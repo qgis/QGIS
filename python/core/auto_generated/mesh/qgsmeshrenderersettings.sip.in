@@ -55,6 +55,15 @@ Returns color used for rendering
 Sets color used for rendering of the mesh
 %End
 
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
 };
 
 class QgsMeshRendererScalarSettings
@@ -81,6 +90,15 @@ Returns color ramp shader function
     void setColorRampShader( const QgsColorRampShader &shader );
 %Docstring
 Sets color ramp shader function
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
 %End
 
 };
@@ -244,6 +262,15 @@ Returns ratio of the head length of the arrow (range 0-1)
 Sets ratio of the head length of the arrow (range 0-1)
 %End
 
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
 };
 
 
@@ -318,6 +345,15 @@ Returns active vector dataset
     void setActiveVectorDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
 %Docstring
 Sets active vector dataset for rendering.
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
 %End
 
 };

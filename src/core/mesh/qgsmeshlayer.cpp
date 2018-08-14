@@ -221,18 +221,26 @@ QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &renderer
 
 bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context )
 {
-  Q_UNUSED( node );
   Q_UNUSED( errorMessage );
   Q_UNUSED( context );
+
+  QDomElement elem = node.toElement();
+  QDomElement elemRendererSettings = elem.firstChildElement( "mesh-renderer-settings" );
+  if ( !elemRendererSettings.isNull() )
+    mRendererSettings.readXml( elemRendererSettings );
+
   return true;
 }
 
 bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( node );
-  Q_UNUSED( doc );
   Q_UNUSED( errorMessage );
   Q_UNUSED( context );
+
+  QDomElement elem = node.toElement();
+  QDomElement elemRendererSettings = mRendererSettings.writeXml( doc );
+  elem.appendChild( elemRendererSettings );
+
   return true;
 }
 
@@ -258,8 +266,6 @@ QString QgsMeshLayer::encodedSource( const QString &source, const QgsReadWriteCo
 
 bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
 {
-  Q_UNUSED( context );
-
   QgsDebugMsgLevel( QStringLiteral( "Datasource in QgsMeshLayer::readXml: %1" ).arg( mDataSource.toLocal8Bit().data() ), 3 );
 
   //process provider key
@@ -295,6 +301,9 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
       elemUri = elemUri.nextSiblingElement( QStringLiteral( "uri" ) );
     }
   }
+
+  QString errorMsg;
+  readSymbology( layer_node, errorMsg, context );
 
   return mValid; // should be true if read successfully
 }

@@ -53,6 +53,11 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
     //! Sets color used for rendering of the mesh
     void setColor( const QColor &color );
 
+    //! Writes configuration to a new DOM element
+    QDomElement writeXml( QDomDocument &doc ) const;
+    //! Reads configuration from the given DOM element
+    void readXml( const QDomElement &elem );
+
   private:
     bool mEnabled = false;
     double mLineWidth = DEFAULT_LINE_WIDTH;
@@ -75,6 +80,11 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
     QgsColorRampShader colorRampShader() const;
     //! Sets color ramp shader function
     void setColorRampShader( const QgsColorRampShader &shader );
+
+    //! Writes configuration to a new DOM element
+    QDomElement writeXml( QDomDocument &doc ) const;
+    //! Reads configuration from the given DOM element
+    void readXml( const QDomElement &elem );
 
   private:
     QgsColorRampShader mColorRampShader;
@@ -222,6 +232,11 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     //! Sets ratio of the head length of the arrow (range 0-1)
     void setArrowHeadLengthRatio( double arrowHeadLengthRatio );
 
+    //! Writes configuration to a new DOM element
+    QDomElement writeXml( QDomDocument &doc ) const;
+    //! Reads configuration from the given DOM element
+    void readXml( const QDomElement &elem );
+
   private:
     double mLineWidth = DEFAULT_LINE_WIDTH; //in milimeters
     QColor mColor = Qt::black;
@@ -281,6 +296,11 @@ class CORE_EXPORT QgsMeshRendererSettings
     QgsMeshDatasetIndex activeVectorDataset() const { return mActiveVectorDataset; }
     //! Sets active vector dataset for rendering.
     void setActiveVectorDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() ) { mActiveVectorDataset = index; }
+
+    //! Writes configuration to a new DOM element
+    QDomElement writeXml( QDomDocument &doc ) const;
+    //! Reads configuration from the given DOM element
+    void readXml( const QDomElement &elem );
 
   private:
     QgsMeshRendererMeshSettings mRendererNativeMeshSettings;

@@ -108,7 +108,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     Type colorRampType() const { return mColorRampType; }
 
     //! Returns the color ramp type as a string.
-    QString colorRampTypeAsQString();
+    QString colorRampTypeAsQString() const;
 
     //! Sets a custom colormap
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem> &list ); //TODO: sort on set
@@ -166,6 +166,18 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
                 int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) const override;
 
     void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
+
+    /**
+     * Writes configuration to a new DOM element
+     * \since QGIS 3.4
+     */
+    QDomElement writeXml( QDomDocument &doc ) const;
+
+    /**
+     * Reads configuration from the given DOM element
+     * \since QGIS 3.4
+     */
+    void readXml( const QDomElement &elem );
 
     //! Sets classification mode
     void setClassificationMode( ClassificationMode classificationMode ) { mClassificationMode = classificationMode; }

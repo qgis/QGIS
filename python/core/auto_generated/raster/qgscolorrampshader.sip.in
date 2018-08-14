@@ -82,7 +82,7 @@ Returns the custom colormap.
 Returns the color ramp type.
 %End
 
-    QString colorRampTypeAsQString();
+    QString colorRampTypeAsQString() const;
 %Docstring
 Returns the color ramp type as a string.
 %End
@@ -159,6 +159,20 @@ Generates and new RGB value based on original RGB value
 
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
 
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+
+.. versionadded:: 3.4
+%End
+
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+
+.. versionadded:: 3.4
+%End
 
     void setClassificationMode( ClassificationMode classificationMode );
 %Docstring

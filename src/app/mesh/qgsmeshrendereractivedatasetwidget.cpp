@@ -164,11 +164,13 @@ void QgsMeshRendererActiveDatasetWidget::syncToLayer()
   if ( mMeshLayer )
   {
     const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
+    mActiveDatasetGroup = mDatasetGroupTreeView->activeGroup();
     mActiveScalarDataset = rendererSettings.activeScalarDataset();
     mActiveVectorDataset = rendererSettings.activeVectorDataset();
   }
   else
   {
+    mActiveDatasetGroup = -1;
     mActiveScalarDataset = QgsMeshDatasetIndex();
     mActiveVectorDataset = QgsMeshDatasetIndex();
   }
