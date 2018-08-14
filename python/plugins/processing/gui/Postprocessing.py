@@ -57,7 +57,7 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
             feedback.setProgress(100 * i / float(len(context.layersToLoadOnCompletion())))
 
         try:
-            layer = QgsProcessingUtils.mapLayerFromString(l, context)
+            layer = QgsProcessingUtils.mapLayerFromString(l, context, typeHint=details.layerTypeHint)
             if layer is not None:
                 if not ProcessingConfig.getSetting(ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):
                     layer.setName(details.name)

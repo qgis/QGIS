@@ -26,6 +26,7 @@
 #include "qgsmaplayerlistutils.h"
 #include "qgsexception.h"
 #include "qgsprocessingfeedback.h"
+#include "qgsprocessingutils.h"
 
 class QgsProcessingLayerPostProcessorInterface;
 
@@ -169,9 +170,10 @@ class CORE_EXPORT QgsProcessingContext
         /**
          * Constructor for LayerDetails.
          */
-        LayerDetails( const QString &name, QgsProject *project, const QString &outputName = QString() )
+        LayerDetails( const QString &name, QgsProject *project, const QString &outputName = QString(), QgsProcessingUtils::LayerHint layerTypeHint = QgsProcessingUtils::UnknownType )
           : name( name )
           , outputName( outputName )
+          , layerTypeHint( layerTypeHint )
           , project( project )
         {}
 
@@ -183,6 +185,13 @@ class CORE_EXPORT QgsProcessingContext
 
         //! Associated output name from algorithm which generated the layer.
         QString outputName;
+
+        /**
+         * Layer type hint.
+         *
+         * \since QGIS 3.4
+         */
+        QgsProcessingUtils::LayerHint layerTypeHint = QgsProcessingUtils::UnknownType;
 
         /**
          * Layer post-processor. May be nullptr if no post-processing is required.
