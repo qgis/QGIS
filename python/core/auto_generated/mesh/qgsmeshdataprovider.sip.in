@@ -321,7 +321,7 @@ emits dataChanged when successful
 
     virtual QStringList extraDatasets() const = 0;
 %Docstring
-Get list of additional dataset file URIs added using addDataset() calls.
+Returns list of additional dataset file URIs added using addDataset() calls.
 %End
 
     virtual int datasetGroupCount( ) const = 0;

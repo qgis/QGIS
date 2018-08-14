@@ -208,6 +208,7 @@ class CORE_EXPORT QgsDefaultMeshLayerLegend : public QgsMapLayerLegend
     Q_OBJECT
 
   public:
+    //! Creates an instance for the given mesh layer
     explicit QgsDefaultMeshLayerLegend( QgsMeshLayer *ml );
 
     QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;

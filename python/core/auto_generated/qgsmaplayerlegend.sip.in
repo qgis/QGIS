@@ -210,6 +210,9 @@ Default legend implementation for mesh layers
 %End
   public:
     explicit QgsDefaultMeshLayerLegend( QgsMeshLayer *ml );
+%Docstring
+Creates an instance for the given mesh layer
+%End
 
     virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
 

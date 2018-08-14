@@ -18,6 +18,8 @@
 #ifndef QGSMESHLAYERUTILS_H
 #define QGSMESHLAYERUTILS_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 
 class QgsMeshDataProvider;
