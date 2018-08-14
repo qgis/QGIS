@@ -93,6 +93,7 @@ SET(TESTS
  testqgsdxfexport.cpp
  testqgsellipsemarker.cpp
  testqgsexpressioncontext.cpp
+ testqgssqliteexpressioncompiler.cpp
  testqgsexpression.cpp
  testqgsfeature.cpp
  testqgsfields.cpp
