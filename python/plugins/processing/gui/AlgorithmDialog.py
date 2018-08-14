@@ -98,14 +98,23 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
             if not param.isDestination():
-                wrapper = self.mainWidget().wrappers[param.name()]
-                value = None
-                if wrapper.widget is not None:
-                    value = wrapper.value()
-                    parameters[param.name()] = value
+                try:
+                    wrapper = self.mainWidget().wrappers[param.name()]
+                except KeyError:
+                    continue
 
-                    if not param.checkValueIsAcceptable(value):
-                        raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper.widget)
+                try:
+                    widget = wrapper.wrappedWidget()
+                except AttributeError:
+                    widget = wrapper.widget
+                if widget is None:
+                    continue
+
+                value = wrapper.value()
+                parameters[param.name()] = value
+
+                if not param.checkValueIsAcceptable(value):
+                    raise AlgorithmDialogBase.InvalidParameterValue(param, widget)
             else:
                 dest_project = None
                 if not param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
