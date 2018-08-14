@@ -17,6 +17,7 @@ import qgis  # NOQA
 from qgis.core import QgsTask, QgsApplication
 
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.testing import start_app, unittest
 from time import sleep
@@ -260,6 +261,36 @@ class TestQgsTaskManager(unittest.TestCase):
         self.assertFalse(task.exception)
         self.assertEqual(result_value, 5)
         self.assertEqual(result_statement, 'whoo')
+
+    def testTaskFromFunctionWithSubTaskCompletedIsCalledOnce(self):
+        """ test that when a parent task has subtasks it does emit taskCompleted only once"""
+
+        self.finished = 0
+        self.completed = 0
+
+        def _on_finished():
+            self.finished += 1
+
+        def _on_completed():
+            self.completed += 1
+
+        task = QgsTask.fromFunction('test task', run_no_result, on_finished=_on_finished)
+        task.taskCompleted.connect(_on_completed)
+        spy = QSignalSpy(task.taskCompleted)
+        sub_task_1 = QgsTask.fromFunction('test subtask 1', run_no_result, on_finished=_on_finished)
+        sub_task_2 = QgsTask.fromFunction('test subtask 2', run_no_result, on_finished=_on_finished)
+        task.addSubTask(sub_task_1, [], QgsTask.ParentDependsOnSubTask)
+        task.addSubTask(sub_task_2, [], QgsTask.ParentDependsOnSubTask)
+
+        QgsApplication.taskManager().addTask(task)
+        while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
+            pass
+        while QgsApplication.taskManager().countActiveTasks() > 0:
+            QCoreApplication.processEvents()
+
+        self.assertEqual(self.completed, 1)
+        self.assertEqual(self.finished, 3)
+        self.assertEqual(len(spy), 1)
 
 
 if __name__ == '__main__':
