@@ -53,6 +53,7 @@ class TestQgsMeshRenderer : public QObject
     QString mDataDir;
     QgsMeshLayer *mMemoryLayer = nullptr;
     QgsMapSettings *mMapSettings = nullptr;
+    QString mReport;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -76,7 +77,12 @@ class TestQgsMeshRenderer : public QObject
 
 void TestQgsMeshRenderer::init()
 {
-  mMemoryLayer->setRendererSettings( QgsMeshRendererSettings() );
+  QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
+  rendererSettings.setActiveScalarDataset();
+  rendererSettings.setActiveVectorDataset();
+  rendererSettings.setNativeMeshSettings( QgsMeshRendererMeshSettings() );
+  rendererSettings.setTriangularMeshSettings( QgsMeshRendererMeshSettings() );
+  mMemoryLayer->setRendererSettings( rendererSettings );
 }
 
 void TestQgsMeshRenderer::initTestCase()
@@ -87,6 +93,8 @@ void TestQgsMeshRenderer::initTestCase()
   QgsApplication::showSettings();
   mDataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mDataDir += "/mesh";
+
+  mReport = QStringLiteral( "<h1>Mesh Layer Rendering Tests</h1>\n" );
 
   mMapSettings = new QgsMapSettings();
 
@@ -114,6 +122,15 @@ void TestQgsMeshRenderer::initTestCase()
 
 void TestQgsMeshRenderer::cleanupTestCase()
 {
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
+
   QgsApplication::exitQgis();
 }
 
@@ -128,6 +145,7 @@ QString TestQgsMeshRenderer::readFile( const QString &fname ) const
 
 bool TestQgsMeshRenderer::imageCheck( const QString &testType )
 {
+  mReport += "<h2>" + testType + "</h2>\n";
   mMapSettings->setExtent( mMemoryLayer->extent() );
   mMapSettings->setDestinationCrs( mMemoryLayer->crs() );
   mMapSettings->setOutputDpi( 96 );
@@ -137,6 +155,7 @@ bool TestQgsMeshRenderer::imageCheck( const QString &testType )
   myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 15 );
   bool myResultFlag = myChecker.runTest( testType, 0 );
+  mReport += myChecker.report();
   return myResultFlag;
 }
 
