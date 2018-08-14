@@ -262,7 +262,7 @@ class TestQgsTaskManager(unittest.TestCase):
         self.assertEqual(result_value, 5)
         self.assertEqual(result_statement, 'whoo')
 
-    def testTaskFromFunctionWithSubTaskCompletedIsCalledOnce(self):
+    def testTaskFromFunctionWithSubTaskCompletedIsCalledOnce(self):  # spellok
         """ test that when a parent task has subtasks it does emit taskCompleted only once"""
 
         self.finished = 0
