@@ -603,7 +603,7 @@ QgsVectorLayer *QgsProcessingParameters::parameterAsVectorLayer( const QgsProces
 
 QgsVectorLayer *QgsProcessingParameters::parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
 {
-  return qobject_cast< QgsVectorLayer *>( parameterAsVectorLayer( definition, value, context ) );
+  return qobject_cast< QgsVectorLayer *>( parameterAsLayer( definition, value, context ) );
 }
 
 QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
