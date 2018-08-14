@@ -38,12 +38,11 @@ from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsWkbTypes,
                        QgsGeometry,
-                       QgsPointXY,
+                       QgsPoint,
                        QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterExtent,
-                       QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterFeatureSink)
@@ -145,11 +144,11 @@ class RegularPoints(QgisAlgorithm):
                     break
 
                 if randomize:
-                    geom = QgsGeometry().fromPointXY(QgsPointXY(
+                    geom = QgsGeometry(QgsPoint(
                         uniform(x - (pSpacing / 2.0), x + (pSpacing / 2.0)),
                         uniform(y - (pSpacing / 2.0), y + (pSpacing / 2.0))))
                 else:
-                    geom = QgsGeometry().fromPointXY(QgsPointXY(x, y))
+                    geom = QgsGeometry(QgsPoint(x, y))
 
                 if extent_engine.intersects(geom.constGet()):
                     f.setAttributes([id])
