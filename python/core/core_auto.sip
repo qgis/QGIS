@@ -121,6 +121,7 @@
 %Include auto_generated/qgsstringutils.sip
 %Include auto_generated/qgstextrenderer.sip
 %Include auto_generated/qgstracer.sip
+%Include auto_generated/qgstranslationcontext.sip
 %Include auto_generated/qgsvectordataprovider.sip
 %Include auto_generated/qgsvectorlayercache.sip
 %Include auto_generated/qgsvectorfilewriter.sip
@@ -442,5 +443,4 @@
 %Include auto_generated/layertree/qgslayertreeregistrybridge.sip
 %Include auto_generated/qgsuserprofilemanager.sip
 %Include auto_generated/symbology/qgsarrowsymbollayer.sip
-%Include auto_generated/qgstranslationcontext.sip
 %Include auto_generated/qgsuserprofile.sip

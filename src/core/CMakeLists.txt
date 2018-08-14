@@ -937,6 +937,7 @@ SET(QGIS_CORE_HDRS
   qgstextrenderer.h
   qgstextrenderer_p.h
   qgstracer.h
+  qgstranslationcontext.h
 
   qgsvectordataprovider.h
   qgsvectorlayercache.h
