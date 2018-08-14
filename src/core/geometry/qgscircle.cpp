@@ -249,8 +249,8 @@ int QgsCircle::intersections( const QgsCircle &other, QgsPoint &intersection1, Q
   if ( res == 0 )
     return 0;
 
-  intersection1 = QgsPoint( int1.x(), int1.y() );
-  intersection2 = QgsPoint( int2.x(), int2.y() );
+  intersection1 = QgsPoint( int1 );
+  intersection2 = QgsPoint( int2 );
   if ( useZ && mCenter.is3D() )
   {
     intersection1.addZValue( mCenter.z() );
