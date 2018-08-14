@@ -158,7 +158,7 @@ class RegularPoints(QgisAlgorithm):
 
                 count += 1
                 feedback.setProgress(int(count * total))
-                
+
             y = y - pSpacing
 
         return {self.OUTPUT: dest_id}
