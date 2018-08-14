@@ -10,12 +10,14 @@
 
 
 
-
 class QgsProcessingGuiRegistry
 {
 %Docstring
 The QgsProcessingGuiRegistry is a home for widgets for processing
 configuration widgets.
+
+QgsProcessingGuiRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsGui.processingGuiRegistry()`
 
 .. versionadded:: 3.2
 %End
@@ -55,6 +57,41 @@ next to parameter widgets. Most algorithms do not have a configuration widget
 and in this case, None will be returned.
 
 .. versionadded:: 3.2
+%End
+
+    bool addParameterWidgetFactory( QgsProcessingParameterWidgetFactoryInterface *factory /Transfer/ );
+%Docstring
+Adds a parameter widget ``factory`` to the registry. Ownership of ``factory`` is transferred to the registry.
+
+Returns true if the factory was successfully added, or false if the factory could not be added. Each
+factory must return a unique value for QgsProcessingParameterWidgetFactoryInterface.parameterType(),
+and attempting to add a new factory with a duplicate type will result in failure.
+
+.. seealso:: :py:func:`removeParameterWidgetFactory`
+
+.. seealso:: :py:func:`createParameterWidgetWrapper`
+
+.. versionadded:: 3.4
+%End
+
+    void removeParameterWidgetFactory( QgsProcessingParameterWidgetFactoryInterface *factory );
+%Docstring
+Removes a parameter widget ``factory`` from the registry. The factory will be deleted.
+
+.. seealso:: :py:func:`addParameterWidgetFactory`
+
+.. versionadded:: 3.4
+%End
+
+    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsAbstractProcessingParameterWidgetWrapper::WidgetType type ) /Factory/;
+%Docstring
+Creates a new parameter widget wrapper for the given ``parameter``. The ``type`` argument
+dictates the type of dialog the wrapper should be created for. The caller takes ownership
+of the returned wrapper.
+
+If no factory is registered which handles the given ``parameter``, a None will be returned.
+
+.. seealso:: :py:func:`addParameterWidgetFactory`
 %End
 
 };

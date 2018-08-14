@@ -43,12 +43,12 @@ class RasterOptionsWidgetWrapper(WidgetWrapper):
             options = [(self.dialog.resolveValueDescription(s), s) for s in strings]
             for desc, val in options:
                 widget.addItem(desc, val)
-            widget.setEditText(self.param.defaultValue() or '')
+            widget.setEditText(self.parameterDefinition().defaultValue() or '')
             return widget
         elif self.dialogType == DIALOG_BATCH:
             widget = QLineEdit()
-            if self.param.defaultValue():
-                widget.setText(self.param.defaultValue())
+            if self.parameterDefinition().defaultValue():
+                widget.setText(self.parameterDefinition().defaultValue())
             return widget
         else:
             return QgsRasterFormatSaveOptionsWidget()

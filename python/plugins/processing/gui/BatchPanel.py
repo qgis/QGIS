@@ -36,7 +36,7 @@ from qgis.core import (Qgis,
                        QgsApplication,
                        QgsSettings,
                        QgsProcessingParameterDefinition)
-from qgis.gui import QgsMessageBar
+from qgis.gui import QgsAbstractProcessingParameterWidgetWrapper
 
 from processing.gui.wrappers import WidgetWrapperFactory
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
@@ -232,13 +232,22 @@ class BatchPanel(BASE, WIDGET):
             with open(filename, 'w') as f:
                 json.dump(toSave, f)
 
-    def setCellWrapper(self, row, column, wrapper):
+    def setCellWrapper(self, row, column, wrapper, context):
         self.wrappers[row][column] = wrapper
-        self.tblParameters.setCellWidget(row, column, wrapper.widget)
+
+        is_cpp_wrapper = issubclass(wrapper.__class__, QgsAbstractProcessingParameterWidgetWrapper)
+        if is_cpp_wrapper:
+            widget = wrapper.createWrappedWidget(context)
+        else:
+            widget = wrapper.widget
+
+        self.tblParameters.setCellWidget(row, column, widget)
 
     def addRow(self):
         self.wrappers.append([None] * self.tblParameters.columnCount())
         self.tblParameters.setRowCount(self.tblParameters.rowCount() + 1)
+
+        context = dataobjects.createContext()
 
         wrappers = {}
         row = self.tblParameters.rowCount() - 1
@@ -249,7 +258,7 @@ class BatchPanel(BASE, WIDGET):
 
             wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent, row, column)
             wrappers[param.name()] = wrapper
-            self.setCellWrapper(row, column, wrapper)
+            self.setCellWrapper(row, column, wrapper, context)
             column += 1
 
         for out in self.alg.destinationParameterDefinitions():
