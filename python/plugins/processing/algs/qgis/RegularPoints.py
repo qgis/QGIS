@@ -130,6 +130,7 @@ class RegularPoints(QgisAlgorithm):
         f.setFields(fields)
 
         count = 0
+        id = 0
         total = 100.0 / (area / pSpacing)
         y = extent.yMaximum() - inset
 
@@ -151,10 +152,11 @@ class RegularPoints(QgisAlgorithm):
                     geom = QgsGeometry().fromPointXY(QgsPointXY(x, y))
 
                 if extent_engine.intersects(geom.constGet()):
-                    f.setAttribute('id', count)
+                    f.setAttributes([id])
                     f.setGeometry(geom)
                     sink.addFeature(f, QgsFeatureSink.FastInsert)
                     x += pSpacing
+                    id += 1
 
                 count += 1
                 feedback.setProgress(int(count * total))
