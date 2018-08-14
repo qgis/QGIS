@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscoordinateformatter.h"
 #include "qgsexpressionfunction.h"
 #include "qgsexpressionutils.h"
 #include "qgsexpressionnodeimpl.h"
@@ -1496,6 +1497,62 @@ static QVariant fcnToTime( const QVariantList &values, const QgsExpressionContex
 static QVariant fcnToInterval( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   return QVariant::fromValue( QgsExpressionUtils::getInterval( values.at( 0 ), parent ) );
+}
+
+/*
+ * DMS functions
+ */
+
+static QVariant floatToDegreeFormat( const QgsCoordinateFormatter::Format format, const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  double value = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
+  QString axis = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+  int precision = QgsExpressionUtils::getIntValue( values.at( 2 ), parent );
+
+  QString formatString;
+  if ( values.count() > 3 )
+    formatString = QgsExpressionUtils::getStringValue( values.at( 3 ), parent );
+
+  QgsCoordinateFormatter::FormatFlags flags = nullptr;
+  if ( formatString.compare( QLatin1String( "suffix" ), Qt::CaseInsensitive ) == 0 )
+  {
+    flags = QgsCoordinateFormatter::FlagDegreesUseStringSuffix;
+  }
+  else if ( formatString.compare( QLatin1String( "aligned" ), Qt::CaseInsensitive ) == 0 )
+  {
+    flags = QgsCoordinateFormatter::FlagDegreesUseStringSuffix | QgsCoordinateFormatter::FlagDegreesPadMinutesSeconds;
+  }
+  else if ( ! formatString.isEmpty() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Invalid formatting parameter: '%1'. It must be empty, or 'suffix' or 'aligned'." ).arg( formatString ) );
+    return QVariant();
+  }
+
+  if ( axis.compare( QLatin1String( "x" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return QVariant::fromValue( QgsCoordinateFormatter::formatX( value, format, precision, flags ) );
+  }
+  else if ( axis.compare( QLatin1String( "y" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return QVariant::fromValue( QgsCoordinateFormatter::formatY( value, format, precision, flags ) );
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Invalid axis name: '%1'. It must be either 'x' or 'y'." ).arg( axis ) );
+    return QVariant();
+  }
+}
+
+static QVariant fcnToDegreeMinute( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node )
+{
+  QgsCoordinateFormatter::Format format = QgsCoordinateFormatter::FormatDegreesMinutes;
+  return floatToDegreeFormat( format, values, context, parent, node );
+}
+
+static QVariant fcnToDegreeMinuteSecond( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node )
+{
+  QgsCoordinateFormatter::Format format = QgsCoordinateFormatter::FormatDegreesMinutesSeconds;
+  return floatToDegreeFormat( format, values, context, parent, node );
 }
 
 static QVariant fcnAge( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -4415,6 +4472,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "to_date" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToDate, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todate" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_time" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToTime, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "totime" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_interval" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToInterval, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "tointerval" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "to_dm" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "axis" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "precision" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "formatting" ), true ), fcnToDegreeMinute, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todm" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "to_dms" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "axis" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "precision" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "formatting" ), true ), fcnToDegreeMinuteSecond, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todms" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "coalesce" ), -1, fcnCoalesce, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), false, QStringList(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "if" ), 3, fcnIf, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), true )
 
