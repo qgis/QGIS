@@ -29,8 +29,11 @@ MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 
 #############################################################
 # Configure OpenCL if available
-
-OPTION(USE_OPENCL "Use OpenCL" ON)
+IF (APPLE)
+  OPTION(USE_OPENCL "Use OpenCL" OFF)
+ELSE (APPLE)
+  OPTION(USE_OPENCL "Use OpenCL" ON)
+ENDIF (APPLE)
 IF (USE_OPENCL)
     FIND_PACKAGE(OpenCL)
     IF(${OpenCL_FOUND})
