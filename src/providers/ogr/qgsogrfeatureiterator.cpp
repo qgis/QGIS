@@ -43,8 +43,11 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   , mFilterFids( mRequest.filterFids() )
   , mFilterFidsIt( mFilterFids.constBegin() )
 {
+  // Since connection timeout for OGR connections is problematic and can lead to crashes, disable for now.
+  mRequest.setConnectionTimeout( -1 );
+
   //QgsDebugMsg( "Feature iterator of " + mSource->mLayerName + ": acquiring connection");
-  mConn = QgsOgrConnPool::instance()->acquireConnection( QgsOgrProviderUtils::connectionPoolId( mSource->mDataSource ), request.connectionTimeout(), request.requestMayBeNested() );
+  mConn = QgsOgrConnPool::instance()->acquireConnection( QgsOgrProviderUtils::connectionPoolId( mSource->mDataSource ), mRequest.connectionTimeout(), mRequest.requestMayBeNested() );
   if ( !mConn->ds )
   {
     return;
