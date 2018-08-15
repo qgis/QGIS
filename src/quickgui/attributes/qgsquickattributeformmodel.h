@@ -59,7 +59,6 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
     {
       ElementType = Qt::UserRole + 1, //!< User role used to identify either "field" or "container" type of item
       Name, //!< Field Name
-      Alias, //!< Field Alias
       AttributeValue, //!< Field Value
       AttributeEditable,  //!< Whether is field editable
       EditorWidget, //!< Widget type to represent the data (text field, value map, ...)

@@ -33,7 +33,6 @@ QHash<int, QByteArray> QgsQuickAttributeFormModelBase::roleNames() const
 
   roles[QgsQuickAttributeFormModel::ElementType]  = QByteArray( "Type" );
   roles[QgsQuickAttributeFormModel::Name]  = QByteArray( "Name" );
-  roles[QgsQuickAttributeFormModel::Alias]  = QByteArray( "Alias" );
   roles[QgsQuickAttributeFormModel::AttributeValue] = QByteArray( "AttributeValue" );
   roles[QgsQuickAttributeFormModel::AttributeEditable] = QByteArray( "AttributeEditable" );
   roles[QgsQuickAttributeFormModel::EditorWidget] = QByteArray( "EditorWidget" );
@@ -251,7 +250,6 @@ void QgsQuickAttributeFormModelBase::flatten( QgsAttributeEditorContainer *conta
 
         QStandardItem *item = new QStandardItem();
         item->setData( mLayer->attributeDisplayName( fieldIndex ), QgsQuickAttributeFormModel::Name );
-        item->setData( mLayer->attributeAlias( fieldIndex ), QgsQuickAttributeFormModel::Alias );
         item->setData( mAttributeModel->featureLayerPair().feature().attribute( fieldIndex ), QgsQuickAttributeFormModel::AttributeValue );
         item->setData( !mLayer->editFormConfig().readOnly( fieldIndex ), QgsQuickAttributeFormModel::AttributeEditable );
         QgsEditorWidgetSetup setup = mLayer->editorWidgetSetup( fieldIndex );
