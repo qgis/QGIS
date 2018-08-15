@@ -82,6 +82,8 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   bool gbxCustom = ( mMacStyle );
   opts.insert( QStringLiteral( "groupBoxCustom" ), settings.value( QStringLiteral( "groupBoxCustom" ), QVariant( gbxCustom ) ) );
 
+  opts.insert( QStringLiteral( "toolbarSpacing" ), settings.value( QStringLiteral( "toolbarSpacing" ), QString() ) );
+
   settings.endGroup(); // "qgis/stylesheet"
 
   opts.insert( QStringLiteral( "iconSize" ), settings.value( QStringLiteral( "/qgis/iconSize" ), QGIS_ICON_SIZE ) );
@@ -184,6 +186,17 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
                  "}" )
         .arg( palette.highlight().color().name(),
               palette.highlightedText().color().name() );
+
+  QString toolbarSpacing = opts.value( QStringLiteral( "toolbarSpacing" ), QString() ).toString();
+  if ( !toolbarSpacing.isEmpty() )
+  {
+    bool ok = false;
+    int toolbarSpacingInt = toolbarSpacing.toInt( &ok );
+    if ( ok )
+    {
+      ss += QStringLiteral( "QToolBar > QToolButton { padding: %1px; } " ).arg( toolbarSpacingInt );
+    }
+  }
 
   QgsDebugMsg( QString( "Stylesheet built: %1" ).arg( ss ) );
 
