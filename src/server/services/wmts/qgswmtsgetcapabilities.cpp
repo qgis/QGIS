@@ -30,6 +30,17 @@
 
 namespace QgsWmts
 {
+  namespace
+  {
+    QList< layerDef > getWmtsLayerList( QgsServerInterface *serverIface, const QgsProject *project );
+
+    void appendLayerElements( QDomDocument &doc, QDomElement &contentsElement,
+                              QList< layerDef > wmtsLayers, QList< tileMatrixSetDef > tmsList,
+                              const QgsProject *project );
+
+    void appendTileMatrixSetElements( QDomDocument &doc, QDomElement &contentsElement,
+                                      QList< tileMatrixSetDef > tmsList );
+  }
 
   /**
    * Output WMTS  GetCapabilities response
@@ -312,9 +323,6 @@ namespace QgsWmts
 
   QDomElement getContentsElement( QDomDocument &doc, QgsServerInterface *serverIface, const QgsProject *project )
   {
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsAccessControl *accessControl = serverIface->accessControls();
-#endif
     /*
      * Adding layer list in ContentMetadata
      */
@@ -323,9 +331,28 @@ namespace QgsWmts
     QList< tileMatrixSetDef > tmsList = getTileMatrixSetList( project );
     if ( !tmsList.isEmpty() )
     {
+      // get layer list
+      QList< layerDef > wmtsLayers = getWmtsLayerList( serverIface, project );
+      if ( !wmtsLayers.isEmpty() )
+      {
+        appendLayerElements( doc, contentsElement, wmtsLayers, tmsList, project );
+      }
+
+      appendTileMatrixSetElements( doc, contentsElement, tmsList );
+    }
+
+    //End
+    return contentsElement;
+  }
+  namespace
+  {
+    QList< layerDef > getWmtsLayerList( QgsServerInterface *serverIface, const QgsProject *project )
+    {
       QList< layerDef > wmtsLayers;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      QgsAccessControl *accessControl = serverIface->accessControls();
+#endif
       QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
-      QList<tileMatrixSetDef>::iterator tmsIt = tmsList.begin();
 
       QStringList nonIdentifiableLayers = project->nonIdentifiableLayers();
 
@@ -492,8 +519,15 @@ namespace QgsWmts
 
         wmtsLayers.append( pLayer );
       }
+      return wmtsLayers;
+    }
 
-      // Append InfoFormat helper
+    void appendLayerElements( QDomDocument &doc, QDomElement &contentsElement,
+                              QList< layerDef > wmtsLayers, QList< tileMatrixSetDef > tmsList,
+                              const QgsProject *project )
+    {
+      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+      // Define InfoFormat helper
       std::function < void ( QDomElement &, const QString & ) > appendInfoFormat = [&doc]( QDomElement & elem, const QString & format )
       {
         QDomElement formatElem = doc.createElement( QStringLiteral( "InfoFormat" )/*wmts:InfoFormat*/ );
@@ -544,10 +578,8 @@ namespace QgsWmts
         layerElem.appendChild( wgs84BBoxElement );
 
         // Other bounding boxes
-        tmsIt = tmsList.begin();
-        for ( ; tmsIt != tmsList.end(); ++tmsIt )
+        for ( tileMatrixSetDef tms : tmsList )
         {
-          tileMatrixSetDef &tms = *tmsIt;
           if ( tms.ref == QLatin1String( "EPSG:4326" ) )
             continue;
 
@@ -606,10 +638,8 @@ namespace QgsWmts
           appendInfoFormat( layerElem, QStringLiteral( "application/vnd.ogc.gml/3.1.1" ) );
         }
 
-        tmsIt = tmsList.begin();
-        for ( ; tmsIt != tmsList.end(); ++tmsIt )
+        for ( tileMatrixSetDef tms : tmsList )
         {
-          tileMatrixSetDef &tms = *tmsIt;
           if ( tms.ref != QLatin1String( "EPSG:4326" ) )
           {
             QgsRectangle rect;
@@ -636,11 +666,8 @@ namespace QgsWmts
           //wmts:TileMatrixSetLimits
           QDomElement tmsLimitsElement = doc.createElement( QStringLiteral( "TileMatrixSetLimits" )/*wmts:TileMatrixSetLimits*/ );
           int tmIdx = 0;
-          QList<tileMatrixDef>::iterator tmIt = tms.tileMatrixList.begin();
-          for ( ; tmIt != tms.tileMatrixList.end(); ++tmIt )
+          for ( tileMatrixDef tm : tms.tileMatrixList )
           {
-            tileMatrixDef &tm = *tmIt;
-
             QDomElement tmLimitsElement = doc.createElement( QStringLiteral( "TileMatrixLimits" )/*wmts:TileMatrixLimits*/ );
 
             QDomElement tmIdentifierElem = doc.createElement( QStringLiteral( "TileMatrix" ) );
@@ -679,12 +706,13 @@ namespace QgsWmts
 
         contentsElement.appendChild( layerElem );
       }
+    }
 
-      tmsIt = tmsList.begin();
-      for ( ; tmsIt != tmsList.end(); ++tmsIt )
+    void appendTileMatrixSetElements( QDomDocument &doc, QDomElement &contentsElement,
+                                      QList< tileMatrixSetDef > tmsList )
+    {
+      for ( tileMatrixSetDef tms : tmsList )
       {
-        tileMatrixSetDef &tms = *tmsIt;
-
         //wmts:TileMatrixSet
         QDomElement tmsElement = doc.createElement( QStringLiteral( "TileMatrixSet" )/*wmts:TileMatrixSet*/ );
 
@@ -700,11 +728,8 @@ namespace QgsWmts
 
         //wmts:TileMatrix
         int tmIdx = 0;
-        QList<tileMatrixDef>::iterator tmIt = tms.tileMatrixList.begin();
-        for ( ; tmIt != tms.tileMatrixList.end(); ++tmIt )
+        for ( tileMatrixDef tm : tms.tileMatrixList )
         {
-          tileMatrixDef &tm = *tmIt;
-
           QDomElement tmElement = doc.createElement( QStringLiteral( "TileMatrix" )/*wmts:TileMatrix*/ );
 
           QDomElement tmIdentifierElem = doc.createElement( QStringLiteral( "ows:Identifier" ) );
@@ -750,9 +775,7 @@ namespace QgsWmts
       }
     }
 
-    //End
-    return contentsElement;
-  }
+  } // namespace
 
 } // namespace QgsWmts
 
