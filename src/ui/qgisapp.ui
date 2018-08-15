@@ -359,6 +359,7 @@
     <addaction name="mActionSplitParts"/>
     <addaction name="mActionMergeFeatures"/>
     <addaction name="mActionMergeFeatureAttributes"/>
+    <addaction name="mActionVertexToolActiveLayer"/>
     <addaction name="mActionVertexTool"/>
     <addaction name="mActionRotatePointSymbols"/>
     <addaction name="mActionOffsetPointSymbol"/>
@@ -3069,7 +3070,7 @@ Acts on currently active editable layer</string>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionVertexTool.svg</normaloff>:/images/themes/default/mActionVertexTool.svg</iconset>
+     <normaloff>:/images/themes/default/mActionVertexToolActiveLayer.svg</normaloff>:/images/themes/default/mActionVertexToolActiveLayer.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Vertex Tool (Current Layer)</string>
