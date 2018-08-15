@@ -110,14 +110,14 @@ void TestQgsMeshRenderer::initTestCase()
   mMapSettings->setLayers(
     QList<QgsMapLayer *>() << mMemoryLayer );
 
-  // here we check that datasets automatically get some default style applied
+  // here we check that datasets automatically get our default color ramp applied ("Plasma")
   QgsMeshDatasetIndex ds( 0, 0 );
   QgsMeshRendererScalarSettings scalarSettings = mMemoryLayer->rendererSettings().scalarSettings( ds.group() );
   QgsColorRampShader shader = scalarSettings.colorRampShader();
   QList<QgsColorRampShader::ColorRampItem> lst = shader.colorRampItemList();
-  QCOMPARE( lst.count(), 5 );
+  QCOMPARE( lst.count(), 52 );
   QCOMPARE( lst.at( 0 ).value, 1. );  // min group value
-  QCOMPARE( lst.at( 4 ).value, 4. );  // max group value
+  QCOMPARE( lst.at( lst.count() - 1 ).value, 4. );  // max group value
 }
 
 void TestQgsMeshRenderer::cleanupTestCase()

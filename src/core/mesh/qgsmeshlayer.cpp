@@ -25,12 +25,13 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshlayer.h"
+#include "qgsmeshlayerinterpolator.h"
 #include "qgsmeshlayerrenderer.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsreadwritecontext.h"
+#include "qgsstyle.h"
 #include "qgstriangularmesh.h"
-#include "qgsmeshlayerinterpolator.h"
 
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
@@ -182,13 +183,28 @@ void QgsMeshLayer::onDatasetGroupsAdded( int count )
     assignDefaultStyleToDatasetGroup( i );
 }
 
-static QgsGradientColorRamp *_createDefaultColorRamp()
+static QgsColorRamp *_createDefaultColorRamp()
 {
-  QgsGradientStopsList stops;
-  stops << QgsGradientStop( 0.25, QColor( 0, 255, 255 ) );
-  stops << QgsGradientStop( 0.5, QColor( 0, 255, 0 ) );
-  stops << QgsGradientStop( 0.75, QColor( 255, 255, 0 ) );
-  return new QgsGradientColorRamp( QColor( 0, 0, 255 ), QColor( 255, 0, 0 ), false, stops );
+  QgsColorRamp *ramp = QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Plasma" ) );
+  if ( ramp )
+    return ramp;
+
+  // definition of "Plasma" color ramp (in case it is not available in the style for some reason)
+  QgsStringMap props;
+  props["color1"] = "13,8,135,255";
+  props["color2"] = "240,249,33,255";
+  props["stops"] =
+    "0.0196078;27,6,141,255:0.0392157;38,5,145,255:0.0588235;47,5,150,255:0.0784314;56,4,154,255:0.0980392;65,4,157,255:"
+    "0.117647;73,3,160,255:0.137255;81,2,163,255:0.156863;89,1,165,255:0.176471;97,0,167,255:0.196078;105,0,168,255:"
+    "0.215686;113,0,168,255:0.235294;120,1,168,255:0.254902;128,4,168,255:0.27451;135,7,166,255:0.294118;142,12,164,255:"
+    "0.313725;149,17,161,255:0.333333;156,23,158,255:0.352941;162,29,154,255:0.372549;168,34,150,255:0.392157;174,40,146,255:"
+    "0.411765;180,46,141,255:0.431373;186,51,136,255:0.45098;191,57,132,255:0.470588;196,62,127,255:0.490196;201,68,122,255:"
+    "0.509804;205,74,118,255:0.529412;210,79,113,255:0.54902;214,85,109,255:0.568627;218,91,105,255:0.588235;222,97,100,255:"
+    "0.607843;226,102,96,255:0.627451;230,108,92,255:0.647059;233,114,87,255:0.666667;237,121,83,255:0.686275;240,127,79,255:"
+    "0.705882;243,133,75,255:0.72549;245,140,70,255:0.745098;247,147,66,255:0.764706;249,154,62,255:0.784314;251,161,57,255:"
+    "0.803922;252,168,53,255:0.823529;253,175,49,255:0.843137;254,183,45,255:0.862745;254,190,42,255:0.882353;253,198,39,255:"
+    "0.901961;252,206,37,255:0.921569;251,215,36,255:0.941176;248,223,37,255:0.960784;246,232,38,255:0.980392;243,240,39,255";
+  return QgsGradientColorRamp::create( props );
 }
 
 void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
