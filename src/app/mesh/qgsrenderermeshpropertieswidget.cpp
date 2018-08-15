@@ -125,6 +125,7 @@ void QgsRendererMeshPropertiesWidget::onActiveDatasetGroupChanged()
   mMeshRendererVectorSettingsWidget->syncToLayer();
 
   mContoursGroupBox->setChecked( scalarGroup >= 0 );
+  mContoursGroupBox->setEnabled( scalarGroup >= 0 );
   mVectorsGroupBox->setChecked( vectorGroup >= 0 );
   mVectorsGroupBox->setEnabled( vectorGroup >= 0 );
 }

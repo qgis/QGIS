@@ -24,6 +24,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgscolorrampshader.h"
+#include "qgsmeshdataprovider.h"
 
 
 /**
@@ -251,8 +252,6 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     double mArrowHeadLengthRatio = 0.40;
 };
 
-
-#include "qgsmeshdataprovider.h"
 
 /**
  * \ingroup core

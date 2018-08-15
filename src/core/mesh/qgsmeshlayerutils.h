@@ -40,13 +40,22 @@ class CORE_EXPORT QgsMeshLayerUtils
 {
   public:
 
-    //! Calculates min/max values from the given vector of values
+    /**
+     * Calculates min/max values from the given vector of values.
+     * Ignores any NaN values in the input. Returns NaN for min/max on error.
+     */
     static void calculateMinimumMaximum( double &min, double &max, const QVector<double> &arr );
 
-    //! Calculates min/max values for the whole dataset group (considering all datasets within it)
+    /**
+     * Calculates min/max values for the whole dataset group (considering all datasets within it).
+     * Ignores any NaN values in the input. Returns NaN for min/max on error.
+     */
     static void calculateMinMaxForDatasetGroup( double &min, double &max, QgsMeshDataProvider *provider, int groupIndex );
 
-    //! Calculates min/max values for one dataset
+    /**
+     * Calculates min/max values for one dataset.
+     * Ignores any NaN values in the input. Returns NaN for min/max on error.
+     */
     static void calculateMinMaxForDataset( double &min, double &max, QgsMeshDataProvider *provider, QgsMeshDatasetIndex index );
 };
 

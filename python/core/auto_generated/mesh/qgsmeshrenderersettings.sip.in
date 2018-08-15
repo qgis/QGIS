@@ -274,7 +274,6 @@ Reads configuration from the given DOM element
 };
 
 
-
 class QgsMeshRendererSettings
 {
 %Docstring

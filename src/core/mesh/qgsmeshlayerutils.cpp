@@ -51,7 +51,7 @@ void QgsMeshLayerUtils::calculateMinimumMaximum( double &min, double &max, const
 
 void QgsMeshLayerUtils::calculateMinMaxForDatasetGroup( double &min, double &max, QgsMeshDataProvider *provider, int groupIndex )
 {
-  if ( groupIndex < 0 || groupIndex >= provider->datasetGroupCount() )
+  if ( groupIndex < 0 || !provider || groupIndex >= provider->datasetGroupCount() )
   {
     min = std::numeric_limits<double>::quiet_NaN();
     max = std::numeric_limits<double>::quiet_NaN();
@@ -73,7 +73,7 @@ void QgsMeshLayerUtils::calculateMinMaxForDatasetGroup( double &min, double &max
 
 void QgsMeshLayerUtils::calculateMinMaxForDataset( double &min, double &max, QgsMeshDataProvider *provider, QgsMeshDatasetIndex index )
 {
-  if ( !index.isValid() )
+  if ( !index.isValid() || !provider )
   {
     min = std::numeric_limits<double>::quiet_NaN();
     max = std::numeric_limits<double>::quiet_NaN();
