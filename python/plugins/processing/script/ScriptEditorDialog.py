@@ -68,7 +68,9 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.editor.initLexer()
         self.searchWidget.setVisible(False)
 
-        self.toolBar.setIconSize(iface.iconSize())
+        if iface is not None:
+            self.toolBar.setIconSize(iface.iconSize())
+            self.setStyleSheet(iface.mainWindow().styleSheet())
 
         self.actionOpenScript.setIcon(
             QgsApplication.getThemeIcon('/mActionScriptOpen.svg'))

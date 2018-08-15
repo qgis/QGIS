@@ -249,6 +249,8 @@ class ModelerDialog(BASE, WIDGET):
 
         if iface is not None:
             self.mToolbar.setIconSize(iface.iconSize())
+            self.setStyleSheet(iface.mainWindow().styleSheet())
+
         self.mActionOpen.setIcon(
             QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
         self.mActionSave.setIcon(
