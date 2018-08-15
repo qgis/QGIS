@@ -56,7 +56,9 @@ QString QgsLineSubstringAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm returns the portion of a line (or curve) which falls "
                       "between the specified start and end distances (measured from the "
                       "beginning of the line).\n\n"
-                      "Z and M values are linearly interpolated from existing values." );
+                      "Z and M values are linearly interpolated from existing values.\n\n"
+                      "If a multipart geometry is encountered, only the first part is considered when "
+                      "calculating the substring." );
 }
 
 QString QgsLineSubstringAlgorithm::shortDescription() const
