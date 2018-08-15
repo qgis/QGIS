@@ -69,13 +69,13 @@ class ConcaveHull(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.NO_MULTIGEOMETRY,
                                                         self.tr('Split multipart geometry into singleparts geometries'), defaultValue=False))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Concave hull'), type=QgsProcessing.TypeVectorPolygon))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Output layer'), type=QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'concavehull'
 
     def displayName(self):
-        return self.tr('Concave hull')
+        return self.tr('Concave hull (using alpha shapes algorithm)')
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsSource(parameters, ConcaveHull.INPUT, context)
