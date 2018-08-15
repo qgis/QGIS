@@ -53,7 +53,11 @@ QString QgsInterpolatePointAlgorithm::outputName() const
 
 QString QgsInterpolatePointAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a point geometry interpolated at a set distance along line geometries." );
+  return QObject::tr( "This algorithm creates a point geometry interpolated at a set distance along line or curve geometries.\n\n"
+                      "Z and M values are linearly interpolated from existing values.\n\n"
+                      "If a multipart geometry is encountered, only the first part is considered when "
+                      "interpolating the point.\n\n"
+                      "If the specified distance is greater than the curve's length, the resultant feature will have a null geometry." );
 }
 
 QString QgsInterpolatePointAlgorithm::shortDescription() const
