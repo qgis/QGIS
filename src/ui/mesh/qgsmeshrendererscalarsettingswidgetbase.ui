@@ -47,7 +47,7 @@
      <item>
       <widget class="QPushButton" name="mScalarRecalculateMinMaxButton">
        <property name="text">
-        <string>Recalculate</string>
+        <string>Load</string>
        </property>
       </widget>
      </item>
