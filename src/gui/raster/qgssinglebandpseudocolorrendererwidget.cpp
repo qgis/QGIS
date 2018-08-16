@@ -143,18 +143,6 @@ void QgsSingleBandPseudoColorRendererWidget::setMapCanvas( QgsMapCanvas *canvas 
   mColorRampShaderWidget->setExtent( mMinMaxWidget->extent() );
 }
 
-void QgsSingleBandPseudoColorRendererWidget::mLoadFromBandButton_clicked()
-{
-  if ( !mRasterLayer || !mRasterLayer->dataProvider() )
-  {
-    return;
-  }
-
-  int bandIndex = mBandComboBox->currentBand();
-  mColorRampShaderWidget->setRasterBand( bandIndex );
-  emit widgetChanged();
-}
-
 void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
 {
   const QgsSingleBandPseudoColorRenderer *pr = dynamic_cast<const QgsSingleBandPseudoColorRenderer *>( r );
@@ -162,6 +150,7 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
   {
     mBandComboBox->setBand( pr->band() );
     mMinMaxWidget->setBands( QList< int >() << pr->band() );
+    mColorRampShaderWidget->setRasterBand( pr->band() );
 
     const QgsRasterShader *rasterShader = pr->shader();
     if ( rasterShader )

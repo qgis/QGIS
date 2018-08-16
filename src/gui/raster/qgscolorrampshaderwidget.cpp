@@ -97,12 +97,12 @@ void QgsColorRampShaderWidget::initializeForUseWithRasterLayer()
 {
   Q_ASSERT( mClassificationModeComboBox->findData( QgsColorRampShader::Quantile < 0 ) );
   mClassificationModeComboBox->addItem( tr( "Quantile" ), QgsColorRampShader::Quantile );
-  mLoadFromBandButton->setVisible( bool( mRasterDataProvider ) ); // only for raster version
 }
 
 void QgsColorRampShaderWidget::setRasterDataProvider( QgsRasterDataProvider *dp )
 {
   mRasterDataProvider = dp;
+  mLoadFromBandButton->setVisible( bool( mRasterDataProvider ) ); // only for raster version
 }
 
 void QgsColorRampShaderWidget::setRasterBand( int band )
