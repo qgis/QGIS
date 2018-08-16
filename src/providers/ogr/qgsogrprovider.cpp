@@ -3021,6 +3021,39 @@ QString createFilters( const QString &type )
   }
 }
 
+QGISEXTERN QVariantMap decodeUri( const QString &uri )
+{
+  QString path = uri;
+  QString layerName;
+  int layerId = -1;
+
+  int pipeIndex = path.indexOf( '|' );
+  if ( pipeIndex != -1 )
+  {
+    if ( path.indexOf( QLatin1String( "|layername=" ) ) != -1 )
+    {
+      QRegularExpression regex( QStringLiteral( "\\|layername=([^|]*)" ) );
+      layerName = regex.match( path ).captured( 1 );
+    }
+    else if ( path.indexOf( QLatin1String( "|layerid=" ) ) )
+    {
+      QRegularExpression regex( QStringLiteral( "\\|layerid=([^|]*)" ) );
+      layerId = regex.match( path ).captured( 1 ).toInt();
+    }
+
+    path = path.left( pipeIndex );
+  }
+
+  QString vsiPrefix = qgsVsiPrefix( path );
+  if ( !vsiPrefix.isEmpty() )
+    path = path.mid( vsiPrefix.count() );
+
+  QVariantMap uriComponents;
+  uriComponents.insert( QStringLiteral( "path" ), path );
+  uriComponents.insert( QStringLiteral( "layerName" ), layerName );
+  uriComponents.insert( QStringLiteral( "layerId" ), layerId > -1 ? layerId : QVariant() ) ;
+  return uriComponents;
+}
 
 QGISEXTERN QString fileVectorFilters()
 {

@@ -96,7 +96,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     QString dataSourceUri( bool expandAuthConfig = false ) const override;
 
-
     QgsAbstractFeatureSource *featureSource() const override;
 
     QgsCoordinateReferenceSystem crs() const override;
