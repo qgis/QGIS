@@ -820,6 +820,14 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         requests = None
         self.runTest(filename, requests, **params)
 
+    def test_043_decodeuri(self):
+        # URI decoding
+        filename = '/home/to/path/test.csv'
+        uri = 'file://{}?geomType=none'.format(filename)
+        registry = QgsProviderRegistry.instance()
+        components = registry.decodeUri('delimitedtext', uri)
+        self.assertEqual(components['path'], filename)
+
 
 if __name__ == '__main__':
     unittest.main()
