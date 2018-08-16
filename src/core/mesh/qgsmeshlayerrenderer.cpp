@@ -205,13 +205,14 @@ void QgsMeshLayerRenderer::renderScalarDataset()
   if ( !index.isValid() )
     return; // no shader
 
-  QgsColorRampShader *fcn = new QgsColorRampShader( mRendererSettings.scalarSettings( index.group() ).colorRampShader() );
+  const QgsMeshRendererScalarSettings scalarSettings = mRendererSettings.scalarSettings( index.group() );
+  QgsColorRampShader *fcn = new QgsColorRampShader( scalarSettings.colorRampShader() );
   QgsRasterShader *sh = new QgsRasterShader();
   sh->setRasterShaderFunction( fcn );  // takes ownership of fcn
   QgsMeshLayerInterpolator interpolator( mTriangularMesh, mScalarDatasetValues, mScalarDataOnVertices, mContext, mOutputSize );
   QgsSingleBandPseudoColorRenderer renderer( &interpolator, 0, sh );  // takes ownership of sh
-  renderer.setClassificationMin( fcn->minimumValue() );
-  renderer.setClassificationMax( fcn->maximumValue() );
+  renderer.setClassificationMin( scalarSettings.classificationMin() );
+  renderer.setClassificationMax( scalarSettings.classificationMax() );
 
   std::unique_ptr<QgsRasterBlock> bl( renderer.block( 0, mContext.extent(), mOutputSize.width(), mOutputSize.height(), mFeedback.get() ) );
   QImage img = bl->image();

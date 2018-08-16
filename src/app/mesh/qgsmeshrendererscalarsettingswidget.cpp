@@ -45,6 +45,7 @@ QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() co
 {
   QgsMeshRendererScalarSettings settings;
   settings.setColorRampShader( mScalarColorRampShaderWidget->shader() );
+  settings.setClassificationMinMax( lineEditValue( mScalarMinLineEdit ), lineEditValue( mScalarMaxLineEdit ) );
   return settings;
 }
 
@@ -59,8 +60,8 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
   const QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings( mActiveDatasetGroup );
   const QgsColorRampShader shader = settings.colorRampShader();
-  whileBlocking( mScalarMinLineEdit )->setText( QString::number( shader.minimumValue() ) );
-  whileBlocking( mScalarMaxLineEdit )->setText( QString::number( shader.maximumValue() ) );
+  whileBlocking( mScalarMinLineEdit )->setText( QString::number( settings.classificationMin() ) );
+  whileBlocking( mScalarMaxLineEdit )->setText( QString::number( settings.classificationMax() ) );
   whileBlocking( mScalarColorRampShaderWidget )->setFromShader( shader );
 }
 

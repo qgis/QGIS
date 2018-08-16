@@ -92,6 +92,19 @@ Returns color ramp shader function
 Sets color ramp shader function
 %End
 
+    double classificationMin() const;
+%Docstring
+Returns min value used for creation of the color ramp shader
+%End
+    double classificationMax() const;
+%Docstring
+Returns max value used for creation of the color ramp shader
+%End
+    void setClassificationMinMax( double vMin, double vMax );
+%Docstring
+Sets min/max values used for creation of the color ramp shader
+%End
+
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Writes configuration to a new DOM element
