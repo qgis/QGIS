@@ -253,11 +253,15 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   //get first feature from layer for previews
   if ( mVectorLayer )
   {
+#if 0 // this is too expensive to do for many providers. TODO revisit when support for connection timeouts is complete across all providers
     // short timeout for request - it doesn't really matter if we don't get the feature, and this call is blocking UI
     QgsFeatureIterator it = mVectorLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ).setConnectionTimeout( 100 ) );
     it.nextFeature( mPreviewFeature );
+#endif
     mPreviewExpressionContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
+#if 0
     mPreviewExpressionContext.setFeature( mPreviewFeature );
+#endif
   }
   else
   {
