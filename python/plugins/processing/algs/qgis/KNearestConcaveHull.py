@@ -88,7 +88,7 @@ class KNearestConcaveHull(QgisAlgorithm):
                                                        QgsProcessingParameterNumber.Integer,
                                                        defaultValue=3, minValue=3))
         self.addParameter(QgsProcessingParameterField(self.FIELD,
-                                              self.tr('Field (optional, set if creating concave hulls by class)'),
+                                              self.tr('Field (set if creating concave hulls by class)'),
                                               parentLayerParameterName=self.INPUT, optional=True))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Output layer'),
                                                             QgsProcessing.TypeVectorPolygon))
@@ -359,20 +359,6 @@ def point_in_polygon_q(point, list_of_points):
     return inside
 
 
-def as_polygon(point_list):
-    """
-    Returns the geometry described by *point_list* in as QgsGeometry
-
-    :param point_list: list of tuples (x, y)
-    :return: QgsGeometry
-    """
-    # create a list of QgsPoint() from list of point coordinate strings in *point_list*
-    points = [QgsPoint(point[0], point[1]) for point in point_list]
-    # create the polygon geometry from list of point geometries
-    poly = QgsGeometry.fromPolygon([points])
-    return poly
-
-
 def extract_points(geom):
     """
     Generate list of QgsPoints from QgsGeometry *geom* ( can be point, line, or polygon )
@@ -445,11 +431,10 @@ def concave_hull(points_list, k):
     """
     # return an empty list if not enough points are given
     if k > len(points_list):
-        return None
+        k = len(points_list)
 
     # the number of nearest neighbors k must be greater than or equal to 3
-    # kk = max(k, 3)
-    kk = max(k, 2)
+    kk = max(k, 3)
 
     # delete duplicate points
     point_set = clean_list(points_list)
