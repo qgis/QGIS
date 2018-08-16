@@ -5294,6 +5294,16 @@ void QgsSpatiaLiteProvider::invalidateConnections( const QString &connection )
   QgsSpatiaLiteConnPool::instance()->invalidateConnections( connection );
 }
 
+QGISEXTERN QVariantMap decodeUri( const QString &uri )
+{
+  QgsDataSourceUri dsUri = QgsDataSourceUri( uri );
+
+  QVariantMap components;
+  components.insert( QStringLiteral( "path" ), dsUri.database() );
+  components.insert( QStringLiteral( "layerName" ), dsUri.table() );
+  return components;
+}
+
 /**
  * Class factory to return a pointer to a newly created
  * QgsSpatiaLiteProvider object
