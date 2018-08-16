@@ -4729,6 +4729,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "raster_value" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ), fcnRasterValue, QStringLiteral( "Rasters" ) )
 
         // functions for arrays
+        << new QgsArrayForeachExpressionFunction()
         << new QgsStaticExpressionFunction( QStringLiteral( "array" ), -1, fcnArray, QStringLiteral( "Arrays" ), QString(), false, QSet<QString>(), false, QStringList(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_length" ), 1, fcnArrayLength, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_contains" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayContains, QStringLiteral( "Arrays" ) )
@@ -4772,6 +4773,93 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     }
   }
   return sFunctions;
+}
+
+QgsArrayForeachExpressionFunction::QgsArrayForeachExpressionFunction()
+  : QgsExpressionFunction( QStringLiteral( "array_foreach" ), 2, QCoreApplication::tr( "Arrays" ) )
+{
+
+}
+
+bool QgsArrayForeachExpressionFunction::isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  bool isStatic = false;
+
+  QgsExpressionNode::NodeList *args = node->args();
+
+  if ( args->count() < 2 )
+    return false;
+
+  if ( args->at( 0 )->isStatic( parent, context ) && args->at( 1 )->isStatic( parent, context ) )
+  {
+    isStatic = true;
+  }
+  return isStatic;
+}
+
+QVariant QgsArrayForeachExpressionFunction::run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node )
+{
+  Q_UNUSED( node )
+  QVariantList result;
+
+  if ( args->count() < 2 )
+    // error
+    return result;
+
+  QVariantList array = args->at( 0 )->eval( parent, context ).toList();
+
+  QgsExpressionContext *subContext = const_cast<QgsExpressionContext *>( context );
+  if ( !context )
+    subContext = new QgsExpressionContext();
+
+  QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
+  subContext->appendScope( subScope );
+
+  for ( QVariantList::const_iterator it = array.constBegin(); it != array.constEnd(); ++it )
+  {
+    subScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "element" ), *it, true ) );
+    result << args->at( 1 )->eval( parent, subContext );
+  }
+
+  if ( !context )
+    delete subContext;
+
+  return result;
+}
+
+QVariant QgsArrayForeachExpressionFunction::func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node )
+{
+  // This is a dummy function, all the real handling is in run
+  Q_UNUSED( values )
+  Q_UNUSED( context )
+  Q_UNUSED( parent )
+  Q_UNUSED( node )
+
+  Q_ASSERT( false );
+  return QVariant();
+}
+
+bool QgsArrayForeachExpressionFunction::prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
+{
+  QgsExpressionNode::NodeList *args = node->args();
+
+  if ( args->count() < 2 )
+    // error
+    return false;
+
+  args->at( 0 )->prepare( parent, context );
+
+  QgsExpressionContext subContext;
+  if ( context )
+    subContext = *context;
+
+  QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
+  subScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "element" ), QVariant(), true ) );
+  subContext.appendScope( subScope );
+
+  args->at( 1 )->prepare( parent, &subContext );
+
+  return true;
 }
 
 QgsWithVariableExpressionFunction::QgsWithVariableExpressionFunction()
