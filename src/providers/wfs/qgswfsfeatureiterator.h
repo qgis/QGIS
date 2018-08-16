@@ -153,6 +153,7 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     bool mSupportsPaging;
     bool mRemoveNSPrefix;
     int mNumberMatched;
+    bool mUseProgressDialog = false;
     QWidget *mMainWindow = nullptr;
     QTimer *mTimer = nullptr;
     QgsWFSFeatureHitsAsyncRequest mFeatureHitsAsyncRequest;
