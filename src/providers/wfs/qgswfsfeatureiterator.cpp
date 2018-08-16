@@ -155,9 +155,28 @@ void QgsWFSFeatureDownloader::hideProgressDialog()
 // Called from GUI thread
 void QgsWFSFeatureDownloader::createProgressDialog()
 {
+  Q_ASSERT( qApp->thread() == QThread::currentThread() );
+
   if ( mStop )
     return;
   Q_ASSERT( !mProgressDialog );
+
+  if ( !mMainWindow )
+  {
+    const QWidgetList widgets = qApp->topLevelWidgets();
+    for ( QWidget *widget : widgets )
+    {
+      if ( widget->objectName() == QLatin1String( "QgisApp" ) )
+      {
+        mMainWindow = widget;
+        break;
+      }
+    }
+  }
+
+  if ( !mMainWindow )
+    return;
+
   mProgressDialog = new QgsWFSProgressDialog( tr( "Loading features for layer %1" ).arg( mShared->mURI.typeName() ),
       tr( "Abort" ), 0, mNumberMatched, mMainWindow );
   mProgressDialog->setWindowTitle( tr( "QGIS" ) );
@@ -425,17 +444,10 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
 
   if ( !mShared->mHideProgressDialog && maxFeatures != 1 && mShared->supportsHits() )
   {
-    Q_FOREACH ( QWidget *widget, qApp->topLevelWidgets() )
-    {
-      if ( widget->objectName() == QLatin1String( "QgisApp" ) )
-      {
-        mMainWindow = widget;
-        break;
-      }
-    }
+    mUseProgressDialog = true;
   }
 
-  if ( mMainWindow )
+  if ( mUseProgressDialog )
   {
     // In case the header of the GetFeature response doesn't contain the total
     // number of features, or we don't get it within 4 seconds, we will issue
@@ -550,7 +562,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
 
       // Consider if we should display a progress dialog
       // We can only do that if we know how many features will be downloaded
-      if ( !mTimer && maxFeatures != 1 && mMainWindow )
+      if ( !mTimer && maxFeatures != 1 && mUseProgressDialog )
       {
         if ( mNumberMatched < 0 )
         {
@@ -586,7 +598,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
           // thread of this
           connect( mTimer, &QTimer::timeout, this, &QgsWFSFeatureDownloader::createProgressDialog, Qt::DirectConnection );
 
-          mTimer->moveToThread( mMainWindow->thread() );
+          mTimer->moveToThread( qApp->thread() );
           QMetaObject::invokeMethod( mTimer, "start", Qt::QueuedConnection );
         }
       }
