@@ -261,7 +261,7 @@ QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometri
 
 QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double azimuth, const double angularWidth, const double outerRadius, const double innerRadius )
 {
-  if ( abs( angularWidth ) >= 360.0 )
+  if ( std::abs( angularWidth ) >= 360.0 )
   {
     std::unique_ptr< QgsCompoundCurve > outerCc = qgis::make_unique< QgsCompoundCurve >();
 
