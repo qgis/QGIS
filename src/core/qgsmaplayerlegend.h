@@ -24,6 +24,7 @@ class QDomElement;
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;
+class QgsMeshLayer;
 class QgsPluginLayer;
 class QgsRasterLayer;
 class QgsReadWriteContext;
@@ -74,6 +75,9 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 
     //! Create new legend implementation for raster layer
     static QgsMapLayerLegend *defaultRasterLegend( QgsRasterLayer *rl ) SIP_FACTORY;
+
+    //! Create new legend implementation for mesh layer
+    static QgsMapLayerLegend *defaultMeshLegend( QgsMeshLayer *ml ) SIP_FACTORY;
 
   signals:
     //! Emitted when existing items/nodes got invalid and should be replaced by new ones
@@ -191,6 +195,26 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
 
   private:
     QgsRasterLayer *mLayer = nullptr;
+};
+
+
+/**
+ * \ingroup core
+ * Default legend implementation for mesh layers
+ * \since QGIS 3.4
+ */
+class CORE_EXPORT QgsDefaultMeshLayerLegend : public QgsMapLayerLegend
+{
+    Q_OBJECT
+
+  public:
+    //! Creates an instance for the given mesh layer
+    explicit QgsDefaultMeshLayerLegend( QgsMeshLayer *ml );
+
+    QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
+
+  private:
+    QgsMeshLayer *mLayer = nullptr;
 };
 
 

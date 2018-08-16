@@ -30,14 +30,8 @@ QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget 
 
 void QgsMeshRendererActiveDatasetWidget::setLayer( QgsMeshLayer *layer )
 {
-  if ( layer != mMeshLayer )
-  {
-    mMeshLayer = layer;
-  }
-
+  mMeshLayer = layer;
   mDatasetGroupTreeView->setLayer( layer );
-  setEnabled( mMeshLayer );
-  syncToLayer();
 }
 
 QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::activeScalarDataset() const
@@ -73,6 +67,8 @@ void QgsMeshRendererActiveDatasetWidget::onActiveGroupChanged()
 
   mDatasetSlider->setValue( val );
   onActiveDatasetChanged( val );
+  mActiveDatasetGroup = mDatasetGroupTreeView->activeGroup();
+  emit activeDatasetGroupChanged( mActiveDatasetGroup );
 }
 
 void QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged( int value )
@@ -161,15 +157,20 @@ QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::datasetIndex() const
 
 void QgsMeshRendererActiveDatasetWidget::syncToLayer()
 {
+  setEnabled( mMeshLayer );
+
   whileBlocking( mDatasetGroupTreeView )->syncToLayer();
 
   if ( mMeshLayer )
   {
-    mActiveScalarDataset = mMeshLayer->activeScalarDataset();
-    mActiveVectorDataset = mMeshLayer->activeVectorDataset();
+    const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
+    mActiveDatasetGroup = mDatasetGroupTreeView->activeGroup();
+    mActiveScalarDataset = rendererSettings.activeScalarDataset();
+    mActiveVectorDataset = rendererSettings.activeVectorDataset();
   }
   else
   {
+    mActiveDatasetGroup = -1;
     mActiveScalarDataset = QgsMeshDatasetIndex();
     mActiveVectorDataset = QgsMeshDatasetIndex();
   }

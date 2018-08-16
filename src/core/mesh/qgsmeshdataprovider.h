@@ -297,6 +297,11 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
     virtual bool addDataset( const QString &uri ) = 0;
 
     /**
+     * Returns list of additional dataset file URIs added using addDataset() calls.
+     */
+    virtual QStringList extraDatasets() const = 0;
+
+    /**
      * \brief Returns number of datasets groups loaded
      */
     virtual int datasetGroupCount( ) const = 0;
@@ -358,6 +363,10 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
      * \returns QgsRectangle containing the extent of the layer
      */
     QgsRectangle extent() const override;
+
+  signals:
+    //! Emitted when some new dataset groups have been added
+    void datasetGroupsAdded( int count );
 };
 
 #endif // QGSMESHDATAPROVIDER_H

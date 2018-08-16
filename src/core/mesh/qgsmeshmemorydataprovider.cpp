@@ -329,9 +329,18 @@ bool QgsMeshMemoryDataProvider::addDataset( const QString &uri )
   mDatasetGroups.push_back( group );
 
   if ( valid )
+  {
+    mExtraDatasetUris << uri;
+    emit datasetGroupsAdded( 1 );
     emit dataChanged();
+  }
 
   return valid;
+}
+
+QStringList QgsMeshMemoryDataProvider::extraDatasets() const
+{
+  return mExtraDatasetUris;
 }
 
 int QgsMeshMemoryDataProvider::datasetGroupCount() const

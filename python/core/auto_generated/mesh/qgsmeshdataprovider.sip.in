@@ -319,6 +319,11 @@ Associate dataset with the mesh
 emits dataChanged when successful
 %End
 
+    virtual QStringList extraDatasets() const = 0;
+%Docstring
+Returns list of additional dataset file URIs added using addDataset() calls.
+%End
+
     virtual int datasetGroupCount( ) const = 0;
 %Docstring
 Returns number of datasets groups loaded
@@ -387,6 +392,12 @@ Ctor
 Returns the extent of the layer
 
 :return: QgsRectangle containing the extent of the layer
+%End
+
+  signals:
+    void datasetGroupsAdded( int count );
+%Docstring
+Emitted when some new dataset groups have been added
 %End
 };
 

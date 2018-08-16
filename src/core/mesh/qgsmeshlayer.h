@@ -142,46 +142,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsTriangularMesh *triangularMesh() SIP_SKIP;
 
     //! Returns renderer settings
-    QgsMeshRendererMeshSettings rendererNativeMeshSettings() const;
-
-    //! Sets new renderer settings, triggers repaint
-    void setRendererNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
-
-    //! Returns renderer settings
-    QgsMeshRendererMeshSettings rendererTriangularMeshSettings() const;
-
-    //! Sets new renderer settings, triggers repaint
-    void setRendererTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
-
-    //! Returns renderer settings
-    QgsMeshRendererScalarSettings rendererScalarSettings() const;
-
-    //! Sets new renderer settings, triggers repaint
-    void setRendererScalarSettings( const QgsMeshRendererScalarSettings &settings );
-
-    //! Returns renderer settings
-    QgsMeshRendererVectorSettings rendererVectorSettings() const;
-
-    //! Sets new renderer settings, triggers repaint
-    void setRendererVectorSettings( const QgsMeshRendererVectorSettings &settings );
-
-    /**
-     * Sets active scalar dataset for rendering
-     *
-     * Triggers repaint
-     */
-    void setActiveScalarDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
-    //! Returns active scalar dataset
-    QgsMeshDatasetIndex activeScalarDataset() const { return mActiveScalarDataset; }
-
-    /**
-     * Sets active vector dataset for rendering.
-     *
-     * If dataset is not vector based, do nothing. Triggers repaint
-     */
-    void setActiveVectorDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
-    //! Returns active vector dataset
-    QgsMeshDatasetIndex activeVectorDataset() const { return mActiveVectorDataset; }
+    QgsMeshRendererSettings rendererSettings() const;
+    //! Sets new renderer settings
+    void setRendererSettings( const QgsMeshRendererSettings &settings );
 
     /**
       * Interpolates the value on the given point from given dataset.
@@ -236,6 +199,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
   private:
     void fillNativeMesh();
+    void assignDefaultStyleToDatasetGroup( int groupIndex );
+
+  private slots:
+    void onDatasetGroupsAdded( int count );
 
   private:
     //! Pointer to data provider derived from the abastract base class QgsMeshDataProvider
@@ -250,16 +217,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //! Pointer to derived mesh structure
     std::unique_ptr<QgsTriangularMesh> mTriangularMesh;
 
-    QgsMeshRendererMeshSettings mRendererNativeMeshSettings;
-    QgsMeshRendererMeshSettings mRendererTriangularMeshSettings;
-    QgsMeshRendererScalarSettings mRendererScalarSettings;
-    QgsMeshRendererVectorSettings mRendererVectorSettings;
-
-    //! index of active scalar dataset
-    QgsMeshDatasetIndex mActiveScalarDataset;
-
-    //! index of active vector dataset
-    QgsMeshDatasetIndex mActiveVectorDataset;
+    //! Renderer configuration
+    QgsMeshRendererSettings mRendererSettings;
 };
 
 #endif //QGSMESHLAYER_H

@@ -46,6 +46,12 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
     //! Associates mesh layer with the widget
     void setLayer( QgsMeshLayer *layer );
 
+    //! Returns index of the active scalar dataset group
+    int activeScalarDatasetGroup() const { return mActiveDatasetGroup; }
+
+    //! Returns index of the active vector dataset group
+    int activeVectorDatasetGroup() const { return mActiveDatasetGroup; }
+
     //! Gets index of the selected/active scalar dataset
     QgsMeshDatasetIndex activeScalarDataset() const;
 
@@ -63,6 +69,9 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
     //! Emitted when active vector dataset changed
     void activeVectorDatasetChanged( QgsMeshDatasetIndex index );
 
+    //! Emitted when the current group gets changed
+    void activeDatasetGroupChanged( int groupIndex );
+
     //! Emitted when any settings related to rendering changed
     void widgetChanged();
 
@@ -76,6 +85,7 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
     void setSliderRange();
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
+    int mActiveDatasetGroup = -1;
     QgsMeshDatasetIndex mActiveScalarDataset;
     QgsMeshDatasetIndex mActiveVectorDataset;
 };

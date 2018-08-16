@@ -113,9 +113,16 @@ bool QgsMdalProvider::addDataset( const QString &uri )
   }
   else
   {
+    mExtraDatasetUris << uri;
+    emit datasetGroupsAdded( datasetGroupCount() - datasetCount );
     emit dataChanged();
     return true; // Ok
   }
+}
+
+QStringList QgsMdalProvider::extraDatasets() const
+{
+  return mExtraDatasetUris;
 }
 
 int QgsMdalProvider::datasetGroupCount() const

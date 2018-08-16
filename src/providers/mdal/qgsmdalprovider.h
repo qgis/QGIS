@@ -56,6 +56,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QgsMeshFace face( int index ) const override;
 
     bool addDataset( const QString &uri ) override;
+    QStringList extraDatasets() const override;
 
     int datasetGroupCount() const override;
     int datasetCount( int groupIndex ) const override;
@@ -66,6 +67,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
 
   private:
     MeshH mMeshH;
+    QStringList mExtraDatasetUris;
 };
 
 #endif //QGSMDALPROVIDER_H

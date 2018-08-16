@@ -46,6 +46,9 @@ class APP_EXPORT QgsMeshRendererVectorSettingsWidget : public QWidget, private U
     //! Associates mesh layer with the widget
     void setLayer( QgsMeshLayer *layer );
 
+    //! Associates a dataset group with the widget (should be set before syncToLayer())
+    void setActiveDatasetGroup( int groupIndex ) { mActiveDatasetGroup = groupIndex; }
+
     //! Returns vector settings
     QgsMeshRendererVectorSettings settings() const;
 
@@ -56,10 +59,6 @@ class APP_EXPORT QgsMeshRendererVectorSettingsWidget : public QWidget, private U
     //! Mesh rendering settings changed
     void widgetChanged();
 
-  public slots:
-    //! Set active vector dataset to be used
-    void setActiveDataset( QgsMeshDatasetIndex activeDataset );
-
   private:
 
     /**
@@ -69,7 +68,7 @@ class APP_EXPORT QgsMeshRendererVectorSettingsWidget : public QWidget, private U
     double filterValue( const QString &text, double errVal ) const;
 
     QgsMeshLayer *mMeshLayer = nullptr; //not owned
-    QgsMeshDatasetIndex mActiveDataset;
+    int mActiveDatasetGroup = -1;
 };
 
 #endif // QGSMESHRENDERERVECTORSETTINGSWIDGET_H

@@ -55,6 +55,15 @@ Returns color used for rendering
 Sets color used for rendering of the mesh
 %End
 
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
 };
 
 class QgsMeshRendererScalarSettings
@@ -83,10 +92,15 @@ Returns color ramp shader function
 Sets color ramp shader function
 %End
 
-    bool isEnabled() const;
+    QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
-Returns whether color ramp has any items assigned
+Writes configuration to a new DOM element
 %End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
 };
 
 class QgsMeshRendererVectorSettings
@@ -106,6 +120,7 @@ Represents a mesh renderer settings for vector datasets
 #include "qgsmeshrenderersettings.h"
 %End
   public:
+
     enum ArrowScalingMethod
     {
 
@@ -245,6 +260,99 @@ Returns ratio of the head length of the arrow (range 0-1)
     void setArrowHeadLengthRatio( double arrowHeadLengthRatio );
 %Docstring
 Sets ratio of the head length of the arrow (range 0-1)
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+};
+
+
+class QgsMeshRendererSettings
+{
+%Docstring
+
+Represents all mesh renderer settings
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsmeshrenderersettings.h"
+%End
+  public:
+
+    QgsMeshRendererMeshSettings nativeMeshSettings() const;
+%Docstring
+Returns renderer settings
+%End
+    void setNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
+%Docstring
+Sets new renderer settings, triggers repaint
+%End
+
+    QgsMeshRendererMeshSettings triangularMeshSettings() const;
+%Docstring
+Returns renderer settings
+%End
+    void setTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
+%Docstring
+Sets new renderer settings
+%End
+
+    QgsMeshRendererScalarSettings scalarSettings( int groupIndex ) const;
+%Docstring
+Returns renderer settings
+%End
+    void setScalarSettings( int groupIndex, const QgsMeshRendererScalarSettings &settings );
+%Docstring
+Sets new renderer settings
+%End
+
+    QgsMeshRendererVectorSettings vectorSettings( int groupIndex ) const;
+%Docstring
+Returns renderer settings
+%End
+    void setVectorSettings( int groupIndex, const QgsMeshRendererVectorSettings &settings );
+%Docstring
+Sets new renderer settings
+%End
+
+    QgsMeshDatasetIndex activeScalarDataset() const;
+%Docstring
+Returns active scalar dataset
+%End
+    void setActiveScalarDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
+%Docstring
+Sets active scalar dataset for rendering
+%End
+
+    QgsMeshDatasetIndex activeVectorDataset() const;
+%Docstring
+Returns active vector dataset
+%End
+    void setActiveVectorDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
+%Docstring
+Sets active vector dataset for rendering.
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
 %End
 
 };

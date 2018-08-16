@@ -45,6 +45,9 @@ class APP_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     //! Associates mesh layer with the widget
     void setLayer( QgsMeshLayer *layer );
 
+    //! Associates a dataset group with the widget (should be set before syncToLayer())
+    void setActiveDatasetGroup( int groupIndex ) { mActiveDatasetGroup = groupIndex; }
+
     //! Returns scalar settings
     QgsMeshRendererScalarSettings settings() const;
 
@@ -55,10 +58,6 @@ class APP_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     //! Mesh rendering settings changed
     void widgetChanged();
 
-  public slots:
-    //! Set active scalar dataset to be used
-    void setActiveDataset( QgsMeshDatasetIndex activeDataset );
-
   private slots:
     void minMaxChanged();
     void minMaxEdited();
@@ -66,10 +65,9 @@ class APP_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
 
   private:
     double lineEditValue( const QLineEdit *lineEdit ) const;
-    void calcMinMax( QgsMeshDatasetIndex datasetIndex, double &min, double &max ) const;
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
-    QgsMeshDatasetIndex mActiveDataset;
+    int mActiveDatasetGroup = -1;
 };
 
 #endif // QGSMESHRENDERERSCALARSETTINGSWIDGET_H

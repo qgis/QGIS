@@ -20,15 +20,19 @@
 
 #include <QUuid>
 
-
+#include "qgscolorramp.h"
 #include "qgslogger.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshlayer.h"
+#include "qgsmeshlayerinterpolator.h"
 #include "qgsmeshlayerrenderer.h"
+#include "qgsmeshlayerutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsreadwritecontext.h"
+#include "qgsstyle.h"
 #include "qgstriangularmesh.h"
-#include "qgsmeshlayerinterpolator.h"
+
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -41,8 +45,12 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   QgsDataProvider::ProviderOptions providerOptions;
   setDataProvider( providerKey, providerOptions );
 
+  setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
+
   // show at least the mesh by default so we render something
-  mRendererNativeMeshSettings.setEnabled( true );
+  QgsMeshRendererMeshSettings meshSettings;
+  meshSettings.setEnabled( true );
+  mRendererSettings.setNativeMeshSettings( meshSettings );
 
 } // QgsMeshLayer ctor
 
@@ -98,89 +106,16 @@ QgsTriangularMesh *QgsMeshLayer::triangularMesh() SIP_SKIP
   return mTriangularMesh.get();
 }
 
-
-QgsMeshRendererMeshSettings QgsMeshLayer::rendererNativeMeshSettings() const
+QgsMeshRendererSettings QgsMeshLayer::rendererSettings() const
 {
-  return mRendererNativeMeshSettings;
+  return mRendererSettings;
 }
 
-void QgsMeshLayer::setRendererNativeMeshSettings( const QgsMeshRendererMeshSettings &settings )
+void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings )
 {
-  mRendererNativeMeshSettings = settings;
+  mRendererSettings = settings;
+  emit rendererChanged();
   triggerRepaint();
-}
-
-QgsMeshRendererMeshSettings QgsMeshLayer::rendererTriangularMeshSettings() const
-{
-  return mRendererTriangularMeshSettings;
-}
-
-void QgsMeshLayer::setRendererTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings )
-{
-  mRendererTriangularMeshSettings = settings;
-  triggerRepaint();
-}
-
-QgsMeshRendererScalarSettings QgsMeshLayer::rendererScalarSettings() const
-{
-  return mRendererScalarSettings;
-}
-
-void QgsMeshLayer::setRendererScalarSettings( const QgsMeshRendererScalarSettings &settings )
-{
-  mRendererScalarSettings = settings;
-  triggerRepaint();
-}
-
-
-QgsMeshRendererVectorSettings QgsMeshLayer::rendererVectorSettings() const
-{
-  return mRendererVectorSettings;
-}
-
-void QgsMeshLayer::setRendererVectorSettings( const QgsMeshRendererVectorSettings &settings )
-{
-  mRendererVectorSettings = settings;
-  triggerRepaint();
-}
-
-
-void QgsMeshLayer::setActiveScalarDataset( QgsMeshDatasetIndex index )
-{
-  if ( index == mActiveScalarDataset )
-    return;
-
-  if ( index.isValid() )
-    mActiveScalarDataset = index;
-  else
-    mActiveScalarDataset = QgsMeshDatasetIndex();
-
-  triggerRepaint();
-
-  emit activeScalarDatasetChanged( mActiveScalarDataset );
-}
-
-void QgsMeshLayer::setActiveVectorDataset( QgsMeshDatasetIndex index )
-{
-  if ( index == mActiveVectorDataset )
-    return;
-
-  if ( !index.isValid() )
-  {
-    mActiveVectorDataset = QgsMeshDatasetIndex();
-  }
-  else
-  {
-    const QgsMeshDatasetGroupMetadata metadata = dataProvider()->datasetGroupMetadata( index );
-    if ( metadata.isVector() )
-      mActiveVectorDataset = index;
-    else
-      mActiveVectorDataset = QgsMeshDatasetIndex();
-  }
-
-  triggerRepaint();
-
-  emit activeVectorDatasetChanged( mActiveVectorDataset );
 }
 
 QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const
@@ -240,6 +175,51 @@ void QgsMeshLayer::fillNativeMesh()
   }
 }
 
+void QgsMeshLayer::onDatasetGroupsAdded( int count )
+{
+  // assign default style to new dataset groups
+  int newDatasetGroupCount = mDataProvider->datasetGroupCount();
+  for ( int i = newDatasetGroupCount - count; i < newDatasetGroupCount; ++i )
+    assignDefaultStyleToDatasetGroup( i );
+}
+
+static QgsColorRamp *_createDefaultColorRamp()
+{
+  QgsColorRamp *ramp = QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Plasma" ) );
+  if ( ramp )
+    return ramp;
+
+  // definition of "Plasma" color ramp (in case it is not available in the style for some reason)
+  QgsStringMap props;
+  props["color1"] = "13,8,135,255";
+  props["color2"] = "240,249,33,255";
+  props["stops"] =
+    "0.0196078;27,6,141,255:0.0392157;38,5,145,255:0.0588235;47,5,150,255:0.0784314;56,4,154,255:0.0980392;65,4,157,255:"
+    "0.117647;73,3,160,255:0.137255;81,2,163,255:0.156863;89,1,165,255:0.176471;97,0,167,255:0.196078;105,0,168,255:"
+    "0.215686;113,0,168,255:0.235294;120,1,168,255:0.254902;128,4,168,255:0.27451;135,7,166,255:0.294118;142,12,164,255:"
+    "0.313725;149,17,161,255:0.333333;156,23,158,255:0.352941;162,29,154,255:0.372549;168,34,150,255:0.392157;174,40,146,255:"
+    "0.411765;180,46,141,255:0.431373;186,51,136,255:0.45098;191,57,132,255:0.470588;196,62,127,255:0.490196;201,68,122,255:"
+    "0.509804;205,74,118,255:0.529412;210,79,113,255:0.54902;214,85,109,255:0.568627;218,91,105,255:0.588235;222,97,100,255:"
+    "0.607843;226,102,96,255:0.627451;230,108,92,255:0.647059;233,114,87,255:0.666667;237,121,83,255:0.686275;240,127,79,255:"
+    "0.705882;243,133,75,255:0.72549;245,140,70,255:0.745098;247,147,66,255:0.764706;249,154,62,255:0.784314;251,161,57,255:"
+    "0.803922;252,168,53,255:0.823529;253,175,49,255:0.843137;254,183,45,255:0.862745;254,190,42,255:0.882353;253,198,39,255:"
+    "0.901961;252,206,37,255:0.921569;251,215,36,255:0.941176;248,223,37,255:0.960784;246,232,38,255:0.980392;243,240,39,255";
+  return QgsGradientColorRamp::create( props );
+}
+
+void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
+{
+  double groupMin, groupMax;
+  QgsMeshLayerUtils::calculateMinMaxForDatasetGroup( groupMin, groupMax, mDataProvider, groupIndex );
+
+  QgsColorRampShader fcn( groupMin, groupMax, _createDefaultColorRamp() );
+  fcn.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
+
+  QgsMeshRendererScalarSettings scalarSettings;
+  scalarSettings.setColorRampShader( fcn );
+  mRendererSettings.setScalarSettings( groupIndex, scalarSettings );
+}
+
 QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
   if ( !mNativeMesh )
@@ -257,18 +237,26 @@ QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &renderer
 
 bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context )
 {
-  Q_UNUSED( node );
   Q_UNUSED( errorMessage );
   Q_UNUSED( context );
+
+  QDomElement elem = node.toElement();
+  QDomElement elemRendererSettings = elem.firstChildElement( "mesh-renderer-settings" );
+  if ( !elemRendererSettings.isNull() )
+    mRendererSettings.readXml( elemRendererSettings );
+
   return true;
 }
 
 bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( node );
-  Q_UNUSED( doc );
   Q_UNUSED( errorMessage );
   Q_UNUSED( context );
+
+  QDomElement elem = node.toElement();
+  QDomElement elemRendererSettings = mRendererSettings.writeXml( doc );
+  elem.appendChild( elemRendererSettings );
+
   return true;
 }
 
@@ -294,8 +282,6 @@ QString QgsMeshLayer::encodedSource( const QString &source, const QgsReadWriteCo
 
 bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
 {
-  Q_UNUSED( context );
-
   QgsDebugMsgLevel( QStringLiteral( "Datasource in QgsMeshLayer::readXml: %1" ).arg( mDataSource.toLocal8Bit().data() ), 3 );
 
   //process provider key
@@ -316,6 +302,24 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   {
     return false;
   }
+
+  QDomElement elemExtraDatasets = layer_node.firstChildElement( QStringLiteral( "extra-datasets" ) );
+  if ( !elemExtraDatasets.isNull() )
+  {
+    QDomElement elemUri = elemExtraDatasets.firstChildElement( QStringLiteral( "uri" ) );
+    while ( !elemUri.isNull() )
+    {
+      QString uri = context.pathResolver().readPath( elemUri.text() );
+
+      bool res = mDataProvider->addDataset( uri );
+      QgsDebugMsg( QStringLiteral( "extra dataset (res %1): %2" ).arg( res ).arg( uri ) );
+
+      elemUri = elemUri.nextSiblingElement( QStringLiteral( "uri" ) );
+    }
+  }
+
+  QString errorMsg;
+  readSymbology( layer_node, errorMsg, context );
 
   return mValid; // should be true if read successfully
 }
@@ -340,6 +344,17 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
     QDomText providerText = document.createTextNode( providerType() );
     provider.appendChild( providerText );
     layer_node.appendChild( provider );
+
+    const QStringList extraDatasetUris = mDataProvider->extraDatasets();
+    QDomElement elemExtraDatasets = document.createElement( QStringLiteral( "extra-datasets" ) );
+    for ( const QString &uri : extraDatasetUris )
+    {
+      QString path = context.pathResolver().writePath( uri );
+      QDomElement elemUri = document.createElement( QStringLiteral( "uri" ) );
+      elemUri.appendChild( document.createTextNode( path ) );
+      elemExtraDatasets.appendChild( elemUri );
+    }
+    layer_node.appendChild( elemExtraDatasets );
   }
 
   // renderer specific settings
@@ -377,7 +392,11 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
   }
 
+  for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
+    assignDefaultStyleToDatasetGroup( i );
+
   connect( mDataProvider, &QgsMeshDataProvider::dataChanged, this, &QgsMeshLayer::dataChanged );
+  connect( mDataProvider, &QgsMeshDataProvider::datasetGroupsAdded, this, &QgsMeshLayer::onDatasetGroupsAdded );
 
   return true;
 }

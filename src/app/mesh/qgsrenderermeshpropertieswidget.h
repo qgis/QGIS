@@ -53,15 +53,9 @@ class APP_EXPORT QgsRendererMeshPropertiesWidget : public QgsMapLayerConfigWidge
     void syncToLayer();
 
   private slots:
-    void enableVectorRenderingTab( QgsMeshDatasetIndex vectorDatasetIndex );
+    void onActiveDatasetGroupChanged();
 
   private:
-    //! Gets index of the selected/active scalar dataset
-    QgsMeshDatasetIndex activeScalarDataset() const;
-
-    //! Gets index of the selected/active vector dataset
-    QgsMeshDatasetIndex activeVectorDataset() const;
-
     QgsMeshLayer *mMeshLayer = nullptr; //not owned
 };
 

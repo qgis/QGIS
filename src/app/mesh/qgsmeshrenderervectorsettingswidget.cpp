@@ -26,6 +26,8 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
 {
   setupUi( this );
 
+  mShaftLengthComboBox->setCurrentIndex( -1 );
+
   connect( mColorWidget, &QgsColorButton::colorChanged, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
   connect( mLineWidthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
@@ -49,11 +51,7 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
 
 void QgsMeshRendererVectorSettingsWidget::setLayer( QgsMeshLayer *layer )
 {
-  if ( layer != mMeshLayer )
-  {
-    mMeshLayer = layer;
-    syncToLayer();
-  }
+  mMeshLayer = layer;
 }
 
 QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() const
@@ -97,17 +95,16 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
   return settings;
 }
 
-void QgsMeshRendererVectorSettingsWidget::setActiveDataset( QgsMeshDatasetIndex activeDataset )
-{
-  mActiveDataset = activeDataset;
-}
-
 void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
 {
   if ( !mMeshLayer )
     return;
 
-  QgsMeshRendererVectorSettings settings = mMeshLayer->rendererVectorSettings();
+  if ( mActiveDatasetGroup < 0 )
+    return;
+
+  const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
+  const QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( mActiveDatasetGroup );
 
   // basic
   mColorWidget->setColor( settings.color() );
