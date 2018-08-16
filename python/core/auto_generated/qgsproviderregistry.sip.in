@@ -78,7 +78,7 @@ Sets library directory where to search for plugins
 %Docstring
 Creates a new instance of a provider.
 
-:param providerKey: identificator of the provider
+:param providerKey: identifier of the provider
 :param dataSource: string containing data source for the provider
 :param options: provider options
 
@@ -89,9 +89,25 @@ Creates a new instance of a provider.
 %Docstring
 Returns the provider capabilities
 
-:param providerKey: identificator of the provider
+:param providerKey: identifier of the provider
 
 .. versionadded:: 2.6
+%End
+
+    QVariantMap decodeUri( const QString &providerKey, const QString &uri );
+%Docstring
+Returns the components (e.g. file path, layer name) of a provider uri
+
+:param providerKey: identifier of the provider
+:param uri: uri string
+
+:return: map containing components
+
+.. note::
+
+   this function may not be supported by all providers, an empty map will be returned in such case
+
+.. versionadded:: 3.4
 %End
 
     QWidget *createSelectionWidget( const QString &providerKey,
@@ -109,7 +125,7 @@ responsible for deleting the returned widget.
 %Docstring
 Gets pointer to provider function
 
-:param providerKey: identificator of the provider
+:param providerKey: identifier of the provider
 :param functionName: name of function
 
 :return: pointer to function or NULL on error. If the provider uses direct provider

@@ -44,6 +44,7 @@ class TestQgsGdalProvider : public QObject
     void init() {}// will be called before each testfunction is executed.
     void cleanup() {}// will be called after every testfunction.
 
+    void decodeUri(); // test decode URI implementation
     void scaleDataType(); //test resultant data types for int raster with float scale (#11573)
     void warpedVrt(); //test loading raster which requires a warped vrt
     void noData();
@@ -80,6 +81,20 @@ void TestQgsGdalProvider::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+}
+
+void TestQgsGdalProvider::decodeUri()
+{
+  QString uri = QStringLiteral( "/home/to/path/raster.tif" );
+  QVariantMap components;
+
+  components = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
+  QCOMPARE( components[QStringLiteral( "path" )].toString(), uri );
+
+  uri = QStringLiteral( "gpkg:/home/to/path/my_file.gpkg:layer_name" );
+  components = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
+  QCOMPARE( components[QStringLiteral( "path" )].toString(), QStringLiteral( "/home/to/path/my_file.gpkg" ) );
+  QCOMPARE( components[QStringLiteral( "layerName" )].toString(), QStringLiteral( "layer_name" ) );
 }
 
 void TestQgsGdalProvider::scaleDataType()

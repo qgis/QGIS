@@ -28,6 +28,7 @@ from qgis.core import (QgsFeature,
                        QgsField,
                        QgsFieldConstraints,
                        QgsGeometry,
+                       QgsProviderRegistry,
                        QgsRectangle,
                        QgsSettings,
                        QgsVectorLayer,
@@ -94,6 +95,25 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         shutil.rmtree(cls.basetestpath, True)
 
         QgsSettings().clear()
+
+    def testDecodeUri(self):
+
+        filename = '/home/to/path/my_file.gpkg'
+
+        registry = QgsProviderRegistry.instance()
+        uri = filename
+        components = registry.decodeUri('ogr', uri)
+        self.assertEqual(components["path"], filename)
+
+        uri = '{}|layername=test'.format(filename)
+        components = registry.decodeUri('ogr', uri)
+        self.assertEqual(components["path"], filename)
+        self.assertEqual(components["layerName"], 'test')
+
+        uri = '{}|layerid=0'.format(filename)
+        components = registry.decodeUri('ogr', uri)
+        self.assertEqual(components["path"], filename)
+        self.assertEqual(components["layerId"], 0)
 
     def testSingleToMultiPolygonPromotion(self):
 

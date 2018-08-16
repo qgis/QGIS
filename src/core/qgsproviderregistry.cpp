@@ -43,6 +43,8 @@ typedef QString databaseDrivers_t();
 typedef QString directoryDrivers_t();
 typedef QString protocolDrivers_t();
 typedef void initProviderFunction_t();
+typedef QVariantMap decodeUri_t( const QString &uri );
+
 //typedef int dataCapabilities_t();
 //typedef QgsDataItem * dataItem_t(QString);
 
@@ -437,6 +439,22 @@ QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey
   QgsDebugMsg( QString( "Instantiated the data provider plugin: %1" ).arg( dataProvider->name() ) );
   return dataProvider;
 } // QgsProviderRegistry::setDataProvider
+
+QVariantMap QgsProviderRegistry::decodeUri( const QString &providerKey, const QString &uri )
+{
+  std::unique_ptr< QLibrary > library( createProviderLibrary( providerKey ) );
+  if ( !library )
+  {
+    return QVariantMap();
+  }
+
+  decodeUri_t *decodeUri = reinterpret_cast< decodeUri_t *>( cast_to_fptr( library->resolve( "decodeUri" ) ) );
+  if ( !decodeUri )
+  {
+    return QVariantMap();
+  }
+  return decodeUri( uri );
+}
 
 int QgsProviderRegistry::providerCapabilities( const QString &providerKey ) const
 {

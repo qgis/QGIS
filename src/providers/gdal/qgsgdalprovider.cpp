@@ -1974,6 +1974,30 @@ QStringList QgsGdalProvider::subLayers() const
   return mSubLayers;
 }
 
+
+QGISEXTERN QVariantMap decodeUri( const QString &uri )
+{
+  QString path = uri;
+  QString layerName;
+
+  QString vsiPrefix = qgsVsiPrefix( path );
+  if ( !path.isEmpty() )
+    path = path.mid( vsiPrefix.count() );
+
+  if ( path.indexOf( ':' ) != -1 )
+  {
+    QStringList parts = path.split( ':' );
+    path  = parts[1];
+    if ( parts.count() > 2 )
+      layerName = parts[2];
+  }
+
+  QVariantMap uriComponents;
+  uriComponents.insert( QStringLiteral( "path" ), path );
+  uriComponents.insert( QStringLiteral( "layerName" ), layerName );
+  return uriComponents;
+}
+
 /**
  * Class factory to return a pointer to a newly created
  * QgsGdalProvider object
