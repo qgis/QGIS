@@ -1135,6 +1135,13 @@ QString  QgsDelimitedTextProvider::description() const
   return TEXT_PROVIDER_DESCRIPTION;
 }
 
+QGISEXTERN QVariantMap decodeUri( const QString &uri )
+{
+  QVariantMap components;
+  components.insert( QStringLiteral( "path" ), QUrl( uri ).toLocalFile() );
+  return components;
+}
+
 /**
  * Class factory to return a pointer to a newly created
  * QgsDelimitedTextProvider object
