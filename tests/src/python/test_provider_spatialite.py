@@ -20,7 +20,8 @@ import sys
 import shutil
 import tempfile
 
-from qgis.core import (QgsVectorLayer,
+from qgis.core import (QgsProviderRegistry,
+                       QgsVectorLayer,
                        QgsVectorDataProvider,
                        QgsPointXY,
                        QgsFeature,
@@ -741,6 +742,15 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(subSet_vl.setSubsetString(''))
         self.assertEqual(subSet_vl.featureCount(), 8)
         self.assertEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
+
+    def testDecodeUri(self):
+        """Check that the provider URI decoding returns expected values"""
+
+        filename = '/home/to/path/test.db'
+        uri = 'dbname=\'{}\' table="test" (geometry) sql='.format(filename)
+        registry = QgsProviderRegistry.instance()
+        components = registry.decodeUri('spatialite', uri)
+        self.assertEqual(components['path'], filename)
 
 
 if __name__ == '__main__':
