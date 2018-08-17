@@ -90,7 +90,7 @@ class KNearestConcaveHull(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterField(self.FIELD,
                                               self.tr('Field (set if creating concave hulls by class)'),
                                               parentLayerParameterName=self.INPUT, optional=True))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Output layer'),
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Concave hull'),
                                                             QgsProcessing.TypeVectorPolygon))
 
     def processAlgorithm(self, parameters, context, feedback):
