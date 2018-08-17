@@ -39,7 +39,7 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
     mUri.setParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES, maxnumfeatures );
   }
 
-  QgsDebugMsg( QString( "WFS full uri: '%1'." ).arg( QString( mUri.uri() ) ) );
+  QgsDebugMsg( QStringLiteral( "WFS full uri: '%1'." ).arg( QString( mUri.uri() ) ) );
 }
 
 QStringList QgsWfsConnection::connectionList()

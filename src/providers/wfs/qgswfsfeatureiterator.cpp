@@ -103,14 +103,14 @@ QgsWFSFeatureDownloader::~QgsWFSFeatureDownloader()
 
 void QgsWFSFeatureDownloader::stop()
 {
-  QgsDebugMsg( "QgsWFSFeatureDownloader::stop()" );
+  QgsDebugMsgLevel( QStringLiteral( "QgsWFSFeatureDownloader::stop()" ), 4 );
   mStop = true;
   emit doStop();
 }
 
 void QgsWFSFeatureDownloader::setStopFlag()
 {
-  QgsDebugMsg( "QgsWFSFeatureDownloader::setStopFlag()" );
+  QgsDebugMsgLevel( QStringLiteral( "QgsWFSFeatureDownloader::setStopFlag()" ), 4 );
   mStop = true;
 }
 
@@ -633,7 +633,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
             if ( mShared->mCapabilityExtent.contains( invertedRectangle ) )
             {
               mShared->mGetFeatureEPSGDotHonoursEPSGOrder = true;
-              QgsDebugMsg( "Server is likely MapServer. Using mGetFeatureEPSGDotHonoursEPSGOrder mode" );
+              QgsDebugMsg( QStringLiteral( "Server is likely MapServer. Using mGetFeatureEPSGDotHonoursEPSGOrder mode" ) );
             }
           }
         }
@@ -651,7 +651,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
             gmlId = QgsWFSUtils::getMD5( f );
             if ( !mShared->mHasWarnedAboutMissingFeatureId )
             {
-              QgsDebugMsg( "Server returns features without fid/gml:id. Computing a fake one using feature attributes" );
+              QgsDebugMsg( QStringLiteral( "Server returns features without fid/gml:id. Computing a fake one using feature attributes" ) );
               mShared->mHasWarnedAboutMissingFeatureId = true;
             }
           }
@@ -662,7 +662,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
           else if ( pagingIter == 2 && featureCountForThisResponse == 0 && gmlIdFirstFeatureFirstIter == gmlId )
           {
             disablePaging = true;
-            QgsDebugMsg( "Server does not seem to properly support paging since it returned the same first feature for 2 different page requests. Disabling paging" );
+            QgsDebugMsg( QStringLiteral( "Server does not seem to properly support paging since it returned the same first feature for 2 different page requests. Disabling paging" ) );
           }
 
           if ( mShared->mGetFeatureEPSGDotHonoursEPSGOrder && f.hasGeometry() )
@@ -878,7 +878,7 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource *source,
   if ( !mShared->mCacheDataProvider )
     return;
 
-  QgsDebugMsg( QString( "QgsWFSFeatureIterator::constructor(): genCounter=%1 " ).arg( genCounter ) );
+  QgsDebugMsgLevel( QStringLiteral( "QgsWFSFeatureIterator::constructor(): genCounter=%1 " ).arg( genCounter ), 4 );
 
   mCacheIterator = mShared->mCacheDataProvider->getFeatures( buildRequestCache( genCounter ) );
 }
@@ -966,7 +966,7 @@ QgsFeatureRequest QgsWFSFeatureIterator::buildRequestCache( int genCounter )
 
 QgsWFSFeatureIterator::~QgsWFSFeatureIterator()
 {
-  QgsDebugMsg( QString( "qgsWFSFeatureIterator::~QgsWFSFeatureIterator()" ) );
+  QgsDebugMsgLevel( QStringLiteral( "qgsWFSFeatureIterator::~QgsWFSFeatureIterator()" ), 4 );
 
   close();
 
@@ -1018,7 +1018,7 @@ void QgsWFSFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChe
 // if it goes above a given threshold, on disk
 void QgsWFSFeatureIterator::featureReceivedSynchronous( const QVector<QgsWFSFeatureGmlIdPair> &list )
 {
-  QgsDebugMsg( QString( "QgsWFSFeatureIterator::featureReceivedSynchronous %1 features" ).arg( list.size() ) );
+  QgsDebugMsgLevel( QStringLiteral( "QgsWFSFeatureIterator::featureReceivedSynchronous %1 features" ).arg( list.size() ), 4 );
   QMutexLocker locker( &mMutex );
   if ( !mWriterStream )
   {
@@ -1034,11 +1034,11 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( const QVector<QgsWFSFeat
     thisStr.sprintf( "%p", this );
     ++ mCounter;
     mWriterFilename = QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QStringLiteral( "iterator_%1_%2.bin" ).arg( thisStr ).arg( mCounter ) );
-    QgsDebugMsg( QString( "Transferring feature iterator cache to %1" ).arg( mWriterFilename ) );
+    QgsDebugMsgLevel( QStringLiteral( "Transferring feature iterator cache to %1" ).arg( mWriterFilename ), 4 );
     mWriterFile = new QFile( mWriterFilename );
     if ( !mWriterFile->open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
-      QgsDebugMsg( QString( "Cannot open %1 for writing" ).arg( mWriterFilename ) );
+      QgsDebugMsg( QStringLiteral( "Cannot open %1 for writing" ).arg( mWriterFilename ) );
       delete mWriterFile;
       mWriterFile = nullptr;
       return;
@@ -1105,7 +1105,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
         }
         catch ( const QgsWkbException & )
         {
-          QgsDebugMsg( QString( "Invalid WKB for cached feature %1" ).arg( cachedFeature.id() ) );
+          QgsDebugMsg( QStringLiteral( "Invalid WKB for cached feature %1" ).arg( cachedFeature.id() ) );
           delete[] wkbClone;
           cachedFeature.clearGeometry();
         }
@@ -1164,7 +1164,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
         mReaderFile = new QFile( mReaderFilename );
         if ( !mReaderFile->open( QIODevice::ReadOnly ) )
         {
-          QgsDebugMsg( QString( "Cannot open %1" ).arg( mReaderFilename ) );
+          QgsDebugMsg( QStringLiteral( "Cannot open %1" ).arg( mReaderFilename ) );
           delete mReaderFile;
           mReaderFile = nullptr;
           return false;
@@ -1280,7 +1280,7 @@ bool QgsWFSFeatureIterator::close()
 {
   if ( mClosed )
     return false;
-  QgsDebugMsg( QString( "qgsWFSFeatureIterator::close()" ) );
+  QgsDebugMsgLevel( QStringLiteral( "qgsWFSFeatureIterator::close()" ), 4 );
 
   iteratorClosed();
 
