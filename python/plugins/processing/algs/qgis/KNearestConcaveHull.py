@@ -189,13 +189,6 @@ def clean_list(list_of_points):
     return list(set(list_of_points))
 
 
-def length(vector):
-    """
-    Returns the number of elements in vector
-    """
-    return len(vector)
-
-
 def find_min_y_point(list_of_points):
     """
     Returns that point of *list_of_points* having minimal y-coordinate
