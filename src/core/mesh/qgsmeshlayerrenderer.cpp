@@ -110,6 +110,14 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
       mScalarDatasetValues[i] = v;
     }
 
+    // populate face active flag, always defined on faces
+    mScalarActiveFaceFlagValues.resize( mNativeMesh.faces.count() );
+    for ( int i = 0; i < mNativeMesh.faces.count(); ++i )
+    {
+      bool active = layer->dataProvider()->faceIsActive( datasetIndex, i );
+      mScalarActiveFaceFlagValues[i] = active;
+    }
+
     QgsMeshLayerUtils::calculateMinimumMaximum( mScalarDatasetMinimum, mScalarDatasetMaximum, mScalarDatasetValues );
   }
 }
@@ -209,7 +217,8 @@ void QgsMeshLayerRenderer::renderScalarDataset()
   QgsColorRampShader *fcn = new QgsColorRampShader( scalarSettings.colorRampShader() );
   QgsRasterShader *sh = new QgsRasterShader();
   sh->setRasterShaderFunction( fcn );  // takes ownership of fcn
-  QgsMeshLayerInterpolator interpolator( mTriangularMesh, mScalarDatasetValues, mScalarDataOnVertices, mContext, mOutputSize );
+  QgsMeshLayerInterpolator interpolator( mTriangularMesh, mScalarDatasetValues, mScalarActiveFaceFlagValues,
+                                         mScalarDataOnVertices, mContext, mOutputSize );
   QgsSingleBandPseudoColorRenderer renderer( &interpolator, 0, sh );  // takes ownership of sh
   renderer.setClassificationMin( scalarSettings.classificationMinimum() );
   renderer.setClassificationMax( scalarSettings.classificationMaximum() );
