@@ -26,7 +26,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
   QVector<QgsAbstractGeometry *> geomList;
 
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, nullptr, true );
+  const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, nullptr, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     geomList.append( layerFeature.geometry()->clone() );
@@ -96,7 +96,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
 
     // Get neighboring polygons
     QMap<QString, QgsFeatureIds> neighboringIds;
-    QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds.keys(), gapAreaBBox, mCompatibleGeometryTypes );
+    const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds.keys(), gapAreaBBox, mCompatibleGeometryTypes );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
     {
       if ( QgsGeometryCheckerUtils::sharedEdgeLength( gapGeom, layerFeature.geometry(), mContext->reducedTolerance ) > 0 )
@@ -154,14 +154,17 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError *err, Chan
 
   const QgsAbstractGeometry *errGeometry = QgsGeometryCheckerUtils::getGeomPart( err->geometry(), 0 );
 
+  const auto layerIds = err->neighbors().keys();
   // Search for touching neighboring geometries
-  for ( const QString &layerId : err->neighbors().keys() )
+  for ( const QString &layerId : layerIds )
   {
-    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
+    QgsFeaturePool *featurePool = mContext->featurePools.value( layerId );
     QgsAbstractGeometry *errLayerGeom = errGeometry->clone();
     errLayerGeom->transform( featurePool->getLayerToMapTransform(), QgsCoordinateTransform::ReverseTransform );
 
-    for ( QgsFeatureId testId : err->neighbors()[layerId] )
+    const auto featureIds = err->neighbors().value( layerId );
+
+    for ( QgsFeatureId testId : featureIds )
     {
       QgsFeature testFeature;
       if ( !featurePool->get( testId, testFeature ) )
