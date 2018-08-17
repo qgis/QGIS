@@ -87,7 +87,7 @@ void QgsWfsLayerItem::copyStyle()
   {
 #ifdef QGISDEBUG
     QString errorMsg( QStringLiteral( "Cannot get style for layer %1" ).arg( this->name() ) );
-    QgsDebugMsg( " Cannot get style: " + errorMsg );
+    QgsDebugMsg( QStringLiteral( " Cannot get style: " ) + errorMsg );
 #endif
 #if 0
     // TODO: how to emit message from provider (which does not know about QgisApp)
@@ -306,7 +306,7 @@ QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDat
 
       QgsWFSDataSourceURI sourceUri( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WFS" ) )[0] );
 
-      QgsDebugMsgLevel( QString( "WFS full uri: '%1'." ).arg( QString( sourceUri.uri() ) ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( QString( sourceUri.uri() ) ), 4 );
 
       return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, sourceUri.uri( false ) );
     }

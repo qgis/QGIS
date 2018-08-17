@@ -45,7 +45,7 @@ QString QgsWFSUtils::getBaseCacheDirectory( bool createIfNotExisting )
     QMutexLocker locker( &sMutex );
     if ( !QDir( cacheDirectory ).exists( QStringLiteral( "wfsprovider" ) ) )
     {
-      QgsDebugMsg( QString( "Creating main cache dir %1/wfsprovider" ).arg( cacheDirectory ) );
+      QgsDebugMsg( QStringLiteral( "Creating main cache dir %1/wfsprovider" ).arg( cacheDirectory ) );
       QDir( cacheDirectory ).mkpath( QStringLiteral( "wfsprovider" ) );
     }
   }
@@ -61,7 +61,7 @@ QString QgsWFSUtils::getCacheDirectory( bool createIfNotExisting )
     QMutexLocker locker( &sMutex );
     if ( !QDir( baseDirectory ).exists( processPath ) )
     {
-      QgsDebugMsg( QString( "Creating our cache dir %1/%2" ).arg( baseDirectory, processPath ) );
+      QgsDebugMsg( QStringLiteral( "Creating our cache dir %1/%2" ).arg( baseDirectory, processPath ) );
       QDir( baseDirectory ).mkpath( processPath );
     }
     if ( sCounter == 0 && sKeepAliveWorks )
@@ -97,7 +97,7 @@ void QgsWFSUtils::releaseCacheDirectory()
     QString tmpDirname( getCacheDirectory( false ) );
     if ( QDir( tmpDirname ).exists() )
     {
-      QgsDebugMsg( QString( "Removing our cache dir %1" ).arg( tmpDirname ) );
+      QgsDebugMsg( QStringLiteral( "Removing our cache dir %1" ).arg( tmpDirname ) );
       removeDir( tmpDirname );
 
       QString baseDirname( getBaseCacheDirectory( false ) );
@@ -105,12 +105,12 @@ void QgsWFSUtils::releaseCacheDirectory()
       QFileInfoList fileList( baseDir.entryInfoList( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files ) );
       if ( fileList.size() == 0 )
       {
-        QgsDebugMsg( QString( "Removing main cache dir %1" ).arg( baseDirname ) );
+        QgsDebugMsg( QStringLiteral( "Removing main cache dir %1" ).arg( baseDirname ) );
         removeDir( baseDirname );
       }
       else
       {
-        QgsDebugMsg( QString( "%1 entries remaining in %2" ).arg( fileList.size() ).arg( baseDirname ) );
+        QgsDebugMsg( QStringLiteral( "%1 entries remaining in %2" ).arg( fileList.size() ).arg( baseDirname ) );
       }
     }
   }
@@ -159,7 +159,7 @@ void QgsWFSUtilsKeepAlive::updateTimestamp()
   qint64 timestamp = QDateTime::currentMSecsSinceEpoch();
   if ( mSharedMemory->lock() )
   {
-    QgsDebugMsg( "Updating keep-alive" );
+    QgsDebugMsgLevel( QStringLiteral( "Updating keep-alive" ), 4 );
     memcpy( mSharedMemory->data(), &timestamp, sizeof( timestamp ) );
     mSharedMemory->unlock();
   }
@@ -209,11 +209,11 @@ void QgsWFSUtils::init()
 
   if ( sKeepAliveWorks )
   {
-    QgsDebugMsg( QString( "Keep-alive mechanism works" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Keep-alive mechanism works" ), 4 );
   }
   else
   {
-    QgsDebugMsg( QString( "Keep-alive mechanism does not work" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Keep-alive mechanism does not work" ), 4 );
   }
 
   // Remove temporary directories of qgis instances that haven't demonstrated
@@ -250,12 +250,12 @@ void QgsWFSUtils::init()
                 if ( currentTimestamp > otherTimestamp && otherTimestamp > 0 &&
                      currentTimestamp - otherTimestamp < 2 * KEEP_ALIVE_DELAY )
                 {
-                  QgsDebugMsg( QString( "Cache dir %1 kept since process seems to be still alive" ).arg( info.absoluteFilePath() ) );
+                  QgsDebugMsgLevel( QStringLiteral( "Cache dir %1 kept since process seems to be still alive" ).arg( info.absoluteFilePath() ), 4 );
                   canDelete = false;
                 }
                 else
                 {
-                  QgsDebugMsg( QString( "Cache dir %1 to be destroyed since process seems to be no longer alive" ).arg( info.absoluteFilePath() ) );
+                  QgsDebugMsgLevel( QStringLiteral( "Cache dir %1 to be destroyed since process seems to be no longer alive" ).arg( info.absoluteFilePath() ), 4 );
                 }
 
                 otherSharedMemory.unlock();
@@ -265,7 +265,7 @@ void QgsWFSUtils::init()
           }
           else
           {
-            QgsDebugMsg( QString( "Cannot attach to shared memory segment of process %1. It must be ghost" ).arg( pid ) );
+            QgsDebugMsg( QStringLiteral( "Cannot attach to shared memory segment of process %1. It must be ghost" ).arg( pid ) );
           }
         }
         else
@@ -276,18 +276,18 @@ void QgsWFSUtils::init()
           if ( currentTimestamp > fileTimestamp &&
                currentTimestamp - fileTimestamp < 24 * 3600 * 1000 )
           {
-            QgsDebugMsg( QString( "Cache dir %1 kept since last modified in the past 24 hours" ).arg( info.absoluteFilePath() ) );
+            QgsDebugMsgLevel( QStringLiteral( "Cache dir %1 kept since last modified in the past 24 hours" ).arg( info.absoluteFilePath() ), 4 );
             canDelete = false;
           }
           else
           {
-            QgsDebugMsg( QString( "Cache dir %1 to be destroyed since not modified in the past 24 hours" ).arg( info.absoluteFilePath() ) );
+            QgsDebugMsgLevel( QStringLiteral( "Cache dir %1 to be destroyed since not modified in the past 24 hours" ).arg( info.absoluteFilePath() ), 4 );
             canDelete = true;
           }
         }
         if ( canDelete )
         {
-          QgsDebugMsg( QString( "Removing cache dir %1" ).arg( info.absoluteFilePath() ) );
+          QgsDebugMsgLevel( QStringLiteral( "Removing cache dir %1" ).arg( info.absoluteFilePath() ), 4 );
           removeDir( info.absoluteFilePath() );
         }
       }
