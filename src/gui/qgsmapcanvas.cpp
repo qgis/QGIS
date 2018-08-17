@@ -285,6 +285,9 @@ QgsMapLayer *QgsMapCanvas::layer( int index )
 
 void QgsMapCanvas::setCurrentLayer( QgsMapLayer *layer )
 {
+  if ( mCurrentLayer == layer )
+    return;
+
   mCurrentLayer = layer;
   emit currentLayerChanged( layer );
 }
