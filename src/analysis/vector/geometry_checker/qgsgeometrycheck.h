@@ -41,10 +41,8 @@ struct ANALYSIS_EXPORT QgsGeometryCheckerContext
   const QMap<QString, QgsFeaturePool *> featurePools;
 };
 
-class ANALYSIS_EXPORT QgsGeometryCheck : QObject
+class ANALYSIS_EXPORT QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     enum ChangeWhat { ChangeFeature, ChangePart, ChangeRing, ChangeNode };
     enum ChangeType { ChangeAdded, ChangeRemoved, ChangeChanged };
