@@ -4220,7 +4220,9 @@ QString QgsVectorLayer::htmlMetadata() const
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Unit" ) + QStringLiteral( "</td><td>" ) + QgsUnitTypes::toString( crs().mapUnits() ) + QStringLiteral( "</td></tr>\n" );
 
   // feature count
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Feature count" ) + QStringLiteral( "</td><td>" ) + QString::number( featureCount() ) + QStringLiteral( "</td></tr>\n" );
+  QLocale locale = QLocale();
+  locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Feature count" ) + QStringLiteral( "</td><td>" ) + ( featureCount() == -1 ? tr( "unknown" ) : locale.toString( ( qlonglong )featureCount() ) ) + QStringLiteral( "</td></tr>\n" );
 
   // End Provider section
   myMetadata += QLatin1String( "</table>\n<br><br>" );
