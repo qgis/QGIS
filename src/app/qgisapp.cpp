@@ -567,9 +567,13 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
   }
 }
 
-void QgisApp::activeLayerChanged( QgsMapLayer *layer )
+void QgisApp::onActiveLayerChanged( QgsMapLayer *layer )
 {
-  Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+  if ( mBlockActiveLayerChanged )
+    return;
+
+  const QList< QgsMapCanvas * > canvases = mapCanvases();
+  for ( QgsMapCanvas *canvas : canvases )
     canvas->setCurrentLayer( layer );
 
   if ( mUndoWidget )
@@ -584,6 +588,8 @@ void QgisApp::activeLayerChanged( QgsMapLayer *layer )
     }
     updateUndoActions();
   }
+
+  emit activeLayerChanged( layer );
 }
 
 /*
@@ -1702,6 +1708,10 @@ QVector<QPointer<QgsLayoutCustomDropHandler> > QgisApp::customLayoutDropHandlers
 
 void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
 {
+  // avoid unnecessary work when adding lots of layers at once - defer emitting the active layer changed signal until we've
+  // added all layers, and only emit the signal once for the final layer added
+  mBlockActiveLayerChanged = true;
+
   // insert items in reverse order as each one is inserted on top of previous one
   for ( int i = lst.size() - 1 ; i >= 0 ; i-- )
   {
@@ -1742,8 +1752,10 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
       openFile( u.uri, QStringLiteral( "project" ) );
     }
   }
-}
 
+  mBlockActiveLayerChanged = false;
+  emit activeLayerChanged( activeLayer() );
+}
 
 bool QgisApp::event( QEvent *event )
 {
@@ -3339,9 +3351,9 @@ void QgisApp::setupConnections()
   } );
 
   // connect legend signals
-  connect( mLayerTreeView, &QgsLayerTreeView::currentLayerChanged,
+  connect( this, &QgisApp::activeLayerChanged,
            this, &QgisApp::activateDeactivateLayerRelatedActions );
-  connect( mLayerTreeView, &QgsLayerTreeView::currentLayerChanged,
+  connect( this, &QgisApp::activeLayerChanged,
            this, &QgisApp::setMapStyleDockLayer );
 
   connect( mLayerTreeView->selectionModel(), &QItemSelectionModel::selectionChanged,
@@ -3837,7 +3849,7 @@ void QgisApp::initLayerTreeView()
   setupLayerTreeViewFromSettings();
 
   connect( mLayerTreeView, &QAbstractItemView::doubleClicked, this, &QgisApp::layerTreeViewDoubleClicked );
-  connect( mLayerTreeView, &QgsLayerTreeView::currentLayerChanged, this, &QgisApp::activeLayerChanged );
+  connect( mLayerTreeView, &QgsLayerTreeView::currentLayerChanged, this, &QgisApp::onActiveLayerChanged );
   connect( mLayerTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgisApp::updateNewLayerInsertionPoint );
   connect( QgsProject::instance()->layerTreeRegistryBridge(), &QgsLayerTreeRegistryBridge::addedLayersToLayerTree,
            this, &QgisApp::autoSelectAddedLayer );
@@ -11172,7 +11184,14 @@ void QgisApp::closeProject()
   mMapCanvas->clearCache();
   mOverviewCanvas->setLayers( QList<QgsMapLayer *>() );
   mMapCanvas->freeze( false );
+
+  // Avoid unnecessary layer changed handling for each layer removed - instead,
+  // defer the handling until we've removed all layers
+  mBlockActiveLayerChanged = true;
   QgsProject::instance()->clear();
+  mBlockActiveLayerChanged = false;
+
+  emit activeLayerChanged( activeLayer() );
 }
 
 

@@ -260,7 +260,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWid
   //SLM - added functionality
   mLogFile = nullptr;
 
-  connect( QgisApp::instance()->layerTreeView(), &QgsLayerTreeView::currentLayerChanged,
+  connect( QgisApp::instance(), &QgisApp::activeLayerChanged,
            this, &QgsGpsInformationWidget::updateCloseFeatureButton );
 
   mStackedWidget->setCurrentIndex( 3 ); // force to Options
