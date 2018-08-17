@@ -1712,8 +1712,12 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
   // added all layers, and only emit the signal once for the final layer added
   mBlockActiveLayerChanged = true;
 
+  QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Loading layers" ) );
+  QgsApplication::taskManager()->addTask( proxyTask );
+
   // insert items in reverse order as each one is inserted on top of previous one
-  for ( int i = lst.size() - 1 ; i >= 0 ; i-- )
+  int count = 0;
+  for ( int i = lst.size() - 1 ; i >= 0 ; i--, count++ )
   {
     const QgsMimeDataUtils::Uri &u = lst.at( i );
 
@@ -1751,7 +1755,11 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     {
       openFile( u.uri, QStringLiteral( "project" ) );
     }
+
+    proxyTask->setProxyProgress( 100.0 * static_cast< double >( count ) / lst.size() );
   }
+
+  proxyTask->finalize( true );
 
   mBlockActiveLayerChanged = false;
   emit activeLayerChanged( activeLayer() );
