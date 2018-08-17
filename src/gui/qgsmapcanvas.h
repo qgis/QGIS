@@ -928,7 +928,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool mRenderFlag = true;
 
     //! current layer in legend
-    QgsMapLayer *mCurrentLayer = nullptr;
+    QPointer< QgsMapLayer > mCurrentLayer;
 
     //! graphics scene manages canvas items
     QGraphicsScene *mScene = nullptr;
