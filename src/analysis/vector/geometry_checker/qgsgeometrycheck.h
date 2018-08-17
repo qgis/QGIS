@@ -44,9 +44,27 @@ struct ANALYSIS_EXPORT QgsGeometryCheckerContext
 class ANALYSIS_EXPORT QgsGeometryCheck
 {
   public:
-    enum ChangeWhat { ChangeFeature, ChangePart, ChangeRing, ChangeNode };
-    enum ChangeType { ChangeAdded, ChangeRemoved, ChangeChanged };
-    enum CheckType { FeatureNodeCheck, FeatureCheck, LayerCheck };
+    enum ChangeWhat
+    {
+      ChangeFeature,
+      ChangePart,
+      ChangeRing,
+      ChangeNode
+    };
+
+    enum ChangeType
+    {
+      ChangeAdded,
+      ChangeRemoved,
+      ChangeChanged
+    };
+
+    enum CheckType
+    {
+      FeatureNodeCheck,
+      FeatureCheck,
+      LayerCheck
+    };
 
     struct Change
     {
