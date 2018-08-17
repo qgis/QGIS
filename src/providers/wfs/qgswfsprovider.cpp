@@ -134,7 +134,7 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
 
 QgsWFSProvider::~QgsWFSProvider()
 {
-  QgsDebugMsg( "~QgsWFSProvider()" );
+  QgsDebugMsgLevel( QStringLiteral( "~QgsWFSProvider()" ), 4 );
 }
 
 class QgsWFSProviderSQLFunctionValidator: public QgsSQLStatement::RecursiveVisitor
@@ -275,7 +275,7 @@ void QgsWFSProviderSQLColumnRefValidator::visit( const QgsSQLStatement::NodeColu
 
 bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QString &warningMsg )
 {
-  QgsDebugMsg( QString( "Processing SQL: %1" ).arg( sqlString ) );
+  QgsDebugMsgLevel( QStringLiteral( "Processing SQL: %1" ).arg( sqlString ), 4 );
   errorMsg.clear();
   warningMsg.clear();
   QgsSQLStatement sql( sqlString );
@@ -313,14 +313,14 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   if ( sql.rootNode()->nodeType() != QgsSQLStatement::ntSelect )
   {
     // Shouldn't happen
-    QgsDebugMsg( "SQL statement is not a SELECT. This should not happen" );
+    QgsDebugMsg( QStringLiteral( "SQL statement is not a SELECT. This should not happen" ) );
     return false;
   }
   const QgsSQLStatement::NodeSelect *select = dynamic_cast<const QgsSQLStatement::NodeSelect *>( sql.rootNode() );
   if ( !select )
   {
     // Makes Coverity happy, but cannot happen in practice
-    QgsDebugMsg( "should not happen" );
+    QgsDebugMsg( QStringLiteral( "should not happen" ) );
     return false;
   }
   mShared->mDistinctSelect = select->distinct();
@@ -437,7 +437,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     // returns a <ExceptionText><![CDATA[Missing typeNames parameter]]></ExceptionText>
     if ( i == 0 && response.indexOf( "<![CDATA[Missing typeNames parameter]]>" ) >= 0 )
     {
-      QgsDebugMsg( "Server does not accept TYPENAME parameter for DescribeFeatureType. Re-trying with TYPENAMES" );
+      QgsDebugMsg( QStringLiteral( "Server does not accept TYPENAME parameter for DescribeFeatureType. Re-trying with TYPENAMES" ) );
       bUsePlural = true;
     }
     else
@@ -450,7 +450,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   errorMsg.clear();
   if ( !describeFeatureDocument.setContent( response, true, &errorMsg ) )
   {
-    QgsDebugMsg( response );
+    QgsDebugMsgLevel( response, 4 );
     errorMsg = tr( "DescribeFeatureType failed for url %1: %2" ).
                arg( dataSourceUri(), errorMsg );
     return false;
@@ -616,7 +616,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
       int idx = tableFields.lookupField( columnRef->name() );
       if ( idx < 0 )
       {
-        QgsDebugMsg( QString( "Should not happen. Cannot find field for %1" ).arg( columnRef->name() ) );
+        QgsDebugMsg( QStringLiteral( "Should not happen. Cannot find field for %1" ).arg( columnRef->name() ) );
         continue;
       }
 
@@ -677,7 +677,7 @@ QString QgsWFSProvider::subsetString() const
 
 bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
-  QgsDebugMsg( QString( "theSql = '%1'" ).arg( theSQL ) );
+  QgsDebugMsgLevel( QStringLiteral( "theSql = '%1'" ).arg( theSQL ), 4 );
 
   if ( theSQL == mSubsetString )
     return true;
@@ -772,8 +772,8 @@ QgsRectangle QgsWFSProvider::extent() const
   // Some servers return completely buggy extent in their capabilities response
   // so mix it with the extent actually got from the downloaded features
   QgsRectangle computedExtent( mShared->computedExtent() );
-  QgsDebugMsg( "computedExtent: " + computedExtent.toString() );
-  QgsDebugMsg( "mCapabilityExtent: " + mShared->mCapabilityExtent.toString() );
+  QgsDebugMsgLevel( QStringLiteral( "computedExtent: " ) + computedExtent.toString(), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "mCapabilityExtent: " ) + mShared->mCapabilityExtent.toString(), 4 );
 
   // If we didn't get any feature, then return capabilities extent.
   if ( computedExtent.isNull() )
@@ -953,7 +953,7 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
     QString gmlid = mShared->findGmlId( *idIt );
     if ( gmlid.isEmpty() )
     {
-      QgsDebugMsg( QString( "Cannot identify feature of id %1" ).arg( *idIt ) );
+      QgsDebugMsg( QStringLiteral( "Cannot identify feature of id %1" ).arg( *idIt ) );
       continue;
     }
     QDomElement featureIdElem = transactionDoc.createElementNS( QgsWFSConstants::OGC_NAMESPACE, QStringLiteral( "FeatureId" ) );
@@ -1009,7 +1009,7 @@ bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     QString gmlid = mShared->findGmlId( geomIt.key() );
     if ( gmlid.isEmpty() )
     {
-      QgsDebugMsg( QString( "Cannot identify feature of id %1" ).arg( geomIt.key() ) );
+      QgsDebugMsg( QStringLiteral( "Cannot identify feature of id %1" ).arg( geomIt.key() ) );
       continue;
     }
     QDomElement updateElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Update" ) );
@@ -1102,7 +1102,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     QString gmlid = mShared->findGmlId( attIt.key() );
     if ( gmlid.isEmpty() )
     {
-      QgsDebugMsg( QString( "Cannot identify feature of id %1" ).arg( attIt.key() ) );
+      QgsDebugMsg( QStringLiteral( "Cannot identify feature of id %1" ).arg( attIt.key() ) );
       continue;
     }
 
@@ -1230,7 +1230,7 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
     // returns a <ExceptionText><![CDATA[Missing typeNames parameter]]></ExceptionText>
     if ( i == 0 && response.indexOf( "<![CDATA[Missing typeNames parameter]]>" ) >= 0 )
     {
-      QgsDebugMsg( "Server does not accept TYPENAME parameter for DescribeFeatureType. Re-trying with TYPENAMES" );
+      QgsDebugMsg( QStringLiteral( "Server does not accept TYPENAME parameter for DescribeFeatureType. Re-trying with TYPENAMES" ) );
       bUsePlural = true;
     }
     // "http://services.cuzk.cz/wfs/inspire-cp-wfs.asp?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=cp:CadastralParcel" returns
@@ -1241,7 +1241,7 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
     else if ( i == 0 && response.indexOf( "<!--Generated by Marushka" ) >= 0 &&
               response.indexOf( "OperationProcessingFailed" ) >= 0 )
     {
-      QgsDebugMsg( "Server does not accept TYPENAME parameter for DescribeFeatureType. Re-trying with TYPENAMES" );
+      QgsDebugMsg( QStringLiteral( "Server does not accept TYPENAME parameter for DescribeFeatureType. Re-trying with TYPENAMES" ) );
       bUsePlural = true;
     }
     else
@@ -1254,7 +1254,7 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
   QString errorMsg;
   if ( !describeFeatureDocument.setContent( response, true, &errorMsg ) )
   {
-    QgsDebugMsg( response );
+    QgsDebugMsgLevel( response, 4 );
     QgsMessageLog::logMessage( tr( "DescribeFeatureType XML parse failed for url %1: %2" ).
                                arg( dataSourceUri(), errorMsg ), tr( "WFS" ) );
     return false;
@@ -1264,7 +1264,7 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
                                   mShared->mURI.typeName(),
                                   geometryAttribute, fields, geomType, errorMsg ) )
   {
-    QgsDebugMsg( response );
+    QgsDebugMsgLevel( response, 4 );
     QgsMessageLog::logMessage( tr( "Analysis of DescribeFeatureType response failed for url %1: %2" ).
                                arg( dataSourceUri(), errorMsg ), tr( "WFS" ) );
     return false;
@@ -1369,7 +1369,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     {
       QString schemaLocation =
         includeElement.attribute( QStringLiteral( "schemaLocation" ) );
-      QgsDebugMsg( QStringLiteral( "DescribeFeatureType response redirects to: %1" ).arg( schemaLocation ) );
+      QgsDebugMsgLevel( QStringLiteral( "DescribeFeatureType response redirects to: %1" ).arg( schemaLocation ), 4 );
 
       QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI );
       if ( !describeFeatureType.sendGET( schemaLocation, true, false ) )
@@ -1384,7 +1384,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       QDomDocument describeFeatureDocument;
       if ( !describeFeatureDocument.setContent( response, true, &errorMsg ) )
       {
-        QgsDebugMsg( response );
+        QgsDebugMsgLevel( response, 4 );
         errorMsg = tr( "DescribeFeatureType XML parse failed for url %1: %2" ).
                    arg( schemaLocation, errorMsg );
       }
@@ -1718,9 +1718,9 @@ bool QgsWFSProvider::getCapabilities()
           QgsCoordinateTransform ct( src, mShared->mSourceCRS );
           Q_NOWARN_DEPRECATED_POP
 
-          QgsDebugMsg( "latlon ext:" + r.toString() );
-          QgsDebugMsg( "src:" + src.authid() );
-          QgsDebugMsg( "dst:" + mShared->mSourceCRS.authid() );
+          QgsDebugMsgLevel( "latlon ext:" + r.toString(), 4 );
+          QgsDebugMsgLevel( "src:" + src.authid(), 4 );
+          QgsDebugMsgLevel( "dst:" + mShared->mSourceCRS.authid(), 4 );
 
           mShared->mCapabilityExtent = ct.transformBoundingBox( r, QgsCoordinateTransform::ForwardTransform );
         }
@@ -1729,7 +1729,7 @@ bool QgsWFSProvider::getCapabilities()
           mShared->mCapabilityExtent = r;
         }
 
-        QgsDebugMsg( "layer ext:" + mShared->mCapabilityExtent.toString() );
+        QgsDebugMsgLevel( "layer ext:" + mShared->mCapabilityExtent.toString(), 4 );
       }
       if ( mShared->mCaps.featureTypes[i].insertCap )
       {
@@ -1762,8 +1762,8 @@ QgsWkbTypes::Type QgsWFSProvider::geomTypeFromPropertyType( const QString &attNa
 {
   Q_UNUSED( attName );
 
-  QgsDebugMsg( QString( "DescribeFeatureType geometry attribute \"%1\" type is \"%2\"" )
-               .arg( attName, propType ) );
+  QgsDebugMsgLevel( QStringLiteral( "DescribeFeatureType geometry attribute \"%1\" type is \"%2\"" )
+                    .arg( attName, propType ), 4 );
   if ( propType == QLatin1String( "Point" ) )
     return QgsWkbTypes::Point;
   if ( propType == QLatin1String( "LineString" ) || propType == QLatin1String( "Curve" ) )
@@ -1781,7 +1781,7 @@ QgsWkbTypes::Type QgsWFSProvider::geomTypeFromPropertyType( const QString &attNa
 
 void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
 {
-  QgsDebugMsg( QString( "server response: %1" ).arg( serverResponse.toString() ) );
+  QgsDebugMsgLevel( QStringLiteral( "server response: %1" ).arg( serverResponse.toString() ), 4 );
 
   QDomElement exceptionElem = serverResponse.documentElement();
   if ( exceptionElem.isNull() )

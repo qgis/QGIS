@@ -37,7 +37,7 @@ QgsWfsRequest::QgsWfsRequest( const QgsWFSDataSourceURI &uri )
   , mTimedout( false )
   , mGotNonEmptyResponse( false )
 {
-  QgsDebugMsg( "theUri = " + uri.uri( ) );
+  QgsDebugMsgLevel( QStringLiteral( "theUri = " ) + uri.uri( ), 4 );
   connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestTimedOut, this, &QgsWfsRequest::requestTimedOut );
 }
 
@@ -78,7 +78,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
     QString modifiedUrlString = modifiedUrl.toString();
     // Qt5 does URL encoding from some reason (of the FILTER parameter for example)
     modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrlString.toUtf8() );
-    QgsDebugMsg( QStringLiteral( "Get %1" ).arg( modifiedUrlString ) );
+    QgsDebugMsgLevel( QStringLiteral( "Get %1" ).arg( modifiedUrlString ), 4 );
     modifiedUrlString = modifiedUrlString.mid( QStringLiteral( "http://" ).size() );
     QString args = modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) );
     if ( modifiedUrlString.size() > 256 )
@@ -107,7 +107,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
     }
 #endif
     modifiedUrlString = modifiedUrlString.mid( 0, modifiedUrlString.indexOf( '?' ) ) + args;
-    QgsDebugMsg( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ) );
+    QgsDebugMsgLevel( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ), 4 );
     modifiedUrl = QUrl::fromLocalFile( modifiedUrlString );
   }
 
@@ -280,7 +280,7 @@ void QgsWfsRequest::abort()
 
 void QgsWfsRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  QgsDebugMsg( QStringLiteral( "%1 of %2 bytes downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "%1 of %2 bytes downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) ), 4 );
 
   if ( bytesReceived != 0 )
     mGotNonEmptyResponse = true;
@@ -307,11 +307,11 @@ void QgsWfsRequest::replyFinished()
   {
     if ( mReply->error() == QNetworkReply::NoError )
     {
-      QgsDebugMsg( QStringLiteral( "reply OK" ) );
+      QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 4 );
       QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {
-        QgsDebugMsg( QStringLiteral( "Request redirected." ) );
+        QgsDebugMsgLevel( QStringLiteral( "Request redirected." ), 4 );
 
         const QUrl &toUrl = redirect.toUrl();
         mReply->request();
@@ -339,7 +339,7 @@ void QgsWfsRequest::replyFinished()
           mReply->deleteLater();
           mReply = nullptr;
 
-          QgsDebugMsg( QStringLiteral( "redirected: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ) );
+          QgsDebugMsgLevel( QStringLiteral( "redirected: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ), 4 );
           mReply = QgsNetworkAccessManager::instance()->get( request );
           mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
           if ( !mUri.auth().setAuthorizationReply( mReply ) )
@@ -372,7 +372,7 @@ void QgsWfsRequest::replyFinished()
           }
           cmd.setRawHeaders( hl );
 
-          QgsDebugMsg( QStringLiteral( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
+          QgsDebugMsgLevel( QStringLiteral( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ), 4 );
           if ( cmd.expirationDate().isNull() )
           {
             cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( defaultExpirationInSec() ) );
@@ -382,12 +382,12 @@ void QgsWfsRequest::replyFinished()
         }
         else
         {
-          QgsDebugMsg( QStringLiteral( "No cache!" ) );
+          QgsDebugMsgLevel( QStringLiteral( "No cache!" ), 4 );
         }
 
 #ifdef QGISDEBUG
         bool fromCache = mReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
-        QgsDebugMsg( QStringLiteral( "Reply was cached: %1" ).arg( fromCache ) );
+        QgsDebugMsgLevel( QStringLiteral( "Reply was cached: %1" ).arg( fromCache ), 4 );
 #endif
 
         mResponse = mReply->readAll();

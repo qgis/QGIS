@@ -59,7 +59,7 @@ QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
 
 QgsWFSSharedData::~QgsWFSSharedData()
 {
-  QgsDebugMsg( QString( "~QgsWFSSharedData()" ) );
+  QgsDebugMsgLevel( QStringLiteral( "~QgsWFSSharedData()" ), 4 );
 
   invalidateCache();
 }
@@ -120,7 +120,7 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
     if ( !select )
     {
       // Makes Coverity happy, but cannot happen in practice
-      QgsDebugMsg( "should not happen" );
+      QgsDebugMsg( QStringLiteral( "should not happen" ) );
       return false;
     }
     QList<QgsSQLStatement::NodeColumnSorted *> orderBy = select->orderBy();
@@ -316,7 +316,7 @@ bool QgsWFSSharedData::createCache()
       bool created = false;
       if ( loaded )
       {
-        QgsDebugMsg( "SpatiaLite provider loaded" );
+        QgsDebugMsgLevel( QStringLiteral( "SpatiaLite provider loaded" ), 4 );
 
         typedef bool ( *createDbProc )( const QString &, QString & );
         createDbProc createDbPtr = ( createDbProc ) cast_to_fptr( myLib->resolve( "createDb" ) );
@@ -388,7 +388,7 @@ bool QgsWFSSharedData::createCache()
       rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
-        QgsDebugMsg( QString( "%1 failed" ).arg( sql ) );
+        QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
         ret = false;
       }
 
@@ -396,7 +396,7 @@ bool QgsWFSSharedData::createCache()
       rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
-        QgsDebugMsg( QString( "%1 failed" ).arg( sql ) );
+        QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
         ret = false;
       }
 
@@ -404,7 +404,7 @@ bool QgsWFSSharedData::createCache()
       rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
-        QgsDebugMsg( QString( "%1 failed" ).arg( sql ) );
+        QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
         ret = false;
       }
     }
@@ -415,7 +415,7 @@ bool QgsWFSSharedData::createCache()
     rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
-      QgsDebugMsg( QString( "%1 failed" ).arg( sql ) );
+      QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
       ret = false;
     }
 
@@ -425,7 +425,7 @@ bool QgsWFSSharedData::createCache()
       rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
-        QgsDebugMsg( QString( "%1 failed" ).arg( sql ) );
+        QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
         ret = false;
       }
     }
@@ -510,7 +510,7 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator *iterator, int limi
       if ( mRegions[id].geometry().boundingBox().contains( rect ) &&
            !mRegions[id].attributes().value( 0 ).toBool() )
       {
-        QgsDebugMsg( "Cached features already cover this area of interest" );
+        QgsDebugMsgLevel( QStringLiteral( "Cached features already cover this area of interest" ), 4 );
         newDownloadNeeded = false;
         break;
       }
@@ -521,7 +521,7 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator *iterator, int limi
       if ( rect.contains( mRegions[id].geometry().boundingBox() ) &&
            mRegions[id].attributes().value( 0 ).toBool() )
       {
-        QgsDebugMsg( "Current request is larger than a smaller request that hit the download limit, so no server download needed." );
+        QgsDebugMsgLevel( QStringLiteral( "Current request is larger than a smaller request that hit the download limit, so no server download needed." ), 4 );
         newDownloadNeeded = false;
         break;
       }
@@ -782,7 +782,7 @@ bool QgsWFSSharedData::changeAttributeValues( const QgsChangedAttributesMap &att
 
 void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featureList )
 {
-  QgsDebugMsg( QString( "begin %1" ).arg( featureList.size() ) );
+  QgsDebugMsgLevel( QStringLiteral( "begin %1" ).arg( featureList.size() ), 4 );
 
   int genCounter;
   {
@@ -844,7 +844,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featu
       {
         if ( mRect.isEmpty() )
         {
-          QgsDebugMsg( QString( "duplicate gmlId %1" ).arg( gmlId ) );
+          QgsDebugMsgLevel( QStringLiteral( "duplicate gmlId %1" ).arg( gmlId ), 4 );
         }
         continue;
       }
@@ -951,7 +951,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featu
 
   emit extentUpdated();
 
-  QgsDebugMsg( QString( "end %1" ).arg( featureList.size() ) );
+  QgsDebugMsgLevel( QStringLiteral( "end %1" ).arg( featureList.size() ), 4 );
 
 }
 
@@ -993,7 +993,7 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
     if ( featureCount == 0 && mRect.contains( mCapabilityExtent ) && mWFSFilter.isEmpty() &&
          mCaps.supportsHits && !mGeometryAttribute.isEmpty() && !mTryFetchingOneFeature )
     {
-      QgsDebugMsg( "Capability extent is probably wrong. Starting a new request with one feature limit to get at least one feature" );
+      QgsDebugMsg( QStringLiteral( "Capability extent is probably wrong. Starting a new request with one feature limit to get at least one feature" ) );
       mTryFetchingOneFeature = true;
       QgsWFSSingleFeatureRequest request( this );
       mComputedExtent = request.getExtent();
@@ -1050,7 +1050,7 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
       // contains duplicates. Actually happens with
       // http://demo.opengeo.org/geoserver/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=osm:landcover_line
       // with gml.id=landcover_line.119246130 in particular
-      QgsDebugMsg( QString( "raw features=%1, unique features=%2" ).
+      QgsDebugMsg( QStringLiteral( "raw features=%1, unique features=%2" ).
                    arg( featureCount ).arg( mFeatureCount ) );
     }
   }
@@ -1214,14 +1214,14 @@ int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
 
   const QByteArray &buffer = response();
 
-  QgsDebugMsg( "parsing QgsWFSFeatureHitsRequest: " + buffer );
+  QgsDebugMsgLevel( QStringLiteral( "parsing QgsWFSFeatureHitsRequest: " ) + buffer, 4 );
 
   // parse XML
   QString error;
   QDomDocument domDoc;
   if ( !domDoc.setContent( buffer, true, &error ) )
   {
-    QgsDebugMsg( "parsing failed: " + error );
+    QgsDebugMsg( QStringLiteral( "parsing failed: " ) + error );
     return -1;
   }
 
@@ -1273,7 +1273,7 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
 
   const QByteArray &buffer = response();
 
-  QgsDebugMsg( "parsing QgsWFSSingleFeatureRequest: " + buffer );
+  QgsDebugMsgLevel( QStringLiteral( "parsing QgsWFSSingleFeatureRequest: " ) + buffer, 4 );
 
   // parse XML
   QgsGmlStreamingParser *parser = mShared->createParser();
