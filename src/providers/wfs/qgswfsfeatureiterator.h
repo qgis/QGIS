@@ -32,6 +32,7 @@ class QgsWFSProvider;
 class QgsWFSSharedData;
 class QgsVectorDataProvider;
 class QProgressDialog;
+class QgsProxyProgressTask;
 
 typedef QPair<QgsFeature, QString> QgsWFSFeatureGmlIdPair;
 
@@ -59,25 +60,6 @@ class QgsWFSFeatureHitsAsyncRequest: public QgsWfsRequest
 
   private:
     int mNumberMatched;
-};
-
-
-//! Utility class for QgsWFSFeatureDownloader
-class QgsWFSProgressDialog: public QProgressDialog
-{
-    Q_OBJECT
-  public:
-    //! Constructor
-    QgsWFSProgressDialog( const QString &labelText, const QString &cancelButtonText, int minimum, int maximum, QWidget *parent );
-
-    void resizeEvent( QResizeEvent *ev ) override;
-
-  signals:
-    void hideRequest();
-
-  private:
-    QPushButton *mCancel = nullptr;
-    QPushButton *mHide = nullptr;
 };
 
 /**
@@ -128,11 +110,10 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     QString errorMessageWithReason( const QString &reason ) override;
 
   private slots:
-    void createProgressDialog();
+    void createProgressTask();
     void startHitsRequest();
     void gotHitsResponse();
     void setStopFlag();
-    void hideProgressDialog();
 
   private:
     QUrl buildURL( qint64 startIndex, int maxFeatures, bool forHits );
@@ -143,13 +124,9 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     QgsWFSSharedData *mShared = nullptr;
     //! Whether the download should stop
     bool mStop;
-    //! Progress dialog
-    QgsWFSProgressDialog *mProgressDialog = nullptr;
 
-    /**
-     * If the progress dialog should be shown immediately, or if it should be
-        let to QProgressDialog logic to decide when to show it */
-    bool mProgressDialogShowImmediately;
+    QgsProxyProgressTask *mProgressTask = nullptr;
+
     int mPageSize;
     bool mRemoveNSPrefix;
     int mNumberMatched;

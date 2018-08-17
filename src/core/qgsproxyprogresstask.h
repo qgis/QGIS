@@ -44,6 +44,10 @@ class CORE_EXPORT QgsProxyProgressTask : public QgsTask
      */
     QgsProxyProgressTask( const QString &description );
 
+    bool run() override;
+
+  public slots:
+
     /**
      * Finalizes the task, with the specified \a result.
      *
@@ -51,8 +55,6 @@ class CORE_EXPORT QgsProxyProgressTask : public QgsTask
      * to remove this proxy task from the task manager.
      */
     void finalize( bool result );
-
-    bool run() override;
 
     /**
      * Sets the \a progress (from 0 to 100) for the proxied operation.

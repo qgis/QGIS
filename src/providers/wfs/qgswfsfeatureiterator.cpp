@@ -28,6 +28,8 @@
 #include "qgssettings.h"
 #include "qgsexception.h"
 #include "qgsfeedback.h"
+#include "qgstaskmanager.h"
+#include "qgsproxyprogresstask.h"
 
 #include <algorithm>
 #include <QDir>
@@ -81,7 +83,6 @@ QgsWFSFeatureDownloader::QgsWFSFeatureDownloader( QgsWFSSharedData *shared )
   : QgsWfsRequest( shared->mURI )
   , mShared( shared )
   , mStop( false )
-  , mProgressDialogShowImmediately( false )
   , mPageSize( shared->mPageSize )
   , mRemoveNSPrefix( false )
   , mNumberMatched( -1 )
@@ -96,8 +97,10 @@ QgsWFSFeatureDownloader::~QgsWFSFeatureDownloader()
 {
   stop();
 
-  if ( mProgressDialog )
-    mProgressDialog->deleteLater();
+  // NOT THREAD SAFE - we need to run this whole block (including the mProgressTask check) in the main thread
+  if ( mProgressTask )
+    QMetaObject::invokeMethod( mProgressTask, "finalize", Qt::QueuedConnection, Q_ARG( bool, true ) );
+
   if ( mTimer )
     mTimer->deleteLater();
 }
@@ -115,85 +118,27 @@ void QgsWFSFeatureDownloader::setStopFlag()
   mStop = true;
 }
 
-QgsWFSProgressDialog::QgsWFSProgressDialog( const QString &labelText,
-    const QString &cancelButtonText,
-    int minimum, int maximum, QWidget *parent )
-  : QProgressDialog( labelText, cancelButtonText, minimum, maximum, parent )
-{
-  mCancel = new QPushButton( cancelButtonText, this );
-  setCancelButton( mCancel );
-  mHide = new QPushButton( tr( "Hide" ), this );
-  connect( mHide, &QAbstractButton::clicked, this, &QgsWFSProgressDialog::hideRequest );
-}
-
-void QgsWFSProgressDialog::resizeEvent( QResizeEvent *ev )
-{
-  QProgressDialog::resizeEvent( ev );
-  // Note: this relies heavily on the details of the layout done in QProgressDialogPrivate::layout()
-  // Might be a bit fragile depending on QT versions.
-  QRect rect = geometry();
-  QRect cancelRect = mCancel->geometry();
-  QRect hideRect = mHide->geometry();
-  int mtb = style()->pixelMetric( QStyle::PM_DefaultTopLevelMargin );
-  int mlr = std::min( width() / 10, mtb );
-  if ( rect.width() - cancelRect.x() - cancelRect.width() > mlr )
-  {
-    // Force right alighnment of cancel button
-    cancelRect.setX( rect.width() - cancelRect.width() - mlr );
-    mCancel->setGeometry( cancelRect );
-  }
-  mHide->setGeometry( rect.width() - cancelRect.x() - cancelRect.width(),
-                      cancelRect.y(), hideRect.width(), cancelRect.height() );
-}
-
-void QgsWFSFeatureDownloader::hideProgressDialog()
-{
-  mShared->mHideProgressDialog = true;
-  mProgressDialog->deleteLater();
-  mProgressDialog = nullptr;
-}
-
 // Called from GUI thread
-void QgsWFSFeatureDownloader::createProgressDialog()
+void QgsWFSFeatureDownloader::createProgressTask()
 {
   Q_ASSERT( qApp->thread() == QThread::currentThread() );
 
   if ( mStop )
     return;
-  Q_ASSERT( !mProgressDialog );
+  Q_ASSERT( !mProgressTask );
 
-  if ( !mMainWindow )
+  mProgressTask = new QgsProxyProgressTask( tr( "Loading features for layer %1" ).arg( mShared->mURI.typeName() ) );
+  connect( this, &QgsWFSFeatureDownloader::updateProgress, mProgressTask, [this]( int downloaded )
   {
-    const QWidgetList widgets = qApp->topLevelWidgets();
-    for ( QWidget *widget : widgets )
-    {
-      if ( widget->objectName() == QLatin1String( "QgisApp" ) )
-      {
-        mMainWindow = widget;
-        break;
-      }
-    }
-  }
+    mProgressTask->setProxyProgress( static_cast< double >( downloaded ) / mNumberMatched * 100 );
+  } );
 
-  if ( !mMainWindow )
-    return;
+  QgsApplication::taskManager()->addTask( mProgressTask );
 
-  mProgressDialog = new QgsWFSProgressDialog( tr( "Loading features for layer %1" ).arg( mShared->mURI.typeName() ),
-      tr( "Abort" ), 0, mNumberMatched, mMainWindow );
-  mProgressDialog->setWindowTitle( tr( "QGIS" ) );
-  mProgressDialog->setValue( 0 );
-  if ( mProgressDialogShowImmediately )
-    mProgressDialog->show();
-
+#if 0 // TODO - handle cancelation
   connect( mProgressDialog, &QProgressDialog::canceled, this, &QgsWFSFeatureDownloader::setStopFlag, Qt::DirectConnection );
   connect( mProgressDialog, &QProgressDialog::canceled, this, &QgsWFSFeatureDownloader::stop );
-  connect( mProgressDialog, &QgsWFSProgressDialog::hideRequest, this, &QgsWFSFeatureDownloader::hideProgressDialog );
-
-  // Make sure the progress dialog has not been deleted by another thread
-  if ( mProgressDialog )
-  {
-    connect( this, &QgsWFSFeatureDownloader::updateProgress, mProgressDialog, &QProgressDialog::setValue );
-  }
+#endif
 }
 
 QString QgsWFSFeatureDownloader::sanitizeFilter( QString filter )
@@ -409,13 +354,6 @@ void QgsWFSFeatureDownloader::gotHitsResponse()
   }
   if ( mNumberMatched >= 0 )
   {
-    if ( mTotalDownloadedFeatureCount == 0 )
-    {
-      // We get at this point after the 4 second delay to emit the hits request
-      // and the delay to get its response. If we don't still have downloaded
-      // any feature at this point, it is high time to give some visual feedback
-      mProgressDialogShowImmediately = true;
-    }
     // If the request didn't include any BBOX, then we can update the layer
     // feature count
     if ( mShared->mRect.isNull() )
@@ -636,7 +574,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
           // Direct connection, since we want createProgressDialog()
           // to be invoked from the same thread as timer, and not in the
           // thread of this
-          connect( mTimer, &QTimer::timeout, this, &QgsWFSFeatureDownloader::createProgressDialog, Qt::DirectConnection );
+          connect( mTimer, &QTimer::timeout, this, &QgsWFSFeatureDownloader::createProgressTask, Qt::DirectConnection );
 
           mTimer->moveToThread( qApp->thread() );
           QMetaObject::invokeMethod( mTimer, "start", Qt::QueuedConnection );
@@ -800,10 +738,11 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
   // test suite.
   emit endOfDownload( success );
 
-  if ( mProgressDialog )
+  if ( mProgressTask )
   {
-    mProgressDialog->deleteLater();
-    mProgressDialog = nullptr;
+    // NOT THREAD SAFE - we need to run this whole block (including the mProgressTask check) in the main thread
+    QMetaObject::invokeMethod( mProgressTask, "finalize", Qt::QueuedConnection, Q_ARG( bool, true ) );
+    mProgressTask = nullptr;
   }
   if ( mTimer )
   {
