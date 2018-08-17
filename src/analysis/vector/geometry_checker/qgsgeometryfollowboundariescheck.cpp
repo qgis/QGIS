@@ -99,7 +99,7 @@ void QgsGeometryFollowBoundariesCheck::fixError( QgsGeometryCheckError *error, i
   }
 }
 
-QStringList QgsGeometryFollowBoundariesCheck::getResolutionMethods() const
+QStringList QgsGeometryFollowBoundariesCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;

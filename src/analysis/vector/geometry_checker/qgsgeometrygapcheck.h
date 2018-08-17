@@ -39,7 +39,7 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
     bool isEqual( QgsGeometryCheckError *other ) const override
     {
       QgsGeometryGapCheckError *err = dynamic_cast<QgsGeometryGapCheckError *>( other );
-      return err && QgsGeometryCheckerUtils::pointsFuzzyEqual( err->location(), location(), mCheck->getContext()->reducedTolerance ) && err->neighbors() == neighbors();
+      return err && QgsGeometryCheckerUtils::pointsFuzzyEqual( err->location(), location(), mCheck->context()->reducedTolerance ) && err->neighbors() == neighbors();
     }
 
     bool closeMatch( QgsGeometryCheckError *other ) const override
@@ -83,7 +83,7 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     {}
     void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
-    QStringList getResolutionMethods() const override;
+    QStringList resolutionMethods() const override;
     QString errorDescription() const override { return tr( "Gap" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryGapCheck" ); }
 

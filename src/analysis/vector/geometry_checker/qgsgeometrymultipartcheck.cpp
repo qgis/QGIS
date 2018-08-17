@@ -74,7 +74,7 @@ void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError *error, int meth
   }
 }
 
-QStringList QgsGeometryMultipartCheck::getResolutionMethods() const
+QStringList QgsGeometryMultipartCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList()
                                << tr( "Convert to single part feature" )

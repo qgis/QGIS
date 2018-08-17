@@ -31,7 +31,7 @@ class ANALYSIS_EXPORT QgsGeometryAngleCheck : public QgsGeometryCheck
     {}
     void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
-    QStringList getResolutionMethods() const override;
+    QStringList resolutionMethods() const override;
     QString errorDescription() const override { return tr( "Minimal angle" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryAngleCheck" ); }
 

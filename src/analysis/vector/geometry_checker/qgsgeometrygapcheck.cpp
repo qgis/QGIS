@@ -212,7 +212,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError *err, Chan
 }
 
 
-QStringList QgsGeometryGapCheck::getResolutionMethods() const
+QStringList QgsGeometryGapCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "Add gap area to neighboring polygon with longest shared edge" ) << tr( "No action" );
   return methods;

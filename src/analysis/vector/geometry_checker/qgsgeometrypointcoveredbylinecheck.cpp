@@ -79,7 +79,7 @@ void QgsGeometryPointCoveredByLineCheck::fixError( QgsGeometryCheckError *error,
   }
 }
 
-QStringList QgsGeometryPointCoveredByLineCheck::getResolutionMethods() const
+QStringList QgsGeometryPointCoveredByLineCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;

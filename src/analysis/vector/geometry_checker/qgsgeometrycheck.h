@@ -41,7 +41,7 @@ struct ANALYSIS_EXPORT QgsGeometryCheckerContext
   const QMap<QString, QgsFeaturePool *> featurePools;
 };
 
-class ANALYSIS_EXPORT QgsGeometryCheck : public QObject
+class ANALYSIS_EXPORT QgsGeometryCheck : QObject
 {
     Q_OBJECT
 
@@ -76,14 +76,14 @@ class ANALYSIS_EXPORT QgsGeometryCheck : public QObject
     {}
     virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const = 0;
     virtual void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const = 0;
-    virtual QStringList getResolutionMethods() const = 0;
+    virtual QStringList resolutionMethods() const = 0;
     virtual QString errorDescription() const = 0;
     virtual QString errorName() const = 0;
-    CheckType getCheckType() const { return mCheckType; }
-    bool getCompatibility( QgsWkbTypes::GeometryType type ) const { return mCompatibleGeometryTypes.contains( type ); }
-    QgsGeometryCheckerContext *getContext() const { return mContext; }
+    CheckType checkType() const { return mCheckType; }
+    bool isCompatible( QgsWkbTypes::GeometryType type ) const { return mCompatibleGeometryTypes.contains( type ); }
+    QgsGeometryCheckerContext *context() const { return mContext; }
 
-  protected:
+  private:
     QMap<QString, QgsFeatureIds> allLayerFeatureIds() const;
     void replaceFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const;
     void deleteFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const;
@@ -133,7 +133,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     void setFixed( int method )
     {
       mStatus = StatusFixed;
-      const QStringList methods = mCheck->getResolutionMethods();
+      const QStringList methods = mCheck->resolutionMethods();
       mResolutionMessage = methods[method];
     }
     void setFixFailed( const QString &reason )
