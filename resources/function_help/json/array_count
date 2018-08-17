@@ -1,0 +1,8 @@
+{
+  "name": "array_count",
+  "type": "function",
+  "description": "Returns the number of a given value in an array.",
+  "arguments": [ {"arg":"array","description":"an array"},
+                 {"arg":"value","description":"given value"}],
+  "examples": [ { "expression":"array_count(array(1,2,3,1,1),1)", "returns":"number: 3"}]
+}

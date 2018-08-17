@@ -1,0 +1,8 @@
+{
+  "name": "array_max",
+  "type": "function",
+  "description": "Returns the maximum value in an array.",
+  "arguments": [ {"arg":"array","description":"an array"} ],
+  "examples": [ { "expression":"array_max(2,10,0.1)", "returns":"max: 10"}
+  ]
+}

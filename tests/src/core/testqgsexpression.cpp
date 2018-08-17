@@ -1290,7 +1290,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "'a' not  like 'a%'" ) << QStringLiteral( "'a' not  like 'a%'" ) << false << QVariant( 0 );
 
       // with_variable
-      QTest::newRow( "with_variable(name:='five', value:=5, expression:=@five * 2)" ) << QStringLiteral( "with_variable(name:='five', value:=5, expression:=@five * 2)" ) << false << QVariant( 10 );
+      QTest::newRow( "with_variable('five', 5, @five * 2)" ) << QStringLiteral( "with_variable('five', 5, @five * 2)" ) << false << QVariant( 10 );
       QTest::newRow( "with_variable('nothing', NULL, COALESCE(@nothing, 'something'))" ) << QStringLiteral( "with_variable('nothing', NULL, COALESCE(@nothing, 'something'))" ) << false << QVariant( "something" );
 
       // array_first, array_last
@@ -1684,7 +1684,7 @@ class TestQgsExpression: public QObject
       mMemoryLayer->selectByIds( selectedFeatures );
 
       QgsExpression exp( expression );
-      QCOMPARE( exp.parserErrorString(), QString() );
+      QCOMPARE( exp.parserErrorString(), QLatin1String( "" ) );
       exp.prepare( &context );
       QVariant res = exp.evaluate( &context );
       QCOMPARE( res, result );
@@ -2610,23 +2610,6 @@ class TestQgsExpression: public QObject
       QCOMPARE( v4, QVariant( "test value" ) );
     }
 
-    void eval_generate_series()
-    {
-      QVariantList array;
-      array << 1 << 2 << 3 << 4;
-      QCOMPARE( QgsExpression( "generate_series(1,4)" ).evaluate(), QVariant( array ) );
-      array.clear();
-      array << 1 << 1.25 << 1.5 << 1.75 << 2;
-      QCOMPARE( QgsExpression( "generate_series(1,2,0.25)" ).evaluate(), QVariant( array ) );
-      array.clear();
-      array << 10 << 9 << 8;
-      QCOMPARE( QgsExpression( "generate_series(10,8,-1)" ).evaluate(), QVariant( array ) );
-
-      QCOMPARE( QgsExpression( "generate_series(10,11,-1)" ).evaluate(), QVariant() );
-      QCOMPARE( QgsExpression( "generate_series(10,5)" ).evaluate(), QVariant() );
-      QCOMPARE( QgsExpression( "generate_series(1,2,0)" ).evaluate(), QVariant() );
-    }
-
     void eval_string_array()
     {
       QgsFeature f( 100 );
@@ -2689,13 +2672,6 @@ class TestQgsExpression: public QObject
       QStringList concatExpected = array;
       concatExpected << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" );
       QCOMPARE( QgsExpression( "array_cat(\"strings\", array('a', 'b'), array('c'))" ).evaluate( &context ), QVariant( concatExpected ) );
-
-      QVariantList foreachExpected;
-      foreachExpected << QStringLiteral( "ABC" ) << QStringLiteral( "HELLO" );
-      QCOMPARE( QgsExpression( "array_foreach(array:=array('abc', 'hello'), expression:=upper(@element))" ).evaluate( &context ), QVariant( foreachExpected ) );
-
-      QVariantList filterExpected = QVariantList() << QStringLiteral( "A: a" ) << QStringLiteral( "A: d" );
-      QCOMPARE( QgsExpression( "array_filter(array:=array('A: a', 'B: b', 'C: c', 'A: d'), expression:=substr(@element, 1, 2) = 'A:')" ).evaluate( &context ), QVariant( filterExpected ) );
 
       QCOMPARE( QgsExpression( "array_intersect(array('1', '2', '3', '4'), array('4', '0', '2', '5'))" ).evaluate( &context ), QVariant( true ) );
       QCOMPARE( QgsExpression( "array_intersect(array('1', '2', '3', '4'), array('0', '5'))" ).evaluate( &context ), QVariant( false ) );
@@ -2775,6 +2751,21 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression( "array_slice(array(1,2,3,4,5),0,0) = array(1)" ).evaluate( &context ), QVariant( true ) );
       QCOMPARE( QgsExpression( "array_slice(array(1,2,3,4,5),-2,-1) = array(4,5)" ).evaluate( &context ), QVariant( true ) );
       QCOMPARE( QgsExpression( "array_slice(array(1,2,3,4,5),-1,-1) = array(5)" ).evaluate( &context ), QVariant( true ) );
+
+      QVariant min = 0.1;
+      QCOMPARE( QgsExpression( "array_min(array(2,10,0.1))" ).evaluate( &context ), min );
+
+      QVariant max = 16;
+      QCOMPARE( QgsExpression( "array_max(array(2,10,0.1,16))" ).evaluate( &context ), max );
+
+      QVariant sum = 28.1;
+      QCOMPARE( QgsExpression( "array_sum(array(2,10,0.1,16))" ).evaluate( &context ), sum );
+
+      QVariant count = 3;
+      QCOMPARE( QgsExpression( "array_count(array(2,10,2,16,2),2)" ).evaluate( &context ), count );
+
+      QVariant avg = 7.025;
+      QCOMPARE( QgsExpression( "array_avg(array(2,10,0.1,16))" ).evaluate( &context ), avg );
 
       QVariantList foreachExpected;
       foreachExpected << 10 << 20 << 40;
@@ -3117,36 +3108,24 @@ class TestQgsExpression: public QObject
 
     void test_formatPreviewString()
     {
-      QCOMPARE( QgsExpression::formatPreviewString( QVariant( "hello" ) ), QStringLiteral( "'hello'" ) );
-      QCOMPARE( QgsExpression::formatPreviewString( QVariant( QVariantMap() ) ), QStringLiteral( "{}" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( "hello" ) ), QString( "'hello'" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( QVariantMap() ) ), QString( "<i>&lt;map: &gt;</i>" ) );
 
       QVariantMap map;
       map[QStringLiteral( "1" )] = "One";
       map[QStringLiteral( "2" )] = "Two";
-      QCOMPARE( QgsExpression::formatPreviewString( QVariant( map ) ), QStringLiteral( "{ '1': 'One', '2': 'Two' }" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( map ) ), QString( "<i>&lt;map: 1: 'One', 2: 'Two'&gt;</i>" ) );
       map[QStringLiteral( "3" )] = "A very long string that is going to be truncated";
-      QCOMPARE( QgsExpression::formatPreviewString( QVariant( map ) ), QStringLiteral( "{ '1': 'One', '2': 'Two', '3': 'A very long string that is… }" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( map ) ), QString( "<i>&lt;map: 1: 'One', 2: 'Two', 3: 'A very long string that is going to …&gt;</i>" ) );
 
       QVariantList list;
       list << 1 << 2 << 3;
-      QCOMPARE( QgsExpression::formatPreviewString( QVariant( list ) ), QStringLiteral( "[ 1, 2, 3 ]" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( list ) ), QString( "<i>&lt;array: 1, 2, 3&gt;</i>" ) );
 
       QStringList stringList;
       stringList << QStringLiteral( "One" ) << QStringLiteral( "Two" ) << QStringLiteral( "A very long string that is going to be truncated" );
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( stringList ) ),
-                QStringLiteral( "[ 'One', 'Two', 'A very long string that is going to be tr… ]" ) );
-    }
-
-    void test_nowStatic()
-    {
-      QgsExpression e( QStringLiteral( "now()" ) );
-      QgsExpressionContext ctx;
-      e.prepare( &ctx );
-      QVariant v = e.evaluate();
-      QTest::qSleep( 1000 );
-      QVariant v2 = e.evaluate();
-
-      QCOMPARE( v.toDateTime().toMSecsSinceEpoch(), v2.toDateTime().toMSecsSinceEpoch() );
+                QString( "<i>&lt;array: 'One', 'Two', 'A very long string that is going to be trunca…&gt;</i>" ) );
     }
 };
 

@@ -1,0 +1,8 @@
+{
+  "name": "array_avg",
+  "type": "function",
+  "description": "Returns the average of the array.",
+  "arguments": [ {"arg":"array","description":"an array"} ],
+  "examples": [ { "expression":"array_avg(2,10)", "returns":"avg: 6"}
+  ]
+}
