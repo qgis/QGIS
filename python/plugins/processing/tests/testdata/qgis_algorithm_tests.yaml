@@ -4738,6 +4738,25 @@ tests:
             fid: skip
             fid_2: skip
 
+  - algorithm: qgis:joinattributesbylocation
+    name: Join by location, unjoinable
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: custom/points.shp
+        type: vector
+      JOIN:
+        name: polys.gml
+        type: vector
+      METHOD: 0
+      PREDICATE:
+      - 0
+      PREFIX: ''
+    results:
+      NON_MATCHING:
+        name: expected/join_by_location_unjoinable.gml
+        type: vector
+
   - algorithm: qgis:joinbylocationsummary
     name: Join by location (summary), intersects
     params:
