@@ -84,7 +84,7 @@ class KNearestConcaveHull(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterNumber(self.KNEIGHBORS,
-                                                       self.tr('Number of neighbors'),
+                                                       self.tr('Number of neighboring points to consider (a lower number is more concave, a higher number is smoother)'),
                                                        QgsProcessingParameterNumber.Integer,
                                                        defaultValue=3, minValue=3))
         self.addParameter(QgsProcessingParameterField(self.FIELD,
