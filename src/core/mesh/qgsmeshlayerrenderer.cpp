@@ -211,8 +211,8 @@ void QgsMeshLayerRenderer::renderScalarDataset()
   sh->setRasterShaderFunction( fcn );  // takes ownership of fcn
   QgsMeshLayerInterpolator interpolator( mTriangularMesh, mScalarDatasetValues, mScalarDataOnVertices, mContext, mOutputSize );
   QgsSingleBandPseudoColorRenderer renderer( &interpolator, 0, sh );  // takes ownership of sh
-  renderer.setClassificationMin( scalarSettings.classificationMin() );
-  renderer.setClassificationMax( scalarSettings.classificationMax() );
+  renderer.setClassificationMin( scalarSettings.classificationMinimum() );
+  renderer.setClassificationMax( scalarSettings.classificationMaximum() );
 
   std::unique_ptr<QgsRasterBlock> bl( renderer.block( 0, mContext.extent(), mOutputSize.width(), mOutputSize.height(), mFeedback.get() ) );
   QImage img = bl->image();
