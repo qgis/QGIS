@@ -216,7 +216,7 @@ void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
   fcn.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
 
   QgsMeshRendererScalarSettings scalarSettings;
-  scalarSettings.setClassificationMinMax( groupMin, groupMax );
+  scalarSettings.setClassificationMinimumMaximum( groupMin, groupMax );
   scalarSettings.setColorRampShader( fcn );
   mRendererSettings.setScalarSettings( groupIndex, scalarSettings );
 }

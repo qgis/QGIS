@@ -92,15 +92,15 @@ Returns color ramp shader function
 Sets color ramp shader function
 %End
 
-    double classificationMin() const;
+    double classificationMinimum() const;
 %Docstring
 Returns min value used for creation of the color ramp shader
 %End
-    double classificationMax() const;
+    double classificationMaximum() const;
 %Docstring
 Returns max value used for creation of the color ramp shader
 %End
-    void setClassificationMinMax( double vMin, double vMax );
+    void setClassificationMinimumMaximum( double minimum, double maximum );
 %Docstring
 Sets min/max values used for creation of the color ramp shader
 %End
