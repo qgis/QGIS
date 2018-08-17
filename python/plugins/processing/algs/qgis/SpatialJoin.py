@@ -41,7 +41,8 @@ from qgis.core import (QgsFields,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterString)
+                       QgsProcessingParameterString,
+                       QgsProcessingOutputNumber)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
@@ -58,6 +59,8 @@ class SpatialJoin(QgisAlgorithm):
     DISCARD_NONMATCHING = "DISCARD_NONMATCHING"
     PREFIX = "PREFIX"
     OUTPUT = "OUTPUT"
+    NON_MATCHING = "NON_MATCHING"
+    JOINED_COUNT = "JOINED_COUNT"
 
     def group(self):
         return self.tr('Vector general')
@@ -120,7 +123,19 @@ class SpatialJoin(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterString(self.PREFIX,
                                                        self.tr('Joined field prefix'), optional=True))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
-                                                            self.tr('Joined layer')))
+                                                            self.tr('Joined layer'),
+                                                            QgsProcessing.TypeVectorAnyGeometry,
+                                                            defaultValue=None, optional=True, createByDefault=True))
+
+        non_matching = QgsProcessingParameterFeatureSink(self.NON_MATCHING,
+                                                         self.tr('Unjoinable features from first layer'),
+                                                         QgsProcessing.TypeVectorAnyGeometry,
+                                                         defaultValue=None, optional=True, createByDefault=False)
+        # TODO GUI doesn't support advanced outputs yet
+        # non_matching.setFlags(non_matching.flags() | QgsProcessingParameterDefinition.FlagAdvanced )
+        self.addParameter(non_matching)
+
+        self.addOutput(QgsProcessingOutputNumber(self.JOINED_COUNT, self.tr("Number of joined features from input table")))
 
     def name(self):
         return 'joinattributesbylocation'
@@ -170,8 +185,13 @@ class SpatialJoin(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                out_fields, source.wkbType(), source.sourceCrs())
-        if sink is None:
+        if self.OUTPUT in parameters and parameters[self.OUTPUT] is not None and sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
+
+        (non_matching_sink, non_matching_dest_id) = self.parameterAsSink(parameters, self.NON_MATCHING, context,
+                                                                         source.fields(), source.wkbType(), source.sourceCrs())
+        if self.NON_MATCHING in parameters and parameters[self.NON_MATCHING] is not None and non_matching_sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.NON_MATCHING))
 
         # do the join
 
@@ -182,7 +202,7 @@ class SpatialJoin(QgisAlgorithm):
                       self.parameterAsEnums(parameters, self.PREDICATE, context)]
 
         remaining = set()
-        if not discard_nomatch:
+        if not discard_nomatch or non_matching_sink is not None:
             remaining = set(source.allFeatureIds())
 
         added_set = set()
@@ -190,6 +210,9 @@ class SpatialJoin(QgisAlgorithm):
         request = QgsFeatureRequest().setSubsetOfAttributes(join_field_indexes).setDestinationCrs(source.sourceCrs(), context.transformContext())
         features = join_source.getFeatures(request)
         total = 100.0 / join_source.featureCount() if join_source.featureCount() else 0
+
+        joined_count = 0
+        unjoined_count = 0
 
         for current, f in enumerate(features):
             if feedback.isCanceled():
@@ -221,21 +244,33 @@ class SpatialJoin(QgisAlgorithm):
                     if getattr(engine, predicate)(test_feat.geometry().constGet()):
                         added_set.add(test_feat.id())
 
-                        # join attributes and add
-                        attributes = test_feat.attributes()
-                        attributes.extend(join_attributes)
-                        output_feature = test_feat
-                        output_feature.setAttributes(attributes)
-                        sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
+                        if sink is not None:
+                            # join attributes and add
+                            attributes = test_feat.attributes()
+                            attributes.extend(join_attributes)
+                            output_feature = test_feat
+                            output_feature.setAttributes(attributes)
+                            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
                         break
 
             feedback.setProgress(int(current * total))
 
-        if not discard_nomatch:
+        if not discard_nomatch or non_matching_sink is not None:
             remaining = remaining.difference(added_set)
             for f in source.getFeatures(QgsFeatureRequest().setFilterFids(list(remaining))):
                 if feedback.isCanceled():
                     break
-                sink.addFeature(f, QgsFeatureSink.FastInsert)
+                if sink is not None:
+                    sink.addFeature(f, QgsFeatureSink.FastInsert)
+                if non_matching_sink is not None:
+                    non_matching_sink.addFeature(f, QgsFeatureSink.FastInsert)
 
-        return {self.OUTPUT: dest_id}
+        result = {}
+        if sink is not None:
+            result[self.OUTPUT] = dest_id
+        if non_matching_sink is not None:
+            result[self.NON_MATCHING] = non_matching_dest_id
+
+        result[self.JOINED_COUNT] = len(added_set)
+
+        return result
