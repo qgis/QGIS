@@ -14110,7 +14110,7 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, bool saving )
     QString name = storage->visibleName();
     if ( name.isEmpty() )
       continue;
-    QAction *action = menu->addAction( QStringLiteral( "%1" ).arg( name ) + QChar( 0x2026 ) ); // 0x2026 = ellipsis character
+    QAction *action = menu->addAction( name + QChar( 0x2026 ) ); // 0x2026 = ellipsis character
     if ( saving )
     {
       connect( action, &QAction::triggered, [this, storage]
