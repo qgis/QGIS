@@ -998,6 +998,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void setMapTipsDelay( int timerInterval );
 
+    /**
+     * Abort application triggering the crash handler
+     * \since QGIS 3.4
+     */
+    void triggerCrashHandler();
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
