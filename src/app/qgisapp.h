@@ -1409,6 +1409,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void rotatePointSymbols();
     //! activates the offset point symbol tool
     void offsetPointSymbol();
+    //! activates the reverse line tool
+    void reverseLine();
     //! activates the tool
     void setMapTool( QgsMapTool *tool, bool clean = false );
 
@@ -2064,6 +2066,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mRotateFeature = nullptr;
         QgsMapTool *mRotateLabel = nullptr;
         QgsMapTool *mChangeLabelProperties = nullptr;
+        QgsMapTool *mReverseLine = nullptr ;
     } mMapTools;
 
     QgsMapTool *mNonEditMapTool = nullptr;

@@ -97,6 +97,7 @@ SET(QGIS_APP_SRCS
   qgsmaptooloffsetpointsymbol.cpp
   qgsmaptoolpointsymbol.cpp
   qgsmaptoolreshape.cpp
+  qgsmaptoolreverseline.cpp
   qgsmaptoolrotatefeature.cpp
   qgsmaptoolrotatelabel.cpp
   qgsmaptoolrotatepointsymbols.cpp
@@ -318,6 +319,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooloffsetpointsymbol.h
   qgsmaptoolpointsymbol.h
   qgsmaptoolreshape.h
+  qgsmaptoolreverseline.h
   qgsmaptoolrotatefeature.h
   qgsmaptoolrotatelabel.h
   qgsmaptoolrotatepointsymbols.h
