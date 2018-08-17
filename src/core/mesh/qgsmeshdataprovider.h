@@ -337,6 +337,18 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      * See QgsMeshDatasetMetadata::isVector() to check if the returned value is vector or scalar
      */
     virtual QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const = 0;
+
+    /**
+     * \brief Returns whether the face is active for particular dataset
+     *
+     * For example to represent the situation when F1 and F3 are flooded, but F2 is dry,
+     * some solvers store water depth on vertices V1-V8 (all non-zero values) and
+     * set active flag for F2 to false.
+     *  V1 ---- V2 ---- V5-----V7
+     *  |   F1  |   F2   | F3  |
+     *  V3 ---- V4 ---- V6-----V8
+     */
+    virtual bool faceIsActive( QgsMeshDatasetIndex index, int faceIndex ) const = 0;
 };
 
 
