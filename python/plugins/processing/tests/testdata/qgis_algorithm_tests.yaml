@@ -2991,6 +2991,25 @@ tests:
         name: expected/join_attribute_table_subset.gml
         type: vector
 
+  - algorithm: native:joinattributestable
+    name: Join attributes table, saving unjoinable features
+    params:
+      DISCARD_NONMATCHING: false
+      FIELD: id
+      FIELD_2: ID
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_2:
+        name: table2.dbf
+        type: vector
+      METHOD: 1
+      PREFIX: ''
+    results:
+      NON_MATCHING:
+        name: expected/join_attribute_table_unjoinable.gml
+        type: vector
+
   - algorithm: native:shortestpathpointtopoint
     name: Shortest path (point to point, shortest route)
     params:
