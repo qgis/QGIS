@@ -348,6 +348,11 @@ Determines if the "unlink feature" button should be shown
 
 class QgsAttributeEditorQmlElement : QgsAttributeEditorElement
 {
+%Docstring
+An attribute editor widget that will represent arbitrary QML code.
+
+.. versionadded:: 3.4
+%End
 
 %TypeHeaderCode
 #include "qgsattributeeditorelement.h"
@@ -355,8 +360,22 @@ class QgsAttributeEditorQmlElement : QgsAttributeEditorElement
   public:
     QgsAttributeEditorQmlElement( QgsAttributeEditorElement *parent );
 
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
+
     QString qmlCode() const;
+%Docstring
+The QML code that will be represented within this widget.
+
+.. versionadded:: 3.4
+%End
+
     void setQmlCode( const QString &qmlCode );
+%Docstring
+The QML code that will be represented within this widget.
+
+@param qmlCode
+%End
 
 };
 

@@ -491,6 +491,11 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged()
       mAttributeTypeDialog->setVisible( false );
       break;
     }
+    case DnDTreeItemData::QmlWidget:
+    {
+
+      break;
+    }
 
   }
 }
@@ -570,6 +575,15 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
       }
 
       widgetDef = container;
+      break;
+    }
+
+    case DnDTreeItemData::QmlWidget:
+    {
+      QgsAttributeEditorQmlElement *element = new QgsAttributeEditorQmlElement( parent );
+      element->setQmlCode( "ABC " );
+
+      widgetDef = element;
       break;
     }
   }

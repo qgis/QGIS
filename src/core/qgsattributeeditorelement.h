@@ -412,6 +412,11 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     bool mShowUnlinkButton = true;
 };
 
+/**
+ * An attribute editor widget that will represent arbitrary QML code.
+ *
+ * \since QGIS 3.4
+ */
 class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElement
 {
   public:
@@ -419,7 +424,20 @@ class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElemen
       : QgsAttributeEditorElement( AeTypeQmlElement, "TODO NAME", parent )
     {}
 
+    QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
+
+    /**
+     * The QML code that will be represented within this widget.
+     *
+     * \since QGIS 3.4
+     */
     QString qmlCode() const;
+
+    /**
+     * The QML code that will be represented within this widget.
+     *
+     * @param qmlCode
+     */
     void setQmlCode( const QString &qmlCode );
 
   private:
