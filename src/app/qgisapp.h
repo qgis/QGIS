@@ -710,7 +710,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void updateNewLayerInsertionPoint();
     //! connected to layer tree registry bridge, selects first of the newly added map layers
     void autoSelectAddedLayer( QList<QgsMapLayer *> layers );
-    void activeLayerChanged( QgsMapLayer *layer );
+
     //! Zoom to full extent
     void zoomFull();
     //! Zoom to the previous extent
@@ -1647,6 +1647,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! handle project crs changes
     void projectCrsChanged();
 
+    void onActiveLayerChanged( QgsMapLayer *layer );
+
   signals:
 
     /**
@@ -1719,6 +1721,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
        \since QGIS 2.7
      */
     void layerSavedAs( QgsMapLayer *l, const QString &path );
+
+    /**
+     * Emitted when the active layer is changed.
+     */
+    void activeLayerChanged( QgsMapLayer *layer );
 
   private:
     void startProfile( const QString &name );
@@ -2255,6 +2262,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMap< QString, QString > mOptionsPagesMap;
     QMap< QString, QString > mProjectPropertiesPagesMap;
     QMap< QString, QString > mSettingPagesMap;
+
+    //! True if we are blocking the activeLayerChanged signal from being emitted
+    bool mBlockActiveLayerChanged = false;
 
     friend class TestQgisAppPython;
 };

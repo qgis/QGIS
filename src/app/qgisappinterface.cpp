@@ -53,7 +53,7 @@ QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   , pluginManagerIface( _qgis->pluginManager() )
 {
   // connect signals
-  connect( qgis->layerTreeView(), &QgsLayerTreeView::currentLayerChanged,
+  connect( qgis, &QgisApp::activeLayerChanged,
            this, &QgisInterface::currentLayerChanged );
   connect( qgis, &QgisApp::currentThemeChanged,
            this, &QgisAppInterface::currentThemeChanged );
