@@ -99,7 +99,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     bool isCompatible( QgsWkbTypes::GeometryType type ) const { return mCompatibleGeometryTypes.contains( type ); }
     QgsGeometryCheckerContext *context() const { return mContext; }
 
-  private:
+  protected:
     QMap<QString, QgsFeatureIds> allLayerFeatureIds() const;
     void replaceFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const;
     void deleteFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const;
