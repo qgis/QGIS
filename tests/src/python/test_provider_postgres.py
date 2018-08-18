@@ -366,7 +366,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         available in the connection pool
         """
         request = QgsFeatureRequest()
-        request.setConnectionTimeout(1)
+        request.setTimeout(1)
 
         iterators = list()
         for i in range(100):

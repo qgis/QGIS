@@ -46,7 +46,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   , mSharedDS( source->mSharedDS )
 {
   // Since connection timeout for OGR connections is problematic and can lead to crashes, disable for now.
-  mRequest.setConnectionTimeout( -1 );
+  mRequest.setTimeout( -1 );
   if ( mSharedDS )
   {
     mOgrLayer = mSharedDS->createSQLResultLayer( mSource->mEncoding, mSource->mLayerName, mSource->mLayerIndex );
@@ -58,7 +58,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   else
   {
     //QgsDebugMsg( "Feature iterator of " + mSource->mLayerName + ": acquiring connection");
-    mConn = QgsOgrConnPool::instance()->acquireConnection( QgsOgrProviderUtils::connectionPoolId( mSource->mDataSource ), mRequest.connectionTimeout(), mRequest.requestMayBeNested() );
+    mConn = QgsOgrConnPool::instance()->acquireConnection( QgsOgrProviderUtils::connectionPoolId( mSource->mDataSource ), mRequest.timeout(), mRequest.requestMayBeNested() );
     if ( !mConn || !mConn->ds )
     {
       return;
