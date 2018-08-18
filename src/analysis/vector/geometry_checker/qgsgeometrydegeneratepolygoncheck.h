@@ -22,8 +22,6 @@
 
 class ANALYSIS_EXPORT QgsGeometryDegeneratePolygonCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     explicit QgsGeometryDegeneratePolygonCheck( QgsGeometryCheckerContext *context )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::PolygonGeometry}, context ) {}

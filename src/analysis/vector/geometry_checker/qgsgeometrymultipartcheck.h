@@ -22,8 +22,6 @@
 
 class ANALYSIS_EXPORT QgsGeometryMultipartCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     explicit QgsGeometryMultipartCheck( QgsGeometryCheckerContext *context )
       : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}

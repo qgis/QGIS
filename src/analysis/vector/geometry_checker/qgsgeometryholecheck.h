@@ -22,8 +22,6 @@
 
 class ANALYSIS_EXPORT QgsGeometryHoleCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     explicit QgsGeometryHoleCheck( QgsGeometryCheckerContext *context )
       : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PolygonGeometry}, context ) {}

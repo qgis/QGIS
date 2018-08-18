@@ -49,8 +49,6 @@ class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheckError : public QgsGeometry
 
 class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     explicit QgsGeometrySelfIntersectionCheck( QgsGeometryCheckerContext *context )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}

@@ -46,8 +46,6 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsGeometryCheckError
 
 class ANALYSIS_EXPORT QgsGeometryTypeCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     QgsGeometryTypeCheck( QgsGeometryCheckerContext *context, int allowedTypes )
       : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context )

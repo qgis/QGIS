@@ -22,8 +22,6 @@
 
 class ANALYSIS_EXPORT QgsGeometryPointInPolygonCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     QgsGeometryPointInPolygonCheck( QgsGeometryCheckerContext *context )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::PointGeometry}, context )

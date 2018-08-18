@@ -22,8 +22,6 @@
 
 class ANALYSIS_EXPORT QgsGeometryDuplicateNodesCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     explicit QgsGeometryDuplicateNodesCheck( QgsGeometryCheckerContext *context )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}

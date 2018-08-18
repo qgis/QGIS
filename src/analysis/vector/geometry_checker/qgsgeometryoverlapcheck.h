@@ -72,8 +72,6 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
 
 class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     QgsGeometryOverlapCheck( QgsGeometryCheckerContext *context, double thresholdMapUnits )
       : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PolygonGeometry}, context )

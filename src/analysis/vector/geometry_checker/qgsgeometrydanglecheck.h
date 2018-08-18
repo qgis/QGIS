@@ -22,8 +22,6 @@
 
 class ANALYSIS_EXPORT QgsGeometryDangleCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     QgsGeometryDangleCheck( QgsGeometryCheckerContext *context )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry}, context )

@@ -22,8 +22,6 @@
 
 class ANALYSIS_EXPORT QgsGeometryLineIntersectionCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     QgsGeometryLineIntersectionCheck( QgsGeometryCheckerContext *context )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry}, context )

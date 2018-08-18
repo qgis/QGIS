@@ -22,8 +22,6 @@
 
 class ANALYSIS_EXPORT QgsGeometryLineLayerIntersectionCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     QgsGeometryLineLayerIntersectionCheck( QgsGeometryCheckerContext *context, const QString &checkLayer )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry}, context ), mCheckLayer( checkLayer )

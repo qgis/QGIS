@@ -22,8 +22,6 @@
 
 class ANALYSIS_EXPORT QgsGeometryPointCoveredByLineCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     QgsGeometryPointCoveredByLineCheck( QgsGeometryCheckerContext *context )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::PointGeometry}, context )

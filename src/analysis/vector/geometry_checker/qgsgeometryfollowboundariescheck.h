@@ -25,8 +25,6 @@ class QgsSpatialIndex;
 
 class ANALYSIS_EXPORT QgsGeometryFollowBoundariesCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     QgsGeometryFollowBoundariesCheck( QgsGeometryCheckerContext *context, QgsVectorLayer *checkLayer );
     ~QgsGeometryFollowBoundariesCheck() override;

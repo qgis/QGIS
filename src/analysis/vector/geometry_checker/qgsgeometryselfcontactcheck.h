@@ -22,8 +22,6 @@
 
 class ANALYSIS_EXPORT QgsGeometrySelfContactCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     QgsGeometrySelfContactCheck( QgsGeometryCheckerContext *context )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
