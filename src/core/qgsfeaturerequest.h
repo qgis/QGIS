@@ -621,8 +621,8 @@ class CORE_EXPORT QgsFeatureRequest
      * at this moment. A negative value (which is set by default) will wait forever.
      *
      * \note Only works if the provider supports this option.
-     * \deprecated Use timeout() instead.
      *
+     * \deprecated Use timeout() instead.
      * \since QGIS 3.0
      */
     Q_DECL_DEPRECATED int connectionTimeout() const SIP_DEPRECATED;
@@ -632,8 +632,8 @@ class CORE_EXPORT QgsFeatureRequest
      * at this moment. A negative value (which is set by default) will wait forever.
      *
      * \note Only works if the provider supports this option.
-     * \deprecated Use setTimeout() instead.
      *
+     * \deprecated Use setTimeout() instead.
      * \since QGIS 3.0
      */
     Q_DECL_DEPRECATED QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) SIP_DEPRECATED;
