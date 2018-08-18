@@ -29,7 +29,7 @@
 QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>( source, ownSource, request )
 {
-  mHandle = QgsSpatiaLiteConnPool::instance()->acquireConnection( mSource->mSqlitePath, request.connectionTimeout(), request.requestMayBeNested() );
+  mHandle = QgsSpatiaLiteConnPool::instance()->acquireConnection( mSource->mSqlitePath, request.timeout(), request.requestMayBeNested() );
 
   mFetchGeometry = !mSource->mGeometryColumn.isNull() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   mHasPrimaryKey = !mSource->mPrimaryKey.isEmpty();

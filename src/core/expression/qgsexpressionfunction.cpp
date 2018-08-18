@@ -3605,7 +3605,7 @@ static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressi
 
     QgsFeatureRequest req;
     req.setFilterFid( fid );
-    req.setConnectionTimeout( 10000 );
+    req.setTimeout( 10000 );
     req.setRequestMayBeNested( true );
     QgsFeatureIterator fIt = vl->getFeatures( req );
 
@@ -3648,7 +3648,7 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
   req.setFilterExpression( QStringLiteral( "%1=%2" ).arg( QgsExpression::quotedColumnRef( attribute ),
                            QgsExpression::quotedString( attVal.toString() ) ) );
   req.setLimit( 1 );
-  req.setConnectionTimeout( 10000 );
+  req.setTimeout( 10000 );
   req.setRequestMayBeNested( true );
   if ( !parent->needsGeometry() )
   {

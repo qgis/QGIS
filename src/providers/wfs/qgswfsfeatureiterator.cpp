@@ -1291,10 +1291,10 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
     QTimer timer( this );
     timer.start( 50 );
     QTimer requestTimeout( this );
-    if ( mRequest.connectionTimeout() > 0 )
+    if ( mRequest.timeout() > 0 )
     {
       connect( &requestTimeout, &QTimer::timeout, this, &QgsWFSFeatureIterator::timeout );
-      requestTimeout.start( mRequest.connectionTimeout() );
+      requestTimeout.start( mRequest.timeout() );
     }
     if ( mInterruptionChecker )
       connect( &timer, &QTimer::timeout, this, &QgsWFSFeatureIterator::checkInterruption );
