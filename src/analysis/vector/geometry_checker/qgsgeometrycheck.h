@@ -43,6 +43,8 @@ struct ANALYSIS_EXPORT QgsGeometryCheckerContext
 
 class ANALYSIS_EXPORT QgsGeometryCheck
 {
+    Q_DECLARE_TR_FUNCTIONS()
+
   public:
     enum ChangeWhat
     {
@@ -90,7 +92,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
       , mCompatibleGeometryTypes( compatibleGeometryTypes )
       , mContext( context )
     {}
-    virtual ~QgsGeometryCheck();
+    virtual ~QgsGeometryCheck() = default;
     virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const = 0;
     virtual void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const = 0;
     virtual QStringList resolutionMethods() const = 0;
