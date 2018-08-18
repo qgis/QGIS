@@ -313,7 +313,11 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
       QString uri = context.pathResolver().readPath( elemUri.text() );
 
       bool res = mDataProvider->addDataset( uri );
+#ifdef QGISDEBUG
       QgsDebugMsg( QStringLiteral( "extra dataset (res %1): %2" ).arg( res ).arg( uri ) );
+#else
+      ( void )res; // avoid unused warning in release builds
+#endif
 
       elemUri = elemUri.nextSiblingElement( QStringLiteral( "uri" ) );
     }
