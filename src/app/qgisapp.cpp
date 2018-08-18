@@ -6177,30 +6177,50 @@ void QgisApp::runScript( const QString &filePath )
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
     return;
 
-  mPythonUtils->runString(
-    QString( "import sys\n"
-             "import inspect\n"
-             "from qgis.utils import iface\n"
-             "try:\n"
-             "    from qgis.core import QgsApplication, QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm\n"
-             "    from processing.gui.AlgorithmDialog import AlgorithmDialog\n"
-             "except ImportError:\n"
-             "    processing_found = False\n"
-             "else:\n"
-             "    processing_found = True\n"
-             "d={}\n"
-             "exec(open(\"%1\".replace(\"\\\\\", \"/\").encode(sys.getfilesystemencoding())).read(), d)\n"
-             "if processing_found:\n"
-             "    alg = None\n"
-             "    for k, v in d.items():\n"
-             "        if inspect.isclass(v) and issubclass(v, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and v.__name__ not in (\"QgsProcessingAlgorithm\", \"QgsProcessingFeatureBasedAlgorithm\"):\n"
-             "            alg = v()\n"
-             "            break\n"
-             "    if alg:\n"
-             "        alg.setProvider(QgsApplication.processingRegistry().providerById(\"script\"))\n"
-             "        alg.initAlgorithm()\n"
-             "        dlg = AlgorithmDialog(alg)\n"
-             "        dlg.show()\n" ).arg( filePath ), tr( "Failed to run Python script:" ), false );
+  QgsSettings settings;
+  bool showScriptWarning = settings.value( QStringLiteral( "UI/showScriptWarning" ), true ).toBool();
+
+  QMessageBox msgbox;
+  if ( showScriptWarning )
+  {
+    msgbox.setText( tr( "Security warning: executing a script from an untrusted source can lead to data loss and/or leak. Continue?" ) );
+    msgbox.setIcon( QMessageBox::Icon::Warning );
+    msgbox.addButton( QMessageBox::Yes );
+    msgbox.addButton( QMessageBox::No );
+    msgbox.setDefaultButton( QMessageBox::No );
+    QCheckBox *cb = new QCheckBox( tr( "Don't show this again." ) );
+    msgbox.setCheckBox( cb );
+    msgbox.exec();
+    settings.setValue( QStringLiteral( "UI/showScriptWarning" ), !msgbox.checkBox()->isChecked() );
+  }
+
+  if ( !showScriptWarning || msgbox.result() == QMessageBox::Yes )
+  {
+    mPythonUtils->runString(
+      QString( "import sys\n"
+               "import inspect\n"
+               "from qgis.utils import iface\n"
+               "try:\n"
+               "    from qgis.core import QgsApplication, QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm\n"
+               "    from processing.gui.AlgorithmDialog import AlgorithmDialog\n"
+               "except ImportError:\n"
+               "    processing_found = False\n"
+               "else:\n"
+               "    processing_found = True\n"
+               "d={}\n"
+               "exec(open(\"%1\".replace(\"\\\\\", \"/\").encode(sys.getfilesystemencoding())).read(), d)\n"
+               "if processing_found:\n"
+               "    alg = None\n"
+               "    for k, v in d.items():\n"
+               "        if inspect.isclass(v) and issubclass(v, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and v.__name__ not in (\"QgsProcessingAlgorithm\", \"QgsProcessingFeatureBasedAlgorithm\"):\n"
+               "            alg = v()\n"
+               "            break\n"
+               "    if alg:\n"
+               "        alg.setProvider(QgsApplication.processingRegistry().providerById(\"script\"))\n"
+               "        alg.initAlgorithm()\n"
+               "        dlg = AlgorithmDialog(alg)\n"
+               "        dlg.show()\n" ).arg( filePath ), tr( "Failed to run Python script:" ), false );
+  }
 #else
   Q_UNUSED( filePath );
 #endif
