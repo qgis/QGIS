@@ -635,7 +635,7 @@ Check if a feature is accepted by this requests filter
 .. versionadded:: 2.1
 %End
 
-    int connectionTimeout() const;
+ int connectionTimeout() const /Deprecated/;
 %Docstring
 Returns the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
 at this moment. A negative value (which is set by default) will wait forever.
@@ -644,10 +644,12 @@ at this moment. A negative value (which is set by default) will wait forever.
 
    Only works if the provider supports this option.
 
+.. deprecated:: Use timeout() instead.
+
 .. versionadded:: 3.0
 %End
 
-    QgsFeatureRequest &setConnectionTimeout( int connectionTimeout );
+ QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) /Deprecated/;
 %Docstring
 Sets the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
 at this moment. A negative value (which is set by default) will wait forever.
@@ -656,7 +658,33 @@ at this moment. A negative value (which is set by default) will wait forever.
 
    Only works if the provider supports this option.
 
+.. deprecated:: Use setTimeout() instead.
+
 .. versionadded:: 3.0
+%End
+
+    int timeout() const;
+%Docstring
+Returns the timeout (in milliseconds) for the maximum time we should wait during feature requests before a
+feature is returned. A negative value (which is set by default) will wait forever.
+
+.. note::
+
+   Only works if the provider supports this option.
+
+.. versionadded:: 3.4
+%End
+
+    QgsFeatureRequest &setTimeout( int timeout );
+%Docstring
+Sets the ``timeout`` (in milliseconds) for the maximum time we should wait during feature requests before a
+feature is returned. A negative value (which is set by default) will wait forever.
+
+.. note::
+
+   Only works if the provider supports this option.
+
+.. versionadded:: 3.4
 %End
 
     bool requestMayBeNested() const;
