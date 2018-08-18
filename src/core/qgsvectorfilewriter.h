@@ -274,7 +274,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     };
 
     /**
-     * Write contents of vector layer to an (OGR supported) vector formt
+     * Write contents of vector layer to an (OGR supported) vector format
      * \param layer layer to write
      * \param fileName file name to write to
      * \param fileEncoding encoding to use
@@ -289,8 +289,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param symbologyExport symbology to export
      * \param symbologyScale scale of symbology
      * \param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
-     * \param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter
-     * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
+     * \param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
      * \param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
      * \param includeZ set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
      * \param attributes attributes to export (empty means all unless skipAttributeCreation is set)
@@ -322,8 +321,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param layer layer to write
      * \param fileName file name to write to
      * \param fileEncoding encoding to use
-     * \param ct coordinate transform to reproject exported geometries with, or invalid transform
-     * for no transformation
+     * \param ct coordinate transform to reproject exported geometries with, or invalid transform for no transformation
      * \param driverName OGR driver to use
      * \param onlySelected write only selected features of layer
      * \param errorMessage pointer to buffer fo error message
@@ -334,8 +332,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param symbologyExport symbology to export
      * \param symbologyScale scale of symbology
      * \param filterExtent if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
-     * \param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter
-     * allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
+     * \param overrideGeometryType set to a valid geometry type to override the default geometry type for the layer. This parameter allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
      * \param forceMulti set to true to force creation of multi* geometries (added in QGIS 2.14)
      * \param includeZ set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
      * \param attributes attributes to export (empty means all unless skipAttributeCreation is set)
@@ -636,7 +633,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * Returns the reference scale for output.
-     * The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \see setSymbologyScale()
      * \since QGIS 3.0
      */
