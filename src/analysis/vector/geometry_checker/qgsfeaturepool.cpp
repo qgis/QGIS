@@ -60,25 +60,22 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, c
 bool QgsFeaturePool::get( QgsFeatureId id, QgsFeature &feature )
 {
   QMutexLocker lock( &mLayerMutex );
-  QgsFeature *pfeature = mFeatureCache.object( id );
-  if ( pfeature )
+  QgsFeature *cachedFeature = mFeatureCache.object( id );
+  if ( cachedFeature )
   {
     //feature was cached
-    feature = *pfeature;
+    feature = *cachedFeature;
   }
-
-  // Feature not in cache, retrieve from layer
-  pfeature = new QgsFeature();
-  // TODO: avoid always querying all attributes (attribute values are needed when merging by attribute)
-  if ( !mLayer->getFeatures( QgsFeatureRequest( id ) ).nextFeature( *pfeature ) )
+  else
   {
-    delete pfeature;
-    return false;
+    // Feature not in cache, retrieve from layer
+    // TODO: avoid always querying all attributes (attribute values are needed when merging by attribute)
+    if ( !mLayer->getFeatures( QgsFeatureRequest( id ) ).nextFeature( feature ) )
+    {
+      return false;
+    }
+    mFeatureCache.insert( id, new QgsFeature( feature ) );
   }
-  //make a copy of pfeature into feature parameter
-  feature = QgsFeature( *pfeature );
-  //ownership of pfeature is transferred to cache
-  mFeatureCache.insert( id, pfeature );
   return true;
 }
 
