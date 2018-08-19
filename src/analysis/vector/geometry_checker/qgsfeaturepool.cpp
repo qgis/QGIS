@@ -20,10 +20,8 @@
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsgeometryutils.h"
 
 #include <QMutexLocker>
-#include <limits>
 
 QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, const QgsCoordinateTransform &layerToMapTransform, bool selectedOnly )
   : mFeatureCache( CACHE_SIZE )

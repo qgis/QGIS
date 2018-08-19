@@ -20,19 +20,16 @@
 #define QGS_FEATUREPOOL_H
 
 #include <QCache>
-#include <QLinkedList>
-#include <QMap>
 #include <QMutex>
 #include "qgis_analysis.h"
 #include "qgsfeature.h"
 #include "qgsspatialindex.h"
-#include "qgsgeometrycheckerutils.h"
 
 class QgsVectorLayer;
 
-class ANALYSIS_EXPORT QgsFeaturePool : public QObject
+class ANALYSIS_EXPORT QgsFeaturePool
 {
-    Q_OBJECT
+
   public:
     QgsFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, const QgsCoordinateTransform &layerToMapTransform, bool selectedOnly = false );
     bool get( QgsFeatureId id, QgsFeature &feature );

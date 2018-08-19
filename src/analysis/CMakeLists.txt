@@ -169,7 +169,6 @@ SET(QGIS_ANALYSIS_MOC_HDRS
 
   processing/qgsalgorithmfiledownloader.h
 
-  vector/geometry_checker/qgsfeaturepool.h
   vector/geometry_checker/qgsgeometrychecker.h
   vector/geometry_checker/qgsgeometryanglecheck.h
   vector/geometry_checker/qgsgeometryareacheck.h
@@ -255,6 +254,7 @@ SET(QGIS_ANALYSIS_HDRS
   vector/qgsgeometrysnapper.h
   vector/qgszonalstatistics.h
   vector/geometry_checker/qgsgeometrycheckerutils.h
+  vector/geometry_checker/qgsfeaturepool.h
 
   interpolation/qgsinterpolator.h
   interpolation/qgsgridfilewriter.h
