@@ -38,7 +38,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QObject
     bool get( QgsFeatureId id, QgsFeature &feature );
     void addFeature( QgsFeature &feature );
     void updateFeature( QgsFeature &feature );
-    void deleteFeature( const QgsFeatureId &fid );
+    void deleteFeature( QgsFeatureId fid );
     QgsFeatureIds getIntersects( const QgsRectangle &rect ) const;
     QgsVectorLayer *getLayer() const { return mLayer; }
     const QgsFeatureIds &getFeatureIds() const { return mFeatureIds; }

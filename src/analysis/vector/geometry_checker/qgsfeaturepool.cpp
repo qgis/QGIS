@@ -123,7 +123,7 @@ void QgsFeaturePool::updateFeature( QgsFeature &feature )
   mIndexMutex.unlock();
 }
 
-void QgsFeaturePool::deleteFeature( const QgsFeatureId &fid )
+void QgsFeaturePool::deleteFeature( QgsFeatureId fid )
 {
   QgsFeature origFeature;
   if ( get( fid, origFeature ) )
