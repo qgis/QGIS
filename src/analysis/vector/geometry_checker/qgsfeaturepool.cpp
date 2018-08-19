@@ -32,25 +32,23 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, c
   , mLayerToMapTransform( layerToMapTransform )
   , mSelectedOnly( selectedOnly )
 {
-  if ( selectedOnly )
-  {
-    mFeatureIds = layer->selectedFeatureIds();
-  }
-  else
-  {
-    mFeatureIds = layer->allFeatureIds();
-  }
-
   // Build spatial index
   QgsFeature feature;
   QgsFeatureRequest req;
   req.setSubsetOfAttributes( QgsAttributeList() );
+  if ( selectedOnly )
+  {
+    mFeatureIds = layer->selectedFeatureIds();
+    req.setFilterFids( mFeatureIds );
+  }
+
   QgsFeatureIterator it = layer->getFeatures( req );
   while ( it.nextFeature( feature ) )
   {
-    if ( mFeatureIds.contains( feature.id() ) && feature.geometry() )
+    if ( feature.geometry() )
     {
       mIndex.insertFeature( feature );
+      mFeatureIds.insert( feature.id() );
     }
     else
     {
