@@ -467,10 +467,15 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
           QDomElement attElem = doc.createElement( "element"/*xsd:element*/ );
           attElem.setAttribute( "name", attributeName.replace( " ", "_" ).replace( mCleanTagNameRegExp, "" ) );
           QVariant::Type attributeType = fields[idx].type();
+          int attributePrec = fields[idx].precision();
           if ( attributeType == QVariant::Int )
+            attElem.setAttribute( "type", "integer" );
+          else if ( attributeType == QVariant::LongLong && attributePrec == 0 )
             attElem.setAttribute( "type", "integer" );
           else if ( attributeType == QVariant::LongLong )
             attElem.setAttribute( "type", "long" );
+          else if ( attributeType == QVariant::Double && attributePrec == 0 )
+            attElem.setAttribute( "type", "integer" );
           else if ( attributeType == QVariant::Double )
             attElem.setAttribute( "type", "double" );
           else if ( attributeType == QVariant::Bool )
