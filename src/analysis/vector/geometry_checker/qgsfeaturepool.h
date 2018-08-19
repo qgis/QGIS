@@ -44,19 +44,10 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QObject
     const QgsFeatureIds &getFeatureIds() const { return mFeatureIds; }
     double getLayerToMapUnits() const { return mLayerToMapUnits; }
     const QgsCoordinateTransform &getLayerToMapTransform() const { return mLayerToMapTransform; }
-    bool getSelectedOnly() const { return mSelectedOnly; }
+
     void clearLayer() { mLayer = nullptr; }
 
   private:
-    struct MapEntry
-    {
-      MapEntry( QgsFeature *_feature, QLinkedList<QgsFeatureId>::iterator _ageIt )
-        : feature( _feature )
-        , ageIt( _ageIt )
-      {}
-      QgsFeature *feature = nullptr;
-      QLinkedList<QgsFeatureId>::iterator ageIt;
-    };
 
     static const int CACHE_SIZE = 1000;
 
@@ -66,11 +57,9 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QObject
     QMutex mLayerMutex;
     mutable QMutex mIndexMutex;
     QgsSpatialIndex mIndex;
-    double mLayerToMapUnits;
+    double mLayerToMapUnits = 1.0;
     QgsCoordinateTransform mLayerToMapTransform;
-    bool mSelectedOnly;
-
-    bool getTouchingWithSharedEdge( QgsFeature &feature, QgsFeatureId &touchingId, const double & ( *comparator )( const double &, const double & ), double init );
+    bool mSelectedOnly = false;
 };
 
 #endif // QGS_FEATUREPOOL_H
