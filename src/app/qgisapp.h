@@ -408,17 +408,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsVectorLayerTools *vectorLayerTools() { return mVectorLayerTools; }
 
     /**
-     * Notify the user by using the system tray notifications
-     *
-     * \note usage of the system tray notifications should be limited
-     *       to long running tasks and to when the user needs to be notified
-     *       about interaction with OS services, like the password manager.
-     *
-     * \param title
-     * \param message
-     * \param replaceExisting set to true to replace any existing notifications, or false to add a new notification
+     * Notify the user of long running task completion.
      */
-    void showSystemNotification( const QString &title, const QString &message, bool replaceExisting = true );
+    void showTaskCompletionNotification( const QString &title, const QString &message, bool replaceExisting = true );
 
 
     //! Actions to be inserted in menus and toolbars

@@ -12913,9 +12913,9 @@ void QgisApp::onTaskCompleteShowNotify( long taskId, int status )
     if ( task && task->elapsedTime() >= minTime )
     {
       if ( status == QgsTask::Complete )
-        showSystemNotification( tr( "Task complete" ), task->description() );
+        showTaskCompletionNotification( tr( "Task complete" ), task->description() );
       else if ( status == QgsTask::Terminated )
-        showSystemNotification( tr( "Task failed" ), task->description() );
+        showTaskCompletionNotification( tr( "Task failed" ), task->description() );
     }
   }
 }
@@ -13679,17 +13679,8 @@ void QgisApp::eraseAuthenticationDatabase()
 
 void QgisApp::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
-  // Use system notifications if the main window is not the active one,
-  // push message to the message bar if the main window is active
-  if ( qApp->activeWindow() != this )
-  {
-    showSystemNotification( tr( "QGIS Authentication" ), message );
-  }
-  else
-  {
-    int levelint = static_cast< int >( level );
-    messageBar()->pushMessage( authtag, message, static_cast< Qgis::MessageLevel >( levelint ), 7 );
-  }
+  int levelint = static_cast< int >( level );
+  messageBar()->pushMessage( authtag, message, static_cast< Qgis::MessageLevel >( levelint ), 7 );
 }
 
 void QgisApp::completeInitialization()
@@ -13840,7 +13831,7 @@ QMenu *QgisApp::createPopupMenu()
 }
 
 
-void QgisApp::showSystemNotification( const QString &title, const QString &message, bool replaceExisting )
+void QgisApp::showTaskCompletionNotification( const QString &title, const QString &message, bool replaceExisting )
 {
   static QVariant sLastMessageId;
 
