@@ -5023,30 +5023,6 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   }
 }
 
-void QgisApp::addDatabaseLayer()
-{
-#ifdef HAVE_POSTGRESQL
-  // Fudge for now
-  QgsDebugMsg( "about to addRasterLayer" );
-
-  // TODO: QDialog for now, switch to QWidget in future
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "postgres" ), this ) );
-  if ( !dbs )
-  {
-    QMessageBox::warning( this, tr( "Add PostgreSQL Layer" ), tr( "Cannot get PostgreSQL select dialog from provider." ) );
-    return;
-  }
-  connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
-           this, SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
-  connect( dbs, SIGNAL( progress( int, int ) ),
-           this, SLOT( showProgress( int, int ) ) );
-  connect( dbs, SIGNAL( progressMessage( QString ) ),
-           this, SLOT( showStatusMessage( QString ) ) );
-  dbs->exec();
-  delete dbs;
-#endif
-} // QgisApp::addDatabaseLayer()
-
 void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey )
 {
   QList<QgsMapLayer *> myList;

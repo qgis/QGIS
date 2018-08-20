@@ -1042,10 +1042,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void sponsors();
     //! About QGIS
     void about();
-    //#ifdef HAVE_POSTGRESQL
-    //! Add a databaselayer to the map
-    void addDatabaseLayer();
-    //#endif
+
     //! Add a list of database layers to the map
     void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
     //! Add a SpatiaLite layer to the map
