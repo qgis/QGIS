@@ -1045,22 +1045,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Add a list of database layers to the map
     void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
-    //! Add a SpatiaLite layer to the map
-    void addSpatiaLiteLayer();
-    //! Add a Delimited Text layer to the map
-    void addDelimitedTextLayer();
     //! Add a vector layer defined by uri, layer name, data source uri
     void addSelectedVectorLayer( const QString &uri, const QString &layerName, const QString &provider );
     //! Replace the selected layer by a vector layer defined by uri, layer name, data source uri
     void replaceSelectedVectorLayer( const QString &oldId, const QString &uri, const QString &layerName, const QString &provider );
-    //! Add a MSSQL layer to the map
-    void addMssqlLayer();
-    //! Add a DB2 layer to the map
-    void addDb2Layer();
-    //#ifdef HAVE_ORACLE
-    //! Add a Oracle layer to the map
-    void addOracleLayer();
-    //#endif
     //! Add a virtual layer
     void addVirtualLayer();
     //! toggles whether the current selected layer is in overview or not
