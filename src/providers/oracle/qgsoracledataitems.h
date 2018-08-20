@@ -31,6 +31,7 @@ class QgsOracleRootItem;
 class QgsOracleConnectionItem;
 class QgsOracleOwnerItem;
 class QgsOracleLayerItem;
+class QgsProxyProgressTask;
 
 class QgsOracleRootItem : public QgsDataCollectionItem
 {
@@ -86,6 +87,7 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
     void stop();
     QMap<QString, QgsOracleOwnerItem * > mOwnerMap;
     QgsOracleColumnTypeThread *mColumnTypeThread = nullptr;
+    QgsProxyProgressTask *mColumnTypeTask = nullptr;
     void setAllAsPopulated();
 };
 
