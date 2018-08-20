@@ -2607,6 +2607,23 @@ class TestQgsExpression: public QObject
       QCOMPARE( v4, QVariant( "test value" ) );
     }
 
+    void eval_generate_series()
+    {
+      QVariantList array;
+      array << 1 << 2 << 3 << 4;
+      QCOMPARE( QgsExpression( "generate_series(1,4)" ).evaluate(), QVariant( array ) );
+      array.clear();
+      array << 1 << 1.25 << 1.5 << 1.75 << 2;
+      QCOMPARE( QgsExpression( "generate_series(1,2,0.25)" ).evaluate(), QVariant( array ) );
+      array.clear();
+      array << 10 << 9 << 8;
+      QCOMPARE( QgsExpression( "generate_series(10,8,-1)" ).evaluate(), QVariant( array ) );
+
+      QCOMPARE( QgsExpression( "generate_series(10,11,-1)" ).evaluate(), QVariant() );
+      QCOMPARE( QgsExpression( "generate_series(10,5)" ).evaluate(), QVariant() );
+      QCOMPARE( QgsExpression( "generate_series(1,2,0)" ).evaluate(), QVariant() );
+    }
+
     void eval_string_array()
     {
       QgsFeature f( 100 );
