@@ -1759,7 +1759,7 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
   }
 
   mBlockActiveLayerChanged = false;
-  emit activeLayerChanged( activeLayer() );
+  onActiveLayerChanged( activeLayer() );
 }
 
 bool QgisApp::event( QEvent *event )
@@ -11126,7 +11126,7 @@ void QgisApp::closeProject()
   QgsProject::instance()->clear();
   mBlockActiveLayerChanged = false;
 
-  emit activeLayerChanged( activeLayer() );
+  onActiveLayerChanged( activeLayer() );
 }
 
 
