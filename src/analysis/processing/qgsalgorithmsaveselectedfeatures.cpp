@@ -37,12 +37,12 @@ QString QgsSaveSelectedFeatures::name() const
 
 QString QgsSaveSelectedFeatures::displayName() const
 {
-  return QObject::tr( "Save Selected Features" );
+  return QObject::tr( "Extract selected features" );
 }
 
 QStringList QgsSaveSelectedFeatures::tags() const
 {
-  return QObject::tr( "selection,save" ).split( ',' );
+  return QObject::tr( "selection,save,by" ).split( ',' );
 }
 
 QString QgsSaveSelectedFeatures::group() const
