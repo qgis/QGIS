@@ -254,7 +254,7 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryFollowBoundariesCheck>::rest
 
 template<> bool QgsGeometryCheckFactoryT<QgsGeometryFollowBoundariesCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int /*nPoint*/, int nLineString, int nPolygon ) const
 {
-  const bool enabled = nPolygon > 0;
+  const bool enabled = nLineString + nPolygon > 0;
   if ( !enabled )
     ui.checkBoxFollowBoundaries->setChecked( false );
   ui.checkBoxFollowBoundaries->setEnabled( enabled );
