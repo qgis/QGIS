@@ -112,9 +112,12 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      */
     void replaceVectorLayer( const QString &oldId, const QString &source, const QString &name, const QString &provider );
 
-
-    //! Emitted when a progress dialog is shown by the provider dialog
-    void progress( int, int );
+    /**
+     * Emitted when a progress dialog is shown by the provider dialog.
+     *
+     * \deprecated Since QGIS 3.4 this signal is no longer used. Use QgsProxyProgressTask instead to show progress reports.
+     */
+    Q_DECL_DEPRECATED void progress( int, int ) SIP_DEPRECATED;
 
     //! Emitted when a progress dialog is shown by the provider dialog
     void progressMessage( QString message );
