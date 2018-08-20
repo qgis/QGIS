@@ -128,7 +128,7 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
     if ( faceIndex >= 0 )
     {
       int nativeFaceIndex = mTriangularMesh->trianglesToNativeFaces().at( faceIndex );
-      if ( dataProvider()->faceIsActive( index, nativeFaceIndex ) )
+      if ( dataProvider()->isFaceActive( index, nativeFaceIndex ) )
       {
 
         if ( dataProvider()->datasetGroupMetadata( index ).dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces )

@@ -216,7 +216,7 @@ QgsMeshDatasetValue QgsMdalProvider::datasetValue( QgsMeshDatasetIndex index, in
   return val;
 }
 
-bool QgsMdalProvider::faceIsActive( QgsMeshDatasetIndex index, int faceIndex ) const
+bool QgsMdalProvider::isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const
 {
   DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
   if ( !group )

@@ -348,7 +348,7 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
      *  |   F1  |   F2   | F3  |
      *  V3 ---- V4 ---- V6-----V8
      */
-    virtual bool faceIsActive( QgsMeshDatasetIndex index, int faceIndex ) const = 0;
+    virtual bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const = 0;
 };
 
 

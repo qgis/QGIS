@@ -361,7 +361,7 @@ Returns vector/scalar value associated with the index from the dataset
 See QgsMeshDatasetMetadata.isVector() to check if the returned value is vector or scalar
 %End
 
-    virtual bool faceIsActive( QgsMeshDatasetIndex index, int faceIndex ) const = 0;
+    virtual bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const = 0;
 %Docstring
 Returns whether the face is active for particular dataset
 
