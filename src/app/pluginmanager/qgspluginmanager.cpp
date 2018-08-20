@@ -1367,8 +1367,28 @@ void QgsPluginManager::mZipFileWidget_fileChanged( const QString &filePath )
 
 void QgsPluginManager::buttonInstallFromZip_clicked()
 {
-  QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installFromZipFile(r'%1')" ).arg( mZipFileWidget->filePath() ) );
-  mZipFileWidget->setFilePath( "" );
+  QgsSettings settings;
+  bool showInstallFromZipWarning = settings.value( QStringLiteral( "UI/showInstallFromZipWarning" ), true ).toBool();
+
+  QMessageBox msgbox;
+  if ( showInstallFromZipWarning )
+  {
+    msgbox.setText( tr( "Security warning: installing a plugin from an untrusted source can lead to data loss and/or leak. Continue?" ) );
+    msgbox.setIcon( QMessageBox::Icon::Warning );
+    msgbox.addButton( QMessageBox::Yes );
+    msgbox.addButton( QMessageBox::No );
+    msgbox.setDefaultButton( QMessageBox::No );
+    QCheckBox *cb = new QCheckBox( tr( "Don't show this again." ) );
+    msgbox.setCheckBox( cb );
+    msgbox.exec();
+    settings.setValue( QStringLiteral( "UI/showInstallFromZipWarning" ), !msgbox.checkBox()->isChecked() );
+  }
+
+  if ( !showInstallFromZipWarning || msgbox.result() == QMessageBox::Yes )
+  {
+    QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installFromZipFile(r'%1')" ).arg( mZipFileWidget->filePath() ) );
+    mZipFileWidget->setFilePath( "" );
+  }
 }
 
 
