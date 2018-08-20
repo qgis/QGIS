@@ -12983,9 +12983,9 @@ void QgisApp::onTaskCompleteShowNotify( long taskId, int status )
     if ( task && task->elapsedTime() >= minTime )
     {
       if ( status == QgsTask::Complete )
-        showSystemNotification( tr( "Task complete" ), task->description() );
+        showTaskCompletionNotification( tr( "Task complete" ), task->description() );
       else if ( status == QgsTask::Terminated )
-        showSystemNotification( tr( "Task failed" ), task->description() );
+        showTaskCompletionNotification( tr( "Task failed" ), task->description() );
     }
   }
 }
@@ -13901,7 +13901,7 @@ QMenu *QgisApp::createPopupMenu()
 }
 
 
-void QgisApp::showSystemNotification( const QString &title, const QString &message, bool replaceExisting )
+void QgisApp::showTaskCompletionNotification( const QString &title, const QString &message, bool replaceExisting )
 {
   static QVariant sLastMessageId;
 
