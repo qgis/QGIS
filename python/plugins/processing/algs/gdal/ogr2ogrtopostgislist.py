@@ -171,7 +171,15 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         return 'importvectorintopostgisdatabaseavailableconnections'
 
     def displayName(self):
-        return self.tr('Import vector into PostGIS database (available connections)')
+        return self.tr('Export to PostgreSQL (available connections)')
+
+    def shortDescription(self):
+        return self.tr('Exports a vector layer to an existing PostgreSQL database connection')
+
+    def tags(self):
+        t = self.tr('import,into,postgis,database,vector').split(',')
+        t.extend(super().tags())
+        return t
 
     def group(self):
         return self.tr('Vector miscellaneous')
