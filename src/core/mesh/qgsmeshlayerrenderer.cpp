@@ -114,7 +114,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
     mScalarActiveFaceFlagValues.resize( mNativeMesh.faces.count() );
     for ( int i = 0; i < mNativeMesh.faces.count(); ++i )
     {
-      bool active = layer->dataProvider()->faceIsActive( datasetIndex, i );
+      bool active = layer->dataProvider()->isFaceActive( datasetIndex, i );
       mScalarActiveFaceFlagValues[i] = active;
     }
 

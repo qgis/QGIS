@@ -180,7 +180,7 @@ void TestQgsMeshLayer::test_read_vertex_scalar_dataset()
       QCOMPARE( QgsMeshDatasetValue( 2.0 + i ), dp->datasetValue( ds, 3 ) );
       QCOMPARE( QgsMeshDatasetValue( 1.0 + i ), dp->datasetValue( ds, 4 ) );
 
-      QVERIFY( dp->faceIsActive( ds, 0 ) );
+      QVERIFY( dp->isFaceActive( ds, 0 ) );
     }
   }
 }
@@ -220,7 +220,7 @@ void TestQgsMeshLayer::test_read_vertex_vector_dataset()
       QCOMPARE( QgsMeshDatasetValue( 2 + i, 2 + i ), dp->datasetValue( ds, 3 ) );
       QCOMPARE( QgsMeshDatasetValue( 1 + i, -2 + i ), dp->datasetValue( ds, 4 ) );
 
-      QVERIFY( dp->faceIsActive( ds, 0 ) );
+      QVERIFY( dp->isFaceActive( ds, 0 ) );
     }
   }
 }
@@ -257,7 +257,7 @@ void TestQgsMeshLayer::test_read_face_scalar_dataset()
       QCOMPARE( QgsMeshDatasetValue( 1 + i ), dp->datasetValue( ds, 0 ) );
       QCOMPARE( QgsMeshDatasetValue( 2 + i ), dp->datasetValue( ds, 1 ) );
 
-      QVERIFY( dp->faceIsActive( ds, 0 ) );
+      QVERIFY( dp->isFaceActive( ds, 0 ) );
     }
   }
 }
@@ -295,7 +295,7 @@ void TestQgsMeshLayer::test_read_face_vector_dataset()
       QCOMPARE( QgsMeshDatasetValue( 1 + i, 1 + i ), dp->datasetValue( ds, 0 ) );
       QCOMPARE( QgsMeshDatasetValue( 2 + i, 2 + i ), dp->datasetValue( ds, 1 ) );
 
-      QVERIFY( dp->faceIsActive( ds, 0 ) );
+      QVERIFY( dp->isFaceActive( ds, 0 ) );
     }
   }
 }
@@ -331,8 +331,8 @@ void TestQgsMeshLayer::test_read_vertex_scalar_dataset_with_inactive_face()
     QCOMPARE( QgsMeshDatasetValue( 1.0 + i ), dp->datasetValue( ds, 4 ) );
 
     // We have 2 faces
-    QVERIFY( !dp->faceIsActive( ds, 0 ) );
-    QVERIFY( dp->faceIsActive( ds, 1 ) );
+    QVERIFY( !dp->isFaceActive( ds, 0 ) );
+    QVERIFY( dp->isFaceActive( ds, 1 ) );
   }
 }
 

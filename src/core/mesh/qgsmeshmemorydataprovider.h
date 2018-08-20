@@ -128,7 +128,7 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     QgsMeshDatasetGroupMetadata datasetGroupMetadata( int groupIndex ) const override;
     QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const override;
     QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const override;
-    bool faceIsActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
+    bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
 
     //! Returns the memory provider key
     static QString providerKey();
