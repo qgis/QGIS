@@ -28,23 +28,15 @@ namespace QgsWmts
                      QgsServerResponse &response )
   {
     Q_UNUSED( version );
-    //QgsServerRequest::Parameters params = request.parameters();
     const QgsWmtsParameters params( QUrlQuery( request.url() ) );
 
     // WMS query
     QUrlQuery query = translateWmtsParamToWmsQueryItem( QStringLiteral( "GetMap" ), params, project, serverIface );
 
     // Get cached image
-    QStringList cacheKeyList;
-    bool cache = true;
-
     QgsAccessControl *accessControl = serverIface->accessControls();
-    if ( accessControl )
-      cache = accessControl->fillCacheKey( cacheKeyList );
-
-    QString cacheKey = cacheKeyList.join( '-' );
     QgsServerCacheManager *cacheManager = serverIface->cacheManager();
-    if ( cacheManager && cache )
+    if ( cacheManager )
     {
       QgsWmtsParameters::Format f = params.format();
       QString contentType;
@@ -63,7 +55,7 @@ namespace QgsWmts
         image = qgis::make_unique<QImage>( 256, 256, QImage::Format_ARGB32_Premultiplied );
       }
 
-      QByteArray content = cacheManager->getCachedImage( project, request, cacheKey );
+      QByteArray content = cacheManager->getCachedImage( project, request, accessControl );
       if ( !content.isEmpty() && image->loadFromData( content ) )
       {
         response.setHeader( QStringLiteral( "Content-Type" ), contentType );
@@ -77,11 +69,11 @@ namespace QgsWmts
     QgsServerRequest wmsRequest( "?" + query.query( QUrl::FullyDecoded ) );
     QgsService *service = serverIface->serviceRegistry()->getService( wmsParams.service(), wmsParams.version() );
     service->executeRequest( wmsRequest, response, project );
-    if ( cache && cacheManager )
+    if ( cacheManager )
     {
       QByteArray content = response.data();
       if ( !content.isEmpty() )
-        cacheManager->setCachedImage( &content, project, request, cacheKey );
+        cacheManager->setCachedImage( &content, project, request, accessControl );
     }
   }
 

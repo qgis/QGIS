@@ -20,6 +20,7 @@
 #define QGSSERVERCACHEMANAGER_H
 
 #include "qgsservercachefilter.h"
+#include "qgsaccesscontrol.h"
 #include "qgsserverrequest.h"
 
 #include <QMultiMap>
@@ -47,70 +48,45 @@ class SERVER_EXPORT QgsServerCacheManager
 
   public:
     //! Constructor
-    QgsServerCacheManager()
-    {
-      mPluginsServerCaches.reset( new QgsServerCacheFilterMap() );
-    }
+    QgsServerCacheManager();
 
     //! Copy constructor
-    QgsServerCacheManager( const QgsServerCacheManager &copy )
-    {
-      if ( copy.mPluginsServerCaches )
-      {
-        mPluginsServerCaches.reset( new QgsServerCacheFilterMap( *copy.mPluginsServerCaches ) );
-      }
-      else
-      {
-        mPluginsServerCaches.reset( nullptr );
-      }
-    }
+    QgsServerCacheManager( const QgsServerCacheManager &copy );
+
     //! Assignment operator
-    QgsServerCacheManager &operator=( const QgsServerCacheManager &copy )
-    {
-      if ( copy.mPluginsServerCaches )
-      {
-        mPluginsServerCaches.reset( new QgsServerCacheFilterMap( *copy.mPluginsServerCaches ) );
-      }
-      else
-      {
-        mPluginsServerCaches.reset( nullptr );
-      }
-      return *this;
-    }
+    QgsServerCacheManager &operator=( const QgsServerCacheManager &copy );
 
-
-    ~QgsServerCacheManager()
-    {
-      mPluginsServerCaches.reset();
-    }
+    //! Destructor
+    ~QgsServerCacheManager();
 
     /**
      * Returns cached document (or 0 if document not in cache) like capabilities
+     * \param doc the document to update by content found in cache
      * \param project the project used to generate the document to provide path
      * \param request the request used to generate the document to provider parameters or data
-     * \param key the key provided by the access control to identify different documents for the same request
-     * \returns the cached document or 0 if no corresponding document found
+     * \param accessControl the access control to identify different documents for the same request provided by server interface
+     * \returns true if the document has been found in cache and the document's content set
      */
-    QByteArray getCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+    bool getCachedDocument( QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
 
     /**
      * Updates or inserts the document in cache like capabilities
      * \param doc the document to cache
      * \param project the project used to generate the document to provide path
      * \param request the request used to generate the document to provider parameters or data
-     * \param key the key provided by the access control to identify different documents for the same request
+     * \param accessControl the access control to identify different documents for the same request provided by server interface
      * \returns true if the document has been cached
      */
-    bool setCachedDocument( const QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+    bool setCachedDocument( const QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
 
     /**
      * Deletes the cached document
      * \param project the project used to generate the document to provide path
      * \param request the request used to generate the document to provider parameters or data
-     * \param key the key provided by the access control to identify different documents for the same request
+     * \param accessControl the access control to identify different documents for the same request provided by server interface
      * \returns true if the document has been deleted
      */
-    bool deleteCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+    bool deleteCachedDocument( const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
 
     /**
      * Deletes all cached documents for a QGIS project
@@ -123,29 +99,29 @@ class SERVER_EXPORT QgsServerCacheManager
      * Returns cached image (or 0 if image not in cache) like tiles
      * \param project the project used to generate the image to provide path
      * \param request the request used to generate the image to provider parameters or data
-     * \param key the key provided by the access control to identify different images for the same request
+     * \param accessControl the access control to identify different documents for the same request provided by server interface
      * \returns the cached image or 0 if no corresponding image found
      */
-    QByteArray getCachedImage( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+    QByteArray getCachedImage( const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
 
     /**
      * Updates or inserts the image in cache like tiles
      * \param img the image to cache
      * \param project the project used to generate the image to provide path
      * \param request the request used to generate the image to provider parameters or data
-     * \param key the key provided by the access control to identify different images for the same request
+     * \param accessControl the access control to identify different documents for the same request provided by server interface
      * \returns true if the image has been cached
      */
-    bool setCachedImage( const QByteArray *img, const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+    bool setCachedImage( const QByteArray *img, const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
 
     /**
      * Deletes the cached image
      * \param project the project used to generate the image to provide path
      * \param request the request used to generate the image to provider parameters or data
-     * \param key the key provided by the access control to identify different images for the same request
+     * \param accessControl the access control to identify different documents for the same request provided by server interface
      * \returns true if the image has been deleted
      */
-    bool deleteCachedImage( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+    bool deleteCachedImage( const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const;
 
     /**
      * Deletes all cached images for a QGIS project
@@ -162,6 +138,7 @@ class SERVER_EXPORT QgsServerCacheManager
     void registerServerCache( QgsServerCacheFilter *serverCache, int priority = 0 );
 
   private:
+    QString getCacheKey( bool &cache, QgsAccessControl *accessControl ) const;
     //! The ServerCache plugins registry
     std::unique_ptr<QgsServerCacheFilterMap> mPluginsServerCaches = nullptr;
 };

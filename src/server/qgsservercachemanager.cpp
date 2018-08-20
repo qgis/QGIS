@@ -18,22 +18,84 @@
 
 #include "qgsservercachemanager.h"
 
-QByteArray QgsServerCacheManager::getCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
+QgsServerCacheManager::QgsServerCacheManager()
 {
+  mPluginsServerCaches.reset( new QgsServerCacheFilterMap() );
+}
+
+QgsServerCacheManager::QgsServerCacheManager( const QgsServerCacheManager &copy )
+{
+  if ( copy.mPluginsServerCaches )
+  {
+    mPluginsServerCaches.reset( new QgsServerCacheFilterMap( *copy.mPluginsServerCaches ) );
+  }
+  else
+  {
+    mPluginsServerCaches.reset( nullptr );
+  }
+}
+
+QgsServerCacheManager &QgsServerCacheManager::operator=( const QgsServerCacheManager &copy )
+{
+  if ( copy.mPluginsServerCaches )
+  {
+    mPluginsServerCaches.reset( new QgsServerCacheFilterMap( *copy.mPluginsServerCaches ) );
+  }
+  else
+  {
+    mPluginsServerCaches.reset( nullptr );
+  }
+  return *this;
+}
+
+QgsServerCacheManager::~QgsServerCacheManager()
+{
+  mPluginsServerCaches.reset();
+}
+
+bool QgsServerCacheManager::getCachedDocument( QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const
+{
+  bool cache = true;
+  QString key = getCacheKey( cache, accessControl );
+
+  if ( !cache )
+  {
+    return false;
+  }
+
+  QByteArray content;
   QgsServerCacheFilterMap::const_iterator scIterator;
   for ( scIterator = mPluginsServerCaches->constBegin(); scIterator != mPluginsServerCaches->constEnd(); ++scIterator )
   {
-    QByteArray content = scIterator.value()->getCachedDocument( project, request, key );
+    content = scIterator.value()->getCachedDocument( project, request, key );
     if ( !content.isEmpty() )
     {
-      return content;
+      break;
     }
   }
-  return QByteArray();
+  if ( content.isEmpty() )
+  {
+    return false;
+  }
+
+  if ( !doc->setContent( content ) )
+  {
+    return false;
+  }
+
+  return true;
 }
 
-bool QgsServerCacheManager::setCachedDocument( const QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
+bool QgsServerCacheManager::setCachedDocument( const QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const
 {
+  bool cache = true;
+  QString key = getCacheKey( cache, accessControl );
+
+  if ( !cache )
+  {
+    return false;
+  }
+
   QgsServerCacheFilterMap::const_iterator scIterator;
   for ( scIterator = mPluginsServerCaches->constBegin(); scIterator != mPluginsServerCaches->constEnd(); ++scIterator )
   {
@@ -45,8 +107,11 @@ bool QgsServerCacheManager::setCachedDocument( const QDomDocument *doc, const Qg
   return false;
 }
 
-bool QgsServerCacheManager::deleteCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
+bool QgsServerCacheManager::deleteCachedDocument( const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const
 {
+  bool cache = true;
+  QString key = getCacheKey( cache, accessControl );
+
   QgsServerCacheFilterMap::const_iterator scIterator;
   for ( scIterator = mPluginsServerCaches->constBegin(); scIterator != mPluginsServerCaches->constEnd(); ++scIterator )
   {
@@ -71,8 +136,11 @@ bool QgsServerCacheManager::deleteCachedDocuments( const QgsProject *project ) c
   return false;
 }
 
-QByteArray QgsServerCacheManager::getCachedImage( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
+QByteArray QgsServerCacheManager::getCachedImage( const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const
 {
+  bool cache = true;
+  QString key = getCacheKey( cache, accessControl );
+
   QgsServerCacheFilterMap::const_iterator scIterator;
   for ( scIterator = mPluginsServerCaches->constBegin(); scIterator != mPluginsServerCaches->constEnd(); ++scIterator )
   {
@@ -85,8 +153,11 @@ QByteArray QgsServerCacheManager::getCachedImage( const QgsProject *project, con
   return QByteArray();
 }
 
-bool QgsServerCacheManager::setCachedImage( const QByteArray *img, const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
+bool QgsServerCacheManager::setCachedImage( const QByteArray *img, const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const
 {
+  bool cache = true;
+  QString key = getCacheKey( cache, accessControl );
+
   QgsServerCacheFilterMap::const_iterator scIterator;
   for ( scIterator = mPluginsServerCaches->constBegin(); scIterator != mPluginsServerCaches->constEnd(); ++scIterator )
   {
@@ -98,8 +169,11 @@ bool QgsServerCacheManager::setCachedImage( const QByteArray *img, const QgsProj
   return false;
 }
 
-bool QgsServerCacheManager::deleteCachedImage( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
+bool QgsServerCacheManager::deleteCachedImage( const QgsProject *project, const QgsServerRequest &request, QgsAccessControl *accessControl ) const
 {
+  bool cache = true;
+  QString key = getCacheKey( cache, accessControl );
+
   QgsServerCacheFilterMap::const_iterator scIterator;
   for ( scIterator = mPluginsServerCaches->constBegin(); scIterator != mPluginsServerCaches->constEnd(); ++scIterator )
   {
@@ -127,4 +201,18 @@ bool QgsServerCacheManager::deleteCachedImages( const QgsProject *project ) cons
 void QgsServerCacheManager::registerServerCache( QgsServerCacheFilter *serverCache, int priority )
 {
   mPluginsServerCaches->insert( priority, serverCache );
+}
+
+QString QgsServerCacheManager::getCacheKey( bool &cache, QgsAccessControl *accessControl ) const
+{
+  QStringList cacheKeyList;
+  if ( accessControl )
+  {
+    cache = accessControl->fillCacheKey( cacheKeyList );
+  }
+  else
+  {
+    cache = true;
+  }
+  return cacheKeyList.join( '-' );
 }

@@ -69,6 +69,9 @@ class PyServerCache(QgsServerCacheFilter):
         return doc.toByteArray()
 
     def setCachedDocument(self, doc, project, request, key):
+        if not doc:
+            print("Could not cache None document")
+            return False
         m = hashlib.md5()
         paramMap = request.parameters()
         urlParam = "&".join(["%s=%s" % (k, paramMap[k]) for k in paramMap.keys()])
@@ -261,18 +264,14 @@ class TestQgsServerCacheManager(unittest.TestCase):
         query_string = '?MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.parse.quote(project), 'GetCapabilities')
         request = QgsBufferServerRequest(query_string, QgsServerRequest.GetMethod, {}, None)
 
-        cContent = cacheManager.getCachedDocument(prj, request, '')
-
-        self.assertTrue(cContent.isEmpty(), 'getCachedDocument is not None')
-
-        self.assertTrue(cacheManager.setCachedDocument(doc, prj, request, ''), 'setCachedDocument false')
-
-        cContent = cacheManager.getCachedDocument(prj, request, '')
-
-        self.assertFalse(cContent.isEmpty(), 'getCachedDocument is empty')
+        accessControls = self._server_iface.accessControls()
 
         cDoc = QDomDocument("wms_getcapabilities_130.xml")
-        self.assertTrue(cDoc.setContent(cContent), 'cachedDocument not XML doc')
+        self.assertFalse(cacheManager.getCachedDocument(cDoc, prj, request, accessControls), 'getCachedDocument is not None')
+
+        self.assertTrue(cacheManager.setCachedDocument(doc, prj, request, accessControls), 'setCachedDocument false')
+
+        self.assertTrue(cacheManager.getCachedDocument(cDoc, prj, request, accessControls), 'getCachedDocument is None')
         self.assertEqual(doc.documentElement().tagName(), cDoc.documentElement().tagName(), 'cachedDocument not equal to provide document')
 
         self.assertTrue(cacheManager.deleteCachedDocuments(None), 'deleteCachedDocuments does not return True')

@@ -93,88 +93,61 @@ namespace QgsWms
                              const QString &version, const QgsServerRequest &request,
                              QgsServerResponse &response, bool projectSettings )
   {
+    QgsAccessControl *accessControl = serverIface->accessControls();
+
+    QDomDocument doc;
+    const QDomDocument *capabilitiesDocument = nullptr;
+
+    // Data for WMS capabilities server memory cache
     QString configFilePath = serverIface->configFilePath();
     QgsCapabilitiesCache *capabilitiesCache = serverIface->capabilitiesCache();
-
     QStringList cacheKeyList;
     cacheKeyList << ( projectSettings ? QStringLiteral( "projectSettings" ) : version );
     cacheKeyList << request.url().host();
     bool cache = true;
-
-    QgsAccessControl *accessControl = serverIface->accessControls();
     if ( accessControl )
       cache = accessControl->fillCacheKey( cacheKeyList );
-
-
-    QDomDocument doc;
     QString cacheKey = cacheKeyList.join( '-' );
-    const QDomDocument *capabilitiesDocument = nullptr;
 
     QgsServerCacheManager *cacheManager = serverIface->cacheManager();
-    if ( cacheManager && cache )
+    if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
     {
-      QByteArray content;
-      if ( cacheKeyList.count() == 2 )
-        content = cacheManager->getCachedDocument( project, request, QString() );
-      else if ( cacheKeyList.count() > 2 )
-        content = cacheManager->getCachedDocument( project, request, cacheKeyList.at( 3 ) );
+      capabilitiesDocument = &doc;
+    }
 
-      if ( !content.isEmpty() && doc.setContent( content ) )
+    if ( !capabilitiesDocument && cache ) //capabilities xml not in cache plugins
+    {
+      capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
+    }
+
+    if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "WMS capabilities document not found in cache" ) );
+
+      doc = getCapabilities( serverIface, project, version, request, projectSettings );
+
+      if ( cacheManager &&
+           cacheManager->setCachedDocument( &doc, project, request, accessControl ) )
       {
-        QgsMessageLog::logMessage( QStringLiteral( "Found capabilities document in cache manager" ) );
-        doc = doc.cloneNode().toDocument();
+        capabilitiesDocument = &doc;
+      }
+      else if ( cache )
+      {
+        capabilitiesCache->insertCapabilitiesDocument( configFilePath, cacheKey, &doc );
+        capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
+      }
+      if ( !capabilitiesDocument )
+      {
         capabilitiesDocument = &doc;
       }
       else
       {
-        QgsMessageLog::logMessage( QStringLiteral( "Capabilities document not found in cache manager" ) );
-      }
-    }
-
-    if ( !capabilitiesDocument ) //capabilities xml not in cache plugins
-      capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
-    if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
-    {
-      QgsMessageLog::logMessage( QStringLiteral( "Capabilities document not found in cache" ) );
-
-      doc = getCapabilities( serverIface, project, version, request, projectSettings );
-
-      if ( cache )
-      {
-        if ( cacheManager )
-        {
-          QByteArray content;
-          if ( cacheKeyList.count() == 2 &&
-               cacheManager->setCachedDocument( &doc, project, request, QString() ) )
-          {
-            content = cacheManager->getCachedDocument( project, request, QString() );
-          }
-          else if ( cacheKeyList.count() > 2 &&
-                    cacheManager->setCachedDocument( &doc, project, request, cacheKeyList.at( 3 ) ) )
-          {
-            content = cacheManager->getCachedDocument( project, request, cacheKeyList.at( 3 ) );
-          }
-          if ( !content.isEmpty() && doc.setContent( content ) )
-          {
-            doc = doc.cloneNode().toDocument();
-            capabilitiesDocument = &doc;
-          }
-        }
-        else
-        {
-          capabilitiesCache->insertCapabilitiesDocument( configFilePath, cacheKey, &doc );
-          capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
-        }
-      }
-      if ( !capabilitiesDocument )
-      {
-        doc = doc.cloneNode().toDocument();
-        capabilitiesDocument = &doc;
+        QgsMessageLog::logMessage( QStringLiteral( "Set WMS capabilities document in cache" ) );
       }
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Found capabilities document in cache" ) );
+      QgsMessageLog::logMessage( QStringLiteral( "Found WMS capabilities document in cache" ) );
     }
 
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );

@@ -43,49 +43,25 @@ namespace QgsWfs
     void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                                const QgsServerRequest &request, QgsServerResponse &response )
     {
-      QStringList cacheKeyList;
-      bool cache = true;
-
       QgsAccessControl *accessControl = serverIface->accessControls();
-      if ( accessControl )
-        cache = accessControl->fillCacheKey( cacheKeyList );
 
       QDomDocument doc;
-      QString cacheKey = cacheKeyList.join( '-' );
       const QDomDocument *capabilitiesDocument = nullptr;
 
       QgsServerCacheManager *cacheManager = serverIface->cacheManager();
-      if ( cacheManager && cache )
+      if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
       {
-        QByteArray content = cacheManager->getCachedDocument( project, request, cacheKey );
-        if ( !content.isEmpty() && doc.setContent( content ) )
-        {
-          doc = doc.cloneNode().toDocument();
-          capabilitiesDocument = &doc;
-        }
+        capabilitiesDocument = &doc;
       }
-
-      if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
+      else //capabilities xml not in cache. Create a new one
       {
         doc = createGetCapabilitiesDocument( serverIface, project, version, request );
 
-        if ( cache && cacheManager )
+        if ( cacheManager )
         {
-          if ( cacheManager->setCachedDocument( &doc, project, request, cacheKey ) )
-          {
-            QByteArray content = cacheManager->getCachedDocument( project, request, cacheKey );
-            if ( !content.isEmpty() && doc.setContent( content ) )
-            {
-              doc = doc.cloneNode().toDocument();
-              capabilitiesDocument = &doc;
-            }
-          }
+          cacheManager->setCachedDocument( &doc, project, request, accessControl );
         }
-        if ( !capabilitiesDocument )
-        {
-          doc = doc.cloneNode().toDocument();
-          capabilitiesDocument = &doc;
-        }
+        capabilitiesDocument = &doc;
       }
 
       response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
