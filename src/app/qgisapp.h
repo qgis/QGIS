@@ -973,7 +973,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void renameView();
 
-    void showProgress( int progress, int totalSteps );
     void showStatusMessage( const QString &message );
 
     void loadingLayerMessages( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages );
@@ -1739,6 +1738,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void startProfile( const QString &name );
     void endProfile();
     void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name );
+
+    void showProgress( int progress, int totalSteps );
 
     /**
      * This method will open a dialog so the user can select GDAL sublayers to load
