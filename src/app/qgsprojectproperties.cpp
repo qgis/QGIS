@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgsdistancearea.h"
 #include "qgisapp.h"
+#include "qgis.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatumtransformtablewidget.h"
 #include "qgslayoutmanager.h"
@@ -827,8 +828,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mMetadataWidget->setMetadata( &QgsProject::instance()->metadata() );
 
   // sync metadata title and project title fields
-  connect( mMetadataWidget, &QgsMetadataWidget::titleChanged, titleEdit, &QLineEdit::setText );
-  connect( titleEdit, &QLineEdit::textChanged, mMetadataWidget, &QgsMetadataWidget::setTitle );
+  connect( mMetadataWidget, &QgsMetadataWidget::titleChanged, titleEdit, &QLineEdit::setText, Qt::QueuedConnection );
+  connect( titleEdit, &QLineEdit::textChanged, [ = ] { whileBlocking( mMetadataWidget )->setTitle( title() ) ;} );
 
   projectionSelectorInitialized();
   populateRequiredLayers();
