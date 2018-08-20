@@ -163,7 +163,15 @@ class OgrToPostGis(GdalAlgorithm):
         return 'importvectorintopostgisdatabasenewconnection'
 
     def displayName(self):
-        return self.tr('Import vector into PostGIS database (new connection)')
+        return self.tr('Export to PostgreSQL (new connection)')
+
+    def shortDescription(self):
+        return self.tr('Exports a vector layer to a new PostgreSQL database connection')
+
+    def tags(self):
+        t = self.tr('import,into,postgis,database,vector').split(',')
+        t.extend(super().tags())
+        return t
 
     def group(self):
         return self.tr('Vector miscellaneous')
