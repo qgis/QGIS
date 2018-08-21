@@ -44,6 +44,7 @@ from processing.algs.gdal.GridNearestNeighbor import GridNearestNeighbor
 from processing.algs.gdal.buildvrt import buildvrt
 from processing.algs.gdal.hillshade import hillshade
 from processing.algs.gdal.ogr2ogr import ogr2ogr
+from processing.algs.gdal.ogrinfo import ogrinfo
 from processing.algs.gdal.proximity import proximity
 from processing.algs.gdal.rasterize import rasterize
 from processing.algs.gdal.retile import retile
@@ -1089,6 +1090,48 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-f "LIBKML" "d:/temp/my out/check.kml" ' +
              source + ' polys2'])
+
+    def testOgrInfo(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'polys.gml')
+        alg = ogrinfo()
+        alg.initAlgorithm()
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SUMMARY_ONLY': True,
+                                    'NO_METADATA': False}, context, feedback),
+            ['ogrinfo',
+             '-al -so ' +
+             source])
+
+        source = os.path.join(testDataPath, 'filename with spaces.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SUMMARY_ONLY': True,
+                                    'NO_METADATA': False}, context, feedback),
+            ['ogrinfo',
+             '-al -so "' +
+             source + '"'])
+
+        source = os.path.join(testDataPath, 'filename with spaces.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SUMMARY_ONLY': False,
+                                    'NO_METADATA': False}, context, feedback),
+            ['ogrinfo',
+             '-al "' +
+             source + '"'])
+
+        source = os.path.join(testDataPath, 'filename with spaces.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SUMMARY_ONLY': True,
+                                    'NO_METADATA': True}, context, feedback),
+            ['ogrinfo',
+             '-al -so -nomd "' +
+             source + '"'])
 
     def testHillshade(self):
         context = QgsProcessingContext()
