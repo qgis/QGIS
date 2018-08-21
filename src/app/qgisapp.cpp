@@ -6056,11 +6056,32 @@ void QgisApp::runScript( const QString &filePath )
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
     return;
 
-  mPythonUtils->runString(
-    QString( "import sys\n"
-             "from qgis.utils import iface\n"
-             "exec(open(\"%1\".replace(\"\\\\\", \"/\").encode(sys.getfilesystemencoding())).read())\n" ).arg( filePath )
-    , tr( "Failed to run Python script:" ), false );
+  QgsSettings settings;
+  bool showScriptWarning = settings.value( QStringLiteral( "UI/showScriptWarning" ), true ).toBool();
+
+  QMessageBox msgbox;
+  if ( showScriptWarning )
+  {
+    msgbox.setText( tr( "Security warning: executing a script from an untrusted source can lead to data loss and/or leak. Continue?" ) );
+    msgbox.setIcon( QMessageBox::Icon::Warning );
+    msgbox.addButton( QMessageBox::Yes );
+    msgbox.addButton( QMessageBox::No );
+    msgbox.setDefaultButton( QMessageBox::No );
+    QCheckBox *cb = new QCheckBox( tr( "Don't show this again." ) );
+    msgbox.setCheckBox( cb );
+    msgbox.exec();
+    settings.setValue( QStringLiteral( "UI/showScriptWarning" ), !msgbox.checkBox()->isChecked() );
+  }
+
+  if ( !showScriptWarning || msgbox.result() == QMessageBox::Yes )
+  {
+    mPythonUtils->runString(
+      QString( "import sys\n"
+               "from qgis.utils import iface\n"
+               "exec(open(\"%1\".replace(\"\\\\\", \"/\").encode(sys.getfilesystemencoding())).read())\n" ).arg( filePath )
+      , tr( "Failed to run Python script:" ), false );
+  }
+
 #else
   Q_UNUSED( filePath );
 #endif
