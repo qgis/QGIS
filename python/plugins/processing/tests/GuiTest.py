@@ -29,6 +29,12 @@ from qgis.testing import start_app, unittest
 from qgis.core import (QgsApplication,
                        QgsCoordinateReferenceSystem,
                        QgsProcessingParameterMatrix,
+                       QgsProcessingOutputLayerDefinition,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterFolderDestination,
+                       QgsProcessingParameterVectorDestination,
+                       QgsProcessingParameterRasterDestination,
                        QgsVectorLayer,
                        QgsProject)
 from qgis.analysis import QgsNativeAlgorithms
@@ -37,9 +43,12 @@ from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.gui.wrappers import *
+from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
 
 start_app()
 QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
+
+testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
 class AlgorithmDialogTest(unittest.TestCase):
@@ -51,6 +60,10 @@ class AlgorithmDialogTest(unittest.TestCase):
 
 
 class WrappersTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        ProcessingConfig.initialize()
 
     def checkConstructWrapper(self, param, expected_wrapper_class):
         alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
@@ -232,6 +245,118 @@ class WrappersTest(unittest.TestCase):
 
     def testBand(self):
         self.checkConstructWrapper(QgsProcessingParameterBand('test'), BandWidgetWrapper)
+
+    def testFeatureSink(self):
+        param = QgsProcessingParameterFeatureSink('test')
+        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        panel = DestinationSelectionPanel(param, alg)
+
+        panel.setValue('memory:')
+        v = panel.getValue()
+        self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
+        self.assertEqual(v.createOptions, {'fileEncoding': 'System'})
+        self.assertEqual(v.sink.staticValue(), 'memory:')
+
+        panel.setValue('''ogr:dbname='/me/a.gpkg' table="d" (geom) sql=''')
+        v = panel.getValue()
+        self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
+        self.assertEqual(v.createOptions, {'fileEncoding': 'System'})
+        self.assertEqual(v.sink.staticValue(), '''ogr:dbname='/me/a.gpkg' table="d" (geom) sql=''')
+
+        panel.setValue('''postgis:dbname='oraclesux' host=10.1.1.221 port=5432 user='qgis' password='qgis' table="stufff"."output" (the_geom) sql=''')
+        v = panel.getValue()
+        self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
+        self.assertEqual(v.createOptions, {'fileEncoding': 'System'})
+        self.assertEqual(v.sink.staticValue(), '''postgis:dbname='oraclesux' host=10.1.1.221 port=5432 user='qgis' password='qgis' table="stufff"."output" (the_geom) sql=''')
+
+        panel.setValue('/home/me/test.shp')
+        v = panel.getValue()
+        self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
+        self.assertEqual(v.createOptions, {'fileEncoding': 'System'})
+        self.assertEqual(v.sink.staticValue(), '/home/me/test.shp')
+
+        ProcessingConfig.setSettingValue(ProcessingConfig.OUTPUT_FOLDER, testDataPath)
+        panel.setValue('test.shp')
+        v = panel.getValue()
+        self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
+        self.assertEqual(v.createOptions, {'fileEncoding': 'System'})
+        self.assertEqual(v.sink.staticValue(), os.path.join(testDataPath, 'test.shp'))
+
+    def testVectorDestination(self):
+        param = QgsProcessingParameterVectorDestination('test')
+        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        panel = DestinationSelectionPanel(param, alg)
+
+        panel.setValue('''ogr:dbname='/me/a.gpkg' table="d" (geom) sql=''')
+        v = panel.getValue()
+        self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
+        self.assertEqual(v.createOptions, {'fileEncoding': 'System'})
+        self.assertEqual(v.sink.staticValue(), '''ogr:dbname='/me/a.gpkg' table="d" (geom) sql=''')
+
+        panel.setValue('''postgis:dbname='oraclesux' host=10.1.1.221 port=5432 user='qgis' password='qgis' table="stufff"."output" (the_geom) sql=''')
+        v = panel.getValue()
+        self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
+        self.assertEqual(v.createOptions, {'fileEncoding': 'System'})
+        self.assertEqual(v.sink.staticValue(), '''postgis:dbname='oraclesux' host=10.1.1.221 port=5432 user='qgis' password='qgis' table="stufff"."output" (the_geom) sql=''')
+
+        panel.setValue('/home/me/test.shp')
+        v = panel.getValue()
+        self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
+        self.assertEqual(v.createOptions, {'fileEncoding': 'System'})
+        self.assertEqual(v.sink.staticValue(), '/home/me/test.shp')
+
+        ProcessingConfig.setSettingValue(ProcessingConfig.OUTPUT_FOLDER, testDataPath)
+        panel.setValue('test.shp')
+        v = panel.getValue()
+        self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
+        self.assertEqual(v.createOptions, {'fileEncoding': 'System'})
+        self.assertEqual(v.sink.staticValue(), os.path.join(testDataPath, 'test.shp'))
+
+    def testRasterDestination(self):
+        param = QgsProcessingParameterRasterDestination('test')
+        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        panel = DestinationSelectionPanel(param, alg)
+
+        panel.setValue('/home/me/test.tif')
+        v = panel.getValue()
+        self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
+        self.assertEqual(v.createOptions, {'fileEncoding': 'System'})
+        self.assertEqual(v.sink.staticValue(), '/home/me/test.tif')
+
+        ProcessingConfig.setSettingValue(ProcessingConfig.OUTPUT_FOLDER, testDataPath)
+        panel.setValue('test.tif')
+        v = panel.getValue()
+        self.assertIsInstance(v, QgsProcessingOutputLayerDefinition)
+        self.assertEqual(v.createOptions, {'fileEncoding': 'System'})
+        self.assertEqual(v.sink.staticValue(), os.path.join(testDataPath, 'test.tif'))
+
+    def testFolderDestination(self):
+        param = QgsProcessingParameterFolderDestination('test')
+        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        panel = DestinationSelectionPanel(param, alg)
+
+        panel.setValue('/home/me/test.tif')
+        v = panel.getValue()
+        self.assertEqual(v, '/home/me/test.tif')
+
+        ProcessingConfig.setSettingValue(ProcessingConfig.OUTPUT_FOLDER, testDataPath)
+        panel.setValue('test.tif')
+        v = panel.getValue()
+        self.assertEqual(v, os.path.join(testDataPath, 'test.tif'))
+
+    def testFileDestination(self):
+        param = QgsProcessingParameterFileDestination('test')
+        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        panel = DestinationSelectionPanel(param, alg)
+
+        panel.setValue('/home/me/test.tif')
+        v = panel.getValue()
+        self.assertEqual(v, '/home/me/test.tif')
+
+        ProcessingConfig.setSettingValue(ProcessingConfig.OUTPUT_FOLDER, testDataPath)
+        panel.setValue('test.tif')
+        v = panel.getValue()
+        self.assertEqual(v, os.path.join(testDataPath, 'test.tif'))
 
 
 if __name__ == '__main__':

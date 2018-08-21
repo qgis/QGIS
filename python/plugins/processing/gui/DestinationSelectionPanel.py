@@ -30,7 +30,7 @@ import os
 import warnings
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QCoreApplication, QDir, pyqtSignal
+from qgis.PyQt.QtCore import QCoreApplication, QDir, pyqtSignal, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QAction, QFileDialog, QInputDialog
 from qgis.PyQt.QtGui import QCursor
 from qgis.gui import QgsEncodingSelectionDialog
@@ -330,6 +330,17 @@ class DestinationSelectionPanel(BASE, WIDGET):
 
         if not key and self.parameter.flags() & QgsProcessingParameterDefinition.FlagOptional:
             return None
+
+        if key and not key.startswith('memory:') \
+                and not key.startswith('ogr:') \
+                and not key.startswith('postgres:') \
+                and not key.startswith('postgis:'):
+            # output should be a file path
+            folder = QFileInfo(key).path()
+            if folder == '.':
+                # output name does not include a folder - use default
+                default_folder = ProcessingConfig.getSetting(ProcessingConfig.OUTPUT_FOLDER)
+                key = QDir(default_folder).filePath(key)
 
         if isinstance(self.parameter, QgsProcessingParameterFolderDestination):
             return key
