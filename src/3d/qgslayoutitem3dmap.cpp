@@ -26,8 +26,10 @@
 QgsLayoutItem3DMap::QgsLayoutItem3DMap( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
-
 }
+
+QgsLayoutItem3DMap::~QgsLayoutItem3DMap() = default;
+
 
 QgsLayoutItem3DMap *QgsLayoutItem3DMap::create( QgsLayout *layout )
 {
@@ -41,6 +43,9 @@ int QgsLayoutItem3DMap::type() const
 
 void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
 {
+  if ( !mSettings )
+    return;
+
   QgsOffscreen3DEngine engine;
   QSizeF sizePixels = mLayout->renderContext().measurementConverter().convert( sizeWithUnits(), QgsUnitTypes::LayoutPixels ).toQSizeF();
   engine.setSize( QSize( static_cast<int>( std::ceil( sizePixels.width() ) ),

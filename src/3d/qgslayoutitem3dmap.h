@@ -34,6 +34,7 @@ class Qgs3DMapSettings;
  */
 class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem
 {
+    Q_OBJECT
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -60,6 +61,8 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem
      * Ownership is transferred to the layout.
      */
     QgsLayoutItem3DMap( QgsLayout *layout SIP_TRANSFERTHIS );
+
+    ~QgsLayoutItem3DMap();
 
     /**
      * Returns a new 3D map item for the specified \a layout.
