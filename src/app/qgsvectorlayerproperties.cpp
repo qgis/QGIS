@@ -425,10 +425,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   if ( mLayer->isSpatial() )
   {
+    mRemoveDuplicateVerticeCheckbox->setEnabled( true );
+    mGeometryPrecisionSpinBox->setEnabled( true );
+
     mRemoveDuplicateVerticeCheckbox->setChecked( mLayer->removeDuplicateNodes() );
     mGeometryPrecisionSpinBox->setValue( mLayer->geometryPrecision() );
 
-    mGeometryPrecisionSpinBox->setSuffix( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) );
+    mGeometryPrecisionSpinBox->setSuffix( QStringLiteral( " [%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
   }
   else
   {
