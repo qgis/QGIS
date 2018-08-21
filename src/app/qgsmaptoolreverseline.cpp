@@ -31,8 +31,6 @@
 
 QgsMapToolReverseLine::QgsMapToolReverseLine( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mPressedFid( 0 )
-  , mPressedPartNum( 0 )
 {
   mToolName = tr( "Reverse line geometry" );
 }
@@ -103,7 +101,7 @@ void QgsMapToolReverseLine::canvasReleaseEvent( QgsMapMouseEvent *e )
   vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mPressedFid ) ).nextFeature( f );
   QgsGeometry geom;
 
-  if ( f.geometry().constGet() )
+  if ( f.hasGeometry() )
   {
     if ( f.geometry().isMultipart() )
     {
@@ -119,8 +117,8 @@ void QgsMapToolReverseLine::canvasReleaseEvent( QgsMapMouseEvent *e )
     else
     {
 
-      std::unique_ptr<QgsCurve> line( static_cast<QgsCurve *>( f.geometry().constGet()->clone() ) );
-      geom = QgsGeometry( line->reversed() );
+      geom = QgsGeometry( static_cast< const QgsCurve * >( f.geometry().constGet() )->reversed() );
+
     }
 
     if ( geom )

@@ -49,8 +49,8 @@ class APP_EXPORT QgsMapToolReverseLine: public QgsMapToolEdit
 
     //The feature and part where the mouse cursor was pressed
     //This is used to check whether we are still in the same part at cursor release
-    QgsFeatureId mPressedFid;
-    int mPressedPartNum;
+    QgsFeatureId mPressedFid = 0;
+    int mPressedPartNum = 0;
 };
 
 #endif // QGSMAPTOOLREVERSELINE_H
