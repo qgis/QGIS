@@ -35,6 +35,7 @@ from processing.algs.gdal.gdal2tiles import gdal2tiles
 from processing.algs.gdal.gdalcalc import gdalcalc
 from processing.algs.gdal.gdaltindex import gdaltindex
 from processing.algs.gdal.contour import contour
+from processing.algs.gdal.gdalinfo import gdalinfo
 from processing.algs.gdal.GridAverage import GridAverage
 from processing.algs.gdal.GridDataMetrics import GridDataMetrics
 from processing.algs.gdal.GridInverseDistance import GridInverseDistance
@@ -803,6 +804,68 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertIn('-r lanczos', commands[1])
         self.assertIn('-input_file_list', commands[1])
         self.assertIn('d:/temp/test.vrt', commands[1])
+
+    def testGdalInfo(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = gdalinfo()
+        alg.initAlgorithm()
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MIN_MAX': False,
+                                    'NOGCP': False,
+                                    'NO_METADATA': False,
+                                    'STATS': False}, context, feedback),
+            ['gdalinfo',
+             source])
+
+        source = os.path.join(testDataPath, 'raster with spaces.tif')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MIN_MAX': False,
+                                    'NOGCP': False,
+                                    'NO_METADATA': False,
+                                    'STATS': False}, context, feedback),
+            ['gdalinfo',
+             '"' + source + '"'])
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MIN_MAX': True,
+                                    'NOGCP': False,
+                                    'NO_METADATA': False,
+                                    'STATS': False}, context, feedback),
+            ['gdalinfo',
+             '-mm "' + source + '"'])
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MIN_MAX': False,
+                                    'NOGCP': True,
+                                    'NO_METADATA': False,
+                                    'STATS': False}, context, feedback),
+            ['gdalinfo',
+             '-nogcp "' + source + '"'])
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MIN_MAX': False,
+                                    'NOGCP': False,
+                                    'NO_METADATA': True,
+                                    'STATS': False}, context, feedback),
+            ['gdalinfo',
+             '-nomd "' + source + '"'])
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MIN_MAX': False,
+                                    'NOGCP': False,
+                                    'NO_METADATA': False,
+                                    'STATS': True}, context, feedback),
+            ['gdalinfo',
+             '-stats "' + source + '"'])
 
     def testGdalTindex(self):
         context = QgsProcessingContext()
