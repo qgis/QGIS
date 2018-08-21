@@ -75,6 +75,9 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If the remove duplicate nodes option is activated, duplicate vertices will automatically be removed from geometries which are edited on this layer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="horizontalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOff</enum>
          </property>
@@ -309,6 +312,10 @@
          <item>
           <property name="text">
            <string>Digitizing</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/digitizing.svg</normaloff>:/images/themes/default/propertyicons/digitizing.svg</iconset>
           </property>
          </item>
         </widget>
@@ -2346,6 +2353,9 @@ border-radius: 2px;</string>
              <layout class="QFormLayout" name="formLayout">
               <item row="1" column="0">
                <widget class="QLabel" name="label">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The geometry precision defines the maximum precision to of geometry coordinates that should be stored on this layer. A snap to grid algorithm will be applied on every geometry entering this layer, resulting in coordinates being rounded to multiples of this value. The operation is applied in this layer's coordinate reference system.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
                 <property name="text">
                  <string>Geometry precision</string>
                 </property>
@@ -2353,6 +2363,9 @@ border-radius: 2px;</string>
               </item>
               <item row="1" column="1">
                <widget class="QDoubleSpinBox" name="mGeometryPrecisionSpinBox">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The geometry precision defines the maximum precision to of geometry coordinates that should be stored on this layer. A snap to grid algorithm will be applied on every geometry entering this layer, resulting in coordinates being rounded to multiples of this value. The operation is applied in this layer's coordinate reference system.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
                 <property name="specialValueText">
                  <string>[Disabled]</string>
                 </property>
@@ -2361,7 +2374,7 @@ border-radius: 2px;</string>
               <item row="0" column="0" colspan="2">
                <widget class="QCheckBox" name="mRemoveDuplicateVerticeCheckbox">
                 <property name="text">
-                 <string>Remove duplicate vertices</string>
+                 <string>Remove duplicate nodes</string>
                 </property>
                </widget>
               </item>
