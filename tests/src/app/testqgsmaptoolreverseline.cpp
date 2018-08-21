@@ -86,7 +86,7 @@ void TestQgsMapToolReverseLine::testReverseCurve()
   std::unique_ptr< QgsMapToolReverseLine > tool( new QgsMapToolReverseLine( mCanvas ) );
 
   memoryLayer->startEditing();
-  QgsPointXY mapPoint = mCanvas->getCoordinateTransform()->transform( 6, 6 );
+  QgsPointXY mapPoint = mCanvas->getCoordinateTransform()->transform( 5, 5 );
   std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
