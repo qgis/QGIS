@@ -74,7 +74,7 @@ class ogrinfo(GdalAlgorithm):
         return 'ogrinfo'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        arguments = [self.commandName(), '-al']
+        arguments = ['-al']
 
         if self.parameterAsBool(parameters, self.SUMMARY_ONLY, context):
             arguments.append('-so')
@@ -87,7 +87,7 @@ class ogrinfo(GdalAlgorithm):
 
         connectionString = GdalUtils.ogrConnectionString(inLayer.source(), context)
         arguments.append(connectionString)
-        return arguments
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 
     def processAlgorithm(self, parameters, context, feedback):
         GdalUtils.runGdal(self.getConsoleCommands(parameters, context, feedback), feedback)
