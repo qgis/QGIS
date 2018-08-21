@@ -167,7 +167,7 @@ namespace QgsWms
     QUrl href = serviceUrl( request, project );
 
     //href needs to be a prefix
-    QString hrefString = href.toString( QUrl::FullyDecoded );
+    QString hrefString = href.toString();
     hrefString.append( href.hasQuery() ? "&" : "?" );
 
     // XML declaration
@@ -407,7 +407,7 @@ namespace QgsWms
     QUrl href = serviceUrl( request, project );
 
     //href needs to be a prefix
-    QString hrefString = href.toString( QUrl::FullyDecoded );
+    QString hrefString = href.toString();
     hrefString.append( href.hasQuery() ? "&" : "?" );
 
     QDomElement capabilityElem = doc.createElement( QStringLiteral( "Capability" )/*wms:Capability*/ );
@@ -1140,7 +1140,7 @@ namespace QgsWms
       QUrl href = serviceUrl( request, project );
 
       //href needs to be a prefix
-      QString hrefString = href.toString( QUrl::FullyDecoded );
+      QString hrefString = href.toString();
       hrefString.append( href.hasQuery() ? "&" : "?" );
       for ( const QString &styleName : currentLayer->styleManager()->styles() )
       {

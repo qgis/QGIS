@@ -84,7 +84,7 @@ namespace QgsWms
 
     // get the wms service url defined in project or keep the one from the
     // request url
-    QString wmsHrefString = serviceUrl( request, project ).toString( QUrl::FullyDecoded );
+    QString wmsHrefString = serviceUrl( request, project ).toString();
 
     // get the wfs service url defined in project or take the same as the
     // wms service url

@@ -251,7 +251,7 @@ namespace QgsWcs
       q.removeAllQueryItems( QStringLiteral( "_DC" ) );
 
       url.setQuery( q );
-      href = url.toString( QUrl::FullyDecoded );
+      href = url.toString();
 
     }
 

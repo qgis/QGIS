@@ -311,7 +311,7 @@ namespace QgsWms
           QUrl href = serviceUrl( request, project );
 
           //href needs to be a prefix
-          QString hrefString = href.toString( QUrl::FullyDecoded );
+          QString hrefString = href.toString();
           hrefString.append( href.hasQuery() ? "&" : "?" );
 
           // COntext Server Element with WMS service URL

@@ -74,7 +74,7 @@ namespace QgsWmts
       params.remove( QgsServerParameter::SERVICE );
 
       url.setQuery( params.urlQuery() );
-      href = url.toString( QUrl::FullyDecoded );
+      href = url.toString();
     }
 
     return  href;
