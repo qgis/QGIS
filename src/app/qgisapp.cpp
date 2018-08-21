@@ -90,6 +90,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgscameracontroller.h"
 #include "qgsflatterraingenerator.h"
+#include "qgslayoutitem3dmap.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "processing/qgs3dalgorithms.h"
 #endif
@@ -1712,8 +1713,11 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
   // added all layers, and only emit the signal once for the final layer added
   mBlockActiveLayerChanged = true;
 
+  QgsScopedProxyProgressTask task( tr( "Loading layers" ) );
+
   // insert items in reverse order as each one is inserted on top of previous one
-  for ( int i = lst.size() - 1 ; i >= 0 ; i-- )
+  int count = 0;
+  for ( int i = lst.size() - 1 ; i >= 0 ; i--, count++ )
   {
     const QgsMimeDataUtils::Uri &u = lst.at( i );
 
@@ -1751,10 +1755,12 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     {
       openFile( u.uri, QStringLiteral( "project" ) );
     }
+
+    task.setProgress( 100.0 * static_cast< double >( count ) / lst.size() );
   }
 
   mBlockActiveLayerChanged = false;
-  emit activeLayerChanged( activeLayer() );
+  onActiveLayerChanged( activeLayer() );
 }
 
 bool QgisApp::event( QEvent *event )
@@ -1793,7 +1799,6 @@ void QgisApp::dataSourceManager( const QString &pageName )
     connect( mDataSourceManagerDialog, SIGNAL( addVectorLayers( QStringList const &, QString const &, QString const & ) ),
              this, SLOT( addVectorLayers( QStringList const &, QString const &, QString const & ) ) );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addMeshLayer, this, &QgisApp::addMeshLayer );
-    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::showProgress, this, &QgisApp::showProgress );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::showStatusMessage, this, &QgisApp::showStatusMessage );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addDatabaseLayers, this, &QgisApp::addDatabaseLayers );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::replaceSelectedVectorLayer, this, &QgisApp::replaceSelectedVectorLayer );
@@ -5018,30 +5023,6 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   }
 }
 
-void QgisApp::addDatabaseLayer()
-{
-#ifdef HAVE_POSTGRESQL
-  // Fudge for now
-  QgsDebugMsg( "about to addRasterLayer" );
-
-  // TODO: QDialog for now, switch to QWidget in future
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "postgres" ), this ) );
-  if ( !dbs )
-  {
-    QMessageBox::warning( this, tr( "Add PostgreSQL Layer" ), tr( "Cannot get PostgreSQL select dialog from provider." ) );
-    return;
-  }
-  connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
-           this, SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
-  connect( dbs, SIGNAL( progress( int, int ) ),
-           this, SLOT( showProgress( int, int ) ) );
-  connect( dbs, SIGNAL( progressMessage( QString ) ),
-           this, SLOT( showStatusMessage( QString ) ) );
-  dbs->exec();
-  delete dbs;
-#endif
-} // QgisApp::addDatabaseLayer()
-
 void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey )
 {
   QList<QgsMapLayer *> myList;
@@ -5114,37 +5095,6 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
   QApplication::restoreOverrideCursor();
 }
 
-
-void QgisApp::addSpatiaLiteLayer()
-{
-  // show the SpatiaLite dialog
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "spatialite" ), this ) );
-  if ( !dbs )
-  {
-    QMessageBox::warning( this, tr( "Add SpatiaLite Layer" ), tr( "Cannot get SpatiaLite select dialog from provider." ) );
-    return;
-  }
-  connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
-           this, SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
-  dbs->exec();
-  delete dbs;
-} // QgisApp::addSpatiaLiteLayer()
-
-void QgisApp::addDelimitedTextLayer()
-{
-  // show the Delimited text dialog
-  QDialog *dts = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "delimitedtext" ), this ) );
-  if ( !dts )
-  {
-    QMessageBox::warning( this, tr( "Add Delimited Text Layer" ), tr( "Cannot get Delimited Text select dialog from provider." ) );
-    return;
-  }
-  connect( dts, SIGNAL( addVectorLayer( QString, QString, QString ) ),
-           this, SLOT( addSelectedVectorLayer( QString, QString, QString ) ) );
-  dts->exec();
-  delete dts;
-} // QgisApp::addDelimitedTextLayer()
-
 void QgisApp::addVirtualLayer()
 {
   // show the Delimited text dialog
@@ -5185,59 +5135,6 @@ void QgisApp::replaceSelectedVectorLayer( const QString &oldId, const QString &u
   // and remove the old layer
   QgsProject::instance()->removeMapLayer( oldLayer );
 } // QgisApp:replaceSelectedVectorLayer
-
-void QgisApp::addMssqlLayer()
-{
-  // show the MSSQL dialog
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "mssql" ), this ) );
-  if ( !dbs )
-  {
-    QMessageBox::warning( this, tr( "Add MSSQL Layer" ), tr( "Cannot get MSSQL select dialog from provider." ) );
-    return;
-  }
-  connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
-           this, SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
-  dbs->exec();
-  delete dbs;
-} // QgisApp::addMssqlLayer()
-
-void QgisApp::addDb2Layer()
-{
-  // show the DB2 dialog
-  QgsDebugMsg( "Show dialog for DB2 " );
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "DB2" ), this ) );
-  if ( !dbs )
-  {
-    QMessageBox::warning( this, tr( "Add DB2 Layer" ), tr( "Cannot get DB2 select dialog from provider." ) );
-    return;
-  }
-  connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
-           this, SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
-  dbs->exec();
-  delete dbs;
-} // QgisApp::addDb2Layer()
-
-void QgisApp::addOracleLayer()
-{
-#ifdef HAVE_ORACLE
-  // show the Oracle dialog
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( "oracle", this ) );
-  if ( !dbs )
-  {
-    QMessageBox::warning( this, tr( "Add Oracle Layer" ), tr( "Cannot get Oracle select dialog from provider." ) );
-    return;
-  }
-  connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
-           this, SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
-  connect( dbs, SIGNAL( progress( int, int ) ),
-           this, SLOT( showProgress( int, int ) ) );
-  connect( dbs, SIGNAL( progressMessage( QString ) ),
-           this, SLOT( showStatusMessage( QString ) ) );
-  dbs->exec();
-  delete dbs;
-#endif
-} // QgisApp::addOracleLayer()
-
 
 void QgisApp::fileExit()
 {
@@ -6172,11 +6069,50 @@ void QgisApp::runScript( const QString &filePath )
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
     return;
 
-  mPythonUtils->runString(
-    QString( "import sys\n"
-             "from qgis.utils import iface\n"
-             "exec(open(\"%1\".replace(\"\\\\\", \"/\").encode(sys.getfilesystemencoding())).read())\n" ).arg( filePath )
-    , tr( "Failed to run Python script:" ), false );
+  QgsSettings settings;
+  bool showScriptWarning = settings.value( QStringLiteral( "UI/showScriptWarning" ), true ).toBool();
+
+  QMessageBox msgbox;
+  if ( showScriptWarning )
+  {
+    msgbox.setText( tr( "Security warning: executing a script from an untrusted source can lead to data loss and/or leak. Continue?" ) );
+    msgbox.setIcon( QMessageBox::Icon::Warning );
+    msgbox.addButton( QMessageBox::Yes );
+    msgbox.addButton( QMessageBox::No );
+    msgbox.setDefaultButton( QMessageBox::No );
+    QCheckBox *cb = new QCheckBox( tr( "Don't show this again." ) );
+    msgbox.setCheckBox( cb );
+    msgbox.exec();
+    settings.setValue( QStringLiteral( "UI/showScriptWarning" ), !msgbox.checkBox()->isChecked() );
+  }
+
+  if ( !showScriptWarning || msgbox.result() == QMessageBox::Yes )
+  {
+    mPythonUtils->runString(
+      QString( "import sys\n"
+               "import inspect\n"
+               "from qgis.utils import iface\n"
+               "try:\n"
+               "    from qgis.core import QgsApplication, QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm\n"
+               "    from processing.gui.AlgorithmDialog import AlgorithmDialog\n"
+               "except ImportError:\n"
+               "    processing_found = False\n"
+               "else:\n"
+               "    processing_found = True\n"
+               "d={}\n"
+               "exec(open(\"%1\".replace(\"\\\\\", \"/\").encode(sys.getfilesystemencoding())).read(), d)\n"
+               "if processing_found:\n"
+               "    alg = None\n"
+               "    for k, v in d.items():\n"
+               "        if inspect.isclass(v) and issubclass(v, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and v.__name__ not in (\"QgsProcessingAlgorithm\", \"QgsProcessingFeatureBasedAlgorithm\"):\n"
+               "            alg = v()\n"
+               "            break\n"
+               "    if alg:\n"
+               "        alg.setProvider(QgsApplication.processingRegistry().providerById(\"script\"))\n"
+               "        alg.initAlgorithm()\n"
+               "        dlg = AlgorithmDialog(alg)\n"
+               "        dlg.show()\n" ).arg( filePath ), tr( "Failed to run Python script:" ), false );
+  }
 #else
   Q_UNUSED( filePath );
 #endif
@@ -10863,6 +10799,12 @@ void QgisApp::initNativeProcessing()
 
 void QgisApp::initLayouts()
 {
+#ifdef HAVE_3D
+  QgsApplication::layoutItemRegistry()->addLayoutItemType(
+    new QgsLayoutItemMetadata( QgsLayoutItemRegistry::Layout3DMap, QObject::tr( "3D Map" ), QgsLayoutItem3DMap::create )
+  );
+#endif
+
   QgsLayoutAppUtils::registerGuiForKnownItemTypes();
 
   mLayoutQptDropHandler = new QgsLayoutQptDropHandler( this );
@@ -11191,7 +11133,7 @@ void QgisApp::closeProject()
   QgsProject::instance()->clear();
   mBlockActiveLayerChanged = false;
 
-  emit activeLayerChanged( activeLayer() );
+  onActiveLayerChanged( activeLayer() );
 }
 
 
@@ -12945,9 +12887,6 @@ void QgisApp::keyReleaseEvent( QKeyEvent *event )
 
 void QgisApp::keyPressEvent( QKeyEvent *e )
 {
-  // The following statement causes a crash on WIN32 and should be
-  // enclosed in an #ifdef QGISDEBUG if its really necessary. Its
-  // commented out for now. [gsherman]
   // QgsDebugMsg( QString( "%1 (keypress received)" ).arg( e->text() ) );
   emit keyPressed( e );
 
@@ -12956,12 +12895,6 @@ void QgisApp::keyPressEvent( QKeyEvent *e )
   {
     stopRendering();
   }
-#if defined(_MSC_VER) && defined(QGISDEBUG)
-  else if ( e->key() == Qt::Key_Backslash && e->modifiers() & Qt::ControlModifier )
-  {
-    abort();
-  }
-#endif
   else
   {
     e->ignore();
@@ -14110,7 +14043,7 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, bool saving )
     QString name = storage->visibleName();
     if ( name.isEmpty() )
       continue;
-    QAction *action = menu->addAction( QStringLiteral( "%1" ).arg( name ) + QChar( 0x2026 ) ); // 0x2026 = ellipsis character
+    QAction *action = menu->addAction( name + QChar( 0x2026 ) ); // 0x2026 = ellipsis character
     if ( saving )
     {
       connect( action, &QAction::triggered, [this, storage]
@@ -14148,4 +14081,11 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, bool saving )
       } );
     }
   }
+}
+
+void QgisApp::triggerCrashHandler()
+{
+#ifdef Q_OS_WIN
+  RaiseException( 0x12345678, 0, 0, nullptr );
+#endif
 }

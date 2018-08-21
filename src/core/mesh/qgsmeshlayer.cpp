@@ -127,29 +127,36 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
     int faceIndex = mTriangularMesh->faceIndexForPoint( point ) ;
     if ( faceIndex >= 0 )
     {
-      if ( dataProvider()->datasetGroupMetadata( index ).dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces )
+      int nativeFaceIndex = mTriangularMesh->trianglesToNativeFaces().at( faceIndex );
+      if ( dataProvider()->isFaceActive( index, nativeFaceIndex ) )
       {
-        int nativeFaceIndex = mTriangularMesh->trianglesToNativeFaces().at( faceIndex );
-        return dataProvider()->datasetValue( index, nativeFaceIndex );
-      }
-      else
-      {
-        const QgsMeshFace &face = mTriangularMesh->triangles()[faceIndex];
-        const int v1 = face[0], v2 = face[1], v3 = face[2];
-        const QgsPoint p1 = mTriangularMesh->vertices()[v1], p2 = mTriangularMesh->vertices()[v2], p3 = mTriangularMesh->vertices()[v3];
-        const QgsMeshDatasetValue val1 = dataProvider()->datasetValue( index, v1 );
-        const QgsMeshDatasetValue val2 = dataProvider()->datasetValue( index, v2 );
-        const QgsMeshDatasetValue val3 = dataProvider()->datasetValue( index, v3 );
-        const double x = QgsMeshLayerInterpolator::interpolateFromVerticesData( p1, p2, p3, val1.x(), val2.x(), val3.x(), point );
-        double y = std::numeric_limits<double>::quiet_NaN();
-        bool isVector = dataProvider()->datasetGroupMetadata( index ).isVector();
-        if ( isVector )
-          y = QgsMeshLayerInterpolator::interpolateFromVerticesData( p1, p2, p3, val1.y(), val2.y(), val3.y(), point );
 
-        return QgsMeshDatasetValue( x, y );
+        if ( dataProvider()->datasetGroupMetadata( index ).dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces )
+        {
+          int nativeFaceIndex = mTriangularMesh->trianglesToNativeFaces().at( faceIndex );
+          value = dataProvider()->datasetValue( index, nativeFaceIndex );
+        }
+        else
+        {
+          const QgsMeshFace &face = mTriangularMesh->triangles()[faceIndex];
+          const int v1 = face[0], v2 = face[1], v3 = face[2];
+          const QgsPoint p1 = mTriangularMesh->vertices()[v1], p2 = mTriangularMesh->vertices()[v2], p3 = mTriangularMesh->vertices()[v3];
+          const QgsMeshDatasetValue val1 = dataProvider()->datasetValue( index, v1 );
+          const QgsMeshDatasetValue val2 = dataProvider()->datasetValue( index, v2 );
+          const QgsMeshDatasetValue val3 = dataProvider()->datasetValue( index, v3 );
+          const double x = QgsMeshLayerInterpolator::interpolateFromVerticesData( p1, p2, p3, val1.x(), val2.x(), val3.x(), point );
+          double y = std::numeric_limits<double>::quiet_NaN();
+          bool isVector = dataProvider()->datasetGroupMetadata( index ).isVector();
+          if ( isVector )
+            y = QgsMeshLayerInterpolator::interpolateFromVerticesData( p1, p2, p3, val1.y(), val2.y(), val3.y(), point );
+
+          value = QgsMeshDatasetValue( x, y );
+        }
+
       }
     }
   }
+
   return value;
 }
 
@@ -216,6 +223,7 @@ void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
   fcn.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
 
   QgsMeshRendererScalarSettings scalarSettings;
+  scalarSettings.setClassificationMinimumMaximum( groupMin, groupMax );
   scalarSettings.setColorRampShader( fcn );
   mRendererSettings.setScalarSettings( groupIndex, scalarSettings );
 }
@@ -312,7 +320,11 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
       QString uri = context.pathResolver().readPath( elemUri.text() );
 
       bool res = mDataProvider->addDataset( uri );
+#ifdef QGISDEBUG
       QgsDebugMsg( QStringLiteral( "extra dataset (res %1): %2" ).arg( res ).arg( uri ) );
+#else
+      ( void )res; // avoid unused warning in release builds
+#endif
 
       elemUri = elemUri.nextSiblingElement( QStringLiteral( "uri" ) );
     }

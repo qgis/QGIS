@@ -82,6 +82,13 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
     //! Sets color ramp shader function
     void setColorRampShader( const QgsColorRampShader &shader );
 
+    //! Returns min value used for creation of the color ramp shader
+    double classificationMinimum() const { return mClassificationMinimum; }
+    //! Returns max value used for creation of the color ramp shader
+    double classificationMaximum() const { return mClassificationMaximum; }
+    //! Sets min/max values used for creation of the color ramp shader
+    void setClassificationMinimumMaximum( double minimum, double maximum );
+
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads configuration from the given DOM element
@@ -89,6 +96,8 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 
   private:
     QgsColorRampShader mColorRampShader;
+    double mClassificationMinimum = 0;
+    double mClassificationMaximum = 0;
 };
 
 /**

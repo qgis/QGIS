@@ -89,7 +89,13 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
         return 'postgisexecuteandloadsql'
 
     def displayName(self):
-        return self.tr('PostGIS execute and load SQL')
+        return self.tr('PostgreSQL execute and load SQL')
+
+    def shortDescription(self):
+        return self.tr('Executes a SQL command on a PostgreSQL database and loads the result as a table')
+
+    def tags(self):
+        return self.tr('postgis,table,database').split(',')
 
     def processAlgorithm(self, parameters, context, feedback):
         connection = self.parameterAsString(parameters, self.DATABASE, context)

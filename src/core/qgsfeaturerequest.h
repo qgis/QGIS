@@ -622,9 +622,10 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \note Only works if the provider supports this option.
      *
+     * \deprecated Use timeout() instead.
      * \since QGIS 3.0
      */
-    int connectionTimeout() const;
+    Q_DECL_DEPRECATED int connectionTimeout() const SIP_DEPRECATED;
 
     /**
      * Sets the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
@@ -632,9 +633,30 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \note Only works if the provider supports this option.
      *
+     * \deprecated Use setTimeout() instead.
      * \since QGIS 3.0
      */
-    QgsFeatureRequest &setConnectionTimeout( int connectionTimeout );
+    Q_DECL_DEPRECATED QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) SIP_DEPRECATED;
+
+    /**
+     * Returns the timeout (in milliseconds) for the maximum time we should wait during feature requests before a
+     * feature is returned. A negative value (which is set by default) will wait forever.
+     *
+     * \note Only works if the provider supports this option.
+     *
+     * \since QGIS 3.4
+     */
+    int timeout() const;
+
+    /**
+     * Sets the \a timeout (in milliseconds) for the maximum time we should wait during feature requests before a
+     * feature is returned. A negative value (which is set by default) will wait forever.
+     *
+     * \note Only works if the provider supports this option.
+     *
+     * \since QGIS 3.4
+     */
+    QgsFeatureRequest &setTimeout( int timeout );
 
     /**
      * In case this request may be run nested within another already running
@@ -681,7 +703,7 @@ class CORE_EXPORT QgsFeatureRequest
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
-    int mConnectionTimeout = -1;
+    int mTimeout = -1;
     int mRequestMayBeNested = false;
 };
 

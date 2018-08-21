@@ -115,7 +115,13 @@ class ImportIntoPostGIS(QgisAlgorithm):
         return 'importintopostgis'
 
     def displayName(self):
-        return self.tr('Import into PostGIS')
+        return self.tr('Export to PostgreSQL')
+
+    def shortDescription(self):
+        return self.tr('Exports a vector layer to a PostgreSQL database')
+
+    def tags(self):
+        return self.tr('import,postgis,table,layer,into,copy').split(',')
 
     def processAlgorithm(self, parameters, context, feedback):
         connection = self.parameterAsString(parameters, self.DATABASE, context)

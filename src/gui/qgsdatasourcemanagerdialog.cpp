@@ -144,8 +144,6 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
   // DB
   connect( dlg, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
            this, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ) );
-  connect( dlg, SIGNAL( progress( int, int ) ),
-           this, SIGNAL( showProgress( int, int ) ) );
   connect( dlg, SIGNAL( progressMessage( QString ) ),
            this, SIGNAL( showStatusMessage( QString ) ) );
   // Vector

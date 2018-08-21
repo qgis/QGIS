@@ -216,6 +216,19 @@ QgsMeshDatasetValue QgsMdalProvider::datasetValue( QgsMeshDatasetIndex index, in
   return val;
 }
 
+bool QgsMdalProvider::isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const
+{
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
+  if ( !group )
+    return false;
+
+  DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
+  if ( !dataset )
+    return false;
+
+  return MDAL_D_active( dataset, faceIndex );
+}
+
 /*----------------------------------------------------------------------------------------------*/
 
 /**

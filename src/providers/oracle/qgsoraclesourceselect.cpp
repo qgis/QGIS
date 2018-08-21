@@ -29,6 +29,7 @@ email                : jef at norbit dot de
 #include "qgsvectorlayer.h"
 #include "qgsoraclecolumntypethread.h"
 #include "qgssettings.h"
+#include "qgsproxyprogresstask.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -516,15 +517,20 @@ void QgsOracleSourceSelect::on_btnConnect_clicked()
       QgsOracleConn::restrictToSchema( cmbConnections->currentText() ),
       uri.useEstimatedMetadata(),
       cbxAllowGeometrylessTables->isChecked() );
+  mColumnTypeTask = new QgsProxyProgressTask( tr( "Scanning tables for %1" ).arg( cmbConnections->currentText() ) );
+  QgsApplication::taskManager()->addTask( mColumnTypeTask );
 
   connect( mColumnTypeThread, &QgsOracleColumnTypeThread::setLayerType,
            this, &QgsOracleSourceSelect::setLayerType );
   connect( mColumnTypeThread, &QThread::finished,
            this, &QgsOracleSourceSelect::columnThreadFinished );
   connect( mColumnTypeThread, &QgsOracleColumnTypeThread::progress,
-           this, &QgsOracleSourceSelect::progress );
+           mColumnTypeTask, [ = ]( int i, int n )
+  {
+    mColumnTypeTask->setProxyProgress( 100.0 * static_cast< double >( i ) / n );
+  } );
   connect( mColumnTypeThread, &QgsOracleColumnTypeThread::progressMessage,
-           this, &QgsOracleSourceSelect::progressMessage );
+           this, &QgsAbstractDataSourceWidget::progressMessage );
 
   btnConnect->setText( tr( "Stop" ) );
   mColumnTypeThread->start();
@@ -565,6 +571,10 @@ void QgsOracleSourceSelect::columnThreadFinished()
 
   delete mColumnTypeThread;
   mColumnTypeThread = nullptr;
+
+  mColumnTypeTask->finalize( true );
+  mColumnTypeTask = nullptr;
+
   btnConnect->setText( tr( "Connect" ) );
 
   finishList();

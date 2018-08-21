@@ -69,4 +69,35 @@ class CORE_EXPORT QgsProxyProgressTask : public QgsTask
 
 };
 
+/**
+ * \ingroup core
+ *
+ * Scoped QgsScopedProxyProgressTask, which automatically adds the proxy task
+ * to the application task manager on construction and finalizes the task
+ * when it goes out of scope.
+ *
+ * \since QGIS 3.4
+ */
+class CORE_EXPORT QgsScopedProxyProgressTask
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedProxyProgressTask, with the specified \a description.
+     */
+    QgsScopedProxyProgressTask( const QString &description );
+
+    ~QgsScopedProxyProgressTask();
+
+    /**
+     * Sets the \a progress (from 0 to 100) for the proxied operation.
+     */
+    void setProgress( double progress );
+
+  private:
+
+    QgsProxyProgressTask *mTask = nullptr;
+
+};
+
 #endif // QGSPROXYPROGRESSTASK_H

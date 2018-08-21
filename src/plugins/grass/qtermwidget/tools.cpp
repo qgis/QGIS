@@ -33,7 +33,7 @@ QString get_kb_layout_dir()
     //qDebug() << d.path();
     if (d.exists())
         return QCoreApplication::applicationDirPath() + "/kb-layouts/";
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MACOS
     d.setPath(QCoreApplication::applicationDirPath() + "/../Resources/kb-layouts/");
     if (d.exists())
         return QCoreApplication::applicationDirPath() + "/../Resources/kb-layouts/";
@@ -68,7 +68,7 @@ QString get_color_schemes_dir()
     //qDebug() << d.path();
     if (d.exists())
         rval = QCoreApplication::applicationDirPath() + "/color-schemes/";
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MACOS
     d.setPath(QCoreApplication::applicationDirPath() + "/../Resources/color-schemes/");
     if (d.exists())
         rval = QCoreApplication::applicationDirPath() + "/../Resources/color-schemes/";

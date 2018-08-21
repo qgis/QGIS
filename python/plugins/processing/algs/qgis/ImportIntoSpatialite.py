@@ -84,7 +84,13 @@ class ImportIntoSpatialite(QgisAlgorithm):
         return 'importintospatialite'
 
     def displayName(self):
-        return self.tr('Import into Spatialite')
+        return self.tr('Export to SpatiaLite')
+
+    def shortDescription(self):
+        return self.tr('Exports a vector layer to a SpatiaLite database')
+
+    def tags(self):
+        return self.tr('import,table,layer,into,copy').split(',')
 
     def processAlgorithm(self, parameters, context, feedback):
         database = self.parameterAsVectorLayer(parameters, self.DATABASE, context)

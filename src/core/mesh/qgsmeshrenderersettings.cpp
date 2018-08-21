@@ -78,9 +78,17 @@ void QgsMeshRendererScalarSettings::setColorRampShader( const QgsColorRampShader
   mColorRampShader = shader;
 }
 
+void QgsMeshRendererScalarSettings::setClassificationMinimumMaximum( double minimum, double maximum )
+{
+  mClassificationMinimum = minimum;
+  mClassificationMaximum = maximum;
+}
+
 QDomElement QgsMeshRendererScalarSettings::writeXml( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( "scalar-settings" );
+  elem.setAttribute( "min-val", mClassificationMinimum );
+  elem.setAttribute( "max-val", mClassificationMaximum );
   QDomElement elemShader = mColorRampShader.writeXml( doc );
   elem.appendChild( elemShader );
   return elem;
@@ -88,6 +96,8 @@ QDomElement QgsMeshRendererScalarSettings::writeXml( QDomDocument &doc ) const
 
 void QgsMeshRendererScalarSettings::readXml( const QDomElement &elem )
 {
+  mClassificationMinimum = elem.attribute( "min-val" ).toDouble();
+  mClassificationMaximum = elem.attribute( "max-val" ).toDouble();
   QDomElement elemShader = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
   mColorRampShader.readXml( elemShader );
 }

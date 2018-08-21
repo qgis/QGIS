@@ -105,8 +105,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void replaceSelectedVectorLayer( const QString &oldId, const QString &uri, const QString &layerName, const QString &provider );
     //! Emitted when a one or more layer were selected for addition: for signal forwarding to QgisApp
     void addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
-    //! Emitted when the dialog is busy: for signal forwarding to QgisApp
-    void showProgress( int progress, int totalSteps );
+
     //! Emitted when a status message needs to be shown: for signal forwarding to QgisApp
     void showStatusMessage( const QString &message );
     //! Emitted when a DB layer was selected for addition: for signal forwarding to QgisApp

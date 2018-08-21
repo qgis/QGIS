@@ -102,10 +102,11 @@ Emitted when a layer needs to be replaced
 :param provider: key
 %End
 
-
-    void progress( int, int );
+ void progress( int, int ) /Deprecated/;
 %Docstring
-Emitted when a progress dialog is shown by the provider dialog
+Emitted when a progress dialog is shown by the provider dialog.
+
+.. deprecated:: Since QGIS 3.4 this signal is no longer used. Use QgsProxyProgressTask instead to show progress reports.
 %End
 
     void progressMessage( QString message );
