@@ -55,7 +55,6 @@ class ProcessingConfig:
     FILTER_INVALID_GEOMETRIES = 'FILTER_INVALID_GEOMETRIES'
     USE_FILENAME_AS_LAYER_NAME = 'USE_FILENAME_AS_LAYER_NAME'
     KEEP_DIALOG_OPEN = 'KEEP_DIALOG_OPEN'
-    SHOW_DEBUG_IN_DIALOG = 'SHOW_DEBUG_IN_DIALOG'
     RECENT_ALGORITHMS = 'RECENT_ALGORITHMS'
     PRE_EXECUTION_SCRIPT = 'PRE_EXECUTION_SCRIPT'
     POST_EXECUTION_SCRIPT = 'POST_EXECUTION_SCRIPT'
@@ -64,7 +63,6 @@ class ProcessingConfig:
     DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DEFAULT_OUTPUT_RASTER_LAYER_EXT'
     DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DEFAULT_OUTPUT_VECTOR_LAYER_EXT'
     SHOW_PROVIDERS_TOOLTIP = 'SHOW_PROVIDERS_TOOLTIP'
-    MODELS_SCRIPTS_REPO = 'MODELS_SCRIPTS_REPO'
 
     settings = {}
     settingIcons = {}
@@ -73,10 +71,6 @@ class ProcessingConfig:
     def initialize():
         icon = QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         ProcessingConfig.settingIcons['General'] = icon
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.SHOW_DEBUG_IN_DIALOG,
-            ProcessingConfig.tr('Show extra info in Log panel'), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.KEEP_DIALOG_OPEN,
@@ -140,11 +134,6 @@ class ProcessingConfig:
             ProcessingConfig.tr('General'),
             ProcessingConfig.RECENT_ALGORITHMS,
             ProcessingConfig.tr('Recent algorithms'), '', hidden=True))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.MODELS_SCRIPTS_REPO,
-            ProcessingConfig.tr('Scripts and models repository'),
-            'https://raw.githubusercontent.com/qgis/QGIS-Processing/master'))
 
         invalidFeaturesOptions = [ProcessingConfig.tr('Do not filter (better performance)'),
                                   ProcessingConfig.tr('Ignore features with invalid geometries'),
