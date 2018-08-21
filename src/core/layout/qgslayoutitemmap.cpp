@@ -1155,7 +1155,18 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_definition" ), mapCrs.toProj4(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mapCrs.mapUnits() ), true ) );
 
+  QVariantList layers_ids;
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layers_ids" ), layers_ids, true ) );
+
   context.appendScope( scope );
+
+  // The scope map_layers_ids has been added to the context, only now we can call layersToRender
+  const QList<QgsMapLayer *> layersInMap = layersToRender( &context );
+  for ( QgsMapLayer *layer : layersInMap )
+  {
+    layers_ids << layer->id();
+  }
+  scope->setVariable( QStringLiteral( "map_layers_ids" ), layers_ids );
 
   return context;
 }
