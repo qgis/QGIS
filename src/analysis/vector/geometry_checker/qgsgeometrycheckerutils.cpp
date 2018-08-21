@@ -47,7 +47,7 @@ namespace QgsGeometryCheckerUtils
 
 /////////////////////////////////////////////////////////////////////////////
 
-  LayerFeatures::iterator::iterator( const QList<QString>::iterator &layerIt, LayerFeatures *parent )
+  LayerFeatures::iterator::iterator( const QStringList::const_iterator &layerIt, const LayerFeatures *parent )
     : mLayerIt( layerIt )
     , mFeatureIt( QgsFeatureIds::const_iterator() )
     , mParent( parent )

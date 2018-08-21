@@ -147,7 +147,7 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError *error, int method, 
   }
 }
 
-QStringList QgsGeometryAngleCheck::getResolutionMethods() const
+QStringList QgsGeometryAngleCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "Delete node with small angle" ) << tr( "No action" );
   return methods;

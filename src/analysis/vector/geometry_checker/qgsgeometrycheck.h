@@ -41,14 +41,32 @@ struct ANALYSIS_EXPORT QgsGeometryCheckerContext
   const QMap<QString, QgsFeaturePool *> featurePools;
 };
 
-class ANALYSIS_EXPORT QgsGeometryCheck : public QObject
+class ANALYSIS_EXPORT QgsGeometryCheck
 {
-    Q_OBJECT
+    Q_DECLARE_TR_FUNCTIONS()
 
   public:
-    enum ChangeWhat { ChangeFeature, ChangePart, ChangeRing, ChangeNode };
-    enum ChangeType { ChangeAdded, ChangeRemoved, ChangeChanged };
-    enum CheckType { FeatureNodeCheck, FeatureCheck, LayerCheck };
+    enum ChangeWhat
+    {
+      ChangeFeature,
+      ChangePart,
+      ChangeRing,
+      ChangeNode
+    };
+
+    enum ChangeType
+    {
+      ChangeAdded,
+      ChangeRemoved,
+      ChangeChanged
+    };
+
+    enum CheckType
+    {
+      FeatureNodeCheck,
+      FeatureCheck,
+      LayerCheck
+    };
 
     struct Change
     {
@@ -74,14 +92,15 @@ class ANALYSIS_EXPORT QgsGeometryCheck : public QObject
       , mCompatibleGeometryTypes( compatibleGeometryTypes )
       , mContext( context )
     {}
+    virtual ~QgsGeometryCheck() = default;
     virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const = 0;
     virtual void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const = 0;
-    virtual QStringList getResolutionMethods() const = 0;
+    virtual QStringList resolutionMethods() const = 0;
     virtual QString errorDescription() const = 0;
     virtual QString errorName() const = 0;
-    CheckType getCheckType() const { return mCheckType; }
-    bool getCompatibility( QgsWkbTypes::GeometryType type ) const { return mCompatibleGeometryTypes.contains( type ); }
-    QgsGeometryCheckerContext *getContext() const { return mContext; }
+    CheckType checkType() const { return mCheckType; }
+    bool isCompatible( QgsWkbTypes::GeometryType type ) const { return mCompatibleGeometryTypes.contains( type ); }
+    QgsGeometryCheckerContext *context() const { return mContext; }
 
   protected:
     QMap<QString, QgsFeatureIds> allLayerFeatureIds() const;
@@ -133,7 +152,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     void setFixed( int method )
     {
       mStatus = StatusFixed;
-      const QStringList methods = mCheck->getResolutionMethods();
+      const QStringList methods = mCheck->resolutionMethods();
       mResolutionMessage = methods[method];
     }
     void setFixFailed( const QString &reason )

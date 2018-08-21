@@ -170,29 +170,6 @@ SET(QGIS_ANALYSIS_MOC_HDRS
   processing/qgsalgorithmfiledownloader.h
 
   vector/geometry_checker/qgsgeometrychecker.h
-  vector/geometry_checker/qgsgeometryanglecheck.h
-  vector/geometry_checker/qgsgeometryareacheck.h
-  vector/geometry_checker/qgsgeometrychecker.h
-  vector/geometry_checker/qgsgeometrycheck.h
-  vector/geometry_checker/qgsgeometrycontainedcheck.h
-  vector/geometry_checker/qgsgeometrydanglecheck.h
-  vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.h
-  vector/geometry_checker/qgsgeometryduplicatecheck.h
-  vector/geometry_checker/qgsgeometryduplicatenodescheck.h
-  vector/geometry_checker/qgsgeometryfollowboundariescheck.h
-  vector/geometry_checker/qgsgeometrygapcheck.h
-  vector/geometry_checker/qgsgeometryholecheck.h
-  vector/geometry_checker/qgsgeometrylineintersectioncheck.h
-  vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.h
-  vector/geometry_checker/qgsgeometrymultipartcheck.h
-  vector/geometry_checker/qgsgeometryoverlapcheck.h
-  vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.h
-  vector/geometry_checker/qgsgeometrypointinpolygoncheck.h
-  vector/geometry_checker/qgsgeometrysegmentlengthcheck.h
-  vector/geometry_checker/qgsgeometryselfcontactcheck.h
-  vector/geometry_checker/qgsgeometryselfintersectioncheck.h
-  vector/geometry_checker/qgsgeometrysliverpolygoncheck.h
-  vector/geometry_checker/qgsgeometrytypecheck.h
 )
 
 INCLUDE_DIRECTORIES(SYSTEM ${SPATIALITE_INCLUDE_DIR})
@@ -281,6 +258,30 @@ SET(QGIS_ANALYSIS_HDRS
   network/qgsnetworkdistancestrategy.h
   network/qgsgraphanalyzer.h
   network/qgsvectorlayerdirector.h
+
+  vector/geometry_checker/qgsgeometryanglecheck.h
+  vector/geometry_checker/qgsgeometryareacheck.h
+  vector/geometry_checker/qgsgeometrychecker.h
+  vector/geometry_checker/qgsgeometrycheck.h
+  vector/geometry_checker/qgsgeometrycontainedcheck.h
+  vector/geometry_checker/qgsgeometrydanglecheck.h
+  vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.h
+  vector/geometry_checker/qgsgeometryduplicatecheck.h
+  vector/geometry_checker/qgsgeometryduplicatenodescheck.h
+  vector/geometry_checker/qgsgeometryfollowboundariescheck.h
+  vector/geometry_checker/qgsgeometrygapcheck.h
+  vector/geometry_checker/qgsgeometryholecheck.h
+  vector/geometry_checker/qgsgeometrylineintersectioncheck.h
+  vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.h
+  vector/geometry_checker/qgsgeometrymultipartcheck.h
+  vector/geometry_checker/qgsgeometryoverlapcheck.h
+  vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.h
+  vector/geometry_checker/qgsgeometrypointinpolygoncheck.h
+  vector/geometry_checker/qgsgeometrysegmentlengthcheck.h
+  vector/geometry_checker/qgsgeometryselfcontactcheck.h
+  vector/geometry_checker/qgsgeometryselfintersectioncheck.h
+  vector/geometry_checker/qgsgeometrysliverpolygoncheck.h
+  vector/geometry_checker/qgsgeometrytypecheck.h
 )
 
 INCLUDE_DIRECTORIES(
