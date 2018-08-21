@@ -2756,6 +2756,45 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertAlmostEqual(features[4]['virtual'], -65.32, 2)
         self.assertAlmostEqual(features[4].geometry().constGet().x(), -7271389, -5)
 
+    def testPrecision(self):
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int", "vl", "memory")
+        layer.setGeometryPrecision(10)
+        geom = QgsGeometry.fromWkt('Polygon ((2596411 1224654, 2596400 1224652, 2596405 1224640, 2596410 1224641, 2596411 1224654))')
+        feature = QgsFeature(layer.fields())
+        feature.setGeometry(geom)
+        layer.startEditing()
+        layer.addFeature(feature)
+        self.assertGeometriesEqual(QgsGeometry.fromWkt('Polygon ((2596410 1224650, 2596400 1224650, 2596410 1224640, 2596410 1224650))'), feature.geometry(), 'geometry with unsnapped nodes', 'fixed geometry')
+        layer.setGeometryPrecision(0.0)
+        feature.setGeometry(QgsGeometry.fromWkt('Polygon ((2596411 1224654, 2596400 1224652, 2596405 1224640, 2596410 1224641, 2596411 1224654))'))
+        layer.addFeature(feature)
+        self.assertGeometriesEqual(QgsGeometry.fromWkt('Polygon ((2596411 1224654, 2596400 1224652, 2596405 1224640, 2596410 1224641, 2596411 1224654))'), feature.geometry(), 'geometry with duplicates', 'unchanged geometry')
+
+    def testRemoveDuplicateNodes(self):
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int", "vl", "memory")
+        layer.setRemoveDuplicateNodes(True)
+        geom = QgsGeometry.fromWkt('Polygon ((70 80, 80 90, 80 90, 60 50, 70 80))')
+        feature = QgsFeature(layer.fields())
+        feature.setGeometry(geom)
+        layer.startEditing()
+        layer.addFeature(feature)
+        self.assertGeometriesEqual(feature.geometry(), QgsGeometry.fromWkt('Polygon ((70 80, 80 90, 60 50, 70 80))'), 'fixed geometry', 'geometry with duplicates')
+        layer.setRemoveDuplicateNodes(False)
+        feature.setGeometry(QgsGeometry.fromWkt('Polygon ((70 80, 80 90, 80 90, 60 50, 70 80))'))
+        layer.addFeature(feature)
+        self.assertGeometriesEqual(feature.geometry(), QgsGeometry.fromWkt('Polygon ((70 80, 80 90, 80 90, 60 50, 70 80))'), 'unchanged geometry', 'geometry with duplicates')
+
+    def testPrecisionAndDuplicateNodes(self):
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int", "vl", "memory")
+        layer.setGeometryPrecision(10)
+        layer.setRemoveDuplicateNodes(True)
+        geom = QgsGeometry.fromWkt('Polygon ((2596411 1224654, 2596400 1224652, 2596402 1224653, 2596405 1224640, 2596410 1224641, 2596411 1224654))')
+        feature = QgsFeature(layer.fields())
+        feature.setGeometry(geom)
+        layer.startEditing()
+        layer.addFeature(feature)
+        self.assertGeometriesEqual(QgsGeometry.fromWkt('Polygon ((2596410 1224650, 2596400 1224650, 2596410 1224640, 2596410 1224650))'), feature.geometry(), 'geometry with unsnapped nodes', 'fixed geometry')
+
 
 class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSourceTestCase):
 
