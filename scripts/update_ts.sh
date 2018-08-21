@@ -120,6 +120,7 @@ if [ $action = push ]; then
 		echo Download of source translation failed
 		exit 1
 	fi
+	cp i18n/qgis_en.ts /tmp/qgis_en.ts-downloaded
 elif [ $action = pull ]; then
 	rm i18n/qgis_*.ts
 
@@ -175,6 +176,7 @@ $LUPDATE -locations absolute -verbose qgis_ts.pro
 perl -i.bak -ne 'print unless /^\s+<location.*qgs(expression|contexthelp)_texts\.cpp.*$/;' i18n/qgis_*.ts
 
 if [ $action = push ]; then
+	cp i18n/qgis_en.ts /tmp/qgis_en.ts-uploading
 	echo Pushing translation...
 	fail=1
 	for i in $(seq 10); do

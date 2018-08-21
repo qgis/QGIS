@@ -221,7 +221,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     task.executed.connect(on_complete)
                     self.setCurrentTask(task)
                 else:
-                    self.proxy_progress = QgsProxyProgressTask(self.tr("Executing “{}”").format(self.algorithm().displayName()))
+                    self.proxy_progress = QgsProxyProgressTask(QCoreApplication.translate("AlgorithmDialog", "Executing “{}”").format(self.algorithm().displayName()))
                     QgsApplication.taskManager().addTask(self.proxy_progress)
                     feedback.progressChanged.connect(self.proxy_progress.setProxyProgress)
                     self.feedback_dialog = self.createProgressDialog()
