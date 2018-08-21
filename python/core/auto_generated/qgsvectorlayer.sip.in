@@ -2235,12 +2235,42 @@ Test if an edit command is active
 .. versionadded:: 3.0
 %End
 
-
     bool removeDuplicateNodes() const;
+%Docstring
+If the `removeDuplicateNodes` property is set on a layer, whenever a new feature enters
+the edit buffer or the geometry of an existing feature is changed, duplicate nodes will
+automatically be removed without any user intervention.
+
+.. versionadded:: 3.4
+%End
+
     void setRemoveDuplicateNodes( bool removeDuplicateNodes );
+%Docstring
+If the `removeDuplicateNodes` property is set on a layer, whenever a new feature enters
+the edit buffer or the geometry of an existing feature is changed, duplicate nodes will
+automatically be removed without any user intervention.
+
+.. versionadded:: 3.4
+%End
+
 
     double geometryPrecision() const;
+%Docstring
+The `geometryPrecision` property of a layer will enable an automatic snap to grid operation
+on a layer whenever a new feature is added or the geometry of an existing feature is changed.
+If it is set to 0.0, this feature is disabled.
+
+.. versionadded:: 3.4
+%End
+
     void setGeometryPrecision( double geometryPrecision );
+%Docstring
+The `geometryPrecision` property of a layer will enable an automatic snap to grid
+on a layer whenever a new feature is added or the geometry of an existing feature is changed.
+If it is set to 0.0, this feature is disabled.
+
+.. versionadded:: 3.4
+%End
 
   public slots:
 

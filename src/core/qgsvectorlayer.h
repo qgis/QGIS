@@ -2018,11 +2018,41 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool isEditCommandActive() const { return mEditCommandActive; }
 
-
+    /**
+     * If the `removeDuplicateNodes` property is set on a layer, whenever a new feature enters
+     * the edit buffer or the geometry of an existing feature is changed, duplicate nodes will
+     * automatically be removed without any user intervention.
+     *
+     * \since QGIS 3.4
+     */
     bool removeDuplicateNodes() const;
+
+    /**
+     * If the `removeDuplicateNodes` property is set on a layer, whenever a new feature enters
+     * the edit buffer or the geometry of an existing feature is changed, duplicate nodes will
+     * automatically be removed without any user intervention.
+     *
+     * \since QGIS 3.4
+     */
     void setRemoveDuplicateNodes( bool removeDuplicateNodes );
 
+
+    /**
+     * The `geometryPrecision` property of a layer will enable an automatic snap to grid operation
+     * on a layer whenever a new feature is added or the geometry of an existing feature is changed.
+     * If it is set to 0.0, this feature is disabled.
+     *
+     * \since QGIS 3.4
+     */
     double geometryPrecision() const;
+
+    /**
+     * The `geometryPrecision` property of a layer will enable an automatic snap to grid
+     * on a layer whenever a new feature is added or the geometry of an existing feature is changed.
+     * If it is set to 0.0, this feature is disabled.
+     *
+     * \since QGIS 3.4
+     */
     void setGeometryPrecision( double geometryPrecision );
 
   public slots:
