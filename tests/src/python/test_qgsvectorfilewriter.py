@@ -32,6 +32,7 @@ from qgis.core import (QgsVectorLayer,
                        )
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 import os
+import tempfile
 import osgeo.gdal  # NOQA
 from osgeo import gdal, ogr
 from qgis.testing import start_app, unittest
@@ -897,6 +898,46 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertTrue(QgsVectorFileWriter.supportsFeatureStyles('KML'))
         self.assertTrue(QgsVectorFileWriter.supportsFeatureStyles('MapInfo File'))
         self.assertTrue(QgsVectorFileWriter.supportsFeatureStyles('MapInfo MIF'))
+
+    def testOverwriteGPKG(self):
+        """Test that overwriting the same origin GPKG file works only if the layername is different"""
+
+        # Prepare test data
+        ml = QgsVectorLayer('Point?field=firstfield:int&field=secondfield:int', 'test', 'memory')
+        provider = ml.dataProvider()
+        ft = QgsFeature()
+        ft.setAttributes([4, -10])
+        provider.addFeatures([ft])
+        filehandle, filename = tempfile.mkstemp('.gpkg')
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'test'
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            ml,
+            filename,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+        # Real test
+        vl = QgsVectorLayer("%s|layername=test" % filename, 'src_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 1)
+
+        # This must fail
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            vl,
+            filename,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.ErrCreateDataSource)
+        self.assertEqual(error_message, 'Cannot overwrite a OGR layer in place')
+
+        options.layerName = 'test2'
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            vl,
+            filename,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
 
 if __name__ == '__main__':

@@ -2550,16 +2550,35 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( Prepa
   int lastProgressReport = 0;
   long total = details.featureCount;
 
+  // Special rules for OGR layers
   if ( details.providerType == QLatin1String( "ogr" ) && !details.dataSourceUri.isEmpty() )
   {
     QStringList theURIParts = details.dataSourceUri.split( '|' );
     QString srcFileName = theURIParts[0];
+    QgsStringMap srcUriParams;
+    if ( theURIParts.length() > 0 )
+    {
+      for ( int i = 1; i < theURIParts.length(); ++i )
+      {
+        QStringList parts( theURIParts[i].split( '=' ) );
+        if ( parts.length() == 2 )
+          srcUriParams[parts[0]] = parts[1];
+      }
+    }
 
     if ( QFile::exists( srcFileName ) && QFileInfo( fileName ).canonicalFilePath() == QFileInfo( srcFileName ).canonicalFilePath() )
     {
-      if ( errorMessage )
-        *errorMessage = QObject::tr( "Cannot overwrite a OGR layer in place" );
-      return ErrCreateDataSource;
+      // Check the layer name too if it's a GPKG/SpatiaLite/SQLite OGR driver
+      QgsDataSourceUri uri( details.dataSourceUri );
+      if ( !( ( options.driverName == QLatin1String( "GPKG" ) ||
+                options.driverName == QLatin1String( "SpatiaLite" ) ||
+                options.driverName == QLatin1String( "SQLite" ) ) &&
+              options.layerName != srcUriParams["layername"] ) )
+      {
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Cannot overwrite a OGR layer in place" );
+        return ErrCreateDataSource;
+      }
     }
 
     // Shapefiles might contain multi types although wkbType() only reports singles
