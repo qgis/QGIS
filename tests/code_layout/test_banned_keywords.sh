@@ -107,6 +107,15 @@ HINTS[27]="Use std::shared_ptr instead"
 KEYWORDS[28]="QOverload"
 HINTS[28]="Use qgis::overload instead"
 
+KEYWORDS[29]="qFloor"
+HINTS[29]="Use std::floor instead"
+
+KEYWORDS[30]="qCeil"
+HINTS[30]="Use std::ceil instead"
+
+KEYWORDS[31]="qSqrt"
+HINTS[31]="Use std::sqrt instead"
+
 RES=
 DIR=$(git rev-parse --show-toplevel)
 
