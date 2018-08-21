@@ -43,7 +43,7 @@ struct ANALYSIS_EXPORT QgsGeometryCheckerContext
 
 class ANALYSIS_EXPORT QgsGeometryCheck
 {
-    Q_DECLARE_TR_FUNCTIONS()
+    Q_DECLARE_TR_FUNCTIONS( QgsGeometryCheck )
 
   public:
     enum ChangeWhat
