@@ -196,6 +196,9 @@ class TestCase(_TestCase):
                 diff = list(diff)
                 self.assertEqual(0, len(diff), ''.join(diff))
 
+    def assertGeometriesEqual(self, geom0, geom1, geom0_id='geometry 1', geom1_id='geometry 2', precision=14, topo_equal_check=False):
+        self.checkGeometriesEqual(geom0, geom1, geom0_id, geom1_id, use_asserts=True, precision=precision, topo_equal_check=topo_equal_check)
+
     def checkGeometriesEqual(self, geom0, geom1, geom0_id, geom1_id, use_asserts=False, precision=14, topo_equal_check=False):
         """ Checks whether two geometries are the same - using either a strict check of coordinates (up to given precision)
         or by using topological equality (where e.g. a polygon with clockwise is equal to a polygon with counter-clockwise
