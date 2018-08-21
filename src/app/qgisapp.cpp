@@ -90,6 +90,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgscameracontroller.h"
 #include "qgsflatterraingenerator.h"
+#include "qgslayoutitem3dmap.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "processing/qgs3dalgorithms.h"
 #endif
@@ -10798,6 +10799,12 @@ void QgisApp::initNativeProcessing()
 
 void QgisApp::initLayouts()
 {
+#ifdef HAVE_3D
+  QgsApplication::layoutItemRegistry()->addLayoutItemType(
+    new QgsLayoutItemMetadata( QgsLayoutItemRegistry::Layout3DMap, QObject::tr( "3D Map" ), QgsLayoutItem3DMap::create )
+  );
+#endif
+
   QgsLayoutAppUtils::registerGuiForKnownItemTypes();
 
   mLayoutQptDropHandler = new QgsLayoutQptDropHandler( this );
