@@ -2055,6 +2055,10 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     mFieldWidgetSetups[fieldName] = setup;
   }
 
+  QDomElement geometryOptionsElement = layerNode.namedItem( QStringLiteral( "geometryOptions" ) ).toElement();
+  mGeometryOptions.geometryPrecision = geometryOptionsElement.attribute( QStringLiteral( "geometryPrecision" ),  QStringLiteral( "0.0" ) ).toDouble();
+  mGeometryOptions.removeDuplicateNodes = geometryOptionsElement.attribute( QStringLiteral( "removeDuplicateNodes" ),  QStringLiteral( "0" ) ).toInt() == 1;
+
   mEditFormConfig.readXml( layerNode, context );
 
   mAttributeTableConfig.readXml( layerNode );
@@ -2248,6 +2252,12 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
   QDomElement fieldConfigurationElement = doc.createElement( QStringLiteral( "fieldConfiguration" ) );
   node.appendChild( fieldConfigurationElement );
+
+  QDomElement geometryOptionsElement = doc.createElement( QStringLiteral( "geometryOptions" ) );
+  node.appendChild( geometryOptionsElement );
+
+  geometryOptionsElement.setAttribute( QStringLiteral( "removeDuplicateNodes" ), mGeometryOptions.removeDuplicateNodes ? 1 : 0 );
+  geometryOptionsElement.setAttribute( QStringLiteral( "geometryPrecision" ), mGeometryOptions.geometryPrecision );
 
   int index = 0;
   Q_FOREACH ( const QgsField &field, mFields )
