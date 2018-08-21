@@ -43,7 +43,8 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
 {
   QgsOffscreen3DEngine engine;
   QSizeF sizePixels = mLayout->renderContext().measurementConverter().convert( sizeWithUnits(), QgsUnitTypes::LayoutPixels ).toQSizeF();
-  engine.setSize( QSize( qCeil( sizePixels.width() ), qCeil( sizePixels.height() ) ) );
+  engine.setSize( QSize( static_cast<int>( std::ceil( sizePixels.width() ) ),
+                         static_cast<int>( std::ceil( sizePixels.height() ) ) ) );
 
   Qgs3DMapScene *scene = new Qgs3DMapScene( *mSettings, &engine );
   engine.setRootEntity( scene );
