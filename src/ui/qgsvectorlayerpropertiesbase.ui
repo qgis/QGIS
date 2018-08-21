@@ -2361,7 +2361,7 @@ border-radius: 2px;</string>
               <item row="0" column="0" colspan="2">
                <widget class="QCheckBox" name="mRemoveDuplicateVerticeCheckbox">
                 <property name="text">
-                 <string>Remove duplciate vertices</string>
+                 <string>Remove duplicate vertices</string>
                 </property>
                </widget>
               </item>
