@@ -944,6 +944,20 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return false;
 
+
+  if ( mGeometryOptions.geometryPrecision != 0.0 || mGeometryOptions.removeDuplicateNodes )
+  {
+    QgsGeometry geom = feature.geometry();
+
+    if ( mGeometryOptions.geometryPrecision != 0.0 )
+      geom = geom.snappedToGrid( mGeometryOptions.geometryPrecision, mGeometryOptions.geometryPrecision );
+
+    if ( mGeometryOptions.removeDuplicateNodes )
+      geom.removeDuplicateNodes();
+
+    feature.setGeometry( geom );
+  }
+
   bool success = mEditBuffer->addFeature( feature );
 
   if ( success )
@@ -957,7 +971,7 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
   return success;
 }
 
-bool QgsVectorLayer::updateFeature( const QgsFeature &updatedFeature, bool skipDefaultValues )
+bool QgsVectorLayer::updateFeature( QgsFeature &updatedFeature, bool skipDefaultValues )
 {
   if ( !mEditBuffer || !mDataProvider )
   {
@@ -972,9 +986,11 @@ bool QgsVectorLayer::updateFeature( const QgsFeature &updatedFeature, bool skipD
 
     if ( ( updatedFeature.hasGeometry() || currentFeature.hasGeometry() ) && !updatedFeature.geometry().equals( currentFeature.geometry() ) )
     {
-      if ( changeGeometry( updatedFeature.id(), updatedFeature.geometry(), true ) )
+      QgsGeometry geometry = updatedFeature.geometry();
+      if ( changeGeometry( updatedFeature.id(), geometry, true ) )
       {
         hasChanged = true;
+        updatedFeature.setGeometry( geometry );
       }
       else
       {
@@ -2485,12 +2501,18 @@ bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
 }
 
 
-bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, const QgsGeometry &geom, bool skipDefaultValue )
+bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry &geom, bool skipDefaultValue )
 {
   if ( !mEditBuffer || !mDataProvider )
   {
     return false;
   }
+
+  if ( mGeometryOptions.geometryPrecision != 0.0 )
+    geom = geom.snappedToGrid( mGeometryOptions.geometryPrecision, mGeometryOptions.geometryPrecision );
+
+  if ( mGeometryOptions.removeDuplicateNodes )
+    geom.removeDuplicateNodes();
 
   updateExtents();
 
@@ -2959,6 +2981,22 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList &features, Flags )
 {
   if ( !mEditBuffer || !mDataProvider )
     return false;
+
+  if ( mGeometryOptions.geometryPrecision != 0.0 || mGeometryOptions.removeDuplicateNodes )
+  {
+    for ( auto feature = features.begin(); feature != features.end(); ++feature )
+    {
+      QgsGeometry geom = feature->geometry();
+
+      if ( mGeometryOptions.geometryPrecision != 0.0 )
+        geom = geom.snappedToGrid( mGeometryOptions.geometryPrecision, mGeometryOptions.geometryPrecision );
+
+      if ( mGeometryOptions.removeDuplicateNodes )
+        geom.removeDuplicateNodes();
+
+      feature->setGeometry( geom );
+    }
+  }
 
   bool res = mEditBuffer->addFeatures( features );
   updateExtents();
@@ -4742,6 +4780,26 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
   }
 
   return labeling;
+}
+
+double QgsVectorLayer::geometryPrecision() const
+{
+  return mGeometryOptions.geometryPrecision;
+}
+
+void QgsVectorLayer::setGeometryPrecision( double geometryPrecision )
+{
+  mGeometryOptions.geometryPrecision = geometryPrecision;
+}
+
+bool QgsVectorLayer::removeDuplicateNodes() const
+{
+  return mGeometryOptions.removeDuplicateNodes;
+}
+
+void QgsVectorLayer::setRemoveDuplicateNodes( bool removeDuplicateNodes )
+{
+  mGeometryOptions.removeDuplicateNodes = removeDuplicateNodes;
 }
 
 void QgsVectorLayer::setReadExtentFromXml( bool readExtentFromXml )

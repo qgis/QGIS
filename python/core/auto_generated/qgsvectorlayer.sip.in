@@ -329,6 +329,16 @@ Constructor for LayerOptions.
 
     };
 
+    struct GeometryOptions
+    {
+      explicit GeometryOptions( bool removeDuplicateNodes = false, double geometryPrecision = 0.0 );
+
+
+      bool removeDuplicateNodes;
+
+      double geometryPrecision;
+    };
+
     explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
                              const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
 %Docstring
@@ -1062,7 +1072,7 @@ Query the layer for the features which intersect the specified rectangle.
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
 
 
-    bool updateFeature( const QgsFeature &feature, bool skipDefaultValues = false );
+    bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
 %Docstring
 Updates an existing ``feature`` in the layer, replacing the attributes and geometry for the feature
 with matching QgsFeature.id() with the attributes and geometry from ``feature``.
@@ -1498,7 +1508,7 @@ Make layer read-only (editing disabled) or not
 :return: false if the layer is in editing yet
 %End
 
-    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geometry, bool skipDefaultValue = false );
+    bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
 %Docstring
 Changes a feature's ``geometry`` within the layer's edit buffer
 (but does not immediately commit the changes). The ``fid`` argument
@@ -2224,6 +2234,13 @@ Test if an edit command is active
 
 .. versionadded:: 3.0
 %End
+
+
+    bool removeDuplicateNodes() const;
+    void setRemoveDuplicateNodes( bool removeDuplicateNodes );
+
+    double geometryPrecision() const;
+    void setGeometryPrecision( double geometryPrecision );
 
   public slots:
 

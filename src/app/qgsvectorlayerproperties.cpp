@@ -289,9 +289,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   //insert existing join info
   const QList< QgsVectorLayerJoinInfo > &joins = mLayer->vectorJoins();
-  for ( int i = 0; i < joins.size(); ++i )
+  for ( const QgsVectorLayerJoinInfo &join : joins )
   {
-    addJoinToTreeWidget( joins[i] );
+    addJoinToTreeWidget( join );
   }
 
   mOldJoins = mLayer->vectorJoins();
@@ -422,6 +422,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( mAuxiliaryStorageFieldsAddBtn, &QPushButton::clicked, this, &QgsVectorLayerProperties::onAuxiliaryLayerAddField );
 
   updateAuxiliaryStoragePage();
+
+  mRemoveDuplicateVerticeCheckbox->setChecked( mLayer->removeDuplicateNodes() );
+  mGeometryPrecisionSpinBox->setValue( mLayer->geometryPrecision() );
 
   optionsStackedWidget_CurrentChanged( mOptStackedWidget->currentIndex() );
 }
@@ -760,6 +763,9 @@ void QgsVectorLayerProperties::apply()
 #ifdef HAVE_3D
   mVector3DWidget->apply();
 #endif
+
+  mLayer->setRemoveDuplicateNodes( mRemoveDuplicateVerticeCheckbox->isChecked() );
+  mLayer->setGeometryPrecision( mGeometryPrecisionSpinBox->value() );
 
   // update symbology
   emit refreshLegend( mLayer->id() );

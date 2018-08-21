@@ -408,6 +408,32 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     };
 
+    struct GeometryOptions
+    {
+      explicit GeometryOptions( bool removeDuplicateNodes = false, double geometryPrecision = 0.0 )
+        : removeDuplicateNodes( removeDuplicateNodes )
+        , geometryPrecision( geometryPrecision )
+      {
+      }
+
+
+      /**
+       * Automatically remove duplicate nodes on all geometries which are edited on this layer.
+       *
+       * \since QGIS 3.4
+       */
+      bool removeDuplicateNodes = false;
+
+      /**
+       * The precision in which geometries on this layer should be saved.
+       * Geometries which are edited on this layer will be rounded to multiples of this value (snap to grid).
+       * Set to 0.0 to disable.
+       *
+       * \since QGIS 3.4
+       */
+      double geometryPrecision = 0.0;
+    };
+
     /**
      * Constructor - creates a vector layer
      *
@@ -1069,7 +1095,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see changeGeometry()
      * \see changeAttributeValue()
     */
-    bool updateFeature( const QgsFeature &feature, bool skipDefaultValues = false );
+    bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
 
     /**
      * Insert a new vertex before the given vertex number,
@@ -1402,7 +1428,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see changeAttributeValue()
      * \see updateFeature()
      */
-    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geometry, bool skipDefaultValue = false );
+    bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
 
     /**
      * Changes an attribute value for a feature (but does not immediately commit the changes).
@@ -1992,6 +2018,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool isEditCommandActive() const { return mEditCommandActive; }
 
+
+    bool removeDuplicateNodes() const;
+    void setRemoveDuplicateNodes( bool removeDuplicateNodes );
+
+    double geometryPrecision() const;
+    void setGeometryPrecision( double geometryPrecision );
+
   public slots:
 
     /**
@@ -2482,6 +2515,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     mutable QMutex mFeatureSourceConstructorMutex;
 
     QgsVectorLayerFeatureCounter *mFeatureCounter = nullptr;
+
+    GeometryOptions mGeometryOptions;
 
     friend class QgsVectorLayerFeatureSource;
 };
