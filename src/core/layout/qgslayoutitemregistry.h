@@ -320,6 +320,8 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
       LayoutAttributeTable, //!< Attribute table
       LayoutTextTable, //!< Preset text table
 
+      Layout3DMap,  //!< 3D map item
+
       // item types provided by plugins
       PluginItem = LayoutTextTable + 10000, //!< Starting point for plugin item types
     };
