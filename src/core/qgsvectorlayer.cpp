@@ -4800,26 +4800,6 @@ void QgsVectorLayer::setGeometryOptions( const GeometryOptions &geometryOptions 
   mGeometryOptions = geometryOptions;
 }
 
-double QgsVectorLayer::geometryPrecision() const
-{
-  return mGeometryOptions.geometryPrecision;
-}
-
-void QgsVectorLayer::setGeometryPrecision( double geometryPrecision )
-{
-  mGeometryOptions.geometryPrecision = geometryPrecision;
-}
-
-bool QgsVectorLayer::removeDuplicateNodes() const
-{
-  return mGeometryOptions.removeDuplicateNodes;
-}
-
-void QgsVectorLayer::setRemoveDuplicateNodes( bool removeDuplicateNodes )
-{
-  mGeometryOptions.removeDuplicateNodes = removeDuplicateNodes;
-}
-
 void QgsVectorLayer::setReadExtentFromXml( bool readExtentFromXml )
 {
   mReadExtentFromXml = readExtentFromXml;
