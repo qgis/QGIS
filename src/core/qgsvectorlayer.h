@@ -2020,7 +2020,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * The geometry options applied to this layer contain information about
-     * how geomtries should be preprocessed when added to or edited on this layer.
+     * how geometries should be preprocessed when added to or edited on this layer.
      *
      * \since QGIS 3.4
      */
@@ -2028,7 +2028,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * The geometry options applied to this layer contain information about
-     * how geomtries should be preprocessed when added to or edited on this layer.
+     * how geometries should be preprocessed when added to or edited on this layer.
      *
      * \since QGIS 3.4
      */

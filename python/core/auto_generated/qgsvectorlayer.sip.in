@@ -2238,7 +2238,7 @@ Test if an edit command is active
     GeometryOptions geometryOptions() const;
 %Docstring
 The geometry options applied to this layer contain information about
-how geomtries should be preprocessed when added to or edited on this layer.
+how geometries should be preprocessed when added to or edited on this layer.
 
 .. versionadded:: 3.4
 %End
@@ -2246,7 +2246,7 @@ how geomtries should be preprocessed when added to or edited on this layer.
     void setGeometryOptions( const GeometryOptions &geometryOptions );
 %Docstring
 The geometry options applied to this layer contain information about
-how geomtries should be preprocessed when added to or edited on this layer.
+how geometries should be preprocessed when added to or edited on this layer.
 
 .. versionadded:: 3.4
 %End
