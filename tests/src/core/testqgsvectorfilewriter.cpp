@@ -80,6 +80,8 @@ class TestQgsVectorFileWriter: public QObject
     void projectedPlygonGridTest();
     //! This is a regression test ticket 1141 (broken Polish characters support since r8592) https://issues.qgis.org/issues/1141
     void regression1141();
+    //! Test prepareWriteAsVectorFormat
+    void prepareWriteAsVectorFormat();
 
   private:
     // a little util fn used by all tests
@@ -106,6 +108,7 @@ void TestQgsVectorFileWriter::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::showSettings();
+  QgsApplication::initQgis();
   //create some objects that will be used in all tests...
 
   mEncoding = QStringLiteral( "UTF-8" );
@@ -455,6 +458,37 @@ void TestQgsVectorFileWriter::regression1141()
 
   // Now check we can delete it again OK
   QVERIFY( QgsVectorFileWriter::deleteShapeFile( fileName ) );
+}
+
+void TestQgsVectorFileWriter::prepareWriteAsVectorFormat()
+{
+  QgsVectorFileWriter::PreparedWriterDetails details;
+  QgsVectorFileWriter::SaveVectorOptions options;
+  QgsVectorLayer ml( "Point?field=firstfield:int&field=secondfield:int", "test", "memory" );
+  QgsFeature ft( ml.fields( ) );
+  ft.setAttribute( 0, 4 );
+  ft.setAttribute( 1, -10 );
+  ml.dataProvider()->addFeature( ft );
+  QVERIFY( ml.isValid() );
+  QTemporaryFile tmpFile( QDir::tempPath() +  "/test_qgsvectorfilewriter_XXXXXX.gpkg" );
+  tmpFile.open();
+  QString fileName( tmpFile.fileName( ) );
+  options.driverName = "GPKG";
+  options.layerName = "test";
+  QString errorMessage;
+  QgsVectorFileWriter::WriterError error( QgsVectorFileWriter::writeAsVectorFormat(
+      &ml,
+      fileName,
+      options,
+      &errorMessage ) );
+
+  QCOMPARE( error, QgsVectorFileWriter::WriterError::NoError );
+  QCOMPARE( errorMessage, fileName );
+  QgsVectorLayer vl( QStringLiteral( "%1|layername=test" ).arg( fileName ), "src_test", "ogr" );
+  QVERIFY( vl.isValid() );
+  QgsVectorFileWriter::prepareWriteAsVectorFormat( &vl, options, details );
+  QCOMPARE( details.providerUriParams.value( "layerName" ), QStringLiteral( "test" ) );
+  QCOMPARE( details.providerUriParams.value( "path" ), fileName );
 }
 
 QGSTEST_MAIN( TestQgsVectorFileWriter )
