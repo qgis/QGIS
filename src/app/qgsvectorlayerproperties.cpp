@@ -991,7 +991,7 @@ void QgsVectorLayerProperties::loadStyle_clicked()
   }
   else
   {
-    myMessage = mLayer->loadNamedStyle( myFileName, defaultLoadedFlag );
+    myMessage = mLayer->loadNamedStyle( myFileName, defaultLoadedFlag, true );
   }
   //reset if the default style was loaded OK only
   if ( defaultLoadedFlag )
