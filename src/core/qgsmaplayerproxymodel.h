@@ -98,14 +98,34 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
      */
     QStringList excludedProviders() const { return mExcludedProviders; }
 
+    /**
+     * Returns the current filter string, if set.
+     *
+     * \see setFilterString()
+     * \since QGIS 3.4
+     */
+    QString filterString() const { return mFilterString; }
+
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+
+  public slots:
+
+    /**
+     * Sets a \a filter string, such that only layers with names matching the
+     * specified string will be shown.
+     *
+     * \see filterString()
+     * \since QGIS 3.4
+    */
+    void setFilterString( const QString &filter );
 
   private:
     Filters mFilters;
     QList<QgsMapLayer *> mExceptList;
     QgsMapLayerModel *mModel = nullptr;
     QStringList mExcludedProviders;
+    QString mFilterString;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerProxyModel::Filters )

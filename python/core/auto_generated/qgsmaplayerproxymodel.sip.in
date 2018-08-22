@@ -95,10 +95,31 @@ Returns the list of data providers which are excluded from the model.
 .. versionadded:: 3.0
 %End
 
+    QString filterString() const;
+%Docstring
+Returns the current filter string, if set.
+
+.. seealso:: :py:func:`setFilterString`
+
+.. versionadded:: 3.4
+%End
+
     virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
 
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
+
+  public slots:
+
+    void setFilterString( const QString &filter );
+%Docstring
+Sets a ``filter`` string, such that only layers with names matching the
+specified string will be shown.
+
+.. seealso:: :py:func:`filterString`
+
+.. versionadded:: 3.4
+%End
 
 };
 
