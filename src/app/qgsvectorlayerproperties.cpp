@@ -429,8 +429,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mRemoveDuplicateVerticeCheckbox->setEnabled( true );
     mGeometryPrecisionSpinBox->setEnabled( true );
 
-    mRemoveDuplicateVerticeCheckbox->setChecked( geomOps.removeDuplicateNodes() );
-    mGeometryPrecisionSpinBox->setValue( geomOps.geometryPrecision() );
+    mRemoveDuplicateVerticeCheckbox->setChecked( geomOps.removeDuplicateNodes );
+    mGeometryPrecisionSpinBox->setValue( geomOps.geometryPrecision );
 
     mGeometryPrecisionSpinBox->setSuffix( QStringLiteral( " [%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
   }
