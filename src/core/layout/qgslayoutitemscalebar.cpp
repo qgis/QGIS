@@ -473,8 +473,8 @@ void QgsLayoutItemScaleBar::applyDefaultSize( QgsUnitTypes::DistanceUnit units )
     mSettings.setUnitsPerSegment( unitsPerSegment );
     mSettings.setMapUnitsPerScaleBarUnit( upperMagnitudeMultiplier );
 
-    mSettings.setNumberOfSegments( 4 );
-    mSettings.setNumberOfSegmentsLeft( 2 );
+    mSettings.setNumberOfSegments( 2 );
+    mSettings.setNumberOfSegmentsLeft( 0 );
   }
 
   refreshSegmentMillimeters();
