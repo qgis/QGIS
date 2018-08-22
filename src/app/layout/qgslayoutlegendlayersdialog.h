@@ -18,7 +18,7 @@
 #include "ui_qgslayoutlegendlayersdialogbase.h"
 
 class QgsMapLayer;
-class QgsMapLayerModel;
+class QgsMapLayerProxyModel;
 
 /**
  * \ingroup app
@@ -37,7 +37,7 @@ class QgsLayoutLegendLayersDialog: public QDialog, private Ui::QgsLayoutLegendLa
   private:
     QgsLayoutLegendLayersDialog() = delete;
 
-    QgsMapLayerModel *mModel = nullptr;
+    QgsMapLayerProxyModel *mModel = nullptr;
 };
 
 #endif //QGSLAYOUTLEGENDLAYERSDIALOG_H
