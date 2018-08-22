@@ -81,8 +81,7 @@ void QgsTranslationContext::writeTsFile( const QString &locale )
     messageElement.appendChild( sourceElement );
 
     QDomElement translationElement = doc.createElement( QStringLiteral( "translation" ) );
-    QDomText translationText = doc.createTextNode( translatableObject.source );
-    translationElement.appendChild( translationText );
+    translationElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "unfinished" ) );
     messageElement.appendChild( translationElement );
   }
 

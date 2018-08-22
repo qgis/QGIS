@@ -2834,5 +2834,11 @@ QString QgsProject::translate( const QString &context, const QString &sourceText
     return sourceText;
   }
 
-  return mTranslator->translate( context.toUtf8(), sourceText.toUtf8(), disambiguation, n );
+  QString result = mTranslator->translate( context.toUtf8(), sourceText.toUtf8(), disambiguation, n );
+
+  if ( result.isEmpty() )
+  {
+    return sourceText;
+  }
+  return result;
 }
