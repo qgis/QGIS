@@ -17,6 +17,7 @@
 #include <QStandardItem>
 #include "qgsmaplayer.h"
 #include "qgsmaplayermodel.h"
+#include "qgsmaplayerproxymodel.h"
 #include "qgssettings.h"
 
 QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
@@ -26,7 +27,7 @@ QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/LayoutLegendLayers/geometry" ) ).toByteArray() );
 
-  mModel = new QgsMapLayerModel( listMapLayers );
+  mModel = new QgsMapLayerProxyModel( listMapLayers );
   listMapLayers->setModel( mModel );
   QModelIndex firstLayer = mModel->index( 0, 0 );
   listMapLayers->selectionModel()->select( firstLayer, QItemSelectionModel::Select );
@@ -47,7 +48,13 @@ QList< QgsMapLayer *> QgsLayoutLegendLayersDialog::selectedLayers() const
   const QModelIndexList selection = listMapLayers->selectionModel()->selectedIndexes();
   for ( const QModelIndex &index : selection )
   {
-    QgsMapLayer *layer = mModel->layerFromIndex( index );
+    const QModelIndex sourceIndex = mModel->mapToSource( index );
+    if ( !sourceIndex.isValid() )
+    {
+      continue;
+    }
+
+    QgsMapLayer *layer = mModel->sourceLayerModel()->layerFromIndex( sourceIndex );
     if ( layer )
       layers << layer;
   }
