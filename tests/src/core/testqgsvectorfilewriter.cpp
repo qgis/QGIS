@@ -487,8 +487,8 @@ void TestQgsVectorFileWriter::prepareWriteAsVectorFormat()
   QgsVectorLayer vl( QStringLiteral( "%1|layername=test" ).arg( fileName ), "src_test", "ogr" );
   QVERIFY( vl.isValid() );
   QgsVectorFileWriter::prepareWriteAsVectorFormat( &vl, options, details );
-  QCOMPARE( details.providerUriParams.value( "layerName" ), QStringLiteral( "test" ) );
-  QCOMPARE( details.providerUriParams.value( "path" ), fileName );
+  QCOMPARE( details.providerUriParams.value( "layerName" ).toString(), QStringLiteral( "test" ) );
+  QCOMPARE( details.providerUriParams.value( "path" ).toString(), fileName );
 }
 
 QGSTEST_MAIN( TestQgsVectorFileWriter )
