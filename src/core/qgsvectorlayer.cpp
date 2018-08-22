@@ -4790,6 +4790,16 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
   return labeling;
 }
 
+QgsVectorLayer::GeometryOptions QgsVectorLayer::geometryOptions() const
+{
+  return mGeometryOptions;
+}
+
+void QgsVectorLayer::setGeometryOptions( const GeometryOptions &geometryOptions )
+{
+  mGeometryOptions = geometryOptions;
+}
+
 double QgsVectorLayer::geometryPrecision() const
 {
   return mGeometryOptions.geometryPrecision;

@@ -423,13 +423,14 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   updateAuxiliaryStoragePage();
 
+  QgsVectorLayer::GeometryOptions geomOps = mLayer->geometryOptions();
   if ( mLayer->isSpatial() )
   {
     mRemoveDuplicateVerticeCheckbox->setEnabled( true );
     mGeometryPrecisionSpinBox->setEnabled( true );
 
-    mRemoveDuplicateVerticeCheckbox->setChecked( mLayer->removeDuplicateNodes() );
-    mGeometryPrecisionSpinBox->setValue( mLayer->geometryPrecision() );
+    mRemoveDuplicateVerticeCheckbox->setChecked( geomOps.removeDuplicateNodes() );
+    mGeometryPrecisionSpinBox->setValue( geomOps.geometryPrecision() );
 
     mGeometryPrecisionSpinBox->setSuffix( QStringLiteral( " [%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
   }
@@ -777,8 +778,10 @@ void QgsVectorLayerProperties::apply()
   mVector3DWidget->apply();
 #endif
 
-  mLayer->setRemoveDuplicateNodes( mRemoveDuplicateVerticeCheckbox->isChecked() );
-  mLayer->setGeometryPrecision( mGeometryPrecisionSpinBox->value() );
+  QgsVectorLayer::GeometryOptions geomOps;
+  geomOps.removeDuplicateNodes = mRemoveDuplicateVerticeCheckbox->isChecked();
+  geomOps.geometryPrecision = mGeometryPrecisionSpinBox->value();
+  mLayer->setGeometryOptions( geomOps );
 
   // update symbology
   emit refreshLegend( mLayer->id() );
