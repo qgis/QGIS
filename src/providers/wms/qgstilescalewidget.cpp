@@ -35,8 +35,8 @@ QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent
   , mMapCanvas( mapCanvas )
 {
   setupUi( this );
-  connect( mSlider, &QSlider::valueChanged, this, &QgsTileScaleWidget::mSlider_valueChanged );
 
+  connect( mSlider, &QSlider::valueChanged, this, &QgsTileScaleWidget::mSlider_valueChanged );
   connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, &QgsTileScaleWidget::scaleChanged );
 
   layerChanged( mMapCanvas->currentLayer() );
@@ -110,6 +110,11 @@ void QgsTileScaleWidget::mSlider_valueChanged( int value )
   mMapCanvas->zoomByFactor( mResolutions.at( mSlider->value() ) / mMapCanvas->mapUnitsPerPixel() );
 }
 
+void QgsTileScaleWidget::locationChanged( Qt::DockWidgetArea area )
+{
+  mSlider->setOrientation( area == Qt::TopDockWidgetArea || area == Qt::BottomDockWidgetArea ? Qt::Horizontal : Qt::Vertical );
+}
+
 void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
 {
   QgsDockWidget *dock = mainWindow->findChild<QgsDockWidget *>( QStringLiteral( "theTileScaleDock" ) );
@@ -144,7 +149,9 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   //create the dock widget
   dock = new QgsDockWidget( tr( "Tile Scale" ), mainWindow );
   dock->setObjectName( QStringLiteral( "theTileScaleDock" ) );
-  dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+
+  connect( dock, &QDockWidget::dockLocationChanged, tws, &QgsTileScaleWidget::locationChanged );
+
   mainWindow->addDockWidget( Qt::RightDockWidgetArea, dock );
 
   // add to the Panel submenu
