@@ -18,10 +18,43 @@
 #include "qgsmacnative.h"
 
 #include <Cocoa/Cocoa.h>
+#include <QtMacExtras/QtMac>
+
 #include <QString>
+#include <QPixmap>
+
+
+@interface QgsUserNotificationCenterDelegate : NSObject <NSUserNotificationCenterDelegate>
+@end
+
+@implementation QgsUserNotificationCenterDelegate
+
+- ( BOOL )userNotificationCenter:( NSUserNotificationCenter * )center shouldPresentNotification:( NSUserNotification * )notification
+{
+#pragma unused (notification)
+#pragma unused (center)
+  return YES;
+}
+
+@end
+
+class QgsMacNative::QgsUserNotificationCenter
+{
+  public:
+    QgsUserNotificationCenterDelegate *_qgsUserNotificationCenter;
+};
+
+QgsMacNative::QgsMacNative()
+  : mQgsUserNotificationCenter( new QgsMacNative::QgsUserNotificationCenter() )
+{
+  mQgsUserNotificationCenter->_qgsUserNotificationCenter = [[QgsUserNotificationCenterDelegate alloc] init];
+  [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate: mQgsUserNotificationCenter->_qgsUserNotificationCenter];
+}
 
 QgsMacNative::~QgsMacNative()
 {
+  [mQgsUserNotificationCenter->_qgsUserNotificationCenter dealloc];
+  delete mQgsUserNotificationCenter;
 }
 
 const char *QgsMacNative::currentAppLocalizedName()
@@ -40,4 +73,39 @@ void QgsMacNative::openFileExplorerAndSelectFile( const QString &path )
   NSString *pathStr = [[NSString alloc] initWithUTF8String:path.toUtf8().data()];
   NSArray *fileURLs = [NSArray arrayWithObjects:[NSURL fileURLWithPath:pathStr], nil];
   [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:fileURLs];
+}
+
+QgsNative::Capabilities QgsMacNative::capabilities() const
+{
+  return NativeDesktopNotifications;
+}
+
+QgsNative::NotificationResult QgsMacNative::showDesktopNotification( const QString &summary,
+    const QString &body,
+    const QgsNative::NotificationSettings &settings )
+{
+  NSUserNotification *notification = [[NSUserNotification alloc] init];
+  notification.title = summary.toNSString();
+  notification.informativeText = body.toNSString();
+  notification.soundName = NSUserNotificationDefaultSoundName;   //Will play a default sound
+  const QPixmap px = QPixmap::fromImage( settings.image );
+  NSImage *image = nil;
+  if ( settings.image.isNull() )
+  {
+    image = [[NSImage imageNamed:@"NSApplicationIcon"] retain];
+  }
+  else
+  {
+    image = QtMac::toNSImage( px );
+  }
+  notification.contentImage = image;
+
+  [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification: notification];
+  [notification autorelease];
+
+  //[userCenterDelegate dealloc];
+
+  NotificationResult result;
+  result.successful = true;
+  return result;
 }
