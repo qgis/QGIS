@@ -757,6 +757,20 @@ void QgsVectorLayer::setExtent( const QgsRectangle &r )
   mValidExtent = true;
 }
 
+void QgsVectorLayer::applyGeometryFixes( QgsGeometry &geom ) const
+{
+  if ( mGeometryOptions.geometryPrecision != 0.0 )
+    geom = geom.snappedToGrid( mGeometryOptions.geometryPrecision, mGeometryOptions.geometryPrecision );
+
+  if ( mGeometryOptions.removeDuplicateNodes )
+    geom.removeDuplicateNodes();
+}
+
+bool QgsVectorLayer::geometryFixesEnabled() const
+{
+  return mGeometryOptions.geometryPrecision != 0.0 || mGeometryOptions.removeDuplicateNodes;
+}
+
 void QgsVectorLayer::updateDefaultValues( QgsFeatureId fid, QgsFeature feature )
 {
   if ( !mDefaultValueOnUpdateFields.isEmpty() )
@@ -945,16 +959,10 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
     return false;
 
 
-  if ( mGeometryOptions.geometryPrecision != 0.0 || mGeometryOptions.removeDuplicateNodes )
+  if ( geometryFixesEnabled() )
   {
     QgsGeometry geom = feature.geometry();
-
-    if ( mGeometryOptions.geometryPrecision != 0.0 )
-      geom = geom.snappedToGrid( mGeometryOptions.geometryPrecision, mGeometryOptions.geometryPrecision );
-
-    if ( mGeometryOptions.removeDuplicateNodes )
-      geom.removeDuplicateNodes();
-
+    applyGeometryFixes( geom );
     feature.setGeometry( geom );
   }
 
@@ -2518,11 +2526,7 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry &geom, bool s
     return false;
   }
 
-  if ( mGeometryOptions.geometryPrecision != 0.0 )
-    geom = geom.snappedToGrid( mGeometryOptions.geometryPrecision, mGeometryOptions.geometryPrecision );
-
-  if ( mGeometryOptions.removeDuplicateNodes )
-    geom.removeDuplicateNodes();
+  applyGeometryFixes( geom );
 
   updateExtents();
 
@@ -2992,18 +2996,12 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList &features, Flags )
   if ( !mEditBuffer || !mDataProvider )
     return false;
 
-  if ( mGeometryOptions.geometryPrecision != 0.0 || mGeometryOptions.removeDuplicateNodes )
+  if ( geometryFixesEnabled() )
   {
     for ( auto feature = features.begin(); feature != features.end(); ++feature )
     {
       QgsGeometry geom = feature->geometry();
-
-      if ( mGeometryOptions.geometryPrecision != 0.0 )
-        geom = geom.snappedToGrid( mGeometryOptions.geometryPrecision, mGeometryOptions.geometryPrecision );
-
-      if ( mGeometryOptions.removeDuplicateNodes )
-        geom.removeDuplicateNodes();
-
+      applyGeometryFixes( geom );
       feature->setGeometry( geom );
     }
   }

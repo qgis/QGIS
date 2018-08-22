@@ -2387,6 +2387,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setExtent( const QgsRectangle &rect ) override;
 
   private:                       // Private methods
+    /**
+     * Applies automatic fixes to geometries added to or edited on this layer.
+     */
+    void applyGeometryFixes( QgsGeometry &geom ) const;
+
+    /**
+     * Check if geometry fixes are enabled and `applyGeometryFixes` needs to be called.
+     */
+    bool geometryFixesEnabled() const;
 
     void updateDefaultValues( QgsFeatureId fid, QgsFeature feature = QgsFeature() );
 
