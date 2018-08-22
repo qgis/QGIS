@@ -2820,7 +2820,7 @@ void QgsProject::generateTsFile( const QString &locale )
 {
   QgsTranslationContext translationContext;
   translationContext.setProject( this );
-  translationContext.setFileName( QStringLiteral( "%1/%2_%3.ts" ).arg( absolutePath(), baseName(), locale ) );
+  translationContext.setFileName( QStringLiteral( "%1/%2.ts" ).arg( absolutePath(), baseName() ) );
 
   emit QgsApplication::instance()->collectTranslatableObjects( &translationContext );
 

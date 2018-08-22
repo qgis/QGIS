@@ -807,6 +807,13 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_4">
                   <item>
+                   <widget class="QLabel" name="sourceLanguageLabel">
+                    <property name="text">
+                     <string>Source language</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
                    <widget class="QComboBox" name="cbtsLocale"/>
                   </item>
                   <item>
@@ -2921,6 +2928,7 @@
   <tabstop>teOWSChecker</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
