@@ -98,7 +98,7 @@ struct QgsGeometryPrivate;
  * container class can also be stored inside a QVariant object.
  *
  * The actual geometry representation is stored as a QgsAbstractGeometry within the container, and
- * can be accessed via the geometry() method or set using the setGeometry() method.
+ * can be accessed via the get() method or set using the set() method.
  */
 
 class CORE_EXPORT QgsGeometry
