@@ -71,6 +71,7 @@ class CORE_EXPORT QgsFeature
     Q_PROPERTY( QgsFeatureId id READ id WRITE setId )
     Q_PROPERTY( QgsAttributes attributes READ attributes WRITE setAttributes )
     Q_PROPERTY( QgsFields fields READ fields WRITE setFields )
+    Q_PROPERTY( QgsGeometry geometry READ geometry WRITE setGeometry )
 
   public:
 
