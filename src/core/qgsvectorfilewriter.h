@@ -760,6 +760,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       QgsFeatureIterator sourceFeatureIterator;
       QgsGeometry filterRectGeometry;
       std::unique_ptr< QgsGeometryEngine  > filterRectEngine;
+      QVariantMap providerUriParams;
     };
 
     /**
@@ -814,6 +815,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     static QStringList concatenateOptions( const QMap<QString, Option *> &options );
 
     friend class QgsVectorFileWriterTask;
+    friend class TestQgsVectorFileWriter;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorFileWriter::EditionCapabilities )

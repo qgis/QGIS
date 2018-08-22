@@ -33,6 +33,7 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 #include "qgsgeometryengine.h"
+#include "qgsproviderregistry.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -2422,6 +2423,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
     details.dataSourceUri = layer->dataProvider()->dataSourceUri();
   details.storageType = layer->storageType();
   details.selectedFeatureIds = layer->selectedFeatureIds();
+  details.providerUriParams = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->dataProvider()->dataSourceUri() );
 
   if ( details.storageType == QLatin1String( "ESRI Shapefile" ) )
   {
@@ -2550,16 +2552,23 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( Prepa
   int lastProgressReport = 0;
   long total = details.featureCount;
 
+  // Special rules for OGR layers
   if ( details.providerType == QLatin1String( "ogr" ) && !details.dataSourceUri.isEmpty() )
   {
-    QStringList theURIParts = details.dataSourceUri.split( '|' );
-    QString srcFileName = theURIParts[0];
-
+    QString srcFileName( details.providerUriParams.value( QLatin1String( "path" ) ).toString() );
     if ( QFile::exists( srcFileName ) && QFileInfo( fileName ).canonicalFilePath() == QFileInfo( srcFileName ).canonicalFilePath() )
     {
-      if ( errorMessage )
-        *errorMessage = QObject::tr( "Cannot overwrite a OGR layer in place" );
-      return ErrCreateDataSource;
+      // Check the layer name too if it's a GPKG/SpatiaLite/SQLite OGR driver (pay attention: camel case in layerName)
+      QgsDataSourceUri uri( details.dataSourceUri );
+      if ( !( ( options.driverName == QLatin1String( "GPKG" ) ||
+                options.driverName == QLatin1String( "SpatiaLite" ) ||
+                options.driverName == QLatin1String( "SQLite" ) ) &&
+              options.layerName != details.providerUriParams.value( QLatin1String( "layerName" ) ) ) )
+      {
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Cannot overwrite a OGR layer in place" );
+        return ErrCreateDataSource;
+      }
     }
 
     // Shapefiles might contain multi types although wkbType() only reports singles
@@ -2577,7 +2586,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( Prepa
         if ( options.feedback )
         {
           //dedicate first 5% of progress bar to this scan
-          int newProgress = ( 5.0 * scanned ) / total;
+          int newProgress = static_cast<int>( ( 5.0 * scanned ) / total );
           if ( newProgress != lastProgressReport )
           {
             lastProgressReport = newProgress;
@@ -2675,7 +2684,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( Prepa
     if ( options.feedback )
     {
       //avoid spamming progress reports
-      int newProgress = initialProgress + ( ( 100.0 - initialProgress ) * saved ) / total;
+      int newProgress = static_cast<int>( initialProgress + ( ( 100.0 - initialProgress ) * saved ) / total );
       if ( newProgress < 100 && newProgress != lastProgressReport )
       {
         lastProgressReport = newProgress;
