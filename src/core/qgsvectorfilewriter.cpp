@@ -2555,14 +2555,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( Prepa
   // Special rules for OGR layers
   if ( details.providerType == QLatin1String( "ogr" ) && !details.dataSourceUri.isEmpty() )
   {
-    QStringList theURIParts = details.dataSourceUri.split( '|' );
-    QgsStringMap srcUriParams;
-    QString srcFileName;
-    if ( theURIParts.length() > 0 )
-    {
-      srcFileName = theURIParts[0];
-    }
-
+    QString srcFileName( details.providerUriParams.value( QLatin1String( "path" ) ).toString() );
     if ( QFile::exists( srcFileName ) && QFileInfo( fileName ).canonicalFilePath() == QFileInfo( srcFileName ).canonicalFilePath() )
     {
       // Check the layer name too if it's a GPKG/SpatiaLite/SQLite OGR driver (pay attention: camel case in layerName)
