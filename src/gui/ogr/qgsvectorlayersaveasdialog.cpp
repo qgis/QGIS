@@ -257,6 +257,12 @@ QList<QPair<QLabel *, QWidget *> > QgsVectorLayerSaveAsDialog::createControls( c
 
 void QgsVectorLayerSaveAsDialog::accept()
 {
+  if ( format() == QLatin1String( "KML" ) )
+  {
+    // The KML driver transforms dashes to underscores, not adjusting accordingly breaks automatic addition of dataset upon saving
+    leLayername->setText( leLayername->text().replace( '-', '_' ) );
+  }
+
   if ( QFile::exists( filename() ) )
   {
     QgsVectorFileWriter::EditionCapabilities caps =
