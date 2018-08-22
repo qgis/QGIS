@@ -28,6 +28,7 @@
 #include <QMainWindow>
 #include <QMenu>
 #include <QGraphicsView>
+#include <QToolTip>
 
 QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )
@@ -102,8 +103,10 @@ void QgsTileScaleWidget::scaleChanged( double scale )
 
 void QgsTileScaleWidget::mSlider_valueChanged( int value )
 {
-  Q_UNUSED( value );
   QgsDebugMsg( QString( "slider released at %1: %2" ).arg( mSlider->value() ).arg( mResolutions.at( mSlider->value() ) ) );
+
+  // Invert value in tooltip to match expectation (i.e. 0 = zoomed out, maximum = zoomed in)
+  QToolTip::showText( QCursor::pos(), QString( "Zoom level: %1\nResolution: %2" ).arg( mSlider->maximum() - value ).arg( mResolutions.at( value ) ), this );
   mMapCanvas->zoomByFactor( mResolutions.at( mSlider->value() ) / mMapCanvas->mapUnitsPerPixel() );
 }
 
