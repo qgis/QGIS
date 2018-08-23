@@ -28,8 +28,13 @@ class QgsLayout3DMapWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayo
   public:
     explicit QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D );
 
+  private slots:
+    void copy3DMapSettings();
+    void updateCameraPose();
+
   private:
     QPointer< QgsLayoutItem3DMap > mMap3D;
+    QMenu *mMenu3DCanvases = nullptr;
 };
 
 #endif // QGSLAYOUT3DMAPWIDGET_H

@@ -67,6 +67,38 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
   ctx.painter()->drawImage( 0, 0, img );
 }
 
+bool QgsLayoutItem3DMap::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  if ( mSettings )
+  {
+    QDomElement elemSettings = mSettings->writeXml( document, context );
+    element.appendChild( elemSettings );
+  }
+
+  QDomElement elemCameraPose = mCameraPose.writeXml( document );
+  element.appendChild( elemCameraPose );
+
+  return true;
+}
+
+bool QgsLayoutItem3DMap::readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context )
+{
+  QDomElement elemSettings = element.firstChildElement( "qgis3d" );
+  if ( !elemSettings.isNull() )
+  {
+    mSettings.reset( new Qgs3DMapSettings );
+    mSettings->readXml( elemSettings, context );
+    if ( mLayout->project() )
+      mSettings->resolveReferences( *mLayout->project() );
+  }
+
+  QDomElement elemCameraPose = element.firstChildElement( "camera-pose" );
+  if ( !elemCameraPose.isNull() )
+    mCameraPose.readXml( elemCameraPose );
+
+  return true;
+}
+
 void QgsLayoutItem3DMap::setMapSettings( Qgs3DMapSettings *settings )
 {
   mSettings.reset( settings );

@@ -17,6 +17,31 @@
 
 #include <Qt3DRender/QCamera>
 
+#include <QDomDocument>
+
+QDomElement QgsCameraPose::writeXml( QDomDocument &doc ) const
+{
+  QDomElement elemCamera = doc.createElement( "camera-pose" );
+  elemCamera.setAttribute( QStringLiteral( "x" ), mCenterPoint.x() );
+  elemCamera.setAttribute( QStringLiteral( "y" ), mCenterPoint.y() );
+  elemCamera.setAttribute( QStringLiteral( "z" ), mCenterPoint.z() );
+  elemCamera.setAttribute( QStringLiteral( "dist" ), mDistanceFromCenterPoint );
+  elemCamera.setAttribute( QStringLiteral( "pitch" ), mPitchAngle );
+  elemCamera.setAttribute( QStringLiteral( "heading" ), mHeadingAngle );
+  return elemCamera;
+}
+
+void QgsCameraPose::readXml( const QDomElement &elem )
+{
+  double x = elem.attribute( QStringLiteral( "x" ) ).toDouble();
+  double y = elem.attribute( QStringLiteral( "y" ) ).toDouble();
+  double z = elem.attribute( QStringLiteral( "z" ) ).toDouble();
+  mCenterPoint = QgsVector3D( x, y, z );
+
+  mDistanceFromCenterPoint = elem.attribute( QStringLiteral( "dist" ) ).toFloat();
+  mPitchAngle = elem.attribute( QStringLiteral( "pitch" ) ).toFloat();
+  mHeadingAngle = elem.attribute( QStringLiteral( "heading" ) ).toFloat();
+}
 
 void QgsCameraPose::updateCamera( Qt3DRender::QCamera *camera )
 {

@@ -54,7 +54,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-65</y>
         <width>510</width>
         <height>635</height>
        </rect>
@@ -90,7 +90,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="mCenterXLineEdit">
+           <widget class="QgsDoubleSpinBox" name="mCenterXSpinBox">
             <property name="decimals">
              <number>1</number>
             </property>
@@ -110,7 +110,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="mCenterYLineEdit">
+           <widget class="QgsDoubleSpinBox" name="mCenterYSpinBox">
             <property name="decimals">
              <number>1</number>
             </property>
@@ -130,7 +130,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="mCenterZLineEdit">
+           <widget class="QgsDoubleSpinBox" name="mCenterZSpinBox">
             <property name="decimals">
              <number>1</number>
             </property>
@@ -150,7 +150,7 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="mDistanceToCenterLineEdit">
+           <widget class="QgsDoubleSpinBox" name="mDistanceToCenterSpinBox">
             <property name="decimals">
              <number>1</number>
             </property>
@@ -167,7 +167,7 @@
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QDoubleSpinBox" name="mPitchAngleLineEdit">
+           <widget class="QgsDoubleSpinBox" name="mPitchAngleSpinBox">
             <property name="suffix">
              <string> °</string>
             </property>
@@ -187,7 +187,7 @@
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="QDoubleSpinBox" name="mHeadingAngleLineEdit">
+           <widget class="QgsDoubleSpinBox" name="mHeadingAngleSpinBox">
             <property name="suffix">
              <string> °</string>
             </property>
@@ -208,6 +208,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

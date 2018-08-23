@@ -73,8 +73,6 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem
 
     virtual int type() const override;
 
-    virtual void draw( QgsLayoutItemRenderContext &context ) override;
-
     //! Configures camera view
     void setCameraPose( const QgsCameraPose &pose ) { mCameraPose = pose; }
     //! Returns camera view
@@ -88,6 +86,11 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem
     void setMapSettings( Qgs3DMapSettings *settings SIP_TRANSFER );
     //! Returns map scene. May be a null pointer if not yet configured.
     Qgs3DMapSettings *mapSettings() const { return mSettings.get(); }
+
+  protected:
+    void draw( QgsLayoutItemRenderContext &context ) override;
+    bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
     std::unique_ptr<Qgs3DMapSettings> mSettings;
