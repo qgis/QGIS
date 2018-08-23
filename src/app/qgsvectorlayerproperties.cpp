@@ -425,17 +425,17 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   if ( mLayer->isSpatial() )
   {
-    mRemoveDuplicateVerticeCheckbox->setEnabled( true );
+    mRemoveDuplicateNodesCheckbox->setEnabled( true );
     mGeometryPrecisionSpinBox->setEnabled( true );
 
-    mRemoveDuplicateVerticeCheckbox->setChecked( mLayer->removeDuplicateNodes() );
+    mRemoveDuplicateNodesCheckbox->setChecked( mLayer->removeDuplicateNodes() );
     mGeometryPrecisionSpinBox->setValue( mLayer->geometryPrecision() );
 
     mGeometryPrecisionSpinBox->setSuffix( QStringLiteral( " [%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
   }
   else
   {
-    mRemoveDuplicateVerticeCheckbox->setEnabled( false );
+    mRemoveDuplicateNodesCheckbox->setEnabled( false );
     mGeometryPrecisionSpinBox->setEnabled( false );
   }
 
@@ -777,7 +777,7 @@ void QgsVectorLayerProperties::apply()
   mVector3DWidget->apply();
 #endif
 
-  mLayer->setRemoveDuplicateNodes( mRemoveDuplicateVerticeCheckbox->isChecked() );
+  mLayer->setRemoveDuplicateNodes( mRemoveDuplicateNodesCheckbox->isChecked() );
   mLayer->setGeometryPrecision( mGeometryPrecisionSpinBox->value() );
 
   // update symbology
