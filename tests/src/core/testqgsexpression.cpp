@@ -2691,6 +2691,9 @@ class TestQgsExpression: public QObject
       foreachExpected << QStringLiteral( "ABC" ) << QStringLiteral( "HELLO" );
       QCOMPARE( QgsExpression( "array_foreach(array:=array('abc', 'hello'), expression:=upper(@element))" ).evaluate( &context ), QVariant( foreachExpected ) );
 
+      QVariantList filterExpected = QVariantList() << QStringLiteral( "A: a" ) << QStringLiteral( "A: d" );
+      QCOMPARE( QgsExpression( "array_filter(array:=array('A: a', 'B: b', 'C: c', 'A: d'), expression:=substr(@element, 1, 2) = 'A:')" ).evaluate( &context ), QVariant( filterExpected ) );
+
       QCOMPARE( QgsExpression( "array_intersect(array('1', '2', '3', '4'), array('4', '0', '2', '5'))" ).evaluate( &context ), QVariant( true ) );
       QCOMPARE( QgsExpression( "array_intersect(array('1', '2', '3', '4'), array('0', '5'))" ).evaluate( &context ), QVariant( false ) );
 
@@ -2773,6 +2776,9 @@ class TestQgsExpression: public QObject
       QVariantList foreachExpected;
       foreachExpected << 10 << 20 << 40;
       QCOMPARE( QgsExpression( "array_foreach(array(1, 2, 4), @element * 10)" ).evaluate( &context ), QVariant( foreachExpected ) );
+
+      QVariantList filterExpected = QVariantList() << 1 << 2;
+      QCOMPARE( QgsExpression( "array_filter(array(1, 2, 4), @element < 3)" ).evaluate( &context ), QVariant( filterExpected ) );
 
       QgsExpression badArray( QStringLiteral( "array_get('not an array', 0)" ) );
       QCOMPARE( badArray.evaluate( &context ), QVariant() );
