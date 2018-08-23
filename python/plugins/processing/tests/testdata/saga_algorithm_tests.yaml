@@ -432,9 +432,9 @@ tests:
   - algorithm: saga:watershedsegmentation
     name: Test (saga:watershedsegmentation)
     params:
-      'BBORDERS       ': true
+      'BBORDERS': true
       DOWN: 0
-      'EDGE           ': true
+      'EDGE': true
       GRID:
         name: dem.tif
         type: raster
