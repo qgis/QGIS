@@ -4864,7 +4864,10 @@ bool QgsArrayForeachExpressionFunction::prepare( const QgsExpressionNodeFunction
 }
 
 QgsArrayFilterExpressionFunction::QgsArrayFilterExpressionFunction()
-  : QgsExpressionFunction( QStringLiteral( "array_filter" ), 2, QCoreApplication::tr( "Arrays" ) )
+  : QgsExpressionFunction( QStringLiteral( "array_filter" ), QgsExpressionFunction::ParameterList()
+                           << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) )
+                           << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ),
+                           QCoreApplication::tr( "Arrays" ) )
 {
 
 }
