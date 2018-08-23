@@ -4776,7 +4776,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 }
 
 QgsArrayForeachExpressionFunction::QgsArrayForeachExpressionFunction()
-  : QgsExpressionFunction( QStringLiteral( "array_foreach" ), 2, QCoreApplication::tr( "Arrays" ) )
+  : QgsExpressionFunction( QStringLiteral( "array_foreach" ), QgsExpressionFunction::ParameterList()
+                           << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) )
+                           << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ),
+                           QCoreApplication::tr( "Arrays" ) )
 {
 
 }
