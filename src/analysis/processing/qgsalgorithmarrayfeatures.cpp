@@ -26,12 +26,12 @@ QString QgsArrayFeaturesAlgorithm::name() const
 
 QString QgsArrayFeaturesAlgorithm::displayName() const
 {
-  return QObject::tr( "Array of offset features" );
+  return QObject::tr( "Array of translated features" );
 }
 
 QStringList QgsArrayFeaturesAlgorithm::tags() const
 {
-  return QObject::tr( "translate,duplicate,grid,spaced,moved,copy,features,objects,step,repeat" ).split( ',' );
+  return QObject::tr( "translate,parallel,offset,duplicate,grid,spaced,moved,copy,features,objects,step,repeat" ).split( ',' );
 }
 
 QString QgsArrayFeaturesAlgorithm::group() const
@@ -51,13 +51,13 @@ QString QgsArrayFeaturesAlgorithm::outputName() const
 
 QString QgsArrayFeaturesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates copies of features in a layer, by creating multiple offset versions of each feature. "
+  return QObject::tr( "This algorithm creates copies of features in a layer, by creating multiple translated versions of each feature. "
                       "Each copy is displaced by a preset amount in the x/y/z/m axis." );
 }
 
 QString QgsArrayFeaturesAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates multiple offset copies of features in a layer." );
+  return QObject::tr( "Creates multiple translated copies of features in a layer." );
 }
 
 QgsArrayFeaturesAlgorithm *QgsArrayFeaturesAlgorithm::createInstance() const
