@@ -50,6 +50,7 @@ class translate(GdalAlgorithm):
     INPUT = 'INPUT'
     TARGET_CRS = 'TARGET_CRS'
     NODATA = 'NODATA'
+    BANDS = 'BANDS'
     COPY_SUBDATASETS = 'COPY_SUBDATASETS'
     OPTIONS = 'OPTIONS'
     DATA_TYPE = 'DATA_TYPE'
@@ -70,6 +71,10 @@ class translate(GdalAlgorithm):
                                                        self.tr('Assign a specified nodata value to output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
                                                        defaultValue=None,
+                                                       optional=True))
+        self.addParameter(QgsProcessingParameterString(self.BANDS,
+                                                       self.tr('Comma-separated list of bands to include and order (i.e. 3,2,1)'),
+                                                       defaultValue='',
                                                        optional=True))
         self.addParameter(QgsProcessingParameterBoolean(self.COPY_SUBDATASETS,
                                                         self.tr('Copy all subdatasets of this file to individual output files'),
@@ -138,6 +143,13 @@ class translate(GdalAlgorithm):
 
         if self.parameterAsBool(parameters, self.COPY_SUBDATASETS, context):
             arguments.append('-sds')
+
+        bands = self.parameterAsString(parameters, self.BANDS, context)
+        if bands:
+            bands.replace(' ', '')
+            for band in bands.split(','):
+                if band.isdigit():
+                    arguments.append('-b {}'.format(band))
 
         arguments.append('-ot')
         arguments.append(self.TYPES[self.parameterAsEnum(parameters, self.DATA_TYPE, context)])
