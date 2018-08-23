@@ -4809,8 +4809,12 @@ QVariant QgsArrayForeachExpressionFunction::run( QgsExpressionNode::NodeList *ar
   QVariantList array = args->at( 0 )->eval( parent, context ).toList();
 
   QgsExpressionContext *subContext = const_cast<QgsExpressionContext *>( context );
-  if ( !context )
-    subContext = new QgsExpressionContext();
+  std::unique_ptr< QgsExpressionContext > tempContext;
+  if ( !subContext )
+  {
+    tempContext = qgis::make_unique< QgsExpressionContext >();
+    subContext = tempContext.get();
+  }
 
   QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
   subContext->appendScope( subScope );
@@ -4821,8 +4825,8 @@ QVariant QgsArrayForeachExpressionFunction::run( QgsExpressionNode::NodeList *ar
     result << args->at( 1 )->eval( parent, subContext );
   }
 
-  if ( !context )
-    delete subContext;
+  if ( context )
+    delete subContext->popScope();
 
   return result;
 }
@@ -4909,15 +4913,19 @@ QVariant QgsWithVariableExpressionFunction::run( QgsExpressionNode::NodeList *ar
   QVariant name = args->at( 0 )->eval( parent, context );
   QVariant value = args->at( 1 )->eval( parent, context );
 
-  QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
-  if ( !context )
-    updatedContext = new QgsExpressionContext();
+  const QgsExpressionContext *updatedContext = context;
+  std::unique_ptr< QgsExpressionContext > tempContext;
+  if ( !updatedContext )
+  {
+    tempContext = qgis::make_unique< QgsExpressionContext >();
+    updatedContext = tempContext.get();
+  }
 
   appendTemporaryVariable( updatedContext, name.toString(), value );
   result = args->at( 2 )->eval( parent, updatedContext );
-  popTemporaryVariable( updatedContext );
-  if ( !context )
-    delete updatedContext;
+
+  if ( context )
+    popTemporaryVariable( updatedContext );
 
   return result;
 }
@@ -4945,9 +4953,9 @@ bool QgsWithVariableExpressionFunction::prepare( const QgsExpressionNodeFunction
   QVariant name = args->at( 0 )->prepare( parent, context );
   QVariant value = args->at( 1 )->prepare( parent, context );
 
-  QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
+  const QgsExpressionContext *updatedContext = context;
   std::unique_ptr< QgsExpressionContext > tempContext;
-  if ( !context )
+  if ( !updatedContext )
   {
     tempContext = qgis::make_unique< QgsExpressionContext >();
     updatedContext = tempContext.get();
