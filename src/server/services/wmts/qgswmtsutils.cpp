@@ -378,23 +378,23 @@ namespace QgsWmts
     QUrlQuery query;
     if ( !params.value( QStringLiteral( "MAP" ) ).isEmpty() )
     {
-      query.addQueryItem( QStringLiteral( "map" ), params.value( QStringLiteral( "MAP" ) ) );
+      query.addQueryItem( QgsServerParameter::name( QgsServerParameter::MAP ), params.value( QStringLiteral( "MAP" ) ) );
     }
-    query.addQueryItem( QStringLiteral( "service" ), QStringLiteral( "WMS" ) );
-    query.addQueryItem( QStringLiteral( "version" ), QStringLiteral( "1.3.0" ) );
-    query.addQueryItem( QStringLiteral( "request" ), request );
-    query.addQueryItem( QStringLiteral( "layers" ), layer );
-    query.addQueryItem( QStringLiteral( "styles" ), QString() );
-    query.addQueryItem( QStringLiteral( "crs" ), tms.ref );
-    query.addQueryItem( QStringLiteral( "bbox" ), bbox );
-    query.addQueryItem( QStringLiteral( "width" ), QStringLiteral( "256" ) );
-    query.addQueryItem( QStringLiteral( "height" ), QStringLiteral( "256" ) );
-    query.addQueryItem( QStringLiteral( "format" ), format );
+    query.addQueryItem( QgsServerParameter::name( QgsServerParameter::SERVICE ), QStringLiteral( "WMS" ) );
+    query.addQueryItem( QgsServerParameter::name( QgsServerParameter::VERSION_SERVICE ), QStringLiteral( "1.3.0" ) );
+    query.addQueryItem( QgsServerParameter::name( QgsServerParameter::REQUEST ), request );
+    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::LAYERS ), layer );
+    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::STYLES ), QString() );
+    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::CRS ), tms.ref );
+    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::BBOX ), bbox );
+    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::WIDTH ), QStringLiteral( "256" ) );
+    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::HEIGHT ), QStringLiteral( "256" ) );
+    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::FORMAT ), format );
     if ( params.format() == QgsWmtsParameters::Format::PNG )
     {
-      query.addQueryItem( QStringLiteral( "transparent" ), QStringLiteral( "true" ) );
+      query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::TRANSPARENT ), QStringLiteral( "true" ) );
     }
-    query.addQueryItem( QStringLiteral( "dpi" ), QStringLiteral( "96" ) );
+    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::DPI ), QStringLiteral( "96" ) );
 
     return query;
   }

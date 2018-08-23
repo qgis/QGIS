@@ -32,6 +32,49 @@ namespace QgsWmts
 
   /**
    * \ingroup server
+   * \class QgsWmts::QgsWmsParameter
+   * \brief WMS parameter used by WMTS service.
+   * \since QGIS 3.4
+   */
+  class QgsWmsParameter : public QgsServerParameterDefinition
+  {
+      Q_GADGET
+
+    public:
+      //! Available parameters for translating WMTS requests to WMS requests
+      enum Name
+      {
+        UNKNOWN,
+        LAYERS,
+        STYLES,
+        CRS,
+        BBOX,
+        WIDTH,
+        HEIGHT,
+        FORMAT,
+        TRANSPARENT,
+        DPI,
+        QUERY_LAYERS,
+        I,
+        J,
+        INFO_FORMAT
+      };
+      Q_ENUM( Name )
+
+      /**
+       * Converts a parameter's name into its string representation.
+       */
+      static QString name( const QgsWmsParameter::Name );
+
+      /**
+       * Converts a string into a parameter's name (UNKNOWN in case of an
+       * invalid string).
+       */
+      static QgsWmsParameter::Name name( const QString &name );
+  };
+
+  /**
+   * \ingroup server
    * \class QgsWmts::QgsWmtsParameter
    * \brief WMTS parameter received from the client.
    * \since QGIS 3.4
