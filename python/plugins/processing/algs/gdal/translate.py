@@ -105,7 +105,7 @@ class translate(GdalAlgorithm):
         return 'translate'
 
     def displayName(self):
-        return self.tr('Translate (convert format)')
+        return self.tr('Convert format (translate)')
 
     def group(self):
         return self.tr('Raster conversion')
