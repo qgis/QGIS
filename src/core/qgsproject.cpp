@@ -479,10 +479,18 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
       const QgsFields fields = vlayer->fields();
       for ( const QgsField &field : fields )
       {
+        QString fieldName;
         if ( field.alias().isEmpty() )
-          translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), field.name() );
+          fieldName = field.name();
         else
-          translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), field.alias() );
+          fieldName = field.alias();
+
+        translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), fieldName );
+
+        if ( field.editorWidgetSetup().type() == QStringLiteral( "ValueRelation" ) )
+        {
+          translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( QStringLiteral( "Value" ) ).toString() );
+        }
       }
 
       //register formcontainers
