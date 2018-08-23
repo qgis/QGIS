@@ -71,6 +71,19 @@ void QgsMapMouseEvent::setMapPoint( const QgsPointXY &point )
   mPixelPoint = mapToPixelCoordinates( point );
 }
 
+void QgsMapMouseEvent::snapToGrid( double precision )
+{
+  if ( precision <= 0 )
+    return;
+
+  mMapPoint.setX( std::round( mMapPoint.x() / precision ) * precision );
+  mMapPoint.setY( std::round( mMapPoint.y() / precision ) * precision );
+
+  // mSnapMatch = QgsPointLocator::Match( mSnapMatch.type(), mSnapMatch.layer(), mSnapMatch.featureId(), mSnapMatch.distance(), mMapPoint, mSnapMatch.vertexIndex(), mSnapMatch.edgePoints() );
+
+  setMapPoint( mMapPoint );
+}
+
 QPoint QgsMapMouseEvent::mapToPixelCoordinates( const QgsPointXY &point )
 {
   double x = point.x(), y = point.y();

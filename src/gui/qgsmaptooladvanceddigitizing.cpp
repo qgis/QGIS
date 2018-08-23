@@ -17,6 +17,7 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmapcanvas.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsvectorlayer.h"
 
 QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolEdit( canvas )
@@ -37,6 +38,9 @@ void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
   {
     e->snapPoint();
   }
+
+  if ( currentVectorLayer() )
+    e->snapToGrid( currentVectorLayer()->geometryOptions().geometryPrecision );
 
   cadCanvasPressEvent( e );
 }
@@ -72,6 +76,9 @@ void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
     e->snapPoint();
   }
 
+  if ( currentVectorLayer() )
+    e->snapToGrid( currentVectorLayer()->geometryOptions().geometryPrecision );
+
   cadCanvasReleaseEvent( e );
 }
 
@@ -90,6 +97,9 @@ void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
   {
     e->snapPoint();
   }
+
+  if ( currentVectorLayer() )
+    e->snapToGrid( currentVectorLayer()->geometryOptions().geometryPrecision );
 
   cadCanvasMoveEvent( e );
 }

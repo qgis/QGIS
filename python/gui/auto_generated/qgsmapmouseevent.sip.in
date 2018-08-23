@@ -119,6 +119,13 @@ Alias to pos()
 :return: Mouse position in pixel coordinates
 %End
 
+    void snapToGrid( double precision );
+%Docstring
+Snaps the mapPoint to a grid with the given ``precision``.
+
+.. versionadded:: 3.4
+%End
+
 };
 
 /************************************************************************
