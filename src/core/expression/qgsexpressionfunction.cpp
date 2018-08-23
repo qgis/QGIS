@@ -4941,9 +4941,19 @@ bool QgsWithVariableExpressionFunction::prepare( const QgsExpressionNodeFunction
   QVariant name = args->at( 0 )->prepare( parent, context );
   QVariant value = args->at( 1 )->prepare( parent, context );
 
-  appendTemporaryVariable( context, name.toString(), value );
-  args->at( 2 )->prepare( parent, context );
-  popTemporaryVariable( context );
+  QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
+  std::unique_ptr< QgsExpressionContext > tempContext;
+  if ( !context )
+  {
+    tempContext = qgis::make_unique< QgsExpressionContext >();
+    updatedContext = tempContext.get();
+  }
+
+  appendTemporaryVariable( updatedContext, name.toString(), value );
+  args->at( 2 )->prepare( parent, updatedContext );
+
+  if ( context )
+    popTemporaryVariable( updatedContext );
 
   return true;
 }
