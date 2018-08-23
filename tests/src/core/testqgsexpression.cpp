@@ -1287,7 +1287,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "'a' not  like 'a%'" ) << QStringLiteral( "'a' not  like 'a%'" ) << false << QVariant( 0 );
 
       // with_variable
-      QTest::newRow( "with_variable('five', 5, @five * 2)" ) << QStringLiteral( "with_variable('five', 5, @five * 2)" ) << false << QVariant( 10 );
+      QTest::newRow( "with_variable(name:='five', value:=5, expression:=@five * 2)" ) << QStringLiteral( "with_variable(name:='five', value:=5, expression:=@five * 2)" ) << false << QVariant( 10 );
       QTest::newRow( "with_variable('nothing', NULL, COALESCE(@nothing, 'something'))" ) << QStringLiteral( "with_variable('nothing', NULL, COALESCE(@nothing, 'something'))" ) << false << QVariant( "something" );
 
       // array_first, array_last

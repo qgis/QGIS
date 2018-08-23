@@ -4863,7 +4863,11 @@ bool QgsArrayForeachExpressionFunction::prepare( const QgsExpressionNodeFunction
 }
 
 QgsWithVariableExpressionFunction::QgsWithVariableExpressionFunction()
-  : QgsExpressionFunction( QStringLiteral( "with_variable" ), 3, QCoreApplication::tr( "General" ) )
+  : QgsExpressionFunction( QStringLiteral( "with_variable" ), QgsExpressionFunction::ParameterList() <<
+                           QgsExpressionFunction::Parameter( QStringLiteral( "name" ) )
+                           << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) )
+                           << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ),
+                           QCoreApplication::tr( "General" ) )
 {
 
 }
