@@ -429,3 +429,26 @@ tests:
         hash: f4ac677152697773262aa1e5f69146a475139014ace77149966ec045
         type: rasterhash
 
+  - algorithm: saga:watershedsegmentation
+    name: Test (saga:watershedsegmentation)
+    params:
+      'BBORDERS       ': true
+      DOWN: 0
+      'EDGE           ': true
+      GRID:
+        name: dem.tif
+        type: raster
+      JOIN: 0
+      OUTPUT: 0
+      THRESHOLD: 0.5
+    results:
+      BORDERS:
+        hash: d0cd8bdc7c8400bedb2b5c1edc4a64b4c9b7c14692a4f30fbf3c5f2d
+        type: rasterhash
+      SEEDS:
+        name: expected/saga/watershed_segmentation_seeds.shp
+        type: vector
+      SEGMENTS:
+        hash: f2e71e3374eb229d387db8f87bc24d09b86ffc23d9fca85f324b566b
+        type: rasterhash
+  
