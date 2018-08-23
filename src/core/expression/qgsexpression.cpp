@@ -903,34 +903,44 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
   }
   else if ( value.type() == QVariant::Map )
   {
-    QString mapStr;
+    QString mapStr = QStringLiteral( "{ " );
     const QVariantMap map = value.toMap();
+    QString separator;
     for ( QVariantMap::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
     {
-      if ( !mapStr.isEmpty() ) mapStr.append( ", " );
+      mapStr.append( separator );
+      if ( separator.isEmpty() )
+        separator = QStringLiteral( ", " );
+
       mapStr.append( it.key() ).append( ": " ).append( formatPreviewString( it.value() ) );
-      if ( mapStr.length() > MAX_PREVIEW + 3 )
+      if ( mapStr.length() > MAX_PREVIEW + 5 )
       {
-        mapStr = QString( tr( "%1…" ) ).arg( mapStr.left( MAX_PREVIEW ) );
+        mapStr = tr( "%1…" ).arg( mapStr.left( MAX_PREVIEW ) );
         break;
       }
     }
+    mapStr += QStringLiteral( " }" );
     return tr( "<i>&lt;map: %1&gt;</i>" ).arg( mapStr );
   }
   else if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
   {
-    QString listStr;
+    QString listStr = QStringLiteral( "[ " );
     const QVariantList list = value.toList();
-    for ( QVariantList::const_iterator it = list.constBegin(); it != list.constEnd(); ++it )
+    QString separator;
+    for ( const QVariant &arrayValue : list )
     {
-      if ( !listStr.isEmpty() ) listStr.append( ", " );
-      listStr.append( formatPreviewString( *it ) );
-      if ( listStr.length() > MAX_PREVIEW + 3 )
+      listStr.append( separator );
+      if ( separator.isEmpty() )
+        separator = QStringLiteral( ", " );
+
+      listStr.append( formatPreviewString( arrayValue ) );
+      if ( listStr.length() > MAX_PREVIEW + 5 )
       {
         listStr = QString( tr( "%1…" ) ).arg( listStr.left( MAX_PREVIEW ) );
         break;
       }
     }
+    listStr += QStringLiteral( " ]" );
     return tr( "<i>&lt;array: %1&gt;</i>" ).arg( listStr );
   }
   else
