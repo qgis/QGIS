@@ -2526,7 +2526,8 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry &geom, bool s
     return false;
   }
 
-  applyGeometryFixes( geom );
+  if ( geometryFixesEnabled() )
+    applyGeometryFixes( geom );
 
   updateExtents();
 
