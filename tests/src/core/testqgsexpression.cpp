@@ -2689,7 +2689,7 @@ class TestQgsExpression: public QObject
 
       QVariantList foreachExpected;
       foreachExpected << QStringLiteral( "ABC" ) << QStringLiteral( "HELLO" );
-      QCOMPARE( QgsExpression( "array_foreach(array('abc', 'hello'), upper(@element))" ).evaluate( &context ), QVariant( foreachExpected ) );
+      QCOMPARE( QgsExpression( "array_foreach(array:=array('abc', 'hello'), expression:=upper(@element))" ).evaluate( &context ), QVariant( foreachExpected ) );
 
       QCOMPARE( QgsExpression( "array_intersect(array('1', '2', '3', '4'), array('4', '0', '2', '5'))" ).evaluate( &context ), QVariant( true ) );
       QCOMPARE( QgsExpression( "array_intersect(array('1', '2', '3', '4'), array('0', '5'))" ).evaluate( &context ), QVariant( false ) );
