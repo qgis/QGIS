@@ -39,7 +39,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( checkSelection() )
   {
-    QgsMapToolAdvancedDigitizing::canvasReleaseEvent( e );
+    QgsMapToolCapture::canvasReleaseEvent( e );
   }
   else
   {
