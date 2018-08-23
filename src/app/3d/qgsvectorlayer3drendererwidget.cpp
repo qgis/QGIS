@@ -36,7 +36,7 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsVectorLayer *
   setPanelTitle( tr( "3D View" ) );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
-  chkEnabled = new QCheckBox( "Enable 3D renderer", this );
+  chkEnabled = new QCheckBox( tr( "Enable 3D renderer" ), this );
   widgetStack = new QStackedWidget( this );
   layout->addWidget( chkEnabled );
   layout->addWidget( widgetStack );
