@@ -250,6 +250,30 @@ Creates a clone of the FieldValueConverter.
         const QgsAttributeList &attributes = QgsAttributeList(),
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = 0
                                                                );
+%Docstring
+Write contents of vector layer to an (OGR supported) vector format
+
+:param layer: layer to write
+:param fileName: file name to write to
+:param fileEncoding: encoding to use
+:param destCRS: CRS to reproject exported geometries to, or invalid CRS for no reprojection
+:param driverName: OGR driver to use
+:param onlySelected: write only selected features of layer
+:param errorMessage: pointer to buffer fo error message
+:param datasourceOptions: list of OGR data source creation options
+:param layerOptions: list of OGR layer creation options
+:param skipAttributeCreation: only write geometries
+:param newFilename: QString pointer which will contain the new file name created (in case it is different to fileName).
+:param symbologyExport: symbology to export
+:param symbologyScale: scale of symbology
+:param filterExtent: if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
+:param overrideGeometryType: set to a valid geometry type to override the default geometry type for the layer. This parameter
+                             allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
+:param forceMulti: set to true to force creation of multi* geometries (added in QGIS 2.14)
+:param includeZ: set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
+:param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
+:param fieldValueConverter: field value converter (added in QGIS 2.16)
+%End
 
 
     static QgsVectorFileWriter::WriterError writeAsVectorFormat( QgsVectorLayer *layer,
@@ -272,7 +296,33 @@ Creates a clone of the FieldValueConverter.
         const QgsAttributeList &attributes = QgsAttributeList(),
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = 0
                                                                );
+%Docstring
+Writes a layer out to a vector file.
 
+:param layer: layer to write
+:param fileName: file name to write to
+:param fileEncoding: encoding to use
+:param ct: coordinate transform to reproject exported geometries with, or invalid transform
+           for no transformation
+:param driverName: OGR driver to use
+:param onlySelected: write only selected features of layer
+:param errorMessage: pointer to buffer fo error message
+:param datasourceOptions: list of OGR data source creation options
+:param layerOptions: list of OGR layer creation options
+:param skipAttributeCreation: only write geometries
+:param newFilename: QString pointer which will contain the new file name created (in case it is different to fileName).
+:param symbologyExport: symbology to export
+:param symbologyScale: scale of symbology
+:param filterExtent: if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
+:param overrideGeometryType: set to a valid geometry type to override the default geometry type for the layer. This parameter
+                             allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
+:param forceMulti: set to true to force creation of multi* geometries (added in QGIS 2.14)
+:param includeZ: set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
+:param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
+:param fieldValueConverter: field value converter (added in QGIS 2.16)
+
+.. versionadded:: 2.2
+%End
 
     class SaveVectorOptions
 {
@@ -337,6 +387,17 @@ Constructor
         QString *newFilename = 0,
         QString *errorMessage /Out/ = 0
                                                                );
+%Docstring
+Writes a layer out to a vector file.
+
+:param layer: source layer to write
+:param fileName: file name to write to
+:param options: options.
+:param newFilename: QString pointer which will contain the new file name created (in case it is different to fileName).
+:param errorMessage: pointer to buffer fo error message
+
+.. versionadded:: 3.0
+%End
 
     QgsVectorFileWriter( const QString &vectorFileName,
                          const QString &fileEncoding,

@@ -345,9 +345,10 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         const QgsAttributeList &attributes = QgsAttributeList(),
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = nullptr
 #ifndef SIP_RUN
-            , QString *newLayer = nullptr
-#endif
+            , QString *newLayer = nullptr );
+#else
                                                                );
+#endif
 
 #ifndef SIP_RUN
 
@@ -425,10 +426,10 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         const QgsAttributeList &attributes = QgsAttributeList(),
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = nullptr
 #ifndef SIP_RUN
-            , QString *newLayer = nullptr
-#endif
+            , QString *newLayer = nullptr );
+#else
                                                                );
-
+#endif
 
     /**
      * \ingroup core
@@ -528,7 +529,6 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param options options.
      * \param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
      * \param errorMessage pointer to buffer fo error message
-     * \param newLayer QString pointer which will contain the new layer name created (in case it is different to the provided layer name) (added in QGIS 3.4, not available in python)
      * \since QGIS 3.0
      */
 #endif
@@ -538,9 +538,10 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         QString *newFilename = nullptr,
         QString *errorMessage SIP_OUT = nullptr
 #ifndef SIP_RUN
-                                        , QString *newLayer = nullptr
-#endif
+                                        , QString *newLayer = nullptr );
+#else
                                                                );
+#endif
 
     //! Create a new vector file writer
     QgsVectorFileWriter( const QString &vectorFileName,
