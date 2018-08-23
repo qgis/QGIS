@@ -71,17 +71,21 @@ void QgsMapMouseEvent::setMapPoint( const QgsPointXY &point )
   mPixelPoint = mapToPixelCoordinates( point );
 }
 
-void QgsMapMouseEvent::snapToGrid( double precision )
+void QgsMapMouseEvent::snapToGrid( double precision, const QgsCoordinateReferenceSystem &crs )
 {
   if ( precision <= 0 )
     return;
 
-  mMapPoint.setX( std::round( mMapPoint.x() / precision ) * precision );
-  mMapPoint.setY( std::round( mMapPoint.y() / precision ) * precision );
+  QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), crs, mMapCanvas->mapSettings().transformContext() );
 
-  // mSnapMatch = QgsPointLocator::Match( mSnapMatch.type(), mSnapMatch.layer(), mSnapMatch.featureId(), mSnapMatch.distance(), mMapPoint, mSnapMatch.vertexIndex(), mSnapMatch.edgePoints() );
+  QgsPointXY pt = ct.transform( mMapPoint );
 
-  setMapPoint( mMapPoint );
+  pt.setX( std::round( mMapPoint.x() / precision ) * precision );
+  pt.setY( std::round( mMapPoint.y() / precision ) * precision );
+
+  pt = ct.transform( pt, QgsCoordinateTransform::ReverseTransform );
+
+  setMapPoint( pt );
 }
 
 QPoint QgsMapMouseEvent::mapToPixelCoordinates( const QgsPointXY &point )

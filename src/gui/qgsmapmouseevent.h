@@ -128,10 +128,12 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
 
     /**
      * Snaps the mapPoint to a grid with the given \a precision.
+     * The snapping will be done in the specified \a crs. If this crs is
+     * different from the mapCanvas crs, it will add some overhead.
      *
      * \since QGIS 3.4
      */
-    void snapToGrid( double precision );
+    void snapToGrid( double precision, const QgsCoordinateReferenceSystem &crs );
 
   private:
 

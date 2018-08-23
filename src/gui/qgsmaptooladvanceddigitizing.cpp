@@ -39,8 +39,11 @@ void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
     e->snapPoint();
   }
 
-  if ( currentVectorLayer() )
-    e->snapToGrid( currentVectorLayer()->geometryOptions().geometryPrecision );
+  QgsVectorLayer *layer = currentVectorLayer();
+  if ( layer )
+  {
+    e->snapToGrid( layer->geometryOptions().geometryPrecision, layer->crs() );
+  }
 
   cadCanvasPressEvent( e );
 }
@@ -76,8 +79,11 @@ void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
     e->snapPoint();
   }
 
-  if ( currentVectorLayer() )
-    e->snapToGrid( currentVectorLayer()->geometryOptions().geometryPrecision );
+  QgsVectorLayer *layer = currentVectorLayer();
+  if ( layer )
+  {
+    e->snapToGrid( layer->geometryOptions().geometryPrecision, layer->crs() );
+  }
 
   cadCanvasReleaseEvent( e );
 }
@@ -98,8 +104,11 @@ void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
     e->snapPoint();
   }
 
-  if ( currentVectorLayer() )
-    e->snapToGrid( currentVectorLayer()->geometryOptions().geometryPrecision );
+  QgsVectorLayer *layer = currentVectorLayer();
+  if ( layer )
+  {
+    e->snapToGrid( layer->geometryOptions().geometryPrecision, layer->crs() );
+  }
 
   cadCanvasMoveEvent( e );
 }
