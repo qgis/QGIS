@@ -101,7 +101,8 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   const QStringList &datasourceOptions,
   const QStringList &layerOptions,
   QString *newFilename,
-  SymbologyExport symbologyExport
+  SymbologyExport symbologyExport,
+  QString *newLayer
 )
   : mError( NoError )
   , mWkbType( geometryType )
@@ -110,7 +111,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 {
   init( vectorFileName, fileEncoding, fields,  geometryType,
         srs, driverName, datasourceOptions, layerOptions, newFilename, nullptr,
-        QString(), CreateOrOverwriteFile );
+        QString(), CreateOrOverwriteFile, newLayer );
 }
 
 QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
@@ -125,7 +126,8 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
     QgsVectorFileWriter::SymbologyExport symbologyExport,
     FieldValueConverter *fieldValueConverter,
     const QString &layerName,
-    ActionOnExistingFile action )
+    ActionOnExistingFile action,
+    QString *newLayer )
   : mError( NoError )
   , mWkbType( geometryType )
   , mSymbologyExport( symbologyExport )
@@ -133,7 +135,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
 {
   init( vectorFileName, fileEncoding, fields, geometryType, srs, driverName,
         datasourceOptions, layerOptions, newFilename, fieldValueConverter,
-        layerName, action );
+        layerName, action, newLayer );
 }
 
 bool QgsVectorFileWriter::supportsFeatureStyles( const QString &driverName )
@@ -164,7 +166,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
                                 QString *newFilename,
                                 FieldValueConverter *fieldValueConverter,
                                 const QString &layerNameIn,
-                                ActionOnExistingFile action )
+                                ActionOnExistingFile action,
+                                QString *newLayer )
 {
   mRenderContext.setRendererScale( mSymbologyScale );
 
@@ -419,6 +422,8 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   else if ( action == CreateOrOverwriteFile || action == CreateOrOverwriteLayer )
   {
     mLayer = OGR_DS_CreateLayer( mDS.get(), layerName.toUtf8().constData(), mOgrRef, wkbType, options );
+    if ( newLayer )
+      *newLayer = OGR_L_GetName( mLayer );
   }
   else
   {
@@ -2338,7 +2343,8 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
     bool forceMulti,
     bool includeZ,
     const QgsAttributeList &attributes,
-    FieldValueConverter *fieldValueConverter )
+    FieldValueConverter *fieldValueConverter,
+    QString *newLayer )
 {
   QgsCoordinateTransform ct;
   if ( destCRS.isValid() && layer )
@@ -2352,7 +2358,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       errorMessage, datasourceOptions, layerOptions, skipAttributeCreation,
       newFilename, symbologyExport, symbologyScale, filterExtent,
       overrideGeometryType, forceMulti, includeZ, attributes,
-      fieldValueConverter );
+      fieldValueConverter, newLayer );
   return error;
 }
 
@@ -2374,7 +2380,8 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     bool forceMulti,
     bool includeZ,
     const QgsAttributeList &attributes,
-    FieldValueConverter *fieldValueConverter )
+    FieldValueConverter *fieldValueConverter,
+    QString *newLayer )
 {
   SaveVectorOptions options;
   options.fileEncoding = fileEncoding;
@@ -2393,7 +2400,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   options.includeZ = includeZ;
   options.attributes = attributes;
   options.fieldValueConverter = fieldValueConverter;
-  return writeAsVectorFormat( layer, fileName, options, newFilename, errorMessage );
+  return writeAsVectorFormat( layer, fileName, options, newFilename, errorMessage, newLayer );
 }
 
 
@@ -2544,7 +2551,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
   return NoError;
 }
 
-QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( PreparedWriterDetails &details, const QString &fileName, const QgsVectorFileWriter::SaveVectorOptions &options, QString *newFilename, QString *errorMessage )
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( PreparedWriterDetails &details, const QString &fileName, const QgsVectorFileWriter::SaveVectorOptions &options, QString *newFilename, QString *errorMessage, QString *newLayer )
 {
 
   QgsWkbTypes::Type destWkbType = details.destWkbType;
@@ -2614,7 +2621,8 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( Prepa
         options.symbologyExport,
         options.fieldValueConverter,
         options.layerName,
-        options.actionOnExistingFile );
+        options.actionOnExistingFile,
+        newLayer );
   writer->setSymbologyScale( options.symbologyScale );
 
   if ( newFilename )
@@ -2765,14 +2773,15 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
     const QString &fileName,
     const SaveVectorOptions &options,
     QString *newFilename,
-    QString *errorMessage )
+    QString *errorMessage,
+    QString *newLayer )
 {
   QgsVectorFileWriter::PreparedWriterDetails details;
   WriterError err = prepareWriteAsVectorFormat( layer, options, details );
   if ( err != NoError )
     return err;
 
-  return writeAsVectorFormat( details, fileName, options, newFilename, errorMessage );
+  return writeAsVectorFormat( details, fileName, options, newFilename, errorMessage, newLayer );
 }
 
 

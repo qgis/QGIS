@@ -45,7 +45,12 @@ and save ``options``.
 %Docstring
 Emitted when writing the layer is successfully completed. The ``newFilename``
 parameter indicates the file path for the written file.
+
+.. note::
+
+   this signal is deprecated in favor of completed().
 %End
+
 
     void errorOccurred( int error, const QString &errorMessage );
 %Docstring

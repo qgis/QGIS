@@ -54,14 +54,19 @@ bool QgsVectorFileWriterTask::run()
 
 
   mError = QgsVectorFileWriter::writeAsVectorFormat(
-             mWriterDetails, mDestFileName, mOptions, &mNewFilename, &mErrorMessage );
+             mWriterDetails, mDestFileName, mOptions, &mNewFilename, &mErrorMessage, &mNewLayer );
   return mError == QgsVectorFileWriter::NoError;
 }
 
 void QgsVectorFileWriterTask::finished( bool result )
 {
   if ( result )
+  {
     emit writeComplete( mNewFilename );
+    emit completed( mNewFilename, mNewLayer );
+  }
   else
+  {
     emit errorOccurred( mError, mErrorMessage );
+  }
 }

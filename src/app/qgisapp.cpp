@@ -7446,13 +7446,12 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
     options.fieldValueConverter = converterPtr;
 
     bool addToCanvas = dialog->addToCanvas();
-    QString layerName = dialog->layername();
     QgsVectorFileWriterTask *writerTask = new QgsVectorFileWriterTask( vlayer, vectorFilename, options );
 
     // when writer is successful:
-    connect( writerTask, &QgsVectorFileWriterTask::writeComplete, this, [onSuccess, addToCanvas, layerName, encoding, vectorFilename]( const QString & newFilename )
+    connect( writerTask, &QgsVectorFileWriterTask::completed, this, [onSuccess, addToCanvas, encoding, vectorFilename]( const QString & newFilename, const QString & newLayer )
     {
-      onSuccess( newFilename, addToCanvas, layerName, encoding, vectorFilename );
+      onSuccess( newFilename, addToCanvas, newLayer, encoding, vectorFilename );
     } );
 
     // when an error occurs:
