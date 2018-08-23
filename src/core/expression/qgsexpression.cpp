@@ -912,7 +912,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
       if ( separator.isEmpty() )
         separator = QStringLiteral( ", " );
 
-      mapStr.append( it.key() ).append( ": " ).append( formatPreviewString( it.value() ) );
+      mapStr.append( QStringLiteral( "\"%1\": %2" ).arg( it.key(), formatPreviewString( it.value() ) ) );
       if ( mapStr.length() > MAX_PREVIEW + 5 )
       {
         mapStr = tr( "%1…" ).arg( mapStr.left( MAX_PREVIEW ) );
@@ -920,7 +920,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
       }
     }
     mapStr += QStringLiteral( " }" );
-    return tr( "<i>&lt;map: %1&gt;</i>" ).arg( mapStr );
+    return tr( "<i>&lt;%1&gt;</i>" ).arg( mapStr );
   }
   else if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
   {
@@ -941,7 +941,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
       }
     }
     listStr += QStringLiteral( " ]" );
-    return tr( "<i>&lt;array: %1&gt;</i>" ).arg( listStr );
+    return tr( "<i>&lt;%1&gt;</i>" ).arg( listStr );
   }
   else
   {
