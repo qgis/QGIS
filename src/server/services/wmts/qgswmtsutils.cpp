@@ -192,7 +192,11 @@ namespace QgsWmts
   {
     QList< tileMatrixSetDef > tmsList;
 
-    double minScale = getProjectMinScale( project );
+    double minScale = project->readNumEntry( QStringLiteral( "WMTSMinScale" ), QStringLiteral( "/" ), -1.0 );
+    if ( minScale == -1.0 )
+    {
+      minScale = getProjectMinScale( project );
+    }
 
     QStringList crsList = QgsServerProjectUtils::wmsOutputCrsList( *project );
     for ( const QString &crsStr : crsList )
