@@ -59,7 +59,7 @@ namespace QgsWmts
     QString href;
     if ( project )
     {
-      href = QgsServerProjectUtils::wmsServiceUrl( *project );
+      href = QgsServerProjectUtils::wmtsServiceUrl( *project );
     }
 
     // Build default url

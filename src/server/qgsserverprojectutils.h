@@ -347,6 +347,13 @@ namespace QgsServerProjectUtils
     * \returns the Layer ids list.
     */
   SERVER_EXPORT QStringList wcsLayerIds( const QgsProject &project );
+
+  /**
+   * Returns the WMTS service url defined in a QGIS project.
+    * \param project the QGIS project
+    * \returns url if defined in project, an empty string otherwise.
+    */
+  SERVER_EXPORT QString wmtsServiceUrl( const QgsProject &project );
 };
 
 #endif
