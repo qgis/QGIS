@@ -522,7 +522,7 @@ class QgsArrayForeachExpressionFunction : public QgsExpressionFunction
 };
 
 /**
- * Handles the ``array_foreach(array, expression)`` expression function.
+ * Handles the ``array_filter(array, expression)`` expression function.
  * It temporarily appends a new scope to the expression context.
  *
  * \ingroup core
