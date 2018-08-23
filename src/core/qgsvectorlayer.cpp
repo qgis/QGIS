@@ -4790,14 +4790,24 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
   return labeling;
 }
 
-QgsVectorLayer::GeometryOptions QgsVectorLayer::geometryOptions() const
+double QgsVectorLayer::geometryPrecision() const
 {
-  return mGeometryOptions;
+  return mGeometryOptions.geometryPrecision;
 }
 
-void QgsVectorLayer::setGeometryOptions( const GeometryOptions &geometryOptions )
+void QgsVectorLayer::setGeometryPrecision( double geometryPrecision )
 {
-  mGeometryOptions = geometryOptions;
+  mGeometryOptions.geometryPrecision = geometryPrecision;
+}
+
+bool QgsVectorLayer::removeDuplicateNodes() const
+{
+  return mGeometryOptions.removeDuplicateNodes;
+}
+
+void QgsVectorLayer::setRemoveDuplicateNodes( bool removeDuplicateNodes )
+{
+  mGeometryOptions.removeDuplicateNodes = removeDuplicateNodes;
 }
 
 void QgsVectorLayer::setReadExtentFromXml( bool readExtentFromXml )
