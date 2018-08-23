@@ -93,8 +93,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *
  * \code{.cpp}
  *     QString myFileNameQString = "/path/to/file";
- *     QFileInfo myFileInfo(myFileNameQString);
- *     QString myBaseNameQString = myFileInfo.baseName();
+ *     QString myBaseNameQString = "my layer";
  *     QgsRasterLayer *myRasterLayer = new QgsRasterLayer(myFileNameQString, myBaseNameQString);
  * \endcode
  *
@@ -197,8 +196,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * -Determine whether the layer is gray, paletted or multiband.
      *
      * -Assign sensible defaults for the red, green, blue and gray bands.
-     *
-     * -
      * */
     explicit QgsRasterLayer( const QString &uri,
                              const QString &baseName = QString(),

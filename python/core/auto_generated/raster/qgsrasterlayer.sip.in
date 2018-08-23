@@ -130,8 +130,6 @@ The main tasks carried out by the constructor are:
 -Determine whether the layer is gray, paletted or multiband.
 
 -Assign sensible defaults for the red, green, blue and gray bands.
-
--
 %End
 
     ~QgsRasterLayer();
