@@ -1,0 +1,78 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsgeometryfixes.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsGeometryFixes
+{
+%Docstring
+The QgsGeometryFixes class contains options to
+%End
+
+%TypeHeaderCode
+#include "qgsgeometryfixes.h"
+%End
+  public:
+    QgsGeometryFixes();
+
+    bool removeDuplicateNodes() const;
+%Docstring
+Automatically remove duplicate nodes on all geometries which are edited on this layer.
+
+.. versionadded:: 3.4
+%End
+
+    void setRemoveDuplicateNodes( bool value );
+%Docstring
+Automatically remove duplicate nodes on all geometries which are edited on this layer.
+
+.. versionadded:: 3.4
+%End
+
+    double geometryPrecision() const;
+%Docstring
+The precision in which geometries on this layer should be saved.
+Geometries which are edited on this layer will be rounded to multiples of this value (snap to grid).
+Set to 0.0 to disable.
+
+.. versionadded:: 3.4
+%End
+
+    void setGeometryPrecision( double value );
+%Docstring
+The precision in which geometries on this layer should be saved.
+Geometries which are edited on this layer will be rounded to multiples of this value (snap to grid).
+Set to 0.0 to disable.
+
+.. versionadded:: 3.4
+%End
+
+    bool isActive() const;
+%Docstring
+Determines if at least one fix is enabled.
+
+.. versionadded:: 3.4
+%End
+
+    void apply( QgsGeometry &geometry ) const;
+%Docstring
+Apply any fixes configured on this class to ``geometry``.
+
+.. versionadded:: 3.4
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsgeometryfixes.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -72,6 +72,7 @@ class QgsPoint;
 class QgsFeedback;
 class QgsAuxiliaryStorage;
 class QgsAuxiliaryLayer;
+class QgsGeometryFixes;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -406,32 +407,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        */
       bool readExtentFromXml = false;
 
-    };
-
-    struct GeometryOptions
-    {
-      explicit GeometryOptions( bool removeDuplicateNodes = false, double geometryPrecision = 0.0 )
-        : removeDuplicateNodes( removeDuplicateNodes )
-        , geometryPrecision( geometryPrecision )
-      {
-      }
-
-
-      /**
-       * Automatically remove duplicate nodes on all geometries which are edited on this layer.
-       *
-       * \since QGIS 3.4
-       */
-      bool removeDuplicateNodes = false;
-
-      /**
-       * The precision in which geometries on this layer should be saved.
-       * Geometries which are edited on this layer will be rounded to multiples of this value (snap to grid).
-       * Set to 0.0 to disable.
-       *
-       * \since QGIS 3.4
-       */
-      double geometryPrecision = 0.0;
     };
 
     /**
@@ -2019,41 +1994,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool isEditCommandActive() const { return mEditCommandActive; }
 
     /**
-     * If the `removeDuplicateNodes` property is set on a layer, whenever a new feature enters
-     * the edit buffer or the geometry of an existing feature is changed, duplicate nodes will
-     * automatically be removed without any user intervention.
+     * Configuration and logic to apply automatically on any edit happening on this layer.
      *
      * \since QGIS 3.4
      */
-    bool removeDuplicateNodes() const;
-
-    /**
-     * If the `removeDuplicateNodes` property is set on a layer, whenever a new feature enters
-     * the edit buffer or the geometry of an existing feature is changed, duplicate nodes will
-     * automatically be removed without any user intervention.
-     *
-     * \since QGIS 3.4
-     */
-    void setRemoveDuplicateNodes( bool removeDuplicateNodes );
-
-
-    /**
-     * The `geometryPrecision` property of a layer will enable an automatic snap to grid operation
-     * on a layer whenever a new feature is added or the geometry of an existing feature is changed.
-     * If it is set to 0.0, this feature is disabled.
-     *
-     * \since QGIS 3.4
-     */
-    double geometryPrecision() const;
-
-    /**
-     * The `geometryPrecision` property of a layer will enable an automatic snap to grid
-     * on a layer whenever a new feature is added or the geometry of an existing feature is changed.
-     * If it is set to 0.0, this feature is disabled.
-     *
-     * \since QGIS 3.4
-     */
-    void setGeometryPrecision( double geometryPrecision );
+    QgsGeometryFixes *geometryFixes() const;
 
   public slots:
 
@@ -2386,18 +2331,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Sets the extent
     void setExtent( const QgsRectangle &rect ) override;
 
-  private:                       // Private methods
-
-    /**
-     * Applies automatic fixes to geometries added to or edited on this layer.
-     */
-    void applyGeometryFixes( QgsGeometry &geom ) const;
-
-    /**
-     * Check if geometry fixes are enabled and `applyGeometryFixes` needs to be called.
-     */
-    bool geometryFixesEnabled() const;
-
+  private:
     void updateDefaultValues( QgsFeatureId fid, QgsFeature feature = QgsFeature() );
 
     /**
@@ -2556,7 +2490,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     QgsVectorLayerFeatureCounter *mFeatureCounter = nullptr;
 
-    GeometryOptions mGeometryOptions;
+    std::unique_ptr<QgsGeometryFixes> mGeometryFixes;
 
     friend class QgsVectorLayerFeatureSource;
 };

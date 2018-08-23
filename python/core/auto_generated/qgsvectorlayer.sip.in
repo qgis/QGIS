@@ -329,16 +329,6 @@ Constructor for LayerOptions.
 
     };
 
-    struct GeometryOptions
-    {
-      explicit GeometryOptions( bool removeDuplicateNodes = false, double geometryPrecision = 0.0 );
-
-
-      bool removeDuplicateNodes;
-
-      double geometryPrecision;
-    };
-
     explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
                              const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
 %Docstring
@@ -2235,39 +2225,9 @@ Test if an edit command is active
 .. versionadded:: 3.0
 %End
 
-    bool removeDuplicateNodes() const;
+    QgsGeometryFixes *geometryFixes() const;
 %Docstring
-If the `removeDuplicateNodes` property is set on a layer, whenever a new feature enters
-the edit buffer or the geometry of an existing feature is changed, duplicate nodes will
-automatically be removed without any user intervention.
-
-.. versionadded:: 3.4
-%End
-
-    void setRemoveDuplicateNodes( bool removeDuplicateNodes );
-%Docstring
-If the `removeDuplicateNodes` property is set on a layer, whenever a new feature enters
-the edit buffer or the geometry of an existing feature is changed, duplicate nodes will
-automatically be removed without any user intervention.
-
-.. versionadded:: 3.4
-%End
-
-
-    double geometryPrecision() const;
-%Docstring
-The `geometryPrecision` property of a layer will enable an automatic snap to grid operation
-on a layer whenever a new feature is added or the geometry of an existing feature is changed.
-If it is set to 0.0, this feature is disabled.
-
-.. versionadded:: 3.4
-%End
-
-    void setGeometryPrecision( double geometryPrecision );
-%Docstring
-The `geometryPrecision` property of a layer will enable an automatic snap to grid
-on a layer whenever a new feature is added or the geometry of an existing feature is changed.
-If it is set to 0.0, this feature is disabled.
+Configuration and logic to apply automatically on any edit happening on this layer.
 
 .. versionadded:: 3.4
 %End
@@ -2637,7 +2597,7 @@ Emitted when the feature count for symbols on this layer has been recalculated.
 Sets the extent
 %End
 
-  private:                       // Private methods
+  private:
     QgsVectorLayer( const QgsVectorLayer &rhs );
 };
 
