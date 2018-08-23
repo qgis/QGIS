@@ -151,6 +151,20 @@ construction mode.
 :param e: Mouse events prepared by the cad system
 %End
 
+    bool snapToGridEnabled() const;
+%Docstring
+Enables or disables snap to grid of mouse events.
+
+.. versionadded:: 3.4
+%End
+
+    void setSnapToGridEnabled( bool snapToGridEnabled );
+%Docstring
+Enables or disables snap to grid of mouse events.
+
+.. versionadded:: 3.4
+%End
+
 };
 
 /************************************************************************

@@ -40,7 +40,7 @@ void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
   }
 
   QgsVectorLayer *layer = currentVectorLayer();
-  if ( layer )
+  if ( mSnapToGridEnabled && layer )
   {
     e->snapToGrid( layer->geometryOptions().geometryPrecision, layer->crs() );
   }
@@ -80,7 +80,7 @@ void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 
   QgsVectorLayer *layer = currentVectorLayer();
-  if ( layer )
+  if ( mSnapToGridEnabled && layer )
   {
     e->snapToGrid( layer->geometryOptions().geometryPrecision, layer->crs() );
   }
@@ -105,7 +105,7 @@ void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
   }
 
   QgsVectorLayer *layer = currentVectorLayer();
-  if ( layer )
+  if ( mSnapToGridEnabled && layer )
   {
     e->snapToGrid( layer->geometryOptions().geometryPrecision, layer->crs() );
   }
@@ -132,4 +132,14 @@ void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPointXY &point )
   Q_UNUSED( point );
   QMouseEvent *ev = new QMouseEvent( QEvent::MouseMove, mCanvas->mouseLastXY(), Qt::NoButton, Qt::NoButton, Qt::NoModifier );
   qApp->postEvent( mCanvas->viewport(), ev );  // event queue will delete the event when processed
+}
+
+bool QgsMapToolAdvancedDigitizing::snapToGridEnabled() const
+{
+  return mSnapToGridEnabled;
+}
+
+void QgsMapToolAdvancedDigitizing::setSnapToGridEnabled( bool snapToGridEnabled )
+{
+  mSnapToGridEnabled = snapToGridEnabled;
 }
