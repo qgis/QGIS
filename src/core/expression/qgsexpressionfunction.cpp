@@ -4967,7 +4967,7 @@ void QgsWithVariableExpressionFunction::popTemporaryVariable( const QgsExpressio
 void QgsWithVariableExpressionFunction::appendTemporaryVariable( const QgsExpressionContext *context, const QString &name, const QVariant &value ) const
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope();
-  scope->setVariable( name, value );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( name, value, true ) );
 
   QgsExpressionContext *updatedContext = const_cast<QgsExpressionContext *>( context );
   updatedContext->appendScope( scope );
