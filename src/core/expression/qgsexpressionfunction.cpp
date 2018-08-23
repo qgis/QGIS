@@ -4900,8 +4900,12 @@ QVariant QgsArrayFilterExpressionFunction::run( QgsExpressionNode::NodeList *arg
   const QVariantList array = args->at( 0 )->eval( parent, context ).toList();
 
   QgsExpressionContext *subContext = const_cast<QgsExpressionContext *>( context );
-  if ( !context )
-    subContext = new QgsExpressionContext();
+  std::unique_ptr< QgsExpressionContext > tempContext;
+  if ( !subContext )
+  {
+    tempContext = qgis::make_unique< QgsExpressionContext >();
+    subContext = tempContext.get();
+  }
 
   QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
   subContext->appendScope( subScope );
@@ -4913,8 +4917,8 @@ QVariant QgsArrayFilterExpressionFunction::run( QgsExpressionNode::NodeList *arg
       result << value;
   }
 
-  if ( !context )
-    delete subContext;
+  if ( context )
+    delete subContext->popScope();
 
   return result;
 }
