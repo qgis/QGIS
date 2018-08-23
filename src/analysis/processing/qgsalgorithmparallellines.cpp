@@ -26,12 +26,12 @@ QString QgsCreateParallelLinesAlgorithm::name() const
 
 QString QgsCreateParallelLinesAlgorithm::displayName() const
 {
-  return QObject::tr( "Create parallel lines" );
+  return QObject::tr( "Array of offset lines" );
 }
 
 QStringList QgsCreateParallelLinesAlgorithm::tags() const
 {
-  return QObject::tr( "offset,duplicate,create,spaced,copy,features,objects,step,repeat" ).split( ',' );
+  return QObject::tr( "offset,parallel,duplicate,create,spaced,copy,features,objects,step,repeat" ).split( ',' );
 }
 
 QString QgsCreateParallelLinesAlgorithm::group() const
@@ -46,18 +46,18 @@ QString QgsCreateParallelLinesAlgorithm::groupId() const
 
 QString QgsCreateParallelLinesAlgorithm::outputName() const
 {
-  return QObject::tr( "Parallel lines" );
+  return QObject::tr( "Offset lines" );
 }
 
 QString QgsCreateParallelLinesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates copies of line features in a layer, by creating multiple parallel versions of each feature. "
+  return QObject::tr( "This algorithm creates copies of line features in a layer, by creating multiple offset versions of each feature. "
                       "Each copy is offset by a preset distance." );
 }
 
 QString QgsCreateParallelLinesAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Creates multiple parallel copies of lines from a layer." );
+  return QObject::tr( "Creates multiple offset copies of lines from a layer." );
 }
 
 QgsCreateParallelLinesAlgorithm *QgsCreateParallelLinesAlgorithm::createInstance() const
