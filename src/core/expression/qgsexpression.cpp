@@ -903,45 +903,50 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
   }
   else if ( value.type() == QVariant::Map )
   {
-    QString mapStr = QStringLiteral( "{ " );
+    QString mapStr = QStringLiteral( "{" );
     const QVariantMap map = value.toMap();
     QString separator;
     for ( QVariantMap::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
     {
       mapStr.append( separator );
       if ( separator.isEmpty() )
-        separator = QStringLiteral( ", " );
+        separator = QStringLiteral( "," );
 
-      mapStr.append( QStringLiteral( "%1: %2" ).arg( quotedValue( it.key() ), formatPreviewString( it.value() ) ) );
-      if ( mapStr.length() > MAX_PREVIEW + 5 )
+      mapStr.append( QStringLiteral( " %1: %2" ).arg( quotedValue( it.key() ), formatPreviewString( it.value() ) ) );
+      if ( mapStr.length() > MAX_PREVIEW - 3 )
       {
-        mapStr = tr( "%1…" ).arg( mapStr.left( MAX_PREVIEW ) );
+        mapStr = tr( "%1…" ).arg( mapStr.left( MAX_PREVIEW - 2 ) );
         break;
       }
     }
-    mapStr += QStringLiteral( " }" );
-    return tr( "<i>&lt;%1&gt;</i>" ).arg( mapStr );
+    if ( !map.empty() )
+      mapStr += QStringLiteral( " " );
+    mapStr += QStringLiteral( "}" );
+    return mapStr;
   }
   else if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
   {
-    QString listStr = QStringLiteral( "[ " );
+    QString listStr = QStringLiteral( "[" );
     const QVariantList list = value.toList();
     QString separator;
     for ( const QVariant &arrayValue : list )
     {
       listStr.append( separator );
       if ( separator.isEmpty() )
-        separator = QStringLiteral( ", " );
+        separator = QStringLiteral( "," );
 
+      listStr.append( " " );
       listStr.append( formatPreviewString( arrayValue ) );
-      if ( listStr.length() > MAX_PREVIEW + 5 )
+      if ( listStr.length() > MAX_PREVIEW - 3 )
       {
-        listStr = QString( tr( "%1…" ) ).arg( listStr.left( MAX_PREVIEW ) );
+        listStr = QString( tr( "%1…" ) ).arg( listStr.left( MAX_PREVIEW - 2 ) );
         break;
       }
     }
-    listStr += QStringLiteral( " ]" );
-    return tr( "<i>&lt;%1&gt;</i>" ).arg( listStr );
+    if ( !list.empty() )
+      listStr += QStringLiteral( " " );
+    listStr += QStringLiteral( "]" );
+    return listStr;
   }
   else
   {
