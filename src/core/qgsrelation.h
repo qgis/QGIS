@@ -95,7 +95,19 @@ class CORE_EXPORT QgsRelation
      */
     QgsRelation();
     ~QgsRelation();
+
+    /**
+     * Copies a relation.
+     * This makes a shallow copy, relations are implicitly shared and only duplicated when the copy is
+     * changed.
+     */
     QgsRelation( const QgsRelation &other );
+
+    /**
+     * Copies a relation.
+     * This makes a shallow copy, relations are implicitly shared and only duplicated when the copy is
+     * changed.
+     */
     QgsRelation &operator=( const QgsRelation &other );
 
     /**
