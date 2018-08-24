@@ -390,6 +390,31 @@ class TestQgsServerCacheManager(unittest.TestCase):
         filelist = [f for f in os.listdir(self._servercache._tile_cache_dir) if f.endswith(".png")]
         self.assertEqual(len(filelist), 0, 'All images in cache are not deleted ')
 
+    def test_gettile_invalid_parameters(self):
+        project = self._project_path
+        assert os.path.exists(project), "Project file not found: " + project
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMTS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetTile",
+            "LAYER": "Country",
+            "STYLE": "",
+            "TILEMATRIXSET": "EPSG:3857",
+            "TILEMATRIX": "0",
+            "TILEROW": "0",
+            "TILECOL": "FOO",
+            "FORMAT": "image/png"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"TILECOL (\'FOO\') cannot be converted into int" in r
+        self.assertTrue(err)
+
+        filelist = [f for f in os.listdir(self._servercache._tile_cache_dir) if f.endswith(".png")]
+        self.assertEqual(len(filelist), 0, 'Exception has been cached ')
+
 
 if __name__ == "__main__":
     unittest.main()
