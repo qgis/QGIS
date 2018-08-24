@@ -18,6 +18,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsvectorlayer.h"
+#include "qgsgeometryfixes.h"
 
 QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolEdit( canvas )
@@ -42,7 +43,7 @@ void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
   QgsVectorLayer *layer = currentVectorLayer();
   if ( mSnapToGridEnabled && layer )
   {
-    e->snapToGrid( layer->geometryOptions().geometryPrecision, layer->crs() );
+    e->snapToGrid( layer->geometryFixes()->geometryPrecision(), layer->crs() );
   }
 
   cadCanvasPressEvent( e );
@@ -82,7 +83,7 @@ void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
   QgsVectorLayer *layer = currentVectorLayer();
   if ( mSnapToGridEnabled && layer )
   {
-    e->snapToGrid( layer->geometryOptions().geometryPrecision, layer->crs() );
+    e->snapToGrid( layer->geometryFixes()->geometryPrecision(), layer->crs() );
   }
 
   cadCanvasReleaseEvent( e );
@@ -107,7 +108,7 @@ void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
   QgsVectorLayer *layer = currentVectorLayer();
   if ( mSnapToGridEnabled && layer )
   {
-    e->snapToGrid( layer->geometryOptions().geometryPrecision, layer->crs() );
+    e->snapToGrid( layer->geometryFixes()->geometryPrecision(), layer->crs() );
   }
 
   cadCanvasMoveEvent( e );
