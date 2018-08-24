@@ -105,13 +105,44 @@ namespace QgsWmts
     double scaleDenominator = 0.0;
     int colRes = ( tmi.extent.xMaximum() - tmi.extent.xMinimum() ) / tileWidth;
     int rowRes = ( tmi.extent.yMaximum() - tmi.extent.yMinimum() ) / tileHeight;
-    if ( colRes < rowRes )
-      scaleDenominator = colRes * INCHES_PER_UNIT[ tmi.unit ] * METERS_PER_INCH / 0.00028;
+    if ( colRes > rowRes )
+      scaleDenominator = std::ceil( colRes * INCHES_PER_UNIT[ tmi.unit ] * METERS_PER_INCH / 0.00028 );
     else
-      scaleDenominator = rowRes * INCHES_PER_UNIT[ tmi.unit ] * METERS_PER_INCH / 0.00028;
+      scaleDenominator = std::ceil( rowRes * INCHES_PER_UNIT[ tmi.unit ] * METERS_PER_INCH / 0.00028 );
+
+    // Update extent to get a square one
+    QgsRectangle extent = tmi.extent;
+    double res = 0.00028 * scaleDenominator / METERS_PER_INCH / INCHES_PER_UNIT[ tmi.unit ];
+    int col = std::ceil( ( extent.xMaximum() - extent.xMinimum() ) / ( tileWidth * res ) );
+    int row = std::ceil( ( extent.yMaximum() - extent.yMinimum() ) / ( tileHeight * res ) );
+    if ( col > 1 || row > 1 )
+    {
+      // Update scale
+      if ( col > row )
+      {
+        res = col * res;
+        scaleDenominator = col * scaleDenominator;
+      }
+      else
+      {
+        res = row * res;
+        scaleDenominator = row * scaleDenominator;
+      }
+      // set col and row to 1 for the square
+      col = 1;
+      row = 1;
+    }
+    // Calculate extent
+    double left = ( extent.xMinimum() + ( extent.xMaximum() - extent.xMinimum() ) / 2.0 ) - ( col / 2.0 ) * ( tileWidth * res );
+    double bottom = ( extent.yMinimum() + ( extent.yMaximum() - extent.yMinimum() ) / 2.0 ) - ( row / 2.0 ) * ( tileHeight * res );
+    double right = ( extent.xMinimum() + ( extent.xMaximum() - extent.xMinimum() ) / 2.0 ) + ( col / 2.0 ) * ( tileWidth * res );
+    double top = ( extent.yMinimum() + ( extent.yMaximum() - extent.yMinimum() ) / 2.0 ) + ( row / 2.0 ) * ( tileHeight * res );
+    tmi.extent = QgsRectangle( left, bottom, right, top );
+
     tmi.scaleDenominator = scaleDenominator;
 
     tileMatrixInfoMap[crsStr] = tmi;
+
     return tmi;
   }
 
@@ -126,8 +157,8 @@ namespace QgsWmts
     {
       double scale = scaleDenominator;
       double res = 0.00028 * scale / METERS_PER_INCH / INCHES_PER_UNIT[ unit ];
-      int col = std::round( ( extent.xMaximum() - extent.xMinimum() ) / ( tileWidth * res ) );
-      int row = std::round( ( extent.yMaximum() - extent.yMinimum() ) / ( tileHeight * res ) );
+      int col = std::ceil( ( extent.xMaximum() - extent.xMinimum() ) / ( tileWidth * res ) );
+      int row = std::ceil( ( extent.yMaximum() - extent.yMinimum() ) / ( tileHeight * res ) );
       double left = ( extent.xMinimum() + ( extent.xMaximum() - extent.xMinimum() ) / 2.0 ) - ( col / 2.0 ) * ( tileWidth * res );
       double top = ( extent.yMinimum() + ( extent.yMaximum() - extent.yMinimum() ) / 2.0 ) + ( row / 2.0 ) * ( tileHeight * res );
 
@@ -209,6 +240,254 @@ namespace QgsWmts
     }
 
     return tmsList;
+  }
+
+  QList< layerDef > getWmtsLayerList( QgsServerInterface *serverIface, const QgsProject *project )
+  {
+    QList< layerDef > wmtsLayers;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControl = serverIface->accessControls();
+#endif
+    QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+
+    QStringList nonIdentifiableLayers = project->nonIdentifiableLayers();
+
+    // WMTS Project configuration
+    bool wmtsProject = project->readBoolEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Project" ) );
+
+    // Root Layer name
+    QString rootLayerName = QgsServerProjectUtils::wmsRootName( *project );
+    if ( rootLayerName.isEmpty() && !project->title().isEmpty() )
+    {
+      rootLayerName = project->title();
+    }
+
+    if ( wmtsProject && !rootLayerName.isEmpty() )
+    {
+      layerDef pLayer;
+      pLayer.id = rootLayerName;
+
+      if ( !project->title().isEmpty() )
+      {
+        pLayer.title = project->title();
+        pLayer.abstract = project->title();
+      }
+
+      //transform the project native CRS into WGS84
+      QgsRectangle projRect = QgsServerProjectUtils::wmsExtent( *project );
+      QgsCoordinateReferenceSystem projCrs = project->crs();
+      QgsCoordinateTransform exGeoTransform( projCrs, wgs84, project );
+      try
+      {
+        pLayer.wgs84BoundingRect = exGeoTransform.transformBoundingBox( projRect );
+      }
+      catch ( const QgsCsException & )
+      {
+        pLayer.wgs84BoundingRect = QgsRectangle( -180, -90, 180, 90 );
+      }
+
+      // Formats
+      bool wmtsPngProject = project->readBoolEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Project" ) );
+      if ( wmtsPngProject )
+        pLayer.formats << QStringLiteral( "image/png" );
+      bool wmtsJpegProject = project->readBoolEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Project" ) );
+      if ( wmtsJpegProject )
+        pLayer.formats << QStringLiteral( "image/jpeg" );
+
+      // Project is not queryable in WMS
+      //pLayer.queryable = ( nonIdentifiableLayers.count() != project->count() );
+      pLayer.queryable = false;
+
+      wmtsLayers.append( pLayer );
+    }
+
+    QStringList wmtsGroupNameList = project->readListEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Group" ) );
+    if ( !wmtsGroupNameList.isEmpty() )
+    {
+      QgsLayerTreeGroup *treeRoot = project->layerTreeRoot();
+
+      QStringList wmtsPngGroupNameList = project->readListEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Group" ) );
+      QStringList wmtsJpegGroupNameList = project->readListEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Group" ) );
+
+      for ( const QString gName : wmtsGroupNameList )
+      {
+        QgsLayerTreeGroup *treeGroup = treeRoot->findGroup( gName );
+        if ( !treeGroup )
+        {
+          continue;
+        }
+
+        layerDef pLayer;
+        pLayer.id = treeGroup->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
+        if ( pLayer.id.isEmpty() )
+          pLayer.id = gName;
+
+        pLayer.title = treeGroup->customProperty( QStringLiteral( "wmsTitle" ) ).toString();
+        if ( pLayer.title.isEmpty() )
+          pLayer.title = gName;
+
+        pLayer.abstract = treeGroup->customProperty( QStringLiteral( "wmsAbstract" ) ).toString();
+
+        QgsRectangle wgs84BoundingRect;
+        bool queryable = false;
+        double maxScale = 0.0;
+        double minScale = 0.0;
+        for ( QgsLayerTreeLayer *layer : treeGroup->findLayers() )
+        {
+          QgsMapLayer *l = layer->layer();
+          if ( !l )
+          {
+            continue;
+          }
+          //transform the layer native CRS into WGS84
+          QgsCoordinateReferenceSystem layerCrs = l->crs();
+          QgsCoordinateTransform exGeoTransform( layerCrs, wgs84, project );
+          try
+          {
+            wgs84BoundingRect.combineExtentWith( exGeoTransform.transformBoundingBox( l->extent() ) );
+          }
+          catch ( const QgsCsException & )
+          {
+            wgs84BoundingRect.combineExtentWith( QgsRectangle( -180, -90, 180, 90 ) );
+          }
+          if ( !queryable && !nonIdentifiableLayers.contains( l->id() ) )
+          {
+            queryable = true;
+          }
+
+          double lMaxScale = l->maximumScale();
+          if ( lMaxScale > 0.0 && lMaxScale > maxScale )
+          {
+            maxScale = lMaxScale;
+          }
+          double lMinScale = l->minimumScale();
+          if ( lMinScale > 0.0 && ( minScale == 0.0 || lMinScale < minScale ) )
+          {
+            minScale = lMinScale;
+          }
+        }
+        pLayer.wgs84BoundingRect = wgs84BoundingRect;
+        pLayer.queryable = queryable;
+        pLayer.maxScale = maxScale;
+        pLayer.minScale = minScale;
+
+        // Formats
+        if ( wmtsPngGroupNameList.contains( gName ) )
+          pLayer.formats << QStringLiteral( "image/png" );
+        if ( wmtsJpegGroupNameList.contains( gName ) )
+          pLayer.formats << QStringLiteral( "image/jpeg" );
+
+        wmtsLayers.append( pLayer );
+      }
+    }
+
+    QStringList wmtsLayerIdList = project->readListEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Layer" ) );
+    QStringList wmtsPngLayerIdList = project->readListEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Layer" ) );
+    QStringList wmtsJpegLayerIdList = project->readListEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Layer" ) );
+
+    for ( const QString lId : wmtsLayerIdList )
+    {
+      QgsMapLayer *l = project->mapLayer( lId );
+      if ( !l )
+      {
+        continue;
+      }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      if ( !accessControl->layerReadPermission( l ) )
+      {
+        continue;
+      }
+#endif
+
+      layerDef pLayer;
+      pLayer.id = l->name();
+      if ( !l->shortName().isEmpty() )
+        pLayer.id = l->shortName();
+      pLayer.id = pLayer.id.replace( ' ', '_' );
+
+      pLayer.title = l->title();
+      pLayer.abstract = l->abstract();
+
+      //transform the layer native CRS into WGS84
+      QgsCoordinateReferenceSystem layerCrs = l->crs();
+      QgsCoordinateTransform exGeoTransform( layerCrs, wgs84, project );
+      try
+      {
+        pLayer.wgs84BoundingRect = exGeoTransform.transformBoundingBox( l->extent() );
+      }
+      catch ( const QgsCsException & )
+      {
+        pLayer.wgs84BoundingRect = QgsRectangle( -180, -90, 180, 90 );
+      }
+
+      // Formats
+      if ( wmtsPngLayerIdList.contains( lId ) )
+        pLayer.formats << QStringLiteral( "image/png" );
+      if ( wmtsJpegLayerIdList.contains( lId ) )
+        pLayer.formats << QStringLiteral( "image/jpeg" );
+
+      pLayer.queryable = ( !nonIdentifiableLayers.contains( l->id() ) );
+
+      pLayer.maxScale = l->maximumScale();
+      pLayer.minScale = l->minimumScale();
+
+      wmtsLayers.append( pLayer );
+    }
+    return wmtsLayers;
+  }
+
+  tileMatrixSetLinkDef getLayerTileMatrixSetLink( const layerDef layer, const tileMatrixSetDef tms, const QgsProject *project )
+  {
+    tileMatrixSetLinkDef tmsl;
+
+    QMap< int, tileMatrixLimitDef > tileMatrixLimits;
+
+    QgsRectangle rect( layer.wgs84BoundingRect );
+    if ( tms.ref != QLatin1String( "EPSG:4326" ) )
+    {
+      QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tms.ref );
+      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+      QgsCoordinateTransform exGeoTransform( wgs84, crs, project );
+      try
+      {
+        rect = exGeoTransform.transformBoundingBox( layer.wgs84BoundingRect );
+      }
+      catch ( const QgsCsException & )
+      {
+        return tmsl;
+      }
+    }
+    tmsl.ref = tms.ref;
+
+    rect = rect.intersect( tms.extent );
+
+    int tmIdx = -1;
+    for ( const tileMatrixDef tm : tms.tileMatrixList )
+    {
+      ++tmIdx;
+
+      if ( layer.maxScale > 0.0 && tm.scaleDenominator > layer.maxScale )
+      {
+        continue;
+      }
+      if ( layer.minScale > 0.0 && tm.scaleDenominator < layer.minScale )
+      {
+        continue;
+      }
+
+      double res = tm.resolution;
+
+      tileMatrixLimitDef tml;
+      tml.minCol = std::floor( ( rect.xMinimum() - tm.left ) / ( tileWidth * res ) );
+      tml.maxCol = std::ceil( ( rect.xMaximum() - tm.left ) / ( tileWidth * res ) ) - 1;
+      tml.minRow = std::floor( ( tm.top - rect.yMaximum() ) / ( tileHeight * res ) );
+      tml.maxRow = std::ceil( ( tm.top - rect.yMinimum() ) / ( tileHeight * res ) ) - 1;
+
+      tileMatrixLimits[tmIdx] = tml;
+    }
+
+    tmsl.tileMatrixLimits = tileMatrixLimits;
+    return tmsl;
   }
 
   QUrlQuery translateWmtsParamToWmsQueryItem( const QString &request, const QgsWmtsParameters &params,

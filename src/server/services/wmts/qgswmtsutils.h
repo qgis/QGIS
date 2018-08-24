@@ -72,6 +72,24 @@ namespace QgsWmts
     QList< tileMatrixDef > tileMatrixList;
   };
 
+  struct tileMatrixLimitDef
+  {
+    int minCol;
+
+    int maxCol;
+
+    int minRow;
+
+    int maxRow;
+  };
+
+  struct tileMatrixSetLinkDef
+  {
+    QString ref;
+
+    QMap< int, tileMatrixLimitDef > tileMatrixLimits;
+  };
+
   struct layerDef
   {
     QString id;
@@ -85,6 +103,10 @@ namespace QgsWmts
     QStringList formats;
 
     bool queryable = false;
+
+    double maxScale = 0.0;
+
+    double minScale = 0.0;
   };
 
   /**
@@ -106,6 +128,9 @@ namespace QgsWmts
   tileMatrixSetDef getTileMatrixSet( tileMatrixInfo tmi, double minScale );
   double getProjectMinScale( const QgsProject *project );
   QList< tileMatrixSetDef > getTileMatrixSetList( const QgsProject *project );
+
+  QList< layerDef > getWmtsLayerList( QgsServerInterface *serverIface, const QgsProject *project );
+  tileMatrixSetLinkDef getLayerTileMatrixSetLink( const layerDef layer, const tileMatrixSetDef tms, const QgsProject *project );
 
   /**
    * Translate WMTS parameters to WMS query item

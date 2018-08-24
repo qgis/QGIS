@@ -32,8 +32,6 @@ namespace QgsWmts
 {
   namespace
   {
-    QList< layerDef > getWmtsLayerList( QgsServerInterface *serverIface, const QgsProject *project );
-
     void appendLayerElements( QDomDocument &doc, QDomElement &contentsElement,
                               QList< layerDef > wmtsLayers, QList< tileMatrixSetDef > tmsList,
                               const QgsProject *project );
@@ -322,182 +320,6 @@ namespace QgsWmts
   }
   namespace
   {
-    QList< layerDef > getWmtsLayerList( QgsServerInterface *serverIface, const QgsProject *project )
-    {
-      QList< layerDef > wmtsLayers;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-      QgsAccessControl *accessControl = serverIface->accessControls();
-#endif
-      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
-
-      QStringList nonIdentifiableLayers = project->nonIdentifiableLayers();
-
-      // WMTS Project configuration
-      bool wmtsProject = project->readBoolEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Project" ) );
-
-      // Root Layer name
-      QString rootLayerName = QgsServerProjectUtils::wmsRootName( *project );
-      if ( rootLayerName.isEmpty() && !project->title().isEmpty() )
-      {
-        rootLayerName = project->title();
-      }
-
-      if ( wmtsProject && !rootLayerName.isEmpty() )
-      {
-        layerDef pLayer;
-        pLayer.id = rootLayerName;
-
-        if ( !project->title().isEmpty() )
-        {
-          pLayer.title = project->title();
-          pLayer.abstract = project->title();
-        }
-
-        //transform the project native CRS into WGS84
-        QgsRectangle projRect = QgsServerProjectUtils::wmsExtent( *project );
-        QgsCoordinateReferenceSystem projCrs = project->crs();
-        QgsCoordinateTransform exGeoTransform( projCrs, wgs84, project );
-        try
-        {
-          pLayer.wgs84BoundingRect = exGeoTransform.transformBoundingBox( projRect );
-        }
-        catch ( const QgsCsException & )
-        {
-          pLayer.wgs84BoundingRect = QgsRectangle( -180, -90, 180, 90 );
-        }
-
-        // Formats
-        bool wmtsPngProject = project->readBoolEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Project" ) );
-        if ( wmtsPngProject )
-          pLayer.formats << QStringLiteral( "image/png" );
-        bool wmtsJpegProject = project->readBoolEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Project" ) );
-        if ( wmtsJpegProject )
-          pLayer.formats << QStringLiteral( "image/jpeg" );
-
-        // Project is not queryable in WMS
-        //pLayer.queryable = ( nonIdentifiableLayers.count() != project->count() );
-        pLayer.queryable = false;
-
-        wmtsLayers.append( pLayer );
-      }
-
-      QStringList wmtsGroupNameList = project->readListEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Group" ) );
-      if ( !wmtsGroupNameList.isEmpty() )
-      {
-        QgsLayerTreeGroup *treeRoot = project->layerTreeRoot();
-
-        QStringList wmtsPngGroupNameList = project->readListEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Group" ) );
-        QStringList wmtsJpegGroupNameList = project->readListEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Group" ) );
-
-        for ( const QString gName : wmtsGroupNameList )
-        {
-          QgsLayerTreeGroup *treeGroup = treeRoot->findGroup( gName );
-          if ( !treeGroup )
-          {
-            continue;
-          }
-
-          layerDef pLayer;
-          pLayer.id = treeGroup->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
-          if ( pLayer.id.isEmpty() )
-            pLayer.id = gName;
-
-          pLayer.title = treeGroup->customProperty( QStringLiteral( "wmsTitle" ) ).toString();
-          if ( pLayer.title.isEmpty() )
-            pLayer.title = gName;
-
-          pLayer.abstract = treeGroup->customProperty( QStringLiteral( "wmsAbstract" ) ).toString();
-
-          QgsRectangle wgs84BoundingRect;
-          bool queryable = false;
-          for ( QgsLayerTreeLayer *layer : treeGroup->findLayers() )
-          {
-            QgsMapLayer *l = layer->layer();
-            if ( !l )
-            {
-              continue;
-            }
-            //transform the layer native CRS into WGS84
-            QgsCoordinateReferenceSystem layerCrs = l->crs();
-            QgsCoordinateTransform exGeoTransform( layerCrs, wgs84, project );
-            try
-            {
-              wgs84BoundingRect.combineExtentWith( exGeoTransform.transformBoundingBox( l->extent() ) );
-            }
-            catch ( const QgsCsException & )
-            {
-              wgs84BoundingRect.combineExtentWith( QgsRectangle( -180, -90, 180, 90 ) );
-            }
-            if ( !queryable && !nonIdentifiableLayers.contains( l->id() ) )
-            {
-              queryable = true;
-            }
-          }
-          pLayer.wgs84BoundingRect = wgs84BoundingRect;
-          pLayer.queryable = queryable;
-
-          // Formats
-          if ( wmtsPngGroupNameList.contains( gName ) )
-            pLayer.formats << QStringLiteral( "image/png" );
-          if ( wmtsJpegGroupNameList.contains( gName ) )
-            pLayer.formats << QStringLiteral( "image/jpeg" );
-
-          wmtsLayers.append( pLayer );
-        }
-      }
-
-      QStringList wmtsLayerIdList = project->readListEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Layer" ) );
-      QStringList wmtsPngLayerIdList = project->readListEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Layer" ) );
-      QStringList wmtsJpegLayerIdList = project->readListEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Layer" ) );
-
-      for ( const QString lId : wmtsLayerIdList )
-      {
-        QgsMapLayer *l = project->mapLayer( lId );
-        if ( !l )
-        {
-          continue;
-        }
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-        if ( !accessControl->layerReadPermission( l ) )
-        {
-          continue;
-        }
-#endif
-
-        layerDef pLayer;
-        pLayer.id = l->name();
-        if ( !l->shortName().isEmpty() )
-          pLayer.id = l->shortName();
-        pLayer.id = pLayer.id.replace( ' ', '_' );
-
-        pLayer.title = l->title();
-        pLayer.abstract = l->abstract();
-
-        //transform the layer native CRS into WGS84
-        QgsCoordinateReferenceSystem layerCrs = l->crs();
-        QgsCoordinateTransform exGeoTransform( layerCrs, wgs84, project );
-        try
-        {
-          pLayer.wgs84BoundingRect = exGeoTransform.transformBoundingBox( l->extent() );
-        }
-        catch ( const QgsCsException & )
-        {
-          pLayer.wgs84BoundingRect = QgsRectangle( -180, -90, 180, 90 );
-        }
-
-        // Formats
-        if ( wmtsPngLayerIdList.contains( lId ) )
-          pLayer.formats << QStringLiteral( "image/png" );
-        if ( wmtsJpegLayerIdList.contains( lId ) )
-          pLayer.formats << QStringLiteral( "image/jpeg" );
-
-        pLayer.queryable = ( !nonIdentifiableLayers.contains( l->id() ) );
-
-        wmtsLayers.append( pLayer );
-      }
-      return wmtsLayers;
-    }
-
     void appendLayerElements( QDomDocument &doc, QDomElement &contentsElement,
                               QList< layerDef > wmtsLayers, QList< tileMatrixSetDef > tmsList,
                               const QgsProject *project )
@@ -616,19 +438,10 @@ namespace QgsWmts
 
         for ( const tileMatrixSetDef tms : tmsList )
         {
-          if ( tms.ref != QLatin1String( "EPSG:4326" ) )
+          tileMatrixSetLinkDef tmsl = getLayerTileMatrixSetLink( wmtsLayer, tms, project );
+          if ( tmsl.ref.isEmpty() || tmsl.ref != tms.ref )
           {
-            QgsRectangle rect;
-            QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tms.ref );
-            QgsCoordinateTransform exGeoTransform( wgs84, crs, project );
-            try
-            {
-              rect = exGeoTransform.transformBoundingBox( wmtsLayer.wgs84BoundingRect );
-            }
-            catch ( const QgsCsException & )
-            {
-              continue;
-            }
+            continue;
           }
 
           //wmts:TileMatrixSetLink
@@ -641,8 +454,7 @@ namespace QgsWmts
 
           //wmts:TileMatrixSetLimits
           QDomElement tmsLimitsElement = doc.createElement( QStringLiteral( "TileMatrixSetLimits" )/*wmts:TileMatrixSetLimits*/ );
-          int tmIdx = 0;
-          for ( const tileMatrixDef tm : tms.tileMatrixList )
+          for ( int tmIdx : tmsl.tileMatrixLimits.keys() )
           {
             QDomElement tmLimitsElement = doc.createElement( QStringLiteral( "TileMatrixLimits" )/*wmts:TileMatrixLimits*/ );
 
@@ -651,29 +463,29 @@ namespace QgsWmts
             tmIdentifierElem.appendChild( tmIdentifierText );
             tmLimitsElement.appendChild( tmIdentifierElem );
 
+            tileMatrixLimitDef tml = tmsl.tileMatrixLimits[tmIdx];
+
             QDomElement minTileColElem = doc.createElement( QStringLiteral( "MinTileCol" ) );
-            QDomText minTileColText = doc.createTextNode( QString::number( 0 ) );
+            QDomText minTileColText = doc.createTextNode( QString::number( tml.minCol ) );
             minTileColElem.appendChild( minTileColText );
             tmLimitsElement.appendChild( minTileColElem );
 
             QDomElement maxTileColElem = doc.createElement( QStringLiteral( "MaxTileCol" ) );
-            QDomText maxTileColText = doc.createTextNode( QString::number( tm.col ) );
+            QDomText maxTileColText = doc.createTextNode( QString::number( tml.maxCol ) );
             maxTileColElem.appendChild( maxTileColText );
             tmLimitsElement.appendChild( maxTileColElem );
 
             QDomElement minTileRowElem = doc.createElement( QStringLiteral( "MinTileRow" ) );
-            QDomText minTileRowText = doc.createTextNode( QString::number( 0 ) );
+            QDomText minTileRowText = doc.createTextNode( QString::number( tml.minRow ) );
             minTileRowElem.appendChild( minTileRowText );
             tmLimitsElement.appendChild( minTileRowElem );
 
             QDomElement maxTileRowElem = doc.createElement( QStringLiteral( "MaxTileRow" ) );
-            QDomText maxTileRowText = doc.createTextNode( QString::number( tm.row ) );
+            QDomText maxTileRowText = doc.createTextNode( QString::number( tml.maxRow ) );
             maxTileRowElem.appendChild( maxTileRowText );
             tmLimitsElement.appendChild( maxTileRowElem );
 
             tmsLimitsElement.appendChild( tmLimitsElement );
-
-            ++tmIdx;
           }
           tmslElement.appendChild( tmsLimitsElement );
 
