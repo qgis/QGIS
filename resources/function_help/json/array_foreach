@@ -7,7 +7,7 @@
     {"arg":"expression","description":"an expression to evaluate on each item. The variable `@element` will be replaced by the current value."}
   ],
   "examples": [
-    { "expression": "array_foreach(array('a','b','c'),upper(@element))", "returns":"array: 'A', 'B', 'C'"},
-    { "expression": "array_foreach(array(1,2,3),@element + 10)", "returns":"array: 11, 12, 13"}
+    { "expression": "array_foreach(array('a','b','c'),upper(@element))", "returns":"[ 'A', 'B', 'C' ]"},
+    { "expression": "array_foreach(array(1,2,3),@element + 10)", "returns":"[ 11, 12, 13 ]"}
   ]
 }
