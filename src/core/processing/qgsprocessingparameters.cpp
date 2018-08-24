@@ -4276,9 +4276,10 @@ QgsProcessingParameterVectorDestination *QgsProcessingParameterVectorDestination
   return new QgsProcessingParameterVectorDestination( name, description, type, definition, isOptional );
 }
 
-QgsProcessingParameterBand::QgsProcessingParameterBand( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, bool optional )
+QgsProcessingParameterBand::QgsProcessingParameterBand( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, bool optional, bool allowMultiple )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mParentLayerParameterName( parentLayerParameterName )
+  , mAllowMultiple( allowMultiple )
 {
 
 }
@@ -4298,13 +4299,33 @@ bool QgsProcessingParameterBand::checkValueIsAcceptable( const QVariant &input, 
     return true;
   }
 
-  bool ok = false;
-  double res = input.toInt( &ok );
-  Q_UNUSED( res );
-  if ( !ok )
-    return mFlags & FlagOptional;
+  if ( input.type() == QVariant::List || input.type() == QVariant::StringList )
+  {
+    if ( !mAllowMultiple )
+      return false;
 
+    if ( input.toList().isEmpty() && !( mFlags & FlagOptional ) )
+      return false;
+  }
+  else
+  {
+    bool ok = false;
+    double res = input.toInt( &ok );
+    Q_UNUSED( res );
+    if ( !ok )
+      return mFlags & FlagOptional;
+  }
   return true;
+}
+
+bool QgsProcessingParameterBand::allowMultiple() const
+{
+  return mAllowMultiple;
+}
+
+void QgsProcessingParameterBand::setAllowMultiple( bool allowMultiple )
+{
+  mAllowMultiple = allowMultiple;
 }
 
 QString QgsProcessingParameterBand::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
@@ -4315,6 +4336,27 @@ QString QgsProcessingParameterBand::valueAsPythonString( const QVariant &value, 
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
+  if ( value.type() == QVariant::List )
+  {
+    QStringList parts;
+    QVariantList values = value.toList();
+    for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
+    {
+      parts << QgsProcessingUtils::stringToPythonLiteral( it->toString() );
+    }
+    return parts.join( ',' ).prepend( '[' ).append( ']' );
+  }
+  else if ( value.type() == QVariant::StringList )
+  {
+    QStringList parts;
+    QStringList values = value.toStringList();
+    for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
+    {
+      parts << QgsProcessingUtils::stringToPythonLiteral( *it );
+    }
+    return parts.join( ',' ).prepend( '[' ).append( ']' );
+  }
+
   return value.toString();
 }
 
@@ -4324,6 +4366,9 @@ QString QgsProcessingParameterBand::asScriptCode() const
   if ( mFlags & FlagOptional )
     code += QStringLiteral( "optional " );
   code += QStringLiteral( "band " );
+
+  if ( mAllowMultiple )
+    code += QStringLiteral( "multiple " );
 
   code += mParentLayerParameterName + ' ';
 
@@ -4353,6 +4398,7 @@ QVariantMap QgsProcessingParameterBand::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   map.insert( QStringLiteral( "parent_layer" ), mParentLayerParameterName );
+  map.insert( QStringLiteral( "allow_multiple" ), mAllowMultiple );
   return map;
 }
 
@@ -4360,6 +4406,7 @@ bool QgsProcessingParameterBand::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mParentLayerParameterName = map.value( QStringLiteral( "parent_layer" ) ).toString();
+  mAllowMultiple = map.value( QStringLiteral( "allow_multiple" ) ).toBool();
   return true;
 }
 
@@ -4367,6 +4414,13 @@ QgsProcessingParameterBand *QgsProcessingParameterBand::fromScriptCode( const QS
 {
   QString parent;
   QString def = definition;
+  bool allowMultiple = false;
+
+  if ( def.startsWith( QStringLiteral( "multiple" ), Qt::CaseInsensitive ) )
+  {
+    allowMultiple = true;
+    def = def.mid( 8 ).trimmed();
+  }
 
   QRegularExpression re( QStringLiteral( "(.*?)\\s+(.*)$" ) );
   QRegularExpressionMatch m = re.match( def );
@@ -4381,7 +4435,7 @@ QgsProcessingParameterBand *QgsProcessingParameterBand::fromScriptCode( const QS
     def.clear();
   }
 
-  return new QgsProcessingParameterBand( name, description, def.isEmpty() ? QVariant() : def, parent, isOptional );
+  return new QgsProcessingParameterBand( name, description, def.isEmpty() ? QVariant() : def, parent, isOptional, allowMultiple );
 }
 
 //

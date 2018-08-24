@@ -76,6 +76,7 @@ from qgis.core import (
     QgsProcessingOutputNumber,
     QgsProcessingModelChildParameterSource,
     QgsProcessingModelAlgorithm,
+    QgsRasterDataProvider,
     NULL)
 
 from qgis.PyQt.QtWidgets import (
@@ -1655,6 +1656,8 @@ class BandWidgetWrapper(WidgetWrapper):
         self._layer = None
 
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            if self.param.allowMultiple():
+                return MultipleInputPanel(options=[])
             widget = QgsRasterBandComboBox()
             widget.setShowNotSetOption(self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
             widget.bandChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
@@ -1689,24 +1692,60 @@ class BandWidgetWrapper(WidgetWrapper):
         self._layer = layer
         self.refreshItems()
 
+    def getBands(self):
+        bands = []
+
+        if self._layer is not None:
+            provider = self._layer.dataProvider()
+            for band in range(1, provider.bandCount() + 1):
+                name = provider.generateBandName(band)
+                interpretation = provider.colorInterpretationName(band)
+                if interpretation != "Undefined":
+                    name = name + ' ({})'.format(interpretation)
+                bands.append(name)
+        return bands
+
     def refreshItems(self):
-        self.widget.setLayer(self._layer)
-        self.widget.setCurrentIndex(0)
+        if self.param.allowMultiple():
+            self.widget.setSelectedItems([])
+            self.widget.updateForOptions(self.getBands())
+        else:
+            self.widget.setLayer(self._layer)
+            self.widget.setCurrentIndex(0)
 
     def setValue(self, value):
         if value is None or value == NULL:
             return
 
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-            self.widget.setBand(value)
+            if self.param.allowMultiple():
+                options = self.widget.options
+                selected = []
+                if isinstance(value, str):
+                    value = value.split(';')
+
+                for v in value:
+                    for i, opt in enumerate(options):
+                        if opt == v:
+                            selected.append(i)
+                        # case insensitive check - only do if matching case value is not present
+                        elif v not in options and opt.lower() == v.lower():
+                            selected.append(i)
+
+                self.widget.setSelectedItems(selected)
+            else:
+                self.widget.setBand(value)
         else:
             self.setComboValue(value)
 
     def value(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-            f = self.widget.currentBand()
-            if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional and not f:
-                return None
+            if self.param.allowMultiple():
+                return [self.widget.options[i] for i in self.widget.selectedoptions]
+            else:
+                f = self.widget.currentBand()
+                if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional and not f:
+                    return None
             return f
         else:
             def validator(v):
