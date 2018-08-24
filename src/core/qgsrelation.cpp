@@ -326,7 +326,7 @@ QgsAttributeList QgsRelation::referencingFields() const
 
 bool QgsRelation::isValid() const
 {
-  return d->mValid;
+  return d->mValid && d->mReferencingLayer && d->mReferencedLayer;
 }
 
 bool QgsRelation::hasEqualDefinition( const QgsRelation &other ) const
