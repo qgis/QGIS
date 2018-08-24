@@ -3108,19 +3108,19 @@ class TestQgsExpression: public QObject
 
     void test_formatPreviewString()
     {
-      QCOMPARE( QgsExpression::formatPreviewString( QVariant( "hello" ) ), QString( "'hello'" ) );
-      QCOMPARE( QgsExpression::formatPreviewString( QVariant( QVariantMap() ) ), QString( "<i>&lt;map: &gt;</i>" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( "hello" ) ), QStringLiteral( "'hello'" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( QVariantMap() ) ), QStringLiteral( "{}" ) );
 
       QVariantMap map;
       map[QStringLiteral( "1" )] = "One";
       map[QStringLiteral( "2" )] = "Two";
-      QCOMPARE( QgsExpression::formatPreviewString( QVariant( map ) ), QString( "<i>&lt;map: 1: 'One', 2: 'Two'&gt;</i>" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( map ) ), QStringLiteral( "{ 1: 'One', 2: 'Two' }" ) );
       map[QStringLiteral( "3" )] = "A very long string that is going to be truncated";
-      QCOMPARE( QgsExpression::formatPreviewString( QVariant( map ) ), QString( "<i>&lt;map: 1: 'One', 2: 'Two', 3: 'A very long string that is going to …&gt;</i>" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( map ) ), QStringLiteral( "{ 1: 'One', 2: 'Two', 3: 'A very long string that is going to … }" ) );
 
       QVariantList list;
       list << 1 << 2 << 3;
-      QCOMPARE( QgsExpression::formatPreviewString( QVariant( list ) ), QString( "<i>&lt;array: 1, 2, 3&gt;</i>" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( list ) ), QStringLiteral( "[ 1, 2, 3 ]" ) );
 
       QStringList stringList;
       stringList << QStringLiteral( "One" ) << QStringLiteral( "Two" ) << QStringLiteral( "A very long string that is going to be truncated" );
