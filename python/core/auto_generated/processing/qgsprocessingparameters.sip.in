@@ -2473,7 +2473,8 @@ A raster band parameter for Processing algorithms.
 
     QgsProcessingParameterBand( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                 const QString &parentLayerParameterName = QString(),
-                                bool optional = false );
+                                bool optional = false,
+                                bool allowMultiple = false );
 %Docstring
 Constructor for QgsProcessingParameterBand.
 %End
@@ -2516,6 +2517,24 @@ Sets the name of the parent layer parameter. Use an empty string if this is not 
     static QgsProcessingParameterBand *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
+%End
+
+    bool allowMultiple() const;
+%Docstring
+Returns whether multiple band selections are permitted.
+
+.. seealso:: :py:func:`setAllowMultiple`
+
+.. versionadded:: 3.4
+%End
+
+    void setAllowMultiple( bool allowMultiple );
+%Docstring
+Sets whether multiple band selections are permitted.
+
+.. seealso:: :py:func:`allowMultiple`
+
+.. versionadded:: 3.4
 %End
 
 };

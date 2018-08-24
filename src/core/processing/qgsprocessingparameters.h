@@ -2346,7 +2346,8 @@ class CORE_EXPORT QgsProcessingParameterBand : public QgsProcessingParameterDefi
      */
     QgsProcessingParameterBand( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                 const QString &parentLayerParameterName = QString(),
-                                bool optional = false );
+                                bool optional = false,
+                                bool allowMultiple = false );
 
     /**
      * Returns the type name for the parameter class.
@@ -2379,9 +2380,24 @@ class CORE_EXPORT QgsProcessingParameterBand : public QgsProcessingParameterDefi
      */
     static QgsProcessingParameterBand *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
+    /**
+     * Returns whether multiple band selections are permitted.
+     * \see setAllowMultiple()
+     * \since QGIS 3.4
+     */
+    bool allowMultiple() const;
+
+    /**
+     * Sets whether multiple band selections are permitted.
+     * \see allowMultiple()
+     * \since QGIS 3.4
+     */
+    void setAllowMultiple( bool allowMultiple );
+
   private:
 
     QString mParentLayerParameterName;
+    bool mAllowMultiple = false;
 };
 
 // clazy:excludeall=qstring-allocations

@@ -5103,6 +5103,46 @@ void TestQgsProcessing::parameterBand()
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
   QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
 
+  // multiple
+  def.reset( new QgsProcessingParameterBand( "non_optional", QString(), QVariant(), QString(), false, true ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringList() << "Band 1" << "Band 2" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << "Band 1" << "Band 2" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringList() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() ) );
+
+  params.insert( "non_optional", QString( "Band 1;Band 2" ) );
+  QStringList bands = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  QCOMPARE( bands, QStringList() << "Band 1" << "Band 2" );
+  params.insert( "non_optional", QVariantList() << "Band 1" << "Band 2" );
+  bands = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  QCOMPARE( bands, QStringList() << "Band 1" << "Band 2" );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( QStringList() << "Band 1" << "Band 2", context ), QStringLiteral( "['Band 1','Band 2']" ) );
+  QCOMPARE( def->valueAsPythonString( QVariantList() << "Band 1" << "Band 2", context ), QStringLiteral( "['Band 1','Band 2']" ) );
+
+  QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterBand fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.parentLayerParameterName(), def->parentLayerParameterName() );
+  QCOMPARE( fromMap.allowMultiple(), def->allowMultiple() );
+  def.reset( dynamic_cast< QgsProcessingParameterBand *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterBand *>( def.get() ) );
+
+  code = def->asScriptCode();
+  fromCode.reset( dynamic_cast< QgsProcessingParameterBand * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->parentLayerParameterName(), def->parentLayerParameterName() );
+  QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
+
   // optional
   def.reset( new QgsProcessingParameterBand( "optional", QString(), 1, QString(), true ) );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
