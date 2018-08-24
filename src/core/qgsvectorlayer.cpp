@@ -95,6 +95,7 @@
 #include "qgstaskmanager.h"
 #include "qgstransaction.h"
 #include "qgsauxiliarystorage.h"
+#include "qgsgeometryfixes.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -149,6 +150,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   , mAuxiliaryLayerKey( QString() )
   , mReadExtentFromXml( options.readExtentFromXml )
 {
+  mGeometryFixes = qgis::make_unique<QgsGeometryFixes>();
   mActions = new QgsActionManager( this );
   mConditionalStyles = new QgsConditionalLayerStyles();
 
@@ -944,6 +946,14 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return false;
 
+
+  if ( mGeometryFixes->isActive() )
+  {
+    QgsGeometry geom = feature.geometry();
+    mGeometryFixes->apply( geom );
+    feature.setGeometry( geom );
+  }
+
   bool success = mEditBuffer->addFeature( feature );
 
   if ( success )
@@ -957,7 +967,7 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
   return success;
 }
 
-bool QgsVectorLayer::updateFeature( const QgsFeature &updatedFeature, bool skipDefaultValues )
+bool QgsVectorLayer::updateFeature( QgsFeature &updatedFeature, bool skipDefaultValues )
 {
   if ( !mEditBuffer || !mDataProvider )
   {
@@ -972,9 +982,11 @@ bool QgsVectorLayer::updateFeature( const QgsFeature &updatedFeature, bool skipD
 
     if ( ( updatedFeature.hasGeometry() || currentFeature.hasGeometry() ) && !updatedFeature.geometry().equals( currentFeature.geometry() ) )
     {
-      if ( changeGeometry( updatedFeature.id(), updatedFeature.geometry(), true ) )
+      QgsGeometry geometry = updatedFeature.geometry();
+      if ( changeGeometry( updatedFeature.id(), geometry, true ) )
       {
         hasChanged = true;
+        updatedFeature.setGeometry( geometry );
       }
       else
       {
@@ -2043,6 +2055,10 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     mFieldWidgetSetups[fieldName] = setup;
   }
 
+  QDomElement geometryOptionsElement = layerNode.namedItem( QStringLiteral( "geometryOptions" ) ).toElement();
+  mGeometryFixes->setGeometryPrecision( geometryOptionsElement.attribute( QStringLiteral( "geometryPrecision" ),  QStringLiteral( "0.0" ) ).toDouble() );
+  mGeometryFixes->setRemoveDuplicateNodes( geometryOptionsElement.attribute( QStringLiteral( "removeDuplicateNodes" ),  QStringLiteral( "0" ) ).toInt() == 1 );
+
   mEditFormConfig.readXml( layerNode, context );
 
   mAttributeTableConfig.readXml( layerNode );
@@ -2236,6 +2252,12 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
   QDomElement fieldConfigurationElement = doc.createElement( QStringLiteral( "fieldConfiguration" ) );
   node.appendChild( fieldConfigurationElement );
+
+  QDomElement geometryOptionsElement = doc.createElement( QStringLiteral( "geometryOptions" ) );
+  node.appendChild( geometryOptionsElement );
+
+  geometryOptionsElement.setAttribute( QStringLiteral( "removeDuplicateNodes" ), mGeometryFixes->removeDuplicateNodes() ? 1 : 0 );
+  geometryOptionsElement.setAttribute( QStringLiteral( "geometryPrecision" ), mGeometryFixes->geometryPrecision() );
 
   int index = 0;
   Q_FOREACH ( const QgsField &field, mFields )
@@ -2489,12 +2511,15 @@ bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
 }
 
 
-bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, const QgsGeometry &geom, bool skipDefaultValue )
+bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry &geom, bool skipDefaultValue )
 {
   if ( !mEditBuffer || !mDataProvider )
   {
     return false;
   }
+
+  if ( mGeometryFixes->isActive() )
+    mGeometryFixes->apply( geom );
 
   updateExtents();
 
@@ -2963,6 +2988,16 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList &features, Flags )
 {
   if ( !mEditBuffer || !mDataProvider )
     return false;
+
+  if ( mGeometryFixes->isActive() )
+  {
+    for ( auto feature = features.begin(); feature != features.end(); ++feature )
+    {
+      QgsGeometry geom = feature->geometry();
+      mGeometryFixes->apply( geom );
+      feature->setGeometry( geom );
+    }
+  }
 
   bool res = mEditBuffer->addFeatures( features );
   updateExtents();
@@ -4746,6 +4781,11 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
   }
 
   return labeling;
+}
+
+QgsGeometryFixes *QgsVectorLayer::geometryFixes() const
+{
+  return mGeometryFixes.get();
 }
 
 void QgsVectorLayer::setReadExtentFromXml( bool readExtentFromXml )

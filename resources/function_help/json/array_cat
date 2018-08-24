@@ -7,6 +7,6 @@
     {"arg":"array1", "syntaxOnly": true},
     {"arg":"array2", "syntaxOnly": true},
     {"arg":"array", "descOnly": true, "description":"an array"}],
-  "examples": [ { "expression":"array_cat(array(1,2),array(2,3))", "returns":"array: 1,2,2,3"}
+  "examples": [ { "expression":"array_cat(array(1,2),array(2,3))", "returns":"[ 1, 2, 2, 3 ]"}
   ]
 }
