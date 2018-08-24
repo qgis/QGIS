@@ -60,6 +60,7 @@ from .pct2rgb import pct2rgb
 from .polygonize import polygonize
 from .proximity import proximity
 from .rasterize import rasterize
+from .rearrange_bands import rearrange_bands
 from .retile import retile
 from .rgb2pct import rgb2pct
 from .roughness import roughness
@@ -166,6 +167,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             polygonize(),
             proximity(),
             rasterize(),
+            rearrange_bands(),
             retile(),
             rgb2pct(),
             roughness(),
