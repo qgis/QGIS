@@ -42,7 +42,6 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
   , mCaptureMode( mode )
 {
-  mCaptureModeFromLayer = mode == CaptureNone;
   mCapturing = false;
 
   mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
@@ -51,6 +50,8 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
 
   connect( canvas, &QgsMapCanvas::currentLayerChanged,
            this, &QgsMapToolCapture::currentLayerChanged );
+
+  currentLayerChanged( canvas->currentLayer() );
 }
 
 QgsMapToolCapture::~QgsMapToolCapture()
@@ -94,10 +95,8 @@ void QgsMapToolCapture::validationFinished()
 
 void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
 {
-  if ( !mCaptureModeFromLayer )
+  if ( mCaptureMode != CaptureNone )
     return;
-
-  mCaptureMode = CaptureNone;
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
