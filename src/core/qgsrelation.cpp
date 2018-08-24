@@ -23,12 +23,11 @@
 #include "qgsrelation_p.h"
 
 QgsRelation::QgsRelation()
+  : d( new QgsRelationPrivate() )
 {
 }
 
-QgsRelation::~QgsRelation()
-{
-}
+QgsRelation::~QgsRelation() = default;
 
 QgsRelation::QgsRelation( const QgsRelation &other )
   : d( other.d )
@@ -326,7 +325,7 @@ QgsAttributeList QgsRelation::referencingFields() const
 
 bool QgsRelation::isValid() const
 {
-  return d->mValid && d->mReferencingLayer && d->mReferencedLayer;
+  return d->mValid && !d->mReferencingLayer.isNull() && !d->mReferencedLayer.isNull();
 }
 
 bool QgsRelation::hasEqualDefinition( const QgsRelation &other ) const

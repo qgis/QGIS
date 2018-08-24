@@ -39,7 +39,7 @@
 class QgsRelationPrivate : public QSharedData
 {
   public:
-    QgsRelationPrivate();
+    QgsRelationPrivate() = default;
 
     //! Unique Id
     QString mRelationId;
