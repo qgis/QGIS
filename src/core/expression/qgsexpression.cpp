@@ -912,7 +912,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
       if ( separator.isEmpty() )
         separator = QStringLiteral( ", " );
 
-      mapStr.append( QStringLiteral( "\"%1\": %2" ).arg( it.key(), formatPreviewString( it.value() ) ) );
+      mapStr.append( QStringLiteral( "%1: %2" ).arg( quotedValue( it.key() ), formatPreviewString( it.value() ) ) );
       if ( mapStr.length() > MAX_PREVIEW + 5 )
       {
         mapStr = tr( "%1…" ).arg( mapStr.left( MAX_PREVIEW ) );
