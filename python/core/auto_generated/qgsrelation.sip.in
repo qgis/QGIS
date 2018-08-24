@@ -11,6 +11,7 @@
 
 
 
+
 class QgsRelation
 {
 
@@ -34,6 +35,8 @@ class QgsRelation
 %Docstring
 Default constructor. Creates an invalid relation.
 %End
+    ~QgsRelation();
+    QgsRelation( const QgsRelation &other );
 
     static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context );
 %Docstring
