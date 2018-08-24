@@ -419,6 +419,9 @@ void QgsCameraController::setLookingAtPoint( const QgsVector3D &point, float dis
 
 void QgsCameraController::setCameraPose( const QgsCameraPose &camPose )
 {
+  if ( camPose == mCameraPose )
+    return;
+
   mCameraPose = camPose;
 
   if ( mCamera )

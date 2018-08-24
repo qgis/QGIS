@@ -23,7 +23,9 @@
 #include "qgscamerapose.h"
 
 
+class Qgs3DMapScene;
 class Qgs3DMapSettings;
+class QgsOffscreen3DEngine;
 
 /**
  * \ingroup 3d
@@ -74,7 +76,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem
     virtual int type() const override;
 
     //! Configures camera view
-    void setCameraPose( const QgsCameraPose &pose ) { mCameraPose = pose; }
+    void setCameraPose( const QgsCameraPose &pose );
     //! Returns camera view
     QgsCameraPose cameraPose() const { return mCameraPose; }
 
@@ -92,9 +94,18 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
+  private slots:
+    void onImageCaptured( const QImage &img );
+    void onSceneStateChanged();
+    void onSizePositionChanged();
+
   private:
     std::unique_ptr<Qgs3DMapSettings> mSettings;
+    std::unique_ptr<QgsOffscreen3DEngine> mEngine;
+    Qgs3DMapScene *mScene = nullptr;  //!< 3D scene (owned by the 3D engine)
+    QImage mCapturedImage;
     QgsCameraPose mCameraPose;
+    bool mDrawing = false;
 };
 
 #endif // QGSLAYOUTITEM3DMAP_H

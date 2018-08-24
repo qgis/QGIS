@@ -26,6 +26,7 @@
 QgsLayoutItem3DMap::QgsLayoutItem3DMap( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItem3DMap::onSizePositionChanged );
 }
 
 QgsLayoutItem3DMap::~QgsLayoutItem3DMap() = default;
@@ -43,29 +44,79 @@ int QgsLayoutItem3DMap::type() const
 
 void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
 {
-  if ( !mSettings )
-    return;
-
-  QgsOffscreen3DEngine engine;
-  QSizeF sizePixels = mLayout->renderContext().measurementConverter().convert( sizeWithUnits(), QgsUnitTypes::LayoutPixels ).toQSizeF();
-  engine.setSize( QSize( static_cast<int>( std::ceil( sizePixels.width() ) ),
-                         static_cast<int>( std::ceil( sizePixels.height() ) ) ) );
-
-  Qgs3DMapScene *scene = new Qgs3DMapScene( *mSettings, &engine );
-  engine.setRootEntity( scene );
-
-  scene->cameraController()->setCameraPose( mCameraPose );
-
-  // XXX this should not be needed, but without it the scene often
-  // is not completely ready (e.g. a missing terrain tile).
-  // leaving it here until a more robust solution is found...
-  Qgs3DUtils::captureSceneImage( engine, scene );
-
-  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
-
   QgsRenderContext &ctx = context.renderContext();
-  ctx.painter()->drawImage( 0, 0, img );
+  QPainter *painter = ctx.painter();
+
+  int w = static_cast<int>( std::ceil( rect().width() * ctx.scaleFactor() ) );
+  int h = static_cast<int>( std::ceil( rect().height() * ctx.scaleFactor() ) );
+  QRect r( 0, 0, w, h );
+
+  painter->save();
+
+  if ( !mSettings )
+  {
+    painter->drawText( r, Qt::AlignCenter, tr( "Scene not set" ) );
+    painter->restore();
+    return;
+  }
+
+  if ( !mCapturedImage.isNull() )
+  {
+    painter->drawImage( r, mCapturedImage );
+    painter->restore();
+    return;
+  }
+
+  // we do not have a cached image of the rendered scene - let's request one from the engine
+
+  painter->drawText( r, Qt::AlignCenter, tr( "Loading" ) );
+  painter->restore();
+
+  QSizeF sizePixels = mLayout->renderContext().measurementConverter().convert( sizeWithUnits(), QgsUnitTypes::LayoutPixels ).toQSizeF();
+  QSize sizePixelsInt = QSize( static_cast<int>( std::ceil( sizePixels.width() ) ),
+                               static_cast<int>( std::ceil( sizePixels.height() ) ) );
+
+  if ( !mEngine )
+  {
+    mEngine.reset( new QgsOffscreen3DEngine );
+    connect( mEngine.get(), &QgsAbstract3DEngine::imageCaptured, this, &QgsLayoutItem3DMap::onImageCaptured );
+
+    mEngine->setSize( sizePixelsInt );
+
+    mScene = new Qgs3DMapScene( *mSettings, mEngine.get() );
+    connect( mScene, &Qgs3DMapScene::sceneStateChanged, this, &QgsLayoutItem3DMap::onSceneStateChanged );
+
+    mEngine->setRootEntity( mScene );
+  }
+
+  if ( mEngine->size() != sizePixelsInt )
+    mEngine->setSize( sizePixelsInt );
+
+  mScene->cameraController()->setCameraPose( mCameraPose );
+
+  onSceneStateChanged();
 }
+
+void QgsLayoutItem3DMap::onImageCaptured( const QImage &img )
+{
+  mCapturedImage = img;
+  update();
+}
+
+void QgsLayoutItem3DMap::onSceneStateChanged()
+{
+  if ( mCapturedImage.isNull() && mScene->sceneState() == Qgs3DMapScene::Ready )
+  {
+    mEngine->requestCaptureImage();
+  }
+}
+
+void QgsLayoutItem3DMap::onSizePositionChanged()
+{
+  mCapturedImage = QImage();
+  update();
+}
+
 
 bool QgsLayoutItem3DMap::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
@@ -83,6 +134,7 @@ bool QgsLayoutItem3DMap::writePropertiesToElement( QDomElement &element, QDomDoc
 
 bool QgsLayoutItem3DMap::readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context )
 {
+  Q_UNUSED( document );
   QDomElement elemSettings = element.firstChildElement( "qgis3d" );
   if ( !elemSettings.isNull() )
   {
@@ -102,4 +154,20 @@ bool QgsLayoutItem3DMap::readPropertiesFromElement( const QDomElement &element, 
 void QgsLayoutItem3DMap::setMapSettings( Qgs3DMapSettings *settings )
 {
   mSettings.reset( settings );
+
+  mEngine.reset();
+  mScene = nullptr;
+
+  mCapturedImage = QImage();
+  update();
+}
+
+void QgsLayoutItem3DMap::setCameraPose( const QgsCameraPose &pose )
+{
+  if ( mCameraPose == pose )
+    return;
+
+  mCameraPose = pose;
+  mCapturedImage = QImage();
+  update();
 }

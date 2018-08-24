@@ -34,6 +34,7 @@ class QgsLayout3DMapWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayo
 
   private:
     QPointer< QgsLayoutItem3DMap > mMap3D;
+    QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
     QMenu *mMenu3DCanvases = nullptr;
 };
 

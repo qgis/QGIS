@@ -27,6 +27,10 @@ QgsLayout3DMapWidget::QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D )
 {
   setupUi( this );
 
+  //add widget for general composer item properties
+  mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, map3D );
+  mainLayout->addWidget( mItemPropertiesWidget );
+
   mMenu3DCanvases = new QMenu( this );
   mCopySettingsButton->setMenu( mMenu3DCanvases );
   connect( mMenu3DCanvases, &QMenu::aboutToShow, this, [ = ]

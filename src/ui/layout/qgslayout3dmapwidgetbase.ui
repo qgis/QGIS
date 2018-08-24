@@ -54,12 +54,12 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-65</y>
+        <y>0</y>
         <width>510</width>
         <height>635</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
+      <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
