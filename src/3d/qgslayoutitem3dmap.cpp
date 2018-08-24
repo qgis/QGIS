@@ -69,8 +69,11 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
 
   // we do not have a cached image of the rendered scene - let's request one from the engine
 
-  painter->drawText( r, Qt::AlignCenter, tr( "Loading" ) );
-  painter->restore();
+  if ( mLayout->renderContext().isPreviewRender() )
+  {
+    painter->drawText( r, Qt::AlignCenter, tr( "Loading" ) );
+    painter->restore();
+  }
 
   QSizeF sizePixels = mLayout->renderContext().measurementConverter().convert( sizeWithUnits(), QgsUnitTypes::LayoutPixels ).toQSizeF();
   QSize sizePixelsInt = QSize( static_cast<int>( std::ceil( sizePixels.width() ) ),
@@ -94,7 +97,23 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
 
   mScene->cameraController()->setCameraPose( mCameraPose );
 
-  onSceneStateChanged();
+  if ( mLayout->renderContext().isPreviewRender() )
+  {
+    onSceneStateChanged();
+  }
+  else
+  {
+    // we can't just request a capture and hope it will arrive at some point later.
+    // this is not a preview, we need the rendered scene now!
+    if ( mDrawing )
+      return;
+    mDrawing = true;
+    Qgs3DUtils::captureSceneImage( *mEngine.get(), mScene );
+    QImage img = Qgs3DUtils::captureSceneImage( *mEngine.get(), mScene );
+    painter->drawImage( r, img );
+    painter->restore();
+    mDrawing = false;
+  }
 }
 
 void QgsLayoutItem3DMap::onImageCaptured( const QImage &img )
