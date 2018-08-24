@@ -53,6 +53,7 @@
 %Include auto_generated/qgsfields.sip
 %Include auto_generated/qgsfileutils.sip
 %Include auto_generated/qgsfontutils.sip
+%Include auto_generated/qgsgeometryfixes.sip
 %Include auto_generated/qgsgeometrysimplifier.sip
 %Include auto_generated/qgshistogram.sip
 %Include auto_generated/qgshtmlutils.sip
