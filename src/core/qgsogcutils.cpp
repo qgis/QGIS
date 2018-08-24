@@ -2415,6 +2415,12 @@ QDomElement QgsOgcUtilsExprToFilter::expressionLiteralToOgcFilter( const QgsExpr
     case QVariant::String:
       value = node->value().toString();
       break;
+    case QVariant::Date:
+      value = node->value().toDate().toString( Qt::ISODate );
+      break;
+    case QVariant::DateTime:
+      value = node->value().toDateTime().toString( Qt::ISODate );
+      break;
 
     default:
       mErrorMessage = QObject::tr( "Literal type not supported: %1" ).arg( node->value().type() );
