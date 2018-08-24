@@ -12,14 +12,19 @@
 class QgsGeometryFixes
 {
 %Docstring
-The QgsGeometryFixes class contains options to
+The QgsGeometryFixes class contains options to automatically adjust geometries to
+constraints on a layer.
 %End
 
 %TypeHeaderCode
 #include "qgsgeometryfixes.h"
 %End
   public:
+
     QgsGeometryFixes();
+%Docstring
+Create a new QgsGeometryFixes object.
+%End
 
     bool removeDuplicateNodes() const;
 %Docstring

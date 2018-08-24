@@ -21,11 +21,18 @@
 #include "qgsgeometry.h"
 
 /**
- * The QgsGeometryFixes class contains options to
+ * The QgsGeometryFixes class contains options to automatically adjust geometries to
+ * constraints on a layer.
+ *
+ * \ingroup core
  */
 class CORE_EXPORT QgsGeometryFixes
 {
   public:
+
+    /**
+     * Create a new QgsGeometryFixes object.
+     */
     QgsGeometryFixes() = default;
 
     /**
