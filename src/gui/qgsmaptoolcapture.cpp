@@ -51,6 +51,8 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
 
   connect( canvas, &QgsMapCanvas::currentLayerChanged,
            this, &QgsMapToolCapture::currentLayerChanged );
+
+  currentLayerChanged( canvas->currentLayer() );
 }
 
 QgsMapToolCapture::~QgsMapToolCapture()
