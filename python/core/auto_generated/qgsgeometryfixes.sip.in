@@ -12,8 +12,11 @@
 class QgsGeometryFixes
 {
 %Docstring
+
 The QgsGeometryFixes class contains options to automatically adjust geometries to
 constraints on a layer.
+
+.. versionadded:: 3.4
 %End
 
 %TypeHeaderCode

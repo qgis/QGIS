@@ -21,10 +21,12 @@
 #include "qgsgeometry.h"
 
 /**
+ * \ingroup core
+ *
  * The QgsGeometryFixes class contains options to automatically adjust geometries to
  * constraints on a layer.
  *
- * \ingroup core
+ * \since QGIS 3.4
  */
 class CORE_EXPORT QgsGeometryFixes
 {
