@@ -190,6 +190,97 @@ class TestQgsServerWMTS(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMTS_GetTile_Hello_4326_0", 20000)
 
+    def test_wmts_gettile_invalid_parameters(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectGroupsPath),
+            "SERVICE": "WMTS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetTile",
+            "LAYER": "Hello",
+            "STYLE": "",
+            "TILEMATRIXSET": "EPSG:3857",
+            "TILEMATRIX": "0",
+            "TILEROW": "0",
+            "TILECOL": "FOO",
+            "FORMAT": "image/png"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"TILECOL (\'FOO\') cannot be converted into int" in r
+        self.assertTrue(err)
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectGroupsPath),
+            "SERVICE": "WMTS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetTile",
+            "LAYER": "Hello",
+            "STYLE": "",
+            "TILEMATRIXSET": "EPSG:3857",
+            "TILEMATRIX": "0",
+            "TILEROW": "0",
+            "TILECOL": "1",
+            "FORMAT": "image/png"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"TileCol is unknown" in r
+        self.assertTrue(err)
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectGroupsPath),
+            "SERVICE": "WMTS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetTile",
+            "LAYER": "Hello",
+            "STYLE": "",
+            "TILEMATRIXSET": "EPSG:3857",
+            "TILEMATRIX": "0",
+            "TILEROW": "0",
+            "TILECOL": "-1",
+            "FORMAT": "image/png"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"TileCol is unknown" in r
+        self.assertTrue(err)
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectGroupsPath),
+            "SERVICE": "WMTS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetTile",
+            "LAYER": "dem",
+            "STYLE": "",
+            "TILEMATRIXSET": "EPSG:3857",
+            "TILEMATRIX": "0",
+            "TILEROW": "0",
+            "TILECOL": "0",
+            "FORMAT": "image/png"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"Layer \'dem\' not found" in r
+        self.assertTrue(err)
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectGroupsPath),
+            "SERVICE": "WMTS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetTile",
+            "LAYER": "Hello",
+            "STYLE": "",
+            "TILEMATRIXSET": "EPSG:2154",
+            "TILEMATRIX": "0",
+            "TILEROW": "0",
+            "TILECOL": "0",
+            "FORMAT": "image/png"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"TileMatrixSet is unknown" in r
+        self.assertTrue(err)
+
 
 if __name__ == '__main__':
     unittest.main()

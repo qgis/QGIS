@@ -601,11 +601,7 @@ namespace QgsWmts
     //difining TileMatrix idx
     int tm_idx = params.tileMatrixAsInt();
     //read TileMatrix
-    if ( tm_idx == -1 )
-    {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrix is mandatory" ) );
-    }
-    if ( tms.tileMatrixList.count() < tm_idx )
+    if ( tm_idx < 0 || tms.tileMatrixList.count() < tm_idx )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrix is unknown" ) );
     }
@@ -614,11 +610,7 @@ namespace QgsWmts
     //defining TileRow
     int tr = params.tileRowAsInt();
     //read TileRow
-    if ( tr == -1 )
-    {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "TileRow is mandatory" ) );
-    }
-    if ( tm.row <= tr )
+    if ( tr < 0 || tm.row <= tr )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "TileRow is unknown" ) );
     }
@@ -626,11 +618,7 @@ namespace QgsWmts
     //defining TileCol
     int tc = params.tileColAsInt();
     //read TileCol
-    if ( tc == -1 )
-    {
-      throw QgsRequestNotWellFormedException( QStringLiteral( "TileCol is mandatory" ) );
-    }
-    if ( tm.col <= tc )
+    if ( tc < 0 || tm.col <= tc )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "TileCol is unknown" ) );
     }
