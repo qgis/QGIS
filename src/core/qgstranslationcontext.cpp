@@ -52,14 +52,11 @@ void QgsTranslationContext::registerTranslation( const QString &context, const Q
 
 void QgsTranslationContext::writeTsFile( const QString &locale )
 {
-  QgsSettings settings;
-
   //write xml
   QDomDocument doc( QStringLiteral( "TS" ) );
 
   QDomElement tsElement = doc.createElement( QStringLiteral( "TS" ) );
-  tsElement.setAttribute( QStringLiteral( "language" ), locale );
-  tsElement.setAttribute( QStringLiteral( "sourcelanguage" ), settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString() );
+  tsElement.setAttribute( QStringLiteral( "sourcelanguage" ), locale );
   doc.appendChild( tsElement );
 
   for ( const TranslatableObject &translatableObject : mTranslatableObjects )
@@ -81,8 +78,7 @@ void QgsTranslationContext::writeTsFile( const QString &locale )
     messageElement.appendChild( sourceElement );
 
     QDomElement translationElement = doc.createElement( QStringLiteral( "translation" ) );
-    QDomText translationText = doc.createTextNode( translatableObject.source );
-    translationElement.appendChild( translationText );
+    translationElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "unfinished" ) );
     messageElement.appendChild( translationElement );
   }
 

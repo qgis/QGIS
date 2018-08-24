@@ -2218,4 +2218,10 @@ void QgsProjectProperties::onGenerateTsFileButton() const
 {
   QString l = cbtsLocale->currentData().toString();
   QgsProject::instance()->generateTsFile( l );
+  QMessageBox::information( nullptr, tr( "General TS file generated" ), tr( "TS file generated with source language %1.\n"
+                            "- open it with Qt Linguist\n"
+                            "- translate strings\n"
+                            "- save it with the postfix of the target language (eg. de)\n"
+                            "- release to get qm file including postfix (eg. aproject_de.qm)\n"
+                            "When you open it again in QGIS having set the target language (de), the project will be translated and saved with postfix (eg. aproject_de.qgs)." ).arg( l ) ) ;
 }

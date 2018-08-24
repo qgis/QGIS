@@ -479,10 +479,18 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
       const QgsFields fields = vlayer->fields();
       for ( const QgsField &field : fields )
       {
+        QString fieldName;
         if ( field.alias().isEmpty() )
-          translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), field.name() );
+          fieldName = field.name();
         else
-          translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), field.alias() );
+          fieldName = field.alias();
+
+        translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), fieldName );
+
+        if ( field.editorWidgetSetup().type() == QStringLiteral( "ValueRelation" ) )
+        {
+          translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( QStringLiteral( "Value" ) ).toString() );
+        }
       }
 
       //register formcontainers
@@ -2820,7 +2828,7 @@ void QgsProject::generateTsFile( const QString &locale )
 {
   QgsTranslationContext translationContext;
   translationContext.setProject( this );
-  translationContext.setFileName( QStringLiteral( "%1/%2_%3.ts" ).arg( absolutePath(), baseName(), locale ) );
+  translationContext.setFileName( QStringLiteral( "%1/%2.ts" ).arg( absolutePath(), baseName() ) );
 
   emit QgsApplication::instance()->collectTranslatableObjects( &translationContext );
 
@@ -2834,5 +2842,11 @@ QString QgsProject::translate( const QString &context, const QString &sourceText
     return sourceText;
   }
 
-  return mTranslator->translate( context.toUtf8(), sourceText.toUtf8(), disambiguation, n );
+  QString result = mTranslator->translate( context.toUtf8(), sourceText.toUtf8(), disambiguation, n );
+
+  if ( result.isEmpty() )
+  {
+    return sourceText;
+  }
+  return result;
 }
