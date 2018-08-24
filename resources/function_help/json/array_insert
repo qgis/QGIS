@@ -5,5 +5,5 @@
   "arguments": [ {"arg":"array","description":"an array"},
                  {"arg":"pos","description":"the position where to add (0 based)"},
                  {"arg":"value","description":"the value to add"}],
-  "examples": [ { "expression":"array_insert(array(1,2,3),1,100)", "returns":"array: 1,100,2,3"}]
+  "examples": [ { "expression":"array_insert(array(1,2,3),1,100)", "returns":"[ 1, 100, 2, 3 ]"}]
 }

@@ -279,7 +279,7 @@ void QgsExpressionBuilderWidget::btnNewFile_pressed()
   bool ok;
   QString text = QInputDialog::getText( this, tr( "Enter new file name" ),
                                         tr( "File name:" ), QLineEdit::Normal,
-                                        QLatin1String( "" ), &ok );
+                                        QString(), &ok );
   if ( ok && !text.isEmpty() )
   {
     newFunctionFile( text );
@@ -348,7 +348,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields &fields )
   {
     QString fieldName = fields.at( i ).name();
     fieldNames << fieldName;
-    registerItem( QStringLiteral( "Fields and Values" ), fieldName, " \"" + fieldName + "\" ", QLatin1String( "" ), QgsExpressionItem::Field, false, i );
+    registerItem( QStringLiteral( "Fields and Values" ), fieldName, " \"" + fieldName + "\" ", QString(), QgsExpressionItem::Field, false, i );
   }
 //  highlighter->addFields( fieldNames );
 }
@@ -426,7 +426,7 @@ void QgsExpressionBuilderWidget::registerItem( const QString &group,
   else
   {
     // If the group doesn't exist yet we make it first.
-    QgsExpressionItem *newgroupNode = new QgsExpressionItem( QgsExpression::group( group ), QLatin1String( "" ), QgsExpressionItem::Header );
+    QgsExpressionItem *newgroupNode = new QgsExpressionItem( QgsExpression::group( group ), QString(), QgsExpressionItem::Header );
     newgroupNode->setData( group, Qt::UserRole );
     //Recent group should always be last group
     newgroupNode->setData( group.startsWith( QLatin1String( "Recent (" ) ) ? 2 : 1, QgsExpressionItem::CUSTOM_SORT_ROLE );
@@ -628,9 +628,9 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
   if ( text.isEmpty() )
   {
     lblPreview->clear();
-    lblPreview->setStyleSheet( QLatin1String( "" ) );
-    txtExpressionString->setToolTip( QLatin1String( "" ) );
-    lblPreview->setToolTip( QLatin1String( "" ) );
+    lblPreview->setStyleSheet( QString() );
+    txtExpressionString->setToolTip( QString() );
+    lblPreview->setToolTip( QString() );
     emit expressionParsed( false );
     setParserError( true );
     setEvalError( true );
@@ -1064,7 +1064,7 @@ QString QgsExpressionBuilderWidget::helpStylesheet() const
 QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem *expressionItem )
 {
   if ( !expressionItem )
-    return QLatin1String( "" );
+    return QString();
 
   QString helpContents = expressionItem->getHelpText();
 

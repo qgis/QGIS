@@ -3,5 +3,5 @@
   "type": "function",
   "description": "Returns the given array with array values in reversed order.",
   "arguments": [ {"arg":"array","description":"an array"} ],
-  "examples": [ { "expression":"array_reverse(array(2,4,0,10))", "returns":"array: 10,0,4,2"}]
+  "examples": [ { "expression":"array_reverse(array(2,4,0,10))", "returns":"[ 10, 0, 4, 2 ]"}]
 }
