@@ -19,6 +19,7 @@
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
 #include "qgslayout.h"
+#include "qgslayoutmodel.h"
 #include "qgslayoutitemregistry.h"
 #include "qgsoffscreen3dengine.h"
 
@@ -26,6 +27,8 @@
 QgsLayoutItem3DMap::QgsLayoutItem3DMap( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
+  assignFreeId();
+
   connect( this, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItem3DMap::onSizePositionChanged );
 }
 
@@ -40,6 +43,49 @@ QgsLayoutItem3DMap *QgsLayoutItem3DMap::create( QgsLayout *layout )
 int QgsLayoutItem3DMap::type() const
 {
   return QgsLayoutItemRegistry::Layout3DMap;
+}
+
+void QgsLayoutItem3DMap::assignFreeId()
+{
+  if ( !mLayout )
+    return;
+
+  QList<QgsLayoutItem3DMap *> mapsList;
+  mLayout->layoutItems( mapsList );
+
+  int maxId = -1;
+  bool used = false;
+  for ( QgsLayoutItem3DMap *map : qgis::as_const( mapsList ) )
+  {
+    if ( map == this )
+      continue;
+
+    if ( map->mMapId == mMapId )
+      used = true;
+
+    maxId = std::max( maxId, map->mMapId );
+  }
+  if ( used )
+  {
+    mMapId = maxId + 1;
+    mLayout->itemsModel()->updateItemDisplayName( this );
+  }
+  updateToolTip();
+}
+
+QString QgsLayoutItem3DMap::displayName() const
+{
+  if ( !QgsLayoutItem::id().isEmpty() )
+  {
+    return QgsLayoutItem::id();
+  }
+
+  return tr( "3D Map %1" ).arg( mMapId );
+}
+
+void QgsLayoutItem3DMap::updateToolTip()
+{
+  setToolTip( displayName() );
 }
 
 void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
@@ -168,6 +214,11 @@ bool QgsLayoutItem3DMap::readPropertiesFromElement( const QDomElement &element, 
     mCameraPose.readXml( elemCameraPose );
 
   return true;
+}
+
+void QgsLayoutItem3DMap::finalizeRestoreFromXml()
+{
+  assignFreeId();
 }
 
 void QgsLayoutItem3DMap::setMapSettings( Qgs3DMapSettings *settings )

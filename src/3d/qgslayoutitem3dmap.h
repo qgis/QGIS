@@ -89,6 +89,16 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem
     //! Returns map scene. May be a null pointer if not yet configured.
     Qgs3DMapSettings *mapSettings() const { return mSettings.get(); }
 
+    /**
+     * Sets the map id() to a number not yet used in the layout. The existing id() is kept if it is not in use.
+    */
+    void assignFreeId();
+
+    //! overridden to show "3D Map 1" type names
+    QString displayName() const override;
+
+    void finalizeRestoreFromXml() override;
+
   public slots:
     void refresh() override;
 
@@ -103,12 +113,19 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem
     void onSizePositionChanged();
 
   private:
+    //! Resets the item tooltip to reflect current map id
+    void updateToolTip();
+
+  private:
     std::unique_ptr<Qgs3DMapSettings> mSettings;
     std::unique_ptr<QgsOffscreen3DEngine> mEngine;
     Qgs3DMapScene *mScene = nullptr;  //!< 3D scene (owned by the 3D engine)
     QImage mCapturedImage;
     QgsCameraPose mCameraPose;
     bool mDrawing = false;
+
+    //! Unique identifier
+    int mMapId = 1;
 };
 
 #endif // QGSLAYOUTITEM3DMAP_H
