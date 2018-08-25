@@ -96,6 +96,16 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
   } );
   registry->addLayoutItemGuiMetadata( mapItemMetadata.release() );
 
+  // 3D map item
+#ifdef HAVE_3D
+  std::unique_ptr< QgsLayoutItemGuiMetadata > map3dMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata>(
+        QgsLayoutItemRegistry::Layout3DMap, QObject::tr( "3D Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAdd3DMap.svg" ) ),
+        [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayout3DMapWidget( qobject_cast< QgsLayoutItem3DMap * >( item ) );
+  }, createRubberBand );
+  registry->addLayoutItemGuiMetadata( map3dMetadata.release() );
+#endif
 
   // picture item
 
@@ -345,15 +355,4 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     return f;
   } );
   registry->addLayoutItemGuiMetadata( attributeTableItemMetadata .release() );
-
-  // 3D map item
-#ifdef HAVE_3D
-  std::unique_ptr< QgsLayoutItemGuiMetadata > map3dMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata>(
-        QgsLayoutItemRegistry::Layout3DMap, QObject::tr( "3D Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAdd3DMap.svg" ) ),
-        [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
-  {
-    return new QgsLayout3DMapWidget( qobject_cast< QgsLayoutItem3DMap * >( item ) );
-  }, createRubberBand );
-  registry->addLayoutItemGuiMetadata( map3dMetadata.release() );
-#endif
 }
