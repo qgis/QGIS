@@ -25,6 +25,9 @@ namespace Qt3DRender
   class QCamera;
 }
 
+class QDomDocument;
+class QDomElement;
+
 /**
  * \ingroup 3d
  * Class that encapsulates camera pose in a 3D scene. The pose is defined with the following parameters:
@@ -61,6 +64,11 @@ class _3D_EXPORT QgsCameraPose
 
     //! Update Qt3D camera view matrix based on the pose
     void updateCamera( Qt3DRender::QCamera *camera );
+
+    //! Writes configuration to a new DOM element and returns it
+    QDomElement writeXml( QDomDocument &doc ) const;
+    //! Reads configuration from a DOM element previously written using writeXml()
+    void readXml( const QDomElement &elem );
 
     bool operator==( const QgsCameraPose &other ) const
     {

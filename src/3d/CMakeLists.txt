@@ -54,6 +54,7 @@ SET(QGIS_3D_MOC_HDRS
   qgs3dmapsettings.h
   qgsabstract3dengine.h
   qgscameracontroller.h
+  qgslayoutitem3dmap.h
   qgsoffscreen3dengine.h
   qgswindow3dengine.h
 
