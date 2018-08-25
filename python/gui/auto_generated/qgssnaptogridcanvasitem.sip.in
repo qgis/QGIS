@@ -1,0 +1,91 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgssnaptogridcanvasitem.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsSnapToGridCanvasItem : QObject, QgsMapCanvasItem
+{
+%Docstring
+
+Shows a grid on the map canvas given a spatial resolution.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgssnaptogridcanvasitem.h"
+%End
+  public:
+
+    QgsSnapToGridCanvasItem( QgsMapCanvas *mapCanvas );
+%Docstring
+Will automatically be added to the ``mapCanvas``.
+%End
+
+    virtual void paint( QPainter *painter );
+
+
+    QgsPointXY point() const;
+%Docstring
+A point that will be highlighted on the map canvas.
+The point needs to be in map coordinates. The closest point on the
+grid will be highlighted.
+%End
+
+    void setPoint( const QgsPointXY &point );
+%Docstring
+A point that will be highlighted on the map canvas.
+The point needs to be in map coordinates. The closest point on the
+grid will be highlighted.
+%End
+
+    double precision() const;
+%Docstring
+The resolution of the grid in map units.
+If a crs has been specified it will be in CRS units.
+%End
+
+    void setPrecision( double precision );
+%Docstring
+The resolution of the grid in map units.
+If a crs has been specified it will be in CRS units.
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+The CRS in which the grid should be calculated.
+By default will be an invalid QgsCoordinateReferenceSystem and
+as such equal to the CRS of the map canvas.
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+The CRS in which the grid should be calculated.
+By default will be an invalid QgsCoordinateReferenceSystem and
+as such equal to the CRS of the map canvas.
+%End
+
+    bool enabled() const;
+%Docstring
+Enable this item. It will be hidden if disabled.
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Enable this item. It will be hidden if disabled.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgssnaptogridcanvasitem.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
