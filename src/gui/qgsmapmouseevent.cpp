@@ -80,8 +80,8 @@ void QgsMapMouseEvent::snapToGrid( double precision, const QgsCoordinateReferenc
 
   QgsPointXY pt = ct.transform( mMapPoint );
 
-  pt.setX( std::round( mMapPoint.x() / precision ) * precision );
-  pt.setY( std::round( mMapPoint.y() / precision ) * precision );
+  pt.setX( std::round( pt.x() / precision ) * precision );
+  pt.setY( std::round( pt.y() / precision ) * precision );
 
   pt = ct.transform( pt, QgsCoordinateTransform::ReverseTransform );
 
