@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-128</y>
         <width>510</width>
-        <height>635</height>
+        <height>698</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -82,33 +82,6 @@
           <string>Camera pose</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Center X</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QgsDoubleSpinBox" name="mCenterXSpinBox">
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="minimum">
-             <double>-9999999.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>9999999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Center Y</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="1">
            <widget class="QgsDoubleSpinBox" name="mCenterYSpinBox">
             <property name="decimals">
@@ -122,30 +95,10 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
             <property name="text">
-             <string>Center Z</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QgsDoubleSpinBox" name="mCenterZSpinBox">
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="minimum">
-             <double>-9999999.000000000000000</double>
-            </property>
-            <property name="maximum">
-             <double>9999999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Distance</string>
+             <string>Center X</string>
             </property>
            </widget>
           </item>
@@ -156,6 +109,40 @@
             </property>
             <property name="maximum">
              <double>9999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Center Z</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Center Y</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QgsDoubleSpinBox" name="mHeadingAngleSpinBox">
+            <property name="suffix">
+             <string> °</string>
+            </property>
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <double>360.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Heading</string>
             </property>
            </widget>
           </item>
@@ -179,23 +166,43 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Heading</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QgsDoubleSpinBox" name="mHeadingAngleSpinBox">
-            <property name="suffix">
-             <string> °</string>
-            </property>
+          <item row="0" column="1">
+           <widget class="QgsDoubleSpinBox" name="mCenterXSpinBox">
             <property name="decimals">
              <number>1</number>
             </property>
+            <property name="minimum">
+             <double>-9999999.000000000000000</double>
+            </property>
             <property name="maximum">
-             <double>360.000000000000000</double>
+             <double>9999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Distance</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QgsDoubleSpinBox" name="mCenterZSpinBox">
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="minimum">
+             <double>-9999999.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>9999999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0" colspan="2">
+           <widget class="QPushButton" name="mPoseFromViewButton">
+            <property name="text">
+             <string>Set from a 3D view...</string>
             </property>
            </widget>
           </item>

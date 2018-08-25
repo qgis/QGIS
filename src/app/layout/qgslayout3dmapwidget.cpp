@@ -19,7 +19,56 @@
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapcanvasdockwidget.h"
 #include "qgs3dmapsettings.h"
+#include "qgscameracontroller.h"
 #include <QMenu>
+
+
+float _normalizedAngle( float x )
+{
+  x = std::fmod( x, 360 );
+  if ( x < 0 ) x += 360;
+  return x;
+}
+
+template<typename Func1>
+void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, Func1 slot )
+{
+  QObject::connect( menu, &QMenu::aboutToShow, w, [menu, w, slot]
+  {
+    const QList<Qgs3DMapCanvasDockWidget *> lst = QgisApp::instance()->findChildren<Qgs3DMapCanvasDockWidget *>();
+    menu->clear();
+    for ( auto dock : lst )
+    {
+      QAction *a = menu->addAction( dock->mapCanvas3D()->objectName(), w, slot );
+      // need to use a custom property for identification because Qt likes to add "&" to the action text
+      a->setProperty( "name", dock->mapCanvas3D()->objectName() );
+    }
+    if ( lst.isEmpty() )
+    {
+      menu->addAction( QObject::tr( "No 3D maps defined" ) )->setEnabled( false );
+    }
+  } );
+}
+
+Qgs3DMapCanvasDockWidget *_dock3DViewFromSender( QObject *sender )
+{
+  QAction *action = qobject_cast<QAction *>( sender );
+  if ( !action )
+    return nullptr;
+
+  QString actionText = action->property( "name" ).toString();
+  const QList<Qgs3DMapCanvasDockWidget *> lst = QgisApp::instance()->findChildren<Qgs3DMapCanvasDockWidget *>();
+  for ( auto dock : lst )
+  {
+    QString objName = dock->mapCanvas3D()->objectName();
+    if ( objName == actionText )
+    {
+      return dock;
+    }
+  }
+  return nullptr;
+}
+
 
 QgsLayout3DMapWidget::QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D )
   : QgsLayoutItemBaseWidget( nullptr, map3D )
@@ -38,52 +87,45 @@ QgsLayout3DMapWidget::QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D )
 
   mMenu3DCanvases = new QMenu( this );
   mCopySettingsButton->setMenu( mMenu3DCanvases );
-  connect( mMenu3DCanvases, &QMenu::aboutToShow, this, [ = ]
-  {
-    const QList<Qgs3DMapCanvasDockWidget *> lst = QgisApp::instance()->findChildren<Qgs3DMapCanvasDockWidget *>();
-    mMenu3DCanvases->clear();
-    for ( auto dock : lst )
-    {
-      QAction *a = mMenu3DCanvases->addAction( dock->mapCanvas3D()->objectName(), this, &QgsLayout3DMapWidget::copy3DMapSettings );
-      // need to use a custom property for identification because Qt likes to add "&" to the action text
-      a->setProperty( "name", dock->mapCanvas3D()->objectName() );
-    }
-    if ( lst.isEmpty() )
-    {
-      mMenu3DCanvases->addAction( tr( "No 3D maps defined" ) )->setEnabled( false );
-    }
-  } );
+  _prepare3DViewsMenu( mMenu3DCanvases, this, &QgsLayout3DMapWidget::copy3DMapSettings );
 
-  QgsCameraPose pose = mMap3D->cameraPose();
-  mCenterXSpinBox->setValue( pose.centerPoint().x() );
-  mCenterYSpinBox->setValue( pose.centerPoint().y() );
-  mCenterZSpinBox->setValue( pose.centerPoint().z() );
-  mDistanceToCenterSpinBox->setValue( pose.distanceFromCenterPoint() );
-  mPitchAngleSpinBox->setValue( pose.pitchAngle() );
-  mHeadingAngleSpinBox->setValue( pose.headingAngle() );
+  mMenu3DCanvasesPose = new QMenu( this );
+  mPoseFromViewButton->setMenu( mMenu3DCanvasesPose );
+  _prepare3DViewsMenu( mMenu3DCanvasesPose, this, &QgsLayout3DMapWidget::copeCameraPose );
 
   QList<QgsDoubleSpinBox *> lst;
   lst << mCenterXSpinBox << mCenterYSpinBox << mCenterZSpinBox << mDistanceToCenterSpinBox << mPitchAngleSpinBox << mHeadingAngleSpinBox;
   for ( QgsDoubleSpinBox *spinBox : lst )
     connect( spinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayout3DMapWidget::updateCameraPose );
+
+  updateCameraPoseWidgetsFromItem();
+}
+
+void QgsLayout3DMapWidget::updateCameraPoseWidgetsFromItem()
+{
+  QgsCameraPose pose = mMap3D->cameraPose();
+  whileBlocking( mCenterXSpinBox )->setValue( pose.centerPoint().x() );
+  whileBlocking( mCenterYSpinBox )->setValue( pose.centerPoint().y() );
+  whileBlocking( mCenterZSpinBox )->setValue( pose.centerPoint().z() );
+  whileBlocking( mDistanceToCenterSpinBox )->setValue( pose.distanceFromCenterPoint() );
+  whileBlocking( mPitchAngleSpinBox )->setValue( _normalizedAngle( pose.pitchAngle() ) );
+  whileBlocking( mHeadingAngleSpinBox )->setValue( _normalizedAngle( pose.headingAngle() ) );
 }
 
 void QgsLayout3DMapWidget::copy3DMapSettings()
 {
-  QAction *action = qobject_cast<QAction *>( sender() );
-  if ( !action )
-    return;
+  Qgs3DMapCanvasDockWidget *dock = _dock3DViewFromSender( sender() );
+  if ( dock )
+    mMap3D->setMapSettings( new Qgs3DMapSettings( *dock->mapCanvas3D()->map() ) );
+}
 
-  QString actionText = action->property( "name" ).toString();
-  const QList<Qgs3DMapCanvasDockWidget *> lst = QgisApp::instance()->findChildren<Qgs3DMapCanvasDockWidget *>();
-  for ( auto dock : lst )
+void QgsLayout3DMapWidget::copeCameraPose()
+{
+  Qgs3DMapCanvasDockWidget *dock = _dock3DViewFromSender( sender() );
+  if ( dock )
   {
-    QString objName = dock->mapCanvas3D()->objectName();
-    if ( objName == actionText )
-    {
-      mMap3D->setMapSettings( new Qgs3DMapSettings( *dock->mapCanvas3D()->map() ) );
-      break;
-    }
+    mMap3D->setCameraPose( dock->mapCanvas3D()->cameraController()->cameraPose() );
+    updateCameraPoseWidgetsFromItem();
   }
 }
 
