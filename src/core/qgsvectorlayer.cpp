@@ -3010,19 +3010,9 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList &features, Flags )
 
 void QgsVectorLayer::setCoordinateSystem()
 {
-  QgsDebugMsgLevel( QStringLiteral( "Computing Coordinate System" ), 4 );
-
-  if ( isSpatial() )
-  {
-    // get CRS directly from provider
-    setCrs( mDataProvider->crs() );
-  }
-  else
-  {
-    setCrs( QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ) );
-  }
+  // if layer is not spatial, it has not CRS!
+  setCrs( isSpatial() ? mDataProvider->crs() : QgsCoordinateReferenceSystem() );
 }
-
 
 QString QgsVectorLayer::displayField() const
 {

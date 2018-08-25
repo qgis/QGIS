@@ -336,6 +336,24 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertNotEqual(layer.renderer(), r)
         self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.Line)
 
+    def test_layer_crs(self):
+        """
+        Test that spatial layers have CRS, and non-spatial don't
+        """
+        vl = QgsVectorLayer('Point?crs=epsg:3111&field=pk:integer', 'test', 'memory')
+        self.assertTrue(vl.isSpatial())
+        self.assertTrue(vl.crs().isValid())
+        self.assertEqual(vl.crs().authid(), 'EPSG:3111')
+
+        vl = QgsVectorLayer('None?field=pk:integer', 'test', 'memory')
+        self.assertFalse(vl.isSpatial())
+        self.assertFalse(vl.crs().isValid())
+
+        # even if provider has a crs - we don't respect it for non-spatial layers!
+        vl = QgsVectorLayer('None?crs=epsg:3111field=pk:integer', 'test', 'memory')
+        self.assertFalse(vl.isSpatial())
+        self.assertFalse(vl.crs().isValid())
+
     # ADD FEATURE
 
     def test_AddFeature(self):
