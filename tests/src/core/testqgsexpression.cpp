@@ -3134,12 +3134,8 @@ class TestQgsExpression: public QObject
       QgsExpressionContext ctx;
       e.prepare( &ctx );
       QVariant v = e.evaluate();
-      qDebug() << v.toString();
-      qDebug() << v.toDateTime().toMSecsSinceEpoch();
       QTest::qSleep( 1000 );
       QVariant v2 = e.evaluate();
-      qDebug() << v2.toString();
-      qDebug() << v2.toDateTime().toMSecsSinceEpoch();
 
       QCOMPARE( v.toDateTime().toMSecsSinceEpoch(), v2.toDateTime().toMSecsSinceEpoch() );
     }
