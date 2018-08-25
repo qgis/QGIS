@@ -131,18 +131,15 @@
           <property name="text">
            <string>User role</string>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="editUser">
+          <property name="text">
+           <string>user_role</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QLineEdit" name="editUser">
-          <property name="text">
-           <string>time_end</string>
-          </property>
-         </widget>
-        </item>         
        </layout>
       </widget>
      </item>
@@ -190,7 +187,6 @@
   <tabstop>editPkey</tabstop>
   <tabstop>editStart</tabstop>
   <tabstop>editEnd</tabstop>
-  <tabstop>editUser</tabstop> 
   <tabstop>txtSql</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
