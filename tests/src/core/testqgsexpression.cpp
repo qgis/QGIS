@@ -3127,6 +3127,22 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( stringList ) ),
                 QString( "<i>&lt;array: 'One', 'Two', 'A very long string that is going to be trunca…&gt;</i>" ) );
     }
+
+    void test_nowStatic()
+    {
+      QgsExpression e( QStringLiteral( "now()" ) );
+      QgsExpressionContext ctx;
+      e.prepare( &ctx );
+      QVariant v = e.evaluate();
+      qDebug() << v.toString();
+      qDebug() << v.toDateTime().toMSecsSinceEpoch();
+      QTest::qSleep( 1000 );
+      QVariant v2 = e.evaluate();
+      qDebug() << v2.toString();
+      qDebug() << v2.toDateTime().toMSecsSinceEpoch();
+
+      QCOMPARE( v.toDateTime().toMSecsSinceEpoch(), v2.toDateTime().toMSecsSinceEpoch() );
+    }
 };
 
 QGSTEST_MAIN( TestQgsExpression )
