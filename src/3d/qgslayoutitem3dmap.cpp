@@ -181,6 +181,13 @@ void QgsLayoutItem3DMap::setMapSettings( Qgs3DMapSettings *settings )
   update();
 }
 
+void QgsLayoutItem3DMap::refresh()
+{
+  QgsLayoutItem::refresh();
+
+  mCapturedImage = QImage();
+}
+
 void QgsLayoutItem3DMap::setCameraPose( const QgsCameraPose &pose )
 {
   if ( mCameraPose == pose )

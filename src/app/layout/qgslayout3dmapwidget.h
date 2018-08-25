@@ -28,6 +28,9 @@ class QgsLayout3DMapWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayo
   public:
     explicit QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D );
 
+  protected:
+    bool setNewItem( QgsLayoutItem *item ) override;
+
   private:
     void updateCameraPoseWidgetsFromItem();
 

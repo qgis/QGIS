@@ -89,6 +89,9 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem
     //! Returns map scene. May be a null pointer if not yet configured.
     Qgs3DMapSettings *mapSettings() const { return mSettings.get(); }
 
+  public slots:
+    void refresh() override;
+
   protected:
     void draw( QgsLayoutItemRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;

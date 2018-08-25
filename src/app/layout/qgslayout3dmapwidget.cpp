@@ -138,3 +138,17 @@ void QgsLayout3DMapWidget::updateCameraPose()
   pose.setHeadingAngle( mHeadingAngleSpinBox->value() );
   mMap3D->setCameraPose( pose );
 }
+
+bool QgsLayout3DMapWidget::setNewItem( QgsLayoutItem *item )
+{
+  QgsLayoutItem3DMap *newItem = qobject_cast< QgsLayoutItem3DMap * >( item );
+  if ( !newItem )
+    return false;
+
+  mMap3D = newItem;
+  mItemPropertiesWidget->setItem( newItem );
+
+  updateCameraPoseWidgetsFromItem();
+
+  return true;
+}
