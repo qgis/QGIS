@@ -29,6 +29,7 @@ from qgis.core import (QgsDataSourceUri,
                        QgsFeatureSink,
                        QgsProcessingAlgorithm,
                        QgsVectorLayerExporter,
+                       QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorLayer,
@@ -42,7 +43,6 @@ from processing.tools import spatialite
 
 
 class ImportIntoSpatialite(QgisAlgorithm):
-
     DATABASE = 'DATABASE'
     TABLENAME = 'TABLENAME'
     INPUT = 'INPUT'
@@ -65,17 +65,25 @@ class ImportIntoSpatialite(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Layer to import')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Layer to import'),
+                                                              types=[QgsProcessing.TypeVector]))
         self.addParameter(QgsProcessingParameterVectorLayer(self.DATABASE, self.tr('File database'), optional=False))
-        self.addParameter(QgsProcessingParameterString(self.TABLENAME, self.tr('Table to import to (leave blank to use layer name)'), optional=True))
-        self.addParameter(QgsProcessingParameterField(self.PRIMARY_KEY, self.tr('Primary key field'), None, self.INPUT, QgsProcessingParameterField.Any, False, True))
+        self.addParameter(
+            QgsProcessingParameterString(self.TABLENAME, self.tr('Table to import to (leave blank to use layer name)'),
+                                         optional=True))
+        self.addParameter(QgsProcessingParameterField(self.PRIMARY_KEY, self.tr('Primary key field'), None, self.INPUT,
+                                                      QgsProcessingParameterField.Any, False, True))
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY_COLUMN, self.tr('Geometry column'), 'geom'))
         self.addParameter(QgsProcessingParameterString(self.ENCODING, self.tr('Encoding'), 'UTF-8', optional=True))
         self.addParameter(QgsProcessingParameterBoolean(self.OVERWRITE, self.tr('Overwrite'), True))
         self.addParameter(QgsProcessingParameterBoolean(self.CREATEINDEX, self.tr('Create spatial index'), True))
-        self.addParameter(QgsProcessingParameterBoolean(self.LOWERCASE_NAMES, self.tr('Convert field names to lowercase'), True))
-        self.addParameter(QgsProcessingParameterBoolean(self.DROP_STRING_LENGTH, self.tr('Drop length constraints on character fields'), False))
-        self.addParameter(QgsProcessingParameterBoolean(self.FORCE_SINGLEPART, self.tr('Create single-part geometries instead of multi-part'), False))
+        self.addParameter(
+            QgsProcessingParameterBoolean(self.LOWERCASE_NAMES, self.tr('Convert field names to lowercase'), True))
+        self.addParameter(QgsProcessingParameterBoolean(self.DROP_STRING_LENGTH,
+                                                        self.tr('Drop length constraints on character fields'), False))
+        self.addParameter(QgsProcessingParameterBoolean(self.FORCE_SINGLEPART,
+                                                        self.tr('Create single-part geometries instead of multi-part'),
+                                                        False))
 
     def flags(self):
         return super().flags() | QgsProcessingAlgorithm.FlagNoThreading

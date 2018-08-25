@@ -32,6 +32,7 @@ from qgis.core import (QgsExpression,
                        QgsFeatureSink,
                        QgsField,
                        QgsDistanceArea,
+                       QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
@@ -71,7 +72,8 @@ class FieldsCalculator(QgisAlgorithm):
                            self.tr('Date')]
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'),
+                                                              types=[QgsProcessing.TypeVector]))
         self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,
                                                        self.tr('Result field name')))
         self.addParameter(QgsProcessingParameterEnum(self.FIELD_TYPE,
