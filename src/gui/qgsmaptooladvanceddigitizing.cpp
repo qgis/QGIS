@@ -19,6 +19,7 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometryfixes.h"
+#include "qgssnaptogridcanvasitem.h"
 
 QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolEdit( canvas )
@@ -109,6 +110,7 @@ void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
   if ( mSnapToGridEnabled && layer )
   {
     e->snapToGrid( layer->geometryFixes()->geometryPrecision(), layer->crs() );
+    mSnapToGridCanvasItem->setPoint( e->mapPoint() );
   }
 
   cadCanvasMoveEvent( e );
@@ -119,6 +121,10 @@ void QgsMapToolAdvancedDigitizing::activate()
   QgsMapToolEdit::activate();
   connect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChanged, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
   mCadDockWidget->enable();
+  mSnapToGridCanvasItem = new QgsSnapToGridCanvasItem( mCanvas );
+  mSnapToGridCanvasItem->setCrs( currentVectorLayer()->crs() );
+  mSnapToGridCanvasItem->setPrecision( currentVectorLayer()->geometryFixes()->geometryPrecision() );
+  mSnapToGridCanvasItem->setEnabled( mSnapToGridEnabled );
 }
 
 void QgsMapToolAdvancedDigitizing::deactivate()
@@ -126,6 +132,8 @@ void QgsMapToolAdvancedDigitizing::deactivate()
   QgsMapToolEdit::deactivate();
   disconnect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChanged, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
   mCadDockWidget->disable();
+  delete mSnapToGridCanvasItem;
+  mSnapToGridCanvasItem = nullptr;
 }
 
 void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPointXY &point )
@@ -142,5 +150,9 @@ bool QgsMapToolAdvancedDigitizing::snapToGridEnabled() const
 
 void QgsMapToolAdvancedDigitizing::setSnapToGridEnabled( bool snapToGridEnabled )
 {
-  mSnapToGridEnabled = snapToGridEnabled;
+  if ( mSnapToGridCanvasItem )
+  {
+    mSnapToGridEnabled = snapToGridEnabled;
+    mSnapToGridCanvasItem->setEnabled( snapToGridEnabled );
+  }
 }

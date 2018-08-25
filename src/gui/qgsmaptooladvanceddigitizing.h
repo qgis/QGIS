@@ -22,6 +22,7 @@
 
 class QgsMapMouseEvent;
 class QgsAdvancedDigitizingDockWidget;
+class QgsSnapToGridCanvasItem;
 
 /**
  * \ingroup gui
@@ -175,6 +176,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     bool mAutoSnapEnabled = true;
     //! Whether to snap to grid before passing coordinates to cadCanvas*Event()
     bool mSnapToGridEnabled = true;
+    QgsSnapToGridCanvasItem *mSnapToGridCanvasItem = nullptr;
 };
 
 #endif // QGSMAPTOOLADVANCEDDIGITIZE_H
