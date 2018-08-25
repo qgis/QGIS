@@ -48,7 +48,7 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
 
 void QgsRelationWidgetWrapper::aboutToSave()
 {
-  if ( !mRelation.isValid() )
+  if ( !mRelation.isValid() || !widget() || !widget()->isVisible() )
     return;
 
   // Calling isModified() will emit a beforeModifiedCheck()
