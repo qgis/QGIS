@@ -46,7 +46,8 @@ QString QgsAddUniqueValueIndexAlgorithm::groupId() const
 
 void QgsAddUniqueValueIndexAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
+                QList< int >() << QgsProcessing::TypeVector ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Class field" ), QVariant(),
                 QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_NAME" ),
