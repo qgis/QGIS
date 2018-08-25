@@ -22,7 +22,6 @@
 #include "qgswkbptr.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
-#include "qgsproject.h"
 
 #include <QColor>
 #include <QStringList>
@@ -2162,7 +2161,7 @@ QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &expression,
   QgsExpression exp = expression;
 
   QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  context << QgsExpressionContextUtils::globalScope();
   QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, geometryName, srsName, honourAxisOrientation, invertAxisOrientation );
   QDomElement exprRootElem = utils.expressionNodeToOgcFilter( exp.rootNode(), &exp, &context );
   if ( errorMessage )
@@ -2198,7 +2197,7 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &express
     QString *errorMessage )
 {
   QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope() << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  context << QgsExpressionContextUtils::globalScope();
 
   QgsExpression exp = expression;
 
