@@ -63,6 +63,13 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
               elemOrigin.attribute( "y" ).toDouble(),
               elemOrigin.attribute( "z" ).toDouble() );
 
+  QDomElement elemColor = elem.firstChildElement( "color" );
+  if ( !elemColor.isNull() )
+  {
+    mBackgroundColor = QgsSymbolLayerUtils::decodeColor( elemColor.attribute( "background" ) );
+    mSelectionColor = QgsSymbolLayerUtils::decodeColor( elemColor.attribute( "selection" ) );
+  }
+
   QDomElement elemCrs = elem.firstChildElement( "crs" );
   mCrs.readXml( elemCrs );
 
@@ -146,6 +153,11 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemOrigin.setAttribute( "y", QString::number( mOrigin.y() ) );
   elemOrigin.setAttribute( "z", QString::number( mOrigin.z() ) );
   elem.appendChild( elemOrigin );
+
+  QDomElement elemColor = doc.createElement( "color" );
+  elemColor.setAttribute( "background", QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
+  elemColor.setAttribute( "selection", QgsSymbolLayerUtils::encodeColor( mSelectionColor ) );
+  elem.appendChild( elemColor );
 
   QDomElement elemCrs = doc.createElement( "crs" );
   mCrs.writeXml( elemCrs, doc );
