@@ -31,6 +31,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsProcessingException,
                        QgsField,
                        QgsFeatureSink,
+                       QgsProcessing,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingParameterEnum,
@@ -40,7 +41,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class FieldsPyculator(QgisAlgorithm):
-
     INPUT = 'INPUT'
     FIELD_NAME = 'FIELD_NAME'
     FIELD_TYPE = 'FIELD_TYPE'
@@ -67,15 +67,18 @@ class FieldsPyculator(QgisAlgorithm):
                            self.tr('Float'),
                            self.tr('String')]
 
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'),
+                                                              types=[QgsProcessing.TypeVector]))
         self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,
                                                        self.tr('Result field name'), defaultValue='NewField'))
         self.addParameter(QgsProcessingParameterEnum(self.FIELD_TYPE,
                                                      self.tr('Field type'), options=self.type_names))
         self.addParameter(QgsProcessingParameterNumber(self.FIELD_LENGTH,
-                                                       self.tr('Field length'), minValue=1, maxValue=255, defaultValue=10))
+                                                       self.tr('Field length'), minValue=1, maxValue=255,
+                                                       defaultValue=10))
         self.addParameter(QgsProcessingParameterNumber(self.FIELD_PRECISION,
-                                                       self.tr('Field precision'), minValue=0, maxValue=15, defaultValue=3))
+                                                       self.tr('Field precision'), minValue=0, maxValue=15,
+                                                       defaultValue=3))
         self.addParameter(QgsProcessingParameterString(self.GLOBAL,
                                                        self.tr('Global expression'), multiLine=True, optional=True))
         self.addParameter(QgsProcessingParameterString(self.FORMULA,
@@ -118,7 +121,8 @@ class FieldsPyculator(QgisAlgorithm):
                 exec(bytecode, new_ns)
             except:
                 raise QgsProcessingException(
-                    self.tr("FieldPyculator code execute error.Global code block can't be executed!\n{0}\n{1}").format(str(sys.exc_info()[0].__name__), str(sys.exc_info()[1])))
+                    self.tr("FieldPyculator code execute error.Global code block can't be executed!\n{0}\n{1}").format(
+                        str(sys.exc_info()[0].__name__), str(sys.exc_info()[1])))
 
         # Replace all fields tags
         fields = source.fields()
@@ -141,7 +145,8 @@ class FieldsPyculator(QgisAlgorithm):
             bytecode = compile(code, '<string>', 'exec')
         except:
             raise QgsProcessingException(
-                self.tr("FieldPyculator code execute error. Field code block can't be executed!\n{0}\n{1}").format(str(sys.exc_info()[0].__name__), str(sys.exc_info()[1])))
+                self.tr("FieldPyculator code execute error. Field code block can't be executed!\n{0}\n{1}").format(
+                    str(sys.exc_info()[0].__name__), str(sys.exc_info()[1])))
 
         # Run
         features = source.getFeatures()
