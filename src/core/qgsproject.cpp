@@ -1674,15 +1674,15 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.appendChild( titleNode );
 
   QDomElement transactionNode = doc->createElement( QStringLiteral( "autotransaction" ) );
-  transactionNode.setAttribute( QStringLiteral( "active" ), mAutoTransaction ? '1' : '0' );
+  transactionNode.setAttribute( QStringLiteral( "active" ), mAutoTransaction ? 1 : 0 );
   qgisNode.appendChild( transactionNode );
 
   QDomElement evaluateDefaultValuesNode = doc->createElement( QStringLiteral( "evaluateDefaultValues" ) );
-  evaluateDefaultValuesNode.setAttribute( QStringLiteral( "active" ), mEvaluateDefaultValues ? '1' : '0' );
+  evaluateDefaultValuesNode.setAttribute( QStringLiteral( "active" ), mEvaluateDefaultValues ? 1 : 0 );
   qgisNode.appendChild( evaluateDefaultValuesNode );
 
   QDomElement trustNode = doc->createElement( QStringLiteral( "trust" ) );
-  trustNode.setAttribute( QStringLiteral( "active" ), mTrustLayerMetadata ? '1' : '0' );
+  trustNode.setAttribute( QStringLiteral( "active" ), mTrustLayerMetadata ? 1 : 0 );
   qgisNode.appendChild( trustNode );
 
   QDomText titleText = doc->createTextNode( title() );  // XXX why have title TWICE?
