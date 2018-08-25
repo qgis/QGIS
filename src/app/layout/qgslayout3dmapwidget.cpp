@@ -27,6 +27,11 @@ QgsLayout3DMapWidget::QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D )
 {
   setupUi( this );
 
+  mCenterXSpinBox->setClearValue( 0 );
+  mCenterYSpinBox->setClearValue( 0 );
+  mCenterZSpinBox->setClearValue( 0 );
+  mDistanceToCenterSpinBox->setClearValue( 1000 );
+
   //add widget for general composer item properties
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, map3D );
   mainLayout->addWidget( mItemPropertiesWidget );
@@ -58,7 +63,7 @@ QgsLayout3DMapWidget::QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D )
   mHeadingAngleSpinBox->setValue( pose.headingAngle() );
 
   QList<QgsDoubleSpinBox *> lst;
-  lst << mCenterXSpinBox << mCenterXSpinBox << mCenterXSpinBox << mDistanceToCenterSpinBox << mPitchAngleSpinBox << mHeadingAngleSpinBox;
+  lst << mCenterXSpinBox << mCenterYSpinBox << mCenterZSpinBox << mDistanceToCenterSpinBox << mPitchAngleSpinBox << mHeadingAngleSpinBox;
   for ( QgsDoubleSpinBox *spinBox : lst )
     connect( spinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayout3DMapWidget::updateCameraPose );
 }
