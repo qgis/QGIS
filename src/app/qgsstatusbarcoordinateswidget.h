@@ -59,6 +59,7 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     void extentsViewToggled( bool flag );
     void validateCoordinates();
     void dizzy();
+    void world();
     void contributors();
     void hackfests();
     void showExtent();
