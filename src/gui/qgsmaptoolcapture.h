@@ -249,7 +249,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     CaptureMode mCaptureMode;
 
     //! Flag to indicate a map canvas capture operation is taking place
-    bool mCapturing;
+    bool mCapturing = false;
 
     //! Rubber band for polylines and polygons
     QgsRubberBand *mRubberBand = nullptr;
@@ -267,6 +267,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QgsGeometryValidator *mValidator = nullptr;
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;
+
+    bool mCaptureModeFromLayer;
 
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
