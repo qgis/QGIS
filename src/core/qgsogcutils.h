@@ -338,7 +338,7 @@ class QgsOgcUtilsExprToFilter
                              bool invertAxisOrientation );
 
     //! Convert an expression to a OGC filter
-    QDomElement expressionNodeToOgcFilter( const QgsExpressionNode *node );
+    QDomElement expressionNodeToOgcFilter( const QgsExpressionNode *node, QgsExpression *expression, const QgsExpressionContext *context );
 
     //! Returns whether the gml: namespace is used
     bool GMLNamespaceUsed() const { return mGMLUsed; }
@@ -359,12 +359,12 @@ class QgsOgcUtilsExprToFilter
     QString mPropertyName;
     int mGeomId;
 
-    QDomElement expressionUnaryOperatorToOgcFilter( const QgsExpressionNodeUnaryOperator *node );
-    QDomElement expressionBinaryOperatorToOgcFilter( const QgsExpressionNodeBinaryOperator *node );
-    QDomElement expressionLiteralToOgcFilter( const QgsExpressionNodeLiteral *node );
-    QDomElement expressionColumnRefToOgcFilter( const QgsExpressionNodeColumnRef *node );
-    QDomElement expressionInOperatorToOgcFilter( const QgsExpressionNodeInOperator *node );
-    QDomElement expressionFunctionToOgcFilter( const QgsExpressionNodeFunction *node );
+    QDomElement expressionUnaryOperatorToOgcFilter( const QgsExpressionNodeUnaryOperator *node, QgsExpression *expression, const QgsExpressionContext *context );
+    QDomElement expressionBinaryOperatorToOgcFilter( const QgsExpressionNodeBinaryOperator *node, QgsExpression *expression, const QgsExpressionContext *context );
+    QDomElement expressionLiteralToOgcFilter( const QgsExpressionNodeLiteral *node, QgsExpression *expression, const QgsExpressionContext *context );
+    QDomElement expressionColumnRefToOgcFilter( const QgsExpressionNodeColumnRef *node, QgsExpression *expression, const QgsExpressionContext *context );
+    QDomElement expressionInOperatorToOgcFilter( const QgsExpressionNodeInOperator *node, QgsExpression *expression, const QgsExpressionContext *context );
+    QDomElement expressionFunctionToOgcFilter( const QgsExpressionNodeFunction *node, QgsExpression *expression, const QgsExpressionContext *context );
 };
 
 /**

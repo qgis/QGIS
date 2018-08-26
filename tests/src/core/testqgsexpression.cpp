@@ -3133,6 +3133,18 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( stringList ) ),
                 QStringLiteral( "[ 'One', 'Two', 'A very long string that is going to be tr… ]" ) );
     }
+
+    void test_nowStatic()
+    {
+      QgsExpression e( QStringLiteral( "now()" ) );
+      QgsExpressionContext ctx;
+      e.prepare( &ctx );
+      QVariant v = e.evaluate();
+      QTest::qSleep( 1000 );
+      QVariant v2 = e.evaluate();
+
+      QCOMPARE( v.toDateTime().toMSecsSinceEpoch(), v2.toDateTime().toMSecsSinceEpoch() );
+    }
 };
 
 QGSTEST_MAIN( TestQgsExpression )
