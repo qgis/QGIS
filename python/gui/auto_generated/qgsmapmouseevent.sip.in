@@ -123,7 +123,7 @@ Alias to pos()
 %Docstring
 Snaps the mapPoint to a grid with the given ``precision``.
 The snapping will be done in the specified ``crs``. If this crs is
-different from the mapCanvas crs, it will add some overhead.
+different from the mapCanvas crs, it will be reprojected on the fly.
 
 .. versionadded:: 3.4
 %End
