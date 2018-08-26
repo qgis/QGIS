@@ -23,7 +23,7 @@ Shows a grid on the map canvas given a spatial resolution.
 %End
   public:
 
-    QgsSnapToGridCanvasItem( QgsMapCanvas *mapCanvas );
+    QgsSnapToGridCanvasItem( QgsMapCanvas *mapCanvas /TransferThis/ );
 %Docstring
 Will automatically be added to the ``mapCanvas``.
 %End

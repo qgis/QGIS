@@ -39,7 +39,7 @@ class GUI_EXPORT QgsSnapToGridCanvasItem : public QObject, public QgsMapCanvasIt
     /**
      * Will automatically be added to the \a mapCanvas.
      */
-    QgsSnapToGridCanvasItem( QgsMapCanvas *mapCanvas );
+    QgsSnapToGridCanvasItem( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );
 
     void paint( QPainter *painter ) override;
 
