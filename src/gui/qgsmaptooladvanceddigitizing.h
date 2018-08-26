@@ -167,6 +167,8 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     void cadPointChanged( const QgsPointXY &point );
 
+    void onCurrentLayerChanged();
+
   private:
     QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
 

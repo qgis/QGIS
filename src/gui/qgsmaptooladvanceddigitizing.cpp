@@ -25,6 +25,7 @@ QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas
   : QgsMapToolEdit( canvas )
   , mCadDockWidget( cadDockWidget )
 {
+  connect( canvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolAdvancedDigitizing::onCurrentLayerChanged );
 }
 
 void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
@@ -141,6 +142,20 @@ void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPointXY &point )
   Q_UNUSED( point );
   QMouseEvent *ev = new QMouseEvent( QEvent::MouseMove, mCanvas->mouseLastXY(), Qt::NoButton, Qt::NoButton, Qt::NoModifier );
   qApp->postEvent( mCanvas->viewport(), ev );  // event queue will delete the event when processed
+}
+
+void QgsMapToolAdvancedDigitizing::onCurrentLayerChanged()
+{
+  QgsVectorLayer *layer = currentVectorLayer();
+  if ( mSnapToGridCanvasItem && layer && mSnapToGridEnabled )
+  {
+    mSnapToGridCanvasItem->setPrecision( layer->geometryFixes()->geometryPrecision() );
+    mSnapToGridCanvasItem->setCrs( layer->crs() );
+    mSnapToGridCanvasItem->setEnabled( true );
+  }
+
+  if ( !layer )
+    mSnapToGridCanvasItem->setEnabled( false );
 }
 
 bool QgsMapToolAdvancedDigitizing::snapToGridEnabled() const
