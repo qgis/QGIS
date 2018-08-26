@@ -175,6 +175,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   {
     labelingDialog = nullptr;
     mOptsPage_Labels->setEnabled( false ); // disable labeling item
+    mGeometryGroupBox->setEnabled( false );
+    mGeometryGroupBox->setVisible( false );
   }
 
   // Create the Actions dialog tab
