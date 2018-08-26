@@ -1769,7 +1769,9 @@ void QgsLayoutDesignerDialog::print()
 
   QgsLayoutExporter exporter( mLayout );
   QString printerName = printer()->printerName();
-  QgsLayoutExporter::ExportResult result = exporter.print( *printer(), printSettings );
+  QPrinter *p = printer();
+  p->setDocName( mMasterLayout->name() );
+  QgsLayoutExporter::ExportResult result = exporter.print( *p, printSettings );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
 
@@ -1780,7 +1782,7 @@ void QgsLayoutDesignerDialog::print()
       QString message;
       if ( !printerName.isEmpty() )
       {
-        message =   tr( "Successfully printed layout to %1." ).arg( printerName );
+        message = tr( "Successfully printed layout to %1." ).arg( printerName );
       }
       else
       {
@@ -2381,8 +2383,10 @@ void QgsLayoutDesignerDialog::printAtlas()
 
   QgsApplication::taskManager()->addTask( proxyTask );
 
-  QString printerName = printer()->printerName();
-  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::print( printAtlas, *printer(), printSettings, error, feedback.get() );
+  QPrinter *p = printer();
+  p->setDocName( mMasterLayout->name() );
+  QString printerName = p->printerName();
+  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::print( printAtlas, *p, printSettings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
 
@@ -3428,8 +3432,10 @@ void QgsLayoutDesignerDialog::printReport()
 
   QgsApplication::taskManager()->addTask( proxyTask );
 
-  QString printerName = printer()->printerName();
-  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::print( static_cast< QgsReport * >( mMasterLayout ), *printer(), printSettings, error, feedback.get() );
+  QPrinter *p = printer();
+  QString printerName = p->printerName();
+  p->setDocName( mMasterLayout->name() );
+  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::print( static_cast< QgsReport * >( mMasterLayout ), *p, printSettings, error, feedback.get() );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
 
