@@ -14,6 +14,7 @@
 ***************************************************************************/
 
 #include <QFont>
+#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -27,6 +28,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgscoordinateutils.h"
+#include "qgsvectorlayer.h"
 
 
 QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
@@ -117,7 +119,15 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   {
     return;
   }
-  if ( mLineEdit->text() == QLatin1String( "dizzy" ) )
+  if ( mLineEdit->text() == QLatin1String( "contributors" ) )
+  {
+    this->contributors();
+  }
+  else if ( mLineEdit->text() == QLatin1String( "hackfests" ) )
+  {
+    this->hackfests();
+  }
+  else if ( mLineEdit->text() == QLatin1String( "dizzy" ) )
   {
     // sometimes you may feel a bit dizzy...
     if ( mDizzyTimer->isActive() )
@@ -192,6 +202,34 @@ void QgsStatusBarCoordinatesWidget::dizzy()
   QTransform matrix;
   matrix.rotate( ( qrand() % ( 2 * r ) ) - r );
   mMapCanvas->setTransform( matrix );
+}
+
+void QgsStatusBarCoordinatesWidget::contributors()
+{
+  if ( !mMapCanvas )
+  {
+    return;
+  }
+  QString myFileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors.json" );
+  QFileInfo myFileInfo = QFileInfo( myFileName );
+  QgsVectorLayer *layer = new QgsVectorLayer( myFileInfo.absoluteFilePath(),
+      "QGIS Contributors", QStringLiteral( "ogr" ) );
+  // Register this layer with the layers registry
+  QgsProject::instance()->addMapLayer( layer );
+}
+
+void QgsStatusBarCoordinatesWidget::hackfests()
+{
+  if ( !mMapCanvas )
+  {
+    return;
+  }
+  QString myFileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/qgis-hackfests.json" );
+  QFileInfo myFileInfo = QFileInfo( myFileName );
+  QgsVectorLayer *layer = new QgsVectorLayer( myFileInfo.absoluteFilePath(),
+      "QGIS Hackfests", QStringLiteral( "ogr" ) );
+  // Register this layer with the layers registry
+  QgsProject::instance()->addMapLayer( layer );
 }
 
 void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )
