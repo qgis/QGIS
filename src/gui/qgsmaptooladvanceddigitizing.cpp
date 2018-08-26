@@ -150,9 +150,10 @@ bool QgsMapToolAdvancedDigitizing::snapToGridEnabled() const
 
 void QgsMapToolAdvancedDigitizing::setSnapToGridEnabled( bool snapToGridEnabled )
 {
+  mSnapToGridEnabled = snapToGridEnabled;
+
   if ( mSnapToGridCanvasItem )
   {
-    mSnapToGridEnabled = snapToGridEnabled;
     mSnapToGridCanvasItem->setEnabled( snapToGridEnabled );
   }
 }
