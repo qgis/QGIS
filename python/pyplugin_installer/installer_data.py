@@ -724,14 +724,12 @@ class Plugins(QObject):
             self.mPlugins[i] = self.localCache[i].copy()
         settings = QgsSettings()
         allowExperimental = settings.value(settingsGroup + "/allowExperimental", False, type=bool)
-        allowDeprecated = settings.value(settingsGroup + "/allowDeprecated", False, type=bool)
         for i in list(self.repoCache.values()):
             for j in i:
                 plugin = j.copy()  # do not update repoCache elements!
                 key = plugin["id"]
                 # check if the plugin is allowed and if there isn't any better one added already.
                 if (allowExperimental or not plugin["experimental"]) \
-                   and (allowDeprecated or not plugin["deprecated"]) \
                    and not (key in self.mPlugins and self.mPlugins[key]["version_available"] and compareVersions(self.mPlugins[key]["version_available"], plugin["version_available"]) < 2):
                     # The mPlugins dict contains now locally installed plugins.
                     # Now, add the available one if not present yet or update it if present already.

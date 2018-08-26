@@ -81,7 +81,6 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   connect( buttonDeleteRep, &QPushButton::clicked, this, &QgsPluginManager::buttonDeleteRep_clicked );
   connect( buttonRefreshRepos, &QPushButton::clicked, this, &QgsPluginManager::buttonRefreshRepos_clicked );
   connect( ckbExperimental, &QgsCollapsibleGroupBox::toggled, this, &QgsPluginManager::ckbExperimental_toggled );
-  connect( ckbDeprecated, &QgsCollapsibleGroupBox::toggled, this, &QgsPluginManager::ckbDeprecated_toggled );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPluginManager::showHelp );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -228,11 +227,6 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   if ( settings.value( settingsGroup + "/allowExperimental", false ).toBool() )
   {
     ckbExperimental->setChecked( true );
-  }
-
-  if ( settings.value( settingsGroup + "/allowDeprecated", false ).toBool() )
-  {
-    ckbDeprecated->setChecked( true );
   }
 
   int interval = settings.value( settingsGroup + "/checkOnStartInterval", "" ).toInt();
@@ -1480,16 +1474,6 @@ void QgsPluginManager::ckbExperimental_toggled( bool state )
   QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
   QgsSettings settings;
   settings.setValue( settingsGroup + "/allowExperimental", QVariant( state ) );
-  QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.installer_data.plugins.rebuild()" ) );
-  QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().exportPluginsToManager()" ) );
-}
-
-void QgsPluginManager::ckbDeprecated_toggled( bool state )
-{
-  QString settingsGroup;
-  QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
-  QgsSettings settings;
-  settings.setValue( settingsGroup + "/allowDeprecated", QVariant( state ) );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.installer_data.plugins.rebuild()" ) );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().exportPluginsToManager()" ) );
 }
