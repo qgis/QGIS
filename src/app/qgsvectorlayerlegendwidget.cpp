@@ -52,7 +52,7 @@ QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
   groupLayout->addWidget( mLegendTreeView );
   groupLayout->addLayout( buttonsLayout );
 
-  mTextOnSymbolGroupBox->setTitle( tr( "Text on symbols" ) );
+  mTextOnSymbolGroupBox->setTitle( tr( "Text on Symbols" ) );
   mTextOnSymbolGroupBox->setCheckable( true );
   mTextOnSymbolGroupBox->setLayout( groupLayout );
   mTextOnSymbolGroupBox->setCollapsed( false );

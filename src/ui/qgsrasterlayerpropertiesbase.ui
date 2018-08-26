@@ -395,7 +395,7 @@ border-radius: 2px;</string>
                   </sizepolicy>
                  </property>
                  <property name="title">
-                  <string>Band rendering</string>
+                  <string>Band Rendering</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">rasterstyle</string>
@@ -440,7 +440,7 @@ border-radius: 2px;</string>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="mColorRenderingGrpBox">
                  <property name="title">
-                  <string>Color rendering</string>
+                  <string>Color Rendering</string>
                  </property>
                  <property name="collapsed" stdset="0">
                   <bool>false</bool>
@@ -983,7 +983,7 @@ border-radius: 2px;</string>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="gboxNoDataValue_2">
                  <property name="title">
-                  <string>Global opacity</string>
+                  <string>Global Opacity</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">rastertransp</string>
@@ -1002,7 +1002,7 @@ border-radius: 2px;</string>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="gboxNoDataValue">
                  <property name="title">
-                  <string>No data value</string>
+                  <string>No Data Value</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">rastertransp</string>
@@ -1074,7 +1074,7 @@ border-radius: 2px;</string>
                   </sizepolicy>
                  </property>
                  <property name="title">
-                  <string>Custom transparency options</string>
+                  <string>Custom Transparency Options</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">rastertransp</string>
@@ -1353,7 +1353,7 @@ border-radius: 2px;</string>
            <item>
             <widget class="QgsCollapsibleGroupBox" name="chkUseScaleDependentRendering">
              <property name="title">
-              <string>Scale dependent visibility</string>
+              <string>Scale Dependent Visibility</string>
              </property>
              <property name="checkable">
               <bool>true</bool>
@@ -1558,7 +1558,7 @@ p, li { white-space: pre-wrap; }
                      <bool>false</bool>
                     </property>
                     <property name="text">
-                     <string>Build pyramids</string>
+                     <string>Build Pyramids</string>
                     </property>
                    </widget>
                   </item>

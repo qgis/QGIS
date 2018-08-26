@@ -555,7 +555,7 @@ border-radius: 2px;</string>
                   <enum>Qt::StrongFocus</enum>
                  </property>
                  <property name="title">
-                  <string>Coordinate reference system</string>
+                  <string>Coordinate Reference System</string>
                  </property>
                  <property name="checkable">
                   <bool>false</bool>
@@ -586,14 +586,14 @@ border-radius: 2px;</string>
                     <item>
                      <widget class="QPushButton" name="pbnIndex">
                       <property name="text">
-                       <string>Create spatial index</string>
+                       <string>Create Spatial Index</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QPushButton" name="pbnUpdateExtents">
                       <property name="text">
-                       <string>Update extents</string>
+                       <string>Update Extents</string>
                       </property>
                      </widget>
                     </item>
@@ -631,7 +631,7 @@ border-radius: 2px;</string>
                   </sizepolicy>
                  </property>
                  <property name="title">
-                  <string>Provider feature filter</string>
+                  <string>Provider Feature Filter</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_4">
                   <item row="1" column="1">
@@ -1524,7 +1524,7 @@ border-radius: 2px;</string>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="mScaleVisibilityGroupBox">
                  <property name="title">
-                  <string>Scale dependen&amp;t visibility</string>
+                  <string>Scale Dependen&amp;t Visibility</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -1543,7 +1543,7 @@ border-radius: 2px;</string>
                <item>
                 <widget class="QGroupBox" name="mSimplifyDrawingGroupBox">
                  <property name="title">
-                  <string>Simplify &amp;geometry</string>
+                  <string>Simplify &amp;Geometry</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -1868,7 +1868,7 @@ border-radius: 2px;</string>
            <item>
             <widget class="QGroupBox" name="groupBox_5">
              <property name="title">
-              <string>Data dependencies</string>
+              <string>Data Dependencies</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_24">
               <item>
@@ -1923,7 +1923,7 @@ border-radius: 2px;</string>
            <item>
             <widget class="QgsCollapsibleGroupBox" name="groupBox_3">
              <property name="title">
-              <string>Embedded widgets in legend</string>
+              <string>Embedded Widgets in Legend</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_22">
               <item>
