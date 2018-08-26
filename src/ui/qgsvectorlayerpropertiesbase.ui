@@ -357,7 +357,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>18</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -550,7 +550,7 @@ border-radius: 2px;</string>
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="indexGroupBox_2">
+                <widget class="QgsCollapsibleGroupBox" name="mGeometryGroupBox">
                  <property name="focusPolicy">
                   <enum>Qt::StrongFocus</enum>
                  </property>
@@ -2543,7 +2543,7 @@ border-radius: 2px;</string>
   <tabstop>mLayerOrigNameLineEdit</tabstop>
   <tabstop>txtDisplayName</tabstop>
   <tabstop>cboProviderEncoding</tabstop>
-  <tabstop>indexGroupBox_2</tabstop>
+  <tabstop>mGeometryGroupBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>pbnIndex</tabstop>
   <tabstop>pbnUpdateExtents</tabstop>
