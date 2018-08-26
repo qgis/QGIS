@@ -268,6 +268,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;
 
+    bool mCaptureModeFromLayer;
+
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     /**
