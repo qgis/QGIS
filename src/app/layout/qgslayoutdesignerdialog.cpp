@@ -1765,7 +1765,9 @@ void QgsLayoutDesignerDialog::print()
 
   QgsLayoutExporter exporter( mLayout );
   QString printerName = printer()->printerName();
-  switch ( exporter.print( *printer(), printSettings ) )
+  QPrinter *p = printer();
+  p->setDocName( mMasterLayout->name() );
+  switch ( exporter.print( *p, printSettings ) )
   {
     case QgsLayoutExporter::Success:
     {
@@ -2348,8 +2350,10 @@ void QgsLayoutDesignerDialog::printAtlas()
     feedback->cancel();
   } );
 
-  QString printerName = printer()->printerName();
-  switch ( QgsLayoutExporter::print( printAtlas, *printer(), printSettings, error, feedback.get() ) )
+  QPrinter *p = printer();
+  p->setDocName( mMasterLayout->name() );
+  QString printerName = p->printerName();
+  switch ( QgsLayoutExporter::print( printAtlas, *p, printSettings, error, feedback.get() ) )
   {
     case QgsLayoutExporter::Success:
     {
@@ -3346,8 +3350,10 @@ void QgsLayoutDesignerDialog::printReport()
     feedback->cancel();
   } );
 
-  QString printerName = printer()->printerName();
-  switch ( QgsLayoutExporter::print( static_cast< QgsReport * >( mMasterLayout ), *printer(), printSettings, error, feedback.get() ) )
+  QPrinter *p = printer();
+  QString printerName = p->printerName();
+  p->setDocName( mMasterLayout->name() );
+  switch ( QgsLayoutExporter::print( static_cast< QgsReport * >( mMasterLayout ), *p, printSettings, error, feedback.get() ) )
   {
     case QgsLayoutExporter::Success:
     {
