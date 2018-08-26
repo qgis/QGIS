@@ -38,32 +38,41 @@ void QgsSnapToGridCanvasItem::paint( QPainter *painter )
 
   if ( mEnabled && mAvailableByZoomFactor )
   {
-    const QgsRectangle layerExtent = mTransform.transformBoundingBox( mapRect, QgsCoordinateTransform::ReverseTransform );
-    const QgsPointXY layerPt = mTransform.transform( mPoint, QgsCoordinateTransform::ReverseTransform );
-
-    const double gridXMin = std::ceil( layerExtent.xMinimum() / mPrecision ) * mPrecision;
-    const double gridXMax = std::ceil( layerExtent.xMaximum() / mPrecision ) * mPrecision;
-    const double gridYMin = std::ceil( layerExtent.yMinimum() / mPrecision ) * mPrecision;
-    const double gridYMax = std::ceil( layerExtent.yMaximum() / mPrecision ) * mPrecision;
-
-    for ( int x = gridXMin ; x < gridXMax; x += mPrecision )
+    try
     {
-      for ( int y = gridYMin ; y < gridYMax; y += mPrecision )
-      {
-        const QgsPointXY pt = mTransform.transform( x, y );
-        const QPointF canvasPt = toCanvasCoordinates( pt );
+      const QgsRectangle layerExtent = mTransform.transformBoundingBox( mapRect, QgsCoordinateTransform::ReverseTransform );
+      const QgsPointXY layerPt = mTransform.transform( mPoint, QgsCoordinateTransform::ReverseTransform );
 
-        if ( qgsDoubleNear( layerPt.x(), x, mPrecision / 3 ) && qgsDoubleNear( layerPt.y(), y, mPrecision / 3 ) )
+      const double gridXMin = std::ceil( layerExtent.xMinimum() / mPrecision ) * mPrecision;
+      const double gridXMax = std::ceil( layerExtent.xMaximum() / mPrecision ) * mPrecision;
+      const double gridYMin = std::ceil( layerExtent.yMinimum() / mPrecision ) * mPrecision;
+      const double gridYMax = std::ceil( layerExtent.yMaximum() / mPrecision ) * mPrecision;
+
+      for ( int x = gridXMin ; x < gridXMax; x += mPrecision )
+      {
+        for ( int y = gridYMin ; y < gridYMax; y += mPrecision )
         {
-          painter->setPen( mCurrentPointPen );
+          const QgsPointXY pt = mTransform.transform( x, y );
+          const QPointF canvasPt = toCanvasCoordinates( pt );
+
+          if ( qgsDoubleNear( layerPt.x(), x, mPrecision / 3 ) && qgsDoubleNear( layerPt.y(), y, mPrecision / 3 ) )
+          {
+            painter->setPen( mCurrentPointPen );
+          }
+          else
+          {
+            painter->setPen( mGridPen );
+          }
+          painter->drawLine( canvasPt.x() - 3, canvasPt.y(), canvasPt.x() + 3, canvasPt.y() );
+          painter->drawLine( canvasPt.x(), canvasPt.y() - 3, canvasPt.x(), canvasPt.y() + 3 );
+
         }
-        else
-        {
-          painter->setPen( mGridPen );
-        }
-        painter->drawLine( canvasPt.x() - 3, canvasPt.y(), canvasPt.x() + 3, canvasPt.y() );
-        painter->drawLine( canvasPt.x(), canvasPt.y() - 3, canvasPt.x(), canvasPt.y() + 3 );
       }
+    }
+    catch ( QgsCsException &e )
+    {
+      Q_UNUSED( e )
+      mAvailableByZoomFactor = false;
     }
   }
 
