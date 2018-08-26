@@ -123,8 +123,12 @@ void QgsMapToolAdvancedDigitizing::activate()
   connect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChanged, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
   mCadDockWidget->enable();
   mSnapToGridCanvasItem = new QgsSnapToGridCanvasItem( mCanvas );
-  mSnapToGridCanvasItem->setCrs( currentVectorLayer()->crs() );
-  mSnapToGridCanvasItem->setPrecision( currentVectorLayer()->geometryFixes()->geometryPrecision() );
+  QgsVectorLayer *layer = currentVectorLayer();
+  if ( layer )
+  {
+    mSnapToGridCanvasItem->setCrs( currentVectorLayer()->crs() );
+    mSnapToGridCanvasItem->setPrecision( currentVectorLayer()->geometryFixes()->geometryPrecision() );
+  }
   mSnapToGridCanvasItem->setEnabled( mSnapToGridEnabled );
 }
 
@@ -146,16 +150,20 @@ void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPointXY &point )
 
 void QgsMapToolAdvancedDigitizing::onCurrentLayerChanged()
 {
-  QgsVectorLayer *layer = currentVectorLayer();
-  if ( mSnapToGridCanvasItem && layer && mSnapToGridEnabled )
+  if ( mSnapToGridCanvasItem )
   {
-    mSnapToGridCanvasItem->setPrecision( layer->geometryFixes()->geometryPrecision() );
-    mSnapToGridCanvasItem->setCrs( layer->crs() );
-    mSnapToGridCanvasItem->setEnabled( true );
-  }
+    QgsVectorLayer *layer = currentVectorLayer();
+    if ( layer && mSnapToGridEnabled )
+    {
+      mSnapToGridCanvasItem->setPrecision( layer->geometryFixes()->geometryPrecision() );
+      mSnapToGridCanvasItem->setCrs( layer->crs() );
+    }
 
-  if ( !layer )
-    mSnapToGridCanvasItem->setEnabled( false );
+    if ( !layer )
+      mSnapToGridCanvasItem->setEnabled( false );
+    else
+      mSnapToGridCanvasItem->setEnabled( mSnapToGridEnabled );
+  }
 }
 
 bool QgsMapToolAdvancedDigitizing::snapToGridEnabled() const
