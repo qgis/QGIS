@@ -594,10 +594,11 @@ class CORE_EXPORT QgsExpression
      * Formats an expression result for friendly display to the user. Truncates the result to a sensible
      * length, and presents text representations of non numeric/text types (e.g., geometries and features).
      * \param value expression result to format
-     * \returns formatted string, may contain HTML formatting characters
+     * \param htmlOutput set to true to allow HTML formatting, or false for plain text output
+     * \returns formatted string, may contain HTML formatting characters if \a htmlOutput is true
      * \since QGIS 2.14
      */
-    static QString formatPreviewString( const QVariant &value );
+    static QString formatPreviewString( const QVariant &value, bool htmlOutput = true );
 
     /**
      * Create an expression allowing to evaluate if a field is equal to a
