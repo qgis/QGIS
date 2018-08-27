@@ -121,15 +121,15 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   }
   else if ( mLineEdit->text() == QLatin1String( "world" ) )
   {
-    this->world();
+    world();
   }
   if ( mLineEdit->text() == QLatin1String( "contributors" ) )
   {
-    this->contributors();
+    contributors();
   }
   else if ( mLineEdit->text() == QLatin1String( "hackfests" ) )
   {
-    this->hackfests();
+    hackfests();
   }
   else if ( mLineEdit->text() == QLatin1String( "dizzy" ) )
   {
@@ -214,10 +214,10 @@ void QgsStatusBarCoordinatesWidget::contributors()
   {
     return;
   }
-  QString myFileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors.json" );
-  QFileInfo myFileInfo = QFileInfo( myFileName );
-  QgsVectorLayer *layer = new QgsVectorLayer( myFileInfo.absoluteFilePath(),
-      "QGIS Contributors", QStringLiteral( "ogr" ) );
+  QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors.json" );
+  QFileInfo fileInfo = QFileInfo( fileName );
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
+      tr( "QGIS Contributors" ), QStringLiteral( "ogr" ) );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );
   layer->setAutoRefreshInterval( 500 );
@@ -230,10 +230,10 @@ void QgsStatusBarCoordinatesWidget::world()
   {
     return;
   }
-  QString myFileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.shp" );
-  QFileInfo myFileInfo = QFileInfo( myFileName );
-  QgsVectorLayer *layer = new QgsVectorLayer( myFileInfo.absoluteFilePath(),
-      "World Map", QStringLiteral( "ogr" ) );
+  QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.shp" );
+  QFileInfo fileInfo = QFileInfo( fileName );
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
+      tr( "World Map" ), QStringLiteral( "ogr" ) );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );
 }
@@ -244,10 +244,10 @@ void QgsStatusBarCoordinatesWidget::hackfests()
   {
     return;
   }
-  QString myFileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/qgis-hackfests.json" );
-  QFileInfo myFileInfo = QFileInfo( myFileName );
-  QgsVectorLayer *layer = new QgsVectorLayer( myFileInfo.absoluteFilePath(),
-      "QGIS Hackfests", QStringLiteral( "ogr" ) );
+  QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/qgis-hackfests.json" );
+  QFileInfo fileInfo = QFileInfo( fileName );
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
+      tr( "QGIS Hackfests" ), QStringLiteral( "ogr" ) );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );
   layer->setAutoRefreshInterval( 500 );
