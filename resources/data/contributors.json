@@ -842,6 +842,23 @@
     {
       "type": "Feature",
       "properties": {
+        "Name": "Etienne Trimaille",
+        "Committer": "No",
+        "First Commit Message": "change str to unicode fix #10624",
+        "First Commit Date": "03-07-2014",
+        "GIT Nickname": "Gustry"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -61.70715,
+          16.01649
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "Name": "Raymond Nijssen",
         "Committer": "No",
         "First Commit Message": "Sipify QgsPoint",
