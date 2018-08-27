@@ -35,6 +35,11 @@ QString QgsTransformAlgorithm::outputName() const
   return QObject::tr( "Reprojected" );
 }
 
+QgsProcessingFeatureSource::Flag QgsTransformAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 QString QgsTransformAlgorithm::name() const
 {
   return QStringLiteral( "reprojectlayer" );
