@@ -74,7 +74,7 @@ class PoleOfInaccessibility(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'),
                                                               [QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterDistance(self.TOLERANCE,
-                                                         self.tr('Tolerance (layer units)'),
+                                                         self.tr('Tolerance'),
                                                          parentParameterName=self.INPUT,
                                                          defaultValue=1.0, minValue=0.0))
 
