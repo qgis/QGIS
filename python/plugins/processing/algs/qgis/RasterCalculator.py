@@ -214,6 +214,12 @@ class RasterCalculator(QgisAlgorithm):
 
         nameToMap = lyr.source()
 
+        # check if nameToMap is a file
+        # TODO: what about URI eg for a COG?
+        if os.path.isfile(nameToMap):
+            # get only the name without extension and path of the file
+            nameToMap = os.path.splitext(os.path.basename(nameToMap))[0]
+
         # check for layers directly added in the expression
         if (nameToMap + "@") in expression:
             layersDict[nameToMap] = lyr
