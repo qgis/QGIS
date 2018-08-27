@@ -1722,6 +1722,17 @@ static QVariant fcnGeomZ( const QVariantList &values, const QgsExpressionContext
     if ( point )
       return point->z();
   }
+  else if ( geom.type() == QgsWkbTypes::PointGeometry && geom.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() ) )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) ) )
+          return point->z();
+      }
+    }
+  }
 
   return QVariant();
 }
@@ -1738,6 +1749,17 @@ static QVariant fcnGeomM( const QVariantList &values, const QgsExpressionContext
     const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom.constGet() );
     if ( point )
       return point->m();
+  }
+  else if ( geom.type() == QgsWkbTypes::PointGeometry && geom.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() ) )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) ) )
+          return point->m();
+      }
+    }
   }
 
   return QVariant();
@@ -1869,6 +1891,17 @@ static QVariant fcnInteriorRingN( const QVariantList &values, const QgsExpressio
     return QVariant();
 
   const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( geom.constGet() );
+  if ( !curvePolygon && geom.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() ) )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( collection->geometryN( 0 ) );
+      }
+    }
+  }
+
   if ( !curvePolygon )
     return QVariant();
 
@@ -1878,7 +1911,7 @@ static QVariant fcnInteriorRingN( const QVariantList &values, const QgsExpressio
   if ( idx >= curvePolygon->numInteriorRings() || idx < 0 )
     return QVariant();
 
-  QgsCurve *curve = static_cast< QgsCurve * >( curvePolygon->interiorRing( idx )->clone() );
+  QgsCurve *curve = static_cast< QgsCurve * >( curvePolygon->interiorRing( static_cast< int >( idx ) )->clone() );
   QVariant result = curve ? QVariant::fromValue( QgsGeometry( curve ) ) : QVariant();
   return result;
 }
@@ -1900,7 +1933,7 @@ static QVariant fcnGeometryN( const QVariantList &values, const QgsExpressionCon
   if ( idx < 0 || idx >= collection->numGeometries() )
     return QVariant();
 
-  QgsAbstractGeometry *part = collection->geometryN( idx )->clone();
+  QgsAbstractGeometry *part = collection->geometryN( static_cast< int >( idx ) )->clone();
   QVariant result = part ? QVariant::fromValue( QgsGeometry( part ) ) : QVariant();
   return result;
 }
@@ -2056,11 +2089,28 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
   }
 
   QgsGeometry outerRing = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  if ( outerRing.type() != QgsWkbTypes::LineGeometry || outerRing.isMultipart() || outerRing.isNull() )
+  if ( outerRing.type() != QgsWkbTypes::LineGeometry || outerRing.isNull() )
     return QVariant();
 
-  QgsPolygon *polygon = new QgsPolygon();
-  polygon->setExteriorRing( qgsgeometry_cast< QgsCurve * >( outerRing.constGet()->clone() ) );
+  std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >();
+
+  const QgsCurve *exteriorRing = qgsgeometry_cast< QgsCurve * >( outerRing.constGet() );
+  if ( !exteriorRing && outerRing.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( outerRing.constGet() ) )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        exteriorRing = qgsgeometry_cast< QgsCurve * >( collection->geometryN( 0 ) );
+      }
+    }
+  }
+
+  if ( !exteriorRing )
+    return QVariant();
+
+  polygon->setExteriorRing( exteriorRing->segmentize() );
+
 
   for ( int i = 1; i < values.count(); ++i )
   {
@@ -2068,13 +2118,28 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
     if ( ringGeom.isNull() )
       continue;
 
-    if ( ringGeom.type() != QgsWkbTypes::LineGeometry || ringGeom.isMultipart() || ringGeom.isNull() )
+    if ( ringGeom.type() != QgsWkbTypes::LineGeometry || ringGeom.isNull() )
       continue;
 
-    polygon->addInteriorRing( qgsgeometry_cast< QgsCurve * >( ringGeom.constGet()->clone() ) );
+    const QgsCurve *ring = qgsgeometry_cast< QgsCurve * >( ringGeom.constGet() );
+    if ( !ring && ringGeom.isMultipart() )
+    {
+      if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( ringGeom.constGet() ) )
+      {
+        if ( collection->numGeometries() == 1 )
+        {
+          ring = qgsgeometry_cast< QgsCurve * >( collection->geometryN( 0 ) );
+        }
+      }
+    }
+
+    if ( !ring )
+      continue;
+
+    polygon->addInteriorRing( ring->segmentize() );
   }
 
-  return QVariant::fromValue( QgsGeometry( polygon ) );
+  return QVariant::fromValue( QgsGeometry( std::move( polygon ) ) );
 }
 
 static QVariant fcnMakeTriangle( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -2093,6 +2158,17 @@ static QVariant fcnMakeTriangle( const QVariantList &values, const QgsExpression
       return QVariant();
 
     const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom.constGet() );
+    if ( !point && geom.isMultipart() )
+    {
+      if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() ) )
+      {
+        if ( collection->numGeometries() == 1 )
+        {
+          point = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) );
+        }
+      }
+    }
+
     if ( !point )
       return QVariant();
 
@@ -2122,6 +2198,19 @@ static QVariant fcnMakeCircle( const QVariantList &values, const QgsExpressionCo
     return QVariant();
   }
   const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom.constGet() );
+  if ( !point && geom.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() ) )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        point = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) );
+      }
+    }
+  }
+  if ( !point )
+    return QVariant();
+
   QgsCircle circ( *point, radius );
   return QVariant::fromValue( QgsGeometry( circ.toPolygon( segment ) ) );
 }
@@ -2145,6 +2234,19 @@ static QVariant fcnMakeEllipse( const QVariantList &values, const QgsExpressionC
     return QVariant();
   }
   const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( geom.constGet() );
+  if ( !point && geom.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() ) )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        point = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) );
+      }
+    }
+  }
+  if ( !point )
+    return QVariant();
+
   QgsEllipse elp( *point, majorAxis,  minorAxis, azimuth );
   return QVariant::fromValue( QgsGeometry( elp.toPolygon( segment ) ) );
 }
@@ -2179,8 +2281,34 @@ static QVariant fcnMakeRegularPolygon( const QVariantList &values, const QgsExpr
     parent->setEvalErrorString( QObject::tr( "Option can be 0 (inscribed) or 1 (circumscribed)" ) );
     return QVariant();
   }
+
   const QgsPoint *center = qgsgeometry_cast< const QgsPoint * >( pt1.constGet() );
+  if ( !center && pt1.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( pt1.constGet() ) )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        center = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) );
+      }
+    }
+  }
+  if ( !center )
+    return QVariant();
+
   const QgsPoint *corner = qgsgeometry_cast< const QgsPoint * >( pt2.constGet() );
+  if ( !corner && pt2.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( pt2.constGet() ) )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        corner = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) );
+      }
+    }
+  }
+  if ( !corner )
+    return QVariant();
 
   QgsRegularPolygon rp = QgsRegularPolygon( *center, *corner, nbEdges, option );
 
@@ -2461,6 +2589,17 @@ static QVariant fcnIsClosed( const QVariantList &values, const QgsExpressionCont
     return QVariant();
 
   const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( fGeom.constGet() );
+  if ( !curve && fGeom.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( fGeom.constGet() ) )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        curve = qgsgeometry_cast< const QgsCurve * >( collection->geometryN( 0 ) );
+      }
+    }
+  }
+
   if ( !curve )
     return QVariant();
 
@@ -2563,6 +2702,17 @@ static QVariant fcnWedgeBuffer( const QVariantList &values, const QgsExpressionC
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   const QgsPoint *pt = qgsgeometry_cast<const QgsPoint *>( fGeom.constGet() );
+  if ( !pt && fGeom.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( fGeom.constGet() ) )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        pt = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) );
+      }
+    }
+  }
+
   if ( !pt )
   {
     parent->setEvalErrorString( QObject::tr( "Function `wedge_buffer` requires a point value for the center." ) );
@@ -2766,6 +2916,17 @@ static QVariant fcnExteriorRing( const QVariantList &values, const QgsExpression
     return QVariant();
 
   const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( fGeom.constGet() );
+  if ( !curvePolygon && fGeom.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( fGeom.constGet() ) )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( collection->geometryN( 0 ) );
+      }
+    }
+  }
+
   if ( !curvePolygon || !curvePolygon->exteriorRing() )
     return QVariant();
 
@@ -2850,7 +3011,28 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
   QgsGeometry fGeom2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
 
   const QgsPoint *pt1 = qgsgeometry_cast<const QgsPoint *>( fGeom1.constGet() );
+  if ( !pt1 && fGeom1.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( fGeom1.constGet() ) )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        pt1 = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) );
+      }
+    }
+  }
+
   const QgsPoint *pt2 = qgsgeometry_cast<const QgsPoint *>( fGeom2.constGet() );
+  if ( !pt2 && fGeom2.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( fGeom2.constGet() ) )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        pt2 = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) );
+      }
+    }
+  }
 
   if ( !pt1 || !pt2 )
   {
@@ -2933,7 +3115,27 @@ static QVariant fcnInclination( const QVariantList &values, const QgsExpressionC
   QgsGeometry fGeom2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
 
   const QgsPoint *pt1 = qgsgeometry_cast<const QgsPoint *>( fGeom1.constGet() );
+  if ( !pt1 && fGeom1.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( fGeom1.constGet() ) )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        pt1 = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) );
+      }
+    }
+  }
   const QgsPoint *pt2 = qgsgeometry_cast<const QgsPoint *>( fGeom2.constGet() );
+  if ( !pt2 && fGeom2.isMultipart() )
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( fGeom2.constGet() ) )
+    {
+      if ( collection->numGeometries() == 1 )
+      {
+        pt2 = qgsgeometry_cast< const QgsPoint * >( collection->geometryN( 0 ) );
+      }
+    }
+  }
 
   if ( ( fGeom1.type() != QgsWkbTypes::PointGeometry ) || ( fGeom2.type() != QgsWkbTypes::PointGeometry ) ||
        !pt1 || !pt2 )
