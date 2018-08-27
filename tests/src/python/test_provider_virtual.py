@@ -879,7 +879,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(tl1.fields()), 4)
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(tl1)
         self.assertEqual(df.query(), 'SELECT t.rowid AS uid, t."id", t."e_id", t."0name", j1."ena me" AS "E_ena me" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."e_id"=j1."id"'.format(tl1.id(), tl2.id()))
-        
+
         QgsProject.instance().removeMapLayers([v1.id(), v2.id(), v3.id(), tl1.id(), tl2.id()])
 
     def testFieldsWithSpecialCharacters(self):
