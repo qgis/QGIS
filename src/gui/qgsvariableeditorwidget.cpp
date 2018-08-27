@@ -360,8 +360,9 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope *sc
 
     item->setFlags( item->flags() | Qt::ItemIsEnabled );
     item->setText( 0, name );
-    QString value = scope->variable( name ).toString();
-    item->setText( 1, value );
+    const QVariant value = scope->variable( name );
+    const QString previewString = QgsExpression::formatPreviewString( value, false );
+    item->setText( 1, previewString );
     QFont font = item->font( 0 );
     if ( readOnly || !isCurrent )
     {
@@ -385,7 +386,7 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope *sc
     {
       font.setStrikeOut( false );
       item->setToolTip( 0, name );
-      item->setToolTip( 1, value );
+      item->setToolTip( 1, previewString );
     }
     item->setFont( 0, font );
     item->setFont( 1, font );
