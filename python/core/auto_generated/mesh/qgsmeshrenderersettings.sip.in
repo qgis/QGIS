@@ -105,6 +105,15 @@ Returns max value used for creation of the color ramp shader
 Sets min/max values used for creation of the color ramp shader
 %End
 
+    double opacity() const;
+%Docstring
+Returns opacity
+%End
+    void setOpacity( double opacity );
+%Docstring
+Sets opacity
+%End
+
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Writes configuration to a new DOM element

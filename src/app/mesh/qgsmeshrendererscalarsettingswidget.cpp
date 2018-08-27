@@ -33,7 +33,7 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
   connect( mScalarMinLineEdit, &QLineEdit::textEdited, this, &QgsMeshRendererScalarSettingsWidget::minMaxEdited );
   connect( mScalarMaxLineEdit, &QLineEdit::textEdited, this, &QgsMeshRendererScalarSettingsWidget::minMaxEdited );
   connect( mScalarColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
-
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
 }
 
 void QgsMeshRendererScalarSettingsWidget::setLayer( QgsMeshLayer *layer )
@@ -46,6 +46,7 @@ QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() co
   QgsMeshRendererScalarSettings settings;
   settings.setColorRampShader( mScalarColorRampShaderWidget->shader() );
   settings.setClassificationMinimumMaximum( lineEditValue( mScalarMinLineEdit ), lineEditValue( mScalarMaxLineEdit ) );
+  settings.setOpacity( mOpacityWidget->opacity() );
   return settings;
 }
 
@@ -63,6 +64,7 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   whileBlocking( mScalarMinLineEdit )->setText( QString::number( settings.classificationMinimum() ) );
   whileBlocking( mScalarMaxLineEdit )->setText( QString::number( settings.classificationMaximum() ) );
   whileBlocking( mScalarColorRampShaderWidget )->setFromShader( shader );
+  whileBlocking( mOpacityWidget )->setOpacity( settings.opacity() );
 }
 
 double QgsMeshRendererScalarSettingsWidget::lineEditValue( const QLineEdit *lineEdit ) const

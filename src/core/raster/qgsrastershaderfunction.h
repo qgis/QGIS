@@ -71,7 +71,7 @@ class CORE_EXPORT QgsRasterShaderFunction
      * \param returnRedValue The red component of the new RGBA value
      * \param returnGreenValue The green component of the new RGBA value
      * \param returnBlueValue The blue component of the new RGBA value
-     * \param returnAlpha The blue component of the new RGBA value
+     * \param returnAlpha The alpha component of the new RGBA value
      * \return True if the return values are valid otherwise false
     */
     virtual bool shade( double value,
