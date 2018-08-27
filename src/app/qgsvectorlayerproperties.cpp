@@ -438,6 +438,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   {
     mRemoveDuplicateNodesCheckbox->setEnabled( false );
     mGeometryPrecisionSpinBox->setEnabled( false );
+    mGeometryAutoFixesGroupBox->setEnabled( false );
   }
 
   optionsStackedWidget_CurrentChanged( mOptStackedWidget->currentIndex() );

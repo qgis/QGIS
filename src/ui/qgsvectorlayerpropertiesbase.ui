@@ -2358,7 +2358,7 @@ border-radius: 2px;</string>
             <number>0</number>
            </property>
            <item row="0" column="0">
-            <widget class="QGroupBox" name="groupBox">
+            <widget class="QGroupBox" name="mGeometryAutoFixesGroupBox">
              <property name="title">
               <string>Automatic Fixes</string>
              </property>
