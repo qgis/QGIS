@@ -33,7 +33,6 @@ from qgis.core import (QgsFeatureSink,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterNumber,
                        QgsProcessingParameterEnum)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
