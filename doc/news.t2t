@@ -84,7 +84,7 @@ This release has following new features:
 - Processing: Feature filter algorithm for processing models
 - Processing: Zonal histogram
 - Processing: Port Union, Difference and Intersection algorithms to C++
-- Processing: 'Project points (cartesian)' algorithm
+- Processing: 'Project points (Cartesian)' algorithm
 - Processing: Dynamic parameter values for more algorithms
 - Processing: Multi-ring buffer (constant distance) algorithm
 - Processing: New "segmentize" algorithms

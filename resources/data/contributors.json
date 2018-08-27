@@ -88,7 +88,7 @@
       "properties": {
         "Name": "Tisham Dhar",
         "Committer": "Yes",
-        "First Commit Message": "MINGW/MSYS based intial windows builds/installers",
+        "First Commit Message": "MINGW/MSYS based initial windows builds/installers",
         "First Commit Date": "05-02-2008",
         "GIT Nickname": "whatnick"
       },
@@ -326,7 +326,7 @@
       "properties": {
         "Name": "Mathieu Pellerin",
         "Committer": "Yes",
-        "First Commit Message": "[labelling] set fill rule of qpainterpath for text/buffer rendering",
+        "First Commit Message": "[labeling] set fill rule of qpainterpath for text/buffer rendering",
         "First Commit Date": "04-09-2015",
         "GIT Nickname": "nirvn"
       },
