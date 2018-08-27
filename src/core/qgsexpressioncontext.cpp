@@ -1005,7 +1005,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
     layersIds << layer->id();
     layers << QVariant::fromValue<QgsWeakMapLayerPointer>( QgsWeakMapLayerPointer( layer ) );
   }
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layers_ids" ), layersIds, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layer_ids" ), layersIds, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layers" ), layers, true ) );
 
   scope->addFunction( QStringLiteral( "is_layer_visible" ), new GetLayerVisibility( mapSettings.layers() ) );
