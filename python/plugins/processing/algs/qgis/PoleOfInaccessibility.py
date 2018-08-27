@@ -36,7 +36,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingException,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSink)
 
 from qgis.PyQt.QtCore import QVariant
