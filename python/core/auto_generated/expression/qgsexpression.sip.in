@@ -561,14 +561,15 @@ Returns the translated name for a function group.
 :param group: untranslated group name
 %End
 
-    static QString formatPreviewString( const QVariant &value );
+    static QString formatPreviewString( const QVariant &value, bool htmlOutput = true );
 %Docstring
 Formats an expression result for friendly display to the user. Truncates the result to a sensible
 length, and presents text representations of non numeric/text types (e.g., geometries and features).
 
 :param value: expression result to format
+:param htmlOutput: set to true to allow HTML formatting, or false for plain text output
 
-:return: formatted string, may contain HTML formatting characters
+:return: formatted string, may contain HTML formatting characters if ``htmlOutput`` is true
 
 .. versionadded:: 2.14
 %End

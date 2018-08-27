@@ -843,68 +843,72 @@ QString QgsExpression::group( const QString &name )
   return sGroups.value( name, name );
 }
 
-QString QgsExpression::formatPreviewString( const QVariant &value )
+QString QgsExpression::formatPreviewString( const QVariant &value, const bool htmlOutput )
 {
   static const int MAX_PREVIEW = 60;
+
+  const QString startToken = htmlOutput ? QStringLiteral( "<i>&lt;" ) : QStringLiteral( "<" );
+  const QString endToken = htmlOutput ? QStringLiteral( "&gt;</i>" ) : QStringLiteral( ">" );
 
   if ( value.canConvert<QgsGeometry>() )
   {
     //result is a geometry
     QgsGeometry geom = value.value<QgsGeometry>();
     if ( geom.isNull() )
-      return tr( "<i>&lt;empty geometry&gt;</i>" );
+      return startToken + tr( "empty geometry" ) + endToken;
     else
-      return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWkbTypes::displayString( geom.constGet()->wkbType() ) );
+      return startToken + tr( "geometry: %1" ).arg( QgsWkbTypes::displayString( geom.constGet()->wkbType() ) )
+             + endToken;
   }
   else if ( value.value< QgsWeakMapLayerPointer >().data() )
   {
-    return tr( "<i>&lt;map layer&gt;</i>" );
+    return startToken + tr( "map layer" ) + endToken;
   }
   else if ( !value.isValid() )
   {
-    return tr( "<i>NULL</i>" );
+    return htmlOutput ? tr( "<i>NULL</i>" ) : QString();
   }
   else if ( value.canConvert< QgsFeature >() )
   {
     //result is a feature
     QgsFeature feat = value.value<QgsFeature>();
-    return tr( "<i>&lt;feature: %1&gt;</i>" ).arg( feat.id() );
+    return startToken + tr( "feature: %1" ).arg( feat.id() ) + endToken;
   }
   else if ( value.canConvert< QgsInterval >() )
   {
     //result is a feature
     QgsInterval interval = value.value<QgsInterval>();
-    return tr( "<i>&lt;interval: %1 days&gt;</i>" ).arg( interval.days() );
+    return startToken + tr( "interval: %1 days" ).arg( interval.days() ) + endToken;
   }
   else if ( value.canConvert< QgsGradientColorRamp >() )
   {
-    return tr( "<i>&lt;gradient ramp&gt;</i>" );
+    return startToken + tr( "gradient ramp" ) + endToken;
   }
   else if ( value.type() == QVariant::Date )
   {
     QDate dt = value.toDate();
-    return tr( "<i>&lt;date: %1&gt;</i>" ).arg( dt.toString( QStringLiteral( "yyyy-MM-dd" ) ) );
+    return startToken + tr( "date: %1" ).arg( dt.toString( QStringLiteral( "yyyy-MM-dd" ) ) ) + endToken;
   }
   else if ( value.type() == QVariant::Time )
   {
     QTime tm = value.toTime();
-    return tr( "<i>&lt;time: %1&gt;</i>" ).arg( tm.toString( QStringLiteral( "hh:mm:ss" ) ) );
+    return startToken + tr( "time: %1" ).arg( tm.toString( QStringLiteral( "hh:mm:ss" ) ) ) + endToken;
   }
   else if ( value.type() == QVariant::DateTime )
   {
     QDateTime dt = value.toDateTime();
-    return tr( "<i>&lt;datetime: %1&gt;</i>" ).arg( dt.toString( QStringLiteral( "yyyy-MM-dd hh:mm:ss" ) ) );
+    return startToken + tr( "datetime: %1" ).arg( dt.toString( QStringLiteral( "yyyy-MM-dd hh:mm:ss" ) ) ) + endToken;
   }
   else if ( value.type() == QVariant::String )
   {
-    QString previewString = value.toString();
+    const QString previewString = value.toString();
     if ( previewString.length() > MAX_PREVIEW + 3 )
     {
       return tr( "'%1…'" ).arg( previewString.left( MAX_PREVIEW ) );
     }
     else
     {
-      return previewString.prepend( '\'' ).append( '\'' );
+      return '\'' + previewString + '\'';
     }
   }
   else if ( value.type() == QVariant::Map )
@@ -918,7 +922,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
       if ( separator.isEmpty() )
         separator = QStringLiteral( "," );
 
-      mapStr.append( QStringLiteral( " '%1': %2" ).arg( it.key(), formatPreviewString( it.value() ) ) );
+      mapStr.append( QStringLiteral( " '%1': %2" ).arg( it.key(), formatPreviewString( it.value(), htmlOutput ) ) );
       if ( mapStr.length() > MAX_PREVIEW - 3 )
       {
         mapStr = tr( "%1…" ).arg( mapStr.left( MAX_PREVIEW - 2 ) );
@@ -942,7 +946,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
         separator = QStringLiteral( "," );
 
       listStr.append( " " );
-      listStr.append( formatPreviewString( arrayValue ) );
+      listStr.append( formatPreviewString( arrayValue, htmlOutput ) );
       if ( listStr.length() > MAX_PREVIEW - 3 )
       {
         listStr = QString( tr( "%1…" ) ).arg( listStr.left( MAX_PREVIEW - 2 ) );
