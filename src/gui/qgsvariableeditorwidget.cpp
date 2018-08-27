@@ -339,7 +339,8 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope *sc
   bool isCurrent = scopeIndex == mEditableScopeIndex;
   QTreeWidgetItem *scopeItem = mScopeToItem.value( scopeIndex );
 
-  Q_FOREACH ( const QString &name, scope->filteredVariableNames() )
+  const QStringList names = scope->filteredVariableNames();
+  for ( const QString &name : names )
   {
     QTreeWidgetItem *item = mVariableToItem.value( qMakePair( scopeIndex, name ) );
     if ( !item )
@@ -720,7 +721,7 @@ void VariableEditorDelegate::setModelData( QWidget *widget, QAbstractItemModel *
     //edited variable name
     QString newName = lineEdit->text();
     newName = newName.trimmed();
-    newName = newName.replace( QStringLiteral( " " ), "_" );
+    newName = newName.replace( ' ', '_' );
 
     //test for validity
     if ( newName == variableName )
