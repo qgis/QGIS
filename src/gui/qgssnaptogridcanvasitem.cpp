@@ -37,6 +37,12 @@ void QgsSnapToGridCanvasItem::paint( QPainter *painter )
   painter->setRenderHints( QPainter::Antialiasing );
   painter->setCompositionMode( QPainter::CompositionMode_Difference );
 
+  double scaleFactor = painter->fontMetrics().xHeight() * .2;
+
+  mGridPen.setWidth( scaleFactor );
+  mCurrentPointPen.setWidth( scaleFactor * 3 );
+  const int gridMarkerLength = scaleFactor * 3;
+
   try
   {
     const QgsRectangle layerExtent = mTransform.transformBoundingBox( mapRect, QgsCoordinateTransform::ReverseTransform );
@@ -54,7 +60,7 @@ void QgsSnapToGridCanvasItem::paint( QPainter *painter )
         const QgsPointXY pt = mTransform.transform( x, y );
         const QPointF canvasPt = toCanvasCoordinates( pt );
 
-        if ( qgsDoubleNear( layerPt.x(), x, mPrecision / 3 ) && qgsDoubleNear( layerPt.y(), y, mPrecision / 3 ) )
+        if ( qgsDoubleNear( layerPt.x(), x, mPrecision / 2 ) && qgsDoubleNear( layerPt.y(), y, mPrecision / 2 ) )
         {
           painter->setPen( mCurrentPointPen );
         }
@@ -62,8 +68,8 @@ void QgsSnapToGridCanvasItem::paint( QPainter *painter )
         {
           painter->setPen( mGridPen );
         }
-        painter->drawLine( canvasPt.x() - 3, canvasPt.y(), canvasPt.x() + 3, canvasPt.y() );
-        painter->drawLine( canvasPt.x(), canvasPt.y() - 3, canvasPt.x(), canvasPt.y() + 3 );
+        painter->drawLine( canvasPt.x() - gridMarkerLength, canvasPt.y(), canvasPt.x() + gridMarkerLength, canvasPt.y() );
+        painter->drawLine( canvasPt.x(), canvasPt.y() - gridMarkerLength, canvasPt.x(), canvasPt.y() + gridMarkerLength );
 
       }
     }
