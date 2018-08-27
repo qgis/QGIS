@@ -78,17 +78,26 @@ void QgsMeshRendererScalarSettings::setColorRampShader( const QgsColorRampShader
   mColorRampShader = shader;
 }
 
+double QgsMeshRendererScalarSettings::classificationMinimum() const { return mClassificationMinimum; }
+
+double QgsMeshRendererScalarSettings::classificationMaximum() const { return mClassificationMaximum; }
+
 void QgsMeshRendererScalarSettings::setClassificationMinimumMaximum( double minimum, double maximum )
 {
   mClassificationMinimum = minimum;
   mClassificationMaximum = maximum;
 }
 
+double QgsMeshRendererScalarSettings::opacity() const { return mOpacity; }
+
+void QgsMeshRendererScalarSettings::setOpacity( double opacity ) { mOpacity = opacity; }
+
 QDomElement QgsMeshRendererScalarSettings::writeXml( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( "scalar-settings" );
   elem.setAttribute( "min-val", mClassificationMinimum );
   elem.setAttribute( "max-val", mClassificationMaximum );
+  elem.setAttribute( "opacity", mOpacity );
   QDomElement elemShader = mColorRampShader.writeXml( doc );
   elem.appendChild( elemShader );
   return elem;
@@ -98,6 +107,7 @@ void QgsMeshRendererScalarSettings::readXml( const QDomElement &elem )
 {
   mClassificationMinimum = elem.attribute( "min-val" ).toDouble();
   mClassificationMaximum = elem.attribute( "max-val" ).toDouble();
+  mOpacity = elem.attribute( "opacity" ).toDouble();
   QDomElement elemShader = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
   mColorRampShader.readXml( elemShader );
 }
