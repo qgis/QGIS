@@ -291,7 +291,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="titleBox">
                  <property name="title">
-                  <string>General settings</string>
+                  <string>General Settings</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
@@ -625,7 +625,7 @@
                   </sizepolicy>
                  </property>
                  <property name="title">
-                  <string>Coordinate display</string>
+                  <string>Coordinate Display</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
@@ -709,7 +709,7 @@
                   </sizepolicy>
                  </property>
                  <property name="title">
-                  <string>Project predefined scales</string>
+                  <string>Project Predefined Scales</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -807,6 +807,13 @@
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_4">
                   <item>
+                   <widget class="QLabel" name="sourceLanguageLabel">
+                    <property name="text">
+                     <string>Source language</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
                    <widget class="QComboBox" name="cbtsLocale"/>
                   </item>
                   <item>
@@ -891,7 +898,7 @@
                <item>
                 <widget class="QGroupBox" name="mDatumTransformGroupBox">
                  <property name="title">
-                  <string>Datum transformations</string>
+                  <string>Datum Transformations</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_2">
                   <item row="0" column="0">
@@ -943,15 +950,15 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>285</width>
-                <height>638</height>
+                <width>685</width>
+                <height>778</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox">
                  <property name="title">
-                  <string>Default symbols</string>
+                  <string>Default Symbols</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projstyles</string>
@@ -1239,7 +1246,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_7">
                  <property name="title">
-                  <string>Project colors</string>
+                  <string>Project Colors</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
                   <item row="2" column="1">
@@ -1401,7 +1408,7 @@
                   </size>
                  </property>
                  <property name="title">
-                  <string>Project layers</string>
+                  <string>Project Layers</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_22">
                   <item>
@@ -1475,7 +1482,7 @@
            <item row="4" column="0" colspan="2">
             <widget class="QgsCollapsibleGroupBox" name="groupBox_5">
              <property name="title">
-              <string>Required layers</string>
+              <string>Required Layers</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_19">
               <item row="0" column="0" colspan="2">
@@ -1573,7 +1580,7 @@
                <item>
                 <widget class="QGroupBox" name="grpPythonMacros">
                  <property name="title">
-                  <string>Python macros</string>
+                  <string>Python Macros</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -1635,7 +1642,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="grpOWSServiceCapabilities">
                  <property name="title">
-                  <string>Service capabilities</string>
+                  <string>Service Capabilities</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -2518,14 +2525,14 @@
                   <item row="1" column="1">
                    <widget class="QPushButton" name="pbnWFSLayersDeselectAll">
                     <property name="text">
-                     <string>Deselect all</string>
+                     <string>Deselect All</string>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="0">
                    <widget class="QPushButton" name="pbnWFSLayersSelectAll">
                     <property name="text">
-                     <string>Select all</string>
+                     <string>Select All</string>
                     </property>
                    </widget>
                   </item>
@@ -2584,14 +2591,14 @@
                   <item row="1" column="1">
                    <widget class="QPushButton" name="pbnWCSLayersDeselectAll">
                     <property name="text">
-                     <string>Deselect all</string>
+                     <string>Deselect All</string>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="0">
                    <widget class="QPushButton" name="pbnWCSLayersSelectAll">
                     <property name="text">
-                     <string>Select all</string>
+                     <string>Select All</string>
                     </property>
                    </widget>
                   </item>
@@ -2621,7 +2628,7 @@
                   </sizepolicy>
                  </property>
                  <property name="title">
-                  <string>Test configuration</string>
+                  <string>Test Configuration</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_24">
                   <item>
@@ -2921,6 +2928,7 @@
   <tabstop>teOWSChecker</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>

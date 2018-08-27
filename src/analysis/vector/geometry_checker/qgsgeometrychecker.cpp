@@ -65,9 +65,9 @@ QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
     {
       for ( auto it = mContext->featurePools.constBegin(); it != mContext->featurePools.constEnd(); ++it )
       {
-        if ( check->getCheckType() <= QgsGeometryCheck::FeatureCheck )
+        if ( check->checkType() <= QgsGeometryCheck::FeatureCheck )
         {
-          *totalSteps += check->getCompatibility( it.value()->getLayer()->geometryType() ) ? it.value()->getFeatureIds().size() : 0;
+          *totalSteps += check->isCompatible( it.value()->getLayer()->geometryType() ) ? it.value()->getFeatureIds().size() : 0;
         }
         else
         {
@@ -170,7 +170,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   // - Determine extent to recheck for gaps
   for ( QgsGeometryCheckError *err : qgis::as_const( mCheckErrors ) )
   {
-    if ( err->check()->getCheckType() == QgsGeometryCheck::LayerCheck )
+    if ( err->check()->checkType() == QgsGeometryCheck::LayerCheck )
     {
       if ( err->affectedAreaBBox().intersects( recheckArea ) )
       {
@@ -191,7 +191,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   QList<QgsGeometryCheckError *> recheckErrors;
   for ( const QgsGeometryCheck *check : qgis::as_const( mChecks ) )
   {
-    if ( check->getCheckType() == QgsGeometryCheck::LayerCheck )
+    if ( check->checkType() == QgsGeometryCheck::LayerCheck )
     {
       if ( !recheckAreaFeatures.isEmpty() )
       {
@@ -246,9 +246,9 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
            // changes weren't handled
            !handled ||
            // or if it is a FeatureNodeCheck or FeatureCheck error whose feature was rechecked
-           ( err->check()->getCheckType() <= QgsGeometryCheck::FeatureCheck && recheckFeatures[err->layerId()].contains( err->featureId() ) ) ||
+           ( err->check()->checkType() <= QgsGeometryCheck::FeatureCheck && recheckFeatures[err->layerId()].contains( err->featureId() ) ) ||
            // or if it is a LayerCheck error within the rechecked area
-           ( err->check()->getCheckType() == QgsGeometryCheck::LayerCheck && recheckArea.contains( err->affectedAreaBBox() ) )
+           ( err->check()->checkType() == QgsGeometryCheck::LayerCheck && recheckArea.contains( err->affectedAreaBBox() ) )
          )
        )
     {

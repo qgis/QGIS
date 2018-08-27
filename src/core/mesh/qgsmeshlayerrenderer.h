@@ -34,6 +34,7 @@ class QgsSymbol;
 #include "qgstriangularmesh.h"
 #include "qgsmeshlayer.h"
 #include "qgssymbol.h"
+#include "qgsmeshdataprovider.h"
 
 ///@cond PRIVATE
 
@@ -69,7 +70,6 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     void renderVectorDataset();
     void copyScalarDatasetValues( QgsMeshLayer *layer );
     void copyVectorDatasetValues( QgsMeshLayer *layer );
-
     void createMeshSymbol( std::unique_ptr<QgsSymbol> &symbol, const QgsMeshRendererMeshSettings &settings );
     void calculateOutputSize();
 
@@ -85,6 +85,7 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
 
     // copy of the scalar dataset
     QVector<double> mScalarDatasetValues;
+    QVector<bool> mScalarActiveFaceFlagValues;
     bool mScalarDataOnVertices = true;
     double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
     double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();

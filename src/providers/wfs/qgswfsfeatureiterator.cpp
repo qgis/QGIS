@@ -1111,6 +1111,14 @@ void QgsWFSFeatureIterator::checkInterruption()
   }
 }
 
+void QgsWFSFeatureIterator::timeout()
+{
+  mTimeoutOccurred = true;
+  mDownloadFinished = true;
+  if ( mLoop )
+    mLoop->quit();
+}
+
 bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
 {
   f.setValid( false );
@@ -1123,6 +1131,9 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
   while ( mCacheIterator.nextFeature( cachedFeature ) )
   {
     if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
+      return false;
+
+    if ( mTimeoutOccurred )
       return false;
 
     //QgsDebugMsg(QString("QgsWFSSharedData::fetchFeature() : mCacheIterator.nextFeature(cachedFeature)") );
@@ -1279,6 +1290,12 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
     mLoop = &loop;
     QTimer timer( this );
     timer.start( 50 );
+    QTimer requestTimeout( this );
+    if ( mRequest.timeout() > 0 )
+    {
+      connect( &requestTimeout, &QTimer::timeout, this, &QgsWFSFeatureIterator::timeout );
+      requestTimeout.start( mRequest.timeout() );
+    }
     if ( mInterruptionChecker )
       connect( &timer, &QTimer::timeout, this, &QgsWFSFeatureIterator::checkInterruption );
     loop.exec( QEventLoop::ExcludeUserInputEvents );

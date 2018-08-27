@@ -190,6 +190,8 @@ class TestQgsServerWFS(QgsServerTestBase):
         )
 
     def test_getfeature_post(self):
+        tests = []
+
         template = """<?xml version="1.0" encoding="UTF-8"?>
 <wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
   <wfs:Query typeName="testlayer" xmlns:feature="http://www.qgis.org/gml">
@@ -205,8 +207,6 @@ class TestQgsServerWFS(QgsServerTestBase):
   </wfs:Query>
 </wfs:GetFeature>
 """
-
-        tests = []
         tests.append(('nobbox_post', template.format("")))
         tests.append(('startindex2_post', template.format('startIndex="2"')))
         tests.append(('limit2_post', template.format('maxFeatures="2"')))
@@ -306,6 +306,41 @@ class TestQgsServerWFS(QgsServerTestBase):
 </wfs:GetFeature>
 """
         tests.append(('bbox_inside_and_post', andBboxTemplate.format("")))
+
+        # With namespace
+        template = """<?xml version="1.0" encoding="UTF-8"?>
+<wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+  <wfs:Query typeName="feature:testlayer" xmlns:feature="http://www.qgis.org/gml">
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:BBOX>
+        <ogc:PropertyName>geometry</ogc:PropertyName>
+        <gml:Envelope xmlns:gml="http://www.opengis.net/gml">
+          <gml:lowerCorner>8 44</gml:lowerCorner>
+          <gml:upperCorner>9 45</gml:upperCorner>
+        </gml:Envelope>
+      </ogc:BBOX>
+    </ogc:Filter>
+  </wfs:Query>
+</wfs:GetFeature>
+"""
+        tests.append(('nobbox_post', template.format("")))
+
+        template = """<?xml version="1.0" encoding="UTF-8"?>
+<wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+  <wfs:Query typeName="testlayer" xmlns="http://www.qgis.org/gml">
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:BBOX>
+        <ogc:PropertyName>geometry</ogc:PropertyName>
+        <gml:Envelope xmlns:gml="http://www.opengis.net/gml">
+          <gml:lowerCorner>8 44</gml:lowerCorner>
+          <gml:upperCorner>9 45</gml:upperCorner>
+        </gml:Envelope>
+      </ogc:BBOX>
+    </ogc:Filter>
+  </wfs:Query>
+</wfs:GetFeature>
+"""
+        tests.append(('nobbox_post', template.format("")))
 
         for id, req in tests:
             self.wfs_getfeature_post_compare(id, req)

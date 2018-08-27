@@ -104,8 +104,8 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid buster stretch"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"artful bionic cosmic"))
-# Only on ubuntu - Qt3DExtras intentionally removed from debian (#895386)
+ifneq (,$(findstring $(DISTRIBUTION),"bionic"))
+# Only on bionic - Qt3DExtras intentionally removed from debian (#895386) and in turn ubuntu
 	CMAKE_OPTS += \
 		-DWITH_3D=TRUE \
 		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so

@@ -102,7 +102,7 @@ void QgsGeometryDangleCheck::fixError( QgsGeometryCheckError *error, int method,
   }
 }
 
-QStringList QgsGeometryDangleCheck::getResolutionMethods() const
+QStringList QgsGeometryDangleCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;

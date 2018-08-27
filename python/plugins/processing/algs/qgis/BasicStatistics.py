@@ -36,6 +36,7 @@ from qgis.core import (QgsApplication,
                        QgsStringStatisticalSummary,
                        QgsDateTimeStatisticalSummary,
                        QgsFeatureRequest,
+                       QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
@@ -49,7 +50,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class BasicStatisticsForField(QgisAlgorithm):
-
     INPUT_LAYER = 'INPUT_LAYER'
     FIELD_NAME = 'FIELD_NAME'
     OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
@@ -82,8 +82,9 @@ class BasicStatisticsForField(QgisAlgorithm):
         return QgsApplication.iconPath("/algorithms/mAlgorithmBasicStatistics.svg")
 
     def tags(self):
-        return self.tr('stats,statistics,date,time,datetime,string,number,text,table,layer,sum,maximum,minimum,mean,average,standard,deviation,'
-                       'count,distinct,unique,variance,median,quartile,range,majority,minority,summary').split(',')
+        return self.tr(
+            'stats,statistics,date,time,datetime,string,number,text,table,layer,sum,maximum,minimum,mean,average,standard,deviation,'
+            'count,distinct,unique,variance,median,quartile,range,majority,minority,summary').split(',')
 
     def group(self):
         return self.tr('Vector analysis')
@@ -96,13 +97,15 @@ class BasicStatisticsForField(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
-                                                              self.tr('Input layer')))
+                                                              self.tr('Input layer'),
+                                                              types=[QgsProcessing.TypeVector]))
 
         self.addParameter(QgsProcessingParameterField(self.FIELD_NAME,
                                                       self.tr('Field to calculate statistics on'),
                                                       None, self.INPUT_LAYER, QgsProcessingParameterField.Any))
 
-        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('Statistics'), self.tr('HTML files (*.html)'), None, True))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('Statistics'),
+                                                                self.tr('HTML files (*.html)'), None, True))
 
         self.addOutput(QgsProcessingOutputNumber(self.COUNT, self.tr('Count')))
         self.addOutput(QgsProcessingOutputNumber(self.UNIQUE, self.tr('Number of unique values')))
@@ -141,7 +144,8 @@ class BasicStatisticsForField(QgisAlgorithm):
 
         output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
 
-        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([field_name], source.fields())
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([field_name],
+                                                                                                   source.fields())
         features = source.getFeatures(request, QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         count = source.featureCount()
 
@@ -267,8 +271,10 @@ class BasicStatisticsForField(QgisAlgorithm):
         data.append(self.tr('Count: {}').format(count))
         data.append(self.tr('Unique values: {}').format(stat.countDistinct()))
         data.append(self.tr('NULL (missing) values: {}').format(stat.countMissing()))
-        data.append(self.tr('Minimum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Min))))
-        data.append(self.tr('Maximum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Max))))
+        data.append(
+            self.tr('Minimum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Min))))
+        data.append(
+            self.tr('Maximum value: {}').format(field.displayString(stat.statistic(QgsDateTimeStatisticalSummary.Max))))
 
         return data, results
 

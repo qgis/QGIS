@@ -183,6 +183,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     SIP_END
 #endif
 
+
     Q_OBJECT
     Q_PROPERTY( bool locked READ isLocked WRITE setLocked NOTIFY lockChanged )
 

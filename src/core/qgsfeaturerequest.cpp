@@ -85,7 +85,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mOrderBy = rh.mOrderBy;
   mCrs = rh.mCrs;
   mTransformErrorCallback = rh.mTransformErrorCallback;
-  mConnectionTimeout = rh.mConnectionTimeout;
+  mTimeout = rh.mTimeout;
   mRequestMayBeNested = rh.mRequestMayBeNested;
   return *this;
 }
@@ -291,12 +291,23 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
 
 int QgsFeatureRequest::connectionTimeout() const
 {
-  return mConnectionTimeout;
+  return mTimeout;
 }
 
 QgsFeatureRequest &QgsFeatureRequest::setConnectionTimeout( int connectionTimeout )
 {
-  mConnectionTimeout = connectionTimeout;
+  mTimeout = connectionTimeout;
+  return *this;
+}
+
+int QgsFeatureRequest::timeout() const
+{
+  return mTimeout;
+}
+
+QgsFeatureRequest &QgsFeatureRequest::setTimeout( int timeout )
+{
+  mTimeout = timeout;
   return *this;
 }
 

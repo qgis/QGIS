@@ -41,7 +41,7 @@ void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError *
         {
           QgsPoint pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
           QgsPoint pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
-          double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
+          double dist = pi.distance( pj );
           // Don't report very small lengths, they are either duplicate nodes or degenerate geometries
           if ( dist < minLength && dist > mContext->tolerance )
           {
@@ -85,7 +85,7 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError *error, int 
 
   QgsPoint pi = geom->vertexAt( error->vidx() );
   QgsPoint pj = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + nVerts ) % nVerts ) );
-  double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
+  double dist = pi.distance( pj );
   double layerToMapUnits = featurePool->getLayerToMapUnits();
   double minLength = mMinLengthMapUnits / layerToMapUnits;
   if ( dist >= minLength )
@@ -105,7 +105,7 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError *error, int 
   }
 }
 
-QStringList QgsGeometrySegmentLengthCheck::getResolutionMethods() const
+QStringList QgsGeometrySegmentLengthCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;

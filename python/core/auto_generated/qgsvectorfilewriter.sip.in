@@ -229,6 +229,7 @@ Creates a clone of the FieldValueConverter.
       AppendToLayerAddFields
     };
 
+
     static QgsVectorFileWriter::WriterError writeAsVectorFormat( QgsVectorLayer *layer,
         const QString &fileName,
         const QString &fileEncoding,
@@ -250,7 +251,7 @@ Creates a clone of the FieldValueConverter.
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = 0
                                                                );
 %Docstring
-Write contents of vector layer to an (OGR supported) vector formt
+Write contents of vector layer to an (OGR supported) vector format
 
 :param layer: layer to write
 :param fileName: file name to write to
@@ -273,6 +274,7 @@ Write contents of vector layer to an (OGR supported) vector formt
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
 %End
+
 
     static QgsVectorFileWriter::WriterError writeAsVectorFormat( QgsVectorLayer *layer,
         const QString &fileName,
@@ -321,7 +323,6 @@ Writes a layer out to a vector file.
 
 .. versionadded:: 2.2
 %End
-
 
     class SaveVectorOptions
 {
@@ -379,11 +380,13 @@ Constructor
         QgsFeedback *feedback;
     };
 
+
     static QgsVectorFileWriter::WriterError writeAsVectorFormat( QgsVectorLayer *layer,
         const QString &fileName,
         const QgsVectorFileWriter::SaveVectorOptions &options,
         QString *newFilename = 0,
-        QString *errorMessage /Out/ = 0 );
+        QString *errorMessage /Out/ = 0
+                                                               );
 %Docstring
 Writes a layer out to a vector file.
 
@@ -407,9 +410,6 @@ Writes a layer out to a vector file.
                          QString *newFilename = 0,
                          QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology
                        );
-%Docstring
-Create a new vector file writer
-%End
 
 
 

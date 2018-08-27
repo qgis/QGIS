@@ -36,7 +36,7 @@ Item {
     visible: height !== 0
     anchors.left: parent.left
     anchors.right: parent.right
-    font.pointSize: 14 * QgsQuick.Utils.dp
+    font.pointSize: 28
 
     text: value || ''
 
@@ -72,6 +72,8 @@ Item {
     visible: height !== 0
     anchors.left: parent.left
     anchors.right: parent.right
+    font.pointSize: 28
+    wrapMode: "WordWrap"
 
     text: value || ''
     textFormat: config['UseHtml'] ? TextEdit.RichText : TextEdit.PlainText

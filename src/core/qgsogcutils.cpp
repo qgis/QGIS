@@ -2145,7 +2145,7 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &exp, QD
                                     QStringLiteral( "geometry" ), QString(), false, false, errorMessage );
 }
 
-QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &exp,
+QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &expression,
     QDomDocument &doc,
     GMLVersion gmlVersion,
     FilterVersion filterVersion,
@@ -2155,11 +2155,15 @@ QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &exp,
     bool invertAxisOrientation,
     QString *errorMessage )
 {
-  if ( !exp.rootNode() )
+  if ( !expression.rootNode() )
     return QDomElement();
 
+  QgsExpression exp = expression;
+
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope();
   QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, geometryName, srsName, honourAxisOrientation, invertAxisOrientation );
-  QDomElement exprRootElem = utils.expressionNodeToOgcFilter( exp.rootNode() );
+  QDomElement exprRootElem = utils.expressionNodeToOgcFilter( exp.rootNode(), &exp, &context );
   if ( errorMessage )
     *errorMessage = utils.errorMessage();
   if ( exprRootElem.isNull() )
@@ -2182,7 +2186,7 @@ QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &exp,
   return filterElem;
 }
 
-QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &exp,
+QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &expression,
     QDomDocument &doc,
     GMLVersion gmlVersion,
     FilterVersion filterVersion,
@@ -2192,6 +2196,11 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &exp,
     bool invertAxisOrientation,
     QString *errorMessage )
 {
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope();
+
+  QgsExpression exp = expression;
+
   const QgsExpressionNode *node = exp.rootNode();
   if ( !node )
     return QDomElement();
@@ -2203,7 +2212,7 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &exp,
     case QgsExpressionNode::ntColumnRef:
     {
       QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, geometryName, srsName, honourAxisOrientation, invertAxisOrientation );
-      QDomElement exprRootElem = utils.expressionNodeToOgcFilter( node );
+      QDomElement exprRootElem = utils.expressionNodeToOgcFilter( node, &exp, &context );
 
       if ( errorMessage )
         *errorMessage = utils.errorMessage();
@@ -2266,22 +2275,22 @@ QDomElement QgsOgcUtils::SQLStatementToOgcFilter( const QgsSQLStatement &stateme
 //
 
 
-QDomElement QgsOgcUtilsExprToFilter::expressionNodeToOgcFilter( const QgsExpressionNode *node )
+QDomElement QgsOgcUtilsExprToFilter::expressionNodeToOgcFilter( const QgsExpressionNode *node, QgsExpression *expression, const QgsExpressionContext *context )
 {
   switch ( node->nodeType() )
   {
     case QgsExpressionNode::ntUnaryOperator:
-      return expressionUnaryOperatorToOgcFilter( static_cast<const QgsExpressionNodeUnaryOperator *>( node ) );
+      return expressionUnaryOperatorToOgcFilter( static_cast<const QgsExpressionNodeUnaryOperator *>( node ), expression, context );
     case QgsExpressionNode::ntBinaryOperator:
-      return expressionBinaryOperatorToOgcFilter( static_cast<const QgsExpressionNodeBinaryOperator *>( node ) );
+      return expressionBinaryOperatorToOgcFilter( static_cast<const QgsExpressionNodeBinaryOperator *>( node ), expression, context );
     case QgsExpressionNode::ntInOperator:
-      return expressionInOperatorToOgcFilter( static_cast<const QgsExpressionNodeInOperator *>( node ) );
+      return expressionInOperatorToOgcFilter( static_cast<const QgsExpressionNodeInOperator *>( node ), expression, context );
     case QgsExpressionNode::ntFunction:
-      return expressionFunctionToOgcFilter( static_cast<const QgsExpressionNodeFunction *>( node ) );
+      return expressionFunctionToOgcFilter( static_cast<const QgsExpressionNodeFunction *>( node ), expression, context );
     case QgsExpressionNode::ntLiteral:
-      return expressionLiteralToOgcFilter( static_cast<const QgsExpressionNodeLiteral *>( node ) );
+      return expressionLiteralToOgcFilter( static_cast<const QgsExpressionNodeLiteral *>( node ), expression, context );
     case QgsExpressionNode::ntColumnRef:
-      return expressionColumnRefToOgcFilter( static_cast<const QgsExpressionNodeColumnRef *>( node ) );
+      return expressionColumnRefToOgcFilter( static_cast<const QgsExpressionNodeColumnRef *>( node ), expression, context );
 
     default:
       mErrorMessage = QObject::tr( "Node type not supported: %1" ).arg( node->nodeType() );
@@ -2289,11 +2298,9 @@ QDomElement QgsOgcUtilsExprToFilter::expressionNodeToOgcFilter( const QgsExpress
   }
 }
 
-
-QDomElement QgsOgcUtilsExprToFilter::expressionUnaryOperatorToOgcFilter( const QgsExpressionNodeUnaryOperator *node )
+QDomElement QgsOgcUtilsExprToFilter::expressionUnaryOperatorToOgcFilter( const QgsExpressionNodeUnaryOperator *node, QgsExpression *expression, const QgsExpressionContext *context )
 {
-
-  QDomElement operandElem = expressionNodeToOgcFilter( node->operand() );
+  QDomElement operandElem = expressionNodeToOgcFilter( node->operand(), expression, context );
   if ( !mErrorMessage.isEmpty() )
     return QDomElement();
 
@@ -2329,9 +2336,9 @@ QDomElement QgsOgcUtilsExprToFilter::expressionUnaryOperatorToOgcFilter( const Q
 }
 
 
-QDomElement QgsOgcUtilsExprToFilter::expressionBinaryOperatorToOgcFilter( const QgsExpressionNodeBinaryOperator *node )
+QDomElement QgsOgcUtilsExprToFilter::expressionBinaryOperatorToOgcFilter( const QgsExpressionNodeBinaryOperator *node, QgsExpression *expression, const QgsExpressionContext *context )
 {
-  QDomElement leftElem = expressionNodeToOgcFilter( node->opLeft() );
+  QDomElement leftElem = expressionNodeToOgcFilter( node->opLeft(), expression, context );
   if ( !mErrorMessage.isEmpty() )
     return QDomElement();
 
@@ -2365,7 +2372,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionBinaryOperatorToOgcFilter( const 
 
   }
 
-  QDomElement rightElem = expressionNodeToOgcFilter( node->opRight() );
+  QDomElement rightElem = expressionNodeToOgcFilter( node->opRight(), expression, context );
   if ( !mErrorMessage.isEmpty() )
     return QDomElement();
 
@@ -2401,8 +2408,10 @@ QDomElement QgsOgcUtilsExprToFilter::expressionBinaryOperatorToOgcFilter( const 
 }
 
 
-QDomElement QgsOgcUtilsExprToFilter::expressionLiteralToOgcFilter( const QgsExpressionNodeLiteral *node )
+QDomElement QgsOgcUtilsExprToFilter::expressionLiteralToOgcFilter( const QgsExpressionNodeLiteral *node, QgsExpression *expression, const QgsExpressionContext *context )
 {
+  Q_UNUSED( expression )
+  Q_UNUSED( context )
   QString value;
   switch ( node->value().type() )
   {
@@ -2414,6 +2423,12 @@ QDomElement QgsOgcUtilsExprToFilter::expressionLiteralToOgcFilter( const QgsExpr
       break;
     case QVariant::String:
       value = node->value().toString();
+      break;
+    case QVariant::Date:
+      value = node->value().toDate().toString( Qt::ISODate );
+      break;
+    case QVariant::DateTime:
+      value = node->value().toDateTime().toString( Qt::ISODate );
       break;
 
     default:
@@ -2427,8 +2442,10 @@ QDomElement QgsOgcUtilsExprToFilter::expressionLiteralToOgcFilter( const QgsExpr
 }
 
 
-QDomElement QgsOgcUtilsExprToFilter::expressionColumnRefToOgcFilter( const QgsExpressionNodeColumnRef *node )
+QDomElement QgsOgcUtilsExprToFilter::expressionColumnRefToOgcFilter( const QgsExpressionNodeColumnRef *node, QgsExpression *expression, const QgsExpressionContext *context )
 {
+  Q_UNUSED( expression )
+  Q_UNUSED( context )
   QDomElement propElem = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
   propElem.appendChild( mDoc.createTextNode( node->name() ) );
   return propElem;
@@ -2436,17 +2453,17 @@ QDomElement QgsOgcUtilsExprToFilter::expressionColumnRefToOgcFilter( const QgsEx
 
 
 
-QDomElement QgsOgcUtilsExprToFilter::expressionInOperatorToOgcFilter( const QgsExpressionNodeInOperator *node )
+QDomElement QgsOgcUtilsExprToFilter::expressionInOperatorToOgcFilter( const QgsExpressionNodeInOperator *node, QgsExpression *expression, const QgsExpressionContext *context )
 {
   if ( node->list()->list().size() == 1 )
-    return expressionNodeToOgcFilter( node->list()->list()[0] );
+    return expressionNodeToOgcFilter( node->list()->list()[0], expression, context );
 
   QDomElement orElem = mDoc.createElement( mFilterPrefix + ":Or" );
-  QDomElement leftNode = expressionNodeToOgcFilter( node->node() );
+  QDomElement leftNode = expressionNodeToOgcFilter( node->node(), expression, context );
 
   Q_FOREACH ( QgsExpressionNode *n, node->list()->list() )
   {
-    QDomElement listNode = expressionNodeToOgcFilter( n );
+    QDomElement listNode = expressionNodeToOgcFilter( n, expression, context );
     if ( !mErrorMessage.isEmpty() )
       return QDomElement();
 
@@ -2521,7 +2538,7 @@ static QgsGeometry geometryFromConstExpr( const QgsExpressionNode *node )
 }
 
 
-QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExpressionNodeFunction *node )
+QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExpressionNodeFunction *node, QgsExpression *expression, const QgsExpressionContext *context )
 {
   QgsExpressionFunction *fd = QgsExpression::Functions()[node->fnIndex()];
 
@@ -2633,6 +2650,13 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
     return funcElem;
   }
 
+  if ( fd->isStatic( node, expression, context ) )
+  {
+    QVariant result = fd->run( node->args(), context, expression, node );
+    QgsExpressionNodeLiteral literal( result );
+    return expressionLiteralToOgcFilter( &literal, expression, context );
+  }
+
   if ( fd->params() == 0 )
   {
     mErrorMessage = QObject::tr( "Special columns/constants are not supported." );
@@ -2644,7 +2668,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
   funcElem.setAttribute( QStringLiteral( "name" ), fd->name() );
   Q_FOREACH ( QgsExpressionNode *n, node->args()->list() )
   {
-    QDomElement childElem = expressionNodeToOgcFilter( n );
+    QDomElement childElem = expressionNodeToOgcFilter( n, expression, context );
     if ( !mErrorMessage.isEmpty() )
       return QDomElement();
 

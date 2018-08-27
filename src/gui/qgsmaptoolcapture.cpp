@@ -41,16 +41,16 @@
 QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
   , mCaptureMode( mode )
+  , mCaptureModeFromLayer( mode == CaptureNone )
 {
-  mCaptureModeFromLayer = mode == CaptureNone;
-  mCapturing = false;
-
   mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
 
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
 
   connect( canvas, &QgsMapCanvas::currentLayerChanged,
            this, &QgsMapToolCapture::currentLayerChanged );
+
+  currentLayerChanged( canvas->currentLayer() );
 }
 
 QgsMapToolCapture::~QgsMapToolCapture()

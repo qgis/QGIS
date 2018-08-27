@@ -409,9 +409,35 @@ bool QgsRuleBasedRenderer::Rule::startRender( QgsRenderContext &context, const Q
   if ( subfilters.length() > 1 || !subfilters.value( 0 ).isEmpty() )
   {
     if ( subfilters.contains( QStringLiteral( "TRUE" ) ) )
+    {
       sf = QStringLiteral( "TRUE" );
+    }
+    // If we have more than 50 rules (to stay on the safe side) make a binary tree or SQLITE will fail,
+    // see: http://issues.qgis.org/issues/19441
+    else if ( subfilters.count() > 50 )
+    {
+      std::function<QString( const QStringList & )>bt = [ &bt ]( const QStringList & subf )
+      {
+        if ( subf.count( ) == 1 )
+        {
+          return subf.at( 0 );
+        }
+        else if ( subf.count( ) == 2 )
+        {
+          return subf.join( QStringLiteral( ") OR (" ) ).prepend( '(' ).append( ')' );
+        }
+        else
+        {
+          int midpos = static_cast<int>( subf.length() / 2 );
+          return QStringLiteral( "(%1) OR (%2)" ).arg( bt( subf.mid( 0, midpos ) ) ).arg( bt( subf.mid( midpos ) ) );
+        }
+      };
+      sf = bt( subfilters );
+    }
     else
+    {
       sf = subfilters.join( QStringLiteral( ") OR (" ) ).prepend( '(' ).append( ')' );
+    }
   }
 
   // Now join the subfilters with their parent (this) based on if

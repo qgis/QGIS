@@ -9,6 +9,7 @@ SET(QGIS_3D_SRCS
   qgs3dutils.cpp
   qgscameracontroller.cpp
   qgscamerapose.cpp
+  qgslayoutitem3dmap.cpp
   qgsoffscreen3dengine.cpp
   qgsphongmaterialsettings.cpp
   qgsraycastingutils_p.cpp
@@ -53,6 +54,7 @@ SET(QGIS_3D_MOC_HDRS
   qgs3dmapsettings.h
   qgsabstract3dengine.h
   qgscameracontroller.h
+  qgslayoutitem3dmap.h
   qgsoffscreen3dengine.h
   qgswindow3dengine.h
 
@@ -83,6 +85,7 @@ SET(QGIS_3D_HDRS
   qgs3dutils.h
   qgscameracontroller.h
   qgscamerapose.h
+  qgslayoutitem3dmap.h
   qgsoffscreen3dengine.h
   qgsphongmaterialsettings.h
   qgsraycastingutils_p.h
@@ -131,6 +134,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/3d
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/3d

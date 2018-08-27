@@ -28,6 +28,7 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayer.h"
 #include "qgscolumntypethread.h"
 #include "qgssettings.h"
+#include "qgsproxyprogresstask.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -545,13 +546,18 @@ void QgsPgSourceSelect::btnConnect_clicked()
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
   mColumnTypeThread = new QgsGeomColumnTypeThread( cmbConnections->currentText(), mUseEstimatedMetadata, cbxAllowGeometrylessTables->isChecked() );
+  mColumnTypeTask = new QgsProxyProgressTask( tr( "Scanning tables for %1" ).arg( cmbConnections->currentText() ) );
+  QgsApplication::taskManager()->addTask( mColumnTypeTask );
 
   connect( mColumnTypeThread, &QgsGeomColumnTypeThread::setLayerType,
            this, &QgsPgSourceSelect::setLayerType );
   connect( mColumnTypeThread, &QThread::finished,
            this, &QgsPgSourceSelect::columnThreadFinished );
   connect( mColumnTypeThread, &QgsGeomColumnTypeThread::progress,
-           this, &QgsPgSourceSelect::progress );
+           mColumnTypeTask, [ = ]( int i, int n )
+  {
+    mColumnTypeTask->setProxyProgress( 100.0 * static_cast< double >( i ) / n );
+  } );
   connect( mColumnTypeThread, &QgsGeomColumnTypeThread::progressMessage,
            this, &QgsPgSourceSelect::progressMessage );
 
@@ -572,6 +578,8 @@ void QgsPgSourceSelect::columnThreadFinished()
   delete mColumnTypeThread;
   mColumnTypeThread = nullptr;
   btnConnect->setText( tr( "Connect" ) );
+  mColumnTypeTask->finalize( true );
+  mColumnTypeTask = nullptr;
 
   finishList();
 }

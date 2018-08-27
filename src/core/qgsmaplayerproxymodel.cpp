@@ -80,9 +80,15 @@ void QgsMapLayerProxyModel::setExcludedProviders( const QStringList &providers )
   invalidateFilter();
 }
 
+void QgsMapLayerProxyModel::setFilterString( const QString &filter )
+{
+  mFilterString = filter;
+  invalidateFilter();
+}
+
 bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( mFilters.testFlag( All ) && mExceptList.isEmpty() && mExcludedProviders.isEmpty() )
+  if ( mFilters.testFlag( All ) && mExceptList.isEmpty() && mExcludedProviders.isEmpty() && mFilterString.isEmpty() )
     return true;
 
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
@@ -102,6 +108,9 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
     return false;
 
   if ( mFilters.testFlag( WritableLayer ) && layer->readOnly() )
+    return false;
+
+  if ( !layer->name().contains( mFilterString, Qt::CaseInsensitive ) )
     return false;
 
   // layer type

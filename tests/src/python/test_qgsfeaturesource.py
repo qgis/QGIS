@@ -114,7 +114,8 @@ class TestQgsFeatureSource(unittest.TestCase):
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
         new_layer = layer.materialize(request)
         self.assertEqual(new_layer.fields(), layer.fields())
-        self.assertEqual(new_layer.crs(), layer.crs())
+        self.assertFalse(new_layer.crs().isValid())
+        self.assertFalse(new_layer.isSpatial())
         self.assertEqual(new_layer.featureCount(), 5)
         self.assertEqual(new_layer.wkbType(), QgsWkbTypes.NoGeometry)
         new_features = {f[0]: f for f in new_layer.getFeatures()}

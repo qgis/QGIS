@@ -22,7 +22,7 @@ void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError *> &err
 {
   double overlapThreshold = mThresholdMapUnits;
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, true );
+  const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, true );
   QList<QString> layerIds = featureIds.keys();
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
@@ -37,7 +37,7 @@ void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError *> &err
       continue;
     }
 
-    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, QList<QString>() << layerFeatureA.layer().id() << layerIds, bboxA, mCompatibleGeometryTypes );
+    const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, QList<QString>() << layerFeatureA.layer().id() << layerIds, bboxA, mCompatibleGeometryTypes );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
       // > : only report overlaps within same layer once
@@ -183,7 +183,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
   }
 }
 
-QStringList QgsGeometryOverlapCheck::getResolutionMethods() const
+QStringList QgsGeometryOverlapCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList()
                                << tr( "Remove overlapping area from neighboring polygon with shortest shared edge" )

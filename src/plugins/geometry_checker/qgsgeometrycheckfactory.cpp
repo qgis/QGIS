@@ -254,9 +254,12 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryFollowBoundariesCheck>::rest
 
 template<> bool QgsGeometryCheckFactoryT<QgsGeometryFollowBoundariesCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int /*nPoint*/, int nLineString, int nPolygon ) const
 {
-  ui.checkBoxFollowBoundaries->setEnabled( nLineString + nPolygon > 0 );
-  ui.checkBoxFollowBoundaries->setEnabled( nLineString + nPolygon > 0 );
-  return ui.checkBoxFollowBoundaries->isEnabled();
+  const bool enabled = nLineString + nPolygon > 0;
+  if ( !enabled )
+    ui.checkBoxFollowBoundaries->setChecked( false );
+  ui.checkBoxFollowBoundaries->setEnabled( enabled );
+  ui.comboBoxFollowBoundaries->setEnabled( enabled && ui.checkBoxFollowBoundaries->isChecked() );
+  return enabled;
 }
 
 template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryFollowBoundariesCheck>::createInstance( QgsGeometryCheckerContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const
@@ -371,9 +374,12 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryLineLayerIntersectionCheck>:
 
 template<> bool QgsGeometryCheckFactoryT<QgsGeometryLineLayerIntersectionCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int /*nPoint*/, int nLineString, int /*nPolygon*/ ) const
 {
-  ui.checkLineLayerIntersection->setEnabled( nLineString > 0 );
-  ui.comboLineLayerIntersection->setEnabled( nLineString > 0 );
-  return ui.checkLineLayerIntersection->isEnabled();
+  const bool enabled = nLineString > 0;
+  if ( !enabled )
+    ui.checkLineLayerIntersection->setChecked( false );
+  ui.checkLineLayerIntersection->setEnabled( enabled );
+  ui.comboLineLayerIntersection->setEnabled( enabled && ui.checkLineLayerIntersection->isChecked() );
+  return enabled;
 }
 
 template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryLineLayerIntersectionCheck>::createInstance( QgsGeometryCheckerContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const

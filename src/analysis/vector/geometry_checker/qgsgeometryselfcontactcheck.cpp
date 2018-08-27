@@ -95,7 +95,7 @@ void QgsGeometrySelfContactCheck::fixError( QgsGeometryCheckError *error, int me
   }
 }
 
-QStringList QgsGeometrySelfContactCheck::getResolutionMethods() const
+QStringList QgsGeometrySelfContactCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;

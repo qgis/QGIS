@@ -34,8 +34,7 @@ QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
   : mFileName( QString() )
   , mEncoding( QStringLiteral( "UTF-8" ) )
   , mDefaultFieldName( QStringLiteral( "field_%1" ) )
-    // field_ is optional in following regexp to simplify QgsDelimitedTextFile::fieldNumber()
-  , mDefaultFieldRegexp( "^(?:field_)?(\\d+)$", Qt::CaseInsensitive )
+  , mDefaultFieldRegexp( "^(?:field_)(\\d+)$", Qt::CaseInsensitive )
 {
   // The default type is CSV
   setTypeCSV();

@@ -366,7 +366,8 @@ QgsProject::QgsProject( QObject *parent )
   connect( mLayerStore.get(), &QgsMapLayerStore::allLayersRemoved, this, &QgsProject::removeAll );
   connect( mLayerStore.get(), &QgsMapLayerStore::layersAdded, this, &QgsProject::layersAdded );
   connect( mLayerStore.get(), &QgsMapLayerStore::layerWasAdded, this, &QgsProject::layerWasAdded );
-  connect( QgsApplication::instance(), &QgsApplication::requestForTranslatableObjects, this, &QgsProject::registerTranslatableObjects );
+  if ( QgsApplication::instance() )
+    connect( QgsApplication::instance(), &QgsApplication::requestForTranslatableObjects, this, &QgsProject::registerTranslatableObjects );
 }
 
 
@@ -478,10 +479,18 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
       const QgsFields fields = vlayer->fields();
       for ( const QgsField &field : fields )
       {
+        QString fieldName;
         if ( field.alias().isEmpty() )
-          translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), field.name() );
+          fieldName = field.name();
         else
-          translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), field.alias() );
+          fieldName = field.alias();
+
+        translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), fieldName );
+
+        if ( field.editorWidgetSetup().type() == QStringLiteral( "ValueRelation" ) )
+        {
+          translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( QStringLiteral( "Value" ) ).toString() );
+        }
       }
 
       //register formcontainers
@@ -1665,15 +1674,15 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.appendChild( titleNode );
 
   QDomElement transactionNode = doc->createElement( QStringLiteral( "autotransaction" ) );
-  transactionNode.setAttribute( QStringLiteral( "active" ), mAutoTransaction ? '1' : '0' );
+  transactionNode.setAttribute( QStringLiteral( "active" ), mAutoTransaction ? 1 : 0 );
   qgisNode.appendChild( transactionNode );
 
   QDomElement evaluateDefaultValuesNode = doc->createElement( QStringLiteral( "evaluateDefaultValues" ) );
-  evaluateDefaultValuesNode.setAttribute( QStringLiteral( "active" ), mEvaluateDefaultValues ? '1' : '0' );
+  evaluateDefaultValuesNode.setAttribute( QStringLiteral( "active" ), mEvaluateDefaultValues ? 1 : 0 );
   qgisNode.appendChild( evaluateDefaultValuesNode );
 
   QDomElement trustNode = doc->createElement( QStringLiteral( "trust" ) );
-  trustNode.setAttribute( QStringLiteral( "active" ), mTrustLayerMetadata ? '1' : '0' );
+  trustNode.setAttribute( QStringLiteral( "active" ), mTrustLayerMetadata ? 1 : 0 );
   qgisNode.appendChild( trustNode );
 
   QDomText titleText = doc->createTextNode( title() );  // XXX why have title TWICE?
@@ -2819,7 +2828,7 @@ void QgsProject::generateTsFile( const QString &locale )
 {
   QgsTranslationContext translationContext;
   translationContext.setProject( this );
-  translationContext.setFileName( QStringLiteral( "%1/%2_%3.ts" ).arg( absolutePath(), baseName(), locale ) );
+  translationContext.setFileName( QStringLiteral( "%1/%2.ts" ).arg( absolutePath(), baseName() ) );
 
   emit QgsApplication::instance()->collectTranslatableObjects( &translationContext );
 
@@ -2833,5 +2842,11 @@ QString QgsProject::translate( const QString &context, const QString &sourceText
     return sourceText;
   }
 
-  return mTranslator->translate( context.toUtf8(), sourceText.toUtf8(), disambiguation, n );
+  QString result = mTranslator->translate( context.toUtf8(), sourceText.toUtf8(), disambiguation, n );
+
+  if ( result.isEmpty() )
+  {
+    return sourceText;
+  }
+  return result;
 }

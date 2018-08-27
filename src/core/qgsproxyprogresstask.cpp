@@ -41,3 +41,23 @@ void QgsProxyProgressTask::setProxyProgress( double progress )
 {
   QMetaObject::invokeMethod( this, "setProgress", Qt::AutoConnection, Q_ARG( double, progress ) );
 }
+
+//
+// QgsScopedProxyProgressTask
+//
+
+QgsScopedProxyProgressTask::QgsScopedProxyProgressTask( const QString &description )
+  : mTask( new QgsProxyProgressTask( description ) )
+{
+  QgsApplication::taskManager()->addTask( mTask );
+}
+
+QgsScopedProxyProgressTask::~QgsScopedProxyProgressTask()
+{
+  mTask->finalize( true );
+}
+
+void QgsScopedProxyProgressTask::setProgress( double progress )
+{
+  mTask->setProxyProgress( progress );
+}

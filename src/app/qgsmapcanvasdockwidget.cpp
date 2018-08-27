@@ -572,7 +572,7 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   gLayout->addWidget( label, 4, 0 );
   gLayout->addWidget( mMagnifierWidget, 4, 1 );
 
-  mSyncScaleCheckBox = new QCheckBox( tr( "Synchronize Scale" ) );
+  mSyncScaleCheckBox = new QCheckBox( tr( "Synchronize scale" ) );
   gLayout->addWidget( mSyncScaleCheckBox, 5, 0, 1, 2 );
 
   mScaleFactorWidget = new QgsDoubleSpinBox();

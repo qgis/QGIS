@@ -28,14 +28,15 @@
 #include <QMainWindow>
 #include <QMenu>
 #include <QGraphicsView>
+#include <QToolTip>
 
 QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )
   , mMapCanvas( mapCanvas )
 {
   setupUi( this );
-  connect( mSlider, &QSlider::valueChanged, this, &QgsTileScaleWidget::mSlider_valueChanged );
 
+  connect( mSlider, &QSlider::valueChanged, this, &QgsTileScaleWidget::mSlider_valueChanged );
   connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, &QgsTileScaleWidget::scaleChanged );
 
   layerChanged( mMapCanvas->currentLayer() );
@@ -102,9 +103,16 @@ void QgsTileScaleWidget::scaleChanged( double scale )
 
 void QgsTileScaleWidget::mSlider_valueChanged( int value )
 {
-  Q_UNUSED( value );
   QgsDebugMsg( QString( "slider released at %1: %2" ).arg( mSlider->value() ).arg( mResolutions.at( mSlider->value() ) ) );
+
+  // Invert value in tooltip to match expectation (i.e. 0 = zoomed out, maximum = zoomed in)
+  QToolTip::showText( QCursor::pos(), tr( "Zoom level: %1" ).arg( mSlider->maximum() - value ) + "\n" + tr( "Resolution: %1" ).arg( mResolutions.at( value ) ), this );
   mMapCanvas->zoomByFactor( mResolutions.at( mSlider->value() ) / mMapCanvas->mapUnitsPerPixel() );
+}
+
+void QgsTileScaleWidget::locationChanged( Qt::DockWidgetArea area )
+{
+  mSlider->setOrientation( area == Qt::TopDockWidgetArea || area == Qt::BottomDockWidgetArea ? Qt::Horizontal : Qt::Vertical );
 }
 
 void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
@@ -141,7 +149,9 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   //create the dock widget
   dock = new QgsDockWidget( tr( "Tile Scale" ), mainWindow );
   dock->setObjectName( QStringLiteral( "theTileScaleDock" ) );
-  dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+
+  connect( dock, &QDockWidget::dockLocationChanged, tws, &QgsTileScaleWidget::locationChanged );
+
   mainWindow->addDockWidget( Qt::RightDockWidgetArea, dock );
 
   // add to the Panel submenu

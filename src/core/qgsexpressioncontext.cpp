@@ -995,6 +995,14 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_definition" ), mapSettings.destinationCrs().toProj4(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mapSettings.mapUnits() ), true ) );
 
+  QVariantList layers_ids;
+  const QList<QgsMapLayer *> layersInMap = mapSettings.layers();
+  for ( QgsMapLayer *layer : layersInMap )
+  {
+    layers_ids << layer->id();
+  }
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layers_ids" ), layers_ids, true ) );
+
   scope->addFunction( QStringLiteral( "is_layer_visible" ), new GetLayerVisibility( mapSettings.layers() ) );
 
   return scope;

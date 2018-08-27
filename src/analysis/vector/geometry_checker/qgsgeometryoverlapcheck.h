@@ -41,8 +41,8 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
              other->layerId() == layerId() &&
              other->featureId() == featureId() &&
              err->overlappedFeature() == overlappedFeature() &&
-             QgsGeometryCheckerUtils::pointsFuzzyEqual( location(), other->location(), mCheck->getContext()->reducedTolerance ) &&
-             std::fabs( value().toDouble() - other->value().toDouble() ) < mCheck->getContext()->reducedTolerance;
+             QgsGeometryCheckerUtils::pointsFuzzyEqual( location(), other->location(), mCheck->context()->reducedTolerance ) &&
+             std::fabs( value().toDouble() - other->value().toDouble() ) < mCheck->context()->reducedTolerance;
     }
 
     bool closeMatch( QgsGeometryCheckError *other ) const override
@@ -72,8 +72,6 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
 
 class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     QgsGeometryOverlapCheck( QgsGeometryCheckerContext *context, double thresholdMapUnits )
       : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PolygonGeometry}, context )
@@ -81,7 +79,7 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
     {}
     void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
-    QStringList getResolutionMethods() const override;
+    QStringList resolutionMethods() const override;
     QString errorDescription() const override { return tr( "Overlap" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryOverlapCheck" ); }
 

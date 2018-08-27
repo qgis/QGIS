@@ -30,6 +30,7 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
   mCrashMessage->setText( tr( "Sorry. It looks something unexpected happened that we didn't handle and QGIS crashed." ) );
   connect( mReloadQGISButton, &QPushButton::clicked, this, &QgsCrashDialog::reloadQGIS );
   connect( mCopyReportButton, &QPushButton::clicked, this, &QgsCrashDialog::createBugReport );
+  mCopyReportButton->setEnabled( false );
 
   mHelpLabel->setText( tr( "Keen to help us fix bugs? "
                            "<a href=\"http://qgis.org/en/site/getinvolved/development/bugreporting.html#bugs-features-and-issues\">Follow the steps to help our developers.</a>"
@@ -54,6 +55,11 @@ void QgsCrashDialog::setReloadArgs( const QString &reloadArgs )
 
 void QgsCrashDialog::showReportWidget()
 {
+}
+
+void QgsCrashDialog::on_mUserFeedbackText_textChanged()
+{
+  mCopyReportButton->setEnabled( !mUserFeedbackText->toPlainText().isEmpty() );
 }
 
 void QgsCrashDialog::createBugReport()

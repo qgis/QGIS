@@ -22,15 +22,13 @@
 
 class ANALYSIS_EXPORT QgsGeometryLineLayerIntersectionCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
     QgsGeometryLineLayerIntersectionCheck( QgsGeometryCheckerContext *context, const QString &checkLayer )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry}, context ), mCheckLayer( checkLayer )
     {}
     void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
-    QStringList getResolutionMethods() const override;
+    QStringList resolutionMethods() const override;
     QString errorDescription() const override { return tr( "Intersection" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryLineLayerIntersectionCheck" ); }
 

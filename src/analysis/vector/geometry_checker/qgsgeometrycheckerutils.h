@@ -66,7 +66,7 @@ namespace QgsGeometryCheckerUtils
       class iterator
       {
         public:
-          iterator( const QList<QString>::iterator &layerIt, LayerFeatures *parent );
+          iterator( const QList<QString>::const_iterator &layerIt, const LayerFeatures *parent );
           ~iterator();
           const iterator &operator++();
           iterator operator++( int ) { iterator tmp( *this ); ++*this; return tmp; }
@@ -77,14 +77,14 @@ namespace QgsGeometryCheckerUtils
           bool nextLayerFeature( bool begin );
           bool nextLayer( bool begin );
           bool nextFeature( bool begin );
-          QList<QString>::iterator mLayerIt;
+          QList<QString>::const_iterator mLayerIt;
           QgsFeatureIds::const_iterator mFeatureIt;
-          LayerFeatures *mParent;
-          LayerFeature *mCurrentFeature = nullptr;
+          const LayerFeatures *mParent;
+          const LayerFeature *mCurrentFeature = nullptr;
       };
 
-      iterator begin() { return iterator( mLayerIds.begin(), this ); }
-      iterator end() { return iterator( mLayerIds.end(), this ); }
+      iterator begin() const { return iterator( mLayerIds.constBegin(), this ); }
+      iterator end() const { return iterator( mLayerIds.end(), this ); }
     private:
       QMap<QString, QgsFeaturePool *> mFeaturePools;
       QMap<QString, QgsFeatureIds> mFeatureIds;

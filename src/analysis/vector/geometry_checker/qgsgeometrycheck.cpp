@@ -97,7 +97,7 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &chan
         // If the check is checking the feature at geometry nodes level, the
         // error almost certainly invalid after a geometry change. In the other
         // cases, it might likely still be valid.
-        return mCheck->getCheckType() != QgsGeometryCheck::FeatureNodeCheck;
+        return mCheck->checkType() != QgsGeometryCheck::FeatureNodeCheck;
       }
     }
     else if ( change.what == QgsGeometryCheck::ChangePart )

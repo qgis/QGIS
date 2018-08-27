@@ -62,6 +62,7 @@
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgslabelinggui.h"
 #include "qgssymbollayer.h"
+#include "qgsgeometryfixes.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -174,6 +175,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   {
     labelingDialog = nullptr;
     mOptsPage_Labels->setEnabled( false ); // disable labeling item
+    mGeometryGroupBox->setEnabled( false );
+    mGeometryGroupBox->setVisible( false );
   }
 
   // Create the Actions dialog tab
@@ -289,9 +292,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   //insert existing join info
   const QList< QgsVectorLayerJoinInfo > &joins = mLayer->vectorJoins();
-  for ( int i = 0; i < joins.size(); ++i )
+  for ( const QgsVectorLayerJoinInfo &join : joins )
   {
-    addJoinToTreeWidget( joins[i] );
+    addJoinToTreeWidget( join );
   }
 
   mOldJoins = mLayer->vectorJoins();
@@ -422,6 +425,23 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( mAuxiliaryStorageFieldsAddBtn, &QPushButton::clicked, this, &QgsVectorLayerProperties::onAuxiliaryLayerAddField );
 
   updateAuxiliaryStoragePage();
+
+  if ( mLayer->isSpatial() )
+  {
+    mRemoveDuplicateNodesCheckbox->setEnabled( true );
+    mGeometryPrecisionSpinBox->setEnabled( true );
+
+    mRemoveDuplicateNodesCheckbox->setChecked( mLayer->geometryFixes()->removeDuplicateNodes() );
+    mGeometryPrecisionSpinBox->setValue( mLayer->geometryFixes()->geometryPrecision() );
+
+    mGeometryPrecisionSpinBox->setSuffix( QStringLiteral( " [%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
+  }
+  else
+  {
+    mRemoveDuplicateNodesCheckbox->setEnabled( false );
+    mGeometryPrecisionSpinBox->setEnabled( false );
+    mGeometryAutoFixesGroupBox->setEnabled( false );
+  }
 
   optionsStackedWidget_CurrentChanged( mOptStackedWidget->currentIndex() );
 }
@@ -761,6 +781,9 @@ void QgsVectorLayerProperties::apply()
   mVector3DWidget->apply();
 #endif
 
+  mLayer->geometryFixes()->setRemoveDuplicateNodes( mRemoveDuplicateNodesCheckbox->isChecked() );
+  mLayer->geometryFixes()->setGeometryPrecision( mGeometryPrecisionSpinBox->value() );
+
   // update symbology
   emit refreshLegend( mLayer->id() );
 
@@ -991,7 +1014,7 @@ void QgsVectorLayerProperties::loadStyle_clicked()
   }
   else
   {
-    myMessage = mLayer->loadNamedStyle( myFileName, defaultLoadedFlag );
+    myMessage = mLayer->loadNamedStyle( myFileName, defaultLoadedFlag, true );
   }
   //reset if the default style was loaded OK only
   if ( defaultLoadedFlag )

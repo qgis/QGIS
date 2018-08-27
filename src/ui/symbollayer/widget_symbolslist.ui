@@ -107,7 +107,7 @@
      <item>
       <widget class="QPushButton" name="openStyleManagerButton">
        <property name="text">
-        <string>Open Library</string>
+        <string>Open Library…</string>
        </property>
       </widget>
      </item>
@@ -147,7 +147,7 @@
         <string>Save symbol</string>
        </property>
        <property name="text">
-        <string>Save symbol</string>
+        <string>Save Symbol</string>
        </property>
       </widget>
      </item>

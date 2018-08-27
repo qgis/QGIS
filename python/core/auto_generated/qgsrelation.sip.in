@@ -11,6 +11,7 @@
 
 
 
+
 class QgsRelation
 {
 
@@ -34,6 +35,15 @@ class QgsRelation
 %Docstring
 Default constructor. Creates an invalid relation.
 %End
+    ~QgsRelation();
+
+    QgsRelation( const QgsRelation &other );
+%Docstring
+Copies a relation.
+This makes a shallow copy, relations are implicitly shared and only duplicated when the copy is
+changed.
+%End
+
 
     static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context );
 %Docstring

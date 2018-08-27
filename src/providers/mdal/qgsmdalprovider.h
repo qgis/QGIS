@@ -64,6 +64,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QgsMeshDatasetGroupMetadata datasetGroupMetadata( int groupIndex ) const override;
     QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const override;
     QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const override;
+    bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
 
   private:
     MeshH mMeshH;

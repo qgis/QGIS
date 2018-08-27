@@ -47,7 +47,7 @@ QgsMessageLogConsole::QgsMessageLogConsole()
 
 void QgsMessageLogConsole::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
 {
-  std::cout
+  std::cerr
       << tag.toLocal8Bit().data() << "[" <<
       ( level == Qgis::Info ? "INFO"
         : level == Qgis::Warning ? "WARNING"

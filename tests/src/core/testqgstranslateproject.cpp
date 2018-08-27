@@ -71,7 +71,7 @@ void TestQgsTranslateProject::cleanupTestCase()
 
   //delete created ts file
   QString tsFileName( TEST_DATA_DIR );
-  tsFileName = tsFileName + "/project_translation/points_translation_de.ts";
+  tsFileName = tsFileName + "/project_translation/points_translation.ts";
   QFile tsFile( tsFileName );
   tsFile.remove();
 }
@@ -99,7 +99,7 @@ void TestQgsTranslateProject::createTsFile()
 
   //check if ts file is created
   QString tsFileName( TEST_DATA_DIR );
-  tsFileName = tsFileName + "/project_translation/points_translation_de.ts";
+  tsFileName = tsFileName + "/project_translation/points_translation.ts";
   QFile tsFile( tsFileName );
   QVERIFY( tsFile.exists() );
 

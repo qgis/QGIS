@@ -130,6 +130,14 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
     }
   }
 
+  // Remove pre-existing overview files to avoid using those with new raster
+  QFile pyramidFile( mOutputUrl + ( mTiledMode ? ".vrt.ovr" : ".ovr" ) );
+  if ( pyramidFile.exists() )
+    pyramidFile.remove();
+  pyramidFile.setFileName( mOutputUrl + ( mTiledMode ? ".vrt.rrd" : ".rrd" ) );
+  if ( pyramidFile.exists() )
+    pyramidFile.remove();
+
   if ( mMode == Image )
   {
     WriterError e = writeImageRaster( &iter, nCols, nRows, outputExtent, crs, feedback );

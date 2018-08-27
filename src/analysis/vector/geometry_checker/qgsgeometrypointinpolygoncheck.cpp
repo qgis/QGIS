@@ -74,7 +74,7 @@ void QgsGeometryPointInPolygonCheck::fixError( QgsGeometryCheckError *error, int
   }
 }
 
-QStringList QgsGeometryPointInPolygonCheck::getResolutionMethods() const
+QStringList QgsGeometryPointInPolygonCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;

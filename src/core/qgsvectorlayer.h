@@ -72,6 +72,7 @@ class QgsPoint;
 class QgsFeedback;
 class QgsAuxiliaryStorage;
 class QgsAuxiliaryLayer;
+class QgsGeometryFixes;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -1069,7 +1070,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see changeGeometry()
      * \see changeAttributeValue()
     */
-    bool updateFeature( const QgsFeature &feature, bool skipDefaultValues = false );
+    bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
 
     /**
      * Insert a new vertex before the given vertex number,
@@ -1402,7 +1403,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see changeAttributeValue()
      * \see updateFeature()
      */
-    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geometry, bool skipDefaultValue = false );
+    bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
 
     /**
      * Changes an attribute value for a feature (but does not immediately commit the changes).
@@ -1992,6 +1993,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool isEditCommandActive() const { return mEditCommandActive; }
 
+    /**
+     * Configuration and logic to apply automatically on any edit happening on this layer.
+     *
+     * \since QGIS 3.4
+     */
+    QgsGeometryFixes *geometryFixes() const;
+
   public slots:
 
     /**
@@ -2323,8 +2331,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Sets the extent
     void setExtent( const QgsRectangle &rect ) override;
 
-  private:                       // Private methods
-
+  private:
     void updateDefaultValues( QgsFeatureId fid, QgsFeature feature = QgsFeature() );
 
     /**
@@ -2482,6 +2489,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     mutable QMutex mFeatureSourceConstructorMutex;
 
     QgsVectorLayerFeatureCounter *mFeatureCounter = nullptr;
+
+    std::unique_ptr<QgsGeometryFixes> mGeometryFixes;
 
     friend class QgsVectorLayerFeatureSource;
 };

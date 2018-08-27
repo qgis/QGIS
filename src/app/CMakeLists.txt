@@ -448,6 +448,7 @@ IF (WITH_3D)
     3d/qgspolygon3dsymbolwidget.cpp
     3d/qgsphongmaterialwidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
+    layout/qgslayout3dmapwidget.cpp
   )
 
   SET (QGIS_APP_MOC_HDRS
@@ -461,6 +462,7 @@ IF (WITH_3D)
     3d/qgspolygon3dsymbolwidget.h
     3d/qgsphongmaterialwidget.h
     3d/qgsvectorlayer3drendererwidget.h
+    layout/qgslayout3dmapwidget.h
   )
 ENDIF (WITH_3D)
 

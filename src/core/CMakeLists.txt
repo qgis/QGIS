@@ -203,6 +203,7 @@ SET(QGIS_CORE_SRCS
   qgsfontutils.cpp
   qgsgeometrysimplifier.cpp
   qgsgeometryvalidator.cpp
+  qgsgeometryfixes.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
   qgshistogram.cpp
@@ -860,6 +861,7 @@ SET(QGIS_CORE_HDRS
   qgsfields.h
   qgsfileutils.h
   qgsfontutils.h
+  qgsgeometryfixes.h
   qgsgeometrysimplifier.h
   qgshistogram.h
   qgshtmlutils.h

@@ -54,8 +54,16 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
     /**
      * Emitted when writing the layer is successfully completed. The \a newFilename
      * parameter indicates the file path for the written file.
+     * \note this signal is deprecated in favor of completed().
      */
     void writeComplete( const QString &newFilename );
+
+    /**
+     * Emitted when writing the layer is successfully completed. The \a newFilename
+     * parameter indicates the file path for the written file. When applicable, the
+     * \a newLayer parameter indicates the layer name used.
+     */
+    void completed( const QString &newFilename, const QString &newLayer ) SIP_SKIP;
 
     /**
      * Emitted when an error occurs which prevented the file being written (or if
@@ -76,6 +84,7 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
     QgsVectorFileWriter::WriterError mError = QgsVectorFileWriter::NoError;
 
     QString mNewFilename;
+    QString mNewLayer;
     QString mErrorMessage;
 
     QgsVectorFileWriter::SaveVectorOptions mOptions;

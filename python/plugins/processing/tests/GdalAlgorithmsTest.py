@@ -35,6 +35,7 @@ from processing.algs.gdal.gdal2tiles import gdal2tiles
 from processing.algs.gdal.gdalcalc import gdalcalc
 from processing.algs.gdal.gdaltindex import gdaltindex
 from processing.algs.gdal.contour import contour
+from processing.algs.gdal.gdalinfo import gdalinfo
 from processing.algs.gdal.GridAverage import GridAverage
 from processing.algs.gdal.GridDataMetrics import GridDataMetrics
 from processing.algs.gdal.GridInverseDistance import GridInverseDistance
@@ -44,6 +45,7 @@ from processing.algs.gdal.GridNearestNeighbor import GridNearestNeighbor
 from processing.algs.gdal.buildvrt import buildvrt
 from processing.algs.gdal.hillshade import hillshade
 from processing.algs.gdal.ogr2ogr import ogr2ogr
+from processing.algs.gdal.ogrinfo import ogrinfo
 from processing.algs.gdal.proximity import proximity
 from processing.algs.gdal.rasterize import rasterize
 from processing.algs.gdal.retile import retile
@@ -801,6 +803,68 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertIn('-input_file_list', commands[1])
         self.assertIn('d:/temp/test.vrt', commands[1])
 
+    def testGdalInfo(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = gdalinfo()
+        alg.initAlgorithm()
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MIN_MAX': False,
+                                    'NOGCP': False,
+                                    'NO_METADATA': False,
+                                    'STATS': False}, context, feedback),
+            ['gdalinfo',
+             source])
+
+        source = os.path.join(testDataPath, 'raster with spaces.tif')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MIN_MAX': False,
+                                    'NOGCP': False,
+                                    'NO_METADATA': False,
+                                    'STATS': False}, context, feedback),
+            ['gdalinfo',
+             '"' + source + '"'])
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MIN_MAX': True,
+                                    'NOGCP': False,
+                                    'NO_METADATA': False,
+                                    'STATS': False}, context, feedback),
+            ['gdalinfo',
+             '-mm "' + source + '"'])
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MIN_MAX': False,
+                                    'NOGCP': True,
+                                    'NO_METADATA': False,
+                                    'STATS': False}, context, feedback),
+            ['gdalinfo',
+             '-nogcp "' + source + '"'])
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MIN_MAX': False,
+                                    'NOGCP': False,
+                                    'NO_METADATA': True,
+                                    'STATS': False}, context, feedback),
+            ['gdalinfo',
+             '-nomd "' + source + '"'])
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MIN_MAX': False,
+                                    'NOGCP': False,
+                                    'NO_METADATA': False,
+                                    'STATS': True}, context, feedback),
+            ['gdalinfo',
+             '-stats "' + source + '"'])
+
     def testGdalTindex(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -1089,6 +1153,48 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-f "LIBKML" "d:/temp/my out/check.kml" ' +
              source + ' polys2'])
+
+    def testOgrInfo(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'polys.gml')
+        alg = ogrinfo()
+        alg.initAlgorithm()
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SUMMARY_ONLY': True,
+                                    'NO_METADATA': False}, context, feedback),
+            ['ogrinfo',
+             '-al -so ' +
+             source])
+
+        source = os.path.join(testDataPath, 'filename with spaces.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SUMMARY_ONLY': True,
+                                    'NO_METADATA': False}, context, feedback),
+            ['ogrinfo',
+             '-al -so "' +
+             source + '"'])
+
+        source = os.path.join(testDataPath, 'filename with spaces.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SUMMARY_ONLY': False,
+                                    'NO_METADATA': False}, context, feedback),
+            ['ogrinfo',
+             '-al "' +
+             source + '"'])
+
+        source = os.path.join(testDataPath, 'filename with spaces.gml')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SUMMARY_ONLY': True,
+                                    'NO_METADATA': True}, context, feedback),
+            ['ogrinfo',
+             '-al -so -nomd "' +
+             source + '"'])
 
     def testHillshade(self):
         context = QgsProcessingContext()

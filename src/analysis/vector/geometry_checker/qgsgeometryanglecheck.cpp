@@ -52,7 +52,7 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError *> &error
             continue;
           }
 
-          double angle = qAcos( v21 * v23 ) / M_PI * 180.0;
+          double angle = std::acos( v21 * v23 ) / M_PI * 180.0;
           if ( angle < mMinAngle )
           {
             errors.append( new QgsGeometryCheckError( this, layerFeature, p2, QgsVertexId( iPart, iRing, iVert ), angle ) );
@@ -147,7 +147,7 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError *error, int method, 
   }
 }
 
-QStringList QgsGeometryAngleCheck::getResolutionMethods() const
+QStringList QgsGeometryAngleCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "Delete node with small angle" ) << tr( "No action" );
   return methods;

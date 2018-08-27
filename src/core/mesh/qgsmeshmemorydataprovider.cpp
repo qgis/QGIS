@@ -407,5 +407,12 @@ QgsMeshDatasetValue QgsMeshMemoryDataProvider::datasetValue( QgsMeshDatasetIndex
   }
 }
 
+bool QgsMeshMemoryDataProvider::isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const
+{
+  Q_UNUSED( index );
+  Q_UNUSED( faceIndex );
+  return true;
+}
+
 
 ///@endcond

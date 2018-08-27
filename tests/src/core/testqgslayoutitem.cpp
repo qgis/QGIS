@@ -1431,6 +1431,12 @@ void TestQgsLayoutItem::itemVariablesFunction()
   QgsExpression e4( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_units' )" ) );
   r = e4.evaluate( &c );
   QCOMPARE( r.toString(), QString( "degrees" ) );
+
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
+  map->setLayers( QList<QgsMapLayer *>() << layer );
+  QgsExpression e5( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_layers_ids' )" ) );
+  r = e5.evaluate( &c );
+  QCOMPARE( r.toStringList().join( ',' ), layer->id() );
 }
 
 void TestQgsLayoutItem::variables()

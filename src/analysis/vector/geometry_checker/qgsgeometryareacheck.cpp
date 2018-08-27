@@ -199,7 +199,7 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature
   return true;
 }
 
-QStringList QgsGeometryAreaCheck::getResolutionMethods() const
+QStringList QgsGeometryAreaCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList()
                                << tr( "Merge with neighboring polygon with longest shared edge" )

@@ -82,7 +82,7 @@ void QgsGeometryLineIntersectionCheck::fixError( QgsGeometryCheckError *error, i
   }
 }
 
-QStringList QgsGeometryLineIntersectionCheck::getResolutionMethods() const
+QStringList QgsGeometryLineIntersectionCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;

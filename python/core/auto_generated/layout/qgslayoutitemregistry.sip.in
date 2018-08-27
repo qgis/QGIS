@@ -178,6 +178,8 @@ of layout items.
       LayoutAttributeTable,
       LayoutTextTable,
 
+      Layout3DMap,
+
       // item
       PluginItem,
     };

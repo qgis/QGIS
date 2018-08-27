@@ -255,7 +255,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   QgsVectorLayer *followBoundaryCheckLayer = ui.comboBoxFollowBoundaries->isEnabled() ? dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboBoxFollowBoundaries->currentData().toString() ) ) : nullptr;
   if ( layers.contains( lineLayerCheckLayer ) || layers.contains( followBoundaryCheckLayer ) )
   {
-    QMessageBox::critical( this, tr( "Check Geometries" ), tr( "The test layer set contains a layer selected for a topology check." ) );
+    QMessageBox::critical( this, tr( "Check Geometries" ), tr( "The selected input layers cannot contain a layer also selected for a topology check." ) );
     return;
   }
 

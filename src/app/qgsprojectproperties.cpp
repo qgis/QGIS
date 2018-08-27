@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgsdistancearea.h"
 #include "qgisapp.h"
+#include "qgis.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatumtransformtablewidget.h"
 #include "qgslayoutmanager.h"
@@ -827,8 +828,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mMetadataWidget->setMetadata( &QgsProject::instance()->metadata() );
 
   // sync metadata title and project title fields
-  connect( mMetadataWidget, &QgsMetadataWidget::titleChanged, titleEdit, &QLineEdit::setText );
-  connect( titleEdit, &QLineEdit::textChanged, mMetadataWidget, &QgsMetadataWidget::setTitle );
+  connect( mMetadataWidget, &QgsMetadataWidget::titleChanged, titleEdit, &QLineEdit::setText, Qt::QueuedConnection );
+  connect( titleEdit, &QLineEdit::textChanged, [ = ] { whileBlocking( mMetadataWidget )->setTitle( title() ) ;} );
 
   //fill ts language checkbox
   QString i18nPath = QgsApplication::i18nPath();
@@ -2217,4 +2218,10 @@ void QgsProjectProperties::onGenerateTsFileButton() const
 {
   QString l = cbtsLocale->currentData().toString();
   QgsProject::instance()->generateTsFile( l );
+  QMessageBox::information( nullptr, tr( "General TS file generated" ), tr( "TS file generated with source language %1.\n"
+                            "- open it with Qt Linguist\n"
+                            "- translate strings\n"
+                            "- save it with the postfix of the target language (eg. de)\n"
+                            "- release to get qm file including postfix (eg. aproject_de.qm)\n"
+                            "When you open it again in QGIS having set the target language (de), the project will be translated and saved with postfix (eg. aproject_de.qgs)." ).arg( l ) ) ;
 }

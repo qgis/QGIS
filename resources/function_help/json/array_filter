@@ -1,0 +1,12 @@
+{
+  "name": "array_filter",
+  "type": "function",
+  "description": "Returns an array with only the items for which the expression evaluates to true.",
+  "arguments": [
+    {"arg":"array","description":"an array"},
+    {"arg":"expression","description":"an expression to evaluate on each item. The variable `@element` will be replaced by the current value."}
+  ],
+  "examples": [
+    { "expression": "array_filter(array(1,2,3),@element < 3)", "returns":"[ 1, 2 ]"}
+  ]
+}

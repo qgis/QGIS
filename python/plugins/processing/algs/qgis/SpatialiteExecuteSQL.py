@@ -60,6 +60,9 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
     def displayName(self):
         return self.tr('SpatiaLite execute SQL')
 
+    def shortDescription(self):
+        return self.tr('Executes a SQL command on a SpatiaLite database')
+
     def flags(self):
         return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 

@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayer.h"
+#include "qgsproxyprogresstask.h"
 
 #include <QMessageBox>
 #include <QProgressDialog>
@@ -93,6 +94,8 @@ QVector<QgsDataItem *> QgsOracleConnectionItem::createChildren()
         QgsOracleConn::restrictToSchema( mName ),
         /* useEstimatedMetadata */ true,
         QgsOracleConn::allowGeometrylessTables( mName ) );
+    mColumnTypeTask = new QgsProxyProgressTask( tr( "Scanning tables for %1" ).arg( mName ) );
+    QgsApplication::taskManager()->addTask( mColumnTypeTask );
 
     connect( mColumnTypeThread, &QgsOracleColumnTypeThread::setLayerType,
              this, &QgsOracleConnectionItem::setLayerType );
@@ -101,8 +104,11 @@ QVector<QgsDataItem *> QgsOracleConnectionItem::createChildren()
 
     if ( QgsOracleRootItem::sMainWindow )
     {
-      connect( mColumnTypeThread, SIGNAL( progress( int, int ) ),
-               QgsOracleRootItem::sMainWindow, SLOT( showProgress( int, int ) ) );
+      connect( mColumnTypeThread, &QgsOracleColumnTypeThread::progress,
+               mColumnTypeTask, [ = ]( int i, int n )
+      {
+        mColumnTypeTask->setProxyProgress( 100.0 * static_cast< double >( i ) / n );
+      } );
       connect( mColumnTypeThread, SIGNAL( progressMessage( QString ) ),
                QgsOracleRootItem::sMainWindow, SLOT( showStatusMessage( QString ) ) );
     }
@@ -127,6 +133,9 @@ void QgsOracleConnectionItem::threadStarted()
 
 void QgsOracleConnectionItem::threadFinished()
 {
+  mColumnTypeTask->finalize( true );
+  mColumnTypeTask = nullptr;
+
   QgsDebugMsgLevel( QStringLiteral( "Entering." ), 3 );
   setAllAsPopulated();
 }
