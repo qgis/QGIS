@@ -854,6 +854,10 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
     else
       return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWkbTypes::displayString( geom.constGet()->wkbType() ) );
   }
+  else if ( value.value< QgsWeakMapLayerPointer >().data() )
+  {
+    return tr( "<i>&lt;map layer&gt;</i>" );
+  }
   else if ( !value.isValid() )
   {
     return tr( "<i>NULL</i>" );
