@@ -28,6 +28,10 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
   QStringList leftJoins;
   QStringList columns;
 
+  // add the geometry column if the layer is spatial
+  if ( Layer->isSpatial() )
+    columns << "t.geometry";
+
   // look for the uid
   QgsFields fields = layer->dataProvider()->fields();
   {
@@ -51,7 +55,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
   const QgsFields providerFields = layer->dataProvider()->fields();
   for ( const auto &f : providerFields )
   {
-    columns << "t." + f.name();
+    columns << "t.\"" + f.name() + "\"";
   }
 
   int joinIdx = 0;
@@ -63,12 +67,12 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
       continue;
     QString prefix = join.prefix().isEmpty() ? joinedLayer->name() + "_" : join.prefix();
 
-    leftJoins << QStringLiteral( "LEFT JOIN %1 AS %2 ON t.\"%5\"=%2.\"%3\"" ).arg( joinedLayer->id(), joinName, join.joinFieldName(), join.targetFieldName() );
+    leftJoins << QStringLiteral( "LEFT JOIN \"%1\" AS %2 ON t.\"%5\"=%2.\"%3\"" ).arg( joinedLayer->id(), joinName, join.joinFieldName(), join.targetFieldName() );
     if ( join.joinFieldNamesSubset() )
     {
       Q_FOREACH ( const QString &f, *join.joinFieldNamesSubset() )
       {
-        columns << joinName + "." + f + " AS " + prefix + f;
+        columns << joinName + ".\"" + f + "\" AS \"" + prefix + f + "\"";
       }
     }
     else
@@ -78,12 +82,12 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
       {
         if ( f.name() == join.joinFieldName() )
           continue;
-        columns << joinName + "." + f.name() + " AS " + prefix + f.name();
+        columns << joinName + ".\"" + f.name() + "\" AS \"" + prefix + f.name() + "\"";
       }
     }
   }
 
-  QString query = "SELECT " + columns.join( QStringLiteral( ", " ) ) + " FROM " + layer->id() + " AS t " + leftJoins.join( QStringLiteral( " " ) );
+  QString query = "SELECT " + columns.join( QStringLiteral( ", " ) ) + " FROM \"" + layer->id() + "\" AS t " + leftJoins.join( QStringLiteral( " " ) );
   def.setQuery( query );
 
   return def;
