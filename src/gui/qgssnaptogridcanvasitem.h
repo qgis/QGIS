@@ -99,8 +99,8 @@ class GUI_EXPORT QgsSnapToGridCanvasItem : public QObject, public QgsMapCanvasIt
     void updateZoomFactor();
 
   private:
-    QPen mGridPen;
-    QPen mCurrentPointPen;
+    QPen mGridPen = QPen( QColor( 127, 127, 127, 150 ) );
+    QPen mCurrentPointPen = QPen( QColor( 200, 200, 200, 150 ) );
 
     bool mEnabled = true;
     bool mAvailableByZoomFactor = false;

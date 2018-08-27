@@ -18,8 +18,6 @@
 
 QgsSnapToGridCanvasItem::QgsSnapToGridCanvasItem( QgsMapCanvas *mapCanvas )
   : QgsMapCanvasItem( mapCanvas )
-  , mGridPen( QPen( QColor( 127, 127, 127, 150 ), 1 ) )
-  , mCurrentPointPen( QPen( QColor( 200, 200, 200, 150 ), 3 ) )
 {
   updateMapCanvasCrs();
   connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsSnapToGridCanvasItem::updateZoomFactor );
