@@ -1157,12 +1157,12 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
 
   QVariantList layersIds;
   QVariantList layers;
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layers_ids" ), layersIds, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layer_ids" ), layersIds, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layers" ), layers, true ) );
 
   context.appendScope( scope );
 
-  // The scope map_layers_ids and map_layers variables have been added to the context, only now we can
+  // The scope map_layer_ids and map_layers variables have been added to the context, only now we can
   // call layersToRender (just in case layersToRender relies on evaluating an expression which uses
   // other variables contained within the map settings scope
   const QList<QgsMapLayer *> layersInMap = layersToRender( &context );
@@ -1174,7 +1174,7 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
     layersIds << layer->id();
     layers << QVariant::fromValue<QgsWeakMapLayerPointer>( QgsWeakMapLayerPointer( layer ) );
   }
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layers_ids" ), layersIds, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layer_ids" ), layersIds, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layers" ), layers, true ) );
 
   return context;

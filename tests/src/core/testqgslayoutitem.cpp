@@ -1435,7 +1435,7 @@ void TestQgsLayoutItem::itemVariablesFunction()
   std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
   std::unique_ptr< QgsVectorLayer > layer2 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
   map->setLayers( QList<QgsMapLayer *>() << layer.get() << layer2.get() );
-  QgsExpression e5( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_layers_ids' )" ) );
+  QgsExpression e5( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_layer_ids' )" ) );
   r = e5.evaluate( &c );
   QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "%1,%2" ).arg( layer->id(), layer2->id() ) );
   e5 = QgsExpression( QStringLiteral( "array_foreach(map_get( item_variables( 'Map_id' ), 'map_layers' ), layer_property(@element, 'name'))" ) );
