@@ -1,0 +1,113 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingmodelerwidget.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsProcessingModelerParameterWidget : QWidget
+{
+%Docstring
+
+A widget for customising the value of Processing algorithm parameter inside
+a Processing model.
+
+The widget provides choice of the linked source for values for the parameter
+inside the model. E.g. parameters can be a static value, an evaluated
+expression results, the output from another child algorithm, or an input
+parameter for the model itself.
+
+Individual modeler parameter widgets are not usually created directly, instead they are
+constructed through the central registry, via calls to
+QgsGui.processingGuiRegistry()->createModelerParameterWidget().
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingmodelerwidget.h"
+%End
+  public:
+
+    QgsProcessingModelerParameterWidget( QgsProcessingModelAlgorithm *model,
+                                         const QString &childId,
+                                         const QgsProcessingParameterDefinition *parameter,
+                                         const QgsProcessingContext &context,
+                                         QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProcessingModelerParameterWidget, for the specified
+``parameter`` definition within the given ``model``.
+
+The ID of the child algorithm within the model must be specified via the ``childId``
+argument. This value corresponds to the :py:func:`QgsProcessingModelChildAlgorithm.childId()`
+string, which uniquely identifies which child algorithm the parameter is associated
+with inside the given ``model``.
+
+A Processing ``context`` must also be specified, which allows the widget
+to resolve parameter values which are context dependent. The context must
+last for the lifetime of the widget.
+%End
+
+    ~QgsProcessingModelerParameterWidget();
+
+    void populateSources( const QStringList &compatibleParameterTypes,
+                          const QStringList &compatibleOutputTypes,
+                          const QList< int > &compatibleDataTypes );
+%Docstring
+Populates the widget with available sources for the parameter's value, e.g.
+adding the available child algorithm outputs and model input parameter
+choices.
+
+In order to determine the available source, the ``compatibleParameterTypes``,
+``compatibleOutputTypes`` arguments are used. These lists correspond to the
+various available values for QgsProcessingParameterDefinition.type() (for
+``compatibleParameterTypes``) and the values for :py:func:`QgsProcessingOutputDefinition.type()`
+(for ``compatibleOutputTypes``).
+
+The ``compatibleDataTypes`` list corresponds to the compatible data types
+from QgsProcessing.SourceType.
+%End
+
+    const QgsProcessingParameterDefinition *parameterDefinition() const;
+%Docstring
+Returns the parameter definition associated with this wrapper.
+%End
+
+    QLabel *createLabel() /Factory/;
+%Docstring
+Creates a label for use identifying the associated parameter.
+
+The caller takes ownership of the returned value.
+%End
+
+    virtual void setWidgetValue( const QgsProcessingModelChildParameterSource &value );
+%Docstring
+Sets the current ``value`` for the parameter.
+
+.. seealso:: :py:func:`value`
+%End
+
+    virtual QgsProcessingModelChildParameterSource value() const;
+%Docstring
+Returns the current value of the parameter.
+
+.. seealso:: :py:func:`setWidgetValue`
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingmodelerwidget.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

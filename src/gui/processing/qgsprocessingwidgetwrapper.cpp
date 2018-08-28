@@ -18,17 +18,18 @@
 
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingmodelerwidget.h"
 #include <QLabel>
 
 
-QgsAbstractProcessingParameterWidgetWrapper::QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsAbstractProcessingParameterWidgetWrapper::WidgetType type, QObject *parent )
+QgsAbstractProcessingParameterWidgetWrapper::QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QObject *parent )
   : QObject( parent )
   , mType( type )
   , mParameterDefinition( parameter )
 {
 }
 
-QgsAbstractProcessingParameterWidgetWrapper::WidgetType QgsAbstractProcessingParameterWidgetWrapper::type() const
+QgsProcessingGui::WidgetType QgsAbstractProcessingParameterWidgetWrapper::type() const
 {
   return mType;
 }
@@ -72,14 +73,14 @@ QLabel *QgsAbstractProcessingParameterWidgetWrapper::createLabel()
 {
   switch ( mType )
   {
-    case Batch:
+    case QgsProcessingGui::Batch:
       return nullptr;
 
-    case Standard:
-    case Modeler:
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Modeler:
     {
       std::unique_ptr< QLabel > label = qgis::make_unique< QLabel >( mParameterDefinition->description() );
-      label->setToolTip( mParameterDefinition->name() );
+      label->setToolTip( mParameterDefinition->toolTip() );
       return label.release();
     }
   }
@@ -89,4 +90,11 @@ QLabel *QgsAbstractProcessingParameterWidgetWrapper::createLabel()
 void QgsAbstractProcessingParameterWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> & )
 {
 
+}
+
+QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterface::createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, const QgsProcessingContext &context )
+{
+  std::unique_ptr< QgsProcessingModelerParameterWidget > widget = qgis::make_unique< QgsProcessingModelerParameterWidget >( model, childId, parameter, context );
+  widget->populateSources( compatibleParameterTypes(), compatibleOutputTypes(), compatibleDataTypes() );
+  return widget.release();
 }

@@ -19,6 +19,8 @@
 #include <QLabel>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QStackedWidget>
+#include <QToolButton>
 
 #include "qgstest.h"
 #include "qgsgui.h"
@@ -27,7 +29,9 @@
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
+#include "qgsprocessingmodelerwidget.h"
 #include "qgsnativealgorithms.h"
+#include "processing/models/qgsprocessingmodelalgorithm.h"
 #include "qgsxmlutils.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
@@ -57,7 +61,7 @@ class TestWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper
   public:
 
     TestWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
-                       WidgetType type = Standard )
+                       QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard )
       : QgsAbstractProcessingParameterWidgetWrapper( parameter, type )
     {}
 
@@ -99,10 +103,17 @@ class TestWidgetFactory : public QgsProcessingParameterWidgetFactoryInterface
     }
 
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter,
-        QgsAbstractProcessingParameterWidgetWrapper::WidgetType type ) override
+        QgsProcessingGui::WidgetType type ) override
     {
       return new TestWidgetWrapper( parameter, type );
     }
+
+
+    QStringList compatibleParameterTypes() const override { return QStringList(); }
+
+    QStringList compatibleOutputTypes() const override { return QStringList(); }
+
+    QList< int > compatibleDataTypes() const override { return QList<int >(); }
 
 };
 
@@ -122,6 +133,7 @@ class TestProcessingGui : public QObject
     void testFilterAlgorithmConfig();
     void testWrapperFactoryRegistry();
     void testWrapperGeneral();
+    void testModelerWrapper();
     void testBooleanWrapper();
 };
 
@@ -203,7 +215,7 @@ void TestProcessingGui::testWrapperFactoryRegistry()
   TestParamType numParam( QStringLiteral( "num" ), QStringLiteral( "num" ) );
   TestParamType stringParam( QStringLiteral( "str" ), QStringLiteral( "str" ) );
 
-  QVERIFY( !registry.createParameterWidgetWrapper( &numParam, QgsAbstractProcessingParameterWidgetWrapper::Standard ) );
+  QVERIFY( !registry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard ) );
 
   TestWidgetFactory *factory = new TestWidgetFactory( QStringLiteral( "str" ) );
   QVERIFY( registry.addParameterWidgetFactory( factory ) );
@@ -213,9 +225,9 @@ void TestProcessingGui::testWrapperFactoryRegistry()
   QVERIFY( !registry.addParameterWidgetFactory( factory2 ) );
   delete factory2;
 
-  QgsAbstractProcessingParameterWidgetWrapper *wrapper = registry.createParameterWidgetWrapper( &numParam, QgsAbstractProcessingParameterWidgetWrapper::Standard );
+  QgsAbstractProcessingParameterWidgetWrapper *wrapper = registry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard );
   QVERIFY( !wrapper );
-  wrapper = registry.createParameterWidgetWrapper( &stringParam, QgsAbstractProcessingParameterWidgetWrapper::Standard );
+  wrapper = registry.createParameterWidgetWrapper( &stringParam, QgsProcessingGui::Standard );
   QVERIFY( wrapper );
   QCOMPARE( wrapper->parameterDefinition()->type(), QStringLiteral( "str" ) );
   delete wrapper;
@@ -223,7 +235,7 @@ void TestProcessingGui::testWrapperFactoryRegistry()
   TestWidgetFactory *factory3 = new TestWidgetFactory( QStringLiteral( "num" ) );
   QVERIFY( registry.addParameterWidgetFactory( factory3 ) );
 
-  wrapper = registry.createParameterWidgetWrapper( &numParam, QgsAbstractProcessingParameterWidgetWrapper::Standard );
+  wrapper = registry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard );
   QVERIFY( wrapper );
   QCOMPARE( wrapper->parameterDefinition()->type(), QStringLiteral( "num" ) );
   delete wrapper;
@@ -233,10 +245,10 @@ void TestProcessingGui::testWrapperFactoryRegistry()
   TestWidgetFactory *factory4 = new TestWidgetFactory( QStringLiteral( "xxxx" ) );
   registry.removeParameterWidgetFactory( factory4 );
   registry.removeParameterWidgetFactory( factory );
-  wrapper = registry.createParameterWidgetWrapper( &stringParam, QgsAbstractProcessingParameterWidgetWrapper::Standard );
+  wrapper = registry.createParameterWidgetWrapper( &stringParam, QgsProcessingGui::Standard );
   QVERIFY( !wrapper );
 
-  wrapper = registry.createParameterWidgetWrapper( &numParam, QgsAbstractProcessingParameterWidgetWrapper::Standard );
+  wrapper = registry.createParameterWidgetWrapper( &numParam, QgsProcessingGui::Standard );
   QVERIFY( wrapper );
   QCOMPARE( wrapper->parameterDefinition()->type(), QStringLiteral( "num" ) );
   delete wrapper;
@@ -246,11 +258,14 @@ void TestProcessingGui::testWrapperGeneral()
 {
   TestParamType param( QStringLiteral( "boolean" ), QStringLiteral( "bool" ) );
   QgsProcessingBooleanWidgetWrapper wrapper( &param );
-  QCOMPARE( wrapper.type(), QgsAbstractProcessingParameterWidgetWrapper::Standard );
-  QgsProcessingBooleanWidgetWrapper wrapper2( &param, QgsAbstractProcessingParameterWidgetWrapper::Batch );
-  QCOMPARE( wrapper2.type(), QgsAbstractProcessingParameterWidgetWrapper::Batch );
+  QCOMPARE( wrapper.type(), QgsProcessingGui::Standard );
 
+  QgsProcessingBooleanWidgetWrapper wrapper2( &param, QgsProcessingGui::Batch );
+  QCOMPARE( wrapper2.type(), QgsProcessingGui::Batch );
   QCOMPARE( wrapper2.parameterDefinition()->name(), QStringLiteral( "bool" ) );
+
+  QgsProcessingBooleanWidgetWrapper wrapperModeler( &param, QgsProcessingGui::Modeler );
+  QCOMPARE( wrapperModeler.type(), QgsProcessingGui::Modeler );
 
   QgsProcessingContext context;
   QVERIFY( !wrapper2.wrappedWidget() );
@@ -261,6 +276,10 @@ void TestProcessingGui::testWrapperGeneral()
   QVERIFY( !wrapper2.wrappedLabel() );
   QLabel *l = wrapper2.createWrappedLabel();
   QCOMPARE( wrapper2.wrappedLabel(), l );
+  delete l;
+  l = wrapperModeler.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( wrapperModeler.wrappedLabel(), l );
   delete l;
 
   // check that created widget starts with default value
@@ -274,6 +293,107 @@ void TestProcessingGui::testWrapperGeneral()
   w = falseDefault.createWrappedWidget( context );
   QVERIFY( !falseDefault.value().toBool() );
   delete w;
+}
+
+void TestProcessingGui::testModelerWrapper()
+{
+  // make a little model
+  QgsProcessingModelAlgorithm model( QStringLiteral( "test" ), QStringLiteral( "testGroup" ) );
+  QMap<QString, QgsProcessingModelChildAlgorithm> algs;
+  QgsProcessingModelChildAlgorithm a1( "native:buffer" );
+  a1.setDescription( QStringLiteral( "alg1" ) );
+  a1.setChildId( QStringLiteral( "alg1" ) );
+  QgsProcessingModelChildAlgorithm a2;
+  a2.setDescription( QStringLiteral( "alg2" ) );
+  a2.setChildId( QStringLiteral( "alg2" ) );
+  QgsProcessingModelChildAlgorithm a3( QStringLiteral( "native:buffer" ) );
+  a3.setDescription( QStringLiteral( "alg3" ) );
+  a3.setChildId( QStringLiteral( "alg3" ) );
+  algs.insert( QStringLiteral( "alg1" ), a1 );
+  algs.insert( QStringLiteral( "alg2" ), a2 );
+  algs.insert( QStringLiteral( "alg3" ), a3 );
+  model.setChildAlgorithms( algs );
+
+  QMap<QString, QgsProcessingModelParameter> pComponents;
+  QgsProcessingModelParameter pc1;
+  pc1.setParameterName( QStringLiteral( "my_param" ) );
+  pComponents.insert( QStringLiteral( "my_param" ), pc1 );
+  model.setParameterComponents( pComponents );
+
+  QgsProcessingModelParameter bool1( "p1" );
+  model.addModelParameter( new QgsProcessingParameterBoolean( "p1", "desc" ), bool1 );
+  QgsProcessingModelParameter testParam( "p2" );
+  model.addModelParameter( new TestParamType( "test_type", "p2" ), testParam );
+
+  // try to create a parameter widget, no factories registered
+  QgsProcessingGuiRegistry registry;
+  QgsProcessingContext context;
+  QVERIFY( !registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p2" ), context ) );
+
+  // register factory
+  TestWidgetFactory *factory = new TestWidgetFactory( QStringLiteral( "test_type" ) );
+  QVERIFY( registry.addParameterWidgetFactory( factory ) );
+  QgsProcessingModelerParameterWidget *w = registry.createModelerParameterWidget( &model, QStringLiteral( "a" ), model.parameterDefinition( "p2" ), context );
+  QVERIFY( w );
+  delete w;
+
+
+  // widget tests
+  w = new QgsProcessingModelerParameterWidget( &model, "alg1", model.parameterDefinition( "p1" ), context );
+  QCOMPARE( w->parameterDefinition()->name(), QStringLiteral( "p1" ) );
+  QLabel *l = w->createLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "desc" ) );
+  QCOMPARE( l->toolTip(), w->parameterDefinition()->toolTip() );
+  delete l;
+
+  // static value
+  w->setWidgetValue( QgsProcessingModelChildParameterSource::fromStaticValue( true ) );
+  QCOMPARE( w->value().source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( w->value().staticValue().toBool(), true );
+  w->setWidgetValue( QgsProcessingModelChildParameterSource::fromStaticValue( false ) );
+  QCOMPARE( w->value().source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( w->value().staticValue().toBool(), false );
+  QCOMPARE( w->mStackedWidget->currentIndex(), 0 );
+  QCOMPARE( w->mSourceButton->toolTip(), QStringLiteral( "Value" ) );
+
+  // expression value
+  w->setWidgetValue( QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "1+2" ) ) );
+  QCOMPARE( w->value().source(), QgsProcessingModelChildParameterSource::Expression );
+  QCOMPARE( w->value().expression(), QStringLiteral( "1+2" ) );
+  QCOMPARE( w->mStackedWidget->currentIndex(), 1 );
+  QCOMPARE( w->mSourceButton->toolTip(), QStringLiteral( "Pre-calculated Value" ) );
+
+  // model input - should fail, because we haven't populated sources yet, and so have no compatible sources
+  w->setWidgetValue( QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "p1" ) ) );
+  QCOMPARE( w->value().source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  QVERIFY( w->value().parameterName().isEmpty() );
+  QCOMPARE( w->mStackedWidget->currentIndex(), 2 );
+  QCOMPARE( w->mSourceButton->toolTip(), QStringLiteral( "Model Input" ) );
+
+  // alg output  - should fail, because we haven't populated sources yet, and so have no compatible sources
+  w->setWidgetValue( QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg3" ), QStringLiteral( "OUTPUT" ) ) );
+  QCOMPARE( w->value().source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QVERIFY( w->value().outputChildId().isEmpty() );
+  QCOMPARE( w->mStackedWidget->currentIndex(), 3 );
+  QCOMPARE( w->mSourceButton->toolTip(), QStringLiteral( "Algorithm Output" ) );
+
+  // populate sources and re-try
+  w->populateSources( QStringList() << QStringLiteral( "boolean" ), QStringList() << QStringLiteral( "outputVector" ), QList<int>() );
+
+  // model input
+  w->setWidgetValue( QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "p1" ) ) );
+  QCOMPARE( w->value().source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( w->value().parameterName(), QStringLiteral( "p1" ) );
+
+  // alg output
+  w->setWidgetValue( QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg3" ), QStringLiteral( "OUTPUT" ) ) );
+  QCOMPARE( w->value().source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( w->value().outputChildId(), QStringLiteral( "alg3" ) );
+  QCOMPARE( w->value().outputName(), QStringLiteral( "OUTPUT" ) );
+
+  delete w;
+
 }
 
 void TestProcessingGui::testBooleanWrapper()
@@ -298,7 +418,7 @@ void TestProcessingGui::testBooleanWrapper()
   delete w;
 
   // batch wrapper
-  QgsProcessingBooleanWidgetWrapper wrapperB( &param, QgsAbstractProcessingParameterWidgetWrapper::Batch );
+  QgsProcessingBooleanWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
 
   w = wrapperB.createWrappedWidget( context );
   wrapperB.setWidgetValue( true, context );
@@ -311,6 +431,25 @@ void TestProcessingGui::testBooleanWrapper()
   // should be no label in batch mode
   QVERIFY( !wrapperB.createWrappedLabel() );
   delete w;
+
+  // modeler wrapper
+  QgsProcessingBooleanWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+
+  w = wrapperM.createWrappedWidget( context );
+  wrapperM.setWidgetValue( true, context );
+  QVERIFY( wrapperM.value().toBool() );
+  QVERIFY( static_cast< QComboBox * >( wrapperM.wrappedWidget() )->currentData().toBool() );
+  wrapperM.setWidgetValue( false, context );
+  QVERIFY( !wrapperM.value().toBool() );
+  QVERIFY( !static_cast< QComboBox * >( wrapperM.wrappedWidget() )->currentData().toBool() );
+
+  // should be a label in modeler mode
+  QLabel *l = wrapperM.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "bool" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete w;
+  delete l;
 }
 
 QGSTEST_MAIN( TestProcessingGui )

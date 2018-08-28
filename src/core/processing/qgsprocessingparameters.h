@@ -198,7 +198,7 @@ Q_DECLARE_METATYPE( QgsProcessingOutputLayerDefinition )
  * \since QGIS 3.0
  */
 
-class CORE_EXPORT QgsProcessingParameterDefinition
+class CORE_EXPORT  QgsProcessingParameterDefinition
 {
 
 #ifdef SIP_RUN

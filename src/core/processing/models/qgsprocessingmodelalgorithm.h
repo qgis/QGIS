@@ -311,7 +311,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * Returns a list of possible sources which can be used for the parameters for a child
      * algorithm in the model. Returned sources are those which match either one of the
      * specified \a parameterTypes (see QgsProcessingParameterDefinition::type() ) or
-     * on of the specified \a outputTypes (see QgsProcessingOutputDefinition::type() ).
+     * one of the specified \a outputTypes (see QgsProcessingOutputDefinition::type() ).
      * If specified, an optional list of \a dataTypes can be used to filter the returned
      * sources to those with compatible data types for the parameter/outputs.
      */

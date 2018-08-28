@@ -355,7 +355,7 @@ Attempts to convert the model to executable Python code.
 Returns a list of possible sources which can be used for the parameters for a child
 algorithm in the model. Returned sources are those which match either one of the
 specified ``parameterTypes`` (see QgsProcessingParameterDefinition.type() ) or
-on of the specified ``outputTypes`` (see QgsProcessingOutputDefinition.type() ).
+one of the specified ``outputTypes`` (see QgsProcessingOutputDefinition.type() ).
 If specified, an optional list of ``dataTypes`` can be used to filter the returned
 sources to those with compatible data types for the parameter/outputs.
 %End

@@ -15,18 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef QGSPROCESSINGWIDGETWRAPPER_H
 #define QGSPROCESSINGWIDGETWRAPPER_H
 
 #include <QObject>
 #include <QWidget>
+#include <QPointer>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QPointer>
+#include "qgsprocessinggui.h"
 
 class QgsProcessingParameterDefinition;
 class QgsProcessingContext;
+class QgsProcessingModelerParameterWidget;
+class QgsProcessingModelAlgorithm;
 class QLabel;
 
 /**
@@ -54,25 +56,17 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
 
   public:
 
-    //! Types of dialogs the widgets can be created for
-    enum WidgetType
-    {
-      Standard, //!< Standard algorithm dialog
-      Batch, //!< Batch processing dialog
-      Modeler, //!< Modeler dialog
-    };
-
     /**
      * Constructor for QgsAbstractProcessingParameterWidgetWrapper, for the specified
      * \a parameter definition and dialog \a type.
      */
     QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
-        WidgetType type = Standard, QObject *parent SIP_TRANSFERTHIS = nullptr );
+        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the dialog type for which widgets and labels will be created by this wrapper.
      */
-    WidgetType type() const;
+    QgsProcessingGui::WidgetType type() const;
 
     /**
      * Creates and return a new wrapped widget which allows customization of the parameter's value.
@@ -116,6 +110,8 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
      * Returns the parameter definition associated with this wrapper.
      */
     const QgsProcessingParameterDefinition *parameterDefinition() const;
+
+    // TODO QGIS 4.0 - rename to setValue, avoid conflict with Python WidgetWrapper method
 
     /**
      * Sets the current \a value for the parameter.
@@ -165,7 +161,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
 
   private:
 
-    WidgetType mType = Standard;
+    QgsProcessingGui::WidgetType mType = QgsProcessingGui::Standard;
     const QgsProcessingParameterDefinition *mParameterDefinition = nullptr;
 
     QPointer< QWidget > mWidget;
@@ -203,9 +199,87 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      * Creates a new widget wrapper for the specified \a parameter definition.
      *
      * The \a type argument indicates the dialog type to create a wrapper for.
+     *
+     * \see createModelerWidgetWrapper()
      */
     virtual QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter,
-        QgsAbstractProcessingParameterWidgetWrapper::WidgetType type ) = 0 SIP_FACTORY;
+        QgsProcessingGui::WidgetType type ) = 0 SIP_FACTORY;
+
+    /**
+     * Creates a new widget wrapper for the specified \a parameter definition.
+     *
+     * The \a type argument indicates the dialog type to create a wrapper for.
+     */
+
+    /**
+     * Creates a new modeler parameter widget for the given \a parameter. This widget allows
+     * configuration of the parameter's value when used inside a Processing \a model.
+     *
+     * The ID of the child algorithm within the model must be specified via the \a childId
+     * argument. This value corresponds to the QgsProcessingModelChildAlgorithm::childId()
+     * string, which uniquely identifies which child algorithm the parameter is associated
+     * with inside the given \a model.
+     *
+     * A Processing \a context must also be specified, which allows the widget
+     * to resolve parameter values which are context dependent. The context must
+     * last for the lifetime of the widget.
+     *
+     * \see createWidgetWrapper()
+     */
+    virtual QgsProcessingModelerParameterWidget *createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model,
+        const QString &childId,
+        const QgsProcessingParameterDefinition *parameter,
+        const QgsProcessingContext &context );
+
+  protected:
+
+    /**
+     * Returns a list of compatible Processing parameter types for inputs
+     * for this parameter.
+     *
+     * In order to determine the available sources for the parameter in a model
+     * the types returned by this method are checked. The returned list corresponds to the
+     * various available values for QgsProcessingParameterDefinition::type().
+     *
+     * Subclasses should return a list of all QgsProcessingParameterDefinition::type()
+     * values which can be used as input values for the parameter.
+     *
+     * \see compatibleOutputTypes()
+     * \see compatibleDataTypes()
+     */
+    virtual QStringList compatibleParameterTypes() const = 0;
+
+    /**
+     * Returns a list of compatible Processing output types for inputs
+     * for this parameter.
+     *
+     * In order to determine the available sources for the parameter in a model
+     * the types returned by this method are checked. The returned list corresponds to the
+     * various available values for QgsProcessingOutputDefinition::type().
+     *
+     * Subclasses should return a list of all QgsProcessingOutputDefinition::type()
+     * values which can be used as values for the parameter.
+     *
+     * \see compatibleParameterTypes()
+     * \see compatibleDataTypes()
+     */
+    virtual QStringList compatibleOutputTypes() const = 0;
+
+    /**
+     * Returns a list of compatible Processing data types for inputs
+     * for this parameter.
+     *
+     * In order to determine the available sources for the parameter in a model
+     * the types returned by this method are checked. The returned list corresponds
+     * to the various available values from QgsProcessing::SourceType.
+     *
+     * Subclasses should return a list of all QgsProcessing::SourceType
+     * values which can be used as values for the parameter.
+     *
+     * \see compatibleParameterTypes()
+     * \see compatibleOutputTypes()
+     */
+    virtual QList< int > compatibleDataTypes() const = 0;
 
 };
 

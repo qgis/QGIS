@@ -103,6 +103,7 @@ from qgis.gui import (
     QgsMapLayerComboBox,
     QgsProjectionSelectionWidget,
     QgsRasterBandComboBox,
+    QgsProcessingGui,
     QgsAbstractProcessingParameterWidgetWrapper
 )
 from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant, Qt
@@ -124,9 +125,9 @@ from processing.gui.ParameterGuiUtils import getFileFilter
 
 from processing.tools import dataobjects
 
-DIALOG_STANDARD = QgsAbstractProcessingParameterWidgetWrapper.Standard
-DIALOG_BATCH = QgsAbstractProcessingParameterWidgetWrapper.Batch
-DIALOG_MODELER = QgsAbstractProcessingParameterWidgetWrapper.Modeler
+DIALOG_STANDARD = QgsProcessingGui.Standard
+DIALOG_BATCH = QgsProcessingGui.Batch
+DIALOG_MODELER = QgsProcessingGui.Modeler
 
 
 class InvalidParameterValue(Exception):
@@ -152,7 +153,7 @@ class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
     NOT_SET_OPTION = '~~~~!!!!NOT SET!!!!~~~~~~~'
 
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
-        self.dialogType = dialogTypes.get(dialog.__class__.__name__, QgsAbstractProcessingParameterWidgetWrapper.Standard)
+        self.dialogType = dialogTypes.get(dialog.__class__.__name__, QgsProcessingGui.Standard)
         super().__init__(param, self.dialogType)
         self.param = param
         self.dialog = dialog
@@ -1771,9 +1772,16 @@ class WidgetWrapperFactory:
             return WidgetWrapperFactory.create_wrapper_from_metadata(param, dialog, row, col)
         else:
             # try from c++ registry first
-            dialog_type = dialogTypes.get(dialog.__class__.__name__,
-                                          QgsAbstractProcessingParameterWidgetWrapper.Standard)
-            wrapper = QgsGui.processingGuiRegistry().createParameterWidgetWrapper(param, dialog_type)
+            class_type = dialog.__class__.__name__
+            if class_type == 'ModelerParametersDialog':
+                wrapper = QgsGui.processingGuiRegistry().createModelerParameterWidget(dialog.model,
+                                                                                      dialog.childId,
+                                                                                      param,
+                                                                                      dialog.context)
+            else:
+                dialog_type = dialogTypes.get(class_type,
+                                              QgsProcessingGui.Standard)
+                wrapper = QgsGui.processingGuiRegistry().createParameterWidgetWrapper(param, dialog_type)
             if wrapper is not None:
                 return wrapper
 

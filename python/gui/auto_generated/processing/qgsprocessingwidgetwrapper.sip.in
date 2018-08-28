@@ -10,7 +10,6 @@
 
 
 
-
 class QgsAbstractProcessingParameterWidgetWrapper : QObject
 {
 %Docstring
@@ -36,21 +35,14 @@ QgsGui.processingGuiRegistry()->createParameterWidgetWrapper().
 %End
   public:
 
-    enum WidgetType
-    {
-      Standard,
-      Batch,
-      Modeler,
-    };
-
     QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter = 0,
-        WidgetType type = Standard, QObject *parent /TransferThis/ = 0 );
+        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAbstractProcessingParameterWidgetWrapper, for the specified
 ``parameter`` definition and dialog ``type``.
 %End
 
-    WidgetType type() const;
+    QgsProcessingGui::WidgetType type() const;
 %Docstring
 Returns the dialog type for which widgets and labels will be created by this wrapper.
 %End
@@ -99,6 +91,7 @@ Returns the current wrapped label, if any.
 %Docstring
 Returns the parameter definition associated with this wrapper.
 %End
+
 
     virtual void setWidgetValue( const QVariant &value, const QgsProcessingContext &context ) = 0;
 %Docstring
@@ -176,11 +169,87 @@ Returns the type string for the parameter type the factory is associated with.
 %End
 
     virtual QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter,
-        QgsAbstractProcessingParameterWidgetWrapper::WidgetType type ) = 0 /Factory/;
+        QgsProcessingGui::WidgetType type ) = 0 /Factory/;
 %Docstring
 Creates a new widget wrapper for the specified ``parameter`` definition.
 
 The ``type`` argument indicates the dialog type to create a wrapper for.
+
+.. seealso:: :py:func:`createModelerWidgetWrapper`
+%End
+
+
+    virtual QgsProcessingModelerParameterWidget *createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model,
+        const QString &childId,
+        const QgsProcessingParameterDefinition *parameter,
+        const QgsProcessingContext &context );
+%Docstring
+Creates a new modeler parameter widget for the given ``parameter``. This widget allows
+configuration of the parameter's value when used inside a Processing ``model``.
+
+The ID of the child algorithm within the model must be specified via the ``childId``
+argument. This value corresponds to the :py:func:`QgsProcessingModelChildAlgorithm.childId()`
+string, which uniquely identifies which child algorithm the parameter is associated
+with inside the given ``model``.
+
+A Processing ``context`` must also be specified, which allows the widget
+to resolve parameter values which are context dependent. The context must
+last for the lifetime of the widget.
+
+.. seealso:: :py:func:`createWidgetWrapper`
+%End
+
+  protected:
+
+    virtual QStringList compatibleParameterTypes() const = 0;
+%Docstring
+Returns a list of compatible Processing parameter types for inputs
+for this parameter.
+
+In order to determine the available sources for the parameter in a model
+the types returned by this method are checked. The returned list corresponds to the
+various available values for :py:func:`QgsProcessingParameterDefinition.type()`
+
+Subclasses should return a list of all :py:func:`QgsProcessingParameterDefinition.type()`
+values which can be used as input values for the parameter.
+
+.. seealso:: :py:func:`compatibleOutputTypes`
+
+.. seealso:: :py:func:`compatibleDataTypes`
+%End
+
+    virtual QStringList compatibleOutputTypes() const = 0;
+%Docstring
+Returns a list of compatible Processing output types for inputs
+for this parameter.
+
+In order to determine the available sources for the parameter in a model
+the types returned by this method are checked. The returned list corresponds to the
+various available values for :py:func:`QgsProcessingOutputDefinition.type()`
+
+Subclasses should return a list of all :py:func:`QgsProcessingOutputDefinition.type()`
+values which can be used as values for the parameter.
+
+.. seealso:: :py:func:`compatibleParameterTypes`
+
+.. seealso:: :py:func:`compatibleDataTypes`
+%End
+
+    virtual QList< int > compatibleDataTypes() const = 0;
+%Docstring
+Returns a list of compatible Processing data types for inputs
+for this parameter.
+
+In order to determine the available sources for the parameter in a model
+the types returned by this method are checked. The returned list corresponds
+to the various available values from QgsProcessing.SourceType.
+
+Subclasses should return a list of all QgsProcessing.SourceType
+values which can be used as values for the parameter.
+
+.. seealso:: :py:func:`compatibleParameterTypes`
+
+.. seealso:: :py:func:`compatibleOutputTypes`
 %End
 
 };
