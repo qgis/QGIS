@@ -45,18 +45,22 @@ class QgsMacNative::QgsUserNotificationCenter
     NSImage *_qgisIcon;
 };
 
-QgsMacNative::QgsMacNative( const QString &iconPath )
+QgsMacNative::QgsMacNative()
   : mQgsUserNotificationCenter( new QgsMacNative::QgsUserNotificationCenter() )
 {
   mQgsUserNotificationCenter->_qgsUserNotificationCenter = [[QgsUserNotificationCenterDelegate alloc] init];
   [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate: mQgsUserNotificationCenter->_qgsUserNotificationCenter];
-  mQgsUserNotificationCenter->_qgisIcon = QtMac::toNSImage( QPixmap( iconPath ) );
 }
 
 QgsMacNative::~QgsMacNative()
 {
   [mQgsUserNotificationCenter->_qgsUserNotificationCenter dealloc];
   delete mQgsUserNotificationCenter;
+}
+
+void QgsMacNative::setIconPath( const QString &iconPath )
+{
+  mQgsUserNotificationCenter->_qgisIcon = QtMac::toNSImage( QPixmap( iconPath ) );
 }
 
 const char *QgsMacNative::currentAppLocalizedName()
