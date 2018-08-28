@@ -51,6 +51,8 @@ class CORE_EXPORT QgsMeshDatasetIndex
     bool isValid() const;
     //! Equality operator
     bool operator == ( const QgsMeshDatasetIndex &other ) const;
+    //! Inequality operator
+    bool operator != ( const QgsMeshDatasetIndex &other ) const;
   private:
     int mGroupIndex = -1;
     int mDatasetIndex = -1;

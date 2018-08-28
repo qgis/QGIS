@@ -53,7 +53,8 @@ class APP_EXPORT QgsRendererMeshPropertiesWidget : public QgsMapLayerConfigWidge
     void syncToLayer();
 
   private slots:
-    void onActiveDatasetGroupChanged();
+    void onActiveScalarGroupChanged( int groupIndex );
+    void onActiveVectorGroupChanged( int groupIndex );
 
   private:
     QgsMeshLayer *mMeshLayer = nullptr; //not owned

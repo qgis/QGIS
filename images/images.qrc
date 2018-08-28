@@ -526,8 +526,10 @@
         <file>themes/default/propertyicons/locale.svg</file>
         <file>themes/default/propertyicons/map_tools.svg</file>
         <file>themes/default/propertyicons/meshcontours.svg</file>
+        <file>themes/default/propertyicons/meshcontoursoff.svg</file>
         <file>themes/default/propertyicons/meshframe.svg</file>
         <file>themes/default/propertyicons/meshvectors.svg</file>
+        <file>themes/default/propertyicons/meshvectorsoff.svg</file>
         <file>themes/default/propertyicons/metadata.svg</file>
         <file>themes/default/propertyicons/network_and_proxy.svg</file>
         <file>themes/default/propertyicons/overlay.svg</file>

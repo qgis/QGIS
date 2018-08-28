@@ -44,8 +44,10 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
   mMeshRendererVectorSettingsWidget->setLayer( mMeshLayer );
   syncToLayer();
 
-  connect( mMeshRendererActiveDatasetWidget, &QgsMeshRendererActiveDatasetWidget::activeDatasetGroupChanged,
-           this, &QgsRendererMeshPropertiesWidget::onActiveDatasetGroupChanged );
+  connect( mMeshRendererActiveDatasetWidget, &QgsMeshRendererActiveDatasetWidget::activeScalarGroupChanged,
+           this, &QgsRendererMeshPropertiesWidget::onActiveScalarGroupChanged );
+  connect( mMeshRendererActiveDatasetWidget, &QgsMeshRendererActiveDatasetWidget::activeVectorGroupChanged,
+           this, &QgsRendererMeshPropertiesWidget::onActiveVectorGroupChanged );
 
   connect( mNativeMeshGroup, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( mTriangularMeshGroup, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
@@ -108,24 +110,24 @@ void QgsRendererMeshPropertiesWidget::syncToLayer()
   mNativeMeshSettingsWidget->syncToLayer();
   mTriangularMeshSettingsWidget->syncToLayer();
 
-  onActiveDatasetGroupChanged();
+  onActiveScalarGroupChanged( mMeshRendererActiveDatasetWidget->activeScalarDatasetGroup() );
+  onActiveVectorGroupChanged( mMeshRendererActiveDatasetWidget->activeVectorDatasetGroup() );
 }
 
-void QgsRendererMeshPropertiesWidget::onActiveDatasetGroupChanged()
+void QgsRendererMeshPropertiesWidget::onActiveScalarGroupChanged( int groupIndex )
 {
-  int scalarGroup = mMeshRendererActiveDatasetWidget->activeScalarDatasetGroup();
-  int vectorGroup = mMeshRendererActiveDatasetWidget->activeVectorDatasetGroup();
-  if ( vectorGroup >= 0 && !mMeshLayer->dataProvider()->datasetGroupMetadata( vectorGroup ).isVector() )
-    vectorGroup = -1;
-
-  mMeshRendererScalarSettingsWidget->setActiveDatasetGroup( scalarGroup );
-  mMeshRendererVectorSettingsWidget->setActiveDatasetGroup( vectorGroup );
-
+  mMeshRendererScalarSettingsWidget->setActiveDatasetGroup( groupIndex );
   mMeshRendererScalarSettingsWidget->syncToLayer();
-  mMeshRendererVectorSettingsWidget->syncToLayer();
+  mContoursGroupBox->setChecked( groupIndex >= 0 );
+  mContoursGroupBox->setEnabled( groupIndex >= 0 );
+}
 
-  mContoursGroupBox->setChecked( scalarGroup >= 0 );
-  mContoursGroupBox->setEnabled( scalarGroup >= 0 );
-  mVectorsGroupBox->setChecked( vectorGroup >= 0 );
-  mVectorsGroupBox->setEnabled( vectorGroup >= 0 );
+void QgsRendererMeshPropertiesWidget::onActiveVectorGroupChanged( int groupIndex )
+{
+  if ( groupIndex >= 0 && !mMeshLayer->dataProvider()->datasetGroupMetadata( groupIndex ).isVector() )
+    groupIndex = -1;
+  mMeshRendererVectorSettingsWidget->setActiveDatasetGroup( groupIndex );
+  mMeshRendererVectorSettingsWidget->syncToLayer();
+  mVectorsGroupBox->setChecked( groupIndex >= 0 );
+  mVectorsGroupBox->setEnabled( groupIndex >= 0 );
 }

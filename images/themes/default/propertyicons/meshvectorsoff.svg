@@ -14,8 +14,8 @@
    height="16"
    id="svg2"
    version="1.1"
-   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
-   sodipodi:docname="meshvectors.svg"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="list_icons.svg"
    inkscape:export-filename="/home/martin/lutra/qgis-crayfish-plugin/plugin/list_icons_d.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
@@ -134,58 +134,50 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="31.678384"
-     inkscape:cx="-2.6207406"
+     inkscape:cx="2.8246129"
      inkscape:cy="6.2123922"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
-     inkscape:window-height="1015"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-height="994"
+     inkscape:window-x="-4"
+     inkscape:window-y="-3"
      inkscape:window-maximized="1"
      showguides="true"
      inkscape:guide-bbox="true">
     <sodipodi:guide
        orientation="1,0"
        position="14.017857,5.8035714"
-       id="guide4180"
-       inkscape:locked="false" />
+       id="guide4180" />
     <sodipodi:guide
        orientation="0,1"
        position="-3.5714286,1.9642857"
-       id="guide4182"
-       inkscape:locked="false" />
+       id="guide4182" />
     <sodipodi:guide
        orientation="1,0"
        position="12.053571,10.982143"
-       id="guide4186"
-       inkscape:locked="false" />
+       id="guide4186" />
     <sodipodi:guide
        orientation="0,1"
        position="-9.1964286,3.9732143"
-       id="guide4188"
-       inkscape:locked="false" />
+       id="guide4188" />
     <sodipodi:guide
        orientation="0,1"
        position="-5.0446429,5.9821429"
-       id="guide4190"
-       inkscape:locked="false" />
+       id="guide4190" />
     <sodipodi:guide
        orientation="1,0"
        position="10,8.3482143"
-       id="guide4192"
-       inkscape:locked="false" />
+       id="guide4192" />
     <sodipodi:guide
        orientation="1,0"
        position="12.991071,10.714286"
-       id="guide4194"
-       inkscape:locked="false" />
+       id="guide4194" />
     <sodipodi:guide
        orientation="0,1"
        position="8.9651038,2.9673231"
-       id="guide4196"
-       inkscape:locked="false" />
+       id="guide4196" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -195,7 +187,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -205,15 +197,14 @@
      id="layer1"
      transform="translate(0,-1036.3622)">
     <path
-       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-mid:none;marker-end:none;fill-opacity:0.23"
-       d="m 2.5000001,1038.8622 6.0050762,6.0051 4.9949237,4.9949"
+       style="fill:#b3b3b3;stroke:#b3b3b3;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-mid:none;marker-end:none"
+       d="m 2.5000001,1038.8622 10.9999999,11"
        id="path3789"
        inkscape:connector-curvature="0"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90"
-       sodipodi:nodetypes="ccc" />
+       inkscape:export-ydpi="90" />
     <path
-       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#b3b3b3;fill-opacity:1;stroke:#b3b3b3;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 14.017857,1050.3979 12.991071,1046.3801 10,1049.3949 z"
        id="path4184"
        inkscape:connector-curvature="0"
