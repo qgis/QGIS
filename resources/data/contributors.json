@@ -872,6 +872,23 @@
           51.6934
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Peter Petrik",
+        "Committer": "No",
+        "First Commit Message": "fix #13669 (Circular string generates duplicated nodes)",
+        "First Commit Date": "28-01-2016",
+        "GIT Nickname": "PeterPetrik"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.3137828,
+          49.871362
+        ]
+      }
     }
   ]
 }
