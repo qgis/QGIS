@@ -296,7 +296,7 @@ void TestQgisAppClipboard::pasteWkt()
   QCOMPARE( features.at( 1 ).attributes().at( 0 ).toString(), QString( "3" ) );
   QCOMPARE( features.at( 1 ).attributes().at( 1 ).toString(), QString( "c3" ) );
   QCOMPARE( features.at( 1 ).attributes().at( 2 ).toString(), QString( "4" ) );
-  QCOMPARE( features.at( 2 ).constGeometry()->exportToWkt(), QStringLiteral( "Point (5 4)" ) );
+  QCOMPARE( features.at( 2 ).constGeometry()->exportToWkt(), QString( "Point (5 4)" ) );
   QCOMPARE( features.at( 2 ).attributes().count(), 3 );
   QCOMPARE( features.at( 2 ).attributes().at( 0 ).toString(), QString( "2" ) );
   QCOMPARE( features.at( 2 ).attributes().at( 1 ).toString(), QString( "b2" ) );
