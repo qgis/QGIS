@@ -115,7 +115,9 @@ QgsGui::~QgsGui()
 QgsGui::QgsGui()
 {
 #ifdef Q_OS_MAC
-  mNative = new QgsMacNative();
+  QgsMacNative *macNative = new QgsMacNative();
+  macNative->setIconPath( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) );
+  mNative = macNative;
 #elif defined (Q_OS_WIN)
   mNative = new QgsWinNative();
 #elif defined(Q_OS_LINUX)
