@@ -135,7 +135,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
 {
   if ( !mCurrentLabel.valid )
   {
-    return QLatin1String( "" );
+    return QString();
   }
   QgsPalLayerSettings &labelSettings = mCurrentLabel.settings;
 
@@ -155,7 +155,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
     QgsVectorLayer *vlayer = mCurrentLabel.layer;
     if ( !vlayer )
     {
-      return QLatin1String( "" );
+      return QString();
     }
 
     QString labelField = labelSettings.fieldName;
@@ -175,7 +175,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
       }
     }
   }
-  return QLatin1String( "" );
+  return QString();
 }
 
 void QgsMapToolLabel::currentAlignment( QString &hali, QString &vali )

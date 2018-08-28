@@ -384,7 +384,7 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseFid()
 QString QgsSpatiaLiteFeatureIterator::whereClauseFids()
 {
   if ( mRequest.filterFids().isEmpty() )
-    return QLatin1String( "" );
+    return QString();
 
   QString expr = QStringLiteral( "%1 IN (" ).arg( quotedPrimaryKey() ), delim;
   Q_FOREACH ( const QgsFeatureId featureId, mRequest.filterFids() )

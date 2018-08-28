@@ -331,7 +331,7 @@ void QgsDb2SourceSelect::mSearchGroupBox_toggled( bool checked )
   if ( mSearchTableEdit->text().isEmpty() )
     return;
 
-  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
+  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QString() );
 }
 
 void QgsDb2SourceSelect::mSearchTableEdit_textChanged( const QString &text )
@@ -695,7 +695,7 @@ void QgsDb2GeomColumnTypeThread::run()
     {
       QString table;
       table = QStringLiteral( "%1[%2]" )
-              .arg( layerProperty.schemaName.isEmpty() ? QLatin1String( "" ) : QStringLiteral( "[%1]." ).arg( layerProperty.schemaName ),
+              .arg( layerProperty.schemaName.isEmpty() ? QString() : QStringLiteral( "[%1]." ).arg( layerProperty.schemaName ),
                     layerProperty.tableName );
 
       QString query = QString( "SELECT %3"

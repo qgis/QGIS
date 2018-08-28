@@ -827,7 +827,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
   QgsFields fields;
   // No attribute
   {
-    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), fields );
+    QgsGmlStreamingParser gmlParser( QString(), QString(), fields );
     QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                      "xmlns:wfs='http://wfs' "
                                      "xmlns:gml='http://www.opengis.net/gml'>"
@@ -837,7 +837,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
   }
   // Valid numberOfFeatures
   {
-    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), fields );
+    QgsGmlStreamingParser gmlParser( QString(), QString(), fields );
     QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                      "numberOfFeatures='1' "
                                      "xmlns:wfs='http://wfs' "
@@ -847,7 +847,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
   }
   // Invalid numberOfFeatures
   {
-    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), fields );
+    QgsGmlStreamingParser gmlParser( QString(), QString(), fields );
     QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                      "numberOfFeatures='invalid' "
                                      "xmlns:wfs='http://wfs' "
@@ -857,7 +857,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
   }
   // Valid numberReturned
   {
-    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), fields );
+    QgsGmlStreamingParser gmlParser( QString(), QString(), fields );
     QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                      "numberReturned='1' "
                                      "xmlns:wfs='http://wfs' "
@@ -867,7 +867,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
   }
   // Invalid numberReturned
   {
-    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), fields );
+    QgsGmlStreamingParser gmlParser( QString(), QString(), fields );
     QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                      "numberReturned='invalid' "
                                      "xmlns:wfs='http://wfs' "
@@ -877,7 +877,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
   }
   // Valid numberMatched
   {
-    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), fields );
+    QgsGmlStreamingParser gmlParser( QString(), QString(), fields );
     QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                      "numberMatched='1' "
                                      "xmlns:wfs='http://wfs' "
@@ -887,7 +887,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
   }
   // numberMatched=unknown
   {
-    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), fields );
+    QgsGmlStreamingParser gmlParser( QString(), QString(), fields );
     QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                      "numberMatched='unknown' "
                                      "xmlns:wfs='http://wfs' "
@@ -899,7 +899,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
 
 void TestQgsGML::testException()
 {
-  QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), QgsFields() );
+  QgsGmlStreamingParser gmlParser( ( QString() ), ( QString() ), QgsFields() );
   QCOMPARE( gmlParser.processData( QByteArray( "<ows:ExceptionReport xmlns:ows='http://www.opengis.net/ows/1.1' version='2.0.0'>"
                                    "  <ows:Exception exceptionCode='NoApplicableCode'>"
                                    "    <ows:ExceptionText>my_exception</ows:ExceptionText>"
@@ -1006,7 +1006,7 @@ void TestQgsGML::testRenamedFields()
 
 void TestQgsGML::testTruncatedResponse()
 {
-  QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), QgsFields() );
+  QgsGmlStreamingParser gmlParser( ( QString() ), ( QString() ), QgsFields() );
   QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                    "xmlns:wfs='http://wfs' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"

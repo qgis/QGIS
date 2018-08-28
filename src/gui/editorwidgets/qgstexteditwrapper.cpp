@@ -161,7 +161,7 @@ void QgsTextEditWrapper::showIndeterminateState()
     mLineEdit->setPlaceholderText( QString() );
   }
 
-  setWidgetValue( QLatin1String( "" ) );
+  setWidgetValue( QString() );
 
   if ( mTextEdit )
     mTextEdit->blockSignals( false );

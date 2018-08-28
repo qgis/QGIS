@@ -174,7 +174,7 @@ QString QgsArcGisServiceSourceSelect::getPreferredCrs( const QSet<QString> &crsS
 {
   if ( crsSet.size() < 1 )
   {
-    return QLatin1String( "" );
+    return QString();
   }
 
   //first: project CRS
@@ -342,7 +342,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     QString layerTitle = mModel->item( row, 0 )->text(); //layer title/id
     QString layerName = mModel->item( row, 1 )->text(); //layer name
     bool cacheFeatures = mServiceType == FeatureService ? mModel->item( row, 3 )->checkState() == Qt::Checked : false;
-    QString filter = mServiceType == FeatureService ? mModel->item( row, 4 )->text() : QLatin1String( "" ); //optional filter specified by user
+    QString filter = mServiceType == FeatureService ? mModel->item( row, 4 )->text() : QString(); //optional filter specified by user
     if ( cbxUseTitleLayerName->isChecked() && !layerTitle.isEmpty() )
     {
       layerName = layerTitle;

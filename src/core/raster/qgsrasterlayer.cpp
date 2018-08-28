@@ -1764,7 +1764,7 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
             {
               // resolutions are no more needed and size limit is not used for tiles
               // we have to tell to the provider however that it is tiled
-              uri.setParam( QStringLiteral( "tileMatrixSet" ), QLatin1String( "" ) );
+              uri.setParam( QStringLiteral( "tileMatrixSet" ), QString() );
             }
           }
           else if ( item.startsWith( QLatin1String( "featureCount=" ) ) )

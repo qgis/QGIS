@@ -107,8 +107,8 @@ void QgsMssqlNewConnection::accept()
   settings.setValue( baseKey + "/service", txtService->text() );
   settings.setValue( baseKey + "/host", txtHost->text() );
   settings.setValue( baseKey + "/database", database );
-  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() ? txtUsername->text() : QLatin1String( "" ) );
-  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : QLatin1String( "" ) );
+  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() ? txtUsername->text() : QString() );
+  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : QString() );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/geometryColumns", cb_geometryColumns->isChecked() );

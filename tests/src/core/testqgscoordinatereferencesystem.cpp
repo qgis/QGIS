@@ -349,7 +349,7 @@ QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateRefer
     return QStringLiteral( "test %1 AUTHID = [%2] expecting [%3]"
                          ).arg( i ).arg( myCrs.authid(), myAuthIdStrings[i] );
 
-  return QLatin1String( "" );
+  return QString();
 }
 void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 {
@@ -369,7 +369,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 
   // this example file taken from bug #5598 - geographic CRS only, supported since gdal 1.9
   myWktStrings << QStringLiteral( "GEOGCS[\"GCS_Indian_1960\",DATUM[\"D_Indian_1960\",SPHEROID[\"Everest_Adjustment_1937\",6377276.345,300.8017]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]" );
-  myFiles << QLatin1String( "" );
+  myFiles << QString();
   myGdalVersionOK << 1900;
   myProj4Strings << QStringLiteral( "+proj=longlat +a=6377276.345 +b=6356075.41314024 +towgs84=198,881,317,0,0,0,0 +no_defs" );
   myTOWGS84Strings << QStringLiteral( "+towgs84=198,881,317,0,0,0,0" );
@@ -377,7 +377,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 
   // SAD69 geographic CRS, supported since gdal 1.9
   myWktStrings << QStringLiteral( "GEOGCS[\"GCS_South_American_1969\",DATUM[\"D_South_American_1969\",SPHEROID[\"GRS_1967_Truncated\",6378160.0,298.25]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]" );
-  myFiles << QLatin1String( "" );
+  myFiles << QString();
   myGdalVersionOK << 1900;
 
   //proj definition for EPSG:4618 was updated in GDAL 2.0 - see https://github.com/OSGeo/proj.4/issues/241
@@ -412,7 +412,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
       QString fileStr = QStringLiteral( TEST_DATA_DIR ) + '/' + myFiles[i];
       QgsDebugMsg( QString( "i=%1 file=%2" ).arg( i ).arg( fileStr ) );
 
-      QgsVectorLayer *myLayer = new QgsVectorLayer( fileStr, QLatin1String( "" ), QStringLiteral( "ogr" ) );
+      QgsVectorLayer *myLayer = new QgsVectorLayer( fileStr, QString(), QStringLiteral( "ogr" ) );
       if ( !myLayer || ! myLayer->isValid() )
       {
         qWarning() << QStringLiteral( "test %1 did not get valid vector layer from %2" ).arg( i ).arg( fileStr );
@@ -503,7 +503,7 @@ void TestQgsCoordinateReferenceSystem::fromProj4()
   debugPrint( myCrs );
   QVERIFY( myCrs.isValid() );
   QCOMPARE( myCrs.srsid(), GEOCRS_ID );
-  myCrs = QgsCoordinateReferenceSystem::fromProj4( QLatin1String( "" ) );
+  myCrs = QgsCoordinateReferenceSystem::fromProj4( QString() );
   QVERIFY( !myCrs.isValid() );
 }
 

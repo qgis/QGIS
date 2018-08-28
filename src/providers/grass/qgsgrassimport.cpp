@@ -113,13 +113,13 @@ void QgsGrassImportProgress::setRange( int min, int max )
   mProgressMin = min;
   mProgressMax = max;
   mProgressValue = min;
-  emit progressChanged( QLatin1String( "" ), mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
+  emit progressChanged( QString(), mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
 }
 
 void QgsGrassImportProgress::setValue( int value )
 {
   mProgressValue = value;
-  emit progressChanged( QLatin1String( "" ), mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
+  emit progressChanged( QString(), mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
 }
 
 //------------------------------ QgsGrassImport ------------------------------------
@@ -492,7 +492,7 @@ QString QgsGrassRasterImport::srcDescription() const
 {
   if ( !mPipe || !mPipe->provider() )
   {
-    return QLatin1String( "" );
+    return QString();
   }
   return mPipe->provider()->dataSourceUri();
 }
@@ -749,7 +749,7 @@ QString QgsGrassVectorImport::srcDescription() const
 {
   if ( !mProvider )
   {
-    return QLatin1String( "" );
+    return QString();
   }
   return mProvider->dataSourceUri();
 }

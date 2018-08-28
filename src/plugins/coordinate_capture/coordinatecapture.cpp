@@ -145,7 +145,7 @@ void CoordinateCapture::initGui()
   connect( mpCaptureButton, &QAbstractButton::clicked, this, &CoordinateCapture::run );
 
   // Set the icons
-  setCurrentTheme( QLatin1String( "" ) );
+  setCurrentTheme( QString() );
 
   mypLayout->addWidget( mypUserCrsToolButton, 0, 0 );
   mypLayout->addWidget( mpUserCrsEdit, 0, 1 );
@@ -296,7 +296,7 @@ QString CoordinateCapture::getIconPath( const QString &name )
   }
   else
   {
-    return QLatin1String( "" );
+    return QString();
   }
 }
 

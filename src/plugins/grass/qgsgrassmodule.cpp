@@ -771,7 +771,7 @@ void QgsGrassModule::readStdout()
   while ( mProcess.canReadLine() )
   {
     QByteArray ba = mProcess.readLine();
-    line = QString::fromLocal8Bit( ba ).replace( '\n', QLatin1String( "" ) );
+    line = QString::fromLocal8Bit( ba ).replace( '\n', QString() );
 
     // GRASS_INFO_PERCENT is caught here only because of bugs in GRASS,
     // normally it should be printed to stderr
@@ -797,7 +797,7 @@ void QgsGrassModule::readStderr()
   while ( mProcess.canReadLine() )
   {
     QByteArray ba = mProcess.readLine();
-    line = QString::fromLocal8Bit( ba ).replace( '\n', QLatin1String( "" ) );
+    line = QString::fromLocal8Bit( ba ).replace( '\n', QString() );
 
     QString text, html;
     int percent;

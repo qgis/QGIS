@@ -356,7 +356,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
   }
 
   // use the provider to edit the table
-  dsUri.setDataSource( QLatin1String( "" ), tableName, geometryColumn, QString(), primaryKey );
+  dsUri.setDataSource( QString(), tableName, geometryColumn, QString(), primaryKey );
 
   QgsDataProvider::ProviderOptions providerOptions;
   QgsSpatiaLiteProvider *provider = new QgsSpatiaLiteProvider( dsUri.uri(), providerOptions );
@@ -704,7 +704,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
         fieldType = QVariant::Double;
         type = "DOUBLE";
       }
-      mAttributeFields.append( QgsField( name, fieldType, type, 0, 0, QLatin1String( "" ) ) );
+      mAttributeFields.append( QgsField( name, fieldType, type, 0, 0, QString() ) );
     }
     fld = fld->Next;
   }
@@ -5065,8 +5065,8 @@ bool QgsSpatiaLiteProvider::getQueryGeometryDetails()
   int columns;
   char *errMsg = nullptr;
 
-  QString fType( QLatin1String( "" ) );
-  QString xSrid( QLatin1String( "" ) );
+  QString fType;
+  QString xSrid;
 
   // get stuff from the relevant column instead. This may (will?)
   // fail if there is no data in the relevant table.
@@ -5236,7 +5236,7 @@ bool QgsSpatiaLiteProvider::getTableSummary()
   char *errMsg = nullptr;
 
   QString sql = QStringLiteral( "SELECT Count(*)%1 FROM %2" )
-                .arg( mGeometryColumn.isEmpty() ? QLatin1String( "" ) : QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedIdentifier( mGeometryColumn ) ),
+                .arg( mGeometryColumn.isEmpty() ? QString() : QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedIdentifier( mGeometryColumn ) ),
                       mQuery );
 
   if ( !mSubsetString.isEmpty() )
@@ -5785,7 +5785,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
     return QString();
   }
 
-  QString style = ( rows == 1 ) ? QString::fromUtf8( results[( rows * columns ) + 0 ] ) : QLatin1String( "" );
+  QString style = ( rows == 1 ) ? QString::fromUtf8( results[( rows * columns ) + 0 ] ) : QString();
   sqlite3_free_table( results );
 
   QgsSqliteHandle::closeDb( handle );
@@ -5911,7 +5911,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   {
     QgsDebugMsg( "Connection to database failed. Save style aborted." );
     errCause = QObject::tr( "Connection to database failed" );
-    return QLatin1String( "" );
+    return QString();
   }
 
   sqlite3 *sqliteHandle = handle->handle();

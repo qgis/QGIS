@@ -849,7 +849,7 @@ void QgsDxfExport::writeTables()
   writeGroup( 71, 0 );
   writeGroup( 42, 5.0 );
   writeGroup( 3, QStringLiteral( "romans.shx" ) );
-  writeGroup( 4, QLatin1String( "" ) );
+  writeGroup( 4, QString() );
 
   writeGroup( 0, QStringLiteral( "ENDTAB" ) );
 
@@ -874,7 +874,7 @@ void QgsDxfExport::writeBlocks()
     writeGroup( 70, 0 );
     writeGroup( 0, QgsPoint( QgsWkbTypes::PointZ ) );
     writeGroup( 3, block );
-    writeGroup( 1, QLatin1String( "" ) );
+    writeGroup( 1, QString() );
     writeGroup( 0, QStringLiteral( "ENDBLK" ) );
     writeHandle();
     writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
@@ -927,7 +927,7 @@ void QgsDxfExport::writeBlocks()
     // size *= mapUnitScaleFactor( mSymbologyScale, ml->sizeUnit(), mMapUnits );
     writeGroup( 0, QgsPoint( QgsWkbTypes::PointZ ) );
     writeGroup( 3, block );
-    writeGroup( 1, QLatin1String( "" ) );
+    writeGroup( 1, QString() );
 
     // maplayer 0 -> block receives layer from INSERT statement
     ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, ml->sizeUnit(), mMapUnits, ctx.renderContext().mapToPixel().mapUnitsPerPixel() ), QStringLiteral( "0" ), ctx );
@@ -4182,7 +4182,7 @@ void QgsDxfExport::writeLinetype( const QString &styleName, const QVector<qreal>
   writeGroup( 100, QStringLiteral( "AcDbLinetypeTableRecord" ) );
   writeGroup( 2, styleName );
   writeGroup( 70, 64 ); // 0?
-  writeGroup( 3, QLatin1String( "" ) );
+  writeGroup( 3, QString() );
   writeGroup( 72, 65 );
   writeGroup( 73, pattern.size() );
   writeGroup( 40, length );

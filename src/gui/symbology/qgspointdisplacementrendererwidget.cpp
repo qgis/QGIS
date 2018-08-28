@@ -222,7 +222,7 @@ void QgsPointDisplacementRendererWidget::mLabelFieldComboBox_currentIndexChanged
   {
     if ( text == tr( "None" ) )
     {
-      mRenderer->setLabelAttributeName( QLatin1String( "" ) );
+      mRenderer->setLabelAttributeName( QString() );
     }
     else
     {

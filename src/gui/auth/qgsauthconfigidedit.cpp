@@ -93,8 +93,8 @@ void QgsAuthConfigIdEdit::clear()
 void QgsAuthConfigIdEdit::updateValidityStyle( bool valid )
 {
   QString ss( QStringLiteral( "QLineEdit{" ) );
-  ss += valid ? QLatin1String( "" ) : QStringLiteral( "color: %1;" ).arg( QgsAuthGuiUtils::redColor().name() );
-  ss += !btnLock->isChecked() ? QLatin1String( "" ) : QStringLiteral( "background-color: %1;" ).arg( QgsAuthGuiUtils::yellowColor().name() );
+  ss += valid ? QString() : QStringLiteral( "color: %1;" ).arg( QgsAuthGuiUtils::redColor().name() );
+  ss += !btnLock->isChecked() ? QString() : QStringLiteral( "background-color: %1;" ).arg( QgsAuthGuiUtils::yellowColor().name() );
   ss += '}';
 
   leAuthCfg->setStyleSheet( ss );

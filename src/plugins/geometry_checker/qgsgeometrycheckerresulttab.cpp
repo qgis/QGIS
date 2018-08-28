@@ -155,7 +155,7 @@ void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
   QTableWidgetItem *valueItem = new QTableWidgetItem();
   valueItem->setData( Qt::EditRole, error->value() );
   ui.tableWidgetErrors->setItem( row, 4, valueItem );
-  ui.tableWidgetErrors->setItem( row, 5, new QTableWidgetItem( QLatin1String( "" ) ) );
+  ui.tableWidgetErrors->setItem( row, 5, new QTableWidgetItem( QString() ) );
   ui.tableWidgetErrors->item( row, 0 )->setData( Qt::UserRole, QVariant::fromValue( error ) );
   ++mErrorCount;
   ui.labelErrorCount->setText( tr( "Total errors: %1, fixed errors: %2" ).arg( mErrorCount ).arg( mFixedCount ) );

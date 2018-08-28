@@ -55,7 +55,7 @@ void QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished()
   if ( mErrorCode == NoError )
   {
     QByteArray data = response();
-    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), QgsFields() );
+    QgsGmlStreamingParser gmlParser( ( QString() ), ( QString() ), QgsFields() );
     QString errorMsg;
     if ( gmlParser.processData( data, true, errorMsg ) )
     {

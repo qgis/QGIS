@@ -1108,7 +1108,7 @@ bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql 
   }
   QgsDebugMsgLevel( QString( "Binary cursor %1 for %2" ).arg( cursorName, sql ), 3 );
   return PQexecNR( QStringLiteral( "DECLARE %1 BINARY CURSOR%2 FOR %3" ).
-                   arg( cursorName, !mTransaction ? QLatin1String( "" ) : QStringLiteral( " WITH HOLD" ), sql ) );
+                   arg( cursorName, !mTransaction ? QString() : QStringLiteral( " WITH HOLD" ), sql ) );
 }
 
 bool QgsPostgresConn::closeCursor( const QString &cursorName )
@@ -1459,7 +1459,7 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
       table = QStringLiteral( "(SELECT %1 FROM %2%3 LIMIT %4) AS t" )
               .arg( quotedIdentifier( layerProperty.geometryColName ),
                     table,
-                    layerProperty.sql.isEmpty() ? QLatin1String( "" ) : QStringLiteral( " WHERE %1" ).arg( layerProperty.sql ) )
+                    layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " WHERE %1" ).arg( layerProperty.sql ) )
               .arg( GEOM_TYPE_SELECT_LIMIT );
     }
     else if ( !layerProperty.sql.isEmpty() )

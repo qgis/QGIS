@@ -229,7 +229,7 @@ void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem *item, bool r
   {
     if ( resetRamp )
     {
-      mRamp.setName( QLatin1String( "" ), QLatin1String( "" ) );
+      mRamp.setName( QString(), QString() );
       QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
       lblSchemeName->clear();
       populateVariants();
@@ -280,7 +280,7 @@ void QgsCptCityColorRampDialog::mListWidget_itemSelectionChanged()
 {
   if ( mListWidget->selectedItems().isEmpty() )
   {
-    mRamp.setName( QLatin1String( "" ), QLatin1String( "" ) );
+    mRamp.setName( QString(), QString() );
   }
 }
 
@@ -638,7 +638,7 @@ bool QgsCptCityColorRampDialog::updateRamp()
 
 void QgsCptCityColorRampDialog::showAll()
 {
-  QModelIndex modelIndex = mModel->findPath( QLatin1String( "" ) );
+  QModelIndex modelIndex = mModel->findPath( QString() );
   if ( modelIndex != QModelIndex() )
   {
     QModelIndex selIndex = mTreeFilter->mapFromSource( modelIndex );

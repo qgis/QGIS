@@ -172,7 +172,7 @@ QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString> &crsSet ) const
 {
   if ( crsSet.size() < 1 )
   {
-    return QLatin1String( "" );
+    return QString();
   }
 
   //first: project CRS
@@ -480,7 +480,7 @@ void QgsWFSTableSelectedCallback::tableSelected( const QString &name )
     QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( p.geometryAttribute() ) );
     fieldList << QgsSQLComposerDialog::PairNameType( fieldName, QStringLiteral( "geometry" ) );
   }
-  fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", QLatin1String( "" ) );
+  fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", QString() );
 
   mDialog->addColumnNames( fieldList, name );
 }
@@ -609,7 +609,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
     QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( p.geometryAttribute() ) );
     fieldList << QgsSQLComposerDialog::PairNameType( fieldName, QStringLiteral( "geometry" ) );
   }
-  fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", QLatin1String( "" ) );
+  fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", QString() );
 
   d->addColumnNames( fieldList, QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ) );
 

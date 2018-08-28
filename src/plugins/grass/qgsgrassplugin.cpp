@@ -236,7 +236,7 @@ void QgsGrassPlugin::initGui()
   connect( qGisInterface, &QgisInterface::newProject, this, &QgsGrassPlugin::newProject );
 
   // Set icons to current theme
-  setCurrentTheme( QLatin1String( "" ) );
+  setCurrentTheme( QString() );
   // Connect theme change signal
   connect( qGisInterface, &QgisInterface::currentThemeChanged, this, &QgsGrassPlugin::setCurrentTheme );
 
@@ -565,7 +565,7 @@ void QgsGrassPlugin::newVector()
 
   QgsGrassElementDialog dialog( qGisInterface->mainWindow() );
   name = dialog.getItem( QStringLiteral( "vector" ), tr( "New vector name" ),
-                         tr( "New vector name" ), QLatin1String( "" ), QLatin1String( "" ), &ok );
+                         tr( "New vector name" ), QString(), QString(), &ok );
 
   if ( !ok )
     return;
@@ -728,12 +728,12 @@ void QgsGrassPlugin::projectRead()
   bool ok;
   QString gisdbase = QgsProject::instance()->readPath(
                        QgsProject::instance()->readEntry(
-                         QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingGisdbase" ), QLatin1String( "" ), &ok ).trimmed()
+                         QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingGisdbase" ), QString(), &ok ).trimmed()
                      );
   QString location = QgsProject::instance()->readEntry(
-                       QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingLocation" ), QLatin1String( "" ), &ok ).trimmed();
+                       QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingLocation" ), QString(), &ok ).trimmed();
   QString mapset = QgsProject::instance()->readEntry(
-                     QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingMapset" ), QLatin1String( "" ), &ok ).trimmed();
+                     QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingMapset" ), QString(), &ok ).trimmed();
 
   if ( gisdbase.isEmpty() || location.isEmpty() || mapset.isEmpty() )
   {

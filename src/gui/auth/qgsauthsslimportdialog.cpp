@@ -145,7 +145,7 @@ void QgsAuthSslImportDialog::accept()
 
 void QgsAuthSslImportDialog::updateEnabledState()
 {
-  leServer->setStyleSheet( QLatin1String( "" ) );
+  leServer->setStyleSheet( QString() );
 
   bool unconnected = !mSocket || mSocket->state() == QAbstractSocket::UnconnectedState;
 
@@ -170,7 +170,7 @@ void QgsAuthSslImportDialog::secureConnect()
     return;
   }
 
-  leServer->setStyleSheet( QLatin1String( "" ) );
+  leServer->setStyleSheet( QString() );
   clearStatusCertificateConfig();
 
   if ( !mSocket )
@@ -416,7 +416,7 @@ void QgsAuthSslImportDialog::loadCertFromFile()
   }
 
   wdgtSslConfig->setEnabled( true );
-  wdgtSslConfig->setSslHost( QLatin1String( "" ) );
+  wdgtSslConfig->setSslHost( QString() );
   wdgtSslConfig->setSslCertificate( cert );
   if ( !mSslErrors.isEmpty() )
   {

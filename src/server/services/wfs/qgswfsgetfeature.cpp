@@ -253,7 +253,7 @@ namespace QgsWfs
         for ( int idx = 0; idx < fields.count(); ++idx )
         {
           fieldnames.append( fields[idx].name() );
-          propertynames.append( fields.field( idx ).name().replace( ' ', '_' ).replace( cleanTagNameRegExp, QLatin1String( "" ) ) );
+          propertynames.append( fields.field( idx ).name().replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
         }
         QString fieldName;
         for ( plstIt = propertyList.begin(); plstIt != propertyList.end(); ++plstIt )
@@ -884,7 +884,7 @@ namespace QgsWfs
 
   getFeatureQuery parseQueryElement( QDomElement &queryElem, const QgsProject *project )
   {
-    QString typeName = queryElem.attribute( QStringLiteral( "typeName" ), QLatin1String( "" ) );
+    QString typeName = queryElem.attribute( QStringLiteral( "typeName" ), QString() );
     if ( typeName.contains( ':' ) )
     {
       typeName = typeName.section( ':', 1, 1 );
@@ -929,7 +929,7 @@ namespace QgsWfs
     }
 
     // srsName attribute
-    QString srsName = queryElem.attribute( QStringLiteral( "srsName" ), QLatin1String( "" ) );
+    QString srsName = queryElem.attribute( QStringLiteral( "srsName" ), QString() );
 
     getFeatureQuery query;
     query.typeName = typeName;
@@ -1337,7 +1337,7 @@ namespace QgsWfs
         }
         QString attributeName = fields.at( idx ).name();
 
-        QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QLatin1String( "" ) ) );
+        QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
         QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
         fieldElem.appendChild( fieldText );
         typeNameElement.appendChild( fieldElem );
@@ -1432,7 +1432,7 @@ namespace QgsWfs
         }
         QString attributeName = fields.at( idx ).name();
 
-        QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QLatin1String( "" ) ) );
+        QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
         QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
         fieldElem.appendChild( fieldText );
         typeNameElement.appendChild( fieldElem );

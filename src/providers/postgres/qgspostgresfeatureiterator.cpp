@@ -507,7 +507,8 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
   }
 #endif
 
-  QString query( QStringLiteral( "SELECT " ) ), delim( QLatin1String( "" ) );
+  QString query( QStringLiteral( "SELECT " ) );
+  QString delim;
 
   if ( mFetchGeometry )
   {

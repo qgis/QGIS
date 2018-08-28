@@ -124,7 +124,7 @@ QgsMapLayer *TestZipLayer::getLayer( const QString &myPath, const QString &myNam
 QgsMapLayer *TestZipLayer::getZipLayer( const QString &myPath, const QString &myName )
 {
   QgsMapLayer *myLayer = nullptr;
-  QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "/" ), QLatin1String( "" ) );
+  QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "/" ), QString() );
   QgsDataItem *myItem = QgsZipItem::itemFromPath( dirItem, myPath, myName );
   if ( myItem )
   {
@@ -139,7 +139,7 @@ QgsMapLayer *TestZipLayer::getZipLayer( const QString &myPath, const QString &my
 
 bool TestZipLayer::testZipItemPassthru( const QString &myFileName, const QString &myProviderKey )
 {
-  QgsMapLayer *myLayer = getLayer( myFileName, QLatin1String( "" ), myProviderKey );
+  QgsMapLayer *myLayer = getLayer( myFileName, QString(), myProviderKey );
   bool ok = myLayer && myLayer->isValid();
   if ( myLayer )
     delete myLayer;
@@ -238,9 +238,9 @@ int TestZipLayer::getLayerTransparency( const QString &myFileName, const QString
 
   QgsMapLayer *myLayer = nullptr;
   if ( myFileName.endsWith( QLatin1String( ".gz" ), Qt::CaseInsensitive ) )
-    myLayer = getLayer( myFileName, QLatin1String( "" ), myProviderKey );
+    myLayer = getLayer( myFileName, QString(), myProviderKey );
   else
-    myLayer = getZipLayer( myFileName, QLatin1String( "" ) );
+    myLayer = getZipLayer( myFileName, QString() );
   if ( myLayer && myLayer->isValid() )
   {
     // myTransparency = myLayer->getTransparency();
@@ -300,7 +300,7 @@ void TestZipLayer::initTestCase()
   QgsSettings settings;
   mSettingsKey = QStringLiteral( "/qgis/scanZipInBrowser2" );
   mScanZipSetting = settings.value( mSettingsKey, "" ).toString();
-  mScanZipSettings << QLatin1String( "" ) << QStringLiteral( "basic" ) << QStringLiteral( "full" );
+  mScanZipSettings << QString() << QStringLiteral( "basic" ) << QStringLiteral( "full" );
 }
 
 void TestZipLayer::cleanupTestCase()

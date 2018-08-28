@@ -596,7 +596,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
       {
         whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
       }
-      return whereClauses.isEmpty() ? QLatin1String( "" ) : whereClauses.join( QStringLiteral( " OR " ) ).prepend( '(' ).append( ')' );
+      return whereClauses.isEmpty() ? QString() : whereClauses.join( QStringLiteral( " OR " ) ).prepend( '(' ).append( ')' );
     }
   }
   return QString(); //avoid warning
@@ -3559,14 +3559,14 @@ bool QgsPostgresProvider::getGeometryDetails()
           mSpatialColType = SctPcPatch;
         else
         {
-          detectedType = mRequestedGeomType == QgsWkbTypes::Unknown ? QLatin1String( "" ) : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
+          detectedType = mRequestedGeomType == QgsWkbTypes::Unknown ? QString() : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
           detectedSrid = mRequestedSrid;
         }
       }
       else
       {
         connectionRO()->PQexecNR( QStringLiteral( "COMMIT" ) );
-        detectedType = mRequestedGeomType == QgsWkbTypes::Unknown ? QLatin1String( "" ) : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
+        detectedType = mRequestedGeomType == QgsWkbTypes::Unknown ? QString() : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
       }
     }
     else
@@ -3718,7 +3718,7 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
 
     case QVariant::List:
     {
-      QgsField sub( QLatin1String( "" ), field.subType(), QLatin1String( "" ), fieldSize, fieldPrec );
+      QgsField sub( QString(), field.subType(), QString(), fieldSize, fieldPrec );
       if ( !convertField( sub, nullptr ) ) return false;
       fieldType = "_" + sub.typeName();
       fieldPrec = -1;
@@ -4778,7 +4778,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
-    return QLatin1String( "" );
+    return QString();
   }
 
   if ( dsUri.database().isEmpty() ) // typically when a service file is used
@@ -4789,7 +4789,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
   {
     conn->unref();
-    return QLatin1String( "" );
+    return QString();
   }
 
   QString selectQmlQuery = QString( "SELECT styleQML"
@@ -4807,7 +4807,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
 
   QgsPostgresResult result( conn->PQexec( selectQmlQuery ) );
 
-  QString style = result.PQntuples() == 1 ? result.PQgetvalue( 0, 0 ) : QLatin1String( "" );
+  QString style = result.PQntuples() == 1 ? result.PQgetvalue( 0, 0 ) : QString();
   conn->unref();
 
   return style;
@@ -4931,7 +4931,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
-    return QLatin1String( "" );
+    return QString();
   }
 
   QString style;

@@ -83,7 +83,7 @@ QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString &name
   if ( name.contains( ':' ) )
     return name;
   if ( setAmbiguousUnprefixedTypename.contains( name ) )
-    return QLatin1String( "" );
+    return QString();
   return mapUnprefixedTypenameToPrefixedTypename[name];
 }
 

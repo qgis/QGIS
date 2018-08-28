@@ -86,7 +86,7 @@ void QgsGpsPlugin::initGui()
   mQActionPointer->setObjectName( QStringLiteral( "mQActionPointer" ) );
   mCreateGPXAction = new QAction( QIcon(), tr( "&Create new GPX layer" ), this );
   mCreateGPXAction->setObjectName( QStringLiteral( "mCreateGPXAction" ) );
-  setCurrentTheme( QLatin1String( "" ) );
+  setCurrentTheme( QString() );
 
   mQActionPointer->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );
   mCreateGPXAction->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );

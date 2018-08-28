@@ -105,7 +105,7 @@ bool QgsGmlSchema::parseXSD( const QByteArray &xml )
     if ( gmlBaseType == QLatin1String( "AbstractFeatureType" ) )
     {
       // Get feature type definition
-      QgsGmlFeatureClass featureClass( name, QLatin1String( "" ) );
+      QgsGmlFeatureClass featureClass( name, QString() );
       xsdFeatureClass( docElem, stripNS( type ), featureClass );
       mFeatureClassMap.insert( name, featureClass );
     }
@@ -234,14 +234,14 @@ QString QgsGmlSchema::xsdComplexTypeGmlBaseType( const QDomElement &element, con
 {
   //QgsDebugMsg("name = " + name );
   QDomElement complexTypeElement = domElement( element, QStringLiteral( "complexType" ), QStringLiteral( "name" ), name );
-  if ( complexTypeElement.isNull() ) return QLatin1String( "" );
+  if ( complexTypeElement.isNull() ) return QString();
 
   QDomElement extrest = domElement( complexTypeElement, QStringLiteral( "complexContent.extension" ) );
   if ( extrest.isNull() )
   {
     extrest = domElement( complexTypeElement, QStringLiteral( "complexContent.restriction" ) );
   }
-  if ( extrest.isNull() ) return QLatin1String( "" );
+  if ( extrest.isNull() ) return QString();
 
   QString extrestName = extrest.attribute( QStringLiteral( "base" ) );
   if ( extrestName.startsWith( QLatin1String( "gml:" ) ) )
@@ -357,7 +357,7 @@ void QgsGmlSchema::startElement( const XML_Char *el, const XML_Char **attr )
 
   QStringList splitName = elementName.split( NS_SEPARATOR );
   QString localName = splitName.last();
-  QString ns = splitName.size() > 1 ? splitName.first() : QLatin1String( "" );
+  QString ns = splitName.size() > 1 ? splitName.first() : QString();
   //QgsDebugMsg( "ns = " + ns + " localName = " + localName );
 
   ParseMode parseMode = modeStackTop();
@@ -459,7 +459,7 @@ void QgsGmlSchema::endElement( const XML_Char *el )
 
   QStringList splitName = elementName.split( NS_SEPARATOR );
   QString localName = splitName.last();
-  QString ns = splitName.size() > 1 ? splitName.first() : QLatin1String( "" );
+  QString ns = splitName.size() > 1 ? splitName.first() : QString();
 
   QgsGmlSchema::ParseMode parseMode = modeStackTop();
 

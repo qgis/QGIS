@@ -173,7 +173,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
         }
       }
       if ( !name.isEmpty() )
-        attributes.append( QgsField( name, type, typeName, length, precision, QLatin1String( "" ), subType ) );
+        attributes.append( QgsField( name, type, typeName, length, precision, QString(), subType ) );
     }
     addAttributes( attributes );
   }
@@ -220,7 +220,7 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
 
   if ( mCrs.isValid() )
   {
-    QString crsDef( QLatin1String( "" ) );
+    QString crsDef;
     QString authid = mCrs.authid();
     if ( authid.startsWith( QLatin1String( "EPSG:" ) ) )
     {

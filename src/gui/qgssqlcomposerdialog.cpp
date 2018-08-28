@@ -113,8 +113,8 @@ QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget *parent, Qt::WindowFlags fl 
   mRemoveJoinButton->setEnabled( false );
 
   mTableJoins->setRowCount( 0 );
-  mTableJoins->setItem( 0, 0, new QTableWidgetItem( QLatin1String( "" ) ) );
-  mTableJoins->setItem( 0, 1, new QTableWidgetItem( QLatin1String( "" ) ) );
+  mTableJoins->setItem( 0, 0, new QTableWidgetItem( QString() ) );
+  mTableJoins->setItem( 0, 1, new QTableWidgetItem( QString() ) );
 }
 
 QgsSQLComposerDialog::~QgsSQLComposerDialog()
@@ -327,11 +327,11 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
     if ( join->onExpr() )
       mTableJoins->setItem( iRow, 1, new QTableWidgetItem( join->onExpr()->dump() ) );
     else
-      mTableJoins->setItem( iRow, 1, new QTableWidgetItem( QLatin1String( "" ) ) );
+      mTableJoins->setItem( iRow, 1, new QTableWidgetItem( QString() ) );
     iRow ++;
   }
-  mTableJoins->setItem( iRow, 0, new QTableWidgetItem( QLatin1String( "" ) ) );
-  mTableJoins->setItem( iRow, 1, new QTableWidgetItem( QLatin1String( "" ) ) );
+  mTableJoins->setItem( iRow, 0, new QTableWidgetItem( QString() ) );
+  mTableJoins->setItem( iRow, 1, new QTableWidgetItem( QString() ) );
 
   mAlreadyModifyingFields = false;
 }
@@ -718,8 +718,8 @@ void QgsSQLComposerDialog::mAddJoinButton_clicked()
     mTableJoins->setItem( row, 0, mTableJoins->takeItem( row - 1, 0 ) );
     mTableJoins->setItem( row, 1, mTableJoins->takeItem( row - 1, 1 ) );
   }
-  mTableJoins->setItem( ( insertRow == rowCount ) ? insertRow : insertRow + 1, 0, new QTableWidgetItem( QLatin1String( "" ) ) );
-  mTableJoins->setItem( ( insertRow == rowCount ) ? insertRow : insertRow + 1, 1, new QTableWidgetItem( QLatin1String( "" ) ) );
+  mTableJoins->setItem( ( insertRow == rowCount ) ? insertRow : insertRow + 1, 0, new QTableWidgetItem( QString() ) );
+  mTableJoins->setItem( ( insertRow == rowCount ) ? insertRow : insertRow + 1, 1, new QTableWidgetItem( QString() ) );
 }
 
 void QgsSQLComposerDialog::mRemoveJoinButton_clicked()

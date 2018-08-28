@@ -92,7 +92,7 @@ void QgsGeorefPlugin::initGui()
   // Connect the action to the run
   connect( mActionRunGeoref, &QAction::triggered, this, &QgsGeorefPlugin::run );
 
-  setCurrentTheme( QLatin1String( "" ) );
+  setCurrentTheme( QString() );
   // this is called when the icon theme is changed
   connect( mQGisIface, &QgisInterface::currentThemeChanged, this, &QgsGeorefPlugin::setCurrentTheme );
 

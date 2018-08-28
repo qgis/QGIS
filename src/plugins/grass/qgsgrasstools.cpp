@@ -230,7 +230,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
 
     QIcon is;
     is.addPixmap( pixmap );
-    mTabWidget->addTab( m, is, QLatin1String( "" ) );
+    mTabWidget->addTab( m, is, QString() );
   }
   else
   {

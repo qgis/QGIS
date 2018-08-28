@@ -93,7 +93,7 @@ void QgsSingleSymbolRenderer::setSymbol( QgsSymbol *s )
 
 QString QgsSingleSymbolRenderer::dump() const
 {
-  return mSymbol ? QStringLiteral( "SINGLE: %1" ).arg( mSymbol->dump() ) : QLatin1String( "" );
+  return mSymbol ? QStringLiteral( "SINGLE: %1" ).arg( mSymbol->dump() ) : QString();
 }
 
 QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::clone() const

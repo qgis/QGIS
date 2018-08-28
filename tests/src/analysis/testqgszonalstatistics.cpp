@@ -81,7 +81,7 @@ void TestQgsZonalStatistics::cleanupTestCase()
 
 void TestQgsZonalStatistics::testStatistics()
 {
-  QgsZonalStatistics zs( mVectorLayer, mRasterLayer, QLatin1String( "" ), 1, QgsZonalStatistics::All );
+  QgsZonalStatistics zs( mVectorLayer, mRasterLayer, QString(), 1, QgsZonalStatistics::All );
   zs.calculateStatistics( nullptr );
 
   QgsFeature f;

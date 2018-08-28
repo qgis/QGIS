@@ -135,7 +135,7 @@ QString QgsPathResolver::readPath( const QString &filename ) const
 
 #if !defined(Q_OS_WIN)
   // make path absolute
-  projElems.prepend( QLatin1String( "" ) );
+  projElems.prepend( QString() );
 #endif
 
   return vsiPrefix + projElems.join( QStringLiteral( "/" ) );

@@ -349,7 +349,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QString fileVectorFilters() const
     {
-      return QLatin1String( "" );
+      return QString();
     }
 
 
@@ -365,7 +365,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QString fileRasterFilters() const
     {
-      return QLatin1String( "" );
+      return QString();
     }
 
     /**

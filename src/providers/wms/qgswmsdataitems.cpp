@@ -269,11 +269,11 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem *parent, QString name, QString pat
 QString QgsWMSLayerItem::createUri()
 {
   if ( mLayerProperty.name.isEmpty() )
-    return QLatin1String( "" ); // layer collection
+    return QString(); // layer collection
 
   // Number of styles must match number of layers
   mDataSourceUri.setParam( QStringLiteral( "layers" ), mLayerProperty.name );
-  QString style = !mLayerProperty.style.isEmpty() ? mLayerProperty.style.at( 0 ).name : QLatin1String( "" );
+  QString style = !mLayerProperty.style.isEmpty() ? mLayerProperty.style.at( 0 ).name : QString();
   mDataSourceUri.setParam( QStringLiteral( "styles" ), style );
 
   QString format;

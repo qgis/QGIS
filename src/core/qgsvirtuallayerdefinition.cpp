@@ -194,7 +194,7 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
     url.addQueryItem( QStringLiteral( "uid" ), uid() );
 
   if ( geometryWkbType() == QgsWkbTypes::NoGeometry )
-    url.addQueryItem( QStringLiteral( "nogeometry" ), QLatin1String( "" ) );
+    url.addQueryItem( QStringLiteral( "nogeometry" ), QString() );
   else if ( !geometryField().isEmpty() )
   {
     if ( hasDefinedGeometry() )
@@ -215,7 +215,7 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
 
   if ( isLazy() )
   {
-    url.addQueryItem( QStringLiteral( "lazy" ), QLatin1String( "" ) );
+    url.addQueryItem( QStringLiteral( "lazy" ), QString() );
   }
 
   return url;

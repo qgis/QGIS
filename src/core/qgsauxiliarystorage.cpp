@@ -812,7 +812,7 @@ QgsDataSourceUri QgsAuxiliaryStorage::parseOgrUri( const QgsDataSourceUri &uri )
   if ( tableParts.count() < 1 )
     return newUri;
 
-  const QString tableName = tableParts[0].replace( QStringLiteral( "layername=" ), QStringLiteral( "" ) );
+  const QString tableName = tableParts[0].replace( QStringLiteral( "layername=" ), QString() );
 
   newUri.setDataSource( QString(), tableName, QString() );
   newUri.setDatabase( databasePath );

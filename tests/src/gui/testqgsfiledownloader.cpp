@@ -204,7 +204,7 @@ void TestQgsFileDownloader::testInvalidUrl()
 void TestQgsFileDownloader::testBlankUrl()
 {
   QVERIFY( ! mTempFile->fileName().isEmpty() );
-  makeCall( QUrl( QLatin1String( "" ) ), mTempFile->fileName() );
+  makeCall( QUrl( QString() ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
   QVERIFY( mError );

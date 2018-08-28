@@ -497,7 +497,7 @@ QString TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer *layer,
   QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer );
   if ( result.length() != 1 )
-    return QLatin1String( "" );
+    return QString();
   return result[0].mAttributes[QStringLiteral( "Band 1" )];
 }
 

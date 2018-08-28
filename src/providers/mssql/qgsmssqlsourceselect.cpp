@@ -329,7 +329,7 @@ void QgsMssqlSourceSelect::mSearchGroupBox_toggled( bool checked )
   if ( mSearchTableEdit->text().isEmpty() )
     return;
 
-  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
+  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QString() );
 }
 
 void QgsMssqlSourceSelect::mSearchTableEdit_textChanged( const QString &text )

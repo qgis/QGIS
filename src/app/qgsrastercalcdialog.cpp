@@ -120,7 +120,7 @@ QString QgsRasterCalcDialog::outputFormat() const
   int index = mOutputFormatComboBox->currentIndex();
   if ( index == -1 )
   {
-    return QLatin1String( "" );
+    return QString();
   }
   return mOutputFormatComboBox->itemData( index ).toString();
 }

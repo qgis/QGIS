@@ -84,7 +84,7 @@ void QgsAuthCertTrustPolicyComboBox::setDefaultTrustPolicy( QgsAuthCertUtils::Ce
 void QgsAuthCertTrustPolicyComboBox::highlightCurrentIndex( int indx )
 {
   QgsAuthCertUtils::CertTrustPolicy policy = ( QgsAuthCertUtils::CertTrustPolicy )itemData( indx ).toInt();
-  QString ss( QLatin1String( "" ) );
+  QString ss;
 
   // TODO: why are these widget state selectors backwards?
   switch ( policy )

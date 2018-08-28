@@ -593,7 +593,7 @@ void QgsGeorefPluginGui::showCoordDialog( const QgsPointXY &pixelCoords )
 
 void QgsGeorefPluginGui::loadGCPsDialog()
 {
-  QString selectedFile = mRasterFileName.isEmpty() ? QLatin1String( "" ) : mRasterFileName + ".points";
+  QString selectedFile = mRasterFileName.isEmpty() ? QString() : mRasterFileName + ".points";
   mGCPpointsFileName = QFileDialog::getOpenFileName( this, tr( "Load GCP Points" ),
                        selectedFile, tr( "GCP file" ) + " (*.points)" );
   if ( mGCPpointsFileName.isEmpty() )
@@ -617,7 +617,7 @@ void QgsGeorefPluginGui::saveGCPsDialog()
     return;
   }
 
-  QString selectedFile = mRasterFileName.isEmpty() ? QLatin1String( "" ) : mRasterFileName + ".points";
+  QString selectedFile = mRasterFileName.isEmpty() ? QString() : mRasterFileName + ".points";
   mGCPpointsFileName = QFileDialog::getSaveFileName( this, tr( "Save GCP Points" ),
                        selectedFile,
                        tr( "GCP file" ) + " (*.points)" );
@@ -2056,7 +2056,7 @@ QString QgsGeorefPluginGui::convertResamplingEnumToString( QgsImageWarper::Resam
     case QgsImageWarper::Lanczos:
       return QStringLiteral( "lanczos" );
   }
-  return QLatin1String( "" );
+  return QString();
 }
 
 int QgsGeorefPluginGui::polynomialOrder( QgsGeorefTransform::TransformParametrisation transform )

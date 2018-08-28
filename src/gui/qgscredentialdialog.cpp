@@ -231,11 +231,11 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
 
 void QgsCredentialDialog::leMasterPass_textChanged( const QString &pass )
 {
-  leMasterPass->setStyleSheet( QLatin1String( "" ) );
+  leMasterPass->setStyleSheet( QString() );
   bool passok = !pass.isEmpty(); // regardless of new or comparing existing, empty password disallowed
   if ( leMasterPassVerify->isVisible() )
   {
-    leMasterPassVerify->setStyleSheet( QLatin1String( "" ) );
+    leMasterPassVerify->setStyleSheet( QString() );
     passok = passok && ( leMasterPass->text() == leMasterPassVerify->text() );
   }
   mOkButton->setEnabled( passok );
@@ -251,8 +251,8 @@ void QgsCredentialDialog::leMasterPassVerify_textChanged( const QString &pass )
 {
   if ( leMasterPassVerify->isVisible() )
   {
-    leMasterPass->setStyleSheet( QLatin1String( "" ) );
-    leMasterPassVerify->setStyleSheet( QLatin1String( "" ) );
+    leMasterPass->setStyleSheet( QString() );
+    leMasterPassVerify->setStyleSheet( QString() );
 
     // empty password disallowed
     bool passok = !pass.isEmpty() && ( leMasterPass->text() == leMasterPassVerify->text() );

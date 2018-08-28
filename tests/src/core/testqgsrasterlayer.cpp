@@ -341,7 +341,7 @@ void TestQgsRasterLayer::colorRamp3()
 void TestQgsRasterLayer::colorRamp4()
 {
   // cpt-city ramp, continuous
-  QgsCptCityColorRamp ramp( QStringLiteral( "grass/elevation" ), QLatin1String( "" ) );
+  QgsCptCityColorRamp ramp( QStringLiteral( "grass/elevation" ), QString() );
   QVERIFY( testColorRamp( "raster_colorRamp4",
                           &ramp,
                           QgsColorRampShader::Discrete, 10 ) );

@@ -715,7 +715,7 @@ QHash<QString, QString> QgsApplication::uiThemes()
 {
   QStringList paths = QStringList() << userThemesFolder() << defaultThemesFolder();
   QHash<QString, QString> mapping;
-  mapping.insert( QStringLiteral( "default" ), QLatin1String( "" ) );
+  mapping.insert( QStringLiteral( "default" ), QString() );
   Q_FOREACH ( const QString &path, paths )
   {
     QDir folder( path );
@@ -1348,7 +1348,7 @@ QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const 
 
 #if !defined(Q_OS_WIN)
   // make path absolute
-  targetElems.prepend( QLatin1String( "" ) );
+  targetElems.prepend( QString() );
 #endif
 
   return targetElems.join( QStringLiteral( "/" ) );

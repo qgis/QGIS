@@ -375,7 +375,7 @@ void QgsColorRampButton::createColorRamp()
   }
   else if ( rampType == tr( "Catalog: cpt-city" ) )
   {
-    ramp = new QgsCptCityColorRamp( QLatin1String( "" ), QLatin1String( "" ) );
+    ramp = new QgsCptCityColorRamp( QString(), QString() );
   }
   else
   {

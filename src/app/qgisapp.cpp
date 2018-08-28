@@ -6757,7 +6757,7 @@ void QgisApp::refreshFeatureActions()
     if ( !vlayer->isEditable() && action.isEnabledOnlyWhenEditable() )
       continue;
 
-    QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : QStringLiteral( "" );
+    QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : QString();
     QAction *qAction = new QAction( action.icon(), actionTitle, mFeatureActionMenu );
     qAction->setData( QVariant::fromValue<QgsAction>( action ) );
     mFeatureActionMenu->addAction( qAction );
@@ -6853,7 +6853,7 @@ void QgisApp::labelingFontNotFound( QgsVectorLayer *vlayer, const QString &fontf
   act->setText( tr( "Open labeling dialog" ) );
   btnOpenPrefs->addAction( act );
   btnOpenPrefs->setDefaultAction( act );
-  btnOpenPrefs->setToolTip( QLatin1String( "" ) );
+  btnOpenPrefs->setToolTip( QString() );
   connect( btnOpenPrefs, &QToolButton::triggered, this, &QgisApp::labelingDialogFontNotFound );
 
   // no timeout set, since notice needs attention and is only shown first time layer is labeled
@@ -9668,7 +9668,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
                         tr( "Duplicate layer: " ),
                         tr( "%1 (%2 type unsupported)" )
                         .arg( selectedLyr->name(),
-                              !unSppType.isEmpty() ? QStringLiteral( "'" ) + unSppType + "' " : QLatin1String( "" ) ),
+                              !unSppType.isEmpty() ? QStringLiteral( "'" ) + unSppType + "' " : QString() ),
                         Qgis::Warning,
                         0,
                         mInfoBar ) );
@@ -11105,7 +11105,7 @@ void QgisApp::closeProject()
 
   mTrustedMacros = false;
 
-  mLegendExpressionFilterButton->setExpressionText( QLatin1String( "" ) );
+  mLegendExpressionFilterButton->setExpressionText( QString() );
   mLegendExpressionFilterButton->setChecked( false );
   mActionFilterLegend->setChecked( false );
 
@@ -13501,7 +13501,7 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
   if ( !settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool() ||
        settings.value( QStringLiteral( "proxy/proxyType" ), "" ).toString() == QLatin1String( "DefaultProxy" ) )
   {
-    auth->setUser( QLatin1String( "" ) );
+    auth->setUser( QString() );
     return;
   }
 

@@ -304,7 +304,7 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
   // !!! DON'T LEAVE THESE UNCOMMENTED !!!
   // QgsDebugMsg( QString( "PKI bundle key for authcfg: \n%1" ).arg( bundlelist.at( 1 ) ) );
   // QgsDebugMsg( QString( "PKI bundle key pass for authcfg: \n%1" )
-  //              .arg( !mconfig.config( QStringLiteral( "bundlepass" ) ).isNull() ? mconfig.config( QStringLiteral( "bundlepass" ) ) : QStringLiteral() ) );
+  //              .arg( !mconfig.config( QStringLiteral( "bundlepass" ) ).isNull() ? mconfig.config( QStringLiteral( "bundlepass" ) ) : QString() ) );
 
   // init key
   QSslKey clientkey( bundlelist.at( 1 ).toLatin1(),

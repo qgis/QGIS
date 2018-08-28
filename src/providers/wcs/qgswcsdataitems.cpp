@@ -148,7 +148,7 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem *parent, QString name, QString pat
 QString QgsWCSLayerItem::createUri()
 {
   if ( mCoverageSummary.identifier.isEmpty() )
-    return QLatin1String( "" ); // layer collection
+    return QString(); // layer collection
 
   // Number of styles must match number of layers
   mDataSourceUri.setParam( QStringLiteral( "identifier" ), mCoverageSummary.identifier );

@@ -970,7 +970,7 @@ void QgsVectorLayerProperties::saveDefaultStyle_clicked()
       case 0:
         return;
       case 2:
-        mLayer->saveStyleToDatabase( QLatin1String( "" ), QLatin1String( "" ), true, QLatin1String( "" ), errorMsg );
+        mLayer->saveStyleToDatabase( QString(), QString(), true, QString(), errorMsg );
         if ( errorMsg.isNull() )
         {
           return;

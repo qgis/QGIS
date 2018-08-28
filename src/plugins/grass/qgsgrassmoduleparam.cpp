@@ -576,7 +576,7 @@ void QgsGrassModuleOption::browse( bool checked )
   Q_UNUSED( checked );
 
   QgsSettings settings;
-  QString lastDir = settings.value( QStringLiteral( "GRASS/lastDirectOutputDir" ), "" ).toString();
+  QString lastDir = settings.value( QStringLiteral( "GRASS/lastDirectOutputDir" ), QString() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Output file" ), lastDir, tr( "GeoTIFF" ) + " (*.tif)" );
   if ( !fileName.isEmpty() )
   {
@@ -751,7 +751,7 @@ QString QgsGrassModuleOption::ready()
 QgsGrassModuleFlag::QgsGrassModuleFlag( QgsGrassModule *module, QString key,
                                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                                         bool direct, QWidget *parent )
-  : QgsGrassModuleCheckBox( QLatin1String( "" ), parent ), QgsGrassModuleParam( module, key, qdesc, gdesc, gnode, direct )
+  : QgsGrassModuleCheckBox( QString(), parent ), QgsGrassModuleParam( module, key, qdesc, gdesc, gnode, direct )
 {
 
   if ( mHidden )
@@ -908,8 +908,8 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
         {
           uri = items[0];
 
-          ogrLayer = QLatin1String( "" );
-          ogrWhere = QLatin1String( "" );
+          ogrLayer.clear();
+          ogrWhere.clear();
 
           for ( int i = 1; i < items.size(); i++ )
           {
@@ -930,14 +930,14 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
 
           if ( uri.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
           {
-            ogrLayer = QLatin1String( "" );
+            ogrLayer.clear();
           }
         }
         else
         {
           uri = items[0];
-          ogrLayer = QLatin1String( "" );
-          ogrWhere = QLatin1String( "" );
+          ogrLayer.clear();
+          ogrWhere.clear();
         }
       }
 
@@ -959,8 +959,8 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
       if ( layer->name() == current )
         mLayerComboBox->setItemText( mLayerComboBox->currentIndex(), current );
       mUri.push_back( uri );
-      mOgrLayers.push_back( QLatin1String( "" ) );
-      mOgrWheres.push_back( QLatin1String( "" ) );
+      mOgrLayers.push_back( QString() );
+      mOgrWheres.push_back( QString() );
     }
   }
 }

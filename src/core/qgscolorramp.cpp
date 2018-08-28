@@ -638,7 +638,7 @@ void QgsCptCityColorRamp::invert()
 
 QgsCptCityColorRamp *QgsCptCityColorRamp::clone() const
 {
-  QgsCptCityColorRamp *ramp = new QgsCptCityColorRamp( QLatin1String( "" ), QLatin1String( "" ), mInverted, false );
+  QgsCptCityColorRamp *ramp = new QgsCptCityColorRamp( QString(), QString(), mInverted, false );
   ramp->copy( this );
   return ramp;
 }

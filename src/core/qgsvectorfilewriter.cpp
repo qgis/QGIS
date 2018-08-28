@@ -224,7 +224,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
   if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
   {
-    if ( layerOptions.join( QLatin1String( "" ) ).toUpper().indexOf( QLatin1String( "ENCODING=" ) ) == -1 )
+    if ( layerOptions.join( QString() ).toUpper().indexOf( QLatin1String( "ENCODING=" ) ) == -1 )
     {
       layerOptions.append( "ENCODING=" + convertCodecNameForEncodingOption( fileEncoding ) );
     }
@@ -892,7 +892,7 @@ class QgsVectorFileWriterMetadataContainer
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
                              << QStringLiteral( "MULTIPATCH" )
 #endif
-                             << QStringLiteral( "" ),
+                             << QString(),
                              QString(), // Default value
                              true  // Allow None
                            ) );
@@ -1027,44 +1027,44 @@ class QgsVectorFileWriterMetadataContainer
                                QObject::tr( "XML content that will be put between the <channel> element and the "
                                             "first <item> element for a RSS document, or between the xml tag and "
                                             "the first <entry> element for an Atom document." ),
-                               QLatin1String( "" )  // Default value
+                               QString()  // Default value
                              ) );
 
       datasetOptions.insert( QStringLiteral( "TITLE" ), new QgsVectorFileWriter::StringOption(
                                QObject::tr( "Value put inside the <title> element in the header. "
                                             "If not provided, a dummy value will be used as that element is compulsory." ),
-                               QLatin1String( "" )  // Default value
+                               QString()  // Default value
                              ) );
 
       datasetOptions.insert( QStringLiteral( "DESCRIPTION" ), new QgsVectorFileWriter::StringOption(
                                QObject::tr( "Value put inside the <description> element in the header. "
                                             "If not provided, a dummy value will be used as that element is compulsory." ),
-                               QLatin1String( "" )  // Default value
+                               QString()  // Default value
                              ) );
 
       datasetOptions.insert( QStringLiteral( "LINK" ), new QgsVectorFileWriter::StringOption(
                                QObject::tr( "Value put inside the <link> element in the header. "
                                             "If not provided, a dummy value will be used as that element is compulsory." ),
-                               QLatin1String( "" )  // Default value
+                               QString()  // Default value
                              ) );
 
       datasetOptions.insert( QStringLiteral( "UPDATED" ), new QgsVectorFileWriter::StringOption(
                                QObject::tr( "Value put inside the <updated> element in the header. "
                                             "Should be formatted as a XML datetime. "
                                             "If not provided, a dummy value will be used as that element is compulsory." ),
-                               QLatin1String( "" )  // Default value
+                               QString()  // Default value
                              ) );
 
       datasetOptions.insert( QStringLiteral( "AUTHOR_NAME" ), new QgsVectorFileWriter::StringOption(
                                QObject::tr( "Value put inside the <author><name> element in the header. "
                                             "If not provided, a dummy value will be used as that element is compulsory." ),
-                               QLatin1String( "" )  // Default value
+                               QString()  // Default value
                              ) );
 
       datasetOptions.insert( QStringLiteral( "ID" ), new QgsVectorFileWriter::StringOption(
                                QObject::tr( "Value put inside the <id> element in the header. "
                                             "If not provided, a dummy value will be used as that element is compulsory." ),
-                               QLatin1String( "" )  // Default value
+                               QString()  // Default value
                              ) );
 
       driverMetadata.insert( QStringLiteral( "GeoRSS" ),
@@ -1127,7 +1127,7 @@ class QgsVectorFileWriterMetadataContainer
                                << QStringLiteral( "GML3" )
                                << QStringLiteral( "GML3Deegree" )
                                << QStringLiteral( "GML3.2" ),
-                               QLatin1String( "" ), // Default value
+                               QString(), // Default value
                                true // Allow None
                              ) );
 
@@ -1175,12 +1175,12 @@ class QgsVectorFileWriterMetadataContainer
 
       layerOptions.insert( QStringLiteral( "IDENTIFIER" ), new QgsVectorFileWriter::StringOption(
                              QObject::tr( "Human-readable identifier (e.g. short name) for the layer content" ),
-                             QLatin1String( "" )  // Default value
+                             QString()  // Default value
                            ) );
 
       layerOptions.insert( QStringLiteral( "DESCRIPTION" ), new QgsVectorFileWriter::StringOption(
                              QObject::tr( "Human-readable description for the layer content" ),
-                             QLatin1String( "" )  // Default value
+                             QString()  // Default value
                            ) );
 
       layerOptions.insert( QStringLiteral( "FID" ), new QgsVectorFileWriter::StringOption(
@@ -1273,7 +1273,7 @@ class QgsVectorFileWriterMetadataContainer
                                QStringList()
                                << QStringLiteral( "CRLF" )
                                << QStringLiteral( "LF" ),
-                               QLatin1String( "" ), // Default value
+                               QString(), // Default value
                                true // Allow None
                              ) );
 
@@ -1391,7 +1391,7 @@ class QgsVectorFileWriterMetadataContainer
                                QObject::tr( "xmin,ymin,xmax,ymax: Define custom layer bounds to increase the "
                                             "accuracy of the coordinates. Note: the geometry of written "
                                             "features must be within the defined box." ),
-                               QLatin1String( "" ) // Default value
+                               QString() // Default value
                              ) );
       };
       insertMapInfoOptions( datasetOptions, layerOptions );
@@ -1434,7 +1434,7 @@ class QgsVectorFileWriterMetadataContainer
 
       datasetOptions.insert( QStringLiteral( "SEED" ), new QgsVectorFileWriter::StringOption(
                                QObject::tr( "Override the seed file to use." ),
-                               QLatin1String( "" )  // Default value
+                               QString()  // Default value
                              ) );
 
       datasetOptions.insert( QStringLiteral( "COPY_WHOLE_SEED_FILE" ), new QgsVectorFileWriter::BoolOption(
@@ -1451,13 +1451,13 @@ class QgsVectorFileWriterMetadataContainer
       datasetOptions.insert( QStringLiteral( "MASTER_UNIT_NAME" ), new QgsVectorFileWriter::StringOption(
                                QObject::tr( "Override the master unit name from the seed file with "
                                             "the provided one or two character unit name." ),
-                               QLatin1String( "" )  // Default value
+                               QString()  // Default value
                              ) );
 
       datasetOptions.insert( QStringLiteral( "SUB_UNIT_NAME" ), new QgsVectorFileWriter::StringOption(
                                QObject::tr( "Override the sub unit name from the seed file with the provided "
                                             "one or two character unit name." ),
-                               QLatin1String( "" )  // Default value
+                               QString()  // Default value
                              ) );
 
       datasetOptions.insert( QStringLiteral( "SUB_UNITS_PER_MASTER_UNIT" ), new QgsVectorFileWriter::IntOption(
@@ -1475,7 +1475,7 @@ class QgsVectorFileWriterMetadataContainer
       datasetOptions.insert( QStringLiteral( "ORIGIN" ), new QgsVectorFileWriter::StringOption(
                                QObject::tr( "ORIGIN=x,y,z: Override the origin of the design plane. "
                                             "By default the origin from the seed file is used." ),
-                               QLatin1String( "" )  // Default value
+                               QString()  // Default value
                              ) );
 
       driverMetadata.insert( QStringLiteral( "DGN" ),
@@ -1623,7 +1623,7 @@ class QgsVectorFileWriterMetadataContainer
                            ) );
 
       layerOptions.insert( QStringLiteral( "SRID" ), new QgsVectorFileWriter::HiddenOption(
-                             QLatin1String( "" )
+                             QString()
                            ) );
 
       layerOptions.insert( QStringLiteral( "COMPRESS_COLUMNS" ), new QgsVectorFileWriter::StringOption(
@@ -1636,7 +1636,7 @@ class QgsVectorFileWriterMetadataContainer
                                           "done transparently. However, such columns cannot be (easily) queried with "
                                           "an attribute filter or WHERE clause. Note: in table definition, such columns "
                                           "have the 'VARCHAR_deflate' declaration type." ),
-                             QLatin1String( "" )  // Default value
+                             QString()  // Default value
                            ) );
 
       driverMetadata.insert( QStringLiteral( "SQLite" ),
@@ -1705,7 +1705,7 @@ class QgsVectorFileWriterMetadataContainer
                                           "the spatial_ref_sys table. When the SRID option is specified, this "
                                           "search (and the eventual insertion of a new entry) will not be done: "
                                           "the specified SRID is used as such." ),
-                             QLatin1String( "" )  // Default value
+                             QString()  // Default value
                            ) );
 
       layerOptions.insert( QStringLiteral( "COMPRESS_COLUMNS" ), new QgsVectorFileWriter::StringOption(
@@ -1718,7 +1718,7 @@ class QgsVectorFileWriterMetadataContainer
                                           "done transparently. However, such columns cannot be (easily) queried with "
                                           "an attribute filter or WHERE clause. Note: in table definition, such columns "
                                           "have the 'VARCHAR_deflate' declaration type." ),
-                             QLatin1String( "" )  // Default value
+                             QString()  // Default value
                            ) );
 
       driverMetadata.insert( QStringLiteral( "SpatiaLite" ),
@@ -1738,12 +1738,12 @@ class QgsVectorFileWriterMetadataContainer
 
       datasetOptions.insert( QStringLiteral( "HEADER" ), new QgsVectorFileWriter::StringOption(
                                QObject::tr( "Override the header file used - in place of header.dxf." ),
-                               QLatin1String( "" )  // Default value
+                               QString()  // Default value
                              ) );
 
       datasetOptions.insert( QStringLiteral( "TRAILER" ), new QgsVectorFileWriter::StringOption(
                                QObject::tr( "Override the trailer file used - in place of trailer.dxf." ),
-                               QLatin1String( "" )  // Default value
+                               QString()  // Default value
                              ) );
 
       driverMetadata.insert( QStringLiteral( "DXF" ),
@@ -1774,7 +1774,7 @@ class QgsVectorFileWriterMetadataContainer
                                QObject::tr( "Path to the GCT: the GCT file describes the GeoConcept types definitions: "
                                             "In this file, every line must start with //# followed by a keyword. "
                                             "Lines starting with // are comments." ),
-                               QLatin1String( "" )  // Default value
+                               QString()  // Default value
                              ) );
 
       datasetOptions.insert( QStringLiteral( "FEATURETYPE" ), new QgsVectorFileWriter::StringOption(
@@ -1782,7 +1782,7 @@ class QgsVectorFileWriterMetadataContainer
                                             "found in the GCT file for a type section. The SUBTYPE corresponds to one of "
                                             "the Name found in the GCT file for a sub-type section within the previous "
                                             "type section." ),
-                               QLatin1String( "" )  // Default value
+                               QString()  // Default value
                              ) );
 
       driverMetadata.insert( QStringLiteral( "Geoconcept" ),
@@ -1803,7 +1803,7 @@ class QgsVectorFileWriterMetadataContainer
       layerOptions.insert( QStringLiteral( "FEATURE_DATASET" ), new QgsVectorFileWriter::StringOption(
                              QObject::tr( "When this option is set, the new layer will be created inside the named "
                                           "FeatureDataset folder. If the folder does not already exist, it will be created." ),
-                             QLatin1String( "" )  // Default value
+                             QString()  // Default value
                            ) );
 
       layerOptions.insert( QStringLiteral( "GEOMETRY_NAME" ), new QgsVectorFileWriter::StringOption(

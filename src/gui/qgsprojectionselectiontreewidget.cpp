@@ -342,7 +342,7 @@ QString QgsProjectionSelectionTreeWidget::selectedProj4String()
   // Get the selected node
   QTreeWidgetItem *item = lstCoordinateSystems->currentItem();
   if ( !item || item->text( QgisCrsIdColumn ).isEmpty() )
-    return QLatin1String( "" );
+    return QString();
 
   QString srsId = item->text( QgisCrsIdColumn );
 
@@ -372,7 +372,7 @@ QString QgsProjectionSelectionTreeWidget::selectedProj4String()
   if ( rc )
   {
     showDBMissingWarning( databaseFileName );
-    return QLatin1String( "" );
+    return QString();
   }
 
   // prepare the sql statement
@@ -676,7 +676,7 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
     QTreeWidgetItem *newItem = nullptr;
     // Cache some stuff to speed up creating of the list of projected
     // spatial reference systems
-    QString previousSrsType( QLatin1String( "" ) );
+    QString previousSrsType;
     QTreeWidgetItem *previousSrsTypeNode = nullptr;
 
     while ( sqlite3_step( stmt ) == SQLITE_ROW )

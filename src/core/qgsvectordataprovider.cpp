@@ -217,7 +217,7 @@ QString QgsVectorDataProvider::encoding() const
     return mEncoding->name();
   }
 
-  return QLatin1String( "" );
+  return QString();
 }
 
 QString QgsVectorDataProvider::capabilitiesString() const
