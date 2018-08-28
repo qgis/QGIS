@@ -332,7 +332,7 @@ namespace QgsWms
     {
       checkLayerReadPermissions( layer );
 
-      for ( QgsWmsParametersLayer param : params )
+      for ( const QgsWmsParametersLayer &param : params )
       {
         if ( param.mNickname == layerNickname( *layer ) )
         {
@@ -681,7 +681,7 @@ namespace QgsWms
     {
       checkLayerReadPermissions( layer );
 
-      for ( const QgsWmsParametersLayer param : params )
+      for ( const QgsWmsParametersLayer &param : params )
       {
         if ( param.mNickname == layerNickname( *layer ) )
         {
@@ -784,7 +784,7 @@ namespace QgsWms
 
       checkLayerReadPermissions( layer );
 
-      for ( QgsWmsParametersLayer param : params )
+      for ( const QgsWmsParametersLayer &param : params )
       {
         if ( param.mNickname == layerNickname( *layer ) )
         {
@@ -955,7 +955,7 @@ namespace QgsWms
     {
       checkLayerReadPermissions( layer );
 
-      for ( QgsWmsParametersLayer param : params )
+      for ( const QgsWmsParametersLayer &param : params )
       {
         if ( param.mNickname == layerNickname( *layer ) )
         {
@@ -1456,7 +1456,7 @@ namespace QgsWms
     mAccessControl->filterFeatures( layer, fReq );
 
     QStringList attributes;
-    for ( QgsField field : layer->fields().toList() )
+    for ( const QgsField &field : layer->fields().toList() )
     {
       attributes.append( field.name() );
     }
@@ -2468,7 +2468,7 @@ namespace QgsWms
 
     // try to create highlight layer for each geometry
     QString crs = mWmsParameters.crs();
-    for ( QgsWmsParametersHighlightLayer param : params )
+    for ( const QgsWmsParametersHighlightLayer &param : params )
     {
       // create sld document from symbology
       QDomDocument sldDoc;
@@ -2674,7 +2674,7 @@ namespace QgsWms
   {
     QList<QgsMapLayer *> layers;
 
-    for ( QgsWmsParametersLayer param : params )
+    for ( const QgsWmsParametersLayer &param : params )
     {
       QString nickname = param.mNickname;
       QString style = param.mStyle;
