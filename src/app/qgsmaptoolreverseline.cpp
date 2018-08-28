@@ -37,7 +37,6 @@ QgsMapToolReverseLine::QgsMapToolReverseLine( QgsMapCanvas *canvas )
 
 QgsMapToolReverseLine::~QgsMapToolReverseLine()
 {
-  delete mRubberBand;
 }
 
 void QgsMapToolReverseLine::canvasMoveEvent( QgsMapMouseEvent *e )
@@ -50,8 +49,6 @@ void QgsMapToolReverseLine::canvasPressEvent( QgsMapMouseEvent *e )
 {
   mPressedFid = -1;
   mPressedPartNum = -1;
-  delete mRubberBand;
-  mRubberBand = nullptr;
 
   QgsMapLayer *currentLayer = mCanvas->currentLayer();
   if ( !currentLayer )
@@ -74,7 +71,7 @@ void QgsMapToolReverseLine::canvasPressEvent( QgsMapMouseEvent *e )
 
   if ( mPressedFid != -1 )
   {
-    mRubberBand = createRubberBand( vlayer->geometryType() );
+    mRubberBand.reset( createRubberBand( vlayer->geometryType() ) );
 
     mRubberBand->setToGeometry( geomPart, vlayer );
     mRubberBand->show();
@@ -85,9 +82,6 @@ void QgsMapToolReverseLine::canvasPressEvent( QgsMapMouseEvent *e )
 void QgsMapToolReverseLine::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
-
-  delete mRubberBand;
-  mRubberBand = nullptr;
 
   if ( !vlayer || !vlayer->isEditable() )
   {

@@ -44,8 +44,8 @@ class APP_EXPORT QgsMapToolReverseLine: public QgsMapToolEdit
 
     QgsGeometry partUnderPoint( QPoint p, QgsFeatureId &fid, int &partNum );
 
-    /* Rubberband that shows the part being deleted*/
-    QgsRubberBand *mRubberBand = nullptr;
+    /* Rubberband that shows the part being reversed*/
+    std::unique_ptr<QgsRubberBand>mRubberBand;
 
     //The feature and part where the mouse cursor was pressed
     //This is used to check whether we are still in the same part at cursor release
