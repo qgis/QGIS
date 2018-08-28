@@ -133,7 +133,7 @@ namespace QgsWms
       // WMS restricted layers
       QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
 
-      Q_FOREACH ( QgsMapLayer *layer, project->mapLayers() )
+      for ( QgsMapLayer *layer : project->mapLayers() )
       {
         QString name = layer->name();
         if ( useLayerIds )
@@ -172,7 +172,7 @@ namespace QgsWms
           if ( vlayer->isSpatial() )
           {
             QString currentStyle = vlayer->styleManager()->currentStyle();
-            Q_FOREACH ( QString styleName, vlayer->styleManager()->styles() )
+            for ( const QString &styleName : vlayer->styleManager()->styles() )
             {
               vlayer->styleManager()->setCurrentStyle( styleName );
               QDomElement styleElem = vlayer->renderer()->writeSld( myDocument, styleName );

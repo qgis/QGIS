@@ -62,9 +62,9 @@ namespace QgsWfs
 
     QString createFeatureGeoJSON( QgsFeature *feat, const createFeatureParams &params );
 
-    QDomElement createFeatureGML2( QgsFeature *feat, QDomDocument &doc, const createFeatureParams &params );
+    QDomElement createFeatureGML2( QgsFeature *feat, QDomDocument &doc, const createFeatureParams &params, const QgsProject *project );
 
-    QDomElement createFeatureGML3( QgsFeature *feat, QDomDocument &doc, const createFeatureParams &params );
+    QDomElement createFeatureGML3( QgsFeature *feat, QDomDocument &doc, const createFeatureParams &params, const QgsProject *project );
 
     void hitGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project,
                         QgsWfsParameters::Format format, int numberOfFeatures, const QStringList &typeNames );
@@ -74,7 +74,7 @@ namespace QgsWfs
                           QgsRectangle *rect, const QStringList &typeNames );
 
     void setGetFeature( QgsServerResponse &response, QgsWfsParameters::Format format, QgsFeature *feat, int featIdx,
-                        const createFeatureParams &params );
+                        const createFeatureParams &params, const QgsProject *project );
 
     void endGetFeature( QgsServerResponse &response, QgsWfsParameters::Format format );
 
@@ -155,9 +155,7 @@ namespace QgsWfs
         }
         else
         {
-          Q_NOWARN_DEPRECATED_PUSH
-          QgsCoordinateTransform transform( layer->crs(), requestCrs );
-          Q_NOWARN_DEPRECATED_POP
+          QgsCoordinateTransform transform( layer->crs(), requestCrs, project );
           try
           {
             if ( requestRect.isEmpty() )
@@ -319,7 +317,7 @@ namespace QgsWfs
         accessControl->filterFeatures( vlayer, featureRequest );
 
         QStringList attributes = QStringList();
-        Q_FOREACH ( int idx, attrIndexes )
+        for ( int idx : attrIndexes )
         {
           attributes.append( vlayer->fields().field( idx ).name() );
         }
@@ -357,9 +355,7 @@ namespace QgsWfs
 
       if ( !featureRequest.filterRect().isEmpty() )
       {
-        Q_NOWARN_DEPRECATED_PUSH
-        QgsCoordinateTransform transform( outputCrs, vlayer->crs() );
-        Q_NOWARN_DEPRECATED_POP
+        QgsCoordinateTransform transform( outputCrs, vlayer->crs(), project );
         try
         {
           featureRequest.setFilterRect( transform.transform( featureRequest.filterRect() ) );
@@ -405,7 +401,7 @@ namespace QgsWfs
 
           if ( iteratedFeatures >= aRequest.startIndex )
           {
-            setGetFeature( response, aRequest.outputFormat, &feature, sentFeatures, cfp );
+            setGetFeature( response, aRequest.outputFormat, &feature, sentFeatures, cfp, project );
             ++sentFeatures;
           }
           ++iteratedFeatures;
@@ -1169,7 +1165,7 @@ namespace QgsWfs
     }
 
     void setGetFeature( QgsServerResponse &response, QgsWfsParameters::Format format, QgsFeature *feat, int featIdx,
-                        const createFeatureParams &params )
+                        const createFeatureParams &params, const QgsProject *project )
     {
       if ( !feat->isValid() )
         return;
@@ -1196,12 +1192,12 @@ namespace QgsWfs
         QDomElement featureElement;
         if ( format == QgsWfsParameters::Format::GML3 )
         {
-          featureElement = createFeatureGML3( feat, gmlDoc, params );
+          featureElement = createFeatureGML3( feat, gmlDoc, params, project );
           gmlDoc.appendChild( featureElement );
         }
         else
         {
-          featureElement = createFeatureGML2( feat, gmlDoc, params );
+          featureElement = createFeatureGML2( feat, gmlDoc, params, project );
           gmlDoc.appendChild( featureElement );
         }
         response.write( gmlDoc.toByteArray() );
@@ -1255,7 +1251,7 @@ namespace QgsWfs
     }
 
 
-    QDomElement createFeatureGML2( QgsFeature *feat, QDomDocument &doc, const createFeatureParams &params )
+    QDomElement createFeatureGML2( QgsFeature *feat, QDomDocument &doc, const createFeatureParams &params, const QgsProject *project )
     {
       //gml:FeatureMember
       QDomElement featureElement = doc.createElement( QStringLiteral( "gml:featureMember" )/*wfs:FeatureMember*/ );
@@ -1271,9 +1267,7 @@ namespace QgsWfs
       {
         int prec = params.precision;
         QgsCoordinateReferenceSystem crs = params.crs;
-        Q_NOWARN_DEPRECATED_PUSH
-        QgsCoordinateTransform mTransform( crs, params.outputCrs );
-        Q_NOWARN_DEPRECATED_POP
+        QgsCoordinateTransform mTransform( crs, params.outputCrs, project );
         try
         {
           QgsGeometry transformed = geom;
@@ -1352,7 +1346,7 @@ namespace QgsWfs
       return featureElement;
     }
 
-    QDomElement createFeatureGML3( QgsFeature *feat, QDomDocument &doc, const createFeatureParams &params )
+    QDomElement createFeatureGML3( QgsFeature *feat, QDomDocument &doc, const createFeatureParams &params, const QgsProject *project )
     {
       //gml:FeatureMember
       QDomElement featureElement = doc.createElement( QStringLiteral( "gml:featureMember" )/*wfs:FeatureMember*/ );
@@ -1368,9 +1362,7 @@ namespace QgsWfs
       {
         int prec = params.precision;
         QgsCoordinateReferenceSystem crs = params.crs;
-        Q_NOWARN_DEPRECATED_PUSH
-        QgsCoordinateTransform mTransform( crs, params.outputCrs );
-        Q_NOWARN_DEPRECATED_POP
+        QgsCoordinateTransform mTransform( crs, params.outputCrs, project );
         try
         {
           QgsGeometry transformed = geom;

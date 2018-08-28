@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis projectname="QGIS Server Hello World" version="3.2.0-Bonn">
+<qgis projectname="QGIS Server Hello World" version="3.3.0-Master">
   <homePath path=""/>
   <title>QGIS Server Hello World</title>
   <autotransaction active="0"/>
@@ -4362,6 +4362,29 @@ def my_form_open(dialog, layer, feature):
       <ProjectionsEnabled type="int">1</ProjectionsEnabled>
       <ProjectCRSProj4String type="QString">+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs</ProjectCRSProj4String>
     </SpatialRefSys>
+    <WMTSLayers>
+      <Project type="bool">true</Project>
+      <Group type="QStringList">
+        <value>CountryGroup</value>
+      </Group>
+      <Layer type="QStringList">
+        <value>hello20131022151106574</value>
+      </Layer>
+    </WMTSLayers>
+    <WMTSPngLayers>
+      <Project type="bool">true</Project>
+      <Group type="QStringList">
+        <value>CountryGroup</value>
+      </Group>
+      <Layer type="QStringList">
+        <value>hello20131022151106574</value>
+      </Layer>
+    </WMTSPngLayers>
+    <WMTSJpegLayers>
+      <Project type="bool">false</Project>
+      <Group type="QStringList"/>
+      <Layer type="QStringList"/>
+    </WMTSJpegLayers>
   </properties>
   <visibility-presets/>
   <transformContext/>

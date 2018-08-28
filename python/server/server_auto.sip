@@ -29,3 +29,9 @@
 %If ( HAVE_SERVER_PYTHON_PLUGINS )
 %Include auto_generated/qgsaccesscontrol.sip
 %End
+%If ( HAVE_SERVER_PYTHON_PLUGINS )
+%Include auto_generated/qgsservercachefilter.sip
+%End
+%If ( HAVE_SERVER_PYTHON_PLUGINS )
+%Include auto_generated/qgsservercachemanager.sip
+%End

@@ -414,6 +414,17 @@ Returns the Layer ids list defined in a QGIS project as published in WCS.
 
 :return: the Layer ids list.
 %End
+
+  QString wmtsServiceUrl( const QgsProject &project );
+%Docstring
+Returns the WMTS service url defined in a QGIS project.
+
+:param project: the QGIS project
+
+:return: url if defined in project, an empty string otherwise.
+
+.. versionadded:: 3.4
+%End
 };
 
 /************************************************************************

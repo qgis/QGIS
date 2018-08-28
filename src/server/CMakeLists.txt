@@ -73,6 +73,8 @@ IF (WITH_SERVER_PLUGINS)
     qgsserverfilter.cpp
     qgsaccesscontrolfilter.cpp
     qgsaccesscontrol.cpp
+    qgsservercachefilter.cpp
+    qgsservercachemanager.cpp
   )
 ENDIF (WITH_SERVER_PLUGINS)
 

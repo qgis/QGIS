@@ -120,7 +120,7 @@ namespace QgsWcs
       if ( coveNameList.size() == 0 || coveNameList.contains( name ) )
       {
         QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
-        coveDescElement.appendChild( getCoverageOffering( doc, const_cast<QgsRasterLayer *>( rLayer ) ) );
+        coveDescElement.appendChild( getCoverageOffering( doc, const_cast<QgsRasterLayer *>( rLayer ), project ) );
       }
     }
     return doc;

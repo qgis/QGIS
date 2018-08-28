@@ -111,9 +111,9 @@ namespace QgsWms
 
     QgsLayerTreeModelLegendNode *_findLegendNodeForRule( QgsLayerTreeModel *legendModel, const QString &rule )
     {
-      Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, legendModel->rootGroup()->findLayers() )
+      for ( QgsLayerTreeLayer *nodeLayer : legendModel->rootGroup()->findLayers() )
       {
-        Q_FOREACH ( QgsLayerTreeModelLegendNode *legendNode, legendModel->layerLegendNodes( nodeLayer ) )
+        for ( QgsLayerTreeModelLegendNode *legendNode : legendModel->layerLegendNodes( nodeLayer ) )
         {
           if ( legendNode->data( Qt::DisplayRole ).toString() == rule )
             return legendNode;
@@ -181,7 +181,7 @@ namespace QgsWms
     std::reverse( layers.begin(), layers.end() );
 
     // check permissions
-    Q_FOREACH ( QgsMapLayer *ml, layers )
+    for ( QgsMapLayer *ml : layers )
       checkLayerReadPermissions( ml );
 
     // build layer tree model for legend
@@ -241,7 +241,7 @@ namespace QgsWms
   {
     QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
 
-    Q_FOREACH ( const QString &id, mapSettings.layerIds() )
+    for ( const QString &id : mapSettings.layerIds() )
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mProject->mapLayer( id ) );
       if ( !vl || !vl->renderer() )
@@ -276,7 +276,7 @@ namespace QgsWms
       context.expressionContext().setFeature( f );
       if ( moreSymbolsPerFeature )
       {
-        Q_FOREACH ( QgsSymbol *s, r->originalSymbolsForFeature( f, context ) )
+        for ( QgsSymbol *s : r->originalSymbolsForFeature( f, context ) )
           usedSymbols.insert( QgsSymbolLayerUtils::symbolProperties( s ) );
       }
       else
@@ -328,11 +328,11 @@ namespace QgsWms
 
     // configure each layer with opacity, selection filter, ...
     bool updateMapExtent = mWmsParameters.bbox().isEmpty();
-    Q_FOREACH ( QgsMapLayer *layer, layers )
+    for ( QgsMapLayer *layer : layers )
     {
       checkLayerReadPermissions( layer );
 
-      Q_FOREACH ( QgsWmsParametersLayer param, params )
+      for ( const QgsWmsParametersLayer &param : params )
       {
         if ( param.mNickname == layerNickname( *layer ) )
         {
@@ -677,11 +677,11 @@ namespace QgsWms
 
     // configure each layer with opacity, selection filter, ...
     bool updateMapExtent = mWmsParameters.bbox().isEmpty();
-    Q_FOREACH ( QgsMapLayer *layer, layers )
+    for ( QgsMapLayer *layer : layers )
     {
       checkLayerReadPermissions( layer );
 
-      Q_FOREACH ( QgsWmsParametersLayer param, params )
+      for ( const QgsWmsParametersLayer &param : params )
       {
         if ( param.mNickname == layerNickname( *layer ) )
         {
@@ -774,7 +774,7 @@ namespace QgsWms
     // get dxf layers
     QList< QgsDxfExport::DxfLayer > dxfLayers;
     int layerIdx = -1;
-    Q_FOREACH ( QgsMapLayer *layer, layers )
+    for ( QgsMapLayer *layer : layers )
     {
       layerIdx++;
       if ( layer->type() != QgsMapLayer::VectorLayer )
@@ -784,7 +784,7 @@ namespace QgsWms
 
       checkLayerReadPermissions( layer );
 
-      Q_FOREACH ( QgsWmsParametersLayer param, params )
+      for ( const QgsWmsParametersLayer &param : params )
       {
         if ( param.mNickname == layerNickname( *layer ) )
         {
@@ -951,11 +951,11 @@ namespace QgsWms
     // remove non identifiable layers
     //removeNonIdentifiableLayers( layers );
 
-    Q_FOREACH ( QgsMapLayer *layer, layers )
+    for ( QgsMapLayer *layer : layers )
     {
       checkLayerReadPermissions( layer );
 
-      Q_FOREACH ( QgsWmsParametersLayer param, params )
+      for ( const QgsWmsParametersLayer &param : params )
       {
         if ( param.mNickname == layerNickname( *layer ) )
         {
@@ -1244,11 +1244,11 @@ namespace QgsWms
     //layers can have assigned a different name for GetCapabilities
     QHash<QString, QString> layerAliasMap = QgsServerProjectUtils::wmsFeatureInfoLayerAliasMap( *mProject );
 
-    Q_FOREACH ( QString queryLayer, queryLayers )
+    for ( const QString &queryLayer : queryLayers )
     {
       bool validLayer = false;
       bool queryableLayer = true;
-      Q_FOREACH ( QgsMapLayer *layer, layers )
+      for ( QgsMapLayer *layer : layers )
       {
         if ( queryLayer == layerNickname( *layer ) )
         {
@@ -1456,8 +1456,7 @@ namespace QgsWms
     mAccessControl->filterFeatures( layer, fReq );
 
     QStringList attributes;
-    QgsField field;
-    Q_FOREACH ( field, layer->fields().toList() )
+    for ( const QgsField &field : layer->fields().toList() )
     {
       attributes.append( field.name() );
     }
@@ -2368,13 +2367,13 @@ namespace QgsWms
     QStringList restrictedLayersNames;
     QgsLayerTreeGroup *root = mProject->layerTreeRoot();
 
-    Q_FOREACH ( QString l, restricted )
+    for ( const QString &l : restricted )
     {
       QgsLayerTreeGroup *group = root->findGroup( l );
       if ( group )
       {
         QList<QgsLayerTreeLayer *> groupLayers = group->findLayers();
-        Q_FOREACH ( QgsLayerTreeLayer *treeLayer, groupLayers )
+        for ( QgsLayerTreeLayer *treeLayer : groupLayers )
         {
           restrictedLayersNames.append( treeLayer->name() );
         }
@@ -2387,7 +2386,7 @@ namespace QgsWms
 
     // build output with names, ids or short name according to the configuration
     QList<QgsLayerTreeLayer *> layers = root->findLayers();
-    Q_FOREACH ( QgsLayerTreeLayer *layer, layers )
+    for ( QgsLayerTreeLayer *layer : layers )
     {
       if ( restrictedLayersNames.contains( layer->name() ) )
       {
@@ -2398,7 +2397,7 @@ namespace QgsWms
 
   void QgsRenderer::initNicknameLayers()
   {
-    Q_FOREACH ( QgsMapLayer *ml, mProject->mapLayers() )
+    for ( QgsMapLayer *ml : mProject->mapLayers() )
     {
       mNicknameLayers[ layerNickname( *ml ) ] = ml;
     }
@@ -2469,7 +2468,7 @@ namespace QgsWms
 
     // try to create highlight layer for each geometry
     QString crs = mWmsParameters.crs();
-    Q_FOREACH ( QgsWmsParametersHighlightLayer param, params )
+    for ( const QgsWmsParametersHighlightLayer &param : params )
     {
       // create sld document from symbology
       QDomDocument sldDoc;
@@ -2675,7 +2674,7 @@ namespace QgsWms
   {
     QList<QgsMapLayer *> layers;
 
-    Q_FOREACH ( QgsWmsParametersLayer param, params )
+    for ( const QgsWmsParametersLayer &param : params )
     {
       QString nickname = param.mNickname;
       QString style = param.mStyle;
@@ -2798,7 +2797,7 @@ namespace QgsWms
     if ( layer->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( layer );
-      Q_FOREACH ( QString filter, filters )
+      for ( const QString &filter : filters )
       {
         if ( filter.startsWith( QStringLiteral( "<" ) ) && filter.endsWith( QStringLiteral( "Filter>" ) ) )
         {
@@ -2850,7 +2849,7 @@ namespace QgsWms
     {
       QgsFeatureIds selectedIds;
 
-      Q_FOREACH ( const QString &id, fids )
+      for ( const QString &id : fids )
       {
         selectedIds.insert( STRING_TO_FID( id ) );
       }
@@ -2927,7 +2926,7 @@ namespace QgsWms
   {
     QList<QgsMapLayer *> wantedLayers;
 
-    Q_FOREACH ( QgsMapLayer *layer, layers )
+    for ( QgsMapLayer *layer : layers )
     {
       if ( !layerScaleVisibility( *layer, scaleDenominator ) )
         continue;
@@ -2948,7 +2947,7 @@ namespace QgsWms
     {
       QList<QgsMapLayer *> wantedLayers;
 
-      Q_FOREACH ( QgsMapLayer *layer, layers )
+      for ( QgsMapLayer *layer : layers )
       {
         if ( nonIdentifiableLayers.contains( layer->id() ) )
           continue;
@@ -2989,7 +2988,7 @@ namespace QgsWms
     // build layer tree
     rootGroup.clear();
     QList<QgsVectorLayerFeatureCounter *> counters;
-    Q_FOREACH ( QgsMapLayer *ml, layers )
+    for ( QgsMapLayer *ml : layers )
     {
       QgsLayerTreeLayer *lt = rootGroup.addLayer( ml );
       lt->setCustomProperty( QStringLiteral( "showFeatureCount" ), showFeatureCount );
@@ -3018,7 +3017,7 @@ namespace QgsWms
       HitTest hitTest;
       getMap( contentBasedMapSettings, &hitTest );
 
-      Q_FOREACH ( QgsLayerTreeNode *node, rootGroup.children() )
+      for ( QgsLayerTreeNode *node : rootGroup.children() )
       {
         Q_ASSERT( QgsLayerTree::isLayer( node ) );
         QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
@@ -3030,7 +3029,7 @@ namespace QgsWms
         const SymbolSet &usedSymbols = hitTest[vl];
         QList<int> order;
         int i = 0;
-        Q_FOREACH ( const QgsLegendSymbolItem &legendItem, vl->renderer()->legendSymbolItems() )
+        for ( const QgsLegendSymbolItem &legendItem : vl->renderer()->legendSymbolItems() )
         {
           QString sProp = QgsSymbolLayerUtils::symbolProperties( legendItem.legacyRuleKey() );
           if ( usedSymbols.contains( sProp ) )
@@ -3053,7 +3052,7 @@ namespace QgsWms
     if ( ! ruleDefined )
     {
       QList<QgsLayerTreeNode *> rootChildren = rootGroup.children();
-      Q_FOREACH ( QgsLayerTreeNode *node, rootChildren )
+      for ( QgsLayerTreeNode *node : rootChildren )
       {
         if ( QgsLayerTree::isLayer( node ) )
         {
@@ -3065,14 +3064,14 @@ namespace QgsWms
           // rule item titles
           if ( !drawLegendItemLabel )
           {
-            Q_FOREACH ( QgsLayerTreeModelLegendNode *legendNode, legendModel->layerLegendNodes( nodeLayer ) )
+            for ( QgsLayerTreeModelLegendNode *legendNode : legendModel->layerLegendNodes( nodeLayer ) )
             {
               legendNode->setUserLabel( QStringLiteral( " " ) ); // empty string = no override, so let's use one space
             }
           }
           else if ( !drawLegendLayerLabel )
           {
-            Q_FOREACH ( QgsLayerTreeModelLegendNode *legendNode, legendModel->layerLegendNodes( nodeLayer ) )
+            for ( QgsLayerTreeModelLegendNode *legendNode : legendModel->layerLegendNodes( nodeLayer ) )
             {
               if ( legendNode->isEmbeddedInParent() )
                 legendNode->setEmbeddedInParent( false );

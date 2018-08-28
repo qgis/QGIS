@@ -31,6 +31,7 @@ class QgsStyle;
 class QgsExpressionContext;
 class QgsLayerTreeGroup;
 class QgsMetadataWidget;
+class QgsTreeWidgetItem;
 
 /**
  * Dialog to set project level properties
@@ -136,6 +137,11 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void pbtnStyleColorRamp_clicked();
 
     /**
+     * Slot to link WMTS checkboxes in tree widget
+     */
+    void twWmtsItemChanged( QTreeWidgetItem *item, int column );
+
+    /**
      * Slot to link WFS checkboxes
      */
     void cbxWFSPubliedStateChanged( int aIdx );
@@ -213,6 +219,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QList<EllipsoidDefs> mEllipsoidList;
     int mEllipsoidIndex;
 
+    //! populate WMTS tree
+    void populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem );
     //! Check OWS configuration
     void checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
 

@@ -84,7 +84,7 @@ namespace QgsWms
 
     // get the wms service url defined in project or keep the one from the
     // request url
-    QString wmsHrefString = serviceUrl( request, project ).toString( QUrl::FullyDecoded );
+    QString wmsHrefString = serviceUrl( request, project ).toString();
 
     // get the wfs service url defined in project or take the same as the
     // wms service url
@@ -113,7 +113,7 @@ namespace QgsWms
     // WCS layers
     QStringList wcsLayerIds = QgsServerProjectUtils::wcsLayerIds( *project );
 
-    Q_FOREACH ( QgsMapLayer *layer, project->mapLayers() )
+    for ( QgsMapLayer *layer : project->mapLayers() )
     {
       QString name = layer->name();
       if ( useLayerIds )

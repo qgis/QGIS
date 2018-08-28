@@ -311,7 +311,7 @@ namespace QgsWms
           QUrl href = serviceUrl( request, project );
 
           //href needs to be a prefix
-          QString hrefString = href.toString( QUrl::FullyDecoded );
+          QString hrefString = href.toString();
           hrefString.append( href.hasQuery() ? "&" : "?" );
 
           // COntext Server Element with WMS service URL
@@ -405,9 +405,7 @@ namespace QgsWms
           // update combineBBox
           try
           {
-            Q_NOWARN_DEPRECATED_PUSH
-            QgsCoordinateTransform t( l->crs(), project->crs() );
-            Q_NOWARN_DEPRECATED_POP
+            QgsCoordinateTransform t( l->crs(), project->crs(), project );
             QgsRectangle BBox = t.transformBoundingBox( l->extent() );
             if ( combinedBBox.isEmpty() )
             {
@@ -437,7 +435,7 @@ namespace QgsWms
 
     void appendOwsLayerStyles( QDomDocument &doc, QDomElement &layerElem, QgsMapLayer *currentLayer )
     {
-      Q_FOREACH ( QString styleName, currentLayer->styleManager()->styles() )
+      for ( const QString &styleName : currentLayer->styleManager()->styles() )
       {
         QDomElement styleListElem = doc.createElement( QStringLiteral( "StyleList" ) );
         //only one default style in project file mode
