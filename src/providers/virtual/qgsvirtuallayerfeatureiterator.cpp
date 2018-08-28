@@ -65,7 +65,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     QStringList wheres;
     QString offset;
     QString subset = mSource->mSubset;
-    if ( !subset.isNull() )
+    if ( !subset.isEmpty() )
     {
       wheres << subset;
     }
