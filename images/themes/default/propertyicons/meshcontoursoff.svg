@@ -15,12 +15,21 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
-   sodipodi:docname="meshvectors.svg"
-   inkscape:export-filename="/home/martin/lutra/qgis-crayfish-plugin/plugin/list_icons_d.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   sodipodi:docname="meshcontoursoff.svg">
   <defs
      id="defs4">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient907">
+      <stop
+         style="stop-color:#b3b3b3;stop-opacity:1;"
+         offset="0"
+         id="stop903" />
+      <stop
+         style="stop-color:#b3b3b3;stop-opacity:0;"
+         offset="1"
+         id="stop905" />
+    </linearGradient>
     <marker
        inkscape:stockid="TriangleOutM"
        orient="auto"
@@ -116,14 +125,32 @@
          offset="1"
          id="stop3759" />
     </linearGradient>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Fade to Black or White"
+       id="filter1005">
+      <feColorMatrix
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0"
+         id="feColorMatrix1003"
+         result="fbSourceGraphic" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix1039" />
+      <feColorMatrix
+         id="feColorMatrix1041"
+         values="0.432642 0 0 0 0 0 0.432642 0 0 0 0 0 0.432642 0 0 0 0 0 1 0"
+         in="fbSourceGraphic" />
+    </filter>
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient3755"
-       id="linearGradient3761"
-       x1="-0.044642858"
-       y1="0.071428955"
-       x2="15.955357"
-       y2="16.053572"
+       xlink:href="#linearGradient907"
+       id="linearGradient909"
+       x1="-1.6446429"
+       y1="8.0178574"
+       x2="17.555358"
+       y2="8.0178574"
        gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
@@ -133,9 +160,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="31.678384"
-     inkscape:cx="-2.6207406"
-     inkscape:cy="6.2123922"
+     inkscape:zoom="22.4"
+     inkscape:cx="-8.70357"
+     inkscape:cy="2.9092772"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -143,50 +170,7 @@
      inkscape:window-height="1015"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     showguides="true"
-     inkscape:guide-bbox="true">
-    <sodipodi:guide
-       orientation="1,0"
-       position="14.017857,5.8035714"
-       id="guide4180"
-       inkscape:locked="false" />
-    <sodipodi:guide
-       orientation="0,1"
-       position="-3.5714286,1.9642857"
-       id="guide4182"
-       inkscape:locked="false" />
-    <sodipodi:guide
-       orientation="1,0"
-       position="12.053571,10.982143"
-       id="guide4186"
-       inkscape:locked="false" />
-    <sodipodi:guide
-       orientation="0,1"
-       position="-9.1964286,3.9732143"
-       id="guide4188"
-       inkscape:locked="false" />
-    <sodipodi:guide
-       orientation="0,1"
-       position="-5.0446429,5.9821429"
-       id="guide4190"
-       inkscape:locked="false" />
-    <sodipodi:guide
-       orientation="1,0"
-       position="10,8.3482143"
-       id="guide4192"
-       inkscape:locked="false" />
-    <sodipodi:guide
-       orientation="1,0"
-       position="12.991071,10.714286"
-       id="guide4194"
-       inkscape:locked="false" />
-    <sodipodi:guide
-       orientation="0,1"
-       position="8.9651038,2.9673231"
-       id="guide4196"
-       inkscape:locked="false" />
-  </sodipodi:namedview>
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -204,19 +188,13 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-1036.3622)">
-    <path
-       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-mid:none;marker-end:none;fill-opacity:0.23"
-       d="m 2.5000001,1038.8622 6.0050762,6.0051 4.9949237,4.9949"
-       id="path3789"
-       inkscape:connector-curvature="0"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90"
-       sodipodi:nodetypes="ccc" />
-    <path
-       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 14.017857,1050.3979 12.991071,1046.3801 10,1049.3949 z"
-       id="path4184"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccc" />
+    <rect
+       style="fill:url(#linearGradient909);stroke:none;fill-opacity:1;opacity:1;filter:url(#filter1005)"
+       id="rect2985"
+       width="16"
+       height="16"
+       x="-0.044642858"
+       y="0.017857092"
+       transform="translate(0,1036.3622)" />
   </g>
 </svg>

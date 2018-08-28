@@ -39,9 +39,16 @@ bool QgsMeshDatasetIndex::isValid() const
 
 bool QgsMeshDatasetIndex::operator ==( const QgsMeshDatasetIndex &other ) const
 {
-  return other.group() == group() && other.dataset() == dataset();
+  if ( isValid() && other.isValid() )
+    return other.group() == group() && other.dataset() == dataset();
+  else
+    return isValid() == other.isValid();
 }
 
+bool QgsMeshDatasetIndex::operator !=( const QgsMeshDatasetIndex &other ) const
+{
+  return !( operator==( other ) );
+}
 
 QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
   : QgsDataProvider( uri, options )

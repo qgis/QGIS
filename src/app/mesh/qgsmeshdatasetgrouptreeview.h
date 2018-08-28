@@ -24,6 +24,7 @@
 #include <QVector>
 #include <QItemSelection>
 #include <QStandardItemModel>
+#include <QStyledItemDelegate>
 #include <QList>
 #include <memory>
 
@@ -39,25 +40,29 @@ class QgsMeshLayer;
  *
  * Groups:
  *   Depth
- *     - Maximum/Depth
+ *     - Maximum
  *   Velocity
  *   Wind speed
- *     - Maximum/Wind Speed
+ *     - Maximum
  */
 class APP_NO_EXPORT QgsMeshDatasetGroupTreeItem
 {
   public:
     QgsMeshDatasetGroupTreeItem( QgsMeshDatasetGroupTreeItem *parent = nullptr );
-    QgsMeshDatasetGroupTreeItem( const QString &name, QgsMeshDatasetGroupTreeItem *parent = nullptr );
+    QgsMeshDatasetGroupTreeItem( const QString &name,
+                                 bool isVector,
+                                 int index,
+                                 QgsMeshDatasetGroupTreeItem *parent = nullptr );
     ~QgsMeshDatasetGroupTreeItem();
 
     void appendChild( QgsMeshDatasetGroupTreeItem *node );
     QgsMeshDatasetGroupTreeItem *child( int row ) const;
-    int columnCount() const;
     int childCount() const;
     QgsMeshDatasetGroupTreeItem *parentItem() const;
     int row() const;
-    QVariant data( int column ) const;
+    QString name() const;
+    bool isVector() const;
+    int datasetGroupIndex() const;
 
   private:
     QgsMeshDatasetGroupTreeItem *mParent = nullptr;
@@ -65,6 +70,8 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeItem
 
     // Data
     QString mName;
+    bool mIsVector = false;
+    int mDatasetGroupIndex = -1;
 };
 
 /**
@@ -73,8 +80,16 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeItem
 class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
-
   public:
+    enum Roles
+    {
+      Name = Qt::UserRole,
+      IsVector,
+      IsActiveScalarDatasetGroup,
+      IsActiveVectorDatasetGroup,
+      DatasetGroupIndex
+    };
+
     explicit QgsMeshDatasetGroupTreeModel( QObject *parent = nullptr );
 
     QVariant data( const QModelIndex &index, int role ) const override;
@@ -87,11 +102,54 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
-    //! Add groups to the model
-    void setupModelData( const QStringList &groups );
+    //! Returns index of active group for contours
+    int activeScalarGroup() const;
+
+    //! Sets active group for contours
+    void setActiveScalarGroup( int group );
+
+    //! Returns index of active group for vectors
+    int activeVectorGroup() const;
+
+    //! Sets active vector group
+    void setActiveVectorGroup( int group );
+
+    //! Add groups to the model from mesh layer
+    void syncToLayer( QgsMeshLayer *layer );
 
   private:
+    void addTreeItem( const QString &groupName, bool isVector, int groupIndex, QgsMeshDatasetGroupTreeItem *parent );
+    QModelIndex groupIndexToModelIndex( int groupIndex );
+
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mRootItem;
+    QMap<QString, QgsMeshDatasetGroupTreeItem *> mNameToItem;
+    QMap<int, QgsMeshDatasetGroupTreeItem *> mDatasetGroupIndexToItem;
+    int mActiveScalarGroupIndex = -1;
+    int mActiveVectorGroupIndex = -1;
+};
+
+/**
+ * Delegate to display tree item with a contours and vector selector
+ */
+class APP_EXPORT QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
+{
+  public:
+    QgsMeshDatasetGroupTreeItemDelagate( QObject *parent = Q_NULLPTR );
+
+    void paint( QPainter *painter,
+                const QStyleOptionViewItem &option,
+                const QModelIndex &index ) const override;
+
+    //! Icon rectangle for given item rectangle
+    QRect iconRect( const QRect rect, bool isVector ) const;
+
+    QSize sizeHint( const QStyleOptionViewItem &option,
+                    const QModelIndex &index ) const override;
+  private:
+    const QPixmap mScalarSelectedPixmap;
+    const QPixmap mScalarUnselectedPixmap;
+    const QPixmap mVectorSelectedPixmap;
+    const QPixmap mVectorUnselectedPixmap;
 };
 
 /**
@@ -109,27 +167,39 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView : public QTreeView
     //! Associates mesh layer with the widget
     void setLayer( QgsMeshLayer *layer );
 
-    //! Returns index of active group
-    int activeGroup() const;
+    //! Returns index of active group for contours
+    int activeScalarGroup() const;
+
+    //! Sets active group for contours
+    void setActiveScalarGroup( int group );
+
+    //! Returns index of active group for vectors
+    int activeVectorGroup() const;
+
+    //! Sets active vector group
+    void setActiveVectorGroup( int group );
 
     //! Synchronize widgets state with associated mesh layer
     void syncToLayer();
 
+    void mousePressEvent( QMouseEvent *event ) override;
+
   signals:
-    //! Selected dataset group changed
-    void activeGroupChanged();
+    //! Selected dataset group for contours changed. -1 for invalid group
+    void activeScalarGroupChanged( int groupIndex );
+
+    //! Selected dataset group for vectors changed. -1 for invalid group
+    void activeVectorGroupChanged( int groupIndex );
 
   private slots:
-    void onSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
+    // void onSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
   private:
-    void extractGroups();
-    int setActiveGroupFromActiveDataset();
+    void setActiveGroupFromActiveDataset();
 
     QgsMeshDatasetGroupTreeModel mModel;
+    QgsMeshDatasetGroupTreeItemDelagate mDelegate;
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
-    QStringList mGroups; // group names
-    int mActiveGroup = -1; // index of active group
 };
 
 #endif // QGSMESHDATASETGROUPTREE_H
