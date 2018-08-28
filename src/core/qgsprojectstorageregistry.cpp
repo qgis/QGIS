@@ -52,5 +52,5 @@ void QgsProjectStorageRegistry::registerProjectStorage( QgsProjectStorage *stora
 
 void QgsProjectStorageRegistry::unregisterProjectStorage( QgsProjectStorage *storage )
 {
-  delete mBackends.take( storage->type() );
+  mBackends.remove( storage->type() );
 }
