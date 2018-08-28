@@ -228,7 +228,7 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
   {
     // This is deferred because at the time the feature is set in one widget it is not
     // set in the next, which is typically the "down" in a drill-down
-    QTimer::singleShot( 0, [ this ]
+    QTimer::singleShot( 0, this, [ this ]
     {
       setValue( mCache.at( 0 ).key );
     } );
