@@ -83,7 +83,7 @@ class SpatialJoin(QgisAlgorithm):
 
         self.reversed_predicates = {'intersects': 'intersects',
                                     'contains': 'within',
-                                    'isEqual': 'isEqual',
+                                    'equals': 'equals',
                                     'touches': 'touches',
                                     'overlaps': 'overlaps',
                                     'within': 'contains',
