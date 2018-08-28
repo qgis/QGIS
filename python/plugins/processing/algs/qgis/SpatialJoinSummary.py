@@ -85,7 +85,7 @@ class SpatialJoinSummary(QgisAlgorithm):
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),
-            ('equals', self.tr('equals')),
+            ('isEqual', self.tr('equals')),
             ('touches', self.tr('touches')),
             ('overlaps', self.tr('overlaps')),
             ('within', self.tr('within')),
