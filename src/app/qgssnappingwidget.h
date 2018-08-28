@@ -150,6 +150,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mEnableTracingAction = nullptr;
     QgsDoubleSpinBox *mTracingOffsetSpinBox = nullptr;
     QTreeView *mLayerTreeView = nullptr;
+    QWidget *mAdvancedConfigWidget = nullptr;
     QgsFloatingWidget *mAdvancedConfigContainer = nullptr;
 
     void cleanGroup( QgsLayerTreeNode *node );

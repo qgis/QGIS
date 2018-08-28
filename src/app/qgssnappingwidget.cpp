@@ -62,6 +62,11 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   }
 
   // Advanced config layer tree view
+  mAdvancedConfigWidget = new QWidget( this );
+  QVBoxLayout *advancedLayout = new QVBoxLayout();
+  if ( mDisplayMode == Widget )
+    advancedLayout->setContentsMargins( 0, 0, 0, 0 );
+  // tree view
   mLayerTreeView = new QTreeView();
   QgsSnappingLayerTreeModel *model = new QgsSnappingLayerTreeModel( mProject, this );
   model->setLayerTreeModel( new QgsLayerTreeModel( mProject->layerTreeRoot(), model ) );
@@ -82,6 +87,19 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mLayerTreeView->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
   mLayerTreeView->setMinimumWidth( 500 );
   mLayerTreeView->resizeColumnToContents( 0 );
+  // filter line edit
+  QHBoxLayout *filterLayout = new QHBoxLayout();
+  filterLayout->setContentsMargins( 0, 0, 0, 0 );
+  filterLayout->addStretch();
+  QgsFilterLineEdit *filterLineEdit = new QgsFilterLineEdit();
+  filterLineEdit->setShowClearButton( true );
+  filterLineEdit->setShowSearchIcon( true );
+  connect( filterLineEdit, &QgsFilterLineEdit::textChanged, model, &QgsSnappingLayerTreeModel::setFilterText );
+  filterLayout->addStretch();
+  filterLayout->addWidget( filterLineEdit );
+  advancedLayout->addLayout( filterLayout );
+  advancedLayout->addWidget( mLayerTreeView );
+  mAdvancedConfigWidget->setLayout( advancedLayout );
 
   // enable button
   mEnabledAction = new QAction( tr( "Toggle Snapping" ), this );
@@ -206,7 +224,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     advConfigButton->setPopupMode( QToolButton::InstantPopup );
     QMenu *advConfigMenu = new QMenu( this );
     QWidgetAction *advConfigWidgetAction = new QWidgetAction( advConfigMenu );
-    advConfigWidgetAction->setDefaultWidget( mLayerTreeView );
+    advConfigWidgetAction->setDefaultWidget( mAdvancedConfigWidget );
     advConfigMenu->addAction( advConfigWidgetAction );
     advConfigButton->setIcon( QIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" ) ) );
     advConfigButton->setToolTip( tr( "Edit advanced configuration" ) );
@@ -255,7 +273,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
 
     QGridLayout *topLayout = new QGridLayout();
     topLayout->addLayout( layout, 0, 0, Qt::AlignLeft | Qt::AlignTop );
-    topLayout->addWidget( mLayerTreeView, 1, 0 );
+    topLayout->addWidget( mAdvancedConfigWidget, 1, 0 );
     setLayout( topLayout );
   }
 
@@ -333,7 +351,7 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
     mToleranceSpinBox->setValue( config.tolerance() );
   }
 
-  if ( ( QgsTolerance::UnitType )mUnitsComboBox->currentData().toInt() != config.units() )
+  if ( static_cast<QgsTolerance::UnitType>( mUnitsComboBox->currentData().toInt() ) != config.units() )
   {
     mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData( config.units() ) );
   }
@@ -367,9 +385,9 @@ void QgsSnappingWidget::toggleSnappingWidgets( bool enabled )
   mTypeButton->setEnabled( enabled );
   mToleranceSpinBox->setEnabled( enabled );
   mUnitsComboBox->setEnabled( enabled );
-  if ( mLayerTreeView )
+  if ( mAdvancedConfigWidget )
   {
-    mLayerTreeView->setEnabled( enabled );
+    mAdvancedConfigWidget->setEnabled( enabled );
   }
   mIntersectionSnappingAction->setEnabled( enabled );
   mEnableTracingAction->setEnabled( enabled );
@@ -383,7 +401,7 @@ void QgsSnappingWidget::changeTolerance( double tolerance )
 
 void QgsSnappingWidget::changeUnit( int idx )
 {
-  QgsTolerance::UnitType unit = ( QgsTolerance::UnitType )mUnitsComboBox->itemData( idx ).toInt();
+  QgsTolerance::UnitType unit = static_cast<QgsTolerance::UnitType>( mUnitsComboBox->itemData( idx ).toInt() );
   mConfig.setUnits( unit );
   mProject->setSnappingConfig( mConfig );
 
@@ -495,9 +513,9 @@ void QgsSnappingWidget::modeChanged()
     mTypeButton->setVisible( !advanced );
     mToleranceSpinBox->setVisible( !advanced );
     mUnitsComboBox->setVisible( !advanced );
-    if ( mDisplayMode == Widget && mLayerTreeView )
+    if ( mDisplayMode == Widget && mAdvancedConfigWidget )
     {
-      mLayerTreeView->setVisible( advanced );
+      mAdvancedConfigWidget->setVisible( advanced );
     }
   }
 }
