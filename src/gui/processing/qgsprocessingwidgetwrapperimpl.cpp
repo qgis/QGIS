@@ -28,7 +28,7 @@
 // QgsProcessingBooleanWidgetWrapper
 //
 
-QgsProcessingBooleanWidgetWrapper::QgsProcessingBooleanWidgetWrapper( const QgsProcessingParameterDefinition *parameter, WidgetType type, QWidget *parent )
+QgsProcessingBooleanWidgetWrapper::QgsProcessingBooleanWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
 
@@ -38,7 +38,7 @@ QWidget *QgsProcessingBooleanWidgetWrapper::createWidget()
 {
   switch ( type() )
   {
-    case Standard:
+    case QgsProcessingGui::Standard:
     {
       QString description = parameterDefinition()->description();
       if ( parameterDefinition()->flags() & QgsProcessingParameterDefinition::FlagOptional )
@@ -49,7 +49,8 @@ QWidget *QgsProcessingBooleanWidgetWrapper::createWidget()
       return mCheckBox;
     };
 
-    case Batch:
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Modeler:
     {
       mComboBox = new QComboBox();
       mComboBox->addItem( tr( "Yes" ), true );
@@ -64,7 +65,7 @@ QWidget *QgsProcessingBooleanWidgetWrapper::createWidget()
 QLabel *QgsProcessingBooleanWidgetWrapper::createLabel()
 {
   // avoid creating labels in standard dialogs
-  if ( type() == QgsAbstractProcessingParameterWidgetWrapper::Standard )
+  if ( type() == QgsProcessingGui::Standard )
     return nullptr;
   else
     return QgsAbstractProcessingParameterWidgetWrapper::createLabel();
@@ -74,34 +75,50 @@ void QgsProcessingBooleanWidgetWrapper::setWidgetValue( const QVariant &value, c
 {
   switch ( type() )
   {
-    case Standard:
+    case QgsProcessingGui::Standard:
     {
       const bool v = QgsProcessingParameters::parameterAsBool( parameterDefinition(), value, context );
       mCheckBox->setChecked( v );
       break;
     }
 
-    case Batch:
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Modeler:
     {
       const bool v = QgsProcessingParameters::parameterAsBool( parameterDefinition(), value, context );
       mComboBox->setCurrentIndex( mComboBox->findData( v ) );
       break;
     }
   }
-
 }
 
 QVariant QgsProcessingBooleanWidgetWrapper::value() const
 {
   switch ( type() )
   {
-    case Standard:
+    case QgsProcessingGui::Standard:
       return mCheckBox->isChecked();
 
-    case Batch:
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Modeler:
       return mComboBox->currentData();
-
   }
+  return QVariant();
+}
+
+QStringList QgsProcessingBooleanWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList() << "boolean" << "crs" << "layer";
+}
+
+QStringList QgsProcessingBooleanWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList() << "outputNumber" << "outputString" << "outputLayer" << "outputVector" << "outputRaster";
+}
+
+QList<int> QgsProcessingBooleanWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
 }
 
 QString QgsProcessingBooleanWidgetWrapper::parameterType() const
@@ -109,9 +126,10 @@ QString QgsProcessingBooleanWidgetWrapper::parameterType() const
   return QStringLiteral( "boolean" );
 }
 
-QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingBooleanWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsAbstractProcessingParameterWidgetWrapper::WidgetType type )
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingBooleanWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingBooleanWidgetWrapper( parameter, type );
 }
+
 
 ///@endcond PRIVATE

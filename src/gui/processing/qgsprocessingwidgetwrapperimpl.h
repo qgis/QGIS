@@ -32,17 +32,27 @@ class GUI_EXPORT QgsProcessingBooleanWidgetWrapper : public QgsAbstractProcessin
   public:
 
     QgsProcessingBooleanWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
-                                       QgsAbstractProcessingParameterWidgetWrapper::WidgetType type = Standard, QWidget *parent = nullptr );
+                                       QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
 
     // QgsProcessingParameterWidgetFactoryInterface
     QString parameterType() const override;
-    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsAbstractProcessingParameterWidgetWrapper::WidgetType type ) override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
 
     // QgsProcessingParameterWidgetWrapper interface
     QWidget *createWidget() override SIP_FACTORY;
     QLabel *createLabel() override SIP_FACTORY;
     void setWidgetValue( const QVariant &value, const QgsProcessingContext &context ) override;
     QVariant value() const override;
+
+  protected:
+
+  protected:
+
+    QStringList compatibleParameterTypes() const override;
+
+    QStringList compatibleOutputTypes() const override;
+
+    QList< int > compatibleDataTypes() const override;
 
   private:
 

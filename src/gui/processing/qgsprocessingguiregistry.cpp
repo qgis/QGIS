@@ -88,12 +88,8 @@ void QgsProcessingGuiRegistry::removeParameterWidgetFactory( QgsProcessingParame
   delete factory;
 }
 
-QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingGuiRegistry::createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsAbstractProcessingParameterWidgetWrapper::WidgetType type )
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingGuiRegistry::createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
-  // TODO - support modeler type
-  if ( type == QgsAbstractProcessingParameterWidgetWrapper::Modeler )
-    return nullptr;
-
   if ( !parameter )
     return nullptr;
 
@@ -102,5 +98,17 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingGuiRegistry::createPar
     return nullptr;
 
   return mParameterWidgetFactories.value( parameterType )->createWidgetWrapper( parameter, type );
+}
+
+QgsProcessingModelerParameterWidget *QgsProcessingGuiRegistry::createModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, const QgsProcessingContext &context )
+{
+  if ( !parameter )
+    return nullptr;
+
+  const QString parameterType = parameter->type();
+  if ( !mParameterWidgetFactories.contains( parameterType ) )
+    return nullptr;
+
+  return mParameterWidgetFactories.value( parameterType )->createModelerWidgetWrapper( model, childId, parameter, context );
 }
 

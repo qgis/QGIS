@@ -61,7 +61,10 @@ and in this case, None will be returned.
 
     bool addParameterWidgetFactory( QgsProcessingParameterWidgetFactoryInterface *factory /Transfer/ );
 %Docstring
-Adds a parameter widget ``factory`` to the registry. Ownership of ``factory`` is transferred to the registry.
+Adds a parameter widget ``factory`` to the registry, allowing widget creation for parameters of the matching
+type via createParameterWidgetWrapper() and createModelerParameterWidget().
+
+Ownership of ``factory`` is transferred to the registry.
 
 Returns true if the factory was successfully added, or false if the factory could not be added. Each
 factory must return a unique value for QgsProcessingParameterWidgetFactoryInterface.parameterType(),
@@ -70,6 +73,8 @@ and attempting to add a new factory with a duplicate type will result in failure
 .. seealso:: :py:func:`removeParameterWidgetFactory`
 
 .. seealso:: :py:func:`createParameterWidgetWrapper`
+
+.. seealso:: :py:func:`createModelerParameterWidget`
 
 .. versionadded:: 3.4
 %End
@@ -83,7 +88,7 @@ Removes a parameter widget ``factory`` from the registry. The factory will be de
 .. versionadded:: 3.4
 %End
 
-    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsAbstractProcessingParameterWidgetWrapper::WidgetType type ) /Factory/;
+    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) /Factory/;
 %Docstring
 Creates a new parameter widget wrapper for the given ``parameter``. The ``type`` argument
 dictates the type of dialog the wrapper should be created for. The caller takes ownership
@@ -91,7 +96,33 @@ of the returned wrapper.
 
 If no factory is registered which handles the given ``parameter``, a None will be returned.
 
+.. seealso:: :py:func:`createModelerParameterWidget`
+
 .. seealso:: :py:func:`addParameterWidgetFactory`
+
+.. versionadded:: 3.4
+%End
+
+    QgsProcessingModelerParameterWidget *createModelerParameterWidget( QgsProcessingModelAlgorithm *model,
+        const QString &childId,
+        const QgsProcessingParameterDefinition *parameter, const QgsProcessingContext &context ) /Factory/;
+%Docstring
+Creates a new modeler parameter widget for the given ``parameter``. This widget allows
+configuration of the parameter's value when used inside a Processing ``model``.
+
+The ID of the child algorithm within the model must be specified via the ``childId``
+argument. This value corresponds to the :py:func:`QgsProcessingModelChildAlgorithm.childId()`
+string, which uniquely identifies which child algorithm the parameter is associated
+with inside the given ``model``.
+
+The caller takes ownership of the returned widget. If no factory is registered which
+handles the given ``parameter``, a None will be returned.
+
+.. seealso:: :py:func:`createParameterWidgetWrapper`
+
+.. seealso:: :py:func:`addParameterWidgetFactory`
+
+.. versionadded:: 3.4
 %End
 
 };

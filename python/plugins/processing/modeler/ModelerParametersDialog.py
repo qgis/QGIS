@@ -57,11 +57,13 @@ from qgis.gui import (QgsGui,
                       QgsMessageBar,
                       QgsScrollArea,
                       QgsFilterLineEdit,
-                      QgsHelp)
+                      QgsHelp,
+                      QgsProcessingModelerParameterWidget)
 
 from processing.gui.wrappers import WidgetWrapperFactory
 from processing.gui.wrappers import InvalidParameterValue
 from processing.gui.MultipleInputPanel import MultipleInputPanel
+from processing.tools.dataobjects import createContext
 
 
 class ModelerParametersDialog(QDialog):
@@ -74,6 +76,7 @@ class ModelerParametersDialog(QDialog):
         self.model = model # The model this algorithm is going to be added to. It is an instance of QgsProcessingModelAlgorithm
         self.childId = algName # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
         self.configuration = configuration
+        self.context = createContext()
 
         self.setupUi()
         self.params = None
@@ -143,15 +146,25 @@ class ModelerParametersDialog(QDialog):
             wrapper = WidgetWrapperFactory.create_wrapper(param, self)
             self.wrappers[param.name()] = wrapper
 
-            widget = wrapper.widget
+            if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
+                widget = wrapper
+            else:
+                widget = wrapper.widget
             if widget is not None:
                 self.valueItems[param.name()] = widget
-                tooltip = param.description()
-                widget.setToolTip(tooltip)
+
+                if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
+                    label = wrapper.createLabel()
+                else:
+                    tooltip = param.description()
+                    widget.setToolTip(tooltip)
+                    label = wrapper.label
+
                 if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
-                    wrapper.label.setVisible(self.showAdvanced)
+                    label.setVisible(self.showAdvanced)
                     widget.setVisible(self.showAdvanced)
-                self.verticalLayout.addWidget(wrapper.label)
+
+                self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(widget)
 
         for dest in self._alg.destinationParameterDefinitions():
@@ -194,9 +207,6 @@ class ModelerParametersDialog(QDialog):
         self.buttonBox.rejected.connect(self.cancelPressed)
         self.buttonBox.helpRequested.connect(self.openHelp)
         QMetaObject.connectSlotsByName(self)
-
-        for wrapper in list(self.wrappers.values()):
-            wrapper.postInitialize(list(self.wrappers.values()))
 
     def getAvailableDependencies(self):  # spellok
         if self.childId is None:
@@ -270,11 +280,15 @@ class ModelerParametersDialog(QDialog):
                 if value is None:
                     value = param.defaultValue()
 
-                if isinstance(value,
-                              QgsProcessingModelChildParameterSource) and value.source() == QgsProcessingModelChildParameterSource.StaticValue:
-                    value = value.staticValue()
+                wrapper = self.wrappers[param.name()]
+                if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
+                    wrapper.setWidgetValue(value)
+                else:
+                    if isinstance(value,
+                                  QgsProcessingModelChildParameterSource) and value.source() == QgsProcessingModelChildParameterSource.StaticValue:
+                        value = value.staticValue()
+                    wrapper.setValue(value)
 
-                self.wrappers[param.name()].setValue(value)
             for name, out in list(alg.modelOutputs().items()):
                 if out.childOutputName() in self.valueItems:
                     self.valueItems[out.childOutputName()].setText(out.name())

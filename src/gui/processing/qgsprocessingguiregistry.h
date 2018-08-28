@@ -20,6 +20,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsprocessinggui.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include <QList>
 #include <QMap>
@@ -27,6 +28,7 @@
 class QgsProcessingAlgorithm;
 class QgsProcessingAlgorithmConfigurationWidget;
 class QgsProcessingAlgorithmConfigurationWidgetFactory;
+class QgsProcessingModelerParameterWidget;
 
 /**
  * The QgsProcessingGuiRegistry is a home for widgets for processing
@@ -75,7 +77,10 @@ class GUI_EXPORT QgsProcessingGuiRegistry
     QgsProcessingAlgorithmConfigurationWidget *algorithmConfigurationWidget( const QgsProcessingAlgorithm *algorithm ) const;
 
     /**
-     * Adds a parameter widget \a factory to the registry. Ownership of \a factory is transferred to the registry.
+     * Adds a parameter widget \a factory to the registry, allowing widget creation for parameters of the matching
+     * type via createParameterWidgetWrapper() and createModelerParameterWidget().
+     *
+     * Ownership of \a factory is transferred to the registry.
      *
      * Returns true if the factory was successfully added, or false if the factory could not be added. Each
      * factory must return a unique value for QgsProcessingParameterWidgetFactoryInterface::parameterType(),
@@ -83,6 +88,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * \see removeParameterWidgetFactory()
      * \see createParameterWidgetWrapper()
+     * \see createModelerParameterWidget()
      *
      * \since QGIS 3.4
      */
@@ -104,9 +110,33 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * If no factory is registered which handles the given \a parameter, a nullptr will be returned.
      *
+     * \see createModelerParameterWidget()
      * \see addParameterWidgetFactory()
+     *
+     * \since QGIS 3.4
      */
-    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsAbstractProcessingParameterWidgetWrapper::WidgetType type ) SIP_FACTORY;
+    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) SIP_FACTORY;
+
+    /**
+     * Creates a new modeler parameter widget for the given \a parameter. This widget allows
+     * configuration of the parameter's value when used inside a Processing \a model.
+     *
+     * The ID of the child algorithm within the model must be specified via the \a childId
+     * argument. This value corresponds to the QgsProcessingModelChildAlgorithm::childId()
+     * string, which uniquely identifies which child algorithm the parameter is associated
+     * with inside the given \a model.
+     *
+     * The caller takes ownership of the returned widget. If no factory is registered which
+     * handles the given \a parameter, a nullptr will be returned.
+     *
+     * \see createParameterWidgetWrapper()
+     * \see addParameterWidgetFactory()
+     *
+     * \since QGIS 3.4
+     */
+    QgsProcessingModelerParameterWidget *createModelerParameterWidget( QgsProcessingModelAlgorithm *model,
+        const QString &childId,
+        const QgsProcessingParameterDefinition *parameter, const QgsProcessingContext &context ) SIP_FACTORY;
 
   private:
 

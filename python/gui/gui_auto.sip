@@ -45,6 +45,7 @@
 %Include auto_generated/layertree/qgslayertreeembeddedconfigwidget.sip
 %Include auto_generated/layertree/qgslayertreeembeddedwidgetregistry.sip
 %Include auto_generated/layout/qgslayoutviewmouseevent.sip
+%Include auto_generated/processing/qgsprocessinggui.sip
 %Include auto_generated/processing/qgsprocessingguiregistry.sip
 %Include auto_generated/raster/qgsrasterrendererwidget.sip
 %Include auto_generated/symbology/qgssymbolwidgetcontext.sip
@@ -316,6 +317,7 @@
 %Include auto_generated/locator/qgslocatorwidget.sip
 %Include auto_generated/processing/qgsprocessingalgorithmconfigurationwidget.sip
 %Include auto_generated/processing/qgsprocessingalgorithmdialogbase.sip
+%Include auto_generated/processing/qgsprocessingmodelerwidget.sip
 %Include auto_generated/processing/qgsprocessingrecentalgorithmlog.sip
 %Include auto_generated/processing/qgsprocessingtoolboxmodel.sip
 %Include auto_generated/processing/qgsprocessingtoolboxtreeview.sip
