@@ -176,6 +176,6 @@ void QgsFieldValidator::fixup( QString &s ) const
   else if ( mField.type() == QVariant::Date )
   {
     // invalid dates will also translate to NULL
-    s = QLatin1String( "" );
+    s = QString();
   }
 }

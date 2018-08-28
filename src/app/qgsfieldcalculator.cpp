@@ -484,7 +484,7 @@ void QgsFieldCalculator::setOkButtonState()
     return;
   }
 
-  okButton->setToolTip( QLatin1String( "" ) );
+  okButton->setToolTip( QString() );
   okButton->setEnabled( true );
 }
 

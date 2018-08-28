@@ -358,7 +358,7 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
   mAnnotationFrameDistance = itemElem.attribute( QStringLiteral( "frameAnnotationDistance" ), QStringLiteral( "0" ) ).toDouble();
   if ( !QgsFontUtils::setFromXmlChildNode( mGridAnnotationFont, itemElem, QStringLiteral( "annotationFontProperties" ) ) )
   {
-    mGridAnnotationFont.fromString( itemElem.attribute( QStringLiteral( "annotationFont" ), QLatin1String( "" ) ) );
+    mGridAnnotationFont.fromString( itemElem.attribute( QStringLiteral( "annotationFont" ), QString() ) );
   }
   mGridAnnotationFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "annotationFontColor" ), QStringLiteral( "0,0,0,255" ) ) );
   mGridAnnotationPrecision = itemElem.attribute( QStringLiteral( "annotationPrecision" ), QStringLiteral( "3" ) ).toInt();

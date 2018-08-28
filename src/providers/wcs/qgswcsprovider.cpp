@@ -1283,7 +1283,7 @@ QString QgsWcsProvider::htmlMetadata()
   metadata += htmlRow( tr( "Image Formats" ), mCapabilities.capability.request.getMap.format.join( "<br />" ) );
   metadata += htmlRow( tr( "GetCapabilitiesUrl" ), mBaseUrl );
 #endif
-  metadata += htmlRow( tr( "Get Coverage Url" ), mCapabilities.getCoverageUrl() + ( mIgnoreGetCoverageUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : QLatin1String( "" ) ) );
+  metadata += htmlRow( tr( "Get Coverage Url" ), mCapabilities.getCoverageUrl() + ( mIgnoreGetCoverageUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : QString() ) );
 
   // Close the nested table
   metadata += QLatin1String( "</table>" );  // End nested table 2

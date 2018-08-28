@@ -200,7 +200,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDown()
   // Check null is selected
   QCOMPARE( w_municipality.mComboBox->count(), 3 );
   QCOMPARE( w_municipality.mComboBox->itemText( 0 ), QStringLiteral( "(no selection)" ) );
-  QCOMPARE( w_municipality.value().toString(), QStringLiteral( "" ) );
+  QCOMPARE( w_municipality.value().toString(), QString() );
 
   // Check order by value false
   cfg_municipality[QStringLiteral( "AllowNull" )] = false;

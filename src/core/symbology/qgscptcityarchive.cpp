@@ -373,7 +373,7 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
       //todo integrate this into symbollayerutils, keep here for now...
       double offset;
       QString offsetStr = e.attribute( QStringLiteral( "offset" ) ); // offset="50.00%" | offset="0.5"
-      QString colorStr = e.attribute( QStringLiteral( "stop-color" ), QLatin1String( "" ) ); // stop-color="rgb(222,235,247)"
+      QString colorStr = e.attribute( QStringLiteral( "stop-color" ), QString() ); // stop-color="rgb(222,235,247)"
       QString opacityStr = e.attribute( QStringLiteral( "stop-opacity" ), QStringLiteral( "1.0" ) ); // stop-opacity="1.0000"
       if ( offsetStr.endsWith( '%' ) )
         offset = offsetStr.remove( offsetStr.size() - 1, 1 ).toDouble() / 100.0;

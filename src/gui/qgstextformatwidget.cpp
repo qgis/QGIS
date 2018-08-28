@@ -1179,7 +1179,7 @@ void QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged( int index )
   mShapeSizeYLabel->setVisible( !isSVG );
   mShapeSizeYSpnBx->setVisible( !isSVG );
   mShapeSizeYDDBtn->setVisible( !isSVG && mWidgetMode == Labeling );
-  mShapeSizeXLabel->setText( tr( "Size%1" ).arg( !isSVG ? tr( " X" ) : QLatin1String( "" ) ) );
+  mShapeSizeXLabel->setText( tr( "Size%1" ).arg( !isSVG ? tr( " X" ) : QString() ) );
 
   // SVG parameter setting doesn't support color's alpha component yet
   mShapeFillColorBtn->setAllowOpacity( !isSVG );

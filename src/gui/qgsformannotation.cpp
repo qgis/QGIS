@@ -154,7 +154,7 @@ void QgsFormAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const Qg
 
 void QgsFormAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
-  mDesignerForm = itemElem.attribute( QStringLiteral( "designerForm" ), QLatin1String( "" ) );
+  mDesignerForm = itemElem.attribute( QStringLiteral( "designerForm" ), QString() );
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {

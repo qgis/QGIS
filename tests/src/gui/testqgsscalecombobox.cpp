@@ -176,7 +176,7 @@ void TestQgsScaleComboBox::toDouble()
   //bad
   QgsScaleComboBox::toDouble( QStringLiteral( "abc" ), &ok );
   QVERIFY( !ok );
-  QgsScaleComboBox::toDouble( QStringLiteral( "" ), &ok );
+  QgsScaleComboBox::toDouble( QString(), &ok );
   QVERIFY( !ok );
   QgsScaleComboBox::toDouble( QStringLiteral( "1:" ), &ok );
   QVERIFY( !ok );

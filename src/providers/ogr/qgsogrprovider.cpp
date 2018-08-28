@@ -3017,7 +3017,7 @@ QString createFilters( const QString &type )
   }
   else
   {
-    return QLatin1String( "" );
+    return QString();
   }
 }
 
@@ -6000,7 +6000,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   QgsOgrLayerUniquePtr userLayer;
   if ( !LoadDataSourceLayerStylesAndLayer( uri, layerStyles, userLayer, errCause ) )
   {
-    return QLatin1String( "" );
+    return QString();
   }
 
   QMutex *mutex1 = nullptr;
@@ -6180,7 +6180,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   QgsOgrLayerUniquePtr userLayer;
   if ( !LoadDataSourceLayerStylesAndLayer( uri, layerStyles, userLayer, errCause ) )
   {
-    return QLatin1String( "" );
+    return QString();
   }
 
   QMutex *mutex1 = nullptr;
@@ -6192,14 +6192,14 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   if ( !ok )
   {
     errCause = QObject::tr( "Invalid style identifier" );
-    return QLatin1String( "" );
+    return QString();
   }
 
   gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetFeature( hLayer, id ) );
   if ( !hFeature )
   {
     errCause = QObject::tr( "No style corresponding to style identifier" );
-    return QLatin1String( "" );
+    return QString();
   }
 
   OGRFeatureDefnH hLayerDefn = OGR_L_GetLayerDefn( hLayer );

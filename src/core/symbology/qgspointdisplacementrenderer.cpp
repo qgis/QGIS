@@ -141,13 +141,13 @@ QgsFeatureRenderer *QgsPointDisplacementRenderer::create( QDomElement &symbology
   QFont labelFont;
   if ( !QgsFontUtils::setFromXmlChildNode( labelFont, symbologyElem, QStringLiteral( "labelFontProperties" ) ) )
   {
-    labelFont.fromString( symbologyElem.attribute( QStringLiteral( "labelFont" ), QLatin1String( "" ) ) );
+    labelFont.fromString( symbologyElem.attribute( QStringLiteral( "labelFont" ), QString() ) );
   }
   r->setLabelFont( labelFont );
   r->setPlacement( static_cast< Placement >( symbologyElem.attribute( QStringLiteral( "placement" ), QStringLiteral( "0" ) ).toInt() ) );
   r->setCircleWidth( symbologyElem.attribute( QStringLiteral( "circleWidth" ), QStringLiteral( "0.4" ) ).toDouble() );
-  r->setCircleColor( QgsSymbolLayerUtils::decodeColor( symbologyElem.attribute( QStringLiteral( "circleColor" ), QLatin1String( "" ) ) ) );
-  r->setLabelColor( QgsSymbolLayerUtils::decodeColor( symbologyElem.attribute( QStringLiteral( "labelColor" ), QLatin1String( "" ) ) ) );
+  r->setCircleColor( QgsSymbolLayerUtils::decodeColor( symbologyElem.attribute( QStringLiteral( "circleColor" ), QString() ) ) );
+  r->setLabelColor( QgsSymbolLayerUtils::decodeColor( symbologyElem.attribute( QStringLiteral( "labelColor" ), QString() ) ) );
   r->setCircleRadiusAddition( symbologyElem.attribute( QStringLiteral( "circleRadiusAddition" ), QStringLiteral( "0.0" ) ).toDouble() );
   r->setMinimumLabelScale( symbologyElem.attribute( QStringLiteral( "maxLabelScaleDenominator" ), QStringLiteral( "-1" ) ).toDouble() );
   r->setTolerance( symbologyElem.attribute( QStringLiteral( "tolerance" ), QStringLiteral( "0.00001" ) ).toDouble() );

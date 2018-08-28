@@ -36,8 +36,8 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( QgsVectorLayer
 
   if ( vectorLayer() )
   {
-    mXAttributeComboBox->addItem( QLatin1String( "" ) );
-    mYAttributeComboBox->addItem( QLatin1String( "" ) );
+    mXAttributeComboBox->addItem( QString() );
+    mYAttributeComboBox->addItem( QString() );
     int i = 0;
     Q_FOREACH ( const QgsField &f, vectorLayer()->fields() )
     {

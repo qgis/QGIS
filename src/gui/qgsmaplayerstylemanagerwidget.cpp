@@ -197,7 +197,7 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
         case 0:
           return;
         case 2:
-          layer->saveStyleToDatabase( QLatin1String( "" ), QLatin1String( "" ), true, QLatin1String( "" ), errorMsg );
+          layer->saveStyleToDatabase( QString(), QString(), true, QString(), errorMsg );
           if ( errorMsg.isNull() )
           {
             return;

@@ -177,7 +177,7 @@ void QgsQueryBuilder::btnSampleValues_clicked()
   QString prevSubsetString = mLayer->subsetString();
   if ( mUseUnfilteredLayer->isChecked() && !prevSubsetString.isEmpty() )
   {
-    mLayer->setSubsetString( QLatin1String( "" ) );
+    mLayer->setSubsetString( QString() );
   }
 
   //Clear and fill the mModelValues
@@ -198,7 +198,7 @@ void QgsQueryBuilder::btnGetAllValues_clicked()
   QString prevSubsetString = mLayer->subsetString();
   if ( mUseUnfilteredLayer->isChecked() && !prevSubsetString.isEmpty() )
   {
-    mLayer->setSubsetString( QLatin1String( "" ) );
+    mLayer->setSubsetString( QString() );
   }
 
   //Clear and fill the mModelValues
@@ -409,7 +409,7 @@ void QgsQueryBuilder::onTextChanged( const QString &text )
 void QgsQueryBuilder::clear()
 {
   txtSQL->clear();
-  mLayer->setSubsetString( QLatin1String( "" ) );
+  mLayer->setSubsetString( QString() );
   mUseUnfilteredLayer->setDisabled( true );
 }
 

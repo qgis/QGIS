@@ -181,8 +181,8 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
     if ( childIndex != -1 )
     {
       child = childAt( parent, childIndex );
-      child->setText( 1, QLatin1String( "" ) );
-      child->setText( 2, QLatin1String( "" ) );
+      child->setText( 1, QString() );
+      child->setText( 2, QString() );
       child->setData( 2, Qt::UserRole, QVariant() );
       moveItemForward( parent, childIndex, dividerIndex );
     }

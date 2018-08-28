@@ -132,7 +132,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     {
       public:
         explicit HiddenOption( const QString &value )
-          : Option( QLatin1String( "" ), Hidden )
+          : Option( QString(), Hidden )
           , mValue( value )
         {}
 

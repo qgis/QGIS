@@ -45,7 +45,7 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
 
-    QString msg( disabled ? QgsApplication::authManager()->disabledMessage() : QLatin1String( "" ) );
+    QString msg( disabled ? QgsApplication::authManager()->disabledMessage() : QString() );
     if ( !authcfg.isEmpty() )
     {
       msg += "\n\n" + tr( "Authentication config id not loaded: %1" ).arg( authcfg );

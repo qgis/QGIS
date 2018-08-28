@@ -138,7 +138,7 @@ void QgsBrowserModel::addRootItems()
       continue;
     }
 
-    QgsDataItem *item = pr->createDataItem( QLatin1String( "" ), nullptr );  // empty path -> top level
+    QgsDataItem *item = pr->createDataItem( QString(), nullptr );  // empty path -> top level
     if ( item )
     {
       // Forward the signal from the root items to the model (and then to the app)

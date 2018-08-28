@@ -634,7 +634,7 @@ void TestQgsWcsPublicServers::report()
           QStringList myValues;
           myValues << QStringLiteral( "<a href='%1'>%2</a>" ).arg( myLog.value( QStringLiteral( "describeCoverageUrl" ) ), myLog.value( QStringLiteral( "identifier" ) ) );
           //myValues << myLog.value( "hasSize" );
-          myVersionReport += cells( myValues, QLatin1String( "" ), 1, 2 );
+          myVersionReport += cells( myValues, QString(), 1, 2 );
           myValues.clear();
 
           QStringList issues = issueDescriptions( myServerLog.value( QStringLiteral( "server" ) ), myLog.value( QStringLiteral( "identifier" ) ), myLog.value( QStringLiteral( "version" ) ) );
@@ -725,7 +725,7 @@ void TestQgsWcsPublicServers::report()
           }
           else
           {
-            myValues << QLatin1String( "" );
+            myValues << QString();
             cls = QStringLiteral( "cell-empty" );
           }
           myVersionReport += cells( myValues, cls, 24 );

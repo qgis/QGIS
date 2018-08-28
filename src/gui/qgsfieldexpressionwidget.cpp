@@ -298,7 +298,7 @@ void QgsFieldExpressionWidget::currentFieldChanged()
   }
   else
   {
-    mCombo->setToolTip( QLatin1String( "" ) );
+    mCombo->setToolTip( QString() );
   }
 
   emit fieldChanged( fieldName );

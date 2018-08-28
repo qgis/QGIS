@@ -321,7 +321,7 @@ void TestQgsOgrUtils::stringToFeatureList()
   fields.append( QgsField( QStringLiteral( "name" ), QVariant::String ) );
 
   //empty string
-  QgsFeatureList features = QgsOgrUtils::stringToFeatureList( QLatin1String( "" ), fields, QTextCodec::codecForName( "System" ) );
+  QgsFeatureList features = QgsOgrUtils::stringToFeatureList( QString(), fields, QTextCodec::codecForName( "System" ) );
   QVERIFY( features.isEmpty() );
   // bad string
   features = QgsOgrUtils::stringToFeatureList( QStringLiteral( "asdasdas" ), fields, QTextCodec::codecForName( "System" ) );
@@ -361,7 +361,7 @@ void TestQgsOgrUtils::stringToFeatureList()
 void TestQgsOgrUtils::stringToFields()
 {
   //empty string
-  QgsFields fields = QgsOgrUtils::stringToFields( QLatin1String( "" ), QTextCodec::codecForName( "System" ) );
+  QgsFields fields = QgsOgrUtils::stringToFields( QString(), QTextCodec::codecForName( "System" ) );
   QCOMPARE( fields.count(), 0 );
   // bad string
   fields = QgsOgrUtils::stringToFields( QStringLiteral( "asdasdas" ), QTextCodec::codecForName( "System" ) );

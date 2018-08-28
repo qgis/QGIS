@@ -52,7 +52,7 @@ void QgsMssqlGeomColumnTypeThread::run()
     {
       QString table;
       table = QStringLiteral( "%1[%2]" )
-              .arg( layerProperty.schemaName.isEmpty() ? QLatin1String( "" ) : QStringLiteral( "[%1]." ).arg( layerProperty.schemaName ),
+              .arg( layerProperty.schemaName.isEmpty() ? QString() : QStringLiteral( "[%1]." ).arg( layerProperty.schemaName ),
                     layerProperty.tableName );
 
       QString query = QString( "SELECT %3"
@@ -64,7 +64,7 @@ void QgsMssqlGeomColumnTypeThread::run()
                       .arg( layerProperty.geometryColName,
                             table,
                             mUseEstimatedMetadata ? "TOP 1" : "",
-                            layerProperty.sql.isEmpty() ? QLatin1String( "" ) : QStringLiteral( " AND %1" ).arg( layerProperty.sql ) );
+                            layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( layerProperty.sql ) );
 
       // issue the sql query
       QSqlDatabase db = QSqlDatabase::database( mConnectionName );

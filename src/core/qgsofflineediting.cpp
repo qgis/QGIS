@@ -1224,7 +1224,7 @@ QList<QgsField> QgsOfflineEditing::sqlQueryAttributesAdded( sqlite3 *db, const Q
   {
     QgsField field( QString( reinterpret_cast< const char * >( sqlite3_column_text( stmt, 0 ) ) ),
                     static_cast< QVariant::Type >( sqlite3_column_int( stmt, 1 ) ),
-                    QLatin1String( "" ), // typeName
+                    QString(), // typeName
                     sqlite3_column_int( stmt, 2 ),
                     sqlite3_column_int( stmt, 3 ),
                     QString( reinterpret_cast< const char * >( sqlite3_column_text( stmt, 4 ) ) ) );

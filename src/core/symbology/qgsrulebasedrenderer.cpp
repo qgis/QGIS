@@ -318,7 +318,7 @@ void QgsRuleBasedRenderer::Rule::toSld( QDomDocument &doc, QDomElement &element,
 
   if ( !mFilterExp.isEmpty() )
   {
-    if ( !props.value( QStringLiteral( "filter" ), QLatin1String( "" ) ).isEmpty() )
+    if ( !props.value( QStringLiteral( "filter" ), QString() ).isEmpty() )
       props[ QStringLiteral( "filter" )] += QLatin1String( " AND " );
     props[ QStringLiteral( "filter" )] += mFilterExp;
   }
@@ -354,9 +354,9 @@ void QgsRuleBasedRenderer::Rule::toSld( QDomDocument &doc, QDomElement &element,
       ruleElem.appendChild( descrElem );
     }
 
-    if ( !props.value( QStringLiteral( "filter" ), QLatin1String( "" ) ).isEmpty() )
+    if ( !props.value( QStringLiteral( "filter" ), QString() ).isEmpty() )
     {
-      QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, props.value( QStringLiteral( "filter" ), QLatin1String( "" ) ) );
+      QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, props.value( QStringLiteral( "filter" ), QString() ) );
     }
 
     QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, props );

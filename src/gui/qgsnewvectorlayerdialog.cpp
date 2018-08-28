@@ -95,7 +95,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   }
   mFileEncoding->setCurrentIndex( encindex );
 
-  mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << QStringLiteral( "id" ) << QStringLiteral( "Integer" ) << QStringLiteral( "10" ) << QLatin1String( "" ) ) );
+  mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << QStringLiteral( "id" ) << QStringLiteral( "Integer" ) << QStringLiteral( "10" ) << QString() ) );
   connect( mNameEdit, &QLineEdit::textChanged, this, &QgsNewVectorLayerDialog::nameChanged );
   connect( mAttributeView, &QTreeWidget::itemSelectionChanged, this, &QgsNewVectorLayerDialog::selectionChanged );
 
@@ -191,7 +191,7 @@ void QgsNewVectorLayerDialog::mAddAttributeButton_clicked()
 {
   QString myName = mNameEdit->text();
   QString myWidth = mWidth->text();
-  QString myPrecision = mPrecision->isEnabled() ? mPrecision->text() : QLatin1String( "" );
+  QString myPrecision = mPrecision->isEnabled() ? mPrecision->text() : QString();
   //use userrole to avoid translated type string
   QString myType = mTypeBox->currentData( Qt::UserRole ).toString();
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << myName << myType << myWidth << myPrecision ) );
@@ -258,7 +258,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
   geomDialog.setCrs( crs );
   if ( geomDialog.exec() == QDialog::Rejected )
   {
-    return QLatin1String( "" );
+    return QString();
   }
 
   QgsWkbTypes::Type geometrytype = geomDialog.selectedType();

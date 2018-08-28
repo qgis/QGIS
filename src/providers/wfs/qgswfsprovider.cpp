@@ -299,7 +299,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
         parserErrorString += QLatin1String( " " );
       parserErrorString += newPart;
     }
-    parserErrorString.replace( QLatin1String( " or " ), tr( "%1 or %2" ).arg( QLatin1String( "" ), QLatin1String( "" ) ) );
+    parserErrorString.replace( QLatin1String( " or " ), tr( "%1 or %2" ).arg( QString(), QString() ) );
     parserErrorString.replace( QLatin1String( "COMMA" ), tr( "comma" ) );
     parserErrorString.replace( QLatin1String( "IDENTIFIER" ), tr( "an identifier" ) );
     errorMsg = tr( "SQL query is invalid: %1" ).arg( parserErrorString );

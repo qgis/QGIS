@@ -224,7 +224,7 @@ void QgsAuthCertInfo::setCertHierarchy()
   {
     QSslCertificate cert( it.previous() );
     bool missingCA = cert.isNull();
-    QString cert_source( QLatin1String( "" ) );
+    QString cert_source;
     if ( missingCA && it.hasPrevious() )
     {
       cert_source = QgsAuthCertUtils::resolvedCertName( it.peekPrevious(), true );
@@ -395,7 +395,7 @@ void QgsAuthCertInfo::addFieldItem( QTreeWidgetItem *parent, const QString &fiel
 
   QTreeWidgetItem *item = new QTreeWidgetItem(
     parent,
-    QStringList() << field << ( wdgt == NoWidget ? value : QLatin1String( "" ) ),
+    QStringList() << field << ( wdgt == NoWidget ? value : QString() ),
     ( int )DetailsField );
 
   item->setTextAlignment( 0, Qt::AlignRight );
@@ -818,7 +818,7 @@ void QgsAuthCertInfo::populateInfoPemTextSection()
 
   QTreeWidgetItem *item = new QTreeWidgetItem(
     mSecPemText,
-    QStringList( QLatin1String( "" ) ),
+    QStringList( QString() ),
     ( int )DetailsField );
 
   item->setFirstColumnSpanned( true );

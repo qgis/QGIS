@@ -683,7 +683,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
     QFont f;
     if ( !QgsFontUtils::setFromXmlChildNode( f, itemElem, QStringLiteral( "scaleBarFont" ) ) )
     {
-      f.fromString( itemElem.attribute( QStringLiteral( "font" ), QLatin1String( "" ) ) );
+      f.fromString( itemElem.attribute( QStringLiteral( "font" ), QString() ) );
     }
     mSettings.textFormat().setFont( f );
     if ( f.pointSizeF() > 0 )
@@ -800,7 +800,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   }
 
   //style
-  QString styleString = itemElem.attribute( QStringLiteral( "style" ), QLatin1String( "" ) );
+  QString styleString = itemElem.attribute( QStringLiteral( "style" ), QString() );
   setStyle( styleString.toLocal8Bit().data() );
 
   if ( itemElem.attribute( QStringLiteral( "unitType" ) ).isEmpty() )

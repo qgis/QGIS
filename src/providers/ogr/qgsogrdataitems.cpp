@@ -258,7 +258,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
       QStringList pieces = uri.split( ':' );
       QString name = pieces.value( pieces.length() - 1 );
       QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2 %3" ).arg( name, uri ), 3 );
-      children.append( new QgsOgrDbLayerInfo( path, uri, name, QStringLiteral( "" ), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster ) );
+      children.append( new QgsOgrDbLayerInfo( path, uri, name, QString(), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster ) );
     }
   }
   else if ( rlayer.isValid( ) )
@@ -292,7 +292,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
       }
 
       QgsDebugMsgLevel( QStringLiteral( "Adding %1 Raster item %2 %3" ).arg( driver, name, path ), 3 );
-      children.append( new QgsOgrDbLayerInfo( path, uri, name, QStringLiteral( "" ), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster ) );
+      children.append( new QgsOgrDbLayerInfo( path, uri, name, QString(), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster ) );
     }
   }
   return children;
@@ -455,7 +455,7 @@ bool QgsOgrDataCollectionItem::storeConnection( const QString &path, const QStri
 
       connName = QInputDialog::getText( nullptr, tr( "Cannot add connection '%1'" ).arg( connName ),
                                         tr( "A connection with the same name already exists,\nplease provide a new name:" ), QLineEdit::Normal,
-                                        QLatin1String( "" ), &ok );
+                                        QString(), &ok );
     }
     if ( ok && ! connName.isEmpty() )
     {
@@ -470,7 +470,7 @@ bool QgsOgrDataCollectionItem::storeConnection( const QString &path, const QStri
 
 bool QgsOgrDataCollectionItem::createConnection( const QString &name, const QString &extensions, const QString &ogrDriverName )
 {
-  QString path = QFileDialog::getOpenFileName( nullptr, tr( "Open %1" ).arg( name ), QLatin1String( "" ), extensions );
+  QString path = QFileDialog::getOpenFileName( nullptr, tr( "Open %1" ).arg( name ), QString(), extensions );
   return storeConnection( path, ogrDriverName );
 }
 

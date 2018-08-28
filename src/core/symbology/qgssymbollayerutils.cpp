@@ -98,7 +98,7 @@ QString QgsSymbolLayerUtils::encodeSldFontStyle( QFont::Style style )
     case QFont::StyleOblique:
       return QStringLiteral( "oblique" );
     default:
-      return QLatin1String( "" );
+      return QString();
   }
 }
 
@@ -202,7 +202,7 @@ QString QgsSymbolLayerUtils::encodeSldLineJoinStyle( Qt::PenJoinStyle style )
     case Qt::RoundJoin:
       return QStringLiteral( "round" );
     default:
-      return QLatin1String( "" );
+      return QString();
   }
 }
 
@@ -248,7 +248,7 @@ QString QgsSymbolLayerUtils::encodeSldLineCapStyle( Qt::PenCapStyle style )
     case Qt::RoundCap:
       return QStringLiteral( "round" );
     default:
-      return QLatin1String( "" );
+      return QString();
   }
 }
 
@@ -1022,7 +1022,7 @@ static QString _nameForSymbolType( QgsSymbol::SymbolType type )
     case QgsSymbol::Fill:
       return QStringLiteral( "fill" );
     default:
-      return QLatin1String( "" );
+      return QString();
   }
 }
 
@@ -3156,7 +3156,7 @@ QgsNamedColorList QgsSymbolLayerUtils::colorListFromMimeData( const QMimeData *d
 
         QPair< QColor, QString> namedColor;
         namedColor.first = QgsSymbolLayerUtils::decodeColor( currentElem.attribute( QStringLiteral( "color" ), QStringLiteral( "255,255,255,255" ) ) );
-        namedColor.second = currentElem.attribute( QStringLiteral( "label" ), QLatin1String( "" ) );
+        namedColor.second = currentElem.attribute( QStringLiteral( "label" ), QString() );
 
         mimeColors << namedColor;
       }
@@ -4168,17 +4168,17 @@ QVector<qreal> QgsSymbolLayerUtils::rescaleUom( const QVector<qreal> &array, Qgs
 
 void QgsSymbolLayerUtils::applyScaleDependency( QDomDocument &doc, QDomElement &ruleElem, QgsStringMap &props )
 {
-  if ( !props.value( QStringLiteral( "scaleMinDenom" ), QLatin1String( "" ) ).isEmpty() )
+  if ( !props.value( QStringLiteral( "scaleMinDenom" ), QString() ).isEmpty() )
   {
     QDomElement scaleMinDenomElem = doc.createElement( QStringLiteral( "se:MinScaleDenominator" ) );
-    scaleMinDenomElem.appendChild( doc.createTextNode( props.value( QStringLiteral( "scaleMinDenom" ), QLatin1String( "" ) ) ) );
+    scaleMinDenomElem.appendChild( doc.createTextNode( props.value( QStringLiteral( "scaleMinDenom" ), QString() ) ) );
     ruleElem.appendChild( scaleMinDenomElem );
   }
 
-  if ( !props.value( QStringLiteral( "scaleMaxDenom" ), QLatin1String( "" ) ).isEmpty() )
+  if ( !props.value( QStringLiteral( "scaleMaxDenom" ), QString() ).isEmpty() )
   {
     QDomElement scaleMaxDenomElem = doc.createElement( QStringLiteral( "se:MaxScaleDenominator" ) );
-    scaleMaxDenomElem.appendChild( doc.createTextNode( props.value( QStringLiteral( "scaleMaxDenom" ), QLatin1String( "" ) ) ) );
+    scaleMaxDenomElem.appendChild( doc.createTextNode( props.value( QStringLiteral( "scaleMaxDenom" ), QString() ) ) );
     ruleElem.appendChild( scaleMaxDenomElem );
   }
 }

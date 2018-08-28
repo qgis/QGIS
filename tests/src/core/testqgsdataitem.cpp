@@ -104,7 +104,7 @@ void TestQgsDataItem::testDirItemChildren()
 {
   QgsSettings settings;
   QStringList tmpSettings;
-  tmpSettings << QLatin1String( "" ) << QStringLiteral( "contents" ) << QStringLiteral( "extension" );
+  tmpSettings << QString() << QStringLiteral( "contents" ) << QStringLiteral( "extension" );
   Q_FOREACH ( const QString &tmpSetting, tmpSettings )
   {
     settings.setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ), tmpSetting );

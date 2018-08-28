@@ -322,12 +322,12 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     return;
 
   QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:PolygonSymbolizer" ) );
-  if ( !props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ).isEmpty() )
-    symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ) );
+  if ( !props.value( QStringLiteral( "uom" ), QString() ).isEmpty() )
+    symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QString() ) );
   element.appendChild( symbolizerElem );
 
   // <Geometry>
-  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QLatin1String( "" ) ) );
+  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ) );
 
   if ( mBrushStyle != Qt::NoBrush )
   {
@@ -2055,11 +2055,11 @@ QgsSVGFillSymbolLayer *QgsSVGFillSymbolLayer::clone() const
 void QgsSVGFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
   QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:PolygonSymbolizer" ) );
-  if ( !props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ).isEmpty() )
-    symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ) );
+  if ( !props.value( QStringLiteral( "uom" ), QString() ).isEmpty() )
+    symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QString() ) );
   element.appendChild( symbolizerElem );
 
-  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QLatin1String( "" ) ) );
+  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ) );
 
   QDomElement fillElem = doc.createElement( QStringLiteral( "se:Fill" ) );
   symbolizerElem.appendChild( fillElem );
@@ -2829,12 +2829,12 @@ QgsLinePatternFillSymbolLayer *QgsLinePatternFillSymbolLayer::clone() const
 void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
   QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:PolygonSymbolizer" ) );
-  if ( !props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ).isEmpty() )
-    symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ) );
+  if ( !props.value( QStringLiteral( "uom" ), QString() ).isEmpty() )
+    symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QString() ) );
   element.appendChild( symbolizerElem );
 
   // <Geometry>
-  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QLatin1String( "" ) ) );
+  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ) );
 
   QDomElement fillElem = doc.createElement( QStringLiteral( "se:Fill" ) );
   symbolizerElem.appendChild( fillElem );
@@ -3243,12 +3243,12 @@ void QgsPointPatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &elem
   for ( int i = 0; i < mMarkerSymbol->symbolLayerCount(); i++ )
   {
     QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:PolygonSymbolizer" ) );
-    if ( !props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ).isEmpty() )
-      symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ) );
+    if ( !props.value( QStringLiteral( "uom" ), QString() ).isEmpty() )
+      symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QString() ) );
     element.appendChild( symbolizerElem );
 
     // <Geometry>
-    QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QLatin1String( "" ) ) );
+    QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ) );
 
     QDomElement fillElem = doc.createElement( QStringLiteral( "se:Fill" ) );
     symbolizerElem.appendChild( fillElem );

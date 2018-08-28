@@ -422,7 +422,7 @@ QString updateDataDefinedString( const QString &value )
     QStringList values;
     values << QStringLiteral( "1" ); // all old-style values are active if not empty
     values << QStringLiteral( "0" );
-    values << QLatin1String( "" );
+    values << QString();
     values << value; // all old-style values are only field names
     newValue = values.join( QStringLiteral( "~~" ) );
   }
@@ -1316,12 +1316,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
       QgsDebugMsgLevel( QString( "Expression parser eval error:%1" ).arg( exp->evalErrorString() ), 4 );
       return;
     }
-    labelText = result.isNull() ? QLatin1String( "" ) : result.toString();
+    labelText = result.isNull() ? QString() : result.toString();
   }
   else
   {
     const QVariant &v = f.attribute( fieldIndex );
-    labelText = v.isNull() ? QLatin1String( "" ) : v.toString();
+    labelText = v.isNull() ? QString() : v.toString();
   }
 
   // apply text replacements

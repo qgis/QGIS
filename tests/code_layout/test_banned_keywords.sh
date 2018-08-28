@@ -116,6 +116,15 @@ HINTS[30]="Use std::ceil instead"
 KEYWORDS[31]="qSqrt"
 HINTS[31]="Use std::sqrt instead"
 
+KEYWORDS[32]="QStringLiteral()"
+HINTS[32]="Use QString() instead"
+
+KEYWORDS[33]="QStringLiteral( \"\" )"
+HINTS[33]="Use QString() instead"
+
+KEYWORDS[34]="QLatin1String( \"\" )"
+HINTS[34]="Use QString() instead"
+
 RES=
 DIR=$(git rev-parse --show-toplevel)
 

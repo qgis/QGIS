@@ -939,9 +939,9 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   }
 
   QString layers = visibleLayers.join( QStringLiteral( "," ) );
-  layers = layers.isNull() ? QLatin1String( "" ) : layers;
+  layers = layers.isNull() ? QString() : layers;
   QString styles = visibleStyles.join( QStringLiteral( "," ) );
-  styles = styles.isNull() ? QLatin1String( "" ) : styles;
+  styles = styles.isNull() ? QString() : styles;
 
   QgsDebugMsg( "Visible layer list of " + layers + " and style list of " + styles );
 
@@ -1987,21 +1987,21 @@ QString QgsWmsProvider::htmlMetadata()
   metadata += tr( "GetMapUrl" );
   metadata += QLatin1String( "</td>" );
   metadata += QLatin1String( "<td>" );
-  metadata += getMapUrl() + ( mSettings.mIgnoreGetMapUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : QLatin1String( "" ) );
+  metadata += getMapUrl() + ( mSettings.mIgnoreGetMapUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : QString() );
   metadata += QLatin1String( "</td></tr>" );
 
   metadata += QLatin1String( "<tr><td>" );
   metadata += tr( "GetFeatureInfoUrl" );
   metadata += QLatin1String( "</td>" );
   metadata += QLatin1String( "<td>" );
-  metadata += getFeatureInfoUrl() + ( mSettings.mIgnoreGetFeatureInfoUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : QLatin1String( "" ) );
+  metadata += getFeatureInfoUrl() + ( mSettings.mIgnoreGetFeatureInfoUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : QString() );
   metadata += QLatin1String( "</td></tr>" );
 
   metadata += QLatin1String( "<tr><td>" );
   metadata += tr( "GetLegendGraphic" );
   metadata += QLatin1String( "</td>" );
   metadata += QLatin1String( "<td>" );
-  metadata += getLegendGraphicUrl() + ( mSettings.mIgnoreGetMapUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : QLatin1String( "" ) );
+  metadata += getLegendGraphicUrl() + ( mSettings.mIgnoreGetMapUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : QString() );
   metadata += QLatin1String( "</td></tr>" );
 
   if ( mSettings.mTiled )

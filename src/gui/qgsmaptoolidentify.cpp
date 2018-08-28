@@ -754,7 +754,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
       {
         QString value = it.value().toString();
         attributes.clear();
-        attributes.insert( QLatin1String( "" ), value );
+        attributes.insert( QString(), value );
 
         QString label = layer->subLayers().value( it.key() );
         results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );

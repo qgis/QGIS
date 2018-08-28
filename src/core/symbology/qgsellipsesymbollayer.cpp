@@ -347,12 +347,12 @@ QgsEllipseSymbolLayer *QgsEllipseSymbolLayer::clone() const
 void QgsEllipseSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
   QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:PointSymbolizer" ) );
-  if ( !props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ).isEmpty() )
-    symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ) );
+  if ( !props.value( QStringLiteral( "uom" ), QString() ).isEmpty() )
+    symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QString() ) );
   element.appendChild( symbolizerElem );
 
   // <Geometry>
-  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QLatin1String( "" ) ) );
+  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ) );
 
   writeSldMarker( doc, symbolizerElem, props );
 }
@@ -370,7 +370,7 @@ void QgsEllipseSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &elem
   // <Rotation>
   QgsProperty ddRotation = mDataDefinedProperties.property( QgsSymbolLayer::PropertyAngle );
 
-  QString angleFunc = props.value( QStringLiteral( "angle" ), QLatin1String( "" ) );
+  QString angleFunc = props.value( QStringLiteral( "angle" ), QString() );
   if ( angleFunc.isEmpty() )  // symbol has no angle set
   {
     if ( ddRotation && ddRotation.isActive() )

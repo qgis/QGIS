@@ -967,7 +967,7 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList &messages, bool s
 
 bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
 {
-  QString nonNullSubset = subset.isNull() ? QLatin1String( "" ) : subset;
+  QString nonNullSubset = subset.isNull() ? QString() : subset;
 
   // If not changing string, then all OK, nothing to do
   if ( nonNullSubset == mSubsetString )

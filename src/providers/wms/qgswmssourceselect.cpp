@@ -771,7 +771,7 @@ void QgsWMSSourceSelect::collectNamedLayers( QTreeWidgetItem *item, QStringList 
   {
     // named layers
     layers << layerName;
-    styles << QLatin1String( "" );
+    styles << QString();
     titles << titleName;
 
     if ( mCRSs.isEmpty() )
@@ -817,7 +817,7 @@ void QgsWMSSourceSelect::lstLayers_itemSelectionChanged()
     {
       // named layer: add using default style
       layers << layerName;
-      styles << QLatin1String( "" );
+      styles << QString();
       titles << titleName;
       if ( mCRSs.isEmpty() )
         mCRSs = item->data( 0, Qt::UserRole + 2 ).toStringList().toSet();
@@ -1024,7 +1024,7 @@ QString QgsWMSSourceSelect::selectedImageEncoding()
   int id = mImageFormatGroup->checkedId();
   if ( id < 0 )
   {
-    return QLatin1String( "" );
+    return QString();
   }
   else
   {

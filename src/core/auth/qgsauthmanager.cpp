@@ -2994,7 +2994,7 @@ bool QgsAuthManager::passwordHelperDelete()
 QString QgsAuthManager::passwordHelperRead()
 {
   // Retrieve it!
-  QString password( QLatin1String( "" ) );
+  QString password;
   passwordHelperLog( tr( "Opening %1 for READ…" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
   QKeychain::ReadPasswordJob job( AUTH_PASSWORD_HELPER_FOLDER_NAME );
   QgsSettings settings;

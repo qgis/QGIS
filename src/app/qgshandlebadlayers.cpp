@@ -135,7 +135,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     }
     else
     {
-      item = new QTableWidgetItem( QLatin1String( "" ) );
+      item = new QTableWidgetItem( QString() );
       mLayerList->setItem( j, 3, item );
     }
 

@@ -230,7 +230,7 @@ QString qgsVsiPrefix( const QString &path )
             path.endsWith( QLatin1String( ".gz" ), Qt::CaseInsensitive ) )
     return QStringLiteral( "/vsigzip/" );
   else
-    return QLatin1String( "" );
+    return QString();
 }
 
 uint qHash( const QVariant &variant )

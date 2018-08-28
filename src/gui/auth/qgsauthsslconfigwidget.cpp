@@ -132,7 +132,7 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
   mProtocolCmbBx->setCurrentIndex( 0 );
   QTreeWidgetItem *protocolitem = new QTreeWidgetItem(
     mProtocolItem,
-    QStringList() << QLatin1String( "" ),
+    QStringList() << QString(),
     ( int )ConfigItem );
   protocolitem->setFlags( protocolitem->flags() & ~Qt::ItemIsSelectable );
   treeSslConfig->setItemWidget( protocolitem, 0, mProtocolCmbBx );
@@ -148,7 +148,7 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
   mVerifyPeerCmbBx->setCurrentIndex( 0 );
   QTreeWidgetItem *peerverifycmbxitem = new QTreeWidgetItem(
     mVerifyModeItem,
-    QStringList() << QLatin1String( "" ),
+    QStringList() << QString(),
     ( int )ConfigItem );
   peerverifycmbxitem->setFlags( peerverifycmbxitem->flags() & ~Qt::ItemIsSelectable );
   treeSslConfig->setItemWidget( peerverifycmbxitem, 0, mVerifyPeerCmbBx );
@@ -162,7 +162,7 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
   mVerifyDepthSpnBx->setAlignment( Qt::AlignHCenter );
   QTreeWidgetItem *peerverifyspnbxitem = new QTreeWidgetItem(
     mVerifyDepthItem,
-    QStringList() << QLatin1String( "" ),
+    QStringList() << QString(),
     ( int )ConfigItem );
   peerverifyspnbxitem->setFlags( peerverifyspnbxitem->flags() & ~Qt::ItemIsSelectable );
   treeSslConfig->setItemWidget( peerverifyspnbxitem, 0, mVerifyDepthSpnBx );
@@ -322,7 +322,7 @@ void QgsAuthSslConfigWidget::resetSslCertConfig()
   mCert.clear();
   mConnectionCAs.clear();
   leCommonName->clear();
-  leCommonName->setStyleSheet( QLatin1String( "" ) );
+  leCommonName->setStyleSheet( QString() );
   leHost->clear();
 
   lblLoadedConfig->setVisible( false );

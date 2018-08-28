@@ -37,7 +37,7 @@ QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWi
   setBold( allSymbols );
   model->appendRow( allSymbols );
 
-  QStandardItem *tags = new QStandardItem( QLatin1String( "" ) ); //require empty name to get first order groups
+  QStandardItem *tags = new QStandardItem( QString() ); //require empty name to get first order groups
   tags->setData( "tagsheader", Qt::UserRole + 2 );
   tags->setEditable( false );
   tags->setFlags( tags->flags() & ~Qt::ItemIsSelectable );

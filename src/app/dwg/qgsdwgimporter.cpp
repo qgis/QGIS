@@ -793,7 +793,8 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
     }
   }
 
-  QString typeName( data.name.c_str() ), dash( QLatin1String( "" ) );
+  QString typeName( data.name.c_str() );
+  QString dash;
   if ( !upath.empty() )
   {
     QStringList l;
@@ -866,9 +867,9 @@ QString QgsDwgImporter::linetypeString( const std::string &olinetype, const std:
   QString linetype( olinetype.c_str() );
 
   if ( linetype == QLatin1String( "bylayer" ) )
-    return mLayerLinetype.value( layer.c_str(), QLatin1String( "" ) );
+    return mLayerLinetype.value( layer.c_str(), QString() );
   else
-    return mLinetype.value( linetype, QLatin1String( "" ) );
+    return mLinetype.value( linetype, QString() );
 }
 
 void QgsDwgImporter::addLayer( const DRW_Layer &data )

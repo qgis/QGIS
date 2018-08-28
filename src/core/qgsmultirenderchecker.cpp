@@ -42,7 +42,7 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
 
   if ( subDirs.isEmpty() )
   {
-    subDirs << QLatin1String( "" );
+    subDirs << QString();
   }
 
   QVector<QgsDartMeasurement> dartMeasurements;

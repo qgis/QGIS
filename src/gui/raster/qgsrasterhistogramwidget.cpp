@@ -179,7 +179,7 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
     action->setSeparator( true );
     menu->addAction( action );
     // should we plot as histogram instead of line plot? (int data only)
-    action = new QAction( QLatin1String( "" ), group );
+    action = new QAction( QString(), group );
     action->setData( QVariant( "Draw lines" ) );
     if ( isInt )
     {
@@ -993,7 +993,7 @@ void QgsRasterHistogramWidget::btnHistoMax_toggled()
 // this is sensitive and may not always be correct, needs more testing
 QString findClosestTickVal( double target, const QwtScaleDiv *scale, int div = 100 )
 {
-  if ( !scale ) return QLatin1String( "" );
+  if ( !scale ) return QString();
 
   QList< double > minorTicks = scale->ticks( QwtScaleDiv::MinorTick );
   QList< double > majorTicks = scale->ticks( QwtScaleDiv::MajorTick );

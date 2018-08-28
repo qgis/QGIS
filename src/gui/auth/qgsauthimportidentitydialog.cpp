@@ -145,7 +145,7 @@ bool QgsAuthImportIdentityDialog::validateBundle()
 void QgsAuthImportIdentityDialog::clearValidation()
 {
   teValidation->clear();
-  teValidation->setStyleSheet( QLatin1String( "" ) );
+  teValidation->setStyleSheet( QString() );
 }
 
 void QgsAuthImportIdentityDialog::writeValidation( const QString &msg,
@@ -431,8 +431,8 @@ void QgsAuthImportIdentityDialog::fileFound( bool found, QWidget *widget )
   }
   else
   {
-    widget->setStyleSheet( QLatin1String( "" ) );
-    widget->setToolTip( QLatin1String( "" ) );
+    widget->setStyleSheet( QString() );
+    widget->setToolTip( QString() );
   }
 }
 

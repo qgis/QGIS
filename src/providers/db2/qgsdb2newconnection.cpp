@@ -115,8 +115,8 @@ void QgsDb2NewConnection::accept()
   settings.setValue( baseKey + "/port", txtPort->text() );
   settings.setValue( baseKey + "/driver", txtDriver->text() );
   settings.setValue( baseKey + "/database", txtDatabase->text() );
-  settings.setValue( baseKey + "/username", mAuthSettings->storeUsernameIsChecked( ) ? mAuthSettings->username( ) : QLatin1String( "" ) );
-  settings.setValue( baseKey + "/password", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password( ) : QLatin1String( "" ) );
+  settings.setValue( baseKey + "/username", mAuthSettings->storeUsernameIsChecked( ) ? mAuthSettings->username( ) : QString() );
+  settings.setValue( baseKey + "/password", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password( ) : QString() );
   settings.setValue( baseKey + "/saveUsername", mAuthSettings->storeUsernameIsChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", mAuthSettings->storePasswordIsChecked( )  && !hasAuthConfigID ? "true" : "false" );
   settings.setValue( baseKey + "/authcfg", mAuthSettings->configId() );

@@ -139,7 +139,7 @@ QString QgsRendererRange::dump() const
 
 void QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props, bool firstRange ) const
 {
-  if ( !mSymbol || props.value( QStringLiteral( "attribute" ), QLatin1String( "" ) ).isEmpty() )
+  if ( !mSymbol || props.value( QStringLiteral( "attribute" ), QString() ).isEmpty() )
     return;
 
   QString attrName = props[ QStringLiteral( "attribute" )];
@@ -1597,7 +1597,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( con
 
   if ( !r )
   {
-    r = new QgsGraduatedSymbolRenderer( QLatin1String( "" ), QgsRangeList() );
+    r = new QgsGraduatedSymbolRenderer( QString(), QgsRangeList() );
     QgsRenderContext context;
     QgsSymbolList symbols = const_cast<QgsFeatureRenderer *>( renderer )->symbols( context );
     if ( !symbols.isEmpty() )

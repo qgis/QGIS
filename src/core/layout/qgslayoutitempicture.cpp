@@ -752,7 +752,7 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   if ( itemElem.hasAttribute( QStringLiteral( "sourceExpression" ) ) )
   {
     //update pre 2.5 picture expression to use data defined expression
-    QString sourceExpression = itemElem.attribute( QStringLiteral( "sourceExpression" ), QLatin1String( "" ) );
+    QString sourceExpression = itemElem.attribute( QStringLiteral( "sourceExpression" ), QString() );
     QString useExpression = itemElem.attribute( QStringLiteral( "useExpression" ) );
     bool expressionActive;
     expressionActive = ( useExpression.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );

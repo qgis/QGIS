@@ -113,7 +113,7 @@ void QgsRasterTransparencyWidget::syncToLayer()
   }
   else
   {
-    leNoDataValue->insert( QLatin1String( "" ) );
+    leNoDataValue->insert( QString() );
   }
 
   populateTransparencyTable( mRasterLayer->renderer() );

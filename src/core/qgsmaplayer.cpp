@@ -356,7 +356,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   if ( !dataUrlElem.isNull() )
   {
     mDataUrl = dataUrlElem.text();
-    mDataUrlFormat = dataUrlElem.attribute( QStringLiteral( "format" ), QLatin1String( "" ) );
+    mDataUrlFormat = dataUrlElem.attribute( QStringLiteral( "format" ), QString() );
   }
 
   //legendUrl
@@ -364,7 +364,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   if ( !legendUrlElem.isNull() )
   {
     mLegendUrl = legendUrlElem.text();
-    mLegendUrlFormat = legendUrlElem.attribute( QStringLiteral( "format" ), QLatin1String( "" ) );
+    mLegendUrlFormat = legendUrlElem.attribute( QStringLiteral( "format" ), QString() );
   }
 
   //attribution
@@ -372,7 +372,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   if ( !attribElem.isNull() )
   {
     mAttribution = attribElem.text();
-    mAttributionUrl = attribElem.attribute( QStringLiteral( "href" ), QLatin1String( "" ) );
+    mAttributionUrl = attribElem.attribute( QStringLiteral( "href" ), QString() );
   }
 
   //metadataUrl
@@ -380,8 +380,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   if ( !metaUrlElem.isNull() )
   {
     mMetadataUrl = metaUrlElem.text();
-    mMetadataUrlType = metaUrlElem.attribute( QStringLiteral( "type" ), QLatin1String( "" ) );
-    mMetadataUrlFormat = metaUrlElem.attribute( QStringLiteral( "format" ), QLatin1String( "" ) );
+    mMetadataUrlType = metaUrlElem.attribute( QStringLiteral( "type" ), QString() );
+    mMetadataUrlFormat = metaUrlElem.attribute( QStringLiteral( "format" ), QString() );
   }
 
   // mMetadata.readFromLayer( this );
@@ -1527,7 +1527,7 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
     return myErrorMessage;
   }
 
-  return QLatin1String( "" );
+  return QString();
 }
 
 bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context )

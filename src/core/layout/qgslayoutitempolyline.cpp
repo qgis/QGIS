@@ -401,8 +401,8 @@ bool QgsLayoutItemPolyline::readPropertiesFromElement( const QDomElement &elmt, 
   mArrowHeadStrokeColor = QgsSymbolLayerUtils::decodeColor( elmt.attribute( QStringLiteral( "arrowHeadOutlineColor" ), QStringLiteral( "0,0,0,255" ) ) );
   mArrowHeadStrokeWidth = elmt.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "1.0" ) ).toDouble();
   // relative paths to absolute
-  QString startMarkerPath = elmt.attribute( QStringLiteral( "startMarkerFile" ), QLatin1String( "" ) );
-  QString endMarkerPath = elmt.attribute( QStringLiteral( "endMarkerFile" ), QLatin1String( "" ) );
+  QString startMarkerPath = elmt.attribute( QStringLiteral( "startMarkerFile" ), QString() );
+  QString endMarkerPath = elmt.attribute( QStringLiteral( "endMarkerFile" ), QString() );
   setStartSvgMarkerPath( QgsSymbolLayerUtils::svgSymbolNameToPath( startMarkerPath, context.pathResolver() ) );
   setEndSvgMarkerPath( QgsSymbolLayerUtils::svgSymbolNameToPath( endMarkerPath, context.pathResolver() ) );
   mEndMarker = static_cast< QgsLayoutItemPolyline::MarkerMode >( elmt.attribute( QStringLiteral( "markerMode" ), QStringLiteral( "0" ) ).toInt() );

@@ -1276,7 +1276,7 @@ void QgsGrassNewMapset::createMapset()
     setLocations();
     mSelectLocationRadioButton->setChecked( true );
     mLocationComboBox->setItemText( mLocationComboBox->currentIndex(), location );
-    mLocationLineEdit->setText( QLatin1String( "" ) );
+    mLocationLineEdit->setText( QString() );
     locationRadioSwitched(); // calls also checkLocation()
   }
   else
@@ -1344,7 +1344,7 @@ void QgsGrassNewMapset::setError( QLabel *line, const QString &err )
   }
   else
   {
-    line->setText( QLatin1String( "" ) );
+    line->setText( QString() );
     line->hide();
   }
 }

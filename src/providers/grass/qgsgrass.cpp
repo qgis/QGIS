@@ -177,7 +177,7 @@ QString QgsGrassObject::elementShort( Type type )
   else if ( type == Stds )
     return QStringLiteral( "stds" );
   else
-    return QLatin1String( "" );
+    return QString();
 }
 
 QString QgsGrassObject::elementName() const
@@ -196,7 +196,7 @@ QString QgsGrassObject::elementName( Type type )
   else if ( type == Region )
     return QStringLiteral( "region" );
   else
-    return QLatin1String( "" );
+    return QString();
 }
 
 QString QgsGrassObject::dirName() const
@@ -215,7 +215,7 @@ QString QgsGrassObject::dirName( Type type )
   else if ( type == Region )
     return QStringLiteral( "windows" );
   else
-    return QLatin1String( "" );
+    return QString();
 }
 
 QString QgsGrassObject::toString() const
@@ -537,7 +537,7 @@ QString QgsGrass::getDefaultLocation()
 
 QgsGrassObject QgsGrass::getDefaultLocationObject()
 {
-  return QgsGrassObject( sDefaultGisdbase, sDefaultLocation, QLatin1String( "" ), QLatin1String( "" ), QgsGrassObject::Location );
+  return QgsGrassObject( sDefaultGisdbase, sDefaultLocation, QString(), QString(), QgsGrassObject::Location );
 }
 
 QString QgsGrass::getDefaultLocationPath()
@@ -556,7 +556,7 @@ QString QgsGrass::getDefaultMapset()
 
 QgsGrassObject QgsGrass::getDefaultMapsetObject()
 {
-  return QgsGrassObject( sDefaultGisdbase, sDefaultLocation, sDefaultMapset, QLatin1String( "" ), QgsGrassObject::Mapset );
+  return QgsGrassObject( sDefaultGisdbase, sDefaultLocation, sDefaultMapset, QString(), QgsGrassObject::Mapset );
 }
 
 QString QgsGrass::getDefaultMapsetPath()
@@ -1040,7 +1040,7 @@ QString QgsGrass::closeMapset()
       return QObject::tr( "Cannot remove mapset lock: %1" ).arg( sMapsetLock );
     }
 #endif
-    sMapsetLock = QLatin1String( "" );
+    sMapsetLock.clear();
 
     putenv( ( char * ) "GISRC" );
 
@@ -1055,9 +1055,9 @@ QString QgsGrass::closeMapset()
     //G_setenv_nogisrc( "LOCATION_NAME", ( char * ) "" );
     //G_setenv_nogisrc( "MAPSET", ( char * ) "" );
 
-    sDefaultGisdbase = QLatin1String( "" );
-    sDefaultLocation = QLatin1String( "" );
-    sDefaultMapset = QLatin1String( "" );
+    sDefaultGisdbase.clear();
+    sDefaultLocation.clear();
+    sDefaultMapset.clear();
     sActive = 0;
 
     // Delete temporary dir
@@ -1889,11 +1889,11 @@ QString QgsGrass::findModule( QString module )
   extensions << ".bat" << ".py" << ".exe";
 #endif
   // and then try if it's a module without extension (standard on UNIX)
-  extensions << QLatin1String( "" );
+  extensions << QString();
 
   QStringList paths;
   // Try first full path
-  paths << QLatin1String( "" );
+  paths << QString();
   paths << QgsGrass::grassModulesPaths();
 
   // Extensions first to prefer .bat over .exe on Windows
@@ -2040,7 +2040,7 @@ QString QgsGrass::getInfo( const QString  &info, const QString  &gisdbase,
         break;
       default:
         QgsDebugMsg( QString( "unexpected type:%1" ).arg( type ) );
-        return QLatin1String( "" );
+        return QString();
     }
     arguments.append( opt + "=" +  map + "@" + mapset );
   }
@@ -2060,7 +2060,7 @@ QString QgsGrass::getInfo( const QString  &info, const QString  &gisdbase,
 
   //QByteArray data = runModule( gisdbase, location, mapset, cmd, arguments, timeOut );
   // Run module with empty mapset so that it tries to find a mapset owned by user
-  QByteArray data = runModule( gisdbase, location, QLatin1String( "" ), cmd, arguments, timeOut );
+  QByteArray data = runModule( gisdbase, location, QString(), cmd, arguments, timeOut );
   QgsDebugMsg( data );
   return QString( data );
 }

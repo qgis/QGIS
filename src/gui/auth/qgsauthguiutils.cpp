@@ -245,8 +245,8 @@ void QgsAuthGuiUtils::fileFound( bool found, QWidget *widget )
   }
   else
   {
-    widget->setStyleSheet( QLatin1String( "" ) );
-    widget->setToolTip( QLatin1String( "" ) );
+    widget->setStyleSheet( QString() );
+    widget->setToolTip( QString() );
   }
 }
 

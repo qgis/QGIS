@@ -399,7 +399,7 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QList
   QUrl queryUrl( layerurl + "/query" );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
   queryUrl.addQueryItem( QStringLiteral( "objectIds" ), ids.join( QStringLiteral( "," ) ) );
-  QString wkid = crs.indexOf( QLatin1String( ":" ) ) >= 0 ? crs.split( ':' )[1] : QLatin1String( "" );
+  QString wkid = crs.indexOf( QLatin1String( ":" ) ) >= 0 ? crs.split( ':' )[1] : QString();
   queryUrl.addQueryItem( QStringLiteral( "inSR" ), wkid );
   queryUrl.addQueryItem( QStringLiteral( "outSR" ), wkid );
   QString outFields = fetchAttributes.join( QStringLiteral( "," ) );

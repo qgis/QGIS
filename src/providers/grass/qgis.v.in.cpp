@@ -173,7 +173,7 @@ int main( int argc, char **argv )
   QString key;
   while ( true )
   {
-    key = "cat" + ( keyNum == 1 ? QLatin1String( "" ) : QString::number( keyNum ) );
+    key = "cat" + ( keyNum == 1 ? QString() : QString::number( keyNum ) );
     if ( srcFields.indexFromName( key ) == -1 )
     {
       break;

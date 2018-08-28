@@ -525,7 +525,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
   }
   else if ( rampType == tr( "Catalog: cpt-city" ) )
   {
-    QgsCptCityColorRampDialog dlg( QgsCptCityColorRamp( QLatin1String( "" ), QLatin1String( "" ) ), parent );
+    QgsCptCityColorRampDialog dlg( QgsCptCityColorRamp( QString(), QString() ), parent );
     if ( !dlg.exec() )
     {
       return QString();
@@ -912,7 +912,7 @@ void QgsStyleManagerDialog::populateGroups()
   setBold( allSymbols );
   model->appendRow( allSymbols );
 
-  QStandardItem *taggroup = new QStandardItem( QLatin1String( "" ) ); //require empty name to get first order groups
+  QStandardItem *taggroup = new QStandardItem( QString() ); //require empty name to get first order groups
   taggroup->setData( "tags" );
   taggroup->setEditable( false );
   QStringList tags = mStyle->tags();

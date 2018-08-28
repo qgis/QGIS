@@ -384,12 +384,12 @@ void QgsSimpleLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     return;
 
   QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:LineSymbolizer" ) );
-  if ( !props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ).isEmpty() )
-    symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ) );
+  if ( !props.value( QStringLiteral( "uom" ), QString() ).isEmpty() )
+    symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QString() ) );
   element.appendChild( symbolizerElem );
 
   // <Geometry>
-  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QLatin1String( "" ) ) );
+  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ) );
 
   // <Stroke>
   QDomElement strokeElem = doc.createElement( QStringLiteral( "se:Stroke" ) );
@@ -1390,12 +1390,12 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
   for ( int i = 0; i < mMarker->symbolLayerCount(); i++ )
   {
     QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:LineSymbolizer" ) );
-    if ( !props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ).isEmpty() )
-      symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ) );
+    if ( !props.value( QStringLiteral( "uom" ), QString() ).isEmpty() )
+      symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QString() ) );
     element.appendChild( symbolizerElem );
 
     // <Geometry>
-    QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QLatin1String( "" ) ) );
+    QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QString() ) );
 
     QString gap;
     switch ( mPlacement )

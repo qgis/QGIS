@@ -509,7 +509,7 @@ void QgsPluginManager::reloadModelData()
 
   if ( !mCurrentlyDisplayedPlugin.isEmpty() )
   {
-    wvDetails->setHtml( QLatin1String( "" ) );
+    wvDetails->setHtml( QString() );
     buttonInstall->setEnabled( false );
     buttonUninstall->setEnabled( false );
   }
@@ -1161,12 +1161,12 @@ void QgsPluginManager::setCurrentTab( int idx )
     {
       case PLUGMAN_TAB_ALL:
         // all (statuses ends with Z are for spacers to always sort properly)
-        acceptedStatuses << QStringLiteral( "installed" ) << QStringLiteral( "not installed" ) << QStringLiteral( "new" ) << QStringLiteral( "orphan" ) << QStringLiteral( "newer" ) << QStringLiteral( "upgradeable" ) << QStringLiteral( "not installedZ" ) << QStringLiteral( "installedZ" ) << QStringLiteral( "upgradeableZ" ) << QStringLiteral( "orphanZ" ) << QStringLiteral( "newerZZ" ) << QLatin1String( "" );
+        acceptedStatuses << QStringLiteral( "installed" ) << QStringLiteral( "not installed" ) << QStringLiteral( "new" ) << QStringLiteral( "orphan" ) << QStringLiteral( "newer" ) << QStringLiteral( "upgradeable" ) << QStringLiteral( "not installedZ" ) << QStringLiteral( "installedZ" ) << QStringLiteral( "upgradeableZ" ) << QStringLiteral( "orphanZ" ) << QStringLiteral( "newerZZ" ) << QString();
         tabTitle = QStringLiteral( "all_plugins" );
         break;
       case PLUGMAN_TAB_INSTALLED:
         // installed (statuses ends with Z are for spacers to always sort properly)
-        acceptedStatuses << QStringLiteral( "installed" ) << QStringLiteral( "orphan" ) << QStringLiteral( "newer" ) << QStringLiteral( "upgradeable" ) << QStringLiteral( "installedZ" ) << QStringLiteral( "upgradeableZ" ) << QStringLiteral( "orphanZ" ) << QStringLiteral( "newerZZ" ) << QLatin1String( "" );
+        acceptedStatuses << QStringLiteral( "installed" ) << QStringLiteral( "orphan" ) << QStringLiteral( "newer" ) << QStringLiteral( "upgradeable" ) << QStringLiteral( "installedZ" ) << QStringLiteral( "upgradeableZ" ) << QStringLiteral( "orphanZ" ) << QStringLiteral( "newerZZ" ) << QString();
         tabTitle = QStringLiteral( "installed_plugins" );
         break;
       case PLUGMAN_TAB_NOT_INSTALLED:

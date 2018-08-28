@@ -715,7 +715,7 @@ void QgsRasterLayerProperties::sync()
   }
   else
   {
-    leNoDataValue->insert( QLatin1String( "" ) );
+    leNoDataValue->insert( QString() );
   }
 
   mRefreshLayerCheckBox->setChecked( mRasterLayer->hasAutoRefreshEnabled() );

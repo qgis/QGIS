@@ -155,7 +155,7 @@ void QgsBookmarks::addClicked()
   QgsMapCanvas *canvas = QgisApp::instance()->mapCanvas();
   Q_ASSERT( canvas );
 
-  QString projStr( QLatin1String( "" ) );
+  QString projStr;
   if ( QgsProject::instance() )
   {
     if ( !QgsProject::instance()->title().isEmpty() )
@@ -165,7 +165,7 @@ void QgsBookmarks::addClicked()
     else if ( !QgsProject::instance()->fileName().isEmpty() )
     {
       QFileInfo fi( QgsProject::instance()->fileName() );
-      projStr = fi.exists() ? fi.fileName() : QLatin1String( "" );
+      projStr = fi.exists() ? fi.fileName() : QString();
     }
   }
 

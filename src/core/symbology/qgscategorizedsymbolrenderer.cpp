@@ -111,7 +111,7 @@ QString QgsRendererCategory::dump() const
 
 void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
 {
-  if ( !mSymbol.get() || props.value( QStringLiteral( "attribute" ), QLatin1String( "" ) ).isEmpty() )
+  if ( !mSymbol.get() || props.value( QStringLiteral( "attribute" ), QString() ).isEmpty() )
     return;
 
   QString attrName = props[ QStringLiteral( "attribute" )];
@@ -199,7 +199,7 @@ QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value, 
   foundMatchingSymbol = false;
 
   // TODO: special case for int, double
-  QHash<QString, QgsSymbol *>::const_iterator it = mSymbolHash.constFind( value.isNull() ? QLatin1String( "" ) : value.toString() );
+  QHash<QString, QgsSymbol *>::const_iterator it = mSymbolHash.constFind( value.isNull() ? QString() : value.toString() );
   if ( it == mSymbolHash.constEnd() )
   {
     if ( mSymbolHash.isEmpty() )
@@ -932,7 +932,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
 
   if ( !r )
   {
-    r = new QgsCategorizedSymbolRenderer( QLatin1String( "" ), QgsCategoryList() );
+    r = new QgsCategorizedSymbolRenderer( QString(), QgsCategoryList() );
     QgsRenderContext context;
     QgsSymbolList symbols = const_cast<QgsFeatureRenderer *>( renderer )->symbols( context );
     if ( !symbols.isEmpty() )

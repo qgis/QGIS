@@ -102,9 +102,9 @@ void TestQgsOgcUtils::testGeometryFromGML()
 static bool compareElements( QDomElement &element1, QDomElement &element2 )
 {
   QString tag1 = element1.tagName();
-  tag1.replace( QRegExp( ".*:" ), QLatin1String( "" ) );
+  tag1.replace( QRegExp( ".*:" ), QString() );
   QString tag2 = element2.tagName();
-  tag2.replace( QRegExp( ".*:" ), QLatin1String( "" ) );
+  tag2.replace( QRegExp( ".*:" ), QString() );
   if ( tag1 != tag2 )
   {
     qDebug( "Different tag names: %s, %s", tag1.toAscii().data(), tag2.toAscii().data() );
