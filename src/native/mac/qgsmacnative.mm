@@ -42,13 +42,15 @@ class QgsMacNative::QgsUserNotificationCenter
 {
   public:
     QgsUserNotificationCenterDelegate *_qgsUserNotificationCenter;
+    NSImage *_qgisIcon;
 };
 
-QgsMacNative::QgsMacNative()
+QgsMacNative::QgsMacNative( const QString &iconPath )
   : mQgsUserNotificationCenter( new QgsMacNative::QgsUserNotificationCenter() )
 {
   mQgsUserNotificationCenter->_qgsUserNotificationCenter = [[QgsUserNotificationCenterDelegate alloc] init];
   [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate: mQgsUserNotificationCenter->_qgsUserNotificationCenter];
+  mQgsUserNotificationCenter->_qgisIcon = QtMac::toNSImage( QPixmap( iconPath ) );
 }
 
 QgsMacNative::~QgsMacNative()
@@ -92,7 +94,10 @@ QgsNative::NotificationResult QgsMacNative::showDesktopNotification( const QStri
   NSImage *image = nil;
   if ( settings.image.isNull() )
   {
-    image = [[NSImage imageNamed:@"NSApplicationIcon"] retain];
+    // image application (qgis.icns) seems not to be set for now, although present in the plist
+    // whenever fixed, try following line (and remove corresponding code in QgsMacNative::QgsUserNotificationCenter)
+    // image = [[NSImage imageNamed:@"NSApplicationIcon"] retain]
+    image = mQgsUserNotificationCenter->_qgisIcon;
   }
   else
   {

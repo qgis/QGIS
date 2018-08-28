@@ -26,7 +26,7 @@ class QString;
 class NATIVE_EXPORT QgsMacNative : public QgsNative
 {
   public:
-    explicit QgsMacNative();
+    explicit QgsMacNative( const QString &iconPath = QString() );
     ~QgsMacNative() override;
 
     virtual const char *currentAppLocalizedName();
