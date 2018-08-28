@@ -32,11 +32,11 @@ namespace QgsWmts
 
   /**
    * \ingroup server
-   * \class QgsWmts::QgsWmsParameter
+   * \class QgsWmts::QgsWmsParameterForWmts
    * \brief WMS parameter used by WMTS service.
    * \since QGIS 3.4
    */
-  class QgsWmsParameter : public QgsServerParameterDefinition
+  class QgsWmsParameterForWmts : public QgsServerParameterDefinition
   {
       Q_GADGET
 
@@ -64,13 +64,13 @@ namespace QgsWmts
       /**
        * Converts a parameter's name into its string representation.
        */
-      static QString name( const QgsWmsParameter::Name );
+      static QString name( const QgsWmsParameterForWmts::Name );
 
       /**
        * Converts a string into a parameter's name (UNKNOWN in case of an
        * invalid string).
        */
-      static QgsWmsParameter::Name name( const QString &name );
+      static QgsWmsParameterForWmts::Name name( const QString &name );
   };
 
   /**

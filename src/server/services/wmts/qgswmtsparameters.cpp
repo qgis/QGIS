@@ -22,18 +22,18 @@
 namespace QgsWmts
 {
   //
-  // QgsWmsParameter
+  // QgsWmsParameterForWmts
   //
-  QString QgsWmsParameter::name( const QgsWmsParameter::Name name )
+  QString QgsWmsParameterForWmts::name( const QgsWmsParameterForWmts::Name name )
   {
-    const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWmsParameter::Name>() );
+    const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWmsParameterForWmts::Name>() );
     return metaEnum.valueToKey( name );
   }
 
-  QgsWmsParameter::Name QgsWmsParameter::name( const QString &name )
+  QgsWmsParameterForWmts::Name QgsWmsParameterForWmts::name( const QString &name )
   {
-    const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWmsParameter::Name>() );
-    return ( QgsWmsParameter::Name ) metaEnum.keyToValue( name.toUpper().toStdString().c_str() );
+    const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWmsParameterForWmts::Name>() );
+    return ( QgsWmsParameterForWmts::Name ) metaEnum.keyToValue( name.toUpper().toStdString().c_str() );
   }
 
   //

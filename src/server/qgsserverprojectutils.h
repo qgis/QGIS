@@ -350,9 +350,10 @@ namespace QgsServerProjectUtils
 
   /**
    * Returns the WMTS service url defined in a QGIS project.
-    * \param project the QGIS project
-    * \returns url if defined in project, an empty string otherwise.
-    */
+   * \param project the QGIS project
+   * \returns url if defined in project, an empty string otherwise.
+   * \since QGIS 3.4
+   */
   SERVER_EXPORT QString wmtsServiceUrl( const QgsProject &project );
 };
 

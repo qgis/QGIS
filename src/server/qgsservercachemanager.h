@@ -31,9 +31,6 @@
 
 SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 
-class QgsServerCachePlugin;
-
-
 /**
  * \ingroup server
  * \class QgsServerCacheManager

@@ -34,10 +34,10 @@ namespace QgsWmts
     QUrlQuery query = translateWmtsParamToWmsQueryItem( QStringLiteral( "GetFeatureInfo" ), params, project, serverIface );
 
     // GetFeatureInfo query items
-    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::QUERY_LAYERS ), params.layer() );
-    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::I ), params.i() );
-    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::J ), params.j() );
-    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::INFO_FORMAT ), params.infoFormatAsString() );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::QUERY_LAYERS ), params.layer() );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::I ), params.i() );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::J ), params.j() );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::INFO_FORMAT ), params.infoFormatAsString() );
 
     QgsServerParameters wmsParams( query );
     QgsServerRequest wmsRequest( "?" + query.query( QUrl::FullyDecoded ) );

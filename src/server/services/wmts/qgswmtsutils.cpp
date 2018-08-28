@@ -309,7 +309,7 @@ namespace QgsWmts
       QStringList wmtsPngGroupNameList = project->readListEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Group" ) );
       QStringList wmtsJpegGroupNameList = project->readListEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Group" ) );
 
-      for ( const QString gName : wmtsGroupNameList )
+      for ( const QString &gName : wmtsGroupNameList )
       {
         QgsLayerTreeGroup *treeGroup = treeRoot->findGroup( gName );
         if ( !treeGroup )
@@ -385,7 +385,7 @@ namespace QgsWmts
     QStringList wmtsPngLayerIdList = project->readListEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Layer" ) );
     QStringList wmtsJpegLayerIdList = project->readListEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Layer" ) );
 
-    for ( const QString lId : wmtsLayerIdList )
+    for ( const QString &lId : wmtsLayerIdList )
     {
       QgsMapLayer *l = project->mapLayer( lId );
       if ( !l )
@@ -462,7 +462,7 @@ namespace QgsWmts
     rect = rect.intersect( tms.extent );
 
     int tmIdx = -1;
-    for ( const tileMatrixDef tm : tms.tileMatrixList )
+    for ( const tileMatrixDef &tm : tms.tileMatrixList )
     {
       ++tmIdx;
 
@@ -521,7 +521,7 @@ namespace QgsWmts
     if ( !wmtsGroupNameList.isEmpty() )
     {
       QgsLayerTreeGroup *treeRoot = project->layerTreeRoot();
-      for ( QString gName : wmtsGroupNameList )
+      for ( const QString &gName : wmtsGroupNameList )
       {
         QgsLayerTreeGroup *treeGroup = treeRoot->findGroup( gName );
         if ( !treeGroup )
@@ -541,7 +541,7 @@ namespace QgsWmts
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       QgsAccessControl *accessControl = serverIface->accessControls();
 #endif
-      for ( QString lId : wmtsLayerIdList )
+      for ( const QString &lId : wmtsLayerIdList )
       {
         QgsMapLayer *l = project->mapLayer( lId );
         if ( !l )
@@ -654,18 +654,18 @@ namespace QgsWmts
     query.addQueryItem( QgsServerParameter::name( QgsServerParameter::SERVICE ), QStringLiteral( "WMS" ) );
     query.addQueryItem( QgsServerParameter::name( QgsServerParameter::VERSION_SERVICE ), QStringLiteral( "1.3.0" ) );
     query.addQueryItem( QgsServerParameter::name( QgsServerParameter::REQUEST ), request );
-    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::LAYERS ), layer );
-    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::STYLES ), QString() );
-    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::CRS ), tms.ref );
-    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::BBOX ), bbox );
-    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::WIDTH ), QStringLiteral( "256" ) );
-    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::HEIGHT ), QStringLiteral( "256" ) );
-    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::FORMAT ), format );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::LAYERS ), layer );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::STYLES ), QString() );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::CRS ), tms.ref );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::BBOX ), bbox );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::WIDTH ), QStringLiteral( "256" ) );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::HEIGHT ), QStringLiteral( "256" ) );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::FORMAT ), format );
     if ( params.format() == QgsWmtsParameters::Format::PNG )
     {
-      query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::TRANSPARENT ), QStringLiteral( "true" ) );
+      query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::TRANSPARENT ), QStringLiteral( "true" ) );
     }
-    query.addQueryItem( QgsWmsParameter::name( QgsWmsParameter::DPI ), QStringLiteral( "96" ) );
+    query.addQueryItem( QgsWmsParameterForWmts::name( QgsWmsParameterForWmts::DPI ), QStringLiteral( "96" ) );
 
     return query;
   }

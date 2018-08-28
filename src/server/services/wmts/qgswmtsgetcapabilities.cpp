@@ -145,7 +145,7 @@ namespace QgsWmts
     if ( !keywords.isEmpty() )
     {
       QDomElement keywordsElem = doc.createElement( QStringLiteral( "ows:Keywords" ) );
-      for ( const QString k : keywords )
+      for ( const QString &k : keywords )
       {
         QDomElement keywordElem = doc.createElement( QStringLiteral( "ows:Keyword" ) );
         QDomText keywordText = doc.createTextNode( k );
@@ -333,7 +333,7 @@ namespace QgsWmts
         elem.appendChild( formatElem );
       };
 
-      for ( const layerDef wmtsLayer : wmtsLayers )
+      for ( const layerDef &wmtsLayer : wmtsLayers )
       {
         if ( wmtsLayer.id.isEmpty() )
           continue;
@@ -376,7 +376,7 @@ namespace QgsWmts
         layerElem.appendChild( wgs84BBoxElement );
 
         // Other bounding boxes
-        for ( const tileMatrixSetDef tms : tmsList )
+        for ( const tileMatrixSetDef &tms : tmsList )
         {
           if ( tms.ref == QLatin1String( "EPSG:4326" ) )
             continue;
@@ -419,7 +419,7 @@ namespace QgsWmts
         layerStyleElem.appendChild( layerStyleTitleElem );
         layerElem.appendChild( layerStyleElem );
 
-        for ( const QString format : wmtsLayer.formats )
+        for ( const QString &format : wmtsLayer.formats )
         {
           QDomElement layerFormatElem = doc.createElement( QStringLiteral( "Format" ) );
           QDomText layerFormatText = doc.createTextNode( format );
@@ -436,7 +436,7 @@ namespace QgsWmts
           appendInfoFormat( layerElem, QStringLiteral( "application/vnd.ogc.gml/3.1.1" ) );
         }
 
-        for ( const tileMatrixSetDef tms : tmsList )
+        for ( const tileMatrixSetDef &tms : tmsList )
         {
           tileMatrixSetLinkDef tmsl = getLayerTileMatrixSetLink( wmtsLayer, tms, project );
           if ( tmsl.ref.isEmpty() || tmsl.ref != tms.ref )
@@ -499,7 +499,7 @@ namespace QgsWmts
     void appendTileMatrixSetElements( QDomDocument &doc, QDomElement &contentsElement,
                                       QList< tileMatrixSetDef > tmsList )
     {
-      for ( const tileMatrixSetDef tms : tmsList )
+      for ( const tileMatrixSetDef &tms : tmsList )
       {
         //wmts:TileMatrixSet
         QDomElement tmsElement = doc.createElement( QStringLiteral( "TileMatrixSet" )/*wmts:TileMatrixSet*/ );
@@ -516,7 +516,7 @@ namespace QgsWmts
 
         //wmts:TileMatrix
         int tmIdx = 0;
-        for ( const tileMatrixDef tm : tms.tileMatrixList )
+        for ( const tileMatrixDef &tm : tms.tileMatrixList )
         {
           QDomElement tmElement = doc.createElement( QStringLiteral( "TileMatrix" )/*wmts:TileMatrix*/ );
 

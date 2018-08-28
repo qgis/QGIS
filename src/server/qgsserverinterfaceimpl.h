@@ -62,7 +62,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
 
 
     /**
-     * Register a server cache filter
+     * Registers a server cache filter
      * \param serverCache the server cache to register
      * \param priority the priority used to order them
      * \since QGIS 3.4

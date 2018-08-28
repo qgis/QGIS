@@ -17,8 +17,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSERVERCACHEPLUGIN_H
-#define QGSSERVERCACHEPLUGIN_H
+#ifndef QGSSERVERCACHEFILTER_H
+#define QGSSERVERCACHEFILTER_H
 
 #include <QMultiMap>
 #include <QDomDocument>
@@ -133,4 +133,4 @@ class SERVER_EXPORT QgsServerCacheFilter
 //! The registry definition
 typedef QMultiMap<int, QgsServerCacheFilter *> QgsServerCacheFilterMap;
 
-#endif // QGSSERVERCACHEPLUGIN_H
+#endif // QGSSERVERCACHEFILTER_H
