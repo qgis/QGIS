@@ -106,7 +106,8 @@ class SelectByAttribute(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.OPERATOR,
                                                      self.tr('Operator'), self.operators))
         self.addParameter(QgsProcessingParameterString(self.VALUE,
-                                                       self.tr('Value')))
+                                                       self.tr('Value'),
+                                                       optional=True))
         self.addParameter(QgsProcessingParameterEnum(self.METHOD,
                                                      self.tr('Modify current selection by'),
                                                      self.methods,
