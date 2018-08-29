@@ -69,23 +69,7 @@ void MDAL::LoaderXmdf::load( MDAL::Mesh *mesh, MDAL_Status *status )
       if ( maxGroup->datasets.size() != 1 )
         MDAL::debug( "Maximum dataset should have just one timestep!" );
       else
-      {
-        bool found = false;
-        for ( const std::shared_ptr<MDAL::DatasetGroup> grp : groups )
-        {
-          if ( grp->name() == name )
-          {
-            grp->maximumDataset = maxGroup->datasets.at( 0 );
-            found = true;
-            break;
-          }
-        }
-
-        if ( !found )
-        {
-          MDAL::debug( "Unable to find base dataset for maximum dataset" );
-        }
-      }
+        groups.push_back( maxGroup );
     }
   }
 
@@ -168,7 +152,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::LoaderXmdf::readXmdfGroupAsDatasetGrou
     dataset->values.resize( vertexCount );
     dataset->active.resize( faceCount );
     dataset->parent = group.get();
-    dataset->time = double( times[i] ) / 3600.0;
+    dataset->time = double( times[i] );
 
     if ( isVector )
     {

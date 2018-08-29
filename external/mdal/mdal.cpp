@@ -18,7 +18,7 @@ static MDAL_Status sLastStatus;
 
 const char *MDAL_Version()
 {
-  return "0.0.5";
+  return "0.0.6";
 }
 
 MDAL_Status MDAL_LastStatus()
@@ -117,6 +117,28 @@ double MDAL_M_vertexYCoordinatesAt( MeshH mesh, int index )
     return NODATA;
   }
   return m->vertices[i].y;
+}
+
+double MDAL_M_vertexZCoordinatesAt( MeshH mesh, int index )
+{
+  if ( !mesh )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
+    return NODATA;
+  }
+  MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
+  if ( index < 0 )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
+    return NODATA;
+  }
+  size_t i = static_cast<size_t>( index );
+  if ( m->vertices.size() <= i )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
+    return NODATA;
+  }
+  return m->vertices[i].z;
 }
 
 int MDAL_M_faceCount( MeshH mesh )
@@ -227,6 +249,13 @@ DatasetGroupH MDAL_M_datasetGroup( MeshH mesh, int index )
     sLastStatus = MDAL_Status::Err_IncompatibleMesh;
     return nullptr;
   }
+
+  if ( index < 0 )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
+    return nullptr;
+  }
+
   MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
   int len = static_cast<int>( m->datasetGroups.size() );
   if ( len <= index )
@@ -262,6 +291,13 @@ DatasetH MDAL_G_dataset( DatasetGroupH group, int index )
     sLastStatus = MDAL_Status::Err_IncompatibleDatasetGroup;
     return nullptr;
   }
+
+  if ( index < 0 )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDatasetGroup;
+    return nullptr;
+  }
+
   MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
   int len = static_cast<int>( g->datasets.size() );
   if ( len <= index )
@@ -271,17 +307,6 @@ DatasetH MDAL_G_dataset( DatasetGroupH group, int index )
   }
   size_t i = static_cast<size_t>( index );
   return static_cast< DatasetH >( g->datasets[i].get() );
-}
-
-DatasetH MDAL_G_maxiumumsDataset( DatasetGroupH group )
-{
-  if ( !group )
-  {
-    sLastStatus = MDAL_Status::Err_IncompatibleDatasetGroup;
-    return nullptr;
-  }
-  MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
-  return static_cast< DatasetH >( g->maximumDataset.get() );
 }
 
 int MDAL_G_metadataCount( DatasetGroupH group )
