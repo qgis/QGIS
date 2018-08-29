@@ -98,7 +98,7 @@ class Heatmap(QgisAlgorithm):
                                                               [QgsProcessing.TypeVectorPoint]))
 
         self.addParameter(QgsProcessingParameterDistance(self.RADIUS,
-                                                         self.tr('Radius (layer units)'),
+                                                         self.tr('Radius'),
                                                          100.0, self.INPUT, False, 0.0, 9999999999.99))
 
         radius_field_param = QgsProcessingParameterField(self.RADIUS_FIELD,
