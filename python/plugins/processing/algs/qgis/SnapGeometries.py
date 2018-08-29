@@ -62,7 +62,7 @@ class SnapGeometriesToLayer(QgisAlgorithm):
                                                                QgsProcessing.TypeVectorLine,
                                                                QgsProcessing.TypeVectorPolygon]))
 
-        self.addParameter(QgsProcessingParameterDistance(self.TOLERANCE, self.tr('Tolerance (layer units)'), parentParameterName=self.INPUT,
+        self.addParameter(QgsProcessingParameterDistance(self.TOLERANCE, self.tr('Tolerance'), parentParameterName=self.INPUT,
                                                          minValue=0.00000001, maxValue=9999999999, defaultValue=10.0))
 
         self.modes = [self.tr('Prefer aligning nodes, insert extra vertices where required'),
