@@ -96,10 +96,10 @@ class Grid(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterDistance(self.HSPACING,
                                                          self.tr('Horizontal spacing'),
-                                                         0.0001, self.CRS, False, 0, 1000000000.0))
+                                                         1.0, self.CRS, False, 0, 1000000000.0))
         self.addParameter(QgsProcessingParameterDistance(self.VSPACING,
                                                          self.tr('Vertical spacing'),
-                                                         0.0001, self.CRS, False, 0, 1000000000.0))
+                                                         1.0, self.CRS, False, 0, 1000000000.0))
         self.addParameter(QgsProcessingParameterDistance(self.HOVERLAY,
                                                          self.tr('Horizontal overlay'),
                                                          0.0, self.CRS, False, 0, 1000000000.0))
