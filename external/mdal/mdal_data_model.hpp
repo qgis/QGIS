@@ -10,10 +10,6 @@
 #include <vector>
 #include <memory>
 #include <map>
-#include <string>
-
-// avoid unused variable warnings
-#define MDAL_UNUSED(x) (void)x;
 
 namespace MDAL
 {
@@ -35,6 +31,7 @@ namespace MDAL
   {
     double x;
     double y;
+    double z; // Bed elevation
   } Vertex;
 
   typedef std::vector<size_t> Face;
@@ -87,8 +84,6 @@ namespace MDAL
       bool isScalar = true;
       bool isOnVertices = true;
       Datasets datasets;
-      std::shared_ptr<Dataset> maximumDataset;
-
       std::string uri; // file/uri from where it came
   };
 
@@ -109,6 +104,8 @@ namespace MDAL
 
     void setSourceCrs( const std::string &str ) {crs = str;} //TODO
     void setSourceCrsFromWKT( const std::string &str ) {crs = str;} //TODO
+
+    void addBedElevationDataset();
   };
 
 } // namespace MDAL

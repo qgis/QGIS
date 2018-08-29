@@ -129,6 +129,12 @@ void MDAL::LoaderBinaryDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
   group->uri = mDatFile;
   group->isOnVertices = true;
 
+  // in TUFLOW results there could be also a special timestep (99999) with maximums
+  // we will put it into a separate dataset
+  std::shared_ptr<DatasetGroup> groupMax( new DatasetGroup() );
+  groupMax->uri = mDatFile;
+  groupMax->isOnVertices = true;
+
   while ( card != CT_ENDDS )
   {
     if ( read( in, reinterpret_cast< char * >( &card ), 4 ) )
@@ -161,10 +167,12 @@ void MDAL::LoaderBinaryDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
 
       case CT_BEGSCL:
         group->isScalar = true;
+        groupMax->isScalar = true;
         break;
 
       case CT_BEGVEC:
         group->isScalar = false;
+        groupMax->isScalar = false;
         break;
 
       case CT_VECTYPE:
@@ -202,6 +210,7 @@ void MDAL::LoaderBinaryDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
         if ( name[39] != 0 )
           name[39] = 0;
         group->setName( trim( std::string( name ) ) );
+        groupMax->setName( group->name() + "/Maximums" );
         break;
 
       case CT_TS:
@@ -213,7 +222,7 @@ void MDAL::LoaderBinaryDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
           EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
 
         double t = static_cast<double>( time );
-        if ( readVertexTimestep( mesh, group, t, istat, sflg, in ) )
+        if ( readVertexTimestep( mesh, group, groupMax, t, istat, sflg, in ) )
           EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
 
         break;
@@ -226,14 +235,17 @@ void MDAL::LoaderBinaryDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
   mesh->datasetGroups.push_back( group );
 }
 
-bool MDAL::LoaderBinaryDat::readVertexTimestep(
-  const MDAL::Mesh *mesh,
-  std::shared_ptr<DatasetGroup> group,
-  double time,
-  bool hasStatus,
-  int sflg,
-  std::ifstream &in )
+bool MDAL::LoaderBinaryDat::readVertexTimestep( const MDAL::Mesh *mesh,
+    std::shared_ptr<DatasetGroup> group,
+    std::shared_ptr<DatasetGroup> groupMax,
+    double time,
+    bool hasStatus,
+    int sflg,
+    std::ifstream &in )
 {
+  assert( group && groupMax && ( group->isScalar == groupMax->isScalar ) );
+  bool isScalar = group->isScalar;
+
   size_t vertexCount = mesh->vertices.size();
   size_t faceCount = mesh->faces.size();
 
@@ -256,7 +268,7 @@ bool MDAL::LoaderBinaryDat::readVertexTimestep(
 
   for ( size_t i = 0; i < vertexCount; ++i )
   {
-    if ( !group->isScalar )
+    if ( !isScalar )
     {
       float x, y;
 
@@ -282,11 +294,11 @@ bool MDAL::LoaderBinaryDat::readVertexTimestep(
   if ( MDAL::equals( time, 99999.0 ) ) // Special TUFLOW dataset with maximus
   {
     dataset->time = time;
-    group->maximumDataset = dataset;
+    groupMax->datasets.push_back( dataset );
   }
   else
   {
-    dataset->time = time / 3600.0; // TODO read TIMEUNITS
+    dataset->time = time; // TODO read TIMEUNITS
     group->datasets.push_back( dataset );
   }
   return false; //OK

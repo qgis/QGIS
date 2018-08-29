@@ -28,6 +28,7 @@ namespace MDAL
     private:
       bool readVertexTimestep( const Mesh *mesh,
                                std::shared_ptr<DatasetGroup> group,
+                               std::shared_ptr<DatasetGroup> groupMax,
                                double time,
                                bool hasStatus,
                                int sflg,

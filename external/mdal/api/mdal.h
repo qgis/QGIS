@@ -89,6 +89,8 @@ MDAL_EXPORT int MDAL_M_vertexCount( MeshH mesh );
 MDAL_EXPORT double MDAL_M_vertexXCoordinatesAt( MeshH mesh, int index );
 //! Returns vertex Y coord for the mesh
 MDAL_EXPORT double MDAL_M_vertexYCoordinatesAt( MeshH mesh, int index );
+//! Returns vertex Z coord for the mesh
+MDAL_EXPORT double MDAL_M_vertexZCoordinatesAt( MeshH mesh, int index );
 //! Returns face count for the mesh
 MDAL_EXPORT int MDAL_M_faceCount( MeshH mesh );
 //! Returns number of vertices face consist of, e.g. 3 for triangle
@@ -119,9 +121,6 @@ MDAL_EXPORT int MDAL_G_datasetCount( DatasetGroupH group );
 
 //! Returns dataset handle
 MDAL_EXPORT DatasetH MDAL_G_dataset( DatasetGroupH group, int index );
-
-//! Returns dataset handle for Maximums. Could be null for some formats
-MDAL_EXPORT DatasetH MDAL_G_maxiumumsDataset( DatasetGroupH group );
 
 //! Returns number of metadata values
 MDAL_EXPORT int MDAL_G_metadataCount( DatasetGroupH group );

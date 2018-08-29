@@ -83,6 +83,7 @@ bool MDAL::LoaderGdal::initVertices( Vertices &vertices )
       // VertexsPtr->setId(x + mXSize*y);
       VertexsPtr->x = mGT[0] + ( x + 0.5 ) * mGT[1] + ( y + 0.5 ) * mGT[2];
       VertexsPtr->y = mGT[3] + ( x + 0.5 ) * mGT[4] + ( y + 0.5 ) * mGT[5];
+      VertexsPtr->z = 0.0;
     }
   }
 

@@ -161,7 +161,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::Loader2dm::load( MDAL_Status *status )
       Vertex &vertex = vertices[vertexIndex];
       vertex.x = toDouble( chunks[2] );
       vertex.y = toDouble( chunks[3] );
-
+      vertex.z = toDouble( chunks[4] );
       vertexIndex++;
     }
   }
@@ -196,6 +196,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::Loader2dm::load( MDAL_Status *status )
   mesh->vertices = vertices;
   mesh->faceIDtoIndex = faceIDtoIndex;
   mesh->vertexIDtoIndex = vertexIDtoIndex;
+  mesh->addBedElevationDataset();
 
   return mesh;
 }
