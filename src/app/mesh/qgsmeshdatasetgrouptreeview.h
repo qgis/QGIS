@@ -147,9 +147,9 @@ class APP_EXPORT QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
                     const QModelIndex &index ) const override;
   private:
     const QPixmap mScalarSelectedPixmap;
-    const QPixmap mScalarUnselectedPixmap;
+    const QPixmap mScalarDeselectedPixmap;
     const QPixmap mVectorSelectedPixmap;
-    const QPixmap mVectorUnselectedPixmap;
+    const QPixmap mVectorDeselectedPixmap;
 };
 
 /**

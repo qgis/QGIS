@@ -255,7 +255,7 @@ void TestQgsMeshRenderer::test_face_vector_dataset_rendering()
 
 void TestQgsMeshRenderer::test_vertex_scalar_dataset_with_inactive_face_rendering()
 {
-  QgsMeshDatasetIndex ds( 0, 1 );
+  QgsMeshDatasetIndex ds( 1, 1 );
   const QgsMeshDatasetGroupMetadata metadata = mMdalLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "VertexScalarDatasetWithInactiveFace1" );
 
