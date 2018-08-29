@@ -21,6 +21,7 @@
 #include <QStyleOptionViewItem>
 #include <QModelIndex>
 #include <QApplication>
+#include "qgsapplication.h"
 #include "qgspluginsortfilterproxymodel.h"
 
 
@@ -65,11 +66,17 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
 
   // Draw the icon
   QPixmap iconPixmap = index.data( Qt::DecorationRole ).value<QPixmap>();
+  int iconSize = pixelsHigh;
 
   if ( !iconPixmap.isNull() )
   {
-    int iconSize = pixelsHigh;
     painter->drawPixmap( option.rect.left() + 1.2 * pixelsHigh, option.rect.top() + 0.2 * pixelsHigh, iconSize, iconSize, iconPixmap );
+  }
+
+  if ( index.data( PLUGIN_DEPRECATED_ROLE ).toString() == QLatin1String( "true" ) )
+  {
+    QPixmap warningPixmap = QPixmap( QgsApplication::defaultThemePath() + "/mIconWarning.svg" );
+    painter->drawPixmap( option.rect.right() - 1.2 * pixelsHigh, option.rect.top() + 0.2 * pixelsHigh, iconSize, iconSize, warningPixmap );
   }
 
   // Draw the text
