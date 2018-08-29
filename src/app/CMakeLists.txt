@@ -54,6 +54,7 @@ SET(QGIS_APP_SRCS
   qgslabelengineconfigdialog.cpp
   qgslabelinggui.cpp
   qgslabelingwidget.cpp
+  qgslayercapabilitiesmodel.cpp
   qgslayertreeviewembeddedindicator.cpp
   qgslayertreeviewfilterindicator.cpp
   qgslayertreeviewmemoryindicator.cpp
@@ -275,6 +276,7 @@ SET (QGIS_APP_MOC_HDRS
   qgslabelinggui.h
   qgslabelingwidget.h
   qgslabelpropertydialog.h
+  qgslayercapabilitiesmodel.h
   qgslayertreeviewembeddedindicator.h
   qgslayertreeviewmemoryindicator.h
   qgslayertreeviewfilterindicator.h

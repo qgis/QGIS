@@ -1498,6 +1498,18 @@ Make layer read-only (editing disabled) or not
 :return: false if the layer is in editing yet
 %End
 
+    bool searchable() const;
+%Docstring
+Returns true if the provider is in read-only mode
+%End
+
+    void setSearchable( bool searchable );
+%Docstring
+Make layer searchable or not
+
+.. versionadded:: 3.4
+%End
+
     bool changeGeometry( QgsFeatureId fid, QgsGeometry &geometry, bool skipDefaultValue = false );
 %Docstring
 Changes a feature's ``geometry`` within the layer's edit buffer
@@ -2581,6 +2593,13 @@ Emitted when the read only state of this layer is changed.
 Only applies to manually set readonly state, not to the edit mode.
 
 .. versionadded:: 3.0
+%End
+
+    void searchableChanged();
+%Docstring
+Emitted when the search state of this layer is changed.
+
+.. versionadded:: 3.4
 %End
 
     void symbolFeatureCountMapChanged();

@@ -32,6 +32,7 @@ class QgsExpressionContext;
 class QgsLayerTreeGroup;
 class QgsMetadataWidget;
 class QgsTreeWidgetItem;
+class QgsLayerCapabilitiesModel;
 
 /**
  * Dialog to set project level properties
@@ -187,6 +188,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsStyle *mStyle = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
+    QgsLayerCapabilitiesModel *mLayerCapabilitiesModel = nullptr;
 
     QgsCoordinateReferenceSystem mCrs;
 

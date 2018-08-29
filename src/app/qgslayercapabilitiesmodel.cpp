@@ -1,0 +1,300 @@
+/***************************************************************************
+                        qgslayercapabilitiesmodel.h
+                        ----------------------------
+   begin                : August 2018
+   copyright            : (C) 2018 by Denis Rouzaud
+   email                : denis@opengis.ch
+***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgslayercapabilitiesmodel.h"
+
+#include "qgslayertree.h"
+#include "qgslayertreemodel.h"
+
+QgsLayerCapabilitiesModel::QgsLayerCapabilitiesModel( QgsProject *project, QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+  mNonIdentifiableLayers = project->nonIdentifiableLayers();
+
+  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
+  {
+    mReadOnlyLayers.insert( it.value(), it.value()->readOnly() );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
+    mSearchableLayers.insert( it.value(), vl && vl->searchable() );
+  }
+}
+
+
+QgsLayerTreeModel *QgsLayerCapabilitiesModel::layerTreeModel() const
+{
+  return mLayerTreeModel;
+}
+
+void QgsLayerCapabilitiesModel::setLayerTreeModel( QgsLayerTreeModel *layerTreeModel )
+{
+  mLayerTreeModel = layerTreeModel;
+  QSortFilterProxyModel::setSourceModel( layerTreeModel );
+}
+
+void QgsLayerCapabilitiesModel::setFilterText( const QString &filterText )
+{
+  if ( filterText == mFilterText )
+    return;
+
+  mFilterText = filterText;
+  invalidateFilter();
+}
+
+void QgsLayerCapabilitiesModel::checkSelectedItems( const QModelIndexList &checkedIndexes, bool check )
+{
+  QVector<int> roles = QVector<int>() << Qt::CheckStateRole;
+  // beginResetModel();
+  for ( const QModelIndex &index : checkedIndexes )
+  {
+    if ( setData( index, check ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole ) )
+      emit dataChanged( index, index ); //), roles);
+  }
+  //endResetModel();
+}
+
+QStringList QgsLayerCapabilitiesModel::nonIdentifiableLayers() const
+{
+  return mNonIdentifiableLayers;
+}
+
+bool QgsLayerCapabilitiesModel::readOnly( QgsMapLayer *layer ) const
+{
+  return mReadOnlyLayers.value( layer, true );
+}
+
+bool QgsLayerCapabilitiesModel::searchable( QgsMapLayer *layer ) const
+{
+  return mSearchableLayers.value( layer, false );
+}
+
+int QgsLayerCapabilitiesModel::columnCount( const QModelIndex &parent ) const
+{
+  Q_UNUSED( parent );
+  return 4;
+}
+
+QVariant QgsLayerCapabilitiesModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  if ( orientation == Qt::Horizontal )
+  {
+    if ( role == Qt::DisplayRole )
+    {
+      switch ( section )
+      {
+        case 0:
+          return tr( "Layer" );
+        case 1:
+          return tr( "Identifiable" );
+        case 2:
+          return tr( "Read-only" );
+        case 3:
+          return tr( "Searchable" );
+        default:
+          return QVariant();
+      }
+    }
+  }
+  return mLayerTreeModel->headerData( section, orientation, role );
+}
+
+Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
+{
+  if ( idx.column() == LayerColumn )
+  {
+    return Qt::ItemIsEnabled;
+  }
+
+  QgsMapLayer *layer = mapLayer( idx );
+  if ( !layer )
+  {
+    return Qt::NoItemFlags;
+  }
+  else
+  {
+    if ( idx.column() == IdentifiableColumn )
+    {
+      return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+    }
+    else if ( idx.column() == ReadOnlyColumn )
+    {
+      if ( layer->type() == QgsMapLayer::VectorLayer )
+      {
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+      }
+      else
+      {
+        return Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+      }
+    }
+    else if ( idx.column() == SearchableColumn )
+    {
+      if ( layer->type() == QgsMapLayer::VectorLayer )
+      {
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+      }
+      else
+      {
+        return nullptr;
+      }
+    }
+  }
+  return nullptr;
+}
+
+QgsMapLayer *QgsLayerCapabilitiesModel::mapLayer( const QModelIndex &idx ) const
+{
+  QgsLayerTreeNode *node = nullptr;
+  if ( idx.column() == LayerColumn )
+  {
+    node = mLayerTreeModel->index2node( mapToSource( idx ) );
+  }
+  else
+  {
+    node = mLayerTreeModel->index2node( mapToSource( index( idx.row(), LayerColumn, idx.parent() ) ) );
+  }
+
+  if ( !node || !QgsLayerTree::isLayer( node ) )
+    return nullptr;
+
+  return QgsLayerTree::toLayer( node )->layer();
+}
+
+QModelIndex QgsLayerCapabilitiesModel::index( int row, int column, const QModelIndex &parent ) const
+{
+  QModelIndex newIndex = QSortFilterProxyModel::index( row, LayerColumn, parent );
+  if ( column == LayerColumn )
+    return newIndex;
+
+  return createIndex( row, column, newIndex.internalId() );
+}
+
+QModelIndex QgsLayerCapabilitiesModel::parent( const QModelIndex &child ) const
+{
+  return QSortFilterProxyModel::parent( createIndex( child.row(), LayerColumn, child.internalId() ) );
+}
+
+QModelIndex QgsLayerCapabilitiesModel::sibling( int row, int column, const QModelIndex &idx ) const
+{
+  QModelIndex parent = idx.parent();
+  return index( row, column, parent );
+}
+
+QVariant QgsLayerCapabilitiesModel::data( const QModelIndex &idx, int role ) const
+{
+  if ( idx.column() == LayerColumn )
+  {
+    return mLayerTreeModel->data( mapToSource( idx ), role );
+  }
+  else
+  {
+    QgsMapLayer *layer = mapLayer( idx );
+
+    if ( !layer )
+    {
+      return QVariant();
+    }
+
+    if ( role == Qt::CheckStateRole || role == Qt::UserRole )
+    {
+      QVariant trueValue = role == Qt::CheckStateRole ? Qt::Checked : true;
+      QVariant falseValue = role == Qt::CheckStateRole ? Qt::Unchecked : false;
+      if ( idx.column() == IdentifiableColumn )
+      {
+        return !mNonIdentifiableLayers.contains( layer->id() ) ? trueValue : falseValue;
+      }
+      else if ( idx.column() == ReadOnlyColumn )
+      {
+        return mReadOnlyLayers.value( layer, true ) ? trueValue : falseValue;
+      }
+      else if ( idx.column() == SearchableColumn )
+      {
+        return mSearchableLayers.value( layer, true ) ? trueValue : falseValue;
+      }
+    }
+  }
+
+  return QVariant();
+}
+
+bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( role == Qt::CheckStateRole )
+  {
+    QgsMapLayer *layer = mapLayer( index );
+    if ( layer )
+    {
+      if ( index.column() == IdentifiableColumn )
+      {
+        bool nonIdentifiable = value == Qt::Unchecked;
+        bool containsLayer = mNonIdentifiableLayers.contains( layer->id() );
+        if ( containsLayer && !nonIdentifiable )
+          mNonIdentifiableLayers.removeAll( layer->id() );
+        if ( !containsLayer && nonIdentifiable )
+          mNonIdentifiableLayers.append( layer->id() );
+        return true;
+      }
+      else if ( index.column() == ReadOnlyColumn )
+      {
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+        if ( vl )
+        {
+          mReadOnlyLayers.insert( layer, value == Qt::Checked );
+          return true;
+        }
+      }
+      else if ( index.column() == SearchableColumn )
+      {
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+        if ( vl )
+        {
+          mSearchableLayers.insert( layer, value == Qt::Checked );
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+bool QgsLayerCapabilitiesModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+{
+  QgsLayerTreeNode *node = mLayerTreeModel->index2node( mLayerTreeModel->index( sourceRow, LayerColumn, sourceParent ) );
+  return nodeShown( node );
+}
+
+bool QgsLayerCapabilitiesModel::nodeShown( QgsLayerTreeNode *node ) const
+{
+  if ( !node )
+    return false;
+  if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
+  {
+    Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+    {
+      if ( nodeShown( child ) )
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+  else
+  {
+    QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+    return layer && ( mFilterText.isEmpty() || layer->name().contains( mFilterText, Qt::CaseInsensitive ) );
+  }
+}

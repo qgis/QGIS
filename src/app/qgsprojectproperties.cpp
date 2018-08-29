@@ -61,6 +61,7 @@
 #include "qgsprintlayout.h"
 #include "qgsmetadatawidget.h"
 #include "qgsmessagelog.h"
+#include "qgslayercapabilitiesmodel.h"
 
 //qt includes
 #include <QInputDialog>
@@ -354,71 +355,37 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   grpProjectScales->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
 
-  QgsMapLayer *currentLayer = nullptr;
+  mLayerCapabilitiesModel = new QgsLayerCapabilitiesModel( QgsProject::instance(), this );
+  mLayerCapabilitiesModel->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), mLayerCapabilitiesModel ) );
+  mLayerCapabilitiesTree->setModel( mLayerCapabilitiesModel );
+  mLayerCapabilitiesTree->resizeColumnToContents( 0 );
+  mLayerCapabilitiesTree->header()->show();
+  mLayerCapabilitiesTree->setSelectionBehavior( QAbstractItemView::SelectItems );
+  mLayerCapabilitiesTree->setSelectionMode( QAbstractItemView::MultiSelection );
+  mLayerCapabilitiesTree->expandAll();
 
-  QStringList noIdentifyLayerIdList = QgsProject::instance()->nonIdentifiableLayers();
-
-  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
-
-  twIdentifyLayers->setColumnCount( 4 );
-  twIdentifyLayers->horizontalHeader()->setVisible( true );
-  twIdentifyLayers->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "Layer" ) ) );
-  twIdentifyLayers->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "Type" ) ) );
-  twIdentifyLayers->setHorizontalHeaderItem( 2, new QTableWidgetItem( tr( "Identifiable" ) ) );
-  twIdentifyLayers->setHorizontalHeaderItem( 3, new QTableWidgetItem( tr( "Read Only" ) ) );
-  twIdentifyLayers->setRowCount( mapLayers.size() );
-  twIdentifyLayers->verticalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
-
-  int i = 0;
-  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it, i++ )
+  mLayerCapabilitiesTreeFilterLineEdit->setShowClearButton( true );
+  mLayerCapabilitiesTreeFilterLineEdit->setShowSearchIcon( true );
+  connect( mLayerCapabilitiesTreeFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [ = ]( const QString & filterText )
   {
-    currentLayer = it.value();
+    mLayerCapabilitiesModel->setFilterText( filterText );
+    mLayerCapabilitiesTree->expandAll();
+  } );
 
-    QgsTableWidgetItem *twi = new QgsTableWidgetItem( QString::number( i ) );
-    twIdentifyLayers->setVerticalHeaderItem( i, twi );
-
-    twi = new QgsTableWidgetItem( currentLayer->name() );
-    twi->setData( Qt::UserRole, it.key() );
-    twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
-    twIdentifyLayers->setItem( i, 0, twi );
-
-    QString type;
-    if ( currentLayer->type() == QgsMapLayer::VectorLayer )
-    {
-      type = tr( "Vector" );
-    }
-    else if ( currentLayer->type() == QgsMapLayer::RasterLayer )
-    {
-      QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( currentLayer );
-
-      if ( rl && rl->providerType() == QLatin1String( "wms" ) )
-      {
-        type = tr( "WMS" );
-      }
-      else
-      {
-        type = tr( "Raster" );
-      }
-    }
-
-    twi = new QgsTableWidgetItem( type );
-    twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
-    twIdentifyLayers->setItem( i, 1, twi );
-
-    twi = new QgsTableWidgetItem();
-    twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
-    twi->setFlags( twi->flags() | Qt::ItemIsUserCheckable );
-    twi->setCheckState( noIdentifyLayerIdList.contains( currentLayer->id() ) ? Qt::Unchecked : Qt::Checked );
-    twi->setSortRole( Qt::CheckStateRole );
-    twIdentifyLayers->setItem( i, 2, twi );
-
-    twi = new QgsTableWidgetItem();
-    twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
-    twi->setFlags( twi->flags() | Qt::ItemIsUserCheckable );
-    twi->setCheckState( currentLayer->readOnly() ? Qt::Checked : Qt::Unchecked );
-    twi->setSortRole( Qt::CheckStateRole );
-    twIdentifyLayers->setItem( i, 3, twi );
-  }
+  connect( mLayerCapabilitiesCheckButton, &QToolButton::clicked, this, [ = ]( bool clicked )
+  {
+    Q_UNUSED( clicked );
+    const QModelIndexList indexes = mLayerCapabilitiesTree->selectionModel()->selectedIndexes();
+    mLayerCapabilitiesModel->checkSelectedItems( indexes, true );
+    mLayerCapabilitiesTree->repaint();
+  } );
+  connect( mLayerCapabilitiesUncheckButton, &QToolButton::clicked, this, [ = ]( bool clicked )
+  {
+    Q_UNUSED( clicked );
+    const QModelIndexList indexes = mLayerCapabilitiesTree->selectionModel()->selectedIndexes();
+    mLayerCapabilitiesModel->checkSelectedItems( indexes, false );
+    mLayerCapabilitiesTree->repaint();
+  } );
 
   grpOWSServiceCapabilities->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "WMSServiceCapabilities" ), QStringLiteral( "/" ), false ) );
   mWMSTitle->setText( QgsProject::instance()->readEntry( QStringLiteral( "WMSServiceTitle" ), QStringLiteral( "/" ) ) );
@@ -715,11 +682,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   QSignalMapper *smPublied = new QSignalMapper( this );
   connect( smPublied, SIGNAL( mapped( int ) ), this, SLOT( cbxWFSPubliedStateChanged( int ) ) );
 
+  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
+
   twWFSLayers->setColumnCount( 6 );
   twWFSLayers->horizontalHeader()->setVisible( true );
   twWFSLayers->setRowCount( mapLayers.size() );
 
-  i = 0;
+  QgsMapLayer *currentLayer = nullptr;
+  int i = 0;
   int j = 0;
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it, i++ )
   {
@@ -1060,22 +1030,18 @@ void QgsProjectProperties::apply()
     emit scalesChanged();
   }
 
-  QStringList noIdentifyLayerList;
-  for ( int i = 0; i < twIdentifyLayers->rowCount(); i++ )
+  QgsProject::instance()->setNonIdentifiableLayers( mLayerCapabilitiesModel->nonIdentifiableLayers() );
+  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
-    QString id = twIdentifyLayers->item( i, 0 )->data( Qt::UserRole ).toString();
-
-    if ( twIdentifyLayers->item( i, 2 )->checkState() == Qt::Unchecked )
-    {
-      noIdentifyLayerList << id;
-    }
-    bool readonly = twIdentifyLayers->item( i, 3 )->checkState() == Qt::Checked;
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
     if ( vl )
-      vl->setReadOnly( readonly );
+    {
+      // read only and searchable are for vector layers only for now
+      vl->setReadOnly( mLayerCapabilitiesModel->readOnly( vl ) );
+      vl->setSearchable( mLayerCapabilitiesModel->searchable( vl ) );
+    }
   }
-
-  QgsProject::instance()->setNonIdentifiableLayers( noIdentifyLayerList );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSServiceCapabilities" ), QStringLiteral( "/" ), grpOWSServiceCapabilities->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSServiceTitle" ), QStringLiteral( "/" ), mWMSTitle->text() );

@@ -139,7 +139,7 @@
          </item>
          <item>
           <property name="text">
-           <string>Identify Layers</string>
+           <string>Layers</string>
           </property>
           <property name="toolTip">
            <string>Identifiable layers</string>
@@ -248,7 +248,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -276,9 +276,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-147</y>
-                <width>680</width>
-                <height>923</height>
+                <y>0</y>
+                <width>676</width>
+                <height>833</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -875,8 +875,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>580</width>
-                <height>154</height>
+                <width>676</width>
+                <height>764</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -950,8 +950,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>778</height>
+                <width>676</width>
+                <height>764</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1388,8 +1388,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>120</width>
-                <height>100</height>
+                <width>676</width>
+                <height>764</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1410,32 +1410,38 @@
                  <property name="title">
                   <string>Project Layers</string>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_22">
-                  <item>
-                   <widget class="QTableWidget" name="twIdentifyLayers">
-                    <property name="sortingEnabled">
-                     <bool>true</bool>
+                 <layout class="QGridLayout" name="gridLayout_20">
+                  <item row="0" column="2">
+                   <widget class="QPushButton" name="mLayerCapabilitiesCheckButton">
+                    <property name="text">
+                     <string>check selection</string>
                     </property>
-                    <column>
-                     <property name="text">
-                      <string>Layer</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Type</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Identifiable</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Read Only</string>
-                     </property>
-                    </column>
+                   </widget>
+                  </item>
+                  <item row="1" column="0" colspan="4">
+                   <widget class="QTreeView" name="mLayerCapabilitiesTree"/>
+                  </item>
+                  <item row="0" column="0">
+                   <spacer name="horizontalSpacer_5">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="3">
+                   <widget class="QgsFilterLineEdit" name="mLayerCapabilitiesTreeFilterLineEdit"/>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QPushButton" name="mLayerCapabilitiesUncheckButton">
+                    <property name="text">
+                     <string>uncheck selection</string>
+                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -1566,8 +1572,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>155</width>
-                <height>52</height>
+                <width>157</width>
+                <height>59</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1628,8 +1634,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>622</width>
-                <height>2646</height>
+                <width>603</width>
+                <height>2365</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2942,7 +2948,6 @@
   <tabstop>mButtonImportColors</tabstop>
   <tabstop>mButtonExportColors</tabstop>
   <tabstop>scrollArea_3</tabstop>
-  <tabstop>twIdentifyLayers</tabstop>
   <tabstop>mAutoTransaction</tabstop>
   <tabstop>mEvaluateDefaultValues</tabstop>
   <tabstop>mTrustProjectCheckBox</tabstop>
