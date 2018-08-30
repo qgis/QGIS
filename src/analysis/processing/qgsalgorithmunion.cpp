@@ -42,7 +42,14 @@ QString QgsUnionAlgorithm::groupId() const
 
 QString QgsUnionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm creates a layer containing all the features from both input layers. In the case of polygon layers, separate features are created for overlapping and non-overlapping features. The attribute table of the union layer contains attribute values from the respective input layer for non-overlapping features, and attribute values from both input layers for overlapping features." );
+  return QObject::tr( "This algorithm checks overlaps between features within the Input layer and creates separate features for overlapping "
+                      "and non-overlapping parts. The area of overlap will create as many identical overlapping features as there are "
+                      "features that participate in that overlap." )
+         + QStringLiteral( "\n\n" )
+         + QObject::tr( "An Overlay layer can also be used, in which case features from each layer are split at their overlap with features from "
+                        "the other one, creating a layer containing all the portions from both Input and Overlay layers. "
+                        "The attribute table of the Union layer is filled with attribute values from the respective original layer "
+                        "for non-overlapping features, and attribute values from both layers for overlapping features." );
 }
 
 QgsProcessingAlgorithm *QgsUnionAlgorithm::createInstance() const
@@ -53,7 +60,7 @@ QgsProcessingAlgorithm *QgsUnionAlgorithm::createInstance() const
 void QgsUnionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Union layer" ), QList< int >(), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ), QList< int >(), QVariant(), true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Union" ) ) );
 }

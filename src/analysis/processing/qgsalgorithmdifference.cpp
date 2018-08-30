@@ -42,9 +42,13 @@ QString QgsDifferenceAlgorithm::groupId() const
 
 QString QgsDifferenceAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts features from the Input layer that fall outside, or partially overlap, features in the Difference layer. Input layer features that partially overlap the difference layer feature(s) are split along the boundary of the difference layer feature(s) and only the portions outside the difference layer features are retained." )
+  return QObject::tr( "This algorithm extracts features from the Input layer that fall outside, or partially overlap, features in the Overlay layer. "
+                      "Input layer features that partially overlap feature(s) in the Overlay layer are split along those features' boundary "
+                      "and only the portions outside the Overlay layer features are retained." )
          + QStringLiteral( "\n\n" )
-         + QObject::tr( "Attributes are not modified." );
+         + QObject::tr( "Attributes are not modified, although properties such as area or length of the features will "
+                        "be modified by the difference operation. If such properties are stored as attributes, those attributes will have to "
+                        "be manually updated." );
 }
 
 QgsProcessingAlgorithm *QgsDifferenceAlgorithm::createInstance() const
@@ -55,7 +59,7 @@ QgsProcessingAlgorithm *QgsDifferenceAlgorithm::createInstance() const
 void QgsDifferenceAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Difference layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Difference" ) ) );
 }
 
