@@ -2811,7 +2811,11 @@ namespace QgsWms
           }
           QDomElement filterElem = filterXml.firstChildElement();
           std::unique_ptr<QgsExpression> expression( QgsOgcUtils::expressionFromOgcFilter( filterElem, filteredLayer ) );
-          mFeatureFilter.setFilter( filteredLayer, *expression );
+
+          if ( expression )
+          {
+            mFeatureFilter.setFilter( filteredLayer, *expression );
+          }
         }
         else
         {
