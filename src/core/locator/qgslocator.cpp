@@ -25,6 +25,7 @@ const QList<QString> QgsLocator::CORE_FILTERS = QList<QString>() << QStringLiter
     <<  QStringLiteral( "layertree" )
     <<  QStringLiteral( "layouts" )
     <<  QStringLiteral( "features" )
+    <<  QStringLiteral( "allfeatures" )
     <<  QStringLiteral( "calculator" )
     <<  QStringLiteral( "bookmarks" )
     <<  QStringLiteral( "optionpages" );

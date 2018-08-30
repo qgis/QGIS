@@ -3121,6 +3121,7 @@ void QgisApp::createStatusBar()
 
   mLocatorWidget->locator()->registerFilter( new QgsActionLocatorFilter( actionObjects ) );
   mLocatorWidget->locator()->registerFilter( new QgsActiveLayerFeaturesLocatorFilter() );
+  mLocatorWidget->locator()->registerFilter( new QgsAllLayersFeaturesLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsExpressionCalculatorLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsBookmarkLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsSettingsLocatorFilter() );
