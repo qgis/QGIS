@@ -58,7 +58,7 @@ void TestQgsMapToolReverseLine::initTestCase()
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
-  //mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
 
 }
 
@@ -70,13 +70,13 @@ void TestQgsMapToolReverseLine::cleanupTestCase()
 void TestQgsMapToolReverseLine::testReverseCurve()
 {
   //create a temporary layer
-  std::unique_ptr< QgsVectorLayer > memoryLayer( new QgsVectorLayer( QStringLiteral( "LineStringZ?field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr< QgsVectorLayer > memoryLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3946&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( memoryLayer->isValid() );
   QgsFeature curve( memoryLayer->dataProvider()->fields(), 1 );
 
   curve.setAttribute( QStringLiteral( "pk" ), 1 );
   curve.setGeometry( QgsGeometry::fromWkt( QStringLiteral(
-                       "CircularStringZ(0 0 0, 10 10 10, 5 5 5)" ) ) );
+                       "CircularString(10 10, 5 5)" ) ) );
 
   memoryLayer->dataProvider()->addFeatures( QgsFeatureList() << curve );
 
@@ -97,7 +97,7 @@ void TestQgsMapToolReverseLine::testReverseCurve()
   tool->canvasReleaseEvent( event.get() );
   QgsFeature f = memoryLayer->getFeature( 1 );
 
-  QString wkt = "CircularStringZ (5 5 5, 10 10 10, 0 0 0)";
+  QString wkt = "CircularString (5 5, 10 10)";
   QCOMPARE( f.geometry().asWkt(), wkt );
   memoryLayer->rollBack();
 
@@ -106,7 +106,7 @@ void TestQgsMapToolReverseLine::testReverseCurve()
 void TestQgsMapToolReverseLine::testReverseLineString()
 {
   //create a temporary layer
-  std::unique_ptr< QgsVectorLayer > memoryLayer( new QgsVectorLayer( QStringLiteral( "LineStringZ?field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr< QgsVectorLayer > memoryLayer( new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:3946&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( memoryLayer->isValid() );
   QgsFeature line( memoryLayer->dataProvider()->fields(), 1 );
 
@@ -142,7 +142,7 @@ void TestQgsMapToolReverseLine::testReverseLineString()
 void TestQgsMapToolReverseLine::testReverseMultiLineString()
 {
   //create a temporary layer
-  std::unique_ptr< QgsVectorLayer > memoryLayer( new QgsVectorLayer( QStringLiteral( "MultiLineStringZ?field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr< QgsVectorLayer > memoryLayer( new QgsVectorLayer( QStringLiteral( "MultiLineStringZ?crs=EPSG:3946&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( memoryLayer->isValid() );
   QgsFeature multi( memoryLayer->dataProvider()->fields(), 1 );
 
