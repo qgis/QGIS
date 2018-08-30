@@ -117,7 +117,7 @@ class rearrange_bands(GdalAlgorithm):
 
         arguments = []
 
-        bands = self.parameterAsFields(parameters, self.BANDS, context)
+        bands = self.parameterAsInts(parameters, self.BANDS, context)
         for band in bands:
             arguments.append('-b {}'.format(band))
 

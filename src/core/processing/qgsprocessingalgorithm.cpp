@@ -565,6 +565,11 @@ int QgsProcessingAlgorithm::parameterAsInt( const QVariantMap &parameters, const
   return QgsProcessingParameters::parameterAsInt( parameterDefinition( name ), parameters, context );
 }
 
+QList<int> QgsProcessingAlgorithm::parameterAsInts( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsInts( parameterDefinition( name ), parameters, context );
+}
+
 int QgsProcessingAlgorithm::parameterAsEnum( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsEnum( parameterDefinition( name ), parameters, context );

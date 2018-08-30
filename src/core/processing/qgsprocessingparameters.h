@@ -603,6 +603,18 @@ class CORE_EXPORT QgsProcessingParameters
     static int parameterAsInt( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition to a list of integer values.
+     * \since QGIS 3.4
+     */
+    static QList<int> parameterAsInts( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a list of integer values.
+     * \since QGIS 3.4
+     */
+    static QList<int> parameterAsInts( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to a enum value.
      */
     static int parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );

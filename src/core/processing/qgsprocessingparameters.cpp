@@ -178,6 +178,63 @@ int QgsProcessingParameters::parameterAsInt( const QgsProcessingParameterDefinit
   return val.toInt();
 }
 
+QList< int > QgsProcessingParameters::parameterAsInts( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QList< int >();
+
+  return parameterAsInts( definition, parameters.value( definition->name() ), context );
+}
+
+QList< int > QgsProcessingParameters::parameterAsInts( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QList< int >();
+
+  QList< int > resultList;
+  QVariant val = value;
+  if ( val.isValid() )
+  {
+    if ( val.canConvert<QgsProperty>() )
+      resultList << val.value< QgsProperty >().valueAsInt( context.expressionContext(), definition->defaultValue().toInt() );
+    else if ( val.type() == QVariant::List )
+    {
+      QVariantList list = val.toList();
+      for ( auto it = list.constBegin(); it != list.constEnd(); ++it )
+        resultList << it->toInt();
+    }
+    else
+    {
+      QStringList parts = val.toString().split( ';' );
+      for ( auto it = parts.constBegin(); it != parts.constEnd(); ++it )
+        resultList << it->toInt();
+    }
+  }
+
+  if ( ( resultList.isEmpty() || resultList.at( 0 ) == 0 ) )
+  {
+    resultList.clear();
+    // check default
+    if ( definition->defaultValue().isValid() )
+    {
+      if ( definition->defaultValue().type() == QVariant::List )
+      {
+        QVariantList list = definition->defaultValue().toList();
+        for ( auto it = list.constBegin(); it != list.constEnd(); ++it )
+          resultList << it->toInt();
+      }
+      else
+      {
+        QStringList parts = definition->defaultValue().toString().split( ';' );
+        for ( auto it = parts.constBegin(); it != parts.constEnd(); ++it )
+          resultList << it->toInt();
+      }
+    }
+  }
+
+  return resultList;
+}
+
 int QgsProcessingParameters::parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
 {
   if ( !definition )
@@ -4342,7 +4399,7 @@ QString QgsProcessingParameterBand::valueAsPythonString( const QVariant &value, 
     QVariantList values = value.toList();
     for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
     {
-      parts << QgsProcessingUtils::stringToPythonLiteral( it->toString() );
+      parts << QString::number( static_cast< int >( it->toDouble() ) );
     }
     return parts.join( ',' ).prepend( '[' ).append( ']' );
   }
@@ -4352,7 +4409,7 @@ QString QgsProcessingParameterBand::valueAsPythonString( const QVariant &value, 
     QStringList values = value.toStringList();
     for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
     {
-      parts << QgsProcessingUtils::stringToPythonLiteral( *it );
+      parts << QString::number( static_cast< int >( it->toDouble() ) );
     }
     return parts.join( ',' ).prepend( '[' ).append( ']' );
   }

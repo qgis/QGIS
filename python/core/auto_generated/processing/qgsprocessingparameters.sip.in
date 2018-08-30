@@ -536,6 +536,20 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a static i
 .. versionadded:: 3.4
 %End
 
+    static QList<int> parameterAsInts( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a list of integer values.
+
+.. versionadded:: 3.4
+%End
+
+    static QList<int> parameterAsInts( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a list of integer values.
+
+.. versionadded:: 3.4
+%End
+
     static int parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a enum value.
