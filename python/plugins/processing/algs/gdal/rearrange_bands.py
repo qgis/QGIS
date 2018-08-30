@@ -103,7 +103,7 @@ class rearrange_bands(GdalAlgorithm):
 
     def shortHelpString(self):
         return self.tr("This algorithm creates a new raster using selected band(s) from a given raster layer.\n\n"
-                       "The reordering of bands is possible by dragging individual band names in the multiple selection dialog.")
+                       "The algorithm also makes it possible to reorder the bands for the newly-created raster.")
 
     def commandName(self):
         return 'gdal_translate'
