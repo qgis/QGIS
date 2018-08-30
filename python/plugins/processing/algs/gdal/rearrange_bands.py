@@ -119,10 +119,7 @@ class rearrange_bands(GdalAlgorithm):
 
         bands = self.parameterAsFields(parameters, self.BANDS, context)
         for band in bands:
-            match = re.search('(?:\A|[^0-9])([0-9]+)(?:\Z|[^0-9]|)', band)
-            if match:
-                band_nb = match.group(1)
-                arguments.append('-b {}'.format(band_nb))
+            arguments.append('-b {}'.format(band))
 
         arguments.append('-ot')
         arguments.append(self.TYPES[self.parameterAsEnum(parameters, self.DATA_TYPE, context)])

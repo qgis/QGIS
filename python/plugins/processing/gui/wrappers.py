@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 import locale
 import os
+import re
 from functools import cmp_to_key
 from inspect import isclass
 from copy import deepcopy
@@ -1726,10 +1727,8 @@ class BandWidgetWrapper(WidgetWrapper):
 
                 for v in value:
                     for i, opt in enumerate(options):
-                        if opt == v:
-                            selected.append(i)
-                        # case insensitive check - only do if matching case value is not present
-                        elif v not in options and opt.lower() == v.lower():
+                        match = re.search('(?:\A|[^0-9]){}(?:\Z|[^0-9]|)'.format(v), opt)
+                        if match:
                             selected.append(i)
 
                 self.widget.setSelectedItems(selected)
@@ -1741,7 +1740,12 @@ class BandWidgetWrapper(WidgetWrapper):
     def value(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             if self.param.allowMultiple():
-                return [self.widget.options[i] for i in self.widget.selectedoptions]
+                bands = []
+                for i in self.widget.selectedoptions:
+                    match = re.search('(?:\A|[^0-9])([0-9]+)(?:\Z|[^0-9]|)', self.widget.options[i])
+                    if match:
+                        bands.append(match.group(1))
+                return bands
             else:
                 f = self.widget.currentBand()
                 if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional and not f:
