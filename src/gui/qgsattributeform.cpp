@@ -1775,11 +1775,10 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       const QgsAttributeEditorQmlElement *elementDef = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
-      QTemporaryFile *qmlFile = new QTemporaryFile();
-      qmlFile->write( elementDef->qmlCode().toUtf8() );
-      qmlFile->setParent( qmlWrapper );
 
-      qmlWrapper->setConfig( mLayer->editFormConfig().widgetConfig( "TODO NAME??" ) );
+      qmlWrapper->setQmlCode( elementDef->qmlCode() );
+
+      //qmlWrapper->setConfig( mLayer->editFormConfig().widgetConfig( elementDef->name()) );
       qmlWrapper->setContext( context );
 
       // QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
@@ -1788,8 +1787,9 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       // mFormWidgets.append( formWidget );
 
       newWidgetInfo.widget = qmlWrapper->widget();
-      newWidgetInfo.labelText = QString();
+      newWidgetInfo.labelText = elementDef->name();
       newWidgetInfo.labelOnTop = true;
+      newWidgetInfo.showLabel = widgetDef->showLabel();
       break;
     }
 

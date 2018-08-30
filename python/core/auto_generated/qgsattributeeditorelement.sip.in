@@ -358,7 +358,7 @@ An attribute editor widget that will represent arbitrary QML code.
 #include "qgsattributeeditorelement.h"
 %End
   public:
-    QgsAttributeEditorQmlElement( QgsAttributeEditorElement *parent );
+    QgsAttributeEditorQmlElement( const QString &name, QgsAttributeEditorElement *parent );
 
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
 

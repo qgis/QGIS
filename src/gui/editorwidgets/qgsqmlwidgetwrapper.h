@@ -19,6 +19,7 @@
 #include "qgswidgetwrapper.h"
 #include "qgis.h"
 #include "qgis_gui.h"
+#include <QtQuickWidgets/QQuickWidget>
 
 
 class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
@@ -34,12 +35,16 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 
     void initWidget( QWidget *editor ) override;
 
+    void setQmlCode( const QString &qmlCode );
+
   public slots:
 
     void setFeature( const QgsFeature &feature ) override;
 
   private:
     QTemporaryFile mQmlFile;
+
+    QQuickWidget *mWidget = nullptr;
 };
 
 #endif // QGSQMLWIDGETWRAPPER_H

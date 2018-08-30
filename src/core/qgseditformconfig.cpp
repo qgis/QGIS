@@ -558,13 +558,13 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
 
     newElement = container;
   }
-  else if ( elem.tagName() == QLatin1String( "attributeEditorField" ) )
+  else if ( elem.tagName() == QStringLiteral( "attributeEditorField" ) )
   {
     QString name = elem.attribute( QStringLiteral( "name" ) );
     int idx = d->mFields.lookupField( name );
     newElement = new QgsAttributeEditorField( name, idx, parent );
   }
-  else if ( elem.tagName() == QLatin1String( "attributeEditorRelation" ) )
+  else if ( elem.tagName() == QStringLiteral( "attributeEditorRelation" ) )
   {
     // At this time, the relations are not loaded
     // So we only grab the id and delegate the rest to onRelationsLoaded()
@@ -572,6 +572,12 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
     relElement->setShowLinkButton( elem.attribute( QStringLiteral( "showLinkButton" ), QStringLiteral( "1" ) ).toInt() );
     relElement->setShowUnlinkButton( elem.attribute( QStringLiteral( "showUnlinkButton" ), QStringLiteral( "1" ) ).toInt() );
     newElement = relElement;
+  }
+  else if ( elem.tagName() == QStringLiteral( "attributeEditorQmlElement" ) )
+  {
+    QgsAttributeEditorQmlElement *qmlElement = new QgsAttributeEditorQmlElement( elem.attribute( QStringLiteral( "name" ) ), parent );
+    qmlElement->setQmlCode( elem.text() );
+    newElement = qmlElement;
   }
 
   if ( newElement )

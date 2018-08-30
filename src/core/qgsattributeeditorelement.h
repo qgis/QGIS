@@ -420,8 +420,8 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElement
 {
   public:
-    QgsAttributeEditorQmlElement( QgsAttributeEditorElement *parent )
-      : QgsAttributeEditorElement( AeTypeQmlElement, "TODO NAME", parent )
+    QgsAttributeEditorQmlElement( const QString &name, QgsAttributeEditorElement *parent )
+      : QgsAttributeEditorElement( AeTypeQmlElement, name, parent )
     {}
 
     QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;

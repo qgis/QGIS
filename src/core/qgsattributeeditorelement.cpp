@@ -153,7 +153,7 @@ void QgsAttributeEditorRelation::setShowUnlinkButton( bool showUnlinkButton )
 
 QgsAttributeEditorElement *QgsAttributeEditorQmlElement::clone( QgsAttributeEditorElement *parent ) const
 {
-  QgsAttributeEditorQmlElement *element = new QgsAttributeEditorQmlElement( parent );
+  QgsAttributeEditorQmlElement *element = new QgsAttributeEditorQmlElement( name(), parent );
   element->setQmlCode( mQmlCode );
 
   return element;

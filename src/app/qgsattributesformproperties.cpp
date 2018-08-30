@@ -456,8 +456,20 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       {
         loadAttributeEditorTreeItem( wdg, newWidget, tree );
       }
+      break;
     }
-    break;
+
+    case QgsAttributeEditorElement::AeTypeQmlElement:
+    {
+      const QgsAttributeEditorQmlElement *qmlElementEditor = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
+      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::QmlWidget, widgetDef->name(), widgetDef->name() );
+      itemData.setShowLabel( widgetDef->showLabel() );
+      QmlElementEditorConfiguration qmlEdConfig;
+      qmlEdConfig.qmlCode = qmlElementEditor->qmlCode();
+      itemData.setQmlElementEditorConfiguration( qmlEdConfig );
+      newWidget = tree->addItem( parent, itemData );
+      break;
+    }
     default:
       //should not happen
       break;
@@ -580,8 +592,43 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
 
     case DnDTreeItemData::QmlWidget:
     {
-      QgsAttributeEditorQmlElement *element = new QgsAttributeEditorQmlElement( parent );
-      element->setQmlCode( "ABC " );
+      QgsAttributeEditorQmlElement *element = new QgsAttributeEditorQmlElement( item->text( 0 ), parent );
+      element->setQmlCode( itemData.qmlElementEditorConfiguration().qmlCode );
+
+      /*
+      element->setQmlCode( QStringLiteral(
+                             "import QtQuick 2.0\n"
+                             "\n"
+                             "Rectangle {\n"
+                             "    width: 100\n"
+                             "    height: 100\n"
+                             "    color: \"red\"\n"
+                             "}\n" ) );
+
+      element->setQmlCode( QStringLiteral(
+                          "import QtQuick 2.0\n"
+                          "import QtCharts 2.0\n"
+                          "\n"
+                          "ChartView {\n"
+                          "    width: 600\n"
+                          "    height: 400\n"
+                          "\n"
+                          "    PieSeries {\n"
+                          "        id: pieSeries\n"
+                          "        PieSlice { label: \"outlet 1\"; value: attributes.outlet_1 }\n"
+                          "        PieSlice { label: \"outlet 2\"; value: attributes.outlet_2 }\n"
+                          "        PieSlice { label: \"outlet 3\"; value: attributes.outlet_3 }\n"
+                          "        PieSlice { label: \"outlet 4\"; value: attributes.outlet_4 }\n"
+                          "    }\n"
+                          "}\n" ) );
+      import QtQuick 2.0
+
+      Rectangle {
+      width: 100
+      height: 100
+      color: "red"
+      }
+      */
 
       widgetDef = element;
       break;
@@ -1087,12 +1134,11 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       dlg.setLayout( layout );
       layout->addWidget( baseWidget );
 
-      QCheckBox *showLinkButton = new QCheckBox( tr( "Show link button" ) );
-      showLinkButton->setChecked( itemData.relationEditorConfiguration().showLinkButton );
-      QCheckBox *showUnlinkButton = new QCheckBox( tr( "Show unlink button" ) );
-      showUnlinkButton->setChecked( itemData.relationEditorConfiguration().showUnlinkButton );
-      layout->addRow( showLinkButton );
-      layout->addRow( showUnlinkButton );
+      QPlainTextEdit *qmlCode = new QPlainTextEdit( itemData.qmlElementEditorConfiguration().qmlCode );
+      QLineEdit *title = new QLineEdit( itemData.name() );
+
+      layout->addRow( tr( "Title" ), title );
+      layout->addRow( tr( "QML Code" ), qmlCode );
 
       QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
 
@@ -1103,13 +1149,14 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
 
       if ( dlg.exec() )
       {
-        QgsAttributesFormProperties::RelationEditorConfiguration relEdCfg;
-        relEdCfg.showLinkButton = showLinkButton->isChecked();
-        relEdCfg.showUnlinkButton = showUnlinkButton->isChecked();
+        QgsAttributesFormProperties::QmlElementEditorConfiguration qmlEdCfg;
+        qmlEdCfg.qmlCode = qmlCode->toPlainText();
+        itemData.setName( title->text() );
+        itemData.setQmlElementEditorConfiguration( qmlEdCfg );
         itemData.setShowLabel( showLabelCheckbox->isChecked() );
-        itemData.setRelationEditorConfiguration( relEdCfg );
 
         item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+        item->setText( 0, title->text() );
       }
     }
     break;
@@ -1214,5 +1261,15 @@ QgsAttributesFormProperties::RelationEditorConfiguration QgsAttributesFormProper
 void QgsAttributesFormProperties::DnDTreeItemData::setRelationEditorConfiguration( QgsAttributesFormProperties::RelationEditorConfiguration relationEditorConfiguration )
 {
   mRelationEditorConfiguration = relationEditorConfiguration;
+}
+
+QgsAttributesFormProperties::QmlElementEditorConfiguration QgsAttributesFormProperties::DnDTreeItemData::qmlElementEditorConfiguration() const
+{
+  return mQmlElementEditorConfiguration;
+}
+
+void QgsAttributesFormProperties::DnDTreeItemData::setQmlElementEditorConfiguration( QgsAttributesFormProperties::QmlElementEditorConfiguration qmlElementEditorConfiguration )
+{
+  mQmlElementEditorConfiguration = qmlElementEditorConfiguration;
 }
 
