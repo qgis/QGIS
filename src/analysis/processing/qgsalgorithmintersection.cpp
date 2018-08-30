@@ -44,7 +44,9 @@ QString QgsIntersectionAlgorithm::groupId() const
 
 QString QgsIntersectionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts the overlapping portions of features in the Input and Overlay layers. Features in the Overlay layer are assigned the attributes of the overlapping features from both the Input and Overlay layers." );
+  return QObject::tr( "This algorithm extracts the overlapping portions of features in the Input and Overlay layers. "
+                      "Features in the output Intersection layer are assigned the attributes of the overlapping features "
+                      "from both the Input and Overlay layers." );
 }
 
 QgsProcessingAlgorithm *QgsIntersectionAlgorithm::createInstance() const
@@ -55,7 +57,7 @@ QgsProcessingAlgorithm *QgsIntersectionAlgorithm::createInstance() const
 void QgsIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Intersection layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ) ) );
 
   addParameter( new QgsProcessingParameterField(
                   QStringLiteral( "INPUT_FIELDS" ),
