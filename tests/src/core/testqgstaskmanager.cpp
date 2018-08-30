@@ -269,6 +269,7 @@ class TestQgsTaskManager : public QObject
     void managerWithSubTasks();
     void managerWithSubTasks2();
     void managerWithSubTasks3();
+    void cancelBeforeStart();
 };
 
 void TestQgsTaskManager::initTestCase()
@@ -1346,6 +1347,31 @@ void TestQgsTaskManager::managerWithSubTasks3()
   QCOMPARE( manager3.dependencies( parentId ), QSet< long >() << subTask2Id );
   QCOMPARE( manager3.dependencies( subTaskId ), QSet< long >() << subTask2Id );
   QCOMPARE( manager3.dependencies( subTask2Id ), QSet< long >() );
+}
+
+void TestQgsTaskManager::cancelBeforeStart()
+{
+  // add a lot of tasks to the manager, so that some are queued and can't start immediately
+  // then cancel them all!
+  QList< QgsTask * > tasks;
+  QgsTaskManager manager;
+  for ( int i = 0; i < 30; ++i )
+  {
+    QgsTask *task = new CancelableTask();
+    tasks << task;
+    manager.addTask( task );
+  }
+
+  for ( QgsTask *t : qgis::as_const( tasks ) )
+  {
+    t->cancel();
+  }
+
+  while ( manager.countActiveTasks() > 1 )
+  {
+    QCoreApplication::processEvents();
+  }
+  flushEvents();
 }
 
 QGSTEST_MAIN( TestQgsTaskManager )

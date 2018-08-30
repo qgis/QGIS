@@ -34,11 +34,12 @@ QgsTask::QgsTask( const QString &name, Flags flags )
 QgsTask::~QgsTask()
 {
   Q_ASSERT_X( mStatus != Running, "delete", QStringLiteral( "status was %1" ).arg( mStatus ).toLatin1() );
-
+  mNotFinishedMutex.tryLock(); // we're not guaranteed to already have the lock in place here
   Q_FOREACH ( const SubTask &subTask, mSubTasks )
   {
     delete subTask.task;
   }
+  mNotFinishedMutex.unlock();
 }
 
 qint64 QgsTask::elapsedTime() const
@@ -261,6 +262,7 @@ void QgsTask::processSubTasksForCompletion()
     setProgress( 100.0 );
     emit statusChanged( Complete );
     emit taskCompleted();
+    mNotFinishedMutex.tryLock(); // we're not guaranteed to already have the lock in place here
     mNotFinishedMutex.unlock();
   }
   else if ( mStatus == Complete )
@@ -288,6 +290,7 @@ void QgsTask::processSubTasksForTermination()
 
     emit statusChanged( Terminated );
     emit taskTerminated();
+    mNotFinishedMutex.tryLock(); // we're not guaranteed to already have the lock in place here
     mNotFinishedMutex.unlock();
   }
   else if ( mStatus == Terminated && !subTasksTerminated )
