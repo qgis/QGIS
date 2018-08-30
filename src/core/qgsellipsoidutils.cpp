@@ -82,7 +82,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   int result = database.open_v2( QgsApplication::srsDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
   if ( result )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Can't open database: %1" ).arg( database.errorMessage() ) );
+    QgsMessageLog::logMessage( QObject::tr( "Can not open srs database (%1): %2" ).arg( QgsApplication::srsDatabaseFilePath(), database.errorMessage() ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     return params;
