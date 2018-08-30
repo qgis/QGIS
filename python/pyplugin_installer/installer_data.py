@@ -600,6 +600,10 @@ class Plugins(QObject):
         errorDetails = ""
         version = None
 
+        if not os.path.exists(os.path.join(path, '__init__.py')):
+            error = "broken"
+            errorDetails = QCoreApplication.translate("QgsPluginInstaller", "Missing __init__.py")
+
         metadataFile = os.path.join(path, 'metadata.txt')
         if os.path.exists(metadataFile):
             version = normalizeVersion(pluginMetadata("version"))
