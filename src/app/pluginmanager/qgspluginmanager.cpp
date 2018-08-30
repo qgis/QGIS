@@ -549,6 +549,16 @@ void QgsPluginManager::reloadModelData()
         mypDetailItem->setData( QPixmap( QgsApplication::defaultThemePath() + "/propertyicons/plugin.svg" ), Qt::DecorationRole );
       }
 
+      // Set the additional icon if the plugin is experimental or deprecated.
+      if ( it->value( QStringLiteral( "experimental" ) ) == QLatin1String( "true" ) )
+      {
+        mypDetailItem->setData( QPixmap( QgsApplication::defaultThemePath() + "/pluginExperimental.png" ), PLUGIN_RIGHT_SIDE_ICON_ROLE );
+      }
+      if ( it->value( QStringLiteral( "deprecated" ) ) == QLatin1String( "true" ) )
+      {
+        mypDetailItem->setData( QPixmap( QgsApplication::defaultThemePath() + "/mIconWarning.svg" ), PLUGIN_RIGHT_SIDE_ICON_ROLE );
+      }
+
       mypDetailItem->setEditable( false );
 
       // Set checkable if the plugin is installed and not disabled due to incompatibility.
