@@ -4757,6 +4757,27 @@ tests:
         name: expected/join_by_location_unjoinable.gml
         type: vector
 
+  - algorithm: qgis:joinattributesbylocation
+    name: Join by location (equals)
+    params:
+      DISCARD_NONMATCHING: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/polys_2.gml
+        type: vector
+      JOIN_FIELDS:
+      - fid
+      METHOD: 0
+      PREDICATE:
+      - 2
+      PREFIX: J_
+    results:
+      OUTPUT:
+        name: expected/join_by_location_equals.gml
+        type: vector
+
   - algorithm: qgis:joinbylocationsummary
     name: Join by location (summary), intersects
     params:
