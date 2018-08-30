@@ -5105,23 +5105,23 @@ void TestQgsProcessing::parameterBand()
 
   // multiple
   def.reset( new QgsProcessingParameterBand( "non_optional", QString(), QVariant(), QString(), false, true ) );
-  QVERIFY( def->checkValueIsAcceptable( QStringList() << "Band 1" << "Band 2" ) );
-  QVERIFY( def->checkValueIsAcceptable( QVariantList() << "Band 1" << "Band 2" ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringList() << "1" << "2" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << 1 << 2 ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
   QVERIFY( !def->checkValueIsAcceptable( QStringList() ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariantList() ) );
 
-  params.insert( "non_optional", QString( "Band 1;Band 2" ) );
-  QStringList bands = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
-  QCOMPARE( bands, QStringList() << "Band 1" << "Band 2" );
-  params.insert( "non_optional", QVariantList() << "Band 1" << "Band 2" );
-  bands = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
-  QCOMPARE( bands, QStringList() << "Band 1" << "Band 2" );
+  params.insert( "non_optional", QString( "1;2" ) );
+  QList<int> bands = QgsProcessingParameters::parameterAsInts( def.get(), params, context );
+  QCOMPARE( bands, QList<int>() << 1 << 2 );
+  params.insert( "non_optional", QVariantList() << 1 << 2 );
+  bands = QgsProcessingParameters::parameterAsInts( def.get(), params, context );
+  QCOMPARE( bands, QList<int>() << 1 << 2 );
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
-  QCOMPARE( def->valueAsPythonString( QStringList() << "Band 1" << "Band 2", context ), QStringLiteral( "['Band 1','Band 2']" ) );
-  QCOMPARE( def->valueAsPythonString( QVariantList() << "Band 1" << "Band 2", context ), QStringLiteral( "['Band 1','Band 2']" ) );
+  QCOMPARE( def->valueAsPythonString( QStringList() << "1" << "2", context ), QStringLiteral( "[1,2]" ) );
+  QCOMPARE( def->valueAsPythonString( QVariantList() << 1 << 2, context ), QStringLiteral( "[1,2]" ) );
 
   QVariantMap map = def->toVariantMap();
   QgsProcessingParameterBand fromMap( "x" );

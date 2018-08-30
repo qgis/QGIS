@@ -585,6 +585,13 @@ Evaluates the parameter with matching ``name`` to a static double value.
 Evaluates the parameter with matching ``name`` to a static integer value.
 %End
 
+    QList<int> parameterAsInts( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+%Docstring
+Evaluates the parameter with matching ``name`` to a list of integer values.
+
+.. versionadded:: 3.4
+%End
+
     int parameterAsEnum( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a enum value.

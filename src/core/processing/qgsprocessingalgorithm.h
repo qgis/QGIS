@@ -583,6 +583,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
     int parameterAsInt( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 
     /**
+     * Evaluates the parameter with matching \a name to a list of integer values.
+     * \since QGIS 3.4
+     */
+    QList<int> parameterAsInts( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+
+    /**
      * Evaluates the parameter with matching \a name to a enum value.
      */
     int parameterAsEnum( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
