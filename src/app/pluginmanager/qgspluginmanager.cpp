@@ -556,7 +556,7 @@ void QgsPluginManager::reloadModelData()
       }
       if ( it->value( QStringLiteral( "deprecated" ) ) == QLatin1String( "true" ) )
       {
-        mypDetailItem->setData( QPixmap( QgsApplication::defaultThemePath() + "/mIconWarning.svg" ), PLUGIN_RIGHT_SIDE_ICON_ROLE );
+        mypDetailItem->setData( QPixmap( QgsApplication::defaultThemePath() + "/pluginDeprecated.svg" ), PLUGIN_RIGHT_SIDE_ICON_ROLE );
       }
 
       mypDetailItem->setEditable( false );
@@ -833,7 +833,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   {
     html += QString( "<table bgcolor=\"#EEBBCC\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#660000\">"
-                     "    <img src=\"qrc:/images/themes/default/pluginDeprecated.svg\" width=\"32\"><b>%1</b>"
+                     "    <img src=\"qrc:/images/themes/default/pluginDeprecated.svg\" width=\"32\"> <b>%1</b>"
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin is deprecated" ) );
   }
