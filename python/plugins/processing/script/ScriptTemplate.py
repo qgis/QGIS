@@ -150,7 +150,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         )
 
         # Send some information to the user
-        feedback.pushInfo('CRS is {}'.format(source.sourceCrs().authid()))
+        feedback.pushInfo('CRS is {}'.format(source.crs().authid()))
 
         # If sink was not created, throw an exception to indicate that the algorithm
         # encountered a fatal error. The exception text can be any string, but in this
@@ -181,7 +181,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         # to the executed algorithm, and that the executed algorithm can send feedback
         # reports to the user (and correctly handle cancelation and progress reports!)
         if False:
-            buffered_layer = processing.run("native:buffer", param={
+            buffered_layer = processing.run("native:buffer", {
                 'INPUT': dest_id,
                 'DISTANCE': 1.5,
                 'SEGMENTS': 5,
