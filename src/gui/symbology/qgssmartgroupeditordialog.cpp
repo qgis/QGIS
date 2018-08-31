@@ -17,6 +17,7 @@
 
 #include "qgsstyle.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
 
 #include <QVariant>
 #include <QMessageBox>
@@ -79,6 +80,8 @@ QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyle *style, QWidget *
   , mStyle( style )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsSmartGroupEditorDialog::buttonBox_accepted );
 
   mCondCount = 0;

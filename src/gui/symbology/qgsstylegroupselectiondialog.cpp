@@ -17,6 +17,7 @@
 
 #include "qgsstylegroupselectiondialog.h"
 #include "qgsstyle.h"
+#include "qgsgui.h"
 
 #include <QStandardItemModel>
 #include <QStandardItem>
@@ -27,6 +28,8 @@ QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWi
   , mStyle( style )
 {
   setupUi( this );
+
+  QgsGui::enableAutoGeometryRestore( this );
 
   QStandardItemModel *model = new QStandardItemModel( groupTree );
   groupTree->setModel( model );

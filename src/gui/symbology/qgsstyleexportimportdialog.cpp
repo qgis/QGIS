@@ -24,6 +24,7 @@
 #include "qgslogger.h"
 #include "qgsstylegroupselectiondialog.h"
 #include "qgsguiutils.h"
+#include "qgsgui.h"
 
 #include <QInputDialog>
 #include <QCloseEvent>
@@ -39,6 +40,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   , mStyle( style )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   // additional buttons
   QPushButton *pb = nullptr;
