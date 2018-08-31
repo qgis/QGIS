@@ -237,9 +237,9 @@ class CORE_EXPORT QgsSymbol
      * Optionally a custom render context may be given in order to ensure that the preview icon exactly
      * matches the settings from that context.
      *
-     * \since QGIS 2.6
      * \see exportImage()
      * \see asImage()
+     * \since QGIS 2.6
      */
     void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr );
 
