@@ -246,6 +246,7 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
           mNonIdentifiableLayers.removeAll( layer->id() );
         if ( !containsLayer && nonIdentifiable )
           mNonIdentifiableLayers.append( layer->id() );
+        emit dataChanged( index, index );
         return true;
       }
       else if ( index.column() == ReadOnlyColumn )
@@ -254,6 +255,7 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
         if ( vl )
         {
           mReadOnlyLayers.insert( layer, value == Qt::Checked );
+          emit dataChanged( index, index );
           return true;
         }
       }
@@ -263,6 +265,7 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
         if ( vl )
         {
           mSearchableLayers.insert( layer, value == Qt::Checked );
+          emit dataChanged( index, index );
           return true;
         }
       }
