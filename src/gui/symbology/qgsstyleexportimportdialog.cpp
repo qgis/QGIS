@@ -79,8 +79,12 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
 
     mSymbolTags->setText( QStringLiteral( "imported" ) );
 
-    btnBrowse->setText( QStringLiteral( "Browse" ) );
-    connect( btnBrowse, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::browse );
+    connect( mButtonFetch, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::fetch );
+
+    mImportFileWidget->setStorageMode( QgsFileWidget::GetFile );
+    mImportFileWidget->setDialogTitle( tr( "Load Styles" ) );
+    mImportFileWidget->setFilter( tr( "XML files (*.xml *.XML)" ) );
+    connect( mImportFileWidget, &QgsFileWidget::fileChanged, this, &QgsStyleExportImportDialog::importFileChanged );
 
     label->setText( tr( "Select items to import" ) );
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Import" ) );
@@ -89,11 +93,10 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   {
     setWindowTitle( tr( "Export Item(s)" ) );
     // hide import specific controls when exporting
-    btnBrowse->setHidden( true );
+    mLocationStackedEdit->setHidden( true );
     fromLabel->setHidden( true );
     importTypeCombo->setHidden( true );
     mLocationLabel->setHidden( true );
-    locationLineEdit->setHidden( true );
 
     mFavorite->setHidden( true );
     mIgnoreXMLTags->setHidden( true );
@@ -482,15 +485,12 @@ void QgsStyleExportImportDialog::importTypeChanged( int index )
 {
   ImportSource source = static_cast< ImportSource >( importTypeCombo->itemData( index ).toInt() );
 
-  locationLineEdit->clear();
-
   switch ( source )
   {
     case ImportSource::File:
     {
+      mLocationStackedEdit->setCurrentIndex( 0 );
       mLocationLabel->setText( tr( "File" ) );
-      locationLineEdit->setEnabled( true );
-      btnBrowse->setText( QStringLiteral( "Browse" ) );
       break;
     }
 #if 0
@@ -503,51 +503,29 @@ void QgsStyleExportImportDialog::importTypeChanged( int index )
 #endif
     case ImportSource::Url:
     {
+      mLocationStackedEdit->setCurrentIndex( 1 );
       mLocationLabel->setText( tr( "URL" ) );
-      btnBrowse->setText( QStringLiteral( "Fetch Items" ) );
-      locationLineEdit->setEnabled( true );
       break;
     }
   }
 }
 
-void QgsStyleExportImportDialog::browse()
+void QgsStyleExportImportDialog::fetch()
 {
-  ImportSource source = static_cast< ImportSource >( importTypeCombo->currentData().toInt() );
+  downloadStyleXml( QUrl( mUrlLineEdit->text() ) );
+}
 
-  switch ( source )
-  {
-    case ImportSource::File:
-    {
-      mFileName = QFileDialog::getOpenFileName( this, tr( "Load Styles" ), QDir::homePath(),
-                  tr( "XML files (*.xml *.XML)" ) );
-      if ( mFileName.isEmpty() )
-      {
-        return;
-      }
-      QFileInfo pathInfo( mFileName );
-      QString tag = pathInfo.fileName().remove( QStringLiteral( ".xml" ) );
-      mSymbolTags->setText( tag );
-      locationLineEdit->setText( mFileName );
-      populateStyles( mTempStyle );
-      break;
-    }
+void QgsStyleExportImportDialog::importFileChanged( const QString &path )
+{
+  if ( path.isEmpty() )
+    return;
 
-#if 0
-    case ImportSource::Official:
-    {
-      // TODO set URL
-      // downloadStyleXML( QUrl( "http://...." ) );
-      break;
-    }
-#endif
-
-    case ImportSource::Url:
-    {
-      downloadStyleXml( QUrl( locationLineEdit->text() ) );
-      break;
-    }
-  }
+  mFileName = path;
+  QFileInfo pathInfo( mFileName );
+  QString tag = pathInfo.fileName().remove( QStringLiteral( ".xml" ) );
+  mSymbolTags->setText( tag );
+  if ( QFileInfo::exists( mFileName ) )
+    populateStyles( mTempStyle );
 }
 
 void QgsStyleExportImportDialog::downloadStyleXml( const QUrl &url )
