@@ -154,11 +154,11 @@ void QgsStyleExportImportDialog::doExportImport()
 
     mFileName = fileName;
 
-    QgsTemporaryCursorOverride override( Qt::WaitCursor );
+    mCursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
     moveStyles( &selection, mStyle, mTempStyle );
     if ( !mTempStyle->exportXml( mFileName ) )
     {
-      override.release();
+      mCursorOverride.reset();
       QMessageBox::warning( this, tr( "Export Symbols" ),
                             tr( "Error when saving selected symbols to file:\n%1" )
                             .arg( mTempStyle->errorString() ) );
@@ -166,7 +166,7 @@ void QgsStyleExportImportDialog::doExportImport()
     }
     else
     {
-      override.release();
+      mCursorOverride.reset();
       QMessageBox::information( this, tr( "Export Symbols" ),
                                 tr( "The selected symbols were successfully exported to file:\n%1" )
                                 .arg( mFileName ) );
@@ -174,13 +174,14 @@ void QgsStyleExportImportDialog::doExportImport()
   }
   else // import
   {
-    QgsTemporaryCursorOverride override( Qt::WaitCursor );
+    mCursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
     moveStyles( &selection, mTempStyle, mStyle );
 
     // clear model
     QStandardItemModel *model = qobject_cast<QStandardItemModel *>( listItems->model() );
     model->clear();
     accept();
+    mCursorOverride.reset();
   }
 
   mFileName.clear();
@@ -296,10 +297,12 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList *selection, QgsStyl
     {
       if ( dst->symbolNames().contains( symbolName ) && prompt )
       {
+        mCursorOverride.reset();
         int res = QMessageBox::warning( this, tr( "Export/import Symbols" ),
                                         tr( "Symbol with name '%1' already exists.\nOverwrite?" )
                                         .arg( symbolName ),
                                         QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+        mCursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
         switch ( res )
         {
           case QMessageBox::Cancel:
@@ -347,10 +350,12 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList *selection, QgsStyl
     {
       if ( dst->colorRampNames().contains( symbolName ) && prompt )
       {
+        mCursorOverride.reset();
         int res = QMessageBox::warning( this, tr( "Export/import Color Ramps" ),
                                         tr( "Color ramp with name '%1' already exists.\nOverwrite?" )
                                         .arg( symbolName ),
                                         QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+        mCursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
         switch ( res )
         {
           case QMessageBox::Cancel:

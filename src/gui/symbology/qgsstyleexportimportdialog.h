@@ -32,6 +32,7 @@
 
 class QgsStyle;
 class QgsStyleGroupSelectionDialog;
+class QgsTemporaryCursorOverride;
 
 /**
  * \ingroup gui
@@ -144,6 +145,7 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
 
     QgsStyle *mStyle = nullptr;
     QgsStyle *mTempStyle = nullptr;
+    std::unique_ptr< QgsTemporaryCursorOverride > mCursorOverride;
 };
 
 #endif // QGSSTYLEV2EXPORTIMPORTDIALOG_H
