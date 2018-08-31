@@ -202,6 +202,12 @@ class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
     def setValue(self, value):
         pass
 
+    def value(self):
+        return None
+
+    def widgetValue(self):
+        return self.value()
+
     def setWidgetValue(self, value, context):
         self.setValue(value)
 

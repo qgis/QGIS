@@ -92,7 +92,7 @@ void QgsProcessingBooleanWidgetWrapper::setWidgetValue( const QVariant &value, c
   }
 }
 
-QVariant QgsProcessingBooleanWidgetWrapper::value() const
+QVariant QgsProcessingBooleanWidgetWrapper::widgetValue() const
 {
   switch ( type() )
   {

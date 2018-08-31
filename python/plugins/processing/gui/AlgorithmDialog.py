@@ -110,7 +110,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 if widget is None:
                     continue
 
-                value = wrapper.value()
+                value = wrapper.parameterValue()
                 parameters[param.name()] = value
 
                 if not param.checkValueIsAcceptable(value):

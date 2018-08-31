@@ -219,7 +219,7 @@ class ParametersPanel(BASE, WIDGET):
                 value = parameters[param.name()]
 
                 wrapper = self.wrappers[param.name()]
-                wrapper.setWidgetValue(value, context)
+                wrapper.setParameterValue(value, context)
             else:
                 dest_widget = self.outputWidgets[param.name()]
                 dest_widget.setValue(parameters[param.name()])

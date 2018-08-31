@@ -41,12 +41,11 @@ class GUI_EXPORT QgsProcessingBooleanWidgetWrapper : public QgsAbstractProcessin
     // QgsProcessingParameterWidgetWrapper interface
     QWidget *createWidget() override SIP_FACTORY;
     QLabel *createLabel() override SIP_FACTORY;
+
+  protected:
+
     void setWidgetValue( const QVariant &value, const QgsProcessingContext &context ) override;
-    QVariant value() const override;
-
-  protected:
-
-  protected:
+    QVariant widgetValue() const override;
 
     QStringList compatibleParameterTypes() const override;
 
@@ -58,6 +57,8 @@ class GUI_EXPORT QgsProcessingBooleanWidgetWrapper : public QgsAbstractProcessin
 
     QCheckBox *mCheckBox = nullptr;
     QComboBox *mComboBox = nullptr;
+
+    friend class TestProcessingGui;
 };
 
 ///@endcond PRIVATE
