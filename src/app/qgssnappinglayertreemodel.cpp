@@ -550,6 +550,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
         config.setIndividualLayerSettings( vl, ls );
         mProject->setSnappingConfig( config );
       }
+      emit dataChanged( index, index );
       return true;
     }
 
@@ -572,6 +573,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );
+      emit dataChanged( index, index );
       return true;
     }
   }
@@ -592,6 +594,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );
+      emit dataChanged( index, index );
       return true;
     }
   }
@@ -612,6 +615,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );
+      emit dataChanged( index, index );
       return true;
     }
   }
@@ -632,6 +636,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
         avoidIntersectionsList.removeAll( vl );
 
       mProject->setAvoidIntersectionsLayers( avoidIntersectionsList );
+      emit dataChanged( index, index );
       return true;
     }
   }
