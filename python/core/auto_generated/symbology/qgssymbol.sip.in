@@ -15,6 +15,10 @@ typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
 
 class QgsSymbol
 {
+%Docstring
+
+Abstract base class for all rendered symbols.
+%End
 
 %TypeHeaderCode
 #include "qgssymbol.h"
@@ -56,15 +60,20 @@ class QgsSymbol
 
     static QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType ) /Factory/;
 %Docstring
-Returns new default symbol for specified geometry type
+Returns a new default symbol for the specified geometry type.
+
+The caller takes ownership of the returned object.
 %End
 
     SymbolType type() const;
+%Docstring
+Returns the symbol's type.
+%End
 
 
     QgsSymbolLayerList symbolLayers();
 %Docstring
-Returns list of symbol layers contained in the symbol.
+Returns the list of symbol layers contained in the symbol.
 
 :return: symbol layers list
 
@@ -77,7 +86,7 @@ Returns list of symbol layers contained in the symbol.
 
     QgsSymbolLayer *symbolLayer( int layer );
 %Docstring
-Returns a specific symbol layers contained in the symbol.
+Returns a specific symbol layer contained in the symbol.
 
 :param layer: layer number
 
@@ -92,7 +101,7 @@ Returns a specific symbol layers contained in the symbol.
 
     int symbolLayerCount() const;
 %Docstring
-Returns total number of symbol layers contained in the symbol.
+Returns the total number of symbol layers contained in the symbol.
 
 :return: count of symbol layers
 
@@ -105,8 +114,8 @@ Returns total number of symbol layers contained in the symbol.
 
     bool insertSymbolLayer( int index, QgsSymbolLayer *layer /Transfer/ );
 %Docstring
-Insert symbol layer to specified index
-Ownership will be transferred.
+Inserts a symbol ``layer`` to specified ``index``.
+Ownership of ``layer`` is transferred to the symbol.
 
 :param index: The index at which the layer should be added
 :param layer: The symbol layer to add
@@ -116,23 +125,22 @@ Ownership will be transferred.
 
     bool appendSymbolLayer( QgsSymbolLayer *layer /Transfer/ );
 %Docstring
-Append symbol layer at the end of the list
-Ownership will be transferred.
+Appends a symbol ``layer`` at the end of the current symbol layer list.
+Ownership of ``layer`` is transferred to the symbol.
 
-:param layer: The layer to add
-
-:return: True if the layer is added, False if the layer is bad
+:return: true if the layer was successfully added, false if the layer is not compatible with the
+         symbol's type().
 %End
 
     bool deleteSymbolLayer( int index );
 %Docstring
-delete symbol layer at specified index
+Removes and deletes the symbol layer at the specified ``index``.
 %End
 
     QgsSymbolLayer *takeSymbolLayer( int index ) /TransferBack/;
 %Docstring
-Remove symbol layer from the list and return pointer to it.
-Ownership is handed to the caller.
+Removes a symbol layer from the list and returns a pointer to it.
+Ownership of the layer is handed to the caller.
 
 :param index: The index of the layer to remove
 
@@ -141,7 +149,11 @@ Ownership is handed to the caller.
 
     bool changeSymbolLayer( int index, QgsSymbolLayer *layer /Transfer/ );
 %Docstring
-delete layer at specified index and set a new one
+Deletes the current layer at the specified ``index`` and replaces it with ``layer``.
+Ownership of ``layer`` is transferred to the symbol.
+
+Returns false if ``layer`` is not compatible with the symbol's type(), or
+true if the layer was successfully replaced.
 %End
 
     void startRender( QgsRenderContext &context, const QgsFields &fields = QgsFields() );
@@ -168,24 +180,63 @@ Ends the rendering process. This should be called after rendering all desired fe
 %End
 
     void setColor( const QColor &color );
+%Docstring
+Sets the ``color`` for the symbol.
+
+Calling this method sets the color for each individual symbol layer contained
+within the symbol to ``color``.
+
+Locked symbol layers are skipped and are left unchanged.
+
+.. seealso:: :py:func:`color`
+%End
+
     QColor color() const;
+%Docstring
+Returns the symbol's color.
+
+For multi-layer symbols, this method returns the color of the first unlocked symbol
+layer.
+
+.. seealso:: :py:func:`setColor`
+%End
 
     void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = 0 );
 %Docstring
-Draw icon of the symbol that occupyies area given by size using the painter.
-Optionally custom context may be given in order to get rendering of symbols that use map units right.
+Draws an icon of the symbol that occupies an area given by ``size`` using the specified ``painter``.
+
+Optionally a custom render context may be given in order to ensure that the preview icon exactly
+matches the settings from that context.
 
 .. versionadded:: 2.6
+
+.. seealso:: :py:func:`exportImage`
+
+.. seealso:: :py:func:`asImage`
 %End
 
     void exportImage( const QString &path, const QString &format, QSize size );
 %Docstring
-export symbol as image format. PNG and SVG supported
+Export the symbol as an image format, to the specified ``path`` and with the given ``size``.
+
+If ``format`` is "SVG" then an SVG file will be created, otherwise a raster image of the
+specified format will be created.
+
+.. seealso:: :py:func:`asImage`
+
+.. seealso:: :py:func:`drawPreviewIcon`
 %End
 
     QImage asImage( QSize size, QgsRenderContext *customContext = 0 );
 %Docstring
-Generate symbol as image
+Returns an image of the symbol at the specified ``size``.
+
+Optionally a custom render context may be given in order to ensure that the preview icon exactly
+matches the settings from that context.
+
+.. seealso:: :py:func:`exportImage`
+
+.. seealso:: :py:func:`drawPreviewIcon`
 %End
 
     QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0 );
@@ -194,18 +245,28 @@ Returns a large (roughly 100x100 pixel) preview image for the symbol.
 
 :param expressionContext: optional expression context, for evaluation of
                           data defined symbol properties
+
+.. seealso:: :py:func:`asImage`
+
+.. seealso:: :py:func:`drawPreviewIcon`
 %End
 
     QString dump() const;
+%Docstring
+Returns a string dump of the symbol's properties.
+%End
 
     virtual QgsSymbol *clone() const = 0 /Factory/;
 %Docstring
-Gets a deep copy of this symbol.
-Needs to be reimplemented by subclasses.
+Returns a deep copy of this symbol.
+
 Ownership is transferred to the caller.
 %End
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+%Docstring
+Converts the symbol to a SLD representation.
+%End
 
     QgsUnitTypes::RenderUnit outputUnit() const;
 %Docstring
@@ -232,7 +293,25 @@ may use it to specify the units for the line width.
 %End
 
     QgsMapUnitScale mapUnitScale() const;
+%Docstring
+Returns the map unit scale for the symbol.
+
+If the symbol consists of multiple layers, the map unit scale is only
+returned if all layers have the same scale settings. If the settings differ,
+a default constructed map unit scale is returned.
+
+.. seealso:: :py:func:`setMapUnitScale`
+%End
+
     void setMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the symbol.
+
+Calling this method sets the scale for all symbol layers contained within the
+symbol.
+
+.. seealso:: :py:func:`mapUnitScale`
+%End
 
     qreal opacity() const;
 %Docstring
