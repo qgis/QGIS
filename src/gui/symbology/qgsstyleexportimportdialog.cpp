@@ -24,6 +24,7 @@
 #include "qgslogger.h"
 #include "qgsstylegroupselectiondialog.h"
 #include "qgsguiutils.h"
+#include "qgssettings.h"
 #include "qgsgui.h"
 
 #include <QInputDialog>
@@ -84,6 +85,9 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
     mImportFileWidget->setStorageMode( QgsFileWidget::GetFile );
     mImportFileWidget->setDialogTitle( tr( "Load Styles" ) );
     mImportFileWidget->setFilter( tr( "XML files (*.xml *.XML)" ) );
+
+    QgsSettings settings;
+    mImportFileWidget->setDefaultRoot( settings.value( QStringLiteral( "StyleManager/lastImportDir" ), QDir::homePath(), QgsSettings::Gui ).toString() );
     connect( mImportFileWidget, &QgsFileWidget::fileChanged, this, &QgsStyleExportImportDialog::importFileChanged );
 
     label->setText( tr( "Select items to import" ) );
@@ -525,7 +529,11 @@ void QgsStyleExportImportDialog::importFileChanged( const QString &path )
   QString tag = pathInfo.fileName().remove( QStringLiteral( ".xml" ) );
   mSymbolTags->setText( tag );
   if ( QFileInfo::exists( mFileName ) )
+  {
     populateStyles( mTempStyle );
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "StyleManager/lastImportDir" ), pathInfo.absolutePath(), QgsSettings::Gui );
+  }
 }
 
 void QgsStyleExportImportDialog::downloadStyleXml( const QUrl &url )
