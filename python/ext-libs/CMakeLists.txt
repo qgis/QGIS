@@ -49,8 +49,8 @@ IF(NOT ENABLE_PYTHON3)
       FILE(GLOB_RECURSE files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/future future/*)
       ADD_CUSTOM_COMMAND(TARGET pyfuture
         POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${item} "${PYTHON_OUTPUT_DIRECTORY}/"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${item} "${PYTHON_OUTPUT_DIRECTORY}/${item}"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/future
         DEPENDS ${files}
       )
       PY_COMPILE(pyfuture "${PYTHON_OUTPUT_DIRECTORY}/${item}")
