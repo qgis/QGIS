@@ -472,7 +472,9 @@ void QgsSymbolSelectorWidget::layerChanged()
   {
     mDataDefineRestorer.reset();
     // then it must be a symbol
+    Q_NOWARN_DEPRECATED_PUSH
     currentItem->symbol()->setLayer( mVectorLayer );
+    Q_NOWARN_DEPRECATED_POP
     // Now populate symbols of that type using the symbols list widget:
     QgsSymbolsListWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, mAdvancedMenu, this, mVectorLayer );
     symbolsList->setContext( mContext );

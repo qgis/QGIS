@@ -387,14 +387,21 @@ Returns whether the symbol utilizes any data defined properties.
 .. versionadded:: 2.12
 %End
 
-    void setLayer( const QgsVectorLayer *layer );
+ void setLayer( const QgsVectorLayer *layer ) /Deprecated/;
 %Docstring
 
 .. note::
 
    the layer will be NULL after stopRender
+
+.. deprecated:: Will be removed in QGIS 4.0
 %End
-    const QgsVectorLayer *layer() const;
+
+ const QgsVectorLayer *layer() const /Deprecated/;
+%Docstring
+
+.. deprecated:: Will be removed in QGIS 4.0
+%End
 
     void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, int currentVertexMarkerSize = 0 );
 %Docstring
