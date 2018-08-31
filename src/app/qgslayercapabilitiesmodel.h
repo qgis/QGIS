@@ -46,6 +46,7 @@ class APP_EXPORT QgsLayerCapabilitiesModel : public QSortFilterProxyModel
     bool readOnly( QgsMapLayer *layer ) const;
     bool searchable( QgsMapLayer *layer ) const;
     QgsMapLayer *mapLayer( const QModelIndex &idx ) const;
+    void setShowSpatialLayersOnly( bool only );
 
     int columnCount( const QModelIndex &parent ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
@@ -67,6 +68,7 @@ class APP_EXPORT QgsLayerCapabilitiesModel : public QSortFilterProxyModel
     bool nodeShown( QgsLayerTreeNode *node ) const;
 
     QString mFilterText;
+    bool mShowSpatialLayersOnly = false;
     QStringList mNonIdentifiableLayers;
     QHash<QgsMapLayer *, bool> mReadOnlyLayers;
     QHash<QgsMapLayer *, bool> mSearchableLayers;

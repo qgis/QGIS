@@ -174,6 +174,15 @@ QgsMapLayer *QgsLayerCapabilitiesModel::mapLayer( const QModelIndex &idx ) const
   return QgsLayerTree::toLayer( node )->layer();
 }
 
+void QgsLayerCapabilitiesModel::setShowSpatialLayersOnly( bool only )
+{
+  if ( only == mShowSpatialLayersOnly )
+    return;
+
+  mShowSpatialLayersOnly = only;
+  invalidateFilter();
+}
+
 QModelIndex QgsLayerCapabilitiesModel::index( int row, int column, const QModelIndex &parent ) const
 {
   QModelIndex newIndex = QSortFilterProxyModel::index( row, LayerColumn, parent );
@@ -298,6 +307,8 @@ bool QgsLayerCapabilitiesModel::nodeShown( QgsLayerTreeNode *node ) const
   else
   {
     QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
-    return layer && ( mFilterText.isEmpty() || layer->name().contains( mFilterText, Qt::CaseInsensitive ) );
+    return layer
+           && ( mFilterText.isEmpty() || layer->name().contains( mFilterText, Qt::CaseInsensitive ) )
+           && ( !mShowSpatialLayersOnly || layer->isSpatial() );
   }
 }
