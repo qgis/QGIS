@@ -44,6 +44,9 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterVectorDestination,
                        QgsProject)
+from qgis.gui import (QgsGui,
+                      QgsAbstractProcessingParameterWidgetWrapper)
+
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
@@ -52,7 +55,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
 from processing.gui.wrappers import WidgetWrapperFactory
-
+from processing.tools.dataobjects import createContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]\
 
@@ -91,7 +94,10 @@ class ParametersPanel(BASE, WIDGET):
 
     def layerRegistryChanged(self, layers):
         for wrapper in list(self.wrappers.values()):
-            wrapper.refresh()
+            try:
+                wrapper.refresh()
+            except AttributeError:
+                pass
 
     def formatParameterTooltip(self, parameter):
         return '<p><b>{}</b></p><p>{}</p>'.format(
@@ -100,6 +106,8 @@ class ParametersPanel(BASE, WIDGET):
         )
 
     def initWidgets(self):
+        context = createContext()
+
         # If there are advanced parameters — show corresponding groupbox
         for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
@@ -115,9 +123,16 @@ class ParametersPanel(BASE, WIDGET):
             else:
                 wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent)
                 self.wrappers[param.name()] = wrapper
-                widget = wrapper.widget
+                is_cpp_wrapper = issubclass(wrapper.__class__, QgsAbstractProcessingParameterWidgetWrapper)
+                if is_cpp_wrapper:
+                    widget = wrapper.createWrappedWidget(context)
+                else:
+                    widget = wrapper.widget
 
                 if widget is not None:
+                    if not is_cpp_wrapper:
+                        widget.setToolTip(param.toolTip())
+
                     if isinstance(param, QgsProcessingParameterFeatureSource):
                         layout = QHBoxLayout()
                         layout.setSpacing(6)
@@ -136,15 +151,19 @@ class ParametersPanel(BASE, WIDGET):
                         widget = QWidget()
                         widget.setLayout(layout)
 
-                    widget.setToolTip(param.toolTip())
+                    label = None
+                    if is_cpp_wrapper:
+                        label = wrapper.createWrappedLabel()
+                    else:
+                        label = wrapper.label
 
-                    if wrapper.label is not None:
+                    if label is not None:
                         if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
-                            self.layoutAdvanced.addWidget(wrapper.label)
+                            self.layoutAdvanced.addWidget(label)
                         else:
                             self.layoutMain.insertWidget(
-                                self.layoutMain.count() - 2, wrapper.label)
-                    else:
+                                self.layoutMain.count() - 2, label)
+                    elif not is_cpp_wrapper:
                         desc = param.description()
                         if isinstance(param, QgsProcessingParameterExtent):
                             desc += self.tr(' (xmin, xmax, ymin, ymax)')
@@ -188,6 +207,7 @@ class ParametersPanel(BASE, WIDGET):
             wrapper.postInitialize(list(self.wrappers.values()))
 
     def setParameters(self, parameters):
+        context = createContext()
         for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
@@ -196,8 +216,10 @@ class ParametersPanel(BASE, WIDGET):
                 continue
 
             if not param.isDestination():
+                value = parameters[param.name()]
+
                 wrapper = self.wrappers[param.name()]
-                wrapper.setValue(parameters[param.name()])
+                wrapper.setWidgetValue(value, context)
             else:
                 dest_widget = self.outputWidgets[param.name()]
                 dest_widget.setValue(parameters[param.name()])

@@ -223,30 +223,30 @@ class ExpressionWidgetWrapper(WidgetWrapper):
         for lyr in layers:
             for n in range(lyr.bandCount()):
                 options[lyr.name()] = '{:s}@{:d}'.format(lyr.name(), n + 1)
-        self.widget.setList(options)
+        self.widget().setList(options)
 
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
             pass  # TODO
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.setText(value)
+            return self.widget().setText(value)
         else:
-            self.widget.setValue(value)
+            self.widget().setValue(value)
 
     def value(self):
         if self.dialogType in DIALOG_STANDARD:
-            return self.widget.value()
+            return self.widget().value()
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.text()
+            return self.widget().text()
         else:
-            return self.widget.value()
+            return self.widget().value()
 
 
 class LayersListWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType == DIALOG_BATCH:
-            widget = BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget = BatchInputSelectionPanel(self.parameterDefinition(), self.row, self.col, self.dialog)
             widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             return widget
         else:
@@ -272,7 +272,7 @@ class LayersListWidgetWrapper(WidgetWrapper):
             return self.widget.getText()
         else:
             options = self._getOptions()
-            values = [options[i] for i in self.widget.selectedoptions]
-            if len(values) == 0 and not self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+            values = [options[i] for i in self.widget().selectedoptions]
+            if len(values) == 0 and not self.parameterDefinition().flags() & QgsProcessingParameterDefinition.FlagOptional:
                 raise InvalidParameterValue()
             return values
