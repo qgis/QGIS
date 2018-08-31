@@ -65,7 +65,7 @@ void QgsIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
                   QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true ) );
   addParameter( new QgsProcessingParameterField(
                   QStringLiteral( "OVERLAY_FIELDS" ),
-                  QObject::tr( "Intersect fields to keep (leave empty to keep all fields)" ), QVariant(),
+                  QObject::tr( "Overlay fields to keep (leave empty to keep all fields)" ), QVariant(),
                   QStringLiteral( "OVERLAY" ), QgsProcessingParameterField::Any, true, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Intersection" ) ) );
