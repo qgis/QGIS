@@ -119,6 +119,14 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void showHelp();
 
   private:
+
+    enum ImportSource
+    {
+      File,
+      //Official,
+      Url,
+    };
+
     void downloadStyleXml( const QUrl &url );
     bool populateStyles( QgsStyle *style );
     void moveStyles( QModelIndexList *selection, QgsStyle *src, QgsStyle *dst );
