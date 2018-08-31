@@ -974,7 +974,6 @@ void QgsProjectProperties::apply()
       degreeFormat = QStringLiteral( "MU" );
       break;
     case DecimalDegrees:
-    default:
       degreeFormat = QStringLiteral( "D" );
       break;
   }

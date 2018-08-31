@@ -39,7 +39,6 @@ namespace QgsWmts
 
     QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
 
-    int DOTS_PER_INCH = 72;
     double METERS_PER_INCH = 0.02540005080010160020;
     QMap< QgsUnitTypes::DistanceUnit, double> INCHES_PER_UNIT = populateInchesPerUnit();
     int tileWidth = 256;

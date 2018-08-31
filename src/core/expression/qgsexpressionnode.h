@@ -66,7 +66,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     SIP_END
 #endif
 
-    Q_DECLARE_TR_FUNCTIONS( QgsExpressionNode );
+    Q_DECLARE_TR_FUNCTIONS( QgsExpressionNode )
 
   public:
 

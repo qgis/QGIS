@@ -37,7 +37,7 @@ class QgsRasterTransparency;
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {
 
-    Q_DECLARE_TR_FUNCTIONS( QgsRasterRenderer );
+    Q_DECLARE_TR_FUNCTIONS( QgsRasterRenderer )
 
   public:
 
