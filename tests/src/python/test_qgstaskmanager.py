@@ -12,6 +12,9 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
+from time import sleep
+
 import qgis  # NOQA
 
 from qgis.core import QgsTask, QgsApplication
@@ -20,7 +23,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.testing import start_app, unittest
-from time import sleep
 
 start_app()
 
