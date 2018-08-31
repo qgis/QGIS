@@ -152,7 +152,7 @@ QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int ro
       {
         int decimalPlaces = mRenderer->labelFormat().precision() + 2;
         if ( decimalPlaces < 0 ) decimalPlaces = 0;
-        return QString::number( range.lowerValue(), 'f', decimalPlaces ) + " - " + QString::number( range.upperValue(), 'f', decimalPlaces );
+        return QLocale().toString( range.lowerValue(), 'f', decimalPlaces ) + " - " + QLocale().toString( range.upperValue(), 'f', decimalPlaces );
       }
       case 2:
         return range.label();
@@ -1008,8 +1008,8 @@ void QgsGraduatedSymbolRendererWidget::changeRange( int rangeIdx )
   // Ensures users can see if legend is not completely honest!
   int decimalPlaces = mRenderer->labelFormat().precision() + 2;
   if ( decimalPlaces < 0 ) decimalPlaces = 0;
-  dialog.setLowerValue( QString::number( range.lowerValue(), 'f', decimalPlaces ) );
-  dialog.setUpperValue( QString::number( range.upperValue(), 'f', decimalPlaces ) );
+  dialog.setLowerValue( QLocale().toString( range.lowerValue(), 'f', decimalPlaces ) );
+  dialog.setUpperValue( QLocale().toString( range.upperValue(), 'f', decimalPlaces ) );
 
   if ( dialog.exec() == QDialog::Accepted )
   {

@@ -228,7 +228,7 @@ QString QgsRendererRangeLabelFormat::formatNumber( double value ) const
 {
   if ( mPrecision > 0 )
   {
-    QString valueStr = QString::number( value, 'f', mPrecision );
+    QString valueStr = QLocale().toString( value, 'f', mPrecision );
     if ( mTrimTrailingZeroes )
       valueStr = valueStr.remove( mReTrailingZeroes );
     if ( mReNegativeZero.exactMatch( valueStr ) )
@@ -237,7 +237,7 @@ QString QgsRendererRangeLabelFormat::formatNumber( double value ) const
   }
   else
   {
-    QString valueStr = QString::number( value * mNumberScale, 'f', 0 );
+    QString valueStr = QLocale().toString( value * mNumberScale, 'f', 0 );
     if ( valueStr == QLatin1String( "-0" ) )
       valueStr = '0';
     if ( valueStr != QLatin1String( "0" ) )
