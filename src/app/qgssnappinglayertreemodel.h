@@ -76,6 +76,9 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
 
     QgsVectorLayer *vectorLayer( const QModelIndex &idx ) const;
 
+  public slots:
+    void setFilterText( const QString &filterText = QString() );
+
   protected:
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
@@ -86,6 +89,7 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
     bool nodeShown( QgsLayerTreeNode *node ) const;
 
     QgsProject *mProject = nullptr;
+    QString mFilterText;
     QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> mIndividualLayerSettings;
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
 
