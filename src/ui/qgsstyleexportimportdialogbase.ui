@@ -27,7 +27,7 @@
       <widget class="QComboBox" name="importTypeCombo"/>
      </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="locationLabel">
+      <widget class="QLabel" name="mLocationLabel">
        <property name="text">
         <string>Location</string>
        </property>

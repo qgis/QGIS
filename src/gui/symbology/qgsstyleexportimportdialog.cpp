@@ -71,10 +71,11 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   {
     setWindowTitle( tr( "Import Item(s)" ) );
     // populate the import types
-    importTypeCombo->addItem( tr( "file specified below" ), QVariant( "file" ) );
-    // importTypeCombo->addItem( "official QGIS repo online", QVariant( "official" ) );
-    importTypeCombo->addItem( tr( "URL specified below" ), QVariant( "url" ) );
+    importTypeCombo->addItem( tr( "File" ), ImportSource::File );
+    // importTypeCombo->addItem( "official QGIS repo online", ImportSource::Official );
+    importTypeCombo->addItem( tr( "URL" ), ImportSource::Url );
     connect( importTypeCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsStyleExportImportDialog::importTypeChanged );
+    importTypeChanged( 0 );
 
     mSymbolTags->setText( QStringLiteral( "imported" ) );
 
@@ -91,7 +92,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
     btnBrowse->setHidden( true );
     fromLabel->setHidden( true );
     importTypeCombo->setHidden( true );
-    locationLabel->setHidden( true );
+    mLocationLabel->setHidden( true );
     locationLineEdit->setHidden( true );
 
     mFavorite->setHidden( true );
@@ -479,53 +480,73 @@ void QgsStyleExportImportDialog::selectByGroup()
 
 void QgsStyleExportImportDialog::importTypeChanged( int index )
 {
-  QString type = importTypeCombo->itemData( index ).toString();
+  ImportSource source = static_cast< ImportSource >( importTypeCombo->itemData( index ).toInt() );
 
   locationLineEdit->clear();
 
-  if ( type == QLatin1String( "file" ) )
+  switch ( source )
   {
-    locationLineEdit->setEnabled( true );
-    btnBrowse->setText( QStringLiteral( "Browse" ) );
-  }
-  else if ( type == QLatin1String( "official" ) )
-  {
-    btnBrowse->setText( QStringLiteral( "Fetch Items" ) );
-    locationLineEdit->setEnabled( false );
-  }
-  else
-  {
-    btnBrowse->setText( QStringLiteral( "Fetch Items" ) );
-    locationLineEdit->setEnabled( true );
+    case ImportSource::File:
+    {
+      mLocationLabel->setText( tr( "File" ) );
+      locationLineEdit->setEnabled( true );
+      btnBrowse->setText( QStringLiteral( "Browse" ) );
+      break;
+    }
+#if 0
+    case ImportSource::Official:
+    {
+      btnBrowse->setText( QStringLiteral( "Fetch Items" ) );
+      locationLineEdit->setEnabled( false );
+      break;
+    }
+#endif
+    case ImportSource::Url:
+    {
+      mLocationLabel->setText( tr( "URL" ) );
+      btnBrowse->setText( QStringLiteral( "Fetch Items" ) );
+      locationLineEdit->setEnabled( true );
+      break;
+    }
   }
 }
 
 void QgsStyleExportImportDialog::browse()
 {
-  QString type = importTypeCombo->currentData().toString();
+  ImportSource source = static_cast< ImportSource >( importTypeCombo->currentData().toInt() );
 
-  if ( type == QLatin1String( "file" ) )
+  switch ( source )
   {
-    mFileName = QFileDialog::getOpenFileName( this, tr( "Load Styles" ), QDir::homePath(),
-                tr( "XML files (*.xml *.XML)" ) );
-    if ( mFileName.isEmpty() )
+    case ImportSource::File:
     {
-      return;
+      mFileName = QFileDialog::getOpenFileName( this, tr( "Load Styles" ), QDir::homePath(),
+                  tr( "XML files (*.xml *.XML)" ) );
+      if ( mFileName.isEmpty() )
+      {
+        return;
+      }
+      QFileInfo pathInfo( mFileName );
+      QString tag = pathInfo.fileName().remove( QStringLiteral( ".xml" ) );
+      mSymbolTags->setText( tag );
+      locationLineEdit->setText( mFileName );
+      populateStyles( mTempStyle );
+      break;
     }
-    QFileInfo pathInfo( mFileName );
-    QString tag = pathInfo.fileName().remove( QStringLiteral( ".xml" ) );
-    mSymbolTags->setText( tag );
-    locationLineEdit->setText( mFileName );
-    populateStyles( mTempStyle );
-  }
-  else if ( type == QLatin1String( "official" ) )
-  {
-    // TODO set URL
-    // downloadStyleXML( QUrl( "http://...." ) );
-  }
-  else
-  {
-    downloadStyleXml( QUrl( locationLineEdit->text() ) );
+
+#if 0
+    case ImportSource::Official:
+    {
+      // TODO set URL
+      // downloadStyleXML( QUrl( "http://...." ) );
+      break;
+    }
+#endif
+
+    case ImportSource::Url:
+    {
+      downloadStyleXml( QUrl( locationLineEdit->text() ) );
+      break;
+    }
   }
 }
 
