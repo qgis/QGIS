@@ -19,8 +19,9 @@
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingmodelerwidget.h"
+#include "qgspropertyoverridebutton.h"
 #include <QLabel>
-
+#include <QHBoxLayout>
 
 QgsAbstractProcessingParameterWidgetWrapper::QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QObject *parent )
   : QObject( parent )
@@ -40,9 +41,25 @@ QWidget *QgsAbstractProcessingParameterWidgetWrapper::createWrappedWidget( const
     return mWidget;
 
   mWidget = createWidget();
+  QWidget *wrappedWidget = mWidget;
+  if ( mType != QgsProcessingGui::Batch && mParameterDefinition->isDynamic() )
+  {
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    hLayout->setMargin( 0 );
+    hLayout->setContentsMargins( 0, 0, 0, 0 );
+    hLayout->addWidget( mWidget, 1 );
+    mPropertyButton = new QgsPropertyOverrideButton();
+    hLayout->addWidget( mPropertyButton );
+    mPropertyButton->init( 0, QgsProperty(), mParameterDefinition->dynamicPropertyDefinition() );
+    mPropertyButton->registerEnabledWidget( mWidget, false );
+
+    wrappedWidget = new QWidget();
+    wrappedWidget->setLayout( hLayout );
+  }
+
   setWidgetValue( mParameterDefinition->defaultValue(), context );
 
-  return mWidget;
+  return wrappedWidget;
 }
 
 QLabel *QgsAbstractProcessingParameterWidgetWrapper::createWrappedLabel()
@@ -67,6 +84,26 @@ QLabel *QgsAbstractProcessingParameterWidgetWrapper::wrappedLabel()
 const QgsProcessingParameterDefinition *QgsAbstractProcessingParameterWidgetWrapper::parameterDefinition() const
 {
   return mParameterDefinition;
+}
+
+void QgsAbstractProcessingParameterWidgetWrapper::setParameterValue( const QVariant &value, const QgsProcessingContext &context )
+{
+  if ( mPropertyButton && value.canConvert< QgsProperty >() )
+  {
+    mPropertyButton->setToProperty( value.value< QgsProperty >() );
+  }
+  else
+  {
+    setWidgetValue( value, context );
+  }
+}
+
+QVariant QgsAbstractProcessingParameterWidgetWrapper::parameterValue() const
+{
+  if ( mPropertyButton && mPropertyButton->isActive() )
+    return mPropertyButton->toProperty();
+  else
+    return widgetValue();
 }
 
 QLabel *QgsAbstractProcessingParameterWidgetWrapper::createLabel()

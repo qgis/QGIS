@@ -79,7 +79,7 @@ class TestWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper
     {
     }
 
-    QVariant value() const override
+    QVariant widgetValue() const override
     {
       return QVariant();
     }
@@ -286,12 +286,12 @@ void TestProcessingGui::testWrapperGeneral()
   param = TestParamType( QStringLiteral( "boolean" ), QStringLiteral( "bool" ), true );
   QgsProcessingBooleanWidgetWrapper trueDefault( &param );
   w = trueDefault.createWrappedWidget( context );
-  QVERIFY( trueDefault.value().toBool() );
+  QVERIFY( trueDefault.widgetValue().toBool() );
   delete w;
   param = TestParamType( QStringLiteral( "boolean" ), QStringLiteral( "bool" ), false );
   QgsProcessingBooleanWidgetWrapper falseDefault( &param );
   w = falseDefault.createWrappedWidget( context );
-  QVERIFY( !falseDefault.value().toBool() );
+  QVERIFY( !falseDefault.widgetValue().toBool() );
   delete w;
 }
 
@@ -406,10 +406,10 @@ void TestProcessingGui::testBooleanWrapper()
   QgsProcessingContext context;
   QWidget *w = wrapper.createWrappedWidget( context );
   wrapper.setWidgetValue( true, context );
-  QVERIFY( wrapper.value().toBool() );
+  QVERIFY( wrapper.widgetValue().toBool() );
   QVERIFY( static_cast< QCheckBox * >( wrapper.wrappedWidget() )->isChecked() );
   wrapper.setWidgetValue( false, context );
-  QVERIFY( !wrapper.value().toBool() );
+  QVERIFY( !wrapper.widgetValue().toBool() );
   QVERIFY( !static_cast< QCheckBox * >( wrapper.wrappedWidget() )->isChecked() );
 
   // should be no label in standard mode
@@ -422,10 +422,10 @@ void TestProcessingGui::testBooleanWrapper()
 
   w = wrapperB.createWrappedWidget( context );
   wrapperB.setWidgetValue( true, context );
-  QVERIFY( wrapperB.value().toBool() );
+  QVERIFY( wrapperB.widgetValue().toBool() );
   QVERIFY( static_cast< QComboBox * >( wrapperB.wrappedWidget() )->currentData().toBool() );
   wrapperB.setWidgetValue( false, context );
-  QVERIFY( !wrapperB.value().toBool() );
+  QVERIFY( !wrapperB.widgetValue().toBool() );
   QVERIFY( !static_cast< QComboBox * >( wrapperB.wrappedWidget() )->currentData().toBool() );
 
   // should be no label in batch mode
@@ -437,10 +437,10 @@ void TestProcessingGui::testBooleanWrapper()
 
   w = wrapperM.createWrappedWidget( context );
   wrapperM.setWidgetValue( true, context );
-  QVERIFY( wrapperM.value().toBool() );
+  QVERIFY( wrapperM.widgetValue().toBool() );
   QVERIFY( static_cast< QComboBox * >( wrapperM.wrappedWidget() )->currentData().toBool() );
   wrapperM.setWidgetValue( false, context );
-  QVERIFY( !wrapperM.value().toBool() );
+  QVERIFY( !wrapperM.widgetValue().toBool() );
   QVERIFY( !static_cast< QComboBox * >( wrapperM.wrappedWidget() )->currentData().toBool() );
 
   // should be a label in modeler mode

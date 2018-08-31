@@ -30,6 +30,7 @@ class QgsProcessingContext;
 class QgsProcessingModelerParameterWidget;
 class QgsProcessingModelAlgorithm;
 class QLabel;
+class QgsPropertyOverrideButton;
 
 /**
  * \class QgsAbstractProcessingParameterWidgetWrapper
@@ -111,24 +112,22 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
      */
     const QgsProcessingParameterDefinition *parameterDefinition() const;
 
-    // TODO QGIS 4.0 - rename to setValue, avoid conflict with Python WidgetWrapper method
-
     /**
      * Sets the current \a value for the parameter.
      *
      * The \a context argument is used to specify the wider Processing context which the
      * current value is associated with.
      *
-     * \see value()
+     * \see parameterValue()
      */
-    virtual void setWidgetValue( const QVariant &value, const QgsProcessingContext &context ) = 0;
+    void setParameterValue( const QVariant &value, const QgsProcessingContext &context );
 
     /**
      * Returns the current value of the parameter.
      *
-     * \see setWidgetValue()
+     * \see setParameterValue()
      */
-    virtual QVariant value() const = 0;
+    QVariant parameterValue() const;
 
     /**
      * Called after all wrappers have been created within a particular dialog or context,
@@ -159,12 +158,30 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
      */
     virtual QLabel *createLabel() SIP_FACTORY;
 
+    /**
+     * Sets the current \a value for the parameter to show in the widget.
+     *
+     * The \a context argument is used to specify the wider Processing context which the
+     * current value is associated with.
+     *
+     * \see widgetValue()
+     */
+    virtual void setWidgetValue( const QVariant &value, const QgsProcessingContext &context ) = 0;
+
+    /**
+     * Returns the current value of the parameter.
+     *
+     * \see setWidgetValue()
+     */
+    virtual QVariant widgetValue() const = 0;
+
   private:
 
     QgsProcessingGui::WidgetType mType = QgsProcessingGui::Standard;
     const QgsProcessingParameterDefinition *mParameterDefinition = nullptr;
 
     QPointer< QWidget > mWidget;
+    QPointer< QgsPropertyOverrideButton > mPropertyButton;
     QPointer< QLabel > mLabel;
 
 };

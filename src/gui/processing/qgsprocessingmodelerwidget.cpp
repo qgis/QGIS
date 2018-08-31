@@ -145,7 +145,7 @@ QgsProcessingModelChildParameterSource QgsProcessingModelerParameterWidget::valu
   switch ( mStackedWidget->currentIndex() )
   {
     case 0:
-      return QgsProcessingModelChildParameterSource::fromStaticValue( mStaticWidgetWrapper->value() );
+      return QgsProcessingModelChildParameterSource::fromStaticValue( mStaticWidgetWrapper->parameterValue() );
 
     case 1:
       return QgsProcessingModelChildParameterSource::fromExpression( mExpressionWidget->expression() );
@@ -238,7 +238,7 @@ void QgsProcessingModelerParameterWidget::setSourceType( QgsProcessingModelChild
 
 void QgsProcessingModelerParameterWidget::updateUi()
 {
-  mStaticWidgetWrapper->setWidgetValue( mStaticValue, mContext );
+  mStaticWidgetWrapper->setParameterValue( mStaticValue, mContext );
 
   mExpressionWidget->setExpression( mExpression );
 

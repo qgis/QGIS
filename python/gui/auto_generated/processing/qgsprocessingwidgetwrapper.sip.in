@@ -92,22 +92,21 @@ Returns the current wrapped label, if any.
 Returns the parameter definition associated with this wrapper.
 %End
 
-
-    virtual void setWidgetValue( const QVariant &value, const QgsProcessingContext &context ) = 0;
+    void setParameterValue( const QVariant &value, const QgsProcessingContext &context );
 %Docstring
 Sets the current ``value`` for the parameter.
 
 The ``context`` argument is used to specify the wider Processing context which the
 current value is associated with.
 
-.. seealso:: :py:func:`value`
+.. seealso:: :py:func:`parameterValue`
 %End
 
-    virtual QVariant value() const = 0;
+    QVariant parameterValue() const;
 %Docstring
 Returns the current value of the parameter.
 
-.. seealso:: :py:func:`setWidgetValue`
+.. seealso:: :py:func:`setParameterValue`
 %End
 
     virtual void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers );
@@ -137,6 +136,23 @@ label should be shown for the parameter's widget (i.e. the label is embedded ins
 widget itself).
 
 .. seealso:: :py:func:`createWidget`
+%End
+
+    virtual void setWidgetValue( const QVariant &value, const QgsProcessingContext &context ) = 0;
+%Docstring
+Sets the current ``value`` for the parameter to show in the widget.
+
+The ``context`` argument is used to specify the wider Processing context which the
+current value is associated with.
+
+.. seealso:: :py:func:`widgetValue`
+%End
+
+    virtual QVariant widgetValue() const = 0;
+%Docstring
+Returns the current value of the parameter.
+
+.. seealso:: :py:func:`setWidgetValue`
 %End
 
 };
