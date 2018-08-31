@@ -326,7 +326,7 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
     QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( it.value() );
-    if ( !layer )
+    if ( !layer || !layer->searchable() )
       continue;
 
     QgsExpression expression( layer->displayExpression() );
