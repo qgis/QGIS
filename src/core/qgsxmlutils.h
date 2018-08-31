@@ -66,7 +66,7 @@ class CORE_EXPORT QgsXmlUtils
      * - QVariant::Int
      * - QVariant::Double
      * - QVariant::String
-     *
+     * - QgsProperty (since QGIS 3.4)
      */
     static QDomElement writeVariant( const QVariant &value, QDomDocument &doc );
 
