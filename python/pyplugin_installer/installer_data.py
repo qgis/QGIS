@@ -28,22 +28,14 @@ from qgis.PyQt.QtCore import (pyqtSignal, QObject, QCoreApplication, QFile,
                               QLocale, QByteArray)
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
-from qgis.core import QgsSettings
+from qgis.core import Qgis, QgsSettings
 import sys
 import os
 import codecs
 import re
-try:
-    import configparser
-except ImportError:
-    import configparser as configparser
-try:
-    from importlib import reload
-except ImportError:
-    from imp import reload
+import configparser
 import qgis.utils
 from qgis.core import QgsNetworkAccessManager, QgsApplication
-from qgis.gui import QgsMessageBar
 from qgis.utils import iface, plugin_paths
 from .version_compare import pyQgisVersion, compareVersions, normalizeVersion, isCompatible
 
@@ -565,7 +557,7 @@ class Plugins(QObject):
         """ get the metadata of an installed plugin """
         def metadataParser(fct):
             """ plugin metadata parser reimplemented from qgis.utils
-                for better control on wchich module is examined
+                for better control of which module is examined
                 in case there is an installed plugin masking a core one """
             global errorDetails
             cp = configparser.ConfigParser()
@@ -625,7 +617,7 @@ class Plugins(QObject):
         else:
             error = "broken"
             e = errorDetails
-            errorDetails = QCoreApplication.translate("QgsPluginInstaller", u"Error reading metadata")
+            errorDetails = QCoreApplication.translate("QgsPluginInstaller", "Error reading metadata")
             if e:
                 errorDetails += ": " + e
 
