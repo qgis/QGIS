@@ -5840,7 +5840,8 @@ void TestQgsProcessing::modelerAlgorithm()
   alg5c1.addParameterSources( "zm", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromStaticValue( 6 )
                               << QgsProcessingModelChildParameterSource::fromModelParameter( "p2" )
                               << QgsProcessingModelChildParameterSource::fromChildOutput( "cx2", "out4" )
-                              << QgsProcessingModelChildParameterSource::fromExpression( "1+2" ) );
+                              << QgsProcessingModelChildParameterSource::fromExpression( "1+2" )
+                              << QgsProcessingModelChildParameterSource::fromStaticValue( QgsProperty::fromExpression( "1+8" ) ) );
   alg5c1.setActive( true );
   alg5c1.setOutputsCollapsed( true );
   alg5c1.setParametersCollapsed( true );
@@ -5896,7 +5897,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6c1.parameterSources().value( "z" ).at( 0 ).staticValue().toInt(), 5 );
   QCOMPARE( alg6c1.parameterSources().value( "a" ).at( 0 ).source(), QgsProcessingModelChildParameterSource::Expression );
   QCOMPARE( alg6c1.parameterSources().value( "a" ).at( 0 ).expression(), QStringLiteral( "2*2" ) );
-  QCOMPARE( alg6c1.parameterSources().value( "zm" ).count(), 4 );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).count(), 5 );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 0 ).source(), QgsProcessingModelChildParameterSource::StaticValue );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 0 ).staticValue().toInt(), 6 );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 1 ).source(), QgsProcessingModelChildParameterSource::ModelParameter );
@@ -5906,6 +5907,9 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 2 ).outputName(), QStringLiteral( "out4" ) );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 3 ).source(), QgsProcessingModelChildParameterSource::Expression );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 3 ).expression(), QStringLiteral( "1+2" ) );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 4 ).source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QVERIFY( alg6c1.parameterSources().value( "zm" ).at( 4 ).staticValue().canConvert< QgsProperty >() );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 4 ).staticValue().value< QgsProperty >().expressionString(), QStringLiteral( "1+8" ) );
 
   QCOMPARE( alg6c1.modelOutputs().count(), 1 );
   QCOMPARE( alg6c1.modelOutputs().value( QStringLiteral( "a" ) ).description(), QStringLiteral( "my output" ) );
