@@ -44,11 +44,11 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
 
   // additional buttons
   QPushButton *pb = nullptr;
-  pb = new QPushButton( tr( "Select all" ) );
+  pb = new QPushButton( tr( "Select All" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::selectAll );
 
-  pb = new QPushButton( tr( "Clear selection" ) );
+  pb = new QPushButton( tr( "Clear Selection" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::clearSelection );
 
@@ -97,7 +97,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
     mFavorite->setHidden( true );
     mIgnoreXMLTags->setHidden( true );
 
-    pb = new QPushButton( tr( "Select by group" ) );
+    pb = new QPushButton( tr( "Select by Group" ) );
     buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
     connect( pb, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::selectByGroup );
     tagLabel->setHidden( true );
