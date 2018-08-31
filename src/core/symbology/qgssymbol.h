@@ -394,9 +394,16 @@ class CORE_EXPORT QgsSymbol
      */
     bool hasDataDefinedProperties() const;
 
-    //! \note the layer will be NULL after stopRender
-    void setLayer( const QgsVectorLayer *layer ) { mLayer = layer; }
-    const QgsVectorLayer *layer() const { return mLayer; }
+    /**
+     * \note the layer will be NULL after stopRender
+     * \deprecated Will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED void setLayer( const QgsVectorLayer *layer ) SIP_DEPRECATED;
+
+    /**
+     * \deprecated Will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED const QgsVectorLayer *layer() const SIP_DEPRECATED;
 
     /**
      * Render a feature. Before calling this the startRender() method should be called to initialize
@@ -483,7 +490,7 @@ class CORE_EXPORT QgsSymbol
     RenderHints mRenderHints = nullptr;
     bool mClipFeaturesToExtent = true;
 
-    const QgsVectorLayer *mLayer = nullptr; //current vectorlayer
+    Q_DECL_DEPRECATED const QgsVectorLayer *mLayer = nullptr; //current vectorlayer
 
   private:
 #ifdef SIP_RUN
