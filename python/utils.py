@@ -30,7 +30,7 @@ QGIS utilities module
 
 from qgis.PyQt.QtCore import QCoreApplication, QLocale, QThread
 from qgis.PyQt.QtWidgets import QPushButton, QApplication
-from qgis.core import Qgis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput, QgsWkbTypes
+from qgis.core import Qgis, QgsMessageLog, qgsfunction, QgsMessageOutput
 from qgis.gui import QgsMessageBar
 
 import os
@@ -38,10 +38,7 @@ import sys
 import traceback
 import glob
 import os.path
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
+import configparser
 import warnings
 import codecs
 import time
