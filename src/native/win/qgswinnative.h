@@ -35,6 +35,7 @@ class NATIVE_EXPORT QgsWinNative : public QgsNative
                                const QString &applicationName,
                                const QString &organizationName,
                                const QString &version ) override;
+    void cleanup() override;
     void openFileExplorerAndSelectFile( const QString &path ) override;
     void showUndefinedApplicationProgress() override;
     void setApplicationProgress( double progress ) override;

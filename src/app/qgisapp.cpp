@@ -1532,6 +1532,8 @@ QgisApp::~QgisApp()
     delete canvas;
   }
 
+  QgsGui::instance()->nativePlatformInterface()->cleanup();
+
   // This function *MUST* be the last one called, as it destroys in
   // particular GDAL. As above objects can hold GDAL/OGR objects, it is not
   // safe destroying them afterwards

@@ -47,6 +47,12 @@ class NATIVE_EXPORT QgsNative
     virtual ~QgsNative() = default;
 
     /**
+     * Called on QGIS exit, allowing the native interface to gracefully
+     * cleanup and exit.
+     */
+    virtual void cleanup();
+
+    /**
      * Returns the native interface's capabilities.
      */
     virtual Capabilities capabilities() const;

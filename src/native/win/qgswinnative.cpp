@@ -58,6 +58,11 @@ void QgsWinNative::initializeMainWindow( QWindow *window,
   }
 }
 
+void QgsWinNative::cleanup()
+{
+  WinToastLib::WinToast::instance()->clear();
+}
+
 void QgsWinNative::openFileExplorerAndSelectFile( const QString &path )
 {
   const QString nativePath = QDir::toNativeSeparators( path );

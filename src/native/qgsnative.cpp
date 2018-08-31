@@ -21,6 +21,9 @@
 #include <QUrl>
 #include <QFileInfo>
 
+void QgsNative::cleanup()
+{}
+
 QgsNative::Capabilities QgsNative::capabilities() const
 {
   return nullptr;
