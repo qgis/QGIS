@@ -59,6 +59,7 @@ Supported types are
 - QVariant.Int
 - QVariant.Double
 - QVariant.String
+- :py:class:`QgsProperty` (since QGIS 3.4)
 %End
 
     static QVariant readVariant( const QDomElement &element );

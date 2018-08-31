@@ -14,7 +14,8 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA switch sip api
 
-from qgis.core import QgsXmlUtils
+from qgis.core import (QgsXmlUtils,
+                       QgsProperty)
 
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -101,6 +102,33 @@ class TestQgsXmlUtils(unittest.TestCase):
         prop2 = QgsXmlUtils.readVariant(elem)
 
         self.assertEqual(my_properties, prop2)
+
+    def test_property(self):
+        """
+        Test that QgsProperty values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        prop = QgsProperty.fromValue(1001)
+        elem = QgsXmlUtils.writeVariant(prop, doc)
+
+        prop2 = QgsXmlUtils.readVariant(elem)
+
+        self.assertEqual(prop, prop2)
+
+        prop = QgsProperty.fromExpression('1+2=5')
+        elem = QgsXmlUtils.writeVariant(prop, doc)
+
+        prop2 = QgsXmlUtils.readVariant(elem)
+
+        self.assertEqual(prop, prop2)
+
+        prop = QgsProperty.fromField('oid')
+        elem = QgsXmlUtils.writeVariant(prop, doc)
+
+        prop2 = QgsXmlUtils.readVariant(elem)
+
+        self.assertEqual(prop, prop2)
 
 
 if __name__ == '__main__':

@@ -18,7 +18,7 @@
 
 #include "qgslogger.h"
 #include "qgsrectangle.h"
-
+#include "qgsproperty.h"
 
 QgsUnitTypes::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement &element )
 {
@@ -153,6 +153,18 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
       element.setAttribute( QStringLiteral( "value" ), value.toString() );
       break;
 
+    case QVariant::UserType:
+    {
+      if ( value.canConvert< QgsProperty >() )
+      {
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProperty" ) );
+        const QDomElement propertyElem = QgsXmlUtils::writeVariant( value.value< QgsProperty >().toVariant(), doc );
+        element.appendChild( propertyElem );
+        break;
+      }
+      FALLTHROUGH
+    }
+
     default:
       element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "Unknown" ) );
       element.setAttribute( QStringLiteral( "value" ), value.toString() );
@@ -216,6 +228,18 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
       list.append( readVariant( elem ).toString() );
     }
     return list;
+  }
+  else if ( type == QLatin1String( "QgsProperty" ) )
+  {
+    const QDomNodeList values = element.childNodes();
+    if ( values.isEmpty() )
+      return QVariant();
+
+    QgsProperty p;
+    if ( p.loadVariant( QgsXmlUtils::readVariant( values.at( 0 ).toElement() ) ) )
+      return p;
+
+    return QVariant();
   }
   else
   {
