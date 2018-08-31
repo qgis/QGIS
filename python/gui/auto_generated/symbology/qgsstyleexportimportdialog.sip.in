@@ -87,7 +87,6 @@ deselectSmartgroup deselects all symbols from a smart group
 %End
 
     void importTypeChanged( int );
-    void browse();
 
 };
 
