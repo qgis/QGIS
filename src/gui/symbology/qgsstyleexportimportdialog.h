@@ -108,7 +108,6 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void deselectSmartgroup( const QString &groupName );
 
     void importTypeChanged( int );
-    void browse();
 
   private slots:
     void httpFinished();
@@ -117,6 +116,9 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void downloadCanceled();
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     void showHelp();
+
+    void fetch();
+    void importFileChanged( const QString &path );
 
   private:
 
