@@ -46,7 +46,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="mMapScaleButton">
+    <widget class="QToolButton" name="mMapScaleButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Maximum" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
@@ -62,6 +62,9 @@
      <property name="icon">
       <iconset resource="../../images/images.qrc">
        <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
