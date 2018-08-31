@@ -208,11 +208,11 @@ Draws an icon of the symbol that occupies an area given by ``size`` using the sp
 Optionally a custom render context may be given in order to ensure that the preview icon exactly
 matches the settings from that context.
 
-.. versionadded:: 2.6
-
 .. seealso:: :py:func:`exportImage`
 
 .. seealso:: :py:func:`asImage`
+
+.. versionadded:: 2.6
 %End
 
     void exportImage( const QString &path, const QString &format, QSize size );
