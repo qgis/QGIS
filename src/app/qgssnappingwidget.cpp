@@ -94,11 +94,12 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   QgsFilterLineEdit *filterLineEdit = new QgsFilterLineEdit();
   filterLineEdit->setShowClearButton( true );
   filterLineEdit->setShowSearchIcon( true );
+  filterLineEdit->setPlaceholderText( tr( "Filter layers…" ) );
   connect( filterLineEdit, &QgsFilterLineEdit::textChanged, model, &QgsSnappingLayerTreeModel::setFilterText );
   filterLayout->addStretch();
   filterLayout->addWidget( filterLineEdit );
-  advancedLayout->addLayout( filterLayout );
   advancedLayout->addWidget( mLayerTreeView );
+  advancedLayout->addLayout( filterLayout );
   mAdvancedConfigWidget->setLayout( advancedLayout );
 
   // enable button
