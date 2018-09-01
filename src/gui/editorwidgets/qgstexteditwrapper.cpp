@@ -221,6 +221,15 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
     v = field().displayString( val );
   }
 
+  // For numbers, remove the group separator that might cause validation errors
+  // when the user is editing the field value.
+  // We are checking for editable layer because in the form field context we do not
+  // want to strip the separator unless the layer is editable
+  if ( layer() && layer()->isEditable() && ! QLocale().groupSeparator().isNull() && ( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong ) )
+  {
+    v = v.remove( QLocale().groupSeparator() );
+  }
+
   if ( mTextEdit )
   {
     if ( val != value() )
