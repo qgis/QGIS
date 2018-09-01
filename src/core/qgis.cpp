@@ -108,6 +108,13 @@ int qgsPermissiveToInt( QString string, bool &ok )
   return QLocale().toInt( string, &ok );
 }
 
+qlonglong qgsPermissiveToLongLong( QString string, bool &ok )
+{
+  //remove any thousands separators
+  string.remove( QLocale().groupSeparator() );
+  return QLocale().toLongLong( string, &ok );
+}
+
 void *qgsMalloc( size_t size )
 {
   if ( size == 0 || long( size ) < 0 )

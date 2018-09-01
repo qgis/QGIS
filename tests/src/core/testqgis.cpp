@@ -38,6 +38,7 @@ class TestQgis : public QObject
 
     void permissiveToDouble();
     void permissiveToInt();
+    void permissiveToLongLong();
     void doubleToString();
     void signalBlocker();
     void qVariantCompare_data();
@@ -125,6 +126,31 @@ void TestQgis::permissiveToInt()
   result = qgsPermissiveToInt( QStringLiteral( "10%0100" ).arg( QLocale().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
+}
+
+void TestQgis::permissiveToLongLong()
+{
+  //good inputs
+  bool ok = false;
+  qlonglong result = qgsPermissiveToLongLong( QStringLiteral( "1000" ), ok );
+  QVERIFY( ok );
+  QCOMPARE( result, 1000 );
+  ok = false;
+  result = qgsPermissiveToLongLong( QStringLiteral( "1%01000" ).arg( QLocale().groupSeparator() ), ok );
+  QVERIFY( ok );
+  QCOMPARE( result, 1000 );
+
+  //bad input
+  ok = false;
+  ( void ) qgsPermissiveToLongLong( QStringLiteral( "a" ), ok );
+  QVERIFY( !ok );
+
+  //messy input (invalid thousand separator position), should still be converted
+  ok = false;
+  result = qgsPermissiveToLongLong( QStringLiteral( "10%0100" ).arg( QLocale().groupSeparator() ), ok );
+  QVERIFY( ok );
+  QCOMPARE( result, 1000 );
+
 }
 
 void TestQgis::doubleToString()
