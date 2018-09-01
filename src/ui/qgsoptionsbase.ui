@@ -332,7 +332,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>16</number>
+          <number>13</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -4867,8 +4867,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>616</width>
-                <height>737</height>
+                <width>857</width>
+                <height>828</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
