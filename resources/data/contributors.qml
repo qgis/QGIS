@@ -115,14 +115,14 @@
       <effect type="dropShadow">
         <prop v="13" k="blend_mode"/>
         <prop v="3" k="blur_level"/>
-        <prop v="124,124,124,255" k="color"/>
+        <prop v="0,0,0,255" k="color"/>
         <prop v="2" k="draw_mode"/>
         <prop v="1" k="enabled"/>
         <prop v="135" k="offset_angle"/>
         <prop v="2" k="offset_distance"/>
         <prop v="MM" k="offset_unit"/>
         <prop v="3x:0,0,0,0,0,0" k="offset_unit_scale"/>
-        <prop v="1" k="opacity"/>
+        <prop v="0.5" k="opacity"/>
       </effect>
       <effect type="outerGlow">
         <prop v="0" k="blend_mode"/>
