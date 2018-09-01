@@ -154,8 +154,7 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
       break;
 
     default:
-      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "Unknown" ) );
-      element.setAttribute( QStringLiteral( "value" ), value.toString() );
+      Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", "unsupported variant type" );
       break;
   }
 
