@@ -363,9 +363,19 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mLayerCapabilitiesTree->setSelectionBehavior( QAbstractItemView::SelectItems );
   mLayerCapabilitiesTree->setSelectionMode( QAbstractItemView::MultiSelection );
   mLayerCapabilitiesTree->expandAll();
+  connect( mLayerCapabilitiesTree->selectionModel(), &QItemSelectionModel::selectionChanged, this,
+           [ = ]( const QItemSelection & selected, const QItemSelection & deselected )
+  {
+    Q_UNUSED( selected );
+    Q_UNUSED( deselected );
+    bool hasSelection = !mLayerCapabilitiesTree->selectionModel()->selectedIndexes().isEmpty();
+    mLayerCapabilitiesCheckButton->setEnabled( hasSelection );
+    mLayerCapabilitiesUncheckButton->setEnabled( hasSelection );
+  } );
 
   mLayerCapabilitiesTreeFilterLineEdit->setShowClearButton( true );
   mLayerCapabilitiesTreeFilterLineEdit->setShowSearchIcon( true );
+  mLayerCapabilitiesTreeFilterLineEdit->setPlaceholderText( tr( "Filter layers…" ) );
   connect( mLayerCapabilitiesTreeFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [ = ]( const QString & filterText )
   {
     mLayerCapabilitiesModel->setFilterText( filterText );

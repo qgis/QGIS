@@ -277,7 +277,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>563</width>
+                <width>676</width>
                 <height>833</height>
                </rect>
               </property>
@@ -875,8 +875,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>547</width>
-                <height>152</height>
+                <width>676</width>
+                <height>764</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -950,8 +950,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>271</width>
-                <height>597</height>
+                <width>676</width>
+                <height>764</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1411,8 +1411,31 @@
                   <string>Project Layers</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_20">
-                  <item row="3" column="3">
-                   <widget class="QgsFilterLineEdit" name="mLayerCapabilitiesTreeFilterLineEdit"/>
+                  <property name="verticalSpacing">
+                   <number>0</number>
+                  </property>
+                  <item row="1" column="0" colspan="4">
+                   <widget class="QTreeView" name="mLayerCapabilitiesTree"/>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QPushButton" name="mLayerCapabilitiesCheckButton">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Check Selected</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QPushButton" name="mLayerCapabilitiesUncheckButton">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Uncheck Selected</string>
+                    </property>
+                   </widget>
                   </item>
                   <item row="3" column="2">
                    <spacer name="horizontalSpacer_5">
@@ -1427,29 +1450,18 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="3" column="0">
-                   <widget class="QPushButton" name="mLayerCapabilitiesUncheckButton">
-                    <property name="text">
-                     <string>uncheck selection</string>
-                    </property>
-                   </widget>
+                  <item row="3" column="3">
+                   <widget class="QgsFilterLineEdit" name="mLayerCapabilitiesTreeFilterLineEdit"/>
                   </item>
-                  <item row="3" column="1">
-                   <widget class="QPushButton" name="mLayerCapabilitiesCheckButton">
-                    <property name="text">
-                     <string>check selection</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="3">
+                  <item row="4" column="3">
                    <widget class="QCheckBox" name="mShowSpatialLayersCheckBox">
+                    <property name="layoutDirection">
+                     <enum>Qt::LeftToRight</enum>
+                    </property>
                     <property name="text">
-                     <string>show spatial layers only</string>
+                     <string>Show spatial layers only</string>
                     </property>
                    </widget>
-                  </item>
-                  <item row="1" column="0" colspan="4">
-                   <widget class="QTreeView" name="mLayerCapabilitiesTree"/>
                   </item>
                  </layout>
                 </widget>
@@ -1579,8 +1591,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>157</width>
-                <height>59</height>
+                <width>676</width>
+                <height>764</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1641,7 +1653,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>603</width>
+                <width>676</width>
                 <height>2666</height>
                </rect>
               </property>
