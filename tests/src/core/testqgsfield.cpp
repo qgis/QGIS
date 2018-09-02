@@ -609,8 +609,6 @@ void TestQgsField::convertCompatible()
 
   // Test that wrongly formatted decimal separator are also accepted
   QLocale::setDefault( QLocale::German );
-  QCOMPARE( QLocale().groupSeparator(), '.' );
-  QCOMPARE( QLocale().decimalPoint(), ',' );
   stringDouble = QVariant( "12.23.456,012345" );
   QVERIFY( doubleField.convertCompatible( stringDouble ) );
   QCOMPARE( stringDouble.type(), QVariant::Double );
