@@ -162,6 +162,21 @@ numbers of digits between thousand separators
 .. versionadded:: 2.9
 %End
 
+qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
+%Docstring
+Converts a string to an qlonglong in a permissive way, e.g., allowing for incorrect
+numbers of digits between thousand separators
+
+:param string: string to convert
+:param ok: will be set to true if conversion was successful
+
+:return: string converted to int if possible
+
+.. seealso:: :py:func:`permissiveToInt`
+
+.. versionadded:: 3.4
+%End
+
 bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 %Docstring
 Compares two QVariant values and returns whether the first is less than the second.

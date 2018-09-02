@@ -1013,8 +1013,13 @@ void QgsGraduatedSymbolRendererWidget::changeRange( int rangeIdx )
 
   if ( dialog.exec() == QDialog::Accepted )
   {
-    double lowerValue = dialog.lowerValue().toDouble();
-    double upperValue = dialog.upperValue().toDouble();
+    bool ok = false;
+    double lowerValue = qgsPermissiveToDouble( dialog.lowerValue(), ok );
+    if ( ! ok )
+      lowerValue = 0.0;
+    double upperValue = qgsPermissiveToDouble( dialog.upperValue(), ok );
+    if ( ! ok )
+      upperValue = 0.0;
     mRenderer->updateRangeUpperValue( rangeIdx, upperValue );
     mRenderer->updateRangeLowerValue( rangeIdx, lowerValue );
 
@@ -1138,9 +1143,15 @@ QList<QgsSymbol *> QgsGraduatedSymbolRendererWidget::selectedSymbols()
       {
         continue;
       }
-
-      double lowerBound = list.at( 0 ).toDouble();
-      double upperBound = list.at( 2 ).toDouble();
+      // Not strictly necessary because the range should have been sanitized already
+      // after user input, but being permissive never hurts
+      bool ok = false;
+      double lowerBound = qgsPermissiveToDouble( list.at( 0 ), ok );
+      if ( ! ok )
+        lowerBound = 0.0;
+      double upperBound = qgsPermissiveToDouble( list.at( 2 ), ok );
+      if ( ! ok )
+        upperBound = 0.0;
       QgsSymbol *s = findSymbolForRange( lowerBound, upperBound, ranges );
       if ( s )
       {

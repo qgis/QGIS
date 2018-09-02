@@ -1463,6 +1463,12 @@ void QgsAttributeForm::init()
   connect( mLayer, &QgsVectorLayer::editingStarted, this, &QgsAttributeForm::synchronizeEnabledState );
   connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsAttributeForm::synchronizeEnabledState );
 
+  // This triggers a refresh of the form widget and gives a chance to re-format the
+  // value to those widgets that have a different representation when in edit mode
+  connect( mLayer, &QgsVectorLayer::editingStarted, this, [ = ] { setFeature( feature() ); } );
+  connect( mLayer, &QgsVectorLayer::editingStopped, this,  [ = ] { setFeature( feature() ); } );
+
+
   Q_FOREACH ( QgsAttributeFormInterface *iface, mInterfaces )
   {
     iface->initForm();

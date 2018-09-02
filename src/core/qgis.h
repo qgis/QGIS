@@ -410,6 +410,17 @@ CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
 CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
 
 /**
+ * Converts a string to an qlonglong in a permissive way, e.g., allowing for incorrect
+ * numbers of digits between thousand separators
+ * \param string string to convert
+ * \param ok will be set to true if conversion was successful
+ * \returns string converted to int if possible
+ * \see permissiveToInt
+ * \since QGIS 3.4
+ */
+CORE_EXPORT qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
+
+/**
  * Compares two QVariant values and returns whether the first is less than the second.
  * Useful for sorting lists of variants, correctly handling sorting of the various
  * QVariant data types (such as strings, numeric values, dates and times)
