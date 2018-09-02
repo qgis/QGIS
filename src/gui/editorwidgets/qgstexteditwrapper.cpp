@@ -225,7 +225,7 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
   // when the user is editing the field value.
   // We are checking for editable layer because in the form field context we do not
   // want to strip the separator unless the layer is editable
-  if ( layer() && layer()->isEditable() && ! QLocale().groupSeparator().isNull() && ( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong ) )
+  if ( layer() && layer()->isEditable() && ! QLocale().groupSeparator().isNull() && field().isNumeric() )
   {
     v = v.remove( QLocale().groupSeparator() );
   }
