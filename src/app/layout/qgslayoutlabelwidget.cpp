@@ -187,6 +187,9 @@ void QgsLayoutLabelWidget::mInsertExpressionButton_clicked()
 
   QString selText = mTextEdit->textCursor().selectedText();
 
+  // html editor replaces newlines with Paragraph Separator characters - see https://issues.qgis.org/issues/19743
+  selText = selText.replace( QChar( 0x2029 ), QChar( '\n' ) );
+
   // edit the selected expression if there's one
   if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
     selText = selText.mid( 2, selText.size() - 4 );
