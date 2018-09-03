@@ -535,6 +535,7 @@ void QgsStyleExportImportDialog::importFileChanged( const QString &path )
   mSymbolTags->setText( tag );
   if ( QFileInfo::exists( mFileName ) )
   {
+    mTempStyle->clear();
     populateStyles( mTempStyle );
     mImportFileWidget->setDefaultRoot( pathInfo.absolutePath() );
     QgsSettings settings;
@@ -594,6 +595,7 @@ void QgsStyleExportImportDialog::httpFinished()
   {
     mTempFile->flush();
     mTempFile->close();
+    mTempStyle->clear();
     populateStyles( mTempStyle );
   }
 }
