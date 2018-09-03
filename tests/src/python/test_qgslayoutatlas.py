@@ -554,6 +554,7 @@ class TestQgsLayoutAtlas(unittest.TestCase):
 
         # add a legend
         legend = QgsLayoutItemLegend(self.layout)
+        legend.setTitle("Legend")
         legend.attemptMove(QgsLayoutPoint(200, 100))
         # sets the legend filter parameter
         legend.setLinkedMap(self.atlas_map)

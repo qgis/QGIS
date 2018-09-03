@@ -73,6 +73,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         map.setExtent(point_layer.extent())
 
         legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
         legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
         legend.setFrameEnabled(True)
         legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
@@ -127,6 +128,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         map.setExtent(point_layer.extent())
 
         legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
         legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
         legend.setFrameEnabled(True)
         legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
@@ -166,6 +168,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         map.setExtent(point_layer.extent())
 
         legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
         legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
         legend.setFrameEnabled(True)
         legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
@@ -209,6 +212,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         map.setExtent(point_layer.extent())
 
         legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
         legend.attemptSetSceneRect(QRectF(120, 20, 20, 20))
         legend.setFrameEnabled(True)
         legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
@@ -253,6 +257,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         layout.initializeDefaults()
 
         legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
         layout.addLayoutItem(legend)
 
         legend.setColumnCount(2)
