@@ -247,7 +247,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   QDomNode srsNode = layerElement.namedItem( QStringLiteral( "srs" ) );
   mCRS.readXml( srsNode );
   mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( mne.text() ) );
-  mCRS.validate();
+  if ( isSpatial() )
+    mCRS.validate();
   savedCRS = mCRS;
 
   // Do not validate any projections in children, they will be overwritten anyway.
