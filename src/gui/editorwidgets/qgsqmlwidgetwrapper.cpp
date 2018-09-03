@@ -16,6 +16,8 @@
 #include "qgsqmlwidgetwrapper.h"
 #include "qgsmessagelog.h"
 #include <QtQuickWidgets/QQuickWidget>
+#include <QQuickWidget>
+#include <QQmlContext>
 
 QgsQmlWidgetWrapper::QgsQmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
@@ -35,9 +37,9 @@ QWidget *QgsQmlWidgetWrapper::createWidget( QWidget *parent )
 
 void QgsQmlWidgetWrapper::initWidget( QWidget *editor )
 {
-  QQuickWidget *quickWidget = qobject_cast<QQuickWidget *>( editor );
+  mWidget = qobject_cast<QQuickWidget *>( editor );
 
-  if ( !quickWidget )
+  if ( !mWidget )
     return;
 
 
@@ -47,7 +49,7 @@ void QgsQmlWidgetWrapper::initWidget( QWidget *editor )
     return;
   }
 
-  quickWidget->setSource( QUrl::fromLocalFile( mQmlFile.fileName() ) );
+  mWidget->setSource( QUrl::fromLocalFile( mQmlFile.fileName() ) );
 
   mQmlFile.close();
 }
@@ -67,5 +69,6 @@ void QgsQmlWidgetWrapper::setQmlCode( const QString &qmlCode )
 
 void QgsQmlWidgetWrapper::setFeature( const QgsFeature &feature )
 {
-
+  if ( mWidget )
+    mWidget->rootContext()->setContextProperty( "feature", feature );
 }

@@ -45,6 +45,8 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
     QTemporaryFile mQmlFile;
 
     QQuickWidget *mWidget = nullptr;
+
+    QgsFeature mFeature;
 };
 
 #endif // QGSQMLWIDGETWRAPPER_H
