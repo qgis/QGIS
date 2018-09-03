@@ -24,9 +24,8 @@
 #include <QMutex>
 #include <QStringList>
 #include "qgis_analysis.h"
+#include "qgsfeatureid.h"
 
-typedef qint64 QgsFeatureId;
-typedef QSet<QgsFeatureId> QgsFeatureIds;
 struct QgsGeometryCheckerContext;
 class QgsGeometryCheck;
 class QgsGeometryCheckError;
