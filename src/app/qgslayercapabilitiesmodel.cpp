@@ -55,16 +55,15 @@ void QgsLayerCapabilitiesModel::setFilterText( const QString &filterText )
   invalidateFilter();
 }
 
-void QgsLayerCapabilitiesModel::checkSelectedItems( const QModelIndexList &checkedIndexes, bool check )
+void QgsLayerCapabilitiesModel::toggleSelectedItems( const QModelIndexList &checkedIndexes )
 {
   QVector<int> roles = QVector<int>() << Qt::CheckStateRole;
-  // beginResetModel();
   for ( const QModelIndex &index : checkedIndexes )
   {
-    if ( setData( index, check ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole ) )
-      emit dataChanged( index, index ); //), roles);
+    bool isChecked = data( index, Qt::CheckStateRole ) == Qt::Checked;
+    if ( setData( index, isChecked ? Qt::Unchecked : Qt::Checked, Qt::CheckStateRole ) )
+      emit dataChanged( index, index );
   }
-  //endResetModel();
 }
 
 QStringList QgsLayerCapabilitiesModel::nonIdentifiableLayers() const

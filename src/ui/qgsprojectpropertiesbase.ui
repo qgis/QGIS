@@ -277,7 +277,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>676</width>
+                <width>563</width>
                 <height>833</height>
                </rect>
               </property>
@@ -875,8 +875,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>676</width>
-                <height>764</height>
+                <width>547</width>
+                <height>152</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -950,8 +950,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>676</width>
-                <height>764</height>
+                <width>271</width>
+                <height>597</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1414,30 +1414,10 @@
                   <property name="verticalSpacing">
                    <number>0</number>
                   </property>
-                  <item row="1" column="0" colspan="4">
-                   <widget class="QTreeView" name="mLayerCapabilitiesTree"/>
+                  <item row="3" column="3">
+                   <widget class="QgsFilterLineEdit" name="mLayerCapabilitiesTreeFilterLineEdit"/>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QPushButton" name="mLayerCapabilitiesCheckButton">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="text">
-                     <string>Check Selected</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QPushButton" name="mLayerCapabilitiesUncheckButton">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="text">
-                     <string>Uncheck Selected</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="2">
                    <spacer name="horizontalSpacer_5">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
@@ -1450,10 +1430,20 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="3" column="3">
-                   <widget class="QgsFilterLineEdit" name="mLayerCapabilitiesTreeFilterLineEdit"/>
+                  <item row="3" column="0">
+                   <widget class="QPushButton" name="mLayerCapabilitiesToggleSelectionButton">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="text">
+                     <string>Toggle Selection</string>
+                    </property>
+                   </widget>
                   </item>
-                  <item row="4" column="3">
+                  <item row="1" column="0" colspan="4">
+                   <widget class="QTreeView" name="mLayerCapabilitiesTree"/>
+                  </item>
+                  <item row="3" column="2">
                    <widget class="QCheckBox" name="mShowSpatialLayersCheckBox">
                     <property name="layoutDirection">
                      <enum>Qt::LeftToRight</enum>
@@ -1591,8 +1581,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>676</width>
-                <height>764</height>
+                <width>157</width>
+                <height>59</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1653,7 +1643,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>676</width>
+                <width>603</width>
                 <height>2666</height>
                </rect>
               </property>

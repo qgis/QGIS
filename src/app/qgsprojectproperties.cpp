@@ -369,8 +369,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     Q_UNUSED( selected );
     Q_UNUSED( deselected );
     bool hasSelection = !mLayerCapabilitiesTree->selectionModel()->selectedIndexes().isEmpty();
-    mLayerCapabilitiesCheckButton->setEnabled( hasSelection );
-    mLayerCapabilitiesUncheckButton->setEnabled( hasSelection );
+    mLayerCapabilitiesToggleSelectionButton->setEnabled( hasSelection );
   } );
 
   mLayerCapabilitiesTreeFilterLineEdit->setShowClearButton( true );
@@ -382,18 +381,11 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     mLayerCapabilitiesTree->expandAll();
   } );
 
-  connect( mLayerCapabilitiesCheckButton, &QToolButton::clicked, this, [ = ]( bool clicked )
+  connect( mLayerCapabilitiesToggleSelectionButton, &QToolButton::clicked, this, [ = ]( bool clicked )
   {
     Q_UNUSED( clicked );
     const QModelIndexList indexes = mLayerCapabilitiesTree->selectionModel()->selectedIndexes();
-    mLayerCapabilitiesModel->checkSelectedItems( indexes, true );
-    mLayerCapabilitiesTree->repaint();
-  } );
-  connect( mLayerCapabilitiesUncheckButton, &QToolButton::clicked, this, [ = ]( bool clicked )
-  {
-    Q_UNUSED( clicked );
-    const QModelIndexList indexes = mLayerCapabilitiesTree->selectionModel()->selectedIndexes();
-    mLayerCapabilitiesModel->checkSelectedItems( indexes, false );
+    mLayerCapabilitiesModel->toggleSelectedItems( indexes );
     mLayerCapabilitiesTree->repaint();
   } );
 

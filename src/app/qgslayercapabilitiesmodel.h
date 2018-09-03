@@ -59,7 +59,7 @@ class APP_EXPORT QgsLayerCapabilitiesModel : public QSortFilterProxyModel
 
   public slots:
     void setFilterText( const QString &filterText = QString() );
-    void checkSelectedItems( const QModelIndexList &checkedIndexes, bool check );
+    void toggleSelectedItems( const QModelIndexList &checkedIndexes );
 
   protected:
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
