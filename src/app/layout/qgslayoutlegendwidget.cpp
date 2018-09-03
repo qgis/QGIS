@@ -856,6 +856,7 @@ void QgsLayoutLegendWidget::mFilterByMapToolButton_toggled( bool checked )
   mLegend->beginCommand( tr( "Update Legend" ) );
   mLegend->setLegendFilterByMapEnabled( checked );
   mLegend->adjustBoxSize();
+  mLegend->update();
   mLegend->endCommand();
 }
 
