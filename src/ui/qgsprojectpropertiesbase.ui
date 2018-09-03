@@ -19,8 +19,8 @@
   <property name="windowTitle">
    <string>Project Properties</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_21">
+   <item row="0" column="0">
     <widget class="QSplitter" name="mOptionsSplitter">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -139,18 +139,6 @@
          </item>
          <item>
           <property name="text">
-           <string>Layers</string>
-          </property>
-          <property name="toolTip">
-           <string>Identifiable layers</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/map_tools.svg</normaloff>:/images/themes/default/propertyicons/map_tools.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Data Sources</string>
           </property>
           <property name="toolTip">
@@ -242,7 +230,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -277,7 +265,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>563</width>
+                <width>676</width>
                 <height>833</height>
                </rect>
               </property>
@@ -875,8 +863,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>547</width>
-                <height>152</height>
+                <width>676</width>
+                <height>764</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -950,8 +938,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>271</width>
-                <height>597</height>
+                <width>676</width>
+                <height>764</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1361,107 +1349,6 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mProjOptsLayers">
-          <layout class="QVBoxLayout" name="verticalLayout_9">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QgsScrollArea" name="scrollArea_3">
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="widgetResizable">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_3">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>676</width>
-                <height>764</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_10">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QGroupBox" name="groupBox_3">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>100</height>
-                  </size>
-                 </property>
-                 <property name="title">
-                  <string>Project Layers</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_20">
-                  <property name="verticalSpacing">
-                   <number>0</number>
-                  </property>
-                  <item row="3" column="3">
-                   <widget class="QgsFilterLineEdit" name="mLayerCapabilitiesTreeFilterLineEdit"/>
-                  </item>
-                  <item row="3" column="1">
-                   <spacer name="horizontalSpacer_5">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QPushButton" name="mLayerCapabilitiesToggleSelectionButton">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="text">
-                     <string>Toggle Selection</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0" colspan="4">
-                   <widget class="QTreeView" name="mLayerCapabilitiesTree"/>
-                  </item>
-                  <item row="3" column="2">
-                   <widget class="QCheckBox" name="mShowSpatialLayersCheckBox">
-                    <property name="layoutDirection">
-                     <enum>Qt::LeftToRight</enum>
-                    </property>
-                    <property name="text">
-                     <string>Show spatial layers only</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
          <widget class="QWidget" name="mTab_DataSources">
           <layout class="QFormLayout" name="formLayout">
            <item row="0" column="0" colspan="2">
@@ -1474,7 +1361,7 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
+           <item row="1" column="0" colspan="2">
             <widget class="QCheckBox" name="mEvaluateDefaultValues">
              <property name="toolTip">
               <string>When enabled, default values will be evaluated as early as possible. This will fill default values in the add feature form already and not only create them on commit. Only supported for postgres provider.</string>
@@ -1496,22 +1383,57 @@
            </item>
            <item row="4" column="0" colspan="2">
             <widget class="QgsCollapsibleGroupBox" name="groupBox_5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="title">
-              <string>Required Layers</string>
+              <string>Layers Capabilities</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_19">
-              <item row="0" column="0" colspan="2">
-               <widget class="QLabel" name="label_31">
-                <property name="text">
-                 <string>Checked layers in this list are protected from inadvertent removal from the project.</string>
+              <property name="verticalSpacing">
+               <number>0</number>
+              </property>
+              <item row="3" column="1">
+               <spacer name="horizontalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
                 </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="0" colspan="4">
+               <widget class="QTreeView" name="mLayerCapabilitiesTree"/>
+              </item>
+              <item row="3" column="0">
+               <widget class="QPushButton" name="mLayerCapabilitiesToggleSelectionButton">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Toggle Selection</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="0" colspan="2">
-               <widget class="QListView" name="mViewRequiredLayers"/>
+              <item row="3" column="2">
+               <widget class="QCheckBox" name="mShowSpatialLayersCheckBox">
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="text">
+                 <string>Show spatial layers only</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="3">
+               <widget class="QgsFilterLineEdit" name="mLayerCapabilitiesTreeFilterLineEdit"/>
               </item>
              </layout>
             </widget>
@@ -2806,7 +2728,7 @@
      </widget>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0">
     <widget class="QFrame" name="mButtonBoxFrame">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -2956,7 +2878,6 @@
   <tabstop>mButtonPasteColors</tabstop>
   <tabstop>mButtonImportColors</tabstop>
   <tabstop>mButtonExportColors</tabstop>
-  <tabstop>scrollArea_3</tabstop>
   <tabstop>mAutoTransaction</tabstop>
   <tabstop>mEvaluateDefaultValues</tabstop>
   <tabstop>mTrustProjectCheckBox</tabstop>

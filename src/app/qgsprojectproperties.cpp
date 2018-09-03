@@ -875,7 +875,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( generateTsFileButton, &QPushButton::clicked, this, &QgsProjectProperties::onGenerateTsFileButton );
 
   projectionSelectorInitialized();
-  populateRequiredLayers();
   restoreOptionsBaseUi();
   restoreState();
 }
@@ -1038,6 +1037,7 @@ void QgsProjectProperties::apply()
   }
 
   QgsProject::instance()->setNonIdentifiableLayers( mLayerCapabilitiesModel->nonIdentifiableLayers() );
+  QgsProject::instance()->setRequiredLayers( mLayerCapabilitiesModel->requiredLayers() );
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
@@ -1375,8 +1375,6 @@ void QgsProjectProperties::apply()
     canvas->refresh();
   }
   QgisApp::instance()->mapOverviewCanvas()->refresh();
-
-  applyRequiredLayers();
 }
 
 void QgsProjectProperties::showProjectionsTab()
@@ -2285,40 +2283,6 @@ void QgsProjectProperties::showHelp()
     link = QStringLiteral( "working_with_ogc/server/getting_started.html#prepare-a-project-to-serve" );
   }
   QgsHelp::openHelp( link );
-}
-
-void QgsProjectProperties::populateRequiredLayers()
-{
-  const QSet<QgsMapLayer *> requiredLayers = QgsProject::instance()->requiredLayers();
-  QStandardItemModel *model = new QStandardItemModel( mViewRequiredLayers );
-  QList<QgsLayerTreeLayer *> layers = QgsProject::instance()->layerTreeRoot()->findLayers();
-  std::sort( layers.begin(), layers.end(), []( QgsLayerTreeLayer * layer1, QgsLayerTreeLayer * layer2 ) { return layer1->name() < layer2->name(); } );
-  for ( const QgsLayerTreeLayer *l : layers )
-  {
-    QStandardItem *item = new QStandardItem( l->name() );
-    item->setCheckable( true );
-    item->setCheckState( requiredLayers.contains( l->layer() ) ? Qt::Checked : Qt::Unchecked );
-    item->setData( l->layerId() );
-    model->appendRow( item );
-  }
-
-  mViewRequiredLayers->setModel( model );
-}
-
-void QgsProjectProperties::applyRequiredLayers()
-{
-  QSet<QgsMapLayer *> requiredLayers;
-  QAbstractItemModel *model = mViewRequiredLayers->model();
-  for ( int i = 0; i < model->rowCount(); ++i )
-  {
-    if ( model->data( model->index( i, 0 ), Qt::CheckStateRole ).toInt() == Qt::Checked )
-    {
-      QString layerId = model->data( model->index( i, 0 ), Qt::UserRole + 1 ).toString();
-      if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId ) )
-        requiredLayers << layer;
-    }
-  }
-  QgsProject::instance()->setRequiredLayers( requiredLayers );
 }
 
 QMap< QString, QString > QgsProjectProperties::pageWidgetNameMap()

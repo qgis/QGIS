@@ -24,6 +24,7 @@ QgsLayerCapabilitiesModel::QgsLayerCapabilitiesModel( QgsProject *project, QObje
   : QSortFilterProxyModel( parent )
 {
   mNonIdentifiableLayers = project->nonIdentifiableLayers();
+  mRequiredLayers = project->requiredLayers();
 
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
@@ -71,6 +72,11 @@ QStringList QgsLayerCapabilitiesModel::nonIdentifiableLayers() const
   return mNonIdentifiableLayers;
 }
 
+QSet<QgsMapLayer *> QgsLayerCapabilitiesModel::requiredLayers() const
+{
+  return mRequiredLayers;
+}
+
 bool QgsLayerCapabilitiesModel::readOnly( QgsMapLayer *layer ) const
 {
   return mReadOnlyLayers.value( layer, true );
@@ -84,7 +90,7 @@ bool QgsLayerCapabilitiesModel::searchable( QgsMapLayer *layer ) const
 int QgsLayerCapabilitiesModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  return 4;
+  return 5;
 }
 
 QVariant QgsLayerCapabilitiesModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -95,14 +101,31 @@ QVariant QgsLayerCapabilitiesModel::headerData( int section, Qt::Orientation ori
     {
       switch ( section )
       {
-        case 0:
+        case LayerColumn:
           return tr( "Layer" );
-        case 1:
+        case IdentifiableColumn:
           return tr( "Identifiable" );
-        case 2:
+        case ReadOnlyColumn:
           return tr( "Read-only" );
-        case 3:
+        case SearchableColumn:
           return tr( "Searchable" );
+        case RequiredColumn:
+          return tr( "Required" );
+        default:
+          return QVariant();
+      }
+    }
+    if ( role == Qt::ToolTipRole )
+    {
+      switch ( section )
+      {
+        case LayerColumn:
+        case IdentifiableColumn:
+        case ReadOnlyColumn:
+        case SearchableColumn:
+          return QVariant();
+        case RequiredColumn:
+          return tr( "Layers which are protected from inadvertent removal from the project." );
         default:
           return QVariant();
       }
@@ -157,6 +180,10 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
       {
         return nullptr;
       }
+    }
+    else if ( idx.column() == RequiredColumn )
+    {
+      return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
     }
   }
   return nullptr;
@@ -243,6 +270,10 @@ QVariant QgsLayerCapabilitiesModel::data( const QModelIndex &idx, int role ) con
         if ( layer->type() == QgsMapLayer::VectorLayer )
           return mSearchableLayers.value( layer, true ) ? trueValue : falseValue;
       }
+      else if ( idx.column() == RequiredColumn )
+      {
+        return mRequiredLayers.contains( layer ) ? trueValue : falseValue;
+      }
     }
   }
 
@@ -287,6 +318,17 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
           emit dataChanged( index, index );
           return true;
         }
+      }
+      else if ( index.column() == RequiredColumn )
+      {
+        bool required = value == Qt::Checked;
+        bool containsLayer = mRequiredLayers.contains( layer );
+        if ( containsLayer && !required )
+          mRequiredLayers.remove( layer );
+        if ( !containsLayer && required )
+          mRequiredLayers.insert( layer );
+        emit dataChanged( index, index );
+        return true;
       }
     }
   }

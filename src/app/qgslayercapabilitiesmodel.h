@@ -35,7 +35,8 @@ class APP_EXPORT QgsLayerCapabilitiesModel : public QSortFilterProxyModel
       LayerColumn = 0,
       IdentifiableColumn,
       ReadOnlyColumn,
-      SearchableColumn
+      SearchableColumn,
+      RequiredColumn,
     };
 
     QgsLayerCapabilitiesModel( QgsProject *project, QObject *parent = nullptr );
@@ -43,6 +44,7 @@ class APP_EXPORT QgsLayerCapabilitiesModel : public QSortFilterProxyModel
     QgsLayerTreeModel *layerTreeModel() const;
     void setLayerTreeModel( QgsLayerTreeModel *layerTreeModel );
     QStringList nonIdentifiableLayers() const;
+    QSet<QgsMapLayer *> requiredLayers() const;
     bool readOnly( QgsMapLayer *layer ) const;
     bool searchable( QgsMapLayer *layer ) const;
     QgsMapLayer *mapLayer( const QModelIndex &idx ) const;
@@ -70,6 +72,7 @@ class APP_EXPORT QgsLayerCapabilitiesModel : public QSortFilterProxyModel
     QString mFilterText;
     bool mShowSpatialLayersOnly = false;
     QStringList mNonIdentifiableLayers;
+    QSet<QgsMapLayer *> mRequiredLayers;
     QHash<QgsMapLayer *, bool> mReadOnlyLayers;
     QHash<QgsMapLayer *, bool> mSearchableLayers;
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
