@@ -181,7 +181,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         # to the executed algorithm, and that the executed algorithm can send feedback
         # reports to the user (and correctly handle cancelation and progress reports!)
         if False:
-            buffered_layer = processing.run("native:buffer", param={
+            buffered_layer = processing.run("native:buffer", {
                 'INPUT': dest_id,
                 'DISTANCE': 1.5,
                 'SEGMENTS': 5,
