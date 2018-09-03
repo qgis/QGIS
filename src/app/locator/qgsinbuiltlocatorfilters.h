@@ -134,7 +134,7 @@ class QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
     QString name() const override { return QStringLiteral( "allfeatures" ); }
     QString displayName() const override { return tr( "Features In All Layers" ); }
     Priority priority() const override { return Medium; }
-    QString prefix() const override { return QStringLiteral( "a" ); }
+    QString prefix() const override { return QStringLiteral( "af" ); }
 
     void prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
