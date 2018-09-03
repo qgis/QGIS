@@ -186,6 +186,9 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   mGroupTreeContextMenu->addAction( actnRemoveGroup );
 
   tabItemType_currentChanged( 0 );
+
+  connect( mStyle, &QgsStyle::symbolSaved, this, &QgsStyleManagerDialog::populateList );
+  connect( mStyle, &QgsStyle::groupsModified, this, &QgsStyleManagerDialog::populateGroups );
 }
 
 void QgsStyleManagerDialog::onFinished()
