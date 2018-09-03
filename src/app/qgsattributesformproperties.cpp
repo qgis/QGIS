@@ -142,7 +142,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::QmlWidget, QStringLiteral( "QmlWidget" ), tr( "QML Widget" ) );
   itemData.setShowLabel( true );
 
-  QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
+  mAvailableWidgetsTree->addItem( catitem, itemData );
   catitem ->setExpanded( true );
 }
 
@@ -851,6 +851,10 @@ QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormPro
       case QgsAttributesFormProperties::DnDTreeItemData::Container:
         newItem->setIcon( 0, QgsApplication::getThemeIcon( "/mContainerIcon.svg" ) );
         break;
+
+      case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
+        newItem->setIcon( 0, QgsApplication::getThemeIcon( "/mQmlWidgetIcon.svg" ) );
+        break;
     }
   }
   newItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, data );
@@ -914,15 +918,22 @@ bool DnDTree::dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData 
     {
       stream >> itemElement;
 
+      QTreeWidgetItem *newItem;
+
       if ( parent )
       {
-        addItem( parent, itemElement, index );
+        newItem = addItem( parent, itemElement, index );
         bDropSuccessful = true;
       }
       else
       {
-        addItem( invisibleRootItem(), itemElement, index );
+        newItem = addItem( invisibleRootItem(), itemElement, index );
         bDropSuccessful = true;
+      }
+
+      if ( itemElement.type() == QgsAttributesFormProperties::DnDTreeItemData::QmlWidget )
+      {
+        onItemDoubleClicked( newItem, 0 );
       }
     }
   }
@@ -1094,8 +1105,8 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
     {
       QDialog dlg;
+      dlg.resize( 600, 400 );
       dlg.setWindowTitle( tr( "Configure QML Widget" ) );
-      dlg.setBaseSize( 600, 400 );
       QFormLayout *layout = new QFormLayout() ;
       dlg.setLayout( layout );
       layout->addWidget( baseWidget );
