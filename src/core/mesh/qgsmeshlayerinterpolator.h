@@ -60,22 +60,6 @@ class QgsMeshLayerInterpolator : public QgsRasterInterface
     int bandCount() const override;
     QgsRasterBlock *block( int, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    /*
-    * Interpolates value based on known values on the vertices of a triangle
-    * \param p1 first vertex of the triangle
-    * \param p2 second vertex of the triangle
-    * \param p3 third vertex of the triangle
-    * \param val1 value on p1 of the triangle
-    * \param val2 value on p2 of the triangle
-    * \param val3 value on p3 of the triangle
-    * \param pt point where to calculate value
-    * \returns value on the point pt or NaN in case the point is outside the triangle
-    */
-    static double interpolateFromVerticesData(
-      const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
-      double val1, double val2, double val3, const QgsPointXY &pt
-    );
-
   private:
     const QgsTriangularMesh &mTriangularMesh;
     const QVector<double> &mDatasetValues;

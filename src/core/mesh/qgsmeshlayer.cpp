@@ -25,7 +25,6 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshlayer.h"
-#include "qgsmeshlayerinterpolator.h"
 #include "qgsmeshlayerrenderer.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsproviderregistry.h"
@@ -144,11 +143,11 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
           const QgsMeshDatasetValue val1 = dataProvider()->datasetValue( index, v1 );
           const QgsMeshDatasetValue val2 = dataProvider()->datasetValue( index, v2 );
           const QgsMeshDatasetValue val3 = dataProvider()->datasetValue( index, v3 );
-          const double x = QgsMeshLayerInterpolator::interpolateFromVerticesData( p1, p2, p3, val1.x(), val2.x(), val3.x(), point );
+          const double x = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, val1.x(), val2.x(), val3.x(), point );
           double y = std::numeric_limits<double>::quiet_NaN();
           bool isVector = dataProvider()->datasetGroupMetadata( index ).isVector();
           if ( isVector )
-            y = QgsMeshLayerInterpolator::interpolateFromVerticesData( p1, p2, p3, val1.y(), val2.y(), val3.y(), point );
+            y = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, val1.y(), val2.y(), val3.y(), point );
 
           value = QgsMeshDatasetValue( x, y );
         }

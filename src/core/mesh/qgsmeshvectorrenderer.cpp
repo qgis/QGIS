@@ -20,6 +20,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsmaptopixel.h"
 #include "qgsunittypes.h"
+#include "qgsmeshlayerutils.h"
 
 #include <cstdlib>
 #include <ctime>
@@ -91,7 +92,9 @@ void QgsMeshVectorRenderer::draw()
   pen.setColor( mCfg.color() );
   painter->setPen( pen );
 
-  if ( mDataOnVertices )
+  if ( mCfg.isOnUserDefinedGrid() )
+    drawVectorDataOnGrid();
+  else if ( mDataOnVertices )
     drawVectorDataOnVertices();
   else
     drawVectorDataOnFaces();
@@ -234,6 +237,97 @@ void QgsMeshVectorRenderer::drawVectorDataOnFaces()
   }
 }
 
+void QgsMeshVectorRenderer::drawVectorDataOnGrid()
+{
+  int cellx = mCfg.userGridCellWidth();
+  int celly = mCfg.userGridCellHeight();
+
+  const QVector<QgsMeshFace> &triangles = mTriangularMesh.triangles();
+  const QVector<QgsMeshVertex> &vertices = mTriangularMesh.vertices();
+
+  for ( int i = 0; i < triangles.size(); i++ )
+  {
+    const QgsMeshFace &face = triangles[i];
+
+    const int v1 = face[0], v2 = face[1], v3 = face[2];
+    const QgsPoint p1 = vertices[v1], p2 = vertices[v2], p3 = vertices[v3];
+
+    const int nativeFaceIndex = mTriangularMesh.trianglesToNativeFaces()[i];
+    //const bool isActive = mActiveFaceFlagValues[nativeFaceIndex];
+    //if ( !isActive )
+    //  continue;
+
+    QgsRectangle bbox = QgsMeshLayerUtils::triangleBoundingBox( p1, p2, p3 );
+    if ( !mContext.extent().intersects( bbox ) )
+      continue;
+
+    // Get the BBox of the element in pixels
+    int left, right, top, bottom;
+    QgsMeshLayerUtils::boundingBoxToScreenRectangle( mContext.mapToPixel(), mOutputSize, bbox, left, right, top, bottom );
+
+    // Align rect to the grid (e.g. interval <13, 36> with grid cell 10 will be trimmed to <20,30>
+    if ( left % cellx != 0 )
+      left += cellx - ( left % cellx );
+    if ( right % cellx != 0 )
+      right -= ( right % cellx );
+    if ( top % celly != 0 )
+      top += celly - ( top % celly );
+    if ( bottom % celly != 0 )
+      bottom -= ( bottom % celly );
+
+    for ( int y = top; y <= bottom; y += celly )
+    {
+      for ( int x = left; x <= right; x += cellx )
+      {
+        QgsMeshDatasetValue val;
+        const QgsPointXY p = mContext.mapToPixel().toMapCoordinates( x, y );
+
+        if ( mDataOnVertices )
+        {
+          val.setX(
+            QgsMeshLayerUtils::interpolateFromVerticesData(
+              p1, p2, p3,
+              mDatasetValuesX[v1],
+              mDatasetValuesX[v2],
+              mDatasetValuesX[v3],
+              p )
+          );
+          val.setY(
+            QgsMeshLayerUtils::interpolateFromVerticesData(
+              p1, p2, p3,
+              mDatasetValuesY[v1],
+              mDatasetValuesY[v2],
+              mDatasetValuesY[v3],
+              p )
+          );
+        }
+        else
+        {
+          val.setX(
+            QgsMeshLayerUtils::interpolateFromFacesData(
+              p1, p2, p3,
+              mDatasetValuesX[nativeFaceIndex],
+              p
+            )
+          );
+          val.setY(
+            QgsMeshLayerUtils::interpolateFromFacesData(
+              p1, p2, p3,
+              mDatasetValuesX[nativeFaceIndex],
+              p
+            )
+          );
+        }
+
+        if ( nodataValue( val.x(), val.y() ) )
+          continue;
+
+        QgsPointXY lineStart( x, y );
+        drawVectorArrow( lineStart, val.x(), val.y(), val.scalar() );
+      }
+    }
+  }
+}
 
 void QgsMeshVectorRenderer::drawVectorArrow( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude )
 {

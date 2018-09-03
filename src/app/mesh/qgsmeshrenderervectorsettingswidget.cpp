@@ -19,12 +19,14 @@
 #include "qgsmeshlayer.h"
 #include "qgsmessagelog.h"
 
+#include <QIntValidator>
 
 QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidget *parent )
   : QWidget( parent )
 
 {
   setupUi( this );
+  addValidators( );
 
   mShaftLengthComboBox->setCurrentIndex( -1 );
 
@@ -37,16 +39,33 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
 
   connect( mShaftLengthComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
            mShaftOptionsStackedWidget, &QStackedWidget::setCurrentIndex );
+
+  connect( mDisplayVectorsOnGridGroupBox, &QGroupBox::toggled, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+
   QVector<QLineEdit *> widgets;
   widgets << mMinMagLineEdit << mMaxMagLineEdit
           << mHeadWidthLineEdit << mHeadLengthLineEdit
           << mMinimumShaftLineEdit << mMaximumShaftLineEdit
-          << mScaleShaftByFactorOfLineEdit << mShaftLengthLineEdit;
+          << mScaleShaftByFactorOfLineEdit << mShaftLengthLineEdit
+          << mXSpacingLineEdit << mYSpacingLineEdit;
 
   for ( auto widget : widgets )
   {
     connect( widget, &QLineEdit::textChanged, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
   }
+}
+
+void QgsMeshRendererVectorSettingsWidget::addValidators()
+{
+  QIntValidator *validatorX = new QIntValidator();
+  validatorX->setBottom( 0 );
+  validatorX->setParent( mXSpacingLineEdit );
+  mXSpacingLineEdit->setValidator( validatorX );
+
+  QIntValidator *validatorY = new QIntValidator();
+  validatorY->setBottom( 0 );
+  validatorY->setParent( mYSpacingLineEdit );
+  mYSpacingLineEdit->setValidator( validatorY );
 }
 
 void QgsMeshRendererVectorSettingsWidget::setLayer( QgsMeshLayer *layer )
@@ -75,6 +94,16 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
 
   val = filterValue( mHeadLengthLineEdit->text(), settings.arrowHeadLengthRatio() * 100.0 );
   settings.setArrowHeadLengthRatio( val / 100.0 );
+
+  // user grid
+  bool enabled = mDisplayVectorsOnGridGroupBox->isChecked();
+  settings.setOnUserDefinedGrid( enabled );
+
+  val = filterValue( mXSpacingLineEdit->text(), settings.userGridCellWidth() );
+  settings.setUserGridCellWidth( static_cast<int>( val ) );
+
+  val = filterValue( mYSpacingLineEdit->text(), settings.userGridCellHeight() );
+  settings.setUserGridCellHeight( static_cast<int>( val ) );
 
   // shaft length
   auto method = static_cast<QgsMeshRendererVectorSettings::ArrowScalingMethod>( mShaftLengthComboBox->currentIndex() );

@@ -73,6 +73,8 @@ class TestQgsMeshRenderer : public QObject
     void test_face_scalar_dataset_rendering();
     void test_face_vector_dataset_rendering();
     void test_vertex_scalar_dataset_with_inactive_face_rendering();
+    void test_face_vector_on_user_grid();
+    void test_vertex_vector_on_user_grid();
 
     void test_signals();
 };
@@ -264,6 +266,42 @@ void TestQgsMeshRenderer::test_vertex_scalar_dataset_with_inactive_face_renderin
   mMdalLayer->setRendererSettings( rendererSettings );
 
   QVERIFY( imageCheck( "quad_and_triangle_vertex_scalar_dataset_with_inactive_face", mMdalLayer ) );
+}
+
+void TestQgsMeshRenderer::test_face_vector_on_user_grid()
+{
+  QgsMeshDatasetIndex ds( 3, 0 );
+  const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
+  QVERIFY( metadata.name() == "FaceVectorDataset" );
+
+  QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
+  QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( ds.group() );
+  settings.setOnUserDefinedGrid( true );
+  settings.setUserGridCellWidth( 22 );
+  settings.setUserGridCellHeight( 11 );
+  rendererSettings.setVectorSettings( ds.group(), settings );
+  rendererSettings.setActiveVectorDataset( ds );
+  mMemoryLayer->setRendererSettings( rendererSettings );
+
+  QVERIFY( imageCheck( "quad_and_triangle_face_vector_user_grid_dataset", mMemoryLayer ) );
+}
+
+void TestQgsMeshRenderer::test_vertex_vector_on_user_grid()
+{
+  QgsMeshDatasetIndex ds( 1, 0 );
+  const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
+  QVERIFY( metadata.name() == "VertexVectorDataset" );
+
+  QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
+  QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( ds.group() );
+  settings.setOnUserDefinedGrid( true );
+  settings.setUserGridCellWidth( 40 );
+  settings.setUserGridCellHeight( 40 );
+  rendererSettings.setVectorSettings( ds.group(), settings );
+  rendererSettings.setActiveVectorDataset( ds );
+  mMemoryLayer->setRendererSettings( rendererSettings );
+
+  QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_user_grid_dataset", mMemoryLayer ) );
 }
 
 void TestQgsMeshRenderer::test_signals()

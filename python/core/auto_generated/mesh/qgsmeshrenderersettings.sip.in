@@ -284,6 +284,31 @@ Returns ratio of the head length of the arrow (range 0-1)
 Sets ratio of the head length of the arrow (range 0-1)
 %End
 
+    bool isOnUserDefinedGrid() const;
+%Docstring
+Returns if vectors are drawn on user-defined grid
+%End
+    void setOnUserDefinedGrid( bool enabled );
+%Docstring
+Toggle drawing of vectors on user defined grid
+%End
+    int userGridCellWidth() const;
+%Docstring
+Returns width in pixels of user grid cell
+%End
+    void setUserGridCellWidth( int width );
+%Docstring
+Sets width of user grid cell (in pixels)
+%End
+    int userGridCellHeight() const;
+%Docstring
+Returns height in pixels of user grid cell
+%End
+    void setUserGridCellHeight( int height );
+%Docstring
+Sets height of user grid cell (in pixels)
+%End
+
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Writes configuration to a new DOM element

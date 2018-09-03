@@ -224,6 +224,36 @@ void QgsMeshRendererVectorSettings::setArrowHeadLengthRatio( double vectorHeadLe
   mArrowHeadLengthRatio = vectorHeadLengthRatio;
 }
 
+bool QgsMeshRendererVectorSettings::isOnUserDefinedGrid() const
+{
+  return mOnUserDefinedGrid;
+}
+
+void QgsMeshRendererVectorSettings::setOnUserDefinedGrid( bool enabled )
+{
+  mOnUserDefinedGrid = enabled;
+}
+
+int QgsMeshRendererVectorSettings::userGridCellWidth() const
+{
+  return mUserGridCellWidth;
+}
+
+void QgsMeshRendererVectorSettings::setUserGridCellWidth( int width )
+{
+  mUserGridCellWidth = width;
+}
+
+int QgsMeshRendererVectorSettings::userGridCellHeight() const
+{
+  return mUserGridCellHeight;
+}
+
+void QgsMeshRendererVectorSettings::setUserGridCellHeight( int height )
+{
+  mUserGridCellHeight = height;
+}
+
 QDomElement QgsMeshRendererVectorSettings::writeXml( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( "vector-settings" );
@@ -233,6 +263,9 @@ QDomElement QgsMeshRendererVectorSettings::writeXml( QDomDocument &doc ) const
   elem.setAttribute( "filter-max", mFilterMax );
   elem.setAttribute( "arrow-head-width-ratio", mArrowHeadWidthRatio );
   elem.setAttribute( "arrow-head-length-ratio", mArrowHeadLengthRatio );
+  elem.setAttribute( "user-grid-enabled", mOnUserDefinedGrid ? "1" : "0" );
+  elem.setAttribute( "user-grid-width", mUserGridCellWidth );
+  elem.setAttribute( "user-grid-height", mUserGridCellHeight );
 
   QDomElement elemShaft = doc.createElement( "shaft-length" );
   QString methodTxt;
@@ -265,6 +298,9 @@ void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem )
   mFilterMax = elem.attribute( "filter-max" ).toDouble();
   mArrowHeadWidthRatio = elem.attribute( "arrow-head-width-ratio" ).toDouble();
   mArrowHeadLengthRatio = elem.attribute( "arrow-head-length-ratio" ).toDouble();
+  mOnUserDefinedGrid = elem.attribute( "user-grid-enabled" ).toInt(); //bool
+  mUserGridCellWidth = elem.attribute( "user-grid-width" ).toInt();
+  mUserGridCellHeight = elem.attribute( "user-grid-height" ).toInt();
 
   QDomElement elemShaft = elem.firstChildElement( "shaft-length" );
   QString methodTxt = elemShaft.attribute( "method" );
