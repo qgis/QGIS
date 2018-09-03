@@ -822,7 +822,11 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(v2.isValid(), True)
         v3 = QgsVectorLayer("Point?field=id:integer&field=cname:string", "C", "memory")
         self.assertEqual(v3.isValid(), True)
-        QgsProject.instance().addMapLayers([v1, v2, v3])
+        tl1 = QgsVectorLayer("NoGeometry?field=id:integer&field=e_id:integer&field=0name:string", "D", "memory")
+        self.assertEqual(tl1.isValid(), True)
+        tl2 = QgsVectorLayer("NoGeometry?field=id:integer&field=ena me:string", "E", "memory")
+        self.assertEqual(tl2.isValid(), True)
+        QgsProject.instance().addMapLayers([v1, v2, v3, tl1, tl2])
         joinInfo = QgsVectorLayerJoinInfo()
         joinInfo.setTargetFieldName("b_id")
         joinInfo.setJoinLayer(v2)
@@ -832,7 +836,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(v1.fields()), 6)
 
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(v1)
-        self.assertEqual(df.query(), 'SELECT t.rowid AS uid, t.id, t.b_id, t.c_id, t.name, j1.bname AS B_bname, j1.bfield AS B_bfield FROM {} AS t LEFT JOIN {} AS j1 ON t."b_id"=j1."id"'.format(v1.id(), v2.id()))
+        self.assertEqual(df.query(), 'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "B_bname", j1."bfield" AS "B_bfield" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id"'.format(v1.id(), v2.id()))
 
         # with a field subset
         v1.removeJoin(v2.id())
@@ -840,7 +844,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         v1.addJoin(joinInfo)
         self.assertEqual(len(v1.fields()), 5)
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(v1)
-        self.assertEqual(df.query(), 'SELECT t.rowid AS uid, t.id, t.b_id, t.c_id, t.name, j1.bname AS B_bname FROM {} AS t LEFT JOIN {} AS j1 ON t."b_id"=j1."id"'.format(v1.id(), v2.id()))
+        self.assertEqual(df.query(), 'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "B_bname" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id"'.format(v1.id(), v2.id()))
         joinInfo.setJoinFieldNamesSubset(None)
 
         # add a table prefix to the join
@@ -849,7 +853,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         v1.addJoin(joinInfo)
         self.assertEqual(len(v1.fields()), 6)
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(v1)
-        self.assertEqual(df.query(), 'SELECT t.rowid AS uid, t.id, t.b_id, t.c_id, t.name, j1.bname AS BB_bname, j1.bfield AS BB_bfield FROM {} AS t LEFT JOIN {} AS j1 ON t."b_id"=j1."id"'.format(v1.id(), v2.id()))
+        self.assertEqual(df.query(), 'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "BB_bname", j1."bfield" AS "BB_bfield" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id"'.format(v1.id(), v2.id()))
         joinInfo.setPrefix("")
         v1.removeJoin(v2.id())
         v1.addJoin(joinInfo)
@@ -862,11 +866,21 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         v1.addJoin(joinInfo2)
         self.assertEqual(len(v1.fields()), 7)
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(v1)
-        self.assertEqual(df.query(), ('SELECT t.rowid AS uid, t.id, t.b_id, t.c_id, t.name, j1.bname AS B_bname, j1.bfield AS B_bfield, j2.cname AS C_cname FROM {} AS t ' +
-                                      'LEFT JOIN {} AS j1 ON t."b_id"=j1."id" ' +
-                                      'LEFT JOIN {} AS j2 ON t."c_id"=j2."id"').format(v1.id(), v2.id(), v3.id()))
+        self.assertEqual(df.query(), ('SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "B_bname", j1."bfield" AS "B_bfield", j2."cname" AS "C_cname" FROM "{}" AS t ' +
+                                      'LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id" ' +
+                                      'LEFT JOIN "{}" AS j2 ON t."c_id"=j2."id"').format(v1.id(), v2.id(), v3.id()))
 
-        QgsProject.instance().removeMapLayers([v1.id(), v2.id(), v3.id()])
+        # test NoGeometry joined layers with field names starting with a digit or containing white spaces
+        joinInfo3 = QgsVectorLayerJoinInfo()
+        joinInfo3.setTargetFieldName("e_id")
+        joinInfo3.setJoinLayer(tl2)
+        joinInfo3.setJoinFieldName("id")
+        tl1.addJoin(joinInfo3)
+        self.assertEqual(len(tl1.fields()), 4)
+        df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(tl1)
+        self.assertEqual(df.query(), 'SELECT t.rowid AS uid, t."id", t."e_id", t."0name", j1."ena me" AS "E_ena me" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."e_id"=j1."id"'.format(tl1.id(), tl2.id()))
+
+        QgsProject.instance().removeMapLayers([v1.id(), v2.id(), v3.id(), tl1.id(), tl2.id()])
 
     def testFieldsWithSpecialCharacters(self):
         ml = QgsVectorLayer("Point?srid=EPSG:4326&field=123:int", "mem_with_nontext_fieldnames", "memory")
