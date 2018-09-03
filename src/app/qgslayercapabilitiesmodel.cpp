@@ -128,7 +128,14 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
   {
     if ( idx.column() == IdentifiableColumn )
     {
-      return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+      if ( layer->isSpatial() )
+      {
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+      }
+      else
+      {
+        return nullptr;
+      }
     }
     else if ( idx.column() == ReadOnlyColumn )
     {
@@ -138,7 +145,7 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
       }
       else
       {
-        return Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+        return nullptr;
       }
     }
     else if ( idx.column() == SearchableColumn )
@@ -224,15 +231,18 @@ QVariant QgsLayerCapabilitiesModel::data( const QModelIndex &idx, int role ) con
       QVariant falseValue = role == Qt::CheckStateRole ? Qt::Unchecked : false;
       if ( idx.column() == IdentifiableColumn )
       {
-        return !mNonIdentifiableLayers.contains( layer->id() ) ? trueValue : falseValue;
+        if ( layer->isSpatial() )
+          return !mNonIdentifiableLayers.contains( layer->id() ) ? trueValue : falseValue;
       }
       else if ( idx.column() == ReadOnlyColumn )
       {
-        return mReadOnlyLayers.value( layer, true ) ? trueValue : falseValue;
+        if ( layer->type() == QgsMapLayer::VectorLayer )
+          return mReadOnlyLayers.value( layer, true ) ? trueValue : falseValue;
       }
       else if ( idx.column() == SearchableColumn )
       {
-        return mSearchableLayers.value( layer, true ) ? trueValue : falseValue;
+        if ( layer->type() == QgsMapLayer::VectorLayer )
+          return mSearchableLayers.value( layer, true ) ? trueValue : falseValue;
       }
     }
   }
@@ -249,19 +259,21 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
     {
       if ( index.column() == IdentifiableColumn )
       {
-        bool nonIdentifiable = value == Qt::Unchecked;
-        bool containsLayer = mNonIdentifiableLayers.contains( layer->id() );
-        if ( containsLayer && !nonIdentifiable )
-          mNonIdentifiableLayers.removeAll( layer->id() );
-        if ( !containsLayer && nonIdentifiable )
-          mNonIdentifiableLayers.append( layer->id() );
-        emit dataChanged( index, index );
-        return true;
+        if ( layer->isSpatial() )
+        {
+          bool nonIdentifiable = value == Qt::Unchecked;
+          bool containsLayer = mNonIdentifiableLayers.contains( layer->id() );
+          if ( containsLayer && !nonIdentifiable )
+            mNonIdentifiableLayers.removeAll( layer->id() );
+          if ( !containsLayer && nonIdentifiable )
+            mNonIdentifiableLayers.append( layer->id() );
+          emit dataChanged( index, index );
+          return true;
+        }
       }
       else if ( index.column() == ReadOnlyColumn )
       {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-        if ( vl )
+        if ( layer->type() == QgsMapLayer::VectorLayer )
         {
           mReadOnlyLayers.insert( layer, value == Qt::Checked );
           emit dataChanged( index, index );
@@ -270,8 +282,7 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
       }
       else if ( index.column() == SearchableColumn )
       {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-        if ( vl )
+        if ( layer->type() == QgsMapLayer::VectorLayer )
         {
           mSearchableLayers.insert( layer, value == Qt::Checked );
           emit dataChanged( index, index );
