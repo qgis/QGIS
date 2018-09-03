@@ -110,7 +110,7 @@ class RasterCalculator(QgisAlgorithm):
             layersDict = {lyr.source(): lyr for lyr in layers}
 
         crs = self.parameterAsCrs(parameters, self.CRS, context)
-        if not crs or not crs.isValid():
+        if crs is None or not crs.isValid():
             if not layers:
                 raise QgsProcessingException(self.tr("No reference layer selected nor CRS provided"))
             else:
