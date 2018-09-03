@@ -26,6 +26,7 @@
 #include "qgsgui.h"
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingregistry.h"
+#include "qgsprocessingalgorithm.h"
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
@@ -33,6 +34,7 @@
 #include "qgsnativealgorithms.h"
 #include "processing/models/qgsprocessingmodelalgorithm.h"
 #include "qgsxmlutils.h"
+#include "qgspropertyoverridebutton.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -133,6 +135,7 @@ class TestProcessingGui : public QObject
     void testFilterAlgorithmConfig();
     void testWrapperFactoryRegistry();
     void testWrapperGeneral();
+    void testWrapperDynamic();
     void testModelerWrapper();
     void testBooleanWrapper();
 };
@@ -295,6 +298,84 @@ void TestProcessingGui::testWrapperGeneral()
   delete w;
 }
 
+class TestProcessingContextGenerator : public QgsProcessingContextGenerator
+{
+  public:
+
+    TestProcessingContextGenerator( QgsProcessingContext &context )
+      : mContext( context )
+    {}
+
+    QgsProcessingContext *processingContext() override
+    {
+      return &mContext;
+    }
+
+    QgsProcessingContext &mContext;
+};
+
+void TestProcessingGui::testWrapperDynamic()
+{
+  const QgsProcessingAlgorithm *centroidAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:centroids" ) );
+  const QgsProcessingParameterDefinition *layerDef = centroidAlg->parameterDefinition( QStringLiteral( "INPUT" ) );
+  const QgsProcessingParameterDefinition *allPartsDef = centroidAlg->parameterDefinition( QStringLiteral( "ALL_PARTS" ) );
+
+  QgsProcessingBooleanWidgetWrapper inputWrapper( layerDef, QgsProcessingGui::Standard );
+  QgsProcessingBooleanWidgetWrapper allPartsWrapper( allPartsDef, QgsProcessingGui::Standard );
+
+  QgsProcessingContext context;
+
+  std::unique_ptr< QWidget > allPartsWidget( allPartsWrapper.createWrappedWidget( context ) );
+  // dynamic parameter, so property button should be created
+  QVERIFY( allPartsWrapper.mPropertyButton.data() != nullptr );
+
+  std::unique_ptr< QWidget > inputWidget( inputWrapper.createWrappedWidget( context ) );
+  // not dynamic parameter, so property button should be NOT created
+  QVERIFY( inputWrapper.mPropertyButton.data() == nullptr );
+
+  // set dynamic parameter to dynamic value
+  allPartsWrapper.setParameterValue( QgsProperty::fromExpression( QStringLiteral( "1+2" ) ), context );
+  QCOMPARE( allPartsWrapper.parameterValue().value< QgsProperty >().expressionString(), QStringLiteral( "1+2" ) );
+  // not dynamic value
+  allPartsWrapper.setParameterValue( true, context );
+  QCOMPARE( allPartsWrapper.parameterValue().toBool(), true );
+  allPartsWrapper.setParameterValue( false, context );
+  QCOMPARE( allPartsWrapper.parameterValue().toBool(), false );
+
+  // project layer
+  QgsProject p;
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  p.addMapLayer( vl );
+
+  QVERIFY( !allPartsWrapper.mPropertyButton->vectorLayer() );
+  allPartsWrapper.setDynamicParentLayerParameter( QVariant::fromValue( vl ) );
+  QCOMPARE( allPartsWrapper.mPropertyButton->vectorLayer(), vl );
+  // should not be owned by wrapper
+  QVERIFY( !allPartsWrapper.mDynamicLayer.get() );
+  allPartsWrapper.setDynamicParentLayerParameter( QVariant() );
+  QVERIFY( !allPartsWrapper.mPropertyButton->vectorLayer() );
+
+  allPartsWrapper.setDynamicParentLayerParameter( vl->id() );
+  QVERIFY( !allPartsWrapper.mPropertyButton->vectorLayer() );
+  QVERIFY( !allPartsWrapper.mDynamicLayer.get() );
+
+  // with project layer
+  context.setProject( &p );
+  TestProcessingContextGenerator generator( context );
+  allPartsWrapper.registerProcessingContextGenerator( &generator );
+
+  allPartsWrapper.setDynamicParentLayerParameter( vl->id() );
+  QCOMPARE( allPartsWrapper.mPropertyButton->vectorLayer(), vl );
+  QVERIFY( !allPartsWrapper.mDynamicLayer.get() );
+
+  // non-project layer
+  QString pointFileName = TEST_DATA_DIR + QStringLiteral( "/points.shp" );
+  allPartsWrapper.setDynamicParentLayerParameter( pointFileName );
+  QCOMPARE( allPartsWrapper.mPropertyButton->vectorLayer()->publicSource(), pointFileName );
+  // must be owned by wrapper, or layer may be deleted while still required by wrapper
+  QCOMPARE( allPartsWrapper.mDynamicLayer->publicSource(), pointFileName );
+}
+
 void TestProcessingGui::testModelerWrapper()
 {
   // make a little model
@@ -402,31 +483,50 @@ void TestProcessingGui::testBooleanWrapper()
 
   // standard wrapper
   QgsProcessingBooleanWidgetWrapper wrapper( &param );
+  QSignalSpy spy( &wrapper, &QgsProcessingBooleanWidgetWrapper::widgetValueHasChanged );
 
   QgsProcessingContext context;
   QWidget *w = wrapper.createWrappedWidget( context );
   wrapper.setWidgetValue( true, context );
+  QCOMPARE( spy.count(), 1 );
   QVERIFY( wrapper.widgetValue().toBool() );
   QVERIFY( static_cast< QCheckBox * >( wrapper.wrappedWidget() )->isChecked() );
   wrapper.setWidgetValue( false, context );
+  QCOMPARE( spy.count(), 2 );
   QVERIFY( !wrapper.widgetValue().toBool() );
   QVERIFY( !static_cast< QCheckBox * >( wrapper.wrappedWidget() )->isChecked() );
 
   // should be no label in standard mode
   QVERIFY( !wrapper.createWrappedLabel() );
   QCOMPARE( static_cast< QCheckBox * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "bool" ) );
+
+  // check signal
+  static_cast< QCheckBox * >( wrapper.wrappedWidget() )->setChecked( true );
+  QCOMPARE( spy.count(), 3 );
+  static_cast< QCheckBox * >( wrapper.wrappedWidget() )->setChecked( false );
+  QCOMPARE( spy.count(), 4 );
+
   delete w;
 
   // batch wrapper
   QgsProcessingBooleanWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
 
   w = wrapperB.createWrappedWidget( context );
+  QSignalSpy spy2( &wrapperB, &QgsProcessingBooleanWidgetWrapper::widgetValueHasChanged );
   wrapperB.setWidgetValue( true, context );
+  QCOMPARE( spy2.count(), 1 );
   QVERIFY( wrapperB.widgetValue().toBool() );
   QVERIFY( static_cast< QComboBox * >( wrapperB.wrappedWidget() )->currentData().toBool() );
   wrapperB.setWidgetValue( false, context );
+  QCOMPARE( spy2.count(), 2 );
   QVERIFY( !wrapperB.widgetValue().toBool() );
   QVERIFY( !static_cast< QComboBox * >( wrapperB.wrappedWidget() )->currentData().toBool() );
+
+  // check signal
+  static_cast< QComboBox * >( w )->setCurrentIndex( 0 );
+  QCOMPARE( spy2.count(), 3 );
+  static_cast< QComboBox * >( w )->setCurrentIndex( 1 );
+  QCOMPARE( spy2.count(), 4 );
 
   // should be no label in batch mode
   QVERIFY( !wrapperB.createWrappedLabel() );
@@ -436,12 +536,21 @@ void TestProcessingGui::testBooleanWrapper()
   QgsProcessingBooleanWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
 
   w = wrapperM.createWrappedWidget( context );
+  QSignalSpy spy3( &wrapperM, &QgsProcessingBooleanWidgetWrapper::widgetValueHasChanged );
   wrapperM.setWidgetValue( true, context );
   QVERIFY( wrapperM.widgetValue().toBool() );
+  QCOMPARE( spy3.count(), 1 );
   QVERIFY( static_cast< QComboBox * >( wrapperM.wrappedWidget() )->currentData().toBool() );
   wrapperM.setWidgetValue( false, context );
   QVERIFY( !wrapperM.widgetValue().toBool() );
+  QCOMPARE( spy3.count(), 2 );
   QVERIFY( !static_cast< QComboBox * >( wrapperM.wrappedWidget() )->currentData().toBool() );
+
+  // check signal
+  static_cast< QComboBox * >( w )->setCurrentIndex( 0 );
+  QCOMPARE( spy3.count(), 3 );
+  static_cast< QComboBox * >( w )->setCurrentIndex( 1 );
+  QCOMPARE( spy3.count(), 4 );
 
   // should be a label in modeler mode
   QLabel *l = wrapperM.createWrappedLabel();

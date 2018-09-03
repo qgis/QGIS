@@ -21,9 +21,11 @@
 #include <QObject>
 #include <QWidget>
 #include <QPointer>
+#include <memory>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsprocessinggui.h"
+#include "qgsvectorlayer.h"
 
 class QgsProcessingParameterDefinition;
 class QgsProcessingContext;
@@ -31,6 +33,31 @@ class QgsProcessingModelerParameterWidget;
 class QgsProcessingModelAlgorithm;
 class QLabel;
 class QgsPropertyOverrideButton;
+class QgsVectorLayer;
+
+/**
+ * \class QgsProcessingContextGenerator
+ *
+ * An interface for objects which can create Processing contexts.
+ *
+ * \ingroup gui
+ * \since QGIS 3.4
+ */
+class GUI_EXPORT QgsProcessingContextGenerator
+{
+  public:
+
+    /**
+     * This method needs to be reimplemented in all classes which implement this interface
+     * and return a Processing context.
+     *
+     * Note that ownership of the context is not transferred - it is intended that subclasses
+     * return a pointer to a context which they have already created and own.
+     */
+    virtual QgsProcessingContext *processingContext() = 0;
+
+    virtual ~QgsProcessingContextGenerator() = default;
+};
 
 /**
  * \class QgsAbstractProcessingParameterWidgetWrapper
@@ -130,10 +157,26 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
     QVariant parameterValue() const;
 
     /**
+     * Register a Processing context generator class that will be used to retrieve
+     * a Processing context for the wrapper when required.
+     */
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+
+    /**
      * Called after all wrappers have been created within a particular dialog or context,
      * allowing the wrapper to connect to the wrappers of other, related parameters.
      */
     virtual void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers );
+
+  signals:
+
+    // TODO QGIS 4.0 - remove wrapper parameter - this is kept for compatibility with 3.x API,
+    // yet can easily be retrieved by checking the sender()
+
+    /**
+     * Emitted whenever the parameter value (as defined by the wrapped widget) is changed.
+     */
+    void widgetValueHasChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper );
 
   protected:
 
@@ -175,14 +218,24 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
      */
     virtual QVariant widgetValue() const = 0;
 
+  private slots:
+
+    void parentLayerChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper );
+
   private:
 
     QgsProcessingGui::WidgetType mType = QgsProcessingGui::Standard;
     const QgsProcessingParameterDefinition *mParameterDefinition = nullptr;
+    QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
+
+    void setDynamicParentLayerParameter( const QVariant &value );
 
     QPointer< QWidget > mWidget;
     QPointer< QgsPropertyOverrideButton > mPropertyButton;
     QPointer< QLabel > mLabel;
+    std::unique_ptr< QgsVectorLayer > mDynamicLayer;
+
+    friend class TestProcessingGui;
 
 };
 

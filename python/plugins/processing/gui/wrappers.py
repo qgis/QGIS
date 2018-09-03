@@ -148,13 +148,13 @@ def getExtendedLayerName(layer):
 
 
 class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
-    widgetValueHasChanged = pyqtSignal(object)
 
     NOT_SET_OPTION = '~~~~!!!!NOT SET!!!!~~~~~~~'
 
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
         self.dialogType = dialogTypes.get(dialog.__class__.__name__, QgsProcessingGui.Standard)
         super().__init__(param, self.dialogType)
+
         self.param = param
         self.dialog = dialog
         self.row = row
