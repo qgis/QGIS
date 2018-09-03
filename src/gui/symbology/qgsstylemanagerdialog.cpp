@@ -43,8 +43,8 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
-  : QDialog( parent )
+QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, Qt::WindowFlags flags )
+  : QDialog( parent, flags )
   , mStyle( style )
 {
   setupUi( this );
@@ -602,6 +602,12 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
   return name;
 }
 
+void QgsStyleManagerDialog::activate()
+{
+  raise();
+  setWindowState( windowState() & ~Qt::WindowMinimized );
+  activateWindow();
+}
 
 bool QgsStyleManagerDialog::addColorRamp()
 {
