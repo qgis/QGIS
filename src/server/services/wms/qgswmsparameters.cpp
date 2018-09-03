@@ -1167,29 +1167,46 @@ namespace QgsWms
   QStringList QgsWmsParameters::filters() const
   {
     const QString filter = mWmsParameters[ QgsWmsParameter::FILTER ].toString();
-    if ( filter.startsWith( QStringLiteral( "(<" ) ) && filter.endsWith( QStringLiteral( "Filter>)" ) ) )
+    QStringList results;
+    int pos = 0;
+    while ( pos < filter.size() )
     {
-      // OGC filter on multiple layers
-      // remove the "(<" at the beginning and the "Filter>)" at the end
-      const QString toSplit = filter.mid( 2, filter.length() - 10 );
-
-      QStringList result;
-      for ( const QString &cur : toSplit.split( QStringLiteral( "Filter>)(<" ), QString::SkipEmptyParts ) )
+      if ( pos + 1 < filter.size() && filter[pos] == '(' && filter[pos + 1] == '<' )
       {
-        result.append( QStringLiteral( "<" ) + cur + QStringLiteral( "Filter>" ) );
+        // OGC filter on multiple layers
+        int posEnd = filter.indexOf( "Filter>)", pos );
+        if ( posEnd < 0 )
+        {
+          posEnd = filter.size();
+        }
+        results.append( filter.mid( pos + 1, posEnd - pos + 6 ) );
+        pos = posEnd + 8;
       }
-      return result;
+      else if ( pos + 1 < filter.size() && filter[pos] == '(' && filter[pos + 1] == ')' )
+      {
+        // empty OGC filter
+        results.append( "" );
+        pos += 2;
+      }
+      else if ( filter[pos] == '<' )
+      {
+        // Single OGC filter
+        results.append( filter.mid( pos ) );
+        break;
+      }
+      else
+      {
+        // QGIS specific filter
+        int posEnd = filter.indexOf( ';', pos + 1 );
+        if ( posEnd < 0 )
+        {
+          posEnd = filter.size();
+        }
+        results.append( filter.mid( pos, posEnd - pos ) );
+        pos = posEnd + 1;
+      }
     }
-    else if ( filter.startsWith( QStringLiteral( "<" ) ) && filter.endsWith( QStringLiteral( "Filter>" ) ) )
-    {
-      // single OGC filter
-      return QStringList( filter );
-    }
-    else
-    {
-      // QGIS specific filter
-      return filter.split( ';', QString::SkipEmptyParts );
-    }
+    return results;
   }
 
   QString QgsWmsParameters::filterGeom() const
@@ -1233,8 +1250,6 @@ namespace QgsWms
 
   QMultiMap<QString, QString> QgsWmsParameters::getLayerFilters( const QStringList &layers ) const
   {
-    // filter format: "LayerName:filterString;LayerName2:filterString2;..."
-    // several filters can be defined for one layer
     const QStringList rawFilters = filters();
     QMultiMap<QString, QString> layerFilters;
     for ( int i = 0; i < rawFilters.size(); i++ )
@@ -1244,8 +1259,10 @@ namespace QgsWms
       {
         layerFilters.insert( layers[i], f );
       }
-      else
+      else if ( !f.isEmpty() )
       {
+        // filter format: "LayerName:filterString;LayerName2:filterString2;..."
+        // several filters can be defined for one layer
         const QStringList splits = f.split( ':' );
         if ( splits.size() == 2 )
         {
