@@ -29,6 +29,7 @@ email                : sherman at mrcc.com
 
 #include "qgsattributes.h"
 #include "qgsfields.h"
+#include "qgsfeatureid.h"
 
 class QgsFeature;
 class QgsFeaturePrivate;
@@ -42,15 +43,6 @@ class QgsRectangle;
  * full unit tests in testqgsfeature.cpp.
  * See details in QEP #17
  ****************************************************************************/
-
-// feature id class (currently 64 bit)
-
-// 64 bit feature ids
-typedef qint64 QgsFeatureId SIP_SKIP;
-#define FID_IS_NEW(fid)     (fid<0)
-#define FID_TO_NUMBER(fid)  static_cast<qint64>(fid)
-#define FID_TO_STRING(fid)  QString::number( fid )
-#define STRING_TO_FID(str)  (str).toLongLong()
 
 
 /**
@@ -538,13 +530,6 @@ typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
 typedef QMap<QgsFeatureId, QgsGeometry> QgsGeometryMap;
 #else
 typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
-#endif
-
-
-#ifndef SIP_RUN
-typedef QSet<QgsFeatureId> QgsFeatureIds;
-#else
-typedef QSet<qint64> QgsFeatureIds;
 #endif
 
 typedef QList<QgsFeature> QgsFeatureList;
