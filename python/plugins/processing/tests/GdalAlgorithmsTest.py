@@ -52,6 +52,7 @@ from processing.algs.gdal.retile import retile
 from processing.algs.gdal.translate import translate
 from processing.algs.gdal.warp import warp
 from processing.algs.gdal.fillnodata import fillnodata
+from processing.algs.gdal.rearrange_bands import rearrange_bands
 
 from qgis.core import (QgsProcessingContext,
                        QgsProcessingFeedback,
@@ -1531,6 +1532,33 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
+
+    def testRearrangeBands(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        outsource = 'd:/temp/check.tif'
+
+        alg = rearrange_bands()
+        alg.initAlgorithm()
+
+        # single band
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BANDS': 1,
+                                    'OUTPUT': outsource}, context, feedback),
+            ['gdal_translate', '-b 1 ' +
+             '-ot Float32 -of GTiff ' +
+             source + ' ' + outsource])
+
+        # three bands, re-ordered
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BANDS': [3, 2, 1],
+                                    'OUTPUT': outsource}, context, feedback),
+            ['gdal_translate', '-b 3 -b 2 -b 1 ' +
+             '-ot Float32 -of GTiff ' +
+             source + ' ' + outsource])
 
     def testFillnodata(self):
         context = QgsProcessingContext()

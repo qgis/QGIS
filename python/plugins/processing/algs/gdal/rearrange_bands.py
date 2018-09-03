@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    translate.py
+    rearrange_bands.py
     ---------------------
     Date                 : August 2018
     Copyright            : (C) 2018 by Mathieu Pellerin

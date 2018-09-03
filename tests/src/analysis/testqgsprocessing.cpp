@@ -1703,6 +1703,7 @@ void TestQgsProcessing::parameters()
   params.insert( QStringLiteral( "string" ), QStringLiteral( "a string" ) );
   params.insert( QStringLiteral( "double" ), 5.2 );
   params.insert( QStringLiteral( "int" ), 15 );
+  params.insert( QStringLiteral( "ints" ), QVariant( QList<QVariant>() << 3 << 2 << 1 ) );
   params.insert( QStringLiteral( "bool" ), true );
 
   QgsProcessingContext context;
@@ -1762,6 +1763,12 @@ void TestQgsProcessing::parameters()
   QCOMPARE( QgsProcessingParameters::parameterAsInt( def.get(), params, context ), 15 );
   def->setName( QStringLiteral( "prop" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsInt( def.get(), params, context ), 6 );
+
+  // as ints
+  def->setName( QStringLiteral( "int" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsInts( def.get(), params, context ), QList<int>() << 15 );
+  def->setName( QStringLiteral( "ints" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsInts( def.get(), params, context ), QList<int>() << 3 << 2 << 1 );
 
   // as bool
   def->setName( QStringLiteral( "double" ) );
