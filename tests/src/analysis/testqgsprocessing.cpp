@@ -6156,6 +6156,7 @@ void TestQgsProcessing::modelExecution()
   QCOMPARE( variables.count(), 11 );
   QCOMPARE( variables.value( "DIST" ).value.toInt(), 271 );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.parameterName(), QString( "SOURCE_LAYER" ) );
+  QCOMPARE( variables.value( "cx1_OUTPUT" ).source.outputChildId(), QString( "cx1" ) );
   QCOMPARE( variables.value( "cx1_OUTPUT" ).source.parameterName(), QString( "" ) );
   QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_minx" ).value.toDouble(), -118.8888, 0.001 );
   QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_miny" ).value.toDouble(), 22.8002, 0.001 );
@@ -6219,7 +6220,9 @@ void TestQgsProcessing::modelExecution()
   QCOMPARE( variables.count(), 16 );
   QCOMPARE( variables.value( "DIST" ).value.toInt(), 271 );
   QCOMPARE( variables.value( "SOURCE_LAYER" ).source.parameterName(), QString( "SOURCE_LAYER" ) );
+  QCOMPARE( variables.value( "cx1_OUTPUT" ).source.outputChildId(), QString( "cx1" ) );
   QCOMPARE( variables.value( "cx1_OUTPUT" ).source.parameterName(), QString( "" ) );
+  QCOMPARE( variables.value( "cx2_OUTPUT" ).source.outputChildId(), QString( "cx2" ) );
   QCOMPARE( variables.value( "cx2_OUTPUT" ).source.parameterName(), QString( "" ) );
   QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_minx" ).value.toDouble(), -118.8888, 0.001 );
   QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_miny" ).value.toDouble(), 22.8002, 0.001 );
