@@ -154,10 +154,10 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     QString mStyleFilename;
 
-    bool mModified;
+    bool mModified = false;
 
     //! Mode to display the symbol list
-    bool mGrouppingMode;
+    bool mGrouppingMode = false;
 
     //! space to store symbol tags
     QStringList mTagList;
