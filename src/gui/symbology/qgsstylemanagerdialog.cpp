@@ -46,7 +46,6 @@
 QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   : QDialog( parent )
   , mStyle( style )
-  , mModified( false )
 {
   setupUi( this );
   connect( tabItemType, &QTabWidget::currentChanged, this, &QgsStyleManagerDialog::tabItemType_currentChanged );
@@ -98,9 +97,6 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   connect( importAction, &QAction::triggered, this, &QgsStyleManagerDialog::importItems );
   btnShare->setMenu( shareMenu );
 
-  // Set editing mode off by default
-  mGrouppingMode = false;
-
   QStandardItemModel *model = new QStandardItemModel( listItems );
   listItems->setModel( model );
   listItems->setSelectionMode( QAbstractItemView::ExtendedSelection );
@@ -150,7 +146,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   rampTypes << tr( "Gradient" ) << tr( "Color presets" ) << tr( "Random" ) << tr( "Catalog: cpt-city" );
   rampTypes << tr( "Catalog: ColorBrewer" );
   mMenuBtnAddItemColorRamp = new QMenu( this );
-  Q_FOREACH ( const QString &rampType, rampTypes )
+  for ( const QString &rampType : qgis::as_const( rampTypes ) )
     mMenuBtnAddItemColorRamp->addAction( new QAction( rampType, this ) );
   connect( mMenuBtnAddItemColorRamp, &QMenu::triggered,
            this, static_cast<bool ( QgsStyleManagerDialog::* )( QAction * )>( &QgsStyleManagerDialog::addColorRamp ) );
@@ -769,7 +765,7 @@ void QgsStyleManagerDialog::removeItem()
 
 bool QgsStyleManagerDialog::removeSymbol()
 {
-  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
+  const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Symbol" ),
        QString( tr( "Do you really want to remove %n symbol(s)?", nullptr, indexes.count() ) ),
        QMessageBox::Yes,
@@ -778,7 +774,7 @@ bool QgsStyleManagerDialog::removeSymbol()
 
   QgsTemporaryCursorOverride override( Qt::WaitCursor );
 
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  for ( const QModelIndex &index : indexes )
   {
     QString symbolName = index.data().toString();
     // delete from style and update list
@@ -791,7 +787,7 @@ bool QgsStyleManagerDialog::removeSymbol()
 
 bool QgsStyleManagerDialog::removeColorRamp()
 {
-  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
+  const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Color Ramp" ),
        QString( tr( "Do you really want to remove %n ramp(s)?", nullptr, indexes.count() ) ),
        QMessageBox::Yes,
@@ -800,7 +796,7 @@ bool QgsStyleManagerDialog::removeColorRamp()
 
   QgsTemporaryCursorOverride override( Qt::WaitCursor );
 
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  for ( const QModelIndex &index : indexes )
   {
     QString rampName = index.data().toString();
     // delete from style and update list
@@ -863,8 +859,8 @@ void QgsStyleManagerDialog::exportSelectedItemsImages( const QString &dir, const
   if ( dir.isEmpty() )
     return;
 
-  QModelIndexList indexes = listItems->selectionModel()->selection().indexes();
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const QModelIndexList indexes = listItems->selectionModel()->selection().indexes();
+  for ( const QModelIndex &index : indexes )
   {
     QString name = index.data().toString();
     QString path = dir + '/' + name + '.' + format;
@@ -917,7 +913,7 @@ void QgsStyleManagerDialog::populateGroups()
   taggroup->setEditable( false );
   QStringList tags = mStyle->tags();
   tags.sort();
-  Q_FOREACH ( const QString &tag, tags )
+  for ( const QString &tag : qgis::as_const( tags ) )
   {
     QStandardItem *item = new QStandardItem( tag );
     item->setData( mStyle->tagId( tag ) );
@@ -1269,10 +1265,10 @@ void QgsStyleManagerDialog::regrouped( QStandardItem *item )
 void QgsStyleManagerDialog::setSymbolsChecked( const QStringList &symbols )
 {
   QStandardItemModel *model = qobject_cast<QStandardItemModel *>( listItems->model() );
-  Q_FOREACH ( const QString &symbol, symbols )
+  for ( const QString &symbol : symbols )
   {
-    QList<QStandardItem *> items = model->findItems( symbol );
-    Q_FOREACH ( QStandardItem *item, items )
+    const QList<QStandardItem *> items = model->findItems( symbol );
+    for ( QStandardItem *item : items )
       item->setCheckState( Qt::Checked );
   }
 }
@@ -1381,7 +1377,7 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
   QAction *a = nullptr;
   QStringList tags = mStyle->tags();
   tags.sort();
-  Q_FOREACH ( const QString &tag, tags )
+  for ( const QString &tag : qgis::as_const( tags ) )
   {
     a = new QAction( tag, mGroupListMenu );
     a->setData( tag );
@@ -1411,8 +1407,8 @@ void QgsStyleManagerDialog::addFavoriteSelectedSymbols()
     return;
   }
 
-  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
+  for ( const QModelIndex &index : indexes )
   {
     mStyle->addFavorite( type, index.data().toString() );
   }
@@ -1428,8 +1424,8 @@ void QgsStyleManagerDialog::removeFavoriteSelectedSymbols()
     return;
   }
 
-  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-  Q_FOREACH ( const QModelIndex &index, indexes )
+  const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
+  for ( const QModelIndex &index : indexes )
   {
     mStyle->removeFavorite( type, index.data().toString() );
   }
@@ -1464,8 +1460,8 @@ void QgsStyleManagerDialog::tagSelectedSymbols( bool newTag )
       tag = selectedItem->data().toString();
     }
 
-    QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-    Q_FOREACH ( const QModelIndex &index, indexes )
+    const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
+    for ( const QModelIndex &index : indexes )
     {
       mStyle->tagSymbol( type, index.data().toString(), QStringList( tag ) );
     }
@@ -1487,8 +1483,8 @@ void QgsStyleManagerDialog::detagSelectedSymbols()
       QgsDebugMsg( QStringLiteral( "unknown entity type" ) );
       return;
     }
-    QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-    Q_FOREACH ( const QModelIndex &index, indexes )
+    const QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
+    for ( const QModelIndex &index : indexes )
     {
       mStyle->detagSymbol( type, index.data().toString() );
     }
