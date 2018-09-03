@@ -35,6 +35,8 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 
     void initWidget( QWidget *editor ) override;
 
+    void reinitWidget();
+
     void setQmlCode( const QString &qmlCode );
 
   public slots:

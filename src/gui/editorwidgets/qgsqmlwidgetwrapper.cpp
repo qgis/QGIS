@@ -18,6 +18,7 @@
 #include <QtQuickWidgets/QQuickWidget>
 #include <QQuickWidget>
 #include <QQmlContext>
+#include <QQmlEngine>
 
 QgsQmlWidgetWrapper::QgsQmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
@@ -54,6 +55,25 @@ void QgsQmlWidgetWrapper::initWidget( QWidget *editor )
   mQmlFile.close();
 }
 
+
+void QgsQmlWidgetWrapper::reinitWidget( )
+{
+  if ( !mWidget )
+    return;
+
+  if ( !mQmlFile.open() )
+  {
+    QgsMessageLog::logMessage( tr( "Failed to open temporary QML file" ) );
+    return;
+  }
+
+  mWidget->engine()->clearComponentCache();
+  mWidget->setSource( QUrl::fromLocalFile( mQmlFile.fileName() ) );
+
+  mQmlFile.close();
+}
+
+
 void QgsQmlWidgetWrapper::setQmlCode( const QString &qmlCode )
 {
   if ( !mQmlFile.open() )
@@ -62,6 +82,7 @@ void QgsQmlWidgetWrapper::setQmlCode( const QString &qmlCode )
     return;
   }
 
+  mQmlFile.resize( 0 );
   mQmlFile.write( qmlCode.toUtf8() );
 
   mQmlFile.close();

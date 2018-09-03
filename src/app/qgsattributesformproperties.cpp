@@ -19,6 +19,7 @@
 #include "qgsattributesforminitcode.h"
 #include "qgisapp.h"
 #include "qgsfieldcombobox.h"
+#include "qgsqmlwidgetwrapper.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -1105,10 +1106,14 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
     {
       QDialog dlg;
-      dlg.resize( 600, 400 );
       dlg.setWindowTitle( tr( "Configure QML Widget" ) );
-      QFormLayout *layout = new QFormLayout() ;
-      dlg.setLayout( layout );
+
+      QVBoxLayout *mainLayout = new QVBoxLayout();
+      QHBoxLayout *qmlLayout = new QHBoxLayout();
+      QFormLayout *layout = new QFormLayout();
+      mainLayout->addLayout( qmlLayout );
+      qmlLayout->addLayout( layout );
+      dlg.setLayout( mainLayout );
       layout->addWidget( baseWidget );
 
       //widget title
@@ -1166,6 +1171,15 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       } );
 
 
+      QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
+      qmlWrapper->setQmlCode( qmlCode->toPlainText() );
+      connect( qmlCode, &QPlainTextEdit::textChanged, this, [ = ]
+      {
+        qmlWrapper->setQmlCode( qmlCode->toPlainText() );
+        qmlWrapper->reinitWidget();
+      } );
+
+
       layout->addRow( tr( "Title" ), title );
       QGroupBox *qmlCodeBox = new QGroupBox( tr( "QML Code" ) );
       qmlCodeBox->setLayout( new QGridLayout );
@@ -1173,13 +1187,15 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       qmlCodeBox->layout()->addWidget( attributeFieldCombo );
       qmlCodeBox->layout()->addWidget( qmlCode );
       layout->addRow( qmlCodeBox );
+      qmlLayout->addWidget( qmlWrapper->widget() );
 
       QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
 
-      dlg.layout()->addWidget( buttonBox );
+      mainLayout->addWidget( buttonBox );
+
 
       if ( dlg.exec() )
       {
