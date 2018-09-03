@@ -318,6 +318,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsnewnamedialog.h"
 #include "qgsgui.h"
 #include "qgsdatasourcemanagerdialog.h"
+#include "qgsstylemanagerdialog.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -1509,6 +1510,9 @@ QgisApp::~QgisApp()
   delete mVectorLayerTools;
   delete mWelcomePage;
 
+  if ( mStyleManagerDialog )
+    delete mStyleManagerDialog;
+
   deleteLayoutDesigners();
   removeAnnotationItems();
 
@@ -2262,8 +2266,13 @@ void QgisApp::createActions()
 
 void QgisApp::showStyleManager()
 {
-  QgsStyleManagerDialog dlg( QgsStyle::defaultStyle(), this );
-  dlg.exec();
+  if ( !mStyleManagerDialog )
+  {
+    mStyleManagerDialog = new QgsStyleManagerDialog( QgsStyle::defaultStyle(), this, Qt::Window );
+    mStyleManagerDialog->setAttribute( Qt::WA_DeleteOnClose );
+  }
+  mStyleManagerDialog->show();
+  mStyleManagerDialog->activate();
 }
 
 void QgisApp::showPythonDialog()
