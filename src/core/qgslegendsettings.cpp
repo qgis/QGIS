@@ -18,8 +18,7 @@
 #include <QPainter>
 
 QgsLegendSettings::QgsLegendSettings()
-  : mTitle( QObject::tr( "Legend" ) )
-  , mFontColor( QColor( 0, 0, 0 ) )
+  : mFontColor( QColor( 0, 0, 0 ) )
   , mSymbolSize( 7, 4 )
   , mWmsLegendSize( 50, 25 )
   , mRasterStrokeColor( Qt::black )
