@@ -1120,6 +1120,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       QLineEdit *title = new QLineEdit( itemData.name() );
       //qml code
       QPlainTextEdit *qmlCode = new QPlainTextEdit( itemData.qmlElementEditorConfiguration().qmlCode );
+      qmlCode->setMinimumWidth( 400 );
       //template to select
       QComboBox *qmlObjectTemplate = new QComboBox();
       qmlObjectTemplate->addItem( "Rectangle" );
@@ -1145,7 +1146,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
                                       "import QtCharts 2.0\n"
                                       "\n"
                                       "ChartView {\n"
-                                      "    width: 600\n"
+                                      "    width: 400\n"
                                       "    height: 400\n"
                                       "\n"
                                       "    PieSeries {\n"
@@ -1165,11 +1166,21 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       //attributes to select
       QgsFieldComboBox *attributeFieldCombo = new QgsFieldComboBox();
       attributeFieldCombo->setLayer( mLayer );
-      connect( attributeFieldCombo, &QgsFieldComboBox::fieldChanged, qmlCode, [ = ]( QString attributeName )
+      connect( attributeFieldCombo, &QgsFieldComboBox::fieldChanged, this, [ = ]( QString attributeName )
       {
         qmlCode->insertPlainText( QStringLiteral( "feature.attribute(\"%1\")" ).arg( attributeName ) );
       } );
 
+      QgsFieldExpressionWidget *expressionWidget = new QgsFieldExpressionWidget;
+      expressionWidget->setLayer( mLayer );
+      expressionWidget->setExpressionDialogTitle( tr( "Expression" ) );
+
+      connect( expressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & expressionText )
+      {
+        qmlCode->insertPlainText( QStringLiteral( "expression(%1)" ).arg( expressionText ) );
+        QgsLogger::warning( QStringLiteral( "Do it..." ) );
+        //expression needs to be added here...
+      } );
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
       qmlWrapper->setQmlCode( qmlCode->toPlainText() );
@@ -1179,15 +1190,19 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
         qmlWrapper->reinitWidget();
       } );
 
-
       layout->addRow( tr( "Title" ), title );
       QGroupBox *qmlCodeBox = new QGroupBox( tr( "QML Code" ) );
       qmlCodeBox->setLayout( new QGridLayout );
       qmlCodeBox->layout()->addWidget( qmlObjectTemplate );
       qmlCodeBox->layout()->addWidget( attributeFieldCombo );
+      qmlCodeBox->layout()->addWidget( expressionWidget );
       qmlCodeBox->layout()->addWidget( qmlCode );
       layout->addRow( qmlCodeBox );
-      qmlLayout->addWidget( qmlWrapper->widget() );
+      QGroupBox *qmlPreviewBox = new QGroupBox( tr( "Preview") );
+      qmlPreviewBox->setLayout( new QGridLayout );
+      qmlPreviewBox->setMinimumWidth( 400 );
+      qmlPreviewBox->layout()->addWidget(qmlWrapper->widget());
+      qmlLayout->addWidget( qmlPreviewBox );
 
       QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
 
@@ -1195,7 +1210,6 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
 
       mainLayout->addWidget( buttonBox );
-
 
       if ( dlg.exec() )
       {

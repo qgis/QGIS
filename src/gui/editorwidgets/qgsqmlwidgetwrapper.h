@@ -51,4 +51,17 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
     QgsFeature mFeature;
 };
 
+/*
+class GUI_EXPORT QmlExpression
+{
+  Q_GADGET
+
+  public:
+    QgsExpressionContext expressionContext();
+    void setExpressionContext( QgsExpressionContext expressionContext );
+
+   Q_INVOKABLE evaluate();
+}
+*/
+
 #endif // QGSQMLWIDGETWRAPPER_H
