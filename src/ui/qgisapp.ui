@@ -397,6 +397,7 @@
    <addaction name="mActionSaveProjectAs"/>
    <addaction name="mActionNewPrintLayout"/>
    <addaction name="mActionShowLayoutManager"/>
+   <addaction name="mActionStyleManager"/>
   </widget>
   <widget class="QToolBar" name="mLayerToolBar">
    <property name="windowTitle">
