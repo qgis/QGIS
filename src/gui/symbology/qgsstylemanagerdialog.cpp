@@ -545,7 +545,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
   {
     // Q_ASSERT( 0 && "invalid ramp type" );
     // bailing out is rather harsh!
-    QgsDebugMsg( "invalid ramp type " + rampType );
+    QgsDebugMsg( QStringLiteral( "invalid ramp type %1" ).arg( rampType ) );
     return QString();
   }
 
@@ -958,7 +958,7 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex &index )
   QgsStyle::StyleEntity type = currentItemType() < 3 ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
   if ( currentItemType() > 3 )
   {
-    QgsDebugMsg( "Entity not implemented" );
+    QgsDebugMsg( QStringLiteral( "Entity not implemented" ) );
     return;
   }
 
@@ -1156,7 +1156,7 @@ void QgsStyleManagerDialog::removeGroup()
 
 void QgsStyleManagerDialog::groupRenamed( QStandardItem *item )
 {
-  QgsDebugMsg( "Symbol group edited: data=" + item->data( Qt::UserRole + 1 ).toString() + " text=" + item->text() );
+  QgsDebugMsg( QStringLiteral( "Symbol group edited: data=%1 text=%2" ).arg( item->data( Qt::UserRole + 1 ).toString(), item->text() ) );
   int id = item->data( Qt::UserRole + 1 ).toInt();
   QString name = item->text();
   if ( item->parent()->data( Qt::UserRole + 1 ) == "smartgroups" )
@@ -1243,7 +1243,7 @@ void QgsStyleManagerDialog::regrouped( QStandardItem *item )
   QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
   if ( currentItemType() > 3 )
   {
-    QgsDebugMsg( "Unknown style entity" );
+    QgsDebugMsg( QStringLiteral( "Unknown style entity" ) );
     return;
   }
 
@@ -1365,7 +1365,7 @@ void QgsStyleManagerDialog::grouptreeContextMenu( QPoint point )
   QPoint globalPos = groupTree->viewport()->mapToGlobal( point );
 
   QModelIndex index = groupTree->indexAt( point );
-  QgsDebugMsg( "Now you clicked: " + index.data().toString() );
+  QgsDebugMsg( QStringLiteral( "Now you clicked: %1" ).arg( index.data().toString() ) );
 
   if ( index.isValid() && !mGrouppingMode )
     mGroupTreeContextMenu->popup( globalPos );
@@ -1407,7 +1407,7 @@ void QgsStyleManagerDialog::addFavoriteSelectedSymbols()
   QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
   if ( currentItemType() > 3 )
   {
-    QgsDebugMsg( "unknown entity type" );
+    QgsDebugMsg( QStringLiteral( "unknown entity type" ) );
     return;
   }
 
@@ -1424,7 +1424,7 @@ void QgsStyleManagerDialog::removeFavoriteSelectedSymbols()
   QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
   if ( currentItemType() > 3 )
   {
-    QgsDebugMsg( "unknown entity type" );
+    QgsDebugMsg( QStringLiteral( "unknown entity type" ) );
     return;
   }
 
@@ -1444,7 +1444,7 @@ void QgsStyleManagerDialog::tagSelectedSymbols( bool newTag )
     QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
     if ( currentItemType() > 3 )
     {
-      QgsDebugMsg( "unknown entity type" );
+      QgsDebugMsg( QStringLiteral( "unknown entity type" ) );
       return;
     }
 
@@ -1471,7 +1471,7 @@ void QgsStyleManagerDialog::tagSelectedSymbols( bool newTag )
     }
     populateList();
 
-    QgsDebugMsg( "Selected Action: " + selectedItem->text() );
+    QgsDebugMsg( QStringLiteral( "Selected Action: %1" ).arg( selectedItem->text() ) );
   }
 }
 
@@ -1484,7 +1484,7 @@ void QgsStyleManagerDialog::detagSelectedSymbols()
     QgsStyle::StyleEntity type = ( currentItemType() < 3 ) ? QgsStyle::SymbolEntity : QgsStyle::ColorrampEntity;
     if ( currentItemType() > 3 )
     {
-      QgsDebugMsg( "unknown entity type" );
+      QgsDebugMsg( QStringLiteral( "unknown entity type" ) );
       return;
     }
     QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
@@ -1494,7 +1494,7 @@ void QgsStyleManagerDialog::detagSelectedSymbols()
     }
     populateList();
 
-    QgsDebugMsg( "Selected Action: " + selectedItem->text() );
+    QgsDebugMsg( QStringLiteral( "Selected Action: %1" ).arg( selectedItem->text() ) );
   }
 }
 
