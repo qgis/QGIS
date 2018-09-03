@@ -18,6 +18,7 @@
 #include "qgsattributerelationedit.h"
 #include "qgsattributesforminitcode.h"
 #include "qgisapp.h"
+#include "qgsfieldcombobox.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -594,42 +595,6 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
     {
       QgsAttributeEditorQmlElement *element = new QgsAttributeEditorQmlElement( item->text( 0 ), parent );
       element->setQmlCode( itemData.qmlElementEditorConfiguration().qmlCode );
-
-      /*
-      element->setQmlCode( QStringLiteral(
-                             "import QtQuick 2.0\n"
-                             "\n"
-                             "Rectangle {\n"
-                             "    width: 100\n"
-                             "    height: 100\n"
-                             "    color: \"red\"\n"
-                             "}\n" ) );
-
-      element->setQmlCode( QStringLiteral(
-                          "import QtQuick 2.0\n"
-                          "import QtCharts 2.0\n"
-                          "\n"
-                          "ChartView {\n"
-                          "    width: 600\n"
-                          "    height: 400\n"
-                          "\n"
-                          "    PieSeries {\n"
-                          "        id: pieSeries\n"
-                          "        PieSlice { label: \"outlet 1\"; value: attributes.outlet_1 }\n"
-                          "        PieSlice { label: \"outlet 2\"; value: attributes.outlet_2 }\n"
-                          "        PieSlice { label: \"outlet 3\"; value: attributes.outlet_3 }\n"
-                          "        PieSlice { label: \"outlet 4\"; value: attributes.outlet_4 }\n"
-                          "    }\n"
-                          "}\n" ) );
-      import QtQuick 2.0
-
-      Rectangle {
-      width: 100
-      height: 100
-      color: "red"
-      }
-      */
-
       widgetDef = element;
       break;
     }
@@ -1130,15 +1095,73 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
     {
       QDialog dlg;
       dlg.setWindowTitle( tr( "Configure QML Widget" ) );
+      dlg.setBaseSize( 600, 400 );
       QFormLayout *layout = new QFormLayout() ;
       dlg.setLayout( layout );
       layout->addWidget( baseWidget );
 
-      QPlainTextEdit *qmlCode = new QPlainTextEdit( itemData.qmlElementEditorConfiguration().qmlCode );
+      //widget title
       QLineEdit *title = new QLineEdit( itemData.name() );
+      //qml code
+      QPlainTextEdit *qmlCode = new QPlainTextEdit( itemData.qmlElementEditorConfiguration().qmlCode );
+      //template to select
+      QComboBox *qmlObjectTemplate = new QComboBox();
+      qmlObjectTemplate->addItem( "Rectangle" );
+      qmlObjectTemplate->addItem( "Pie Chart" );
+      connect( qmlObjectTemplate, QOverload<int>::of( &QComboBox::currentIndexChanged ), qmlCode, [ = ]( int index )
+      {
+        switch ( index )
+        {
+          case 0:
+          {
+            qmlCode->insertPlainText( QStringLiteral( "import QtQuick 2.0\n"
+                                      "\n"
+                                      "Rectangle {\n"
+                                      "    width: 100\n"
+                                      "    height: 100\n"
+                                      "    color: \"red\"\n"
+                                      "}\n" ) );
+            break;
+          }
+          case 1:
+          {
+            qmlCode->insertPlainText( QStringLiteral( "import QtQuick 2.0\n"
+                                      "import QtCharts 2.0\n"
+                                      "\n"
+                                      "ChartView {\n"
+                                      "    width: 600\n"
+                                      "    height: 400\n"
+                                      "\n"
+                                      "    PieSeries {\n"
+                                      "        id: pieSeries\n"
+                                      "        PieSlice { label: \"First slice\"; value: 25 }\n"
+                                      "        PieSlice { label: \"Second slice\"; value: 45 }\n"
+                                      "        PieSlice { label: \"Third slice\"; value: 30 }\n"
+                                      "    }\n"
+                                      "}\n" ) );
+            break;
+          }
+          default:
+            break;
+        }
+      } );
+
+      //attributes to select
+      QgsFieldComboBox *attributeFieldCombo = new QgsFieldComboBox();
+      attributeFieldCombo->setLayer( mLayer );
+      connect( attributeFieldCombo, &QgsFieldComboBox::fieldChanged, qmlCode, [ = ]( QString attributeName )
+      {
+        qmlCode->insertPlainText( QStringLiteral( "feature.attribute(\"%1\")" ).arg( attributeName ) );
+      } );
+
 
       layout->addRow( tr( "Title" ), title );
-      layout->addRow( tr( "QML Code" ), qmlCode );
+      QGroupBox *qmlCodeBox = new QGroupBox( tr( "QML Code" ) );
+      qmlCodeBox->setLayout( new QGridLayout );
+      qmlCodeBox->layout()->addWidget( qmlObjectTemplate );
+      qmlCodeBox->layout()->addWidget( attributeFieldCombo );
+      qmlCodeBox->layout()->addWidget( qmlCode );
+      layout->addRow( qmlCodeBox );
 
       QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
 
