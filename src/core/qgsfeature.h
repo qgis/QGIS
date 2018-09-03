@@ -451,7 +451,7 @@ class CORE_EXPORT QgsFeature
      *  \see setFields
      */
 #ifndef SIP_RUN
-    QVariant attribute( const QString &name ) const;
+    Q_INVOKABLE QVariant attribute( const QString &name ) const;
 #else
     SIP_PYOBJECT attribute( const QString &name ) const;
     % MethodCode
