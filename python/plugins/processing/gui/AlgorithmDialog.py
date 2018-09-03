@@ -59,6 +59,7 @@ from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmExecutor import executeIterating, execute
 from processing.gui.Postprocessing import handleAlgorithmResults
+from processing.gui.wrappers import WidgetWrapper
 
 from processing.tools import dataobjects
 
@@ -103,10 +104,11 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 except KeyError:
                     continue
 
-                try:
-                    widget = wrapper.wrappedWidget()
-                except AttributeError:
+                if issubclass(wrapper.__class__, WidgetWrapper):
                     widget = wrapper.widget
+                else:
+                    widget = wrapper.wrappedWidget()
+
                 if widget is None:
                     continue
 

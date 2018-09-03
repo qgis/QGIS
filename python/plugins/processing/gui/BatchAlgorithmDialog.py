@@ -83,8 +83,8 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
                     continue
                 wrapper = self.mainWidget().wrappers[row][col]
-                parameters[param.name()] = wrapper.value()
-                if not param.checkValueIsAcceptable(wrapper.value()):
+                parameters[param.name()] = wrapper.parameterValue()
+                if not param.checkValueIsAcceptable(wrapper.parameterValue()):
                     self.messageBar().pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
                         param.description(), row + 1),
                         level=Qgis.Warning, duration=5)

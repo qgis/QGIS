@@ -38,14 +38,10 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingOutputVectorLayer,
-                       QgsProcessingOutputRasterLayer,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterVectorDestination,
                        QgsProject)
-from qgis.gui import (QgsGui,
-                      QgsAbstractProcessingParameterWidgetWrapper)
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, Qt
@@ -54,7 +50,7 @@ from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
 from qgis.PyQt.QtGui import QIcon
 
 from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
-from processing.gui.wrappers import WidgetWrapperFactory
+from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
 from processing.tools.dataobjects import createContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]\
@@ -123,14 +119,14 @@ class ParametersPanel(BASE, WIDGET):
             else:
                 wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent)
                 self.wrappers[param.name()] = wrapper
-                is_cpp_wrapper = issubclass(wrapper.__class__, QgsAbstractProcessingParameterWidgetWrapper)
-                if is_cpp_wrapper:
+                is_python_wrapper = issubclass(wrapper.__class__, WidgetWrapper)
+                if not is_python_wrapper:
                     widget = wrapper.createWrappedWidget(context)
                 else:
                     widget = wrapper.widget
 
                 if widget is not None:
-                    if not is_cpp_wrapper:
+                    if is_python_wrapper:
                         widget.setToolTip(param.toolTip())
 
                     if isinstance(param, QgsProcessingParameterFeatureSource):
@@ -152,7 +148,7 @@ class ParametersPanel(BASE, WIDGET):
                         widget.setLayout(layout)
 
                     label = None
-                    if is_cpp_wrapper:
+                    if not is_python_wrapper:
                         label = wrapper.createWrappedLabel()
                     else:
                         label = wrapper.label
@@ -163,7 +159,7 @@ class ParametersPanel(BASE, WIDGET):
                         else:
                             self.layoutMain.insertWidget(
                                 self.layoutMain.count() - 2, label)
-                    elif not is_cpp_wrapper:
+                    elif is_python_wrapper:
                         desc = param.description()
                         if isinstance(param, QgsProcessingParameterExtent):
                             desc += self.tr(' (xmin, xmax, ymin, ymax)')

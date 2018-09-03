@@ -36,9 +36,8 @@ from qgis.core import (Qgis,
                        QgsApplication,
                        QgsSettings,
                        QgsProcessingParameterDefinition)
-from qgis.gui import QgsAbstractProcessingParameterWidgetWrapper
 
-from processing.gui.wrappers import WidgetWrapperFactory
+from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 
 from processing.tools import dataobjects
@@ -235,7 +234,7 @@ class BatchPanel(BASE, WIDGET):
     def setCellWrapper(self, row, column, wrapper, context):
         self.wrappers[row][column] = wrapper
 
-        is_cpp_wrapper = issubclass(wrapper.__class__, QgsAbstractProcessingParameterWidgetWrapper)
+        is_cpp_wrapper = not issubclass(wrapper.__class__, WidgetWrapper)
         if is_cpp_wrapper:
             widget = wrapper.createWrappedWidget(context)
         else:
