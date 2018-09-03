@@ -121,7 +121,6 @@ class QgsDiagramProperties;
 #include "qgswelcomepageitemsmodel.h"
 #include "qgsruntimeprofiler.h"
 
-
 #include "ui_qgisapp.h"
 
 #ifdef HAVE_TOUCH

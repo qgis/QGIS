@@ -13,7 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 #include <QtTest/QtTest>
+#ifndef Q_MOC_RUN
 #include "qgisapp.h"
+#endif
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
@@ -23,6 +25,7 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+
 
 /** \ingroup UnitTests
  * This is a unit test for the save as dialog

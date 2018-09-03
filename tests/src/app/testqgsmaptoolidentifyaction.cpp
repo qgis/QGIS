@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include <QtTest/QtTest>
+#ifndef Q_MOC_RUN
+#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
@@ -24,9 +26,9 @@
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
 #include "qgsmaptoolidentifyaction.h"
-#include "qgisapp.h"
 #include "qgsidentifymenu.h"
 #include "qgsidentifyresultsdialog.h"
+#endif
 
 #include "cpl_conv.h"
 

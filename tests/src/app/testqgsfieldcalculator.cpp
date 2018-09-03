@@ -13,7 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 #include <QtTest/QtTest>
+#ifndef Q_MOC_RUN
 #include "qgisapp.h"
+#endif
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"

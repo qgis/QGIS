@@ -14,6 +14,9 @@ Email                : paul.blottiere@oslandia.com
  ***************************************************************************/
 
 #include <QtTest/QtTest>
+#ifndef Q_MOC_RUN
+#include "qgisapp.h"
+#endif
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
@@ -21,7 +24,6 @@ Email                : paul.blottiere@oslandia.com
 #include "qgsmaptoolreshape.h"
 #include "qgsvectordataprovider.h"
 #include "qgsmaplayerregistry.h"
-#include "qgisapp.h"
 
 class TestQgsMapToolReshape : public QObject
 {

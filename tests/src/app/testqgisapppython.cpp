@@ -19,7 +19,10 @@
 #include <QStringList>
 #include <QtTest/QtTest>
 
-#include <qgisapp.h>
+#ifndef Q_MOC_RUN
+#include "qgisapp.h"
+#endif
+
 #include <qgsapplication.h>
 
 /** \ingroup UnitTests

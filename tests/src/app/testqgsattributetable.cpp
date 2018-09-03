@@ -13,7 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 #include <QtTest/QtTest>
+#ifndef Q_MOC_RUN
 #include "qgisapp.h"
+#endif
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
@@ -24,6 +26,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
 #include "qgsvectorfilewriter.h"
+
 
 /** \ingroup UnitTests
  * This is a unit test for the attribute table dialog
