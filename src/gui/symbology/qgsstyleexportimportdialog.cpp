@@ -536,6 +536,7 @@ void QgsStyleExportImportDialog::importFileChanged( const QString &path )
   if ( QFileInfo::exists( mFileName ) )
   {
     populateStyles( mTempStyle );
+    mImportFileWidget->setDefaultRoot( pathInfo.absolutePath() );
     QgsSettings settings;
     settings.setValue( QStringLiteral( "StyleManager/lastImportDir" ), pathInfo.absolutePath(), QgsSettings::Gui );
   }
