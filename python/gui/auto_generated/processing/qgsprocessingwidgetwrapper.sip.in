@@ -10,6 +10,32 @@
 
 
 
+class QgsProcessingContextGenerator
+{
+%Docstring
+
+An interface for objects which can create Processing contexts.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingwidgetwrapper.h"
+%End
+  public:
+
+    virtual QgsProcessingContext *processingContext() = 0;
+%Docstring
+This method needs to be reimplemented in all classes which implement this interface
+and return a Processing context.
+
+Note that ownership of the context is not transferred - it is intended that subclasses
+return a pointer to a context which they have already created and own.
+%End
+
+    virtual ~QgsProcessingContextGenerator();
+};
+
 class QgsAbstractProcessingParameterWidgetWrapper : QObject
 {
 %Docstring
@@ -109,10 +135,24 @@ Returns the current value of the parameter.
 .. seealso:: :py:func:`setParameterValue`
 %End
 
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+%Docstring
+Register a Processing context generator class that will be used to retrieve
+a Processing context for the wrapper when required.
+%End
+
     virtual void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers );
 %Docstring
 Called after all wrappers have been created within a particular dialog or context,
 allowing the wrapper to connect to the wrappers of other, related parameters.
+%End
+
+  signals:
+
+
+    void widgetValueHasChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper );
+%Docstring
+Emitted whenever the parameter value (as defined by the wrapped widget) is changed.
 %End
 
   protected:

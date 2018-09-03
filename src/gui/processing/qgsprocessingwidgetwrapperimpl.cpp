@@ -46,6 +46,11 @@ QWidget *QgsProcessingBooleanWidgetWrapper::createWidget()
 
       mCheckBox = new QCheckBox( description );
       mCheckBox->setToolTip( parameterDefinition()->toolTip() );
+
+      connect( mCheckBox, &QCheckBox::toggled, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
       return mCheckBox;
     };
 
@@ -56,6 +61,12 @@ QWidget *QgsProcessingBooleanWidgetWrapper::createWidget()
       mComboBox->addItem( tr( "Yes" ), true );
       mComboBox->addItem( tr( "No" ), false );
       mComboBox->setToolTip( parameterDefinition()->toolTip() );
+
+      connect( mComboBox, qgis::overload< int>::of( &QComboBox::currentIndexChanged ), this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+
       return mComboBox;
     }
   }

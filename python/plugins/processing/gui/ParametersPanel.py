@@ -42,6 +42,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterVectorDestination,
                        QgsProject)
+from qgis.gui import QgsProcessingContextGenerator
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, Qt
@@ -83,6 +84,19 @@ class ParametersPanel(BASE, WIDGET):
         self.dependentItems = {}
         self.iterateButtons = {}
 
+        self.processing_context = createContext()
+
+        class ContextGenerator(QgsProcessingContextGenerator):
+
+            def __init__(self, context):
+                super().__init__()
+                self.processing_context = context
+
+            def processingContext(self):
+                return self.processing_context
+
+        self.context_generator = ContextGenerator(self.processing_context)
+
         self.initWidgets()
 
         QgsProject.instance().layerWasAdded.connect(self.layerRegistryChanged)
@@ -102,8 +116,6 @@ class ParametersPanel(BASE, WIDGET):
         )
 
     def initWidgets(self):
-        context = createContext()
-
         # If there are advanced parameters — show corresponding groupbox
         for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
@@ -121,7 +133,8 @@ class ParametersPanel(BASE, WIDGET):
                 self.wrappers[param.name()] = wrapper
                 is_python_wrapper = issubclass(wrapper.__class__, WidgetWrapper)
                 if not is_python_wrapper:
-                    widget = wrapper.createWrappedWidget(context)
+                    widget = wrapper.createWrappedWidget(self.processing_context)
+                    wrapper.registerProcessingContextGenerator(self.context_generator)
                 else:
                     widget = wrapper.widget
 
@@ -203,7 +216,6 @@ class ParametersPanel(BASE, WIDGET):
             wrapper.postInitialize(list(self.wrappers.values()))
 
     def setParameters(self, parameters):
-        context = createContext()
         for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
@@ -215,7 +227,7 @@ class ParametersPanel(BASE, WIDGET):
                 value = parameters[param.name()]
 
                 wrapper = self.wrappers[param.name()]
-                wrapper.setParameterValue(value, context)
+                wrapper.setParameterValue(value, self.processing_context)
             else:
                 dest_widget = self.outputWidgets[param.name()]
                 dest_widget.setValue(parameters[param.name()])
