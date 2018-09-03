@@ -821,8 +821,9 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Filter_OGC")
 
-    def test_wms_getmap_filter_ogc_empty(self):
-        filter = "(<ogc:Filter xmlns=\"http://www.opengis.net/ogc\"></ogc:Filter>)"
+        # empty filter
+        filter = ("(<ogc:Filter xmlns=\"http://www.opengis.net/ogc\">"
+                  "</ogc:Filter>)")
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
@@ -840,6 +841,30 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Filter_OGC2")
+
+        # filter on the second layer
+        filter_hello = ("(<Filter></Filter>)")
+        filter_country = ("(<Filter><PropertyIsEqualTo><PropertyName>name"
+                          "</PropertyName><Literal>eurasia</Literal>"
+                          "</PropertyIsEqualTo></Filter>)")
+        filter = "{}{}".format(filter_hello, filter_country)
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Hello,Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "FILTER": filter
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Filter_OGC3")
 
     def test_wms_getmap_selection(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
