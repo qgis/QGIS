@@ -19,6 +19,7 @@
 #define QGSSPATIALINDEXKDBUSHDATA_H
 
 #include "qgsfeatureid.h"
+#include "qgspointxy.h"
 
 /**
  * \class QgsSpatialIndexKDBushData

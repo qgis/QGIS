@@ -20,6 +20,7 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
+#include "qgspointxy.h"
 
 
 //
