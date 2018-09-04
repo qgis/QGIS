@@ -65,7 +65,7 @@ QgsProjectFileTransform::TransformItem QgsProjectFileTransform::sTransformers[] 
   // A transformer with a NULL from version means that it should be run when upgrading
   // from any version and will take care that it's not going to cause trouble if it's
   // run several times on the same file.
-  {PFV(), PFV( 2, 99, 0 ), &QgsProjectFileTransform::transform2990},
+  {PFV(), PFV( 3, 0, 0 ), &QgsProjectFileTransform::transform3000},
 };
 
 bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion &newVersion )
@@ -78,7 +78,7 @@ bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion &newVersio
     for ( std::size_t i = 0; i < sizeof( sTransformers ) / sizeof( TransformItem ); i++ )
     {
       const TransformItem &transformer = sTransformers[i];
-      if ( transformer.from == mCurrentVersion || transformer.from.isNull() )
+      if ( transformer.to > mCurrentVersion && ( transformer.from == mCurrentVersion || transformer.from.isNull() ) )
       {
         // Run the transformer, and update the revision in every case
         ( this->*( transformer.transformFunc ) )();
@@ -621,7 +621,7 @@ void QgsProjectFileTransform::transform2200to2300()
   }
 }
 
-void QgsProjectFileTransform::transform2990()
+void QgsProjectFileTransform::transform3000()
 {
   // transform OTF off to "no projection" for project
   QDomElement propsElem = mDom.firstChildElement( QStringLiteral( "qgis" ) ).toElement().firstChildElement( QStringLiteral( "properties" ) );
