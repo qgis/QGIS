@@ -439,7 +439,7 @@ QString QgsRasterLayer::htmlMetadata() const
 
   // Band table
   myMetadata += QLatin1String( "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n" );
-  myMetadata += "<tr><th>" + tr( "Number" ) + "</th><th>" + tr( "Band" ) + "</th><th>" + tr( "No-Data" ) + "</th><th>" + tr( "Min" ) + "</th><th>" + tr( "Max" ) + "</th></tr>\n";
+  myMetadata += QLatin1String( "<tr><th>" ) + tr( "Number" ) + QLatin1String( "</th><th>" ) + tr( "Band" ) + QLatin1String( "</th><th>" ) + tr( "No-Data" ) + QLatin1String( "</th><th>" ) + tr( "Min" ) + QLatin1String( "</th><th>" ) + tr( "Max" ) + QLatin1String( "</th></tr>\n" );
 
   QgsRasterDataProvider *provider = const_cast< QgsRasterDataProvider * >( mDataProvider );
   for ( int i = 1; i <= bandCount(); i++ )
@@ -447,7 +447,7 @@ QString QgsRasterLayer::htmlMetadata() const
     QString rowClass;
     if ( i % 2 )
       rowClass = QStringLiteral( "class=\"odd-row\"" );
-    myMetadata += "<tr " + rowClass + "><td>" + QString::number( i ) + "</td><td>" + bandName( i ) + "</td><td>";
+    myMetadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td>" ) + QString::number( i ) + QLatin1String( "</td><td>" ) + bandName( i ) + QLatin1String( "</td><td>" );
 
     if ( dataProvider()->sourceHasNoDataValue( i ) )
       myMetadata += QString::number( dataProvider()->sourceNoDataValue( i ) );
@@ -458,12 +458,12 @@ QString QgsRasterLayer::htmlMetadata() const
     if ( provider->hasStatistics( i ) )
     {
       QgsRasterBandStats myRasterBandStats = provider->bandStatistics( i );
-      myMetadata += "<td>" + QString::number( myRasterBandStats.minimumValue, 'f', 10 ) + "</td>";
-      myMetadata += "<td>" + QString::number( myRasterBandStats.maximumValue, 'f', 10 ) + "</td>";
+      myMetadata += QLatin1String( "<td>" ) + QString::number( myRasterBandStats.minimumValue, 'f', 10 ) + QLatin1String( "</td>" );
+      myMetadata += QLatin1String( "<td>" ) + QString::number( myRasterBandStats.maximumValue, 'f', 10 ) + QLatin1String( "</td>" );
     }
     else
     {
-      myMetadata += "<td>" + tr( "n/a" ) + "</td><td>" + tr( "n/a" ) + "</td>";
+      myMetadata += QLatin1String( "<td>" ) + tr( "n/a" ) + QLatin1String( "</td><td>" ) + tr( "n/a" ) + QLatin1String( "</td>" );
     }
 
     myMetadata += QLatin1String( "</tr>\n" );
