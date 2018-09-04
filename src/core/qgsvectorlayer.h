@@ -1938,7 +1938,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns the configuration of the form used to represent this vector layer.
-     * This is a writable configuration that can directly be changed in place.
      *
      * \returns The configuration of this layers' form
      *
