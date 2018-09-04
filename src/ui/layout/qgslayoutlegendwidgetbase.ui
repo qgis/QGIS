@@ -893,7 +893,7 @@
              <string>Space above text using group style.</string>
             </property>
             <property name="text">
-             <string>Group Space</string>
+             <string>Group space</string>
             </property>
            </widget>
           </item>
