@@ -124,7 +124,7 @@ class DownloaderThread : public QThread
     Q_OBJECT
 
   public:
-    DownloaderThread( std::function<bool()> function, QObject *parent = nullptr )
+    DownloaderThread( std::function<void()> function, QObject *parent = nullptr )
       : QThread( parent )
       , mFunction( function )
     {
@@ -132,17 +132,11 @@ class DownloaderThread : public QThread
 
     void run() override
     {
-      mSuccess = mFunction();
-    }
-
-    bool success() const
-    {
-      return mSuccess;
+      mFunction();
     }
 
   private:
-    std::function<bool()> mFunction;
-    bool mSuccess = false;
+    std::function<void()> mFunction;
 };
 
 #endif // QGSWFSREQUEST_H
