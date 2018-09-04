@@ -548,7 +548,10 @@ QString QgsExpression::helpText( QString name )
 
   name = f.mName;
   if ( f.mType == tr( "group" ) )
+  {
     name = group( name );
+    name = name.toLower();
+  }
 
   name = name.toHtmlEscaped();
 
