@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmaplayerstyle.h"
 
 #include "qgslogger.h"
 
@@ -226,82 +227,4 @@ bool QgsMapLayerStyleManager::restoreOverrideStyle()
 bool QgsMapLayerStyleManager::isDefault( const QString &styleName ) const
 {
   return styleName == defaultStyleName();
-}
-
-
-// -----
-
-QgsMapLayerStyle::QgsMapLayerStyle( const QString &xmlData )
-  : mXmlData( xmlData )
-{
-}
-
-bool QgsMapLayerStyle::isValid() const
-{
-  return !mXmlData.isEmpty();
-}
-
-void QgsMapLayerStyle::clear()
-{
-  mXmlData.clear();
-}
-
-QString QgsMapLayerStyle::xmlData() const
-{
-  return mXmlData;
-}
-
-void QgsMapLayerStyle::readFromLayer( QgsMapLayer *layer )
-{
-  QString errorMsg;
-  QDomDocument doc;
-  layer->exportNamedStyle( doc, errorMsg );
-  if ( !errorMsg.isEmpty() )
-  {
-    QgsDebugMsg( "Failed to export style from layer: " + errorMsg );
-    return;
-  }
-
-  mXmlData.clear();
-  QTextStream stream( &mXmlData );
-  doc.documentElement().save( stream, 0 );
-}
-
-void QgsMapLayerStyle::writeToLayer( QgsMapLayer *layer ) const
-{
-  if ( !isValid() )
-  {
-    return;
-  }
-
-  QDomDocument doc( QStringLiteral( "qgis" ) );
-  if ( !doc.setContent( mXmlData ) )
-  {
-    QgsDebugMsg( "Failed to parse XML of previously stored XML data - this should not happen!" );
-    return;
-  }
-
-  QString errorMsg;
-  if ( !layer->importNamedStyle( doc, errorMsg ) )
-  {
-    QgsDebugMsg( "Failed to import style to layer: " + errorMsg );
-  }
-}
-
-void QgsMapLayerStyle::readXml( const QDomElement &styleElement )
-{
-  mXmlData.clear();
-  QTextStream stream( &mXmlData );
-  styleElement.firstChildElement().save( stream, 0 );
-}
-
-void QgsMapLayerStyle::writeXml( QDomElement &styleElement ) const
-{
-  // the currently selected style has no content stored here (layer has all the information inside)
-  if ( !isValid() )
-    return;
-
-  QDomDocument docX;
-  docX.setContent( mXmlData );
-  styleElement.appendChild( docX.documentElement() );
 }
