@@ -276,12 +276,6 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
         QgsProcessingGui::WidgetType type ) = 0 SIP_FACTORY;
 
     /**
-     * Creates a new widget wrapper for the specified \a parameter definition.
-     *
-     * The \a type argument indicates the dialog type to create a wrapper for.
-     */
-
-    /**
      * Creates a new modeler parameter widget for the given \a parameter. This widget allows
      * configuration of the parameter's value when used inside a Processing \a model.
      *

@@ -1,6 +1,6 @@
 /***************************************************************************
-                         qgsprocessingwidgetwrapper.h
-                         ---------------------
+                         qgsprocessinggui.h
+                         ------------------
     begin                : August 2018
     copyright            : (C) 2018 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
