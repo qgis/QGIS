@@ -31,7 +31,7 @@ For the QGIS build you need to install following packages from cygwin:
 
 and from OSGeo4W (select //Advanced Installation//):
 
-- qgis-rel-deps
+- qgis-dev-deps
 -
 
 This will also select packages the above packages depend on.

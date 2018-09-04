@@ -168,11 +168,6 @@ run( "perl -i -pe 's#<releases>#<releases>\n    <release version=\"$newmajor.$ne
 unless( $dopoint ) {
 	run( "scripts/update-news.pl $newmajor $newminor '$newreleasename'", "could not update news" ) if $major>2 || ($major==2 && $minor>14);
 
-	run( "perl -i -pe 's/qgis-dev-deps/qgis-ltr-deps/;' doc/msvc.t2t", "could not update osgeo4w deps package" ) if $doltr;
-	run( "perl -i -pe 's/qgis-dev-deps/qgis-rel-deps/;' doc/msvc.t2t", "could not update osgeo4w deps package" ) unless $doltr;
-	run( "txt2tags --encoding=utf-8 -odoc/INSTALL.html -t html doc/INSTALL.t2t", "could not update INSTALL.html" );
-	run( "txt2tags --encoding=utf-8 -oINSTALL -t txt doc/INSTALL.t2t", "could not update INSTALL" );
-
 	run( "git commit -n -a -m \"changelog and news update for $release\"", "could not commit changelog and news update" );
 
 	print "Creating and checking out branch...\n";
@@ -187,6 +182,11 @@ run( "dch --newversion $version 'Release of $version'", "dch failed" );
 run( "cp debian/changelog /tmp", "backup changelog failed" );
 
 unless( $dopoint ) {
+	run( "perl -i -pe 's/qgis-dev-deps/qgis-ltr-deps/;' doc/msvc.t2t", "could not update osgeo4w deps package" ) if $doltr;
+	run( "perl -i -pe 's/qgis-dev-deps/qgis-rel-deps/;' doc/msvc.t2t", "could not update osgeo4w deps package" ) unless $doltr;
+	run( "txt2tags --encoding=utf-8 -odoc/INSTALL.html -t html doc/INSTALL.t2t", "could not update INSTALL.html" );
+	run( "txt2tags --encoding=utf-8 -oINSTALL -t txt doc/INSTALL.t2t", "could not update INSTALL" );
+
 	run( "cp -v images/splash/splash-$newmajor.$newminor.png images/splash/splash.png", "splash png switch failed" );
 	run( "convert -resize 164x314 ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.png BMP3:ms-windows/Installer-Files/WelcomeFinishPage.bmp", "installer bitmap switch failed" );
 	run( "git commit -n -a -m 'Release of $release ($newreleasename)'", "release commit failed" );
