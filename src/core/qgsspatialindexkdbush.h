@@ -26,7 +26,6 @@ class QgsSpatialIndexKDBushPrivate;
 class QgsRectangle;
 
 #include "qgis_core.h"
-#include "qgsfeature.h"
 #include "qgsspatialindexkdbushdata.h"
 #include <memory>
 #include <QList>

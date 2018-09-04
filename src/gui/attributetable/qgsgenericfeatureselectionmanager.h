@@ -16,9 +16,9 @@
 #ifndef QGSGENERICFEATURESELECTIONMANAGER_H
 #define QGSGENERICFEATURESELECTIONMANAGER_H
 
-#include "qgsfeature.h"
 #include "qgsifeatureselectionmanager.h"
 #include "qgis_gui.h"
+#include "qgsfeatureid.h"
 
 SIP_NO_FILE
 

@@ -23,8 +23,8 @@ class QgsVectorLayer;
 #include <QVector>
 #include <memory>
 
+#include "qgsfeatureid.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsfeature.h"
 #include "qgsrectangle.h"
 
 struct QgsTracerGraph;

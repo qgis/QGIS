@@ -130,7 +130,7 @@ typedef QVector<QVariant> QgsAttributes;
 % MappedType QgsAttributes
 {
   % TypeHeaderCode
-#include <qgsfeature.h>
+#include "qgsfeature.h"
   % End
 
   % ConvertFromTypeCode

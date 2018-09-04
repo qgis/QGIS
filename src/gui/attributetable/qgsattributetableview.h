@@ -19,8 +19,8 @@
 #include <QTableView>
 #include "qgis.h"
 #include <QAction>
+#include "qgsfeatureid.h"
 
-#include "qgsfeature.h" // For QgsFeatureIds
 #include "qgis_gui.h"
 
 class QgsAttributeTableDelegate;

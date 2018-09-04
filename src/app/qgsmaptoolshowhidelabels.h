@@ -19,7 +19,7 @@
 #define QGSMAPTOOLSHOWHIDELABELS_H
 
 #include "qgsmaptoollabel.h"
-#include "qgsfeature.h"
+#include "qgsfeatureid.h"
 #include "qgis_app.h"
 
 

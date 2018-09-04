@@ -30,7 +30,6 @@
 #include <qgsapplication.h>
 #include <qgsmapcanvas.h>
 #include <qgsvectorlayer.h>
-#include <qgsfeature.h>
 #include <qgsgeometry.h>
 #include <qgspoint.h>
 #include <qgsdistancearea.h>

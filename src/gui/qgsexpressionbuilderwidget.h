@@ -21,7 +21,6 @@
 #include "ui_qgsexpressionbuilder.h"
 #include "qgsdistancearea.h"
 #include "qgsexpressioncontext.h"
-#include "qgsfeature.h"
 
 #include "QStandardItemModel"
 #include "QStandardItem"

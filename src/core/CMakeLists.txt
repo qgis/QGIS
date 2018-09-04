@@ -591,7 +591,6 @@ SET(QGIS_CORE_MOC_HDRS
   qgsdataprovider.h
   qgsdatasourceuri.h
   qgsdbfilterproxymodel.h
-  qgsfeature.h
   qgsfeedback.h
   qgsfield.h
   qgsfieldconstraints.h

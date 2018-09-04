@@ -18,7 +18,6 @@
 #include <QStringList>
 #include <QVariant>
 #include "geometry/qgswkbtypes.h"
-#include "qgsfeature.h"
 
 class QNetworkReply;
 class QgsNetworkAccessManager;

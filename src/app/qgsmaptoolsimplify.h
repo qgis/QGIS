@@ -20,7 +20,6 @@
 #include "ui_qgssimplifytolerancedialog.h"
 
 #include <QVector>
-#include "qgsfeature.h"
 #include "qgstolerance.h"
 #include "qgis_app.h"
 

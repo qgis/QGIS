@@ -18,7 +18,6 @@
 #include "qgslogger.h"
 #include "qgsexpression.h"
 #include "qgsexpressionnodeimpl.h"
-#include "qgsfeature.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
 

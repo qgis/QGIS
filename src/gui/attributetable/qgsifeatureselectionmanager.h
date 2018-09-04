@@ -18,9 +18,8 @@
 
 #include <QObject>
 #include "qgis_sip.h"
-
-#include "qgsfeature.h"
 #include "qgis_gui.h"
+#include "qgsfeatureid.h"
 
 /**
  * \ingroup gui

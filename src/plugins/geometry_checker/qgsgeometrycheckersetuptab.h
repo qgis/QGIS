@@ -19,7 +19,6 @@
 
 #include <QMutex>
 
-#include "qgsfeature.h"
 #include "ui_qgsgeometrycheckersetuptab.h"
 
 class QgisInterface;

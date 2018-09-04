@@ -22,9 +22,9 @@
 #include "qgis_sip.h"
 
 #include "qgsexpressioncontext.h"
-#include "qgsfeature.h"
 #include "qgsmessagebar.h"
 #include "qgsrectangle.h"
+#include "qgsfeatureid.h"
 #include "qgis.h"
 
 #include <QDomDocument>

@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgslayoutrendercontext.h"
-#include "qgsfeature.h"
 #include "qgslayout.h"
 
 QgsLayoutRenderContext::QgsLayoutRenderContext( QgsLayout *layout )

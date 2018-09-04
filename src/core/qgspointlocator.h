@@ -22,10 +22,10 @@ class QgsFeatureRenderer;
 class QgsRenderContext;
 
 #include "qgis_core.h"
-#include "qgsfeature.h"
 #include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeatureid.h"
 #include <memory>
 
 class QgsPointLocator_VisitorNearestVertex;

@@ -16,8 +16,8 @@
 #ifndef QGSSELECTEDFEATURE_H
 #define QGSSELECTEDFEATURE_H
 
-#include "qgsfeature.h"
 #include "qgsgeometry.h"
+#include "qgsfeatureid.h"
 
 #include <QObject>
 

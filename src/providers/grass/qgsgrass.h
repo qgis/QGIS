@@ -33,7 +33,6 @@ extern "C"
 #include <stdexcept>
 #include "qgsapplication.h"
 #include "qgsexception.h"
-#include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsrectangle.h"
 #include <QFileSystemWatcher>

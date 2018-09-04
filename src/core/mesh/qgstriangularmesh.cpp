@@ -17,12 +17,12 @@
 
 #include <memory>
 #include <QList>
-#include "qgsfeature.h"
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 #include "qgstriangularmesh.h"
 #include "qgsrendercontext.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeatureid.h"
 
 static void ENP_centroid_step( const QPolygonF &pX, double &cx, double &cy, double &signedArea, int i, int i1 )
 {
