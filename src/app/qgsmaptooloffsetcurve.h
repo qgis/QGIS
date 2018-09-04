@@ -26,6 +26,7 @@ class QGridLayout;
 class QgsSnapIndicator;
 class QgsDoubleSpinBox;
 class QGraphicsProxyWidget;
+class QgsFeature;
 
 class APP_EXPORT QgsOffsetUserWidget : public QWidget, private Ui::QgsOffsetUserInputBase
 {
