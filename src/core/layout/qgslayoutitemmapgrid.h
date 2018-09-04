@@ -725,6 +725,20 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     double frameWidth() const { return mGridFrameWidth; }
 
     /**
+     * Sets the grid frame margin (in layout units).
+     * This property controls distance between the map frame and the grid frame.
+     * \see GridFrameMargin()
+     */
+    void setGridFrameMargin( const double margin ) { mGridFrameMargin = margin; }
+
+    /**
+     * Sets the grid frame Margin (in layout units).
+     * This property controls distance between the map frame and the grid frame.
+     * \see setGridFrameMargin()
+     */
+    double GridFrameMargin() const { return mGridFrameMargin; }
+
+    /**
      * Sets the \a width of the stroke drawn in the grid frame.
      * \see framePenSize()
      * \see setFramePenColor()
@@ -867,6 +881,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     QColor mGridFrameFillColor1 = Qt::white;
     QColor mGridFrameFillColor2 = Qt::black;
     double mCrossLength = 3.0;
+    double mGridFrameMargin = 0.0;
 
     //! Divisions for frame on left map side
     DisplayMode mLeftFrameDivisions = QgsLayoutItemMapGrid::ShowAll;

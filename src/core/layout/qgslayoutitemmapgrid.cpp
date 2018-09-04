@@ -234,6 +234,7 @@ bool QgsLayoutItemMapGrid::writeXml( QDomElement &elem, QDomDocument &doc, const
   mapGridElem.setAttribute( QStringLiteral( "gridFrameStyle" ), mGridFrameStyle );
   mapGridElem.setAttribute( QStringLiteral( "gridFrameSideFlags" ), mGridFrameSides );
   mapGridElem.setAttribute( QStringLiteral( "gridFrameWidth" ), qgsDoubleToString( mGridFrameWidth ) );
+  mapGridElem.setAttribute( QStringLiteral( "gridFrameMargin" ), qgsDoubleToString( mGridFrameMargin ) );
   mapGridElem.setAttribute( QStringLiteral( "gridFramePenThickness" ), qgsDoubleToString( mGridFramePenThickness ) );
   mapGridElem.setAttribute( QStringLiteral( "gridFramePenColor" ), QgsSymbolLayerUtils::encodeColor( mGridFramePenColor ) );
   mapGridElem.setAttribute( QStringLiteral( "frameFillColor1" ), QgsSymbolLayerUtils::encodeColor( mGridFrameFillColor1 ) );
@@ -294,6 +295,7 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
   mGridFrameStyle = static_cast< QgsLayoutItemMapGrid::FrameStyle >( itemElem.attribute( QStringLiteral( "gridFrameStyle" ), QStringLiteral( "0" ) ).toInt() );
   mGridFrameSides = static_cast< QgsLayoutItemMapGrid::FrameSideFlags >( itemElem.attribute( QStringLiteral( "gridFrameSideFlags" ), QStringLiteral( "15" ) ).toInt() );
   mGridFrameWidth = itemElem.attribute( QStringLiteral( "gridFrameWidth" ), QStringLiteral( "2.0" ) ).toDouble();
+  mGridFrameMargin = itemElem.attribute( QStringLiteral( "gridFrameMargin" ), QStringLiteral( "0.0" ) ).toDouble();
   mGridFramePenThickness = itemElem.attribute( QStringLiteral( "gridFramePenThickness" ), QStringLiteral( "0.3" ) ).toDouble();
   mGridFramePenColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "gridFramePenColor" ), QStringLiteral( "0,0,0" ) ) );
   mGridFrameFillColor1 = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "frameFillColor1" ), QStringLiteral( "255,255,255,255" ) ) );
@@ -800,21 +802,23 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, const QMap< do
 
   if ( extension )
   {
-    *extension = mGridFrameWidth + mGridFramePenThickness / 2.0;
+    *extension = mGridFrameMargin + mGridFrameWidth + mGridFramePenThickness / 2.0;
     return;
   }
 
   QMap< double, double > pos = borderPos;
 
-  double currentCoord = 0;
+  double currentCoord = 0.0;
   if ( ( border == QgsLayoutItemMapGrid::Left || border == QgsLayoutItemMapGrid::Right ) && testFrameSideFlag( QgsLayoutItemMapGrid::FrameTop ) )
   {
-    currentCoord = - mGridFrameWidth;
+//    currentCoord = - (mGridFrameWidth + mGridFrameMargin);
+    currentCoord = -mGridFramePenThickness / 2.0;
     pos.insert( 0, 0 );
   }
   else if ( ( border == QgsLayoutItemMapGrid::Top || border == QgsLayoutItemMapGrid::Bottom ) && testFrameSideFlag( QgsLayoutItemMapGrid::FrameLeft ) )
   {
-    currentCoord = - mGridFrameWidth;
+//    currentCoord = - (mGridFrameWidth + mGridFrameMargin);
+    currentCoord = -mGridFramePenThickness / 2.0;
     pos.insert( 0, 0 );
   }
   bool color1 = true;
@@ -828,7 +832,8 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, const QMap< do
     pos.insert( mMap->rect().height(), mMap->rect().height() );
     if ( testFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom ) )
     {
-      pos.insert( mMap->rect().height() + mGridFrameWidth, mMap->rect().height() + mGridFrameWidth );
+//      pos.insert( mMap->rect().height() + mGridFrameWidth, mMap->rect().height() + mGridFrameWidth );
+      pos.insert( mMap->rect().height(), mMap->rect().height() );
     }
   }
   else if ( border == QgsLayoutItemMapGrid::Top || border == QgsLayoutItemMapGrid::Bottom )
@@ -836,7 +841,8 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, const QMap< do
     pos.insert( mMap->rect().width(), mMap->rect().width() );
     if ( testFrameSideFlag( QgsLayoutItemMapGrid::FrameRight ) )
     {
-      pos.insert( mMap->rect().width() + mGridFrameWidth, mMap->rect().width() + mGridFrameWidth );
+//      pos.insert( mMap->rect().width() + mGridFrameWidth, mMap->rect().width() + mGridFrameWidth );
+      pos.insert( mMap->rect().width(), mMap->rect().width() );
     }
   }
 
@@ -854,7 +860,7 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, const QMap< do
     {
       height = posIt.key() - currentCoord;
       width = mGridFrameWidth;
-      x = ( border == QgsLayoutItemMapGrid::Left ) ? -mGridFrameWidth : mMap->rect().width();
+      x = ( border == QgsLayoutItemMapGrid::Left ) ? -( mGridFrameWidth + mGridFrameMargin ) : mMap->rect().width() + mGridFrameMargin;
       y = currentCoord;
     }
     else //top or bottom
@@ -862,12 +868,19 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, const QMap< do
       height = mGridFrameWidth;
       width = posIt.key() - currentCoord;
       x = currentCoord;
-      y = ( border == QgsLayoutItemMapGrid::Top ) ? -mGridFrameWidth : mMap->rect().height();
+      y = ( border == QgsLayoutItemMapGrid::Top ) ? -( mGridFrameWidth + mGridFrameMargin ) : mMap->rect().height() + mGridFrameMargin;
     }
     p->drawRect( QRectF( x, y, width, height ) );
     currentCoord = posIt.key();
     color1 = !color1;
   }
+  //draw corners
+  width = height = ( mGridFrameWidth + mGridFrameMargin ) ;
+  p->setBrush( QBrush( mGridFrameFillColor1 ) );
+  p->drawRect( QRectF( -( mGridFrameWidth + mGridFrameMargin ), -( mGridFrameWidth + mGridFrameMargin ), width, height ) );
+  p->drawRect( QRectF( mMap->rect().width(), -( mGridFrameWidth + mGridFrameMargin ), width, height ) );
+  p->drawRect( QRectF( -( mGridFrameWidth + mGridFrameMargin ), mMap->rect().height(),                  width, height ) );
+  p->drawRect( QRectF( mMap->rect().width(), mMap->rect().height(), width, height ) );
 }
 
 void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, const QMap< double, double > &borderPos, QgsLayoutItemMapGrid::BorderSide border, double *extension ) const
@@ -880,7 +893,7 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, const QMap< double, 
   if ( extension )
   {
     if ( mGridFrameStyle != QgsLayoutItemMapGrid::InteriorTicks )
-      *extension = mGridFrameWidth;
+      *extension = mGridFrameMargin + mGridFrameWidth;
     return;
   }
 
@@ -906,17 +919,17 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, const QMap< double, 
       if ( mGridFrameStyle == QgsLayoutItemMapGrid::InteriorTicks )
       {
         width = mGridFrameWidth;
-        x = ( border == QgsLayoutItemMapGrid::Left ) ? 0 : mMap->rect().width() - mGridFrameWidth;
+        x = ( border == QgsLayoutItemMapGrid::Left ) ? 0 - mGridFrameMargin : mMap->rect().width() - mGridFrameWidth + mGridFrameMargin;
       }
       else if ( mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
       {
         width = mGridFrameWidth;
-        x = ( border == QgsLayoutItemMapGrid::Left ) ? - mGridFrameWidth : mMap->rect().width();
+        x = ( border == QgsLayoutItemMapGrid::Left ) ? - mGridFrameWidth - mGridFrameMargin : mMap->rect().width() + mGridFrameMargin;
       }
       else if ( mGridFrameStyle == QgsLayoutItemMapGrid::InteriorExteriorTicks )
       {
         width = mGridFrameWidth * 2;
-        x = ( border == QgsLayoutItemMapGrid::Left ) ? - mGridFrameWidth : mMap->rect().width() - mGridFrameWidth;
+        x = ( border == QgsLayoutItemMapGrid::Left ) ? - mGridFrameWidth - mGridFrameMargin : mMap->rect().width() - mGridFrameWidth + mGridFrameMargin;
       }
     }
     else //top or bottom
@@ -926,17 +939,17 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, const QMap< double, 
       if ( mGridFrameStyle == QgsLayoutItemMapGrid::InteriorTicks )
       {
         height = mGridFrameWidth;
-        y = ( border == QgsLayoutItemMapGrid::Top ) ? 0 : mMap->rect().height() - mGridFrameWidth;
+        y = ( border == QgsLayoutItemMapGrid::Top ) ? 0 - mGridFrameMargin : mMap->rect().height() - mGridFrameWidth + mGridFrameMargin;
       }
       else if ( mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
       {
         height = mGridFrameWidth;
-        y = ( border == QgsLayoutItemMapGrid::Top ) ? -mGridFrameWidth : mMap->rect().height();
+        y = ( border == QgsLayoutItemMapGrid::Top ) ? -mGridFrameWidth - mGridFrameMargin : mMap->rect().height() + mGridFrameMargin;
       }
       else if ( mGridFrameStyle == QgsLayoutItemMapGrid::InteriorExteriorTicks )
       {
         height = mGridFrameWidth * 2;
-        y = ( border == QgsLayoutItemMapGrid::Top ) ? -mGridFrameWidth : mMap->rect().height() - mGridFrameWidth;
+        y = ( border == QgsLayoutItemMapGrid::Top ) ? -mGridFrameWidth - mGridFrameMargin : mMap->rect().height() - mGridFrameWidth + mGridFrameMargin;
       }
     }
     p->drawLine( QLineF( x, y, x + width, y + height ) );
@@ -952,7 +965,7 @@ void QgsLayoutItemMapGrid::drawGridFrameLineBorder( QPainter *p, QgsLayoutItemMa
 
   if ( extension )
   {
-    *extension = mGridFramePenThickness / 2.0;
+    *extension = mGridFrameMargin + mGridFramePenThickness / 2.0;
     return;
   }
 
@@ -966,16 +979,44 @@ void QgsLayoutItemMapGrid::drawGridFrameLineBorder( QPainter *p, QgsLayoutItemMa
   switch ( border )
   {
     case QgsLayoutItemMapGrid::Left:
-      p->drawLine( QLineF( 0, 0, 0, mMap->rect().height() ) );
+      p->drawLine( QLineF( 0 - mGridFrameMargin, 0 - mGridFrameMargin, 0 - mGridFrameMargin, mMap->rect().height() + mGridFrameMargin ) );
+      //corner left-top
+      if ( mGridFrameMargin != 0 )
+      {
+        const double X1 = 0 - mGridFrameMargin + mGridFramePenThickness / 2.0;
+        const double Y1 = 0 - mGridFrameMargin + mGridFramePenThickness / 2.0;
+        p->drawLine( QLineF( 0, 0, X1, Y1 ) );
+      }
       break;
     case QgsLayoutItemMapGrid::Right:
-      p->drawLine( QLineF( mMap->rect().width(), 0, mMap->rect().width(), mMap->rect().height() ) );
+      p->drawLine( QLineF( mMap->rect().width() + mGridFrameMargin, 0 - mGridFrameMargin, mMap->rect().width() + mGridFrameMargin, mMap->rect().height() + mGridFrameMargin ) );
+      //corner right-bottom
+      if ( mGridFrameMargin != 0 )
+      {
+        const double X1 = mMap->rect().width() + mGridFrameMargin - mGridFramePenThickness / 2.0 ;
+        const double Y1 = mMap->rect().height() + mGridFrameMargin - mGridFramePenThickness / 2.0 ;
+        p->drawLine( QLineF( mMap->rect().width(), mMap->rect().height(), X1, Y1 ) );
+      }
       break;
     case QgsLayoutItemMapGrid::Top:
-      p->drawLine( QLineF( 0, 0, mMap->rect().width(), 0 ) );
+      p->drawLine( QLineF( 0 - mGridFrameMargin, 0 - mGridFrameMargin, mMap->rect().width() + mGridFrameMargin, 0 - mGridFrameMargin ) );
+      //corner right-top
+      if ( mGridFrameMargin != 0 )
+      {
+        const double X1 = mMap->rect().width() + mGridFrameMargin - mGridFramePenThickness / 2.0 ;
+        const double Y1 = 0 - mGridFrameMargin + mGridFramePenThickness / 2.0 ;
+        p->drawLine( QLineF( mMap->rect().width(), 0, X1, Y1 ) );
+      }
       break;
     case QgsLayoutItemMapGrid::Bottom:
-      p->drawLine( QLineF( 0, mMap->rect().height(), mMap->rect().width(), mMap->rect().height() ) );
+      p->drawLine( QLineF( 0 - mGridFrameMargin, mMap->rect().height() + mGridFrameMargin, mMap->rect().width() + mGridFrameMargin, mMap->rect().height() + mGridFrameMargin ) );
+      //corner left-bottom
+      if ( mGridFrameMargin != 0 )
+      {
+        const double X1 = 0 - mGridFrameMargin + mGridFramePenThickness / 2.0 ;
+        const double Y1 = mMap->rect().height() + mGridFrameMargin - mGridFramePenThickness / 2.0 ;
+        p->drawLine( QLineF( 0, mMap->rect().height(), X1, Y1 ) );
+      }
       break;
   }
 }
@@ -1684,7 +1725,7 @@ int QgsLayoutItemMapGrid::xGridLinesCrsTransform( const QgsRectangle &bbox, cons
       catch ( QgsCsException &cse )
       {
         Q_UNUSED( cse );
-        QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+        QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
       }
 
       currentX += step;
@@ -1760,7 +1801,7 @@ int QgsLayoutItemMapGrid::yGridLinesCrsTransform( const QgsRectangle &bbox, cons
       catch ( QgsCsException &cse )
       {
         Q_UNUSED( cse );
-        QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+        QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
       }
 
       currentY += step;
