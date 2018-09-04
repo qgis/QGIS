@@ -115,6 +115,14 @@ void QgsLayout3DMapWidget::updateCameraPoseWidgetsFromItem()
 void QgsLayout3DMapWidget::copy3DMapSettings()
 {
   Qgs3DMapCanvasDockWidget *dock = _dock3DViewFromSender( sender() );
+
+  // if this is the first settings passed on, also copy camera details
+  if ( !mMap3D->mapSettings() )
+  {
+    mMap3D->setCameraPose( dock->mapCanvas3D()->cameraController()->cameraPose() );
+    updateCameraPoseWidgetsFromItem();
+  }
+
   if ( dock )
     mMap3D->setMapSettings( new Qgs3DMapSettings( *dock->mapCanvas3D()->map() ) );
 }
