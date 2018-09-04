@@ -498,12 +498,15 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
   return newFeature;
 }
 
-std::unique_ptr<QgsVectorLayerFeatureSource> QgsVectorLayerUtils::getFeatureSource( QWeakPointer<QgsVectorLayer> layer )
+std::unique_ptr<QgsVectorLayerFeatureSource> QgsVectorLayerUtils::getFeatureSource( QPointer<QgsVectorLayer> layer )
 {
   std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
 
   auto getFeatureSource = [ layer, &featureSource ]
   {
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 )
+    Q_ASSERT( QThread::currentThread() == qApp->thread() );
+#endif
     QgsVectorLayer *lyr = layer.data();
 
     if ( lyr )
