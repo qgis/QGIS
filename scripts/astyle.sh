@@ -85,7 +85,7 @@ astyleit() {
 
 for f in "$@"; do
 	case "$f" in
-                src/plugins/grass/qtermwidget/*|external/o2/*|external/astyle/*|external/kdbush/*|external/wintoast/*|python/ext-libs/*|ui_*.py|*.astyle|tests/testdata/*|editors/*)
+                src/plugins/grass/qtermwidget/*|external/o2/*|external/astyle/*|external/kdbush/*|external/wintoast/*|external/qt3dextra-headers/*|python/ext-libs/*|ui_*.py|*.astyle|tests/testdata/*|editors/*)
 			echo -ne "$f skipped $elcr"
 			continue
 			;;

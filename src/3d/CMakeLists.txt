@@ -143,6 +143,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
+  ${QT5_3DEXTRA_INCLUDE_DIR}
 )
 
 #############################################################

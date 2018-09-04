@@ -40,8 +40,7 @@ Build-Depends:
  graphviz,
  xvfb, xauth,
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
-#sid buster bionic cosmic# libosgearth-dev,
-#bionic# qt3d5-dev, qt3d-assimpsceneimport-plugin, qt3d-defaultgeometryloader-plugin, qt3d-gltfsceneio-plugin, qt3d-scene2d-plugin,
+#sid buster bionic cosmic# libosgearth-dev, qt3d5-dev, qt3d-assimpsceneimport-plugin, qt3d-defaultgeometryloader-plugin, qt3d-gltfsceneio-plugin, qt3d-scene2d-plugin,
 #oracle# oracle-instantclient12.1-devel, oracle-instantclient12.1-basiclite,
  locales, ca-certificates, ninja-build
 Build-Conflicts: libqgis-dev, qgis-dev
@@ -148,19 +147,19 @@ Description: QGIS - shared native gui library
  .
  This package contains the shared native gui library.
 
-#bionic#Package: libqgis-3d{QGIS_ABI}
-#bionic#Architecture: any
-#bionic#Section: libs
-#bionic#Depends:
-#bionic# qt3d-assimpsceneimport-plugin, qt3d-defaultgeometryloader-plugin, qt3d-gltfsceneio-plugin, qt3d-scene2d-plugin,
-#bionic# ${shlibs:Depends},
-#bionic# ${misc:Depends}
-#bionic#Description: QGIS - shared 3d library
-#bionic# QGIS is a Geographic Information System (GIS) which manages, analyzes and
-#bionic# display databases of geographic information.
-#bionic# .
-#bionic# This package contains the shared 3d library.
-#bionic#
+#sid buster bionic cosmic#Package: libqgis-3d{QGIS_ABI}
+#sid buster bionic cosmic#Architecture: any
+#sid buster bionic cosmic#Section: libs
+#sid buster bionic cosmic#Depends:
+#sid buster bionic cosmic# qt3d-assimpsceneimport-plugin, qt3d-defaultgeometryloader-plugin, qt3d-gltfsceneio-plugin, qt3d-scene2d-plugin,
+#sid buster bionic cosmic# ${shlibs:Depends},
+#sid buster bionic cosmic# ${misc:Depends}
+#sid buster bionic cosmic#Description: QGIS - shared 3d library
+#sid buster bionic cosmic# QGIS is a Geographic Information System (GIS) which manages, analyzes and
+#sid buster bionic cosmic# display databases of geographic information.
+#sid buster bionic cosmic# .
+#sid buster bionic cosmic# This package contains the shared 3d library.
+#sid buster bionic cosmic#
 Package: libqgisgrass{GRASSVER}-{QGIS_ABI}
 Architecture: any
 Section: libs
