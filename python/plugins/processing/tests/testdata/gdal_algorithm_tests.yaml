@@ -20,7 +20,7 @@ tests:
   - algorithm: gdal:cliprasterbyextent
     name: Clip raster by extent (gdal_transform)
     params:
-      DATA_TYPE: 5
+      DATA_TYPE: 6
       INPUT:
         name: dem.tif
         type: raster
@@ -35,7 +35,7 @@ tests:
   - algorithm: gdal:cliprasterbyextent
     name: Test (gdal:cliprasterbyextent)
     params:
-      DATA_TYPE: 5
+      DATA_TYPE: 6
       INPUT:
         name: dem.tif
         type: raster
@@ -53,7 +53,7 @@ tests:
     params:
       ALPHA_BAND: false
       CROP_TO_CUTLINE: true
-      DATA_TYPE: 5
+      DATA_TYPE: 6
       INPUT:
         name: dem.tif
         type: raster
@@ -458,7 +458,7 @@ tests:
   - algorithm: gdal:warpreproject
     name: Warp (gdalwarp)
     params:
-      DATA_TYPE: 5
+      DATA_TYPE: 6
       INPUT:
         name: dem.tif
         type: raster
