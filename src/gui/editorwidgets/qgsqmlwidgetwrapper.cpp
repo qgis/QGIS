@@ -91,5 +91,26 @@ void QgsQmlWidgetWrapper::setQmlCode( const QString &qmlCode )
 void QgsQmlWidgetWrapper::setFeature( const QgsFeature &feature )
 {
   if ( mWidget )
-    mWidget->rootContext()->setContextProperty( "feature", feature );
+  {
+    QgsExpressionContext context = layer()->createExpressionContext();
+
+    context.setFeature( feature );
+
+    QmlExpression *qmlExpression = new QmlExpression();
+    qmlExpression->setExpressionContext( context );
+
+    mWidget->rootContext()->setContextProperty( "expression", qmlExpression );
+  }
+}
+
+void QmlExpression::setExpressionContext( const QgsExpressionContext &context )
+{
+  mExpressionContext = context;
+}
+
+QVariant QmlExpression::evaluate( const QString& expression ) const
+{
+  QgsExpression exp = QgsExpression( expression );
+  exp.prepare( &mExpressionContext );
+  return exp.evaluate(&mExpressionContext);
 }

@@ -1163,24 +1163,16 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
         }
       } );
 
-      //attributes to select
-      QgsFieldComboBox *attributeFieldCombo = new QgsFieldComboBox();
-      attributeFieldCombo->setLayer( mLayer );
-      connect( attributeFieldCombo, &QgsFieldComboBox::fieldChanged, this, [ = ]( QString attributeName )
-      {
-        qmlCode->insertPlainText( QStringLiteral( "feature.attribute(\"%1\")" ).arg( attributeName ) );
-      } );
-
       QgsFieldExpressionWidget *expressionWidget = new QgsFieldExpressionWidget;
       expressionWidget->setLayer( mLayer );
-      expressionWidget->setExpressionDialogTitle( tr( "Expression" ) );
+      QToolButton *addExpressionButton = new QToolButton();
+      addExpressionButton->setIcon( QgsApplication::getThemeIcon( "/symbologyAdd.svg" ) );
 
-      connect( expressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & expressionText )
+      connect( addExpressionButton, &QAbstractButton::clicked, this, [ = ]
       {
-        qmlCode->insertPlainText( QStringLiteral( "expression(%1)" ).arg( expressionText ) );
-        QgsLogger::warning( QStringLiteral( "Do it..." ) );
-        //expression needs to be added here...
+        qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"(%1)\")" ).arg( expressionWidget->currentText()) );
       } );
+
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
       qmlWrapper->setQmlCode( qmlCode->toPlainText() );
@@ -1188,20 +1180,26 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       {
         qmlWrapper->setQmlCode( qmlCode->toPlainText() );
         qmlWrapper->reinitWidget();
+        QgsFeature f;
+        mLayer->getFeatures().nextFeature(f);
+        qmlWrapper->setFeature( f );
       } );
 
       layout->addRow( tr( "Title" ), title );
-      QGroupBox *qmlCodeBox = new QGroupBox( tr( "QML Code" ) );
+      QScrollArea *qmlCodeBox = new QScrollArea();
       qmlCodeBox->setLayout( new QGridLayout );
       qmlCodeBox->layout()->addWidget( qmlObjectTemplate );
-      qmlCodeBox->layout()->addWidget( attributeFieldCombo );
-      qmlCodeBox->layout()->addWidget( expressionWidget );
+      QGroupBox *expressionWidgetBox = new QGroupBox();
+      qmlCodeBox->layout()->addWidget( expressionWidgetBox );
+      expressionWidgetBox->setLayout( new QGridLayout );
+      expressionWidgetBox->layout()->addWidget( expressionWidget );
+      expressionWidgetBox->layout()->addWidget( addExpressionButton );
       qmlCodeBox->layout()->addWidget( qmlCode );
       layout->addRow( qmlCodeBox );
-      QGroupBox *qmlPreviewBox = new QGroupBox( tr( "Preview") );
+      QScrollArea *qmlPreviewBox = new QScrollArea();
       qmlPreviewBox->setLayout( new QGridLayout );
       qmlPreviewBox->setMinimumWidth( 400 );
-      qmlPreviewBox->layout()->addWidget(qmlWrapper->widget());
+      qmlPreviewBox->layout()->addWidget( qmlWrapper->widget() );
       qmlLayout->addWidget( qmlPreviewBox );
 
       QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );

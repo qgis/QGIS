@@ -21,7 +21,6 @@
 #include "qgis_gui.h"
 #include <QtQuickWidgets/QQuickWidget>
 
-
 class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 {
     Q_OBJECT
@@ -51,17 +50,18 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
     QgsFeature mFeature;
 };
 
-/*
-class GUI_EXPORT QmlExpression
+
+class GUI_EXPORT QmlExpression : public QObject
 {
-  Q_GADGET
+  Q_OBJECT
 
   public:
-    QgsExpressionContext expressionContext();
-    void setExpressionContext( QgsExpressionContext expressionContext );
+   void setExpressionContext( const QgsExpressionContext &context );
 
-   Q_INVOKABLE evaluate();
-}
-*/
+   Q_INVOKABLE QVariant evaluate( const QString &expression) const;
+
+  private:
+   QgsExpressionContext mExpressionContext;
+};
 
 #endif // QGSQMLWIDGETWRAPPER_H
