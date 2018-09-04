@@ -17,6 +17,7 @@
 
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingoutputs.h"
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QCheckBox>
@@ -119,12 +120,21 @@ QVariant QgsProcessingBooleanWidgetWrapper::widgetValue() const
 
 QStringList QgsProcessingBooleanWidgetWrapper::compatibleParameterTypes() const
 {
-  return QStringList() << "boolean" << "crs" << "layer";
+  return QStringList() << QgsProcessingParameterBoolean::typeName()
+         << QgsProcessingParameterNumber::typeName()
+         << QgsProcessingParameterFeatureSource::typeName()
+         << QgsProcessingParameterMapLayer::typeName()
+         << QgsProcessingParameterRasterLayer::typeName()
+         << QgsProcessingParameterVectorLayer::typeName();
 }
 
 QStringList QgsProcessingBooleanWidgetWrapper::compatibleOutputTypes() const
 {
-  return QStringList() << "outputNumber" << "outputString" << "outputLayer" << "outputVector" << "outputRaster";
+  return QStringList() << QgsProcessingOutputNumber::typeName()
+         << QgsProcessingOutputMapLayer::typeName()
+         << QgsProcessingOutputRasterLayer::typeName()
+         << QgsProcessingOutputVectorLayer::typeName()
+         << QgsProcessingOutputString::typeName();
 }
 
 QList<int> QgsProcessingBooleanWidgetWrapper::compatibleDataTypes() const
