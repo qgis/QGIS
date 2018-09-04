@@ -20,6 +20,7 @@ class QgsPointXY;
 class QgsVectorLayer;
 class QgsFeatureRenderer;
 class QgsRenderContext;
+class QgsRectangle;
 
 #include "qgis_core.h"
 #include "qgspointxy.h"

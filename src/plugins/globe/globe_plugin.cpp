@@ -39,6 +39,7 @@
 #include <qgssettings.h>
 #include <qgsvectorlayerlabeling.h>
 #include <qgsproject.h>
+#include <qgsrectangle.h>
 
 #include <QAction>
 #include <QDir>

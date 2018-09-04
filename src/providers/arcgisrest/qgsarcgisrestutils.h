@@ -17,12 +17,12 @@
 
 #include <QStringList>
 #include <QVariant>
-#include "geometry/qgswkbtypes.h"
+#include "qgswkbtypes.h"
+#include "qgsrectangle.h"
 
 class QNetworkReply;
 class QgsNetworkAccessManager;
 class QgsFields;
-class QgsRectangle;
 class QgsAbstractGeometry;
 class QgsCoordinateReferenceSystem;
 class QgsFeedback;
