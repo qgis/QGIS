@@ -1116,31 +1116,37 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       dlg.setLayout( mainLayout );
       layout->addWidget( baseWidget );
 
-      //widget title
       QLineEdit *title = new QLineEdit( itemData.name() );
-      //qml code
       QPlainTextEdit *qmlCode = new QPlainTextEdit( itemData.qmlElementEditorConfiguration().qmlCode );
-      qmlCode->setMinimumWidth( 400 );
-      //template to select
+      qmlCode->setPlaceholderText( tr( "Insert QML code here..." ) );
+
       QComboBox *qmlObjectTemplate = new QComboBox();
-      qmlObjectTemplate->addItem( "Rectangle" );
-      qmlObjectTemplate->addItem( "Pie Chart" );
+      qmlObjectTemplate->addItem( tr( "Free text..." ) );
+      qmlObjectTemplate->addItem( tr( "Rectangle" ) );
+      qmlObjectTemplate->addItem( tr( "Pie Chart" ) );
       connect( qmlObjectTemplate, QOverload<int>::of( &QComboBox::currentIndexChanged ), qmlCode, [ = ]( int index )
       {
+        qmlCode->clear();
         switch ( index )
         {
           case 0:
+          {
+            qmlCode->setPlaceholderText( tr( "Insert QML code here..." ) );
+            break;
+          }
+          case 1:
           {
             qmlCode->insertPlainText( QStringLiteral( "import QtQuick 2.0\n"
                                       "\n"
                                       "Rectangle {\n"
                                       "    width: 100\n"
                                       "    height: 100\n"
-                                      "    color: \"red\"\n"
+                                      "    color: \"steelblue\"\n"
+                                      "    Text{ text: \"A rectangle\"\n"
                                       "}\n" ) );
             break;
           }
-          case 1:
+          case 2:
           {
             qmlCode->insertPlainText( QStringLiteral( "import QtQuick 2.0\n"
                                       "import QtCharts 2.0\n"
@@ -1170,7 +1176,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
 
       connect( addExpressionButton, &QAbstractButton::clicked, this, [ = ]
       {
-        qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"(%1)\")" ).arg( expressionWidget->currentText() ) );
+        qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expressionWidget->currentText() ) );
       } );
 
 
@@ -1186,12 +1192,12 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       } );
 
       layout->addRow( tr( "Title" ), title );
-      QScrollArea *qmlCodeBox = new QScrollArea();
+      QGroupBox *qmlCodeBox = new QGroupBox( tr( "QML Code" ) );
       qmlCodeBox->setLayout( new QGridLayout );
       qmlCodeBox->layout()->addWidget( qmlObjectTemplate );
       QGroupBox *expressionWidgetBox = new QGroupBox();
       qmlCodeBox->layout()->addWidget( expressionWidgetBox );
-      expressionWidgetBox->setLayout( new QGridLayout );
+      expressionWidgetBox->setLayout( new QHBoxLayout );
       expressionWidgetBox->layout()->addWidget( expressionWidget );
       expressionWidgetBox->layout()->addWidget( addExpressionButton );
       qmlCodeBox->layout()->addWidget( qmlCode );
