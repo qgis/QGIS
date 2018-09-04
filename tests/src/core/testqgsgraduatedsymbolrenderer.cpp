@@ -20,6 +20,10 @@
 
 #include "qgsgraduatedsymbolrenderer.h"
 
+/** \ingroup UnitTests
+ * This is a unit test for the qgsGraduatedSymbolRenderer class.
+ */
+
 class TestQgsGraduatedSymbolRenderer: public QObject
 {
     Q_OBJECT
@@ -31,6 +35,7 @@ class TestQgsGraduatedSymbolRenderer: public QObject
     void cleanup();// will be called after every testfunction.
     void rangesOverlap();
     void rangesHaveGaps();
+    void _makeBreaksSymmetric(QList<double> &breaks, double symmetryPoint, bool astride);
 
 
   private:
@@ -134,6 +139,30 @@ void TestQgsGraduatedSymbolRenderer::rangesHaveGaps()
   renderer.addClass( range4 );
 
   QVERIFY( renderer.rangesHaveGaps() );
+}
+
+void TestQgsGraduatedSymbolRenderer::_makeBreaksSymmetric(QList<double> &breaks, double symmetryPoint, bool astride)
+{
+  const QList<double> unchanged_breaks = {1235, 1023, 997, 800, 555, 10, 1, -5, -11, -423, -811};
+  
+  // with astride = false
+  breaks = unchanged_breaks;
+  symmetryPoint = 12.0;
+  astride = false;
+  _makeBreaksSymmetric( breaks, symmetryPoint, astride );
+  
+  QVERIFY( breaks.contains( symmetryPoint) );
+  // /!\ breaks contain the maximum of the distrib but not the minimum ?
+  QVERIFY( breaks.count() % 2 == 0 ); 
+  
+  // with astride = true
+  breaks = unchanged_breaks;
+  symmetryPoint = 666.3;
+  astride = true;  
+  _makeBreaksSymmetric( breaks, symmetryPoint, astride );
+  
+  QVERIFY( breaks.contains( symmetryPoint) );
+  QVERIFY( breaks.count() % 2 != 0 );   
 }
 
 QGSTEST_MAIN( TestQgsGraduatedSymbolRenderer )

@@ -327,7 +327,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
         const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(),
         bool useSymmetricMode = false,
         double symmetryPoint = 0.0,
-        QStringList listForCboPrettyBreaks = {},
+        QStringList listForCboPrettyBreaks = QStringList(),
         bool astride = false );
 
     //! create renderer from XML element
@@ -483,7 +483,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     bool mUseSymmetricMode = false;
     double mSymmetryPoint = 0.0;
-    QStringList mListForCboPrettyBreaks = {};
+    QStringList mListForCboPrettyBreaks = QStringList();
     bool mAstride = false;
 
   private:
