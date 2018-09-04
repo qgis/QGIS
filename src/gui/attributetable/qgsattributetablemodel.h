@@ -25,7 +25,6 @@
 #include <QQueue>
 #include <QMap>
 
-#include "qgsvectorlayer.h" // QgsAttributeList
 #include "qgsconditionalstyle.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsvectorlayercache.h"

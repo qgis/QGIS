@@ -26,6 +26,7 @@
 #include "qgsalgorithmimportphotos.h"
 #include "qgsalgorithmtransform.h"
 #include "qgsalgorithmkmeansclustering.h"
+#include "qgsvectorlayer.h"
 
 class TestQgsProcessingAlgs: public QObject
 {

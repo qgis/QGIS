@@ -16,6 +16,7 @@
 #include "qgsgeometryengine.h"
 #include "qgsgeometrycontainedcheck.h"
 #include "qgsfeaturepool.h"
+#include "qgsvectorlayer.h"
 
 
 void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const

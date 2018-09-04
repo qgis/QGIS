@@ -17,6 +17,7 @@
 
 #include "dockModel.h"
 #include "topolError.h"
+#include "qgsvectorlayer.h"
 
 DockModel::DockModel( ErrorList &errorList, QObject *parent = nullptr ) : mErrorlist( errorList )
 {

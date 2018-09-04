@@ -25,10 +25,10 @@
 #include "qgsfeedback.h"
 #include "qgssymbol.h"
 #include "qgstaskmanager.h"
-#include "qgsvectorlayer.h"
 #include "qgsogrutils.h"
 #include "qgsrenderer.h"
 #include "qgsgeometryengine.h"
+#include "qgsfeaturesink.h"
 #include <ogr_api.h>
 
 class QgsSymbolLayer;

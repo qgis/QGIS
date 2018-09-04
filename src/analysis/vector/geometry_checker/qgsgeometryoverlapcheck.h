@@ -19,6 +19,7 @@
 #define QGS_GEOMETRY_OVERLAP_CHECK_H
 
 #include "qgsgeometrycheck.h"
+#include "qgsvectorlayer.h"
 
 class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckError
 {

@@ -38,6 +38,7 @@
 #include "qgsreferencedgeometry.h"
 #include "qgssettings.h"
 #include "qgsmessagelog.h"
+#include "qgsvectorlayer.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {

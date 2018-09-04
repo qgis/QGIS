@@ -23,7 +23,6 @@
 #include <QStringList>
 #include "qgis_analysis.h"
 #include "qgsfeature.h"
-#include "qgsvectorlayer.h"
 #include "geometry/qgsgeometry.h"
 #include "qgsgeometrycheckerutils.h"
 

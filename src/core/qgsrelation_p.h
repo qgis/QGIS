@@ -31,7 +31,6 @@
 //
 
 #include "qgsrelation.h"
-#include "qgsvectorlayer.h"
 
 #include <QSharedData>
 #include <QPointer>

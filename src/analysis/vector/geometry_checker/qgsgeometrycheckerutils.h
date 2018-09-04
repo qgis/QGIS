@@ -20,7 +20,6 @@
 #define QGS_GEOMETRYCHECKERUTILS_H
 
 #include "qgsfeature.h"
-#include "qgsvectorlayer.h"
 #include "geometry/qgsabstractgeometry.h"
 #include "geometry/qgspoint.h"
 #include <qmath.h>
@@ -41,9 +40,9 @@ namespace QgsGeometryCheckerUtils
       const QgsCoordinateTransform &layerToMapTransform() const;
       const QgsAbstractGeometry *geometry() const { return mGeometry; }
       QString geometryCrs() const { return mMapCrs ? layerToMapTransform().destinationCrs().authid() : layerToMapTransform().sourceCrs().authid(); }
-      QString id() const { return QString( "%1:%2" ).arg( layer().name() ).arg( mFeature.id() ); }
-      bool operator==( const LayerFeature &other ) const { return layer().id() == other.layer().id() && feature().id() == other.feature().id(); }
-      bool operator!=( const LayerFeature &other ) const { return layer().id() != other.layer().id() || feature().id() != other.feature().id(); }
+      QString id() const;
+      bool operator==( const LayerFeature &other ) const;
+      bool operator!=( const LayerFeature &other ) const;
 
     private:
       const QgsFeaturePool *mFeaturePool;

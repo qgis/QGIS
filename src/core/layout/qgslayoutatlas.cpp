@@ -21,6 +21,9 @@
 #include "qgslayoutatlas.h"
 #include "qgslayout.h"
 #include "qgsmessagelog.h"
+#include "qgsfeaturerequest.h"
+#include "qgsfeatureiterator.h"
+#include "qgsvectorlayer.h"
 
 QgsLayoutAtlas::QgsLayoutAtlas( QgsLayout *layout )
   : QObject( layout )

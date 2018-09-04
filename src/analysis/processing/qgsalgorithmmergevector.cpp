@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmmergevector.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

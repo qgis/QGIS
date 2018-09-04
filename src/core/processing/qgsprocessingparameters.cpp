@@ -28,6 +28,8 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingparametertype.h"
 #include "qgsrasterfilewriter.h"
+#include "qgsvectorlayer.h"
+
 #include <functional>
 
 

@@ -20,11 +20,13 @@
 
 //qgis includes...
 #include "qgsfeatureiterator.h"
-#include <qgsvectorlayercache.h>
-#include <qgsvectordataprovider.h>
-#include <qgsapplication.h>
-#include <qgsvectorlayereditbuffer.h>
-#include <qgscacheindexfeatureid.h>
+#include "qgsvectorlayercache.h"
+#include "qgsvectordataprovider.h"
+#include "qgsapplication.h"
+#include "qgsvectorlayereditbuffer.h"
+#include "qgscacheindexfeatureid.h"
+#include "qgsvectorlayer.h"
+
 #include <QDebug>
 
 /**

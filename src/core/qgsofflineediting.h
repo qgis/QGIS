@@ -21,7 +21,6 @@
 
 #include "qgis_core.h"
 #include "qgsfeature.h"
-#include "qgsvectorlayer.h"
 #include "qgssqliteutils.h"
 
 #include <QObject>

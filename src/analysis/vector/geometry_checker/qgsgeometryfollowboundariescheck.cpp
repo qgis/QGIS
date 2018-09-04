@@ -17,7 +17,7 @@
 #include "qgsgeometryengine.h"
 #include "qgsproject.h"
 #include "qgsspatialindex.h"
-
+#include "qgsvectorlayer.h"
 
 QgsGeometryFollowBoundariesCheck::QgsGeometryFollowBoundariesCheck( QgsGeometryCheckerContext *context, QgsVectorLayer *checkLayer )
   : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::PolygonGeometry}, context )

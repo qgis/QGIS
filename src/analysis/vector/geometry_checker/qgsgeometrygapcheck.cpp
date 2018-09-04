@@ -17,6 +17,8 @@
 #include "qgsgeometrygapcheck.h"
 #include "qgsgeometrycollection.h"
 #include "qgsfeaturepool.h"
+#include "qgsvectorlayer.h"
+
 #include "geos_c.h"
 
 void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const

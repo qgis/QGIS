@@ -19,7 +19,6 @@
 #include "ui_qgsloadstylefromdbdialog.h"
 #include "qgsguiutils.h"
 #include "qgis_app.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
 class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadStyleFromDBDialogLayout

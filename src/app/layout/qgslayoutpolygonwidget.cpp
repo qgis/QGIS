@@ -21,6 +21,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutundostack.h"
+#include "qgsvectorlayer.h"
 
 QgsLayoutPolygonWidget::QgsLayoutPolygonWidget( QgsLayoutItemPolygon *polygon )
   : QgsLayoutItemBaseWidget( nullptr, polygon )

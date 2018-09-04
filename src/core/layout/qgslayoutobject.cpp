@@ -21,6 +21,7 @@
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
 #include "qgslayoutobject.h"
+#include "qgsfeedback.h"
 
 
 QgsPropertiesDefinition QgsLayoutObject::sPropertyDefinitions;

@@ -16,6 +16,7 @@
 #include "qgslogger.h"
 #include "qgsgpsdetector.h"
 #include "qgssettings.h"
+#include "qgsvectorlayer.h"
 
 //qt includes
 #include <QFileDialog>

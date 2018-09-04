@@ -30,7 +30,6 @@
 #include <QHBoxLayout>
 #include <QFormLayout>
 
-#include "qgsvectorlayer.h"
 #include "ui_qgsattributesformproperties.h"
 #include "qgis_app.h"
 #include "qgsaddattrdialog.h"

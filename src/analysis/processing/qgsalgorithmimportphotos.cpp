@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmimportphotos.h"
 #include "qgsogrutils.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

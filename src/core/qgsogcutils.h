@@ -31,13 +31,13 @@ class QgsExpression;
 class QgsGeometry;
 class QgsPointXY;
 class QgsRectangle;
+class QgsVectorLayer;
 
 #include "qgsgeometry.h"
 #include "qgsexpression.h"
 #include "qgsexpressionnode.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgssqlstatement.h"
-#include "qgsvectorlayer.h"
 
 /**
  * \ingroup core

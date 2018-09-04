@@ -20,8 +20,8 @@
 #include <QWidget>
 
 #include "qgsdistancearea.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectorlayertools.h"
+#include "qgsvectorlayer.h"
 #include "qgis_gui.h"
 #include "qgsproject.h"
 

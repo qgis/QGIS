@@ -21,7 +21,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfields.h"
-#include "qgsvectorlayer.h"
+
+#include <QPointer>
 
 class QTextCodec;
 

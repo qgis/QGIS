@@ -18,7 +18,6 @@
 #ifndef QGSPROXYPROGRESSTASK_H
 #define QGSPROXYPROGRESSTASK_H
 
-#include "qgsvectorlayer.h"
 #include "qgsvirtuallayerdefinition.h"
 #include "qgstaskmanager.h"
 

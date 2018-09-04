@@ -18,13 +18,14 @@
 #ifndef TOPOLERROR_H
 #define TOPOLERROR_H
 
-#include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
+#include "qgsfeature.h"
 
 class TopolError;
 typedef QList<TopolError *> ErrorList;
 typedef bool ( TopolError::*fixFunction )();
+
 
 class FeatureLayer
 {

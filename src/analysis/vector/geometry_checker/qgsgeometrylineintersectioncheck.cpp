@@ -15,6 +15,7 @@
 
 #include "qgsgeometrylineintersectioncheck.h"
 #include "qgslinestring.h"
+#include "qgsvectorlayer.h"
 
 void QgsGeometryLineIntersectionCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {

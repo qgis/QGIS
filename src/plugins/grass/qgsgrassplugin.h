@@ -18,7 +18,6 @@
 #include "../qgisplugin.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
-#include "qgsvectorlayer.h"
 #include <QObject>
 
 class QgsGrassTools;

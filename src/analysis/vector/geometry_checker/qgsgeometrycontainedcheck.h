@@ -19,6 +19,7 @@
 #define QGS_GEOMETRY_COVER_CHECK_H
 
 #include "qgsgeometrycheck.h"
+#include "qgsvectorlayer.h"
 
 class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckError
 {

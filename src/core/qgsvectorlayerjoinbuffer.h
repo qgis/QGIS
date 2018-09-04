@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsvectorlayerjoininfo.h"
+#include "qgsfeaturesink.h"
 
 #include <QHash>
 #include <QString>

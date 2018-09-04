@@ -17,6 +17,7 @@
 
 #include "qgsvirtuallayertask.h"
 #include "qgslogger.h"
+#include "qgsvectorlayer.h"
 
 QgsVirtualLayerTask::QgsVirtualLayerTask( const QgsVirtualLayerDefinition &definition )
   : mDefinition( definition )

@@ -19,7 +19,6 @@
 #include <osgEarthFeatures/FeatureCursor>
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
-#include "qgsvectorlayer.h"
 
 #include "qgsglobefeatureutils.h"
 

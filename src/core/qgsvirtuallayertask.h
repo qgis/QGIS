@@ -18,9 +18,9 @@
 #ifndef QGSVIRTUALLAYERTASK_H
 #define QGSVIRTUALLAYERTASK_H
 
-#include "qgsvectorlayer.h"
 #include "qgsvirtuallayerdefinition.h"
 #include "qgstaskmanager.h"
+#include "qgsvectorlayer.h"
 
 /**
  * \ingroup core

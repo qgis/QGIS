@@ -46,8 +46,8 @@
 #include "qgsreadwritecontext.h"
 #include "qgsprojectmetadata.h"
 #include "qgstranslationcontext.h"
-#include "qgsvectorlayer.h"
 #include "qgsprojecttranslator.h"
+#include "qgsattributeeditorelement.h"
 
 class QFileInfo;
 class QDomDocument;

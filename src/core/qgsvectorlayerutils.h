@@ -17,7 +17,6 @@
 #define QGSVECTORLAYERUTILS_H
 
 #include "qgis_core.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayerfeatureiterator.h"
 

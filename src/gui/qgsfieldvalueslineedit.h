@@ -18,16 +18,19 @@
 #include "qgsfilterlineedit.h"
 #include "qgis.h"
 #include "qgsfeedback.h"
-#include "qgsvectorlayer.h"
+
 #include <QStringListModel>
 #include <QTreeView>
 #include <QFocusEvent>
 #include <QHeaderView>
 #include <QTimer>
 #include <QThread>
+#include <QMutex>
+
 #include "qgis_gui.h"
 
 class QgsFloatingWidget;
+class QgsVectorLayer;
 
 
 #ifndef SIP_RUN
@@ -55,40 +58,10 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
      */
     void setSubstring( const QString &string ) { mSubstring = string; }
 
-    void run() override
-    {
-      mWasCanceled = false;
-      if ( mSubstring.isEmpty() )
-      {
-        emit collectedValues( QStringList() );
-        return;
-      }
-
-      // allow responsive cancelation
-      mFeedback = new QgsFeedback();
-      // just get 100 values... maybe less/more would be useful?
-      mValues = mLayer->uniqueStringsMatching( mAttributeIndex, mSubstring, 100, mFeedback );
-
-      // be overly cautious - it's *possible* stop() might be called between deleting mFeedback and nulling it
-      mFeedbackMutex.lock();
-      delete mFeedback;
-      mFeedback = nullptr;
-      mFeedbackMutex.unlock();
-
-      emit collectedValues( mValues );
-    }
+    void run() override;
 
     //! Informs the gatherer to immediately stop collecting values
-    void stop()
-    {
-      // be cautious, in case gatherer stops naturally just as we are canceling it and mFeedback gets deleted
-      mFeedbackMutex.lock();
-      if ( mFeedback )
-        mFeedback->cancel();
-      mFeedbackMutex.unlock();
-
-      mWasCanceled = true;
-    }
+    void stop();
 
     //! Returns true if collection was canceled before completion
     bool wasCanceled() const { return mWasCanceled; }

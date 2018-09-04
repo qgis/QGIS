@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsfeedback.h"
+#include "qgsvectorlayer.h"
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {

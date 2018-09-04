@@ -21,7 +21,6 @@
 #include "qgis_core.h"
 #include "qgsvectorfilewriter.h"
 #include "qgstaskmanager.h"
-#include "qgsvectorlayer.h"
 
 /**
  * \class QgsVectorFileWriterTask

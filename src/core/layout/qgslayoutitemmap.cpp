@@ -28,6 +28,8 @@
 #include "qgsmaplayerref.h"
 #include "qgsmaplayerlistutils.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsvectorlayer.h"
+
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 

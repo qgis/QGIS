@@ -21,6 +21,7 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
 #include "qgslayoutundostack.h"
+#include "qgsvectorlayer.h"
 
 #include <QButtonGroup>
 #include <QFileDialog>

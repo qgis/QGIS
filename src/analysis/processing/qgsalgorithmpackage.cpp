@@ -19,6 +19,7 @@
 #include "qgsgeometryengine.h"
 #include "qgsogrutils.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
