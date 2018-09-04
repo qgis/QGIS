@@ -1117,9 +1117,27 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       layout->addWidget( baseWidget );
 
       QLineEdit *title = new QLineEdit( itemData.name() );
+
+      //qmlCode
       QPlainTextEdit *qmlCode = new QPlainTextEdit( itemData.qmlElementEditorConfiguration().qmlCode );
       qmlCode->setPlaceholderText( tr( "Insert QML code here..." ) );
 
+      QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
+      qmlWrapper->setQmlCode( qmlCode->toPlainText() );
+      QgsFeature previewFeature;
+      mLayer->getFeatures().nextFeature( previewFeature );
+      qmlWrapper->setFeature( previewFeature );
+      //update preview on text change
+      connect( qmlCode, &QPlainTextEdit::textChanged, this, [ = ]
+      {
+        qmlWrapper->setQmlCode( qmlCode->toPlainText() );
+        qmlWrapper->reinitWidget();
+        QgsFeature previewFeature;
+        mLayer->getFeatures().nextFeature( previewFeature );
+        qmlWrapper->setFeature( previewFeature );
+      } );
+
+      //templates
       QComboBox *qmlObjectTemplate = new QComboBox();
       qmlObjectTemplate->addItem( tr( "Free text..." ) );
       qmlObjectTemplate->addItem( tr( "Rectangle" ) );
@@ -1142,7 +1160,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
                                       "    width: 100\n"
                                       "    height: 100\n"
                                       "    color: \"steelblue\"\n"
-                                      "    Text{ text: \"A rectangle\"\n"
+                                      "    Text{ text: \"A rectangle\" }\n"
                                       "}\n" ) );
             break;
           }
@@ -1177,18 +1195,6 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       connect( addExpressionButton, &QAbstractButton::clicked, this, [ = ]
       {
         qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expressionWidget->currentText() ) );
-      } );
-
-
-      QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
-      qmlWrapper->setQmlCode( qmlCode->toPlainText() );
-      connect( qmlCode, &QPlainTextEdit::textChanged, this, [ = ]
-      {
-        qmlWrapper->setQmlCode( qmlCode->toPlainText() );
-        qmlWrapper->reinitWidget();
-        QgsFeature f;
-        mLayer->getFeatures().nextFeature( f );
-        qmlWrapper->setFeature( f );
       } );
 
       layout->addRow( tr( "Title" ), title );

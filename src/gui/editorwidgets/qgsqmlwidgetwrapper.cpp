@@ -61,16 +61,9 @@ void QgsQmlWidgetWrapper::reinitWidget( )
   if ( !mWidget )
     return;
 
-  if ( !mQmlFile.open() )
-  {
-    QgsMessageLog::logMessage( tr( "Failed to open temporary QML file" ) );
-    return;
-  }
-
   mWidget->engine()->clearComponentCache();
-  mWidget->setSource( QUrl::fromLocalFile( mQmlFile.fileName() ) );
 
-  mQmlFile.close();
+  initWidget( mWidget );
 }
 
 
@@ -93,6 +86,9 @@ void QgsQmlWidgetWrapper::setFeature( const QgsFeature &feature )
   if ( mWidget )
   {
     QgsExpressionContext context = layer()->createExpressionContext();
+    context << QgsExpressionContextUtils::globalScope()
+            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+            << QgsExpressionContextUtils::layerScope( layer() );
 
     context.setFeature( feature );
 
