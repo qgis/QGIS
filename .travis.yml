@@ -95,10 +95,10 @@ matrix:
    #            - flip
    #            - clang-3.8
     # OSX based build with QT4 and Python 2
-    - os: osx
-      env:
-        - BUILD=osx
-        - IGNORE_BUILD_FAILURES=YES
+   # - os: osx
+   #   env:
+   #    - BUILD=osx
+   #    - IGNORE_BUILD_FAILURES=YES
 
 git:
   depth: 30
