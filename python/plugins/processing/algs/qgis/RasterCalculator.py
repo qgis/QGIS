@@ -117,9 +117,8 @@ class RasterCalculator(QgisAlgorithm):
                 crs = list(layersDict.values())[0].crs()
 
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
-        if bbox.isNull():
-            if not layers:
-                raise QgsProcessingException(self.tr("No reference layer selected nor extent box provided"))
+        if bbox.isNull() and not layers:
+            raise QgsProcessingException(self.tr("No reference layer selected nor extent box provided"))
 
         if not bbox.isNull():
             bboxCrs = self.parameterAsExtentCrs(parameters, self.EXTENT, context)
