@@ -133,6 +133,17 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget
 
   private:
 
+    // IMPORTANT - must match order of widgets in the stacked widget!
+    enum SourceType
+    {
+      StaticValue = 0,
+      Expression = 1,
+      ModelParameter = 2,
+      ChildOutput = 3,
+    };
+
+    SourceType currentSourceType() const;
+
     void setSourceType( QgsProcessingModelChildParameterSource::Source type );
     void updateUi();
 
