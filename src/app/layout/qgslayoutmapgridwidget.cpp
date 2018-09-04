@@ -39,6 +39,7 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   connect( mOffsetYSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mOffsetYSpinBox_valueChanged );
   connect( mCrossWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mCrossWidthSpinBox_valueChanged );
   connect( mFrameWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mFrameWidthSpinBox_valueChanged );
+  connect( mGridFrameMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mGridFrameMarginSpinBox_valueChanged );
   connect( mFrameStyleComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::mFrameStyleComboBox_currentIndexChanged );
   connect( mGridFramePenSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mGridFramePenSizeSpinBox_valueChanged );
   connect( mGridFramePenColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutMapGridWidget::mGridFramePenColorButton_colorChanged );
@@ -196,6 +197,7 @@ void QgsLayoutMapGridWidget::blockAllSignals( bool block )
   mCrossWidthSpinBox->blockSignals( block );
   mFrameStyleComboBox->blockSignals( block );
   mFrameWidthSpinBox->blockSignals( block );
+  mGridFrameMarginSpinBox->blockSignals( block );
   mGridLineStyleButton->blockSignals( block );
   mMapGridUnitComboBox->blockSignals( block );
   mGridFramePenSizeSpinBox->blockSignals( block );
@@ -281,11 +283,13 @@ void QgsLayoutMapGridWidget::toggleFrameControls( bool frameEnabled, bool frameF
 {
   //set status of frame controls
   mFrameWidthSpinBox->setEnabled( frameSizeEnabled );
+  mGridFrameMarginSpinBox->setEnabled( frameEnabled );
   mGridFramePenSizeSpinBox->setEnabled( frameEnabled );
   mGridFramePenColorButton->setEnabled( frameEnabled );
   mGridFrameFill1ColorButton->setEnabled( frameFillEnabled );
   mGridFrameFill2ColorButton->setEnabled( frameFillEnabled );
   mFrameWidthLabel->setEnabled( frameSizeEnabled );
+  mFrameMarginLabel->setEnabled( frameEnabled );
   mFramePenLabel->setEnabled( frameEnabled );
   mFrameFillLabel->setEnabled( frameFillEnabled );
   mCheckGridLeftSide->setEnabled( frameEnabled );
@@ -458,6 +462,7 @@ void QgsLayoutMapGridWidget::setGridItems()
   mOffsetYSpinBox->setValue( mMapGrid->offsetY() );
   mCrossWidthSpinBox->setValue( mMapGrid->crossLength() );
   mFrameWidthSpinBox->setValue( mMapGrid->frameWidth() );
+  mGridFrameMarginSpinBox->setValue( mMapGrid->GridFrameMargin() );
   mGridFramePenSizeSpinBox->setValue( mMapGrid->framePenSize() );
   mGridFramePenColorButton->setColor( mMapGrid->framePenColor() );
   mGridFrameFill1ColorButton->setColor( mMapGrid->frameFillColor1() );
@@ -514,6 +519,7 @@ void QgsLayoutMapGridWidget::setGridItems()
 
   //grid frame
   mFrameWidthSpinBox->setValue( mMapGrid->frameWidth() );
+  mGridFrameMarginSpinBox->setValue( mMapGrid->GridFrameMargin() );
   QgsLayoutItemMapGrid::FrameStyle gridFrameStyle = mMapGrid->frameStyle();
   switch ( gridFrameStyle )
   {
@@ -683,6 +689,20 @@ void QgsLayoutMapGridWidget::mFrameWidthSpinBox_valueChanged( double val )
 
   mMap->beginCommand( tr( "Change Frame Width" ) );
   mMapGrid->setFrameWidth( val );
+  mMap->updateBoundingRect();
+  mMap->update();
+  mMap->endCommand();
+}
+
+void QgsLayoutMapGridWidget::mGridFrameMarginSpinBox_valueChanged( double val )
+{
+  if ( !mMapGrid || !mMap )
+  {
+    return;
+  }
+
+  mMap->beginCommand( tr( "Change Grid Frame Margin" ) );
+  mMapGrid->setGridFrameMargin( val );
   mMap->updateBoundingRect();
   mMap->update();
   mMap->endCommand();

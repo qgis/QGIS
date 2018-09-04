@@ -750,6 +750,22 @@ framePenSize method.
 .. seealso:: :py:func:`setFrameWidth`
 %End
 
+    void setGridFrameMargin( const double margin );
+%Docstring
+Sets the grid frame margin (in layout units).
+This property controls distance between the map frame and the grid frame.
+
+.. seealso:: GridFrameMargin
+%End
+
+    double GridFrameMargin() const;
+%Docstring
+Sets the grid frame Margin (in layout units).
+This property controls distance between the map frame and the grid frame.
+
+.. seealso:: :py:func:`setGridFrameMargin`
+%End
+
     void setFramePenSize( const double width );
 %Docstring
 Sets the ``width`` of the stroke drawn in the grid frame.
