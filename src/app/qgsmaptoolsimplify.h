@@ -21,6 +21,7 @@
 
 #include <QVector>
 #include "qgstolerance.h"
+#include "qgsgeometry.h"
 #include "qgis_app.h"
 
 class QgsRubberBand;

@@ -23,6 +23,7 @@
 #include "qgsrendercontext.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfeatureid.h"
+#include "qgsgeometry.h"
 
 static void ENP_centroid_step( const QPolygonF &pX, double &cx, double &cy, double &signedArea, int i, int i1 )
 {

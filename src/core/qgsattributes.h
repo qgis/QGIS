@@ -33,7 +33,6 @@
 #include "qgsfields.h"
 
 
-class QgsGeometry;
 class QgsRectangle;
 class QgsFeature;
 class QgsFeaturePrivate;

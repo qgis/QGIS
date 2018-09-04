@@ -22,6 +22,7 @@
 
 #include "qgsglobefeatureoptions.h"
 #include "qgsfeatureid.h"
+#include "qgsgeometry.h"
 
 class QgsGlobeFeatureSource : public QObject, public osgEarth::Features::FeatureSource
 {

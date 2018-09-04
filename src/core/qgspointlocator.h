@@ -26,6 +26,7 @@ class QgsRenderContext;
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfeatureid.h"
+#include "qgsgeometry.h"
 #include <memory>
 
 class QgsPointLocator_VisitorNearestVertex;
