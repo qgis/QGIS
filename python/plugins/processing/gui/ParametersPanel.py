@@ -131,6 +131,11 @@ class ParametersPanel(BASE, WIDGET):
             else:
                 wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent)
                 self.wrappers[param.name()] = wrapper
+
+                # For compatibility with 3.x API, we need to check whether the wrapper is
+                # the deprecated WidgetWrapper class. If not, it's the newer
+                # QgsAbstractProcessingParameterWidgetWrapper class
+                # TODO QGIS 4.0 - remove
                 is_python_wrapper = issubclass(wrapper.__class__, WidgetWrapper)
                 if not is_python_wrapper:
                     widget = wrapper.createWrappedWidget(self.processing_context)
