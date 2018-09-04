@@ -362,6 +362,7 @@
     <addaction name="mActionVertexTool"/>
     <addaction name="mActionRotatePointSymbols"/>
     <addaction name="mActionOffsetPointSymbol"/>
+    <addaction name="mActionReverseLine"/>
    </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
@@ -468,6 +469,7 @@
    <addaction name="mActionDeletePart"/>
    <addaction name="mActionReshapeFeatures"/>
    <addaction name="mActionOffsetCurve"/>
+   <addaction name="mActionReverseLine"/>
    <addaction name="mActionSplitFeatures"/>
    <addaction name="mActionSplitParts"/>
    <addaction name="mActionMergeFeatures"/>
@@ -1045,6 +1047,18 @@
    </property>
    <property name="text">
     <string>Offset Point Symbol</string>
+   </property>
+  </action>
+  <action name="mActionReverseLine">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionReverseLine.svg</normaloff>:/images/themes/default/mActionReverseLine.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Reverse line</string>
    </property>
   </action>
   <action name="mActionSnappingOptions">

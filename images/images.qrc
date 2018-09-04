@@ -704,6 +704,7 @@
         <file>themes/default/mIconGPU.svg</file>
         <file>themes/default/mAddToProject.svg</file>
         <file>themes/default/mDockify.svg</file>
+        <file>themes/default/mActionReverseLine.svg</file>
         <file>themes/default/mActionAdd3DMap.svg</file>
     </qresource>
     <qresource prefix="/images/tips">

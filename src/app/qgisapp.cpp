@@ -403,6 +403,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaptoolmovelabel.h"
 #include "qgsmaptoolrotatelabel.h"
 #include "qgsmaptoolchangelabelproperties.h"
+#include "qgsmaptoolreverseline.h"
 
 #include "vertextool/qgsvertextool.h"
 
@@ -1466,6 +1467,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mOffsetCurve;
   delete mMapTools.mPinLabels;
   delete mMapTools.mReshapeFeatures;
+  delete mMapTools.mReverseLine;
   delete mMapTools.mRotateFeature;
   delete mMapTools.mRotateLabel;
   delete mMapTools.mRotatePointSymbolsTool;
@@ -2063,6 +2065,7 @@ void QgisApp::createActions()
   connect( mActionOffsetPointSymbol, &QAction::triggered, this, &QgisApp::offsetPointSymbol );
   connect( mActionSnappingOptions, &QAction::triggered, this, &QgisApp::snappingOptions );
   connect( mActionOffsetCurve, &QAction::triggered, this, &QgisApp::offsetCurve );
+  connect( mActionReverseLine, &QAction::triggered, this, &QgisApp::reverseLine );
 
   // View Menu Items
   connect( mActionPan, &QAction::triggered, this, &QgisApp::pan );
@@ -2354,6 +2357,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMoveLabel );
   mMapToolGroup->addAction( mActionRotateLabel );
   mMapToolGroup->addAction( mActionChangeLabelProperties );
+  mMapToolGroup->addAction( mActionReverseLine );
 
   //
   // Preview Modes Group
@@ -3307,6 +3311,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionDecorationNorthArrow->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/north_arrow.png" ) ) );
   mActionDecorationScaleBar->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionScaleBar.svg" ) ) );
   mActionDecorationGrid->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/transformed.svg" ) ) );
+  mActionReverseLine->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionReverseLine.svg" ) ) );
 
   emit currentThemeChanged( themeName );
 }
@@ -3518,6 +3523,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mOffsetCurve->setAction( mActionOffsetCurve );
   mMapTools.mReshapeFeatures = new QgsMapToolReshape( mMapCanvas );
   mMapTools.mReshapeFeatures->setAction( mActionReshapeFeatures );
+  mMapTools.mReverseLine = new QgsMapToolReverseLine( mMapCanvas );
+  mMapTools.mReverseLine->setAction( mActionReverseLine );
   mMapTools.mSplitFeatures = new QgsMapToolSplitFeatures( mMapCanvas );
   mMapTools.mSplitFeatures->setAction( mActionSplitFeatures );
   mMapTools.mSplitParts = new QgsMapToolSplitParts( mMapCanvas );
@@ -7603,6 +7610,11 @@ void QgisApp::deleteRing()
 void QgisApp::deletePart()
 {
   mMapCanvas->setMapTool( mMapTools.mDeletePart );
+}
+
+void QgisApp::reverseLine()
+{
+  mMapCanvas->setMapTool( mMapTools.mReverseLine );
 }
 
 QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &featureList, bool &canceled )
@@ -12140,6 +12152,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionPasteStyle->setEnabled( false );
     mActionCopyLayer->setEnabled( false );
     mActionPasteLayer->setEnabled( false );
+    mActionReverseLine->setEnabled( false );
 
     mUndoDock->widget()->setEnabled( false );
     mActionUndo->setEnabled( false );
@@ -12214,6 +12227,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionZoomToSelected->setEnabled( isSpatial );
     mActionLabeling->setEnabled( isSpatial );
     mActionDiagramProperties->setEnabled( isSpatial );
+    mActionReverseLine->setEnabled( false );
 
     mActionSelectFeatures->setEnabled( isSpatial );
     mActionSelectPolygon->setEnabled( isSpatial );
@@ -12357,6 +12371,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         mActionSplitParts->setEnabled( isEditable && canChangeGeometry && isMultiPart );
         mActionSimplifyFeature->setEnabled( isEditable && canChangeGeometry );
         mActionOffsetCurve->setEnabled( isEditable && canAddFeatures && canChangeAttributes );
+        mActionReverseLine->setEnabled( isEditable && canChangeGeometry );
 
         mActionAddRing->setEnabled( false );
         mActionFillRing->setEnabled( false );
