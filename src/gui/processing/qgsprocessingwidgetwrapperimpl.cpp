@@ -22,6 +22,8 @@
 #include <QHBoxLayout>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QLineEdit>
+#include <QPlainTextEdit>
 
 ///@cond PRIVATE
 
@@ -120,18 +122,25 @@ QVariant QgsProcessingBooleanWidgetWrapper::widgetValue() const
 
 QStringList QgsProcessingBooleanWidgetWrapper::compatibleParameterTypes() const
 {
+  //pretty much everything is compatible here and can be converted to a bool!
   return QStringList() << QgsProcessingParameterBoolean::typeName()
+         << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterNumber::typeName()
+         << QgsProcessingParameterDistance::typeName()
+         << QgsProcessingParameterFile::typeName()
+         << QgsProcessingParameterField::typeName()
          << QgsProcessingParameterFeatureSource::typeName()
          << QgsProcessingParameterMapLayer::typeName()
          << QgsProcessingParameterRasterLayer::typeName()
-         << QgsProcessingParameterVectorLayer::typeName();
+         << QgsProcessingParameterVectorLayer::typeName()
+         << QgsProcessingParameterExpression::typeName();
 }
 
 QStringList QgsProcessingBooleanWidgetWrapper::compatibleOutputTypes() const
 {
   return QStringList() << QgsProcessingOutputNumber::typeName()
          << QgsProcessingOutputMapLayer::typeName()
+         << QgsProcessingOutputFile::typeName()
          << QgsProcessingOutputRasterLayer::typeName()
          << QgsProcessingOutputVectorLayer::typeName()
          << QgsProcessingOutputString::typeName();
@@ -144,12 +153,122 @@ QList<int> QgsProcessingBooleanWidgetWrapper::compatibleDataTypes() const
 
 QString QgsProcessingBooleanWidgetWrapper::parameterType() const
 {
-  return QStringLiteral( "boolean" );
+  return QgsProcessingParameterBoolean::typeName();
 }
 
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingBooleanWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingBooleanWidgetWrapper( parameter, type );
+}
+
+
+
+//
+// QgsProcessingStringWidgetWrapper
+//
+
+QgsProcessingStringWidgetWrapper::QgsProcessingStringWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingStringWidgetWrapper::createWidget()
+{
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Modeler:
+    {
+      if ( static_cast< const QgsProcessingParameterString * >( parameterDefinition() )->multiLine() )
+      {
+        mPlainTextEdit = new QPlainTextEdit();
+        mPlainTextEdit->setToolTip( parameterDefinition()->toolTip() );
+
+        connect( mPlainTextEdit, &QPlainTextEdit::textChanged, this, [ = ]
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mPlainTextEdit;
+      }
+      else
+      {
+        mLineEdit = new QLineEdit();
+        mLineEdit->setToolTip( parameterDefinition()->toolTip() );
+
+        connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mLineEdit;
+      }
+    };
+
+    case QgsProcessingGui::Batch:
+    {
+      mLineEdit = new QLineEdit();
+      mLineEdit->setToolTip( parameterDefinition()->toolTip() );
+
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mLineEdit;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingStringWidgetWrapper::setWidgetValue( const QVariant &value, const QgsProcessingContext &context )
+{
+  const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+  if ( mLineEdit )
+    mLineEdit->setText( v );
+  if ( mPlainTextEdit )
+    mPlainTextEdit->setPlainText( v );
+}
+
+QVariant QgsProcessingStringWidgetWrapper::widgetValue() const
+{
+  if ( mLineEdit )
+    return mLineEdit->text();
+  else if ( mPlainTextEdit )
+    return mPlainTextEdit->toPlainText();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingStringWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterNumber::typeName()
+         << QgsProcessingParameterDistance::typeName()
+         << QgsProcessingParameterFile::typeName()
+         << QgsProcessingParameterField::typeName()
+         << QgsProcessingParameterExpression::typeName();
+}
+
+QStringList QgsProcessingStringWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList() << QgsProcessingOutputNumber::typeName()
+         << QgsProcessingOutputFile::typeName()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingStringWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingStringWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterString::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingStringWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingStringWidgetWrapper( parameter, type );
 }
 
 

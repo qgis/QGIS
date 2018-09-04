@@ -28,6 +28,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addAlgorithmConfigurationWidgetFactory( new QgsFilterAlgorithmConfigurationWidgetFactory() );
 
   addParameterWidgetFactory( new QgsProcessingBooleanWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingStringWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

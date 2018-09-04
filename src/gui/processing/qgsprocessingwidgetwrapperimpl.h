@@ -24,6 +24,9 @@
 
 class QCheckBox;
 class QComboBox;
+class QLineEdit;
+class QPlainTextEdit;
+
 
 ///@cond PRIVATE
 
@@ -62,6 +65,43 @@ class GUI_EXPORT QgsProcessingBooleanWidgetWrapper : public QgsAbstractProcessin
 
     friend class TestProcessingGui;
 };
+
+
+class GUI_EXPORT QgsProcessingStringWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingStringWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                      QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+
+  protected:
+
+    void setWidgetValue( const QVariant &value, const QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    QStringList compatibleParameterTypes() const override;
+
+    QStringList compatibleOutputTypes() const override;
+
+    QList< int > compatibleDataTypes() const override;
+
+  private:
+
+    QLineEdit *mLineEdit = nullptr;
+    QPlainTextEdit *mPlainTextEdit = nullptr;
+
+    friend class TestProcessingGui;
+};
+
 
 ///@endcond PRIVATE
 
