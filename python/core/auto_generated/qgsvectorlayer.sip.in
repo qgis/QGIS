@@ -2196,7 +2196,6 @@ It may also contain embedded expressions.
     QgsEditFormConfig editFormConfig() const;
 %Docstring
 Returns the configuration of the form used to represent this vector layer.
-This is a writable configuration that can directly be changed in place.
 
 :return: The configuration of this layers' form
 
