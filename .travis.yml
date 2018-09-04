@@ -58,47 +58,47 @@ matrix:
             - python-sip-dev
             - txt2tags
             - xvfb
-    # QT5 based build with Python 3 // using container based builds and prebuild binary dependencies in osgeo4travis
-    - os: linux
-      language: python # This lets us use newer python versions from virtualenv
-      env:
-        - BUILD=qt5
-        - QT_VERSION=5
-        - LLVM_VERSION=3.8
-      dist: precise
-      sudo: false
-      cache:
-        apt: true
-        directories:
-          - $HOME/.ccache
-      compiler: gcc
-      python: "3.3"
-      addons:
-        postgresql: "9.4"
-        apt:
-          sources:
-            - llvm-toolchain-precise-3.8
-            - ubuntu-toolchain-r-test
-            - george-edison55-precise-backports # doxygen 1.8.3
-          packages:
-            - doxygen
-            - bison
-            - flex
-            - graphviz
-            - libpq-dev
-            - libfcgi-dev
-            - libfftw3-3
-            - pkg-config
-            - poppler-utils
-            - txt2tags
-            - xvfb
-            - flip
-            - clang-3.8
+   # QT5 based build with Python 3 // using container based builds and prebuild binary dependencies in osgeo4travis
+   #    - os: linux
+   #      language: python # This lets us use newer python versions from virtualenv
+   #      env:
+   #        - BUILD=qt5
+   #        - QT_VERSION=5
+   #        - LLVM_VERSION=3.8
+   #      dist: precise
+   #      sudo: false
+   #      cache:
+   #        apt: true
+   #        directories:
+   #          - $HOME/.ccache
+   #      compiler: gcc
+   #      python: "3.3"
+   #      addons:
+   #        postgresql: "9.4"
+   #        apt:
+   #          sources:
+   #            - llvm-toolchain-precise-3.8
+   #            - ubuntu-toolchain-r-test
+   #            - george-edison55-precise-backports # doxygen 1.8.3
+   #          packages:
+   #            - doxygen
+   #            - bison
+   #            - flex
+   #            - graphviz
+   #            - libpq-dev
+   #            - libfcgi-dev
+   #            - libfftw3-3
+   #            - pkg-config
+   #            - poppler-utils
+   #            - txt2tags
+   #            - xvfb
+   #            - flip
+   #            - clang-3.8
     # OSX based build with QT4 and Python 2
-    - os: osx
-      env:
-        - BUILD=osx
-        - IGNORE_BUILD_FAILURES=YES
+   # - os: osx
+   #   env:
+   #    - BUILD=osx
+   #    - IGNORE_BUILD_FAILURES=YES
 
 git:
   depth: 30
