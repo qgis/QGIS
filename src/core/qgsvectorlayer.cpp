@@ -4231,37 +4231,41 @@ QString QgsVectorLayer::htmlMetadata() const
   // encoding
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Encoding" ) + QStringLiteral( "</td><td>" ) + dataProvider()->encoding() + QStringLiteral( "</td></tr>\n" );
 
-  // geom type
-  QgsWkbTypes::GeometryType type = geometryType();
-  if ( type < 0 || type > QgsWkbTypes::NullGeometry )
+  if ( isSpatial() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Invalid vector type" ), 2 );
-  }
-  else
-  {
-    QString typeString( QStringLiteral( "%1 (%2)" ).arg( QgsWkbTypes::geometryDisplayString( geometryType() ),
-                        QgsWkbTypes::displayString( wkbType() ) ) );
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Geometry" ) + QStringLiteral( "</td><td>" ) + typeString + QStringLiteral( "</td></tr>\n" );
-  }
-
-  // EPSG
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" );
-  if ( crs().isValid() )
-  {
-    myMetadata += crs().authid() + QStringLiteral( " - " );
-    myMetadata += crs().description() + QStringLiteral( " - " );
-    if ( crs().isGeographic() )
-      myMetadata += tr( "Geographic" );
+    // geom type
+    QgsWkbTypes::GeometryType type = geometryType();
+    if ( type < 0 || type > QgsWkbTypes::NullGeometry )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Invalid vector type" ), 2 );
+    }
     else
-      myMetadata += tr( "Projected" );
+    {
+      QString typeString( QStringLiteral( "%1 (%2)" ).arg( QgsWkbTypes::geometryDisplayString( geometryType() ),
+                          QgsWkbTypes::displayString( wkbType() ) ) );
+      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Geometry" ) + QStringLiteral( "</td><td>" ) + typeString + QStringLiteral( "</td></tr>\n" );
+    }
+
+    // EPSG
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" );
+    if ( crs().isValid() )
+    {
+      myMetadata += crs().authid() + QStringLiteral( " - " );
+      myMetadata += crs().description() + QStringLiteral( " - " );
+      if ( crs().isGeographic() )
+        myMetadata += tr( "Geographic" );
+      else
+        myMetadata += tr( "Projected" );
+    }
+    myMetadata += QLatin1String( "</td></tr>\n" );
+
+    // Extent
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
+
+    // unit
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Unit" ) + QStringLiteral( "</td><td>" ) + QgsUnitTypes::toString( crs().mapUnits() ) + QStringLiteral( "</td></tr>\n" );
+
   }
-  myMetadata += QLatin1String( "</td></tr>\n" );
-
-  // Extent
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
-
-  // unit
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Unit" ) + QStringLiteral( "</td><td>" ) + QgsUnitTypes::toString( crs().mapUnits() ) + QStringLiteral( "</td></tr>\n" );
 
   // feature count
   QLocale locale = QLocale();
