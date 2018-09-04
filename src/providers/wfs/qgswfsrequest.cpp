@@ -130,13 +130,15 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
 
   QWaitCondition waitCondition;
   QMutex waitConditionMutex;
+  bool threadFinished = false;
+  bool success = false;
 
-  std::function<bool()> downloaderFunction = [ this, request, synchronous, &waitConditionMutex, &waitCondition ]()
+  std::function<void()> downloaderFunction = [ this, request, synchronous, &waitConditionMutex, &waitCondition, &threadFinished, &success ]()
   {
     if ( QThread::currentThread() != QgsApplication::instance()->thread() )
       QgsNetworkAccessManager::instance( Qt::DirectConnection );
 
-    bool success = true;
+    success = true;
     mReply = QgsNetworkAccessManager::instance()->get( request );
 
     mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
@@ -180,41 +182,51 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
         loop.exec();
       }
     }
+    waitConditionMutex.lock();
+    threadFinished = true;
     waitCondition.wakeAll();
-    return success;
+    waitConditionMutex.unlock();
   };
-
-  bool success;
 
   if ( synchronous && QThread::currentThread() == QApplication::instance()->thread() )
   {
     std::unique_ptr<DownloaderThread> downloaderThread = qgis::make_unique<DownloaderThread>( downloaderFunction );
     downloaderThread->start();
 
-    while ( !downloaderThread->isFinished() )
+    while ( true )
     {
       waitConditionMutex.lock();
+      if ( threadFinished )
+      {
+        waitConditionMutex.unlock();
+        break;
+      }
       waitCondition.wait( &waitConditionMutex );
-      waitConditionMutex.unlock();
 
       // If the downloader thread wakes us (the main thread) up and is not yet finished
       // he needs the authentication to run.
       // The processEvents() call gives the auth manager the chance to show a dialog and
       // once done with that, we can wake the downloaderThread again and continue the download.
-      if ( !downloaderThread->isFinished() )
+      if ( !threadFinished )
       {
+        waitConditionMutex.unlock();
+
         QgsApplication::instance()->processEvents();
         waitConditionMutex.lock();
         waitCondition.wakeAll();
         waitConditionMutex.unlock();
       }
+      else
+      {
+        waitConditionMutex.unlock();
+      }
     }
-
-    success = downloaderThread->success();
+    // wait for thread to gracefully exit
+    downloaderThread->wait();
   }
   else
   {
-    success = downloaderFunction();
+    downloaderFunction();
   }
   return success && mErrorMessage.isEmpty();
 }
