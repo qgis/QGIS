@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/processing/qgsprocessingmodelerwidget.h                      *
+ * src/gui/processing/qgsprocessingmodelerparameterwidget.h             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -32,7 +32,7 @@ QgsGui.processingGuiRegistry()->createModelerParameterWidget().
 %End
 
 %TypeHeaderCode
-#include "qgsprocessingmodelerwidget.h"
+#include "qgsprocessingmodelerparameterwidget.h"
 %End
   public:
 
@@ -65,7 +65,7 @@ Populates the widget with available sources for the parameter's value, e.g.
 adding the available child algorithm outputs and model input parameter
 choices.
 
-In order to determine the available source, the ``compatibleParameterTypes``,
+In order to determine the available source, the ``compatibleParameterTypes`` and
 ``compatibleOutputTypes`` arguments are used. These lists correspond to the
 various available values for QgsProcessingParameterDefinition.type() (for
 ``compatibleParameterTypes``) and the values for :py:func:`QgsProcessingOutputDefinition.type()`
@@ -107,7 +107,7 @@ Returns the current value of the parameter.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/processing/qgsprocessingmodelerwidget.h                      *
+ * src/gui/processing/qgsprocessingmodelerparameterwidget.h             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

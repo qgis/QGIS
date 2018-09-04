@@ -30,7 +30,7 @@
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
-#include "qgsprocessingmodelerwidget.h"
+#include "qgsprocessingmodelerparameterwidget.h"
 #include "qgsnativealgorithms.h"
 #include "processing/models/qgsprocessingmodelalgorithm.h"
 #include "qgsxmlutils.h"

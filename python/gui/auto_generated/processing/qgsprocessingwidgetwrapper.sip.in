@@ -234,7 +234,6 @@ The ``type`` argument indicates the dialog type to create a wrapper for.
 .. seealso:: :py:func:`createModelerWidgetWrapper`
 %End
 
-
     virtual QgsProcessingModelerParameterWidget *createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model,
         const QString &childId,
         const QgsProcessingParameterDefinition *parameter,

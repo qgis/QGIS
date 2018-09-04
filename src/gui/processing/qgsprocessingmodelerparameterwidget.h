@@ -1,6 +1,6 @@
 /***************************************************************************
-                         qgsprocessingmodelerwidgetwrapper.h
-                         ---------------------
+                         qgsprocessingmodelerparameterwidget.h
+                         -------------------------------------
     begin                : August 2018
     copyright            : (C) 2018 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
@@ -16,8 +16,8 @@
  ***************************************************************************/
 
 
-#ifndef QGSPROCESSINGMODELERWIDGETWRAPPER_H
-#define QGSPROCESSINGMODELERWIDGETWRAPPER_H
+#ifndef QGSPROCESSINGMODELERPARAMETERWIDGET_H
+#define QGSPROCESSINGMODELERPARAMETERWIDGET_H
 
 #include <QWidget>
 #include "qgis_gui.h"
@@ -87,7 +87,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget
      * adding the available child algorithm outputs and model input parameter
      * choices.
      *
-     * In order to determine the available source, the \a compatibleParameterTypes,
+     * In order to determine the available source, the \a compatibleParameterTypes and
      * \a compatibleOutputTypes arguments are used. These lists correspond to the
      * various available values for QgsProcessingParameterDefinition::type() (for
      * \a compatibleParameterTypes) and the values for QgsProcessingOutputDefinition::type()
@@ -161,4 +161,4 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget
 };
 
 
-#endif // QGSPROCESSINGMODELERWIDGETWRAPPER_H
+#endif // QGSPROCESSINGMODELERPARAMETERWIDGET_H

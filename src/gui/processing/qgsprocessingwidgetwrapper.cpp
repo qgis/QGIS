@@ -18,7 +18,7 @@
 
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingparameters.h"
-#include "qgsprocessingmodelerwidget.h"
+#include "qgsprocessingmodelerparameterwidget.h"
 #include "qgspropertyoverridebutton.h"
 #include <QLabel>
 #include <QHBoxLayout>

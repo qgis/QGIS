@@ -1,6 +1,6 @@
 /***************************************************************************
-                         qgsprocessingmodelerwidgetwrapper.cpp
-                         ---------------------
+                         qgsprocessingmodelerparameterwidget.cpp
+                         ---------------------------------------
     begin                : August 2018
     copyright            : (C) 2018 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 
-#include "qgsprocessingmodelerwidget.h"
+#include "qgsprocessingmodelerparameterwidget.h"
 #include "qgsprocessingparameters.h"
 #include "qgsexpressionlineedit.h"
 #include "qgsprocessingguiregistry.h"
