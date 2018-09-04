@@ -881,7 +881,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist, Flags flags )
        feature id are returned but new0 returned instead of the featureId*/
     Q_FOREACH ( const QString &v, idList )
     {
-      if ( v.startsWith( QStringLiteral( "new" ) ) )
+      if ( v.startsWith( QLatin1String( "new" ) ) )
       {
         reloadData();
         return true;

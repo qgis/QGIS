@@ -1543,15 +1543,15 @@ bool QgsCompositionConverter::readXml( QgsLayoutItem *layoutItem, const QDomElem
 
   //frame
   QString frame = itemElem.attribute( QStringLiteral( "frame" ) );
-  layoutItem->setFrameEnabled( frame.compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 ) ;
+  layoutItem->setFrameEnabled( frame.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 ) ;
 
   //frame
   QString background = itemElem.attribute( QStringLiteral( "background" ) );
-  layoutItem->setBackgroundEnabled( background.compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 );
+  layoutItem->setBackgroundEnabled( background.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
 
   //position lock for mouse moves/resizes
   QString positionLock = itemElem.attribute( QStringLiteral( "positionLock" ) );
-  layoutItem->setLocked( positionLock.compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 );
+  layoutItem->setLocked( positionLock.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
 
   //visibility
   layoutItem->setVisibility( itemElem.attribute( QStringLiteral( "visibility" ), QStringLiteral( "1" ) ) != QStringLiteral( "0" ) );
@@ -1711,7 +1711,7 @@ QgsProperty QgsCompositionConverter::readOldDataDefinedProperty( const QgsCompos
 
   QString active = ddElem.attribute( QStringLiteral( "active" ) );
   bool isActive = false;
-  if ( active.compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 )
+  if ( active.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
   {
     isActive = true;
   }
@@ -1720,7 +1720,7 @@ QgsProperty QgsCompositionConverter::readOldDataDefinedProperty( const QgsCompos
 
   QString useExpr = ddElem.attribute( QStringLiteral( "useExpr" ) );
   bool isExpression = false;
-  if ( useExpr.compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 )
+  if ( useExpr.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
   {
     isExpression = true;
   }

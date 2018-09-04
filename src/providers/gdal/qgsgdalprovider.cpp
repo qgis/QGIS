@@ -3062,7 +3062,7 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList &createOptio
 
   // gtiff files - validate PREDICTOR option
   // see gdal: frmts/gtiff/geotiff.cpp and libtiff: tif_predict.c)
-  if ( format.toLower() == QLatin1String( "gtiff" ) && optionsMap.contains( QStringLiteral( "PREDICTOR" ) ) )
+  if ( format.compare( QLatin1String( "gtiff" ), Qt::CaseInsensitive ) == 0 && optionsMap.contains( QStringLiteral( "PREDICTOR" ) ) )
   {
     QString value = optionsMap.value( QStringLiteral( "PREDICTOR" ) );
     GDALDataType nDataType = ( !mGdalDataType.isEmpty() ) ? ( GDALDataType ) mGdalDataType.at( 0 ) : GDT_Unknown;

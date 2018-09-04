@@ -34,7 +34,7 @@
 #include "qgswmsparameters.h"
 
 #define QSTR_COMPARE( str, lit )\
-  (str.compare( QStringLiteral( lit ), Qt::CaseInsensitive ) == 0)
+  (str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0)
 
 namespace QgsWms
 {
@@ -94,9 +94,9 @@ namespace QgsWms
                                      QStringLiteral( "Please check the value of the REQUEST parameter" ) );
         }
 
-        if ( ( mVersion.compare( QStringLiteral( "1.1.1" ) ) == 0 \
-               && req.compare( QStringLiteral( "capabilities" ) ) == 0 )
-             || req.compare( QStringLiteral( "GetCapabilities" ) ) == 0 )
+        if ( ( mVersion.compare( QLatin1String( "1.1.1" ) ) == 0 \
+               && req.compare( QLatin1String( "capabilities" ) ) == 0 )
+             || req.compare( QLatin1String( "GetCapabilities" ) ) == 0 )
         {
           writeGetCapabilities( mServerIface, project, version, request, response, false );
         }

@@ -283,7 +283,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
       // to avoid restoring these invalid paths, we take a less-tolerant approach for older (untrustworthy) projects
       // and only set ui forms paths IF they are local files OR start with "http(s)".
       const bool localFile = QFileInfo::exists( uiFormPath );
-      if ( localFile || tolerantRemoteUrls || uiFormPath.startsWith( QStringLiteral( "http" ) ) )
+      if ( localFile || tolerantRemoteUrls || uiFormPath.startsWith( QLatin1String( "http" ) ) )
         setUiForm( uiFormPath );
     }
   }

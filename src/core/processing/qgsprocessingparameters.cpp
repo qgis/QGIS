@@ -724,7 +724,7 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsP
     return QgsCoordinateReferenceSystem();
 
   // maybe special string
-  if ( context.project() && crsText.compare( QStringLiteral( "ProjectCrs" ), Qt::CaseInsensitive ) == 0 )
+  if ( context.project() && crsText.compare( QLatin1String( "ProjectCrs" ), Qt::CaseInsensitive ) == 0 )
     return context.project()->crs();
 
   // maybe a map layer reference
@@ -1555,7 +1555,7 @@ bool QgsProcessingParameters::parseScriptCodeParameterOptions( const QString &co
 
   name = m.captured( 1 );
   QString tokens = m.captured( 2 );
-  if ( tokens.startsWith( QStringLiteral( "optional" ), Qt::CaseInsensitive ) )
+  if ( tokens.startsWith( QLatin1String( "optional" ), Qt::CaseInsensitive ) )
   {
     isOptional = true;
     tokens.remove( 0, 8 ); // length "optional" = 8
@@ -1758,7 +1758,7 @@ QString QgsProcessingParameterCrs::valueAsPythonString( const QVariant &value, Q
 
 QgsProcessingParameterCrs *QgsProcessingParameterCrs::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterCrs( name, description, definition.toLower() == QStringLiteral( "none" ) ? QVariant() : definition, isOptional );
+  return new QgsProcessingParameterCrs( name, description, definition.compare( QLatin1String( "none" ), Qt::CaseInsensitive ) == 0 ? QVariant() : definition, isOptional );
 }
 
 QgsProcessingParameterMapLayer::QgsProcessingParameterMapLayer( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -2873,7 +2873,7 @@ QgsProcessingParameterEnum *QgsProcessingParameterEnum::fromScriptCode( const QS
   QString defaultVal;
   bool multiple = false;
   QString def = definition;
-  if ( def.startsWith( QStringLiteral( "multiple" ), Qt::CaseInsensitive ) )
+  if ( def.startsWith( QLatin1String( "multiple" ), Qt::CaseInsensitive ) )
   {
     multiple = true;
     def = def.mid( 9 );
@@ -2957,7 +2957,7 @@ QgsProcessingParameterString *QgsProcessingParameterString::fromScriptCode( cons
 {
   QString def = definition;
   bool multiLine = false;
-  if ( def.startsWith( QStringLiteral( "long" ), Qt::CaseInsensitive ) )
+  if ( def.startsWith( QLatin1String( "long" ), Qt::CaseInsensitive ) )
   {
     multiLine = true;
     def = def.mid( 5 );
@@ -3317,23 +3317,23 @@ QgsProcessingParameterField *QgsProcessingParameterField::fromScriptCode( const 
   bool allowMultiple = false;
   QString def = definition;
 
-  if ( def.startsWith( QStringLiteral( "numeric " ), Qt::CaseInsensitive ) )
+  if ( def.startsWith( QLatin1String( "numeric " ), Qt::CaseInsensitive ) )
   {
     type = Numeric;
     def = def.mid( 8 );
   }
-  else if ( def.startsWith( QStringLiteral( "string " ), Qt::CaseInsensitive ) )
+  else if ( def.startsWith( QLatin1String( "string " ), Qt::CaseInsensitive ) )
   {
     type = String;
     def = def.mid( 7 );
   }
-  else if ( def.startsWith( QStringLiteral( "datetime " ), Qt::CaseInsensitive ) )
+  else if ( def.startsWith( QLatin1String( "datetime " ), Qt::CaseInsensitive ) )
   {
     type = DateTime;
     def = def.mid( 9 );
   }
 
-  if ( def.startsWith( QStringLiteral( "multiple" ), Qt::CaseInsensitive ) )
+  if ( def.startsWith( QLatin1String( "multiple" ), Qt::CaseInsensitive ) )
   {
     allowMultiple = true;
     def = def.mid( 8 ).trimmed();
@@ -3536,19 +3536,19 @@ QgsProcessingParameterFeatureSource *QgsProcessingParameterFeatureSource::fromSc
   QString def = definition;
   while ( true )
   {
-    if ( def.startsWith( QStringLiteral( "point" ), Qt::CaseInsensitive ) )
+    if ( def.startsWith( QLatin1String( "point" ), Qt::CaseInsensitive ) )
     {
       types << QgsProcessing::TypeVectorPoint;
       def = def.mid( 6 );
       continue;
     }
-    else if ( def.startsWith( QStringLiteral( "line" ), Qt::CaseInsensitive ) )
+    else if ( def.startsWith( QLatin1String( "line" ), Qt::CaseInsensitive ) )
     {
       types << QgsProcessing::TypeVectorLine;
       def = def.mid( 5 );
       continue;
     }
-    else if ( def.startsWith( QStringLiteral( "polygon" ), Qt::CaseInsensitive ) )
+    else if ( def.startsWith( QLatin1String( "polygon" ), Qt::CaseInsensitive ) )
     {
       types << QgsProcessing::TypeVectorPolygon;
       def = def.mid( 8 );
@@ -3762,22 +3762,22 @@ QgsProcessingParameterFeatureSink *QgsProcessingParameterFeatureSink::fromScript
 {
   QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry;
   QString def = definition;
-  if ( def.startsWith( QStringLiteral( "point" ), Qt::CaseInsensitive ) )
+  if ( def.startsWith( QLatin1String( "point" ), Qt::CaseInsensitive ) )
   {
     type = QgsProcessing::TypeVectorPoint;
     def = def.mid( 6 );
   }
-  else if ( def.startsWith( QStringLiteral( "line" ), Qt::CaseInsensitive ) )
+  else if ( def.startsWith( QLatin1String( "line" ), Qt::CaseInsensitive ) )
   {
     type = QgsProcessing::TypeVectorLine;
     def = def.mid( 5 );
   }
-  else if ( def.startsWith( QStringLiteral( "polygon" ), Qt::CaseInsensitive ) )
+  else if ( def.startsWith( QLatin1String( "polygon" ), Qt::CaseInsensitive ) )
   {
     type = QgsProcessing::TypeVectorPolygon;
     def = def.mid( 8 );
   }
-  else if ( def.startsWith( QStringLiteral( "table" ), Qt::CaseInsensitive ) )
+  else if ( def.startsWith( QLatin1String( "table" ), Qt::CaseInsensitive ) )
   {
     type = QgsProcessing::TypeVector;
     def = def.mid( 6 );
@@ -4314,17 +4314,17 @@ QgsProcessingParameterVectorDestination *QgsProcessingParameterVectorDestination
 {
   QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry;
   QString def = definition;
-  if ( def.startsWith( QStringLiteral( "point" ), Qt::CaseInsensitive ) )
+  if ( def.startsWith( QLatin1String( "point" ), Qt::CaseInsensitive ) )
   {
     type = QgsProcessing::TypeVectorPoint;
     def = def.mid( 6 );
   }
-  else if ( def.startsWith( QStringLiteral( "line" ), Qt::CaseInsensitive ) )
+  else if ( def.startsWith( QLatin1String( "line" ), Qt::CaseInsensitive ) )
   {
     type = QgsProcessing::TypeVectorLine;
     def = def.mid( 5 );
   }
-  else if ( def.startsWith( QStringLiteral( "polygon" ), Qt::CaseInsensitive ) )
+  else if ( def.startsWith( QLatin1String( "polygon" ), Qt::CaseInsensitive ) )
   {
     type = QgsProcessing::TypeVectorPolygon;
     def = def.mid( 8 );
@@ -4473,7 +4473,7 @@ QgsProcessingParameterBand *QgsProcessingParameterBand::fromScriptCode( const QS
   QString def = definition;
   bool allowMultiple = false;
 
-  if ( def.startsWith( QStringLiteral( "multiple" ), Qt::CaseInsensitive ) )
+  if ( def.startsWith( QLatin1String( "multiple" ), Qt::CaseInsensitive ) )
   {
     allowMultiple = true;
     def = def.mid( 8 ).trimmed();

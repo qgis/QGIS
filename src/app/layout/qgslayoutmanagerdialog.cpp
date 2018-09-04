@@ -190,7 +190,7 @@ QMap<QString, QString> QgsLayoutManagerDialog::templatesFromPath( const QString 
   QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
   for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
   {
-    if ( infoIt->suffix().toLower() == QLatin1String( "qpt" ) )
+    if ( infoIt->suffix().compare( QLatin1String( "qpt" ), Qt::CaseInsensitive ) == 0 )
     {
       templateMap.insert( infoIt->baseName(), infoIt->absoluteFilePath() );
     }

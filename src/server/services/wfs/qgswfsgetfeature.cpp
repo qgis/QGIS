@@ -789,19 +789,19 @@ namespace QgsWfs
         }
         for ( const QString &attribute : sortBy.split( ',' ) )
         {
-          if ( attribute.endsWith( QStringLiteral( " D" ) ) || attribute.endsWith( QStringLiteral( "+D" ) ) )
+          if ( attribute.endsWith( QLatin1String( " D" ) ) || attribute.endsWith( QLatin1String( "+D" ) ) )
           {
             query.featureRequest.addOrderBy( attribute.left( attribute.size() - 2 ), false );
           }
-          else if ( attribute.endsWith( QStringLiteral( " DESC" ) ) || attribute.endsWith( QStringLiteral( "+DESC" ) ) )
+          else if ( attribute.endsWith( QLatin1String( " DESC" ) ) || attribute.endsWith( QLatin1String( "+DESC" ) ) )
           {
             query.featureRequest.addOrderBy( attribute.left( attribute.size() - 5 ), false );
           }
-          else if ( attribute.endsWith( QStringLiteral( " A" ) ) || attribute.endsWith( QStringLiteral( "+A" ) ) )
+          else if ( attribute.endsWith( QLatin1String( " A" ) ) || attribute.endsWith( QLatin1String( "+A" ) ) )
           {
             query.featureRequest.addOrderBy( attribute.left( attribute.size() - 2 ) );
           }
-          else if ( attribute.endsWith( QStringLiteral( " ASC" ) ) || attribute.endsWith( QStringLiteral( "+ASC" ) ) )
+          else if ( attribute.endsWith( QLatin1String( " ASC" ) ) || attribute.endsWith( QLatin1String( "+ASC" ) ) )
           {
             query.featureRequest.addOrderBy( attribute.left( attribute.size() - 4 ) );
           }

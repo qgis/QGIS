@@ -723,7 +723,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
     {
       QString name = QString::fromUtf8( results[( i * columns ) + 1] );
 
-      if ( name.toLower() == mGeometryColumn )
+      if ( name.compare( mGeometryColumn, Qt::CaseInsensitive ) == 0 )
         continue;
 
       insertDefaultValue( realFieldIndex, QString::fromUtf8( results[( i * columns ) + 4] ) );
@@ -986,7 +986,7 @@ void QgsSpatiaLiteProvider::loadFields()
       for ( i = 1; i <= rows; i++ )
       {
         QString name = QString::fromUtf8( results[( i * columns ) + 1] );
-        if ( name.toLower() == mGeometryColumn )
+        if ( name.compare( mGeometryColumn, Qt::CaseInsensitive ) == 0 )
           continue;
 
         QString type = QString::fromUtf8( results[( i * columns ) + 2] ).toLower();

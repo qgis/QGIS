@@ -248,7 +248,7 @@ bool QgsVirtualLayerProvider::createIt()
           continue;
 
         const QgsVectorLayer *vl = static_cast<const QgsVectorLayer *>( l );
-        if ( ( vl->name() == tname ) || ( vl->name().toLower() == tname.toLower() ) || ( vl->id() == tname ) )
+        if ( ( vl->name() == tname ) || ( vl->name().compare( tname.toLower(), Qt::CaseInsensitive ) == 0 ) || ( vl->id() == tname ) )
         {
           mDefinition.addSource( tname, vl->id() );
           found = true;
@@ -609,7 +609,7 @@ QgsAttributeList QgsVirtualLayerProvider::pkAttributeIndexes() const
     const QgsFields &fields = mDefinition.fields();
     for ( int i = 0; i < fields.size(); i++ )
     {
-      if ( fields.at( i ).name().toLower() == mDefinition.uid().toLower() )
+      if ( fields.at( i ).name().compare( mDefinition.uid(), Qt::CaseInsensitive ) == 0 )
       {
         QgsAttributeList l;
         l << i;

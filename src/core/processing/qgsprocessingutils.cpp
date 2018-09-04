@@ -409,10 +409,10 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
     options.insert( QStringLiteral( "fileEncoding" ), context.defaultEncoding().isEmpty() ? QStringLiteral( "system" ) : context.defaultEncoding() );
   }
 
-  if ( destination.isEmpty() || destination.startsWith( QStringLiteral( "memory:" ) ) )
+  if ( destination.isEmpty() || destination.startsWith( QLatin1String( "memory:" ) ) )
   {
     // strip "memory:" from start of destination
-    if ( destination.startsWith( QStringLiteral( "memory:" ) ) )
+    if ( destination.startsWith( QLatin1String( "memory:" ) ) )
       destination = destination.mid( 7 );
 
     if ( destination.isEmpty() )
@@ -541,7 +541,7 @@ QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input
   else
   {
     QString res = input.toString();
-    if ( res.startsWith( QStringLiteral( "memory:" ) ) )
+    if ( res.startsWith( QLatin1String( "memory:" ) ) )
     {
       return res + '_' + id.toString();
     }

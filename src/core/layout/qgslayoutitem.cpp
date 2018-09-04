@@ -665,7 +665,7 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
 
   //position lock for mouse moves/resizes
   QString positionLock = element.attribute( QStringLiteral( "positionLock" ) );
-  if ( positionLock.compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 )
+  if ( positionLock.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
   {
     setLocked( true );
   }
