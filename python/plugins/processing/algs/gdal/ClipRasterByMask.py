@@ -58,7 +58,7 @@ class ClipRasterByMask(GdalAlgorithm):
     DATA_TYPE = 'DATA_TYPE'
     OUTPUT = 'OUTPUT'
 
-    TYPES = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
+    TYPES = ['Use input layer data type', 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
     def __init__(self):
         super().__init__()
@@ -98,7 +98,7 @@ class ClipRasterByMask(GdalAlgorithm):
                                                     self.tr('Output data type'),
                                                     self.TYPES,
                                                     allowMultiple=False,
-                                                    defaultValue=5)
+                                                    defaultValue=0)
         dataType_param.setFlags(dataType_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(dataType_param)
 
@@ -138,8 +138,10 @@ class ClipRasterByMask(GdalAlgorithm):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         arguments = []
-        arguments.append('-ot')
-        arguments.append(self.TYPES[self.parameterAsEnum(parameters, self.DATA_TYPE, context)])
+
+        data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
+        if data_type:
+            arguments.append('-ot ' + self.TYPES[data_type])
 
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))

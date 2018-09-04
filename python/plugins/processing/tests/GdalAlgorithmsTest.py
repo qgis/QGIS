@@ -348,7 +348,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             translate_alg.getConsoleCommands({'INPUT': source,
                                               'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_translate',
-             '-ot Float32 -of JPEG ' +
+             '-of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
         # with None NODATA value
@@ -357,7 +357,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                               'NODATA': None,
                                               'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_translate',
-             '-ot Float32 -of JPEG ' +
+             '-of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
         # with NODATA value
@@ -367,7 +367,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                               'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_translate',
              '-a_nodata 9999.0 ' +
-             '-ot Float32 -of JPEG ' +
+             '-of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
         # with "0" NODATA value
@@ -377,9 +377,21 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                               'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_translate',
              '-a_nodata 0.0 ' +
+             '-of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value and custom data type
+        self.assertEqual(
+            translate_alg.getConsoleCommands({'INPUT': source,
+                                              'NODATA': 0,
+                                              'DATA_TYPE': 6,
+                                              'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_translate',
+             '-a_nodata 0.0 ' +
              '-ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
+
         # with target srs
         self.assertEqual(
             translate_alg.getConsoleCommands({'INPUT': source,
@@ -387,7 +399,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                               'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_translate',
              '-a_srs EPSG:3111 ' +
-             '-ot Float32 -of JPEG ' +
+             '-of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
 
@@ -399,7 +411,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                               'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_translate',
              '-a_srs EPSG:20936 ' +
-             '-ot Float32 -of JPEG ' +
+             '-of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
 
@@ -411,7 +423,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                               'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_translate',
              '-a_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" ' +
-             '-ot Float32 -of JPEG ' +
+             '-of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
 
@@ -422,7 +434,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                               'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_translate',
              '-a_srs EPSG:3111 ' +
-             '-ot Float32 -of JPEG ' +
+             '-of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
 
@@ -433,7 +445,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                               'OUTPUT': 'd:/temp/check.tif'}, context, feedback),
             ['gdal_translate',
              '-sds ' +
-             '-ot Float32 -of GTiff ' +
+             '-of GTiff ' +
              source + ' ' +
              'd:/temp/check.tif'])
 
@@ -451,7 +463,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'EXTENT': extent,
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_translate',
-             '-projwin 0.0 0.0 0.0 0.0 -ot Float32 -of JPEG ' +
+             '-projwin 0.0 0.0 0.0 0.0 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
         # with NODATA value
@@ -461,7 +473,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'NODATA': 9999,
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_translate',
-             '-projwin 0.0 0.0 0.0 0.0 -a_nodata 9999.0 -ot Float32 -of JPEG ' +
+             '-projwin 0.0 0.0 0.0 0.0 -a_nodata 9999.0 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
         # with "0" NODATA value
@@ -469,6 +481,17 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             alg.getConsoleCommands({'INPUT': source,
                                     'EXTENT': extent,
                                     'NODATA': 0,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_translate',
+             '-projwin 0.0 0.0 0.0 0.0 -a_nodata 0.0 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value and custom data type
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'EXTENT': extent,
+                                    'NODATA': 0,
+                                    'DATA_TYPE': 6,
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_translate',
              '-projwin 0.0 0.0 0.0 0.0 -a_nodata 0.0 -ot Float32 -of JPEG ' +
@@ -489,7 +512,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'MASK': mask,
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
-             '-ot Float32 -of JPEG -cutline ' +
+             '-of JPEG -cutline ' +
              mask + ' -crop_to_cutline ' + source + ' ' +
              'd:/temp/check.jpg'])
         # with NODATA value
@@ -499,7 +522,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'NODATA': 9999,
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
-             '-ot Float32 -of JPEG -cutline ' +
+             '-of JPEG -cutline ' +
              mask + ' -crop_to_cutline -dstnodata 9999.0 ' + source + ' ' +
              'd:/temp/check.jpg'])
         # with "0" NODATA value
@@ -507,6 +530,17 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             alg.getConsoleCommands({'INPUT': source,
                                     'MASK': mask,
                                     'NODATA': 0,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-of JPEG -cutline ' +
+             mask + ' -crop_to_cutline -dstnodata 0.0 ' + source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value and custom data type
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'MASK': mask,
+                                    'NODATA': 0,
+                                    'DATA_TYPE': 6,
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
              '-ot Float32 -of JPEG -cutline ' +
@@ -1431,7 +1465,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'SOURCE_CRS': 'EPSG:3111',
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
-             '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
         # with None NODATA value
@@ -1441,7 +1475,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'SOURCE_CRS': 'EPSG:3111',
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
-             '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
         # with NODATA value
@@ -1451,13 +1485,24 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'SOURCE_CRS': 'EPSG:3111',
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
-             '-s_srs EPSG:3111 -t_srs EPSG:4326 -dstnodata 9999.0 -r near -ot Float32 -of JPEG ' +
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -dstnodata 9999.0 -r near -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
         # with "0" NODATA value
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
                                     'NODATA': 0,
+                                    'SOURCE_CRS': 'EPSG:3111',
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -dstnodata 0.0 -r near -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with "0" NODATA value and custom data type
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': 0,
+                                    'DATA_TYPE': 6,
                                     'SOURCE_CRS': 'EPSG:3111',
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
@@ -1473,7 +1518,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'TARGET_CRS': custom_crs,
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
-             '-s_srs EPSG:20936 -t_srs EPSG:20936 -r near -ot Float32 -of JPEG ' +
+             '-s_srs EPSG:20936 -t_srs EPSG:20936 -r near -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
 
@@ -1485,7 +1530,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'TARGET_CRS': custom_crs,
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
-             '-s_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -t_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -r near -ot Float32 -of JPEG ' +
+             '-s_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -t_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -r near -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
 
@@ -1496,7 +1541,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'TARGET_CRS': 'POSTGIS:3111',
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
-             '-s_srs EPSG:3111 -t_srs EPSG:3111 -r near -ot Float32 -of JPEG ' +
+             '-s_srs EPSG:3111 -t_srs EPSG:3111 -r near -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
 
@@ -1507,7 +1552,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'TARGET_RESOLUTION': None,
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
-             '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
 
@@ -1518,7 +1563,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'TARGET_RESOLUTION': 10.0,
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
-             '-s_srs EPSG:3111 -t_srs EPSG:4326 -tr 10.0 10.0 -r near -ot Float32 -of JPEG ' +
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -tr 10.0 10.0 -r near -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
 
@@ -1529,7 +1574,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'TARGET_RESOLUTION': 0.0,
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
-             '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
 
@@ -1548,13 +1593,21 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'BANDS': 1,
                                     'OUTPUT': outsource}, context, feedback),
             ['gdal_translate', '-b 1 ' +
-             '-ot Float32 -of GTiff ' +
+             '-of GTiff ' +
              source + ' ' + outsource])
-
         # three bands, re-ordered
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
                                     'BANDS': [3, 2, 1],
+                                    'OUTPUT': outsource}, context, feedback),
+            ['gdal_translate', '-b 3 -b 2 -b 1 ' +
+             '-of GTiff ' +
+             source + ' ' + outsource])
+        # three bands, re-ordered with custom data type
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BANDS': [3, 2, 1],
+                                    'DATA_TYPE': 6,
                                     'OUTPUT': outsource}, context, feedback),
             ['gdal_translate', '-b 3 -b 2 -b 1 ' +
              '-ot Float32 -of GTiff ' +
