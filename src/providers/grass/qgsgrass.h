@@ -45,6 +45,7 @@ extern "C"
 #include "qgis_grass_lib.h"
 class QgsCoordinateReferenceSystem;
 class QgsRectangle;
+class QgsAttributes;
 
 // Make the release string because it may be for example 0beta1
 #define STR(x) #x
