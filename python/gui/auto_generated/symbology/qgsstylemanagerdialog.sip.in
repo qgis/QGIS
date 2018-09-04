@@ -14,7 +14,7 @@ class QgsStyleManagerDialog : QDialog
 {
 %Docstring
 
-A dialog allowing users to customise and populate a QgsStyle.
+A dialog allowing users to customize and populate a QgsStyle.
 %End
 
 %TypeHeaderCode
