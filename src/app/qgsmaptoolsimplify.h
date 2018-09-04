@@ -23,6 +23,7 @@
 #include "qgstolerance.h"
 #include "qgsgeometry.h"
 #include "qgis_app.h"
+#include "qgsfeature.h"
 
 class QgsRubberBand;
 class QgsMapToolSimplify;
