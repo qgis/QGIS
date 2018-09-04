@@ -145,7 +145,9 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
       mErrorCode = QgsWfsRequest::NetworkError;
       mErrorMessage = errorMessageFailedAuth();
       QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
+      waitConditionMutex.lock();
       waitCondition.wakeAll();
+      waitConditionMutex.unlock();
       success = false;
     }
     else
@@ -180,7 +182,9 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
         loop.exec();
       }
     }
+    waitConditionMutex.lock();
     waitCondition.wakeAll();
+    waitConditionMutex.unlock();
     return success;
   };
 
