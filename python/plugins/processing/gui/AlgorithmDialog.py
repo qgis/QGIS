@@ -104,6 +104,10 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 except KeyError:
                     continue
 
+                # For compatibility with 3.x API, we need to check whether the wrapper is
+                # the deprecated WidgetWrapper class. If not, it's the newer
+                # QgsAbstractProcessingParameterWidgetWrapper class
+                # TODO QGIS 4.0 - remove
                 if issubclass(wrapper.__class__, WidgetWrapper):
                     widget = wrapper.widget
                 else:
