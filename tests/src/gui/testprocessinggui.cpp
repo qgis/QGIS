@@ -21,6 +21,8 @@
 #include <QComboBox>
 #include <QStackedWidget>
 #include <QToolButton>
+#include <QLineEdit>
+#include <QPlainTextEdit>
 
 #include "qgstest.h"
 #include "qgsgui.h"
@@ -138,6 +140,7 @@ class TestProcessingGui : public QObject
     void testWrapperDynamic();
     void testModelerWrapper();
     void testBooleanWrapper();
+    void testStringWrapper();
 };
 
 void TestProcessingGui::initTestCase()
@@ -556,6 +559,179 @@ void TestProcessingGui::testBooleanWrapper()
   QLabel *l = wrapperM.createWrappedLabel();
   QVERIFY( l );
   QCOMPARE( l->text(), QStringLiteral( "bool" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete w;
+  delete l;
+}
+
+void TestProcessingGui::testStringWrapper()
+{
+  QgsProcessingParameterString param( QStringLiteral( "string" ), QStringLiteral( "string" ) );
+
+  // standard wrapper
+  QgsProcessingStringWidgetWrapper wrapper( &param );
+
+  QgsProcessingContext context;
+  QWidget *w = wrapper.createWrappedWidget( context );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingStringWidgetWrapper::widgetValueHasChanged );
+  wrapper.setWidgetValue( QStringLiteral( "a" ), context );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "a" ) );
+  QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(), QStringLiteral( "a" ) );
+  wrapper.setWidgetValue( QString(), context );
+  QCOMPARE( spy.count(), 2 );
+  QVERIFY( wrapper.widgetValue().toString().isEmpty() );
+  QVERIFY( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text().isEmpty() );
+
+  QLabel *l = wrapper.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "string" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete l;
+
+  // check signal
+  static_cast< QLineEdit * >( wrapper.wrappedWidget() )->setText( QStringLiteral( "b" ) );
+  QCOMPARE( spy.count(), 3 );
+  static_cast< QLineEdit * >( wrapper.wrappedWidget() )->clear();
+  QCOMPARE( spy.count(), 4 );
+
+  delete w;
+
+  // batch wrapper
+  QgsProcessingStringWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+
+  w = wrapperB.createWrappedWidget( context );
+  QSignalSpy spy2( &wrapperB, &QgsProcessingStringWidgetWrapper::widgetValueHasChanged );
+  wrapperB.setWidgetValue( QStringLiteral( "a" ), context );
+  QCOMPARE( spy2.count(), 1 );
+  QCOMPARE( wrapperB.widgetValue().toString(), QStringLiteral( "a" ) );
+  QCOMPARE( static_cast< QLineEdit * >( wrapperB.wrappedWidget() )->text(), QStringLiteral( "a" ) );
+  wrapperB.setWidgetValue( QString(), context );
+  QCOMPARE( spy2.count(), 2 );
+  QVERIFY( wrapperB.widgetValue().toString().isEmpty() );
+  QVERIFY( static_cast< QLineEdit * >( wrapperB.wrappedWidget() )->text().isEmpty() );
+
+  // check signal
+  static_cast< QLineEdit * >( w )->setText( QStringLiteral( "x" ) );
+  QCOMPARE( spy2.count(), 3 );
+  static_cast< QLineEdit * >( w )->clear();
+  QCOMPARE( spy2.count(), 4 );
+
+  // should be no label in batch mode
+  QVERIFY( !wrapperB.createWrappedLabel() );
+  delete w;
+
+  // modeler wrapper
+  QgsProcessingStringWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+
+  w = wrapperM.createWrappedWidget( context );
+  QSignalSpy spy3( &wrapperM, &QgsProcessingStringWidgetWrapper::widgetValueHasChanged );
+  wrapperM.setWidgetValue( QStringLiteral( "a" ), context );
+  QCOMPARE( wrapperM.widgetValue().toString(), QStringLiteral( "a" ) );
+  QCOMPARE( spy3.count(), 1 );
+  QCOMPARE( static_cast< QLineEdit * >( wrapperM.wrappedWidget() )->text(), QStringLiteral( "a" ) );
+  wrapperM.setWidgetValue( QString(), context );
+  QVERIFY( wrapperM.widgetValue().toString().isEmpty() );
+  QCOMPARE( spy3.count(), 2 );
+  QVERIFY( static_cast< QLineEdit * >( wrapperM.wrappedWidget() )->text().isEmpty() );
+
+  // check signal
+  static_cast< QLineEdit * >( w )->setText( QStringLiteral( "x" ) );
+  QCOMPARE( spy3.count(), 3 );
+  static_cast< QLineEdit * >( w )->clear();
+  QCOMPARE( spy3.count(), 4 );
+
+  // should be a label in modeler mode
+  l = wrapperM.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "string" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete w;
+  delete l;
+
+  //
+  // multiline parameter
+  //
+  param = QgsProcessingParameterString( QStringLiteral( "string" ), QStringLiteral( "string" ), QVariant(), true );
+
+  // standard wrapper
+  QgsProcessingStringWidgetWrapper wrapperMultiLine( &param );
+
+  w = wrapperMultiLine.createWrappedWidget( context );
+
+  QSignalSpy spy4( &wrapperMultiLine, &QgsProcessingStringWidgetWrapper::widgetValueHasChanged );
+  wrapperMultiLine.setWidgetValue( QStringLiteral( "a" ), context );
+  QCOMPARE( spy4.count(), 1 );
+  QCOMPARE( wrapperMultiLine.widgetValue().toString(), QStringLiteral( "a" ) );
+  QCOMPARE( static_cast< QPlainTextEdit * >( wrapperMultiLine.wrappedWidget() )->toPlainText(), QStringLiteral( "a" ) );
+  wrapperMultiLine.setWidgetValue( QString(), context );
+  QCOMPARE( spy4.count(), 2 );
+  QVERIFY( wrapperMultiLine.widgetValue().toString().isEmpty() );
+  QVERIFY( static_cast< QPlainTextEdit * >( wrapperMultiLine.wrappedWidget() )->toPlainText().isEmpty() );
+
+  l = wrapper.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "string" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete l;
+
+  // check signal
+  static_cast< QPlainTextEdit * >( wrapperMultiLine.wrappedWidget() )->setPlainText( QStringLiteral( "b" ) );
+  QCOMPARE( spy4.count(), 3 );
+  static_cast< QPlainTextEdit * >( wrapperMultiLine.wrappedWidget() )->clear();
+  QCOMPARE( spy4.count(), 4 );
+
+  delete w;
+
+  // batch wrapper - should still be a line edit
+  QgsProcessingStringWidgetWrapper wrapperMultiLineB( &param, QgsProcessingGui::Batch );
+
+  w = wrapperMultiLineB.createWrappedWidget( context );
+  QSignalSpy spy5( &wrapperMultiLineB, &QgsProcessingStringWidgetWrapper::widgetValueHasChanged );
+  wrapperMultiLineB.setWidgetValue( QStringLiteral( "a" ), context );
+  QCOMPARE( spy5.count(), 1 );
+  QCOMPARE( wrapperMultiLineB.widgetValue().toString(), QStringLiteral( "a" ) );
+  QCOMPARE( static_cast< QLineEdit * >( wrapperMultiLineB.wrappedWidget() )->text(), QStringLiteral( "a" ) );
+  wrapperMultiLineB.setWidgetValue( QString(), context );
+  QCOMPARE( spy5.count(), 2 );
+  QVERIFY( wrapperMultiLineB.widgetValue().toString().isEmpty() );
+  QVERIFY( static_cast< QLineEdit * >( wrapperMultiLineB.wrappedWidget() )->text().isEmpty() );
+
+  // check signal
+  static_cast< QLineEdit * >( w )->setText( QStringLiteral( "x" ) );
+  QCOMPARE( spy5.count(), 3 );
+  static_cast< QLineEdit * >( w )->clear();
+  QCOMPARE( spy5.count(), 4 );
+
+  // should be no label in batch mode
+  QVERIFY( !wrapperB.createWrappedLabel() );
+  delete w;
+
+  // modeler wrapper
+  QgsProcessingStringWidgetWrapper wrapperMultiLineM( &param, QgsProcessingGui::Modeler );
+
+  w = wrapperMultiLineM.createWrappedWidget( context );
+  QSignalSpy spy6( &wrapperMultiLineM, &QgsProcessingStringWidgetWrapper::widgetValueHasChanged );
+  wrapperMultiLineM.setWidgetValue( QStringLiteral( "a" ), context );
+  QCOMPARE( wrapperMultiLineM.widgetValue().toString(), QStringLiteral( "a" ) );
+  QCOMPARE( spy6.count(), 1 );
+  QCOMPARE( static_cast< QPlainTextEdit * >( wrapperMultiLineM.wrappedWidget() )->toPlainText(), QStringLiteral( "a" ) );
+  wrapperMultiLineM.setWidgetValue( QString(), context );
+  QVERIFY( wrapperMultiLineM.widgetValue().toString().isEmpty() );
+  QCOMPARE( spy6.count(), 2 );
+  QVERIFY( static_cast< QPlainTextEdit * >( wrapperMultiLineM.wrappedWidget() )->toPlainText().isEmpty() );
+
+  // check signal
+  static_cast< QPlainTextEdit * >( w )->setPlainText( QStringLiteral( "x" ) );
+  QCOMPARE( spy6.count(), 3 );
+  static_cast< QPlainTextEdit * >( w )->clear();
+  QCOMPARE( spy6.count(), 4 );
+
+  // should be a label in modeler mode
+  l = wrapperMultiLineM.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "string" ) );
   QCOMPARE( l->toolTip(), param.toolTip() );
   delete w;
   delete l;
