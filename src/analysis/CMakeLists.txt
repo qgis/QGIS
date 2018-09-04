@@ -132,6 +132,7 @@ SET(QGIS_ANALYSIS_SRCS
   network/qgsgraphanalyzer.cpp
 
   vector/geometry_checker/qgsfeaturepool.cpp
+  vector/geometry_checker/qgsvectordataproviderfeaturepool.cpp
   vector/geometry_checker/qgsgeometrychecker.cpp
   vector/geometry_checker/qgsgeometryanglecheck.cpp
   vector/geometry_checker/qgsgeometryareacheck.cpp
@@ -232,6 +233,7 @@ SET(QGIS_ANALYSIS_HDRS
   vector/qgszonalstatistics.h
   vector/geometry_checker/qgsgeometrycheckerutils.h
   vector/geometry_checker/qgsfeaturepool.h
+  vector/geometry_checker/qgsvectordataproviderfeaturepool.h
 
   interpolation/qgsinterpolator.h
   interpolation/qgsgridfilewriter.h

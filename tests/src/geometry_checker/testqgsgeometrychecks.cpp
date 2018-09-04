@@ -38,6 +38,7 @@
 #include "qgsgeometryselfcontactcheck.h"
 #include "qgsgeometryselfintersectioncheck.h"
 #include "qgsgeometrysliverpolygoncheck.h"
+#include "qgsvectordataproviderfeaturepool.h"
 #include "qgsproject.h"
 
 #include "qgsgeometrytypecheck.h"
@@ -478,7 +479,7 @@ void TestQgsGeometryChecks::testFollowBoundariesCheck()
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometryFollowBoundariesCheck( context, context->featurePools[layers["follow_ref.shp"]]->getLayer() ).collectErrors( checkErrors, messages );
+  QgsGeometryFollowBoundariesCheck( context, context->featurePools[layers["follow_ref.shp"]]->layer() ).collectErrors( checkErrors, messages );
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 2 );
@@ -640,9 +641,9 @@ void TestQgsGeometryChecks::testMultipartCheck()
 
   QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"] ).isEmpty() );
   // Easier to ensure that multipart features don't appear as errors than verifying each single-part multi-type feature
-  QVERIFY( QgsWkbTypes::isSingleType( context->featurePools[layers["point_layer.shp"]]->getLayer()->wkbType() ) );
-  QVERIFY( QgsWkbTypes::isMultiType( context->featurePools[layers["line_layer.shp"]]->getLayer()->wkbType() ) );
-  QVERIFY( QgsWkbTypes::isMultiType( context->featurePools[layers["polygon_layer.shp"]]->getLayer()->wkbType() ) );
+  QVERIFY( QgsWkbTypes::isSingleType( context->featurePools[layers["point_layer.shp"]]->layer()->wkbType() ) );
+  QVERIFY( QgsWkbTypes::isMultiType( context->featurePools[layers["line_layer.shp"]]->layer()->wkbType() ) );
+  QVERIFY( QgsWkbTypes::isMultiType( context->featurePools[layers["polygon_layer.shp"]]->layer()->wkbType() ) );
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"] ).size() > 0 );
   QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"] ).size() > 0 );
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 0 ).isEmpty() );
@@ -858,7 +859,7 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
   // Test fixes
   QgsFeature f;
 
-  int nextId = context->featurePools[errs1[0]->layerId()]->getLayer()->featureCount();
+  int nextId = context->featurePools[errs1[0]->layerId()]->layer()->featureCount();
   QVERIFY( fixCheckError( errs1[0],
                           QgsGeometrySelfIntersectionCheck::ToSingleObjects, QgsGeometryCheckError::StatusFixed,
   {
@@ -885,7 +886,7 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
   QCOMPARE( f.geometry().constGet()->vertexCount( 0 ), 4 );
   QCOMPARE( f.geometry().constGet()->vertexCount( 1 ), 5 );
 
-  nextId = context->featurePools[errs3[0]->layerId()]->getLayer()->featureCount();
+  nextId = context->featurePools[errs3[0]->layerId()]->layer()->featureCount();
   QVERIFY( fixCheckError( errs3[0],
                           QgsGeometrySelfIntersectionCheck::ToSingleObjects, QgsGeometryCheckError::StatusFixed,
   {
@@ -975,7 +976,7 @@ QgsFeaturePool *TestQgsGeometryChecks::createFeaturePool( QgsVectorLayer *layer,
 {
   double layerToMapUntis = layerToMapUnits( layer, mapCrs );
   QgsCoordinateTransform layerToMapTransform = QgsCoordinateTransform( layer->crs(), mapCrs, QgsProject::instance() );
-  return new QgsFeaturePool( layer, layerToMapUntis, layerToMapTransform, selectedOnly );
+  return new QgsVectorDataProviderFeaturePool( layer, layerToMapUntis, layerToMapTransform, selectedOnly );
 }
 
 QgsGeometryCheckerContext *TestQgsGeometryChecks::createTestContext( QTemporaryDir &tempDir, QMap<QString, QString> &layers, const QgsCoordinateReferenceSystem &mapCrs, double prec ) const
@@ -1008,8 +1009,8 @@ void TestQgsGeometryChecks::cleanupTestContext( QgsGeometryCheckerContext *ctx )
 {
   for ( const QgsFeaturePool *pool : ctx->featurePools )
   {
-    pool->getLayer()->dataProvider()->leaveUpdateMode();
-    delete pool->getLayer();
+    pool->layer()->dataProvider()->leaveUpdateMode();
+    delete pool->layer();
   }
   qDeleteAll( ctx->featurePools );
   delete ctx;
