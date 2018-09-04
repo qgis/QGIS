@@ -330,8 +330,8 @@ Reset the label decimal places to a numberbased on the minimum class interval
         const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(),
         bool useSymmetricMode = false,
         double symmetryPoint = 0.0,
-        QStringList listForCboPrettyBreaks = {},
-        bool astride = false);
+        QStringList listForCboPrettyBreaks = QStringList(),
+        bool astride = false );
 %Docstring
 Creates a new graduated renderer.
 
@@ -518,9 +518,8 @@ Gets the symbol which is used to represent ``value``.
 Returns the matching legend key for a value.
 %End
 
-    
-    QStringList mListForCboPrettyBreaks = {};
-    
+
+
   private:
     QgsGraduatedSymbolRenderer( const QgsGraduatedSymbolRenderer & );
     QgsGraduatedSymbolRenderer &operator=( const QgsGraduatedSymbolRenderer & );
