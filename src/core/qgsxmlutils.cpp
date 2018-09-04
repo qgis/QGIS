@@ -105,6 +105,12 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
   QDomElement element = doc.createElement( QStringLiteral( "Option" ) );
   switch ( value.type() )
   {
+    case QVariant::Invalid:
+    {
+      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "invalid" ) );
+      break;
+    }
+
     case QVariant::Map:
     {
       QVariantMap map = value.toMap();
@@ -166,7 +172,7 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
     }
 
     default:
-      Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", "unsupported variant type" );
+      Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", QStringLiteral( "unsupported variant type %1" ).arg( QVariant::typeToName( value.type() ) ).toLocal8Bit() );
       break;
   }
 
@@ -177,7 +183,11 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
 {
   QString type = element.attribute( QStringLiteral( "type" ) );
 
-  if ( type == QLatin1String( "int" ) )
+  if ( type == QLatin1String( "invalid" ) )
+  {
+    return QVariant();
+  }
+  else if ( type == QLatin1String( "int" ) )
   {
     return element.attribute( QStringLiteral( "value" ) ).toInt();
   }
