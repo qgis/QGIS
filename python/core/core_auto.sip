@@ -317,6 +317,7 @@
 %Include auto_generated/qgsdataitem.sip
 %Include auto_generated/qgsdataprovider.sip
 %Include auto_generated/qgsdatasourceuri.sip
+%Include auto_generated/qgsfeature.sip
 %Include auto_generated/qgsfeedback.sip
 %Include auto_generated/qgsfield.sip
 %Include auto_generated/qgsfieldconstraints.sip
@@ -445,5 +446,4 @@
 %Include auto_generated/layertree/qgslayertreeregistrybridge.sip
 %Include auto_generated/qgsuserprofilemanager.sip
 %Include auto_generated/symbology/qgsarrowsymbollayer.sip
-%Include auto_generated/qgsfeature.sip
 %Include auto_generated/qgsuserprofile.sip
