@@ -42,9 +42,8 @@ QString QgsFilterVerticesAlgorithmBase::shortHelpString() const
                       "the maximum value.\n\n"
                       "If the minimum value is not specified than only the maximum value is tested, "
                       "and similarly if the maximum value is not specified than only the minimum value is tested.\n\n"
-                      "The resultant geometries created by this algorithm may not be valid "
-                      "and may need to be run through the \"Repair geometries\" algorithm to ensure "
-                      "their validity." ).arg( componentString() );
+                      "Depending on the input geometry attributes and the filters used, "
+                      "the resultant geometries created by this algorithm may no longer be valid." ).arg( componentString() );
 }
 
 QList<int> QgsFilterVerticesAlgorithmBase::inputLayerTypes() const
