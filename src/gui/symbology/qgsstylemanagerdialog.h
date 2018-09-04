@@ -31,7 +31,7 @@ class QgsStyle;
  * \ingroup gui
  * \class QgsStyleManagerDialog
  *
- * A dialog allowing users to customise and populate a QgsStyle.
+ * A dialog allowing users to customize and populate a QgsStyle.
  */
 class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleManagerDialogBase
 {
