@@ -142,18 +142,18 @@ void QgsProcessingModelerParameterWidget::setWidgetValue( const QgsProcessingMod
 
 QgsProcessingModelChildParameterSource QgsProcessingModelerParameterWidget::value() const
 {
-  switch ( mStackedWidget->currentIndex() )
+  switch ( currentSourceType() )
   {
-    case 0:
+    case StaticValue:
       return QgsProcessingModelChildParameterSource::fromStaticValue( mStaticWidgetWrapper->parameterValue() );
 
-    case 1:
+    case Expression:
       return QgsProcessingModelChildParameterSource::fromExpression( mExpressionWidget->expression() );
 
-    case 2:
+    case ModelParameter:
       return QgsProcessingModelChildParameterSource::fromModelParameter( mModelInputCombo->currentData().toString() );
 
-    case 3:
+    case ChildOutput:
     {
       const QStringList parts = mChildOutputCombo->currentData().toStringList();
       return QgsProcessingModelChildParameterSource::fromChildOutput( parts.value( 0, QString() ), parts.value( 1, QString() ) );
@@ -167,27 +167,29 @@ void QgsProcessingModelerParameterWidget::sourceMenuAboutToShow()
 {
   mSourceMenu->clear();
 
+  const SourceType currentSource = currentSourceType();
+
   if ( mHasStaticWrapper )
   {
     QAction *fixedValueAction = mSourceMenu->addAction( tr( "Value" ) );
-    fixedValueAction->setCheckable( mStackedWidget->currentIndex() == 0 );
-    fixedValueAction->setChecked( mStackedWidget->currentIndex() == 0 );
+    fixedValueAction->setCheckable( currentSource == StaticValue );
+    fixedValueAction->setChecked( currentSource == StaticValue );
     fixedValueAction->setData( QgsProcessingModelChildParameterSource::StaticValue );
   }
 
   QAction *calculatedValueAction = mSourceMenu->addAction( tr( "Pre-calculated Value" ) );
-  calculatedValueAction->setCheckable( mStackedWidget->currentIndex() == 1 );
-  calculatedValueAction->setChecked( mStackedWidget->currentIndex() == 1 );
+  calculatedValueAction->setCheckable( currentSource == Expression );
+  calculatedValueAction->setChecked( currentSource == Expression );
   calculatedValueAction->setData( QgsProcessingModelChildParameterSource::Expression );
 
   QAction *inputValueAction = mSourceMenu->addAction( tr( "Model Input" ) );
-  inputValueAction->setCheckable( mStackedWidget->currentIndex() == 2 );
-  inputValueAction->setChecked( mStackedWidget->currentIndex() == 2 );
+  inputValueAction->setCheckable( currentSource == ModelParameter );
+  inputValueAction->setChecked( currentSource == ModelParameter );
   inputValueAction->setData( QgsProcessingModelChildParameterSource::ModelParameter );
 
   QAction *childOutputValueAction = mSourceMenu->addAction( tr( "Algorithm Output" ) );
-  childOutputValueAction->setCheckable( mStackedWidget->currentIndex() == 3 );
-  childOutputValueAction->setChecked( mStackedWidget->currentIndex() == 3 );
+  childOutputValueAction->setCheckable( currentSource == ChildOutput );
+  childOutputValueAction->setChecked( currentSource == ChildOutput );
   childOutputValueAction->setData( QgsProcessingModelChildParameterSource::ChildOutput );
 
   // TODO - expression text item?
@@ -199,26 +201,31 @@ void QgsProcessingModelerParameterWidget::sourceMenuActionTriggered( QAction *ac
   setSourceType( sourceType );
 }
 
+QgsProcessingModelerParameterWidget::SourceType QgsProcessingModelerParameterWidget::currentSourceType() const
+{
+  return static_cast< SourceType >( mStackedWidget->currentIndex() );
+}
+
 void QgsProcessingModelerParameterWidget::setSourceType( QgsProcessingModelChildParameterSource::Source type )
 {
   switch ( type )
   {
     case QgsProcessingModelChildParameterSource::StaticValue:
-      mStackedWidget->setCurrentIndex( 0 );
+      mStackedWidget->setCurrentIndex( static_cast< int >( StaticValue ) );
       mSourceButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconFieldInteger.svg" ) ) );
       mSourceButton->setToolTip( tr( "Value" ) );
       break;
 
     case QgsProcessingModelChildParameterSource::Expression:
       mSourceButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconExpression.svg" ) ) );
-      mStackedWidget->setCurrentIndex( 1 );
+      mStackedWidget->setCurrentIndex( static_cast< int >( Expression ) );
       mSourceButton->setToolTip( tr( "Pre-calculated Value" ) );
       break;
 
     case QgsProcessingModelChildParameterSource::ModelParameter:
     {
       mSourceButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "processingModel.svg" ) ) );
-      mStackedWidget->setCurrentIndex( 2 );
+      mStackedWidget->setCurrentIndex( static_cast< int >( ModelParameter ) );
       mSourceButton->setToolTip( tr( "Model Input" ) );
       break;
     }
@@ -226,7 +233,7 @@ void QgsProcessingModelerParameterWidget::setSourceType( QgsProcessingModelChild
     case QgsProcessingModelChildParameterSource::ChildOutput:
     {
       mSourceButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "processingAlgorithm.svg" ) ) );
-      mStackedWidget->setCurrentIndex( 3 );
+      mStackedWidget->setCurrentIndex( static_cast< int >( ChildOutput ) );
       mSourceButton->setToolTip( tr( "Algorithm Output" ) );
       break;
     }
