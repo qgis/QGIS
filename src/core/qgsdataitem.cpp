@@ -1375,12 +1375,12 @@ QVector<QgsDataItem *> QgsZipItem::createChildren()
       // ugly hack to remove .dbf file if there is a .shp file
       if ( sProviderNames[i] == QLatin1String( "ogr" ) )
       {
-        if ( info.suffix().toLower() == QLatin1String( "dbf" ) )
+        if ( info.suffix().compare( QLatin1String( "dbf" ), Qt::CaseInsensitive ) == 0 )
         {
           if ( mZipFileList.indexOf( fileName.left( fileName.count() - 4 ) + ".shp" ) != -1 )
             continue;
         }
-        if ( info.completeSuffix().toLower() == QLatin1String( "shp.xml" ) )
+        if ( info.completeSuffix().compare( QLatin1String( "shp.xml" ), Qt::CaseInsensitive ) == 0 )
         {
           continue;
         }

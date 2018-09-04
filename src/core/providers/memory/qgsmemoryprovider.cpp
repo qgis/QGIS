@@ -47,7 +47,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
     geometry = url.path();
   }
 
-  if ( geometry.toLower() == QLatin1String( "none" ) )
+  if ( geometry.compare( QLatin1String( "none" ), Qt::CaseInsensitive ) == 0 )
   {
     mWkbType = QgsWkbTypes::NoGeometry;
   }

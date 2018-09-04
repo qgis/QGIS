@@ -49,7 +49,7 @@ QgsSvgSourceLineEdit::QgsSvgSourceLineEdit( QWidget *parent )
 
   connect( sourceMenu, &QMenu::aboutToShow, this, [this, extractFileAction]
   {
-    extractFileAction->setEnabled( mFileLineEdit->text().startsWith( QStringLiteral( "base64:" ), Qt::CaseInsensitive ) );
+    extractFileAction->setEnabled( mFileLineEdit->text().startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) );
   } );
 
   QAction *enterUrlAction = new QAction( tr( "From URL…" ), sourceMenu );

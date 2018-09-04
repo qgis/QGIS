@@ -2799,7 +2799,7 @@ namespace QgsWms
       QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( layer );
       for ( const QString &filter : filters )
       {
-        if ( filter.startsWith( QStringLiteral( "<" ) ) && filter.endsWith( QStringLiteral( "Filter>" ) ) )
+        if ( filter.startsWith( QLatin1String( "<" ) ) && filter.endsWith( QLatin1String( "Filter>" ) ) )
         {
           // OGC filter
           QDomDocument filterXml;

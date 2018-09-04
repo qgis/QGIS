@@ -247,11 +247,11 @@ void QgsOWSSourceSelect::populateConnectionList()
 
 QgsNewHttpConnection::ConnectionType connectionTypeFromServiceString( const QString &string )
 {
-  if ( string.compare( QStringLiteral( "wms" ), Qt::CaseInsensitive ) == 0 )
+  if ( string.compare( QLatin1String( "wms" ), Qt::CaseInsensitive ) == 0 )
     return QgsNewHttpConnection::ConnectionWms;
-  else if ( string.compare( QStringLiteral( "wfs" ), Qt::CaseInsensitive ) == 0 )
+  else if ( string.compare( QLatin1String( "wfs" ), Qt::CaseInsensitive ) == 0 )
     return QgsNewHttpConnection::ConnectionWfs;
-  else if ( string.compare( QStringLiteral( "wcs" ), Qt::CaseInsensitive ) == 0 )
+  else if ( string.compare( QLatin1String( "wcs" ), Qt::CaseInsensitive ) == 0 )
     return QgsNewHttpConnection::ConnectionWcs;
   else
     return QgsNewHttpConnection::ConnectionWms;

@@ -3653,7 +3653,7 @@ void QgsWmsImageDownloadHandler::cacheReplyFinished()
     else
     {
       QString errorTitle, errorText;
-      if ( contentType.toLower() == QLatin1String( "text/xml" ) && QgsWmsProvider::parseServiceExceptionReportDom( text, errorTitle, errorText ) )
+      if ( contentType.compare( QLatin1String( "text/xml" ), Qt::CaseInsensitive ) == 0 && QgsWmsProvider::parseServiceExceptionReportDom( text, errorTitle, errorText ) )
       {
         QgsMessageLog::logMessage( tr( "Map request error (Title: %1; Error: %2; URL: %3)" )
                                    .arg( errorTitle, errorText,
@@ -3889,7 +3889,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
     {
       QByteArray text = reply->readAll();
       QString errorTitle, errorText;
-      if ( contentType.toLower() == QLatin1String( "text/xml" ) && QgsWmsProvider::parseServiceExceptionReportDom( text, errorTitle, errorText ) )
+      if ( contentType.compare( QLatin1String( "text/xml" ), Qt::CaseInsensitive ) == 0 && QgsWmsProvider::parseServiceExceptionReportDom( text, errorTitle, errorText ) )
       {
         QgsMessageLog::logMessage( tr( "Tile request error (Title: %1; Error: %2; URL: %3)" )
                                    .arg( errorTitle, errorText,

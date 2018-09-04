@@ -62,7 +62,7 @@ QgsDataItem *QgsQlrDataItemProvider::createDataItem( const QString &path, QgsDat
 {
   QFileInfo fileInfo( path );
 
-  if ( fileInfo.suffix().compare( QStringLiteral( "qlr" ), Qt::CaseInsensitive ) == 0 )
+  if ( fileInfo.suffix().compare( QLatin1String( "qlr" ), Qt::CaseInsensitive ) == 0 )
   {
     return new QgsQlrDataItem( parentItem, fileInfo.fileName(), path );
   }
@@ -98,7 +98,7 @@ QgsDataItem *QgsQptDataItemProvider::createDataItem( const QString &path, QgsDat
 {
   QFileInfo fileInfo( path );
 
-  if ( fileInfo.suffix().compare( QStringLiteral( "qpt" ), Qt::CaseInsensitive ) == 0 )
+  if ( fileInfo.suffix().compare( QLatin1String( "qpt" ), Qt::CaseInsensitive ) == 0 )
   {
     return new QgsQptDataItem( parentItem, fileInfo.baseName(), path );
   }
@@ -123,7 +123,7 @@ void QgsQptDropHandler::handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) 
 bool QgsQptDropHandler::handleFileDrop( const QString &file )
 {
   QFileInfo fi( file );
-  if ( fi.completeSuffix().compare( QStringLiteral( "qpt" ), Qt::CaseInsensitive ) == 0 )
+  if ( fi.completeSuffix().compare( QLatin1String( "qpt" ), Qt::CaseInsensitive ) == 0 )
   {
     QgisApp::instance()->openTemplate( file );
     return true;
@@ -240,7 +240,7 @@ QgsDataItem *QgsPyDataItemProvider::createDataItem( const QString &path, QgsData
 {
   QFileInfo fileInfo( path );
 
-  if ( fileInfo.suffix().compare( QStringLiteral( "py" ), Qt::CaseInsensitive ) == 0 )
+  if ( fileInfo.suffix().compare( QLatin1String( "py" ), Qt::CaseInsensitive ) == 0 )
   {
     return new QgsPyDataItem( parentItem, fileInfo.baseName(), path );
   }
@@ -265,7 +265,7 @@ void QgsPyDropHandler::handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) c
 bool QgsPyDropHandler::handleFileDrop( const QString &file )
 {
   QFileInfo fi( file );
-  if ( fi.completeSuffix().compare( QStringLiteral( "py" ), Qt::CaseInsensitive ) == 0 )
+  if ( fi.completeSuffix().compare( QLatin1String( "py" ), Qt::CaseInsensitive ) == 0 )
   {
     QgisApp::instance()->runScript( file );
     return true;

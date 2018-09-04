@@ -975,7 +975,7 @@ QString QgsApplication::locale()
   {
     QString locale = settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString();
     // don't differentiate en_US and en_GB
-    if ( locale.startsWith( QStringLiteral( "en" ), Qt::CaseInsensitive ) )
+    if ( locale.startsWith( QLatin1String( "en" ), Qt::CaseInsensitive ) )
     {
       return locale.left( 2 );
     }

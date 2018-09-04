@@ -1258,7 +1258,7 @@ void QgsTextFormatWidget::updateSvgWidgets( const QString &svgPath )
 
   QString resolvedPath;
   bool validSVG = true;
-  if ( ! svgPath.startsWith( QStringLiteral( "base64:" ), Qt::CaseInsensitive ) )
+  if ( ! svgPath.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) )
   {
     resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgPath, QgsProject::instance()->pathResolver() );
     validSVG = QFileInfo::exists( resolvedPath );

@@ -332,7 +332,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
 
   // calculate offset if frame overlaps triangle (oxygen theme)
   // using an offset of 6 pixels from frame border
-  if ( QApplication::style()->objectName().toLower() == QLatin1String( "oxygen" ) )
+  if ( QApplication::style()->objectName().compare( QLatin1String( "oxygen" ), Qt::CaseInsensitive ) == 0 )
   {
     QStyleOptionGroupBox box;
     initStyleOption( &box );

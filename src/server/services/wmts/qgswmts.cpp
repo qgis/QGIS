@@ -22,7 +22,7 @@
 #include "qgswmtsgetfeatureinfo.h"
 
 #define QSTR_COMPARE( str, lit )\
-  (str.compare( QStringLiteral( lit ), Qt::CaseInsensitive ) == 0)
+  (str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0)
 
 namespace QgsWmts
 {

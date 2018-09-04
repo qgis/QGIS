@@ -859,7 +859,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       QgsField fld = mAttributeFields.at( i );
 
-      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+      if ( fld.typeName().compare( QLatin1String( "timestamp" ), Qt::CaseInsensitive ) == 0 )
         continue; // You can't update timestamp columns they are server only.
 
       if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
@@ -939,7 +939,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       QgsField fld = mAttributeFields.at( i );
 
-      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+      if ( fld.typeName().compare( QLatin1String( "timestamp" ), Qt::CaseInsensitive ) == 0 )
         continue; // You can't update timestamp columns they are server only.
 
       if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
@@ -1183,7 +1183,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     {
       QgsField fld = mAttributeFields.at( it2.key() );
 
-      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+      if ( fld.typeName().compare( QLatin1String( "timestamp" ), Qt::CaseInsensitive ) == 0 )
         continue; // You can't update timestamp columns they are server only.
 
       if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )
@@ -1220,7 +1220,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     {
       QgsField fld = mAttributeFields.at( it2.key() );
 
-      if ( fld.typeName().toLower() == QLatin1String( "timestamp" ) )
+      if ( fld.typeName().compare( QLatin1String( "timestamp" ), Qt::CaseInsensitive ) == 0 )
         continue; // You can't update timestamp columns they are server only.
 
       if ( fld.typeName().endsWith( QLatin1String( " identity" ), Qt::CaseInsensitive ) )

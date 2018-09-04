@@ -461,7 +461,7 @@ QgsMapUnitScale QgsSymbolLayerUtils::decodeMapUnitScale( const QString &str )
 {
   QStringList lst;
   bool v3 = false;
-  if ( str.startsWith( QStringLiteral( "3x:" ) ) )
+  if ( str.startsWith( QLatin1String( "3x:" ) ) )
   {
     v3 = true;
     QString chopped = str.mid( 3 );

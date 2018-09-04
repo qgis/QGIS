@@ -30,7 +30,7 @@
 #include "qgswfstransaction_1_0_0.h"
 
 #define QSTR_COMPARE( str, lit )\
-  (str.compare( QStringLiteral( lit ), Qt::CaseInsensitive ) == 0)
+  (str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0)
 
 namespace QgsWfs
 {

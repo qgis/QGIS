@@ -1726,13 +1726,13 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
     //                        application/vnd.ogc.se_xml;charset=UTF-8
     //                        application/xml
     if ( contentType.startsWith( QLatin1String( "text/" ), Qt::CaseInsensitive ) ||
-         contentType.toLower() == QLatin1String( "application/xml" ) ||
+         contentType.compare( QLatin1String( "application/xml" ), Qt::CaseInsensitive ) == 0 ||
          contentType.startsWith( QLatin1String( "application/vnd.ogc.se_xml" ), Qt::CaseInsensitive ) )
     {
       QString errorTitle, errorText;
       QByteArray text = mCacheReply->readAll();
-      if ( ( contentType.toLower() == QLatin1String( "text/xml" ) ||
-             contentType.toLower() == QLatin1String( "application/xml" ) ||
+      if ( ( contentType.compare( QLatin1String( "text/xml" ), Qt::CaseInsensitive ) == 0 ||
+             contentType.compare( QLatin1String( "application/xml" ), Qt::CaseInsensitive ) == 0 ||
              contentType.startsWith( QLatin1String( "application/vnd.ogc.se_xml" ), Qt::CaseInsensitive ) )
            && QgsWcsProvider::parseServiceExceptionReportDom( text, mWcsVersion, errorTitle, errorText ) )
       {

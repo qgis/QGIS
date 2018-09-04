@@ -1255,7 +1255,7 @@ namespace QgsWms
     for ( int i = 0; i < rawFilters.size(); i++ )
     {
       const QString f = rawFilters[i];
-      if ( f.startsWith( QStringLiteral( "<" ) ) && f.endsWith( QStringLiteral( "Filter>" ) ) &&  i < layers.size() )
+      if ( f.startsWith( QLatin1String( "<" ) ) && f.endsWith( QLatin1String( "Filter>" ) ) &&  i < layers.size() )
       {
         layerFilters.insert( layers[i], f );
       }

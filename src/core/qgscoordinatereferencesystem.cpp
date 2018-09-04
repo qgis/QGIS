@@ -240,7 +240,7 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
     match = reCrsStr.match( definition );
     if ( match.capturedStart() == 0 )
     {
-      if ( match.captured( 1 ).toLower() == QLatin1String( "proj4" ) )
+      if ( match.captured( 1 ).compare( QLatin1String( "proj4" ), Qt::CaseInsensitive ) == 0 )
       {
         result = createFromProj4( match.captured( 2 ) );
         //TODO: createFromProj4 used to save to the user database any new CRS

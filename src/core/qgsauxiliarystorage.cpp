@@ -308,7 +308,7 @@ int QgsAuxiliaryLayer::propertyFromIndex( int index ) const
   int p = -1;
   QgsPropertyDefinition aDef = propertyDefinitionFromIndex( index );
 
-  if ( aDef.origin().compare( QStringLiteral( "labeling" ) ) == 0 )
+  if ( aDef.origin().compare( QLatin1String( "labeling" ) ) == 0 )
   {
     const QgsPropertiesDefinition defs = QgsPalLayerSettings::propertyDefinitions();
     QgsPropertiesDefinition::const_iterator it = defs.constBegin();
@@ -321,7 +321,7 @@ int QgsAuxiliaryLayer::propertyFromIndex( int index ) const
       }
     }
   }
-  else if ( aDef.origin().compare( QStringLiteral( "symbol" ) ) == 0 )
+  else if ( aDef.origin().compare( QLatin1String( "symbol" ) ) == 0 )
   {
     const QgsPropertiesDefinition defs = QgsSymbolLayer::propertyDefinitions();
     QgsPropertiesDefinition::const_iterator it = defs.constBegin();
@@ -334,7 +334,7 @@ int QgsAuxiliaryLayer::propertyFromIndex( int index ) const
       }
     }
   }
-  else if ( aDef.origin().compare( QStringLiteral( "diagram" ) ) == 0 )
+  else if ( aDef.origin().compare( QLatin1String( "diagram" ) ) == 0 )
   {
     const QgsPropertiesDefinition defs = QgsDiagramLayerSettings::propertyDefinitions();
     QgsPropertiesDefinition::const_iterator it = defs.constBegin();

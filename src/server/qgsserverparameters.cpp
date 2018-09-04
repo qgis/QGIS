@@ -42,7 +42,7 @@ QColor QgsServerParameterDefinition::toColor( bool &ok ) const
   if ( !cStr.isEmpty() )
   {
     // support hexadecimal notation to define colors
-    if ( cStr.startsWith( QStringLiteral( "0x" ), Qt::CaseInsensitive ) )
+    if ( cStr.startsWith( QLatin1String( "0x" ), Qt::CaseInsensitive ) )
     {
       cStr.replace( 0, 2, QStringLiteral( "#" ) );
     }
@@ -99,7 +99,7 @@ QList<QColor> QgsServerParameterDefinition::toColorList( bool &ok, const char de
     if ( !cStr.isEmpty() )
     {
       // support hexadecimal notation to define colors
-      if ( cStr.startsWith( QStringLiteral( "0x" ), Qt::CaseInsensitive ) )
+      if ( cStr.startsWith( QLatin1String( "0x" ), Qt::CaseInsensitive ) )
       {
         cStr.replace( 0, 2, QStringLiteral( "#" ) );
       }
@@ -273,7 +273,7 @@ QString QgsServerParameter::name( const QgsServerParameter::Name name )
 
 QgsServerParameter::Name QgsServerParameter::name( const QString &name )
 {
-  if ( name.compare( QStringLiteral( "VERSION" ) ) == 0 )
+  if ( name.compare( QLatin1String( "VERSION" ) ) == 0 )
   {
     return QgsServerParameter::VERSION_SERVICE;
   }
@@ -441,7 +441,7 @@ void QgsServerParameters::load( const QUrlQuery &query )
         mParameters[name].raiseError();
       }
     }
-    else if ( item.first.compare( QStringLiteral( "VERSION" ) ) == 0 )
+    else if ( item.first.compare( QLatin1String( "VERSION" ) ) == 0 )
     {
       const QgsServerParameter::Name name = QgsServerParameter::VERSION_SERVICE;
       mParameters[name].mValue = item.second;

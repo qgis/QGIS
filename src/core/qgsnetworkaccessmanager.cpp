@@ -179,7 +179,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   pReq->setRawHeader( "User-Agent", userAgent.toUtf8() );
 
 #ifndef QT_NO_SSL
-  bool ishttps = pReq->url().scheme().toLower() == QLatin1String( "https" );
+  bool ishttps = pReq->url().scheme().compare( QLatin1String( "https" ), Qt::CaseInsensitive ) == 0;
   if ( ishttps && !QgsApplication::authManager()->isDisabled() )
   {
     QgsDebugMsgLevel( QStringLiteral( "Adding trusted CA certs to request" ), 3 );
