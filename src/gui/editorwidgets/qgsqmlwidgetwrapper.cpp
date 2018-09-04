@@ -108,9 +108,9 @@ void QmlExpression::setExpressionContext( const QgsExpressionContext &context )
   mExpressionContext = context;
 }
 
-QVariant QmlExpression::evaluate( const QString& expression ) const
+QVariant QmlExpression::evaluate( const QString &expression ) const
 {
   QgsExpression exp = QgsExpression( expression );
   exp.prepare( &mExpressionContext );
-  return exp.evaluate(&mExpressionContext);
+  return exp.evaluate( &mExpressionContext );
 }

@@ -7,7 +7,6 @@
  ************************************************************************/
 
 
-
 class QgsQmlWidgetWrapper : QgsWidgetWrapper
 {
 %Docstring
@@ -54,6 +53,19 @@ the Free Software Foundation; either version 2 of the License, or     *
 
 };
 
+
+class QmlExpression : QObject
+{
+
+%TypeHeaderCode
+#include "qgsqmlwidgetwrapper.h"
+%End
+  public:
+    void setExpressionContext( const QgsExpressionContext &context );
+
+    QVariant evaluate( const QString &expression ) const;
+
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *

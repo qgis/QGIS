@@ -53,15 +53,15 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 
 class GUI_EXPORT QmlExpression : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
-   void setExpressionContext( const QgsExpressionContext &context );
+    void setExpressionContext( const QgsExpressionContext &context );
 
-   Q_INVOKABLE QVariant evaluate( const QString &expression) const;
+    Q_INVOKABLE QVariant evaluate( const QString &expression ) const;
 
   private:
-   QgsExpressionContext mExpressionContext;
+    QgsExpressionContext mExpressionContext;
 };
 
 #endif // QGSQMLWIDGETWRAPPER_H

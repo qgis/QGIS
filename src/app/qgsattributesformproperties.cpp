@@ -1170,7 +1170,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
 
       connect( addExpressionButton, &QAbstractButton::clicked, this, [ = ]
       {
-        qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"(%1)\")" ).arg( expressionWidget->currentText()) );
+        qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"(%1)\")" ).arg( expressionWidget->currentText() ) );
       } );
 
 
@@ -1181,7 +1181,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
         qmlWrapper->setQmlCode( qmlCode->toPlainText() );
         qmlWrapper->reinitWidget();
         QgsFeature f;
-        mLayer->getFeatures().nextFeature(f);
+        mLayer->getFeatures().nextFeature( f );
         qmlWrapper->setFeature( f );
       } );
 
