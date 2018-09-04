@@ -50,10 +50,11 @@ class CORE_EXPORT QgsLayerMetadataFormatter
     QString contactsSectionHtml() const;
 
     /**
-     * Formats the "Extents" section according to a \a metadata object.
+     * Formats the "Extents" section according to a \a metadata object (extent and temporal).
      * This will return a HTML table.
+     * \param showSpatialExtent flag if the spatial extent needs to be displayed. Default to true.
      */
-    QString extentSectionHtml() const;
+    QString extentSectionHtml( const bool showSpatialExtent = true ) const;
 
     /**
      * Formats the "Identification" section according to a \a metadata object.

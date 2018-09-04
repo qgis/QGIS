@@ -4282,7 +4282,7 @@ QString QgsVectorLayer::htmlMetadata() const
 
   // extent section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Extent" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.extentSectionHtml( );
+  myMetadata += htmlFormatter.extentSectionHtml( isSpatial() );
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Start the Access section
