@@ -107,50 +107,53 @@ QString QgsLayerMetadataFormatter::contactsSectionHtml() const
   return myMetadata;
 }
 
-QString QgsLayerMetadataFormatter::extentSectionHtml() const
+QString QgsLayerMetadataFormatter::extentSectionHtml( const bool showSpatialExtent ) const
 {
-  QString myMetadata = QStringLiteral( "<table class=\"list-view\">\n" );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "CRS" ) + QStringLiteral( "</td><td>" );
-  if ( mMetadata.crs().isValid() )
-  {
-    myMetadata += mMetadata.crs().authid() + QStringLiteral( " - " );
-    myMetadata += mMetadata.crs().description() + QStringLiteral( " - " );
-    if ( mMetadata.crs().isGeographic() )
-      myMetadata += QObject::tr( "Geographic" );
-    else
-      myMetadata += QObject::tr( "Projected" );
-  }
-  myMetadata += QLatin1String( "</td></tr>\n" );
-
   const QgsLayerMetadata::Extent extent = mMetadata.extent();
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Spatial Extent" ) + QStringLiteral( "</td><td>" );
-  const QList< QgsLayerMetadata::SpatialExtent > spatialExtents = extent.spatialExtents();
   bool notFirstRow = false;
-  for ( const QgsLayerMetadata::SpatialExtent &spatialExtent : spatialExtents )
+  QString myMetadata = QStringLiteral( "<table class=\"list-view\">\n" );
+  if ( showSpatialExtent )
   {
-    if ( notFirstRow )
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "CRS" ) + QStringLiteral( "</td><td>" );
+    if ( mMetadata.crs().isValid() )
     {
-      myMetadata += QLatin1String( "<br />\n" );
+      myMetadata += mMetadata.crs().authid() + QStringLiteral( " - " );
+      myMetadata += mMetadata.crs().description() + QStringLiteral( " - " );
+      if ( mMetadata.crs().isGeographic() )
+        myMetadata += QObject::tr( "Geographic" );
+      else
+        myMetadata += QObject::tr( "Projected" );
     }
-    myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "CRS" ) + QStringLiteral( ": </strong>" ) + spatialExtent.extentCrs.authid() + QStringLiteral( " - " );
-    myMetadata += spatialExtent.extentCrs.description() + QStringLiteral( " - " );
-    if ( spatialExtent.extentCrs.isGeographic() )
-      myMetadata += QObject::tr( "Geographic" );
-    else
-      myMetadata += QObject::tr( "Projected" );
-    myMetadata += QStringLiteral( "<br />" );
-    myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "X Minimum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.xMinimum() ) + QStringLiteral( "<br />" );
-    myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "Y Minimum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.yMinimum() ) + QStringLiteral( "<br />" );
-    myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "X Maximum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.xMaximum() ) + QStringLiteral( "<br />" );
-    myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "Y Maximum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.yMaximum() ) + QStringLiteral( "<br />" );
-    if ( spatialExtent.bounds.zMinimum() || spatialExtent.bounds.zMaximum() )
+    myMetadata += QLatin1String( "</td></tr>\n" );
+
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Spatial Extent" ) + QStringLiteral( "</td><td>" );
+    const QList< QgsLayerMetadata::SpatialExtent > spatialExtents = extent.spatialExtents();
+    for ( const QgsLayerMetadata::SpatialExtent &spatialExtent : spatialExtents )
     {
-      myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "Z Minimum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.zMinimum() ) + QStringLiteral( "<br />" );
-      myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "Z Maximum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.zMaximum() );
+      if ( notFirstRow )
+      {
+        myMetadata += QLatin1String( "<br />\n" );
+      }
+      myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "CRS" ) + QStringLiteral( ": </strong>" ) + spatialExtent.extentCrs.authid() + QStringLiteral( " - " );
+      myMetadata += spatialExtent.extentCrs.description() + QStringLiteral( " - " );
+      if ( spatialExtent.extentCrs.isGeographic() )
+        myMetadata += QObject::tr( "Geographic" );
+      else
+        myMetadata += QObject::tr( "Projected" );
+      myMetadata += QStringLiteral( "<br />" );
+      myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "X Minimum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.xMinimum() ) + QStringLiteral( "<br />" );
+      myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "Y Minimum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.yMinimum() ) + QStringLiteral( "<br />" );
+      myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "X Maximum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.xMaximum() ) + QStringLiteral( "<br />" );
+      myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "Y Maximum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.yMaximum() ) + QStringLiteral( "<br />" );
+      if ( spatialExtent.bounds.zMinimum() || spatialExtent.bounds.zMaximum() )
+      {
+        myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "Z Minimum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.zMinimum() ) + QStringLiteral( "<br />" );
+        myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "Z Maximum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.zMaximum() );
+      }
+      notFirstRow = true;
     }
-    notFirstRow = true;
+    myMetadata += QLatin1String( "</td></tr>\n" );
   }
-  myMetadata += QLatin1String( "</td></tr>\n" );
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Temporal Extent" ) + QStringLiteral( "</td><td>" );
   const QList< QgsDateTimeRange > temporalExtents = extent.temporalExtents();
   notFirstRow = false;
