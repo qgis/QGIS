@@ -58,7 +58,6 @@ void QgsLayerCapabilitiesModel::setFilterText( const QString &filterText )
 
 void QgsLayerCapabilitiesModel::toggleSelectedItems( const QModelIndexList &checkedIndexes )
 {
-  QVector<int> roles = QVector<int>() << Qt::CheckStateRole;
   for ( const QModelIndex &index : checkedIndexes )
   {
     bool isChecked = data( index, Qt::CheckStateRole ) == Qt::Checked;
@@ -253,8 +252,8 @@ QVariant QgsLayerCapabilitiesModel::data( const QModelIndex &idx, int role ) con
 
     if ( role == Qt::CheckStateRole || role == Qt::UserRole )
     {
-      QVariant trueValue = role == Qt::CheckStateRole ? Qt::Checked : true;
-      QVariant falseValue = role == Qt::CheckStateRole ? Qt::Unchecked : false;
+      QVariant trueValue = role == Qt::CheckStateRole ? QVariant( Qt::Checked ) : QVariant( true );
+      QVariant falseValue = role == Qt::CheckStateRole ? QVariant( Qt::Unchecked ) : QVariant( false );
       if ( idx.column() == IdentifiableColumn )
       {
         if ( layer->isSpatial() )
