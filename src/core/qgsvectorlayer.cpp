@@ -4307,7 +4307,7 @@ QString QgsVectorLayer::htmlMetadata() const
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Count" ) + QStringLiteral( "</td><td>" ) + QString::number( myFields.size() ) + QStringLiteral( "</td></tr>\n" );
 
   myMetadata += QLatin1String( "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n" );
-  myMetadata += "<tr><th>" + tr( "Field" ) + "</th><th>" + tr( "Type" ) + "</th><th>" + tr( "Length" ) + "</th><th>" + tr( "Precision" ) + "</th><th>" + tr( "Comment" ) + "</th></tr>\n";
+  myMetadata += QLatin1String( "<tr><th>" ) + tr( "Field" ) + QLatin1String( "</th><th>" ) + tr( "Type" ) + QLatin1String( "</th><th>" ) + tr( "Length" ) + QLatin1String( "</th><th>" ) + tr( "Precision" ) + QLatin1String( "</th><th>" ) + tr( "Comment" ) + QLatin1String( "</th></tr>\n" );
 
   for ( int i = 0; i < myFields.size(); ++i )
   {
@@ -4315,7 +4315,7 @@ QString QgsVectorLayer::htmlMetadata() const
     QString rowClass;
     if ( i % 2 )
       rowClass = QStringLiteral( "class=\"odd-row\"" );
-    myMetadata += "<tr " + rowClass + "><td>" + myField.name() + "</td><td>" + myField.typeName() + "</td><td>" + QString::number( myField.length() ) + "</td><td>" + QString::number( myField.precision() ) + "</td><td>" + myField.comment() + "</td></tr>\n";
+    myMetadata += QLatin1String( "<tr " ) + rowClass + QLatin1String( "><td>" ) + myField.name() + QLatin1String( "</td><td>" ) + myField.typeName() + QLatin1String( "</td><td>" ) + QString::number( myField.length() ) + QLatin1String( "</td><td>" ) + QString::number( myField.precision() ) + QLatin1String( "</td><td>" ) + myField.comment() + QLatin1String( "</td></tr>\n" );
   }
 
   //close field list
