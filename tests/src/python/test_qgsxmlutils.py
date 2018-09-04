@@ -27,6 +27,17 @@ start_app()
 
 class TestQgsXmlUtils(unittest.TestCase):
 
+    def test_invalid(self):
+        """
+        Test that invalid attributes are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        elem = QgsXmlUtils.writeVariant(None, doc)
+
+        prop2 = QgsXmlUtils.readVariant(elem)
+        self.assertIsNone(prop2)
+
     def test_integer(self):
         """
         Test that maps are correctly loaded and written
