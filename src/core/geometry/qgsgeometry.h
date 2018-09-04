@@ -29,9 +29,9 @@ email                : morb at ozemail dot com dot au
 #include "qgis.h"
 
 #include "qgsabstractgeometry.h"
-#include "qgsfeature.h"
 #include "qgspointxy.h"
 #include "qgspoint.h"
+#include "qgsfeatureid.h"
 
 
 class QgsGeometryEngine;

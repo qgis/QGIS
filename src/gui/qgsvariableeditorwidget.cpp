@@ -15,7 +15,6 @@
 
 #include "qgsvariableeditorwidget.h"
 #include "qgsexpressioncontext.h"
-#include "qgsfeature.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
 

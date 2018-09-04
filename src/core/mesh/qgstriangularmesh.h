@@ -25,6 +25,7 @@
 #include "qgis_core.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsgeometry.h"
+#include "qgsfeatureid.h"
 #include "qgsspatialindex.h"
 
 class QgsRenderContext;

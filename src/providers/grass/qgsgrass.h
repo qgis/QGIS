@@ -33,7 +33,6 @@ extern "C"
 #include <stdexcept>
 #include "qgsapplication.h"
 #include "qgsexception.h"
-#include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsrectangle.h"
 #include <QFileSystemWatcher>
@@ -46,6 +45,7 @@ extern "C"
 #include "qgis_grass_lib.h"
 class QgsCoordinateReferenceSystem;
 class QgsRectangle;
+class QgsAttributes;
 
 // Make the release string because it may be for example 0beta1
 #define STR(x) #x

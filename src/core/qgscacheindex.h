@@ -17,7 +17,7 @@
 #define QGSCACHEINDEX_H
 
 #include "qgis_core.h"
-#include "qgsfeature.h" // QgsFeatureIds
+#include "qgsfeatureid.h"
 
 class QgsFeatureRequest;
 class QgsFeatureIterator;

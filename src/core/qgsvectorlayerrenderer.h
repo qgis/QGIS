@@ -36,10 +36,10 @@ typedef QList<int> QgsAttributeList;
 
 #include "qgis.h"
 #include "qgsfields.h"  // QgsFields
-#include "qgsfeature.h"  // QgsFeatureIds
 #include "qgsfeatureiterator.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgsfeedback.h"
+#include "qgsfeatureid.h"
 
 #include "qgsmaplayerrenderer.h"
 

@@ -20,12 +20,14 @@ class QgsPointXY;
 class QgsVectorLayer;
 class QgsFeatureRenderer;
 class QgsRenderContext;
+class QgsRectangle;
 
 #include "qgis_core.h"
-#include "qgsfeature.h"
 #include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeatureid.h"
+#include "qgsgeometry.h"
 #include <memory>
 
 class QgsPointLocator_VisitorNearestVertex;

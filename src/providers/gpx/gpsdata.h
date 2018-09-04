@@ -25,8 +25,8 @@
 #include <QTextStream>
 #include <QStack>
 
-#include "qgsfeature.h"
 #include "qgsrectangle.h"
+#include "qgsfeatureid.h"
 
 // workaround for MSVC compiler which already has defined macro max
 // that interferes with calling std::numeric_limits<int>::max

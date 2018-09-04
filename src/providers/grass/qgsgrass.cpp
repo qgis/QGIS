@@ -55,6 +55,7 @@
 #include <QHash>
 #include <QTextCodec>
 
+
 extern "C"
 {
 #ifndef Q_OS_WIN

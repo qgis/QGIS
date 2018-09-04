@@ -33,7 +33,6 @@
 #include "qgsfields.h"
 
 
-class QgsGeometry;
 class QgsRectangle;
 class QgsFeature;
 class QgsFeaturePrivate;
@@ -130,7 +129,7 @@ typedef QVector<QVariant> QgsAttributes;
 % MappedType QgsAttributes
 {
   % TypeHeaderCode
-#include <qgsfeature.h>
+#include "qgsfeature.h"
   % End
 
   % ConvertFromTypeCode

@@ -27,7 +27,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 
-#include "qgsfeature.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 

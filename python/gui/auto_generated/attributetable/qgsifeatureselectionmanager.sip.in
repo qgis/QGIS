@@ -9,7 +9,6 @@
 
 
 
-
 class QgsIFeatureSelectionManager : QObject
 {
 %Docstring

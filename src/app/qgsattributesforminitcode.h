@@ -19,7 +19,6 @@
 #include "ui_qgsattributesforminitcode.h"
 
 #include "qgseditorconfigwidget.h"
-#include "qgsfeature.h"
 #include "qgsvectordataprovider.h"
 #include "qgshelp.h"
 #include "qgis_app.h"
