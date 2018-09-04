@@ -1138,6 +1138,13 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
   if ( err != CE_None )
     return std::numeric_limits<double>::quiet_NaN();
 
+  if ( ( sourceHasNoDataValue( band ) && useSourceNoDataValue( band ) &&
+         ( std::isnan( value ) || qgsDoubleNear( static_cast< double >( value ), sourceNoDataValue( band ) ) ) ) ||
+       ( QgsRasterRange::contains( static_cast< double >( value ), userNoDataValues( band ) ) ) )
+  {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+
   if ( ok )
     *ok = true;
 
