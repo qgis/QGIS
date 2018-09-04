@@ -7203,7 +7203,7 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
 
   auto onSuccess = [this, layerId]( const QString & newFilename,
                                     bool,
-                                    const QString &,
+                                    const QString & newLayerName,
                                     const QString &,
                                     const QString & )
   {
@@ -7212,7 +7212,11 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
     if ( vl )
     {
       QgsDataProvider::ProviderOptions options;
-      vl->setDataSource( QStringLiteral( "%1" ).arg( newFilename ), vl->name(), QStringLiteral( "ogr" ), options );
+      QString source = newFilename;
+      if ( ! newLayerName.isEmpty() )
+        source += QStringLiteral( "|layername=%1" ).arg( newLayerName );
+      vl->setDataSource( source, vl->name(), QStringLiteral( "ogr" ), options );
+      vl->triggerRepaint();
       this->messageBar()->pushMessage( tr( "Layer Saved" ),
                                        tr( "Successfully saved scratch layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ),
                                        Qgis::Success, messageTimeout() );
