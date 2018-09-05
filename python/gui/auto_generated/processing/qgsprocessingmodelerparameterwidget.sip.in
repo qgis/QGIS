@@ -39,7 +39,7 @@ QgsGui.processingGuiRegistry()->createModelerParameterWidget().
     QgsProcessingModelerParameterWidget( QgsProcessingModelAlgorithm *model,
                                          const QString &childId,
                                          const QgsProcessingParameterDefinition *parameter,
-                                         const QgsProcessingContext &context,
+                                         QgsProcessingContext &context,
                                          QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingModelerParameterWidget, for the specified

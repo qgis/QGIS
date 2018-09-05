@@ -106,7 +106,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
      *
      * \see createWrappedLabel()
      */
-    QWidget *createWrappedWidget( const QgsProcessingContext &context ) SIP_FACTORY;
+    QWidget *createWrappedWidget( QgsProcessingContext &context ) SIP_FACTORY;
 
     /**
      * Creates and returns a new label to accompany widgets created by the wrapper.
@@ -147,7 +147,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
      *
      * \see parameterValue()
      */
-    void setParameterValue( const QVariant &value, const QgsProcessingContext &context );
+    void setParameterValue( const QVariant &value, QgsProcessingContext &context );
 
     /**
      * Returns the current value of the parameter.
@@ -209,7 +209,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
      *
      * \see widgetValue()
      */
-    virtual void setWidgetValue( const QVariant &value, const QgsProcessingContext &context ) = 0;
+    virtual void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) = 0;
 
     /**
      * Returns the current value of the parameter.
@@ -293,7 +293,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
     virtual QgsProcessingModelerParameterWidget *createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model,
         const QString &childId,
         const QgsProcessingParameterDefinition *parameter,
-        const QgsProcessingContext &context );
+        QgsProcessingContext &context );
 
   protected:
 

@@ -18,6 +18,7 @@
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingoutputs.h"
+#include "qgsprojectionselectionwidget.h"
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QCheckBox>
@@ -85,7 +86,7 @@ QLabel *QgsProcessingBooleanWidgetWrapper::createLabel()
     return QgsAbstractProcessingParameterWidgetWrapper::createLabel();
 }
 
-void QgsProcessingBooleanWidgetWrapper::setWidgetValue( const QVariant &value, const QgsProcessingContext &context )
+void QgsProcessingBooleanWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
 {
   switch ( type() )
   {
@@ -162,6 +163,127 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingBooleanWidgetWrapper::
 }
 
 
+//
+// QgsProcessingCrsWidgetWrapper
+//
+
+QgsProcessingCrsWidgetWrapper::QgsProcessingCrsWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingCrsWidgetWrapper::createWidget()
+{
+  mProjectionSelectionWidget = new QgsProjectionSelectionWidget();
+  mProjectionSelectionWidget->setToolTip( parameterDefinition()->toolTip() );
+
+  if ( parameterDefinition()->flags() & QgsProcessingParameterDefinition::FlagOptional )
+    mProjectionSelectionWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
+  else
+    mProjectionSelectionWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, false );
+
+  connect( mProjectionSelectionWidget, &QgsProjectionSelectionWidget::crsChanged, this, [ = ]
+  {
+    emit widgetValueHasChanged( this );
+  } );
+
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      return mProjectionSelectionWidget;
+    };
+
+    case QgsProcessingGui::Modeler:
+    {
+      QWidget *w = new QWidget();
+      w->setToolTip( parameterDefinition()->toolTip() );
+
+      QVBoxLayout *vl = new QVBoxLayout();
+      vl->setMargin( 0 );
+      vl->setContentsMargins( 0, 0, 0, 0 );
+      w->setLayout( vl );
+
+      mUseProjectCrsCheckBox = new QCheckBox( tr( "Use project CRS" ) );
+      mUseProjectCrsCheckBox->setToolTip( tr( "Always use the current project CRS when running the model" ) );
+      vl->addWidget( mUseProjectCrsCheckBox );
+      connect( mUseProjectCrsCheckBox, &QCheckBox::toggled, mProjectionSelectionWidget, &QgsProjectionSelectionWidget::setDisabled );
+
+      vl->addWidget( mProjectionSelectionWidget );
+
+      return w;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingCrsWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mUseProjectCrsCheckBox )
+  {
+    if ( value.toString().compare( QLatin1String( "ProjectCrs" ), Qt::CaseInsensitive ) == 0 )
+    {
+      mUseProjectCrsCheckBox->setChecked( true );
+      return;
+    }
+    else
+    {
+      mUseProjectCrsCheckBox->setChecked( false );
+    }
+  }
+
+  const QgsCoordinateReferenceSystem v = QgsProcessingParameters::parameterAsCrs( parameterDefinition(), value, context );
+  if ( mProjectionSelectionWidget )
+    mProjectionSelectionWidget->setCrs( v );
+}
+
+QVariant QgsProcessingCrsWidgetWrapper::widgetValue() const
+{
+  if ( mUseProjectCrsCheckBox && mUseProjectCrsCheckBox->isChecked() )
+    return QStringLiteral( "ProjectCrs" );
+  else if ( mProjectionSelectionWidget )
+    return mProjectionSelectionWidget->crs().isValid() ? mProjectionSelectionWidget->crs() : QVariant();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingCrsWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterCrs::typeName()
+         << QgsProcessingParameterExpression::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterRasterLayer::typeName()
+         << QgsProcessingParameterVectorLayer::typeName()
+         << QgsProcessingParameterFeatureSource::typeName();
+}
+
+QStringList QgsProcessingCrsWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList() << QgsProcessingOutputVectorLayer::typeName()
+         << QgsProcessingOutputRasterLayer::typeName()
+         << QgsProcessingOutputMapLayer::typeName()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingCrsWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingCrsWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterCrs::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingCrsWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingCrsWidgetWrapper( parameter, type );
+}
+
+
 
 //
 // QgsProcessingStringWidgetWrapper
@@ -219,7 +341,7 @@ QWidget *QgsProcessingStringWidgetWrapper::createWidget()
   return nullptr;
 }
 
-void QgsProcessingStringWidgetWrapper::setWidgetValue( const QVariant &value, const QgsProcessingContext &context )
+void QgsProcessingStringWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
 {
   const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
   if ( mLineEdit )

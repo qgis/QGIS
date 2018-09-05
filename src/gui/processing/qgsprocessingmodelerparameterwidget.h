@@ -77,7 +77,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget
     QgsProcessingModelerParameterWidget( QgsProcessingModelAlgorithm *model,
                                          const QString &childId,
                                          const QgsProcessingParameterDefinition *parameter,
-                                         const QgsProcessingContext &context,
+                                         QgsProcessingContext &context,
                                          QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsProcessingModelerParameterWidget() override;
@@ -150,7 +150,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget
     QgsProcessingModelAlgorithm *mModel = nullptr;
     const QString mChildId;
     const QgsProcessingParameterDefinition *mParameterDefinition = nullptr;
-    const QgsProcessingContext &mContext;
+    QgsProcessingContext &mContext;
 
     QVariant mStaticValue;
     QString mModelInputParameterName;

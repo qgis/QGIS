@@ -79,7 +79,7 @@ class TestWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper
       return nullptr;
     }
 
-    void setWidgetValue( const QVariant &, const QgsProcessingContext & ) override
+    void setWidgetValue( const QVariant &, QgsProcessingContext & ) override
     {
     }
 
