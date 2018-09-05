@@ -741,7 +741,6 @@ ADD_DEFINITIONS(-DWITH_QML)
 SET(QGIS_GUI_MOC_HDRS
   ${QGIS_GUI_MOC_HDRS}
   editorwidgets/qgsqmlwidgetwrapper.h
-  qgsqmlwidget.h
 )
 ENDIF(Qt5Qml_FOUND)
 
@@ -856,7 +855,6 @@ IF(Qt5Qml_FOUND)
 SET(QGIS_GUI_SRCS
   ${QGIS_GUI_SRCS}
   editorwidgets/qgsqmlwidgetwrapper.cpp
-  qgsqmlwidget.cpp
 )
 ENDIF(Qt5Qml_FOUND)
 
