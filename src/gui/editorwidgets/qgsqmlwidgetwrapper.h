@@ -63,4 +63,23 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
     QQuickWidget *mWidget = nullptr;
 };
 
+/**
+ * \ingroup gui
+ * To pass the QgsExpression functionality and it's context to the context of the QQuickWidget
+ * \since QGIS 3.4
+ */
+class GUI_EXPORT QmlExpression : public QObject
+{
+    Q_OBJECT
+
+  public:
+    void setExpressionContext( const QgsExpressionContext &context );
+
+    //! evaluates the value regarding the /a expression and the context
+    Q_INVOKABLE QVariant evaluate( const QString &expression ) const;
+
+  private:
+    QgsExpressionContext mExpressionContext;
+};
+
 #endif // QGSQMLWIDGETWRAPPER_H

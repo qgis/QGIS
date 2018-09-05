@@ -20,26 +20,6 @@
 #include <QQmlContext>
 #include <QQmlEngine>
 
-/**
- * \ingroup gui
- * To pass the QgsExpression functionality and it's context to the context of the QQuickWidget
- * \since QGIS 3.4
- */
-class GUI_EXPORT QmlExpression : public QObject
-{
-    Q_OBJECT
-
-  public:
-    void setExpressionContext( const QgsExpressionContext &context );
-
-    //! evaluates the value regarding the /a expression and the context
-    Q_INVOKABLE QVariant evaluate( const QString &expression ) const;
-
-  private:
-    QgsExpressionContext mExpressionContext;
-};
-
-
 QgsQmlWidgetWrapper::QgsQmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
 {

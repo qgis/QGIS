@@ -58,6 +58,27 @@ passes the ``feature`` into the context property of the widget
 
 };
 
+class QmlExpression : QObject
+{
+%Docstring
+To pass the QgsExpression functionality and it's context to the context of the QQuickWidget
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsqmlwidgetwrapper.h"
+%End
+  public:
+    void setExpressionContext( const QgsExpressionContext &context );
+
+    QVariant evaluate( const QString &expression ) const;
+%Docstring
+evaluates the value regarding the /a expression and the context
+%End
+
+};
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
