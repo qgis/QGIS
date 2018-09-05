@@ -685,7 +685,12 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsP
 
   QVariant val = value;
 
-  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  if ( val.canConvert<QgsCoordinateReferenceSystem>() )
+  {
+    // input is a QgsCoordinateReferenceSystem - done!
+    return val.value< QgsCoordinateReferenceSystem >();
+  }
+  else if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
   {
     // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
@@ -1715,7 +1720,11 @@ bool QgsProcessingParameterCrs::checkValueIsAcceptable( const QVariant &input, Q
   if ( !input.isValid() )
     return mFlags & FlagOptional;
 
-  if ( input.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  if ( input.canConvert<QgsCoordinateReferenceSystem>() )
+  {
+    return true;
+  }
+  else if ( input.canConvert<QgsProcessingFeatureSourceDefinition>() )
   {
     return true;
   }
@@ -1743,6 +1752,14 @@ QString QgsProcessingParameterCrs::valueAsPythonString( const QVariant &value, Q
 {
   if ( !value.isValid() )
     return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsCoordinateReferenceSystem>() )
+  {
+    if ( !value.value< QgsCoordinateReferenceSystem >().isValid() )
+      return QStringLiteral( "QgsCoordinateReferenceSystem()" );
+    else
+      return QStringLiteral( "QgsCoordinateReferenceSystem('%1')" ).arg( value.value< QgsCoordinateReferenceSystem >().authid() );
+  }
 
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
