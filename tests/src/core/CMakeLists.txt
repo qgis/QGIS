@@ -192,6 +192,7 @@ SET(TESTS
  testqgsvectorlayercache.cpp
  testqgsvectorlayerjoinbuffer.cpp
  testqgsvectorlayer.cpp
+ testqgsvectorlayerutils.cpp
  testziplayer.cpp
  testqgsmeshlayer.cpp
  testqgsmeshlayerrenderer.cpp

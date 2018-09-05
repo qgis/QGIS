@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 /**
  * \ingroup core
@@ -155,6 +156,18 @@ class CORE_EXPORT QgsVectorLayerUtils
      */
     static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, int depth, QgsDuplicateFeatureContext &duplicateFeatureContext SIP_OUT );
 
+    /**
+     * Gets the feature source from a QgsVectorLayer pointer.
+     * This method is thread-safe but will block the main thread for execution. Executing it from the main
+     * thread is safe too.
+     * This should be used in scenarios, where a ``QWeakPointer<QgsVectorLayer>`` is kept in a thread
+     * and features should be fetched from this layer. Using the layer directly is not safe to do.
+     * The result will be ``nullptr`` if the layer has been deleted.
+     *
+     * \note Requires Qt >= 5.10 to make use of the thread-safe implementation
+     * \since QGIS 3.4
+     */
+    static std::unique_ptr<QgsVectorLayerFeatureSource> getFeatureSource( QPointer<QgsVectorLayer> layer ) SIP_SKIP;
 };
 
 

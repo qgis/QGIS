@@ -498,6 +498,37 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
   return newFeature;
 }
 
+std::unique_ptr<QgsVectorLayerFeatureSource> QgsVectorLayerUtils::getFeatureSource( QPointer<QgsVectorLayer> layer )
+{
+  std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
+
+  auto getFeatureSource = [ layer, &featureSource ]
+  {
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 )
+    Q_ASSERT( QThread::currentThread() == qApp->thread() );
+#endif
+    QgsVectorLayer *lyr = layer.data();
+
+    if ( lyr )
+    {
+      featureSource.reset( new QgsVectorLayerFeatureSource( lyr ) );
+    }
+  };
+
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 )
+  // Make sure we only deal with the vector layer on the main thread where it lives.
+  // Anything else risks a crash.
+  if ( QThread::currentThread() == qApp->thread() )
+    getFeatureSource();
+  else
+    QMetaObject::invokeMethod( qApp, getFeatureSource, Qt::BlockingQueuedConnection );
+#else
+  getFeatureSource();
+#endif
+
+  return featureSource;
+}
+
 QList<QgsVectorLayer *> QgsVectorLayerUtils::QgsDuplicateFeatureContext::layers() const
 {
   QList<QgsVectorLayer *> layers;
