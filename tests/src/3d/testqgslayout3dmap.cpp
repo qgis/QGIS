@@ -114,6 +114,7 @@ void TestQgsLayout3DMap::testBasic()
   l.initializeDefaults();
 
   QgsLayoutItem3DMap *map3dItem = new QgsLayoutItem3DMap( &l );
+  map3dItem->setBackgroundColor( QColor( 0, 0, 0 ) );
   map3dItem->attemptSetSceneRect( QRectF( 0, 0, 297, 210 ) );
   map3dItem->setCameraPose( cam );
   map3dItem->setMapSettings( map );
