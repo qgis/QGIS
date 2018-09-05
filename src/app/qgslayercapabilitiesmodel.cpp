@@ -19,6 +19,7 @@
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgsvectorlayer.h"
 
 QgsLayerCapabilitiesModel::QgsLayerCapabilitiesModel( QgsProject *project, QObject *parent )
   : QSortFilterProxyModel( parent )
