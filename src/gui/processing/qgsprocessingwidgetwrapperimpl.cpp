@@ -210,6 +210,10 @@ QWidget *QgsProcessingCrsWidgetWrapper::createWidget()
       mUseProjectCrsCheckBox->setToolTip( tr( "Always use the current project CRS when running the model" ) );
       vl->addWidget( mUseProjectCrsCheckBox );
       connect( mUseProjectCrsCheckBox, &QCheckBox::toggled, mProjectionSelectionWidget, &QgsProjectionSelectionWidget::setDisabled );
+      connect( mUseProjectCrsCheckBox, &QCheckBox::toggled, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
 
       vl->addWidget( mProjectionSelectionWidget );
 

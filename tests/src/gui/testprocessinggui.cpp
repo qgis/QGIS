@@ -37,6 +37,7 @@
 #include "processing/models/qgsprocessingmodelalgorithm.h"
 #include "qgsxmlutils.h"
 #include "qgspropertyoverridebutton.h"
+#include "qgsprojectionselectionwidget.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -141,6 +142,7 @@ class TestProcessingGui : public QObject
     void testModelerWrapper();
     void testBooleanWrapper();
     void testStringWrapper();
+    void testCrsWrapper();
 };
 
 void TestProcessingGui::initTestCase()
@@ -732,6 +734,105 @@ void TestProcessingGui::testStringWrapper()
   l = wrapperMultiLineM.createWrappedLabel();
   QVERIFY( l );
   QCOMPARE( l->text(), QStringLiteral( "string" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete w;
+  delete l;
+}
+
+void TestProcessingGui::testCrsWrapper()
+{
+  QgsProcessingParameterCrs param( QStringLiteral( "crs" ), QStringLiteral( "crs" ) );
+
+  // standard wrapper
+  QgsProcessingCrsWidgetWrapper wrapper( &param );
+
+  QgsProcessingContext context;
+  QWidget *w = wrapper.createWrappedWidget( context );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingCrsWidgetWrapper::widgetValueHasChanged );
+  wrapper.setWidgetValue( QStringLiteral( "epsg:3111" ), context );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( wrapper.widgetValue().value< QgsCoordinateReferenceSystem >().authid(), QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( static_cast< QgsProjectionSelectionWidget * >( wrapper.wrappedWidget() )->crs().authid(), QStringLiteral( "EPSG:3111" ) );
+  wrapper.setWidgetValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), context );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( wrapper.widgetValue().value< QgsCoordinateReferenceSystem >().authid(), QStringLiteral( "EPSG:28356" ) );
+  QCOMPARE( static_cast< QgsProjectionSelectionWidget * >( wrapper.wrappedWidget() )->crs().authid(), QStringLiteral( "EPSG:28356" ) );
+  wrapper.setWidgetValue( QString(), context );
+  QCOMPARE( spy.count(), 3 );
+  QVERIFY( !wrapper.widgetValue().value< QgsCoordinateReferenceSystem >().isValid() );
+  QVERIFY( !static_cast< QgsProjectionSelectionWidget * >( wrapper.wrappedWidget() )->crs().isValid() );
+
+  QLabel *l = wrapper.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "crs" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete l;
+
+  // check signal
+  static_cast< QgsProjectionSelectionWidget * >( wrapper.wrappedWidget() )->setCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+  QCOMPARE( spy.count(), 4 );
+  static_cast< QgsProjectionSelectionWidget * >( wrapper.wrappedWidget() )->setCrs( QgsCoordinateReferenceSystem() );
+  QCOMPARE( spy.count(), 5 );
+
+  delete w;
+
+  // batch wrapper
+  QgsProcessingCrsWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+
+  w = wrapperB.createWrappedWidget( context );
+  QSignalSpy spy2( &wrapperB, &QgsProcessingCrsWidgetWrapper::widgetValueHasChanged );
+  wrapperB.setWidgetValue( QStringLiteral( "epsg:3111" ), context );
+  QCOMPARE( spy2.count(), 1 );
+  QCOMPARE( wrapperB.widgetValue().value< QgsCoordinateReferenceSystem >().authid(), QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( static_cast< QgsProjectionSelectionWidget * >( wrapperB.wrappedWidget() )->crs().authid(), QStringLiteral( "EPSG:3111" ) );
+  wrapperB.setWidgetValue( QgsCoordinateReferenceSystem(), context );
+  QCOMPARE( spy2.count(), 2 );
+  QVERIFY( !wrapperB.widgetValue().value< QgsCoordinateReferenceSystem >().isValid() );
+  QVERIFY( !static_cast< QgsProjectionSelectionWidget * >( wrapperB.wrappedWidget() )->crs().isValid() );
+
+  // check signal
+  static_cast< QgsProjectionSelectionWidget * >( w )->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
+  QCOMPARE( spy2.count(), 3 );
+  static_cast< QgsProjectionSelectionWidget * >( w )->setCrs( QgsCoordinateReferenceSystem() );
+  QCOMPARE( spy2.count(), 4 );
+
+  // should be no label in batch mode
+  QVERIFY( !wrapperB.createWrappedLabel() );
+  delete w;
+
+  // modeler wrapper
+  QgsProcessingCrsWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+
+  w = wrapperM.createWrappedWidget( context );
+  QSignalSpy spy3( &wrapperM, &QgsProcessingCrsWidgetWrapper::widgetValueHasChanged );
+  wrapperM.setWidgetValue( QStringLiteral( "epsg:3111" ), context );
+  QCOMPARE( wrapperM.widgetValue().value< QgsCoordinateReferenceSystem >().authid(), QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( spy3.count(), 1 );
+  QCOMPARE( wrapperM.mProjectionSelectionWidget->crs().authid(), QStringLiteral( "EPSG:3111" ) );
+  QVERIFY( !wrapperM.mUseProjectCrsCheckBox->isChecked() );
+  wrapperM.setWidgetValue( QgsCoordinateReferenceSystem(), context );
+  QVERIFY( !wrapperM.widgetValue().value< QgsCoordinateReferenceSystem >().isValid() );
+  QCOMPARE( spy3.count(), 2 );
+  QVERIFY( !wrapperM.mProjectionSelectionWidget->crs().isValid() );
+  QVERIFY( !wrapperM.mUseProjectCrsCheckBox->isChecked() );
+  wrapperM.setWidgetValue( QStringLiteral( "ProjectCrs" ), context );
+  QCOMPARE( wrapperM.widgetValue().toString(), QStringLiteral( "ProjectCrs" ) );
+  QCOMPARE( spy3.count(), 3 );
+  QVERIFY( wrapperM.mUseProjectCrsCheckBox->isChecked() );
+
+  // check signal
+  wrapperM.mUseProjectCrsCheckBox->setChecked( false );
+  QCOMPARE( spy3.count(), 4 );
+  wrapperM.mProjectionSelectionWidget->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28355" ) ) );
+  QCOMPARE( spy3.count(), 5 );
+  wrapperM.mProjectionSelectionWidget->setCrs( QgsCoordinateReferenceSystem() );
+  QCOMPARE( spy3.count(), 6 );
+
+  // should be a label in modeler mode
+  l = wrapperM.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "crs" ) );
   QCOMPARE( l->toolTip(), param.toolTip() );
   delete w;
   delete l;
