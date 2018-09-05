@@ -286,11 +286,11 @@ Sets ratio of the head length of the arrow (range 0-1)
 
     bool isOnUserDefinedGrid() const;
 %Docstring
-Returns if vectors are drawn on user-defined grid
+Returns whether vectors are drawn on user-defined grid
 %End
     void setOnUserDefinedGrid( bool enabled );
 %Docstring
-Toggle drawing of vectors on user defined grid
+Toggles drawing of vectors on user defined grid
 %End
     int userGridCellWidth() const;
 %Docstring

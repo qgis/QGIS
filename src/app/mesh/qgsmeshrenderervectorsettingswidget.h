@@ -61,9 +61,6 @@ class APP_EXPORT QgsMeshRendererVectorSettingsWidget : public QWidget, private U
 
   private:
 
-    //! Add validators to line edits
-    void addValidators();
-
     /**
      * convert text to double, return err_val if
      * text is not possible to convert or the value is negative

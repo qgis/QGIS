@@ -277,8 +277,9 @@ void TestQgsMeshRenderer::test_face_vector_on_user_grid()
   QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
   QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( ds.group() );
   settings.setOnUserDefinedGrid( true );
-  settings.setUserGridCellWidth( 22 );
-  settings.setUserGridCellHeight( 11 );
+  settings.setUserGridCellWidth( 30 );
+  settings.setUserGridCellHeight( 20 );
+  settings.setLineWidth( 0.8 );
   rendererSettings.setVectorSettings( ds.group(), settings );
   rendererSettings.setActiveVectorDataset( ds );
   mMemoryLayer->setRendererSettings( rendererSettings );
@@ -295,8 +296,9 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid()
   QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
   QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( ds.group() );
   settings.setOnUserDefinedGrid( true );
-  settings.setUserGridCellWidth( 40 );
+  settings.setUserGridCellWidth( 60 );
   settings.setUserGridCellHeight( 40 );
+  settings.setLineWidth( 0.9 );
   rendererSettings.setVectorSettings( ds.group(), settings );
   rendererSettings.setActiveVectorDataset( ds );
   mMemoryLayer->setRendererSettings( rendererSettings );

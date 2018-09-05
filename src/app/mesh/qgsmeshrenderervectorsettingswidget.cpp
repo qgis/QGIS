@@ -26,7 +26,6 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
 
 {
   setupUi( this );
-  addValidators( );
 
   mShaftLengthComboBox->setCurrentIndex( -1 );
 
@@ -46,26 +45,15 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
   widgets << mMinMagLineEdit << mMaxMagLineEdit
           << mHeadWidthLineEdit << mHeadLengthLineEdit
           << mMinimumShaftLineEdit << mMaximumShaftLineEdit
-          << mScaleShaftByFactorOfLineEdit << mShaftLengthLineEdit
-          << mXSpacingLineEdit << mYSpacingLineEdit;
+          << mScaleShaftByFactorOfLineEdit << mShaftLengthLineEdit;
 
   for ( auto widget : widgets )
   {
     connect( widget, &QLineEdit::textChanged, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
   }
-}
 
-void QgsMeshRendererVectorSettingsWidget::addValidators()
-{
-  QIntValidator *validatorX = new QIntValidator();
-  validatorX->setBottom( 0 );
-  validatorX->setParent( mXSpacingLineEdit );
-  mXSpacingLineEdit->setValidator( validatorX );
-
-  QIntValidator *validatorY = new QIntValidator();
-  validatorY->setBottom( 0 );
-  validatorY->setParent( mYSpacingLineEdit );
-  mYSpacingLineEdit->setValidator( validatorY );
+  connect( mXSpacingSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+  connect( mYSpacingSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 }
 
 void QgsMeshRendererVectorSettingsWidget::setLayer( QgsMeshLayer *layer )
@@ -98,12 +86,8 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
   // user grid
   bool enabled = mDisplayVectorsOnGridGroupBox->isChecked();
   settings.setOnUserDefinedGrid( enabled );
-
-  val = filterValue( mXSpacingLineEdit->text(), settings.userGridCellWidth() );
-  settings.setUserGridCellWidth( static_cast<int>( val ) );
-
-  val = filterValue( mYSpacingLineEdit->text(), settings.userGridCellHeight() );
-  settings.setUserGridCellHeight( static_cast<int>( val ) );
+  settings.setUserGridCellWidth( mXSpacingSpinBox->value() );
+  settings.setUserGridCellHeight( mYSpacingSpinBox->value() );
 
   // shaft length
   auto method = static_cast<QgsMeshRendererVectorSettings::ArrowScalingMethod>( mShaftLengthComboBox->currentIndex() );

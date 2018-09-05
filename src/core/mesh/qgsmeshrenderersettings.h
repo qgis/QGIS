@@ -248,9 +248,9 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     //! Sets ratio of the head length of the arrow (range 0-1)
     void setArrowHeadLengthRatio( double arrowHeadLengthRatio );
 
-    //! Returns if vectors are drawn on user-defined grid
+    //! Returns whether vectors are drawn on user-defined grid
     bool isOnUserDefinedGrid() const;
-    //! Toggle drawing of vectors on user defined grid
+    //! Toggles drawing of vectors on user defined grid
     void setOnUserDefinedGrid( bool enabled );
     //! Returns width in pixels of user grid cell
     int userGridCellWidth() const;

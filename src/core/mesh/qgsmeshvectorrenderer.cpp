@@ -253,9 +253,6 @@ void QgsMeshVectorRenderer::drawVectorDataOnGrid()
     const QgsPoint p1 = vertices[v1], p2 = vertices[v2], p3 = vertices[v3];
 
     const int nativeFaceIndex = mTriangularMesh.trianglesToNativeFaces()[i];
-    //const bool isActive = mActiveFaceFlagValues[nativeFaceIndex];
-    //if ( !isActive )
-    //  continue;
 
     QgsRectangle bbox = QgsMeshLayerUtils::triangleBoundingBox( p1, p2, p3 );
     if ( !mContext.extent().intersects( bbox ) )
