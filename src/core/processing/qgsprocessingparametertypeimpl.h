@@ -355,7 +355,7 @@ class CORE_EXPORT QgsProcessingParameterTypeEnum : public QgsProcessingParameter
 
     QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "TODO." );
+      return QCoreApplication::translate( "Processing", "An enumerated type parameter." );
     }
 
     QString name() const override
