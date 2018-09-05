@@ -162,6 +162,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * thread is safe too.
      * This should be used in scenarios, where a ``QWeakPointer<QgsVectorLayer>`` is kept in a thread
      * and features should be fetched from this layer. Using the layer directly is not safe to do.
+     * The result will be ``nullptr`` if the layer has been deleted.
      *
      * \note Requires Qt >= 5.10 to make use of the thread-safe implementation
      * \since QGIS 3.4
