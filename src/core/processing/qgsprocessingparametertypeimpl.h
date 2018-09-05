@@ -257,6 +257,7 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
              << QObject::tr( "str: layer ID. CRS of layer is used." )
              << QObject::tr( "str: layer name. CRS of layer is used." )
              << QObject::tr( "str: layer source. CRS of layer is used." )
+             << QObject::tr( "QgsCoordinateReferenceSystem" )
              << QObject::tr( "QgsMapLayer: CRS of layer is used" )
              << QObject::tr( "QgsProcessingFeatureSourceDefinition: CRS of source is used" )
              << QStringLiteral( "QgsProperty" );
