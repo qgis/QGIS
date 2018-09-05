@@ -50,7 +50,7 @@ QgsColorRampButton::QgsColorRampButton( QWidget *parent, const QString &dialogTi
   setMenu( mMenu );
 
   mAllRampsMenu = new QMenu( mMenu );
-  mAllRampsMenu->setTitle( tr( "All color ramps" ) );
+  mAllRampsMenu->setTitle( tr( "All Color Ramps" ) );
 
   setPopupMode( QToolButton::MenuButtonPopup );
 
