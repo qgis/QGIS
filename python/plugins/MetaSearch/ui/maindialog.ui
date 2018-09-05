@@ -377,11 +377,21 @@
               <string>Add ArcGIS FeatureServer</string>
              </property>
             </action>
+            <action name="mActionAddGisFile">
+             <property name="icon">
+              <iconset>
+               <normaloff>:/images/themes/default/mActionAddAfsLayer.svg</normaloff>:/images/themes/default/mActionAddAfsLayer.svg</iconset>
+             </property>
+             <property name="text">
+              <string>Add GIS File</string>
+             </property>
+            </action>
             <addaction name="mActionAddWms"/>
             <addaction name="mActionAddWfs"/>
             <addaction name="mActionAddWcs"/>
             <addaction name="mActionAddAms"/>
             <addaction name="mActionAddAfs"/>
+            <addaction name="mActionAddGisFile"/>
            </widget>
           </item>
          </layout>
