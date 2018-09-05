@@ -26,15 +26,6 @@ class TestQgsVectorLayerUtils : public QObject
   public:
     TestQgsVectorLayerUtils() = default;
 
-  private:
-    bool mTestHasError =  false ;
-    QgsMapLayer *mpPointsLayer = nullptr;
-    QgsMapLayer *mpLinesLayer = nullptr;
-    QgsMapLayer *mpPolysLayer = nullptr;
-    QgsVectorLayer *mpNonSpatialLayer = nullptr;
-    QString mTestDataDir;
-    QString mReport;
-
   private slots:
 
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -71,7 +62,9 @@ class FeatureFetcher : public QThread
     void run() override
     {
       QgsFeature feat;
-      QgsVectorLayerUtils::getFeatureSource( mLayer ).get()->getFeatures().nextFeature( feat );
+      auto fs = QgsVectorLayerUtils::getFeatureSource( mLayer );
+      if ( fs )
+        fs->getFeatures().nextFeature( feat );
       emit resultReady( feat.attribute( QStringLiteral( "col1" ) ) );
     }
 
@@ -85,35 +78,51 @@ class FeatureFetcher : public QThread
 
 void TestQgsVectorLayerUtils::testGetFeatureSource()
 {
-  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> vl = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   vl->startEditing();
   QgsFeature f1( vl->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 10 );
   vl->addFeature( f1 );
 
-  QPointer<QgsVectorLayer> vlPtr( vl );
+  QPointer<QgsVectorLayer> vlPtr( vl.get() );
 
   QgsFeature feat;
-  QgsVectorLayerUtils::getFeatureSource( vlPtr ).get()->getFeatures().nextFeature( feat );
+  QgsVectorLayerUtils::getFeatureSource( vlPtr )->getFeatures().nextFeature( feat );
   QCOMPARE( feat.attribute( QStringLiteral( "col1" ) ).toInt(), 10 );
 
   FeatureFetcher *thread = new FeatureFetcher( vlPtr );
 
   bool finished = false;
   QVariant result;
-  connect( thread, &FeatureFetcher::resultReady, this, [finished, result]( const QVariant & res )
+
+  auto onResultReady = [&finished, &result]( const QVariant & res )
   {
     finished = true;
     result = res;
-  } );
+  };
+
+  connect( thread, &FeatureFetcher::resultReady, this, onResultReady );
   connect( thread, &QThread::finished, thread, &QThread::deleteLater );
 
   thread->start();
   while ( !finished )
     QCoreApplication::processEvents();
   QCOMPARE( result.toInt(), 10 );
-
   thread->quit();
+
+  FeatureFetcher *thread2 = new FeatureFetcher( vlPtr );
+
+  finished = false;
+  result = QVariant();
+  connect( thread2, &FeatureFetcher::resultReady, this, onResultReady );
+  connect( thread2, &QThread::finished, thread, &QThread::deleteLater );
+
+  vl.reset();
+  thread2->start();
+  while ( !finished )
+    QCoreApplication::processEvents();
+  QVERIFY( result.isNull() );
+  thread2->quit();
 }
 
 QGSTEST_MAIN( TestQgsVectorLayerUtils )
