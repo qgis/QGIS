@@ -24,6 +24,7 @@
 #include "qgis.h"
 #include "qgswkbtypes.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsvectorlayer.h"
 
 #include <limits>
 

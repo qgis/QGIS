@@ -17,7 +17,6 @@
 #define QGSFEATUREFILTERMODEL_P_H
 
 #include <QThread>
-#include "qgsvectorlayer.h"
 #include "qgsfeaturefiltermodel.h"
 #include "qgslogger.h"
 #include "qgsvectorlayerfeatureiterator.h"

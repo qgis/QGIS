@@ -20,6 +20,7 @@
 #include "qgscachedfeatureiterator.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerjoinbuffer.h"
+#include "qgsvectorlayer.h"
 
 QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, QObject *parent )
   : QObject( parent )

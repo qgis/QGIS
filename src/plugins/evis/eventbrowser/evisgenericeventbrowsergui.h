@@ -34,7 +34,6 @@
 #include "qgsfeature.h"
 #include "qgsmapcanvas.h"
 #include "qgisinterface.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
 #include "evisconfiguration.h"

@@ -20,7 +20,6 @@
 
 #include <QDialog>
 
-#include "qgsvectorlayer.h"
 
 #include "ui_rulesDialog.h"
 #include "topolTest.h"

@@ -28,6 +28,7 @@
 #include "qgslayoutitemmap.h"
 #include "qgslayoutundostack.h"
 #include "qgscompositionconverter.h"
+#include "qgsvectorlayer.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )

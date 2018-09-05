@@ -19,8 +19,8 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsgeometry.h"
-#include "qgsvectorlayer.h"
 #include "qgsfeatureid.h"
+#include "qgsvectorlayer.h"
 
 class QgsCurve;
 

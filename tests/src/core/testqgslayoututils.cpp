@@ -22,6 +22,8 @@
 #include "qgslayoutitemmap.h"
 #include "qgsfontutils.h"
 #include "qgsrenderchecker.h"
+#include "qgsvectorlayer.h"
+
 #include <QStyleOptionGraphicsItem>
 
 class TestQgsLayoutUtils: public QObject

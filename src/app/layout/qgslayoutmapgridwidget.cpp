@@ -26,6 +26,7 @@
 #include "qgslayout.h"
 #include "qgsmapsettings.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsvectorlayer.h"
 
 QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, QgsLayoutItemMap *map )
   : QgsLayoutItemBaseWidget( nullptr, mapGrid )

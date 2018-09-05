@@ -18,6 +18,7 @@
 #include "qgsgeometrycheck.h"
 #include "qgsfeaturepool.h"
 #include "qgsproject.h"
+#include "qgsvectorlayer.h"
 
 #include <QtConcurrentMap>
 #include <QFutureWatcher>

@@ -21,10 +21,11 @@
 #include "qgis_core.h"
 
 #include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
 #include "qgsmessagelog.h"
 #include "qgsspatialindex.h"
 #include "qgsprocessing.h"
+#include "qgsfeaturesink.h"
+#include "qgsfeaturesource.h"
 
 class QgsProject;
 class QgsProcessingContext;

@@ -37,6 +37,7 @@
 #include "qgslayertree.h"
 #include "qgsogrutils.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 #include <QDir>
 #include <QDomDocument>

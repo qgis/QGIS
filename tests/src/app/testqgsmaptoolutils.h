@@ -20,7 +20,6 @@
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
 
 /**
  * \ingroup UnitTests

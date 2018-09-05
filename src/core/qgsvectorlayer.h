@@ -1,6 +1,5 @@
 
 /***************************************************************************
-                          qgsvectorlayer.h  -  description
                              -------------------
     begin                : Oct 29, 2003
     copyright            : (C) 2003 by Gary E.Sherman

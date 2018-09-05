@@ -19,6 +19,7 @@
 #include "qgsreport.h"
 #include "qgsreportsectionfieldgroup.h"
 #include "qgsreportsectionlayout.h"
+#include "qgsvectorlayer.h"
 
 ///@cond NOT_STABLE
 

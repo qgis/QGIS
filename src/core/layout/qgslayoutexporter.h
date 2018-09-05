@@ -29,6 +29,7 @@ class QgsLayout;
 class QPainter;
 class QgsLayoutItemMap;
 class QgsAbstractLayoutIterator;
+class QgsFeedback;
 
 /**
  * \ingroup core

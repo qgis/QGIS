@@ -25,6 +25,7 @@
 #include "qgsconfigcache.h"
 #include "qgsserverprojectutils.h"
 #include "qgswfsparameters.h"
+#include "qgsvectorlayer.h"
 
 namespace QgsWfs
 {

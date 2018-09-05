@@ -22,12 +22,11 @@
 #include "qgsfeature.h"
 #include "qgsexpression.h"
 #include "qgscolorramp.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-
+#include "qgsvectorlayer.h"
 
 #define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return QVariant(); }
 #define SET_EVAL_ERROR(x)   { parent->setEvalErrorString( x ); return QVariant(); }

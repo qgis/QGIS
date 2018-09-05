@@ -21,7 +21,6 @@
 #include "ui_qgsnewauxiliaryfielddialogbase.h"
 #include "qgsguiutils.h"
 #include "qgis_gui.h"
-#include "qgsvectorlayer.h"
 #include "qgsproperty.h"
 
 /**

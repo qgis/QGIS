@@ -17,6 +17,7 @@
 #include "qgscurvepolygon.h"
 #include "qgsgeometrycheck.h"
 #include "qgsfeaturepool.h"
+#include "qgsvectorlayer.h"
 
 QgsGeometryCheckerContext::QgsGeometryCheckerContext( int _precision, const QgsCoordinateReferenceSystem &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools )
   : tolerance( std::pow( 10, -_precision ) )

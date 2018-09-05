@@ -25,6 +25,7 @@
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsproperty.h"
 #include "qgsspatialiteutils.h"
+#include "qgsvectorlayer.h"
 #include <QString>
 
 class QgsProject;

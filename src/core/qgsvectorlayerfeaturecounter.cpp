@@ -12,7 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsvectorlayerfeaturecounter.h"
+#include "qgsvectorlayer.h"
 
 QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context )
   : QgsTask( tr( "Counting features in %1" ).arg( layer->name() ), QgsTask::CanCancel )

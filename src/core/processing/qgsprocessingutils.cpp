@@ -28,6 +28,7 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsexpressioncontextscopegenerator.h"
 #include "qgsfileutils.h"
+#include "qgsvectorlayer.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {

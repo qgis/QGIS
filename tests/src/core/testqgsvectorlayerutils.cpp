@@ -15,6 +15,7 @@
 #include "qgstest.h"
 
 #include "qgsvectorlayerutils.h"
+#include "qgsvectorlayer.h"
 
 /**
  * \ingroup UnitTests

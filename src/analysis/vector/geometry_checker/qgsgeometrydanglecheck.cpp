@@ -15,6 +15,7 @@
 
 #include "qgsgeometrydanglecheck.h"
 #include "qgslinestring.h"
+#include "qgsvectorlayer.h"
 
 void QgsGeometryDangleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {

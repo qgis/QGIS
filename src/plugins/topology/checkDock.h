@@ -20,7 +20,6 @@
 
 #include "qgsdockwidget.h"
 
-#include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 //#include "qgsvertexmarker.h"
 #include "qgsspatialindex.h"

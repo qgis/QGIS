@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmextractbylocation.h"
 #include "qgsgeometryengine.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

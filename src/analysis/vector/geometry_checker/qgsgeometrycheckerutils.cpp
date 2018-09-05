@@ -22,6 +22,8 @@
 #include "qgsgeos.h"
 #include "qgsgeometrycollection.h"
 #include "qgssurface.h"
+#include "qgsvectorlayer.h"
+
 #include <qmath.h>
 
 namespace QgsGeometryCheckerUtils
@@ -45,7 +47,22 @@ namespace QgsGeometryCheckerUtils
   double LayerFeature::layerToMapUnits() const { return mFeaturePool->getLayerToMapUnits(); }
   const QgsCoordinateTransform &LayerFeature::layerToMapTransform() const { return mFeaturePool->getLayerToMapTransform(); }
 
-/////////////////////////////////////////////////////////////////////////////
+  QString LayerFeature::id() const
+  {
+    return QString( "%1:%2" ).arg( layer().name() ).arg( mFeature.id() );
+  }
+
+  bool LayerFeature::operator==( const LayerFeature &other ) const
+  {
+    return layer().id() == other.layer().id() && feature().id() == other.feature().id();
+  }
+
+  bool LayerFeature::operator!=( const LayerFeature &other ) const
+  {
+    return layer().id() != other.layer().id() || feature().id() != other.feature().id();
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
 
   LayerFeatures::iterator::iterator( const QStringList::const_iterator &layerIt, const LayerFeatures *parent )
     : mLayerIt( layerIt )

@@ -15,7 +15,6 @@
 #ifndef QGSVECTORLAYERFEATURECOUNTER_H
 #define QGSVECTORLAYERFEATURECOUNTER_H
 
-#include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsrenderer.h"
 #include "qgstaskmanager.h"

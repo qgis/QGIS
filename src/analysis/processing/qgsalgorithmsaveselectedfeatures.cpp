@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsaveselectedfeatures.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 

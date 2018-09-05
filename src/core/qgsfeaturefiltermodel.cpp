@@ -16,6 +16,7 @@
 #include "qgsfeaturefiltermodel.h"
 #include "qgsfeaturefiltermodel_p.h"
 
+#include "qgsvectorlayer.h"
 #include "qgsconditionalstyle.h"
 
 QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )

@@ -29,6 +29,8 @@
 #include "qgsfillsymbollayer.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgsvectorlayer.h"
+
 #include <QObject>
 #include <QPainter>
 #include <QImage>

@@ -20,7 +20,6 @@
 #include <QVector>
 
 #include "qgsfeature.h"
-#include "qgsvectorlayer.h"
 
 #include "qgis_quick.h"
 #include "qgsquickfeaturelayerpair.h"

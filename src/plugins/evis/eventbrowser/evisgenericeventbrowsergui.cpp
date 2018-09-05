@@ -35,6 +35,7 @@
 #include "qgspointxy.h"
 #include "qgsfields.h"
 #include "qgsrectangle.h"
+#include "qgsvectorlayer.h"
 
 #include <QMessageBox>
 #include <QTreeWidgetItem>

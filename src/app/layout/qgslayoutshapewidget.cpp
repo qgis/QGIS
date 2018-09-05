@@ -20,6 +20,7 @@
 #include "qgslayoutitemshape.h"
 #include "qgslayout.h"
 #include "qgslayoutundostack.h"
+#include "qgsvectorlayer.h"
 
 QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
   : QgsLayoutItemBaseWidget( nullptr, shape )
