@@ -41,6 +41,7 @@
 #include "qgsunittypes.h"
 #include "qgstextlabelfeature.h"
 #include "qgslogger.h"
+#include "qgsmaplayerstyle.h"
 #include "qgsmaplayerstylemanager.h"
 
 #include "qgswkbtypes.h"
