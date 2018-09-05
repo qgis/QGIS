@@ -413,6 +413,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 };
 
 /**
+ * \ingroup core
  * An attribute editor widget that will represent arbitrary QML code.
  *
  * \since QGIS 3.4
@@ -420,6 +421,13 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElement
 {
   public:
+
+    /**
+     * Creates a new element which can display QML
+     *
+     * \param name         The name of the widget
+     * \param parent       The parent (used as container)
+    */
     QgsAttributeEditorQmlElement( const QString &name, QgsAttributeEditorElement *parent )
       : QgsAttributeEditorElement( AeTypeQmlElement, name, parent )
     {}

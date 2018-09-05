@@ -1141,7 +1141,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       qmlObjectTemplate->addItem( tr( "Rectangle" ) );
       qmlObjectTemplate->addItem( tr( "Pie chart" ) );
       qmlObjectTemplate->addItem( tr( "Bar chart" ) );
-      connect( qmlObjectTemplate, QOverload<int>::of( &QComboBox::currentIndexChanged ), qmlCode, [ = ]( int index )
+      connect( qmlObjectTemplate, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), qmlCode, [ = ]( int index )
       {
         qmlCode->clear();
         switch ( index )
