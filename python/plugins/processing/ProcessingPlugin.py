@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import shutil
 import os
 import sys
+from functools import partial
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils,
@@ -254,9 +255,16 @@ class ProcessingPlugin:
         initializeMenus()
         createMenus()
 
-        self.iface.currentLayerChanged.connect(self.layer_changed)
+        # In-place editing button state sync
+        self.iface.currentLayerChanged.connect(self.sync_in_place_button_state)
+        self.iface.mapCanvas().selectionChanged.connect(self.sync_in_place_button_state)
+        self.iface.actionToggleEditing().triggered.connect(partial(self.sync_in_place_button_state, None))
+        self.sync_in_place_button_state()
 
-    def layer_changed(self, layer):
+    def sync_in_place_button_state(self, layer=None):
+        """Synchronise the button state with layer state and selection"""
+        if layer is None:
+            layer = self.iface.activeLayer()
         if layer is None or layer.type() != QgsMapLayer.VectorLayer or not layer.isEditable() or not layer.selectedFeatureCount():
             self.editSelectedAction.setChecked(False)
             self.editSelectedAction.setEnabled(False)
