@@ -102,6 +102,22 @@ void QgsLinuxNative::hideApplicationProgress()
   QDBusConnection::sessionBus().send( message );
 }
 
+void QgsLinuxNative::setApplicationBadgeCount( int count )
+{
+  // the badge will only be shown when the count is greater than one
+  const QVariantMap properties
+  {
+    { QStringLiteral( "count-visible" ), count > 1 },
+    { QStringLiteral( "count" ), static_cast< long long >( count ) }
+  };
+
+  QDBusMessage message = QDBusMessage::createSignal( QStringLiteral( "/org/qgis/UnityLauncher" ),
+                         QStringLiteral( "com.canonical.Unity.LauncherEntry" ),
+                         QStringLiteral( "Update" ) );
+  message.setArguments( {mDesktopFile, properties} );
+  QDBusConnection::sessionBus().send( message );
+}
+
 /**
  * Automatic marshaling of a QImage for org.freedesktop.Notifications.Notify
  *

@@ -63,6 +63,11 @@ void QgsNative::hideApplicationProgress()
 
 }
 
+void QgsNative::setApplicationBadgeCount( int )
+{
+
+}
+
 QgsNative::NotificationResult QgsNative::showDesktopNotification( const QString &, const QString &, const NotificationSettings & )
 {
   NotificationResult result;
