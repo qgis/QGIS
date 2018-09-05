@@ -85,6 +85,11 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
      */
     void setFilters( QgsProcessingToolboxProxyModel::Filters filters );
 
+
+    /**
+     * Sets geometry \type for the in-place algorithms
+     * @param type
+     */
     void setInPlaceLayerType( QgsWkbTypes::GeometryType type );
 
   public slots:
