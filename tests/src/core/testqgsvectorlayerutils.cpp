@@ -79,7 +79,7 @@ class FeatureFetcher : public QThread
     void resultReady( const QVariant &attribute );
 
   private:
-    QPoinst<QgsVectorLayer> mLayer;
+    QPointer<QgsVectorLayer> mLayer;
 };
 
 
@@ -97,7 +97,7 @@ void TestQgsVectorLayerUtils::testGetFeatureSource()
   QgsVectorLayerUtils::getFeatureSource( vlPtr ).get()->getFeatures().nextFeature( feat );
   QCOMPARE( feat.attribute( QStringLiteral( "col1" ) ).toInt(), 10 );
 
-  FeatureFetcher *thread = new FeatureFetcher();
+  FeatureFetcher *thread = new FeatureFetcher( vlPtr );
 
   bool finished = false;
   QVariant result;
