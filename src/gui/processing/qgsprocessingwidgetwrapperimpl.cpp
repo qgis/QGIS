@@ -273,6 +273,11 @@ QList<int> QgsProcessingCrsWidgetWrapper::compatibleDataTypes() const
   return QList< int >();
 }
 
+QString QgsProcessingCrsWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string as EPSG code, WKT or PROJ format, or a string identifying a map layer" );
+}
+
 QString QgsProcessingCrsWidgetWrapper::parameterType() const
 {
   return QgsProcessingParameterCrs::typeName();

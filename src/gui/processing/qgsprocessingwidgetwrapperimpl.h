@@ -88,10 +88,9 @@ class GUI_EXPORT QgsProcessingCrsWidgetWrapper : public QgsAbstractProcessingPar
     QVariant widgetValue() const override;
 
     QStringList compatibleParameterTypes() const override;
-
     QStringList compatibleOutputTypes() const override;
-
     QList< int > compatibleDataTypes() const override;
+    QString modelerExpressionFormatString() const override;
 
   private:
 

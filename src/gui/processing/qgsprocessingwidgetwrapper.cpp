@@ -211,5 +211,11 @@ QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterfac
 {
   std::unique_ptr< QgsProcessingModelerParameterWidget > widget = qgis::make_unique< QgsProcessingModelerParameterWidget >( model, childId, parameter, context );
   widget->populateSources( compatibleParameterTypes(), compatibleOutputTypes(), compatibleDataTypes() );
+  widget->setExpressionHelpText( modelerExpressionFormatString() );
   return widget.release();
+}
+
+QString QgsProcessingParameterWidgetFactoryInterface::modelerExpressionFormatString() const
+{
+  return QString();
 }

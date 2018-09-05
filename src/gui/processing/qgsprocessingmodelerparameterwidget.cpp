@@ -293,5 +293,9 @@ void QgsProcessingModelerParameterWidget::populateSources( const QStringList &co
     }
 
   }
+}
 
+void QgsProcessingModelerParameterWidget::setExpressionHelpText( const QString &text )
+{
+  mExpressionWidget->setExpectedOutputFormat( text );
 }

@@ -345,6 +345,17 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      */
     virtual QList< int > compatibleDataTypes() const = 0;
 
+    /**
+     * Returns the expected expression format string for expression results for the parameter
+     * within model child algorithms.
+     *
+     * This is shown in modeler widget wrappers when using the "pre-calculated" expression mode,
+     * and should give helpful text to users to indicate the expected results from the expression.
+
+     * This is purely a text format and no expression validation is made against it.
+     */
+    virtual QString modelerExpressionFormatString() const;
+
 };
 
 #endif // QGSPROCESSINGWIDGETWRAPPER_H
