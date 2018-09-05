@@ -1775,16 +1775,11 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       const QgsAttributeEditorQmlElement *elementDef = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
-
       qmlWrapper->setQmlCode( elementDef->qmlCode() );
-
-      //qmlWrapper->setConfig( mLayer->editFormConfig().widgetConfig( elementDef->name()) );
+      qmlWrapper->setConfig( mLayer->editFormConfig().widgetConfig( elementDef->name() ) );
       qmlWrapper->setContext( context );
 
-      // QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
-
       mWidgets.append( qmlWrapper );
-      // mFormWidgets.append( formWidget );
 
       newWidgetInfo.widget = qmlWrapper->widget();
       newWidgetInfo.labelText = elementDef->name();

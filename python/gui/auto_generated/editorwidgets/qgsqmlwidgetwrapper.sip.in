@@ -31,6 +31,7 @@ the Free Software Foundation; either version 2 of the License, or     *
 #include "qgsqmlwidgetwrapper.h"
 %End
   public:
+
     QgsQmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent );
 
     virtual bool valid() const;
@@ -43,13 +44,22 @@ the Free Software Foundation; either version 2 of the License, or     *
 
 
     void reinitWidget();
+%Docstring
+Clears the content and makes new intialisaton
+%End
 
     void setQmlCode( const QString &qmlCode );
+%Docstring
+writes the ``qmlCode`` into a temporary file
+%End
 
   public slots:
 
     virtual void setFeature( const QgsFeature &feature );
 
+%Docstring
+passes the ``feature`` into the context property of the widget
+%End
 
 };
 
@@ -64,6 +74,9 @@ class QmlExpression : QObject
     void setExpressionContext( const QgsExpressionContext &context );
 
     QVariant evaluate( const QString &expression ) const;
+%Docstring
+evaluates the value regarding the /a expression and the context
+%End
 
 };
 

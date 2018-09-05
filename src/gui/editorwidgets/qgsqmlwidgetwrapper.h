@@ -26,6 +26,7 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
     Q_OBJECT
 
   public:
+
     QgsQmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent );
 
     bool valid() const override;
@@ -34,17 +35,19 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 
     void initWidget( QWidget *editor ) override;
 
+    //! Clears the content and makes new intialisaton
     void reinitWidget();
 
+    //! writes the \a qmlCode into a temporary file
     void setQmlCode( const QString &qmlCode );
 
   public slots:
 
+    //! passes the \a feature into the context property of the widget
     void setFeature( const QgsFeature &feature ) override;
 
   private:
     QTemporaryFile mQmlFile;
-
     QQuickWidget *mWidget = nullptr;
 };
 
@@ -56,6 +59,7 @@ class GUI_EXPORT QmlExpression : public QObject
   public:
     void setExpressionContext( const QgsExpressionContext &context );
 
+    //! evaluates the value regarding the /a expression and the context
     Q_INVOKABLE QVariant evaluate( const QString &expression ) const;
 
   private:

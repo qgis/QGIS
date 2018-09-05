@@ -507,7 +507,8 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged()
     }
     case DnDTreeItemData::QmlWidget:
     {
-
+      mAttributeRelationEdit->setVisible( false );
+      mAttributeTypeDialog->setVisible( false );
       break;
     }
 
@@ -854,7 +855,7 @@ QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormPro
         break;
 
       case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
-        newItem->setIcon( 0, QgsApplication::getThemeIcon( "/mQmlWidgetIcon.svg" ) );
+        //no icon for QmlWidget
         break;
     }
   }
@@ -1124,16 +1125,14 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
       qmlWrapper->setQmlCode( qmlCode->toPlainText() );
+      //update preview on text change
       QgsFeature previewFeature;
       mLayer->getFeatures().nextFeature( previewFeature );
       qmlWrapper->setFeature( previewFeature );
-      //update preview on text change
       connect( qmlCode, &QPlainTextEdit::textChanged, this, [ = ]
       {
         qmlWrapper->setQmlCode( qmlCode->toPlainText() );
         qmlWrapper->reinitWidget();
-        QgsFeature previewFeature;
-        mLayer->getFeatures().nextFeature( previewFeature );
         qmlWrapper->setFeature( previewFeature );
       } );
 
@@ -1141,7 +1140,8 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       QComboBox *qmlObjectTemplate = new QComboBox();
       qmlObjectTemplate->addItem( tr( "Free text..." ) );
       qmlObjectTemplate->addItem( tr( "Rectangle" ) );
-      qmlObjectTemplate->addItem( tr( "Pie Chart" ) );
+      qmlObjectTemplate->addItem( tr( "Pie chart" ) );
+      qmlObjectTemplate->addItem( tr( "Bar chart" ) );
       connect( qmlObjectTemplate, QOverload<int>::of( &QComboBox::currentIndexChanged ), qmlCode, [ = ]( int index )
       {
         qmlCode->clear();
@@ -1179,6 +1179,27 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
                                       "        PieSlice { label: \"Second slice\"; value: 45 }\n"
                                       "        PieSlice { label: \"Third slice\"; value: 30 }\n"
                                       "    }\n"
+                                      "}\n" ) );
+            break;
+          }
+          case 3:
+          {
+            qmlCode->insertPlainText( QStringLiteral( "import QtQuick 2.0\n"
+                                      "import QtCharts 2.0\n"
+                                      "\n"
+                                      "ChartView {\n"
+                                      "title: \"Bar series\"\n"
+                                      "width: 600\n"
+                                      "height:400\n"
+                                      "legend.alignment: Qt.AlignBottom\n"
+                                      "antialiasing: true\n"
+                                      "\n"
+                                      "BarSeries {\n"
+                                      "id: mySeries\n"
+                                      "axisX: BarCategoryAxis { categories: [\"2007\", \"2008\", \"2009\", \"2010\", \"2011\", \"2012\" ] }\n"
+                                      "BarSet { label: \"Bob\"; values: [2, 2, 3, 4, 5, 6] }\n"
+                                      "BarSet { label: \"Susan\"; values: [5, 1, 2, 4, 1, 7] }\n"
+                                      "BarSet { label: \"James\"; values: [3, 5, 8, 13, 5, 8] }\n"
                                       "}\n" ) );
             break;
           }
