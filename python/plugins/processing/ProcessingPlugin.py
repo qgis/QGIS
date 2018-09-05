@@ -263,13 +263,17 @@ class ProcessingPlugin:
 
     def sync_in_place_button_state(self, layer=None):
         """Synchronise the button state with layer state and selection"""
+
         if layer is None:
             layer = self.iface.activeLayer()
-        if layer is None or layer.type() != QgsMapLayer.VectorLayer or not layer.isEditable() or not layer.selectedFeatureCount():
-            self.editSelectedAction.setChecked(False)
-            self.editSelectedAction.setEnabled(False)
-        else:
-            self.editSelectedAction.setEnabled(True)
+
+        old_enabled_state = self.editSelectedAction.isEnabled()
+
+        new_enabled_state = layer is not None and layer.type() == QgsMapLayer.VectorLayer and layer.isEditable() and layer.selectedFeatureCount()
+        self.editSelectedAction.setEnabled(new_enabled_state)
+
+        if new_enabled_state != old_enabled_state:
+            self.toolbox.set_in_place_edit_mode(new_enabled_state and self.editSelectedAction.isChecked())
 
     def openProcessingOptions(self):
         self.iface.showOptionsDialog(self.iface.mainWindow(), currentPage='processingOptions')
