@@ -370,9 +370,16 @@ Section "QGIS" SecQGIS
 	IfFileExists "$INSTALL_DIR\etc\reboot" RebootNecessary NoRebootNecessary
 
 RebootNecessary:
+	IfSilent FlagRebootNecessary
 	SetRebootFlag true
+	Return
+
+FlagRebootNecessary:
+	SetErrorLevel 3010 ; ERROR_SUCCESS_REBOOT_REQUIRED
+	Return
 
 NoRebootNecessary:
+	Return
 
 SectionEnd
 !endif
