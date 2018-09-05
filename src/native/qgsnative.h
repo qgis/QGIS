@@ -124,6 +124,13 @@ class NATIVE_EXPORT QgsNative
      */
     virtual void hideApplicationProgress();
 
+    /**
+     * Shows an application badge count.
+     *
+     * The default implementation does nothing.
+     * \since QGIS 3.4
+     */
+    virtual void setApplicationBadgeCount( int count );
 
     /**
      * Notification settings, for use with showDesktopNotification().
