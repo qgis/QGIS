@@ -72,20 +72,6 @@ echo "travis_fold:end:cmake"
 TRAVIS_TIME=120
 UPLOAD_TIME=5
 CURRENT_TIME=$(date +%s)
-TIMEOUT=$((( TRAVIS_TIME - UPLOAD_TIME ) * 60 - CURRENT_TIME + TRAVIS_TIMESTAMP))
-TIMEOUT=$(( TIMEOUT < 300 ? 300 : TIMEOUT ))
-echo "Timeout: ${TIMEOUT}s (started at ${TRAVIS_TIMESTAMP}, current: ${CURRENT_TIME})"
-
-# echo "travis_fold:start:ninja-build.1"
-echo "${bold}Building QGIS...${endbold}"
-timeout ${TIMEOUT}s ${CTEST_BUILD_COMMAND}
-# echo "travis_fold:end:ninja-build.1"
-
-rv=$?
-if [ $rv -eq 124 ] ; then
-    printf '\n\n${bold}Build and test timeout. Please restart the build for meaningful results.${endbold}\n'
-    exit #$rv
-fi
 
 # Temporarily uncomment to debug ccache issues
 # echo "travis_fold:start:ccache-debug"
