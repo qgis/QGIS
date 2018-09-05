@@ -1126,13 +1126,12 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
       qmlWrapper->setQmlCode( qmlCode->toPlainText() );
       //update preview on text change
-      QgsFeature previewFeature;
-      mLayer->getFeatures().nextFeature( previewFeature );
-      qmlWrapper->setFeature( previewFeature );
       connect( qmlCode, &QPlainTextEdit::textChanged, this, [ = ]
       {
         qmlWrapper->setQmlCode( qmlCode->toPlainText() );
         qmlWrapper->reinitWidget();
+        QgsFeature previewFeature;
+        mLayer->getFeatures().nextFeature( previewFeature );
         qmlWrapper->setFeature( previewFeature );
       } );
 
@@ -1216,7 +1215,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
 
       connect( addExpressionButton, &QAbstractButton::clicked, this, [ = ]
       {
-        qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expressionWidget->currentText() ) );
+        qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expressionWidget->currentText().replace( '"', "\\\"" ) ) );
       } );
 
       layout->addRow( tr( "Title" ), title );
