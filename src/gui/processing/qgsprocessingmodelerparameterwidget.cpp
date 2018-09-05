@@ -31,7 +31,7 @@
 
 QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsProcessingModelAlgorithm *model,
     const QString &childId,
-    const QgsProcessingParameterDefinition *parameter, const QgsProcessingContext &context,
+    const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context,
     QWidget *parent )
   : QWidget( parent )
   , mModel( model )

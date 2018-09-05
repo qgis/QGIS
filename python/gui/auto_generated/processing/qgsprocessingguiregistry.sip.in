@@ -105,7 +105,7 @@ If no factory is registered which handles the given ``parameter``, a None will b
 
     QgsProcessingModelerParameterWidget *createModelerParameterWidget( QgsProcessingModelAlgorithm *model,
         const QString &childId,
-        const QgsProcessingParameterDefinition *parameter, const QgsProcessingContext &context ) /Factory/;
+        const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context ) /Factory/;
 %Docstring
 Creates a new modeler parameter widget for the given ``parameter``. This widget allows
 configuration of the parameter's value when used inside a Processing ``model``.

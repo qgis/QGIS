@@ -136,7 +136,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      */
     QgsProcessingModelerParameterWidget *createModelerParameterWidget( QgsProcessingModelAlgorithm *model,
         const QString &childId,
-        const QgsProcessingParameterDefinition *parameter, const QgsProcessingContext &context ) SIP_FACTORY;
+        const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context ) SIP_FACTORY;
 
   private:
 

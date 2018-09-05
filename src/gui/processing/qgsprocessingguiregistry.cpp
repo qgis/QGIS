@@ -28,6 +28,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addAlgorithmConfigurationWidgetFactory( new QgsFilterAlgorithmConfigurationWidgetFactory() );
 
   addParameterWidgetFactory( new QgsProcessingBooleanWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingCrsWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingStringWidgetWrapper() );
 }
 
@@ -101,7 +102,7 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingGuiRegistry::createPar
   return mParameterWidgetFactories.value( parameterType )->createWidgetWrapper( parameter, type );
 }
 
-QgsProcessingModelerParameterWidget *QgsProcessingGuiRegistry::createModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, const QgsProcessingContext &context )
+QgsProcessingModelerParameterWidget *QgsProcessingGuiRegistry::createModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context )
 {
   if ( !parameter )
     return nullptr;

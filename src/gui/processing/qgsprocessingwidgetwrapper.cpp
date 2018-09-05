@@ -35,7 +35,7 @@ QgsProcessingGui::WidgetType QgsAbstractProcessingParameterWidgetWrapper::type()
   return mType;
 }
 
-QWidget *QgsAbstractProcessingParameterWidgetWrapper::createWrappedWidget( const QgsProcessingContext &context )
+QWidget *QgsAbstractProcessingParameterWidgetWrapper::createWrappedWidget( QgsProcessingContext &context )
 {
   if ( mWidget )
     return mWidget;
@@ -86,7 +86,7 @@ const QgsProcessingParameterDefinition *QgsAbstractProcessingParameterWidgetWrap
   return mParameterDefinition;
 }
 
-void QgsAbstractProcessingParameterWidgetWrapper::setParameterValue( const QVariant &value, const QgsProcessingContext &context )
+void QgsAbstractProcessingParameterWidgetWrapper::setParameterValue( const QVariant &value, QgsProcessingContext &context )
 {
   if ( mPropertyButton && value.canConvert< QgsProperty >() )
   {
@@ -207,7 +207,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter
   }
 }
 
-QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterface::createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, const QgsProcessingContext &context )
+QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterface::createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context )
 {
   std::unique_ptr< QgsProcessingModelerParameterWidget > widget = qgis::make_unique< QgsProcessingModelerParameterWidget >( model, childId, parameter, context );
   widget->populateSources( compatibleParameterTypes(), compatibleOutputTypes(), compatibleDataTypes() );
