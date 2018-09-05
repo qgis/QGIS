@@ -26,10 +26,10 @@ QgsLayerMetadataFormatter::QgsLayerMetadataFormatter( const QgsLayerMetadata &me
 QString QgsLayerMetadataFormatter::accessSectionHtml() const
 {
   QString myMetadata = QStringLiteral( "<table class=\"list-view\">\n" );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Fees" ) + QStringLiteral( "</td><td>" ) + mMetadata.fees() + QStringLiteral( "</td></tr>\n" );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Licenses" ) + QStringLiteral( "</td><td>" ) + mMetadata.licenses().join( QStringLiteral( "<br />" ) ) + QStringLiteral( "</td></tr>\n" );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Rights" ) + QStringLiteral( "</td><td>" ) + mMetadata.rights().join( QStringLiteral( "<br />" ) ) + QStringLiteral( "</td></tr>\n" );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Constraints" ) + QStringLiteral( "</td><td>" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Fees" ) + QStringLiteral( "</td><td>" ) + mMetadata.fees() + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Licenses" ) + QStringLiteral( "</td><td>" ) + mMetadata.licenses().join( QStringLiteral( "<br />" ) ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Rights" ) + QStringLiteral( "</td><td>" ) + mMetadata.rights().join( QStringLiteral( "<br />" ) ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Constraints" ) + QStringLiteral( "</td><td>" );
   const QList<QgsLayerMetadata::Constraint> &constraints = mMetadata.constraints();
   bool notFirstRow = false;
   for ( const QgsLayerMetadata::Constraint &constraint : constraints )
@@ -53,12 +53,12 @@ QString QgsLayerMetadataFormatter::contactsSectionHtml() const
   QString myMetadata;
   if ( contacts.isEmpty() )
   {
-    myMetadata += QStringLiteral( "<p>" ) + QObject::tr( "No contact yet." ) + QStringLiteral( "</p>" );
+    myMetadata += QStringLiteral( "<p>" ) + tr( "No contact yet." ) + QStringLiteral( "</p>" );
   }
   else
   {
     myMetadata += QStringLiteral( "<table width=\"100%\" class=\"tabular-view\">\n" );
-    myMetadata += QLatin1String( "<tr><th>" ) + QObject::tr( "ID" ) + QLatin1String( "</th><th>" ) + QObject::tr( "Name" ) + QLatin1String( "</th><th>" ) + QObject::tr( "Position" ) + QLatin1String( "</th><th>" ) + QObject::tr( "Organization" ) + QLatin1String( "</th><th>" ) + QObject::tr( "Role" ) + QLatin1String( "</th><th>" ) + QObject::tr( "Email" ) + QLatin1String( "</th><th>" ) + QObject::tr( "Voice" ) + QLatin1String( "</th><th>" ) + QObject::tr( "Fax" ) + QLatin1String( "</th><th>" ) + QObject::tr( "Addresses" ) + QLatin1String( "</th></tr>\n" );
+    myMetadata += QLatin1String( "<tr><th>" ) + tr( "ID" ) + QLatin1String( "</th><th>" ) + tr( "Name" ) + QLatin1String( "</th><th>" ) + tr( "Position" ) + QLatin1String( "</th><th>" ) + tr( "Organization" ) + QLatin1String( "</th><th>" ) + tr( "Role" ) + QLatin1String( "</th><th>" ) + tr( "Email" ) + QLatin1String( "</th><th>" ) + tr( "Voice" ) + QLatin1String( "</th><th>" ) + tr( "Fax" ) + QLatin1String( "</th><th>" ) + tr( "Addresses" ) + QLatin1String( "</th></tr>\n" );
     int i = 1;
     for ( const QgsAbstractMetadataBase::Contact &contact : contacts )
     {
@@ -114,19 +114,19 @@ QString QgsLayerMetadataFormatter::extentSectionHtml( const bool showSpatialExte
   QString myMetadata = QStringLiteral( "<table class=\"list-view\">\n" );
   if ( showSpatialExtent )
   {
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "CRS" ) + QStringLiteral( "</td><td>" );
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" );
     if ( mMetadata.crs().isValid() )
     {
       myMetadata += mMetadata.crs().authid() + QStringLiteral( " - " );
       myMetadata += mMetadata.crs().description() + QStringLiteral( " - " );
       if ( mMetadata.crs().isGeographic() )
-        myMetadata += QObject::tr( "Geographic" );
+        myMetadata += tr( "Geographic" );
       else
-        myMetadata += QObject::tr( "Projected" );
+        myMetadata += tr( "Projected" );
     }
     myMetadata += QLatin1String( "</td></tr>\n" );
 
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Spatial Extent" ) + QStringLiteral( "</td><td>" );
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Spatial Extent" ) + QStringLiteral( "</td><td>" );
     const QList< QgsLayerMetadata::SpatialExtent > spatialExtents = extent.spatialExtents();
     for ( const QgsLayerMetadata::SpatialExtent &spatialExtent : spatialExtents )
     {
@@ -134,27 +134,27 @@ QString QgsLayerMetadataFormatter::extentSectionHtml( const bool showSpatialExte
       {
         myMetadata += QLatin1String( "<br />\n" );
       }
-      myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "CRS" ) + QStringLiteral( ": </strong>" ) + spatialExtent.extentCrs.authid() + QStringLiteral( " - " );
+      myMetadata += QStringLiteral( "<strong>" ) + tr( "CRS" ) + QStringLiteral( ": </strong>" ) + spatialExtent.extentCrs.authid() + QStringLiteral( " - " );
       myMetadata += spatialExtent.extentCrs.description() + QStringLiteral( " - " );
       if ( spatialExtent.extentCrs.isGeographic() )
-        myMetadata += QObject::tr( "Geographic" );
+        myMetadata += tr( "Geographic" );
       else
-        myMetadata += QObject::tr( "Projected" );
+        myMetadata += tr( "Projected" );
       myMetadata += QStringLiteral( "<br />" );
-      myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "X Minimum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.xMinimum() ) + QStringLiteral( "<br />" );
-      myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "Y Minimum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.yMinimum() ) + QStringLiteral( "<br />" );
-      myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "X Maximum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.xMaximum() ) + QStringLiteral( "<br />" );
-      myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "Y Maximum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.yMaximum() ) + QStringLiteral( "<br />" );
+      myMetadata += QStringLiteral( "<strong>" ) + tr( "X Minimum:" ) + QStringLiteral( " </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.xMinimum() ) + QStringLiteral( "<br />" );
+      myMetadata += QStringLiteral( "<strong>" ) + tr( "Y Minimum:" ) + QStringLiteral( " </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.yMinimum() ) + QStringLiteral( "<br />" );
+      myMetadata += QStringLiteral( "<strong>" ) + tr( "X Maximum:" ) + QStringLiteral( " </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.xMaximum() ) + QStringLiteral( "<br />" );
+      myMetadata += QStringLiteral( "<strong>" ) + tr( "Y Maximum:" ) + QStringLiteral( " </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.yMaximum() ) + QStringLiteral( "<br />" );
       if ( spatialExtent.bounds.zMinimum() || spatialExtent.bounds.zMaximum() )
       {
-        myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "Z Minimum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.zMinimum() ) + QStringLiteral( "<br />" );
-        myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "Z Maximum" ) + QStringLiteral( ": </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.zMaximum() );
+        myMetadata += QStringLiteral( "<strong>" ) + tr( "Z Minimum:" ) + QStringLiteral( " </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.zMinimum() ) + QStringLiteral( "<br />" );
+        myMetadata += QStringLiteral( "<strong>" ) + tr( "Z Maximum:" ) + QStringLiteral( " </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.zMaximum() );
       }
       notFirstRow = true;
     }
     myMetadata += QLatin1String( "</td></tr>\n" );
   }
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Temporal Extent" ) + QStringLiteral( "</td><td>" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Temporal Extent" ) + QStringLiteral( "</td><td>" );
   const QList< QgsDateTimeRange > temporalExtents = extent.temporalExtents();
   notFirstRow = false;
   for ( const QgsDateTimeRange &temporalExtent : temporalExtents )
@@ -165,12 +165,12 @@ QString QgsLayerMetadataFormatter::extentSectionHtml( const bool showSpatialExte
     }
     if ( temporalExtent.isInstant() )
     {
-      myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "Instant" ) + QStringLiteral( ": </strong>" ) + temporalExtent.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate );
+      myMetadata += QStringLiteral( "<strong>" ) + tr( "Instant:" ) + QStringLiteral( " </strong>" ) + temporalExtent.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate );
     }
     else
     {
-      myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "Start" ) + QStringLiteral( ": </strong>" ) + temporalExtent.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) + QStringLiteral( "<br />\n" );
-      myMetadata += QStringLiteral( "<strong>" ) + QObject::tr( "End" ) + QStringLiteral( ": </strong>" ) + temporalExtent.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate );
+      myMetadata += QStringLiteral( "<strong>" ) + tr( "Start:" ) + QStringLiteral( " </strong>" ) + temporalExtent.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) + QStringLiteral( "<br />\n" );
+      myMetadata += QStringLiteral( "<strong>" ) + tr( "End:" ) + QStringLiteral( " </strong>" ) + temporalExtent.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate );
     }
     notFirstRow = true;
   }
@@ -184,33 +184,33 @@ QString QgsLayerMetadataFormatter::identificationSectionHtml() const
   QString myMetadata = QStringLiteral( "<table class=\"list-view\">\n" );
 
   // Identifier
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Identifier" ) + QStringLiteral( "</td><td>" ) + mMetadata.identifier() + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Identifier" ) + QStringLiteral( "</td><td>" ) + mMetadata.identifier() + QStringLiteral( "</td></tr>\n" );
 
   // Parent Identifier
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Parent Identifier" ) + QStringLiteral( "</td><td>" ) + mMetadata.parentIdentifier() + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Parent Identifier" ) + QStringLiteral( "</td><td>" ) + mMetadata.parentIdentifier() + QStringLiteral( "</td></tr>\n" );
 
   // Title
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Title" ) + QStringLiteral( "</td><td>" ) + mMetadata.title() + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Title" ) + QStringLiteral( "</td><td>" ) + mMetadata.title() + QStringLiteral( "</td></tr>\n" );
 
   // Type
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Type" ) + QStringLiteral( "</td><td>" ) + mMetadata.type() + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Type" ) + QStringLiteral( "</td><td>" ) + mMetadata.type() + QStringLiteral( "</td></tr>\n" );
 
   // Language
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Language" ) + QStringLiteral( "</td><td>" ) + mMetadata.language() + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Language" ) + QStringLiteral( "</td><td>" ) + mMetadata.language() + QStringLiteral( "</td></tr>\n" );
 
   // Abstract
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Abstract" ) + QStringLiteral( "</td><td>" ) + mMetadata.abstract() + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Abstract" ) + QStringLiteral( "</td><td>" ) + mMetadata.abstract() + QStringLiteral( "</td></tr>\n" );
 
   // Categories
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Categories" ) + QStringLiteral( "</td><td>" ) + mMetadata.categories().join( QStringLiteral( ", " ) ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Categories" ) + QStringLiteral( "</td><td>" ) + mMetadata.categories().join( QStringLiteral( ", " ) ) + QStringLiteral( "</td></tr>\n" );
 
   // Keywords
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "Keywords" ) + QStringLiteral( "</td><td>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Keywords" ) + QStringLiteral( "</td><td>\n" );
   QMapIterator<QString, QStringList> i( mMetadata.keywords() );
   if ( i.hasNext() )
   {
     myMetadata += QStringLiteral( "<table width=\"100%\" class=\"tabular-view\">\n" );
-    myMetadata += QLatin1String( "<tr><th>" ) + QObject::tr( "Vocabulary" ) + QLatin1String( "</th><th>" ) + QObject::tr( "Items" ) + QLatin1String( "</th></tr>\n" );
+    myMetadata += QLatin1String( "<tr><th>" ) + tr( "Vocabulary" ) + QLatin1String( "</th><th>" ) + tr( "Items" ) + QLatin1String( "</th></tr>\n" );
     int j = 1;
     while ( i.hasNext() )
     {
@@ -234,12 +234,12 @@ QString QgsLayerMetadataFormatter::historySectionHtml() const
   const QStringList historyItems = mMetadata.history();
   if ( historyItems.isEmpty() )
   {
-    myMetadata += QStringLiteral( "<p>" ) + QObject::tr( "No history yet." ) + QStringLiteral( "</p>\n" );
+    myMetadata += QStringLiteral( "<p>" ) + tr( "No history yet." ) + QStringLiteral( "</p>\n" );
   }
   else
   {
     myMetadata += QStringLiteral( "<table width=\"100%\" class=\"tabular-view\">\n" );
-    myMetadata += QLatin1String( "<tr><th>" ) + QObject::tr( "ID" ) + QLatin1String( "</th><th>" ) + QObject::tr( "Action" ) + QLatin1String( "</th></tr>\n" );
+    myMetadata += QLatin1String( "<tr><th>" ) + tr( "ID" ) + QLatin1String( "</th><th>" ) + tr( "Action" ) + QLatin1String( "</th></tr>\n" );
     int i = 1;
     for ( const QString &history : historyItems )
     {
@@ -260,12 +260,12 @@ QString QgsLayerMetadataFormatter::linksSectionHtml() const
   const QList<QgsAbstractMetadataBase::Link> &links = mMetadata.links();
   if ( links.isEmpty() )
   {
-    myMetadata += QStringLiteral( "<p>" ) + QObject::tr( "No links yet." ) + QStringLiteral( "</p>\n" );
+    myMetadata += QStringLiteral( "<p>" ) + tr( "No links yet." ) + QStringLiteral( "</p>\n" );
   }
   else
   {
     myMetadata += QStringLiteral( "<table width=\"100%\" class=\"tabular-view\">\n" );
-    myMetadata += QLatin1String( "<tr><th>" ) + QObject::tr( "ID" ) + QLatin1String( "</th><th>" ) + QObject::tr( "Name" ) + QLatin1String( "</th><th>" ) + QObject::tr( "Type" ) + QLatin1String( "</th><th>" ) + QObject::tr( "URL" ) + QLatin1String( "</th><th>" ) + QObject::tr( "Description" ) + QLatin1String( "</th><th>" ) + QObject::tr( "Format" ) + QLatin1String( "</th><th>" ) + QObject::tr( "MIME Type" ) + QLatin1String( "</th><th>" ) + QObject::tr( "Size" ) + QLatin1String( "</th></tr>\n" );
+    myMetadata += QLatin1String( "<tr><th>" ) + tr( "ID" ) + QLatin1String( "</th><th>" ) + tr( "Name" ) + QLatin1String( "</th><th>" ) + tr( "Type" ) + QLatin1String( "</th><th>" ) + tr( "URL" ) + QLatin1String( "</th><th>" ) + tr( "Description" ) + QLatin1String( "</th><th>" ) + tr( "Format" ) + QLatin1String( "</th><th>" ) + tr( "MIME Type" ) + QLatin1String( "</th><th>" ) + tr( "Size" ) + QLatin1String( "</th></tr>\n" );
     int i = 1;
     for ( const QgsAbstractMetadataBase::Link &link : links )
     {
