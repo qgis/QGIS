@@ -133,6 +133,9 @@ void QgsFieldValuesLineEdit::updateCompleter( const QStringList &values )
 }
 
 
+// just internal guff - definitely not for exposing to public API!
+///@cond PRIVATE
+
 void QgsFieldValuesLineEditValuesGatherer::run()
 {
   mWasCanceled = false;
@@ -166,3 +169,5 @@ void QgsFieldValuesLineEditValuesGatherer::stop()
 
   mWasCanceled = true;
 }
+
+///@endcond
