@@ -73,7 +73,12 @@ if no algorithm is currently selected.
 Sets ``filters`` controlling the view's contents.
 %End
 
+
     void setInPlaceLayerType( QgsWkbTypes::GeometryType type );
+%Docstring
+Sets geometry \type for the in-place algorithms
+@param type
+%End
 
   public slots:
 
