@@ -22,7 +22,6 @@
 #include <QDomDocument>
 
 QgsServerCacheFilter::QgsServerCacheFilter( const QgsServerInterface *serverInterface )
-  : mServerInterface( serverInterface )
 {
 }
 

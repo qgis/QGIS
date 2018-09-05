@@ -123,11 +123,6 @@ class SERVER_EXPORT QgsServerCacheFilter
      */
     virtual bool deleteCachedImages( const QgsProject *project ) const;
 
-  private:
-
-    //! The server interface
-    const QgsServerInterface *mServerInterface = nullptr;
-
 };
 
 //! The registry definition
