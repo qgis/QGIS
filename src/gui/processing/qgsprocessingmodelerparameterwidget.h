@@ -101,6 +101,13 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget
                           const QList< int > &compatibleDataTypes );
 
     /**
+     * Set the expected expression format \a text, which is shown in the expression builder dialog for the widget
+     * when in the "pre-calculated" expression mode. This is purely a text format and no expression validation is made
+     * against it.
+     */
+    void setExpressionHelpText( const QString &text );
+
+    /**
      * Returns the parameter definition associated with this wrapper.
      */
     const QgsProcessingParameterDefinition *parameterDefinition() const;

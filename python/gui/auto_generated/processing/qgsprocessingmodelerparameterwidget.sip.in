@@ -75,6 +75,13 @@ The ``compatibleDataTypes`` list corresponds to the compatible data types
 from QgsProcessing.SourceType.
 %End
 
+    void setExpressionHelpText( const QString &text );
+%Docstring
+Set the expected expression format ``text``, which is shown in the expression builder dialog for the widget
+when in the "pre-calculated" expression mode. This is purely a text format and no expression validation is made
+against it.
+%End
+
     const QgsProcessingParameterDefinition *parameterDefinition() const;
 %Docstring
 Returns the parameter definition associated with this wrapper.
