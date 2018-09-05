@@ -103,6 +103,16 @@ void QgsExpressionLineEdit::setMultiLine( bool multiLine )
   }
 }
 
+QString QgsExpressionLineEdit::expectedOutputFormat() const
+{
+  return mExpectedOutputFormat;
+}
+
+void QgsExpressionLineEdit::setExpectedOutputFormat( const QString &expected )
+{
+  mExpectedOutputFormat = expected;
+}
+
 void QgsExpressionLineEdit::setGeomCalculator( const QgsDistanceArea &da )
 {
   mDa.reset( new QgsDistanceArea( da ) );
@@ -151,6 +161,7 @@ void QgsExpressionLineEdit::editExpression()
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
 
   QgsExpressionBuilderDialog dlg( mLayer, currentExpression, this, QStringLiteral( "generic" ), context );
+  dlg.setExpectedOutputFormat( mExpectedOutputFormat );
   if ( mDa )
   {
     dlg.setGeomCalculator( *mDa );
