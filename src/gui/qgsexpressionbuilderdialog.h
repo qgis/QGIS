@@ -48,17 +48,17 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     QString expressionText();
 
     /**
-     * The set expected format string. This is pure text format and no expression validation
+     * Returns the expected format string, which is shown in the dialog.
+     * This is purely a text format and no expression validation
      * is done against it.
-     * \returns The expected value format.
+     * \see setExpectedOutputFormat()
      */
     QString expectedOutputFormat();
 
     /**
-     * The set expected format string. This is pure text format and no expression validation
-     * is done against it.
-     * \param expected The expected value format for the expression.
-     * \note Only a UI hint and not used for expression validation.
+     * Set the \a expected format string, which is shown in the dialog.
+     * This is purely a text format and no expression validation is done against it.
+     * \see expectedOutputFormat()
      */
     void setExpectedOutputFormat( const QString &expected );
 

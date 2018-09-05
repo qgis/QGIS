@@ -63,6 +63,27 @@ Sets whether the widget should show a multiline text editor.
                   to show single line editor (the default).
 %End
 
+    QString expectedOutputFormat() const;
+%Docstring
+Returns the expected format string, which is shown in the expression builder dialog for the widget.
+This is purely a text format and no expression validation
+is done against it.
+
+.. seealso:: :py:func:`setExpectedOutputFormat`
+
+.. versionadded:: 3.4
+%End
+
+    void setExpectedOutputFormat( const QString &expected );
+%Docstring
+Set the ``expected`` format string, which is shown in the expression builder dialog for the widget.
+This is purely a text format and no expression validation is done against it.
+
+.. seealso:: :py:func:`expectedOutputFormat`
+
+.. versionadded:: 3.4
+%End
+
     void setGeomCalculator( const QgsDistanceArea &distanceArea );
 %Docstring
 Set the geometry calculator used in the expression dialog.
