@@ -19,8 +19,6 @@
 #include "qgsmeshlayer.h"
 #include "qgsmessagelog.h"
 
-#include <QIntValidator>
-
 QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidget *parent )
   : QWidget( parent )
 
@@ -136,6 +134,11 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   // arrow head
   mHeadWidthLineEdit->setText( QString::number( settings.arrowHeadWidthRatio() * 100.0 ) );
   mHeadLengthLineEdit->setText( QString::number( settings.arrowHeadLengthRatio() * 100.0 ) );
+
+  // user grid
+  mDisplayVectorsOnGridGroupBox->setChecked( settings.isOnUserDefinedGrid() );
+  mXSpacingSpinBox->setValue( settings.userGridCellWidth() );
+  mYSpacingSpinBox->setValue( settings.userGridCellHeight() );
 
   // shaft length
   mShaftLengthComboBox->setCurrentIndex( settings.shaftLengthMethod() );

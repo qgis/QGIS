@@ -310,7 +310,7 @@ void QgsMeshVectorRenderer::drawVectorDataOnGrid()
           val.setY(
             QgsMeshLayerUtils::interpolateFromFacesData(
               p1, p2, p3,
-              mDatasetValuesX[nativeFaceIndex],
+              mDatasetValuesY[nativeFaceIndex],
               p
             )
           );
