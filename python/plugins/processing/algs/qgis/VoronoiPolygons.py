@@ -404,7 +404,7 @@ class VoronoiPolygons(QgisAlgorithm):
                 if hasYMin:
                     bndpoints.append(QgsPointXY(width + extent.xMinimum(),
                                                 extent.yMinimum()))
-                elif HasYMax:
+                elif hasYMax:
                     bndpoints.append(QgsPointXY(width + extent.xMinimum(),
                                                 height + extent.yMinimum()))
         if pt_y == ymin:    # lowest point
