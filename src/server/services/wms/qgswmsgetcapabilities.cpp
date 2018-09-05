@@ -39,6 +39,7 @@
 
 #include "qgsexception.h"
 #include "qgsexpressionnodeimpl.h"
+#include "qgsvectorlayer.h"
 
 
 namespace QgsWms

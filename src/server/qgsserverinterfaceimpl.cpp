@@ -95,6 +95,10 @@ void QgsServerInterfaceImpl::registerServerCache( QgsServerCacheFilter *serverCa
 #endif
 }
 
+QgsServerCacheManager *QgsServerInterfaceImpl::cacheManager() const
+{
+  return mCacheManager.get();
+}
 
 void QgsServerInterfaceImpl::removeConfigCacheEntry( const QString &path )
 {

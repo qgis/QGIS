@@ -24,6 +24,7 @@
 
 #include "qgsserverinterface.h"
 #include "qgscapabilitiescache.h"
+#include "qgsservercachemanager.h"
 
 /**
  * \ingroup server
@@ -74,7 +75,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
      * \returns the server cache helper
      * \since QGIS 3.4
      */
-    QgsServerCacheManager *cacheManager() const override { return mCacheManager.get(); }
+    QgsServerCacheManager *cacheManager() const override;
 
     QString getEnv( const QString &name ) const override;
     QString configFilePath() override { return mConfigFilePath; }
