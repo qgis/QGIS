@@ -106,6 +106,12 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
     return;
   }
 
+  if ( mSettings->backgroundColor() != backgroundColor() )
+  {
+    mSettings->setBackgroundColor( backgroundColor() );
+    mCapturedImage = QImage();
+  }
+
   if ( !mCapturedImage.isNull() )
   {
     painter->drawImage( r, mCapturedImage );
