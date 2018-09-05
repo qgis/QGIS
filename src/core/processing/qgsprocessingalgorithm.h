@@ -864,6 +864,31 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
 
     QgsProcessingAlgorithm::Flags flags() const override;
 
+    /**
+     * Processes an individual input \a feature from the source. Algorithms should implement their
+     * logic in this method for performing the algorithm's operation (e.g. replacing the feature's
+     * geometry with the centroid of the original feature geometry for a 'centroid' type
+     * algorithm).
+     *
+     * Implementations should return a list containing the modified feature. Returning an empty an list
+     * will indicate that this feature should be 'skipped', and will not be added to the algorithm's output.
+     * Subclasses can use this approach to filter the incoming features as desired.
+     *
+     * Additionally, multiple features can be returned for a single input feature. Each returned feature
+     * will be added to the algorithm's output. This allows for "explode" type algorithms where a single
+     * input feature results in multiple output features.
+     *
+     * The provided \a feedback object can be used to push messages to the log and for giving feedback
+     * to users. Note that handling of progress reports and algorithm cancelation is handled by
+     * the base class and subclasses do not need to reimplement this logic.
+     *
+     * Algorithms can throw a QgsProcessingException if a fatal error occurred which should
+     * prevent the algorithm execution from continuing. This can be annoying for users though as it
+     * can break valid model execution - so use with extreme caution, and consider using
+     * \a feedback to instead report non-fatal processing failures for features instead.
+     */
+    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_THROW( QgsProcessingException ) = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
+
   protected:
 
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
@@ -937,30 +962,6 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      */
     QgsCoordinateReferenceSystem sourceCrs() const;
 
-    /**
-     * Processes an individual input \a feature from the source. Algorithms should implement their
-     * logic in this method for performing the algorithm's operation (e.g. replacing the feature's
-     * geometry with the centroid of the original feature geometry for a 'centroid' type
-     * algorithm).
-     *
-     * Implementations should return a list containing the modified feature. Returning an empty an list
-     * will indicate that this feature should be 'skipped', and will not be added to the algorithm's output.
-     * Subclasses can use this approach to filter the incoming features as desired.
-     *
-     * Additionally, multiple features can be returned for a single input feature. Each returned feature
-     * will be added to the algorithm's output. This allows for "explode" type algorithms where a single
-     * input feature results in multiple output features.
-     *
-     * The provided \a feedback object can be used to push messages to the log and for giving feedback
-     * to users. Note that handling of progress reports and algorithm cancelation is handled by
-     * the base class and subclasses do not need to reimplement this logic.
-     *
-     * Algorithms can throw a QgsProcessingException if a fatal error occurred which should
-     * prevent the algorithm execution from continuing. This can be annoying for users though as it
-     * can break valid model execution - so use with extreme caution, and consider using
-     * \a feedback to instead report non-fatal processing failures for features instead.
-     */
-    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_THROW( QgsProcessingException ) = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override SIP_THROW( QgsProcessingException );
 
