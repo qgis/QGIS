@@ -83,10 +83,14 @@ The function accept the following parameters
 
 The @qgsfunction decorator accepts the following arguments:
 
-:param args: Defines the number of arguments. With ``args='auto'`` the number
+:param args: Defines the number of arguments. With ``args='auto'`` the number of
              arguments will automatically be extracted from the signature.
+             With ``args=-1``, you can pass any number of arguments.
 :param group: The name of the group under which this expression function will
               be listed.
+:param handlesnull: Set this to True if your function has custom handling for NULL values.
+                    If False, the result will always be NULL as soon as any parameter is NULL.
+                    Defaults to False.
 :param usesgeometry: Set this to False if your function does not access
                      feature.geometry(). Defaults to True.
 :param referenced_columns: An array of attribute names that are required to run
