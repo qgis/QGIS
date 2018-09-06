@@ -117,7 +117,7 @@ class ANALYSIS_EXPORT QgsFeaturePool
      * Changes a feature in the cache and the spatial index.
      * To be used by implementations of ``updateFeature``.
      */
-    void changeFeature( const QgsFeature &feature );
+    void refreshCache( const QgsFeature &feature );
 
     /**
      * Removes a feature from the cache and the spatial index.

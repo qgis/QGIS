@@ -110,7 +110,6 @@ void QgsVectorDataProviderFeaturePool::updateFeature( QgsFeature &feature )
   }
   changedAttributesMap.insert( feature.id(), attribMap );
 
-  removeFeature( origFeature.id() );
   runOnMainThread( [this, geometryMap, changedAttributesMap]()
   {
     QgsVectorLayer *lyr = layer();
@@ -121,7 +120,7 @@ void QgsVectorDataProviderFeaturePool::updateFeature( QgsFeature &feature )
     }
   } );
 
-  insertFeature( feature );
+  refreshCache( feature );
 }
 
 void QgsVectorDataProviderFeaturePool::deleteFeature( QgsFeatureId fid )

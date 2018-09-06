@@ -89,13 +89,15 @@ void QgsFeaturePool::insertFeature( const QgsFeature &feature )
   mIndex.insertFeature( feature );
 }
 
-void QgsFeaturePool::changeFeature( const QgsFeature &feature )
+void QgsFeaturePool::refreshCache( const QgsFeature &feature )
 {
   QgsReadWriteLocker locker( mIndexLock, QgsReadWriteLocker::Write );
   mFeatureCache.remove( feature.id() );
-  mFeatureCache.insert( feature.id(), new QgsFeature( feature ) );
   mIndex.deleteFeature( feature );
-  mIndex.insertFeature( feature );
+  locker.unlock();
+
+  QgsFeature tempFeature;
+  get( feature.id(), tempFeature );
 }
 
 void QgsFeaturePool::removeFeature( const QgsFeatureId featureId )
