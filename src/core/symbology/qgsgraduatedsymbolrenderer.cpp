@@ -529,7 +529,7 @@ QgsSymbolList QgsGraduatedSymbolRenderer::symbols( QgsRenderContext &context ) c
   return lst;
 }
 
-static void _makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, bool astride )
+void QgsGraduatedSymbolRenderer::makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, bool astride )
 {
   // remove the breaks that are above the existing opposite sign classes
   // to keep colors symmetrically balanced around symmetryPoint
@@ -538,15 +538,16 @@ static void _makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, b
 
   if ( breaks.size() > 1 ) //to avoid crash when only 1 class
   {
-    std::sort( breaks.begin(), breaks.end() );
+    qSort( breaks.begin(), breaks.end() );
     // breaks contain the maximum of the distrib but not the minimum
-    double distBelowSymmetricValue = std::abs( breaks[0] - symmetryPoint );
-    double distAboveSymmetricValue = std::abs( breaks[ breaks.size() - 2 ] - symmetryPoint ) ;
-    double absMin = std::min( std::abs( distAboveSymmetricValue ), std::abs( distBelowSymmetricValue ) );
+    double distBelowSymmetricValue = qAbs( breaks[0] - symmetryPoint );
+    double distAboveSymmetricValue = qAbs( breaks[ breaks.size() - 2 ] - symmetryPoint ) ;
+    double absMin = qMin( qAbs( distAboveSymmetricValue ), qAbs( distBelowSymmetricValue ) );
+
     // make symmetric
     for ( int i = 0; i <= breaks.size() - 2; ++i )
     {
-      if ( std::abs( breaks.at( i ) - symmetryPoint ) > absMin )
+      if ( qAbs( breaks.at( i ) - symmetryPoint ) >= ( absMin - qAbs( breaks[0] - breaks[1] ) / 100. ) )
       {
         breaks.removeAt( i );
         --i;
@@ -560,7 +561,7 @@ static void _makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, b
   }
 }
 
-static QList<double> _calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride )
+QList<double> QgsGraduatedSymbolRenderer::calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride )
 {
   // Equal interval algorithm
   // Returns breaks based on dividing the range ('minimum' to 'maximum') into 'classes' parts.
@@ -692,7 +693,7 @@ static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList
     symmetryPoint = mean; // otherwise symmetryPoint = symmetryPoint
 
   QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( ( minimum - symmetryPoint ) / stdDev, ( maximum - symmetryPoint ) / stdDev, classes );
-  _makeBreaksSymmetric( breaks, 0.0, astride ); //0.0 because breaks where computed on a centered distribution
+  QgsGraduatedSymbolRenderer::makeBreaksSymmetric( breaks, 0.0, astride ); //0.0 because breaks where computed on a centered distribution
 
   for ( int i = 0; i < breaks.count(); i++ ) //unNormalize breaks and put labels
   {
@@ -918,7 +919,7 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
 
   if ( mode == EqualInterval )
   {
-    breaks = _calcEqualIntervalBreaks( minimum, maximum, nclasses, mUseSymmetricMode, symmetryPoint, astride );
+    breaks = QgsGraduatedSymbolRenderer::calcEqualIntervalBreaks( minimum, maximum, nclasses, mUseSymmetricMode, symmetryPoint, astride );
   }
   else if ( mode == Pretty )
   {
@@ -926,7 +927,7 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
     setListForCboPrettyBreaks( _breaksAsStrings( breaks ) );
 
     if ( useSymmetricMode )
-      _makeBreaksSymmetric( breaks, symmetryPoint, astride );
+      QgsGraduatedSymbolRenderer::makeBreaksSymmetric( breaks, symmetryPoint, astride );
   }
   else if ( mode == Quantile || mode == Jenks || mode == StdDev )
   {

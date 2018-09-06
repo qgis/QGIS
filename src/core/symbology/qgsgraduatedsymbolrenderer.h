@@ -271,6 +271,15 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void setAstride( bool astride ) { mAstride = astride; }
 
     /**
+     * Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint
+     * Does not put a break on the symmetryPoint
+     * \since QGIS 3.4
+     */
+    static void makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, bool astride );
+
+    static QList<double> calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride );
+
+    /**
      * Recalculate classes for a layer
      * \param vlayer  The layer being rendered (from which data values are calculated)
      * \param mode    The calculation mode

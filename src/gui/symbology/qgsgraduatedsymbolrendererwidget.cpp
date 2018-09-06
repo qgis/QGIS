@@ -576,7 +576,7 @@ void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
   connect( cbxClassifySymmetric, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( cboSymmetryPointForPretty, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
-  connect( spinSymmetryPointForOtherMethods, static_cast<void( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  connect( spinSymmetryPointForOtherMethods, static_cast<void( QgsDoubleSpinBox::* )()>( &QgsDoubleSpinBox::editingFinished ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
 }
 
 // Connect/disconnect event handlers which trigger updating renderer
@@ -597,7 +597,7 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
   disconnect( cbxClassifySymmetric, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( cboSymmetryPointForPretty, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
-  disconnect( spinSymmetryPointForOtherMethods, static_cast<void( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  disconnect( spinSymmetryPointForOtherMethods, static_cast<void( QgsDoubleSpinBox::* )()>( &QgsDoubleSpinBox::editingFinished ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
 }
 
 void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
