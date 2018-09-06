@@ -78,7 +78,7 @@ bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion &newVersio
     for ( std::size_t i = 0; i < sizeof( sTransformers ) / sizeof( TransformItem ); i++ )
     {
       const TransformItem &transformer = sTransformers[i];
-      if ( transformer.to > mCurrentVersion && ( transformer.from == mCurrentVersion || transformer.from.isNull() ) )
+      if ( transformer.to >= mCurrentVersion && ( transformer.from == mCurrentVersion || transformer.from.isNull() ) )
       {
         // Run the transformer, and update the revision in every case
         ( this->*( transformer.transformFunc ) )();
