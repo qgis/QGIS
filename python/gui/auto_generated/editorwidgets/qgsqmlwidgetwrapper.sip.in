@@ -40,7 +40,7 @@ Create a qml widget wrapper
 
     void reinitWidget();
 %Docstring
-Clears the content and makes new intialisaton
+Clears the content and makes new initialisation
 %End
 
     void setQmlCode( const QString &qmlCode );

@@ -47,7 +47,7 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 
     void initWidget( QWidget *editor ) override;
 
-    //! Clears the content and makes new intialisaton
+    //! Clears the content and makes new initialisation
     void reinitWidget();
 
     //! writes the \a qmlCode into a temporary file
