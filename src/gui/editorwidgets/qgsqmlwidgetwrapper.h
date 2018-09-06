@@ -63,12 +63,16 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
     QQuickWidget *mWidget = nullptr;
 };
 
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+
 /**
  * \ingroup gui
  * To pass the QgsExpression functionality and it's context to the context of the QQuickWidget
  * \since QGIS 3.4
  */
-class GUI_EXPORT QmlExpression : public QObject
+class QmlExpression : public QObject
 {
     Q_OBJECT
 
@@ -81,5 +85,7 @@ class GUI_EXPORT QmlExpression : public QObject
   private:
     QgsExpressionContext mExpressionContext;
 };
+///@endcond
+#endif //SIP_RUN
 
 #endif // QGSQMLWIDGETWRAPPER_H

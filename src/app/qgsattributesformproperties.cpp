@@ -1124,14 +1124,14 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       qmlCode->setPlaceholderText( tr( "Insert QML code here..." ) );
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
-      qmlWrapper->setQmlCode( qmlCode->toPlainText() );
+      QgsFeature previewFeature;
+      mLayer->getFeatures().nextFeature( previewFeature );
+
       //update preview on text change
       connect( qmlCode, &QPlainTextEdit::textChanged, this, [ = ]
       {
         qmlWrapper->setQmlCode( qmlCode->toPlainText() );
         qmlWrapper->reinitWidget();
-        QgsFeature previewFeature;
-        mLayer->getFeatures().nextFeature( previewFeature );
         qmlWrapper->setFeature( previewFeature );
       } );
 
@@ -1141,7 +1141,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       qmlObjectTemplate->addItem( tr( "Rectangle" ) );
       qmlObjectTemplate->addItem( tr( "Pie chart" ) );
       qmlObjectTemplate->addItem( tr( "Bar chart" ) );
-      connect( qmlObjectTemplate, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), qmlCode, [ = ]( int index )
+      connect( qmlObjectTemplate, qgis::overload<int>::of( &QComboBox::activated ), qmlCode, [ = ]( int index )
       {
         qmlCode->clear();
         switch ( index )
@@ -1215,7 +1215,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
 
       connect( addExpressionButton, &QAbstractButton::clicked, this, [ = ]
       {
-        qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expressionWidget->currentText().replace( '"', "\\\"" ) ) );
+        qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expressionWidget->expression().replace( '"', "\\\"" ) ) );
       } );
 
       layout->addRow( tr( "Title" ), title );
@@ -1233,6 +1233,8 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       qmlPreviewBox->setLayout( new QGridLayout );
       qmlPreviewBox->setMinimumWidth( 400 );
       qmlPreviewBox->layout()->addWidget( qmlWrapper->widget() );
+      //emit to load preview for the first time
+      emit qmlCode->textChanged();
       qmlLayout->addWidget( qmlPreviewBox );
 
       QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
