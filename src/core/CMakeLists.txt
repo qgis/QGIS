@@ -280,6 +280,7 @@ SET(QGIS_CORE_SRCS
   qgsproxyprogresstask.cpp
   qgspythonrunner.cpp
   qgsreadwritecontext.cpp
+  qgsreadwritelocker.cpp
   qgsrelation.cpp
   qgsrelationmanager.cpp
   qgsrenderchecker.cpp
@@ -919,6 +920,7 @@ SET(QGIS_CORE_HDRS
   qgspythonrunner.h
   qgsrange.h
   qgsreadwritecontext.h
+  qgsreadwritelocker.h
   qgsrenderchecker.h
   qgsrendercontext.h
   qgsrulebasedlabeling.h
