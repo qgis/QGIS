@@ -211,7 +211,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
     bool isRight( double angleTolerance = 0.0001 ) const;
 
     /**
-     * Is the triangle scalene (all sides have differen lengths)?
+     * Is the triangle scalene (all sides have different lengths)?
      * \param lengthTolerance The tolerance to use
      * \returns True or False. Always false for empty triangle.
      * * Example:

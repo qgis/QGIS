@@ -499,7 +499,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
         if ( shape->parent )
           delete shape;
       }
-      // check for useless spliting
+      // check for useless splitting
       else if ( imax == imin || nbPtSh1 <= 2 || nbPtSh2 <= 2 || nbPtSh1 == nbp  || nbPtSh2 == nbp )
       {
         shapes_final.append( shape );

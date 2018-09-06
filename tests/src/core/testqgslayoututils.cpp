@@ -440,7 +440,7 @@ void TestQgsLayoutUtils::scaledFontPixelSize()
 void TestQgsLayoutUtils::fontAscentMM()
 {
   mTestFont.setPointSize( 12 );
-  //platform specific font rendering differences mean these tests need to be very leniant
+  //platform specific font rendering differences mean these tests need to be very lenient
   QGSCOMPARENEAR( QgsLayoutUtils::fontAscentMM( mTestFont ), 3.9, 0.5 );
 }
 
@@ -453,14 +453,14 @@ void TestQgsLayoutUtils::fontDescentMM()
 void TestQgsLayoutUtils::fontHeightMM()
 {
   mTestFont.setPointSize( 12 );
-  //platform specific font rendering differences mean these tests need to be very leniant
+  //platform specific font rendering differences mean these tests need to be very lenient
   QGSCOMPARENEAR( QgsLayoutUtils::fontHeightMM( mTestFont ), 4.9, 0.5 );
 }
 
 void TestQgsLayoutUtils::fontHeightCharacterMM()
 {
   mTestFont.setPointSize( 12 );
-  //platform specific font rendering differences mean these tests need to be very leniant
+  //platform specific font rendering differences mean these tests need to be very lenient
   QGSCOMPARENEAR( QgsLayoutUtils::fontHeightCharacterMM( mTestFont, QChar( 'a' ) ), 2.4, 0.15 );
   QGSCOMPARENEAR( QgsLayoutUtils::fontHeightCharacterMM( mTestFont, QChar( 'l' ) ), 3.15, 0.16 );
   QGSCOMPARENEAR( QgsLayoutUtils::fontHeightCharacterMM( mTestFont, QChar( 'g' ) ), 3.2, 0.11 );
@@ -469,7 +469,7 @@ void TestQgsLayoutUtils::fontHeightCharacterMM()
 
 void TestQgsLayoutUtils::textWidthMM()
 {
-  //platform specific font rendering differences mean this test needs to be very leniant
+  //platform specific font rendering differences mean this test needs to be very lenient
   mTestFont.setPointSize( 12 );
   QGSCOMPARENEAR( QgsLayoutUtils::textWidthMM( mTestFont, QString( "test string" ) ), 20, 2 );
 
@@ -477,7 +477,7 @@ void TestQgsLayoutUtils::textWidthMM()
 
 void TestQgsLayoutUtils::textHeightMM()
 {
-  //platform specific font rendering differences mean this test needs to be very leniant
+  //platform specific font rendering differences mean this test needs to be very lenient
   mTestFont.setPointSize( 12 );
   QGSCOMPARENEAR( QgsLayoutUtils::textHeightMM( mTestFont, QString( "test string" ) ), 3.9, 0.2 );
   QGSCOMPARENEAR( QgsLayoutUtils::textHeightMM( mTestFont, QString( "test\nstring" ) ), 8.7, 0.2 );

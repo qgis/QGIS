@@ -63,7 +63,7 @@ static QString WCS_DESCRIPTION = QStringLiteral( "OGC Web Coverage Service versi
 
 static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 
-// TODO: colortable - use comon baseclass with gdal, mapserver does not support http://trac.osgeo.org/mapserver/ticket/1671
+// TODO: colortable - use common baseclass with gdal, mapserver does not support http://trac.osgeo.org/mapserver/ticket/1671
 
 QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &options )
   : QgsRasterDataProvider( uri, options )

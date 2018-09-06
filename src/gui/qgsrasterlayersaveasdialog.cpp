@@ -703,12 +703,12 @@ void QgsRasterLayerSaveAsDialog::mTileModeCheckBox_toggled( bool toggled )
 
     // Disabled (Radim), auto enabling of pyramids was making impression that
     // we (programmers) know better what you (user) want to do,
-    // certainly auto expaning was bad experience
+    // certainly auto expanding was a bad experience
 
     //if ( ! mPyramidsGroupBox->isChecked() )
     //  mPyramidsGroupBox->setChecked( true );
 
-    // Auto expanding mPyramidsGroupBox is bad - it auto crolls content of dialog
+    // Auto expanding mPyramidsGroupBox is bad - it auto scrolls content of dialog
     //if ( mPyramidsGroupBox->isCollapsed() )
     //  mPyramidsGroupBox->setCollapsed( false );
     //mPyramidsOptionsWidget->checkAllLevels( true );

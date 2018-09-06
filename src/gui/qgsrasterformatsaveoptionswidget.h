@@ -100,7 +100,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::Q
     void apply();
 
     /**
-     * Opens window with options desctiption for given provider
+     * Opens window with options description for given provider
      * and output format
      */
     void helpOptions();

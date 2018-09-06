@@ -865,7 +865,7 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   for ( ; childIt != childMap.constEnd(); ++childIt )
   {
     QgsProcessingModelChildAlgorithm child;
-    // we be leniant here - even if we couldn't load a parameter, don't interrupt the model loading
+    // we be lenient here - even if we couldn't load a parameter, don't interrupt the model loading
     // otherwise models may become unusable (e.g. due to removed plugins providing algs/parameters)
     // with no way for users to repair them
     if ( !child.loadVariant( childIt.value() ) )
@@ -893,7 +893,7 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   for ( ; paramDefIt != paramDefMap.constEnd(); ++paramDefIt )
   {
     std::unique_ptr< QgsProcessingParameterDefinition > param( QgsProcessingParameters::parameterFromVariantMap( paramDefIt.value().toMap() ) );
-    // we be leniant here - even if we couldn't load a parameter, don't interrupt the model loading
+    // we be lenient here - even if we couldn't load a parameter, don't interrupt the model loading
     // otherwise models may become unusable (e.g. due to removed plugins providing algs/parameters)
     // with no way for users to repair them
     if ( param )

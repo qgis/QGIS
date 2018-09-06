@@ -2258,7 +2258,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void editCommandEnded();
 
     /**
-     * Signal emitted, whan an edit command is destroyed
+     * Signal emitted, when an edit command is destroyed
      * \note This is not a rollback, it is only related to the current edit command.
      * See beforeRollBack()
      */

@@ -45,7 +45,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   // buttons
   QHBoxLayout *buttonLayout = new QHBoxLayout();
   buttonLayout->setContentsMargins( 0, 0, 0, 0 );
-  // toogle editing
+  // toggle editing
   mToggleEditingButton = new QToolButton( this );
   mToggleEditingButton->setObjectName( QStringLiteral( "mToggleEditingButton" ) );
   mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
