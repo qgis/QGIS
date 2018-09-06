@@ -58,6 +58,7 @@ bool QgsFeaturePool::get( QgsFeatureId id, QgsFeature &feature )
     }
     locker.changeMode( QgsReadWriteLocker::Write );
     mFeatureCache.insert( id, new QgsFeature( feature ) );
+    mIndex.insertFeature( feature );
   }
   return true;
 }
