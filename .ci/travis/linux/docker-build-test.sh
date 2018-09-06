@@ -56,7 +56,9 @@ cmake \
  -DWITH_SERVER=ON \
  -DDISABLE_DEPRECATED=ON \
  -DPYTHON_TEST_WRAPPER="timeout -sSIGSEGV 55s"\
- -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" ..
+ -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
+ -DWERROR=TRUE \
+ ..
 echo "travis_fold:end:cmake"
 
 #######
