@@ -23,6 +23,7 @@
 
 QgsServerCacheFilter::QgsServerCacheFilter( const QgsServerInterface *serverInterface )
 {
+  Q_UNUSED( serverInterface );
 }
 
 QByteArray QgsServerCacheFilter::getCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
