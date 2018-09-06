@@ -66,6 +66,15 @@ This is the base class for all map layer types (vector, raster).
       Metadata,
     };
 
+    enum LayerFlag
+    {
+      Identifiable,
+      Removable,
+      Searchable,
+    };
+    typedef QFlags<QgsMapLayer::LayerFlag> LayerFlags;
+
+
     QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString(), const QString &source = QString() );
 %Docstring
 Constructor for QgsMapLayer
@@ -91,6 +100,30 @@ is still unique.
     QgsMapLayer::LayerType type() const;
 %Docstring
 Returns the type of the layer.
+%End
+
+    QgsMapLayer::LayerFlags flags() const;
+%Docstring
+Returns the flags for this layer.
+
+.. note::
+
+   Flags are options specified by the user and might not reflect the actual state.
+   For instance, even if the ReadOnly flag is not set, a raster layer will always be ready-only.
+
+.. versionadded:: 3.4
+%End
+
+    void setFlags( QgsMapLayer::LayerFlags flags );
+%Docstring
+Returns the flags for this layer.
+
+.. note::
+
+   Flags are options specified by the user and might not reflect the actual state.
+   For instance, even if the ReadOnly flag is not set, a raster layer will always be ready-only.
+
+.. versionadded:: 3.4
 %End
 
     static QString extensionPropertyType( PropertyType type );
@@ -1472,6 +1505,8 @@ Checks whether a new set of dependencies will introduce a cycle
 
 
 };
+
+QFlags<QgsMapLayer::LayerFlag> operator|(QgsMapLayer::LayerFlag f1, QFlags<QgsMapLayer::LayerFlag> f2);
 
 
 

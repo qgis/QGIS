@@ -144,6 +144,16 @@ QgsMapLayer::LayerType QgsMapLayer::type() const
   return mLayerType;
 }
 
+QgsMapLayer::LayerFlags QgsMapLayer::flags() const
+{
+  return mFlags;
+}
+
+void QgsMapLayer::setFlags( QgsMapLayer::LayerFlags flags )
+{
+  mFlags = flags;
+}
+
 QString QgsMapLayer::id() const
 {
   return mID;
@@ -389,6 +399,21 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
   mMetadata.readMetadataXml( metadataElem );
 
+  // flags
+  QDomElement flagsElem = layerElement.firstChildElement( QStringLiteral( "flags" ) );
+  QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayer::LayerFlag>();
+  for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
+  {
+    const char *enumKey = metaEnum.key( idx );
+    QDomNode flagNode = flagsElem.namedItem( QString( enumKey ) );
+    bool flagValue = flagNode.toElement().text() == "1" ? true : false;
+    QgsMapLayer::LayerFlag enumValue = static_cast<QgsMapLayer::LayerFlag>( metaEnum.keyToValue( enumKey ) );
+    if ( mFlags.testFlag( enumValue ) && !flagValue )
+      mFlags &= ~enumValue;
+    else if ( !mFlags.testFlag( enumValue ) && flagValue )
+      mFlags |= enumValue;
+  }
+
   return true;
 } // bool QgsMapLayer::readLayerXML
 
@@ -553,6 +578,21 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   QDomElement myMetadataElem = document.createElement( QStringLiteral( "resourceMetadata" ) );
   mMetadata.writeMetadataXml( myMetadataElem, document );
   layerElement.appendChild( myMetadataElem );
+
+  // flags
+  // this code is saving automatically all the flags entries
+  QDomElement layerFlagsElem = document.createElement( QStringLiteral( "flags" ) );
+  QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayer::LayerFlag>();
+  for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
+  {
+    const char *enumKey = metaEnum.key( idx );
+    QgsMapLayer::LayerFlag enumValue = static_cast<QgsMapLayer::LayerFlag>( metaEnum.keyToValue( enumKey ) );
+    bool flagValue = mFlags.testFlag( enumValue );
+    QDomElement flagElem = document.createElement( enumKey );
+    flagElem.appendChild( document.createTextNode( QString::number( flagValue ) ) );
+    layerFlagsElem.appendChild( flagElem );
+  }
+  layerElement.appendChild( layerFlagsElem );
 
   // now append layer node to map layer node
 

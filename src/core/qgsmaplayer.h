@@ -118,6 +118,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Metadata,
     };
 
+    enum LayerFlag
+    {
+      Identifiable = 1 << 0, //!< If the layer is identifiable
+      Removable = 1 << 1, //!< If the layer can be removed from the project
+      Searchable = 1 << 2, //!< Only for vector-layer
+    };
+    Q_ENUM( LayerFlag )
+    Q_DECLARE_FLAGS( LayerFlags, LayerFlag )
+    Q_FLAG( LayerFlags )
+
     /**
      * Constructor for QgsMapLayer
      * \param type layer type
@@ -145,6 +155,22 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns the type of the layer.
      */
     QgsMapLayer::LayerType type() const;
+
+    /**
+     * Returns the flags for this layer.
+     * \note Flags are options specified by the user and might not reflect the actual state.
+     * For instance, even if the ReadOnly flag is not set, a raster layer will always be ready-only.
+     * \since QGIS 3.4
+     */
+    QgsMapLayer::LayerFlags flags() const;
+
+    /**
+     * Returns the flags for this layer.
+     * \note Flags are options specified by the user and might not reflect the actual state.
+     * For instance, even if the ReadOnly flag is not set, a raster layer will always be ready-only.
+     * \since QGIS 3.4
+     */
+    void setFlags( QgsMapLayer::LayerFlags flags );
 
     /**
      * Returns the extension of a Property.
@@ -1335,6 +1361,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Type of the layer (e.g., vector, raster)
     QgsMapLayer::LayerType mLayerType;
 
+    LayerFlags mFlags = LayerFlags( Identifiable | Removable | Searchable );
+
     //! Blend mode for the layer
     QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
 
@@ -1375,6 +1403,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer * )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayer::LayerFlags )
 
 #ifndef SIP_RUN
 

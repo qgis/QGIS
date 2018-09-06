@@ -2070,8 +2070,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   QDomElement mapLayerNode = layerNode.toElement();
   if ( mapLayerNode.attribute( QStringLiteral( "readOnly" ), QStringLiteral( "0" ) ).toInt() == 1 )
     mReadOnly = true;
-  if ( mapLayerNode.attribute( QStringLiteral( "searchable" ), QStringLiteral( "0" ) ).toInt() == 1 )
-    mSearchable = true;
 
   updateFields();
 
@@ -2377,9 +2375,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
   // save readonly state
   node.toElement().setAttribute( QStringLiteral( "readOnly" ), mReadOnly );
-
-  // save searchable state
-  node.toElement().setAttribute( QStringLiteral( "searchable" ), mSearchable );
 
   // save preview expression
   QDomElement prevExpElem = doc.createElement( QStringLiteral( "previewExpression" ) );
@@ -3112,25 +3107,11 @@ bool QgsVectorLayer::setReadOnly( bool readonly )
   return true;
 }
 
-bool QgsVectorLayer::searchable() const
-{
-  return mSearchable;
-}
-
-void QgsVectorLayer::setSearchable( bool searchable )
-{
-  if ( searchable == mSearchable )
-    return;
-  mSearchable = searchable;
-  emit searchableChanged();
-}
-
 bool QgsVectorLayer::isModified() const
 {
   emit beforeModifiedCheck();
   return mEditBuffer && mEditBuffer->isModified();
 }
-
 
 bool QgsVectorLayer::isAuxiliaryField( int index, int &srcIndex ) const
 {

@@ -360,7 +360,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_PROPERTY( QgsEditFormConfig editFormConfig READ editFormConfig WRITE setEditFormConfig NOTIFY editFormConfigChanged )
     Q_PROPERTY( bool readOnly READ isReadOnly WRITE setReadOnly NOTIFY readOnlyChanged )
     Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
-    Q_PROPERTY( bool searchable READ searchable WRITE setSearchable NOTIFY searchableChanged )
 
   public:
 
@@ -1384,17 +1383,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool setReadOnly( bool readonly = true );
 
     /**
-     * Returns true if the provider is in read-only mode
-     */
-    bool searchable() const;
-
-    /**
-     * Make layer searchable or not
-     * \since QGIS 3.4
-     */
-    void setSearchable( bool searchable );
-
-    /**
      * Changes a feature's \a geometry within the layer's edit buffer
      * (but does not immediately commit the changes). The \a fid argument
      * specifies the ID of the feature to be changed.
@@ -2321,12 +2309,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void readOnlyChanged();
 
     /**
-     * Emitted when the search state of this layer is changed.
-     * \since QGIS 3.4
-     */
-    void searchableChanged();
-
-    /**
      * Emitted when the feature count for symbols on this layer has been recalculated.
      *
      * \since QGIS 3.0
@@ -2391,9 +2373,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Flag indicating whether the layer is in read-only mode (editing disabled) or not
     bool mReadOnly = false;
-
-    //! Indicates whether the layer is searchable or not
-    bool mSearchable = true;
 
     /**
      * Set holding the feature IDs that are activated.  Note that if a feature

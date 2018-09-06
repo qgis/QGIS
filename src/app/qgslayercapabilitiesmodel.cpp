@@ -24,15 +24,13 @@
 QgsLayerCapabilitiesModel::QgsLayerCapabilitiesModel( QgsProject *project, QObject *parent )
   : QSortFilterProxyModel( parent )
 {
-  mNonIdentifiableLayers = project->nonIdentifiableLayers();
-  mRequiredLayers = project->requiredLayers();
-
-  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer *> &mapLayers = project->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
     mReadOnlyLayers.insert( it.value(), it.value()->readOnly() );
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
-    mSearchableLayers.insert( it.value(), vl && vl->searchable() );
+    mSearchableLayers.insert( it.value(), it.value()->type() == QgsMapLayer::VectorLayer && it.value()->flags().testFlag( QgsMapLayer::Searchable ) );
+    mIdentifiableLayers.insert( it.value(), it.value()->flags().testFlag( QgsMapLayer::Identifiable ) );
+    mRemovableLayers.insert( it.value(), it.value()->flags().testFlag( QgsMapLayer::Removable ) );
   }
 }
 
@@ -67,14 +65,14 @@ void QgsLayerCapabilitiesModel::toggleSelectedItems( const QModelIndexList &chec
   }
 }
 
-QStringList QgsLayerCapabilitiesModel::nonIdentifiableLayers() const
+bool QgsLayerCapabilitiesModel::identifiable( QgsMapLayer *layer ) const
 {
-  return mNonIdentifiableLayers;
+  return mIdentifiableLayers.value( layer, true );
 }
 
-QSet<QgsMapLayer *> QgsLayerCapabilitiesModel::requiredLayers() const
+bool QgsLayerCapabilitiesModel::removable( QgsMapLayer *layer ) const
 {
-  return mRequiredLayers;
+  return mRemovableLayers.value( layer, true );
 }
 
 bool QgsLayerCapabilitiesModel::readOnly( QgsMapLayer *layer ) const
@@ -258,7 +256,7 @@ QVariant QgsLayerCapabilitiesModel::data( const QModelIndex &idx, int role ) con
       if ( idx.column() == IdentifiableColumn )
       {
         if ( layer->isSpatial() )
-          return !mNonIdentifiableLayers.contains( layer->id() ) ? trueValue : falseValue;
+          return mIdentifiableLayers.value( layer, true ) ? trueValue : falseValue;
       }
       else if ( idx.column() == ReadOnlyColumn )
       {
@@ -272,7 +270,7 @@ QVariant QgsLayerCapabilitiesModel::data( const QModelIndex &idx, int role ) con
       }
       else if ( idx.column() == RequiredColumn )
       {
-        return mRequiredLayers.contains( layer ) ? trueValue : falseValue;
+        return !mRemovableLayers.value( layer, true ) ? trueValue : falseValue;
       }
     }
   }
@@ -291,44 +289,50 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
       {
         if ( layer->isSpatial() )
         {
-          bool nonIdentifiable = value == Qt::Unchecked;
-          bool containsLayer = mNonIdentifiableLayers.contains( layer->id() );
-          if ( containsLayer && !nonIdentifiable )
-            mNonIdentifiableLayers.removeAll( layer->id() );
-          if ( !containsLayer && nonIdentifiable )
-            mNonIdentifiableLayers.append( layer->id() );
-          emit dataChanged( index, index );
-          return true;
+          bool identifiable = value == Qt::Checked;
+          if ( identifiable != mIdentifiableLayers.value( layer, true ) )
+          {
+            mIdentifiableLayers.insert( layer, identifiable );
+            emit dataChanged( index, index );
+            return true;
+          }
         }
       }
       else if ( index.column() == ReadOnlyColumn )
       {
         if ( layer->type() == QgsMapLayer::VectorLayer )
         {
-          mReadOnlyLayers.insert( layer, value == Qt::Checked );
-          emit dataChanged( index, index );
-          return true;
+          bool readOnly = value == Qt::Checked;
+          if ( readOnly != mReadOnlyLayers.value( layer, true ) )
+          {
+            mReadOnlyLayers.insert( layer, readOnly );
+            emit dataChanged( index, index );
+            return true;
+          }
         }
       }
       else if ( index.column() == SearchableColumn )
       {
         if ( layer->type() == QgsMapLayer::VectorLayer )
         {
-          mSearchableLayers.insert( layer, value == Qt::Checked );
-          emit dataChanged( index, index );
-          return true;
+          bool searchable = value == Qt::Checked;
+          if ( searchable != mSearchableLayers.value( layer, true ) )
+          {
+            mSearchableLayers.insert( layer, searchable );
+            emit dataChanged( index, index );
+            return true;
+          }
         }
       }
       else if ( index.column() == RequiredColumn )
       {
-        bool required = value == Qt::Checked;
-        bool containsLayer = mRequiredLayers.contains( layer );
-        if ( containsLayer && !required )
-          mRequiredLayers.remove( layer );
-        if ( !containsLayer && required )
-          mRequiredLayers.insert( layer );
-        emit dataChanged( index, index );
-        return true;
+        bool removable = value == Qt::Unchecked;
+        if ( removable != mRemovableLayers.value( layer, true ) )
+        {
+          mRemovableLayers.insert( layer, removable );
+          emit dataChanged( index, index );
+          return true;
+        }
       }
     }
   }

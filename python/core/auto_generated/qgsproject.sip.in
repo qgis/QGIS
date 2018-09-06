@@ -573,19 +573,25 @@ Returns pointer to the project's annotation manager.
 %End
 
 
-    void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
+ void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
 Set a list of layers which should not be taken into account on map identification
+
+.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
 %End
 
-    void setNonIdentifiableLayers( const QStringList &layerIds );
+ void setNonIdentifiableLayers( const QStringList &layerIds );
 %Docstring
 Set a list of layers which should not be taken into account on map identification
+
+.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
 %End
 
-    QStringList nonIdentifiableLayers() const;
+ QStringList nonIdentifiableLayers() const;
 %Docstring
 Gets the list of layers which currently should not be taken into account on map identification
+
+.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
 %End
 
     bool autoTransaction() const;
@@ -980,6 +986,8 @@ removed from the project. The set of layers may be configured by users in projec
 and it is mainly a hint for the user interface to protect users from removing layers that important
 in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
 
+.. deprecated:: since QGIS 3.4 use QgsMapLayer.flags() instead
+
 .. versionadded:: 3.2
 %End
 
@@ -989,6 +997,8 @@ Configures a set of map layers that are required in the project and therefore th
 removed from the project. The set of layers may be configured by users in project properties.
 and it is mainly a hint for the user interface to protect users from removing layers that important
 in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
+
+.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
 
 .. versionadded:: 3.2
 %End
@@ -1095,9 +1105,11 @@ Emitted when loading layers has produced some messages
 .. versionadded:: 3.2
 %End
 
-    void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
+ void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 %Docstring
 Emitted when the list of layer which are excluded from map identification changes
+
+.. deprecated:: since QGIS 3.4
 %End
 
     void fileNameChanged();
