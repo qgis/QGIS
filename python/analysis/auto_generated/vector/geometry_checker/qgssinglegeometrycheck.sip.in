@@ -1,0 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgssinglegeometrycheck.h        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsSingleGeometryCheck
+{
+%Docstring
+*************************************************************************
+qgssinglegeometrycheck.h
+--------------------------------------
+Date                 : 6.9.2018
+Copyright            : (C) 2018 by Matthias Kuhn
+email                : matthias@opengis.ch
+**************************************************************************
+
+This program is free software; you can redistribute it and/or modify  *
+it under the terms of the GNU General Public License as published by  *
+the Free Software Foundation; either version 2 of the License, or     *
+(at your option) any later version.                                   *
+
+**************************************************************************
+%End
+
+%TypeHeaderCode
+#include "qgssinglegeometrycheck.h"
+%End
+  public:
+    QgsSingleGeometryCheck();
+    virtual ~QgsSingleGeometryCheck();
+
+    virtual QList<QgsGeometry::Error> collectErrors( const QgsFeature &feature ) const = 0;
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgssinglegeometrycheck.h        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

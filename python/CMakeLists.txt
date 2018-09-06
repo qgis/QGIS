@@ -245,6 +245,7 @@ ENDIF (WITH_SERVER AND WITH_SERVER_PLUGINS)
 INCLUDE_DIRECTORIES(BEFORE
   ../src/analysis/processing
   ../src/analysis/vector
+  ../src/analysis/vector/geometry_checker
   ../src/analysis/raster
   ../src/analysis/network
   ../src/analysis/interpolation

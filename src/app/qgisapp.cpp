@@ -79,6 +79,7 @@
 #include "qgsziputils.h"
 #include "qgsbrowsermodel.h"
 #include "qgsvectorlayerjoinbuffer.h"
+#include "qgsgeometryvalidationservice.h"
 
 #ifdef HAVE_3D
 #include "qgsabstract3drenderer.h"
@@ -405,6 +406,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaptoolrotatelabel.h"
 #include "qgsmaptoolchangelabelproperties.h"
 #include "qgsmaptoolreverseline.h"
+#include "qgsgeometryvalidationmodel.h"
+#include "qgsgeometryvalidationdock.h"
 
 #include "vertextool/qgsvertextool.h"
 
@@ -779,7 +782,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // what type of project to auto-open
   mProjOpen = settings.value( QStringLiteral( "qgis/projOpenAtLaunch" ), 0 ).toInt();
 
-
   startProfile( QStringLiteral( "Welcome page" ) );
   mWelcomePage = new QgsWelcomePage( skipVersionCheck );
   connect( mWelcomePage, &QgsWelcomePage::projectRemoved, this, [ this ]( int row )
@@ -919,6 +921,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::init3D, this, QStringLiteral( "Initialize 3D support" ) );
   functionProfile( &QgisApp::initNativeProcessing, this, QStringLiteral( "Initialize native processing" ) );
   functionProfile( &QgisApp::initLayouts, this, QStringLiteral( "Initialize layouts support" ) );
+
+  startProfile( QStringLiteral( "Geometry validation" ) );
+  mGeometryValidationService = qgis::make_unique<QgsGeometryValidationService>( QgsProject::instance() );
+  mGeometryValidationDock = new QgsGeometryValidationDock( tr( "Geometry Validation" ) );
+  mGeometryValidationModel = new QgsGeometryValidationModel( mGeometryValidationService.get(), mGeometryValidationDock );
+  mGeometryValidationDock->setGeometryValidationModel( mGeometryValidationModel );
+  addDockWidget( Qt::RightDockWidgetArea, mGeometryValidationDock );
+  endProfile();
 
   QgsApplication::annotationRegistry()->addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "FormAnnotationItem" ), &QgsFormAnnotation::create ) );
   connect( QgsProject::instance()->annotationManager(), &QgsAnnotationManager::annotationAdded, this, &QgisApp::annotationCreated );

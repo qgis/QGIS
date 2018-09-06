@@ -161,6 +161,8 @@ SET(QGIS_ANALYSIS_SRCS
   vector/geometry_checker/qgsgeometryselfintersectioncheck.cpp
   vector/geometry_checker/qgsgeometrysliverpolygoncheck.cpp
   vector/geometry_checker/qgsgeometrytypecheck.cpp
+  vector/geometry_checker/qgssinglegeometrycheck.cpp
+  vector/geometry_checker/qgsisvalidgeometrycheck.cpp
 )
 
 SET(QGIS_ANALYSIS_MOC_HDRS
@@ -289,6 +291,9 @@ SET(QGIS_ANALYSIS_HDRS
   vector/geometry_checker/qgsgeometryselfintersectioncheck.h
   vector/geometry_checker/qgsgeometrysliverpolygoncheck.h
   vector/geometry_checker/qgsgeometrytypecheck.h
+  vector/geometry_checker/qgssinglegeometrycheck.h
+  vector/geometry_checker/qgsisvalidgeometrycheck.h
+
 )
 
 INCLUDE_DIRECTORIES(
