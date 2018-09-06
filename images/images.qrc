@@ -489,6 +489,7 @@
         <file>themes/default/mLayoutItemPicture.svg</file>
         <file>themes/default/mLayoutItemLabel.svg</file>
         <file>themes/default/mLayoutItemLegend.svg</file>
+        <file>themes/default/mLayoutItem3DMap.svg</file>
         <file>themes/default/mLayoutItemMap.svg</file>
         <file>themes/default/mLayoutItemPolygon.svg</file>
         <file>themes/default/mLayoutItemPolyline.svg</file>
