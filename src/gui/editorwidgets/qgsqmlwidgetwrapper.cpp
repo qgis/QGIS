@@ -99,6 +99,7 @@ void QgsQmlWidgetWrapper::setFeature( const QgsFeature &feature )
   mWidget->rootContext()->setContextProperty( "expression", qmlExpression );
 }
 
+///@cond PRIVATE
 void QmlExpression::setExpressionContext( const QgsExpressionContext &context )
 {
   mExpressionContext = context;
@@ -110,3 +111,4 @@ QVariant QmlExpression::evaluate( const QString &expression ) const
   exp.prepare( &mExpressionContext );
   return exp.evaluate( &mExpressionContext );
 }
+///@endcond
