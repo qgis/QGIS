@@ -58,20 +58,31 @@ class TestQgsProcessingRecentAlgorithmLog(unittest.TestCase):
         parameters = {}
         parameters['INPUT'] = QgsProcessingFeatureSourceDefinition(self.vl.id(), True)
         parameters['OUTPUT'] = 'memory:'
+        parameters['DELTA_X'] = 1.1
+        parameters['DELTA_Y'] = 1.1
 
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
         self.assertTrue(alg.prepare(parameters, context, feedback))
 
+        self.assertTrue(self.vl.startEditing())
+
+        field_idxs = range(len(self.vl.fields()))
+
+        new_features = {}
         for f in self.vl.getFeatures():
             new_f = alg.processFeature(f, context, feedback)[0]
+            new_features[f.id()] = new_f
             self.assertEqual(new_f.id(), f.id())
+            # This alg does change the geometry!
+            self.vl.changeGeometry(f.id(), new_f.geometry())
+            # This alg does not change attrs but some other might do
+            self.vl.changeAttributeValues(f.id(), dict(zip(field_idxs, new_f.attributes())), dict(zip(field_idxs, f.attributes())))
 
-        from IPython import embed; embed()
+        self.assertTrue(self.vl.commitChanges())
 
-
-
-
+        for f in self.vl.getFeatures():
+            self.assertEqual(new_features[f.id()].geometry().asWkt(), f.geometry().asWkt())
 
 
 if __name__ == '__main__':
