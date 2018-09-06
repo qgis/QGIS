@@ -84,6 +84,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.catalog_password = None
         self.context = StaticContext()
 
+        self.leKeywords.setShowSearchIcon(True)
+        self.leKeywords.setPlaceholderText(self.tr('Search keywords'))
+
         version = self.context.metadata.get('general', 'version')
         self.setWindowTitle(self.tr('MetaSearch {0}').format(version))
 

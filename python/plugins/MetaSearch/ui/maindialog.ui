@@ -43,7 +43,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="1">
-           <widget class="QLineEdit" name="leKeywords">
+           <widget class="QgsFilterLineEdit" name="leKeywords">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -628,4 +628,11 @@
    </hints>
   </connection>
  </connections>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+ </customwidgets>
 </ui>
