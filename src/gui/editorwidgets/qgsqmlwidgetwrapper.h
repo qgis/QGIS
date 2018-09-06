@@ -47,7 +47,7 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 
     void initWidget( QWidget *editor ) override;
 
-    //! Clears the content and makes new initialization
+    //! Clears the content and makes new initialisation
     void reinitWidget();
 
     //! writes the \a qmlCode into a temporary file
@@ -77,9 +77,10 @@ class QmlExpression : public QObject
     Q_OBJECT
 
   public:
+    //! set the \a context of the expression
     void setExpressionContext( const QgsExpressionContext &context );
 
-    //! evaluates the value regarding the /a expression and the context
+    //! evaluates the value regarding the \a expression and the context
     Q_INVOKABLE QVariant evaluate( const QString &expression ) const;
 
   private:
