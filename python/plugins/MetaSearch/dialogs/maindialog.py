@@ -87,8 +87,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.leKeywords.setShowSearchIcon(True)
         self.leKeywords.setPlaceholderText(self.tr('Search keywords'))
 
-        version = self.context.metadata.get('general', 'version')
-        self.setWindowTitle(self.tr('MetaSearch {0}').format(version))
+        self.setWindowTitle(self.tr('MetaSearch'))
 
         self.rubber_band = QgsRubberBand(self.map, True)  # True = a polygon
         self.rubber_band.setColor(QColor(255, 0, 0, 75))
