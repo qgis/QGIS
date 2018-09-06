@@ -21,8 +21,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsreadwritelocker.h"
 
 #include <QMutexLocker>
+
 
 QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, const QgsCoordinateTransform &layerToMapTransform )
   : mFeatureCache( CACHE_SIZE )
@@ -37,7 +39,7 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, c
 
 bool QgsFeaturePool::get( QgsFeatureId id, QgsFeature &feature )
 {
-  mCacheLock.lockForRead();
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
   QgsFeature *cachedFeature = mFeatureCache.object( id );
   if ( cachedFeature )
   {
@@ -54,11 +56,9 @@ bool QgsFeaturePool::get( QgsFeatureId id, QgsFeature &feature )
     {
       return false;
     }
-    mCacheLock.unlock();
-    mCacheLock.lockForWrite();
+    locker.changeMode( QgsReadWriteLocker::Write );
     mFeatureCache.insert( id, new QgsFeature( feature ) );
   }
-  mCacheLock.unlock();
   return true;
 }
 
@@ -69,9 +69,8 @@ QgsFeatureIds QgsFeaturePool::getFeatureIds() const
 
 QgsFeatureIds QgsFeaturePool::getIntersects( const QgsRectangle &rect ) const
 {
-  mIndexLock.lockForRead();
+  QgsReadWriteLocker locker( mIndexLock, QgsReadWriteLocker::Read );
   QgsFeatureIds ids = QgsFeatureIds::fromList( mIndex.intersects( rect ) );
-  mIndexLock.unlock();
   return ids;
 }
 
@@ -84,32 +83,31 @@ QgsVectorLayer *QgsFeaturePool::layer() const
 
 void QgsFeaturePool::insertFeature( const QgsFeature &feature )
 {
-  mCacheLock.lockForWrite();
+  QgsReadWriteLocker locker( mIndexLock, QgsReadWriteLocker::Write );
   mFeatureCache.insert( feature.id(), new QgsFeature( feature ) );
   mIndex.insertFeature( feature );
-  mCacheLock.unlock();
 }
 
 void QgsFeaturePool::changeFeature( const QgsFeature &feature )
 {
-  mCacheLock.lockForWrite();
+  QgsReadWriteLocker locker( mIndexLock, QgsReadWriteLocker::Write );
   mFeatureCache.remove( feature.id() );
   mFeatureCache.insert( feature.id(), new QgsFeature( feature ) );
   mIndex.deleteFeature( feature );
   mIndex.insertFeature( feature );
-  mCacheLock.unlock();
 }
 
 void QgsFeaturePool::removeFeature( const QgsFeatureId featureId )
 {
   QgsFeature origFeature;
-  mCacheLock.lockForWrite();
+  QgsReadWriteLocker locker( mIndexLock, QgsReadWriteLocker::Unlocked );
   if ( get( featureId, origFeature ) )
   {
+    locker.changeMode( QgsReadWriteLocker::Write );
     mIndex.deleteFeature( origFeature );
   }
+  locker.changeMode( QgsReadWriteLocker::Write );
   mFeatureCache.remove( origFeature.id() );
-  mCacheLock.unlock();
 }
 
 void QgsFeaturePool::setFeatureIds( const QgsFeatureIds &ids )
