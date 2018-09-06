@@ -39,7 +39,6 @@ QgsVectorDataProviderFeaturePool::QgsVectorDataProviderFeaturePool( QgsVectorLay
   // Build spatial index
   QgsFeature feature;
   QgsFeatureRequest req;
-  req.setSubsetOfAttributes( QgsAttributeList() );
   QgsFeatureIds featureIds;
   if ( selectedOnly )
   {
