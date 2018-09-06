@@ -330,9 +330,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         msg = self.tr('Remove service {0}?').format(current_text)
 
-        result = QMessageBox.information(self, self.tr('Confirm delete'), msg,
-                                         QMessageBox.Ok | QMessageBox.Cancel)
-        if result == QMessageBox.Ok:  # remove service from list
+        result = QMessageBox.question(self, self.tr('Delete Service'), msg,
+                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if result == QMessageBox.Yes:  # remove service from list
             self.settings.remove(key)
             index_to_delete = self.cmbConnectionsServices.currentIndex()
             self.cmbConnectionsServices.removeItem(index_to_delete)
