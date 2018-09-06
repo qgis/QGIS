@@ -40,6 +40,10 @@
 class CORE_EXPORT QgsReadWriteLocker
 {
   public:
+
+    /**
+     * A QReadWriteLock can be in 3 different modes, read, write or unlocked.
+     */
     enum Mode
     {
       Read, //!< Lock for read

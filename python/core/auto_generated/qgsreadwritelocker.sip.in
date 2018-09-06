@@ -31,6 +31,7 @@ If locked, the mutex will be unlocked when the QgsReadWriteLocker is destroyed.
 #include "qgsreadwritelocker.h"
 %End
   public:
+
     enum Mode
     {
       Read,
