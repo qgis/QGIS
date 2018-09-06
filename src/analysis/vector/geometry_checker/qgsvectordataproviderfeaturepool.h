@@ -32,9 +32,10 @@ class ANALYSIS_EXPORT QgsVectorDataProviderFeaturePool : public QgsFeaturePool
   public:
     QgsVectorDataProviderFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, const QgsCoordinateTransform &layerToMapTransform, bool selectedOnly = false );
 
-    void addFeature( QgsFeature &feature );
-    void updateFeature( QgsFeature &feature );
-    void deleteFeature( QgsFeatureId fid );
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
+    void updateFeature( QgsFeature &feature ) override;
+    void deleteFeature( QgsFeatureId fid ) override;
 
   private:
     bool mSelectedOnly = false;

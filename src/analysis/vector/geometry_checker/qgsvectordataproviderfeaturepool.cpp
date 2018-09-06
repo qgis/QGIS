@@ -62,19 +62,25 @@ QgsVectorDataProviderFeaturePool::QgsVectorDataProviderFeaturePool( QgsVectorLay
   setFeatureIds( featureIds );
 }
 
-void QgsVectorDataProviderFeaturePool::addFeature( QgsFeature &feature )
+bool QgsVectorDataProviderFeaturePool::addFeature( QgsFeature &feature, Flags flags )
 {
+  Q_UNUSED( flags );
   QgsFeatureList features;
   features.append( feature );
 
-  auto addFeatureSynchronized = [ this, &features ]()
+  bool res = false;
+
+  auto addFeatureSynchronized = [ this, &features, &res ]()
   {
     QgsVectorLayer *lyr = layer();
     if ( lyr )
-      lyr->dataProvider()->addFeatures( features );
+      res = lyr->dataProvider()->addFeatures( features );
   };
 
   runOnMainThread( addFeatureSynchronized );
+
+  if ( !res )
+    return false;
 
   feature.setId( features.front().id() );
   if ( mSelectedOnly )
@@ -92,6 +98,47 @@ void QgsVectorDataProviderFeaturePool::addFeature( QgsFeature &feature )
   }
 
   insertFeature( feature );
+
+  return res;
+}
+
+bool QgsVectorDataProviderFeaturePool::addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags )
+{
+  Q_UNUSED( flags );
+
+  bool res = false;
+
+  auto addFeatureSynchronized = [ this, &features, &res ]()
+  {
+    QgsVectorLayer *lyr = layer();
+    if ( lyr )
+      res = lyr->dataProvider()->addFeatures( features );
+  };
+
+  runOnMainThread( addFeatureSynchronized );
+
+  if ( !res )
+    return false;
+
+  if ( mSelectedOnly )
+  {
+    runOnMainThread( [ this, features ]()
+    {
+      QgsVectorLayer *lyr = layer();
+      if ( lyr )
+      {
+        QgsFeatureIds selectedFeatureIds = lyr->selectedFeatureIds();
+        for ( const QgsFeature &feature : qgis::as_const( features ) )
+          selectedFeatureIds.insert( feature.id() );
+        lyr->selectByIds( selectedFeatureIds );
+      }
+    } );
+  }
+
+  for ( const QgsFeature &feature : qgis::as_const( features ) )
+    insertFeature( feature );
+
+  return res;
 }
 
 void QgsVectorDataProviderFeaturePool::updateFeature( QgsFeature &feature )

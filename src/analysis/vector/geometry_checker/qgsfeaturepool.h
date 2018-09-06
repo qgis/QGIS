@@ -21,10 +21,12 @@
 
 #include <QCache>
 #include <QMutex>
+#include <QPointer>
+
 #include "qgis_analysis.h"
 #include "qgsfeature.h"
 #include "qgsspatialindex.h"
-#include "qgsvectorlayer.h"
+#include "qgsfeaturesink.h"
 
 class QgsVectorLayer;
 
@@ -32,7 +34,7 @@ class QgsVectorLayer;
  * \ingroup analysis
  * A feature pool is based on a vector layer and caches features.
  */
-class ANALYSIS_EXPORT QgsFeaturePool
+class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
 {
 
   public:
@@ -45,12 +47,6 @@ class ANALYSIS_EXPORT QgsFeaturePool
      * If the feature is neither available from the cache nor from the layer it will return false.
      */
     bool get( QgsFeatureId id, QgsFeature &feature );
-
-    /**
-     * Adds a feature to this pool.
-     * Implementations will add the feature to the layer or to the data provider.
-     */
-    virtual void addFeature( QgsFeature &feature ) = 0;
 
     /**
      * Updates a feature in this pool.
