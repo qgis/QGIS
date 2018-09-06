@@ -959,7 +959,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \deprecated since QGIS 3.4 use QgsMapLayer::flags() instead
      * \since QGIS 3.2
      */
-    QSet<QgsMapLayer *> requiredLayers() const;
+    Q_DECL_DEPRECATED QSet<QgsMapLayer *> requiredLayers() const;
 
     /**
      * Configures a set of map layers that are required in the project and therefore they should not get
@@ -969,7 +969,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
      * \since QGIS 3.2
      */
-    void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
+    Q_DECL_DEPRECATED void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
 
     /**
      * Triggers the collection strings of .qgs to be included in ts file and calls writeTsFile()

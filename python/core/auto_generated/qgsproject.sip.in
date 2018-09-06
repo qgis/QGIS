@@ -979,7 +979,7 @@ Sets the project's ``metadata`` store.
 .. versionadded:: 3.2
 %End
 
-    QSet<QgsMapLayer *> requiredLayers() const;
+ QSet<QgsMapLayer *> requiredLayers() const;
 %Docstring
 Returns a set of map layers that are required in the project and therefore they should not get
 removed from the project. The set of layers may be configured by users in project properties.
@@ -991,7 +991,7 @@ in the project. The removeMapLayer(), removeMapLayers() calls do not block remov
 .. versionadded:: 3.2
 %End
 
-    void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
+ void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
 %Docstring
 Configures a set of map layers that are required in the project and therefore they should not get
 removed from the project. The set of layers may be configured by users in project properties.
