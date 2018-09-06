@@ -136,6 +136,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.mActionAddWcs.triggered.connect(self.add_to_ows)
         self.mActionAddAms.triggered.connect(self.add_to_ows)
         self.mActionAddAfs.triggered.connect(self.add_to_ows)
+        self.mActionAddGisFile.triggered.connect(self.add_gis_file)
         self.btnShowXml.clicked.connect(self.show_xml)
 
         # settings
@@ -614,12 +615,13 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             wcs_link_types = list(map(str.upper, link_types.WCS_LINK_TYPES))
             ams_link_types = list(map(str.upper, link_types.AMS_LINK_TYPES))
             afs_link_types = list(map(str.upper, link_types.AFS_LINK_TYPES))
+            gis_file_link_types = list(map(str.upper, link_types.GIS_FILE_LINK_TYPES))
 
             # if the link type exists, and it is one of the acceptable
             # interactive link types, then set
             if all([link_type is not None,
                     link_type in wmswmst_link_types + wfs_link_types +
-                    wcs_link_types + ams_link_types + afs_link_types]):
+                    wcs_link_types + ams_link_types + afs_link_types + gis_file_link_types]):
                 if link_type in wmswmst_link_types:
                     services['wms'] = link['url']
                     self.mActionAddWms.setEnabled(True)
@@ -635,6 +637,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 if link_type in afs_link_types:
                     services['afs'] = link['url']
                     self.mActionAddAfs.setEnabled(True)
+                if link_type in gis_file_link_types:
+                    services['gis_file'] = link['url']
+                    services['title'] = record.title
+                    self.mActionAddGisFile.setEnabled(True)
                 self.tbAddData.setEnabled(True)
 
             set_item_data(item, 'link', json.dumps(services))
@@ -803,6 +809,22 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 ows_provider.cmbConnections_activated(index)
         getattr(ows_provider, connect)()
 
+    def add_gis_file(self):
+        """add GIS file from result"""
+        item = self.treeRecords.currentItem()
+
+        if not item:
+            return
+
+        item_data = json.loads(get_item_data(item, 'link'))
+        gis_file = item_data['gis_file']
+
+        title = item_data['title']
+
+        layer = self.iface.addVectorLayer(gis_file, title, "ogr")
+        if not layer:
+            self.iface.messageBar().pushWarning(None, "Layer failed to load!")
+
     def show_metadata(self):
         """show record metadata"""
 
@@ -869,6 +891,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             self.mActionAddWcs.setEnabled(False)
             self.mActionAddAms.setEnabled(False)
             self.mActionAddAfs.setEnabled(False)
+            self.mActionAddGisFile.setEnabled(False)
 
         if xml:
             self.btnShowXml.setEnabled(False)
