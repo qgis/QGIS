@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>310</width>
-    <height>419</height>
+    <width>287</width>
+    <height>520</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -57,6 +57,90 @@
       </item>
       <item>
        <widget class="QLineEdit" name="mMaxMagLineEdit"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="mDisplayVectorsOnGridGroupBox">
+     <property name="title">
+      <string>Display Vectors on User Grid</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="xSpacingLabel">
+          <property name="text">
+           <string>X Spacing</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="ySpacingLabel">
+          <property name="text">
+           <string>Y Spacing</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QgsSpinBox" name="mXSpacingSpinBox">
+          <property name="suffix">
+           <string> px</string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>8000</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="value">
+           <number>10</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="mYSpacingSpinBox">
+          <property name="suffix">
+           <string>px</string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>5000</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="value">
+           <number>10</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
@@ -217,15 +301,20 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QFrame</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

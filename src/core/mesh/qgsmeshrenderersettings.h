@@ -248,6 +248,19 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     //! Sets ratio of the head length of the arrow (range 0-1)
     void setArrowHeadLengthRatio( double arrowHeadLengthRatio );
 
+    //! Returns whether vectors are drawn on user-defined grid
+    bool isOnUserDefinedGrid() const;
+    //! Toggles drawing of vectors on user defined grid
+    void setOnUserDefinedGrid( bool enabled );
+    //! Returns width in pixels of user grid cell
+    int userGridCellWidth() const;
+    //! Sets width of user grid cell (in pixels)
+    void setUserGridCellWidth( int width );
+    //! Returns height in pixels of user grid cell
+    int userGridCellHeight() const;
+    //! Sets height of user grid cell (in pixels)
+    void setUserGridCellHeight( int height );
+
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads configuration from the given DOM element
@@ -265,6 +278,9 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     double mFixedShaftLength = 20; //in milimeters
     double mArrowHeadWidthRatio = 0.15;
     double mArrowHeadLengthRatio = 0.40;
+    bool mOnUserDefinedGrid = false;
+    int mUserGridCellWidth = 10; // in pixels
+    int mUserGridCellHeight = 10; // in pixels
 };
 
 

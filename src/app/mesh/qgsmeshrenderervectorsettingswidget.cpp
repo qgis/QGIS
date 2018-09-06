@@ -19,7 +19,6 @@
 #include "qgsmeshlayer.h"
 #include "qgsmessagelog.h"
 
-
 QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidget *parent )
   : QWidget( parent )
 
@@ -37,6 +36,9 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
 
   connect( mShaftLengthComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
            mShaftOptionsStackedWidget, &QStackedWidget::setCurrentIndex );
+
+  connect( mDisplayVectorsOnGridGroupBox, &QGroupBox::toggled, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+
   QVector<QLineEdit *> widgets;
   widgets << mMinMagLineEdit << mMaxMagLineEdit
           << mHeadWidthLineEdit << mHeadLengthLineEdit
@@ -47,6 +49,9 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
   {
     connect( widget, &QLineEdit::textChanged, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
   }
+
+  connect( mXSpacingSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
+  connect( mYSpacingSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 }
 
 void QgsMeshRendererVectorSettingsWidget::setLayer( QgsMeshLayer *layer )
@@ -75,6 +80,12 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
 
   val = filterValue( mHeadLengthLineEdit->text(), settings.arrowHeadLengthRatio() * 100.0 );
   settings.setArrowHeadLengthRatio( val / 100.0 );
+
+  // user grid
+  bool enabled = mDisplayVectorsOnGridGroupBox->isChecked();
+  settings.setOnUserDefinedGrid( enabled );
+  settings.setUserGridCellWidth( mXSpacingSpinBox->value() );
+  settings.setUserGridCellHeight( mYSpacingSpinBox->value() );
 
   // shaft length
   auto method = static_cast<QgsMeshRendererVectorSettings::ArrowScalingMethod>( mShaftLengthComboBox->currentIndex() );
@@ -123,6 +134,11 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   // arrow head
   mHeadWidthLineEdit->setText( QString::number( settings.arrowHeadWidthRatio() * 100.0 ) );
   mHeadLengthLineEdit->setText( QString::number( settings.arrowHeadLengthRatio() * 100.0 ) );
+
+  // user grid
+  mDisplayVectorsOnGridGroupBox->setChecked( settings.isOnUserDefinedGrid() );
+  mXSpacingSpinBox->setValue( settings.userGridCellWidth() );
+  mYSpacingSpinBox->setValue( settings.userGridCellHeight() );
 
   // shaft length
   mShaftLengthComboBox->setCurrentIndex( settings.shaftLengthMethod() );
