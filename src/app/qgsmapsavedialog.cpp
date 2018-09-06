@@ -113,7 +113,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   }
   else
   {
-    QPushButton *button = new QPushButton( tr( "Copy to clipboard" ) );
+    QPushButton *button = new QPushButton( tr( "Copy to Clipboard" ) );
     buttonBox->addButton( button, QDialogButtonBox::ResetRole );
     connect( button, &QPushButton::clicked, this, &QgsMapSaveDialog::copyToClipboard );
   }

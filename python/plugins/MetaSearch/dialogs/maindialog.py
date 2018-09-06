@@ -299,7 +299,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         """add new service"""
 
         conn_new = NewConnectionDialog()
-        conn_new.setWindowTitle(self.tr('New Catalog service'))
+        conn_new.setWindowTitle(self.tr('New Catalog Service'))
         if conn_new.exec_() == QDialog.Accepted:  # add to service list
             self.populate_connection_list()
         self.textMetadata.clear()
@@ -312,7 +312,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         url = self.settings.value('/MetaSearch/%s/url' % current_text)
 
         conn_edit = NewConnectionDialog(current_text)
-        conn_edit.setWindowTitle(self.tr('Edit Catalog service'))
+        conn_edit.setWindowTitle(self.tr('Edit Catalog Service'))
         conn_edit.leName.setText(current_text)
         conn_edit.leURL.setText(url)
         conn_edit.leUsername.setText(self.settings.value('/MetaSearch/%s/username' % current_text))

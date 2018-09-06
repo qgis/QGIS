@@ -86,7 +86,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Map view extent</string>
+         <string>Map Canvas Extent</string>
         </property>
        </widget>
       </item>
@@ -138,7 +138,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Calculate from layer</string>
+         <string>Calculate from Layer</string>
         </property>
        </widget>
       </item>
@@ -151,7 +151,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Draw on canvas</string>
+         <string>Draw on Canvas</string>
         </property>
        </widget>
       </item>
@@ -164,7 +164,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Current layer extent</string>
+         <string>Current Layer Extent</string>
         </property>
        </widget>
       </item>

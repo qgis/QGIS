@@ -128,7 +128,7 @@ void CoordinateCapture::initGui()
   mpCanvasEdit->setToolTip( tr( "Coordinate in map canvas coordinate reference system (lat,lon or east,north)" ) );
 
   QPushButton *mypCopyButton = new QPushButton( mypWidget );
-  mypCopyButton->setText( tr( "Copy to clipboard" ) );
+  mypCopyButton->setText( tr( "Copy to Clipboard" ) );
   connect( mypCopyButton, &QAbstractButton::clicked, this, &CoordinateCapture::copy );
 
   mpTrackMouseButton = new QToolButton( mypWidget );
