@@ -406,6 +406,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   {
     const char *enumKey = metaEnum.key( idx );
     QDomNode flagNode = flagsElem.namedItem( QString( enumKey ) );
+    if ( flagNode.isNull() )
+      continue;
     bool flagValue = flagNode.toElement().text() == "1" ? true : false;
     QgsMapLayer::LayerFlag enumValue = static_cast<QgsMapLayer::LayerFlag>( metaEnum.keyToValue( enumKey ) );
     if ( mFlags.testFlag( enumValue ) && !flagValue )
