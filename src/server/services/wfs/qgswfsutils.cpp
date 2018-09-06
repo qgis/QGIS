@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsfssutils.cpp
+                              qgswfssutils.cpp
                               -------------------------
   begin                : December 20 , 2016
   copyright            : (C) 2007 by Marco Hugentobler  ( parts from qgswmshandler)

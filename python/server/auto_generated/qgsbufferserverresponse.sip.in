@@ -54,7 +54,7 @@ Returns all the headers
     virtual bool headersSent() const;
 
 %Docstring
-Returns true if the headers have alredy been sent
+Returns true if the headers have already been sent
 %End
 
     virtual void setStatusCode( int code );

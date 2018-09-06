@@ -353,6 +353,7 @@ alcholic:alcoholic
 alcohal:alcohol
 alcoholical:alcoholic
 aleady:already
+alredy:already
 aledge:allege:*
 aledged:alleged
 aledges:alleges:*
@@ -1675,6 +1676,7 @@ consumate:consummate
 consumated:consummated
 contaiminate:contaminate
 containes:contains
+containint:containing
 containg:containing
 containging:containing
 containting:containing
@@ -1848,6 +1850,7 @@ coutners:counters
 coverted:converted
 coypright:copyright
 cpoy:copy
+craete:create
 creaeted:created
 creationg:creating
 creche:crèche
@@ -1913,6 +1916,7 @@ deamons:daemons
 deatch:detach
 deatched:detached
 deatches:detaches
+deactive:deactivate
 deatching:detaching
 debain:Debian
 debateable:debatable
@@ -1949,6 +1953,7 @@ decribe:describe
 decribed:described
 decribes:describes
 decribing:describing
+desctiption:description
 decription:description
 decriptions:descriptions
 decriptor:descriptor
@@ -2208,6 +2213,7 @@ diferrent:different
 diffcult:difficult
 diffculties:difficulties
 diffculty:difficulty
+differen:different
 differenciate:differentiate
 differenciated:differentiated
 differenciates:differentiates
@@ -2392,6 +2398,7 @@ documetation:documentation
 documment:document
 documments:documents
 doens't:doesn't
+doesnot:doesn't
 doens:does
 does'nt:doesn't
 does't:doesn't
@@ -2763,6 +2770,7 @@ exagerrating:exaggerating
 examinated:examined
 exampt:exempt
 exapansion:expansion
+expaning:expanding
 exapmle:example
 exapmles:examples
 excact:exact
@@ -2951,6 +2959,7 @@ favoutrable:favourable
 feasable:feasible
 featre:feature
 featue:feature
+feautre:feature
 featues:features
 feauture:feature
 feautures:features
@@ -3275,6 +3284,7 @@ guranteeing:guaranteeing
 gurantees:guarantees
 guttaral:guttural
 gutteral:guttural
+hammmer:hammer
 habaeus:habeas
 habeus:habeas
 Habsbourg:Habsburg
@@ -3417,6 +3427,7 @@ hopefuly:hopefully
 hoppefully:hopefully
 horrifing:horrifying
 horzontal:horizontal
+horizonal:horizontal
 horzontally:horizontally
 hosited:hoisted
 hospitible:hospitable
@@ -4120,6 +4131,7 @@ konw:know
 konwn:known
 konws:knows
 kwno:know
+leniant:lenient
 labatory:laboratory
 labelling:labeling
 labled:labeled
@@ -5509,6 +5521,7 @@ protable:portable
 protaganist:protagonist
 protaganists:protagonists
 protcol:protocol
+protocl:protocol
 protecion:protection
 protocal:protocol
 protocals:protocols
@@ -6054,6 +6067,8 @@ retores:restores
 retoring:restoring
 retransmited:retransmitted
 retreive:retrieve
+retreiving:retrieving
+retieve:retrieve
 retreived:retrieved
 retrive:retrieve
 retrived:retrieved
@@ -6195,6 +6210,7 @@ scince:science
 scinece:science
 scirpt:script
 scoll:scroll
+crolls:scrolls
 scolling:scrolling
 screenwrighter:screenwriter
 scriping:scripting
@@ -6386,6 +6402,7 @@ slashs:slashes
 slaugterhouses:slaughterhouses
 slection:selection
 slighly:slightly
+sightly:slightly
 sligth:slight
 sligthly:slightly
 slippy:slippery
@@ -6489,6 +6506,7 @@ speices:species
 speling:spelling
 spendour:splendour
 spermatozoan:spermatozoon
+spliting:splitting
 splitted:split
 spoace:space
 sponser:sponsor
@@ -6802,6 +6820,7 @@ swaping:swapping
 swepth:swept
 swiming:swimming
 switchs:switches:*
+swithed:switched
 syas:says
 syle:style
 syles:styles
@@ -6857,6 +6876,9 @@ sytems:systems
 sythesis:synthesis
 sytle:style
 tabacco:tobacco
+triange:triangle
+toogle:toggle
+fron:from
 tahn:than
 taht:that
 talekd:talked
@@ -7179,6 +7201,7 @@ uncertainities:uncertainties
 uncertainity:uncertainty
 unchallengable:unchallengeable
 unchangable:unchangeable
+comon:common
 uncoment:uncomment
 uncomented:uncommented
 uncomenting:uncommenting
@@ -7393,6 +7416,7 @@ vaieties:varieties
 vaild:valid
 vailidty:validity
 valetta:valletta
+vlues:values
 validing:validating
 valied:valid
 valu:value
@@ -7530,6 +7554,7 @@ wereabouts:whereabouts
 werent:weren't
 wether:whether
 whant:want
+whan:when
 whants:wants
 whataver:whatever
 whcih:which

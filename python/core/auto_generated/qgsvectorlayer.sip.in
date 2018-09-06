@@ -2530,7 +2530,7 @@ Signal emitted, when an edit command successfully ended
 
     void editCommandDestroyed();
 %Docstring
-Signal emitted, whan an edit command is destroyed
+Signal emitted, when an edit command is destroyed
 
 .. note::
 

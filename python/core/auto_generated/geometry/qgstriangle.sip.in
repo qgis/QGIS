@@ -226,7 +226,7 @@ Is the triangle right-angled?
 
     bool isScalene( double lengthTolerance = 0.0001 ) const;
 %Docstring
-Is the triangle scalene (all sides have differen lengths)?
+Is the triangle scalene (all sides have different lengths)?
 
 :param lengthTolerance: The tolerance to use
 
