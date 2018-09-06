@@ -113,7 +113,7 @@ class QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
     QIcon mLayerIcon;
 };
 
-class QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
+class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
 
