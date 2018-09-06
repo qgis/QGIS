@@ -326,7 +326,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     QVector<QgsDataItem *> mChildren; // easier to have it always
     State mState;
     QString mName;
-    // Path is slash ('/') separated chain of item identifiers which are usually item names, but may be differen if it is
+    // Path is slash ('/') separated chain of item identifiers which are usually item names, but may be different if it is
     // necessary to distinguish paths of two providers to the same source (e.g GRASS location and standard directory have the same
     // name but different paths). Identifiers in path must not contain '/' characters.
     // The path is used to identify item in tree.

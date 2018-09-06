@@ -116,7 +116,7 @@ class CORE_EXPORT QgsRasterPipe
      *  Returns true on success */
     bool setOn( int idx, bool on );
 
-    //! Test if interface at index may be swithed on/off
+    //! Test if interface at index may be switched on/off
     bool canSetOn( int idx, bool on );
 
     // Getters for special types of interfaces

@@ -88,7 +88,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     void setEditCommandMessage( const QString &message ) { mAttributeForm->setEditCommandMessage( message ); }
 
     /**
-     * Intercept window activate/deactive events to show/hide the highlighted feature.
+     * Intercept window activate/deactivate events to show/hide the highlighted feature.
      *
      * \param e The event
      *

@@ -73,7 +73,7 @@ class SERVER_EXPORT QgsServerResponse
     virtual QMap<QString, QString> headers() const = 0;
 
     /**
-     * Returns true if the headers have alredy been sent
+     * Returns true if the headers have already been sent
      */
     virtual bool headersSent() const = 0;
 

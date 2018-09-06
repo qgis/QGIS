@@ -66,7 +66,7 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
     QMap<QString, QString> headers() const override { return mHeaders; }
 
     /**
-     * Returns true if the headers have alredy been sent
+     * Returns true if the headers have already been sent
      */
     bool headersSent() const override;
 

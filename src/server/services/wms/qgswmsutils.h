@@ -4,7 +4,7 @@
   Define WMS service utility functions
   ------------------------------------
   begin                : December 20 , 2016
-  copyright            : (C) 2007 by Marco Hugentobler  ( parts fron qgswmshandler)
+  copyright            : (C) 2007 by Marco Hugentobler  ( parts from qgswmshandler)
                          (C) 2014 by Alessandro Pasotti ( parts from qgswmshandler)
                          (C) 2016 by David Marteau
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch

@@ -68,7 +68,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     //! Gets the host:port to associate with the server certificate
     const QString sslHost();
 
-    //! Gets the SSL protocl used for connections
+    //! Gets the SSL protocol used for connections
     QSsl::SslProtocol sslProtocol();
 
     //! Gets list of the SSL errors (as enums) to be ignored for connections

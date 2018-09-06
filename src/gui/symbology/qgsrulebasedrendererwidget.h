@@ -27,7 +27,7 @@ class QgsSymbolSelectorWidget;
 
 #include <QAbstractItemModel>
 
-/* Features count fro rule */
+/* Features count for rule */
 struct QgsRuleBasedRendererCount SIP_SKIP
 {
   int count; // number of features

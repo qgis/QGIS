@@ -49,7 +49,7 @@ typedef QMap<int, QString> QgsSymbolGroupMap;
  *
  *  The supported constraints are:
  *  tag -> symbol has the tag matching the parameter
- *  !tag -> symbol doesnot have the tag matching the parameter
+ *  !tag -> symbol doesn't have the tag matching the parameter
  *  name -> symbol has a part of its name matching the parameter
  *  !name -> symbol doesn't have any part of the name matching the parameter
  *

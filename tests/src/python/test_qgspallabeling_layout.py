@@ -55,7 +55,7 @@ from test_qgspallabeling_tests import (
 # look for Poppler w/ Cairo, then muPDF
 # * Poppler w/ Cairo renders correctly
 # * Poppler w/o Cairo does not always correctly render vectors in PDF to image
-# * muPDF renders correctly, but sightly shifts colors
+# * muPDF renders correctly, but slightly shifts colors
 for util in [
     'pdftocairo',
     # 'mudraw',

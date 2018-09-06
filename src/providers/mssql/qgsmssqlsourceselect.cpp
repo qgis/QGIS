@@ -620,7 +620,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
   else
   {
     QApplication::restoreOverrideCursor();
-    // Let user know we couldn't retieve tables from the MSSQL provider
+    // Let user know we couldn't retrieve tables from the MSSQL provider
     QMessageBox::warning( this,
                           tr( "MSSQL Provider" ), q.lastError().text() );
     return;

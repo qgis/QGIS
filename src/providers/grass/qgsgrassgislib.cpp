@@ -224,7 +224,7 @@ int GRASS_LIB_EXPORT QgsGrassGisLib::G__gisinit( const char *version, const char
   }
   mDistanceArea.setSourceCrs( mCrs );
 
-  // Read region fron environment variable
+  // Read region from environment variable
   // QGIS_GRASS_REGION=west,south,east,north,cols,rows
 #if 0
   QString regionStr = getenv( "QGIS_GRASS_REGION" );
