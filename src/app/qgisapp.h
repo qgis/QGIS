@@ -101,6 +101,9 @@ class QgsVectorLayerTools;
 class QgsWelcomePage;
 class QgsOptionsWidgetFactory;
 class QgsStatusBar;
+class QgsGeometryValidationService;
+class QgsGeometryValidationDock;
+class QgsGeometryValidationModel;
 class QgsUserProfileManagerWidgetFactory;
 class Qgs3DMapCanvasDockWidget;
 
@@ -114,6 +117,7 @@ class QgsAdvancedDigitizingDockWidget;
 class QgsGpsInformationWidget;
 class QgsStatisticalSummaryDockWidget;
 class QgsMapCanvasTracer;
+
 class QgsDecorationItem;
 class QgsMessageLogViewer;
 class QgsMessageBar;
@@ -689,13 +693,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Returns pointer to the identify map tool - used by identify tool in 3D view
     QgsMapToolIdentifyAction *identifyMapTool() const { return mMapTools.mIdentify; }
-
-    /**
-     * Take screenshots for user documentation
-     * @param saveDirectory path were the screenshots will be saved
-     * @param categories an int as a flag value of QgsAppScreenShots::Categories
-     */
-    void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 );
 
   public slots:
     //! save current vector layer
@@ -1970,9 +1967,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Populates project "load from" / "save to" menu based on project storages (when the menu is about to be shown)
     void populateProjectStorageMenu( QMenu *menu, bool saving );
 
-    //! Create the option dialog
-    QgsOptions *createOptionsDialog( QWidget *parent = nullptr );
-
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
     // actions for menus and toolbars -----------------
@@ -2145,6 +2139,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! interface to QgisApp for plugins
     QgisAppInterface *mQgisInterface = nullptr;
+    friend class QgisAppInterface;
 
     QSplashScreen *mSplash = nullptr;
     //! list of recently opened/saved project files
@@ -2311,8 +2306,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool mBlockActiveLayerChanged = false;
 
     friend class TestQgisAppPython;
-    friend class QgisAppInterface;
-    friend class QgsAppScreenShots;
 };
 
 #ifdef ANDROID

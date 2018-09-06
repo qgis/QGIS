@@ -48,6 +48,9 @@ SET(QGIS_APP_SRCS
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
   qgsfirstrundialog.cpp
+  qgsgeometryvalidationservice.cpp
+  qgsgeometryvalidationdock.cpp
+  qgsgeometryvalidationmodel.cpp
   qgssourcefieldsproperties.cpp
   qgsattributesformproperties.cpp
   qgsidentifyresultsdialog.cpp
@@ -276,6 +279,9 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributesformproperties.h
   qgsformannotationdialog.h
   qgsguivectorlayertools.h
+  qgsgeometryvalidationservice.h
+  qgsgeometryvalidationdock.h
+  qgsgeometryvalidationmodel.h
   qgshtmlannotationdialog.h
   qgsidentifyresultsdialog.h
   qgslabelengineconfigdialog.h
@@ -692,6 +698,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 INCLUDE_DIRECTORIES(
   ../analysis/processing
   ../analysis/raster
+  ../analysis/vector/geometry_checker
   ../core
   ../core/annotations
   ../core/auth
