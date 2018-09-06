@@ -23,14 +23,19 @@
 class ANALYSIS_EXPORT QgsGeometryPointInPolygonCheck : public QgsGeometryCheck
 {
   public:
-    QgsGeometryPointInPolygonCheck( QgsGeometryCheckerContext *context )
-      : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::PointGeometry}, context )
+    QgsGeometryPointInPolygonCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
+      : QgsGeometryCheck( FeatureNodeCheck, context, configuration )
     {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
-    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PointGeometry}; }
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
+    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Point not in polygon" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometryPointInPolygonCheck" ); }
+    QString factoryDescription() const { return tr( "Point not in polygon" ); }
+    QString description() const override { return factoryDescription(); }
+    QString factoryId() const { return QStringLiteral( "QgsGeometryPointInPolygonCheck" ); }
+    QString id() const override { return factoryId(); }
 
     enum ResolutionMethod { NoChange };
 };

@@ -13,14 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrydanglecheck.h"
 #include "qgslinestring.h"
 #include "qgsvectorlayer.h"
+#include "qgsgeometrycheckerror.h"
 
-void QgsGeometryDangleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+void QgsGeometryDangleCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, mContext );
+  Q_UNUSED( messages )
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
@@ -47,7 +50,7 @@ void QgsGeometryDangleCheck::collectErrors( QList<QgsGeometryCheckError *> &erro
       }
 
       // Check whether endpoints line on another line in the layer
-      QgsGeometryCheckerUtils::LayerFeatures checkFeatures( mContext->featurePools, QList<QString>() << layerFeature.layer()->id(), line->boundingBox(), {QgsWkbTypes::LineGeometry}, mContext );
+      QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, QList<QString>() << layerFeature.layer()->id(), line->boundingBox(), {QgsWkbTypes::LineGeometry}, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
         const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();
@@ -91,8 +94,10 @@ void QgsGeometryDangleCheck::collectErrors( QList<QgsGeometryCheckError *> &erro
   }
 }
 
-void QgsGeometryDangleCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes & /*changes*/ ) const
+void QgsGeometryDangleCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes & /*changes*/ ) const
 {
+  Q_UNUSED( featurePools )
+
   if ( method == NoChange )
   {
     error->setFixed( method );

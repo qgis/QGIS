@@ -23,13 +23,18 @@
 class ANALYSIS_EXPORT QgsGeometrySelfContactCheck : public QgsSingleGeometryCheck
 {
   public:
-    QgsGeometrySelfContactCheck( QgsGeometryCheckerContext *context )
-      : QgsSingleGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
-    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const override;
-    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes & ) const override;
+    QgsGeometrySelfContactCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
+      : QgsSingleGeometryCheck( FeatureNodeCheck, context, configuration ) {}
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
+    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
+    void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes & ) const override;
     QStringList resolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Self contact" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometrySelfContactCheck" ); }
+    QString factoryDescription() const { return tr( "Self contact" ); }
+    QString description() const override { return factoryDescription(); }
+    QString factoryId() const { return QStringLiteral( "QgsGeometrySelfContactCheck" ); }
+    QString id() const override { return factoryId(); }
 
     enum ResolutionMethod { NoChange };
 };

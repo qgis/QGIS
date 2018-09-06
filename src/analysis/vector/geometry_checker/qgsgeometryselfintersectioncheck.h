@@ -45,15 +45,32 @@ class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheckError : public QgsSingleGe
 class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheck : public QgsSingleGeometryCheck
 {
   public:
-    explicit QgsGeometrySelfIntersectionCheck( QgsGeometryCheckerContext *context )
-      : QgsSingleGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
-    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
-    QStringList resolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Self intersection" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometrySelfIntersectionCheck" ); }
-    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const override;
+    enum ResolutionMethod
+    {
+      ToMultiObject,
+      ToSingleObjects,
+      NoChange
+    };
 
-    enum ResolutionMethod { ToMultiObject, ToSingleObjects, NoChange };
+    explicit QgsGeometrySelfIntersectionCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration = QVariantMap() )
+      : QgsSingleGeometryCheck( FeatureNodeCheck,
+                                context,
+                                configuration ) {}
+    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
+    QStringList resolutionMethods() const override;
+    QString description() const override { return factoryDescription(); }
+    QString id() const override { return factoryId(); }
+    QgsGeometryCheck::Flags flags() const override {return factoryFlags(); }
+    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
+///@cond private
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP;
+    static QString factoryDescription() SIP_SKIP;
+    static QgsGeometryCheck::Flags factoryFlags() SIP_SKIP;
+    static QString factoryId() SIP_SKIP;
+///@endcond private
+
 };
 
 #endif // QGS_GEOMETRY_SELFINTERSECTION_CHECK_H

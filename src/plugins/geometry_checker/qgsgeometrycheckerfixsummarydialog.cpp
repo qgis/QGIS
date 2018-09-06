@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerfixsummarydialog.h"
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheck.h"
@@ -21,8 +22,11 @@
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
+#include "qgsgeometrycheckerror.h"
 
-QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const Statistics &stats, QgsGeometryChecker *checker, QWidget *parent )
+QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const Statistics &stats,
+    QgsGeometryChecker *checker,
+    QWidget *parent )
   : QDialog( parent )
   , mChecker( checker )
 {
@@ -75,7 +79,7 @@ void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget *table, QgsGeome
 
   int row = table->rowCount();
   table->insertRow( row );
-  table->setItem( row, 0, new QTableWidgetItem( !error->layerId().isEmpty() ? mChecker->getContext()->featurePools[error->layerId()]->layer()->name() : "" ) );
+  table->setItem( row, 0, new QTableWidgetItem( !error->layerId().isEmpty() ? mChecker->featurePools()[error->layerId()]->layer()->name() : "" ) );
   QTableWidgetItem *idItem = new QTableWidgetItem();
   idItem->setData( Qt::EditRole, error->featureId() != FEATUREID_NULL ? QVariant( error->featureId() ) : QVariant() );
   table->setItem( row, 1, idItem );

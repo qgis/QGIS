@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrymultipartcheck.h"
 #include "qgsfeaturepool.h"
 
-QList<QgsSingleGeometryCheckError *> QgsGeometryMultipartCheck::processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const
+QList<QgsSingleGeometryCheckError *> QgsGeometryMultipartCheck::processGeometry( const QgsGeometry &geometry ) const
 {
-  Q_UNUSED( configuration )
   QList<QgsSingleGeometryCheckError *> errors;
 
   const QgsAbstractGeometry *geom = geometry.constGet();
@@ -30,9 +30,9 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryMultipartCheck::processGeometry(
   return errors;
 }
 
-void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
+void QgsGeometryMultipartCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
-  QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
+  QgsFeaturePool *featurePool = featurePools[ error->layerId() ];
   QgsFeature feature;
   if ( !featurePool->getFeature( error->featureId(), feature ) )
   {

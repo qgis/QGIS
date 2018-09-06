@@ -1,0 +1,63 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckfactory.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsGeometryCheckFactory /Abstract/
+{
+
+%TypeHeaderCode
+#include "qgsgeometrycheckfactory.h"
+%End
+  public:
+
+    virtual ~QgsGeometryCheckFactory();
+
+    virtual QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) const = 0 /Factory/;
+
+    virtual QString id() const = 0;
+
+    virtual QString description() const = 0;
+
+    virtual bool isCompatible( QgsVectorLayer *layer ) const = 0;
+
+    virtual QgsGeometryCheck::Flags flags() const = 0;
+};
+
+template<T>
+class QgsGeometryCheckFactoryT : QgsGeometryCheckFactory
+{
+
+%TypeHeaderCode
+#include "qgsgeometrycheckfactory.h"
+%End
+  public:
+    virtual QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) const;
+
+    virtual QString description() const;
+
+    virtual QString id() const;
+
+    virtual bool isCompatible( QgsVectorLayer *layer ) const;
+
+    virtual QgsGeometryCheck::Flags flags() const;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckfactory.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

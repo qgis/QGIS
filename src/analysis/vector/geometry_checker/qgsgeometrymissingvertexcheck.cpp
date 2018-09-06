@@ -15,7 +15,7 @@
 
 #include "qgsgeometrymissingvertexcheck.h"
 
-#include "qgsfeaturepool.h"
+#include "qgsfeedback.h"
 #include "qgsgeometrycollection.h"
 #include "qgsmultipolygon.h"
 #include "qgscurvepolygon.h"
@@ -24,17 +24,24 @@
 #include "qgsgeometryengine.h"
 #include "qgsgeometryutils.h"
 
-void QgsGeometryMissingVertexCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+QgsGeometryMissingVertexCheck::QgsGeometryMissingVertexCheck( const QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfiguration )
+  : QgsGeometryCheck( LayerCheck,  context, geometryCheckConfiguration )
+
 {
-  Q_UNUSED( messages );
-  if ( progressCounter )
-    progressCounter->fetchAndAddRelaxed( 1 );
+
+}
+
+void QgsGeometryMissingVertexCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+{
+  Q_UNUSED( messages )
+  if ( feedback )
+    feedback->setProgress( feedback->progress() + 1.0 );
 
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
 
   QgsFeaturePool *featurePool = mContext->featurePools.value( featureIds.firstKey() );
 
-  const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, nullptr, mContext, true );
+  const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), nullptr, mContext, true );
 
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
@@ -58,10 +65,10 @@ void QgsGeometryMissingVertexCheck::collectErrors( QList<QgsGeometryCheckError *
   }
 }
 
-void QgsGeometryMissingVertexCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const
+void QgsGeometryMissingVertexCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
-  Q_UNUSED( mergeAttributeIndices );
-  Q_UNUSED( changes );
+  Q_UNUSED( featurePools )
+  Q_UNUSED( changes )
   if ( method == NoChange )
   {
     error->setFixed( method );
@@ -72,6 +79,11 @@ QStringList QgsGeometryMissingVertexCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;
+}
+
+QString QgsGeometryMissingVertexCheck::description() const
+{
+  return factoryDescription();
 }
 
 void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polygon, QgsFeaturePool *featurePool, QList<QgsGeometryCheckError *> &errors, const QgsGeometryCheckerUtils::LayerFeature &layerFeature ) const
@@ -130,4 +142,44 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
       }
     }
   }
+}
+
+QString QgsGeometryMissingVertexCheck::id() const
+{
+  return factoryId();
+}
+
+QList<QgsWkbTypes::GeometryType> QgsGeometryMissingVertexCheck::compatibleGeometryTypes() const
+{
+  return factoryCompatibleGeometryTypes();
+}
+
+QgsGeometryCheck::Flags QgsGeometryMissingVertexCheck::flags() const
+{
+  return factoryFlags();
+}
+
+QList<QgsWkbTypes::GeometryType> QgsGeometryMissingVertexCheck::factoryCompatibleGeometryTypes()
+{
+  return {QgsWkbTypes::PolygonGeometry};
+}
+
+bool QgsGeometryMissingVertexCheck::factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP
+{
+  return factoryCompatibleGeometryTypes().contains( layer->geometryType() );
+}
+
+QString QgsGeometryMissingVertexCheck::factoryDescription()
+{
+  return tr( "Missing Vertex" );
+}
+
+QString QgsGeometryMissingVertexCheck::factoryId()
+{
+  return QStringLiteral( "QgsGeometryMissingVertexCheck" );
+}
+
+QgsGeometryCheck::Flags QgsGeometryMissingVertexCheck::factoryFlags()
+{
+  return QgsGeometryCheck::SingleLayerTopologyCheck;
 }

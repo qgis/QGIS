@@ -13,16 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometrycontainedcheck.h"
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
 
 
-void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+void QgsGeometryContainedCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, mContext );
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
+  QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
     QgsRectangle bboxA = layerFeatureA.geometry().boundingBox();
@@ -32,7 +33,7 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &e
       messages.append( tr( "Contained check failed for (%1): the geometry is invalid" ).arg( layerFeatureA.id() ) );
       continue;
     }
-    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, featureIds.keys(), bboxA, mCompatibleGeometryTypes, mContext );
+    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featurePools, featureIds.keys(), bboxA, compatibleGeometryTypes(), mContext );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
       if ( layerFeatureA == layerFeatureB )
@@ -59,11 +60,11 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &e
   }
 }
 
-void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
+void QgsGeometryContainedCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
   QgsGeometryContainedCheckError *containerError = static_cast<QgsGeometryContainedCheckError *>( error );
-  QgsFeaturePool *featurePoolA = mContext->featurePools[ error->layerId() ];
-  QgsFeaturePool *featurePoolB = mContext->featurePools[ containerError->containingFeature().first ];
+  QgsFeaturePool *featurePoolA = featurePools[ error->layerId() ];
+  QgsFeaturePool *featurePoolB = featurePools[ containerError->containingFeature().first ];
 
   QgsFeature featureA;
   QgsFeature featureB;

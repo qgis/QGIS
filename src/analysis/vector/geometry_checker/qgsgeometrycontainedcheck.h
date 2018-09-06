@@ -20,6 +20,7 @@
 
 #include "qgsgeometrycheck.h"
 #include "qgsvectorlayer.h"
+#include "qgsgeometrycheckerror.h"
 
 class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckError
 {
@@ -41,7 +42,8 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckEr
              static_cast<QgsGeometryContainedCheckError *>( other )->containingFeature() == containingFeature();
     }
 
-    QString description() const override { return QApplication::translate( "QgsGeometryContainedCheckError", "Within feature" ); }
+    QString factoryDescription() const { return QApplication::translate( "QgsGeometryContainedCheckError", "Within feature" ); }
+    QString description() const override { return factoryDescription(); }
 
   private:
     QPair<QString, QgsFeatureId> mContainingFeature;
@@ -50,13 +52,18 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckEr
 class ANALYSIS_EXPORT QgsGeometryContainedCheck : public QgsGeometryCheck
 {
   public:
-    explicit QgsGeometryContainedCheck( QgsGeometryCheckerContext *context )
-      : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
-    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
+    explicit QgsGeometryContainedCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
+      : QgsGeometryCheck( FeatureCheck, context, configuration ) {}
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
+    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Within" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometryContainedCheck" ); }
+    QString factoryDescription() const { return tr( "Within" ); }
+    QString description() const override { return factoryDescription(); }
+    QString factoryId() const { return QStringLiteral( "QgsGeometryContainedCheck" ); }
+    QString id() const override { return factoryId(); }
 
     enum ResolutionMethod { Delete, NoChange };
 };

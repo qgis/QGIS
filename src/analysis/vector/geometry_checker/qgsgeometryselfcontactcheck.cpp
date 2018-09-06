@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryselfcontactcheck.h"
 #include "qgsgeometryutils.h"
 #include "qgsfeaturepool.h"
 
-QList<QgsSingleGeometryCheckError *> QgsGeometrySelfContactCheck::processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const
+QList<QgsSingleGeometryCheckError *> QgsGeometrySelfContactCheck::processGeometry( const QgsGeometry &geometry ) const
 {
-  Q_UNUSED( configuration )
   QList<QgsSingleGeometryCheckError *> errors;
   const QgsAbstractGeometry *geom = geometry.constGet();
   for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
@@ -81,8 +81,9 @@ QList<QgsSingleGeometryCheckError *> QgsGeometrySelfContactCheck::processGeometr
   return errors;
 }
 
-void QgsGeometrySelfContactCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes & /*changes*/ ) const
+void QgsGeometrySelfContactCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes & /*changes*/ ) const
 {
+  Q_UNUSED( featurePools )
   if ( method == NoChange )
   {
     error->setFixed( method );

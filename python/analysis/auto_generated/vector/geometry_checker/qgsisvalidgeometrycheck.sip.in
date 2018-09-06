@@ -1,0 +1,37 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsisvalidgeometrycheck.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsIsValidGeometryCheck : QgsSingleGeometryCheck
+{
+%Docstring
+Checks if geometries are valid.
+%End
+
+%TypeHeaderCode
+#include "qgsisvalidgeometrycheck.h"
+%End
+  public:
+    explicit QgsIsValidGeometryCheck( QgsGeometryCheckerContext *context );
+    virtual QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const;
+
+
+    virtual QString errorDescription() const;
+
+    virtual QString errorName() const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsisvalidgeometrycheck.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
