@@ -1140,9 +1140,12 @@ QMap< QString, QString > QgsOptions::pageWidgetNameMap()
   {
     QWidget *currentPage = mOptionsStackedWidget->widget( idx );
     QListWidgetItem *item = mOptionsListWidget->item( idx );
-    QString title = item->text();
-    QString name = currentPage->objectName();
-    pageNames.insert( title, name );
+    if ( currentPage && item )
+    {
+      QString title = item->text();
+      QString name = currentPage->objectName();
+      pageNames.insert( title, name );
+    }
   }
   return pageNames;
 }
