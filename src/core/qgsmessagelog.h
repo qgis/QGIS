@@ -138,6 +138,10 @@ class CORE_EXPORT QgsMessageLogConsole : public QObject
     Q_OBJECT
 
   public:
+
+    /**
+     * Constructor for QgsMessageLogConsole.
+     */
     QgsMessageLogConsole();
 
   protected:
@@ -152,6 +156,14 @@ class CORE_EXPORT QgsMessageLogConsole : public QObject
     QString formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level = Qgis::Info ) const;
 
   public slots:
+
+    /**
+     * Log a message to stderr.
+     *
+     * \param message the message to format
+     * \param tag the tag of the message
+     * \param level the log level of the message
+     */
     void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 };
 
