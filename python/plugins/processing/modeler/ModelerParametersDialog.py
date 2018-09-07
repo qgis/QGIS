@@ -231,8 +231,10 @@ class ModelerParametersDialog(QDialog):
             self.advancedButton.setText(self.tr('Show advanced parameters'))
         for param in self._alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
-                self.wrappers[param.name()].widget.setVisible(self.showAdvanced)
-                self.wrappers[param.name()].label.setVisible(self.showAdvanced)
+                wrapper = self.wrappers[param.name()]
+                if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
+                    self.wrappers[param.name()].widget.setVisible(self.showAdvanced)
+                    self.wrappers[param.name()].label.setVisible(self.showAdvanced)
 
     def getAvailableValuesOfType(self, paramType, outTypes=[], dataTypes=[]):
         # upgrade paramType to list
