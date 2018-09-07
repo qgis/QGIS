@@ -132,9 +132,8 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
     static const int CACHE_SIZE = 1000;
     QCache<QgsFeatureId, QgsFeature> mFeatureCache;
     QPointer<QgsVectorLayer> mLayer;
-    QReadWriteLock mCacheLock;
+    mutable QReadWriteLock mCacheLock;
     QgsFeatureIds mFeatureIds;
-    mutable QReadWriteLock mIndexLock;
     QgsSpatialIndex mIndex;
     double mLayerToMapUnits = 1.0;
     QgsCoordinateTransform mLayerToMapTransform;
