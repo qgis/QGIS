@@ -29,6 +29,7 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsproperty.h"
+#include "qgsstyle.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -955,4 +956,66 @@ void QgsCategorizedSymbolRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeL
 QgsDataDefinedSizeLegend *QgsCategorizedSymbolRenderer::dataDefinedSizeLegend() const
 {
   return mDataDefinedSizeLegend.get();
+}
+
+int QgsCategorizedSymbolRenderer::matchToSymbols( QgsStyle *style, const QgsSymbol::SymbolType type, QVariantList &unmatchedCategories, QStringList &unmatchedSymbols, const bool caseSensitive, const bool useTolerantMatch )
+{
+  if ( !style )
+    return 0;
+
+  int matched = 0;
+  unmatchedSymbols = style->symbolNames();
+  const QSet< QString > allSymbolNames = unmatchedSymbols.toSet();
+
+  const QRegularExpression tolerantMatchRe( QStringLiteral( "[^\\w\\d ]" ), QRegularExpression::UseUnicodePropertiesOption );
+
+  for ( int catIdx = 0; catIdx < mCategories.count(); ++catIdx )
+  {
+    const QVariant value = mCategories.at( catIdx ).value();
+    const QString val = value.toString().trimmed();
+    std::unique_ptr< QgsSymbol > symbol( style->symbol( val ) );
+    // case-sensitive match
+    if ( symbol && symbol->type() == type )
+    {
+      matched++;
+      unmatchedSymbols.removeAll( val );
+      updateCategorySymbol( catIdx, symbol.release() );
+      continue;
+    }
+
+    if ( !caseSensitive || useTolerantMatch )
+    {
+      QString testVal = val;
+      if ( useTolerantMatch )
+        testVal.replace( tolerantMatchRe, QString() );
+
+      bool foundMatch = false;
+      for ( const QString &name : allSymbolNames )
+      {
+        QString testName = name.trimmed();
+        if ( useTolerantMatch )
+          testName.replace( tolerantMatchRe, QString() );
+
+        if ( testName == testVal || ( !caseSensitive && testName.trimmed().compare( testVal, Qt::CaseInsensitive ) == 0 ) )
+        {
+          // found a case-insensitive match
+          std::unique_ptr< QgsSymbol > symbol( style->symbol( name ) );
+          if ( symbol && symbol->type() == type )
+          {
+            matched++;
+            unmatchedSymbols.removeAll( name );
+            updateCategorySymbol( catIdx, symbol.release() );
+            foundMatch = true;
+            break;
+          }
+        }
+      }
+      if ( foundMatch )
+        continue;
+    }
+
+    unmatchedCategories << value;
+  }
+
+  return matched;
 }

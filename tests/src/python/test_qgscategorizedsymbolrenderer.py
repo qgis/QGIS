@@ -18,10 +18,14 @@ from qgis.testing import unittest, start_app
 from qgis.core import (QgsCategorizedSymbolRenderer,
                        QgsRendererCategory,
                        QgsMarkerSymbol,
+                       QgsLineSymbol,
+                       QgsFillSymbol,
                        QgsField,
                        QgsFields,
                        QgsFeature,
-                       QgsRenderContext
+                       QgsRenderContext,
+                       QgsSymbol,
+                       QgsStyle
                        )
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QColor
@@ -34,6 +38,20 @@ def createMarkerSymbol():
         "color": "100,150,50",
         "name": "square",
         "size": "3.0"
+    })
+    return symbol
+
+
+def createLineSymbol():
+    symbol = QgsLineSymbol.createSimple({
+        "color": "100,150,50"
+    })
+    return symbol
+
+
+def createFillSymbol():
+    symbol = QgsFillSymbol.createSimple({
+        "color": "100,150,50"
     })
     return symbol
 
@@ -310,6 +328,134 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         keys = renderer.legendKeysForFeature(f, context)
         self.assertFalse(keys)
 
+        renderer.stopRender(context)
+
+    def testMatchToSymbols(self):
+        """
+        Test QgsCategorizedSymbolRender.matchToSymbols
+        """
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute('x')
+
+        symbol_a = createMarkerSymbol()
+        symbol_a.setColor(QColor(255, 0, 0))
+        renderer.addCategory(QgsRendererCategory('a', symbol_a, 'a'))
+        symbol_b = createMarkerSymbol()
+        symbol_b.setColor(QColor(0, 255, 0))
+        renderer.addCategory(QgsRendererCategory('b', symbol_b, 'b'))
+        symbol_c = createMarkerSymbol()
+        symbol_c.setColor(QColor(0, 0, 255))
+        renderer.addCategory(QgsRendererCategory('c ', symbol_c, 'c'))
+
+        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(None, QgsSymbol.Marker)
+        self.assertEqual(matched, 0)
+
+        style = QgsStyle()
+        symbol_a = createMarkerSymbol()
+        symbol_a.setColor(QColor(255, 10, 10))
+        self.assertTrue(style.addSymbol('a', symbol_a))
+        symbol_B = createMarkerSymbol()
+        symbol_B.setColor(QColor(10, 255, 10))
+        self.assertTrue(style.addSymbol('B ', symbol_B))
+        symbol_b = createFillSymbol()
+        symbol_b.setColor(QColor(10, 255, 10))
+        self.assertTrue(style.addSymbol('b', symbol_b))
+        symbol_C = createLineSymbol()
+        symbol_C.setColor(QColor(10, 255, 10))
+        self.assertTrue(style.addSymbol('C', symbol_C))
+        symbol_C = createMarkerSymbol()
+        symbol_C.setColor(QColor(10, 255, 10))
+        self.assertTrue(style.addSymbol(' ----c/- ', symbol_C))
+
+        # non-matching symbol type
+        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.Line)
+        self.assertEqual(matched, 0)
+        self.assertEqual(unmatched_cats, ['a', 'b', 'c '])
+        self.assertEqual(unmatched_symbols, [' ----c/- ', 'B ', 'C', 'a', 'b'])
+
+        # exact match
+        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.Marker)
+        self.assertEqual(matched, 1)
+        self.assertEqual(unmatched_cats, ['b', 'c '])
+        self.assertEqual(unmatched_symbols, [' ----c/- ', 'B ', 'C', 'b'])
+
+        # make sure symbol was applied
+        context = QgsRenderContext()
+        renderer.startRender(context, QgsFields())
+        symbol, ok = renderer.symbolForValue2('a')
+        self.assertTrue(ok)
+        self.assertEqual(symbol.color().name(), '#ff0a0a')
+        renderer.stopRender(context)
+
+        # case insensitive match
+        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.Marker, False)
+        self.assertEqual(matched, 2)
+        self.assertEqual(unmatched_cats, ['c '])
+        self.assertEqual(unmatched_symbols, [' ----c/- ', 'C', 'b'])
+
+        # make sure symbols were applied
+        context = QgsRenderContext()
+        renderer.startRender(context, QgsFields())
+        symbol, ok = renderer.symbolForValue2('a')
+        self.assertTrue(ok)
+        self.assertEqual(symbol.color().name(), '#ff0a0a')
+        symbol, ok = renderer.symbolForValue2('b')
+        self.assertTrue(ok)
+        self.assertEqual(symbol.color().name(), '#0aff0a')
+        renderer.stopRender(context)
+
+        # case insensitive match
+        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.Marker, False)
+        self.assertEqual(matched, 2)
+        self.assertEqual(unmatched_cats, ['c '])
+        self.assertEqual(unmatched_symbols, [' ----c/- ', 'C', 'b'])
+
+        # make sure symbols were applied
+        context = QgsRenderContext()
+        renderer.startRender(context, QgsFields())
+        symbol, ok = renderer.symbolForValue2('a')
+        self.assertTrue(ok)
+        self.assertEqual(symbol.color().name(), '#ff0a0a')
+        symbol, ok = renderer.symbolForValue2('b')
+        self.assertTrue(ok)
+        self.assertEqual(symbol.color().name(), '#0aff0a')
+        renderer.stopRender(context)
+
+        # tolerant match
+        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.Marker, True, True)
+        self.assertEqual(matched, 2)
+        self.assertEqual(unmatched_cats, ['b'])
+        self.assertEqual(unmatched_symbols, ['B ', 'C', 'b'])
+
+        # make sure symbols were applied
+        context = QgsRenderContext()
+        renderer.startRender(context, QgsFields())
+        symbol, ok = renderer.symbolForValue2('a')
+        self.assertTrue(ok)
+        self.assertEqual(symbol.color().name(), '#ff0a0a')
+        symbol, ok = renderer.symbolForValue2('c ')
+        self.assertTrue(ok)
+        self.assertEqual(symbol.color().name(), '#0aff0a')
+        renderer.stopRender(context)
+
+        # tolerant match, case insensitive
+        matched, unmatched_cats, unmatched_symbols = renderer.matchToSymbols(style, QgsSymbol.Marker, False, True)
+        self.assertEqual(matched, 3)
+        self.assertFalse(unmatched_cats)
+        self.assertEqual(unmatched_symbols, ['C', 'b'])
+
+        # make sure symbols were applied
+        context = QgsRenderContext()
+        renderer.startRender(context, QgsFields())
+        symbol, ok = renderer.symbolForValue2('a')
+        self.assertTrue(ok)
+        self.assertEqual(symbol.color().name(), '#ff0a0a')
+        symbol, ok = renderer.symbolForValue2('b')
+        self.assertTrue(ok)
+        self.assertEqual(symbol.color().name(), '#0aff0a')
+        symbol, ok = renderer.symbolForValue2('c ')
+        self.assertTrue(ok)
+        self.assertEqual(symbol.color().name(), '#0aff0a')
         renderer.stopRender(context)
 
 
