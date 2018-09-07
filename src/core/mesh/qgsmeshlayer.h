@@ -125,8 +125,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMeshLayer *clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
-    bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
-    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
+    bool readSymbology( const QDomNode &node, QString &errorMessage,
+                        QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) override;
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                         const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const override;
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
     QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;

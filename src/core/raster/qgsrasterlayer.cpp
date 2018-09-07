@@ -1306,9 +1306,12 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
  * \param errorMessage reference to string that will be updated with any error messages
  * \return true in case of success.
  */
-bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage, QgsReadWriteContext &context )
+bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage,
+                                    QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories )
 {
   Q_UNUSED( errorMessage );
+  Q_UNUSED( categories );
+
   QDomElement rasterRendererElem;
 
   QDomElement layerElement = layer_node.toElement();
@@ -1398,9 +1401,9 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   return true;
 }
 
-bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context )
+bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories )
 {
-  return readSymbology( node, errorMessage, context );
+  return readSymbology( node, errorMessage, context, categories );
 }
 
 bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
@@ -1545,9 +1548,11 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
  * \param errorMessage reference to string that will be updated with any error messages
  * \return true in case of success.
  */
-bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage, const QgsReadWriteContext &context ) const
+bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage,
+                                     const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
 {
   Q_UNUSED( errorMessage );
+  Q_UNUSED( categories );
 
   QDomElement layerElement = layer_node.toElement();
   writeCommonStyle( layerElement, document, context );
@@ -1574,9 +1579,9 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
   return true;
 }
 
-bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
+bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
 {
-  return writeSymbology( node, doc, errorMessage, context );
+  return writeSymbology( node, doc, errorMessage, context, categories );
 
 } // bool QgsRasterLayer::writeSymbology
 

@@ -870,8 +870,8 @@ Returns the current auxiliary layer.
 %End
 
 
-    virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage, QgsReadWriteContext &context );
-
+     virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage,
+                        QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All );
 %Docstring
 Read the symbology for the current layer from the Dom node supplied.
 
@@ -882,8 +882,8 @@ Read the symbology for the current layer from the Dom node supplied.
 :return: true in case of success.
 %End
 
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
-
+     virtual bool readStyle( const QDomNode &node, QString &errorMessage,
+                    QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All );
 %Docstring
 Read the style for the current layer from the Dom node supplied.
 
@@ -894,8 +894,8 @@ Read the style for the current layer from the Dom node supplied.
 :return: true in case of success.
 %End
 
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
-
+     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                         const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
 %Docstring
 Write the symbology for the layer into the docment provided.
 
@@ -907,8 +907,8 @@ Write the symbology for the layer into the docment provided.
 :return: true in case of success.
 %End
 
-    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
-
+     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                     const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
 %Docstring
 Write just the style information for the layer into the document
 

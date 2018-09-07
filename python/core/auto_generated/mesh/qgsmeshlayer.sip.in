@@ -109,10 +109,10 @@ QgsMeshLayer cannot be copied.
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
-
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
-
+     virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
+                        QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All );
+     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                         const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
     virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;
 
     virtual QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const;
