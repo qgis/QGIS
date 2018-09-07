@@ -140,6 +140,17 @@ class CORE_EXPORT QgsMessageLogConsole : public QObject
   public:
     QgsMessageLogConsole();
 
+  protected:
+
+    /**
+     * Format a log message. Used by child classes.
+     *
+     * \param message the message to format
+     * \param tag the tag of the message
+     * \param level the log level of the message
+     */
+    QString formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level = Qgis::Info ) const;
+
   public slots:
     void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 };

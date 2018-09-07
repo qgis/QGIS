@@ -117,6 +117,17 @@ be the right choice for apps without GUI.
   public:
     QgsMessageLogConsole();
 
+  protected:
+
+    QString formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level = Qgis::Info ) const;
+%Docstring
+Format a log message. Used by child classes.
+
+:param message: the message to format
+:param tag: the tag of the message
+:param level: the log level of the message
+%End
+
   public slots:
     void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 };
