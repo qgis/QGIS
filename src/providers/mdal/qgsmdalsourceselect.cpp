@@ -28,7 +28,7 @@ QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   setupButtons( buttonBox );
 
   mFileWidget->setDialogTitle( tr( "Open MDAL Supported Mesh Dataset(s)" ) );
-  mFileWidget->setFilter( QStringLiteral( "All files(*.*);;GRIB File(*.grb *.grb2 *.bin *.grib *.grib1 *.grib2);;2DM Mesh File(*.2dm)" ) );
+  mFileWidget->setFilter( QStringLiteral( "All files(*.*);;GRIB File(*.grb *.grb2 *.bin *.grib *.grib1 *.grib2);;2DM Mesh File(*.2dm);;3Di Results(results_3di.nc)" ) );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
