@@ -921,20 +921,14 @@ int QgsCategorizedSymbolRendererWidget::matchToSymbols( QgsStyle *style )
   if ( !mLayer || !style )
     return 0;
 
-  int matched = 0;
-  for ( int catIdx = 0; catIdx < mRenderer->categories().count(); ++catIdx )
-  {
-    QString val = mRenderer->categories().at( catIdx ).value().toString();
-    std::unique_ptr< QgsSymbol > symbol( style->symbol( val ) );
-    if ( symbol &&
-         ( ( symbol->type() == QgsSymbol::Marker && mLayer->geometryType() == QgsWkbTypes::PointGeometry )
-           || ( symbol->type() == QgsSymbol::Line && mLayer->geometryType() == QgsWkbTypes::LineGeometry )
-           || ( symbol->type() == QgsSymbol::Fill && mLayer->geometryType() == QgsWkbTypes::PolygonGeometry ) ) )
-    {
-      matched++;
-      mRenderer->updateCategorySymbol( catIdx, symbol.release() );
-    }
-  }
+  const QgsSymbol::SymbolType type = mLayer->geometryType() == QgsWkbTypes::PointGeometry ? QgsSymbol::Marker
+                                     : mLayer->geometryType() == QgsWkbTypes::LineGeometry ? QgsSymbol::Line
+                                     : QgsSymbol::Fill;
+
+  QVariantList unmatchedCategories;
+  QStringList unmatchedSymbols;
+  const int matched = mRenderer->matchToSymbols( style, type, unmatchedCategories, unmatchedSymbols );
+
   mModel->updateSymbology();
   return matched;
 }

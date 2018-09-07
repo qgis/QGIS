@@ -257,6 +257,26 @@ Will return null if the functionality is disabled.
 .. versionadded:: 3.0
 %End
 
+    int matchToSymbols( QgsStyle *style, QgsSymbol::SymbolType type,
+                        QVariantList &unmatchedCategories /Out/, QStringList &unmatchedSymbols /Out/, bool caseSensitive = true, bool useTolerantMatch = false );
+%Docstring
+Replaces category symbols with the symbols from a ``style`` that have a matching
+name and symbol ``type``.
+
+The ``unmatchedCategories`` list will be filled with all existing categories which could not be matched
+to a symbol in ``style``.
+
+The ``unmatchedSymbols`` list will be filled with all symbol names from ``style`` which were not be matched
+to an existing category.
+
+If ``caseSensitive`` is false, then a case-insensitive match will be performed. If ``useTolerantMatch``
+is true, then non-alphanumeric characters in style and category names will be ignored during the match.
+
+Returns the count of symbols matched.
+
+.. versionadded:: 3.4
+%End
+
   protected:
 
 
