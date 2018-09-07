@@ -22,6 +22,7 @@
 #define QGSHTTPTRANSACTION_H
 
 #include <QHttp>
+#include <QSslError>
 #include <QNetworkProxy>
 #include <QString>
 
@@ -113,6 +114,12 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
     void dataStateChanged( int state );
 
     void networkTimedOut();
+
+    /**
+     * Handle SSL errors
+     * @since QGIS 2.18.24
+     */
+    void handleSslErrors( const QList<QSslError> &errors );
 
     /** Aborts the current transaction*/
     void abort();

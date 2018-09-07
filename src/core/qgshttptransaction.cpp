@@ -22,6 +22,7 @@
 
 #include "qgshttptransaction.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsconfig.h"
 
 #include <QApplication>
@@ -30,6 +31,7 @@
 #include <QTimer>
 
 static int HTTP_PORT_DEFAULT = 80;
+static int HTTPS_PORT_DEFAULT = 443;
 
 //XXX Set the connection name when creating the provider instance
 //XXX in qgswmsprovider. When creating a QgsHttpTransaction, pass
@@ -118,7 +120,14 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   // Set the user agent to QGIS plus the version name
   header.setValue( "User-agent", QString( "QGIS - " ) + VERSION );
   // Set the host in the QHttp object
-  http->setHost( qurl.host(), qurl.port( HTTP_PORT_DEFAULT ) );
+  if ( qurl.scheme() == QString( "https" ) )
+  {
+    http->setHost( qurl.host(), QHttp::ConnectionModeHttps, qurl.port( HTTPS_PORT_DEFAULT ) );
+  }
+  else
+  {
+    http->setHost( qurl.host(), qurl.port( HTTP_PORT_DEFAULT ) );
+  }
   // Set the username and password if supplied for this connection
   // If we have username and password set in header
   if ( !mUserName.isEmpty() && !mPassword.isEmpty() )
@@ -188,6 +197,9 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
 
   connect( http,   SIGNAL( stateChanged( int ) ),
            this, SLOT( dataStateChanged( int ) ) );
+
+  connect( http,   SIGNAL( sslErrors( const QList<QSslError>& ) ),
+           this, SLOT( handleSslErrors( const QList<QSslError>& ) ) );
 
   // Set up the watchdog timer
   connect( mWatchdogTimer, SIGNAL( timeout() ),
@@ -485,6 +497,13 @@ void QgsHttpTransaction::dataStateChanged( int state )
   }
 }
 
+void QgsHttpTransaction::handleSslErrors( const QList<QSslError> &errors )
+{
+  Q_FOREACH ( const QSslError &e, errors )
+  {
+    QgsMessageLog::logMessage( e.errorString() );
+  }
+}
 
 void QgsHttpTransaction::networkTimedOut()
 {
