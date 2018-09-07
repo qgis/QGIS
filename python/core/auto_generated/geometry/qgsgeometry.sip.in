@@ -1482,8 +1482,19 @@ by calling `error()` on the returned geometry.
 
         Error( const QString &m, const QgsPointXY &p );
         QString what() const;
+%Docstring
+A human readable error message containing details about the error.
+%End
+
         QgsPointXY where() const;
+%Docstring
+The coordinates at which the error is located and should be visualized.
+%End
+
         bool hasWhere() const;
+%Docstring
+True if the location available from :py:func:`where` is valid.
+%End
 
     };
 

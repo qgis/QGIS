@@ -1432,8 +1432,19 @@ class CORE_EXPORT QgsGeometry
           , mLocation( p )
           , mHasLocation( true ) {}
 
+        /**
+         * A human readable error message containing details about the error.
+         */
         QString what() const;
+
+        /**
+         * The coordinates at which the error is located and should be visualized.
+         */
         QgsPointXY where() const;
+
+        /**
+         * True if the location available from \see where is valid.
+         */
         bool hasWhere() const;
 
       private:
