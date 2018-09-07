@@ -188,7 +188,7 @@ class WrappersTest(unittest.TestCase):
 
         # range values check
 
-        # check intial value
+        # check initial value
         self.assertEqual(widget.getValue(), '0.0,100.0')
         # check set/get
         widget.setValue("100.0,200.0")
@@ -213,7 +213,7 @@ class WrappersTest(unittest.TestCase):
 
         # range values check
 
-        # check intial value
+        # check initial value
         self.assertEqual(widget.getValue(), '0.0,100.0')
         # check rounding
         widget.setValue("100.1,200.1")
