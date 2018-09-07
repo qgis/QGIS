@@ -33,7 +33,7 @@
  * QgsReadWriteLocker should be created within a function where a QReadWriteLock needs to be locked.
  * The lock may be locked when QgsReadWriteLocker is created or when changeMode is called.
  * You can unlock and relock the lock with unlock() and changeMode().
- * If locked, the mutex will be unlocked when the QgsReadWriteLocker is destroyed.
+ * If locked, the lock will be unlocked when the QgsReadWriteLocker is destroyed.
  *
  * \since QGIS 3.4
  */
