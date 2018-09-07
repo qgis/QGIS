@@ -113,9 +113,9 @@ class ConfigDialog(BASE, WIDGET):
 
         self.groupIcon = QIcon()
         self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
+            QStyle.SP_DirClosedIcon, None), QIcon.Normal, QIcon.Off)
         self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
+            QStyle.SP_DirOpenIcon, None), QIcon.Normal, QIcon.On)
 
         self.model = QStandardItemModel()
         self.tree.setModel(self.model)
