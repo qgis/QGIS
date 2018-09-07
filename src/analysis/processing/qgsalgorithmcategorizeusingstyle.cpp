@@ -32,7 +32,7 @@ void QgsCategorizeUsingStyleAlgorithm::initAlgorithm( const QVariantMap & )
                 QList< int >() << QgsProcessing::TypeVector ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FIELD" ), QObject::tr( "Categorize using expression" ), QVariant(), QStringLiteral( "INPUT" ) ) );
 
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "STYLE" ), QObject::tr( "Style database" ), QgsProcessingParameterFile::File, QStringLiteral( "xml" ) ) );
+  addParameter( new QgsProcessingParameterFile( QStringLiteral( "STYLE" ), QObject::tr( "Style database (leave blank to use saved symbols)" ), QgsProcessingParameterFile::File, QStringLiteral( "xml" ), QVariant(), true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "CASE_SENSITIVE" ), QObject::tr( "Use case-sensitive match to symbol names" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "TOLERANT" ), QObject::tr( "Ignore non-alphanumeric characters while matching" ), false ) );
 
@@ -77,7 +77,8 @@ QString QgsCategorizeUsingStyleAlgorithm::groupId() const
 
 QString QgsCategorizeUsingStyleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Sets a vector layer's renderer to a categorized renderer using matching symbols from a style database.\n\n"
+  return QObject::tr( "Sets a vector layer's renderer to a categorized renderer using matching symbols from a style database. If no "
+                      "style file is specified, symbols from the user's current style library are used instead.\n\n"
                       "The specified expression (or field name) is used to create categories for the renderer. A category will be "
                       "created for each unique value within the layer.\n\n"
                       "Each category is individually matched to the symbols which exist within the specified QGIS XML style database. Whenever "
@@ -161,10 +162,20 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
   const bool caseSensitive = parameterAsBool( parameters, QStringLiteral( "CASE_SENSITIVE" ), context );
   const bool tolerant = parameterAsBool( parameters, QStringLiteral( "TOLERANT" ), context );
 
-  QgsStyle style;
-  if ( !style.importXml( styleFile ) )
+  QgsStyle *style = nullptr;
+  std::unique_ptr< QgsStyle >importedStyle;
+  if ( !styleFile.isEmpty() )
   {
-    throw QgsProcessingException( QObject::tr( "An error occurred while reading style file: %1" ).arg( style.errorString() ) );
+    importedStyle = qgis::make_unique< QgsStyle >();
+    if ( !importedStyle->importXml( styleFile ) )
+    {
+      throw QgsProcessingException( QObject::tr( "An error occurred while reading style file: %1" ).arg( importedStyle->errorString() ) );
+    }
+    style = importedStyle.get();
+  }
+  else
+  {
+    style = QgsStyle::defaultStyle();
   }
 
   QgsFields nonMatchingCategoryFields;
@@ -211,7 +222,7 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
 
   QVariantList unmatchedCategories;
   QStringList unmatchedSymbols;
-  const int matched = mRenderer->matchToSymbols( &style, type, unmatchedCategories, unmatchedSymbols, caseSensitive, tolerant );
+  const int matched = mRenderer->matchToSymbols( style, type, unmatchedCategories, unmatchedSymbols, caseSensitive, tolerant );
 
   if ( matched > 0 )
   {
