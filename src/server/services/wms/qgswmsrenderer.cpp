@@ -1253,7 +1253,7 @@ namespace QgsWms
         if ( queryLayer == layerNickname( *layer ) )
         {
           validLayer = true;
-          queryableLayer = l->flags().testFlag( QgsMapLayer::Identifiable );
+          queryableLayer = layer->flags().testFlag( QgsMapLayer::Identifiable );
           if ( !queryableLayer )
           {
             break;
