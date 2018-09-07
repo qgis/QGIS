@@ -235,7 +235,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
             self.widget.setValue(value)
 
     def value(self):
-        if self.dialogType in DIALOG_STANDARD:
+        if self.dialogType == DIALOG_STANDARD:
             return self.widget.value()
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.text()
