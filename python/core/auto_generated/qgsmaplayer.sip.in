@@ -783,7 +783,7 @@ Import the properties of this layer from a QDomDocument
 .. versionadded:: 2.8
 %End
 
-    virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const;
+    virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg /Out/ ) const;
 %Docstring
 Export the properties of this layer as named style in a QDomDocument
 
