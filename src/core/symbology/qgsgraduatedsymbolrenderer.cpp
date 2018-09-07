@@ -538,16 +538,17 @@ void QgsGraduatedSymbolRenderer::makeBreaksSymmetric( QList<double> &breaks, dou
 
   if ( breaks.size() > 1 ) //to avoid crash when only 1 class
   {
-    qSort( breaks.begin(), breaks.end() );
+    std::sort( breaks.begin(), breaks.end() );
     // breaks contain the maximum of the distrib but not the minimum
-    double distBelowSymmetricValue = qAbs( breaks[0] - symmetryPoint );
-    double distAboveSymmetricValue = qAbs( breaks[ breaks.size() - 2 ] - symmetryPoint ) ;
-    double absMin = qMin( qAbs( distAboveSymmetricValue ), qAbs( distBelowSymmetricValue ) );
+    double distBelowSymmetricValue = std::fabs( breaks[0] - symmetryPoint );
+    double distAboveSymmetricValue = std::fabs( breaks[ breaks.size() - 2 ] - symmetryPoint ) ;
+    double absMin = std::min( distAboveSymmetricValue, distBelowSymmetricValue );
 
     // make symmetric
     for ( int i = 0; i <= breaks.size() - 2; ++i )
     {
-      if ( qAbs( breaks.at( i ) - symmetryPoint ) >= ( absMin - qAbs( breaks[0] - breaks[1] ) / 100. ) )
+      // part after "absMin" is for doubles rounding issues
+      if ( std::fabs( breaks.at( i ) - symmetryPoint ) >= ( absMin - std::fabs( breaks[0] - breaks[1] ) / 100. ) )
       {
         breaks.removeAt( i );
         --i;
