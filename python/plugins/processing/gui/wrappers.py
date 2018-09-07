@@ -1286,7 +1286,7 @@ class StringWidgetWrapper(WidgetWrapper):
                 self.setComboValue(value)
 
     def value(self):
-        if self.dialogType in DIALOG_STANDARD:
+        if self.dialogType == DIALOG_STANDARD:
             if self.parameterDefinition().multiLine():
                 text = self.widget.toPlainText()
             else:
