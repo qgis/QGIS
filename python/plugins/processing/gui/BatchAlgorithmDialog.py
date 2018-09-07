@@ -40,7 +40,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingOutputNumber,
                        QgsProcessingOutputString,
                        QgsProject,
-                       Qgis)
+                       Qgis,
+                       QgsScopedProxyProgressTask)
 
 from qgis.gui import QgsProcessingAlgorithmDialogBase
 from qgis.utils import OverrideCursor
@@ -115,6 +116,8 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
             alg_parameters.append(parameters)
 
+        task = QgsScopedProxyProgressTask(self.tr('Batch Processing - {0}').format(self.algorithm().displayName()))
+
         with OverrideCursor(Qt.WaitCursor):
 
             self.mainWidget().setEnabled(False)
@@ -135,6 +138,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     break
                 self.setProgressText(QCoreApplication.translate('BatchAlgorithmDialog', '\nProcessing algorithm {0}/{1}…').format(count + 1, len(alg_parameters)))
                 self.setInfo(self.tr('<b>Algorithm {0} starting&hellip;</b>').format(self.algorithm().displayName()), escapeHtml=False)
+                task.setProgress(100 * count / len(alg_parameters))
 
                 parameters = self.algorithm().preprocessParameters(parameters)
 
@@ -165,6 +169,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 handleAlgorithmResults(self.algorithm(), context, feedback, False)
 
         feedback.pushInfo(self.tr('Batch execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
+        task = None
 
         self.finish(algorithm_results)
         self.cancelButton().setEnabled(False)
@@ -175,8 +180,6 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         self.createSummaryTable(algorithm_results)
         self.mainWidget().setEnabled(True)
-        QMessageBox.information(self, self.tr('Batch processing'),
-                                self.tr('Batch processing completed'))
 
     def loadHTMLResults(self, results, num):
         for out in self.algorithm().outputDefinitions():
