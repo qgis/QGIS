@@ -108,7 +108,7 @@ Returns the flags for this layer.
 
 .. note::
 
-   Flags are options specified by the user used for the UI but are not preventing API calls.
+   Flags are options specified by the user used for the UI but are not preventing any API call.
    For instance, even if the Removable flag is not set, the layer can still be removed with the API
    but the action will not be listed in the legend menu.
 
@@ -121,7 +121,7 @@ Returns the flags for this layer.
 
 .. note::
 
-   Flags are options specified by the user and might not reflect the actual state.
+   Flags are options specified by the user used for the UI but are not preventing any API call.
    For instance, even if the Removable flag is not set, the layer can still be removed with the API
    but the action will not be listed in the legend menu.
 

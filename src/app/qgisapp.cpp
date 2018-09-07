@@ -9565,10 +9565,9 @@ void QgisApp::removeLayer()
   // extra check for required layers
   // In theory it should not be needed because the remove action should be disabled
   // if there are required layers in the selection...
-  const QSet<QgsMapLayer *> requiredLayers = QgsProject::instance()->requiredLayers();
   for ( QgsMapLayer *layer : selectedLayers )
   {
-    if ( requiredLayers.contains( layer ) )
+    if ( !layer->flags().testFlag( QgsMapLayer::Removable ) )
       return;
   }
 

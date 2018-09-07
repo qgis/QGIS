@@ -118,6 +118,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Metadata,
     };
 
+    /**
+     * Flags for the map layer
+     * \note Flags are options specified by the user used for the UI but are not preventing any API call.
+     * \since QGIS 3.4
+     */
     enum LayerFlag
     {
       Identifiable = 1 << 0, //!< If the layer is identifiable using the identify map tool and as a WMS layer.
@@ -158,7 +163,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns the flags for this layer.
-     * \note Flags are options specified by the user used for the UI but are not preventing API calls.
+     * \note Flags are options specified by the user used for the UI but are not preventing any API call.
      * For instance, even if the Removable flag is not set, the layer can still be removed with the API
      * but the action will not be listed in the legend menu.
      * \since QGIS 3.4
@@ -167,7 +172,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns the flags for this layer.
-     * \note Flags are options specified by the user and might not reflect the actual state.
+      \note Flags are options specified by the user used for the UI but are not preventing any API call.
      * For instance, even if the Removable flag is not set, the layer can still be removed with the API
      * but the action will not be listed in the legend menu.
      * \since QGIS 3.4

@@ -720,10 +720,9 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
 bool QgsAppLayerTreeViewMenuProvider::removeActionEnabled()
 {
   const QList<QgsLayerTreeLayer *> selectedLayers = mView->selectedLayerNodes();
-  const QSet<QgsMapLayer *> requiredLayers = QgsProject::instance()->requiredLayers();
   for ( QgsLayerTreeLayer *nodeLayer : selectedLayers )
   {
-    if ( requiredLayers.contains( nodeLayer->layer() ) )
+    if ( !nodeLayer->layer()->flags().testFlag( QgsMapLayer::Removable ) )
       return false;
   }
   return true;
