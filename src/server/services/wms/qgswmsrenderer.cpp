@@ -1139,6 +1139,9 @@ namespace QgsWms
 
     // add labeling engine settings
     mapSettings.setLabelingEngineSettings( mProject->labelingEngineSettings() );
+
+    // enable rendering optimization
+    mapSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
   }
 
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
