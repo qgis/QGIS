@@ -84,8 +84,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.catalog_password = None
         self.context = StaticContext()
 
-        version = self.context.metadata.get('general', 'version')
-        self.setWindowTitle(self.tr('MetaSearch {0}').format(version))
+        self.leKeywords.setShowSearchIcon(True)
+        self.leKeywords.setPlaceholderText(self.tr('Search keywords'))
+
+        self.setWindowTitle(self.tr('MetaSearch'))
 
         self.rubber_band = QgsRubberBand(self.map, True)  # True = a polygon
         self.rubber_band.setColor(QColor(255, 0, 0, 75))
@@ -297,7 +299,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         """add new service"""
 
         conn_new = NewConnectionDialog()
-        conn_new.setWindowTitle(self.tr('New Catalog service'))
+        conn_new.setWindowTitle(self.tr('New Catalog Service'))
         if conn_new.exec_() == QDialog.Accepted:  # add to service list
             self.populate_connection_list()
         self.textMetadata.clear()
@@ -310,7 +312,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         url = self.settings.value('/MetaSearch/%s/url' % current_text)
 
         conn_edit = NewConnectionDialog(current_text)
-        conn_edit.setWindowTitle(self.tr('Edit Catalog service'))
+        conn_edit.setWindowTitle(self.tr('Edit Catalog Service'))
         conn_edit.leName.setText(current_text)
         conn_edit.leURL.setText(url)
         conn_edit.leUsername.setText(self.settings.value('/MetaSearch/%s/username' % current_text))
@@ -328,9 +330,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         msg = self.tr('Remove service {0}?').format(current_text)
 
-        result = QMessageBox.information(self, self.tr('Confirm delete'), msg,
-                                         QMessageBox.Ok | QMessageBox.Cancel)
-        if result == QMessageBox.Ok:  # remove service from list
+        result = QMessageBox.question(self, self.tr('Delete Service'), msg,
+                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if result == QMessageBox.Yes:  # remove service from list
             self.settings.remove(key)
             index_to_delete = self.cmbConnectionsServices.currentIndex()
             self.cmbConnectionsServices.removeItem(index_to_delete)
