@@ -119,6 +119,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         task = QgsScopedProxyProgressTask(self.tr('Batch Processing - {0}').format(self.algorithm().displayName()))
         multi_feedback = QgsProcessingMultiStepFeedback(len(alg_parameters), feedback)
+        feedback.progressChanged.connect(task.setProgress)
 
         with OverrideCursor(Qt.WaitCursor):
 
@@ -140,7 +141,6 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     break
                 self.setProgressText(QCoreApplication.translate('BatchAlgorithmDialog', '\nProcessing algorithm {0}/{1}…').format(count + 1, len(alg_parameters)))
                 self.setInfo(self.tr('<b>Algorithm {0} starting&hellip;</b>').format(self.algorithm().displayName()), escapeHtml=False)
-                task.setProgress(100 * count / len(alg_parameters))
                 multi_feedback.setCurrentStep(count)
 
                 parameters = self.algorithm().preprocessParameters(parameters)
