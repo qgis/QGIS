@@ -3288,3 +3288,18 @@ QDataStream &operator>>( QDataStream &in, QgsGeometry &geometry )
   return in;
 }
 
+
+QString QgsGeometry::Error::what() const
+{
+  return mMessage;
+}
+
+QgsPointXY QgsGeometry::Error::where() const
+{
+  return mLocation;
+}
+
+bool QgsGeometry::Error::hasWhere() const
+{
+  return mHasLocation;
+}

@@ -1418,27 +1418,39 @@ class CORE_EXPORT QgsGeometry
      */
     class CORE_EXPORT Error
     {
-        QString message;
-        QgsPointXY location;
-        bool hasLocation = false;
-
       public:
         Error()
-          : message( QStringLiteral( "none" ) )
+          : mMessage( QStringLiteral( "none" ) )
         {}
 
         explicit Error( const QString &m )
-          : message( m )
+          : mMessage( m )
         {}
 
         Error( const QString &m, const QgsPointXY &p )
-          : message( m )
-          , location( p )
-          , hasLocation( true ) {}
+          : mMessage( m )
+          , mLocation( p )
+          , mHasLocation( true ) {}
 
-        QString what() { return message; }
-        QgsPointXY where() { return location; }
-        bool hasWhere() { return hasLocation; }
+        /**
+         * A human readable error message containing details about the error.
+         */
+        QString what() const;
+
+        /**
+         * The coordinates at which the error is located and should be visualized.
+         */
+        QgsPointXY where() const;
+
+        /**
+         * True if the location available from \see where is valid.
+         */
+        bool hasWhere() const;
+
+      private:
+        QString mMessage;
+        QgsPointXY mLocation;
+        bool mHasLocation = false;
     };
 
     /**
