@@ -1279,10 +1279,7 @@ bool QgsProject::readProjectFile( const QString &filename )
     {
       if ( QgsMapLayer *layer = mapLayer( layerId ) )
       {
-        qDebug() << layer->id();
-        qDebug() << layer->flags();
         layer->setFlags( layer->flags() & ~QgsMapLayer::Removable );
-        qDebug() << layer->flags();
       }
     }
     const QStringList disabledLayerIds = readListEntry( QStringLiteral( "Identify" ), QStringLiteral( "/disabledLayers" ) );
@@ -1290,10 +1287,7 @@ bool QgsProject::readProjectFile( const QString &filename )
     {
       if ( QgsMapLayer *layer = mapLayer( layerId ) )
       {
-        qDebug() << layer->id();
-        qDebug() << layer->flags();
         layer->setFlags( layer->flags() & ~QgsMapLayer::Identifiable );
-        qDebug() << layer->flags();
       }
     }
   }
