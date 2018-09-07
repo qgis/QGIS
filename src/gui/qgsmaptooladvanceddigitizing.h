@@ -143,17 +143,19 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
 
     /**
      * Enables or disables snap to grid of mouse events.
+     * The snapping will occur in the layer's CRS.
      *
      * \since QGIS 3.4
      */
-    bool snapToGridEnabled() const;
+    bool snapToLayerGridEnabled() const;
 
     /**
      * Enables or disables snap to grid of mouse events.
+     * The snapping will occur in the layer's CRS.
      *
      * \since QGIS 3.4
      */
-    void setSnapToGridEnabled( bool snapToGridEnabled );
+    void setSnapToLayerGridEnabled( bool snapToLayerGridEnabled );
 
   private slots:
 
@@ -177,7 +179,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     //! Whether to snap mouse cursor to map before passing coordinates to cadCanvas*Event()
     bool mAutoSnapEnabled = true;
     //! Whether to snap to grid before passing coordinates to cadCanvas*Event()
-    bool mSnapToGridEnabled = true;
+    bool mSnapToLayerGridEnabled = true;
     QgsSnapToGridCanvasItem *mSnapToGridCanvasItem = nullptr;
 };
 

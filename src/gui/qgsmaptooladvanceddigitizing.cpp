@@ -43,7 +43,7 @@ void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
   }
 
   QgsVectorLayer *layer = currentVectorLayer();
-  if ( mSnapToGridEnabled && layer )
+  if ( mSnapToLayerGridEnabled && layer )
   {
     e->snapToGrid( layer->geometryFixes()->geometryPrecision(), layer->crs() );
   }
@@ -83,7 +83,7 @@ void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 
   QgsVectorLayer *layer = currentVectorLayer();
-  if ( mSnapToGridEnabled && layer )
+  if ( mSnapToLayerGridEnabled && layer )
   {
     e->snapToGrid( layer->geometryFixes()->geometryPrecision(), layer->crs() );
   }
@@ -108,7 +108,7 @@ void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
   }
 
   QgsVectorLayer *layer = currentVectorLayer();
-  if ( mSnapToGridEnabled && layer )
+  if ( mSnapToLayerGridEnabled && layer )
   {
     e->snapToGrid( layer->geometryFixes()->geometryPrecision(), layer->crs() );
     mSnapToGridCanvasItem->setPoint( e->mapPoint() );
@@ -129,7 +129,7 @@ void QgsMapToolAdvancedDigitizing::activate()
     mSnapToGridCanvasItem->setCrs( currentVectorLayer()->crs() );
     mSnapToGridCanvasItem->setPrecision( currentVectorLayer()->geometryFixes()->geometryPrecision() );
   }
-  mSnapToGridCanvasItem->setEnabled( mSnapToGridEnabled );
+  mSnapToGridCanvasItem->setEnabled( mSnapToLayerGridEnabled );
 }
 
 void QgsMapToolAdvancedDigitizing::deactivate()
@@ -153,7 +153,7 @@ void QgsMapToolAdvancedDigitizing::onCurrentLayerChanged()
   if ( mSnapToGridCanvasItem )
   {
     QgsVectorLayer *layer = currentVectorLayer();
-    if ( layer && mSnapToGridEnabled )
+    if ( layer && mSnapToLayerGridEnabled )
     {
       mSnapToGridCanvasItem->setPrecision( layer->geometryFixes()->geometryPrecision() );
       mSnapToGridCanvasItem->setCrs( layer->crs() );
@@ -162,18 +162,18 @@ void QgsMapToolAdvancedDigitizing::onCurrentLayerChanged()
     if ( !layer )
       mSnapToGridCanvasItem->setEnabled( false );
     else
-      mSnapToGridCanvasItem->setEnabled( mSnapToGridEnabled );
+      mSnapToGridCanvasItem->setEnabled( mSnapToLayerGridEnabled );
   }
 }
 
-bool QgsMapToolAdvancedDigitizing::snapToGridEnabled() const
+bool QgsMapToolAdvancedDigitizing::snapToLayerGridEnabled() const
 {
-  return mSnapToGridEnabled;
+  return mSnapToLayerGridEnabled;
 }
 
-void QgsMapToolAdvancedDigitizing::setSnapToGridEnabled( bool snapToGridEnabled )
+void QgsMapToolAdvancedDigitizing::setSnapToLayerGridEnabled( bool snapToGridEnabled )
 {
-  mSnapToGridEnabled = snapToGridEnabled;
+  mSnapToLayerGridEnabled = snapToGridEnabled;
 
   if ( mSnapToGridCanvasItem )
   {
