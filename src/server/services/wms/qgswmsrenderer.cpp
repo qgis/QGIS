@@ -1253,7 +1253,7 @@ namespace QgsWms
         if ( queryLayer == layerNickname( *layer ) )
         {
           validLayer = true;
-          queryableLayer = l->flags().testFlags( QgsMapLayer::Identifiable );
+          queryableLayer = l->flags().testFlag( QgsMapLayer::Identifiable );
           if ( !queryableLayer )
           {
             break;
@@ -2945,7 +2945,7 @@ namespace QgsWms
     QList<QgsMapLayer *>::iterator it = layers.begin();
     while ( it != layers.end() )
     {
-      if ( !( *it )->flags().testFlags( QgsMapLayer::Identifiable ) )
+      if ( !( *it )->flags().testFlag( QgsMapLayer::Identifiable ) )
         it = layers.erase( it );
       else
         ++it;

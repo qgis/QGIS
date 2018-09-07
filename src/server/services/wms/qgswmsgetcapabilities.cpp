@@ -935,7 +935,7 @@ namespace QgsWms
           }
 
           // queryable layer
-          if ( l->flags().testFlags( QgsMapLayer::Identifiable ) )
+          if ( l->flags().testFlag( QgsMapLayer::Identifiable ) )
           {
             layerElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "0" ) );
           }

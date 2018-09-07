@@ -347,7 +347,7 @@ namespace QgsWmts
           {
             wgs84BoundingRect.combineExtentWith( QgsRectangle( -180, -90, 180, 90 ) );
           }
-          if ( !queryable && l->flags().testFlags( QgsMapLayer::Identifiable ) )
+          if ( !queryable && l->flags().testFlag( QgsMapLayer::Identifiable ) )
           {
             queryable = true;
           }
@@ -423,7 +423,7 @@ namespace QgsWmts
       if ( wmtsJpegLayerIdList.contains( lId ) )
         pLayer.formats << QStringLiteral( "image/jpeg" );
 
-      pLayer.queryable = ( l->flags().testFlags( QgsMapLayer::Identifiable ) );
+      pLayer.queryable = ( l->flags().testFlag( QgsMapLayer::Identifiable ) );
 
       pLayer.maxScale = l->maximumScale();
       pLayer.minScale = l->minimumScale();

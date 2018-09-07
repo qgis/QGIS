@@ -310,7 +310,7 @@ class TestQgsMapLayerModel(unittest.TestCase):
 
         QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
 
-    def testFlags(self):
+    def testFlag(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
         QgsProject.instance().addMapLayers([l1, l2])

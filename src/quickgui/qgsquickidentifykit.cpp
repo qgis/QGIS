@@ -67,7 +67,7 @@ QgsQuickFeatureLayerPairs QgsQuickIdentifyKit::identify( const QPointF &point, Q
   {
     for ( QgsMapLayer *layer : mMapSettings->mapSettings().layers() )
     {
-      if ( mMapSettings->project() && !layer->flags().testFlags( QgsMapLayer::Identifiable ) )
+      if ( mMapSettings->project() && !layer->flags().testFlag( QgsMapLayer::Identifiable ) )
         continue;
 
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
