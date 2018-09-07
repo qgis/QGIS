@@ -70,7 +70,8 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
                 << QStringLiteral( "bin" )
                 << QStringLiteral( "grib" )
                 << QStringLiteral( "grib1" )
-                << QStringLiteral( "grib2" );
+                << QStringLiteral( "grib2" )
+                << QStringLiteral( "nc" );
   }
 
   // Filter files by extension
