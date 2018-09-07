@@ -35,6 +35,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingParameterVectorDestination,
                        QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterRange,
                        QgsVectorLayer,
                        QgsProject)
 from qgis.analysis import QgsNativeAlgorithms
@@ -169,6 +170,66 @@ class WrappersTest(unittest.TestCase):
         wrapper.setValue('/home/my_layer.shp')
         value = wrapper.value()
         self.assertEqual(value, '/home/my_layer.shp')
+
+    def testRange(self):
+        # minimal test to check if wrapper generate GUI for each processign context
+        self.checkConstructWrapper(QgsProcessingParameterRange('test'), RangeWidgetWrapper)
+
+        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        dlg = AlgorithmDialog(alg)
+        param = QgsProcessingParameterRange(
+            name='test',
+            description='test',
+            type=QgsProcessingParameterNumber.Double,
+            defaultValue="0.0,100.0")
+
+        wrapper = RangeWidgetWrapper(param, dlg)
+        widget = wrapper.createWidget()
+
+        # range values check
+
+        # check initial value
+        self.assertEqual(widget.getValue(), '0.0,100.0')
+        # check set/get
+        widget.setValue("100.0,200.0")
+        self.assertEqual(widget.getValue(), '100.0,200.0')
+        # check that min/max are mutually adapted
+        widget.setValue("200.0,100.0")
+        self.assertEqual(widget.getValue(), '100.0,100.0')
+        widget.spnMax.setValue(50)
+        self.assertEqual(widget.getValue(), '50.0,50.0')
+        widget.spnMin.setValue(100)
+        self.assertEqual(widget.getValue(), '100.0,100.0')
+
+        # check for integers
+        param = QgsProcessingParameterRange(
+            name='test',
+            description='test',
+            type=QgsProcessingParameterNumber.Integer,
+            defaultValue="0.1,100.1")
+
+        wrapper = RangeWidgetWrapper(param, dlg)
+        widget = wrapper.createWidget()
+
+        # range values check
+
+        # check initial value
+        self.assertEqual(widget.getValue(), '0.0,100.0')
+        # check rounding
+        widget.setValue("100.1,200.1")
+        self.assertEqual(widget.getValue(), '100.0,200.0')
+        widget.setValue("100.6,200.6")
+        self.assertEqual(widget.getValue(), '101.0,201.0')
+        # check set/get
+        widget.setValue("100.1,200.1")
+        self.assertEqual(widget.getValue(), '100.0,200.0')
+        # check that min/max are mutually adapted
+        widget.setValue("200.1,100.1")
+        self.assertEqual(widget.getValue(), '100.0,100.0')
+        widget.spnMax.setValue(50.1)
+        self.assertEqual(widget.getValue(), '50.0,50.0')
+        widget.spnMin.setValue(100.1)
+        self.assertEqual(widget.getValue(), '100.0,100.0')
 
     def testMapLayer(self):
         self.checkConstructWrapper(QgsProcessingParameterMapLayer('test'), MapLayerWidgetWrapper)

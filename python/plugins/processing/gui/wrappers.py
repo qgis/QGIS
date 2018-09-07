@@ -812,12 +812,9 @@ class DistanceWidgetWrapper(WidgetWrapper):
 class RangeWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
-        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-            widget = RangePanel(self.parameterDefinition())
-            widget.hasChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
-            return widget
-        #else:
-        #    return ModelerNumberInputPanel(self.param, self.dialog)
+        widget = RangePanel(self.parameterDefinition())
+        widget.hasChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+        return widget
 
     def setValue(self, value):
         if value is None or value == NULL:
