@@ -12047,10 +12047,9 @@ void QgisApp::legendLayerSelectionChanged()
 
   // remove action - check for required layers
   bool removeEnabled = true;
-  const QSet<QgsMapLayer *> requiredLayers = QgsProject::instance()->requiredLayers();
   for ( QgsLayerTreeLayer *nodeLayer : selectedLayers )
   {
-    if ( requiredLayers.contains( nodeLayer->layer() ) )
+    if ( !nodeLayer->layer()->flags().testFlag( QgsMapLayer::Removable ) )
     {
       removeEnabled = false;
       break;
