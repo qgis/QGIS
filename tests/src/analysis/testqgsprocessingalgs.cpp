@@ -27,6 +27,8 @@
 #include "qgsalgorithmtransform.h"
 #include "qgsalgorithmkmeansclustering.h"
 #include "qgsvectorlayer.h"
+#include "qgscategorizedsymbolrenderer.h"
+#include "qgssinglesymbolrenderer.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -44,6 +46,7 @@ class TestQgsProcessingAlgs: public QObject
     void featureFilterAlg();
     void transformAlg();
     void kmeansCluster();
+    void categorizeByStyle();
 
   private:
 
@@ -494,6 +497,135 @@ void TestQgsProcessingAlgs::kmeansCluster()
   QCOMPARE( features[ 0 ].cluster, -1 );
   QCOMPARE( features[ 1 ].cluster, -1 );
   QCOMPARE( features[ 2 ].cluster, -1 );
+}
+
+void TestQgsProcessingAlgs::categorizeByStyle()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:categorizeusingstyle" ) ) );
+  QVERIFY( alg != nullptr );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProject p;
+  context->setProject( &p );
+
+  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString styleFileName = dataDir + "/categorized.xml";
+
+
+  QgsProcessingFeedback feedback;
+
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:4326&field=col1:string" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+  QgsFeature f, f2, f3;
+  f.setAttributes( QgsAttributes() << "a" );
+  QVERIFY( layer->dataProvider()->addFeature( f ) );
+  f2.setAttributes( QgsAttributes() << "b" );
+  QVERIFY( layer->dataProvider()->addFeature( f2 ) );
+  f3.setAttributes( QgsAttributes() << "c " );
+  QVERIFY( layer->dataProvider()->addFeature( f3 ) );
+  p.addMapLayer( layer );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "test" ) );
+  parameters.insert( QStringLiteral( "FIELD" ), QStringLiteral( "col1" ) );
+  parameters.insert( QStringLiteral( "STYLE" ), styleFileName );
+  parameters.insert( QStringLiteral( "CASE_SENSITIVE" ), true );
+  parameters.insert( QStringLiteral( "TOLERANT" ), false );
+  parameters.insert( QStringLiteral( "NON_MATCHING_CATEGORIES" ), QStringLiteral( "memory:" ) );
+  parameters.insert( QStringLiteral( "NON_MATCHING_SYMBOLS" ), QStringLiteral( "memory:" ) );
+
+  bool ok = false;
+  QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  context->layerToLoadOnCompletionDetails( layer->id() ).postProcessor()->postProcessLayer( layer, *context, &feedback );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast< QgsCategorizedSymbolRenderer * >( layer->renderer() );
+  QVERIFY( catRenderer );
+
+  auto allValues = []( QgsVectorLayer * layer )->QStringList
+  {
+    QStringList all;
+    QgsFeature f;
+    QgsFeatureIterator it = layer->getFeatures();
+    while ( it.nextFeature( f ) )
+    {
+      all.append( f.attribute( 0 ).toString() );
+    }
+    return all;
+  };
+  QgsVectorLayer *nonMatchingCats = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "NON_MATCHING_CATEGORIES" ) ).toString() ) );
+  QCOMPARE( allValues( nonMatchingCats ), QStringList() << "b" << "c " );
+  QgsVectorLayer *nonMatchingSymbols = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "NON_MATCHING_SYMBOLS" ) ).toString() ) );
+  QCOMPARE( allValues( nonMatchingSymbols ), QStringList() << " ----c/- " << "B " );
+
+  QCOMPARE( catRenderer->categories().count(), 3 );
+  QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "a" ) ) ).symbol()->color().name(), QStringLiteral( "#ff0000" ) );
+  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "b" ) ) ).symbol()->color().name() != QStringLiteral( "#00ff00" ) );
+  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "c " ) ) ).symbol()->color().name() != QStringLiteral( "#0000ff" ) );
+  // reset renderer
+  layer->setRenderer( new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+
+  // case insensitive
+  parameters.insert( QStringLiteral( "CASE_SENSITIVE" ), false );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  context->layerToLoadOnCompletionDetails( layer->id() ).postProcessor()->postProcessLayer( layer, *context, &feedback );
+  catRenderer = dynamic_cast< QgsCategorizedSymbolRenderer * >( layer->renderer() );
+  QVERIFY( catRenderer );
+
+  nonMatchingCats = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "NON_MATCHING_CATEGORIES" ) ).toString() ) );
+  QCOMPARE( allValues( nonMatchingCats ), QStringList() << "c " );
+  nonMatchingSymbols = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "NON_MATCHING_SYMBOLS" ) ).toString() ) );
+  QCOMPARE( allValues( nonMatchingSymbols ), QStringList() << " ----c/- " );
+
+  QCOMPARE( catRenderer->categories().count(), 3 );
+  QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "a" ) ) ).symbol()->color().name(), QStringLiteral( "#ff0000" ) );
+  QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "b" ) ) ).symbol()->color().name(), QStringLiteral( "#00ff00" ) );
+  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "c " ) ) ).symbol()->color().name() != QStringLiteral( "#0000ff" ) );
+  // reset renderer
+  layer->setRenderer( new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+
+  // tolerant
+  parameters.insert( QStringLiteral( "CASE_SENSITIVE" ), true );
+  parameters.insert( QStringLiteral( "TOLERANT" ), true );
+
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  context->layerToLoadOnCompletionDetails( layer->id() ).postProcessor()->postProcessLayer( layer, *context, &feedback );
+  catRenderer = dynamic_cast< QgsCategorizedSymbolRenderer * >( layer->renderer() );
+  QVERIFY( catRenderer );
+
+  nonMatchingCats = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "NON_MATCHING_CATEGORIES" ) ).toString() ) );
+  QCOMPARE( allValues( nonMatchingCats ), QStringList() << "b" );
+  nonMatchingSymbols = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "NON_MATCHING_SYMBOLS" ) ).toString() ) );
+  QCOMPARE( allValues( nonMatchingSymbols ), QStringList() << "B " );
+
+  QCOMPARE( catRenderer->categories().count(), 3 );
+  QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "a" ) ) ).symbol()->color().name(), QStringLiteral( "#ff0000" ) );
+  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "b" ) ) ).symbol()->color().name() != QStringLiteral( "#00ff00" ) );
+  QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "c " ) ) ).symbol()->color().name(), QStringLiteral( "#0000ff" ) );
+  // reset renderer
+  layer->setRenderer( new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
+
+  // no optional sinks
+  parameters.insert( QStringLiteral( "CASE_SENSITIVE" ), false );
+  parameters.remove( QStringLiteral( "NON_MATCHING_CATEGORIES" ) );
+  parameters.remove( QStringLiteral( "NON_MATCHING_SYMBOLS" ) );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  context->layerToLoadOnCompletionDetails( layer->id() ).postProcessor()->postProcessLayer( layer, *context, &feedback );
+  catRenderer = dynamic_cast< QgsCategorizedSymbolRenderer * >( layer->renderer() );
+  QVERIFY( catRenderer );
+
+  QVERIFY( !context->getMapLayer( results.value( QStringLiteral( "NON_MATCHING_CATEGORIES" ) ).toString() ) );
+  QVERIFY( !context->getMapLayer( results.value( QStringLiteral( "NON_MATCHING_SYMBOLS" ) ).toString() ) );
+
+  QCOMPARE( catRenderer->categories().count(), 3 );
+  QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "a" ) ) ).symbol()->color().name(), QStringLiteral( "#ff0000" ) );
+  QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "b" ) ) ).symbol()->color().name(), QStringLiteral( "#00ff00" ) );
+  QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "c " ) ) ).symbol()->color().name(), QStringLiteral( "#0000ff" ) );
 }
 
 
