@@ -108,8 +108,9 @@ Returns the flags for this layer.
 
 .. note::
 
-   Flags are options specified by the user and might not reflect the actual state.
-   For instance, even if the ReadOnly flag is not set, a raster layer will always be ready-only.
+   Flags are options specified by the user used for the UI but are not preventing API calls.
+   For instance, even if the Removable flag is not set, the layer can still be removed with the API
+   but the action will not be listed in the legend menu.
 
 .. versionadded:: 3.4
 %End
@@ -121,7 +122,8 @@ Returns the flags for this layer.
 .. note::
 
    Flags are options specified by the user and might not reflect the actual state.
-   For instance, even if the ReadOnly flag is not set, a raster layer will always be ready-only.
+   For instance, even if the Removable flag is not set, the layer can still be removed with the API
+   but the action will not be listed in the legend menu.
 
 .. versionadded:: 3.4
 %End

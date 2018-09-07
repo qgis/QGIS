@@ -120,9 +120,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     enum LayerFlag
     {
-      Identifiable = 1 << 0, //!< If the layer is identifiable
-      Removable = 1 << 1, //!< If the layer can be removed from the project
-      Searchable = 1 << 2, //!< Only for vector-layer
+      Identifiable = 1 << 0, //!< If the layer is identifiable using the identify map tool and as a WMS layer.
+      Removable = 1 << 1,    //!< If the layer can be removed from the project. The layer will not be removable from the legend menu entry but can still be removed with an API call.
+      Searchable = 1 << 2,   //!< Only for vector-layer, determines if the layer is used in the 'search all layers' locator.
     };
     Q_ENUM( LayerFlag )
     Q_DECLARE_FLAGS( LayerFlags, LayerFlag )
@@ -158,8 +158,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns the flags for this layer.
-     * \note Flags are options specified by the user and might not reflect the actual state.
-     * For instance, even if the ReadOnly flag is not set, a raster layer will always be ready-only.
+     * \note Flags are options specified by the user used for the UI but are not preventing API calls.
+     * For instance, even if the Removable flag is not set, the layer can still be removed with the API
+     * but the action will not be listed in the legend menu.
      * \since QGIS 3.4
      */
     QgsMapLayer::LayerFlags flags() const;
@@ -167,7 +168,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns the flags for this layer.
      * \note Flags are options specified by the user and might not reflect the actual state.
-     * For instance, even if the ReadOnly flag is not set, a raster layer will always be ready-only.
+     * For instance, even if the Removable flag is not set, the layer can still be removed with the API
+     * but the action will not be listed in the legend menu.
      * \since QGIS 3.4
      */
     void setFlags( QgsMapLayer::LayerFlags flags );
