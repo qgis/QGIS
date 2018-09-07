@@ -1857,8 +1857,11 @@ void QgsVectorLayer::resolveReferences( QgsProject *project )
 }
 
 
-bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMessage, QgsReadWriteContext &context )
+bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMessage,
+                                    QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories )
 {
+  Q_UNUSED( categories );
+
   QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Symbology" ) );
 
   if ( !mExpressionFieldBuffer )
@@ -2076,8 +2079,10 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   return true;
 }
 
-bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context )
+bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories )
 {
+  Q_UNUSED( categories );
+
   bool result = true;
   emit readCustomSymbology( node.toElement(), errorMessage );
 
@@ -2243,8 +2248,11 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, Qgs
 }
 
 
-bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
+bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                                     const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
 {
+  Q_UNUSED( categories );
+
   QDomElement layerElement = node.toElement();
   writeCommonStyle( layerElement, doc, context );
 
@@ -2391,8 +2399,10 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   return true;
 }
 
-bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
+bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                                 const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
 {
+  Q_UNUSED( categories );
   QDomElement mapLayerNode = node.toElement();
 
   emit writeCustomSymbology( mapLayerNode, doc, errorMessage );
@@ -4251,7 +4261,10 @@ QString QgsVectorLayer::htmlMetadata() const
   // feature count
   QLocale locale = QLocale();
   locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Feature count" ) + QStringLiteral( "</td><td>" ) + ( featureCount() == -1 ? tr( "unknown" ) : locale.toString( ( qlonglong )featureCount() ) ) + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
+                + tr( "Feature count" ) + QStringLiteral( "</td><td>" )
+                + ( featureCount() == -1 ? tr( "unknown" ) : locale.toString( static_cast<qlonglong>( featureCount() ) ) )
+                + QStringLiteral( "</td></tr>\n" );
 
   // End Provider section
   myMetadata += QLatin1String( "</table>\n<br><br>" );
@@ -4453,7 +4466,8 @@ void QgsVectorLayer::saveStyleToDatabase( const QString &name, const QString &de
   }
 
   QDomDocument qmlDocument, sldDocument;
-  this->exportNamedStyle( qmlDocument, msgError );
+  QgsReadWriteContext context;
+  exportNamedStyle( qmlDocument, msgError, context );
   if ( !msgError.isNull() )
   {
     return;

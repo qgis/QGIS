@@ -242,10 +242,12 @@ QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &renderer
   return new QgsMeshLayerRenderer( this, rendererContext );
 }
 
-bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context )
+bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
+                                  QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories )
 {
   Q_UNUSED( errorMessage );
   Q_UNUSED( context );
+  Q_UNUSED( categories );
 
   QDomElement elem = node.toElement();
   QDomElement elemRendererSettings = elem.firstChildElement( "mesh-renderer-settings" );
@@ -255,10 +257,12 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage, Q
   return true;
 }
 
-bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
+bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                                   const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
 {
   Q_UNUSED( errorMessage );
   Q_UNUSED( context );
+  Q_UNUSED( categories );
 
   QDomElement elem = node.toElement();
   QDomElement elemRendererSettings = mRendererSettings.writeXml( doc );

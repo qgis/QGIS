@@ -35,6 +35,7 @@
 #include "qgsrendercontext.h"
 #include "qgsmaplayerdependency.h"
 #include "qgslayermetadata.h"
+#include "qgsmaplayerstyle.h"
 
 class QgsAbstract3DRenderer;
 class QgsDataProvider;
@@ -489,19 +490,19 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Sets state from Dom document
-       \param layerElement The Dom element corresponding to ``maplayer'' tag
-       \param context writing context (e.g. for conversion between relative and absolute paths)
-       \note
-
-       The Dom node corresponds to a Dom document project file XML element read
-       by QgsProject.
-
-       This, in turn, calls readXml(), which is over-rideable by sub-classes so
-       that they can read their own specific state from the given Dom node.
-
-       Invoked by QgsProject::read().
-
-       \returns true if successful
+     * \param layerElement The Dom element corresponding to ``maplayer'' tag
+     * \param context writing context (e.g. for conversion between relative and absolute paths)
+     * \note
+     *
+     * The Dom node corresponds to a Dom document project file XML element read
+     * by QgsProject.
+     *
+     * This, in turn, calls readXml() (and then readSymbology()), which is over-rideable
+     * by sub-classes so that they can read their own specific state from the given Dom node.
+     *
+     * Invoked by QgsProject::read().
+     *
+     * \returns true if successful
      */
     bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context );
 
@@ -515,8 +516,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * The Dom node corresponds to a Dom document project file XML element to be
      * written by QgsProject.
      *
-     * This, in turn, calls writeXml(), which is over-rideable by sub-classes so
-     * that they can write their own specific state to the given Dom node.
+     * This, in turn, calls writeXml() (and then writeSymbology), which is over-rideable
+     * by sub-classes so that they can write their own specific state to the given Dom node.
      *
      * Invoked by QgsProject::write().
      *
@@ -736,7 +737,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param errorMsg this QString will be initialized on error
      * during the execution of writeSymbology
      */
-    virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg SIP_OUT ) const;
+    virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg SIP_OUT, QgsReadWriteContext &context,
+                                   QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
 
 
     /**
@@ -806,7 +808,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
      */
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) = 0;
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
+                                QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) = 0;
 
     /**
      * Read the style for the current layer from the Dom node supplied.
@@ -817,29 +820,34 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \note To be implemented in subclasses. Default implementation does nothing and returns false.
      * \since QGIS 2.16
      */
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage,
+                            QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All );
 
     /**
-     * Write the symbology for the layer into the docment provided.
+     * Write the style for the layer into the docment provided.
      *  \param node the node that will have the style element added to it.
      *  \param doc the document that will have the QDomNode added.
      *  \param errorMessage reference to string that will be updated with any error messages
      *  \param context writing context (used for transform from absolute to relative paths)
+     *  \note There is a confusion of terms with the GUI. This method actually writes what is called a style in the application.
      *  \returns true in case of success.
      */
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const = 0;
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
+                                 QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const = 0;
 
     /**
-     * Write just the style information for the layer into the document
+     * Write just the symbology information for the layer into the document
      *  \param node the node that will have the style element added to it.
      *  \param doc the document that will have the QDomNode added.
      *  \param errorMessage reference to string that will be updated with any error messages
      *  \param context writing context (used for transform from absolute to relative paths)
      *  \returns true in case of success.
      *  \note To be implemented in subclasses. Default implementation does nothing and returns false.
+     *  \note There is a confusion of terms with the GUI. This method actually writes what is known as the symbology in the application.
      *  \since QGIS 2.16
      */
-    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
+                             QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
 
     //! Returns pointer to layer's undo stack
     QUndoStack *undoStack();
@@ -1284,13 +1292,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Write style data common to all layer types
      * \since QGIS 3.0
      */
-    void writeCommonStyle( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+    void writeCommonStyle( QDomElement &layerElement, QDomDocument &document,
+                           const QgsReadWriteContext &context,
+                           QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
 
     /**
      * Read style data common to all layer types
      * \since QGIS 3.0
      */
-    void readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context );
+    void readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context,
+                          QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All );
 
 #ifndef SIP_RUN
 #if 0

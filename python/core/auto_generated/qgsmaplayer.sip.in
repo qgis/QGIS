@@ -503,8 +503,8 @@ Sets state from Dom document
 The Dom node corresponds to a Dom document project file XML element read
 by :py:class:`QgsProject`.
 
-This, in turn, calls readXml(), which is over-rideable by sub-classes so
-that they can read their own specific state from the given Dom node.
+This, in turn, calls readXml() (and then readSymbology()), which is over-rideable
+by sub-classes so that they can read their own specific state from the given Dom node.
 
 Invoked by :py:func:`QgsProject.read()`
 
@@ -523,8 +523,8 @@ Stores state in Dom node
 The Dom node corresponds to a Dom document project file XML element to be
 written by :py:class:`QgsProject`.
 
-This, in turn, calls writeXml(), which is over-rideable by sub-classes so
-that they can write their own specific state to the given Dom node.
+This, in turn, calls writeXml() (and then writeSymbology), which is over-rideable
+by sub-classes so that they can write their own specific state to the given Dom node.
 
 Invoked by :py:func:`QgsProject.write()`
 
@@ -783,7 +783,8 @@ Import the properties of this layer from a QDomDocument
 .. versionadded:: 2.8
 %End
 
-    virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg /Out/ ) const;
+    virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg /Out/, QgsReadWriteContext &context,
+                                   QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
 %Docstring
 Export the properties of this layer as named style in a QDomDocument
 
@@ -865,7 +866,8 @@ Attempts to style the layer using the formatting from an SLD type file.
 
 
 
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) = 0;
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
+                                QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) = 0;
 %Docstring
 Read the symbology for the current layer from the Dom node supplied.
 
@@ -876,7 +878,8 @@ Read the symbology for the current layer from the Dom node supplied.
 :return: true in case of success.
 %End
 
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage,
+                            QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All );
 %Docstring
 Read the style for the current layer from the Dom node supplied.
 
@@ -893,21 +896,27 @@ Read the style for the current layer from the Dom node supplied.
 .. versionadded:: 2.16
 %End
 
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const = 0;
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
+                                 QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const = 0;
 %Docstring
-Write the symbology for the layer into the docment provided.
+Write the style for the layer into the docment provided.
 
 :param node: the node that will have the style element added to it.
 :param doc: the document that will have the QDomNode added.
 :param errorMessage: reference to string that will be updated with any error messages
 :param context: writing context (used for transform from absolute to relative paths)
 
+.. note::
+
+   There is a confusion of terms with the GUI. This method actually writes what is called a style in the application.
+
 :return: true in case of success.
 %End
 
-    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
+                             QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
 %Docstring
-Write just the style information for the layer into the document
+Write just the symbology information for the layer into the document
 
 :param node: the node that will have the style element added to it.
 :param doc: the document that will have the QDomNode added.
@@ -919,6 +928,10 @@ Write just the style information for the layer into the document
 .. note::
 
    To be implemented in subclasses. Default implementation does nothing and returns false.
+
+.. note::
+
+   There is a confusion of terms with the GUI. This method actually writes what is known as the symbology in the application.
 
 .. versionadded:: 2.16
 %End
@@ -1475,14 +1488,17 @@ Read style manager's configuration (if any). To be called by subclasses.
 Write style manager's configuration (if exists). To be called by subclasses.
 %End
 
-    void writeCommonStyle( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+    void writeCommonStyle( QDomElement &layerElement, QDomDocument &document,
+                           const QgsReadWriteContext &context,
+                           QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
 %Docstring
 Write style data common to all layer types
 
 .. versionadded:: 3.0
 %End
 
-    void readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context );
+    void readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context,
+                          QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All );
 %Docstring
 Read style data common to all layer types
 

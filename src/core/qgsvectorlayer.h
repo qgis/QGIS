@@ -880,7 +880,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
      */
-    bool readSymbology( const QDomNode &layerNode, QString &errorMessage, QgsReadWriteContext &context ) override;
+    bool readSymbology( const QDomNode &layerNode, QString &errorMessage,
+                        QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) override;
 
     /**
      * Read the style for the current layer from the Dom node supplied.
@@ -889,7 +890,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
      */
-    bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
+    bool readStyle( const QDomNode &node, QString &errorMessage,
+                    QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) override;
 
     /**
      * Write the symbology for the layer into the docment provided.
@@ -899,7 +901,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  \param context writing context (used for transform from absolute to relative paths)
      *  \returns true in case of success.
      */
-    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                         const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const override;
 
     /**
      * Write just the style information for the layer into the document
@@ -909,7 +912,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  \param context writing context (used for transform from absolute to relative paths)
      *  \returns true in case of success.
      */
-    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
+    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                     const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const override;
 
     /**
      * Writes the symbology of the layer into the document provided in SLD 1.1 format

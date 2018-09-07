@@ -15,6 +15,7 @@
 
 #include "qgsmaplayerstyle.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsreadwritecontext.h"
 
 #include "qgslogger.h"
 
@@ -46,7 +47,8 @@ void QgsMapLayerStyle::readFromLayer( QgsMapLayer *layer )
 {
   QString errorMsg;
   QDomDocument doc;
-  layer->exportNamedStyle( doc, errorMsg );
+  QgsReadWriteContext context;
+  layer->exportNamedStyle( doc, errorMsg, context );
   if ( !errorMsg.isEmpty() )
   {
     QgsDebugMsg( "Failed to export style from layer: " + errorMsg );

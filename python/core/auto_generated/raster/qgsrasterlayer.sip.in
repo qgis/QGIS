@@ -348,16 +348,16 @@ Draws a preview of the rasterlayer into a QImage
     void showStatusMessage( const QString &message );
 
   protected:
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All );
 
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All );
 
     virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );
 
-    virtual bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
-
-    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
-
+     virtual bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage,
+                         const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
+     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                     const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;

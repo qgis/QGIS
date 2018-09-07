@@ -8855,7 +8855,8 @@ void QgisApp::copyStyle( QgsMapLayer *sourceLayer )
   {
     QString errorMsg;
     QDomDocument doc( QStringLiteral( "qgis" ) );
-    selectionLayer->exportNamedStyle( doc, errorMsg );
+    QgsReadWriteContext context;
+    selectionLayer->exportNamedStyle( doc, errorMsg, context );
 
 
     if ( !errorMsg.isEmpty() )
@@ -9730,7 +9731,8 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
     // duplicate the layer style
     QString errMsg;
     QDomDocument style;
-    selectedLyr->exportNamedStyle( style, errMsg );
+    QgsReadWriteContext context;
+    selectedLyr->exportNamedStyle( style, errMsg, context );
     if ( errMsg.isEmpty() )
       dupLayer->importNamedStyle( style, errMsg );
     if ( !errMsg.isEmpty() )

@@ -968,7 +968,8 @@ void QgsOfflineEditing::copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLay
 {
   QString error;
   QDomDocument doc;
-  sourceLayer->exportNamedStyle( doc, error );
+  QgsReadWriteContext context;
+  sourceLayer->exportNamedStyle( doc, error, context );
 
   if ( error.isEmpty() )
   {
