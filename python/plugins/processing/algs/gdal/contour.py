@@ -55,6 +55,7 @@ class contour(GdalAlgorithm):
     IGNORE_NODATA = 'IGNORE_NODATA'
     NODATA = 'NODATA'
     OFFSET = 'OFFSET'
+    OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -74,6 +75,10 @@ class contour(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,
                                                        self.tr('Attribute name (if not set, no elevation attribute is attached)'),
                                                        defaultValue='ELEV',
+                                                       optional=True))       
+        self.addParameter(QgsProcessingParameterString(self.OPTIONS,
+                                                       self.tr('Additional creation options'),
+                                                       defaultValue='',
                                                        optional=True))
 
         create_3d_param = QgsProcessingParameterBoolean(self.CREATE_3D,
@@ -162,6 +167,9 @@ class contour(GdalAlgorithm):
 
         if offset:
             arguments.append('-off {}'.format(offset))
+        
+        if options:
+             arguments.append(options)
 
         if outFormat:
             arguments.append('-f {}'.format(outFormat))
