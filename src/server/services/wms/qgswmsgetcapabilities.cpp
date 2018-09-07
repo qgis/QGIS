@@ -771,7 +771,6 @@ namespace QgsWms
       const QgsProject *project, const QString &version,
       const QgsServerRequest &request, bool projectSettings )
   {
-    QStringList nonIdentifiableLayers = project->nonIdentifiableLayers();
     const QgsLayerTree *projectLayerTreeRoot = project->layerTreeRoot();
 
     QDomElement layerParentElem = doc.createElement( QStringLiteral( "Layer" ) );
@@ -936,7 +935,7 @@ namespace QgsWms
           }
 
           // queryable layer
-          if ( project->nonIdentifiableLayers().contains( l->id() ) )
+          if ( l->flags().testFlags( QgsMapLayer::Identifiable ) )
           {
             layerElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "0" ) );
           }

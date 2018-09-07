@@ -65,15 +65,9 @@ QgsQuickFeatureLayerPairs QgsQuickIdentifyKit::identify( const QPointF &point, Q
   }
   else
   {
-    QStringList noIdentifyLayerIdList;
-    if ( mMapSettings->project() )
-    {
-      noIdentifyLayerIdList = mMapSettings->project()->nonIdentifiableLayers();
-    }
-
     for ( QgsMapLayer *layer : mMapSettings->mapSettings().layers() )
     {
-      if ( mMapSettings->project() && noIdentifyLayerIdList.contains( layer->id() ) )
+      if ( mMapSettings->project() && !layer->flags().testFlags( QgsMapLayer::Identifiable ) )
         continue;
 
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
@@ -91,7 +85,6 @@ QgsQuickFeatureLayerPairs QgsQuickIdentifyKit::identify( const QPointF &point, Q
         QgsDebugMsg( QStringLiteral( "IdentifyKit identified %1 results with TopDownStopAtFirst mode." ).arg( results.count() ) );
         return results;
       }
-
     }
 
     QgsDebugMsg( QStringLiteral( "IdentifyKit identified %1 results" ).arg( results.count() ) );

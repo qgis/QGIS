@@ -247,7 +247,7 @@ namespace QgsWms
           QDomElement layerElem = doc.createElement( QStringLiteral( "Layer" ) );
 
           // queryable layer
-          if ( project->nonIdentifiableLayers().contains( l->id() ) )
+          if ( l->flags().testFlags( QgsMapLayer::Identifiable ) )
           {
             layerElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "false" ) );
           }
