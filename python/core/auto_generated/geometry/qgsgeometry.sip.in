@@ -1481,9 +1481,10 @@ by calling `error()` on the returned geometry.
         explicit Error( const QString &m );
 
         Error( const QString &m, const QgsPointXY &p );
-        QString what();
-        QgsPointXY where();
-        bool hasWhere();
+        QString what() const;
+        QgsPointXY where() const;
+        bool hasWhere() const;
+
     };
 
     enum ValidationMethod
