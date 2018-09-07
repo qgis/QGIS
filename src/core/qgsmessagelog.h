@@ -128,11 +128,11 @@ class CORE_EXPORT QgsMessageLogNotifyBlocker
 
 /**
  * \ingroup core
-\brief Default implementation of message logging interface
-
-This class outputs log messages to the standard output. Therefore it might
-be the right choice for apps without GUI.
-*/
+ * \brief Default implementation of message logging interface
+ *
+ * This class outputs log messages to the standard output. Therefore it might
+ * be the right choice for apps without GUI.
+ */
 class CORE_EXPORT QgsMessageLogConsole : public QObject
 {
     Q_OBJECT
