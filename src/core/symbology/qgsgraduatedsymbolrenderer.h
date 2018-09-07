@@ -272,11 +272,23 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     /**
      * Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint
-     * Does not put a break on the symmetryPoint
+     * Does not put a break on the symmetryPoint. This is done before.
+     * \param breaks The breaks of an already-done classification
+     * \param symmetryPoint The point around which we want a symmetry
+     * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
      * \since QGIS 3.4
      */
     static void makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, bool astride );
 
+    /**
+     * Compute the equal interval classification
+     * \param minimum The minimum value of the distribution
+     * \param maximum The maximum value of the distribution
+     * \param classes The number of classes desired
+     * \param useSymmetricMode A bool indicating if we want to have classes and hence colors ramp symmetric around a value
+     * \param symmetryPoint The point around which we want a symmetry
+     * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+     */
     static QList<double> calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride );
 
     /**
