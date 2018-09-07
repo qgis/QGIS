@@ -40,6 +40,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingOutputNumber,
                        QgsProcessingOutputString,
                        QgsProject,
+                       QgsProcessingMultiStepFeedback,
                        Qgis,
                        QgsScopedProxyProgressTask)
 
@@ -117,6 +118,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             alg_parameters.append(parameters)
 
         task = QgsScopedProxyProgressTask(self.tr('Batch Processing - {0}').format(self.algorithm().displayName()))
+        multi_feedback = QgsProcessingMultiStepFeedback(len(alg_parameters), feedback)
 
         with OverrideCursor(Qt.WaitCursor):
 
@@ -139,6 +141,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 self.setProgressText(QCoreApplication.translate('BatchAlgorithmDialog', '\nProcessing algorithm {0}/{1}…').format(count + 1, len(alg_parameters)))
                 self.setInfo(self.tr('<b>Algorithm {0} starting&hellip;</b>').format(self.algorithm().displayName()), escapeHtml=False)
                 task.setProgress(100 * count / len(alg_parameters))
+                multi_feedback.setCurrentStep(count)
 
                 parameters = self.algorithm().preprocessParameters(parameters)
 
@@ -153,10 +156,9 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 context = dataobjects.createContext(feedback)
 
                 alg_start_time = time.time()
-                ret, results = execute(self.algorithm(), parameters, context, feedback)
+                ret, results = execute(self.algorithm(), parameters, context, multi_feedback)
                 if ret:
                     self.setInfo(QCoreApplication.translate('BatchAlgorithmDialog', 'Algorithm {0} correctly executed…').format(self.algorithm().displayName()), escapeHtml=False)
-                    feedback.setProgress(100)
                     feedback.pushInfo(
                         self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - alg_start_time)))
                     feedback.pushInfo(self.tr('Results:'))
@@ -166,7 +168,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 else:
                     break
 
-                handleAlgorithmResults(self.algorithm(), context, feedback, False)
+                handleAlgorithmResults(self.algorithm(), context, multi_feedback, False)
 
         feedback.pushInfo(self.tr('Batch execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
         task = None
