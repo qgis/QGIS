@@ -76,7 +76,7 @@ QIcon QgsLayerItem::iconRaster()
 
 QIcon QgsLayerItem::iconMesh()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconMeshLayer.svg" ) );
 }
 
 QIcon QgsLayerItem::iconDefault()
@@ -626,29 +626,22 @@ QString QgsLayerItem::iconName( QgsLayerItem::LayerType layerType )
   {
     case Point:
       return QStringLiteral( "/mIconPointLayer.svg" );
-      break;
     case Line:
       return QStringLiteral( "/mIconLineLayer.svg" );
-      break;
     case Polygon:
       return QStringLiteral( "/mIconPolygonLayer.svg" );
-      break;
     // TODO add a new icon for generic Vector layers
     case Vector :
       return QStringLiteral( "/mIconPolygonLayer.svg" );
-      break;
     case TableLayer:
     case Table:
       return QStringLiteral( "/mIconTableLayer.svg" );
-      break;
     case Raster:
       return QStringLiteral( "/mIconRaster.svg" );
-      break;
     case Mesh:
-    //TODO add icon!
+      return QStringLiteral( "/mIconMeshLayer.svg" );
     default:
       return QStringLiteral( "/mIconLayer.png" );
-      break;
   }
 }
 
