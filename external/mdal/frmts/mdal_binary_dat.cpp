@@ -125,13 +125,13 @@ void MDAL::LoaderBinaryDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
   if ( version != CT_VERSION ) // Version should be 3000
     EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
 
-  std::shared_ptr<DatasetGroup> group( new DatasetGroup() ); // DAT datasets
+  std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(); // DAT datasets
   group->uri = mDatFile;
   group->isOnVertices = true;
 
   // in TUFLOW results there could be also a special timestep (99999) with maximums
   // we will put it into a separate dataset
-  std::shared_ptr<DatasetGroup> groupMax( new DatasetGroup() );
+  std::shared_ptr<DatasetGroup> groupMax = std::make_shared< DatasetGroup >();
   groupMax->uri = mDatFile;
   groupMax->isOnVertices = true;
 
@@ -249,7 +249,7 @@ bool MDAL::LoaderBinaryDat::readVertexTimestep( const MDAL::Mesh *mesh,
   size_t vertexCount = mesh->vertices.size();
   size_t faceCount = mesh->faces.size();
 
-  std::shared_ptr<MDAL::Dataset> dataset( new MDAL::Dataset );
+  std::shared_ptr<MDAL::Dataset> dataset = std::make_shared< MDAL::Dataset >();
   dataset->values.resize( vertexCount );
   dataset->active.resize( faceCount );
   dataset->parent = group.get();

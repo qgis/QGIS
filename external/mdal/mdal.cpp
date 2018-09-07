@@ -18,7 +18,7 @@ static MDAL_Status sLastStatus;
 
 const char *MDAL_Version()
 {
-  return "0.0.6";
+  return "0.0.7";
 }
 
 MDAL_Status MDAL_LastStatus()
@@ -59,6 +59,18 @@ void MDAL_CloseMesh( MeshH mesh )
     MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
     delete m;
   }
+}
+
+const char *MDAL_M_projection( MeshH mesh )
+{
+  if ( !mesh )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
+    return EMPTY_STR;
+  }
+
+  MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
+  return _return_str( m->crs );
 }
 
 

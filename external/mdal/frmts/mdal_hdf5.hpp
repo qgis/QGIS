@@ -53,7 +53,10 @@ class HdfFile
   public:
     typedef HdfH<H5I_FILE> Handle;
 
-    HdfFile( const std::string &path ) { d.reset( new Handle( H5Fopen( path.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT ) ) ); }
+    HdfFile( const std::string &path )
+      : d( std::make_shared< Handle >( H5Fopen( path.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT ) ) )
+    {
+    }
 
     bool isValid() const { return d->id >= 0; }
     hid_t id() const { return d->id; }
@@ -73,7 +76,9 @@ class HdfGroup
   public:
     typedef HdfH<H5I_GROUP> Handle;
 
-    HdfGroup( hid_t file, const std::string &path ) { d.reset( new Handle( H5Gopen( file, path.c_str() ) ) ); }
+    HdfGroup( hid_t file, const std::string &path )
+      : d( std::make_shared< Handle >( H5Gopen( file, path.c_str() ) ) )
+    {}
 
     bool isValid() const { return d->id >= 0; }
     hid_t id() const { return d->id; }
@@ -125,7 +130,9 @@ class HdfAttribute
   public:
     typedef HdfH<H5I_ATTR> Handle;
 
-    HdfAttribute( hid_t obj_id, const std::string &attr_name ) { d.reset( new Handle( H5Aopen( obj_id, attr_name.c_str(), H5P_DEFAULT ) ) ); }
+    HdfAttribute( hid_t obj_id, const std::string &attr_name )
+      : d( std::make_shared< Handle >( H5Aopen( obj_id, attr_name.c_str(), H5P_DEFAULT ) ) )
+    {}
 
     bool isValid() const { return d->id >= 0; }
     hid_t id() const { return d->id; }
@@ -153,7 +160,9 @@ class HdfDataset
   public:
     typedef HdfH<H5I_DATASET> Handle;
 
-    HdfDataset( hid_t file, const std::string &path ) { d.reset( new Handle( H5Dopen2( file, path.c_str(), H5P_DEFAULT ) ) ); }
+    HdfDataset( hid_t file, const std::string &path )
+      : d( std::make_shared< Handle >( H5Dopen2( file, path.c_str(), H5P_DEFAULT ) ) )
+    {}
 
     bool isValid() const { return d->id >= 0; }
     hid_t id() const { return d->id; }

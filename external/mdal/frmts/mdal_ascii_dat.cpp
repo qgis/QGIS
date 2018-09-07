@@ -69,7 +69,7 @@ void MDAL::LoaderAsciiDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
     oldFormat = true;
     isVector = ( line == "VECTOR" );
 
-    group.reset( new DatasetGroup() );
+    group = std::make_shared< DatasetGroup >();
     group->uri = mDatFile;
     group->setName( name );
     group->isScalar = !isVector;
@@ -118,7 +118,7 @@ void MDAL::LoaderAsciiDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
       }
       isVector = cardType == "BEGVEC";
 
-      group.reset( new DatasetGroup() );
+      group = std::make_shared< DatasetGroup >();
       group->uri = mDatFile;
       group->setName( name );
       group->isScalar = !isVector;
@@ -197,7 +197,7 @@ void MDAL::LoaderAsciiDat::readVertexTimestep(
   size_t vertexCount = mesh->vertices.size();
   size_t faceCount = mesh->faces.size();
 
-  std::shared_ptr<MDAL::Dataset> dataset( new MDAL::Dataset );
+  std::shared_ptr<MDAL::Dataset> dataset = std::make_shared< MDAL::Dataset >();
   dataset->time = t / 3600.; // TODO read TIMEUNITS
   dataset->values.resize( vertexCount );
   dataset->active.resize( faceCount );
@@ -267,7 +267,7 @@ void MDAL::LoaderAsciiDat::readFaceTimestep(
 
   size_t faceCount = mesh->faces.size();
 
-  std::shared_ptr<MDAL::Dataset> dataset( new MDAL::Dataset );
+  std::shared_ptr<MDAL::Dataset> dataset = std::make_shared< MDAL::Dataset >();
   dataset->time = t / 3600.;
   dataset->values.resize( faceCount );
   dataset->parent = group.get();

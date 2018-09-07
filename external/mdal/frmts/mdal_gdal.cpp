@@ -348,7 +348,7 @@ void MDAL::LoaderGdal::addDatasetGroups()
   // Add dataset to mMesh
   for ( data_hash::const_iterator band = mBands.begin(); band != mBands.end(); band++ )
   {
-    std::shared_ptr<DatasetGroup> group( new DatasetGroup() );
+    std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >();
     group->uri = mFileName;
     group->setName( band->first );
     group->isOnVertices = true;
@@ -358,7 +358,7 @@ void MDAL::LoaderGdal::addDatasetGroups()
       std::vector<GDALRasterBandH> raster_bands = time_step->second;
       bool is_vector = ( raster_bands.size() > 1 );
 
-      std::shared_ptr<MDAL::Dataset> dataset( new MDAL::Dataset );
+      std::shared_ptr<MDAL::Dataset> dataset = std::make_shared< MDAL::Dataset >();
       group->isScalar = !is_vector;
 
       dataset->time = time_step->first;

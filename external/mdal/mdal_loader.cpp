@@ -18,6 +18,10 @@
 #include "frmts/mdal_grib.hpp"
 #endif
 
+#ifdef HAVE_NETCDF
+#include "frmts/mdal_3di.hpp"
+#endif
+
 std::unique_ptr<MDAL::Mesh> MDAL::Loader::load( const std::string &meshFile, MDAL_Status *status )
 {
   if ( !MDAL::fileExists( meshFile ) )
@@ -28,6 +32,14 @@ std::unique_ptr<MDAL::Mesh> MDAL::Loader::load( const std::string &meshFile, MDA
 
   MDAL::Loader2dm loader( meshFile );
   std::unique_ptr<MDAL::Mesh> mesh = loader.load( status );
+
+#ifdef HAVE_NETCDF
+  if ( !mesh && status && *status == MDAL_Status::Err_UnknownFormat )
+  {
+    MDAL::Loader3Di loader( meshFile );
+    mesh = loader.load( status );
+  }
+#endif
 
 #ifdef HAVE_GDAL
   if ( !mesh && status && *status == MDAL_Status::Err_UnknownFormat )
