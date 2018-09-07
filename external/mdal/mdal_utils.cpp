@@ -180,6 +180,13 @@ std::string MDAL::replace( const std::string &str, const std::string &substr, co
   return res;
 }
 
+std::string MDAL::removeLastChar( const std::string &str )
+{
+  std::string ret( str );
+  ret.pop_back();
+  return ret;
+}
+
 MDAL::BBox MDAL::computeExtent( const MDAL::Vertices &vertices )
 {
   BBox b;
@@ -206,4 +213,44 @@ MDAL::BBox MDAL::computeExtent( const MDAL::Vertices &vertices )
 bool MDAL::equals( double val1, double val2, double eps )
 {
   return fabs( val1 - val2 ) < eps;
+}
+
+double MDAL::safeValue( double val, double nodata, double eps )
+{
+  if ( equals( val, nodata, eps ) )
+  {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+  else
+  {
+    return val;
+  }
+}
+
+double MDAL::parseTimeUnits( const std::string &units )
+{
+  double divBy = 1;
+  // We are trying to parse strings like
+  // "seconds since 2001-05-05 00:00:00"
+  // "hours since 1900-01-01 00:00:0.0"
+  // "days since 1961-01-01 00:00:00"
+  const std::vector<std::string> units_list = MDAL::split( units, " since ", SkipEmptyParts );
+  if ( units_list.size() == 2 )
+  {
+    // Give me hours
+    if ( units_list[0] == "seconds" )
+    {
+      divBy = 3600.0;
+    }
+    else if ( units_list[0] == "minutes" )
+    {
+      divBy = 60.0;
+    }
+    else if ( units_list[0] == "days" )
+    {
+      divBy = 1.0 / 24.0;
+    }
+  }
+
+  return divBy;
 }

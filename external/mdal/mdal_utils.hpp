@@ -21,6 +21,9 @@ namespace MDAL
   // numbers
   bool equals( double val1, double val2, double eps = std::numeric_limits<double>::epsilon() );
 
+  //! returns quiet_NaN if value equals nodata value, otherwise returns val itself
+  double safeValue( double val, double nodata, double eps = std::numeric_limits<double>::epsilon() );
+
   // debugging
   void debug( const std::string &message );
 
@@ -40,6 +43,7 @@ namespace MDAL
   bool contains( const std::string &str, const std::string &substr, ContainsBehaviour behaviour = CaseSensitive );
   bool contains( const std::vector<std::string> &list, const std::string &str );
   std::string replace( const std::string &str, const std::string &substr, const std::string &replacestr, ContainsBehaviour behaviour = CaseSensitive );
+  std::string removeLastChar( const std::string &str );
 
   std::string toLower( const std::string &std );
 
@@ -82,6 +86,11 @@ namespace MDAL
 
   // extent
   BBox computeExtent( const Vertices &vertices );
+
+  // time
+
+  //! Returns a delimiter to get time in hours
+  double parseTimeUnits( const std::string &units );
 
 } // namespace MDAL
 #endif //MDAL_UTILS_HPP

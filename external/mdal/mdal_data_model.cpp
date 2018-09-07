@@ -6,6 +6,7 @@
 #include "mdal_data_model.hpp"
 #include <assert.h>
 #include <algorithm>
+#include "mdal_utils.hpp"
 
 bool MDAL::Dataset::isActive( size_t faceIndex )
 {
@@ -60,17 +61,32 @@ void MDAL::DatasetGroup::setName( const std::string &name )
   setMetadata( "name", name );
 }
 
+void MDAL::Mesh::setSourceCrs( const std::string &str )
+{
+  crs = MDAL::trim( str );
+}
+
+void MDAL::Mesh::setSourceCrsFromWKT( const std::string &wkt )
+{
+  setSourceCrs( wkt );
+}
+
+void MDAL::Mesh::setSourceCrsFromEPSG( int code )
+{
+  setSourceCrs( std::string( "EPSG:" ) + std::to_string( code ) );
+}
+
 void MDAL::Mesh::addBedElevationDataset()
 {
   if ( faces.empty() )
     return;
 
-  std::shared_ptr<DatasetGroup> group( new DatasetGroup );
+  std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >();
   group->isOnVertices = true;
   group->isScalar = true;
   group->setName( "Bed Elevation" );
   group->uri = uri;
-  std::shared_ptr<MDAL::Dataset> dataset( new Dataset );
+  std::shared_ptr<MDAL::Dataset> dataset = std::make_shared< Dataset >();
   dataset->time = 0.0;
   dataset->values.resize( vertices.size() );
   dataset->active.resize( faces.size() );

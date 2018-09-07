@@ -16,12 +16,14 @@ IF (WITH_GUI)
   )
 ENDIF ()
 
-
+SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/external/mdal/cmake ${CMAKE_MODULE_PATH})
 FIND_PACKAGE(HDF5)
+FIND_PACKAGE(NetCDF)
 
 ########################################################
 # Compile internal MDAL
 IF (WITH_INTERNAL_MDAL)
+
   ADD_DEFINITIONS(-DMDAL_STATIC)
 
   INCLUDE_DIRECTORIES(
@@ -72,6 +74,19 @@ IF (WITH_INTERNAL_MDAL)
     )
     SET (HAVE_GDAL TRUE)
   ENDIF(GDAL_FOUND)
+
+  IF(NETCDF_FOUND)
+    SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_cf.cpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.cpp
+    )
+    SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_cf.hpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_3di.hpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.hpp
+    )
+    SET (HAVE_NETCDF TRUE)
+  ENDIF(NETCDF_FOUND)
 
   # create mdal_config.h
   CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/external/mdal/cmake_templates/mdal_config.hpp.in ${CMAKE_BINARY_DIR}/mdal_config.hpp)
@@ -128,6 +143,11 @@ IF (GDAL_FOUND)
   TARGET_INCLUDE_DIRECTORIES(mdalprovider PRIVATE ${GDAL_INCLUDE_DIR})
   TARGET_LINK_LIBRARIES(mdalprovider ${GDAL_LIBRARY} )
 ENDIF (GDAL_FOUND)
+
+IF (NETCDF_FOUND)
+  TARGET_INCLUDE_DIRECTORIES(mdalprovider PRIVATE ${NETCDF_INCLUDE_DIR})
+  TARGET_LINK_LIBRARIES(mdalprovider ${NETCDF_LIBRARY} )
+ENDIF (NETCDF_FOUND)
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)
