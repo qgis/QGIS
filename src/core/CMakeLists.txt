@@ -610,7 +610,6 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmaplayermodel.h
   qgsmaplayerproxymodel.h
   qgsmaplayerstore.h
-  qgsmaplayerstyle.h
   qgsmaplayerstylemanager.h
   qgsmaprenderercache.h
   qgsmaprenderercustompainterjob.h
@@ -885,6 +884,7 @@ SET(QGIS_CORE_HDRS
   qgsmaphittest.h
   qgsmaplayerdependency.h
   qgsmaplayerrenderer.h
+  qgsmaplayerstyle.h
   qgsmaplayerstylemanager.h
   qgsmapsettings.h
   qgsmapsettingsutils.h
