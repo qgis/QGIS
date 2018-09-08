@@ -199,7 +199,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! Menu for the "Add item" toolbutton when in colorramp mode
     QMenu *mMenuBtnAddItemColorRamp = nullptr;
 
-
+    bool mBlockGroupUpdates = false;
 
 };
 
