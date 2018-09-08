@@ -82,14 +82,14 @@ class QgsCaseInsensitiveLexerExpression : public QsciLexerSQL
     Q_OBJECT
 
   public:
-    //! constructor
-    explicit QgsCaseInsensitiveLexerExpression( QObject *parent = nullptr ) : QsciLexerSQL( parent ) {}
+    //! Constructor
+    explicit QgsCaseInsensitiveLexerExpression( QObject *parent = nullptr );
 
     bool caseSensitive() const override;
 
-#if 0
     const char *wordCharacters() const override;
-#endif
+
+    const char *autoCompletionFillups() const override;
 };
 ///@endcond
 #endif

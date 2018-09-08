@@ -16,11 +16,9 @@
 #include "qgsapplication.h"
 #include "qgscodeeditorexpression.h"
 
-#include <QWidget>
 #include <QString>
 #include <QFont>
 #include <QLabel>
-
 
 QgsCodeEditorExpression::QgsCodeEditorExpression( QWidget *parent )
   : QgsCodeEditor( parent )
@@ -146,18 +144,22 @@ void QgsCodeEditorExpression::updateApis()
   mSqlLexer->setAPIs( mApis );
 }
 
+QgsCaseInsensitiveLexerExpression::QgsCaseInsensitiveLexerExpression( QObject *parent )
+  : QsciLexerSQL( parent )
+{
+}
+
 bool QgsCaseInsensitiveLexerExpression::caseSensitive() const
 {
   return false;
 }
-#if 0
+
 const char *QgsCaseInsensitiveLexerExpression::wordCharacters() const
 {
-  static QString wordChars;
-
-  wordChars = QsciLexerSQL::wordCharacters();
-  wordChars += '@';
-  return wordChars.toUtf8().constData();
+  return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_@";
 }
 
-#endif
+const char *QgsCaseInsensitiveLexerExpression::autoCompletionFillups() const
+{
+  return "(";
+}
