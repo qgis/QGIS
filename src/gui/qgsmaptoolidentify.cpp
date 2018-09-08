@@ -796,7 +796,7 @@ QString QgsMapToolIdentify::formatDistance( double distance, QgsUnitTypes::Dista
   QgsSettings settings;
   bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
 
-  return QgsDistanceArea::formatDistance( distance, 3, unit, baseUnit );
+  return QgsDistanceArea::formatDistance( distance, mCoordinatePrecision, unit, baseUnit );
 }
 
 QString QgsMapToolIdentify::formatArea( double area, QgsUnitTypes::AreaUnit unit ) const
@@ -804,7 +804,7 @@ QString QgsMapToolIdentify::formatArea( double area, QgsUnitTypes::AreaUnit unit
   QgsSettings settings;
   bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
 
-  return QgsDistanceArea::formatArea( area, 3, unit, baseUnit );
+  return QgsDistanceArea::formatArea( area, mCoordinatePrecision, unit, baseUnit );
 }
 
 void QgsMapToolIdentify::formatChanged( QgsRasterLayer *layer )
