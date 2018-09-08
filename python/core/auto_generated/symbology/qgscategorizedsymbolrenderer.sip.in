@@ -266,7 +266,7 @@ name and symbol ``type``.
 The ``unmatchedCategories`` list will be filled with all existing categories which could not be matched
 to a symbol in ``style``.
 
-The ``unmatchedSymbols`` list will be filled with all symbol names from ``style`` which were not be matched
+The ``unmatchedSymbols`` list will be filled with all symbol names from ``style`` which were not matched
 to an existing category.
 
 If ``caseSensitive`` is false, then a case-insensitive match will be performed. If ``useTolerantMatch``
