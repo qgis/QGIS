@@ -22,6 +22,7 @@
 #include "qgscameracontroller.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapscene.h"
+#include "qgs3dmaptool.h"
 #include "qgswindow3dengine.h"
 
 
@@ -107,4 +108,43 @@ void Qgs3DMapCanvas::saveAsImage( const QString fileName, const QString fileForm
     mCaptureFileFormat = fileFormat;
     mEngine->requestCaptureImage();
   }
+}
+
+void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
+{
+  if ( mMapTool && !tool )
+  {
+    mEngine->window()->removeEventFilter( this );
+    mScene->cameraController()->setEnabled( true );
+  }
+  else if ( !mMapTool && tool )
+  {
+    mEngine->window()->installEventFilter( this );
+    mScene->cameraController()->setEnabled( false );
+  }
+
+  mMapTool = tool;
+}
+
+bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
+{
+  if ( !mMapTool )
+    return false;
+
+  Q_UNUSED( watched );
+  switch ( event->type() )
+  {
+    case QEvent::MouseButtonPress:
+      mMapTool->mousePressEvent( static_cast<QMouseEvent *>( event ) );
+      break;
+    case QEvent::MouseButtonRelease:
+      mMapTool->mouseReleaseEvent( static_cast<QMouseEvent *>( event ) );
+      break;
+    case QEvent::MouseMove:
+      mMapTool->mouseMoveEvent( static_cast<QMouseEvent *>( event ) );
+      break;
+    default:
+      break;
+  }
+  return false;
 }
