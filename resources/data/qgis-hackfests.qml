@@ -61,7 +61,7 @@
               <Option name="properties" type="Map">
                 <Option name="fillColor" type="Map">
                   <Option name="active" type="bool" value="true"/>
-                  <Option name="expression" type="QString" value="--color_hsv(second(now()), 170, 0 )&#xa;color_hsv((abs(second(now())-30) * 7) + 60, 95, 87)"/>
+                  <Option name="expression" type="QString" value="color_hsv((abs(second(now())-30) * 7) + 60, 95, 87)"/>
                   <Option name="type" type="int" value="3"/>
                 </Option>
                 <Option name="size" type="Map">
