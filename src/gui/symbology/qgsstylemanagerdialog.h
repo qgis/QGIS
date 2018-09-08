@@ -169,6 +169,12 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! sets the text of the item with bold font
     void setBold( QStandardItem * );
 
+  private slots:
+
+    void tabItemType_currentChanged( int );
+
+  private:
+
     QgsStyle *mStyle = nullptr;
 
     QString mStyleFilename;
@@ -193,9 +199,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! Menu for the "Add item" toolbutton when in colorramp mode
     QMenu *mMenuBtnAddItemColorRamp = nullptr;
 
-  private slots:
 
-    void tabItemType_currentChanged( int );
+
 };
 
 #endif
