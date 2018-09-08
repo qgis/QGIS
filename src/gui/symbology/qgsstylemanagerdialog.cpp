@@ -902,6 +902,9 @@ void QgsStyleManagerDialog::setBold( QStandardItem *item )
 
 void QgsStyleManagerDialog::populateGroups()
 {
+  if ( mBlockGroupUpdates )
+    return;
+
   QStandardItemModel *model = qobject_cast<QStandardItemModel *>( groupTree->model() );
   model->clear();
 
@@ -1082,7 +1085,13 @@ int QgsStyleManagerDialog::addTag()
                            tr( "Tag name already exists in your symbol database." ) );
     return 0;
   }
+
+  // block the auto-repopulation of groups when the style emits groupsModified
+  // instead, we manually update the model items for better state retention
+  mBlockGroupUpdates = true;
   id = mStyle->addTag( itemName );
+  mBlockGroupUpdates = false;
+
   if ( !id )
   {
     QMessageBox::critical( this, tr( "Add Tag" ),
@@ -1118,7 +1127,13 @@ int QgsStyleManagerDialog::addSmartgroup()
   QgsSmartGroupEditorDialog dlg( mStyle, this );
   if ( dlg.exec() == QDialog::Rejected )
     return 0;
+
+  // block the auto-repopulation of groups when the style emits groupsModified
+  // instead, we manually update the model items for better state retention
+  mBlockGroupUpdates = true;
   id = mStyle->addSmartgroup( dlg.smartgroupName(), dlg.conditionOperator(), dlg.conditionMap() );
+  mBlockGroupUpdates = false;
+
   if ( !id )
     return 0;
   itemName = dlg.smartgroupName();
@@ -1148,6 +1163,11 @@ void QgsStyleManagerDialog::removeGroup()
   }
 
   QStandardItem *parentItem = model->itemFromIndex( index.parent() );
+
+  // block the auto-repopulation of groups when the style emits groupsModified
+  // instead, we manually update the model items for better state retention
+  mBlockGroupUpdates = true;
+
   if ( parentItem->data( Qt::UserRole + 1 ).toString() == QLatin1String( "smartgroups" ) )
   {
     mStyle->remove( QgsStyle::SmartgroupEntity, index.data( Qt::UserRole + 1 ).toInt() );
@@ -1156,6 +1176,8 @@ void QgsStyleManagerDialog::removeGroup()
   {
     mStyle->remove( QgsStyle::TagEntity, index.data( Qt::UserRole + 1 ).toInt() );
   }
+
+  mBlockGroupUpdates = false;
   parentItem->removeRow( index.row() );
 }
 
