@@ -233,7 +233,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      * The \a unmatchedCategories list will be filled with all existing categories which could not be matched
      * to a symbol in \a style.
      *
-     * The \a unmatchedSymbols list will be filled with all symbol names from \a style which were not be matched
+     * The \a unmatchedSymbols list will be filled with all symbol names from \a style which were not matched
      * to an existing category.
      *
      * If \a caseSensitive is false, then a case-insensitive match will be performed. If \a useTolerantMatch
