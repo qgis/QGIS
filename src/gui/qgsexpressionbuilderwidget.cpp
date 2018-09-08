@@ -49,7 +49,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( btnNewFile, &QToolButton::pressed, this, &QgsExpressionBuilderWidget::btnNewFile_pressed );
   connect( cmbFileNames, &QListWidget::currentItemChanged, this, &QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged );
   connect( expressionTree, &QTreeView::doubleClicked, this, &QgsExpressionBuilderWidget::expressionTree_doubleClicked );
-  connect( txtExpressionString, &QgsCodeEditorSQL::textChanged, this, &QgsExpressionBuilderWidget::txtExpressionString_textChanged );
+  connect( txtExpressionString, &QgsCodeEditorExpression::textChanged, this, &QgsExpressionBuilderWidget::txtExpressionString_textChanged );
   connect( txtPython, &QgsCodeEditorPython::textChanged, this, &QgsExpressionBuilderWidget::txtPython_textChanged );
   connect( txtSearchEditValues, &QgsFilterLineEdit::textChanged, this, &QgsExpressionBuilderWidget::txtSearchEditValues_textChanged );
   connect( txtSearchEdit, &QgsFilterLineEdit::textChanged, this, &QgsExpressionBuilderWidget::txtSearchEdit_textChanged );
@@ -142,7 +142,10 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtExpressionString->setIndicatorHoverForegroundColor( QColor( Qt::blue ), FUNCTION_MARKER_ID );
   txtExpressionString->setIndicatorHoverStyle( QgsCodeEditor::DotsIndicator, FUNCTION_MARKER_ID );
 
-  connect( txtExpressionString, &QgsCodeEditorSQL::indicatorClicked, this, &QgsExpressionBuilderWidget::indicatorClicked );
+  connect( txtExpressionString, &QgsCodeEditorExpression::indicatorClicked, this, &QgsExpressionBuilderWidget::indicatorClicked );
+  txtExpressionString->setAutoCompletionCaseSensitivity( true );
+  txtExpressionString->setAutoCompletionSource( QsciScintilla::AcsAPIs );
+  txtExpressionString->setCallTipsVisible( 0 );
 
   setExpectedOutputFormat( QString() );
 }
@@ -340,6 +343,8 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields &fields )
 {
   if ( fields.isEmpty() )
     return;
+
+  txtExpressionString->setFields( fields );
 
   QStringList fieldNames;
   //Q_FOREACH ( const QgsField& field, fields )
@@ -696,6 +701,7 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
 
 void QgsExpressionBuilderWidget::loadExpressionContext()
 {
+  txtExpressionString->setExpressionContext( mExpressionContext );
   QStringList variableNames = mExpressionContext.filteredVariableNames();
   Q_FOREACH ( const QString &variable, variableNames )
   {

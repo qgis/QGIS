@@ -229,6 +229,7 @@ SET(QGIS_GUI_SRCS
   qgscodeeditorhtml.cpp
   qgscodeeditorpython.cpp
   qgscodeeditorsql.cpp
+  qgscodeeditorexpression.cpp
   qgscollapsiblegroupbox.cpp
   qgscolorbrewercolorrampdialog.cpp
   qgscolorbutton.cpp
@@ -406,6 +407,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgscodeeditorhtml.h
   qgscodeeditorpython.h
   qgscodeeditorsql.h
+  qgscodeeditorexpression.h
   qgscollapsiblegroupbox.h
   qgscolorbrewercolorrampdialog.h
   qgscolorbutton.h

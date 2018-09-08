@@ -27,7 +27,7 @@ class QgsFilterLineEdit;
 class QToolButton;
 class QgsDistanceArea;
 class QgsExpressionContextGenerator;
-class QgsCodeEditorSQL;
+class QgsCodeEditorExpression;
 
 /**
  * \ingroup gui
@@ -170,7 +170,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
 
   private:
     QgsFilterLineEdit *mLineEdit = nullptr;
-    QgsCodeEditorSQL *mCodeEditor = nullptr;
+    QgsCodeEditorExpression *mCodeEditor = nullptr;
     QToolButton *mButton = nullptr;
     QString mExpressionDialogTitle;
     std::unique_ptr<QgsDistanceArea> mDa;
