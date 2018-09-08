@@ -1036,17 +1036,34 @@ void QgsProjectProperties::apply()
     emit scalesChanged();
   }
 
-  QgsProject::instance()->setNonIdentifiableLayers( mLayerCapabilitiesModel->nonIdentifiableLayers() );
-  QgsProject::instance()->setRequiredLayers( mLayerCapabilitiesModel->requiredLayers() );
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
+    QgsMapLayer *layer = it.value();
+    QgsMapLayer::LayerFlags flags = layer->flags();
+
+    if ( mLayerCapabilitiesModel->identifiable( layer ) )
+      flags |= QgsMapLayer::Identifiable;
+    else
+      flags &= ~QgsMapLayer::Identifiable;
+
+    if ( mLayerCapabilitiesModel->removable( layer ) )
+      flags |= QgsMapLayer::Removable;
+    else
+      flags &= ~QgsMapLayer::Removable;
+
+    if ( mLayerCapabilitiesModel->searchable( layer ) )
+      flags |= QgsMapLayer::Searchable;
+    else
+      flags &= ~QgsMapLayer::Searchable;
+
+    layer->setFlags( flags );
+
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( vl )
     {
-      // read only and searchable are for vector layers only for now
+      // read only is for vector layers only for now
       vl->setReadOnly( mLayerCapabilitiesModel->readOnly( vl ) );
-      vl->setSearchable( mLayerCapabilitiesModel->searchable( vl ) );
     }
   }
 

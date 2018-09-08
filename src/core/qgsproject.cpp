@@ -1271,6 +1271,27 @@ bool QgsProject::readProjectFile( const QString &filename )
     mRootGroup->readLayerOrderFromXml( layerTreeCanvasElem );
   }
 
+  // Convert pre 3.4 to create layers flags
+  if ( QgsProjectVersion( 3, 4, 0 ) > fileVersion )
+  {
+    const QStringList requiredLayerIds = readListEntry( QStringLiteral( "RequiredLayers" ), QStringLiteral( "Layers" ) );
+    for ( const QString &layerId : requiredLayerIds )
+    {
+      if ( QgsMapLayer *layer = mapLayer( layerId ) )
+      {
+        layer->setFlags( layer->flags() & ~QgsMapLayer::Removable );
+      }
+    }
+    const QStringList disabledLayerIds = readListEntry( QStringLiteral( "Identify" ), QStringLiteral( "/disabledLayers" ) );
+    for ( const QString &layerId : disabledLayerIds )
+    {
+      if ( QgsMapLayer *layer = mapLayer( layerId ) )
+      {
+        layer->setFlags( layer->flags() & ~QgsMapLayer::Identifiable );
+      }
+    }
+  }
+
   // make sure the are just valid layers
   QgsLayerTreeUtils::removeInvalidLayers( mRootGroup );
 
@@ -1323,7 +1344,9 @@ bool QgsProject::readProjectFile( const QString &filename )
   if ( clean )
     setDirty( false );
 
+  Q_NOWARN_DEPRECATED_PUSH
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
+  Q_NOWARN_DEPRECATED_POP
 
   if ( mTranslator )
   {
@@ -2224,18 +2247,6 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   context.setPathResolver( pathResolver() );
   context.setProjectTranslator( this );
 
-  // store identify disabled layers of the embedded project
-  QSet<QString> embeddedIdentifyDisabledLayers;
-  QDomElement disabledLayersElem = projectDocument.documentElement().firstChildElement( QStringLiteral( "properties" ) ).firstChildElement( QStringLiteral( "Identify" ) ).firstChildElement( QStringLiteral( "disabledLayers" ) );
-  if ( !disabledLayersElem.isNull() )
-  {
-    QDomNodeList valueList = disabledLayersElem.elementsByTagName( QStringLiteral( "value" ) );
-    for ( int i = 0; i < valueList.size(); ++i )
-    {
-      embeddedIdentifyDisabledLayers.insert( valueList.at( i ).toElement().text() );
-    }
-  }
-
   QgsLayerTreeGroup *root = new QgsLayerTreeGroup;
 
   QDomElement layerTreeElem = projectDocument.documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
@@ -2269,16 +2280,9 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   initializeEmbeddedSubtree( projectFilePath, newGroup );
   mLayerTreeRegistryBridge->setEnabled( true );
 
-  QStringList thisProjectIdentifyDisabledLayers = nonIdentifiableLayers();
-
   // consider the layers might be identify disabled in its project
   Q_FOREACH ( const QString &layerId, newGroup->findLayerIds() )
   {
-    if ( embeddedIdentifyDisabledLayers.contains( layerId ) )
-    {
-      thisProjectIdentifyDisabledLayers.append( layerId );
-    }
-
     QgsLayerTreeLayer *layer = newGroup->findLayer( layerId );
     if ( layer )
     {
@@ -2286,8 +2290,6 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
       layer->setItemVisibilityChecked( invisibleLayers.contains( layerId ) );
     }
   }
-
-  setNonIdentifiableLayers( thisProjectIdentifyDisabledLayers );
 
   return newGroup;
 }
@@ -2446,37 +2448,46 @@ const QgsAnnotationManager *QgsProject::annotationManager() const
 
 void QgsProject::setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers )
 {
-  QStringList currentLayers = nonIdentifiableLayers();
-
-  QStringList newLayers;
-  Q_FOREACH ( QgsMapLayer *l, layers )
+  const QMap<QString, QgsMapLayer *> &projectLayers = mapLayers();
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = projectLayers.constBegin(); it != projectLayers.constEnd(); ++it )
   {
-    newLayers << l->id();
+    if ( layers.contains( it.value() ) == !it.value()->flags().testFlag( QgsMapLayer::Identifiable ) )
+      continue;
+
+    if ( layers.contains( it.value() ) )
+      it.value()->setFlags( it.value()->flags() & ~QgsMapLayer::Identifiable );
+    else
+      it.value()->setFlags( it.value()->flags() | QgsMapLayer::Identifiable );
   }
 
-  if ( newLayers == currentLayers )
-    return;
-
-  QStringList disabledLayerIds;
-
-  Q_FOREACH ( QgsMapLayer *l, layers )
-  {
-    disabledLayerIds << l->id();
-  }
-
-  setNonIdentifiableLayers( disabledLayerIds );
+  emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
 }
 
 void QgsProject::setNonIdentifiableLayers( const QStringList &layerIds )
 {
-  writeEntry( QStringLiteral( "Identify" ), QStringLiteral( "/disabledLayers" ), layerIds );
-
-  emit nonIdentifiableLayersChanged( layerIds );
+  QList<QgsMapLayer *> nonIdentifiableLayers;
+  for ( const QString &layerId : layerIds )
+  {
+    QgsMapLayer *layer = mapLayer( layerId );
+    if ( layer )
+      nonIdentifiableLayers << layer;
+  }
+  setNonIdentifiableLayers( nonIdentifiableLayers );
 }
 
 QStringList QgsProject::nonIdentifiableLayers() const
 {
-  return readListEntry( QStringLiteral( "Identify" ), QStringLiteral( "/disabledLayers" ) );
+  QStringList nonIdentifiableLayers;
+
+  const QMap<QString, QgsMapLayer *> &layers = mapLayers();
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = layers.constBegin(); it != layers.constEnd(); ++it )
+  {
+    if ( !it.value()->flags().testFlag( QgsMapLayer::Identifiable ) )
+    {
+      nonIdentifiableLayers.append( it.value()->id() );
+    }
+  }
+  return nonIdentifiableLayers;
 }
 
 bool QgsProject::autoTransaction() const
@@ -2803,25 +2814,32 @@ void QgsProject::setMetadata( const QgsProjectMetadata &metadata )
 
 QSet<QgsMapLayer *> QgsProject::requiredLayers() const
 {
-  QSet<QgsMapLayer *> layers;
-  const QStringList lst = readListEntry( QStringLiteral( "RequiredLayers" ), QStringLiteral( "Layers" ) );
-  for ( const QString &layerId : lst )
+  QSet<QgsMapLayer *> requiredLayers;
+
+  const QMap<QString, QgsMapLayer *> &layers = mapLayers();
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
-    if ( QgsMapLayer *layer = mapLayer( layerId ) )
-      layers.insert( layer );
+    if ( !it.value()->flags().testFlag( QgsMapLayer::Removable ) )
+    {
+      requiredLayers.insert( it.value() );
+    }
   }
-  return layers;
+  return requiredLayers;
 }
 
 void QgsProject::setRequiredLayers( const QSet<QgsMapLayer *> &layers )
 {
-  QStringList layerIds;
-  layerIds.reserve( layers.count() );
-  for ( QgsMapLayer *layer : layers )
+  const QMap<QString, QgsMapLayer *> &projectLayers = mapLayers();
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = projectLayers.constBegin(); it != projectLayers.constEnd(); ++it )
   {
-    layerIds << layer->id();
+    if ( layers.contains( it.value() ) == !it.value()->flags().testFlag( QgsMapLayer::Removable ) )
+      continue;
+
+    if ( layers.contains( it.value() ) )
+      it.value()->setFlags( it.value()->flags() & ~QgsMapLayer::Removable );
+    else
+      it.value()->setFlags( it.value()->flags() | QgsMapLayer::Removable );
   }
-  writeEntry( QStringLiteral( "RequiredLayers" ), QStringLiteral( "Layers" ), layerIds );
 }
 
 void QgsProject::generateTsFile( const QString &locale )

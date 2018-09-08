@@ -249,8 +249,6 @@ namespace QgsWmts
 #endif
     QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
 
-    QStringList nonIdentifiableLayers = project->nonIdentifiableLayers();
-
     // WMTS Project configuration
     bool wmtsProject = project->readBoolEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Project" ) );
 
@@ -349,7 +347,7 @@ namespace QgsWmts
           {
             wgs84BoundingRect.combineExtentWith( QgsRectangle( -180, -90, 180, 90 ) );
           }
-          if ( !queryable && !nonIdentifiableLayers.contains( l->id() ) )
+          if ( !queryable && l->flags().testFlag( QgsMapLayer::Identifiable ) )
           {
             queryable = true;
           }
@@ -425,7 +423,7 @@ namespace QgsWmts
       if ( wmtsJpegLayerIdList.contains( lId ) )
         pLayer.formats << QStringLiteral( "image/jpeg" );
 
-      pLayer.queryable = ( !nonIdentifiableLayers.contains( l->id() ) );
+      pLayer.queryable = ( l->flags().testFlag( QgsMapLayer::Identifiable ) );
 
       pLayer.maxScale = l->maximumScale();
       pLayer.minScale = l->minimumScale();

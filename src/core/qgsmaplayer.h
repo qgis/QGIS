@@ -119,6 +119,21 @@ class CORE_EXPORT QgsMapLayer : public QObject
     };
 
     /**
+     * Flags for the map layer
+     * \note Flags are options specified by the user used for the UI but are not preventing any API call.
+     * \since QGIS 3.4
+     */
+    enum LayerFlag
+    {
+      Identifiable = 1 << 0, //!< If the layer is identifiable using the identify map tool and as a WMS layer.
+      Removable = 1 << 1,    //!< If the layer can be removed from the project. The layer will not be removable from the legend menu entry but can still be removed with an API call.
+      Searchable = 1 << 2,   //!< Only for vector-layer, determines if the layer is used in the 'search all layers' locator.
+    };
+    Q_ENUM( LayerFlag )
+    Q_DECLARE_FLAGS( LayerFlags, LayerFlag )
+    Q_FLAG( LayerFlags )
+
+    /**
      * Constructor for QgsMapLayer
      * \param type layer type
      * \param name display name for the layer
@@ -145,6 +160,24 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns the type of the layer.
      */
     QgsMapLayer::LayerType type() const;
+
+    /**
+     * Returns the flags for this layer.
+     * \note Flags are options specified by the user used for the UI but are not preventing any API call.
+     * For instance, even if the Removable flag is not set, the layer can still be removed with the API
+     * but the action will not be listed in the legend menu.
+     * \since QGIS 3.4
+     */
+    QgsMapLayer::LayerFlags flags() const;
+
+    /**
+     * Returns the flags for this layer.
+      \note Flags are options specified by the user used for the UI but are not preventing any API call.
+     * For instance, even if the Removable flag is not set, the layer can still be removed with the API
+     * but the action will not be listed in the legend menu.
+     * \since QGIS 3.4
+     */
+    void setFlags( QgsMapLayer::LayerFlags flags );
 
     /**
      * Returns the extension of a Property.
@@ -1335,6 +1368,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Type of the layer (e.g., vector, raster)
     QgsMapLayer::LayerType mLayerType;
 
+    LayerFlags mFlags = LayerFlags( Identifiable | Removable | Searchable );
+
     //! Blend mode for the layer
     QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
 
@@ -1375,6 +1410,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer * )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayer::LayerFlags )
 
 #ifndef SIP_RUN
 

@@ -1253,7 +1253,7 @@ namespace QgsWms
         if ( queryLayer == layerNickname( *layer ) )
         {
           validLayer = true;
-          queryableLayer = !mProject->nonIdentifiableLayers().contains( layer->id() )  ;
+          queryableLayer = layer->flags().testFlag( QgsMapLayer::Identifiable );
           if ( !queryableLayer )
           {
             break;
@@ -2946,20 +2946,13 @@ namespace QgsWms
 
   void QgsRenderer::removeNonIdentifiableLayers( QList<QgsMapLayer *> &layers ) const
   {
-    QStringList nonIdentifiableLayers = mProject->nonIdentifiableLayers();
-    if ( !nonIdentifiableLayers.isEmpty() )
+    QList<QgsMapLayer *>::iterator it = layers.begin();
+    while ( it != layers.end() )
     {
-      QList<QgsMapLayer *> wantedLayers;
-
-      for ( QgsMapLayer *layer : layers )
-      {
-        if ( nonIdentifiableLayers.contains( layer->id() ) )
-          continue;
-
-        wantedLayers.append( layer );
-      }
-
-      layers = wantedLayers;
+      if ( !( *it )->flags().testFlag( QgsMapLayer::Identifiable ) )
+        it = layers.erase( it );
+      else
+        ++it;
     }
   }
 

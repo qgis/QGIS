@@ -40,7 +40,7 @@ class TestQgsProject : public QObject
     void testPathResolverSvg();
     void testProjectUnits();
     void variablesChanged();
-    void testRequiredLayers();
+    void testLayerFlags();
 };
 
 void TestQgsProject::init()
@@ -356,7 +356,7 @@ void TestQgsProject::variablesChanged()
   delete prj;
 }
 
-void TestQgsProject::testRequiredLayers()
+void TestQgsProject::testLayerFlags()
 {
   QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString layerPath = dataDir + "/points.shp";
@@ -367,13 +367,9 @@ void TestQgsProject::testRequiredLayers()
   prj.addMapLayer( layer1 );
   prj.addMapLayer( layer2 );
 
-  QSet<QgsMapLayer *> reqLayers;
-  reqLayers << layer2;
-  prj.setRequiredLayers( reqLayers );
+  layer2->setFlags( layer2->flags() & ~QgsMapLayer::Removable );
 
-  QSet<QgsMapLayer *> reqLayersReturned = prj.requiredLayers();
-  QCOMPARE( reqLayersReturned.count(), 1 );
-  QCOMPARE( *reqLayersReturned.constBegin(), layer2 );
+  QString layer2id = layer2->id();
 
   QTemporaryFile f;
   QVERIFY( f.open() );
@@ -385,9 +381,9 @@ void TestQgsProject::testRequiredLayers()
   QgsProject prj2;
   prj2.setFileName( f.fileName() );
   QVERIFY( prj2.read() );
-  QSet<QgsMapLayer *> reqLayersReturned2 = prj2.requiredLayers();
-  QCOMPARE( reqLayersReturned2.count(), 1 );
-  QCOMPARE( ( *reqLayersReturned.constBegin() )->name(), QString( "points 2" ) );
+  QgsMapLayer *layer = prj.mapLayer( layer2id );
+  QVERIFY( layer );
+  QVERIFY( !layer->flags().testFlag( QgsMapLayer::Removable ) );
 }
 
 
