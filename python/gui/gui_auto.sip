@@ -193,6 +193,7 @@
 %Include auto_generated/qgssearchquerybuilder.sip
 %Include auto_generated/qgsshortcutsmanager.sip
 %Include auto_generated/qgsslider.sip
+%Include auto_generated/qgssnaptogridcanvasitem.sip
 %Include auto_generated/qgsstatusbar.sip
 %Include auto_generated/qgssublayersdialog.sip
 %Include auto_generated/qgssubstitutionlistwidget.sip

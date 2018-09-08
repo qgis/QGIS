@@ -27,6 +27,7 @@ QgsMapToolSplitParts::QgsMapToolSplitParts( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
 {
   mToolName = tr( "Split parts" );
+  setSnapToLayerGridEnabled( false );
 }
 
 void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent *e )

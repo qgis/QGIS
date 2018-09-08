@@ -119,6 +119,15 @@ Alias to pos()
 :return: Mouse position in pixel coordinates
 %End
 
+    void snapToGrid( double precision, const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Snaps the mapPoint to a grid with the given ``precision``.
+The snapping will be done in the specified ``crs``. If this crs is
+different from the mapCanvas crs, it will be reprojected on the fly.
+
+.. versionadded:: 3.4
+%End
+
 };
 
 /************************************************************************
