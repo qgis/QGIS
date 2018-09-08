@@ -158,8 +158,3 @@ const char *QgsCaseInsensitiveLexerExpression::wordCharacters() const
 {
   return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_@";
 }
-
-const char *QgsCaseInsensitiveLexerExpression::autoCompletionFillups() const
-{
-  return "(";
-}

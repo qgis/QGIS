@@ -88,8 +88,6 @@ class QgsCaseInsensitiveLexerExpression : public QsciLexerSQL
     bool caseSensitive() const override;
 
     const char *wordCharacters() const override;
-
-    const char *autoCompletionFillups() const override;
 };
 ///@endcond
 #endif
