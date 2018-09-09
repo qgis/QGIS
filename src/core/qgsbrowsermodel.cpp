@@ -91,7 +91,7 @@ void QgsBrowserModel::addRootItems()
   QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(), QStringLiteral( HOME_PREFIX ) + QDir::homePath() );
   item->setSortKey( QStringLiteral( " 2" ) );
   QStyle *style = QApplication::style();
-  QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
+  QIcon homeIcon( style->standardIcon( QStyle::SP_DirHomeIcon ) );
   item->setIcon( homeIcon );
   connectItem( item );
   mRootItems << item;
