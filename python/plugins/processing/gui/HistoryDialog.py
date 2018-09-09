@@ -55,8 +55,7 @@ class HistoryDialog(BASE, WIDGET):
         self.groupIcon.addPixmap(self.style().standardPixmap(
             QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
 
-        self.keyIcon = QIcon()
-        self.keyIcon.addPixmap(self.style().standardPixmap(QStyle.SP_FileIcon))
+        self.keyIcon = self.style().standardIcon(QStyle.SP_FileIcon)
 
         self.clearButton = QPushButton(self.tr('Clear'))
         self.clearButton.setToolTip(self.tr('Clear history'))
