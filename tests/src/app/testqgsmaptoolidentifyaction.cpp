@@ -242,8 +242,8 @@ void TestQgsMapToolIdentifyAction::closestPoint()
   //check that closest point attributes are present
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
-  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest X" )], QStringLiteral( "2484588" ) );
-  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest Y" )], QStringLiteral( "2399800" ) );
+  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest X" )], QStringLiteral( "2484588.000" ) );
+  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest Y" )], QStringLiteral( "2399800.000" ) );
   QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Interpolated M" )].left( 4 ), QStringLiteral( "36.7" ) );
   QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Interpolated Z" )].left( 4 ), QStringLiteral( "14.8" ) );
 
@@ -262,8 +262,8 @@ void TestQgsMapToolIdentifyAction::closestPoint()
   mapPoint = canvas->getCoordinateTransform()->transform( 2484589, 2399800 );
   result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer2.get() );
   QCOMPARE( result.length(), 1 );
-  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest X" )], QStringLiteral( "2484588" ) );
-  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest Y" )], QStringLiteral( "2399800" ) );
+  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest X" )], QStringLiteral( "2484588.000" ) );
+  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest Y" )], QStringLiteral( "2399800.000" ) );
   QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Interpolated M" )].left( 4 ), QStringLiteral( "11.9" ) );
   QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Interpolated Z" )].left( 4 ), QStringLiteral( "1.96" ) );
 }
@@ -292,6 +292,9 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
+
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), false );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 3 );
 
   QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
 
@@ -367,6 +370,9 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), false );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 3 );
+
   QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
 
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
@@ -441,6 +447,9 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
+
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), false );
+  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 3 );
 
   QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
 
