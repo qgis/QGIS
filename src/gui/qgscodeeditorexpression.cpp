@@ -106,7 +106,7 @@ void QgsCodeEditorExpression::initializeLexer()
   // The font size gotten from getMonospaceFont() is too small on Mac
   font.setPointSize( QLabel().font().pointSize() );
 #endif
-  mSqlLexer = new QgsCaseInsensitiveLexerExpression( this );
+  mSqlLexer = new QgsLexerExpression( this );
   mSqlLexer->setDefaultFont( font );
   mSqlLexer->setFont( font, -1 );
   font.setBold( true );
@@ -145,17 +145,22 @@ void QgsCodeEditorExpression::updateApis()
 }
 
 ///@cond PRIVATE
-QgsCaseInsensitiveLexerExpression::QgsCaseInsensitiveLexerExpression( QObject *parent )
+QgsLexerExpression::QgsLexerExpression( QObject *parent )
   : QsciLexerSQL( parent )
 {
 }
 
-bool QgsCaseInsensitiveLexerExpression::caseSensitive() const
+const char *QgsLexerExpression::language() const
+{
+  return "QGIS Expression";
+}
+
+bool QgsLexerExpression::caseSensitive() const
 {
   return false;
 }
 
-const char *QgsCaseInsensitiveLexerExpression::wordCharacters() const
+const char *QgsLexerExpression::wordCharacters() const
 {
   return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_@";
 }
