@@ -118,7 +118,7 @@ void QgsCodeEditorExpression::initializeLexer()
 
 void QgsCodeEditorExpression::updateApis()
 {
-  mApis = new QsciAPIs( mSqlLexer );
+  mApis = new QgsSciApisExpression( mSqlLexer );
 
   for ( const QString &var : qgis::as_const( mVariables ) )
   {
@@ -163,5 +163,21 @@ bool QgsLexerExpression::caseSensitive() const
 const char *QgsLexerExpression::wordCharacters() const
 {
   return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_@";
+}
+
+QgsSciApisExpression::QgsSciApisExpression( QsciLexer *lexer )
+  : QsciAPIs( lexer )
+{
+
+}
+
+QStringList QgsSciApisExpression::callTips( const QStringList &context, int commas, QsciScintilla::CallTipsStyle style, QList<int> &shifts )
+{
+  const QStringList originalTips = QsciAPIs::callTips( context, commas, style, shifts );
+  QStringList lowercaseTips;
+  for ( const QString &tip : originalTips )
+    lowercaseTips << tip.toLower();
+
+  return lowercaseTips;
 }
 ///@endcond

@@ -91,6 +91,14 @@ class QgsLexerExpression : public QsciLexerSQL
 
     const char *wordCharacters() const override;
 };
+
+class QgsSciApisExpression : public QsciAPIs
+{
+  public:
+    QgsSciApisExpression( QsciLexer *lexer );
+
+    QStringList callTips( const QStringList &context, int commas, QsciScintilla::CallTipsStyle style, QList<int> &shifts ) override;
+};
 ///@endcond
 #endif
 
