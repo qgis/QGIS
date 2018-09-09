@@ -66,7 +66,7 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
         return self.tr('Drop field(s)')
 
     def outputName(self):
-        return self.tr('Fields dropped')
+        return self.tr('Remaining fields')
 
     def prepareAlgorithm(self, parameters, context, feedback):
         self.fields_to_delete = self.parameterAsFields(parameters, self.COLUMNS, context)
