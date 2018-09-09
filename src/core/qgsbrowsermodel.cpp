@@ -335,7 +335,7 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString 
   if ( matchFlag == Qt::MatchStartsWith )
     return index;
 
-  QgsDebugMsgLevel( "path not found", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "path not found" ), 4 );
   return QModelIndex(); // not found
 }
 
@@ -391,13 +391,13 @@ void QgsBrowserModel::beginInsertItems( QgsDataItem *parent, int first, int last
   QModelIndex idx = findItem( parent );
   if ( !idx.isValid() )
     return;
-  QgsDebugMsgLevel( "valid", 3 );
+  QgsDebugMsgLevel( QStringLiteral( "valid" ), 3 );
   beginInsertRows( idx, first, last );
-  QgsDebugMsgLevel( "end", 3 );
+  QgsDebugMsgLevel( QStringLiteral( "end" ), 3 );
 }
 void QgsBrowserModel::endInsertItems()
 {
-  QgsDebugMsgLevel( "Entered", 3 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 3 );
   endInsertRows();
 }
 void QgsBrowserModel::beginRemoveItems( QgsDataItem *parent, int first, int last )
@@ -410,12 +410,12 @@ void QgsBrowserModel::beginRemoveItems( QgsDataItem *parent, int first, int last
 }
 void QgsBrowserModel::endRemoveItems()
 {
-  QgsDebugMsgLevel( "Entered", 3 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 3 );
   endRemoveRows();
 }
 void QgsBrowserModel::itemDataChanged( QgsDataItem *item )
 {
-  QgsDebugMsgLevel( "Entered", 3 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 3 );
   QModelIndex idx = findItem( item );
   if ( !idx.isValid() )
     return;
@@ -428,7 +428,7 @@ void QgsBrowserModel::itemStateChanged( QgsDataItem *item, QgsDataItem::State ol
   QModelIndex idx = findItem( item );
   if ( !idx.isValid() )
     return;
-  QgsDebugMsgLevel( QString( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( oldState ).arg( item->state() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( oldState ).arg( item->state() ), 4 );
   emit stateChanged( idx, oldState );
 }
 
@@ -486,7 +486,7 @@ bool QgsBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
   QgsDataItem *destItem = dataItem( parent );
   if ( !destItem )
   {
-    QgsDebugMsgLevel( "DROP PROBLEM!", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "DROP PROBLEM!" ), 4 );
     return false;
   }
 

@@ -685,8 +685,6 @@ QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
     case QgsMapLayer::PluginLayer:
       u.layerType = QStringLiteral( "plugin" );
       break;
-    default:
-      return u;  // invalid URI
   }
 
   u.providerKey = providerKey();

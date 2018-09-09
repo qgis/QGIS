@@ -2460,19 +2460,24 @@ void QgsProject::setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers )
       it.value()->setFlags( it.value()->flags() | QgsMapLayer::Identifiable );
   }
 
+  Q_NOWARN_DEPRECATED_PUSH
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsProject::setNonIdentifiableLayers( const QStringList &layerIds )
 {
   QList<QgsMapLayer *> nonIdentifiableLayers;
+  nonIdentifiableLayers.reserve( layerIds.count() );
   for ( const QString &layerId : layerIds )
   {
     QgsMapLayer *layer = mapLayer( layerId );
     if ( layer )
       nonIdentifiableLayers << layer;
   }
+  Q_NOWARN_DEPRECATED_PUSH
   setNonIdentifiableLayers( nonIdentifiableLayers );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QStringList QgsProject::nonIdentifiableLayers() const
