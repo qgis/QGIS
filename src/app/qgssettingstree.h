@@ -54,14 +54,14 @@ class QgsSettingsTree : public QTreeWidget
   public:
     explicit QgsSettingsTree( QWidget *parent = nullptr );
 
-    void setSettingsObject( QgsSettings *settings );
+    void setSettingsObject( QgsSettings *mSettings );
     QSize sizeHint() const override;
 
-    void setSettingsMap( QMap< QString, QStringList > &map ) { settingsMap = map; }
+    void setSettingsMap( QMap< QString, QStringList > &map ) { mSettingsMap = map; }
     QString itemKey( QTreeWidgetItem *item );
 
   public slots:
-    void setAutoRefresh( bool autoRefresh );
+    void setAutoRefresh( bool mAutoRefresh );
     void maybeRefresh();
     void refresh();
 
@@ -80,13 +80,13 @@ class QgsSettingsTree : public QTreeWidget
     int findChild( QTreeWidgetItem *parent, const QString &text, int startIndex );
     void moveItemForward( QTreeWidgetItem *parent, int oldIndex, int newIndex );
 
-    QgsSettings *settings = nullptr;
-    QTimer refreshTimer;
-    bool autoRefresh;
-    QIcon groupIcon;
-    QIcon keyIcon;
+    QgsSettings *mSettings = nullptr;
+    QTimer mRefreshTimer;
+    bool mAutoRefresh = true;
+    QIcon mGroupIcon;
+    QIcon mKeyIcon;
 
-    QMap< QString, QStringList > settingsMap;
+    QMap< QString, QStringList > mSettingsMap;
 };
 
 #endif
