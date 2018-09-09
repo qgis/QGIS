@@ -68,7 +68,7 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
                        QIcon::Normal, QIcon::Off );
   groupIcon.addPixmap( style()->standardPixmap( QStyle::SP_DirOpenIcon ),
                        QIcon::Normal, QIcon::On );
-  keyIcon.addPixmap( style()->standardPixmap( QStyle::SP_FileIcon ) );
+  keyIcon = style()->standardIcon( QStyle::SP_FileIcon );
 
   setEditTriggers( QAbstractItemView::AllEditTriggers );
 
