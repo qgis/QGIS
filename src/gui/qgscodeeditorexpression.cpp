@@ -144,6 +144,7 @@ void QgsCodeEditorExpression::updateApis()
   mSqlLexer->setAPIs( mApis );
 }
 
+///@cond PRIVATE
 QgsCaseInsensitiveLexerExpression::QgsCaseInsensitiveLexerExpression( QObject *parent )
   : QsciLexerSQL( parent )
 {
@@ -158,3 +159,4 @@ const char *QgsCaseInsensitiveLexerExpression::wordCharacters() const
 {
   return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_@";
 }
+///@endcond
