@@ -969,10 +969,10 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
   setHeaderLabels( labels );
 
   QStyle *style = QApplication::style();
-  QIcon iconDirectory = QIcon( style->standardPixmap( QStyle::SP_DirClosedIcon ) );
-  QIcon iconFile = QIcon( style->standardPixmap( QStyle::SP_FileIcon ) );
-  QIcon iconDirLink = QIcon( style->standardPixmap( QStyle::SP_DirLinkIcon ) );
-  QIcon iconFileLink = QIcon( style->standardPixmap( QStyle::SP_FileLinkIcon ) );
+  QIcon iconDirectory = QIcon( style->standardIcon( QStyle::SP_DirClosedIcon ) );
+  QIcon iconFile = QIcon( style->standardIcon( QStyle::SP_FileIcon ) );
+  QIcon iconDirLink = QIcon( style->standardIcon( QStyle::SP_DirLinkIcon ) );
+  QIcon iconFileLink = QIcon( style->standardIcon( QStyle::SP_FileLinkIcon ) );
 
   QList<QTreeWidgetItem *> items;
 
@@ -1099,7 +1099,7 @@ void QgsDirectoryParamWidget::showHideColumn()
 QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataItem( QgsDataItem::Project, parent, name, path )
 {
-  mIconName = QStringLiteral( ":/images/icons/qgis-icon-16x16.png" );
+  mIconName = QStringLiteral( ":/images/icons/qgis_icon.svg" );
   setToolTip( QDir::toNativeSeparators( path ) );
   setState( Populated ); // no more children
 }
