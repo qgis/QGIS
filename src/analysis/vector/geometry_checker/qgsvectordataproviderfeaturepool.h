@@ -30,7 +30,7 @@ email                : matthias@opengis.ch
 class ANALYSIS_EXPORT QgsVectorDataProviderFeaturePool : public QgsFeaturePool
 {
   public:
-    QgsVectorDataProviderFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, const QgsCoordinateTransform &layerToMapTransform, bool selectedOnly = false );
+    QgsVectorDataProviderFeaturePool( QgsVectorLayer *layer, bool selectedOnly = false );
 
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;

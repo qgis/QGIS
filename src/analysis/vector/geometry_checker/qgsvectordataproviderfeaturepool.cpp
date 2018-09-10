@@ -32,8 +32,8 @@ void runOnMainThread( const Func &func )
 #endif
 }
 
-QgsVectorDataProviderFeaturePool::QgsVectorDataProviderFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, const QgsCoordinateTransform &layerToMapTransform, bool selectedOnly )
-  : QgsFeaturePool( layer, layerToMapUnits, layerToMapTransform )
+QgsVectorDataProviderFeaturePool::QgsVectorDataProviderFeaturePool( QgsVectorLayer *layer, bool selectedOnly )
+  : QgsFeaturePool( layer )
   , mSelectedOnly( selectedOnly )
 {
   // Build spatial index

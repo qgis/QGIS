@@ -23,6 +23,8 @@
 #include <QList>
 #include <QMutex>
 #include <QStringList>
+#include <memory>
+
 #include "qgis_analysis.h"
 #include "qgsfeatureid.h"
 
@@ -55,8 +57,12 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
     class RunCheckWrapper
     {
       public:
-        explicit RunCheckWrapper( QgsGeometryChecker *instance ) : mInstance( instance ) {}
-        void operator()( const QgsGeometryCheck *check ) { mInstance->runCheck( check ); }
+
+        /**
+         * The caller needs to make sure that the context is not deleted before this thread ends.
+         */
+        explicit RunCheckWrapper( QgsGeometryChecker *instance );
+        void operator()( const QgsGeometryCheck *check );
       private:
         QgsGeometryChecker *mInstance = nullptr;
     };

@@ -26,13 +26,14 @@
 
 class QgsGeometryEngine;
 class QgsFeaturePool;
+struct QgsGeometryCheckerContext;
 
 namespace QgsGeometryCheckerUtils
 {
   class LayerFeature
   {
     public:
-      LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, bool useMapCrs );
+      LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, QgsGeometryCheckerContext *context, bool useMapCrs );
       ~LayerFeature();
       const QgsFeature &feature() const { return mFeature; }
       QgsVectorLayer *layer() const;
@@ -43,6 +44,8 @@ namespace QgsGeometryCheckerUtils
       QString id() const;
       bool operator==( const LayerFeature &other ) const;
       bool operator!=( const LayerFeature &other ) const;
+
+      bool useMapCrs() const;
 
     private:
       const QgsFeaturePool *mFeaturePool;
@@ -57,10 +60,14 @@ namespace QgsGeometryCheckerUtils
       LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
                      const QMap<QString, QgsFeatureIds> &featureIds,
                      const QList<QgsWkbTypes::GeometryType> &geometryTypes,
-                     QAtomicInt *progressCounter, bool useMapCrs = false );
+                     QAtomicInt *progressCounter,
+                     QgsGeometryCheckerContext *context,
+                     bool useMapCrs = false );
+
       LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
                      const QList<QString> &layerIds, const QgsRectangle &extent,
-                     const QList<QgsWkbTypes::GeometryType> &geometryTypes );
+                     const QList<QgsWkbTypes::GeometryType> &geometryTypes,
+                     QgsGeometryCheckerContext *context );
 
       class iterator
       {
@@ -91,7 +98,8 @@ namespace QgsGeometryCheckerUtils
       QgsRectangle mExtent;
       QList<QgsWkbTypes::GeometryType> mGeometryTypes;
       QAtomicInt *mProgressCounter = nullptr;
-      bool mUseMapCrs;
+      QgsGeometryCheckerContext *mContext = nullptr;
+      bool mUseMapCrs = true;
   };
 
   std::unique_ptr<QgsGeometryEngine> createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance );

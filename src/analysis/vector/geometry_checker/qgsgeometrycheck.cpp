@@ -19,13 +19,39 @@
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
 
-QgsGeometryCheckerContext::QgsGeometryCheckerContext( int _precision, const QgsCoordinateReferenceSystem &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools )
+QgsGeometryCheckerContext::QgsGeometryCheckerContext( int _precision, const QgsCoordinateReferenceSystem &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools, const QgsCoordinateTransformContext &transformContext )
   : tolerance( std::pow( 10, -_precision ) )
   , reducedTolerance( std::pow( 10, -_precision / 2 ) )
   , mapCrs( _mapCrs )
   , featurePools( _featurePools )
+  , transformContext( transformContext )
 {
+}
 
+const QgsCoordinateTransform &QgsGeometryCheckerContext::layerTransform( QgsVectorLayer *layer )
+{
+  Q_ASSERT( QThread::currentThread() == qApp->thread() );
+
+  if ( !mTransformCache.contains( layer ) )
+  {
+    QgsCoordinateTransform transform = QgsCoordinateTransform( layer->crs(), mapCrs, transformContext );
+    mTransformCache[layer] = transform;
+  }
+
+  return mTransformCache[layer];
+}
+
+double QgsGeometryCheckerContext::layerScaleFactor( QgsVectorLayer *layer )
+{
+  Q_ASSERT( QThread::currentThread() == qApp->thread() );
+
+  if ( !mScaleFactorCache.contains( layer ) )
+  {
+    double scaleFactor = layerTransform( layer ).scaleFactor( layer->extent() );
+    mScaleFactorCache[layer] = scaleFactor;
+  }
+
+  return mScaleFactorCache.value( layer );
 }
 
 QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId,
@@ -66,10 +92,11 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
   {
     mGeometry.reset( layerFeature.geometry()->clone() );
   }
-  if ( layerFeature.geometryCrs() != layerFeature.layerToMapTransform().destinationCrs().authid() )
+  if ( !layerFeature.useMapCrs() )
   {
-    mGeometry->transform( layerFeature.layerToMapTransform() );
-    mErrorLocation = layerFeature.layerToMapTransform().transform( mErrorLocation );
+    const QgsCoordinateTransform &transform = check->context()->layerTransform( layerFeature.layer() );
+    mGeometry->transform( transform );
+    mErrorLocation = transform.transform( mErrorLocation );
   }
 }
 

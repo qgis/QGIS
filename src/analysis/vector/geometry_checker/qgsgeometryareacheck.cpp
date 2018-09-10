@@ -21,11 +21,11 @@
 void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    double layerToMapUnits = layerFeature.layerToMapUnits();
     const QgsAbstractGeometry *geom = layerFeature.geometry();
+    double layerToMapUnits = mContext->layerScaleFactor( layerFeature.layer() );
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
       double value;
@@ -47,10 +47,12 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, c
     error->setObsolete();
     return;
   }
-  double layerToMapUnits = featurePool->getLayerToMapUnits();
-  QgsGeometry g = feature.geometry();
+
+  const QgsGeometry g = feature.geometry();
   const QgsAbstractGeometry *geom = g.constGet();
   QgsVertexId vidx = error->vidx();
+
+  double layerToMapUnits = mContext->layerScaleFactor( featurePool->layer() );
 
   // Check if polygon still exists
   if ( !vidx.isValid( geom ) )

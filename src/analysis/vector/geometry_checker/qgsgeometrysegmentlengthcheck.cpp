@@ -20,10 +20,10 @@
 void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    double layerToMapUnits = layerFeature.layerToMapUnits();
+    double layerToMapUnits = mContext->layerScaleFactor( layerFeature.layer() );
     double minLength = mMinLengthMapUnits / layerToMapUnits;
 
     const QgsAbstractGeometry *geom = layerFeature.geometry();
@@ -86,7 +86,7 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError *error, int 
   QgsPoint pi = geom->vertexAt( error->vidx() );
   QgsPoint pj = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + nVerts ) % nVerts ) );
   double dist = pi.distance( pj );
-  double layerToMapUnits = featurePool->getLayerToMapUnits();
+  double layerToMapUnits = mContext->layerScaleFactor( featurePool->layer() );
   double minLength = mMinLengthMapUnits / layerToMapUnits;
   if ( dist >= minLength )
   {

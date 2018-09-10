@@ -33,11 +33,18 @@ class QgsFeaturePool;
 
 struct ANALYSIS_EXPORT QgsGeometryCheckerContext
 {
-  QgsGeometryCheckerContext( int _precision, const QgsCoordinateReferenceSystem &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools );
-  const double tolerance;
-  const double reducedTolerance;
-  const QgsCoordinateReferenceSystem mapCrs;
-  const QMap<QString, QgsFeaturePool *> featurePools;
+    QgsGeometryCheckerContext( int _precision, const QgsCoordinateReferenceSystem &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools, const QgsCoordinateTransformContext &transformContext );
+    const double tolerance;
+    const double reducedTolerance;
+    const QgsCoordinateReferenceSystem mapCrs;
+    const QMap<QString, QgsFeaturePool *> featurePools;
+    const QgsCoordinateTransformContext transformContext;
+    const QgsCoordinateTransform &layerTransform( QgsVectorLayer *layer );
+    double layerScaleFactor( QgsVectorLayer *layer );
+
+  private:
+    QMap<QgsVectorLayer *, QgsCoordinateTransform> mTransformCache;
+    QMap<QgsVectorLayer *, double> mScaleFactorCache;
 };
 
 class ANALYSIS_EXPORT QgsGeometryCheck

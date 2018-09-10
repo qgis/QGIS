@@ -57,7 +57,7 @@ class TestQgsGeometryChecks: public QObject
       QgsVertexId vidx;
     };
     double layerToMapUnits( const QgsMapLayer *layer, const QgsCoordinateReferenceSystem &mapCrs ) const;
-    QgsFeaturePool *createFeaturePool( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &mapCrs, bool selectedOnly = false ) const;
+    QgsFeaturePool *createFeaturePool( QgsVectorLayer *layer, bool selectedOnly = false ) const;
     QgsGeometryCheckerContext *createTestContext( QTemporaryDir &tempDir, QMap<QString, QString> &layers, const QgsCoordinateReferenceSystem &mapCrs = QgsCoordinateReferenceSystem( "EPSG:4326" ), double prec = 8 ) const;
     void cleanupTestContext( QgsGeometryCheckerContext *ctx ) const;
     void listErrors( const QList<QgsGeometryCheckError *> &checkErrors, const QStringList &messages ) const;
@@ -972,11 +972,9 @@ double TestQgsGeometryChecks::layerToMapUnits( const QgsMapLayer *layer, const Q
   return distMapUnits / distLayerUnits;
 }
 
-QgsFeaturePool *TestQgsGeometryChecks::createFeaturePool( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &mapCrs, bool selectedOnly ) const
+QgsFeaturePool *TestQgsGeometryChecks::createFeaturePool( QgsVectorLayer *layer, bool selectedOnly ) const
 {
-  double layerToMapUntis = layerToMapUnits( layer, mapCrs );
-  QgsCoordinateTransform layerToMapTransform = QgsCoordinateTransform( layer->crs(), mapCrs, QgsProject::instance() );
-  return new QgsVectorDataProviderFeaturePool( layer, layerToMapUntis, layerToMapTransform, selectedOnly );
+  return new QgsVectorDataProviderFeaturePool( layer, selectedOnly );
 }
 
 QgsGeometryCheckerContext *TestQgsGeometryChecks::createTestContext( QTemporaryDir &tempDir, QMap<QString, QString> &layers, const QgsCoordinateReferenceSystem &mapCrs, double prec ) const
@@ -1000,9 +998,9 @@ QgsGeometryCheckerContext *TestQgsGeometryChecks::createTestContext( QTemporaryD
     Q_ASSERT( layer && layer->isValid() );
     layers[layerFile] = layer->id();
     layer->dataProvider()->enterUpdateMode();
-    featurePools.insert( layer->id(), createFeaturePool( layer, mapCrs ) );
+    featurePools.insert( layer->id(), createFeaturePool( layer ) );
   }
-  return new QgsGeometryCheckerContext( prec, mapCrs, featurePools );
+  return new QgsGeometryCheckerContext( prec, mapCrs, featurePools, QgsProject::instance()->transformContext() );
 }
 
 void TestQgsGeometryChecks::cleanupTestContext( QgsGeometryCheckerContext *ctx ) const
