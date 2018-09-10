@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgs3dmaptool.cpp
+  qgs3dmaptoolidentify.h
   --------------------------------------
   Date                 : Sep 2018
   Copyright            : (C) 2018 by Martin Dobias
@@ -13,35 +13,39 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGS3DMAPTOOLIDENTIFY_H
+#define QGS3DMAPTOOLIDENTIFY_H
+
 #include "qgs3dmaptool.h"
 
-#include "qgs3dmapcanvas.h"
-
-Qgs3DMapTool::Qgs3DMapTool( Qgs3DMapCanvas *canvas )
-  : QObject( canvas )
-  , mCanvas( canvas )
+namespace Qt3DRender
 {
+  class QPickEvent;
 }
 
-void Qgs3DMapTool::mousePressEvent( QMouseEvent *event )
-{
-  Q_UNUSED( event );
-}
+//class QgsMapToolIdentifyAction;
 
-void Qgs3DMapTool::mouseReleaseEvent( QMouseEvent *event )
-{
-  Q_UNUSED( event );
-}
 
-void Qgs3DMapTool::mouseMoveEvent( QMouseEvent *event )
+class Qgs3DMapToolIdentify : public Qgs3DMapTool
 {
-  Q_UNUSED( event );
-}
+    Q_OBJECT
 
-void Qgs3DMapTool::activate()
-{
-}
+  public:
+    Qgs3DMapToolIdentify( Qgs3DMapCanvas *canvas );
 
-void Qgs3DMapTool::deactivate()
-{
-}
+    void mousePressEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override { Q_UNUSED( event );}
+    void mouseMoveEvent( QMouseEvent *event ) override {Q_UNUSED( event );}
+
+    void activate() override;
+    void deactivate() override;
+
+  private slots:
+    void onTerrainPicked( Qt3DRender::QPickEvent *event );
+    void onTerrainEntityChanged();
+
+  private:
+    //QgsMapToolIdentifyAction *mIdentifyTool2D = nullptr;
+};
+
+#endif // QGS3DMAPTOOLIDENTIFY_H

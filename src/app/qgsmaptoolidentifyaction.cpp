@@ -212,6 +212,16 @@ void QgsMapToolIdentifyAction::deactivate()
   QgsMapToolIdentify::deactivate();
 }
 
+void QgsMapToolIdentifyAction::identifyAndShowResults( const QgsGeometry &geom )
+{
+  mSelectionHandler->setSelectedGeometry( geom );
+}
+
+void QgsMapToolIdentifyAction::clearResults()
+{
+  resultsDialog()->clear();
+}
+
 QgsUnitTypes::DistanceUnit QgsMapToolIdentifyAction::displayDistanceUnits() const
 {
   return QgsProject::instance()->distanceUnits();

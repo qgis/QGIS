@@ -446,6 +446,7 @@ IF (WITH_3D)
     3d/qgs3dmapcanvasdockwidget.cpp
     3d/qgs3dmapconfigwidget.cpp
     3d/qgs3dmaptool.cpp
+    3d/qgs3dmaptoolidentify.cpp
     3d/qgsline3dsymbolwidget.cpp
     3d/qgspoint3dsymbolwidget.cpp
     3d/qgspolygon3dsymbolwidget.cpp
@@ -461,6 +462,7 @@ IF (WITH_3D)
     3d/qgs3dmapcanvasdockwidget.h
     3d/qgs3dmapconfigwidget.h
     3d/qgs3dmaptool.h
+    3d/qgs3dmaptoolidentify.h
     3d/qgsline3dsymbolwidget.h
     3d/qgspoint3dsymbolwidget.h
     3d/qgspolygon3dsymbolwidget.h

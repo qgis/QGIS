@@ -695,6 +695,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Zoom to a bookmark
     void zoomToBookmarkIndex( const QModelIndex & );
 
+    //! Returns pointer to the identify map tool - used by identify tool in 3D view
+    QgsMapToolIdentifyAction *identifyMapTool() const { return mMapTools.mIdentify; }
+
   public slots:
     //! save current vector layer
     void saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false );

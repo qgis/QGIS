@@ -112,18 +112,29 @@ void Qgs3DMapCanvas::saveAsImage( const QString fileName, const QString fileForm
 
 void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
 {
+  if ( tool == mMapTool )
+    return;
+
   if ( mMapTool && !tool )
   {
     mEngine->window()->removeEventFilter( this );
     mScene->cameraController()->setEnabled( true );
+    mEngine->window()->setCursor( Qt::OpenHandCursor );
   }
   else if ( !mMapTool && tool )
   {
     mEngine->window()->installEventFilter( this );
     mScene->cameraController()->setEnabled( false );
+    mEngine->window()->setCursor( Qt::CrossCursor );
   }
 
+  if ( mMapTool )
+    mMapTool->deactivate();
+
   mMapTool = tool;
+
+  if ( mMapTool )
+    mMapTool->activate();
 }
 
 bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )

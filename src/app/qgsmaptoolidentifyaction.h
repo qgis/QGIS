@@ -61,6 +61,11 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     void deactivate() override;
 
+    //! Triggers map identification of at the given location and outputs results in GUI
+    void identifyAndShowResults( const QgsGeometry &geom );
+    //! Clears any previous results from the GUI
+    void clearResults();
+
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
     void handleChangedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
