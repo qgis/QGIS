@@ -250,16 +250,14 @@ class VLayerConnector(DBConnector):
         return []
 
     def getTableRowCount(self, table):
-        t = table[1]
-        l = VLayerRegistry.instance().getLayer(t)
+        l = VLayerRegistry.instance().getLayer(table)
         if not l or not l.isValid():
             return None
         return l.featureCount()
 
     def getTableFields(self, table):
         """ return list of columns in table """
-        t = table[1]
-        l = VLayerRegistry.instance().getLayer(t)
+        l = VLayerRegistry.instance().getLayer(table)
         if not l or not l.isValid():
             return []
         # id, name, type, nonnull, default, pk
