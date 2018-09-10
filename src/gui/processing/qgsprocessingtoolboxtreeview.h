@@ -88,9 +88,9 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
 
     /**
      * Sets geometry \type for the in-place algorithms
-     * @param type
+     * \param layer the vector layer for in-place algorithm filter
      */
-    void setInPlaceLayerType( QgsWkbTypes::GeometryType type );
+    void setInPlaceLayer( QgsVectorLayer *layer );
 
   public slots:
 

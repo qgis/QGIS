@@ -124,7 +124,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
     def layer_changed(self, layer):
         if layer is None or layer.type() != QgsMapLayer.VectorLayer:
             return
-        self.algorithmTree.setInPlaceLayerType(QgsWkbTypes.geometryType(layer.wkbType()))
+        self.algorithmTree.setInPlaceLayer(layer)
 
     def disabledProviders(self):
         showTip = ProcessingConfig.getSetting(ProcessingConfig.SHOW_PROVIDERS_TOOLTIP)

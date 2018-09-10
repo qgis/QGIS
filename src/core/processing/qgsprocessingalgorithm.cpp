@@ -25,6 +25,7 @@
 #include "qgsprocessingutils.h"
 #include "qgsexception.h"
 #include "qgsmessagelog.h"
+#include "qgsvectorlayer.h"
 #include "qgsprocessingfeedback.h"
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
@@ -761,6 +762,12 @@ QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters,
   }
 }
 
+bool QgsProcessingAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+{
+  Q_UNUSED( layer );
+  return false;
+}
+
 bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParameterDefinition *parameter )
 {
   if ( !parameter->isDestination() )
@@ -900,5 +907,29 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
 QgsFeatureRequest QgsProcessingFeatureBasedAlgorithm::request() const
 {
   return QgsFeatureRequest();
+}
+
+bool QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+{
+  QgsWkbTypes::GeometryType inPlaceGeometryType = layer->geometryType();
+  if ( !inputLayerTypes().empty() &&
+       !inputLayerTypes().contains( QgsProcessing::TypeVector ) &&
+       !inputLayerTypes().contains( QgsProcessing::TypeVectorAnyGeometry ) &&
+       ( ( inPlaceGeometryType == QgsWkbTypes::PolygonGeometry && !inputLayerTypes().contains( QgsProcessing::TypeVectorPolygon ) ) ||
+         ( inPlaceGeometryType == QgsWkbTypes::LineGeometry && !inputLayerTypes().contains( QgsProcessing::TypeVectorLine ) ) ||
+         ( inPlaceGeometryType == QgsWkbTypes::PointGeometry && !inputLayerTypes().contains( QgsProcessing::TypeVectorPoint ) ) ) )
+    return false;
+
+  QgsWkbTypes::Type type = QgsWkbTypes::Unknown;
+  if ( inPlaceGeometryType == QgsWkbTypes::PointGeometry )
+    type = QgsWkbTypes::Point;
+  else if ( inPlaceGeometryType == QgsWkbTypes::LineGeometry )
+    type = QgsWkbTypes::LineString;
+  else if ( inPlaceGeometryType == QgsWkbTypes::PolygonGeometry )
+    type = QgsWkbTypes::Polygon;
+  if ( QgsWkbTypes::geometryType( outputWkbType( type ) ) != inPlaceGeometryType )
+    return false;
+
+  return true;
 }
 
