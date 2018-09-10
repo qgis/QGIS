@@ -64,7 +64,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
      * Returns the complete set of feature ids in this pool.
      * Note that this concerns the features governed by this pool, which are not necessarily all cached.
      */
-    QgsFeatureIds getFeatureIds() const;
+    QgsFeatureIds allFeatureIds() const;
 
     /**
      * Get all feature ids in the bounding box \a rect. It will use a spatial index to

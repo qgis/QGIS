@@ -63,7 +63,7 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
   return true;
 }
 
-QgsFeatureIds QgsFeaturePool::getFeatureIds() const
+QgsFeatureIds QgsFeaturePool::allFeatureIds() const
 {
   return mFeatureIds;
 }
