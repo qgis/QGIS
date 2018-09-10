@@ -41,6 +41,9 @@ class Qgs3DMapTool : public QObject
     //! Called when map tool is being deactivated
     virtual void deactivate();
 
+    //! Mouse cursor to be used when the tool is active
+    virtual QCursor cursor() const;
+
   protected:
     Qgs3DMapCanvas *mCanvas = nullptr;
 };

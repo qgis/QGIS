@@ -45,3 +45,8 @@ void Qgs3DMapTool::activate()
 void Qgs3DMapTool::deactivate()
 {
 }
+
+QCursor Qgs3DMapTool::cursor() const
+{
+  return Qt::CrossCursor;
+}

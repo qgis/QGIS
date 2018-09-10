@@ -125,7 +125,7 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
   {
     mEngine->window()->installEventFilter( this );
     mScene->cameraController()->setEnabled( false );
-    mEngine->window()->setCursor( Qt::CrossCursor );
+    mEngine->window()->setCursor( tool->cursor() );
   }
 
   if ( mMapTool )
