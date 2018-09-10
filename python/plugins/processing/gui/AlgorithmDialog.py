@@ -105,6 +105,11 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
             if not param.isDestination():
+
+                if self.in_place and param.name() == 'INPUT':
+                    parameters[param.name()] = iface.activeLayer()
+                    continue
+
                 try:
                     wrapper = self.mainWidget().wrappers[param.name()]
                 except KeyError:
@@ -124,9 +129,6 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
                 value = wrapper.parameterValue()
                 parameters[param.name()] = value
-                if self.in_place and param.name() == 'INPUT':
-                    parameters[param.name()] = iface.activeLayer()
-                    continue
 
                 wrapper = self.mainWidget().wrappers[param.name()]
                 value = None

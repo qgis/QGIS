@@ -87,25 +87,29 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
         feedback = QgsProcessingFeedback()
-        # Failing:
-        #self.assertEqual(alg.parameterAsVectorLayer(parameters, 'INPUT', context ), input_layer)
 
-        def _f():
+        with self.assertRaises(QgsProcessingException) as cm:
             execute_in_place_run(
-                alg, parameters, context=context, feedback=feedback)
+                alg, input_layer, parameters, context=context, feedback=feedback, raise_exceptions=True)
 
-        self.assertRaises(QgsProcessingException, _f)
-
+        ok = False
         input_layer.startEditing()
         ok, _ = execute_in_place_run(
-            alg, parameters, context=context, feedback=feedback)
+            alg, input_layer, parameters, context=context, feedback=feedback, raise_exceptions=True)
+        new_features = [f for f in input_layer.getFeatures()]
 
+        # Check ret values
         self.assertTrue(ok, alg_name)
 
-        return old_features, [f for f in input_layer.getFeatures()]
+        # Check geometry types (drop Z or M)
+        self.assertEqual(new_features[0].geometry().wkbType(), old_features[0].geometry().wkbType())
+
+        return old_features, new_features
 
     def test_execute_in_place_run(self):
         """Test the execution in place"""
+
+        self.vl.rollBack()
 
         old_features, new_features = self._alg_tester(
             'native:translategeometry',
@@ -129,6 +133,37 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         # Check selected
         self.assertEqual(self.vl.selectedFeatureIds(), [old_features[0].id()])
 
+        # Check that if the only change is Z or M then we should fail
+        with self.assertRaises(QgsProcessingException) as cm:
+            self._alg_tester(
+                'native:translategeometry',
+                self.vl,
+                {
+                    'DELTA_Z': 1.1,
+                }
+            )
+        self.vl.rollBack()
+
+        # Check that if the only change is Z or M then we should fail
+        with self.assertRaises(QgsProcessingException) as cm:
+            self._alg_tester(
+                'native:translategeometry',
+                self.vl,
+                {
+                    'DELTA_M': 1.1,
+                }
+            )
+        self.vl.rollBack()
+
+        old_features, new_features = self._alg_tester(
+            'native:translategeometry',
+            self.vl,
+            {
+                'DELTA_X': 1.1,
+                'DELTA_Z': 1.1,
+            }
+        )
+
     def test_multi_to_single(self):
         """Check that the geometry type is still multi after the alg is run"""
 
@@ -142,7 +177,27 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(len(new_features), 3)
 
         # Check selected
-        self.assertEqual(sorted(self.multipoly_vl.selectedFeatureIds()), [-3, -2])
+        self.assertEqual(len(self.multipoly_vl.selectedFeatureIds()), 2)
+
+    def test_arrayfeatures(self):
+        """Check that this runs correctly and additional attributes are dropped"""
+
+        old_count = self.vl.featureCount()
+
+        old_features, new_features = self._alg_tester(
+            'native:arrayfeatures',
+            self.vl,
+            {
+                'COUNT': 2,
+                'DELTA_X': 1.1,
+                'DELTA_Z': 1.1,
+            }
+        )
+
+        self.assertEqual(len(new_features), old_count + 2)
+
+        # Check selected
+        self.assertEqual(len(self.vl.selectedFeatureIds()), 3)
 
     def test_make_compatible(self):
         """Test fixer function"""

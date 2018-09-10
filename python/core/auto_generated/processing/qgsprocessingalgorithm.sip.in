@@ -812,6 +812,16 @@ should correspond to the invalid source parameter name.
 .. versionadded:: 3.2
 %End
 
+    virtual bool supportInPlaceEdit( const QgsVectorLayer *layer ) const;
+%Docstring
+Checks whether this algorithm supports in-place editing on the given ``layer``
+Default implementation returns false.
+
+:return: true if the algorithm supports in-place editing
+
+.. versionadded:: 3.4
+%End
+
   private:
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );
 };
@@ -964,6 +974,17 @@ called from a subclasses' processFeature() implementation.
 %Docstring
 Returns the feature request used for fetching features to process from the
 source layer. The default implementation requests all attributes and geometry.
+%End
+
+    virtual bool supportInPlaceEdit( const QgsVectorLayer *layer ) const;
+%Docstring
+Checks whether this algorithm supports in-place editing on the given ``layer``
+Default implementation for feature based algorithms run some basic compatibility
+checks based on the geometry type of the layer.
+
+:return: true if the algorithm supports in-place editing
+
+.. versionadded:: 3.4
 %End
 
 };

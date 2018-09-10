@@ -42,6 +42,7 @@ class QgsTranslateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString shortHelpString() const override;
     QgsTranslateAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
+    bool supportInPlaceEdit( const QgsVectorLayer *layer ) const override;
 
   protected:
     QString outputName() const override;

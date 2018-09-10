@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmtranslate.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -141,9 +142,9 @@ QgsFeatureList QgsTranslateAlgorithm::processFeature( const QgsFeature &feature,
     if ( mDynamicDeltaM )
       deltaM = mDeltaMProperty.valueAsDouble( context.expressionContext(), deltaM );
 
-    if ( deltaZ != 0 && !geometry.constGet()->is3D() )
+    if ( deltaZ != 0.0 && !geometry.constGet()->is3D() )
       geometry.get()->addZValue( 0 );
-    if ( deltaM != 0 && !geometry.constGet()->isMeasure() )
+    if ( deltaM != 0.0 && !geometry.constGet()->isMeasure() )
       geometry.get()->addMValue( 0 );
 
     geometry.translate( deltaX, deltaY, deltaZ, deltaM );
@@ -155,13 +156,27 @@ QgsFeatureList QgsTranslateAlgorithm::processFeature( const QgsFeature &feature,
 QgsWkbTypes::Type QgsTranslateAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
   QgsWkbTypes::Type wkb = inputWkbType;
-  if ( mDeltaZ != 0 )
+  if ( mDeltaZ != 0.0 )
     wkb = QgsWkbTypes::addZ( wkb );
-  if ( mDeltaM != 0 )
+  if ( mDeltaM != 0.0 )
     wkb = QgsWkbTypes::addM( wkb );
   return wkb;
 }
 
+
+bool QgsTranslateAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+{
+  if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
+    return false;
+
+  // Check if we can drop Z/M and still have some work done
+  if ( mDeltaX != 0.0 || mDeltaY != 0.0 )
+    return true;
+
+  // If the type differs there is no sense in executing the algorithm and drop the result
+  QgsWkbTypes::Type inPlaceWkbType = layer->wkbType();
+  return inPlaceWkbType == outputWkbType( inPlaceWkbType );
+}
 ///@endcond
 
 

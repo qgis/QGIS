@@ -22,6 +22,7 @@
 #include <QSortFilterProxyModel>
 #include <QPointer>
 
+class QgsVectorLayer;
 class QgsProcessingRegistry;
 class QgsProcessingProvider;
 class QgsProcessingAlgorithm;
@@ -460,7 +461,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
      */
     Filters filters() const { return mFilters; }
 
-    void setInPlaceLayerType( QgsWkbTypes::GeometryType type );
+    void setInPlaceLayer( QgsVectorLayer *layer );
 
     /**
      * Sets a \a filter string, such that only algorithms matching the
@@ -488,7 +489,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
     QgsProcessingToolboxModel *mModel = nullptr;
     Filters mFilters = nullptr;
     QString mFilterString;
-    QgsWkbTypes::GeometryType mInPlaceGeometryType = QgsWkbTypes::UnknownGeometry;
+    QPointer<QgsVectorLayer> mInPlaceLayer;
 };
 
 

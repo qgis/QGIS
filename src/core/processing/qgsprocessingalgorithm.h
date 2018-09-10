@@ -805,6 +805,15 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     static QString invalidSinkError( const QVariantMap &parameters, const QString &name );
 
+    /**
+     * Checks whether this algorithm supports in-place editing on the given \a layer
+     * Default implementation returns false.
+     *
+     * \return true if the algorithm supports in-place editing
+     * \since QGIS 3.4
+     */
+    virtual bool supportInPlaceEdit( const QgsVectorLayer *layer ) const;
+
   private:
 
     QgsProcessingProvider *mProvider = nullptr;
@@ -970,6 +979,16 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * source layer. The default implementation requests all attributes and geometry.
      */
     virtual QgsFeatureRequest request() const;
+
+    /**
+     * Checks whether this algorithm supports in-place editing on the given \a layer
+     * Default implementation for feature based algorithms run some basic compatibility
+     * checks based on the geometry type of the layer.
+     *
+     * \return true if the algorithm supports in-place editing
+     * \since QGIS 3.4
+     */
+    virtual bool supportInPlaceEdit( const QgsVectorLayer *layer ) const override;
 
   private:
 

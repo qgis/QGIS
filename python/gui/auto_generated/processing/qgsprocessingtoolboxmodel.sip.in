@@ -418,7 +418,7 @@ Returns any filters that affect how toolbox content is filtered.
 .. seealso:: :py:func:`setFilters`
 %End
 
-    void setInPlaceLayerType( QgsWkbTypes::GeometryType type );
+    void setInPlaceLayer( QgsVectorLayer *layer );
 
     void setFilterString( const QString &filter );
 %Docstring
