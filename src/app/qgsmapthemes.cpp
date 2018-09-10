@@ -133,7 +133,7 @@ void QgsMapThemes::replaceTriggered()
   if ( !actionPreset )
     return;
 
-  int res = QMessageBox::question( nullptr, tr( "Replace Theme" ),
+  int res = QMessageBox::question( QgisApp::instance(), tr( "Replace Theme" ),
                                    tr( "Are you sure you want to replace the existing theme “%1”?" ).arg( actionPreset->text() ),
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
   if ( res != QMessageBox::Yes )
@@ -160,7 +160,7 @@ void QgsMapThemes::removeCurrentPreset()
   {
     if ( actionPreset->isChecked() )
     {
-      int res = QMessageBox::question( nullptr, tr( "Remove Theme" ),
+      int res = QMessageBox::question( QgisApp::instance(), tr( "Remove Theme" ),
                                        tr( "Are you sure you want to remove the existing theme “%1”?" ).arg( actionPreset->text() ),
                                        QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
       if ( res == QMessageBox::Yes )
