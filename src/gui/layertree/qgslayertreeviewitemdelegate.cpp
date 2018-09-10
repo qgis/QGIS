@@ -107,6 +107,16 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
   }
 }
 
+static void _fixStyleOption( QStyleOptionViewItem &opt )
+{
+  // This makes sure our delegate behaves correctly across different styles. Unfortunately there is inconsistency
+  // in how QStyleOptionViewItem::showDecorationSelected is prepared for paint() vs what is returned from view's viewOptions():
+  // - viewOptions() returns it based on style's SH_ItemView_ShowDecorationSelected hint
+  // - for paint() there is extra call to QTreeViewPrivate::adjustViewOptionsForIndex() which makes it
+  //   always true if view's selection behavior is SelectRows (which is the default and our case with layer tree view)
+  // So for consistency between different calls we override it to what we get in paint() method ... phew!
+  opt.showDecorationSelected = true;
+}
 
 bool QgsLayerTreeViewItemDelegate::helpEvent( QHelpEvent *event, QAbstractItemView *view, const QStyleOptionViewItem &option, const QModelIndex &index )
 {
@@ -122,6 +132,8 @@ bool QgsLayerTreeViewItemDelegate::helpEvent( QHelpEvent *event, QAbstractItemVi
       {
         QStyleOptionViewItem opt = option;
         initStyleOption( &opt, index );
+        _fixStyleOption( opt );
+
         QRect indRect = mLayerTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsLayerTreeViewProxyStyle::SE_LayerTreeItemIndicator ), &opt, mLayerTreeView );
 
         if ( indRect.contains( he->pos() ) )
@@ -157,6 +169,8 @@ void QgsLayerTreeViewItemDelegate::onClicked( const QModelIndex &index )
   QStyleOptionViewItem opt( mLayerTreeView->viewOptions() );
   opt.rect = mLayerTreeView->visualRect( index );
   initStyleOption( &opt, index );
+  _fixStyleOption( opt );
+
   QRect indRect = mLayerTreeView->style()->subElementRect( static_cast<QStyle::SubElement>( QgsLayerTreeViewProxyStyle::SE_LayerTreeItemIndicator ), &opt, mLayerTreeView );
 
   QPoint pos = mLayerTreeView->mLastReleaseMousePos;
