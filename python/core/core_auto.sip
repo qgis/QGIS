@@ -439,6 +439,7 @@
 %Include auto_generated/symbology/qgscptcityarchive.sip
 %Include auto_generated/symbology/qgssvgcache.sip
 %Include auto_generated/symbology/qgsstyle.sip
+%Include auto_generated/symbology/qgsstylemodel.sip
 %Include auto_generated/layertree/qgslayertree.sip
 %Include auto_generated/layertree/qgslayertreegroup.sip
 %Include auto_generated/layertree/qgslayertreelayer.sip

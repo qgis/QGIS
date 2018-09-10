@@ -47,6 +47,7 @@ SET(QGIS_CORE_SRCS
   symbology/qgsrulebasedrenderer.cpp
   symbology/qgssinglesymbolrenderer.cpp
   symbology/qgsstyle.cpp
+  symbology/qgsstylemodel.cpp
   symbology/qgssvgcache.cpp
   symbology/qgssymbollayer.cpp
   symbology/qgssymbollayerregistry.cpp
@@ -746,6 +747,7 @@ SET(QGIS_CORE_MOC_HDRS
   symbology/qgscptcityarchive.h
   symbology/qgssvgcache.h
   symbology/qgsstyle.h
+  symbology/qgsstylemodel.h
 
   layertree/qgslayertree.h
   layertree/qgslayertreegroup.h

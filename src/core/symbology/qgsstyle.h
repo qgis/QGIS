@@ -92,7 +92,13 @@ class CORE_EXPORT QgsStyle : public QObject
      *  database functions are being run.
      *  \sa rename(), remove(), symbolsOfFavorite(), symbolsWithTag(), symbolsOfSmartgroup()
      */
-    enum StyleEntity { SymbolEntity, TagEntity, ColorrampEntity, SmartgroupEntity };
+    enum StyleEntity
+    {
+      SymbolEntity,
+      TagEntity,
+      ColorrampEntity,
+      SmartgroupEntity
+    };
 
     /**
      * Adds a symbol to style and takes symbol's ownership
@@ -205,7 +211,11 @@ class CORE_EXPORT QgsStyle : public QObject
     //! Removes symbol from style (and delete it)
     bool removeSymbol( const QString &name );
 
-    //! Changessymbol's name
+    /**
+     * Renames a symbol from \a oldName to \a newName.
+     *
+     * Returns true if symbol was successfully renamed.
+     */
     bool renameSymbol( const QString &oldName, const QString &newName );
 
     //! Returns a NEW copy of symbol
@@ -272,7 +282,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param id is the DB id of the entity which is to be renamed
      *  \param newName is the new name of the entity
      */
-    void rename( StyleEntity type, int id, const QString &newName );
+    bool rename( StyleEntity type, int id, const QString &newName );
 
     /**
      * Removes the specified entity from the db
@@ -280,7 +290,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param type is any of the style entities. Refer enum StyleEntity.
      *  \param id is the DB id of the entity to be removed
      */
-    void remove( StyleEntity type, int id );
+    bool remove( StyleEntity type, int id );
 
     /**
      * Adds the symbol to the DB with the tags
@@ -415,10 +425,73 @@ class CORE_EXPORT QgsStyle : public QObject
     bool importXml( const QString &filename );
 
   signals:
-    //! Is emitted every time a new symbol has been added to the database
+
+    /**
+     * Emitted every time a new symbol has been added to the database.
+     * Emitted whenever a symbol has been added to the style and the database
+     * has been updated as a result.
+     * \see symbolRemoved()
+     * \see rampAdded()
+     */
     void symbolSaved( const QString &name, QgsSymbol *symbol );
+
     //! Is emitted every time a tag or smartgroup has been added, removed, or renamed
     void groupsModified();
+
+    /**
+     * Emitted whenever an \a entity's tags are changed.
+     *
+     * \since QGIS 3.4
+     */
+    void entityTagsChanged( QgsStyle::StyleEntity entity, const QString &name, const QStringList &newTags );
+
+    /**
+     * Emitted whenever an \a entity is either favorited or un-favorited.
+     *
+     * \since QGIS 3.4
+     */
+    void favoritedChanged( QgsStyle::StyleEntity entity, const QString &name, bool isFavorite );
+
+    /**
+     * Emitted whenever a symbol has been removed from the style and the database
+     * has been updated as a result.
+     * \see symbolSaved()
+     * \see rampRemoved()
+     * \since QGIS 3.4
+     */
+    void symbolRemoved( const QString &name );
+
+    /**
+     * Emitted whenever a symbol has been renamed from \a oldName to \a newName
+     * \see rampRenamed()
+     * \since QGIS 3.4
+     */
+    void symbolRenamed( const QString &oldName, const QString &newName );
+
+    /**
+     * Emitted whenever a color ramp has been renamed from \a oldName to \a newName
+     * \see symbolRenamed()
+     * \since QGIS 3.4
+     */
+    void rampRenamed( const QString &oldName, const QString &newName );
+
+    /**
+     * Emitted whenever a color ramp has been added to the style and the database
+     * has been updated as a result.
+     * \see rampRemoved()
+     * \see symbolSaved()
+     * \since QGIS 3.4
+     */
+    void rampAdded( const QString &name );
+
+    /**
+     * Emitted whenever a color ramp has been removed from the style and the database
+     * has been updated as a result.
+     * \see rampAdded()
+     * \see symbolRemoved()
+     * \since QGIS 3.4
+     */
+    void rampRemoved( const QString &name );
 
   private:
 
