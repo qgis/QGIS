@@ -85,7 +85,7 @@ The @qgsfunction decorator accepts the following arguments:
 
 :param args: Defines the number of arguments. With ``args='auto'`` the number of
              arguments will automatically be extracted from the signature.
-             With ``args=-1``, you can pass any number of arguments.
+             With ``args=-1``, any number of arguments are accepted.
 :param group: The name of the group under which this expression function will
               be listed.
 :param handlesnull: Set this to True if your function has custom handling for NULL values.
