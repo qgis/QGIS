@@ -23,8 +23,6 @@ namespace Qt3DRender
   class QPickEvent;
 }
 
-//class QgsMapToolIdentifyAction;
-
 
 class Qgs3DMapToolIdentify : public Qgs3DMapTool
 {
@@ -45,7 +43,7 @@ class Qgs3DMapToolIdentify : public Qgs3DMapTool
     void onTerrainEntityChanged();
 
   private:
-    //QgsMapToolIdentifyAction *mIdentifyTool2D = nullptr;
+
 };
 
 #endif // QGS3DMAPTOOLIDENTIFY_H
