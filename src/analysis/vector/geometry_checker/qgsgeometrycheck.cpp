@@ -149,7 +149,7 @@ QMap<QString, QgsFeatureIds> QgsGeometryCheck::allLayerFeatureIds() const
   QMap<QString, QgsFeatureIds> featureIds;
   for ( QgsFeaturePool *pool : mContext->featurePools )
   {
-    featureIds.insert( pool->getLayer()->id(), pool->getFeatureIds() );
+    featureIds.insert( pool->layerId(), pool->getFeatureIds() );
   }
   return featureIds;
 }

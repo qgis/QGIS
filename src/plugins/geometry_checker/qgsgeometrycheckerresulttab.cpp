@@ -57,7 +57,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
 
   for ( const QString &layerId : mChecker->getContext()->featurePools.keys() )
   {
-    QgsVectorLayer *layer = mChecker->getContext()->featurePools[layerId]->getLayer();
+    QgsVectorLayer *layer = mChecker->getContext()->featurePools[layerId]->layer();
     QTreeWidgetItem *item = new QTreeWidgetItem( ui.treeWidgetMergeAttribute, QStringList() << layer->name() << "" );
     QComboBox *attribCombo = new QComboBox();
     for ( int i = 0, n = layer->fields().count(); i < n; ++i )
@@ -85,7 +85,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
   bool allLayersEditable = true;
   for ( const QgsFeaturePool *featurePool : mChecker->getContext()->featurePools.values() )
   {
-    if ( ( featurePool->getLayer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
+    if ( ( featurePool->layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
     {
       allLayersEditable = false;
       break;
@@ -148,7 +148,7 @@ void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
   ui.tableWidgetErrors->insertRow( row );
   QTableWidgetItem *idItem = new QTableWidgetItem();
   idItem->setData( Qt::EditRole, error->featureId() != FEATUREID_NULL ? QVariant( error->featureId() ) : QVariant() );
-  ui.tableWidgetErrors->setItem( row, 0, new QTableWidgetItem( !error->layerId().isEmpty() ? mChecker->getContext()->featurePools[error->layerId()]->getLayer()->name() : "" ) );
+  ui.tableWidgetErrors->setItem( row, 0, new QTableWidgetItem( !error->layerId().isEmpty() ? mChecker->getContext()->featurePools[error->layerId()]->layer()->name() : "" ) );
   ui.tableWidgetErrors->setItem( row, 1, idItem );
   ui.tableWidgetErrors->setItem( row, 2, new QTableWidgetItem( error->description() ) );
   ui.tableWidgetErrors->setItem( row, 3, new QTableWidgetItem( posStr ) );
@@ -221,7 +221,7 @@ void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError *error, boo
 void QgsGeometryCheckerResultTab::exportErrors()
 {
   QString initialdir;
-  QDir dir = QFileInfo( mChecker->getContext()->featurePools.first()->getLayer()->dataProvider()->dataSourceUri() ).dir();
+  QDir dir = QFileInfo( mChecker->getContext()->featurePools.first()->layer()->dataProvider()->dataSourceUri() ).dir();
   if ( dir.exists() )
   {
     initialdir = dir.absolutePath();
@@ -280,7 +280,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   for ( int row = 0, nRows = ui.tableWidgetErrors->rowCount(); row < nRows; ++row )
   {
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( row, 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
-    QgsVectorLayer *srcLayer = mChecker->getContext()->featurePools[error->layerId()]->getLayer();
+    QgsVectorLayer *srcLayer = mChecker->getContext()->featurePools[error->layerId()]->layer();
     QgsFeature f( layer->fields() );
     f.setAttribute( fieldLayer, srcLayer->name() );
     f.setAttribute( fieldFeatureId, error->featureId() );
@@ -454,7 +454,7 @@ void QgsGeometryCheckerResultTab::openAttributeTable()
     {
       mAttribTableDialogs[layerId]->close();
     }
-    mAttribTableDialogs[layerId] = mIface->showAttributeTable( mChecker->getContext()->featurePools[layerId]->getLayer(), expr.join( QStringLiteral( " or " ) ) );
+    mAttribTableDialogs[layerId] = mIface->showAttributeTable( mChecker->getContext()->featurePools[layerId]->layer(), expr.join( QStringLiteral( " or " ) ) );
   }
 }
 
@@ -528,7 +528,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
   }
   for ( const QString &layerId : mChecker->getContext()->featurePools.keys() )
   {
-    mChecker->getContext()->featurePools[layerId]->getLayer()->triggerRepaint();
+    mChecker->getContext()->featurePools[layerId]->layer()->triggerRepaint();
   }
 
   if ( mStatistics.itemCount() > 0 )
@@ -618,7 +618,6 @@ void QgsGeometryCheckerResultTab::checkRemovedLayer( const QStringList &ids )
   {
     if ( ids.contains( layerId ) )
     {
-      mChecker->getContext()->featurePools[layerId]->clearLayer();
       if ( isEnabled() )
         requiredLayersRemoved = true;
     }

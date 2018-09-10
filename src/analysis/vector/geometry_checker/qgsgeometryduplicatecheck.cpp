@@ -25,7 +25,7 @@ QString QgsGeometryDuplicateCheckError::duplicatesString( const QMap<QString, Qg
   QStringList str;
   for ( auto it = duplicates.constBegin(); it != duplicates.constEnd(); ++it )
   {
-    str.append( featurePools[it.key()]->getLayer()->name() + ":" );
+    str.append( featurePools[it.key()]->layer()->name() + ":" );
     QStringList ids;
     for ( QgsFeatureId id : it.value() )
     {

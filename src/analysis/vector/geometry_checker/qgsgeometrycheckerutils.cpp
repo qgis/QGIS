@@ -43,7 +43,7 @@ namespace QgsGeometryCheckerUtils
   {
     delete mGeometry;
   }
-  const QgsVectorLayer &LayerFeature::layer() const { return *mFeaturePool->getLayer(); }
+  const QgsVectorLayer &LayerFeature::layer() const { return *mFeaturePool->layer(); }
   double LayerFeature::layerToMapUnits() const { return mFeaturePool->getLayerToMapUnits(); }
   const QgsCoordinateTransform &LayerFeature::layerToMapTransform() const { return mFeaturePool->getLayerToMapTransform(); }
 
@@ -114,7 +114,7 @@ namespace QgsGeometryCheckerUtils
       {
         break;
       }
-      if ( mParent->mGeometryTypes.contains( mParent->mFeaturePools[*mLayerIt]->getLayer()->geometryType() ) )
+      if ( mParent->mGeometryTypes.contains( mParent->mFeaturePools[*mLayerIt]->geometryType() ) )
       {
         mFeatureIt = mParent->mFeatureIds[*mLayerIt].constBegin();
         return true;
@@ -178,7 +178,7 @@ namespace QgsGeometryCheckerUtils
     for ( const QString &layerId : layerIds )
     {
       const QgsFeaturePool *featurePool = featurePools[layerId];
-      if ( geometryTypes.contains( featurePool->getLayer()->geometryType() ) )
+      if ( geometryTypes.contains( featurePool->layer()->geometryType() ) )
       {
         mFeatureIds.insert( layerId, featurePool->getIntersects( featurePool->getLayerToMapTransform().transform( extent, QgsCoordinateTransform::ReverseTransform ) ) );
       }
