@@ -1,4 +1,4 @@
-x{
+{
   "name": "relation_aggregate",
   "type": "function",
   "description": "Returns an aggregate value calculated using all matching child features from a layer relation.",
