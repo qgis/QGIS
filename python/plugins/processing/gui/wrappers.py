@@ -765,12 +765,12 @@ class NumberWidgetWrapper(WidgetWrapper):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH) and self.parameterDefinition().isDynamic():
             for wrapper in wrappers:
                 if wrapper.parameterDefinition().name() == self.parameterDefinition().dynamicLayerParameterName():
-                    self.widget.setDynamicLayer(wrapper.value())
+                    self.widget.setDynamicLayer(wrapper.parameterValue())
                     wrapper.widgetValueHasChanged.connect(self.parentLayerChanged)
                     break
 
     def parentLayerChanged(self, wrapper):
-        self.widget.setDynamicLayer(wrapper.value())
+        self.widget.setDynamicLayer(wrapper.parameterValue())
 
 
 class DistanceWidgetWrapper(WidgetWrapper):
@@ -796,17 +796,17 @@ class DistanceWidgetWrapper(WidgetWrapper):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             for wrapper in wrappers:
                 if wrapper.parameterDefinition().name() == self.parameterDefinition().dynamicLayerParameterName():
-                    self.widget.setDynamicLayer(wrapper.value())
+                    self.widget.setDynamicLayer(wrapper.parameterValue())
                     wrapper.widgetValueHasChanged.connect(self.dynamicLayerChanged)
                 if wrapper.parameterDefinition().name() == self.parameterDefinition().parentParameterName():
-                    self.widget.setUnitParameterValue(wrapper.value())
+                    self.widget.setUnitParameterValue(wrapper.parameterValue())
                     wrapper.widgetValueHasChanged.connect(self.parentParameterChanged)
 
     def dynamicLayerChanged(self, wrapper):
-        self.widget.setDynamicLayer(wrapper.value())
+        self.widget.setDynamicLayer(wrapper.parameterValue())
 
     def parentParameterChanged(self, wrapper):
-        self.widget.setUnitParameterValue(wrapper.value())
+        self.widget.setUnitParameterValue(wrapper.parameterValue())
 
 
 class RangeWidgetWrapper(WidgetWrapper):
@@ -1347,12 +1347,12 @@ class ExpressionWidgetWrapper(WidgetWrapper):
         for wrapper in wrappers:
             if wrapper.parameterDefinition().name() == self.parameterDefinition().parentLayerParameterName():
                 if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-                    self.setLayer(wrapper.value())
+                    self.setLayer(wrapper.parameterValue())
                     wrapper.widgetValueHasChanged.connect(self.parentLayerChanged)
                 break
 
     def parentLayerChanged(self, wrapper):
-        self.setLayer(wrapper.value())
+        self.setLayer(wrapper.parameterValue())
 
     def setLayer(self, layer):
         if isinstance(layer, QgsProcessingFeatureSourceDefinition):
@@ -1567,12 +1567,12 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         for wrapper in wrappers:
             if wrapper.parameterDefinition().name() == self.parameterDefinition().parentLayerParameterName():
                 if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-                    self.setLayer(wrapper.value())
+                    self.setLayer(wrapper.parameterValue())
                     wrapper.widgetValueHasChanged.connect(self.parentValueChanged)
                 break
 
     def parentValueChanged(self, wrapper):
-        self.setLayer(wrapper.value())
+        self.setLayer(wrapper.parameterValue())
 
     def setLayer(self, layer):
         if isinstance(layer, QgsProcessingFeatureSourceDefinition):
@@ -1682,12 +1682,12 @@ class BandWidgetWrapper(WidgetWrapper):
         for wrapper in wrappers:
             if wrapper.parameterDefinition().name() == self.parameterDefinition().parentLayerParameterName():
                 if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
-                    self.setLayer(wrapper.value())
+                    self.setLayer(wrapper.parameterValue())
                     wrapper.widgetValueHasChanged.connect(self.parentValueChanged)
                 break
 
     def parentValueChanged(self, wrapper):
-        self.setLayer(wrapper.value())
+        self.setLayer(wrapper.parameterValue())
 
     def setLayer(self, layer):
         if isinstance(layer, QgsProcessingParameterRasterLayer):

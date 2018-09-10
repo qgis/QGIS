@@ -315,7 +315,7 @@ class ModelerParametersDialog(QDialog):
             if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
             try:
-                val = self.wrappers[param.name()].value()
+                val = self.wrappers[param.name()].parameterValue()
             except InvalidParameterValue:
                 self.bar.pushMessage(self.tr("Error"),
                                      self.tr("Wrong or missing value for parameter '{}'").format(param.description()),

@@ -310,7 +310,7 @@ class BatchPanel(BASE, WIDGET):
             return
 
         for row in range(1, self.tblParameters.rowCount()):
-            self.wrappers[row][column].setParameterValue(wrapper.value(), context)
+            self.wrappers[row][column].setParameterValue(wrapper.parameterValue(), context)
 
     def toggleAdvancedMode(self, checked):
         for column, param in enumerate(self.alg.parameterDefinitions()):
