@@ -67,8 +67,8 @@ void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError *error, int meth
 
   QgsFeature featureA;
   QgsFeature featureB;
-  if ( !featurePoolA->get( error->featureId(), featureA ) ||
-       !featurePoolB->get( containerError->containingFeature().second, featureB ) )
+  if ( !featurePoolA->getFeature( error->featureId(), featureA ) ||
+       !featurePoolB->getFeature( containerError->containingFeature().second, featureB ) )
   {
     error->setObsolete();
     return;

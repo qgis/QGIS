@@ -46,7 +46,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
      * It will be retrieved from the cache or from the underlying layer if unavailable.
      * If the feature is neither available from the cache nor from the layer it will return false.
      */
-    bool get( QgsFeatureId id, QgsFeature &feature );
+    bool getFeature( QgsFeatureId id, QgsFeature &feature );
 
     /**
      * Updates a feature in this pool.

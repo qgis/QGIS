@@ -163,7 +163,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError *err, Chan
     for ( QgsFeatureId testId : featureIds )
     {
       QgsFeature testFeature;
-      if ( !featurePool->get( testId, testFeature ) )
+      if ( !featurePool->getFeature( testId, testFeature ) )
       {
         continue;
       }

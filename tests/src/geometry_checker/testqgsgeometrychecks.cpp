@@ -141,21 +141,21 @@ void TestQgsGeometryChecks::testAngleCheck()
   QgsFeature f;
   int n1, n2;
 
-  context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
+  context->featurePools[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
   n1 = f.geometry().constGet()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
   QVERIFY( fixCheckError( errs1[0],
                           QgsGeometryAngleCheck::DeleteNode, QgsGeometryCheckError::StatusFixed,
   {{errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, errs1[0]->vidx()}} ) );
-  context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
+  context->featurePools[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
   n2 = f.geometry().constGet()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
   QCOMPARE( n1, n2 + 1 );
 
-  context->featurePools[errs2[0]->layerId()]->get( errs2[0]->featureId(), f );
+  context->featurePools[errs2[0]->layerId()]->getFeature( errs2[0]->featureId(), f );
   n1 = f.geometry().constGet()->vertexCount( errs2[0]->vidx().part, errs2[0]->vidx().ring );
   QVERIFY( fixCheckError( errs2[0],
                           QgsGeometryAngleCheck::DeleteNode, QgsGeometryCheckError::StatusFixed,
   {{errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, errs2[0]->vidx()}} ) );
-  context->featurePools[errs2[0]->layerId()]->get( errs2[0]->featureId(), f );
+  context->featurePools[errs2[0]->layerId()]->getFeature( errs2[0]->featureId(), f );
   n2 = f.geometry().constGet()->vertexCount( errs2[0]->vidx().part, errs2[0]->vidx().ring );
   QCOMPARE( n1, n2 + 1 );
 
@@ -222,11 +222,11 @@ void TestQgsGeometryChecks::testAreaCheck()
   QVERIFY( fixCheckError( errs1[0],
                           QgsGeometryAreaCheck::Delete, QgsGeometryCheckError::StatusFixed,
   {{errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId()}} ) );
-  valid = context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
+  valid = context->featurePools[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
   QVERIFY( !valid );
 
   // Try merging a small geometry by longest edge, largest area and common value
-  context->featurePools[layers["polygon_layer.shp"]]->get( 15, f );
+  context->featurePools[layers["polygon_layer.shp"]]->getFeature( 15, f );
   double area15 = f.geometry().area();
   QVERIFY( fixCheckError( errs2[0],
                           QgsGeometryAreaCheck::MergeLargestArea, QgsGeometryCheckError::StatusFixed,
@@ -235,12 +235,12 @@ void TestQgsGeometryChecks::testAreaCheck()
     {layers["polygon_layer.shp"], 15, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )},
     {layers["polygon_layer.shp"], 15, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )}
   } ) );
-  context->featurePools[layers["polygon_layer.shp"]]->get( 15, f );
+  context->featurePools[layers["polygon_layer.shp"]]->getFeature( 15, f );
   QVERIFY( f.geometry().area() > area15 );
-  valid = context->featurePools[errs2[0]->layerId()]->get( errs2[0]->featureId(), f );
+  valid = context->featurePools[errs2[0]->layerId()]->getFeature( errs2[0]->featureId(), f );
   QVERIFY( !valid );
 
-  context->featurePools[layers["polygon_layer.shp"]]->get( 18, f );
+  context->featurePools[layers["polygon_layer.shp"]]->getFeature( 18, f );
   double area18 = f.geometry().area();
   QVERIFY( fixCheckError( errs3[0],
                           QgsGeometryAreaCheck::MergeLongestEdge, QgsGeometryCheckError::StatusFixed,
@@ -249,12 +249,12 @@ void TestQgsGeometryChecks::testAreaCheck()
     {layers["polygon_layer.shp"], 18, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )},
     {layers["polygon_layer.shp"], 18, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )}
   } ) );
-  context->featurePools[layers["polygon_layer.shp"]]->get( 18, f );
+  context->featurePools[layers["polygon_layer.shp"]]->getFeature( 18, f );
   QVERIFY( f.geometry().area() > area18 );
-  valid = context->featurePools[errs3[0]->layerId()]->get( errs3[0]->featureId(), f );
+  valid = context->featurePools[errs3[0]->layerId()]->getFeature( errs3[0]->featureId(), f );
   QVERIFY( !valid );
 
-  context->featurePools[layers["polygon_layer.shp"]]->get( 21, f );
+  context->featurePools[layers["polygon_layer.shp"]]->getFeature( 21, f );
   double area21 = f.geometry().area();
   QMap<QString, int> mergeIdx;
   mergeIdx.insert( layers["polygon_layer.shp"], 1 ); // 1: attribute "attr"
@@ -265,9 +265,9 @@ void TestQgsGeometryChecks::testAreaCheck()
     {layers["polygon_layer.shp"], 21, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )},
     {layers["polygon_layer.shp"], 21, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )}
   }, mergeIdx ) );
-  context->featurePools[layers["polygon_layer.shp"]]->get( 21, f );
+  context->featurePools[layers["polygon_layer.shp"]]->getFeature( 21, f );
   QVERIFY( f.geometry().area() > area21 );
-  valid = context->featurePools[errs4[0]->layerId()]->get( errs4[0]->featureId(), f );
+  valid = context->featurePools[errs4[0]->layerId()]->getFeature( errs4[0]->featureId(), f );
   QVERIFY( !valid );
 
   cleanupTestContext( context );
@@ -304,7 +304,7 @@ void TestQgsGeometryChecks::testContainedCheck()
                           QgsGeometryContainedCheck::Delete, QgsGeometryCheckError::StatusFixed,
   {{errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId()}} ) );
   QgsFeature f;
-  bool valid = context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
+  bool valid = context->featurePools[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
   QVERIFY( !valid );
 
   cleanupTestContext( context );
@@ -376,7 +376,7 @@ void TestQgsGeometryChecks::testDegeneratePolygonCheck()
                           QgsGeometryDegeneratePolygonCheck::DeleteRing, QgsGeometryCheckError::StatusFixed,
   {{errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId()}} ) );
   QgsFeature f;
-  bool valid = context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
+  bool valid = context->featurePools[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
   QVERIFY( !valid );
 
   cleanupTestContext( context );
@@ -420,7 +420,7 @@ void TestQgsGeometryChecks::testDuplicateCheck()
                           QgsGeometryDuplicateCheck::RemoveDuplicates, QgsGeometryCheckError::StatusFixed,
   {{dup1LayerId, dup1Fid, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId()}} ) );
   QgsFeature f;
-  bool valid = context->featurePools[dup1LayerId]->get( dup1Fid, f );
+  bool valid = context->featurePools[dup1LayerId]->getFeature( dup1Fid, f );
   QVERIFY( !valid );
 
   cleanupTestContext( context );
@@ -455,12 +455,12 @@ void TestQgsGeometryChecks::testDuplicateNodesCheck()
   // Test fixes
   QgsFeature f;
 
-  context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
+  context->featurePools[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
   int n1 = f.geometry().constGet()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
   QVERIFY( fixCheckError( errs1[0],
                           QgsGeometryDuplicateNodesCheck::RemoveDuplicates, QgsGeometryCheckError::StatusFixed,
   {{errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, errs1[0]->vidx()}} ) );
-  context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
+  context->featurePools[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
   int n2 = f.geometry().constGet()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
   QCOMPARE( n1, n2 + 1 );
 
@@ -516,7 +516,7 @@ void TestQgsGeometryChecks::testGapCheck()
   // Test fixes
   QgsFeature f;
 
-  context->featurePools[layers["gap_layer.shp"]]->get( 0, f );
+  context->featurePools[layers["gap_layer.shp"]]->getFeature( 0, f );
   double areaOld = f.geometry().area();
   QVERIFY( fixCheckError( errs1[0],
                           QgsGeometryGapCheck::MergeLongestEdge, QgsGeometryCheckError::StatusFixed,
@@ -524,7 +524,7 @@ void TestQgsGeometryChecks::testGapCheck()
     {layers["gap_layer.shp"], 0, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )},
     {layers["gap_layer.shp"], 0, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )}
   } ) );
-  context->featurePools[layers["gap_layer.shp"]]->get( 0, f );
+  context->featurePools[layers["gap_layer.shp"]]->getFeature( 0, f );
   QVERIFY( f.geometry().area() > areaOld );
 
   cleanupTestContext( context );
@@ -562,7 +562,7 @@ void TestQgsGeometryChecks::testHoleCheck()
   {
     {errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangeRing, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0, 1 )}
   } ) );
-  context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
+  context->featurePools[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
   QVERIFY( f.geometry().constGet()->ringCount( 0 ) == 1 );
 
   cleanupTestContext( context );
@@ -674,7 +674,7 @@ void TestQgsGeometryChecks::testMultipartCheck()
   {
     {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId( )}
   } ) );
-  bool valid = context->featurePools[errs2[0]->layerId()]->get( errs2[0]->featureId(), f );
+  bool valid = context->featurePools[errs2[0]->layerId()]->getFeature( errs2[0]->featureId(), f );
   QVERIFY( !valid );
 
   cleanupTestContext( context );
@@ -708,14 +708,14 @@ void TestQgsGeometryChecks::testOverlapCheck()
   // Test fixes
   QgsFeature f;
 
-  context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
+  context->featurePools[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
   double areaOld = f.geometry().area();
   QVERIFY( fixCheckError( errs1[0],
                           QgsGeometryOverlapCheck::Subtract, QgsGeometryCheckError::StatusFixed,
   {
     {errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeChanged, QgsVertexId( )}
   } ) );
-  context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
+  context->featurePools[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
   QVERIFY( f.geometry().area() < areaOld );
 
   cleanupTestContext( context );
@@ -867,10 +867,10 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
     {errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )},
     {errs1[0]->layerId(), nextId, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeAdded, QgsVertexId()}
   } ) );
-  context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
+  context->featurePools[errs1[0]->layerId()]->getFeature( errs1[0]->featureId(), f );
   QCOMPARE( f.geometry().constGet()->partCount(), 1 );
   QCOMPARE( f.geometry().constGet()->vertexCount(), 4 );
-  context->featurePools[errs1[0]->layerId()]->get( nextId, f );
+  context->featurePools[errs1[0]->layerId()]->getFeature( nextId, f );
   QCOMPARE( f.geometry().constGet()->partCount(), 1 );
   QCOMPARE( f.geometry().constGet()->vertexCount(), 6 );
 
@@ -881,7 +881,7 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
     {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )},
     {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 1 )}
   } ) );
-  context->featurePools[errs2[0]->layerId()]->get( errs2[0]->featureId(), f );
+  context->featurePools[errs2[0]->layerId()]->getFeature( errs2[0]->featureId(), f );
   QCOMPARE( f.geometry().constGet()->partCount(), 2 );
   QCOMPARE( f.geometry().constGet()->vertexCount( 0 ), 4 );
   QCOMPARE( f.geometry().constGet()->vertexCount( 1 ), 5 );
@@ -893,10 +893,10 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
     {errs3[0]->layerId(), errs3[0]->featureId(), QgsGeometryCheck::ChangeRing, QgsGeometryCheck::ChangeChanged, QgsVertexId( 0, 0 )},
     {errs3[0]->layerId(), nextId, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeAdded, QgsVertexId()}
   } ) );
-  context->featurePools[errs3[0]->layerId()]->get( errs3[0]->featureId(), f );
+  context->featurePools[errs3[0]->layerId()]->getFeature( errs3[0]->featureId(), f );
   QCOMPARE( f.geometry().constGet()->partCount(), 1 );
   QCOMPARE( f.geometry().constGet()->vertexCount(), 6 );
-  context->featurePools[errs3[0]->layerId()]->get( nextId, f );
+  context->featurePools[errs3[0]->layerId()]->getFeature( nextId, f );
   QCOMPARE( f.geometry().constGet()->partCount(), 1 );
   QCOMPARE( f.geometry().constGet()->vertexCount(), 4 );
 
@@ -907,7 +907,7 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
     {errs4[0]->layerId(), errs4[0]->featureId(), QgsGeometryCheck::ChangeRing, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0, 1 )},
     {errs4[0]->layerId(), errs4[0]->featureId(), QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 1 )}
   } ) );
-  context->featurePools[errs4[0]->layerId()]->get( errs4[0]->featureId(), f );
+  context->featurePools[errs4[0]->layerId()]->getFeature( errs4[0]->featureId(), f );
   QCOMPARE( f.geometry().constGet()->partCount(), 2 );
   QCOMPARE( f.geometry().constGet()->ringCount( 0 ), 1 );
   QCOMPARE( f.geometry().constGet()->vertexCount( 0, 0 ), 5 );

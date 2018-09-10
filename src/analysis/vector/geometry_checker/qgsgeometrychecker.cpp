@@ -160,7 +160,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
       if ( !removed )
       {
         QgsFeature f;
-        if ( featurePool->get( layerChangeIt.key(), f ) )
+        if ( featurePool->getFeature( layerChangeIt.key(), f ) )
         {
           recheckFeatures[it.key()].insert( layerChangeIt.key() );
           recheckArea.combineExtentWith( t.transformBoundingBox( f.geometry().boundingBox() ) );

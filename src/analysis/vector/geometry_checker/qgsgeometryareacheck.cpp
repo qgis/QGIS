@@ -42,7 +42,7 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, c
 {
   QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
   QgsFeature feature;
-  if ( !featurePool->get( error->featureId(), feature ) )
+  if ( !featurePool->getFeature( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -118,7 +118,7 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature
   for ( QgsFeatureId testId : intersects )
   {
     QgsFeature testFeature;
-    if ( !featurePool->get( testId, testFeature ) )
+    if ( !featurePool->getFeature( testId, testFeature ) )
     {
       continue;
     }
