@@ -175,7 +175,7 @@ void QgsGpsDetector::advance()
       serial->setDataBits( DATA_8 );
       serial->setStopBits( STOP_1 );
 
-      if ( serial->open( QIODevice::ReadOnly | QIODevice::Unbuffered ) )
+      if ( serial->open( QIODevice::ReadOnly ) )
       {
         mConn = new QgsNmeaConnection( serial );
       }
