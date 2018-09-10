@@ -232,9 +232,9 @@ class ModelerParametersDialog(QDialog):
         for param in self._alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 wrapper = self.wrappers[param.name()]
-                if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
-                    self.wrappers[param.name()].widget.setVisible(self.showAdvanced)
-                    self.wrappers[param.name()].label.setVisible(self.showAdvanced)
+                if not issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
+                    wrapper.widget.setVisible(self.showAdvanced)
+                    wrapper.label.setVisible(self.showAdvanced)
 
     def getAvailableValuesOfType(self, paramType, outTypes=[], dataTypes=[]):
         # upgrade paramType to list
