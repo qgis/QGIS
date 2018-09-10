@@ -79,6 +79,12 @@ class QgsHttpTransaction : QObject
 
     void networkTimedOut();
 
+    /**
+     * Handle SSL errors
+     * @since QGIS 2.18.24
+     */
+    void handleSslErrors( const QList<QSslError> &errors );
+
     /** Aborts the current transaction*/
     void abort();
 
