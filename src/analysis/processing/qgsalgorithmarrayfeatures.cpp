@@ -46,13 +46,13 @@ QString QgsArrayFeaturesAlgorithm::groupId() const
 
 QString QgsArrayFeaturesAlgorithm::outputName() const
 {
-  return QObject::tr( "Offsets" );
+  return QObject::tr( "Translated" );
 }
 
 QString QgsArrayFeaturesAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates copies of features in a layer, by creating multiple translated versions of each feature. "
-                      "Each copy is displaced by a preset amount in the x/y/z/m axis." );
+                      "Each copy is incrementally displaced by a preset amount in the x/y/z/m axis." );
 }
 
 QString QgsArrayFeaturesAlgorithm::shortDescription() const
