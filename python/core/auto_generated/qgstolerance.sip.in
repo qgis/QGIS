@@ -26,11 +26,11 @@ This is the class is providing tolerance value in map unit values.
 
     enum UnitType
     {
-      //! Layer
+      //! Layer unit value
       LayerUnits,
-      //! Pixels
+      //! Pixels unit of tolerance
       Pixels,
-      //! Map
+      //! Map (project) units. Added in 2.8
       ProjectUnits
     };
 

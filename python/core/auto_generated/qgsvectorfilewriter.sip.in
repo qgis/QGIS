@@ -198,16 +198,16 @@ Creates a clone of the FieldValueConverter.
 
     enum EditionCapability
     {
-      //! Flag
+      //! Flag to indicate that a new layer can be added to the dataset
       CanAddNewLayer,
 
-      //! Flag
+      //! Flag to indicate that new features can be added to an existing layer
       CanAppendToExistingLayer,
 
-      //! Flag
+      //! Flag to indicate that new fields can be added to an existing layer. Imply CanAppendToExistingLayer
       CanAddNewFieldsToExistingLayer,
 
-      //! Flag
+      //! Flag to indicate that an existing layer can be deleted
       CanDeleteLayer
     };
 
@@ -216,16 +216,16 @@ Creates a clone of the FieldValueConverter.
 
     enum ActionOnExistingFile
     {
-      //! Create
+      //! Create or overwrite file
       CreateOrOverwriteFile,
 
-      //! Create
+      //! Create or overwrite layer
       CreateOrOverwriteLayer,
 
-      //! Append
+      //! Append features to existing layer, but do not create new fields
       AppendToLayerNoNewFields,
 
-      //! Append
+      //! Append features to existing layer, and create new fields if needed
       AppendToLayerAddFields
     };
 

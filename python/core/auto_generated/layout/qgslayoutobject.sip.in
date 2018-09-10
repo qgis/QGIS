@@ -27,13 +27,13 @@ A base class for objects which belong to a layout.
       NoProperty,
       AllProperties,
       TestProperty,
-      //composer
+      //composer page properties
       PresetPaperSize,
       PaperWidth,
       PaperHeight,
       NumPages,
       PaperOrientation,
-      //general
+      //general composer item properties
       PageNumber,
       PositionX,
       PositionY,
@@ -46,7 +46,7 @@ A base class for objects which belong to a layout.
       ExcludeFromExports,
       FrameColor,
       BackgroundColor,
-      //composer
+      //composer map
       MapRotation,
       MapScale,
       MapXMin,
@@ -56,22 +56,22 @@ A base class for objects which belong to a layout.
       MapAtlasMargin,
       MapLayers,
       MapStylePreset,
-      //composer
+      //composer picture
       PictureSource,
       PictureSvgBackgroundColor,
       PictureSvgStrokeColor,
       PictureSvgStrokeWidth,
-      //html
+      //html item
       SourceUrl,
-      //legend
+      //legend item
       LegendTitle,
       LegendColumnCount,
-      //scalebar
+      //scalebar item
       ScalebarFillColor,
       ScalebarFillColor2,
       ScalebarLineColor,
       ScalebarLineWidth,
-      //table
+      //table item
       AttributeTableSourceLayer,
     };
 

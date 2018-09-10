@@ -31,7 +31,7 @@ Is mostly referred to as "master model" within this doc and the source.
       FeatureIdRole,
       FieldIndexRole,
       UserRole,
-      // Insert
+      // Insert new values here, SortRole needs to be the last one
       SortRole,
     };
 
