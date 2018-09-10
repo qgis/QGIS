@@ -35,6 +35,12 @@ class Qgs3DMapTool : public QObject
     virtual void mouseReleaseEvent( QMouseEvent *event );
     virtual void mouseMoveEvent( QMouseEvent *event );
 
+    //! Called when set as currently active map tool
+    virtual void activate();
+
+    //! Called when map tool is being deactivated
+    virtual void deactivate();
+
   protected:
     Qgs3DMapCanvas *mCanvas = nullptr;
 };

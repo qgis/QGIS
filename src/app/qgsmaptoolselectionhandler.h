@@ -124,6 +124,8 @@ class QgsMapToolSelectionHandler : public QObject
     //! Handles escape press event - returns true if the even has been processed
     bool keyReleaseEvent( QKeyEvent *e );
 
+    void setSelectedGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+
   signals:
     //! emitted when a new geometry has been picked (selectedGeometry())
     void geometryChanged( Qt::KeyboardModifiers modifiers = Qt::NoModifier );
@@ -164,8 +166,6 @@ class QgsMapToolSelectionHandler : public QObject
     void deleteDistanceWidget();
 
     void updateRadiusFromEdge( QgsPointXY &radiusEdge );
-
-    void setSelectedGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
   private:
 
