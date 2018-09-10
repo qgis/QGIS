@@ -26,7 +26,7 @@ QString QgsCreateParallelLinesAlgorithm::name() const
 
 QString QgsCreateParallelLinesAlgorithm::displayName() const
 {
-  return QObject::tr( "Array of offset lines" );
+  return QObject::tr( "Array of offset (parallel) lines" );
 }
 
 QStringList QgsCreateParallelLinesAlgorithm::tags() const
