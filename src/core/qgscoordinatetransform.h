@@ -405,6 +405,17 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     static void invalidateCache();
 
+    /**
+     * Computes an *estimated* conversion factor between source and destination units:
+     *
+     *   sourceUnits * conversionFactor = destinationUnits
+     *
+     * \param referenceExtent A reference extent based on which to perform the computation
+     *
+     * \since QGIS 3.4
+     */
+    double conversionFactor( const QgsRectangle &referenceExtent ) const;
+
   private:
 
     mutable QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
