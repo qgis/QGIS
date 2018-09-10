@@ -25,7 +25,7 @@ void QgsGeometryLineIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
     // Ensure each pair of layers only gets compared once: remove the current layer from the layerIds, but add it to the layerList for layerFeaturesB
-    layerIds.removeOne( layerFeatureA.layer().id() );
+    layerIds.removeOne( layerFeatureA.layer()->id() );
 
     const QgsAbstractGeometry *geom = layerFeatureA.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
@@ -38,11 +38,11 @@ void QgsGeometryLineIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
       }
 
       // Check whether the line intersects with any other lines
-      QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, QList<QString>() << layerFeatureA.layer().id() << layerIds, line->boundingBox(), {QgsWkbTypes::LineGeometry} );
+      QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, QList<QString>() << layerFeatureA.layer()->id() << layerIds, line->boundingBox(), {QgsWkbTypes::LineGeometry} );
       for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
       {
         // > : only report intersections within same layer once
-        if ( layerFeatureA.layer().id() == layerFeatureB.layer().id() && layerFeatureB.feature().id() > layerFeatureA.feature().id() )
+        if ( layerFeatureA.layer()->id() == layerFeatureB.layer()->id() && layerFeatureB.feature().id() > layerFeatureA.feature().id() )
         {
           continue;
         }

@@ -35,7 +35,7 @@ namespace QgsGeometryCheckerUtils
       LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, bool useMapCrs );
       ~LayerFeature();
       const QgsFeature &feature() const { return mFeature; }
-      const QgsVectorLayer &layer() const;
+      QgsVectorLayer *layer() const;
       double layerToMapUnits() const;
       const QgsCoordinateTransform &layerToMapTransform() const;
       const QgsAbstractGeometry *geometry() const { return mGeometry; }

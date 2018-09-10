@@ -43,23 +43,28 @@ namespace QgsGeometryCheckerUtils
   {
     delete mGeometry;
   }
-  const QgsVectorLayer &LayerFeature::layer() const { return *mFeaturePool->layer(); }
+
+  QgsVectorLayer *LayerFeature::layer() const
+  {
+    return mFeaturePool->layer();
+  }
+
   double LayerFeature::layerToMapUnits() const { return mFeaturePool->getLayerToMapUnits(); }
   const QgsCoordinateTransform &LayerFeature::layerToMapTransform() const { return mFeaturePool->getLayerToMapTransform(); }
 
   QString LayerFeature::id() const
   {
-    return QString( "%1:%2" ).arg( layer().name() ).arg( mFeature.id() );
+    return QString( "%1:%2" ).arg( layer()->name() ).arg( mFeature.id() );
   }
 
   bool LayerFeature::operator==( const LayerFeature &other ) const
   {
-    return layer().id() == other.layer().id() && feature().id() == other.feature().id();
+    return layer()->id() == other.layer()->id() && feature().id() == other.feature().id();
   }
 
   bool LayerFeature::operator!=( const LayerFeature &other ) const
   {
-    return layer().id() != other.layer().id() || feature().id() != other.feature().id();
+    return layer()->id() != other.layer()->id() || feature().id() != other.feature().id();
   }
 
   /////////////////////////////////////////////////////////////////////////////

@@ -50,7 +50,7 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
     const QgsPointXY &errorLocation, QgsVertexId vidx,
     const QVariant &value, ValueType valueType )
   : mCheck( check )
-  , mLayerId( layerFeature.layer().id() )
+  , mLayerId( layerFeature.layer()->id() )
   , mFeatureId( layerFeature.feature().id() )
   , mErrorLocation( errorLocation )
   , mVidx( vidx )

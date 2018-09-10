@@ -100,7 +100,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
     {
       if ( QgsGeometryCheckerUtils::sharedEdgeLength( gapGeom.get(), layerFeature.geometry(), mContext->reducedTolerance ) > 0 )
       {
-        neighboringIds[layerFeature.layer().id()].insert( layerFeature.feature().id() );
+        neighboringIds[layerFeature.layer()->id()].insert( layerFeature.feature().id() );
         gapAreaBBox.combineExtentWith( layerFeature.geometry()->boundingBox() );
       }
     }
