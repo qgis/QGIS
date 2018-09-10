@@ -396,7 +396,7 @@ QgsCoordinateTransform QgsMapSettings::layerTransform( const QgsMapLayer *layer 
 
 double QgsMapSettings::layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent ) const
 {
-  return layerTransform( layer ).conversionFactor( referenceExtent );
+  return layerTransform( layer ).scaleFactor( referenceExtent );
 }
 
 

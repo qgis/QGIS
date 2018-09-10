@@ -36,8 +36,8 @@ class TestQgsCoordinateTransform: public QObject
     void isValid();
     void isShortCircuited();
     void contextShared();
-    void conversionFactor();
-    void conversionFactor_data();
+    void scaleFactor();
+    void scaleFactor_data();
 
   private:
 
@@ -215,7 +215,7 @@ void TestQgsCoordinateTransform::contextShared()
   QCOMPARE( copy2.sourceDestinationDatumTransforms(), expected );
 }
 
-void TestQgsCoordinateTransform::conversionFactor()
+void TestQgsCoordinateTransform::scaleFactor()
 {
   QFETCH( QgsCoordinateReferenceSystem, sourceCrs );
   QFETCH( QgsCoordinateReferenceSystem, destCrs );
@@ -224,11 +224,11 @@ void TestQgsCoordinateTransform::conversionFactor()
 
   QgsCoordinateTransform ct( sourceCrs, destCrs, QgsProject::instance() );
 
-  // qDebug() << QString::number(ct.conversionFactor( rect ), 'g', 17) ;
-  QVERIFY( qgsDoubleNear( ct.conversionFactor( rect ), factor ) );
+  // qDebug() << QString::number(ct.scaleFactor( rect ), 'g', 17) ;
+  QVERIFY( qgsDoubleNear( ct.scaleFactor( rect ), factor ) );
 }
 
-void TestQgsCoordinateTransform::conversionFactor_data()
+void TestQgsCoordinateTransform::scaleFactor_data()
 {
   QTest::addColumn<QgsCoordinateReferenceSystem>( "sourceCrs" );
   QTest::addColumn<QgsCoordinateReferenceSystem>( "destCrs" );

@@ -799,7 +799,7 @@ void QgsCoordinateTransform::invalidateCache()
   sCacheLock.unlock();
 }
 
-double QgsCoordinateTransform::conversionFactor( const QgsRectangle &ReferenceExtent ) const
+double QgsCoordinateTransform::scaleFactor( const QgsRectangle &ReferenceExtent ) const
 {
   QgsPointXY source1( ReferenceExtent.xMinimum(), ReferenceExtent.yMinimum() );
   QgsPointXY source2( ReferenceExtent.xMaximum(), ReferenceExtent.yMaximum() );
