@@ -126,6 +126,8 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
                            const QVariant &value = QVariant(),
                            ValueType valueType = ValueOther );
 
+    virtual ~QgsGeometryCheckError() = default;
+
     const QgsGeometryCheckError &operator=( const QgsGeometryCheckError & ) = delete;
 
     const QgsGeometryCheck *check() const { return mCheck; }
