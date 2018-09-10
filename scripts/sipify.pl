@@ -935,11 +935,11 @@ while ($LINE_IDX < $LINE_COUNT){
                 if (detect_comment_block()){
                     next;
                 }
-                if ($LINE =~ m/\};/){
-                    last;
-                }
+                last if ($LINE =~ m/\};/);
+                next if ($LINE =~ m/^\s*\w+\s*\|/); # multi line declaration as sum of enums
+
                 do {no warnings 'uninitialized';
-                    my $enum_decl = $LINE =~ s/(\s*\w+)(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+.*?)?(,?).*$/$1$2$3/r;
+                    my $enum_decl = $LINE =~ s/^(\s*\w+)(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?).*$/$1$2$3/r;
                     $enum_decl = fix_annotations($enum_decl);
                     write_output("ENU3", "$enum_decl\n");
                 };
