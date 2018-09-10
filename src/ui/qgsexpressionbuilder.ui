@@ -273,7 +273,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QgsCodeEditorSQL" name="txtExpressionString" native="true"/>
+               <widget class="QgsCodeEditorExpression" name="txtExpressionString" native="true"/>
               </item>
               <item>
                <layout class="QGridLayout" name="gridLayout">
@@ -768,9 +768,9 @@ Saved scripts are auto loaded on QGIS startup.</string>
    <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCodeEditorSQL</class>
+   <class>QgsCodeEditorExpression</class>
    <extends>QWidget</extends>
-   <header>qgscodeeditorsql.h</header>
+   <header>qgscodeeditorexpression.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

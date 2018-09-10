@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscodeeditorexpression.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsCodeEditorExpression : QgsCodeEditor
+{
+%Docstring
+
+A QGIS expression editor based on QScintilla2. Adds syntax highlighting and
+code autocompletion.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgscodeeditorexpression.h"
+%End
+  public:
+    QgsCodeEditorExpression( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCodeEditorExpression
+%End
+
+    void setExpressionContext( const QgsExpressionContext &context );
+%Docstring
+Variables and functions from this expression context will be added to
+the API.
+Will also reload all globally registered functions.
+%End
+
+    void setFields( const QgsFields &fields );
+%Docstring
+Field names will be added to the API.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscodeeditorexpression.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

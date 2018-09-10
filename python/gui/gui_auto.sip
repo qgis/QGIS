@@ -79,6 +79,9 @@
 %If ( HAVE_QSCI_SIP )
 %Include auto_generated/qgscodeeditorsql.sip
 %End
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/qgscodeeditorexpression.sip
+%End
 %Include auto_generated/qgscollapsiblegroupbox.sip
 %Include auto_generated/qgscolorbrewercolorrampdialog.sip
 %Include auto_generated/qgscolorbutton.sip

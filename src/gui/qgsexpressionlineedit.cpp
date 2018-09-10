@@ -55,7 +55,7 @@ void QgsExpressionLineEdit::setMultiLine( bool multiLine )
 
   if ( multiLine && !mCodeEditor )
   {
-    mCodeEditor = new QgsCodeEditorSQL();
+    mCodeEditor = new QgsCodeEditorExpression();
     mCodeEditor->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     delete mLineEdit;
     mLineEdit = nullptr;
