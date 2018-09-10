@@ -29,7 +29,7 @@ expression context.
 
     enum Flag
     {
-      // UseSelectionIfPresent,
+      // UseSelectionIfPresent = 1 << 0,
     };
     typedef QFlags<QgsProcessingContext::Flag> Flags;
 

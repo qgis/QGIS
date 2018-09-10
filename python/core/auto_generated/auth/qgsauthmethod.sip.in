@@ -23,7 +23,7 @@ Abstract base class for authentication method plugins
 
     enum Expansion
     {
-      // TODO
+      // TODO: Figure out all different authentication expansions current layer providers use
       NetworkRequest,
       NetworkReply,
       DataSourceUri,

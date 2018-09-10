@@ -61,9 +61,9 @@ of feature and attribute information from a spatial datasource.
 
     enum FeatureCountState
     {
-      //! Feature
+      //! Feature count not yet computed
       Uncounted,
-      //! Provider
+      //! Provider returned an unknown feature count
       UnknownCount,
     };
 

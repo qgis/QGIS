@@ -140,7 +140,7 @@ class QgsPalLayerSettings
 
     enum Property
     {
-      // text
+      // text style
       Size,
       Bold,
       Italic,
@@ -157,7 +157,7 @@ class QgsPalLayerSettings
       FontWordSpacing,
       FontBlendMode,
 
-      // text
+      // text formatting
       MultiLineWrapChar,
       MultiLineHeight,
       MultiLineAlignment,
@@ -170,7 +170,7 @@ class QgsPalLayerSettings
       NumDecimals,
       NumPlusSign,
 
-      // text
+      // text buffer
       BufferDraw,
       BufferSize,
       BufferUnit,
@@ -203,7 +203,7 @@ class QgsPalLayerSettings
       ShapeStrokeWidthUnits,
       ShapeJoinStyle,
 
-      // drop
+      // drop shadow
       ShadowDraw,
       ShadowUnder,
       ShadowOffsetAngle,
@@ -226,7 +226,7 @@ class QgsPalLayerSettings
       DistanceUnits,
       OffsetRotation,
       CurvedCharAngleInOut,
-      // (data
+      // (data defined only)
       PositionX,
       PositionY,
       Hali,
@@ -251,7 +251,7 @@ class QgsPalLayerSettings
       ObstacleFactor,
       ZIndex,
 
-      // (data
+      // (data defined only)
       Show,
       AlwaysShow
     };

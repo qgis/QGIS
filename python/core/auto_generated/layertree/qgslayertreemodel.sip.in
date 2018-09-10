@@ -76,13 +76,13 @@ The root node is not transferred by the model.
 
     enum Flag
     {
-      // display
+      // display flags
       ShowLegend,
       ShowLegendAsTree,
       DeferredLegendInvalidation,
       UseEmbeddedWidgets,
 
-      // behavioral
+      // behavioral flags
       AllowNodeReorder,
       AllowNodeRename,
       AllowNodeChangeVisibility,
