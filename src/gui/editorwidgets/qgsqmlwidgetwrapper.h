@@ -55,7 +55,6 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 
   public slots:
 
-    //! passes the \a feature into the context property of the widget
     void setFeature( const QgsFeature &feature ) override;
 
   private:

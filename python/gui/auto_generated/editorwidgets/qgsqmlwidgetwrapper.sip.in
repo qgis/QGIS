@@ -52,9 +52,6 @@ writes the ``qmlCode`` into a temporary file
 
     virtual void setFeature( const QgsFeature &feature );
 
-%Docstring
-passes the ``feature`` into the context property of the widget
-%End
 
 };
 

@@ -472,9 +472,11 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       newWidget = tree->addItem( parent, itemData );
       break;
     }
-    default:
-      //should not happen
+    case QgsAttributeEditorElement::AeTypeInvalid:
+    {
+      QgsDebugMsg( "Not loading invalid attribute editor type..." );
       break;
+    }
   }
   return newWidget;
 }
