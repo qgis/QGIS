@@ -265,13 +265,50 @@ void TestStyle::testFavorites()
   QVERIFY( favorites.contains( "symbolA" ) );
   QVERIFY( favorites.contains( "symbolC" ) );
 
+  QSignalSpy favoriteChangedSpy( mStyle, &QgsStyle::favoritedChanged );
+
   // remove one symbol from favorites
   mStyle->removeFavorite( QgsStyle::SymbolEntity, QStringLiteral( "symbolA" ) );
+  QCOMPARE( favoriteChangedSpy.count(), 1 );
+  QCOMPARE( favoriteChangedSpy.at( 0 ).at( 0 ).toInt(), QgsStyle::SymbolEntity );
+  QCOMPARE( favoriteChangedSpy.at( 0 ).at( 1 ).toString(), QStringLiteral( "symbolA" ) );
+  QCOMPARE( favoriteChangedSpy.at( 0 ).at( 2 ).toBool(), false );
 
   // insure favorites updated after removal
   favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
   QCOMPARE( favorites.count(), count + 1 );
   QVERIFY( favorites.contains( "symbolC" ) );
+
+  mStyle->addFavorite( QgsStyle::SymbolEntity, QStringLiteral( "symbolA" ) );
+  QCOMPARE( favoriteChangedSpy.count(), 2 );
+  QCOMPARE( favoriteChangedSpy.at( 1 ).at( 0 ).toInt(), QgsStyle::SymbolEntity );
+  QCOMPARE( favoriteChangedSpy.at( 1 ).at( 1 ).toString(), QStringLiteral( "symbolA" ) );
+  QCOMPARE( favoriteChangedSpy.at( 1 ).at( 2 ).toBool(), true );
+  favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
+  QCOMPARE( favorites.count(), count + 2 );
+  QVERIFY( favorites.contains( "symbolA" ) );
+
+  QgsGradientColorRamp *gradientRamp = new QgsGradientColorRamp( QColor( Qt::red ), QColor( Qt::blue ) );
+  QVERIFY( mStyle->addColorRamp( "gradient_1", gradientRamp, true ) );
+  favorites = mStyle->symbolsOfFavorite( QgsStyle::ColorrampEntity );
+  QCOMPARE( favorites.count(), 0 );
+
+  mStyle->addFavorite( QgsStyle::ColorrampEntity, QStringLiteral( "gradient_1" ) );
+  QCOMPARE( favoriteChangedSpy.count(), 3 );
+  QCOMPARE( favoriteChangedSpy.at( 2 ).at( 0 ).toInt(), QgsStyle::ColorrampEntity );
+  QCOMPARE( favoriteChangedSpy.at( 2 ).at( 1 ).toString(), QStringLiteral( "gradient_1" ) );
+  QCOMPARE( favoriteChangedSpy.at( 2 ).at( 2 ).toBool(), true );
+  favorites = mStyle->symbolsOfFavorite( QgsStyle::ColorrampEntity );
+  QCOMPARE( favorites.count(), 1 );
+  QVERIFY( favorites.contains( "gradient_1" ) );
+
+  mStyle->removeFavorite( QgsStyle::ColorrampEntity, QStringLiteral( "gradient_1" ) );
+  QCOMPARE( favoriteChangedSpy.count(), 4 );
+  QCOMPARE( favoriteChangedSpy.at( 3 ).at( 0 ).toInt(), QgsStyle::ColorrampEntity );
+  QCOMPARE( favoriteChangedSpy.at( 3 ).at( 1 ).toString(), QStringLiteral( "gradient_1" ) );
+  QCOMPARE( favoriteChangedSpy.at( 3 ).at( 2 ).toBool(), false );
+  favorites = mStyle->symbolsOfFavorite( QgsStyle::ColorrampEntity );
+  QCOMPARE( favorites.count(), 0 );
 }
 
 void TestStyle::testTags()
@@ -279,6 +316,7 @@ void TestStyle::testTags()
   //add some tags
   int id = mStyle->addTag( QStringLiteral( "red" ) );
   QCOMPARE( id, mStyle->tagId( "red" ) );
+
   id = mStyle->addTag( QStringLiteral( "starry" ) );
   QCOMPARE( id, mStyle->tagId( "starry" ) );
   id = mStyle->addTag( QStringLiteral( "circle" ) );
@@ -321,13 +359,31 @@ void TestStyle::testTags()
   mStyle->addSymbol( QStringLiteral( "red circle" ), sym3.release(), true );
   mStyle->addSymbol( QStringLiteral( "МЕТЕОР" ), sym4.release(), true );
 
+  QSignalSpy tagsChangedSpy( mStyle, &QgsStyle::entityTagsChanged );
+
   //tag them
   QVERIFY( mStyle->tagSymbol( QgsStyle::SymbolEntity, "blue starry", QStringList() << "blue" << "starry" ) );
+  QCOMPARE( tagsChangedSpy.count(), 1 );
+  QCOMPARE( tagsChangedSpy.at( 0 ).at( 0 ).toInt(), QgsStyle::SymbolEntity );
+  QCOMPARE( tagsChangedSpy.at( 0 ).at( 1 ).toString(), QStringLiteral( "blue starry" ) );
+  QCOMPARE( tagsChangedSpy.at( 0 ).at( 2 ).toStringList(), QStringList() << QStringLiteral( "blue" ) << QStringLiteral( "starry" ) );
+
   QVERIFY( mStyle->tagSymbol( QgsStyle::SymbolEntity, "red circle", QStringList() << "red" << "circle" ) );
+  QCOMPARE( tagsChangedSpy.count(), 2 );
+  QCOMPARE( tagsChangedSpy.at( 1 ).at( 0 ).toInt(), QgsStyle::SymbolEntity );
+  QCOMPARE( tagsChangedSpy.at( 1 ).at( 1 ).toString(), QStringLiteral( "red circle" ) );
+  QCOMPARE( tagsChangedSpy.at( 1 ).at( 2 ).toStringList(), QStringList() << QStringLiteral( "red" ) << QStringLiteral( "circle" ) );
+
   //bad symbol name
   QVERIFY( !mStyle->tagSymbol( QgsStyle::SymbolEntity, "no symbol", QStringList() << "red" << "circle" ) );
+  QCOMPARE( tagsChangedSpy.count(), 2 );
   //tag which hasn't been added yet
   QVERIFY( mStyle->tagSymbol( QgsStyle::SymbolEntity, "red circle", QStringList() << "round" ) );
+  QCOMPARE( tagsChangedSpy.count(), 3 );
+  QCOMPARE( tagsChangedSpy.at( 2 ).at( 0 ).toInt(), QgsStyle::SymbolEntity );
+  QCOMPARE( tagsChangedSpy.at( 2 ).at( 1 ).toString(), QStringLiteral( "red circle" ) );
+  QCOMPARE( tagsChangedSpy.at( 2 ).at( 2 ).toStringList(), QStringList() << QStringLiteral( "red" ) << QStringLiteral( "circle" ) << QStringLiteral( "round" ) );
+
   tags = mStyle->tags();
   QVERIFY( tags.contains( "round" ) );
 
@@ -369,9 +425,25 @@ void TestStyle::testTags()
   tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, QStringLiteral( "blue starry" ) );
   QCOMPARE( tags.count(), 1 );
   QVERIFY( tags.contains( "starry" ) );
+  QCOMPARE( tagsChangedSpy.count(), 5 );
+  QCOMPARE( tagsChangedSpy.at( 4 ).at( 0 ).toInt(), QgsStyle::SymbolEntity );
+  QCOMPARE( tagsChangedSpy.at( 4 ).at( 1 ).toString(), QStringLiteral( "blue starry" ) );
+  QCOMPARE( tagsChangedSpy.at( 4 ).at( 2 ).toStringList(), QStringList() << QStringLiteral( "starry" ) );
+
+  // completely detag symbol
+  QVERIFY( mStyle->detagSymbol( QgsStyle::SymbolEntity, QStringLiteral( "blue starry" ) ) );
+  tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, QStringLiteral( "blue starry" ) );
+  QCOMPARE( tags.count(), 0 );
+  QCOMPARE( tagsChangedSpy.count(), 6 );
+  QCOMPARE( tagsChangedSpy.at( 5 ).at( 0 ).toInt(), QgsStyle::SymbolEntity );
+  QCOMPARE( tagsChangedSpy.at( 5 ).at( 1 ).toString(), QStringLiteral( "blue starry" ) );
+  QCOMPARE( tagsChangedSpy.at( 5 ).at( 2 ).toStringList(), QStringList() );
 
   //try to remove tag from non-existing symbol
   QVERIFY( !mStyle->detagSymbol( QgsStyle::SymbolEntity, "no symbol!", QStringList() << "bad" << "blue" ) );
+  QCOMPARE( tagsChangedSpy.count(), 6 );
+
+  mStyle->tagSymbol( QgsStyle::SymbolEntity, "blue starry", QStringList() << QStringLiteral( "starry" ) );
 
   //check symbols with tag
   QStringList symbols = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( QStringLiteral( "red" ) ) );
@@ -417,6 +489,66 @@ void TestStyle::testTags()
   QCOMPARE( symbols.count(), 1 );
   QVERIFY( symbols.contains( "МЕТЕОР" ) );
 
+  // tag ramp
+  QgsGradientColorRamp *gradientRamp = new QgsGradientColorRamp( QColor( Qt::red ), QColor( Qt::blue ) );
+  QVERIFY( mStyle->addColorRamp( "gradient_tag1", gradientRamp, true ) );
+  QgsGradientColorRamp *gradientRamp2 = new QgsGradientColorRamp( QColor( Qt::red ), QColor( Qt::blue ) );
+  QVERIFY( mStyle->addColorRamp( "gradient_tag2", gradientRamp2, true ) );
+
+  QVERIFY( mStyle->tagSymbol( QgsStyle::ColorrampEntity, "gradient_tag1", QStringList() << "blue" << "starry" ) );
+  QCOMPARE( tagsChangedSpy.count(), 10 );
+  QCOMPARE( tagsChangedSpy.at( 9 ).at( 0 ).toInt(), static_cast< int>( QgsStyle::ColorrampEntity ) );
+  QCOMPARE( tagsChangedSpy.at( 9 ).at( 1 ).toString(), QStringLiteral( "gradient_tag1" ) );
+  QCOMPARE( tagsChangedSpy.at( 9 ).at( 2 ).toStringList(), QStringList() << QStringLiteral( "blue" ) << QStringLiteral( "starry" ) );
+
+  QVERIFY( mStyle->tagSymbol( QgsStyle::ColorrampEntity, "gradient_tag2", QStringList() << "red" << "circle" ) );
+  QCOMPARE( tagsChangedSpy.count(), 11 );
+  QCOMPARE( tagsChangedSpy.at( 10 ).at( 0 ).toInt(), static_cast< int>( QgsStyle::ColorrampEntity ) );
+  QCOMPARE( tagsChangedSpy.at( 10 ).at( 1 ).toString(), QStringLiteral( "gradient_tag2" ) );
+  QCOMPARE( tagsChangedSpy.at( 10 ).at( 2 ).toStringList(), QStringList() << QStringLiteral( "red" ) << QStringLiteral( "circle" ) );
+
+  //bad ramp name
+  QVERIFY( !mStyle->tagSymbol( QgsStyle::ColorrampEntity, "no ramp", QStringList() << "red" << "circle" ) );
+  QCOMPARE( tagsChangedSpy.count(), 11 );
+  //tag which hasn't been added yet
+  QVERIFY( mStyle->tagSymbol( QgsStyle::ColorrampEntity, "gradient_tag2", QStringList() << "round ramp" ) );
+  QCOMPARE( tagsChangedSpy.count(), 12 );
+  QCOMPARE( tagsChangedSpy.at( 11 ).at( 0 ).toInt(), static_cast< int>( QgsStyle::ColorrampEntity ) );
+  QCOMPARE( tagsChangedSpy.at( 11 ).at( 1 ).toString(), QStringLiteral( "gradient_tag2" ) );
+  QCOMPARE( tagsChangedSpy.at( 11 ).at( 2 ).toStringList(), QStringList() << QStringLiteral( "red" ) << QStringLiteral( "circle" ) << QStringLiteral( "round ramp" ) );
+
+  tags = mStyle->tags();
+  QVERIFY( tags.contains( QStringLiteral( "round ramp" ) ) );
+
+  //check that tags have been applied
+  tags = mStyle->tagsOfSymbol( QgsStyle::ColorrampEntity, QStringLiteral( "gradient_tag1" ) );
+  QCOMPARE( tags.count(), 2 );
+  QVERIFY( tags.contains( "blue" ) );
+  QVERIFY( tags.contains( "starry" ) );
+  tags = mStyle->tagsOfSymbol( QgsStyle::ColorrampEntity, QStringLiteral( "gradient_tag2" ) );
+  QCOMPARE( tags.count(), 3 );
+  QVERIFY( tags.contains( "red" ) );
+  QVERIFY( tags.contains( "circle" ) );
+  QVERIFY( tags.contains( "round ramp" ) );
+
+  //remove a tag, including a non-present tag
+  QVERIFY( mStyle->detagSymbol( QgsStyle::ColorrampEntity, "gradient_tag1", QStringList() << "bad" << "blue" ) );
+  tags = mStyle->tagsOfSymbol( QgsStyle::ColorrampEntity, QStringLiteral( "gradient_tag1" ) );
+  QCOMPARE( tags.count(), 1 );
+  QVERIFY( tags.contains( "starry" ) );
+  QCOMPARE( tagsChangedSpy.count(), 13 );
+  QCOMPARE( tagsChangedSpy.at( 12 ).at( 0 ).toInt(), QgsStyle::ColorrampEntity );
+  QCOMPARE( tagsChangedSpy.at( 12 ).at( 1 ).toString(), QStringLiteral( "gradient_tag1" ) );
+  QCOMPARE( tagsChangedSpy.at( 12 ).at( 2 ).toStringList(), QStringList() << QStringLiteral( "starry" ) );
+
+  // completely detag symbol
+  QVERIFY( mStyle->detagSymbol( QgsStyle::ColorrampEntity, QStringLiteral( "gradient_tag1" ) ) );
+  tags = mStyle->tagsOfSymbol( QgsStyle::ColorrampEntity, QStringLiteral( "gradient_tag1" ) );
+  QCOMPARE( tags.count(), 0 );
+  QCOMPARE( tagsChangedSpy.count(), 14 );
+  QCOMPARE( tagsChangedSpy.at( 13 ).at( 0 ).toInt(), QgsStyle::ColorrampEntity );
+  QCOMPARE( tagsChangedSpy.at( 13 ).at( 1 ).toString(), QStringLiteral( "gradient_tag1" ) );
+  QCOMPARE( tagsChangedSpy.at( 13 ).at( 2 ).toStringList(), QStringList() );
 }
 
 QGSTEST_MAIN( TestStyle )

@@ -38,7 +38,13 @@ Constructor for QgsStyle.
 %End
     ~QgsStyle();
 
-    enum StyleEntity { SymbolEntity, TagEntity, ColorrampEntity, SmartgroupEntity };
+    enum StyleEntity
+    {
+      SymbolEntity,
+      TagEntity,
+      ColorrampEntity,
+      SmartgroupEntity
+    };
 
     bool addSymbol( const QString &name, QgsSymbol *symbol /Transfer/, bool update = false );
 %Docstring
@@ -180,7 +186,9 @@ Removes symbol from style (and delete it)
 
     bool renameSymbol( const QString &oldName, const QString &newName );
 %Docstring
-Changessymbol's name
+Renames a symbol from ``oldName`` to ``newName``.
+
+Returns true if symbol was successfully renamed.
 %End
 
     QgsSymbol *symbol( const QString &name ) /Factory/;
@@ -256,7 +264,7 @@ Removes the specified symbol from favorites
 :return: returns the success state as bool
 %End
 
-    void rename( StyleEntity type, int id, const QString &newName );
+    bool rename( StyleEntity type, int id, const QString &newName );
 %Docstring
 Renames the given entity with the specified id
 
@@ -265,7 +273,7 @@ Renames the given entity with the specified id
 :param newName: is the new name of the entity
 %End
 
-    void remove( StyleEntity type, int id );
+    bool remove( StyleEntity type, int id );
 %Docstring
 Removes the specified entity from the db
 
@@ -447,13 +455,89 @@ Imports the symbols and colorramps into the default style database from the give
 %End
 
   signals:
+
     void symbolSaved( const QString &name, QgsSymbol *symbol );
 %Docstring
-Is emitted every time a new symbol has been added to the database
+Emitted every time a new symbol has been added to the database.
+Emitted whenever a symbol has been added to the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`symbolRemoved`
+
+.. seealso:: :py:func:`rampAdded`
 %End
+
     void groupsModified();
 %Docstring
 Is emitted every time a tag or smartgroup has been added, removed, or renamed
+%End
+
+    void entityTagsChanged( QgsStyle::StyleEntity entity, const QString &name, const QStringList &newTags );
+%Docstring
+Emitted whenever an ``entity``'s tags are changed.
+
+.. versionadded:: 3.4
+%End
+
+    void favoritedChanged( QgsStyle::StyleEntity entity, const QString &name, bool isFavorite );
+%Docstring
+Emitted whenever an ``entity`` is either favorited or un-favorited.
+
+.. versionadded:: 3.4
+%End
+
+    void symbolRemoved( const QString &name );
+%Docstring
+Emitted whenever a symbol has been removed from the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`symbolSaved`
+
+.. seealso:: :py:func:`rampRemoved`
+
+.. versionadded:: 3.4
+%End
+
+    void symbolRenamed( const QString &oldName, const QString &newName );
+%Docstring
+Emitted whenever a symbol has been renamed from ``oldName`` to ``newName``
+
+.. seealso:: :py:func:`rampRenamed`
+
+.. versionadded:: 3.4
+%End
+
+    void rampRenamed( const QString &oldName, const QString &newName );
+%Docstring
+Emitted whenever a color ramp has been renamed from ``oldName`` to ``newName``
+
+.. seealso:: :py:func:`symbolRenamed`
+
+.. versionadded:: 3.4
+%End
+
+    void rampAdded( const QString &name );
+%Docstring
+Emitted whenever a color ramp has been added to the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`rampRemoved`
+
+.. seealso:: :py:func:`symbolSaved`
+
+.. versionadded:: 3.4
+%End
+
+    void rampRemoved( const QString &name );
+%Docstring
+Emitted whenever a color ramp has been removed from the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`rampAdded`
+
+.. seealso:: :py:func:`symbolRemoved`
+
+.. versionadded:: 3.4
 %End
 
 };
