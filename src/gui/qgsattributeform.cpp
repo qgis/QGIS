@@ -183,6 +183,13 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
         break;
     }
   }
+  //update all form editor widget modes to match
+  for ( QgsWidgetWrapper *w : qgis::as_const( mWidgets ) )
+  {
+    QgsAttributeEditorContext newContext = w->context();
+    newContext.setAttributeFormMode( ( QgsAttributeEditorContext::Mode )mode );
+    w->setContext( newContext );
+  }
 
   bool relationWidgetsVisible = ( mMode != QgsAttributeForm::MultiEditMode && mMode != QgsAttributeForm::AggregateSearchMode );
   for ( QgsAttributeFormRelationEditorWidget *w : findChildren<  QgsAttributeFormRelationEditorWidget * >() )
@@ -1777,6 +1784,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
       qmlWrapper->setQmlCode( elementDef->qmlCode() );
       qmlWrapper->setConfig( mLayer->editFormConfig().widgetConfig( elementDef->name() ) );
+      context.setAttributeFormMode( ( QgsAttributeEditorContext::Mode ) mode() );
       qmlWrapper->setContext( context );
 
       mWidgets.append( qmlWrapper );

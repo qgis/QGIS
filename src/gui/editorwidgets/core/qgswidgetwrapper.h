@@ -202,6 +202,15 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      */
     void notifyAboutToSave();
 
+  signals:
+
+    /**
+     * Signal when QgsAttributeEditorContext mContext changed after the widget wrapper has already been intialized
+     *
+     * \since QGIS 3.4
+     */
+    void contextChanged();
+
   protected:
 
     /**

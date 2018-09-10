@@ -790,12 +790,13 @@ class GetProcessingParameterValue : public QgsScopedExpressionFunction
 ///@endcond
 
 
-QgsExpressionContextScope *QgsExpressionContextUtils::formScope( const QgsFeature &formFeature )
+QgsExpressionContextScope *QgsExpressionContextUtils::formScope( const QgsFeature &formFeature, const QString &formMode )
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Form" ) );
   scope->addFunction( QStringLiteral( "current_value" ), new GetCurrentFormFieldValue( ) );
   scope->setVariable( QStringLiteral( "current_geometry" ), formFeature.geometry( ), true );
   scope->setVariable( QStringLiteral( "current_feature" ), formFeature, true );
+  scope->setVariable( QStringLiteral( "form_mode" ), formMode, true );
   return scope;
 }
 

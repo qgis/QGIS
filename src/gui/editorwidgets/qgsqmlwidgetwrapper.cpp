@@ -23,7 +23,7 @@
 QgsQmlWidgetWrapper::QgsQmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
 {
-
+  connect( this, &QgsWidgetWrapper::contextChanged, this, &QgsQmlWidgetWrapper::setQmlContext );
 }
 
 bool QgsQmlWidgetWrapper::valid() const
@@ -66,7 +66,6 @@ void QgsQmlWidgetWrapper::reinitWidget( )
   initWidget( mWidget );
 }
 
-
 void QgsQmlWidgetWrapper::setQmlCode( const QString &qmlCode )
 {
   if ( !mQmlFile.open() )
@@ -81,22 +80,29 @@ void QgsQmlWidgetWrapper::setQmlCode( const QString &qmlCode )
   mQmlFile.close();
 }
 
+void QgsQmlWidgetWrapper::setQmlContext( )
+{
+  if ( !mWidget )
+    return;
+
+  QgsExpressionContext expressionContext = layer()->createExpressionContext();
+  expressionContext << QgsExpressionContextUtils::formScope( mFeature, context().attributeFormModeString() );
+  expressionContext.setFeature( mFeature );
+
+  QmlExpression *qmlExpression = new QmlExpression();
+  qmlExpression->setExpressionContext( expressionContext );
+
+  mWidget->rootContext()->setContextProperty( "expression", qmlExpression );
+}
+
 void QgsQmlWidgetWrapper::setFeature( const QgsFeature &feature )
 {
   if ( !mWidget )
     return;
 
-  QgsExpressionContext context = layer()->createExpressionContext();
-  context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-          << QgsExpressionContextUtils::layerScope( layer() );
+  mFeature = feature;
 
-  context.setFeature( feature );
-
-  QmlExpression *qmlExpression = new QmlExpression();
-  qmlExpression->setExpressionContext( context );
-
-  mWidget->rootContext()->setContextProperty( "expression", qmlExpression );
+  setQmlContext();
 }
 
 ///@cond PRIVATE

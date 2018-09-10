@@ -24,6 +24,16 @@ showing an embedded form due to relations)
 %End
   public:
 
+    enum Mode
+    {
+      SingleEditMode,
+      AddFeatureMode,
+      MultiEditMode,
+      SearchMode,
+      AggregateSearchMode,
+      IdentifyMode
+    };
+
     enum RelationMode
     {
       Undefined,
@@ -198,8 +208,30 @@ Set current ``feature`` for the currently edited form or table row
 .. versionadded:: 3.2
 %End
 
+    Mode attributeFormMode() const;
+%Docstring
+Returns current attributeFormMode
+
+.. versionadded:: 3.4
+%End
+
+    void setAttributeFormMode( const Mode attributeFormMode );
+%Docstring
+Set ``attributeFormMode`` for the edited form
+
+.. versionadded:: 3.4
+%End
+
+    QString attributeFormModeString() const;
+%Docstring
+Returns the context as string
+
+.. versionadded:: 3.4
+%End
+
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

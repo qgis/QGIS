@@ -55,11 +55,14 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 
   public slots:
 
+    void setQmlContext();
+
     void setFeature( const QgsFeature &feature ) override;
 
   private:
     QTemporaryFile mQmlFile;
     QQuickWidget *mWidget = nullptr;
+    QgsFeature mFeature;
 };
 
 

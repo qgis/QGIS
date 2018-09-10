@@ -167,6 +167,15 @@ might be lost.
 .. versionadded:: 3.2
 %End
 
+  signals:
+
+    void contextChanged();
+%Docstring
+Signal when QgsAttributeEditorContext mContext changed after the widget wrapper has already been intialized
+
+.. versionadded:: 3.4
+%End
+
   protected:
 
     virtual QWidget *createWidget( QWidget *parent ) = 0;
