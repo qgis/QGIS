@@ -124,7 +124,7 @@ void QgsGpsDetector::advance()
       serial->setDataBits( QSerialPort::Data8 );
       serial->setStopBits( QSerialPort::OneStop );
 
-      if ( serial->open( QIODevice::ReadOnly | QIODevice::Unbuffered ) )
+      if ( serial->open( QIODevice::ReadOnly ) )
       {
         mConn = new QgsNmeaConnection( serial );
       }
