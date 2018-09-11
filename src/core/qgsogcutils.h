@@ -461,6 +461,7 @@ class QgsOgcUtilsExpressionFromFilter
     QgsVectorLayer *mLayer = nullptr;
     QString mErrorMessage;
     QString mPropertyName;
+    QString mPrefix;
 };
 
 /**

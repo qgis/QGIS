@@ -3098,9 +3098,13 @@ QgsOgcUtilsExpressionFromFilter::QgsOgcUtilsExpressionFromFilter( const QgsOgcUt
   , mLayer( layer )
 {
   mPropertyName = QStringLiteral( "PropertyName" );
+  mPrefix = QStringLiteral( "ogc" );
 
   if ( version == QgsOgcUtils::FILTER_FES_2_0 )
+  {
     mPropertyName = QStringLiteral( "ValueReference" );
+    mPrefix = QStringLiteral( "fes" );
+  }
 }
 
 QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeFromOgcFilter( const QDomElement &element )
@@ -3300,7 +3304,7 @@ QgsExpressionNodeColumnRef *QgsOgcUtilsExpressionFromFilter::nodeColumnRefFromOg
 {
   if ( element.isNull() || element.tagName() != mPropertyName )
   {
-    mErrorMessage = QObject::tr( "ogc:PropertyName expected, got %1" ).arg( element.tagName() );
+    mErrorMessage = QObject::tr( "%1:PropertyName expected, got %2" ).arg( mPrefix, element.tagName() );
     return nullptr;
   }
 
@@ -3311,7 +3315,7 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
 {
   if ( element.isNull() || element.tagName() != QLatin1String( "Literal" ) )
   {
-    mErrorMessage = QObject::tr( "ogc:Literal expected, got %1" ).arg( element.tagName() );
+    mErrorMessage = QObject::tr( "%1:Literal expected, got %2" ).arg( mPrefix, element.tagName() );
     return nullptr;
   }
 
@@ -3332,7 +3336,7 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
       {
         delete root;
 
-        mErrorMessage = QObject::tr( "'%1' is an invalid or not supported content for ogc:Literal" ).arg( operandElem.tagName() );
+        mErrorMessage = QObject::tr( "'%1' is an invalid or not supported content for %2:Literal" ).arg( operandElem.tagName(), mPrefix );
         return nullptr;
       }
     }
@@ -3405,8 +3409,7 @@ QgsExpressionNodeUnaryOperator *QgsOgcUtilsExpressionFromFilter::nodeNotFromOgcF
   QgsExpressionNode *operand = nodeFromOgcFilter( operandElem );
   if ( !operand )
   {
-    if ( mErrorMessage.isEmpty() )
-      mErrorMessage = QObject::tr( "invalid operand for '%1' unary operator" ).arg( element.tagName() );
+    mErrorMessage = QObject::tr( "invalid operand for '%1' unary operator" ).arg( element.tagName() );
     return nullptr;
   }
 
@@ -3434,7 +3437,7 @@ QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeFunctionFromOgcF
 {
   if ( element.isNull() || element.tagName() != QLatin1String( "Function" ) )
   {
-    mErrorMessage = QObject::tr( "ogc:Function expected, got %1" ).arg( element.tagName() );
+    mErrorMessage = QObject::tr( "%1:Function expected, got %2" ).arg( mPrefix, element.tagName() );
     return nullptr;
   }
 
@@ -3507,7 +3510,7 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeIsBetweenFromOgcFilter( 
     delete lowerBound;
     delete upperBound;
 
-    mErrorMessage = QObject::tr( "missing some required sub-elements in ogc:PropertyIsBetween" );
+    mErrorMessage = QObject::tr( "missing some required sub-elements in %1:PropertyIsBetween" ).arg( mPrefix );
     return nullptr;
   }
 
