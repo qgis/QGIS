@@ -19,6 +19,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
 #include <iostream>
+#include <QUrl>
 
 namespace QgsWms
 {
@@ -83,6 +84,37 @@ namespace QgsWms
     }
 
     return val;
+  }
+
+  QString QgsWmsParameter::loadUrl() const
+  {
+    // Check URL -- it will be used in error messages
+    const QUrl url = toUrl();
+
+    bool ok = false;
+    const QString content = QgsServerParameterDefinition::loadUrl( ok );
+
+    if ( !ok )
+    {
+      const QString msg = QString( "%1 request error for %2" ).arg( name( mName ), url.toString() );
+      QgsMessageLog::logMessage( msg );
+      QgsServerParameterDefinition::raiseError( msg );
+    }
+
+    return content;
+  }
+
+  QUrl QgsWmsParameter::toUrl() const
+  {
+    bool ok = false;
+    const QUrl url = QgsServerParameterDefinition::toUrl( ok );
+
+    if ( !ok )
+    {
+      raiseError();
+    }
+
+    return url;
   }
 
   QColor QgsWmsParameter::toColor() const
@@ -336,6 +368,9 @@ namespace QgsWms
     const QgsWmsParameter pSld( QgsWmsParameter::SLD );
     save( pSld );
 
+    const QgsWmsParameter pSldBody( QgsWmsParameter::SLD_BODY );
+    save( pSldBody );
+
     const QgsWmsParameter pLayer( QgsWmsParameter::LAYER );
     save( pLayer );
 
@@ -470,6 +505,16 @@ namespace QgsWms
     : QgsWmsParameters()
   {
     load( parameters.urlQuery() );
+
+    const QString sld = mWmsParameters[ QgsWmsParameter::SLD ].toString();
+    if ( !sld.isEmpty() )
+    {
+      const QString sldBody = mWmsParameters[ QgsWmsParameter::SLD ].loadUrl();
+      if ( !sldBody.isEmpty() )
+      {
+        loadParameter( QgsWmsParameter::name( QgsWmsParameter::SLD_BODY ), sldBody );
+      }
+    }
   }
 
   bool QgsWmsParameters::loadParameter( const QString &key, const QString &value )
@@ -1159,9 +1204,9 @@ namespace QgsWms
     return mWmsParameters[ QgsWmsParameter::WMS_PRECISION ].toInt();
   }
 
-  QString QgsWmsParameters::sld() const
+  QString QgsWmsParameters::sldBody() const
   {
-    return mWmsParameters[ QgsWmsParameter::SLD ].toString();
+    return mWmsParameters[ QgsWmsParameter::SLD_BODY ].toString();
   }
 
   QStringList QgsWmsParameters::filters() const

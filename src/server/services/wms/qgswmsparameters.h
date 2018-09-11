@@ -132,6 +132,7 @@ namespace QgsWms
         SYMBOLWIDTH,
         OPACITIES,
         SLD,
+        SLD_BODY,
         FI_POLYGON_TOLERANCE,
         FI_LINE_TOLERANCE,
         FI_POINT_TOLERANCE,
@@ -250,6 +251,22 @@ namespace QgsWms
        * \throws QgsBadRequestException Invalid parameter exception
        */
       QColor toColor() const;
+
+      /**
+       * Converts the parameter into an url.
+       * \returns An url
+       * \throws QgsBadRequestException Invalid parameter exception
+       * \since QGIS 3.4
+       */
+      QUrl toUrl() const;
+
+      /**
+       * Loads the data associated to the parameter converted into an url.
+       * \returns The content loaded
+       * \throws QgsBadRequestException Invalid parameter exception
+       * \since QGIS 3.4
+       */
+      QString loadUrl() const;
 
       /**
        * Raises an error in case of an invalid conversion.
@@ -377,10 +394,10 @@ namespace QgsWms
       QgsRectangle bboxAsRectangle() const;
 
       /**
-       * Returns SLD if defined or an empty string.
-       * \returns sld
+       * Returns SLD_body if defined or an empty string.
+       * \returns sld body
        */
-      QString sld() const;
+      QString sldBody() const;
 
       /**
        * Returns the list of feature selection found in SELECTION parameter.

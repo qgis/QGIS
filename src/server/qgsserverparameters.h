@@ -138,6 +138,22 @@ class SERVER_EXPORT QgsServerParameterDefinition
     QColor toColor( bool &ok ) const;
 
     /**
+     * Converts the parameter into an url.
+     * \param ok True if there's no error during the conversion, false otherwise
+     * \returns An url
+     * \since QGIS 3.4
+     */
+    QUrl toUrl( bool &ok ) const;
+
+    /**
+     * Loads the data associated to the parameter converted into an url.
+     * \param ok True if there's no error during the load, false otherwise
+     * \returns The content loaded
+     * \since QGIS 3.4
+     */
+    QString loadUrl( bool &ok ) const;
+
+    /**
      * Raises an exception in case of an invalid parameters.
      * \param msg The message describing the exception
      * \throws QgsBadRequestException Invalid parameter exception

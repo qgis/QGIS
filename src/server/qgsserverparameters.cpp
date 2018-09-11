@@ -17,6 +17,12 @@
 
 #include "qgsserverparameters.h"
 #include "qgsserverexception.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsmessagelog.h"
+#include <QUrl>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QTextCodec>
 
 //
 // QgsServerParameterDefinition
@@ -198,6 +204,167 @@ QgsRectangle QgsServerParameterDefinition::toRectangle( bool &ok ) const
   }
 
   return extent;
+}
+
+QString QgsServerParameterDefinition::loadUrl( bool &ok ) const
+{
+  ok = true;
+
+  // Get URL
+  QUrl url = toUrl( ok );
+  if ( !ok )
+  {
+    return QString();
+  }
+
+  // Do the request
+  QNetworkReply *reply = nullptr;
+  // The following code blocks until the file is downloaded...
+  // with max redirections fixed to 5
+  int countRedirections = 0;
+  QDateTime start = QDateTime::currentDateTime();
+  while ( 1 )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Request started [url: %2]" ).arg( url.toString() ) );
+    QNetworkRequest request( url );
+    request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+    request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+    reply = QgsNetworkAccessManager::instance()->get( request );
+
+    // wait until the SLD download finished
+    while ( !reply->isFinished() )
+    {
+      if ( start.secsTo( QDateTime::currentDateTime() ) >= 5 * 60 )
+        break;
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 500 );
+    }
+
+    if ( !reply->isFinished() )
+    {
+      ok = false;
+      break;
+    }
+
+
+    if ( reply->error() != QNetworkReply::NoError )
+    {
+      ok = false;
+      QgsMessageLog::logMessage( QStringLiteral( "Request failed [error: %1 - url: %2]" ).arg( reply->errorString(), reply->url().toString() ) );
+      break;
+    }
+
+    QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+    if ( redirect.isNull() )
+    {
+      break;
+    }
+
+    // max redirections
+    countRedirections++;
+    if ( countRedirections >= 5 )
+    {
+      ok = false;
+      break;
+    }
+
+    // do a new request to the redirect url
+    url = redirect.toUrl();
+    reply->deleteLater();
+  }
+
+  if ( !reply->isFinished() )
+  {
+    ok = false;
+    QgsMessageLog::logMessage( QStringLiteral( "Request timeout [redirections: %1 - url: %2]" ).arg( countRedirections ).arg( mValue.toString() ) );
+
+    reply->abort();
+    reply->deleteLater();
+
+    return QString();
+  }
+
+  if ( countRedirections >= 5 )
+  {
+    ok = false;
+    QgsMessageLog::logMessage( QStringLiteral( "Request failed [max redirection raised - url: %1]" ).arg( mValue.toString() ) );
+
+    reply->deleteLater();
+    return QString();
+  }
+
+  QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+  if ( !status.isNull() && status.toInt() >= 400 )
+  {
+    ok = false;
+    QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+    QgsMessageLog::logMessage( QStringLiteral( "Request error [status: %1 - reason phrase: %2] for %3" ).arg( status.toInt() ).arg( phrase.toString(), reply->url().toString() ) );
+
+    reply->deleteLater();
+    return QString();
+  }
+
+  if ( reply->error() != QNetworkReply::NoError )
+  {
+    ok = false;
+
+    reply->deleteLater();
+    return QString();
+  }
+
+  // read content
+  QByteArray ba = reply->readAll();
+  reply->deleteLater();
+
+  ok = ( !ba.isEmpty() );
+
+  //QTextCodec::codecForHtml fails to detect "<meta charset="utf-8"/>" type tags
+  //see https://bugreports.qt.io/browse/QTBUG-41011
+  //so test for that ourselves
+
+  //basic check
+  QTextCodec *codec = QTextCodec::codecForUtfText( ba, nullptr );
+  if ( !codec )
+  {
+    //check for meta charset tag
+    QByteArray header = ba.left( 1024 ).toLower();
+    int pos = header.indexOf( "meta charset=" );
+    if ( pos != -1 )
+    {
+      pos += int( strlen( "meta charset=" ) ) + 1;
+      int pos2 = header.indexOf( '\"', pos );
+      QByteArray cs = header.mid( pos, pos2 - pos );
+      codec = QTextCodec::codecForName( cs );
+    }
+  }
+
+  if ( !codec )
+  {
+    //fallback to QTextCodec::codecForHtml
+    codec = QTextCodec::codecForHtml( ba, codec );
+  }
+
+  if ( !codec )
+  {
+    //no luck, default to utf-8
+    codec = QTextCodec::codecForName( "UTF-8" );
+  }
+
+  return codec->toUnicode( ba );
+}
+
+QUrl QgsServerParameterDefinition::toUrl( bool &ok ) const
+{
+  ok = true;
+  QUrl val;
+
+  if ( !mValue.toString().isEmpty() )
+  {
+    val = mValue.toUrl();
+  }
+
+  ok = ( !val.isEmpty() && val.isValid() );
+  return val;
 }
 
 int QgsServerParameterDefinition::toInt( bool &ok ) const
