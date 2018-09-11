@@ -3171,7 +3171,9 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
   }
 
   QDomElement operandElem = element.firstChildElement();
-  QgsExpressionNode *expr = nodeFromOgcFilter( operandElem ), *leftOp = expr;
+  std::unique_ptr<QgsExpressionNode> expr( nodeFromOgcFilter( operandElem ) );
+  std::unique_ptr<QgsExpressionNode> leftOp( expr->clone() );
+
   if ( !expr )
   {
     mErrorMessage = QObject::tr( "invalid left operand for '%1' binary operator" ).arg( element.tagName() );
@@ -3180,11 +3182,10 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
 
   for ( operandElem = operandElem.nextSiblingElement(); !operandElem.isNull(); operandElem = operandElem.nextSiblingElement() )
   {
-    QgsExpressionNode *opRight = nodeFromOgcFilter( operandElem );
+    std::unique_ptr<QgsExpressionNode> opRight( nodeFromOgcFilter( operandElem ) );
     if ( !opRight )
     {
       mErrorMessage = QObject::tr( "invalid right operand for '%1' binary operator" ).arg( element.tagName() );
-      delete expr;
       return nullptr;
     }
 
@@ -3206,7 +3207,7 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
         escape = element.attribute( QStringLiteral( "escape" ) );
       }
       // replace
-      QString oprValue = static_cast<const QgsExpressionNodeLiteral *>( opRight )->value().toString();
+      QString oprValue = static_cast<const QgsExpressionNodeLiteral *>( opRight.get() )->value().toString();
       if ( !wildCard.isEmpty() && wildCard != QLatin1String( "%" ) )
       {
         oprValue.replace( '%', QLatin1String( "\\%" ) );
@@ -3243,24 +3244,19 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
       {
         oprValue.replace( escape + escape, escape );
       }
-      opRight = new QgsExpressionNodeLiteral( oprValue );
+      opRight.reset( new QgsExpressionNodeLiteral( oprValue ) );
     }
 
-    expr = new QgsExpressionNodeBinaryOperator( static_cast< QgsExpressionNodeBinaryOperator::BinaryOperator >( op ), expr, opRight );
+    expr.reset( new QgsExpressionNodeBinaryOperator( static_cast< QgsExpressionNodeBinaryOperator::BinaryOperator >( op ), expr.release(), opRight.release() ) );
   }
 
   if ( expr == leftOp )
   {
     mErrorMessage = QObject::tr( "only one operand for '%1' binary operator" ).arg( element.tagName() );
-    delete expr;
     return nullptr;
   }
 
-  QgsExpressionNodeBinaryOperator *ret = dynamic_cast< QgsExpressionNodeBinaryOperator * >( expr );
-  if ( !ret )
-    delete expr;
-
-  return ret;
+  return dynamic_cast< QgsExpressionNodeBinaryOperator * >( expr.release() );
 }
 
 
