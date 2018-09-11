@@ -208,27 +208,19 @@ Set current ``feature`` for the currently edited form or table row
 .. versionadded:: 3.2
 %End
 
-    Mode attributeFormMode() const;
+    QString attributeFormMode() const;
 %Docstring
 Returns current attributeFormMode
 
 .. versionadded:: 3.4
 %End
 
-    void setAttributeFormMode( const Mode attributeFormMode );
+    void setAttributeFormMode( const QString &attributeFormMode );
 %Docstring
 Set ``attributeFormMode`` for the edited form
 
 .. versionadded:: 3.4
 %End
-
-    QString attributeFormModeString() const;
-%Docstring
-Returns the context as string
-
-.. versionadded:: 3.4
-%End
-
 
 };
 

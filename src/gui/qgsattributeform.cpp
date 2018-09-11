@@ -187,7 +187,7 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
   for ( QgsWidgetWrapper *w : qgis::as_const( mWidgets ) )
   {
     QgsAttributeEditorContext newContext = w->context();
-    newContext.setAttributeFormMode( ( QgsAttributeEditorContext::Mode )mode );
+    newContext.setAttributeFormMode( modeString( mMode ) );
     w->setContext( newContext );
   }
 
@@ -232,6 +232,25 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
   }
 
   emit modeChanged( mMode );
+}
+
+QString QgsAttributeForm::modeString( Mode mode ) const
+{
+  switch ( mode )
+  {
+    case SingleEditMode:
+      return QStringLiteral( "SingleEditMode" );
+    case AddFeatureMode:
+      return QStringLiteral( "AddFeatureMode" );
+    case MultiEditMode:
+      return QStringLiteral( "MultiEditMode" );
+    case SearchMode:
+      return QStringLiteral( "SearchMode" );
+    case AggregateSearchMode:
+      return QStringLiteral( "AggregateSearchMode" );
+    case IdentifyMode:
+      return QStringLiteral( "IdentifyMode" );
+  }
 }
 
 void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &value, const QString &hintText )
@@ -804,6 +823,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
     synchronizeEnabledState();
 
     mExpressionContext.setFeature( ft );
+    mExpressionContext << QgsExpressionContextUtils::formScope( ft, modeString( mMode ) );
 
     // Recheck visibility for all containers which are controlled by this value
     const QVector<ContainerInformation *> infos = mContainerInformationDependency.value( eww->field().name() );
@@ -1784,7 +1804,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
       qmlWrapper->setQmlCode( elementDef->qmlCode() );
       qmlWrapper->setConfig( mLayer->editFormConfig().widgetConfig( elementDef->name() ) );
-      context.setAttributeFormMode( ( QgsAttributeEditorContext::Mode ) mode() );
+      context.setAttributeFormMode( modeString( mMode ) );
       qmlWrapper->setContext( context );
 
       mWidgets.append( qmlWrapper );

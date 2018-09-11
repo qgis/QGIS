@@ -220,37 +220,13 @@ class GUI_EXPORT QgsAttributeEditorContext
      * Returns current attributeFormMode
      * \since QGIS 3.4
      */
-    Mode attributeFormMode() const { return mAttributeFormMode; }
+    QString attributeFormMode() const { return mAttributeFormMode; }
 
     /**
      * Set \a attributeFormMode for the edited form
      * \since QGIS 3.4
      */
-    void setAttributeFormMode( const Mode attributeFormMode ) { mAttributeFormMode = attributeFormMode; }
-
-    /**
-     * Returns the context as string
-     * \since QGIS 3.4
-     */
-    QString attributeFormModeString() const
-    {
-      switch ( mAttributeFormMode )
-      {
-        case SingleEditMode:
-          return QStringLiteral( "SingleEditMode" );
-        case AddFeatureMode:
-          return QStringLiteral( "AddFeatureMode" );
-        case MultiEditMode:
-          return QStringLiteral( "MultiEditMode" );
-        case SearchMode:
-          return QStringLiteral( "SearchMode" );
-        case AggregateSearchMode:
-          return QStringLiteral( "AggregateSearchMode" );
-        case IdentifyMode:
-          return QStringLiteral( "IdentifyMode" );
-      }
-    }
-
+    void setAttributeFormMode( const QString &attributeFormMode ) { mAttributeFormMode = attributeFormMode; }
 
   private:
     const QgsAttributeEditorContext *mParentContext = nullptr;
@@ -264,7 +240,7 @@ class GUI_EXPORT QgsAttributeEditorContext
     QgsFeature mFormFeature;
     FormMode mFormMode = Embed;
     bool mAllowCustomUi = true;
-    Mode mAttributeFormMode = QgsAttributeEditorContext::SingleEditMode;
+    QString mAttributeFormMode = QStringLiteral( "SingleEditMode" );
 };
 
 #endif // QGSATTRIBUTEEDITORCONTEXT_H

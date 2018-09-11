@@ -91,6 +91,13 @@ Sets the current mode of the form.
 .. versionadded:: 2.16
 %End
 
+    QString modeString( Mode mode ) const;
+%Docstring
+Returns the context as string of ``mode``
+
+.. versionadded:: 3.4
+%End
+
     void setEditCommandMessage( const QString &message );
 %Docstring
 Sets the edit command message (Undo) that will be used when the dialog is accepted

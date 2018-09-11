@@ -131,6 +131,12 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void setMode( Mode mode );
 
     /**
+     * Returns the context as string of \a mode
+     * \since QGIS 3.4
+     */
+    QString modeString( Mode mode ) const;
+
+    /**
      * Sets the edit command message (Undo) that will be used when the dialog is accepted
      *
      * \param message The message
