@@ -3464,8 +3464,9 @@ QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeFunctionFromOgcF
 QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeIsBetweenFromOgcFilter( const QDomElement &element )
 {
   // <ogc:PropertyIsBetween> encode a Range check
-  QgsExpressionNode *operand = nullptr, *lowerBound = nullptr;
-  QgsExpressionNode *operand2 = nullptr, *upperBound = nullptr;
+  std::unique_ptr<QgsExpressionNode> operand;
+  std::unique_ptr<QgsExpressionNode> lowerBound;
+  std::unique_ptr<QgsExpressionNode> upperBound;
 
   QDomElement operandElem = element.firstChildElement();
   while ( !operandElem.isNull() )
@@ -3473,41 +3474,34 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeIsBetweenFromOgcFilter( 
     if ( operandElem.tagName() == QLatin1String( "LowerBoundary" ) )
     {
       QDomElement lowerBoundElem = operandElem.firstChildElement();
-      lowerBound = nodeFromOgcFilter( lowerBoundElem );
+      lowerBound.reset( nodeFromOgcFilter( lowerBoundElem ) );
     }
     else if ( operandElem.tagName() == QLatin1String( "UpperBoundary" ) )
     {
       QDomElement upperBoundElem = operandElem.firstChildElement();
-      upperBound = nodeFromOgcFilter( upperBoundElem );
+      upperBound.reset( nodeFromOgcFilter( upperBoundElem ) );
     }
     else
     {
       // <ogc:expression>
-      // both operand and operand2 contain the same expression,
-      // they are respectively compared to lower bound and upper bound
-      operand = nodeFromOgcFilter( operandElem );
-      operand2 = nodeFromOgcFilter( operandElem );
+      operand.reset( nodeFromOgcFilter( operandElem ) );
     }
 
-    if ( operand && lowerBound && operand2 && upperBound )
+    if ( operand && lowerBound && upperBound )
       break;
 
     operandElem = operandElem.nextSiblingElement();
   }
 
-  if ( !operand || !lowerBound || !operand2 || !upperBound )
+  if ( !operand || !lowerBound || !upperBound )
   {
-    delete operand;
-    delete lowerBound;
-    delete upperBound;
-
     mErrorMessage = QObject::tr( "missing some required sub-elements in %1:PropertyIsBetween" ).arg( mPrefix );
     return nullptr;
   }
 
-  QgsExpressionNode *geOperator = new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boGE, operand, lowerBound );
-  QgsExpressionNode *leOperator = new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boLE, operand2, upperBound );
-  return new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boAnd, geOperator, leOperator );
+  std::unique_ptr<QgsExpressionNode> leOperator( new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boLE, operand->clone(), upperBound.release() ) );
+  std::unique_ptr<QgsExpressionNode> geOperator( new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boGE, operand.release(), lowerBound.release() ) );
+  return new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boAnd, geOperator.release(), leOperator.release() );
 }
 
 QString QgsOgcUtilsExpressionFromFilter::errorMessage() const
