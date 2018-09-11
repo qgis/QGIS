@@ -25,6 +25,8 @@
 /**
  * \ingroup core
  * Provides threading utilities for QGIS.
+ *
+ * \since QGIS 3.4
  */
 class CORE_EXPORT QgsThreadingUtils
 {
