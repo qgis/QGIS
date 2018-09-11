@@ -258,7 +258,7 @@ class ReliefColorsWidgetWrapper(WidgetWrapper):
                 break
 
     def parentValueChanged(self, wrapper):
-        self.setLayer(wrapper.value())
+        self.setLayer(wrapper.parameterValue())
 
     def setLayer(self, layer):
         if isinstance(layer, QgsMapLayer):
