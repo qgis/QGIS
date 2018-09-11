@@ -383,6 +383,10 @@ class QgsOgcUtilsExprFromFilter
     QgsExpressionNodeFunction *nodeSpatialOperatorFromOgcFilter( const QDomElement &element );
     QgsExpressionNodeColumnRef *nodeColumnRefFromOgcFilter( const QDomElement &element );
     QgsExpressionNode *nodeLiteralFromOgcFilter( const QDomElement &element );
+    QgsExpressionNodeUnaryOperator *nodeNotFromOgcFilter( const QDomElement &element );
+    QgsExpressionNodeBinaryOperator *nodePropertyIsNullFromOgcFilter( const QDomElement &element );
+    QgsExpressionNodeFunction *nodeFunctionFromOgcFilter( const QDomElement &element );
+    QgsExpressionNode *nodeIsBetweenFromOgcFilter( const QDomElement &element );
 
   private:
     QgsOgcUtils::FilterVersion mVersion = QgsOgcUtils::FILTER_OGC_1_0;

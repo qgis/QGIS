@@ -1718,103 +1718,34 @@ QgsExpressionNode *QgsOgcUtils::nodeFromOgcFilter( QDomElement &element, QString
 QgsExpressionNodeBinaryOperator *QgsOgcUtils::nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage, QgsVectorLayer *layer )
 {
   QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0, layer );
-  QgsExpressionNode *node = utils.nodeBinaryOperatorFromOgcFilter( element );
+  QgsExpressionNodeBinaryOperator *node = utils.nodeBinaryOperatorFromOgcFilter( element );
   errorMessage = utils.errorMessage();
-  retur node;
+  return node;
 }
 
 QgsExpressionNodeFunction *QgsOgcUtils::nodeSpatialOperatorFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
-  // we are exploiting the fact that our function names are the same as the XML tag names
-  int opIdx = QgsExpression::functionIndex( element.tagName().toLower() );
-
-  QgsExpressionNode::NodeList *gml2Args = new QgsExpressionNode::NodeList();
-  QDomElement childElem = element.firstChildElement();
-  QString gml2Str;
-  while ( !childElem.isNull() && gml2Str.isEmpty() )
-  {
-    if ( childElem.tagName() != QLatin1String( "PropertyName" ) )
-    {
-      QTextStream gml2Stream( &gml2Str );
-      childElem.save( gml2Stream, 0 );
-    }
-    childElem = childElem.nextSiblingElement();
-  }
-  if ( !gml2Str.isEmpty() )
-  {
-    gml2Args->append( new QgsExpressionNodeLiteral( QVariant( gml2Str.remove( '\n' ) ) ) );
-  }
-  else
-  {
-    errorMessage = QObject::tr( "No OGC Geometry found" );
-    delete gml2Args;
-    return nullptr;
-  }
-
-  QgsExpressionNode::NodeList *opArgs = new QgsExpressionNode::NodeList();
-  opArgs->append( new QgsExpressionNodeFunction( QgsExpression::functionIndex( QStringLiteral( "$geometry" ) ), new QgsExpressionNode::NodeList() ) );
-  opArgs->append( new QgsExpressionNodeFunction( QgsExpression::functionIndex( QStringLiteral( "geomFromGML" ) ), gml2Args ) );
-
-  return new QgsExpressionNodeFunction( opIdx, opArgs );
+  QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
+  QgsExpressionNodeFunction *node = utils.nodeSpatialOperatorFromOgcFilter( element );
+  errorMessage = utils.errorMessage();
+  return node;
 }
-
 
 QgsExpressionNodeUnaryOperator *QgsOgcUtils::nodeNotFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
-  if ( element.tagName() != QLatin1String( "Not" ) )
-    return nullptr;
-
-  QDomElement operandElem = element.firstChildElement();
-  QgsExpressionNode *operand = nodeFromOgcFilter( operandElem, errorMessage );
-  if ( !operand )
-  {
-    if ( errorMessage.isEmpty() )
-      errorMessage = QObject::tr( "invalid operand for '%1' unary operator" ).arg( element.tagName() );
-    return nullptr;
-  }
-
-  return new QgsExpressionNodeUnaryOperator( QgsExpressionNodeUnaryOperator::uoNot, operand );
+  QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
+  QgsExpressionNodeUnaryOperator *node = utils.nodeNotFromOgcFilter( element );
+  errorMessage = utils.errorMessage();
+  return node;
 }
-
 
 QgsExpressionNodeFunction *QgsOgcUtils::nodeFunctionFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
-  if ( element.isNull() || element.tagName() != QLatin1String( "Function" ) )
-  {
-    errorMessage = QObject::tr( "ogc:Function expected, got %1" ).arg( element.tagName() );
-    return nullptr;
-  }
-
-  for ( int i = 0; i < QgsExpression::Functions().size(); i++ )
-  {
-    QgsExpressionFunction *funcDef = QgsExpression::Functions()[i];
-
-    if ( element.attribute( QStringLiteral( "name" ) ) != funcDef->name() )
-      continue;
-
-    QgsExpressionNode::NodeList *args = new QgsExpressionNode::NodeList();
-
-    QDomElement operandElem = element.firstChildElement();
-    while ( !operandElem.isNull() )
-    {
-      QgsExpressionNode *op = nodeFromOgcFilter( operandElem, errorMessage );
-      if ( !op )
-      {
-        delete args;
-        return nullptr;
-      }
-      args->append( op );
-
-      operandElem = operandElem.nextSiblingElement();
-    }
-
-    return new QgsExpressionNodeFunction( i, args );
-  }
-
-  return nullptr;
+  QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
+  QgsExpressionNodeFunction *node = utils.nodeFunctionFromOgcFilter( element );
+  errorMessage = utils.errorMessage();
+  return node;
 }
-
-
 
 QgsExpressionNode *QgsOgcUtils::nodeLiteralFromOgcFilter( QDomElement &element, QString &errorMessage, QgsVectorLayer *layer )
 {
@@ -1824,81 +1755,28 @@ QgsExpressionNode *QgsOgcUtils::nodeLiteralFromOgcFilter( QDomElement &element, 
   return node;
 }
 
-
 QgsExpressionNodeColumnRef *QgsOgcUtils::nodeColumnRefFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
   QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
-  QgsExpressionNode *node = utils.nodeColumnRefFromOgcFilter( element );
+  QgsExpressionNodeColumnRef *node = utils.nodeColumnRefFromOgcFilter( element );
   errorMessage = utils.errorMessage();
   return node;
 }
 
-
 QgsExpressionNode *QgsOgcUtils::nodeIsBetweenFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
-  // <ogc:PropertyIsBetween> encode a Range check
-  QgsExpressionNode *operand = nullptr, *lowerBound = nullptr;
-  QgsExpressionNode *operand2 = nullptr, *upperBound = nullptr;
-
-  QDomElement operandElem = element.firstChildElement();
-  while ( !operandElem.isNull() )
-  {
-    if ( operandElem.tagName() == QLatin1String( "LowerBoundary" ) )
-    {
-      QDomElement lowerBoundElem = operandElem.firstChildElement();
-      lowerBound = nodeFromOgcFilter( lowerBoundElem, errorMessage );
-    }
-    else if ( operandElem.tagName() == QLatin1String( "UpperBoundary" ) )
-    {
-      QDomElement upperBoundElem = operandElem.firstChildElement();
-      upperBound = nodeFromOgcFilter( upperBoundElem, errorMessage );
-    }
-    else
-    {
-      // <ogc:expression>
-      // both operand and operand2 contain the same expression,
-      // they are respectively compared to lower bound and upper bound
-      operand = nodeFromOgcFilter( operandElem, errorMessage );
-      operand2 = nodeFromOgcFilter( operandElem, errorMessage );
-    }
-
-    if ( operand && lowerBound && operand2 && upperBound )
-      break;
-
-    operandElem = operandElem.nextSiblingElement();
-  }
-
-  if ( !operand || !lowerBound || !operand2 || !upperBound )
-  {
-    delete operand;
-    delete lowerBound;
-    delete upperBound;
-
-    errorMessage = QObject::tr( "missing some required sub-elements in ogc:PropertyIsBetween" );
-    return nullptr;
-  }
-
-  QgsExpressionNode *geOperator = new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boGE, operand, lowerBound );
-  QgsExpressionNode *leOperator = new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boLE, operand2, upperBound );
-  return new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boAnd, geOperator, leOperator );
+  QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
+  QgsExpressionNode *node = utils.nodeIsBetweenFromOgcFilter( element );
+  errorMessage = utils.errorMessage();
+  return node;
 }
-
 
 QgsExpressionNodeBinaryOperator *QgsOgcUtils::nodePropertyIsNullFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
-  // convert ogc:PropertyIsNull to IS operator with NULL right operand
-  if ( element.tagName() != QLatin1String( "PropertyIsNull" ) )
-  {
-    return nullptr;
-  }
-
-  QDomElement operandElem = element.firstChildElement();
-  QgsExpressionNode *opLeft = nodeFromOgcFilter( operandElem, errorMessage );
-  if ( !opLeft )
-    return nullptr;
-
-  QgsExpressionNode *opRight = new QgsExpressionNodeLiteral( QVariant() );
-  return new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boIs, opLeft, opRight );
+  QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
+  QgsExpressionNodeBinaryOperator *node = utils.nodePropertyIsNullFromOgcFilter( element );
+  errorMessage = utils.errorMessage();
+  return node;
 }
 
 
@@ -3243,14 +3121,13 @@ QgsExpressionNode *QgsOgcUtilsExprFromFilter::nodeFromOgcFilter( const QDomEleme
   }
 
   // check for other OGC operators, convert them to expressions
-
   if ( element.tagName() == QLatin1String( "Not" ) )
   {
-    // return nodeNotFromOgcFilter( element, errorMessage );
+    return nodeNotFromOgcFilter( element );
   }
   else if ( element.tagName() == QLatin1String( "PropertyIsNull" ) )
   {
-    // return nodePropertyIsNullFromOgcFilter( element, errorMessage );
+    return nodePropertyIsNullFromOgcFilter( element );
   }
   else if ( element.tagName() == QLatin1String( "Literal" ) )
   {
@@ -3258,7 +3135,7 @@ QgsExpressionNode *QgsOgcUtilsExprFromFilter::nodeFromOgcFilter( const QDomEleme
   }
   else if ( element.tagName() == QLatin1String( "Function" ) )
   {
-    // return nodeFunctionFromOgcFilter( element, errorMessage );
+    return nodeFunctionFromOgcFilter( element );
   }
   else if ( element.tagName() == mPropertyName )
   {
@@ -3266,7 +3143,7 @@ QgsExpressionNode *QgsOgcUtilsExprFromFilter::nodeFromOgcFilter( const QDomEleme
   }
   else if ( element.tagName() == QLatin1String( "PropertyIsBetween" ) )
   {
-    // return nodeIsBetweenFromOgcFilter( element, errorMessage );
+    return nodeIsBetweenFromOgcFilter( element );
   }
 
   mErrorMessage += QObject::tr( "unable to convert '%1' element to a valid expression: it is not supported yet or it has invalid arguments" ).arg( element.tagName() );
@@ -3517,6 +3394,126 @@ QgsExpressionNode *QgsOgcUtilsExprFromFilter::nodeLiteralFromOgcFilter( const QD
     return root;
 
   return nullptr;
+}
+
+QgsExpressionNodeUnaryOperator *QgsOgcUtilsExprFromFilter::nodeNotFromOgcFilter( const QDomElement &element )
+{
+  if ( element.tagName() != QLatin1String( "Not" ) )
+    return nullptr;
+
+  QDomElement operandElem = element.firstChildElement();
+  QgsExpressionNode *operand = nodeFromOgcFilter( operandElem );
+  if ( !operand )
+  {
+    if ( mErrorMessage.isEmpty() )
+      mErrorMessage = QObject::tr( "invalid operand for '%1' unary operator" ).arg( element.tagName() );
+    return nullptr;
+  }
+
+  return new QgsExpressionNodeUnaryOperator( QgsExpressionNodeUnaryOperator::uoNot, operand );
+}
+
+QgsExpressionNodeBinaryOperator *QgsOgcUtilsExprFromFilter::nodePropertyIsNullFromOgcFilter( const QDomElement &element )
+{
+  // convert ogc:PropertyIsNull to IS operator with NULL right operand
+  if ( element.tagName() != QLatin1String( "PropertyIsNull" ) )
+  {
+    return nullptr;
+  }
+
+  QDomElement operandElem = element.firstChildElement();
+  QgsExpressionNode *opLeft = nodeFromOgcFilter( operandElem );
+  if ( !opLeft )
+    return nullptr;
+
+  QgsExpressionNode *opRight = new QgsExpressionNodeLiteral( QVariant() );
+  return new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boIs, opLeft, opRight );
+}
+
+QgsExpressionNodeFunction *QgsOgcUtilsExprFromFilter::nodeFunctionFromOgcFilter( const QDomElement &element )
+{
+  if ( element.isNull() || element.tagName() != QLatin1String( "Function" ) )
+  {
+    mErrorMessage = QObject::tr( "ogc:Function expected, got %1" ).arg( element.tagName() );
+    return nullptr;
+  }
+
+  for ( int i = 0; i < QgsExpression::Functions().size(); i++ )
+  {
+    QgsExpressionFunction *funcDef = QgsExpression::Functions()[i];
+
+    if ( element.attribute( QStringLiteral( "name" ) ) != funcDef->name() )
+      continue;
+
+    QgsExpressionNode::NodeList *args = new QgsExpressionNode::NodeList();
+
+    QDomElement operandElem = element.firstChildElement();
+    while ( !operandElem.isNull() )
+    {
+      QgsExpressionNode *op = nodeFromOgcFilter( operandElem );
+      if ( !op )
+      {
+        delete args;
+        return nullptr;
+      }
+      args->append( op );
+
+      operandElem = operandElem.nextSiblingElement();
+    }
+
+    return new QgsExpressionNodeFunction( i, args );
+  }
+
+  return nullptr;
+}
+
+QgsExpressionNode *QgsOgcUtilsExprFromFilter::nodeIsBetweenFromOgcFilter( const QDomElement &element )
+{
+  // <ogc:PropertyIsBetween> encode a Range check
+  QgsExpressionNode *operand = nullptr, *lowerBound = nullptr;
+  QgsExpressionNode *operand2 = nullptr, *upperBound = nullptr;
+
+  QDomElement operandElem = element.firstChildElement();
+  while ( !operandElem.isNull() )
+  {
+    if ( operandElem.tagName() == QLatin1String( "LowerBoundary" ) )
+    {
+      QDomElement lowerBoundElem = operandElem.firstChildElement();
+      lowerBound = nodeFromOgcFilter( lowerBoundElem );
+    }
+    else if ( operandElem.tagName() == QLatin1String( "UpperBoundary" ) )
+    {
+      QDomElement upperBoundElem = operandElem.firstChildElement();
+      upperBound = nodeFromOgcFilter( upperBoundElem );
+    }
+    else
+    {
+      // <ogc:expression>
+      // both operand and operand2 contain the same expression,
+      // they are respectively compared to lower bound and upper bound
+      operand = nodeFromOgcFilter( operandElem );
+      operand2 = nodeFromOgcFilter( operandElem );
+    }
+
+    if ( operand && lowerBound && operand2 && upperBound )
+      break;
+
+    operandElem = operandElem.nextSiblingElement();
+  }
+
+  if ( !operand || !lowerBound || !operand2 || !upperBound )
+  {
+    delete operand;
+    delete lowerBound;
+    delete upperBound;
+
+    mErrorMessage = QObject::tr( "missing some required sub-elements in ogc:PropertyIsBetween" );
+    return nullptr;
+  }
+
+  QgsExpressionNode *geOperator = new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boGE, operand, lowerBound );
+  QgsExpressionNode *leOperator = new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boLE, operand2, upperBound );
+  return new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boAnd, geOperator, leOperator );
 }
 
 QString QgsOgcUtilsExprFromFilter::errorMessage() const
