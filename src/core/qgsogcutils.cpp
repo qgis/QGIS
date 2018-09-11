@@ -1619,7 +1619,7 @@ QgsExpression *QgsOgcUtils::expressionFromOgcFilter( const QDomElement &element,
     return expr;
   }
 
-  QgsOgcUtilsExprFromFilter utils( version, layer );
+  QgsOgcUtilsExpressionFromFilter utils( version, layer );
 
   // then check OGC DOM elements that contain OGC tags specifying
   // OGC operators.
@@ -1709,7 +1709,7 @@ static bool isSpatialOperator( const QString &tagName )
 
 QgsExpressionNode *QgsOgcUtils::nodeFromOgcFilter( QDomElement &element, QString &errorMessage, QgsVectorLayer *layer )
 {
-  QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0, layer );
+  QgsOgcUtilsExpressionFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0, layer );
   QgsExpressionNode *node = utils.nodeFromOgcFilter( element );
   errorMessage = utils.errorMessage();
   return node;
@@ -1717,7 +1717,7 @@ QgsExpressionNode *QgsOgcUtils::nodeFromOgcFilter( QDomElement &element, QString
 
 QgsExpressionNodeBinaryOperator *QgsOgcUtils::nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage, QgsVectorLayer *layer )
 {
-  QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0, layer );
+  QgsOgcUtilsExpressionFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0, layer );
   QgsExpressionNodeBinaryOperator *node = utils.nodeBinaryOperatorFromOgcFilter( element );
   errorMessage = utils.errorMessage();
   return node;
@@ -1725,7 +1725,7 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtils::nodeBinaryOperatorFromOgcFilter( Q
 
 QgsExpressionNodeFunction *QgsOgcUtils::nodeSpatialOperatorFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
-  QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
+  QgsOgcUtilsExpressionFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
   QgsExpressionNodeFunction *node = utils.nodeSpatialOperatorFromOgcFilter( element );
   errorMessage = utils.errorMessage();
   return node;
@@ -1733,7 +1733,7 @@ QgsExpressionNodeFunction *QgsOgcUtils::nodeSpatialOperatorFromOgcFilter( QDomEl
 
 QgsExpressionNodeUnaryOperator *QgsOgcUtils::nodeNotFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
-  QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
+  QgsOgcUtilsExpressionFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
   QgsExpressionNodeUnaryOperator *node = utils.nodeNotFromOgcFilter( element );
   errorMessage = utils.errorMessage();
   return node;
@@ -1741,7 +1741,7 @@ QgsExpressionNodeUnaryOperator *QgsOgcUtils::nodeNotFromOgcFilter( QDomElement &
 
 QgsExpressionNodeFunction *QgsOgcUtils::nodeFunctionFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
-  QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
+  QgsOgcUtilsExpressionFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
   QgsExpressionNodeFunction *node = utils.nodeFunctionFromOgcFilter( element );
   errorMessage = utils.errorMessage();
   return node;
@@ -1749,7 +1749,7 @@ QgsExpressionNodeFunction *QgsOgcUtils::nodeFunctionFromOgcFilter( QDomElement &
 
 QgsExpressionNode *QgsOgcUtils::nodeLiteralFromOgcFilter( QDomElement &element, QString &errorMessage, QgsVectorLayer *layer )
 {
-  QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0, layer );
+  QgsOgcUtilsExpressionFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0, layer );
   QgsExpressionNode *node = utils.nodeLiteralFromOgcFilter( element );
   errorMessage = utils.errorMessage();
   return node;
@@ -1757,7 +1757,7 @@ QgsExpressionNode *QgsOgcUtils::nodeLiteralFromOgcFilter( QDomElement &element, 
 
 QgsExpressionNodeColumnRef *QgsOgcUtils::nodeColumnRefFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
-  QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
+  QgsOgcUtilsExpressionFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
   QgsExpressionNodeColumnRef *node = utils.nodeColumnRefFromOgcFilter( element );
   errorMessage = utils.errorMessage();
   return node;
@@ -1765,7 +1765,7 @@ QgsExpressionNodeColumnRef *QgsOgcUtils::nodeColumnRefFromOgcFilter( QDomElement
 
 QgsExpressionNode *QgsOgcUtils::nodeIsBetweenFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
-  QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
+  QgsOgcUtilsExpressionFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
   QgsExpressionNode *node = utils.nodeIsBetweenFromOgcFilter( element );
   errorMessage = utils.errorMessage();
   return node;
@@ -1773,7 +1773,7 @@ QgsExpressionNode *QgsOgcUtils::nodeIsBetweenFromOgcFilter( QDomElement &element
 
 QgsExpressionNodeBinaryOperator *QgsOgcUtils::nodePropertyIsNullFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
-  QgsOgcUtilsExprFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
+  QgsOgcUtilsExpressionFromFilter utils( QgsOgcUtils::FILTER_OGC_1_0 );
   QgsExpressionNodeBinaryOperator *node = utils.nodePropertyIsNullFromOgcFilter( element );
   errorMessage = utils.errorMessage();
   return node;
@@ -3093,7 +3093,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   return QDomElement();
 }
 
-QgsOgcUtilsExprFromFilter::QgsOgcUtilsExprFromFilter( const QgsOgcUtils::FilterVersion version, QgsVectorLayer *layer )
+QgsOgcUtilsExpressionFromFilter::QgsOgcUtilsExpressionFromFilter( const QgsOgcUtils::FilterVersion version, QgsVectorLayer *layer )
   : mVersion( version )
   , mLayer( layer )
 {
@@ -3103,7 +3103,7 @@ QgsOgcUtilsExprFromFilter::QgsOgcUtilsExprFromFilter( const QgsOgcUtils::FilterV
     mPropertyName = QStringLiteral( "ValueReference" );
 }
 
-QgsExpressionNode *QgsOgcUtilsExprFromFilter::nodeFromOgcFilter( const QDomElement &element )
+QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeFromOgcFilter( const QDomElement &element )
 {
   if ( element.isNull() )
     return nullptr;
@@ -3150,7 +3150,7 @@ QgsExpressionNode *QgsOgcUtilsExprFromFilter::nodeFromOgcFilter( const QDomEleme
   return nullptr;
 }
 
-QgsExpressionNodeBinaryOperator *QgsOgcUtilsExprFromFilter::nodeBinaryOperatorFromOgcFilter( const QDomElement &element )
+QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOperatorFromOgcFilter( const QDomElement &element )
 {
   if ( element.isNull() )
     return nullptr;
@@ -3261,7 +3261,7 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExprFromFilter::nodeBinaryOperatorFr
 }
 
 
-QgsExpressionNodeFunction *QgsOgcUtilsExprFromFilter::nodeSpatialOperatorFromOgcFilter( const QDomElement &element )
+QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeSpatialOperatorFromOgcFilter( const QDomElement &element )
 {
   // we are exploiting the fact that our function names are the same as the XML tag names
   int opIdx = QgsExpression::functionIndex( element.tagName().toLower() );
@@ -3296,7 +3296,7 @@ QgsExpressionNodeFunction *QgsOgcUtilsExprFromFilter::nodeSpatialOperatorFromOgc
   return new QgsExpressionNodeFunction( opIdx, opArgs );
 }
 
-QgsExpressionNodeColumnRef *QgsOgcUtilsExprFromFilter::nodeColumnRefFromOgcFilter( const QDomElement &element )
+QgsExpressionNodeColumnRef *QgsOgcUtilsExpressionFromFilter::nodeColumnRefFromOgcFilter( const QDomElement &element )
 {
   if ( element.isNull() || element.tagName() != mPropertyName )
   {
@@ -3307,7 +3307,7 @@ QgsExpressionNodeColumnRef *QgsOgcUtilsExprFromFilter::nodeColumnRefFromOgcFilte
   return new QgsExpressionNodeColumnRef( element.firstChild().nodeValue() );
 }
 
-QgsExpressionNode *QgsOgcUtilsExprFromFilter::nodeLiteralFromOgcFilter( const QDomElement &element )
+QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( const QDomElement &element )
 {
   if ( element.isNull() || element.tagName() != QLatin1String( "Literal" ) )
   {
@@ -3396,7 +3396,7 @@ QgsExpressionNode *QgsOgcUtilsExprFromFilter::nodeLiteralFromOgcFilter( const QD
   return nullptr;
 }
 
-QgsExpressionNodeUnaryOperator *QgsOgcUtilsExprFromFilter::nodeNotFromOgcFilter( const QDomElement &element )
+QgsExpressionNodeUnaryOperator *QgsOgcUtilsExpressionFromFilter::nodeNotFromOgcFilter( const QDomElement &element )
 {
   if ( element.tagName() != QLatin1String( "Not" ) )
     return nullptr;
@@ -3413,7 +3413,7 @@ QgsExpressionNodeUnaryOperator *QgsOgcUtilsExprFromFilter::nodeNotFromOgcFilter(
   return new QgsExpressionNodeUnaryOperator( QgsExpressionNodeUnaryOperator::uoNot, operand );
 }
 
-QgsExpressionNodeBinaryOperator *QgsOgcUtilsExprFromFilter::nodePropertyIsNullFromOgcFilter( const QDomElement &element )
+QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodePropertyIsNullFromOgcFilter( const QDomElement &element )
 {
   // convert ogc:PropertyIsNull to IS operator with NULL right operand
   if ( element.tagName() != QLatin1String( "PropertyIsNull" ) )
@@ -3430,7 +3430,7 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExprFromFilter::nodePropertyIsNullFr
   return new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boIs, opLeft, opRight );
 }
 
-QgsExpressionNodeFunction *QgsOgcUtilsExprFromFilter::nodeFunctionFromOgcFilter( const QDomElement &element )
+QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeFunctionFromOgcFilter( const QDomElement &element )
 {
   if ( element.isNull() || element.tagName() != QLatin1String( "Function" ) )
   {
@@ -3467,7 +3467,7 @@ QgsExpressionNodeFunction *QgsOgcUtilsExprFromFilter::nodeFunctionFromOgcFilter(
   return nullptr;
 }
 
-QgsExpressionNode *QgsOgcUtilsExprFromFilter::nodeIsBetweenFromOgcFilter( const QDomElement &element )
+QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeIsBetweenFromOgcFilter( const QDomElement &element )
 {
   // <ogc:PropertyIsBetween> encode a Range check
   QgsExpressionNode *operand = nullptr, *lowerBound = nullptr;
@@ -3516,7 +3516,7 @@ QgsExpressionNode *QgsOgcUtilsExprFromFilter::nodeIsBetweenFromOgcFilter( const 
   return new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boAnd, geOperator, leOperator );
 }
 
-QString QgsOgcUtilsExprFromFilter::errorMessage() const
+QString QgsOgcUtilsExpressionFromFilter::errorMessage() const
 {
   return mErrorMessage;
 }

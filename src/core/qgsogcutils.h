@@ -382,17 +382,17 @@ class QgsOgcUtilsExprToFilter
  * \note not available in Python bindings
  * \since QGIS 3.4
  */
-class QgsOgcUtilsExprFromFilter
+class QgsOgcUtilsExpressionFromFilter
 {
   public:
 
     /**
-     * Constructor for QgsOgcUtilsExprFromFilter.
+     * Constructor for QgsOgcUtilsExpressionFromFilter.
      * \param version WFS Version
      * \param layer Layer to use to retrieve field values from literal filters
      */
-    QgsOgcUtilsExprFromFilter( QgsOgcUtils::FilterVersion version = QgsOgcUtils::FILTER_OGC_1_0,
-                               QgsVectorLayer *layer = nullptr );
+    QgsOgcUtilsExpressionFromFilter( QgsOgcUtils::FilterVersion version = QgsOgcUtils::FILTER_OGC_1_0,
+                                     QgsVectorLayer *layer = nullptr );
 
     /**
      * Returns an expression node from a WFS filter embedded in a document
