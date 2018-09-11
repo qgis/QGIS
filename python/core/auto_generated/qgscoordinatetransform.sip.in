@@ -358,6 +358,17 @@ been modified in order to ensure that outdated CRS transforms are not created.
 .. versionadded:: 3.0
 %End
 
+    double scaleFactor( const QgsRectangle &referenceExtent ) const;
+%Docstring
+Computes an *estimated* conversion factor between source and destination units:
+
+sourceUnits * scaleFactor = destinationUnits
+
+:param referenceExtent: A reference extent based on which to perform the computation
+
+.. versionadded:: 3.4
+%End
+
 };
 
 

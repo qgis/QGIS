@@ -396,14 +396,7 @@ QgsCoordinateTransform QgsMapSettings::layerTransform( const QgsMapLayer *layer 
 
 double QgsMapSettings::layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent ) const
 {
-  QgsRectangle extent = referenceExtent.isEmpty() ? layer->extent() : referenceExtent;
-  QgsPointXY l1( extent.xMinimum(), extent.yMinimum() );
-  QgsPointXY l2( extent.xMaximum(), extent.yMaximum() );
-  double distLayerUnits = std::sqrt( l1.sqrDist( l2 ) );
-  QgsPointXY m1 = layerToMapCoordinates( layer, l1 );
-  QgsPointXY m2 = layerToMapCoordinates( layer, l2 );
-  double distMapUnits = std::sqrt( m1.sqrDist( m2 ) );
-  return distMapUnits / distLayerUnits;
+  return layerTransform( layer ).scaleFactor( referenceExtent );
 }
 
 
