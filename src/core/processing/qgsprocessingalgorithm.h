@@ -830,6 +830,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     friend class QgsProcessingProvider;
     friend class TestQgsProcessing;
     friend class QgsProcessingModelAlgorithm;
+    friend class QgsProcessingToolboxProxyModel;
 
 #ifdef SIP_RUN
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );
@@ -1001,7 +1002,6 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
   private:
 
     std::unique_ptr< QgsProcessingFeatureSource > mSource;
-    friend class QgsProcessingToolboxProxyModel;
 
 };
 
