@@ -33,6 +33,11 @@ QgsGeometryValidationService::~QgsGeometryValidationService()
   delete mIsValidGeometryCheck;
 }
 
+bool QgsGeometryValidationService::validationActive( QgsVectorLayer *layer, QgsFeatureId feature ) const
+{
+  return false;
+}
+
 void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &layers )
 {
   for ( QgsMapLayer *layer : layers )
@@ -58,45 +63,32 @@ void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &la
 
 void QgsGeometryValidationService::onFeatureAdded( QgsVectorLayer *layer, QgsFeatureId fid )
 {
-  emit geometryCheckStarted( layer, fid );
-
-  QgsFeature feature = layer->getFeature( fid );
-  const auto errors = mIsValidGeometryCheck->collectErrors( feature );
-  for ( const auto &error : errors )
-  {
-    qDebug() << error.what();
-  }
-
-  emit geometryCheckCompleted( layer, fid );
+  processFeature( layer, fid );
 }
 
 void QgsGeometryValidationService::onGeometryChanged( QgsVectorLayer *layer, QgsFeatureId fid, const QgsGeometry &geometry )
 {
-  emit geometryCheckStarted( layer, fid );
+  Q_UNUSED( geometry )
 
-  QgsFeature feature = layer->getFeature( fid );
-  const auto errors = mIsValidGeometryCheck->collectErrors( feature );
-  for ( const auto &error : errors )
-  {
-    qDebug() << error.what();
-  }
-
-  emit geometryCheckCompleted( layer, fid );
+  cancelChecks( layer, fid );
+  processFeature( layer, fid );
 }
 
 void QgsGeometryValidationService::onFeatureDeleted( QgsVectorLayer *layer, QgsFeatureId fid )
 {
-  // TODO: cleanup any ongoing validation threads.
-
-  emit geometryCheckCompleted( layer, fid );
+  cancelChecks( layer, fid );
 }
 
-QgsGeometryValidationService::FeatureErrors QgsGeometryValidationService::featureErrors( QgsVectorLayer *layer ) const
+void QgsGeometryValidationService::cancelChecks( QgsVectorLayer *layer, QgsFeatureId fid )
 {
-  return mFeatureErrors.value( layer );
+
 }
 
-QgsGeometryValidationService::FeatureError QgsGeometryValidationService::featureError( QgsVectorLayer *layer, int errorIndex )
+void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFeatureId fid )
 {
-  return mFeatureErrors.value( layer ).value( errorIndex );
+  emit geometryCheckStarted( layer, fid );
+
+  QgsFeature feature = layer->getFeature( fid );
+  const auto errors = mIsValidGeometryCheck->collectErrors( feature );
+  emit geometryCheckCompleted( layer, fid, errors );
 }

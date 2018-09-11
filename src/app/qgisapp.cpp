@@ -925,6 +925,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mGeometryValidationService = qgis::make_unique<QgsGeometryValidationService>( QgsProject::instance() );
   mGeometryValidationDock = new QgsGeometryValidationDock( tr( "Geometry Validation" ) );
   mGeometryValidationModel = new QgsGeometryValidationModel( mGeometryValidationService.get(), mGeometryValidationDock );
+  connect( this, &QgisApp::activeLayerChanged, mGeometryValidationModel, [this]( QgsMapLayer * layer )
+  {
+    mGeometryValidationModel->setCurrentLayer( qobject_cast<QgsVectorLayer *>( layer ) );
+  } );
   mGeometryValidationDock->setGeometryValidationModel( mGeometryValidationModel );
   addDockWidget( Qt::RightDockWidgetArea, mGeometryValidationDock );
   endProfile();
