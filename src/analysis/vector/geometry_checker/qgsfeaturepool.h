@@ -79,6 +79,13 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
      */
     QgsVectorLayer *layer() const;
 
+    /**
+     * Get a QPointer to the underlying layer.
+     * Note that access to any methods of the object
+     * will need to be done on the main thread and
+     * the pointer will need to be checked for validity
+     * before usage.
+     */
     QPointer<QgsVectorLayer> layerPtr() const;
 
     /**
