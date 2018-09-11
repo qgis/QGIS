@@ -1088,9 +1088,9 @@ int QgsStyleManagerDialog::addTag()
 
   // block the auto-repopulation of groups when the style emits groupsModified
   // instead, we manually update the model items for better state retention
-  mBlockGroupUpdates = true;
+  mBlockGroupUpdates++;
   id = mStyle->addTag( itemName );
-  mBlockGroupUpdates = false;
+  mBlockGroupUpdates--;
 
   if ( !id )
   {
@@ -1130,9 +1130,9 @@ int QgsStyleManagerDialog::addSmartgroup()
 
   // block the auto-repopulation of groups when the style emits groupsModified
   // instead, we manually update the model items for better state retention
-  mBlockGroupUpdates = true;
+  mBlockGroupUpdates++;
   id = mStyle->addSmartgroup( dlg.smartgroupName(), dlg.conditionOperator(), dlg.conditionMap() );
-  mBlockGroupUpdates = false;
+  mBlockGroupUpdates--;
 
   if ( !id )
     return 0;
@@ -1166,7 +1166,7 @@ void QgsStyleManagerDialog::removeGroup()
 
   // block the auto-repopulation of groups when the style emits groupsModified
   // instead, we manually update the model items for better state retention
-  mBlockGroupUpdates = true;
+  mBlockGroupUpdates++;
 
   if ( parentItem->data( Qt::UserRole + 1 ).toString() == QLatin1String( "smartgroups" ) )
   {
@@ -1177,7 +1177,7 @@ void QgsStyleManagerDialog::removeGroup()
     mStyle->remove( QgsStyle::TagEntity, index.data( Qt::UserRole + 1 ).toInt() );
   }
 
-  mBlockGroupUpdates = false;
+  mBlockGroupUpdates--;
   parentItem->removeRow( index.row() );
 }
 
@@ -1186,6 +1186,7 @@ void QgsStyleManagerDialog::groupRenamed( QStandardItem *item )
   QgsDebugMsg( QStringLiteral( "Symbol group edited: data=%1 text=%2" ).arg( item->data( Qt::UserRole + 1 ).toString(), item->text() ) );
   int id = item->data( Qt::UserRole + 1 ).toInt();
   QString name = item->text();
+  mBlockGroupUpdates++;
   if ( item->parent()->data( Qt::UserRole + 1 ) == "smartgroups" )
   {
     mStyle->rename( QgsStyle::SmartgroupEntity, id, name );
@@ -1194,6 +1195,7 @@ void QgsStyleManagerDialog::groupRenamed( QStandardItem *item )
   {
     mStyle->rename( QgsStyle::TagEntity, id, name );
   }
+  mBlockGroupUpdates--;
 }
 
 void QgsStyleManagerDialog::tagSymbolsAction()
@@ -1548,8 +1550,10 @@ void QgsStyleManagerDialog::editSmartgroupAction()
   if ( dlg.exec() == QDialog::Rejected )
     return;
 
+  mBlockGroupUpdates++;
   mStyle->remove( QgsStyle::SmartgroupEntity, item->data().toInt() );
   int id = mStyle->addSmartgroup( dlg.smartgroupName(), dlg.conditionOperator(), dlg.conditionMap() );
+  mBlockGroupUpdates--;
   if ( !id )
   {
     QMessageBox::critical( this, tr( "Edit Smart Group" ),
