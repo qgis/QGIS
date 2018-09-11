@@ -3313,23 +3313,21 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
     return nullptr;
   }
 
-  QgsExpressionNode *root = nullptr;
+  std::unique_ptr<QgsExpressionNode> root;
 
   // the literal content can have more children (e.g. CDATA section, text, ...)
   QDomNode childNode = element.firstChild();
   while ( !childNode.isNull() )
   {
-    QgsExpressionNode *operand = nullptr;
+    std::unique_ptr<QgsExpressionNode> operand;
 
     if ( childNode.nodeType() == QDomNode::ElementNode )
     {
       // found a element node (e.g. PropertyName), convert it
       QDomElement operandElem = childNode.toElement();
-      operand = nodeFromOgcFilter( operandElem );
+      operand.reset( nodeFromOgcFilter( operandElem ) );
       if ( !operand )
       {
-        delete root;
-
         mErrorMessage = QObject::tr( "'%1' is an invalid or not supported content for %2:Literal" ).arg( operandElem.tagName(), mPrefix );
         return nullptr;
       }
@@ -3370,7 +3368,7 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
           value = d;
       }
 
-      operand = new QgsExpressionNodeLiteral( value );
+      operand.reset( new QgsExpressionNodeLiteral( value ) );
       if ( !operand )
         continue;
     }
@@ -3378,18 +3376,18 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
     // use the concat operator to merge the ogc:Literal children
     if ( !root )
     {
-      root = operand;
+      root = std::move( operand );
     }
     else
     {
-      root = new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boConcat, root, operand );
+      root.reset( new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boConcat, root.release(), operand.release() ) );
     }
 
     childNode = childNode.nextSibling();
   }
 
   if ( root )
-    return root;
+    return root.release();
 
   return nullptr;
 }
