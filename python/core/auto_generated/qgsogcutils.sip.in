@@ -149,6 +149,8 @@ according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
       FILTER_FES_2_0
     };
 
+    static QgsExpression *expressionFromOgcFilter( const QDomElement &element, FilterVersion version, QgsVectorLayer *layer = 0 ) /Factory/;
+
 
     static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = 0 );
 %Docstring
