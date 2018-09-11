@@ -1310,12 +1310,12 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
                                     QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories )
 {
   Q_UNUSED( errorMessage );
-  Q_UNUSED( categories );
+  // TODO: implement categories for raster layer
 
   QDomElement rasterRendererElem;
 
   QDomElement layerElement = layer_node.toElement();
-  readCommonStyle( layerElement, context );
+  readCommonStyle( layerElement, context, categories );
 
   // pipe element was introduced in the end of 1.9 development when there were
   // already many project files in use so we support 1.9 backward compatibility
@@ -1552,10 +1552,10 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
                                      const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
 {
   Q_UNUSED( errorMessage );
-  Q_UNUSED( categories );
+  // TODO: implement categories for raster layer
 
   QDomElement layerElement = layer_node.toElement();
-  writeCommonStyle( layerElement, document, context );
+  writeCommonStyle( layerElement, document, context, categories );
 
   // Store pipe members (except provider) into pipe element, in future, it will be
   // possible to add custom filters into the pipe
@@ -1579,10 +1579,10 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
   return true;
 }
 
-bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
+bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                                 const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
 {
   return writeSymbology( node, doc, errorMessage, context, categories );
-
 } // bool QgsRasterLayer::writeSymbology
 
 /*

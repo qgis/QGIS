@@ -559,12 +559,15 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
     layerElement.setAttribute( QStringLiteral( "minScale" ), QString::number( minimumScale() ) );
   }
 
-  if ( m3DRenderer )
+  if ( categories.testFlag( QgsMapLayerStyle::Symbology ) )
   {
-    QDomElement renderer3DElem = document.createElement( QStringLiteral( "renderer-3d" ) );
-    renderer3DElem.setAttribute( QStringLiteral( "type" ), m3DRenderer->type() );
-    m3DRenderer->writeXml( renderer3DElem, context );
-    layerElement.appendChild( renderer3DElem );
+    if ( m3DRenderer )
+    {
+      QDomElement renderer3DElem = document.createElement( QStringLiteral( "renderer-3d" ) );
+      renderer3DElem.setAttribute( QStringLiteral( "type" ), m3DRenderer->type() );
+      m3DRenderer->writeXml( renderer3DElem, context );
+      layerElement.appendChild( renderer3DElem );
+    }
   }
 
   if ( categories.testFlag( QgsMapLayerStyle::LayerConfiguration ) )
@@ -1112,7 +1115,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg, QgsRea
   myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
   myDocument.appendChild( myRootNode );
 
-  if ( !writeSymbology( myRootNode, myDocument, errorMsg, QgsReadWriteContext(), categories ) )  // TODO: support relative paths in QML?
+  if ( !writeSymbology( myRootNode, myDocument, errorMsg, context, categories ) )  // TODO: support relative paths in QML?
   {
     errorMsg = QObject::tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
     return;
@@ -1563,6 +1566,7 @@ bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsRea
   Q_UNUSED( node );
   Q_UNUSED( errorMessage );
   Q_UNUSED( context );
+  Q_UNUSED( categories );
   return false;
 }
 
@@ -1573,61 +1577,74 @@ bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorM
   Q_UNUSED( doc );
   Q_UNUSED( errorMessage );
   Q_UNUSED( context );
+  Q_UNUSED( categories );
   return false;
 }
 
 void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context,
                                    QgsMapLayerStyle::StyleCategories categories )
 {
-  QgsAbstract3DRenderer *r3D = nullptr;
-  QDomElement renderer3DElem = layerElement.firstChildElement( QStringLiteral( "renderer-3d" ) );
-  if ( !renderer3DElem.isNull() )
+  if ( categories.testFlag( QgsMapLayerStyle::Symbology ) )
   {
-    QString type3D = renderer3DElem.attribute( QStringLiteral( "type" ) );
-    Qgs3DRendererAbstractMetadata *meta3D = QgsApplication::renderer3DRegistry()->rendererMetadata( type3D );
-    if ( meta3D )
+    QgsAbstract3DRenderer *r3D = nullptr;
+    QDomElement renderer3DElem = layerElement.firstChildElement( QStringLiteral( "renderer-3d" ) );
+    if ( !renderer3DElem.isNull() )
     {
-      r3D = meta3D->createRenderer( renderer3DElem, context );
+      QString type3D = renderer3DElem.attribute( QStringLiteral( "type" ) );
+      Qgs3DRendererAbstractMetadata *meta3D = QgsApplication::renderer3DRegistry()->rendererMetadata( type3D );
+      if ( meta3D )
+      {
+        r3D = meta3D->createRenderer( renderer3DElem, context );
+      }
     }
+    setRenderer3D( r3D );
   }
-  setRenderer3D( r3D );
 
-  // read custom properties before passing reading further to a subclass, so that
-  // the subclass can also read custom properties
-  readCustomProperties( layerElement );
+  if ( categories.testFlag( QgsMapLayerStyle::CustomProperties ) )
+  {
+    // read custom properties before passing reading further to a subclass, so that
+    // the subclass can also read custom properties
+    readCustomProperties( layerElement );
+  }
 
   // use scale dependent visibility flag
-  setScaleBasedVisibility( layerElement.attribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).toInt() == 1 );
-  if ( layerElement.hasAttribute( QStringLiteral( "minimumScale" ) ) )
+  if ( categories.testFlag( QgsMapLayerStyle::Rendering ) )
   {
-    // older element, when scales were reversed
-    setMaximumScale( layerElement.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
-    setMinimumScale( layerElement.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
-  }
-  else
-  {
-    setMaximumScale( layerElement.attribute( QStringLiteral( "maxScale" ) ).toDouble() );
-    setMinimumScale( layerElement.attribute( QStringLiteral( "minScale" ) ).toDouble() );
+    setScaleBasedVisibility( layerElement.attribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).toInt() == 1 );
+    if ( layerElement.hasAttribute( QStringLiteral( "minimumScale" ) ) )
+    {
+      // older element, when scales were reversed
+      setMaximumScale( layerElement.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
+      setMinimumScale( layerElement.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
+    }
+    else
+    {
+      setMaximumScale( layerElement.attribute( QStringLiteral( "maxScale" ) ).toDouble() );
+      setMinimumScale( layerElement.attribute( QStringLiteral( "minScale" ) ).toDouble() );
+    }
   }
 
-  // flags
-  QDomElement flagsElem = layerElement.firstChildElement( QStringLiteral( "flags" ) );
-  QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayer::LayerFlag>();
-  LayerFlags flags = mFlags;
-  for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
+  if ( categories.testFlag( QgsMapLayerStyle::LayerConfiguration ) )
   {
-    const char *enumKey = metaEnum.key( idx );
-    QDomNode flagNode = flagsElem.namedItem( QString( enumKey ) );
-    if ( flagNode.isNull() )
-      continue;
-    bool flagValue = flagNode.toElement().text() == "1" ? true : false;
-    QgsMapLayer::LayerFlag enumValue = static_cast<QgsMapLayer::LayerFlag>( metaEnum.keyToValue( enumKey ) );
-    if ( flags.testFlag( enumValue ) && !flagValue )
-      flags &= ~enumValue;
-    else if ( !flags.testFlag( enumValue ) && flagValue )
-      flags |= enumValue;
+    // flags
+    QDomElement flagsElem = layerElement.firstChildElement( QStringLiteral( "flags" ) );
+    QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayer::LayerFlag>();
+    LayerFlags flags = mFlags;
+    for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
+    {
+      const char *enumKey = metaEnum.key( idx );
+      QDomNode flagNode = flagsElem.namedItem( QString( enumKey ) );
+      if ( flagNode.isNull() )
+        continue;
+      bool flagValue = flagNode.toElement().text() == "1" ? true : false;
+      QgsMapLayer::LayerFlag enumValue = static_cast<QgsMapLayer::LayerFlag>( metaEnum.keyToValue( enumKey ) );
+      if ( flags.testFlag( enumValue ) && !flagValue )
+        flags &= ~enumValue;
+      else if ( !flags.testFlag( enumValue ) && flagValue )
+        flags |= enumValue;
+    }
+    setFlags( flags );
   }
-  setFlags( flags );
 }
 
 QUndoStack *QgsMapLayer::undoStack()

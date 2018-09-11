@@ -246,10 +246,12 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
                                   QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories )
 {
   Q_UNUSED( errorMessage );
-  Q_UNUSED( context );
-  Q_UNUSED( categories );
+  // TODO: implement categories for raster layer
 
   QDomElement elem = node.toElement();
+
+  readCommonStyle( elem, context, categories );
+
   QDomElement elemRendererSettings = elem.firstChildElement( "mesh-renderer-settings" );
   if ( !elemRendererSettings.isNull() )
     mRendererSettings.readXml( elemRendererSettings );
@@ -261,10 +263,12 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
                                    const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
 {
   Q_UNUSED( errorMessage );
-  Q_UNUSED( context );
-  Q_UNUSED( categories );
+  // TODO: implement categories for raster layer
 
   QDomElement elem = node.toElement();
+
+  writeCommonStyle( elem, doc, context, categories );
+
   QDomElement elemRendererSettings = mRendererSettings.writeXml( doc );
   elem.appendChild( elemRendererSettings );
 

@@ -38,7 +38,7 @@ only possible to read or write layer's current style.
       Fields,
       Forms,
       Actions,
-      Tooltips,
+      MapTips,
       Diagrams,
       AttributeTable,
       Rendering,
