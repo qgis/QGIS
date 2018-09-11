@@ -692,7 +692,28 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertEqual(model.rowCount(), 8)
 
         # smart group filter
-        # can't test in Python -- smart groups cannot be set here!
+        style.addSmartgroup('smart', 'AND', ['tag 3'], [], ['c'], [])
+        self.assertEqual(model.smartGroupId(), -1)
+        model.setSmartGroupId(1)
+        self.assertEqual(model.smartGroupId(), 1)
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), 'C')
+        style.addSmartgroup('smart', 'OR', ['tag 3'], [], ['c'], [])
+        model.setSmartGroupId(2)
+        self.assertEqual(model.rowCount(), 2)
+        self.assertEqual(model.data(model.index(0, 0)), 'C')
+        self.assertEqual(model.data(model.index(1, 0)), 'ramp c')
+        style.tagSymbol(QgsStyle.SymbolEntity, 'a', ['tag 3'])
+        self.assertEqual(model.rowCount(), 3)
+        self.assertEqual(model.data(model.index(0, 0)), 'a')
+        self.assertEqual(model.data(model.index(1, 0)), 'C')
+        self.assertEqual(model.data(model.index(2, 0)), 'ramp c')
+        style.renameColorRamp('ramp c', 'x')
+        self.assertEqual(model.rowCount(), 2)
+        self.assertEqual(model.data(model.index(0, 0)), 'a')
+        self.assertEqual(model.data(model.index(1, 0)), 'C')
+        model.setSmartGroupId(-1)
+        self.assertEqual(model.rowCount(), 8)
 
 
 if __name__ == '__main__':
