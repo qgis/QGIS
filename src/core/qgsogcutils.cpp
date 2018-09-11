@@ -3398,14 +3398,14 @@ QgsExpressionNodeUnaryOperator *QgsOgcUtilsExpressionFromFilter::nodeNotFromOgcF
     return nullptr;
 
   QDomElement operandElem = element.firstChildElement();
-  QgsExpressionNode *operand = nodeFromOgcFilter( operandElem );
+  std::unique_ptr<QgsExpressionNode> operand( nodeFromOgcFilter( operandElem ) );
   if ( !operand )
   {
     mErrorMessage = QObject::tr( "invalid operand for '%1' unary operator" ).arg( element.tagName() );
     return nullptr;
   }
 
-  return new QgsExpressionNodeUnaryOperator( QgsExpressionNodeUnaryOperator::uoNot, operand );
+  return new QgsExpressionNodeUnaryOperator( QgsExpressionNodeUnaryOperator::uoNot, operand.release() );
 }
 
 QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodePropertyIsNullFromOgcFilter( const QDomElement &element )
