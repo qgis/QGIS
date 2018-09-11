@@ -151,7 +151,11 @@ QgsMapLayer::LayerFlags QgsMapLayer::flags() const
 
 void QgsMapLayer::setFlags( QgsMapLayer::LayerFlags flags )
 {
+  if ( flags == mFlags )
+    return;
+
   mFlags = flags;
+  emit flagsChanged();
 }
 
 QString QgsMapLayer::id() const

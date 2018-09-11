@@ -1380,6 +1380,17 @@ Emitted when the layer's metadata is changed.
 .. versionadded:: 3.0
 %End
 
+    void flagsChanged();
+%Docstring
+Emitted when layer's flags have been modified.
+
+.. seealso:: :py:func:`setFlags`
+
+.. seealso:: :py:func:`flags`
+
+.. versionadded:: 3.4
+%End
+
   protected:
 
     void clone( QgsMapLayer *layer ) const;
