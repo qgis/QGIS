@@ -3265,7 +3265,7 @@ QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeSpatialOperatorF
   // we are exploiting the fact that our function names are the same as the XML tag names
   int opIdx = QgsExpression::functionIndex( element.tagName().toLower() );
 
-  QgsExpressionNode::NodeList *gml2Args = new QgsExpressionNode::NodeList();
+  std::unique_ptr<QgsExpressionNode::NodeList> gml2Args( new QgsExpressionNode::NodeList() );
   QDomElement childElem = element.firstChildElement();
   QString gml2Str;
   while ( !childElem.isNull() && gml2Str.isEmpty() )
@@ -3284,13 +3284,12 @@ QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeSpatialOperatorF
   else
   {
     mErrorMessage = QObject::tr( "No OGC Geometry found" );
-    delete gml2Args;
     return nullptr;
   }
 
   QgsExpressionNode::NodeList *opArgs = new QgsExpressionNode::NodeList();
   opArgs->append( new QgsExpressionNodeFunction( QgsExpression::functionIndex( QStringLiteral( "$geometry" ) ), new QgsExpressionNode::NodeList() ) );
-  opArgs->append( new QgsExpressionNodeFunction( QgsExpression::functionIndex( QStringLiteral( "geomFromGML" ) ), gml2Args ) );
+  opArgs->append( new QgsExpressionNodeFunction( QgsExpression::functionIndex( QStringLiteral( "geomFromGML" ) ), gml2Args.release() ) );
 
   return new QgsExpressionNodeFunction( opIdx, opArgs );
 }
