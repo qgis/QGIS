@@ -259,16 +259,20 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         old_feature.setAttributes([1])
         old_feature.setGeometry(QgsGeometry.fromWkt('Polygon z ((1 1 1, 2 2 2, 3 3 3 , 1 1 1))'))
         l, f = self._make_compatible_tester('Polygon ((1 1, 2 2, 3 3, 1 1))', 'PolygonZ', old_feature=old_feature)
-        g = f.geometry().get()
-        print(g)
-        self.assertEqual(f.geometry().get().z(), 0)
+        g = f.geometry()
+        g2 = g.get()
+        for v in g2.vertices():
+            self.assertEqual(v.z(), 0)
 
         # Adding M back
         old_feature = QgsFeature(self.vl.fields())
         old_feature.setAttributes([1])
         old_feature.setGeometry(QgsGeometry.fromWkt('Polygon m ((1 1 1, 2 2 2, 3 3 3 , 1 1 1))'))
         l, f = self._make_compatible_tester('Polygon ((1 1, 2 2, 3 3, 1 1))', 'PolygonM', old_feature=old_feature)
-        self.assertEqual(f.geometry().get().m(), 0)
+        g = f.geometry()
+        g2 = g.get()
+        for v in g2.vertices():
+            self.assertEqual(v.m(), 0)
 
         self._make_compatible_tester('Polygon m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', 'Polygon')
         self._make_compatible_tester('Polygon m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', 'PolygonM')
@@ -281,6 +285,27 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self._make_compatible_tester('LineString z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', 'LineStringZ')
         self._make_compatible_tester('LineString m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', 'LineString')
         self._make_compatible_tester('LineString m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', 'LineStringM')
+
+        # Adding Z back
+        old_feature = QgsFeature(self.vl.fields())
+        old_feature.setAttributes([1])
+        old_feature.setGeometry(QgsGeometry.fromWkt('LineString z ((1 1 1, 2 2 2, 3 3 3 , 1 1 1))'))
+        l, f = self._make_compatible_tester('LineString ((1 1, 2 2, 3 3, 1 1))', 'LineStringZ', old_feature=old_feature)
+        g = f.geometry()
+        g2 = g.get()
+        for v in g2.vertices():
+            self.assertEqual(v.z(), 0)
+
+        # Adding M back
+        old_feature = QgsFeature(self.vl.fields())
+        old_feature.setAttributes([1])
+        old_feature.setGeometry(QgsGeometry.fromWkt('LineString m ((1 1 1, 2 2 2, 3 3 3 , 1 1 1))'))
+        l, f = self._make_compatible_tester('LineString ((1 1, 2 2, 3 3, 1 1))', 'LineStringM', old_feature=old_feature)
+        g = f.geometry()
+        g2 = g.get()
+        for v in g2.vertices():
+            self.assertEqual(v.m(), 0)
+
         self._make_compatible_tester('LineString((1 1, 2 2, 3 3, 1 1))', 'MultiLineString')
         self._make_compatible_tester('MultiLineString(((1 1, 2 2, 3 3, 1 1)), ((1 1, 2 2, 3 3, 1 1)))', 'MultiLineString')
 
