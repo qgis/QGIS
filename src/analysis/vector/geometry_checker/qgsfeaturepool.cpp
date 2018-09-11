@@ -37,7 +37,7 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, c
 
 }
 
-bool QgsFeaturePool::get( QgsFeatureId id, QgsFeature &feature )
+bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
 {
   QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
   QgsFeature *cachedFeature = mFeatureCache.object( id );
@@ -63,7 +63,7 @@ bool QgsFeaturePool::get( QgsFeatureId id, QgsFeature &feature )
   return true;
 }
 
-QgsFeatureIds QgsFeaturePool::getFeatureIds() const
+QgsFeatureIds QgsFeaturePool::allFeatureIds() const
 {
   return mFeatureIds;
 }
@@ -97,14 +97,14 @@ void QgsFeaturePool::refreshCache( const QgsFeature &feature )
   locker.unlock();
 
   QgsFeature tempFeature;
-  get( feature.id(), tempFeature );
+  getFeature( feature.id(), tempFeature );
 }
 
 void QgsFeaturePool::removeFeature( const QgsFeatureId featureId )
 {
   QgsFeature origFeature;
   QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Unlocked );
-  if ( get( featureId, origFeature ) )
+  if ( getFeature( featureId, origFeature ) )
   {
     locker.changeMode( QgsReadWriteLocker::Write );
     mIndex.deleteFeature( origFeature );

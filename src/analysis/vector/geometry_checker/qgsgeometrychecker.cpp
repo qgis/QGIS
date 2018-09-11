@@ -68,7 +68,7 @@ QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
       {
         if ( check->checkType() <= QgsGeometryCheck::FeatureCheck )
         {
-          *totalSteps += check->isCompatible( it.value()->layer()->geometryType() ) ? it.value()->getFeatureIds().size() : 0;
+          *totalSteps += check->isCompatible( it.value()->layer()->geometryType() ) ? it.value()->allFeatureIds().size() : 0;
         }
         else
         {
@@ -160,7 +160,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
       if ( !removed )
       {
         QgsFeature f;
-        if ( featurePool->get( layerChangeIt.key(), f ) )
+        if ( featurePool->getFeature( layerChangeIt.key(), f ) )
         {
           recheckFeatures[it.key()].insert( layerChangeIt.key() );
           recheckArea.combineExtentWith( t.transformBoundingBox( f.geometry().boundingBox() ) );

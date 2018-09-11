@@ -81,8 +81,8 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
   QgsFeaturePool *featurePoolB = mContext->featurePools[ overlapError->overlappedFeature().first ];
   QgsFeature featureA;
   QgsFeature featureB;
-  if ( !featurePoolA->get( overlapError->featureId(), featureA ) ||
-       !featurePoolB->get( overlapError->overlappedFeature().second, featureB ) )
+  if ( !featurePoolA->getFeature( overlapError->featureId(), featureA ) ||
+       !featurePoolB->getFeature( overlapError->overlappedFeature().second, featureB ) )
   {
     error->setObsolete();
     return;

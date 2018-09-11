@@ -42,7 +42,7 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, c
 {
   QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
   QgsFeature feature;
-  if ( !featurePool->get( error->featureId(), feature ) )
+  if ( !featurePool->getFeature( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;

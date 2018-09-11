@@ -88,7 +88,7 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
 {
   QgsFeaturePool *featurePoolA = mContext->featurePools[ error->layerId() ];
   QgsFeature featureA;
-  if ( !featurePoolA->get( error->featureId(), featureA ) )
+  if ( !featurePoolA->getFeature( error->featureId(), featureA ) )
   {
     error->setObsolete();
     return;
@@ -110,7 +110,7 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
       for ( QgsFeatureId idB : duplicateError->duplicates()[layerIdB] )
       {
         QgsFeature featureB;
-        if ( !featurePoolB->get( idB, featureB ) )
+        if ( !featurePoolB->getFeature( idB, featureB ) )
         {
           continue;
         }
