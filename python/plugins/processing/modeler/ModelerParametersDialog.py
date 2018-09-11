@@ -64,6 +64,7 @@ from processing.gui.wrappers import WidgetWrapperFactory
 from processing.gui.wrappers import InvalidParameterValue
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.tools.dataobjects import createContext
+from processing.gui.wrappers import WidgetWrapper
 
 
 class ModelerParametersDialog(QDialog):
@@ -77,6 +78,8 @@ class ModelerParametersDialog(QDialog):
         self.childId = algName # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
         self.configuration = configuration
         self.context = createContext()
+
+        self.widget_labels = {}
 
         self.setupUi()
         self.params = None
@@ -159,6 +162,7 @@ class ModelerParametersDialog(QDialog):
                     tooltip = param.description()
                     widget.setToolTip(tooltip)
                     label = wrapper.label
+                self.widget_labels[param.name()] = label
 
                 if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                     label.setVisible(self.showAdvanced)
@@ -231,8 +235,13 @@ class ModelerParametersDialog(QDialog):
             self.advancedButton.setText(self.tr('Show advanced parameters'))
         for param in self._alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
-                self.wrappers[param.name()].widget.setVisible(self.showAdvanced)
-                self.wrappers[param.name()].label.setVisible(self.showAdvanced)
+                wrapper = self.wrappers[param.name()]
+                if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
+                    wrapper.setVisible(self.showAdvanced)
+                else:
+                    wrapper.widget.setVisible(self.showAdvanced)
+
+                self.widget_labels[param.name()].setVisible(self.showAdvanced)
 
     def getAvailableValuesOfType(self, paramType, outTypes=[], dataTypes=[]):
         # upgrade paramType to list
