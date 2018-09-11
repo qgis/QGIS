@@ -105,3 +105,6 @@ class SetMValue(QgisFeatureBasedAlgorithm):
             feature.setGeometry(QgsGeometry(new_geom))
 
         return [feature]
+
+    def supportInPlaceEdit(self, layer):
+        return super().supportInPlaceEdit(layer) and QgsWkbTypes.hasM(layer.wkbType())
