@@ -141,6 +141,21 @@ class CORE_EXPORT QgsStyle : public QObject
     int addSmartgroup( const QString &name, const QString &op, const QgsSmartConditionMap &conditions ) SIP_SKIP;
 
     /**
+     * Adds a new smartgroup to the database and returns the id.
+     *
+     * \param name is the name of the new Smart Group to be added
+     * \param op is the operator between the conditions; AND/OR as QString
+     * \param matchTag list of strings to match within tags
+     * \param noMatchTag list of strings to exclude matches from tags
+     * \param matchName list of string to match within names
+     * \param noMatchName list of strings to exclude matches from names
+     *
+     * \since QGIS 3.4
+     */
+    int addSmartgroup( const QString &name, const QString &op, const QStringList &matchTag, const QStringList &noMatchTag,
+                       const QStringList &matchName, const QStringList &noMatchName );
+
+    /**
      * Returns a list of all tags in the style database
      *
      * \see addTag()

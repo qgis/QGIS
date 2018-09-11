@@ -1170,25 +1170,33 @@ int QgsStyle::smartgroupId( const QString &name )
 
 int QgsStyle::addSmartgroup( const QString &name, const QString &op, const QgsSmartConditionMap &conditions )
 {
+  return addSmartgroup( name, op, conditions.values( QStringLiteral( "tag" ) ),
+                        conditions.values( QStringLiteral( "!tag" ) ),
+                        conditions.values( QStringLiteral( "name" ) ),
+                        conditions.values( QStringLiteral( "!name" ) ) );
+}
+
+int QgsStyle::addSmartgroup( const QString &name, const QString &op, const QStringList &matchTag, const QStringList &noMatchTag, const QStringList &matchName, const QStringList &noMatchName )
+{
   QDomDocument doc( QStringLiteral( "dummy" ) );
   QDomElement smartEl = doc.createElement( QStringLiteral( "smartgroup" ) );
   smartEl.setAttribute( QStringLiteral( "name" ), name );
   smartEl.setAttribute( QStringLiteral( "operator" ), op );
 
-  QStringList constraints;
-  constraints << QStringLiteral( "tag" ) << QStringLiteral( "group" ) << QStringLiteral( "name" ) << QStringLiteral( "!tag" ) << QStringLiteral( "!group" ) << QStringLiteral( "!name" );
-
-  Q_FOREACH ( const QString &constraint, constraints )
+  auto addCondition = [&doc, &smartEl]( const QString & constraint, const QStringList & parameters )
   {
-    QStringList parameters = conditions.values( constraint );
-    Q_FOREACH ( const QString &param, parameters )
+    for ( const QString &param : parameters )
     {
       QDomElement condEl = doc.createElement( QStringLiteral( "condition" ) );
       condEl.setAttribute( QStringLiteral( "constraint" ), constraint );
       condEl.setAttribute( QStringLiteral( "param" ), param );
       smartEl.appendChild( condEl );
     }
-  }
+  };
+  addCondition( QStringLiteral( "tag" ), matchTag );
+  addCondition( QStringLiteral( "!tag" ), noMatchTag );
+  addCondition( QStringLiteral( "name" ), matchName );
+  addCondition( QStringLiteral( "!name" ), noMatchName );
 
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
@@ -1312,16 +1320,16 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
       else if ( constraint == QLatin1String( "!tag" ) )
       {
         resultNames = type == SymbolEntity ? symbolNames() : colorRampNames();
-        QStringList unwanted = symbolsWithTag( type, tagId( param ) );
-        Q_FOREACH ( const QString &name, unwanted )
+        const QStringList unwanted = symbolsWithTag( type, tagId( param ) );
+        for ( const QString &name : unwanted )
         {
           resultNames.removeAll( name );
         }
       }
       else if ( constraint == QLatin1String( "!name" ) )
       {
-        QStringList all = type == SymbolEntity ? symbolNames() : colorRampNames();
-        Q_FOREACH ( const QString &str, all )
+        const QStringList all = type == SymbolEntity ? symbolNames() : colorRampNames();
+        for ( const QString &str : all )
         {
           if ( !str.contains( param, Qt::CaseInsensitive ) )
             resultNames << str;
@@ -1344,7 +1352,7 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
         {
           QStringList dummy = symbols;
           symbols.clear();
-          Q_FOREACH ( const QString &result, resultNames )
+          for ( const QString &result : qgis::as_const( resultNames ) )
           {
             if ( dummy.contains( result ) )
               symbols << result;
@@ -1354,7 +1362,10 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
     } // DOM loop ends here
   }
 
-  return symbols;
+  // return sorted, unique list
+  QStringList unique = symbols.toSet().toList();
+  std::sort( unique.begin(), unique.end() );
+  return unique;
 }
 
 QgsSmartConditionMap QgsStyle::smartgroup( int id )
@@ -1437,7 +1448,7 @@ bool QgsStyle::exportXml( const QString &filename )
 
   QDomDocument doc( QStringLiteral( "qgis_style" ) );
   QDomElement root = doc.createElement( QStringLiteral( "qgis_style" ) );
-  root.setAttribute( QStringLiteral( "version" ), STYLE_CURRENT_VERSION );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( STYLE_CURRENT_VERSION ) );
   doc.appendChild( root );
 
   QStringList favoriteSymbols = symbolsOfFavorite( SymbolEntity );
@@ -1528,7 +1539,7 @@ bool QgsStyle::importXml( const QString &filename )
   }
 
   QString version = docEl.attribute( QStringLiteral( "version" ) );
-  if ( version != STYLE_CURRENT_VERSION && version != QLatin1String( "0" ) )
+  if ( version != QLatin1String( STYLE_CURRENT_VERSION ) && version != QLatin1String( "0" ) )
   {
     mErrorString = "Unknown style file version: " + version;
     return false;
@@ -1543,7 +1554,7 @@ bool QgsStyle::importXml( const QString &filename )
   auto query = QgsSqlite3Mprintf( "BEGIN TRANSACTION;" );
   runEmptyQuery( query );
 
-  if ( version == STYLE_CURRENT_VERSION )
+  if ( version == QLatin1String( STYLE_CURRENT_VERSION ) )
   {
     // For the new style, load symbols individually
     while ( !e.isNull() )
