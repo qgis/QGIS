@@ -3287,11 +3287,11 @@ QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeSpatialOperatorF
     return nullptr;
   }
 
-  QgsExpressionNode::NodeList *opArgs = new QgsExpressionNode::NodeList();
+  std::unique_ptr<QgsExpressionNode::NodeList> opArgs( new QgsExpressionNode::NodeList() );
   opArgs->append( new QgsExpressionNodeFunction( QgsExpression::functionIndex( QStringLiteral( "$geometry" ) ), new QgsExpressionNode::NodeList() ) );
   opArgs->append( new QgsExpressionNodeFunction( QgsExpression::functionIndex( QStringLiteral( "geomFromGML" ) ), gml2Args.release() ) );
 
-  return new QgsExpressionNodeFunction( opIdx, opArgs );
+  return new QgsExpressionNodeFunction( opIdx, opArgs.release() );
 }
 
 QgsExpressionNodeColumnRef *QgsOgcUtilsExpressionFromFilter::nodeColumnRefFromOgcFilter( const QDomElement &element )
