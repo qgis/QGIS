@@ -33,15 +33,44 @@ namespace QgsGeometryCheckerUtils
   class LayerFeature
   {
     public:
+
+      /**
+       * Create a new layer/feature combination.
+       * The layer is defined by \a pool, \a feature needs to be from this layer.
+       * If \a useMapCrs is True, geometries will be reprojected to the mapCrs defined
+       * in \a context.
+       */
       LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, QgsGeometryCheckerContext *context, bool useMapCrs );
-      const QgsFeature &feature() const { return mFeature; }
+
+      /**
+       * Returns the feature.
+       * The geometry will not be reprojected regardless of useMapCrs.
+       */
+      const QgsFeature &feature() const;
+
+      /**
+       * The layer.
+       */
       QPointer<QgsVectorLayer> layer() const;
+
+      /**
+       * The layer id.
+       */
       QString layerId() const;
+
+      /**
+       * Returns the geometry of this feature.
+       * If useMapCrs was specified, it will already be reprojected into the
+       * CRS specified in the context specified in the constructor.
+       */
       const QgsGeometry &geometry() const;
       QString id() const;
       bool operator==( const LayerFeature &other ) const;
       bool operator!=( const LayerFeature &other ) const;
 
+      /**
+       * Returns if the geometry is reprojected to the map CRS or not.
+       */
       bool useMapCrs() const;
 
     private:

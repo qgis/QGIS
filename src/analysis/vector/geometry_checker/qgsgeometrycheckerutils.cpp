@@ -42,6 +42,11 @@ namespace QgsGeometryCheckerUtils
     }
   }
 
+  const QgsFeature &LayerFeature::feature() const
+  {
+    return mFeature;
+  }
+
   QPointer<QgsVectorLayer> LayerFeature::layer() const
   {
     return mFeaturePool->layerPtr();
@@ -55,7 +60,6 @@ namespace QgsGeometryCheckerUtils
   const QgsGeometry &LayerFeature::geometry() const
   {
     return mGeometry;
-
   }
 
   QString LayerFeature::id() const
