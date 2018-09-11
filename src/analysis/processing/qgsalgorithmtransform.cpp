@@ -79,6 +79,7 @@ QgsTransformAlgorithm *QgsTransformAlgorithm::createInstance() const
 
 bool QgsTransformAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
+  prepareSource( parameters, context );
   mDestCrs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
   mTransformContext = context.project() ? context.project()->transformContext() : QgsCoordinateTransformContext();
   return true;

@@ -88,6 +88,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         context.setProject(QgsProject.instance())
         feedback = QgsProcessingFeedback()
 
+        input_layer.rollBack()
         with self.assertRaises(QgsProcessingException) as cm:
             execute_in_place_run(
                 alg, input_layer, parameters, context=context, feedback=feedback, raise_exceptions=True)
@@ -198,6 +199,26 @@ class TestQgsProcessingInPlace(unittest.TestCase):
 
         # Check selected
         self.assertEqual(len(self.vl.selectedFeatureIds()), 3)
+
+    def test_reprojectlayer(self):
+        """Check that this runs correctly"""
+
+        old_count = self.vl.featureCount()
+
+        old_features, new_features = self._alg_tester(
+            'native:reprojectlayer',
+            self.vl,
+            {
+                'TARGET_CRS': 'EPSG:3857',
+            }
+        )
+
+        g = [f.geometry() for f in new_features][0]
+        self.assertAlmostEqual(g.get().x(), 1001875.4, 1)
+        self.assertAlmostEqual(g.get().y(), 5621521.5, 1)
+
+        # Check selected
+        self.assertEqual(self.vl.selectedFeatureIds(), [1])
 
     def _make_compatible_tester(self, feature_wkt, layer_wkb_name, attrs=[1], old_feature=None):
         fields = QgsFields()

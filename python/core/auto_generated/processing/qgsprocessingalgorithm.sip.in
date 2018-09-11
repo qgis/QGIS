@@ -987,6 +987,13 @@ checks based on the geometry type of the layer.
 .. versionadded:: 3.4
 %End
 
+    void prepareSource( const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Read the source from ``parameters`` and ``context`` and set it
+
+.. versionadded:: 3.4
+%End
+
 };
 
 
