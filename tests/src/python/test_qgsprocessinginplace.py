@@ -17,7 +17,7 @@ from qgis.core import (
     QgsFeature, QgsGeometry, QgsSettings, QgsApplication, QgsMemoryProviderUtils, QgsWkbTypes, QgsField, QgsFields, QgsProcessingFeatureSourceDefinition, QgsProcessingContext, QgsProcessingFeedback, QgsCoordinateReferenceSystem, QgsProject, QgsProcessingException
 )
 from processing.core.Processing import Processing
-from processing.gui.AlgorithmExecutor import execute_in_place_run
+from processing.gui.AlgorithmExecutor import execute_in_place_run, make_features_compatible
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.analysis import QgsNativeAlgorithms
@@ -45,10 +45,10 @@ class TestQgsProcessingInPlace(unittest.TestCase):
 
         f1 = QgsFeature(cls.vl.fields())
         f1['int_f'] = 1
-        f1.setGeometry(QgsGeometry.fromWkt('point(9 45)'))
+        f1.setGeometry(QgsGeometry.fromWkt('Point(9 45)'))
         f2 = QgsFeature(cls.vl.fields())
         f2['int_f'] = 2
-        f2.setGeometry(QgsGeometry.fromWkt('point(9.5 45.6)'))
+        f2.setGeometry(QgsGeometry.fromWkt('Point(9.5 45.6)'))
         cls.vl.dataProvider().addFeatures([f1, f2])
 
         assert cls.vl.isValid()
@@ -199,9 +199,90 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         # Check selected
         self.assertEqual(len(self.vl.selectedFeatureIds()), 3)
 
-    def test_make_compatible(self):
+    def _make_compatible_tester(self, feature_wkt, layer_wkb_name, attrs=[1], old_feature=None):
+        fields = QgsFields()
+        wkb_type = getattr(QgsWkbTypes, layer_wkb_name)
+        fields.append(QgsField('int_f', QVariant.Int))
+        layer = QgsMemoryProviderUtils.createMemoryLayer(
+            '%s_layer' % layer_wkb_name, fields, wkb_type, QgsCoordinateReferenceSystem(4326))
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.wkbType(), wkb_type)
+        layer.startEditing()
+
+        f = QgsFeature(layer.fields())
+        f.setAttributes(attrs)
+        f.setGeometry(QgsGeometry.fromWkt(feature_wkt))
+        self.assertTrue(f.isValid())
+
+        # Fix it!
+        new_features = make_features_compatible([f], layer, old_feature)
+
+        self.assertEqual(f.geometry().wkbType(), wkb_type)
+        self.assertTrue(layer.addFeatures(new_features), "Fail: %s - %s - %s" % (feature_wkt, attrs, layer_wkb_name))
+        return layer, new_features[0]
+
+    def test_make_features_compatible(self):
         """Test fixer function"""
-        pass
+        # Test failure
+        with self.assertRaises(AssertionError):
+            self._make_compatible_tester('LineString (1 1, 2 2, 3 3)', 'Point')
+        self._make_compatible_tester('Point(1 1)', 'Point')
+        self._make_compatible_tester('Point(1 1)', 'Point', [1, 'nope'])
+        self._make_compatible_tester('Point z (1 1 3)', 'Point')
+        self._make_compatible_tester('Point z (1 1 3)', 'PointZ')
+
+        # Adding Z back
+        old_feature = QgsFeature(self.vl.fields())
+        old_feature.setAttributes([1])
+        old_feature.setGeometry(QgsGeometry.fromWkt('Point z (1 1 3)'))
+        l, f = self._make_compatible_tester('Point (1 1)', 'PointZ', old_feature=old_feature)
+        self.assertEqual(f.geometry().get().z(), 0)
+
+        # Adding M back
+        old_feature = QgsFeature(self.vl.fields())
+        old_feature.setAttributes([1])
+        old_feature.setGeometry(QgsGeometry.fromWkt('Point m (1 1 3)'))
+        l, f = self._make_compatible_tester('Point (1 1)', 'PointM', old_feature=old_feature)
+        self.assertEqual(f.geometry().get().m(), 0)
+
+        self._make_compatible_tester('Point m (1 1 3)', 'Point')
+        self._make_compatible_tester('Point(1 3)', 'MultiPoint')
+        self._make_compatible_tester('MultiPoint((1 3), (2 2))', 'MultiPoint')
+
+        self._make_compatible_tester('Polygon((1 1, 2 2, 3 3, 1 1))', 'Polygon')
+        self._make_compatible_tester('Polygon((1 1, 2 2, 3 3, 1 1)', 'Polygon', [1, 'nope'])
+        self._make_compatible_tester('Polygon z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', 'Polygon')
+        self._make_compatible_tester('Polygon z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', 'PolygonZ')
+
+        # Adding Z back
+        old_feature = QgsFeature(self.vl.fields())
+        old_feature.setAttributes([1])
+        old_feature.setGeometry(QgsGeometry.fromWkt('Polygon z ((1 1 1, 2 2 2, 3 3 3 , 1 1 1))'))
+        l, f = self._make_compatible_tester('Polygon ((1 1, 2 2, 3 3, 1 1))', 'PolygonZ', old_feature=old_feature)
+        g = f.geometry().get()
+        print(g)
+        self.assertEqual(f.geometry().get().z(), 0)
+
+        # Adding M back
+        old_feature = QgsFeature(self.vl.fields())
+        old_feature.setAttributes([1])
+        old_feature.setGeometry(QgsGeometry.fromWkt('Polygon m ((1 1 1, 2 2 2, 3 3 3 , 1 1 1))'))
+        l, f = self._make_compatible_tester('Polygon ((1 1, 2 2, 3 3, 1 1))', 'PolygonM', old_feature=old_feature)
+        self.assertEqual(f.geometry().get().m(), 0)
+
+        self._make_compatible_tester('Polygon m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', 'Polygon')
+        self._make_compatible_tester('Polygon m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', 'PolygonM')
+        self._make_compatible_tester('Polygon((1 1, 2 2, 3 3, 1 1))', 'MultiPolygon')
+        self._make_compatible_tester('MultiPolygon(((1 1, 2 2, 3 3, 1 1)), ((1 1, 2 2, 3 3, 1 1)))', 'MultiPolygon')
+
+        self._make_compatible_tester('LineString((1 1, 2 2, 3 3, 1 1))', 'LineString')
+        self._make_compatible_tester('LineString((1 1, 2 2, 3 3, 1 1)', 'LineString', [1, 'nope'])
+        self._make_compatible_tester('LineString z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', 'LineString')
+        self._make_compatible_tester('LineString z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', 'LineStringZ')
+        self._make_compatible_tester('LineString m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', 'LineString')
+        self._make_compatible_tester('LineString m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', 'LineStringM')
+        self._make_compatible_tester('LineString((1 1, 2 2, 3 3, 1 1))', 'MultiLineString')
+        self._make_compatible_tester('MultiLineString(((1 1, 2 2, 3 3, 1 1)), ((1 1, 2 2, 3 3, 1 1)))', 'MultiLineString')
 
 
 if __name__ == '__main__':
