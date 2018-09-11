@@ -392,7 +392,7 @@ class QgsOgcUtilsExpressionFromFilter
      * \param layer Layer to use to retrieve field values from literal filters
      */
     QgsOgcUtilsExpressionFromFilter( QgsOgcUtils::FilterVersion version = QgsOgcUtils::FILTER_OGC_1_0,
-                                     QgsVectorLayer *layer = nullptr );
+                                     const QgsVectorLayer *layer = nullptr );
 
     /**
      * Returns an expression node from a WFS filter embedded in a document
@@ -457,7 +457,7 @@ class QgsOgcUtilsExpressionFromFilter
     QgsExpressionNode *nodeIsBetweenFromOgcFilter( const QDomElement &element );
 
   private:
-    QgsVectorLayer *mLayer = nullptr;
+    const QgsVectorLayer *mLayer = nullptr;
     QString mErrorMessage;
     QString mPropertyName;
     QString mPrefix;

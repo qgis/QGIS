@@ -3093,7 +3093,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   return QDomElement();
 }
 
-QgsOgcUtilsExpressionFromFilter::QgsOgcUtilsExpressionFromFilter( const QgsOgcUtils::FilterVersion version, QgsVectorLayer *layer )
+QgsOgcUtilsExpressionFromFilter::QgsOgcUtilsExpressionFromFilter( const QgsOgcUtils::FilterVersion version, const QgsVectorLayer *layer )
   : mLayer( layer )
 {
   mPropertyName = QStringLiteral( "PropertyName" );
@@ -3263,7 +3263,7 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
 QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeSpatialOperatorFromOgcFilter( const QDomElement &element )
 {
   // we are exploiting the fact that our function names are the same as the XML tag names
-  int opIdx = QgsExpression::functionIndex( element.tagName().toLower() );
+  const int opIdx = QgsExpression::functionIndex( element.tagName().toLower() );
 
   std::unique_ptr<QgsExpressionNode::NodeList> gml2Args( new QgsExpressionNode::NodeList() );
   QDomElement childElem = element.firstChildElement();
@@ -3324,7 +3324,7 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
     if ( childNode.nodeType() == QDomNode::ElementNode )
     {
       // found a element node (e.g. PropertyName), convert it
-      QDomElement operandElem = childNode.toElement();
+      const QDomElement operandElem = childNode.toElement();
       operand.reset( nodeFromOgcFilter( operandElem ) );
       if ( !operand )
       {
@@ -3349,7 +3349,7 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
         }
         if ( !propertyNameElement.isNull() || propertyNameElement.tagName() == mPropertyName )
         {
-          int fieldIndex = mLayer->fields().indexOf( propertyNameElement.firstChild().nodeValue() );
+          const int fieldIndex = mLayer->fields().indexOf( propertyNameElement.firstChild().nodeValue() );
           if ( fieldIndex != -1 )
           {
             QgsField field = mLayer->fields().field( propertyNameElement.firstChild().nodeValue() );
@@ -3363,7 +3363,7 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
         // try to convert the node content to number if possible,
         // otherwise let's use it as string
         bool ok;
-        double d = value.toDouble( &ok );
+        const double d = value.toDouble( &ok );
         if ( ok )
           value = d;
       }
@@ -3397,7 +3397,7 @@ QgsExpressionNodeUnaryOperator *QgsOgcUtilsExpressionFromFilter::nodeNotFromOgcF
   if ( element.tagName() != QLatin1String( "Not" ) )
     return nullptr;
 
-  QDomElement operandElem = element.firstChildElement();
+  const QDomElement operandElem = element.firstChildElement();
   std::unique_ptr<QgsExpressionNode> operand( nodeFromOgcFilter( operandElem ) );
   if ( !operand )
   {
@@ -3416,7 +3416,7 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodePropertyIs
     return nullptr;
   }
 
-  QDomElement operandElem = element.firstChildElement();
+  const QDomElement operandElem = element.firstChildElement();
   std::unique_ptr<QgsExpressionNode> opLeft( nodeFromOgcFilter( operandElem ) );
   if ( !opLeft )
     return nullptr;
@@ -3435,7 +3435,7 @@ QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeFunctionFromOgcF
 
   for ( int i = 0; i < QgsExpression::Functions().size(); i++ )
   {
-    QgsExpressionFunction *funcDef = QgsExpression::Functions()[i];
+    const QgsExpressionFunction *funcDef = QgsExpression::Functions()[i];
 
     if ( element.attribute( QStringLiteral( "name" ) ) != funcDef->name() )
       continue;
