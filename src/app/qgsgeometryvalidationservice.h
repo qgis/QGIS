@@ -34,7 +34,13 @@ class QgsGeometryValidationService : public QObject
   public:
     struct FeatureError
     {
-      QgsFeatureId featureId;
+      FeatureError()
+      {}
+      FeatureError( QgsFeatureId fid, QgsGeometry::Error error )
+        : featureId( fid )
+        , error( error )
+      {}
+      QgsFeatureId featureId = std::numeric_limits<QgsFeatureId>::min();
       QgsGeometry::Error error;
     };
 
@@ -43,13 +49,11 @@ class QgsGeometryValidationService : public QObject
     QgsGeometryValidationService( QgsProject *project );
     ~QgsGeometryValidationService();
 
-    FeatureErrors featureErrors( QgsVectorLayer *layer ) const;
-
-    FeatureError featureError( QgsVectorLayer *layer, int errorIndex );
+    bool validationActive( QgsVectorLayer *layer, QgsFeatureId feature ) const;
 
   signals:
     void geometryCheckStarted( QgsVectorLayer *layer, QgsFeatureId fid );
-    void geometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid );
+    void geometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<QgsGeometry::Error> &errors );
 
   private slots:
     void onLayersAdded( const QList<QgsMapLayer *> &layers );
@@ -60,12 +64,13 @@ class QgsGeometryValidationService : public QObject
   private:
     void cancelChecks( QgsVectorLayer *layer, QgsFeatureId fid );
 
+    void processFeature( QgsVectorLayer *layer, QgsFeatureId fid );
+
     QgsIsValidGeometryCheck *mIsValidGeometryCheck;
 
     QgsProject *mProject;
 
     QMap<QgsVectorLayer *, bool> mActiveChecks;
-    QMap<QgsVectorLayer *, FeatureErrors> mFeatureErrors;
 };
 
 #endif // QGSGEOMETRYVALIDATIONSERVICE_H

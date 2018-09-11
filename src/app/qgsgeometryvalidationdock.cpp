@@ -30,4 +30,5 @@ QgsGeometryValidationModel *QgsGeometryValidationDock::geometryValidationModel()
 void QgsGeometryValidationDock::setGeometryValidationModel( QgsGeometryValidationModel *geometryValidationModel )
 {
   mGeometryValidationModel = geometryValidationModel;
+  mErrorListView->setModel( mGeometryValidationModel );
 }

@@ -12,19 +12,44 @@ class QgsGeometryValidationModel : public QAbstractItemModel
 
   public:
     QgsGeometryValidationModel( QgsGeometryValidationService *geometryValidationService, QObject *parent = nullptr );
+
     QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
     QModelIndex parent( const QModelIndex &child ) const override;
     int rowCount( const QModelIndex &parent ) const override;
     int columnCount( const QModelIndex &parent ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
+
     QgsVectorLayer *currentLayer() const;
+
+  public slots:
     void setCurrentLayer( QgsVectorLayer *currentLayer );
 
+  private slots:
+    void onGeometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<QgsGeometry::Error> &errors );
+    void onGeometryCheckStarted( QgsVectorLayer *layer, QgsFeatureId fid );
+
   private:
+    struct FeatureErrors
+    {
+      FeatureErrors()
+      {}
+
+      FeatureErrors( QgsFeatureId fid )
+        : fid( fid )
+      {}
+
+      QgsFeatureId fid; // TODO INITIALIZE PROPERLY
+      QList<QgsGeometry::Error> errors;
+    };
+
+    int errorsForFeature( QgsVectorLayer *layer, QgsFeatureId fid );
+
     QgsGeometryValidationService *mGeometryValidationService = nullptr;
     QgsVectorLayer *mCurrentLayer = nullptr;
     mutable QgsExpression mDisplayExpression;
     mutable QgsExpressionContext mExpressionContext;
+
+    QMap<QgsVectorLayer *, QList< FeatureErrors > > mErrorStorage;
 };
 
 #endif // QGSGEOMETRYVALIDATIONMODEL_H
