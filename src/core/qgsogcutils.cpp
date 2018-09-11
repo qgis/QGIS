@@ -3417,12 +3417,12 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodePropertyIs
   }
 
   QDomElement operandElem = element.firstChildElement();
-  QgsExpressionNode *opLeft = nodeFromOgcFilter( operandElem );
+  std::unique_ptr<QgsExpressionNode> opLeft( nodeFromOgcFilter( operandElem ) );
   if ( !opLeft )
     return nullptr;
 
-  QgsExpressionNode *opRight = new QgsExpressionNodeLiteral( QVariant() );
-  return new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boIs, opLeft, opRight );
+  std::unique_ptr<QgsExpressionNode> opRight( new QgsExpressionNodeLiteral( QVariant() ) );
+  return new QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::boIs, opLeft.release(), opRight.release() );
 }
 
 QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeFunctionFromOgcFilter( const QDomElement &element )
