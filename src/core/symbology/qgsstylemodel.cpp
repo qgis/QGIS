@@ -18,6 +18,7 @@
 #include "qgssymbollayerutils.h"
 #include <QIcon>
 
+const double ICON_PADDING_FACTOR = 0.16;
 
 QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   : QAbstractItemModel( parent )
@@ -70,18 +71,41 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
     case Qt::DecorationRole:
     {
+      // check the model custom property for icon sizes to generate. This is used
+      // by instances of the model to indicate the required sizes for decorations in all
+      // views connected to the model, and allows the model to have size responsive icons.
+      // By using a QObject property we avoid having public GUI/view related API within
+      // the model, and mostly avoid view related properties contaminating the pure model...
+      const QVariantList iconSizes = property( "icon_sizes" ).toList();
+
       switch ( index.column() )
       {
         case Name:
           if ( !isColorRamp )
           {
             std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
-            return QgsSymbolLayerUtils::symbolPreviewIcon( symbol.get(), QSize( 24, 24 ), 2 );
+            QIcon icon;
+            icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( 24, 24 ), 1 ) );
+
+            for ( const QVariant &size : iconSizes )
+            {
+              QSize s = size.toSize();
+              icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
+            }
+
+            return icon;
           }
           else
           {
             std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
-            return QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), QSize( 24, 24 ), 2 );
+            QIcon icon;
+            icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), QSize( 24, 24 ), 1 ) );
+            for ( const QVariant &size : iconSizes )
+            {
+              QSize s = size.toSize();
+              icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
+            }
+            return icon;
           }
         case Tags:
           return QVariant();
