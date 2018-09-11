@@ -19,21 +19,7 @@
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
 #include "qgsreadwritelocker.h"
-
-template <typename Func>
-void runOnMainThread( const Func &func )
-{
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 )
-  // Make sure we only deal with the vector layer on the main thread where it lives.
-  // Anything else risks a crash.
-  if ( QThread::currentThread() == qApp->thread() )
-    func();
-  else
-    QMetaObject::invokeMethod( qApp, func, Qt::BlockingQueuedConnection );
-#else
-  func();
-#endif
-}
+#include "qgsthreadingutils.h"
 
 QgsGeometryCheckerContext::QgsGeometryCheckerContext( int _precision, const QgsCoordinateReferenceSystem &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools, const QgsCoordinateTransformContext &transformContext )
   : tolerance( std::pow( 10, -_precision ) )
@@ -50,7 +36,7 @@ const QgsCoordinateTransform &QgsGeometryCheckerContext::layerTransform( const Q
   if ( !mTransformCache.contains( layer ) )
   {
     QgsCoordinateTransform transform;
-    runOnMainThread( [this, &transform, layer]()
+    QgsThreadingUtils::runOnMainThread( [this, &transform, layer]()
     {
       QgsVectorLayer *lyr = layer.data();
       if ( lyr )
@@ -70,7 +56,7 @@ double QgsGeometryCheckerContext::layerScaleFactor( const QPointer<QgsVectorLaye
   if ( !mScaleFactorCache.contains( layer ) )
   {
     double scaleFactor = 1.0;
-    runOnMainThread( [this, layer, &scaleFactor]()
+    QgsThreadingUtils::runOnMainThread( [this, layer, &scaleFactor]()
     {
       QgsVectorLayer *lyr = layer.data();
       if ( lyr )

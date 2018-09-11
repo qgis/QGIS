@@ -14,23 +14,9 @@ email                : matthias@opengis.ch
  ***************************************************************************/
 
 #include "qgsvectordataproviderfeaturepool.h"
+#include "qgsthreadingutils.h"
 
 #include "qgsfeaturerequest.h"
-
-template <typename Func>
-void runOnMainThread( const Func &func )
-{
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 )
-  // Make sure we only deal with the vector layer on the main thread where it lives.
-  // Anything else risks a crash.
-  if ( QThread::currentThread() == qApp->thread() )
-    func();
-  else
-    QMetaObject::invokeMethod( qApp, func, Qt::BlockingQueuedConnection );
-#else
-  func();
-#endif
-}
 
 QgsVectorDataProviderFeaturePool::QgsVectorDataProviderFeaturePool( QgsVectorLayer *layer, bool selectedOnly )
   : QgsFeaturePool( layer )
@@ -77,7 +63,7 @@ bool QgsVectorDataProviderFeaturePool::addFeature( QgsFeature &feature, Flags fl
       res = lyr->dataProvider()->addFeatures( features );
   };
 
-  runOnMainThread( addFeatureSynchronized );
+  QgsThreadingUtils::runOnMainThread( addFeatureSynchronized );
 
   if ( !res )
     return false;
@@ -85,7 +71,7 @@ bool QgsVectorDataProviderFeaturePool::addFeature( QgsFeature &feature, Flags fl
   feature.setId( features.front().id() );
   if ( mSelectedOnly )
   {
-    runOnMainThread( [ this, feature ]()
+    QgsThreadingUtils::runOnMainThread( [ this, feature ]()
     {
       QgsVectorLayer *lyr = layer();
       if ( lyr )
@@ -115,14 +101,14 @@ bool QgsVectorDataProviderFeaturePool::addFeatures( QgsFeatureList &features, Qg
       res = lyr->dataProvider()->addFeatures( features );
   };
 
-  runOnMainThread( addFeatureSynchronized );
+  QgsThreadingUtils::runOnMainThread( addFeatureSynchronized );
 
   if ( !res )
     return false;
 
   if ( mSelectedOnly )
   {
-    runOnMainThread( [ this, features ]()
+    QgsThreadingUtils::runOnMainThread( [ this, features ]()
     {
       QgsVectorLayer *lyr = layer();
       if ( lyr )
@@ -156,7 +142,7 @@ void QgsVectorDataProviderFeaturePool::updateFeature( QgsFeature &feature )
   }
   changedAttributesMap.insert( feature.id(), attribMap );
 
-  runOnMainThread( [this, geometryMap, changedAttributesMap]()
+  QgsThreadingUtils::runOnMainThread( [this, geometryMap, changedAttributesMap]()
   {
     QgsVectorLayer *lyr = layer();
     if ( lyr )
@@ -172,7 +158,7 @@ void QgsVectorDataProviderFeaturePool::updateFeature( QgsFeature &feature )
 void QgsVectorDataProviderFeaturePool::deleteFeature( QgsFeatureId fid )
 {
   removeFeature( fid );
-  runOnMainThread( [this, fid]()
+  QgsThreadingUtils::runOnMainThread( [this, fid]()
   {
     QgsVectorLayer *lyr = layer();
     if ( lyr )

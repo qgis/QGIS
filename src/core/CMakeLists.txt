@@ -946,6 +946,7 @@ SET(QGIS_CORE_HDRS
   qgstextlabelfeature.h
   qgstextrenderer.h
   qgstextrenderer_p.h
+  qgsthreadingutils.h
   qgstracer.h
   qgstranslationcontext.h
 
