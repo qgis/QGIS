@@ -709,6 +709,7 @@
         <file>themes/default/mDockify.svg</file>
         <file>themes/default/mActionReverseLine.svg</file>
         <file>themes/default/mActionAdd3DMap.svg</file>
+        <file>themes/default/mIndicatorNonRemovable.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

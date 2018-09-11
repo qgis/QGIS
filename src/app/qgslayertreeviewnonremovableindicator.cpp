@@ -24,7 +24,7 @@ QgsLayerTreeViewNonRemovableIndicatorProvider::QgsLayerTreeViewNonRemovableIndic
   : QObject( view )
   , mLayerTreeView( view )
 {
-  mIcon = QgsApplication::getThemeIcon( QStringLiteral( "/lockedGray.svg" ) );
+  mIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIndicatorNonRemovable.svg" ) );
 
   QgsLayerTree *tree = mLayerTreeView->layerTreeModel()->rootGroup();
   onAddedChildren( tree, 0, tree->children().count() - 1 );
