@@ -203,6 +203,7 @@ def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, ad
         global algorithmsToolbar
         if algorithmsToolbar is None:
             algorithmsToolbar = iface.addToolBar(QCoreApplication.translate('MainWindow', 'Processing Algorithms'))
+            algorithmsToolbar.setObjectName("ProcessingAlgorithms")
             algorithmsToolbar.setToolTip(QCoreApplication.translate('MainWindow', 'Processing Algorithms Toolbar'))
         algorithmsToolbar.addAction(action)
 
