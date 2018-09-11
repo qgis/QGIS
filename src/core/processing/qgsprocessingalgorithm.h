@@ -826,6 +826,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     bool createAutoOutputForParameter( QgsProcessingParameterDefinition *parameter );
 
+
     friend class QgsProcessingProvider;
     friend class TestQgsProcessing;
     friend class QgsProcessingModelAlgorithm;
@@ -989,6 +990,13 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * \since QGIS 3.4
      */
     virtual bool supportInPlaceEdit( const QgsVectorLayer *layer ) const override;
+
+    /**
+     * Read the source from \a parameters and \a context and set it
+     *
+     * \since QGIS 3.4
+     */
+    void prepareSource( const QVariantMap &parameters, QgsProcessingContext &context );
 
   private:
 

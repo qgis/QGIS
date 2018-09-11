@@ -768,6 +768,7 @@ bool QgsProcessingAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) c
   return false;
 }
 
+
 bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParameterDefinition *parameter )
 {
   if ( !parameter->isDestination() )
@@ -852,10 +853,7 @@ QgsCoordinateReferenceSystem QgsProcessingFeatureBasedAlgorithm::sourceCrs() con
 
 QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !mSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
-
+  prepareSource( parameters, context );
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest,
                                           outputFields( mSource->fields() ),
@@ -931,5 +929,15 @@ bool QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( const QgsVectorLaye
     return false;
 
   return true;
+}
+
+void QgsProcessingFeatureBasedAlgorithm::prepareSource( const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  if ( ! mSource )
+  {
+    mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+    if ( !mSource )
+      throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+  }
 }
 
