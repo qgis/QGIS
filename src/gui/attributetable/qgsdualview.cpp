@@ -446,7 +446,7 @@ void QgsDualView::setMultiEditEnabled( bool enabled )
   if ( enabled )
     setView( AttributeEditor );
 
-  mAttributeForm->setMode( enabled ? QgsAttributeForm::MultiEditMode : QgsAttributeForm::SingleEditMode );
+  mAttributeForm->setMode( enabled ? QgsAttributeEditorContext::MultiEditMode : QgsAttributeEditorContext::SingleEditMode );
 }
 
 void QgsDualView::toggleSearchMode( bool enabled )
@@ -454,11 +454,11 @@ void QgsDualView::toggleSearchMode( bool enabled )
   if ( enabled )
   {
     setView( AttributeEditor );
-    mAttributeForm->setMode( QgsAttributeForm::SearchMode );
+    mAttributeForm->setMode( QgsAttributeEditorContext::SearchMode );
   }
   else
   {
-    mAttributeForm->setMode( QgsAttributeForm::SingleEditMode );
+    mAttributeForm->setMode( QgsAttributeEditorContext::SingleEditMode );
   }
 }
 

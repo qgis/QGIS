@@ -73,7 +73,7 @@ Change the feature on which actions are performed
                 as long as the menu is displayed and the action is running.
 %End
 
-    void setMode( QgsAttributeForm::Mode mode );
+    void setMode( QgsAttributeEditorContext::Mode mode );
 %Docstring
 Change the mode of the actions
 

@@ -267,7 +267,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * Emitted when the form changes mode.
      * \param mode new mode
      */
-    void formModeChanged( QgsAttributeForm::Mode mode );
+    void formModeChanged( QgsAttributeEditorContext::Mode mode );
 
     /**
      * Emitted when selecting context menu on the feature list to create the context menu individually

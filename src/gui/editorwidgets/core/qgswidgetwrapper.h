@@ -205,7 +205,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
   signals:
 
     /**
-     * Signal when QgsAttributeEditorContext mContext changed after the widget wrapper has already been intialized
+     * Signal when QgsAttributeEditorContext mContext changed
      *
      * \since QGIS 3.4
      */

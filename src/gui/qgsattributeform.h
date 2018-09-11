@@ -46,18 +46,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
   public:
 
-    //! Form modes
-    enum Mode
-    {
-      SingleEditMode, //!< Single edit mode, for editing a single feature
-      AddFeatureMode, /*!< Add feature mode, for setting attributes for a new feature. In this mode the dialog will be editable even with an invalid feature and
-      will add a new feature when the form is accepted. */
-      MultiEditMode, //!< Multi edit mode, for editing fields of multiple features at once
-      SearchMode, //!< Form values are used for searching/filtering the layer
-      AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode \since QGIS 3.0
-      IdentifyMode //!< Identify the feature \since QGIS 3.0
-    };
-
     //! Filter types
     enum FilterType
     {
@@ -120,7 +108,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \see setMode()
      * \since QGIS 2.16
      */
-    Mode mode() const { return mMode; }
+    QgsAttributeEditorContext::Mode mode() const { return mMode; }
 
     /**
      * Sets the current mode of the form.
@@ -128,13 +116,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \see mode()
      * \since QGIS 2.16
      */
-    void setMode( Mode mode );
-
-    /**
-     * Returns the context as string of \a mode
-     * \since QGIS 3.4
-     */
-    QString modeString( Mode mode ) const;
+    void setMode( QgsAttributeEditorContext::Mode mode );
 
     /**
      * Sets the edit command message (Undo) that will be used when the dialog is accepted
@@ -226,7 +208,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Emitted when the form changes mode.
      * \param mode new mode
      */
-    void modeChanged( QgsAttributeForm::Mode mode );
+    void modeChanged( QgsAttributeEditorContext::Mode mode );
 
     /**
      * Emitted when the user selects the close option from the form's button bar.
@@ -440,7 +422,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     QString mEditCommandMessage;
 
-    Mode mMode;
+    QgsAttributeEditorContext::Mode mMode;
 
     QMap<QWidget *, QSvgWidget *> mIconMap;
 

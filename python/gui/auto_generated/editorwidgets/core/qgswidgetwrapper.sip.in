@@ -171,7 +171,7 @@ might be lost.
 
     void contextChanged();
 %Docstring
-Signal when QgsAttributeEditorContext mContext changed after the widget wrapper has already been intialized
+Signal when QgsAttributeEditorContext mContext changed
 
 .. versionadded:: 3.4
 %End

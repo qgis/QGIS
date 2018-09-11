@@ -54,10 +54,11 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
     void setQmlCode( const QString &qmlCode );
 
   public slots:
-
-    void setQmlContext();
-
     void setFeature( const QgsFeature &feature ) override;
+
+  private slots:
+    //! sets the qml context with the current values
+    void setQmlContext();
 
   private:
     QTemporaryFile mQmlFile;

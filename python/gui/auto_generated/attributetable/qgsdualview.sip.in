@@ -240,7 +240,7 @@ Is emitted when a filter expression is set using the view.
 .. versionadded:: 2.16
 %End
 
-    void formModeChanged( QgsAttributeForm::Mode mode );
+    void formModeChanged( QgsAttributeEditorContext::Mode mode );
 %Docstring
 Emitted when the form changes mode.
 

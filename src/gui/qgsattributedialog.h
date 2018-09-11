@@ -75,10 +75,10 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
 
     /**
      * Toggles the form mode.
-     * \param mode form mode. For example, if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
+     * \param mode form mode. For example, if set to QgsAttributeEditorContext::AddFeatureMode, the dialog will be editable even with an invalid feature and
      * will add a new feature when the form is accepted.
      */
-    void setMode( QgsAttributeForm::Mode mode );
+    void setMode( QgsAttributeEditorContext::Mode mode );
 
     /**
      * Sets the edit command message (Undo) that will be used when the dialog is accepted

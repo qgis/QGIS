@@ -18,6 +18,7 @@
 
 #include <QMap>
 #include <QWidget>
+#include <QMetaEnum>
 
 #include "qgsdistancearea.h"
 #include "qgsvectorlayer.h"
@@ -36,9 +37,11 @@ class QgsMapCanvas;
 
 class GUI_EXPORT QgsAttributeEditorContext
 {
+    Q_GADGET
+
   public:
 
-    //! Form modes
+    //! modes
     enum Mode
     {
       SingleEditMode, //!< Single edit mode, for editing a single feature
@@ -49,6 +52,7 @@ class GUI_EXPORT QgsAttributeEditorContext
       AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode \since QGIS 3.0
       IdentifyMode //!< Identify the feature \since QGIS 3.0
     };
+    Q_ENUM( Mode )
 
     /**
      * Determines in which direction a relation was resolved.
@@ -220,13 +224,23 @@ class GUI_EXPORT QgsAttributeEditorContext
      * Returns current attributeFormMode
      * \since QGIS 3.4
      */
-    QString attributeFormMode() const { return mAttributeFormMode; }
+    Mode attributeFormMode() const { return mAttributeFormMode; }
 
     /**
      * Set \a attributeFormMode for the edited form
      * \since QGIS 3.4
      */
-    void setAttributeFormMode( const QString &attributeFormMode ) { mAttributeFormMode = attributeFormMode; }
+    void setAttributeFormMode( const Mode &attributeFormMode ) { mAttributeFormMode = attributeFormMode; }
+
+    /**
+     * Returns given \a attributeFormMode as string
+     * \since QGIS 3.4
+     */
+    QString attributeFormModeString( const Mode &attributeFormMode )
+    {
+      const QMetaEnum metaEnum( QMetaEnum::fromType<Mode>() );
+      return metaEnum.valueToKey( static_cast<int>( attributeFormMode ) );
+    }
 
   private:
     const QgsAttributeEditorContext *mParentContext = nullptr;
@@ -240,7 +254,7 @@ class GUI_EXPORT QgsAttributeEditorContext
     QgsFeature mFormFeature;
     FormMode mFormMode = Embed;
     bool mAllowCustomUi = true;
-    QString mAttributeFormMode = QStringLiteral( "SingleEditMode" );
+    Mode mAttributeFormMode = SingleEditMode;
 };
 
 #endif // QGSATTRIBUTEEDITORCONTEXT_H

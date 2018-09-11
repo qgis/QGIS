@@ -19,16 +19,6 @@ class QgsAttributeForm : QWidget
 %End
   public:
 
-    enum Mode
-    {
-      SingleEditMode,
-      AddFeatureMode,
-      MultiEditMode,
-      SearchMode,
-      AggregateSearchMode,
-      IdentifyMode
-    };
-
     enum FilterType
     {
       ReplaceFilter,
@@ -71,7 +61,7 @@ Returns if the form is currently in editable mode.
 :return: Editable mode of this form
 %End
 
-    Mode mode() const;
+    QgsAttributeEditorContext::Mode mode() const;
 %Docstring
 Returns the current mode of the form.
 
@@ -80,7 +70,7 @@ Returns the current mode of the form.
 .. versionadded:: 2.16
 %End
 
-    void setMode( Mode mode );
+    void setMode( QgsAttributeEditorContext::Mode mode );
 %Docstring
 Sets the current mode of the form.
 
@@ -89,13 +79,6 @@ Sets the current mode of the form.
 .. seealso:: :py:func:`mode`
 
 .. versionadded:: 2.16
-%End
-
-    QString modeString( Mode mode ) const;
-%Docstring
-Returns the context as string of ``mode``
-
-.. versionadded:: 3.4
 %End
 
     void setEditCommandMessage( const QString &message );
@@ -184,7 +167,7 @@ Is emitted when a filter expression is set using the form.
 .. versionadded:: 2.16
 %End
 
-    void modeChanged( QgsAttributeForm::Mode mode );
+    void modeChanged( QgsAttributeEditorContext::Mode mode );
 %Docstring
 Emitted when the form changes mode.
 

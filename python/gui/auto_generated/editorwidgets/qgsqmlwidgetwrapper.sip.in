@@ -49,9 +49,6 @@ writes the ``qmlCode`` into a temporary file
 %End
 
   public slots:
-
-    void setQmlContext();
-
     virtual void setFeature( const QgsFeature &feature );
 
 

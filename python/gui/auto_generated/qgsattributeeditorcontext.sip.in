@@ -23,6 +23,9 @@ showing an embedded form due to relations)
 #include "qgsattributeeditorcontext.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum Mode
     {
@@ -208,16 +211,23 @@ Set current ``feature`` for the currently edited form or table row
 .. versionadded:: 3.2
 %End
 
-    QString attributeFormMode() const;
+    Mode attributeFormMode() const;
 %Docstring
 Returns current attributeFormMode
 
 .. versionadded:: 3.4
 %End
 
-    void setAttributeFormMode( const QString &attributeFormMode );
+    void setAttributeFormMode( const Mode &attributeFormMode );
 %Docstring
 Set ``attributeFormMode`` for the edited form
+
+.. versionadded:: 3.4
+%End
+
+    QString attributeFormModeString( const Mode &attributeFormMode );
+%Docstring
+Returns given ``attributeFormMode`` as string
 
 .. versionadded:: 3.4
 %End
