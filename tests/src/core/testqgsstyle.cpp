@@ -67,6 +67,7 @@ class TestStyle : public QObject
     void testSaveLoad();
     void testFavorites();
     void testTags();
+    void testSmartGroup();
 
 };
 
@@ -549,6 +550,89 @@ void TestStyle::testTags()
   QCOMPARE( tagsChangedSpy.at( 13 ).at( 0 ).toInt(), static_cast< int >( QgsStyle::ColorrampEntity ) );
   QCOMPARE( tagsChangedSpy.at( 13 ).at( 1 ).toString(), QStringLiteral( "gradient_tag1" ) );
   QCOMPARE( tagsChangedSpy.at( 13 ).at( 2 ).toStringList(), QStringList() );
+}
+
+void TestStyle::testSmartGroup()
+{
+  QgsStyle style;
+  style.createMemoryDatabase();
+
+  QSignalSpy groupModifiedSpy( &style, &QgsStyle::groupsModified );
+
+  std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  style.addSymbol( QStringLiteral( "symbolA" ), sym1->clone(), true );
+  style.addSymbol( QStringLiteral( "symbolB" ), sym2->clone(), true );
+  style.addSymbol( QStringLiteral( "symbolC" ), sym3->clone(), true );
+  QgsLimitedRandomColorRamp *randomRamp = new QgsLimitedRandomColorRamp();
+  QVERIFY( style.addColorRamp( "ramp a", randomRamp, true ) );
+  randomRamp = new QgsLimitedRandomColorRamp();
+  QVERIFY( style.addColorRamp( "different bbb", randomRamp, true ) );
+
+  QVERIFY( style.smartgroupNames().empty() );
+  QVERIFY( style.smartgroup( 5 ).isEmpty() );
+  QCOMPARE( style.smartgroupId( QStringLiteral( "no exist" ) ), 0 );
+
+  int res = style.addSmartgroup( QStringLiteral( "mine" ), QStringLiteral( "AND" ), QStringList(), QStringList(), QStringList() << QStringLiteral( "a" ), QStringList() );
+  QCOMPARE( res, 1 );
+  QCOMPARE( style.smartgroupNames(), QStringList() << QStringLiteral( "mine" ) );
+  QCOMPARE( style.smartgroup( 1 ).values( QStringLiteral( "name" ) ), QStringList() << QStringLiteral( "a" ) );
+  QCOMPARE( style.smartgroupId( QStringLiteral( "mine" ) ), 1 );
+  QCOMPARE( groupModifiedSpy.count(), 1 );
+
+  QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::SymbolEntity, 1 ), QStringList() << QStringLiteral( "symbolA" ) );
+  QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::ColorrampEntity, 1 ), QStringList() << QStringLiteral( "ramp a" ) );
+
+  res = style.addSmartgroup( QStringLiteral( "tag" ), QStringLiteral( "OR" ), QStringList(), QStringList(), QStringList() << "c", QStringList() << "a" );
+  QCOMPARE( res, 2 );
+  QCOMPARE( style.smartgroupNames(), QStringList() << QStringLiteral( "mine" ) << QStringLiteral( "tag" ) );
+  QCOMPARE( style.smartgroup( 2 ).values( QStringLiteral( "name" ) ), QStringList() << QStringLiteral( "c" ) );
+  QCOMPARE( style.smartgroup( 2 ).values( QStringLiteral( "!name" ) ), QStringList() << QStringLiteral( "a" ) );
+  QCOMPARE( style.smartgroupId( QStringLiteral( "tag" ) ), 2 );
+  QCOMPARE( groupModifiedSpy.count(), 2 );
+
+  QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::SymbolEntity, 2 ), QStringList() << QStringLiteral( "symbolB" ) << QStringLiteral( "symbolC" ) );
+  QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::ColorrampEntity, 2 ), QStringList() << QStringLiteral( "different bbb" ) );
+
+  // tag some symbols
+  style.tagSymbol( QgsStyle::SymbolEntity, "symbolA", QStringList() << "red" << "blue" );
+  style.tagSymbol( QgsStyle::SymbolEntity, "symbolB", QStringList() << "blue" );
+  style.tagSymbol( QgsStyle::ColorrampEntity, "ramp a", QStringList() << "blue" );
+  style.tagSymbol( QgsStyle::ColorrampEntity, "different bbb", QStringList() << "blue" << "red" );
+
+  // adding tags modifies groups!
+  QCOMPARE( groupModifiedSpy.count(), 4 );
+
+  res = style.addSmartgroup( QStringLiteral( "tags" ), QStringLiteral( "AND" ), QStringList() << "blue", QStringList() << "red", QStringList(), QStringList() );
+  QCOMPARE( res, 3 );
+  QCOMPARE( style.smartgroupNames(), QStringList() << QStringLiteral( "mine" ) << QStringLiteral( "tag" ) << QStringLiteral( "tags" ) );
+  QCOMPARE( style.smartgroup( 3 ).values( QStringLiteral( "tag" ) ), QStringList() << QStringLiteral( "blue" ) );
+  QCOMPARE( style.smartgroup( 3 ).values( QStringLiteral( "!tag" ) ), QStringList() << QStringLiteral( "red" ) );
+  QCOMPARE( style.smartgroupId( QStringLiteral( "tags" ) ), 3 );
+  QCOMPARE( groupModifiedSpy.count(), 5 );
+
+  QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::SymbolEntity, 3 ), QStringList() << QStringLiteral( "symbolB" ) );
+  QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::ColorrampEntity, 3 ), QStringList() << QStringLiteral( "ramp a" ) );
+
+  res = style.addSmartgroup( QStringLiteral( "combined" ), QStringLiteral( "AND" ), QStringList() << "blue", QStringList(), QStringList(), QStringList() << "a" );
+  QCOMPARE( res, 4 );
+  QCOMPARE( style.smartgroupNames(), QStringList() << QStringLiteral( "mine" ) << QStringLiteral( "tag" ) << QStringLiteral( "tags" )  << QStringLiteral( "combined" ) );
+  QCOMPARE( style.smartgroup( 4 ).values( QStringLiteral( "tag" ) ), QStringList() << QStringLiteral( "blue" ) );
+  QCOMPARE( style.smartgroup( 4 ).values( QStringLiteral( "!name" ) ), QStringList() << QStringLiteral( "a" ) );
+  QCOMPARE( style.smartgroupId( QStringLiteral( "combined" ) ), 4 );
+  QCOMPARE( groupModifiedSpy.count(), 6 );
+
+  QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::SymbolEntity, 4 ), QStringList() << QStringLiteral( "symbolB" ) );
+  QCOMPARE( style.symbolsOfSmartgroup( QgsStyle::ColorrampEntity, 4 ), QStringList() << QStringLiteral( "different bbb" ) );
+
+  style.remove( QgsStyle::SmartgroupEntity, 1 );
+  QCOMPARE( style.smartgroupNames(), QStringList() << QStringLiteral( "tag" ) << QStringLiteral( "tags" )  << QStringLiteral( "combined" ) );
+  QCOMPARE( groupModifiedSpy.count(), 7 );
+
+  style.remove( QgsStyle::SmartgroupEntity, 4 );
+  QCOMPARE( style.smartgroupNames(), QStringList() << QStringLiteral( "tag" ) << QStringLiteral( "tags" ) );
+  QCOMPARE( groupModifiedSpy.count(), 8 );
 }
 
 QGSTEST_MAIN( TestStyle )
