@@ -3094,8 +3094,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
 }
 
 QgsOgcUtilsExpressionFromFilter::QgsOgcUtilsExpressionFromFilter( const QgsOgcUtils::FilterVersion version, QgsVectorLayer *layer )
-  : mVersion( version )
-  , mLayer( layer )
+  : mLayer( layer )
 {
   mPropertyName = QStringLiteral( "PropertyName" );
   mPrefix = QStringLiteral( "ogc" );

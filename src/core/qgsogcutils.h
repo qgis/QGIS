@@ -457,7 +457,6 @@ class QgsOgcUtilsExpressionFromFilter
     QgsExpressionNode *nodeIsBetweenFromOgcFilter( const QDomElement &element );
 
   private:
-    QgsOgcUtils::FilterVersion mVersion = QgsOgcUtils::FILTER_OGC_1_0;
     QgsVectorLayer *mLayer = nullptr;
     QString mErrorMessage;
     QString mPropertyName;
