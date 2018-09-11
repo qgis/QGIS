@@ -58,6 +58,7 @@ SET(QGIS_APP_SRCS
   qgslayertreeviewembeddedindicator.cpp
   qgslayertreeviewfilterindicator.cpp
   qgslayertreeviewmemoryindicator.cpp
+  qgslayertreeviewnonremovableindicator.cpp
   qgsloadstylefromdbdialog.cpp
   qgsmapcanvasdockwidget.cpp
   qgsmaplayerstyleguiutils.cpp
@@ -281,6 +282,7 @@ SET (QGIS_APP_MOC_HDRS
   qgslayertreeviewembeddedindicator.h
   qgslayertreeviewmemoryindicator.h
   qgslayertreeviewfilterindicator.h
+  qgslayertreeviewnonremovableindicator.h
   qgsloadstylefromdbdialog.h
   qgsmapcanvasdockwidget.h
   qgsmaplayerstyleguiutils.h
