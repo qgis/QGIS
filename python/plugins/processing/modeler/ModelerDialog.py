@@ -35,6 +35,7 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import (
     Qt,
     QCoreApplication,
+    QDir,
     QRectF,
     QMimeData,
     QPoint,
@@ -44,7 +45,8 @@ from qgis.PyQt.QtCore import (
     QSizeF,
     pyqtSignal,
     QDataStream,
-    QIODevice)
+    QIODevice,
+    QUrl)
 from qgis.PyQt.QtWidgets import (QGraphicsView,
                                  QTreeWidget,
                                  QMessageBox,
@@ -570,7 +572,7 @@ class ModelerDialog(BASE, WIDGET):
 
         img.save(filename)
 
-        self.bar.pushMessage("", self.tr("Model was correctly exported as image"), level=Qgis.Success, duration=5)
+        self.bar.pushMessage("", self.tr("Successfully exported model as image to <a href=\"{}\">{}</a>").format(QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.Success, duration=5)
         self.repaintModel(controls=True)
 
     def exportAsPdf(self):
@@ -598,7 +600,7 @@ class ModelerDialog(BASE, WIDGET):
         self.scene.render(painter, printerRect, totalRect)
         painter.end()
 
-        self.bar.pushMessage("", self.tr("Model was correctly exported as PDF"), level=Qgis.Success, duration=5)
+        self.bar.pushMessage("", self.tr("Successfully exported model as PDF to <a href=\"{}\">{}</a>").format(QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.Success, duration=5)
         self.repaintModel(controls=True)
 
     def exportAsSvg(self):
@@ -626,7 +628,7 @@ class ModelerDialog(BASE, WIDGET):
         self.scene.render(painter, svgRect, totalRect)
         painter.end()
 
-        self.bar.pushMessage("", self.tr("Model was correctly exported as SVG"), level=Qgis.Success, duration=5)
+        self.bar.pushMessage("", self.tr("Successfully exported model as SVG to <a href=\"{}\">{}</a>").format(QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.Success, duration=5)
         self.repaintModel(controls=True)
 
     def exportAsPython(self):
@@ -643,7 +645,7 @@ class ModelerDialog(BASE, WIDGET):
         with codecs.open(filename, 'w', encoding='utf-8') as fout:
             fout.write(text)
 
-        self.bar.pushMessage("", self.tr("Model was correctly exported as python script"), level=Qgis.Success, duration=5)
+        self.bar.pushMessage("", self.tr("Successfully exported model as python script to <a href=\"{}\">{}</a>").format(QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.Success, duration=5)
 
     def can_save(self):
         """
@@ -686,7 +688,10 @@ class ModelerDialog(BASE, WIDGET):
                     )
                 return
             self.update_model.emit()
-            self.bar.pushMessage("", self.tr("Model was correctly saved"), level=Qgis.Success, duration=5)
+            if saveAs:
+                self.bar.pushMessage("", self.tr("Model was correctly saved to <a href=\"{}\">{}</a>").format(QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.Success, duration=5)
+            else:
+                self.bar.pushMessage("", self.tr("Model was correctly saved"), level=Qgis.Success, duration=5)
 
             self.hasChanged = False
 
