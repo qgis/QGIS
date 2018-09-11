@@ -161,6 +161,8 @@ class CORE_EXPORT QgsOgcUtils
       FILTER_FES_2_0
     };
 
+    static QgsExpression *expressionFromOgcFilter( const QDomElement &element, FilterVersion version, QgsVectorLayer *layer = nullptr ) SIP_FACTORY;
+
     /**
      * Creates OGC filter XML element. Supports minimum standard filter
      * according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
@@ -365,6 +367,28 @@ class QgsOgcUtilsExprToFilter
     QDomElement expressionColumnRefToOgcFilter( const QgsExpressionNodeColumnRef *node, QgsExpression *expression, const QgsExpressionContext *context );
     QDomElement expressionInOperatorToOgcFilter( const QgsExpressionNodeInOperator *node, QgsExpression *expression, const QgsExpressionContext *context );
     QDomElement expressionFunctionToOgcFilter( const QgsExpressionNodeFunction *node, QgsExpression *expression, const QgsExpressionContext *context );
+};
+
+class QgsOgcUtilsExprFromFilter
+{
+  public:
+    QgsOgcUtilsExprFromFilter( QgsOgcUtils::FilterVersion version = QgsOgcUtils::FILTER_OGC_1_0,
+                               QgsVectorLayer *layer = nullptr );
+
+    QgsExpressionNode *nodeFromOgcFilter( const QDomElement &element );
+
+    QString errorMessage() const;
+
+    QgsExpressionNodeBinaryOperator *nodeBinaryOperatorFromOgcFilter( const QDomElement &element );
+    QgsExpressionNodeFunction *nodeSpatialOperatorFromOgcFilter( const QDomElement &element );
+    QgsExpressionNodeColumnRef *nodeColumnRefFromOgcFilter( const QDomElement &element );
+    QgsExpressionNode *nodeLiteralFromOgcFilter( const QDomElement &element );
+
+  private:
+    QgsOgcUtils::FilterVersion mVersion = QgsOgcUtils::FILTER_OGC_1_0;
+    QgsVectorLayer *mLayer = nullptr;
+    QString mErrorMessage;
+    QString mPropertyName;
 };
 
 /**
