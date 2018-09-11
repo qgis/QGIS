@@ -45,7 +45,7 @@ class ProjectProvider(QgsProcessingProvider):
         else:
             self.project = project
 
-        self.model_definitions = []  # list of maps defining models
+        self.model_definitions = {} # dict of models in project
         self.is_loading = False
 
         # must reload models if providers list is changed - previously unavailable algorithms
@@ -67,7 +67,7 @@ class ProjectProvider(QgsProcessingProvider):
         """
         Remove all algorithms from the provider
         """
-        self.model_definitions = []
+        self.model_definitions = {}
         self.refreshAlgorithms()
 
     def add_model(self, model):
@@ -77,7 +77,7 @@ class ProjectProvider(QgsProcessingProvider):
         :param model: model to add
         """
         definition = model.toVariant()
-        self.model_definitions.append(definition)
+        self.model_definitions[model.name()] = definition
         self.refreshAlgorithms()
 
     def remove_model(self, model):
@@ -89,15 +89,9 @@ class ProjectProvider(QgsProcessingProvider):
         if model is None:
             return
 
-        filtered_model_definitions = []
-        for m in self.model_definitions:
-            algorithm = QgsProcessingModelAlgorithm()
-            if algorithm.loadVariant(m) and algorithm.name() == model.name():
-                # found matching model definition, skip it
-                continue
-            filtered_model_definitions.append(m)
+        if model.name() in self.model_definitions:
+            del self.model_definitions[model.name()]
 
-        self.model_definitions = filtered_model_definitions
         self.refreshAlgorithms()
 
     def read_project(self, doc):
@@ -105,7 +99,7 @@ class ProjectProvider(QgsProcessingProvider):
         Reads the project model definitions from the project DOM document
         :param doc: DOM document
         """
-        self.model_definitions = []
+        self.model_definitions = {}
         project_models_nodes = doc.elementsByTagName('projectModels')
         if project_models_nodes:
             project_models_node = project_models_nodes.at(0)
@@ -113,7 +107,9 @@ class ProjectProvider(QgsProcessingProvider):
             for n in range(model_nodes.count()):
                 model_element = model_nodes.at(n).toElement()
                 definition = QgsXmlUtils.readVariant(model_element)
-                self.model_definitions.append(definition)
+                algorithm = QgsProcessingModelAlgorithm()
+                if algorithm.loadVariant(definition):
+                    self.model_definitions[algorithm.name()] = definition
 
         self.refreshAlgorithms()
 
@@ -158,7 +154,7 @@ class ProjectProvider(QgsProcessingProvider):
             return
         self.is_loading = True
 
-        for definition in self.model_definitions:
+        for definition in self.model_definitions.values():
             algorithm = QgsProcessingModelAlgorithm()
             if algorithm.loadVariant(definition):
                 self.addAlgorithm(algorithm)
