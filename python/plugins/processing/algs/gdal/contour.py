@@ -55,6 +55,7 @@ class contour(GdalAlgorithm):
     IGNORE_NODATA = 'IGNORE_NODATA'
     NODATA = 'NODATA'
     OFFSET = 'OFFSET'
+    OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -103,6 +104,13 @@ class contour(GdalAlgorithm):
                                                     optional=True)
         nodata_param.setFlags(offset_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(offset_param)
+
+        options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                     self.tr('Additional creation options'),
+                                                     defaultValue='',
+                                                     optional=True)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(options_param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(
             self.OUTPUT, self.tr('Contours'), QgsProcessing.TypeVectorLine))
@@ -162,6 +170,10 @@ class contour(GdalAlgorithm):
 
         if offset:
             arguments.append('-off {}'.format(offset))
+
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.append(options)
 
         if outFormat:
             arguments.append('-f {}'.format(outFormat))

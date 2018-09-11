@@ -589,6 +589,18 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-b 1 -a elev -i 5.0 -snodata 0.0 -f "GPKG" ' +
              source + ' ' +
              'd:/temp/check.gpkg'])
+        # fixed level contours
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'FIELD_NAME': 'elev',
+                                    'INTERVAL': 0,
+                                    'OPTIONS': '-fl 100 125 150 200',
+                                    'OUTPUT': 'd:/temp/check.shp'}, context, feedback),
+            ['gdal_contour',
+             '-b 1 -a elev -i 0.0 -fl 100 125 150 200 -f "ESRI Shapefile" ' +
+             source + ' ' +
+             'd:/temp/check.shp'])
 
     def testGdal2Tiles(self):
         context = QgsProcessingContext()
