@@ -60,17 +60,22 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
 {
   if ( vidx.part != -1 )
   {
-    mGeometry = QgsGeometryCheckerUtils::getGeomPart( layerFeature.geometry(), vidx.part )->clone();
+    mGeometry.reset( QgsGeometryCheckerUtils::getGeomPart( layerFeature.geometry(), vidx.part )->clone() );
   }
   else
   {
-    mGeometry = layerFeature.geometry()->clone();
+    mGeometry.reset( layerFeature.geometry()->clone() );
   }
   if ( layerFeature.geometryCrs() != layerFeature.layerToMapTransform().destinationCrs().authid() )
   {
     mGeometry->transform( layerFeature.layerToMapTransform() );
     mErrorLocation = layerFeature.layerToMapTransform().transform( mErrorLocation );
   }
+}
+
+const QgsAbstractGeometry *QgsGeometryCheckError::geometry() const
+{
+  return mGeometry.get();
 }
 
 QgsRectangle QgsGeometryCheckError::affectedAreaBBox() const

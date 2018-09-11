@@ -125,10 +125,8 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
                            QgsVertexId vidx = QgsVertexId(),
                            const QVariant &value = QVariant(),
                            ValueType valueType = ValueOther );
-    virtual ~QgsGeometryCheckError()
-    {
-      delete mGeometry;
-    }
+
+    virtual ~QgsGeometryCheckError() = default;
 
     const QgsGeometryCheckError &operator=( const QgsGeometryCheckError & ) = delete;
 
@@ -136,7 +134,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     const QString &layerId() const { return mLayerId; }
     QgsFeatureId featureId() const { return mFeatureId; }
     // In map units
-    const QgsAbstractGeometry *geometry() const { return mGeometry; }
+    const QgsAbstractGeometry *geometry() const;
     // In map units
     virtual QgsRectangle affectedAreaBBox() const;
     virtual QString description() const { return mCheck->errorDescription(); }
@@ -173,14 +171,13 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     }
     virtual void update( const QgsGeometryCheckError *other )
     {
-      delete mGeometry;
       Q_ASSERT( mCheck == other->mCheck );
       Q_ASSERT( mLayerId == other->mLayerId );
       Q_ASSERT( mFeatureId == other->mFeatureId );
       mErrorLocation = other->mErrorLocation;
       mVidx = other->mVidx;
       mValue = other->mValue;
-      mGeometry = other->mGeometry->clone();
+      mGeometry.reset( other->mGeometry->clone() );
     }
 
     virtual bool handleChanges( const QgsGeometryCheck::Changes &changes );
@@ -199,7 +196,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     const QgsGeometryCheck *mCheck = nullptr;
     QString mLayerId;
     QgsFeatureId mFeatureId;
-    QgsAbstractGeometry *mGeometry;
+    std::unique_ptr<QgsAbstractGeometry> mGeometry;
     QgsPointXY mErrorLocation;
     QgsVertexId mVidx;
     QVariant mValue;
