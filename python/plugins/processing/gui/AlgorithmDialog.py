@@ -130,12 +130,6 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 value = wrapper.parameterValue()
                 parameters[param.name()] = value
 
-                wrapper = self.mainWidget().wrappers[param.name()]
-                value = None
-                if wrapper.widget is not None:
-                    value = wrapper.value()
-                    parameters[param.name()] = value
-
                 if not param.checkValueIsAcceptable(value):
                     raise AlgorithmDialogBase.InvalidParameterValue(param, widget)
             else:
