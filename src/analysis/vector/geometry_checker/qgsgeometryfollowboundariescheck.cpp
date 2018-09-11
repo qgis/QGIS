@@ -49,7 +49,7 @@ void QgsGeometryFollowBoundariesCheck::collectErrors( QList<QgsGeometryCheckErro
     const QgsAbstractGeometry *geom = layerFeature.geometry();
 
     // The geometry to crs of the check layer
-    QgsCoordinateTransform crst( layerFeature.layer().crs(), mCheckLayer->crs(), QgsProject::instance() );
+    QgsCoordinateTransform crst( layerFeature.layer()->crs(), mCheckLayer->crs(), QgsProject::instance() );
     QgsGeometry geomt( geom->clone() );
     geomt.transform( crst );
 

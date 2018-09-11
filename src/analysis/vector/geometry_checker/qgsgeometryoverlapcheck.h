@@ -30,8 +30,8 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
                                   const QgsPointXY &errorLocation,
                                   const QVariant &value,
                                   const QgsGeometryCheckerUtils::LayerFeature &overlappedFeature )
-      : QgsGeometryCheckError( check, layerFeature.layer().id(), layerFeature.feature().id(), geometry, errorLocation, QgsVertexId(), value, ValueArea )
-      , mOverlappedFeature( qMakePair( overlappedFeature.layer().id(), overlappedFeature.feature().id() ) )
+      : QgsGeometryCheckError( check, layerFeature.layer()->id(), layerFeature.feature().id(), geometry, errorLocation, QgsVertexId(), value, ValueArea )
+      , mOverlappedFeature( qMakePair( overlappedFeature.layer()->id(), overlappedFeature.feature().id() ) )
     { }
     const QPair<QString, QgsFeatureId> &overlappedFeature() const { return mOverlappedFeature; }
 
