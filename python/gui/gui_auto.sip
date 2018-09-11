@@ -1,5 +1,4 @@
 // Include auto-generated SIP files
-%Include auto_generated/qgsattributeeditorcontext.sip
 %Include auto_generated/qgsattributeforminterface.sip
 %Include auto_generated/qgsdetaileditemdata.sip
 %Include auto_generated/qgsexpressionbuilderdialog.sip
@@ -208,6 +207,7 @@
 %Include auto_generated/qgsvariableeditorwidget.sip
 %Include auto_generated/qgsvscrollarea.sip
 %Include auto_generated/qgsfiledownloaderdialog.sip
+%Include auto_generated/qgsattributeeditorcontext.sip
 %Include auto_generated/raster/qgscolorrampshaderwidget.sip
 %Include auto_generated/raster/qgsmultibandcolorrendererwidget.sip
 %Include auto_generated/raster/qgspalettedrendererwidget.sip

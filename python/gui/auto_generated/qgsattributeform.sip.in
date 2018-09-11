@@ -19,6 +19,16 @@ class QgsAttributeForm : QWidget
 %End
   public:
 
+    enum Mode
+    {
+      SingleEditMode,
+      AddFeatureMode,
+      MultiEditMode,
+      SearchMode,
+      AggregateSearchMode,
+      IdentifyMode
+    };
+
     enum FilterType
     {
       ReplaceFilter,

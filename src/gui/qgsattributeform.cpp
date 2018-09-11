@@ -805,7 +805,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
 
     mExpressionContext.setFeature( ft );
 
-    mExpressionContext << QgsExpressionContextUtils::formScope( ft, mContext.attributeFormModeString( mMode ) );
+    mExpressionContext << QgsExpressionContextUtils::formScope( ft, mContext.attributeFormModeString() );
 
     // Recheck visibility for all containers which are controlled by this value
     const QVector<ContainerInformation *> infos = mContainerInformationDependency.value( eww->field().name() );
@@ -819,7 +819,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
 void QgsAttributeForm::updateContainersVisibility()
 {
 
-  mExpressionContext << QgsExpressionContextUtils::formScope( QgsFeature( mFeature ), mContext.attributeFormModeString( mMode ) );
+  mExpressionContext << QgsExpressionContextUtils::formScope( QgsFeature( mFeature ), mContext.attributeFormModeString() );
 
   const QVector<ContainerInformation *> infos = mContainerVisibilityInformation;
 

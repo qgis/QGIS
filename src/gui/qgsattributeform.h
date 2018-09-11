@@ -46,6 +46,18 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
   public:
 
+    //! Form modes \deprecated Use QgsAttributeEditorContext::Mode instead.
+    enum Mode
+    {
+      SingleEditMode, //!< Single edit mode, for editing a single feature
+      AddFeatureMode, /*!< Add feature mode, for setting attributes for a new feature. In this mode the dialog will be editable even with an invalid feature and
+      will add a new feature when the form is accepted. */
+      MultiEditMode, //!< Multi edit mode, for editing fields of multiple features at once
+      SearchMode, //!< Form values are used for searching/filtering the layer
+      AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode \since QGIS 3.0
+      IdentifyMode //!< Identify the feature \since QGIS 3.0
+    };
+
     //! Filter types
     enum FilterType
     {

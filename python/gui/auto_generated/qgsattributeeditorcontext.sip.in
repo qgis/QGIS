@@ -225,7 +225,7 @@ Set ``attributeFormMode`` for the edited form
 .. versionadded:: 3.4
 %End
 
-    QString attributeFormModeString( const Mode &attributeFormMode );
+    QString attributeFormModeString() const;
 %Docstring
 Returns given ``attributeFormMode`` as string
 

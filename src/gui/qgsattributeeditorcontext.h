@@ -236,10 +236,10 @@ class GUI_EXPORT QgsAttributeEditorContext
      * Returns given \a attributeFormMode as string
      * \since QGIS 3.4
      */
-    QString attributeFormModeString( const Mode &attributeFormMode )
+    QString attributeFormModeString() const
     {
       const QMetaEnum metaEnum( QMetaEnum::fromType<Mode>() );
-      return metaEnum.valueToKey( static_cast<int>( attributeFormMode ) );
+      return metaEnum.valueToKey( static_cast<int>( mAttributeFormMode ) );
     }
 
   private:
