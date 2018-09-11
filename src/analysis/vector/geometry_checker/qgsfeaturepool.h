@@ -79,6 +79,8 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
      */
     QgsVectorLayer *layer() const;
 
+    QPointer<QgsVectorLayer> layerPtr() const;
+
     /**
      * The layer id of the layer.
      */

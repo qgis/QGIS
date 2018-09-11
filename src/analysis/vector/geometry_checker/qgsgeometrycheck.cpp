@@ -18,6 +18,22 @@
 #include "qgsgeometrycheck.h"
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
+#include "qgsreadwritelocker.h"
+
+template <typename Func>
+void runOnMainThread( const Func &func )
+{
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 )
+  // Make sure we only deal with the vector layer on the main thread where it lives.
+  // Anything else risks a crash.
+  if ( QThread::currentThread() == qApp->thread() )
+    func();
+  else
+    QMetaObject::invokeMethod( qApp, func, Qt::BlockingQueuedConnection );
+#else
+  func();
+#endif
+}
 
 QgsGeometryCheckerContext::QgsGeometryCheckerContext( int _precision, const QgsCoordinateReferenceSystem &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools, const QgsCoordinateTransformContext &transformContext )
   : tolerance( std::pow( 10, -_precision ) )
@@ -28,27 +44,42 @@ QgsGeometryCheckerContext::QgsGeometryCheckerContext( int _precision, const QgsC
 {
 }
 
-const QgsCoordinateTransform &QgsGeometryCheckerContext::layerTransform( QgsVectorLayer *layer )
+const QgsCoordinateTransform &QgsGeometryCheckerContext::layerTransform( const QPointer<QgsVectorLayer> &layer )
 {
-  Q_ASSERT( QThread::currentThread() == qApp->thread() );
-
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
   if ( !mTransformCache.contains( layer ) )
   {
-    QgsCoordinateTransform transform = QgsCoordinateTransform( layer->crs(), mapCrs, transformContext );
+    QgsCoordinateTransform transform;
+    runOnMainThread( [this, &transform, layer]()
+    {
+      QgsVectorLayer *lyr = layer.data();
+      if ( lyr )
+        transform = QgsCoordinateTransform( lyr->crs(), mapCrs, transformContext );
+    } );
+    locker.changeMode( QgsReadWriteLocker::Write );
     mTransformCache[layer] = transform;
+    locker.changeMode( QgsReadWriteLocker::Read );
   }
 
   return mTransformCache[layer];
 }
 
-double QgsGeometryCheckerContext::layerScaleFactor( QgsVectorLayer *layer )
+double QgsGeometryCheckerContext::layerScaleFactor( const QPointer<QgsVectorLayer> &layer )
 {
-  Q_ASSERT( QThread::currentThread() == qApp->thread() );
-
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
   if ( !mScaleFactorCache.contains( layer ) )
   {
-    double scaleFactor = layerTransform( layer ).scaleFactor( layer->extent() );
+    double scaleFactor = 1.0;
+    runOnMainThread( [this, layer, &scaleFactor]()
+    {
+      QgsVectorLayer *lyr = layer.data();
+      if ( lyr )
+        scaleFactor = layerTransform( layer ).scaleFactor( lyr->extent() );
+    } );
+
+    locker.changeMode( QgsReadWriteLocker::Write );
     mScaleFactorCache[layer] = scaleFactor;
+    locker.changeMode( QgsReadWriteLocker::Read );
   }
 
   return mScaleFactorCache.value( layer );
@@ -76,7 +107,7 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
     const QgsPointXY &errorLocation, QgsVertexId vidx,
     const QVariant &value, ValueType valueType )
   : mCheck( check )
-  , mLayerId( layerFeature.layer()->id() )
+  , mLayerId( layerFeature.layerId() )
   , mFeatureId( layerFeature.feature().id() )
   , mErrorLocation( errorLocation )
   , mVidx( vidx )

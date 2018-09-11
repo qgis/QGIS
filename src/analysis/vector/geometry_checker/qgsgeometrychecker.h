@@ -23,11 +23,10 @@
 #include <QList>
 #include <QMutex>
 #include <QStringList>
-#include <memory>
-
 #include "qgis_analysis.h"
-#include "qgsfeatureid.h"
 
+typedef qint64 QgsFeatureId;
+typedef QSet<QgsFeatureId> QgsFeatureIds;
 struct QgsGeometryCheckerContext;
 class QgsGeometryCheck;
 class QgsGeometryCheckError;
@@ -57,10 +56,6 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
     class RunCheckWrapper
     {
       public:
-
-        /**
-         * The caller needs to make sure that the context is not deleted before this thread ends.
-         */
         explicit RunCheckWrapper( QgsGeometryChecker *instance );
         void operator()( const QgsGeometryCheck *check );
       private:

@@ -21,8 +21,11 @@
 #include <QApplication>
 #include <limits>
 #include <QStringList>
+#include <QPointer>
+
 #include "qgis_analysis.h"
 #include "qgsfeature.h"
+#include "qgsvectorlayer.h"
 #include "geometry/qgsgeometry.h"
 #include "qgsgeometrycheckerutils.h"
 
@@ -39,12 +42,13 @@ struct ANALYSIS_EXPORT QgsGeometryCheckerContext
     const QgsCoordinateReferenceSystem mapCrs;
     const QMap<QString, QgsFeaturePool *> featurePools;
     const QgsCoordinateTransformContext transformContext;
-    const QgsCoordinateTransform &layerTransform( QgsVectorLayer *layer );
-    double layerScaleFactor( QgsVectorLayer *layer );
+    const QgsCoordinateTransform &layerTransform( const QPointer<QgsVectorLayer> &layer );
+    double layerScaleFactor( const QPointer<QgsVectorLayer> &layer );
 
   private:
-    QMap<QgsVectorLayer *, QgsCoordinateTransform> mTransformCache;
-    QMap<QgsVectorLayer *, double> mScaleFactorCache;
+    QMap<QPointer<QgsVectorLayer>, QgsCoordinateTransform> mTransformCache;
+    QMap<QPointer<QgsVectorLayer>, double> mScaleFactorCache;
+    QReadWriteLock mCacheLock;
 };
 
 class ANALYSIS_EXPORT QgsGeometryCheck

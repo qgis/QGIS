@@ -81,6 +81,11 @@ QgsVectorLayer *QgsFeaturePool::layer() const
   return mLayer.data();
 }
 
+QPointer<QgsVectorLayer> QgsFeaturePool::layerPtr() const
+{
+  return mLayer;
+}
+
 void QgsFeaturePool::insertFeature( const QgsFeature &feature )
 {
   QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
