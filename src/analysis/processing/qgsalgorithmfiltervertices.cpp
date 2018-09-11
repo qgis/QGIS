@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfiltervertices.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -135,6 +136,13 @@ QgsFilterVerticesByM *QgsFilterVerticesByM::createInstance() const
   return new QgsFilterVerticesByM();
 }
 
+bool QgsFilterVerticesByM::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+{
+  if ( ! QgsFilterVerticesAlgorithmBase::supportInPlaceEdit( layer ) )
+    return  false;
+  return QgsWkbTypes::hasM( layer->wkbType() );
+}
+
 QString QgsFilterVerticesByM::componentString() const
 {
   return QObject::tr( "m-value" );
@@ -172,6 +180,13 @@ QStringList QgsFilterVerticesByZ::tags() const
 QgsFilterVerticesByZ *QgsFilterVerticesByZ::createInstance() const
 {
   return new QgsFilterVerticesByZ();
+}
+
+bool QgsFilterVerticesByZ::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+{
+  if ( ! QgsFilterVerticesAlgorithmBase::supportInPlaceEdit( layer ) )
+    return  false;
+  return QgsWkbTypes::hasZ( layer->wkbType() );
 }
 
 QString QgsFilterVerticesByZ::componentString() const
