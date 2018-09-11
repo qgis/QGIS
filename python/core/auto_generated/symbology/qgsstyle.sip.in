@@ -85,14 +85,6 @@ Adds a new tag and returns the tag's id
 :return: returns an int, which is the DB id of the new tag created, 0 if the tag couldn't be created
 %End
 
-    int addSmartgroup( const QString &name, const QString &op, const QgsSmartConditionMap &conditions );
-%Docstring
-Adds a new smartgroup to the database and returns the id
-
-:param name: is the name of the new Smart Group to be added
-:param op: is the operator between the conditions; AND/OR as QString
-:param conditions: are the smart group conditions
-%End
 
     QStringList tags() const;
 %Docstring
