@@ -76,6 +76,12 @@ QgsClipAlgorithm *QgsClipAlgorithm::createInstance() const
   return new QgsClipAlgorithm();
 }
 
+bool QgsClipAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+{
+  Q_UNUSED( layer );
+  return true;
+}
+
 QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsFeatureSource > featureSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
@@ -141,7 +147,6 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
     {
       break;
     }
-
     QgsFeatureIterator inputIt = featureSource->getFeatures( QgsFeatureRequest().setFilterRect( clipGeom.boundingBox() ) );
     QgsFeatureList inputFeatures;
     QgsFeature f;
