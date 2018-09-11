@@ -150,6 +150,15 @@ according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
     };
 
     static QgsExpression *expressionFromOgcFilter( const QDomElement &element, FilterVersion version, QgsVectorLayer *layer = 0 ) /Factory/;
+%Docstring
+Returns an expression from a WFS filter embedded in a document.
+
+:param element: The WFS Filter
+:param version: The WFS version
+:param layer: Layer to use to retrieve field values from literal filters
+
+.. versionadded:: 3.4
+%End
 
 
     static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = 0 );
