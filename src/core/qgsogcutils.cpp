@@ -3440,23 +3440,22 @@ QgsExpressionNodeFunction *QgsOgcUtilsExpressionFromFilter::nodeFunctionFromOgcF
     if ( element.attribute( QStringLiteral( "name" ) ) != funcDef->name() )
       continue;
 
-    QgsExpressionNode::NodeList *args = new QgsExpressionNode::NodeList();
+    std::unique_ptr<QgsExpressionNode::NodeList> args( new QgsExpressionNode::NodeList() );
 
     QDomElement operandElem = element.firstChildElement();
     while ( !operandElem.isNull() )
     {
-      QgsExpressionNode *op = nodeFromOgcFilter( operandElem );
+      std::unique_ptr<QgsExpressionNode> op( nodeFromOgcFilter( operandElem ) );
       if ( !op )
       {
-        delete args;
         return nullptr;
       }
-      args->append( op );
+      args->append( op.release() );
 
       operandElem = operandElem.nextSiblingElement();
     }
 
-    return new QgsExpressionNodeFunction( i, args );
+    return new QgsExpressionNodeFunction( i, args.release() );
   }
 
   return nullptr;
