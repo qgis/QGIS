@@ -255,6 +255,7 @@ ENDIF (ENABLE_ORACLETEST)
 
 IF (WITH_SERVER)
   ADD_PYTHON_TEST(PyQgsServer test_qgsserver.py)
+  ADD_PYTHON_TEST(PyQgsServerLogger test_qgsserverlogger.py)
   ADD_PYTHON_TEST(PyQgsServerPlugins test_qgsserver_plugins.py)
   ADD_PYTHON_TEST(PyQgsServerWMS test_qgsserver_wms.py)
   ADD_PYTHON_TEST(PyQgsServerWMSGetMap test_qgsserver_wms_getmap.py)

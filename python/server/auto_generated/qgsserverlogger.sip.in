@@ -1,0 +1,77 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverlogger.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsServerLogger : QgsMessageLogConsole
+{
+%Docstring
+Writes message log into server logfile
+
+.. versionadded:: 2.8
+%End
+
+%TypeHeaderCode
+#include "qgsserverlogger.h"
+%End
+  public:
+
+    static QgsServerLogger *instance();
+%Docstring
+Gets the singleton instance
+%End
+
+    Qgis::MessageLevel logLevel() const;
+%Docstring
+Gets the current log level
+
+:return: the log level
+
+.. versionadded:: 3.0
+%End
+
+    void setLogLevel( Qgis::MessageLevel level );
+%Docstring
+Set the current log level
+
+:param level: the log level
+
+.. versionadded:: 3.0
+%End
+
+    void setLogFile( const QString &f );
+%Docstring
+Set the current log file
+%End
+
+  public slots:
+
+    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
+%Docstring
+Log a message from the server context
+
+:param message: the message
+:param tag: tag of the message
+:param level: log level of the message
+%End
+
+  protected:
+    QgsServerLogger();
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverlogger.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
