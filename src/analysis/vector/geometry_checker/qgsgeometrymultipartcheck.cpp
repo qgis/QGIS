@@ -22,7 +22,7 @@ void QgsGeometryMultipartCheck::collectErrors( QList<QgsGeometryCheckError *> &e
   QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    const QgsAbstractGeometry *geom = layerFeature.geometry();
+    const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
     QgsWkbTypes::Type type = geom->wkbType();
     if ( geom->partCount() == 1 && QgsWkbTypes::isMultiType( type ) )
     {

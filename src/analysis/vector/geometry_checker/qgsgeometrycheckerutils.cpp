@@ -34,17 +34,12 @@ namespace QgsGeometryCheckerUtils
     , mFeature( feature )
     , mMapCrs( useMapCrs )
   {
-    mGeometry = feature.geometry().constGet()->clone();
+    mGeometry = feature.geometry();
     const QgsCoordinateTransform &transform = context->layerTransform( mFeaturePool->layerPtr() );
     if ( useMapCrs && context->mapCrs.isValid() && !transform.isShortCircuited() )
     {
-      mGeometry->transform( transform );
+      mGeometry.transform( transform );
     }
-  }
-
-  LayerFeature::~LayerFeature()
-  {
-    delete mGeometry;
   }
 
   QPointer<QgsVectorLayer> LayerFeature::layer() const
@@ -55,6 +50,12 @@ namespace QgsGeometryCheckerUtils
   QString LayerFeature::layerId() const
   {
     return mFeaturePool->layerId();
+  }
+
+  const QgsGeometry &LayerFeature::geometry() const
+  {
+    return mGeometry;
+
   }
 
   QString LayerFeature::id() const

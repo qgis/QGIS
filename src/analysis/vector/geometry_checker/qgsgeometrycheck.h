@@ -188,7 +188,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
       mErrorLocation = other->mErrorLocation;
       mVidx = other->mVidx;
       mValue = other->mValue;
-      mGeometry.reset( other->mGeometry->clone() );
+      mGeometry = other->mGeometry;
     }
 
     virtual bool handleChanges( const QgsGeometryCheck::Changes &changes );
@@ -198,7 +198,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     QgsGeometryCheckError( const QgsGeometryCheck *check,
                            const QString &layerId,
                            QgsFeatureId featureId,
-                           QgsAbstractGeometry *geometry,
+                           const QgsGeometry &geometry,
                            const QgsPointXY &errorLocation,
                            QgsVertexId vidx = QgsVertexId(),
                            const QVariant &value = QVariant(),
@@ -207,7 +207,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     const QgsGeometryCheck *mCheck = nullptr;
     QString mLayerId;
     QgsFeatureId mFeatureId;
-    std::unique_ptr<QgsAbstractGeometry> mGeometry;
+    QgsGeometry mGeometry;
     QgsPointXY mErrorLocation;
     QgsVertexId mVidx;
     QVariant mValue;

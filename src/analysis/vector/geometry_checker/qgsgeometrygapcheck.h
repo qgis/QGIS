@@ -25,11 +25,11 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
   public:
     QgsGeometryGapCheckError( const QgsGeometryCheck *check,
                               const QString &layerId,
-                              QgsAbstractGeometry *geometry,
+                              const QgsGeometry &geometry,
                               const QMap<QString, QgsFeatureIds> &neighbors,
                               double area,
                               const QgsRectangle &gapAreaBBox )
-      : QgsGeometryCheckError( check, layerId, FEATUREID_NULL, geometry, geometry->centroid(), QgsVertexId(), area, ValueArea )
+      : QgsGeometryCheckError( check, layerId, FEATUREID_NULL, geometry, geometry.constGet()->centroid(), QgsVertexId(), area, ValueArea )
       , mNeighbors( neighbors )
       , mGapAreaBBox( gapAreaBBox )
     {

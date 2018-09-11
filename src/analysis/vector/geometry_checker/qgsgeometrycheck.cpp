@@ -72,7 +72,7 @@ double QgsGeometryCheckerContext::layerScaleFactor( const QPointer<QgsVectorLaye
 }
 
 QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId,
-    QgsFeatureId featureId, QgsAbstractGeometry *geometry,
+    QgsFeatureId featureId, const QgsGeometry &geometry,
     const QgsPointXY &errorLocation,
     QgsVertexId vidx,
     const QVariant &value, ValueType valueType )
@@ -103,28 +103,28 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
 {
   if ( vidx.part != -1 )
   {
-    mGeometry.reset( QgsGeometryCheckerUtils::getGeomPart( layerFeature.geometry(), vidx.part )->clone() );
+    mGeometry = QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( layerFeature.geometry().constGet(), vidx.part )->clone() );
   }
   else
   {
-    mGeometry.reset( layerFeature.geometry()->clone() );
+    mGeometry = layerFeature.geometry();
   }
   if ( !layerFeature.useMapCrs() )
   {
     const QgsCoordinateTransform &transform = check->context()->layerTransform( layerFeature.layer() );
-    mGeometry->transform( transform );
+    mGeometry.transform( transform );
     mErrorLocation = transform.transform( mErrorLocation );
   }
 }
 
 const QgsAbstractGeometry *QgsGeometryCheckError::geometry() const
 {
-  return mGeometry.get();
+  return mGeometry.constGet();
 }
 
 QgsRectangle QgsGeometryCheckError::affectedAreaBBox() const
 {
-  return mGeometry->boundingBox();
+  return mGeometry.boundingBox();
 }
 
 bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &changes )

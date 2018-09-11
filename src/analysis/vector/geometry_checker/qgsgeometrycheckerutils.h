@@ -34,14 +34,10 @@ namespace QgsGeometryCheckerUtils
   {
     public:
       LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, QgsGeometryCheckerContext *context, bool useMapCrs );
-      ~LayerFeature();
       const QgsFeature &feature() const { return mFeature; }
       QPointer<QgsVectorLayer> layer() const;
       QString layerId() const;
-      double layerToMapUnits() const;
-      const QgsCoordinateTransform &layerToMapTransform() const;
-      const QgsAbstractGeometry *geometry() const { return mGeometry; }
-      QString geometryCrs() const { return mMapCrs ? layerToMapTransform().destinationCrs().authid() : layerToMapTransform().sourceCrs().authid(); }
+      const QgsGeometry &geometry() const;
       QString id() const;
       bool operator==( const LayerFeature &other ) const;
       bool operator!=( const LayerFeature &other ) const;
@@ -51,7 +47,7 @@ namespace QgsGeometryCheckerUtils
     private:
       const QgsFeaturePool *mFeaturePool;
       QgsFeature mFeature;
-      QgsAbstractGeometry *mGeometry = nullptr;
+      QgsGeometry mGeometry;
       bool mMapCrs;
   };
 
