@@ -69,13 +69,12 @@ def execute(alg, parameters, context=None, feedback=None):
         return False, {}
 
 
-def make_feature_compatible(new_features, input_layer):
-    """Try to make new features compatible with old feature by:
+def make_features_compatible(new_features, input_layer, old_feature=None):
+    """Try to make the new features compatible with old features by:
 
     - converting single to multi part
     - dropping additional attributes
     - adding back M/Z values
-
 
     :param new_features: new features
     :type new_features: list of QgsFeatures
@@ -95,27 +94,24 @@ def make_feature_compatible(new_features, input_layer):
                 new_geom.convertToMultiType()
                 new_f.setGeometry(new_geom)
             # Drop Z/M
-            if ((QgsWkbTypes.hasZ(new_f.geometry().wkbType()) and not QgsWkbTypes.hasZ(input_layer.wkbType())) or
-                    (QgsWkbTypes.hasM(new_f.geometry().wkbType()) and not QgsWkbTypes.hasM(input_layer.wkbType()))):
-                # FIXME: there must be a better way!!!
-                if new_f.geometry().type() == QgsWkbTypes.PointGeometry:
-                    if new_f.geometry().isMultipart():
-                        new_geom = QgsGeometry.fromWkt(new_f.geometry().asMultiPoint().asWkt())
-                    else:
-                        new_geom = QgsGeometry.fromWkt(new_f.geometry().asPoint().asWkt())
-                elif new_f.geometry().type() == QgsWkbTypes.PolygonGeometry:
-                    if new_f.geometry().isMultipart():
-                        new_geom = QgsGeometry.fromWkt(new_f.geometry().asMultiPolygon().asWkt())
-                    else:
-                        new_geom = QgsGeometry.fromWkt(new_f.geometry().asPolygon().asWkt())
-                elif new_f.geometry().type() == QgsWkbTypes.LineGeometry:  # Linestring
-                    if new_f.geometry().isMultipart():
-                        new_geom = QgsGeometry.fromWkt(new_f.geometry().asPolyline().asWkt())
-                    else:
-                        new_geom = QgsGeometry.fromWkt(new_f.geometry().asMultiPolyline().asWkt())
-                else:
-                    new_geom = QgsGeometry()
+            if (new_f.geometry().constGet().is3D() and not QgsWkbTypes.hasZ(input_layer.wkbType())):
+                new_geom = new_f.geometry()
+                new_geom.get().dropZValue()
                 new_f.setGeometry(new_geom)
+            if (new_f.geometry().constGet().isMeasure() and not QgsWkbTypes.hasM(input_layer.wkbType())):
+                new_geom = new_f.geometry()
+                new_geom.get().dropMValue()
+                new_f.setGeometry(new_geom)
+            # Add Z/M back (set it to 0)
+            if (old_feature is not None and not new_f.geometry().constGet().is3D() and QgsWkbTypes.hasZ(input_layer.wkbType())):
+                new_geom = new_f.geometry()
+                new_geom.get().addZValue(0.0)
+                new_f.setGeometry(new_geom)
+            if (old_feature is not None and not new_f.geometry().constGet().isMeasure() and QgsWkbTypes.hasM(input_layer.wkbType())):
+                new_geom = new_f.geometry()
+                new_geom.get().addMValue(0.0)
+                new_f.setGeometry(new_geom)
+
         if len(new_f.attributes()) > len(input_layer.fields()):
             f = QgsFeature(input_layer.fields())
             f.setGeometry(new_f.geometry())
@@ -180,7 +176,7 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
             feature_iterator = active_layer.getFeatures(QgsFeatureRequest(active_layer.selectedFeatureIds())) if parameters['INPUT'].selectedFeaturesOnly else active_layer.getFeatures()
             for f in feature_iterator:
                 new_features = alg.processFeature(f, context, feedback)
-                new_features = make_feature_compatible(new_features, active_layer)
+                new_features = make_features_compatible(new_features, active_layer, f)
                 if len(new_features) == 0:
                     active_layer.deleteFeature(f.id())
                 elif len(new_features) == 1:
@@ -209,7 +205,7 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
             active_layer.deleteFeatures(active_layer.selectedFeatureIds())
             new_features = []
             for f in result_layer.getFeatures():
-                new_features.append(make_feature_compatible([f], active_layer))
+                new_features.append(make_features_compatible([f], active_layer))
 
             # Get the new ids
             old_ids = set([f.id() for f in active_layer.getFeatures(req)])
