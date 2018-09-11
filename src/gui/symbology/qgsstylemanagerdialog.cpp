@@ -253,8 +253,9 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
   actnExportAsPNG->setVisible( flag );
   actnExportAsSVG->setVisible( flag );
 
-  listItems->setIconSize( QSize( 100, 90 ) );
-  listItems->setGridSize( QSize( 120, 110 ) );
+  double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
+  listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
+  listItems->setGridSize( QSize( static_cast< int >( iconSize * 1.2 ), static_cast< int >( iconSize * 1.1 ) ) ); // ~120,110 on low dpi
 
   populateList();
 }
@@ -283,7 +284,7 @@ void QgsStyleManagerDialog::populateSymbols( const QStringList &symbolNames, boo
     {
       QStringList tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, name );
       QStandardItem *item = new QStandardItem( name );
-      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol.get(), listItems->iconSize(), 18 );
+      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol.get(), listItems->iconSize(), static_cast< int >( listItems->iconSize().width() * 0.16 ) );
       item->setIcon( icon );
       item->setData( name ); // used to find out original name when user edited the name
       item->setCheckable( check );
@@ -308,7 +309,7 @@ void QgsStyleManagerDialog::populateColorRamps( const QStringList &colorRamps, b
     std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
 
     QStandardItem *item = new QStandardItem( name );
-    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), listItems->iconSize(), 18 );
+    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), listItems->iconSize(), static_cast< int >( listItems->iconSize().width() * 0.16 ) );
     item->setIcon( icon );
     item->setData( name ); // used to find out original name when user edited the name
     item->setCheckable( check );
