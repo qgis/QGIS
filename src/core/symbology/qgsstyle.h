@@ -135,8 +135,10 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param name is the name of the new Smart Group to be added
      *  \param op is the operator between the conditions; AND/OR as QString
      *  \param conditions are the smart group conditions
+     *
+     * \note Not available from Python bindings
      */
-    int addSmartgroup( const QString &name, const QString &op, const QgsSmartConditionMap &conditions );
+    int addSmartgroup( const QString &name, const QString &op, const QgsSmartConditionMap &conditions ) SIP_SKIP;
 
     /**
      * Returns a list of all tags in the style database
