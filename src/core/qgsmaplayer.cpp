@@ -406,6 +406,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   // flags
   QDomElement flagsElem = layerElement.firstChildElement( QStringLiteral( "flags" ) );
   QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayer::LayerFlag>();
+  LayerFlags flags = mFlags;
   for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
   {
     const char *enumKey = metaEnum.key( idx );
@@ -414,11 +415,12 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
       continue;
     bool flagValue = flagNode.toElement().text() == "1" ? true : false;
     QgsMapLayer::LayerFlag enumValue = static_cast<QgsMapLayer::LayerFlag>( metaEnum.keyToValue( enumKey ) );
-    if ( mFlags.testFlag( enumValue ) && !flagValue )
-      mFlags &= ~enumValue;
-    else if ( !mFlags.testFlag( enumValue ) && flagValue )
-      mFlags |= enumValue;
+    if ( flags.testFlag( enumValue ) && !flagValue )
+      flags &= ~enumValue;
+    else if ( !flags.testFlag( enumValue ) && flagValue )
+      flags |= enumValue;
   }
+  setFlags( flags );
 
   return true;
 } // bool QgsMapLayer::readLayerXML
