@@ -1200,6 +1200,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void metadataChanged();
 
+    /**
+     * Emitted when layer's flags have been modified.
+     * \see setFlags()
+     * \see flags()
+     * \since QGIS 3.4
+     */
+    void flagsChanged();
+
   private slots:
 
     void onNotifiedTriggerRepaint( const QString &message );
