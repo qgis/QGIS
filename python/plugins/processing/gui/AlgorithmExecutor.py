@@ -40,7 +40,8 @@ from qgis.core import (Qgis,
                        QgsFeature,
                        QgsExpression,
                        QgsWkbTypes,
-                       QgsGeometry)
+                       QgsGeometry,
+                       QgsVectorLayerUtils)
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 from qgis.utils import iface
@@ -69,55 +70,74 @@ def execute(alg, parameters, context=None, feedback=None):
         return False, {}
 
 
-def make_features_compatible(new_features, input_layer, old_feature=None):
+def make_features_compatible(new_features, input_layer, context):
     """Try to make the new features compatible with old features by:
 
     - converting single to multi part
     - dropping additional attributes
     - adding back M/Z values
+    - drop Z/M
+    - convert multi part to single part
 
     :param new_features: new features
     :type new_features: list of QgsFeatures
     :param input_layer: input layer
     :type input_layer: QgsVectorLayer
+    :param context: processing context
+    :type context: QgsProcessingContext
     :return: modified features
     :rtype: list of QgsFeatures
     """
 
+    input_wkb_type = input_layer.wkbType()
     result_features = []
     for new_f in new_features:
-        if new_f.geometry().wkbType() != input_layer.wkbType():
-            # Single -> Multi
-            if (QgsWkbTypes.isMultiType(input_layer.wkbType()) and not
-                    new_f.geometry().isMultipart()):
-                new_geom = new_f.geometry()
-                new_geom.convertToMultiType()
-                new_f.setGeometry(new_geom)
-            # Drop Z/M
-            if (new_f.geometry().constGet().is3D() and not QgsWkbTypes.hasZ(input_layer.wkbType())):
-                new_geom = new_f.geometry()
-                new_geom.get().dropZValue()
-                new_f.setGeometry(new_geom)
-            if (new_f.geometry().constGet().isMeasure() and not QgsWkbTypes.hasM(input_layer.wkbType())):
-                new_geom = new_f.geometry()
-                new_geom.get().dropMValue()
-                new_f.setGeometry(new_geom)
-            # Add Z/M back (set it to 0)
-            if (old_feature is not None and not new_f.geometry().constGet().is3D() and QgsWkbTypes.hasZ(input_layer.wkbType())):
-                new_geom = new_f.geometry()
-                new_geom.get().addZValue(0.0)
-                new_f.setGeometry(new_geom)
-            if (old_feature is not None and not new_f.geometry().constGet().isMeasure() and QgsWkbTypes.hasM(input_layer.wkbType())):
-                new_geom = new_f.geometry()
-                new_geom.get().addMValue(0.0)
-                new_f.setGeometry(new_geom)
-
+        # Fix attributes
         if len(new_f.attributes()) > len(input_layer.fields()):
             f = QgsFeature(input_layer.fields())
             f.setGeometry(new_f.geometry())
             f.setAttributes(new_f.attributes()[:len(input_layer.fields())])
             new_f = f
-        result_features.append(new_f)
+        # Fix geometry
+        if new_f.geometry().wkbType() != input_wkb_type:
+            # Single -> Multi
+            if (QgsWkbTypes.isMultiType(input_wkb_type) and not
+                    new_f.geometry().isMultipart()):
+                new_geom = new_f.geometry()
+                new_geom.convertToMultiType()
+                new_f.setGeometry(new_geom)
+            # Drop Z/M
+            if (new_f.geometry().constGet().is3D() and not QgsWkbTypes.hasZ(input_wkb_type)):
+                new_geom = new_f.geometry()
+                new_geom.get().dropZValue()
+                new_f.setGeometry(new_geom)
+            if (new_f.geometry().constGet().isMeasure() and not QgsWkbTypes.hasM(input_wkb_type)):
+                new_geom = new_f.geometry()
+                new_geom.get().dropMValue()
+                new_f.setGeometry(new_geom)
+            # Add Z/M back (set it to 0)
+            if (not new_f.geometry().constGet().is3D() and QgsWkbTypes.hasZ(input_wkb_type)):
+                new_geom = new_f.geometry()
+                new_geom.get().addZValue(0.0)
+                new_f.setGeometry(new_geom)
+            if (not new_f.geometry().constGet().isMeasure() and QgsWkbTypes.hasM(input_wkb_type)):
+                new_geom = new_f.geometry()
+                new_geom.get().addMValue(0.0)
+                new_f.setGeometry(new_geom)
+            # Multi -> Single
+            if (not QgsWkbTypes.isMultiType(input_wkb_type) and
+                    new_f.geometry().isMultipart()):
+                g = new_f.geometry()
+                g2 = g.constGet()
+                for i in range(g2.partCount()):
+                    # Clone or crash!
+                    g4 = QgsGeometry(g2.geometryN(i).clone())
+                    f = QgsVectorLayerUtils.createFeature(input_layer, g4, {i: new_f.attribute(i) for i in range(new_f.fields().count())})
+                    result_features.append(f)
+            else:
+                result_features.append(new_f)
+        else:
+            result_features.append(new_f)
     return result_features
 
 
@@ -176,7 +196,7 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
             feature_iterator = active_layer.getFeatures(QgsFeatureRequest(active_layer.selectedFeatureIds())) if parameters['INPUT'].selectedFeaturesOnly else active_layer.getFeatures()
             for f in feature_iterator:
                 new_features = alg.processFeature(f, context, feedback)
-                new_features = make_features_compatible(new_features, active_layer, f)
+                new_features = make_features_compatible(new_features, active_layer, context)
                 if len(new_features) == 0:
                     active_layer.deleteFeature(f.id())
                 elif len(new_features) == 1:
@@ -200,30 +220,32 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
         else:  # Traditional 'run' with delete and add features cycle
             results, ok = alg.run(parameters, context, feedback)
 
-            result_layer = QgsProcessingUtils.mapLayerFromString(results['OUTPUT'], context)
-            # TODO: check if features have changed before delete/add cycle
-            active_layer.deleteFeatures(active_layer.selectedFeatureIds())
-            new_features = []
-            for f in result_layer.getFeatures():
-                new_features.append(make_features_compatible([f], active_layer))
+            if ok:
+                result_layer = QgsProcessingUtils.mapLayerFromString(results['OUTPUT'], context)
+                # TODO: check if features have changed before delete/add cycle
+                active_layer.deleteFeatures(active_layer.selectedFeatureIds())
+                new_features = []
+                for f in result_layer.getFeatures():
+                    new_features.extend(make_features_compatible([f], active_layer, context))
 
-            # Get the new ids
-            old_ids = set([f.id() for f in active_layer.getFeatures(req)])
-            active_layer.addFeatures(new_features)
-            new_ids = set([f.id() for f in active_layer.getFeatures(req)])
-            new_feature_ids += list(new_ids - old_ids)
+                # Get the new ids
+                old_ids = set([f.id() for f in active_layer.getFeatures(req)])
+                active_layer.addFeatures(new_features)
+                new_ids = set([f.id() for f in active_layer.getFeatures(req)])
+                new_feature_ids += list(new_ids - old_ids)
 
         active_layer.endEditCommand()
 
         if ok and new_feature_ids:
             active_layer.selectByIds(new_feature_ids)
         elif not ok:
-            active_layer.rollback()
+            active_layer.rollBack()
 
         return ok, results
 
     except QgsProcessingException as e:
         active_layer.endEditCommand()
+        active_layer.rollBack()
         if raise_exceptions:
             raise e
         QgsMessageLog.logMessage(str(sys.exc_info()[0]), 'Processing', Qgis.Critical)
