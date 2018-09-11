@@ -150,7 +150,9 @@ bool QgsStyleModel::setData( const QModelIndex &index, const QVariant &value, in
                            : mRampNames.at( index.row() - mSymbolNames.size() );
       const QString newName = value.toString();
 
-      return true;
+      return isColorRamp
+             ? mStyle->renameColorRamp( name, newName )
+             : mStyle->renameSymbol( name, newName );
     }
 
     case Tags:

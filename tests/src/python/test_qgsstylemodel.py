@@ -23,7 +23,7 @@ from qgis.core import (QgsSymbol,
                        QgsStyle,
                        QgsStyleProxyModel)
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import Qt, QSize
+from qgis.PyQt.QtCore import Qt, QSize, QModelIndex
 from qgis.PyQt.QtGui import QColor
 
 start_app()
@@ -757,6 +757,33 @@ class TestQgsStyleModel(unittest.TestCase):
             self.assertEqual(icon.actualSize(QSize(125, 125)), QSize(125, 112))
             self.assertEqual(icon.actualSize(QSize(225, 225)), QSize(200, 180))
             model.setProperty('icon_sizes', None)
+
+    def testSetData(self):
+        """
+        Test model set data
+        """
+        style = QgsStyle()
+        style.createMemoryDatabase()
+
+        symbol_a = createMarkerSymbol()
+        symbol_a.setColor(QColor(255, 10, 10))
+        self.assertTrue(style.addSymbol('a', symbol_a, True))
+        ramp_a = QgsLimitedRandomColorRamp(5)
+        self.assertTrue(style.addColorRamp('ramp a', ramp_a, True))
+
+        model = QgsStyleModel(style)
+        self.assertEqual(model.rowCount(), 2)
+
+        self.assertEqual(style.symbolNames(), ['a'])
+
+        self.assertFalse(model.setData(QModelIndex(), 'b', Qt.EditRole))
+        self.assertFalse(model.setData(model.index(0, 1), 'b', Qt.EditRole))
+        self.assertTrue(model.setData(model.index(0, 0), 'new symbol name', Qt.EditRole))
+        self.assertEqual(model.data(model.index(0, 0), Qt.DisplayRole), 'new symbol name')
+        self.assertEqual(style.symbolNames(), ['new symbol name'])
+        self.assertTrue(model.setData(model.index(1, 0), 'ramp new name', Qt.EditRole))
+        self.assertEqual(model.data(model.index(1, 0), Qt.DisplayRole), 'ramp new name')
+        self.assertEqual(style.colorRampNames(), ['ramp new name'])
 
 
 if __name__ == '__main__':
