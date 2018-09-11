@@ -364,6 +364,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! constraints management
     void updateAllConstraints();
     void updateConstraints( QgsEditorWidgetWrapper *w );
+    void updateContainersVisibility();
     void updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww );
     bool currentFormFeature( QgsFeature &feature );
     bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions );

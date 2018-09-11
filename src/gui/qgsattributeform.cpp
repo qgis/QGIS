@@ -77,9 +77,9 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &featur
   connect( vl, &QgsVectorLayer::beforeAddingExpressionField, this, &QgsAttributeForm::preventFeatureRefresh );
   connect( vl, &QgsVectorLayer::beforeRemovingExpressionField, this, &QgsAttributeForm::preventFeatureRefresh );
   connect( vl, &QgsVectorLayer::selectionChanged, this, &QgsAttributeForm::layerSelectionChanged );
+  connect( this, &QgsAttributeForm::modeChanged, this, &QgsAttributeForm::updateContainersVisibility );
 
-  // constraints management
-  updateAllConstraints();
+  updateContainersVisibility();
 }
 
 QgsAttributeForm::~QgsAttributeForm()
@@ -823,6 +823,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
     synchronizeEnabledState();
 
     mExpressionContext.setFeature( ft );
+
     mExpressionContext << QgsExpressionContextUtils::formScope( ft, modeString( mMode ) );
 
     // Recheck visibility for all containers which are controlled by this value
@@ -832,6 +833,22 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
       info->apply( &mExpressionContext );
     }
   }
+}
+
+void QgsAttributeForm::updateContainersVisibility()
+{
+
+  mExpressionContext << QgsExpressionContextUtils::formScope( QgsFeature( mFeature ), modeString( mMode ) );
+
+  const QVector<ContainerInformation *> infos = mContainerVisibilityInformation;
+
+  for ( ContainerInformation *info : infos )
+  {
+    info->apply( &mExpressionContext );
+  }
+
+  //and update the constraints
+  updateAllConstraints();
 }
 
 void QgsAttributeForm::updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww )
