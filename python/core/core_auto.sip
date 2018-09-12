@@ -73,7 +73,6 @@
 %Include auto_generated/qgsmaplayerdependency.sip
 %Include auto_generated/qgsmaplayerrenderer.sip
 %Include auto_generated/qgsmaplayerstyle.sip
-%Include auto_generated/qgsmaplayerstylemanager.sip
 %Include auto_generated/qgsmapsettings.sip
 %Include auto_generated/qgsmapsettingsutils.sip
 %Include auto_generated/qgsmaptopixel.sip
@@ -337,6 +336,7 @@
 %Include auto_generated/qgsmaplayermodel.sip
 %Include auto_generated/qgsmaplayerproxymodel.sip
 %Include auto_generated/qgsmaplayerstore.sip
+%Include auto_generated/qgsmaplayerstylemanager.sip
 %Include auto_generated/qgsmaprenderercache.sip
 %Include auto_generated/qgsmaprenderercustompainterjob.sip
 %Include auto_generated/qgsmaprendererjob.sip
