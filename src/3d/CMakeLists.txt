@@ -56,6 +56,7 @@ SET(QGIS_3D_MOC_HDRS
   qgscameracontroller.h
   qgslayoutitem3dmap.h
   qgsoffscreen3dengine.h
+  qgstessellatedpolygongeometry.h
   qgswindow3dengine.h
 
   chunks/qgschunkedentity_p.h

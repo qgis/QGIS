@@ -165,6 +165,9 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
 
+    //! Returns derived attributes map for a clicked point in map coordinates. May be 2D or 3D point.
+    QMap< QString, QString > derivedAttributesForPoint( const QgsPoint &point );
+
   private:
 
     bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );

@@ -65,6 +65,8 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     void identifyAndShowResults( const QgsGeometry &geom );
     //! Clears any previous results from the GUI
     void clearResults();
+    //! Looks up feature by its ID and outputs the result in GUI
+    void showResultsForFeature( QgsVectorLayer *vlayer, QgsFeatureId fid, const QgsPoint &pt );
 
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );

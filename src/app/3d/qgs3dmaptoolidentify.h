@@ -18,10 +18,14 @@
 
 #include "qgs3dmaptool.h"
 
+#include <memory>
+
 namespace Qt3DRender
 {
   class QPickEvent;
 }
+
+class Qgs3DMapToolIdentifyPickHandler;
 
 
 class Qgs3DMapToolIdentify : public Qgs3DMapTool
@@ -30,6 +34,7 @@ class Qgs3DMapToolIdentify : public Qgs3DMapTool
 
   public:
     Qgs3DMapToolIdentify( Qgs3DMapCanvas *canvas );
+    ~Qgs3DMapToolIdentify() override;
 
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override { Q_UNUSED( event );}
@@ -43,7 +48,9 @@ class Qgs3DMapToolIdentify : public Qgs3DMapTool
     void onTerrainEntityChanged();
 
   private:
+    std::unique_ptr<Qgs3DMapToolIdentifyPickHandler> mPickHandler;
 
+    friend class Qgs3DMapToolIdentifyPickHandler;
 };
 
 #endif // QGS3DMAPTOOLIDENTIFY_H

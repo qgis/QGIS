@@ -56,11 +56,20 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( QNode *parent )
   }
 }
 
-void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &polygons, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon )
+void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &polygons, const QList<QgsFeatureId> &featureIds, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon )
 {
+  Q_ASSERT( polygons.count() == featureIds.count() );
+  mTriangleIndexStartingIndices.reserve( polygons.count() );
+  mTriangleIndexFids.reserve( polygons.count() );
+
   QgsTessellator tessellator( origin.x(), origin.y(), mWithNormals, mInvertNormals, mAddBackFaces );
   for ( int i = 0; i < polygons.count(); ++i )
   {
+    Q_ASSERT( tessellator.dataVerticesCount() % 3 == 0 );
+    uint startingTriangleIndex = static_cast<uint>( tessellator.dataVerticesCount() / 3 );
+    mTriangleIndexStartingIndices.append( startingTriangleIndex );
+    mTriangleIndexFids.append( featureIds[i] );
+
     QgsPolygon *polygon = polygons.at( i );
     float extr = extrusionHeightPerPolygon.isEmpty() ? extrusionHeight : extrusionHeightPerPolygon.at( i );
     tessellator.addPolygon( *polygon, extr );
@@ -75,4 +84,39 @@ void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &poly
   mPositionAttribute->setCount( nVerts );
   if ( mNormalAttribute )
     mNormalAttribute->setCount( nVerts );
+}
+
+
+// run binary search on a sorted array, return index i where data[i] <= x < data[i+1]
+static int binary_search( uint v, const uint *data, int count )
+{
+  int idx0 = 0;
+  int idx1 = count - 1;
+
+  if ( v < data[0] )
+    return -1;  // not in the array
+
+  while ( idx0 != idx1 )
+  {
+    int idxPivot = ( idx0 + idx1 ) / 2;
+    uint pivot = data[idxPivot];
+    if ( pivot <= v )
+    {
+      if ( data[idxPivot + 1] > v )
+        return idxPivot;   // we're done!
+      else  // continue searching values greater than the pivot
+        idx0 = idxPivot;
+    }
+    else   // continue searching values lower than the pivot
+      idx1 = idxPivot;
+  }
+  return idx0;
+}
+
+
+QgsFeatureId QgsTessellatedPolygonGeometry::triangleIndexToFeatureId( uint triangleIndex )
+{
+  int i = binary_search( triangleIndex, mTriangleIndexStartingIndices.constData(), mTriangleIndexStartingIndices.count() );
+  Q_ASSERT( i != -1 );
+  return mTriangleIndexFids[i];
 }

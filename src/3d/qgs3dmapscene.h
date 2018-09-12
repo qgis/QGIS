@@ -24,6 +24,7 @@ namespace Qt3DRender
 {
   class QRenderSettings;
   class QCamera;
+  class QPickEvent;
 }
 
 namespace Qt3DLogic
@@ -39,6 +40,7 @@ namespace Qt3DExtras
 class QgsAbstract3DEngine;
 class QgsMapLayer;
 class QgsCameraController;
+class Qgs3DMapScenePickHandler;
 class Qgs3DMapSettings;
 class QgsTerrainEntity;
 class QgsChunkedEntity;
@@ -76,6 +78,11 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Returns the current state of the scene
     SceneState sceneState() const { return mSceneState; }
 
+    //! Registers an object that will get results of pick events on 3D entities. Does not take ownerhip of the pick handler. Adds object picker components to 3D entities.
+    void registerPickHandler( Qgs3DMapScenePickHandler *pickHandler );
+    //! Unregisters previously registered pick handler. Pick handler is not deleted. Also removes object picker components from 3D entities.
+    void unregisterPickHandler( Qgs3DMapScenePickHandler *pickHandler );
+
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();
@@ -92,6 +99,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onLayersChanged();
     void createTerrainDeferred();
     void onBackgroundColorChanged();
+    void onLayerEntityPickEvent( Qt3DRender::QPickEvent *event );
 
   private:
     void addLayerEntity( QgsMapLayer *layer );
@@ -116,6 +124,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     QMap<QgsMapLayer *, Qt3DCore::QEntity *> mLayerEntities;
     bool mTerrainUpdateScheduled = false;
     SceneState mSceneState = Ready;
+    //! List of currently registered pick handlers (used by identify tool)
+    QList<Qgs3DMapScenePickHandler *> mPickHandlers;
 };
 
 #endif // QGS3DMAPSCENE_H

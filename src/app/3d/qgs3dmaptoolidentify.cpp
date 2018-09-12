@@ -26,10 +26,42 @@
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
 
+
+#include "qgs3dmapscenepickhandler.h"
+
+class Qgs3DMapToolIdentifyPickHandler : public Qgs3DMapScenePickHandler
+{
+  public:
+    Qgs3DMapToolIdentifyPickHandler( Qgs3DMapToolIdentify *identifyTool ): mIdentifyTool( identifyTool ) {}
+    void handlePickOnVectorLayer( QgsVectorLayer *vlayer, QgsFeatureId id, const QVector3D &worldIntersection ) override;
+  private:
+    Qgs3DMapToolIdentify *mIdentifyTool = nullptr;
+};
+
+
+void Qgs3DMapToolIdentifyPickHandler::handlePickOnVectorLayer( QgsVectorLayer *vlayer, QgsFeatureId id, const QVector3D &worldIntersection )
+{
+  QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( worldIntersection, mIdentifyTool->mCanvas->map()->origin() );
+  QgsPoint pt( mapCoords.x(), mapCoords.y(), mapCoords.z() );
+
+  QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
+  identifyTool2D->showResultsForFeature( vlayer, id, pt );
+}
+
+
+//////
+
+
 Qgs3DMapToolIdentify::Qgs3DMapToolIdentify( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )
 {
   connect( mCanvas->scene(), &Qgs3DMapScene::terrainEntityChanged, this, &Qgs3DMapToolIdentify::onTerrainEntityChanged );
+
+  mPickHandler.reset( new Qgs3DMapToolIdentifyPickHandler( this ) );
+}
+
+Qgs3DMapToolIdentify::~Qgs3DMapToolIdentify()
+{
 }
 
 void Qgs3DMapToolIdentify::mousePressEvent( QMouseEvent *event )
@@ -44,16 +76,23 @@ void Qgs3DMapToolIdentify::activate()
 {
   Qt3DRender::QObjectPicker *picker = mCanvas->scene()->terrainEntity()->terrainPicker();
   connect( picker, &Qt3DRender::QObjectPicker::pressed, this, &Qgs3DMapToolIdentify::onTerrainPicked );
+
+  mCanvas->scene()->registerPickHandler( mPickHandler.get() );
 }
 
 void Qgs3DMapToolIdentify::deactivate()
 {
   Qt3DRender::QObjectPicker *picker = mCanvas->scene()->terrainEntity()->terrainPicker();
   disconnect( picker, &Qt3DRender::QObjectPicker::pressed, this, &Qgs3DMapToolIdentify::onTerrainPicked );
+
+  mCanvas->scene()->unregisterPickHandler( mPickHandler.get() );
 }
 
 void Qgs3DMapToolIdentify::onTerrainPicked( Qt3DRender::QPickEvent *event )
 {
+  if ( event->button() != Qt3DRender::QPickEvent::LeftButton )
+    return;
+
   QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( event->worldIntersection(), mCanvas->map()->origin() );
 
   QgsGeometry geom = QgsGeometry::fromPointXY( QgsPointXY( mapCoords.x(), mapCoords.y() ) );

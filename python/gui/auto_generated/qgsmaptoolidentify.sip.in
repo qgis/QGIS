@@ -158,6 +158,11 @@ Call the right method depending on layer type
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
 
+    QMap< QString, QString > derivedAttributesForPoint( const QgsPoint &point );
+%Docstring
+Returns derived attributes map for a clicked point in map coordinates. May be 2D or 3D point.
+%End
+
 };
 
 QFlags<QgsMapToolIdentify::Type> operator|(QgsMapToolIdentify::Type f1, QFlags<QgsMapToolIdentify::Type> f2);
