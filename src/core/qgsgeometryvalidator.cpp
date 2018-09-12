@@ -313,7 +313,7 @@ void QgsGeometryValidator::run()
         {
           if ( mp[i].isEmpty() )
           {
-            emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 has no rings" ).arg( i ) ) );
+            emit errorFound( QgsGeometry::Error( QObject::tr( "Polygon %1 has no rings" ).arg( i ) ) );
             mErrorCount++;
             continue;
           }
@@ -325,12 +325,12 @@ void QgsGeometryValidator::run()
 
             if ( ringInRing( mp[i][0], mp[j][0] ) )
             {
-              emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 inside polygon %2" ).arg( i ).arg( j ) ) );
+              emit errorFound( QgsGeometry::Error( QObject::tr( "Polygon %1 inside polygon %2" ).arg( i ).arg( j ) ) );
               mErrorCount++;
             }
             else if ( ringInRing( mp[j][0], mp[i][0] ) )
             {
-              emit errorFound( QgsGeometry::Error( QObject::tr( "polygon %1 inside polygon %2" ).arg( j ).arg( i ) ) );
+              emit errorFound( QgsGeometry::Error( QObject::tr( "Polygon %1 inside polygon %2" ).arg( j ).arg( i ) ) );
               mErrorCount++;
             }
             else
@@ -343,7 +343,6 @@ void QgsGeometryValidator::run()
 
       else if ( flatType == QgsWkbTypes::Unknown )
       {
-        QgsDebugMsg( QObject::tr( "Unknown geometry type" ) );
         emit errorFound( QgsGeometry::Error( QObject::tr( "Unknown geometry type %1" ).arg( mGeometry.wkbType() ) ) );
         mErrorCount++;
       }
