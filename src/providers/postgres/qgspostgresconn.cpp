@@ -989,7 +989,7 @@ static QString doubleQuotedMapValue( const QString &v )
 
 static QString quotedMap( const QVariantMap &map )
 {
-  //should it be stored in json/jsonb as well?
+  //to store properly it should be decided if it's a hstore or a json/jsonb field here...
   QString ret;
   for ( QVariantMap::const_iterator i = map.constBegin(); i != map.constEnd(); ++i )
   {

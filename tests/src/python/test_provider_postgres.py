@@ -650,8 +650,6 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f.attributes()[value_idx], {'c': 4, 'd': 5})
         self.assertEqual(f.attributes()[value_idx], {'c': 4.0, 'd': 5.0})
 
-        #test int - not yet implemented
-
     def testStringArray(self):
         vl = QgsVectorLayer('%s table="qgis_test"."string_array" sql=' % (self.dbconn), "teststringarray", "postgres")
         self.assertTrue(vl.isValid())

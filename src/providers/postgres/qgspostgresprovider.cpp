@@ -2132,9 +2132,10 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
                     .arg( delim,
                           quotedValue( v.toString() ) );
         }
-        //TODO: convert arrays and hstore to native types and json/jsonb
+        //TODO: convert arrays and hstore to native types
         else
         {
+          //this should be for json/jsonb in future
           values += delim + quotedValue( v );
         }
       }
@@ -3709,8 +3710,9 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
       break;
 
     case QVariant::Map:
-      fieldType = QStringLiteral( "hstore" );
-      //or json/jsonb
+      fieldType = field.typeName();
+      if ( fieldType.isEmpty() )
+        fieldType = QStringLiteral( "hstore" );
       fieldPrec = -1;
       break;
 

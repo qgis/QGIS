@@ -124,28 +124,6 @@ class TestQgsPostgresProvider: public QObject
       qDebug() << "actual: " << decoded;
       QCOMPARE( decoded.toMap(), expected );
     }
-    /*
-    void decodeJsonInt()
-    {
-      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "'123'" ), QStringLiteral( "json" ) );
-      QCOMPARE( decoded.type(), QVariant::Int );
-
-      int expected;
-      expected="'123'";
-      qDebug() << "actual: " << decoded;
-      QCOMPARE( decoded., expected );
-    }
-    void decodeJsonbInt()
-    {
-      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "'123'" ), QStringLiteral( "jsonb" ) );
-      QCOMPARE( decoded.type(), QVariant::Int );
-
-      int expected;
-      expected=123;
-      qDebug() << "actual: " << decoded;
-      QCOMPARE( decoded.toInt(), expected );
-    }
-    */
 };
 
 QGSTEST_MAIN( TestQgsPostgresProvider )

@@ -257,11 +257,8 @@ QString QgsField::displayString( const QVariant &v ) const
   }
   else if ( d->typeName.compare( "json" ) == 0 || d->typeName.compare( "jsonb" ) == 0 )
   {
-    //this works only if the json/jsonb field contains a map - this has to be improved.
-    //toJsonDocument works only if the usertype is QJsonDocument
-    QJsonValue value = QJsonValue::fromVariant( v );
-    QJsonDocument doc( value.toObject() );
-    return QString::fromUtf8( doc.toJson( QJsonDocument::Indented ).data() );
+    QJsonDocument doc = QJsonDocument::fromVariant( v );
+    return QString::fromUtf8( doc.toJson().data() );
   }
   // Fallback if special rules do not apply
   return v.toString();
