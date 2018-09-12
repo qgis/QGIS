@@ -86,6 +86,34 @@ class CORE_EXPORT QgsGeometryOptions
     void apply( QgsGeometry &geometry ) const;
 
     /**
+     * A list of activated geometry checks.
+     *
+     * \since QGIS 3.4
+     */
+    QStringList geometryChecks() const;
+
+    /**
+     * A list of activated geometry checks.
+     *
+     * \since QGIS 3.4
+     */
+    void setGeometryChecks( const QStringList &geometryChecks );
+
+    /**
+     * Access the configuration for the check \a checkId.
+     *
+     * \since QGIS 3.4
+     */
+    QVariantMap checkConfiguration( const QString &checkId ) const;
+
+    /**
+     * Set the configuration for the check \a checkId.
+     *
+     * \since QGIS 3.4
+     */
+    void setCheckConfiguration( const QString &checkId, const QVariantMap &checkConfiguration );
+
+    /**
      * Write the geometry options to the \a node.
      *
      * \since QGIS 3.4
@@ -116,6 +144,9 @@ class CORE_EXPORT QgsGeometryOptions
      * \since QGIS 3.4
      */
     double mGeometryPrecision = 0.0;
+
+    QStringList mGeometryChecks;
+    QVariantMap mCheckConfiguration;
 };
 
 #endif // QGSGEOMETRYOPTIONS_H
