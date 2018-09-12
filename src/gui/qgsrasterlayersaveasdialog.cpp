@@ -321,12 +321,15 @@ void QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( const QStr
   }
   mFilename->setFilter( filter );
 
+  // Disable mTileModeCheckBox for GeoPackages
+  mTileModeCheckBox->setEnabled( outputFormat() != QStringLiteral( "GPKG" ) );
   mFilename->setConfirmOverwrite( outputFormat() != QStringLiteral( "GPKG" ) );
   mLayerName->setEnabled( outputFormat() == QStringLiteral( "GPKG" ) );
   if ( mLayerName->isEnabled() )
   {
     QString layerName = QFileInfo( mFilename->filePath() ).baseName();
     mLayerName->setText( layerName );
+    mTileModeCheckBox->setChecked( false );
   }
   else
   {
