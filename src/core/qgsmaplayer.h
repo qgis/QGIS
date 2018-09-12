@@ -26,6 +26,7 @@
 #include <QPainter>
 #include <QUndoStack>
 #include <QVariant>
+#include <QIcon>
 
 #include "qgis.h"
 #include "qgserror.h"
@@ -148,7 +149,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Actions            = 1 << 5,
       MapTips            = 1 << 6,
       Diagrams           = 1 << 7,
-      AttributeTable     = 7 << 8,
+      AttributeTable     = 1 << 8,
       Rendering          = 1 << 9, //!< Scale visibility, simplify method, opacity
       CustomProperties   = 1 << 10,
       AllCategories = LayerConfiguration | Symbology | Labels | Fields | Forms | Actions |
@@ -168,12 +169,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
         ReadableStyleCategory( const QString &name, const QString &toolTip = QString() )
           : mName( name ), mToolTip( toolTip )
         {}
-
+        ReadableStyleCategory( const QString &name, const QIcon &icon, const QString &toolTip = QString() )
+          : mName( name ), mToolTip( toolTip ), mIcon( icon )
+        {}
         QString name() const {return mName;}
         QString toolTip() const {return mToolTip;}
+        QIcon icon() const {return mIcon;}
       private:
         QString mName;
         QString mToolTip;
+        QIcon mIcon;
     };
 
     /**

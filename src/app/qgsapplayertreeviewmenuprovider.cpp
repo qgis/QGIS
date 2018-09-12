@@ -320,12 +320,17 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         {
           QMenu *copyStyleMenu = menuStyleManager->addMenu( tr( "Copy Style…" ) );
           copyStyleMenu->setToolTipsVisible( true );
-          auto enumMap = qgsEnumMap<QgsMapLayer::StyleCategory>();
-          for ( auto it = enumMap.constBegin(); it != enumMap.constEnd(); ++it )
+          QList<QgsMapLayer::StyleCategory> categories = qgsEnumMap<QgsMapLayer::StyleCategory>().keys();
+          categories.move( categories.indexOf( QgsMapLayer::AllCategories ), 0 ); // move All categories to top
+          for ( QgsMapLayer::StyleCategory category : categories )
           {
-            QgsMapLayer::ReadableStyleCategory category = QgsMapLayer::readableStyleCategory( it.key() );
-            QAction *action = copyStyleMenu->addAction( category.name(), app, SLOT( copyStyle() ) );
-            action->setToolTip( category.toolTip() );
+            QgsMapLayer::ReadableStyleCategory readableCategory = QgsMapLayer::readableStyleCategory( category );
+            QAction *copyAction = new QAction( readableCategory.icon(), readableCategory.name() );
+            copyAction->setToolTip( readableCategory.toolTip() );
+            connect( copyAction, &QAction::triggered, this, [ = ]() {app->copyStyle( layer, category );} );
+            copyStyleMenu->addAction( copyAction );
+            if ( category == QgsMapLayer::AllCategories )
+              copyStyleMenu->addSeparator();
           }
         }
         else
