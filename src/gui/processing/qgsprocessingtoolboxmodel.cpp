@@ -722,7 +722,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       if ( !supportsInPlace )
         return false;
 
-      const QgsProcessingAlgorithm *alg = dynamic_cast< const QgsProcessingAlgorithm * >( mModel->algorithmForIndex( sourceIndex ) );
+      const QgsProcessingAlgorithm *alg = mModel->algorithmForIndex( sourceIndex );
       if ( !( mInPlaceLayer && alg && alg->supportInPlaceEdit( mInPlaceLayer ) ) )
       {
         return false;
