@@ -132,6 +132,7 @@ Returns a double ``number``, rounded (as close as possible) to the specified num
 
 
 
+
 double qgsPermissiveToDouble( QString string, bool &ok );
 %Docstring
 Converts a string to a double in a permissive way, e.g., allowing for incorrect
