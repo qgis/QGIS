@@ -5326,6 +5326,31 @@ tests:
         name: expected/concave_hull_points_07.gml
         type: vector
 
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbour Concave Hull - Points (7)
+    params:
+      KNEIGHBORS: 7
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/knearest_concave_hull_points_7.gml
+        type: vector
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbour Concave Hull - Group by field
+    params:
+      KNEIGHBORS: 3
+      FIELD: id2
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/knearest_concave_hull_points_id2.gml
+        type: vector
+
   - algorithm: native:swapxy
     name: Swap XY coordinates
     params:

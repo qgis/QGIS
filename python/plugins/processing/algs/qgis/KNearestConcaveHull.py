@@ -232,9 +232,9 @@ def euclidian_distance(point1, point2):
 
 def nearest_points(list_of_points, point, k):
     """
-    Returns a list of the indices of the k closest neighbors from list_of_points to the specified point.
-                                The measure of proximity is the Euclidean distance. Internally, k becomes the minimum between the given value
-                                for k and the number of points in list_of_points
+    Returns a list of the indices of the k closest neighbors from list_of_points to the specified point. The measure
+    of proximity is the Euclidean distance. Internally, k becomes the minimum between the given value for k and the
+    number of points in list_of_points
 
     :param list_of_points: list of tuples
     :param point: tuple (x, y)
@@ -397,9 +397,9 @@ def extract_points(geom):
 
 def sort_by_angle(list_of_points, last_point, last_angle):
     """
-    returns the points in list_of_points in descending order of angle to the last segment of the envelope,
-                                measured in a clockwise direction. Thus, the rightmost of the neighboring points is always selected. The first
-                                point of this list will be the next point of the envelope.
+    returns the points in list_of_points in descending order of angle to the last segment of the envelope, measured
+    in a clockwise direction. Thus, the rightmost of the neighboring points is always selected. The first point of
+    this list will be the next point of the envelope.
     """
     def getkey(item):
         return angle_difference(last_angle, angle(last_point, item))
