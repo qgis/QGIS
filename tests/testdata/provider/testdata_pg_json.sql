@@ -11,5 +11,4 @@ CREATE TABLE qgis_test.json
 INSERT INTO qgis_test.json(jvalue, jbvalue)
   VALUES
     ('[1,2,3]', '[4,5,6]'),
-    ('{"a":1,"b":2}', '{"c":4,"d":5}'),
-    ('123', '456');
+    ('{"a":1,"b":2}', '{"c":4,"d":5}');

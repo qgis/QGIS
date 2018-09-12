@@ -4221,11 +4221,8 @@ static QVariant parseJson( const QString &txt )
 {
   QVariant result;
   QJsonDocument jsonResponse = QJsonDocument::fromJson( txt.toUtf8() );
-  //it's null when no json format
+  //it's null if no json format
   result = jsonResponse.toVariant();
-
-  //TODO json/jsonb convert toVariantMap from QJsonObject in case it's a map etc.
-  //we can check there with jsonResponse.isArray if it's an array etc.
   return result;
 }
 
