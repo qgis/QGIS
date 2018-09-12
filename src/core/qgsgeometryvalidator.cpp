@@ -230,6 +230,28 @@ void QgsGeometryValidator::run()
         char res = GEOSisValidDetail_r( handle, g0.get(), GEOSVALID_ALLOW_SELFTOUCHING_RING_FORMING_HOLE, &r, &g1 );
         if ( res != 1 )
         {
+          static QgsStringMap translatedErrors;
+
+          if ( translatedErrors.empty() )
+          {
+            // Copied from https://git.osgeo.org/gitea/geos/geos/src/branch/master/src/operation/valid/TopologyValidationError.cpp
+            translatedErrors.insert( QStringLiteral( "Topology Validation Error" ), QObject::tr( "Topology Validation Error", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "Repeated Point" ), QObject::tr( "Repeated Point", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "Hole lies outside shell" ), QObject::tr( "Hole lies outside shell", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "Holes are nested" ), QObject::tr( "Holes are nested", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "Interior is disconnected" ), QObject::tr( "Interior is disconnected", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "Self-intersection" ), QObject::tr( "Self-intersection", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "Ring Self-intersection" ), QObject::tr( "Ring Self-intersection", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "Nested shells" ), QObject::tr( "Nested shells", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "Duplicate Rings" ), QObject::tr( "Duplicate Rings", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "Too few points in geometry component" ), QObject::tr( "Too few points in geometry component", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "Invalid Coordinate" ), QObject::tr( "Invalid Coordinate", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "Ring is not closed" ), QObject::tr( "Ring is not closed", "GEOS Error" ) );
+          }
+
+          const QString errorMsg( r );
+          const QString translatedErrorMsg = translatedErrors.value( errorMsg, errorMsg );
+
           if ( g1 )
           {
             const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( handle, g1 );
@@ -240,7 +262,8 @@ void QgsGeometryValidator::run()
               double x, y;
               GEOSCoordSeq_getX_r( handle, cs, 0, &x );
               GEOSCoordSeq_getY_r( handle, cs, 0, &y );
-              emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error: %1" ).arg( r ), QgsPointXY( x, y ) ) );
+
+              emit errorFound( QgsGeometry::Error( translatedErrorMsg, QgsPointXY( x, y ) ) );
               mErrorCount++;
             }
 
@@ -248,7 +271,7 @@ void QgsGeometryValidator::run()
           }
           else
           {
-            emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error: %1" ).arg( r ) ) );
+            emit errorFound( QgsGeometry::Error( translatedErrorMsg ) );
             mErrorCount++;
           }
 
