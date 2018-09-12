@@ -71,6 +71,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     bool tileMode() const;
     bool addToCanvas() const;
     QString outputFileName() const;
+    QString outputLayerName() const;
     QString outputFormat() const;
     QgsCoordinateReferenceSystem outputCrs();
     QStringList createOptions() const;
@@ -87,7 +88,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void hideOutput();
 
   public slots:
-    void accept() override { if ( validate() ) QDialog::accept(); }
+    void accept() override;
 
   private slots:
     void mRawModeRadioButton_toggled( bool );
@@ -138,6 +139,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     double noDataCellValue( int row, int column ) const;
     void adjustNoDataCellWidth( int row, int column );
     bool validate() const;
+    bool outputLayerExistsInGpkg() const;
 
     void insertAvailableOutputFormats();
 };

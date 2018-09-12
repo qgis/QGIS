@@ -7156,13 +7156,16 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
   bool tileMode = d.tileMode();
   bool addToCanvas = d.addToCanvas();
   QPointer< QgsRasterLayer > rlWeakPointer( rasterLayer );
+  QString outputLayerName = d.outputLayerName();
+  QString outputFormat = d.outputFormat();
 
   QgsRasterFileWriterTask *writerTask = new QgsRasterFileWriterTask( fileWriter, pipe.release(), d.nColumns(), d.nRows(),
       d.outputRectangle(), d.outputCrs() );
 
   // when writer is successful:
 
-  connect( writerTask, &QgsRasterFileWriterTask::writeComplete, this, [this, tileMode, addToCanvas, rlWeakPointer ]( const QString & newFilename )
+  connect( writerTask, &QgsRasterFileWriterTask::writeComplete, this,
+           [this, tileMode, addToCanvas, rlWeakPointer, outputLayerName, outputFormat]( const QString & newFilename )
   {
     QString fileName = newFilename;
     if ( tileMode )
@@ -7173,7 +7176,14 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
 
     if ( addToCanvas )
     {
-      addRasterLayers( QStringList( fileName ) );
+      if ( outputFormat == QLatin1String( "GPKG" ) && !outputLayerName.isEmpty() )
+      {
+        addRasterLayers( QStringList( QStringLiteral( "GPKG:%1:%2" ).arg( fileName, outputLayerName ) ) );
+      }
+      else
+      {
+        addRasterLayers( QStringList( fileName ) );
+      }
     }
     if ( rlWeakPointer )
       emit layerSavedAs( rlWeakPointer, fileName );
@@ -12811,7 +12821,17 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
       QFileInfo myFileInfo( *myIterator );
 
       // try to create the layer
-      QgsRasterLayer *layer = addRasterLayerPrivate( *myIterator, myFileInfo.completeBaseName(),
+      // set the layer name to the file base name...
+      QString layerName = myFileInfo.completeBaseName();
+
+      // ...unless the layer uri matches "GPKG:filePath:layerName" and layerName differs from the file base name
+      QStringList layerUriSegments = myIterator->split( QLatin1String( ":" ) );
+      if ( layerUriSegments.count() == 3 && layerUriSegments[ 0 ] ==  QLatin1String( "GPKG" ) && layerUriSegments[ 2 ] != layerName )
+      {
+        layerName = QStringLiteral( "%1 %2" ).arg( layerName, layerUriSegments[ 2 ] );
+      }
+
+      QgsRasterLayer *layer = addRasterLayerPrivate( *myIterator, layerName,
                               QString(), guiWarning, true );
       if ( layer && layer->isValid() )
       {

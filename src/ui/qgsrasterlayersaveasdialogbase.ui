@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>575</width>
-    <height>580</height>
+    <height>610</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -86,7 +86,7 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="4" column="1">
       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
        <property name="focusPolicy">
         <enum>Qt::StrongFocus</enum>
@@ -118,7 +118,7 @@ datasets with maximum width and height specified below.</string>
        </item>
       </layout>
      </item>
-     <item row="3" column="0">
+     <item row="4" column="0">
       <widget class="QLabel" name="label_2">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -147,7 +147,7 @@ datasets with maximum width and height specified below.</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="0" colspan="2">
+     <item row="5" column="0" colspan="2">
       <widget class="QCheckBox" name="mAddToCanvas">
        <property name="text">
         <string>Add saved file to map</string>
@@ -156,6 +156,16 @@ datasets with maximum width and height specified below.</string>
         <bool>true</bool>
        </property>
       </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Layer name</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="mLayerName"/>
      </item>
     </layout>
    </item>
@@ -716,6 +726,7 @@ datasets with maximum width and height specified below.</string>
   <tabstop>mFormatComboBox</tabstop>
   <tabstop>mTileModeCheckBox</tabstop>
   <tabstop>mFilename</tabstop>
+  <tabstop>mLayerName</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mAddToCanvas</tabstop>
   <tabstop>mScrollArea</tabstop>
