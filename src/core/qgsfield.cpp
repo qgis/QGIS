@@ -23,6 +23,8 @@
 #include <QDataStream>
 #include <QIcon>
 #include <QLocale>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -253,10 +255,13 @@ QString QgsField::displayString( const QVariant &v ) const
     if ( ok )
       return QLocale().toString( converted );
   }
-  else if ( d->typeName.compare( "json" ) == 0 )
+  else if ( d->typeName.compare( "json" ) == 0 || d->typeName.compare( "jsonb" ) == 0 )
   {
-    //QJsonDocument jsonDocument = variable.toJsonDocument();
-    //return QString::fromUtf8( jsonDocument.toJson() );
+    //this works only if the json/jsonb field contains a map - this has to be improved.
+    //toJsonDocument works only if the usertype is QJsonDocument
+    QJsonValue value = QJsonValue::fromVariant( v );
+    QJsonDocument doc( value.toObject() );
+    return QString::fromUtf8( doc.toJson( QJsonDocument::Indented ).data() );
   }
   // Fallback if special rules do not apply
   return v.toString();
