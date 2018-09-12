@@ -575,13 +575,11 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
     // flags
     // this code is saving automatically all the flags entries
     QDomElement layerFlagsElem = document.createElement( QStringLiteral( "flags" ) );
-    QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayer::LayerFlag>();
-    for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
+    auto enumMap = qgsEnumMap<QgsMapLayer::LayerFlag>();
+    for ( auto it = enumMap.constBegin(); it != enumMap.constEnd(); ++it )
     {
-      const char *enumKey = metaEnum.key( idx );
-      QgsMapLayer::LayerFlag enumValue = static_cast<QgsMapLayer::LayerFlag>( metaEnum.keyToValue( enumKey ) );
-      bool flagValue = mFlags.testFlag( enumValue );
-      QDomElement flagElem = document.createElement( enumKey );
+      bool flagValue = mFlags.testFlag( it.key() );
+      QDomElement flagElem = document.createElement( it.value() );
       flagElem.appendChild( document.createTextNode( QString::number( flagValue ) ) );
       layerFlagsElem.appendChild( flagElem );
     }
@@ -1628,20 +1626,18 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
   {
     // flags
     QDomElement flagsElem = layerElement.firstChildElement( QStringLiteral( "flags" ) );
-    QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayer::LayerFlag>();
     LayerFlags flags = mFlags;
-    for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
+    auto enumMap = qgsEnumMap<QgsMapLayer::LayerFlag>();
+    for ( auto it = enumMap.constBegin(); it != enumMap.constEnd(); ++it )
     {
-      const char *enumKey = metaEnum.key( idx );
-      QDomNode flagNode = flagsElem.namedItem( QString( enumKey ) );
+      QDomNode flagNode = flagsElem.namedItem( it.value() );
       if ( flagNode.isNull() )
         continue;
       bool flagValue = flagNode.toElement().text() == "1" ? true : false;
-      QgsMapLayer::LayerFlag enumValue = static_cast<QgsMapLayer::LayerFlag>( metaEnum.keyToValue( enumKey ) );
-      if ( flags.testFlag( enumValue ) && !flagValue )
-        flags &= ~enumValue;
-      else if ( !flags.testFlag( enumValue ) && flagValue )
-        flags |= enumValue;
+      if ( flags.testFlag( it.key() ) && !flagValue )
+        flags &= ~it.key();
+      else if ( !flags.testFlag( it.key() ) && flagValue )
+        flags |= it.key();
     }
     setFlags( flags );
   }
