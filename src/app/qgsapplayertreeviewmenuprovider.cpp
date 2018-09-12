@@ -318,7 +318,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QgisApp *app = QgisApp::instance();
         if ( layer->type() == QgsMapLayer::VectorLayer )
         {
-          QMenu *copyStyleMenu = menuStyleManager->addMenu( tr( "Copy Style…" ) );
+          QMenu *copyStyleMenu = menuStyleManager->addMenu( tr( "Copy Style" ) );
           copyStyleMenu->setToolTipsVisible( true );
           QList<QgsMapLayer::StyleCategory> categories = qgsEnumMap<QgsMapLayer::StyleCategory>().keys();
           categories.move( categories.indexOf( QgsMapLayer::AllCategories ), 0 ); // move All categories to top
@@ -340,7 +340,27 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
         {
-          menuStyleManager->addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
+          if ( layer->type() == QgsMapLayer::VectorLayer )
+          {
+            QMenu *copyStyleMenu = menuStyleManager->addMenu( tr( "Paste Style" ) );
+            copyStyleMenu->setToolTipsVisible( true );
+            QList<QgsMapLayer::StyleCategory> categories = qgsEnumMap<QgsMapLayer::StyleCategory>().keys();
+            categories.move( categories.indexOf( QgsMapLayer::AllCategories ), 0 ); // move All categories to top
+            for ( QgsMapLayer::StyleCategory category : categories )
+            {
+              QgsMapLayer::ReadableStyleCategory readableCategory = QgsMapLayer::readableStyleCategory( category );
+              QAction *copyAction = new QAction( readableCategory.icon(), readableCategory.name() );
+              copyAction->setToolTip( readableCategory.toolTip() );
+              connect( copyAction, &QAction::triggered, this, [ = ]() {app->pasteStyle( layer, category );} );
+              copyStyleMenu->addAction( copyAction );
+              if ( category == QgsMapLayer::AllCategories )
+                copyStyleMenu->addSeparator();
+            }
+          }
+          else
+          {
+            menuStyleManager->addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
+          }
         }
 
         menuStyleManager->addSeparator();

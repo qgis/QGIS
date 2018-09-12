@@ -8872,7 +8872,7 @@ void QgisApp::copyStyle( QgsMapLayer *sourceLayer, QgsMapLayer::StyleCategories 
   }
 }
 
-void QgisApp::pasteStyle( QgsMapLayer *destinationLayer )
+void QgisApp::pasteStyle( QgsMapLayer *destinationLayer, QgsMapLayer::StyleCategories categories )
 {
   QgsMapLayer *selectionLayer = destinationLayer ? destinationLayer : activeLayer();
   if ( selectionLayer )
@@ -8898,7 +8898,7 @@ void QgisApp::pasteStyle( QgsMapLayer *destinationLayer )
         return;
       }
 
-      if ( !selectionLayer->importNamedStyle( doc, errorMsg ) )
+      if ( !selectionLayer->importNamedStyle( doc, errorMsg, categories ) )
       {
         messageBar()->pushMessage( tr( "Cannot paste style" ),
                                    errorMsg,

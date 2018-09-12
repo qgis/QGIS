@@ -1080,7 +1080,7 @@ bool QgsMapLayer::importNamedMetadata( QDomDocument &document, QString &errorMes
   return mMetadata.readMetadataXml( myRoot );
 }
 
-bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMessage )
+bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMessage, QgsMapLayer::StyleCategories categories )
 {
   QDomElement myRoot = myDocument.firstChildElement( QStringLiteral( "qgis" ) );
   if ( myRoot.isNull() )
@@ -1111,22 +1111,8 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
     }
   }
 
-  // use scale dependent visibility flag
-  setScaleBasedVisibility( myRoot.attribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).toInt() == 1 );
-  if ( myRoot.hasAttribute( QStringLiteral( "minimumScale" ) ) )
-  {
-    //older scale element, when min/max were reversed
-    setMaximumScale( myRoot.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
-    setMinimumScale( myRoot.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
-  }
-  else
-  {
-    setMaximumScale( myRoot.attribute( QStringLiteral( "maxScale" ) ).toDouble() );
-    setMinimumScale( myRoot.attribute( QStringLiteral( "minScale" ) ).toDouble() );
-  }
-
   QgsReadWriteContext context = QgsReadWriteContext();
-  return readSymbology( myRoot, myErrorMessage, context ); // TODO: support relative paths in QML?
+  return readSymbology( myRoot, myErrorMessage, context, categories ); // TODO: support relative paths in QML?
 }
 
 void QgsMapLayer::exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) const
