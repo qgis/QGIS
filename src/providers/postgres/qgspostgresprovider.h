@@ -209,7 +209,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * \param value the value to convert
      * \returns a QVariant of the given type or a null QVariant
      */
-    static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value );
+    static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName );
 
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
     QgsAttrPalIndexNameHash palAttributeIndexNames() const override;

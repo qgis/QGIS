@@ -989,6 +989,7 @@ static QString doubleQuotedMapValue( const QString &v )
 
 static QString quotedMap( const QVariantMap &map )
 {
+  //should it be stored in json/jsonb as well?
   QString ret;
   for ( QVariantMap::const_iterator i = map.constBegin(); i != map.constEnd(); ++i )
   {
@@ -1393,6 +1394,7 @@ QString QgsPostgresConn::fieldExpression( const QgsField &fld, QString expr )
     return QStringLiteral( "st_astext(%1)" ).arg( expr );
   }
   //TODO: add support for hstore
+  //TODO: add support for json/jsonb
   else
   {
     return expr + "::text";

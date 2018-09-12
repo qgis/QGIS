@@ -253,6 +253,11 @@ QString QgsField::displayString( const QVariant &v ) const
     if ( ok )
       return QLocale().toString( converted );
   }
+  else if ( d->typeName.compare( "json" ) == 0 )
+  {
+    //QJsonDocument jsonDocument = variable.toJsonDocument();
+    //return QString::fromUtf8( jsonDocument.toJson() );
+  }
   // Fallback if special rules do not apply
   return v.toString();
 }
