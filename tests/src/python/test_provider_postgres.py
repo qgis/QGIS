@@ -615,6 +615,43 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             self.assertTrue(vl.deleteFeatures([new_pk]))
             self.assertTrue(vl.commitChanges())
 
+    def testJson(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."json" sql=' % (self.dbconn), "testjson", "postgres")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName('jvalue')).type(), QVariant.Map)
+        self.assertEqual(fields.at(fields.indexFromName('jbvalue')).type(), QVariant.Map)
+
+        fi = vl.getFeatures(QgsFeatureRequest())
+        f = QgsFeature()
+
+        #test list
+        fi.nextFeature(f)
+        value_idx = vl.fields().lookupField('jvalue')
+        self.assertIsInstance(f.attributes()[value_idx], list)
+        self.assertEqual(f.attributes()[value_idx], [1, 2, 3])
+        self.assertEqual(f.attributes()[value_idx], [1.0, 2.0, 3.0])
+
+        value_idx = vl.fields().lookupField('jbvalue')
+        self.assertIsInstance(f.attributes()[value_idx], list)
+        self.assertEqual(f.attributes()[value_idx], [4, 5, 6])
+        self.assertEqual(f.attributes()[value_idx], [4.0, 5.0, 6.0])
+
+        #test dict
+        fi.nextFeature(f)
+        value_idx = vl.fields().lookupField('jvalue')
+        self.assertIsInstance(f.attributes()[value_idx], dict)
+        self.assertEqual(f.attributes()[value_idx], {'a': 1, 'b': 2})
+        self.assertEqual(f.attributes()[value_idx], {'a': 1.0, 'b': 2.0})
+
+        value_idx = vl.fields().lookupField('jbvalue')
+        self.assertIsInstance(f.attributes()[value_idx], dict)
+        self.assertEqual(f.attributes()[value_idx], {'c': 4, 'd': 5})
+        self.assertEqual(f.attributes()[value_idx], {'c': 4.0, 'd': 5.0})
+
+        #test int - not yet implemented
+
     def testStringArray(self):
         vl = QgsVectorLayer('%s table="qgis_test"."string_array" sql=' % (self.dbconn), "teststringarray", "postgres")
         self.assertTrue(vl.isValid())

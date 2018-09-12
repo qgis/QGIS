@@ -230,11 +230,13 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
                   << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "timestamp without time zone" ), QVariant::DateTime, -1, -1, -1, -1 )
 
                   // complex types
-                  << QgsVectorDataProvider::NativeType( tr( "Map" ), QStringLiteral( "hstore" ), QVariant::Map, -1, -1, -1, -1, QVariant::String )
+                  << QgsVectorDataProvider::NativeType( tr( "Map (hstore)" ), QStringLiteral( "hstore" ), QVariant::Map, -1, -1, -1, -1, QVariant::String )
                   << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 32bit)" ), QStringLiteral( "int4[]" ), QVariant::List, -1, -1, -1, -1, QVariant::Int )
                   << QgsVectorDataProvider::NativeType( tr( "Array of number (integer - 64bit)" ), QStringLiteral( "int8[]" ), QVariant::List, -1, -1, -1, -1, QVariant::LongLong )
                   << QgsVectorDataProvider::NativeType( tr( "Array of number (double)" ), QStringLiteral( "double precision[]" ), QVariant::List, -1, -1, -1, -1, QVariant::Double )
                   << QgsVectorDataProvider::NativeType( tr( "Array of text" ), QStringLiteral( "text[]" ), QVariant::StringList, -1, -1, -1, -1, QVariant::String )
+                  << QgsVectorDataProvider::NativeType( tr( "Map (json)" ), QStringLiteral( "json" ), QVariant::Map, -1, -1, -1, -1, QVariant::String )
+                  << QgsVectorDataProvider::NativeType( tr( "Map (jsonb)" ), QStringLiteral( "jsonb" ), QVariant::Map, -1, -1, -1, -1, QVariant::String )
 
                   // boolean
                   << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 )
@@ -985,7 +987,7 @@ bool QgsPostgresProvider::loadFields()
           fieldPrec = -1;
         }
       }
-      else if ( fieldTypeName == QLatin1String( "hstore" ) )
+      else if ( fieldTypeName == QLatin1String( "hstore" ) ||  fieldTypeName == QLatin1String( "json" ) || fieldTypeName == QLatin1String( "jsonb" ) )
       {
         fieldType = QVariant::Map;
         fieldSubType = QVariant::String;
@@ -1586,7 +1588,7 @@ QVariant QgsPostgresProvider::minimumValue( int index ) const
     sql = QStringLiteral( "SELECT %1 FROM (%2) foo" ).arg( connectionRO()->fieldExpression( fld ), sql );
 
     QgsPostgresResult rmin( connectionRO()->PQexec( sql ) );
-    return convertValue( fld.type(), fld.subType(), rmin.PQgetvalue( 0, 0 ) );
+    return convertValue( fld.type(), fld.subType(), rmin.PQgetvalue( 0, 0 ), fld.typeName() );
   }
   catch ( PGFieldNotFound )
   {
@@ -1625,7 +1627,7 @@ QSet<QVariant> QgsPostgresProvider::uniqueValues( int index, int limit ) const
     if ( res.PQresultStatus() == PGRES_TUPLES_OK )
     {
       for ( int i = 0; i < res.PQntuples(); i++ )
-        uniqueValues.insert( convertValue( fld.type(), fld.subType(), res.PQgetvalue( i, 0 ) ) );
+        uniqueValues.insert( convertValue( fld.type(), fld.subType(), res.PQgetvalue( i, 0 ), fld.typeName() ) );
     }
   }
   catch ( PGFieldNotFound )
@@ -1668,7 +1670,7 @@ QStringList QgsPostgresProvider::uniqueStringsMatching( int index, const QString
     {
       for ( int i = 0; i < res.PQntuples(); i++ )
       {
-        results << ( convertValue( fld.type(), fld.subType(), res.PQgetvalue( i, 0 ) ) ).toString();
+        results << ( convertValue( fld.type(), fld.subType(), res.PQgetvalue( i, 0 ), fld.typeName() ) ).toString();
         if ( feedback && feedback->isCanceled() )
           break;
       }
@@ -1822,7 +1824,7 @@ QVariant QgsPostgresProvider::maximumValue( int index ) const
 
     QgsPostgresResult rmax( connectionRO()->PQexec( sql ) );
 
-    return convertValue( fld.type(), fld.subType(), rmax.PQgetvalue( 0, 0 ) );
+    return convertValue( fld.type(), fld.subType(), rmax.PQgetvalue( 0, 0 ), fld.typeName() );
   }
   catch ( PGFieldNotFound )
   {
@@ -1859,7 +1861,7 @@ QVariant QgsPostgresProvider::defaultValue( int fieldId ) const
     QgsPostgresResult res( connectionRO()->PQexec( QStringLiteral( "SELECT %1" ).arg( defVal ) ) );
 
     if ( res.result() )
-      return convertValue( fld.type(), fld.subType(), res.PQgetvalue( 0, 0 ) );
+      return convertValue( fld.type(), fld.subType(), res.PQgetvalue( 0, 0 ), fld.typeName() );
     else
     {
       pushError( tr( "Could not execute query" ) );
@@ -2130,7 +2132,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
                     .arg( delim,
                           quotedValue( v.toString() ) );
         }
-        //TODO: convert arrays and hstore to native types
+        //TODO: convert arrays and hstore to native types and json/jsonb
         else
         {
           values += delim + quotedValue( v );
@@ -2209,7 +2211,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         {
           QgsField fld = field( attrIdx );
           v = paramValue( defaultValues[ i ], defaultValues[ i ] );
-          features->setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v ) );
+          features->setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v, fld.typeName() ) );
         }
         else
         {
@@ -2218,7 +2220,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           if ( v != value.toString() )
           {
             QgsField fld = field( attrIdx );
-            features->setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v ) );
+            features->setAttribute( attrIdx, convertValue( fld.type(), fld.subType(), v, fld.typeName() ) );
           }
         }
 
@@ -2233,7 +2235,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         {
           const int idx = mPrimaryKeyAttrs.at( i );
           const QgsField fld = mAttributeFields.at( idx );
-          features->setAttribute( idx, convertValue( fld.type(), fld.subType(), result.PQgetvalue( 0, i ) ) );
+          features->setAttribute( idx, convertValue( fld.type(), fld.subType(), result.PQgetvalue( 0, i ), fld.typeName() ) );
         }
       }
       else if ( result.PQresultStatus() != PGRES_COMMAND_OK )
@@ -3708,6 +3710,7 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
 
     case QVariant::Map:
       fieldType = QStringLiteral( "hstore" );
+      //or json/jsonb
       fieldPrec = -1;
       break;
 
@@ -4212,7 +4215,19 @@ static QVariant parseHstore( const QString &txt )
   return result;
 }
 
-static QVariant parseOtherArray( const QString &txt, QVariant::Type subType )
+static QVariant parseJson( const QString &txt )
+{
+  QVariant result;
+  QJsonDocument jsonResponse = QJsonDocument::fromJson( txt.toUtf8() );
+  //it's null when no json format
+  result = jsonResponse.toVariant();
+
+  //TODO json/jsonb convert toVariantMap from QJsonObject in case it's a map etc.
+  //we can check there with jsonResponse.isArray if it's an array etc.
+  return result;
+}
+
+static QVariant parseOtherArray( const QString &txt, QVariant::Type subType, const QString &typeName )
 {
   int i = 0;
   QVariantList result;
@@ -4224,7 +4239,7 @@ static QVariant parseOtherArray( const QString &txt, QVariant::Type subType )
       QgsLogger::warning( "Error parsing array: " + txt );
       break;
     }
-    result.append( QgsPostgresProvider::convertValue( subType, QVariant::Invalid, value ) );
+    result.append( QgsPostgresProvider::convertValue( subType, QVariant::Invalid, value, typeName ) );
   }
   return result;
 }
@@ -4246,7 +4261,7 @@ static QVariant parseStringArray( const QString &txt )
   return result;
 }
 
-static QVariant parseArray( const QString &txt, QVariant::Type type, QVariant::Type subType )
+static QVariant parseArray( const QString &txt, QVariant::Type type, QVariant::Type subType, const QString &typeName )
 {
   if ( !txt.startsWith( '{' ) || !txt.endsWith( '}' ) )
   {
@@ -4258,20 +4273,23 @@ static QVariant parseArray( const QString &txt, QVariant::Type type, QVariant::T
   if ( type == QVariant::StringList )
     return parseStringArray( inner );
   else
-    return parseOtherArray( inner, subType );
+    return parseOtherArray( inner, subType, typeName );
 }
 
-QVariant QgsPostgresProvider::convertValue( QVariant::Type type, QVariant::Type subType, const QString &value )
+QVariant QgsPostgresProvider::convertValue( QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName )
 {
   QVariant result;
   switch ( type )
   {
     case QVariant::Map:
-      result = parseHstore( value );
+      if ( typeName.compare( QLatin1String( "json" ) ) == 0 || typeName.compare( QLatin1String( "jsonb" ) ) == 0 )
+        result = parseJson( value );
+      else
+        result = parseHstore( value );
       break;
     case QVariant::StringList:
     case QVariant::List:
-      result = parseArray( value, type, subType );
+      result = parseArray( value, type, subType, typeName );
       break;
     case QVariant::Bool:
       if ( value == QChar( 't' ) )
