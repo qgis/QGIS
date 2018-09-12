@@ -68,9 +68,8 @@ QgsPromoteToMultipartAlgorithm *QgsPromoteToMultipartAlgorithm::createInstance()
 
 bool QgsPromoteToMultipartAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
 {
-  if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
-    return false;
-  return QgsWkbTypes::isMultiType( layer->wkbType() );
+  Q_UNUSED( layer );
+  return false;
 }
 
 QgsWkbTypes::Type QgsPromoteToMultipartAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
