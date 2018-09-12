@@ -22,6 +22,8 @@
 #include <QString>
 #include <QRegExp>
 #include <QMetaType>
+#include <QMap>
+#include <QMetaEnum>
 #include <QVariant>
 #include <QDateTime>
 #include <QDate>
@@ -386,6 +388,24 @@ namespace qgis
 }
 ///@endcond
 #endif
+
+/**
+ * Returns a map of all enum entries.
+ * The map has the enum values (int) as keys and the enum keys (QString) as values.
+ * The enum must have been declared using Q_ENUM or Q_FLAG.
+ */
+template<class T> CORE_EXPORT const QMap<T, QString> qgsEnumMap() SIP_SKIP
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  Q_ASSERT( metaEnum.isValid() );
+  QMap<T, QString> enumMap;
+  for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
+  {
+    const char *enumKey = metaEnum.key( idx );
+    enumMap.insert( static_cast<T>( metaEnum.keyToValue( enumKey ) ), QString( enumKey ) );
+  }
+  return enumMap;
+};
 
 /**
  * Converts a string to a double in a permissive way, e.g., allowing for incorrect
