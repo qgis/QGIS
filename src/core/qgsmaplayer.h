@@ -781,15 +781,18 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param doc source QDomDocument
      * \param errorMsg this QString will be initialized on error
      * during the execution of readSymbology
+     * \param categories the style categories to import
      * \returns true on success
      * \since QGIS 2.8
      */
-    virtual bool importNamedStyle( QDomDocument &doc, QString &errorMsg SIP_OUT );
+    virtual bool importNamedStyle( QDomDocument &doc, QString &errorMsg SIP_OUT,
+                                   QgsMapLayer::StyleCategories categories = QgsMapLayer::AllCategories );
 
     /**
      * Export the properties of this layer as named style in a QDomDocument
      * \param doc the target QDomDocument
      * \param errorMsg this QString will be initialized on error
+     * \param categories the style categories to export
      * during the execution of writeSymbology
      */
     virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg SIP_OUT, QgsReadWriteContext &context,

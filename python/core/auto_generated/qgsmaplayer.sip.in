@@ -807,13 +807,15 @@ Retrieve a named style for this layer from a sqlite database.
 :return: true if style was successfully loaded
 %End
 
-    virtual bool importNamedStyle( QDomDocument &doc, QString &errorMsg /Out/ );
+    virtual bool importNamedStyle( QDomDocument &doc, QString &errorMsg /Out/,
+                                   QgsMapLayer::StyleCategories categories = QgsMapLayer::AllCategories );
 %Docstring
 Import the properties of this layer from a QDomDocument
 
 :param doc: source QDomDocument
 :param errorMsg: this QString will be initialized on error
                  during the execution of readSymbology
+:param categories: the style categories to import
 
 :return: true on success
 
@@ -827,7 +829,8 @@ Export the properties of this layer as named style in a QDomDocument
 
 :param doc: the target QDomDocument
 :param errorMsg: this QString will be initialized on error
-                 during the execution of writeSymbology
+:param categories: the style categories to export
+                   during the execution of writeSymbology
 %End
 
 
