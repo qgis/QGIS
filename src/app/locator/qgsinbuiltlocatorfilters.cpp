@@ -206,9 +206,9 @@ QgsActiveLayerFeaturesLocatorFilter *QgsActiveLayerFeaturesLocatorFilter::clone(
   return new QgsActiveLayerFeaturesLocatorFilter();
 }
 
-void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext & )
+void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext &context )
 {
-  if ( string.length() < 3 )
+  if ( string.length() < 3 || context.usingPrefix )
     return;
 
   bool allowNumeric = false;
@@ -317,9 +317,9 @@ QgsAllLayersFeaturesLocatorFilter *QgsAllLayersFeaturesLocatorFilter::clone() co
   return new QgsAllLayersFeaturesLocatorFilter();
 }
 
-void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext & )
+void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext &context )
 {
-  if ( string.length() < 3 )
+  if ( string.length() < 3 || context.usingPrefix )
     return;
 
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
