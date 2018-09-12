@@ -24,7 +24,6 @@
 #include <QJsonObject>
 #include <QUrl>
 
-
 static bool _parseMetadataDocument( const QJsonDocument &doc, QgsProjectStorage::Metadata &metadata )
 {
   if ( !doc.isObject() )
@@ -162,7 +161,7 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
     QgsPostgresResult res( conn->PQexec( sql ) );
     if ( res.PQresultStatus() != PGRES_COMMAND_OK )
     {
-      QString errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( projectUri.connInfo.username() );
+      QString errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. Maybe this is due to database permissions (user=%1). Please contact your database admin" ).arg( projectUri.connInfo.username() );
       context.pushMessage( errCause, Qgis::Critical );
       QgsPostgresConnPool::instance()->releaseConnection( conn );
       return false;
@@ -188,11 +187,16 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
   sql += "') ON CONFLICT (name) DO UPDATE SET content = EXCLUDED.content, metadata = EXCLUDED.metadata;";
 
   QgsPostgresResult res( conn->PQexec( sql ) );
-  bool ok = res.PQresultStatus() == PGRES_COMMAND_OK;
+  if ( res.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    QString errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database. Maybe this is due to table permissions (user=%2). Please contact your database admin" ).arg( projectUri.projectName, projectUri.connInfo.username() );
+    context.pushMessage( errCause, Qgis::Critical );
+    QgsPostgresConnPool::instance()->releaseConnection( conn );
+    return false;
+  }
 
   QgsPostgresConnPool::instance()->releaseConnection( conn );
-
-  return ok;
+  return true;
 }
 
 
