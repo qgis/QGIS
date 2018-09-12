@@ -118,6 +118,8 @@ Returns the current wrapped label, if any.
 Returns the parameter definition associated with this wrapper.
 %End
 
+%Property( name = param, get = parameterDefinition )
+
     void setParameterValue( const QVariant &value, QgsProcessingContext &context );
 %Docstring
 Sets the current ``value`` for the parameter.

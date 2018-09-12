@@ -139,6 +139,11 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
      */
     const QgsProcessingParameterDefinition *parameterDefinition() const;
 
+    // TODO QGIS 4.0 -- remove
+#ifdef SIP_RUN
+    % Property( name = param, get = parameterDefinition )
+#endif
+
     /**
      * Sets the current \a value for the parameter.
      *

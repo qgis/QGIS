@@ -534,6 +534,13 @@ while ($LINE_IDX < $LINE_COUNT){
         write_output("COD", $LINE."\n");
         next;
     }
+    # do not process SIP code %Property
+    if ( $SIP_RUN == 1 && $LINE =~ m/^ *% *(Property)(.*)?$/ ){
+        $LINE = "%$1$2";
+        $COMMENT = '';
+        write_output("COD", $LINE."\n");
+        next;
+    }
 
     # Skip preprocessor stuff
     if ($LINE =~ m/^\s*#/){
