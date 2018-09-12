@@ -222,6 +222,19 @@ void QgsMapToolIdentifyAction::clearResults()
   resultsDialog()->clear();
 }
 
+void QgsMapToolIdentifyAction::showResultsForFeature( QgsVectorLayer *vlayer, QgsFeatureId fid, const QgsPoint &pt )
+{
+  QgsFeature feature = vlayer->getFeature( fid );
+  QMap< QString, QString > derivedAttributes = derivedAttributesForPoint( pt );
+  // TODO: private in QgsMapToolIdentify
+  //derivedAttributes.unite( featureDerivedAttributes( feature, vlayer, QgsPointXY( pt ) ) );
+
+  resultsDialog()->addFeature( IdentifyResult( vlayer, feature, derivedAttributes ) );
+  resultsDialog()->show();
+  // update possible view modes
+  resultsDialog()->updateViewModes();
+}
+
 QgsUnitTypes::DistanceUnit QgsMapToolIdentifyAction::displayDistanceUnits() const
 {
   return QgsProject::instance()->distanceUnits();

@@ -101,6 +101,7 @@ void QgsPolygon3DSymbolEntity::addEntityForNotSelectedPolygons( const Qgs3DMapSe
 
   // build the entity
   QgsPolygon3DSymbolEntityNode *entity = new QgsPolygon3DSymbolEntityNode( map, layer, symbol, req );
+  entity->findChild<Qt3DRender::QGeometryRenderer *>()->setObjectName( "main" ); // temporary measure to distinguish between "selected" and "main"
   entity->addComponent( mat );
   entity->addComponent( tform );
   entity->setParent( this );
@@ -141,6 +142,7 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
 {
   QgsPointXY origin( map.origin().x(), map.origin().y() );
   QList<QgsPolygon *> polygons;
+  QList<QgsFeatureId> fids;
   QList<float> extrusionHeightPerPolygon;  // will stay empty if not needed per polygon
 
   QgsExpressionContext ctx( _expressionContext3D() );
@@ -178,6 +180,7 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
       QgsPolygon *polyClone = poly->clone();
       Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), height, map );
       polygons.append( polyClone );
+      fids.append( f.id() );
       if ( hasDDExtrusion )
         extrusionHeightPerPolygon.append( extrusionHeight );
     }
@@ -190,6 +193,7 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
         QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
         Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), height, map );
         polygons.append( polyClone );
+        fids.append( f.id() );
         if ( hasDDExtrusion )
           extrusionHeightPerPolygon.append( extrusionHeight );
       }
@@ -201,7 +205,7 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
   mGeometry = new QgsTessellatedPolygonGeometry;
   mGeometry->setInvertNormals( symbol.invertNormals() );
   mGeometry->setAddBackFaces( symbol.addBackFaces() );
-  mGeometry->setPolygons( polygons, origin, symbol.extrusionHeight(), extrusionHeightPerPolygon );
+  mGeometry->setPolygons( polygons, fids, origin, symbol.extrusionHeight(), extrusionHeightPerPolygon );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( mGeometry );
