@@ -97,9 +97,10 @@ This is the base class for all map layer types (vector, raster).
     {
       public:
         ReadableStyleCategory( const QString &name, const QString &toolTip = QString() );
-
+        ReadableStyleCategory( const QString &name, const QIcon &icon, const QString &toolTip = QString() );
         QString name() const;
         QString toolTip() const;
+        QIcon icon() const;
     };
 
     QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString(), const QString &source = QString() );
