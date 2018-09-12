@@ -441,7 +441,7 @@ QStringList QgsRasterLayerSaveAsDialog::createOptions() const
       indx = options.indexOf( QRegExp( "^APPEND_SUBDATASET=.*", Qt::CaseInsensitive ) );
       if ( indx > -1 )
       {
-        options.replace ( indx, QStringLiteral( "APPEND_SUBDATASET=YES" ) );
+        options.replace( indx, QStringLiteral( "APPEND_SUBDATASET=YES" ) );
       }
       else
       {

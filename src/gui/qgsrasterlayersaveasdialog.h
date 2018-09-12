@@ -139,6 +139,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     double noDataCellValue( int row, int column ) const;
     void adjustNoDataCellWidth( int row, int column );
     bool validate() const;
+    // Returns true if the output layer already exists in a GeoPackage file.
     bool outputLayerExistsInGpkg() const;
 
     void insertAvailableOutputFormats();
