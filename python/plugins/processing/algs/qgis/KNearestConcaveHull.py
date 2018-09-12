@@ -52,6 +52,7 @@ from qgis.core import (QgsApplication,
                        QgsWkbTypes)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
+
 class KNearestConcaveHull(QgisAlgorithm):
     KNEIGHBORS = 'KNEIGHBORS'
     INPUT = 'INPUT'
@@ -79,7 +80,6 @@ class KNearestConcaveHull(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer')))
@@ -88,8 +88,8 @@ class KNearestConcaveHull(QgisAlgorithm):
                                                        QgsProcessingParameterNumber.Integer,
                                                        defaultValue=3, minValue=3))
         self.addParameter(QgsProcessingParameterField(self.FIELD,
-                                              self.tr('Field (set if creating concave hulls by class)'),
-                                              parentLayerParameterName=self.INPUT, optional=True))
+                                                      self.tr('Field (set if creating concave hulls by class)'),
+                                                      parentLayerParameterName=self.INPUT, optional=True))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Concave hull'),
                                                             QgsProcessing.TypeVectorPolygon))
 
@@ -128,7 +128,7 @@ class KNearestConcaveHull(QgisAlgorithm):
 
             for unique in unique_values:
                 points = []
-                filter = QgsExpression.createFieldEqualityExpression(field_name,unique)
+                filter = QgsExpression.createFieldEqualityExpression(field_name, unique)
                 request = QgsFeatureRequest().setFilterExpression(filter)
                 request.setSubsetOfAttributes([])
                 features = source.getFeatures(request)
@@ -233,8 +233,8 @@ def euclidian_distance(point1, point2):
 def nearest_points(list_of_points, point, k):
     """
     Returns a list of the indices of the k closest neighbors from list_of_points to the specified point.
-    The measure of proximity is the Euclidean distance. Internally, k becomes the minimum between the given value
-    for k and the number of points in list_of_points
+                                The measure of proximity is the Euclidean distance. Internally, k becomes the minimum between the given value
+                                for k and the number of points in list_of_points
 
     :param list_of_points: list of tuples
     :param point: tuple (x, y)
@@ -245,7 +245,7 @@ def nearest_points(list_of_points, point, k):
     # their respective index of list *list_of_distances*
     list_of_distances = []
     for index in range(len(list_of_points)):
-        list_of_distances.append(( euclidian_distance(list_of_points[index], point), index))
+        list_of_distances.append((euclidian_distance(list_of_points[index], point), index))
 
     # sort distances in ascending order
     list_of_distances.sort()
@@ -374,7 +374,7 @@ def extract_points(geom):
         if geom.isMultipart():
             multi_geom = geom.asMultiPolyline()
             for i in multi_geom:
-                temp_geom.extend( i )
+                temp_geom.extend(i)
         else:
             temp_geom = geom.asPolyline()
     # polygon geometry
@@ -386,20 +386,20 @@ def extract_points(geom):
             for i in multi_geom:
                 # explode to line segments
                 for j in i:
-                    temp_geom.extend( j )
+                    temp_geom.extend(j)
         else:
             multi_geom = geom.asPolygon()
             # explode to line segments
             for i in multi_geom:
-                temp_geom.extend( i )
+                temp_geom.extend(i)
     return temp_geom
 
 
 def sort_by_angle(list_of_points, last_point, last_angle):
     """
     returns the points in list_of_points in descending order of angle to the last segment of the envelope,
-    measured in a clockwise direction. Thus, the rightmost of the neighboring points is always selected. The first
-    point of this list will be the next point of the envelope.
+                                measured in a clockwise direction. Thus, the rightmost of the neighboring points is always selected. The first
+                                point of this list will be the next point of the envelope.
     """
     def getkey(item):
         return angle_difference(last_angle, angle(last_point, item))
@@ -478,7 +478,7 @@ def concave_hull(points_list, k):
         i = -1
 
         # search for the nearest point to which the connecting line does not intersect any existing segment
-        while its is True and (i < len(c_points)-1):
+        while its is True and (i < len(c_points) - 1):
             i += 1
             if c_points[i] == first_point:
                 last_point = 1
@@ -488,7 +488,7 @@ def concave_hull(points_list, k):
             its = False
 
             while its is False and (j < len(hull) - last_point):
-                its = intersect((hull[step-2], c_points[i]), (hull[step-2-j], hull[step-1-j]))
+                its = intersect((hull[step - 2], c_points[i]), (hull[step - 2 - j], hull[step - 1 - j]))
                 j += 1
 
         # there is no candidate to which the connecting line does not intersect any existing segment, so the
@@ -511,7 +511,7 @@ def concave_hull(points_list, k):
         step += 1
 
     all_inside = True
-    i = len(point_set)-1
+    i = len(point_set) - 1
 
     # check if all points are within the created polygon
     while (all_inside is True) and (i >= 0):
