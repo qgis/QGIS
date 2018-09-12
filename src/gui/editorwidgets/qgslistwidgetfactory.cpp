@@ -44,5 +44,5 @@ QgsEditorConfigWidget *QgsListWidgetFactory::configWidget( QgsVectorLayer *vl, i
 unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
-  return ( field.type() == QVariant::List || field.type() == QVariant::StringList ) && field.subType() != QVariant::Invalid ? 20 : 0;
+  return ( field.type() == QVariant::List || field.type() == QVariant::StringList || field.typeName().compare( QLatin1String( "json" ) ) == 0 || field.typeName().compare( QLatin1String( "jsonb" ) ) == 0 ) && field.subType() != QVariant::Invalid ? 20 : 0;
 }
