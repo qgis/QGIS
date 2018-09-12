@@ -577,7 +577,7 @@ void TestStyle::testSmartGroup()
   int res = style.addSmartgroup( QStringLiteral( "mine" ), QStringLiteral( "AND" ), QStringList(), QStringList(), QStringList() << QStringLiteral( "a" ), QStringList() );
   QCOMPARE( res, 1 );
   QCOMPARE( style.smartgroupNames(), QStringList() << QStringLiteral( "mine" ) );
-  QCOMPARE( style.smartgroup( 1 ).values( QStringLiteral( "name" ) ), QStringList() << QStringLiteral( "a" ) );
+  QCOMPARE( style.smartgroup( 1 ).values( QStringLiteral( "name" ) ), QList< QString >() << QStringLiteral( "a" ) );
   QCOMPARE( style.smartgroupId( QStringLiteral( "mine" ) ), 1 );
   QCOMPARE( groupModifiedSpy.count(), 1 );
 
@@ -587,8 +587,8 @@ void TestStyle::testSmartGroup()
   res = style.addSmartgroup( QStringLiteral( "tag" ), QStringLiteral( "OR" ), QStringList(), QStringList(), QStringList() << "c", QStringList() << "a" );
   QCOMPARE( res, 2 );
   QCOMPARE( style.smartgroupNames(), QStringList() << QStringLiteral( "mine" ) << QStringLiteral( "tag" ) );
-  QCOMPARE( style.smartgroup( 2 ).values( QStringLiteral( "name" ) ), QStringList() << QStringLiteral( "c" ) );
-  QCOMPARE( style.smartgroup( 2 ).values( QStringLiteral( "!name" ) ), QStringList() << QStringLiteral( "a" ) );
+  QCOMPARE( style.smartgroup( 2 ).values( QStringLiteral( "name" ) ), QList< QString >() << QStringLiteral( "c" ) );
+  QCOMPARE( style.smartgroup( 2 ).values( QStringLiteral( "!name" ) ), QList< QString >() << QStringLiteral( "a" ) );
   QCOMPARE( style.smartgroupId( QStringLiteral( "tag" ) ), 2 );
   QCOMPARE( groupModifiedSpy.count(), 2 );
 
@@ -607,8 +607,8 @@ void TestStyle::testSmartGroup()
   res = style.addSmartgroup( QStringLiteral( "tags" ), QStringLiteral( "AND" ), QStringList() << "blue", QStringList() << "red", QStringList(), QStringList() );
   QCOMPARE( res, 3 );
   QCOMPARE( style.smartgroupNames(), QStringList() << QStringLiteral( "mine" ) << QStringLiteral( "tag" ) << QStringLiteral( "tags" ) );
-  QCOMPARE( style.smartgroup( 3 ).values( QStringLiteral( "tag" ) ), QStringList() << QStringLiteral( "blue" ) );
-  QCOMPARE( style.smartgroup( 3 ).values( QStringLiteral( "!tag" ) ), QStringList() << QStringLiteral( "red" ) );
+  QCOMPARE( style.smartgroup( 3 ).values( QStringLiteral( "tag" ) ), QList< QString >() << QStringLiteral( "blue" ) );
+  QCOMPARE( style.smartgroup( 3 ).values( QStringLiteral( "!tag" ) ), QList< QString >() << QStringLiteral( "red" ) );
   QCOMPARE( style.smartgroupId( QStringLiteral( "tags" ) ), 3 );
   QCOMPARE( groupModifiedSpy.count(), 5 );
 
@@ -618,8 +618,8 @@ void TestStyle::testSmartGroup()
   res = style.addSmartgroup( QStringLiteral( "combined" ), QStringLiteral( "AND" ), QStringList() << "blue", QStringList(), QStringList(), QStringList() << "a" );
   QCOMPARE( res, 4 );
   QCOMPARE( style.smartgroupNames(), QStringList() << QStringLiteral( "mine" ) << QStringLiteral( "tag" ) << QStringLiteral( "tags" )  << QStringLiteral( "combined" ) );
-  QCOMPARE( style.smartgroup( 4 ).values( QStringLiteral( "tag" ) ), QStringList() << QStringLiteral( "blue" ) );
-  QCOMPARE( style.smartgroup( 4 ).values( QStringLiteral( "!name" ) ), QStringList() << QStringLiteral( "a" ) );
+  QCOMPARE( style.smartgroup( 4 ).values( QStringLiteral( "tag" ) ), QList< QString >() << QStringLiteral( "blue" ) );
+  QCOMPARE( style.smartgroup( 4 ).values( QStringLiteral( "!name" ) ), QList< QString >() << QStringLiteral( "a" ) );
   QCOMPARE( style.smartgroupId( QStringLiteral( "combined" ) ), 4 );
   QCOMPARE( groupModifiedSpy.count(), 6 );
 
