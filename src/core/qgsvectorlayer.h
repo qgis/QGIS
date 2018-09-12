@@ -881,7 +881,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns true in case of success.
      */
     bool readSymbology( const QDomNode &layerNode, QString &errorMessage,
-                        QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) override;
+                        QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllCategories ) override;
 
     /**
      * Read the style for the current layer from the Dom node supplied.
@@ -891,7 +891,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns true in case of success.
      */
     bool readStyle( const QDomNode &node, QString &errorMessage,
-                    QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) override;
+                    QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllCategories ) override;
 
     /**
      * Write the symbology for the layer into the docment provided.
@@ -902,7 +902,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  \returns true in case of success.
      */
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                         const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const override;
+                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllCategories ) const override;
 
     /**
      * Write just the style information for the layer into the document
@@ -913,7 +913,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  \returns true in case of success.
      */
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                     const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const override;
+                     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllCategories ) const override;
 
     /**
      * Writes the symbology of the layer into the document provided in SLD 1.1 format

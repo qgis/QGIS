@@ -1307,7 +1307,7 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
  * \return true in case of success.
  */
 bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage,
-                                    QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories )
+                                    QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
   Q_UNUSED( errorMessage );
   // TODO: implement categories for raster layer
@@ -1401,7 +1401,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   return true;
 }
 
-bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories )
+bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
   return readSymbology( node, errorMessage, context, categories );
 }
@@ -1549,7 +1549,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
  * \return true in case of success.
  */
 bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage,
-                                     const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
+                                     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   Q_UNUSED( errorMessage );
   // TODO: implement categories for raster layer
@@ -1580,7 +1580,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
 }
 
 bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                                 const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
+                                 const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   return writeSymbology( node, doc, errorMessage, context, categories );
 } // bool QgsRasterLayer::writeSymbology

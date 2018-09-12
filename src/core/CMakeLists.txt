@@ -888,7 +888,6 @@ SET(QGIS_CORE_HDRS
   qgsmaplayerdependency.h
   qgsmaplayerrenderer.h
   qgsmaplayerstyle.h
-  qgsmaplayerstylemanager.h
   qgsmapsettings.h
   qgsmapsettingsutils.h
   qgsmaptopixel.h

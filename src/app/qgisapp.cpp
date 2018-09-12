@@ -8847,7 +8847,7 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
   return layer;
 }
 
-void QgisApp::copyStyle( QgsMapLayer *sourceLayer )
+void QgisApp::copyStyle( QgsMapLayer *sourceLayer, QgsMapLayer::StyleCategories categories )
 {
   QgsMapLayer *selectionLayer = sourceLayer ? sourceLayer : activeLayer();
 
@@ -8856,8 +8856,7 @@ void QgisApp::copyStyle( QgsMapLayer *sourceLayer )
     QString errorMsg;
     QDomDocument doc( QStringLiteral( "qgis" ) );
     QgsReadWriteContext context;
-    selectionLayer->exportNamedStyle( doc, errorMsg, context );
-
+    selectionLayer->exportNamedStyle( doc, errorMsg, context, categories );
 
     if ( !errorMsg.isEmpty() )
     {
