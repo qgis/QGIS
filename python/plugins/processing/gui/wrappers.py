@@ -155,7 +155,6 @@ class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
         self.dialogType = dialogTypes.get(dialog.__class__.__name__, QgsProcessingGui.Standard)
         super().__init__(param, self.dialogType)
 
-        self.param = param
         self.dialog = dialog
         self.row = row
         self.col = col
