@@ -27,6 +27,11 @@ class QgsVectorLayer;
 // TODO: Should be retrieved from registry!!
 class QgsIsValidGeometryCheck;
 
+
+/**
+ * This service connects to all layers in a project and triggers validation
+ * of features whenever they are edited.
+ */
 class QgsGeometryValidationService : public QObject
 {
     Q_OBJECT
@@ -49,6 +54,10 @@ class QgsGeometryValidationService : public QObject
     QgsGeometryValidationService( QgsProject *project );
     ~QgsGeometryValidationService();
 
+    /**
+     * Returns if a validation is active for the specified \a feature on
+     * \a layer.
+     */
     bool validationActive( QgsVectorLayer *layer, QgsFeatureId feature ) const;
 
   signals:
