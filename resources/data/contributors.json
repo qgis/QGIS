@@ -890,6 +890,23 @@
           49.871362
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Loïc Bartoletti",
+        "Committer": "No",
+        "First Commit Message": "Oriented Minimum Bounding Box",
+        "First Commit Date": "11-06-2015",
+        "GIT Nickname": "lbartoletti"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.63055,
+          45.93943
+        ]
+      }
     }
   ]
 }
