@@ -830,10 +830,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! copies style of the active layer to the clipboard
 
     /**
-       \param sourceLayer  The layer where the style will be taken from
-                                        (defaults to the active layer on the legend)
+     * Copy the style of a map layer
+     * \param sourceLayer The layer where the style will be taken from
+                          (defaults to the active layer on the legend)
+     * \param categories The style categories to copy
      */
-    void copyStyle( QgsMapLayer *sourceLayer = nullptr );
+    void copyStyle( QgsMapLayer *sourceLayer = nullptr, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllCategories );
     //! pastes style on the clipboard to the active layer
 
     /**

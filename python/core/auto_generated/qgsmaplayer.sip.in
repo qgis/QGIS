@@ -75,6 +75,33 @@ This is the base class for all map layer types (vector, raster).
     typedef QFlags<QgsMapLayer::LayerFlag> LayerFlags;
 
 
+    enum StyleCategory
+    {
+      LayerConfiguration,
+      Symbology,
+      Labels,
+      Fields,
+      Forms,
+      Actions,
+      MapTips,
+      Diagrams,
+      AttributeTable,
+      Rendering,
+      CustomProperties,
+      AllCategories
+    };
+    typedef QFlags<QgsMapLayer::StyleCategory> StyleCategories;
+
+
+    struct ReadableStyleCategory
+    {
+      public:
+        ReadableStyleCategory( const QString &name, const QString &toolTip = QString() );
+
+        QString name() const;
+        QString toolTip() const;
+    };
+
     QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString(), const QString &source = QString() );
 %Docstring
 Constructor for QgsMapLayer
@@ -136,6 +163,15 @@ Returns the extension of a Property.
 
 .. versionadded:: 3.0
 %End
+
+    static ReadableStyleCategory readableStyleCategory( StyleCategory category );
+%Docstring
+Readable and Translated category
+
+.. versionadded:: 3.4
+%End
+
+
 
     QString id() const;
 %Docstring
@@ -784,7 +820,7 @@ Import the properties of this layer from a QDomDocument
 %End
 
     virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg /Out/, QgsReadWriteContext &context,
-                                   QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
+                                   QgsMapLayer::StyleCategories categories = QgsMapLayer::AllCategories ) const;
 %Docstring
 Export the properties of this layer as named style in a QDomDocument
 
@@ -867,7 +903,7 @@ Attempts to style the layer using the formatting from an SLD type file.
 
 
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
-                                QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) = 0;
+                                QgsReadWriteContext &context, StyleCategories categories = AllCategories ) = 0;
 %Docstring
 Read the symbology for the current layer from the Dom node supplied.
 
@@ -879,7 +915,7 @@ Read the symbology for the current layer from the Dom node supplied.
 %End
 
     virtual bool readStyle( const QDomNode &node, QString &errorMessage,
-                            QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All );
+                            QgsReadWriteContext &context, StyleCategories categories = AllCategories );
 %Docstring
 Read the style for the current layer from the Dom node supplied.
 
@@ -897,7 +933,7 @@ Read the style for the current layer from the Dom node supplied.
 %End
 
     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
-                                 QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const = 0;
+                                 StyleCategories categories = AllCategories ) const = 0;
 %Docstring
 Write the style for the layer into the docment provided.
 
@@ -914,7 +950,7 @@ Write the style for the layer into the docment provided.
 %End
 
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
-                             QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
+                             StyleCategories categories = AllCategories ) const;
 %Docstring
 Write just the symbology information for the layer into the document
 
@@ -1490,7 +1526,7 @@ Write style manager's configuration (if exists). To be called by subclasses.
 
     void writeCommonStyle( QDomElement &layerElement, QDomDocument &document,
                            const QgsReadWriteContext &context,
-                           QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
+                           StyleCategories categories = AllCategories ) const;
 %Docstring
 Write style data common to all layer types
 
@@ -1498,7 +1534,7 @@ Write style data common to all layer types
 %End
 
     void readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context,
-                          QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All );
+                          StyleCategories categories = AllCategories );
 %Docstring
 Read style data common to all layer types
 
@@ -1536,6 +1572,9 @@ Checks whether a new set of dependencies will introduce a cycle
 };
 
 QFlags<QgsMapLayer::LayerFlag> operator|(QgsMapLayer::LayerFlag f1, QFlags<QgsMapLayer::LayerFlag> f2);
+
+QFlags<QgsMapLayer::StyleCategory> operator|(QgsMapLayer::StyleCategory f1, QFlags<QgsMapLayer::StyleCategory> f2);
+
 
 
 

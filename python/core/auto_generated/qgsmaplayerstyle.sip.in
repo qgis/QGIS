@@ -26,28 +26,6 @@ only possible to read or write layer's current style.
 #include "qgsmaplayerstyle.h"
 %End
   public:
-    static const QMetaObject staticMetaObject;
-
-  public:
-
-    enum StyleCategory
-    {
-      LayerConfiguration,
-      Symbology,
-      Labels,
-      Fields,
-      Forms,
-      Actions,
-      MapTips,
-      Diagrams,
-      AttributeTable,
-      Rendering,
-      CustomProperties,
-      All
-    };
-    typedef QFlags<QgsMapLayerStyle::StyleCategory> StyleCategories;
-
-
     QgsMapLayerStyle();
 %Docstring
 construct invalid style
@@ -92,9 +70,6 @@ Write style configuration (for project file writing)
 %End
 
 };
-
-QFlags<QgsMapLayerStyle::StyleCategory> operator|(QgsMapLayerStyle::StyleCategory f1, QFlags<QgsMapLayerStyle::StyleCategory> f2);
-
 
 
 class QgsMapLayerStyleOverride

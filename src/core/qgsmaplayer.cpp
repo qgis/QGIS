@@ -67,6 +67,37 @@ QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
   return QString();
 }
 
+QgsMapLayer::ReadableStyleCategory QgsMapLayer::readableStyleCategory( QgsMapLayer::StyleCategory category )
+{
+  switch ( category )
+  {
+    case LayerConfiguration:
+      return ReadableStyleCategory( tr( "Layer Configuration" ), tr( "Flags, display expression, read-only" ) );
+    case Symbology         :
+      return ReadableStyleCategory( tr( "Symbology" ) );
+    case Labels            :
+      return ReadableStyleCategory( tr( "Labels" ) );
+    case Fields            :
+      return ReadableStyleCategory( tr( "Fields" ), tr( "Aliases, widgets, WMS/WFS, expressions, constraints, virtual fields" ) );
+    case Forms             :
+      return ReadableStyleCategory( tr( "Forms" ) );
+    case Actions           :
+      return ReadableStyleCategory( tr( "Actions" ) );
+    case MapTips           :
+      return ReadableStyleCategory( tr( "Map Tips" ) );
+    case Diagrams          :
+      return ReadableStyleCategory( tr( "Diagrams" ) );
+    case AttributeTable    :
+      return ReadableStyleCategory( tr( "Attribute Table" ) );
+    case Rendering         :
+      return ReadableStyleCategory( tr( "Rendering" ), tr( "Scale visibility, simplify method, opacity" ) );
+    case CustomProperties  :
+      return ReadableStyleCategory( tr( "Custom Properties" ) );
+    case AllCategories               :
+      return ReadableStyleCategory( tr( "All categories" ) );
+  }
+}
+
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           const QString &lyrname,
                           const QString &source )
@@ -549,9 +580,9 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 }
 
 void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &document,
-                                    const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
+                                    const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
-  if ( categories.testFlag( QgsMapLayerStyle::Rendering ) )
+  if ( categories.testFlag( Rendering ) )
   {
     // use scale dependent visibility flag
     layerElement.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
@@ -559,7 +590,7 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
     layerElement.setAttribute( QStringLiteral( "minScale" ), QString::number( minimumScale() ) );
   }
 
-  if ( categories.testFlag( QgsMapLayerStyle::Symbology ) )
+  if ( categories.testFlag( Symbology ) )
   {
     if ( m3DRenderer )
     {
@@ -570,7 +601,7 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
     }
   }
 
-  if ( categories.testFlag( QgsMapLayerStyle::LayerConfiguration ) )
+  if ( categories.testFlag( LayerConfiguration ) )
   {
     // flags
     // this code is saving automatically all the flags entries
@@ -587,7 +618,7 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
   }
 
   // custom properties
-  if ( categories.testFlag( QgsMapLayerStyle::CustomProperties ) )
+  if ( categories.testFlag( CustomProperties ) )
   {
     writeCustomProperties( layerElement, document );
   }
@@ -1103,7 +1134,7 @@ void QgsMapLayer::exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) co
   doc = myDocument;
 }
 
-void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg, QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
+void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   QDomImplementation DomImplementation;
   QDomDocumentType documentType = DomImplementation.createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
@@ -1559,7 +1590,7 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
   return QString();
 }
 
-bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories )
+bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
   Q_UNUSED( node );
   Q_UNUSED( errorMessage );
@@ -1569,7 +1600,7 @@ bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsRea
 }
 
 bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                              const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
+                              const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   Q_UNUSED( node );
   Q_UNUSED( doc );
@@ -1580,9 +1611,9 @@ bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorM
 }
 
 void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context,
-                                   QgsMapLayerStyle::StyleCategories categories )
+                                   QgsMapLayer::StyleCategories categories )
 {
-  if ( categories.testFlag( QgsMapLayerStyle::Symbology ) )
+  if ( categories.testFlag( Symbology ) )
   {
     QgsAbstract3DRenderer *r3D = nullptr;
     QDomElement renderer3DElem = layerElement.firstChildElement( QStringLiteral( "renderer-3d" ) );
@@ -1598,7 +1629,7 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
     setRenderer3D( r3D );
   }
 
-  if ( categories.testFlag( QgsMapLayerStyle::CustomProperties ) )
+  if ( categories.testFlag( CustomProperties ) )
   {
     // read custom properties before passing reading further to a subclass, so that
     // the subclass can also read custom properties
@@ -1606,7 +1637,7 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
   }
 
   // use scale dependent visibility flag
-  if ( categories.testFlag( QgsMapLayerStyle::Rendering ) )
+  if ( categories.testFlag( Rendering ) )
   {
     setScaleBasedVisibility( layerElement.attribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).toInt() == 1 );
     if ( layerElement.hasAttribute( QStringLiteral( "minimumScale" ) ) )
@@ -1622,7 +1653,7 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
     }
   }
 
-  if ( categories.testFlag( QgsMapLayerStyle::LayerConfiguration ) )
+  if ( categories.testFlag( LayerConfiguration ) )
   {
     // flags
     QDomElement flagsElem = layerElement.firstChildElement( QStringLiteral( "flags" ) );

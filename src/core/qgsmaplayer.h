@@ -135,6 +135,48 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_FLAG( LayerFlags )
 
     /**
+     * Categories of style to distinguish appropriate sections for import/export
+     * \since QGIS 3.4
+     */
+    enum StyleCategory
+    {
+      LayerConfiguration = 1 << 0, //!< Flags, display expression, read-only
+      Symbology          = 1 << 1,
+      Labels             = 1 << 2,
+      Fields             = 1 << 3, //!< Aliases, widgets, WMS/WFS, expressions, constraints, virtual fields
+      Forms              = 1 << 4,
+      Actions            = 1 << 5,
+      MapTips            = 1 << 6,
+      Diagrams           = 1 << 7,
+      AttributeTable     = 7 << 8,
+      Rendering          = 1 << 9, //!< Scale visibility, simplify method, opacity
+      CustomProperties   = 1 << 10,
+      AllCategories = LayerConfiguration | Symbology | Labels | Fields | Forms | Actions |
+                      MapTips | Diagrams | AttributeTable | Rendering | CustomProperties,
+    };
+    Q_ENUM( StyleCategory )
+    Q_DECLARE_FLAGS( StyleCategories, StyleCategory )
+    Q_FLAG( StyleCategories )
+
+    /**
+     * Style category with its name and its tooltip translated and readable
+     * \since QGIS 3.4
+     */
+    struct ReadableStyleCategory
+    {
+      public:
+        ReadableStyleCategory( const QString &name, const QString &toolTip = QString() )
+          : mName( name ), mToolTip( toolTip )
+        {}
+
+        QString name() const {return mName;}
+        QString toolTip() const {return mToolTip;}
+      private:
+        QString mName;
+        QString mToolTip;
+    };
+
+    /**
      * Constructor for QgsMapLayer
      * \param type layer type
      * \param name display name for the layer
@@ -186,6 +228,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.0
      */
     static QString extensionPropertyType( PropertyType type );
+
+    /**
+     * Readable and Translated category
+     * \since QGIS 3.4
+     */
+    static ReadableStyleCategory readableStyleCategory( StyleCategory category );
+
+
 
     //! Returns the layer's unique ID, which is used to access this layer from QgsProject.
     QString id() const;
@@ -738,7 +788,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * during the execution of writeSymbology
      */
     virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg SIP_OUT, QgsReadWriteContext &context,
-                                   QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
+                                   QgsMapLayer::StyleCategories categories = QgsMapLayer::AllCategories ) const;
 
 
     /**
@@ -809,7 +859,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \returns true in case of success.
      */
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
-                                QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) = 0;
+                                QgsReadWriteContext &context, StyleCategories categories = AllCategories ) = 0;
 
     /**
      * Read the style for the current layer from the Dom node supplied.
@@ -821,7 +871,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 2.16
      */
     virtual bool readStyle( const QDomNode &node, QString &errorMessage,
-                            QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All );
+                            QgsReadWriteContext &context, StyleCategories categories = AllCategories );
 
     /**
      * Write the style for the layer into the docment provided.
@@ -833,7 +883,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  \returns true in case of success.
      */
     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
-                                 QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const = 0;
+                                 StyleCategories categories = AllCategories ) const = 0;
 
     /**
      * Write just the symbology information for the layer into the document
@@ -847,7 +897,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  \since QGIS 2.16
      */
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
-                             QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
+                             StyleCategories categories = AllCategories ) const;
 
     //! Returns pointer to layer's undo stack
     QUndoStack *undoStack();
@@ -1294,14 +1344,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void writeCommonStyle( QDomElement &layerElement, QDomDocument &document,
                            const QgsReadWriteContext &context,
-                           QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
+                           StyleCategories categories = AllCategories ) const;
 
     /**
      * Read style data common to all layer types
      * \since QGIS 3.0
      */
     void readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context,
-                          QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All );
+                          StyleCategories categories = AllCategories );
 
 #ifndef SIP_RUN
 #if 0
@@ -1430,6 +1480,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
 Q_DECLARE_METATYPE( QgsMapLayer * )
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayer::LayerFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayer::StyleCategories )
+
 
 #ifndef SIP_RUN
 

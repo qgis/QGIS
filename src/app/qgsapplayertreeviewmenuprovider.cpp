@@ -316,7 +316,22 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QMenu *menuStyleManager = new QMenu( tr( "Styles" ), menu );
 
         QgisApp *app = QgisApp::instance();
-        menuStyleManager->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
+        if ( layer->type() == QgsMapLayer::VectorLayer )
+        {
+          QMenu *copyStyleMenu = menuStyleManager->addMenu( tr( "Copy Style…" ) );
+          copyStyleMenu->setToolTipsVisible( true );
+          auto enumMap = qgsEnumMap<QgsMapLayer::StyleCategory>();
+          for ( auto it = enumMap.constBegin(); it != enumMap.constEnd(); ++it )
+          {
+            QgsMapLayer::ReadableStyleCategory category = QgsMapLayer::readableStyleCategory( it.key() );
+            QAction *action = copyStyleMenu->addAction( category.name(), app, SLOT( copyStyle() ) );
+            action->setToolTip( category.toolTip() );
+          }
+        }
+        else
+        {
+          menuStyleManager->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
+        }
 
         if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
         {

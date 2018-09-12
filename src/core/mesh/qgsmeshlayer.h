@@ -126,9 +126,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     bool readSymbology( const QDomNode &node, QString &errorMessage,
-                        QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) override;
+                        QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllCategories ) override;
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                         const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const override;
+                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllCategories ) const override;
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
     QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;

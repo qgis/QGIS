@@ -871,7 +871,7 @@ Returns the current auxiliary layer.
 
 
      virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage,
-                        QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All );
+                        QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllCategories );
 %Docstring
 Read the symbology for the current layer from the Dom node supplied.
 
@@ -883,7 +883,7 @@ Read the symbology for the current layer from the Dom node supplied.
 %End
 
      virtual bool readStyle( const QDomNode &node, QString &errorMessage,
-                    QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All );
+                    QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllCategories );
 %Docstring
 Read the style for the current layer from the Dom node supplied.
 
@@ -895,7 +895,7 @@ Read the style for the current layer from the Dom node supplied.
 %End
 
      virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                         const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
+                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllCategories ) const;
 %Docstring
 Write the symbology for the layer into the docment provided.
 
@@ -908,7 +908,7 @@ Write the symbology for the layer into the docment provided.
 %End
 
      virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                     const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories = QgsMapLayerStyle::All ) const;
+                     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllCategories ) const;
 %Docstring
 Write just the style information for the layer into the document
 

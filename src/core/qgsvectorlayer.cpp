@@ -1858,11 +1858,11 @@ void QgsVectorLayer::resolveReferences( QgsProject *project )
 
 
 bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMessage,
-                                    QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories )
+                                    QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
   QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Symbology" ) );
 
-  if ( categories.testFlag( QgsMapLayerStyle::Fields ) )
+  if ( categories.testFlag( Fields ) )
   {
     if ( !mExpressionFieldBuffer )
       mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
@@ -1877,10 +1877,10 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   readStyle( layerNode, errorMessage, context, categories );
 
-  if ( categories.testFlag( QgsMapLayerStyle::MapTips ) )
+  if ( categories.testFlag( MapTips ) )
     mMapTipTemplate = layerNode.namedItem( QStringLiteral( "mapTip" ) ).toElement().text();
 
-  if ( categories.testFlag( QgsMapLayerStyle::LayerConfiguration ) )
+  if ( categories.testFlag( LayerConfiguration ) )
     mDisplayExpression = layerNode.namedItem( QStringLiteral( "previewExpression" ) ).toElement().text();
 
   // Try to migrate pre QGIS 3.0 display field property
@@ -1888,20 +1888,20 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   if ( mFields.lookupField( displayField ) < 0 )
   {
     // if it's not a field, it's a maptip
-    if ( mMapTipTemplate.isEmpty() && categories.testFlag( QgsMapLayerStyle::MapTips ) )
+    if ( mMapTipTemplate.isEmpty() && categories.testFlag( MapTips ) )
       mMapTipTemplate = displayField;
   }
   else
   {
-    if ( mDisplayExpression.isEmpty() && categories.testFlag( QgsMapLayerStyle::LayerConfiguration ) )
+    if ( mDisplayExpression.isEmpty() && categories.testFlag( LayerConfiguration ) )
       mDisplayExpression = QgsExpression::quotedColumnRef( displayField );
   }
 
   // process the attribute actions
-  if ( categories.testFlag( QgsMapLayerStyle::Actions ) )
+  if ( categories.testFlag( Actions ) )
     mActions->readXml( layerNode );
 
-  if ( categories.testFlag( QgsMapLayerStyle::Fields ) )
+  if ( categories.testFlag( Fields ) )
   {
     mAttributeAliasMap.clear();
     QDomNode aliasesNode = layerNode.namedItem( QStringLiteral( "aliases" ) );
@@ -2064,26 +2064,26 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     }
   }
 
-  if ( categories.testFlag( QgsMapLayerStyle::LayerConfiguration ) )
+  if ( categories.testFlag( LayerConfiguration ) )
   {
     QDomElement geometryOptionsElement = layerNode.namedItem( QStringLiteral( "geometryOptions" ) ).toElement();
     mGeometryFixes->setGeometryPrecision( geometryOptionsElement.attribute( QStringLiteral( "geometryPrecision" ),  QStringLiteral( "0.0" ) ).toDouble() );
     mGeometryFixes->setRemoveDuplicateNodes( geometryOptionsElement.attribute( QStringLiteral( "removeDuplicateNodes" ),  QStringLiteral( "0" ) ).toInt() == 1 );
   }
-  if ( categories.testFlag( QgsMapLayerStyle::Forms ) )
+  if ( categories.testFlag( Forms ) )
     mEditFormConfig.readXml( layerNode, context );
 
-  if ( categories.testFlag( QgsMapLayerStyle::AttributeTable ) )
+  if ( categories.testFlag( AttributeTable ) )
   {
     mAttributeTableConfig.readXml( layerNode );
     mConditionalStyles->readXml( layerNode, context );
   }
 
-  if ( categories.testFlag( QgsMapLayerStyle::CustomProperties ) )
+  if ( categories.testFlag( CustomProperties ) )
     readCustomProperties( layerNode, QStringLiteral( "variable" ) );
 
   QDomElement mapLayerNode = layerNode.toElement();
-  if ( categories.testFlag( QgsMapLayerStyle::LayerConfiguration )
+  if ( categories.testFlag( LayerConfiguration )
        && mapLayerNode.attribute( QStringLiteral( "readOnly" ), QStringLiteral( "0" ) ).toInt() == 1 )
     mReadOnly = true;
 
@@ -2093,7 +2093,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 }
 
 bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
-                                QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories )
+                                QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
   bool result = true;
   emit readCustomSymbology( node.toElement(), errorMessage );
@@ -2101,7 +2101,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
   if ( isSpatial() )
   {
     // try renderer v2 first
-    if ( categories.testFlag( QgsMapLayerStyle::Symbology ) )
+    if ( categories.testFlag( Symbology ) )
     {
       QDomElement rendererElement = node.firstChildElement( RENDERER_TAG_NAME );
       if ( !rendererElement.isNull() )
@@ -2124,7 +2124,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
     }
 
     // read labeling definition
-    if ( categories.testFlag( QgsMapLayerStyle::Labels ) )
+    if ( categories.testFlag( Labels ) )
     {
       QDomElement labelingElement = node.firstChildElement( QStringLiteral( "labeling" ) );
       QgsAbstractVectorLayerLabeling *labeling = nullptr;
@@ -2151,7 +2151,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
         mLabelsEnabled = true;
     }
 
-    if ( categories.testFlag( QgsMapLayerStyle::Symbology ) )
+    if ( categories.testFlag( Symbology ) )
     {
       // get and set the blend mode if it exists
       QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
@@ -2171,7 +2171,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
     }
 
     // get and set the layer transparency if it exists
-    if ( categories.testFlag( QgsMapLayerStyle::Rendering ) )
+    if ( categories.testFlag( Rendering ) )
     {
       QDomNode layerTransparencyNode = node.namedItem( QStringLiteral( "layerTransparency" ) );
       if ( !layerTransparencyNode.isNull() )
@@ -2187,7 +2187,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       }
     }
 
-    if ( categories.testFlag( QgsMapLayerStyle::Rendering ) )
+    if ( categories.testFlag( Rendering ) )
     {
       QDomElement e = node.toElement();
 
@@ -2200,7 +2200,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
     }
 
     //diagram renderer and diagram layer settings
-    if ( categories.testFlag( QgsMapLayerStyle::Diagrams ) )
+    if ( categories.testFlag( Diagrams ) )
     {
       delete mDiagramRenderer;
       mDiagramRenderer = nullptr;
@@ -2279,14 +2279,14 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
 
 
 bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                                     const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
+                                     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   QDomElement layerElement = node.toElement();
   writeCommonStyle( layerElement, doc, context, categories );
 
   ( void )writeStyle( node, doc, errorMessage, context );
 
-  if ( categories.testFlag( QgsMapLayerStyle::LayerConfiguration ) )
+  if ( categories.testFlag( LayerConfiguration ) )
   {
     QDomElement geometryOptionsElement = doc.createElement( QStringLiteral( "geometryOptions" ) );
     node.appendChild( geometryOptionsElement );
@@ -2294,7 +2294,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     geometryOptionsElement.setAttribute( QStringLiteral( "geometryPrecision" ), mGeometryFixes->geometryPrecision() );
   }
 
-  if ( categories.testFlag( QgsMapLayerStyle::Fields ) )
+  if ( categories.testFlag( Fields ) )
   {
     QDomElement fieldConfigurationElement = doc.createElement( QStringLiteral( "fieldConfiguration" ) );
     node.appendChild( fieldConfigurationElement );
@@ -2410,24 +2410,24 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   }
 
   // add attribute actions
-  if ( categories.testFlag( QgsMapLayerStyle::Actions ) )
+  if ( categories.testFlag( Actions ) )
     mActions->writeXml( node );
 
-  if ( categories.testFlag( QgsMapLayerStyle::AttributeTable ) )
+  if ( categories.testFlag( AttributeTable ) )
   {
     mAttributeTableConfig.writeXml( node );
     mConditionalStyles->writeXml( node, doc, context );
   }
 
-  if ( categories.testFlag( QgsMapLayerStyle::Forms ) )
+  if ( categories.testFlag( Forms ) )
     mEditFormConfig.writeXml( node, context );
 
   // save readonly state
-  if ( categories.testFlag( QgsMapLayerStyle::LayerConfiguration ) )
+  if ( categories.testFlag( LayerConfiguration ) )
     node.toElement().setAttribute( QStringLiteral( "readOnly" ), mReadOnly );
 
   // save preview expression
-  if ( categories.testFlag( QgsMapLayerStyle::LayerConfiguration ) )
+  if ( categories.testFlag( LayerConfiguration ) )
   {
     QDomElement prevExpElem = doc.createElement( QStringLiteral( "previewExpression" ) );
     QDomText prevExpText = doc.createTextNode( mDisplayExpression );
@@ -2436,7 +2436,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   }
 
   // save map tip
-  if ( categories.testFlag( QgsMapLayerStyle::MapTips ) )
+  if ( categories.testFlag( MapTips ) )
   {
     QDomElement mapTipElem = doc.createElement( QStringLiteral( "mapTip" ) );
     QDomText mapTipText = doc.createTextNode( mMapTipTemplate );
@@ -2448,7 +2448,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 }
 
 bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                                 const QgsReadWriteContext &context, QgsMapLayerStyle::StyleCategories categories ) const
+                                 const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   QDomElement mapLayerNode = node.toElement();
 
@@ -2456,7 +2456,7 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
 
   if ( isSpatial() )
   {
-    if ( categories.testFlag( QgsMapLayerStyle::Symbology ) )
+    if ( categories.testFlag( Symbology ) )
     {
       if ( mRenderer )
       {
@@ -2465,7 +2465,7 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
       }
     }
 
-    if ( categories.testFlag( QgsMapLayerStyle::Labels ) )
+    if ( categories.testFlag( Labels ) )
     {
       if ( mLabeling )
       {
@@ -2476,7 +2476,7 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
     }
 
     // save the simplification drawing settings
-    if ( categories.testFlag( QgsMapLayerStyle::Rendering ) )
+    if ( categories.testFlag( Rendering ) )
     {
       mapLayerNode.setAttribute( QStringLiteral( "simplifyDrawingHints" ), QString::number( mSimplifyMethod.simplifyHints() ) );
       mapLayerNode.setAttribute( QStringLiteral( "simplifyAlgorithm" ), QString::number( mSimplifyMethod.simplifyAlgorithm() ) );
@@ -2486,12 +2486,12 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
     }
 
     //save customproperties
-    if ( categories.testFlag( QgsMapLayerStyle::CustomProperties ) )
+    if ( categories.testFlag( CustomProperties ) )
     {
       writeCustomProperties( node, doc );
     }
 
-    if ( categories.testFlag( QgsMapLayerStyle::Symbology ) )
+    if ( categories.testFlag( Symbology ) )
     {
       // add the blend mode field
       QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
@@ -2507,7 +2507,7 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
     }
 
     // add the layer opacity
-    if ( categories.testFlag( QgsMapLayerStyle::Rendering ) )
+    if ( categories.testFlag( Rendering ) )
     {
       QDomElement layerOpacityElem  = doc.createElement( QStringLiteral( "layerOpacity" ) );
       QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
@@ -2515,7 +2515,7 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
       node.appendChild( layerOpacityElem );
     }
 
-    if ( categories.testFlag( QgsMapLayerStyle::Diagrams ) && mDiagramRenderer )
+    if ( categories.testFlag( Diagrams ) && mDiagramRenderer )
     {
       mDiagramRenderer->writeXml( mapLayerNode, doc, context );
       if ( mDiagramLayerSettings )
