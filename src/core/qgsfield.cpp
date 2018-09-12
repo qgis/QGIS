@@ -24,7 +24,6 @@
 #include <QIcon>
 #include <QLocale>
 #include <QJsonDocument>
-#include <QJsonObject>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
