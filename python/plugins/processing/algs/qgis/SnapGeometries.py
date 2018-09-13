@@ -26,6 +26,7 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 from qgis.analysis import (QgsGeometrySnapper,
+                           QgsGeometrySnapperSingleSource,
                            QgsInternalGeometrySnapper)
 from qgis.core import (QgsFeatureSink,
                        QgsProcessing,
@@ -71,7 +72,8 @@ class SnapGeometriesToLayer(QgisAlgorithm):
                       self.tr('Prefer closest point, don\'t insert new vertices'),
                       self.tr('Move end points only, prefer aligning nodes'),
                       self.tr('Move end points only, prefer closest point'),
-                      self.tr('Snap end points to end points only')]
+                      self.tr('Snap end points to end points only'),
+                      self.tr('Snap to anchor nodes (single layer only)')]
         self.addParameter(QgsProcessingParameterEnum(
             self.BEHAVIOR,
             self.tr('Behavior'),
@@ -106,6 +108,9 @@ class SnapGeometriesToLayer(QgisAlgorithm):
         total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         if parameters[self.INPUT] != parameters[self.REFERENCE_LAYER]:
+            if mode == 7:
+                raise QgsProcessingException(self.tr('This mode applies when the input and reference layer are the same.'))
+
             snapper = QgsGeometrySnapper(reference_source)
             processed = 0
             for f in features:
@@ -119,6 +124,10 @@ class SnapGeometriesToLayer(QgisAlgorithm):
                     sink.addFeature(f)
                 processed += 1
                 feedback.setProgress(processed * total)
+        elif mode == 7:
+            # input layer == ref layer
+            modified_count = QgsGeometrySnapperSingleSource.run(source, sink, tolerance, feedback)
+            feedback.pushInfo(self.tr('Snapped {} geometries.').format(modified_count))
         else:
             # snapping internally
             snapper = QgsInternalGeometrySnapper(tolerance, mode)

@@ -85,7 +85,6 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmshortestpathpointtopoint.cpp
   processing/qgsalgorithmsimplify.cpp
   processing/qgsalgorithmsmooth.cpp
-  processing/qgsalgorithmsnapgeometries.cpp
   processing/qgsalgorithmsnaptogrid.cpp
   processing/qgsalgorithmsplitwithlines.cpp
   processing/qgsalgorithmstringconcatenation.cpp
@@ -124,6 +123,7 @@ SET(QGIS_ANALYSIS_SRCS
   raster/qgsrastermatrix.cpp
   vector/mersenne-twister.cpp
   vector/qgsgeometrysnapper.cpp
+  vector/qgsgeometrysnappersinglesource.cpp
   vector/qgszonalstatistics.cpp
 
   network/qgsgraph.cpp
@@ -232,6 +232,7 @@ SET(QGIS_ANALYSIS_HDRS
 
   vector/mersenne-twister.h
   vector/qgsgeometrysnapper.h
+  vector/qgsgeometrysnappersinglesource.h
   vector/qgszonalstatistics.h
   vector/geometry_checker/qgsgeometrycheckerutils.h
   vector/geometry_checker/qgsfeaturepool.h

@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsalgorithmsnapgeometries.cpp
+  qgsgeometrysnappersinglesource.cpp
   ---------------------
   Date                 : May 2018
   Copyright            : (C) 2018 by Martin Dobias
@@ -13,81 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmsnapgeometries.h"
+#include "qgsgeometrysnappersinglesource.h"
 
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturesink.h"
+#include "qgsfeaturesource.h"
+#include "qgsfeedback.h"
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
-
-///@cond PRIVATE
-
-QString QgsSnapGeometriesAlgorithm::name() const
-{
-  return QStringLiteral( "snap" );
-}
-
-QString QgsSnapGeometriesAlgorithm::displayName() const
-{
-  return QObject::tr( "Snap geometries" );
-}
-
-QString QgsSnapGeometriesAlgorithm::group() const
-{
-  return QObject::tr( "Vector geometry" );
-}
-
-QString QgsSnapGeometriesAlgorithm::groupId() const
-{
-  return QStringLiteral( "vectorgeometry" );
-}
-
-QString QgsSnapGeometriesAlgorithm::shortHelpString() const
-{
-  return QObject::tr( "Makes sure that any two vertices of the vector layer are at least at distance given by the threshold value. "
-                      "The algorithm moves nearby vertices to one location and adds vertices to segments that are passing around other "
-                      "vertices within the threshold. It does not remove any vertices. Also, it does not modify geometries unless "
-                      "needed (it does not snap coordinates to a grid).\n\n"
-                      "This algorithm comes handy when doing vector overlay operations such as intersection, union or difference "
-                      "to prevent possible topological errors caused by numerical errors if coordinates are very close to each other.\n\n"
-                      "After running the algorithm some previously valid geometries may become invalid and therefore it may be useful "
-                      "to run Fix geometries algorithm afterwards." );
-}
-
-QgsProcessingAlgorithm *QgsSnapGeometriesAlgorithm::createInstance() const
-{
-  return new QgsSnapGeometriesAlgorithm();
-}
-
-void QgsSnapGeometriesAlgorithm::initAlgorithm( const QVariantMap & )
-{
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "THRESHOLD" ), QObject::tr( "Threshold" ), QgsProcessingParameterNumber::Double, 0.01 ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ) ) );
-}
-
-QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
-{
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
-
-  double thresh = parameterAsDouble( parameters, QStringLiteral( "THRESHOLD" ), context );
-
-  QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), source->wkbType(), source->sourceCrs() ) );
-  if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
-
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
-
-  // now go and snap vertices of geometries of source together
-  run( *source.get(), *sink.get(), thresh, feedback );
-
-  return outputs;
-}
-
+#include "qgsspatialindex.h"
 
 //! record about vertex coordinates and index of anchor to which it is snapped
 typedef struct
@@ -113,7 +49,7 @@ typedef struct
 } AnchorAlongSegment;
 
 
-static void buildSnapIndex( QgsFeatureIterator &fi, QgsSpatialIndex &index, QVector<AnchorPoint> &pnts, QgsProcessingFeedback *feedback, int &count, int totalCount )
+static void buildSnapIndex( QgsFeatureIterator &fi, QgsSpatialIndex &index, QVector<AnchorPoint> &pnts, QgsFeedback *feedback, int &count, int totalCount )
 {
   QgsFeature f;
   int pntId = 0;
@@ -362,7 +298,7 @@ static bool snapGeometry( QgsAbstractGeometry *g, QgsSpatialIndex &index, QVecto
 }
 
 
-void QgsSnapGeometriesAlgorithm::run( const QgsFeatureSource &source, QgsFeatureSink &sink, double thresh, QgsProcessingFeedback *feedback )
+int QgsGeometrySnapperSingleSource::run(const QgsFeatureSource &source, QgsFeatureSink &sink, double thresh, QgsFeedback *feedback)
 {
   // the logic here comes from GRASS implementation of Vect_snap_lines_list()
 
@@ -405,7 +341,5 @@ void QgsSnapGeometriesAlgorithm::run( const QgsFeatureSource &source, QgsFeature
     feedback->setProgress( 100. * count / totalCount );
   }
 
-  feedback->pushInfo( QObject::tr( "Snapped %1 geometries." ).arg( modified ) );
+  return modified;
 }
-
-///@endcond PRIVATE

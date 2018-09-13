@@ -82,7 +82,6 @@
 #include "qgsalgorithmshortestpathpointtopoint.h"
 #include "qgsalgorithmsimplify.h"
 #include "qgsalgorithmsmooth.h"
-#include "qgsalgorithmsnapgeometries.h"
 #include "qgsalgorithmsnaptogrid.h"
 #include "qgsalgorithmsplitwithlines.h"
 #include "qgsalgorithmstringconcatenation.h"
@@ -213,7 +212,6 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsShortestPathPointToPointAlgorithm() );
   addAlgorithm( new QgsSimplifyAlgorithm() );
   addAlgorithm( new QgsSmoothAlgorithm() );
-  addAlgorithm( new QgsSnapGeometriesAlgorithm() );
   addAlgorithm( new QgsSnapToGridAlgorithm() );
   addAlgorithm( new QgsSplitWithLinesAlgorithm() );
   addAlgorithm( new QgsStringConcatenationAlgorithm() );

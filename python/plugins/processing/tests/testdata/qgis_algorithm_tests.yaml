@@ -2045,6 +2045,22 @@ tests:
         name: expected/snap_internal.gml
         type: vector
 
+  - algorithm: qgis:snapgeometries
+    name: Test Snap Geometries (to each other)
+    params:
+      BEHAVIOR: '7'
+      INPUT:
+        name: custom/snap_geometries.geojson
+        type: vector
+      REFERENCE_LAYER:
+        name: custom/snap_geometries.geojson
+        type: vector
+      TOLERANCE: 0.5
+    results:
+      OUTPUT:
+        name: expected/snap_geometries.gml
+        type: vector
+
   - algorithm: qgis:poleofinaccessibility
     name: Pole of inaccessibility (polygons)
     params:
@@ -5585,18 +5601,6 @@ tests:
         compare:
           fields:
             fid: skip
-
-  - algorithm: native:snap
-    name: Test Snap Geometries (to each other)
-    params:
-      INPUT:
-        name: custom/snap_geometries.geojson
-        type: vector
-      THRESHOLD: 0.5
-    results:
-      OUTPUT:
-        name: expected/snap_geometries.gml
-        type: vector
 
   - algorithm: native:taperedbuffer
     name: Tapered buffers (lines)
