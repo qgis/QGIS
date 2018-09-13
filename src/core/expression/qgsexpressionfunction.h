@@ -21,6 +21,8 @@
 #include <QString>
 #include <QVariant>
 #include <QSet>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #include "qgis.h"
 #include "qgis_core.h"

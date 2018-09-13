@@ -4349,6 +4349,24 @@ static QVariant fcnStringToArray( const QVariantList &values, const QgsExpressio
   return array;
 }
 
+static QVariant fcnJsonToMap( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  QJsonDocument document = QJsonDocument::fromJson( str.toUtf8() );
+  if ( document.isNull() || !document.isObject() )
+    return QVariantMap();
+
+  return document.object().toVariantMap();
+}
+
+static QVariant fcnMapToJson( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QVariantMap map = QgsExpressionUtils::getMapValue( values.at( 0 ), parent );
+  QJsonObject object = QJsonObject::fromVariantMap( map );
+  QJsonDocument document( object );
+  return document.toJson( QJsonDocument::Compact );
+}
+
 static QVariant fcnMap( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariantMap result;
@@ -5014,6 +5032,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "generate_series" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "start" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "stop" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "step" ), true, 1.0 ), fcnGenerateSeries, QStringLiteral( "Arrays" ) )
 
         //functions for maps
+        << new QgsStaticExpressionFunction( QStringLiteral( "json_to_map" ), 1, fcnJsonToMap, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "map_to_json" ), 1, fcnMapToJson, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "map" ), -1, fcnMap, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "map_get" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "key" ) ), fcnMapGet, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "map_exist" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "key" ) ), fcnMapExist, QStringLiteral( "Maps" ) )

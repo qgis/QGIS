@@ -1,0 +1,9 @@
+{
+  "name": "map_to_json",
+  "type": "function",
+  "description": "Merge map elements into a json-formatted string.",
+  "arguments": [
+    {"arg":"map", "description":"the input map"}],
+  "examples": [ { "expression":"map_to_json(map('qgis','rocks'))", "returns":"{\"qgis\":\"rocks\"}"}
+  ]
+}
