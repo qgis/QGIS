@@ -83,7 +83,7 @@ void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 
   QgsVectorLayer *layer = currentVectorLayer();
-  if ( mSnapToLayerGridEnabled && layer )
+  if ( mSnapToGridCanvasItem && mSnapToLayerGridEnabled && layer )
   {
     e->snapToGrid( layer->geometryFixes()->geometryPrecision(), layer->crs() );
   }
@@ -108,7 +108,7 @@ void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
   }
 
   QgsVectorLayer *layer = currentVectorLayer();
-  if ( mSnapToLayerGridEnabled && layer )
+  if ( mSnapToGridCanvasItem && mSnapToLayerGridEnabled && layer )
   {
     e->snapToGrid( layer->geometryFixes()->geometryPrecision(), layer->crs() );
     mSnapToGridCanvasItem->setPoint( e->mapPoint() );
