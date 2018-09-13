@@ -22,6 +22,8 @@
 #include "qgssymbol.h"
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
+#include <QIcon>
+#include <QHash>
 
 class QgsSymbol;
 
@@ -87,9 +89,11 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
 
     void onSymbolAdded( const QString &name, QgsSymbol *symbol );
     void onSymbolRemoved( const QString &name );
+    void onSymbolChanged( const QString &name );
     void onSymbolRename( const QString &oldName, const QString &newName );
     void onRampAdded( const QString &name );
     void onRampRemoved( const QString &name );
+    void onRampChanged( const QString &name );
     void onRampRename( const QString &oldName, const QString &newName );
     void onTagsChanged( int entity, const QString &name, const QStringList &tags );
 
@@ -99,6 +103,9 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     QStringList mSymbolNames;
     QStringList mRampNames;
     QList< QSize > mAdditionalSizes;
+
+    mutable QHash< QString, QIcon > mSymbolIconCache;
+    mutable QHash< QString, QIcon > mColorRampIconCache;
 
 };
 

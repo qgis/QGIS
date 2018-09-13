@@ -1760,6 +1760,23 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
     QgsDebugMsg( QStringLiteral( "Couldn't insert symbol into the database!" ) );
     return false;
   }
+  else
+  {
+    switch ( type )
+    {
+      case SymbolEntity:
+        emit symbolChanged( name );
+        break;
+
+      case ColorrampEntity:
+        emit rampChanged( name );
+        break;
+
+      case TagEntity:
+      case SmartgroupEntity:
+        break;
+    }
+  }
   return true;
 }
 

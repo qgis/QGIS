@@ -449,8 +449,19 @@ class CORE_EXPORT QgsStyle : public QObject
      * has been updated as a result.
      * \see symbolRemoved()
      * \see rampAdded()
+     * \see symbolChanged()
      */
     void symbolSaved( const QString &name, QgsSymbol *symbol );
+
+    /**
+     * Emitted whenever a symbol's definition is changed. This does not include
+     * name or tag changes.
+     *
+     * \see symbolSaved()
+     *
+     * \since QGIS 3.4
+     */
+    void symbolChanged( const QString &name );
 
     //! Is emitted every time a tag or smartgroup has been added, removed, or renamed
     void groupsModified();
@@ -509,6 +520,16 @@ class CORE_EXPORT QgsStyle : public QObject
      * \since QGIS 3.4
      */
     void rampRemoved( const QString &name );
+
+    /**
+     * Emitted whenever a color ramp's definition is changed. This does not include
+     * name or tag changes.
+     *
+     * \see rampAdded()
+     *
+     * \since QGIS 3.4
+     */
+    void rampChanged( const QString &name );
 
   private:
 

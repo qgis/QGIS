@@ -31,7 +31,9 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   connect( mStyle, &QgsStyle::symbolSaved, this, &QgsStyleModel::onSymbolAdded );
   connect( mStyle, &QgsStyle::symbolRemoved, this, &QgsStyleModel::onSymbolRemoved );
   connect( mStyle, &QgsStyle::symbolRenamed, this, &QgsStyleModel::onSymbolRename );
+  connect( mStyle, &QgsStyle::symbolChanged, this, &QgsStyleModel::onSymbolChanged );
   connect( mStyle, &QgsStyle::rampAdded, this, &QgsStyleModel::onRampAdded );
+  connect( mStyle, &QgsStyle::rampChanged, this, &QgsStyleModel::onRampChanged );
   connect( mStyle, &QgsStyle::rampRemoved, this, &QgsStyleModel::onRampRemoved );
   connect( mStyle, &QgsStyle::rampRenamed, this, &QgsStyleModel::onRampRename );
 
@@ -78,8 +80,12 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
         case Name:
           if ( !isColorRamp )
           {
+            // use cached icon if possible
+            QIcon icon = mSymbolIconCache.value( name );
+            if ( !icon.isNull() )
+              return icon;
+
             std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
-            QIcon icon;
             icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( 24, 24 ), 1 ) );
 
             for ( const QVariant &size : mAdditionalSizes )
@@ -88,18 +94,25 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
             }
 
+            mSymbolIconCache.insert( name, icon );
             return icon;
           }
           else
           {
+            // use cached icon if possible
+            QIcon icon = mColorRampIconCache.value( name );
+            if ( !icon.isNull() )
+              return icon;
+
             std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
-            QIcon icon;
             icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), QSize( 24, 24 ), 1 ) );
             for ( const QVariant &size : mAdditionalSizes )
             {
               QSize s = size.toSize();
               icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
             }
+
+            mColorRampIconCache.insert( name, icon );
             return icon;
           }
         case Tags:
@@ -235,10 +248,13 @@ int QgsStyleModel::columnCount( const QModelIndex & ) const
 void QgsStyleModel::addDesiredIconSize( QSize size )
 {
   mAdditionalSizes << size;
+  mSymbolIconCache.clear();
+  mColorRampIconCache.clear();
 }
 
 void QgsStyleModel::onSymbolAdded( const QString &name, QgsSymbol * )
 {
+  mSymbolIconCache.remove( name );
   const QStringList oldSymbolNames = mSymbolNames;
   const QStringList newSymbolNames = mStyle->symbolNames();
 
@@ -254,6 +270,7 @@ void QgsStyleModel::onSymbolAdded( const QString &name, QgsSymbol * )
 
 void QgsStyleModel::onSymbolRemoved( const QString &name )
 {
+  mSymbolIconCache.remove( name );
   const QStringList oldSymbolNames = mSymbolNames;
   const QStringList newSymbolNames = mStyle->symbolNames();
 
@@ -267,8 +284,17 @@ void QgsStyleModel::onSymbolRemoved( const QString &name )
   endRemoveRows();
 }
 
+void QgsStyleModel::onSymbolChanged( const QString &name )
+{
+  mSymbolIconCache.remove( name );
+
+  QModelIndex i = index( mSymbolNames.indexOf( name ), Tags );
+  emit dataChanged( i, i, QVector< int >() << Qt::DecorationRole );
+}
+
 void QgsStyleModel::onSymbolRename( const QString &oldName, const QString &newName )
 {
+  mSymbolIconCache.remove( oldName );
   const QStringList oldSymbolNames = mSymbolNames;
   const QStringList newSymbolNames = mStyle->symbolNames();
 
@@ -295,6 +321,7 @@ void QgsStyleModel::onSymbolRename( const QString &oldName, const QString &newNa
 
 void QgsStyleModel::onRampAdded( const QString &name )
 {
+  mColorRampIconCache.remove( name );
   const QStringList oldRampNames = mRampNames;
   const QStringList newRampNames = mStyle->colorRampNames();
 
@@ -310,6 +337,7 @@ void QgsStyleModel::onRampAdded( const QString &name )
 
 void QgsStyleModel::onRampRemoved( const QString &name )
 {
+  mColorRampIconCache.remove( name );
   const QStringList oldRampNames = mRampNames;
   const QStringList newRampNames = mStyle->colorRampNames();
 
@@ -323,8 +351,17 @@ void QgsStyleModel::onRampRemoved( const QString &name )
   endRemoveRows();
 }
 
+void QgsStyleModel::onRampChanged( const QString &name )
+{
+  mColorRampIconCache.remove( name );
+
+  QModelIndex i = index( mSymbolNames.count() + mRampNames.indexOf( name ), Tags );
+  emit dataChanged( i, i, QVector< int >() << Qt::DecorationRole );
+}
+
 void QgsStyleModel::onRampRename( const QString &oldName, const QString &newName )
 {
+  mColorRampIconCache.remove( oldName );
   const QStringList oldRampNames = mRampNames;
   const QStringList newRampNames = mStyle->colorRampNames();
 
