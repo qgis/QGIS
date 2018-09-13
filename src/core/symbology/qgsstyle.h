@@ -515,6 +515,9 @@ class CORE_EXPORT QgsStyle : public QObject
     QgsSymbolMap mSymbols;
     QgsVectorColorRampMap mColorRamps;
 
+    QHash< QString, QStringList > mCachedSymbolTags;
+    QHash< QString, QStringList > mCachedColorRampTags;
+
     QString mErrorString;
     QString mFileName;
 
@@ -548,6 +551,8 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \returns Success state of the update operation
      */
     bool updateSymbol( StyleEntity type, const QString &name );
+
+    void clearCachedTags( StyleEntity type, const QString &name );
 
     Q_DISABLE_COPY( QgsStyle )
 };

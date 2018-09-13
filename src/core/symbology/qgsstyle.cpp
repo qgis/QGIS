@@ -81,6 +81,8 @@ void QgsStyle::clear()
 
   mSymbols.clear();
   mColorRamps.clear();
+  mCachedColorRampTags.clear();
+  mCachedSymbolTags.clear();
 }
 
 bool QgsStyle::addSymbol( const QString &name, QgsSymbol *symbol, bool update )
@@ -164,6 +166,7 @@ bool QgsStyle::removeSymbol( const QString &name )
   const bool result = remove( SymbolEntity, symbolid );
   if ( result )
   {
+    mCachedSymbolTags.remove( name );
     emit symbolRemoved( name );
   }
   return result;
@@ -258,6 +261,8 @@ bool QgsStyle::removeColorRamp( const QString &name )
     QgsDebugMsg( QStringLiteral( "Couldn't remove color ramp from the database." ) );
     return false;
   }
+
+  mCachedColorRampTags.remove( name );
 
   emit rampRemoved( name );
 
@@ -494,6 +499,8 @@ bool QgsStyle::renameSymbol( const QString &oldName, const QString &newName )
     return false;
   }
 
+  mCachedSymbolTags.remove( oldName );
+
   const bool result = rename( SymbolEntity, symbolid, newName );
   if ( result )
     emit symbolRenamed( oldName, newName );
@@ -514,6 +521,7 @@ bool QgsStyle::renameColorRamp( const QString &oldName, const QString &newName )
     return false;
 
   mColorRamps.insert( newName, ramp );
+  mCachedColorRampTags.remove( oldName );
 
   int rampid = 0;
   sqlite3_statement_unique_ptr statement;
@@ -681,9 +689,17 @@ bool QgsStyle::rename( StyleEntity type, int id, const QString &newName )
   }
   else
   {
+    mCachedColorRampTags.clear();
+    mCachedSymbolTags.clear();
+
     switch ( type )
     {
       case TagEntity:
+      {
+        emit groupsModified();
+        break;
+      }
+
       case SmartgroupEntity:
       {
         emit groupsModified();
@@ -727,6 +743,9 @@ bool QgsStyle::remove( StyleEntity type, int id )
   }
   else
   {
+    mCachedColorRampTags.clear();
+    mCachedSymbolTags.clear();
+
     if ( groupRemoved )
     {
       QgsSettings settings;
@@ -917,6 +936,7 @@ bool QgsStyle::tagSymbol( StyleEntity type, const QString &symbol, const QString
     }
   }
 
+  clearCachedTags( type, symbol );
   emit entityTagsChanged( type, symbol, tagsOfSymbol( type, symbol ) );
 
   return true;
@@ -969,6 +989,7 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol, const QStri
     }
   }
 
+  clearCachedTags( type, symbol );
   emit entityTagsChanged( type, symbol, tagsOfSymbol( type, symbol ) );
 
   // TODO Perform tag cleanup
@@ -1008,6 +1029,7 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol )
           : QgsSqlite3Mprintf( "DELETE FROM ctagmap WHERE colorramp_id=%d", symbolid );
   runEmptyQuery( query );
 
+  clearCachedTags( type, symbol );
   emit entityTagsChanged( type, symbol, QStringList() );
 
   // TODO Perform tag cleanup
@@ -1018,6 +1040,23 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol )
 
 QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString &symbol )
 {
+  switch ( type )
+  {
+    case SymbolEntity:
+      if ( mCachedSymbolTags.contains( symbol ) )
+        return mCachedSymbolTags.value( symbol );
+      break;
+
+    case ColorrampEntity:
+      if ( mCachedColorRampTags.contains( symbol ) )
+        return mCachedColorRampTags.value( symbol );
+      break;
+
+    case TagEntity:
+    case SmartgroupEntity:
+      break;
+  }
+
   if ( !mCurrentDB )
   {
     QgsDebugMsg( QStringLiteral( "Sorry! Cannot open database for getting the tags." ) );
@@ -1048,6 +1087,22 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString &symbol )
     {
       tagList << statement2.columnAsText( 0 );
     }
+  }
+
+  // update cache
+  switch ( type )
+  {
+    case SymbolEntity:
+      mCachedSymbolTags[ symbol ] = tagList;
+      break;
+
+    case ColorrampEntity:
+      mCachedColorRampTags[ symbol ] = tagList;
+      break;
+
+    case TagEntity:
+    case SmartgroupEntity:
+      break;
   }
 
   return tagList;
@@ -1706,4 +1761,22 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
     return false;
   }
   return true;
+}
+
+void QgsStyle::clearCachedTags( QgsStyle::StyleEntity type, const QString &name )
+{
+  switch ( type )
+  {
+    case SymbolEntity:
+      mCachedSymbolTags.remove( name );
+      break;
+
+    case ColorrampEntity:
+      mCachedColorRampTags.remove( name );
+      break;
+
+    case TagEntity:
+    case SmartgroupEntity:
+      break;
+  }
 }
