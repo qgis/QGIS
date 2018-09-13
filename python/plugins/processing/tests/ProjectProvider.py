@@ -100,6 +100,13 @@ class ProjectProviderTest(unittest.TestCase):
         self.assertEqual(len(provider.algorithms()), 1)
         self.assertEqual(provider.algorithms()[0].name(), 'test name2')
 
+        # overwrite model
+        alg2b = QgsProcessingModelAlgorithm('test name2', 'test group2')
+        alg2b.setHelpContent({'test': 'test'})
+        provider.add_model(alg2b)
+        self.assertEqual(len(provider.algorithms()), 1)
+        self.assertEqual(provider.algorithms()[0].helpContent(), {'test': 'test'})
+
         provider.remove_model(alg2)
         self.assertEqual(len(provider.algorithms()), 0)
 
