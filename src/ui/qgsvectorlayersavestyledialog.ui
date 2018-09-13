@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsVectorLayerLoadSaveStyleDialog</class>
- <widget class="QDialog" name="QgsVectorLayerLoadSaveStyleDialog">
+ <class>QgsVectorLayerSaveStyleDialog</class>
+ <widget class="QDialog" name="QgsVectorLayerSaveStyleDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>733</width>
-    <height>775</height>
+    <width>491</width>
+    <height>527</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Save layer style</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="4" column="0" colspan="2">
@@ -29,6 +29,72 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
+      <item row="5" column="1">
+       <widget class="QLabel" name="mUILabel">
+        <property name="text">
+         <string>UI</string>
+        </property>
+        <property name="buddy">
+         <cstring>mDbStyleNameEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QPushButton" name="mHelpButton">
+        <property name="text">
+         <string>Help</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="3">
+       <widget class="QCheckBox" name="mDbStyleUseAsDefault">
+        <property name="text">
+         <string>Use as default style for this layer</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="3">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Optionally pick an input form for attribute editing (QT Designer UI format), it will be stored in the database</string>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::PlainText</enum>
+        </property>
+        <property name="scaledContents">
+         <bool>false</bool>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="descriptionLabel">
+        <property name="text">
+         <string>Description</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QPlainTextEdit" name="mDbStyleDescriptionEdit"/>
+      </item>
+      <item row="5" column="3">
+       <widget class="QgsFileWidget" name="mDbStyleUIFileWidget" native="true"/>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="mDbStyleNameEdit"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="nameLabel">
+        <property name="text">
+         <string>Style Name</string>
+        </property>
+        <property name="buddy">
+         <cstring>mDbStyleNameEdit</cstring>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -38,7 +104,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="mModeLabel">
      <property name="text">
-      <string>TextLabel</string>
+      <string>Save style</string>
      </property>
     </widget>
    </item>
@@ -111,7 +177,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>QgsVectorLayerLoadSaveStyleDialog</receiver>
+   <receiver>QgsVectorLayerSaveStyleDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -127,7 +193,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>QgsVectorLayerLoadSaveStyleDialog</receiver>
+   <receiver>QgsVectorLayerSaveStyleDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

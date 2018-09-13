@@ -66,7 +66,6 @@ SET(QGIS_APP_SRCS
   qgspuzzlewidget.cpp
   qgsversionmigration.cpp
   qgsrulebasedlabelingwidget.cpp
-  qgssavestyletodbdialog.cpp
   qgssnappinglayertreemodel.cpp
   qgssnappingwidget.cpp
   qgsstatusbarcoordinateswidget.cpp
@@ -138,7 +137,7 @@ SET(QGIS_APP_SRCS
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
   qgsvectorlayerlegendwidget.cpp
-  qgsvectorlayerloadsavestyledialog.cpp
+  qgsvectorlayersavestyledialog.cpp
   qgsvectorlayerproperties.cpp
   qgsmapthemes.cpp
   qgshandlebadlayers.cpp
@@ -290,7 +289,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmapsavedialog.h
   qgspuzzlewidget.h
   qgsrulebasedlabelingwidget.h
-  qgssavestyletodbdialog.h
   qgssnappinglayertreemodel.h
   qgssnappingwidget.h
   qgsstatusbarcoordinateswidget.h
@@ -378,7 +376,7 @@ SET (QGIS_APP_MOC_HDRS
   qgstextannotationdialog.h
   qgsundowidget.h
   qgsvectorlayerlegendwidget.h
-  qgsvectorlayerloadsavestyledialog.h
+  qgsvectorlayersavestyledialog.h
   qgsvectorlayerproperties.h
   qgsmapthemes.h
   qgshandlebadlayers.h
