@@ -30,6 +30,33 @@ class ConsoleFeedBack(QgsProcessingFeedback):
         print(error)
 
 
+base_types = ['Point', 'LineString', 'Polygon']
+
+
+def _add_multi(base):
+    return base + ['Multi' + _b for _b in base]
+
+
+def _add_z(base):
+    return base + [_b + 'Z' for _b in base]
+
+
+def _add_m(base):
+    return base + [_b + 'M' for _b in base]
+
+
+def _all_true():
+    types = base_types
+    types = _add_multi(types)
+    types = _add_z(types)
+    types = _add_m(types)
+    return {t: True for t in types}
+
+
+def _all_false():
+    return {t: False for t in _all_true().keys()}
+
+
 class TestQgsProcessingInPlace(unittest.TestCase):
 
     @classmethod
@@ -75,7 +102,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
 
         QgsProject.instance().addMapLayers([cls.vl, cls.multipoly_vl])
 
-    def _make_compatible_tester(self, feature_wkt, layer_wkb_name, attrs=[1]):
+    def _make_layer(self, layer_wkb_name):
         fields = QgsFields()
         wkb_type = getattr(QgsWkbTypes, layer_wkb_name)
         fields.append(QgsField('int_f', QVariant.Int))
@@ -83,6 +110,60 @@ class TestQgsProcessingInPlace(unittest.TestCase):
             '%s_layer' % layer_wkb_name, fields, wkb_type, QgsCoordinateReferenceSystem(4326))
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.wkbType(), wkb_type)
+        return layer
+
+    def _support_inplace_edit_tester(self, alg_name, expected):
+
+        alg = self.registry.createAlgorithmById(alg_name)
+        for layer_wkb_name, supported in expected.items():
+            layer = self._make_layer(layer_wkb_name)
+            print("Checking %s ( %s ) : %s" % (alg_name, layer_wkb_name, supported))
+            self.assertEqual(alg.supportInPlaceEdit(layer), supported, "Expected: %s - %s = supported: %s" % (alg_name, layer_wkb_name, supported))
+
+    def test_support_in_place_edit(self):
+
+        ALL = _all_true()
+        NONE = _all_false()
+        LINESTRING_ONLY = {t: t.find('LineString') >= 0 for t in _all_true().keys()}
+        Z_ONLY = {t: t.find('Z') > 0 for t in _all_true().keys()}
+        M_ONLY = {t: t.rfind('M') > 0 for t in _all_true().keys()}
+        NOT_M = {t: t.rfind('M') < 1 for t in _all_true().keys()}
+        POLYGON_ONLY = {t: t in ('Polygon', 'MultiPolygon') for t in _all_true().keys()}
+        MULTI_ONLY = {t: t.find('Multi') == 0 for t in _all_true().keys()}
+        SINGLE_ONLY = {t: t.find('Multi') == -1 for t in _all_true().keys()}
+        LINESTRING_AND_POLYGON_ONLY = {t: (t.find('LineString') >= 0 or t.find('Polygon') >= 0) for t in _all_true().keys()}
+        LINESTRING_AND_POLYGON_ONLY_NOT_M = {t: (t.rfind('M') < 1 and (t.find('LineString') >= 0 or t.find('Polygon') >= 0)) for t in _all_true().keys()}
+        LINESTRING_AND_POLYGON_ONLY_NOT_M_NOT_Z = {t: (t.rfind('M') < 1 and t.find('Z') == -1 and (t.find('LineString') >= 0 or t.find('Polygon') >= 0)) for t in _all_true().keys()}
+
+        self._support_inplace_edit_tester('native:smoothgeometry', LINESTRING_AND_POLYGON_ONLY)
+        self._support_inplace_edit_tester('native:parallellines', LINESTRING_ONLY)
+        self._support_inplace_edit_tester('native:arrayfeatures', ALL)
+        self._support_inplace_edit_tester('native:reprojectlayer', ALL)
+        self._support_inplace_edit_tester('qgis:densifygeometries', LINESTRING_AND_POLYGON_ONLY)
+        self._support_inplace_edit_tester('qgis:densifygeometriesgivenaninterval', LINESTRING_AND_POLYGON_ONLY)
+        self._support_inplace_edit_tester('native:setzfromraster', Z_ONLY)
+        self._support_inplace_edit_tester('native:explodelines', LINESTRING_ONLY)
+        self._support_inplace_edit_tester('native:extendlines', LINESTRING_ONLY)
+        self._support_inplace_edit_tester('native:fixgeometries', NOT_M)
+        self._support_inplace_edit_tester('native:minimumenclosingcircle', POLYGON_ONLY)
+        self._support_inplace_edit_tester('native:multiringconstantbuffer', POLYGON_ONLY)
+        self._support_inplace_edit_tester('native:orientedminimumboundingbox', POLYGON_ONLY)
+        self._support_inplace_edit_tester('qgis:orthogonalize', LINESTRING_AND_POLYGON_ONLY)
+        self._support_inplace_edit_tester('native:removeduplicatevertices', ALL)
+        self._support_inplace_edit_tester('native:rotatefeatures', ALL)
+        self._support_inplace_edit_tester('native:segmentizebymaxangle', NONE)
+        self._support_inplace_edit_tester('native:segmentizebymaxdistance', NONE)
+        self._support_inplace_edit_tester('native:setmfromraster', M_ONLY)
+        self._support_inplace_edit_tester('native:simplifygeometries', LINESTRING_AND_POLYGON_ONLY)
+        self._support_inplace_edit_tester('native:snappointstogrid', ALL)
+        self._support_inplace_edit_tester('native:multiparttosingleparts', MULTI_ONLY)
+        self._support_inplace_edit_tester('native:promotetomulti', MULTI_ONLY)
+        self._support_inplace_edit_tester('native:subdivide', ALL)
+        self._support_inplace_edit_tester('native:translategeometry', ALL)
+        self._support_inplace_edit_tester('native:swapxy', ALL)
+
+    def _make_compatible_tester(self, feature_wkt, layer_wkb_name, attrs=[1]):
+        layer = self._make_layer(layer_wkb_name)
         layer.startEditing()
 
         f = QgsFeature(layer.fields())
@@ -97,7 +178,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         new_features = make_features_compatible([f], layer, context)
 
         for new_f in new_features:
-            self.assertEqual(new_f.geometry().wkbType(), wkb_type)
+            self.assertEqual(new_f.geometry().wkbType(), layer.wkbType())
 
         self.assertTrue(layer.addFeatures(new_features), "Fail: %s - %s - %s" % (feature_wkt, attrs, layer_wkb_name))
         return layer, new_features
@@ -373,6 +454,63 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertEqual(len(new_features), 2)
         self.assertEqual(new_features[0].geometry().asWkt(), 'LineString (0 0, 1 1)')
         self.assertEqual(new_features[0].attributes(), [1])
+
+    def test_fix_geometries(self):
+
+        polygon_layer = self._make_layer('Polygon')
+        self.assertTrue(polygon_layer.startEditing())
+        f = QgsFeature(polygon_layer.fields())
+        f.setAttributes([1])
+        # Flake!
+        f.setGeometry(QgsGeometry.fromWkt('POLYGON ((0 0, 2 2, 0 2, 2 0, 0 0))'))
+        self.assertTrue(f.isValid())
+        f2 = QgsFeature(polygon_layer.fields())
+        f2.setAttributes([1])
+        f2.setGeometry(QgsGeometry.fromWkt('POLYGON((1.1 1.1, 1.1 2.1, 2.1 2.1, 2.1 1.1, 1.1 1.1))'))
+        self.assertTrue(f2.isValid())
+        self.assertTrue(polygon_layer.addFeatures([f, f2]))
+        polygon_layer.commitChanges()
+        polygon_layer.rollBack()
+        self.assertEqual(polygon_layer.featureCount(), 2)
+
+        QgsProject.instance().addMapLayers([polygon_layer])
+
+        old_features, new_features = self._alg_tester(
+            'native:fixgeometries',
+            polygon_layer,
+            {
+            }
+        )
+        self.assertEqual(polygon_layer.featureCount(), 3)
+        wkt1, wkt2, _ = [f.geometry().asWkt() for f in new_features]
+        self.assertEqual(wkt1, 'Polygon ((0 0, 1 1, 2 0, 0 0))')
+        self.assertEqual(wkt2, 'Polygon ((1 1, 0 2, 2 2, 1 1))')
+
+        # Test with Z (interpolated)
+        polygonz_layer = self._make_layer('PolygonZ')
+        self.assertTrue(polygonz_layer.startEditing())
+
+        f3 = QgsFeature(polygonz_layer.fields())
+        f3.setAttributes([1])
+        f3.setGeometry(QgsGeometry.fromWkt('POLYGON Z((0 0 1, 2 2 1, 0 2 3, 2 0 4, 0 0 1))'))
+        self.assertTrue(f3.isValid())
+        self.assertTrue(polygonz_layer.addFeatures([f3]))
+        polygonz_layer.commitChanges()
+        polygonz_layer.rollBack()
+        self.assertEqual(polygonz_layer.featureCount(), 1)
+
+        QgsProject.instance().addMapLayers([polygonz_layer])
+
+        old_features, new_features = self._alg_tester(
+            'native:fixgeometries',
+            polygonz_layer,
+            {
+            }
+        )
+        self.assertEqual(polygonz_layer.featureCount(), 2)
+        wkt1, wkt2 = [f.geometry().asWkt() for f in new_features]
+        self.assertEqual(wkt1, 'PolygonZ ((0 0 1, 1 1 2.25, 2 0 4, 0 0 1))')
+        self.assertEqual(wkt2, 'PolygonZ ((1 1 2.25, 0 2 3, 2 2 1, 1 1 2.25))')
 
 
 if __name__ == '__main__':

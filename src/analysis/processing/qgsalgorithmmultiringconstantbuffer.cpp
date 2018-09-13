@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmmultiringconstantbuffer.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -75,6 +76,14 @@ void QgsMultiRingConstantBufferAlgorithm::initParameters( const QVariantMap & )
   distance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance between rings" ), QgsPropertyDefinition::DoublePositive ) );
   distance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( distance.release() );
+}
+
+bool QgsMultiRingConstantBufferAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+{
+  if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
+    return false;
+  // Polygons only
+  return layer->wkbType() == QgsWkbTypes::Type::Polygon || layer->wkbType() == QgsWkbTypes::Type::MultiPolygon;
 }
 
 bool QgsMultiRingConstantBufferAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

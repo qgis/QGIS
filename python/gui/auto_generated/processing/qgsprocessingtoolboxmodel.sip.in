@@ -419,6 +419,11 @@ Returns any filters that affect how toolbox content is filtered.
 %End
 
     void setInPlaceLayer( QgsVectorLayer *layer );
+%Docstring
+Sets geometry \type for the in-place algorithms
+
+:param layer: the vector layer for in-place algorithm filter
+%End
 
     void setFilterString( const QString &filter );
 %Docstring

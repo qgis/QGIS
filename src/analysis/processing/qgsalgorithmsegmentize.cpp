@@ -78,6 +78,12 @@ void QgsSegmentizeByMaximumDistanceAlgorithm::initParameters( const QVariantMap 
   addParameter( tolerance.release() );
 }
 
+bool QgsSegmentizeByMaximumDistanceAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+{
+  Q_UNUSED( layer );
+  return false;
+}
+
 bool QgsSegmentizeByMaximumDistanceAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mTolerance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
@@ -165,6 +171,12 @@ void QgsSegmentizeByMaximumAngleAlgorithm::initParameters( const QVariantMap & )
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "ANGLE" ), QObject::tr( "Maximum angle between vertices (degrees)" ), QgsPropertyDefinition::DoublePositive ) );
   tolerance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( tolerance.release() );
+}
+
+bool QgsSegmentizeByMaximumAngleAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+{
+  Q_UNUSED( layer );
+  return false;
 }
 
 bool QgsSegmentizeByMaximumAngleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )

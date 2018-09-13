@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmminimumenclosingcircle.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -51,7 +52,7 @@ QString QgsMinimumEnclosingCircleAlgorithm::outputName() const
 
 QgsWkbTypes::Type QgsMinimumEnclosingCircleAlgorithm::outputWkbType( QgsWkbTypes::Type ) const
 {
-  return QgsWkbTypes::Polygon;
+  return QgsWkbTypes::Type::Polygon;
 }
 
 void QgsMinimumEnclosingCircleAlgorithm::initParameters( const QVariantMap & )
@@ -70,6 +71,14 @@ QString QgsMinimumEnclosingCircleAlgorithm::shortHelpString() const
 QgsMinimumEnclosingCircleAlgorithm *QgsMinimumEnclosingCircleAlgorithm::createInstance() const
 {
   return new QgsMinimumEnclosingCircleAlgorithm();
+}
+
+bool QgsMinimumEnclosingCircleAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+{
+  if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
+    return false;
+  // (no Z no M)
+  return !( QgsWkbTypes::hasM( layer->wkbType() ) || QgsWkbTypes::hasZ( layer->wkbType() ) );
 }
 
 QgsFields QgsMinimumEnclosingCircleAlgorithm::outputFields( const QgsFields &inputFields ) const

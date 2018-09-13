@@ -45,6 +45,7 @@ class QgsMultipartToSinglepartAlgorithm : public QgsProcessingFeatureBasedAlgori
     QString groupId() const override;
     QString shortHelpString() const override;
     QgsMultipartToSinglepartAlgorithm *createInstance() const override SIP_FACTORY;
+    bool supportInPlaceEdit( const QgsVectorLayer *layer ) const override;
 
   protected:
 

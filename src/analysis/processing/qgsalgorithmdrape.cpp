@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmdrape.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -195,6 +196,13 @@ QgsDrapeToZAlgorithm *QgsDrapeToZAlgorithm::createInstance() const
   return new QgsDrapeToZAlgorithm();
 }
 
+bool QgsDrapeToZAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+{
+  if ( ! QgsDrapeAlgorithmBase::supportInPlaceEdit( layer ) )
+    return false;
+  return QgsWkbTypes::hasZ( layer->wkbType() );
+}
+
 QgsWkbTypes::Type QgsDrapeToZAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
   QgsWkbTypes::Type wkb = inputWkbType;
@@ -245,6 +253,13 @@ QString QgsDrapeToMAlgorithm::shortDescription() const
 QgsDrapeToMAlgorithm *QgsDrapeToMAlgorithm::createInstance() const
 {
   return new QgsDrapeToMAlgorithm();
+}
+
+bool QgsDrapeToMAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+{
+  if ( ! QgsDrapeAlgorithmBase::supportInPlaceEdit( layer ) )
+    return false;
+  return QgsWkbTypes::hasM( layer->wkbType() );
 }
 
 QgsWkbTypes::Type QgsDrapeToMAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const

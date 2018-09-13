@@ -151,6 +151,7 @@ QgsFeatureList QgsCreateParallelLinesAlgorithm::processFeature( const QgsFeature
     for ( int i = 0; i < count; ++i )
     {
       offset += offsetStep;
+      // FIXME: shouldn't we use QgsVectorLayerUtils::createFeature?
       QgsFeature offsetFeature = feature;
       const QgsGeometry offsetGeometry = geometry.offsetCurve( offset, mSegments, mJoinStyle, mMiterLimit );
       offsetFeature.setGeometry( offsetGeometry );

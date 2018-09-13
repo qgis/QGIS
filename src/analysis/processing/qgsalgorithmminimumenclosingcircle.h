@@ -42,6 +42,7 @@ class QgsMinimumEnclosingCircleAlgorithm : public QgsProcessingFeatureBasedAlgor
     QString groupId() const override;
     QString shortHelpString() const override;
     QgsMinimumEnclosingCircleAlgorithm *createInstance() const override SIP_FACTORY;
+    bool supportInPlaceEdit( const QgsVectorLayer *layer ) const override;
 
   protected:
     QString outputName() const override;
@@ -53,6 +54,7 @@ class QgsMinimumEnclosingCircleAlgorithm : public QgsProcessingFeatureBasedAlgor
   private:
 
     int mSegments = 72;
+
 };
 
 ///@endcond PRIVATE

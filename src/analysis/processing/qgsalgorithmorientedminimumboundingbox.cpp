@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmorientedminimumboundingbox.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -64,6 +65,14 @@ QString QgsOrientedMinimumBoundingBoxAlgorithm::shortHelpString() const
 QgsOrientedMinimumBoundingBoxAlgorithm *QgsOrientedMinimumBoundingBoxAlgorithm::createInstance() const
 {
   return new QgsOrientedMinimumBoundingBoxAlgorithm();
+}
+
+bool QgsOrientedMinimumBoundingBoxAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+{
+  if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
+    return false;
+  // Polygons only
+  return layer->wkbType() == QgsWkbTypes::Type::Polygon || layer->wkbType() == QgsWkbTypes::Type::MultiPolygon;
 }
 
 QgsFields QgsOrientedMinimumBoundingBoxAlgorithm::outputFields( const QgsFields &inputFields ) const
