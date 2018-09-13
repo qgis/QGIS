@@ -131,7 +131,7 @@ class CORE_EXPORT QgsMessageLogNotifyBlocker
  * \brief Default implementation of message logging interface
  *
  * This class outputs log messages to the standard error. Therefore it might
- * be the right choice for apps without GUI.
+ * be the right choice for applications without GUI.
  */
 class CORE_EXPORT QgsMessageLogConsole : public QObject
 {
@@ -147,18 +147,19 @@ class CORE_EXPORT QgsMessageLogConsole : public QObject
   protected:
 
     /**
-     * Format a log message. Used by child classes.
+     * Formats a log message. Used by child classes.
      *
      * \param message the message to format
      * \param tag the tag of the message
      * \param level the log level of the message
+     * \since QGIS 3.4
      */
     QString formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level = Qgis::Info ) const;
 
   public slots:
 
     /**
-     * Log a message to stderr.
+     * Logs a message to stderr.
      *
      * \param message the message to format
      * \param tag the tag of the message

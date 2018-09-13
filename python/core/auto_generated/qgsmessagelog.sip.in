@@ -108,7 +108,7 @@ class QgsMessageLogConsole : QObject
 Default implementation of message logging interface
 
 This class outputs log messages to the standard error. Therefore it might
-be the right choice for apps without GUI.
+be the right choice for applications without GUI.
 %End
 
 %TypeHeaderCode
@@ -125,18 +125,20 @@ Constructor for QgsMessageLogConsole.
 
     QString formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level = Qgis::Info ) const;
 %Docstring
-Format a log message. Used by child classes.
+Formats a log message. Used by child classes.
 
 :param message: the message to format
 :param tag: the tag of the message
 :param level: the log level of the message
+
+.. versionadded:: 3.4
 %End
 
   public slots:
 
     void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 %Docstring
-Log a message to stderr.
+Logs a message to stderr.
 
 :param message: the message to format
 :param tag: the tag of the message
