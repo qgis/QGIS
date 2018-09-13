@@ -229,8 +229,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 dlg.exec_()
                 return
 
-            if self.in_place_mode and len(alg.parameterDefinitions()) <= 2:
-                # hack
+            if self.in_place_mode and not [d for d in alg.parameterDefinitions() if d.name() not in ('INPUT', 'OUTPUT')]:
                 parameters = {}
                 execute_in_place(alg, parameters)
                 return

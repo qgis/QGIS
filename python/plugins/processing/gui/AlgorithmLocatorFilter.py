@@ -143,14 +143,7 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
             if not a.flags() & QgsProcessingAlgorithm.FlagSupportsInPlaceEdits:
                 continue
 
-            if a.inputLayerTypes() and \
-                    QgsProcessing.TypeVector not in a.inputLayerTypes() \
-            and QgsProcessing.TypeVectorAnyGeometry not in a.inputLayerTypes() \
-            and (QgsWkbTypes.geometryType(iface.activeLayer().wkbType()) == QgsWkbTypes.PolygonGeometry and QgsProcessing.TypeVectorPolygon not in a.inputLayerTypes() or
-                     QgsWkbTypes.geometryType(
-                    iface.activeLayer().wkbType()) == QgsWkbTypes.LineGeometry and QgsProcessing.TypeVectorLine not in a.inputLayerTypes() or
-                QgsWkbTypes.geometryType(
-                    iface.activeLayer().wkbType()) == QgsWkbTypes.PointGeometry and QgsProcessing.TypeVectorPoint not in a.inputLayerTypes()):
+            if not a.supportInPlaceEdit(iface.activeLayer()):
                 continue
 
             if QgsLocatorFilter.stringMatches(a.displayName(), string) or [t for t in a.tags() if QgsLocatorFilter.stringMatches(t, string)] or \
