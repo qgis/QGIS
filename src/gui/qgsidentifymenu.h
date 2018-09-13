@@ -99,7 +99,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     void setAllowMultipleReturn( bool multipleReturn ) { mAllowMultipleReturn = multipleReturn;}
     bool allowMultipleReturn() { return mAllowMultipleReturn;}
 
-    //! define if the menu will be shown with a single idetify result
+    //! define if the menu will be shown with a single identify result
     void setExecWithSingleResult( bool execWithSingleResult ) { mExecWithSingleResult = execWithSingleResult;}
     bool execWithSingleResult() { return mExecWithSingleResult;}
 
