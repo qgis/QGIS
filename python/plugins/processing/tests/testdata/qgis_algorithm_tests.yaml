@@ -5341,11 +5341,11 @@ tests:
   - algorithm: qgis:knearestconcavehull
     name: K-nearest Neighbour Concave Hull - Group by field
     params:
-      KNEIGHBORS: 3
       FIELD: id2
       INPUT:
         name: points.gml
         type: vector
+      KNEIGHBORS: 3
     results:
       OUTPUT:
         name: expected/knearest_concave_hull_points_id2.gml
