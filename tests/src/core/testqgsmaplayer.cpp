@@ -73,6 +73,8 @@ class TestQgsMapLayer : public QObject
     void layerRef();
     void layerRefListUtils();
 
+    void styleCategories();
+
 
   private:
     QgsVectorLayer *mpLayer = nullptr;
@@ -283,8 +285,19 @@ void TestQgsMapLayer::layerRefListUtils()
   QCOMPARE( refs.size(), 2 );
   QCOMPARE( refs.at( 0 ).get(), vlA );
   QCOMPARE( refs.at( 1 ).get(), vlC );
+}
 
+void TestQgsMapLayer::styleCategories()
+{
+  // control that AllStyleCategories is actually complete
+  QgsMapLayer::StyleCategories allStyleCategories = QgsMapLayer::AllCategories;
+  for ( QgsMapLayer::StyleCategory category : qgsEnumMap<QgsMapLayer::StyleCategory>().keys() )
+  {
+    if ( category == QgsMapLayer::AllCategories )
+      continue;
 
+    QVERIFY( allStyleCategories.testFlag( category ) );
+  }
 }
 
 QGSTEST_MAIN( TestQgsMapLayer )
