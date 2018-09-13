@@ -65,7 +65,7 @@ QVariant QgsReadOnlyStyleModel::data( const QModelIndex &index, int role ) const
   {
     // drop font size to get reasonable amount of item name shown
     QFont f = QgsStyleProxyModel::data( index, role ).value< QFont >();
-    f.setPointSize( 10 );
+    f.setPointSize( 9 );
     return f;
   }
   return QgsStyleProxyModel::data( index, role );
