@@ -2888,6 +2888,15 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression( "json_to_map('{\"1\":\"one\",\"2\":\"two\",\"3\":\"three\"}')" ).evaluate( &context ), QVariant( concatExpected ) );
       QCOMPARE( QgsExpression( "map_to_json(map('1','one','2','two','3','three'))" ).evaluate( &context ), QVariant( "{\"1\":\"one\",\"2\":\"two\",\"3\":\"three\"}" ) );
 
+      QCOMPARE( QgsExpression( "hstore_to_map('1=>one,2=>two,3=>three')" ).evaluate( &context ), QVariant( concatExpected ) );
+      QCOMPARE( QgsExpression( "map_to_hstore(map('1','one','2','two','3','three'))" ).evaluate( &context ), QVariant( "\"1\"=>\"one\",\"2\"=>\"two\",\"3\"=>\"three\"" ) );
+
+      QVariantMap hstoreExpected;
+      hstoreExpected[QStringLiteral( "test_quotes" )] = "test \"quote\" symbol";
+      hstoreExpected[QStringLiteral( "test_slashes" )] = "test \\slash symbol";
+      hstoreExpected[QStringLiteral( "test_mix" )] = "key with value in quotation marks";
+      QCOMPARE( QgsExpression( "hstore_to_map('\"test_quotes\"=>\"test \\\\\"quote\\\\\" symbol\",\"test_slashes\"=>\"test \\\\slash symbol\",test_mix=>\"key with value in quotation marks\"')" ).evaluate( &context ), QVariant( hstoreExpected ) );
+
       QStringList keysExpected;
       keysExpected << QStringLiteral( "1" ) << QStringLiteral( "2" );
       QCOMPARE( QgsExpression( "map_akeys(\"map\")" ).evaluate( &context ), QVariant( keysExpected ) );
