@@ -548,6 +548,12 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertEqual(model.rowCount(), 2)
         self.assertEqual(model.data(model.index(0, 0)), 'a')
         self.assertEqual(model.data(model.index(1, 0)), 'ramp a')
+        model.setFilterString('ram b')
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), 'ramp BB')
+        model.setFilterString('ta ram') # match ta -> "tag 1", ram -> "ramp a"
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.data(model.index(0, 0)), 'ramp a')
         model.setFilterString('')
         self.assertEqual(model.rowCount(), 8)
 

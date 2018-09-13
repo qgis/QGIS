@@ -472,8 +472,33 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( mFavoritesOnly && !mFavoritedSymbolNames.contains( name ) )
     return false;
 
-  if ( !name.contains( mFilterString, Qt::CaseInsensitive ) && !tags.join( ';' ).contains( mFilterString, Qt::CaseInsensitive ) )
-    return false;
+  if ( !mFilterString.isEmpty() )
+  {
+    // filter by word, in both filter string and style entity name/tags
+    // this allows matching of a filter string "hash line" to the symbol "hashed red lines"
+    const QStringList partsToMatch = mFilterString.trimmed().split( ' ' );
+
+    QStringList partsToSearch = name.split( ' ' );
+    for ( const QString &tag : tags )
+    {
+      partsToSearch.append( tag.split( ' ' ) );
+    }
+
+    for ( const QString &part : partsToMatch )
+    {
+      bool found = false;
+      for ( const QString &partToSearch : qgis::as_const( partsToSearch ) )
+      {
+        if ( partToSearch.contains( part, Qt::CaseInsensitive ) )
+        {
+          found = true;
+          break;
+        }
+      }
+      if ( !found )
+        return false; // couldn't find a match for this word, so hide entity
+    }
+  }
 
   return true;
 }
