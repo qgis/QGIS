@@ -75,7 +75,7 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   txtSQL->setText( mOrigSubsetString );
 
   mFilterLineEdit->setShowSearchIcon( true );
-  mFilterLineEdit->setPlaceholderText( tr( "Search" ) );
+  mFilterLineEdit->setPlaceholderText( tr( "Search…" ) );
   connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsQueryBuilder::onTextChanged );
 
   populateFields();

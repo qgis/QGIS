@@ -175,7 +175,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   QgsFilterLineEdit *groupEdit = new QgsFilterLineEdit();
   groupEdit->setShowSearchIcon( true );
   groupEdit->setShowClearButton( true );
-  groupEdit->setPlaceholderText( tr( "Filter symbols" ) );
+  groupEdit->setPlaceholderText( tr( "Filter symbols…" ) );
   groupsCombo->setLineEdit( groupEdit );
   populateGroups();
   connect( groupsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSymbolsListWidget::groupsCombo_currentIndexChanged );

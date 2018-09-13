@@ -83,14 +83,14 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   }
 
   txtSearchEdit->setShowSearchIcon( true );
-  txtSearchEdit->setPlaceholderText( tr( "Search" ) );
+  txtSearchEdit->setPlaceholderText( tr( "Search…" ) );
 
   mValuesModel = new QStringListModel();
   mProxyValues = new QSortFilterProxyModel();
   mProxyValues->setSourceModel( mValuesModel );
   mValuesListView->setModel( mProxyValues );
   txtSearchEditValues->setShowSearchIcon( true );
-  txtSearchEditValues->setPlaceholderText( tr( "Search" ) );
+  txtSearchEditValues->setPlaceholderText( tr( "Search…" ) );
 
   QgsSettings settings;
   splitter->restoreState( settings.value( QStringLiteral( "Windows/QgsExpressionBuilderWidget/splitter" ) ).toByteArray() );
