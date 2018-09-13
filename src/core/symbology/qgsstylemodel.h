@@ -75,6 +75,14 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
+    /**
+     * Adds an additional icon \a size to generate for Qt::DecorationRole data.
+     *
+     * This allows style icons to be generated at an icon size which
+     * corresponds exactly to the view's icon size in which this model is used.
+     */
+    void addDesiredIconSize( QSize size );
+
   private slots:
 
     void onSymbolAdded( const QString &name, QgsSymbol *symbol );
@@ -90,6 +98,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     QgsStyle *mStyle = nullptr;
     QStringList mSymbolNames;
     QStringList mRampNames;
+    QList< QSize > mAdditionalSizes;
 
 };
 
@@ -251,6 +260,14 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      * \see setFavoritesOnly()
      */
     void setFavoritesOnly( bool favoritesOnly );
+
+    /**
+     * Adds an additional icon \a size to generate for Qt::DecorationRole data.
+     *
+     * This allows style icons to be generated at an icon size which
+     * corresponds exactly to the view's icon size in which this model is used.
+     */
+    void addDesiredIconSize( QSize size );
 
   public slots:
 

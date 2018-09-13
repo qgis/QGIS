@@ -728,9 +728,9 @@ class TestQgsStyleModel(unittest.TestCase):
         ramp_a = QgsLimitedRandomColorRamp(5)
         self.assertTrue(style.addColorRamp('ramp a', ramp_a, True))
 
-        model = QgsStyleModel(style)
-        self.assertEqual(model.rowCount(), 2)
         for i in range(2):
+            model = QgsStyleModel(style)
+            self.assertEqual(model.rowCount(), 2)
             icon = model.data(model.index(i, 0), Qt.DecorationRole)
             # by default, only 24x24 icon
             self.assertEqual(icon.availableSizes(), [QSize(24, 24)])
@@ -738,7 +738,8 @@ class TestQgsStyleModel(unittest.TestCase):
             self.assertEqual(icon.actualSize(QSize(24, 24)), QSize(24, 24))
             self.assertEqual(icon.actualSize(QSize(90, 90)), QSize(24, 24))
 
-            model.setProperty('icon_sizes', [QSize(24, 24), QSize(100, 90)])
+            model.addDesiredIconSize(QSize(24, 24))
+            model.addDesiredIconSize(QSize(100, 90))
             icon = model.data(model.index(i, 0), Qt.DecorationRole)
             self.assertEqual(icon.availableSizes(), [QSize(24, 24), QSize(100, 90)])
             self.assertEqual(icon.actualSize(QSize(10, 10)), QSize(10, 10))
@@ -747,7 +748,9 @@ class TestQgsStyleModel(unittest.TestCase):
             self.assertEqual(icon.actualSize(QSize(90, 90)), QSize(90, 81))
             self.assertEqual(icon.actualSize(QSize(125, 125)), QSize(100, 90))
 
-            model.setProperty('icon_sizes', [QSize(100, 90), QSize(200, 180)])
+            model = QgsStyleModel(style)
+            model.addDesiredIconSize(QSize(100, 90))
+            model.addDesiredIconSize(QSize(200, 180))
             icon = model.data(model.index(i, 0), Qt.DecorationRole)
             self.assertEqual(icon.availableSizes(), [QSize(24, 24), QSize(100, 90), QSize(200, 180)])
             self.assertEqual(icon.actualSize(QSize(10, 10)), QSize(10, 10))
@@ -756,7 +759,6 @@ class TestQgsStyleModel(unittest.TestCase):
             self.assertEqual(icon.actualSize(QSize(90, 90)), QSize(90, 81))
             self.assertEqual(icon.actualSize(QSize(125, 125)), QSize(125, 112))
             self.assertEqual(icon.actualSize(QSize(225, 225)), QSize(200, 180))
-            model.setProperty('icon_sizes', None)
 
     def testSetData(self):
         """
