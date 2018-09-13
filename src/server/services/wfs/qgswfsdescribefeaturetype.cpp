@@ -251,8 +251,8 @@ namespace QgsWfs
       const QSet<QString> &layerExcludedAttributes = layer->excludeAttributesWfs();
       for ( int idx = 0; idx < fields.count(); ++idx )
       {
-
-        QString attributeName = fields.at( idx ).name();
+        const QgsField field = fields.at( idx );
+        QString attributeName = field.name();
         //skip attribute if excluded from WFS publication
         if ( layerExcludedAttributes.contains( attributeName ) )
         {
@@ -262,27 +262,54 @@ namespace QgsWfs
         //xsd:element
         QDomElement attElem = doc.createElement( QStringLiteral( "element" )/*xsd:element*/ );
         attElem.setAttribute( QStringLiteral( "name" ), attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
-        QVariant::Type attributeType = fields.at( idx ).type();
+        QVariant::Type attributeType = field.type();
         if ( attributeType == QVariant::Int )
-          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "integer" ) );
+        {
+          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
+        }
+        else if ( attributeType == QVariant::UInt )
+        {
+          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "unsignedInt" ) );
+        }
         else if ( attributeType == QVariant::LongLong )
+        {
           attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "long" ) );
+        }
+        else if ( attributeType == QVariant::ULongLong )
+        {
+          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "unsignedLong" ) );
+        }
         else if ( attributeType == QVariant::Double )
-          attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "double" ) );
+        {
+          if ( field.length() != 0 && field.precision() == 0 )
+            attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "integer" ) );
+          else
+            attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "decimal" ) );
+        }
         else if ( attributeType == QVariant::Bool )
+        {
           attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "boolean" ) );
+        }
         else if ( attributeType == QVariant::Date )
+        {
           attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "date" ) );
+        }
         else if ( attributeType == QVariant::Time )
+        {
           attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "time" ) );
+        }
         else if ( attributeType == QVariant::DateTime )
+        {
           attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "dateTime" ) );
+        }
         else
+        {
           attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "string" ) );
+        }
 
         sequenceElem.appendChild( attElem );
 
-        QString alias = fields.at( idx ).alias();
+        QString alias = field.alias();
         if ( !alias.isEmpty() )
         {
           attElem.setAttribute( QStringLiteral( "alias" ), alias );
