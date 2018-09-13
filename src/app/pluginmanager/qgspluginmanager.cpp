@@ -940,7 +940,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   {
     QString ver = metadata->value( QStringLiteral( "version_installed" ) );
     if ( ver == QLatin1String( "-1" ) ) ver = '?';
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td class='version' title='%2 %3'> %4 <a href=\"%5\">
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td class='version' title='%2 %3'> %4 <a href=\"%5\">"
                             "<img src=\"qrc:/images/themes/default/externalLink.svg\"></a></td></tr>"
                           ).arg( tr( "Installed version" ),
                                  tr( "in" ),
@@ -954,7 +954,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     if ( downloadUrl.contains( QStringLiteral( "plugins.qgis.org" ) ) )
     {
       // For the main repo, open the plugin version page instead of the download link. For other repositories the download link is the only known endpoint.
-      downloadUrl = downloadUrl.replace( QStringLiteral( "download/" ), QStringLiteral( "" ) );
+      downloadUrl = downloadUrl.replace( QStringLiteral( "download/" ), QString() );
     }
 
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td class='version' title='%2 %3'> %4 <a href=\"%5\">"
