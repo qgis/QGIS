@@ -108,13 +108,6 @@ class KNearestConcaveHull(QgisAlgorithm):
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 20))
 
-        # Initialize writer
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Polygon, source.sourceCrs())
-
-        if sink is None:
-            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
-
         current = 0
 
         # Get properties of the field the grouping is based on
@@ -122,6 +115,12 @@ class KNearestConcaveHull(QgisAlgorithm):
             field_index = source.fields().lookupField(field_name)
             if field_index >= 0:
                 fields.append(source.fields()[field_index]) # Add a field with the name of the grouping field
+
+                # Initialize writer
+                (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                                       fields, QgsWkbTypes.Polygon, source.sourceCrs())
+                if sink is None:
+                    raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
                 success = False
                 fid = 0
@@ -166,6 +165,13 @@ class KNearestConcaveHull(QgisAlgorithm):
 
         else:
             # Not grouped by field
+
+            # Initialize writer
+            (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                                   fields, QgsWkbTypes.Polygon, source.sourceCrs())
+            if sink is None:
+                raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
+
             points = []
             request = QgsFeatureRequest()
             request.setSubsetOfAttributes([])
