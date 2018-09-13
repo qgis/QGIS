@@ -71,8 +71,9 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     bool tileMode() const;
     bool addToCanvas() const;
     QString outputFileName() const;
+
     /**
-     * Name of the output layer within GeoPackage file.
+     * Name of the output layer within GeoPackage file
      * \since QGIS 3.4
      */
     QString outputLayerName() const;
@@ -143,8 +144,8 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     double noDataCellValue( int row, int column ) const;
     void adjustNoDataCellWidth( int row, int column );
     bool validate() const;
-    // Returns true if the output layer already exists in the GeoPackage file.
-    bool outputLayerExistsInGpkg() const;
+    // Returns true if the output layer already exists.
+    bool outputLayerExists() const;
 
     void insertAvailableOutputFormats();
 };

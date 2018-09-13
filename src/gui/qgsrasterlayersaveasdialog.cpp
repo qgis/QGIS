@@ -425,7 +425,7 @@ QStringList QgsRasterLayerSaveAsDialog::createOptions() const
   if ( outputFormat() == QStringLiteral( "GPKG" ) )
   {
     // Overwrite the GPKG table options
-    int indx = options.indexOf( QRegExp( "^RASTER_TABLE=.*" ) );
+    int indx = options.indexOf( QRegularExpression( "^RASTER_TABLE=.*", QRegularExpression::CaseInsensitiveOption | QRegularExpression::MultilineOption ) );
     if ( indx > -1 )
     {
       options.replace( indx, QStringLiteral( "RASTER_TABLE=%1" ).arg( outputLayerName() ) );
@@ -436,9 +436,9 @@ QStringList QgsRasterLayerSaveAsDialog::createOptions() const
     }
 
     // Only enable the append mode if the layer doesn't exist yet. For existing layers a 'confirm overwrite' dialog will be shown.
-    if ( !outputLayerExistsInGpkg() )
+    if ( !outputLayerExists() )
     {
-      indx = options.indexOf( QRegExp( "^APPEND_SUBDATASET=.*", Qt::CaseInsensitive ) );
+      indx = options.indexOf( QRegularExpression( "^APPEND_SUBDATASET=.*", QRegularExpression::CaseInsensitiveOption | QRegularExpression::MultilineOption ) );
       if ( indx > -1 )
       {
         options.replace( indx, QStringLiteral( "APPEND_SUBDATASET=YES" ) );
@@ -907,10 +907,19 @@ bool QgsRasterLayerSaveAsDialog::validate() const
   return true;
 }
 
-bool QgsRasterLayerSaveAsDialog::outputLayerExistsInGpkg() const
+bool QgsRasterLayerSaveAsDialog::outputLayerExists() const
 {
-  QgsRasterLayer *layer = nullptr;
-  layer = new QgsRasterLayer( QStringLiteral( "GPKG:%1:%2" ).arg( outputFileName(), outputLayerName() ), "", QStringLiteral( "gdal" ) );
+  QString uri;
+  if ( outputFormat() == QStringLiteral( "GPKG" ) )
+  {
+    uri = QStringLiteral( "GPKG:%1:%2" ).arg( outputFileName(), outputLayerName() );
+  }
+  else
+  {
+    uri = outputFileName();
+  }
+
+  std::unique_ptr< QgsRasterLayer > layer( new QgsRasterLayer( uri, "", QStringLiteral( "gdal" ) ) );
   return layer->isValid();
 }
 
@@ -921,7 +930,7 @@ void QgsRasterLayerSaveAsDialog::accept()
     return;
   }
 
-  if ( outputFormat() == QStringLiteral( "GPKG" ) && outputLayerExistsInGpkg() &&
+  if ( outputFormat() == QStringLiteral( "GPKG" ) && outputLayerExists() &&
        QMessageBox::warning( this, tr( "Save Raster Layer" ),
                              tr( "The layer %1 already exists in the target file, and overwriting layers in GeoPackage is not supported. "
                                  "Do you want to overwrite the whole file?" ).arg( outputLayerName() ),

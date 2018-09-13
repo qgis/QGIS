@@ -12825,7 +12825,7 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
       QString layerName = myFileInfo.completeBaseName();
 
       // ...unless the layer uri matches "GPKG:filePath:layerName" and layerName differs from the file base name
-      QStringList layerUriSegments = myIterator->split( QLatin1String( ":" ) );
+      const QStringList layerUriSegments = myIterator->split( QLatin1String( ":" ) );
       if ( layerUriSegments.count() == 3 && layerUriSegments[ 0 ] ==  QLatin1String( "GPKG" ) && layerUriSegments[ 2 ] != layerName )
       {
         layerName = QStringLiteral( "%1 %2" ).arg( layerName, layerUriSegments[ 2 ] );

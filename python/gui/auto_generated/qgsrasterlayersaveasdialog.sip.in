@@ -54,7 +54,13 @@ Constructor for QgsRasterLayerSaveAsDialog
     bool tileMode() const;
     bool addToCanvas() const;
     QString outputFileName() const;
+
     QString outputLayerName() const;
+%Docstring
+Name of the output layer within GeoPackage file
+
+.. versionadded:: 3.4
+%End
     QString outputFormat() const;
     QgsCoordinateReferenceSystem outputCrs();
     QStringList createOptions() const;
