@@ -88,7 +88,6 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
 {
   setupUi( this );
   connect( mSymbolUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSymbolsListWidget::mSymbolUnitWidget_changed );
-  connect( groupsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSymbolsListWidget::groupsCombo_currentIndexChanged );
   spinAngle->setClearValue( 0 );
 
   mSymbolUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
@@ -173,8 +172,14 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
     QgsSettings().setValue( QStringLiteral( "UI/symbolsList/treeState" ), mSymbolTreeView->header()->saveState(), QgsSettings::Gui );
   } );
 
-
+  QgsFilterLineEdit *groupEdit = new QgsFilterLineEdit();
+  groupEdit->setShowSearchIcon( true );
+  groupEdit->setShowClearButton( true );
+  groupEdit->setPlaceholderText( tr( "Filter symbols" ) );
+  groupsCombo->setLineEdit( groupEdit );
   populateGroups();
+  connect( groupsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSymbolsListWidget::groupsCombo_currentIndexChanged );
+  connect( groupsCombo, &QComboBox::currentTextChanged, this, &QgsSymbolsListWidget::updateModelFilters );
 
   if ( mSymbol )
   {
@@ -309,6 +314,7 @@ QgsSymbolWidgetContext QgsSymbolsListWidget::context() const
 
 void QgsSymbolsListWidget::populateGroups()
 {
+  mUpdatingGroups = true;
   groupsCombo->blockSignals( true );
   groupsCombo->clear();
 
@@ -344,36 +350,53 @@ void QgsSymbolsListWidget::populateGroups()
   index = settings.value( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 ).toInt();
   groupsCombo->setCurrentIndex( index );
 
+  mUpdatingGroups = false;
+
   updateModelFilters();
 }
 
 void QgsSymbolsListWidget::updateModelFilters()
 {
-  const QString text = groupsCombo->currentText();
+  if ( mUpdatingGroups )
+    return;
 
-  if ( groupsCombo->currentData().toString() == QLatin1String( "favorite" ) )
+  const QString text = groupsCombo->currentText();
+  const bool isFreeText = text != groupsCombo->itemText( groupsCombo->currentIndex() );
+
+  if ( isFreeText )
+  {
+    mModel->setFavoritesOnly( false );
+    mModel->setTagId( -1 );
+    mModel->setSmartGroupId( -1 );
+    mModel->setFilterString( groupsCombo->currentText() );
+  }
+  else if ( groupsCombo->currentData().toString() == QLatin1String( "favorite" ) )
   {
     mModel->setFavoritesOnly( true );
     mModel->setTagId( -1 );
     mModel->setSmartGroupId( -1 );
+    mModel->setFilterString( QString() );
   }
   else if ( groupsCombo->currentData().toString() == QLatin1String( "all" ) )
   {
     mModel->setFavoritesOnly( false );
     mModel->setTagId( -1 );
     mModel->setSmartGroupId( -1 );
+    mModel->setFilterString( QString() );
   }
   else if ( groupsCombo->currentData().toString() == QLatin1String( "smartgroup" ) )
   {
     mModel->setFavoritesOnly( false );
     mModel->setTagId( -1 );
     mModel->setSmartGroupId( mStyle->smartgroupId( text ) );
+    mModel->setFilterString( QString() );
   }
   else
   {
     mModel->setFavoritesOnly( false );
     mModel->setTagId( mStyle->tagId( text ) );
     mModel->setSmartGroupId( -1 );
+    mModel->setFilterString( QString() );
   }
 }
 
@@ -709,6 +732,4 @@ void QgsSymbolsListWidget::groupsCombo_currentIndexChanged( int index )
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), index );
-
-  updateModelFilters();
 }
