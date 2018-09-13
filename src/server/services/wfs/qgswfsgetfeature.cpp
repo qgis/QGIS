@@ -22,6 +22,9 @@
 #include "qgswfsutils.h"
 #include "qgsserverprojectutils.h"
 #include "qgsfields.h"
+#include "qgsfieldformatterregistry.h"
+#include "qgsfieldformatter.h"
+#include "qgsdatetimefieldformatter.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
@@ -62,7 +65,7 @@ namespace QgsWfs
 
     QString createFeatureGeoJSON( QgsFeature *feat, const createFeatureParams &params );
 
-    QString encodeValueToText( const QVariant &value );
+    QString encodeValueToText( const QVariant &value, const QgsEditorWidgetSetup &setup );
 
     QDomElement createFeatureGML2( QgsFeature *feat, QDomDocument &doc, const createFeatureParams &params, const QgsProject *project );
 
@@ -1337,10 +1340,12 @@ namespace QgsWfs
         {
           continue;
         }
-        QString attributeName = fields.at( idx ).name();
+        const QgsField field = fields.at( idx );
+        const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
+        QString attributeName = field.name();
 
         QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
-        QDomText fieldText = doc.createTextNode( encodeValueToText( featureAttributes[idx] ) );
+        QDomText fieldText = doc.createTextNode( encodeValueToText( featureAttributes[idx], setup ) );
         fieldElem.appendChild( fieldText );
         typeNameElement.appendChild( fieldElem );
       }
@@ -1432,10 +1437,12 @@ namespace QgsWfs
         {
           continue;
         }
-        QString attributeName = fields.at( idx ).name();
+        const QgsField field = fields.at( idx );
+        const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
+        QString attributeName = field.name();
 
         QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
-        QDomText fieldText = doc.createTextNode( encodeValueToText( featureAttributes[idx] ) );
+        QDomText fieldText = doc.createTextNode( encodeValueToText( featureAttributes[idx], setup ) );
         fieldElem.appendChild( fieldText );
         typeNameElement.appendChild( fieldElem );
       }
@@ -1443,10 +1450,23 @@ namespace QgsWfs
       return featureElement;
     }
 
-    QString encodeValueToText( const QVariant &value )
+    QString encodeValueToText( const QVariant &value, const QgsEditorWidgetSetup &setup )
     {
       if ( value.isNull() )
         return QStringLiteral( "null" );
+
+      if ( setup.type() ==  QStringLiteral( "DateTime" ) )
+      {
+        QgsDateTimeFieldFormatter fieldFormatter;
+        const QVariantMap config = setup.config();
+        const QString fieldFormat = config.value( QStringLiteral( "field_format" ), fieldFormatter.defaultFormat( value.type() ) ).toString();
+        QDateTime date = value.toDateTime();
+
+        if ( date.isValid() )
+        {
+          return date.toString( fieldFormat );
+        }
+      }
 
       switch ( value.type() )
       {

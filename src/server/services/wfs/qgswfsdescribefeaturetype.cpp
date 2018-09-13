@@ -30,6 +30,9 @@
 #include "qgsvectordataprovider.h"
 #include "qgsmapserviceexception.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfieldformatterregistry.h"
+#include "qgsfieldformatter.h"
+#include "qgsdatetimefieldformatter.h"
 
 #include <QStringList>
 
@@ -305,6 +308,20 @@ namespace QgsWfs
         else
         {
           attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "string" ) );
+        }
+
+        const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
+        if ( setup.type() ==  QStringLiteral( "DateTime" ) )
+        {
+          QgsDateTimeFieldFormatter fieldFormatter;
+          const QVariantMap config = setup.config();
+          const QString fieldFormat = config.value( QStringLiteral( "field_format" ), fieldFormatter.defaultFormat( field.type() ) ).toString();
+          if ( fieldFormat == QStringLiteral( "yyyy-MM-dd" ) )
+            attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "date" ) );
+          else if ( fieldFormat == QStringLiteral( "HH:mm:ss" ) )
+            attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "time" ) );
+          else
+            attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "dateTime" ) );
         }
 
         sequenceElem.appendChild( attElem );

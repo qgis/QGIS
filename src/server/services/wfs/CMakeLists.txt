@@ -45,6 +45,7 @@ INCLUDE_DIRECTORIES(
   ../../../core/raster
   ../../../core/symbology
   ../../../core/layertree
+  ../../../core/fieldformatter
   ../..
   ..
   .
