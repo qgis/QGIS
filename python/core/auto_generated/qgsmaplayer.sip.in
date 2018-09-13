@@ -874,7 +874,7 @@ record in the users style table in their personal qgis.db)
 .. seealso:: :py:func:`loadNamedStyle`
 %End
 
-    virtual QString saveNamedStyle( const QString &uri, bool &resultFlag /Out/ );
+    virtual QString saveNamedStyle( const QString &uri, bool &resultFlag /Out/, StyleCategories categories = AllStyleCategories );
 %Docstring
 Save the properties of this layer as a named style
 (either as a .qml file on disk or as a

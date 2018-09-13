@@ -1190,7 +1190,7 @@ QString QgsMapLayer::loadNamedMetadata( const QString &uri, bool &resultFlag )
   return loadNamedProperty( uri, QgsMapLayer::Metadata, resultFlag );
 }
 
-QString QgsMapLayer::saveNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag )
+QString QgsMapLayer::saveNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag, StyleCategories categories )
 {
   // check if the uri is a file or ends with .qml/.qmd,
   // which indicates that it should become one
@@ -1230,7 +1230,7 @@ QString QgsMapLayer::saveNamedProperty( const QString &uri, QgsMapLayer::Propert
 
     case Style:
       QgsReadWriteContext context;
-      exportNamedStyle( myDocument, myErrorMessage, context );
+      exportNamedStyle( myDocument, myErrorMessage, context, categories );
       break;
   }
 
@@ -1421,9 +1421,9 @@ QString QgsMapLayer::saveNamedProperty( const QString &uri, QgsMapLayer::Propert
   return myErrorMessage;
 }
 
-QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
+QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag, StyleCategories categories )
 {
-  return saveNamedProperty( uri, QgsMapLayer::Style, resultFlag );
+  return saveNamedProperty( uri, QgsMapLayer::Style, resultFlag, categories );
 }
 
 void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ) const

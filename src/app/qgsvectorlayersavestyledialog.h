@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsvectorlayerloadsavestyledialog.h
+  qgsvectorlayersavestyledialog.h
   --------------------------------------
   Date                 : September 2018
   Copyright            : (C) 2018 by Denis Rouzaud
@@ -13,43 +13,50 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVECTORLAYERLOADSAVESTYLEDIALOG_H
-#define QGSVECTORLAYERLOADSAVESTYLEDIALOG_H
+#ifndef QGSVECTORLAYERSAVESTYLEDIALOG_H
+#define QGSVECTORLAYERSAVESTYLEDIALOG_H
 
 #include <QDialog>
-#include "ui_qgsvectorlayerloadsavestyledialog.h"
+#include "ui_qgsvectorlayersavestyledialog.h"
+#include "qgsvectorlayerproperties.h"
 
 class QgsVectorLayer;
 
 
-class QgsVectorLayerLoadSaveStyleDialog : public QDialog, private Ui::QgsVectorLayerLoadSaveStyleDialog
+class QgsVectorLayerSaveStyleDialog : public QDialog, private Ui::QgsVectorLayerSaveStyleDialog
 {
     Q_OBJECT
 
   public:
-    enum Mode
+
+    struct SaveToDbSettings
     {
-      Save,
-      Load
+      public:
+        QString uiFileContent;
+        QString name;
+        QString description;
+        bool isDefault;
     };
 
-    enum StyleType
-    {
-      GenericFile,
-      QML,
-      SLD,
-      DB,
-    };
+    explicit QgsVectorLayerSaveStyleDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
+    ~QgsVectorLayerSaveStyleDialog();
 
-    explicit QgsVectorLayerLoadSaveStyleDialog( QgsVectorLayer *layer, Mode mode, QWidget *parent = nullptr );
-    ~QgsVectorLayerLoadSaveStyleDialog() = default;
+    SaveToDbSettings saveToDbSettings() const;
+    QString outputFilePath() const;
+    QgsMapLayer::StyleCategories styleCategories() const;
+
+    QgsVectorLayerProperties::StyleType currentStyleType() const;
 
   public slots:
     void accept();
 
+  private slots:
+    void showDbHelp();
+    void readUiFileContent( const QString &filePath );
+
   private:
     QgsVectorLayer *mLayer;
-    Mode mMode;
+    QString mUiFileContent;
 };
 
-#endif // QGSVECTORLAYERLOADSAVESTYLE_H
+#endif // QGSVECTORLAYERSAVESTYLE_H

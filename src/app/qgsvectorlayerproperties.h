@@ -53,10 +53,11 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
   public:
     enum StyleType
     {
-      QML = 0,
+      QML,
       SLD,
       DB,
     };
+    Q_ENUM( StyleType )
 
     QgsVectorLayerProperties( QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 

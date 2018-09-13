@@ -840,7 +840,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \returns a QString with any status messages
      * \see saveDefaultStyle()
      */
-    virtual QString saveNamedStyle( const QString &uri, bool &resultFlag SIP_OUT );
+    virtual QString saveNamedStyle( const QString &uri, bool &resultFlag SIP_OUT, StyleCategories categories = AllStyleCategories );
 
     /**
      * Saves the properties of this layer to an SLD format file.
@@ -1436,7 +1436,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
   private:
 
     virtual QString baseURI( PropertyType type ) const;
-    QString saveNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag );
+    QString saveNamedProperty( const QString &uri, QgsMapLayer::PropertyType type,
+                               bool &resultFlag, QgsMapLayer::StyleCategories categories = AllStyleCategories );
     QString loadNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag );
     bool loadNamedPropertyFromDatabase( const QString &db, const QString &uri, QString &xml, QgsMapLayer::PropertyType type );
 
