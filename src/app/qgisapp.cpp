@@ -12056,7 +12056,7 @@ void QgisApp::legendLayerSelectionChanged()
   bool removeEnabled = true;
   for ( QgsLayerTreeLayer *nodeLayer : selectedLayers )
   {
-    if ( !nodeLayer->layer()->flags().testFlag( QgsMapLayer::Removable ) )
+    if ( nodeLayer->layer() && !nodeLayer->layer()->flags().testFlag( QgsMapLayer::Removable ) )
     {
       removeEnabled = false;
       break;
