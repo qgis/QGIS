@@ -120,9 +120,17 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
 
   double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
   viewSymbols->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
+  double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 2;
+  mSymbolTreeView->setIconSize( QSize( static_cast< int >( treeIconSize ), static_cast< int >( treeIconSize ) ) );
 
   mModel->addDesiredIconSize( viewSymbols->iconSize() );
+  mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
   viewSymbols->setModel( mModel );
+  mSymbolTreeView->setModel( mModel );
+
+  viewSymbols->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mSymbolTreeView->setSelectionModel( viewSymbols->selectionModel() );
+  mSymbolTreeView->setSelectionMode( viewSymbols->selectionMode() );
 
   connect( viewSymbols->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSymbolsListWidget::setSymbolFromStyle );
 
@@ -131,6 +139,40 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   connect( openStyleManagerButton, &QPushButton::pressed, this, &QgsSymbolsListWidget::openStyleManager );
 
   lblSymbolName->clear();
+
+  connect( mButtonIconView, &QToolButton::toggled, this, [ = ]( bool active )
+  {
+    if ( active )
+    {
+      mSymbolViewStackedWidget->setCurrentIndex( 0 );
+      // note -- we have to save state here and not in destructor, as new symbol list widgets are created before the previous ones are destroyed
+      QgsSettings().setValue( QStringLiteral( "UI/symbolsList/lastIconView" ), 0, QgsSettings::Gui );
+    }
+  } );
+  connect( mButtonListView, &QToolButton::toggled, this, [ = ]( bool active )
+  {
+    if ( active )
+    {
+      QgsSettings().setValue( QStringLiteral( "UI/symbolsList/lastIconView" ), 1, QgsSettings::Gui );
+      mSymbolViewStackedWidget->setCurrentIndex( 1 );
+    }
+  } );
+
+  // restore previous view
+  QgsSettings settings;
+  const int currentView = settings.value( QStringLiteral( "UI/symbolsList/lastIconView" ), 0, QgsSettings::Gui ).toInt();
+  if ( currentView == 0 )
+    mButtonIconView->setChecked( true );
+  else
+    mButtonListView->setChecked( true );
+
+  mSymbolTreeView->header()->restoreState( settings.value( QStringLiteral( "UI/symbolsList/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
+  connect( mSymbolTreeView->header(), &QHeaderView::sectionResized, this, [this]
+  {
+    // note -- we have to save state here and not in destructor, as new symbol list widgets are created before the previous ones are destroyed
+    QgsSettings().setValue( QStringLiteral( "UI/symbolsList/treeState" ), mSymbolTreeView->header()->saveState(), QgsSettings::Gui );
+  } );
+
 
   populateGroups();
 
