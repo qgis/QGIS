@@ -28,12 +28,12 @@ import json
 import zipfile
 
 from qgis.PyQt.QtCore import Qt, QObject, QDir, QUrl, QFileInfo, QFile
-from qgis.PyQt.QtWidgets import QMessageBox, QLabel, QFrame, QApplication, QFileDialog, QInputDialog, QLineEdit
+from qgis.PyQt.QtWidgets import QApplication, QDialog, QDialogButtonBox, QFrame, QMessageBox, QLabel, QVBoxLayout
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 import qgis
 from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings
-from qgis.gui import QgsMessageBar
+from qgis.gui import QgsMessageBar, QgsPasswordLineEdit
 from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin,
                         reloadPlugin, updateAvailablePlugins)
 from .installer_data import (repositories, plugins, officialRepo,
@@ -577,7 +577,20 @@ class QgsPluginInstaller(QObject):
                         msg = self.tr('Wrong password. Please enter a correct password to the zip file.')
                     else:
                         msg = self.tr('The zip file is encrypted. Please enter password.')
-                    password, keepTrying = QInputDialog.getText(iface.mainWindow(), self.tr('Enter password'), msg, QLineEdit.Password)
+                    # Display a password dialog with QgsPasswordLineEdit
+                    dlg = QDialog()
+                    dlg.setWindowTitle(self.tr('Enter password'))
+                    buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal)
+                    buttonBox.rejected.connect(dlg.reject)
+                    buttonBox.accepted.connect(dlg.accept)
+                    lePass = QgsPasswordLineEdit()
+                    layout = QVBoxLayout()
+                    layout.addWidget(QLabel(msg))
+                    layout.addWidget(lePass)
+                    layout.addWidget(buttonBox)
+                    dlg.setLayout(layout)
+                    keepTrying = dlg.exec_()
+                    password = lePass.text()
                 else:
                     infoString = self.tr("Failed to unzip the plugin package\n{}.\nProbably it is broken".format(filePath))
                     keepTrying = False
