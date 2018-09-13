@@ -71,13 +71,8 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
     case Qt::DecorationRole:
     {
-      // check the model custom property for icon sizes to generate. This is used
-      // by instances of the model to indicate the required sizes for decorations in all
-      // views connected to the model, and allows the model to have size responsive icons.
-      // By using a QObject property we avoid having public GUI/view related API within
-      // the model, and mostly avoid view related properties contaminating the pure model...
-      const QVariantList iconSizes = property( "icon_sizes" ).toList();
-
+      // Generate icons at all additional sizes specified for the model.
+      // This allows the model to have size responsive icons.
       switch ( index.column() )
       {
         case Name:
@@ -87,7 +82,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
             QIcon icon;
             icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( 24, 24 ), 1 ) );
 
-            for ( const QVariant &size : iconSizes )
+            for ( const QVariant &size : mAdditionalSizes )
             {
               QSize s = size.toSize();
               icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
@@ -100,7 +95,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
             std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
             QIcon icon;
             icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), QSize( 24, 24 ), 1 ) );
-            for ( const QVariant &size : iconSizes )
+            for ( const QVariant &size : mAdditionalSizes )
             {
               QSize s = size.toSize();
               icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), s, static_cast< int >( s.width() * ICON_PADDING_FACTOR ) ) );
@@ -235,6 +230,11 @@ int QgsStyleModel::rowCount( const QModelIndex &parent ) const
 int QgsStyleModel::columnCount( const QModelIndex & ) const
 {
   return 2;
+}
+
+void QgsStyleModel::addDesiredIconSize( QSize size )
+{
+  mAdditionalSizes << size;
 }
 
 void QgsStyleModel::onSymbolAdded( const QString &name, QgsSymbol * )
@@ -464,6 +464,11 @@ void QgsStyleProxyModel::setFavoritesOnly( bool favoritesOnly )
     mFavoritedSymbolNames.clear();
   }
   invalidateFilter();
+}
+
+void QgsStyleProxyModel::addDesiredIconSize( QSize size )
+{
+  mModel->addDesiredIconSize( size );
 }
 
 bool QgsStyleProxyModel::symbolTypeFilterEnabled() const

@@ -63,6 +63,14 @@ The ``style`` object must exist for the lifetime of this model.
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
 
 
+    void addDesiredIconSize( QSize size );
+%Docstring
+Adds an additional icon ``size`` to generate for Qt.DecorationRole data.
+
+This allows style icons to be generated at an icon size which
+corresponds exactly to the view's icon size in which this model is used.
+%End
+
 };
 
 class QgsStyleProxyModel: QSortFilterProxyModel
@@ -236,6 +244,14 @@ Returns true if the model is showing only favorited entities.
 Sets whether the model should show only favorited entities.
 
 .. seealso:: :py:func:`setFavoritesOnly`
+%End
+
+    void addDesiredIconSize( QSize size );
+%Docstring
+Adds an additional icon ``size`` to generate for Qt.DecorationRole data.
+
+This allows style icons to be generated at an icon size which
+corresponds exactly to the view's icon size in which this model is used.
 %End
 
   public slots:

@@ -121,7 +121,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
   viewSymbols->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
 
-  mModel->sourceModel()->setProperty( "icon_sizes", QVariantList() << viewSymbols->iconSize() );
+  mModel->addDesiredIconSize( viewSymbols->iconSize() );
   viewSymbols->setModel( mModel );
 
   connect( viewSymbols->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSymbolsListWidget::setSymbolFromStyle );
