@@ -63,7 +63,7 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
     void setPolygons( const QList<QgsPolygon *> &polygons, const QList<QgsFeatureId> &featureIds, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon = QList<float>() );
 
     //! Returns ID of the feature to which given triangle index belongs (used for picking)
-    QgsFeatureId triangleIndexToFeatureId( uint triangleIndex );
+    QgsFeatureId triangleIndexToFeatureId( uint triangleIndex ) const;
 
   private:
 

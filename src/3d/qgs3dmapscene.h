@@ -78,7 +78,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Returns the current state of the scene
     SceneState sceneState() const { return mSceneState; }
 
-    //! Registers an object that will get results of pick events on 3D entities. Does not take ownerhip of the pick handler. Adds object picker components to 3D entities.
+    //! Registers an object that will get results of pick events on 3D entities. Does not take ownership of the pick handler. Adds object picker components to 3D entities.
     void registerPickHandler( Qgs3DMapScenePickHandler *pickHandler );
     //! Unregisters previously registered pick handler. Pick handler is not deleted. Also removes object picker components from 3D entities.
     void unregisterPickHandler( Qgs3DMapScenePickHandler *pickHandler );

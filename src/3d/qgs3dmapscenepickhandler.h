@@ -1,3 +1,18 @@
+/***************************************************************************
+  qgs3dmapscenepickhandler.h
+  --------------------------------------
+  Date                 : Sep 2018
+  Copyright            : (C) 2018 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QGS3DMAPSCENEPICKHANDLER_H
 #define QGS3DMAPSCENEPICKHANDLER_H
 
@@ -19,7 +34,7 @@ class QgsVectorLayer;
 class Qgs3DMapScenePickHandler
 {
   public:
-    virtual ~Qgs3DMapScenePickHandler() {}
+    virtual ~Qgs3DMapScenePickHandler() = default;
 
     //! Called when user clicked a 3D entity belonging to a feature of a vector layer
     virtual void handlePickOnVectorLayer( QgsVectorLayer *vlayer, QgsFeatureId id, const QVector3D &worldIntersection ) = 0;

@@ -60,9 +60,8 @@ Qgs3DMapToolIdentify::Qgs3DMapToolIdentify( Qgs3DMapCanvas *canvas )
   mPickHandler.reset( new Qgs3DMapToolIdentifyPickHandler( this ) );
 }
 
-Qgs3DMapToolIdentify::~Qgs3DMapToolIdentify()
-{
-}
+Qgs3DMapToolIdentify::~Qgs3DMapToolIdentify() = default;
+
 
 void Qgs3DMapToolIdentify::mousePressEvent( QMouseEvent *event )
 {

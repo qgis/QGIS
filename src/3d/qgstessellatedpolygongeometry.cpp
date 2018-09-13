@@ -114,7 +114,7 @@ static int binary_search( uint v, const uint *data, int count )
 }
 
 
-QgsFeatureId QgsTessellatedPolygonGeometry::triangleIndexToFeatureId( uint triangleIndex )
+QgsFeatureId QgsTessellatedPolygonGeometry::triangleIndexToFeatureId( uint triangleIndex ) const
 {
   int i = binary_search( triangleIndex, mTriangleIndexStartingIndices.constData(), mTriangleIndexStartingIndices.count() );
   Q_ASSERT( i != -1 );
