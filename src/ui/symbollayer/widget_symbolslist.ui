@@ -66,7 +66,7 @@
       <enum>QListView::IconMode</enum>
      </property>
      <property name="uniformItemSizes">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
