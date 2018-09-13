@@ -21,6 +21,7 @@
 #include "qgsstringutils.h"
 #include "qgsmultipoint.h"
 #include "qgsgeometryutils.h"
+#include "qgshstoreutils.h"
 #include "qgsmultilinestring.h"
 #include "qgslinestring.h"
 #include "qgscurvepolygon.h"
@@ -4374,70 +4375,7 @@ static QVariant fcnHstoreToMap( const QVariantList &values, const QgsExpressionC
     return QVariantMap();
   str = str.trimmed();
 
-  QVariantMap map;
-  QList<QString> bits;
-  QList<QString> seps;
-  seps << "=>" << ",";
-  int i = 0;
-  while ( i < str.length() )
-  {
-    while ( i < str.length() && str.at( i ).isSpace() )
-      ++i;
-    QString current = str.mid( i );
-    QString sep = seps.at( bits.length() );
-    if ( current.startsWith( '"' ) )
-    {
-      QRegularExpression re( "^\"((?:\\\\.|[^\"\\\\])*)\".*" );
-      QRegularExpressionMatch match = re.match( current );
-      bits << QString();
-      if ( match.hasMatch() )
-      {
-        bits[bits.length() - 1] = match.captured( 1 ).replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) ).replace( QLatin1String( "\\\\" ), QLatin1String( "\\" ) );
-        i += match.captured( 1 ).length() + 2;
-        while ( i < str.length() && str.at( i ).isSpace() )
-          ++i;
-
-        if ( str.midRef( i ).startsWith( sep ) )
-        {
-          i += sep.length();
-        }
-        else if ( i < str.length() )
-        {
-          // hstore string format broken, end construction
-          i += current.length();
-        }
-      }
-      else
-      {
-        // hstore string format broken, end construction
-        i += current.length();
-        bits[bits.length() - 1] = current.trimmed();
-      }
-    }
-    else
-    {
-      int sepPos = current.indexOf( sep );
-      if ( sepPos < 0 )
-      {
-        i += current.length();
-        bits << current.trimmed();
-      }
-      else
-      {
-        i += sepPos + sep.length();
-        bits << current.left( sepPos ).trimmed();
-      }
-    }
-
-    if ( bits.length() == 2 )
-    {
-      if ( !bits.at( 0 ).isEmpty() && !bits.at( 1 ).isEmpty() )
-        map[ bits.at( 0 ) ] = bits.at( 1 );
-      bits.clear();
-    }
-  }
-
-  return map;
+  return QgsHstoreUtils::parse( str );
 }
 
 static QVariant fcnMapToHstore( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )

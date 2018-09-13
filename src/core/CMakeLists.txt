@@ -208,6 +208,7 @@ SET(QGIS_CORE_SRCS
   qgsgml.cpp
   qgsgmlschema.cpp
   qgshistogram.cpp
+  qgshstoreutils.cpp
   qgshtmlutils.cpp
   qgsinterval.cpp
   qgsjsonutils.cpp
@@ -869,6 +870,7 @@ SET(QGIS_CORE_HDRS
   qgsgeometryfixes.h
   qgsgeometrysimplifier.h
   qgshistogram.h
+  qgshstoreutils.h
   qgshtmlutils.h
   qgsindexedfeature.h
   qgsinterval.h
