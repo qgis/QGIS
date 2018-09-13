@@ -138,6 +138,7 @@ SET(QGIS_APP_SRCS
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
   qgsvectorlayerlegendwidget.cpp
+  qgsvectorlayerloadsavestyledialog.cpp
   qgsvectorlayerproperties.cpp
   qgsmapthemes.cpp
   qgshandlebadlayers.cpp
@@ -377,6 +378,7 @@ SET (QGIS_APP_MOC_HDRS
   qgstextannotationdialog.h
   qgsundowidget.h
   qgsvectorlayerlegendwidget.h
+  qgsvectorlayerloadsavestyledialog.h
   qgsvectorlayerproperties.h
   qgsmapthemes.h
   qgshandlebadlayers.h

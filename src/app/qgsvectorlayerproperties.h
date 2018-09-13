@@ -116,7 +116,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void loadDefaultStyle_clicked();
     void saveDefaultStyle_clicked();
     void loadStyle_clicked();
-    void saveStyleAs_clicked();
     void loadMetadata();
     void saveMetadataAs();
     void saveDefaultMetadata();
@@ -144,7 +143,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void toggleEditing();
 
     //! Save the style based on selected format from the menu
-    void saveStyleAsMenuTriggered( QAction * );
+    void saveStyleAs();
 
     //! Called when is possible to choice if load the style from filesystem or from db
     void loadStyleMenuTriggered( QAction * );
@@ -178,8 +177,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
       Metadata,
     };
 
-    void saveStyleAs( StyleType styleType );
-
     //! When provider supports, it will list all the styles relative the layer in a dialog
     void showListOfStylesFromDatabase();
 
@@ -198,7 +195,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
 
-    QMenu *mSaveAsMenu = nullptr;
     QMenu *mLoadStyleMenu = nullptr;
 
     QAction *mActionLoadStyle = nullptr;

@@ -290,10 +290,10 @@ void TestQgsMapLayer::layerRefListUtils()
 void TestQgsMapLayer::styleCategories()
 {
   // control that AllStyleCategories is actually complete
-  QgsMapLayer::StyleCategories allStyleCategories = QgsMapLayer::AllCategories;
+  QgsMapLayer::StyleCategories allStyleCategories = QgsMapLayer::AllStyleCategories;
   for ( QgsMapLayer::StyleCategory category : qgsEnumMap<QgsMapLayer::StyleCategory>().keys() )
   {
-    if ( category == QgsMapLayer::AllCategories )
+    if ( category == QgsMapLayer::AllStyleCategories )
       continue;
 
     QVERIFY( allStyleCategories.testFlag( category ) );

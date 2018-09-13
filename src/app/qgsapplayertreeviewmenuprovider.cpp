@@ -321,7 +321,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           QMenu *copyStyleMenu = menuStyleManager->addMenu( tr( "Copy Style" ) );
           copyStyleMenu->setToolTipsVisible( true );
           QList<QgsMapLayer::StyleCategory> categories = qgsEnumMap<QgsMapLayer::StyleCategory>().keys();
-          categories.move( categories.indexOf( QgsMapLayer::AllCategories ), 0 ); // move All categories to top
+          categories.move( categories.indexOf( QgsMapLayer::AllStyleCategories ), 0 ); // move All categories to top
           for ( QgsMapLayer::StyleCategory category : categories )
           {
             QgsMapLayer::ReadableStyleCategory readableCategory = QgsMapLayer::readableStyleCategory( category );
@@ -329,7 +329,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             copyAction->setToolTip( readableCategory.toolTip() );
             connect( copyAction, &QAction::triggered, this, [ = ]() {app->copyStyle( layer, category );} );
             copyStyleMenu->addAction( copyAction );
-            if ( category == QgsMapLayer::AllCategories )
+            if ( category == QgsMapLayer::AllStyleCategories )
               copyStyleMenu->addSeparator();
           }
         }
@@ -345,7 +345,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             QMenu *copyStyleMenu = menuStyleManager->addMenu( tr( "Paste Style" ) );
             copyStyleMenu->setToolTipsVisible( true );
             QList<QgsMapLayer::StyleCategory> categories = qgsEnumMap<QgsMapLayer::StyleCategory>().keys();
-            categories.move( categories.indexOf( QgsMapLayer::AllCategories ), 0 ); // move All categories to top
+            categories.move( categories.indexOf( QgsMapLayer::AllStyleCategories ), 0 ); // move All categories to top
             for ( QgsMapLayer::StyleCategory category : categories )
             {
               QgsMapLayer::ReadableStyleCategory readableCategory = QgsMapLayer::readableStyleCategory( category );
@@ -353,7 +353,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
               copyAction->setToolTip( readableCategory.toolTip() );
               connect( copyAction, &QAction::triggered, this, [ = ]() {app->pasteStyle( layer, category );} );
               copyStyleMenu->addAction( copyAction );
-              if ( category == QgsMapLayer::AllCategories )
+              if ( category == QgsMapLayer::AllStyleCategories )
                 copyStyleMenu->addSeparator();
             }
           }

@@ -111,7 +111,7 @@ QgsMapLayer::ReadableStyleCategory QgsMapLayer::readableStyleCategory( QgsMapLay
     case CustomProperties :
       return ReadableStyleCategory( tr( "Custom Properties" ),
                                     QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
-    case AllCategories :
+    case AllStyleCategories :
       return ReadableStyleCategory( tr( "All Categories" ) );
   }
 }
@@ -1138,7 +1138,7 @@ void QgsMapLayer::exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) co
   doc = myDocument;
 }
 
-void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
+void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   QDomImplementation DomImplementation;
   QDomDocumentType documentType = DomImplementation.createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
