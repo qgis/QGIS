@@ -53,9 +53,9 @@ void QgsSnapToGridCanvasItem::paint( QPainter *painter )
     const double gridYMin = std::ceil( layerExtent.yMinimum() / mPrecision ) * mPrecision;
     const double gridYMax = std::ceil( layerExtent.yMaximum() / mPrecision ) * mPrecision;
 
-    for ( int x = gridXMin ; x < gridXMax; x += mPrecision )
+    for ( double x = gridXMin ; x < gridXMax; x += mPrecision )
     {
-      for ( int y = gridYMin ; y < gridYMax; y += mPrecision )
+      for ( double y = gridYMin ; y < gridYMax; y += mPrecision )
       {
         const QgsPointXY pt = mTransform.transform( x, y );
         const QPointF canvasPt = toCanvasCoordinates( pt );
