@@ -116,7 +116,7 @@ class KNearestConcaveHull(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         current = 0
-        
+
         # Get properties of the field the grouping is based on
         if use_field:
             field_index = source.fields().lookupField(field_name)
