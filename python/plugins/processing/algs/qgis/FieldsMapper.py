@@ -79,6 +79,9 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
     def parameterAsFieldsMapping(self, parameters, name, context):
         return parameters[name]
 
+    def supportInPlaceEdit(self, layer):
+        return False
+
     def prepareAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, 'INPUT', context)
         if source is None:

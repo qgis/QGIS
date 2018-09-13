@@ -162,4 +162,10 @@ QgsFeatureList QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature
   return QgsFeatureList() << f;
 }
 
+bool QgsAddIncrementalFieldAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+{
+  Q_UNUSED( layer );
+  return false;
+}
+
 ///@endcond
