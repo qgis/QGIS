@@ -64,9 +64,19 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="openStyleManagerButton">
+      <widget class="QToolButton" name="openStyleManagerButton">
+       <property name="toolTip">
+        <string>Style Manager</string>
+       </property>
        <property name="text">
         <string>Open Library…</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../../images/images.qrc">
+         <normaloff>:/images/themes/default/propertyicons/symbology.svg</normaloff>:/images/themes/default/propertyicons/symbology.svg</iconset>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
