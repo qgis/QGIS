@@ -76,9 +76,7 @@ Sets ``filters`` controlling the view's contents.
 
     void setInPlaceLayer( QgsVectorLayer *layer );
 %Docstring
-Sets geometry \type for the in-place algorithms
-
-:param layer: the vector layer for in-place algorithm filter
+Sets the vector ``layer`` for the in-place algorithms
 %End
 
   public slots:

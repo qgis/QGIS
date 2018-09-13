@@ -462,8 +462,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
     Filters filters() const { return mFilters; }
 
     /**
-     * Sets geometry \type for the in-place algorithms
-     * \param layer the vector layer for in-place algorithm filter
+     * Sets the vector \a layer for in-place algorithm filter
      */
     void setInPlaceLayer( QgsVectorLayer *layer );
 
