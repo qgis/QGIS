@@ -323,6 +323,24 @@ namespace QgsWfs
           else
             attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "dateTime" ) );
         }
+        else if ( setup.type() ==  QStringLiteral( "Range" ) )
+        {
+          const QVariantMap config = setup.config();
+          if ( config.contains( QStringLiteral( "Precision" ) ) )
+          {
+            // if precision in range config is not the same as the attributePrec
+            // we need to update type
+            bool ok;
+            int configPrec( config[ QStringLiteral( "Precision" ) ].toInt( &ok ) );
+            if ( ok && configPrec != field.precision() )
+            {
+              if ( configPrec == 0 )
+                attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "integer" ) );
+              else
+                attElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "decimal" ) );
+            }
+          }
+        }
 
         sequenceElem.appendChild( attElem );
 

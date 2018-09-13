@@ -1467,6 +1467,18 @@ namespace QgsWfs
           return date.toString( fieldFormat );
         }
       }
+      else if ( setup.type() ==  QStringLiteral( "Range" ) )
+      {
+        const QVariantMap config = setup.config();
+        if ( config.contains( QStringLiteral( "Precision" ) ) )
+        {
+          // if precision is defined, use it
+          bool ok;
+          int precision( config[ QStringLiteral( "Precision" ) ].toInt( &ok ) );
+          if ( ok )
+            return QString::number( value.toDouble(), 'f', precision );
+        }
+      }
 
       switch ( value.type() )
       {
