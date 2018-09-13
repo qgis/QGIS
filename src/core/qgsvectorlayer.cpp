@@ -2284,7 +2284,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   QDomElement layerElement = node.toElement();
   writeCommonStyle( layerElement, doc, context, categories );
 
-  ( void )writeStyle( node, doc, errorMessage, context );
+  ( void )writeStyle( node, doc, errorMessage, context, categories );
 
   if ( categories.testFlag( LayerConfiguration ) )
   {

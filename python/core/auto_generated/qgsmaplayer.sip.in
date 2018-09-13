@@ -887,6 +887,7 @@ record in the users style table in their personal qgis.db)
             key matches the URI.
 :param resultFlag: a reference to a flag that will be set to false if
                    we did not manage to save the default style.
+:param categories: the style categories to be saved.
 
 :return: a QString with any status messages
 
