@@ -48,6 +48,19 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
 
 void QgsRelationWidgetWrapper::aboutToSave()
 {
+  // If this widget is already embedded by the same relation return
+  const QgsAttributeEditorContext *ctx = &context();
+  do
+  {
+    if ( ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
+         || ( mNmRelation.isValid() && ctx->relation().name() == mNmRelation.name() ) )
+    {
+      return;
+    }
+    ctx = ctx->parentContext();
+  }
+  while ( ctx );
+
   if ( !mRelation.isValid() || !widget() || !widget()->isVisible() )
     return;
 
