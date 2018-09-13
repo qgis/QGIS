@@ -2897,6 +2897,11 @@ class TestQgsExpression: public QObject
       hstoreExpected[QStringLiteral( "test_mix" )] = "key with value in quotation marks";
       QCOMPARE( QgsExpression( "hstore_to_map('\"test_quotes\"=>\"test \\\\\"quote\\\\\" symbol\",\"test_slashes\"=>\"test \\\\slash symbol\",test_mix=>\"key with value in quotation marks\"')" ).evaluate( &context ), QVariant( hstoreExpected ) );
 
+      hstoreExpected.clear();
+      hstoreExpected[QStringLiteral( "1" )] = "one";
+      // if a key is missing its closing quote, the map construction process will stop and a partial map is returned
+      QCOMPARE( QgsExpression( "hstore_to_map('\"1\"=>\"one\",\"2=>\"two\"')" ).evaluate( &context ), QVariant( hstoreExpected ) );
+
       QStringList keysExpected;
       keysExpected << QStringLiteral( "1" ) << QStringLiteral( "2" );
       QCOMPARE( QgsExpression( "map_akeys(\"map\")" ).evaluate( &context ), QVariant( keysExpected ) );
