@@ -1248,16 +1248,32 @@ namespace QgsWms
     return style << styles;
   }
 
-  QMultiMap<QString, QString> QgsWmsParameters::getLayerFilters( const QStringList &layers ) const
+  QMultiMap<QString, QgsWmsParametersFilter> QgsWmsParameters::layerFilters( const QStringList &layers ) const
   {
+    const QString nsWfs2 = QStringLiteral( "http://www.opengis.net/fes/2.0" );
+    const QString prefixWfs2 = QStringLiteral( "<fes:" );
+
     const QStringList rawFilters = filters();
-    QMultiMap<QString, QString> layerFilters;
+    QMultiMap<QString, QgsWmsParametersFilter> filters;
     for ( int i = 0; i < rawFilters.size(); i++ )
     {
       const QString f = rawFilters[i];
-      if ( f.startsWith( QLatin1String( "<" ) ) && f.endsWith( QLatin1String( "Filter>" ) ) &&  i < layers.size() )
+      if ( f.startsWith( QLatin1String( "<" ) ) \
+           && f.endsWith( QLatin1String( "Filter>" ) ) \
+           &&  i < layers.size() )
       {
-        layerFilters.insert( layers[i], f );
+        QgsWmsParametersFilter filter;
+        filter.mFilter = f;
+        filter.mType = QgsWmsParametersFilter::OGC_FE;
+        filter.mVersion = QgsOgcUtils::FILTER_OGC_1_0;
+
+        if ( filter.mFilter.contains( nsWfs2 ) \
+             || filter.mFilter.contains( prefixWfs2 ) )
+        {
+          filter.mVersion = QgsOgcUtils::FILTER_FES_2_0;
+        }
+
+        filters.insert( layers[i], filter );
       }
       else if ( !f.isEmpty() )
       {
@@ -1266,7 +1282,10 @@ namespace QgsWms
         const QStringList splits = f.split( ':' );
         if ( splits.size() == 2 )
         {
-          layerFilters.insert( splits[0], splits[1] );
+          QgsWmsParametersFilter filter;
+          filter.mFilter = splits[1];
+          filter.mType = QgsWmsParametersFilter::SQL;
+          filters.insert( splits[0], filter );
         }
         else
         {
@@ -1275,7 +1294,7 @@ namespace QgsWms
         }
       }
     }
-    return layerFilters;
+    return filters;
   }
 
   QList<QgsWmsParametersLayer> QgsWmsParameters::layersParameters() const
@@ -1284,7 +1303,7 @@ namespace QgsWms
     const QStringList styles = allStyles();
     const QStringList selection = selections();
     const QList<int> opacities = opacitiesAsInt();
-    const QMultiMap<QString, QString> layerFilters = getLayerFilters( layers );
+    const QMultiMap<QString, QgsWmsParametersFilter> filters = layerFilters( layers );
 
     // selection format: "LayerName:id0,id1;LayerName2:id0,id1;..."
     // several filters can be defined for one layer
@@ -1316,11 +1335,10 @@ namespace QgsWms
       if ( i < opacities.count() )
         param.mOpacity = opacities[i];
 
-      if ( layerFilters.contains( layer ) )
+      if ( filters.contains( layer ) )
       {
-        QMultiMap<QString, QString>::const_iterator it;
-        it = layerFilters.find( layer );
-        while ( it != layerFilters.end() && it.key() == layer )
+        auto it = filters.find( layer );
+        while ( it != filters.end() && it.key() == layer )
         {
           param.mFilter.append( it.value() );
           ++it;
