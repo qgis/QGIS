@@ -266,6 +266,7 @@ QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLa
       switch ( altClamp )
       {
         case AltClampAbsolute:
+        default:
           h = geomZ;
           break;
         case AltClampTerrain:

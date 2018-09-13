@@ -394,7 +394,7 @@ namespace qgis
  * The map has the enum values (int) as keys and the enum keys (QString) as values.
  * The enum must have been declared using Q_ENUM or Q_FLAG.
  */
-template<class T> CORE_EXPORT const QMap<T, QString> qgsEnumMap() SIP_SKIP
+template<class T> const QMap<T, QString> qgsEnumMap() SIP_SKIP
 {
   QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );

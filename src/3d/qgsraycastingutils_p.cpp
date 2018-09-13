@@ -363,9 +363,9 @@ namespace QgsRayCastingUtils
 
     // the cases below hopefully should not happen and the check is here just as the last resort
     // (with sensible camera matrix we should not hit singularities)
-    if ( qgsFloatNear( nearPos4D.w(), 0, 1e-10 ) )
+    if ( qgsFloatNear( nearPos4D.w(), 0, 1e-10f ) )
       nearPos4D.setW( 1 );
-    if ( qgsFloatNear( farPos4D.w(), 0, 1e-10 ) )
+    if ( qgsFloatNear( farPos4D.w(), 0, 1e-10f ) )
       farPos4D.setW( 1 );
 
     QVector3D nearPos( ( nearPos4D / nearPos4D.w() ).toVector3D() );
