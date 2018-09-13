@@ -39,7 +39,7 @@ RUN  apt-get update \
     libqt5qml5 \
     libqt5quick5 \
     libqt5quickcontrols2-5 \
-    libqt5charts \
+    libqt5charts5 \
     libqt5scintilla2-dev \
     libqt5sql5-sqlite \
     libqt5svg5-dev \
