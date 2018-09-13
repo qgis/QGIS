@@ -61,6 +61,9 @@ class TestQgsOgcUtils : public QObject
     void testExpressionFromOgcFilter();
     void testExpressionFromOgcFilter_data();
 
+    void testExpressionFromOgcFilterWFS20();
+    void testExpressionFromOgcFilterWFS20_data();
+
     void testExpressionToOgcFilter();
     void testExpressionToOgcFilter_data();
 
@@ -264,6 +267,63 @@ void TestQgsOgcUtils::testGeometryToGML()
   doc.removeChild( elemLine );
 }
 
+void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20_data()
+{
+  QTest::addColumn<QString>( "xmlText" );
+  QTest::addColumn<QString>( "dumpText" );
+
+  QTest::newRow( "=" ) << QString(
+                         "<fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\">"
+                         "<fes:PropertyIsEqualTo>"
+                         "<fes:ValueReference>NAME</fes:ValueReference>"
+                         "<fes:Literal>New York</fes:Literal>"
+                         "</fes:PropertyIsEqualTo></fes:Filter>" )
+                       << QStringLiteral( "NAME = 'New York'" );
+
+  QTest::newRow( "bbox coordinates" ) << QString(
+                                        "<Filter>"
+                                        "<BBOX><ValueReference>Name>NAME</ValueReference><gml:Box srsName='foo'>"
+                                        "<gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box></BBOX>"
+                                        "</Filter>" )
+                                      << QStringLiteral( "intersects_bbox($geometry, geom_from_gml('<Box srsName=\"foo\"><coordinates>135.2239,34.4879 135.8578,34.8471</coordinates></Box>'))" );
+
+  QTest::newRow( "bbox corner" )
+      << QString(
+        "<fes:Filter>"
+        "<fes:BBOX>"
+        "<fes:ValueReference>my_geometry_name</fes:ValueReference>"
+        "<gml:Envelope>"
+        "<gml:lowerCorner>49 2</gml:lowerCorner>"
+        "<gml:upperCorner>50 3</gml:upperCorner>"
+        "</gml:Envelope>"
+        "</fes:BBOX>"
+        "</fes:Filter>" )
+      << QStringLiteral( "intersects_bbox($geometry, geom_from_gml('<Envelope><lowerCorner>49 2</lowerCorner><upperCorner>50 3</upperCorner></Envelope>'))" );
+}
+
+void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20()
+{
+  QFETCH( QString, xmlText );
+  QFETCH( QString, dumpText );
+
+  QDomDocument doc;
+  QVERIFY( doc.setContent( xmlText, true ) );
+  QDomElement rootElem = doc.documentElement();
+
+  QgsVectorLayer layer( "Point?crs=epsg:4326&field=LITERAL:string(20)", "temp", "memory" );
+
+  std::shared_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, QgsOgcUtils::FILTER_FES_2_0, &layer ) );
+  QVERIFY( expr.get() );
+
+  qDebug( "OGC XML  : %s", xmlText.toAscii().data() );
+  qDebug( "EXPR-DUMP: %s", expr->expression().toAscii().data() );
+
+  if ( expr->hasParserError() )
+    qDebug( "ERROR: %s ", expr->parserErrorString().toAscii().data() );
+  QVERIFY( !expr->hasParserError() );
+
+  QCOMPARE( dumpText, expr->expression() );
+}
 
 void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
 {

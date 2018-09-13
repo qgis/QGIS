@@ -162,6 +162,15 @@ class CORE_EXPORT QgsOgcUtils
     };
 
     /**
+     * Returns an expression from a WFS filter embedded in a document.
+     * \param element The WFS Filter
+     * \param version The WFS version
+     * \param layer Layer to use to retrieve field values from literal filters
+     * \since QGIS 3.4
+     */
+    static QgsExpression *expressionFromOgcFilter( const QDomElement &element, FilterVersion version, QgsVectorLayer *layer = nullptr ) SIP_FACTORY;
+
+    /**
      * Creates OGC filter XML element. Supports minimum standard filter
      * according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
      * \returns valid \verbatim <Filter> \endverbatim QDomElement on success,
@@ -365,6 +374,93 @@ class QgsOgcUtilsExprToFilter
     QDomElement expressionColumnRefToOgcFilter( const QgsExpressionNodeColumnRef *node, QgsExpression *expression, const QgsExpressionContext *context );
     QDomElement expressionInOperatorToOgcFilter( const QgsExpressionNodeInOperator *node, QgsExpression *expression, const QgsExpressionContext *context );
     QDomElement expressionFunctionToOgcFilter( const QgsExpressionNodeFunction *node, QgsExpression *expression, const QgsExpressionContext *context );
+};
+
+/**
+ * \ingroup core
+ * \brief Internal use by QgsOgcUtils
+ * \note not available in Python bindings
+ * \since QGIS 3.4
+ */
+class QgsOgcUtilsExpressionFromFilter
+{
+  public:
+
+    /**
+     * Constructor for QgsOgcUtilsExpressionFromFilter.
+     * \param version WFS Version
+     * \param layer Layer to use to retrieve field values from literal filters
+     */
+    QgsOgcUtilsExpressionFromFilter( QgsOgcUtils::FilterVersion version = QgsOgcUtils::FILTER_OGC_1_0,
+                                     const QgsVectorLayer *layer = nullptr );
+
+    /**
+     * Returns an expression node from a WFS filter embedded in a document
+     * element. A null pointer is returned when an error happened.
+     * \param element The WFS filter
+     */
+    QgsExpressionNode *nodeFromOgcFilter( const QDomElement &element );
+
+    /**
+     * Returns the underlying error message, or an empty string in case of no
+     * error.
+     */
+    QString errorMessage() const;
+
+    /**
+     * Returns an expression node from a WFS filter embedded in a document with
+     * binary operators.
+     *
+     */
+    QgsExpressionNodeBinaryOperator *nodeBinaryOperatorFromOgcFilter( const QDomElement &element );
+
+    /**
+     * Returns an expression node from a WFS filter embedded in a document with
+     * spatial operators.
+     */
+    QgsExpressionNodeFunction *nodeSpatialOperatorFromOgcFilter( const QDomElement &element );
+
+    /**
+     * Returns an expression node from a WFS filter embedded in a document with
+     * column references.
+     */
+    QgsExpressionNodeColumnRef *nodeColumnRefFromOgcFilter( const QDomElement &element );
+
+    /**
+     * Returns an expression node from a WFS filter embedded in a document with
+     * literal tag.
+     */
+    QgsExpressionNode *nodeLiteralFromOgcFilter( const QDomElement &element );
+
+    /**
+     * Returns an expression node from a WFS filter embedded in a document with
+     * Not operator.
+     */
+    QgsExpressionNodeUnaryOperator *nodeNotFromOgcFilter( const QDomElement &element );
+
+    /**
+     * Returns an expression node from a WFS filter embedded in a document with
+     * IsNull operator.
+     */
+    QgsExpressionNodeBinaryOperator *nodePropertyIsNullFromOgcFilter( const QDomElement &element );
+
+    /**
+     * Returns an expression node from a WFS filter embedded in a document with
+     * functions.
+     */
+    QgsExpressionNodeFunction *nodeFunctionFromOgcFilter( const QDomElement &element );
+
+    /**
+     * Returns an expression node from a WFS filter embedded in a document with
+     * boudnaries operator.
+     */
+    QgsExpressionNode *nodeIsBetweenFromOgcFilter( const QDomElement &element );
+
+  private:
+    const QgsVectorLayer *mLayer = nullptr;
+    QString mErrorMessage;
+    QString mPropertyName;
+    QString mPrefix;
 };
 
 /**
