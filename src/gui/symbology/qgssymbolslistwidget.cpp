@@ -48,6 +48,8 @@
 //
 // QgsReadOnlyStyleModel
 //
+
+///@cond PRIVATE
 QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsStyle *style, QObject *parent )
   : QgsStyleProxyModel( style, parent )
 {
@@ -70,6 +72,8 @@ QVariant QgsReadOnlyStyleModel::data( const QModelIndex &index, int role ) const
   }
   return QgsStyleProxyModel::data( index, role );
 }
+
+///@endcond
 
 
 //
