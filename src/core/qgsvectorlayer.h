@@ -878,6 +878,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param layerNode node that will contain the symbology definition for this layer.
      * \param errorMessage reference to string that will be updated with any error messages
      * \param context reading context (used for transform from relative to absolute paths)
+     * \param categories the style categories to be read
      * \returns true in case of success.
      */
     bool readSymbology( const QDomNode &layerNode, QString &errorMessage,
@@ -888,6 +889,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param node node that will contain the style definition for this layer.
      * \param errorMessage reference to string that will be updated with any error messages
      * \param context reading context (used for transform from relative to absolute paths)
+     * \param categories the style categories to be read
      * \returns true in case of success.
      */
     bool readStyle( const QDomNode &node, QString &errorMessage,
@@ -899,6 +901,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  \param doc the document that will have the QDomNode added.
      *  \param errorMessage reference to string that will be updated with any error messages
      *  \param context writing context (used for transform from absolute to relative paths)
+     *  \param categories the style categories to be written
      *  \returns true in case of success.
      */
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
@@ -910,6 +913,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  \param doc the document that will have the QDomNode added.
      *  \param errorMessage reference to string that will be updated with any error messages
      *  \param context writing context (used for transform from absolute to relative paths)
+     *  \param categories the style categories to be written
      *  \returns true in case of success.
      */
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,

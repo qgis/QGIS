@@ -743,7 +743,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
      * \returns a QString with the style file name
-     * \see also loadNamedStyle () and saveNamedStyle ();
+     * \see also loadNamedStyle() and saveNamedStyle();
      */
     virtual QString styleURI() const;
 
@@ -754,7 +754,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param resultFlag a reference to a flag that will be set to false if
      * we did not manage to load the default style.
      * \returns a QString with any status messages
-     * \see also loadNamedStyle ();
+     * \see also loadNamedStyle();
      */
     virtual QString loadDefaultStyle( bool &resultFlag SIP_OUT );
 
@@ -837,6 +837,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * key matches the URI.
      * \param resultFlag a reference to a flag that will be set to false if
      * we did not manage to save the default style.
+     * \param categories the style categories to be saved.
      * \returns a QString with any status messages
      * \see saveDefaultStyle()
      */
