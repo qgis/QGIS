@@ -92,6 +92,7 @@
         <file>themes/default/algorithms/mAlgorithmExtractVertices.svg</file>
         <file>themes/default/algorithms/mAlgorithmExtractLayerExtent.svg</file>
         <file>themes/default/algorithms/mAlgorithmIntersect.svg</file>
+        <file>themes/default/algorithms/mAlgorithmKNearestConcaveHull.svg</file>
         <file>themes/default/algorithms/mAlgorithmLineIntersections.svg</file>
         <file>themes/default/algorithms/mAlgorithmLineToPolygon.svg</file>
         <file>themes/default/algorithms/mAlgorithmMeanCoordinates.svg</file>
