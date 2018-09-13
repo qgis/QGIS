@@ -2124,7 +2124,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
     }
 
     // read labeling definition
-    if ( categories.testFlag( Labels ) )
+    if ( categories.testFlag( Labeling ) )
     {
       QDomElement labelingElement = node.firstChildElement( QStringLiteral( "labeling" ) );
       QgsAbstractVectorLayerLabeling *labeling = nullptr;
@@ -2465,7 +2465,7 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
       }
     }
 
-    if ( categories.testFlag( Labels ) )
+    if ( categories.testFlag( Labeling ) )
     {
       if ( mLabeling )
       {

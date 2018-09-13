@@ -79,7 +79,8 @@ This is the base class for all map layer types (vector, raster).
     {
       LayerConfiguration,
       Symbology,
-      Labels,
+      Symbology3D,
+      Labeling,
       Fields,
       Forms,
       Actions,
@@ -97,10 +98,25 @@ This is the base class for all map layer types (vector, raster).
     {
       public:
         ReadableStyleCategory( const QString &name, const QString &toolTip = QString() );
+%Docstring
+Create a ReadableStyleCategory
+%End
         ReadableStyleCategory( const QString &name, const QIcon &icon, const QString &toolTip = QString() );
+%Docstring
+Create a ReadableStyleCategory
+%End
         QString name() const;
+%Docstring
+Return the translated name of the category
+%End
         QString toolTip() const;
+%Docstring
+Return the translated tooltip of the category
+%End
         QIcon icon() const;
+%Docstring
+Return the icon of the category
+%End
     };
 
     QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString(), const QString &source = QString() );
@@ -531,17 +547,17 @@ Returns true if the layer is considered a spatial layer, ie it has some form of 
 
     bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context );
 %Docstring
-Sets state from Dom document
+Sets state from DOM document
 
-:param layerElement: The Dom element corresponding to ``maplayer'' tag
+:param layerElement: The DOM element corresponding to ``maplayer'' tag
 :param context: writing context (e.g. for conversion between relative and absolute paths)
 \note
 
-The Dom node corresponds to a Dom document project file XML element read
+The DOM node corresponds to a DOM document project file XML element read
 by :py:class:`QgsProject`.
 
-This, in turn, calls readXml() (and then readSymbology()), which is over-rideable
-by sub-classes so that they can read their own specific state from the given Dom node.
+This, in turn, calls readXml() (and then readSymbology()), which is overridable
+by sub-classes so that they can read their own specific state from the given DOM node.
 
 Invoked by :py:func:`QgsProject.read()`
 
@@ -550,18 +566,18 @@ Invoked by :py:func:`QgsProject.read()`
 
     bool writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
-Stores state in Dom node
+Stores state in DOM node
 
-:param layerElement: is a Dom element corresponding to ``maplayer'' tag
-:param document: is a the dom document being written
+:param layerElement: is a DOM element corresponding to ``maplayer'' tag
+:param document: is a the DOM document being written
 :param context: reading context (e.g. for conversion between relative and absolute paths)
 \note
 
-The Dom node corresponds to a Dom document project file XML element to be
+The DOM node corresponds to a DOM document project file XML element to be
 written by :py:class:`QgsProject`.
 
 This, in turn, calls writeXml() (and then writeSymbology), which is over-rideable
-by sub-classes so that they can write their own specific state to the given Dom node.
+by sub-classes so that they can write their own specific state to the given DOM node.
 
 Invoked by :py:func:`QgsProject.write()`
 
@@ -909,7 +925,7 @@ Attempts to style the layer using the formatting from an SLD type file.
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
                                 QgsReadWriteContext &context, StyleCategories categories = AllCategories ) = 0;
 %Docstring
-Read the symbology for the current layer from the Dom node supplied.
+Read the symbology for the current layer from the DOM node supplied.
 
 :param node: node that will contain the symbology definition for this layer.
 :param errorMessage: reference to string that will be updated with any error messages
@@ -921,7 +937,7 @@ Read the symbology for the current layer from the Dom node supplied.
     virtual bool readStyle( const QDomNode &node, QString &errorMessage,
                             QgsReadWriteContext &context, StyleCategories categories = AllCategories );
 %Docstring
-Read the style for the current layer from the Dom node supplied.
+Read the style for the current layer from the DOM node supplied.
 
 :param node: node that will contain the style definition for this layer.
 :param errorMessage: reference to string that will be updated with any error messages
@@ -1486,7 +1502,7 @@ passwords or drivers prefixes ("HDF5:")
 :param source: data source to encode, typically :py:func:`QgsMapLayer.source()`
 :param context: writing context (e.g. for conversion between relative and absolute paths)
 
-:return: encoded source, typically to be written in the dom element "datasource"
+:return: encoded source, typically to be written in the DOM element "datasource"
 
 .. versionadded:: 3.2
 %End
@@ -1497,8 +1513,8 @@ Called by readLayerXML(), used by derived classes to decode provider's specific 
 source from project files. Typically resolving absolute or relative paths, usernames and
 passwords or drivers prefixes ("HDF5:")
 
-:param source: data source to decode, typically read from layer's dom element "datasource"
-:param dataProvider: string identification of data provider (e.g. "ogr"), typically read from layer's dom element
+:param source: data source to decode, typically read from layer's DOM element "datasource"
+:param dataProvider: string identification of data provider (e.g. "ogr"), typically read from layer's DOM element
 :param context: reading context (e.g. for conversion between relative and absolute paths)
 
 :return: decoded source, typically to be used as the layer's datasource

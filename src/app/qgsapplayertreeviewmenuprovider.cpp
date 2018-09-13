@@ -325,7 +325,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           for ( QgsMapLayer::StyleCategory category : categories )
           {
             QgsMapLayer::ReadableStyleCategory readableCategory = QgsMapLayer::readableStyleCategory( category );
-            QAction *copyAction = new QAction( readableCategory.icon(), readableCategory.name() );
+            QAction *copyAction = new QAction( readableCategory.icon(), readableCategory.name(), copyStyleMenu );
             copyAction->setToolTip( readableCategory.toolTip() );
             connect( copyAction, &QAction::triggered, this, [ = ]() {app->copyStyle( layer, category );} );
             copyStyleMenu->addAction( copyAction );
