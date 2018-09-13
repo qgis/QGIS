@@ -86,7 +86,8 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               return icon;
 
             std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
-            icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( 24, 24 ), 1 ) );
+            if ( mAdditionalSizes.isEmpty() )
+              icon.addPixmap( QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( 24, 24 ), 1 ) );
 
             for ( const QVariant &size : mAdditionalSizes )
             {
@@ -105,7 +106,8 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
               return icon;
 
             std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
-            icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), QSize( 24, 24 ), 1 ) );
+            if ( mAdditionalSizes.isEmpty() )
+              icon.addPixmap( QgsSymbolLayerUtils::colorRampPreviewPixmap( ramp.get(), QSize( 24, 24 ), 1 ) );
             for ( const QVariant &size : mAdditionalSizes )
             {
               QSize s = size.toSize();
