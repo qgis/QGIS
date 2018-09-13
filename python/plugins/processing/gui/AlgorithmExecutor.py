@@ -70,7 +70,7 @@ def execute(alg, parameters, context=None, feedback=None):
         return False, {}
 
 
-def make_features_compatible(new_features, input_layer, context):
+def make_features_compatible(new_features, input_layer):
     """Try to make the new features compatible with old features by:
 
     - converting single to multi part
@@ -83,8 +83,6 @@ def make_features_compatible(new_features, input_layer, context):
     :type new_features: list of QgsFeatures
     :param input_layer: input layer
     :type input_layer: QgsVectorLayer
-    :param context: processing context
-    :type context: QgsProcessingContext
     :return: modified features
     :rtype: list of QgsFeatures
     """
@@ -93,13 +91,46 @@ def make_features_compatible(new_features, input_layer, context):
     result_features = []
     for new_f in new_features:
         # Fix attributes
-        if len(new_f.attributes()) > len(input_layer.fields()):
+        if new_f.fields().count() > 0:
+            attributes = []
+            for field in input_layer.fields():
+                if new_f.fields().indexFromName(field.name()) >= 0:
+                    attributes.append(new_f[field.name()])
+                else:
+                    attributes.append(None)
             f = QgsFeature(input_layer.fields())
+            f.setAttributes(attributes)
             f.setGeometry(new_f.geometry())
-            f.setAttributes(new_f.attributes()[:len(input_layer.fields())])
             new_f = f
-        # Fix geometry
-        if new_f.geometry().wkbType() != input_wkb_type:
+        else:
+            lendiff = len(new_f.attributes()) - len(input_layer.fields())
+            if lendiff > 0:
+                f = QgsFeature(input_layer.fields())
+                f.setGeometry(new_f.geometry())
+                f.setAttributes(new_f.attributes()[:len(input_layer.fields())])
+                new_f = f
+            elif lendiff < 0:
+                f = QgsFeature(input_layer.fields())
+                f.setGeometry(new_f.geometry())
+                attributes = new_f.attributes() + [None for i in range(-lendiff)]
+                f.setAttributes(attributes)
+                new_f = f
+
+        # Check if we need geometry manipulation
+        new_f_geom_type = QgsWkbTypes.geometryType(new_f.geometry().wkbType())
+        new_f_has_geom = new_f_geom_type not in (QgsWkbTypes.UnknownGeometry, QgsWkbTypes.NullGeometry)
+        input_layer_has_geom = input_wkb_type not in (QgsWkbTypes.NoGeometry, QgsWkbTypes.Unknown)
+        if input_layer_has_geom and not new_f_has_geom:
+            continue  # Skip this feature completely
+        elif not input_layer_has_geom and new_f_has_geom:
+            # Drop geometry
+            f = QgsFeature(input_layer.fields())
+            f.setAttributes(new_f.attributes())
+            new_f = f
+            result_features.append(new_f)
+            continue  # skip the rest
+
+        if input_layer_has_geom and new_f.geometry().wkbType() != input_wkb_type:  # Fix geometry
             # Single -> Multi
             if (QgsWkbTypes.isMultiType(input_wkb_type) and not
                     new_f.geometry().isMultipart()):
@@ -177,7 +208,7 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
     try:
         new_feature_ids = []
 
-        active_layer.beginEditCommand(tr('In-place editing by %s') % alg.name())
+        active_layer.beginEditCommand(alg.name())
 
         req = QgsFeatureRequest(QgsExpression(r"$id < 0"))
         req.setFlags(QgsFeatureRequest.NoGeometry)
@@ -196,7 +227,7 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
             feature_iterator = active_layer.getFeatures(QgsFeatureRequest(active_layer.selectedFeatureIds())) if parameters['INPUT'].selectedFeaturesOnly else active_layer.getFeatures()
             for f in feature_iterator:
                 new_features = alg.processFeature(f, context, feedback)
-                new_features = make_features_compatible(new_features, active_layer, context)
+                new_features = make_features_compatible(new_features, active_layer)
                 if len(new_features) == 0:
                     active_layer.deleteFeature(f.id())
                 elif len(new_features) == 1:
@@ -226,11 +257,12 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
                 active_layer.deleteFeatures(active_layer.selectedFeatureIds())
                 new_features = []
                 for f in result_layer.getFeatures():
-                    new_features.extend(make_features_compatible([f], active_layer, context))
+                    new_features.extend(make_features_compatible([f], active_layer))
 
                 # Get the new ids
                 old_ids = set([f.id() for f in active_layer.getFeatures(req)])
-                active_layer.addFeatures(new_features)
+                if not active_layer.addFeatures(new_features):
+                    raise QgsProcessingException(tr("Error adding processed features back into the layer."))
                 new_ids = set([f.id() for f in active_layer.getFeatures(req)])
                 new_feature_ids += list(new_ids - old_ids)
 
