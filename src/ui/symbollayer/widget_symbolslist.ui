@@ -42,13 +42,6 @@
       <number>6</number>
      </property>
      <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Symbols in</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QComboBox" name="groupsCombo">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -62,8 +55,11 @@
          <height>0</height>
         </size>
        </property>
+       <property name="toolTip">
+        <string>Filter Symbols</string>
+       </property>
        <property name="editable">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -164,50 +160,60 @@
       <number>2</number>
      </property>
      <item>
-      <widget class="QToolButton" name="mButtonIconView">
-       <property name="toolTip">
-        <string>Icon View</string>
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <property name="spacing">
+        <number>0</number>
        </property>
-       <property name="text">
-        <string>PushButton</string>
+       <property name="rightMargin">
+        <number>0</number>
        </property>
-       <property name="icon">
-        <iconset resource="../../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionFilterTableFields.svg</normaloff>:/images/themes/default/mActionFilterTableFields.svg</iconset>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">buttonGroup</string>
-       </attribute>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mButtonListView">
-       <property name="toolTip">
-        <string>List View</string>
-       </property>
-       <property name="text">
-        <string>PushButton</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionOpenTable.svg</normaloff>:/images/themes/default/mActionOpenTable.svg</iconset>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">buttonGroup</string>
-       </attribute>
-      </widget>
+       <item>
+        <widget class="QToolButton" name="mButtonIconView">
+         <property name="toolTip">
+          <string>Icon View</string>
+         </property>
+         <property name="text">
+          <string>PushButton</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../images/images.qrc">
+           <normaloff>:/images/themes/default/mActionFilterTableFields.svg</normaloff>:/images/themes/default/mActionFilterTableFields.svg</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup</string>
+         </attribute>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="mButtonListView">
+         <property name="toolTip">
+          <string>List View</string>
+         </property>
+         <property name="text">
+          <string>PushButton</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../../images/images.qrc">
+           <normaloff>:/images/themes/default/mActionOpenTable.svg</normaloff>:/images/themes/default/mActionOpenTable.svg</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">buttonGroup</string>
+         </attribute>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QLabel" name="lblSymbolName">
