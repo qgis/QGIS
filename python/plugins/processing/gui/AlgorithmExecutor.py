@@ -219,7 +219,8 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
             # Make a clone or it will crash the second time the dialog
             # is opened and run
             alg = alg.create()
-            alg.prepare(parameters, context, feedback)
+            if not alg.prepare(parameters, context, feedback):
+                raise QgsProcessingException(tr("Could not prepare selected algorithm."))
             # Check again for compatibility after prepare
             if not alg.supportInPlaceEdit(active_layer):
                 raise QgsProcessingException(tr("Selected algorithm and parameter configuration are not compatible with in-place modifications."))
