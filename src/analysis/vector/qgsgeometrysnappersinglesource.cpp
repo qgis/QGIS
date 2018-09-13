@@ -298,7 +298,7 @@ static bool snapGeometry( QgsAbstractGeometry *g, QgsSpatialIndex &index, QVecto
 }
 
 
-int QgsGeometrySnapperSingleSource::run(const QgsFeatureSource &source, QgsFeatureSink &sink, double thresh, QgsFeedback *feedback)
+int QgsGeometrySnapperSingleSource::run( const QgsFeatureSource &source, QgsFeatureSink &sink, double thresh, QgsFeedback *feedback )
 {
   // the logic here comes from GRASS implementation of Vect_snap_lines_list()
 
