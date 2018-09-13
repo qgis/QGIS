@@ -1,0 +1,8 @@
+{
+  "name": "array_min",
+  "type": "function",
+  "description": "Returns the minimum value in an array.",
+  "arguments": [ {"arg":"array","description":"an array"} ],
+  "examples": [ { "expression":"array_min(2,10,0.1)", "returns":"min: 0.1"}
+  ]
+}

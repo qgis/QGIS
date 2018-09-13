@@ -1,0 +1,10 @@
+{
+  "name": "array_sum",
+  "type": "function",
+  "description": "Returns the sum of the array.",
+  "arguments": [ {"arg":"array","description":"an array"} ],
+  "examples": [
+    { "expression":"array_sum(2,10,5)", "returns":"sum: 17"}
+  ]
+}
+
