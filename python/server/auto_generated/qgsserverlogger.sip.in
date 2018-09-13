@@ -61,7 +61,8 @@ Activates logging to stderr.
 
   public slots:
 
-    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
+    virtual void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
+
 %Docstring
 Log a message from the server context
 

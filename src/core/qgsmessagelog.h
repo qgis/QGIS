@@ -165,7 +165,7 @@ class CORE_EXPORT QgsMessageLogConsole : public QObject
      * \param tag the tag of the message
      * \param level the log level of the message
      */
-    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
+    virtual void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 };
 
 #endif

@@ -76,7 +76,7 @@ class SERVER_EXPORT QgsServerLogger : public QgsMessageLogConsole
      * \param tag tag of the message
      * \param level log level of the message
      */
-    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
+    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level ) override;
 
   protected:
     QgsServerLogger();

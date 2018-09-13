@@ -136,7 +136,7 @@ Formats a log message. Used by child classes.
 
   public slots:
 
-    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
+    virtual void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 %Docstring
 Logs a message to stderr.
 
