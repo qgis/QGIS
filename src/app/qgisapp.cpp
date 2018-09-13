@@ -14098,12 +14098,12 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, bool saving )
           {
             QMessageBox msgbox;
 
-            msgbox.setWindowTitle( tr( "Unable to save project %1" ).arg( uri ) );
+            msgbox.setWindowTitle( tr( "Save Project" ) );
             msgbox.setText( QgsProject::instance()->error() );
             msgbox.setIcon( QMessageBox::Icon::Critical );
             msgbox.addButton( QMessageBox::Cancel );
             msgbox.addButton( QMessageBox::Save );
-            msgbox.setButtonText( QMessageBox::Save, tr( "Save as local file" ) );
+            msgbox.setButtonText( QMessageBox::Save, tr( "Save as Local File" ) );
             msgbox.setDefaultButton( QMessageBox::Cancel );
             msgbox.exec();
 
