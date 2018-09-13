@@ -472,6 +472,18 @@ has been updated as a result.
 .. seealso:: :py:func:`symbolRemoved`
 
 .. seealso:: :py:func:`rampAdded`
+
+.. seealso:: :py:func:`symbolChanged`
+%End
+
+    void symbolChanged( const QString &name );
+%Docstring
+Emitted whenever a symbol's definition is changed. This does not include
+name or tag changes.
+
+.. seealso:: :py:func:`symbolSaved`
+
+.. versionadded:: 3.4
 %End
 
     void groupsModified();
@@ -543,6 +555,16 @@ has been updated as a result.
 .. seealso:: :py:func:`rampAdded`
 
 .. seealso:: :py:func:`symbolRemoved`
+
+.. versionadded:: 3.4
+%End
+
+    void rampChanged( const QString &name );
+%Docstring
+Emitted whenever a color ramp's definition is changed. This does not include
+name or tag changes.
+
+.. seealso:: :py:func:`rampAdded`
 
 .. versionadded:: 3.4
 %End
