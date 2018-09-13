@@ -235,22 +235,22 @@ void QgsGeometryValidator::run()
           if ( translatedErrors.empty() )
           {
             // Copied from https://git.osgeo.org/gitea/geos/geos/src/branch/master/src/operation/valid/TopologyValidationError.cpp
-            translatedErrors.insert( QStringLiteral( "Topology Validation Error" ), QObject::tr( "Topology validation error", "GEOS Error" ) );
-            translatedErrors.insert( QStringLiteral( "Repeated Point" ), QObject::tr( "Repeated point", "GEOS Error" ) );
-            translatedErrors.insert( QStringLiteral( "Hole lies outside shell" ), QObject::tr( "Hole lies outside shell", "GEOS Error" ) );
-            translatedErrors.insert( QStringLiteral( "Holes are nested" ), QObject::tr( "Holes are nested", "GEOS Error" ) );
-            translatedErrors.insert( QStringLiteral( "Interior is disconnected" ), QObject::tr( "Interior is disconnected", "GEOS Error" ) );
-            translatedErrors.insert( QStringLiteral( "Self-intersection" ), QObject::tr( "Self-intersection", "GEOS Error" ) );
-            translatedErrors.insert( QStringLiteral( "Ring Self-intersection" ), QObject::tr( "Ring self-intersection", "GEOS Error" ) );
-            translatedErrors.insert( QStringLiteral( "Nested shells" ), QObject::tr( "Nested shells", "GEOS Error" ) );
-            translatedErrors.insert( QStringLiteral( "Duplicate Rings" ), QObject::tr( "Duplicate rings", "GEOS Error" ) );
-            translatedErrors.insert( QStringLiteral( "Too few points in geometry component" ), QObject::tr( "Too few points in geometry component", "GEOS Error" ) );
-            translatedErrors.insert( QStringLiteral( "Invalid Coordinate" ), QObject::tr( "Invalid coordinate", "GEOS Error" ) );
-            translatedErrors.insert( QStringLiteral( "Ring is not closed" ), QObject::tr( "Ring is not closed", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "topology validation error" ), QObject::tr( "Topology validation error", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "repeated point" ), QObject::tr( "Repeated point", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "hole lies outside shell" ), QObject::tr( "Hole lies outside shell", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "holes are nested" ), QObject::tr( "Holes are nested", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "interior is disconnected" ), QObject::tr( "Interior is disconnected", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "self-intersection" ), QObject::tr( "Self-intersection", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "ring self-intersection" ), QObject::tr( "Ring self-intersection", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "nested shells" ), QObject::tr( "Nested shells", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "duplicate rings" ), QObject::tr( "Duplicate rings", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "too few points in geometry component" ), QObject::tr( "Too few points in geometry component", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "invalid coordinate" ), QObject::tr( "Invalid coordinate", "GEOS Error" ) );
+            translatedErrors.insert( QStringLiteral( "ring is not closed" ), QObject::tr( "Ring is not closed", "GEOS Error" ) );
           }
 
           const QString errorMsg( r );
-          const QString translatedErrorMsg = translatedErrors.value( errorMsg, errorMsg );
+          const QString translatedErrorMsg = translatedErrors.value( errorMsg.toLower(), errorMsg );
 
           if ( g1 )
           {
