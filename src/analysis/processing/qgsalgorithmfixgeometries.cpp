@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfixgeometries.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -70,6 +71,14 @@ QString QgsFixGeometriesAlgorithm::shortHelpString() const
 QgsFixGeometriesAlgorithm *QgsFixGeometriesAlgorithm::createInstance() const
 {
   return new QgsFixGeometriesAlgorithm();
+}
+
+bool QgsFixGeometriesAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+{
+  if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
+    return false;
+  // The algorithm would drop M, so disable it if the layer has M
+  return ! QgsWkbTypes::hasM( layer->wkbType() );
 }
 
 QgsFeatureList QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
