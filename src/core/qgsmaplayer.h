@@ -141,18 +141,19 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     enum StyleCategory
     {
-      LayerConfiguration = 1 << 0, //!< Flags, display expression, read-only
-      Symbology          = 1 << 1,
-      Labels             = 1 << 2,
-      Fields             = 1 << 3, //!< Aliases, widgets, WMS/WFS, expressions, constraints, virtual fields
-      Forms              = 1 << 4,
-      Actions            = 1 << 5,
-      MapTips            = 1 << 6,
-      Diagrams           = 1 << 7,
-      AttributeTable     = 1 << 8,
-      Rendering          = 1 << 9, //!< Scale visibility, simplify method, opacity
-      CustomProperties   = 1 << 10,
-      AllCategories = LayerConfiguration | Symbology | Labels | Fields | Forms | Actions |
+      LayerConfiguration = 1 << 0,  //!< General configuration: identifiable, removable, searchable, display expression, read-only
+      Symbology          = 1 << 1,  //!< Symbology
+      Symbology3D        = 1 << 2,  //!< 3D symbology
+      Labeling           = 1 << 3,  //!< Labeling
+      Fields             = 1 << 4,  //!< Aliases, widgets, WMS/WFS, expressions, constraints, virtual fields
+      Forms              = 1 << 5,  //!< Feature form
+      Actions            = 1 << 6,  //!< Actions
+      MapTips            = 1 << 7,  //!< Map tips
+      Diagrams           = 1 << 8,  //!< Diagrams
+      AttributeTable     = 1 << 9,  //!< Attribute table settings: choice and order of columns, conditional styling
+      Rendering          = 1 << 10, //!< Rendering: scale visibility, simplify method, opacity
+      CustomProperties   = 1 << 11, //!< Custom properties (by plugins for instance)
+      AllCategories = LayerConfiguration | Symbology | Labeling | Fields | Forms | Actions |
                       MapTips | Diagrams | AttributeTable | Rendering | CustomProperties,
     };
     Q_ENUM( StyleCategory )
@@ -160,20 +161,26 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_FLAG( StyleCategories )
 
     /**
-     * Style category with its name and its tooltip translated and readable
+     * Style category with its name, tooltip and icon.
+     * Text are translated and readable
      * \since QGIS 3.4
      */
     struct ReadableStyleCategory
     {
       public:
+        //! Create a ReadableStyleCategory
         ReadableStyleCategory( const QString &name, const QString &toolTip = QString() )
           : mName( name ), mToolTip( toolTip )
         {}
+        //! Create a ReadableStyleCategory
         ReadableStyleCategory( const QString &name, const QIcon &icon, const QString &toolTip = QString() )
           : mName( name ), mToolTip( toolTip ), mIcon( icon )
         {}
+        //! Return the translated name of the category
         QString name() const {return mName;}
+        //! Return the translated tooltip of the category
         QString toolTip() const {return mToolTip;}
+        //! Return the icon of the category
         QIcon icon() const {return mIcon;}
       private:
         QString mName;
@@ -544,16 +551,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool isSpatial() const;
 
     /**
-     * Sets state from Dom document
-     * \param layerElement The Dom element corresponding to ``maplayer'' tag
+     * Sets state from DOM document
+     * \param layerElement The DOM element corresponding to ``maplayer'' tag
      * \param context writing context (e.g. for conversion between relative and absolute paths)
      * \note
      *
-     * The Dom node corresponds to a Dom document project file XML element read
+     * The DOM node corresponds to a DOM document project file XML element read
      * by QgsProject.
      *
-     * This, in turn, calls readXml() (and then readSymbology()), which is over-rideable
-     * by sub-classes so that they can read their own specific state from the given Dom node.
+     * This, in turn, calls readXml() (and then readSymbology()), which is overridable
+     * by sub-classes so that they can read their own specific state from the given DOM node.
      *
      * Invoked by QgsProject::read().
      *
@@ -562,17 +569,17 @@ class CORE_EXPORT QgsMapLayer : public QObject
     bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context );
 
     /**
-     * Stores state in Dom node
-     * \param layerElement is a Dom element corresponding to ``maplayer'' tag
-     * \param document is a the dom document being written
+     * Stores state in DOM node
+     * \param layerElement is a DOM element corresponding to ``maplayer'' tag
+     * \param document is a the DOM document being written
      * \param context reading context (e.g. for conversion between relative and absolute paths)
      * \note
      *
-     * The Dom node corresponds to a Dom document project file XML element to be
+     * The DOM node corresponds to a DOM document project file XML element to be
      * written by QgsProject.
      *
      * This, in turn, calls writeXml() (and then writeSymbology), which is over-rideable
-     * by sub-classes so that they can write their own specific state to the given Dom node.
+     * by sub-classes so that they can write their own specific state to the given DOM node.
      *
      * Invoked by QgsProject::write().
      *
@@ -860,7 +867,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
 
     /**
-     * Read the symbology for the current layer from the Dom node supplied.
+     * Read the symbology for the current layer from the DOM node supplied.
      * \param node node that will contain the symbology definition for this layer.
      * \param errorMessage reference to string that will be updated with any error messages
      * \param context reading context (used for transform from relative to absolute paths)
@@ -870,7 +877,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
                                 QgsReadWriteContext &context, StyleCategories categories = AllCategories ) = 0;
 
     /**
-     * Read the style for the current layer from the Dom node supplied.
+     * Read the style for the current layer from the DOM node supplied.
      * \param node node that will contain the style definition for this layer.
      * \param errorMessage reference to string that will be updated with any error messages
      * \param context reading context (used for transform from relative to absolute paths)
@@ -1312,7 +1319,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * \param source data source to encode, typically QgsMapLayer::source()
      * \param context writing context (e.g. for conversion between relative and absolute paths)
-     * \return encoded source, typically to be written in the dom element "datasource"
+     * \return encoded source, typically to be written in the DOM element "datasource"
      *
      * \since QGIS 3.2
      */
@@ -1323,8 +1330,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * source from project files. Typically resolving absolute or relative paths, usernames and
      * passwords or drivers prefixes ("HDF5:")
      *
-     * \param source data source to decode, typically read from layer's dom element "datasource"
-     * \param dataProvider string identification of data provider (e.g. "ogr"), typically read from layer's dom element
+     * \param source data source to decode, typically read from layer's DOM element "datasource"
+     * \param dataProvider string identification of data provider (e.g. "ogr"), typically read from layer's DOM element
      * \param context reading context (e.g. for conversion between relative and absolute paths)
      * \return decoded source, typically to be used as the layer's datasource
      *

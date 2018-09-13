@@ -74,11 +74,14 @@ QgsMapLayer::ReadableStyleCategory QgsMapLayer::readableStyleCategory( QgsMapLay
     case LayerConfiguration:
       return ReadableStyleCategory( tr( "Layer Configuration" ),
                                     QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/system.svg" ) ),
-                                    tr( "Flags, display expression, read-only" ) );
+                                    tr( "Identifiable, removable, searchable, display expression, read-only" ) );
     case Symbology :
       return ReadableStyleCategory( tr( "Symbology" ),
                                     QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/symbology.svg" ) ) );
-    case Labels :
+    case Symbology3D:
+      return ReadableStyleCategory( tr( "3D Symbology" ),
+                                    QgsApplication::getThemeIcon( QStringLiteral( "/3d.svg" ) ) );
+    case Labeling :
       return ReadableStyleCategory( tr( "Labels" ),
                                     QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/labels.svg" ) ) );
     case Fields :
@@ -98,8 +101,9 @@ QgsMapLayer::ReadableStyleCategory QgsMapLayer::readableStyleCategory( QgsMapLay
       return ReadableStyleCategory( tr( "Diagrams" ),
                                     QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/diagram.svg" ) ) );
     case AttributeTable :
-      return ReadableStyleCategory( tr( "Attribute Table" ),
-                                    QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ) );
+      return ReadableStyleCategory( tr( "Attribute Table Settings" ),
+                                    QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ),
+                                    tr( "Choice and order of columns, conditional styling" ) );
     case Rendering :
       return ReadableStyleCategory( tr( "Rendering" ),
                                     QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/rendering.svg" ) ),
@@ -108,7 +112,7 @@ QgsMapLayer::ReadableStyleCategory QgsMapLayer::readableStyleCategory( QgsMapLay
       return ReadableStyleCategory( tr( "Custom Properties" ),
                                     QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
     case AllCategories :
-      return ReadableStyleCategory( tr( "All categories" ) );
+      return ReadableStyleCategory( tr( "All Categories" ) );
   }
 }
 
@@ -604,7 +608,7 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
     layerElement.setAttribute( QStringLiteral( "minScale" ), QString::number( minimumScale() ) );
   }
 
-  if ( categories.testFlag( Symbology ) )
+  if ( categories.testFlag( Symbology3D ) )
   {
     if ( m3DRenderer )
     {
@@ -1613,7 +1617,7 @@ bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorM
 void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context,
                                    QgsMapLayer::StyleCategories categories )
 {
-  if ( categories.testFlag( Symbology ) )
+  if ( categories.testFlag( Symbology3D ) )
   {
     QgsAbstract3DRenderer *r3D = nullptr;
     QDomElement renderer3DElem = layerElement.firstChildElement( QStringLiteral( "renderer-3d" ) );
