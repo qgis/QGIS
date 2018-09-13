@@ -46,7 +46,12 @@ class TestQgsServerLogger(unittest.TestCase):
         exists = os.access(self.log_file, os.R_OK)
         self.assertTrue(exists)
 
-    def test_logging_stderr(self):
+    def test_logging_log_file_stderr(self):
         self.logger.setLogFile('stderr')
+        exists = os.access(self.log_file, os.R_OK)
+        self.assertFalse(exists)
+
+    def test_logging_stderr(self):
+        self.logger.setLogStderr()
         exists = os.access(self.log_file, os.R_OK)
         self.assertFalse(exists)

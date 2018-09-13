@@ -96,6 +96,15 @@ Returns the log file.
 :return: the path of the log file or an empty string if none is defined.
 %End
 
+    bool logStderr() const;
+%Docstring
+Returns whether logging to stderr is activated.
+
+:return: true if logging to stderr is activated, false otherwise.
+
+.. versionadded:: 3.4
+%End
+
     qint64 cacheSize() const;
 %Docstring
 Returns the cache size.

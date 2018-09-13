@@ -56,6 +56,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_MAX_THREADS,
       QGIS_SERVER_LOG_LEVEL,
       QGIS_SERVER_LOG_FILE,
+      QGIS_SERVER_LOG_STDERR,
       QGIS_PROJECT_FILE,
       MAX_CACHE_LAYERS,
       QGIS_SERVER_CACHE_DIRECTORY,
@@ -147,6 +148,13 @@ class SERVER_EXPORT QgsServerSettings
       * \returns the path of the log file or an empty string if none is defined.
       */
     QString logFile() const;
+
+    /**
+     * Returns whether logging to stderr is activated.
+     * \returns true if logging to stderr is activated, false otherwise.
+     * \since QGIS 3.4
+     */
+    bool logStderr() const;
 
     /**
      * Returns the cache size.

@@ -59,7 +59,13 @@ class SERVER_EXPORT QgsServerLogger : public QgsMessageLogConsole
     /**
       * Set the current log file
       */
-    void setLogFile( const QString &f );
+    void setLogFile( const QString &filename = QString() );
+
+    /**
+     * Activates logging to stderr.
+     * \since QGIS 3.4.
+     */
+    void setLogStderr();
 
   public slots:
 
@@ -79,6 +85,7 @@ class SERVER_EXPORT QgsServerLogger : public QgsMessageLogConsole
     static QgsServerLogger *sInstance;
 
     QFile mLogFile;
+    bool mLogStderr = false;
     QTextStream mTextStream;
     Qgis::MessageLevel mLogLevel = Qgis::None;
 };

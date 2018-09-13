@@ -52,7 +52,7 @@ void QgsServerLogger::logMessage( const QString &message, const QString &tag, Qg
     mTextStream << formattedMessage;
     mTextStream.flush();
   }
-  else if ( QString::compare( mLogFile.fileName(), QStringLiteral( "stderr" ), Qt::CaseInsensitive ) == 0 )
+  else if ( mLogStderr )
   {
     QgsMessageLogConsole::logMessage( message, tag, level );
   }
@@ -63,17 +63,20 @@ void QgsServerLogger::setLogLevel( const Qgis::MessageLevel level )
   mLogLevel = level;
 }
 
-void QgsServerLogger::setLogFile( const QString &f )
+void QgsServerLogger::setLogFile( const QString &filename )
 {
   mTextStream.flush();
   mLogFile.close();
+  mLogFile.setFileName( filename );
 
-  mLogFile.setFileName( f );
-
-  if ( ( ! f.isEmpty() ) &&
-       QString::compare( f, QStringLiteral( "stderr" ), Qt::CaseInsensitive ) != 0 &&
-       mLogFile.open( QIODevice::Append ) )
+  if ( ( ! filename.isEmpty() ) && mLogFile.open( QIODevice::Append ) )
   {
     mTextStream.setDevice( &mLogFile );
   }
+}
+
+void QgsServerLogger::setLogStderr()
+{
+  setLogFile();
+  mLogStderr = true;
 }

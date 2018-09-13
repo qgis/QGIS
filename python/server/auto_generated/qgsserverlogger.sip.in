@@ -47,9 +47,16 @@ Set the current log level
 .. versionadded:: 3.0
 %End
 
-    void setLogFile( const QString &f );
+    void setLogFile( const QString &filename = QString() );
 %Docstring
 Set the current log file
+%End
+
+    void setLogStderr();
+%Docstring
+Activates logging to stderr.
+
+.. versionadded:: 3.4.
 %End
 
   public slots:

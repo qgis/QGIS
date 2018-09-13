@@ -186,7 +186,14 @@ bool QgsServer::init()
   // init and configure logger
   QgsServerLogger::instance();
   QgsServerLogger::instance()->setLogLevel( sSettings.logLevel() );
-  QgsServerLogger::instance()->setLogFile( sSettings.logFile() );
+  if ( ! sSettings.logFile().isEmpty() )
+  {
+    QgsServerLogger::instance()->setLogFile( sSettings.logFile() );
+  }
+  else if ( sSettings.logStderr() )
+  {
+    QgsServerLogger::instance()->setLogStderr();
+  }
 
   // log settings currently used
   sSettings.logSummary();
