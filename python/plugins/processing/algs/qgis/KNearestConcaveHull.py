@@ -94,7 +94,7 @@ class KNearestConcaveHull(QgisAlgorithm):
                                                             QgsProcessing.TypeVectorPolygon))
 
     def processAlgorithm(self, parameters, context, feedback):
-        # get variables from dialog
+        # Get variables from dialog
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
@@ -108,76 +108,91 @@ class KNearestConcaveHull(QgisAlgorithm):
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 20))
 
-        # get properties of the field the grouping is based on
-        if use_field:
-            field_index = source.fields().lookupField(field_name)
-            if field_index >= 0:
-                fields.append(source.fields()[field_index])
-
-        # initialize writer
+        # Initialize writer
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Polygon, source.sourceCrs())
 
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
+
         current = 0
-        fid = 0
+        
+        # Get properties of the field the grouping is based on
+        if use_field:
+            field_index = source.fields().lookupField(field_name)
+            if field_index >= 0:
+                fields.append(source.fields()[field_index]) # Add a field with the name of the grouping field
 
-        if field_index >= 0:
-            # get unique values of field denoted by index as filter conditions
-            unique_values = source.uniqueValues(field_index)
-            total = 100.0 / float(source.featureCount() * len(unique_values))
+                success = False
+                fid = 0
 
-            for unique in unique_values:
-                points = []
-                filter = QgsExpression.createFieldEqualityExpression(field_name, unique)
-                request = QgsFeatureRequest().setFilterExpression(filter)
-                request.setSubsetOfAttributes([])
-                features = source.getFeatures(request)
-                for in_feature in features:
-                    points.extend(extract_points(in_feature.geometry()))
-                    current += 1
-                    feedback.setProgress(int(current * total))
+                # Get unique values of grouping field
+                unique_values = source.uniqueValues(field_index)
+                total = 100.0 / float(source.featureCount() * len(unique_values))
 
-                # A minimum of 3 points is necessary to proceed
-                if len(points) >= 3:
-                    out_feature = QgsFeature()
-                    try:
-                        the_hull = concave_hull(points, kneighbors)
-                        if the_hull:
-                            vertex = [QgsPointXY(point[0], point[1]) for point in the_hull]
-                            poly = QgsGeometry().fromPolygonXY([vertex])
+                for unique in unique_values:
+                    points = []
+                    filter = QgsExpression.createFieldEqualityExpression(field_name, unique)
+                    request = QgsFeatureRequest().setFilterExpression(filter)
+                    request.setSubsetOfAttributes([])
+                    features = source.getFeatures(request) # Get features with the grouping attribute equal to the current grouping value
+                    for in_feature in features:
+                        points.extend(extract_points(in_feature.geometry())) # Either points or vertices of more complex geometry
+                        current += 1
+                        feedback.setProgress(int(current * total))
 
-                            out_feature.setGeometry(poly)
-                            out_feature.setAttributes([fid, unique])
-                            sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
-                    except:
-                        feedback.reportError('Exception while computing concave hull.')
-                        raise QgsProcessingException('Exception while computing concave hull.')
-                fid += 1
+                    # A minimum of 3 points is necessary to proceed
+                    if len(points) >= 3:
+                        out_feature = QgsFeature()
+                        try:
+                            the_hull = concave_hull(points, kneighbors)
+                            if the_hull:
+                                vertex = [QgsPointXY(point[0], point[1]) for point in the_hull]
+                                poly = QgsGeometry().fromPolygonXY([vertex])
+
+                                out_feature.setGeometry(poly)
+                                out_feature.setAttributes([fid, unique]) # Give the polygon the same attribute as the point grouping attribute
+                                sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
+                                success = True  # at least one polygon created
+                        except:
+                            feedback.reportError('Exception while computing concave hull.')
+                            raise QgsProcessingException('Exception while computing concave hull.')
+                    fid += 1
+                if not success:
+                    raise QgsProcessingException('No hulls could be created. Most likely there were not at least three unique points in any of the groups.')
+            else:
+                # Field parameter provided but can't read from it
+                raise QgsProcessingException('Unable to find grouping field')
 
         else:
+            # Not grouped by field
             points = []
             request = QgsFeatureRequest()
             request.setSubsetOfAttributes([])
-            features = source.getFeatures(request)
+            features = source.getFeatures(request) # Get all features
             total = 100.0 / source.featureCount() if source.featureCount() else 0
             for in_feature in features:
-                points.extend(extract_points(in_feature.geometry()))
+                points.extend(extract_points(in_feature.geometry())) # Either points or vertices of more complex geometry
                 current += 1
                 feedback.setProgress(int(current * total))
 
-            out_feature = QgsFeature()
-            try:
-                the_hull = concave_hull(points, kneighbors)
-                if the_hull:
-                    vertex = [QgsPointXY(point[0], point[1]) for point in the_hull]
-                    poly = QgsGeometry().fromPolygonXY([vertex])
+            # A minimum of 3 points is necessary to proceed
+            if len(points) >= 3:
+                out_feature = QgsFeature()
+                try:
+                    the_hull = concave_hull(points, kneighbors)
+                    if the_hull:
+                        vertex = [QgsPointXY(point[0], point[1]) for point in the_hull]
+                        poly = QgsGeometry().fromPolygonXY([vertex])
 
-                    out_feature.setGeometry(poly)
-                    out_feature.setAttributes([0])
-                    sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
-            except:
-                feedback.reportError('Exception while computing concave hull.')
-                raise QgsProcessingException('Exception while computing concave hull.')
+                        out_feature.setGeometry(poly)
+                        out_feature.setAttributes([0])
+                        sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
+                except:
+                    feedback.reportError('Exception while computing concave hull.')
+                    raise QgsProcessingException('Exception while computing concave hull.')
+            else:
+                raise QgsProcessingException('At least three unique points are required to create a concave hull.')
 
         return {self.OUTPUT: dest_id}
 
