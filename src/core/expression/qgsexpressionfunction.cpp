@@ -4367,6 +4367,95 @@ static QVariant fcnMapToJson( const QVariantList &values, const QgsExpressionCon
   return document.toJson( QJsonDocument::Compact );
 }
 
+static QVariant fcnHstoreToMap( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  if ( str.isEmpty() )
+    return QVariantMap();
+  str = str.trimmed();
+
+  QVariantMap map;
+  QList<QString> bits;
+  QList<QString> seps;
+  seps << "=>" << ",";
+  int i = 0;
+  while ( i < str.length() )
+  {
+    while ( i < str.length() && str.at( i ).isSpace() )
+      ++i;
+    QString current = str.mid( i );
+    QString sep = seps.at( bits.length() );
+    if ( current.startsWith( '"' ) )
+    {
+      QRegularExpression re( "^\"((?:\\\\.|[^\"\\\\])*)\".*" );
+      QRegularExpressionMatch match = re.match( current );
+      bits << QString();
+      if ( match.hasMatch() )
+      {
+        bits[bits.length() - 1] = match.captured( 1 ).replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) ).replace( QLatin1String( "\\\\" ), QLatin1String( "\\" ) );
+        i += match.captured( 1 ).length() + 2;
+        while ( i < str.length() && str.at( i ).isSpace() )
+          ++i;
+
+        if ( str.midRef( i ).startsWith( sep ) )
+        {
+          i += sep.length();
+        }
+        else if ( i < str.length() )
+        {
+          // hstore string format broken, end construction
+          i += current.length();
+        }
+      }
+      else
+      {
+        // hstore string format broken, end construction
+        i += current.length();
+        bits[bits.length() - 1] = current.trimmed();
+      }
+    }
+    else
+    {
+      int sepPos = current.indexOf( sep );
+      if ( sepPos < 0 )
+      {
+        i += current.length();
+        bits << current.trimmed();
+      }
+      else
+      {
+        i += sepPos + sep.length();
+        bits << current.left( sepPos ).trimmed();
+      }
+    }
+
+    if ( bits.length() == 2 )
+    {
+      if ( !bits.at( 0 ).isEmpty() && !bits.at( 1 ).isEmpty() )
+        map[ bits.at( 0 ) ] = bits.at( 1 );
+      bits.clear();
+    }
+  }
+
+  return map;
+}
+
+static QVariant fcnMapToHstore( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QVariantMap map = QgsExpressionUtils::getMapValue( values.at( 0 ), parent );
+  QStringList list;
+
+  for ( QVariantMap::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
+  {
+    QString key = it.key();
+    QString value = it.value().toString();
+    list << QString( "\"%1\"=>\"%2\"" ).arg( key.replace( "\\", "\\\\" ).replace( "\"", "\\\"" ),
+         value.replace( "\\", "\\\\" ).replace( "\"", "\\\"" ) );
+  }
+
+  return list.join( ',' );
+}
+
 static QVariant fcnMap( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariantMap result;
@@ -5034,6 +5123,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         //functions for maps
         << new QgsStaticExpressionFunction( QStringLiteral( "json_to_map" ), 1, fcnJsonToMap, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "map_to_json" ), 1, fcnMapToJson, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "hstore_to_map" ), 1, fcnHstoreToMap, QStringLiteral( "Maps" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "map_to_hstore" ), 1, fcnMapToHstore, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "map" ), -1, fcnMap, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "map_get" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "key" ) ), fcnMapGet, QStringLiteral( "Maps" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "map_exist" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "key" ) ), fcnMapExist, QStringLiteral( "Maps" ) )
