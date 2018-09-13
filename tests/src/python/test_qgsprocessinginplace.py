@@ -474,6 +474,41 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         # Check selected
         self.assertEqual(self.vl.selectedFeatureIds(), [1])
 
+    def test_snappointstogrid(self):
+        """Check that this runs correctly"""
+
+        polygon_layer = self._make_layer('Polygon')
+        f1 = QgsFeature(polygon_layer.fields())
+        f1.setAttributes([1])
+        f1.setGeometry(QgsGeometry.fromWkt('POLYGON((1.2 1.2, 1.2 2.2, 2.2 2.2, 2.2 1.2, 1.2 1.2))'))
+        f2 = QgsFeature(polygon_layer.fields())
+        f2.setAttributes([2])
+        f2.setGeometry(QgsGeometry.fromWkt('POLYGON((1.1 1.1, 1.1 2.1, 2.1 2.1, 2.1 1.1, 1.1 1.1))'))
+        self.assertTrue(f2.isValid())
+        self.assertTrue(polygon_layer.startEditing())
+        self.assertTrue(polygon_layer.addFeatures([f1, f2]))
+        self.assertEqual(polygon_layer.featureCount(), 2)
+        polygon_layer.commitChanges()
+        self.assertEqual(polygon_layer.featureCount(), 2)
+        QgsProject.instance().addMapLayers([polygon_layer])
+
+        polygon_layer.selectByIds([next(polygon_layer.getFeatures()).id()])
+        self.assertEqual(polygon_layer.selectedFeatureCount(), 1)
+
+        old_features, new_features = self._alg_tester(
+            'native:snappointstogrid',
+            polygon_layer,
+            {
+                'HSPACING': 0.5,
+                'VSPACING': 0.5,
+            }
+        )
+
+        g = [f.geometry() for f in new_features][0]
+        self.assertEqual(g.asWkt(), 'Polygon ((1 1, 1 2, 2 2, 2 1, 1 1))')
+        # Check selected
+        self.assertEqual(polygon_layer.selectedFeatureIds(), [1])
+
     def test_clip(self):
 
         mask_layer = QgsMemoryProviderUtils.createMemoryLayer(
