@@ -30,6 +30,7 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
 #include "qgssvgcache.h"
+#include "qgsstylemodel.h"
 
 #include <QAction>
 #include <QString>
@@ -44,6 +45,37 @@
 #include <QPushButton>
 
 
+//
+// QgsReadOnlyStyleModel
+//
+QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsStyle *style, QObject *parent )
+  : QgsStyleProxyModel( style, parent )
+{
+
+}
+
+Qt::ItemFlags QgsReadOnlyStyleModel::flags( const QModelIndex &index ) const
+{
+  return QgsStyleProxyModel::flags( index ) & ~Qt::ItemIsEditable;
+}
+
+QVariant QgsReadOnlyStyleModel::data( const QModelIndex &index, int role ) const
+{
+  if ( role == Qt::FontRole )
+  {
+    // drop font size to get reasonable amount of item name shown
+    QFont f = QgsStyleProxyModel::data( index, role ).value< QFont >();
+    f.setPointSize( 10 );
+    return f;
+  }
+  return QgsStyleProxyModel::data( index, role );
+}
+
+
+//
+// QgsSymbolsListWidget
+//
+
 QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent, QgsVectorLayer *layer )
   : QWidget( parent )
   , mSymbol( symbol )
@@ -57,6 +89,15 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
 
   mSymbolUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
+  mModel = new QgsReadOnlyStyleModel( mStyle, this );
+  mModel->setEntityFilterEnabled( true );
+  mModel->setEntityFilter( QgsStyle::SymbolEntity );
+  if ( mSymbol )
+  {
+    mModel->setSymbolTypeFilterEnabled( true );
+    mModel->setSymbolType( mSymbol->type() );
+  }
 
   btnAdvanced->hide(); // advanced button is hidden by default
   if ( menu ) // show it if there is a menu pointer
@@ -73,11 +114,15 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   mClipFeaturesAction->setCheckable( true );
   connect( mClipFeaturesAction, &QAction::toggled, this, &QgsSymbolsListWidget::clipFeaturesToggled );
 
-  QStandardItemModel *model = new QStandardItemModel( viewSymbols );
-  viewSymbols->setModel( model );
+  double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
+  viewSymbols->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
+  viewSymbols->setGridSize( QSize( static_cast< int >( iconSize * 1.2 ), static_cast< int >( iconSize * 1.1 ) ) ); // ~120,110 on low dpi
+
+  mModel->sourceModel()->setProperty( "icon_sizes", QVariantList() << viewSymbols->iconSize() );
+  viewSymbols->setModel( mModel );
+
   connect( viewSymbols->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSymbolsListWidget::setSymbolFromStyle );
 
-  connect( mStyle, &QgsStyle::symbolSaved, this, &QgsSymbolsListWidget::symbolAddedToStyle );
   connect( mStyle, &QgsStyle::groupsModified, this, &QgsSymbolsListWidget::populateGroups );
 
   connect( openStyleManagerButton, &QPushButton::pressed, this, &QgsSymbolsListWidget::openStyleManager );
@@ -121,7 +166,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   // have been generated using the temporary "downloading" svg. In this case
   // we require the preview to be regenerated to use the correct fetched
   // svg
-  connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsSymbolsListWidget::populateSymbolView );
+  connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsSymbolsListWidget::updateModelFilters );
 }
 
 QgsSymbolsListWidget::~QgsSymbolsListWidget()
@@ -254,71 +299,36 @@ void QgsSymbolsListWidget::populateGroups()
   index = settings.value( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 ).toInt();
   groupsCombo->setCurrentIndex( index );
 
-  populateSymbolView();
+  updateModelFilters();
 }
 
-void QgsSymbolsListWidget::populateSymbolView()
+void QgsSymbolsListWidget::updateModelFilters()
 {
-  QStringList symbols;
-  QString text = groupsCombo->currentText();
-  int id;
+  const QString text = groupsCombo->currentText();
 
   if ( groupsCombo->currentData().toString() == QLatin1String( "favorite" ) )
   {
-    symbols = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
+    mModel->setFavoritesOnly( true );
+    mModel->setTagId( -1 );
+    mModel->setSmartGroupId( -1 );
   }
   else if ( groupsCombo->currentData().toString() == QLatin1String( "all" ) )
   {
-    symbols = mStyle->symbolNames();
+    mModel->setFavoritesOnly( false );
+    mModel->setTagId( -1 );
+    mModel->setSmartGroupId( -1 );
   }
   else if ( groupsCombo->currentData().toString() == QLatin1String( "smartgroup" ) )
   {
-    id = mStyle->smartgroupId( text );
-    symbols = mStyle->symbolsOfSmartgroup( QgsStyle::SymbolEntity, id );
+    mModel->setFavoritesOnly( false );
+    mModel->setTagId( -1 );
+    mModel->setSmartGroupId( mStyle->smartgroupId( text ) );
   }
   else
   {
-    id = mStyle->tagId( text );
-    symbols = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, id );
-  }
-
-  symbols.sort();
-  populateSymbols( symbols );
-}
-
-void QgsSymbolsListWidget::populateSymbols( const QStringList &names )
-{
-  QSize previewSize = viewSymbols->iconSize();
-
-  QStandardItemModel *model = qobject_cast<QStandardItemModel *>( viewSymbols->model() );
-  if ( !model )
-  {
-    return;
-  }
-  model->clear();
-
-  for ( int i = 0; i < names.count(); i++ )
-  {
-    std::unique_ptr< QgsSymbol > s( mStyle->symbol( names[i] ) );
-    if ( !s || s->type() != mSymbol->type() )
-    {
-      continue;
-    }
-    QStringList tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, names[i] );
-    QStandardItem *item = new QStandardItem( names[i] );
-    item->setData( names[i], Qt::UserRole ); //so we can load symbol with that name
-    item->setText( names[i] );
-    item->setToolTip( QStringLiteral( "<b>%1</b><br><i>%2</i>" ).arg( names[i], tags.count() > 0 ? tags.join( QStringLiteral( ", " ) ) : tr( "Not tagged" ) ) );
-    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    // Set font to 10points to show reasonable text
-    QFont itemFont = item->font();
-    itemFont.setPointSize( 10 );
-    item->setFont( itemFont );
-    // create preview icon
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( s.get(), previewSize, 15 );
-    item->setIcon( icon );
-    // add to model
-    model->appendRow( item );
+    mModel->setFavoritesOnly( false );
+    mModel->setTagId( mStyle->tagId( text ) );
+    mModel->setSmartGroupId( -1 );
   }
 }
 
@@ -327,7 +337,7 @@ void QgsSymbolsListWidget::openStyleManager()
   QgsStyleManagerDialog dlg( mStyle, this );
   dlg.exec();
 
-  populateSymbolView();
+  updateModelFilters(); // probably not needed -- the model should automatically update if any changes were made
 }
 
 void QgsSymbolsListWidget::clipFeaturesToggled( bool checked )
@@ -439,13 +449,6 @@ void QgsSymbolsListWidget::updateAssistantSymbol()
     mWidthDDBtn->setSymbol( mAssistantSymbol );
 }
 
-void QgsSymbolsListWidget::symbolAddedToStyle( const QString &name, QgsSymbol *symbol )
-{
-  Q_UNUSED( name );
-  Q_UNUSED( symbol );
-  populateSymbolView();
-}
-
 void QgsSymbolsListWidget::addSymbolToStyle()
 {
   bool ok;
@@ -472,7 +475,6 @@ void QgsSymbolsListWidget::addSymbolToStyle()
 
   // make sure the symbol is stored
   mStyle->saveSymbol( name, mSymbol->clone(), false, QStringList() );
-  populateSymbolView();
 }
 
 void QgsSymbolsListWidget::saveSymbol()
@@ -636,7 +638,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
 void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex &index )
 {
-  QString symbolName = index.data( Qt::UserRole ).toString();
+  QString symbolName = mModel->data( mModel->index( index.row(), QgsStyleModel::Name ) ).toString();
   lblSymbolName->setText( symbolName );
   // get new instance of symbol from style
   std::unique_ptr< QgsSymbol > s( mStyle->symbol( symbolName ) );
@@ -663,5 +665,5 @@ void QgsSymbolsListWidget::groupsCombo_currentIndexChanged( int index )
   QgsSettings settings;
   settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), index );
 
-  populateSymbolView();
+  updateModelFilters();
 }
