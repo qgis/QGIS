@@ -26,13 +26,12 @@
 #include <QMutexLocker>
 
 
-QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, const QgsCoordinateTransform &layerToMapTransform )
+QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer )
   : mFeatureCache( CACHE_SIZE )
   , mLayer( layer )
-  , mLayerToMapUnits( layerToMapUnits )
-  , mLayerToMapTransform( layerToMapTransform )
   , mLayerId( layer->id() )
   , mGeometryType( layer->geometryType() )
+  , mCrs( layer->crs() )
 {
 
 }
@@ -82,6 +81,11 @@ QgsVectorLayer *QgsFeaturePool::layer() const
   return mLayer.data();
 }
 
+QPointer<QgsVectorLayer> QgsFeaturePool::layerPtr() const
+{
+  return mLayer;
+}
+
 void QgsFeaturePool::insertFeature( const QgsFeature &feature )
 {
   QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
@@ -116,6 +120,11 @@ void QgsFeaturePool::removeFeature( const QgsFeatureId featureId )
 void QgsFeaturePool::setFeatureIds( const QgsFeatureIds &ids )
 {
   mFeatureIds = ids;
+}
+
+QgsCoordinateReferenceSystem QgsFeaturePool::crs() const
+{
+  return mCrs;
 }
 
 QgsWkbTypes::GeometryType QgsFeaturePool::geometryType() const

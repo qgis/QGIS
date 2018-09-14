@@ -21,8 +21,11 @@
 #include <QApplication>
 #include <limits>
 #include <QStringList>
+#include <QPointer>
+
 #include "qgis_analysis.h"
 #include "qgsfeature.h"
+#include "qgsvectorlayer.h"
 #include "geometry/qgsgeometry.h"
 #include "qgsgeometrycheckerutils.h"
 
@@ -33,11 +36,19 @@ class QgsFeaturePool;
 
 struct ANALYSIS_EXPORT QgsGeometryCheckerContext
 {
-  QgsGeometryCheckerContext( int _precision, const QgsCoordinateReferenceSystem &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools );
-  const double tolerance;
-  const double reducedTolerance;
-  const QgsCoordinateReferenceSystem mapCrs;
-  const QMap<QString, QgsFeaturePool *> featurePools;
+    QgsGeometryCheckerContext( int _precision, const QgsCoordinateReferenceSystem &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools, const QgsCoordinateTransformContext &transformContext );
+    const double tolerance;
+    const double reducedTolerance;
+    const QgsCoordinateReferenceSystem mapCrs;
+    const QMap<QString, QgsFeaturePool *> featurePools;
+    const QgsCoordinateTransformContext transformContext;
+    const QgsCoordinateTransform &layerTransform( const QPointer<QgsVectorLayer> &layer );
+    double layerScaleFactor( const QPointer<QgsVectorLayer> &layer );
+
+  private:
+    QMap<QPointer<QgsVectorLayer>, QgsCoordinateTransform> mTransformCache;
+    QMap<QPointer<QgsVectorLayer>, double> mScaleFactorCache;
+    QReadWriteLock mCacheLock;
 };
 
 class ANALYSIS_EXPORT QgsGeometryCheck
@@ -177,7 +188,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
       mErrorLocation = other->mErrorLocation;
       mVidx = other->mVidx;
       mValue = other->mValue;
-      mGeometry.reset( other->mGeometry->clone() );
+      mGeometry = other->mGeometry;
     }
 
     virtual bool handleChanges( const QgsGeometryCheck::Changes &changes );
@@ -187,7 +198,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     QgsGeometryCheckError( const QgsGeometryCheck *check,
                            const QString &layerId,
                            QgsFeatureId featureId,
-                           QgsAbstractGeometry *geometry,
+                           const QgsGeometry &geometry,
                            const QgsPointXY &errorLocation,
                            QgsVertexId vidx = QgsVertexId(),
                            const QVariant &value = QVariant(),
@@ -196,7 +207,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     const QgsGeometryCheck *mCheck = nullptr;
     QString mLayerId;
     QgsFeatureId mFeatureId;
-    std::unique_ptr<QgsAbstractGeometry> mGeometry;
+    QgsGeometry mGeometry;
     QgsPointXY mErrorLocation;
     QgsVertexId mVidx;
     QVariant mValue;

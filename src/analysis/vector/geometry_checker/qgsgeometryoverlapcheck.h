@@ -26,7 +26,7 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
   public:
     QgsGeometryOverlapCheckError( const QgsGeometryCheck *check,
                                   const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
-                                  QgsAbstractGeometry *geometry,
+                                  const QgsGeometry &geometry,
                                   const QgsPointXY &errorLocation,
                                   const QVariant &value,
                                   const QgsGeometryCheckerUtils::LayerFeature &overlappedFeature )

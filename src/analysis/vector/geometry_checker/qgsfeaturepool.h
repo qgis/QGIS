@@ -38,7 +38,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
 {
 
   public:
-    QgsFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, const QgsCoordinateTransform &layerToMapTransform );
+    QgsFeaturePool( QgsVectorLayer *layer );
     virtual ~QgsFeaturePool() = default;
 
     /**
@@ -73,23 +73,20 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
     QgsFeatureIds getIntersects( const QgsRectangle &rect ) const;
 
     /**
-     * The factor of layer units to map units.
-     * TODO: should this be removed and determined on runtime by checks that need it?
-     */
-    double getLayerToMapUnits() const { return mLayerToMapUnits; }
-
-    /**
-     * A coordinate transform from layer to map CRS.
-     * TODO: should this be removed and determined on runtime by checks that need it?
-     */
-    const QgsCoordinateTransform &getLayerToMapTransform() const { return mLayerToMapTransform; }
-
-    /**
      * Get a pointer to the underlying layer.
      * May return a ``nullptr`` if the layer has been deleted.
      * This must only be called from the main thread.
      */
     QgsVectorLayer *layer() const;
+
+    /**
+     * Get a QPointer to the underlying layer.
+     * Note that access to any methods of the object
+     * will need to be done on the main thread and
+     * the pointer will need to be checked for validity
+     * before usage.
+     */
+    QPointer<QgsVectorLayer> layerPtr() const;
 
     /**
      * The layer id of the layer.
@@ -100,6 +97,11 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
      * The geometry type of this layer.
      */
     QgsWkbTypes::GeometryType geometryType() const;
+
+    /**
+     * The coordinate reference system of this layer.
+     */
+    QgsCoordinateReferenceSystem crs() const;
 
   protected:
 
@@ -135,10 +137,9 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
     mutable QReadWriteLock mCacheLock;
     QgsFeatureIds mFeatureIds;
     QgsSpatialIndex mIndex;
-    double mLayerToMapUnits = 1.0;
-    QgsCoordinateTransform mLayerToMapTransform;
     QString mLayerId;
     QgsWkbTypes::GeometryType mGeometryType;
+    QgsCoordinateReferenceSystem mCrs;
 };
 
 #endif // QGS_FEATUREPOOL_H

@@ -24,6 +24,7 @@
 #include "qgsrelationmanager.h"
 #include "qgsfeedback.h"
 #include "qgsvectorlayer.h"
+#include "qgsthreadingutils.h"
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {
@@ -516,16 +517,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsVectorLayerUtils::getFeatureSour
     }
   };
 
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 )
-  // Make sure we only deal with the vector layer on the main thread where it lives.
-  // Anything else risks a crash.
-  if ( QThread::currentThread() == qApp->thread() )
-    getFeatureSource();
-  else
-    QMetaObject::invokeMethod( qApp, getFeatureSource, Qt::BlockingQueuedConnection );
-#else
-  getFeatureSource();
-#endif
+  QgsThreadingUtils::runOnMainThread( getFeatureSource );
 
   return featureSource;
 }

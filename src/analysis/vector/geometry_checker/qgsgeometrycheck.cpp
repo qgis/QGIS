@@ -18,18 +18,61 @@
 #include "qgsgeometrycheck.h"
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
+#include "qgsreadwritelocker.h"
+#include "qgsthreadingutils.h"
 
-QgsGeometryCheckerContext::QgsGeometryCheckerContext( int _precision, const QgsCoordinateReferenceSystem &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools )
+QgsGeometryCheckerContext::QgsGeometryCheckerContext( int _precision, const QgsCoordinateReferenceSystem &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools, const QgsCoordinateTransformContext &transformContext )
   : tolerance( std::pow( 10, -_precision ) )
   , reducedTolerance( std::pow( 10, -_precision / 2 ) )
   , mapCrs( _mapCrs )
   , featurePools( _featurePools )
+  , transformContext( transformContext )
 {
+}
 
+const QgsCoordinateTransform &QgsGeometryCheckerContext::layerTransform( const QPointer<QgsVectorLayer> &layer )
+{
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
+  if ( !mTransformCache.contains( layer ) )
+  {
+    QgsCoordinateTransform transform;
+    QgsThreadingUtils::runOnMainThread( [this, &transform, layer]()
+    {
+      QgsVectorLayer *lyr = layer.data();
+      if ( lyr )
+        transform = QgsCoordinateTransform( lyr->crs(), mapCrs, transformContext );
+    } );
+    locker.changeMode( QgsReadWriteLocker::Write );
+    mTransformCache[layer] = transform;
+    locker.changeMode( QgsReadWriteLocker::Read );
+  }
+
+  return mTransformCache[layer];
+}
+
+double QgsGeometryCheckerContext::layerScaleFactor( const QPointer<QgsVectorLayer> &layer )
+{
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
+  if ( !mScaleFactorCache.contains( layer ) )
+  {
+    double scaleFactor = 1.0;
+    QgsThreadingUtils::runOnMainThread( [this, layer, &scaleFactor]()
+    {
+      QgsVectorLayer *lyr = layer.data();
+      if ( lyr )
+        scaleFactor = layerTransform( layer ).scaleFactor( lyr->extent() );
+    } );
+
+    locker.changeMode( QgsReadWriteLocker::Write );
+    mScaleFactorCache[layer] = scaleFactor;
+    locker.changeMode( QgsReadWriteLocker::Read );
+  }
+
+  return mScaleFactorCache.value( layer );
 }
 
 QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId,
-    QgsFeatureId featureId, QgsAbstractGeometry *geometry,
+    QgsFeatureId featureId, const QgsGeometry &geometry,
     const QgsPointXY &errorLocation,
     QgsVertexId vidx,
     const QVariant &value, ValueType valueType )
@@ -50,7 +93,7 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
     const QgsPointXY &errorLocation, QgsVertexId vidx,
     const QVariant &value, ValueType valueType )
   : mCheck( check )
-  , mLayerId( layerFeature.layer()->id() )
+  , mLayerId( layerFeature.layerId() )
   , mFeatureId( layerFeature.feature().id() )
   , mErrorLocation( errorLocation )
   , mVidx( vidx )
@@ -60,27 +103,28 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
 {
   if ( vidx.part != -1 )
   {
-    mGeometry.reset( QgsGeometryCheckerUtils::getGeomPart( layerFeature.geometry(), vidx.part )->clone() );
+    mGeometry = QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( layerFeature.geometry().constGet(), vidx.part )->clone() );
   }
   else
   {
-    mGeometry.reset( layerFeature.geometry()->clone() );
+    mGeometry = layerFeature.geometry();
   }
-  if ( layerFeature.geometryCrs() != layerFeature.layerToMapTransform().destinationCrs().authid() )
+  if ( !layerFeature.useMapCrs() )
   {
-    mGeometry->transform( layerFeature.layerToMapTransform() );
-    mErrorLocation = layerFeature.layerToMapTransform().transform( mErrorLocation );
+    const QgsCoordinateTransform &transform = check->context()->layerTransform( layerFeature.layer() );
+    mGeometry.transform( transform );
+    mErrorLocation = transform.transform( mErrorLocation );
   }
 }
 
 const QgsAbstractGeometry *QgsGeometryCheckError::geometry() const
 {
-  return mGeometry.get();
+  return mGeometry.constGet();
 }
 
 QgsRectangle QgsGeometryCheckError::affectedAreaBBox() const
 {
-  return mGeometry->boundingBox();
+  return mGeometry.boundingBox();
 }
 
 bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &changes )

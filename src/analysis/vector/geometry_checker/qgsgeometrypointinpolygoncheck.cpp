@@ -20,10 +20,10 @@
 void QgsGeometryPointInPolygonCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, true );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, mContext, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    const QgsAbstractGeometry *geom = layerFeature.geometry();
+    const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
       const QgsPoint *point = dynamic_cast<const QgsPoint *>( QgsGeometryCheckerUtils::getGeomPart( geom, iPart ) );
@@ -38,11 +38,11 @@ void QgsGeometryPointInPolygonCheck::collectErrors( QList<QgsGeometryCheckError 
       // Check whether point is contained by a fully contained by a polygon
       QgsRectangle rect( point->x() - mContext->tolerance, point->y() - mContext->tolerance,
                          point->x() + mContext->tolerance, point->y() + mContext->tolerance );
-      QgsGeometryCheckerUtils::LayerFeatures checkFeatures( mContext->featurePools, featureIds.keys(), rect, {QgsWkbTypes::PolygonGeometry} );
+      QgsGeometryCheckerUtils::LayerFeatures checkFeatures( mContext->featurePools, featureIds.keys(), rect, {QgsWkbTypes::PolygonGeometry}, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
         ++nTested;
-        const QgsAbstractGeometry *testGeom = checkFeature.geometry();
+        const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();
         std::unique_ptr< QgsGeometryEngine > testGeomEngine = QgsGeometryCheckerUtils::createGeomEngine( testGeom, mContext->reducedTolerance );
         if ( !testGeomEngine->isValid() )
         {

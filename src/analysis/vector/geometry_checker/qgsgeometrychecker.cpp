@@ -291,3 +291,13 @@ void QgsGeometryChecker::runCheck( const QgsGeometryCheck *check )
     emit errorAdded( error );
   }
 }
+
+QgsGeometryChecker::RunCheckWrapper::RunCheckWrapper( QgsGeometryChecker *instance )
+  : mInstance( instance )
+{
+}
+
+void QgsGeometryChecker::RunCheckWrapper::operator()( const QgsGeometryCheck *check )
+{
+  mInstance->runCheck( check );
+}

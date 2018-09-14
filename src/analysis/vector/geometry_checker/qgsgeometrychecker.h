@@ -24,8 +24,9 @@
 #include <QMutex>
 #include <QStringList>
 #include "qgis_analysis.h"
-#include "qgsfeatureid.h"
 
+typedef qint64 QgsFeatureId;
+typedef QSet<QgsFeatureId> QgsFeatureIds;
 struct QgsGeometryCheckerContext;
 class QgsGeometryCheck;
 class QgsGeometryCheckError;
@@ -55,8 +56,8 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
     class RunCheckWrapper
     {
       public:
-        explicit RunCheckWrapper( QgsGeometryChecker *instance ) : mInstance( instance ) {}
-        void operator()( const QgsGeometryCheck *check ) { mInstance->runCheck( check ); }
+        explicit RunCheckWrapper( QgsGeometryChecker *instance );
+        void operator()( const QgsGeometryCheck *check );
       private:
         QgsGeometryChecker *mInstance = nullptr;
     };

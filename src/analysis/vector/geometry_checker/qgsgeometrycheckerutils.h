@@ -26,28 +26,57 @@
 
 class QgsGeometryEngine;
 class QgsFeaturePool;
+struct QgsGeometryCheckerContext;
 
 namespace QgsGeometryCheckerUtils
 {
   class LayerFeature
   {
     public:
-      LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, bool useMapCrs );
-      ~LayerFeature();
-      const QgsFeature &feature() const { return mFeature; }
-      QgsVectorLayer *layer() const;
-      double layerToMapUnits() const;
-      const QgsCoordinateTransform &layerToMapTransform() const;
-      const QgsAbstractGeometry *geometry() const { return mGeometry; }
-      QString geometryCrs() const { return mMapCrs ? layerToMapTransform().destinationCrs().authid() : layerToMapTransform().sourceCrs().authid(); }
+
+      /**
+       * Create a new layer/feature combination.
+       * The layer is defined by \a pool, \a feature needs to be from this layer.
+       * If \a useMapCrs is True, geometries will be reprojected to the mapCrs defined
+       * in \a context.
+       */
+      LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, QgsGeometryCheckerContext *context, bool useMapCrs );
+
+      /**
+       * Returns the feature.
+       * The geometry will not be reprojected regardless of useMapCrs.
+       */
+      const QgsFeature &feature() const;
+
+      /**
+       * The layer.
+       */
+      QPointer<QgsVectorLayer> layer() const;
+
+      /**
+       * The layer id.
+       */
+      QString layerId() const;
+
+      /**
+       * Returns the geometry of this feature.
+       * If useMapCrs was specified, it will already be reprojected into the
+       * CRS specified in the context specified in the constructor.
+       */
+      const QgsGeometry &geometry() const;
       QString id() const;
       bool operator==( const LayerFeature &other ) const;
       bool operator!=( const LayerFeature &other ) const;
 
+      /**
+       * Returns if the geometry is reprojected to the map CRS or not.
+       */
+      bool useMapCrs() const;
+
     private:
       const QgsFeaturePool *mFeaturePool;
       QgsFeature mFeature;
-      QgsAbstractGeometry *mGeometry = nullptr;
+      QgsGeometry mGeometry;
       bool mMapCrs;
   };
 
@@ -57,10 +86,14 @@ namespace QgsGeometryCheckerUtils
       LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
                      const QMap<QString, QgsFeatureIds> &featureIds,
                      const QList<QgsWkbTypes::GeometryType> &geometryTypes,
-                     QAtomicInt *progressCounter, bool useMapCrs = false );
+                     QAtomicInt *progressCounter,
+                     QgsGeometryCheckerContext *context,
+                     bool useMapCrs = false );
+
       LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
                      const QList<QString> &layerIds, const QgsRectangle &extent,
-                     const QList<QgsWkbTypes::GeometryType> &geometryTypes );
+                     const QList<QgsWkbTypes::GeometryType> &geometryTypes,
+                     QgsGeometryCheckerContext *context );
 
       class iterator
       {
@@ -91,7 +124,8 @@ namespace QgsGeometryCheckerUtils
       QgsRectangle mExtent;
       QList<QgsWkbTypes::GeometryType> mGeometryTypes;
       QAtomicInt *mProgressCounter = nullptr;
-      bool mUseMapCrs;
+      QgsGeometryCheckerContext *mContext = nullptr;
+      bool mUseMapCrs = true;
   };
 
   std::unique_ptr<QgsGeometryEngine> createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance );
