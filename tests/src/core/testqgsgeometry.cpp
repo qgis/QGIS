@@ -439,7 +439,7 @@ void TestQgsGeometry::operatorBool()
 void TestQgsGeometry::equality()
 {
   // null geometries
-  QVERIFY( !QgsGeometry().equals( QgsGeometry() ) );
+  QVERIFY( QgsGeometry().equals( QgsGeometry() ) );
 
   // compare to null
   QgsGeometry g1( qgis::make_unique< QgsPoint >( 1.0, 2.0 ) );
