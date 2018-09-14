@@ -677,8 +677,8 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
                  "    padding-right:10px;"
                  "    text-align:right;"
                  "  }"
-                 "  td.version {"
-                 "    cursor:pointer;"
+                 "  td.version img {"
+                 "    height:0.8em;"
                  "  }"
                  "</style>";
 
@@ -939,18 +939,40 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   if ( ! metadata->value( QStringLiteral( "version_installed" ) ).isEmpty() )
   {
     QString ver = metadata->value( QStringLiteral( "version_installed" ) );
-    if ( ver == QLatin1String( "-1" ) ) ver = '?';
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td class='version' title='%2 %3'> %4 </td></tr>" ).arg( tr( "Installed version" ),
-            tr( "in" ),
-            metadata->value( QStringLiteral( "library" ) ),
-            ver );
+    if ( ver == QLatin1String( "-1" ) )
+    {
+      ver = '?';
+    }
+    QString localDir = metadata->value( QStringLiteral( "library" ) );
+    if ( QFileInfo( localDir ).isFile() )
+    {
+      localDir = QFileInfo( localDir ).absolutePath();
+    }
+
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td class='version' title='%2 %3'> %4 <a href=\"%5\">"
+                            "<img src=\"qrc:/images/themes/default/externalLink.svg\"></a></td></tr>"
+                          ).arg( tr( "Installed version" ),
+                                 tr( "in" ),
+                                 metadata->value( QStringLiteral( "library" ) ),
+                                 ver,
+                                 QUrl::fromLocalFile( localDir ).toString() );
   }
   if ( ! metadata->value( QStringLiteral( "version_available" ) ).isEmpty() )
   {
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td class='version' title='%2 %3'> %4 </td></tr>" ).arg( tr( "Available version" ),
-            tr( "in" ),
-            metadata->value( QStringLiteral( "zip_repository" ) ),
-            metadata->value( QStringLiteral( "version_available" ) ) );
+    QString downloadUrl = metadata->value( QStringLiteral( "download_url" ) );
+    if ( downloadUrl.contains( QStringLiteral( "plugins.qgis.org" ) ) )
+    {
+      // For the main repo, open the plugin version page instead of the download link. For other repositories the download link is the only known endpoint.
+      downloadUrl = downloadUrl.replace( QStringLiteral( "download/" ), QString() );
+    }
+
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td class='version' title='%2 %3'> %4 <a href=\"%5\">"
+                            "<img src=\"qrc:/images/themes/default/externalLink.svg\"></a></td></tr>"
+                          ).arg( tr( "Available version" ),
+                                 tr( "in" ),
+                                 metadata->value( QStringLiteral( "zip_repository" ) ),
+                                 metadata->value( QStringLiteral( "version_available" ) ),
+                                 downloadUrl );
   }
 
   if ( ! metadata->value( QStringLiteral( "changelog" ) ).isEmpty() )
