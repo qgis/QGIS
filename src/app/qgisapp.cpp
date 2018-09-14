@@ -210,7 +210,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayoutcustomdrophandler.h"
 #include "qgslayoutdesignerdialog.h"
 #include "qgslayoutmanager.h"
-#include "qgslayoutmanagerdialog.h"
 #include "qgslayoutqptdrophandler.h"
 #include "qgslayoutapputils.h"
 #include "qgslocatorwidget.h"
@@ -10587,13 +10586,7 @@ void QgisApp::reloadConnections()
 
 void QgisApp::showLayoutManager()
 {
-  if ( !mLayoutManagerDialog )
-  {
-    mLayoutManagerDialog = new QgsLayoutManagerDialog( this, Qt::Window );
-    mLayoutManagerDialog->setAttribute( Qt::WA_DeleteOnClose );
-  }
-  mLayoutManagerDialog->show();
-  mLayoutManagerDialog->activate();
+  static_cast< QgsAppWindowManager * >( QgsGui::windowManager() )->openApplicationDialog( QgsAppWindowManager::DialogLayoutManager );
 }
 
 QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &name, const QString &providerKey )
