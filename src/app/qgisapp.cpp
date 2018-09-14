@@ -10929,6 +10929,8 @@ Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name
     }
   }
 
+  markDirty();
+
   Qgs3DMapCanvasDockWidget *map3DWidget = new Qgs3DMapCanvasDockWidget( this );
   map3DWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
   map3DWidget->setWindowTitle( name );
