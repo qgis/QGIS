@@ -50,7 +50,7 @@ class APP_EXPORT QgsVectorLayerLoadStyleDialog : public QDialog, private Ui::Qgs
     void deleteStyleFromDB();
 
   private:
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
     QString mSelectedStyleId;
     QString mSelectedStyleName;
     int mSectionLimit = 0;

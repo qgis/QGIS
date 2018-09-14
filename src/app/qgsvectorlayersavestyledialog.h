@@ -56,7 +56,7 @@ class QgsVectorLayerSaveStyleDialog : public QDialog, private Ui::QgsVectorLayer
     void readUiFileContent( const QString &filePath );
 
   private:
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;;
     QString mUiFileContent;
 };
 

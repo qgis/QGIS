@@ -821,7 +821,7 @@ Delete a style from the database
 %End
 
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/, bool loadFromLocalDb,
-                                    StyleCategories categories = QgsMapLayer::AllStyleCategories );
+                                    QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 %Docstring
 Load a named style from file/local db/datasource db
 

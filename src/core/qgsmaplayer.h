@@ -769,10 +769,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * key matches the URI.
      * \param resultFlag a reference to a flag that will be set to false if
      * we did not manage to load the default style.
+     * \param categories the style categories to be loaded.
      * \returns a QString with any status messages
      * \see also loadDefaultStyle ();
      */
-    virtual QString loadNamedStyle( const QString &uri, bool &resultFlag SIP_OUT, StyleCategories categories = QgsMapLayer::AllStyleCategories );
+    virtual QString loadNamedStyle( const QString &uri, bool &resultFlag SIP_OUT, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
     /**
      * Retrieve a named style for this layer from a sqlite database.
