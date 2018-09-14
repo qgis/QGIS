@@ -114,6 +114,7 @@ QgsMapLayer::ReadableStyleCategory QgsMapLayer::readableStyleCategory( QgsMapLay
     case AllStyleCategories :
       return ReadableStyleCategory( tr( "All Categories" ) );
   }
+  return ReadableStyleCategory( tr( "All Categories" ) ); // no warnings
 }
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
