@@ -23,13 +23,6 @@
 class QgsMapLayerStyleCategoriesModel : public QAbstractListModel
 {
   public:
-    enum DataRole
-    {
-      ReadableCategory = Qt::UserRole + 1, //!< Translated and readable
-      ToolTip,
-      Icon,
-    };
-
     explicit QgsMapLayerStyleCategoriesModel( QObject *parent = nullptr );
 
     //! reset the model data

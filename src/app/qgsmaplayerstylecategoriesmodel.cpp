@@ -76,12 +76,9 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-        case ReadableCategory:
           return tr( "Layer Configuration" );
-        case ToolTip:
         case Qt::ToolTipRole:
           return tr( "Identifiable, removable, searchable, display expression, read-only" );
-        case Icon:
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/system.svg" ) );
       }
@@ -89,12 +86,9 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-        case ReadableCategory:
           return tr( "Symbology" );
-        case ToolTip:
         case Qt::ToolTipRole:
           return QVariant();
-        case Icon:
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/symbology.svg" ) );
       }
@@ -102,12 +96,9 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-        case ReadableCategory:
           return tr( "3D Symbology" );
-        case ToolTip:
         case Qt::ToolTipRole:
           return QVariant();
-        case Icon:
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/3d.svg" ) );
       }
@@ -115,12 +106,9 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-        case ReadableCategory:
           return tr( "Labels" );
-        case ToolTip:
         case Qt::ToolTipRole:
           return QVariant();
-        case Icon:
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/labels.svg" ) );
       }
@@ -128,12 +116,9 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-        case ReadableCategory:
           return tr( "Fields" );
-        case ToolTip:
         case Qt::ToolTipRole:
           return tr( "Aliases, widgets, WMS/WFS, expressions, constraints, virtual fields" );
-        case Icon:
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/mSourceFields" ) );
       }
@@ -141,12 +126,9 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-        case ReadableCategory:
           return tr( "Forms" );
-        case ToolTip:
         case Qt::ToolTipRole:
           return QVariant();
-        case Icon:
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormView" ) );
       }
@@ -154,12 +136,9 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-        case ReadableCategory:
           return tr( "Actions" );
-        case ToolTip:
         case Qt::ToolTipRole:
           return QVariant();
-        case Icon:
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/action.svg" ) );
       }
@@ -167,12 +146,9 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-        case ReadableCategory:
           return tr( "Map Tips" );
-        case ToolTip:
         case Qt::ToolTipRole:
           return QVariant();
-        case Icon:
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/display.svg" ) );
       }
@@ -180,12 +156,9 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-        case ReadableCategory:
           return tr( "Diagrams" );
-        case ToolTip:
         case Qt::ToolTipRole:
           return QVariant();
-        case Icon:
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/diagram.svg" ) );
       }
@@ -193,12 +166,9 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-        case ReadableCategory:
           return tr( "Attribute Table Settings" );
-        case ToolTip:
         case Qt::ToolTipRole:
           return tr( "Choice and order of columns, conditional styling" );
-        case Icon:
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable" ) );
       }
@@ -206,12 +176,9 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-        case ReadableCategory:
           return tr( "Rendering" );
-        case ToolTip:
         case Qt::ToolTipRole:
           return tr( "Scale visibility, simplify method, opacity" );
-        case Icon:
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/rendering.svg" ) );
       }
@@ -219,12 +186,9 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-        case ReadableCategory:
           return tr( "Custom Properties" );
-        case ToolTip:
         case Qt::ToolTipRole:
           return QVariant();
-        case Icon:
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) );
       }
@@ -232,12 +196,9 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-        case ReadableCategory:
           return tr( "All Style Categories" );
-        case ToolTip:
         case Qt::ToolTipRole:
           return QVariant();
-        case Icon:
         case Qt::DecorationRole:
           return QVariant();
       }
