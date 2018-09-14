@@ -256,7 +256,8 @@ bool QgsVectorLayerEditBuffer::addAttribute( const QgsField &field )
   if ( field.name().isEmpty() )
     return false;
 
-  Q_FOREACH ( const QgsField &updatedField, L->fields() )
+  const QgsFields fields = L->fields();
+  for ( const QgsField &updatedField : fields )
   {
     if ( updatedField.name() == field.name() )
       return false;
@@ -303,7 +304,8 @@ bool QgsVectorLayerEditBuffer::renameAttribute( int index, const QString &newNam
   if ( index < 0 || index >= L->fields().count() )
     return false;
 
-  Q_FOREACH ( const QgsField &updatedField, L->fields() )
+  const QgsFields fields = L->fields();
+  for ( const QgsField &updatedField : fields )
   {
     if ( updatedField.name() == newName )
       return false;

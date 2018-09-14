@@ -155,7 +155,8 @@ void QgsPropertyOverrideButton::updateFieldLists()
   if ( mVectorLayer )
   {
     // store just a list of fields of unknown type or those that match the expected type
-    Q_FOREACH ( const QgsField &f, mVectorLayer->fields() )
+    const QgsFields fields = mVectorLayer->fields();
+    for ( const QgsField &f : fields )
     {
       bool fieldMatch = false;
       QString fieldType;

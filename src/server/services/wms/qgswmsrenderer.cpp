@@ -1459,7 +1459,7 @@ namespace QgsWms
     mAccessControl->filterFeatures( layer, fReq );
 
     QStringList attributes;
-    for ( const QgsField &field : layer->fields().toList() )
+    for ( const QgsField &field : fields )
     {
       attributes.append( field.name() );
     }

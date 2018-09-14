@@ -300,7 +300,8 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
     {
       apis->add( l->name() );
       QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
-      Q_FOREACH ( const QgsField &f, vl->fields().toList() )
+      const QgsFields fields = vl->fields();
+      for ( const QgsField &f : fields )
       {
         apis->add( f.name() );
       }
