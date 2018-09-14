@@ -39,7 +39,7 @@ class QgsVectorLayerSaveStyleDialog : public QDialog, private Ui::QgsVectorLayer
     };
 
     explicit QgsVectorLayerSaveStyleDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
-    ~QgsVectorLayerSaveStyleDialog();
+    ~QgsVectorLayerSaveStyleDialog() override;
 
     SaveToDbSettings saveToDbSettings() const;
     QString outputFilePath() const;
@@ -48,9 +48,10 @@ class QgsVectorLayerSaveStyleDialog : public QDialog, private Ui::QgsVectorLayer
     QgsVectorLayerProperties::StyleType currentStyleType() const;
 
   public slots:
-    void accept();
+    void accept() override;
 
   private slots:
+    void updateSaveButtonState();
     void showDbHelp();
     void readUiFileContent( const QString &filePath );
 

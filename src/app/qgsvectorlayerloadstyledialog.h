@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsloadstylefromdbdialog.h
+    qgsvectorlayerloadstyle.h
     ---------------------
     begin                : April 2013
     copyright            : (C) 2013 by Emilio Loi
@@ -16,35 +16,44 @@
 #ifndef QGSLOADFILEFROMDBDIALOG_H
 #define QGSLOADFILEFROMDBDIALOG_H
 
-#include "ui_qgsloadstylefromdbdialog.h"
+#include "ui_qgsvectorlayerloadstyledialog.h"
 #include "qgsguiutils.h"
 #include "qgis_app.h"
-#include "qgsvectordataprovider.h"
+#include "qgsvectorlayerproperties.h"
+#include "qgsmaplayer.h"
 
-class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadStyleFromDBDialogLayout
+class APP_EXPORT QgsVectorLayerLoadStyleDialog : public QDialog, private Ui::QgsVectorLayerLoadStyleDialog
 {
-    QString mSelectedStyleId;
-    QString mSelectedStyleName;
-    int mSectionLimit = 0;
     Q_OBJECT
   public:
-    explicit QgsLoadStyleFromDBDialog( QWidget *parent = nullptr );
+    explicit QgsVectorLayerLoadStyleDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
-    ~QgsLoadStyleFromDBDialog() override;
+    ~QgsVectorLayerLoadStyleDialog() override;
+
+    QgsMapLayer::StyleCategories styleCategories() const;
+
+    QgsVectorLayerProperties::StyleType currentStyleType() const;
+
+    QString filePath() const;
 
     void initializeLists( const QStringList &ids, const QStringList &names, const QStringList &descriptions, int sectionLimit );
-    QString getSelectedStyleId();
+    QString selectedStyleId();
     void selectionChanged( QTableWidget *styleTable );
-    void setLayer( QgsVectorLayer *l );
 
   public slots:
+    void accept() override;
+
+  private slots:
+    void updateLoadButtonState();
     void onRelatedTableSelectionChanged();
     void onOthersTableSelectionChanged();
     void deleteStyleFromDB();
 
   private:
-    QgsVectorLayer *mLayer = nullptr;
-
+    QgsVectorLayer *mLayer;
+    QString mSelectedStyleId;
+    QString mSelectedStyleName;
+    int mSectionLimit = 0;
 };
 
 #endif //QGSLOADFILEFROMDBDIALOG_H

@@ -59,7 +59,6 @@ SET(QGIS_APP_SRCS
   qgslayertreeviewfilterindicator.cpp
   qgslayertreeviewmemoryindicator.cpp
   qgslayertreeviewnonremovableindicator.cpp
-  qgsloadstylefromdbdialog.cpp
   qgsmapcanvasdockwidget.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmapsavedialog.cpp
@@ -71,6 +70,7 @@ SET(QGIS_APP_SRCS
   qgsstatusbarcoordinateswidget.cpp
   qgsstatusbarmagnifierwidget.cpp
   qgsstatusbarscalewidget.cpp
+  qgsvectorlayerloadstyledialog.cpp
   qgsversioninfo.cpp
   qgswelcomepageitemsmodel.cpp
   qgswelcomepage.cpp
@@ -283,7 +283,6 @@ SET (QGIS_APP_MOC_HDRS
   qgslayertreeviewmemoryindicator.h
   qgslayertreeviewfilterindicator.h
   qgslayertreeviewnonremovableindicator.h
-  qgsloadstylefromdbdialog.h
   qgsmapcanvasdockwidget.h
   qgsmaplayerstyleguiutils.h
   qgsmapsavedialog.h
@@ -294,6 +293,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsstatusbarcoordinateswidget.h
   qgsstatusbarmagnifierwidget.h
   qgsstatusbarscalewidget.h
+  qgsvectorlayerloadstyledialog.h
   qgsversioninfo.h
   qgswelcomepageitemsmodel.h
   qgswelcomepage.h

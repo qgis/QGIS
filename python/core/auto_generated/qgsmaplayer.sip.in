@@ -793,7 +793,7 @@ record in the users style table in their personal qgis.db)
 .. seealso:: :py:func:`also`
 %End
 
-    virtual QString loadNamedStyle( const QString &uri, bool &resultFlag /Out/ );
+    virtual QString loadNamedStyle( const QString &uri, bool &resultFlag /Out/, StyleCategories categories = QgsMapLayer::AllStyleCategories );
 %Docstring
 Retrieve a named style for this layer if one
 exists (either as a .qml file on disk or as a

@@ -116,7 +116,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void loadDefaultStyle_clicked();
     void saveDefaultStyle_clicked();
-    void loadStyle_clicked();
     void loadMetadata();
     void saveMetadataAs();
     void saveDefaultMetadata();
@@ -143,11 +142,11 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //! Toggle editing of layer
     void toggleEditing();
 
-    //! Save the style based on selected format from the menu
+    //! Save the style
     void saveStyleAs();
 
-    //! Called when is possible to choice if load the style from filesystem or from db
-    void loadStyleMenuTriggered( QAction * );
+    //! Load the style
+    void loadStyle();
 
     void aboutToShowStyleMenu();
 
@@ -177,9 +176,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
       Style = 0,
       Metadata,
     };
-
-    //! When provider supports, it will list all the styles relative the layer in a dialog
-    void showListOfStylesFromDatabase();
 
     void updateSymbologyPage();
 
