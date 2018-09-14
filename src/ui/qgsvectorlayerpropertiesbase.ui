@@ -357,7 +357,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>18</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -433,8 +433,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>289</width>
-                <height>389</height>
+                <width>653</width>
+                <height>806</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2406,6 +2406,13 @@ border-radius: 2px;</string>
                  </spacer>
                 </item>
                </layout>
+              </item>
+              <item row="2" column="0" colspan="2">
+               <widget class="QGroupBox" name="mGeometryValidationGroupBox">
+                <property name="title">
+                 <string>Geometry validation</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
