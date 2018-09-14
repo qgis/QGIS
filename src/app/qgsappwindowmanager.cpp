@@ -1,6 +1,6 @@
 /***************************************************************************
-                             qgswindowmanagerinterface.cpp
-                             -----------------------------
+                             qgsappwindowmanager.cpp
+                             -----------------------
     Date                 : September 2018
     Copyright            : (C) 2018 Nyall Dawson
     Email                : nyall dot dawson at gmail dot com
@@ -59,8 +59,8 @@ QWidget *QgsAppWindowManager::openApplicationDialog( QgsAppWindowManager::Applic
       }
       mLayoutManagerDialog->show();
       mLayoutManagerDialog->activate();
+      return mLayoutManagerDialog;
     }
-    return nullptr;
   }
   return nullptr;
 }

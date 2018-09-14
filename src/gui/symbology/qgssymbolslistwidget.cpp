@@ -397,8 +397,14 @@ void QgsSymbolsListWidget::updateModelFilters()
 void QgsSymbolsListWidget::openStyleManager()
 {
   // prefer to use global window manager to open the style manager, if possible!
-  // this allows reuse of an existing non-modal window instead of opening a new modal window
-  if ( !QgsGui::windowManager() || !QgsGui::windowManager()->openStandardDialog( QgsWindowManagerInterface::DialogStyleManager ) )
+  // this allows reuse of an existing non-modal window instead of opening a new modal window.
+  // Note that we only use the non-modal dialog if we're open in the panel -- if we're already
+  // open as part of a modal dialog, then we MUST use another modal dialog or the result will
+  // not be focusable!
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( !panel || !panel->dockMode()
+       || !QgsGui::windowManager()
+       || !QgsGui::windowManager()->openStandardDialog( QgsWindowManagerInterface::DialogStyleManager ) )
   {
     // fallback to modal dialog
     QgsStyleManagerDialog dlg( mStyle, this );
