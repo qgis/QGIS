@@ -81,6 +81,9 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsgeometryvalidationservice.h"
 
+#include "qgsanalysis.h"
+#include "qgsgeometrycheckregistry.h"
+
 #ifdef HAVE_3D
 #include "qgsabstract3drenderer.h"
 #include "qgs3danimationsettings.h"
@@ -922,6 +925,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::initLayouts, this, QStringLiteral( "Initialize layouts support" ) );
 
   startProfile( QStringLiteral( "Geometry validation" ) );
+  QgsAnalysis::instance()->geometryCheckRegistry()->initialize();
+
   mGeometryValidationService = qgis::make_unique<QgsGeometryValidationService>( QgsProject::instance() );
   mGeometryValidationDock = new QgsGeometryValidationDock( tr( "Geometry Validation" ) );
   mGeometryValidationModel = new QgsGeometryValidationModel( mGeometryValidationService.get(), mGeometryValidationDock );

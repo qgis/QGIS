@@ -634,6 +634,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app/dwg
   ${CMAKE_SOURCE_DIR}/src/app/mesh
   ${CMAKE_SOURCE_DIR}/src/app/locator
+  ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations

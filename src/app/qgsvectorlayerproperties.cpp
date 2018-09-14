@@ -400,17 +400,17 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   if ( mLayer->isSpatial() )
   {
     mRemoveDuplicateNodesCheckbox->setEnabled( true );
-    mGeometryPrecisionSpinBox->setEnabled( true );
+    mGeometryPrecisionLineEdit->setEnabled( true );
 
     mRemoveDuplicateNodesCheckbox->setChecked( mLayer->geometryOptions()->removeDuplicateNodes() );
-    mGeometryPrecisionSpinBox->setValue( mLayer->geometryOptions()->geometryPrecision() );
+    mGeometryPrecisionLineEdit->setText( QString::number( mLayer->geometryOptions()->geometryPrecision() ) );
 
-    mGeometryPrecisionSpinBox->setSuffix( QStringLiteral( " [%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
+    mPrecisionUnitsLabel->setText( QStringLiteral( "[%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
   }
   else
   {
     mRemoveDuplicateNodesCheckbox->setEnabled( false );
-    mGeometryPrecisionSpinBox->setEnabled( false );
+    mGeometryPrecisionLineEdit->setEnabled( false );
     mGeometryAutoFixesGroupBox->setEnabled( false );
   }
 
@@ -753,7 +753,7 @@ void QgsVectorLayerProperties::apply()
 #endif
 
   mLayer->geometryOptions()->setRemoveDuplicateNodes( mRemoveDuplicateNodesCheckbox->isChecked() );
-  mLayer->geometryOptions()->setGeometryPrecision( mGeometryPrecisionSpinBox->value() );
+  mLayer->geometryOptions()->setGeometryPrecision( mGeometryPrecisionLineEdit->text().toDouble() );
 
   mLayer->triggerRepaint();
   // notify the project we've made a change
