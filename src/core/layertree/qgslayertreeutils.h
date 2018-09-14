@@ -19,15 +19,15 @@
 #include <qnamespace.h>
 #include <QList>
 #include <QPair>
+
 #include "qgis_core.h"
 
 class QDomElement;
 class QDomDocument;
 class QStringList;
-
-class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
+class QgsLayerTreeNode;
 class QgsMapLayer;
 class QgsProject;
 

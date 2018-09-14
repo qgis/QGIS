@@ -15,12 +15,16 @@
 
 #include "qgslayertreegroup.h"
 
-#include "qgslayertree.h"
+
+#include "qgslayertreelayer.h"
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
+#include "qgsprojecttranslator.h"
+#include "qgsreadwritecontext.h"
 
 #include <QDomElement>
 #include <QStringList>
+class QgsProject;
 
 
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked )

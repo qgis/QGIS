@@ -22,18 +22,15 @@
 #include <QIcon>
 #include <QObject>
 
-
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
-#include "qgsrasterdataprovider.h" // for QgsImageFetcher dtor visibility
-
+class QgsDataDefinedSizeLegend;
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
 class QgsLegendSettings;
-class QgsMapSettings;
-class QgsSymbol;
 class QgsRenderContext;
+class QgsSymbol;
 
 /**
  * \ingroup core
@@ -375,8 +372,6 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QColor mColor;
     QString mLabel;
 };
-
-class QgsImageFetcher;
 
 /**
  * \ingroup core

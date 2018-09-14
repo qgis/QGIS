@@ -20,7 +20,7 @@
 #include <QStringList>
 
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;

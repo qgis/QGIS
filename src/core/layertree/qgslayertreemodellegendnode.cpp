@@ -18,16 +18,24 @@
 
 #include "qgslayertreemodellegendnode.h"
 
+
 #include "qgsdatadefinedsizelegend.h"
-#include "qgslayertree.h"
+#include "qgsimageoperation.h"
+#include "qgslayertreelayer.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
+#include "qgslegendstyle.h"
+#include "qgsmaptopixel.h"
 #include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsimageoperation.h"
-#include "qgsvectorlayer.h"
 #include "qgsrasterrenderer.h"
+#include "qgsrendercontext.h"
+#include "qgsrenderer.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayer.h"
+
+class QgsRasterDataProvider;
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent )
   : QObject( parent )

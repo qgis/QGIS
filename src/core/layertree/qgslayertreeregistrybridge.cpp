@@ -15,10 +15,12 @@
 
 #include "qgslayertreeregistrybridge.h"
 
-#include "qgslayertree.h"
 
-#include "qgsproject.h"
+#include "qgslayertree.h"
+#include "qgslayertreelayer.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
+
 
 QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QgsProject *project, QObject *parent )
   : QObject( parent )

@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgslayertree.h"
-#include "qgsmaplayerlistutils.h"
-#include "qgsvectorlayer.h"
+
+
+class QgsReadWriteContext;
 
 QgsLayerTree::QgsLayerTree()
 {

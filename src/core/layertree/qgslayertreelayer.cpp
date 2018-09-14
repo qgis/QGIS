@@ -15,9 +15,13 @@
 
 #include "qgslayertreelayer.h"
 
+
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
-#include "qgsproject.h"
+#include "qgspathresolver.h"
+#include "qgsreadwritecontext.h"
+
+class QgsProject;
 
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )

@@ -16,9 +16,15 @@
 #ifndef QGSLAYERTREE_H
 #define QGSLAYERTREE_H
 
-#include "qgslayertreenode.h"
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
+#include "qgslayertreenode.h"
+#include "qgsmaplayer.h"
+
+class QgsReadWriteContext;
 
 /**
  * \ingroup core

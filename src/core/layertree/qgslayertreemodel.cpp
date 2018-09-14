@@ -15,23 +15,27 @@
 
 #include "qgslayertreemodel.h"
 
-#include "qgslayertree.h"
-#include "qgslayertreeutils.h"
-#include "qgslayertreemodellegendnode.h"
-#include "qgsproject.h"
-
 #include <QMimeData>
 #include <QTextStream>
 
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsdataitem.h"
+#include "qgslayertree.h"
+#include "qgslayertreegroup.h"
+#include "qgslayertreelayer.h"
+#include "qgslayertreemodellegendnode.h"
+#include "qgslayertreenode.h"
+#include "qgslogger.h"
 #include "qgsmaphittest.h"
-#include "qgsmaplayerlegend.h"
-#include "qgsmaplayerstylemanager.h"
-#include "qgspluginlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
-#include "qgssymbollayerutils.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerstyle.h"
+#include "qgsmapsettings.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgswkbtypes.h"
+
+class QgsMapLayerLegend;
 
 QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QAbstractItemModel( parent )
