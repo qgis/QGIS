@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QCoreApplication
 from math import sqrt
 
-from qgis.core import (QgsFeature,
+from qgis.core import (QgsApplication,
+                       QgsFeature,
                        QgsFeatureSink,
                        QgsWkbTypes,
                        QgsProcessing,
