@@ -937,7 +937,7 @@ gray = no data
            <item row="5" column="0">
             <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
              <property name="title">
-              <string>Map centering</string>
+              <string>Map Centering</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_8">
               <property name="topMargin">

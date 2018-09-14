@@ -69,7 +69,7 @@
        <item row="3" column="0">
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
-          <string>New field</string>
+          <string>New Field</string>
          </property>
          <layout class="QGridLayout" name="_2">
           <item row="0" column="1" colspan="3">
@@ -268,7 +268,7 @@
        <item row="4" column="0">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
-          <string>Fields list</string>
+          <string>Fields List</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="2" column="0">
@@ -345,9 +345,9 @@
         </widget>
        </item>
        <item row="5" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupBox" native="true">
-         <property name="title" stdset="0">
-          <string>Advanced options</string>
+        <widget class="QgsCollapsibleGroupBox" name="groupBox">
+         <property name="title">
+          <string>Advanced Options</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>

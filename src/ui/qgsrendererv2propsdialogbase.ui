@@ -93,7 +93,7 @@
          <item>
           <widget class="QgsCollapsibleGroupBox" name="mLayerRenderingGroupBox">
            <property name="title">
-            <string>Layer rendering</string>
+            <string>Layer Rendering</string>
            </property>
            <property name="flat">
             <bool>true</bool>

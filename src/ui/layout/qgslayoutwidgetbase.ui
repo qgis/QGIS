@@ -62,7 +62,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
          <property name="title">
-          <string>General settings</string>
+          <string>General Settings</string>
          </property>
          <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
           <item row="0" column="0">
@@ -207,7 +207,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_3">
          <property name="title">
-          <string>Export settings</string>
+          <string>Export Settings</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="4" column="0" colspan="2">
@@ -275,7 +275,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_5">
          <property name="title">
-          <string>Resize layout to content</string>
+          <string>Resize Layout to Content</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>

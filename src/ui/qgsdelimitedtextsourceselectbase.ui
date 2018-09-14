@@ -178,7 +178,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>File format</string>
+          <string>File Format</string>
          </property>
          <property name="collapsed">
           <bool>false</bool>
@@ -642,7 +642,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Record and fields options</string>
+          <string>Record and Fields Options</string>
          </property>
          <property name="collapsed">
           <bool>true</bool>
@@ -797,7 +797,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Geometry definition</string>
+          <string>Geometry Definition</string>
          </property>
          <property name="collapsed">
           <bool>true</bool>
@@ -1113,7 +1113,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Layer settings</string>
+          <string>Layer Settings</string>
          </property>
          <property name="collapsed">
           <bool>true</bool>
@@ -1186,7 +1186,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Sample data</string>
+          <string>Sample Data</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>false</bool>
