@@ -253,19 +253,7 @@ Set the pivot point
 .. versionadded:: 3.4
 %End
 
-    QStringList listForCboPrettyBreaks() const;
-%Docstring
-Returns the list of breaks used in the prettybreaks mode. Needed to recover this list in saved configuration, or when property window in closed and reopened
 
-.. versionadded:: 3.4
-%End
-
-    void setListForCboPrettyBreaks( QStringList listForCboPrettyBreaks );
-%Docstring
-Set the list of breaks used in the prettybreaks mode, which is needed to recover this list in saved configuration, or when property window is closed and reopened
-
-.. versionadded:: 3.4
-%End
 
     bool astride() const;
 %Docstring
