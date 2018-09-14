@@ -66,10 +66,10 @@ class KNearestConcaveHull(QgisAlgorithm):
         return self.tr('Concave hull (using k-nearest neighbour algorithm)')
 
     def icon(self):
-        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmKNearestConcaveHull.svg")
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmConcaveHull.svg")
 
     def svgIconPath(self):
-        return QgsApplication.iconPath("/algorithms/mAlgorithmKNearestConcaveHull.svg")
+        return QgsApplication.iconPath("/algorithms/mAlgorithmConcaveHull.svg")
 
     def group(self):
         return self.tr('Vector geometry')

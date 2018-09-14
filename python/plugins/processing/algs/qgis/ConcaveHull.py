@@ -77,6 +77,12 @@ class ConcaveHull(QgisAlgorithm):
     def displayName(self):
         return self.tr('Concave hull (using alpha shapes algorithm)')
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmConcaveHull.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmConcaveHull.svg")
+
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsSource(parameters, ConcaveHull.INPUT, context)
         if layer is None:
