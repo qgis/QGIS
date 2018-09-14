@@ -24,6 +24,7 @@ email                : matthias@opengis.ch
 QgsGeometryValidationService::QgsGeometryValidationService( QgsProject *project )
 {
   connect( project, &QgsProject::layersAdded, this, &QgsGeometryValidationService::onLayersAdded );
+  mIsValidGeometryCheck = new QgsIsValidGeometryCheck();
 }
 
 QgsGeometryValidationService::~QgsGeometryValidationService()

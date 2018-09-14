@@ -62,6 +62,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
 #endif
     }
 
+
     case Qt::DecorationRole:
     {
       if ( mGeometryValidationService->validationActive( mCurrentLayer, featureItem.fid ) )
