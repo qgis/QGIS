@@ -780,6 +780,7 @@ SET(QGIS_GUI_HDRS
   qgswidgetstatehelper_p.h
   qgssourceselectprovider.h
   qgssourceselectproviderregistry.h
+  qgswindowmanagerinterface.h
 
   ogr/qgsogrhelperfunctions.h
   ogr/qgsnewogrconnection.h

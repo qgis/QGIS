@@ -30,6 +30,8 @@
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsstylemodel.h"
+#include "qgsgui.h"
+#include "qgswindowmanagerinterface.h"
 
 #include <QAction>
 #include <QString>
@@ -134,7 +136,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
 
   connect( mStyle, &QgsStyle::groupsModified, this, &QgsSymbolsListWidget::populateGroups );
 
-  connect( openStyleManagerButton, &QPushButton::pressed, this, &QgsSymbolsListWidget::openStyleManager );
+  connect( openStyleManagerButton, &QToolButton::clicked, this, &QgsSymbolsListWidget::openStyleManager );
 
   lblSymbolName->clear();
 
@@ -394,10 +396,16 @@ void QgsSymbolsListWidget::updateModelFilters()
 
 void QgsSymbolsListWidget::openStyleManager()
 {
-  QgsStyleManagerDialog dlg( mStyle, this );
-  dlg.exec();
+  // prefer to use global window manager to open the style manager, if possible!
+  // this allows reuse of an existing non-modal window instead of opening a new modal window
+  if ( !QgsGui::windowManager() || !QgsGui::windowManager()->openStandardDialog( QgsWindowManagerInterface::DialogStyleManager ) )
+  {
+    // fallback to modal dialog
+    QgsStyleManagerDialog dlg( mStyle, this );
+    dlg.exec();
 
-  updateModelFilters(); // probably not needed -- the model should automatically update if any changes were made
+    updateModelFilters(); // probably not needed -- the model should automatically update if any changes were made
+  }
 }
 
 void QgsSymbolsListWidget::clipFeaturesToggled( bool checked )

@@ -1,0 +1,45 @@
+/***************************************************************************
+                             qgswindowmanagerinterface.cpp
+                             -----------------------------
+    Date                 : September 2018
+    Copyright            : (C) 2018 Nyall Dawson
+    Email                : nyall dot dawson at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsappwindowmanager.h"
+#include "qgsstylemanagerdialog.h"
+#include "qgsstyle.h"
+#include "qgisapp.h"
+
+
+QgsAppWindowManager::~QgsAppWindowManager()
+{
+  if ( mStyleManagerDialog )
+    delete mStyleManagerDialog;
+}
+
+QWidget *QgsAppWindowManager::openStandardDialog( QgsWindowManagerInterface::StandardDialog dialog )
+{
+  switch ( dialog )
+  {
+    case QgsWindowManagerInterface::DialogStyleManager:
+    {
+      if ( !mStyleManagerDialog )
+      {
+        mStyleManagerDialog = new QgsStyleManagerDialog( QgsStyle::defaultStyle(), QgisApp::instance(), Qt::Window );
+        mStyleManagerDialog->setAttribute( Qt::WA_DeleteOnClose );
+      }
+      mStyleManagerDialog->show();
+      mStyleManagerDialog->activate();
+      return mStyleManagerDialog;
+    }
+  }
+  return nullptr;
+}

@@ -10,6 +10,7 @@ SET(QGIS_APP_SRCS
   qgsalignrasterdialog.cpp
   qgsappbrowserproviders.cpp
   qgsapplayertreeviewmenuprovider.cpp
+  qgsappwindowmanager.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
   qgsjoindialog.cpp

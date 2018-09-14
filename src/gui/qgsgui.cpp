@@ -37,6 +37,7 @@
 #include "qgswidgetstatehelper_p.h"
 #include "qgslogger.h"
 #include "qgsprocessingrecentalgorithmlog.h"
+#include "qgswindowmanagerinterface.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -93,9 +94,19 @@ void QgsGui::enableAutoGeometryRestore( QWidget *widget, const QString &key )
 {
   if ( widget->objectName().isEmpty() )
   {
-    QgsDebugMsg( "WARNING: No object name set. Best for it to be set objectName when using QgsGui::enableAutoGeometryRestore" );
+    QgsDebugMsg( QStringLiteral( "WARNING: No object name set. Best for it to be set objectName when using QgsGui::enableAutoGeometryRestore" ) );
   }
   instance()->mWidgetStateHelper->registerWidget( widget, key );
+}
+
+QgsWindowManagerInterface *QgsGui::windowManager()
+{
+  return instance()->mWindowManager.get();
+}
+
+void QgsGui::setWindowManager( QgsWindowManagerInterface *manager )
+{
+  instance()->mWindowManager.reset( manager );
 }
 
 QgsGui::~QgsGui()
