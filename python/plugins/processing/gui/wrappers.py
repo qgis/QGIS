@@ -630,11 +630,15 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
                 [QgsProcessingOutputRasterLayer,
                  QgsProcessingOutputMapLayer,
                  QgsProcessingOutputMultipleLayers])
-        elif self.param.layerType() == QgsProcessing.TypeVector:
-            options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource,
+
+        elif self.param().layerType() == QgsProcessing.TypeMapLayer:
+            options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterRasterLayer,
+                                                            QgsProcessingParameterFeatureSource,
                                                             QgsProcessingParameterVectorLayer,
                                                             QgsProcessingParameterMultipleLayers),
-                                                           [QgsProcessingOutputVectorLayer,
+                                                           [QgsProcessingOutputRasterLayer,
+                                                            QgsProcessingOutputVectorLayer,
+                                                            QgsProcessingOutputMapLayer,
                                                             QgsProcessingOutputMultipleLayers])
         else:
             options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFile, QgsProcessingOutputFile)
