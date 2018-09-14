@@ -1,0 +1,58 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgswindowmanagerinterface.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsWindowManagerInterface
+{
+%Docstring
+Interface for window manager.
+
+An implementation of the window manager interface is usually retrieved from
+the QgsGui instance, via :py:func:`QgsGui.windowManager()`
+
+.. note::
+
+   This is not considered stable API and may change in future QGIS versions.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgswindowmanagerinterface.h"
+%End
+  public:
+
+    enum StandardDialog
+    {
+      DialogStyleManager,
+    };
+
+    virtual ~QgsWindowManagerInterface();
+
+    virtual QWidget *openStandardDialog( StandardDialog dialog ) = 0;
+%Docstring
+Opens an instance of a standard QGIS dialog. Depending on the window manager
+implementation, this may either open a new instance of the dialog or bring an
+existing instance to the foreground.
+
+Returns the dialog if shown, or None if the dialog either could not be
+created or is not supported by the window manager implementation.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgswindowmanagerinterface.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

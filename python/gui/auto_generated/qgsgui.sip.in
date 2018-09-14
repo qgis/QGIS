@@ -82,6 +82,24 @@ Register the widget to allow its position to be automatically saved and restored
 Use this to avoid needing to call saveGeometry() and restoreGeometry() on your widget.
 %End
 
+    static QgsWindowManagerInterface *windowManager();
+%Docstring
+Returns the global window manager, if set.
+
+.. seealso:: :py:func:`setWindowManager`
+
+.. versionadded:: 3.4
+%End
+
+    static void setWindowManager( QgsWindowManagerInterface *manager /Transfer/ );
+%Docstring
+Sets the global window ``manager``. Ownership is transferred to the QgsGui instance.
+
+.. seealso:: :py:func:`windowManager`
+
+.. versionadded:: 3.4
+%End
+
     ~QgsGui();
 
   private:

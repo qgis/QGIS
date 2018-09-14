@@ -65,7 +65,6 @@ class QgsLayoutCustomDropHandler;
 class QgsLayoutDesignerDialog;
 class QgsLayoutDesignerInterface;
 class QgsLayoutManagerDialog;
-class QgsStyleManagerDialog;
 class QgsMapCanvas;
 class QgsMapCanvasDockWidget;
 class QgsMapLayer;
@@ -2204,7 +2203,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLayerStylingWidget *mMapStyleWidget = nullptr;
 
     QPointer< QgsLayoutManagerDialog > mLayoutManagerDialog;
-    QPointer< QgsStyleManagerDialog > mStyleManagerDialog;
 
     //! Persistent tile scale slider
     QgsTileScaleWidget *mpTileScaleWidget = nullptr;

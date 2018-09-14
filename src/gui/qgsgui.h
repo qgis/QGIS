@@ -21,6 +21,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include <QWidget>
+#include <memory>
 
 class QgsEditorWidgetRegistry;
 class QgsShortcutsManager;
@@ -32,6 +33,7 @@ class QgsLayoutItemGuiRegistry;
 class QgsWidgetStateHelper;
 class QgsProcessingGuiRegistry;
 class QgsProcessingRecentAlgorithmLog;
+class QgsWindowManagerInterface;
 
 /**
  * \ingroup gui
@@ -109,6 +111,20 @@ class GUI_EXPORT QgsGui
      */
     static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
 
+    /**
+     * Returns the global window manager, if set.
+     * \see setWindowManager()
+     * \since QGIS 3.4
+     */
+    static QgsWindowManagerInterface *windowManager();
+
+    /**
+     * Sets the global window \a manager. Ownership is transferred to the QgsGui instance.
+     * \see windowManager()
+     * \since QGIS 3.4
+     */
+    static void setWindowManager( QgsWindowManagerInterface *manager SIP_TRANSFER );
+
     ~QgsGui();
 
   private:
@@ -125,6 +141,7 @@ class GUI_EXPORT QgsGui
     QgsLayoutItemGuiRegistry *mLayoutItemGuiRegistry = nullptr;
     QgsProcessingGuiRegistry *mProcessingGuiRegistry = nullptr;
     QgsProcessingRecentAlgorithmLog *mProcessingRecentAlgorithmLog = nullptr;
+    std::unique_ptr< QgsWindowManagerInterface > mWindowManager;
 
 #ifdef SIP_RUN
     QgsGui( const QgsGui &other );

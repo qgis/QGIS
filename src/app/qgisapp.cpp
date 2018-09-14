@@ -319,7 +319,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsnewnamedialog.h"
 #include "qgsgui.h"
 #include "qgsdatasourcemanagerdialog.h"
-#include "qgsstylemanagerdialog.h"
+#include "qgsappwindowmanager.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -1263,6 +1263,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   qApp->processEvents();
   endProfile();
 
+  QgsGui::setWindowManager( new QgsAppWindowManager() );
+
   mMapCanvas->freeze( false );
   mMapCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
 
@@ -1517,8 +1519,8 @@ QgisApp::~QgisApp()
   delete mVectorLayerTools;
   delete mWelcomePage;
 
-  if ( mStyleManagerDialog )
-    delete mStyleManagerDialog;
+  // Gracefully delete window manager now
+  QgsGui::setWindowManager( nullptr );
 
   deleteLayoutDesigners();
   removeAnnotationItems();
@@ -2269,18 +2271,9 @@ void QgisApp::createActions()
 
 }
 
-#include "qgsstyle.h"
-#include "qgsstylemanagerdialog.h"
-
 void QgisApp::showStyleManager()
 {
-  if ( !mStyleManagerDialog )
-  {
-    mStyleManagerDialog = new QgsStyleManagerDialog( QgsStyle::defaultStyle(), this, Qt::Window );
-    mStyleManagerDialog->setAttribute( Qt::WA_DeleteOnClose );
-  }
-  mStyleManagerDialog->show();
-  mStyleManagerDialog->activate();
+  QgsGui::windowManager()->openStandardDialog( QgsWindowManagerInterface::DialogStyleManager );
 }
 
 void QgisApp::showPythonDialog()

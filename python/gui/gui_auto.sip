@@ -21,6 +21,7 @@
 %Include auto_generated/qgsabstractdatasourcewidget.sip
 %Include auto_generated/qgssourceselectprovider.sip
 %Include auto_generated/qgssourceselectproviderregistry.sip
+%Include auto_generated/qgswindowmanagerinterface.sip
 %Include auto_generated/attributetable/qgsfeaturemodel.sip
 %Include auto_generated/auth/qgsauthauthoritieseditor.sip
 %Include auto_generated/auth/qgsauthcertificateinfo.sip
