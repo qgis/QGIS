@@ -156,7 +156,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self._support_inplace_edit_tester('native:setmfromraster', M_ONLY)
         self._support_inplace_edit_tester('native:simplifygeometries', LINESTRING_AND_POLYGON_ONLY)
         self._support_inplace_edit_tester('native:snappointstogrid', ALL)
-        self._support_inplace_edit_tester('native:multiparttosingleparts', MULTI_ONLY)
+        self._support_inplace_edit_tester('native:multiparttosingleparts', ALL)
         self._support_inplace_edit_tester('native:promotetomulti', MULTI_ONLY)
         self._support_inplace_edit_tester('native:subdivide', ALL)
         self._support_inplace_edit_tester('native:translategeometry', ALL)
