@@ -70,6 +70,9 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     //! The main filter method
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
+    //! The sort method overwritten in order to always display deprecated plugins last.
+    bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
+
   private:
     QStringList mAcceptedStatuses;
     QString mAcceptedSpacers;
