@@ -28,12 +28,12 @@ import json
 import zipfile
 
 from qgis.PyQt.QtCore import Qt, QObject, QDir, QUrl, QFileInfo, QFile
-from qgis.PyQt.QtWidgets import QMessageBox, QLabel, QFrame, QApplication, QFileDialog
+from qgis.PyQt.QtWidgets import QApplication, QDialog, QDialogButtonBox, QFrame, QMessageBox, QLabel, QVBoxLayout
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 import qgis
 from qgis.core import Qgis, QgsApplication, QgsNetworkAccessManager, QgsSettings
-from qgis.gui import QgsMessageBar
+from qgis.gui import QgsMessageBar, QgsPasswordLineEdit
 from qgis.utils import (iface, startPlugin, unloadPlugin, loadPlugin,
                         reloadPlugin, updateAvailablePlugins)
 from .installer_data import (repositories, plugins, officialRepo,
@@ -539,9 +539,6 @@ class QgsPluginInstaller(QObject):
         settings.setValue(settingsGroup + '/lastZipDirectory',
                           QFileInfo(filePath).absoluteDir().absolutePath())
 
-        error = False
-        infoString = None
-
         with zipfile.ZipFile(filePath, 'r') as zf:
             pluginName = os.path.split(zf.namelist()[0])[0]
 
@@ -551,24 +548,54 @@ class QgsPluginInstaller(QObject):
         if not QDir(pluginsDirectory).exists():
             QDir().mkpath(pluginsDirectory)
 
+        pluginDirectory = QDir.cleanPath(os.path.join(pluginsDirectory, pluginName))
+
         # If the target directory already exists as a link,
         # remove the link without resolving
-        QFile(os.path.join(pluginsDirectory, pluginFileName)).remove()
+        QFile(pluginDirectory).remove()
 
-        try:
-            # Test extraction. If fails, then exception will be raised
-            # and no removing occurs
-            unzip(str(filePath), str(pluginsDirectory))
-            # Removing old plugin files if exist
-            removeDir(QDir.cleanPath(os.path.join(pluginsDirectory, pluginFileName)))
-            # Extract new files
-            unzip(str(filePath), str(pluginsDirectory))
-        except:
-            error = True
-            infoString = (self.tr("Plugin installation failed"),
-                          self.tr("Failed to unzip the plugin package\n{}.\nProbably it is broken".format(filePath)))
+        password = None
+        infoString = None
+        success = False
+        keepTrying = True
 
-        if infoString is None:
+        while keepTrying:
+            try:
+                # Test extraction. If fails, then exception will be raised and no removing occurs
+                unzip(filePath, pluginsDirectory, password)
+                # Removing old plugin files if exist
+                removeDir(pluginDirectory)
+                # Extract new files
+                unzip(filePath, pluginsDirectory, password)
+                keepTrying = False
+                success = True
+            except Exception as e:
+                success = False
+                if 'password' in str(e):
+                    infoString = self.tr('Aborted by user')
+                    if 'Bad password' in str(e):
+                        msg = self.tr('Wrong password. Please enter a correct password to the zip file.')
+                    else:
+                        msg = self.tr('The zip file is encrypted. Please enter password.')
+                    # Display a password dialog with QgsPasswordLineEdit
+                    dlg = QDialog()
+                    dlg.setWindowTitle(self.tr('Enter password'))
+                    buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal)
+                    buttonBox.rejected.connect(dlg.reject)
+                    buttonBox.accepted.connect(dlg.accept)
+                    lePass = QgsPasswordLineEdit()
+                    layout = QVBoxLayout()
+                    layout.addWidget(QLabel(msg))
+                    layout.addWidget(lePass)
+                    layout.addWidget(buttonBox)
+                    dlg.setLayout(layout)
+                    keepTrying = dlg.exec_()
+                    password = lePass.text()
+                else:
+                    infoString = self.tr("Failed to unzip the plugin package\n{}.\nProbably it is broken".format(filePath))
+                    keepTrying = False
+
+        if success:
             updateAvailablePlugins()
             loadPlugin(pluginName)
             plugins.getAllInstalled()
@@ -585,11 +612,10 @@ class QgsPluginInstaller(QObject):
             else:
                 if startPlugin(pluginName):
                     settings.setValue('/PythonPlugins/' + pluginName, True)
-            infoString = (self.tr("Plugin installed successfully"), "")
 
-        if infoString[0]:
-            level = error and Qgis.Critical or Qgis.Info
-            msg = "<b>%s</b>" % infoString[0]
-            if infoString[1]:
-                msg += "<b>:</b> %s" % infoString[1]
-            iface.pluginManagerInterface().pushMessage(msg, level)
+            msg = "<b>%s</b>" % self.tr("Plugin installed successfully")
+        else:
+            msg = "<b>%s:</b> %s" % (self.tr("Plugin installation failed"), infoString)
+
+        level = Qgis.Info if success else Qgis.Critical
+        iface.pluginManagerInterface().pushMessage(msg, level)
