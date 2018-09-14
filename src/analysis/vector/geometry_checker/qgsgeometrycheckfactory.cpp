@@ -16,3 +16,8 @@
 #include "qgsgeometrycheckfactory.h"
 
 #include "qgis.h"
+
+QgsGeometryCheck::CheckType QgsGeometryCheckFactory::flags() const
+{
+  return QgsGeometryCheck::FeatureNodeCheck;
+}

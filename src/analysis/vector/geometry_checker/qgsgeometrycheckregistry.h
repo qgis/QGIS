@@ -16,14 +16,18 @@
 #ifndef QGSGEOMETRYCHECKREGISTRY_H
 #define QGSGEOMETRYCHECKREGISTRY_H
 
+#define SIP_NO_FILE
+
 #include <QString>
 #include <QMap>
+#include <QVariant>
 
 #include "qgis_sip.h"
 #include "qgis_analysis.h"
 
 class QgsGeometryCheck;
 class QgsGeometryCheckFactory;
+class QgsGeometryCheckerContext;
 
 
 /**
@@ -43,7 +47,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckRegistry
      */
     QgsGeometryCheckRegistry();
 
-    void init();
+    void initialize();
 
     /**
      * Destructor
@@ -52,7 +56,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckRegistry
      */
     ~QgsGeometryCheckRegistry();
 
-    QgsGeometryCheck *geometryCheck( const QString &checkId );
+    QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckerContext *context, const QVariantMap &geometryCheckConfig ) SIP_TRANSFER;
 
     void registerGeometryCheck( const QString &checkId, QgsGeometryCheckFactory *checkFactory SIP_TRANSFER );
 

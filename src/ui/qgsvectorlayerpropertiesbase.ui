@@ -721,8 +721,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>653</width>
+                <height>806</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -907,8 +907,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>104</width>
-                <height>102</height>
+                <width>653</width>
+                <height>806</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -2363,7 +2363,7 @@ border-radius: 2px;</string>
               <string>Automatic Fixes</string>
              </property>
              <layout class="QFormLayout" name="formLayout">
-              <item row="1" column="0">
+              <item row="2" column="0">
                <widget class="QLabel" name="label">
                 <property name="toolTip">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The geometry precision defines the maximum precision to of geometry coordinates that should be stored on this layer. A snap to grid algorithm will be applied on every geometry entering this layer, resulting in coordinates being rounded to multiples of this value. The operation is applied in this layer's coordinate reference system.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -2380,39 +2380,58 @@ border-radius: 2px;</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
-               <layout class="QHBoxLayout" name="horizontalLayout_11" stretch="1,2">
+              <item row="2" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_11" stretch="0,0">
                 <item>
-                 <widget class="QgsDoubleSpinBox" name="mGeometryPrecisionSpinBox">
-                  <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The geometry precision defines the maximum precision to of geometry coordinates that should be stored on this layer. A snap to grid algorithm will be applied on every geometry entering this layer, resulting in coordinates being rounded to multiples of this value. The operation is applied in this layer's coordinate reference system.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                  <property name="specialValueText">
-                   <string>[Disabled]</string>
+                 <widget class="QLabel" name="mPrecisionUnitsLabel">
+                  <property name="text">
+                   <string>[Units]</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <spacer name="horizontalSpacer_9">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
+                 <widget class="QLineEdit" name="mGeometryPrecisionLineEdit">
+                  <property name="inputMethodHints">
+                   <set>Qt::ImhFormattedNumbersOnly</set>
                   </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
+                  <property name="text">
+                   <string/>
                   </property>
-                 </spacer>
+                  <property name="placeholderText">
+                   <string>[No precision restriction]</string>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
-              <item row="2" column="0" colspan="2">
-               <widget class="QGroupBox" name="mGeometryValidationGroupBox">
-                <property name="title">
-                 <string>Geometry validation</string>
+              <item row="1" column="1">
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>TextLabel</string>
                 </property>
                </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QGroupBox" name="mGeometryValidationGroupBox">
+             <property name="title">
+              <string>Geometry validation</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_13">
+              <item row="0" column="0">
+               <spacer name="verticalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>352</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </widget>
@@ -2536,11 +2555,6 @@ border-radius: 2px;</string>
    <header>qgsvectorlayerlegendwidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
@@ -2603,7 +2617,6 @@ border-radius: 2px;</string>
   <tabstop>mLayerLegendUrlLineEdit</tabstop>
   <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
   <tabstop>mRemoveDuplicateNodesCheckbox</tabstop>
-  <tabstop>mGeometryPrecisionSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

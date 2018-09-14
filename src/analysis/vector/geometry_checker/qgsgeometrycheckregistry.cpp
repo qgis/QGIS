@@ -23,16 +23,21 @@ QgsGeometryCheckRegistry::QgsGeometryCheckRegistry()
 
 }
 
+void QgsGeometryCheckRegistry::initialize()
+{
+
+}
+
 QgsGeometryCheckRegistry::~QgsGeometryCheckRegistry()
 {
   qDeleteAll( mGeometryCheckFactories.values() );
 }
 
-QgsGeometryCheck *QgsGeometryCheckRegistry::geometryCheck( const QString &checkId )
+QgsGeometryCheck *QgsGeometryCheckRegistry::geometryCheck( const QString &checkId, QgsGeometryCheckerContext *context, const QVariantMap &geometryCheckConfig )
 {
   QgsGeometryCheckFactory *factory = mGeometryCheckFactories.value( checkId );
   if ( factory )
-    return factory->createGeometryCheck();
+    return factory->createGeometryCheck( context, geometryCheckConfig );
   else
     return nullptr;
 }
