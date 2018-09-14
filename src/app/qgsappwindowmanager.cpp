@@ -17,12 +17,14 @@
 #include "qgsstylemanagerdialog.h"
 #include "qgsstyle.h"
 #include "qgisapp.h"
-
+#include "qgslayoutmanagerdialog.h"
 
 QgsAppWindowManager::~QgsAppWindowManager()
 {
   if ( mStyleManagerDialog )
     delete mStyleManagerDialog;
+  if ( mLayoutManagerDialog )
+    delete mLayoutManagerDialog;
 }
 
 QWidget *QgsAppWindowManager::openStandardDialog( QgsWindowManagerInterface::StandardDialog dialog )
@@ -40,6 +42,25 @@ QWidget *QgsAppWindowManager::openStandardDialog( QgsWindowManagerInterface::Sta
       mStyleManagerDialog->activate();
       return mStyleManagerDialog;
     }
+  }
+  return nullptr;
+}
+
+QWidget *QgsAppWindowManager::openApplicationDialog( QgsAppWindowManager::ApplicationDialog dialog )
+{
+  switch ( dialog )
+  {
+    case DialogLayoutManager:
+    {
+      if ( !mLayoutManagerDialog )
+      {
+        mLayoutManagerDialog = new QgsLayoutManagerDialog( QgisApp::instance(), Qt::Window );
+        mLayoutManagerDialog->setAttribute( Qt::WA_DeleteOnClose );
+      }
+      mLayoutManagerDialog->show();
+      mLayoutManagerDialog->activate();
+    }
+    return nullptr;
   }
   return nullptr;
 }
