@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaptoolselect.h  -  map tool for selecting features by single click
+    qgsmaptoolselect.h  -  map tool for selecting features
     ---------------------
     begin                : May 2010
     copyright            : (C) 2010 by Jeremy Palmer

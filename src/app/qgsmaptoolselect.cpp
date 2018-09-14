@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaptoolselect.cpp  -  map tool for selecting features by single click
+    qgsmaptoolselect.cpp  -  map tool for selecting features
     ----------------------
     begin                : January 2006
     copyright            : (C) 2006 by Martin Dobias

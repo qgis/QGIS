@@ -25,7 +25,7 @@
 #include "qgsmapmouseevent.h"
 #include "qgsrubberband.h"
 #include "qgssnapindicator.h"
-
+#include "qgsidentifymenu.h"
 
 /// @cond private
 
@@ -101,7 +101,10 @@ QgsMapToolSelectionHandler::QgsMapToolSelectionHandler( QgsMapCanvas *canvas, Qg
   : mCanvas( canvas )
   , mSelectionMode( selectionMode )
   , mSnapIndicator( qgis::make_unique< QgsSnapIndicator >( canvas ) )
+  , mIdentifyMenu( new QgsIdentifyMenu( mCanvas ) )
 {
+  mIdentifyMenu->setAllowMultipleReturn( false );
+  mIdentifyMenu->setExecWithSingleResult( true );
 }
 
 QgsMapToolSelectionHandler::~QgsMapToolSelectionHandler()
@@ -243,6 +246,44 @@ void QgsMapToolSelectionHandler::selectPolygonMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
 {
+  // Handle immediate right-click on feature to show context menu
+  if ( !mSelectionRubberBand && ( e->button() == Qt::RightButton ) )
+  {
+    QList<QgsMapToolIdentify::IdentifyResult> results;
+    QMap< QString, QString > derivedAttributes;
+
+    const QgsPointXY mapPoint = toMapCoordinates( e->pos() );
+    double x = mapPoint.x(), y = mapPoint.y();
+    double sr = QgsMapTool::searchRadiusMU( mCanvas );
+
+    const QList<QgsMapLayer *> layers = mCanvas->layers();
+    for ( auto layer : layers )
+    {
+      if ( layer->type() == QgsMapLayer::VectorLayer )
+      {
+        auto vectorLayer = static_cast<QgsVectorLayer *>( layer );
+        if ( vectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry )
+        {
+          QgsRectangle r = mCanvas->mapSettings().mapToLayerCoordinates( layer, QgsRectangle( x - sr, y - sr, x + sr, y + sr ) );
+          QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+          QgsFeature f;
+          while ( fit.nextFeature( f ) )
+          {
+            results << QgsMapToolIdentify::IdentifyResult( vectorLayer, f, derivedAttributes );
+          }
+        }
+      }
+    }
+
+    QPoint globalPos = mCanvas->mapToGlobal( QPoint( e->pos().x() + 5, e->pos().y() + 5 ) );
+    const QList<QgsMapToolIdentify::IdentifyResult> selectedFeatures = mIdentifyMenu->exec( results, globalPos );
+    if ( !selectedFeatures.empty() && selectedFeatures[0].mFeature.hasGeometry() )
+      setSelectedGeometry( selectedFeatures[0].mFeature.geometry(), e->modifiers() );
+
+    return;
+  }
+
+  // Handle definition of polygon by clicking points on cancas
   if ( !mSelectionRubberBand )
     initRubberBand();
 
