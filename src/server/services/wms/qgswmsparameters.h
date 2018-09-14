@@ -28,15 +28,31 @@
 #include "qgsserverrequest.h"
 #include "qgslegendsettings.h"
 #include "qgsprojectversion.h"
+#include "qgsogcutils.h"
 #include "qgsserverparameters.h"
 
 namespace QgsWms
 {
+  struct QgsWmsParametersFilter
+  {
+    //! Filter type
+    enum Type
+    {
+      UNKNOWN,
+      SQL,
+      OGC_FE
+    };
+
+    QString mFilter;
+    QgsWmsParametersFilter::Type mType = QgsWmsParametersFilter::UNKNOWN;
+    QgsOgcUtils::FilterVersion mVersion = QgsOgcUtils::FILTER_OGC_1_0; // only if FE
+  };
+
   struct QgsWmsParametersLayer
   {
     QString mNickname; // name, id or short name
     int mOpacity = -1;
-    QStringList mFilter; // list of filter
+    QList<QgsWmsParametersFilter> mFilter; // list of filter
     QStringList mSelection; // list of string fid
     QString mStyle;
   };
@@ -1125,7 +1141,7 @@ namespace QgsWms
       void raiseError( const QString &msg ) const;
       void log( const QString &msg ) const;
 
-      QMultiMap<QString, QString> getLayerFilters( const QStringList &layers ) const;
+      QMultiMap<QString, QgsWmsParametersFilter> layerFilters( const QStringList &layers ) const;
 
       QMap<QgsWmsParameter::Name, QgsWmsParameter> mWmsParameters;
       QMap<QString, QMap<QString, QString> > mExternalWMSParameters;

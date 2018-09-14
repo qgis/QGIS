@@ -2795,35 +2795,35 @@ namespace QgsWms
     }
   }
 
-  void QgsRenderer::setLayerFilter( QgsMapLayer *layer, const QStringList &filters )
+  void QgsRenderer::setLayerFilter( QgsMapLayer *layer, const QList<QgsWmsParametersFilter> &filters )
   {
     if ( layer->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( layer );
-      for ( const QString &filter : filters )
+      for ( const QgsWmsParametersFilter &filter : filters )
       {
-        if ( filter.startsWith( QLatin1String( "<" ) ) && filter.endsWith( QLatin1String( "Filter>" ) ) )
+        if ( filter.mType == QgsWmsParametersFilter::OGC_FE )
         {
           // OGC filter
           QDomDocument filterXml;
           QString errorMsg;
-          if ( !filterXml.setContent( filter, true, &errorMsg ) )
+          if ( !filterXml.setContent( filter.mFilter, true, &errorMsg ) )
           {
             throw QgsBadRequestException( QStringLiteral( "Filter string rejected" ),
-                                          QStringLiteral( "error message: %1. The XML string was: %2" ).arg( errorMsg, filter ) );
+                                          QStringLiteral( "error message: %1. The XML string was: %2" ).arg( errorMsg, filter.mFilter ) );
           }
           QDomElement filterElem = filterXml.firstChildElement();
-          std::unique_ptr<QgsExpression> expression( QgsOgcUtils::expressionFromOgcFilter( filterElem, filteredLayer ) );
+          std::unique_ptr<QgsExpression> expression( QgsOgcUtils::expressionFromOgcFilter( filterElem, filter.mVersion, filteredLayer ) );
 
           if ( expression )
           {
             mFeatureFilter.setFilter( filteredLayer, *expression );
           }
         }
-        else
+        else if ( filter.mType == QgsWmsParametersFilter::SQL )
         {
           // QGIS (SQL) filter
-          if ( !testFilterStringSafety( filter ) )
+          if ( !testFilterStringSafety( filter.mFilter ) )
           {
             throw QgsBadRequestException( QStringLiteral( "Filter string rejected" ),
                                           QStringLiteral( "The filter string %1"
@@ -2833,10 +2833,10 @@ namespace QgsWms
                                               " Allowed Keywords and special characters are "
                                               " AND,OR,IN,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX."
                                               " Not allowed are semicolons in the filter expression." ).arg(
-                                            filter ) );
+                                            filter.mFilter ) );
           }
 
-          QString newSubsetString = filter;
+          QString newSubsetString = filter.mFilter;
           if ( !filteredLayer->subsetString().isEmpty() )
           {
             newSubsetString.prepend( ") AND (" );

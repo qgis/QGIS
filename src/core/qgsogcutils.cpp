@@ -3172,7 +3172,6 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
 
   QDomElement operandElem = element.firstChildElement();
   std::unique_ptr<QgsExpressionNode> expr( nodeFromOgcFilter( operandElem ) );
-  std::unique_ptr<QgsExpressionNode> leftOp( expr->clone() );
 
   if ( !expr )
   {
@@ -3180,6 +3179,7 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
     return nullptr;
   }
 
+  std::unique_ptr<QgsExpressionNode> leftOp( expr->clone() );
   for ( operandElem = operandElem.nextSiblingElement(); !operandElem.isNull(); operandElem = operandElem.nextSiblingElement() )
   {
     std::unique_ptr<QgsExpressionNode> opRight( nodeFromOgcFilter( operandElem ) );
