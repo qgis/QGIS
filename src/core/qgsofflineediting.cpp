@@ -969,11 +969,12 @@ void QgsOfflineEditing::copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLay
   QString error;
   QDomDocument doc;
   QgsReadWriteContext context;
-  sourceLayer->exportNamedStyle( doc, error, context );
+  QgsMapLayer::StyleCategories categories = static_cast<QgsMapLayer::StyleCategories>( QgsMapLayer::AllStyleCategories ) & ~QgsMapLayer::CustomProperties;
+  sourceLayer->exportNamedStyle( doc, error, context, categories );
 
   if ( error.isEmpty() )
   {
-    targetLayer->importNamedStyle( doc, error );
+    targetLayer->importNamedStyle( doc, error, categories );
   }
   if ( !error.isEmpty() )
   {
