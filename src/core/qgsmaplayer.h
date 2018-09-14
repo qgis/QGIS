@@ -161,34 +161,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_FLAG( StyleCategories )
 
     /**
-     * Style category with its name, tooltip and icon.
-     * Text are translated and readable
-     * \since QGIS 3.4
-     */
-    struct ReadableStyleCategory
-    {
-      public:
-        //! Create a ReadableStyleCategory
-        ReadableStyleCategory( const QString &name, const QString &toolTip = QString() )
-          : mName( name ), mToolTip( toolTip )
-        {}
-        //! Create a ReadableStyleCategory
-        ReadableStyleCategory( const QString &name, const QIcon &icon, const QString &toolTip = QString() )
-          : mName( name ), mToolTip( toolTip ), mIcon( icon )
-        {}
-        //! Return the translated name of the category
-        QString name() const {return mName;}
-        //! Return the translated tooltip of the category
-        QString toolTip() const {return mToolTip;}
-        //! Return the icon of the category
-        QIcon icon() const {return mIcon;}
-      private:
-        QString mName;
-        QString mToolTip;
-        QIcon mIcon;
-    };
-
-    /**
      * Constructor for QgsMapLayer
      * \param type layer type
      * \param name display name for the layer
@@ -240,14 +212,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.0
      */
     static QString extensionPropertyType( PropertyType type );
-
-    /**
-     * Readable and Translated category
-     * \since QGIS 3.4
-     */
-    static ReadableStyleCategory readableStyleCategory( StyleCategory category );
-
-
 
     //! Returns the layer's unique ID, which is used to access this layer from QgsProject.
     QString id() const;

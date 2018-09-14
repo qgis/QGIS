@@ -22,6 +22,8 @@
 #include "qgsvectorlayerproperties.h"
 #include "qgsmaplayer.h"
 
+class QgsMapLayerStyleCategoriesModel;
+
 class APP_EXPORT QgsVectorLayerLoadStyleDialog : public QDialog, private Ui::QgsVectorLayerLoadStyleDialog
 {
     Q_OBJECT
@@ -51,6 +53,7 @@ class APP_EXPORT QgsVectorLayerLoadStyleDialog : public QDialog, private Ui::Qgs
 
   private:
     QgsVectorLayer *mLayer = nullptr;
+    QgsMapLayerStyleCategoriesModel *mModel;
     QString mSelectedStyleId;
     QString mSelectedStyleName;
     int mSectionLimit = 0;

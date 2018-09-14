@@ -21,6 +21,7 @@
 #include "qgisapp.h"
 #include "qgssettings.h"
 #include "qgsvectorlayerproperties.h"
+#include "qgsmaplayerstylecategoriesmodel.h"
 
 
 
@@ -50,7 +51,7 @@ QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *la
     mFromFileWidget->setVisible( type != QgsVectorLayerProperties::DB );
     mFromDbWidget->setVisible( type == QgsVectorLayerProperties::DB );
     mDeleteButton->setVisible( type == QgsVectorLayerProperties::DB && mLayer->dataProvider()->isDeleteStyleFromDatabaseSupported() );
-    mStyleCategoriesListWidget->setEnabled( currentStyleType() != QgsVectorLayerProperties::SLD );
+    mStyleCategoriesListView->setEnabled( currentStyleType() != QgsVectorLayerProperties::SLD );
     updateLoadButtonState();
   } );
   mStyleTypeComboBox->addItem( tr( "from file" ), QgsVectorLayerProperties::QML ); // QML is used as entry, but works for SLD too, see currentStyleType()
@@ -58,19 +59,10 @@ QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *la
     mStyleTypeComboBox->addItem( tr( "from database (%1)" ).arg( providerName ), QgsVectorLayerProperties::DB );
 
   // fill style categories
+  mModel = new QgsMapLayerStyleCategoriesModel( this );
   QgsMapLayer::StyleCategories lastStyleCategories = settings.flagValue( QStringLiteral( "style/lastStyleCategories" ), QgsMapLayer::AllStyleCategories );
-  for ( QgsMapLayer::StyleCategory category : qgsEnumMap<QgsMapLayer::StyleCategory>().keys() )
-  {
-    if ( category == QgsMapLayer::AllStyleCategories )
-      continue;
-
-    QgsMapLayer::ReadableStyleCategory readableCategory = QgsMapLayer::readableStyleCategory( category );
-
-    QListWidgetItem *item = new QListWidgetItem( readableCategory.icon(), readableCategory.name(), mStyleCategoriesListWidget );
-    item->setFlags( ( item->flags() | Qt::ItemIsUserCheckable ) & ~Qt::ItemIsSelectable );
-    item->setCheckState( lastStyleCategories.testFlag( category ) ? Qt::Checked : Qt::Unchecked );
-    item->setData( Qt::UserRole, category );
-  }
+  mModel->setCategories( lastStyleCategories );
+  mStyleCategoriesListView->setModel( mModel );
 
   // load from file setup
   mFileWidget->setFilter( tr( "QGIS Layer Style File, SLD File" ) + QStringLiteral( " (*.qml *.sld)" ) );
@@ -78,7 +70,7 @@ QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *la
   mFileWidget->setDefaultRoot( myLastUsedDir );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & )
   {
-    mStyleCategoriesListWidget->setEnabled( currentStyleType() != QgsVectorLayerProperties::SLD );
+    mStyleCategoriesListView->setEnabled( currentStyleType() != QgsVectorLayerProperties::SLD );
     updateLoadButtonState();
   } );
 
@@ -103,7 +95,7 @@ QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *la
   setTabOrder( mRelatedTable, mOthersTable );
 
   restoreGeometry( settings.value( QStringLiteral( "Windows/vectorLayerLoadStyle/geometry" ) ).toByteArray() );
-  mStyleCategoriesListWidget->adjustSize();
+  mStyleCategoriesListView->adjustSize();
 }
 
 QgsVectorLayerLoadStyleDialog::~QgsVectorLayerLoadStyleDialog()
@@ -114,14 +106,7 @@ QgsVectorLayerLoadStyleDialog::~QgsVectorLayerLoadStyleDialog()
 
 QgsMapLayer::StyleCategories QgsVectorLayerLoadStyleDialog::styleCategories() const
 {
-  QgsMapLayer::StyleCategories categories;
-  for ( int row = 0; row < mStyleCategoriesListWidget->count(); ++row )
-  {
-    QListWidgetItem *item = mStyleCategoriesListWidget->item( row );
-    if ( item->checkState() == Qt::Checked )
-      categories |= item->data( Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
-  }
-  return categories;
+  return mModel->categories();
 }
 
 QgsVectorLayerProperties::StyleType QgsVectorLayerLoadStyleDialog::currentStyleType() const

@@ -20,6 +20,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgshelp.h"
+#include "qgsmaplayerstylecategoriesmodel.h"
 
 QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )
@@ -44,7 +45,7 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
     QgsVectorLayerProperties::StyleType type = currentStyleType();
     mSaveToFileWidget->setVisible( type != QgsVectorLayerProperties::DB );
     mSaveToDbWidget->setVisible( type == QgsVectorLayerProperties::DB );
-    mStyleCategoriesListWidget->setEnabled( type == QgsVectorLayerProperties::QML );
+    mStyleCategoriesListView->setEnabled( type == QgsVectorLayerProperties::QML );
     mFileWidget->setFilter( type == QgsVectorLayerProperties::QML ? tr( "QGIS Layer Style File (*.qml)" ) : tr( "SLD File (*.sld)" ) );
     updateSaveButtonState();
   } );
@@ -69,22 +70,13 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
   mFileWidget->setDefaultRoot( myLastUsedDir );
 
   // fill style categories
+  mModel = new QgsMapLayerStyleCategoriesModel( this );
   QgsMapLayer::StyleCategories lastStyleCategories = settings.flagValue( QStringLiteral( "style/lastStyleCategories" ), QgsMapLayer::AllStyleCategories );
-  for ( QgsMapLayer::StyleCategory category : qgsEnumMap<QgsMapLayer::StyleCategory>().keys() )
-  {
-    if ( category == QgsMapLayer::AllStyleCategories )
-      continue;
-
-    QgsMapLayer::ReadableStyleCategory readableCategory = QgsMapLayer::readableStyleCategory( category );
-
-    QListWidgetItem *item = new QListWidgetItem( readableCategory.icon(), readableCategory.name(), mStyleCategoriesListWidget );
-    item->setFlags( ( item->flags() | Qt::ItemIsUserCheckable ) & ~Qt::ItemIsSelectable );
-    item->setCheckState( lastStyleCategories.testFlag( category ) ? Qt::Checked : Qt::Unchecked );
-    item->setData( Qt::UserRole, category );
-  }
+  mModel->setCategories( lastStyleCategories );
+  mStyleCategoriesListView->setModel( mModel );
 
   restoreGeometry( settings.value( QStringLiteral( "Windows/vectorLayerSaveStyle/geometry" ) ).toByteArray() );
-  mStyleCategoriesListWidget->adjustSize();
+  mStyleCategoriesListView->adjustSize();
 }
 
 void QgsVectorLayerSaveStyleDialog::accept()
@@ -123,14 +115,7 @@ QString QgsVectorLayerSaveStyleDialog::outputFilePath() const
 
 QgsMapLayer::StyleCategories QgsVectorLayerSaveStyleDialog::styleCategories() const
 {
-  QgsMapLayer::StyleCategories categories;
-  for ( int row = 0; row < mStyleCategoriesListWidget->count(); ++row )
-  {
-    QListWidgetItem *item = mStyleCategoriesListWidget->item( row );
-    if ( item->checkState() == Qt::Checked )
-      categories |= item->data( Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
-  }
-  return categories;
+  return mModel->categories();
 }
 
 QgsVectorLayerProperties::StyleType QgsVectorLayerSaveStyleDialog::currentStyleType() const

@@ -67,56 +67,6 @@ QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
   return QString();
 }
 
-QgsMapLayer::ReadableStyleCategory QgsMapLayer::readableStyleCategory( QgsMapLayer::StyleCategory category )
-{
-  switch ( category )
-  {
-    case LayerConfiguration:
-      return ReadableStyleCategory( tr( "Layer Configuration" ),
-                                    QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/system.svg" ) ),
-                                    tr( "Identifiable, removable, searchable, display expression, read-only" ) );
-    case Symbology :
-      return ReadableStyleCategory( tr( "Symbology" ),
-                                    QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/symbology.svg" ) ) );
-    case Symbology3D:
-      return ReadableStyleCategory( tr( "3D Symbology" ),
-                                    QgsApplication::getThemeIcon( QStringLiteral( "/3d.svg" ) ) );
-    case Labeling :
-      return ReadableStyleCategory( tr( "Labels" ),
-                                    QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/labels.svg" ) ) );
-    case Fields :
-      return ReadableStyleCategory( tr( "Fields" ),
-                                    QgsApplication::getThemeIcon( QStringLiteral( "/mSourceFields.svg" ) ),
-                                    tr( "Aliases, widgets, WMS/WFS, expressions, constraints, virtual fields" ) );
-    case Forms :
-      return ReadableStyleCategory( tr( "Forms" ),
-                                    QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormView.svg" ) ) );
-    case Actions :
-      return ReadableStyleCategory( tr( "Actions" ),
-                                    QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/action.svg" ) ) );
-    case MapTips :
-      return ReadableStyleCategory( tr( "Map Tips" ),
-                                    QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/display.svg" ) ) );
-    case Diagrams :
-      return ReadableStyleCategory( tr( "Diagrams" ),
-                                    QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/diagram.svg" ) ) );
-    case AttributeTable :
-      return ReadableStyleCategory( tr( "Attribute Table Settings" ),
-                                    QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ),
-                                    tr( "Choice and order of columns, conditional styling" ) );
-    case Rendering :
-      return ReadableStyleCategory( tr( "Rendering" ),
-                                    QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/rendering.svg" ) ),
-                                    tr( "Scale visibility, simplify method, opacity" ) );
-    case CustomProperties :
-      return ReadableStyleCategory( tr( "Custom Properties" ),
-                                    QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
-    case AllStyleCategories :
-      return ReadableStyleCategory( tr( "All Categories" ) );
-  }
-  return ReadableStyleCategory( tr( "All Categories" ) ); // no warnings
-}
-
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           const QString &lyrname,
                           const QString &source )
