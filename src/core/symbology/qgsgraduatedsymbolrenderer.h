@@ -248,15 +248,17 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     /**
      * Returns the list of breaks used in the prettybreaks mode. Needed to recover this list in saved configuration, or when property window in closed and reopened
+     * \note Not available in Python bindings, not stable API
      * \since QGIS 3.4
      */
-    QStringList listForCboPrettyBreaks() const { return mListForCboPrettyBreaks; }
+    QStringList listForCboPrettyBreaks() const { return mListForCboPrettyBreaks; } SIP_SKIP
 
     /**
      * Set the list of breaks used in the prettybreaks mode, which is needed to recover this list in saved configuration, or when property window is closed and reopened
+     * \note Not available in Python bindings, not stable API
      * \since QGIS 3.4
      */
-    void setListForCboPrettyBreaks( QStringList listForCboPrettyBreaks ) { mListForCboPrettyBreaks = listForCboPrettyBreaks; }
+    void setListForCboPrettyBreaks( const QStringList &listForCboPrettyBreaks ) { mListForCboPrettyBreaks = listForCboPrettyBreaks; } SIP_SKIP
 
     /**
      * Returns if we want to have a central class astride the pivot value
