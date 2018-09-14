@@ -13,6 +13,7 @@
 %Include auto_generated/raster/qgsrastercalcnode.sip
 %Include auto_generated/raster/qgstotalcurvaturefilter.sip
 %Include auto_generated/vector/qgsgeometrysnapper.sip
+%Include auto_generated/vector/qgsgeometrysnappersinglesource.sip
 %Include auto_generated/vector/qgszonalstatistics.sip
 %Include auto_generated/interpolation/qgsinterpolator.sip
 %Include auto_generated/interpolation/qgsgridfilewriter.sip
