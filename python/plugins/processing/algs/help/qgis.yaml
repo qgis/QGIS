@@ -233,6 +233,13 @@ qgis:joinbylocationsummary: >
 qgis:keepnbiggestparts: >
   This algorithm takes a polygon layer and creates a new polygon layer in which multipart geometries have been removed, leaving only the n largest (in terms of area) parts.
 
+qgis:knearestconcavehull: >
+  This algorithm generates a concave hull polygon from a set of points. If the input layer is a line or polygon layer, it will use the nodes.
+
+  The number of neighbours to consider determines the concaveness of the output polygon. A lower number will result in a concave hull that follows the points very closely, while a higher number will have a smoother shape. The minimum number of neighbour points to consider is 3. A value equal to or greater than the number of points will result in a convex hull.
+
+  If a field is selected, the algorithm will group the features in the input layer using unique values in that field and generate individual polygons in the output layer for each group.
+
 qgis:lineintersections: >
   This algorithm creates point features where the lines in the Intersect layer intersect the lines in the Input layer.
 
