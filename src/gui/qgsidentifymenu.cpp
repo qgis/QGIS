@@ -26,7 +26,7 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 
-//TODO 4.0 add explicitely qobject parent to constructor
+//TODO 4.0 add explicitly qobject parent to constructor
 QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas *canvas )
   : QMenu( canvas )
   , mCanvas( canvas )
