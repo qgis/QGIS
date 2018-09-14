@@ -12820,17 +12820,17 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
     {
       QFileInfo myFileInfo( *myIterator );
 
-      // try to create the layer
       // set the layer name to the file base name...
       QString layerName = myFileInfo.completeBaseName();
 
-      // ...unless the layer uri matches "GPKG:filePath:layerName" and layerName differs from the file base name
-      const QStringList layerUriSegments = myIterator->split( QLatin1String( ":" ) );
-      if ( layerUriSegments.count() == 3 && layerUriSegments[ 0 ] ==  QLatin1String( "GPKG" ) && layerUriSegments[ 2 ] != layerName )
+      // ...unless provided explicitly
+      const QVariantMap uriDetails = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), *myIterator );
+      if ( !uriDetails[ QStringLiteral( "layerName" ) ].toString().isEmpty() )
       {
-        layerName = QStringLiteral( "%1 %2" ).arg( layerName, layerUriSegments[ 2 ] );
+        layerName = uriDetails[ QStringLiteral( "layerName" ) ].toString();
       }
 
+      // try to create the layer
       QgsRasterLayer *layer = addRasterLayerPrivate( *myIterator, layerName,
                               QString(), guiWarning, true );
       if ( layer && layer->isValid() )
