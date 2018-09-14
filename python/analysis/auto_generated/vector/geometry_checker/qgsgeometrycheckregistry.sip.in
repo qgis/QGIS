@@ -1,0 +1,50 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckregistry.h      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsGeometryCheckRegistry
+{
+%Docstring
+This class manages all known geometry check factories.
+
+QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsAnalysis.geometryCheckRegistry()`
+%End
+
+%TypeHeaderCode
+#include "qgsgeometrycheckregistry.h"
+%End
+  public:
+
+    QgsGeometryCheckRegistry();
+%Docstring
+Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsAnalysis.geometryCheckRegistry()`.
+%End
+
+    void init();
+
+    ~QgsGeometryCheckRegistry();
+
+    QgsGeometryCheck *geometryCheck( const QString &checkId );
+
+    bool registerGeometryCheck( const QString &checkId, QgsGeometryCheckFactory *checkFactory /Transfer/ );
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckregistry.h      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

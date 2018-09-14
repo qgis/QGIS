@@ -1,0 +1,36 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckfactory.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsGeometryCheckFactory
+{
+
+%TypeHeaderCode
+#include "qgsgeometrycheckfactory.h"
+%End
+  public:
+
+    QgsGeometryCheckFactory();
+
+    virtual ~QgsGeometryCheckFactory();
+
+    virtual QgsGeometryCheck *createGeometryCheck() const = 0 /Factory/;
+
+    virtual QString id() const = 0;
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckfactory.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

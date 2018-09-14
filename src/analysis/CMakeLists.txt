@@ -2,6 +2,8 @@
 # sources
 
 SET(QGIS_ANALYSIS_SRCS
+  qgsanalysis.cpp
+
   interpolation/qgsgridfilewriter.cpp
   interpolation/qgsidwinterpolator.cpp
   interpolation/qgsinterpolator.cpp
@@ -163,6 +165,8 @@ SET(QGIS_ANALYSIS_SRCS
   vector/geometry_checker/qgsgeometrytypecheck.cpp
   vector/geometry_checker/qgssinglegeometrycheck.cpp
   vector/geometry_checker/qgsisvalidgeometrycheck.cpp
+  vector/geometry_checker/qgsgeometrycheckregistry.cpp
+  vector/geometry_checker/qgsgeometrycheckfactory.cpp
 )
 
 SET(QGIS_ANALYSIS_MOC_HDRS
@@ -216,6 +220,8 @@ QT5_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 # install headers
 
 SET(QGIS_ANALYSIS_HDRS
+  qgsanalysis.h
+
   processing/qgsalgorithmimportphotos.h
   processing/qgsreclassifyutils.h
 
@@ -293,6 +299,8 @@ SET(QGIS_ANALYSIS_HDRS
   vector/geometry_checker/qgsgeometrytypecheck.h
   vector/geometry_checker/qgssinglegeometrycheck.h
   vector/geometry_checker/qgsisvalidgeometrycheck.h
+  vector/geometry_checker/qgsgeometrycheckregistry.h
+  vector/geometry_checker/qgsgeometrycheckfactory.h
 
 )
 
@@ -305,6 +313,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/analysis
   interpolation
