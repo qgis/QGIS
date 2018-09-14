@@ -18,7 +18,9 @@
 #include "qgslogger.h"
 #include <QDateTime>
 #include <QMetaType>
+#include <QTextStream>
 #include <iostream>
+#include <stdio.h>
 
 class QgsMessageLogConsole;
 
@@ -47,12 +49,19 @@ QgsMessageLogConsole::QgsMessageLogConsole()
 
 void QgsMessageLogConsole::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
 {
-  std::cerr
-      << tag.toLocal8Bit().data() << "[" <<
-      ( level == Qgis::Info ? "INFO"
-        : level == Qgis::Warning ? "WARNING"
-        : "CRITICAL" )
-      << "]: " << message.toLocal8Bit().data() << std::endl;
+  QString formattedMessage = formatLogMessage( message, tag, level );
+  QTextStream cerr( stderr );
+  cerr << formattedMessage;
+}
+
+QString QgsMessageLogConsole::formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level ) const
+{
+  const QString time = QTime::currentTime().toString();
+  const QString levelStr = level == Qgis::Info ? QStringLiteral( "INFO" ) :
+                           level == Qgis::Warning ? QStringLiteral( "WARNING" ) :
+                           QStringLiteral( "CRITICAL" );
+  const QString pid = QString::number( QCoreApplication::applicationPid() );
+  return QStringLiteral( "%1 %2 %3[%4]: %5\n" ).arg( time, levelStr, tag, pid, message );
 }
 
 //

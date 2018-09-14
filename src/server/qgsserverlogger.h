@@ -18,8 +18,6 @@
 #ifndef QGSSERVERLOGGER_H
 #define QGSSERVERLOGGER_H
 
-#define SIP_NO_FILE
-
 
 #include "qgsmessagelog.h"
 
@@ -27,13 +25,14 @@
 #include <QObject>
 #include <QString>
 #include <QTextStream>
+#include "qgis_server.h"
 
 /**
  * \ingroup server
  * \brief Writes message log into server logfile
  * \since QGIS 2.8
  */
-class QgsServerLogger: public QObject
+class SERVER_EXPORT QgsServerLogger : public QgsMessageLogConsole
 {
     Q_OBJECT
   public:
@@ -60,7 +59,13 @@ class QgsServerLogger: public QObject
     /**
       * Set the current log file
       */
-    void setLogFile( const QString &f );
+    void setLogFile( const QString &filename = QString() );
+
+    /**
+     * Activates logging to stderr.
+     * \since QGIS 3.4.
+     */
+    void setLogStderr();
 
   public slots:
 
@@ -71,7 +76,7 @@ class QgsServerLogger: public QObject
      * \param tag tag of the message
      * \param level log level of the message
      */
-    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
+    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level ) override;
 
   protected:
     QgsServerLogger();
@@ -80,6 +85,7 @@ class QgsServerLogger: public QObject
     static QgsServerLogger *sInstance;
 
     QFile mLogFile;
+    bool mLogStderr = false;
     QTextStream mTextStream;
     Qgis::MessageLevel mLogLevel = Qgis::None;
 };
