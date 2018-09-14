@@ -120,17 +120,17 @@ def make_features_compatible(new_features, input_layer):
         new_f_geom_type = QgsWkbTypes.geometryType(new_f.geometry().wkbType())
         new_f_has_geom = new_f_geom_type not in (QgsWkbTypes.UnknownGeometry, QgsWkbTypes.NullGeometry)
         input_layer_has_geom = input_wkb_type not in (QgsWkbTypes.NoGeometry, QgsWkbTypes.Unknown)
-        if input_layer_has_geom and not new_f_has_geom:
-            continue  # Skip this feature completely
-        elif not input_layer_has_geom and new_f_has_geom:
-            # Drop geometry
+
+        # Drop geometry if layer is geometry-less
+        if not input_layer_has_geom and new_f_has_geom:
             f = QgsFeature(input_layer.fields())
             f.setAttributes(new_f.attributes())
             new_f = f
             result_features.append(new_f)
             continue  # skip the rest
 
-        if input_layer_has_geom and new_f.geometry().wkbType() != input_wkb_type:  # Fix geometry
+        if input_layer_has_geom and new_f_has_geom and \
+                new_f.geometry().wkbType() != input_wkb_type:  # Fix geometry
             # Single -> Multi
             if (QgsWkbTypes.isMultiType(input_wkb_type) and not
                     new_f.geometry().isMultipart()):
