@@ -104,6 +104,7 @@ QgsMapToolSelectionHandler::QgsMapToolSelectionHandler( QgsMapCanvas *canvas, Qg
   , mIdentifyMenu( new QgsIdentifyMenu( mCanvas ) )
 {
   mIdentifyMenu->setAllowMultipleReturn( false );
+  mIdentifyMenu->setExecWithSingleResult( true );
 }
 
 QgsMapToolSelectionHandler::~QgsMapToolSelectionHandler()
@@ -255,7 +256,7 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
     double x = mapPoint.x(), y = mapPoint.y();
     double sr = QgsMapTool::searchRadiusMU( mCanvas );
 
-    const QList<QgsMapLayer*> layers = mCanvas->layers();
+    const QList<QgsMapLayer *> layers = mCanvas->layers();
     for ( auto layer : layers )
     {
       if ( layer->type() == QgsMapLayer::VectorLayer )
