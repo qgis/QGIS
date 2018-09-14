@@ -303,22 +303,31 @@ class TestQgsProcessingInPlace(unittest.TestCase):
 
     def test_make_features_compatible_geometry(self):
         """Test corner cases for geometries"""
+
+        # Make a feature with no geometry
         layer = self._make_layer('Point')
         self.assertTrue(layer.isValid())
         self.assertTrue(layer.startEditing())
         f1 = QgsFeature(layer.fields())
         f1.setAttributes([1])
-        new_features = make_features_compatible([f1], layer)
-        self.assertEqual(len(new_features), 0)
 
+        # Check that it is accepted on a Point layer
+        new_features = make_features_compatible([f1], layer)
+        self.assertEqual(len(new_features), 1)
+        self.assertEqual(new_features[0].geometry().asWkt(), '')
+
+        # Make a geometry-less layer
         nogeom_layer = QgsMemoryProviderUtils.createMemoryLayer(
             'nogeom_layer', layer.fields(), QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem(4326))
+        # Check that a geometry-less feature is accepted
         new_features = make_features_compatible([f1], nogeom_layer)
         self.assertEqual(len(new_features), 1)
         self.assertEqual(new_features[0].geometry().asWkt(), '')
 
+        # Make a geometry-less layer
         nogeom_layer = QgsMemoryProviderUtils.createMemoryLayer(
             'nogeom_layer', layer.fields(), QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem(4326))
+        # Check that a Point feature is accepted but geometry was dropped
         f1.setGeometry(QgsGeometry.fromWkt('Point(9 45)'))
         new_features = make_features_compatible([f1], nogeom_layer)
         self.assertEqual(len(new_features), 1)
