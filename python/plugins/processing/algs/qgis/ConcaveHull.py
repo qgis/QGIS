@@ -75,7 +75,10 @@ class ConcaveHull(QgisAlgorithm):
         return 'concavehull'
 
     def displayName(self):
-        return self.tr('Concave hull (using alpha shapes algorithm)')
+        return self.tr('Concave hull (alpha shapes)')
+
+    def shortDescription(self):
+        return self.tr('Creates a concave hull using the alpha shapes algorithm.')
 
     def icon(self):
         return QgsApplication.getThemeIcon("/algorithms/mAlgorithmConcaveHull.svg")

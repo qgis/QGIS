@@ -63,7 +63,10 @@ class KNearestConcaveHull(QgisAlgorithm):
         return 'knearestconcavehull'
 
     def displayName(self):
-        return self.tr('Concave hull (using k-nearest neighbour algorithm)')
+        return self.tr('Concave hull (k-nearest neighbour)')
+
+    def shortDescription(self):
+        return self.tr('Creates a concave hull using the k-nearest neighbour algorithm.')
 
     def icon(self):
         return QgsApplication.getThemeIcon("/algorithms/mAlgorithmConcaveHull.svg")
@@ -134,28 +137,28 @@ class KNearestConcaveHull(QgisAlgorithm):
                     filter = QgsExpression.createFieldEqualityExpression(field_name, unique)
                     request = QgsFeatureRequest().setFilterExpression(filter)
                     request.setSubsetOfAttributes([])
-                    features = source.getFeatures(request) # Get features with the grouping attribute equal to the current grouping value
+                    # Get features with the grouping attribute equal to the current grouping value
+                    features = source.getFeatures(request)
                     for in_feature in features:
-                        points.extend(extract_points(in_feature.geometry())) # Either points or vertices of more complex geometry
+                        if feedback.isCanceled():
+                            break
+                        # Add points or vertices of more complex geometry
+                        points.extend(extract_points(in_feature.geometry()))
                         current += 1
                         feedback.setProgress(int(current * total))
-
                     # A minimum of 3 points is necessary to proceed
                     if len(points) >= 3:
                         out_feature = QgsFeature()
-                        try:
-                            the_hull = concave_hull(points, kneighbors)
-                            if the_hull:
-                                vertex = [QgsPointXY(point[0], point[1]) for point in the_hull]
-                                poly = QgsGeometry().fromPolygonXY([vertex])
+                        the_hull = concave_hull(points, kneighbors)
+                        if the_hull:
+                            vertex = [QgsPointXY(point[0], point[1]) for point in the_hull]
+                            poly = QgsGeometry().fromPolygonXY([vertex])
 
-                                out_feature.setGeometry(poly)
-                                out_feature.setAttributes([fid, unique]) # Give the polygon the same attribute as the point grouping attribute
-                                sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
-                                success = True  # at least one polygon created
-                        except:
-                            feedback.reportError('Exception while computing concave hull.')
-                            raise QgsProcessingException('Exception while computing concave hull.')
+                            out_feature.setGeometry(poly)
+                            # Give the polygon the same attribute as the point grouping attribute
+                            out_feature.setAttributes([fid, unique])
+                            sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
+                            success = True  # at least one polygon created
                     fid += 1
                 if not success:
                     raise QgsProcessingException('No hulls could be created. Most likely there were not at least three unique points in any of the groups.')
@@ -178,25 +181,26 @@ class KNearestConcaveHull(QgisAlgorithm):
             features = source.getFeatures(request) # Get all features
             total = 100.0 / source.featureCount() if source.featureCount() else 0
             for in_feature in features:
-                points.extend(extract_points(in_feature.geometry())) # Either points or vertices of more complex geometry
+                if feedback.isCanceled():
+                    break
+                # Add points or vertices of more complex geometry
+                points.extend(extract_points(in_feature.geometry()))
                 current += 1
                 feedback.setProgress(int(current * total))
 
             # A minimum of 3 points is necessary to proceed
             if len(points) >= 3:
                 out_feature = QgsFeature()
-                try:
-                    the_hull = concave_hull(points, kneighbors)
-                    if the_hull:
-                        vertex = [QgsPointXY(point[0], point[1]) for point in the_hull]
-                        poly = QgsGeometry().fromPolygonXY([vertex])
+                the_hull = concave_hull(points, kneighbors)
+                if the_hull:
+                    vertex = [QgsPointXY(point[0], point[1]) for point in the_hull]
+                    poly = QgsGeometry().fromPolygonXY([vertex])
 
-                        out_feature.setGeometry(poly)
-                        out_feature.setAttributes([0])
-                        sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
-                except:
-                    feedback.reportError('Exception while computing concave hull.')
-                    raise QgsProcessingException('Exception while computing concave hull.')
+                    out_feature.setGeometry(poly)
+                    out_feature.setAttributes([0])
+                    sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
+                else:
+                    raise QgsProcessingException('Error while creating concave hull.')
             else:
                 raise QgsProcessingException('At least three unique points are required to create a concave hull.')
 
