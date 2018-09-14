@@ -37,7 +37,7 @@ Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is not usuall
 
     QgsGeometryCheck *geometryCheck( const QString &checkId );
 
-    bool registerGeometryCheck( const QString &checkId, QgsGeometryCheckFactory *checkFactory /Transfer/ );
+    void registerGeometryCheck( const QString &checkId, QgsGeometryCheckFactory *checkFactory /Transfer/ );
 
 };
 

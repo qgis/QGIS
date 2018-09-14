@@ -54,7 +54,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckRegistry
 
     QgsGeometryCheck *geometryCheck( const QString &checkId );
 
-    bool registerGeometryCheck( const QString &checkId, QgsGeometryCheckFactory *checkFactory SIP_TRANSFER );
+    void registerGeometryCheck( const QString &checkId, QgsGeometryCheckFactory *checkFactory SIP_TRANSFER );
 
   private:
     QMap<QString, QgsGeometryCheckFactory *> mGeometryCheckFactories;

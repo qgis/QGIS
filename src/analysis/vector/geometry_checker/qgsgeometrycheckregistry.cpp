@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgeometrycheckregistry.h"
+#include "qgsgeometrycheckfactory.h"
 
 #include "qgis.h"
 
@@ -29,10 +30,14 @@ QgsGeometryCheckRegistry::~QgsGeometryCheckRegistry()
 
 QgsGeometryCheck *QgsGeometryCheckRegistry::geometryCheck( const QString &checkId )
 {
-
+  QgsGeometryCheckFactory *factory = mGeometryCheckFactories.value( checkId );
+  if ( factory )
+    return factory->createGeometryCheck();
+  else
+    return nullptr;
 }
 
-bool QgsGeometryCheckRegistry::registerGeometryCheck( const QString &checkId, QgsGeometryCheckFactory *checkFactory )
+void QgsGeometryCheckRegistry::registerGeometryCheck( const QString &checkId, QgsGeometryCheckFactory *checkFactory )
 {
   mGeometryCheckFactories.insert( checkId, checkFactory );
 }
