@@ -199,7 +199,7 @@ class QgsMapToolSelectionHandler : public QObject
     QColor mStrokeColor = QColor( 254, 58, 29, 100 );
 
     //! Shows features to select polygon from existing features
-    QgsIdentifyMenu *mIdentifyMenu = nullptr;
+    QgsIdentifyMenu *mIdentifyMenu = nullptr; // owned by canvas
 };
 
 #endif
