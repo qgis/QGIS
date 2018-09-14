@@ -736,6 +736,13 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       showWarning( newLayer->commitErrors().join( QStringLiteral( "\n" ) ) );
     }
 
+    // register this layer with the central layers registry
+    QgsProject::instance()->addMapLayers(
+      QList<QgsMapLayer *>() << newLayer );
+
+    // copy style
+    copySymbology( layer, newLayer );
+
     // mark as offline layer
     newLayer->setCustomProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE, true );
 
@@ -743,12 +750,6 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
     newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_SOURCE, layer->source() );
     newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, layer->providerType() );
 
-    // register this layer with the central layers registry
-    QgsProject::instance()->addMapLayers(
-      QList<QgsMapLayer *>() << newLayer );
-
-    // copy style
-    copySymbology( layer, newLayer );
 
     QgsLayerTreeGroup *layerTreeRoot = QgsProject::instance()->layerTreeRoot();
     // Find the parent group of the original layer
@@ -969,12 +970,11 @@ void QgsOfflineEditing::copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLay
   QString error;
   QDomDocument doc;
   QgsReadWriteContext context;
-  QgsMapLayer::StyleCategories categories = static_cast<QgsMapLayer::StyleCategories>( QgsMapLayer::AllStyleCategories ) & ~QgsMapLayer::CustomProperties;
-  sourceLayer->exportNamedStyle( doc, error, context, categories );
+  sourceLayer->exportNamedStyle( doc, error, context );
 
   if ( error.isEmpty() )
   {
-    targetLayer->importNamedStyle( doc, error, categories );
+    targetLayer->importNamedStyle( doc, error );
   }
   if ( !error.isEmpty() )
   {
