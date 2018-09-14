@@ -319,6 +319,8 @@ qgis:pointstopath:
 
   Points can be grouped by a field to output individual line features per group.
 
+  An M-value can optionnaly be added to the vertices to represent additional information.
+
 qgis:polarplot: >
   This algorithm generates a polar plot based on the value of an input vector layer.
 
