@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>952</width>
-    <height>554</height>
+    <width>482</width>
+    <height>618</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -369,87 +369,52 @@ Negative rounds to powers of 10</string>
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <property name="sizeConstraint">
-          <enum>QLayout::SetDefaultConstraint</enum>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mGroupBoxSymmetric">
+         <property name="title">
+          <string>Symmetic Classification</string>
          </property>
-         <property name="leftMargin">
-          <number>0</number>
+         <property name="checkable">
+          <bool>true</bool>
          </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QCheckBox" name="cbxClassifySymmetric">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="visible">
-            <bool>true</bool>
-           </property>
-           <property name="text">
-            <string>Symmetric around:</string>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-           <property name="tristate">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QgsDoubleSpinBox" name="spinSymmetryPointForOtherMethods">
-           <property name="specialValueText">
-            <string/>
-           </property>
-           <property name="minimum">
-            <double>-99999999999999995164818811802792197885196090803013355167206819763650035712.000000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>99999999999999995164818811802792197885196090803013355167206819763650035712.000000000000000</double>
-           </property>
-           <property name="value">
-            <double>100.000000000000000</double>
-           </property>
-           <property name="showClearButton" stdset="0">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="cboSymmetryPointForPretty"/>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="cbxAstride">
-           <property name="text">
-            <string>with a class astride that value</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
+         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+          <item row="0" column="1">
+           <widget class="QgsDoubleSpinBox" name="spinSymmetryPointForOtherMethods">
+            <property name="specialValueText">
+             <string/>
+            </property>
+            <property name="minimum">
+             <double>-99999999999999995164818811802792197885196090803013355167206819763650035712.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>99999999999999995164818811802792197885196090803013355167206819763650035712.000000000000000</double>
+            </property>
+            <property name="value">
+             <double>100.000000000000000</double>
+            </property>
+            <property name="showClearButton" stdset="0">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Around</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QComboBox" name="cboSymmetryPointForPretty"/>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="cbxAstride">
+            <property name="text">
+             <string>Create class astride symmetry value</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -548,15 +513,15 @@ Negative rounds to powers of 10</string>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfieldexpressionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -569,6 +534,12 @@ Negative rounds to powers of 10</string>
    <class>QgsGraduatedHistogramWidget</class>
    <extends>QWidget</extends>
    <header>qgsgraduatedhistogramwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

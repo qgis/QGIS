@@ -524,6 +524,9 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   // initialize from previously set renderer
   updateUiFromRenderer();
 
+  // default to collapsed symmetric group for ui simplicity
+  mGroupBoxSymmetric->setCollapsed( true ); //
+
   // menus for data-defined rotation/size
   QMenu *advMenu = new QMenu( this );
 
@@ -580,7 +583,7 @@ void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
   connect( mModel, &QgsGraduatedSymbolRendererModel::rowsMoved, this, &QgsGraduatedSymbolRendererWidget::rowsMoved );
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsGraduatedSymbolRendererWidget::modelDataChanged );
 
-  connect( cbxClassifySymmetric, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  connect( mGroupBoxSymmetric, &QGroupBox::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( cboSymmetryPointForPretty, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( spinSymmetryPointForOtherMethods, static_cast<void( QgsDoubleSpinBox::* )()>( &QgsDoubleSpinBox::editingFinished ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
@@ -601,7 +604,7 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
   disconnect( mModel, &QgsGraduatedSymbolRendererModel::rowsMoved, this, &QgsGraduatedSymbolRendererWidget::rowsMoved );
   disconnect( mModel, &QAbstractItemModel::dataChanged, this, &QgsGraduatedSymbolRendererWidget::modelDataChanged );
 
-  disconnect( cbxClassifySymmetric, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  disconnect( mGroupBoxSymmetric, &QGroupBox::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( cboSymmetryPointForPretty, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( spinSymmetryPointForOtherMethods, static_cast<void( QgsDoubleSpinBox::* )()>( &QgsDoubleSpinBox::editingFinished ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
@@ -626,7 +629,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
     case QgsGraduatedSymbolRenderer::EqualInterval:
     case QgsGraduatedSymbolRenderer::StdDev:
     {
-      cbxClassifySymmetric->setVisible( true );
+      mGroupBoxSymmetric->setVisible( true );
       cbxAstride->setVisible( true );
       cboSymmetryPointForPretty->setVisible( false );
       spinSymmetryPointForOtherMethods->setVisible( true );
@@ -636,7 +639,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
 
     case QgsGraduatedSymbolRenderer::Pretty:
     {
-      cbxClassifySymmetric->setVisible( true );
+      mGroupBoxSymmetric->setVisible( true );
       cbxAstride->setVisible( true );
       spinSymmetryPointForOtherMethods->setVisible( false );
       cboSymmetryPointForPretty->setVisible( true );
@@ -651,7 +654,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
     case QgsGraduatedSymbolRenderer::Jenks:
     case QgsGraduatedSymbolRenderer::Custom:
     {
-      cbxClassifySymmetric->setVisible( false );
+      mGroupBoxSymmetric->setVisible( false );
       cbxAstride->setVisible( false );
       cboSymmetryPointForPretty->setVisible( false );
       spinSymmetryPointForOtherMethods->setVisible( false );
@@ -662,14 +665,14 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
 
   if ( mRenderer->useSymmetricMode() )
   {
-    cbxClassifySymmetric->setChecked( true );
+    mGroupBoxSymmetric->setChecked( true );
     spinSymmetryPointForOtherMethods->setEnabled( true );
     cbxAstride->setEnabled( true );
     cboSymmetryPointForPretty->setEnabled( true );
   }
   else
   {
-    cbxClassifySymmetric->setChecked( false );
+    mGroupBoxSymmetric->setChecked( false );
     spinSymmetryPointForOtherMethods->setEnabled( false );
     cbxAstride->setEnabled( false );
     cboSymmetryPointForPretty->setEnabled( false );
@@ -903,7 +906,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
       if ( spinSymmetryPointForOtherMethods->value() < ( minimum + ( maximum - minimum ) / 100. ) || spinSymmetryPointForOtherMethods->value() > ( maximum - ( maximum - minimum ) / 100. ) )
         spinSymmetryPointForOtherMethods->setValue( minimum + ( maximum - minimum ) / 2. );
 
-      if ( cbxClassifySymmetric->isChecked() )
+      if ( mGroupBoxSymmetric->isChecked() )
       {
         useSymmetricMode = true;
         symmetryPoint = spinSymmetryPointForOtherMethods->value();
@@ -926,7 +929,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
       if ( spinSymmetryPointForOtherMethods->value() < ( minimum + ( maximum - minimum ) / 100. ) || spinSymmetryPointForOtherMethods->value() > ( maximum - ( maximum - minimum ) / 100. ) )
         spinSymmetryPointForOtherMethods->setValue( minimum + ( maximum - minimum ) / 2. );
 
-      if ( cbxClassifySymmetric->isChecked() )
+      if ( mGroupBoxSymmetric->isChecked() )
       {
         useSymmetricMode = true;
         symmetryPoint = spinSymmetryPointForOtherMethods->value();
@@ -938,7 +941,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
     case QgsGraduatedSymbolRenderer::Pretty:
     {
       mode = QgsGraduatedSymbolRenderer::Pretty;
-      if ( cbxClassifySymmetric->isChecked() )
+      if ( mGroupBoxSymmetric->isChecked() )
       {
         useSymmetricMode = true;
         astride = cbxAstride->isChecked();
