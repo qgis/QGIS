@@ -67,13 +67,6 @@ QgsMultipartToSinglepartAlgorithm *QgsMultipartToSinglepartAlgorithm::createInst
   return new QgsMultipartToSinglepartAlgorithm();
 }
 
-bool QgsMultipartToSinglepartAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
-{
-  if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
-    return false;
-  // The layer is already single part!
-  return QgsWkbTypes::isMultiType( layer->wkbType() );
-}
 
 QgsProcessingFeatureSource::Flag QgsMultipartToSinglepartAlgorithm::sourceFlags() const
 {
