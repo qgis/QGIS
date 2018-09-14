@@ -1,6 +1,6 @@
 /***************************************************************************
-                             qgswindowmanagerinterface.h
-                             ---------------------------
+                             qgsappwindowmanager.h
+                             ---------------------
     Date                 : September 2018
     Copyright            : (C) 2018 Nyall Dawson
     Email                : nyall dot dawson at gmail dot com
