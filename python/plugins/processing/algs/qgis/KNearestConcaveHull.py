@@ -199,9 +199,10 @@ class KNearestConcaveHull(QgisAlgorithm):
                     out_feature.setAttributes([0])
                     sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
                 else:
-                    raise QgsProcessingException('Error while creating concave hull.')
+                    # the_hull returns None only when there are less than three points after cleaning
+                    raise QgsProcessingException('At least three unique points are required to create a concave hull.')
             else:
-                raise QgsProcessingException('At least three unique points are required to create a concave hull.')
+                raise QgsProcessingException('At least three points are required to create a concave hull.')
 
         return {self.OUTPUT: dest_id}
 

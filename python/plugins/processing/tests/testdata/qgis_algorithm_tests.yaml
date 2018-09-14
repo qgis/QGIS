@@ -5327,7 +5327,7 @@ tests:
         type: vector
 
   - algorithm: qgis:knearestconcavehull
-    name: K-nearest Neighbour Concave Hull - Points (7)
+    name: K-nearest Neighbor Concave Hull - Points (k=7)
     params:
       KNEIGHBORS: 7
       INPUT:
@@ -5339,7 +5339,7 @@ tests:
         type: vector
 
   - algorithm: qgis:knearestconcavehull
-    name: K-nearest Neighbour Concave Hull - Group by field
+    name: K-nearest Neighbor Concave Hull - Group by field
     params:
       FIELD: id2
       INPUT:
@@ -5350,6 +5350,55 @@ tests:
       OUTPUT:
         name: expected/knearest_concave_hull_points_id2.gml
         type: vector
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbor Concave Hull - Lines (k=3)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      KNEIGHBORS: 3
+    results:
+      OUTPUT:
+        name: expected/knearest_concave_hull_lines.gml
+        type: vector
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbor Concave Hull - Polys (k=3)
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      KNEIGHBORS: 3
+    results:
+      OUTPUT:
+        name: expected/knearest_concave_hull_polys.gml
+        type: vector
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbor Concave Hull - MultiPoints (k=3)
+    params:
+      INPUT:
+        name: multipoints.gml
+        type: vector
+      KNEIGHBORS: 3
+    results:
+      OUTPUT:
+        name: expected/knearest_concave_hull_multipoints.gml
+        type: vector
+
+  - algorithm: qgis:knearestconcavehull
+    name: K-nearest Neighbor Concave Hull - Duplicate Points
+    params:
+      INPUT:
+        name: custom/points_duplicate.gml
+        type: vector
+      KNEIGHBORS: 3
+    results:
+      OUTPUT:
+        name: expected/failure.gml
+        type: vector
+    expectedException: true
 
   - algorithm: native:swapxy
     name: Swap XY coordinates
