@@ -63,10 +63,10 @@ class KNearestConcaveHull(QgisAlgorithm):
         return 'knearestconcavehull'
 
     def displayName(self):
-        return self.tr('Concave hull (k-nearest neighbour)')
+        return self.tr('Concave hull (k-nearest neighbor)')
 
     def shortDescription(self):
-        return self.tr('Creates a concave hull using the k-nearest neighbour algorithm.')
+        return self.tr('Creates a concave hull using the k-nearest neighbor algorithm.')
 
     def icon(self):
         return QgsApplication.getThemeIcon("/algorithms/mAlgorithmConcaveHull.svg")
@@ -168,7 +168,6 @@ class KNearestConcaveHull(QgisAlgorithm):
 
         else:
             # Not grouped by field
-
             # Initialize writer
             (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                    fields, QgsWkbTypes.Polygon, source.sourceCrs())
@@ -440,7 +439,7 @@ def concave_hull(points_list, k):
     without intersecting any previous line segments.
 
     This is an implementation of the algorithm described by Adriano Moreira and Maribel Yasmina Santos:
-    CONCAVE HULL: A neighborhood_k-NEAREST NEIGHBOURS APPROACH FOR THE COMPUTATION OF THE REGION OCCUPIED BY A SET OF POINTS.
+    CONCAVE HULL: A neighborhood_k-NEAREST NEIGHBORS APPROACH FOR THE COMPUTATION OF THE REGION OCCUPIED BY A SET OF POINTS.
     GRAPP 2007 - International Conference on Computer Graphics Theory and Applications; pp 61-68.
 
     :param points_list: list of tuples (x, y)
@@ -466,7 +465,7 @@ def concave_hull(points_list, k):
     if len(point_set) == 3:
         return add_point(point_set, point_set[0])
 
-    # make sure that k neighbours can be found
+    # make sure that k neighbors can be found
     kk = min(kk, len(point_set))
 
     # start with the point having the smallest y-coordinate (most southern point)
