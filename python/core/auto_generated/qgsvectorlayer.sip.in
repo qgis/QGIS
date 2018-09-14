@@ -831,7 +831,7 @@ Load a named style from file/local db/datasource db
 :param categories: the style categories to be loaded.
 %End
 
-     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT,
+     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/,
                             QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 %Docstring
 Calls loadNamedStyle( theURI, resultFlag, false );

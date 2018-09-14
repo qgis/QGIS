@@ -1042,7 +1042,7 @@ while ($LINE_IDX < $LINE_COUNT){
                 if ( $virtual_line !~ m/^(\s*)virtual\b(.*)$/ ){
                     my $idx = $#OUTPUT-$LINE_IDX+$virtual_line_idx+2;
                     #print "len: $#OUTPUT line_idx: $LINE_IDX virt: $virtual_line_idx\n"idx: $idx\n$OUTPUT[$idx]\n";
-                    $OUTPUT[$idx] = $virtual_line =~ s/^(\s*?)\b(.*)$/$1 virtual $2\n/r;
+                    $OUTPUT[$idx] = fix_annotations($virtual_line =~ s/^(\s*?)\b(.*)$/$1 virtual $2\n/r);
                 }
             }
             elsif ( $LINE !~ m/^(\s*)virtual\b(.*)$/ ){
@@ -1148,7 +1148,7 @@ while ($LINE_IDX < $LINE_COUNT){
         }
     }
     elsif ( $LINE =~ m/^[^()]+\([^()]*([^()]*\([^()]*\)[^()]*)*[^)]*$/ ){
-      dbg_info("Mulitline detected");
+      dbg_info("Multiline detected:: $LINE");
       if ( $LINE =~ m/^\s*((else )?if|while|for) *\(/ ){
           $MULTILINE_DEFINITION = MULTILINE_CONDITIONAL_STATEMENT;
       }
