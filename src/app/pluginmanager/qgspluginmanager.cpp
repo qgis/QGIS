@@ -939,14 +939,23 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   if ( ! metadata->value( QStringLiteral( "version_installed" ) ).isEmpty() )
   {
     QString ver = metadata->value( QStringLiteral( "version_installed" ) );
-    if ( ver == QLatin1String( "-1" ) ) ver = '?';
+    if ( ver == QLatin1String( "-1" ) )
+    {
+      ver = '?';
+    }
+    QString localDir = metadata->value( QStringLiteral( "library" ) );
+    if ( QFileInfo( localDir ).isFile() )
+    {
+      localDir = QFileInfo( localDir ).absolutePath();
+    }
+
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td class='version' title='%2 %3'> %4 <a href=\"%5\">"
                             "<img src=\"qrc:/images/themes/default/externalLink.svg\"></a></td></tr>"
                           ).arg( tr( "Installed version" ),
                                  tr( "in" ),
                                  metadata->value( QStringLiteral( "library" ) ),
                                  ver,
-                                 QUrl::fromLocalFile( metadata->value( QStringLiteral( "library" ) ) ).toString() );
+                                 QUrl::fromLocalFile( localDir ).toString() );
   }
   if ( ! metadata->value( QStringLiteral( "version_available" ) ).isEmpty() )
   {
