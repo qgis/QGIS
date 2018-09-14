@@ -827,7 +827,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param categories the style categories to be loaded.
      */
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT, bool loadFromLocalDb,
-                                    StyleCategories categories = QgsMapLayer::AllStyleCategories );
+                                    QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
     /**
      * Calls loadNamedStyle( theURI, resultFlag, false );

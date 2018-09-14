@@ -975,7 +975,7 @@ bool QgsMapLayer::loadNamedPropertyFromDatabase( const QString &db, const QStrin
 }
 
 
-QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag, StyleCategories categories )
+QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag, QgsMapLayer::StyleCategories categories )
 {
   return loadNamedProperty( uri, PropertyType::Style, resultFlag, categories );
 }

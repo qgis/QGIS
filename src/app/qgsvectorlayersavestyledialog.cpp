@@ -48,10 +48,10 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
     mFileWidget->setFilter( type == QgsVectorLayerProperties::QML ? tr( "QGIS Layer Style File (*.qml)" ) : tr( "SLD File (*.sld)" ) );
     updateSaveButtonState();
   } );
-  mStyleTypeComboBox->addItem( tr( "as QGIS QML style file" ), QgsVectorLayerProperties::QML );
-  mStyleTypeComboBox->addItem( tr( "as SLD style file" ), QgsVectorLayerProperties::SLD );
+  mStyleTypeComboBox->addItem( tr( "As QGIS QML style file" ), QgsVectorLayerProperties::QML );
+  mStyleTypeComboBox->addItem( tr( "As SLD style file" ), QgsVectorLayerProperties::SLD );
   if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
-    mStyleTypeComboBox->addItem( tr( "in database (%1)" ).arg( providerName ), QgsVectorLayerProperties::DB );
+    mStyleTypeComboBox->addItem( tr( "In database (%1)" ).arg( providerName ), QgsVectorLayerProperties::DB );
 
   // Save to DB setup
   connect( mDbStyleNameEdit, &QLineEdit::textChanged, this, &QgsVectorLayerSaveStyleDialog::updateSaveButtonState );
