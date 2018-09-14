@@ -449,6 +449,13 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   // setup user interface
   setupUi( this );
+
+  cboGraduatedMode->addItem( tr( "Equal Interval" ), QgsGraduatedSymbolRenderer::EqualInterval );
+  cboGraduatedMode->addItem( tr( "Quantile (Equal Count)" ), QgsGraduatedSymbolRenderer::Quantile );
+  cboGraduatedMode->addItem( tr( "Natural Breaks (Jenks)" ), QgsGraduatedSymbolRenderer::Jenks );
+  cboGraduatedMode->addItem( tr( "Standard Deviation" ), QgsGraduatedSymbolRenderer::StdDev );
+  cboGraduatedMode->addItem( tr( "Pretty Breaks" ), QgsGraduatedSymbolRenderer::Pretty );
+
   connect( methodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
@@ -607,38 +614,50 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
   spinSymmetryPointForOtherMethods->setShowClearButton( false );
 
   // update UI from the graduated renderer (update combo boxes, view)
-  if ( mRenderer->mode() < cboGraduatedMode->count() )
+  if ( cboGraduatedMode->findData( mRenderer->mode() ) >= 0 )
   {
-    cboGraduatedMode->setCurrentIndex( mRenderer->mode() );
+    cboGraduatedMode->setCurrentIndex( cboGraduatedMode->findData( mRenderer->mode() ) );
   }
 
   // symmetric classification
-  if ( cboGraduatedMode->currentIndex() == 0 || cboGraduatedMode->currentIndex() == 3 ) // EqualInterval or StdDev
+  const QgsGraduatedSymbolRenderer::Mode cboMode = static_cast< QgsGraduatedSymbolRenderer::Mode >( cboGraduatedMode->currentData().toInt() );
+  switch ( cboMode )
   {
-    cbxClassifySymmetric->setVisible( true );
-    cbxAstride->setVisible( true );
-    cboSymmetryPointForPretty->setVisible( false );
-    spinSymmetryPointForOtherMethods->setVisible( true );
-    spinSymmetryPointForOtherMethods->setValue( mRenderer->symmetryPoint() );
-  }
-  else if ( cboGraduatedMode->currentIndex() == 4 ) // Pretty
-  {
-    cbxClassifySymmetric->setVisible( true );
-    cbxAstride->setVisible( true );
-    spinSymmetryPointForOtherMethods->setVisible( false );
-    cboSymmetryPointForPretty->setVisible( true );
-    cboSymmetryPointForPretty->clear();
-    cboSymmetryPointForPretty->addItems( mRenderer->listForCboPrettyBreaks() );
-    // replace the combobox on the good old value
-    cboSymmetryPointForPretty->setCurrentText( QString::number( mRenderer->symmetryPoint(), 'f', 2 ) );
-  }
-  else // quantile or Jenks
-  {
-    cbxClassifySymmetric->setVisible( false );
-    cbxAstride->setVisible( false );
-    cboSymmetryPointForPretty->setVisible( false );
-    spinSymmetryPointForOtherMethods->setVisible( false );
-    spinSymmetryPointForOtherMethods->setValue( mRenderer->symmetryPoint() );
+    case QgsGraduatedSymbolRenderer::EqualInterval:
+    case QgsGraduatedSymbolRenderer::StdDev:
+    {
+      cbxClassifySymmetric->setVisible( true );
+      cbxAstride->setVisible( true );
+      cboSymmetryPointForPretty->setVisible( false );
+      spinSymmetryPointForOtherMethods->setVisible( true );
+      spinSymmetryPointForOtherMethods->setValue( mRenderer->symmetryPoint() );
+      break;
+    }
+
+    case QgsGraduatedSymbolRenderer::Pretty:
+    {
+      cbxClassifySymmetric->setVisible( true );
+      cbxAstride->setVisible( true );
+      spinSymmetryPointForOtherMethods->setVisible( false );
+      cboSymmetryPointForPretty->setVisible( true );
+      cboSymmetryPointForPretty->clear();
+      cboSymmetryPointForPretty->addItems( mRenderer->listForCboPrettyBreaks() );
+      // replace the combobox on the good old value
+      cboSymmetryPointForPretty->setCurrentText( QString::number( mRenderer->symmetryPoint(), 'f', 2 ) );
+      break;
+    }
+
+    case QgsGraduatedSymbolRenderer::Quantile:
+    case QgsGraduatedSymbolRenderer::Jenks:
+    case QgsGraduatedSymbolRenderer::Custom:
+    {
+      cbxClassifySymmetric->setVisible( false );
+      cbxAstride->setVisible( false );
+      cboSymmetryPointForPretty->setVisible( false );
+      spinSymmetryPointForOtherMethods->setVisible( false );
+      spinSymmetryPointForOtherMethods->setValue( mRenderer->symmetryPoint() );
+      break;
+    }
   }
 
   if ( mRenderer->useSymmetricMode() )
@@ -873,53 +892,68 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
   double symmetryPoint = spinSymmetryPointForOtherMethods->value();
 
-  if ( cboGraduatedMode->currentIndex() == 0 ) // EqualInterval
+  const QgsGraduatedSymbolRenderer::Mode cboMode = static_cast< QgsGraduatedSymbolRenderer::Mode >( cboGraduatedMode->currentData().toInt() );
+  switch ( cboMode )
   {
-    mode = QgsGraduatedSymbolRenderer::EqualInterval;
-    // knowing that spinSymmetryPointForOtherMethods->value() is automatically put at minimum when out of min-max
-    // using "(maximum-minimum)/100)" to avoid direct comparison of doubles
-    if ( spinSymmetryPointForOtherMethods->value() < ( minimum + ( maximum - minimum ) / 100. ) || spinSymmetryPointForOtherMethods->value() > ( maximum - ( maximum - minimum ) / 100. ) )
-      spinSymmetryPointForOtherMethods->setValue( minimum + ( maximum - minimum ) / 2. );
+    case QgsGraduatedSymbolRenderer::EqualInterval:
+    {
+      mode = QgsGraduatedSymbolRenderer::EqualInterval;
+      // knowing that spinSymmetryPointForOtherMethods->value() is automatically put at minimum when out of min-max
+      // using "(maximum-minimum)/100)" to avoid direct comparison of doubles
+      if ( spinSymmetryPointForOtherMethods->value() < ( minimum + ( maximum - minimum ) / 100. ) || spinSymmetryPointForOtherMethods->value() > ( maximum - ( maximum - minimum ) / 100. ) )
+        spinSymmetryPointForOtherMethods->setValue( minimum + ( maximum - minimum ) / 2. );
 
-    if ( cbxClassifySymmetric->isChecked() )
-    {
-      useSymmetricMode = true;
-      symmetryPoint = spinSymmetryPointForOtherMethods->value();
-      astride = cbxAstride->isChecked();
+      if ( cbxClassifySymmetric->isChecked() )
+      {
+        useSymmetricMode = true;
+        symmetryPoint = spinSymmetryPointForOtherMethods->value();
+        astride = cbxAstride->isChecked();
+      }
+      break;
     }
-  }
-  else if ( cboGraduatedMode->currentIndex() == 2 ) // Jenks
-  {
-    mode = QgsGraduatedSymbolRenderer::Jenks;
-  }
-  else if ( cboGraduatedMode->currentIndex() == 3 ) // StdDev
-  {
-    mode = QgsGraduatedSymbolRenderer::StdDev;
-    // knowing that spinSymmetryPointForOtherMethods->value() is automatically put at minimum when out of min-max
-    // using "(maximum-minimum)/100)" to avoid direct comparison of doubles
-    if ( spinSymmetryPointForOtherMethods->value() < ( minimum + ( maximum - minimum ) / 100. ) || spinSymmetryPointForOtherMethods->value() > ( maximum - ( maximum - minimum ) / 100. ) )
-      spinSymmetryPointForOtherMethods->setValue( minimum + ( maximum - minimum ) / 2. );
 
-    if ( cbxClassifySymmetric->isChecked() )
+    case QgsGraduatedSymbolRenderer::Jenks:
     {
-      useSymmetricMode = true;
-      symmetryPoint = spinSymmetryPointForOtherMethods->value();
-      astride = cbxAstride->isChecked();
+      mode = QgsGraduatedSymbolRenderer::Jenks;
+      break;
     }
-  }
-  else if ( cboGraduatedMode->currentIndex() == 4 ) // Pretty
-  {
-    mode = QgsGraduatedSymbolRenderer::Pretty;
-    if ( cbxClassifySymmetric->isChecked() )
+
+    case QgsGraduatedSymbolRenderer::StdDev:
     {
-      useSymmetricMode = true;
-      astride = cbxAstride->isChecked();
-      symmetryPoint = cboSymmetryPointForPretty->currentText().toDouble(); //selected number
+      mode = QgsGraduatedSymbolRenderer::StdDev;
+      // knowing that spinSymmetryPointForOtherMethods->value() is automatically put at minimum when out of min-max
+      // using "(maximum-minimum)/100)" to avoid direct comparison of doubles
+      if ( spinSymmetryPointForOtherMethods->value() < ( minimum + ( maximum - minimum ) / 100. ) || spinSymmetryPointForOtherMethods->value() > ( maximum - ( maximum - minimum ) / 100. ) )
+        spinSymmetryPointForOtherMethods->setValue( minimum + ( maximum - minimum ) / 2. );
+
+      if ( cbxClassifySymmetric->isChecked() )
+      {
+        useSymmetricMode = true;
+        symmetryPoint = spinSymmetryPointForOtherMethods->value();
+        astride = cbxAstride->isChecked();
+      }
+      break;
     }
-  }
-  else // default should be quantile for now
-  {
-    mode = QgsGraduatedSymbolRenderer::Quantile; // Quantile
+
+    case QgsGraduatedSymbolRenderer::Pretty:
+    {
+      mode = QgsGraduatedSymbolRenderer::Pretty;
+      if ( cbxClassifySymmetric->isChecked() )
+      {
+        useSymmetricMode = true;
+        astride = cbxAstride->isChecked();
+        symmetryPoint = cboSymmetryPointForPretty->currentText().toDouble(); //selected number
+      }
+      break;
+    }
+
+    case QgsGraduatedSymbolRenderer::Quantile:
+    case QgsGraduatedSymbolRenderer::Custom:
+    {
+      // default should be quantile for now
+      mode = QgsGraduatedSymbolRenderer::Quantile; // Quantile
+      break;
+    }
   }
 
   // Jenks is n^2 complexity, warn for big dataset (more than 50k records)

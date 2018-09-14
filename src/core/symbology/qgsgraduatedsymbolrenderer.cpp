@@ -918,36 +918,46 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   QList<double> breaks;
   QList<double> labels;
 
-  if ( mode == EqualInterval )
+  switch ( mode )
   {
-    breaks = QgsGraduatedSymbolRenderer::calcEqualIntervalBreaks( minimum, maximum, nclasses, mUseSymmetricMode, symmetryPoint, astride );
-  }
-  else if ( mode == Pretty )
-  {
-    breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, nclasses );
-    setListForCboPrettyBreaks( _breaksAsStrings( breaks ) );
-
-    if ( useSymmetricMode )
-      QgsGraduatedSymbolRenderer::makeBreaksSymmetric( breaks, symmetryPoint, astride );
-  }
-  else if ( mode == Quantile || mode == Jenks || mode == StdDev )
-  {
-    // get values from layer
-    if ( !valuesLoaded )
+    case EqualInterval:
     {
-      values = QgsVectorLayerUtils::getDoubleValues( vlayer, mAttrName, ok );
+      breaks = QgsGraduatedSymbolRenderer::calcEqualIntervalBreaks( minimum, maximum, nclasses, mUseSymmetricMode, symmetryPoint, astride );
+      break;
     }
-    // calculate the breaks
-    if ( mode == Quantile )
-      breaks = _calcQuantileBreaks( values, nclasses );
-    else if ( mode == Jenks )
-      breaks = _calcJenksBreaks( values, nclasses, minimum, maximum );
-    else if ( mode == StdDev )
-      breaks = _calcStdDevBreaks( values, nclasses, labels, mUseSymmetricMode, symmetryPoint, astride );
-  }
-  else
-  {
-    Q_ASSERT( false );
+
+    case Pretty:
+    {
+      breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, nclasses );
+      setListForCboPrettyBreaks( _breaksAsStrings( breaks ) );
+
+      if ( useSymmetricMode )
+        QgsGraduatedSymbolRenderer::makeBreaksSymmetric( breaks, symmetryPoint, astride );
+      break;
+    }
+
+    case Quantile:
+    case Jenks:
+    case StdDev:
+    {
+      // get values from layer
+      if ( !valuesLoaded )
+      {
+        values = QgsVectorLayerUtils::getDoubleValues( vlayer, mAttrName, ok );
+      }
+      // calculate the breaks
+      if ( mode == Quantile )
+        breaks = _calcQuantileBreaks( values, nclasses );
+      else if ( mode == Jenks )
+        breaks = _calcJenksBreaks( values, nclasses, minimum, maximum );
+      else if ( mode == StdDev )
+        breaks = _calcStdDevBreaks( values, nclasses, labels, mUseSymmetricMode, symmetryPoint, astride );
+      break;
+    }
+
+    case Custom:
+      Q_ASSERT( false );
+      break;
   }
 
   double lower, upper = minimum;
@@ -1188,16 +1198,26 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
 
   // save mode
   QString modeString;
-  if ( mMode == EqualInterval )
-    modeString = QStringLiteral( "equal" );
-  else if ( mMode == Quantile )
-    modeString = QStringLiteral( "quantile" );
-  else if ( mMode == Jenks )
-    modeString = QStringLiteral( "jenks" );
-  else if ( mMode == StdDev )
-    modeString = QStringLiteral( "stddev" );
-  else if ( mMode == Pretty )
-    modeString = QStringLiteral( "pretty" );
+  switch ( mMode )
+  {
+    case EqualInterval:
+      modeString = QStringLiteral( "equal" );
+      break;
+    case Quantile:
+      modeString = QStringLiteral( "quantile" );
+      break;
+    case Jenks:
+      modeString = QStringLiteral( "jenks" );
+      break;
+    case StdDev:
+      modeString = QStringLiteral( "stddev" );
+      break;
+    case Pretty:
+      modeString = QStringLiteral( "pretty" );
+      break;
+    case Custom:
+      break;
+  }
   if ( !modeString.isEmpty() )
   {
     QDomElement modeElem = doc.createElement( QStringLiteral( "mode" ) );
