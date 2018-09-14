@@ -257,6 +257,11 @@ void QgsOfflineEditing::synchronize()
       updateMapThemes( offlineLayer, remoteLayer );
       updateLayerOrder( offlineLayer, remoteLayer );
 
+      // remove properties from t
+      remoteLayer->removeCustomProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE );
+      remoteLayer->removeCustomProperty( CUSTOM_PROPERTY_REMOTE_SOURCE );
+      remoteLayer->removeCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER );
+
       // apply layer edit log
       QString qgisLayerId = layer->id();
       QString sql = QStringLiteral( "SELECT \"id\" FROM 'log_layer_ids' WHERE \"qgis_id\" = '%1'" ).arg( qgisLayerId );
