@@ -96,6 +96,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     void onRampChanged( const QString &name );
     void onRampRename( const QString &oldName, const QString &newName );
     void onTagsChanged( int entity, const QString &name, const QStringList &tags );
+    void rebuildSymbolIcons();
 
   private:
 
