@@ -95,6 +95,12 @@ void TestQgsGdalProvider::decodeUri()
   components = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
   QCOMPARE( components[QStringLiteral( "path" )].toString(), QStringLiteral( "/home/to/path/my_file.gpkg" ) );
   QCOMPARE( components[QStringLiteral( "layerName" )].toString(), QStringLiteral( "layer_name" ) );
+
+  //test windows path
+  uri = QStringLiteral( "gpkg:c:/home/to/path/my_file.gpkg:layer_name" );
+  components = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
+  QCOMPARE( components[QStringLiteral( "path" )].toString(), QStringLiteral( "c:/home/to/path/my_file.gpkg" ) );
+  QCOMPARE( components[QStringLiteral( "layerName" )].toString(), QStringLiteral( "layer_name" ) );
 }
 
 void TestQgsGdalProvider::scaleDataType()
