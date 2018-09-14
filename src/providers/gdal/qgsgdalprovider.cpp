@@ -1994,9 +1994,17 @@ QGISEXTERN QVariantMap decodeUri( const QString &uri )
   if ( path.indexOf( ':' ) != -1 )
   {
     QStringList parts = path.split( ':' );
-    path  = parts[1];
-    if ( parts.count() > 2 )
-      layerName = parts[2];
+    if ( parts[0].toLower() == QStringLiteral( "gpkg" ) )
+    {
+      parts.removeFirst();
+      // Handle windows paths - which has an extra colon - and unix paths
+      if ( ( parts[0].length() > 1 && parts.count() > 1 ) || parts.count() > 2 )
+      {
+        layerName = parts[parts.length() - 1];
+        parts.removeLast();
+      }
+      path  = parts.join( ':' );
+    }
   }
 
   QVariantMap uriComponents;
