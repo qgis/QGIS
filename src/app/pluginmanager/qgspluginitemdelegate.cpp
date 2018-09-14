@@ -77,6 +77,10 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
   {
     painter->setPen( option.palette.highlightedText().color() );
   }
+  else if ( index.data( PLUGIN_ISDEPRECATED_ROLE ).toString() == QLatin1String( "true" ) )
+  {
+    painter->setPen( option.palette.color( QPalette::Disabled, QPalette::Text ) );
+  }
   else
   {
     painter->setPen( option.palette.text().color() );

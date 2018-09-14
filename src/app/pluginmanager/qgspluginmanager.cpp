@@ -539,6 +539,7 @@ void QgsPluginManager::reloadModelData()
       mypDetailItem->setData( it->value( QStringLiteral( "downloads" ) ).rightJustified( 10, '0' ), PLUGIN_DOWNLOADS_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "zip_repository" ) ), PLUGIN_REPOSITORY_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "average_vote" ) ), PLUGIN_VOTE_ROLE );
+      mypDetailItem->setData( it->value( QStringLiteral( "deprecated" ) ), PLUGIN_ISDEPRECATED_ROLE );
 
       if ( QFileInfo( iconPath ).isFile() )
       {
