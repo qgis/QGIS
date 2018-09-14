@@ -63,15 +63,6 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     style->drawControl( QStyle::CE_CheckBox, &checkBoxStyle, painter );
   }
 
-  // Draw the icon
-  QPixmap iconPixmap = index.data( Qt::DecorationRole ).value<QPixmap>();
-
-  if ( !iconPixmap.isNull() )
-  {
-    int iconSize = pixelsHigh;
-    painter->drawPixmap( option.rect.left() + 1.2 * pixelsHigh, option.rect.top() + 0.2 * pixelsHigh, iconSize, iconSize, iconPixmap );
-  }
-
   // Draw the text
   if ( option.state & QStyle::State_Selected )
   {
@@ -96,6 +87,22 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     painter->setFont( font );
   }
   painter->drawText( option.rect.left() + pixelsHigh * 2.4, option.rect.bottom() - pixelsHigh * 0.4, index.data( Qt::DisplayRole ).toString() );
+
+  // Draw the main icon
+  QPixmap iconPixmap = index.data( Qt::DecorationRole ).value<QPixmap>();
+  int iconSize = pixelsHigh;
+
+  if ( !iconPixmap.isNull() )
+  {
+    painter->drawPixmap( option.rect.left() + 1.2 * pixelsHigh, option.rect.top() + 0.2 * pixelsHigh, iconSize, iconSize, iconPixmap );
+  }
+
+  // Draw the right-side icon if set
+  QPixmap rightSideIconPixmap = index.data( PLUGIN_RIGHT_SIDE_ICON_ROLE ).value<QPixmap>();
+  if ( !rightSideIconPixmap.isNull() )
+  {
+    painter->drawPixmap( option.rect.right() - 1.2 * pixelsHigh, option.rect.top() + 0.2 * pixelsHigh, iconSize, iconSize, rightSideIconPixmap );
+  }
 
   painter->restore();
 }

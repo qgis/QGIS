@@ -549,6 +549,16 @@ void QgsPluginManager::reloadModelData()
         mypDetailItem->setData( QPixmap( QgsApplication::defaultThemePath() + "/propertyicons/plugin.svg" ), Qt::DecorationRole );
       }
 
+      // Set the additional icon if the plugin is experimental or deprecated.
+      if ( it->value( QStringLiteral( "experimental" ) ) == QLatin1String( "true" ) )
+      {
+        mypDetailItem->setData( QPixmap( QgsApplication::defaultThemePath() + "/pluginExperimental.png" ), PLUGIN_RIGHT_SIDE_ICON_ROLE );
+      }
+      if ( it->value( QStringLiteral( "deprecated" ) ) == QLatin1String( "true" ) )
+      {
+        mypDetailItem->setData( QPixmap( QgsApplication::defaultThemePath() + "/pluginDeprecated.svg" ), PLUGIN_RIGHT_SIDE_ICON_ROLE );
+      }
+
       mypDetailItem->setEditable( false );
 
       // Set checkable if the plugin is installed and not disabled due to incompatibility.
@@ -823,7 +833,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   {
     html += QString( "<table bgcolor=\"#EEBBCC\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#660000\">"
-                     "    <img src=\"qrc:/images/themes/default/pluginDeprecated.svg\" width=\"32\"><b>%1</b>"
+                     "    <img src=\"qrc:/images/themes/default/pluginDeprecated.svg\" width=\"32\"> <b>%1</b>"
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin is deprecated" ) );
   }
