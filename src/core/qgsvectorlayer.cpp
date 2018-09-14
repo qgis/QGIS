@@ -2791,13 +2791,7 @@ QString QgsVectorLayer::attributeDisplayName( int index ) const
 
 QgsStringMap QgsVectorLayer::attributeAliases() const
 {
-  QgsStringMap map;
-  Q_FOREACH ( const QgsField &field, fields() )
-  {
-    if ( !field.alias().isEmpty() )
-      map.insert( field.name(), field.alias() );
-  }
-  return map;
+  return mAttributeAliasMap;
 }
 
 bool QgsVectorLayer::deleteAttribute( int index )

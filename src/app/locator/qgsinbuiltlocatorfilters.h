@@ -111,6 +111,7 @@ class QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
     QgsFeatureIterator mIterator;
     QString mLayerId;
     QIcon mLayerIcon;
+    QStringList mAttributeAliases;
 };
 
 class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter

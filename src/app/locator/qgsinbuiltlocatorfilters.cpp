@@ -234,7 +234,7 @@ void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const 
     }
     else if ( allowNumeric && field.isNumeric() )
     {
-      expressionParts << QStringLiteral( "%1 = %2" ).arg( QgsExpression::quotedColumnRef( field.name() ) ).arg( numericValue );
+      expressionParts << QStringLiteral( "%1 = %2" ).arg( QgsExpression::quotedColumnRef( field.name() ) ).arg( numericValue, 0, trunc( numericValue ) == numericValue ? 'f' : 'g' );
     }
   }
 
@@ -248,6 +248,11 @@ void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const 
 
   mLayerId = layer->id();
   mLayerIcon = QgsMapLayerModel::iconForLayer( layer );
+  mAttributeAliases.clear();
+  for ( int idx = 0; idx < layer->fields().size(); ++idx )
+  {
+    mAttributeAliases.append( layer->attributeDisplayName( idx ) );
+  }
 }
 
 void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
@@ -265,14 +270,20 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
     mContext.setFeature( f );
 
     // find matching field content
-    Q_FOREACH ( const QVariant &var, f.attributes() )
+    int idx = 0;
+    const QgsAttributes attributes = f.attributes();
+    for ( const QVariant &var : attributes )
     {
       QString attrString = var.toString();
       if ( attrString.contains( string, Qt::CaseInsensitive ) )
       {
-        result.displayString = attrString;
+        if ( idx < mAttributeAliases.count() )
+          result.displayString = QString( "%1 (%2)" ).arg( attrString, mAttributeAliases[idx] );
+        else
+          result.displayString = attrString;
         break;
       }
+      idx++;
     }
     if ( result.displayString.isEmpty() )
       continue; //not sure how this result slipped through...
