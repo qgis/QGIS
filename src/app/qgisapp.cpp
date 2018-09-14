@@ -8212,7 +8212,7 @@ void QgisApp::modifyAttributesOfSelectedFeatures()
   context.setAllowCustomUi( false );
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( vl, &f, false, this, true, context );
-  dialog->setMode( QgsAttributeForm::MultiEditMode );
+  dialog->setMode( QgsAttributeEditorContext::MultiEditMode );
   dialog->exec();
 }
 

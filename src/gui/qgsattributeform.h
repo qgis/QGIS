@@ -46,7 +46,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
   public:
 
-    //! Form modes
+    //! Form modes \deprecated Use QgsAttributeEditorContext::Mode instead.
     enum Mode
     {
       SingleEditMode, //!< Single edit mode, for editing a single feature
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \see setMode()
      * \since QGIS 2.16
      */
-    Mode mode() const { return mMode; }
+    QgsAttributeEditorContext::Mode mode() const { return mMode; }
 
     /**
      * Sets the current mode of the form.
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \see mode()
      * \since QGIS 2.16
      */
-    void setMode( Mode mode );
+    void setMode( QgsAttributeEditorContext::Mode mode );
 
     /**
      * Sets the edit command message (Undo) that will be used when the dialog is accepted
@@ -220,7 +220,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Emitted when the form changes mode.
      * \param mode new mode
      */
-    void modeChanged( QgsAttributeForm::Mode mode );
+    void modeChanged( QgsAttributeEditorContext::Mode mode );
 
     /**
      * Emitted when the user selects the close option from the form's button bar.
@@ -358,6 +358,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! constraints management
     void updateAllConstraints();
     void updateConstraints( QgsEditorWidgetWrapper *w );
+    void updateContainersVisibility();
     void updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww );
     bool currentFormFeature( QgsFeature &feature );
     bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions );
@@ -433,7 +434,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     QString mEditCommandMessage;
 
-    Mode mMode;
+    QgsAttributeEditorContext::Mode mMode;
 
     QMap<QWidget *, QSvgWidget *> mIconMap;
 

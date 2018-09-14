@@ -107,6 +107,7 @@ BuildRequires: qwt-qt5-devel
 # Installation of QCA plugins must be explicit
 Requires:       qca-qt5-ossl
 Requires:       gpsbabel
+Requires:       qt5-qtcharts
 
 # We don't want to provide private Python extension libs
 %global __provides_exclude_from ^(%{python3_sitearch}|%{_libdir}/%{name}/plugins)/.*\.so(\.%{version})?$

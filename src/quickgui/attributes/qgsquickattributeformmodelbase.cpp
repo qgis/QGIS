@@ -282,6 +282,10 @@ void QgsQuickAttributeFormModelBase::flatten( QgsAttributeEditorContainer *conta
       case QgsAttributeEditorElement::AeTypeInvalid:
         // todo
         break;
+
+      case QgsAttributeEditorElement::AeTypeQmlElement:
+        // todo
+        break;
     }
   }
 }

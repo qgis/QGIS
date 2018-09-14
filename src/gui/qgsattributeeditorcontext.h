@@ -18,6 +18,7 @@
 
 #include <QMap>
 #include <QWidget>
+#include <QMetaEnum>
 
 #include "qgsdistancearea.h"
 #include "qgsvectorlayertools.h"
@@ -36,7 +37,22 @@ class QgsMapCanvas;
 
 class GUI_EXPORT QgsAttributeEditorContext
 {
+    Q_GADGET
+
   public:
+
+    //! modes
+    enum Mode
+    {
+      SingleEditMode, //!< Single edit mode, for editing a single feature
+      AddFeatureMode, /*!< Add feature mode, for setting attributes for a new feature. In this mode the dialog will be editable even with an invalid feature and
+      will add a new feature when the form is accepted. */
+      MultiEditMode, //!< Multi edit mode, for editing fields of multiple features at once
+      SearchMode, //!< Form values are used for searching/filtering the layer
+      AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode \since QGIS 3.0
+      IdentifyMode //!< Identify the feature \since QGIS 3.0
+    };
+    Q_ENUM( Mode )
 
     /**
      * Determines in which direction a relation was resolved.
@@ -204,6 +220,27 @@ class GUI_EXPORT QgsAttributeEditorContext
      */
     void setFormFeature( const QgsFeature &feature ) { mFormFeature = feature ; }
 
+    /**
+     * Returns current attributeFormMode
+     * \since QGIS 3.4
+     */
+    Mode attributeFormMode() const { return mAttributeFormMode; }
+
+    /**
+     * Set \a attributeFormMode for the edited form
+     * \since QGIS 3.4
+     */
+    void setAttributeFormMode( const Mode &attributeFormMode ) { mAttributeFormMode = attributeFormMode; }
+
+    /**
+     * Returns given \a attributeFormMode as string
+     * \since QGIS 3.4
+     */
+    QString attributeFormModeString() const
+    {
+      const QMetaEnum metaEnum( QMetaEnum::fromType<Mode>() );
+      return metaEnum.valueToKey( static_cast<int>( mAttributeFormMode ) );
+    }
 
   private:
     const QgsAttributeEditorContext *mParentContext = nullptr;
@@ -217,6 +254,8 @@ class GUI_EXPORT QgsAttributeEditorContext
     QgsFeature mFormFeature;
     FormMode mFormMode = Embed;
     bool mAllowCustomUi = true;
+    Mode mAttributeFormMode = SingleEditMode;
 };
 
 #endif // QGSATTRIBUTEEDITORCONTEXT_H
+

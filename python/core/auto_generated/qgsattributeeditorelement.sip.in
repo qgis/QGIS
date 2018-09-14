@@ -47,7 +47,8 @@ layer.
       AeTypeContainer,
       AeTypeField,
       AeTypeRelation,
-      AeTypeInvalid
+      AeTypeInvalid,
+      AeTypeQmlElement
     };
 
     QgsAttributeEditorElement( AttributeEditorType type, const QString &name, QgsAttributeEditorElement *parent = 0 );
@@ -345,6 +346,45 @@ Determines if the "unlink feature" button should be shown
 
 };
 
+class QgsAttributeEditorQmlElement : QgsAttributeEditorElement
+{
+%Docstring
+An attribute editor widget that will represent arbitrary QML code.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsattributeeditorelement.h"
+%End
+  public:
+
+    QgsAttributeEditorQmlElement( const QString &name, QgsAttributeEditorElement *parent );
+%Docstring
+Creates a new element which can display QML
+
+:param name: The name of the widget
+:param parent: The parent (used as container)
+%End
+
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
+
+    QString qmlCode() const;
+%Docstring
+The QML code that will be represented within this widget.
+
+.. versionadded:: 3.4
+%End
+
+    void setQmlCode( const QString &qmlCode );
+%Docstring
+The QML code that will be represented within this widget.
+
+@param qmlCode
+%End
+
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *

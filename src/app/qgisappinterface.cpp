@@ -745,7 +745,7 @@ QgsAttributeDialog *QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeat
   QgsAttributeDialog *dialog = new QgsAttributeDialog( l, &feature, false, qgis, true, context );
   if ( !feature.isValid() )
   {
-    dialog->setMode( QgsAttributeForm::AddFeatureMode );
+    dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
   }
   return dialog;
 }

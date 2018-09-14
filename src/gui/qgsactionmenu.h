@@ -97,7 +97,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      *
      * \param mode The mode of the attribute form
      */
-    void setMode( QgsAttributeForm::Mode mode );
+    void setMode( QgsAttributeEditorContext::Mode mode );
 
     /**
      * Sets an expression context scope used to resolve underlying actions.
@@ -131,7 +131,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
     QgsFeatureId mFeatureId;
     QString mActionScope;
     QgsExpressionContextScope mExpressionContextScope;
-    QgsAttributeForm::Mode mMode;
+    QgsAttributeEditorContext::Mode mMode;
 };
 
 

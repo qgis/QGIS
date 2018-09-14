@@ -32,6 +32,7 @@ class QgsVectorLayer;
 // so RTTI for casting is available in the whole module.
 % ModuleCode
 #include "qgsrelationwidgetwrapper.h"
+#include "qgsqmlwidgetwrapper.h"
 % End
 #endif
 
@@ -56,6 +57,8 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
       sipType = sipType_QgsEditorWidgetWrapper;
     else if ( qobject_cast<QgsRelationWidgetWrapper *>( sipCpp ) )
       sipType = sipType_QgsRelationWidgetWrapper;
+    else if ( qobject_cast<QgsQmlWidgetWrapper *>( sipCpp ) )
+      sipType = sipType_QgsQmlWidgetWrapper;
     else
       sipType = 0;
     SIP_END
@@ -198,6 +201,15 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * \since QGIS 3.2
      */
     void notifyAboutToSave();
+
+  signals:
+
+    /**
+     * Signal when QgsAttributeEditorContext mContext changed
+     *
+     * \since QGIS 3.4
+     */
+    void contextChanged();
 
   protected:
 

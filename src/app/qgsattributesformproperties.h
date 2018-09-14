@@ -29,6 +29,7 @@
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QFormLayout>
+#include <QPlainTextEdit>
 
 #include "ui_qgsattributesformproperties.h"
 #include "qgis_app.h"
@@ -69,6 +70,11 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       bool showUnlinkButton = true;
     };
 
+    struct QmlElementEditorConfiguration
+    {
+      QString qmlCode;
+    };
+
     class DnDTreeItemData : public QTreeWidgetItem
     {
       public:
@@ -76,7 +82,8 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         {
           Field,
           Relation,
-          Container
+          Container,
+          QmlWidget
         };
 
         //do we need that
@@ -114,6 +121,9 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         RelationEditorConfiguration relationEditorConfiguration() const;
         void setRelationEditorConfiguration( RelationEditorConfiguration relationEditorConfiguration );
 
+        QmlElementEditorConfiguration qmlElementEditorConfiguration() const;
+        void setQmlElementEditorConfiguration( QmlElementEditorConfiguration qmlElementEditorConfiguration );
+
       private:
         Type mType = Field;
         QString mName;
@@ -124,6 +134,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         bool mShowLabel = true;
         QgsOptionalExpression mVisibilityExpression;
         RelationEditorConfiguration mRelationEditorConfiguration;
+        QmlElementEditorConfiguration mQmlElementEditorConfiguration;
     };
 
 

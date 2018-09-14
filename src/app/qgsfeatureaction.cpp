@@ -135,7 +135,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
     std::unique_ptr<QgsAttributeDialog> dialog( newDialog( false ) );
 
     if ( !mFeature->isValid() )
-      dialog->setMode( QgsAttributeForm::AddFeatureMode );
+      dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
 
     int rv = dialog->exec();
     mFeature->setAttributes( dialog->feature()->attributes() );
@@ -155,7 +155,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
     dialog = newDialog( false );
 
     if ( !mFeature->isValid() )
-      dialog->setMode( QgsAttributeForm::AddFeatureMode );
+      dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
 
     // delete the dialog when it is closed
     dialog->setAttribute( Qt::WA_DeleteOnClose );
@@ -235,7 +235,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     QgsAttributeDialog *dialog = newDialog( false );
     // delete the dialog when it is closed
     dialog->setAttribute( Qt::WA_DeleteOnClose );
-    dialog->setMode( QgsAttributeForm::AddFeatureMode );
+    dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
     dialog->setEditCommandMessage( text() );
 
     connect( dialog->attributeForm(), &QgsAttributeForm::featureSaved, this, &QgsFeatureAction::onFeatureSaved );

@@ -475,9 +475,9 @@ void QgsAttributeTableDialog::updateFieldFromExpressionSelected()
   runFieldCalculation( mLayer, mFieldCombo->currentField(), mUpdateExpressionText->asExpression(), filteredIds );
 }
 
-void QgsAttributeTableDialog::viewModeChanged( QgsAttributeForm::Mode mode )
+void QgsAttributeTableDialog::viewModeChanged( QgsAttributeEditorContext::Mode mode )
 {
-  if ( mode != QgsAttributeForm::SearchMode )
+  if ( mode != QgsAttributeEditorContext::SearchMode )
     mActionSearchForm->setChecked( false );
 }
 

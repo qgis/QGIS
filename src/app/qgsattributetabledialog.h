@@ -218,7 +218,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void runFieldCalculation( QgsVectorLayer *layer, const QString &fieldName, const QString &expression, const QgsFeatureIds &filteredIds = QgsFeatureIds() );
     void updateFieldFromExpression();
     void updateFieldFromExpressionSelected();
-    void viewModeChanged( QgsAttributeForm::Mode mode );
+    void viewModeChanged( QgsAttributeEditorContext::Mode mode );
     void formFilterSet( const QString &filter, QgsAttributeForm::FilterType type );
     void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
     void toggleDockMode( bool docked );

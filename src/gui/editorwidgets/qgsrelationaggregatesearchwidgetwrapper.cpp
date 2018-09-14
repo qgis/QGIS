@@ -90,7 +90,7 @@ bool QgsRelationAggregateSearchWidgetWrapper::eventFilter( QObject *watched, QEv
   {
     QgsAttributeEditorContext subContext = QgsAttributeEditorContext( context(), mWrapper->relation(), QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed );
     mAttributeForm = new QgsAttributeForm( mWrapper->relation().referencingLayer(), QgsFeature(), subContext, mContainerWidget );
-    mAttributeForm->setMode( QgsAttributeForm::AggregateSearchMode );
+    mAttributeForm->setMode( QgsAttributeEditorContext::AggregateSearchMode );
     QGridLayout *glayout = new QGridLayout();
     mContainerWidget->setLayout( glayout );
     glayout->setMargin( 0 );

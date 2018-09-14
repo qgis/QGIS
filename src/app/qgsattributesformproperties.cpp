@@ -18,6 +18,8 @@
 #include "qgsattributerelationedit.h"
 #include "qgsattributesforminitcode.h"
 #include "qgisapp.h"
+#include "qgsfieldcombobox.h"
+#include "qgsqmlwidgetwrapper.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -116,7 +118,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   catitem->setExpanded( true );
 
   //load Relations
-  catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Relations", "Relations" );
+  catItemData = DnDTreeItemData( DnDTreeItemData::Container, QStringLiteral( "Relations" ), tr( "Relations" ) );
   catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
 
   const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
@@ -133,6 +135,16 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
     item->setData( 0, FieldNameRole, relation.id() );
   }
   catitem->setExpanded( true );
+
+  // QML widget
+  catItemData = DnDTreeItemData( DnDTreeItemData::Container, QStringLiteral( "Other" ), tr( "Other Widgets" ) );
+  catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
+
+  DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::QmlWidget, QStringLiteral( "QmlWidget" ), tr( "QML Widget" ) );
+  itemData.setShowLabel( true );
+
+  mAvailableWidgetsTree->addItem( catitem, itemData );
+  catitem ->setExpanded( true );
 }
 
 void QgsAttributesFormProperties::initFormLayoutTree()
@@ -344,7 +356,8 @@ void QgsAttributesFormProperties::loadAttributeRelationEdit()
 
     QgsRelation relation = QgsProject::instance()->relationManager()->relation( currentItem->data( 0, FieldNameRole ).toString() );
 
-    Q_FOREACH ( const QgsRelation &nmrel, QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() ) )
+    const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() );
+    for ( const QgsRelation &nmrel : relations )
     {
       if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
         mAttributeRelationEdit->setCardinalityCombo( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
@@ -445,11 +458,25 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       {
         loadAttributeEditorTreeItem( wdg, newWidget, tree );
       }
-    }
-    break;
-    default:
-      //should not happen
       break;
+    }
+
+    case QgsAttributeEditorElement::AeTypeQmlElement:
+    {
+      const QgsAttributeEditorQmlElement *qmlElementEditor = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
+      DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::QmlWidget, widgetDef->name(), widgetDef->name() );
+      itemData.setShowLabel( widgetDef->showLabel() );
+      QmlElementEditorConfiguration qmlEdConfig;
+      qmlEdConfig.qmlCode = qmlElementEditor->qmlCode();
+      itemData.setQmlElementEditorConfiguration( qmlEdConfig );
+      newWidget = tree->addItem( parent, itemData );
+      break;
+    }
+    case QgsAttributeEditorElement::AeTypeInvalid:
+    {
+      QgsDebugMsg( "Not loading invalid attribute editor type..." );
+      break;
+    }
   }
   return newWidget;
 }
@@ -475,6 +502,12 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged()
       break;
     }
     case DnDTreeItemData::Container:
+    {
+      mAttributeRelationEdit->setVisible( false );
+      mAttributeTypeDialog->setVisible( false );
+      break;
+    }
+    case DnDTreeItemData::QmlWidget:
     {
       mAttributeRelationEdit->setVisible( false );
       mAttributeTypeDialog->setVisible( false );
@@ -559,6 +592,14 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
       }
 
       widgetDef = container;
+      break;
+    }
+
+    case DnDTreeItemData::QmlWidget:
+    {
+      QgsAttributeEditorQmlElement *element = new QgsAttributeEditorQmlElement( item->text( 0 ), parent );
+      element->setQmlCode( itemData.qmlElementEditorConfiguration().qmlCode );
+      widgetDef = element;
       break;
     }
   }
@@ -814,6 +855,10 @@ QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormPro
       case QgsAttributesFormProperties::DnDTreeItemData::Container:
         newItem->setIcon( 0, QgsApplication::getThemeIcon( "/mContainerIcon.svg" ) );
         break;
+
+      case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
+        //no icon for QmlWidget
+        break;
     }
   }
   newItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, data );
@@ -877,15 +922,22 @@ bool DnDTree::dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData 
     {
       stream >> itemElement;
 
+      QTreeWidgetItem *newItem;
+
       if ( parent )
       {
-        addItem( parent, itemElement, index );
+        newItem = addItem( parent, itemElement, index );
         bDropSuccessful = true;
       }
       else
       {
-        addItem( invisibleRootItem(), itemElement, index );
+        newItem = addItem( invisibleRootItem(), itemElement, index );
         bDropSuccessful = true;
+      }
+
+      if ( itemElement.type() == QgsAttributesFormProperties::DnDTreeItemData::QmlWidget )
+      {
+        onItemDoubleClicked( newItem, 0 );
       }
     }
   }
@@ -956,119 +1008,281 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
   QWidget *baseWidget = new QWidget();
   baseWidget->setLayout( baseLayout );
 
-  if ( itemData.type() == QgsAttributesFormProperties::DnDTreeItemData::Container )
+  switch ( itemData.type() )
   {
-    QDialog dlg;
-    dlg.setWindowTitle( tr( "Configure Container" ) );
-    QFormLayout *layout = new QFormLayout() ;
-    dlg.setLayout( layout );
-    layout->addRow( baseWidget );
-
-    QCheckBox *showAsGroupBox = nullptr;
-    QLineEdit *title = new QLineEdit( itemData.name() );
-    QSpinBox *columnCount = new QSpinBox();
-    QGroupBox *visibilityExpressionGroupBox = new QGroupBox( tr( "Control visibility by expression" ) );
-    visibilityExpressionGroupBox->setCheckable( true );
-    visibilityExpressionGroupBox->setChecked( itemData.visibilityExpression().enabled() );
-    visibilityExpressionGroupBox->setLayout( new QGridLayout );
-    QgsFieldExpressionWidget *visibilityExpressionWidget = new QgsFieldExpressionWidget;
-    visibilityExpressionWidget->setLayer( mLayer );
-    visibilityExpressionWidget->setExpressionDialogTitle( tr( "Visibility Expression" ) );
-    visibilityExpressionWidget->setExpression( itemData.visibilityExpression()->expression() );
-    visibilityExpressionGroupBox->layout()->addWidget( visibilityExpressionWidget );
-
-    columnCount->setRange( 1, 5 );
-    columnCount->setValue( itemData.columnCount() );
-
-    layout->addRow( tr( "Title" ), title );
-    layout->addRow( tr( "Column count" ), columnCount );
-    layout->addRow( visibilityExpressionGroupBox );
-
-    if ( !item->parent() )
+    case QgsAttributesFormProperties::DnDTreeItemData::Container:
     {
-      showAsGroupBox = new QCheckBox( tr( "Show as group box" ) );
-      showAsGroupBox->setChecked( itemData.showAsGroupBox() );
-      layout->addRow( showAsGroupBox );
+      QDialog dlg;
+      dlg.setWindowTitle( tr( "Configure Container" ) );
+      QFormLayout *layout = new QFormLayout() ;
+      dlg.setLayout( layout );
+      layout->addRow( baseWidget );
+
+      QCheckBox *showAsGroupBox = nullptr;
+      QLineEdit *title = new QLineEdit( itemData.name() );
+      QSpinBox *columnCount = new QSpinBox();
+      QGroupBox *visibilityExpressionGroupBox = new QGroupBox( tr( "Control visibility by expression" ) );
+      visibilityExpressionGroupBox->setCheckable( true );
+      visibilityExpressionGroupBox->setChecked( itemData.visibilityExpression().enabled() );
+      visibilityExpressionGroupBox->setLayout( new QGridLayout );
+      QgsFieldExpressionWidget *visibilityExpressionWidget = new QgsFieldExpressionWidget;
+      visibilityExpressionWidget->setLayer( mLayer );
+      visibilityExpressionWidget->setExpressionDialogTitle( tr( "Visibility Expression" ) );
+      visibilityExpressionWidget->setExpression( itemData.visibilityExpression()->expression() );
+      visibilityExpressionGroupBox->layout()->addWidget( visibilityExpressionWidget );
+
+      columnCount->setRange( 1, 5 );
+      columnCount->setValue( itemData.columnCount() );
+
+      layout->addRow( tr( "Title" ), title );
+      layout->addRow( tr( "Column count" ), columnCount );
+      layout->addRow( visibilityExpressionGroupBox );
+
+      if ( !item->parent() )
+      {
+        showAsGroupBox = new QCheckBox( tr( "Show as group box" ) );
+        showAsGroupBox->setChecked( itemData.showAsGroupBox() );
+        layout->addRow( showAsGroupBox );
+      }
+
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
+          | QDialogButtonBox::Cancel );
+
+      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+
+      layout->addWidget( buttonBox );
+
+      if ( dlg.exec() )
+      {
+        itemData.setColumnCount( columnCount->value() );
+        itemData.setShowAsGroupBox( showAsGroupBox ? showAsGroupBox->isChecked() : true );
+        itemData.setName( title->text() );
+        itemData.setShowLabel( showLabelCheckbox->isChecked() );
+
+        QgsOptionalExpression visibilityExpression;
+        visibilityExpression.setData( QgsExpression( visibilityExpressionWidget->expression() ) );
+        visibilityExpression.setEnabled( visibilityExpressionGroupBox->isChecked() );
+        itemData.setVisibilityExpression( visibilityExpression );
+
+        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+        item->setText( 0, title->text() );
+      }
     }
+    break;
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
-        | QDialogButtonBox::Cancel );
-
-    connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
-    connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-
-    layout->addWidget( buttonBox );
-
-    if ( dlg.exec() )
+    case  QgsAttributesFormProperties::DnDTreeItemData::Relation:
     {
-      itemData.setColumnCount( columnCount->value() );
-      itemData.setShowAsGroupBox( showAsGroupBox ? showAsGroupBox->isChecked() : true );
-      itemData.setName( title->text() );
-      itemData.setShowLabel( showLabelCheckbox->isChecked() );
+      QDialog dlg;
+      dlg.setWindowTitle( tr( "Configure Relation Editor" ) );
+      QFormLayout *layout = new QFormLayout() ;
+      dlg.setLayout( layout );
+      layout->addWidget( baseWidget );
 
-      QgsOptionalExpression visibilityExpression;
-      visibilityExpression.setData( QgsExpression( visibilityExpressionWidget->expression() ) );
-      visibilityExpression.setEnabled( visibilityExpressionGroupBox->isChecked() );
-      itemData.setVisibilityExpression( visibilityExpression );
+      QCheckBox *showLinkButton = new QCheckBox( tr( "Show link button" ) );
+      showLinkButton->setChecked( itemData.relationEditorConfiguration().showLinkButton );
+      QCheckBox *showUnlinkButton = new QCheckBox( tr( "Show unlink button" ) );
+      showUnlinkButton->setChecked( itemData.relationEditorConfiguration().showUnlinkButton );
+      layout->addRow( showLinkButton );
+      layout->addRow( showUnlinkButton );
 
-      item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
-      item->setText( 0, title->text() );
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+
+      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+
+      dlg.layout()->addWidget( buttonBox );
+
+      if ( dlg.exec() )
+      {
+        QgsAttributesFormProperties::RelationEditorConfiguration relEdCfg;
+        relEdCfg.showLinkButton = showLinkButton->isChecked();
+        relEdCfg.showUnlinkButton = showUnlinkButton->isChecked();
+        itemData.setShowLabel( showLabelCheckbox->isChecked() );
+        itemData.setRelationEditorConfiguration( relEdCfg );
+
+        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+      }
     }
-  }
-  else if ( itemData.type() == QgsAttributesFormProperties::DnDTreeItemData::Relation )
-  {
-    QDialog dlg;
-    dlg.setWindowTitle( tr( "Configure Relation Editor" ) );
-    QFormLayout *layout = new QFormLayout() ;
-    dlg.setLayout( layout );
-    layout->addWidget( baseWidget );
+    break;
 
-    QCheckBox *showLinkButton = new QCheckBox( tr( "Show link button" ) );
-    showLinkButton->setChecked( itemData.relationEditorConfiguration().showLinkButton );
-    QCheckBox *showUnlinkButton = new QCheckBox( tr( "Show unlink button" ) );
-    showUnlinkButton->setChecked( itemData.relationEditorConfiguration().showUnlinkButton );
-    layout->addRow( showLinkButton );
-    layout->addRow( showUnlinkButton );
-
-    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-
-    connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
-    connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-
-    dlg.layout()->addWidget( buttonBox );
-
-    if ( dlg.exec() )
+    case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
     {
-      QgsAttributesFormProperties::RelationEditorConfiguration relEdCfg;
-      relEdCfg.showLinkButton = showLinkButton->isChecked();
-      relEdCfg.showUnlinkButton = showUnlinkButton->isChecked();
-      itemData.setShowLabel( showLabelCheckbox->isChecked() );
-      itemData.setRelationEditorConfiguration( relEdCfg );
+      QDialog dlg;
+      dlg.setWindowTitle( tr( "Configure QML Widget" ) );
 
-      item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+      QVBoxLayout *mainLayout = new QVBoxLayout();
+      QHBoxLayout *qmlLayout = new QHBoxLayout();
+      QFormLayout *layout = new QFormLayout();
+      mainLayout->addLayout( qmlLayout );
+      qmlLayout->addLayout( layout );
+      dlg.setLayout( mainLayout );
+      layout->addWidget( baseWidget );
+
+      QLineEdit *title = new QLineEdit( itemData.name() );
+
+      //qmlCode
+      QPlainTextEdit *qmlCode = new QPlainTextEdit( itemData.qmlElementEditorConfiguration().qmlCode );
+      qmlCode->setPlaceholderText( tr( "Insert QML code here..." ) );
+
+      QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
+      QgsFeature previewFeature;
+      mLayer->getFeatures().nextFeature( previewFeature );
+
+      //update preview on text change
+      connect( qmlCode, &QPlainTextEdit::textChanged, this, [ = ]
+      {
+        qmlWrapper->setQmlCode( qmlCode->toPlainText() );
+        qmlWrapper->reinitWidget();
+        qmlWrapper->setFeature( previewFeature );
+      } );
+
+      //templates
+      QComboBox *qmlObjectTemplate = new QComboBox();
+      qmlObjectTemplate->addItem( tr( "Free text..." ) );
+      qmlObjectTemplate->addItem( tr( "Rectangle" ) );
+      qmlObjectTemplate->addItem( tr( "Pie chart" ) );
+      qmlObjectTemplate->addItem( tr( "Bar chart" ) );
+      connect( qmlObjectTemplate, qgis::overload<int>::of( &QComboBox::activated ), qmlCode, [ = ]( int index )
+      {
+        qmlCode->clear();
+        switch ( index )
+        {
+          case 0:
+          {
+            qmlCode->setPlaceholderText( tr( "Insert QML code here..." ) );
+            break;
+          }
+          case 1:
+          {
+            qmlCode->insertPlainText( QStringLiteral( "import QtQuick 2.0\n"
+                                      "\n"
+                                      "Rectangle {\n"
+                                      "    width: 100\n"
+                                      "    height: 100\n"
+                                      "    color: \"steelblue\"\n"
+                                      "    Text{ text: \"A rectangle\" }\n"
+                                      "}\n" ) );
+            break;
+          }
+          case 2:
+          {
+            qmlCode->insertPlainText( QStringLiteral( "import QtQuick 2.0\n"
+                                      "import QtCharts 2.0\n"
+                                      "\n"
+                                      "ChartView {\n"
+                                      "    width: 400\n"
+                                      "    height: 400\n"
+                                      "\n"
+                                      "    PieSeries {\n"
+                                      "        id: pieSeries\n"
+                                      "        PieSlice { label: \"First slice\"; value: 25 }\n"
+                                      "        PieSlice { label: \"Second slice\"; value: 45 }\n"
+                                      "        PieSlice { label: \"Third slice\"; value: 30 }\n"
+                                      "    }\n"
+                                      "}\n" ) );
+            break;
+          }
+          case 3:
+          {
+            qmlCode->insertPlainText( QStringLiteral( "import QtQuick 2.0\n"
+                                      "import QtCharts 2.0\n"
+                                      "\n"
+                                      "ChartView {\n"
+                                      "    title: \"Bar series\"\n"
+                                      "    width: 600\n"
+                                      "    height:400\n"
+                                      "    legend.alignment: Qt.AlignBottom\n"
+                                      "    antialiasing: true\n"
+                                      "\n"
+                                      "    BarSeries {\n"
+                                      "        id: mySeries\n"
+                                      "        axisX: BarCategoryAxis { categories: [\"2007\", \"2008\", \"2009\", \"2010\", \"2011\", \"2012\" ] }\n"
+                                      "        BarSet { label: \"Bob\"; values: [2, 2, 3, 4, 5, 6] }\n"
+                                      "        BarSet { label: \"Susan\"; values: [5, 1, 2, 4, 1, 7] }\n"
+                                      "        BarSet { label: \"James\"; values: [3, 5, 8, 13, 5, 8] }\n"
+                                      "    }\n"
+                                      "}\n" ) );
+            break;
+          }
+          default:
+            break;
+        }
+      } );
+
+      QgsFieldExpressionWidget *expressionWidget = new QgsFieldExpressionWidget;
+      expressionWidget->setLayer( mLayer );
+      QToolButton *addExpressionButton = new QToolButton();
+      addExpressionButton->setIcon( QgsApplication::getThemeIcon( "/symbologyAdd.svg" ) );
+
+      connect( addExpressionButton, &QAbstractButton::clicked, this, [ = ]
+      {
+        qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expressionWidget->expression().replace( '"', "\\\"" ) ) );
+      } );
+
+      layout->addRow( tr( "Title" ), title );
+      QGroupBox *qmlCodeBox = new QGroupBox( tr( "QML Code" ) );
+      qmlCodeBox->setLayout( new QGridLayout );
+      qmlCodeBox->layout()->addWidget( qmlObjectTemplate );
+      QGroupBox *expressionWidgetBox = new QGroupBox();
+      qmlCodeBox->layout()->addWidget( expressionWidgetBox );
+      expressionWidgetBox->setLayout( new QHBoxLayout );
+      expressionWidgetBox->layout()->addWidget( expressionWidget );
+      expressionWidgetBox->layout()->addWidget( addExpressionButton );
+      qmlCodeBox->layout()->addWidget( qmlCode );
+      layout->addRow( qmlCodeBox );
+      QScrollArea *qmlPreviewBox = new QScrollArea();
+      qmlPreviewBox->setLayout( new QGridLayout );
+      qmlPreviewBox->setMinimumWidth( 400 );
+      qmlPreviewBox->layout()->addWidget( qmlWrapper->widget() );
+      //emit to load preview for the first time
+      emit qmlCode->textChanged();
+      qmlLayout->addWidget( qmlPreviewBox );
+
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+
+      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+
+      mainLayout->addWidget( buttonBox );
+
+      if ( dlg.exec() )
+      {
+        QgsAttributesFormProperties::QmlElementEditorConfiguration qmlEdCfg;
+        qmlEdCfg.qmlCode = qmlCode->toPlainText();
+        itemData.setName( title->text() );
+        itemData.setQmlElementEditorConfiguration( qmlEdCfg );
+        itemData.setShowLabel( showLabelCheckbox->isChecked() );
+
+        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+        item->setText( 0, title->text() );
+      }
     }
-  }
-  else
-  {
-    QDialog dlg;
-    dlg.setWindowTitle( tr( "Configure Field" ) );
-    dlg.setLayout( new QGridLayout() );
-    dlg.layout()->addWidget( baseWidget );
+    break;
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
-        | QDialogButtonBox::Cancel );
-
-    connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
-    connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-
-    dlg.layout()->addWidget( buttonBox );
-
-    if ( dlg.exec() )
+    case QgsAttributesFormProperties::DnDTreeItemData::Field:
     {
-      itemData.setShowLabel( showLabelCheckbox->isChecked() );
+      QDialog dlg;
+      dlg.setWindowTitle( tr( "Configure Field" ) );
+      dlg.setLayout( new QGridLayout() );
+      dlg.layout()->addWidget( baseWidget );
 
-      item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
+          | QDialogButtonBox::Cancel );
+
+      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+
+      dlg.layout()->addWidget( buttonBox );
+
+      if ( dlg.exec() )
+      {
+        itemData.setShowLabel( showLabelCheckbox->isChecked() );
+
+        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+      }
     }
+    break;
   }
 }
 
@@ -1146,5 +1360,15 @@ QgsAttributesFormProperties::RelationEditorConfiguration QgsAttributesFormProper
 void QgsAttributesFormProperties::DnDTreeItemData::setRelationEditorConfiguration( QgsAttributesFormProperties::RelationEditorConfiguration relationEditorConfiguration )
 {
   mRelationEditorConfiguration = relationEditorConfiguration;
+}
+
+QgsAttributesFormProperties::QmlElementEditorConfiguration QgsAttributesFormProperties::DnDTreeItemData::qmlElementEditorConfiguration() const
+{
+  return mQmlElementEditorConfiguration;
+}
+
+void QgsAttributesFormProperties::DnDTreeItemData::setQmlElementEditorConfiguration( QgsAttributesFormProperties::QmlElementEditorConfiguration qmlElementEditorConfiguration )
+{
+  mQmlElementEditorConfiguration = qmlElementEditorConfiguration;
 }
 
