@@ -118,6 +118,7 @@ Visual fixes for when group box is collapsed/expanded
     void clearModifiers();
 
 
+
 };
 
 

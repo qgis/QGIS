@@ -166,6 +166,8 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
 
     QIcon mCollapseIcon;
     QIcon mExpandIcon;
+
+    QString mStyleSheet;
 };
 
 /**
