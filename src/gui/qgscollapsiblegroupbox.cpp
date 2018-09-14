@@ -382,7 +382,8 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
     ss += QLatin1String( "  background-color: rgba(0,0,0,0)" );
   }
   ss += '}';
-  setStyleSheet( styleSheet() + ss );
+  mStyleSheet = styleSheet() + ss;
+  setStyleSheet( mStyleSheet );
 
   // clear toolbutton default background and border and apply offset
   QString ssd;
@@ -445,6 +446,7 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
 
   if ( mCollapsed )
   {
+    setStyleSheet( mStyleSheet + " QgsCollapsibleGroupBoxBasic { border: none; }" );
     Q_FOREACH ( QObject *child, children() )
     {
       QWidget *w = qobject_cast<QWidget *>( child );
@@ -457,6 +459,7 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
   }
   else // on expand
   {
+    setStyleSheet( mStyleSheet );
     Q_FOREACH ( QObject *child, children() )
     {
       QWidget *w = qobject_cast<QWidget *>( child );
