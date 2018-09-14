@@ -26,7 +26,7 @@
 #include "qgsspatialindex.h"
 
 //! record about vertex coordinates and index of anchor to which it is snapped
-typedef struct
+struct AnchorPoint
 {
   //! coordinates of the point
   double x, y;
@@ -38,15 +38,15 @@ typedef struct
    * -2  - this point is an anchor, i.e. do not snap this point (snap others to this point)
    */
   int anchor;
-} AnchorPoint;
+};
 
 
 //! record about anchor being along a segment
-typedef struct
+struct AnchorAlongSegment
 {
   int anchor;    //!< Index of the anchor point
   double along;  //!< Distance of the anchor point along the segment
-} AnchorAlongSegment;
+};
 
 
 static void buildSnapIndex( QgsFeatureIterator &fi, QgsSpatialIndex &index, QVector<AnchorPoint> &pnts, QgsFeedback *feedback, int &count, int totalCount )
@@ -56,6 +56,9 @@ static void buildSnapIndex( QgsFeatureIterator &fi, QgsSpatialIndex &index, QVec
 
   while ( fi.nextFeature( f ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     QgsGeometry g = f.geometry();
 
     for ( auto it = g.vertices_begin(); it != g.vertices_end(); ++it )
@@ -310,8 +313,13 @@ int QgsGeometrySnapperSingleSource::run( const QgsFeatureSource &source, QgsFeat
 
   QgsSpatialIndex index;
   QVector<AnchorPoint> pnts;
-  QgsFeatureIterator fi = source.getFeatures();
+  QgsFeatureRequest request;
+  request.setSubsetOfAttributes( QgsAttributeList() );
+  QgsFeatureIterator fi = source.getFeatures( request );
   buildSnapIndex( fi, index, pnts, feedback, count, totalCount );
+
+  if ( feedback->isCanceled() )
+    return 0;
 
   // step 2: go through all registered points and if not yet marked mark it as anchor and
   // assign this anchor to all not yet marked points in threshold
@@ -328,6 +336,9 @@ int QgsGeometrySnapperSingleSource::run( const QgsFeatureSource &source, QgsFeat
   fi = source.getFeatures();
   while ( fi.nextFeature( f ) )
   {
+    if ( feedback->isCanceled() )
+      break;
+
     QgsGeometry geom = f.geometry();
     if ( snapGeometry( geom.get(), index, pnts, thresh ) )
     {
