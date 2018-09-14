@@ -824,14 +824,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param theURI the URI of the style or the URI of the layer
      * \param resultFlag will be set to true if a named style is correctly loaded
      * \param loadFromLocalDb if true forces to load from local db instead of datasource one
+     * \param categories the style categories to be loaded.
      */
-    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT, bool loadFromLocalDb );
+    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT, bool loadFromLocalDb,
+                                    StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
     /**
      * Calls loadNamedStyle( theURI, resultFlag, false );
      * Retained for backward compatibility
      */
-    QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT ) override;
+    QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT,
+                            QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
 
     /**
      * Loads the auxiliary layer for this vector layer. If there's no

@@ -975,12 +975,12 @@ bool QgsMapLayer::loadNamedPropertyFromDatabase( const QString &db, const QStrin
 }
 
 
-QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
+QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag, StyleCategories categories )
 {
-  return loadNamedProperty( uri, PropertyType::Style, resultFlag );
+  return loadNamedProperty( uri, PropertyType::Style, resultFlag, categories );
 }
 
-QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag )
+QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag, StyleCategories categories )
 {
   QgsDebugMsgLevel( QString( "uri = %1 myURI = %2" ).arg( uri, publicSource() ), 4 );
 
@@ -1059,7 +1059,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   switch ( type )
   {
     case QgsMapLayer::Style:
-      resultFlag = importNamedStyle( myDocument, myErrorMessage );
+      resultFlag = importNamedStyle( myDocument, myErrorMessage, categories );
       if ( !resultFlag )
         myErrorMessage = tr( "Loading style file %1 failed because:\n%2" ).arg( uri, myErrorMessage );
       break;

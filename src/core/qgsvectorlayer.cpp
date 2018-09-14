@@ -4552,9 +4552,9 @@ void QgsVectorLayer::saveStyleToDatabase( const QString &name, const QString &de
 
 
 
-QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag )
+QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, QgsMapLayer::StyleCategories categories )
 {
-  return loadNamedStyle( theURI, resultFlag, false );
+  return loadNamedStyle( theURI, resultFlag, false, categories );
 }
 
 bool QgsVectorLayer::loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage, const QString &key )
@@ -4619,7 +4619,7 @@ QgsAuxiliaryLayer *QgsVectorLayer::auxiliaryLayer()
   return mAuxiliaryLayer.get();
 }
 
-QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bool loadFromLocalDB )
+QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bool loadFromLocalDB, QgsMapLayer::StyleCategories categories )
 {
   QgsDataSourceUri dsUri( theURI );
   if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
@@ -4643,7 +4643,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag,
     }
   }
 
-  return QgsMapLayer::loadNamedStyle( theURI, resultFlag );
+  return QgsMapLayer::loadNamedStyle( theURI, resultFlag, categories );
 }
 
 QSet<QgsMapLayerDependency> QgsVectorLayer::dependencies() const

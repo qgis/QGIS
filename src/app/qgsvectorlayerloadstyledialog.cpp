@@ -13,56 +13,135 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsloadstylefromdbdialog.h"
-#include "qgslogger.h"
-#include "qgisapp.h"
-#include "qgssettings.h"
-
 #include <QMessageBox>
 #include <QVector>
 
-QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
+#include "qgsvectorlayerloadstyledialog.h"
+#include "qgslogger.h"
+#include "qgisapp.h"
+#include "qgssettings.h"
+#include "qgsvectorlayerproperties.h"
+
+
+
+QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )
+  , mLayer( layer )
 {
   setupUi( this );
   setWindowTitle( QStringLiteral( "Database styles manager" ) );
 
+  QgsSettings settings;
+
+  QString providerName = mLayer->providerType();
+  if ( providerName == QLatin1String( "ogr" ) )
+  {
+    providerName = mLayer->dataProvider()->storageType();
+    if ( providerName == QLatin1String( "GPKG" ) )
+      providerName = QStringLiteral( "GeoPackage" );
+  }
+
+  QString myLastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+
+  // load style type combobox
+  connect( mStyleTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
+    QgsVectorLayerProperties::StyleType type = currentStyleType();
+    mFromFileWidget->setVisible( type != QgsVectorLayerProperties::DB );
+    mFromDbWidget->setVisible( type == QgsVectorLayerProperties::DB );
+    mDeleteButton->setVisible( type == QgsVectorLayerProperties::DB && mLayer->dataProvider()->isDeleteStyleFromDatabaseSupported() );
+    mStyleCategoriesListWidget->setEnabled( currentStyleType() != QgsVectorLayerProperties::SLD );
+    updateLoadButtonState();
+  } );
+  mStyleTypeComboBox->addItem( tr( "from file" ), QgsVectorLayerProperties::QML ); // QML is used as entry, but works for SLD too, see currentStyleType()
+  if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
+    mStyleTypeComboBox->addItem( tr( "from database (%1)" ).arg( providerName ), QgsVectorLayerProperties::DB );
+
+  // fill style categories
+  QgsMapLayer::StyleCategories lastStyleCategories = settings.flagValue( QStringLiteral( "style/lastStyleCategories" ), QgsMapLayer::AllStyleCategories );
+  for ( QgsMapLayer::StyleCategory category : qgsEnumMap<QgsMapLayer::StyleCategory>().keys() )
+  {
+    if ( category == QgsMapLayer::AllStyleCategories )
+      continue;
+
+    QgsMapLayer::ReadableStyleCategory readableCategory = QgsMapLayer::readableStyleCategory( category );
+
+    QListWidgetItem *item = new QListWidgetItem( readableCategory.icon(), readableCategory.name(), mStyleCategoriesListWidget );
+    item->setFlags( ( item->flags() | Qt::ItemIsUserCheckable ) & ~Qt::ItemIsSelectable );
+    item->setCheckState( lastStyleCategories.testFlag( category ) ? Qt::Checked : Qt::Unchecked );
+    item->setData( Qt::UserRole, category );
+  }
+
+  // load from file setup
+  mFileWidget->setFilter( tr( "QGIS Layer Style File, SLD File" ) + QStringLiteral( " (*.qml *.sld)" ) );
+  mFileWidget->setStorageMode( QgsFileWidget::GetFile );
+  mFileWidget->setDefaultRoot( myLastUsedDir );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & )
+  {
+    mStyleCategoriesListWidget->setEnabled( currentStyleType() != QgsVectorLayerProperties::SLD );
+    updateLoadButtonState();
+  } );
+
+  // load from DB
   mLoadButton->setDisabled( true );
   mDeleteButton->setDisabled( true );
   mRelatedTable->setEditTriggers( QTableWidget::NoEditTriggers );
   mRelatedTable->horizontalHeader()->setStretchLastSection( true );
   mRelatedTable->setSelectionBehavior( QTableWidget::SelectRows );
   mRelatedTable->verticalHeader()->setVisible( false );
-
   mOthersTable->setEditTriggers( QTableWidget::NoEditTriggers );
   mOthersTable->horizontalHeader()->setStretchLastSection( true );
   mOthersTable->setSelectionBehavior( QTableWidget::SelectRows );
   mOthersTable->verticalHeader()->setVisible( false );
-
-  connect( mRelatedTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsLoadStyleFromDBDialog::onRelatedTableSelectionChanged );
-  connect( mOthersTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsLoadStyleFromDBDialog::onOthersTableSelectionChanged );
+  connect( mRelatedTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVectorLayerLoadStyleDialog::onRelatedTableSelectionChanged );
+  connect( mOthersTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVectorLayerLoadStyleDialog::onOthersTableSelectionChanged );
   connect( mRelatedTable, &QTableWidget::doubleClicked, this, &QDialog::accept );
   connect( mOthersTable, &QTableWidget::doubleClicked, this, &QDialog::accept );
   connect( mCancelButton, &QPushButton::clicked, this, &QDialog::reject );
   connect( mLoadButton, &QPushButton::clicked, this, &QDialog::accept );
-  connect( mDeleteButton, &QPushButton::clicked, this, &QgsLoadStyleFromDBDialog::deleteStyleFromDB );
-
+  connect( mDeleteButton, &QPushButton::clicked, this, &QgsVectorLayerLoadStyleDialog::deleteStyleFromDB );
   setTabOrder( mRelatedTable, mOthersTable );
-  setTabOrder( mOthersTable, mCancelButton );
-  setTabOrder( mCancelButton, mDeleteButton );
-  setTabOrder( mDeleteButton, mLoadButton );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/loadStyleFromDb/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/vectorLayerLoadStyle/geometry" ) ).toByteArray() );
+  mStyleCategoriesListWidget->adjustSize();
 }
 
-QgsLoadStyleFromDBDialog::~QgsLoadStyleFromDBDialog()
+QgsVectorLayerLoadStyleDialog::~QgsVectorLayerLoadStyleDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/loadStyleFromDb/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/vectorLayerLoadStyle/geometry" ), saveGeometry() );
 }
 
-void QgsLoadStyleFromDBDialog::initializeLists( const QStringList &ids, const QStringList &names, const QStringList &descriptions, int sectionLimit )
+QgsMapLayer::StyleCategories QgsVectorLayerLoadStyleDialog::styleCategories() const
+{
+  QgsMapLayer::StyleCategories categories;
+  for ( int row = 0; row < mStyleCategoriesListWidget->count(); ++row )
+  {
+    QListWidgetItem *item = mStyleCategoriesListWidget->item( row );
+    if ( item->checkState() == Qt::Checked )
+      categories |= item->data( Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
+  }
+  return categories;
+}
+
+QgsVectorLayerProperties::StyleType QgsVectorLayerLoadStyleDialog::currentStyleType() const
+{
+  QgsVectorLayerProperties::StyleType type = mStyleTypeComboBox->currentData().value<QgsVectorLayerProperties::StyleType>();
+  if ( type == QgsVectorLayerProperties::QML )
+  {
+    QFileInfo fi( mFileWidget->filePath() );
+    if ( fi.exists() && fi.suffix().compare( QStringLiteral( "sld" ), Qt::CaseInsensitive ) == 0 )
+      type = QgsVectorLayerProperties::SLD;
+  }
+  return type;
+}
+
+QString QgsVectorLayerLoadStyleDialog::filePath() const
+{
+  return mFileWidget->filePath();
+}
+
+void QgsVectorLayerLoadStyleDialog::initializeLists( const QStringList &ids, const QStringList &names, const QStringList &descriptions, int sectionLimit )
 {
   mSectionLimit = sectionLimit;
   int relatedTableNOfCols = sectionLimit > 0 ? 2 : 1;
@@ -98,48 +177,42 @@ void QgsLoadStyleFromDBDialog::initializeLists( const QStringList &ids, const QS
   }
 }
 
-QString QgsLoadStyleFromDBDialog::getSelectedStyleId()
+QString QgsVectorLayerLoadStyleDialog::selectedStyleId()
 {
   return mSelectedStyleId;
 }
 
-void QgsLoadStyleFromDBDialog::setLayer( QgsVectorLayer *l )
-{
-  mLayer = l;
-  mDeleteButton->setVisible( mLayer->dataProvider()->isDeleteStyleFromDatabaseSupported() );
-}
-
-void QgsLoadStyleFromDBDialog::onRelatedTableSelectionChanged()
+void QgsVectorLayerLoadStyleDialog::onRelatedTableSelectionChanged()
 {
   selectionChanged( mRelatedTable );
   if ( mRelatedTable->selectionModel()->hasSelection() )
   {
     if ( mOthersTable->selectionModel()->hasSelection() )
     {
-      disconnect( mOthersTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsLoadStyleFromDBDialog::onOthersTableSelectionChanged );
+      disconnect( mOthersTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVectorLayerLoadStyleDialog::onOthersTableSelectionChanged );
       QTableWidgetSelectionRange range( 0, 0, mOthersTable->rowCount() - 1, mOthersTable->columnCount() - 1 );
       mOthersTable->setRangeSelected( range, false );
-      connect( mOthersTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsLoadStyleFromDBDialog::onOthersTableSelectionChanged );
+      connect( mOthersTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVectorLayerLoadStyleDialog::onOthersTableSelectionChanged );
     }
   }
 }
 
-void QgsLoadStyleFromDBDialog::onOthersTableSelectionChanged()
+void QgsVectorLayerLoadStyleDialog::onOthersTableSelectionChanged()
 {
   selectionChanged( mOthersTable );
   if ( mOthersTable->selectionModel()->hasSelection() )
   {
     if ( mRelatedTable->selectionModel()->hasSelection() )
     {
-      disconnect( mRelatedTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsLoadStyleFromDBDialog::onRelatedTableSelectionChanged );
+      disconnect( mRelatedTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVectorLayerLoadStyleDialog::onRelatedTableSelectionChanged );
       QTableWidgetSelectionRange range( 0, 0, mRelatedTable->rowCount() - 1, mRelatedTable->columnCount() - 1 );
       mRelatedTable->setRangeSelected( range, false );
-      connect( mRelatedTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsLoadStyleFromDBDialog::onRelatedTableSelectionChanged );
+      connect( mRelatedTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVectorLayerLoadStyleDialog::onRelatedTableSelectionChanged );
     }
   }
 }
 
-void QgsLoadStyleFromDBDialog::selectionChanged( QTableWidget *styleTable )
+void QgsVectorLayerLoadStyleDialog::selectionChanged( QTableWidget *styleTable )
 {
   QTableWidgetItem *item = nullptr;
   QList<QTableWidgetItem *> selected = styleTable->selectedItems();
@@ -159,9 +232,17 @@ void QgsLoadStyleFromDBDialog::selectionChanged( QTableWidget *styleTable )
     mLoadButton->setEnabled( false );
     mDeleteButton->setEnabled( false );
   }
+
+  updateLoadButtonState();
 }
 
-void QgsLoadStyleFromDBDialog::deleteStyleFromDB()
+void QgsVectorLayerLoadStyleDialog::accept()
+{
+  QgsSettings().setFlagValue( QStringLiteral( "style/lastStyleCategories" ), styleCategories() );
+  QDialog::accept();
+}
+
+void QgsVectorLayerLoadStyleDialog::deleteStyleFromDB()
 {
   QString msgError;
   QString opInfo = QObject::tr( "Delete style %1 from %2" ).arg( mSelectedStyleName, mLayer->providerType() );
@@ -199,4 +280,16 @@ void QgsLoadStyleFromDBDialog::deleteStyleFromDB()
       initializeLists( ids, names, descriptions, sectionLimit );
     }
   }
+}
+
+void QgsVectorLayerLoadStyleDialog::updateLoadButtonState()
+{
+  QgsVectorLayerProperties::StyleType type = currentStyleType();
+  mLoadButton->setEnabled( ( type == QgsVectorLayerProperties::DB
+                             && ( mRelatedTable->selectionModel()->hasSelection() || mOthersTable->selectionModel()->hasSelection()
+                                ) ) ||
+                           ( type != QgsVectorLayerProperties::DB && !mFileWidget->filePath().isEmpty() ) );
+
+
+
 }

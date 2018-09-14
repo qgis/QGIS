@@ -43,7 +43,6 @@
 #include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
 #include "qgsproject.h"
-#include "qgsloadstylefromdbdialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerproperties.h"
@@ -63,6 +62,7 @@
 #include "qgssymbollayer.h"
 #include "qgsgeometryfixes.h"
 #include "qgsvectorlayersavestyledialog.h"
+#include "qgsvectorlayerloadstyledialog.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -117,7 +117,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   mBtnStyle = new QPushButton( tr( "Style" ), this );
   QMenu *menuStyle = new QMenu( this );
-  mActionLoadStyle = menuStyle->addAction( tr( "Load Style" ), this, &QgsVectorLayerProperties::loadStyle_clicked );
+  mActionLoadStyle = menuStyle->addAction( tr( "Load Style…" ), this, &QgsVectorLayerProperties::loadStyle );
   menuStyle->addAction( tr( "Save Style…" ), this, &QgsVectorLayerProperties::saveStyleAs );
   menuStyle->addSeparator();
   menuStyle->addAction( tr( "Save as Default" ), this, SLOT( saveDefaultStyle_clicked() ) );
@@ -185,20 +185,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mActionDialog = new QgsAttributeActionDialog( *mLayer->actions(), actionOptionsFrame );
   mActionDialog->layout()->setMargin( 0 );
   actionLayout->addWidget( mActionDialog );
-
-  //Only if the provider support loading & saving styles to db add new choices
-  if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
-  {
-    //for loading
-    mLoadStyleMenu = new QMenu( this );
-    mLoadStyleMenu->addAction( tr( "Load from File…" ) );
-    mLoadStyleMenu->addAction( tr( "Database Styles Manager…" ) );
-    //mActionLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );
-    mActionLoadStyle->setMenu( mLoadStyleMenu );
-
-    connect( mLoadStyleMenu, &QMenu::triggered,
-             this, &QgsVectorLayerProperties::loadStyleMenuTriggered );
-  }
 
   mSourceFieldsPropertiesDialog = new QgsSourceFieldsProperties( mLayer, mSourceFieldsFrame );
   mSourceFieldsPropertiesDialog->layout()->setMargin( 0 );
@@ -971,52 +957,6 @@ void QgsVectorLayerProperties::saveDefaultStyle_clicked()
   }
 }
 
-
-void QgsVectorLayerProperties::loadStyle_clicked()
-{
-  QgsSettings settings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
-
-  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load Layer Properties from Style File" ), myLastUsedDir,
-                       tr( "QGIS Layer Style File" ) + " (*.qml);;" + tr( "SLD File" ) + " (*.sld)" );
-  if ( myFileName.isNull() )
-  {
-    return;
-  }
-
-  mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
-
-  QString myMessage;
-  bool defaultLoadedFlag = false;
-
-  if ( myFileName.endsWith( QLatin1String( ".sld" ), Qt::CaseInsensitive ) )
-  {
-    // load from SLD
-    myMessage = mLayer->loadSldStyle( myFileName, defaultLoadedFlag );
-  }
-  else
-  {
-    myMessage = mLayer->loadNamedStyle( myFileName, defaultLoadedFlag, true );
-  }
-  //reset if the default style was loaded OK only
-  if ( defaultLoadedFlag )
-  {
-    syncToLayer();
-  }
-  else
-  {
-    //let the user know what went wrong
-    QMessageBox::warning( this, tr( "Load Style" ), myMessage );
-  }
-
-  QFileInfo myFI( myFileName );
-  QString myPath = myFI.path();
-  settings.setValue( QStringLiteral( "style/lastStyleDir" ), myPath );
-
-  activateWindow(); // set focus back to properties dialog
-}
-
-
 void QgsVectorLayerProperties::loadMetadata()
 {
   QgsSettings myQSettings;  // where we keep last used filter in persistent state
@@ -1180,25 +1120,6 @@ void QgsVectorLayerProperties::saveStyleAs()
   }
 }
 
-void QgsVectorLayerProperties::loadStyleMenuTriggered( QAction *action )
-{
-  QMenu *menu = qobject_cast<QMenu *>( sender() );
-  if ( !menu )
-    return;
-
-  int index = mLoadStyleMenu->actions().indexOf( action );
-
-  if ( index == 0 ) //Load from filesystem
-  {
-    loadStyle_clicked();
-  }
-  else if ( index == 1 ) //Load from database
-  {
-    showListOfStylesFromDatabase();
-  }
-
-}
-
 void QgsVectorLayerProperties::aboutToShowStyleMenu()
 {
   // this should be unified with QgsRasterLayerProperties::aboutToShowStyleMenu()
@@ -1231,8 +1152,12 @@ void QgsVectorLayerProperties::aboutToShowStyleMenu()
   QgsMapLayerStyleGuiUtils::instance()->addStyleManagerActions( m, mLayer );
 }
 
-void QgsVectorLayerProperties::showListOfStylesFromDatabase()
+void QgsVectorLayerProperties::loadStyle()
 {
+
+  QgsSettings settings;  // where we keep last used filter in persistent state
+  QString myLastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+
   QString errorMsg;
   QStringList ids, names, descriptions;
 
@@ -1244,34 +1169,70 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
     return;
   }
 
-  QgsLoadStyleFromDBDialog dialog;
-  dialog.setLayer( mLayer );
-  dialog.initializeLists( ids, names, descriptions, sectionLimit );
+  QgsVectorLayerLoadStyleDialog dlg( mLayer );
+  dlg.initializeLists( ids, names, descriptions, sectionLimit );
 
-  if ( dialog.exec() == QDialog::Accepted )
+  if ( dlg.exec() )
   {
-    QString selectedStyleId = dialog.getSelectedStyleId();
-
-    QString qmlStyle = mLayer->getStyleFromDatabase( selectedStyleId, errorMsg );
-    if ( !errorMsg.isNull() )
+    mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
+    QgsMapLayer::StyleCategories categories = dlg.styleCategories();
+    StyleType type = dlg.currentStyleType();
+    switch ( type )
     {
-      QMessageBox::warning( this, tr( "Load Styles from Database" ), errorMsg );
-      return;
-    }
+      case QML:
+      case SLD:
+      {
+        QString message;
+        bool defaultLoadedFlag = false;
+        QString filePath = dlg.filePath();
+        if ( type == SLD )
+        {
+          message = mLayer->loadSldStyle( filePath, defaultLoadedFlag );
+        }
+        else
+        {
+          message = mLayer->loadNamedStyle( filePath, defaultLoadedFlag, true, categories );
+        }
+        //reset if the default style was loaded OK only
+        if ( defaultLoadedFlag )
+        {
+          syncToLayer();
+        }
+        else
+        {
+          //let the user know what went wrong
+          QMessageBox::warning( this, tr( "Load Style" ), message );
+        }
+        break;
+      }
+      case DB:
+      {
+        QString selectedStyleId = dlg.selectedStyleId();
 
-    QDomDocument myDocument( QStringLiteral( "qgis" ) );
-    myDocument.setContent( qmlStyle );
+        QString qmlStyle = mLayer->getStyleFromDatabase( selectedStyleId, errorMsg );
+        if ( !errorMsg.isNull() )
+        {
+          QMessageBox::warning( this, tr( "Load Styles from Database" ), errorMsg );
+          return;
+        }
 
-    if ( mLayer->importNamedStyle( myDocument, errorMsg ) )
-    {
-      syncToLayer();
+        QDomDocument myDocument( QStringLiteral( "qgis" ) );
+        myDocument.setContent( qmlStyle );
+
+        if ( mLayer->importNamedStyle( myDocument, errorMsg, categories ) )
+        {
+          syncToLayer();
+        }
+        else
+        {
+          QMessageBox::warning( this, tr( "Load Styles from Database" ),
+                                tr( "The retrieved style is not a valid named style. Error message: %1" )
+                                .arg( errorMsg ) );
+        }
+        break;
+      }
     }
-    else
-    {
-      QMessageBox::warning( this, tr( "Load Styles from Database" ),
-                            tr( "The retrieved style is not a valid named style. Error message: %1" )
-                            .arg( errorMsg ) );
-    }
+    activateWindow(); // set focus back to properties dialog
   }
 }
 
