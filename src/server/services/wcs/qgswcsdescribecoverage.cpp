@@ -36,10 +36,29 @@ namespace QgsWcs
   void writeDescribeCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                               const QgsServerRequest &request, QgsServerResponse &response )
   {
-    QDomDocument doc = createDescribeCoverageDocument( serverIface, project, version, request );
+    QgsAccessControl *accessControl = serverIface->accessControls();
+
+    QDomDocument doc;
+    const QDomDocument *describeDocument = nullptr;
+
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
+    if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
+    {
+      describeDocument = &doc;
+    }
+    else //describe feature xml not in cache. Create a new one
+    {
+      doc = createDescribeCoverageDocument( serverIface, project, version, request );
+
+      if ( cacheManager )
+      {
+        cacheManager->setCachedDocument( &doc, project, request, accessControl );
+      }
+      describeDocument = &doc;
+    }
 
     response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
-    response.write( doc.toByteArray() );
+    response.write( describeDocument->toByteArray() );
   }
 
 

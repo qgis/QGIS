@@ -55,10 +55,29 @@ namespace QgsWms
                         const QString &version, const QgsServerRequest &request,
                         QgsServerResponse &response )
   {
-    QDomDocument doc = getContext( serverIface, project, version, request );
+    QgsAccessControl *accessControl = serverIface->accessControls();
+
+    QDomDocument doc;
+    const QDomDocument *contextDocument = nullptr;
+
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
+    if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
+    {
+      contextDocument = &doc;
+    }
+    else //context xml not in cache. Create a new one
+    {
+      doc = getContext( serverIface, project, version, request );
+
+      if ( cacheManager )
+      {
+        cacheManager->setCachedDocument( &doc, project, request, accessControl );
+      }
+      contextDocument = &doc;
+    }
 
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
-    response.write( doc.toByteArray() );
+    response.write( contextDocument->toByteArray() );
   }
 
 
