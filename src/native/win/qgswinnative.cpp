@@ -54,13 +54,15 @@ void QgsWinNative::initializeMainWindow( QWindow *window,
                                           version.toStdWString() ) );
   if ( WinToastLib::WinToast::instance()->initialize() )
   {
+    mWinToastInitialized = true;
     mCapabilities = mCapabilities | NativeDesktopNotifications;
   }
 }
 
 void QgsWinNative::cleanup()
 {
-  WinToastLib::WinToast::instance()->clear();
+  if ( mWinToastInitialized )
+    WinToastLib::WinToast::instance()->clear();
 }
 
 void QgsWinNative::openFileExplorerAndSelectFile( const QString &path )
@@ -126,13 +128,20 @@ class NotificationHandler : public WinToastLib::IWinToastHandler
 
 QgsNative::NotificationResult QgsWinNative::showDesktopNotification( const QString &summary, const QString &body, const QgsNative::NotificationSettings &settings )
 {
+  NotificationResult result;
+  if ( !mWinToastInitialized )
+  {
+    result.successful = false;
+    return result;
+  }
+
   WinToastLib::WinToastTemplate templ = WinToastLib::WinToastTemplate( WinToastLib::WinToastTemplate::ImageAndText02 );
   templ.setImagePath( settings.pngAppIconPath.toStdWString() );
   templ.setTextField( summary.toStdWString(), WinToastLib::WinToastTemplate::FirstLine );
   templ.setTextField( body.toStdWString(), WinToastLib::WinToastTemplate::SecondLine );
   templ.setDuration( WinToastLib::WinToastTemplate::Short );
 
-  NotificationResult result;
+
   if ( WinToastLib::WinToast::instance()->showToast( templ, new NotificationHandler ) < 0 )
     result.successful = false;
   else
