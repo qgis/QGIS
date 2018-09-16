@@ -46,6 +46,7 @@ class NATIVE_EXPORT QgsWinNative : public QgsNative
   private:
 
     Capabilities mCapabilities = nullptr;
+    bool mWinToastInitialized = false;
     QWinTaskbarButton *mTaskButton = nullptr;
     QWinTaskbarProgress *mTaskProgress = nullptr;
 };
