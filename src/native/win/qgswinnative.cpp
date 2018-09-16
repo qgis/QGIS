@@ -68,7 +68,7 @@ void QgsWinNative::openFileExplorerAndSelectFile( const QString &path )
   const QString nativePath = QDir::toNativeSeparators( path );
 
   wchar_t *pathArray = new wchar_t[static_cast< uint>( nativePath.length() + 1 )];
-  nativePath.toWCharArray(pathArray);
+  nativePath.toWCharArray( pathArray );
   pathArray[nativePath.length()] = 0;
 
   ITEMIDLIST *pidl = ILCreateFromPathW( pathArray );
@@ -122,7 +122,7 @@ class NotificationHandler : public WinToastLib::IWinToastHandler
 
     void toastActivated( int ) const override {}
 
-    void toastFailed() const
+    void toastFailed() const override
     {
       qWarning() << "Error showing notification";
     }

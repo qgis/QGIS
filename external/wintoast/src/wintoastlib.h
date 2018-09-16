@@ -35,6 +35,7 @@ namespace WinToastLib {
             ApplicationHidden = ToastDismissalReason::ToastDismissalReason_ApplicationHidden,
             TimedOut = ToastDismissalReason::ToastDismissalReason_TimedOut
         };
+        virtual ~IWinToastHandler() = default;
         virtual void toastActivated() const = 0;
         virtual void toastActivated(int actionIndex) const = 0;
         virtual void toastDismissed(WinToastDismissalReason state) const = 0;
