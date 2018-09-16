@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import sys
 import os
 import json
@@ -8,9 +10,7 @@ sys.path.append(
         os.path.dirname(os.path.realpath(__file__)),
         '../python/ext-libs'))
 
-from six import string_types
-
-cpp = open(sys.argv[1], "w")
+cpp = open(sys.argv[1], "w", encoding="utf-8")
 cpp.write(
     "#include \"qgsexpression.h\"\n"
     "\n"
@@ -31,7 +31,7 @@ def quote(v):
     elif isinstance(v, list):
         return map(quote, v)
 
-    elif isinstance(v, string_types):
+    elif isinstance(v, str):
         return v.replace('"', '\\"').replace('\n', '\\n')
 
     elif isinstance(v, bool):
@@ -42,7 +42,7 @@ def quote(v):
 
 
 for f in sorted(glob.glob('resources/function_help/json/*')):
-    with open(f) as function_file:
+    with open(f, encoding="utf-8") as function_file:
         try:
             json_params = json.load(function_file)
         except:
@@ -103,7 +103,7 @@ for f in sorted(glob.glob('resources/function_help/json/*')):
 
         if 'examples' in v:
             for e in v['examples']:
-                cpp.write("\n            << HelpExample( tr( \"{0}\" ), tr( \"{1}\" ), tr( \"{2}\") )".format(
+                cpp.write("\n            << HelpExample( tr( \"{0}\" ), tr( \"{1}\" ), tr( \"{2}\" ) )".format(
                     e['expression'],
                     e['returns'],
                     e.get('note', ''))
