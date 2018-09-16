@@ -418,7 +418,7 @@ namespace QgsWms
       QgsLayoutSize layoutSize( layout->pageCollection()->page( 0 )->sizeWithUnits() );
       QgsLayoutMeasurement width( layout->convertFromLayoutUnits( layoutSize.width(), QgsUnitTypes::LayoutUnit::LayoutMillimeters ) );
       QgsLayoutMeasurement height( layout->convertFromLayoutUnits( layoutSize.height(), QgsUnitTypes::LayoutUnit::LayoutMillimeters ) );
-      exportSettings.imageSize = QSize( ( int )( width.length() * dpi / 25.4 ), ( int )( height.length() * dpi / 25.4 ) );
+      exportSettings.imageSize = QSize( static_cast<int>( width.length() * dpi / 25.4 ), static_cast<int>( height.length() * dpi / 25.4 ) );
       // Export first page only (unless it's a pdf, see below)
       exportSettings.pages.append( 0 );
       QgsLayoutExporter exporter( layout.get() );
@@ -1019,11 +1019,11 @@ namespace QgsWms
       if ( !mapExtent.isEmpty() && height > 0 && width > 0 )
       {
         double mapWidthHeightRatio = mapExtent.width() / mapExtent.height();
-        double imageWidthHeightRatio = ( double )width / ( double )height;
+        double imageWidthHeightRatio = static_cast<double>( width ) / static_cast<double>( height );
         if ( !qgsDoubleNear( mapWidthHeightRatio, imageWidthHeightRatio, 0.0001 ) )
         {
           // inspired by MapServer, mapdraw.c L115
-          double cellsize = ( mapExtent.width() / ( double )width ) * 0.5 + ( mapExtent.height() / ( double )height ) * 0.5;
+          double cellsize = ( mapExtent.width() / static_cast<double>( width ) ) * 0.5 + ( mapExtent.height() / static_cast<double>( height ) ) * 0.5;
           width = mapExtent.width() / cellsize;
           height = mapExtent.height() / cellsize;
         }
@@ -1174,8 +1174,8 @@ namespace QgsWms
     int height = mWmsParameters.heightAsInt();
     if ( ( i != -1 && j != -1 && width != 0 && height != 0 ) && ( width != outputImage->width() || height != outputImage->height() ) )
     {
-      i *= ( outputImage->width() / ( double )width );
-      j *= ( outputImage->height() / ( double )height );
+      i *= ( outputImage->width() / static_cast<double>( width ) );
+      j *= ( outputImage->height() / static_cast<double>( height ) );
     }
 
     // init search variables
@@ -1573,11 +1573,13 @@ namespace QgsWms
 
           QDomElement attributeElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
           attributeElement.setAttribute( QStringLiteral( "name" ), attributeName );
+          const QgsEditorWidgetSetup setup = layer->editorWidgetSetup( i );
           attributeElement.setAttribute( QStringLiteral( "value" ),
-                                         replaceValueMapAndRelation(
-                                           layer, i,
-                                           featureAttributes[i].isNull() ?  QString() : QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &renderContext.expressionContext() )
-                                         )
+                                         QgsExpression::replaceExpressionText(
+                                           replaceValueMapAndRelation(
+                                             layer, i,
+                                             featureAttributes[i] ),
+                                           &renderContext.expressionContext() )
                                        );
           featureElement.appendChild( attributeElement );
         }
@@ -1878,11 +1880,11 @@ namespace QgsWms
 
     const int bytes_per_line = ( ( width * depth + 31 ) >> 5 ) << 2; // bytes per scanline (must be multiple of 4)
 
-    if ( std::numeric_limits<int>::max() / depth < ( uint )width
+    if ( std::numeric_limits<int>::max() / depth < static_cast<uint>( width )
          || bytes_per_line <= 0
          || height <= 0
-         || std::numeric_limits<int>::max() / uint( bytes_per_line ) < ( uint )height
-         || std::numeric_limits<int>::max() / sizeof( uchar * ) < uint( height ) )
+         || std::numeric_limits<int>::max() / static_cast<uint>( bytes_per_line ) < static_cast<uint>( height )
+         || std::numeric_limits<int>::max() / sizeof( uchar * ) < static_cast<uint>( height ) )
       return false;
 
     return true;
@@ -2245,7 +2247,7 @@ namespace QgsWms
       QString fieldTextString = featureAttributes.at( i ).toString();
       if ( layer )
       {
-        fieldTextString = replaceValueMapAndRelation( layer, i, QgsExpression::replaceExpressionText( fieldTextString, &expressionContext ) );
+        fieldTextString = QgsExpression::replaceExpressionText( replaceValueMapAndRelation( layer, i, fieldTextString ), &expressionContext );
       }
       QDomText fieldText = doc.createTextNode( fieldTextString );
       fieldElem.appendChild( fieldText );
@@ -2270,7 +2272,7 @@ namespace QgsWms
     return typeNameElement;
   }
 
-  QString QgsRenderer::replaceValueMapAndRelation( QgsVectorLayer *vl, int idx, const QString &attributeVal )
+  QString QgsRenderer::replaceValueMapAndRelation( QgsVectorLayer *vl, int idx, const QVariant &attributeVal )
   {
     const QgsEditorWidgetSetup setup = vl->editorWidgetSetup( idx );
     QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
