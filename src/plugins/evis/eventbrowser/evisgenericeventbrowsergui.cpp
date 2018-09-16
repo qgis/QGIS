@@ -53,6 +53,7 @@
 */
 eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgisInterface *interface, Qt::WindowFlags fl )
   : QDialog( parent, fl )
+  , mInterface( interface )
 {
   setupUi( this );
   connect( buttonboxOptions, &QDialogButtonBox::clicked, this, &eVisGenericEventBrowserGui::buttonboxOptions_clicked );
@@ -82,14 +83,6 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgisInt
   QSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "eVis/browser-geometry" ) ).toByteArray() );
 
-  mCurrentFeatureIndex = 0;
-  mInterface = interface;
-  mDataProvider = nullptr;
-  mVectorLayer = nullptr;
-  mCanvas = nullptr;
-
-  mIgnoreEvent = false;
-
   if ( initBrowser() )
   {
     loadRecord();
@@ -109,6 +102,7 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgisInt
 */
 eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl )
   : QDialog( parent, fl )
+  , mCanvas( canvas )
 {
   setupUi( this );
   connect( buttonboxOptions, &QDialogButtonBox::clicked, this, &eVisGenericEventBrowserGui::buttonboxOptions_clicked );
@@ -135,14 +129,6 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgsMapC
   connect( rbtnManualCompassOffset, &QRadioButton::toggled, this, &eVisGenericEventBrowserGui::rbtnManualCompassOffset_toggled );
   connect( tableFileTypeAssociations, &QTableWidget::cellDoubleClicked, this, &eVisGenericEventBrowserGui::tableFileTypeAssociations_cellDoubleClicked );
 
-  mCurrentFeatureIndex = 0;
-  mInterface = nullptr;
-  mDataProvider = nullptr;
-  mVectorLayer = nullptr;
-  mCanvas = canvas;
-
-  mIgnoreEvent = false;
-
   if ( initBrowser() )
   {
     loadRecord();
@@ -156,7 +142,7 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgsMapC
 
 
 /**
- * Basic descructor
+ * Basic destructor
  */
 eVisGenericEventBrowserGui::~eVisGenericEventBrowserGui()
 {
