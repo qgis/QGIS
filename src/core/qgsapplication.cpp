@@ -117,6 +117,7 @@ QString ABISYM( QgsApplication::mAuthDbDirPath );
 QString QgsApplication::sUserName;
 QString QgsApplication::sUserFullName;
 QString QgsApplication::sPlatformName = QStringLiteral( "desktop" );
+QString QgsApplication::sTranslation;
 
 const char *QgsApplication::QGIS_ORGANIZATION_NAME = "QGIS";
 const char *QgsApplication::QGIS_ORGANIZATION_DOMAIN = "qgis.org";
@@ -128,6 +129,34 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
   : QApplication( argc, argv, GUIenabled )
 {
   sPlatformName = platformName;
+
+  if ( sTranslation != QLatin1String( "C" ) )
+  {
+    mQgisTranslator = new QTranslator();
+    if ( mQgisTranslator->load( QStringLiteral( "qgis_" ) + sTranslation, i18nPath() ) )
+    {
+      installTranslator( mQgisTranslator );
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "loading of qgis translation failed %1/qgis_%2" ).arg( i18nPath(), sTranslation ) );
+    }
+
+    /* Translation file for Qt.
+     * The strings from the QMenuBar context section are used by Qt/Mac to shift
+     * the About, Preferences and Quit items to the Mac Application menu.
+     * These items must be translated identically in both qt_ and qgis_ files.
+     */
+    mQtTranslator = new QTranslator();
+    if ( mQtTranslator->load( QStringLiteral( "qt_" ) + sTranslation, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
+    {
+      installTranslator( mQtTranslator );
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), sTranslation ) );
+    }
+  }
 
   mApplicationMembers = new ApplicationMembers();
 
@@ -296,6 +325,8 @@ QgsApplication::~QgsApplication()
 {
   delete mDataItemProviderRegistry;
   delete mApplicationMembers;
+  delete mQgisTranslator;
+  delete mQtTranslator;
 }
 
 QgsApplication *QgsApplication::instance()
@@ -649,7 +680,6 @@ QString QgsApplication::resolvePkgPath()
   {
     return prefixPath + '/' + QStringLiteral( QGIS_DATA_SUBDIR );
   }
-
 }
 
 QString QgsApplication::themeName()
@@ -772,8 +802,10 @@ QString QgsApplication::licenceFilePath()
 
 QString QgsApplication::i18nPath()
 {
-  if ( ABISYM( mRunningFromBuildDir ) )
-    return ABISYM( mBuildOutputPath ) + QStringLiteral( "/i18n" );
+  if ( !ABISYM( mInitialized ) )
+    return resolvePkgPath() + QStringLiteral( "/i18n/" );
+  else if ( ABISYM( mRunningFromBuildDir ) )
+    return ABISYM( mBuildOutputPath ) + QStringLiteral( "/i18n/" );
   else
     return ABISYM( mPkgDataPath ) + QStringLiteral( "/i18n/" );
 }

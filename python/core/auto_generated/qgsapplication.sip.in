@@ -810,6 +810,13 @@ The maximum number of concurrent connections per connections pool.
 .. versionadded:: 3.4
 %End
 
+    static void setTranslation( QString translation );
+%Docstring
+Set translation
+
+.. versionadded:: 3.4
+%End
+
     void collectTranslatableObjects( QgsTranslationContext *translationContext );
 %Docstring
 Emits the signal to collect all the strings of .qgs to be included in ts file
