@@ -68,12 +68,19 @@ void QgsWinNative::cleanup()
 void QgsWinNative::openFileExplorerAndSelectFile( const QString &path )
 {
   const QString nativePath = QDir::toNativeSeparators( path );
-  ITEMIDLIST *pidl = ILCreateFromPath( nativePath.toUtf8().constData() );
+
+  wchar_t *pathArray = new wchar_t[static_cast< uint>( nativePath.length() + 1 )];
+  nativePath.toWCharArray(pathArray);
+  pathArray[nativePath.length()] = 0;
+
+  ITEMIDLIST *pidl = ILCreateFromPathW( pathArray );
   if ( pidl )
   {
-    SHOpenFolderAndSelectItems( pidl, 0, 0, 0 );
+    SHOpenFolderAndSelectItems( pidl, 0, nullptr, 0 );
     ILFree( pidl );
   }
+
+  delete[] pathArray;
 }
 
 void QgsWinNative::showUndefinedApplicationProgress()
