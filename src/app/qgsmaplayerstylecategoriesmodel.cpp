@@ -82,7 +82,8 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/system.svg" ) );
       }
-    case QgsMapLayer::Symbology :
+      break;
+    case QgsMapLayer::Symbology:
       switch ( role )
       {
         case Qt::DisplayRole:
@@ -92,6 +93,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/symbology.svg" ) );
       }
+      break;
     case QgsMapLayer::Symbology3D:
       switch ( role )
       {
@@ -102,7 +104,8 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/3d.svg" ) );
       }
-    case QgsMapLayer::Labeling :
+      break;
+    case QgsMapLayer::Labeling:
       switch ( role )
       {
         case Qt::DisplayRole:
@@ -112,7 +115,8 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/labels.svg" ) );
       }
-    case QgsMapLayer::Fields :
+      break;
+    case QgsMapLayer::Fields:
       switch ( role )
       {
         case Qt::DisplayRole:
@@ -122,7 +126,8 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/mSourceFields" ) );
       }
-    case QgsMapLayer::Forms :
+      break;
+    case QgsMapLayer::Forms:
       switch ( role )
       {
         case Qt::DisplayRole:
@@ -132,7 +137,8 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormView" ) );
       }
-    case QgsMapLayer::Actions :
+      break;
+    case QgsMapLayer::Actions:
       switch ( role )
       {
         case Qt::DisplayRole:
@@ -142,7 +148,8 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/action.svg" ) );
       }
-    case QgsMapLayer::MapTips :
+      break;
+    case QgsMapLayer::MapTips:
       switch ( role )
       {
         case Qt::DisplayRole:
@@ -152,7 +159,8 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/display.svg" ) );
       }
-    case QgsMapLayer::Diagrams :
+      break;
+    case QgsMapLayer::Diagrams:
       switch ( role )
       {
         case Qt::DisplayRole:
@@ -162,7 +170,8 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/diagram.svg" ) );
       }
-    case QgsMapLayer::AttributeTable :
+      break;
+    case QgsMapLayer::AttributeTable:
       switch ( role )
       {
         case Qt::DisplayRole:
@@ -172,7 +181,8 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable" ) );
       }
-    case QgsMapLayer::Rendering :
+      break;
+    case QgsMapLayer::Rendering:
       switch ( role )
       {
         case Qt::DisplayRole:
@@ -182,7 +192,8 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/rendering.svg" ) );
       }
-    case QgsMapLayer::CustomProperties :
+      break;
+    case QgsMapLayer::CustomProperties:
       switch ( role )
       {
         case Qt::DisplayRole:
@@ -192,7 +203,8 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) );
       }
-    case QgsMapLayer::AllStyleCategories :
+      break;
+    case QgsMapLayer::AllStyleCategories:
       switch ( role )
       {
         case Qt::DisplayRole:
@@ -202,6 +214,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DecorationRole:
           return QVariant();
       }
+      break;
   }
   return QVariant();
 }
