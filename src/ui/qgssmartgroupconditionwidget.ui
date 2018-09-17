@@ -28,7 +28,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>The Symbol</string>
+        <string>The symbol</string>
        </property>
       </widget>
      </item>

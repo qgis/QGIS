@@ -62,7 +62,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>File Name</string>
+           <string>File name</string>
           </property>
           <property name="indent">
            <number>0</number>
@@ -88,7 +88,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Layer Name</string>
+           <string>Layer name</string>
           </property>
          </widget>
         </item>

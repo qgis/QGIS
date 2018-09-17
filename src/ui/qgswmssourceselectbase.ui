@@ -134,7 +134,7 @@
           <string comment="Adds several example WMS servers to the list"/>
          </property>
          <property name="text">
-          <string>Add default servers</string>
+          <string>Add Default Servers</string>
          </property>
         </widget>
        </item>
@@ -189,7 +189,7 @@
           </size>
          </property>
          <property name="title">
-          <string>Image encoding</string>
+          <string>Image Encoding</string>
          </property>
         </widget>
        </item>
@@ -470,7 +470,7 @@
        <item row="2" column="0" colspan="2">
         <widget class="QPushButton" name="btnAddWMS">
          <property name="text">
-          <string>Add selected row to WMS list</string>
+          <string>Add Selected Row to WMS List</string>
          </property>
         </widget>
        </item>

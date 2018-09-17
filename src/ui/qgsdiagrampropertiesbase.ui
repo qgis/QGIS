@@ -1632,7 +1632,7 @@
                          <string>Labels are placed in an equal radius circle around point features.</string>
                         </property>
                         <property name="text">
-                         <string>Around Point</string>
+                         <string>Around point</string>
                         </property>
                         <property name="checked">
                          <bool>true</bool>
@@ -1645,7 +1645,7 @@
                          <string>Labels are placed at a fixed offset from the point.</string>
                         </property>
                         <property name="text">
-                         <string>Over Point</string>
+                         <string>Over point</string>
                         </property>
                        </widget>
                       </item>
@@ -2087,7 +2087,7 @@
                     <item>
                      <widget class="QPushButton" name="mButtonSizeLegendSettings">
                       <property name="text">
-                       <string>Legend entries for diagram size...</string>
+                       <string>Legend Entries for Diagram Size...</string>
                       </property>
                      </widget>
                     </item>

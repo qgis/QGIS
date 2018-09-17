@@ -25,7 +25,7 @@
       </property>
       <widget class="QGroupBox" name="mRasterBandsGroupBox">
        <property name="title">
-        <string>Raster bands</string>
+        <string>Raster Bands</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
@@ -35,7 +35,7 @@
       </widget>
       <widget class="QGroupBox" name="mResultGroupBox">
        <property name="title">
-        <string>Result layer</string>
+        <string>Result Layer</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1,1,0">
         <item row="3" column="0" colspan="4">
@@ -176,7 +176,7 @@
         <item row="2" column="0">
          <widget class="QPushButton" name="mCurrentLayerExtentButton">
           <property name="text">
-           <string>Selected layer extent</string>
+           <string>Selected Layer Extent</string>
           </property>
          </widget>
         </item>
@@ -447,7 +447,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
-          <string>Raster calculator expression</string>
+          <string>Raster Calculator Expression</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="leftMargin">

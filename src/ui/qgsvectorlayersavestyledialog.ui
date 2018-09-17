@@ -32,7 +32,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="nameLabel">
         <property name="text">
-         <string>Style Name</string>
+         <string>Style name</string>
         </property>
         <property name="buddy">
          <cstring>mDbStyleNameEdit</cstring>

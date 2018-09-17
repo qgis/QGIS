@@ -65,7 +65,7 @@
      <item>
       <widget class="QPushButton" name="btnSetNoShortcut">
        <property name="text">
-        <string>Set none</string>
+        <string>Set None</string>
        </property>
        <property name="autoDefault">
         <bool>false</bool>
@@ -75,7 +75,7 @@
      <item>
       <widget class="QPushButton" name="btnResetShortcut">
        <property name="text">
-        <string>Set default</string>
+        <string>Set Default</string>
        </property>
        <property name="autoDefault">
         <bool>false</bool>

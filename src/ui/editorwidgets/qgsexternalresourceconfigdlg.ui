@@ -209,7 +209,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set exclusive file selection methods.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="title">
-          <string>Storage mode</string>
+          <string>Storage Mode</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <property name="spacing">
@@ -250,7 +250,7 @@
        <item>
         <widget class="QGroupBox" name="mFileWidgetGroupBox">
          <property name="title">
-          <string>Display resource path</string>
+          <string>Display Resource Path</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -325,7 +325,7 @@
        <item>
         <widget class="QGroupBox" name="mDocumentViewerGroupBox">
          <property name="title">
-          <string>Integrated document viewer</string>
+          <string>Integrated Document Viewer</string>
          </property>
          <property name="checkable">
           <bool>false</bool>

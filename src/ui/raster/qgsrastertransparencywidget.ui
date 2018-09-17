@@ -189,7 +189,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Transparent pixel list</string>
+         <string>Transparent Pixel List</string>
         </property>
        </widget>
       </item>

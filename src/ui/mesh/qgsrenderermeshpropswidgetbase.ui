@@ -95,7 +95,7 @@
        <item>
         <widget class="QGroupBox" name="mContoursGroupBox">
          <property name="title">
-          <string>Show contours</string>
+          <string>Show Contours</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -192,7 +192,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Native Mesh rendering</string>
+          <string>Native Mesh Rendering</string>
          </property>
          <property name="checkable">
           <bool>true</bool>

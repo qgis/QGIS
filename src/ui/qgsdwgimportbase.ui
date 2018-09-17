@@ -27,7 +27,7 @@
    <item row="2" column="0" colspan="2">
     <widget class="QGroupBox" name="mGroupBox">
      <property name="title">
-      <string>Choose layers to import into project</string>
+      <string>Layers to Import into Project</string>
      </property>
      <property name="checkable">
       <bool>false</bool>
@@ -91,14 +91,14 @@
         <item>
          <widget class="QPushButton" name="pbDeselectAll">
           <property name="text">
-           <string>Deselect all</string>
+           <string>Deselect All</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="pbSelectAll">
           <property name="text">
-           <string>Select all</string>
+           <string>Select All</string>
           </property>
          </widget>
         </item>
@@ -110,7 +110,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Import drawing into GeoPackage</string>
+      <string>Import Drawing into GeoPackage</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="1" column="1">

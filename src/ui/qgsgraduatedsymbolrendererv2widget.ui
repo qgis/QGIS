@@ -69,7 +69,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Legend Format</string>
+      <string>Legend format</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -450,7 +450,7 @@ Negative rounds to powers of 10</string>
          <item>
           <widget class="QPushButton" name="btnDeleteAllClasses">
            <property name="text">
-            <string>Delete all</string>
+            <string>Delete All</string>
            </property>
           </widget>
          </item>

@@ -298,14 +298,14 @@ datasets with maximum width and height specified below.</string>
             <item row="0" column="4">
              <widget class="QPushButton" name="mOriginalResolutionPushButton">
               <property name="text">
-               <string>Layer resolution</string>
+               <string>Layer Resolution</string>
               </property>
              </widget>
             </item>
             <item row="1" column="4">
              <widget class="QPushButton" name="mOriginalSizePushButton">
               <property name="text">
-               <string>Layer size</string>
+               <string>Layer Size</string>
               </property>
              </widget>
             </item>

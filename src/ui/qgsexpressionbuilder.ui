@@ -556,14 +556,14 @@
                     <item>
                      <widget class="QPushButton" name="btnLoadAll">
                       <property name="text">
-                       <string>all unique</string>
+                       <string>All Unique</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QPushButton" name="btnLoadSample">
                       <property name="text">
-                       <string>10 samples</string>
+                       <string>10 Samples</string>
                       </property>
                      </widget>
                     </item>
