@@ -55,7 +55,7 @@ void QgsRelationWidgetWrapper::aboutToSave()
   do
   {
     if ( ctx->relation().isValid() && ( ctx->relation().referencedLayer()->name() == mRelation.referencingLayer()->name()
-                                        || ctx->relation().referencedLayer()->name() == mNmRelation.referencedLayer()->name() )
+                                        || ( mNmRelation.isValid() && ctx->relation().referencedLayer()->name() == mNmRelation.referencedLayer()->name() ) )
        )
     {
       return;
