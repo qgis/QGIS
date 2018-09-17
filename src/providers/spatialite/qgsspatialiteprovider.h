@@ -86,6 +86,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     bool supportsSubsetString() const override { return true; }
     QgsWkbTypes::Type wkbType() const override;
+    //! Return the table schema condition
+    static QString tableSchemaCondition( const QgsDataSourceUri &dsUri );
 
     /**
      * Returns the number of layers for the current data source
