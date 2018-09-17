@@ -224,8 +224,6 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'wms_getfeatureinfo-values1-text-xml',
                                  'test_project_values.qgz')
 
-    # TODO make GetFeatureInfo show the dictionary values and enable test
-    @unittest.expectedFailure
     def testGetFeatureInfoValueRelationArray(self):
         """Test GetFeatureInfo on "value relation" widget with array field (multiple selections)"""
         mypath = self.testdata_path + "test_project_values.qgz"
