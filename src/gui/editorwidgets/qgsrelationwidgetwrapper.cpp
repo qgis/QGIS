@@ -19,8 +19,6 @@
 #include "qgsattributeeditorcontext.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#undef QGISDEBUG
-#include "qgslogger.h"
 #include <QWidget>
 
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor, QWidget *parent )
@@ -52,10 +50,7 @@ void QgsRelationWidgetWrapper::aboutToSave()
   if ( !mRelation.isValid() || !widget() || !widget()->isVisible() || mRelation.referencingLayer()->name() ==  mRelation.referencedLayer()->name() )
     return;
 
-
-  QgsDebugMsg( QString( "2. Rel Name: %1, ParentLayer: %2 ChildLayer: %3" ).arg( mRelation.name(), mRelation.referencedLayer()->name(), mRelation.referencingLayer()->name() ) );
-
-  // If this widget is already embedded by the same relation, reduce functionality
+  // If the layer is already saved before, return
   const QgsAttributeEditorContext *ctx = &context();
   do
   {
@@ -63,7 +58,6 @@ void QgsRelationWidgetWrapper::aboutToSave()
                                         || ctx->relation().referencedLayer()->name() == mNmRelation.referencedLayer()->name() )
        )
     {
-      QgsDebugMsg( QString( "- Layer %1 allready occured in the relation %2 as referenced layer" ).arg( mRelation.referencingLayer()->name(), ctx->relation().name() ) );
       return;
     }
     ctx = ctx->parentContext();
