@@ -742,8 +742,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
   }
 
   bool hasChildren = false;
-  // groups are shown only if they have visible children
-  // but providers are shown if they have visible children, OR the filter string is empty
+  // groups/providers are shown only if they have visible children
   int count = sourceModel()->rowCount( sourceIndex );
   for ( int i = 0; i < count; ++i )
   {
@@ -754,15 +753,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
     }
   }
 
-  if ( QgsProcessingProvider *provider = mModel->providerForIndex( sourceIndex ) )
-  {
-    return ( hasChildren || mFilterString.trimmed().isEmpty() ) && provider->isActive();
-  }
-  else
-  {
-    // group
-    return hasChildren; // || isRecentNode;
-  }
+  return hasChildren;
 }
 
 bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
