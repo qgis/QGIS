@@ -117,7 +117,7 @@ class PointsInPolygon(QgisAlgorithm):
 
         fields = poly_source.fields()
         if fields.lookupField(field_name) < 0:
-            fields.append(QgsField(field_name, QVariant.Int))
+            fields.append(QgsField(field_name, QVariant.LongLong))
         field_index = fields.lookupField(field_name)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
