@@ -28,7 +28,7 @@ class ANALYSIS_EXPORT QgsIsValidGeometryCheck : public QgsSingleGeometryCheck
   public:
     QgsIsValidGeometryCheck() = default;
 
-    QList<QgsGeometry::Error> collectErrors( const QgsFeature &feature ) const override;
+    QList<QgsGeometryCheckError *> processGeometry( const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsGeometry &geometry ) const override;
 };
 
 #endif // QGSISVALIDGEOMETRYCHECK_H

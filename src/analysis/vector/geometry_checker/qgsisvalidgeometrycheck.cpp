@@ -19,7 +19,7 @@ email                : matthias@opengis.ch
 #include "qgsgeos.h"
 #include "qgsgeometryvalidator.h"
 
-QList<QgsGeometry::Error> QgsIsValidGeometryCheck::collectErrors( const QgsFeature &feature ) const
+QList<QgsGeometryCheckError *> QgsIsValidGeometryCheck::processGeometry( const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsGeometry &geometry ) const
 {
   QVector<QgsGeometry::Error> errors;
 
@@ -27,7 +27,7 @@ QList<QgsGeometry::Error> QgsIsValidGeometryCheck::collectErrors( const QgsFeatu
   if ( QgsSettings().value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
     method = QgsGeometry::ValidatorGeos;
 
-  QgsGeometryValidator validator( feature.geometry(), &errors, method );
+  QgsGeometryValidator validator( geometry, &errors, method );
 
   QObject::connect( &validator, &QgsGeometryValidator::errorFound, &validator, [ &errors ]( const QgsGeometry::Error & error )
   {
@@ -37,5 +37,10 @@ QList<QgsGeometry::Error> QgsIsValidGeometryCheck::collectErrors( const QgsFeatu
   // We are already on a thread here normally, no reason to start yet another one. Run synchroneously.
   validator.run();
 
-  return errors.toList();
+  QList<QgsGeometryCheckError *> result;
+  for ( const auto &error : qgis::as_const( errors ) )
+  {
+    result << new QgsGeometryCheckError( this, layerFeature, error.where() );
+  }
+  return result;
 }
