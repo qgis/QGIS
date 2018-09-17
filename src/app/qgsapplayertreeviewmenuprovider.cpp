@@ -363,7 +363,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
               QIcon icon = model->data( index, Qt::DecorationRole ).value<QIcon>();
               QAction *copyAction = new QAction( icon, name, pasteStyleMenu );
               copyAction->setToolTip( tooltip );
-              connect( copyAction, &QAction::triggered, this, [ = ]() {app->copyStyle( layer, category );} );
+              connect( copyAction, &QAction::triggered, this, [ = ]() {app->pasteStyle( layer, category );} );
               pasteStyleMenu->addAction( copyAction );
               if ( category == QgsMapLayer::AllStyleCategories )
                 pasteStyleMenu->addSeparator();
