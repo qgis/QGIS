@@ -425,17 +425,13 @@ void TestQgsProcessingModel::testProxyModel()
   QModelIndex alg2Index = model.index( 0, 0, group1Index );
   QCOMPARE( model.data( alg2Index, Qt::DisplayRole ).toString(), QStringLiteral( "a2" ) );
 
+  // empty providers/groups should not be shown
   model.setFilters( QgsProcessingToolboxProxyModel::FilterModeler );
   group1Index = model.index( 0, 0, QModelIndex() );
-  QCOMPARE( model.rowCount(), 3 );
+  QCOMPARE( model.rowCount(), 1 );
   QCOMPARE( model.rowCount( group1Index ), 1 );
   QCOMPARE( model.data( group1Index, Qt::DisplayRole ).toString(), QStringLiteral( "group1" ) );
   QCOMPARE( model.data( model.index( 0, 0, group1Index ), Qt::DisplayRole ).toString(), QStringLiteral( "a2" ) );
-  // no filter string, so empty providers should be shown
-  QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider1" ) );
-  QCOMPARE( model.rowCount( model.index( 1, 0, QModelIndex() ) ), 0 );
-  QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
-  QCOMPARE( model.rowCount( model.index( 2, 0, QModelIndex() ) ), 0 );
   model.setFilters( QgsProcessingToolboxProxyModel::FilterToolbox );
   group2Index = model.index( 0, 0, QModelIndex() );
   QCOMPARE( model.rowCount(), 3 );
@@ -590,23 +586,20 @@ void TestQgsProcessingModel::testView()
   QModelIndex alg1Index = view.model()->index( 0, 0, group2Index );
   QCOMPARE( view.algorithmForIndex( alg1Index )->id(), QStringLiteral( "p2:a1" ) );
 
+  // empty providers/groups should not be shown
   view.setFilters( QgsProcessingToolboxProxyModel::FilterModeler );
-  QCOMPARE( view.model()->rowCount(), 2 );
-  QCOMPARE( view.model()->data( view.model()->index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider1" ) );
-  QCOMPARE( view.model()->rowCount( view.model()->index( 0, 0, QModelIndex() ) ), 0 );
-  provider2Index = view.model()->index( 1, 0, QModelIndex() );
+  QCOMPARE( view.model()->rowCount(), 1 );
+  provider2Index = view.model()->index( 0, 0, QModelIndex() );
   QCOMPARE( view.model()->data( provider2Index, Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
   QCOMPARE( view.model()->rowCount( provider2Index ), 1 );
   group2Index = view.model()->index( 0, 0, provider2Index );
   QCOMPARE( view.model()->rowCount( group2Index ), 1 );
   QCOMPARE( view.algorithmForIndex( view.model()->index( 0, 0, group2Index ) )->id(), QStringLiteral( "p2:a1" ) );
   view.setFilters( QgsProcessingToolboxProxyModel::FilterToolbox );
-  QCOMPARE( view.model()->rowCount(), 2 );
+  QCOMPARE( view.model()->rowCount(), 1 );
   provider1Index = view.model()->index( 0, 0, QModelIndex() );
   QCOMPARE( view.model()->data( provider1Index, Qt::DisplayRole ).toString(), QStringLiteral( "provider1" ) );
   QCOMPARE( view.model()->rowCount( provider1Index ), 1 );
-  QCOMPARE( view.model()->data( view.model()->index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
-  QCOMPARE( view.model()->rowCount( view.model()->index( 1, 0, QModelIndex() ) ), 0 );
   group2Index = view.model()->index( 0, 0, provider1Index );
   QCOMPARE( view.model()->rowCount( group2Index ), 1 );
   QCOMPARE( view.algorithmForIndex( view.model()->index( 0, 0, group2Index ) )->id(), QStringLiteral( "p1:a2" ) );
