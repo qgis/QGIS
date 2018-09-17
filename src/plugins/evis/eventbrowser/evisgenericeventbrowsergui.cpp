@@ -230,7 +230,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
       //verify that the active layer is a vector layer
       if ( QgsMapLayer::VectorLayer == mInterface->activeLayer()->type() )
       {
-        mVectorLayer = ( QgsVectorLayer * )mInterface->activeLayer();
+        mVectorLayer = qobject_cast< QgsVectorLayer * >( mInterface->activeLayer() );
         mCanvas = mInterface->mapCanvas();
       }
       else
@@ -254,7 +254,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
       //verify that the active layer is a vector layer
       if ( QgsMapLayer::VectorLayer == mCanvas->currentLayer()->type() )
       {
-        mVectorLayer = ( QgsVectorLayer * )mCanvas->currentLayer();
+        mVectorLayer = qobject_cast< QgsVectorLayer * >( mCanvas->currentLayer() );
       }
       else
       {
@@ -305,7 +305,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
     return false;
   }
 
-  QgsFields myFields = mDataProvider->fields();
+  QgsFields myFields = mVectorLayer->fields();
   mIgnoreEvent = true; //Ignore indexChanged event when adding items to combo boxes
   for ( int x = 0; x < myFields.count(); x++ )
   {
@@ -589,7 +589,7 @@ QgsFeature *eVisGenericEventBrowserGui::featureAtId( QgsFeatureId id )
 {
   //This method was originally necessary because delimited text data provider did not support featureAtId()
   //It has mostly been stripped down now
-  if ( mDataProvider && mFeatureIds.size() != 0 )
+  if ( mVectorLayer && mFeatureIds.size() != 0 )
   {
     if ( !mVectorLayer->getFeatures( QgsFeatureRequest().setFilterFid( id ) ).nextFeature( mFeature ) )
     {
@@ -617,7 +617,7 @@ void eVisGenericEventBrowserGui::loadRecord()
   QString myCompassBearingField = cboxCompassBearingField->currentText();
   QString myCompassOffsetField = cboxCompassOffsetField->currentText();
   QString myEventImagePathField = cboxEventImagePathField->currentText();
-  QgsFields myFields = mDataProvider->fields();
+  QgsFields myFields = mVectorLayer->fields();
   QgsAttributes myAttrs = myFeature->attributes();
   //loop through the attributes and display their contents
   for ( int i = 0; i < myAttrs.count(); ++i )
@@ -859,7 +859,7 @@ void eVisGenericEventBrowserGui::cboxEventImagePathField_currentIndexChanged( in
   {
     mConfiguration.setEventImagePathField( cboxEventImagePathField->currentText() );
 
-    QgsFields myFields = mDataProvider->fields();
+    QgsFields myFields = mVectorLayer->fields();
     QgsFeature *myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
     if ( !myFeature )
@@ -887,7 +887,7 @@ void eVisGenericEventBrowserGui::cboxCompassBearingField_currentIndexChanged( in
   {
     mConfiguration.setCompassBearingField( cboxCompassBearingField->currentText() );
 
-    QgsFields myFields = mDataProvider->fields();
+    QgsFields myFields = mVectorLayer->fields();
     QgsFeature *myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
     if ( !myFeature )
@@ -915,7 +915,7 @@ void eVisGenericEventBrowserGui::cboxCompassOffsetField_currentIndexChanged( int
   {
     mConfiguration.setCompassOffsetField( cboxCompassOffsetField->currentText() );
 
-    QgsFields myFields = mDataProvider->fields();
+    QgsFields myFields = mVectorLayer->fields();
     QgsFeature *myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
     if ( !myFeature )
