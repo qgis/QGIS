@@ -328,10 +328,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           for ( int row = 0; row < model->rowCount(); ++row )
           {
             QModelIndex index = model->index( row, 0 );
+            QgsMapLayer::StyleCategory category = model->data( index, Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
             QString name = model->data( index, Qt::DisplayRole ).toString();
             QString tooltip = model->data( index, Qt::ToolTipRole ).toString();
             QIcon icon = model->data( index, Qt::DecorationRole ).value<QIcon>();
-            QgsMapLayer::StyleCategory category = model->index2category( index );
             QAction *copyAction = new QAction( icon, name, copyStyleMenu );
             copyAction->setToolTip( tooltip );
             connect( copyAction, &QAction::triggered, this, [ = ]() {app->copyStyle( layer, category );} );
@@ -357,10 +357,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             for ( int row = 0; row < model->rowCount(); ++row )
             {
               QModelIndex index = model->index( row, 0 );
+              QgsMapLayer::StyleCategory category = model->data( index, Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
               QString name = model->data( index, Qt::DisplayRole ).toString();
               QString tooltip = model->data( index, Qt::ToolTipRole ).toString();
               QIcon icon = model->data( index, Qt::DecorationRole ).value<QIcon>();
-              QgsMapLayer::StyleCategory category = model->index2category( index );
               QAction *copyAction = new QAction( icon, name, pasteStyleMenu );
               copyAction->setToolTip( tooltip );
               connect( copyAction, &QAction::triggered, this, [ = ]() {app->copyStyle( layer, category );} );
