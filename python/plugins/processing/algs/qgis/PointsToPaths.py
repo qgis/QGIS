@@ -28,7 +28,9 @@ __revision__ = '$Format:%H$'
 import os
 from datetime import datetime
 
-from qgis.core import (QgsFeature,
+from qgis.core import (QgsExpression,
+                       QgsExpressionContext,
+                       QgsFeature,
                        QgsFeatureSink,
                        QgsFields,
                        QgsField,
@@ -39,6 +41,8 @@ from qgis.core import (QgsFeature,
                        QgsWkbTypes,
                        QgsFeatureRequest,
                        QgsProcessingException,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterExpression,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterString,
@@ -56,6 +60,7 @@ class PointsToPaths(QgisAlgorithm):
     GROUP_FIELD = 'GROUP_FIELD'
     ORDER_FIELD = 'ORDER_FIELD'
     DATE_FORMAT = 'DATE_FORMAT'
+    MVALUE_EXPRESSION = 'MVALUE_EXPRESSION'
     OUTPUT = 'OUTPUT'
     OUTPUT_TEXT_DIR = 'OUTPUT_TEXT_DIR'
 
@@ -80,6 +85,10 @@ class PointsToPaths(QgisAlgorithm):
                                                       self.tr('Group field'), parentLayerParameterName=self.INPUT, optional=True))
         self.addParameter(QgsProcessingParameterString(self.DATE_FORMAT,
                                                        self.tr('Date format (if order field is DateTime)'), optional=True))
+        mvalue_param = QgsProcessingParameterExpression(self.MVALUE_EXPRESSION,
+                                                        self.tr('M value (if you want an XYM or XYZM output)'), optional=True, parentLayerParameterName=self.INPUT)
+        mvalue_param.setFlags(mvalue_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(mvalue_param)
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Paths'), QgsProcessing.TypeVectorLine))
         output_dir_param = QgsProcessingParameterFolderDestination(self.OUTPUT_TEXT_DIR, self.tr('Directory for text output'), optional=True)
@@ -100,7 +109,16 @@ class PointsToPaths(QgisAlgorithm):
         group_field_name = self.parameterAsString(parameters, self.GROUP_FIELD, context)
         order_field_name = self.parameterAsString(parameters, self.ORDER_FIELD, context)
         date_format = self.parameterAsString(parameters, self.DATE_FORMAT, context)
+        mvalue_exp = self.parameterAsExpression(parameters, self.MVALUE_EXPRESSION, context)
         text_dir = self.parameterAsString(parameters, self.OUTPUT_TEXT_DIR, context)
+
+        # instantiate the expression if mvalue is set
+        if mvalue_exp:
+            expression = QgsExpression(mvalue_exp)
+            expression_ctx = self.createExpressionContext(parameters, context)
+            expression.prepare(expression_ctx)
+        else:
+            expression = None
 
         group_field_index = source.fields().lookupField(group_field_name)
         order_field_index = source.fields().lookupField(order_field_name)
@@ -122,7 +140,7 @@ class PointsToPaths(QgisAlgorithm):
         fields.append(end_field)
 
         output_wkb = QgsWkbTypes.LineString
-        if QgsWkbTypes.hasM(source.wkbType()):
+        if QgsWkbTypes.hasM(source.wkbType()) or mvalue_exp:
             output_wkb = QgsWkbTypes.addM(output_wkb)
         if QgsWkbTypes.hasZ(source.wkbType()):
             output_wkb = QgsWkbTypes.addZ(output_wkb)
@@ -133,7 +151,10 @@ class PointsToPaths(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         points = dict()
-        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([group_field_index, order_field_index]), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
+        referencedColumns = [group_field_index, order_field_index]
+        if expression:
+            referencedColumns += expression.referencedAttributeIndexes(source.fields())
+        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes(referencedColumns), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, f in enumerate(features):
             if feedback.isCanceled():
@@ -151,9 +172,9 @@ class PointsToPaths(QgisAlgorithm):
             if date_format != '':
                 order = datetime.strptime(str(order), date_format)
             if group in points:
-                points[group].append((order, point))
+                points[group].append((order, point, f))
             else:
-                points[group] = [(order, point)]
+                points[group] = [(order, point, f)]
 
             feedback.setProgress(int(current * total))
 
@@ -196,7 +217,17 @@ class PointsToPaths(QgisAlgorithm):
                             distance = da.measureLine(QgsPointXY(line[i - 1]), QgsPointXY(line[i]))
                             fl.write('%f;%f;90\n' % (angle, distance))
 
-            f.setGeometry(QgsGeometry(QgsLineString(line)))
+            linestring = QgsLineString(line)
+            if mvalue_exp:
+                linestring.addMValue(0)
+                for i, node in enumerate(vertices):
+                    expression_ctx.setFeature(node[2])
+                    mvalue = expression.evaluate(expression_ctx)
+                    if expression.hasEvalError():
+                        raise QgsProcessingException(
+                            self.tr('Evaluation error: {0}').format(expression.evalErrorString()))
+                    linestring.setMAt(i, mvalue)
+            f.setGeometry(QgsGeometry(linestring))
             sink.addFeature(f, QgsFeatureSink.FastInsert)
             current += 1
             feedback.setProgress(int(current * total))
