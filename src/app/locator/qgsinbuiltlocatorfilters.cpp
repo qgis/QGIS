@@ -212,7 +212,7 @@ void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const 
     return;
 
   bool allowNumeric = false;
-  string.toDouble( &allowNumeric );
+  double numericalValue = string.toDouble( &allowNumeric );
 
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
   if ( !layer )
@@ -234,7 +234,7 @@ void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const 
     }
     else if ( allowNumeric && field.isNumeric() )
     {
-      expressionParts << QStringLiteral( "%1 = '%2'" ).arg( QgsExpression::quotedColumnRef( field.name() ) ).arg( string );
+      expressionParts << QStringLiteral( "%1 = %2" ).arg( QgsExpression::quotedColumnRef( field.name() ) ).arg( QString::number( numericalValue, 'g', 17 ) );
     }
   }
 
