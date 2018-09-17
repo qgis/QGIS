@@ -34,9 +34,6 @@ class QgsMapLayerStyleCategoriesModel : public QAbstractListModel
     //! defines if the model should list the AllStyleCategories entry
     void setShowAllCategories( bool showAll );
 
-    //! return the category for the given index
-    QgsMapLayer::StyleCategory index2category( const QModelIndex &index ) const;
-
     int rowCount( const QModelIndex & = QModelIndex() ) const override;
     int columnCount( const QModelIndex & = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;

@@ -45,11 +45,6 @@ void QgsMapLayerStyleCategoriesModel::setShowAllCategories( bool showAll )
   endResetModel();
 }
 
-QgsMapLayer::StyleCategory QgsMapLayerStyleCategoriesModel::index2category( const QModelIndex &index ) const
-{
-  return mCategoryList.at( index.row() );
-}
-
 int QgsMapLayerStyleCategoriesModel::rowCount( const QModelIndex & ) const
 {
   int count = mCategoryList.count();
@@ -68,7 +63,12 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
   if ( !index.isValid() || index.row() >= rowCount() )
     return QVariant();
 
-  QgsMapLayer::StyleCategory category = index2category( index );
+  QgsMapLayer::StyleCategory category = mCategoryList.at( index.row() );
+
+  if ( role == Qt::UserRole )
+  {
+    return category;
+  }
 
   switch ( category )
   {
@@ -226,7 +226,7 @@ bool QgsMapLayerStyleCategoriesModel::setData( const QModelIndex &index, const Q
 
   if ( role == Qt::CheckStateRole )
   {
-    QgsMapLayer::StyleCategory category = index2category( index );
+    QgsMapLayer::StyleCategory category = mCategoryList.at( index.row() );
     if ( value.value<Qt::CheckState>() == Qt::Checked )
     {
       mCategories |= category;
