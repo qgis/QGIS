@@ -26,9 +26,15 @@ email                : matthias@opengis.ch
 class ANALYSIS_EXPORT QgsIsValidGeometryCheck : public QgsSingleGeometryCheck
 {
   public:
-    QgsIsValidGeometryCheck() = default;
+    explicit QgsIsValidGeometryCheck( QgsGeometryCheckerContext *context )
+      : QgsSingleGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
 
     QList<QgsGeometryCheckError *> processGeometry( const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsGeometry &geometry ) const override;
+
+    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
+    QStringList resolutionMethods() const override;
+    QString errorDescription() const override { return tr( "Is Valid" ); }
+    QString errorName() const override { return QStringLiteral( "QgsIsValidCheck" ); }
 };
 
 #endif // QGSISVALIDGEOMETRYCHECK_H

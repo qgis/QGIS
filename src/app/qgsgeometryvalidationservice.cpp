@@ -24,7 +24,8 @@ email                : matthias@opengis.ch
 QgsGeometryValidationService::QgsGeometryValidationService( QgsProject *project )
 {
   connect( project, &QgsProject::layersAdded, this, &QgsGeometryValidationService::onLayersAdded );
-  mIsValidGeometryCheck = new QgsIsValidGeometryCheck();
+  // TODO: should not provide a nullptr context
+  mIsValidGeometryCheck = new QgsIsValidGeometryCheck( nullptr );
 }
 
 QgsGeometryValidationService::~QgsGeometryValidationService()
@@ -88,6 +89,6 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
 
   QgsFeature feature = layer->getFeature( fid );
   // TODO: this is a bit hardcore
-  const auto errors = mIsValidGeometryCheck->processGeometry( QgsGeometryCheckerUtils::LayerFeature( nullptr, feature ) );
-  emit geometryCheckCompleted( layer, fid, errors );
+  const auto errors = mIsValidGeometryCheck->processGeometry( feature.geometry() );
+  // emit geometryCheckCompleted( layer, fid, errors );
 }

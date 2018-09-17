@@ -44,3 +44,13 @@ QList<QgsGeometryCheckError *> QgsIsValidGeometryCheck::processGeometry( const Q
   }
   return result;
 }
+
+void QgsIsValidGeometryCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, QgsGeometryCheck::Changes &changes ) const
+{
+
+}
+
+QStringList QgsIsValidGeometryCheck::resolutionMethods() const
+{
+
+}
