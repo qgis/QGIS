@@ -231,7 +231,12 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
             if self.in_place_mode and not [d for d in alg.parameterDefinitions() if d.name() not in ('INPUT', 'OUTPUT')]:
                 parameters = {}
-                execute_in_place(alg, parameters)
+                feedback = MessageBarProgress(algname=alg.displayName())
+                ok, results = execute_in_place(alg, parameters, feedback=feedback)
+                if ok:
+                    iface.messageBar().pushSuccess('', self.tr('{} complete').format(alg.displayName()))
+                feedback.close()
+                # MessageBarProgress handles errors
                 return
 
             if alg.countVisibleParameters() > 0:
@@ -250,7 +255,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                         pass
                     canvas.setMapTool(prevMapTool)
             else:
-                feedback = MessageBarProgress()
+                feedback = MessageBarProgress(algname=alg.displayName())
                 context = dataobjects.createContext(feedback)
                 parameters = {}
                 ret, results = execute(alg, parameters, context, feedback)
