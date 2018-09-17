@@ -195,6 +195,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QMenu *mLoadStyleMenu = nullptr;
 
     QAction *mActionLoadStyle = nullptr;
+    QAction *mActionSaveStyle = nullptr;
     QAction *mActionSaveStyleAs = nullptr;
 
     //! Renderer dialog which is shown
