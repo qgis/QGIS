@@ -118,9 +118,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mBtnStyle = new QPushButton( tr( "Style" ), this );
   QMenu *menuStyle = new QMenu( this );
   mActionLoadStyle = menuStyle->addAction( tr( "Load Style…" ) );
-  connect(mActionLoadStyle, &QAction::triggered, this, &QgsVectorLayerProperties::loadStyle );
+  connect( mActionLoadStyle, &QAction::triggered, this, &QgsVectorLayerProperties::loadStyle );
   mActionSaveStyle = menuStyle->addAction( tr( "Save Style…" ) );
-  connect(mActionSaveStyle, &QAction::triggered, this, &QgsVectorLayerProperties::saveStyleAs );
+  connect( mActionSaveStyle, &QAction::triggered, this, &QgsVectorLayerProperties::saveStyleAs );
   menuStyle->addSeparator();
   menuStyle->addAction( tr( "Save as Default" ), this, SLOT( saveDefaultStyle_clicked() ) );
   menuStyle->addAction( tr( "Restore Default" ), this, SLOT( loadDefaultStyle_clicked() ) );
