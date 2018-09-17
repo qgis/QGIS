@@ -19,6 +19,7 @@
 
 QList<QgsSingleGeometryCheckError *> QgsGeometrySelfContactCheck::processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const
 {
+  Q_UNUSED( configuration )
   QList<QgsSingleGeometryCheckError *> errors;
   const QgsAbstractGeometry *geom = geometry.constGet();
   for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
