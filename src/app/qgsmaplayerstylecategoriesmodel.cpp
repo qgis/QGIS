@@ -47,7 +47,7 @@ void QgsMapLayerStyleCategoriesModel::setShowAllCategories( bool showAll )
 
 QgsMapLayer::StyleCategory QgsMapLayerStyleCategoriesModel::index2category( const QModelIndex &index ) const
 {
-  return mCategoryList.at( index.row() - ( mShowAllCategories ? 1 : 0 ) );
+  return mCategoryList.at( index.row() + ( mShowAllCategories ? 0 : 1 ) );
 }
 
 int QgsMapLayerStyleCategoriesModel::rowCount( const QModelIndex & ) const
