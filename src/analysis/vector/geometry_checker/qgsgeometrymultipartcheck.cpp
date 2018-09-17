@@ -16,19 +16,18 @@
 #include "qgsgeometrymultipartcheck.h"
 #include "qgsfeaturepool.h"
 
-void QgsGeometryMultipartCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+QList<QgsSingleGeometryCheckError *> QgsGeometryMultipartCheck::processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const
 {
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, mContext );
-  for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
+  Q_UNUSED( configuration )
+  QList<QgsSingleGeometryCheckError *> errors;
+
+  const QgsAbstractGeometry *geom = geometry.constGet();
+  QgsWkbTypes::Type type = geom->wkbType();
+  if ( geom->partCount() == 1 && QgsWkbTypes::isMultiType( type ) )
   {
-    const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
-    QgsWkbTypes::Type type = geom->wkbType();
-    if ( geom->partCount() == 1 && QgsWkbTypes::isMultiType( type ) )
-    {
-      errors.append( new QgsGeometryCheckError( this, layerFeature, geom->centroid() ) );
-    }
+    errors.append( new QgsSingleGeometryCheckError( this, geometry, geom->centroid() ) );
   }
+  return errors;
 }
 
 void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const

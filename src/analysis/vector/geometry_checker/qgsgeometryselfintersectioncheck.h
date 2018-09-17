@@ -19,44 +19,39 @@
 #define QGS_GEOMETRY_SELFINTERSECTION_CHECK_H
 
 #include "qgsgeometryutils.h"
-#include "qgsgeometrycheck.h"
+#include "qgssinglegeometrycheck.h"
 
-class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheckError : public QgsGeometryCheckError
+class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheckError : public QgsSingleGeometryCheckError
 {
   public:
-    QgsGeometrySelfIntersectionCheckError( const QgsGeometryCheck *check,
-                                           const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
-                                           const QgsPointXY &errorLocation,
-                                           QgsVertexId vidx,
-                                           const QgsGeometryUtils::SelfIntersection &inter )
-      : QgsGeometryCheckError( check, layerFeature, errorLocation, vidx )
-      , mInter( inter )
-    { }
-    const QgsGeometryUtils::SelfIntersection &intersection() const { return mInter; }
-    bool isEqual( QgsGeometryCheckError *other ) const override;
-    bool handleChanges( const QgsGeometryCheck::Changes &changes ) override;
-    void update( const QgsGeometrySelfIntersectionCheckError *other )
-    {
-      QgsGeometryCheckError::update( other );
-      // Static cast since this should only get called if isEqual == true
-      const QgsGeometrySelfIntersectionCheckError *err = static_cast<const QgsGeometrySelfIntersectionCheckError *>( other );
-      mInter.point = err->mInter.point;
-    }
+    QgsGeometrySelfIntersectionCheckError( const QgsSingleGeometryCheck *check,
+                                           const QgsGeometry &geometry,
+                                           const QgsPoint &errorLocation,
+                                           QgsVertexId vertexId,
+                                           const QgsGeometryUtils::SelfIntersection &intersection )
+      : QgsSingleGeometryCheckError( check, geometry, errorLocation, vertexId )
+      , mIntersection( intersection )
+    {}
+
+    const QgsGeometryUtils::SelfIntersection &intersection() const { return mIntersection; }
+    bool isEqual( const QgsSingleGeometryCheckError *other ) const override;
+    bool handleChanges( const QList<QgsGeometryCheck::Change> &changes ) override;
+    void update( const QgsSingleGeometryCheckError *other ) override;
 
   private:
-    QgsGeometryUtils::SelfIntersection mInter;
+    QgsGeometryUtils::SelfIntersection mIntersection;
 };
 
-class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheck : public QgsGeometryCheck
+class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheck : public QgsSingleGeometryCheck
 {
   public:
     explicit QgsGeometrySelfIntersectionCheck( QgsGeometryCheckerContext *context )
-      : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
+      : QgsSingleGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
     QString errorDescription() const override { return tr( "Self intersection" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometrySelfIntersectionCheck" ); }
+    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const override;
 
     enum ResolutionMethod { ToMultiObject, ToSingleObjects, NoChange };
 };

@@ -916,14 +916,14 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
   QCOMPARE( f.geometry().constGet()->vertexCount( 1, 1 ), 5 );
 
   // Test change tracking
-  QgsGeometrySelfIntersectionCheckError *err = static_cast<QgsGeometrySelfIntersectionCheckError *>( errs4[0] );
-  QgsGeometryUtils::SelfIntersection  oldInter = err->intersection();
-  QVERIFY( err->handleChanges( change2changes( {err->layerId(), err->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, QgsVertexId( errs4[0]->vidx().part, errs4[0]->vidx().ring, 0 )} ) ) );
-  QgsGeometryUtils::SelfIntersection  newInter = err->intersection();
+  QgsGeometryCheckErrorSingle *err = static_cast<QgsGeometryCheckErrorSingle *>( errs4[0] );
+  QgsGeometryUtils::SelfIntersection oldInter = static_cast<QgsGeometrySelfIntersectionCheckError *>( err->singleError() )->intersection();
+  QVERIFY( err->handleChanges( change2changes( {err->layerId(), err->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, QgsVertexId( err->vidx().part, errs4[0]->vidx().ring, 0 )} ) ) );
+  QgsGeometryUtils::SelfIntersection  newInter = static_cast<QgsGeometrySelfIntersectionCheckError *>( err->singleError() )->intersection();
   QVERIFY( oldInter.segment1 == newInter.segment1 + 1 );
   QVERIFY( oldInter.segment2 == newInter.segment2 + 1 );
-  QVERIFY( err->handleChanges( change2changes( {err->layerId(), err->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeAdded, QgsVertexId( errs4[0]->vidx().part, errs4[0]->vidx().ring, 0 )} ) ) );
-  newInter = err->intersection();
+  QVERIFY( err->handleChanges( change2changes( {err->layerId(), errs4[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeAdded, QgsVertexId( err->vidx().part, errs4[0]->vidx().ring, 0 )} ) ) );
+  newInter = static_cast<QgsGeometrySelfIntersectionCheckError *>( err->singleError() )->intersection();
   QVERIFY( oldInter.segment1 == newInter.segment1 );
   QVERIFY( oldInter.segment2 == newInter.segment2 );
 

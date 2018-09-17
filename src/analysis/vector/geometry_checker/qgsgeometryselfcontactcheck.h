@@ -18,14 +18,14 @@
 #ifndef QGS_GEOMETRY_SELFCONTACT_CHECK_H
 #define QGS_GEOMETRY_SELFCONTACT_CHECK_H
 
-#include "qgsgeometrycheck.h"
+#include "qgssinglegeometrycheck.h"
 
-class ANALYSIS_EXPORT QgsGeometrySelfContactCheck : public QgsGeometryCheck
+class ANALYSIS_EXPORT QgsGeometrySelfContactCheck : public QgsSingleGeometryCheck
 {
   public:
     QgsGeometrySelfContactCheck( QgsGeometryCheckerContext *context )
-      : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
+      : QgsSingleGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
+    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const override;
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes & ) const override;
     QStringList resolutionMethods() const override;
     QString errorDescription() const override { return tr( "Self contact" ); }

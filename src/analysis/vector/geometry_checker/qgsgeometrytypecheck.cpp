@@ -23,19 +23,16 @@
 #include "qgsfeaturepool.h"
 
 
-void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+QList<QgsSingleGeometryCheckError *> QgsGeometryTypeCheck::processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const
 {
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, mContext );
-  for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
+  QList<QgsSingleGeometryCheckError *> errors;
+  const QgsAbstractGeometry *geom = geometry.constGet();
+  QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
+  if ( ( mAllowedTypes & ( 1 << type ) ) == 0 )
   {
-    const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
-    QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
-    if ( ( mAllowedTypes & ( 1 << type ) ) == 0 )
-    {
-      errors.append( new QgsGeometryTypeCheckError( this, layerFeature, geom->centroid(), type ) );
-    }
+    errors.append( new QgsGeometryTypeCheckError( this, geometry, geom->centroid(), type ) );
   }
+  return errors;
 }
 
 void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
@@ -156,4 +153,15 @@ QStringList QgsGeometryTypeCheck::resolutionMethods() const
                                << tr( "Delete feature" )
                                << tr( "No action" );
   return methods;
+}
+
+bool QgsGeometryTypeCheckError::isEqual( const QgsSingleGeometryCheckError *other ) const
+{
+  return QgsSingleGeometryCheckError::isEqual( other ) &&
+         mFlatType == static_cast<const QgsGeometryTypeCheckError *>( other )->mFlatType;
+}
+
+QString QgsGeometryTypeCheckError::description() const
+{
+  return QStringLiteral( "%1 (%2)" ).arg( mCheck->errorDescription(), QgsWkbTypes::displayString( mFlatType ) );
 }

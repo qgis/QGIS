@@ -18,40 +18,36 @@
 #ifndef QGS_GEOMETRY_TYPE_CHECK_H
 #define QGS_GEOMETRY_TYPE_CHECK_H
 
-#include "qgsgeometrycheck.h"
+#include "qgssinglegeometrycheck.h"
 
-class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsGeometryCheckError
+class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsSingleGeometryCheckError
 {
   public:
-    QgsGeometryTypeCheckError( const QgsGeometryCheck *check,
-                               const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
-                               const QgsPointXY &errorLocation,
+    QgsGeometryTypeCheckError( const QgsSingleGeometryCheck *check,
+                               const QgsGeometry &geometry,
+                               const QgsPoint &errorLocation,
                                QgsWkbTypes::Type flatType )
-      : QgsGeometryCheckError( check, layerFeature, errorLocation )
+      : QgsSingleGeometryCheckError( check, geometry, errorLocation )
+      , mFlatType( flatType )
     {
-      mTypeName = QgsWkbTypes::displayString( flatType );
     }
 
-    bool isEqual( QgsGeometryCheckError *other ) const override
-    {
-      return QgsGeometryCheckError::isEqual( other ) &&
-             mTypeName == static_cast<QgsGeometryTypeCheckError *>( other )->mTypeName;
-    }
+    bool isEqual( const QgsSingleGeometryCheckError *other ) const override;
 
-    QString description() const override { return QStringLiteral( "%1 (%2)" ).arg( mCheck->errorDescription(), mTypeName ); }
+    QString description() const override;
 
   private:
-    QString mTypeName;
+    QgsWkbTypes::Type mFlatType;
 };
 
-class ANALYSIS_EXPORT QgsGeometryTypeCheck : public QgsGeometryCheck
+class ANALYSIS_EXPORT QgsGeometryTypeCheck : public QgsSingleGeometryCheck
 {
   public:
     QgsGeometryTypeCheck( QgsGeometryCheckerContext *context, int allowedTypes )
-      : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context )
+      : QgsSingleGeometryCheck( FeatureCheck, {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context )
     , mAllowedTypes( allowedTypes )
     {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
+    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const override;
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
     QString errorDescription() const override { return tr( "Geometry type" ); }
