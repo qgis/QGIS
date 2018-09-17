@@ -192,7 +192,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Calculate the application pkg path
      * \return the resolved pkg path
      */
-    static QString resolvePkgPath( );
+    static QString resolvePkgPath();
 
     /**
      * Set the active theme to the specified theme.
@@ -748,7 +748,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      *
      * \since QGIS 3.4
      */
-    static void setTranslation( QString translation ) { sTranslation = translation; }
+    static void setTranslation( const QString &translation ) { sTranslation = translation; }
 
     /**
      * Emits the signal to collect all the strings of .qgs to be included in ts file

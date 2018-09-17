@@ -143,7 +143,7 @@ for resources in their own datastores e.g. a Qt4 resource bundle.
    be reverted to 'default'.
 %End
 
-    static QString resolvePkgPath( );
+    static QString resolvePkgPath();
 %Docstring
 Calculate the application pkg path
 
@@ -810,7 +810,7 @@ The maximum number of concurrent connections per connections pool.
 .. versionadded:: 3.4
 %End
 
-    static void setTranslation( QString translation );
+    static void setTranslation( const QString &translation );
 %Docstring
 Set translation
 
