@@ -100,3 +100,8 @@ bool QgsGeometryCheckErrorSingle::handleChanges( const QgsGeometryCheck::Changes
 
   return mError->handleChanges( changes.value( layerId() ).value( featureId() ) );
 }
+
+void QgsSingleGeometryCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+{
+
+}
