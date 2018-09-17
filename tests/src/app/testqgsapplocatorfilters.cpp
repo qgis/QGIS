@@ -36,6 +36,7 @@ class TestQgsAppLocatorFilters : public QObject
     void testCalculator();
     void testLayers();
     void testLayouts();
+    void testSearchActiveLayer();
     void testSearchAllLayers();
 
   private:
@@ -146,6 +147,36 @@ void TestQgsAppLocatorFilters::testLayouts()
   QCOMPARE( results.at( 0 ).userData.toString(), pl1->name() );
   QCOMPARE( results.at( 1 ).userData.toString(), pl2->name() );
   QCOMPARE( results.at( 2 ).userData.toString(), pl3->name() );
+}
+
+void TestQgsAppLocatorFilters::testSearchActiveLayer()
+{
+  QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double&key=pk" );
+  QgsVectorLayer *vl = new QgsVectorLayer( layerDef, QStringLiteral( "Layer" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( vl );
+
+  QgsFeature f;
+  f.setAttributes( QVector<QVariant>() << 1001 << "A nice feature" << 1234567890 << 12345.6789 );
+  f.setGeometry( QgsGeometry::fromWkt( "Point (-71.123 78.23)" ) );
+
+  vl->dataProvider()->addFeature( f );
+
+  mQgisApp->setActiveLayer( vl );
+
+  QgsActiveLayerFeaturesLocatorFilter filter;
+  QgsLocatorContext context;
+
+  QList< QgsLocatorResult > results = gatherResults( &filter, QStringLiteral( "12345.6789" ), context );
+  QCOMPARE( results.count(), 1 );
+
+  results = gatherResults( &filter, QStringLiteral( "12345.67" ), context );
+  QCOMPARE( results.count(), 0 );
+
+  results = gatherResults( &filter, QStringLiteral( "1234567890" ), context );
+  QCOMPARE( results.count(), 1 );
+
+  results = gatherResults( &filter, QStringLiteral( "nice" ), context );
+  QCOMPARE( results.count(), 1 );
 }
 
 void TestQgsAppLocatorFilters::testSearchAllLayers()
