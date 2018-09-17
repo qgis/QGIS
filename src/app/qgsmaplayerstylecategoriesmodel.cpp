@@ -63,11 +63,15 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
   if ( !index.isValid() || index.row() >= rowCount() )
     return QVariant();
 
-  QgsMapLayer::StyleCategory category = mCategoryList.at( index.row() );
+  QgsMapLayer::StyleCategory category = mCategoryList.at( index.row() + ( mShowAllCategories ? 0 : 1 ) );
 
   if ( role == Qt::UserRole )
   {
     return category;
+  }
+  if ( role == Qt::CheckStateRole )
+  {
+    return mCategories.testFlag( category ) ? Qt::Checked : Qt::Unchecked;
   }
 
   switch ( category )
@@ -226,7 +230,7 @@ bool QgsMapLayerStyleCategoriesModel::setData( const QModelIndex &index, const Q
 
   if ( role == Qt::CheckStateRole )
   {
-    QgsMapLayer::StyleCategory category = mCategoryList.at( index.row() );
+    QgsMapLayer::StyleCategory category = data( index, Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
     if ( value.value<Qt::CheckState>() == Qt::Checked )
     {
       mCategories |= category;
@@ -246,5 +250,5 @@ bool QgsMapLayerStyleCategoriesModel::setData( const QModelIndex &index, const Q
 
 Qt::ItemFlags QgsMapLayerStyleCategoriesModel::flags( const QModelIndex & ) const
 {
-  return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+  return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
 }
