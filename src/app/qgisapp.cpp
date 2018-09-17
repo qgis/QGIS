@@ -1433,6 +1433,8 @@ QgisApp::QgisApp()
   connect( mMapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
   mMapCanvas->freeze();
   mLayerTreeView = new QgsLayerTreeView( this );
+  QgsLayerTreeModel *model = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
+  mLayerTreeView->setModel( model );
   mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
   mUserInputDockWidget = new QgsUserInputWidget( this );
   mInfoBar = new QgsMessageBar( centralWidget() );
