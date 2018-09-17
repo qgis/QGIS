@@ -18,7 +18,7 @@
 #ifndef QGSINBUILTLOCATORFILTERS_H
 #define QGSINBUILTLOCATORFILTERS_H
 
-#include "qgisapp.h"
+#include "qgis_app.h"
 #include "qgslocatorfilter.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeatureiterator.h"
@@ -63,7 +63,7 @@ class APP_EXPORT QgsLayoutLocatorFilter : public QgsLocatorFilter
 
 };
 
-class QgsActionLocatorFilter : public QgsLocatorFilter
+class APP_EXPORT QgsActionLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
 
@@ -87,7 +87,7 @@ class QgsActionLocatorFilter : public QgsLocatorFilter
 
 };
 
-class QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
+class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
 
@@ -168,7 +168,7 @@ class APP_EXPORT QgsExpressionCalculatorLocatorFilter : public QgsLocatorFilter
 };
 
 
-class QgsBookmarkLocatorFilter : public QgsLocatorFilter
+class APP_EXPORT QgsBookmarkLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
 
@@ -186,7 +186,7 @@ class QgsBookmarkLocatorFilter : public QgsLocatorFilter
     void triggerResult( const QgsLocatorResult &result ) override;
 };
 
-class QgsSettingsLocatorFilter : public QgsLocatorFilter
+class APP_EXPORT QgsSettingsLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
 
