@@ -19,7 +19,8 @@
 #include "qgsattributeeditorcontext.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-
+#undef QGISDEBUG
+#include "qgslogger.h"
 #include <QWidget>
 
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor, QWidget *parent )
@@ -48,21 +49,26 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
 
 void QgsRelationWidgetWrapper::aboutToSave()
 {
-  // If this widget is already embedded by the same relation return
+  if ( !mRelation.isValid() || !widget() || !widget()->isVisible() || mRelation.referencingLayer()->name() ==  mRelation.referencedLayer()->name() )
+    return;
+
+
+  QgsDebugMsg( QString( "2. Rel Name: %1, ParentLayer: %2 ChildLayer: %3" ).arg( mRelation.name(), mRelation.referencedLayer()->name(), mRelation.referencingLayer()->name() ) );
+
+  // If this widget is already embedded by the same relation, reduce functionality
   const QgsAttributeEditorContext *ctx = &context();
   do
   {
-    if ( ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
-         || ( mNmRelation.isValid() && ctx->relation().name() == mNmRelation.name() ) )
+    if ( ctx->relation().isValid() && ( ctx->relation().referencedLayer()->name() == mRelation.referencingLayer()->name()
+                                        || ctx->relation().referencedLayer()->name() == mNmRelation.referencedLayer()->name() )
+       )
     {
+      QgsDebugMsg( QString( "- Layer %1 allready occured in the relation %2 as referenced layer" ).arg( mRelation.referencingLayer()->name(), ctx->relation().name() ) );
       return;
     }
     ctx = ctx->parentContext();
   }
   while ( ctx );
-
-  if ( !mRelation.isValid() || !widget() || !widget()->isVisible() )
-    return;
 
   // Calling isModified() will emit a beforeModifiedCheck()
   // signal that will make the embedded form to send any
@@ -138,7 +144,6 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
     ctx = ctx->parentContext();
   }
   while ( ctx );
-
 
   w->setRelations( mRelation, mNmRelation );
 
