@@ -36,7 +36,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Action text</string>
+      <string>Action Text</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="2" column="0">

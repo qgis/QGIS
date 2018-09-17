@@ -282,7 +282,7 @@
              <enum>Qt::LeftToRight</enum>
             </property>
             <property name="text">
-             <string>Add to fields list</string>
+             <string>Add to Fields List</string>
             </property>
             <property name="icon">
              <iconset resource="../../images/images.qrc">
@@ -356,7 +356,7 @@
              <string>Delete selected field</string>
             </property>
             <property name="text">
-             <string>Remove field</string>
+             <string>Remove Field</string>
             </property>
             <property name="icon">
              <iconset resource="../../images/images.qrc">

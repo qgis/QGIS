@@ -36,7 +36,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Source type</string>
+      <string>Source Type</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>

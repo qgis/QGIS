@@ -133,7 +133,7 @@
           <item row="4" column="0" colspan="2">
            <widget class="QPushButton" name="mInsertExpressionButton">
             <property name="text">
-             <string>Insert an expression</string>
+             <string>Insert an Expression</string>
             </property>
            </widget>
           </item>
@@ -208,7 +208,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mUseSmartBreaksCheckBox">
          <property name="title">
-          <string>Use smart page breaks</string>
+          <string>Use Smart Page Breaks</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -255,7 +255,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mUserStylesheetCheckBox">
          <property name="title">
-          <string>User stylesheet</string>
+          <string>User Stylesheet</string>
          </property>
          <property name="checkable">
           <bool>true</bool>

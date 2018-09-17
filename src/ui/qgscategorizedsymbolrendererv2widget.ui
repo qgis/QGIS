@@ -170,7 +170,7 @@
      <item>
       <widget class="QPushButton" name="btnDeleteAllCategories">
        <property name="text">
-        <string>Delete all</string>
+        <string>Delete All</string>
        </property>
       </widget>
      </item>

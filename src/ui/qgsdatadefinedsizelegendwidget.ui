@@ -43,7 +43,7 @@
      <item>
       <widget class="QPushButton" name="btnChangeSymbol">
        <property name="text">
-        <string>Legend symbol...</string>
+        <string>Legend Symbol...</string>
        </property>
       </widget>
      </item>

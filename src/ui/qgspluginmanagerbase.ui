@@ -452,7 +452,7 @@
                     <string>Upgrade all upgradeable plugins</string>
                    </property>
                    <property name="text">
-                    <string>Upgrade all</string>
+                    <string>Upgrade All</string>
                    </property>
                   </widget>
                  </item>
@@ -481,7 +481,7 @@
                     <string>Uninstall the selected plugin</string>
                    </property>
                    <property name="text">
-                    <string>Uninstall plugin</string>
+                    <string>Uninstall Plugin</string>
                    </property>
                   </widget>
                  </item>
@@ -500,7 +500,7 @@
                     <string>Install, reinstall or upgrade the selected plugin</string>
                    </property>
                    <property name="text">
-                    <string>Reinstall plugin</string>
+                    <string>Reinstall Plugin</string>
                    </property>
                   </widget>
                  </item>

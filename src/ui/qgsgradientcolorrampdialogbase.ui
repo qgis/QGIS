@@ -193,7 +193,7 @@
           <item row="0" column="2">
            <widget class="QPushButton" name="mDeleteStopButton">
             <property name="text">
-             <string>&amp;Delete stop</string>
+             <string>&amp;Delete Stop</string>
             </property>
            </widget>
           </item>

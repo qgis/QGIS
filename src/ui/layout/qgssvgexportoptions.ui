@@ -17,7 +17,7 @@
    <item>
     <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
      <property name="title">
-      <string>SVG options</string>
+      <string>SVG Options</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
@@ -72,7 +72,7 @@
    <item>
     <widget class="QgsCollapsibleGroupBoxBasic" name="mClipToContentGroupBox">
      <property name="title">
-      <string>Crop to content</string>
+      <string>Crop to Content</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
