@@ -110,7 +110,6 @@ IF(WITH_CORE)
     # force value of some options
     SET(WITH_DESKTOP FALSE)
     SET(WITH_CUSTOM_WIDGETS FALSE)
-    SET(WITH_SERVER FALSE)  # for some reason server also uses GUI library
   ELSE ()
     SET (HAVE_GUI TRUE)     # used in qgsconfig.h
   ENDIF()
