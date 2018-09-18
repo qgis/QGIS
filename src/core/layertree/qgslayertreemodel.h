@@ -16,26 +16,23 @@
 #ifndef QGSLAYERTREEMODEL_H
 #define QGSLAYERTREEMODEL_H
 
-#include "qgis_core.h"
 #include <QAbstractItemModel>
 #include <QFont>
 #include <QIcon>
 #include <QTimer>
 #include <memory>
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsgeometry.h"
-#include "qgsmaplayer.h"
 #include "qgslayertreemodellegendnode.h"
 
-class QgsLayerTreeNode;
+class QgsLayerTree;
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
-class QgsMapHitTest;
-class QgsMapLayer;
+class QgsLayerTreeNode;
 class QgsMapSettings;
-class QgsExpression;
 class QgsRenderContext;
-class QgsLayerTree;
 
 /**
  * \ingroup core

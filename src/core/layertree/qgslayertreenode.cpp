@@ -15,11 +15,15 @@
 
 #include "qgslayertreenode.h"
 
-#include "qgslayertree.h"
-#include "qgslayertreeutils.h"
-
 #include <QDomElement>
 #include <QStringList>
+
+#include "qgslayertree.h"
+#include "qgspathresolver.h"
+#include "qgsproject.h"
+#include "qgsreadwritecontext.h"
+
+class QgsLayerTreeLayer;
 
 
 QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t, bool checked )

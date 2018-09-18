@@ -16,17 +16,16 @@
 #ifndef QGSLAYERTREENODE_H
 #define QGSLAYERTREENODE_H
 
-#include "qgis_core.h"
 #include <QObject>
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsobjectcustomproperties.h"
-#include "qgsreadwritecontext.h"
-#include "qgis.h"
 
 class QDomElement;
-
-class QgsProject;
 class QgsMapLayer;
+class QgsProject;
+class QgsReadWriteContext;
 
 /**
  * \ingroup core
