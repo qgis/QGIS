@@ -248,7 +248,7 @@ int main( int argc, char **argv )
       if ( !isPolygon )
       {
         Vect_reset_cats( cats );
-        Vect_cat_set( cats, 1, ( int )feature.id() + fidToCatPlus );
+        Vect_cat_set( cats, 1, static_cast<int>( feature.id() ) + fidToCatPlus );
       }
 
       if ( geometryType == QgsWkbTypes::Point )
@@ -429,7 +429,7 @@ int main( int argc, char **argv )
         if ( feature.geometry().contains( centroid.geometry() ) )
         {
           QgsAttributes attr = centroid.attributes();
-          attr.append( ( int )feature.id() + fidToCatPlus );
+          attr.append( static_cast<int>( feature.id() ) + fidToCatPlus );
           centroid.setAttributes( attr );
         }
       }

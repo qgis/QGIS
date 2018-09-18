@@ -696,7 +696,7 @@ void QgsGeorefPluginGui::showHelp()
 // Comfort slots
 void QgsGeorefPluginGui::jumpToGCP( uint theGCPIndex )
 {
-  if ( ( int )theGCPIndex >= mPoints.size() )
+  if ( static_cast<int>( theGCPIndex ) >= mPoints.size() )
   {
     return;
   }
@@ -1933,7 +1933,7 @@ bool QgsGeorefPluginGui::checkReadyGeoref()
     return false;
   }
 
-  if ( mPoints.count() < ( int )mGeorefTransform.getMinimumGCPCount() )
+  if ( mPoints.count() < static_cast<int>( mGeorefTransform.getMinimumGCPCount() ) )
   {
     mMessageBar->pushMessage( tr( "Not Enough GCPs" ), tr( "%1 transformation requires at least %2 GCPs. Please define more." )
                               .arg( convertTransformEnumToString( mTransformParam ) ).arg( mGeorefTransform.getMinimumGCPCount() )
@@ -1996,16 +1996,16 @@ QgsRectangle QgsGeorefPluginGui::transformViewportBoundingBox( const QgsRectangl
       switch ( edge )
       {
         case 0:
-          src = QgsPointXY( oX + ( double )s * stepX, oY );
+          src = QgsPointXY( oX + static_cast<double>( s * stepX ), oY );
           break;
         case 1:
-          src = QgsPointXY( oX + ( double )s * stepX, dY );
+          src = QgsPointXY( oX + static_cast<double>( s * stepX ), dY );
           break;
         case 2:
-          src = QgsPointXY( oX, oY + ( double )s * stepY );
+          src = QgsPointXY( oX, oY + static_cast<double>( s * stepY ) );
           break;
         case 3:
-          src = QgsPointXY( dX, oY + ( double )s * stepY );
+          src = QgsPointXY( dX, oY + static_cast<double>( s * stepY ) );
           break;
       }
       t.transform( src, raster, rasterToWorld );

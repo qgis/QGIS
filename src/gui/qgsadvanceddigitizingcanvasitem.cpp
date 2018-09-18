@@ -142,8 +142,8 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     painter->drawArc( prevPointPix.x() - 20,
                       prevPointPix.y() - 20,
                       40, 40,
-                      ( int )16 * -a0 * 180 / M_PI,
-                      ( int )16 * ( a0 - a ) * 180 / M_PI );
+                      static_cast<int>( 16 * -a0 * 180 / M_PI ),
+                      static_cast<int>( 16 * ( a0 - a ) * 180 / M_PI ) );
     painter->drawLine( prevPointPix.x(),
                        prevPointPix.y(),
                        prevPointPix.x() + 60 * std::cos( a0 ),

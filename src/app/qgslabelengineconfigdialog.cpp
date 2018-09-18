@@ -73,7 +73,7 @@ void QgsLabelEngineConfigDialog::onOK()
 void QgsLabelEngineConfigDialog::setDefaults()
 {
   pal::Pal p;
-  cboSearchMethod->setCurrentIndex( ( int )p.getSearch() );
+  cboSearchMethod->setCurrentIndex( static_cast<int>( p.getSearch() ) );
   spinCandPoint->setValue( p.getPointP() );
   spinCandLine->setValue( p.getLineP() );
   spinCandPolygon->setValue( p.getPolyP() );

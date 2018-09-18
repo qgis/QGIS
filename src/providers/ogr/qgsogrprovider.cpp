@@ -6038,7 +6038,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
     OGR_F_GetFieldAsDateTime( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "update_time" ),
                               &year, &month, &day, &hour, &minute, &second, &TZ );
     qlonglong ts = second + minute * 60 + hour * 3600 + day * 24 * 3600 +
-                   ( qlonglong )month * 31 * 24 * 3600 + ( qlonglong )year * 12 * 31 * 24 * 3600;
+                   static_cast<qlonglong>( month * 31 * 24 * 3600 ) + ( qlonglong )year * 12 * 31 * 24 * 3600;
     if ( ts > moreRecentTimestamp )
     {
       moreRecentTimestamp = ts;
@@ -6147,7 +6147,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
       OGR_F_GetFieldAsDateTime( hFeature.get(), OGR_FD_GetFieldIndex( hLayerDefn, "update_time" ),
                                 &year, &month, &day, &hour, &minute, &second, &TZ );
       qlonglong ts = second + minute * 60 + hour * 3600 + day * 24 * 3600 +
-                     ( qlonglong )month * 31 * 24 * 3600 + ( qlonglong )year * 12 * 31 * 24 * 3600;
+                     static_cast<qlonglong>( month * 31 * 24 * 3600 ) + ( qlonglong )year * 12 * 31 * 24 * 3600;
 
       listTimestamp.append( ts );
       mapIdToStyleName[fid] = styleName;

@@ -321,7 +321,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
   mSecGeneral = new QTreeWidgetItem(
     treeDetails,
     QStringList( tr( "General" ) ),
-    ( int )DetailsSection );
+    static_cast<int>( DetailsSection ) );
   setItemBold_( mSecGeneral );
   mSecGeneral->setFirstColumnSpanned( true );
   mSecGeneral->setFlags( Qt::ItemIsEnabled );
@@ -331,7 +331,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
   mSecDetails = new QTreeWidgetItem(
     treeDetails,
     QStringList( tr( "Details" ) ),
-    ( int )DetailsSection );
+    static_cast<int>( DetailsSection ) );
   setItemBold_( mSecDetails );
   mSecDetails->setFirstColumnSpanned( true );
   mSecDetails->setFlags( Qt::ItemIsEnabled );
@@ -348,7 +348,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
   mSecPemText = new QTreeWidgetItem(
     treeDetails,
     QStringList( tr( "PEM Text" ) ),
-    ( int )DetailsSection );
+    static_cast<int>( DetailsSection ) );
   setItemBold_( mSecPemText );
   mSecPemText->setFirstColumnSpanned( true );
   mSecPemText->setFlags( Qt::ItemIsEnabled );
@@ -371,7 +371,7 @@ QTreeWidgetItem *QgsAuthCertInfo::addGroupItem( QTreeWidgetItem *parent, const Q
   QTreeWidgetItem *grpitem = new QTreeWidgetItem(
     parent,
     QStringList( group ),
-    ( int )DetailsGroup );
+    static_cast<int>( DetailsGroup ) );
 
   grpitem->setFirstColumnSpanned( true );
   grpitem->setFlags( Qt::ItemIsEnabled );
@@ -396,7 +396,7 @@ void QgsAuthCertInfo::addFieldItem( QTreeWidgetItem *parent, const QString &fiel
   QTreeWidgetItem *item = new QTreeWidgetItem(
     parent,
     QStringList() << field << ( wdgt == NoWidget ? value : QString() ),
-    ( int )DetailsField );
+    static_cast<int>( DetailsField ) );
 
   item->setTextAlignment( 0, Qt::AlignRight );
   item->setTextAlignment( 1, Qt::AlignLeft );
@@ -819,7 +819,7 @@ void QgsAuthCertInfo::populateInfoPemTextSection()
   QTreeWidgetItem *item = new QTreeWidgetItem(
     mSecPemText,
     QStringList( QString() ),
-    ( int )DetailsField );
+    static_cast<int>( DetailsField ) );
 
   item->setFirstColumnSpanned( true );
 

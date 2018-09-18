@@ -463,11 +463,11 @@ QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> QgsGmlStreamingParser:
 }
 
 #define LOCALNAME_EQUALS(string_constant) \
-  ( localNameLen == ( int )strlen( string_constant ) && memcmp(pszLocalName, string_constant, localNameLen) == 0 )
+  ( localNameLen == static_cast<int>(strlen( string_constant )) && memcmp(pszLocalName, string_constant, localNameLen) == 0 )
 
 void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **attr )
 {
-  const int elLen = ( int )strlen( el );
+  const int elLen = static_cast<int>( strlen( el ) );
   const char *pszSep = strchr( el, NS_SEPARATOR );
   const char *pszLocalName = ( pszSep ) ? pszSep + 1 : el;
   const int nsLen = ( pszSep ) ? ( int )( pszSep - el ) : 0;
@@ -478,12 +478,12 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
   // Figure out if the GML namespace is GML_NAMESPACE or GML32_NAMESPACE
   if ( !mGMLNameSpaceURIPtr && pszSep )
   {
-    if ( nsLen == ( int )strlen( GML_NAMESPACE ) && memcmp( el, GML_NAMESPACE, nsLen ) == 0 )
+    if ( nsLen == static_cast<int>( strlen( GML_NAMESPACE ) ) && memcmp( el, GML_NAMESPACE, nsLen ) == 0 )
     {
       mGMLNameSpaceURI = GML_NAMESPACE;
       mGMLNameSpaceURIPtr = GML_NAMESPACE;
     }
-    else if ( nsLen == ( int )strlen( GML32_NAMESPACE ) && memcmp( el, GML32_NAMESPACE, nsLen ) == 0 )
+    else if ( nsLen == static_cast<int>( strlen( GML32_NAMESPACE ) ) && memcmp( el, GML32_NAMESPACE, nsLen ) == 0 )
     {
       mGMLNameSpaceURI = GML32_NAMESPACE;
       mGMLNameSpaceURIPtr = GML32_NAMESPACE;
@@ -689,7 +689,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     isGeom = true;
   }
   else if ( isGMLNS &&
-            localNameLen == ( int )strlen( "Polygon" ) && memcmp( pszLocalName, "Polygon", localNameLen ) == 0 )
+            localNameLen == static_cast<int>( strlen( "Polygon" ) ) && memcmp( pszLocalName, "Polygon", localNameLen ) == 0 )
   {
     isGeom = true;
     mCurrentWKBFragments.push_back( QList<QgsWkbPtr>() );
@@ -837,7 +837,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
 {
   mParseDepth --;
 
-  const int elLen = ( int )strlen( el );
+  const int elLen = static_cast<int>( strlen( el ) );
   const char *pszSep = strchr( el, NS_SEPARATOR );
   const char *pszLocalName = ( pszSep ) ? pszSep + 1 : el;
   const int nsLen = ( pszSep ) ? ( int )( pszSep - el ) : 0;

@@ -119,7 +119,7 @@ void QgsAuthAuthoritiesEditor::setupCaCertsTree()
   mDbCaSecItem = new QTreeWidgetItem(
     treeWidgetCAs,
     QStringList( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::InDatabase ) ),
-    ( int )QgsAuthAuthoritiesEditor::Section );
+    static_cast<int>( QgsAuthAuthoritiesEditor::Section ) );
   setItemBold_( mDbCaSecItem );
   mDbCaSecItem->setFlags( Qt::ItemIsEnabled );
   mDbCaSecItem->setExpanded( true );
@@ -128,7 +128,7 @@ void QgsAuthAuthoritiesEditor::setupCaCertsTree()
   mFileCaSecItem = new QTreeWidgetItem(
     treeWidgetCAs,
     QStringList( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::FromFile ) ),
-    ( int )QgsAuthAuthoritiesEditor::Section );
+    static_cast<int>( QgsAuthAuthoritiesEditor::Section ) );
   setItemBold_( mFileCaSecItem );
   mFileCaSecItem->setFlags( Qt::ItemIsEnabled );
   mFileCaSecItem->setExpanded( true );
@@ -137,7 +137,7 @@ void QgsAuthAuthoritiesEditor::setupCaCertsTree()
   mRootCaSecItem = new QTreeWidgetItem(
     treeWidgetCAs,
     QStringList( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::SystemRoot ) ),
-    ( int )QgsAuthAuthoritiesEditor::Section );
+    static_cast<int>( QgsAuthAuthoritiesEditor::Section ) );
   setItemBold_( mRootCaSecItem );
   mRootCaSecItem->setFlags( Qt::ItemIsEnabled );
   mRootCaSecItem->setExpanded( false );
@@ -233,7 +233,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToGroup( const QList<QSslCertificate> 
   {
     QTreeWidgetItem *grpitem( new QTreeWidgetItem( parent,
                               QStringList() << it.key(),
-                              ( int )QgsAuthAuthoritiesEditor::OrgName ) );
+                              static_cast<int>( QgsAuthAuthoritiesEditor::OrgName ) ) );
     grpitem->setFirstColumnSpanned( true );
     grpitem->setFlags( Qt::ItemIsEnabled );
     grpitem->setExpanded( true );
@@ -291,7 +291,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate> &
     }
     coltxts << policy;
 
-    QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, ( int )catype ) );
+    QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, static_cast<int>( catype ) ) );
 
     item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
     if ( !cert.isValid() )
@@ -602,10 +602,10 @@ void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
 
   for ( int i = 0; i < policies.size(); i++ )
   {
-    cmbpolicy->addItem( policies.at( i ).second, QVariant( ( int )policies.at( i ).first ) );
+    cmbpolicy->addItem( policies.at( i ).second, QVariant( static_cast<int>( policies.at( i ).first ) ) );
   }
 
-  int idx = cmbpolicy->findData( QVariant( ( int )mDefaultTrustPolicy ) );
+  int idx = cmbpolicy->findData( QVariant( static_cast<int>( mDefaultTrustPolicy ) ) );
   cmbpolicy->setCurrentIndex( idx == -1 ? 0 : idx );
   hlayout2->addWidget( cmbpolicy );
 
@@ -763,7 +763,7 @@ void QgsAuthAuthoritiesEditor::showTrustedCertificateAuthorities()
 
 void QgsAuthAuthoritiesEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
-  int levelint = ( int )level;
+  int levelint = static_cast<int>( level );
   messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint, 7 );
 }
 

@@ -745,21 +745,21 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
   else if ( actionName == QLatin1String( "Show all" ) )
   {
     mHistoShowBands = ShowAll;
-    // settings.setValue( "/Raster/histogram/showBands", (int)mHistoShowBands );
+    // settings.setValue( "/Raster/histogram/showBands", static_cast<int>(mHistoShowBands) );
     refreshHistogram();
     return;
   }
   else if ( actionName == QLatin1String( "Show selected" ) )
   {
     mHistoShowBands = ShowSelected;
-    // settings.setValue( "/Raster/histogram/showBands", (int)mHistoShowBands );
+    // settings.setValue( "/Raster/histogram/showBands", static_cast<int>(mHistoShowBands) );
     refreshHistogram();
     return;
   }
   else if ( actionName == QLatin1String( "Show RGB" ) )
   {
     mHistoShowBands = ShowRGB;
-    // settings.setValue( "/Raster/histogram/showBands", (int)mHistoShowBands );
+    // settings.setValue( "/Raster/histogram/showBands", static_cast<int>(mHistoShowBands) );
     refreshHistogram();
     return;
   }

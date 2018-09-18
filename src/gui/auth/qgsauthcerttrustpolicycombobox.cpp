@@ -42,7 +42,7 @@ QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
   {
     QgsAuthCertUtils::CertTrustPolicy polcy = policies.at( i ).first;
     QString name = policies.at( i ).second;
-    addItem( name, QVariant( ( int )polcy ) );
+    addItem( name, QVariant( static_cast<int>( polcy ) ) );
   }
 
   setItemData( 1, QgsAuthGuiUtils::greenColor(), Qt::TextColorRole );
@@ -71,13 +71,13 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthCertTrustPolicyComboBox::trustPolicyFor
 
 void QgsAuthCertTrustPolicyComboBox::setTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy )
 {
-  int idx = findData( QVariant( ( int )policy ) );
+  int idx = findData( QVariant( static_cast<int>( policy ) ) );
   setCurrentIndex( idx == -1 ? 0 : idx );
 }
 
 void QgsAuthCertTrustPolicyComboBox::setDefaultTrustPolicy( QgsAuthCertUtils::CertTrustPolicy defaultpolicy )
 {
-  int idx = findData( QVariant( ( int )QgsAuthCertUtils::DefaultTrust ) );
+  int idx = findData( QVariant( static_cast<int>( QgsAuthCertUtils::DefaultTrust ) ) );
   setItemText( idx, defaultTrustText( defaultpolicy ) );
 }
 

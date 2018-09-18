@@ -191,7 +191,7 @@ QSharedMemory *QgsWFSUtils::createAndAttachSHM()
       // with the same PID as ours would have been killed before it destroyed
       // its shared memory segment. So we will recycle it.
       if ( sharedMemory->error() == QSharedMemory::AlreadyExists &&
-           sharedMemory->attach() && sharedMemory->size() == ( int )sizeof( qint64 ) )
+           sharedMemory->attach() && sharedMemory->size() == static_cast<int>( sizeof( qint64 ) ) )
       {
         return sharedMemory;
       }

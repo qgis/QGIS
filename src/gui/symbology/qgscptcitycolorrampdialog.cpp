@@ -255,7 +255,7 @@ void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem *item, bool r
   }
   else
   {
-    QgsDebugMsg( QString( "item %1 has invalid type %2" ).arg( item->path() ).arg( ( int )item->type() ) );
+    QgsDebugMsg( QString( "item %1 has invalid type %2" ).arg( item->path() ).arg( static_cast<int>( item->type() ) ) );
   }
 }
 

@@ -1189,14 +1189,14 @@ void eVisGenericEventBrowserGui::renderSymbol( QPainter *painter )
       p.setWorldMatrix( wm );
       p.drawPixmap( -mPointerSymbol.width() / 2, -mPointerSymbol.height() / 2, mPointerSymbol );
 
-      int xShift = ( int )myPoint.x() - ( myTempPixmap.width() / 2 );
-      int yShift = ( int )myPoint.y() - ( myTempPixmap.height() / 2 );
+      int xShift = static_cast<int>( myPoint.x() ) - ( myTempPixmap.width() / 2 );
+      int yShift = static_cast<int>( myPoint.y() ) - ( myTempPixmap.height() / 2 );
       painter->drawPixmap( xShift, yShift, myTempPixmap );
     }
     else
     {
-      int xShift = ( int )myPoint.x() - ( mHighlightSymbol.width() / 2 );
-      int yShift = ( int )myPoint.y() - ( mHighlightSymbol.height() / 2 );
+      int xShift = static_cast<int>( myPoint.x() ) - ( mHighlightSymbol.width() / 2 );
+      int yShift = static_cast<int>( myPoint.y() ) - ( mHighlightSymbol.height() / 2 );
       painter->drawPixmap( xShift, yShift, mHighlightSymbol );
     }
   }
