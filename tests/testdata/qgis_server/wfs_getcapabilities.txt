@@ -139,5 +139,8 @@ Content-Type: text/xml; charset=utf-8
     <ogc:ComparisonOperator>Between</ogc:ComparisonOperator>
    </ogc:ComparisonOperators>
   </ogc:Scalar_Capabilities>
+  <ogc:Id_Capabilities>
+   <ogc:FID/>
+  </ogc:Id_Capabilities>
  </ogc:Filter_Capabilities>
 </WFS_Capabilities>
