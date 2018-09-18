@@ -62,7 +62,7 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     void deactivate() override;
 
     //! Triggers map identification of at the given location and outputs results in GUI
-    void identifyAndShowResults( const QgsGeometry &geom );
+    void identifyAndShowResults( const QgsGeometry &geom, double searchRadiusMapUnits );
     //! Clears any previous results from the GUI
     void clearResults();
     //! Looks up feature by its ID and outputs the result in GUI

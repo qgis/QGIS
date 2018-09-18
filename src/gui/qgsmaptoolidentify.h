@@ -168,6 +168,27 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     //! Returns derived attributes map for a clicked point in map coordinates. May be 2D or 3D point.
     QMap< QString, QString > derivedAttributesForPoint( const QgsPoint &point );
 
+    /**
+     * Overrides some map canvas properties inside the map tool for the upcoming identify requests.
+     *
+     * This is useful when the identification is triggered by some other piece of GUI like a 3D map view
+     * and some properties like search radius need to be adjusted so that identification returns correct
+     * results. Currently only search radius may be overridden.
+     *
+     * When the custom identification has finished, restoreCanvasPropertiesOverrides() should
+     * be called to erase any overrides.
+     * \see restoreCanvasProperties()
+     * \since QGIS 3.4
+     */
+    void setCanvasPropertiesOverrides( double searchRadiusMapUnits );
+
+    /**
+     * Clears canvas properties overrides previously set with setCanvasPropertiesOverrides()
+     * \see setCanvasPropertiesOverrides()
+     * \since QGIS 3.4
+     */
+    void restoreCanvasPropertiesOverrides();
+
   private:
 
     bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );
@@ -238,6 +259,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     QgsRectangle mLastExtent;
 
     int mCoordinatePrecision;
+
+    double mOverrideCanvasSearchRadius = -1;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolIdentify::LayerType )

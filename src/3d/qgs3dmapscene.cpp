@@ -210,6 +210,20 @@ void Qgs3DMapScene::unregisterPickHandler( Qgs3DMapScenePickHandler *pickHandler
   }
 }
 
+float Qgs3DMapScene::worldSpaceError( float epsilon, float distance )
+{
+  Qt3DRender::QCamera *camera = mCameraController->camera();
+  float fov = camera->fieldOfView();
+  QRect rect = mCameraController->viewport();
+  float screenSizePx = std::max( rect.width(), rect.height() ); // TODO: is this correct?
+
+  // in qgschunkedentity_p.cpp there is inverse calculation (world space error to screen space error)
+  // with explanation of the math.
+  float frustumWidthAtDistance = 2 * distance * tan( fov / 2 );
+  float err = frustumWidthAtDistance * epsilon / screenSizePx;
+  return err;
+}
+
 QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController )
 {
   Qt3DRender::QCamera *camera = cameraController->camera();

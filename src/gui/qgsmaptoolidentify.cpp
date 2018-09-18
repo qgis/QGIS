@@ -179,6 +179,16 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( const Qg
   return results;
 }
 
+void QgsMapToolIdentify::setCanvasPropertiesOverrides( double searchRadiusMapUnits )
+{
+  mOverrideCanvasSearchRadius = searchRadiusMapUnits;
+}
+
+void QgsMapToolIdentify::restoreCanvasPropertiesOverrides()
+{
+  mOverrideCanvasSearchRadius = -1;
+}
+
 void QgsMapToolIdentify::activate()
 {
   QgsMapTool::activate();
@@ -270,7 +280,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     QgsRectangle r;
     if ( isSingleClick )
     {
-      double sr = searchRadiusMU( mCanvas );
+      double sr = mOverrideCanvasSearchRadius < 0 ? searchRadiusMU( mCanvas ) : mOverrideCanvasSearchRadius;
       r = toLayerCoordinates( layer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
     }
     else
