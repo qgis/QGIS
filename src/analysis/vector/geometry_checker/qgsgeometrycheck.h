@@ -157,39 +157,12 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     const QgsVertexId &vidx() const { return mVidx; }
     Status status() const { return mStatus; }
     QString resolutionMessage() const { return mResolutionMessage; }
-    void setFixed( int method )
-    {
-      mStatus = StatusFixed;
-      const QStringList methods = mCheck->resolutionMethods();
-      mResolutionMessage = methods[method];
-    }
-    void setFixFailed( const QString &reason )
-    {
-      mStatus = StatusFixFailed;
-      mResolutionMessage = reason;
-    }
+    void setFixed( int method );
+    void setFixFailed( const QString &reason );
     void setObsolete() { mStatus = StatusObsolete; }
-    virtual bool isEqual( QgsGeometryCheckError *other ) const
-    {
-      return other->check() == check() &&
-             other->layerId() == layerId() &&
-             other->featureId() == featureId() &&
-             other->vidx() == vidx();
-    }
-    virtual bool closeMatch( QgsGeometryCheckError * /*other*/ ) const
-    {
-      return false;
-    }
-    virtual void update( const QgsGeometryCheckError *other )
-    {
-      Q_ASSERT( mCheck == other->mCheck );
-      Q_ASSERT( mLayerId == other->mLayerId );
-      Q_ASSERT( mFeatureId == other->mFeatureId );
-      mErrorLocation = other->mErrorLocation;
-      mVidx = other->mVidx;
-      mValue = other->mValue;
-      mGeometry = other->mGeometry;
-    }
+    virtual bool isEqual( QgsGeometryCheckError *other ) const;
+    virtual bool closeMatch( QgsGeometryCheckError * /*other*/ ) const;
+    virtual void update( const QgsGeometryCheckError *other );
 
     virtual bool handleChanges( const QgsGeometryCheck::Changes &changes );
 
