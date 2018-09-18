@@ -239,7 +239,7 @@ bool QgsMapLayerStyleCategoriesModel::setData( const QModelIndex &index, const Q
     }
     else if ( value.value<Qt::CheckState>() == Qt::Unchecked )
     {
-      mCategories &= category;
+      mCategories &= ~category;
       emit dataChanged( index, index );
       return true;
     }
