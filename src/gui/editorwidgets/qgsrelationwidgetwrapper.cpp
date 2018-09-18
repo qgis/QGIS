@@ -47,15 +47,15 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
 
 void QgsRelationWidgetWrapper::aboutToSave()
 {
-  if ( !mRelation.isValid() || !widget() || !widget()->isVisible() || mRelation.referencingLayer()->name() ==  mRelation.referencedLayer()->name() )
+  if ( !mRelation.isValid() || !widget() || !widget()->isVisible() || mRelation.referencingLayer() ==  mRelation.referencedLayer() )
     return;
 
   // If the layer is already saved before, return
   const QgsAttributeEditorContext *ctx = &context();
   do
   {
-    if ( ctx->relation().isValid() && ( ctx->relation().referencedLayer()->name() == mRelation.referencingLayer()->name()
-                                        || ( mNmRelation.isValid() && ctx->relation().referencedLayer()->name() == mNmRelation.referencedLayer()->name() ) )
+    if ( ctx->relation().isValid() && ( ctx->relation().referencedLayer() == mRelation.referencingLayer()
+                                        || ( mNmRelation.isValid() && ctx->relation().referencedLayer() == mNmRelation.referencedLayer() ) )
        )
     {
       return;
