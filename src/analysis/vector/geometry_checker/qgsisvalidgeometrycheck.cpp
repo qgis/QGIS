@@ -19,8 +19,10 @@ email                : matthias@opengis.ch
 #include "qgsgeos.h"
 #include "qgsgeometryvalidator.h"
 
-QList<QgsGeometryCheckError *> QgsIsValidGeometryCheck::processGeometry( const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsGeometry &geometry ) const
+QList<QgsSingleGeometryCheckError *> QgsIsValidGeometryCheck::processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const
 {
+  Q_UNUSED( configuration )
+
   QVector<QgsGeometry::Error> errors;
 
   QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
@@ -37,20 +39,20 @@ QList<QgsGeometryCheckError *> QgsIsValidGeometryCheck::processGeometry( const Q
   // We are already on a thread here normally, no reason to start yet another one. Run synchroneously.
   validator.run();
 
-  QList<QgsGeometryCheckError *> result;
+  QList<QgsSingleGeometryCheckError *> result;
   for ( const auto &error : qgis::as_const( errors ) )
   {
-    result << new QgsGeometryCheckError( this, layerFeature, error.where() );
+    result << new QgsSingleGeometryCheckError( this, geometry, QgsGeometry( qgis::make_unique<QgsPoint>( error.where() ) ) );
   }
   return result;
 }
 
-void QgsIsValidGeometryCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, QgsGeometryCheck::Changes &changes ) const
+QString QgsIsValidGeometryCheck::errorDescription() const
 {
-
+  return tr( "Is Valid" );
 }
 
-QStringList QgsIsValidGeometryCheck::resolutionMethods() const
+QString QgsIsValidGeometryCheck::errorName() const
 {
-
+  return QStringLiteral( "QgsIsValidCheck" );
 }

@@ -25,7 +25,7 @@
 
 class QgsGeometryCheck;
 class QgsGeometryCheckFactory;
-class QgsGeometryCheckerContext;
+struct QgsGeometryCheckerContext;
 
 
 /**

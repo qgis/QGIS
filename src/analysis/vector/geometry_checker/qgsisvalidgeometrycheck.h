@@ -29,12 +29,10 @@ class ANALYSIS_EXPORT QgsIsValidGeometryCheck : public QgsSingleGeometryCheck
     explicit QgsIsValidGeometryCheck( QgsGeometryCheckerContext *context )
       : QgsSingleGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
 
-    QList<QgsGeometryCheckError *> processGeometry( const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsGeometry &geometry ) const override;
+    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const override;
 
-    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
-    QStringList resolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Is Valid" ); }
-    QString errorName() const override { return QStringLiteral( "QgsIsValidCheck" ); }
+    QString errorDescription() const override;
+    QString errorName() const override;
 };
 
 #endif // QGSISVALIDGEOMETRYCHECK_H
