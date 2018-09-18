@@ -199,6 +199,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
   qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
   qRegisterMetaType<QgsStyle::StyleEntity>( "QgsStyle::StyleEntity" );
+  qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
 
   QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
   // QgsDebugMsg( QString( "prefixPath(): %1" ).arg( prefixPath ) );
