@@ -40,8 +40,8 @@ struct ANALYSIS_EXPORT QgsGeometryCheckerContext
     const QgsCoordinateReferenceSystem mapCrs;
     const QMap<QString, QgsFeaturePool *> featurePools;
     const QgsCoordinateTransformContext transformContext;
-    const QgsCoordinateTransform &layerTransform( const QPointer<QgsVectorLayer> &layer );
-    double layerScaleFactor( const QPointer<QgsVectorLayer> &layer );
+    const QgsCoordinateTransform &layerTransform( const QPointer<QgsVectorLayer> &layer ) SIP_SKIP;
+    double layerScaleFactor( const QPointer<QgsVectorLayer> &layer ) SIP_SKIP;
 
   private:
     QMap<QPointer<QgsVectorLayer>, QgsCoordinateTransform> mTransformCache;

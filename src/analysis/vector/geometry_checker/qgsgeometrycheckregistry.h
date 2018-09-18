@@ -41,7 +41,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckRegistry
 
     /**
      * Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
-     * QgsAnalysis::geometryCheckRegistry()..
+     * QgsAnalysis::geometryCheckRegistry().
      */
     QgsGeometryCheckRegistry();
 

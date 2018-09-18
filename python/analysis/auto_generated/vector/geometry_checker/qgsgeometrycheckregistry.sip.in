@@ -28,7 +28,7 @@ QgsGeometryCheckRegistry is not usually directly created, but rather accessed th
     QgsGeometryCheckRegistry();
 %Docstring
 Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsAnalysis.geometryCheckRegistry()`.
+:py:func:`QgsAnalysis.geometryCheckRegistry()`
 %End
 
     void initialize();
