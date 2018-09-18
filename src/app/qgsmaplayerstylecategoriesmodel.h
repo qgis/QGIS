@@ -22,6 +22,8 @@
 
 class QgsMapLayerStyleCategoriesModel : public QAbstractListModel
 {
+    Q_OBJECT
+
   public:
     explicit QgsMapLayerStyleCategoriesModel( QObject *parent = nullptr );
 
