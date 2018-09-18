@@ -36,6 +36,10 @@ SET(QGIS_NATIVE_SRCS
   qgsnative.cpp
 )
 
+SET (QGIS_NATIVE_MOC_HDRS
+  qgsnative.h
+)
+
 IF(APPLE)
   SET(QGIS_APP_OBJC_SRCS
     mac/cocoainitializer.mm
@@ -54,6 +58,10 @@ IF(WIN32)
     ../../external/wintoast/src/wintoastlib.cpp
     win/qgswinnative.cpp
   )
+  SET (QGIS_NATIVE_MOC_HDRS
+    ${QGIS_NATIVE_MOC_HDRS}
+    win/qgswinnative.h
+  )
   SET(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
     ${QGIS_APP_WIN32_SRCS}
   )
@@ -71,6 +79,8 @@ ENDIF(UNIX AND NOT APPLE AND NOT ANDROID)
 SET(QGIS_NATIVE_HDRS
   qgsnative.h
 )
+
+QT5_WRAP_CPP(QGIS_NATIVE_MOC_SRCS ${QGIS_NATIVE_MOC_HDRS})
 
 # install headers
 
@@ -107,7 +117,7 @@ ENDIF(WIN32)
 #############################################################
 # qgis_native library
 
-ADD_LIBRARY(qgis_native SHARED ${QGIS_NATIVE_SRCS} ${QGIS_NATIVE_HDRS})
+ADD_LIBRARY(qgis_native SHARED ${QGIS_NATIVE_SRCS} ${QGIS_NATIVE_MOC_SRCS} ${QGIS_NATIVE_HDRS} ${QGIS_NATIVE_MOC_HDRS})
 SET_PROPERTY(TARGET qgis_native PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 GENERATE_EXPORT_HEADER(

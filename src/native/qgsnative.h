@@ -22,6 +22,7 @@
 #include <QImage>
 #include <QVariant>
 #include <vector>
+#include <QObject>
 
 class QString;
 class QWindow;
@@ -33,8 +34,10 @@ class QWindow;
  * are implemented in subclasses to provide platform abstraction.
  * \since QGIS 3.0
  */
-class NATIVE_EXPORT QgsNative
+class NATIVE_EXPORT QgsNative : public QObject
 {
+    Q_OBJECT
+
   public:
 
     //! Native interface capabilities
@@ -215,6 +218,21 @@ class NATIVE_EXPORT QgsNative
      * \since QGIS 3.4
      */
     virtual void onRecentProjectsChanged( const std::vector< RecentProjectProperties > &recentProjects );
+
+  signals:
+
+    /**
+     * Emitted whenever a USB storage device has been inserted or removed.
+     *
+     * The \a path argument gives the file path to the device (if available).
+     *
+     * If \a inserted is true then the device was inserted. If \a inserted is false then
+     * the device was removed.
+     *
+     * \since QGIS 3.4
+     */
+    void usbStorageNotification( const QString &path, bool inserted );
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsNative::Capabilities )
