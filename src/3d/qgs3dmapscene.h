@@ -83,6 +83,12 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Unregisters previously registered pick handler. Pick handler is not deleted. Also removes object picker components from 3D entities.
     void unregisterPickHandler( Qgs3DMapScenePickHandler *pickHandler );
 
+    /**
+     * Given screen error (in pixels) and distance from camera (in 3D world coordinates), this function
+     * estimates the error in world space. Takes into account camera's field of view and the screen (3D view) size.
+     */
+    float worldSpaceError( float epsilon, float distance );
+
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();

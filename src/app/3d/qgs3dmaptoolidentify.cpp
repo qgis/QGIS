@@ -96,9 +96,16 @@ void Qgs3DMapToolIdentify::onTerrainPicked( Qt3DRender::QPickEvent *event )
 
   QgsGeometry geom = QgsGeometry::fromPointXY( QgsPointXY( mapCoords.x(), mapCoords.y() ) );
 
+  // estimate search radius
+  Qgs3DMapScene *scene = mCanvas->scene();
+  double searchRadiusMM = QgsMapTool::searchRadiusMM();
+  double pixelsPerMM = mCanvas->logicalDpiX() / 25.4;
+  double searchRadiusPx = searchRadiusMM * pixelsPerMM;
+  double searchRadiusMapUnits = scene->worldSpaceError( searchRadiusPx, event->distance() );
+
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
 
-  identifyTool2D->identifyAndShowResults( geom );
+  identifyTool2D->identifyAndShowResults( geom, searchRadiusMapUnits );
 }
 
 void Qgs3DMapToolIdentify::onTerrainEntityChanged()

@@ -163,6 +163,31 @@ Call the right method depending on layer type
 Returns derived attributes map for a clicked point in map coordinates. May be 2D or 3D point.
 %End
 
+    void setCanvasPropertiesOverrides( double searchRadiusMapUnits );
+%Docstring
+Overrides some map canvas properties inside the map tool for the upcoming identify requests.
+
+This is useful when the identification is triggered by some other piece of GUI like a 3D map view
+and some properties like search radius need to be adjusted so that identification returns correct
+results. Currently only search radius may be overridden.
+
+When the custom identification has finished, restoreCanvasPropertiesOverrides() should
+be called to erase any overrides.
+
+.. seealso:: :py:func:`restoreCanvasProperties`
+
+.. versionadded:: 3.4
+%End
+
+    void restoreCanvasPropertiesOverrides();
+%Docstring
+Clears canvas properties overrides previously set with setCanvasPropertiesOverrides()
+
+.. seealso:: :py:func:`setCanvasPropertiesOverrides`
+
+.. versionadded:: 3.4
+%End
+
 };
 
 QFlags<QgsMapToolIdentify::Type> operator|(QgsMapToolIdentify::Type f1, QFlags<QgsMapToolIdentify::Type> f2);
