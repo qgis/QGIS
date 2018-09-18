@@ -15,12 +15,12 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA switch sip api
 
 from qgis.core import (QgsXmlUtils,
-                       QgsProperty)
+                       QgsProperty,
+                       QgsCoordinateReferenceSystem)
 
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.testing import start_app, unittest
-
 
 start_app()
 
@@ -140,6 +140,25 @@ class TestQgsXmlUtils(unittest.TestCase):
         prop2 = QgsXmlUtils.readVariant(elem)
 
         self.assertEqual(prop, prop2)
+
+    def test_crs(self):
+        """
+        Test that QgsCoordinateReferenceSystem values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        crs = QgsCoordinateReferenceSystem('epsg:3111')
+        elem = QgsXmlUtils.writeVariant(crs, doc)
+
+        crs2 = QgsXmlUtils.readVariant(elem)
+        self.assertTrue(crs2.isValid())
+        self.assertEqual(crs2.authid(), 'EPSG:3111')
+
+        crs = QgsCoordinateReferenceSystem()
+        elem = QgsXmlUtils.writeVariant(crs, doc)
+
+        crs2 = QgsXmlUtils.readVariant(elem)
+        self.assertFalse(crs2.isValid())
 
 
 if __name__ == '__main__':

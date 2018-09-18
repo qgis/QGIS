@@ -168,6 +168,13 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
         element.appendChild( propertyElem );
         break;
       }
+      else if ( value.canConvert< QgsCoordinateReferenceSystem >() )
+      {
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsCoordinateReferenceSystem" ) );
+        const QgsCoordinateReferenceSystem crs = value.value< QgsCoordinateReferenceSystem >();
+        crs.writeXml( element, doc );
+        break;
+      }
       FALLTHROUGH
     }
 
@@ -249,6 +256,12 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
       return p;
 
     return QVariant();
+  }
+  else if ( type == QLatin1String( "QgsCoordinateReferenceSystem" ) )
+  {
+    QgsCoordinateReferenceSystem crs;
+    crs.readXml( element );
+    return crs;
   }
   else
   {
