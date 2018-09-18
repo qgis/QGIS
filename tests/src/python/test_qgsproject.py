@@ -32,7 +32,7 @@ from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryFile, QTemporaryDir
+from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
 import sip
 
 from qgis.testing import start_app, unittest
@@ -1104,6 +1104,22 @@ class TestQgsProject(unittest.TestCase):
 
         self.assertEqual(p0.baseName(), '2.18.21')
         self.assertEqual(p1.baseName(), 'qgis-3.2.0')
+
+    def testWriteEntry(self):
+
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgs".format(tmpDir.path())
+
+        # zip with existing file
+        project = QgsProject()
+        query = 'select * from "sample DH" where "sample DH"."Elev" > 130 and "sample DH"."Elev" < 140'
+        self.assertTrue(project.writeEntry('myscope', 'myentry', query))
+        self.assertTrue(project.write(tmpFile))
+
+        self.assertTrue(project.read(tmpFile))
+        q, ok = project.readEntry('myscope', 'myentry')
+        self.assertTrue(ok)
+        self.assertEqual(q, query)
 
 
 if __name__ == '__main__':
