@@ -525,58 +525,6 @@ namespace QgsWfs
         layerElem.appendChild( otherSrsElem );
       }
 
-      //create OutputFormats element
-      QDomElement outputFormatsElem = doc.createElement( QStringLiteral( "OutputFormats" ) );
-      QDomElement outputFormatElem = doc.createElement( QStringLiteral( "Format" ) );
-      QDomText outputFormatText = doc.createTextNode( QStringLiteral( "text/xml; subtype=gml/3.1.1" ) );
-      outputFormatElem.appendChild( outputFormatText );
-      outputFormatsElem.appendChild( outputFormatElem );
-      layerElem.appendChild( outputFormatsElem );
-
-      //create WGS84BoundingBox
-      QgsRectangle layerExtent = layer->extent();
-      //transform the layers native CRS into WGS84
-      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
-      QgsRectangle wgs84BoundingRect;
-      if ( !layerExtent.isNull() )
-      {
-        QgsCoordinateTransform exGeoTransform( layer->crs(), wgs84, project );
-        try
-        {
-          wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
-        }
-        catch ( const QgsCsException & )
-        {
-          wgs84BoundingRect = QgsRectangle();
-        }
-      }
-      //create WGS84BoundingBox element
-      QDomElement bBoxElement = doc.createElement( QStringLiteral( "ows:WGS84BoundingBox" ) );
-      bBoxElement.setAttribute( QStringLiteral( "dimensions" ), QStringLiteral( "2" ) );
-      QDomElement lCornerElement = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
-      QDomText lCornerText = doc.createTextNode( QString::number( wgs84BoundingRect.xMinimum() ) + " " + QString::number( wgs84BoundingRect.yMinimum() ) );
-      lCornerElement.appendChild( lCornerText );
-      bBoxElement.appendChild( lCornerElement );
-      QDomElement uCornerElement = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
-      QDomText uCornerText = doc.createTextNode( QString::number( wgs84BoundingRect.xMaximum() ) + " " + QString::number( wgs84BoundingRect.yMaximum() ) );
-      uCornerElement.appendChild( uCornerText );
-      bBoxElement.appendChild( uCornerElement );
-      layerElem.appendChild( bBoxElement );
-
-      // layer metadata URL
-      QString metadataUrl = layer->metadataUrl();
-      if ( !metadataUrl.isEmpty() )
-      {
-        QDomElement metaUrlElem = doc.createElement( QStringLiteral( "MetadataURL" ) );
-        QString metadataUrlType = layer->metadataUrlType();
-        metaUrlElem.setAttribute( QStringLiteral( "type" ), metadataUrlType );
-        QString metadataUrlFormat = layer->metadataUrlFormat();
-        metaUrlElem.setAttribute( QStringLiteral( "format" ), metadataUrlFormat );
-        QDomText metaUrlText = doc.createTextNode( metadataUrl );
-        metaUrlElem.appendChild( metaUrlText );
-        layerElem.appendChild( metaUrlElem );
-      }
-
       //wfs:Operations element
       QDomElement operationsElement = doc.createElement( QStringLiteral( "Operations" )/*wfs:Operations*/ );
       //wfs:Query element
@@ -615,6 +563,59 @@ namespace QgsWfs
       }
 
       layerElem.appendChild( operationsElement );
+
+      //create OutputFormats element
+      QDomElement outputFormatsElem = doc.createElement( QStringLiteral( "OutputFormats" ) );
+      QDomElement outputFormatElem = doc.createElement( QStringLiteral( "Format" ) );
+      QDomText outputFormatText = doc.createTextNode( QStringLiteral( "text/xml; subtype=gml/3.1.1" ) );
+      outputFormatElem.appendChild( outputFormatText );
+      outputFormatsElem.appendChild( outputFormatElem );
+      layerElem.appendChild( outputFormatsElem );
+
+      //create WGS84BoundingBox
+      QgsRectangle layerExtent = layer->extent();
+      //transform the layers native CRS into WGS84
+      QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+      QgsRectangle wgs84BoundingRect;
+      if ( !layerExtent.isNull() )
+      {
+        QgsCoordinateTransform exGeoTransform( layer->crs(), wgs84, project );
+        try
+        {
+          wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
+        }
+        catch ( const QgsCsException & )
+        {
+          wgs84BoundingRect = QgsRectangle();
+        }
+      }
+
+      //create WGS84BoundingBox element
+      QDomElement bBoxElement = doc.createElement( QStringLiteral( "ows:WGS84BoundingBox" ) );
+      bBoxElement.setAttribute( QStringLiteral( "dimensions" ), QStringLiteral( "2" ) );
+      QDomElement lCornerElement = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
+      QDomText lCornerText = doc.createTextNode( QString::number( wgs84BoundingRect.xMinimum() ) + " " + QString::number( wgs84BoundingRect.yMinimum() ) );
+      lCornerElement.appendChild( lCornerText );
+      bBoxElement.appendChild( lCornerElement );
+      QDomElement uCornerElement = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
+      QDomText uCornerText = doc.createTextNode( QString::number( wgs84BoundingRect.xMaximum() ) + " " + QString::number( wgs84BoundingRect.yMaximum() ) );
+      uCornerElement.appendChild( uCornerText );
+      bBoxElement.appendChild( uCornerElement );
+      layerElem.appendChild( bBoxElement );
+
+      // layer metadata URL
+      QString metadataUrl = layer->metadataUrl();
+      if ( !metadataUrl.isEmpty() )
+      {
+        QDomElement metaUrlElem = doc.createElement( QStringLiteral( "MetadataURL" ) );
+        QString metadataUrlType = layer->metadataUrlType();
+        metaUrlElem.setAttribute( QStringLiteral( "type" ), metadataUrlType );
+        QString metadataUrlFormat = layer->metadataUrlFormat();
+        metaUrlElem.setAttribute( QStringLiteral( "format" ), metadataUrlFormat );
+        QDomText metaUrlText = doc.createTextNode( metadataUrl );
+        metaUrlElem.appendChild( metaUrlText );
+        layerElem.appendChild( metaUrlElem );
+      }
 
       featureTypeListElement.appendChild( layerElem );
     }
