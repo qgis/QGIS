@@ -404,8 +404,7 @@ Uses :py:class:`QgsExpression`
 :return: The expression which will be used to preview features for this layer
 %End
 
-    virtual QgsVectorDataProvider *dataProvider();
-
+    QgsVectorDataProvider *dataProvider() final;
 
     void setProviderEncoding( const QString &encoding );
 %Docstring
@@ -443,8 +442,7 @@ Returns the join buffer object.
 %End
     const QList<QgsVectorLayerJoinInfo> vectorJoins() const;
 
-    virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
-
+    bool setDependencies( const QSet<QgsMapLayerDependency> &layers ) final;
 %Docstring
 Sets the list of dependencies.
 
@@ -457,8 +455,7 @@ Sets the list of dependencies.
 .. versionadded:: 3.0
 %End
 
-    virtual QSet<QgsMapLayerDependency> dependencies() const;
-
+    QSet<QgsMapLayerDependency> dependencies() const final;
 %Docstring
 Gets the list of dependencies. This includes data dependencies set by the user (:py:func:`setDataDependencies`)
 as well as dependencies given by the provider
@@ -724,8 +721,7 @@ Ownership is transferred.
 Returns point, line or polygon
 %End
 
-    virtual QgsWkbTypes::Type wkbType() const;
-
+    QgsWkbTypes::Type wkbType() const final;
 %Docstring
 Returns the WKBType or WKBUnknown in case of error
 %End
@@ -735,13 +731,10 @@ Returns the WKBType or WKBUnknown in case of error
 Returns the provider type for this layer
 %End
 
-    virtual QgsCoordinateReferenceSystem sourceCrs() const;
+    QgsCoordinateReferenceSystem sourceCrs() const final;
+    QString sourceName() const final;
 
-    virtual QString sourceName() const;
-
-
-    virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );
-
+    bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) final;
 %Docstring
 Reads vector layer specific state from project file Dom node.
 
@@ -750,8 +743,7 @@ Reads vector layer specific state from project file Dom node.
    Called by :py:func:`QgsMapLayer.readXml()`
 %End
 
-    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
-
+    bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const final;
 %Docstring
 Write vector layer specific state to project file Dom node.
 
@@ -760,13 +752,10 @@ Write vector layer specific state to project file Dom node.
    Called by :py:func:`QgsMapLayer.writeXml()`
 %End
 
-    virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;
+    QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const final;
+    QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const final;
 
-    virtual QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const;
-
-
-    virtual void resolveReferences( QgsProject *project );
-
+    void resolveReferences( QgsProject *project ) final;
 %Docstring
 Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
 
@@ -831,8 +820,8 @@ Load a named style from file/local db/datasource db
 :param categories: the style categories to be loaded.
 %End
 
-     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/,
-                            QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+    QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/,
+                            QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) final;
 %Docstring
 Calls loadNamedStyle( theURI, resultFlag, false );
 Retained for backward compatibility
@@ -872,8 +861,8 @@ Returns the current auxiliary layer.
 %End
 
 
-     virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage,
-                        QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+    bool readSymbology( const QDomNode &layerNode, QString &errorMessage,
+                        QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) final;
 %Docstring
 Read the symbology for the current layer from the Dom node supplied.
 
@@ -885,8 +874,8 @@ Read the symbology for the current layer from the Dom node supplied.
 :return: true in case of success.
 %End
 
-     virtual bool readStyle( const QDomNode &node, QString &errorMessage,
-                    QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+    bool readStyle( const QDomNode &node, QString &errorMessage,
+                    QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) final;
 %Docstring
 Read the style for the current layer from the Dom node supplied.
 
@@ -898,8 +887,8 @@ Read the style for the current layer from the Dom node supplied.
 :return: true in case of success.
 %End
 
-     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const final;
 %Docstring
 Write the symbology for the layer into the docment provided.
 
@@ -912,8 +901,8 @@ Write the symbology for the layer into the docment provided.
 :return: true in case of success.
 %End
 
-     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-                     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
+    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const final;
 %Docstring
 Write just the style information for the layer into the document
 
@@ -938,8 +927,7 @@ Writes the symbology of the layer into the document provided in SLD 1.1 format
 :return: true in case of success
 %End
 
-    virtual bool readSld( const QDomNode &node, QString &errorMessage );
-
+    bool readSld( const QDomNode &node, QString &errorMessage ) final;
 
     long featureCount( const QString &legendKey ) const;
 %Docstring
@@ -949,8 +937,7 @@ calculated by countSymbolFeatures()
 :return: number of features rendered by symbol or -1 if failed or counts are not available
 %End
 
-    virtual FeatureAvailability hasFeatures() const;
-
+    FeatureAvailability hasFeatures() const final;
 %Docstring
 Determines if this vector layer has features.
 
@@ -997,8 +984,7 @@ if the geometry type of the new data source matches the current geometry type of
 .. versionadded:: 3.2
 %End
 
-    virtual QString loadDefaultStyle( bool &resultFlag /Out/ );
-
+    QString loadDefaultStyle( bool &resultFlag /Out/ ) final;
 
     QgsVectorLayerFeatureCounter *countSymbolFeatures();
 %Docstring
@@ -1034,8 +1020,7 @@ Returns the string (typically sql) used to define a subset of the layer.
 :return: The subset string or null QString if not implemented by the provider
 %End
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
-
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const final;
 %Docstring
 Query the layer for features specified in request.
 
@@ -1065,8 +1050,7 @@ Query the layer for the features with the given ids.
 Query the layer for the features which intersect the specified rectangle.
 %End
 
-    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
-
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) final;
 
     bool updateFeature( QgsFeature &feature, bool skipDefaultValues = false );
 %Docstring
@@ -1428,14 +1412,12 @@ Set labeling configuration. Takes ownership of the object.
 .. versionadded:: 3.0
 %End
 
-    virtual bool isEditable() const;
-
+    bool isEditable() const final;
 %Docstring
 Returns true if the provider is in editing mode
 %End
 
-    virtual bool isSpatial() const;
-
+    bool isSpatial() const final;
 %Docstring
 Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
 %End
@@ -1453,26 +1435,22 @@ false otherwise.
 .. versionadded:: 3.0
 %End
 
-    virtual void reload();
-
+    void reload() final;
 %Docstring
 Synchronises with changes in the datasource
 %End
 
-    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
-
+    QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) final /Factory/;
 %Docstring
 Returns new instance of QgsMapLayerRenderer that will be used for rendering of given context
 
 .. versionadded:: 2.4
 %End
 
-    virtual QgsRectangle extent() const;
+    QgsRectangle extent() const final;
+    QgsRectangle sourceExtent() const final;
 
-    virtual QgsRectangle sourceExtent() const;
-
-
-    virtual QgsFields fields() const;
+    QgsFields fields() const;
 %Docstring
 Returns the list of fields of this layer.
 This also includes fields which have not yet been saved to the provider.
@@ -1490,8 +1468,7 @@ Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
 Returns the list of attributes which make up the layer's primary keys.
 %End
 
-    virtual long featureCount() const;
-
+    long featureCount() const final;
 %Docstring
 Returns feature count including changes which have not yet been committed
 If you need only the count of committed features call this method on this layer's provider.
@@ -1715,8 +1692,7 @@ Deletes a list of attribute fields (but does not commit it)
 :return: true if at least one attribute has been deleted
 %End
 
-    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
-
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) final;
 
     bool deleteFeature( QgsFeatureId fid );
 %Docstring
@@ -1999,8 +1975,7 @@ for the field at `index`.
 .. versionadded:: 3.0
 %End
 
-    virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
-
+    QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const final;
 %Docstring
 Calculates a list of unique values contained within an attribute in the layer. Note that
 in some circumstances when unsaved changes are present for the layer then the returned list
@@ -2034,8 +2009,7 @@ returned list).
 :return: list of unique strings containing substring
 %End
 
-    virtual QVariant minimumValue( int index ) const;
-
+    QVariant minimumValue( int index ) const final;
 %Docstring
 Returns the minimum value for an attribute column or an invalid variant in case of error.
 Note that in some circumstances when unsaved changes are present for the layer then the
@@ -2047,8 +2021,7 @@ been changed inside the edit buffer then the previous saved value may be returne
 .. seealso:: :py:func:`uniqueValues`
 %End
 
-    virtual QVariant maximumValue( int index ) const;
-
+    QVariant maximumValue( int index ) const final;
 %Docstring
 Returns the maximum value for an attribute column or an invalid variant in case of error.
 Note that in some circumstances when unsaved changes are present for the layer then the
@@ -2112,8 +2085,7 @@ and 1.0 (fully opaque).
 .. versionadded:: 3.0
 %End
 
-    virtual QString htmlMetadata() const;
-
+    QString htmlMetadata() const final;
 
     void setSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
 %Docstring
@@ -2181,11 +2153,9 @@ It may also contain embedded expressions.
 .. versionadded:: 3.0
 %End
 
-    virtual QgsExpressionContext createExpressionContext() const;
+    QgsExpressionContext createExpressionContext() const final;
 
-
-    virtual QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
-
+    QgsExpressionContextScope *createExpressionContextScope() const final /Factory/;
 
     QgsEditFormConfig editFormConfig() const;
 %Docstring
@@ -2596,8 +2566,7 @@ Emitted when the feature count for symbols on this layer has been recalculated.
 %End
 
   protected:
-    virtual void setExtent( const QgsRectangle &rect );
-
+    void setExtent( const QgsRectangle &rect ) final;
 %Docstring
 Sets the extent
 %End
