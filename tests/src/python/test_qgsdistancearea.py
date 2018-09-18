@@ -184,7 +184,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         print('-I-> Berlin Wsg84 length_meter_mapunits[{}] point_meter_result[{}] ellipsoid[{}]'.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 20, da_wsg84.lengthUnits(), True), point_meter_result.asWkt(), da_wsg84.ellipsoid()))
         # for unknown reasons, this is returning '0.00001473026 m' instead of '0.00001473026 deg' when using da_wsg84.lengthUnits()
         # self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits,11,da_wsg84.lengthUnits(),True), '0.00001473026 deg')
-        self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 11, QgsUnitTypes.DistanceDegrees, True), '0.00001473026 deg')
+        self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 11, QgsUnitTypes.DistanceDegrees, True), '0.00001473076 deg')
         self.assertEqual(point_meter_result.toString(7), point_berlin_wsg84_project.toString(7))
         point_berlin_4314 = QgsPointXY(13.37944343021465, 52.51767872437083)
         point_berlin_4314_project = QgsPointXY(13.37945816324759, 52.5176787243699)
