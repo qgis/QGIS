@@ -30,6 +30,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingBooleanWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingCrsWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingStringWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingNumericWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
