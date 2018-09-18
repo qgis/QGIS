@@ -1376,7 +1376,7 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
   {
     QString hemisphere;
 
-    double coordRounded = std::round( value * std::pow( 10.0, mGridAnnotationPrecision ) ) / std::pow( 10.0, mGridAnnotationPrecision );
+    double coordRounded = qgsRound( value, mGridAnnotationPrecision );
     if ( coord == QgsLayoutItemMapGrid::Longitude )
     {
       //don't use E/W suffixes if ambiguous (e.g., 180 degrees)

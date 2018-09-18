@@ -3403,8 +3403,7 @@ static QVariant fcnRound( const QVariantList &values, const QgsExpressionContext
   if ( values.length() == 2 && values.at( 1 ).toInt() != 0 )
   {
     double number = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-    double scaler = std::pow( 10.0, QgsExpressionUtils::getIntValue( values.at( 1 ), parent ) );
-    return QVariant( std::round( number * scaler ) / scaler );
+    return qgsRound( number, QgsExpressionUtils::getIntValue( values.at( 1 ), parent ) );
   }
 
   if ( values.length() >= 1 )
