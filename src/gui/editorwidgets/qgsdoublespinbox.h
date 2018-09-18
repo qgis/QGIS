@@ -132,6 +132,13 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      */
     void setLineEditAlignment( Qt::Alignment alignment );
 
+    /**
+     * Set the special-value text to be \a txt
+     * If set, the spin box will display this text instead of a numeric value whenever the current value
+     * is equal to minimum(). Typical use is to indicate that this choice has a special (default) meaning.
+     */
+    void setSpecialValueText( const QString &txt );
+
     double valueFromText( const QString &text ) const override;
     QValidator::State validate( QString &input, int &pos ) const override;
     void paintEvent( QPaintEvent *e ) override;
@@ -156,6 +163,13 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     bool mExpressionsEnabled = true;
 
     QString stripped( const QString &originalText ) const;
+
+    // This is required because private implementation of
+    // QAbstractSpinBoxPrivate checks for specialText emptiness
+    // and skips specialText handling if it's empty
+    static QString SPECIAL_TEXT_WHEN_EMPTY;
+
+    friend class TestQgsRangeWidgetWrapper;
 };
 
 #endif // QGSDOUBLESPINBOX_H

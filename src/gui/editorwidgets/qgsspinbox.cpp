@@ -26,6 +26,12 @@
 
 #define CLEAR_ICON_SIZE 16
 
+// This is required because private implementation of
+// QAbstractSpinBoxPrivate checks for specialText emptiness
+// and skips specialText handling if it's empty
+QString QgsSpinBox::SPECIAL_TEXT_WHEN_EMPTY = QChar( 0x2063 );
+
+
 QgsSpinBox::QgsSpinBox( QWidget *parent )
   : QSpinBox( parent )
 {
@@ -137,6 +143,14 @@ void QgsSpinBox::setLineEditAlignment( Qt::Alignment alignment )
   mLineEdit->setAlignment( alignment );
 }
 
+void QgsSpinBox::setSpecialValueText( const QString &txt )
+{
+  if ( txt.isEmpty() )
+    QSpinBox::setSpecialValueText( SPECIAL_TEXT_WHEN_EMPTY );
+  else
+    QSpinBox::setSpecialValueText( txt );
+}
+
 int QgsSpinBox::valueFromText( const QString &text ) const
 {
   if ( !mExpressionsEnabled )
@@ -185,6 +199,9 @@ QString QgsSpinBox::stripped( const QString &originalText ) const
   QString text = originalText;
   if ( specialValueText().isEmpty() || text != specialValueText() )
   {
+    // Strip SPECIAL_TEXT_WHEN_EMPTY
+    if ( text.contains( SPECIAL_TEXT_WHEN_EMPTY ) )
+      text = text.replace( SPECIAL_TEXT_WHEN_EMPTY, QString() );
     int from = 0;
     int size = text.size();
     bool changed = false;

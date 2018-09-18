@@ -20,12 +20,14 @@
 #include "qgsrangewidgetwrapper.h"
 #include "qgsrangeconfigdlg.h"
 #include "qgsdoublespinbox.h"
+#include "qgsspinbox.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsdataprovider.h"
+#include "qgsfilterlineedit.h"
 
-
+#include <QLineEdit>
 #include <QObject>
 #include <QtTest/QSignalSpy>
 
@@ -48,14 +50,22 @@ class TestQgsRangeWidgetWrapper : public QObject
     void test_setDoubleRange();
     void test_setDoubleSmallerRange();
     void test_setDoubleLimits();
+    void test_nulls();
+
   private:
-    std::unique_ptr<QgsRangeWidgetWrapper> widget; // For field 1
+    std::unique_ptr<QgsRangeWidgetWrapper> widget0; // For field 0
+    std::unique_ptr<QgsRangeWidgetWrapper> widget1; // For field 1
     std::unique_ptr<QgsRangeWidgetWrapper> widget2; // For field 2
     std::unique_ptr<QgsVectorLayer> vl;
 };
 
 void TestQgsRangeWidgetWrapper::initTestCase()
 {
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST-RANGE-WIDGET" ) );
+
   QgsApplication::init();
   QgsApplication::initQgis();
 }
@@ -108,9 +118,10 @@ void TestQgsRangeWidgetWrapper::init()
   QCOMPARE( vl->featureCount( ), ( long )3 );
   QgsFeature _feat1( vl->getFeature( 1 ) );
   QCOMPARE( _feat1, feat1 );
-  widget = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 1, nullptr, nullptr );
+  widget0 = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 0, nullptr, nullptr );
+  widget1 = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 1, nullptr, nullptr );
   widget2 = qgis::make_unique<QgsRangeWidgetWrapper>( vl.get(), 2, nullptr, nullptr );
-  QVERIFY( widget.get() );
+  QVERIFY( widget1.get() );
 }
 
 void TestQgsRangeWidgetWrapper::cleanup()
@@ -123,9 +134,9 @@ void TestQgsRangeWidgetWrapper::test_setDoubleRange()
   // See https://issues.qgis.org/issues/17878
   // QGIS 3 Vector Layer Fields Garbled when Clicking the Toggle Editing Icon
 
-  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( widget->createWidget( nullptr ) );
+  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
   QVERIFY( editor );
-  widget->initWidget( editor );
+  widget1->initWidget( editor );
   QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( nullptr ) );
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
@@ -133,7 +144,7 @@ void TestQgsRangeWidgetWrapper::test_setDoubleRange()
   QgsFeature feat( vl->getFeature( 1 ) );
   QVERIFY( feat.isValid() );
   QCOMPARE( feat.attribute( 1 ).toDouble(), 123.123456789 );
-  widget->setFeature( vl->getFeature( 1 ) );
+  widget1->setFeature( vl->getFeature( 1 ) );
   widget2->setFeature( vl->getFeature( 1 ) );
   QCOMPARE( vl->fields().at( 1 ).precision(), 9 );
   // Default is 0 !!! for double, really ?
@@ -151,12 +162,12 @@ void TestQgsRangeWidgetWrapper::test_setDoubleRange()
   QCOMPARE( editor->maximum( ), std::numeric_limits<double>::max() );
   QCOMPARE( editor2->maximum( ), std::numeric_limits<double>::max() );
 
-  widget->setFeature( vl->getFeature( 2 ) );
+  widget1->setFeature( vl->getFeature( 2 ) );
   widget2->setFeature( vl->getFeature( 2 ) );
   QCOMPARE( editor->value( ), editor->minimum() );
   QCOMPARE( editor2->value( ), editor->minimum() );
 
-  widget->setFeature( vl->getFeature( 3 ) );
+  widget1->setFeature( vl->getFeature( 3 ) );
   widget2->setFeature( vl->getFeature( 3 ) );
   QCOMPARE( editor->value( ), -123.123456789 );
   QCOMPARE( editor2->value( ), -123.0 );
@@ -169,10 +180,10 @@ void TestQgsRangeWidgetWrapper::test_setDoubleSmallerRange()
   cfg.insert( QStringLiteral( "Min" ), -100.0 );
   cfg.insert( QStringLiteral( "Max" ), 100.0 );
   cfg.insert( QStringLiteral( "Step" ), 1 );
-  widget->setConfig( cfg );
-  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( widget->createWidget( nullptr ) );
+  widget1->setConfig( cfg );
+  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
   QVERIFY( editor );
-  widget->initWidget( editor );
+  widget1->initWidget( editor );
 
   widget2->setConfig( cfg );
   QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( nullptr ) );
@@ -182,7 +193,7 @@ void TestQgsRangeWidgetWrapper::test_setDoubleSmallerRange()
   QgsFeature feat( vl->getFeature( 1 ) );
   QVERIFY( feat.isValid() );
   QCOMPARE( feat.attribute( 1 ).toDouble(), 123.123456789 );
-  widget->setFeature( vl->getFeature( 1 ) );
+  widget1->setFeature( vl->getFeature( 1 ) );
   widget2->setFeature( vl->getFeature( 1 ) );
 
   QCOMPARE( vl->fields().at( 1 ).precision(), 9 );
@@ -202,13 +213,13 @@ void TestQgsRangeWidgetWrapper::test_setDoubleSmallerRange()
   QCOMPARE( editor2->maximum( ), ( double )100 );
 
   // NULL, NULL
-  widget->setFeature( vl->getFeature( 2 ) );
+  widget1->setFeature( vl->getFeature( 2 ) );
   widget2->setFeature( vl->getFeature( 2 ) );
   QCOMPARE( editor->value( ), editor->minimum() );
   QCOMPARE( editor2->value( ), editor2->minimum() );
 
   // negative, negative
-  widget->setFeature( vl->getFeature( 3 ) );
+  widget1->setFeature( vl->getFeature( 3 ) );
   widget2->setFeature( vl->getFeature( 3 ) );
   // value was changed to the minimum
   QCOMPARE( editor->value( ), editor->minimum() );
@@ -223,10 +234,10 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
   cfg.insert( QStringLiteral( "Min" ), std::numeric_limits<double>::lowest() );
   cfg.insert( QStringLiteral( "Max" ), std::numeric_limits<double>::max() );
   cfg.insert( QStringLiteral( "Step" ), 1 );
-  widget->setConfig( cfg );
-  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( widget->createWidget( nullptr ) );
+  widget1->setConfig( cfg );
+  QgsDoubleSpinBox *editor = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
   QVERIFY( editor );
-  widget->initWidget( editor );
+  widget1->initWidget( editor );
 
   widget2->setConfig( cfg );
   QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( nullptr ) );
@@ -241,7 +252,7 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
   QgsFeature feat( vl->getFeature( 1 ) );
   QVERIFY( feat.isValid() );
   QCOMPARE( feat.attribute( 1 ).toDouble(), 123.123456789 );
-  widget->setFeature( vl->getFeature( 1 ) );
+  widget1->setFeature( vl->getFeature( 1 ) );
   widget2->setFeature( vl->getFeature( 1 ) );
 
   QCOMPARE( vl->fields().at( 1 ).precision(), 9 );
@@ -253,17 +264,67 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
   QCOMPARE( editor2->value( ), 123.0 );
 
   // NULL, NULL
-  widget->setFeature( vl->getFeature( 2 ) );
+  widget1->setFeature( vl->getFeature( 2 ) );
   widget2->setFeature( vl->getFeature( 2 ) );
   QCOMPARE( editor->value( ), editor->minimum() );
   QCOMPARE( editor2->value( ), editor2->minimum() );
 
   // negative, negative
-  widget->setFeature( vl->getFeature( 3 ) );
+  widget1->setFeature( vl->getFeature( 3 ) );
   widget2->setFeature( vl->getFeature( 3 ) );
   // value was changed to the minimum
   QCOMPARE( editor->value( ), -123.123456789 );
   QCOMPARE( editor2->value( ), -123.0 );
+
+}
+
+void TestQgsRangeWidgetWrapper::test_nulls()
+{
+
+  QgsApplication::setNullRepresentation( QString( "" ) );
+
+  QVariantMap cfg;
+  cfg.insert( QStringLiteral( "Min" ), 100.00 );
+  cfg.insert( QStringLiteral( "Max" ), 200.00 );
+  cfg.insert( QStringLiteral( "Step" ), 1 );
+  cfg.insert( QStringLiteral( "Precision" ), 0 );
+  widget1->setConfig( cfg );
+  QgsDoubleSpinBox *editor1 = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( nullptr ) );
+  QVERIFY( editor1 );
+  widget1->initWidget( editor1 );
+  // Out of range
+  widget1->setFeature( vl->getFeature( 3 ) );
+  QCOMPARE( editor1->value( ), editor1->minimum() );
+  QCOMPARE( widget1->value( ), QVariant( QVariant::Double ) );
+  widget1->setFeature( QgsFeature( vl->fields() ) );
+  // Null
+  QCOMPARE( editor1->value( ), editor1->minimum() );
+  QCOMPARE( widget1->value( ), QVariant( QVariant::Double ) );
+  QCOMPARE( editor1->mLineEdit->text(), QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY );
+  editor1->mLineEdit->setText( QString( "151%1" ).arg( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ) );
+  QCOMPARE( widget1->value( ).toInt(), 151 );
+  editor1->mLineEdit->setText( QString( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ).append( QStringLiteral( "161" ) ) );
+  QCOMPARE( widget1->value( ).toInt(), 161 );
+
+
+  QgsSpinBox *editor0 = qobject_cast<QgsSpinBox *>( widget0->createWidget( nullptr ) );
+  QVERIFY( editor0 );
+  widget0->setConfig( cfg );
+  widget0->initWidget( editor0 );
+  // Out of range
+  widget0->setFeature( vl->getFeature( 3 ) );
+  QCOMPARE( editor0->value( ), editor0->minimum() );
+  QCOMPARE( widget0->value( ), QVariant( QVariant::Int ) );
+  widget0->setFeature( QgsFeature( vl->fields() ) );
+  // Null
+  QCOMPARE( editor0->value( ), editor0->minimum() );
+  QCOMPARE( widget0->value( ), QVariant( QVariant::Int ) );
+  QCOMPARE( editor0->mLineEdit->text(), QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY );
+
+  editor0->mLineEdit->setText( QString( "150%1" ).arg( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ) );
+  QCOMPARE( widget0->value( ).toInt(), 150 );
+  editor0->mLineEdit->setText( QString( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ).append( QStringLiteral( "160" ) ) );
+  QCOMPARE( widget0->value( ).toInt(), 160 );
 
 }
 
