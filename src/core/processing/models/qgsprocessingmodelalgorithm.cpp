@@ -529,6 +529,15 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
 
     };
 
+    if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
+    {
+      QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
+      value = fromVar.sink;
+      if ( value.canConvert<QgsProperty>() )
+      {
+        value = value.value< QgsProperty >().valueAsString( context.expressionContext() );
+      }
+    }
     QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( value ) );
     if ( !layer )
       layer = QgsProcessingUtils::mapLayerFromString( value.toString(), context );
@@ -588,6 +597,10 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
     {
       QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
       value = fromVar.sink;
+      if ( value.canConvert<QgsProperty>() )
+      {
+        value = value.value< QgsProperty >().valueAsString( context.expressionContext() );
+      }
     }
     if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( value ) ) )
     {
