@@ -136,6 +136,9 @@ class QgsWFSServer: public QgsOWSServer
     QDomElement createFeatureGML3( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes,
                                    const QgsAttributeList& pkAttributes = QgsAttributeList() ) /*const*/;
 
+    //methods to encode value to string for text node
+    QString encodeValueToText( const QVariant& value );
+
     void addTransactionResult( QDomDocument& responseDoc, QDomElement& responseElem, const QString& status, const QString& locator, const QString& message );
 };
 

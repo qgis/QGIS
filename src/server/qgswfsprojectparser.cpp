@@ -455,8 +455,8 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
         const QgsFields& fields = layer->pendingFields();
         for ( int idx = 0; idx < fields.count(); ++idx )
         {
-
-          QString attributeName = fields.at( idx ).name();
+          const QgsField field = fields.at( idx );
+          QString attributeName = field.name();
           //skip attribute if excluded from WFS publication
           if ( layerExcludedAttributes.contains( attributeName ) )
           {
@@ -466,27 +466,57 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
           //xsd:element
           QDomElement attElem = doc.createElement( "element"/*xsd:element*/ );
           attElem.setAttribute( "name", attributeName.replace( " ", "_" ).replace( mCleanTagNameRegExp, "" ) );
-          QVariant::Type attributeType = fields[idx].type();
+          QVariant::Type attributeType = field.type();
           if ( attributeType == QVariant::Int )
-            attElem.setAttribute( "type", "integer" );
+          {
+            attElem.setAttribute( "type", "int" );
+          }
+          else if ( attributeType == QVariant::UInt )
+          {
+            attElem.setAttribute( "type", "unsignedInt" );
+          }
           else if ( attributeType == QVariant::LongLong )
+          {
             attElem.setAttribute( "type", "long" );
+          }
+          else if ( attributeType == QVariant::ULongLong )
+          {
+            attElem.setAttribute( "type", "unsignedLong" );
+          }
           else if ( attributeType == QVariant::Double )
-            attElem.setAttribute( "type", "double" );
+          {
+            // if the size is well known, it may be an integer
+            // else a decimal
+            // in sqlite the length is unknown but int type can be used
+            if ( field.length() != 0 && field.precision() == 0 )
+              attElem.setAttribute( "type", "integer" );
+            else
+              attElem.setAttribute( "type", "decimal" );
+          }
           else if ( attributeType == QVariant::Bool )
+          {
             attElem.setAttribute( "type", "boolean" );
+          }
           else if ( attributeType == QVariant::Date )
+          {
             attElem.setAttribute( "type", "date" );
+          }
           else if ( attributeType == QVariant::Time )
+          {
             attElem.setAttribute( "type", "time" );
+          }
           else if ( attributeType == QVariant::DateTime )
+          {
             attElem.setAttribute( "type", "dateTime" );
+          }
           else
+          {
             attElem.setAttribute( "type", "string" );
+          }
 
           sequenceElem.appendChild( attElem );
 
-          QString alias = fields.at( idx ).alias();
+          QString alias = field.alias();
           if ( !alias.isEmpty() )
           {
             attElem.setAttribute( "alias", alias );

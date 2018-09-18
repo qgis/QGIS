@@ -2129,7 +2129,7 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
     }*/
 
     QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( " ", "_" ).replace( mConfigParser->getCleanTagNameRegExp(), "" ) );
-    QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
+    QDomText fieldText = doc.createTextNode( encodeValueToText( featureAttributes[idx] ) );
     fieldElem.appendChild( fieldText );
     typeNameElement.appendChild( fieldElem );
   }
@@ -2213,12 +2213,60 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
     }*/
 
     QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( " ", "_" ).replace( mConfigParser->getCleanTagNameRegExp(), "" ) );
-    QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
+    QDomText fieldText = doc.createTextNode( encodeValueToText( featureAttributes[idx] ) );
     fieldElem.appendChild( fieldText );
     typeNameElement.appendChild( fieldElem );
   }
 
   return featureElement;
+}
+
+QString QgsWFSServer::encodeValueToText( const QVariant& value )
+{
+  if ( value.isNull() )
+    return "null";
+
+  switch ( value.type() )
+  {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    case QVariant::Double:
+      return value.toString();
+
+    case QVariant::Bool:
+      return value.toBool() ? "true" : "false";
+
+    case QVariant::StringList:
+    case QVariant::List:
+    case QVariant::Map:
+    {
+      QString v = QgsJSONUtils::encodeValue( value );
+
+      //do we need CDATA
+      if ( v.indexOf( '<' ) != -1 || v.indexOf( '&' ) != -1 )
+      {
+        v.prepend( "<![CDATA[" ).append( "]]>" );
+      }
+
+      return v;
+    }
+
+    default:
+    case QVariant::String:
+    {
+      QString v = value.toString();
+
+      //do we need CDATA
+      if ( v.indexOf( '<' ) != -1 || v.indexOf( '&' ) != -1 )
+      {
+        v.prepend( "<![CDATA[" ).append( "]]>" );
+      }
+
+      return v;
+    }
+  }
 }
 
 QString QgsWFSServer::serviceUrl() const
