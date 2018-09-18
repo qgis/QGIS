@@ -302,9 +302,9 @@ void TestQgsRangeWidgetWrapper::test_nulls()
   QCOMPARE( widget1->value( ), QVariant( QVariant::Double ) );
   QCOMPARE( editor1->mLineEdit->text(), QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY );
   editor1->mLineEdit->setText( QString( "151%1" ).arg( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ) );
-  QCOMPARE( widget1->value( ), 151 );
+  QCOMPARE( widget1->value( ).toInt(), 151 );
   editor1->mLineEdit->setText( QString( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ).append( QStringLiteral( "161" ) ) );
-  QCOMPARE( widget1->value( ), 161 );
+  QCOMPARE( widget1->value( ).toInt(), 161 );
 
 
   QgsSpinBox *editor0 = qobject_cast<QgsSpinBox *>( widget0->createWidget( nullptr ) );
@@ -322,9 +322,9 @@ void TestQgsRangeWidgetWrapper::test_nulls()
   QCOMPARE( editor0->mLineEdit->text(), QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY );
 
   editor0->mLineEdit->setText( QString( "150%1" ).arg( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ) );
-  QCOMPARE( widget0->value( ), 150 );
+  QCOMPARE( widget0->value( ).toInt(), 150 );
   editor0->mLineEdit->setText( QString( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ).append( QStringLiteral( "160" ) ) );
-  QCOMPARE( widget0->value( ), 160 );
+  QCOMPARE( widget0->value( ).toInt(), 160 );
 
 }
 
