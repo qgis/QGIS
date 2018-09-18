@@ -103,7 +103,9 @@ namespace QgsWms
     }
 
     // access control
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
+#endif
     // Use layer ids
     bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
     // WMS restricted layers
@@ -132,10 +134,12 @@ namespace QgsWms
         throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
       }
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl && !accessControl->layerReadPermission( layer ) )
       {
         throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
       }
+#endif
 
       // Create the NamedLayer element
       QDomElement layerNode = myDocument.createElement( QStringLiteral( "LayerDescription" ) );
