@@ -145,6 +145,15 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
   public slots:
     //! Reload the whole model
     void reload();
+
+    /**
+     * Refreshes the list of drive items, removing any corresponding to removed
+     * drives and adding newly added drives.
+     *
+     * \since QGIS 3.4
+     */
+    void refreshDrives();
+
     void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
@@ -192,6 +201,9 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
   private:
     bool mInitialized = false;
+    QMap< QString, QgsDataItem * > mDriveItems;
+
+    void removeRootItem( QgsDataItem *item );
 };
 
 #endif // QGSBROWSERMODEL_H

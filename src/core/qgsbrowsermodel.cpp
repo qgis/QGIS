@@ -107,13 +107,14 @@ void QgsBrowserModel::addRootItems()
   // add drives
   Q_FOREACH ( const QFileInfo &drive, QDir::drives() )
   {
-    QString path = drive.absolutePath();
+    const QString path = drive.absolutePath();
 
     if ( QgsDirectoryItem::hiddenPath( path ) )
       continue;
 
     QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path );
     item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
+    mDriveItems.insert( path, item );
 
     connectItem( item );
     mRootItems << item;
@@ -173,6 +174,7 @@ void QgsBrowserModel::removeRootItems()
   }
 
   mRootItems.clear();
+  mDriveItems.clear();
 }
 
 void QgsBrowserModel::initialize()
@@ -346,6 +348,54 @@ void QgsBrowserModel::reload()
   removeRootItems();
   addRootItems();
   endResetModel();
+}
+
+void QgsBrowserModel::refreshDrives()
+{
+  const QList< QFileInfo > drives = QDir::drives();
+  // remove any removed drives
+  const QStringList existingDrives = mDriveItems.keys();
+  for ( const QString &drivePath : existingDrives )
+  {
+    bool stillExists = false;
+    for ( const QFileInfo &drive : drives )
+    {
+      if ( drivePath == drive.absolutePath() )
+      {
+        stillExists = true;
+        break;
+      }
+    }
+
+    if ( stillExists )
+      continue;
+
+    // drive has been removed, remove corresponding item
+    if ( QgsDataItem *driveItem = mDriveItems.value( drivePath ) )
+      removeRootItem( driveItem );
+  }
+
+  for ( const QFileInfo &drive : drives )
+  {
+    const QString path = drive.absolutePath();
+
+    if ( QgsDirectoryItem::hiddenPath( path ) )
+      continue;
+
+    // does an item for this drive already exist?
+    if ( !mDriveItems.contains( path ) )
+    {
+      QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path );
+      item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
+
+      mDriveItems.insert( path, item );
+      connectItem( item );
+
+      beginInsertRows( QModelIndex(), mRootItems.count(), mRootItems.count() );
+      mRootItems << item;
+      endInsertRows();
+    }
+  }
 }
 
 QModelIndex QgsBrowserModel::index( int row, int column, const QModelIndex &parent ) const
@@ -576,10 +626,21 @@ void QgsBrowserModel::hidePath( QgsDataItem *item )
   }
   else
   {
-    int i = mRootItems.indexOf( item );
-    beginRemoveRows( QModelIndex(), i, i );
-    mRootItems.remove( i );
-    item->deleteLater();
-    endRemoveRows();
+    removeRootItem( item );
   }
 }
+
+
+void QgsBrowserModel::removeRootItem( QgsDataItem *item )
+{
+  int i = mRootItems.indexOf( item );
+  beginRemoveRows( QModelIndex(), i, i );
+  mRootItems.remove( i );
+  if ( !mDriveItems.key( item ).isEmpty() )
+  {
+    mDriveItems.remove( mDriveItems.key( item ) );
+  }
+  item->deleteLater();
+  endRemoveRows();
+}
+
