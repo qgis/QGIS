@@ -153,6 +153,11 @@ namespace QgsWfs
     }
     scalarCapabilitiesElement.appendChild( comparisonOperatorsElem );
 
+    QDomElement idCapabilitiesElement = doc.createElement( QStringLiteral( "ogc:Id_Capabilities" ) );
+    QDomElement fidElem = doc.createElement( QStringLiteral( "ogc:FID" ) );
+    idCapabilitiesElement.appendChild( fidElem );
+    filterCapabilitiesElement.appendChild( idCapabilitiesElement );
+
     return doc;
 
   }
