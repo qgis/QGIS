@@ -160,10 +160,29 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     void setFixed( int method );
     void setFixFailed( const QString &reason );
     void setObsolete() { mStatus = StatusObsolete; }
+
+    /**
+     * Check if this error is equal to \a other.
+     * Is reimplemented by subclasses with additional information, comparison
+     * of base information is done in parent class.
+     */
     virtual bool isEqual( QgsGeometryCheckError *other ) const;
+
+    /**
+     * Check if this error is almost equal to \a other.
+     * If this returns true, it can be used to update existing errors after re-checking.
+     */
     virtual bool closeMatch( QgsGeometryCheckError * /*other*/ ) const;
+
+    /**
+     * Update this error with the information from \other.
+     * Will be used to update existing errors whenever they are re-checked.
+     */
     virtual void update( const QgsGeometryCheckError *other );
 
+    /**
+     * Apply a list of \a changes.
+     */
     virtual bool handleChanges( const QgsGeometryCheck::Changes &changes );
 
   protected:
