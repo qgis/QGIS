@@ -5539,15 +5539,21 @@ void TestQgsProcessing::modelerAlgorithm()
            QgsProcessingModelChildParameterSource::fromStaticValue( QStringLiteral( "b" ) ) );
 
 
-
-
-
   QgsProcessingModelChildAlgorithm child( QStringLiteral( "some_id" ) );
   QCOMPARE( child.algorithmId(), QStringLiteral( "some_id" ) );
   QVERIFY( !child.algorithm() );
-  child.setAlgorithmId( QStringLiteral( "native:centroids" ) );
+  QVERIFY( !child.setAlgorithmId( QStringLiteral( "blah" ) ) );
+  QVERIFY( !child.reattach() );
+  QVERIFY( child.setAlgorithmId( QStringLiteral( "native:centroids" ) ) );
   QVERIFY( child.algorithm() );
   QCOMPARE( child.algorithm()->id(), QStringLiteral( "native:centroids" ) );
+  // bit of a hack -- but try to simulate an algorithm not originally available!
+  child.mAlgorithm.reset();
+  QVERIFY( !child.algorithm() );
+  QVERIFY( child.reattach() );
+  QVERIFY( child.algorithm() );
+  QCOMPARE( child.algorithm()->id(), QStringLiteral( "native:centroids" ) );
+
   QVariantMap myConfig;
   myConfig.insert( QStringLiteral( "some_key" ), 11 );
   child.setConfiguration( myConfig );
