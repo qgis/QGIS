@@ -1285,6 +1285,16 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
     }
     else if ( var.canConvert<QgsProperty>() )
       resultStringList << var.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+    else if ( var.canConvert<QgsProcessingOutputLayerDefinition>() )
+    {
+      // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+      QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
+      QVariant sink = fromVar.sink;
+      if ( sink.canConvert<QgsProperty>() )
+      {
+        resultStringList << sink.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+      }
+    }
     else if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( var ) ) )
     {
       layers << layer;
