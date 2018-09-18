@@ -3710,13 +3710,13 @@ static bool IsLocalFile( const QString &path )
     }
   }
   return true;
-#elif QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
-  QStorageInfo info( dirName );
-  QString fileSystem( info.fileSystemType() );
-  QgsDebugMsg( QString( "Filesystem for %1 is %2" ).arg( path ).arg( fileSystem ) );
-  return path != "nfs" && path != "smbfs";
 #else
-  return true;
+  QStorageInfo info( dirName );
+  const QString fileSystem( info.fileSystemType() );
+  bool isLocal = path != QStringLiteral( "nfs" ) && path != QStringLiteral( "smbfs" );
+  if ( !isLocal )
+    QgsDebugMsg( QStringLiteral( "Filesystem for %1 is %2" ).arg( path, fileSystem ) );
+  return isLocal;
 #endif
 }
 
