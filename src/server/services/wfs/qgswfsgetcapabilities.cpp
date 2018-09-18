@@ -436,9 +436,6 @@ namespace QgsWfs
     operationElement.appendChild( queryText );
     operationsElement.appendChild( operationElement );
 
-    // QDomElement queryElement = doc.createElement( QStringLiteral( "Query" )/*wfs:Query*/ );
-    // operationsElement.appendChild( queryElement );
-
     const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
     const QStringList wfstUpdateLayersId = QgsServerProjectUtils::wfstUpdateLayerIds( *project );
     const QStringList wfstInsertLayersId = QgsServerProjectUtils::wfstInsertLayerIds( *project );
@@ -528,8 +525,6 @@ namespace QgsWfs
       //wfs:Operations element
       QDomElement operationsElement = doc.createElement( QStringLiteral( "Operations" )/*wfs:Operations*/ );
       //wfs:Query element
-      // QDomElement queryElement = doc.createElement( QStringLiteral( "Query" )/*wfs:Query*/ );
-      // operationsElement.appendChild( queryElement );
       QDomElement operationElement = doc.createElement( QStringLiteral( "Operation" ) );
       QDomText queryText = doc.createTextNode( QStringLiteral( "Query" ) );
       operationElement.appendChild( queryText );
