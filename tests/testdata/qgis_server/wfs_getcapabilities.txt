@@ -82,7 +82,7 @@ Content-Type: text/xml; charset=utf-8
  </ows:OperationsMetadata>
  <FeatureTypeList>
   <Operations>
-   <Query/>
+   <Operation>Query</Operation>
   </Operations>
   <FeatureType>
    <Name>testlayer</Name>
@@ -90,6 +90,12 @@ Content-Type: text/xml; charset=utf-8
    <Abstract>A test vector layer with unicode òà</Abstract>
    <DefaultSRS>EPSG:4326</DefaultSRS>
    <OtherSRS>EPSG:3857</OtherSRS>
+   <Operations>
+    <Operation>Query</Operation>
+    <Operation>Insert</Operation>
+    <Operation>Update</Operation>
+    <Operation>Delete</Operation>
+   </Operations>
    <OutputFormats>
     <Format>text/xml; subtype=gml/3.1.1</Format>
    </OutputFormats>
@@ -97,12 +103,6 @@ Content-Type: text/xml; charset=utf-8
     <ows:LowerCorner>8.20346 44.9014</ows:LowerCorner>
     <ows:UpperCorner>8.20355 44.9015</ows:UpperCorner>
    </ows:WGS84BoundingBox>
-   <Operations>
-    <Query/>
-    <Insert/>
-    <Update/>
-    <Delete/>
-   </Operations>
   </FeatureType>
  </FeatureTypeList>
  <ogc:Filter_Capabilities>
