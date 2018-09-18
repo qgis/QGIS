@@ -1251,6 +1251,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::createFromSld( QDomElement &elem
   m->setAngle( angle );
   m->setOffset( offset );
   m->setOutlineStyle( borderStyle );
+  m->setOutlineWidth( borderWidth );
   return m;
 }
 
