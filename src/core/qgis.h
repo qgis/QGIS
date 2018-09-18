@@ -291,8 +291,8 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
  */
 inline double qgsRound( double number, double places )
 {
-  int scaleFactor = static_cast<int>( std::pow( 10, places ) );
-  return static_cast<double>( static_cast<qlonglong>( number * scaleFactor + 0.5 ) ) / scaleFactor;
+  double scaleFactor = std::pow( 10.0, places );
+  return std::trunc( number * scaleFactor + 0.5 ) / scaleFactor;
 }
 
 
