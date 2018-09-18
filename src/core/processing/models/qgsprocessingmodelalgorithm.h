@@ -416,6 +416,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     static bool vectorOutputIsCompatibleType( const QList<int> &acceptableDataTypes, QgsProcessing::SourceType outputType );
 
+    /**
+     * Tries to reattach all child algorithms to their linked algorithms.
+     */
+    void reattachAlgorithms() const;
+
     friend class TestQgsProcessing;
 };
 

@@ -930,6 +930,16 @@ bool QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( const QList<int>
                 outputType == QgsProcessing::TypeVectorPolygon ) ) );
 }
 
+void QgsProcessingModelAlgorithm::reattachAlgorithms() const
+{
+  QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
+  for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
+  {
+    if ( !childIt->algorithm() )
+      childIt->reattach();
+  }
+}
+
 bool QgsProcessingModelAlgorithm::toFile( const QString &path ) const
 {
   QDomDocument doc = QDomDocument( QStringLiteral( "model" ) );
@@ -1182,6 +1192,7 @@ QSet< QString > QgsProcessingModelAlgorithm::dependsOnChildAlgorithms( const QSt
 
 bool QgsProcessingModelAlgorithm::canExecute( QString *errorMessage ) const
 {
+  reattachAlgorithms();
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
   for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
   {

@@ -5750,7 +5750,14 @@ void TestQgsProcessing::modelerAlgorithm()
   alg2.addChildAlgorithm( c6 );
   QVERIFY( !alg2.canExecute() );
 
-
+  // test that children are re-attached before testing for canExecute
+  QgsProcessingModelAlgorithm alg2a( "test", "testGroup" );
+  QgsProcessingModelChildAlgorithm c5a;
+  c5a.setAlgorithmId( "native:centroids" );
+  alg2a.addChildAlgorithm( c5a );
+  // simulate initially missing provider or algorithm (e.g. another model as a child algorithm)
+  alg2a.mChildAlgorithms.begin().value().mAlgorithm.reset();
+  QVERIFY( alg2a.canExecute() );
 
   // dependencies
   QgsProcessingModelAlgorithm alg3( "test", "testGroup" );
