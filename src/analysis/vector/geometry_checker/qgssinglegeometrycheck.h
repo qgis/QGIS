@@ -16,8 +16,6 @@ email                : matthias@opengis.ch
 #ifndef QGSSINGLEGEOMETRYCHECK_H
 #define QGSSINGLEGEOMETRYCHECK_H
 
-#define SIP_NO_FILE
-
 #include <QList>
 #include <QCoreApplication>
 

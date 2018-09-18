@@ -31,11 +31,11 @@ Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is not usuall
 :py:func:`QgsAnalysis.geometryCheckRegistry()`.
 %End
 
-    void init();
+    void initialize();
 
     ~QgsGeometryCheckRegistry();
 
-    QgsGeometryCheck *geometryCheck( const QString &checkId );
+    QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckerContext *context, const QVariantMap &geometryCheckConfig ) /Transfer/;
 
     void registerGeometryCheck( const QString &checkId, QgsGeometryCheckFactory *checkFactory /Transfer/ );
 

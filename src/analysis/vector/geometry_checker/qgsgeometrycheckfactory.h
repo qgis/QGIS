@@ -16,8 +16,6 @@
 #ifndef QGSGEOMETRYCHECKFACTORY_H
 #define QGSGEOMETRYCHECKFACTORY_H
 
-#define SIP_NO_FILE
-
 #include <QString>
 #include <QMap>
 #include <QVariantMap>

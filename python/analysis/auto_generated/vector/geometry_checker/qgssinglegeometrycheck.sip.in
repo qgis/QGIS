@@ -11,33 +11,126 @@
 
 
 
-class QgsSingleGeometryCheck
+class QgsSingleGeometryCheckError
 {
 %Docstring
-*************************************************************************
-qgssinglegeometrycheck.h
---------------------------------------
-Date                 : 6.9.2018
-Copyright            : (C) 2018 by Matthias Kuhn
-email                : matthias@opengis.ch
-**************************************************************************
 
-This program is free software; you can redistribute it and/or modify  *
-it under the terms of the GNU General Public License as published by  *
-the Free Software Foundation; either version 2 of the License, or     *
-(at your option) any later version.                                   *
+An error from a QgsSingleGeometryCheck.
 
-**************************************************************************
+.. versionadded:: 3.4
 %End
 
 %TypeHeaderCode
 #include "qgssinglegeometrycheck.h"
 %End
   public:
-    QgsSingleGeometryCheck();
-    virtual ~QgsSingleGeometryCheck();
+    QgsSingleGeometryCheckError( const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, const QgsVertexId &vertexId = QgsVertexId() );
 
-    virtual QList<QgsGeometry::Error> collectErrors( const QgsFeature &feature ) const = 0;
+    virtual ~QgsSingleGeometryCheckError();
+
+    virtual void update( const QgsSingleGeometryCheckError *other );
+%Docstring
+Update this error with the information from \other.
+Will be used to update existing errors whenever they are re-checked.
+%End
+
+    virtual bool isEqual( const QgsSingleGeometryCheckError *other ) const;
+%Docstring
+Check if this error is equal to ``other``.
+Is reimplemented by subclasses with additional information, comparison
+of base information is done in parent class.
+%End
+
+    virtual bool handleChanges( const QList<QgsGeometryCheck::Change> &changes );
+%Docstring
+Apply a list of ``changes``.
+%End
+
+    virtual QString description() const;
+%Docstring
+A human readable description of this error.
+%End
+
+    const QgsSingleGeometryCheck *check() const;
+%Docstring
+The check that created this error.
+
+.. versionadded:: 3.4
+%End
+
+    QgsGeometry errorLocation() const;
+%Docstring
+The exact location of the error.
+
+.. versionadded:: 3.4
+%End
+
+    QgsVertexId vertexId() const;
+%Docstring
+The vertex id of the error. May be invalid depending on the check.
+
+.. versionadded:: 3.4
+%End
+
+  protected:
+};
+
+class QgsGeometryCheckErrorSingle : QgsGeometryCheckError
+{
+%Docstring
+
+Wraps a QgsSingleGeometryError into a standard :py:class:`QgsGeometryCheckError`.
+The single error can be obtained via singleError.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgssinglegeometrycheck.h"
+%End
+  public:
+    QgsGeometryCheckErrorSingle( QgsSingleGeometryCheckError *singleError, const QgsGeometryCheckerUtils::LayerFeature &layerFeature );
+
+    QgsSingleGeometryCheckError *singleError() const;
+%Docstring
+The underlying single error.
+%End
+
+    virtual bool handleChanges( const QgsGeometryCheck::Changes &changes );
+
+
+};
+
+class QgsSingleGeometryCheck : QgsGeometryCheck
+{
+%Docstring
+
+Base class for geometry checks for a single geometry without any context of the layer or other layers in the project.
+Classic examples are validity checks like self-intersection.
+
+Subclasses need to implement the processGeometry method.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgssinglegeometrycheck.h"
+%End
+  public:
+    QgsSingleGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, QgsGeometryCheckerContext *context );
+
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = 0, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const;
+
+    virtual QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const = 0;
+%Docstring
+Check the ``geometry`` for errors. It may make use of ``configuration`` options.
+
+Returns a list of QgsSingleGeometryCheckErrors, ownership is transferred to the caller.
+An empty list is returned for geometries without errors.
+
+.. versionadded:: 3.4
+%End
+
 };
 
 /************************************************************************

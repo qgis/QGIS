@@ -1,0 +1,177 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheck.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+struct QgsGeometryCheckerContext
+{
+    QgsGeometryCheckerContext( int _precision, const QgsCoordinateReferenceSystem &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools, const QgsCoordinateTransformContext &transformContext );
+    const double tolerance;
+    const double reducedTolerance;
+    const QgsCoordinateReferenceSystem mapCrs;
+    const QMap<QString, QgsFeaturePool *> featurePools;
+    const QgsCoordinateTransformContext transformContext;
+    const QgsCoordinateTransform &layerTransform( const QPointer<QgsVectorLayer> &layer );
+    double layerScaleFactor( const QPointer<QgsVectorLayer> &layer );
+
+};
+
+class QgsGeometryCheck
+{
+
+%TypeHeaderCode
+#include "qgsgeometrycheck.h"
+%End
+  public:
+    enum ChangeWhat
+    {
+      ChangeFeature,
+      ChangePart,
+      ChangeRing,
+      ChangeNode
+    };
+
+    enum ChangeType
+    {
+      ChangeAdded,
+      ChangeRemoved,
+      ChangeChanged
+    };
+
+    enum CheckType
+    {
+      FeatureNodeCheck,
+      FeatureCheck,
+      LayerCheck
+    };
+
+    struct Change
+    {
+      Change();
+      Change( ChangeWhat _what, ChangeType _type, QgsVertexId _vidx = QgsVertexId() );
+      ChangeWhat what;
+      ChangeType type;
+      QgsVertexId vidx;
+      bool operator==( const Change &other );
+    };
+
+    typedef QMap<QString, QMap<QgsFeatureId, QList<Change>>> Changes;
+
+    QgsGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, QgsGeometryCheckerContext *context );
+    virtual ~QgsGeometryCheck();
+    virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = 0, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const = 0;
+    virtual void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const = 0;
+    virtual QStringList resolutionMethods() const = 0;
+    virtual QString errorDescription() const = 0;
+    virtual QString errorName() const = 0;
+    CheckType checkType() const;
+    bool isCompatible( QgsWkbTypes::GeometryType type ) const;
+    QgsGeometryCheckerContext *context() const;
+
+  protected:
+    QMap<QString, QgsFeatureIds> allLayerFeatureIds() const;
+    void replaceFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const;
+    void deleteFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const;
+    void deleteFeatureGeometryRing( const QString &layerId, QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const;
+
+};
+
+
+class QgsGeometryCheckError
+{
+
+%TypeHeaderCode
+#include "qgsgeometrycheck.h"
+%End
+  public:
+    enum Status { StatusPending, StatusFixFailed, StatusFixed, StatusObsolete };
+    enum ValueType { ValueLength, ValueArea, ValueOther };
+
+    QgsGeometryCheckError( const QgsGeometryCheck *check,
+                           const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
+                           const QgsPointXY &errorLocation,
+                           QgsVertexId vidx = QgsVertexId(),
+                           const QVariant &value = QVariant(),
+                           ValueType valueType = ValueOther );
+
+    QgsGeometryCheckError( const QgsGeometryCheck *check,
+                           const QPointer<QgsVectorLayer> layer,
+                           const QgsFeatureId fid,
+                           const QgsGeometry &geometry,
+                           const QgsPointXY &errorLocation,
+                           QgsVertexId vidx = QgsVertexId(),
+                           const QVariant &value = QVariant(),
+                           ValueType valueType = ValueOther );
+
+    virtual ~QgsGeometryCheckError();
+
+
+    const QgsGeometryCheck *check() const;
+    const QString &layerId() const;
+    QgsFeatureId featureId() const;
+    const QgsAbstractGeometry *geometry() const;
+    virtual QgsRectangle affectedAreaBBox() const;
+    virtual QString description() const;
+    const QgsPointXY &location() const;
+    QVariant value() const;
+    ValueType valueType() const;
+    const QgsVertexId &vidx() const;
+    Status status() const;
+    QString resolutionMessage() const;
+    void setFixed( int method );
+    void setFixFailed( const QString &reason );
+    void setObsolete();
+
+    virtual bool isEqual( QgsGeometryCheckError *other ) const;
+%Docstring
+Check if this error is equal to ``other``.
+Is reimplemented by subclasses with additional information, comparison
+of base information is done in parent class.
+%End
+
+    virtual bool closeMatch( QgsGeometryCheckError * /*other*/ ) const;
+%Docstring
+Check if this error is almost equal to ``other``.
+If this returns true, it can be used to update existing errors after re-checking.
+%End
+
+    virtual void update( const QgsGeometryCheckError *other );
+%Docstring
+Update this error with the information from \other.
+Will be used to update existing errors whenever they are re-checked.
+%End
+
+    virtual bool handleChanges( const QgsGeometryCheck::Changes &changes );
+%Docstring
+Apply a list of ``changes``.
+%End
+
+  protected:
+    QgsGeometryCheckError( const QgsGeometryCheck *check,
+                           const QString &layerId,
+                           QgsFeatureId featureId,
+                           const QgsGeometry &geometry,
+                           const QgsPointXY &errorLocation,
+                           QgsVertexId vidx = QgsVertexId(),
+                           const QVariant &value = QVariant(),
+                           ValueType valueType = ValueOther );
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheck.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

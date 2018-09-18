@@ -13,8 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
-
 #ifndef QGS_GEOMETRY_CHECK_H
 #define QGS_GEOMETRY_CHECK_H
 

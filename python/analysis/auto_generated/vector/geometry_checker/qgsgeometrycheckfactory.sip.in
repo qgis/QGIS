@@ -10,6 +10,7 @@
 
 
 
+
 class QgsGeometryCheckFactory
 {
 
@@ -22,10 +23,26 @@ class QgsGeometryCheckFactory
 
     virtual ~QgsGeometryCheckFactory();
 
-    virtual QgsGeometryCheck *createGeometryCheck() const = 0 /Factory/;
+    virtual QgsGeometryCheck *createGeometryCheck( QgsGeometryCheckerContext *context, const QVariantMap &geometryCheckConfiguration ) const = 0 /Factory/;
+
+    virtual QgsSingleGeometryCheck *createSingleGeometryCheck( const QString &checkId ) const = 0 /Factory/;
 
     virtual QString id() const = 0;
+
+    virtual QgsGeometryCheck::CheckType flags() const;
 };
+
+template<T>
+class QgsGeometryCheckFactoryT : QgsGeometryCheckFactory
+{
+
+%TypeHeaderCode
+#include "qgsgeometrycheckfactory.h"
+%End
+  public:
+    virtual QgsGeometryCheck *createGeometryCheck( QgsGeometryCheckerContext *context, const QVariantMap &geometryCheckConfiguration ) const;
+};
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

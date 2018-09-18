@@ -18,9 +18,13 @@ Checks if geometries are valid.
 #include "qgsisvalidgeometrycheck.h"
 %End
   public:
-    QgsIsValidGeometryCheck();
+    explicit QgsIsValidGeometryCheck( QgsGeometryCheckerContext *context );
+    virtual QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const;
 
-    virtual QList<QgsGeometry::Error> collectErrors( const QgsFeature &feature ) const;
+
+    virtual QString errorDescription() const;
+
+    virtual QString errorName() const;
 
 };
 
