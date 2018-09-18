@@ -126,6 +126,13 @@ Set alignment in the embedded line edit widget
 :param alignment:
 %End
 
+    void setSpecialValueText( const QString &txt );
+%Docstring
+Set the special-value text to be ``txt``
+If set, the spin box will display this text instead of a numeric value whenever the current value
+is equal to minimum(). Typical use is to indicate that this choice has a special (default) meaning.
+%End
+
     virtual double valueFromText( const QString &text ) const;
 
     virtual QValidator::State validate( QString &input, int &pos ) const;
