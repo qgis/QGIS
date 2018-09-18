@@ -3206,6 +3206,23 @@ void TestQgsProcessing::parameterLayerList()
   QCOMPARE( fromCode->flags(), def->flags() );
   QVERIFY( !fromCode->defaultValue().isValid() );
   QCOMPARE( fromCode->layerType(), def->layerType() );
+
+  // manage QgsProcessingOutputLayerDefinition as parameter value
+
+  // optional with sink to a QgsMapLayer.id()
+  def.reset( new QgsProcessingParameterMultipleLayers( "optional", QString(), QgsProcessing::TypeFile ) );
+  params.insert( QString( "optional" ), QgsProcessingOutputLayerDefinition( r1->publicSource() ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << r1 );
+
+  // optional with sink to an empty string
+  def.reset( new QgsProcessingParameterMultipleLayers( "optional", QString(), QgsProcessing::TypeFile ) );
+  params.insert( QString( "optional" ), QgsProcessingOutputLayerDefinition( QString() ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() );
+
+  // optional with sink to an nonsense string
+  def.reset( new QgsProcessingParameterMultipleLayers( "optional", QString(), QgsProcessing::TypeFile ) );
+  params.insert( QString( "optional" ), QgsProcessingOutputLayerDefinition( QString( "i'm not a layer, and nothing you can do will make me one" ) ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() );
 }
 
 void TestQgsProcessing::parameterDistance()
