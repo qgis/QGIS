@@ -128,7 +128,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return tr( "Aliases, widgets, WMS/WFS, expressions, constraints, virtual fields" );
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/mSourceFields" ) );
+          return QgsApplication::getThemeIcon( QStringLiteral( "/mSourceFields.svg" ) );
       }
       break;
     case QgsMapLayer::Forms:
@@ -139,7 +139,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return QVariant();
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormView" ) );
+          return QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormView.svg" ) );
       }
       break;
     case QgsMapLayer::Actions:
@@ -183,7 +183,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return tr( "Choice and order of columns, conditional styling" );
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable" ) );
+          return QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) );
       }
       break;
     case QgsMapLayer::Rendering:
