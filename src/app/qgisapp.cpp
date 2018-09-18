@@ -10620,6 +10620,7 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
 
   // create the layer
   QgsVectorLayer::LayerOptions options;
+  // Default style is loaded later in this method
   options.loadDefaultStyle = false;
   QgsVectorLayer *layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey, options );
 
