@@ -47,6 +47,11 @@ QList<QgsSingleGeometryCheckError *> QgsIsValidGeometryCheck::processGeometry( c
   return result;
 }
 
+QStringList QgsIsValidGeometryCheck::resolutionMethods() const
+{
+  return QStringList();
+}
+
 QString QgsIsValidGeometryCheck::errorDescription() const
 {
   return tr( "Is Valid" );

@@ -117,20 +117,6 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
   }
 }
 
-QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QPointer<QgsVectorLayer> layer, const QgsFeatureId fid, const QgsGeometry &geometry, const QgsPointXY &errorLocation, QgsVertexId vidx, const QVariant &value, QgsGeometryCheckError::ValueType valueType )
-  : mCheck( check )
-  , mLayerId( layer->id() )
-  , mFeatureId( fid )
-  , mGeometry( geometry )
-  , mErrorLocation( errorLocation )
-  , mVidx( vidx )
-  , mValue( value )
-  , mValueType( valueType )
-  , mStatus( StatusPending )
-{
-
-}
-
 const QgsAbstractGeometry *QgsGeometryCheckError::geometry() const
 {
   return mGeometry.constGet();
@@ -231,6 +217,14 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &chan
     }
   }
   return true;
+}
+
+void QgsGeometryCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, QgsGeometryCheck::Changes &changes ) const
+{
+  Q_UNUSED( error )
+  Q_UNUSED( method )
+  Q_UNUSED( mergeAttributeIndices )
+  Q_UNUSED( changes )
 }
 
 QMap<QString, QgsFeatureIds> QgsGeometryCheck::allLayerFeatureIds() const

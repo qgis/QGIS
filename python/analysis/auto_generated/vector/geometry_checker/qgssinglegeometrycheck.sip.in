@@ -41,10 +41,6 @@ Is reimplemented by subclasses with additional information, comparison
 of base information is done in parent class.
 %End
 
-    virtual bool handleChanges( const QList<QgsGeometryCheck::Change> &changes );
-%Docstring
-Apply a list of ``changes``.
-%End
 
     virtual QString description() const;
 %Docstring
@@ -96,8 +92,6 @@ The single error can be obtained via singleError.
 The underlying single error.
 %End
 
-    virtual bool handleChanges( const QgsGeometryCheck::Changes &changes );
-
 
 };
 
@@ -119,7 +113,7 @@ Subclasses need to implement the processGeometry method.
   public:
     QgsSingleGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, QgsGeometryCheckerContext *context );
 
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = 0, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const;
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = 0, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const;
 
     virtual QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const = 0;
 %Docstring

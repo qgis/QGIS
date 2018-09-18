@@ -23,7 +23,9 @@
 #include <QList>
 #include <QMutex>
 #include <QStringList>
+
 #include "qgis_analysis.h"
+#include "qgsfeedback.h"
 
 typedef qint64 QgsFeatureId;
 typedef QSet<QgsFeatureId> QgsFeatureIds;
@@ -68,7 +70,7 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
     QStringList mMessages;
     QMutex mErrorListMutex;
     QMap<QString, int> mMergeAttributeIndices;
-    QAtomicInt mProgressCounter;
+    QgsFeedback mFeedback;
 
     void runCheck( const QgsGeometryCheck *check );
 

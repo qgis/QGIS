@@ -61,12 +61,12 @@ class QgsGeometryCheck
       bool operator==( const Change &other );
     };
 
-    typedef QMap<QString, QMap<QgsFeatureId, QList<Change>>> Changes;
+    typedef QMap<QString, QMap<QgsFeatureId, QList<Change> > > Changes;
 
     QgsGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, QgsGeometryCheckerContext *context );
     virtual ~QgsGeometryCheck();
-    virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = 0, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const = 0;
-    virtual void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const = 0;
+    virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = 0, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const = 0;
+
     virtual QStringList resolutionMethods() const = 0;
     virtual QString errorDescription() const = 0;
     virtual QString errorName() const = 0;
@@ -76,9 +76,6 @@ class QgsGeometryCheck
 
   protected:
     QMap<QString, QgsFeatureIds> allLayerFeatureIds() const;
-    void replaceFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const;
-    void deleteFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const;
-    void deleteFeatureGeometryRing( const QString &layerId, QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const;
 
 };
 
@@ -95,15 +92,6 @@ class QgsGeometryCheckError
 
     QgsGeometryCheckError( const QgsGeometryCheck *check,
                            const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
-                           const QgsPointXY &errorLocation,
-                           QgsVertexId vidx = QgsVertexId(),
-                           const QVariant &value = QVariant(),
-                           ValueType valueType = ValueOther );
-
-    QgsGeometryCheckError( const QgsGeometryCheck *check,
-                           const QPointer<QgsVectorLayer> layer,
-                           const QgsFeatureId fid,
-                           const QgsGeometry &geometry,
                            const QgsPointXY &errorLocation,
                            QgsVertexId vidx = QgsVertexId(),
                            const QVariant &value = QVariant(),
@@ -147,10 +135,6 @@ Update this error with the information from \other.
 Will be used to update existing errors whenever they are re-checked.
 %End
 
-    virtual bool handleChanges( const QgsGeometryCheck::Changes &changes );
-%Docstring
-Apply a list of ``changes``.
-%End
 
   protected:
     QgsGeometryCheckError( const QgsGeometryCheck *check,

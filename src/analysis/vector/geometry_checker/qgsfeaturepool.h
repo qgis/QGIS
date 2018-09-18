@@ -14,8 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
-
 #ifndef QGS_FEATUREPOOL_H
 #define QGS_FEATUREPOOL_H
 
@@ -85,8 +83,10 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
      * will need to be done on the main thread and
      * the pointer will need to be checked for validity
      * before usage.
+     *
+     * \note Not available in Python
      */
-    QPointer<QgsVectorLayer> layerPtr() const;
+    QPointer<QgsVectorLayer> layerPtr() const SIP_SKIP;
 
     /**
      * The layer id of the layer.

@@ -93,7 +93,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
       }
     };
 
-    typedef QMap<QString, QMap<QgsFeatureId, QList<Change>>> Changes;
+    typedef QMap<QString, QMap<QgsFeatureId, QList<Change> > > Changes;
 
     QgsGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, QgsGeometryCheckerContext *context )
       : mCheckType( checkType )
@@ -101,8 +101,14 @@ class ANALYSIS_EXPORT QgsGeometryCheck
       , mContext( context )
     {}
     virtual ~QgsGeometryCheck() = default;
-    virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const = 0;
-    virtual void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const = 0;
+    virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const = 0;
+
+    /**
+     * Fix the error \a error with the specified \a method.
+     *
+     *
+     */
+    virtual void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes SIP_INOUT ) const SIP_SKIP;
     virtual QStringList resolutionMethods() const = 0;
     virtual QString errorDescription() const = 0;
     virtual QString errorName() const = 0;
@@ -112,9 +118,9 @@ class ANALYSIS_EXPORT QgsGeometryCheck
 
   protected:
     QMap<QString, QgsFeatureIds> allLayerFeatureIds() const;
-    void replaceFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const;
-    void deleteFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const;
-    void deleteFeatureGeometryRing( const QString &layerId, QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const;
+    void replaceFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const SIP_SKIP;
+    void deleteFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const SIP_SKIP;
+    void deleteFeatureGeometryRing( const QString &layerId, QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const SIP_SKIP;
 
     const CheckType mCheckType;
     QList<QgsWkbTypes::GeometryType> mCompatibleGeometryTypes;
@@ -130,15 +136,6 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
 
     QgsGeometryCheckError( const QgsGeometryCheck *check,
                            const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
-                           const QgsPointXY &errorLocation,
-                           QgsVertexId vidx = QgsVertexId(),
-                           const QVariant &value = QVariant(),
-                           ValueType valueType = ValueOther );
-
-    QgsGeometryCheckError( const QgsGeometryCheck *check,
-                           const QPointer<QgsVectorLayer> layer,
-                           const QgsFeatureId fid,
-                           const QgsGeometry &geometry,
                            const QgsPointXY &errorLocation,
                            QgsVertexId vidx = QgsVertexId(),
                            const QVariant &value = QVariant(),
@@ -190,7 +187,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     /**
      * Apply a list of \a changes.
      */
-    virtual bool handleChanges( const QgsGeometryCheck::Changes &changes );
+    virtual bool handleChanges( const QgsGeometryCheck::Changes &changes ) SIP_SKIP;
 
   protected:
     // Users of this constructor must ensure geometry and errorLocation are in map coordinates

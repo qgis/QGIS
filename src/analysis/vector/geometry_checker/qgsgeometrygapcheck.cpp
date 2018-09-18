@@ -18,13 +18,14 @@
 #include "qgsgeometrycollection.h"
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
+#include "qgsfeedback.h"
 
 #include "geos_c.h"
 
-void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const QMap<QString, QgsFeatureIds> &ids ) const
 {
-  if ( progressCounter )
-    progressCounter->fetchAndAddRelaxed( 1 );
+  if ( feedback )
+    feedback->setProgress( feedback->progress() + 1.0 );
 
   QVector<QgsAbstractGeometry *> geomList;
 

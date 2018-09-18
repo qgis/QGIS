@@ -16,6 +16,8 @@
 %Include auto_generated/vector/qgsgeometrysnapper.sip
 %Include auto_generated/vector/qgsgeometrysnappersinglesource.sip
 %Include auto_generated/vector/qgszonalstatistics.sip
+%Include auto_generated/vector/geometry_checker/qgsgeometrycheckerutils.sip
+%Include auto_generated/vector/geometry_checker/qgsfeaturepool.sip
 %Include auto_generated/interpolation/qgsinterpolator.sip
 %Include auto_generated/interpolation/qgsgridfilewriter.sip
 %Include auto_generated/interpolation/qgsidwinterpolator.sip

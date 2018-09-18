@@ -62,7 +62,7 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheckError
     /**
      * Apply a list of \a changes.
      */
-    virtual bool handleChanges( const QList<QgsGeometryCheck::Change> &changes );
+    virtual bool handleChanges( const QList<QgsGeometryCheck::Change> &changes ) SIP_SKIP;
 
     /**
      * A human readable description of this error.
@@ -115,7 +115,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError
      */
     QgsSingleGeometryCheckError *singleError() const;
 
-    bool handleChanges( const QgsGeometryCheck::Changes &changes ) override;
+    bool handleChanges( const QgsGeometryCheck::Changes &changes ) override SIP_SKIP;
 
   private:
     QgsSingleGeometryCheckError *mError = nullptr;
@@ -136,7 +136,7 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheck : public QgsGeometryCheck
   public:
     QgsSingleGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, QgsGeometryCheckerContext *context );
 
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const final;
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const final;
 
     /**
      * Check the \a geometry for errors. It may make use of \a configuration options.
