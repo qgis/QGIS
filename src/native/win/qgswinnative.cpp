@@ -21,12 +21,14 @@
 #include <QString>
 #include <QDir>
 #include <QWindow>
+#include <QAbstractEventDispatcher>
 #include <QtWinExtras/QWinTaskbarButton>
 #include <QtWinExtras/QWinTaskbarProgress>
 #include <QtWinExtras/QWinJumpList>
 #include <QtWinExtras/QWinJumpListItem>
 #include <QtWinExtras/QWinJumpListCategory>
 #include "wintoastlib.h"
+#include <Dbt.h>
 
 QgsNative::Capabilities QgsWinNative::capabilities() const
 {
@@ -57,6 +59,10 @@ void QgsWinNative::initializeMainWindow( QWindow *window,
     mWinToastInitialized = true;
     mCapabilities = mCapabilities | NativeDesktopNotifications;
   }
+
+  mNativeEventFilter = new QgsWinNativeEventFilter();
+  QAbstractEventDispatcher::instance()->installNativeEventFilter( mNativeEventFilter );
+  connect( mNativeEventFilter, &QgsWinNativeEventFilter::usbStorageNotification, this, &QgsNative::usbStorageNotification );
 }
 
 void QgsWinNative::cleanup()
@@ -155,4 +161,28 @@ QgsNative::NotificationResult QgsWinNative::showDesktopNotification( const QStri
     result.successful = true;
 
   return result;
+}
+
+bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &, void *message, long * )
+{
+  MSG *pWindowsMessage = static_cast<MSG *>( message );
+  unsigned int wParam = pWindowsMessage->wParam;
+  if ( wParam == DBT_DEVICEARRIVAL || wParam == DBT_DEVICEREMOVECOMPLETE )
+  {
+    long lParam = pWindowsMessage->lParam;
+    unsigned long deviceType = reinterpret_cast<DEV_BROADCAST_HDR *>( lParam )->dbch_devicetype;
+    if ( deviceType == DBT_DEVTYP_VOLUME )
+    {
+      unsigned long unitmask = reinterpret_cast<DEV_BROADCAST_VOLUME *>( lParam )->dbcv_unitmask;
+      for ( int i = 0; i < 32; ++i )
+      {
+        if ( ( unitmask & ( 1 << i ) ) != 0 )
+        {
+          const QChar drive( 65 + i );
+          emit usbStorageNotification( QStringLiteral( "%1:/" ).arg( drive ), wParam == DBT_DEVICEARRIVAL );
+        }
+      }
+    }
+  }
+  return false;
 }
