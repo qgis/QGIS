@@ -160,12 +160,12 @@ void eVisImageDisplayWidget::displayImage()
     if ( mScaleByWidth )
     {
       mySize.setWidth( static_cast<int>( mImage->width() * ( mScaleToFit + ( mScaleFactor * mCurrentZoomStep ) ) ) );
-      mySize.setHeight( static_cast<int>( ( double )mySize.width() * mImageSizeRatio ) );
+      mySize.setHeight( static_cast<int>( static_cast<double>( mySize.width() * mImageSizeRatio ) ) );
     }
     else
     {
       mySize.setHeight( static_cast<int>( mImage->height() * ( mScaleToFit + ( mScaleFactor * mCurrentZoomStep ) ) ) );
-      mySize.setWidth( static_cast<int>( ( double )mySize.height() * mImageSizeRatio ) );
+      mySize.setWidth( static_cast<int>( static_cast<double>( mySize.height() * mImageSizeRatio ) ) );
     }
   }
   else
@@ -195,23 +195,23 @@ void eVisImageDisplayWidget::setScalers()
 {
   if ( mImageLoaded )
   {
-    double xRatio = ( double )mDisplayArea->size().width() / ( double )mImage->width();
-    double yRatio = ( double )mDisplayArea->size().height() / ( double )mImage->height();
+    double xRatio = static_cast<double>( mDisplayArea->size().width() / ( double ) )mImage->width();
+    double yRatio = static_cast<double>( mDisplayArea->size().height() / ( double ) )mImage->height();
     if ( xRatio < yRatio )
     {
       mScaleByWidth = true;
       mScaleByHeight = false;
-      mImageSizeRatio = ( double )mImage->height() / ( double )mImage->width();
-      mScaleToFit = ( double )mDisplayArea->size().width() / ( double )mImage->width();
-      mScaleFactor = ( 1.0 - mScaleToFit ) / ( double )ZOOM_STEPS;
+      mImageSizeRatio = static_cast<double>( mImage->height() / ( double ) )mImage->width();
+      mScaleToFit = static_cast<double>( mDisplayArea->size().width() / ( double ) )mImage->width();
+      mScaleFactor = ( 1.0 - mScaleToFit ) / static_cast<double>( ZOOM_STEPS );
     }
     else
     {
       mScaleByWidth = false;
       mScaleByHeight = true;
-      mImageSizeRatio = ( double )mImage->width() / ( double )mImage->height();
-      mScaleToFit = ( double )mDisplayArea->size().height() / ( double )mImage->height();
-      mScaleFactor = ( 1.0 - mScaleToFit ) / ( double )ZOOM_STEPS;
+      mImageSizeRatio = static_cast<double>( mImage->width() / ( double ) )mImage->height();
+      mScaleToFit = static_cast<double>( mDisplayArea->size().height() / ( double ) )mImage->height();
+      mScaleFactor = ( 1.0 - mScaleToFit ) / static_cast<double>( ZOOM_STEPS );
     }
   }
 }

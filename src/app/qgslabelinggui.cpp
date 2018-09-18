@@ -170,7 +170,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mLineDistanceUnitWidget->setUnit( lyr.distUnits );
   mLineDistanceUnitWidget->setMapUnitScale( lyr.distMapUnitScale );
   mOffsetTypeComboBox->setCurrentIndex( mOffsetTypeComboBox->findData( lyr.offsetType ) );
-  mQuadrantBtnGrp->button( ( int )lyr.quadOffset )->setChecked( true );
+  mQuadrantBtnGrp->button( static_cast<int>( lyr.quadOffset ) )->setChecked( true );
   mPointOffsetXSpinBox->setValue( lyr.xOffset );
   mPointOffsetYSpinBox->setValue( lyr.yOffset );
   mPointOffsetUnitWidget->setUnit( lyr.offsetUnits );
@@ -238,8 +238,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mDirectSymbRightLineEdit->setText( lyr.rightDirectionSymbol );
   mDirectSymbRevChkBx->setChecked( lyr.reverseDirectionSymbol );
 
-  mDirectSymbBtnGrp->button( ( int )lyr.placeDirectionSymbol )->setChecked( true );
-  mUpsidedownBtnGrp->button( ( int )lyr.upsidedownLabels )->setChecked( true );
+  mDirectSymbBtnGrp->button( static_cast<int>( lyr.placeDirectionSymbol ) )->setChecked( true );
+  mUpsidedownBtnGrp->button( static_cast<int>( lyr.upsidedownLabels ) )->setChecked( true );
 
   // curved label max character angles
   mMaxCharAngleInDSpinBox->setValue( lyr.maxCurvedCharAngleIn );

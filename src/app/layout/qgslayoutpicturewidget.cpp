@@ -407,12 +407,12 @@ void QgsLayoutPictureWidget::setGuiElementValues()
     mNorthTypeComboBox->setCurrentIndex( mNorthTypeComboBox->findData( mPicture->northMode() ) );
     mPictureRotationOffsetSpinBox->setValue( mPicture->northOffset() );
 
-    mResizeModeComboBox->setCurrentIndex( ( int )mPicture->resizeMode() );
+    mResizeModeComboBox->setCurrentIndex( static_cast<int>( mPicture->resizeMode() ) );
     //disable picture rotation for non-zoom modes
     mRotationGroupBox->setEnabled( mPicture->resizeMode() == QgsLayoutItemPicture::Zoom ||
                                    mPicture->resizeMode() == QgsLayoutItemPicture::ZoomResizeFrame );
 
-    mAnchorPointComboBox->setCurrentIndex( ( int )mPicture->pictureAnchor() );
+    mAnchorPointComboBox->setCurrentIndex( static_cast<int>( mPicture->pictureAnchor() ) );
     //disable anchor point control for certain zoom modes
     if ( mPicture->resizeMode() == QgsLayoutItemPicture::Zoom ||
          mPicture->resizeMode() == QgsLayoutItemPicture::Clip )

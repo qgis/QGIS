@@ -161,7 +161,7 @@ QVariantMap QgsExternalResourceConfigDlg::config()
   }
   else
   {
-    cfg.insert( QStringLiteral( "RelativeStorage" ), ( int )QgsFileWidget::Absolute );
+    cfg.insert( QStringLiteral( "RelativeStorage" ), static_cast<int>( QgsFileWidget::Absolute ) );
   }
 
   cfg.insert( QStringLiteral( "DocumentViewer" ), mDocumentViewerContentComboBox->currentData().toInt() );

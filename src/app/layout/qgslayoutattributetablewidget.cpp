@@ -466,8 +466,8 @@ void QgsLayoutAttributeTableWidget::updateGuiElements()
   mFeatureFilterEdit->setEnabled( mTable->filterFeatures() );
   mFeatureFilterButton->setEnabled( mTable->filterFeatures() );
 
-  mHeaderHAlignmentComboBox->setCurrentIndex( ( int )mTable->headerHAlignment() );
-  mHeaderModeComboBox->setCurrentIndex( ( int )mTable->headerMode() );
+  mHeaderHAlignmentComboBox->setCurrentIndex( static_cast<int>( mTable->headerHAlignment() ) );
+  mHeaderModeComboBox->setCurrentIndex( static_cast<int>( mTable->headerMode() ) );
 
   mEmptyModeComboBox->setCurrentIndex( mEmptyModeComboBox->findData( mTable->emptyTableBehavior() ) );
   mEmptyMessageLineEdit->setText( mTable->emptyTableMessage() );

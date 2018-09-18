@@ -1121,8 +1121,8 @@ void QgsGrassNewMapset::drawRegion()
           x2 -= 360;
         }
       }
-      p.drawLine( 180 + shift + ( int )x1, 90 - ( int )points[i].y(),
-                  180 + shift + ( int )x2, 90 - ( int )points[i + 1].y() );
+      p.drawLine( 180 + shift + static_cast<int>( x1 ), 90 - ( int )points[i].y(),
+                  180 + shift + static_cast<int>( x2 ), 90 - ( int )points[i + 1].y() );
     }
   }
 

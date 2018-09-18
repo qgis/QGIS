@@ -240,7 +240,7 @@ void QgsColorSwatchGrid::focusOutEvent( QFocusEvent *event )
 
 int QgsColorSwatchGrid::calculateHeight() const
 {
-  int numberRows = std::ceil( ( double )mColors.length() / NUMBER_COLORS_PER_ROW );
+  int numberRows = std::ceil( static_cast<double>( mColors.length() / NUMBER_COLORS_PER_ROW ) );
   return numberRows * ( mSwatchSize ) + ( numberRows - 1 ) * mSwatchSpacing + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin + mSwatchMargin;
 }
 

@@ -72,7 +72,7 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &optio
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
 
   mValid = false;
-  mCachedMemFilename = QStringLiteral( "/vsimem/qgis/wcs/%0.dat" ).arg( ( qlonglong )this );
+  mCachedMemFilename = QStringLiteral( "/vsimem/qgis/wcs/%0.dat" ).arg( static_cast<qlonglong>( this ) );
 
   if ( !parseUri( uri ) ) return;
 

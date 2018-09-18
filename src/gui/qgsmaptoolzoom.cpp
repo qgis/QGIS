@@ -113,8 +113,8 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
     const QSize &zoomRectSize = mZoomRect.size();
     const QgsMapSettings &mapSettings = mCanvas->mapSettings();
     const QSize &canvasSize = mapSettings.outputSize();
-    double sfx = ( double )zoomRectSize.width() / canvasSize.width();
-    double sfy = ( double )zoomRectSize.height() / canvasSize.height();
+    double sfx = static_cast<double>( zoomRectSize.width() / canvasSize.width() );
+    double sfy = static_cast<double>( zoomRectSize.height() / canvasSize.height() );
     double sf = std::max( sfx, sfy );
 
     const QgsMapToPixel *m2p = mCanvas->getCoordinateTransform();

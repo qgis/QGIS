@@ -239,8 +239,8 @@ void QgsGrassVectorMapLayer::load()
                   case DB_C_TYPE_INT:
                     iv = db_get_value_int( value );
                     variant = QVariant( iv );
-                    mMinMax[i].first = std::min( mMinMax[i].first, ( double )iv );
-                    mMinMax[i].second = std::min( mMinMax[i].second, ( double )iv );
+                    mMinMax[i].first = std::min( mMinMax[i].first, static_cast<double>( iv ) );
+                    mMinMax[i].second = std::min( mMinMax[i].second, static_cast<double>( iv ) );
                     break;
                   case DB_C_TYPE_DOUBLE:
                     dv = db_get_value_double( value );

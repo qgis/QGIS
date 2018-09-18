@@ -55,7 +55,7 @@ qint64 QgsGrassDataFile::readData( char *data, qint64 len )
     }
     readSoFar += read;
 
-    //fprintf(stderr, "len = %d readSoFar = %d feof = %d", (int)len, (int)readSoFar, (int)feof(mFh)  );
+    //fprintf(stderr, "len = %d readSoFar = %d feof = %d", static_cast<int>(len), (int)readSoFar, (int)feof(mFh)  );
     if ( readSoFar == len )
     {
       break;

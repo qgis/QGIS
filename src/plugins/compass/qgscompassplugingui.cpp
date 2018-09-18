@@ -94,7 +94,7 @@ void QgsCompassPluginGui::rotatePixmap( QLabel *pixmapLabel, QString myFileNameQ
     double centerYDouble = myQPixmap.height() / 2;
     //save the current canvas rotation
     myQPainter.save();
-    //myQPainter.translate( (int)centerXDouble, (int)centerYDouble );
+    //myQPainter.translate( static_cast<int>(centerXDouble), (int)centerYDouble );
 
     //rotate the canvas
     myQPainter.rotate( rotationInt );

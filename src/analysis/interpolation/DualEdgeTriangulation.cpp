@@ -123,9 +123,9 @@ int DualEdgeTriangulation::addPoint( const QgsPoint &p )
   if ( mPointVector.count() == 1 )//insert the first point into the triangulation
   {
     unsigned int zedge = insertEdge( -10, -10, -1, false, false );//edge pointing from p to the virtual point
-    unsigned int fedge = insertEdge( ( int )zedge, ( int )zedge, 0, false, false ); //edge pointing from the virtual point to p
-    ( mHalfEdge.at( zedge ) )->setDual( ( int )fedge );
-    ( mHalfEdge.at( zedge ) )->setNext( ( int )fedge );
+    unsigned int fedge = insertEdge( static_cast<int>( zedge ), ( int )zedge, 0, false, false ); //edge pointing from the virtual point to p
+    ( mHalfEdge.at( zedge ) )->setDual( static_cast<int>( fedge ) );
+    ( mHalfEdge.at( zedge ) )->setNext( static_cast<int>( fedge ) );
 
   }
 
@@ -142,15 +142,15 @@ int DualEdgeTriangulation::addPoint( const QgsPoint &p )
     }
 
     unsigned int sedge = insertEdge( -10, -10, 1, false, false );//edge pointing from point 0 to point 1
-    unsigned int tedge = insertEdge( ( int )sedge, 0, 0, false, false ); //edge pointing from point 1 to point 0
+    unsigned int tedge = insertEdge( static_cast<int>( sedge ), 0, 0, false, false ); //edge pointing from point 1 to point 0
     unsigned int foedge = insertEdge( -10, 4, 1, false, false );//edge pointing from the virtual point to point 1
-    unsigned int fiedge = insertEdge( ( int )foedge, 1, -1, false, false ); //edge pointing from point 2 to the virtual point
-    mHalfEdge.at( sedge )->setDual( ( int )tedge );
-    mHalfEdge.at( sedge )->setNext( ( int )fiedge );
-    mHalfEdge.at( foedge )->setDual( ( int )fiedge );
-    mHalfEdge.at( foedge )->setNext( ( int )tedge );
-    mHalfEdge.at( 0 )->setNext( ( int )foedge );
-    mHalfEdge.at( 1 )->setNext( ( int )sedge );
+    unsigned int fiedge = insertEdge( static_cast<int>( foedge ), 1, -1, false, false ); //edge pointing from point 2 to the virtual point
+    mHalfEdge.at( sedge )->setDual( static_cast<int>( tedge ) );
+    mHalfEdge.at( sedge )->setNext( static_cast<int>( fiedge ) );
+    mHalfEdge.at( foedge )->setDual( static_cast<int>( fiedge ) );
+    mHalfEdge.at( foedge )->setNext( static_cast<int>( tedge ) );
+    mHalfEdge.at( 0 )->setNext( static_cast<int>( foedge ) );
+    mHalfEdge.at( 1 )->setNext( static_cast<int>( sedge ) );
 
     mEdgeInside = 3;
   }
@@ -163,38 +163,38 @@ int DualEdgeTriangulation::addPoint( const QgsPoint &p )
     {
       //insert six new edges
       unsigned int edgea = insertEdge( -10, -10, 2, false, false );//edge pointing from point1 to point2
-      unsigned int edgeb = insertEdge( ( int )edgea, 5, 1, false, false ); //edge pointing from point2 to point1
-      unsigned int edgec = insertEdge( -10, ( int )edgeb, 2, false, false );//edge pointing from the virtual point to p2
+      unsigned int edgeb = insertEdge( static_cast<int>( edgea ), 5, 1, false, false ); //edge pointing from point2 to point1
+      unsigned int edgec = insertEdge( -10, static_cast<int>( edgeb ), 2, false, false ); //edge pointing from the virtual point to p2
       unsigned int edged = insertEdge( -10, 2, 0, false, false );//edge pointing from point2 to point0
-      unsigned int edgee = insertEdge( ( int )edged, -10, 2, false, false ); //edge pointing from point0 to point2
-      unsigned int edgef = insertEdge( ( int )edgec, 1, -1, false, false ); //edge pointing from point2 to the virtual point
-      mHalfEdge.at( edgea )->setDual( ( int )edgeb );
-      mHalfEdge.at( edgea )->setNext( ( int )edged );
-      mHalfEdge.at( edgec )->setDual( ( int )edgef );
-      mHalfEdge.at( edged )->setDual( ( int )edgee );
-      mHalfEdge.at( edgee )->setNext( ( int )edgef );
-      mHalfEdge.at( 5 )->setNext( ( int )edgec );
-      mHalfEdge.at( 1 )->setNext( ( int )edgee );
-      mHalfEdge.at( 2 )->setNext( ( int )edgea );
+      unsigned int edgee = insertEdge( static_cast<int>( edged ), -10, 2, false, false ); //edge pointing from point0 to point2
+      unsigned int edgef = insertEdge( static_cast<int>( edgec ), 1, -1, false, false ); //edge pointing from point2 to the virtual point
+      mHalfEdge.at( edgea )->setDual( static_cast<int>( edgeb ) );
+      mHalfEdge.at( edgea )->setNext( static_cast<int>( edged ) );
+      mHalfEdge.at( edgec )->setDual( static_cast<int>( edgef ) );
+      mHalfEdge.at( edged )->setDual( static_cast<int>( edgee ) );
+      mHalfEdge.at( edgee )->setNext( static_cast<int>( edgef ) );
+      mHalfEdge.at( 5 )->setNext( static_cast<int>( edgec ) );
+      mHalfEdge.at( 1 )->setNext( static_cast<int>( edgee ) );
+      mHalfEdge.at( 2 )->setNext( static_cast<int>( edgea ) );
     }
 
     else if ( number > leftOfTresh )//p is on the right side
     {
       //insert six new edges
       unsigned int edgea = insertEdge( -10, -10, 2, false, false );//edge pointing from p0 to p2
-      unsigned int edgeb = insertEdge( ( int )edgea, 0, 0, false, false ); //edge pointing from p2 to p0
-      unsigned int edgec = insertEdge( -10, ( int )edgeb, 2, false, false );//edge pointing from the virtual point to p2
+      unsigned int edgeb = insertEdge( static_cast<int>( edgea ), 0, 0, false, false ); //edge pointing from p2 to p0
+      unsigned int edgec = insertEdge( -10, static_cast<int>( edgeb ), 2, false, false ); //edge pointing from the virtual point to p2
       unsigned int edged = insertEdge( -10, 3, 1, false, false );//edge pointing from p2 to p1
-      unsigned int edgee = insertEdge( ( int )edged, -10, 2, false, false ); //edge pointing from p1 to p2
-      unsigned int edgef = insertEdge( ( int )edgec, 4, -1, false, false ); //edge pointing from p2 to the virtual point
-      mHalfEdge.at( edgea )->setDual( ( int )edgeb );
-      mHalfEdge.at( edgea )->setNext( ( int )edged );
-      mHalfEdge.at( edgec )->setDual( ( int )edgef );
-      mHalfEdge.at( edged )->setDual( ( int )edgee );
-      mHalfEdge.at( edgee )->setNext( ( int )edgef );
-      mHalfEdge.at( 0 )->setNext( ( int )edgec );
-      mHalfEdge.at( 4 )->setNext( ( int )edgee );
-      mHalfEdge.at( 3 )->setNext( ( int )edgea );
+      unsigned int edgee = insertEdge( static_cast<int>( edged ), -10, 2, false, false ); //edge pointing from p1 to p2
+      unsigned int edgef = insertEdge( static_cast<int>( edgec ), 4, -1, false, false ); //edge pointing from p2 to the virtual point
+      mHalfEdge.at( edgea )->setDual( static_cast<int>( edgeb ) );
+      mHalfEdge.at( edgea )->setNext( static_cast<int>( edged ) );
+      mHalfEdge.at( edgec )->setDual( static_cast<int>( edgef ) );
+      mHalfEdge.at( edged )->setDual( static_cast<int>( edgee ) );
+      mHalfEdge.at( edgee )->setNext( static_cast<int>( edgef ) );
+      mHalfEdge.at( 0 )->setNext( static_cast<int>( edgec ) );
+      mHalfEdge.at( 4 )->setNext( static_cast<int>( edgee ) );
+      mHalfEdge.at( 3 )->setNext( static_cast<int>( edgea ) );
     }
 
     else//p is in a line with p0 and p1
@@ -288,20 +288,20 @@ int DualEdgeTriangulation::addPoint( const QgsPoint &p )
 
       //insert 6 new HalfEdges for the connections to the vertices of the triangle
       unsigned int edge1 = insertEdge( -10, nextnumber, mHalfEdge[number]->getPoint(), false, false );
-      unsigned int edge2 = insertEdge( ( int )edge1, -10, mPointVector.count() - 1, false, false );
+      unsigned int edge2 = insertEdge( static_cast<int>( edge1 ), -10, mPointVector.count() - 1, false, false );
       unsigned int edge3 = insertEdge( -10, nextnextnumber, mHalfEdge[nextnumber]->getPoint(), false, false );
-      unsigned int edge4 = insertEdge( ( int )edge3, ( int )edge1, mPointVector.count() - 1, false, false );
+      unsigned int edge4 = insertEdge( static_cast<int>( edge3 ), ( int )edge1, mPointVector.count() - 1, false, false );
       unsigned int edge5 = insertEdge( -10, number, mHalfEdge[nextnextnumber]->getPoint(), false, false );
-      unsigned int edge6 = insertEdge( ( int )edge5, ( int )edge3, mPointVector.count() - 1, false, false );
+      unsigned int edge6 = insertEdge( static_cast<int>( edge5 ), ( int )edge3, mPointVector.count() - 1, false, false );
 
 
-      mHalfEdge.at( edge1 )->setDual( ( int )edge2 );
-      mHalfEdge.at( edge2 )->setNext( ( int )edge5 );
-      mHalfEdge.at( edge3 )->setDual( ( int )edge4 );
-      mHalfEdge.at( edge5 )->setDual( ( int )edge6 );
-      mHalfEdge.at( number )->setNext( ( int )edge2 );
-      mHalfEdge.at( nextnumber )->setNext( ( int )edge4 );
-      mHalfEdge.at( nextnextnumber )->setNext( ( int )edge6 );
+      mHalfEdge.at( edge1 )->setDual( static_cast<int>( edge2 ) );
+      mHalfEdge.at( edge2 )->setNext( static_cast<int>( edge5 ) );
+      mHalfEdge.at( edge3 )->setDual( static_cast<int>( edge4 ) );
+      mHalfEdge.at( edge5 )->setDual( static_cast<int>( edge6 ) );
+      mHalfEdge.at( number )->setNext( static_cast<int>( edge2 ) );
+      mHalfEdge.at( nextnumber )->setNext( static_cast<int>( edge4 ) );
+      mHalfEdge.at( nextnextnumber )->setNext( static_cast<int>( edge6 ) );
 
       //check, if there are swaps necessary
       checkSwap( number, 0 );

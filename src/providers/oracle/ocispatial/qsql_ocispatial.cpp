@@ -2066,7 +2066,7 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
             bindColumn.maxLen, bindColumn.bindAs, bindColumn.indicators, bindColumn.lengths,
             arrayBind ? bindColumn.maxarr_len : 0, arrayBind ? &bindColumn.curelep : 0 );
 
-    for ( int ii = 0; ii < ( int )bindColumn.recordCount; ++ii )
+    for ( int ii = 0; ii < static_cast<int>( bindColumn.recordCount ); ++ii )
     {
       qDebug( " record %d: indicator %d, length %d", ii, bindColumn.indicators[ii],
               bindColumn.lengths[ii] );

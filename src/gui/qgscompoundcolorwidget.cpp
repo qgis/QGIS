@@ -722,9 +722,9 @@ QColor QgsCompoundColorWidget::averageColor( const QImage &image ) const
     }
   }
   //calculate average components as floats
-  double avgRed = ( double )sumRed / ( 255.0 * colorCount );
-  double avgGreen = ( double )sumGreen / ( 255.0 * colorCount );
-  double avgBlue = ( double )sumBlue / ( 255.0 * colorCount );
+  double avgRed = static_cast<double>( sumRed / ( 255.0 * colorCount ) );
+  double avgGreen = static_cast<double>( sumGreen / ( 255.0 * colorCount ) );
+  double avgBlue = static_cast<double>( sumBlue / ( 255.0 * colorCount ) );
 
   //create a new color representing the average
   return QColor::fromRgbF( avgRed, avgGreen, avgBlue );
