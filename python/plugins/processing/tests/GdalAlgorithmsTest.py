@@ -292,6 +292,13 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertTrue(crs.isValid())
         self.assertEqual(GdalUtils.gdal_crs_string(crs),
                          '+proj=utm +zone=36 +south +a=600000 +b=70000 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
+        # check that newlines are stripped
+        crs = QgsCoordinateReferenceSystem()
+        crs.createFromProj4(
+            '+proj=utm +zone=36 +south\n     +a=600000 +b=70000 \r\n    +towgs84=-143,-90,-294,0,0,0,0 +units=m\n+no_defs')
+        self.assertTrue(crs.isValid())
+        self.assertEqual(GdalUtils.gdal_crs_string(crs),
+                         '+proj=utm +zone=36 +south      +a=600000 +b=70000       +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
 
     def testAssignProjection(self):
         context = QgsProcessingContext()
