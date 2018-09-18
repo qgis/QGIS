@@ -208,7 +208,7 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
     try:
         new_feature_ids = []
 
-        active_layer.beginEditCommand(alg.name())
+        active_layer.beginEditCommand(alg.displayName())
 
         req = QgsFeatureRequest(QgsExpression(r"$id < 0"))
         req.setFlags(QgsFeatureRequest.NoGeometry)
