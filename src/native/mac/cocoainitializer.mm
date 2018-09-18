@@ -41,10 +41,10 @@
 #include <AppKit/AppKit.h>
 #include <Cocoa/Cocoa.h>
 
-class CocoaInitializer::Private 
+class CocoaInitializer::Private
 {
   public:
-    NSAutoreleasePool* autoReleasePool_;
+    NSAutoreleasePool *autoReleasePool_;
 };
 
 CocoaInitializer::CocoaInitializer()

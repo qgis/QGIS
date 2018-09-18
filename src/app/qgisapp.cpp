@@ -1322,10 +1322,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
       QgsApplication::applicationName(),
       QgsApplication::organizationName(),
       Qgis::QGIS_VERSION );
-  connect( QgsGui::instance()->nativePlatformInterface(), &QgsNative::usbStorageNotification, this, [ = ]( const QString & path, bool inserted )
-  {
-    QgsDebugMsg( QStringLiteral( "USB STORAGE NOTIFICATION! %1 %2" ).arg( path ).arg( inserted ? QStringLiteral( "inserted" ) : QStringLiteral( "removed" ) ) );
-  } );
+  connect( QgsGui::instance()->nativePlatformInterface(), &QgsNative::usbStorageNotification, mBrowserModel, &QgsBrowserModel::refreshDrives );
 
   // setup application progress reports from task manager
   connect( QgsApplication::taskManager(), &QgsTaskManager::taskAdded, this, []

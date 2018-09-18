@@ -129,6 +129,15 @@ notify the provider dialogs of a changed connection
 %Docstring
 Reload the whole model
 %End
+
+    void refreshDrives();
+%Docstring
+Refreshes the list of drive items, removing any corresponding to removed
+drives and adding newly added drives.
+
+.. versionadded:: 3.4
+%End
+
     void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
