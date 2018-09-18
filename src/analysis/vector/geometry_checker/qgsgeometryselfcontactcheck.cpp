@@ -71,7 +71,7 @@ QList<QgsSingleGeometryCheckError *> QgsGeometrySelfContactCheck::processGeometr
           QgsPoint q = QgsGeometryUtils::projectPointOnSegment( p, si, sj );
           if ( QgsGeometryUtils::sqrDistance2D( p, q ) < mContext->tolerance * mContext->tolerance )
           {
-            errors.append( new QgsSingleGeometryCheckError( this, geometry, p, QgsVertexId( iPart, iRing, vtxMap[iVert] ) ) );
+            errors.append( new QgsSingleGeometryCheckError( this, geometry, QgsGeometry( p.clone() ), QgsVertexId( iPart, iRing, vtxMap[iVert] ) ) );
             break; // No need to report same contact on different segments multiple times
           }
         }

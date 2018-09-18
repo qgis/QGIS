@@ -72,7 +72,7 @@ const QgsSingleGeometryCheck *QgsSingleGeometryCheckError::check() const
   return mCheck;
 }
 
-QgsPoint QgsSingleGeometryCheckError::errorLocation() const
+QgsGeometry QgsSingleGeometryCheckError::errorLocation() const
 {
   return mErrorLocation;
 }
@@ -83,7 +83,7 @@ QgsVertexId QgsSingleGeometryCheckError::vertexId() const
 }
 
 QgsGeometryCheckErrorSingle::QgsGeometryCheckErrorSingle( QgsSingleGeometryCheckError *error, const QgsGeometryCheckerUtils::LayerFeature &layerFeature )
-  : QgsGeometryCheckError( error->check(), layerFeature, QgsPointXY( error->errorLocation() ), error->vertexId() )
+  : QgsGeometryCheckError( error->check(), layerFeature, QgsPointXY( error->errorLocation().constGet()->centroid() ), error->vertexId() ) // TODO: should send geometry to QgsGeometryCheckError
   , mError( error )
 {
 

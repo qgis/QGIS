@@ -31,7 +31,7 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryTypeCheck::processGeometry( cons
   QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
   if ( ( mAllowedTypes & ( 1 << type ) ) == 0 )
   {
-    errors.append( new QgsGeometryTypeCheckError( this, geometry, geom->centroid(), type ) );
+    errors.append( new QgsGeometryTypeCheckError( this, geometry, geometry, type ) );
   }
   return errors;
 }

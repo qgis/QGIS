@@ -25,7 +25,7 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryMultipartCheck::processGeometry(
   QgsWkbTypes::Type type = geom->wkbType();
   if ( geom->partCount() == 1 && QgsWkbTypes::isMultiType( type ) )
   {
-    errors.append( new QgsSingleGeometryCheckError( this, geometry, geom->centroid() ) );
+    errors.append( new QgsSingleGeometryCheckError( this, geometry, geometry ) );
   }
   return errors;
 }

@@ -327,7 +327,7 @@ QList<QgsSingleGeometryCheckError *> QgsGeometrySelfIntersectionCheck::processGe
     {
       for ( const QgsGeometryUtils::SelfIntersection &inter : QgsGeometryUtils::selfIntersections( geom, iPart, iRing, mContext->tolerance ) )
       {
-        errors.append( new QgsGeometrySelfIntersectionCheckError( this, geometry, inter.point, QgsVertexId( iPart, iRing ), inter ) );
+        errors.append( new QgsGeometrySelfIntersectionCheckError( this, geometry, QgsGeometry( inter.point.clone() ), QgsVertexId( iPart, iRing ), inter ) );
       }
     }
   }

@@ -26,7 +26,7 @@ class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheckError : public QgsSingleGe
   public:
     QgsGeometrySelfIntersectionCheckError( const QgsSingleGeometryCheck *check,
                                            const QgsGeometry &geometry,
-                                           const QgsPoint &errorLocation,
+                                           const QgsGeometry &errorLocation,
                                            QgsVertexId vertexId,
                                            const QgsGeometryUtils::SelfIntersection &intersection )
       : QgsSingleGeometryCheckError( check, geometry, errorLocation, vertexId )

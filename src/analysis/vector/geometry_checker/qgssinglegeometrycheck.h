@@ -39,7 +39,7 @@ class QgsSingleGeometryCheck;
 class ANALYSIS_EXPORT QgsSingleGeometryCheckError
 {
   public:
-    QgsSingleGeometryCheckError( const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsPoint &errorLocation, const QgsVertexId &vertexId = QgsVertexId() )
+    QgsSingleGeometryCheckError( const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, const QgsVertexId &vertexId = QgsVertexId() )
       : mCheck( check )
       , mGeometry( geometry )
       , mErrorLocation( errorLocation )
@@ -83,7 +83,7 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheckError
      *
      * \since QGIS 3.4
      */
-    QgsPoint errorLocation() const;
+    QgsGeometry errorLocation() const;
 
     /**
      * The vertex id of the error. May be invalid depending on the check.
@@ -95,7 +95,7 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheckError
   protected:
     const QgsSingleGeometryCheck *mCheck = nullptr;
     QgsGeometry mGeometry;
-    QgsPoint mErrorLocation;
+    QgsGeometry mErrorLocation;
     QgsVertexId mVertexId;
 };
 

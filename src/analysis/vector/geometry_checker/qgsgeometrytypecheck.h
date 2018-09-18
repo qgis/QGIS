@@ -25,7 +25,7 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsSingleGeometryCheckE
   public:
     QgsGeometryTypeCheckError( const QgsSingleGeometryCheck *check,
                                const QgsGeometry &geometry,
-                               const QgsPoint &errorLocation,
+                               const QgsGeometry &errorLocation,
                                QgsWkbTypes::Type flatType )
       : QgsSingleGeometryCheckError( check, geometry, errorLocation )
       , mFlatType( flatType )
