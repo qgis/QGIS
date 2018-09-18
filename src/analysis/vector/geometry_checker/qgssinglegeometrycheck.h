@@ -72,7 +72,7 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheckError
     QgsVertexId vertexId() const;
 
   protected:
-    const QgsSingleGeometryCheck *mCheck;
+    const QgsSingleGeometryCheck *mCheck = nullptr;
     QgsGeometry mGeometry;
     QgsPoint mErrorLocation;
     QgsVertexId mVertexId;
@@ -99,7 +99,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError
     bool handleChanges( const QgsGeometryCheck::Changes &changes ) override;
 
   private:
-    QgsSingleGeometryCheckError *mError;
+    QgsSingleGeometryCheckError *mError = nullptr;
 };
 
 /**
