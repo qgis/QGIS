@@ -1450,7 +1450,7 @@ Returns new instance of QgsMapLayerRenderer that will be used for rendering of g
     QgsRectangle extent() const final;
     QgsRectangle sourceExtent() const final;
 
-    QgsFields fields() const;
+    QgsFields fields() const final;
 %Docstring
 Returns the list of fields of this layer.
 This also includes fields which have not yet been saved to the provider.

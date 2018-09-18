@@ -1369,7 +1369,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \returns A list of fields
      */
-    inline QgsFields fields() const { return mFields; }
+    QgsFields fields() const final;
 
     /**
      * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
