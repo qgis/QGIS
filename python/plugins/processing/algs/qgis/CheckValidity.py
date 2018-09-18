@@ -157,9 +157,6 @@ class CheckValidity(QgisAlgorithm):
             if not geom.isNull() and not geom.isEmpty():
                 errors = list(geom.validateGeometry(method))
                 if errors:
-                    # QGIS method return a summary at the end
-                    if method == 1:
-                        errors.pop()
                     valid = False
                     reasons = []
                     for error in errors:
