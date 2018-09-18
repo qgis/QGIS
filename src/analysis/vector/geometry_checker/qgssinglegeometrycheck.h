@@ -30,8 +30,11 @@ class QgsFeature;
 class QgsSingleGeometryCheck;
 
 /**
+ * \ingroup analysis
+ *
  * An error from a QgsSingleGeometryCheck.
  *
+ * \since QGIS 3.4
  */
 class ANALYSIS_EXPORT QgsSingleGeometryCheckError
 {
@@ -45,9 +48,27 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheckError
 
     virtual ~QgsSingleGeometryCheckError() = default;
 
+    /**
+     * Update this error with the information from \other.
+     * Will be used to update existing errors whenever they are re-checked.
+     */
     virtual void update( const QgsSingleGeometryCheckError *other );
+
+    /**
+     * Check if this error is equal to \a other.
+     * Is reimplemented by subclasses with additional information, comparison
+     * of base information is done in parent class.
+     */
     virtual bool isEqual( const QgsSingleGeometryCheckError *other ) const;
+
+    /**
+     * Apply a list of \a changes.
+     */
     virtual bool handleChanges( const QList<QgsGeometryCheck::Change> &changes );
+
+    /**
+     * A human readable description of this error.
+     */
     virtual QString description() const;
 
     /**
