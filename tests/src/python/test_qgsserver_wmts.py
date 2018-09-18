@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsServer WFS.
+"""QGIS Unit tests for QgsServer WMTS.
 
-From build dir, run: ctest -R PyQgsServerWFS -V
+From build dir, run: ctest -R PyQgsServerWMTS -V
 
 
 .. note:: This program is free software; you can redistribute it and/or modify
