@@ -71,14 +71,32 @@ Returns the underlying child algorithm's ID.
 .. seealso:: :py:func:`setAlgorithmId`
 %End
 
-    void setAlgorithmId( const QString &algorithmId );
+    bool setAlgorithmId( const QString &algorithmId );
 %Docstring
 Sets the underlying child algorithm's ID. This
 should be set to an existing QgsProcessingAlgorithm algorithm ID.
 
+Returns true if the algorithm was successfully set.
+
+.. seealso:: :py:func:`reattach`
+
 .. seealso:: :py:func:`algorithm`
 
 .. seealso:: :py:func:`algorithmId`
+%End
+
+    bool reattach() const;
+%Docstring
+Attempts to re-attach the child to the algorithm specified by ``algorithmId``().
+
+This can be run to relink the child to algorithms from providers which were not
+originally available for the model to link to.
+
+Returns true if the algorithm was successfully reattached.
+
+.. seealso:: :py:func:`algorithm`
+
+.. seealso:: :py:func:`setAlgorithmId`
 %End
 
     QVariantMap configuration() const;
@@ -109,6 +127,8 @@ to adjust their behavior at run time according to some user configuration.
 %Docstring
 Returns the underlying child algorithm, or a None
 if a matching algorithm is not available.
+
+.. seealso:: :py:func:`reattach`
 
 .. seealso:: :py:func:`algorithmId`
 %End
