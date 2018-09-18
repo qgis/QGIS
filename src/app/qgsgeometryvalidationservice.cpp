@@ -89,6 +89,6 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
 
   QgsFeature feature = layer->getFeature( fid );
   // TODO: this is a bit hardcore
-  const auto errors = mIsValidGeometryCheck->processGeometry( feature.geometry() );
+  const auto errors = mIsValidGeometryCheck->processGeometry( feature.geometry(), QVariantMap() );
   // emit geometryCheckCompleted( layer, fid, errors );
 }
