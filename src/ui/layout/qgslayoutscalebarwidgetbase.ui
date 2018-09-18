@@ -72,7 +72,7 @@
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
-          <string>Main properties</string>
+          <string>Main Properties</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
@@ -457,7 +457,7 @@
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
-          <string>Fonts and colors</string>
+          <string>Fonts and Colors</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>

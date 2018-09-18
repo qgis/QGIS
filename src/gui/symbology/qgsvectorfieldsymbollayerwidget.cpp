@@ -39,7 +39,8 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( QgsVectorLayer
     mXAttributeComboBox->addItem( QString() );
     mYAttributeComboBox->addItem( QString() );
     int i = 0;
-    Q_FOREACH ( const QgsField &f, vectorLayer()->fields() )
+    const QgsFields fields = vectorLayer()->fields();
+    for ( const QgsField &f : fields )
     {
       QString fieldName = f.name();
       mXAttributeComboBox->addItem( vectorLayer()->fields().iconForField( i ), fieldName );

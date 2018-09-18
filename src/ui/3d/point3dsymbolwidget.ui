@@ -44,7 +44,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="labelMinorRadius">
      <property name="text">
-      <string>Minor Radius</string>
+      <string>Minor radius</string>
      </property>
     </widget>
    </item>
@@ -61,7 +61,7 @@
    <item row="3" column="0">
     <widget class="QLabel" name="labelTopRadius">
      <property name="text">
-      <string>Top Radius</string>
+      <string>Top radius</string>
      </property>
     </widget>
    </item>
@@ -75,7 +75,7 @@
    <item row="4" column="0">
     <widget class="QLabel" name="labelBottomRadius">
      <property name="text">
-      <string>Bottom Radius</string>
+      <string>Bottom radius</string>
      </property>
     </widget>
    </item>
@@ -157,7 +157,7 @@
    <item row="8" column="0">
     <widget class="QLabel" name="labelAltClamping">
      <property name="text">
-      <string>Altitude Clamping</string>
+      <string>Altitude clamping</string>
      </property>
     </widget>
    </item>

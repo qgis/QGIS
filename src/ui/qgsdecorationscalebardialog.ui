@@ -43,7 +43,7 @@
       </size>
      </property>
      <property name="title">
-      <string>Enable scale bar</string>
+      <string>Enable Scale Bar</string>
      </property>
      <property name="checkable">
       <bool>true</bool>

@@ -752,6 +752,43 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         components = registry.decodeUri('spatialite', uri)
         self.assertEqual(components['path'], filename)
 
+    def testLoadStyle(self):
+        """Check that we can store and load a style"""
+
+        # create test db
+        dbname = os.path.join(tempfile.gettempdir(), "test_loadstyle.sqlite")
+        if os.path.exists(dbname):
+            os.remove(dbname)
+        con = spatialite_connect(dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = "SELECT InitSpatialMetadata()"
+        cur.execute(sql)
+
+        # simple table with primary key
+        sql = "CREATE TABLE test_pg (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+
+        sql = "SELECT AddGeometryColumn('test_pg', 'geometry', 4326, 'POLYGON', 'XY')"
+        cur.execute(sql)
+
+        sql = "INSERT INTO test_pg (id, name, geometry) "
+        sql += "VALUES (1, 'toto', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
+        cur.execute(sql)
+
+        cur.execute("COMMIT")
+        con.close()
+
+        testPath = "dbname=%s table='test_pg' (geometry) key='id'" % dbname
+        vl = QgsVectorLayer(testPath, 'test', 'spatialite')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 1)
+        err, ok = vl.loadDefaultStyle()
+        self.assertFalse(ok)
+        vl.saveStyleToDatabase('my_style', 'My description', True, '')
+        err, ok = vl.loadDefaultStyle()
+        self.assertTrue(ok)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -537,7 +537,6 @@ void QgsPluginManager::reloadModelData()
       mypDetailItem->setData( author, PLUGIN_AUTHOR_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "tags" ) ), PLUGIN_TAGS_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "downloads" ) ).rightJustified( 10, '0' ), PLUGIN_DOWNLOADS_ROLE );
-      mypDetailItem->setData( it->value( QStringLiteral( "zip_repository" ) ), PLUGIN_REPOSITORY_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "average_vote" ) ), PLUGIN_VOTE_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "deprecated" ) ), PLUGIN_ISDEPRECATED_ROLE );
 
@@ -677,9 +676,6 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
                  "    white-space:nowrap;"
                  "    padding-right:10px;"
                  "    text-align:right;"
-                 "  }"
-                 "  td.version img {"
-                 "    height:0.8em;"
                  "  }"
                  "</style>";
 
@@ -949,14 +945,11 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     {
       localDir = QFileInfo( localDir ).absolutePath();
     }
-
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td class='version' title='%2 %3'> %4 <a href=\"%5\">"
-                            "<img src=\"qrc:/images/themes/default/externalLink.svg\"></a></td></tr>"
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%3'>%4</a></td></tr>"
                           ).arg( tr( "Installed version" ),
-                                 tr( "in" ),
                                  metadata->value( QStringLiteral( "library" ) ),
-                                 ver,
-                                 QUrl::fromLocalFile( localDir ).toString() );
+                                 QUrl::fromLocalFile( localDir ).toString(),
+                                 ver );
   }
   if ( ! metadata->value( QStringLiteral( "version_available" ) ).isEmpty() )
   {
@@ -967,13 +960,10 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
       downloadUrl = downloadUrl.replace( QStringLiteral( "download/" ), QString() );
     }
 
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td class='version' title='%2 %3'> %4 <a href=\"%5\">"
-                            "<img src=\"qrc:/images/themes/default/externalLink.svg\"></a></td></tr>"
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a></td></tr>"
                           ).arg( tr( "Available version" ),
-                                 tr( "in" ),
-                                 metadata->value( QStringLiteral( "zip_repository" ) ),
-                                 metadata->value( QStringLiteral( "version_available" ) ),
-                                 downloadUrl );
+                                 downloadUrl,
+                                 metadata->value( QStringLiteral( "version_available" ) ) );
   }
 
   if ( ! metadata->value( QStringLiteral( "changelog" ) ).isEmpty() )

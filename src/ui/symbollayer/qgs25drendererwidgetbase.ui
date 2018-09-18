@@ -37,13 +37,13 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Roof Color</string>
+         <string>Roof color</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
        <widget class="QgsColorButton" name="mRoofColorButton">
-        <property name="text">
+        <property name="text" stdset="0">
          <string>…</string>
         </property>
        </widget>
@@ -51,7 +51,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Wall Color</string>
+         <string>Wall color</string>
         </property>
        </widget>
       </item>

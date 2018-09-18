@@ -34,6 +34,7 @@ from qgis.core import (
     QgsField,
     QgsFields,
     QgsGeometry,
+    QgsProcessing,
     QgsProcessingParameterDefinition,
     QgsProcessingParameterExpression,
     QgsProcessingParameterFeatureSink,
@@ -68,7 +69,8 @@ class Aggregate(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer')))
+                                                              self.tr('Input layer'),
+                                                              types=[QgsProcessing.TypeVector]))
         self.addParameter(QgsProcessingParameterExpression(self.GROUP_BY,
                                                            self.tr('Group by expression (NULL to group all features)'),
                                                            defaultValue='NULL',

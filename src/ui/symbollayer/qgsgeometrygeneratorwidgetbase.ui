@@ -29,7 +29,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Geometry Type</string>
+      <string>Geometry type</string>
      </property>
     </widget>
    </item>

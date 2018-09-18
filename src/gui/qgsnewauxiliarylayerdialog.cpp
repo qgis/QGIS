@@ -27,7 +27,8 @@ QgsNewAuxiliaryLayerDialog::QgsNewAuxiliaryLayerDialog( QgsVectorLayer *layer, Q
 {
   setupUi( this );
 
-  for ( const QgsField &field : mLayer->fields() )
+  const QgsFields fields = mLayer->fields();
+  for ( const QgsField &field : fields )
     comboBox->addItem( field.name() );
 }
 

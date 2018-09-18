@@ -125,7 +125,7 @@
      <item>
       <widget class="QPushButton" name="btnRenderingOrder">
        <property name="text">
-        <string>Symbol levels...</string>
+        <string>Symbol Levels...</string>
        </property>
       </widget>
      </item>
@@ -139,7 +139,7 @@
         <bool>true</bool>
        </property>
        <property name="text">
-        <string>Refine selected rules</string>
+        <string>Refine Selected Rules</string>
        </property>
        <property name="checkable">
         <bool>false</bool>

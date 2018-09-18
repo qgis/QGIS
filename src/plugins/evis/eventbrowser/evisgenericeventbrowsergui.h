@@ -68,22 +68,22 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
   private:
     //Variables
     //! \brief A flag to bypass some signal/slots during gui initialization
-    bool mIgnoreEvent;
+    bool mIgnoreEvent = false;
 
     //! \brief Pointer to the main configurations object
     eVisConfiguration mConfiguration;
 
     //! \brief Flag indicating if the browser fully initialized
-    bool mBrowserInitialized;
+    bool mBrowserInitialized = false;
 
     //! \brief Index of the attribute field name that closest 'matches' configuration of the parameter
-    int mDefaultCompassBearingField;
+    int mDefaultCompassBearingField = 0;
 
     //! \brief Index of the attribute field name that closest 'matches' configuration of the parameter
-    int mDefaultCompassOffsetField;
+    int mDefaultCompassOffsetField = 0;
 
     //! \brief Index of the attribute field name that closest 'matches' configuration of the parameter
-    int mDefaultEventImagePathField;
+    int mDefaultEventImagePathField = 0;
 
     //! \brief Pointer to the QgisInferface
     QgisInterface *mInterface = nullptr;
@@ -104,10 +104,10 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     QPixmap mPointerSymbol;
 
     //! \brief Compass bearing value for the current feature
-    double mCompassBearing;
+    double mCompassBearing = 0;
 
     //! \brief Compass bearing offset retrieved from attribute
-    double mCompassOffset;
+    double mCompassOffset = 0;
 
     //! \brief QString holding the path to the image for the current feature
     QString mEventImagePath;
@@ -116,7 +116,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     QList<QgsFeatureId> mFeatureIds;
 
     //! \brief Index of selected feature being viewed, used to access mFeatureIds
-    int mCurrentFeatureIndex;
+    int mCurrentFeatureIndex = 0;
 
     //! \brief Current feature being viewed
     QgsFeature mFeature;

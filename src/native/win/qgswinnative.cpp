@@ -54,24 +54,33 @@ void QgsWinNative::initializeMainWindow( QWindow *window,
                                           version.toStdWString() ) );
   if ( WinToastLib::WinToast::instance()->initialize() )
   {
+    mWinToastInitialized = true;
     mCapabilities = mCapabilities | NativeDesktopNotifications;
   }
 }
 
 void QgsWinNative::cleanup()
 {
-  WinToastLib::WinToast::instance()->clear();
+  if ( mWinToastInitialized )
+    WinToastLib::WinToast::instance()->clear();
 }
 
 void QgsWinNative::openFileExplorerAndSelectFile( const QString &path )
 {
   const QString nativePath = QDir::toNativeSeparators( path );
-  ITEMIDLIST *pidl = ILCreateFromPath( nativePath.toUtf8().constData() );
+
+  wchar_t *pathArray = new wchar_t[static_cast< uint>( nativePath.length() + 1 )];
+  nativePath.toWCharArray( pathArray );
+  pathArray[nativePath.length()] = 0;
+
+  ITEMIDLIST *pidl = ILCreateFromPathW( pathArray );
   if ( pidl )
   {
-    SHOpenFolderAndSelectItems( pidl, 0, 0, 0 );
+    SHOpenFolderAndSelectItems( pidl, 0, nullptr, 0 );
     ILFree( pidl );
   }
+
+  delete[] pathArray;
 }
 
 void QgsWinNative::showUndefinedApplicationProgress()
@@ -115,7 +124,7 @@ class NotificationHandler : public WinToastLib::IWinToastHandler
 
     void toastActivated( int ) const override {}
 
-    void toastFailed() const
+    void toastFailed() const override
     {
       qWarning() << "Error showing notification";
     }
@@ -126,13 +135,20 @@ class NotificationHandler : public WinToastLib::IWinToastHandler
 
 QgsNative::NotificationResult QgsWinNative::showDesktopNotification( const QString &summary, const QString &body, const QgsNative::NotificationSettings &settings )
 {
+  NotificationResult result;
+  if ( !mWinToastInitialized )
+  {
+    result.successful = false;
+    return result;
+  }
+
   WinToastLib::WinToastTemplate templ = WinToastLib::WinToastTemplate( WinToastLib::WinToastTemplate::ImageAndText02 );
   templ.setImagePath( settings.pngAppIconPath.toStdWString() );
   templ.setTextField( summary.toStdWString(), WinToastLib::WinToastTemplate::FirstLine );
   templ.setTextField( body.toStdWString(), WinToastLib::WinToastTemplate::SecondLine );
   templ.setDuration( WinToastLib::WinToastTemplate::Short );
 
-  NotificationResult result;
+
   if ( WinToastLib::WinToast::instance()->showToast( templ, new NotificationHandler ) < 0 )
     result.successful = false;
   else

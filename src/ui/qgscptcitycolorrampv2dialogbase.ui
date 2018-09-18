@@ -182,7 +182,7 @@
            </property>
            <widget class="QWidget" name="tab">
             <attribute name="title">
-             <string>Selection and preview</string>
+             <string>Selection and Preview</string>
             </attribute>
             <layout class="QGridLayout" name="gridLayout">
              <item row="2" column="0">

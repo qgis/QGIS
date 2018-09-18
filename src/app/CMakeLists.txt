@@ -61,6 +61,7 @@ SET(QGIS_APP_SRCS
   qgslayertreeviewmemoryindicator.cpp
   qgslayertreeviewnonremovableindicator.cpp
   qgsmapcanvasdockwidget.cpp
+  qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmapsavedialog.cpp
   qgspuzzlewidget.cpp
@@ -285,6 +286,7 @@ SET (QGIS_APP_MOC_HDRS
   qgslayertreeviewfilterindicator.h
   qgslayertreeviewnonremovableindicator.h
   qgsmapcanvasdockwidget.h
+  qgsmaplayerstylecategoriesmodel.h
   qgsmaplayerstyleguiutils.h
   qgsmapsavedialog.h
   qgspuzzlewidget.h

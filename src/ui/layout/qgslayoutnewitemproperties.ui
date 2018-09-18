@@ -17,7 +17,7 @@
    <item row="0" column="1">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>Reference point</string>
+      <string>Reference Point</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="1" column="2">
@@ -225,7 +225,7 @@
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Position and size</string>
+      <string>Position and Size</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>

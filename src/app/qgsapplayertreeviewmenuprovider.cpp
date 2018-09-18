@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsapplayertreeviewmenuprovider.h"
 
 
@@ -37,6 +38,8 @@
 #include "qgslayertreeregistrybridge.h"
 #include "qgssymbolselectordialog.h"
 #include "qgssinglesymbolrenderer.h"
+#include "qgsmaplayerstylecategoriesmodel.h"
+
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
@@ -320,13 +323,17 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         {
           QMenu *copyStyleMenu = menuStyleManager->addMenu( tr( "Copy Style" ) );
           copyStyleMenu->setToolTipsVisible( true );
-          QList<QgsMapLayer::StyleCategory> categories = qgsEnumMap<QgsMapLayer::StyleCategory>().keys();
-          categories.move( categories.indexOf( QgsMapLayer::AllStyleCategories ), 0 ); // move All categories to top
-          for ( QgsMapLayer::StyleCategory category : categories )
+          QgsMapLayerStyleCategoriesModel *model = new QgsMapLayerStyleCategoriesModel( copyStyleMenu );
+          model->setShowAllCategories( true );
+          for ( int row = 0; row < model->rowCount(); ++row )
           {
-            QgsMapLayer::ReadableStyleCategory readableCategory = QgsMapLayer::readableStyleCategory( category );
-            QAction *copyAction = new QAction( readableCategory.icon(), readableCategory.name(), copyStyleMenu );
-            copyAction->setToolTip( readableCategory.toolTip() );
+            QModelIndex index = model->index( row, 0 );
+            QgsMapLayer::StyleCategory category = model->data( index, Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
+            QString name = model->data( index, Qt::DisplayRole ).toString();
+            QString tooltip = model->data( index, Qt::ToolTipRole ).toString();
+            QIcon icon = model->data( index, Qt::DecorationRole ).value<QIcon>();
+            QAction *copyAction = new QAction( icon, name, copyStyleMenu );
+            copyAction->setToolTip( tooltip );
             connect( copyAction, &QAction::triggered, this, [ = ]() {app->copyStyle( layer, category );} );
             copyStyleMenu->addAction( copyAction );
             if ( category == QgsMapLayer::AllStyleCategories )
@@ -342,19 +349,24 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         {
           if ( layer->type() == QgsMapLayer::VectorLayer )
           {
-            QMenu *copyStyleMenu = menuStyleManager->addMenu( tr( "Paste Style" ) );
-            copyStyleMenu->setToolTipsVisible( true );
-            QList<QgsMapLayer::StyleCategory> categories = qgsEnumMap<QgsMapLayer::StyleCategory>().keys();
-            categories.move( categories.indexOf( QgsMapLayer::AllStyleCategories ), 0 ); // move All categories to top
-            for ( QgsMapLayer::StyleCategory category : categories )
+            QMenu *pasteStyleMenu = menuStyleManager->addMenu( tr( "Paste Style" ) );
+            pasteStyleMenu->setToolTipsVisible( true );
+
+            QgsMapLayerStyleCategoriesModel *model = new QgsMapLayerStyleCategoriesModel( pasteStyleMenu );
+            model->setShowAllCategories( true );
+            for ( int row = 0; row < model->rowCount(); ++row )
             {
-              QgsMapLayer::ReadableStyleCategory readableCategory = QgsMapLayer::readableStyleCategory( category );
-              QAction *copyAction = new QAction( readableCategory.icon(), readableCategory.name() );
-              copyAction->setToolTip( readableCategory.toolTip() );
+              QModelIndex index = model->index( row, 0 );
+              QgsMapLayer::StyleCategory category = model->data( index, Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
+              QString name = model->data( index, Qt::DisplayRole ).toString();
+              QString tooltip = model->data( index, Qt::ToolTipRole ).toString();
+              QIcon icon = model->data( index, Qt::DecorationRole ).value<QIcon>();
+              QAction *copyAction = new QAction( icon, name, pasteStyleMenu );
+              copyAction->setToolTip( tooltip );
               connect( copyAction, &QAction::triggered, this, [ = ]() {app->pasteStyle( layer, category );} );
-              copyStyleMenu->addAction( copyAction );
+              pasteStyleMenu->addAction( copyAction );
               if ( category == QgsMapLayer::AllStyleCategories )
-                copyStyleMenu->addSeparator();
+                pasteStyleMenu->addSeparator();
             }
           }
           else

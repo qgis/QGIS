@@ -34,7 +34,7 @@
      <item>
       <widget class="QPushButton" name="mLoadValuesButton">
        <property name="text">
-        <string>Load values</string>
+        <string>Load Values</string>
        </property>
       </widget>
      </item>

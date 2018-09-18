@@ -66,7 +66,7 @@
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
-          <string>Main properties</string>
+          <string>Main Properties</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
@@ -98,7 +98,7 @@
           <item row="6" column="0" colspan="2">
            <widget class="QPushButton" name="mRefreshPushButton">
             <property name="text">
-             <string>Refresh table data</string>
+             <string>Refresh Table Data</string>
             </property>
            </widget>
           </item>
@@ -149,7 +149,7 @@
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
-          <string>Feature filtering</string>
+          <string>Feature Filtering</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
@@ -421,7 +421,7 @@
           <item row="8" column="1">
            <widget class="QPushButton" name="mAdvancedCustomizationButton">
             <property name="text">
-             <string>Advanced customization...</string>
+             <string>Advanced Customization...</string>
             </property>
            </widget>
           </item>
@@ -434,7 +434,7 @@
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
-          <string>Show grid</string>
+          <string>Show Grid</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -538,7 +538,7 @@
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
-          <string>Fonts and text styling</string>
+          <string>Fonts and Text Styling</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
@@ -550,7 +550,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox_2">
             <property name="title">
-             <string>Table heading</string>
+             <string>Table Heading</string>
             </property>
             <layout class="QGridLayout" name="gridLayout">
              <item row="1" column="1">
@@ -659,7 +659,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox_4">
             <property name="title">
-             <string>Table contents</string>
+             <string>Table Contents</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
              <item row="0" column="0">

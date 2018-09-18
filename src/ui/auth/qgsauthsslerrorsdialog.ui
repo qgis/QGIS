@@ -86,7 +86,7 @@
        </sizepolicy>
       </property>
       <property name="title">
-       <string>SSL errors</string>
+       <string>SSL Errors</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <property name="spacing">

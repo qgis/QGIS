@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QGroupBox" name="GroupBox1">
      <property name="title">
-      <string>GeoNode connections</string>
+      <string>GeoNode Connections</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">

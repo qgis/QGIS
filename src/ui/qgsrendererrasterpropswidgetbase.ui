@@ -84,7 +84,7 @@
       <item>
        <widget class="QGroupBox" name="mLayerRendering">
         <property name="title">
-         <string>Layer rendering</string>
+         <string>Layer Rendering</string>
         </property>
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0" colspan="2">

@@ -31,7 +31,6 @@
 #include <QStyle>
 #include <QStyleFactory>
 #include <QDesktopWidget>
-#include <QTranslator>
 #include <QImageReader>
 #include <QMessageBox>
 
@@ -538,7 +537,7 @@ int main( int argc, char *argv[] )
 
   // This behavior will allow you to force the use of a translation file
   // which is useful for testing
-  QString myTranslationCode;
+  QString translationCode;
 
   // The user can specify a path which will override the default path of custom
   // user settings (~/.qgis) and it will be used for QgsSettings INI file
@@ -622,7 +621,7 @@ int main( int argc, char *argv[] )
       }
       else if ( i + 1 < argc && ( arg == QLatin1String( "--lang" ) || arg == QLatin1String( "-l" ) ) )
       {
-        myTranslationCode = args[++i];
+        translationCode = args[++i];
       }
       else if ( i + 1 < argc && ( arg == QLatin1String( "--project" ) || arg == QLatin1String( "-p" ) ) )
       {
@@ -814,6 +813,71 @@ int main( int argc, char *argv[] )
 #if QT_VERSION >= 0x051000
   QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
 #endif
+
+  /* Translation file for QGIS.
+   */
+  QString i18nPath = QgsApplication::i18nPath();
+  QgsSettings mySettings;
+  QString myUserTranslation = mySettings.value( QStringLiteral( "locale/userLocale" ), "" ).toString();
+  QString myGlobalLocale = mySettings.value( QStringLiteral( "locale/globalLocale" ), "" ).toString();
+  bool myShowGroupSeparatorFlag = false; // Default to false
+  bool myLocaleOverrideFlag = mySettings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
+
+  // Override Show Group Separator if the global override flag is set
+  if ( myLocaleOverrideFlag )
+  {
+    // Default to false again
+    myShowGroupSeparatorFlag = mySettings.value( QStringLiteral( "locale/showGroupSeparator" ), false ).toBool();
+  }
+
+  //
+  // Priority of translation is:
+  //  - command line
+  //  - user specified in options dialog (with group checked on)
+  //  - system locale
+  //
+  //  When specifying from the command line it will change the user
+  //  specified user locale
+  //
+  if ( !translationCode.isNull() && !translationCode.isEmpty() )
+  {
+    mySettings.setValue( QStringLiteral( "locale/userLocale" ), translationCode );
+  }
+  else
+  {
+    if ( !myLocaleOverrideFlag || myUserTranslation.isEmpty() )
+    {
+      translationCode = QLocale().name();
+      //setting the locale/userLocale when the --lang= option is not set will allow third party
+      //plugins to always use the same locale as the QGIS, otherwise they can be out of sync
+      mySettings.setValue( QStringLiteral( "locale/userLocale" ), translationCode );
+    }
+    else
+    {
+      translationCode = myUserTranslation;
+    }
+  }
+
+  // Global locale settings
+  if ( myLocaleOverrideFlag && ! myGlobalLocale.isEmpty( ) )
+  {
+    QLocale currentLocale( myGlobalLocale );
+    QLocale::setDefault( currentLocale );
+  }
+
+  // Number settings
+  QLocale currentLocale;
+  if ( myShowGroupSeparatorFlag )
+  {
+    currentLocale.setNumberOptions( currentLocale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
+  }
+  else
+  {
+    currentLocale.setNumberOptions( currentLocale.numberOptions() |= QLocale::NumberOption::OmitGroupSeparator );
+  }
+  QLocale::setDefault( currentLocale );
+
+  QgsApplication::setTranslation( translationCode );
 
   QgsApplication myApp( argc, argv, myUseGuiFlag );
 
@@ -1057,9 +1121,6 @@ int main( int argc, char *argv[] )
   }
 #endif
 
-
-  QgsSettings mySettings;
-
   // update any saved setting for older themes to new default 'gis' theme (2013-04-15)
   if ( mySettings.contains( QStringLiteral( "/Themes" ) ) )
   {
@@ -1156,96 +1217,6 @@ int main( int argc, char *argv[] )
   {
     QApplication::setStyle( presetStyle );
     mySettings.setValue( QStringLiteral( "qgis/style" ), QApplication::style()->objectName() );
-  }
-  /* Translation file for QGIS.
-   */
-  QString i18nPath = QgsApplication::i18nPath();
-  QString myUserTranslation = mySettings.value( QStringLiteral( "locale/userLocale" ), "" ).toString();
-  QString myGlobalLocale = mySettings.value( QStringLiteral( "locale/globalLocale" ), "" ).toString();
-  bool myShowGroupSeparatorFlag = false; // Default to false
-  bool myLocaleOverrideFlag = mySettings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
-
-  // Override Show Group Separator if the global override flag is set
-  if ( myLocaleOverrideFlag )
-  {
-    // Default to false again
-    myShowGroupSeparatorFlag = mySettings.value( QStringLiteral( "locale/showGroupSeparator" ), false ).toBool();
-  }
-
-  //
-  // Priority of translation is:
-  //  - command line
-  //  - user specified in options dialog (with group checked on)
-  //  - system locale
-  //
-  //  When specifying from the command line it will change the user
-  //  specified user locale
-  //
-  if ( !myTranslationCode.isNull() && !myTranslationCode.isEmpty() )
-  {
-    mySettings.setValue( QStringLiteral( "locale/userLocale" ), myTranslationCode );
-  }
-  else
-  {
-    if ( !myLocaleOverrideFlag || myUserTranslation.isEmpty() )
-    {
-      myTranslationCode = QLocale().name();
-      //setting the locale/userLocale when the --lang= option is not set will allow third party
-      //plugins to always use the same locale as the QGIS, otherwise they can be out of sync
-      mySettings.setValue( QStringLiteral( "locale/userLocale" ), myTranslationCode );
-    }
-    else
-    {
-      myTranslationCode = myUserTranslation;
-    }
-  }
-
-  // Global locale settings
-  if ( myLocaleOverrideFlag && ! myGlobalLocale.isEmpty( ) )
-  {
-    QLocale currentLocale( myGlobalLocale );
-    QLocale::setDefault( currentLocale );
-  }
-
-  // Number settings
-  QLocale currentLocale;
-  if ( myShowGroupSeparatorFlag )
-  {
-    currentLocale.setNumberOptions( currentLocale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
-  }
-  else
-  {
-    currentLocale.setNumberOptions( currentLocale.numberOptions() |= QLocale::NumberOption::OmitGroupSeparator );
-  }
-  QLocale::setDefault( currentLocale );
-
-
-  QTranslator qgistor( nullptr );
-  QTranslator qttor( nullptr );
-  if ( myTranslationCode != QLatin1String( "C" ) )
-  {
-    if ( qgistor.load( QStringLiteral( "qgis_" ) + myTranslationCode, i18nPath ) )
-    {
-      myApp.installTranslator( &qgistor );
-    }
-    else
-    {
-      QgsDebugMsg( QStringLiteral( "loading of qgis translation failed %1/qgis_%2" ).arg( i18nPath, myTranslationCode ) );
-    }
-
-    /* Translation file for Qt.
-     * The strings from the QMenuBar context section are used by Qt/Mac to shift
-     * the About, Preferences and Quit items to the Mac Application menu.
-     * These items must be translated identically in both qt_ and qgis_ files.
-     */
-    if ( qttor.load( QStringLiteral( "qt_" ) + myTranslationCode, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
-    {
-      myApp.installTranslator( &qttor );
-    }
-    else
-    {
-      QgsDebugMsg( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), myTranslationCode ) );
-    }
   }
 
   // set authentication database directory

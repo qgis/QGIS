@@ -20,7 +20,7 @@
    <item>
     <widget class="QGroupBox" name="grpEnable">
      <property name="title">
-      <string>Enable grid</string>
+      <string>Enable Grid</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -32,7 +32,7 @@
       <item row="0" column="3" rowspan="8">
        <widget class="QGroupBox" name="mDrawAnnotationCheckBox">
         <property name="title">
-         <string>Draw annotation</string>
+         <string>Draw Annotation</string>
         </property>
         <property name="flat">
          <bool>false</bool>

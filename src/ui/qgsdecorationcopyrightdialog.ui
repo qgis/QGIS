@@ -37,7 +37,7 @@
       </size>
      </property>
      <property name="title">
-      <string>Enable copyright label</string>
+      <string>Enable Copyright Label</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -128,7 +128,7 @@
       <item row="2" column="0" colspan="3">
        <widget class="QPushButton" name="mInsertExpressionButton">
         <property name="text">
-         <string>Insert an expression...</string>
+         <string>Insert an Expression...</string>
         </property>
        </widget>
       </item>

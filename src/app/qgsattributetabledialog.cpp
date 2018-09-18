@@ -108,7 +108,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mActionExpressionSelect, &QAction::triggered, this, &QgsAttributeTableDialog::mActionExpressionSelect_triggered );
   connect( mMainView, &QgsDualView::showContextMenuExternally, this, &QgsAttributeTableDialog::showContextMenu );
 
-  Q_FOREACH ( const QgsField &field, mLayer->fields() )
+  const QgsFields fields = mLayer->fields();
+  for ( const QgsField &field : fields )
   {
     mVisibleFields.append( field.name() );
   }
@@ -214,6 +215,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsAttributeTableDialog::updateTitle );
   connect( mLayer, &QgsVectorLayer::featureAdded, this, &QgsAttributeTableDialog::updateTitle );
   connect( mLayer, &QgsVectorLayer::featuresDeleted, this, &QgsAttributeTableDialog::updateTitle );
+  connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsAttributeTableDialog::updateTitle );
   connect( mLayer, &QgsVectorLayer::attributeAdded, this, &QgsAttributeTableDialog::columnBoxInit );
   connect( mLayer, &QgsVectorLayer::attributeDeleted, this, &QgsAttributeTableDialog::columnBoxInit );
   connect( mLayer, &QgsVectorLayer::readOnlyChanged, this, &QgsAttributeTableDialog::editingToggled );

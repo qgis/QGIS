@@ -330,6 +330,9 @@ class Grass7Utils:
         Prepare GRASS batch job in a script and
         returns it as a command ready for subprocess.
         """
+        if Grass7Utils.command is None:
+            Grass7Utils.grassBin()
+
         env = os.environ.copy()
         env['GRASS_MESSAGE_FORMAT'] = 'plain'
         if 'GISBASE' in env:

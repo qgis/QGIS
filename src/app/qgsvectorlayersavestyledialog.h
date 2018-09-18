@@ -21,6 +21,7 @@
 #include "qgsvectorlayerproperties.h"
 
 class QgsVectorLayer;
+class QgsMapLayerStyleCategoriesModel;
 
 
 class QgsVectorLayerSaveStyleDialog : public QDialog, private Ui::QgsVectorLayerSaveStyleDialog
@@ -56,7 +57,8 @@ class QgsVectorLayerSaveStyleDialog : public QDialog, private Ui::QgsVectorLayer
     void readUiFileContent( const QString &filePath );
 
   private:
-    QgsVectorLayer *mLayer = nullptr;;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsMapLayerStyleCategoriesModel *mModel;
     QString mUiFileContent;
 };
 

@@ -176,7 +176,7 @@ class gdalcalc(GdalAlgorithm):
         return 'rastermiscellaneous'
 
     def commandName(self):
-        return 'gdal_calc'
+        return 'gdal_calc' if isWindows() else 'gdal_calc.py'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)

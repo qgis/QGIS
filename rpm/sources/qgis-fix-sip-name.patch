@@ -1,0 +1,62 @@
+--- qgis-3.2.1/python/CMakeLists.txt.orig	2018-07-28 21:05:44.650275372 +0100
++++ qgis-3.2.1/python/CMakeLists.txt	2018-07-28 21:06:31.702276533 +0100
+@@ -174,7 +174,7 @@ FILE(GLOB_RECURSE sip_files_core core/*.
+ SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core})
+ SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.core.api)
+ IF((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
+-  SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -n sip)
++  SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -n PyQt5.sip)
+ ENDIF((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
+ IF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+   SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -y ${QGIS_PYTHON_OUTPUT_DIRECTORY}/_core.pyi)
+@@ -198,7 +198,7 @@ IF (WITH_GUI)
+   SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_gui})
+   SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.gui.api)
+   IF((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
+-    SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -n sip)
++    SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -n PyQt5.sip)
+   ENDIF((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
+   IF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+     SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -y ${QGIS_PYTHON_OUTPUT_DIRECTORY}/_gui.pyi)
+@@ -227,7 +227,7 @@ IF (WITH_SERVER AND WITH_SERVER_PLUGINS)
+   SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_server})
+   SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.server.api)
+   IF((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
+-    SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -n sip)
++    SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -n PyQt5.sip)
+   ENDIF((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
+   IF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+     SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -y ${QGIS_PYTHON_OUTPUT_DIRECTORY}/_server.pyi)
+@@ -257,7 +257,7 @@ FILE(GLOB_RECURSE sip_files_analysis ana
+ SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
+ SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
+ IF((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
+-  SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -n sip)
++  SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -n PyQt5.sip)
+ ENDIF((${SIP_VERSION_STR} VERSION_EQUAL 4.19.11) OR (${SIP_VERSION_STR} VERSION_GREATER 4.19.11))
+ IF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+   SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -y ${QGIS_PYTHON_OUTPUT_DIRECTORY}/_analysis.pyi)
+diff -rup qgis-3.2.1.orig/python/plugins/processing/gui/NumberInputPanel.py qgis-3.2.1/python/plugins/processing/gui/NumberInputPanel.py
+--- qgis-3.2.1.orig/python/plugins/processing/gui/NumberInputPanel.py	2018-07-20 13:00:05.000000000 +0100
++++ qgis-3.2.1/python/plugins/processing/gui/NumberInputPanel.py	2018-07-29 06:01:51.016024892 +0100
+@@ -27,7 +27,7 @@ __revision__ = '1edf372fb80f2a35c77b128d
+ 
+ import os
+ import math
+-import sip
++import PyQt5.sip as sip
+ import warnings
+ 
+ from qgis.PyQt import uic
+diff -rup qgis-3.2.1.orig/src/python/qgspythonutilsimpl.cpp qgis-3.2.1/src/python/qgspythonutilsimpl.cpp
+--- qgis-3.2.1.orig/src/python/qgspythonutilsimpl.cpp	2018-07-20 13:00:05.000000000 +0100
++++ qgis-3.2.1/src/python/qgspythonutilsimpl.cpp	2018-07-29 06:03:57.048028001 +0100
+@@ -104,7 +104,7 @@ bool QgsPythonUtilsImpl::checkSystemImpo
+   runString( "sys.path = [" + newpaths.join( QStringLiteral( "," ) ) + "] + sys.path" );
+ 
+   // import SIP
+-  if ( !runString( QStringLiteral( "import sip" ),
++  if ( !runString( QStringLiteral( "import PyQt5.sip as sip" ),
+                    QObject::tr( "Couldn't load SIP module." ) + '\n' + QObject::tr( "Python support will be disabled." ) ) )
+   {
+     return false;

@@ -528,6 +528,18 @@ QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParam
     return layer;
   }
 
+  if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+    val = fromVar.sink;
+  }
+
+  if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  {
+    val = val.value< QgsProperty >().staticValue();
+  }
+
   if ( !val.isValid() || val.toString().isEmpty() )
   {
     // fall back to default

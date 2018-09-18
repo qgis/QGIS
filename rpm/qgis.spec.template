@@ -46,6 +46,10 @@ Source5:        %{name}-mime.xml
 # https://github.com/qgis/QGIS/commit/718581ffb12b723f9a3c0ae01b7ec2d8aed9d4bb.patch
 Patch0:         %{name}-lib64.patch
 
+# Fix build error "PyCapsule_GetPointer called with incorrect name" on >=F29
+# https://issues.qgis.org/issues/19476
+Patch1:         %{name}-fix-sip-name.patch
+
 # Compiling stuff
 BuildRequires: bison
 BuildRequires: clang
@@ -184,6 +188,9 @@ Please refer to %{name}-server-README.fedora for details!
 %prep
 %setup -q
 %patch0 -p0 -b .lib64
+%if 0%{?fedora} >= 29
+%patch1 -p1
+%endif
 
 # Remove executable permissions from source code files
 find . \( -name "*.cpp" -o -name "*.h" \) -type f -perm /111 -execdir chmod -x {} \+

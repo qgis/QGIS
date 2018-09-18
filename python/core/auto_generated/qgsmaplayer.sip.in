@@ -94,31 +94,6 @@ This is the base class for all map layer types (vector, raster).
     typedef QFlags<QgsMapLayer::StyleCategory> StyleCategories;
 
 
-    struct ReadableStyleCategory
-    {
-      public:
-        ReadableStyleCategory( const QString &name, const QString &toolTip = QString() );
-%Docstring
-Create a ReadableStyleCategory
-%End
-        ReadableStyleCategory( const QString &name, const QIcon &icon, const QString &toolTip = QString() );
-%Docstring
-Create a ReadableStyleCategory
-%End
-        QString name() const;
-%Docstring
-Return the translated name of the category
-%End
-        QString toolTip() const;
-%Docstring
-Return the translated tooltip of the category
-%End
-        QIcon icon() const;
-%Docstring
-Return the icon of the category
-%End
-    };
-
     QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString(), const QString &source = QString() );
 %Docstring
 Constructor for QgsMapLayer
@@ -180,15 +155,6 @@ Returns the extension of a Property.
 
 .. versionadded:: 3.0
 %End
-
-    static ReadableStyleCategory readableStyleCategory( StyleCategory category );
-%Docstring
-Readable and Translated category
-
-.. versionadded:: 3.4
-%End
-
-
 
     QString id() const;
 %Docstring

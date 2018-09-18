@@ -116,7 +116,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Gradient colors</string>
+      <string>Gradient Colors</string>
      </property>
     </widget>
    </item>
@@ -390,7 +390,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Shading style</string>
+      <string>Shading Style</string>
      </property>
     </widget>
    </item>

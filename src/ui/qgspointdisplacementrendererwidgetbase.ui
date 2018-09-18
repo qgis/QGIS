@@ -142,7 +142,7 @@
    <item row="4" column="0" colspan="2">
     <widget class="QPushButton" name="mRendererSettingsButton">
      <property name="text">
-      <string>Renderer settings...</string>
+      <string>Renderer Settings...</string>
      </property>
     </widget>
    </item>
@@ -193,7 +193,7 @@
    <item row="8" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBoxBasic" name="mDisplacementCirclesGroupBox">
      <property name="title">
-      <string>Displacement lines</string>
+      <string>Displacement Lines</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="2" column="1">
