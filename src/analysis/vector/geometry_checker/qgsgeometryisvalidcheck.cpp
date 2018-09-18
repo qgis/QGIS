@@ -30,6 +30,8 @@ QList<QgsWkbTypes::GeometryType> QgsGeometryIsValidCheck::compatibleGeometryType
 
 QList<QgsSingleGeometryCheckError *> QgsGeometryIsValidCheck::processGeometry( const QgsGeometry &geometry ) const
 {
+  Q_UNUSED( configuration )
+
   QVector<QgsGeometry::Error> errors;
 
   QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
