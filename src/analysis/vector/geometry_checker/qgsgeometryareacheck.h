@@ -25,7 +25,7 @@ class QgsSurface;
 class ANALYSIS_EXPORT QgsGeometryAreaCheck : public QgsGeometryCheck
 {
   public:
-    QgsGeometryAreaCheck( QgsGeometryCheckerContext *context, double thresholdMapUnits )
+    QgsGeometryAreaCheck( QgsGeometryCheckContext *context, double thresholdMapUnits )
       : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PolygonGeometry}, context )
     , mThresholdMapUnits( thresholdMapUnits )
     {}

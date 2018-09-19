@@ -32,27 +32,6 @@ class QgsFeaturePool;
 
 #define FEATUREID_NULL std::numeric_limits<QgsFeatureId>::min()
 
-struct ANALYSIS_EXPORT QgsGeometryCheckerContext
-{
-    QgsGeometryCheckerContext( int precision, const QgsCoordinateReferenceSystem &mapCrs, const QMap<QString, QgsFeaturePool *> &featurePools, const QgsCoordinateTransformContext &transformContext );
-    const double tolerance;
-    const double reducedTolerance;
-    const QgsCoordinateReferenceSystem mapCrs;
-    const QMap<QString, QgsFeaturePool *> featurePools;
-    const QgsCoordinateTransformContext transformContext;
-    const QgsCoordinateTransform &layerTransform( const QPointer<QgsVectorLayer> &layer ) SIP_SKIP;
-    double layerScaleFactor( const QPointer<QgsVectorLayer> &layer ) SIP_SKIP;
-
-  private:
-#ifdef SIP_RUN
-    QgsGeometryCheckerContext( const QgsGeometryCheckerContext &rh )
-    {}
-#endif
-    QMap<QPointer<QgsVectorLayer>, QgsCoordinateTransform> mTransformCache;
-    QMap<QPointer<QgsVectorLayer>, double> mScaleFactorCache;
-    QReadWriteLock mCacheLock;
-};
-
 class ANALYSIS_EXPORT QgsGeometryCheck
 {
     Q_GADGET
@@ -136,7 +115,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
 
     typedef QMap<QString, QMap<QgsFeatureId, QList<Change> > > Changes;
 
-    QgsGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, QgsGeometryCheckerContext *context )
+    QgsGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, QgsGeometryCheckContext *context )
       : mCheckType( checkType )
       , mCompatibleGeometryTypes( compatibleGeometryTypes )
       , mContext( context )
@@ -155,7 +134,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     virtual QString errorName() const = 0;
     CheckType checkType() const { return mCheckType; }
     bool isCompatible( QgsWkbTypes::GeometryType type ) const { return mCompatibleGeometryTypes.contains( type ); }
-    QgsGeometryCheckerContext *context() const { return mContext; }
+    QgsGeometryCheckContext *context() const { return mContext; }
 
   protected:
     QMap<QString, QgsFeatureIds> allLayerFeatureIds() const SIP_SKIP;
@@ -165,7 +144,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
 
     const CheckType mCheckType;
     QList<QgsWkbTypes::GeometryType> mCompatibleGeometryTypes;
-    QgsGeometryCheckerContext *mContext;
+    QgsGeometryCheckContext *mContext;
 };
 
 

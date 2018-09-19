@@ -11,21 +11,24 @@
 
 
 
-struct QgsGeometryCheckerContext
-{
-    QgsGeometryCheckerContext( int precision, const QgsCoordinateReferenceSystem &mapCrs, const QMap<QString, QgsFeaturePool *> &featurePools, const QgsCoordinateTransformContext &transformContext );
-    const double tolerance;
-    const double reducedTolerance;
-    const QgsCoordinateReferenceSystem mapCrs;
-    const QMap<QString, QgsFeaturePool *> featurePools;
-    const QgsCoordinateTransformContext transformContext;
-
-  private:
-    QgsGeometryCheckerContext( const QgsGeometryCheckerContext &rh );
-};
-
 class QgsGeometryCheck
 {
+%Docstring
+*************************************************************************
+qgsgeometrycheck.h
+---------------------
+begin                : September 2014
+copyright            : (C) 2014 by Sandro Mani / Sourcepole AG
+email                : smani at sourcepole dot ch
+**************************************************************************
+
+This program is free software; you can redistribute it and/or modify  *
+it under the terms of the GNU General Public License as published by  *
+the Free Software Foundation; either version 2 of the License, or     *
+(at your option) any later version.                                   *
+
+**************************************************************************
+%End
 
 %TypeHeaderCode
 #include "qgsgeometrycheck.h"
@@ -84,7 +87,7 @@ class QgsGeometryCheck
 
     typedef QMap<QString, QMap<QgsFeatureId, QList<Change> > > Changes;
 
-    QgsGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, QgsGeometryCheckerContext *context );
+    QgsGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, QgsGeometryCheckContext *context );
     virtual ~QgsGeometryCheck();
     virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = 0, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
 
@@ -93,7 +96,7 @@ class QgsGeometryCheck
     virtual QString errorName() const = 0;
     CheckType checkType() const;
     bool isCompatible( QgsWkbTypes::GeometryType type ) const;
-    QgsGeometryCheckerContext *context() const;
+    QgsGeometryCheckContext *context() const;
 
   protected:
 

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryduplicatenodescheck.h"
 #include "qgsgeometryutils.h"
 #include "qgsfeaturepool.h"

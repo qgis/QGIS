@@ -21,6 +21,7 @@
 #include <QDialogButtonBox>
 #include <QPlainTextEdit>
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerresulttab.h"
 #include "qgsgeometrycheckfixdialog.h"
 

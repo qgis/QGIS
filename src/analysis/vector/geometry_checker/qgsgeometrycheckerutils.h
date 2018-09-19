@@ -21,11 +21,11 @@
 #include "qgsfeature.h"
 #include "geometry/qgsabstractgeometry.h"
 #include "geometry/qgspoint.h"
+#include "qgsgeometrycheckcontext.h"
 #include <qmath.h>
 
 class QgsGeometryEngine;
 class QgsFeaturePool;
-struct QgsGeometryCheckerContext;
 class QgsFeedback;
 
 class ANALYSIS_EXPORT QgsGeometryCheckerUtils
@@ -41,7 +41,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
          * If \a useMapCrs is True, geometries will be reprojected to the mapCrs defined
          * in \a context.
          */
-        LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, QgsGeometryCheckerContext *context, bool useMapCrs );
+        LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, QgsGeometryCheckContext *context, bool useMapCrs );
 
         /**
          * Returns the feature.
@@ -89,13 +89,13 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
                        const QMap<QString, QgsFeatureIds> &featureIds,
                        const QList<QgsWkbTypes::GeometryType> &geometryTypes,
                        QgsFeedback *feedback,
-                       QgsGeometryCheckerContext *context,
+                       QgsGeometryCheckContext *context,
                        bool useMapCrs = false );
 
         LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
                        const QList<QString> &layerIds, const QgsRectangle &extent,
                        const QList<QgsWkbTypes::GeometryType> &geometryTypes,
-                       QgsGeometryCheckerContext *context );
+                       QgsGeometryCheckContext *context );
 
         class iterator
         {
@@ -132,7 +132,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
         QgsRectangle mExtent;
         QList<QgsWkbTypes::GeometryType> mGeometryTypes;
         QgsFeedback *mFeedback = nullptr;
-        QgsGeometryCheckerContext *mContext = nullptr;
+        QgsGeometryCheckContext *mContext = nullptr;
         bool mUseMapCrs = true;
     };
 

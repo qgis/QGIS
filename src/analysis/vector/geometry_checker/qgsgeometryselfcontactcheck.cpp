@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryselfcontactcheck.h"
 #include "qgsgeometryutils.h"
 #include "qgsfeaturepool.h"

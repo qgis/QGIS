@@ -25,7 +25,7 @@
 #include "qgsgeometrycheck.h"
 
 class QgsGeometryCheckFactory;
-struct QgsGeometryCheckerContext;
+struct QgsGeometryCheckContext;
 
 
 /**
@@ -54,7 +54,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckRegistry
      */
     ~QgsGeometryCheckRegistry();
 
-    QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckerContext *context, const QVariantMap &geometryCheckConfig ) SIP_TRANSFER;
+    QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfig ) SIP_TRANSFER;
 
     /**
      * Get all geometry check factories that are compatible with \a layer and have all of the \a flags set.

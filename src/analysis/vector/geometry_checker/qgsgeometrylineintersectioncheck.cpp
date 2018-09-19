@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrylineintersectioncheck.h"
 #include "qgslinestring.h"
 #include "qgsvectorlayer.h"

@@ -23,7 +23,7 @@
 class ANALYSIS_EXPORT QgsGeometryPointInPolygonCheck : public QgsGeometryCheck
 {
   public:
-    QgsGeometryPointInPolygonCheck( QgsGeometryCheckerContext *context )
+    QgsGeometryPointInPolygonCheck( QgsGeometryCheckContext *context )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::PointGeometry}, context )
     {}
     void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;

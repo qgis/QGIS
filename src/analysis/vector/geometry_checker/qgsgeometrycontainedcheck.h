@@ -50,7 +50,7 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckEr
 class ANALYSIS_EXPORT QgsGeometryContainedCheck : public QgsGeometryCheck
 {
   public:
-    explicit QgsGeometryContainedCheck( QgsGeometryCheckerContext *context )
+    explicit QgsGeometryContainedCheck( QgsGeometryCheckContext *context )
       : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
     void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;

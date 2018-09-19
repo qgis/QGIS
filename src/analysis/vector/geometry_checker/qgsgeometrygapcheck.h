@@ -75,7 +75,7 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
 class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
 {
   public:
-    QgsGeometryGapCheck( QgsGeometryCheckerContext *context, double thresholdMapUnits )
+    QgsGeometryGapCheck( QgsGeometryCheckContext *context, double thresholdMapUnits )
       : QgsGeometryCheck( LayerCheck, {QgsWkbTypes::PolygonGeometry}, context )
     , mThresholdMapUnits( thresholdMapUnits )
     {}

@@ -23,7 +23,7 @@
 class ANALYSIS_EXPORT QgsGeometrySegmentLengthCheck : public QgsGeometryCheck
 {
   public:
-    QgsGeometrySegmentLengthCheck( QgsGeometryCheckerContext *context, double minLengthMapUnits )
+    QgsGeometrySegmentLengthCheck( QgsGeometryCheckContext *context, double minLengthMapUnits )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context )
     , mMinLengthMapUnits( minLengthMapUnits )
     {}

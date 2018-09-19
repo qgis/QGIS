@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheck.h"
 #include "qgsfeaturepool.h"
@@ -26,7 +27,7 @@
 #include <QTimer>
 
 
-QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckerContext *context )
+QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckContext *context )
   : mChecks( checks )
   , mContext( context )
 {

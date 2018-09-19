@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrysegmentlengthcheck.h"
 #include "qgsgeometryutils.h"
 #include "qgsfeaturepool.h"

@@ -27,7 +27,7 @@
 class QgsGeometryCheck;
 class QgsSingleGeometryCheck;
 
-struct QgsGeometryCheckerContext;
+struct QgsGeometryCheckContext;
 
 /**
  * \ingroup analysis
@@ -43,7 +43,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
      */
     virtual ~QgsGeometryCheckFactory() = default;
 
-    virtual QgsGeometryCheck *createGeometryCheck( QgsGeometryCheckerContext *context, const QVariantMap &geometryCheckConfiguration ) const = 0 SIP_FACTORY;
+    virtual QgsGeometryCheck *createGeometryCheck( QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfiguration ) const = 0 SIP_FACTORY;
 
     virtual QgsSingleGeometryCheck *createSingleGeometryCheck( const QString &checkId ) const = 0 SIP_FACTORY;
 
@@ -58,7 +58,7 @@ template<class T>
 class QgsGeometryCheckFactoryT : public QgsGeometryCheckFactory
 {
   public:
-    QgsGeometryCheck *createGeometryCheck( QgsGeometryCheckerContext *context, const QVariantMap &geometryCheckConfiguration ) const override
+    QgsGeometryCheck *createGeometryCheck( QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfiguration ) const override
     {
       return new T( context, geometryCheckConfiguration );
     }

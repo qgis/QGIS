@@ -26,7 +26,7 @@ email                : matthias@opengis.ch
 class ANALYSIS_EXPORT QgsIsValidGeometryCheck : public QgsSingleGeometryCheck
 {
   public:
-    explicit QgsIsValidGeometryCheck( QgsGeometryCheckerContext *context )
+    explicit QgsIsValidGeometryCheck( QgsGeometryCheckContext *context )
       : QgsSingleGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
 
     QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const override;

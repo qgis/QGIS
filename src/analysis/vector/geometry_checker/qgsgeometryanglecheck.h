@@ -23,7 +23,7 @@
 class ANALYSIS_EXPORT QgsGeometryAngleCheck : public QgsGeometryCheck
 {
   public:
-    QgsGeometryAngleCheck( QgsGeometryCheckerContext *context, double minAngle )
+    QgsGeometryAngleCheck( QgsGeometryCheckContext *context, double minAngle )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context )
     , mMinAngle( minAngle )
     {}

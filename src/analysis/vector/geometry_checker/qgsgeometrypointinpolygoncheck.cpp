@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrypointinpolygoncheck.h"
 #include "qgspolygon.h"
 #include "qgsgeometryengine.h"

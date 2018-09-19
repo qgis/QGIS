@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrydegeneratepolygoncheck.h"
 #include "qgsfeaturepool.h"
 

@@ -23,7 +23,7 @@
 class ANALYSIS_EXPORT QgsGeometryHoleCheck : public QgsGeometryCheck
 {
   public:
-    explicit QgsGeometryHoleCheck( QgsGeometryCheckerContext *context )
+    explicit QgsGeometryHoleCheck( QgsGeometryCheckContext *context )
       : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PolygonGeometry}, context ) {}
     void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;

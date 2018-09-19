@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrypointcoveredbylinecheck.h"
 #include "qgslinestring.h"
 #include "qgsfeaturepool.h"

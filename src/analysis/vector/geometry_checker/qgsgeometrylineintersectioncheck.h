@@ -23,7 +23,7 @@
 class ANALYSIS_EXPORT QgsGeometryLineIntersectionCheck : public QgsGeometryCheck
 {
   public:
-    QgsGeometryLineIntersectionCheck( QgsGeometryCheckerContext *context )
+    QgsGeometryLineIntersectionCheck( QgsGeometryCheckContext *context )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry}, context )
     {}
     void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;

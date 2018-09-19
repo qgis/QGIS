@@ -33,7 +33,7 @@ QgsGeometryCheckRegistry::~QgsGeometryCheckRegistry()
   qDeleteAll( mGeometryCheckFactories.values() );
 }
 
-QgsGeometryCheck *QgsGeometryCheckRegistry::geometryCheck( const QString &checkId, QgsGeometryCheckerContext *context, const QVariantMap &geometryCheckConfig )
+QgsGeometryCheck *QgsGeometryCheckRegistry::geometryCheck( const QString &checkId, QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfig )
 {
   QgsGeometryCheckFactory *factory = mGeometryCheckFactories.value( checkId );
   if ( factory )

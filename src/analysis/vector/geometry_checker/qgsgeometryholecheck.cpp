@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryholecheck.h"
 #include "qgscurve.h"
 #include "qgscurvepolygon.h"

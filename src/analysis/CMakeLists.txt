@@ -141,6 +141,7 @@ SET(QGIS_ANALYSIS_SRCS
   vector/geometry_checker/qgsgeometryanglecheck.cpp
   vector/geometry_checker/qgsgeometryareacheck.cpp
   vector/geometry_checker/qgsgeometrycheck.cpp
+  vector/geometry_checker/qgsgeometrycheckcontext.cpp
   vector/geometry_checker/qgssinglegeometrycheck.cpp
   vector/geometry_checker/qgsgeometrychecker.cpp
   vector/geometry_checker/qgsgeometrycheckerutils.cpp
@@ -278,6 +279,7 @@ SET(QGIS_ANALYSIS_HDRS
   vector/geometry_checker/qgsgeometryanglecheck.h
   vector/geometry_checker/qgsgeometryareacheck.h
   vector/geometry_checker/qgsgeometrychecker.h
+  vector/geometry_checker/qgsgeometrycheckcontext.h
   vector/geometry_checker/qgssinglegeometrycheck.h
   vector/geometry_checker/qgsgeometrycontainedcheck.h
   vector/geometry_checker/qgsgeometrydanglecheck.h
