@@ -22,62 +22,48 @@
 #include "qgsgeometryutils.h"
 #include "qgsfeaturepool.h"
 
-bool QgsGeometrySelfIntersectionCheckError::isEqual( QgsGeometryCheckError *other ) const
+bool QgsGeometrySelfIntersectionCheckError::isEqual( const QgsSingleGeometryCheckError *other ) const
 {
-  return QgsGeometryCheckError::isEqual( other ) &&
-         static_cast<QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment1 == intersection().segment1 &&
-         static_cast<QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment2 == intersection().segment2;
+  return QgsSingleGeometryCheckError::isEqual( other ) &&
+         static_cast<const QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment1 == intersection().segment1 &&
+         static_cast<const QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment2 == intersection().segment2;
 }
 
-bool QgsGeometrySelfIntersectionCheckError::handleChanges( const QgsGeometryCheck::Changes &changes )
+bool QgsGeometrySelfIntersectionCheckError::handleChanges( const QList<QgsGeometryCheck::Change> &changes )
 {
-  if ( !QgsGeometryCheckError::handleChanges( changes ) )
-  {
+  if ( !QgsSingleGeometryCheckError::handleChanges( changes ) )
     return false;
-  }
-  for ( const QgsGeometryCheck::Change &change : changes[layerId()].value( featureId() ) )
+
+  for ( const QgsGeometryCheck::Change &change : changes )
   {
-    if ( change.vidx.vertex == mInter.segment1 ||
-         change.vidx.vertex == mInter.segment1 + 1 ||
-         change.vidx.vertex == mInter.segment2 ||
-         change.vidx.vertex == mInter.segment2 + 1 )
+    if ( change.vidx.vertex == mIntersection.segment1 ||
+         change.vidx.vertex == mIntersection.segment1 + 1 ||
+         change.vidx.vertex == mIntersection.segment2 ||
+         change.vidx.vertex == mIntersection.segment2 + 1 )
     {
       return false;
     }
     else if ( change.vidx.vertex >= 0 )
     {
-      if ( change.vidx.vertex < mInter.segment1 )
+      if ( change.vidx.vertex < mIntersection.segment1 )
       {
-        mInter.segment1 += change.type == QgsGeometryCheck::ChangeAdded ? 1 : -1;
+        mIntersection.segment1 += change.type == QgsGeometryCheck::ChangeAdded ? 1 : -1;
       }
-      if ( change.vidx.vertex < mInter.segment2 )
+      if ( change.vidx.vertex < mIntersection.segment2 )
       {
-        mInter.segment2 += change.type == QgsGeometryCheck::ChangeAdded ? 1 : -1;
+        mIntersection.segment2 += change.type == QgsGeometryCheck::ChangeAdded ? 1 : -1;
       }
     }
   }
   return true;
 }
 
-
-void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+void QgsGeometrySelfIntersectionCheckError::update( const QgsSingleGeometryCheckError *other )
 {
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, mContext );
-  for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
-  {
-    const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
-    for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
-    {
-      for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
-      {
-        for ( const QgsGeometryUtils::SelfIntersection &inter : QgsGeometryUtils::selfIntersections( geom, iPart, iRing, mContext->tolerance ) )
-        {
-          errors.append( new QgsGeometrySelfIntersectionCheckError( this, layerFeature, inter.point, QgsVertexId( iPart, iRing ), inter ) );
-        }
-      }
-    }
-  }
+  QgsSingleGeometryCheckError::update( other );
+  // Static cast since this should only get called if isEqual == true
+  const QgsGeometrySelfIntersectionCheckError *err = static_cast<const QgsGeometrySelfIntersectionCheckError *>( other );
+  mIntersection.point = err->mIntersection.point;
 }
 
 void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
@@ -89,9 +75,11 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
     error->setObsolete();
     return;
   }
+
   QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometry *geom = featureGeom.get();
-  QgsVertexId vidx = error->vidx();
+
+  const QgsVertexId vidx = error->vidx();
 
   // Check if ring still exists
   if ( !vidx.isValid( geom ) )
@@ -100,7 +88,8 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
     return;
   }
 
-  const QgsGeometryUtils::SelfIntersection &inter = static_cast<QgsGeometrySelfIntersectionCheckError *>( error )->intersection();
+  const QgsGeometryCheckErrorSingle *singleError = static_cast<const QgsGeometryCheckErrorSingle *>( error );
+  const QgsGeometryUtils::SelfIntersection &inter = static_cast<const QgsGeometrySelfIntersectionCheckError *>( singleError->singleError() )->intersection();
   // Check if error still applies
   bool ringIsClosed = false;
   int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring, &ringIsClosed );
@@ -324,4 +313,23 @@ QStringList QgsGeometrySelfIntersectionCheck::resolutionMethods() const
                                << tr( "Split feature into multiple single-object features" )
                                << tr( "No action" );
   return methods;
+}
+
+QList<QgsSingleGeometryCheckError *> QgsGeometrySelfIntersectionCheck::processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const
+{
+  Q_UNUSED( configuration )
+
+  QList<QgsSingleGeometryCheckError *> errors;
+  const QgsAbstractGeometry *geom = geometry.constGet();
+  for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
+  {
+    for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
+    {
+      for ( const QgsGeometryUtils::SelfIntersection &inter : QgsGeometryUtils::selfIntersections( geom, iPart, iRing, mContext->tolerance ) )
+      {
+        errors.append( new QgsGeometrySelfIntersectionCheckError( this, geometry, QgsGeometry( inter.point.clone() ), QgsVertexId( iPart, iRing ), inter ) );
+      }
+    }
+  }
+  return errors;
 }

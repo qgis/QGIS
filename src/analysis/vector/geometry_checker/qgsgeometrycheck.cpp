@@ -127,6 +127,32 @@ QgsRectangle QgsGeometryCheckError::affectedAreaBBox() const
   return mGeometry.boundingBox();
 }
 
+void QgsGeometryCheckError::setFixed( int method )
+{
+  mStatus = StatusFixed;
+  const QStringList methods = mCheck->resolutionMethods();
+  mResolutionMessage = methods[method];
+}
+
+void QgsGeometryCheckError::setFixFailed( const QString &reason )
+{
+  mStatus = StatusFixFailed;
+  mResolutionMessage = reason;
+}
+
+bool QgsGeometryCheckError::isEqual( QgsGeometryCheckError *other ) const
+{
+  return other->check() == check() &&
+         other->layerId() == layerId() &&
+         other->featureId() == featureId() &&
+         other->vidx() == vidx();
+}
+
+bool QgsGeometryCheckError::closeMatch( QgsGeometryCheckError * ) const
+{
+  return false;
+}
+
 bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &changes )
 {
   if ( status() == StatusObsolete )
@@ -276,4 +302,15 @@ void QgsGeometryCheck::deleteFeatureGeometryRing( const QString &layerId, QgsFea
   {
     deleteFeatureGeometryPart( layerId, feature, partIdx, changes );
   }
+}
+
+void QgsGeometryCheckError::update( const QgsGeometryCheckError *other )
+{
+  Q_ASSERT( mCheck == other->mCheck );
+  Q_ASSERT( mLayerId == other->mLayerId );
+  Q_ASSERT( mFeatureId == other->mFeatureId );
+  mErrorLocation = other->mErrorLocation;
+  mVidx = other->mVidx;
+  mValue = other->mValue;
+  mGeometry = other->mGeometry;
 }
