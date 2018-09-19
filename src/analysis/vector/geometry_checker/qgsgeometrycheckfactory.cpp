@@ -17,7 +17,12 @@
 
 #include "qgis.h"
 
-QgsGeometryCheck::CheckType QgsGeometryCheckFactory::flags() const
+bool QgsGeometryCheckFactory::isCompatible( QgsVectorLayer *layer ) const
 {
-  return QgsGeometryCheck::FeatureNodeCheck;
+  return true;
+}
+
+QgsGeometryCheck::Flags QgsGeometryCheckFactory::flags() const
+{
+  return nullptr;
 }

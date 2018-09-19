@@ -64,6 +64,9 @@
 #include "qgsvectorlayersavestyledialog.h"
 #include "qgsvectorlayerloadstyledialog.h"
 #include "qgsmessagebar.h"
+#include "qgsgeometrycheckregistry.h"
+#include "qgsgeometrycheck.h"
+#include "qgsanalysis.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -754,6 +757,9 @@ void QgsVectorLayerProperties::apply()
 
   mLayer->geometryOptions()->setRemoveDuplicateNodes( mRemoveDuplicateNodesCheckbox->isChecked() );
   mLayer->geometryOptions()->setGeometryPrecision( mGeometryPrecisionLineEdit->text().toDouble() );
+
+  // update symbology
+  emit refreshLegend( mLayer->id() );
 
   mLayer->triggerRepaint();
   // notify the project we've made a change
