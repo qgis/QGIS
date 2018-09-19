@@ -493,44 +493,46 @@ QWidget *QgsProcessingNumericWidgetWrapper::createWidget()
         }
         spinBox->setSpecialValueText( tr( "Not set" ) );
       }
-
-      if ( numberDef->defaultValue().isValid() )
+      else
       {
-        // if default value for parameter, we clear to that
-        bool ok = false;
-        if ( mDoubleSpinBox )
+        if ( numberDef->defaultValue().isValid() )
         {
-          double defaultVal = numberDef->defaultValue().toDouble( &ok );
-          if ( ok )
-            mDoubleSpinBox->setClearValue( defaultVal );
+          // if default value for parameter, we clear to that
+          bool ok = false;
+          if ( mDoubleSpinBox )
+          {
+            double defaultVal = numberDef->defaultValue().toDouble( &ok );
+            if ( ok )
+              mDoubleSpinBox->setClearValue( defaultVal );
+          }
+          else
+          {
+            int intVal = numberDef->defaultValue().toInt( &ok );
+            if ( ok )
+              mSpinBox->setClearValue( intVal );
+          }
+        }
+        else if ( !qgsDoubleNear( numberDef->minimum(), std::numeric_limits<double>::lowest() ) )
+        {
+          // otherwise we clear to the minimum, if it's set
+          if ( mDoubleSpinBox )
+            mDoubleSpinBox->setClearValue( numberDef->minimum() );
+          else
+            mSpinBox->setClearValue( static_cast< int >( numberDef->minimum() ) );
         }
         else
         {
-          int intVal = numberDef->defaultValue().toInt( &ok );
-          if ( ok )
-            mSpinBox->setClearValue( intVal );
-        }
-      }
-      else if ( !qgsDoubleNear( numberDef->minimum(), std::numeric_limits<double>::lowest() ) && !mAllowingNull )
-      {
-        // otherwise we clear to the minimum, if it's set
-        if ( mDoubleSpinBox )
-          mDoubleSpinBox->setClearValue( numberDef->minimum() );
-        else
-          mSpinBox->setClearValue( static_cast< int >( numberDef->minimum() ) );
-      }
-      else if ( !mAllowingNull )
-      {
-        // last resort, we clear to 0
-        if ( mDoubleSpinBox )
-        {
-          mDoubleSpinBox->setValue( 0 );
-          mDoubleSpinBox->setClearValue( 0 );
-        }
-        else
-        {
-          mSpinBox->setValue( 0 );
-          mSpinBox->setClearValue( 0 );
+          // last resort, we clear to 0
+          if ( mDoubleSpinBox )
+          {
+            mDoubleSpinBox->setValue( 0 );
+            mDoubleSpinBox->setClearValue( 0 );
+          }
+          else
+          {
+            mSpinBox->setValue( 0 );
+            mSpinBox->setClearValue( 0 );
+          }
         }
       }
 
@@ -615,7 +617,7 @@ double QgsProcessingNumericWidgetWrapper::calculateStep( const double minimum, c
   {
     const double step = valueRange / 10.0;
     // round to 1 significant figure
-    return qgsRound( step, std::floor( std::log( step ) ) );
+    return qgsRound( step, -std::floor( std::log( step ) ) );
   }
   else
   {
