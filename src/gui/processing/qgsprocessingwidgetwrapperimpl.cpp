@@ -21,6 +21,7 @@
 #include "qgsprojectionselectionwidget.h"
 #include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
+#include "qgsprocessingcontext.h"
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QCheckBox>
@@ -633,6 +634,149 @@ QString QgsProcessingNumericWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingNumericWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingNumericWidgetWrapper( parameter, type );
+}
+
+//
+// QgsProcessingDistanceWidgetWrapper
+//
+
+QgsProcessingDistanceWidgetWrapper::QgsProcessingDistanceWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsProcessingNumericWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QString QgsProcessingDistanceWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterDistance::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingDistanceWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingDistanceWidgetWrapper( parameter, type );
+}
+
+QWidget *QgsProcessingDistanceWidgetWrapper::createWidget()
+{
+  QWidget *spin = QgsProcessingNumericWidgetWrapper::createWidget();
+
+  mLabel = new QLabel();
+  mUnitsCombo = new QComboBox();
+
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMeters ), QgsUnitTypes::DistanceMeters );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceKilometers ), QgsUnitTypes::DistanceKilometers );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceFeet ), QgsUnitTypes::DistanceFeet );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMiles ), QgsUnitTypes::DistanceMiles );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceYards ), QgsUnitTypes::DistanceYards );
+
+  const double labelMargin = mUnitsCombo->fontMetrics().width( 'X' );
+  QHBoxLayout *layout = new QHBoxLayout();
+  layout->addWidget( spin, 1 );
+  layout->insertSpacing( 1, labelMargin / 2 );
+  layout->insertWidget( 2, mLabel );
+  layout->insertWidget( 3, mUnitsCombo );
+  layout->insertSpacing( 4, labelMargin / 2 );
+
+  mWarningLabel = new QLabel();
+  QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
+  const int size = static_cast< int >( std::max( 24.0, spin->height() * 0.5 ) );
+  mWarningLabel->setPixmap( icon.pixmap( icon.actualSize( QSize( size, size ) ) ) );
+  mWarningLabel->setToolTip( tr( "Distance is in geographic degrees. Consider reprojecting to a projected local coordinate system for accurate results." ) );
+  layout->insertWidget( 4, mWarningLabel );
+  layout->insertSpacing( 5, labelMargin );
+
+  setUnits( QgsUnitTypes::DistanceUnknownUnit );
+
+  QWidget *w = new QWidget();
+  layout->setMargin( 0 );
+  layout->setContentsMargins( 0, 0, 0, 0 );
+  w->setLayout( layout );
+  return w;
+}
+
+void QgsProcessingDistanceWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  QgsProcessingNumericWidgetWrapper::postInitialize( wrappers );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Standard:
+    {
+      for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
+      {
+        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterDistance * >( parameterDefinition() )->parentParameterName() )
+        {
+          setUnitParameterValue( wrapper->parameterValue() );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
+          {
+            setUnitParameterValue( wrapper->parameterValue() );
+          } );
+          break;
+        }
+      }
+      break;
+    }
+
+    case QgsProcessingGui::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingDistanceWidgetWrapper::setUnitParameterValue( const QVariant &value )
+{
+  QgsUnitTypes::DistanceUnit units = QgsUnitTypes::DistanceUnknownUnit;
+
+  // evaluate value to layer
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  QgsCoordinateReferenceSystem crs = QgsProcessingParameters::parameterAsCrs( parameterDefinition(), value, *context );
+  if ( crs.isValid() )
+  {
+    units = crs.mapUnits();
+  }
+
+  setUnits( units );
+}
+
+void QgsProcessingDistanceWidgetWrapper::setUnits( const QgsUnitTypes::DistanceUnit units )
+{
+  mLabel->setText( QgsUnitTypes::toString( units ) );
+  if ( QgsUnitTypes::unitType( units ) != QgsUnitTypes::Standard )
+  {
+    mUnitsCombo->hide();
+    mLabel->show();
+  }
+  else
+  {
+    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( units ) );
+    mUnitsCombo->show();
+    mLabel->hide();
+    mWarningLabel->setVisible( units == QgsUnitTypes::DistanceDegrees );
+    mBaseUnit = units;
+  }
+}
+
+QVariant QgsProcessingDistanceWidgetWrapper::widgetValue() const
+{
+  const QVariant val = QgsProcessingNumericWidgetWrapper::widgetValue();
+  if ( val.type() == QVariant::Double && mUnitsCombo->isVisible() )
+  {
+    QgsUnitTypes::DistanceUnit displayUnit = static_cast<QgsUnitTypes::DistanceUnit >( mUnitsCombo->currentData().toInt() );
+    return val.toDouble() * QgsUnitTypes::fromUnitToUnitFactor( displayUnit, mBaseUnit );
+  }
+  else
+  {
+    return val;
+  }
 }
 
 
