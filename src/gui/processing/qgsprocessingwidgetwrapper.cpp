@@ -23,6 +23,45 @@
 #include <QLabel>
 #include <QHBoxLayout>
 
+//
+// QgsProcessingParameterWidgetContext
+//
+
+void QgsProcessingParameterWidgetContext::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMapCanvas = canvas;
+}
+
+QgsMapCanvas *QgsProcessingParameterWidgetContext::mapCanvas() const
+{
+  return mMapCanvas;
+}
+
+QString QgsProcessingParameterWidgetContext::modelChildAlgorithmId() const
+{
+  return mModelChildAlgorithmId;
+}
+
+void QgsProcessingParameterWidgetContext::setModelChildAlgorithmId( const QString &modelChildAlgorithmId )
+{
+  mModelChildAlgorithmId = modelChildAlgorithmId;
+}
+
+QgsProcessingModelAlgorithm *QgsProcessingParameterWidgetContext::model() const
+{
+  return mModel;
+}
+
+void QgsProcessingParameterWidgetContext::setModel( QgsProcessingModelAlgorithm *model )
+{
+  mModel = model;
+}
+
+
+//
+// QgsAbstractProcessingParameterWidgetWrapper
+//
+
 QgsAbstractProcessingParameterWidgetWrapper::QgsAbstractProcessingParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QObject *parent )
   : QObject( parent )
   , mType( type )
@@ -33,6 +72,16 @@ QgsAbstractProcessingParameterWidgetWrapper::QgsAbstractProcessingParameterWidge
 QgsProcessingGui::WidgetType QgsAbstractProcessingParameterWidgetWrapper::type() const
 {
   return mType;
+}
+
+void QgsAbstractProcessingParameterWidgetWrapper::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  mWidgetContext = context;
+}
+
+const QgsProcessingParameterWidgetContext &QgsAbstractProcessingParameterWidgetWrapper::widgetContext() const
+{
+  return mWidgetContext;
 }
 
 QWidget *QgsAbstractProcessingParameterWidgetWrapper::createWrappedWidget( QgsProcessingContext &context )
@@ -222,3 +271,4 @@ QString QgsProcessingParameterWidgetFactoryInterface::modelerExpressionFormatStr
 {
   return QString();
 }
+
