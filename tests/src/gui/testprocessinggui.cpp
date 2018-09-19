@@ -147,6 +147,7 @@ class TestProcessingGui : public QObject
     void testCrsWrapper();
     void testNumericWrapperDouble();
     void testNumericWrapperInt();
+    void testDistanceWrapper();
 };
 
 void TestProcessingGui::initTestCase()
@@ -1147,6 +1148,167 @@ void TestProcessingGui::testNumericWrapperInt()
 
   // modeler wrapper
   testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testDistanceWrapper()
+{
+  QgsProcessingParameterDistance param( QStringLiteral( "distance" ), QStringLiteral( "distance" ) );
+
+  // standard wrapper
+  QgsProcessingDistanceWidgetWrapper wrapper( &param );
+
+  QgsProcessingContext context;
+  QWidget *w = wrapper.createWrappedWidget( context );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingDistanceWidgetWrapper::widgetValueHasChanged );
+  wrapper.setWidgetValue( 55.5, context );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( wrapper.widgetValue().toDouble(), 55.5 );
+  QCOMPARE( wrapper.mDoubleSpinBox->value(), 55.5 );
+  wrapper.setWidgetValue( -34.0, context );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( wrapper.widgetValue().toDouble(), -34.0 );
+  QCOMPARE( wrapper.mDoubleSpinBox->value(), -34.0 );
+
+  QLabel *l = wrapper.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "distance" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete l;
+
+  // check signal
+  wrapper.mDoubleSpinBox->setValue( 43.0 );
+  QCOMPARE( spy.count(), 3 );
+
+  // test unit handling
+  w->show();
+
+  // crs values
+  wrapper.setUnitParameterValue( QStringLiteral( "EPSG:3111" ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "meters" ) );
+  QVERIFY( !wrapper.mWarningLabel->isVisible() );
+  QVERIFY( wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( !wrapper.mLabel->isVisible() );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().toInt(), static_cast< int >( QgsUnitTypes::DistanceMeters ) );
+
+  wrapper.setUnitParameterValue( QStringLiteral( "EPSG:4326" ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "degrees" ) );
+  QVERIFY( wrapper.mWarningLabel->isVisible() );
+  QVERIFY( !wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( wrapper.mLabel->isVisible() );
+
+  wrapper.setUnitParameterValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "meters" ) );
+  QVERIFY( !wrapper.mWarningLabel->isVisible() );
+  QVERIFY( wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( !wrapper.mLabel->isVisible() );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().toInt(), static_cast< int >( QgsUnitTypes::DistanceMeters ) );
+
+  wrapper.setUnitParameterValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "degrees" ) );
+  QVERIFY( wrapper.mWarningLabel->isVisible() );
+  QVERIFY( !wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( wrapper.mLabel->isVisible() );
+
+  // layer values
+  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:3111&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  wrapper.setUnitParameterValue( QVariant::fromValue( vl.get() ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "meters" ) );
+  QVERIFY( !wrapper.mWarningLabel->isVisible() );
+  QVERIFY( wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( !wrapper.mLabel->isVisible() );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().toInt(), static_cast< int >( QgsUnitTypes::DistanceMeters ) );
+
+  std::unique_ptr< QgsVectorLayer > vl2 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  wrapper.setUnitParameterValue( QVariant::fromValue( vl2.get() ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "degrees" ) );
+  QVERIFY( wrapper.mWarningLabel->isVisible() );
+  QVERIFY( !wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( wrapper.mLabel->isVisible() );
+
+  // unresolvable values
+  wrapper.setUnitParameterValue( QStringLiteral( "blah" ) );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "<unknown>" ) );
+  QVERIFY( !wrapper.mWarningLabel->isVisible() );
+  QVERIFY( !wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( wrapper.mLabel->isVisible() );
+
+  // resolvable text value
+  const QString id = vl->id();
+  QgsProject::instance()->addMapLayer( vl.release() );
+  context.setProject( QgsProject::instance() );
+
+  TestProcessingContextGenerator generator( context );
+  wrapper.registerProcessingContextGenerator( &generator );
+  wrapper.setUnitParameterValue( id );
+  QCOMPARE( wrapper.mLabel->text(), QStringLiteral( "meters" ) );
+  QVERIFY( !wrapper.mWarningLabel->isVisible() );
+  QVERIFY( wrapper.mUnitsCombo->isVisible() );
+  QVERIFY( !wrapper.mLabel->isVisible() );
+  QCOMPARE( wrapper.mUnitsCombo->currentData().toInt(), static_cast< int >( QgsUnitTypes::DistanceMeters ) );
+
+  // using unit choice
+  wrapper.setParameterValue( 5, context );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 5.0 );
+  wrapper.mUnitsCombo->setCurrentIndex( wrapper.mUnitsCombo->findData( QgsUnitTypes::DistanceKilometers ) );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 5000.0 );
+  wrapper.setParameterValue( 2, context );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 2000.0 );
+
+  wrapper.setUnitParameterValue( id );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 2 );
+  wrapper.setParameterValue( 5, context );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 5.0 );
+
+  delete w;
+
+  // batch wrapper
+  QgsProcessingDistanceWidgetWrapper wrapperB( &param, QgsProcessingGui::Batch );
+
+  w = wrapperB.createWrappedWidget( context );
+  QSignalSpy spy2( &wrapperB, &QgsProcessingDistanceWidgetWrapper::widgetValueHasChanged );
+  wrapperB.setWidgetValue( 34, context );
+  QCOMPARE( spy2.count(), 1 );
+  QCOMPARE( wrapperB.widgetValue().toDouble(), 34.0 );
+  QCOMPARE( wrapperB.mDoubleSpinBox->value(), 34.0 );
+  wrapperB.setWidgetValue( -57, context );
+  QCOMPARE( spy2.count(), 2 );
+  QCOMPARE( wrapperB.widgetValue().toDouble(), -57.0 );
+  QCOMPARE( wrapperB.mDoubleSpinBox->value(), -57.0 );
+
+  // check signal
+  static_cast< QgsDoubleSpinBox * >( w )->setValue( 29 );
+  QCOMPARE( spy2.count(), 3 );
+
+  // should be no label in batch mode
+  QVERIFY( !wrapperB.createWrappedLabel() );
+  delete w;
+
+  // modeler wrapper
+  QgsProcessingDistanceWidgetWrapper wrapperM( &param, QgsProcessingGui::Modeler );
+
+  w = wrapperM.createWrappedWidget( context );
+  QSignalSpy spy3( &wrapperM, &QgsProcessingDistanceWidgetWrapper::widgetValueHasChanged );
+  wrapperM.setWidgetValue( 29, context );
+  QCOMPARE( wrapperM.widgetValue().toDouble(), 29 );
+  QCOMPARE( spy3.count(), 1 );
+  QCOMPARE( wrapperM.mDoubleSpinBox->value(), 29 );
+  wrapperM.setWidgetValue( -29, context );
+  QCOMPARE( wrapperM.widgetValue().toDouble(), -29 );
+  QCOMPARE( spy3.count(), 2 );
+  QCOMPARE( wrapperM.mDoubleSpinBox->value(), -29 );
+
+  // check signal
+  wrapperM.mDoubleSpinBox->setValue( 33 );
+  QCOMPARE( spy3.count(), 3 );
+
+  // should be a label in modeler mode
+  l = wrapperM.createWrappedLabel();
+  QVERIFY( l );
+  QCOMPARE( l->text(), QStringLiteral( "distance" ) );
+  QCOMPARE( l->toolTip(), param.toolTip() );
+  delete w;
+  delete l;
 }
 
 QGSTEST_MAIN( TestProcessingGui )
