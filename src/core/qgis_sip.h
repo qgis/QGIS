@@ -201,7 +201,7 @@
  * Sip supports the final keyword since version 4.19.0, earlier than that
  * we will have build issues because it tries to override final methods.
  */
-#if SIP_VERSION >= 0x041300
+#if SIP_VERSION < 0x041300
 #if defined FINAL
 #undef FINAL
 #endif
