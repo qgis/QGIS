@@ -26,7 +26,7 @@ class ANALYSIS_EXPORT QgsGeometryLineLayerIntersectionCheck : public QgsGeometry
     QgsGeometryLineLayerIntersectionCheck( QgsGeometryCheckerContext *context, const QString &checkLayer )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry}, context ), mCheckLayer( checkLayer )
     {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
     QString errorDescription() const override { return tr( "Intersection" ); }

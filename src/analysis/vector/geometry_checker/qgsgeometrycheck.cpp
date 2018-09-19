@@ -322,3 +322,8 @@ void QgsGeometryCheckError::update( const QgsGeometryCheckError *other )
   mValue = other->mValue;
   mGeometry = other->mGeometry;
 }
+
+QgsGeometryCheck::LayerFeatureIds::LayerFeatureIds( const QMap<QString, QgsFeatureIds> &ids )
+  : ids( ids )
+{
+}

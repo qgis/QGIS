@@ -34,14 +34,16 @@ QgsGeometryFollowBoundariesCheck::~QgsGeometryFollowBoundariesCheck()
   delete mIndex;
 }
 
-void QgsGeometryFollowBoundariesCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QgsFeedback *feedback, const QMap<QString, QgsFeatureIds> &ids ) const
+void QgsGeometryFollowBoundariesCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
+  Q_UNUSED( messages )
+
   if ( !mIndex || !mCheckLayer )
   {
     return;
   }
 
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids.toMap();
   featureIds.remove( mCheckLayer->id() ); // Don't check layer against itself
   QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, feedback, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )

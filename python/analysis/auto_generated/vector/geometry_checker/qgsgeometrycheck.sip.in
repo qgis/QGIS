@@ -31,6 +31,13 @@ class QgsGeometryCheck
 #include "qgsgeometrycheck.h"
 %End
   public:
+    struct LayerFeatureIds
+    {
+      LayerFeatureIds();
+
+
+    };
+
     enum ChangeWhat
     {
       ChangeFeature,
@@ -67,7 +74,7 @@ class QgsGeometryCheck
 
     QgsGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, QgsGeometryCheckerContext *context );
     virtual ~QgsGeometryCheck();
-    virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = 0, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const = 0;
+    virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = 0, const LayerFeatureIds &ids = LayerFeatureIds() ) const = 0;
 
     virtual QStringList resolutionMethods() const = 0;
     virtual QString errorDescription() const = 0;

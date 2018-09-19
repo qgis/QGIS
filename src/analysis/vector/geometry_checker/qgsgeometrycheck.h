@@ -58,6 +58,26 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     Q_DECLARE_TR_FUNCTIONS( QgsGeometryCheck )
 
   public:
+    struct LayerFeatureIds
+    {
+      LayerFeatureIds() = default;
+      LayerFeatureIds( const QMap<QString, QgsFeatureIds> &ids ) SIP_SKIP;
+
+      const QMap<QString, QgsFeatureIds> ids SIP_SKIP;
+
+#ifndef SIP_RUN
+      QMap<QString, QgsFeatureIds> toMap() const
+      {
+        return ids;
+      }
+
+      bool isEmpty() const
+      {
+        return ids.isEmpty();
+      }
+#endif
+    };
+
     enum ChangeWhat
     {
       ChangeFeature,
@@ -105,7 +125,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
       , mContext( context )
     {}
     virtual ~QgsGeometryCheck() = default;
-    virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const = 0;
+    virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const = 0;
 
     /**
      * Fix the error \a error with the specified \a method.
