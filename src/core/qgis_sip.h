@@ -198,6 +198,17 @@
 #define SIP_DOC_TEMPLATE
 
 /*
+ * Sip supports the final keyword since version 4.19.0, earlier than that
+ * we will have build issues because it tries to override final methods.
+ */
+#if SIP_VERSION < 0x041300
+#if defined FINAL
+#undef FINAL
+#endif
+#define FINAL override
+#endif
+
+/*
  * Define Python special method (bool, repr, etc.) using the given method or code
  * sipify.pl will create a dedicated python file named according to the class
  * and located in python/{module}/auto_additions/{classname}.py

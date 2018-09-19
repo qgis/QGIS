@@ -2863,6 +2863,11 @@ bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids )
   return res;
 }
 
+QgsFields QgsVectorLayer::fields() const
+{
+  return mFields;
+}
+
 QgsAttributeList QgsVectorLayer::primaryKeyAttributes() const
 {
   QgsAttributeList pkAttributesList;
