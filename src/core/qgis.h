@@ -636,6 +636,8 @@ typedef unsigned long long qgssize;
 #define MAYBE_UNUSED
 #endif
 
-
+#ifndef FINAL
+#define FINAL final
+#endif
 
 

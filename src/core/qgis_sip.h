@@ -202,9 +202,10 @@
  * we will have build issues because it tries to override final methods.
  */
 #if SIP_VERSION >= 0x041300
-#define SIP_FINAL final
-#else
-#define SIP_FINAL override
+#if defined FINAL
+#undef FINAL
+#endif
+#define FINAL override
 #endif
 
 /*
