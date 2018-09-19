@@ -602,7 +602,7 @@ int QgsGrassGisLib::G_open_raster_new( const char *name, RASTER_MAP_TYPE wr_type
 
   raster.band = 1;
   raster.noDataValue = noDataValueForGrassType( wr_type );
-  QgsDebugMsg( QString( "noDataValue = %1" ).arg( ( int )raster.noDataValue ) );
+  QgsDebugMsg( QString( "noDataValue = %1" ).arg( static_cast<int>( raster.noDataValue ) ) );
   raster.provider->setNoDataValue( raster.band, raster.noDataValue );
 
   raster.fd = mRasters.size();

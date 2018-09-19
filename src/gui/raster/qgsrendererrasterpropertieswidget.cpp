@@ -233,7 +233,7 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer *layer )
     comboGrayscale->setCurrentIndex( ( int ) hueSaturationFilter->grayscaleMode() );
 
     // Set initial state of saturation controls based on grayscale mode choice
-    toggleSaturationControls( ( int )hueSaturationFilter->grayscaleMode() );
+    toggleSaturationControls( static_cast<int>( hueSaturationFilter->grayscaleMode() ) );
 
     // Set initial state of colorize controls
     mColorizeCheck->setChecked( hueSaturationFilter->colorizeOn() );

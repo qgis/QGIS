@@ -508,7 +508,7 @@ void QgsGrassModuleOption::addRow()
   {
     if ( mHaveLimits )
     {
-      mValidator = new QIntValidator( ( int )mMin, ( int )mMax, this );
+      mValidator = new QIntValidator( static_cast<int>( mMin ), static_cast<int>( mMax ), this );
     }
     else
     {

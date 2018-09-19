@@ -339,10 +339,10 @@ void QgsSnappingConfig::writeProject( QDomDocument &doc )
 {
   QDomElement snapSettingsElem = doc.createElement( QStringLiteral( "snapping-settings" ) );
   snapSettingsElem.setAttribute( QStringLiteral( "enabled" ), QString::number( mEnabled ) );
-  snapSettingsElem.setAttribute( QStringLiteral( "mode" ), ( int )mMode );
-  snapSettingsElem.setAttribute( QStringLiteral( "type" ), ( int )mType );
+  snapSettingsElem.setAttribute( QStringLiteral( "mode" ), static_cast<int>( mMode ) );
+  snapSettingsElem.setAttribute( QStringLiteral( "type" ), static_cast<int>( mType ) );
   snapSettingsElem.setAttribute( QStringLiteral( "tolerance" ), mTolerance );
-  snapSettingsElem.setAttribute( QStringLiteral( "unit" ), ( int )mUnits );
+  snapSettingsElem.setAttribute( QStringLiteral( "unit" ), static_cast<int>( mUnits ) );
   snapSettingsElem.setAttribute( QStringLiteral( "intersection-snapping" ), QString::number( mIntersectionSnapping ) );
 
   QDomElement ilsElement = doc.createElement( QStringLiteral( "individual-layer-settings" ) );
@@ -354,9 +354,9 @@ void QgsSnappingConfig::writeProject( QDomDocument &doc )
     QDomElement layerElement = doc.createElement( QStringLiteral( "layer-setting" ) );
     layerElement.setAttribute( QStringLiteral( "id" ), layerIt.key()->id() );
     layerElement.setAttribute( QStringLiteral( "enabled" ), QString::number( setting.enabled() ) );
-    layerElement.setAttribute( QStringLiteral( "type" ), ( int )setting.type() );
+    layerElement.setAttribute( QStringLiteral( "type" ), static_cast<int>( setting.type() ) );
     layerElement.setAttribute( QStringLiteral( "tolerance" ), setting.tolerance() );
-    layerElement.setAttribute( QStringLiteral( "units" ), ( int )setting.units() );
+    layerElement.setAttribute( QStringLiteral( "units" ), static_cast<int>( setting.units() ) );
     ilsElement.appendChild( layerElement );
   }
   snapSettingsElem.appendChild( ilsElement );

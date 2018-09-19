@@ -704,7 +704,7 @@ QgsDataCollectionItem::~QgsDataCollectionItem()
 #if 0
   Q_FOREACH ( QgsDataItem *i, mChildren )
   {
-    QgsDebugMsgLevel( QString( "delete child = 0x%0" ).arg( ( qlonglong )i, 8, 16, QLatin1Char( '0' ) ), 2 );
+    QgsDebugMsgLevel( QString( "delete child = 0x%0" ).arg( static_cast<qlonglong>( i ), 8, 16, QLatin1Char( '0' ) ), 2 );
     delete i;
   }
 #endif

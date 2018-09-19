@@ -166,7 +166,7 @@ namespace QgsWms
       {
         currentColor = colorBoxIt->first;
         currentPixel = colorBoxIt->second;
-        weight = ( double )currentPixel / boxPixels;
+        weight = static_cast<double>( currentPixel ) / boxPixels;
         avRed   += ( qRed( currentColor ) * weight );
         avGreen += ( qGreen( currentColor ) * weight );
         avBlue  += ( qBlue( currentColor ) * weight );
