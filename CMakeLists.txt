@@ -305,6 +305,14 @@ IF(WITH_CORE)
     # (Qt 3D was introduced in 5.7 but it is not stable enough in that branch)
     # Qt 5.8 is missing some classes, https://github.com/qgis/QGIS/pull/5203#discussion_r142319862
     SET(QT_MIN_VERSION 5.9.0)
+    # on recent Debian and Ubuntu the headers from Qt3DExtras library have been removed
+    # so we ship them ourselves as a workaround
+    SET (WITH_INTERNAL_QT3DEXTRAS_HEADERS FALSE CACHE BOOL "Determines whether to use our copy of Qt3DExtras headers (needed for Debian/Ubuntu)")
+    IF (WITH_INTERNAL_QT3DEXTRAS_HEADERS)
+      SET(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/external/qt3dextra-headers/cmake")
+      SET(QT5_3DEXTRA_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/external/qt3dextra-headers")
+      SET(QT5_3DEXTRA_LIBRARY "/usr/lib/x86_64-linux-gnu/libQt53DExtras.so")
+    ENDIF ()
   ELSE ()
     SET(QT_MIN_VERSION 5.4.0)
   ENDIF()
