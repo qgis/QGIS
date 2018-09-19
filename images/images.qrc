@@ -321,6 +321,7 @@
         <file>themes/default/mActionPan.svg</file>
         <file>themes/default/mActionPanToSelected.svg</file>
         <file>themes/default/mActionPinLabels.svg</file>
+        <file>themes/default/mActionProcessSelected.svg</file>
         <file>themes/default/mActionProjectProperties.svg</file>
         <file>themes/default/mActionPropertiesWidget.svg</file>
         <file>themes/default/mActionPropertyItem.svg</file>
