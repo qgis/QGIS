@@ -57,6 +57,15 @@ last for the lifetime of the widget.
 
     ~QgsProcessingModelerParameterWidget();
 
+    void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the modeler parameter widget is shown, e.g., the
+parent model algorithm and other relevant information which allows the widget
+to fine-tune its behavior.
+
+.. seealso:: :py:func:`widgetContext`
+%End
+
     void populateSources( const QStringList &compatibleParameterTypes,
                           const QStringList &compatibleOutputTypes,
                           const QList< int > &compatibleDataTypes );

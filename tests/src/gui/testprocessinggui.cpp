@@ -40,6 +40,8 @@
 #include "qgsprojectionselectionwidget.h"
 #include "qgsdoublespinbox.h"
 #include "qgsspinbox.h"
+#include "qgsmapcanvas.h"
+#include "models/qgsprocessingmodelalgorithm.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -306,6 +308,21 @@ void TestProcessingGui::testWrapperGeneral()
   w = falseDefault.createWrappedWidget( context );
   QVERIFY( !falseDefault.widgetValue().toBool() );
   delete w;
+
+  std::unique_ptr< QgsMapCanvas > mc = qgis::make_unique< QgsMapCanvas >();
+  QgsProcessingParameterWidgetContext widgetContext;
+  widgetContext.setMapCanvas( mc.get() );
+  QCOMPARE( widgetContext.mapCanvas(), mc.get() );
+  std::unique_ptr< QgsProcessingModelAlgorithm > model = qgis::make_unique< QgsProcessingModelAlgorithm >();
+  widgetContext.setModel( model.get() );
+  QCOMPARE( widgetContext.model(), model.get() );
+  widgetContext.setModelChildAlgorithmId( QStringLiteral( "xx" ) );
+  QCOMPARE( widgetContext.modelChildAlgorithmId(), QStringLiteral( "xx" ) );
+
+  wrapper.setWidgetContext( widgetContext );
+  QCOMPARE( wrapper.widgetContext().mapCanvas(), mc.get() );
+  QCOMPARE( wrapper.widgetContext().model(), model.get() );
+  QCOMPARE( wrapper.widgetContext().modelChildAlgorithmId(), QStringLiteral( "xx" ) );
 }
 
 class TestProcessingContextGenerator : public QgsProcessingContextGenerator

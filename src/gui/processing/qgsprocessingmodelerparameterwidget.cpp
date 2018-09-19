@@ -113,6 +113,12 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
 
 QgsProcessingModelerParameterWidget::~QgsProcessingModelerParameterWidget() = default;
 
+void QgsProcessingModelerParameterWidget::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  if ( mStaticWidgetWrapper )
+    mStaticWidgetWrapper->setWidgetContext( context );
+}
+
 const QgsProcessingParameterDefinition *QgsProcessingModelerParameterWidget::parameterDefinition() const
 {
   return mParameterDefinition;
