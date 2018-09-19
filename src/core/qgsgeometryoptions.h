@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSGEOMETRYFIXES_H
-#define QGSGEOMETRYFIXES_H
+#ifndef QGSGEOMETRYOPTIONS_H
+#define QGSGEOMETRYOPTIONS_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -118,4 +118,4 @@ class CORE_EXPORT QgsGeometryOptions
     double mGeometryPrecision = 0.0;
 };
 
-#endif // QGSGEOMETRYFIXES_H
+#endif // QGSGEOMETRYOPTIONS_H
