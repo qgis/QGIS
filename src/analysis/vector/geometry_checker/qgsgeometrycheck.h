@@ -44,6 +44,10 @@ struct ANALYSIS_EXPORT QgsGeometryCheckerContext
     double layerScaleFactor( const QPointer<QgsVectorLayer> &layer ) SIP_SKIP;
 
   private:
+#ifdef SIP_RUN
+    QgsGeometryCheckerContext( const QgsGeometryCheckerContext &rh )
+    {}
+#endif
     QMap<QPointer<QgsVectorLayer>, QgsCoordinateTransform> mTransformCache;
     QMap<QPointer<QgsVectorLayer>, double> mScaleFactorCache;
     QReadWriteLock mCacheLock;

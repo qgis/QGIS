@@ -105,6 +105,8 @@ Should be called by subclasses constructor and whenever
 they insert a new feature.
 %End
 
+  private:
+    QgsFeaturePool( const QgsFeaturePool &other );
 };
 
 /************************************************************************

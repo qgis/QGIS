@@ -131,6 +131,11 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
     void setFeatureIds( const QgsFeatureIds &ids );
 
   private:
+#ifdef SIP_RUN
+    QgsFeaturePool( const QgsFeaturePool &other )
+    {}
+#endif
+
     static const int CACHE_SIZE = 1000;
     QCache<QgsFeatureId, QgsFeature> mFeatureCache;
     QPointer<QgsVectorLayer> mLayer;
