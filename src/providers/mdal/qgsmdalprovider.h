@@ -26,6 +26,7 @@
 
 class QMutex;
 class QgsCoordinateTransform;
+class QgsCoordinateReferenceSystem;
 
 /**
   \brief Data provider for MDAL layers.
@@ -69,6 +70,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
   private:
     MeshH mMeshH;
     QStringList mExtraDatasetUris;
+    QgsCoordinateReferenceSystem mCrs;
 };
 
 #endif //QGSMDALPROVIDER_H

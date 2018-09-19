@@ -44,7 +44,7 @@ QString QgsMdalProvider::description() const
 
 QgsCoordinateReferenceSystem QgsMdalProvider::crs() const
 {
-  return QgsCoordinateReferenceSystem();
+  return mCrs;
 }
 
 QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &options )
@@ -52,6 +52,12 @@ QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &opt
 {
   QByteArray curi = uri.toAscii();
   mMeshH = MDAL_LoadMesh( curi.constData() );
+  if ( mMeshH )
+  {
+    const QString proj = MDAL_M_projection( mMeshH );
+    if ( !proj.isEmpty() )
+      mCrs.createFromString( proj );
+  }
 }
 
 QgsMdalProvider::~QgsMdalProvider()
