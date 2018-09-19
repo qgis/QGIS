@@ -156,7 +156,6 @@ cmake -G "%CMAKEGEN%" ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python3.exe ^
 	-D PYTHON_INCLUDE_PATH=%O4W_ROOT%/apps/Python36/include ^
 	-D PYTHON_LIBRARY=%O4W_ROOT%/apps/Python36/libs/python36.lib ^
-	-D QT_BINARY_DIR=%O4W_ROOT%/bin ^
 	-D QT_LIBRARY_DIR=%O4W_ROOT%/lib ^
 	-D QT_HEADERS_DIR=%O4W_ROOT%/apps/qt5/include ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^

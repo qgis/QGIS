@@ -1,4 +1,4 @@
-Find_Program(QT_LRELEASE_EXECUTABLE NAMES lrelease-qt5 lrelease)
+FIND_PROGRAM(QT_LRELEASE_EXECUTABLE NAMES lrelease-qt5 lrelease)
 
 MACRO(ADD_TRANSLATION_FILES _sources )
 

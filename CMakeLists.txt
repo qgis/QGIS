@@ -393,12 +393,6 @@ IF(WITH_CORE)
   # Disable automatic conversion from QString to ASCII 8-bit strings (char *)
   # (Keeps code compatible with Qt/Mac/64bit)
   ADD_DEFINITIONS(-DQT_NO_CAST_TO_ASCII)
-
-  FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
-    NAMES lrelease
-    PATHS ${QT_BINARY_DIR}
-    NO_DEFAULT_PATH
-  )
 ENDIF(WITH_CORE)
 
 # build our version of astyle
