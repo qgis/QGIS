@@ -24,6 +24,7 @@ The content of this file is based on
 from builtins import zip
 from builtins import next
 from builtins import str
+from hashlib import md5
 
 from qgis.PyQt.QtCore import Qt, pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QStyledItemDelegate
@@ -181,6 +182,9 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         if uri.selectAtIdDisabled():
             self.avoidSelectById.setCheckState(Qt.Checked)
 
+    def getQueryHash(self, name):
+        return 'q%s' % md5(name.encode('utf8')).hexdigest()
+
     def updatePresetsCombobox(self):
         self.presetCombo.clear()
 
@@ -199,8 +203,8 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         if query == "":
             return
         name = self.presetName.text()
-        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name', name)
-        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query', query)
+        QgsProject.instance().writeEntry('DBManager', 'savedQueries/' + self.getQueryHash(name) + '/name', name)
+        QgsProject.instance().writeEntry('DBManager', 'savedQueries/' + self.getQueryHash(name) + '/query', query)
         index = self.presetCombo.findText(name)
         if index == -1:
             self.presetCombo.addItem(name)
@@ -210,13 +214,13 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
 
     def deletePreset(self):
         name = self.presetCombo.currentText()
-        QgsProject.instance().removeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()))
+        QgsProject.instance().removeEntry('DBManager', 'savedQueries/q' + self.getQueryHash(name))
         self.presetCombo.removeItem(self.presetCombo.findText(name))
         self.presetCombo.setCurrentIndex(-1)
 
     def loadPreset(self, name):
-        query = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query')[0]
-        name = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name')[0]
+        query = QgsProject.instance().readEntry('DBManager', 'savedQueries/' + self.getQueryHash(name) + '/query')[0]
+        name = QgsProject.instance().readEntry('DBManager', 'savedQueries/' + self.getQueryHash(name) + '/name')[0]
         self.editSql.setText(query)
 
     def clearSql(self):
