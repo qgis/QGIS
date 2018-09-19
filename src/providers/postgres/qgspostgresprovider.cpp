@@ -1663,7 +1663,7 @@ QStringList QgsPostgresProvider::uniqueStringsMatching( int index, const QString
       sql += QStringLiteral( " ( %1 ) AND " ).arg( mSqlWhereClause );
     }
 
-    sql += QStringLiteral( " %1 ILIKE '%%2%'" ).arg( quotedIdentifier( fld.name() ), substring );
+    sql += QStringLiteral( " %1::text ILIKE '%%2%'" ).arg( quotedIdentifier( fld.name() ), substring );
 
 
     sql += QStringLiteral( " ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) );
