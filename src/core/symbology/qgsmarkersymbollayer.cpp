@@ -1202,6 +1202,7 @@ QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::createFromSld( QDomElement &element 
   m->setAngle( angle );
   m->setOffset( offset );
   m->setStrokeStyle( strokeStyle );
+  m->setStrokeWidth( strokeWidth );
   return m;
 }
 
