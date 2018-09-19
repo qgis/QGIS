@@ -659,39 +659,58 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingDistanceWidgetWrapper:
 QWidget *QgsProcessingDistanceWidgetWrapper::createWidget()
 {
   QWidget *spin = QgsProcessingNumericWidgetWrapper::createWidget();
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    {
+      mLabel = new QLabel();
+      mUnitsCombo = new QComboBox();
 
-  mLabel = new QLabel();
-  mUnitsCombo = new QComboBox();
+      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMeters ), QgsUnitTypes::DistanceMeters );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceKilometers ), QgsUnitTypes::DistanceKilometers );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceFeet ), QgsUnitTypes::DistanceFeet );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMiles ), QgsUnitTypes::DistanceMiles );
+      mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceYards ), QgsUnitTypes::DistanceYards );
 
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMeters ), QgsUnitTypes::DistanceMeters );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceKilometers ), QgsUnitTypes::DistanceKilometers );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceFeet ), QgsUnitTypes::DistanceFeet );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMiles ), QgsUnitTypes::DistanceMiles );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceYards ), QgsUnitTypes::DistanceYards );
+      const int labelMargin = static_cast< int >( std::round( mUnitsCombo->fontMetrics().width( 'X' ) ) );
+      QHBoxLayout *layout = new QHBoxLayout();
+      layout->addWidget( spin, 1 );
+      layout->insertSpacing( 1, labelMargin / 2 );
+      layout->insertWidget( 2, mLabel );
+      layout->insertWidget( 3, mUnitsCombo );
 
-  const double labelMargin = mUnitsCombo->fontMetrics().width( 'X' );
-  QHBoxLayout *layout = new QHBoxLayout();
-  layout->addWidget( spin, 1 );
-  layout->insertSpacing( 1, labelMargin / 2 );
-  layout->insertWidget( 2, mLabel );
-  layout->insertWidget( 3, mUnitsCombo );
-  layout->insertSpacing( 4, labelMargin / 2 );
+      // bit of fiddlyness here -- we want the initial spacing to only be visible
+      // when the warning label is shown, so it's embedded inside mWarningLabel
+      // instead of outside it
+      mWarningLabel = new QWidget();
+      QHBoxLayout *warningLayout = new QHBoxLayout();
+      warningLayout->setMargin( 0 );
+      warningLayout->setContentsMargins( 0, 0, 0, 0 );
+      QLabel *warning = new QLabel();
+      QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
+      const int size = static_cast< int >( std::max( 24.0, spin->minimumSize().height() * 0.5 ) );
+      warning->setPixmap( icon.pixmap( icon.actualSize( QSize( size, size ) ) ) );
+      warning->setToolTip( tr( "Distance is in geographic degrees. Consider reprojecting to a projected local coordinate system for accurate results." ) );
+      warningLayout->insertSpacing( 0, labelMargin / 2 );
+      warningLayout->insertWidget( 1, warning );
+      mWarningLabel->setLayout( warningLayout );
+      layout->insertWidget( 4, mWarningLabel );
 
-  mWarningLabel = new QLabel();
-  QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
-  const int size = static_cast< int >( std::max( 24.0, spin->height() * 0.5 ) );
-  mWarningLabel->setPixmap( icon.pixmap( icon.actualSize( QSize( size, size ) ) ) );
-  mWarningLabel->setToolTip( tr( "Distance is in geographic degrees. Consider reprojecting to a projected local coordinate system for accurate results." ) );
-  layout->insertWidget( 4, mWarningLabel );
-  layout->insertSpacing( 5, labelMargin );
+      setUnits( QgsUnitTypes::DistanceUnknownUnit );
 
-  setUnits( QgsUnitTypes::DistanceUnknownUnit );
+      QWidget *w = new QWidget();
+      layout->setMargin( 0 );
+      layout->setContentsMargins( 0, 0, 0, 0 );
+      w->setLayout( layout );
+      return w;
+    }
 
-  QWidget *w = new QWidget();
-  layout->setMargin( 0 );
-  layout->setContentsMargins( 0, 0, 0, 0 );
-  w->setLayout( layout );
-  return w;
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Modeler:
+      return spin;
+
+  }
+  return nullptr;
 }
 
 void QgsProcessingDistanceWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
@@ -699,7 +718,6 @@ void QgsProcessingDistanceWidgetWrapper::postInitialize( const QList<QgsAbstract
   QgsProcessingNumericWidgetWrapper::postInitialize( wrappers );
   switch ( type() )
   {
-    case QgsProcessingGui::Batch:
     case QgsProcessingGui::Standard:
     {
       for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
@@ -717,6 +735,7 @@ void QgsProcessingDistanceWidgetWrapper::postInitialize( const QList<QgsAbstract
       break;
     }
 
+    case QgsProcessingGui::Batch:
     case QgsProcessingGui::Modeler:
       break;
   }
@@ -760,15 +779,15 @@ void QgsProcessingDistanceWidgetWrapper::setUnits( const QgsUnitTypes::DistanceU
     mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( units ) );
     mUnitsCombo->show();
     mLabel->hide();
-    mWarningLabel->setVisible( units == QgsUnitTypes::DistanceDegrees );
-    mBaseUnit = units;
   }
+  mWarningLabel->setVisible( units == QgsUnitTypes::DistanceDegrees );
+  mBaseUnit = units;
 }
 
 QVariant QgsProcessingDistanceWidgetWrapper::widgetValue() const
 {
   const QVariant val = QgsProcessingNumericWidgetWrapper::widgetValue();
-  if ( val.type() == QVariant::Double && mUnitsCombo->isVisible() )
+  if ( val.type() == QVariant::Double && mUnitsCombo && mUnitsCombo->isVisible() )
   {
     QgsUnitTypes::DistanceUnit displayUnit = static_cast<QgsUnitTypes::DistanceUnit >( mUnitsCombo->currentData().toInt() );
     return val.toDouble() * QgsUnitTypes::fromUnitToUnitFactor( displayUnit, mBaseUnit );

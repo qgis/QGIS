@@ -209,7 +209,7 @@ class GUI_EXPORT QgsProcessingDistanceWidgetWrapper : public QgsProcessingNumeri
 
     QgsUnitTypes::DistanceUnit mBaseUnit = QgsUnitTypes::DistanceUnknownUnit;
     QLabel *mLabel = nullptr;
-    QLabel *mWarningLabel = nullptr;
+    QWidget *mWarningLabel = nullptr;
     QComboBox *mUnitsCombo = nullptr;
 
     friend class TestProcessingGui;
