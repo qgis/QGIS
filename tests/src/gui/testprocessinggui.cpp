@@ -38,6 +38,8 @@
 #include "qgsxmlutils.h"
 #include "qgspropertyoverridebutton.h"
 #include "qgsprojectionselectionwidget.h"
+#include "qgsdoublespinbox.h"
+#include "qgsspinbox.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -143,6 +145,8 @@ class TestProcessingGui : public QObject
     void testBooleanWrapper();
     void testStringWrapper();
     void testCrsWrapper();
+    void testNumericWrapperDouble();
+    void testNumericWrapperInt();
 };
 
 void TestProcessingGui::initTestCase()
@@ -836,6 +840,313 @@ void TestProcessingGui::testCrsWrapper()
   QCOMPARE( l->toolTip(), param.toolTip() );
   delete w;
   delete l;
+}
+
+void TestProcessingGui::testNumericWrapperDouble()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingContext context;
+
+    QgsProcessingParameterNumber param( QStringLiteral( "num" ), QStringLiteral( "num" ), QgsProcessingParameterNumber::Double );
+    QgsProcessingNumericWidgetWrapper wrapper( &param, type );
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    QVERIFY( static_cast< QgsDoubleSpinBox * >( wrapper.wrappedWidget() )->expressionsEnabled() );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapper.wrappedWidget() )->decimals(), 6 ); // you can change this, if it's an intentional change!
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapper.wrappedWidget() )->singleStep(), 1.0 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapper.wrappedWidget() )->minimum(), -999999999 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapper.wrappedWidget() )->maximum(), 999999999 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapper.wrappedWidget() )->clearValue(), 0.0 );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingNumericWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( 5, context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 5.0 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapper.wrappedWidget() )->value(), 5.0 );
+    wrapper.setWidgetValue( QStringLiteral( "28356" ), context );
+    QCOMPARE( spy.count(), 2 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 28356.0 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapper.wrappedWidget() )->value(), 28356.0 );
+    wrapper.setWidgetValue( QVariant(), context ); // not optional, so shouldn't work
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 0.0 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapper.wrappedWidget() )->value(), 0.0 );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "num" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    static_cast< QgsDoubleSpinBox * >( wrapper.wrappedWidget() )->setValue( 37.0 );
+    QCOMPARE( spy.count(), 4 );
+    static_cast< QgsDoubleSpinBox * >( wrapper.wrappedWidget() )->clear();
+    QCOMPARE( spy.count(), 5 );
+    QCOMPARE( wrapper.widgetValue().toDouble(), 0.0 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapper.wrappedWidget() )->value(), 0.0 );
+
+    delete w;
+
+    // with min value
+    QgsProcessingParameterNumber paramMin( QStringLiteral( "num" ), QStringLiteral( "num" ), QgsProcessingParameterNumber::Double );
+    paramMin.setMinimum( -5 );
+
+    QgsProcessingNumericWidgetWrapper wrapperMin( &paramMin, type );
+
+    w = wrapperMin.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMin.wrappedWidget() )->singleStep(), 1.0 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMin.wrappedWidget() )->minimum(), -5 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMin.wrappedWidget() )->maximum(), 999999999 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMin.wrappedWidget() )->clearValue(), -5 );
+    QCOMPARE( wrapperMin.parameterValue(), 0.0 );
+    delete w;
+
+    // with max value
+    QgsProcessingParameterNumber paramMax( QStringLiteral( "num" ), QStringLiteral( "num" ), QgsProcessingParameterNumber::Double );
+    paramMax.setMaximum( 5 );
+
+    QgsProcessingNumericWidgetWrapper wrapperMax( &paramMax, type );
+
+    w = wrapperMax.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMax.wrappedWidget() )->singleStep(), 1.0 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMax.wrappedWidget() )->minimum(), -999999999 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMax.wrappedWidget() )->maximum(), 5 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMax.wrappedWidget() )->clearValue(), 0 );
+    QCOMPARE( wrapperMax.parameterValue(), 0.0 );
+    delete w;
+
+    // with min and max value
+    QgsProcessingParameterNumber paramMinMax( QStringLiteral( "num" ), QStringLiteral( "num" ), QgsProcessingParameterNumber::Double );
+    paramMinMax.setMinimum( -.1 );
+    paramMinMax.setMaximum( .1 );
+
+    QgsProcessingNumericWidgetWrapper wrapperMinMax( &paramMinMax, type );
+
+    w = wrapperMinMax.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMinMax.wrappedWidget() )->singleStep(), 0.02 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMinMax.wrappedWidget() )->minimum(), -.1 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMinMax.wrappedWidget() )->maximum(), .1 );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMinMax.wrappedWidget() )->clearValue(), -.1 );
+    QCOMPARE( wrapperMinMax.parameterValue(), 0.0 );
+    delete w;
+
+    // with default value
+    QgsProcessingParameterNumber paramDefault( QStringLiteral( "num" ), QStringLiteral( "num" ), QgsProcessingParameterNumber::Double );
+    paramDefault.setDefaultValue( 55 );
+
+    QgsProcessingNumericWidgetWrapper wrapperDefault( &paramDefault, type );
+
+    w = wrapperDefault.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperDefault.wrappedWidget() )->clearValue(), 55.0 );
+    QCOMPARE( wrapperDefault.parameterValue(), 55.0 );
+    delete w;
+
+    // optional, no default
+    QgsProcessingParameterNumber paramOptional( QStringLiteral( "num" ), QStringLiteral( "num" ), QgsProcessingParameterNumber::Double, QVariant(), true );
+
+    QgsProcessingNumericWidgetWrapper wrapperOptional( &paramOptional, type );
+
+    w = wrapperOptional.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperOptional.wrappedWidget() )->clearValue(), -1000000000 );
+    QVERIFY( !wrapperOptional.parameterValue().isValid() );
+    wrapperOptional.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptional.parameterValue(), 5.0 );
+    wrapperOptional.setParameterValue( QVariant(), context );
+    QVERIFY( !wrapperOptional.parameterValue().isValid() );
+    wrapperOptional.setParameterValue( 5, context );
+    static_cast< QgsDoubleSpinBox * >( wrapperOptional.wrappedWidget() )->clear();
+    QVERIFY( !wrapperOptional.parameterValue().isValid() );
+
+    // optional, with default
+    paramOptional.setDefaultValue( 3 );
+    QgsProcessingNumericWidgetWrapper wrapperOptionalDefault( &paramOptional, type );
+
+    w = wrapperOptionalDefault.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperOptionalDefault.wrappedWidget() )->clearValue(), -1000000000 );
+    QCOMPARE( wrapperOptionalDefault.parameterValue(), 3.0 );
+    wrapperOptionalDefault.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptionalDefault.parameterValue(), 5.0 );
+    wrapperOptionalDefault.setParameterValue( QVariant(), context );
+    QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperOptionalDefault.wrappedWidget() )->value(), -1000000000 );
+    QVERIFY( !wrapperOptionalDefault.parameterValue().isValid() );
+    wrapperOptionalDefault.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptionalDefault.parameterValue(), 5.0 );
+    static_cast< QgsDoubleSpinBox * >( wrapperOptionalDefault.wrappedWidget() )->clear();
+    QVERIFY( !wrapperOptionalDefault.parameterValue().isValid() );
+    wrapperOptionalDefault.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptionalDefault.parameterValue(), 5.0 );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testNumericWrapperInt()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingContext context;
+
+    QgsProcessingParameterNumber param( QStringLiteral( "num" ), QStringLiteral( "num" ), QgsProcessingParameterNumber::Integer );
+    QgsProcessingNumericWidgetWrapper wrapper( &param, type );
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    QVERIFY( static_cast< QgsSpinBox * >( wrapper.wrappedWidget() )->expressionsEnabled() );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapper.wrappedWidget() )->minimum(), -999999999 );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapper.wrappedWidget() )->maximum(), 999999999 );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapper.wrappedWidget() )->clearValue(), 0 );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingNumericWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( 5, context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toInt(), 5 );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapper.wrappedWidget() )->value(), 5 );
+    wrapper.setWidgetValue( QStringLiteral( "28356" ), context );
+    QCOMPARE( spy.count(), 2 );
+    QCOMPARE( wrapper.widgetValue().toInt(), 28356 );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapper.wrappedWidget() )->value(), 28356 );
+    wrapper.setWidgetValue( QVariant(), context ); // not optional, so shouldn't work
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().toInt(), 0 );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapper.wrappedWidget() )->value(), 0 );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "num" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    static_cast< QgsSpinBox * >( wrapper.wrappedWidget() )->setValue( 37 );
+    QCOMPARE( spy.count(), 4 );
+    static_cast< QgsSpinBox * >( wrapper.wrappedWidget() )->clear();
+    QCOMPARE( spy.count(), 5 );
+    QCOMPARE( wrapper.widgetValue().toInt(), 0 );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapper.wrappedWidget() )->value(), 0 );
+
+    delete w;
+
+    // with min value
+    QgsProcessingParameterNumber paramMin( QStringLiteral( "num" ), QStringLiteral( "num" ), QgsProcessingParameterNumber::Integer );
+    paramMin.setMinimum( -5 );
+
+    QgsProcessingNumericWidgetWrapper wrapperMin( &paramMin, type );
+
+    w = wrapperMin.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapperMin.wrappedWidget() )->minimum(), -5 );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapperMin.wrappedWidget() )->maximum(), 999999999 );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapperMin.wrappedWidget() )->clearValue(), -5 );
+    QCOMPARE( wrapperMin.parameterValue(), 0 );
+    delete w;
+
+    // with max value
+    QgsProcessingParameterNumber paramMax( QStringLiteral( "num" ), QStringLiteral( "num" ), QgsProcessingParameterNumber::Integer );
+    paramMax.setMaximum( 5 );
+
+    QgsProcessingNumericWidgetWrapper wrapperMax( &paramMax, type );
+
+    w = wrapperMax.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapperMax.wrappedWidget() )->minimum(), -999999999 );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapperMax.wrappedWidget() )->maximum(), 5 );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapperMax.wrappedWidget() )->clearValue(), 0 );
+    QCOMPARE( wrapperMax.parameterValue(), 0 );
+    delete w;
+
+    // with min and max value
+    QgsProcessingParameterNumber paramMinMax( QStringLiteral( "num" ), QStringLiteral( "num" ), QgsProcessingParameterNumber::Integer );
+    paramMinMax.setMinimum( -1 );
+    paramMinMax.setMaximum( 1 );
+
+    QgsProcessingNumericWidgetWrapper wrapperMinMax( &paramMinMax, type );
+
+    w = wrapperMinMax.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapperMinMax.wrappedWidget() )->minimum(), -1 );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapperMinMax.wrappedWidget() )->maximum(), 1 );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapperMinMax.wrappedWidget() )->clearValue(), -1 );
+    QCOMPARE( wrapperMinMax.parameterValue(), 0 );
+    delete w;
+
+    // with default value
+    QgsProcessingParameterNumber paramDefault( QStringLiteral( "num" ), QStringLiteral( "num" ), QgsProcessingParameterNumber::Integer );
+    paramDefault.setDefaultValue( 55 );
+
+    QgsProcessingNumericWidgetWrapper wrapperDefault( &paramDefault, type );
+
+    w = wrapperDefault.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapperDefault.wrappedWidget() )->clearValue(), 55 );
+    QCOMPARE( wrapperDefault.parameterValue(), 55 );
+    delete w;
+
+    // optional, no default
+    QgsProcessingParameterNumber paramOptional( QStringLiteral( "num" ), QStringLiteral( "num" ), QgsProcessingParameterNumber::Integer, QVariant(), true );
+
+    QgsProcessingNumericWidgetWrapper wrapperOptional( &paramOptional, type );
+
+    w = wrapperOptional.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapperOptional.wrappedWidget() )->clearValue(), -1000000000 );
+    QVERIFY( !wrapperOptional.parameterValue().isValid() );
+    wrapperOptional.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptional.parameterValue(), 5 );
+    wrapperOptional.setParameterValue( QVariant(), context );
+    QVERIFY( !wrapperOptional.parameterValue().isValid() );
+    wrapperOptional.setParameterValue( 5, context );
+    static_cast< QgsSpinBox * >( wrapperOptional.wrappedWidget() )->clear();
+    QVERIFY( !wrapperOptional.parameterValue().isValid() );
+
+    // optional, with default
+    paramOptional.setDefaultValue( 3 );
+    QgsProcessingNumericWidgetWrapper wrapperOptionalDefault( &paramOptional, type );
+
+    w = wrapperOptionalDefault.createWrappedWidget( context );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapperOptionalDefault.wrappedWidget() )->clearValue(), -1000000000 );
+    QCOMPARE( wrapperOptionalDefault.parameterValue(), 3 );
+    wrapperOptionalDefault.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptionalDefault.parameterValue(), 5 );
+    wrapperOptionalDefault.setParameterValue( QVariant(), context );
+    QCOMPARE( static_cast< QgsSpinBox * >( wrapperOptionalDefault.wrappedWidget() )->value(), -1000000000 );
+    QVERIFY( !wrapperOptionalDefault.parameterValue().isValid() );
+    wrapperOptionalDefault.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptionalDefault.parameterValue(), 5 );
+    static_cast< QgsSpinBox * >( wrapperOptionalDefault.wrappedWidget() )->clear();
+    QVERIFY( !wrapperOptionalDefault.parameterValue().isValid() );
+    wrapperOptionalDefault.setParameterValue( 5, context );
+    QCOMPARE( wrapperOptionalDefault.parameterValue(), 5 );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
 }
 
 QGSTEST_MAIN( TestProcessingGui )
