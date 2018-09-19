@@ -56,7 +56,7 @@ class QComboBox;
  * \ingroup gui
  * \since QGIS 3.4
  */
-class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget
+class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
