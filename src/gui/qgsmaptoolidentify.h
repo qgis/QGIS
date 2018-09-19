@@ -177,7 +177,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      *
      * When the custom identification has finished, restoreCanvasPropertiesOverrides() should
      * be called to erase any overrides.
-     * \see restoreCanvasProperties()
+     * \see restoreCanvasPropertiesOverrides()
      * \since QGIS 3.4
      */
     void setCanvasPropertiesOverrides( double searchRadiusMapUnits );

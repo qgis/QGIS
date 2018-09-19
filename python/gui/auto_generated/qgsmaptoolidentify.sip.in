@@ -174,7 +174,7 @@ results. Currently only search radius may be overridden.
 When the custom identification has finished, restoreCanvasPropertiesOverrides() should
 be called to erase any overrides.
 
-.. seealso:: :py:func:`restoreCanvasProperties`
+.. seealso:: :py:func:`restoreCanvasPropertiesOverrides`
 
 .. versionadded:: 3.4
 %End
