@@ -108,8 +108,12 @@ IF(WITH_CORE)
   IF (NOT WITH_GUI)
     SET (HAVE_GUI FALSE)    # used in qgsconfig.h
     # force value of some options
-    SET(WITH_DESKTOP FALSE)
-    SET(WITH_CUSTOM_WIDGETS FALSE)
+    IF(WITH_DESKTOP)
+      MESSAGE(FATAL_ERROR "Desktop cannot be built without gui. Enable WITH_GUI or disable WITH_DESKTOP.")
+    ENDIF(WITH_DESKTOP)
+    IF(WITH_CUSTOM_WIDGETS)
+      MESSAGE(FATAL_ERROR "Custom widgets cannot be built without gui. Enable WITH_GUI or disable WITH_CUSTOM_WIDGETS.")
+    ENDIF(WITH_CUSTOM_WIDGETS)
   ELSE ()
     SET (HAVE_GUI TRUE)     # used in qgsconfig.h
   ENDIF()
