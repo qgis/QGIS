@@ -153,8 +153,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
       AttributeTable     = 1 << 9,  //!< Attribute table settings: choice and order of columns, conditional styling
       Rendering          = 1 << 10, //!< Rendering: scale visibility, simplify method, opacity
       CustomProperties   = 1 << 11, //!< Custom properties (by plugins for instance)
+      GeometryOptions    = 1 << 12, //!< Geometry validation configuration
       AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions |
-                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties,
+                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions,
     };
     Q_ENUM( StyleCategory )
     Q_DECLARE_FLAGS( StyleCategories, StyleCategory )

@@ -60,7 +60,7 @@
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgslabelinggui.h"
 #include "qgssymbollayer.h"
-#include "qgsgeometryfixes.h"
+#include "qgsgeometryoptions.h"
 #include "qgsvectorlayersavestyledialog.h"
 #include "qgsvectorlayerloadstyledialog.h"
 
@@ -401,8 +401,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mRemoveDuplicateNodesCheckbox->setEnabled( true );
     mGeometryPrecisionSpinBox->setEnabled( true );
 
-    mRemoveDuplicateNodesCheckbox->setChecked( mLayer->geometryFixes()->removeDuplicateNodes() );
-    mGeometryPrecisionSpinBox->setValue( mLayer->geometryFixes()->geometryPrecision() );
+    mRemoveDuplicateNodesCheckbox->setChecked( mLayer->geometryOptions()->removeDuplicateNodes() );
+    mGeometryPrecisionSpinBox->setValue( mLayer->geometryOptions()->geometryPrecision() );
 
     mGeometryPrecisionSpinBox->setSuffix( QStringLiteral( " [%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
   }
@@ -751,8 +751,8 @@ void QgsVectorLayerProperties::apply()
   mVector3DWidget->apply();
 #endif
 
-  mLayer->geometryFixes()->setRemoveDuplicateNodes( mRemoveDuplicateNodesCheckbox->isChecked() );
-  mLayer->geometryFixes()->setGeometryPrecision( mGeometryPrecisionSpinBox->value() );
+  mLayer->geometryOptions()->setRemoveDuplicateNodes( mRemoveDuplicateNodesCheckbox->isChecked() );
+  mLayer->geometryOptions()->setGeometryPrecision( mGeometryPrecisionSpinBox->value() );
 
   // update symbology
   emit refreshLegend( mLayer->id() );

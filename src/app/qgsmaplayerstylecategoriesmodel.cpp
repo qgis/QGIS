@@ -208,6 +208,17 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
           return QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) );
       }
       break;
+    case QgsMapLayer::GeometryOptions:
+      switch ( role )
+      {
+        case Qt::DisplayRole:
+          return tr( "Geometry Options" );
+        case Qt::ToolTipRole:
+          return tr( "Geometry constraints and validity checks" );
+        case Qt::DecorationRole:
+          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/digitizing.svg" ) );
+      }
+      break;
     case QgsMapLayer::AllStyleCategories:
       switch ( role )
       {

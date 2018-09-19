@@ -95,7 +95,7 @@
 #include "qgstaskmanager.h"
 #include "qgstransaction.h"
 #include "qgsauxiliarystorage.h"
-#include "qgsgeometryfixes.h"
+#include "qgsgeometryoptions.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -150,7 +150,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   , mAuxiliaryLayerKey( QString() )
   , mReadExtentFromXml( options.readExtentFromXml )
 {
-  mGeometryFixes = qgis::make_unique<QgsGeometryFixes>();
+  mGeometryOptions = qgis::make_unique<QgsGeometryOptions>();
   mActions = new QgsActionManager( this );
   mConditionalStyles = new QgsConditionalLayerStyles();
 
@@ -947,10 +947,10 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
     return false;
 
 
-  if ( mGeometryFixes->isActive() )
+  if ( mGeometryOptions->isActive() )
   {
     QgsGeometry geom = feature.geometry();
-    mGeometryFixes->apply( geom );
+    mGeometryOptions->apply( geom );
     feature.setGeometry( geom );
   }
 
@@ -2064,12 +2064,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     }
   }
 
-  if ( categories.testFlag( LayerConfiguration ) )
-  {
-    QDomElement geometryOptionsElement = layerNode.namedItem( QStringLiteral( "geometryOptions" ) ).toElement();
-    mGeometryFixes->setGeometryPrecision( geometryOptionsElement.attribute( QStringLiteral( "geometryPrecision" ),  QStringLiteral( "0.0" ) ).toDouble() );
-    mGeometryFixes->setRemoveDuplicateNodes( geometryOptionsElement.attribute( QStringLiteral( "removeDuplicateNodes" ),  QStringLiteral( "0" ) ).toInt() == 1 );
-  }
+  if ( categories.testFlag( GeometryOptions ) )
+    mGeometryOptions->readXml( layerNode.namedItem( QStringLiteral( "geometryOptions" ) ) );
+
   if ( categories.testFlag( Forms ) )
     mEditFormConfig.readXml( layerNode, context );
 
@@ -2286,13 +2283,8 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
   ( void )writeStyle( node, doc, errorMessage, context, categories );
 
-  if ( categories.testFlag( LayerConfiguration ) )
-  {
-    QDomElement geometryOptionsElement = doc.createElement( QStringLiteral( "geometryOptions" ) );
-    node.appendChild( geometryOptionsElement );
-    geometryOptionsElement.setAttribute( QStringLiteral( "removeDuplicateNodes" ), mGeometryFixes->removeDuplicateNodes() ? 1 : 0 );
-    geometryOptionsElement.setAttribute( QStringLiteral( "geometryPrecision" ), mGeometryFixes->geometryPrecision() );
-  }
+  if ( categories.testFlag( GeometryOptions ) )
+    mGeometryOptions->writeXml( node );
 
   if ( categories.testFlag( Fields ) )
   {
@@ -2593,8 +2585,8 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry &geom, bool s
     return false;
   }
 
-  if ( mGeometryFixes->isActive() )
-    mGeometryFixes->apply( geom );
+  if ( mGeometryOptions->isActive() )
+    mGeometryOptions->apply( geom );
 
   updateExtents();
 
@@ -3058,12 +3050,12 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList &features, Flags )
   if ( !mEditBuffer || !mDataProvider )
     return false;
 
-  if ( mGeometryFixes->isActive() )
+  if ( mGeometryOptions->isActive() )
   {
     for ( auto feature = features.begin(); feature != features.end(); ++feature )
     {
       QgsGeometry geom = feature->geometry();
-      mGeometryFixes->apply( geom );
+      mGeometryOptions->apply( geom );
       feature->setGeometry( geom );
     }
   }
@@ -4849,9 +4841,9 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
   return labeling;
 }
 
-QgsGeometryFixes *QgsVectorLayer::geometryFixes() const
+QgsGeometryOptions *QgsVectorLayer::geometryOptions() const
 {
-  return mGeometryFixes.get();
+  return mGeometryOptions.get();
 }
 
 void QgsVectorLayer::setReadExtentFromXml( bool readExtentFromXml )

@@ -2230,7 +2230,7 @@ Test if an edit command is active
 .. versionadded:: 3.0
 %End
 
-    QgsGeometryFixes *geometryFixes() const;
+    QgsGeometryOptions *geometryOptions() const;
 %Docstring
 Configuration and logic to apply automatically on any edit happening on this layer.
 
