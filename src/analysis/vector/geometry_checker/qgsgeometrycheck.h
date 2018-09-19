@@ -55,9 +55,18 @@ struct ANALYSIS_EXPORT QgsGeometryCheckerContext
 
 class ANALYSIS_EXPORT QgsGeometryCheck
 {
+    Q_GADGET
     Q_DECLARE_TR_FUNCTIONS( QgsGeometryCheck )
 
   public:
+
+    /**
+     * A list of layers and feature ids for each of these layers.
+     * In C++, the member `ids` can be accessed directly.
+     * In Python some accessor methods will need to be written.
+     *
+     * \since QGIS 3.4
+     */
     struct LayerFeatureIds
     {
       LayerFeatureIds() = default;
@@ -100,12 +109,13 @@ class ANALYSIS_EXPORT QgsGeometryCheck
       LayerCheck
     };
 
-    enum Flags
+    enum Flag
     {
-      SingleGeometryCheck = 1,
-      AvailableInValidation = 1 << 1
+      SingleGeometryCheck = 1 << 1,
+      AvailableInValidation = 1 << 2
     };
     Q_DECLARE_FLAGS( Flags, Flag )
+    Q_FLAG( Flags )
 
     struct Change
     {

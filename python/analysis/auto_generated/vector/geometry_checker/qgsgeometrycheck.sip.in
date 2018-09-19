@@ -31,6 +31,10 @@ class QgsGeometryCheck
 #include "qgsgeometrycheck.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
     struct LayerFeatureIds
     {
       LayerFeatureIds();
@@ -60,7 +64,7 @@ class QgsGeometryCheck
       LayerCheck
     };
 
-    enum Flags
+    enum Flag
     {
       SingleGeometryCheck,
       AvailableInValidation

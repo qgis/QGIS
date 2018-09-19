@@ -138,7 +138,6 @@ SET(QGIS_ANALYSIS_SRCS
   vector/geometry_checker/qgsfeaturepool.cpp
   vector/geometry_checker/qgsvectordataproviderfeaturepool.cpp
   vector/geometry_checker/qgsvectorlayerfeaturepool.cpp
-  vector/geometry_checker/qgsgeometrychecker.cpp
   vector/geometry_checker/qgsgeometryanglecheck.cpp
   vector/geometry_checker/qgsgeometryareacheck.cpp
   vector/geometry_checker/qgsgeometrycheck.cpp
@@ -181,6 +180,7 @@ SET(QGIS_ANALYSIS_MOC_HDRS
   processing/qgsalgorithmfiledownloader.h
 
   vector/geometry_checker/qgsgeometrychecker.h
+  vector/geometry_checker/qgsgeometrycheck.h
 )
 
 INCLUDE_DIRECTORIES(SYSTEM ${SPATIALITE_INCLUDE_DIR})
@@ -278,7 +278,6 @@ SET(QGIS_ANALYSIS_HDRS
   vector/geometry_checker/qgsgeometryanglecheck.h
   vector/geometry_checker/qgsgeometryareacheck.h
   vector/geometry_checker/qgsgeometrychecker.h
-  vector/geometry_checker/qgsgeometrycheck.h
   vector/geometry_checker/qgssinglegeometrycheck.h
   vector/geometry_checker/qgsgeometrycontainedcheck.h
   vector/geometry_checker/qgsgeometrydanglecheck.h
