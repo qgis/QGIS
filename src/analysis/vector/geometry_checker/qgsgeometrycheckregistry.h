@@ -22,8 +22,8 @@
 
 #include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgsgeometrycheck.h"
 
-class QgsGeometryCheck;
 class QgsGeometryCheckFactory;
 struct QgsGeometryCheckerContext;
 
@@ -55,6 +55,13 @@ class ANALYSIS_EXPORT QgsGeometryCheckRegistry
     ~QgsGeometryCheckRegistry();
 
     QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckerContext *context, const QVariantMap &geometryCheckConfig ) SIP_TRANSFER;
+
+    /**
+     * Get all geometry check factories that are compatible with \a layer and have all of the \a flags set.
+     *
+     * \since QGIS 3.4
+     */
+    QList<QgsGeometryCheckFactory *> geometryCheckFactories( QgsVectorLayer *layer, QgsGeometryCheck::Flags flags = nullptr ) const;
 
     void registerGeometryCheck( const QString &checkId, QgsGeometryCheckFactory *checkFactory SIP_TRANSFER );
 

@@ -21,13 +21,15 @@ class QgsGeometryCheckFactory /Abstract/
 
     virtual ~QgsGeometryCheckFactory();
 
-    virtual QgsGeometryCheck *createGeometryCheck( QgsGeometryCheckerContext *context, const QVariantMap &geometryCheckConfiguration ) const = 0 /Factory/;
+    virtual QgsGeometryCheck *createGeometryCheck( QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfiguration ) const = 0 /Factory/;
 
     virtual QgsSingleGeometryCheck *createSingleGeometryCheck( const QString &checkId ) const = 0 /Factory/;
 
     virtual QString id() const = 0;
 
-    virtual QgsGeometryCheck::CheckType flags() const;
+    virtual bool isCompatible( QgsVectorLayer *layer ) const;
+
+    virtual QgsGeometryCheck::Flags flags() const;
 };
 
 template<T>
@@ -38,7 +40,7 @@ class QgsGeometryCheckFactoryT : QgsGeometryCheckFactory
 #include "qgsgeometrycheckfactory.h"
 %End
   public:
-    virtual QgsGeometryCheck *createGeometryCheck( QgsGeometryCheckerContext *context, const QVariantMap &geometryCheckConfiguration ) const;
+    virtual QgsGeometryCheck *createGeometryCheck( QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfiguration ) const;
 };
 
 

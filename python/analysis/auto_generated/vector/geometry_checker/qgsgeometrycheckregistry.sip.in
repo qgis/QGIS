@@ -35,7 +35,14 @@ Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is not usuall
 
     ~QgsGeometryCheckRegistry();
 
-    QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckerContext *context, const QVariantMap &geometryCheckConfig ) /Transfer/;
+    QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfig ) /Transfer/;
+
+    QList<QgsGeometryCheckFactory *> geometryCheckFactories( QgsVectorLayer *layer, QgsGeometryCheck::Flags flags = 0 ) const;
+%Docstring
+Get all geometry check factories that are compatible with ``layer`` and have all of the ``flags`` set.
+
+.. versionadded:: 3.4
+%End
 
     void registerGeometryCheck( const QString &checkId, QgsGeometryCheckFactory *checkFactory /Transfer/ );
 

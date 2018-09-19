@@ -49,7 +49,9 @@ class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
 
     virtual QString id() const = 0;
 
-    virtual QgsGeometryCheck::CheckType flags() const;
+    virtual bool isCompatible( QgsVectorLayer *layer ) const;
+
+    virtual QgsGeometryCheck::Flags flags() const;
 };
 
 template<class T>

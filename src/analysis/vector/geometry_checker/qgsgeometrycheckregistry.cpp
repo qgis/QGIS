@@ -42,6 +42,17 @@ QgsGeometryCheck *QgsGeometryCheckRegistry::geometryCheck( const QString &checkI
     return nullptr;
 }
 
+QList<QgsGeometryCheckFactory *> QgsGeometryCheckRegistry::geometryCheckFactories( QgsVectorLayer *layer, QgsGeometryCheck::Flags flags ) const
+{
+  QList<QgsGeometryCheckFactory *> factories;
+  for ( QgsGeometryCheckFactory *factory : mGeometryCheckFactories )
+  {
+    if ( ( factory->flags() & flags ) == flags && factory->isCompatible( layer ) )
+      factories << factory;
+  }
+  return factories;
+}
+
 void QgsGeometryCheckRegistry::registerGeometryCheck( const QString &checkId, QgsGeometryCheckFactory *checkFactory )
 {
   mGeometryCheckFactories.insert( checkId, checkFactory );

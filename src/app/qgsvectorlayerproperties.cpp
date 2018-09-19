@@ -63,6 +63,9 @@
 #include "qgsgeometryoptions.h"
 #include "qgsvectorlayersavestyledialog.h"
 #include "qgsvectorlayerloadstyledialog.h"
+#include "qgsgeometrycheckregistry.h"
+#include "qgsgeometrycheck.h"
+#include "qgsanalysis.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -405,6 +408,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mGeometryPrecisionLineEdit->setText( QString::number( mLayer->geometryOptions()->geometryPrecision() ) );
 
     mPrecisionUnitsLabel->setText( QStringLiteral( "[%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
+
+    QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mLayer, QgsGeometryCheck::Flag::SingleGeometryCheck );
   }
   else
   {
