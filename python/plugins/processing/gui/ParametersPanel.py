@@ -42,7 +42,9 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterVectorDestination,
                        QgsProject)
-from qgis.gui import QgsProcessingContextGenerator
+from qgis.gui import (QgsProcessingContextGenerator,
+                      QgsProcessingParameterWidgetContext)
+from qgis.utils import iface
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, Qt
@@ -122,6 +124,10 @@ class ParametersPanel(BASE, WIDGET):
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.grpAdvanced.show()
                 break
+
+        widget_context = QgsProcessingParameterWidgetContext()
+        widget_context.setMapCanvas(iface.mapCanvas())
+
         # Create widgets and put them in layouts
         for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
@@ -142,6 +148,7 @@ class ParametersPanel(BASE, WIDGET):
                 # TODO QGIS 4.0 - remove
                 is_python_wrapper = issubclass(wrapper.__class__, WidgetWrapper)
                 if not is_python_wrapper:
+                    wrapper.setWidgetContext(widget_context)
                     widget = wrapper.createWrappedWidget(self.processing_context)
                     wrapper.registerProcessingContextGenerator(self.context_generator)
                 else:

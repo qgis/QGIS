@@ -36,6 +36,8 @@ from qgis.core import (Qgis,
                        QgsApplication,
                        QgsSettings,
                        QgsProcessingParameterDefinition)
+from qgis.gui import QgsProcessingParameterWidgetContext
+from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
@@ -253,6 +255,9 @@ class BatchPanel(BASE, WIDGET):
         # TODO QGIS 4.0 - remove
         is_cpp_wrapper = not issubclass(wrapper.__class__, WidgetWrapper)
         if is_cpp_wrapper:
+            widget_context = QgsProcessingParameterWidgetContext()
+            widget_context.setMapCanvas(iface.mapCanvas())
+            wrapper.setWidgetContext(widget_context)
             widget = wrapper.createWrappedWidget(context)
         else:
             widget = wrapper.widget

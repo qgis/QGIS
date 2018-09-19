@@ -58,7 +58,9 @@ from qgis.gui import (QgsGui,
                       QgsScrollArea,
                       QgsFilterLineEdit,
                       QgsHelp,
-                      QgsProcessingModelerParameterWidget)
+                      QgsProcessingModelerParameterWidget,
+                      QgsProcessingParameterWidgetContext)
+from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapperFactory
 from processing.gui.wrappers import InvalidParameterValue
@@ -131,6 +133,9 @@ class ModelerParametersDialog(QDialog):
             self.algorithmItem.setConfiguration(self.configuration)
         self.verticalLayout.addWidget(self.algorithmItem)
 
+        widget_context = QgsProcessingParameterWidgetContext()
+        widget_context.setMapCanvas(iface.mapCanvas())
+
         for param in self._alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.advancedButton = QPushButton()
@@ -150,6 +155,7 @@ class ModelerParametersDialog(QDialog):
             self.wrappers[param.name()] = wrapper
 
             if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
+                wrapper.setWidgetContext(widget_context)
                 widget = wrapper
             else:
                 widget = wrapper.widget
