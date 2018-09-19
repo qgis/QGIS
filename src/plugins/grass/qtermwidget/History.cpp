@@ -385,12 +385,12 @@ void HistoryScrollBuffer::setMaxNbLines(unsigned int lineCount)
     HistoryLine* oldBuffer = _historyBuffer;
     HistoryLine* newBuffer = new HistoryLine[lineCount];
 
-    for ( int i = 0 ; i < qMin(_usedLines,(int)lineCount) ; i++ )
+    for ( int i = 0 ; i < qMin(_usedLines,static_cast<int>(lineCount)) ; i++ )
     {
         newBuffer[i] = oldBuffer[bufferIndex(i)];
     }
 
-    _usedLines = qMin(_usedLines,(int)lineCount);
+    _usedLines = qMin(_usedLines,static_cast<int>(lineCount));
     _maxLineCount = lineCount;
     _head = ( _usedLines == _maxLineCount ) ? 0 : _usedLines-1;
 
@@ -770,7 +770,7 @@ void CompactHistoryScroll::setMaxNbLines ( unsigned int lineCount )
 {
   _maxLineCount = lineCount;
 
-  while (lines.size() > (int) lineCount) {
+  while (lines.size() > static_cast<int>(lineCount)) {
     delete lines.takeAt(0);
   }
   //kDebug() << "set max lines to: " << _maxLineCount;
@@ -872,7 +872,7 @@ HistoryScroll* HistoryTypeBuffer::scroll(HistoryScroll *old) const
     HistoryScroll *newScroll = new HistoryScrollBuffer(m_nbLines);
     int lines = old->getLines();
     int startLine = 0;
-    if (lines > (int) m_nbLines)
+    if (lines > static_cast<int>(m_nbLines))
        startLine = lines - m_nbLines;
 
     Character line[LINE_SIZE];

@@ -417,9 +417,9 @@ void ColorScheme::writeColorEntry(KConfig& config , const QString& colorName, co
     // if one of the keys already exists
     if ( !random.isNull() || configGroup.hasKey("MaxRandomHue") )
     {
-        configGroup.writeEntry("MaxRandomHue",(int)random.hue);
-        configGroup.writeEntry("MaxRandomValue",(int)random.value);
-        configGroup.writeEntry("MaxRandomSaturation",(int)random.saturation);
+        configGroup.writeEntry("MaxRandomHue",static_cast<int>(random.hue));
+        configGroup.writeEntry("MaxRandomValue",static_cast<int>(random.value));
+        configGroup.writeEntry("MaxRandomSaturation",static_cast<int>(random.saturation));
     }
 }
 #endif

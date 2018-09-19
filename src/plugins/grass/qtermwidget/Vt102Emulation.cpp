@@ -154,7 +154,7 @@ void Vt102Emulation::reset()
 
 */
 
-#define TY_CONSTRUCT(T,A,N) ( ((((int)N) & 0xffff) << 16) | ((((int)A) & 0xff) << 8) | (((int)T) & 0xff) )
+#define TY_CONSTRUCT(T,A,N) ( (((static_cast<int>(N)) & 0xffff) << 16) | (((static_cast<int>(A)) & 0xff) << 8) | ((static_cast<int>(T)) & 0xff) )
 
 #define TY_CHR(   )     TY_CONSTRUCT(0,0,0)
 #define TY_CTL(A  )     TY_CONSTRUCT(1,A,0)
