@@ -721,8 +721,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>806</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -907,8 +907,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>806</height>
+                <width>104</width>
+                <height>102</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -2408,6 +2408,13 @@ border-radius: 2px;</string>
                </layout>
               </item>
              </layout>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QGroupBox" name="mGeometryValidationGroupBox">
+             <property name="title">
+              <string>Geometry validation</string>
+             </property>
             </widget>
            </item>
           </layout>
