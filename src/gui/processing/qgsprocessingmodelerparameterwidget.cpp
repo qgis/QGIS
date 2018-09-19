@@ -81,6 +81,7 @@ QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsPro
   }
 
   mExpressionWidget = new QgsExpressionLineEdit();
+  mExpressionWidget->registerExpressionContextGenerator( this );
   mStackedWidget->addWidget( mExpressionWidget );
 
   mModelInputCombo = new QComboBox();
@@ -167,6 +168,11 @@ QgsProcessingModelChildParameterSource QgsProcessingModelerParameterWidget::valu
   }
 
   return QgsProcessingModelChildParameterSource();
+}
+
+QgsExpressionContext QgsProcessingModelerParameterWidget::createExpressionContext() const
+{
+  return QgsExpressionContext();
 }
 
 void QgsProcessingModelerParameterWidget::sourceMenuAboutToShow()
