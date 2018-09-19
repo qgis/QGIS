@@ -197,6 +197,9 @@ Returns the current value of the parameter.
 .. seealso:: :py:func:`setWidgetValue`
 %End
 
+  protected:
+
+
 };
 
 

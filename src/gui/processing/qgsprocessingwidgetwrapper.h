@@ -223,6 +223,10 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
      */
     virtual QVariant widgetValue() const = 0;
 
+  protected:
+
+    QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
+
   private slots:
 
     void parentLayerChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper );
@@ -231,7 +235,6 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
 
     QgsProcessingGui::WidgetType mType = QgsProcessingGui::Standard;
     const QgsProcessingParameterDefinition *mParameterDefinition = nullptr;
-    QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
 
     void setDynamicParentLayerParameter( const QVariant &value );
 
