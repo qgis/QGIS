@@ -400,14 +400,14 @@ bool KPtyDevice::isSuspended() const
 qint64 KPtyDevice::readData(char *data, qint64 maxlen)
 {
     Q_D(KPtyDevice);
-    return d->readBuffer.read(data, (int)qMin<qint64>(maxlen, KMAXINT));
+    return d->readBuffer.read(data, static_cast<int>(qMin<qint64>(maxlen, KMAXINT)));
 }
 
 // protected
 qint64 KPtyDevice::readLineData(char *data, qint64 maxlen)
 {
     Q_D(KPtyDevice);
-    return d->readBuffer.readLine(data, (int)qMin<qint64>(maxlen, KMAXINT));
+    return d->readBuffer.readLine(data, static_cast<int>(qMin<qint64>(maxlen, KMAXINT)));
 }
 
 // protected
