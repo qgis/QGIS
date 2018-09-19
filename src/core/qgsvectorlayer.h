@@ -2326,6 +2326,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void symbolFeatureCountMapChanged();
 
+  protected:
+    //! Sets the extent
+    void setExtent( const QgsRectangle &rect ) SIP_FINAL;
+
   private slots:
     void invalidateSymbolCountedFlag();
     void onFeatureCounterCompleted();
@@ -2335,10 +2339,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void onRelationsLoaded();
     void onSymbolsCounted();
     void onDirtyTransaction( const QString &sql, const QString &name );
-
-  protected:
-    //! Sets the extent
-    void setExtent( const QgsRectangle &rect ) SIP_FINAL;
 
   private:
     void updateDefaultValues( QgsFeatureId fid, QgsFeature feature = QgsFeature() );
