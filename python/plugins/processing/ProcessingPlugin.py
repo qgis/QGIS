@@ -231,20 +231,24 @@ class ProcessingPlugin:
         self.resultsDock.visibilityChanged.connect(self.resultsAction.setChecked)
         self.resultsAction.toggled.connect(self.resultsDock.setUserVisible)
 
+        self.toolbox.processingToolbar.addSeparator()
+
+        self.editSelectedAction = QAction(
+            QgsApplication.getThemeIcon("/mActionProcessSelected.svg"),
+            self.tr('Edit Selected Features'), self.iface.mainWindow())
+        self.editSelectedAction.setObjectName('editSelectedFeatures')
+        self.editSelectedAction.setCheckable(True)
+        self.editSelectedAction.toggled.connect(self.editSelected)
+        self.toolbox.processingToolbar.addAction(self.editSelectedAction)
+
+        self.toolbox.processingToolbar.addSeparator()
+
         self.optionsAction = QAction(
             QgsApplication.getThemeIcon("/mActionOptions.svg"),
             self.tr('Options'), self.iface.mainWindow())
         self.optionsAction.setObjectName('optionsAction')
         self.optionsAction.triggered.connect(self.openProcessingOptions)
         self.toolbox.processingToolbar.addAction(self.optionsAction)
-
-        self.editSelectedAction = QAction(
-            QgsApplication.getThemeIcon("/mActionToggleEditing.svg"),
-            self.tr('Edit Selected Features'), self.iface.mainWindow())
-        self.editSelectedAction.setObjectName('editSelectedFeatures')
-        self.editSelectedAction.setCheckable(True)
-        self.editSelectedAction.toggled.connect(self.editSelected)
-        self.toolbox.processingToolbar.addAction(self.editSelectedAction)
 
         menuBar = self.iface.mainWindow().menuBar()
         menuBar.insertMenu(
