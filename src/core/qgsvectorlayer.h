@@ -71,7 +71,7 @@ class QgsPoint;
 class QgsFeedback;
 class QgsAuxiliaryStorage;
 class QgsAuxiliaryLayer;
-class QgsGeometryFixes;
+class QgsGeometryOptions;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -2007,7 +2007,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \since QGIS 3.4
      */
-    QgsGeometryFixes *geometryFixes() const;
+    QgsGeometryOptions *geometryOptions() const;
 
   public slots:
 
@@ -2499,7 +2499,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     QgsVectorLayerFeatureCounter *mFeatureCounter = nullptr;
 
-    std::unique_ptr<QgsGeometryFixes> mGeometryFixes;
+    std::unique_ptr<QgsGeometryOptions> mGeometryOptions;
 
     friend class QgsVectorLayerFeatureSource;
 };

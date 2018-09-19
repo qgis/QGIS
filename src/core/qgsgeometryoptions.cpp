@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsgeometryfixes.cpp
+                          qgsgeometryoptions.cpp
                              -------------------
     begin                : Aug 23, 2018
     copyright            : (C) 2018 by Matthias Kuhn
@@ -15,38 +15,56 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometryfixes.h"
+#include "qgsgeometryoptions.h"
 
-bool QgsGeometryFixes::removeDuplicateNodes() const
+#include "qgsxmlutils.h"
+
+bool QgsGeometryOptions::removeDuplicateNodes() const
 {
   return mRemoveDuplicateNodes;
 }
 
-void QgsGeometryFixes::setRemoveDuplicateNodes( bool value )
+void QgsGeometryOptions::setRemoveDuplicateNodes( bool value )
 {
   mRemoveDuplicateNodes = value;
 }
 
-double QgsGeometryFixes::geometryPrecision() const
+double QgsGeometryOptions::geometryPrecision() const
 {
   return mGeometryPrecision;
 }
 
-void QgsGeometryFixes::setGeometryPrecision( double value )
+void QgsGeometryOptions::setGeometryPrecision( double value )
 {
   mGeometryPrecision = value;
 }
 
-bool QgsGeometryFixes::isActive() const
+bool QgsGeometryOptions::isActive() const
 {
   return mGeometryPrecision != 0.0 || mRemoveDuplicateNodes;
 }
 
-void QgsGeometryFixes::apply( QgsGeometry &geometry ) const
+void QgsGeometryOptions::apply( QgsGeometry &geometry ) const
 {
   if ( mGeometryPrecision != 0.0 )
     geometry = geometry.snappedToGrid( mGeometryPrecision, mGeometryPrecision );
 
   if ( mRemoveDuplicateNodes )
     geometry.removeDuplicateNodes();
+}
+
+void QgsGeometryOptions::writeXml( QDomNode &node ) const
+{
+  QDomElement geometryOptionsElement = node.ownerDocument().createElement( QStringLiteral( "geometryOptions" ) );
+  node.appendChild( geometryOptionsElement );
+
+  geometryOptionsElement.setAttribute( QStringLiteral( "removeDuplicateNodes" ), mRemoveDuplicateNodes ? 1 : 0 );
+  geometryOptionsElement.setAttribute( QStringLiteral( "geometryPrecision" ), mGeometryPrecision );
+}
+
+void QgsGeometryOptions::readXml( const QDomNode &node )
+{
+  QDomElement geometryOptionsElement = node.toElement();
+  setGeometryPrecision( geometryOptionsElement.attribute( QStringLiteral( "geometryPrecision" ),  QStringLiteral( "0.0" ) ).toDouble() );
+  setRemoveDuplicateNodes( geometryOptionsElement.attribute( QStringLiteral( "removeDuplicateNodes" ),  QStringLiteral( "0" ) ).toInt() == 1 );
 }

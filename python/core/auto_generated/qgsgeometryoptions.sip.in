@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsgeometryfixes.h                                          *
+ * src/core/qgsgeometryoptions.h                                        *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -9,24 +9,24 @@
 
 
 
-class QgsGeometryFixes
+class QgsGeometryOptions
 {
 %Docstring
 
-The QgsGeometryFixes class contains options to automatically adjust geometries to
+The QgsGeometryOptions class contains options to automatically adjust geometries to
 constraints on a layer.
 
 .. versionadded:: 3.4
 %End
 
 %TypeHeaderCode
-#include "qgsgeometryfixes.h"
+#include "qgsgeometryoptions.h"
 %End
   public:
 
-    QgsGeometryFixes();
+    QgsGeometryOptions();
 %Docstring
-Create a new QgsGeometryFixes object.
+Create a new QgsGeometryOptions object.
 %End
 
     bool removeDuplicateNodes() const;
@@ -75,12 +75,26 @@ Apply any fixes configured on this class to ``geometry``.
 .. versionadded:: 3.4
 %End
 
+    void writeXml( QDomNode &node ) const;
+%Docstring
+Write the geometry options to the ``node``.
+
+.. versionadded:: 3.4
+%End
+
+    void readXml( const QDomNode &node );
+%Docstring
+Read the geometry options from ``node``.
+
+.. versionadded:: 3.4
+%End
+
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsgeometryfixes.h                                          *
+ * src/core/qgsgeometryoptions.h                                        *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

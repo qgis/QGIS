@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsgeometryfixes.h
+                          qgsgeometryoptions.h
                              -------------------
     begin                : Aug 23, 2018
     copyright            : (C) 2018 by Matthias Kuhn
@@ -15,27 +15,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSGEOMETRYFIXES_H
-#define QGSGEOMETRYFIXES_H
+#ifndef QGSGEOMETRYOPTIONS_H
+#define QGSGEOMETRYOPTIONS_H
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsgeometry.h"
 
 /**
  * \ingroup core
  *
- * The QgsGeometryFixes class contains options to automatically adjust geometries to
+ * The QgsGeometryOptions class contains options to automatically adjust geometries to
  * constraints on a layer.
  *
  * \since QGIS 3.4
  */
-class CORE_EXPORT QgsGeometryFixes
+class CORE_EXPORT QgsGeometryOptions
 {
   public:
 
     /**
-     * Create a new QgsGeometryFixes object.
+     * Create a new QgsGeometryOptions object.
      */
-    QgsGeometryFixes() = default;
+    QgsGeometryOptions() = default;
 
     /**
      * Automatically remove duplicate nodes on all geometries which are edited on this layer.
@@ -83,6 +85,20 @@ class CORE_EXPORT QgsGeometryFixes
      */
     void apply( QgsGeometry &geometry ) const;
 
+    /**
+     * Write the geometry options to the \a node.
+     *
+     * \since QGIS 3.4
+     */
+    void writeXml( QDomNode &node ) const;
+
+    /**
+     * Read the geometry options from \a node.
+     *
+     * \since QGIS 3.4
+     */
+    void readXml( const QDomNode &node );
+
   private:
 
     /**
@@ -102,4 +118,4 @@ class CORE_EXPORT QgsGeometryFixes
     double mGeometryPrecision = 0.0;
 };
 
-#endif // QGSGEOMETRYFIXES_H
+#endif // QGSGEOMETRYOPTIONS_H
