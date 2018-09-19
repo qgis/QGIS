@@ -32,18 +32,16 @@ struct QgsGeometryCheckerContext;
 /**
  * \ingroup analysis
  */
-class ANALYSIS_EXPORT QgsGeometryCheckFactory
+class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
 {
   public:
-
-    QgsGeometryCheckFactory();
 
     /**
      * Destructor
      *
      * Deletes all the registered checks
      */
-    virtual ~QgsGeometryCheckFactory();
+    virtual ~QgsGeometryCheckFactory() = default;
 
     virtual QgsGeometryCheck *createGeometryCheck( QgsGeometryCheckerContext *context, const QVariantMap &geometryCheckConfiguration ) const = 0 SIP_FACTORY;
 

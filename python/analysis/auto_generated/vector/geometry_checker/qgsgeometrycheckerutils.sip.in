@@ -79,18 +79,9 @@ Returns if the geometry is reprojected to the map CRS or not.
 #include "qgsgeometrycheckerutils.h"
 %End
       public:
-        LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
-                       const QMap<QString, QgsFeatureIds> &featureIds,
-                       const QList<QgsWkbTypes::GeometryType> &geometryTypes,
-                       QgsFeedback *feedback,
-                       QgsGeometryCheckerContext *context,
-                       bool useMapCrs = false );
 
-        LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
-                       const QList<QString> &layerIds, const QgsRectangle &extent,
-                       const QList<QgsWkbTypes::GeometryType> &geometryTypes,
-                       QgsGeometryCheckerContext *context );
-
+      private:
+        LayerFeatures();
     };
 
 

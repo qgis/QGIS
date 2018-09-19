@@ -11,15 +11,13 @@
 
 
 
-class QgsGeometryCheckFactory
+class QgsGeometryCheckFactory /Abstract/
 {
 
 %TypeHeaderCode
 #include "qgsgeometrycheckfactory.h"
 %End
   public:
-
-    QgsGeometryCheckFactory();
 
     virtual ~QgsGeometryCheckFactory();
 

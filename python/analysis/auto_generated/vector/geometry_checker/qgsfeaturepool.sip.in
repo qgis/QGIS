@@ -11,7 +11,7 @@
 
 
 
-class QgsFeaturePool : QgsFeatureSink
+class QgsFeaturePool : QgsFeatureSink /Abstract/
 {
 %Docstring
 A feature pool is based on a vector layer and caches features.
@@ -43,17 +43,7 @@ Removes a feature from this pool.
 Implementations will remove the feature from the layer or from the data provider.
 %End
 
-    QgsFeatureIds allFeatureIds() const;
-%Docstring
-Returns the complete set of feature ids in this pool.
-Note that this concerns the features governed by this pool, which are not necessarily all cached.
-%End
 
-    QgsFeatureIds getIntersects( const QgsRectangle &rect ) const;
-%Docstring
-Get all feature ids in the bounding box ``rect``. It will use a spatial index to
-determine the ids.
-%End
 
     QgsVectorLayer *layer() const;
 %Docstring
@@ -98,12 +88,6 @@ Removes a feature from the cache and the spatial index.
 To be used by implementations of ``deleteFeature``.
 %End
 
-    void setFeatureIds( const QgsFeatureIds &ids );
-%Docstring
-Set all the feature ids governed by this feature pool.
-Should be called by subclasses constructor and whenever
-they insert a new feature.
-%End
 
   private:
     QgsFeaturePool( const QgsFeaturePool &other );

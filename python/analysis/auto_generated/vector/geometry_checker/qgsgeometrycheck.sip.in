@@ -74,7 +74,7 @@ class QgsGeometryCheck
 
     QgsGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, QgsGeometryCheckerContext *context );
     virtual ~QgsGeometryCheck();
-    virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = 0, const LayerFeatureIds &ids = LayerFeatureIds() ) const = 0;
+    virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = 0, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
 
     virtual QStringList resolutionMethods() const = 0;
     virtual QString errorDescription() const = 0;
@@ -84,7 +84,6 @@ class QgsGeometryCheck
     QgsGeometryCheckerContext *context() const;
 
   protected:
-    QMap<QString, QgsFeatureIds> allLayerFeatureIds() const;
 
 };
 

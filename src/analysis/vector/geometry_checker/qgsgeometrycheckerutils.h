@@ -84,6 +84,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
     class ANALYSIS_EXPORT LayerFeatures
     {
       public:
+#ifndef SIP_RUN
         LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
                        const QMap<QString, QgsFeatureIds> &featureIds,
                        const QList<QgsWkbTypes::GeometryType> &geometryTypes,
@@ -95,7 +96,6 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
                        const QList<QString> &layerIds, const QgsRectangle &extent,
                        const QList<QgsWkbTypes::GeometryType> &geometryTypes,
                        QgsGeometryCheckerContext *context );
-#ifndef SIP_RUN
 
         class iterator
         {
@@ -123,6 +123,9 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
 #endif
 
       private:
+#ifdef SIP_RUN
+        LayerFeatures();
+#endif
         QMap<QString, QgsFeaturePool *> mFeaturePools;
         QMap<QString, QgsFeatureIds> mFeatureIds;
         QList<QString> mLayerIds;

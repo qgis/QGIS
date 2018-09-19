@@ -63,7 +63,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
       LayerFeatureIds() = default;
       LayerFeatureIds( const QMap<QString, QgsFeatureIds> &ids ) SIP_SKIP;
 
-      const QMap<QString, QgsFeatureIds> ids SIP_SKIP;
+      QMap<QString, QgsFeatureIds> ids SIP_SKIP;
 
 #ifndef SIP_RUN
       QMap<QString, QgsFeatureIds> toMap() const
@@ -125,7 +125,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
       , mContext( context )
     {}
     virtual ~QgsGeometryCheck() = default;
-    virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const = 0;
+    virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
 
     /**
      * Fix the error \a error with the specified \a method.
@@ -141,7 +141,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     QgsGeometryCheckerContext *context() const { return mContext; }
 
   protected:
-    QMap<QString, QgsFeatureIds> allLayerFeatureIds() const;
+    QMap<QString, QgsFeatureIds> allLayerFeatureIds() const SIP_SKIP;
     void replaceFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const SIP_SKIP;
     void deleteFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const SIP_SKIP;
     void deleteFeatureGeometryRing( const QString &layerId, QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const SIP_SKIP;
