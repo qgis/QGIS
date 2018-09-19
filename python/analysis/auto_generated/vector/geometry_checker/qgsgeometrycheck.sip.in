@@ -60,6 +60,14 @@ class QgsGeometryCheck
       LayerCheck
     };
 
+    enum Flags
+    {
+      SingleGeometryCheck,
+      AvailableInValidation
+    };
+    typedef QFlags<QgsGeometryCheck::Flag> Flags;
+
+
     struct Change
     {
       Change();

@@ -100,6 +100,13 @@ class ANALYSIS_EXPORT QgsGeometryCheck
       LayerCheck
     };
 
+    enum Flags
+    {
+      SingleGeometryCheck = 1,
+      AvailableInValidation = 1 << 1
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     struct Change
     {
       Change() = default;
