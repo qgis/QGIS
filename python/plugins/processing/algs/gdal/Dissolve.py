@@ -85,7 +85,7 @@ class Dissolve(GdalAlgorithm):
                                                   self.tr('Numeric attribute to calculate statistics on'),
                                                   None,
                                                   self.INPUT,
-                                                  QgsProcessingParameterField.Any,
+                                                  QgsProcessingParameterField.Numeric,
                                                   optional=True))
         params.append(QgsProcessingParameterString(self.OPTIONS,
                                                    self.tr('Additional creation options'),
@@ -154,7 +154,7 @@ class Dissolve(GdalAlgorithm):
         if self.parameterAsBool(parameters, self.COMPUTE_AREA, context):
             tokens.append("SUM(ST_Area({0})) AS area, ST_Perimeter(ST_Union({0})) AS perimeter".format(geometry))
 
-        statsField = self.parameterAsString(parameters, self.FIELD, context)
+        statsField = self.parameterAsString(parameters, self.STATISTICS_ATTRIBUTE, context)
         if statsField and self.parameterAsBool(parameters, self.COMPUTE_STATISTICS, context):
             tokens.append("SUM({0}) AS sum, MIN({0}) AS min, MAX({0}) AS max, AVG({0}) AS avg".format(statsField))
 
