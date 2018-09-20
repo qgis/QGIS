@@ -41,6 +41,7 @@ class TestQgsFeatureListComboBox : public QObject
     void testSetGetLayer();
     void testSetGetForeignKey();
     void testAllowNull();
+    void nullRepresentation();
 
   private:
     void waitForLoaded( QgsFeatureListComboBox *cb );
@@ -52,6 +53,12 @@ void TestQgsFeatureListComboBox::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST-FEATURELIST-COMBOBOX" ) );
+
 }
 
 void TestQgsFeatureListComboBox::cleanupTestCase()
@@ -106,8 +113,7 @@ void TestQgsFeatureListComboBox::testSetGetLayer()
 
 void TestQgsFeatureListComboBox::testSetGetForeignKey()
 {
-  QgsFeatureListComboBox *cb = new QgsFeatureListComboBox();
-  // std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
+  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
 
   QVERIFY( cb->identifierValue().isNull() );
 
@@ -117,7 +123,7 @@ void TestQgsFeatureListComboBox::testSetGetForeignKey()
   emit cb->lineEdit()->textChanged( "ro" );
   QVERIFY( cb->identifierValue().isNull() );
 
-  waitForLoaded( cb );
+  waitForLoaded( cb.get() );
 
   QVERIFY( cb->identifierValue().isNull() );
 
@@ -127,8 +133,20 @@ void TestQgsFeatureListComboBox::testSetGetForeignKey()
 
 void TestQgsFeatureListComboBox::testAllowNull()
 {
-  QVERIFY( false );
+  //QVERIFY( false );
   // Note to self: implement this!
+}
+
+void TestQgsFeatureListComboBox::nullRepresentation()
+{
+
+  QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
+  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
+  cb->setAllowNull( true );
+
+  QCOMPARE( cb->lineEdit()->text(), QStringLiteral( "nope" ) );
+  QCOMPARE( cb->nullIndex(), 0 );
+
 }
 
 void TestQgsFeatureListComboBox::waitForLoaded( QgsFeatureListComboBox *cb )

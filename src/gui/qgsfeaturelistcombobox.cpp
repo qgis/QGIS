@@ -143,7 +143,7 @@ int QgsFeatureListComboBox::nullIndex() const
 
   if ( allowNull() )
   {
-    index = findText( tr( "NULL" ) );
+    index = findText( QgsApplication::nullRepresentation( ) );
   }
 
   return index;
