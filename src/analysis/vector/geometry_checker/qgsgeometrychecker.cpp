@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheck.h"
 #include "qgsfeaturepool.h"
@@ -26,7 +27,7 @@
 #include <QTimer>
 
 
-QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckerContext *context )
+QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckContext *context )
   : mChecks( checks )
   , mContext( context )
 {
@@ -93,7 +94,7 @@ QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
 
 void QgsGeometryChecker::emitProgressValue()
 {
-  emit progressValue( mProgressCounter );
+  emit progressValue( mFeedback.progress() );
 }
 
 bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, bool triggerRepaint )
@@ -281,7 +282,7 @@ void QgsGeometryChecker::runCheck( const QgsGeometryCheck *check )
   // Run checks
   QList<QgsGeometryCheckError *> errors;
   QStringList messages;
-  check->collectErrors( errors, messages, &mProgressCounter );
+  check->collectErrors( errors, messages, &mFeedback );
   mErrorListMutex.lock();
   mCheckErrors.append( errors );
   mMessages.append( messages );

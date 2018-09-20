@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryfollowboundariescheck.h"
 #include "qgsgeometryengine.h"
 #include "qgsproject.h"
 #include "qgsspatialindex.h"
 #include "qgsvectorlayer.h"
 
-QgsGeometryFollowBoundariesCheck::QgsGeometryFollowBoundariesCheck( QgsGeometryCheckerContext *context, QgsVectorLayer *checkLayer )
+QgsGeometryFollowBoundariesCheck::QgsGeometryFollowBoundariesCheck( QgsGeometryCheckContext *context, QgsVectorLayer *checkLayer )
   : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::PolygonGeometry}, context )
 {
   mCheckLayer = checkLayer;
@@ -34,16 +35,18 @@ QgsGeometryFollowBoundariesCheck::~QgsGeometryFollowBoundariesCheck()
   delete mIndex;
 }
 
-void QgsGeometryFollowBoundariesCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+void QgsGeometryFollowBoundariesCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
+  Q_UNUSED( messages )
+
   if ( !mIndex || !mCheckLayer )
   {
     return;
   }
 
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids.toMap();
   featureIds.remove( mCheckLayer->id() ); // Don't check layer against itself
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, mContext );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, feedback, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();

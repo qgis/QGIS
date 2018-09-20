@@ -13,14 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrypointcoveredbylinecheck.h"
 #include "qgslinestring.h"
 #include "qgsfeaturepool.h"
 
-void QgsGeometryPointCoveredByLineCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+void QgsGeometryPointCoveredByLineCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, mContext, true );
+  Q_UNUSED( messages )
+
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids.toMap();
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, feedback, mContext, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();

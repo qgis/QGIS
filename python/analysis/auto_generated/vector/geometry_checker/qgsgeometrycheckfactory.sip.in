@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckfactory.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsGeometryCheckFactory /Abstract/
+{
+
+%TypeHeaderCode
+#include "qgsgeometrycheckfactory.h"
+%End
+  public:
+
+    virtual ~QgsGeometryCheckFactory();
+
+    virtual QgsGeometryCheck *createGeometryCheck( QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfiguration ) const = 0 /Factory/;
+
+    virtual QgsSingleGeometryCheck *createSingleGeometryCheck( const QString &checkId ) const = 0 /Factory/;
+
+    virtual QString id() const = 0;
+
+    virtual bool isCompatible( QgsVectorLayer *layer ) const;
+
+    virtual QgsGeometryCheck::Flags flags() const;
+};
+
+template<T>
+class QgsGeometryCheckFactoryT : QgsGeometryCheckFactory
+{
+
+%TypeHeaderCode
+#include "qgsgeometrycheckfactory.h"
+%End
+  public:
+    virtual QgsGeometryCheck *createGeometryCheck( QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfiguration ) const;
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckfactory.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

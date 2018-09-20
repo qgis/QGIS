@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerfixsummarydialog.h"
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheck.h"

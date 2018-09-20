@@ -23,7 +23,7 @@
 class ANALYSIS_EXPORT QgsGeometryMultipartCheck : public QgsSingleGeometryCheck
 {
   public:
-    explicit QgsGeometryMultipartCheck( QgsGeometryCheckerContext *context )
+    explicit QgsGeometryMultipartCheck( QgsGeometryCheckContext *context )
       : QgsSingleGeometryCheck( FeatureCheck, {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
     QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const override;
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;

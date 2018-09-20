@@ -53,6 +53,26 @@ void QgsGeometryOptions::apply( QgsGeometry &geometry ) const
     geometry.removeDuplicateNodes();
 }
 
+QStringList QgsGeometryOptions::geometryChecks() const
+{
+  return mGeometryChecks;
+}
+
+void QgsGeometryOptions::setGeometryChecks( const QStringList &geometryChecks )
+{
+  mGeometryChecks = geometryChecks;
+}
+
+QVariantMap QgsGeometryOptions::checkConfiguration( const QString &checkId ) const
+{
+  return mCheckConfiguration.value( checkId ).toMap();
+}
+
+void QgsGeometryOptions::setCheckConfiguration( const QString &checkId, const QVariantMap &checkConfiguration )
+{
+  mCheckConfiguration[checkId] = checkConfiguration;
+}
+
 void QgsGeometryOptions::writeXml( QDomNode &node ) const
 {
   QDomElement geometryOptionsElement = node.ownerDocument().createElement( QStringLiteral( "geometryOptions" ) );

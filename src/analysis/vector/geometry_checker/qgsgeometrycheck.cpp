@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycollection.h"
 #include "qgscurvepolygon.h"
 #include "qgsgeometrycheck.h"
@@ -21,55 +22,6 @@
 #include "qgsreadwritelocker.h"
 #include "qgsthreadingutils.h"
 
-QgsGeometryCheckerContext::QgsGeometryCheckerContext( int _precision, const QgsCoordinateReferenceSystem &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools, const QgsCoordinateTransformContext &transformContext )
-  : tolerance( std::pow( 10, -_precision ) )
-  , reducedTolerance( std::pow( 10, -_precision / 2 ) )
-  , mapCrs( _mapCrs )
-  , featurePools( _featurePools )
-  , transformContext( transformContext )
-{
-}
-
-const QgsCoordinateTransform &QgsGeometryCheckerContext::layerTransform( const QPointer<QgsVectorLayer> &layer )
-{
-  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
-  if ( !mTransformCache.contains( layer ) )
-  {
-    QgsCoordinateTransform transform;
-    QgsThreadingUtils::runOnMainThread( [this, &transform, layer]()
-    {
-      QgsVectorLayer *lyr = layer.data();
-      if ( lyr )
-        transform = QgsCoordinateTransform( lyr->crs(), mapCrs, transformContext );
-    } );
-    locker.changeMode( QgsReadWriteLocker::Write );
-    mTransformCache[layer] = transform;
-    locker.changeMode( QgsReadWriteLocker::Read );
-  }
-
-  return mTransformCache[layer];
-}
-
-double QgsGeometryCheckerContext::layerScaleFactor( const QPointer<QgsVectorLayer> &layer )
-{
-  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
-  if ( !mScaleFactorCache.contains( layer ) )
-  {
-    double scaleFactor = 1.0;
-    QgsThreadingUtils::runOnMainThread( [this, layer, &scaleFactor]()
-    {
-      QgsVectorLayer *lyr = layer.data();
-      if ( lyr )
-        scaleFactor = layerTransform( layer ).scaleFactor( lyr->extent() );
-    } );
-
-    locker.changeMode( QgsReadWriteLocker::Write );
-    mScaleFactorCache[layer] = scaleFactor;
-    locker.changeMode( QgsReadWriteLocker::Read );
-  }
-
-  return mScaleFactorCache.value( layer );
-}
 
 QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId,
     QgsFeatureId featureId, const QgsGeometry &geometry,
@@ -219,6 +171,14 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &chan
   return true;
 }
 
+void QgsGeometryCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, QgsGeometryCheck::Changes &changes ) const
+{
+  Q_UNUSED( error )
+  Q_UNUSED( method )
+  Q_UNUSED( mergeAttributeIndices )
+  Q_UNUSED( changes )
+}
+
 QMap<QString, QgsFeatureIds> QgsGeometryCheck::allLayerFeatureIds() const
 {
   QMap<QString, QgsFeatureIds> featureIds;
@@ -313,4 +273,9 @@ void QgsGeometryCheckError::update( const QgsGeometryCheckError *other )
   mVidx = other->mVidx;
   mValue = other->mValue;
   mGeometry = other->mGeometry;
+}
+
+QgsGeometryCheck::LayerFeatureIds::LayerFeatureIds( const QMap<QString, QgsFeatureIds> &ids )
+  : ids( ids )
+{
 }

@@ -18,7 +18,7 @@
 #include "qgis.h"
 #include "ui_qgsgeometrycheckersetuptab.h"
 
-struct QgsGeometryCheckerContext;
+struct QgsGeometryCheckContext;
 class QgsGeometryCheck;
 
 class QgsGeometryCheckFactory
@@ -27,7 +27,7 @@ class QgsGeometryCheckFactory
     virtual ~QgsGeometryCheckFactory() = default;
     virtual void restorePrevious( Ui::QgsGeometryCheckerSetupTab & /*ui*/ ) const = 0;
     virtual bool checkApplicability( Ui::QgsGeometryCheckerSetupTab & /*ui*/, int /*nPoint*/, int /*nLineString*/, int /*nPolygon*/ ) const = 0;
-    virtual QgsGeometryCheck *createInstance( QgsGeometryCheckerContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const = 0;
+    virtual QgsGeometryCheck *createInstance( QgsGeometryCheckContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const = 0;
 
   protected:
     static QString sSettingsGroup;
@@ -38,7 +38,7 @@ class QgsGeometryCheckFactoryT : public QgsGeometryCheckFactory
 {
     void restorePrevious( Ui::QgsGeometryCheckerSetupTab & /*ui*/ ) const override;
     bool checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int nPoint, int nLineString, int nPolygon ) const override;
-    QgsGeometryCheck *createInstance( QgsGeometryCheckerContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const override;
+    QgsGeometryCheck *createInstance( QgsGeometryCheckContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const override;
 };
 
 class QgsGeometryCheckFactoryRegistry

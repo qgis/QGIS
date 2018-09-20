@@ -23,11 +23,11 @@
 class ANALYSIS_EXPORT QgsGeometrySegmentLengthCheck : public QgsGeometryCheck
 {
   public:
-    QgsGeometrySegmentLengthCheck( QgsGeometryCheckerContext *context, double minLengthMapUnits )
+    QgsGeometrySegmentLengthCheck( QgsGeometryCheckContext *context, double minLengthMapUnits )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context )
     , mMinLengthMapUnits( minLengthMapUnits )
     {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
     QString errorDescription() const override { return tr( "Minimal segment length" ); }

@@ -100,6 +100,9 @@ class QgsVectorLayerTools;
 class QgsWelcomePage;
 class QgsOptionsWidgetFactory;
 class QgsStatusBar;
+class QgsGeometryValidationService;
+class QgsGeometryValidationDock;
+class QgsGeometryValidationModel;
 
 class QgsUserProfileManagerWidgetFactory;
 
@@ -2292,6 +2295,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! True if we are blocking the activeLayerChanged signal from being emitted
     bool mBlockActiveLayerChanged = false;
+
+    std::unique_ptr<QgsGeometryValidationService> mGeometryValidationService;
+    QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
+    QgsGeometryValidationDock *mGeometryValidationDock = nullptr;
 
     friend class TestQgisAppPython;
 };

@@ -23,9 +23,9 @@
 class ANALYSIS_EXPORT QgsGeometryDegeneratePolygonCheck : public QgsGeometryCheck
 {
   public:
-    explicit QgsGeometryDegeneratePolygonCheck( QgsGeometryCheckerContext *context )
+    explicit QgsGeometryDegeneratePolygonCheck( QgsGeometryCheckContext *context )
       : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::PolygonGeometry}, context ) {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
     QString errorDescription() const override { return tr( "Polygon with less than three nodes" ); }

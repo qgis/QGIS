@@ -1,0 +1,136 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgssinglegeometrycheck.h        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsSingleGeometryCheckError
+{
+%Docstring
+
+An error from a QgsSingleGeometryCheck.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgssinglegeometrycheck.h"
+%End
+  public:
+    QgsSingleGeometryCheckError( const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, const QgsVertexId &vertexId = QgsVertexId() );
+
+    virtual ~QgsSingleGeometryCheckError();
+
+    virtual void update( const QgsSingleGeometryCheckError *other );
+%Docstring
+Update this error with the information from \other.
+Will be used to update existing errors whenever they are re-checked.
+%End
+
+    virtual bool isEqual( const QgsSingleGeometryCheckError *other ) const;
+%Docstring
+Check if this error is equal to ``other``.
+Is reimplemented by subclasses with additional information, comparison
+of base information is done in parent class.
+%End
+
+
+    virtual QString description() const;
+%Docstring
+A human readable description of this error.
+%End
+
+    const QgsSingleGeometryCheck *check() const;
+%Docstring
+The check that created this error.
+
+.. versionadded:: 3.4
+%End
+
+    QgsGeometry errorLocation() const;
+%Docstring
+The exact location of the error.
+
+.. versionadded:: 3.4
+%End
+
+    QgsVertexId vertexId() const;
+%Docstring
+The vertex id of the error. May be invalid depending on the check.
+
+.. versionadded:: 3.4
+%End
+
+  protected:
+};
+
+class QgsGeometryCheckErrorSingle : QgsGeometryCheckError
+{
+%Docstring
+
+Wraps a QgsSingleGeometryError into a standard :py:class:`QgsGeometryCheckError`.
+The single error can be obtained via singleError.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgssinglegeometrycheck.h"
+%End
+  public:
+    QgsGeometryCheckErrorSingle( QgsSingleGeometryCheckError *singleError, const QgsGeometryCheckerUtils::LayerFeature &layerFeature );
+
+    QgsSingleGeometryCheckError *singleError() const;
+%Docstring
+The underlying single error.
+%End
+
+
+};
+
+class QgsSingleGeometryCheck : QgsGeometryCheck
+{
+%Docstring
+
+Base class for geometry checks for a single geometry without any context of the layer or other layers in the project.
+Classic examples are validity checks like self-intersection.
+
+Subclasses need to implement the processGeometry method.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgssinglegeometrycheck.h"
+%End
+  public:
+    QgsSingleGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, QgsGeometryCheckContext *context );
+
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = 0, const QgsGeometryCheck::LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const final;
+
+    virtual QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const = 0;
+%Docstring
+Check the ``geometry`` for errors. It may make use of ``configuration`` options.
+
+Returns a list of QgsSingleGeometryCheckErrors, ownership is transferred to the caller.
+An empty list is returned for geometries without errors.
+
+.. versionadded:: 3.4
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgssinglegeometrycheck.h        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -230,6 +230,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
           return QVariant();
       }
       break;
+
   }
   return QVariant();
 }

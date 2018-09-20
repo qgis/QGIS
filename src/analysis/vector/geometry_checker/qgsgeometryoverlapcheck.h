@@ -74,11 +74,11 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
 class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
 {
   public:
-    QgsGeometryOverlapCheck( QgsGeometryCheckerContext *context, double thresholdMapUnits )
+    QgsGeometryOverlapCheck( QgsGeometryCheckContext *context, double thresholdMapUnits )
       : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PolygonGeometry}, context )
     , mThresholdMapUnits( thresholdMapUnits )
     {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
     QString errorDescription() const override { return tr( "Overlap" ); }

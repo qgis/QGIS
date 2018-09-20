@@ -1,4 +1,5 @@
 // Include auto-generated SIP files
+%Include auto_generated/qgsanalysis.sip
 %Include auto_generated/raster/qgsalignraster.sip
 %Include auto_generated/raster/qgsaspectfilter.sip
 %Include auto_generated/raster/qgsderivativefilter.sip
@@ -15,6 +16,8 @@
 %Include auto_generated/vector/qgsgeometrysnapper.sip
 %Include auto_generated/vector/qgsgeometrysnappersinglesource.sip
 %Include auto_generated/vector/qgszonalstatistics.sip
+%Include auto_generated/vector/geometry_checker/qgsgeometrycheckerutils.sip
+%Include auto_generated/vector/geometry_checker/qgsfeaturepool.sip
 %Include auto_generated/interpolation/qgsinterpolator.sip
 %Include auto_generated/interpolation/qgsgridfilewriter.sip
 %Include auto_generated/interpolation/qgsidwinterpolator.sip
@@ -27,5 +30,10 @@
 %Include auto_generated/network/qgsnetworkdistancestrategy.sip
 %Include auto_generated/network/qgsgraphanalyzer.sip
 %Include auto_generated/network/qgsvectorlayerdirector.sip
+%Include auto_generated/vector/geometry_checker/qgsgeometrycheckcontext.sip
+%Include auto_generated/vector/geometry_checker/qgssinglegeometrycheck.sip
+%Include auto_generated/vector/geometry_checker/qgsgeometrycheckregistry.sip
+%Include auto_generated/vector/geometry_checker/qgsgeometrycheckfactory.sip
 %Include auto_generated/processing/qgsnativealgorithms.sip
 %Include auto_generated/network/qgsgraphdirector.sip
+%Include auto_generated/vector/geometry_checker/qgsgeometrycheck.sip

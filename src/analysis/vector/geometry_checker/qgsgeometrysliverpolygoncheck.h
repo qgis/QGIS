@@ -23,7 +23,7 @@
 class ANALYSIS_EXPORT QgsGeometrySliverPolygonCheck : public QgsGeometryAreaCheck
 {
   public:
-    QgsGeometrySliverPolygonCheck( QgsGeometryCheckerContext *context, double threshold, double maxAreaMapUnits )
+    QgsGeometrySliverPolygonCheck( QgsGeometryCheckContext *context, double threshold, double maxAreaMapUnits )
       : QgsGeometryAreaCheck( context, threshold )
       , mMaxAreaMapUnits( maxAreaMapUnits )
     {}

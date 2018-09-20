@@ -63,6 +63,9 @@
 #include "qgsgeometryoptions.h"
 #include "qgsvectorlayersavestyledialog.h"
 #include "qgsvectorlayerloadstyledialog.h"
+#include "qgsgeometrycheckregistry.h"
+#include "qgsgeometrycheck.h"
+#include "qgsanalysis.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -399,17 +402,19 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   if ( mLayer->isSpatial() )
   {
     mRemoveDuplicateNodesCheckbox->setEnabled( true );
-    mGeometryPrecisionSpinBox->setEnabled( true );
+    mGeometryPrecisionLineEdit->setEnabled( true );
 
     mRemoveDuplicateNodesCheckbox->setChecked( mLayer->geometryOptions()->removeDuplicateNodes() );
-    mGeometryPrecisionSpinBox->setValue( mLayer->geometryOptions()->geometryPrecision() );
+    mGeometryPrecisionLineEdit->setText( QString::number( mLayer->geometryOptions()->geometryPrecision() ) );
 
-    mGeometryPrecisionSpinBox->setSuffix( QStringLiteral( " [%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
+    mPrecisionUnitsLabel->setText( QStringLiteral( "[%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
+
+    QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mLayer, QgsGeometryCheck::Flag::SingleGeometryCheck );
   }
   else
   {
     mRemoveDuplicateNodesCheckbox->setEnabled( false );
-    mGeometryPrecisionSpinBox->setEnabled( false );
+    mGeometryPrecisionLineEdit->setEnabled( false );
     mGeometryAutoFixesGroupBox->setEnabled( false );
   }
 
@@ -752,7 +757,7 @@ void QgsVectorLayerProperties::apply()
 #endif
 
   mLayer->geometryOptions()->setRemoveDuplicateNodes( mRemoveDuplicateNodesCheckbox->isChecked() );
-  mLayer->geometryOptions()->setGeometryPrecision( mGeometryPrecisionSpinBox->value() );
+  mLayer->geometryOptions()->setGeometryPrecision( mGeometryPrecisionLineEdit->text().toDouble() );
 
   // update symbology
   emit refreshLegend( mLayer->id() );

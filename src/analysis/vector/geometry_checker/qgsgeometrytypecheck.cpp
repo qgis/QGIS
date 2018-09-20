@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrytypecheck.h"
 #include "qgsgeometrycollection.h"
 #include "qgsmulticurve.h"

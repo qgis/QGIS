@@ -43,7 +43,7 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsSingleGeometryCheckE
 class ANALYSIS_EXPORT QgsGeometryTypeCheck : public QgsSingleGeometryCheck
 {
   public:
-    QgsGeometryTypeCheck( QgsGeometryCheckerContext *context, int allowedTypes )
+    QgsGeometryTypeCheck( QgsGeometryCheckContext *context, int allowedTypes )
       : QgsSingleGeometryCheck( FeatureCheck, {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context )
     , mAllowedTypes( allowedTypes )
     {}
