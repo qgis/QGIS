@@ -44,6 +44,7 @@ class TestQgsExpressionContext : public QObject
     void setFeature();
     void setFields();
     void takeScopes();
+    void highlighted();
 
     void globalScope();
     void projectScope();
@@ -540,6 +541,27 @@ void TestQgsExpressionContext::takeScopes()
 
   QVERIFY( !context.variable( "test_global" ).isValid() );
   QVERIFY( !context.variable( "test_project" ).isValid() );
+}
+
+void TestQgsExpressionContext::highlighted()
+{
+  QgsExpressionContext context;
+  QVERIFY( !context.isHighlightedFunction( QStringLiteral( "x" ) ) );
+  QVERIFY( !context.isHighlightedVariable( QStringLiteral( "x" ) ) );
+  context.setHighlightedFunctions( QStringList() << QStringLiteral( "x" ) << QStringLiteral( "y" ) );
+  QVERIFY( context.isHighlightedFunction( QStringLiteral( "x" ) ) );
+  QVERIFY( context.isHighlightedFunction( QStringLiteral( "y" ) ) );
+  QVERIFY( !context.isHighlightedFunction( QStringLiteral( "z" ) ) );
+  QVERIFY( !context.isHighlightedVariable( QStringLiteral( "x" ) ) );
+  context.setHighlightedVariables( QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
+  QVERIFY( context.isHighlightedVariable( QStringLiteral( "a" ) ) );
+  QVERIFY( context.isHighlightedVariable( QStringLiteral( "b" ) ) );
+  QVERIFY( !context.isHighlightedVariable( QStringLiteral( "c" ) ) );
+  QVERIFY( !context.isHighlightedFunction( QStringLiteral( "a" ) ) );
+  context.setHighlightedFunctions( QStringList() );
+  context.setHighlightedVariables( QStringList() );
+  QVERIFY( !context.isHighlightedFunction( QStringLiteral( "x" ) ) );
+  QVERIFY( !context.isHighlightedVariable( QStringLiteral( "a" ) ) );
 }
 
 void TestQgsExpressionContext::globalScope()

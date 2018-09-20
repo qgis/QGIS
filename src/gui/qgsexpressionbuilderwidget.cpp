@@ -577,7 +577,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
       name += '(';
     else if ( !name.startsWith( '$' ) )
       name += QLatin1String( "()" );
-    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText() );
+    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText(), QgsExpressionItem::ExpressionNode, mExpressionContext.isHighlightedFunction( func->name() ) );
   }
 
   // load relation names
@@ -721,7 +721,7 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
       continue;
     if ( func->params() != 0 )
       name += '(';
-    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText() );
+    registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText(), QgsExpressionItem::ExpressionNode, mExpressionContext.isHighlightedFunction( func->name() ) );
   }
 }
 

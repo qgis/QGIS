@@ -237,6 +237,7 @@ QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other )
     mStack << new QgsExpressionContextScope( *scope );
   }
   mHighlightedVariables = other.mHighlightedVariables;
+  mHighlightedFunctions = other.mHighlightedFunctions;
   mCachedValues = other.mCachedValues;
 }
 
@@ -250,6 +251,7 @@ QgsExpressionContext &QgsExpressionContext::operator=( QgsExpressionContext &&ot
     other.mStack.clear();
 
     mHighlightedVariables = other.mHighlightedVariables;
+    mHighlightedFunctions = other.mHighlightedFunctions;
     mCachedValues = other.mCachedValues;
   }
   return *this;
@@ -264,6 +266,7 @@ QgsExpressionContext &QgsExpressionContext::operator=( const QgsExpressionContex
     mStack << new QgsExpressionContextScope( *scope );
   }
   mHighlightedVariables = other.mHighlightedVariables;
+  mHighlightedFunctions = other.mHighlightedFunctions;
   mCachedValues = other.mCachedValues;
   return *this;
 }
@@ -309,6 +312,16 @@ bool QgsExpressionContext::isHighlightedVariable( const QString &name ) const
 void QgsExpressionContext::setHighlightedVariables( const QStringList &variableNames )
 {
   mHighlightedVariables = variableNames;
+}
+
+bool QgsExpressionContext::isHighlightedFunction( const QString &name ) const
+{
+  return mHighlightedFunctions.contains( name );
+}
+
+void QgsExpressionContext::setHighlightedFunctions( const QStringList &names )
+{
+  mHighlightedFunctions = names;
 }
 
 const QgsExpressionContextScope *QgsExpressionContext::activeScopeForVariable( const QString &name ) const
