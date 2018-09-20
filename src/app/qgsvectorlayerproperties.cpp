@@ -61,6 +61,7 @@
 #include "qgslabelinggui.h"
 #include "qgssymbollayer.h"
 #include "qgsgeometryoptions.h"
+#include "qgsgeometrycheckfactory.h"
 #include "qgsvectorlayersavestyledialog.h"
 #include "qgsvectorlayerloadstyledialog.h"
 #include "qgsmessagebar.h"
@@ -409,6 +410,18 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mGeometryPrecisionLineEdit->setText( QString::number( mLayer->geometryOptions()->geometryPrecision() ) );
 
     mPrecisionUnitsLabel->setText( QStringLiteral( "[%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
+
+    QLayout *layout = new QVBoxLayout();
+    const QList<QgsGeometryCheckFactory *> factories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mLayer, QgsGeometryCheck::Flag::SingleGeometryCheck );
+    const QStringList activeChecks = mLayer->geometryOptions()->geometryChecks();
+    for ( const QgsGeometryCheckFactory *factory : factories )
+    {
+      QCheckBox *cb = new QCheckBox( factory->name() );
+      cb->setChecked( activeChecks.contains( factory->id() ) );
+      mGeometryCheckFactoriesGroupBoxes.insert( cb, factory->id() );
+      layout->addWidget( cb );
+    }
+    mGeometryValidationGroupBox->setLayout( layout );
   }
   else
   {
@@ -757,6 +770,15 @@ void QgsVectorLayerProperties::apply()
 
   mLayer->geometryOptions()->setRemoveDuplicateNodes( mRemoveDuplicateNodesCheckbox->isChecked() );
   mLayer->geometryOptions()->setGeometryPrecision( mGeometryPrecisionLineEdit->text().toDouble() );
+
+  QStringList activeChecks;
+  QHash<QCheckBox *, QString>::const_iterator it;
+  for ( it = mGeometryCheckFactoriesGroupBoxes.constBegin(); it != mGeometryCheckFactoriesGroupBoxes.constEnd(); ++it )
+  {
+    if ( it.key()->isChecked() )
+      activeChecks << it.value();
+  }
+  mLayer->geometryOptions()->setGeometryChecks( activeChecks );
 
   // update symbology
   emit refreshLegend( mLayer->id() );

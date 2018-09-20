@@ -19,10 +19,11 @@
 
 bool QgsGeometryCheckFactory::isCompatible( QgsVectorLayer *layer ) const
 {
+  Q_UNUSED( layer );
   return true;
 }
 
 QgsGeometryCheck::Flags QgsGeometryCheckFactory::flags() const
 {
-  return nullptr;
+  return QgsGeometryCheck::Flags( QgsGeometryCheck::SingleGeometryCheck | QgsGeometryCheck::AvailableInValidation );
 }
