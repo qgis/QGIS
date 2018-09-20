@@ -80,13 +80,13 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   connect( cmbTransformType, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged );
   connect( mWorldFileCheckBox, &QCheckBox::stateChanged, this, &QgsTransformSettingsDialog::mWorldFileCheckBox_stateChanged );
 
-  cmbTransformType->addItem( tr( "Linear" ), ( int )QgsGeorefTransform::Linear );
-  cmbTransformType->addItem( tr( "Helmert" ), ( int )QgsGeorefTransform::Helmert );
-  cmbTransformType->addItem( tr( "Polynomial 1" ), ( int )QgsGeorefTransform::PolynomialOrder1 );
-  cmbTransformType->addItem( tr( "Polynomial 2" ), ( int )QgsGeorefTransform::PolynomialOrder2 );
-  cmbTransformType->addItem( tr( "Polynomial 3" ), ( int )QgsGeorefTransform::PolynomialOrder3 );
-  cmbTransformType->addItem( tr( "Thin Plate Spline" ), ( int )QgsGeorefTransform::ThinPlateSpline );
-  cmbTransformType->addItem( tr( "Projective" ), ( int )QgsGeorefTransform::Projective );
+  cmbTransformType->addItem( tr( "Linear" ), static_cast<int>( QgsGeorefTransform::Linear ) );
+  cmbTransformType->addItem( tr( "Helmert" ), static_cast<int>( QgsGeorefTransform::Helmert ) );
+  cmbTransformType->addItem( tr( "Polynomial 1" ), static_cast<int>( QgsGeorefTransform::PolynomialOrder1 ) );
+  cmbTransformType->addItem( tr( "Polynomial 2" ), static_cast<int>( QgsGeorefTransform::PolynomialOrder2 ) );
+  cmbTransformType->addItem( tr( "Polynomial 3" ), static_cast<int>( QgsGeorefTransform::PolynomialOrder3 ) );
+  cmbTransformType->addItem( tr( "Thin Plate Spline" ), static_cast<int>( QgsGeorefTransform::ThinPlateSpline ) );
+  cmbTransformType->addItem( tr( "Projective" ), static_cast<int>( QgsGeorefTransform::Projective ) );
 
   // Populate CompressionComboBox
   mListCompression.append( QStringLiteral( "None" ) );

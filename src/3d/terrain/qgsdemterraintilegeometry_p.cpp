@@ -30,7 +30,7 @@ using namespace Qt3DRender;
 static QByteArray createPlaneVertexData( int res, float skirtHeight, const QByteArray &heights )
 {
   Q_ASSERT( res >= 2 );
-  Q_ASSERT( heights.count() == res * res * ( int )sizeof( float ) );
+  Q_ASSERT( heights.count() == res * res * static_cast<int>( sizeof( float ) ) );
 
   const float *zData = ( const float * ) heights.constData();
   const float *zBits = zData;

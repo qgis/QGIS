@@ -68,7 +68,7 @@ QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget *parent )
 
 void QgsStatusBarMagnifierWidget::setDefaultFactor( double factor )
 {
-  mSpinBox->setClearValue( ( int )100 * factor );
+  mSpinBox->setClearValue( 100 * factor );
 }
 
 void QgsStatusBarMagnifierWidget::setFont( const QFont &myFont )

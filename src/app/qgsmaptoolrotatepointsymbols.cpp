@@ -171,7 +171,7 @@ void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QgsMapMouseEvent *e )
     }
     else
     {
-      rotation = ( int )mCurrentRotationFeature;
+      rotation = static_cast<int>( mCurrentRotationFeature );
     }
 
     QSet<int>::const_iterator it = mCurrentRotationAttributes.constBegin();

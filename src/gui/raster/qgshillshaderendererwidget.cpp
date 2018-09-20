@@ -109,7 +109,7 @@ void QgsHillshadeRendererWidget::setMultiDirectional( bool isMultiDirectional )
 
 void QgsHillshadeRendererWidget::mLightAzimuth_updated( double value )
 {
-  int newvalue = ( int )value - 180;
+  int newvalue = static_cast<int>( value ) - 180;
   if ( newvalue < 0 )
     newvalue += 360;
   whileBlocking( mLightAzimuthDial )->setValue( newvalue );
@@ -118,7 +118,7 @@ void QgsHillshadeRendererWidget::mLightAzimuth_updated( double value )
 
 void QgsHillshadeRendererWidget::mLightAzimuthDial_updated( int value )
 {
-  int newvalue = ( int )value + 180;
+  int newvalue = static_cast<int>( value ) + 180;
   if ( newvalue > 360 )
     newvalue -= 360;
   whileBlocking( mLightAzimuth )->setValue( newvalue );

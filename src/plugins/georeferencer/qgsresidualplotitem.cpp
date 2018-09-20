@@ -115,7 +115,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   }
   else
   {
-    nDecPlaces = ( int )std::log10( scaleBarWidthUnits );
+    nDecPlaces = static_cast<int>( std::log10( scaleBarWidthUnits ) );
     scaleBarWidthUnits /= std::pow( 10.0, nDecPlaces );
     scaleBarWidthUnits = ( int )( scaleBarWidthUnits + 0.5 );
     scaleBarWidthUnits *= std::pow( 10.0, nDecPlaces );

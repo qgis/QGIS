@@ -166,29 +166,29 @@ void QgsTextFormatWidget::initWidget()
 
   // set up quadrant offset button group
   mQuadrantBtnGrp = new QButtonGroup( this );
-  mQuadrantBtnGrp->addButton( mPointOffsetAboveLeft, ( int )QgsPalLayerSettings::QuadrantAboveLeft );
-  mQuadrantBtnGrp->addButton( mPointOffsetAbove, ( int )QgsPalLayerSettings::QuadrantAbove );
-  mQuadrantBtnGrp->addButton( mPointOffsetAboveRight, ( int )QgsPalLayerSettings::QuadrantAboveRight );
-  mQuadrantBtnGrp->addButton( mPointOffsetLeft, ( int )QgsPalLayerSettings::QuadrantLeft );
-  mQuadrantBtnGrp->addButton( mPointOffsetOver, ( int )QgsPalLayerSettings::QuadrantOver );
-  mQuadrantBtnGrp->addButton( mPointOffsetRight, ( int )QgsPalLayerSettings::QuadrantRight );
-  mQuadrantBtnGrp->addButton( mPointOffsetBelowLeft, ( int )QgsPalLayerSettings::QuadrantBelowLeft );
-  mQuadrantBtnGrp->addButton( mPointOffsetBelow, ( int )QgsPalLayerSettings::QuadrantBelow );
-  mQuadrantBtnGrp->addButton( mPointOffsetBelowRight, ( int )QgsPalLayerSettings::QuadrantBelowRight );
+  mQuadrantBtnGrp->addButton( mPointOffsetAboveLeft, static_cast<int>( QgsPalLayerSettings::QuadrantAboveLeft ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetAbove, static_cast<int>( QgsPalLayerSettings::QuadrantAbove ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetAboveRight, static_cast<int>( QgsPalLayerSettings::QuadrantAboveRight ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetLeft, static_cast<int>( QgsPalLayerSettings::QuadrantLeft ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetOver, static_cast<int>( QgsPalLayerSettings::QuadrantOver ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetRight, static_cast<int>( QgsPalLayerSettings::QuadrantRight ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetBelowLeft, static_cast<int>( QgsPalLayerSettings::QuadrantBelowLeft ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetBelow, static_cast<int>( QgsPalLayerSettings::QuadrantBelow ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetBelowRight, static_cast<int>( QgsPalLayerSettings::QuadrantBelowRight ) );
   mQuadrantBtnGrp->setExclusive( true );
 
   // setup direction symbol(s) button group
   mDirectSymbBtnGrp = new QButtonGroup( this );
-  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnLR, ( int )QgsPalLayerSettings::SymbolLeftRight );
-  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnAbove, ( int )QgsPalLayerSettings::SymbolAbove );
-  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnBelow, ( int )QgsPalLayerSettings::SymbolBelow );
+  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnLR, static_cast<int>( QgsPalLayerSettings::SymbolLeftRight ) );
+  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnAbove, static_cast<int>( QgsPalLayerSettings::SymbolAbove ) );
+  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnBelow, static_cast<int>( QgsPalLayerSettings::SymbolBelow ) );
   mDirectSymbBtnGrp->setExclusive( true );
 
   // upside-down labels button group
   mUpsidedownBtnGrp = new QButtonGroup( this );
-  mUpsidedownBtnGrp->addButton( mUpsidedownRadioOff, ( int )QgsPalLayerSettings::Upright );
-  mUpsidedownBtnGrp->addButton( mUpsidedownRadioDefined, ( int )QgsPalLayerSettings::ShowDefined );
-  mUpsidedownBtnGrp->addButton( mUpsidedownRadioAll, ( int )QgsPalLayerSettings::ShowAll );
+  mUpsidedownBtnGrp->addButton( mUpsidedownRadioOff, static_cast<int>( QgsPalLayerSettings::Upright ) );
+  mUpsidedownBtnGrp->addButton( mUpsidedownRadioDefined, static_cast<int>( QgsPalLayerSettings::ShowDefined ) );
+  mUpsidedownBtnGrp->addButton( mUpsidedownRadioAll, static_cast<int>( QgsPalLayerSettings::ShowAll ) );
   mUpsidedownBtnGrp->setExclusive( true );
 
   //mShapeCollisionsChkBx->setVisible( false ); // until implemented
@@ -199,28 +199,28 @@ void QgsTextFormatWidget::initWidget()
 
   // setup point placement button group
   mPlacePointBtnGrp = new QButtonGroup( this );
-  mPlacePointBtnGrp->addButton( radPredefinedOrder, ( int )QgsPalLayerSettings::OrderedPositionsAroundPoint );
-  mPlacePointBtnGrp->addButton( radAroundPoint, ( int )QgsPalLayerSettings::AroundPoint );
-  mPlacePointBtnGrp->addButton( radOverPoint, ( int )QgsPalLayerSettings::OverPoint );
+  mPlacePointBtnGrp->addButton( radPredefinedOrder, static_cast<int>( QgsPalLayerSettings::OrderedPositionsAroundPoint ) );
+  mPlacePointBtnGrp->addButton( radAroundPoint, static_cast<int>( QgsPalLayerSettings::AroundPoint ) );
+  mPlacePointBtnGrp->addButton( radOverPoint, static_cast<int>( QgsPalLayerSettings::OverPoint ) );
   mPlacePointBtnGrp->setExclusive( true );
   connect( mPlacePointBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePlacementWidgets );
 
   // setup line placement button group (assigned enum id currently unused)
   mPlaceLineBtnGrp = new QButtonGroup( this );
-  mPlaceLineBtnGrp->addButton( radLineParallel, ( int )QgsPalLayerSettings::Line );
-  mPlaceLineBtnGrp->addButton( radLineCurved, ( int )QgsPalLayerSettings::Curved );
-  mPlaceLineBtnGrp->addButton( radLineHorizontal, ( int )QgsPalLayerSettings::Horizontal );
+  mPlaceLineBtnGrp->addButton( radLineParallel, static_cast<int>( QgsPalLayerSettings::Line ) );
+  mPlaceLineBtnGrp->addButton( radLineCurved, static_cast<int>( QgsPalLayerSettings::Curved ) );
+  mPlaceLineBtnGrp->addButton( radLineHorizontal, static_cast<int>( QgsPalLayerSettings::Horizontal ) );
   mPlaceLineBtnGrp->setExclusive( true );
   connect( mPlaceLineBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePlacementWidgets );
 
   // setup polygon placement button group (assigned enum id currently unused)
   mPlacePolygonBtnGrp = new QButtonGroup( this );
-  mPlacePolygonBtnGrp->addButton( radOverCentroid, ( int )QgsPalLayerSettings::OverPoint );
-  mPlacePolygonBtnGrp->addButton( radAroundCentroid, ( int )QgsPalLayerSettings::AroundPoint );
-  mPlacePolygonBtnGrp->addButton( radPolygonHorizontal, ( int )QgsPalLayerSettings::Horizontal );
-  mPlacePolygonBtnGrp->addButton( radPolygonFree, ( int )QgsPalLayerSettings::Free );
-  mPlacePolygonBtnGrp->addButton( radPolygonPerimeter, ( int )QgsPalLayerSettings::Line );
-  mPlacePolygonBtnGrp->addButton( radPolygonPerimeterCurved, ( int )QgsPalLayerSettings::PerimeterCurved );
+  mPlacePolygonBtnGrp->addButton( radOverCentroid, static_cast<int>( QgsPalLayerSettings::OverPoint ) );
+  mPlacePolygonBtnGrp->addButton( radAroundCentroid, static_cast<int>( QgsPalLayerSettings::AroundPoint ) );
+  mPlacePolygonBtnGrp->addButton( radPolygonHorizontal, static_cast<int>( QgsPalLayerSettings::Horizontal ) );
+  mPlacePolygonBtnGrp->addButton( radPolygonFree, static_cast<int>( QgsPalLayerSettings::Free ) );
+  mPlacePolygonBtnGrp->addButton( radPolygonPerimeter, static_cast<int>( QgsPalLayerSettings::Line ) );
+  mPlacePolygonBtnGrp->addButton( radPolygonPerimeterCurved, static_cast<int>( QgsPalLayerSettings::PerimeterCurved ) );
   mPlacePolygonBtnGrp->setExclusive( true );
   connect( mPlacePolygonBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePlacementWidgets );
 

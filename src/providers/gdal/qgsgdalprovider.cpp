@@ -1470,7 +1470,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
   if ( sampleSize > 0 )
   {
     // cast to double, integer could overflow
-    if ( ( ( double )xSize() * ( double )ySize() / sampleSize ) > 2 ) // not perfect
+    if ( ( static_cast<double>( xSize() ) * static_cast<double>( ySize() ) / sampleSize ) > 2 ) // not perfect
     {
       QgsDebugMsg( "Approx" );
       bApproxOK = true;
@@ -1827,8 +1827,8 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList()
 
     QgsRasterPyramid myRasterPyramid;
     myRasterPyramid.level = myDivisor;
-    myRasterPyramid.xDim = ( int )( 0.5 + ( myWidth / ( double )myDivisor ) );
-    myRasterPyramid.yDim = ( int )( 0.5 + ( myHeight / ( double )myDivisor ) );
+    myRasterPyramid.xDim = ( int )( 0.5 + ( myWidth / static_cast<double>( myDivisor ) ) );
+    myRasterPyramid.yDim = ( int )( 0.5 + ( myHeight / static_cast<double>( myDivisor ) ) );
     myRasterPyramid.exists = false;
 
     QgsDebugMsg( QString( "Pyramid %1 xDim %2 yDim %3" ).arg( myRasterPyramid.level ).arg( myRasterPyramid.xDim ).arg( myRasterPyramid.yDim ) );
@@ -1920,8 +1920,8 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( QList<int> overviewLi
 
     QgsRasterPyramid myRasterPyramid;
     myRasterPyramid.level = myDivisor;
-    myRasterPyramid.xDim = ( int )( 0.5 + ( myWidth / ( double )myDivisor ) ); // NOLINT
-    myRasterPyramid.yDim = ( int )( 0.5 + ( myHeight / ( double )myDivisor ) ); // NOLINT
+    myRasterPyramid.xDim = ( int )( 0.5 + ( myWidth / static_cast<double>( myDivisor ) ) ); // NOLINT
+    myRasterPyramid.yDim = ( int )( 0.5 + ( myHeight / static_cast<double>( myDivisor ) ) ); // NOLINT
     myRasterPyramid.exists = false;
 
     QgsDebugMsg( QString( "Pyramid %1 xDim %2 yDim %3" ).arg( myRasterPyramid.level ).arg( myRasterPyramid.xDim ).arg( myRasterPyramid.yDim ) );
@@ -2334,7 +2334,7 @@ bool QgsGdalProvider::hasStatistics( int bandNo,
   int bApproxOK = false;
   if ( sampleSize > 0 )
   {
-    if ( ( ( double )xSize() * ( double )ySize() / sampleSize ) > 2 ) // not perfect
+    if ( ( static_cast<double>( xSize() ) * static_cast<double>( ySize() ) / sampleSize ) > 2 ) // not perfect
     {
       bApproxOK = true;
     }
@@ -2432,7 +2432,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
   int bApproxOK = false;
   if ( sampleSize > 0 )
   {
-    if ( ( ( double )xSize() * ( double )ySize() / sampleSize ) > 2 ) // not perfect
+    if ( ( static_cast<double>( xSize() ) * static_cast<double>( ySize() ) / sampleSize ) > 2 ) // not perfect
     {
       bApproxOK = true;
     }
