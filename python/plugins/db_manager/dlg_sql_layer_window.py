@@ -152,7 +152,8 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             match = re.search('^\((SELECT .+ FROM .+)\)$', sql, re.S)
             if match:
                 sql = match.group(1)
-        if not sql.startswith('(') and not sql.endswith(')'):
+        # Need to check on table() since the parentheses were removed by the regexp
+        if not uri.table().startswith('(') and not uri.table().endswith(')'):
             schema = uri.schema()
             if schema and schema.upper() != 'PUBLIC':
                 sql = 'SELECT * FROM {0}.{1}'.format(self.db.connector.quoteId(schema), self.db.connector.quoteId(sql))
