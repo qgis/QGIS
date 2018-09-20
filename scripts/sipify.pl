@@ -960,6 +960,7 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     $IS_OVERRIDE = 1 if ( $LINE =~ m/\boverride\b/);
+    $IS_OVERRIDE = 1 if ( $LINE =~ m/\bFINAL\b/);
 
     # keyword fixes
     do {no warnings 'uninitialized';
