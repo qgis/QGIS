@@ -32,6 +32,7 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsgeopackagerasterwritertask.h"
 #include "qgstaskmanager.h"
+#include "qgsproviderregistry.h"
 
 #include <QAction>
 #include <QMessageBox>
@@ -357,15 +358,16 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
   // Better safe than sorry
   if ( ! uri.isEmpty( ) )
   {
-    QStringList pieces( uri.split( ':' ) );
-    if ( pieces.size() != 3 )
+    QVariantMap pieces( QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri ) );
+    QString baseUri = pieces[QStringLiteral( "path" )].toString();
+    QString layerName = pieces[QStringLiteral( "layerName" )].toString();
+
+    if ( baseUri.isEmpty() || layerName.isEmpty() )
     {
       errCause = QStringLiteral( "Layer URI is malformed: layer <b>%1</b> cannot be deleted!" ).arg( uri );
     }
     else
     {
-      QString baseUri = pieces.at( 1 );
-      QString layerName = pieces.at( 2 );
       sqlite3_database_unique_ptr database;
       int status = database.open_v2( baseUri, SQLITE_OPEN_READWRITE, nullptr );
       if ( status != SQLITE_OK )
