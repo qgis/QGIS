@@ -733,3 +733,23 @@ tests:
       OUTPUT:
         name: expected/gdal/points_along_lines.gml
         type: vector
+
+  - algorithm: gdal:dissolve
+    name: Dissolve with statistics
+    params:
+      COMPUTE_AREA: false
+      COMPUTE_STATISTICS: true
+      COUNT_FEATURES: true
+      EXPLODE_COLLECTIONS: false
+      FIELD: name
+      GEOMETRY: geometry
+      INPUT:
+        name: custom/dissolve_polys_2.gml
+        type: vector
+      KEEP_ATTRIBUTES: false
+      OPTIONS: ''
+      STATISTICS_ATTRIBUTE: floatval
+    results:
+      OUTPUT:
+        name: expected/gdal/dissolve_polys_2_dissolved.gml
+        type: vector
