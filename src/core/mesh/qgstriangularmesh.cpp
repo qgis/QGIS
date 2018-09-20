@@ -25,6 +25,42 @@
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
+#include "qgsfeatureiterator.h"
+
+///@cond PRIVATE
+
+QgsMeshFeatureIterator::QgsMeshFeatureIterator( QgsMesh *mesh )
+  : QgsAbstractFeatureIterator( QgsFeatureRequest() )
+  , mMesh( mesh )
+{}
+
+QgsMeshFeatureIterator::~QgsMeshFeatureIterator() = default;
+
+bool QgsMeshFeatureIterator::rewind()
+{
+  it = 0;
+  return true;
+}
+bool QgsMeshFeatureIterator::close()
+{
+  mMesh = nullptr;
+  return true;
+}
+
+bool QgsMeshFeatureIterator::fetchFeature( QgsFeature &f )
+{
+  if ( !mMesh || mMesh->faces.size() <= it )
+    return false;
+
+  const QgsMeshFace &face = mMesh->faces.at( it ) ;
+  QgsGeometry geom = QgsMeshUtils::toGeometry( face, mMesh->vertices );
+  f.setGeometry( geom );
+  ++it;
+  return true;
+}
+
+
+///@endcond
 
 static void ENP_centroid_step( const QPolygonF &pX, double &cx, double &cy, double &signedArea, int i, int i1 )
 {
@@ -75,21 +111,28 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
   Q_ASSERT( nativeMesh );
   Q_ASSERT( context );
 
-  mSpatialIndex = QgsSpatialIndex();
+  // FIND OUT IF UPDATE IS NEEDED
+  if ( mTriangularMesh.vertices.size() >= nativeMesh->vertices.size() &&
+       mTriangularMesh.faces.size() >= nativeMesh->faces.size() &&
+       mCoordinateTransform.sourceCrs() == context->coordinateTransform().sourceCrs() &&
+       mCoordinateTransform.destinationCrs() == context->coordinateTransform().destinationCrs() )
+    return;
+
+  // CLEAN-UP
   mTriangularMesh.vertices.clear();
   mTriangularMesh.faces.clear();
   mTrianglesToNativeFaces.clear();
   mNativeMeshFaceCentroids.clear();
 
   // TRANSFORM VERTICES
-  QgsCoordinateTransform transform = context->coordinateTransform();
+  mCoordinateTransform = context->coordinateTransform();
   mTriangularMesh.vertices.resize( nativeMesh->vertices.size() );
   for ( int i = 0; i < nativeMesh->vertices.size(); ++i )
   {
     const QgsMeshVertex &vertex = nativeMesh->vertices.at( i );
-    if ( transform.isValid() )
+    if ( mCoordinateTransform.isValid() )
     {
-      QgsPointXY mapPoint = transform.transform( QgsPointXY( vertex.x(), vertex.y() ) );
+      QgsPointXY mapPoint = mCoordinateTransform.transform( QgsPointXY( vertex.x(), vertex.y() ) );
       QgsMeshVertex mapVertex( mapPoint );
       mapVertex.setZ( vertex.z() );
       mapVertex.setM( vertex.m() );
@@ -152,12 +195,7 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
   }
 
   // CALCULATE SPATIAL INDEX
-  for ( int i = 0; i < mTriangularMesh.faces.size(); ++i )
-  {
-    const QgsMeshFace &face = mTriangularMesh.faces.at( i ) ;
-    QgsGeometry geom = QgsMeshUtils::toGeometry( face, mTriangularMesh.vertices );
-    ( void )mSpatialIndex.insertFeature( i, geom.boundingBox() );
-  }
+  mSpatialIndex = QgsSpatialIndex( new QgsMeshFeatureIterator( &mTriangularMesh ) );
 }
 
 const QVector<QgsMeshVertex> &QgsTriangularMesh::vertices() const

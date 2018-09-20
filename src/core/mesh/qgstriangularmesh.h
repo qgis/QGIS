@@ -27,8 +27,10 @@
 #include "qgsgeometry.h"
 #include "qgsfeatureid.h"
 #include "qgsspatialindex.h"
+#include "qgsfeatureiterator.h"
 
 class QgsRenderContext;
+class QgsCoordinateTransform;
 
 //! Mesh - vertices and faces
 struct CORE_EXPORT QgsMesh
@@ -38,6 +40,40 @@ struct CORE_EXPORT QgsMesh
   //! faces
   QVector<QgsMeshFace> faces;
 };
+
+///@cond PRIVATE
+
+/**
+ * \ingroup core
+ *
+ * Delivers features from mesh
+ *
+ * \since QGIS 3.4
+ */
+class CORE_NO_EXPORT QgsMeshFeatureIterator : public QgsAbstractFeatureIterator
+{
+  public:
+
+    /**
+     * This constructor creates a feature iterator, that delivers all features
+     *
+     * \param mesh The mesh to use
+     */
+    QgsMeshFeatureIterator( QgsMesh *mesh );
+    ~QgsMeshFeatureIterator();
+
+    bool rewind() override;
+    bool close() override;
+
+  protected:
+    bool fetchFeature( QgsFeature &f ) override;
+
+  private:
+    QgsMesh *mMesh = nullptr;
+    int it = 0;
+};
+
+///@endcond
 
 /**
  * \ingroup core
@@ -102,6 +138,7 @@ class CORE_EXPORT QgsTriangularMesh
     QVector<QgsMeshVertex> mNativeMeshFaceCentroids;
 
     QgsSpatialIndex mSpatialIndex;
+    QgsCoordinateTransform mCoordinateTransform; //coordinate transform used to convert native mesh vertices to map vertices
 };
 
 namespace QgsMeshUtils
