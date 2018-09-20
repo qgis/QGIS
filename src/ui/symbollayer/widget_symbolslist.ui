@@ -73,7 +73,7 @@
        </property>
        <property name="icon">
         <iconset resource="../../../images/images.qrc">
-         <normaloff>:/images/themes/default/propertyicons/symbology.svg</normaloff>:/images/themes/default/propertyicons/symbology.svg</iconset>
+         <normaloff>:/images/themes/default/mActionStyleManager.svg</normaloff>:/images/themes/default/mActionStyleManager.svg</iconset>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
