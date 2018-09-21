@@ -78,6 +78,9 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
     if ( feedback && feedback->isCanceled() )
       break;
 
+    if ( mContext.renderingStopped() )
+      break;
+
     const QgsMeshFace &face = triangles[i];
 
     const int v1 = face[0], v2 = face[1], v3 = face[2];
