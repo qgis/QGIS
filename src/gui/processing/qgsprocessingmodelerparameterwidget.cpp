@@ -121,6 +121,12 @@ void QgsProcessingModelerParameterWidget::setWidgetContext( const QgsProcessingP
     mStaticWidgetWrapper->setWidgetContext( context );
 }
 
+void QgsProcessingModelerParameterWidget::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )
+{
+  if ( mStaticWidgetWrapper )
+    mStaticWidgetWrapper->registerProcessingContextGenerator( generator );
+}
+
 const QgsProcessingParameterDefinition *QgsProcessingModelerParameterWidget::parameterDefinition() const
 {
   return mParameterDefinition;
@@ -176,7 +182,10 @@ QgsExpressionContext QgsProcessingModelerParameterWidget::createExpressionContex
   QgsExpressionContext c = mContext.expressionContext();
   if ( mModel )
   {
-    QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( mModel->childAlgorithm( mChildId ).algorithm(), QVariantMap(), mContext );
+    const QgsProcessingAlgorithm *alg = nullptr;
+    if ( mModel->childAlgorithms().contains( mChildId ) )
+      alg = mModel->childAlgorithm( mChildId ).algorithm();
+    QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg, QVariantMap(), mContext );
     c << algorithmScope;
     QgsExpressionContextScope *childScope = mModel->createExpressionContextScopeForChildAlgorithm( mChildId, mContext, QVariantMap(), QVariantMap() );
     c << childScope;
@@ -305,6 +314,9 @@ void QgsProcessingModelerParameterWidget::populateSources( const QStringList &co
 
       case QgsProcessingModelChildParameterSource::ChildOutput:
       {
+        if ( !mModel->childAlgorithms().contains( source.outputChildId() ) )
+          continue;
+
         const QgsProcessingModelChildAlgorithm &alg = mModel->childAlgorithm( source.outputChildId() );
         if ( !alg.algorithm() )
           continue;

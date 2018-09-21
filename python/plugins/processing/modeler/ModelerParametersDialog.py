@@ -36,7 +36,6 @@ from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QHBoxLayout, QWidget)
 
 from qgis.core import (Qgis,
-                       QgsApplication,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterExtent,
@@ -58,6 +57,7 @@ from qgis.gui import (QgsGui,
                       QgsScrollArea,
                       QgsFilterLineEdit,
                       QgsHelp,
+                      QgsProcessingContextGenerator,
                       QgsProcessingModelerParameterWidget,
                       QgsProcessingParameterWidgetContext)
 from qgis.utils import iface
@@ -83,8 +83,20 @@ class ModelerParametersDialog(QDialog):
 
         self.widget_labels = {}
 
+        class ContextGenerator(QgsProcessingContextGenerator):
+
+            def __init__(self, context):
+                super().__init__()
+                self.processing_context = context
+
+            def processingContext(self):
+                return self.processing_context
+
+        self.context_generator = ContextGenerator(self.context)
+
         self.setupUi()
         self.params = None
+
         settings = QgsSettings()
         self.restoreGeometry(settings.value("/Processing/modelParametersDialogGeometry", QByteArray()))
 
@@ -135,6 +147,8 @@ class ModelerParametersDialog(QDialog):
 
         widget_context = QgsProcessingParameterWidgetContext()
         widget_context.setMapCanvas(iface.mapCanvas())
+        widget_context.setModel(self.model)
+        widget_context.setModelChildAlgorithmId(self.childId)
 
         for param in self._alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
@@ -156,6 +170,7 @@ class ModelerParametersDialog(QDialog):
 
             if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
                 wrapper.setWidgetContext(widget_context)
+                wrapper.registerProcessingContextGenerator(self.context_generator)
                 widget = wrapper
             else:
                 widget = wrapper.widget

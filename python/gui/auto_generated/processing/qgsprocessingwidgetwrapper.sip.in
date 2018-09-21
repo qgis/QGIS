@@ -109,7 +109,7 @@ Sets the child algorithm ``id`` within the model which the parameter widget is a
 
 };
 
-class QgsAbstractProcessingParameterWidgetWrapper : QObject
+class QgsAbstractProcessingParameterWidgetWrapper : QObject, QgsExpressionContextGenerator
 {
 %Docstring
 
@@ -232,7 +232,7 @@ Returns the current value of the parameter.
 
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 %Docstring
-Register a Processing context generator class that will be used to retrieve
+Register a Processing context ``generator`` class that will be used to retrieve
 a Processing context for the wrapper when required.
 %End
 
@@ -241,6 +241,9 @@ a Processing context for the wrapper when required.
 Called after all wrappers have been created within a particular dialog or context,
 allowing the wrapper to connect to the wrappers of other, related parameters.
 %End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
 
   signals:
 
