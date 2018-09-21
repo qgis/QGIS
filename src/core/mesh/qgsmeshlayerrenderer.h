@@ -19,7 +19,6 @@
 #define QGSMESHLAYERRENDERER_H
 
 class QgsMeshLayer;
-class QgsSymbol;
 
 #define SIP_NO_FILE
 
@@ -91,12 +90,11 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     bool render() override;
 
   private:
-    void renderMesh( const std::unique_ptr<QgsSymbol> &symbol, const QVector<QgsMeshFace> &faces );
+    void renderMesh(const QgsMeshRendererMeshSettings& settings, const QVector<QgsMeshFace> &faces);
     void renderScalarDataset();
     void renderVectorDataset();
     void copyScalarDatasetValues( QgsMeshLayer *layer );
     void copyVectorDatasetValues( QgsMeshLayer *layer );
-    void createMeshSymbol( std::unique_ptr<QgsSymbol> &symbol, const QgsMeshRendererMeshSettings &settings );
     void calculateOutputSize();
 
   protected:
@@ -123,12 +121,6 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     double mVectorDatasetMagMinimum = std::numeric_limits<double>::quiet_NaN();
     double mVectorDatasetMagMaximum = std::numeric_limits<double>::quiet_NaN();
     bool mVectorDataOnVertices = true;
-
-    // copy from mesh layer
-    std::unique_ptr<QgsSymbol> mNativeMeshSymbol = nullptr;
-
-    // copy from mesh layer
-    std::unique_ptr<QgsSymbol> mTriangularMeshSymbol = nullptr;
 
     // rendering context
     QgsRenderContext &mContext;
