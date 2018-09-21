@@ -223,7 +223,7 @@ void QgsFeatureFilterModel::updateCompleter()
     std::sort( entries.begin(), entries.end(), []( const Entry & a, const Entry & b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
 
     if ( mAllowNull )
-      entries.prepend( Entry( QVariant( QVariant::Int ), tr( "NULL" ), QgsFeature() ) );
+      entries.prepend( Entry( QVariant( QVariant::Int ), QgsApplication::nullRepresentation(), QgsFeature() ) );
 
     const int newEntriesSize = entries.size();
 
@@ -433,7 +433,7 @@ void QgsFeatureFilterModel::setExtraIdentifierValueUnguarded( const QVariant &ex
   {
     beginInsertRows( QModelIndex(), 0, 0 );
     if ( extraIdentifierValue.isNull() )
-      mEntries.prepend( Entry( QVariant( QVariant::Int ), QStringLiteral( "%1" ).arg( tr( "NULL" ) ), QgsFeature() ) );
+      mEntries.prepend( Entry( QVariant( QVariant::Int ), QgsApplication::nullRepresentation( ), QgsFeature() ) );
     else
       mEntries.prepend( Entry( extraIdentifierValue, QStringLiteral( "(%1)" ).arg( extraIdentifierValue.toString() ), QgsFeature() ) );
     endInsertRows();

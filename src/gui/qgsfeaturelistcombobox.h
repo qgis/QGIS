@@ -66,13 +66,13 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
 
     /**
      * The display expression will be used to display features as well as
-     * the the value to match the typed text against.
+     * the value to match the typed text against.
      */
     QString displayExpression() const;
 
     /**
      * The display expression will be used to display features as well as
-     * the the value to match the typed text against.
+     * the value to match the typed text against.
      */
     void setDisplayExpression( const QString &displayExpression );
 

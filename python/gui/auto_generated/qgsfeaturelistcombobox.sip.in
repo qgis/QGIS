@@ -43,13 +43,13 @@ The layer from which features should be listed.
     QString displayExpression() const;
 %Docstring
 The display expression will be used to display features as well as
-the the value to match the typed text against.
+the value to match the typed text against.
 %End
 
     void setDisplayExpression( const QString &displayExpression );
 %Docstring
 The display expression will be used to display features as well as
-the the value to match the typed text against.
+the value to match the typed text against.
 %End
 
     QString filterExpression() const;
