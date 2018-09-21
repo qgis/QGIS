@@ -20,5 +20,6 @@ usr/share/qgis/resources/palettes/*
 usr/share/qgis/resources/themes/*
 usr/share/qgis/resources/data/*
 usr/share/qgis/resources/metadata-ISO/*
+usr/share/qgis/resources/opencl_programs/*
 usr/share/qgis/resources/2to3migration.txt
 usr/share/qgis/resources/qgis_global_settings.ini

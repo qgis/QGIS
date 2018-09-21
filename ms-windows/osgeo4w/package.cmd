@@ -324,6 +324,7 @@ for %%i in (%packages%) do (
 	"apps/%PACKAGENAME%/plugins/arcgismapserverprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/arcgisfeatureserverprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/mdalprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/oauth2authmethod.dll" ^
 	"apps/%PACKAGENAME%/resources/qgis.db" ^
 	"apps/%PACKAGENAME%/resources/spatialite.db" ^
 	"apps/%PACKAGENAME%/resources/srs.db" ^
@@ -399,6 +400,7 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 	"apps/%PACKAGENAME%/resources/themes/" ^
 	"apps/%PACKAGENAME%/resources/data/" ^
 	"apps/%PACKAGENAME%/resources/metadata-ISO/" ^
+	"apps/%PACKAGENAME%/resources/opencl_programs/" ^
 	"apps/%PACKAGENAME%/resources/palettes/" ^
 	"apps/%PACKAGENAME%/resources/2to3migration.txt" ^
 	"apps/%PACKAGENAME%/resources/qgis_global_settings.ini" ^

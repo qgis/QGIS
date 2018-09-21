@@ -5,6 +5,7 @@ usr/lib/qgis/plugins/libevis.so
 usr/lib/qgis/plugins/libofflineeditingplugin.so
 usr/lib/qgis/plugins/libtopolplugin.so
 usr/lib/qgis/plugins/libgeometrycheckerplugin.so
+usr/lib/qgis/plugins/liboauth2authmethod.so
 usr/share/applications/
 usr/share/metainfo/
 usr/share/mime/packages/

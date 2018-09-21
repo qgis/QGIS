@@ -76,10 +76,10 @@ Description: Geographic Information System (GIS)
 Package: qgis-common
 Architecture: all
 Depends:
-  libjs-jquery,
-  libjs-leaflet,
+ libjs-jquery,
+ libjs-leaflet,
 #sid buster bionic cosmic# qml-module-qtcharts,
-  ${misc:Depends}
+ ${misc:Depends}
 Description: QGIS - architecture-independent data
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
