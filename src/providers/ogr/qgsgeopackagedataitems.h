@@ -88,14 +88,18 @@ class QgsGeoPackageCollectionItem : public QgsDataCollectionItem
     //! Returns the layer type from \a geometryType
     static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
 
-    //! Delete a geopackage layer
+    //! Deletes a geopackage layer
     static bool deleteGeoPackageRasterLayer( const QString &uri, QString &errCause );
+
+
 
   public slots:
 #ifdef HAVE_GUI
     void addTable();
     void addConnection();
     void deleteConnection();
+    //! Compacts (VACUUM) a geopackage database
+    void vacuumGeoPackageDb();
 #endif
 
   protected:

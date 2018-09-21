@@ -469,6 +469,44 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
   return result;
 }
 
+void QgsGeoPackageCollectionItem::vacuumGeoPackageDb()
+{
+  QString errCause;
+  // Better safe than sorry
+  if ( ! mPath.isEmpty( ) )
+  {
+    char *errmsg = nullptr;
+    sqlite3_database_unique_ptr database;
+    int status = database.open_v2( mPath, SQLITE_OPEN_READWRITE, nullptr );
+    if ( status != SQLITE_OK )
+    {
+      errCause = sqlite3_errmsg( database.get() );
+    }
+    else
+    {
+      ( void )sqlite3_exec(
+        database.get(),                      /* An open database */
+        "VACUUM",                            /* SQL to be evaluated */
+        nullptr,                             /* Callback function */
+        nullptr,                             /* 1st argument to callback */
+        &errmsg                              /* Error msg written here */
+      );
+    }
+    if ( status == SQLITE_OK && ! errmsg )
+    {
+      QMessageBox::information( nullptr, tr( "Database compact (VACUUM)" ), tr( "Database <b>%1</b> has been compacted successfully." ).arg( mName ) );
+    }
+    else
+    {
+      errCause = tr( "There was an error compacting (VACUUM) the database <b>%1</b>: %2" )
+                 .arg( mName )
+                 .arg( QString::fromUtf8( errmsg ) );
+      QMessageBox::warning( nullptr, tr( "Database compact (VACUUM)" ), errCause );
+    }
+    sqlite3_free( errmsg );
+  }
+}
+
 QgsGeoPackageConnectionItem::QgsGeoPackageConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsGeoPackageCollectionItem( parent, name, path )
 {
@@ -499,6 +537,11 @@ QList<QAction *> QgsGeoPackageConnectionItem::actions( QWidget *parent )
   QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table…" ), parent );
   connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageConnectionItem::addTable );
   lst.append( actionAddTable );
+
+  // Run VACUUM
+  QAction *actionVacuumDb = new QAction( tr( "Compact database (VACUUM)" ), parent );
+  connect( actionVacuumDb, &QAction::triggered, this, &QgsGeoPackageConnectionItem::vacuumGeoPackageDb );
+  lst.append( actionVacuumDb );
 
 
   return lst;
