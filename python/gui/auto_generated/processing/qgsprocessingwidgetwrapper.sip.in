@@ -232,7 +232,7 @@ Returns the current value of the parameter.
 
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 %Docstring
-Register a Processing context ``generator`` class that will be used to retrieve
+Registers a Processing context ``generator`` class that will be used to retrieve
 a Processing context for the wrapper when required.
 %End
 

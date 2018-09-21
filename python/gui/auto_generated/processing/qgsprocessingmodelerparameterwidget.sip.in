@@ -66,7 +66,7 @@ to fine-tune its behavior.
 
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 %Docstring
-Register a Processing context ``generator`` class that will be used to retrieve
+Registers a Processing context ``generator`` class that will be used to retrieve
 a Processing context for the widget when required.
 %End
 
