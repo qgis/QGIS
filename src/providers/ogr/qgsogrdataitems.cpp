@@ -371,7 +371,10 @@ void QgsOgrLayerItem::deleteLayer()
 
 // -------
 
-static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name, QString path, GDALDatasetH hDataSource, int layerId, bool isSubLayer = false )
+static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
+    QString path, GDALDatasetH hDataSource,
+    int layerId,
+    bool isSubLayer, bool uniqueNames )
 {
   OGRLayerH hLayer = GDALDatasetGetLayer( hDataSource, layerId );
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
@@ -401,16 +404,22 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
 
   QString layerUri = path;
 
-  if ( name.isEmpty() )
+  if ( isSubLayer )
   {
     // we are in a collection
     name = QString::fromUtf8( OGR_FD_GetName( hDef ) );
     QgsDebugMsg( "OGR layer name : " + name );
-
-    layerUri += "|layerid=" + QString::number( layerId );
-
+    if ( !uniqueNames )
+    {
+      layerUri += "|layerid=" + QString::number( layerId );
+    }
+    else
+    {
+      layerUri += "|layername=" + name;
+    }
     path += '/' + name;
   }
+  Q_ASSERT( !name.isEmpty() );
 
   QgsDebugMsgLevel( "OGR layer uri : " + layerUri, 2 );
 
@@ -433,10 +442,26 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
     return children;
   int numLayers = GDALDatasetGetLayerCount( hDataSource.get() );
 
+  // Check if layer names are unique, so we can use |layername= in URI
+  QMap< QString, int > mapLayerNameToCount;
+  bool uniqueNames = true;
+  for ( int i = 0; i < numLayers; ++i )
+  {
+    OGRLayerH hLayer = GDALDatasetGetLayer( hDataSource.get(), i );
+    OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
+    QString layerName = QString::fromUtf8( OGR_FD_GetName( hDef ) );
+    ++mapLayerNameToCount[layerName];
+    if ( mapLayerNameToCount[layerName] > 1 )
+    {
+      uniqueNames = false;
+      break;
+    }
+  }
+
   children.reserve( numLayers );
   for ( int i = 0; i < numLayers; ++i )
   {
-    QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource.get(), i, true );
+    QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource.get(), i, true, uniqueNames );
     children.append( item );
   }
 
@@ -477,13 +502,10 @@ bool QgsOgrDataCollectionItem::createConnection( const QString &name, const QStr
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN int dataCapabilities()
-{
-  return  QgsDataProvider::File | QgsDataProvider::Dir;
-}
 
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
+QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
+  QString path( pathIn );
   if ( path.isEmpty() )
     return nullptr;
 
@@ -607,7 +629,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   //       class
   // TODO: add more OGR supported multiple layers formats here!
   QStringList ogrSupportedDbLayersExtensions;
-  ogrSupportedDbLayersExtensions << QStringLiteral( "gpkg" ) << QStringLiteral( "sqlite" ) << QStringLiteral( "db" ) << QStringLiteral( "gdb" );
+  ogrSupportedDbLayersExtensions << QStringLiteral( "gpkg" ) << QStringLiteral( "sqlite" ) << QStringLiteral( "db" ) << QStringLiteral( "gdb" ) << QStringLiteral( "kml" );
   QStringList ogrSupportedDbDriverNames;
   ogrSupportedDbDriverNames << QStringLiteral( "GPKG" ) << QStringLiteral( "db" ) << QStringLiteral( "gdb" );
 
@@ -688,12 +710,12 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   }
   else
   {
-    item = dataItemForLayer( parentItem, name, path, hDS.get(), 0 );
+    item = dataItemForLayer( parentItem, name, path, hDS.get(), 0, false, true );
   }
   return item;
 }
 
-QGISEXTERN bool handlesDirectoryPath( const QString &path )
+bool QgsOgrDataItemProvider::handlesDirectoryPath( const QString &path )
 {
   QFileInfo info( path );
   QString suffix = info.suffix().toLower();

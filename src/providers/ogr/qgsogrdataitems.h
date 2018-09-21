@@ -102,5 +102,19 @@ class QgsOgrDataCollectionItem : public QgsDataCollectionItem
 
 };
 
+//! Provider for OGR root data item
+class QgsOgrDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override { return QStringLiteral( "OGR" ); }
+
+    int capabilities() override { return QgsDataProvider::File | QgsDataProvider::Dir; }
+
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+
+    bool handlesDirectoryPath( const QString &path ) override;
+};
+
+
 
 #endif // QGSOGRDATAITEMS_H
