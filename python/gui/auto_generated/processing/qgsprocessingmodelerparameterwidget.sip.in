@@ -12,7 +12,7 @@
 
 
 
-class QgsProcessingModelerParameterWidget : QWidget
+class QgsProcessingModelerParameterWidget : QWidget, QgsExpressionContextGenerator
 {
 %Docstring
 
@@ -116,6 +116,9 @@ Returns the current value of the parameter.
 
 .. seealso:: :py:func:`setWidgetValue`
 %End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
 
 };
 

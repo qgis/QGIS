@@ -143,6 +143,8 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      */
     virtual QgsProcessingModelChildParameterSource value() const;
 
+    QgsExpressionContext createExpressionContext() const override;
+
   private slots:
 
     void sourceMenuAboutToShow();

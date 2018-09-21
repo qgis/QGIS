@@ -22,6 +22,7 @@
 #include "qgsprocessingguiregistry.h"
 #include "models/qgsprocessingmodelalgorithm.h"
 #include "qgsgui.h"
+#include "qgsexpressioncontext.h"
 #include <QHBoxLayout>
 #include <QToolButton>
 #include <QStackedWidget>
@@ -172,7 +173,23 @@ QgsProcessingModelChildParameterSource QgsProcessingModelerParameterWidget::valu
 
 QgsExpressionContext QgsProcessingModelerParameterWidget::createExpressionContext() const
 {
-  return QgsExpressionContext();
+  QgsExpressionContext c = mContext.expressionContext();
+  if ( mModel )
+  {
+    QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( mModel->childAlgorithm( mChildId ).algorithm(), QVariantMap(), mContext );
+    c << algorithmScope;
+    QgsExpressionContextScope *childScope = mModel->createExpressionContextScopeForChildAlgorithm( mChildId, mContext, QVariantMap(), QVariantMap() );
+    c << childScope;
+
+    QStringList highlightedVariables = childScope->variableNames();
+    QStringList highlightedFunctions = childScope->functionNames();
+    highlightedVariables += algorithmScope->variableNames();
+    highlightedFunctions += algorithmScope->functionNames();
+    c.setHighlightedVariables( highlightedVariables );
+    c.setHighlightedFunctions( highlightedFunctions );
+  }
+
+  return c;
 }
 
 void QgsProcessingModelerParameterWidget::sourceMenuAboutToShow()
