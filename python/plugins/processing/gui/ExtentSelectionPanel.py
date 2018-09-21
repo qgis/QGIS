@@ -31,6 +31,7 @@ import warnings
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QMenu, QAction, QInputDialog
 from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
@@ -97,7 +98,8 @@ class ExtentSelectionPanel(BASE, WIDGET):
     def selectExtent(self):
         popupmenu = QMenu()
         useLayerExtentAction = QAction(
-            self.tr('Use Layer/Canvas Extent…'), self.btnSelect)
+            QCoreApplication.translate("ExtentSelectionPanel", 'Use Layer/Canvas Extent…'),
+            self.btnSelect)
         selectOnCanvasAction = QAction(
             self.tr('Select Extent on Canvas'), self.btnSelect)
 
