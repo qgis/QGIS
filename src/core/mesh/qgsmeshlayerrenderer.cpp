@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include <memory>
+#include <QSet>
+#include <QPair>
 
 #include "qgsmeshlayerrenderer.h"
 
@@ -24,8 +26,6 @@
 #include "qgsmeshlayer.h"
 #include "qgspointxy.h"
 #include "qgsrenderer.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgssymbol.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrastershader.h"
 #include "qgsmeshlayerinterpolator.h"
@@ -51,9 +51,6 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContex
   mNativeMesh = *( layer->nativeMesh() );
   mTriangularMesh = *( layer->triangularMesh() );
 
-  createMeshSymbol( mNativeMeshSymbol, mRendererSettings.nativeMeshSettings() );
-  createMeshSymbol( mTriangularMeshSymbol, mRendererSettings.triangularMeshSettings() );
-
   copyScalarDatasetValues( layer );
   copyVectorDatasetValues( layer );
 
@@ -76,22 +73,6 @@ void QgsMeshLayerRenderer::calculateOutputSize()
   int height = int( bottomright.y() - topleft.y() );
   mOutputSize = QSize( width, height );
 }
-
-void QgsMeshLayerRenderer::createMeshSymbol( std::unique_ptr<QgsSymbol> &symbol,
-    const QgsMeshRendererMeshSettings &settings )
-{
-  if ( settings.isEnabled() )
-  {
-    QgsSymbolLayerList l1;
-    l1 << new QgsSimpleFillSymbolLayer( Qt::white,
-                                        Qt::NoBrush,
-                                        settings.color(),
-                                        Qt::SolidLine,
-                                        settings.lineWidth() );
-    symbol.reset( new QgsFillSymbol( l1 ) );
-  }
-}
-
 
 void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 {
@@ -224,23 +205,38 @@ bool QgsMeshLayerRenderer::render()
 
   renderScalarDataset();
 
-  renderMesh( mNativeMeshSymbol, mNativeMesh.faces ); // native mesh
-  renderMesh( mTriangularMeshSymbol, mTriangularMesh.triangles() ); // triangular mesh
+  renderMesh( mRendererSettings.nativeMeshSettings(), mNativeMesh.faces ); // native mesh
+  renderMesh( mRendererSettings.triangularMeshSettings(), mTriangularMesh.triangles() ); // triangular mesh
 
   renderVectorDataset();
 
   return true;
 }
 
-void QgsMeshLayerRenderer::renderMesh( const std::unique_ptr<QgsSymbol> &symbol, const QVector<QgsMeshFace> &faces )
+void QgsMeshLayerRenderer::renderMesh(const QgsMeshRendererMeshSettings& settings , const QVector<QgsMeshFace> &faces)
 {
-  if ( !symbol )
+  if ( !settings.isEnabled() )
     return;
 
-  QgsFields fields;
-  QgsSingleSymbolRenderer renderer( symbol->clone() );
-  renderer.startRender( mContext, fields );
+  // Set up the render configuration options
+  QPainter *painter = mContext.painter();
+  painter->save();
+  if ( mContext.flags() & QgsRenderContext::Antialiasing )
+    painter->setRenderHint( QPainter::Antialiasing, true );
+
+  painter->setRenderHint( QPainter::Antialiasing );
+  QPen pen = painter->pen();
+  pen.setCapStyle( Qt::FlatCap );
+  pen.setJoinStyle( Qt::MiterJoin );
+
+  double penWidth = mContext.convertToPainterUnits( settings.lineWidth(),
+                    QgsUnitTypes::RenderUnit::RenderMillimeters );
+  pen.setWidthF( penWidth );
+  pen.setColor( settings.color() );
+  painter->setPen( pen );
+
   const QVector<QgsMeshVertex> &vertices = mTriangularMesh.vertices(); //Triangular mesh vertices contains also native mesh vertices
+  QSet<QPair<int, int>> drawnEdges;
 
   for ( int i = 0; i < faces.size(); ++i )
   {
@@ -248,18 +244,28 @@ void QgsMeshLayerRenderer::renderMesh( const std::unique_ptr<QgsSymbol> &symbol,
       break;
 
     const QgsMeshFace &face = faces[i];
-    QgsFeature feat;
-    feat.setFields( fields );
-    QgsGeometry geom = QgsMeshUtils::toGeometry( face, vertices );
-    const QgsRectangle bbox = geom.boundingBox();
-    if ( !mContext.extent().intersects( bbox ) )
+    if (face.size() < 2)
       continue;
 
-    feat.setGeometry( geom );
-    renderer.renderFeature( feat, mContext );
+    for (int j=0; j<face.size(); ++j) {
+      const int startVertexId = face[j];
+      const int endVertexId = face[ (j + 1) % face.size()];
+      const QPair<int, int> thisEdge(startVertexId, endVertexId);
+      const QPair<int, int> thisEdgeReversed(endVertexId, startVertexId);
+      if (drawnEdges.contains(thisEdge) || drawnEdges.contains(thisEdgeReversed))
+        continue;
+      drawnEdges.insert(thisEdge);
+      drawnEdges.insert(thisEdgeReversed);
+
+      const QgsMeshVertex & startVertex = vertices[startVertexId];
+      const QgsMeshVertex & endVertex = vertices[endVertexId];
+      const QgsPointXY lineStart = mContext.mapToPixel().transform( startVertex.x(), startVertex.y() );
+      const QgsPointXY lineEnd = mContext.mapToPixel().transform( endVertex.x(), endVertex.y() );
+      painter->drawLine( lineStart.toQPointF(), lineEnd.toQPointF() );
+    }
   }
 
-  renderer.stopRender( mContext );
+  painter->restore();
 }
 
 void QgsMeshLayerRenderer::renderScalarDataset()
