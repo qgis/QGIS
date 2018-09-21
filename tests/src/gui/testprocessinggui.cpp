@@ -150,6 +150,7 @@ class TestProcessingGui : public QObject
     void testNumericWrapperDouble();
     void testNumericWrapperInt();
     void testDistanceWrapper();
+    void testRangeWrapper();
 };
 
 void TestProcessingGui::initTestCase()
@@ -1326,6 +1327,117 @@ void TestProcessingGui::testDistanceWrapper()
   QCOMPARE( l->toolTip(), param.toolTip() );
   delete w;
   delete l;
+}
+
+void TestProcessingGui::testRangeWrapper()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingContext context;
+
+    QgsProcessingParameterRange param( QStringLiteral( "range" ), QStringLiteral( "range" ), QgsProcessingParameterNumber::Double );
+    param.setDefaultValue( QStringLiteral( "0.0,100.0" ) );
+    QgsProcessingRangeWidgetWrapper wrapper( &param, type );
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    QVERIFY( w );
+
+    // initial value
+    QCOMPARE( wrapper.parameterValue().toString(), QStringLiteral( "0,100" ) );
+
+    QVERIFY( wrapper.mMinSpinBox->expressionsEnabled() );
+    QVERIFY( wrapper.mMaxSpinBox->expressionsEnabled() );
+    QCOMPARE( wrapper.mMinSpinBox->decimals(), 6 ); // you can change this, if it's an intentional change!
+    QCOMPARE( wrapper.mMaxSpinBox->decimals(), 6 ); // you can change this, if it's an intentional change!
+    QGSCOMPARENEAR( wrapper.mMinSpinBox->minimum(), -99999999.999999, 1 );
+    QGSCOMPARENEAR( wrapper.mMaxSpinBox->minimum(), -99999999.999999, 1 );
+    QGSCOMPARENEAR( wrapper.mMinSpinBox->maximum(), 99999999.999999, 1 );
+    QGSCOMPARENEAR( wrapper.mMaxSpinBox->maximum(), 99999999.999999, 1 );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingRangeWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QVariantList() << 5 << 7, context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "5,7" ) );
+    QCOMPARE( wrapper.mMinSpinBox->value(), 5.0 );
+    QCOMPARE( wrapper.mMaxSpinBox->value(), 7.0 );
+    wrapper.setWidgetValue( QStringLiteral( "28.1,36.5" ), context );
+    QCOMPARE( spy.count(), 2 );
+    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "28.1,36.5" ) );
+    QCOMPARE( wrapper.mMinSpinBox->value(), 28.1 );
+    QCOMPARE( wrapper.mMaxSpinBox->value(), 36.5 );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "range" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    wrapper.mMinSpinBox->setValue( 7.0 );
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "7,36.5" ) );
+    wrapper.mMaxSpinBox->setValue( 9.0 );
+    QCOMPARE( spy.count(), 4 );
+    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "7,9" ) );
+
+    // check that min/max are mutually adapted
+    wrapper.setParameterValue( QStringLiteral( "200.0,100.0" ), context );
+    QCOMPARE( wrapper.parameterValue().toString(), QStringLiteral( "100,100" ) );
+
+    wrapper.mMaxSpinBox->setValue( 50 );
+    QCOMPARE( wrapper.parameterValue().toString(), QStringLiteral( "50,50" ) );
+    wrapper.mMinSpinBox->setValue( 100 );
+    QCOMPARE( wrapper.parameterValue().toString(), QStringLiteral( "100,100" ) );
+
+    delete w;
+
+    // ints
+    QgsProcessingParameterRange param2( QStringLiteral( "range" ), QStringLiteral( "range" ), QgsProcessingParameterNumber::Integer );
+    param2.setDefaultValue( QStringLiteral( "0.1,100.1" ) );
+
+    QgsProcessingRangeWidgetWrapper wrapper2( &param2, type );
+
+    w = wrapper2.createWrappedWidget( context );
+    QVERIFY( w );
+    QCOMPARE( wrapper2.mMinSpinBox->decimals(), 0 );
+    QCOMPARE( wrapper2.mMaxSpinBox->decimals(), 0 ); // you can't change this, vampire worms will bite you at night if you do
+
+    // check initial value
+    QCOMPARE( wrapper2.parameterValue().toString(), QStringLiteral( "0,100" ) );
+    // check rounding
+    wrapper2.setParameterValue( QStringLiteral( "100.1,200.1" ), context );
+    QCOMPARE( wrapper2.parameterValue().toString(), QStringLiteral( "100,200" ) );
+    wrapper2.setParameterValue( QStringLiteral( "100.6,200.6" ), context );
+    QCOMPARE( wrapper2.parameterValue().toString(), QStringLiteral( "101,201" ) );
+    // check set/get
+    wrapper2.setParameterValue( QStringLiteral( "100.1,200.1" ), context );
+    QCOMPARE( wrapper2.parameterValue().toString(), QStringLiteral( "100,200" ) );
+    // check that min/max are mutually adapted
+    wrapper2.setParameterValue( QStringLiteral( "200.1,100.1" ), context );
+    QCOMPARE( wrapper2.parameterValue().toString(), QStringLiteral( "100,100" ) );
+    wrapper2.mMaxSpinBox->setValue( 50.1 );
+    QCOMPARE( wrapper2.parameterValue().toString(), QStringLiteral( "50,50" ) );
+    wrapper2.mMinSpinBox->setValue( 100.1 );
+    QCOMPARE( wrapper2.parameterValue().toString(), QStringLiteral( "100,100" ) );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
 }
 
 QGSTEST_MAIN( TestProcessingGui )

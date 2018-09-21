@@ -215,6 +215,44 @@ class GUI_EXPORT QgsProcessingDistanceWidgetWrapper : public QgsProcessingNumeri
     friend class TestProcessingGui;
 };
 
+
+class GUI_EXPORT QgsProcessingRangeWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingRangeWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                     QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+
+  protected:
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+    QStringList compatibleParameterTypes() const override;
+    QStringList compatibleOutputTypes() const override;
+    QList< int > compatibleDataTypes() const override;
+    QString modelerExpressionFormatString() const override;
+
+  protected:
+
+    QgsDoubleSpinBox *mMinSpinBox = nullptr;
+    QgsDoubleSpinBox *mMaxSpinBox = nullptr;
+
+  private:
+
+    int mBlockChangedSignal = 0;
+
+    friend class TestProcessingGui;
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSPROCESSINGWIDGETWRAPPERIMPL_H

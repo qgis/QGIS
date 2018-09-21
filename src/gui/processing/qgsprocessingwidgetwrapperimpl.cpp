@@ -799,4 +799,146 @@ QVariant QgsProcessingDistanceWidgetWrapper::widgetValue() const
 }
 
 
+//
+// QgsProcessingRangeWidgetWrapper
+//
+
+QgsProcessingRangeWidgetWrapper::QgsProcessingRangeWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingRangeWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterRange *rangeDef = static_cast< const QgsProcessingParameterRange * >( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Modeler:
+    case QgsProcessingGui::Batch:
+    {
+      QHBoxLayout *layout = new QHBoxLayout();
+
+      mMinSpinBox = new QgsDoubleSpinBox();
+      mMaxSpinBox = new QgsDoubleSpinBox();
+
+      mMinSpinBox->setExpressionsEnabled( true );
+      mMinSpinBox->setShowClearButton( false );
+      mMaxSpinBox->setExpressionsEnabled( true );
+      mMaxSpinBox->setShowClearButton( false );
+
+      QLabel *minLabel = new QLabel( tr( "Min" ) );
+      layout->addWidget( minLabel );
+      layout->addWidget( mMinSpinBox, 1 );
+
+      QLabel *maxLabel = new QLabel( tr( "Max" ) );
+      layout->addWidget( maxLabel );
+      layout->addWidget( mMaxSpinBox, 1 );
+
+      QWidget *w = new QWidget();
+      layout->setMargin( 0 );
+      layout->setContentsMargins( 0, 0, 0, 0 );
+      w->setLayout( layout );
+
+      if ( rangeDef->dataType() == QgsProcessingParameterNumber::Double )
+      {
+        mMinSpinBox->setDecimals( 6 );
+        mMaxSpinBox->setDecimals( 6 );
+      }
+      else
+      {
+        mMinSpinBox->setDecimals( 0 );
+        mMaxSpinBox->setDecimals( 0 );
+      }
+
+      mMinSpinBox->setMinimum( -99999999.999999 );
+      mMaxSpinBox->setMinimum( -99999999.999999 );
+      mMinSpinBox->setMaximum( 99999999.999999 );
+      mMaxSpinBox->setMaximum( 99999999.999999 );
+
+      w->setToolTip( parameterDefinition()->toolTip() );
+
+      connect( mMinSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( const double v )
+      {
+        mBlockChangedSignal++;
+        if ( v > mMaxSpinBox->value() )
+          mMaxSpinBox->setValue( v );
+        mBlockChangedSignal--;
+
+        if ( !mBlockChangedSignal )
+          emit widgetValueHasChanged( this );
+      } );
+      connect( mMaxSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( const double v )
+      {
+        mBlockChangedSignal++;
+        if ( v < mMinSpinBox->value() )
+          mMinSpinBox->setValue( v );
+        mBlockChangedSignal--;
+
+        if ( !mBlockChangedSignal )
+          emit widgetValueHasChanged( this );
+      } );
+
+      return w;
+    };
+  }
+  return nullptr;
+}
+
+void QgsProcessingRangeWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QList< double > v = QgsProcessingParameters::parameterAsRange( parameterDefinition(), value, context );
+  if ( v.empty() )
+    return;
+
+  mBlockChangedSignal++;
+  mMinSpinBox->setValue( v.at( 0 ) );
+  if ( v.count() >= 2 )
+    mMaxSpinBox->setValue( v.at( 1 ) );
+  mBlockChangedSignal--;
+
+  if ( !mBlockChangedSignal )
+    emit widgetValueHasChanged( this );
+}
+
+QVariant QgsProcessingRangeWidgetWrapper::widgetValue() const
+{
+  return QStringLiteral( "%1,%2" ).arg( mMinSpinBox->value() ).arg( mMaxSpinBox->value() );
+}
+
+QStringList QgsProcessingRangeWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterRange::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingRangeWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList() << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingRangeWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingRangeWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string as two comma delimited floats, e.g. '1,10'" );
+}
+
+QString QgsProcessingRangeWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterRange::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRangeWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingRangeWidgetWrapper( parameter, type );
+}
+
+
 ///@endcond PRIVATE
+
