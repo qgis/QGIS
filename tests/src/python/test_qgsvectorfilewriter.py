@@ -116,6 +116,9 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         idx = vl.fields().indexFromName('fldlonglong')
         self.assertEqual(vl.getFeature(1).attributes()[idx], 2262000000)
 
+        del vl
+        os.unlink(filename + '.gpkg')
+
     def testWriteWithBoolField(self):
 
         # init connection string
@@ -155,6 +158,9 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         # test values
         self.assertEqual(vl.getFeature(1).attributes()[idx], 1)
         self.assertEqual(vl.getFeature(2).attributes()[idx], 0)
+
+        del vl
+        os.unlink(filename + '.gpkg')
 
     def testDateTimeWriteShapefile(self):
         """Check writing date and time fields to an ESRI shapefile."""
@@ -938,6 +944,43 @@ class TestQgsVectorFileWriter(unittest.TestCase):
             filename,
             options)
         self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+    def testCreateDGN(self):
+        ml = QgsVectorLayer('Point?crs=epsg:4326', 'test', 'memory')
+        provider = ml.dataProvider()
+        feat = QgsFeature()
+        feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
+        provider.addFeatures([feat])
+
+        filename = os.path.join(str(QDir.tempPath()), 'testCreateDGN.dgn')
+        crs = QgsCoordinateReferenceSystem()
+        crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        rc, errmsg = QgsVectorFileWriter.writeAsVectorFormat(ml, filename, 'utf-8', crs, 'DGN')
+
+        # open the resulting file
+        vl = QgsVectorLayer(filename, '', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 1)
+        del vl
+
+        # append
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'DGN'
+        options.layerName = 'test'
+        options.actionOnExistingFile = QgsVectorFileWriter.AppendToLayerNoNewFields
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            ml,
+            filename,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+        # open the resulting file
+        vl = QgsVectorLayer(filename, '', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 2)
+        del vl
+
+        os.unlink(filename)
 
 
 if __name__ == '__main__':
