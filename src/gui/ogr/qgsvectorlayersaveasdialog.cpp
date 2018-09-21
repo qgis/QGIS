@@ -758,7 +758,11 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
     }
   }
 
-  return options + mOgrDatasourceOptions->toPlainText().split( '\n' );
+  QString plainText = mOgrDatasourceOptions->toPlainText().trimmed();
+  if ( !plainText.isEmpty() )
+    options += plainText.split( '\n' );
+
+  return options;
 }
 
 QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
@@ -813,7 +817,11 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
     }
   }
 
-  return options + mOgrLayerOptions->toPlainText().split( '\n' );
+  QString plainText = mOgrLayerOptions->toPlainText().trimmed();
+  if ( !plainText.isEmpty() )
+    options += plainText.split( '\n' );
+
+  return options;
 }
 
 QgsAttributeList QgsVectorLayerSaveAsDialog::selectedAttributes() const

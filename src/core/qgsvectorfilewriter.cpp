@@ -140,6 +140,10 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
 
 bool QgsVectorFileWriter::supportsFeatureStyles( const QString &driverName )
 {
+  if ( driverName == QLatin1String( "MapInfo MIF" ) )
+  {
+    return true;
+  }
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
   GDALDriverH gdalDriver = GDALGetDriverByName( driverName.toLocal8Bit().constData() );
   if ( !gdalDriver )
@@ -151,7 +155,7 @@ bool QgsVectorFileWriter::supportsFeatureStyles( const QString &driverName )
 
   return CSLFetchBoolean( driverMetadata, GDAL_DCAP_FEATURE_STYLES, false );
 #else
-  return driverName == QLatin1String( "DXF" ) || driverName == QLatin1String( "KML" ) || driverName == QLatin1String( "MapInfo File" ) || driverName == QLatin1String( "MapInfo MIF" );
+  return driverName == QLatin1String( "DXF" ) || driverName == QLatin1String( "KML" ) || driverName == QLatin1String( "MapInfo File" );
 #endif
 }
 
@@ -415,15 +419,15 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   // disable encoding conversion of OGR Shapefile layer
   CPLSetConfigOption( "SHAPE_ENCODING", "" );
 
-  if ( driverName == QLatin1String( "DGN" ) )
-  {
-    mLayer = OGR_DS_GetLayerByName( mDS.get(), "elements" );
-  }
-  else if ( action == CreateOrOverwriteFile || action == CreateOrOverwriteLayer )
+  if ( action == CreateOrOverwriteFile || action == CreateOrOverwriteLayer )
   {
     mLayer = OGR_DS_CreateLayer( mDS.get(), layerName.toUtf8().constData(), mOgrRef, wkbType, options );
-    if ( newLayer )
+    if ( newLayer && mLayer )
       *newLayer = OGR_L_GetName( mLayer );
+  }
+  else if ( driverName == QLatin1String( "DGN" ) )
+  {
+    mLayer = OGR_DS_GetLayerByName( mDS.get(), "elements" );
   }
   else
   {
