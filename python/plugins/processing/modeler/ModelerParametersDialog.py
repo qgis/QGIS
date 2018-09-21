@@ -146,7 +146,8 @@ class ModelerParametersDialog(QDialog):
         self.verticalLayout.addWidget(self.algorithmItem)
 
         widget_context = QgsProcessingParameterWidgetContext()
-        widget_context.setMapCanvas(iface.mapCanvas())
+        if iface is not None:
+            widget_context.setMapCanvas(iface.mapCanvas())
         widget_context.setModel(self.model)
         widget_context.setModelChildAlgorithmId(self.childId)
 

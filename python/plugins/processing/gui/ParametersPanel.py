@@ -126,7 +126,8 @@ class ParametersPanel(BASE, WIDGET):
                 break
 
         widget_context = QgsProcessingParameterWidgetContext()
-        widget_context.setMapCanvas(iface.mapCanvas())
+        if iface is not None:
+            widget_context.setMapCanvas(iface.mapCanvas())
 
         # Create widgets and put them in layouts
         for param in self.alg.parameterDefinitions():
