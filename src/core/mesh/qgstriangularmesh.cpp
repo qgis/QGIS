@@ -55,6 +55,7 @@ bool QgsMeshFeatureIterator::fetchFeature( QgsFeature &f )
   const QgsMeshFace &face = mMesh->faces.at( it ) ;
   QgsGeometry geom = QgsMeshUtils::toGeometry( face, mMesh->vertices );
   f.setGeometry( geom );
+  f.setId( it );
   ++it;
   return true;
 }
@@ -232,6 +233,18 @@ int QgsTriangularMesh::faceIndexForPoint( const QgsPointXY &point ) const
   return -1;
 }
 
+QList<int> QgsTriangularMesh::faceIndexesForRectangle( const QgsRectangle &rectangle ) const
+{
+  const QList<QgsFeatureId> faceIndexes = mSpatialIndex.intersects( rectangle );
+  QList<int> indexes;
+  for ( const QgsFeatureId fid : faceIndexes )
+  {
+    int faceIndex = static_cast<int>( fid );
+    indexes.append( faceIndex );
+  }
+  return indexes;
+}
+
 QgsGeometry QgsMeshUtils::toGeometry( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices )
 {
   QVector<QgsPoint> ring;
@@ -245,4 +258,15 @@ QgsGeometry QgsMeshUtils::toGeometry( const QgsMeshFace &face, const QVector<Qgs
   std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >();
   polygon->setExteriorRing( new QgsLineString( ring ) );
   return QgsGeometry( std::move( polygon ) );
+}
+
+QList<int> QgsMeshUtils::nativeFacesFromTriangles( const QList<int> &triangleIndexes, const QVector<int> &trianglesToNativeFaces )
+{
+  QSet<int> nativeFaces;
+  for ( const int triangleIndex : triangleIndexes )
+  {
+    const int nativeIndex = trianglesToNativeFaces[triangleIndex];
+    nativeFaces.insert( nativeIndex );
+  }
+  return nativeFaces.toList();
 }
