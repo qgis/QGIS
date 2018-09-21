@@ -51,6 +51,7 @@ def _all_true():
     types = _add_multi(types)
     types = _add_z(types)
     types = _add_m(types)
+    types.append('NoGeometry')
     return {t: True for t in types}
 
 
@@ -124,11 +125,12 @@ class TestQgsProcessingInPlace(unittest.TestCase):
     def test_support_in_place_edit(self):
 
         ALL = _all_true()
+        GEOMETRY_ONLY = {t: t != 'NoGeometry' for t in _all_true().keys()}
         NONE = _all_false()
         LINESTRING_ONLY = {t: t.find('LineString') >= 0 for t in _all_true().keys()}
         Z_ONLY = {t: t.find('Z') > 0 for t in _all_true().keys()}
         M_ONLY = {t: t.rfind('M') > 0 for t in _all_true().keys()}
-        NOT_M = {t: t.rfind('M') < 1 for t in _all_true().keys()}
+        NOT_M = {t: t.rfind('M') < 1 and t != 'NoGeometry' for t in _all_true().keys()}
         POLYGON_ONLY = {t: t in ('Polygon', 'MultiPolygon') for t in _all_true().keys()}
         MULTI_ONLY = {t: t.find('Multi') == 0 for t in _all_true().keys()}
         SINGLE_ONLY = {t: t.find('Multi') == -1 for t in _all_true().keys()}
@@ -138,8 +140,8 @@ class TestQgsProcessingInPlace(unittest.TestCase):
 
         self._support_inplace_edit_tester('native:smoothgeometry', LINESTRING_AND_POLYGON_ONLY)
         self._support_inplace_edit_tester('native:parallellines', LINESTRING_ONLY)
-        self._support_inplace_edit_tester('native:arrayfeatures', ALL)
-        self._support_inplace_edit_tester('native:reprojectlayer', ALL)
+        self._support_inplace_edit_tester('native:arrayfeatures', GEOMETRY_ONLY)
+        self._support_inplace_edit_tester('native:reprojectlayer', GEOMETRY_ONLY)
         self._support_inplace_edit_tester('qgis:densifygeometries', LINESTRING_AND_POLYGON_ONLY)
         self._support_inplace_edit_tester('qgis:densifygeometriesgivenaninterval', LINESTRING_AND_POLYGON_ONLY)
         self._support_inplace_edit_tester('native:setzfromraster', Z_ONLY)
@@ -150,18 +152,25 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self._support_inplace_edit_tester('native:multiringconstantbuffer', POLYGON_ONLY)
         self._support_inplace_edit_tester('native:orientedminimumboundingbox', POLYGON_ONLY)
         self._support_inplace_edit_tester('qgis:orthogonalize', LINESTRING_AND_POLYGON_ONLY)
-        self._support_inplace_edit_tester('native:removeduplicatevertices', ALL)
-        self._support_inplace_edit_tester('native:rotatefeatures', ALL)
+        self._support_inplace_edit_tester('native:removeduplicatevertices', GEOMETRY_ONLY)
+        self._support_inplace_edit_tester('native:rotatefeatures', GEOMETRY_ONLY)
         self._support_inplace_edit_tester('native:segmentizebymaxangle', NONE)
         self._support_inplace_edit_tester('native:segmentizebymaxdistance', NONE)
         self._support_inplace_edit_tester('native:setmfromraster', M_ONLY)
         self._support_inplace_edit_tester('native:simplifygeometries', LINESTRING_AND_POLYGON_ONLY)
-        self._support_inplace_edit_tester('native:snappointstogrid', ALL)
-        self._support_inplace_edit_tester('native:multiparttosingleparts', ALL)
+        self._support_inplace_edit_tester('native:snappointstogrid', GEOMETRY_ONLY)
+        self._support_inplace_edit_tester('native:multiparttosingleparts', GEOMETRY_ONLY)
         self._support_inplace_edit_tester('native:promotetomulti', MULTI_ONLY)
-        self._support_inplace_edit_tester('native:subdivide', ALL)
-        self._support_inplace_edit_tester('native:translategeometry', ALL)
-        self._support_inplace_edit_tester('native:swapxy', ALL)
+        self._support_inplace_edit_tester('native:subdivide', GEOMETRY_ONLY)
+        self._support_inplace_edit_tester('native:translategeometry', GEOMETRY_ONLY)
+        self._support_inplace_edit_tester('native:swapxy', GEOMETRY_ONLY)
+        self._support_inplace_edit_tester('qgis:linestopolygons', NONE)
+        self._support_inplace_edit_tester('qgis:polygonstolines', NONE)
+        self._support_inplace_edit_tester('native:boundary', GEOMETRY_ONLY)
+        self._support_inplace_edit_tester('native:clip', GEOMETRY_ONLY)
+        self._support_inplace_edit_tester('native:difference', GEOMETRY_ONLY)
+        self._support_inplace_edit_tester('native:dropgeometries', ALL)
+        self._support_inplace_edit_tester('native:splitwithlines', LINESTRING_AND_POLYGON_ONLY)
 
     def _make_compatible_tester(self, feature_wkt, layer_wkb_name, attrs=[1]):
         layer = self._make_layer(layer_wkb_name)
