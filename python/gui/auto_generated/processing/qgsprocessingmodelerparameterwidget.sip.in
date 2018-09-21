@@ -66,6 +66,12 @@ to fine-tune its behavior.
 .. seealso:: :py:func:`widgetContext`
 %End
 
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+%Docstring
+Register a Processing context ``generator`` class that will be used to retrieve
+a Processing context for the widget when required.
+%End
+
     void populateSources( const QStringList &compatibleParameterTypes,
                           const QStringList &compatibleOutputTypes,
                           const QList< int > &compatibleDataTypes );

@@ -20,6 +20,8 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingmodelerparameterwidget.h"
 #include "qgspropertyoverridebutton.h"
+#include "qgsexpressioncontext.h"
+#include "models/qgsprocessingmodelalgorithm.h"
 #include <QLabel>
 #include <QHBoxLayout>
 
@@ -101,6 +103,7 @@ QWidget *QgsAbstractProcessingParameterWidgetWrapper::createWrappedWidget( QgsPr
     hLayout->addWidget( mPropertyButton );
     mPropertyButton->init( 0, QgsProperty(), mParameterDefinition->dynamicPropertyDefinition() );
     mPropertyButton->registerEnabledWidget( mWidget, false );
+    mPropertyButton->registerExpressionContextGenerator( this );
 
     wrappedWidget = new QWidget();
     wrappedWidget->setLayout( hLayout );
@@ -209,6 +212,47 @@ void QgsAbstractProcessingParameterWidgetWrapper::postInitialize( const QList<Qg
     case QgsProcessingGui::Modeler:
       break;
   }
+}
+
+QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressionContext() const
+{
+  // Get a processing context to start with
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  QgsExpressionContext c = context->expressionContext();
+
+  if ( mPropertyButton->vectorLayer() )
+    c << QgsExpressionContextUtils::layerScope( mPropertyButton->vectorLayer() );
+
+  if ( mWidgetContext.model() )
+  {
+    const QgsProcessingAlgorithm *alg = nullptr;
+    if ( mWidgetContext.model()->childAlgorithms().contains( mWidgetContext.modelChildAlgorithmId() ) )
+      alg = mWidgetContext.model()->childAlgorithm( mWidgetContext.modelChildAlgorithmId() ).algorithm();
+
+    QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg, QVariantMap(), *context );
+    c << algorithmScope;
+    QgsExpressionContextScope *childScope = mWidgetContext.model()->createExpressionContextScopeForChildAlgorithm( mWidgetContext.modelChildAlgorithmId(), *context, QVariantMap(), QVariantMap() );
+    c << childScope;
+
+    QStringList highlightedVariables = childScope->variableNames();
+    QStringList highlightedFunctions = childScope->functionNames();
+    highlightedVariables += algorithmScope->variableNames();
+    highlightedFunctions += algorithmScope->functionNames();
+    c.setHighlightedVariables( highlightedVariables );
+    c.setHighlightedFunctions( highlightedFunctions );
+  }
+
+  return c;
 }
 
 void QgsAbstractProcessingParameterWidgetWrapper::parentLayerChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper )

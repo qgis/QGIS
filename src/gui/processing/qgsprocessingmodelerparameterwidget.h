@@ -31,6 +31,7 @@ class QgsAbstractProcessingParameterWidgetWrapper;
 class QgsExpressionLineEdit;
 class QgsProcessingModelAlgorithm;
 class QgsProcessingParameterWidgetContext;
+class QgsProcessingContextGenerator;
 
 class QLabel;
 class QToolButton;
@@ -91,6 +92,12 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      * \see widgetContext()
      */
     void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
+
+    /**
+     * Register a Processing context \a generator class that will be used to retrieve
+     * a Processing context for the widget when required.
+     */
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 
     /**
      * Populates the widget with available sources for the parameter's value, e.g.

@@ -153,7 +153,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
  * \ingroup gui
  * \since QGIS 3.4
  */
-class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
+class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -257,7 +257,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
     QVariant parameterValue() const;
 
     /**
-     * Register a Processing context generator class that will be used to retrieve
+     * Register a Processing context \a generator class that will be used to retrieve
      * a Processing context for the wrapper when required.
      */
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
@@ -267,6 +267,8 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject
      * allowing the wrapper to connect to the wrappers of other, related parameters.
      */
     virtual void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers );
+
+    QgsExpressionContext createExpressionContext() const override;
 
   signals:
 
