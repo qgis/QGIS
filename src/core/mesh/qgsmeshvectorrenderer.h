@@ -65,11 +65,11 @@ class QgsMeshVectorRenderer
 
   private:
     //! Draws for data defined on vertices
-    void drawVectorDataOnVertices();
+    void drawVectorDataOnVertices( const QList<int> &trianglesInExtent );
     //! Draws for data defined on face centers
-    void drawVectorDataOnFaces();
+    void drawVectorDataOnFaces( const QList<int> &trianglesInExtent );
     //! Draws data on user-defined grid
-    void drawVectorDataOnGrid();
+    void drawVectorDataOnGrid( const QList<int> &trianglesInExtent );
     //! Draws arrow from start point and vector data
     void drawVectorArrow( const QgsPointXY &lineStart, double xVal, double yVal, double magnitude );
     //! Calculates the end point of the arrow based on start point and vector data

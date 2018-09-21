@@ -90,7 +90,8 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     bool render() override;
 
   private:
-    void renderMesh(const QgsMeshRendererMeshSettings& settings, const QVector<QgsMeshFace> &faces);
+    void renderMesh();
+    void renderMesh( const QgsMeshRendererMeshSettings &settings, const QVector<QgsMeshFace> &faces, const QList<int> facesInExtent );
     void renderScalarDataset();
     void renderVectorDataset();
     void copyScalarDatasetValues( QgsMeshLayer *layer );

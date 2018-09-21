@@ -92,12 +92,14 @@ void QgsMeshVectorRenderer::draw()
   pen.setColor( mCfg.color() );
   painter->setPen( pen );
 
+  const QList<int> trianglesInExtent = mTriangularMesh.faceIndexesForRectangle( mContext.extent() );
+
   if ( mCfg.isOnUserDefinedGrid() )
-    drawVectorDataOnGrid();
+    drawVectorDataOnGrid( trianglesInExtent );
   else if ( mDataOnVertices )
-    drawVectorDataOnVertices();
+    drawVectorDataOnVertices( trianglesInExtent );
   else
-    drawVectorDataOnFaces();
+    drawVectorDataOnFaces( trianglesInExtent );
 
   painter->restore();
 }
@@ -190,39 +192,50 @@ bool QgsMeshVectorRenderer::calcVectorLineEnd(
 }
 
 
-void QgsMeshVectorRenderer::drawVectorDataOnVertices()
+void QgsMeshVectorRenderer::drawVectorDataOnVertices( const QList<int> &trianglesInExtent )
 {
   const QVector<QgsMeshVertex> &vertices = mTriangularMesh.vertices();
+  const QVector<QgsMeshFace> &triangles = mTriangularMesh.triangles();
+  QSet<int> drawnVertices;
 
   // currently expecting that triangulation does not add any new extra vertices on the way
   Q_ASSERT( mDatasetValuesMag.count() == vertices.count() );
 
-  for ( int i = 0; i < vertices.size(); ++i )
+  for ( int triangleIndex : trianglesInExtent )
   {
     if ( mContext.renderingStopped() )
       break;
 
-    const QgsMeshVertex &vertex = vertices.at( i );
-    if ( !mContext.extent().contains( vertex ) )
-      continue;
+    const QgsMeshFace triangle = triangles[triangleIndex];
+    for ( int i : triangle )
+    {
+      if ( drawnVertices.contains( i ) )
+        continue;
+      drawnVertices.insert( i );
 
-    double xVal = mDatasetValuesX[i];
-    double yVal = mDatasetValuesY[i];
-    if ( nodataValue( xVal, yVal ) )
-      continue;
+      const QgsMeshVertex &vertex = vertices.at( i );
+      if ( !mContext.extent().contains( vertex ) )
+        continue;
 
-    double V = mDatasetValuesMag[i];  // pre-calculated magnitude
-    QgsPointXY lineStart = mContext.mapToPixel().transform( vertex.x(), vertex.y() );
+      double xVal = mDatasetValuesX[i];
+      double yVal = mDatasetValuesY[i];
+      if ( nodataValue( xVal, yVal ) )
+        continue;
 
-    drawVectorArrow( lineStart, xVal, yVal, V );
+      double V = mDatasetValuesMag[i];  // pre-calculated magnitude
+      QgsPointXY lineStart = mContext.mapToPixel().transform( vertex.x(), vertex.y() );
+
+      drawVectorArrow( lineStart, xVal, yVal, V );
+    }
   }
 }
 
-void QgsMeshVectorRenderer::drawVectorDataOnFaces()
+void QgsMeshVectorRenderer::drawVectorDataOnFaces( const QList<int> &trianglesInExtent )
 {
   const QVector<QgsMeshVertex> &centroids = mTriangularMesh.centroids();
-
-  for ( int i = 0; i < centroids.count(); i++ )
+  const QList<int> nativeFacesInExtent = QgsMeshUtils::nativeFacesFromTriangles( trianglesInExtent,
+                                         mTriangularMesh.trianglesToNativeFaces() );
+  for ( int i : nativeFacesInExtent )
   {
     if ( mContext.renderingStopped() )
       break;
@@ -243,7 +256,7 @@ void QgsMeshVectorRenderer::drawVectorDataOnFaces()
   }
 }
 
-void QgsMeshVectorRenderer::drawVectorDataOnGrid()
+void QgsMeshVectorRenderer::drawVectorDataOnGrid( const QList<int> &trianglesInExtent )
 {
   int cellx = mCfg.userGridCellWidth();
   int celly = mCfg.userGridCellHeight();
@@ -251,7 +264,7 @@ void QgsMeshVectorRenderer::drawVectorDataOnGrid()
   const QVector<QgsMeshFace> &triangles = mTriangularMesh.triangles();
   const QVector<QgsMeshVertex> &vertices = mTriangularMesh.vertices();
 
-  for ( int i = 0; i < triangles.size(); i++ )
+  for ( const int i : trianglesInExtent )
   {
     if ( mContext.renderingStopped() )
       break;
@@ -263,11 +276,8 @@ void QgsMeshVectorRenderer::drawVectorDataOnGrid()
 
     const int nativeFaceIndex = mTriangularMesh.trianglesToNativeFaces()[i];
 
-    QgsRectangle bbox = QgsMeshLayerUtils::triangleBoundingBox( p1, p2, p3 );
-    if ( !mContext.extent().intersects( bbox ) )
-      continue;
-
     // Get the BBox of the element in pixels
+    QgsRectangle bbox = QgsMeshLayerUtils::triangleBoundingBox( p1, p2, p3 );
     int left, right, top, bottom;
     QgsMeshLayerUtils::boundingBoxToScreenRectangle( mContext.mapToPixel(), mOutputSize, bbox, left, right, top, bottom );
 

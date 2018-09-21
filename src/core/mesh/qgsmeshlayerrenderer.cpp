@@ -202,21 +202,41 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 
 bool QgsMeshLayerRenderer::render()
 {
-
   renderScalarDataset();
-
-  renderMesh( mRendererSettings.nativeMeshSettings(), mNativeMesh.faces ); // native mesh
-  renderMesh( mRendererSettings.triangularMeshSettings(), mTriangularMesh.triangles() ); // triangular mesh
-
+  renderMesh();
   renderVectorDataset();
-
   return true;
 }
 
-void QgsMeshLayerRenderer::renderMesh(const QgsMeshRendererMeshSettings& settings , const QVector<QgsMeshFace> &faces)
+void QgsMeshLayerRenderer::renderMesh()
 {
-  if ( !settings.isEnabled() )
+  if ( !mRendererSettings.nativeMeshSettings().isEnabled() &&
+       !mRendererSettings.triangularMeshSettings().isEnabled() )
     return;
+
+  // triangular mesh
+  const QList<int> trianglesInExtent = mTriangularMesh.faceIndexesForRectangle( mContext.extent() );
+  if ( mRendererSettings.triangularMeshSettings().isEnabled() )
+  {
+    renderMesh( mRendererSettings.triangularMeshSettings(),
+                mTriangularMesh.triangles(),
+                trianglesInExtent );
+  }
+
+  // native mesh
+  if ( mRendererSettings.nativeMeshSettings().isEnabled() )
+  {
+    const QList<int> nativeFacesInExtent = QgsMeshUtils::nativeFacesFromTriangles( trianglesInExtent,
+                                           mTriangularMesh.trianglesToNativeFaces() );
+    renderMesh( mRendererSettings.nativeMeshSettings(),
+                mNativeMesh.faces,
+                nativeFacesInExtent );
+  }
+};
+
+void QgsMeshLayerRenderer::renderMesh( const QgsMeshRendererMeshSettings &settings, const QVector<QgsMeshFace> &faces, const QList<int> facesInExtent )
+{
+  Q_ASSERT( settings.isEnabled() );
 
   // Set up the render configuration options
   QPainter *painter = mContext.painter();
@@ -238,27 +258,28 @@ void QgsMeshLayerRenderer::renderMesh(const QgsMeshRendererMeshSettings& setting
   const QVector<QgsMeshVertex> &vertices = mTriangularMesh.vertices(); //Triangular mesh vertices contains also native mesh vertices
   QSet<QPair<int, int>> drawnEdges;
 
-  for ( int i = 0; i < faces.size(); ++i )
+  for ( const int i : facesInExtent )
   {
     if ( mContext.renderingStopped() )
       break;
 
     const QgsMeshFace &face = faces[i];
-    if (face.size() < 2)
+    if ( face.size() < 2 )
       continue;
 
-    for (int j=0; j<face.size(); ++j) {
+    for ( int j = 0; j < face.size(); ++j )
+    {
       const int startVertexId = face[j];
-      const int endVertexId = face[ (j + 1) % face.size()];
-      const QPair<int, int> thisEdge(startVertexId, endVertexId);
-      const QPair<int, int> thisEdgeReversed(endVertexId, startVertexId);
-      if (drawnEdges.contains(thisEdge) || drawnEdges.contains(thisEdgeReversed))
+      const int endVertexId = face[( j + 1 ) % face.size()];
+      const QPair<int, int> thisEdge( startVertexId, endVertexId );
+      const QPair<int, int> thisEdgeReversed( endVertexId, startVertexId );
+      if ( drawnEdges.contains( thisEdge ) || drawnEdges.contains( thisEdgeReversed ) )
         continue;
-      drawnEdges.insert(thisEdge);
-      drawnEdges.insert(thisEdgeReversed);
+      drawnEdges.insert( thisEdge );
+      drawnEdges.insert( thisEdgeReversed );
 
-      const QgsMeshVertex & startVertex = vertices[startVertexId];
-      const QgsMeshVertex & endVertex = vertices[endVertexId];
+      const QgsMeshVertex &startVertex = vertices[startVertexId];
+      const QgsMeshVertex &endVertex = vertices[endVertexId];
       const QgsPointXY lineStart = mContext.mapToPixel().transform( startVertex.x(), startVertex.y() );
       const QgsPointXY lineEnd = mContext.mapToPixel().transform( endVertex.x(), endVertex.y() );
       painter->drawLine( lineStart.toQPointF(), lineEnd.toQPointF() );
