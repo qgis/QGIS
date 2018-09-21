@@ -227,7 +227,10 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
             field_idxs = range(len(active_layer.fields()))
             feature_iterator = active_layer.getFeatures(QgsFeatureRequest(active_layer.selectedFeatureIds())) if parameters['INPUT'].selectedFeaturesOnly else active_layer.getFeatures()
             for f in feature_iterator:
-                new_features = alg.processFeature(f, context, feedback)
+                # need a deep copy, because python processFeature implementations may return
+                # a shallow copy from processFeature
+                input_feature = QgsFeature(f)
+                new_features = alg.processFeature(input_feature, context, feedback)
                 new_features = make_features_compatible(new_features, active_layer)
                 if len(new_features) == 0:
                     active_layer.deleteFeature(f.id())
