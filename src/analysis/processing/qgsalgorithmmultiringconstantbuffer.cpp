@@ -78,8 +78,12 @@ void QgsMultiRingConstantBufferAlgorithm::initParameters( const QVariantMap & )
   addParameter( distance.release() );
 }
 
-bool QgsMultiRingConstantBufferAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+bool QgsMultiRingConstantBufferAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
   if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
     return false;
   // Polygons only

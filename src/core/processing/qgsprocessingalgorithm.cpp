@@ -762,7 +762,7 @@ QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters,
   }
 }
 
-bool QgsProcessingAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+bool QgsProcessingAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
   Q_UNUSED( layer );
   return false;
@@ -907,8 +907,12 @@ QgsFeatureRequest QgsProcessingFeatureBasedAlgorithm::request() const
   return QgsFeatureRequest();
 }
 
-bool QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+bool QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
   QgsWkbTypes::GeometryType inPlaceGeometryType = layer->geometryType();
   if ( !inputLayerTypes().empty() &&
        !inputLayerTypes().contains( QgsProcessing::TypeVector ) &&

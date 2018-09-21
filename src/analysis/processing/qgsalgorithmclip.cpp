@@ -18,6 +18,7 @@
 #include "qgsalgorithmclip.h"
 #include "qgsgeometryengine.h"
 #include "qgsoverlayutils.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -76,10 +77,13 @@ QgsClipAlgorithm *QgsClipAlgorithm::createInstance() const
   return new QgsClipAlgorithm();
 }
 
-bool QgsClipAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+bool QgsClipAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  Q_UNUSED( layer );
-  return true;
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
+  return layer->isSpatial();
 }
 
 QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

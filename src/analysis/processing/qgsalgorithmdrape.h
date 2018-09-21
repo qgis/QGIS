@@ -73,7 +73,7 @@ class QgsDrapeToZAlgorithm : public QgsDrapeAlgorithmBase
     QString shortHelpString() const override;
     QString shortDescription() const override;
     QgsDrapeToZAlgorithm *createInstance() const override SIP_FACTORY;
-    bool supportInPlaceEdit( const QgsVectorLayer *layer ) const override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
 
@@ -97,7 +97,7 @@ class QgsDrapeToMAlgorithm : public QgsDrapeAlgorithmBase
     QString shortHelpString() const override;
     QString shortDescription() const override;
     QgsDrapeToMAlgorithm *createInstance() const override SIP_FACTORY;
-    bool supportInPlaceEdit( const QgsVectorLayer *layer ) const override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
 

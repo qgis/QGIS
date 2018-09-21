@@ -67,8 +67,12 @@ QgsOrientedMinimumBoundingBoxAlgorithm *QgsOrientedMinimumBoundingBoxAlgorithm::
   return new QgsOrientedMinimumBoundingBoxAlgorithm();
 }
 
-bool QgsOrientedMinimumBoundingBoxAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+bool QgsOrientedMinimumBoundingBoxAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
   if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
     return false;
   // Polygons only

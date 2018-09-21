@@ -72,7 +72,7 @@ class QgsFilterVerticesByM : public QgsFilterVerticesAlgorithmBase
     QString displayName() const override;
     QStringList tags() const override;
     QgsFilterVerticesByM *createInstance() const override SIP_FACTORY;
-    bool supportInPlaceEdit( const QgsVectorLayer *layer ) const override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   private:
 
@@ -95,7 +95,7 @@ class QgsFilterVerticesByZ : public QgsFilterVerticesAlgorithmBase
     QString displayName() const override;
     QStringList tags() const override;
     QgsFilterVerticesByZ *createInstance() const override SIP_FACTORY;
-    bool supportInPlaceEdit( const QgsVectorLayer *layer ) const override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   private:
 

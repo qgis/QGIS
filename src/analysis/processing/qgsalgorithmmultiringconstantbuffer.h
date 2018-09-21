@@ -42,7 +42,7 @@ class QgsMultiRingConstantBufferAlgorithm : public QgsProcessingFeatureBasedAlgo
     QString shortHelpString() const override;
     QgsMultiRingConstantBufferAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
-    bool supportInPlaceEdit( const QgsVectorLayer *layer ) const override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
 

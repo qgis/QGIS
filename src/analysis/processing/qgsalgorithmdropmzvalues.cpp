@@ -59,7 +59,7 @@ QgsDropMZValuesAlgorithm *QgsDropMZValuesAlgorithm::createInstance() const
   return new QgsDropMZValuesAlgorithm();
 }
 
-bool QgsDropMZValuesAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+bool QgsDropMZValuesAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
   Q_UNUSED( layer );
   return false;
