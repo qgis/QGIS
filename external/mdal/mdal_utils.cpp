@@ -191,7 +191,7 @@ MDAL::BBox MDAL::computeExtent( const MDAL::Vertices &vertices )
 {
   BBox b;
 
-  if ( vertices.empty() == 0 )
+  if ( vertices.empty() )
     return b;
 
   b.minX = vertices[0].x;
