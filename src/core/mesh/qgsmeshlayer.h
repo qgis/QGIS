@@ -27,6 +27,7 @@
 #include "qgsmeshrenderersettings.h"
 
 class QgsMapLayerRenderer;
+struct QgsMeshLayerRendererCache;
 class QgsSymbol;
 class QgsTriangularMesh;
 struct QgsMesh;
@@ -143,6 +144,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //! Returns triangular mesh (nullptr before rendering)
     QgsTriangularMesh *triangularMesh() SIP_SKIP;
 
+    //! Returns native mesh (nullptr before rendering)
+    QgsMeshLayerRendererCache *rendererCache() SIP_SKIP;
+
     //! Returns renderer settings
     QgsMeshRendererSettings rendererSettings() const;
     //! Sets new renderer settings
@@ -218,6 +222,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     //! Pointer to derived mesh structure
     std::unique_ptr<QgsTriangularMesh> mTriangularMesh;
+
+    //! Pointer to the cache with data used for last rendering
+    std::unique_ptr<QgsMeshLayerRendererCache> mRendererCache;
 
     //! Renderer configuration
     QgsMeshRendererSettings mRendererSettings;

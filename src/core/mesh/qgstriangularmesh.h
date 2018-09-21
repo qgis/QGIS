@@ -44,11 +44,7 @@ struct CORE_EXPORT QgsMesh
 ///@cond PRIVATE
 
 /**
- * \ingroup core
- *
- * Delivers features from mesh
- *
- * \since QGIS 3.4
+ * Delivers mesh faces as features
  */
 class CORE_NO_EXPORT QgsMeshFeatureIterator : public QgsAbstractFeatureIterator
 {
@@ -60,7 +56,7 @@ class CORE_NO_EXPORT QgsMeshFeatureIterator : public QgsAbstractFeatureIterator
      * \param mesh The mesh to use
      */
     QgsMeshFeatureIterator( QgsMesh *mesh );
-    ~QgsMeshFeatureIterator();
+    ~QgsMeshFeatureIterator() override;
 
     bool rewind() override;
     bool close() override;

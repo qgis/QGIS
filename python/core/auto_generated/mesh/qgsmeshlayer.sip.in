@@ -129,6 +129,7 @@ Returns the provider type for this layer
 
 
 
+
     QgsMeshRendererSettings rendererSettings() const;
 %Docstring
 Returns renderer settings
