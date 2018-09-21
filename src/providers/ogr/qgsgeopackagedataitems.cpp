@@ -438,16 +438,6 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
           );
           sqlite3_free( sql );
         }
-        // Vacuum
-        {
-          ( void )sqlite3_exec(
-            database.get(),                      /* An open database */
-            "VACUUM",                            /* SQL to be evaluated */
-            nullptr,                             /* Callback function */
-            nullptr,                             /* 1st argument to callback */
-            nullptr                              /* Error msg written here */
-          );
-        }
 
         if ( status == SQLITE_OK )
         {
