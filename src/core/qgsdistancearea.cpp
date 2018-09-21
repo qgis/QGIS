@@ -124,6 +124,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
     }
     else
     {
+
       return geomV2->area();
     }
   }
@@ -465,7 +466,7 @@ QgsUnitTypes::AreaUnit QgsDistanceArea::areaUnits() const
          QgsUnitTypes::distanceToAreaUnit( mCoordTransform.sourceCrs().mapUnits() );
 }
 
-double QgsDistanceArea::measurePolygon( const QgsCurve *curve ) const
+double QgsDistanceArea::measurePolygon( const QgsCurve *curve, bool flat ) const
 {
   if ( !curve )
   {
@@ -476,15 +477,15 @@ double QgsDistanceArea::measurePolygon( const QgsCurve *curve ) const
   curve->points( linePointsV2 );
   QVector<QgsPointXY> linePoints;
   QgsGeometry::convertPointList( linePointsV2, linePoints );
-  return measurePolygon( linePoints );
+  return measurePolygon( linePoints, flat );
 }
 
 
-double QgsDistanceArea::measurePolygon( const QVector<QgsPointXY> &points ) const
+double QgsDistanceArea::measurePolygon( const QVector<QgsPointXY> &points, bool flat ) const
 {
   try
   {
-    if ( willUseEllipsoid() )
+    if ( !flat && willUseEllipsoid() )
     {
       QVector<QgsPointXY> pts;
       for ( QVector<QgsPointXY>::const_iterator i = points.constBegin(); i != points.constEnd(); ++i )
@@ -495,7 +496,7 @@ double QgsDistanceArea::measurePolygon( const QVector<QgsPointXY> &points ) cons
     }
     else
     {
-      return computePolygonArea( points );
+      return computePolygonFlatArea( points );
     }
   }
   catch ( QgsCsException &cse )

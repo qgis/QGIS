@@ -212,7 +212,7 @@ class CORE_EXPORT QgsDistanceArea
     /**
      * Measures the area of the polygon described by a set of points.
      */
-    double measurePolygon( const QVector<QgsPointXY> &points ) const;
+    double measurePolygon( const QVector<QgsPointXY> &points, bool flat = false ) const;
 
     /**
      * Computes the bearing (in radians) between two points.
@@ -342,7 +342,7 @@ class CORE_EXPORT QgsDistanceArea
 
     double measure( const QgsAbstractGeometry *geomV2, MeasureType type = Default ) const;
     double measureLine( const QgsCurve *curve ) const;
-    double measurePolygon( const QgsCurve *curve ) const;
+    double measurePolygon( const QgsCurve *curve, bool flat = false ) const;
 
     // temporary area measurement stuff
 
