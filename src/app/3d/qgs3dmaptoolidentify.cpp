@@ -21,6 +21,7 @@
 #include "qgsterrainentity_p.h"
 
 #include "qgisapp.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaptoolidentifyaction.h"
 
 #include <Qt3DRender/QObjectPicker>
@@ -93,8 +94,7 @@ void Qgs3DMapToolIdentify::onTerrainPicked( Qt3DRender::QPickEvent *event )
     return;
 
   QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( event->worldIntersection(), mCanvas->map()->origin() );
-
-  QgsGeometry geom = QgsGeometry::fromPointXY( QgsPointXY( mapCoords.x(), mapCoords.y() ) );
+  QgsPointXY mapPoint( mapCoords.x(), mapCoords.y() );
 
   // estimate search radius
   Qgs3DMapScene *scene = mCanvas->scene();
@@ -104,8 +104,16 @@ void Qgs3DMapToolIdentify::onTerrainPicked( Qt3DRender::QPickEvent *event )
   double searchRadiusMapUnits = scene->worldSpaceError( searchRadiusPx, event->distance() );
 
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
+  QgsMapCanvas *canvas2D = identifyTool2D->canvas();
 
-  identifyTool2D->identifyAndShowResults( geom, searchRadiusMapUnits );
+  // transform the point and search radius to CRS of the map canvas (if they are different)
+  QgsCoordinateTransform ct( mCanvas->map()->crs(), canvas2D->mapSettings().destinationCrs(), canvas2D->mapSettings().transformContext() );
+  QgsPointXY mapPointCanvas2D = ct.transform( mapPoint );
+  QgsPointXY mapPointSearchRadius( mapPoint.x() + searchRadiusMapUnits, mapPoint.y() );
+  QgsPointXY mapPointSearchRadiusCanvas2D = ct.transform( mapPointSearchRadius );
+  double searchRadiusCanvas2D = mapPointCanvas2D.distance( mapPointSearchRadiusCanvas2D );
+
+  identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( mapPointCanvas2D ), searchRadiusCanvas2D );
 }
 
 void Qgs3DMapToolIdentify::onTerrainEntityChanged()
