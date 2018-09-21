@@ -21,8 +21,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <layout class="QGridLayout">
    <property name="leftMargin">
@@ -101,19 +100,19 @@
        <string>Segments</string>
       </property>
       <property name="textAlignment">
-       <set>AlignRight|AlignVCenter</set>
+       <set>AlignTrailing|AlignVCenter</set>
       </property>
      </column>
     </widget>
    </item>
-   <item row="6" column="0" colspan="4">
+   <item row="7" column="0" colspan="4">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
      </property>
     </widget>
    </item>
-   <item row="5" column="0" colspan="4">
+   <item row="6" column="0" colspan="4">
     <widget class="QgsCollapsibleGroupBox" name="groupBox">
      <property name="title">
       <string>Info</string>
@@ -130,6 +129,26 @@
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QRadioButton" name="mCartesian">
+     <property name="text">
+      <string>Cartesian</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="2">
+    <widget class="QRadioButton" name="mProjected">
+     <property name="text">
+      <string>Projected</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
     </widget>
    </item>
   </layout>
