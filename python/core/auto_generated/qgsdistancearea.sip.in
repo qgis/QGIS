@@ -254,7 +254,7 @@ Returns the units of area for areal calculations made by this object.
 .. versionadded:: 2.14
 %End
 
-    double measurePolygon( const QVector<QgsPointXY> &points ) const;
+    double measurePolygon( const QVector<QgsPointXY> &points, bool flat = false ) const;
 %Docstring
 Measures the area of the polygon described by a set of points.
 %End

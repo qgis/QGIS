@@ -150,14 +150,23 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
   {
     QVector<QgsPointXY> tmpPoints = mTool->points();
     tmpPoints.append( point );
-    double area = mDa.measurePolygon( tmpPoints );
+    double area;
+    if ( mCartesian->isChecked() )
+      area = mDa.measurePolygon( tmpPoints, true );
+    else
+      area = mDa.measurePolygon( tmpPoints );
     editTotal->setText( formatArea( area ) );
   }
   else if ( !mMeasureArea && !mTool->points().empty() )
   {
     QVector< QgsPointXY > tmpPoints = mTool->points();
     QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) ), p2( point );
-    double d = mDa.measureLine( p1, p2 );
+
+    double d;
+    if ( mCartesian->isChecked() )
+      d = p1.distance( p2 );
+    else
+      d = mDa.measureLine( p1, p2 );
 
     editTotal->setText( formatDistance( mTotal + d ) );
 
@@ -177,7 +186,11 @@ void QgsMeasureDialog::addPoint()
   int numPoints = mTool->points().size();
   if ( mMeasureArea && numPoints > 2 )
   {
-    double area = mDa.measurePolygon( mTool->points() );
+    double area;
+    if ( mCartesian->isChecked() )
+      area = mDa.measurePolygon( mTool->points(), true );
+    else
+      area = mDa.measurePolygon( mTool->points() );
     editTotal->setText( formatArea( area ) );
   }
   else if ( !mMeasureArea && numPoints >= 1 )
@@ -191,7 +204,10 @@ void QgsMeasureDialog::addPoint()
     }
     if ( numPoints > 1 )
     {
-      mTotal = mDa.measureLine( mTool->points() );
+      if ( mCartesian->isChecked() )
+        mTool->points().at( 0 ).distance( mTool->points().at( 1 ) );
+      else
+        mTotal = mDa.measureLine( mTool->points() );
       editTotal->setText( formatDistance( mTotal ) );
     }
   }
@@ -206,7 +222,12 @@ void QgsMeasureDialog::removeLastPoint()
     {
       QVector<QgsPointXY> tmpPoints = mTool->points();
       tmpPoints.append( mLastMousePoint );
-      double area = mDa.measurePolygon( tmpPoints );
+      double area;
+      if ( mCartesian->isChecked() )
+        area = mDa.measurePolygon( tmpPoints, true );
+      else
+        area = mDa.measurePolygon( tmpPoints );
+
       editTotal->setText( formatArea( area ) );
     }
     else
@@ -219,14 +240,21 @@ void QgsMeasureDialog::removeLastPoint()
     //remove final row
     delete mTable->takeTopLevelItem( mTable->topLevelItemCount() - 1 );
 
-    mTotal = mDa.measureLine( mTool->points() );
+    if ( mCartesian->isChecked() )
+      mTotal = mTool->points().at( 0 ).distance( mTool->points().at( 1 ) );
+    else
+      mTotal = mDa.measureLine( mTool->points() );
 
     if ( !mTool->done() )
     {
       // need to add the distance for the temporary mouse cursor point
       QVector< QgsPointXY > tmpPoints = mTool->points();
       QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) );
-      double d = mDa.measureLine( p1, mLastMousePoint );
+      double d;
+      if ( mCartesian->isChecked() )
+        d = p1.distance( mLastMousePoint );
+      else
+        d = mDa.measureLine( p1, mLastMousePoint );
 
       d = convertLength( d, mDistanceUnits );
 
@@ -470,7 +498,10 @@ void QgsMeasureDialog::updateUi()
     double area = 0.0;
     if ( mTool->points().size() > 1 )
     {
-      area = mDa.measurePolygon( mTool->points() );
+      if ( mCartesian->isChecked() )
+        area = mDa.measurePolygon( mTool->points(), true );
+      else
+        area = mDa.measurePolygon( mTool->points() );
     }
     mTable->hide(); // Hide the table, only show summary.
     editTotal->setText( formatArea( area ) );
@@ -497,7 +528,10 @@ void QgsMeasureDialog::updateUi()
         }
         else
         {
-          d = mDa.measureLine( p1, p2 );
+          if ( mCartesian->isChecked() )
+            d = p1.distance( p2 );
+          else
+            d = mDa.measureLine( p1, p2 );
           d = convertLength( d, mDistanceUnits );
         }
 
@@ -512,6 +546,7 @@ void QgsMeasureDialog::updateUi()
 
     if ( !forceCartesian )
       mTotal = mDa.measureLine( mTool->points() );
+
     mTable->show(); // Show the table with items
     editTotal->setText( formatDistance( mTotal, convertToDisplayUnits ) );
   }
