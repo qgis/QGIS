@@ -92,7 +92,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
 
     /**
-     * Register a Processing context \a generator class that will be used to retrieve
+     * Registers a Processing context \a generator class that will be used to retrieve
      * a Processing context for the widget when required.
      */
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
