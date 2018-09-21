@@ -69,8 +69,17 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   connect( mUnitsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMeasureDialog::unitsChanged );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsMeasureDialog::reject );
   connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMeasureDialog::crsChanged );
+  connect( mCartesian, &QRadioButton::toggled, this, &QgsMeasureDialog::projChanged );
 
   groupBox->setCollapsed( true );
+}
+
+void QgsMeasureDialog::projChanged()
+{
+  if ( mCartesian->isChecked() )
+    mDa.setEllipsoid( GEO_NONE );
+  else
+    mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 }
 
 void QgsMeasureDialog::openConfigTab()
@@ -105,7 +114,7 @@ void QgsMeasureDialog::updateSettings()
   mDistanceUnits = QgsProject::instance()->distanceUnits();
   mAreaUnits = QgsProject::instance()->areaUnits();
   mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
-  mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  projChanged();
 
   mTable->clear();
   mTotal = 0;

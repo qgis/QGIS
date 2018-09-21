@@ -72,6 +72,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     void crsChanged();
 
+    void projChanged();
+
   private:
 
     //! formats distance to most appropriate units
