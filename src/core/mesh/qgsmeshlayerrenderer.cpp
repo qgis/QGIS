@@ -240,6 +240,7 @@ void QgsMeshLayerRenderer::renderMesh( const std::unique_ptr<QgsSymbol> &symbol,
   QgsFields fields;
   QgsSingleSymbolRenderer renderer( symbol->clone() );
   renderer.startRender( mContext, fields );
+  const QVector<QgsMeshVertex> &vertices = mTriangularMesh.vertices(); //Triangular mesh vertices contains also native mesh vertices
 
   for ( int i = 0; i < faces.size(); ++i )
   {
@@ -249,7 +250,11 @@ void QgsMeshLayerRenderer::renderMesh( const std::unique_ptr<QgsSymbol> &symbol,
     const QgsMeshFace &face = faces[i];
     QgsFeature feat;
     feat.setFields( fields );
-    QgsGeometry geom = QgsMeshUtils::toGeometry( face, mTriangularMesh.vertices() ); //Triangular mesh vertices contains also native mesh vertices
+    QgsGeometry geom = QgsMeshUtils::toGeometry( face, vertices );
+    const QgsRectangle bbox = geom.boundingBox();
+    if ( !mContext.extent().intersects( bbox ) )
+      continue;
+
     feat.setGeometry( geom );
     renderer.renderFeature( feat, mContext );
   }

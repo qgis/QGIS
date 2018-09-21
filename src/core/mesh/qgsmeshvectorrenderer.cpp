@@ -199,9 +199,12 @@ void QgsMeshVectorRenderer::drawVectorDataOnVertices()
 
   for ( int i = 0; i < vertices.size(); ++i )
   {
+    if ( mContext.renderingStopped() )
+      break;
+
     const QgsMeshVertex &vertex = vertices.at( i );
-    //if (!nodeInsideView(nodeIndex))
-    //    continue;
+    if ( !mContext.extent().contains( vertex ) )
+      continue;
 
     double xVal = mDatasetValuesX[i];
     double yVal = mDatasetValuesY[i];
@@ -221,10 +224,13 @@ void QgsMeshVectorRenderer::drawVectorDataOnFaces()
 
   for ( int i = 0; i < centroids.count(); i++ )
   {
-    //if (elemOutsideView(elemIndex))
-    //    continue;
+    if ( mContext.renderingStopped() )
+      break;
 
     QgsPointXY center = centroids.at( i );
+    if ( !mContext.extent().contains( center ) )
+      continue;
+
     double xVal = mDatasetValuesX[i];
     double yVal = mDatasetValuesY[i];
     if ( nodataValue( xVal, yVal ) )
@@ -247,6 +253,9 @@ void QgsMeshVectorRenderer::drawVectorDataOnGrid()
 
   for ( int i = 0; i < triangles.size(); i++ )
   {
+    if ( mContext.renderingStopped() )
+      break;
+
     const QgsMeshFace &face = triangles[i];
 
     const int v1 = face[0], v2 = face[1], v3 = face[2];
