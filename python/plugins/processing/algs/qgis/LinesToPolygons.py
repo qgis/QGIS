@@ -94,8 +94,11 @@ class LinesToPolygons(QgisFeatureBasedAlgorithm):
                 feedback.reportError(self.tr("One or more line ignored due to geometry not having a minimum of three vertices."))
         return [feature]
 
+    def supportInPlaceEdit(self, layer):
+        return False
+
     def convertWkbToPolygons(self, wkb):
-        multi_wkb = None
+        multi_wkb = QgsWkbTypes.NoGeometry
         if QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.LineString:
             multi_wkb = QgsWkbTypes.MultiPolygon
         elif QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.CompoundCurve:
