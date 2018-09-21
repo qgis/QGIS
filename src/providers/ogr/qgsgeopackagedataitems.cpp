@@ -74,24 +74,13 @@ QVector<QgsDataItem *> QgsGeoPackageRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsGeoPackageRootItem::actions( QWidget *parent )
+QList<QAction *> QgsGeoPackageAbstractLayerItem::actions( QWidget * )
 {
   QList<QAction *> lst;
-
-  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
-  connect( actionNew, &QAction::triggered, this, &QgsGeoPackageRootItem::newConnection );
-  lst.append( actionNew );
-
-  QAction *actionCreateDatabase = new QAction( tr( "Create Database…" ), parent );
-  connect( actionCreateDatabase, &QAction::triggered, this, &QgsGeoPackageRootItem::createDatabase );
-  lst.append( actionCreateDatabase );
-
+  QAction *actionDeleteLayer = new QAction( tr( "Delete Layer '%1'…" ).arg( mName ), this );
+  connect( actionDeleteLayer, &QAction::triggered, this, &QgsGeoPackageAbstractLayerItem::deleteLayer );
+  lst.append( actionDeleteLayer );
   return lst;
-}
-
-QWidget *QgsGeoPackageRootItem::paramWidget()
-{
-  return nullptr;
 }
 
 void QgsGeoPackageRootItem::onConnectionsChanged()
@@ -121,7 +110,6 @@ void QgsGeoPackageRootItem::createDatabase()
 }
 #endif
 
-
 QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
   , mPath( path )
@@ -129,7 +117,6 @@ QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, c
   mToolTip = path;
   mCapabilities |= Collapse;
 }
-
 
 
 QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
@@ -163,6 +150,25 @@ bool QgsGeoPackageCollectionItem::equal( const QgsDataItem *other )
 }
 
 #ifdef HAVE_GUI
+QList<QAction *> QgsGeoPackageRootItem::actions( QWidget *parent )
+{
+  QList<QAction *> lst;
+
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
+  connect( actionNew, &QAction::triggered, this, &QgsGeoPackageRootItem::newConnection );
+  lst.append( actionNew );
+
+  QAction *actionCreateDatabase = new QAction( tr( "Create Database…" ), parent );
+  connect( actionCreateDatabase, &QAction::triggered, this, &QgsGeoPackageRootItem::createDatabase );
+  lst.append( actionCreateDatabase );
+
+  return lst;
+}
+
+QWidget *QgsGeoPackageRootItem::paramWidget()
+{
+  return nullptr;
+}
 
 QList<QAction *> QgsGeoPackageCollectionItem::actions( QWidget *parent )
 {
@@ -350,7 +356,161 @@ bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAct
   }
   return true;
 }
+
+QList<QAction *> QgsGeoPackageConnectionItem::actions( QWidget *parent )
+{
+  QList<QAction *> lst;
+
+  QAction *actionDeleteConnection = new QAction( tr( "Remove Connection" ), parent );
+  connect( actionDeleteConnection, &QAction::triggered, this, &QgsGeoPackageConnectionItem::deleteConnection );
+  lst.append( actionDeleteConnection );
+
+  // Add table to existing DB
+  QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table…" ), parent );
+  connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageConnectionItem::addTable );
+  lst.append( actionAddTable );
+
+  // Run VACUUM
+  QAction *actionVacuumDb = new QAction( tr( "Compact database (VACUUM)" ), parent );
+  connect( actionVacuumDb, &QAction::triggered, this, &QgsGeoPackageConnectionItem::vacuumGeoPackageDbAction );
+  lst.append( actionVacuumDb );
+
+
+  return lst;
+}
+
+void QgsGeoPackageCollectionItem::deleteConnection()
+{
+  QgsOgrDbConnection::deleteConnection( name(), QStringLiteral( "GPKG" ) );
+  mParent->refreshConnections();
+}
+
+void QgsGeoPackageCollectionItem::addTable()
+{
+  QgsNewGeoPackageLayerDialog dialog( nullptr );
+  dialog.setDatabasePath( mPath );
+  dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+  dialog.setOverwriteBehavior( QgsNewGeoPackageLayerDialog::AddNewLayer );
+  dialog.lockDatabasePath();
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    refreshConnections();
+  }
+}
+
+void QgsGeoPackageCollectionItem::addConnection()
+{
+  QgsOgrDbConnection connection( mName, QStringLiteral( "GPKG" ) );
+  connection.setPath( mPath );
+  connection.save();
+  mParent->refreshConnections();
+}
+
+void QgsGeoPackageCollectionItem::vacuumGeoPackageDbAction()
+{
+  QString errCause;
+  bool result = QgsGeoPackageCollectionItem::vacuumGeoPackageDb( mPath, mName, errCause );
+  if ( result && errCause.isEmpty() )
+  {
+    QMessageBox::information( nullptr, tr( "Database compact (VACUUM)" ), tr( "Database <b>%1</b> has been compacted successfully." ).arg( mName ) );
+  }
+  else
+  {
+    QMessageBox::warning( nullptr, tr( "Database compact (VACUUM)" ), errCause );
+  }
+}
+
+void QgsGeoPackageAbstractLayerItem::deleteLayer()
+{
+  // Check if the layer(s) are in the registry
+  QList<QgsMapLayer *> layersList;
+  const auto mapLayers( QgsProject::instance()->mapLayers() );
+  for ( QgsMapLayer *layer :  mapLayers )
+  {
+    if ( layer->publicSource() == mUri )
+    {
+      layersList << layer;
+    }
+  }
+
+  if ( ! layersList.isEmpty( ) )
+  {
+    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer <b>%1</b> exists in the current project <b>%2</b>,"
+                                " do you want to remove it from the project and delete it?" ).arg( mName, layersList.at( 0 )->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    {
+      return;
+    }
+  }
+  else if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
+                                   QObject::tr( "Are you sure you want to delete layer <b>%1</b> from GeoPackage?" ).arg( mName ),
+                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  {
+    return;
+  }
+
+  if ( layersList.isEmpty() )
+  {
+    QgsProject::instance()->removeMapLayers( layersList );
+  }
+
+  QString errCause;
+  bool res = executeDeleteLayer( errCause );
+  if ( !res )
+  {
+    QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
+  }
+  else
+  {
+    QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer <b>%1</b> deleted successfully." ).arg( mName ) );
+    if ( mParent )
+      mParent->refreshConnections();
+  }
+
+}
 #endif
+
+bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &path, const QString &name, QString &errCause )
+{
+  bool result = false;
+  // Better safe than sorry
+  if ( ! path.isEmpty( ) )
+  {
+    char *errmsg = nullptr;
+    sqlite3_database_unique_ptr database;
+    int status = database.open_v2( path, SQLITE_OPEN_READWRITE, nullptr );
+    if ( status != SQLITE_OK )
+    {
+      errCause = sqlite3_errmsg( database.get() );
+    }
+    else
+    {
+      ( void )sqlite3_exec(
+        database.get(),                      /* An open database */
+        "VACUUM",                            /* SQL to be evaluated */
+        nullptr,                             /* Callback function */
+        nullptr,                             /* 1st argument to callback */
+        &errmsg                              /* Error msg written here */
+      );
+    }
+    if ( status != SQLITE_OK || errmsg )
+    {
+      errCause = tr( "There was an error compacting (VACUUM) the database <b>%1</b>: %2" )
+                 .arg( name )
+                 .arg( QString::fromUtf8( errmsg ) );
+    }
+    else
+    {
+      result = true;
+    }
+    sqlite3_free( errmsg );
+  }
+  else
+  {
+    // This should never happen!
+    errCause = tr( "Layer path is empty: layer cannot be deleted!" );
+  }
+  return result;
+}
 
 bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &uri, QString &errCause )
 {
@@ -459,44 +619,6 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
   return result;
 }
 
-void QgsGeoPackageCollectionItem::vacuumGeoPackageDb()
-{
-  QString errCause;
-  // Better safe than sorry
-  if ( ! mPath.isEmpty( ) )
-  {
-    char *errmsg = nullptr;
-    sqlite3_database_unique_ptr database;
-    int status = database.open_v2( mPath, SQLITE_OPEN_READWRITE, nullptr );
-    if ( status != SQLITE_OK )
-    {
-      errCause = sqlite3_errmsg( database.get() );
-    }
-    else
-    {
-      ( void )sqlite3_exec(
-        database.get(),                      /* An open database */
-        "VACUUM",                            /* SQL to be evaluated */
-        nullptr,                             /* Callback function */
-        nullptr,                             /* 1st argument to callback */
-        &errmsg                              /* Error msg written here */
-      );
-    }
-    if ( status == SQLITE_OK && ! errmsg )
-    {
-      QMessageBox::information( nullptr, tr( "Database compact (VACUUM)" ), tr( "Database <b>%1</b> has been compacted successfully." ).arg( mName ) );
-    }
-    else
-    {
-      errCause = tr( "There was an error compacting (VACUUM) the database <b>%1</b>: %2" )
-                 .arg( mName )
-                 .arg( QString::fromUtf8( errmsg ) );
-      QMessageBox::warning( nullptr, tr( "Database compact (VACUUM)" ), errCause );
-    }
-    sqlite3_free( errmsg );
-  }
-}
-
 QgsGeoPackageConnectionItem::QgsGeoPackageConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsGeoPackageCollectionItem( parent, name, path )
 {
@@ -513,118 +635,6 @@ bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
   return o && mPath == o->mPath && mName == o->mName;
 
 }
-
-#ifdef HAVE_GUI
-QList<QAction *> QgsGeoPackageConnectionItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst;
-
-  QAction *actionDeleteConnection = new QAction( tr( "Remove Connection" ), parent );
-  connect( actionDeleteConnection, &QAction::triggered, this, &QgsGeoPackageConnectionItem::deleteConnection );
-  lst.append( actionDeleteConnection );
-
-  // Add table to existing DB
-  QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table…" ), parent );
-  connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageConnectionItem::addTable );
-  lst.append( actionAddTable );
-
-  // Run VACUUM
-  QAction *actionVacuumDb = new QAction( tr( "Compact database (VACUUM)" ), parent );
-  connect( actionVacuumDb, &QAction::triggered, this, &QgsGeoPackageConnectionItem::vacuumGeoPackageDb );
-  lst.append( actionVacuumDb );
-
-
-  return lst;
-}
-
-void QgsGeoPackageCollectionItem::deleteConnection()
-{
-  QgsOgrDbConnection::deleteConnection( name(), QStringLiteral( "GPKG" ) );
-  mParent->refreshConnections();
-}
-
-
-void QgsGeoPackageCollectionItem::addTable()
-{
-  QgsNewGeoPackageLayerDialog dialog( nullptr );
-  dialog.setDatabasePath( mPath );
-  dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
-  dialog.setOverwriteBehavior( QgsNewGeoPackageLayerDialog::AddNewLayer );
-  dialog.lockDatabasePath();
-  if ( dialog.exec() == QDialog::Accepted )
-  {
-    refreshConnections();
-  }
-}
-
-void QgsGeoPackageCollectionItem::addConnection()
-{
-  QgsOgrDbConnection connection( mName, QStringLiteral( "GPKG" ) );
-  connection.setPath( mPath );
-  connection.save();
-  mParent->refreshConnections();
-}
-
-#endif
-
-#ifdef HAVE_GUI
-QList<QAction *> QgsGeoPackageAbstractLayerItem::actions( QWidget * )
-{
-  QList<QAction *> lst;
-  QAction *actionDeleteLayer = new QAction( tr( "Delete Layer '%1'…" ).arg( mName ), this );
-  connect( actionDeleteLayer, &QAction::triggered, this, &QgsGeoPackageAbstractLayerItem::deleteLayer );
-  lst.append( actionDeleteLayer );
-  return lst;
-}
-
-void QgsGeoPackageAbstractLayerItem::deleteLayer()
-{
-  // Check if the layer(s) are in the registry
-  QList<QgsMapLayer *> layersList;
-  const auto mapLayers( QgsProject::instance()->mapLayers() );
-  for ( QgsMapLayer *layer :  mapLayers )
-  {
-    if ( layer->publicSource() == mUri )
-    {
-      layersList << layer;
-    }
-  }
-
-  if ( ! layersList.isEmpty( ) )
-  {
-    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ), QObject::tr( "The layer <b>%1</b> exists in the current project <b>%2</b>,"
-                                " do you want to remove it from the project and delete it?" ).arg( mName, layersList.at( 0 )->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    {
-      return;
-    }
-  }
-  else if ( QMessageBox::question( nullptr, QObject::tr( "Delete Layer" ),
-                                   QObject::tr( "Are you sure you want to delete layer <b>%1</b> from GeoPackage?" ).arg( mName ),
-                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-  {
-    return;
-  }
-
-  if ( layersList.isEmpty() )
-  {
-    QgsProject::instance()->removeMapLayers( layersList );
-  }
-
-  QString errCause;
-  bool res = executeDeleteLayer( errCause );
-  if ( !res )
-  {
-    QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
-  }
-  else
-  {
-    QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer <b>%1</b> deleted successfully." ).arg( mName ) );
-    if ( mParent )
-      mParent->refreshConnections();
-  }
-
-}
-#endif
 
 QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, QgsLayerItem::LayerType layerType, const QString &providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )

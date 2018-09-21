@@ -88,10 +88,17 @@ class QgsGeoPackageCollectionItem : public QgsDataCollectionItem
     //! Returns the layer type from \a geometryType
     static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
 
-    //! Deletes a geopackage layer
+    //! Deletes a geopackage raster layer
     static bool deleteGeoPackageRasterLayer( const QString &uri, QString &errCause );
 
-
+    /**
+     * Compacts (VACUUM) a geopackage database
+     * \param path DB path
+     * \param name DB name
+     * \param errCause contains the error message
+     * \return true on success
+     */
+    static bool vacuumGeoPackageDb( const QString &path, const QString &name, QString &errCause );
 
   public slots:
 #ifdef HAVE_GUI
@@ -99,7 +106,7 @@ class QgsGeoPackageCollectionItem : public QgsDataCollectionItem
     void addConnection();
     void deleteConnection();
     //! Compacts (VACUUM) a geopackage database
-    void vacuumGeoPackageDb();
+    void vacuumGeoPackageDbAction();
 #endif
 
   protected:
