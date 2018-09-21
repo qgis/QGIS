@@ -88,8 +88,6 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      * Sets the \a context in which the modeler parameter widget is shown, e.g., the
      * parent model algorithm and other relevant information which allows the widget
      * to fine-tune its behavior.
-     *
-     * \see widgetContext()
      */
     void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
 
