@@ -73,8 +73,12 @@ QgsMinimumEnclosingCircleAlgorithm *QgsMinimumEnclosingCircleAlgorithm::createIn
   return new QgsMinimumEnclosingCircleAlgorithm();
 }
 
-bool QgsMinimumEnclosingCircleAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+bool QgsMinimumEnclosingCircleAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
   if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
     return false;
   // (no Z no M)

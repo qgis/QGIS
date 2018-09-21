@@ -164,8 +164,12 @@ QgsWkbTypes::Type QgsTranslateAlgorithm::outputWkbType( QgsWkbTypes::Type inputW
 }
 
 
-bool QgsTranslateAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+bool QgsTranslateAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
   if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
     return false;
 

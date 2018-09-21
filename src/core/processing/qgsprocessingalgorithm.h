@@ -812,7 +812,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \return true if the algorithm supports in-place editing
      * \since QGIS 3.4
      */
-    virtual bool supportInPlaceEdit( const QgsVectorLayer *layer ) const;
+    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
 
   private:
 
@@ -990,7 +990,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * \return true if the algorithm supports in-place editing
      * \since QGIS 3.4
      */
-    virtual bool supportInPlaceEdit( const QgsVectorLayer *layer ) const override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
     /**
      * Read the source from \a parameters and \a context and set it

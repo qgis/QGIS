@@ -73,9 +73,13 @@ QgsFixGeometriesAlgorithm *QgsFixGeometriesAlgorithm::createInstance() const
   return new QgsFixGeometriesAlgorithm();
 }
 
-bool QgsFixGeometriesAlgorithm::supportInPlaceEdit( const QgsVectorLayer *layer ) const
+bool QgsFixGeometriesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
+  if ( !layer->isSpatial() || ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
     return false;
   // The algorithm would drop M, so disable it if the layer has M
   return ! QgsWkbTypes::hasM( layer->wkbType() );

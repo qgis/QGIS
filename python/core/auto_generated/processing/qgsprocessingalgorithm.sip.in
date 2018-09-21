@@ -812,7 +812,7 @@ should correspond to the invalid source parameter name.
 .. versionadded:: 3.2
 %End
 
-    virtual bool supportInPlaceEdit( const QgsVectorLayer *layer ) const;
+    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
 %Docstring
 Checks whether this algorithm supports in-place editing on the given ``layer``
 Default implementation returns false.
@@ -976,7 +976,8 @@ Returns the feature request used for fetching features to process from the
 source layer. The default implementation requests all attributes and geometry.
 %End
 
-    virtual bool supportInPlaceEdit( const QgsVectorLayer *layer ) const;
+    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
+
 %Docstring
 Checks whether this algorithm supports in-place editing on the given ``layer``
 Default implementation for feature based algorithms run some basic compatibility

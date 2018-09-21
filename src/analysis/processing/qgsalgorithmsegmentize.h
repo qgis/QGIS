@@ -44,7 +44,7 @@ class QgsSegmentizeByMaximumDistanceAlgorithm : public QgsProcessingFeatureBased
     QgsSegmentizeByMaximumDistanceAlgorithm *createInstance() const override SIP_FACTORY;
     QList<int> inputLayerTypes() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
-    bool supportInPlaceEdit( const QgsVectorLayer *layer ) const override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
     QString outputName() const override;
@@ -78,7 +78,7 @@ class QgsSegmentizeByMaximumAngleAlgorithm : public QgsProcessingFeatureBasedAlg
     QgsSegmentizeByMaximumAngleAlgorithm *createInstance() const override SIP_FACTORY;
     QList<int> inputLayerTypes() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
-    bool supportInPlaceEdit( const QgsVectorLayer *layer ) const override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
     QString outputName() const override;
