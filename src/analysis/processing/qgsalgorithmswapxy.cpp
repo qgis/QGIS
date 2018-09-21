@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmswapxy.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -58,6 +59,18 @@ QString QgsSwapXYAlgorithm::shortHelpString() const
 QgsSwapXYAlgorithm *QgsSwapXYAlgorithm::createInstance() const
 {
   return new QgsSwapXYAlgorithm();
+}
+
+bool QgsSwapXYAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
+{
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
+  if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
+    return false;
+
+  return layer->isSpatial();
 }
 
 QgsProcessingFeatureSource::Flag QgsSwapXYAlgorithm::sourceFlags() const

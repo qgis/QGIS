@@ -78,6 +78,9 @@ bool QgsSplitWithLinesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) cons
   if ( !layer )
     return false;
 
+  if ( layer->geometryType() != QgsWkbTypes::LineGeometry && layer->geometryType() != QgsWkbTypes::PolygonGeometry )
+    return false;
+
   return true;
 }
 
