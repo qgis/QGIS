@@ -925,7 +925,7 @@ void TestProcessingGui::testNumericWrapperDouble()
     QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMin.wrappedWidget() )->minimum(), -5.0 );
     QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMin.wrappedWidget() )->maximum(), 999999999.0 );
     QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMin.wrappedWidget() )->clearValue(), -5.0 );
-    QCOMPARE( wrapperMin.parameterValue(), 0.0 );
+    QCOMPARE( wrapperMin.parameterValue().toDouble(), 0.0 );
     delete w;
 
     // with max value
@@ -939,7 +939,7 @@ void TestProcessingGui::testNumericWrapperDouble()
     QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMax.wrappedWidget() )->minimum(), -999999999.0 );
     QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMax.wrappedWidget() )->maximum(), 5.0 );
     QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMax.wrappedWidget() )->clearValue(), 0.0 );
-    QCOMPARE( wrapperMax.parameterValue(), 0.0 );
+    QCOMPARE( wrapperMax.parameterValue().toDouble(), 0.0 );
     delete w;
 
     // with min and max value
@@ -954,7 +954,7 @@ void TestProcessingGui::testNumericWrapperDouble()
     QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMinMax.wrappedWidget() )->minimum(), -.1 );
     QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMinMax.wrappedWidget() )->maximum(), .1 );
     QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperMinMax.wrappedWidget() )->clearValue(), -.1 );
-    QCOMPARE( wrapperMinMax.parameterValue(), 0.0 );
+    QCOMPARE( wrapperMinMax.parameterValue().toDouble(), 0.0 );
     delete w;
 
     // with default value
@@ -965,7 +965,7 @@ void TestProcessingGui::testNumericWrapperDouble()
 
     w = wrapperDefault.createWrappedWidget( context );
     QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperDefault.wrappedWidget() )->clearValue(), 55.0 );
-    QCOMPARE( wrapperDefault.parameterValue(), 55.0 );
+    QCOMPARE( wrapperDefault.parameterValue().toDouble(), 55.0 );
     delete w;
 
     // optional, no default
@@ -977,7 +977,7 @@ void TestProcessingGui::testNumericWrapperDouble()
     QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperOptional.wrappedWidget() )->clearValue(), -1000000000.0 );
     QVERIFY( !wrapperOptional.parameterValue().isValid() );
     wrapperOptional.setParameterValue( 5, context );
-    QCOMPARE( wrapperOptional.parameterValue(), 5.0 );
+    QCOMPARE( wrapperOptional.parameterValue().toDouble(), 5.0 );
     wrapperOptional.setParameterValue( QVariant(), context );
     QVERIFY( !wrapperOptional.parameterValue().isValid() );
     wrapperOptional.setParameterValue( 5, context );
@@ -990,18 +990,18 @@ void TestProcessingGui::testNumericWrapperDouble()
 
     w = wrapperOptionalDefault.createWrappedWidget( context );
     QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperOptionalDefault.wrappedWidget() )->clearValue(), -1000000000.0 );
-    QCOMPARE( wrapperOptionalDefault.parameterValue(), 3.0 );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toDouble(), 3.0 );
     wrapperOptionalDefault.setParameterValue( 5, context );
-    QCOMPARE( wrapperOptionalDefault.parameterValue(), 5.0 );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toDouble(), 5.0 );
     wrapperOptionalDefault.setParameterValue( QVariant(), context );
     QCOMPARE( static_cast< QgsDoubleSpinBox * >( wrapperOptionalDefault.wrappedWidget() )->value(), -1000000000.0 );
     QVERIFY( !wrapperOptionalDefault.parameterValue().isValid() );
     wrapperOptionalDefault.setParameterValue( 5, context );
-    QCOMPARE( wrapperOptionalDefault.parameterValue(), 5.0 );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toDouble(), 5.0 );
     static_cast< QgsDoubleSpinBox * >( wrapperOptionalDefault.wrappedWidget() )->clear();
     QVERIFY( !wrapperOptionalDefault.parameterValue().isValid() );
     wrapperOptionalDefault.setParameterValue( 5, context );
-    QCOMPARE( wrapperOptionalDefault.parameterValue(), 5.0 );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toDouble(), 5.0 );
 
     delete w;
   };
@@ -1078,7 +1078,7 @@ void TestProcessingGui::testNumericWrapperInt()
     QCOMPARE( static_cast< QgsSpinBox * >( wrapperMin.wrappedWidget() )->minimum(), -5 );
     QCOMPARE( static_cast< QgsSpinBox * >( wrapperMin.wrappedWidget() )->maximum(), 999999999 );
     QCOMPARE( static_cast< QgsSpinBox * >( wrapperMin.wrappedWidget() )->clearValue(), -5 );
-    QCOMPARE( wrapperMin.parameterValue(), 0 );
+    QCOMPARE( wrapperMin.parameterValue().toInt(), 0 );
     delete w;
 
     // with max value
@@ -1091,7 +1091,7 @@ void TestProcessingGui::testNumericWrapperInt()
     QCOMPARE( static_cast< QgsSpinBox * >( wrapperMax.wrappedWidget() )->minimum(), -999999999 );
     QCOMPARE( static_cast< QgsSpinBox * >( wrapperMax.wrappedWidget() )->maximum(), 5 );
     QCOMPARE( static_cast< QgsSpinBox * >( wrapperMax.wrappedWidget() )->clearValue(), 0 );
-    QCOMPARE( wrapperMax.parameterValue(), 0 );
+    QCOMPARE( wrapperMax.parameterValue().toInt(), 0 );
     delete w;
 
     // with min and max value
@@ -1105,7 +1105,7 @@ void TestProcessingGui::testNumericWrapperInt()
     QCOMPARE( static_cast< QgsSpinBox * >( wrapperMinMax.wrappedWidget() )->minimum(), -1 );
     QCOMPARE( static_cast< QgsSpinBox * >( wrapperMinMax.wrappedWidget() )->maximum(), 1 );
     QCOMPARE( static_cast< QgsSpinBox * >( wrapperMinMax.wrappedWidget() )->clearValue(), -1 );
-    QCOMPARE( wrapperMinMax.parameterValue(), 0 );
+    QCOMPARE( wrapperMinMax.parameterValue().toInt(), 0 );
     delete w;
 
     // with default value
@@ -1116,7 +1116,7 @@ void TestProcessingGui::testNumericWrapperInt()
 
     w = wrapperDefault.createWrappedWidget( context );
     QCOMPARE( static_cast< QgsSpinBox * >( wrapperDefault.wrappedWidget() )->clearValue(), 55 );
-    QCOMPARE( wrapperDefault.parameterValue(), 55 );
+    QCOMPARE( wrapperDefault.parameterValue().toInt(), 55 );
     delete w;
 
     // optional, no default
@@ -1128,7 +1128,7 @@ void TestProcessingGui::testNumericWrapperInt()
     QCOMPARE( static_cast< QgsSpinBox * >( wrapperOptional.wrappedWidget() )->clearValue(), -1000000000 );
     QVERIFY( !wrapperOptional.parameterValue().isValid() );
     wrapperOptional.setParameterValue( 5, context );
-    QCOMPARE( wrapperOptional.parameterValue(), 5 );
+    QCOMPARE( wrapperOptional.parameterValue().toInt(), 5 );
     wrapperOptional.setParameterValue( QVariant(), context );
     QVERIFY( !wrapperOptional.parameterValue().isValid() );
     wrapperOptional.setParameterValue( 5, context );
@@ -1141,18 +1141,18 @@ void TestProcessingGui::testNumericWrapperInt()
 
     w = wrapperOptionalDefault.createWrappedWidget( context );
     QCOMPARE( static_cast< QgsSpinBox * >( wrapperOptionalDefault.wrappedWidget() )->clearValue(), -1000000000 );
-    QCOMPARE( wrapperOptionalDefault.parameterValue(), 3 );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toInt(), 3 );
     wrapperOptionalDefault.setParameterValue( 5, context );
-    QCOMPARE( wrapperOptionalDefault.parameterValue(), 5 );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toInt(), 5 );
     wrapperOptionalDefault.setParameterValue( QVariant(), context );
     QCOMPARE( static_cast< QgsSpinBox * >( wrapperOptionalDefault.wrappedWidget() )->value(), -1000000000 );
     QVERIFY( !wrapperOptionalDefault.parameterValue().isValid() );
     wrapperOptionalDefault.setParameterValue( 5, context );
-    QCOMPARE( wrapperOptionalDefault.parameterValue(), 5 );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toInt(), 5 );
     static_cast< QgsSpinBox * >( wrapperOptionalDefault.wrappedWidget() )->clear();
     QVERIFY( !wrapperOptionalDefault.parameterValue().isValid() );
     wrapperOptionalDefault.setParameterValue( 5, context );
-    QCOMPARE( wrapperOptionalDefault.parameterValue(), 5 );
+    QCOMPARE( wrapperOptionalDefault.parameterValue().toInt(), 5 );
 
     delete w;
   };
@@ -1273,7 +1273,7 @@ void TestProcessingGui::testDistanceWrapper()
   QCOMPARE( wrapper.parameterValue().toDouble(), 2000.0 );
 
   wrapper.setUnitParameterValue( id );
-  QCOMPARE( wrapper.parameterValue().toDouble(), 2 );
+  QCOMPARE( wrapper.parameterValue().toDouble(), 2.0 );
   wrapper.setParameterValue( 5, context );
   QCOMPARE( wrapper.parameterValue().toDouble(), 5.0 );
 
@@ -1307,13 +1307,13 @@ void TestProcessingGui::testDistanceWrapper()
   w = wrapperM.createWrappedWidget( context );
   QSignalSpy spy3( &wrapperM, &QgsProcessingDistanceWidgetWrapper::widgetValueHasChanged );
   wrapperM.setWidgetValue( 29, context );
-  QCOMPARE( wrapperM.widgetValue().toDouble(), 29 );
+  QCOMPARE( wrapperM.widgetValue().toDouble(), 29.0 );
   QCOMPARE( spy3.count(), 1 );
-  QCOMPARE( wrapperM.mDoubleSpinBox->value(), 29 );
+  QCOMPARE( wrapperM.mDoubleSpinBox->value(), 29.0 );
   wrapperM.setWidgetValue( -29, context );
-  QCOMPARE( wrapperM.widgetValue().toDouble(), -29 );
+  QCOMPARE( wrapperM.widgetValue().toDouble(), -29.0 );
   QCOMPARE( spy3.count(), 2 );
-  QCOMPARE( wrapperM.mDoubleSpinBox->value(), -29 );
+  QCOMPARE( wrapperM.mDoubleSpinBox->value(), -29.0 );
 
   // check signal
   wrapperM.mDoubleSpinBox->setValue( 33 );
