@@ -417,6 +417,8 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     return false;
   }
 
+  setCrs( mDataProvider->crs() );
+
   if ( provider == QStringLiteral( "mesh_memory" ) )
   {
     // required so that source differs between memory layers
