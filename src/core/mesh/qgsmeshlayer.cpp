@@ -105,6 +105,11 @@ QgsTriangularMesh *QgsMeshLayer::triangularMesh() SIP_SKIP
   return mTriangularMesh.get();
 }
 
+QgsMeshLayerRendererCache *QgsMeshLayer::rendererCache()
+{
+  return mRendererCache.get();
+}
+
 QgsMeshRendererSettings QgsMeshLayer::rendererSettings() const
 {
   return mRendererSettings;
@@ -229,16 +234,23 @@ void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
 
 QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
+  // Native mesh
   if ( !mNativeMesh )
   {
     // lazy loading of mesh data
     fillNativeMesh();
   }
 
+  // Triangular mesh
   if ( !mTriangularMesh )
     mTriangularMesh.reset( new QgsTriangularMesh() );
 
   mTriangularMesh->update( mNativeMesh.get(), &rendererContext );
+
+  // Cache
+  if ( !mRendererCache )
+    mRendererCache.reset( new QgsMeshLayerRendererCache() );
+
   return new QgsMeshLayerRenderer( this, rendererContext );
 }
 

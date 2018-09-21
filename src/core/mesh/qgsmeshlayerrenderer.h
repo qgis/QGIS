@@ -46,6 +46,32 @@ class QgsMeshLayerRendererFeedback : public QgsRasterBlockFeedback
 {
 };
 
+
+/**
+ * Cache for data needed to render active datasets
+ */
+struct CORE_NO_EXPORT QgsMeshLayerRendererCache
+{
+  int mDatasetGroupsCount = 0;
+
+  // scalar dataset
+  QgsMeshDatasetIndex mActiveScalarDatasetIndex;
+  QVector<double> mScalarDatasetValues;
+  QVector<bool> mScalarActiveFaceFlagValues;
+  bool mScalarDataOnVertices = true;
+  double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
+  double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
+
+  // vector dataset
+  QgsMeshDatasetIndex mActiveVectorDatasetIndex;
+  QVector<double> mVectorDatasetValuesX;
+  QVector<double> mVectorDatasetValuesY;
+  QVector<double> mVectorDatasetValuesMag;
+  double mVectorDatasetMagMinimum = std::numeric_limits<double>::quiet_NaN();
+  double mVectorDatasetMagMaximum = std::numeric_limits<double>::quiet_NaN();
+  bool mVectorDataOnVertices = true;
+};
+
 ///@endcond
 
 /**
