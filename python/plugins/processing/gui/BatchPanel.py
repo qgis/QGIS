@@ -256,7 +256,8 @@ class BatchPanel(BASE, WIDGET):
         is_cpp_wrapper = not issubclass(wrapper.__class__, WidgetWrapper)
         if is_cpp_wrapper:
             widget_context = QgsProcessingParameterWidgetContext()
-            widget_context.setMapCanvas(iface.mapCanvas())
+            if iface is not None:
+                widget_context.setMapCanvas(iface.mapCanvas())
             wrapper.setWidgetContext(widget_context)
             widget = wrapper.createWrappedWidget(context)
         else:
