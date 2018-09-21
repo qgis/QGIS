@@ -17,7 +17,7 @@
 
 #include "qgsalgorithmsplitwithlines.h"
 #include "qgsgeometryengine.h"
-
+#include "qgsvectorlayer.h"
 ///@cond PRIVATE
 
 QString QgsSplitWithLinesAlgorithm::name() const
@@ -63,6 +63,22 @@ QString QgsSplitWithLinesAlgorithm::shortHelpString() const
 QgsSplitWithLinesAlgorithm *QgsSplitWithLinesAlgorithm::createInstance() const
 {
   return new QgsSplitWithLinesAlgorithm();
+}
+
+QgsProcessingAlgorithm::Flags QgsSplitWithLinesAlgorithm::flags() const
+{
+  Flags f = QgsProcessingAlgorithm::flags();
+  f |= QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+  return f;
+}
+
+bool QgsSplitWithLinesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
+{
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
+  return true;
 }
 
 QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

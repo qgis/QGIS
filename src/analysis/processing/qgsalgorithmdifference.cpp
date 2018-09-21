@@ -16,6 +16,7 @@
 #include "qgsalgorithmdifference.h"
 
 #include "qgsoverlayutils.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -49,6 +50,22 @@ QString QgsDifferenceAlgorithm::shortHelpString() const
          + QObject::tr( "Attributes are not modified, although properties such as area or length of the features will "
                         "be modified by the difference operation. If such properties are stored as attributes, those attributes will have to "
                         "be manually updated." );
+}
+
+bool QgsDifferenceAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
+{
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
+  return layer->isSpatial();
+}
+
+QgsProcessingAlgorithm::Flags QgsDifferenceAlgorithm::flags() const
+{
+  Flags f = QgsProcessingAlgorithm::flags();
+  f |= QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+  return f;
 }
 
 QgsProcessingAlgorithm *QgsDifferenceAlgorithm::createInstance() const
