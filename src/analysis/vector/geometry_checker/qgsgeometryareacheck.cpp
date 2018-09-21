@@ -20,7 +20,7 @@
 #include "qgsfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
 
-void QgsGeometryAreaCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+void QgsGeometryAreaCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, const QgsGeometryCheckContext *context, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
@@ -35,7 +35,7 @@ void QgsGeometryAreaCheck::collectErrors( const QMap<QString, QgsFeaturePool *> 
       const QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( geom, iPart );
       if ( checkThreshold( layerToMapUnits, part, value ) )
       {
-        errors.append( new QgsGeometryCheckError( this, layerFeature, part->centroid(), QgsVertexId( iPart ), value * layerToMapUnits * layerToMapUnits, QgsGeometryCheckError::ValueArea ) );
+        errors.append( new QgsGeometryCheckError( this, context, layerFeature, part->centroid(), QgsVertexId( iPart ), value * layerToMapUnits * layerToMapUnits, QgsGeometryCheckError::ValueArea ) );
       }
     }
   }

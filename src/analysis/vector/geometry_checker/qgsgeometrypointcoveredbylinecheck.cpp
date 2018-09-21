@@ -19,7 +19,7 @@
 #include "qgsfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
 
-void QgsGeometryPointCoveredByLineCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+void QgsGeometryPointCoveredByLineCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, const QgsGeometryCheckContext *context, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
 
@@ -66,7 +66,7 @@ void QgsGeometryPointCoveredByLineCheck::collectErrors( const QMap<QString, QgsF
       {
         continue;
       }
-      errors.append( new QgsGeometryCheckError( this, layerFeature, *point, QgsVertexId( iPart, 0, 0 ) ) );
+      errors.append( new QgsGeometryCheckError( this, context, layerFeature, *point, QgsVertexId( iPart, 0, 0 ) ) );
     }
   }
 }

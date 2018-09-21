@@ -20,7 +20,7 @@
 #include "qgsfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
 
-void QgsGeometryLineLayerIntersectionCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+void QgsGeometryLineLayerIntersectionCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, const QgsGeometryCheckContext *context, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
 
@@ -52,7 +52,7 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( const QMap<QString, Q
             const QList< QgsPoint > intersections = QgsGeometryCheckerUtils::lineIntersections( line, testLine, mContext->tolerance );
             for ( const QgsPoint &inter : intersections )
             {
-              errors.append( new QgsGeometryCheckError( this, layerFeature, inter, QgsVertexId( iPart ), checkFeature.id() ) );
+              errors.append( new QgsGeometryCheckError( this, context, layerFeature, inter, QgsVertexId( iPart ), checkFeature.id() ) );
             }
           }
           else if ( const QgsPolygon *polygon = dynamic_cast<const QgsPolygon *>( part ) )
@@ -63,7 +63,7 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( const QMap<QString, Q
               const QList< QgsPoint > intersections = QgsGeometryCheckerUtils::lineIntersections( line, ring, mContext->tolerance );
               for ( const QgsPoint &inter : intersections )
               {
-                errors.append( new QgsGeometryCheckError( this, layerFeature, inter, QgsVertexId( iPart ), checkFeature.id() ) );
+                errors.append( new QgsGeometryCheckError( this, context, layerFeature, inter, QgsVertexId( iPart ), checkFeature.id() ) );
               }
             }
           }

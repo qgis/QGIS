@@ -19,7 +19,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsgeometrycheckerror.h"
 
-void QgsGeometryLineIntersectionCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+void QgsGeometryLineIntersectionCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, const QgsGeometryCheckContext *context, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
 
@@ -67,7 +67,7 @@ void QgsGeometryLineIntersectionCheck::collectErrors( const QMap<QString, QgsFea
           const QList< QgsPoint > intersections = QgsGeometryCheckerUtils::lineIntersections( line, testLine, mContext->tolerance );
           for ( const QgsPoint &inter : intersections )
           {
-            errors.append( new QgsGeometryCheckError( this, layerFeatureA, inter, QgsVertexId( iPart ), layerFeatureB.id() ) );
+            errors.append( new QgsGeometryCheckError( this, context, layerFeatureA, inter, QgsVertexId( iPart ), layerFeatureB.id() ) );
           }
         }
       }

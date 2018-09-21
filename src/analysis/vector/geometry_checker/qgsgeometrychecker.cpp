@@ -200,14 +200,14 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
     {
       if ( !recheckAreaFeatures.isEmpty() )
       {
-        check->collectErrors( mFeaturePools, recheckErrors, mMessages, nullptr, recheckAreaFeatures );
+        check->collectErrors( mFeaturePools, mContext, recheckErrors, mMessages, nullptr, recheckAreaFeatures );
       }
     }
     else
     {
       if ( !recheckFeatures.isEmpty() )
       {
-        check->collectErrors( mFeaturePools, recheckErrors, mMessages, nullptr, recheckFeatures );
+        check->collectErrors( mFeaturePools, mContext, recheckErrors, mMessages, nullptr, recheckFeatures );
       }
     }
   }
@@ -285,7 +285,7 @@ void QgsGeometryChecker::runCheck( const QMap<QString, QgsFeaturePool *> &featur
   // Run checks
   QList<QgsGeometryCheckError *> errors;
   QStringList messages;
-  check->collectErrors( featurePools, errors, messages, &mFeedback );
+  check->collectErrors( featurePools, mContext, errors, messages, &mFeedback );
   mErrorListMutex.lock();
   mCheckErrors.append( errors );
   mMessages.append( messages );

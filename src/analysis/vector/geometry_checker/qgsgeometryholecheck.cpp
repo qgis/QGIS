@@ -20,7 +20,7 @@
 #include "qgsfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
 
-void QgsGeometryHoleCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+void QgsGeometryHoleCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, const QgsGeometryCheckContext *context, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
 
@@ -41,7 +41,7 @@ void QgsGeometryHoleCheck::collectErrors( const QMap<QString, QgsFeaturePool *> 
       {
 
         QgsPoint pos = poly->interiorRing( iRing - 1 )->centroid();
-        errors.append( new QgsGeometryCheckError( this, layerFeature, pos, QgsVertexId( iPart, iRing ) ) );
+        errors.append( new QgsGeometryCheckError( this, context, layerFeature, pos, QgsVertexId( iPart, iRing ) ) );
       }
     }
   }

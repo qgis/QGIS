@@ -19,7 +19,7 @@
 #include "qgsfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
 
-void QgsGeometrySegmentLengthCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+void QgsGeometrySegmentLengthCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, const QgsGeometryCheckContext *context, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
 
@@ -50,7 +50,7 @@ void QgsGeometrySegmentLengthCheck::collectErrors( const QMap<QString, QgsFeatur
           if ( dist < minLength && dist > mContext->tolerance )
           {
             QgsPointXY pos( 0.5 * ( pi.x() + pj.x() ), 0.5 * ( pi.y() + pj.y() ) );
-            errors.append( new QgsGeometryCheckError( this, layerFeature, pos, QgsVertexId( iPart, iRing, iVert ), dist * layerToMapUnits, QgsGeometryCheckError::ValueLength ) );
+            errors.append( new QgsGeometryCheckError( this, context, layerFeature, pos, QgsVertexId( iPart, iRing, iVert ), dist * layerToMapUnits, QgsGeometryCheckError::ValueLength ) );
           }
         }
       }

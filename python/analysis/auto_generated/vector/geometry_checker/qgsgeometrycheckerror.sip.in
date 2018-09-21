@@ -33,6 +33,7 @@ the Free Software Foundation; either version 2 of the License, or     *
     enum ValueType { ValueLength, ValueArea, ValueOther };
 
     QgsGeometryCheckError( const QgsGeometryCheck *check,
+                           const QgsGeometryCheckContext *context,
                            const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
                            const QgsPointXY &errorLocation,
                            QgsVertexId vidx = QgsVertexId(),
@@ -43,6 +44,7 @@ the Free Software Foundation; either version 2 of the License, or     *
 
 
     const QgsGeometryCheck *check() const;
+    const QgsGeometryCheckContext *context() const;
     const QString &layerId() const;
     QgsFeatureId featureId() const;
     QgsGeometry geometry() const;

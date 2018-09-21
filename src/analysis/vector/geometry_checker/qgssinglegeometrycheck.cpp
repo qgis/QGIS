@@ -81,8 +81,13 @@ QgsVertexId QgsSingleGeometryCheckError::vertexId() const
   return mVertexId;
 }
 
-QgsGeometryCheckErrorSingle::QgsGeometryCheckErrorSingle( QgsSingleGeometryCheckError *error, const QgsGeometryCheckerUtils::LayerFeature &layerFeature )
-  : QgsGeometryCheckError( error->check(), layerFeature, QgsPointXY( error->errorLocation().constGet()->centroid() ), error->vertexId() ) // TODO: should send geometry to QgsGeometryCheckError
+QgsGeometryCheckErrorSingle::QgsGeometryCheckErrorSingle( QgsSingleGeometryCheckError *error,
+    const QgsGeometryCheckerUtils::LayerFeature &layerFeature )
+  : QgsGeometryCheckError( error->check(),
+                           error->check()->context(),
+                           layerFeature,
+                           QgsPointXY( error->errorLocation().constGet()->centroid() ),
+                           error->vertexId() ) // TODO: should send geometry to QgsGeometryCheckError
   , mError( error )
 {
 
