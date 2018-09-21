@@ -36,7 +36,7 @@ typedef bool handlesDirectoryPath_t( const QString &path ) SIP_SKIP;
  * There are two occasions when createDataItem() is called:
  * 1. to create root items (passed path is empty, parent item is null).
  * 2. to create items in directory structure. For this capabilities have to return at least
- *    of the following: QgsDataProider::Dir or QgsDataProvider::File. Passed path is the file
+ *    of the following: QgsDataProvider::Dir or QgsDataProvider::File. Passed path is the file
  *    or directory being inspected, parent item is a valid QgsDirectoryItem
  *
  * \since QGIS 2.10

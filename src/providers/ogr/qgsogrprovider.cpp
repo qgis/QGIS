@@ -3375,10 +3375,10 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   return true;
 }
 
-
 QGISEXTERN QList< QgsDataItemProvider * > *dataItemProviders()
 {
   QList< QgsDataItemProvider * > *providers = new QList< QgsDataItemProvider * >();
+  *providers << new QgsOgrDataItemProvider;
   *providers << new QgsGeoPackageDataItemProvider;
   return providers;
 }

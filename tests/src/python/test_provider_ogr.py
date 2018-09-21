@@ -19,7 +19,8 @@ import tempfile
 
 from osgeo import gdal, ogr  # NOQA
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsFeature, QgsFeatureRequest, QgsField, QgsSettings, QgsDataProvider,
+from qgis.core import (QgsApplication,
+                       QgsFeature, QgsFeatureRequest, QgsField, QgsSettings, QgsDataProvider,
                        QgsVectorDataProvider, QgsVectorLayer, QgsWkbTypes, QgsNetworkAccessManager)
 from qgis.testing import start_app, unittest
 
@@ -403,6 +404,34 @@ class PyQgsOGRProvider(unittest.TestCase):
         # Completely reload file
         vl = QgsVectorLayer(datasource, 'test', 'ogr')
         self.assertEqual(len(vl.fields()), 2)
+
+    def testDataItems(self):
+
+        registry = QgsApplication.dataItemProviderRegistry()
+        ogrprovider = next(provider for provider in registry.providers() if provider.name() == 'OGR')
+
+        # Single layer
+        item = ogrprovider.createDataItem(os.path.join(TEST_DATA_DIR, 'lines.shp'), None)
+        self.assertTrue(item.uri().endswith('lines.shp'))
+
+        # Multiple layer
+        item = ogrprovider.createDataItem(os.path.join(TEST_DATA_DIR, 'multilayer.kml'), None)
+        children = item.createChildren()
+        self.assertEqual(len(children), 2)
+        self.assertIn('multilayer.kml|layername=Layer1', children[0].uri())
+        self.assertIn('multilayer.kml|layername=Layer2', children[1].uri())
+
+        # Multiple layer (geopackage)
+        tmpfile = os.path.join(self.basetestpath, 'testDataItems.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('Layer1', geom_type=ogr.wkbPoint)
+        lyr = ds.CreateLayer('Layer2', geom_type=ogr.wkbPoint)
+        ds = None
+        item = ogrprovider.createDataItem(tmpfile, None)
+        children = item.createChildren()
+        self.assertEqual(len(children), 2)
+        self.assertIn('testDataItems.gpkg|layername=Layer1', children[0].uri())
+        self.assertIn('testDataItems.gpkg|layername=Layer2', children[1].uri())
 
 
 if __name__ == '__main__':
