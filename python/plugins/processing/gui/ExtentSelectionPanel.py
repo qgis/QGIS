@@ -97,9 +97,9 @@ class ExtentSelectionPanel(BASE, WIDGET):
     def selectExtent(self):
         popupmenu = QMenu()
         useLayerExtentAction = QAction(
-            self.tr('Use layer/canvas extent'), self.btnSelect)
+            self.tr('Use Layer/Canvas Extent…'), self.btnSelect)
         selectOnCanvasAction = QAction(
-            self.tr('Select extent on canvas'), self.btnSelect)
+            self.tr('Select Extent on Canvas'), self.btnSelect)
 
         popupmenu.addAction(useLayerExtentAction)
         popupmenu.addAction(selectOnCanvasAction)
@@ -109,7 +109,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
 
         if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
             useMincoveringExtentAction = QAction(
-                self.tr('Use min covering extent from input layers'),
+                self.tr('Use Min Covering Extent from Input Layers'),
                 self.btnSelect)
             useMincoveringExtentAction.triggered.connect(
                 self.useMinCoveringExtent)
@@ -121,7 +121,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.leText.setText('')
 
     def useLayerExtent(self):
-        CANVAS_KEY = 'Use canvas extent'
+        CANVAS_KEY = 'Canvas Extent'
         extentsDict = {}
         extentsDict[CANVAS_KEY] = {"extent": iface.mapCanvas().extent(),
                                    "authid": iface.mapCanvas().mapSettings().destinationCrs().authid()}
