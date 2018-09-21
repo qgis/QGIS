@@ -1297,13 +1297,13 @@ QgsExpressionContextScope *QgsExpressionContextUtils::processingAlgorithmScope( 
   Q_UNUSED( context );
 
   std::unique_ptr< QgsExpressionContextScope > scope( new QgsExpressionContextScope( QObject::tr( "Algorithm" ) ) );
+  scope->addFunction( QStringLiteral( "parameter" ), new GetProcessingParameterValue( parameters ) );
+
   if ( !algorithm )
     return scope.release();
 
   //add standard algorithm variables
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "algorithm_id" ), algorithm->id(), true ) );
-
-  scope->addFunction( QStringLiteral( "parameter" ), new GetProcessingParameterValue( parameters ) );
 
   return scope.release();
 }
