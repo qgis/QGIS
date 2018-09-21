@@ -85,8 +85,11 @@ class PolygonsToLines(QgisFeatureBasedAlgorithm):
             feature.setGeometry(QgsGeometry(self.convertToLines(feature.geometry())))
         return [feature]
 
+    def supportInPlaceEdit(self, layer):
+        return False
+
     def convertWkbToLines(self, wkb):
-        multi_wkb = None
+        multi_wkb = QgsWkbTypes.NoGeometry
         if QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.Polygon:
             multi_wkb = QgsWkbTypes.MultiLineString
         elif QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.CurvePolygon:
