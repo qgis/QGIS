@@ -35,7 +35,7 @@ Build-Depends:
  git,
  txt2tags,
  doxygen,
- gdal-bin,
+ gdal-bin, saga,
  spawn-fcgi, lighttpd, poppler-utils,
  graphviz,
  xvfb, xauth,
@@ -385,6 +385,7 @@ Depends:
  python3-matplotlib,
  libqgis-customwidgets,
  ${misc:Depends}
+Suggests: saga
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
