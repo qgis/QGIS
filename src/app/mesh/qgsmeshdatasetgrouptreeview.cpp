@@ -303,11 +303,15 @@ void QgsMeshDatasetGroupTreeModel::addTreeItem( const QString &groupName, bool i
   parent->appendChild( item );
 
   if ( mNameToItem.contains( groupName ) )
+  {
     QgsDebugMsg( QStringLiteral( "Group %1 is not unique" ).arg( groupName ) );
+  }
   mNameToItem[groupName] = item;
 
   if ( mDatasetGroupIndexToItem.contains( groupIndex ) )
+  {
     QgsDebugMsg( QStringLiteral( "Group index %1 is not unique" ).arg( groupIndex ) );
+  }
   mDatasetGroupIndexToItem[groupIndex] = item;
 }
 
