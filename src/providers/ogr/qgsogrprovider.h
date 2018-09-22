@@ -274,6 +274,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     // Friendly name of the GDAL Driver that was actually used to open the layer
     QString mGDALDriverName;
 
+    //! Whether we can share the same dataset handle among different layers
+    bool mShareSameDatasetAmongLayers = true;
+
     bool mValid = false;
 
     OGRwkbGeometryType mOGRGeomType = wkbUnknown;
@@ -323,7 +326,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QgsOgrTransaction *mTransaction = nullptr;
 
     void setTransaction( QgsTransaction *transaction ) override;
-
 };
 
 class QgsOgrDataset;
@@ -365,6 +367,7 @@ class QgsOgrProviderUtils
         GDALDatasetH   hDS = nullptr;
         QMap<QString, QgsOgrLayer *>  setLayers;
         int            refCount = 0;
+        bool           canBeShared = true;
 
         DatasetWithLayers(): mutex( QMutex::Recursive ) {}
     };
@@ -390,6 +393,14 @@ class QgsOgrProviderUtils
                                  DatasetWithLayers *ds,
                                  bool removeFromDatasetList );
 
+    static DatasetWithLayers *createDatasetWithLayers(
+      const QString &dsName,
+      bool updateMode,
+      const QStringList &options,
+      const QString &layerName,
+      const DatasetIdentification &ident,
+      QgsOgrLayerUniquePtr &layer,
+      QString &errCause );
   public:
 
     //! Inject credentials into the dsName (if any)
@@ -460,7 +471,7 @@ class QgsOgrProviderUtils
     static void invalidateCachedDatasets( const QString &dsName );
 
     //! Returns the string to provide to QgsOgrConnPool::instance() methods
-    static QString connectionPoolId( const QString &dataSourceURI );
+    static QString connectionPoolId( const QString &dataSourceURI, bool datasetSharedAmongLayers );
 
     //! Invalidate the cached last modified date of a dataset
     static void invalidateCachedLastModifiedDate( const QString &dsName );
@@ -471,6 +482,8 @@ class QgsOgrProviderUtils
     //! Converts a OGR WKB type to the corresponding QGIS wkb type
     static QgsWkbTypes::Type qgisTypeFromOgrType( OGRwkbGeometryType type );
 
+    //! Whether a driver can share the same dataset handle among different layers
+    static bool canDriverShareSameDatasetAmongLayers( const QString &driverName );
 };
 
 

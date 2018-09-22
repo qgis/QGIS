@@ -38,6 +38,7 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
 
   private:
     QString mDataSource;
+    bool mShareSameDatasetAmongLayers;
     QString mLayerName;
     int mLayerIndex;
     QString mSubsetString;
