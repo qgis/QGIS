@@ -202,6 +202,7 @@ SET(QGIS_CORE_SRCS
   qgsfiledownloader.cpp
   qgsfileutils.cpp
   qgsfontutils.cpp
+  qgsgdalutils.cpp
   qgsgeometrysimplifier.cpp
   qgsgeometryvalidator.cpp
   qgsgeometryoptions.cpp

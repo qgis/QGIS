@@ -21,6 +21,7 @@
 #include "qgis.h"
 #include "qgisapp.h"
 #include "qgisappstylesheet.h"
+#include "qgsgdalutils.h"
 #include "qgshighlight.h"
 #include "qgsmapcanvas.h"
 #include "qgsprojectionselectiondialog.h"
@@ -2161,7 +2162,7 @@ void QgsOptions::loadGdalDriverList()
 
     // get driver R/W flags, taken from GDALGeneralCmdLineProcessor()
     const char *pszRWFlag, *pszVirtualIO;
-    if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATE, nullptr ) )
+    if ( QgsGdalUtils::supportsRasterCreate( myGdalDriver ) )
     {
       myGdalWriteDrivers << myGdalDriverDescription;
       pszRWFlag = "rw+";

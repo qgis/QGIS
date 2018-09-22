@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgdalutils.h"
 #include "qgslogger.h"
 #include "qgsrelief.h"
 #include "qgsaspectfilter.h"
@@ -402,8 +403,6 @@ gdal::dataset_unique_ptr QgsRelief::openInputFile( int &nCellsX, int &nCellsY )
 
 GDALDriverH QgsRelief::openOutputDriver()
 {
-  char **driverMetadata = nullptr;
-
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );
 
@@ -412,8 +411,7 @@ GDALDriverH QgsRelief::openOutputDriver()
     return outputDriver; //return nullptr, driver does not exist
   }
 
-  driverMetadata = GDALGetMetadata( outputDriver, nullptr );
-  if ( !CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
+  if ( !QgsGdalUtils::supportsRasterCreate( outputDriver ) )
   {
     return nullptr; //driver exist, but it does not support the create operation
   }

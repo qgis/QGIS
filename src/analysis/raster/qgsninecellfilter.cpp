@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgdalutils.h"
 #include "qgsninecellfilter.h"
 #include "qgslogger.h"
 #include "cpl_string.h"
@@ -100,8 +101,6 @@ gdal::dataset_unique_ptr QgsNineCellFilter::openInputFile( int &nCellsX, int &nC
 
 GDALDriverH QgsNineCellFilter::openOutputDriver()
 {
-  char **driverMetadata = nullptr;
-
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );
 
@@ -110,14 +109,14 @@ GDALDriverH QgsNineCellFilter::openOutputDriver()
     return outputDriver; //return nullptr, driver does not exist
   }
 
-  driverMetadata = GDALGetMetadata( outputDriver, nullptr );
-  if ( !CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
+  if ( !QgsGdalUtils::supportsRasterCreate( outputDriver ) )
   {
     return nullptr; //driver exist, but it does not support the create operation
   }
 
   return outputDriver;
 }
+
 
 gdal::dataset_unique_ptr QgsNineCellFilter::openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver )
 {

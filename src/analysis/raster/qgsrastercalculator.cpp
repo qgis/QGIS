@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgdalutils.h"
 #include "qgsrastercalculator.h"
 #include "qgsrastercalcnode.h"
 #include "qgsrasterdataprovider.h"
@@ -185,8 +186,6 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
 
 GDALDriverH QgsRasterCalculator::openOutputDriver()
 {
-  char **driverMetadata = nullptr;
-
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );
 
@@ -195,8 +194,7 @@ GDALDriverH QgsRasterCalculator::openOutputDriver()
     return outputDriver; //return nullptr, driver does not exist
   }
 
-  driverMetadata = GDALGetMetadata( outputDriver, nullptr );
-  if ( !CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
+  if ( !QgsGdalUtils::supportsRasterCreate( outputDriver ) )
   {
     return nullptr; //driver exist, but it does not support the create operation
   }

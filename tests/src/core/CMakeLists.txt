@@ -99,6 +99,7 @@ SET(TESTS
  testqgsfields.cpp
  testqgsfield.cpp
  testqgsfilledmarker.cpp
+ testqgsgdalutils.cpp
  testqgsvectorfilewriter.cpp
  testqgsfontmarker.cpp
  testqgsgeometryimport.cpp

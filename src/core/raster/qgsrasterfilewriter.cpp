@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include <typeinfo>
 
+#include "qgsgdalutils.h"
 #include "qgsrasterfilewriter.h"
 #include "qgscoordinatetransform.h"
 #include "qgsproviderregistry.h"
@@ -1067,10 +1068,9 @@ QList< QgsRasterFileWriter::FilterFormatDetails > QgsRasterFileWriter::supported
     GDALDriverH drv = GDALGetDriver( i );
     if ( drv )
     {
-      QString drvName = GDALGetDriverShortName( drv );
-      char **driverMetadata = GDALGetMetadata( drv, nullptr );
-      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
+      if ( QgsGdalUtils::supportsRasterCreate( drv ) )
       {
+        QString drvName = GDALGetDriverShortName( drv );
         QString filterString = filterForDriver( drvName );
         if ( filterString.isEmpty() )
           continue;
