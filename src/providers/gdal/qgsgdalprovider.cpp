@@ -1618,20 +1618,6 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
       return QStringLiteral( "ERROR_WRITE_ACCESS" );
     }
 
-    // libtiff < 4.0 has a bug that prevents safe building of overviews on JPEG compressed files
-    // we detect libtiff < 4.0 by checking that BIGTIFF is not in the creation options of the GTiff driver
-    // see https://trac.osgeo.org/qgis/ticket/1357
-    const char *pszGTiffCreationOptions =
-      GDALGetMetadataItem( GDALGetDriverByName( "GTiff" ), GDAL_DMD_CREATIONOPTIONLIST, "" );
-    if ( !strstr( pszGTiffCreationOptions, "BIGTIFF" ) )
-    {
-      QString myCompressionType = QString( GDALGetMetadataItem( mGdalDataset, "COMPRESSION", "IMAGE_STRUCTURE" ) );
-      if ( "JPEG" == myCompressionType )
-      {
-        return QStringLiteral( "ERROR_JPEG_COMPRESSION" );
-      }
-    }
-
     // if needed close the gdal dataset and reopen it in read / write mode
     // TODO this doesn't seem to work anymore... must fix it before 2.0!!!
     // no errors are reported, but pyramids are not present in file.
@@ -1657,10 +1643,17 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
   // are we using Erdas Imagine external overviews?
   QgsStringMap myConfigOptionsOld;
   myConfigOptionsOld[ QStringLiteral( "USE_RRD" )] = CPLGetConfigOption( "USE_RRD", "NO" );
+  myConfigOptionsOld[ QStringLiteral( "TIFF_USE_OVR" )] = CPLGetConfigOption( "TIFF_USE_OVR", "NO" );
   if ( format == QgsRaster::PyramidsErdas )
     CPLSetConfigOption( "USE_RRD", "YES" );
   else
+  {
     CPLSetConfigOption( "USE_RRD", "NO" );
+    if ( format == QgsRaster::PyramidsGTiff )
+    {
+      CPLSetConfigOption( "TIFF_USE_OVR", "YES" );
+    }
+  }
 
   // add any driver-specific configuration options, save values to be restored later
   if ( format != QgsRaster::PyramidsErdas && ! configOptions.isEmpty() )

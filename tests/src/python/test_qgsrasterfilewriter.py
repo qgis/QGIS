@@ -20,7 +20,8 @@ import tempfile
 
 from osgeo import gdal
 from qgis.PyQt.QtCore import QTemporaryFile, QDir
-from qgis.core import (QgsRasterLayer,
+from qgis.core import (QgsRaster,
+                       QgsRasterLayer,
                        QgsRasterChecker,
                        QgsRasterPipe,
                        QgsRasterFileWriter,
@@ -177,6 +178,52 @@ class TestQgsRasterFileWriter(unittest.TestCase):
 
         # remove result file
         os.unlink(test_gpkg)
+
+    def _testGeneratePyramids(self, pyramidFormat):
+        tmpName = tempfile.mktemp(suffix='.tif')
+        source = QgsRasterLayer(os.path.join(self.testDataDir, 'raster', 'byte.tif'), 'my', 'gdal')
+        self.assertTrue(source.isValid())
+        provider = source.dataProvider()
+        fw = QgsRasterFileWriter(tmpName)
+
+        fw.setBuildPyramidsFlag(QgsRaster.PyramidsFlagYes)
+        fw.setPyramidsFormat(pyramidFormat)
+        fw.setPyramidsList([2])
+
+        pipe = QgsRasterPipe()
+        self.assertTrue(pipe.set(provider.clone()))
+
+        projector = QgsRasterProjector()
+        projector.setCrs(provider.crs(), provider.crs())
+        self.assertTrue(pipe.insert(2, projector))
+
+        self.assertEqual(fw.writeRaster(pipe,
+                                        provider.xSize(),
+                                        provider.ySize(),
+                                        provider.extent(),
+                                        provider.crs()), 0)
+        del fw
+        ds = gdal.Open(tmpName)
+        self.assertEqual(ds.GetRasterBand(1).GetOverviewCount(), 1)
+        fl = ds.GetFileList()
+        if pyramidFormat == QgsRaster.PyramidsGTiff:
+            self.assertEqual(len(fl), 2, fl)
+            self.assertIn('.ovr', fl[1])
+        elif pyramidFormat == QgsRaster.PyramidsInternal:
+            self.assertEqual(len(fl), 1, fl)
+        elif pyramidFormat == QgsRaster.PyramidsErdas:
+            self.assertEqual(len(fl), 2, fl)
+            self.assertIn('.aux', fl[1])
+        os.unlink(tmpName)
+
+    def testGeneratePyramidsExternal(self):
+        return self._testGeneratePyramids(QgsRaster.PyramidsGTiff)
+
+    def testGeneratePyramidsInternal(self):
+        return self._testGeneratePyramids(QgsRaster.PyramidsInternal)
+
+    def testGeneratePyramidsErdas(self):
+        return self._testGeneratePyramids(QgsRaster.PyramidsErdas)
 
 
 if __name__ == '__main__':
