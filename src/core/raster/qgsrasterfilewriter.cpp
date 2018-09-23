@@ -58,15 +58,11 @@ QgsRasterDataProvider *QgsRasterFileWriter::createMultiBandRaster( Qgis::DataTyp
 
 QgsRasterFileWriter::QgsRasterFileWriter( const QString &outputUrl )
   : mOutputUrl( outputUrl )
-  , mOutputProviderKey( QStringLiteral( "gdal" ) )
-  , mOutputFormat( QStringLiteral( "GTiff" ) )
 {
 
 }
 
 QgsRasterFileWriter::QgsRasterFileWriter()
-  : mOutputProviderKey( QStringLiteral( "gdal" ) )
-  , mOutputFormat( QStringLiteral( "GTiff" ) )
 {
 
 }
@@ -400,7 +396,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
         {
           if ( mBuildPyramidsFlag == QgsRaster::PyramidsFlagYes )
           {
-            buildPyramids( mOutputUrl );
+            buildPyramids( mOutputUrl, destProvider );
           }
         }
 
@@ -682,48 +678,20 @@ void QgsRasterFileWriter::addToVRT( const QString &filename, int band, int xSize
   bandElem.appendChild( simpleSourceElem );
 }
 
-#if 0
-void QgsRasterFileWriter::buildPyramids( const QString &filename )
-{
-  GDALDatasetH dataSet;
-  GDALAllRegister();
-  dataSet = GDALOpen( filename.toLocal8Bit().data(), GA_Update );
-  if ( !dataSet )
-  {
-    return;
-  }
-
-  //2,4,8,16,32,64
-  int overviewList[6];
-  overviewList[0] = 2;
-  overviewList[1] = 4;
-  overviewList[2] = 8;
-  overviewList[3] = 16;
-  overviewList[4] = 32;
-  overviewList[5] = 64;
-
-#if 0
-  if ( mProgressDialog )
-  {
-    mProgressDialog->setLabelText( QObject::tr( "Building Pyramids..." ) );
-    mProgressDialog->setValue( 0 );
-    mProgressDialog->setWindowModality( Qt::WindowModal );
-    mProgressDialog->show();
-  }
-#endif
-  GDALBuildOverviews( dataSet, "AVERAGE", 6, overviewList, 0, 0, /*pyramidsProgress*/ 0, /*mProgressDialog*/ 0 );
-}
-#endif
-
-void QgsRasterFileWriter::buildPyramids( const QString &filename )
+void QgsRasterFileWriter::buildPyramids( const QString &filename, QgsRasterDataProvider *destProviderIn )
 {
   QgsDebugMsgLevel( "filename = " + filename, 4 );
   // open new dataProvider so we can build pyramids with it
   QgsDataProvider::ProviderOptions providerOptions;
-  QgsRasterDataProvider *destProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mOutputProviderKey, filename, providerOptions ) );
+  QgsRasterDataProvider *destProvider = destProviderIn;
   if ( !destProvider )
   {
-    return;
+    destProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mOutputProviderKey, filename, providerOptions ) );
+    if ( !destProvider || !destProvider->isValid() )
+    {
+      delete destProvider;
+      return;
+    }
   }
 
   // TODO progress report
@@ -763,11 +731,6 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename )
       title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "Building pyramid overviews is not supported on this type of raster." );
     }
-    else if ( res == QLatin1String( "ERROR_JPEG_COMPRESSION" ) )
-    {
-      title = QObject::tr( "Building Pyramids" );
-      message = QObject::tr( "Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library." );
-    }
     else if ( res == QLatin1String( "ERROR_VIRTUAL" ) )
     {
       title = QObject::tr( "Building Pyramids" );
@@ -776,7 +739,8 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename )
     QMessageBox::warning( nullptr, title, message );
     QgsDebugMsgLevel( res + " - " + message, 4 );
   }
-  delete destProvider;
+  if ( !destProviderIn )
+    delete destProvider;
 }
 
 #if 0
