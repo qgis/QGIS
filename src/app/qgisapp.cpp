@@ -4291,6 +4291,13 @@ void QgisApp::restoreWindowState()
     QgsDebugMsg( "restore of UI state failed" );
   }
 
+  if ( settings.value( QStringLiteral( "UI/hidebrowser" ), false ).toBool() )
+  {
+    mBrowserWidget->hide();
+    mBrowserWidget2->hide();
+    settings.remove( QStringLiteral( "UI/hidebrowser" ) );
+  }
+
   // restore window geometry
   if ( !restoreGeometry( settings.value( QStringLiteral( "UI/geometry" ) ).toByteArray() ) )
   {

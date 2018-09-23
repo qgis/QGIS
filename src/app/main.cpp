@@ -135,6 +135,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--authdbdirectory path] use the given directory for authentication database\n" )
       << QStringLiteral( "\t[--code path]\trun the given python file on load\n" )
       << QStringLiteral( "\t[--defaultui]\tstart by resetting user ui settings to default\n" )
+      << QStringLiteral( "\t[--hide-browser]\thide the browser widget\n" )
       << QStringLiteral( "\t[--dxf-export filename.dxf]\temit dxf output of loaded datasets to given file\n" )
       << QStringLiteral( "\t[--dxf-extent xmin,ymin,xmax,ymax]\tset extent to export to dxf\n" )
       << QStringLiteral( "\t[--dxf-symbology-mode none|symbollayer|feature]\tsymbology mode for dxf output\n" )
@@ -511,6 +512,7 @@ int main( int argc, char *argv[] )
   bool myHideSplash = false;
   bool settingsMigrationForce = false;
   bool mySkipVersionCheck = false;
+  bool hideBrowser = false;
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: Splash hidden" ) );
   myHideSplash = true;
@@ -617,6 +619,10 @@ int main( int argc, char *argv[] )
         else if ( i + 1 < argc && ( arg == QLatin1String( "--width" ) || arg == QLatin1String( "-w" ) ) )
         {
           mySnapshotWidth = QString( args[++i] ).toInt();
+        }
+        else if ( arg == QLatin1String( "--hide-browser" ) )
+        {
+          hideBrowser = true;
         }
         else if ( i + 1 < argc && ( arg == QLatin1String( "--height" ) || arg == QLatin1String( "-h" ) ) )
         {
@@ -1241,6 +1247,13 @@ int main( int argc, char *argv[] )
     QgsDebugMsg( "Resetting /UI/state settings!" );
     settings.remove( QStringLiteral( "/UI/state" ) );
     settings.remove( QStringLiteral( "/qgis/restoreDefaultWindowState" ) );
+  }
+
+  if ( hideBrowser )
+  {
+    if ( settings.value( QStringLiteral( "/Windows/Data Source Manager/tab" ) ).toInt() == 0 )
+      settings.setValue( QStringLiteral( "/Windows/Data Source Manager/tab" ), 1 );
+    settings.setValue( QStringLiteral( "/UI/hidebrowser" ), true );
   }
 
   // set max. thread count

@@ -24,8 +24,8 @@
 #include <QApplication>
 #include <QToolBar>
 
-TestRendererGUI::TestRendererGUI( QWidget *parent ) :
-  QMainWindow( parent )
+TestRendererGUI::TestRendererGUI( QWidget *parent )
+  : QMainWindow( parent )
 {
   resize( 640, 480 );
 

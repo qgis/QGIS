@@ -561,7 +561,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // path to QGIS GRASS modules like qgis.g.info etc.
     static QString qgisGrassModulePath()
     {
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
       if ( QgsApplication::isRunningFromBuildDir() )
       {
         return QCoreApplication::applicationDirPath() + "/../../grass/modules/" + QgsApplication::cfgIntDir();
