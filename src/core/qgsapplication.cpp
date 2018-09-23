@@ -645,13 +645,18 @@ QString QgsApplication::resolvePkgPath()
     {
       qWarning( "Application path not initialized" );
     }
+  }
+
+  if ( !appPath.isNull() || getenv( "QGIS_PREFIX_PATH" ) )
+  {
+    QString prefix = getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : appPath;
 
     // check if QGIS is run from build directory (not the install directory)
     QFile f;
     // "/../../.." is for Mac bundled app in build directory
     Q_FOREACH ( const QString &path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
     {
-      f.setFileName( appPath + path + "/qgisbuildpath.txt" );
+      f.setFileName( prefix + path + "/qgisbuildpath.txt" );
       if ( f.exists() )
         break;
     }
