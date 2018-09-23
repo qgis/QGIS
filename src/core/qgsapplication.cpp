@@ -106,7 +106,7 @@ QString ABISYM( QgsApplication::mConfigPath );
 bool ABISYM( QgsApplication::mInitialized ) = false;
 bool ABISYM( QgsApplication::mRunningFromBuildDir ) = false;
 QString ABISYM( QgsApplication::mBuildSourcePath );
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
 QString ABISYM( QgsApplication::mCfgIntDir );
 #endif
 QString ABISYM( QgsApplication::mBuildOutputPath );
@@ -201,31 +201,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsStyle::StyleEntity>( "QgsStyle::StyleEntity" );
   qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
 
-  QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
-  // QgsDebugMsg( QString( "prefixPath(): %1" ).arg( prefixPath ) );
-
-  // check if QGIS is run from build directory (not the install directory)
-  QFile f;
-  // "/../../.." is for Mac bundled app in build directory
-  Q_FOREACH ( const QString &path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
-  {
-    f.setFileName( prefixPath + path + "/qgisbuildpath.txt" );
-    if ( f.exists() )
-      break;
-  }
-  if ( f.exists() && f.open( QIODevice::ReadOnly ) )
-  {
-    ABISYM( mRunningFromBuildDir ) = true;
-    ABISYM( mBuildSourcePath ) = f.readLine().trimmed();
-    ABISYM( mBuildOutputPath ) = f.readLine().trimmed();
-    QgsDebugMsgLevel( QStringLiteral( "Running from build directory!" ), 4 );
-    QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( ABISYM( mBuildSourcePath ).toUtf8().data() ), 4 );
-    QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( ABISYM( mBuildOutputPath ).toUtf8().data() ), 4 );
-#ifdef _MSC_VER
-    ABISYM( mCfgIntDir ) = prefixPath.split( '/', QString::SkipEmptyParts ).last();
-    qDebug( "- cfg: %s", ABISYM( mCfgIntDir ).toUtf8().data() );
-#endif
-  }
+  ( void ) resolvePkgPath();
 
   if ( ABISYM( mRunningFromBuildDir ) )
   {
@@ -257,7 +233,7 @@ void QgsApplication::init( QString profileFolder )
 #if defined(Q_OS_MACX) || defined(Q_OS_WIN)
         setPrefixPath( applicationDirPath(), true );
 #elif defined(ANDROID)
-        // this is  "/data/data/org.qgis.qgis" in android
+        // this is "/data/data/org.qgis.qgis" in android
         QDir myDir( QDir::homePath() );
         myDir.cdUp();
         QString myPrefix = myDir.absolutePath();
@@ -289,7 +265,6 @@ void QgsApplication::init( QString profileFolder )
   {
     setAuthDatabaseDirPath( getenv( "QGIS_AUTH_DB_DIR_PATH" ) );
   }
-
 
   // store system environment variables passed to application, before they are adjusted
   QMap<QString, QString> systemEnvVarMap;
@@ -494,7 +469,10 @@ QString QgsApplication::pluginPath()
 }
 QString QgsApplication::pkgDataPath()
 {
-  return ABISYM( mPkgDataPath );
+  if ( ABISYM( mPkgDataPath ).isNull() )
+    return resolvePkgPath();
+  else
+    return ABISYM( mPkgDataPath );
 }
 QString QgsApplication::defaultThemePath()
 {
@@ -656,31 +634,77 @@ void QgsApplication::setThemeName( const QString &themeName )
 
 QString QgsApplication::resolvePkgPath()
 {
-#if defined(ANDROID)
-  QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : QDir::homePath() );
-#else
-  QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
-#endif
-  QFile f;
-  // "/../../.." is for Mac bundled app in build directory
-  const QStringList pathPrefixes = QStringList() << "" << "/.." << "/bin" << "/../../..";
-  for ( const QString &path : pathPrefixes )
+  static QString appPath;
+  if ( appPath.isNull() )
   {
-    f.setFileName( prefixPath + path + "/qgisbuildpath.txt" );
-    QgsDebugMsg( f.fileName() );
-    if ( f.exists() )
-      break;
+    if ( QCoreApplication::instance() )
+    {
+      appPath = applicationDirPath();
+    }
+    else
+    {
+      qWarning( "Application path not initialized" );
+    }
+
+    // check if QGIS is run from build directory (not the install directory)
+    QFile f;
+    // "/../../.." is for Mac bundled app in build directory
+    Q_FOREACH ( const QString &path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
+    {
+      f.setFileName( appPath + path + "/qgisbuildpath.txt" );
+      if ( f.exists() )
+        break;
+    }
+    if ( f.exists() && f.open( QIODevice::ReadOnly ) )
+    {
+      ABISYM( mRunningFromBuildDir ) = true;
+      ABISYM( mBuildSourcePath ) = f.readLine().trimmed();
+      ABISYM( mBuildOutputPath ) = f.readLine().trimmed();
+      QgsDebugMsgLevel( QStringLiteral( "Running from build directory!" ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( ABISYM( mBuildSourcePath ).toUtf8().data() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( ABISYM( mBuildOutputPath ).toUtf8().data() ), 4 );
+#if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
+      ABISYM( mCfgIntDir ) = appPath.split( '/', QString::SkipEmptyParts ).last();
+      qDebug( "- cfg: %s", ABISYM( mCfgIntDir ).toUtf8().data() );
+#endif
+    }
   }
 
-  if ( f.exists() && f.open( QIODevice::ReadOnly ) )
-  {
-    QgsDebugMsg( "Running from build dir!" );
-    return f.readLine().trimmed();
-  }
+  QString prefixPath;
+  if ( getenv( "QGIS_PREFIX_PATH" ) )
+    prefixPath = getenv( "QGIS_PREFIX_PATH" );
   else
   {
-    return prefixPath + '/' + QStringLiteral( QGIS_DATA_SUBDIR );
+#if defined(ANDROID)
+    // this is "/data/data/org.qgis.qgis" in android
+    QDir dir( QDir::homePath() );
+    dir.cdUp();
+    prefixPath = dir.absolutePath();
+#else
+
+#if defined(Q_OS_MACX) || defined(Q_OS_WIN)
+    prefixPath = appPath;
+#if defined(_MSC_VER)
+    if ( prefixPath.endsWith( "/bin" ) )
+      prefixPath.chop( 4 );
+#endif
+#else
+    QDir dir( appPath );
+    // Fix for server which is one level deeper in /usr/lib/cgi-bin
+    if ( appPath.contains( QStringLiteral( "cgi-bin" ) ) )
+    {
+      dir.cdUp();
+    }
+    dir.cdUp(); // Go from /usr/bin or /usr/lib (for server) to /usr
+    prefixPath = dir.absolutePath();
+#endif
+#endif
   }
+
+  if ( ABISYM( mRunningFromBuildDir ) )
+    return ABISYM( mBuildSourcePath );
+  else
+    return prefixPath + '/' + QStringLiteral( QGIS_DATA_SUBDIR );
 }
 
 QString QgsApplication::themeName()
@@ -769,56 +793,54 @@ QHash<QString, QString> QgsApplication::uiThemes()
 
 QString QgsApplication::authorsFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/AUTHORS" );
+  return pkgDataPath() + QStringLiteral( "/doc/AUTHORS" );
 }
 
 QString QgsApplication::contributorsFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/CONTRIBUTORS" );
+  return pkgDataPath() + QStringLiteral( "/doc/CONTRIBUTORS" );
 }
 QString QgsApplication::developersMapFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/developersmap.html" );
+  return pkgDataPath() + QStringLiteral( "/doc/developersmap.html" );
 }
 
 QString QgsApplication::sponsorsFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/SPONSORS" );
+  return pkgDataPath() + QStringLiteral( "/doc/SPONSORS" );
 }
 
 QString QgsApplication::donorsFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/DONORS" );
+  return pkgDataPath() + QStringLiteral( "/doc/DONORS" );
 }
 
 QString QgsApplication::translatorsFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/TRANSLATORS" );
+  return pkgDataPath() + QStringLiteral( "/doc/TRANSLATORS" );
 }
 
 QString QgsApplication::licenceFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/LICENSE" );
+  return pkgDataPath() + QStringLiteral( "/doc/LICENSE" );
 }
 
 QString QgsApplication::i18nPath()
 {
-  if ( !ABISYM( mInitialized ) )
-    return resolvePkgPath() + QStringLiteral( "/i18n/" );
-  else if ( ABISYM( mRunningFromBuildDir ) )
+  if ( ABISYM( mRunningFromBuildDir ) )
     return ABISYM( mBuildOutputPath ) + QStringLiteral( "/i18n/" );
   else
-    return ABISYM( mPkgDataPath ) + QStringLiteral( "/i18n/" );
+    return pkgDataPath() + QStringLiteral( "/i18n/" );
 }
 
 QString QgsApplication::metadataPath()
 {
-  return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/metadata-ISO/" );
+  return pkgDataPath() + QStringLiteral( "/resources/metadata-ISO/" );
 }
 
 QString QgsApplication::qgisMasterDatabaseFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/qgis.db" );
+  return pkgDataPath() + QStringLiteral( "/resources/qgis.db" );
 }
 
 QString QgsApplication::qgisSettingsDirPath()
@@ -843,7 +865,7 @@ QString QgsApplication::splashPath()
 
 QString QgsApplication::iconsPath()
 {
-  return ABISYM( mPkgDataPath ) + QStringLiteral( "/images/icons/" );
+  return pkgDataPath() + QStringLiteral( "/images/icons/" );
 }
 
 QString QgsApplication::srsDatabaseFilePath()
@@ -854,7 +876,7 @@ QString QgsApplication::srsDatabaseFilePath()
 
     if ( !QFile( tempCopy ).exists() )
     {
-      QFile f( ABISYM( mPkgDataPath ) + "/resources/srs.db" );
+      QFile f( pkgDataPath() + "/resources/srs.db" );
       if ( !f.copy( tempCopy ) )
       {
         qFatal( "Could not create temporary copy" );
@@ -865,7 +887,7 @@ QString QgsApplication::srsDatabaseFilePath()
   }
   else
   {
-    return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/srs.db" );
+    return pkgDataPath() + QStringLiteral( "/resources/srs.db" );
   }
 }
 
@@ -1029,17 +1051,17 @@ QString QgsApplication::userThemesFolder()
 
 QString QgsApplication::defaultStylePath()
 {
-  return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/symbology-style.xml" );
+  return pkgDataPath() + QStringLiteral( "/resources/symbology-style.xml" );
 }
 
 QString QgsApplication::defaultThemesFolder()
 {
-  return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/themes" );
+  return pkgDataPath() + QStringLiteral( "/resources/themes" );
 }
 
 QString QgsApplication::serverResourcesPath()
 {
-  return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/server/" );
+  return pkgDataPath() + QStringLiteral( "/resources/server/" );
 }
 
 QString QgsApplication::libraryPath()

@@ -123,7 +123,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n" )
       << QStringLiteral( "\t[--width width]\twidth of snapshot to emit\n" )
       << QStringLiteral( "\t[--height height]\theight of snapshot to emit\n" )
-      << QStringLiteral( "\t[--lang language]\tuse language for interface text\n" )
+      << QStringLiteral( "\t[--lang language]\tuse language for interface text (changes existing override)\n" )
       << QStringLiteral( "\t[--project projectfile]\tload the given QGIS project\n" )
       << QStringLiteral( "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n" )
       << QStringLiteral( "\t[--nologo]\thide splash screen\n" )
@@ -510,7 +510,7 @@ int main( int argc, char *argv[] )
   int mySnapshotHeight = 600;
 
   bool myHideSplash = false;
-  bool mySettingsMigrationForce = false;
+  bool settingsMigrationForce = false;
   bool mySkipVersionCheck = false;
   bool hideBrowser = false;
 #if defined(ANDROID)
@@ -565,193 +565,201 @@ int main( int argc, char *argv[] )
 
   QStringList args;
 
-  if ( !bundleclicked( argc, argv ) )
   {
-    // Build a local QCoreApplication from arguments. This way, arguments are correctly parsed from their native locale
-    // It will use QString::fromLocal8Bit( argv ) under Unix and GetCommandLine() under Windows.
     QCoreApplication coreApp( argc, argv );
-    args = QCoreApplication::arguments();
+    ( void ) QgsApplication::resolvePkgPath(); // trigger storing of application path in QgsApplication
 
-    for ( int i = 1; i < args.size(); ++i )
+    if ( !bundleclicked( argc, argv ) )
     {
-      const QString &arg = args[i];
+      // Build a local QCoreApplication from arguments. This way, arguments are correctly parsed from their native locale
+      // It will use QString::fromLocal8Bit( argv ) under Unix and GetCommandLine() under Windows.
+      args = QCoreApplication::arguments();
 
-      if ( arg == QLatin1String( "--help" ) || arg == QLatin1String( "-?" ) )
+      for ( int i = 1; i < args.size(); ++i )
       {
-        usage( args[0] );
-        return 2;
-      }
-      else if ( arg == QLatin1String( "--nologo" ) || arg == QLatin1String( "-n" ) )
-      {
-        myHideSplash = true;
-      }
-      else if ( arg == QLatin1String( "--version-migration" ) )
-      {
-        mySettingsMigrationForce = true;
-      }
-      else if ( arg == QLatin1String( "--noversioncheck" ) || arg == QLatin1String( "-V" ) )
-      {
-        mySkipVersionCheck = true;
-      }
-      else if ( arg == QLatin1String( "--noplugins" ) || arg == QLatin1String( "-P" ) )
-      {
-        myRestorePlugins = false;
-      }
-      else if ( arg == QLatin1String( "--nocustomization" ) || arg == QLatin1String( "-C" ) )
-      {
-        myCustomization = false;
-      }
-      else if ( i + 1 < argc && ( arg == QLatin1String( "--profile" ) ) )
-      {
-        profileName = args[++i];
-      }
-      else if ( i + 1 < argc && ( arg == QLatin1String( "--profiles-path" ) || arg == QLatin1String( "-s" ) ) )
-      {
-        configLocalStorageLocation = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
-      }
-      else if ( i + 1 < argc && ( arg == QLatin1String( "--snapshot" ) || arg == QLatin1String( "-s" ) ) )
-      {
-        mySnapshotFileName = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
-      }
-      else if ( i + 1 < argc && ( arg == QLatin1String( "--width" ) || arg == QLatin1String( "-w" ) ) )
-      {
-        mySnapshotWidth = QString( args[++i] ).toInt();
-      }
-      else if ( i + 1 < argc && ( arg == QLatin1String( "--height" ) || arg == QLatin1String( "-h" ) ) )
-      {
-        mySnapshotHeight = QString( args[++i] ).toInt();
-      }
-      else if ( i + 1 < argc && ( arg == QLatin1String( "--lang" ) || arg == QLatin1String( "-l" ) ) )
-      {
-        translationCode = args[++i];
-      }
-      else if ( i + 1 < argc && ( arg == QLatin1String( "--project" ) || arg == QLatin1String( "-p" ) ) )
-      {
-        sProjectFileName = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
-      }
-      else if ( i + 1 < argc && ( arg == QLatin1String( "--extent" ) || arg == QLatin1String( "-e" ) ) )
-      {
-        myInitialExtent = args[++i];
-      }
-      else if ( i + 1 < argc && ( arg == QLatin1String( "--authdbdirectory" ) || arg == QLatin1String( "-a" ) ) )
-      {
-        authdbdirectory = QDir::toNativeSeparators( QDir( args[++i] ).absolutePath() );
-      }
-      else if ( i + 1 < argc && ( arg == QLatin1String( "--code" ) || arg == QLatin1String( "-f" ) ) )
-      {
-        pythonfile = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
-      }
-      else if ( i + 1 < argc && ( arg == QLatin1String( "--customizationfile" ) || arg == QLatin1String( "-z" ) ) )
-      {
-        customizationfile = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
-      }
-      else if ( i + 1 < argc && ( arg == QLatin1String( "--globalsettingsfile" ) || arg == QLatin1String( "-g" ) ) )
-      {
-        globalsettingsfile = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
-      }
-      else if ( arg == QLatin1String( "--defaultui" ) || arg == QLatin1String( "-d" ) )
-      {
-        myRestoreDefaultWindowState = true;
-      }
-      else if ( arg == QLatin1String( "--dxf-export" ) )
-      {
-        dxfOutputFile = args[++i];
-      }
-      else if ( arg == QLatin1String( "--dxf-extent" ) )
-      {
-        QgsLocaleNumC l;
-        QString ext( args[++i] );
-        QStringList coords( ext.split( ',' ) );
+        const QString &arg = args[i];
 
-        if ( coords.size() != 4 )
+        if ( arg == QLatin1String( "--help" ) || arg == QLatin1String( "-?" ) )
         {
-          std::cerr << "invalid dxf extent " << ext.toStdString() << std::endl;
+          usage( args[0] );
           return 2;
         }
-
-        for ( int i = 0; i < 4; i++ )
+        else if ( arg == QLatin1String( "--nologo" ) || arg == QLatin1String( "-n" ) )
         {
-          bool ok;
-          double d;
+          myHideSplash = true;
+        }
+        else if ( arg == QLatin1String( "--version-migration" ) )
+        {
+          settingsMigrationForce = true;
+        }
+        else if ( arg == QLatin1String( "--noversioncheck" ) || arg == QLatin1String( "-V" ) )
+        {
+          mySkipVersionCheck = true;
+        }
+        else if ( arg == QLatin1String( "--noplugins" ) || arg == QLatin1String( "-P" ) )
+        {
+          myRestorePlugins = false;
+        }
+        else if ( arg == QLatin1String( "--nocustomization" ) || arg == QLatin1String( "-C" ) )
+        {
+          myCustomization = false;
+        }
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--profile" ) ) )
+        {
+          profileName = args[++i];
+        }
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--profiles-path" ) || arg == QLatin1String( "-s" ) ) )
+        {
+          configLocalStorageLocation = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        }
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--snapshot" ) || arg == QLatin1String( "-s" ) ) )
+        {
+          mySnapshotFileName = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        }
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--width" ) || arg == QLatin1String( "-w" ) ) )
+        {
+          mySnapshotWidth = QString( args[++i] ).toInt();
+        }
+        else if ( arg == QLatin1String( "--hide-browser" ) )
+        {
+          hideBrowser = true;
+        }
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--height" ) || arg == QLatin1String( "-h" ) ) )
+        {
+          mySnapshotHeight = QString( args[++i] ).toInt();
+        }
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--lang" ) || arg == QLatin1String( "-l" ) ) )
+        {
+          translationCode = args[++i];
+        }
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--project" ) || arg == QLatin1String( "-p" ) ) )
+        {
+          sProjectFileName = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        }
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--extent" ) || arg == QLatin1String( "-e" ) ) )
+        {
+          myInitialExtent = args[++i];
+        }
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--authdbdirectory" ) || arg == QLatin1String( "-a" ) ) )
+        {
+          authdbdirectory = QDir::toNativeSeparators( QDir( args[++i] ).absolutePath() );
+        }
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--code" ) || arg == QLatin1String( "-f" ) ) )
+        {
+          pythonfile = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        }
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--customizationfile" ) || arg == QLatin1String( "-z" ) ) )
+        {
+          customizationfile = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        }
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--globalsettingsfile" ) || arg == QLatin1String( "-g" ) ) )
+        {
+          globalsettingsfile = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        }
+        else if ( arg == QLatin1String( "--defaultui" ) || arg == QLatin1String( "-d" ) )
+        {
+          myRestoreDefaultWindowState = true;
+        }
+        else if ( arg == QLatin1String( "--dxf-export" ) )
+        {
+          dxfOutputFile = args[++i];
+        }
+        else if ( arg == QLatin1String( "--dxf-extent" ) )
+        {
+          QgsLocaleNumC l;
+          QString ext( args[++i] );
+          QStringList coords( ext.split( ',' ) );
 
-          d = coords[i].toDouble( &ok );
-          if ( !ok )
+          if ( coords.size() != 4 )
           {
-            std::cerr << "invalid dxf coordinate " << coords[i].toStdString() << " in extent " << ext.toStdString() << std::endl;
+            std::cerr << "invalid dxf extent " << ext.toStdString() << std::endl;
             return 2;
           }
 
-          switch ( i )
+          for ( int i = 0; i < 4; i++ )
           {
-            case 0:
-              dxfExtent.setXMinimum( d );
-              break;
-            case 1:
-              dxfExtent.setYMinimum( d );
-              break;
-            case 2:
-              dxfExtent.setXMaximum( d );
-              break;
-            case 3:
-              dxfExtent.setYMaximum( d );
-              break;
+            bool ok;
+            double d;
+
+            d = coords[i].toDouble( &ok );
+            if ( !ok )
+            {
+              std::cerr << "invalid dxf coordinate " << coords[i].toStdString() << " in extent " << ext.toStdString() << std::endl;
+              return 2;
+            }
+
+            switch ( i )
+            {
+              case 0:
+                dxfExtent.setXMinimum( d );
+                break;
+              case 1:
+                dxfExtent.setYMinimum( d );
+                break;
+              case 2:
+                dxfExtent.setXMaximum( d );
+                break;
+              case 3:
+                dxfExtent.setYMaximum( d );
+                break;
+            }
           }
         }
-      }
-      else if ( arg == QLatin1String( "--dxf-symbology-mode" ) )
-      {
-        QString mode( args[++i] );
-        if ( mode == QLatin1String( "none" ) )
+        else if ( arg == QLatin1String( "--dxf-symbology-mode" ) )
         {
-          dxfSymbologyMode = QgsDxfExport::NoSymbology;
+          QString mode( args[++i] );
+          if ( mode == QLatin1String( "none" ) )
+          {
+            dxfSymbologyMode = QgsDxfExport::NoSymbology;
+          }
+          else if ( mode == QLatin1String( "symbollayer" ) )
+          {
+            dxfSymbologyMode = QgsDxfExport::SymbolLayerSymbology;
+          }
+          else if ( mode == QLatin1String( "feature" ) )
+          {
+            dxfSymbologyMode = QgsDxfExport::FeatureSymbology;
+          }
+          else
+          {
+            std::cerr << "invalid dxf symbology mode " << mode.toStdString() << std::endl;
+            return 2;
+          }
         }
-        else if ( mode == QLatin1String( "symbollayer" ) )
+        else if ( arg == QLatin1String( "--dxf-scale-denom" ) )
         {
-          dxfSymbologyMode = QgsDxfExport::SymbolLayerSymbology;
+          bool ok;
+          QString scale( args[++i] );
+          dxfScale = scale.toDouble( &ok );
+          if ( !ok )
+          {
+            std::cerr << "invalid dxf scale " << scale.toStdString() << std::endl;
+            return 2;
+          }
         }
-        else if ( mode == QLatin1String( "feature" ) )
+        else if ( arg == QLatin1String( "--dxf-encoding" ) )
         {
-          dxfSymbologyMode = QgsDxfExport::FeatureSymbology;
+          dxfEncoding = args[++i];
+        }
+        else if ( arg == QLatin1String( "--dxf-map-theme" ) )
+        {
+          dxfMapTheme = args[++i];
+        }
+#ifdef HAVE_OPENCL
+        else if ( arg == QLatin1String( "--openclprogramfolder" ) )
+        {
+          openClProgramFolder = args[++i];
+        }
+#endif
+        else if ( arg == QLatin1String( "--" ) )
+        {
+          for ( i++; i < args.size(); ++i )
+            sFileList.append( QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() ) );
         }
         else
         {
-          std::cerr << "invalid dxf symbology mode " << mode.toStdString() << std::endl;
-          return 2;
-        }
-      }
-      else if ( arg == QLatin1String( "--dxf-scale-denom" ) )
-      {
-        bool ok;
-        QString scale( args[++i] );
-        dxfScale = scale.toDouble( &ok );
-        if ( !ok )
-        {
-          std::cerr << "invalid dxf scale " << scale.toStdString() << std::endl;
-          return 2;
-        }
-      }
-      else if ( arg == QLatin1String( "--dxf-encoding" ) )
-      {
-        dxfEncoding = args[++i];
-      }
-      else if ( arg == QLatin1String( "--dxf-map-theme" ) )
-      {
-        dxfMapTheme = args[++i];
-      }
-#ifdef HAVE_OPENCL
-      else if ( arg == QLatin1String( "--openclprogramfolder" ) )
-      {
-        openClProgramFolder = args[++i];
-      }
-#endif
-      else if ( arg == QLatin1String( "--" ) )
-      {
-        for ( i++; i < args.size(); ++i )
           sFileList.append( QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() ) );
-      }
-      else
-      {
-        sFileList.append( QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() ) );
+        }
       }
     }
   }
@@ -777,10 +785,9 @@ int main( int argc, char *argv[] )
     }
   }
 
-
   /////////////////////////////////////////////////////////////////////
   // Now we have the handlers for the different behaviors...
-  ////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////
 
   /////////////////////////////////////////////////////////////////////
   // Initialize the application and the translation stuff
@@ -816,74 +823,7 @@ int main( int argc, char *argv[] )
   QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
 #endif
 
-  /* Translation file for QGIS.
-   */
-  QString i18nPath = QgsApplication::i18nPath();
-  QgsSettings mySettings;
-  QString myUserTranslation = mySettings.value( QStringLiteral( "locale/userLocale" ), "" ).toString();
-  QString myGlobalLocale = mySettings.value( QStringLiteral( "locale/globalLocale" ), "" ).toString();
-  bool myShowGroupSeparatorFlag = false; // Default to false
-  bool myLocaleOverrideFlag = mySettings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
-
-  // Override Show Group Separator if the global override flag is set
-  if ( myLocaleOverrideFlag )
-  {
-    // Default to false again
-    myShowGroupSeparatorFlag = mySettings.value( QStringLiteral( "locale/showGroupSeparator" ), false ).toBool();
-  }
-
-  //
-  // Priority of translation is:
-  //  - command line
-  //  - user specified in options dialog (with group checked on)
-  //  - system locale
-  //
-  //  When specifying from the command line it will change the user
-  //  specified user locale
-  //
-  if ( !translationCode.isNull() && !translationCode.isEmpty() )
-  {
-    mySettings.setValue( QStringLiteral( "locale/userLocale" ), translationCode );
-  }
-  else
-  {
-    if ( !myLocaleOverrideFlag || myUserTranslation.isEmpty() )
-    {
-      translationCode = QLocale().name();
-      //setting the locale/userLocale when the --lang= option is not set will allow third party
-      //plugins to always use the same locale as the QGIS, otherwise they can be out of sync
-      mySettings.setValue( QStringLiteral( "locale/userLocale" ), translationCode );
-    }
-    else
-    {
-      translationCode = myUserTranslation;
-    }
-  }
-
-  // Global locale settings
-  if ( myLocaleOverrideFlag && ! myGlobalLocale.isEmpty( ) )
-  {
-    QLocale currentLocale( myGlobalLocale );
-    QLocale::setDefault( currentLocale );
-  }
-
-  // Number settings
-  QLocale currentLocale;
-  if ( myShowGroupSeparatorFlag )
-  {
-    currentLocale.setNumberOptions( currentLocale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
-  }
-  else
-  {
-    currentLocale.setNumberOptions( currentLocale.numberOptions() |= QLocale::NumberOption::OmitGroupSeparator );
-  }
-  QLocale::setDefault( currentLocale );
-
-  QgsApplication::setTranslation( translationCode );
-
-  QgsApplication myApp( argc, argv, myUseGuiFlag );
-
-  // SetUp the QgsSettings Global Settings:
+  // Set up the QgsSettings Global Settings:
   // - use the path specified with --globalsettingsfile path,
   // - use the environment if not found
   // - use a default location as a fallback
@@ -903,7 +843,7 @@ int main( int argc, char *argv[] )
 
   if ( !globalsettingsfile.isEmpty() )
   {
-    if ( ! QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
+    if ( !QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
     {
       QgsMessageLog::logMessage( QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
     }
@@ -940,6 +880,105 @@ int main( int argc, char *argv[] )
   profileName = profile->name();
   delete profile;
 
+  {
+    QgsSettings settings;
+
+    /* Translation file for QGIS.
+    */
+    QString myUserTranslation = settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString();
+    QString myGlobalLocale = settings.value( QStringLiteral( "locale/globalLocale" ), "" ).toString();
+    bool myShowGroupSeparatorFlag = false; // Default to false
+    bool myLocaleOverrideFlag = settings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
+
+    // Override Show Group Separator if the global override flag is set
+    if ( myLocaleOverrideFlag )
+    {
+      // Default to false again
+      myShowGroupSeparatorFlag = settings.value( QStringLiteral( "locale/showGroupSeparator" ), false ).toBool();
+    }
+
+    //
+    // Priority of translation is:
+    //  - command line
+    //  - user specified in options dialog (with group checked on)
+    //  - system locale
+    //
+    //  When specifying from the command line it will change the user
+    //  specified user locale
+    //
+    if ( !translationCode.isNull() && !translationCode.isEmpty() )
+    {
+      settings.setValue( QStringLiteral( "locale/userLocale" ), translationCode );
+    }
+    else
+    {
+      if ( !myLocaleOverrideFlag || myUserTranslation.isEmpty() )
+      {
+        translationCode = QLocale().name();
+        //setting the locale/userLocale when the --lang= option is not set will allow third party
+        //plugins to always use the same locale as the QGIS, otherwise they can be out of sync
+        settings.setValue( QStringLiteral( "locale/userLocale" ), translationCode );
+      }
+      else
+      {
+        translationCode = myUserTranslation;
+      }
+    }
+
+    // Global locale settings
+    if ( myLocaleOverrideFlag && ! myGlobalLocale.isEmpty( ) )
+    {
+      QLocale currentLocale( myGlobalLocale );
+      QLocale::setDefault( currentLocale );
+    }
+
+    // Number settings
+    QLocale currentLocale;
+    if ( myShowGroupSeparatorFlag )
+    {
+      currentLocale.setNumberOptions( currentLocale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
+    }
+    else
+    {
+      currentLocale.setNumberOptions( currentLocale.numberOptions() |= QLocale::NumberOption::OmitGroupSeparator );
+    }
+    QLocale::setDefault( currentLocale );
+
+    QgsApplication::setTranslation( translationCode );
+  }
+
+  QgsApplication myApp( argc, argv, myUseGuiFlag );
+
+  // Settings migration is only supported on the default profile for now.
+  if ( profileName == "default" )
+  {
+    // Note: this flag is ka version number so that we can reset it once we change the version.
+    // Note2: Is this a good idea can we do it better.
+
+    QgsSettings migSettings;
+    int firstRunVersion = migSettings.value( QStringLiteral( "migration/firstRunVersionFlag" ), 0 ).toInt();
+    bool showWelcome = ( firstRunVersion == 0  || Qgis::QGIS_VERSION_INT > firstRunVersion );
+
+    std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::QGIS_VERSION_INT ) );
+    if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
+    {
+      bool runMigration = true;
+      if ( !settingsMigrationForce && showWelcome )
+      {
+        QgsFirstRunDialog dlg;
+        dlg.exec();
+        runMigration = dlg.migrateSettings();
+        migSettings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::QGIS_VERSION_INT );
+      }
+
+      if ( runMigration )
+      {
+        QgsDebugMsg( "RUNNING MIGRATION" );
+        migration->runMigration();
+      }
+    }
+  }
+
   // We can't use QgsSettings until this point because the format and
   // folder isn't set until profile is fetch.
   // Should be cleaned up in future to make this cleaner.
@@ -951,35 +990,6 @@ int main( int argc, char *argv[] )
   QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( rootProfileFolder ), 2 );
 
   myApp.init( profileFolder );
-
-  // Settings migration is only supported on the default profile for now.
-  if ( profileName == "default" )
-  {
-    // Note: this flag is ka version number so that we can reset it once we change the version.
-    // Note2: Is this a good idea can we do it better.
-
-    int firstRunVersion = settings.value( QStringLiteral( "migration/firstRunVersionFlag" ), 0 ).toInt();
-    bool showWelcome = ( firstRunVersion == 0  || Qgis::QGIS_VERSION_INT > firstRunVersion );
-
-    std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::QGIS_VERSION_INT ) );
-    if ( migration && ( mySettingsMigrationForce || migration->requiresMigration() ) )
-    {
-      bool runMigration = true;
-      if ( !mySettingsMigrationForce && showWelcome )
-      {
-        QgsFirstRunDialog dlg;
-        dlg.exec();
-        runMigration = dlg.migrateSettings();
-        settings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::QGIS_VERSION_INT );
-      }
-
-      if ( runMigration )
-      {
-        QgsDebugMsg( "RUNNING MIGRATION" );
-        migration->runMigration();
-      }
-    }
-  }
 
   // Redefine QgsApplication::libraryPaths as necessary.
   // IMPORTANT: Do *after* QgsApplication myApp(...), but *before* Qt uses any plugins,
@@ -1123,24 +1133,12 @@ int main( int argc, char *argv[] )
   }
 #endif
 
-  // update any saved setting for older themes to new default 'gis' theme (2013-04-15)
-  if ( mySettings.contains( QStringLiteral( "/Themes" ) ) )
-  {
-    QString theme = mySettings.value( QStringLiteral( "Themes" ), "default" ).toString();
-    if ( theme == QLatin1String( "gis" )
-         || theme == QLatin1String( "classic" )
-         || theme == QLatin1String( "nkids" ) )
-    {
-      mySettings.setValue( QStringLiteral( "Themes" ), QStringLiteral( "default" ) );
-    }
-  }
-
   // custom environment variables
   QMap<QString, QString> systemEnvVars = QgsApplication::systemEnvVars();
-  bool useCustomVars = mySettings.value( QStringLiteral( "qgis/customEnvVarsUse" ), QVariant( false ) ).toBool();
+  bool useCustomVars = settings.value( QStringLiteral( "qgis/customEnvVarsUse" ), QVariant( false ) ).toBool();
   if ( useCustomVars )
   {
-    QStringList customVarsList = mySettings.value( QStringLiteral( "qgis/customEnvVars" ), "" ).toStringList();
+    QStringList customVarsList = settings.value( QStringLiteral( "qgis/customEnvVars" ), "" ).toStringList();
     if ( !customVarsList.isEmpty() )
     {
       Q_FOREACH ( const QString &varStr, customVarsList )
@@ -1195,7 +1193,7 @@ int main( int argc, char *argv[] )
 
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.
-  QString presetStyle = mySettings.value( QStringLiteral( "qgis/style" ) ).toString();
+  QString presetStyle = settings.value( QStringLiteral( "qgis/style" ) ).toString();
   QString activeStyleName = presetStyle;
   if ( activeStyleName.isEmpty() ) // not set, using default style
   {
@@ -1218,7 +1216,7 @@ int main( int argc, char *argv[] )
   if ( !presetStyle.isEmpty() )
   {
     QApplication::setStyle( presetStyle );
-    mySettings.setValue( QStringLiteral( "qgis/style" ), QApplication::style()->objectName() );
+    settings.setValue( QStringLiteral( "qgis/style" ), QApplication::style()->objectName() );
   }
 
   // set authentication database directory
@@ -1235,7 +1233,7 @@ int main( int argc, char *argv[] )
   int h = 300 * qApp->desktop()->logicalDpiY() / 96;
 
   QSplashScreen *mypSplash = new QSplashScreen( myPixmap.scaled( w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
-  if ( !myHideSplash && !mySettings.value( QStringLiteral( "qgis/hideSplash" ) ).toBool() )
+  if ( !myHideSplash && !settings.value( QStringLiteral( "qgis/hideSplash" ) ).toBool() )
   {
     //for win and linux we can just automask and png transparency areas will be used
     mypSplash->setMask( myPixmap.mask() );
@@ -1244,23 +1242,23 @@ int main( int argc, char *argv[] )
 
   // optionally restore default window state
   // use restoreDefaultWindowState setting only if NOT using command line (then it is set already)
-  if ( myRestoreDefaultWindowState || mySettings.value( QStringLiteral( "qgis/restoreDefaultWindowState" ), false ).toBool() )
+  if ( myRestoreDefaultWindowState || settings.value( QStringLiteral( "qgis/restoreDefaultWindowState" ), false ).toBool() )
   {
     QgsDebugMsg( "Resetting /UI/state settings!" );
-    mySettings.remove( QStringLiteral( "/UI/state" ) );
-    mySettings.remove( QStringLiteral( "/qgis/restoreDefaultWindowState" ) );
+    settings.remove( QStringLiteral( "/UI/state" ) );
+    settings.remove( QStringLiteral( "/qgis/restoreDefaultWindowState" ) );
   }
 
   if ( hideBrowser )
   {
-    if ( mySettings.value( QStringLiteral( "/Windows/Data Source Manager/tab" ) ).toInt() == 0 )
-      mySettings.setValue( QStringLiteral( "/Windows/Data Source Manager/tab" ), 1 );
-    mySettings.setValue( QStringLiteral( "/UI/hidebrowser" ), true );
+    if ( settings.value( QStringLiteral( "/Windows/Data Source Manager/tab" ) ).toInt() == 0 )
+      settings.setValue( QStringLiteral( "/Windows/Data Source Manager/tab" ), 1 );
+    settings.setValue( QStringLiteral( "/UI/hidebrowser" ), true );
   }
 
   // set max. thread count
   // this should be done in QgsApplication::init() but it doesn't know the settings dir.
-  QgsApplication::setMaxThreads( mySettings.value( QStringLiteral( "qgis/max_threads" ), -1 ).toInt() );
+  QgsApplication::setMaxThreads( settings.value( QStringLiteral( "qgis/max_threads" ), -1 ).toInt() );
 
   QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipVersionCheck, rootProfileFolder, profileName ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );
