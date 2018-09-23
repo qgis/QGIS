@@ -20,6 +20,7 @@ import tempfile
 from osgeo import gdal, ogr  # NOQA
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
+                       QgsRectangle,
                        QgsFeature, QgsFeatureRequest, QgsField, QgsSettings, QgsDataProvider,
                        QgsVectorDataProvider, QgsVectorLayer, QgsWkbTypes, QgsNetworkAccessManager)
 from qgis.testing import start_app, unittest
@@ -432,6 +433,26 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(len(children), 2)
         self.assertIn('testDataItems.gpkg|layername=Layer1', children[0].uri())
         self.assertIn('testDataItems.gpkg|layername=Layer2', children[1].uri())
+
+    def testOSM(self):
+        """ Test that opening several layers of the same OSM datasource works properly """
+
+        datasource = os.path.join(TEST_DATA_DIR, 'test.osm')
+        vl_points = QgsVectorLayer(datasource + "|layername=points", 'test', 'ogr')
+        vl_multipolygons = QgsVectorLayer(datasource + "|layername=multipolygons", 'test', 'ogr')
+
+        f = QgsFeature()
+
+        # When sharing the same dataset handle, the spatial filter of test
+        # points layer would apply to the other layers
+        iter_points = vl_points.getFeatures(QgsFeatureRequest().setFilterRect(QgsRectangle(-200, -200, -200, -200)))
+        self.assertFalse(iter_points.nextFeature(f))
+
+        iter_multipolygons = vl_multipolygons.getFeatures(QgsFeatureRequest())
+        self.assertTrue(iter_multipolygons.nextFeature(f))
+        self.assertTrue(iter_multipolygons.nextFeature(f))
+        self.assertTrue(iter_multipolygons.nextFeature(f))
+        self.assertFalse(iter_multipolygons.nextFeature(f))
 
 
 if __name__ == '__main__':
