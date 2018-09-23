@@ -3,7 +3,7 @@
 
  ---------------------
  begin                : 30.7.2017
- copyright            : (C) 2017 by Nathan Woodrow
+ copyright            : (C) 2017 by nathan
  email                : woodrow.nathan at gmail dot com
  ***************************************************************************
  *                                                                         *
@@ -342,5 +342,5 @@ QPair<QString, QString> Qgs2To3Migration::transformKey( QString fullOldKey, QStr
 
 QString Qgs2To3Migration::migrationFilePath()
 {
-  return QgsApplication::resolvePkgPath() +  "/resources/2to3migration.txt";
+  return QgsApplication::pkgDataPath() +  "/resources/2to3migration.txt";
 }
