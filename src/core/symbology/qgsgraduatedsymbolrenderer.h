@@ -152,6 +152,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool filterNeedsGeometry() const override;
     QString dump() const override;
     QgsGraduatedSymbolRenderer *clone() const override SIP_FACTORY;
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;

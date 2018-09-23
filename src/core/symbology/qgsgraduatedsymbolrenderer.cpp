@@ -425,6 +425,19 @@ QSet<QString> QgsGraduatedSymbolRenderer::usedAttributes( const QgsRenderContext
   return attributes;
 }
 
+bool QgsGraduatedSymbolRenderer::filterNeedsGeometry() const
+{
+  QgsExpression testExpr( mAttrName );
+  if ( !testExpr.hasParserError() )
+  {
+    QgsExpressionContext context;
+    context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) ); // unfortunately no layer access available!
+    testExpr.prepare( &context );
+    return testExpr.needsGeometry();
+  }
+  return false;
+}
+
 bool QgsGraduatedSymbolRenderer::updateRangeSymbol( int rangeIndex, QgsSymbol *symbol )
 {
   if ( rangeIndex < 0 || rangeIndex >= mRanges.size() )
