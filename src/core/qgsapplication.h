@@ -507,7 +507,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     //! Indicates whether running from build directory (not installed)
     static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
     static QString cfgIntDir() { return ABISYM( mCfgIntDir ); } SIP_SKIP
 #endif
     //! Returns path to the source directory. Valid only when running from build directory
@@ -814,7 +814,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static bool ABISYM( mRunningFromBuildDir );
     //! Path to the source directory. valid only when running from build directory.
     static QString ABISYM( mBuildSourcePath );
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
     //! Configuration internal dir
     static QString ABISYM( mCfgIntDir );
 #endif
