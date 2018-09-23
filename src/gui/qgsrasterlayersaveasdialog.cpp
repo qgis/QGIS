@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsapplication.h"
+#include "qgsgdalutils.h"
 #include "qgslogger.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrasterlayer.h"
@@ -241,9 +242,7 @@ void QgsRasterLayerSaveAsDialog::insertAvailableOutputFormats()
     GDALDriverH driver = GDALGetDriver( i );
     if ( driver )
     {
-      char **driverMetadata = GDALGetMetadata( driver, nullptr );
-
-      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
+      if ( QgsGdalUtils::supportsRasterCreate( driver ) )
       {
         QString driverShortName = GDALGetDriverShortName( driver );
         QString driverLongName = GDALGetDriverLongName( driver );
