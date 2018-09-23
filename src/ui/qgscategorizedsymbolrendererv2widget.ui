@@ -26,12 +26,6 @@
    </item>
    <item row="0" column="1">
     <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
-     <property name="maximumSize">
-      <size>
-       <width>500</width>
-       <height>16777215</height>
-      </size>
-     </property>
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
      </property>
