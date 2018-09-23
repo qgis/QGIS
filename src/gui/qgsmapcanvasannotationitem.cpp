@@ -120,13 +120,20 @@ void QgsMapCanvasAnnotationItem::updateBoundingRect()
 
 void QgsMapCanvasAnnotationItem::onCanvasLayersChanged()
 {
-  if ( !mAnnotation->mapLayer() )
+  if ( !mMapCanvas->annotationsVisible() )
   {
-    setVisible( true );
+    setVisible( false );
   }
   else
   {
-    setVisible( mMapCanvas->mapSettings().layers().contains( mAnnotation->mapLayer() ) );
+    if ( !mAnnotation->mapLayer() )
+    {
+      setVisible( true );
+    }
+    else
+    {
+      setVisible( mMapCanvas->mapSettings().layers().contains( mAnnotation->mapLayer() ) );
+    }
   }
 }
 
