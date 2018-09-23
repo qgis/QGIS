@@ -458,6 +458,31 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         self.assertEqual(symbol.color().name(), '#0aff0a')
         renderer.stopRender(context)
 
+    def testUsedAttributes(self):
+        renderer = QgsCategorizedSymbolRenderer()
+        ctx = QgsRenderContext()
+
+        # attribute can contain either attribute name or an expression.
+        # Sometimes it is not possible to distinguish between those two,
+        # e.g. "a - b" can be both a valid attribute name or expression.
+        # Since we do not have access to fields here, the method should return both options.
+        renderer.setClassAttribute("value")
+        self.assertEqual(renderer.usedAttributes(ctx), {"value"})
+        renderer.setClassAttribute("value - 1")
+        self.assertEqual(renderer.usedAttributes(ctx), {"value", "value - 1"})
+        renderer.setClassAttribute("valuea - valueb")
+        self.assertEqual(renderer.usedAttributes(ctx), {"valuea", "valuea - valueb", "valueb"})
+
+    def testFilterNeedsGeometry(self):
+        renderer = QgsCategorizedSymbolRenderer()
+
+        renderer.setClassAttribute("value")
+        self.assertFalse(renderer.filterNeedsGeometry())
+        renderer.setClassAttribute("$area")
+        self.assertTrue(renderer.filterNeedsGeometry())
+        renderer.setClassAttribute("value - $area")
+        self.assertTrue(renderer.filterNeedsGeometry())
+
 
 if __name__ == "__main__":
     unittest.main()

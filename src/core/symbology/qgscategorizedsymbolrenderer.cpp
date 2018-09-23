@@ -452,6 +452,19 @@ QSet<QString> QgsCategorizedSymbolRenderer::usedAttributes( const QgsRenderConte
   return attributes;
 }
 
+bool QgsCategorizedSymbolRenderer::filterNeedsGeometry() const
+{
+  QgsExpression testExpr( mAttrName );
+  if ( !testExpr.hasParserError() )
+  {
+    QgsExpressionContext context;
+    context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) ); // unfortunately no layer access available!
+    testExpr.prepare( &context );
+    return testExpr.needsGeometry();
+  }
+  return false;
+}
+
 QString QgsCategorizedSymbolRenderer::dump() const
 {
   QString s = QStringLiteral( "CATEGORIZED: idx %1\n" ).arg( mAttrName );
