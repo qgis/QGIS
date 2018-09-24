@@ -42,7 +42,7 @@ images/themes/default/mIconJoinHasNotUpsertOnEdit.svg
 images/themes/default/mIconJoinNotEditable.svg
 images/themes/default/mIconJoinedLayerNotEditable.svg
 LexerR.py
-linux/org.qgis.qgis.appdata.xml
+linux/org.qgis.qgis.appdata.xml.in
 python/plugins/MetaSearch/resources/connections-default.xml
 python/plugins/processing/algs/grass7/description/i.landsat.toar.txt
 python/plugins/processing/gui/algnames.txt
