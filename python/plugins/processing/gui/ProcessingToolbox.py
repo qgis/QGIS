@@ -201,7 +201,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             popupmenu.exec_(self.algorithmTree.mapToGlobal(point))
 
     def editRenderingStyles(self):
-        alg = self.algorithmTree.selectedAlgorithm()
+        alg = self.algorithmTree.selectedAlgorithm().create() if self.algorithmTree.selectedAlgorithm() is not None else None
         if alg is not None:
             dlg = EditRenderingStylesDialog(alg)
             dlg.exec_()
@@ -210,14 +210,14 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.executeAlgorithm()
 
     def executeAlgorithmAsBatchProcess(self):
-        alg = self.algorithmTree.selectedAlgorithm()
+        alg = self.algorithmTree.selectedAlgorithm().create() if self.algorithmTree.selectedAlgorithm() is not None else None
         if alg is not None:
             dlg = BatchAlgorithmDialog(alg)
             dlg.show()
             dlg.exec_()
 
     def executeAlgorithm(self):
-        alg = self.algorithmTree.selectedAlgorithm()
+        alg = self.algorithmTree.selectedAlgorithm().create() if self.algorithmTree.selectedAlgorithm() is not None else None
         if alg is not None:
             ok, message = alg.canExecute()
             if not ok:

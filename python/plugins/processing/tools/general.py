@@ -127,7 +127,7 @@ def createAlgorithmDialog(algOrName, parameters={}):
     and delete this dialog.
     """
     if isinstance(algOrName, QgsProcessingAlgorithm):
-        alg = algOrName
+        alg = algOrName.create()
     else:
         alg = QgsApplication.processingRegistry().createAlgorithmById(algOrName)
 
