@@ -164,6 +164,16 @@ Matches the attributes in ``feature`` to the specified ``fields``.
 This causes the attributes contained within the given ``feature`` to be rearranged (or in
 some cases dropped) in order to match the fields and order indicated by ``fields``.
 
+The exact behavior depends on whether or not ``feature`` has a valid fields container
+set (see QgsFeature.fields()). If a fields container is set, then the names of the
+feature's fields are matched to ``fields``. In this case attributes from ``feature``
+will be rearranged or dropped in order to match the field names from ``fields``.
+
+If the ``feature`` does not have a valid fields container set, then the feature's attributes
+are simply truncated to match the number of fields present in ``fields`` (or if
+less attributes are present in ``feature`` than in ``fields``, the feature's attributes
+are padded with NULL values to match the required length).
+
 .. versionadded:: 3.4
 %End
 };

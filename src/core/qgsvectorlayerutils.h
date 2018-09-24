@@ -174,6 +174,16 @@ class CORE_EXPORT QgsVectorLayerUtils
      * This causes the attributes contained within the given \a feature to be rearranged (or in
      * some cases dropped) in order to match the fields and order indicated by \a fields.
      *
+     * The exact behavior depends on whether or not \a feature has a valid fields container
+     * set (see QgsFeature::fields()). If a fields container is set, then the names of the
+     * feature's fields are matched to \a fields. In this case attributes from \a feature
+     * will be rearranged or dropped in order to match the field names from \a fields.
+     *
+     * If the \a feature does not have a valid fields container set, then the feature's attributes
+     * are simply truncated to match the number of fields present in \a fields (or if
+     * less attributes are present in \a feature than in \a fields, the feature's attributes
+     * are padded with NULL values to match the required length).
+     *
      * \since QGIS 3.4
      */
     static void matchAttributesToFields( QgsFeature &feature, const QgsFields &fields );
