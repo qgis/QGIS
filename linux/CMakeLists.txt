@@ -1,7 +1,3 @@
-#metadata
-install(FILES org.qgis.qgis.desktop DESTINATION share/applications)
-install(FILES org.qgis.qgis.appdata.xml DESTINATION share/metainfo)
-
 #icons
 ## application icon
 install(FILES ${CMAKE_SOURCE_DIR}/images/icons/qgis_icon.svg RENAME qgis.svg DESTINATION share/icons/hicolor/scalable/apps)

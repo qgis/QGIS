@@ -163,7 +163,7 @@ unless( $dopoint ) {
 
 print "Updating changelog...\n";
 run( "scripts/create_changelog.sh", "create_changelog.sh failed" );
-run( "perl -i -pe 's#<releases>#<releases>\n    <release version=\"$newmajor.$newminor.$newpatch\" date=\"" . strftime("%Y-%m-%d", localtime) . "\" />#' linux/org.qgis.qgis.appdata.xml", "appdata update failed" );
+run( "perl -i -pe 's#<releases>#<releases>\n    <release version=\"$newmajor.$newminor.$newpatch\" date=\"" . strftime("%Y-%m-%d", localtime) . "\" />#' linux/org.qgis.qgis.appdata.xml.in", "appdata update failed" );
 
 unless( $dopoint ) {
 	run( "scripts/update-news.pl $newmajor $newminor '$newreleasename'", "could not update news" ) if $major>2 || ($major==2 && $minor>14);
