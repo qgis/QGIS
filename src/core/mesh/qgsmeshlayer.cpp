@@ -40,9 +40,12 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   : QgsMapLayer( MeshLayer, baseName, meshLayerPath )
   , mProviderKey( providerKey )
 {
-  // load data
-  QgsDataProvider::ProviderOptions providerOptions;
-  setDataProvider( providerKey, providerOptions );
+  // if we’re given a provider type, try to create and bind one to this layer
+  if ( !meshLayerPath.isEmpty() && !providerKey.isEmpty() )
+  {
+    QgsDataProvider::ProviderOptions providerOptions;
+    setDataProvider( providerKey, providerOptions );
+  }
 
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
 
