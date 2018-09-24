@@ -2366,7 +2366,7 @@ bool QgsGeometry::isGeosValid() const
   }
 
   // avoid calling geos for trivial point geometries
-  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point )
+  if ( QgsWkbTypes::geometryType( d->geometry->wkbType() ) == QgsWkbTypes::PointGeometry )
   {
     return true;
   }
