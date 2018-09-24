@@ -19,7 +19,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsgeometrycheckerror.h"
 
-void QgsGeometryDangleCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, const QgsGeometryCheckContext *context, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+void QgsGeometryDangleCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
@@ -84,11 +84,11 @@ void QgsGeometryDangleCheck::collectErrors( const QMap<QString, QgsFeaturePool *
       }
       if ( !p1touches )
       {
-        errors.append( new QgsGeometryCheckError( this, context, layerFeature, p1, QgsVertexId( iPart, 0, 0 ) ) );
+        errors.append( new QgsGeometryCheckError( this, layerFeature, p1, QgsVertexId( iPart, 0, 0 ) ) );
       }
       if ( !p2touches )
       {
-        errors.append( new QgsGeometryCheckError( this, context, layerFeature, p2, QgsVertexId( iPart, 0, nVerts - 1 ) ) );
+        errors.append( new QgsGeometryCheckError( this, layerFeature, p2, QgsVertexId( iPart, 0, nVerts - 1 ) ) );
       }
     }
   }

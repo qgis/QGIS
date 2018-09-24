@@ -19,7 +19,7 @@
 #include "qgsfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
 
-void QgsGeometryDuplicateNodesCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, const QgsGeometryCheckContext *context, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+void QgsGeometryDuplicateNodesCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
 
@@ -41,7 +41,7 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( const QMap<QString, QgsFeatu
           QgsPoint pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
           if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < mContext->tolerance )
           {
-            errors.append( new QgsGeometryCheckError( this, context, layerFeature, pj, QgsVertexId( iPart, iRing, jVert ) ) );
+            errors.append( new QgsGeometryCheckError( this, layerFeature, pj, QgsVertexId( iPart, iRing, jVert ) ) );
           }
         }
       }

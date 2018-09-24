@@ -19,7 +19,7 @@
 #include "qgsgeometrycheckerror.h"
 
 
-void QgsGeometryDegeneratePolygonCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, const QgsGeometryCheckContext *context, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+void QgsGeometryDegeneratePolygonCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
 
@@ -35,7 +35,7 @@ void QgsGeometryDegeneratePolygonCheck::collectErrors( const QMap<QString, QgsFe
         if ( QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing ) < 3 )
         {
           QgsVertexId vidx( iPart, iRing );
-          errors.append( new QgsGeometryCheckError( this, context, layerFeature, geom->vertexAt( vidx ), vidx ) );
+          errors.append( new QgsGeometryCheckError( this, layerFeature, geom->vertexAt( vidx ), vidx ) );
         }
       }
     }

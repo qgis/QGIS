@@ -30,7 +30,7 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckEr
                                     const QgsPointXY &errorLocation,
                                     const QgsGeometryCheckerUtils::LayerFeature &containingFeature
                                   )
-      : QgsGeometryCheckError( check, check->context(), layerFeature, errorLocation, QgsVertexId(), containingFeature.id(), ValueOther )
+      : QgsGeometryCheckError( check, layerFeature, errorLocation, QgsVertexId(), containingFeature.id(), ValueOther )
       , mContainingFeature( qMakePair( containingFeature.layer()->id(), containingFeature.feature().id() ) )
     { }
     const QPair<QString, QgsFeatureId> &containingFeature() const { return mContainingFeature; }

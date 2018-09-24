@@ -33,7 +33,6 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     enum ValueType { ValueLength, ValueArea, ValueOther };
 
     QgsGeometryCheckError( const QgsGeometryCheck *check,
-                           const QgsGeometryCheckContext *context,
                            const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
                            const QgsPointXY &errorLocation,
                            QgsVertexId vidx = QgsVertexId(),
@@ -45,7 +44,6 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     const QgsGeometryCheckError &operator=( const QgsGeometryCheckError & ) = delete;
 
     const QgsGeometryCheck *check() const { return mCheck; }
-    const QgsGeometryCheckContext *context() const {return mContext;}
     const QString &layerId() const { return mLayerId; }
     QgsFeatureId featureId() const { return mFeatureId; }
     // In map units
@@ -101,7 +99,6 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
                            ValueType valueType = ValueOther );
 
     const QgsGeometryCheck *mCheck = nullptr;
-    const QgsGeometryCheckContext *mContext = nullptr;
     QString mLayerId;
     QgsFeatureId mFeatureId;
     QgsGeometry mGeometry;

@@ -36,7 +36,7 @@ QgsGeometryFollowBoundariesCheck::~QgsGeometryFollowBoundariesCheck()
   delete mIndex;
 }
 
-void QgsGeometryFollowBoundariesCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, const QgsGeometryCheckContext *context, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+void QgsGeometryFollowBoundariesCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
 
@@ -70,7 +70,7 @@ void QgsGeometryFollowBoundariesCheck::collectErrors( const QMap<QString, QgsFea
     if ( refFeatureIds.isEmpty() )
     {
       // If no potential reference features are found, the geometry is definitely not following boundaries of reference layer features
-      errors.append( new QgsGeometryCheckError( this, context, layerFeature, QgsPointXY( geom->centroid() ) ) );
+      errors.append( new QgsGeometryCheckError( this, layerFeature, QgsPointXY( geom->centroid() ) ) );
     }
     else
     {
@@ -83,7 +83,7 @@ void QgsGeometryFollowBoundariesCheck::collectErrors( const QMap<QString, QgsFea
         QgsGeometry reducedRefGeom( refgeomEngine->buffer( -mContext->tolerance, 0 ) );
         if ( !( geomEngine->contains( reducedRefGeom.constGet() ) || geomEngine->disjoint( reducedRefGeom.constGet() ) ) )
         {
-          errors.append( new QgsGeometryCheckError( this, context, layerFeature, QgsPointXY( geom->centroid() ) ) );
+          errors.append( new QgsGeometryCheckError( this, layerFeature, QgsPointXY( geom->centroid() ) ) );
           break;
         }
       }
