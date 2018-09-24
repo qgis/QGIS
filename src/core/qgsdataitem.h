@@ -33,7 +33,7 @@
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmimedatautils.h"
-
+#include "qgswkbtypes.h"
 
 class QgsDataProvider;
 class QgsDataItem;
