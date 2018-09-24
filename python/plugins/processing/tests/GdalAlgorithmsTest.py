@@ -31,6 +31,7 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.AssignProjection import AssignProjection
 from processing.algs.gdal.ClipRasterByExtent import ClipRasterByExtent
 from processing.algs.gdal.ClipRasterByMask import ClipRasterByMask
+from processing.algs.gdal.Dissolve import Dissolve
 from processing.algs.gdal.gdal2tiles import gdal2tiles
 from processing.algs.gdal.gdalcalc import gdalcalc
 from processing.algs.gdal.gdaltindex import gdaltindex
@@ -610,6 +611,151 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-b 1 -a elev -i 0.0 -fl 100 125 150 200 -f "ESRI Shapefile" ' +
                  source + ' ' +
                  outdir + '/check.shp'])
+
+    def testDissolve(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'polys.gml')
+        source_with_space = os.path.join(testDataPath, 'filename with spaces.gml')
+        alg = Dissolve()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'my_field',
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
+                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source_with_space,
+                                        'FIELD': 'my_field',
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 '"' + source_with_space + '" ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'filename_with_spaces\' ' +
+                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'my_field',
+                                        'GEOMETRY': 'the_geom',
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(the_geom) AS the_geom, my_field FROM \'polys2\' ' +
+                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'my_field',
+                                        'EXPLODE_COLLECTIONS': True,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
+                 'GROUP BY my_field" -explodecollections -f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'my_field',
+                                        'COUNT_FEATURES': True,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field, COUNT(geometry) AS count FROM \'polys2\' ' +
+                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'my_field',
+                                        'COUNT_FEATURES': True,
+                                        'GEOMETRY': 'the_geom',
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(the_geom) AS the_geom, my_field, COUNT(the_geom) AS count FROM \'polys2\' ' +
+                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'my_field',
+                                        'COMPUTE_AREA': True,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field, SUM(ST_Area(geometry)) AS area, ' +
+                 'ST_Perimeter(ST_Union(geometry)) AS perimeter FROM \'polys2\' ' +
+                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'my_field',
+                                        'COMPUTE_AREA': True,
+                                        'GEOMETRY': 'the_geom',
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(the_geom) AS the_geom, my_field, SUM(ST_Area(the_geom)) AS area, ' +
+                 'ST_Perimeter(ST_Union(the_geom)) AS perimeter FROM \'polys2\' ' +
+                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'my_field',
+                                        'COMPUTE_STATISTICS': True,
+                                        'STATISTICS_ATTRIBUTE': 'my_val',
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field, ' +
+                 'SUM(my_val) AS sum, MIN(my_val) AS min, MAX(my_val) AS max, AVG(my_val) AS avg FROM \'polys2\' ' +
+                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+
+            # compute stats without stats attribute, and vice versa (should be ignored)
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'my_field',
+                                        'COMPUTE_STATISTICS': True,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
+                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'my_field',
+                                        'STATISTICS_ATTRIBUTE': 'my_val',
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
+                 'GROUP BY my_field" -f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'my_field',
+                                        'OPTIONS': 'my opts',
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(geometry) AS geometry, my_field FROM \'polys2\' ' +
+                 'GROUP BY my_field" "my opts" -f "ESRI Shapefile"'])
 
     def testGdal2Tiles(self):
         context = QgsProcessingContext()
