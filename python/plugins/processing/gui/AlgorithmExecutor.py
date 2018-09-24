@@ -91,30 +91,7 @@ def make_features_compatible(new_features, input_layer):
     result_features = []
     for new_f in new_features:
         # Fix attributes
-        if new_f.fields().count() > 0:
-            attributes = []
-            for field in input_layer.fields():
-                if new_f.fields().indexFromName(field.name()) >= 0:
-                    attributes.append(new_f[field.name()])
-                else:
-                    attributes.append(None)
-            f = QgsFeature(input_layer.fields())
-            f.setAttributes(attributes)
-            f.setGeometry(new_f.geometry())
-            new_f = f
-        else:
-            lendiff = len(new_f.attributes()) - len(input_layer.fields())
-            if lendiff > 0:
-                f = QgsFeature(input_layer.fields())
-                f.setGeometry(new_f.geometry())
-                f.setAttributes(new_f.attributes()[:len(input_layer.fields())])
-                new_f = f
-            elif lendiff < 0:
-                f = QgsFeature(input_layer.fields())
-                f.setGeometry(new_f.geometry())
-                attributes = new_f.attributes() + [None for i in range(-lendiff)]
-                f.setAttributes(attributes)
-                new_f = f
+        QgsVectorLayerUtils.matchAttributesToFields(new_f, input_layer.fields())
 
         # Check if we need geometry manipulation
         new_f_geom_type = QgsWkbTypes.geometryType(new_f.geometry().wkbType())
