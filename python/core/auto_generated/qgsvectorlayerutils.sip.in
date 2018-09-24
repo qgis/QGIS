@@ -177,8 +177,26 @@ are padded with NULL values to match the required length).
 .. versionadded:: 3.4
 %End
 
+    static const QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer &layer );
+%Docstring
+Converts input ``feature`` to be compatible with the given ``layer``.
 
-    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer &layer );
+This function returns a new list of transformed features compatible with the input
+layer, note that the number of features returned might be greater than one.
+
+The following operations will be performed to convert the input features:
+- convert single geometries to multi part
+- drop additional attributes
+- drop geometry if layer is geometry-less
+- add missing attribute fields
+- add back M/Z values (initialized to 0)
+- drop Z/M
+- convert multi part geometries to single part
+
+.. versionadded:: 3.4
+%End
+
+    static const QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer &layer );
 %Docstring
 Converts input ``features`` to be compatible with the given ``layer``.
 

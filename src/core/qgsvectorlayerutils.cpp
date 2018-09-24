@@ -561,31 +561,30 @@ void QgsVectorLayerUtils::matchAttributesToFields( QgsFeature &feature, const Qg
   }
 }
 
-QgsFeatureList QgsVectorLayerUtils::makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer &layer )
+const QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer &layer )
 {
   QgsWkbTypes::Type inputWkbType( layer.wkbType( ) );
   QgsFeatureList resultFeatures;
-  for ( const QgsFeature &f : features )
+  QgsFeature newF( feature );
+  // Fix attributes
+  QgsVectorLayerUtils::matchAttributesToFields( newF, layer.fields( ) );
+  // Does geometry need tranformations?
+  QgsWkbTypes::GeometryType newFGeomType( QgsWkbTypes::geometryType( newF.geometry().wkbType() ) );
+  bool newFHasGeom = newFGeomType !=
+                     QgsWkbTypes::GeometryType::UnknownGeometry &&
+                     newFGeomType != QgsWkbTypes::GeometryType::NullGeometry;
+  bool layerHasGeom = inputWkbType !=
+                      QgsWkbTypes::Type::NoGeometry &&
+                      inputWkbType != QgsWkbTypes::Type::Unknown;
+  // Drop geometry if layer is geometry-less
+  if ( newFHasGeom && ! layerHasGeom )
   {
-    QgsFeature newF( f );
-    // Fix attributes
-    QgsVectorLayerUtils::matchAttributesToFields( newF, layer.fields( ) );
-    // Does geometry need tranformations?
-    QgsWkbTypes::GeometryType newFGeomType( QgsWkbTypes::geometryType( newF.geometry().wkbType() ) );
-    bool newFHasGeom = newFGeomType !=
-                       QgsWkbTypes::GeometryType::UnknownGeometry &&
-                       newFGeomType != QgsWkbTypes::GeometryType::NullGeometry;
-    bool layerHasGeom = inputWkbType !=
-                        QgsWkbTypes::Type::NoGeometry &&
-                        inputWkbType != QgsWkbTypes::Type::Unknown;
-    // Drop geometry if layer is geometry-less
-    if ( newFHasGeom && ! layerHasGeom )
-    {
-      QgsFeature _f = QgsFeature( layer.fields() );
-      _f.setAttributes( newF.attributes() );
-      resultFeatures.append( _f );
-      continue;  // Skip the rest
-    }
+    QgsFeature _f = QgsFeature( layer.fields() );
+    _f.setAttributes( newF.attributes() );
+    resultFeatures.append( _f );
+  }
+  else
+  {
     // Geometry need fixing
     if ( newFHasGeom && layerHasGeom && newF.geometry().wkbType() != inputWkbType )
     {
@@ -627,15 +626,15 @@ QgsFeatureList QgsVectorLayerUtils::makeFeaturesCompatible( const QgsFeatureList
       {
         QgsGeometry newGeom( newF.geometry( ) );
         const QgsGeometryCollection *parts( static_cast< const QgsGeometryCollection * >( newGeom.constGet() ) );
+        QgsAttributeMap attrMap;
+        for ( int j = 0; j < newF.fields().count(); j++ )
+        {
+          attrMap[j] = newF.attribute( j );
+        }
         for ( int i = 0; i < parts->partCount( ); i++ )
         {
           QgsGeometry g( parts->geometryN( i )->clone() );
-          QgsAttributeMap attrMap;
-          for ( int j = 0; j < newF.fields().count(); j++ )
-          {
-            attrMap[j] = newF.attribute( j );
-          }
-          QgsFeature _f( QgsVectorLayerUtils::createFeature( &layer, g, attrMap ) );
+          QgsFeature _f( createFeature( &layer, g, attrMap ) );
           resultFeatures.append( _f );
         }
       }
@@ -649,7 +648,20 @@ QgsFeatureList QgsVectorLayerUtils::makeFeaturesCompatible( const QgsFeatureList
       resultFeatures.append( newF );
     }
   }
-  return  resultFeatures;
+  return resultFeatures;
+}
+
+const QgsFeatureList QgsVectorLayerUtils::makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer &layer )
+{
+  QgsFeatureList resultFeatures;
+  for ( const QgsFeature &f : features )
+  {
+    for ( const auto &_f : makeFeatureCompatible( f, layer ) )
+    {
+      resultFeatures.append( _f );
+    }
+  }
+  return resultFeatures;
 }
 
 QList<QgsVectorLayer *> QgsVectorLayerUtils::QgsDuplicateFeatureContext::layers() const

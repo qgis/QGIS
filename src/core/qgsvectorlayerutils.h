@@ -188,6 +188,24 @@ class CORE_EXPORT QgsVectorLayerUtils
      */
     static void matchAttributesToFields( QgsFeature &feature, const QgsFields &fields );
 
+    /**
+     * Converts input \a feature to be compatible with the given \a layer.
+     *
+     * This function returns a new list of transformed features compatible with the input
+     * layer, note that the number of features returned might be greater than one.
+     *
+     * The following operations will be performed to convert the input features:
+     *  - convert single geometries to multi part
+     *  - drop additional attributes
+     *  - drop geometry if layer is geometry-less
+     *  - add missing attribute fields
+     *  - add back M/Z values (initialized to 0)
+     *  - drop Z/M
+     *  - convert multi part geometries to single part
+     *
+     * \since QGIS 3.4
+     */
+    static const QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer &layer );
 
     /**
      * Converts input \a features to be compatible with the given \a layer.
@@ -207,7 +225,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      *
      * \since QGIS 3.4
      */
-    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer &layer );
+    static const QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer &layer );
 
 };
 
