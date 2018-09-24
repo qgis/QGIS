@@ -727,7 +727,9 @@ QgsFields QgsProcessingUtils::indicesToFields( const QList<int> &indices, const 
 QgsProcessingFeatureSource::QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource )
   : mSource( originalSource )
   , mOwnsSource( ownsOriginalSource )
-  , mInvalidGeometryCheck( context.invalidGeometryCheck() )
+  , mInvalidGeometryCheck( QgsWkbTypes::geometryType( mSource->wkbType() ) == QgsWkbTypes::PointGeometry
+                           ? QgsFeatureRequest::GeometryNoCheck // never run geometry validity checks for point layers!
+                           : context.invalidGeometryCheck() )
   , mInvalidGeometryCallback( context.invalidGeometryCallback() )
   , mTransformErrorCallback( context.transformErrorCallback() )
 {}
