@@ -27,5 +27,5 @@ bool QgsGeometrySliverPolygonCheck::checkThreshold( double layerToMapUnits, cons
   {
     return false;
   }
-  return value > mThreshold; // the sliver threshold is actually a map unit independent number, just abusing QgsGeometryAreaCheck::mThresholdMapUnits to store it
+  return value > mThresholdMapUnits; // the sliver threshold is actually a map unit independent number, just abusing QgsGeometryAreaCheck::mThresholdMapUnits to store it
 }
