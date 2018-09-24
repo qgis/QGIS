@@ -620,16 +620,16 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer *> &layers )
   invalidateGraph();
 }
 
-void QgsTracer::setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transform )
+void QgsTracer::setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext )
 {
   mCRS = crs;
-  mTransformContext = transform;
+  mTransformContext = transformContext;
   invalidateGraph();
 }
 
-void QgsTracer::setRenderContext( const QgsRenderContext *render )
+void QgsTracer::setRenderContext( const QgsRenderContext *renderContext )
 {
-  mRenderContext = std::unique_ptr<QgsRenderContext>( new QgsRenderContext( *render ) );
+  mRenderContext = std::unique_ptr<QgsRenderContext>( new QgsRenderContext( *renderContext ) );
   invalidateGraph();
 }
 

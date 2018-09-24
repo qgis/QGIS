@@ -63,15 +63,15 @@ class CORE_EXPORT QgsTracer : public QObject
     QgsCoordinateReferenceSystem destinationCrs() const { return mCRS; }
 
     /**
-     * Sets the \a crs and transform \a context used for tracing.
+     * Sets the \a crs and \a transformContext used for tracing.
      * \see destinationCrs()
      */
-    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transform );
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext );
 
     /**
-     * Sets the \a render context used for tracing only on visible features.
+     * Sets the \a renderContext used for tracing only on visible features.
      */
-    void setRenderContext( const QgsRenderContext *render );
+    void setRenderContext( const QgsRenderContext *renderContext );
 
     //! Gets extent to which graph's features will be limited (empty extent means no limit)
     QgsRectangle extent() const { return mExtent; }
