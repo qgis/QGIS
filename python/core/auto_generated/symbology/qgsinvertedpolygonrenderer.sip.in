@@ -76,6 +76,8 @@ Features collected during renderFeature() are rendered using the embedded featur
 %Docstring
 Proxy that will call this method on the embedded renderer.
 %End
+    virtual bool filterNeedsGeometry() const;
+
     virtual QgsFeatureRenderer::Capabilities capabilities();
 
 %Docstring

@@ -218,6 +218,11 @@ QSet<QString> QgsPointDistanceRenderer::usedAttributes( const QgsRenderContext &
   return attributeList;
 }
 
+bool QgsPointDistanceRenderer::filterNeedsGeometry() const
+{
+  return mRenderer ? mRenderer->filterNeedsGeometry() : false;
+}
+
 QgsFeatureRenderer::Capabilities QgsPointDistanceRenderer::capabilities()
 {
   if ( !mRenderer )
