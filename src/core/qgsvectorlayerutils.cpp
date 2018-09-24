@@ -568,7 +568,7 @@ const QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeatur
   QgsFeature newF( feature );
   // Fix attributes
   QgsVectorLayerUtils::matchAttributesToFields( newF, layer.fields( ) );
-  // Does geometry need tranformations?
+  // Does geometry need transformations?
   QgsWkbTypes::GeometryType newFGeomType( QgsWkbTypes::geometryType( newF.geometry().wkbType() ) );
   bool newFHasGeom = newFGeomType !=
                      QgsWkbTypes::GeometryType::UnknownGeometry &&
