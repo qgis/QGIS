@@ -2,11 +2,17 @@
 <component type="desktop">
   <id>org.qgis.qgis.desktop</id>
   <name>QGIS Desktop</name>
-  <summary>Create, edit, visualise, analyse and publish geospatial information</summary>
-  <description>
-    <p>QGIS is a user friendly Open Source Geographic Information System (GIS) licensed under the GNU General Public License. QGIS is an official project of the Open Source Geospatial Foundation (OSGeo).</p>
-    <p>It runs on Linux, Unix, Mac OSX, Windows and Android and supports numerous vector, raster, and database formats and functionalities.</p>
-  </description>
+  <summary>A Free and Open Source Geographic Information System</summary>
+  <summary xml:lang="pt_BR">Um Sistema de Informação Geográfica livre e aberto </summary>
+  <summary xml:lang="es">Un Sistema de Información Geográfica libre y de Código Abierto</summary>
+  <summary xml:lang="id">Sistem Informasi Geografis yang Gratis dan Terbuka</summary>
+  <screenshots>
+    <screenshot><image type="source">https://qgis.org/en/_static/images/about-screenshot.png</image></screenshot>
+  </screenshots>
+  <description>QGIS is a user friendly Open Source Geographic Information System (GIS) licensed under the GNU General Public License. QGIS is an official project of the Open Source Geospatial Foundation (OSGeo). It runs on Linux, Unix, Mac OSX, Windows and Android and supports numerous vector, raster, and database formats and functionalities.</description>
+  <description xml:lang="pt_BR">O QGIS é um Sistema de Informação Geográfica (SIG) de Código Aberto licenciado segundo a Licença Pública Geral GNU. O QGIS é um projeto oficial da Open Source Geospatial Foundation (OSGeo). Funciona em Linux, Unix, Mac OSX, Windows e Android e suporta inúmeros formatos de vetores, rasters e bases de dados e funcionalidades.</description>
+  <description xml:lang="es">QGIS es un Sistema de Información Geográfica (SIG) de Código Abierto licenciado bajo GNU - General Public License . QGIS es un proyecto oficial de Open Source Geospatial Foundation (OSGeo). Corre sobre Linux, Unix, Mac OSX, Windows y Android y soporta numerosos formatos y funcionalidades de datos vector, datos ráster y bases de datos.</description>
+  <description xml:lang="id">QGIS adalah perangkat Sistem Informasi Geografis (SIG) Open Source yang user friendly dengan lisensi di bawah GNU General Public License. QGIS merupakan proyek tidak resmi dari Open Source Geospatial Foundation (OSGeo). QGIS dapat dijalankan pada Linux, Unix, Mac OSX, Windows dan Android, serta mendukung banyak format dan fungsionalitas data vektor, raster, dan basisdata.</description>
   <metadata_license>MIT</metadata_license>
   <project_license>GPL-2.0+</project_license>
   <url type="bugtracker">https://issues.qgis.org/projects/qgis/issues/</url>
