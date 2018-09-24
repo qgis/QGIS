@@ -140,7 +140,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * assuming that they respect the layer's constraints. Note that the created feature is not
      * automatically inserted into the layer.
      */
-    static QgsFeature createFeature( QgsVectorLayer *layer,
+    static QgsFeature createFeature( const QgsVectorLayer *layer,
                                      const QgsGeometry &geometry = QgsGeometry(),
                                      const QgsAttributeMap &attributes = QgsAttributeMap(),
                                      QgsExpressionContext *context = nullptr );
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      *
      * \since QGIS 3.4
      */
-    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, QgsVectorLayer &layer );
+    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer &layer );
 
 };
 

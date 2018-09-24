@@ -133,7 +133,7 @@ Returns true if the attribute value is valid for the field. Any constraint failu
 If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
 %End
 
-    static QgsFeature createFeature( QgsVectorLayer *layer,
+    static QgsFeature createFeature( const QgsVectorLayer *layer,
                                      const QgsGeometry &geometry = QgsGeometry(),
                                      const QgsAttributeMap &attributes = QgsAttributeMap(),
                                      QgsExpressionContext *context = 0 );
@@ -178,7 +178,7 @@ are padded with NULL values to match the required length).
 %End
 
 
-    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, QgsVectorLayer &layer );
+    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer &layer );
 %Docstring
 Converts input ``features`` to be compatible with the given ``layer``.
 
