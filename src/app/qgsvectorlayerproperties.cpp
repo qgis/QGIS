@@ -416,7 +416,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     const QStringList activeChecks = mLayer->geometryOptions()->geometryChecks();
     for ( const QgsGeometryCheckFactory *factory : factories )
     {
-      QCheckBox *cb = new QCheckBox( factory->name() );
+      QCheckBox *cb = new QCheckBox( factory->description() );
       cb->setChecked( activeChecks.contains( factory->id() ) );
       mGeometryCheckFactoriesGroupBoxes.insert( cb, factory->id() );
       layout->addWidget( cb );
