@@ -167,6 +167,16 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \since QGIS 3.4
      */
     static std::unique_ptr<QgsVectorLayerFeatureSource> getFeatureSource( QPointer<QgsVectorLayer> layer ) SIP_SKIP;
+
+    /**
+     * Matches the attributes in \a feature to the specified \a fields.
+     *
+     * This causes the attributes contained within the given \a feature to be rearranged (or in
+     * some cases dropped) in order to match the fields and order indicated by \a fields.
+     *
+     * \since QGIS 3.4
+     */
+    static void matchAttributesToFields( QgsFeature &feature, const QgsFields &fields );
 };
 
 
