@@ -31,7 +31,7 @@
 
 QgsGeometryCheckerUtils::LayerFeature::LayerFeature( const QgsFeaturePool *pool,
     const QgsFeature &feature,
-    QgsGeometryCheckContext *context,
+    const QgsGeometryCheckContext *context,
     bool useMapCrs )
   : mFeaturePool( pool )
   , mFeature( feature )
@@ -211,7 +211,7 @@ QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFe
     const QMap<QString, QgsFeatureIds> &featureIds,
     const QList<QgsWkbTypes::GeometryType> &geometryTypes,
     QgsFeedback *feedback,
-    QgsGeometryCheckContext *context,
+    const QgsGeometryCheckContext *context,
     bool useMapCrs )
   : mFeaturePools( featurePools )
   , mFeatureIds( featureIds )
@@ -225,7 +225,7 @@ QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFe
 QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
     const QList<QString> &layerIds, const QgsRectangle &extent,
     const QList<QgsWkbTypes::GeometryType> &geometryTypes,
-    QgsGeometryCheckContext *context )
+    const QgsGeometryCheckContext *context )
   : mFeaturePools( featurePools )
   , mLayerIds( layerIds )
   , mExtent( extent )

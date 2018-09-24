@@ -35,7 +35,7 @@ the Free Software Foundation; either version 2 of the License, or     *
 %End
       public:
 
-        LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, QgsGeometryCheckContext *context, bool useMapCrs );
+        LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, const QgsGeometryCheckContext *context, bool useMapCrs );
 %Docstring
 Create a new layer/feature combination.
 The layer is defined by ``pool``, ``feature`` needs to be from this layer.
