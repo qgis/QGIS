@@ -349,7 +349,7 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
   return valid;
 }
 
-QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, const QgsGeometry &geometry,
+QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer *layer, const QgsGeometry &geometry,
     const QgsAttributeMap &attributes, QgsExpressionContext *context )
 {
   if ( !layer )

@@ -133,7 +133,7 @@ Returns true if the attribute value is valid for the field. Any constraint failu
 If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
 %End
 
-    static QgsFeature createFeature( const QgsVectorLayer *layer,
+    static QgsFeature createFeature( QgsVectorLayer *layer,
                                      const QgsGeometry &geometry = QgsGeometry(),
                                      const QgsAttributeMap &attributes = QgsAttributeMap(),
                                      QgsExpressionContext *context = 0 );
