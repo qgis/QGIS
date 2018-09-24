@@ -156,6 +156,16 @@ The duplicated feature will be automatically inserted into the layer.
 .. versionadded:: 3.0
 %End
 
+
+    static void matchAttributesToFields( QgsFeature &feature, const QgsFields &fields );
+%Docstring
+Matches the attributes in ``feature`` to the specified ``fields``.
+
+This causes the attributes contained within the given ``feature`` to be rearranged (or in
+some cases dropped) in order to match the fields and order indicated by ``fields``.
+
+.. versionadded:: 3.4
+%End
 };
 
 

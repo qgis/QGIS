@@ -522,6 +522,44 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsVectorLayerUtils::getFeatureSour
   return featureSource;
 }
 
+void QgsVectorLayerUtils::matchAttributesToFields( QgsFeature &feature, const QgsFields &fields )
+{
+  if ( !feature.fields().isEmpty() )
+  {
+    QgsAttributes attributes;
+    attributes.reserve( fields.size() );
+    // feature has a field mapping, so we can match attributes to field names
+    for ( const QgsField &field : fields )
+    {
+      int index = feature.fields().lookupField( field.name() );
+      attributes.append( index >= 0 ? feature.attribute( index ) : QVariant( field.type() ) );
+    }
+    feature.setAttributes( attributes );
+  }
+  else
+  {
+    // no field name mapping in feature, just use order
+    const int lengthDiff = feature.attributes().count() - fields.count();
+    if ( lengthDiff > 0 )
+    {
+      // truncate extra attributes
+      QgsAttributes attributes = feature.attributes().mid( 0, fields.count() );
+      feature.setAttributes( attributes );
+    }
+    else if ( lengthDiff < 0 )
+    {
+      // add missing null attributes
+      QgsAttributes attributes = feature.attributes();
+      attributes.reserve( fields.count() );
+      for ( int i = feature.attributes().count(); i < fields.count(); ++i )
+      {
+        attributes.append( QVariant( fields.at( i ).type() ) );
+      }
+      feature.setAttributes( attributes );
+    }
+  }
+}
+
 QList<QgsVectorLayer *> QgsVectorLayerUtils::QgsDuplicateFeatureContext::layers() const
 {
   QList<QgsVectorLayer *> layers;
