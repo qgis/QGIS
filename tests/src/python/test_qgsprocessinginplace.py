@@ -17,10 +17,11 @@ from qgis.core import (
     QgsFeature, QgsGeometry, QgsSettings, QgsApplication, QgsMemoryProviderUtils, QgsWkbTypes, QgsField, QgsFields, QgsProcessingFeatureSourceDefinition, QgsProcessingContext, QgsProcessingFeedback, QgsCoordinateReferenceSystem, QgsProject, QgsProcessingException
 )
 from processing.core.Processing import Processing
-from processing.gui.AlgorithmExecutor import execute_in_place_run, make_features_compatible
+from processing.gui.AlgorithmExecutor import execute_in_place_run
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.analysis import QgsNativeAlgorithms
+from qgis.core import QgsVectorLayerUtils
 
 start_app()
 
@@ -185,7 +186,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         context.setProject(QgsProject.instance())
 
         # Fix it!
-        new_features = make_features_compatible([f], layer)
+        new_features = QgsVectorLayerUtils.makeFeaturesCompatible([f], layer)
 
         for new_f in new_features:
             self.assertEqual(new_f.geometry().wkbType(), layer.wkbType())
@@ -193,7 +194,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self.assertTrue(layer.addFeatures(new_features), "Fail: %s - %s - %s" % (feature_wkt, attrs, layer_wkb_name))
         return layer, new_features
 
-    def test_make_features_compatible(self):
+    def test_QgsVectorLayerUtilsmakeFeaturesCompatible(self):
         """Test fixer function"""
         # Test failure
         with self.assertRaises(AssertionError):
@@ -283,13 +284,13 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         f1['int_f'] = 1
         f1['str_f'] = 'str'
         f1.setGeometry(QgsGeometry.fromWkt('Point(9 45)'))
-        new_features = make_features_compatible([f1], layer)
+        new_features = QgsVectorLayerUtils.makeFeaturesCompatible([f1], layer)
         self.assertEqual(new_features[0].attributes(), f1.attributes())
         self.assertTrue(new_features[0].geometry().asWkt(), f1.geometry().asWkt())
 
         # Test pad with 0 with fields
         f1.setAttributes([])
-        new_features = make_features_compatible([f1], layer)
+        new_features = QgsVectorLayerUtils.makeFeaturesCompatible([f1], layer)
         self.assertEqual(len(new_features[0].attributes()), 2)
         self.assertEqual(new_features[0].attributes()[0], QVariant())
         self.assertEqual(new_features[0].attributes()[1], QVariant())
@@ -297,7 +298,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         # Test pad with 0 without fields
         f1 = QgsFeature()
         f1.setGeometry(QgsGeometry.fromWkt('Point(9 45)'))
-        new_features = make_features_compatible([f1], layer)
+        new_features = QgsVectorLayerUtils.makeFeaturesCompatible([f1], layer)
         self.assertEqual(len(new_features[0].attributes()), 2)
         self.assertEqual(new_features[0].attributes()[0], QVariant())
         self.assertEqual(new_features[0].attributes()[1], QVariant())
@@ -306,7 +307,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         f1 = QgsFeature(layer.fields())
         f1.setAttributes([1, 'foo', 'extra'])
         f1.setGeometry(QgsGeometry.fromWkt('Point(9 45)'))
-        new_features = make_features_compatible([f1], layer)
+        new_features = QgsVectorLayerUtils.makeFeaturesCompatible([f1], layer)
         self.assertEqual(len(new_features[0].attributes()), 2)
         self.assertEqual(new_features[0].attributes()[0], 1)
         self.assertEqual(new_features[0].attributes()[1], 'foo')
@@ -322,7 +323,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         f1.setAttributes([1])
 
         # Check that it is accepted on a Point layer
-        new_features = make_features_compatible([f1], layer)
+        new_features = QgsVectorLayerUtils.makeFeaturesCompatible([f1], layer)
         self.assertEqual(len(new_features), 1)
         self.assertEqual(new_features[0].geometry().asWkt(), '')
 
@@ -330,7 +331,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         nogeom_layer = QgsMemoryProviderUtils.createMemoryLayer(
             'nogeom_layer', layer.fields(), QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem(4326))
         # Check that a geometry-less feature is accepted
-        new_features = make_features_compatible([f1], nogeom_layer)
+        new_features = QgsVectorLayerUtils.makeFeaturesCompatible([f1], nogeom_layer)
         self.assertEqual(len(new_features), 1)
         self.assertEqual(new_features[0].geometry().asWkt(), '')
 
@@ -339,7 +340,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
             'nogeom_layer', layer.fields(), QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem(4326))
         # Check that a Point feature is accepted but geometry was dropped
         f1.setGeometry(QgsGeometry.fromWkt('Point(9 45)'))
-        new_features = make_features_compatible([f1], nogeom_layer)
+        new_features = QgsVectorLayerUtils.makeFeaturesCompatible([f1], nogeom_layer)
         self.assertEqual(len(new_features), 1)
         self.assertEqual(new_features[0].geometry().asWkt(), '')
 
