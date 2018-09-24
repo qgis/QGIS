@@ -561,13 +561,13 @@ void QgsVectorLayerUtils::matchAttributesToFields( QgsFeature &feature, const Qg
   }
 }
 
-const QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer &layer )
+const QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer )
 {
-  QgsWkbTypes::Type inputWkbType( layer.wkbType( ) );
+  QgsWkbTypes::Type inputWkbType( layer->wkbType( ) );
   QgsFeatureList resultFeatures;
   QgsFeature newF( feature );
   // Fix attributes
-  QgsVectorLayerUtils::matchAttributesToFields( newF, layer.fields( ) );
+  QgsVectorLayerUtils::matchAttributesToFields( newF, layer->fields( ) );
   // Does geometry need transformations?
   QgsWkbTypes::GeometryType newFGeomType( QgsWkbTypes::geometryType( newF.geometry().wkbType() ) );
   bool newFHasGeom = newFGeomType !=
@@ -579,7 +579,7 @@ const QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeatur
   // Drop geometry if layer is geometry-less
   if ( newFHasGeom && ! layerHasGeom )
   {
-    QgsFeature _f = QgsFeature( layer.fields() );
+    QgsFeature _f = QgsFeature( layer->fields() );
     _f.setAttributes( newF.attributes() );
     resultFeatures.append( _f );
   }
@@ -634,7 +634,7 @@ const QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeatur
         for ( int i = 0; i < parts->partCount( ); i++ )
         {
           QgsGeometry g( parts->geometryN( i )->clone() );
-          QgsFeature _f( createFeature( &layer, g, attrMap ) );
+          QgsFeature _f( createFeature( layer, g, attrMap ) );
           resultFeatures.append( _f );
         }
       }
@@ -651,12 +651,13 @@ const QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeatur
   return resultFeatures;
 }
 
-const QgsFeatureList QgsVectorLayerUtils::makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer &layer )
+const QgsFeatureList QgsVectorLayerUtils::makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer )
 {
   QgsFeatureList resultFeatures;
   for ( const QgsFeature &f : features )
   {
-    for ( const auto &_f : makeFeatureCompatible( f, layer ) )
+    const QgsFeatureList features( makeFeatureCompatible( f, layer ) );
+    for ( const auto &_f : features )
     {
       resultFeatures.append( _f );
     }

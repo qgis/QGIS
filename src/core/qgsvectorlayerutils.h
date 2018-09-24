@@ -192,7 +192,8 @@ class CORE_EXPORT QgsVectorLayerUtils
      * Converts input \a feature to be compatible with the given \a layer.
      *
      * This function returns a new list of transformed features compatible with the input
-     * layer, note that the number of features returned might be greater than one.
+     * layer, note that the number of features returned might be greater than one when
+     * converting a multi part geometry to single part
      *
      * The following operations will be performed to convert the input features:
      *  - convert single geometries to multi part
@@ -205,14 +206,14 @@ class CORE_EXPORT QgsVectorLayerUtils
      *
      * \since QGIS 3.4
      */
-    static const QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer &layer );
+    static const QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer );
 
     /**
      * Converts input \a features to be compatible with the given \a layer.
      *
      * This function returns a new list of transformed features compatible with the input
      * layer, note that the number of features returned might be greater than the number
-     * of input featurers.
+     * of input features.
      *
      * The following operations will be performed to convert the input features:
      *  - convert single geometries to multi part
@@ -225,7 +226,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      *
      * \since QGIS 3.4
      */
-    static const QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer &layer );
+    static const QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer );
 
 };
 
