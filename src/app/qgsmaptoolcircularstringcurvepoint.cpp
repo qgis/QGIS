@@ -43,7 +43,7 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
     {
       if ( !mTempRubberBand )
       {
-        mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+        mTempRubberBand = createGeometryRubberBand( layerType, true );
         mTempRubberBand->show();
       }
 
@@ -57,7 +57,7 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
     {
       if ( !mRubberBand )
       {
-        mRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+        mRubberBand = createGeometryRubberBand( layerType );
         mRubberBand->show();
       }
 
