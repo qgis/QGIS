@@ -48,11 +48,16 @@ Returns the CRS used for tracing.
 .. seealso:: :py:func:`setDestinationCrs`
 %End
 
-    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transform );
 %Docstring
 Sets the ``crs`` and transform ``context`` used for tracing.
 
 .. seealso:: :py:func:`destinationCrs`
+%End
+
+    void setRenderContext( const QgsRenderContext *render );
+%Docstring
+Sets the ``render`` context used for tracing only on visible features.
 %End
 
     QgsRectangle extent() const;

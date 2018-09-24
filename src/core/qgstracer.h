@@ -29,6 +29,8 @@ class QgsVectorLayer;
 #include "qgsgeometry.h"
 
 struct QgsTracerGraph;
+class QgsFeatureRenderer;
+class QgsRenderContext;
 
 /**
  * \ingroup core
@@ -64,7 +66,12 @@ class CORE_EXPORT QgsTracer : public QObject
      * Sets the \a crs and transform \a context used for tracing.
      * \see destinationCrs()
      */
-    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transform );
+
+    /**
+     * Sets the \a render context used for tracing only on visible features.
+     */
+    void setRenderContext( const QgsRenderContext *render );
 
     //! Gets extent to which graph's features will be limited (empty extent means no limit)
     QgsRectangle extent() const { return mExtent; }
@@ -160,6 +167,8 @@ class CORE_EXPORT QgsTracer : public QObject
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
+    void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
+    void onDataChanged( );
     void onLayerDestroyed( QObject *obj );
 
   private:
@@ -171,6 +180,8 @@ class CORE_EXPORT QgsTracer : public QObject
     QgsCoordinateReferenceSystem mCRS;
     //! Coordinate transform context
     QgsCoordinateTransformContext mTransformContext;
+    //! Render context
+    std::unique_ptr<QgsRenderContext> mRenderContext;
     //! Extent for graph building (empty extent means no limit)
     QgsRectangle mExtent;
 
