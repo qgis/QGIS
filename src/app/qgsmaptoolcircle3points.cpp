@@ -37,7 +37,7 @@ void QgsMapToolCircle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mPoints.append( point );
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
-      mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+      mTempRubberBand = createGeometryRubberBand( layerType, true );
       mTempRubberBand->show();
     }
   }

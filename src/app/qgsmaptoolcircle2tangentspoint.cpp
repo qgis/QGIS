@@ -108,10 +108,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     if ( !mTempRubberBand )
     {
-      mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
-      mTempRubberBand->setFillColor( QColor( 0, 0, 255 ) );
-      mTempRubberBand->setStrokeColor( QColor( 0, 0, 255 ) );
-      mTempRubberBand->setStrokeWidth( 2 );
+      mTempRubberBand = createGeometryRubberBand( layerType, true );
       mTempRubberBand->show();
     }
     else

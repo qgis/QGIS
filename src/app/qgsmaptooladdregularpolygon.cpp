@@ -134,4 +134,9 @@ void QgsMapToolAddRegularPolygon::clean()
   }
 
   mRegularPolygon = QgsRegularPolygon();
+
+
+  QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
+  if ( vLayer )
+    layerType = vLayer->geometryType();
 }

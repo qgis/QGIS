@@ -110,7 +110,7 @@ void QgsMapToolCircularStringRadius::recalculateRubberBand()
     int rubberBandSize = mPoints.size() - ( mPoints.size() + 1 ) % 2;
     cString->setPoints( mPoints.mid( 0, rubberBandSize ) );
     delete mRubberBand;
-    mRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
+    mRubberBand = createGeometryRubberBand( layerType );
     mRubberBand->setGeometry( cString );
     mRubberBand->show();
   }
@@ -141,7 +141,7 @@ void QgsMapToolCircularStringRadius::recalculateTempRubberBand( const QgsPointXY
   QgsCircularString *cString = new QgsCircularString();
   cString->setPoints( rubberBandPoints );
   delete mTempRubberBand;
-  mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+  mTempRubberBand = createGeometryRubberBand( layerType, true );
   mTempRubberBand->setGeometry( cString );
   mTempRubberBand->show();
 }
