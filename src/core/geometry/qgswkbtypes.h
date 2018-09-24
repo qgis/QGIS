@@ -995,4 +995,6 @@ class CORE_EXPORT QgsWkbTypes
     static const QMap<Type, wkbEntry> ENTRIES;
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsWkbTypes::GeometryTypes )
+
 #endif // QGSWKBTYPES_H

@@ -311,6 +311,9 @@ Will convert the 25D version of the flat type if supported or Unknown if not sup
 
 };
 
+QFlags<QgsWkbTypes::GeometryType> operator|(QgsWkbTypes::GeometryType f1, QFlags<QgsWkbTypes::GeometryType> f2);
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
