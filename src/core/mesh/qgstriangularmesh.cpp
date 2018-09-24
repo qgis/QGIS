@@ -26,6 +26,7 @@
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
 #include "qgsfeatureiterator.h"
+#include "qgslogger.h"
 
 ///@cond PRIVATE
 
@@ -133,11 +134,20 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
     const QgsMeshVertex &vertex = nativeMesh->vertices.at( i );
     if ( mCoordinateTransform.isValid() )
     {
-      QgsPointXY mapPoint = mCoordinateTransform.transform( QgsPointXY( vertex.x(), vertex.y() ) );
-      QgsMeshVertex mapVertex( mapPoint );
-      mapVertex.setZ( vertex.z() );
-      mapVertex.setM( vertex.m() );
-      mTriangularMesh.vertices[i] = mapVertex;
+      try
+      {
+        QgsPointXY mapPoint = mCoordinateTransform.transform( QgsPointXY( vertex.x(), vertex.y() ) );
+        QgsMeshVertex mapVertex( mapPoint );
+        mapVertex.setZ( vertex.z() );
+        mapVertex.setM( vertex.m() );
+        mTriangularMesh.vertices[i] = mapVertex;
+      }
+      catch ( QgsCsException &cse )
+      {
+        Q_UNUSED( cse );
+        QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+        mTriangularMesh.vertices[i] = vertex;
+      }
     }
     else
     {

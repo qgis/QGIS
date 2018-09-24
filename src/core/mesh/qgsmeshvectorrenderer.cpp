@@ -81,7 +81,6 @@ void QgsMeshVectorRenderer::draw()
   if ( mContext.flags() & QgsRenderContext::Antialiasing )
     painter->setRenderHint( QPainter::Antialiasing, true );
 
-  painter->setRenderHint( QPainter::Antialiasing );
   QPen pen = painter->pen();
   pen.setCapStyle( Qt::FlatCap );
   pen.setJoinStyle( Qt::MiterJoin );
