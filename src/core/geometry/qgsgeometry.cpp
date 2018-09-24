@@ -2365,6 +2365,12 @@ bool QgsGeometry::isGeosValid() const
     return false;
   }
 
+  // avoid calling geos for trivial point geometries
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point )
+  {
+    return true;
+  }
+
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   return geos.isValid( &mLastError );
