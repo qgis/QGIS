@@ -161,14 +161,14 @@ class Dissolve(GdalAlgorithm):
         params = ','.join(tokens)
         if params:
             if self.parameterAsBool(parameters, self.KEEP_ATTRIBUTES, context):
-                sql = "SELECT ST_Union({}) AS {}{}, {} FROM {} GROUP BY {}".format(geometry, geometry, other_fields, params, layerName, fieldName)
+                sql = "SELECT ST_Union({}) AS {}{}, {} FROM '{}' GROUP BY {}".format(geometry, geometry, other_fields, params, layerName, fieldName)
             else:
-                sql = "SELECT ST_Union({}) AS {}, {}, {} FROM {} GROUP BY {}".format(geometry, geometry, fieldName, params, layerName, fieldName)
+                sql = "SELECT ST_Union({}) AS {}, {}, {} FROM '{}' GROUP BY {}".format(geometry, geometry, fieldName, params, layerName, fieldName)
         else:
             if self.parameterAsBool(parameters, self.KEEP_ATTRIBUTES, context):
-                sql = "SELECT ST_Union({}) AS {}{} FROM {} GROUP BY {}".format(geometry, geometry, other_fields, layerName, fieldName)
+                sql = "SELECT ST_Union({}) AS {}{} FROM '{}' GROUP BY {}".format(geometry, geometry, other_fields, layerName, fieldName)
             else:
-                sql = "SELECT ST_Union({}) AS {}, {} FROM {} GROUP BY {}".format(geometry, geometry, fieldName, layerName, fieldName)
+                sql = "SELECT ST_Union({}) AS {}, {} FROM '{}' GROUP BY {}".format(geometry, geometry, fieldName, layerName, fieldName)
 
         arguments.append(sql)
 
