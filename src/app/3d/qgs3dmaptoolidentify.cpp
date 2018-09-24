@@ -108,10 +108,21 @@ void Qgs3DMapToolIdentify::onTerrainPicked( Qt3DRender::QPickEvent *event )
 
   // transform the point and search radius to CRS of the map canvas (if they are different)
   QgsCoordinateTransform ct( mCanvas->map()->crs(), canvas2D->mapSettings().destinationCrs(), canvas2D->mapSettings().transformContext() );
-  QgsPointXY mapPointCanvas2D = ct.transform( mapPoint );
-  QgsPointXY mapPointSearchRadius( mapPoint.x() + searchRadiusMapUnits, mapPoint.y() );
-  QgsPointXY mapPointSearchRadiusCanvas2D = ct.transform( mapPointSearchRadius );
-  double searchRadiusCanvas2D = mapPointCanvas2D.distance( mapPointSearchRadiusCanvas2D );
+
+  QgsPointXY mapPointCanvas2D = mapPoint;
+  double searchRadiusCanvas2D = searchRadiusMapUnits;
+  try
+  {
+    mapPointCanvas2D = ct.transform( mapPoint );
+    QgsPointXY mapPointSearchRadius( mapPoint.x() + searchRadiusMapUnits, mapPoint.y() );
+    QgsPointXY mapPointSearchRadiusCanvas2D = ct.transform( mapPointSearchRadius );
+    searchRadiusCanvas2D = mapPointCanvas2D.distance( mapPointSearchRadiusCanvas2D );
+  }
+  catch ( QgsException &e )
+  {
+    Q_UNUSED( e );
+    QgsDebugMsg( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
+  }
 
   identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( mapPointCanvas2D ), searchRadiusCanvas2D );
 }
