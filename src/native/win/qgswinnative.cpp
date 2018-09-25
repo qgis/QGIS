@@ -173,14 +173,22 @@ bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &, void *messa
     unsigned long deviceType = reinterpret_cast<DEV_BROADCAST_HDR *>( lParam )->dbch_devicetype;
     if ( deviceType == DBT_DEVTYP_VOLUME )
     {
+      // need to handle disks with multiple partitions -- these are given by a single event
       unsigned long unitmask = reinterpret_cast<DEV_BROADCAST_VOLUME *>( lParam )->dbcv_unitmask;
-      for ( int i = 0; i < 32; ++i )
+      std::vector< QString > drives;
+      char driveName[] = "A:/";
+      unitmask &= 0x3ffffff;
+      while ( unitmask )
       {
-        if ( ( unitmask & ( 1 << i ) ) != 0 )
-        {
-          const QChar drive( 65 + i );
-          emit usbStorageNotification( QStringLiteral( "%1:/" ).arg( drive ), wParam == DBT_DEVICEARRIVAL );
-        }
+        if ( unitmask & 0x1 )
+          drives.emplace_back( QString::fromLatin1( driveName ) );
+        ++driveName[0];
+        unitmask >>= 1;
+      }
+
+      for ( const QString &drive : drives )
+      {
+        emit usbStorageNotification( QStringLiteral( "%1:/" ).arg( drive ), wParam == DBT_DEVICEARRIVAL );
       }
     }
   }
