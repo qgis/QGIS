@@ -18,6 +18,7 @@
 #ifndef QGSWKBTYPES_H
 #define QGSWKBTYPES_H
 
+#include <QObject>
 #include <QMap>
 #include <QString>
 
