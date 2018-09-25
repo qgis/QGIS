@@ -9564,7 +9564,21 @@ void QgisApp::removeLayer()
     return;
   }
 
-  const QList<QgsMapLayer *> selectedLayers = mLayerTreeView->selectedLayers();
+  // look for layers recursively so we catch also those that are within selected groups
+  const QList<QgsMapLayer *> selectedLayers = mLayerTreeView->selectedLayersRecursive();
+
+  QStringList nonRemovableLayerNames;
+  for ( QgsMapLayer *layer : selectedLayers )
+  {
+    if ( !layer->flags().testFlag( QgsMapLayer::Removable ) )
+      nonRemovableLayerNames << layer->name();
+  }
+  if ( !nonRemovableLayerNames.isEmpty() )
+  {
+    QMessageBox::warning( this, tr( "Required Layers" ),
+                          tr( "The following layers are marked as required by the project:\n\n%1\n\nPlease deselect them (or unmark as required) and retry." ).arg( nonRemovableLayerNames.join( QStringLiteral( "\n" ) ) ) );
+    return;
+  }
 
   for ( QgsMapLayer *layer : selectedLayers )
   {
@@ -9584,15 +9598,6 @@ void QgisApp::removeLayer()
         activeTaskDescriptions << tr( " • %1" ).arg( task->description() );
       }
     }
-  }
-
-  // extra check for required layers
-  // In theory it should not be needed because the remove action should be disabled
-  // if there are required layers in the selection...
-  for ( QgsMapLayer *layer : selectedLayers )
-  {
-    if ( !layer->flags().testFlag( QgsMapLayer::Removable ) )
-      return;
   }
 
   if ( !activeTaskDescriptions.isEmpty() )

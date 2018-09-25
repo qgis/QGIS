@@ -108,6 +108,14 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QList<QgsMapLayer *> selectedLayers() const;
 
     /**
+     * Gets list of selected layers, including those that are not directly selected, but their
+     * ancestor groups is selected. If we have a group with two layers L1, L2 and just the group
+     * node is selected, this method returns L1 and L2, while selectedLayers() returns an empty list.
+     * \since QGIS 3.4
+     */
+    QList<QgsMapLayer *> selectedLayersRecursive() const;
+
+    /**
      * Adds an indicator to the given layer tree node. Indicators are icons shown next to layer/group names
      * in the layer tree view. They can be used to show extra information with tree nodes and they allow
      * user interaction.
