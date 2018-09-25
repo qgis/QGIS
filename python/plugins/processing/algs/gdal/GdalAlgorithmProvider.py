@@ -132,6 +132,9 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
     def id(self):
         return 'gdal'
 
+    def helpId(self):
+        return 'gdal'
+
     def icon(self):
         return QgsApplication.getThemeIcon("/providerGdal.svg")
 

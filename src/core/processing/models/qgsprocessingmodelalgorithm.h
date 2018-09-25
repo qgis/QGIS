@@ -52,6 +52,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QString svgIconPath() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
+    QString helpUrl() const override;
     Flags flags() const override;
 
     bool canExecute( QString *errorMessage SIP_OUT = nullptr ) const override;

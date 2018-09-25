@@ -81,6 +81,11 @@ QString QgsProcessingModelAlgorithm::shortDescription() const
   return mHelpContent.value( QStringLiteral( "SHORT_DESCRIPTION" ) ).toString();
 }
 
+QString QgsProcessingModelAlgorithm::helpUrl() const
+{
+  return QString();
+}
+
 QgsProcessingAlgorithm::Flags QgsProcessingModelAlgorithm::flags() const
 {
   // TODO - check child algorithms, if they all support threading, then the model supports threading...

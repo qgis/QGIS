@@ -128,6 +128,9 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
     def id(self):
         return 'grass7'
 
+    def helpId(self):
+        return 'grass7'
+
     def icon(self):
         return QgsApplication.getThemeIcon("/providerGrass.svg")
 
