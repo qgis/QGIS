@@ -88,6 +88,7 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
   }
 
   geomEngine = QgsGeometryCheckerUtils::createGeomEngine( boundaries.get(), mContext->tolerance );
+  geomEngine->prepareGeometry();
 
   const QgsFeatureIds fids = featurePool->getIntersects( boundaries->boundingBox() );
 
