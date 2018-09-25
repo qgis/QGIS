@@ -1264,10 +1264,8 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
 
   QList<QgsMapLayer *> layers;
 
-  QStringList resultStringList;
-
   std::function< void( const QVariant &var ) > processVariant;
-  processVariant = [ &resultStringList, &layers, &context, &definition, &processVariant ]( const QVariant & var )
+  processVariant = [ &layers, &context, &definition, &processVariant ]( const QVariant & var )
   {
     if ( var.type() == QVariant::List )
     {
