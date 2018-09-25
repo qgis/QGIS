@@ -66,8 +66,9 @@ from processing.tools import dataobjects
 
 class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
-    def __init__(self, alg, in_place=False):
-        super().__init__()
+    def __init__(self, alg, in_place=False, parent=None):
+        super().__init__(parent)
+
         self.feedback_dialog = None
         self.in_place = in_place
 
