@@ -19,6 +19,7 @@
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgslayertreeutils.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
 #include "qgsgui.h"
@@ -356,28 +357,10 @@ QList<QgsMapLayer *> QgsLayerTreeView::selectedLayers() const
   return list;
 }
 
-static void _collectMapLayers( const QList<QgsLayerTreeNode *> &nodes, QSet<QgsMapLayer *> &layersSet )
-{
-  for ( QgsLayerTreeNode *node : nodes )
-  {
-    if ( QgsLayerTree::isLayer( node ) )
-    {
-      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-      if ( nodeLayer->layer() )
-        layersSet << nodeLayer->layer();
-    }
-    else if ( QgsLayerTree::isGroup( node ) )
-    {
-      _collectMapLayers( QgsLayerTree::toGroup( node )->children(), layersSet );
-    }
-  }
-}
-
 QList<QgsMapLayer *> QgsLayerTreeView::selectedLayersRecursive() const
 {
-  QSet<QgsMapLayer *> layersSet;
   const QList<QgsLayerTreeNode *> nodes = layerTreeModel()->indexes2nodes( selectionModel()->selectedIndexes(), false );
-  _collectMapLayers( nodes, layersSet );
+  QSet<QgsMapLayer *> layersSet = QgsLayerTreeUtils::collectMapLayersRecursive( nodes );
   return layersSet.toList();
 }
 

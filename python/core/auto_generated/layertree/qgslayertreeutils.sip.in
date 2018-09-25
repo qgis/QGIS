@@ -97,6 +97,14 @@ Insert a QgsMapLayer just below another one
 
 :return: the new tree layer
 %End
+
+    static QSet<QgsMapLayer *> collectMapLayersRecursive( const QList<QgsLayerTreeNode *> &nodes );
+%Docstring
+Returns map layers from the given list of layer tree nodes. Also recursively visits
+child nodes of groups.
+
+.. versionadded:: 3.4
+%End
 };
 
 /************************************************************************
