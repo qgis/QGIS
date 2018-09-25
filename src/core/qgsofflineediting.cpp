@@ -516,6 +516,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
   {
     case SpatiaLite:
     {
+      QString pkFieldName = layer->dataProvider()->uri().keyColumn();
       // create table
       QString sql = QStringLiteral( "CREATE TABLE '%1' (" ).arg( tableName );
       QString delim;
@@ -542,6 +543,8 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
         }
 
         sql += delim + QStringLiteral( "'%1' %2" ).arg( field.name(), dataType );
+        if ( field.name() == pkFieldName )
+          sql += QStringLiteral( " PRIMARY KEY AUTOINCREMENT" );
         delim = ',';
       }
       sql += ')';
