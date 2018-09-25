@@ -25,6 +25,7 @@
 #include "qgsfeedback.h"
 #include "qgsvectorlayer.h"
 #include "qgsthreadingutils.h"
+#include "qgsgeometrycollection.h"
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {
@@ -348,7 +349,7 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
   return valid;
 }
 
-QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer *layer, const QgsGeometry &geometry,
+QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, const QgsGeometry &geometry,
     const QgsAttributeMap &attributes, QgsExpressionContext *context )
 {
   if ( !layer )
@@ -558,6 +559,110 @@ void QgsVectorLayerUtils::matchAttributesToFields( QgsFeature &feature, const Qg
       feature.setAttributes( attributes );
     }
   }
+}
+
+QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer )
+{
+  QgsWkbTypes::Type inputWkbType( layer->wkbType( ) );
+  QgsFeatureList resultFeatures;
+  QgsFeature newF( feature );
+  // Fix attributes
+  QgsVectorLayerUtils::matchAttributesToFields( newF, layer->fields( ) );
+  // Does geometry need transformations?
+  QgsWkbTypes::GeometryType newFGeomType( QgsWkbTypes::geometryType( newF.geometry().wkbType() ) );
+  bool newFHasGeom = newFGeomType !=
+                     QgsWkbTypes::GeometryType::UnknownGeometry &&
+                     newFGeomType != QgsWkbTypes::GeometryType::NullGeometry;
+  bool layerHasGeom = inputWkbType !=
+                      QgsWkbTypes::Type::NoGeometry &&
+                      inputWkbType != QgsWkbTypes::Type::Unknown;
+  // Drop geometry if layer is geometry-less
+  if ( newFHasGeom && ! layerHasGeom )
+  {
+    QgsFeature _f = QgsFeature( layer->fields() );
+    _f.setAttributes( newF.attributes() );
+    resultFeatures.append( _f );
+  }
+  else
+  {
+    // Geometry need fixing
+    if ( newFHasGeom && layerHasGeom && newF.geometry().wkbType() != inputWkbType )
+    {
+      // Single -> multi
+      if ( QgsWkbTypes::isMultiType( inputWkbType ) && ! newF.geometry().isMultipart( ) )
+      {
+        QgsGeometry newGeom( newF.geometry( ) );
+        newGeom.convertToMultiType();
+        newF.setGeometry( newGeom );
+      }
+      // Drop Z/M
+      if ( newF.geometry().constGet()->is3D() && ! QgsWkbTypes::hasZ( inputWkbType ) )
+      {
+        QgsGeometry newGeom( newF.geometry( ) );
+        newGeom.get()->dropZValue();
+        newF.setGeometry( newGeom );
+      }
+      if ( newF.geometry().constGet()->isMeasure() && ! QgsWkbTypes::hasM( inputWkbType ) )
+      {
+        QgsGeometry newGeom( newF.geometry( ) );
+        newGeom.get()->dropMValue();
+        newF.setGeometry( newGeom );
+      }
+      // Add Z/M back, set to 0
+      if ( ! newF.geometry().constGet()->is3D() && QgsWkbTypes::hasZ( inputWkbType ) )
+      {
+        QgsGeometry newGeom( newF.geometry( ) );
+        newGeom.get()->addZValue( 0.0 );
+        newF.setGeometry( newGeom );
+      }
+      if ( ! newF.geometry().constGet()->isMeasure() && QgsWkbTypes::hasM( inputWkbType ) )
+      {
+        QgsGeometry newGeom( newF.geometry( ) );
+        newGeom.get()->addMValue( 0.0 );
+        newF.setGeometry( newGeom );
+      }
+      // Multi -> single
+      if ( ! QgsWkbTypes::isMultiType( inputWkbType ) && newF.geometry().isMultipart( ) )
+      {
+        QgsGeometry newGeom( newF.geometry( ) );
+        const QgsGeometryCollection *parts( static_cast< const QgsGeometryCollection * >( newGeom.constGet() ) );
+        QgsAttributeMap attrMap;
+        for ( int j = 0; j < newF.fields().count(); j++ )
+        {
+          attrMap[j] = newF.attribute( j );
+        }
+        for ( int i = 0; i < parts->partCount( ); i++ )
+        {
+          QgsGeometry g( parts->geometryN( i )->clone() );
+          QgsFeature _f( createFeature( layer, g, attrMap ) );
+          resultFeatures.append( _f );
+        }
+      }
+      else
+      {
+        resultFeatures.append( newF );
+      }
+    }
+    else
+    {
+      resultFeatures.append( newF );
+    }
+  }
+  return resultFeatures;
+}
+
+QgsFeatureList QgsVectorLayerUtils::makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer )
+{
+  QgsFeatureList resultFeatures;
+  for ( const QgsFeature &f : features )
+  {
+    const QgsFeatureList features( makeFeatureCompatible( f, layer ) );
+    for ( const auto &_f : features )
+    {
+      resultFeatures.append( _f );
+    }
+  }
+  return resultFeatures;
 }
 
 QList<QgsVectorLayer *> QgsVectorLayerUtils::QgsDuplicateFeatureContext::layers() const

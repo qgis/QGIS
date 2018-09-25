@@ -140,7 +140,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * assuming that they respect the layer's constraints. Note that the created feature is not
      * automatically inserted into the layer.
      */
-    static QgsFeature createFeature( QgsVectorLayer *layer,
+    static QgsFeature createFeature( const QgsVectorLayer *layer,
                                      const QgsGeometry &geometry = QgsGeometry(),
                                      const QgsAttributeMap &attributes = QgsAttributeMap(),
                                      QgsExpressionContext *context = nullptr );
@@ -187,6 +187,47 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \since QGIS 3.4
      */
     static void matchAttributesToFields( QgsFeature &feature, const QgsFields &fields );
+
+    /**
+     * Converts input \a feature to be compatible with the given \a layer.
+     *
+     * This function returns a new list of transformed features compatible with the input
+     * layer, note that the number of features returned might be greater than one when
+     * converting a multi part geometry to single part
+     *
+     * The following operations will be performed to convert the input features:
+     *  - convert single geometries to multi part
+     *  - drop additional attributes
+     *  - drop geometry if layer is geometry-less
+     *  - add missing attribute fields
+     *  - add back M/Z values (initialized to 0)
+     *  - drop Z/M
+     *  - convert multi part geometries to single part
+     *
+     * \since QGIS 3.4
+     */
+    static QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer );
+
+    /**
+     * Converts input \a features to be compatible with the given \a layer.
+     *
+     * This function returns a new list of transformed features compatible with the input
+     * layer, note that the number of features returned might be greater than the number
+     * of input features.
+     *
+     * The following operations will be performed to convert the input features:
+     *  - convert single geometries to multi part
+     *  - drop additional attributes
+     *  - drop geometry if layer is geometry-less
+     *  - add missing attribute fields
+     *  - add back M/Z values (initialized to 0)
+     *  - drop Z/M
+     *  - convert multi part geometries to single part
+     *
+     * \since QGIS 3.4
+     */
+    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer );
+
 };
 
 
