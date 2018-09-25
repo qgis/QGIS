@@ -140,7 +140,7 @@ about what the algorithm does and the parameters and outputs associated with it.
 .. seealso:: :py:func:`helpUrl`
 %End
 
-    virtual QString helpString() const;
+ virtual QString helpString() const /Deprecated/;
 %Docstring
 Returns a localised help string for the algorithm. Algorithm subclasses should implement either
 helpString() or helpUrl().
@@ -148,6 +148,8 @@ helpString() or helpUrl().
 .. seealso:: :py:func:`helpUrl`
 
 .. seealso:: :py:func:`shortHelpString`
+
+.. deprecated:: Unused, will be removed in QGIS 4.0
 %End
 
     virtual QString helpUrl() const;
