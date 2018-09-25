@@ -33,7 +33,7 @@ QString QgsLineSubstringAlgorithm::displayName() const
 
 QStringList QgsLineSubstringAlgorithm::tags() const
 {
-  return QObject::tr( "linestring,curve,split,portion,reference,referencing,distance,interpolate" ).split( ',' );
+  return QObject::tr( "linestring,curve,split,shorten,shrink,portion,part,reference,referencing,distance,interpolate" ).split( ',' );
 }
 
 QString QgsLineSubstringAlgorithm::group() const
