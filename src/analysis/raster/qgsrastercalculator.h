@@ -36,11 +36,6 @@ class QgsFeedback;
 */
 class ANALYSIS_EXPORT QgsRasterCalculatorEntry
 {
-#ifdef SIP_RUN
-    % TypeHeaderCode
-#include <qgsrastercalculator.h>
-    % End
-#endif
 
   public:
 
@@ -77,6 +72,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
       Canceled = 3, //!< User canceled calculation
       ParserError = 4, //!< Error parsing formula
       MemoryError = 5, //!< Error allocating memory for result
+      BandError = 6, //!< Invalid band number for input
     };
 
     /**
@@ -111,10 +107,17 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * Starts the calculation and writes a new raster.
      *
      * The optional \a feedback argument can be used for progress reporting and cancelation support.
-     * \returns 0 in case of success
+     *
+     * \returns QgsRasterCalculator::Success in case of success. If an error is encountered then
+     * a description of the error can be obtained by calling lastError().
     */
-    //TODO QGIS 3.0 - return QgsRasterCalculator::Result
-    int processCalculation( QgsFeedback *feedback = nullptr );
+    Result processCalculation( QgsFeedback *feedback = nullptr );
+
+    /**
+     * Returns a description of the last error encountered.
+     * \since QGIS 3.4
+     */
+    QString lastError() const;
 
   private:
     //default constructor forbidden. We need formula, output file, output format and output raster resolution obligatory
@@ -147,6 +150,8 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     int mNumOutputColumns = 0;
     //! Number of output rows
     int mNumOutputRows = 0;
+
+    QString mLastError;
 
     /***/
     QVector<QgsRasterCalculatorEntry> mRasterEntries;
