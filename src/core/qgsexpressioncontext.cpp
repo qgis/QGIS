@@ -32,6 +32,7 @@
 #include "qgslayout.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutreportcontext.h"
+#include "qgsexpressionutils.h"
 
 #include <QSettings>
 #include <QDir>
@@ -712,44 +713,6 @@ class GetLayoutItemVariables : public QgsScopedExpressionFunction
 
 };
 
-class GetLayerVisibility : public QgsScopedExpressionFunction
-{
-  public:
-    GetLayerVisibility( const QList<QgsMapLayer *> &layers )
-      : QgsScopedExpressionFunction( QStringLiteral( "is_layer_visible" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "General" ) )
-      , mLayers( layers )
-    {}
-
-    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
-    {
-      if ( mLayers.isEmpty() )
-      {
-        return QVariant( false );
-      }
-
-      QgsMapLayer *layer = _qgis_findLayer( mLayers, values.at( 0 ).toString() );
-      if ( layer )
-      {
-        return QVariant( true );
-      }
-      else
-      {
-        return QVariant( false );
-      }
-    }
-
-    QgsScopedExpressionFunction *clone() const override
-    {
-      return new GetLayerVisibility( mLayers );
-    }
-
-  private:
-
-    const QList<QgsMapLayer *> mLayers;
-
-};
-
-
 class GetCurrentFormFieldValue : public QgsScopedExpressionFunction
 {
   public:
@@ -1339,4 +1302,36 @@ QSet<QString> QgsScopedExpressionFunction::referencedColumns( const QgsExpressio
 bool QgsScopedExpressionFunction::isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
 {
   return allParamsStatic( node, parent, context );
+}
+
+//
+// GetLayerVisibility
+//
+
+QgsExpressionContextUtils::GetLayerVisibility::GetLayerVisibility( const QList<QgsMapLayer *> &layers )
+  : QgsScopedExpressionFunction( QStringLiteral( "is_layer_visible" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "General" ) )
+  , mLayers( _qgis_listRawToQPointer( layers ) )
+{}
+
+QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  if ( mLayers.isEmpty() )
+  {
+    return false;
+  }
+
+  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), parent );
+  if ( layer )
+  {
+    return mLayers.contains( layer );
+  }
+  else
+  {
+    return false;
+  }
+}
+
+QgsScopedExpressionFunction *QgsExpressionContextUtils::GetLayerVisibility::clone() const
+{
+  return new GetLayerVisibility( _qgis_listQPointerToRaw( mLayers ) );
 }

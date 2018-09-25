@@ -988,6 +988,23 @@ class CORE_EXPORT QgsExpressionContextUtils
      */
     static void registerContextFunctions();
 
+  private:
+
+    class GetLayerVisibility : public QgsScopedExpressionFunction
+    {
+      public:
+        GetLayerVisibility( const QList<QgsMapLayer *> &layers );
+        QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
+        QgsScopedExpressionFunction *clone() const override;
+
+      private:
+
+        const QList< QPointer< QgsMapLayer > > mLayers;
+
+    };
+
+    friend class QgsLayoutItemMap; // needs access to GetLayerVisibility
+
 };
 
 #endif // QGSEXPRESSIONCONTEXT_H
