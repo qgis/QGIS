@@ -47,6 +47,12 @@ const QgsProject *QgsConfigCache::project( const QString &path )
       mProjectCache.insert( path, prj.release() );
       mFileSystemWatcher.addPath( path );
     }
+    else
+    {
+      QgsMessageLog::logMessage(
+        this->tr( "Error when loading project file '%1': %2 " ).arg( path, prj->error() ),
+        QStringLiteral( "Server" ), Qgis::Critical );
+    }
   }
   QgsProject::setInstance( mProjectCache[ path ] );
   return mProjectCache[ path ];
