@@ -176,27 +176,13 @@ QString QgsHandleBadLayers::filename( int row )
 
   if ( type == QLatin1String( "vector" ) )
   {
-    if ( provider == QLatin1String( "spatialite" ) )
-    {
-      QgsDataSourceUri uri( datasource );
-      return uri.database();
-    }
-    else if ( provider == QLatin1String( "ogr" ) )
-    {
-      QStringList theURIParts = datasource.split( '|' );
-      return theURIParts[0];
-    }
-    else if ( provider == QLatin1String( "delimitedtext" ) )
-    {
-      return QUrl::fromEncoded( datasource.toLatin1() ).toLocalFile();
-    }
+    const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( provider, datasource );
+    return parts.value( QLatin1String( "path" ) ).toString();
   }
   else
   {
     return datasource;
   }
-
-  return QString();
 }
 
 void QgsHandleBadLayers::setFilename( int row, const QString &filename )
