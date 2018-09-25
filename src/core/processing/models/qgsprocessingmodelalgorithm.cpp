@@ -83,7 +83,7 @@ QString QgsProcessingModelAlgorithm::shortDescription() const
 
 QString QgsProcessingModelAlgorithm::helpUrl() const
 {
-  return QString();
+  return mHelpContent.value( QStringLiteral( "HELP_URL" ) ).toString();
 }
 
 QgsProcessingAlgorithm::Flags QgsProcessingModelAlgorithm::flags() const
