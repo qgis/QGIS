@@ -599,7 +599,7 @@ void TestQgsRasterCalculator::errors()
   QCOMPARE( static_cast< int >( rc.processCalculation() ), 1 );
   QCOMPARE( rc.lastError(), QStringLiteral( "Could not create output /goodluckwritinghere/blah/blah.tif" ) );
 
-  // cancelled
+  // canceled
   QgsFeedback feedback;
   feedback.cancel();
   rc = QgsRasterCalculator( QStringLiteral( "\"landsat@0\"" ),
