@@ -288,9 +288,9 @@ class OgrToPostGis(GdalAlgorithm):
             arguments.append(self.GEOMTYPE[self.parameterAsEnum(parameters, self.GTYPE, context)])
         if len(geocolumn) > 0:
             arguments.append(geocolumnstring)
-        if len(pk) > 0:
+        if pk:
             arguments.append(pkstring)
-        elif primary_key is not None:
+        elif primary_key:
             arguments.append("-lco FID=" + primary_key)
         if len(table) == 0:
             table = layername.lower()
