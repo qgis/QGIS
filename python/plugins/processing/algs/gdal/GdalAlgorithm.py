@@ -35,7 +35,8 @@ from qgis.core import (QgsApplication,
                        QgsProcessingFeatureSourceDefinition,
                        QgsProcessingAlgorithm,
                        QgsProcessingContext,
-                       QgsProcessingFeedback)
+                       QgsProcessingFeedback,
+                       QgsProviderRegistry)
 
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -106,7 +107,12 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                 ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
                                                                           QgsVectorFileWriter.supportedFormatExtensions(),
                                                                           feedback=feedback)
-                ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
+                parts = QgsProviderRegistry.instance().decodeUri('ogr', ogr_data_path)
+                ogr_data_path = parts['path']
+                if 'layerName' in parts and parts['layerName']:
+                    ogr_layer_name = parts['layerName']
+                else:
+                    ogr_layer_name = GdalUtils.ogrLayerName(ogr_data_path)
             else:
                 #not executing - don't worry about 'selected features only' handling. It has no meaning
                 #for the command line preview since it has no meaning outside of a QGIS session!
