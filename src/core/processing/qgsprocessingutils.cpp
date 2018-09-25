@@ -29,6 +29,7 @@
 #include "qgsexpressioncontextscopegenerator.h"
 #include "qgsfileutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsproviderregistry.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -631,8 +632,16 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
   bool requiresTranslation = selectedFeaturesOnly;
   if ( !selectedFeaturesOnly )
   {
-    QFileInfo fi( vl->source() );
-    requiresTranslation = !compatibleFormats.contains( fi.suffix(), Qt::CaseInsensitive );
+    const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( vl->dataProvider()->name(), vl->source() );
+    if ( parts.contains( QLatin1String( "path" ) ) )
+    {
+      QFileInfo fi( parts.value( QLatin1String( "path" ) ).toString() );
+      requiresTranslation = !compatibleFormats.contains( fi.suffix(), Qt::CaseInsensitive );
+    }
+    else
+    {
+      requiresTranslation = true; // not a disk-based format
+    }
   }
 
   if ( requiresTranslation )
