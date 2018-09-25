@@ -561,7 +561,7 @@ void QgsVectorLayerUtils::matchAttributesToFields( QgsFeature &feature, const Qg
   }
 }
 
-const QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer )
+QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer )
 {
   QgsWkbTypes::Type inputWkbType( layer->wkbType( ) );
   QgsFeatureList resultFeatures;
@@ -651,7 +651,7 @@ const QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeatur
   return resultFeatures;
 }
 
-const QgsFeatureList QgsVectorLayerUtils::makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer )
+QgsFeatureList QgsVectorLayerUtils::makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer )
 {
   QgsFeatureList resultFeatures;
   for ( const QgsFeature &f : features )

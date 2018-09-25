@@ -177,7 +177,7 @@ are padded with NULL values to match the required length).
 .. versionadded:: 3.4
 %End
 
-    static const QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer );
+    static QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer );
 %Docstring
 Converts input ``feature`` to be compatible with the given ``layer``.
 
@@ -197,7 +197,7 @@ The following operations will be performed to convert the input features:
 .. versionadded:: 3.4
 %End
 
-    static const QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer );
+    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer );
 %Docstring
 Converts input ``features`` to be compatible with the given ``layer``.
 

@@ -206,7 +206,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      *
      * \since QGIS 3.4
      */
-    static const QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer );
+    static QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer );
 
     /**
      * Converts input \a features to be compatible with the given \a layer.
@@ -226,7 +226,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      *
      * \since QGIS 3.4
      */
-    static const QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer );
+    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer );
 
 };
 
