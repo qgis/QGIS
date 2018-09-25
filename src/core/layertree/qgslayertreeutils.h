@@ -87,6 +87,13 @@ class CORE_EXPORT QgsLayerTreeUtils
      * \returns the new tree layer
      */
     static QgsLayerTreeLayer *insertLayerBelow( QgsLayerTreeGroup *group, const QgsMapLayer *refLayer, QgsMapLayer *layerToInsert );
+
+    /**
+     * Returns map layers from the given list of layer tree nodes. Also recursively visits
+     * child nodes of groups.
+     * \since QGIS 3.4
+     */
+    static QSet<QgsMapLayer *> collectMapLayersRecursive( const QList<QgsLayerTreeNode *> &nodes );
 };
 
 #endif // QGSLAYERTREEUTILS_H

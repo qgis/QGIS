@@ -26,6 +26,7 @@
 #include <qgsrulebasedrenderer.h>
 #include <qgslayertreemodel.h>
 #include <qgslayertreemodellegendnode.h>
+#include <qgslayertreeutils.h>
 
 class TestQgsLayerTree : public QObject
 {
@@ -50,6 +51,7 @@ class TestQgsLayerTree : public QObject
     void testFindLayer();
     void testLayerDeleted();
     void testFindGroups();
+    void testUtilsCollectMapLayers();
 
   private:
 
@@ -659,6 +661,30 @@ void TestQgsLayerTree::testFindGroups()
   QVERIFY( groups.contains( group1 ) );
   QVERIFY( groups.contains( group2 ) );
   QVERIFY( groups.contains( group3 ) );
+}
+
+void TestQgsLayerTree::testUtilsCollectMapLayers()
+{
+  QgsVectorLayer *vl1 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+
+  QgsProject project;
+  project.addMapLayer( vl1 );
+  project.addMapLayer( vl2 );
+
+  QgsLayerTree root;
+  QgsLayerTreeLayer *nodeVl1 = root.addLayer( vl1 );
+  QgsLayerTreeGroup *nodeGrp = root.addGroup( "grp" );
+  QgsLayerTreeLayer *nodeVl2 = nodeGrp->addLayer( vl2 );
+  Q_UNUSED( nodeVl2 );
+
+  QSet<QgsMapLayer *> set1 = QgsLayerTreeUtils::collectMapLayersRecursive( QList<QgsLayerTreeNode *>() << &root );
+  QSet<QgsMapLayer *> set2 = QgsLayerTreeUtils::collectMapLayersRecursive( QList<QgsLayerTreeNode *>() << nodeVl1 );
+  QSet<QgsMapLayer *> set3 = QgsLayerTreeUtils::collectMapLayersRecursive( QList<QgsLayerTreeNode *>() << nodeGrp );
+
+  QCOMPARE( set1, QSet<QgsMapLayer *>() << vl1 << vl2 );
+  QCOMPARE( set2, QSet<QgsMapLayer *>() << vl1 );
+  QCOMPARE( set3, QSet<QgsMapLayer *>() << vl2 );
 }
 
 

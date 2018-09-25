@@ -413,3 +413,27 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerBelow( QgsLayerTreeGroup *group
   QgsLayerTreeGroup *parent = static_cast<QgsLayerTreeGroup *>( inTree->parent() ) ? static_cast<QgsLayerTreeGroup *>( inTree->parent() ) : group;
   return parent->insertLayer( idx, layerToInsert );
 }
+
+static void _collectMapLayers( const QList<QgsLayerTreeNode *> &nodes, QSet<QgsMapLayer *> &layersSet )
+{
+  for ( QgsLayerTreeNode *node : nodes )
+  {
+    if ( QgsLayerTree::isLayer( node ) )
+    {
+      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+      if ( nodeLayer->layer() )
+        layersSet << nodeLayer->layer();
+    }
+    else if ( QgsLayerTree::isGroup( node ) )
+    {
+      _collectMapLayers( QgsLayerTree::toGroup( node )->children(), layersSet );
+    }
+  }
+}
+
+QSet<QgsMapLayer *> QgsLayerTreeUtils::collectMapLayersRecursive( const QList<QgsLayerTreeNode *> &nodes )
+{
+  QSet<QgsMapLayer *> layersSet;
+  _collectMapLayers( nodes, layersSet );
+  return layersSet;
+}
