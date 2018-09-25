@@ -24,6 +24,9 @@ Handles storage of information regarding WKB types and their properties.
 #include "qgswkbtypes.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum Type
     {
@@ -97,6 +100,8 @@ Handles storage of information regarding WKB types and their properties.
       UnknownGeometry,
       NullGeometry
     };
+    typedef QFlags<QgsWkbTypes::GeometryType> GeometryTypes;
+
 
     static Type singleType( Type type );
 %Docstring
@@ -305,6 +310,9 @@ Will convert the 25D version of the flat type if supported or Unknown if not sup
 %End
 
 };
+
+QFlags<QgsWkbTypes::GeometryType> operator|(QgsWkbTypes::GeometryType f1, QFlags<QgsWkbTypes::GeometryType> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

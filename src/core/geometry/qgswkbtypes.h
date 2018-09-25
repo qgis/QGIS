@@ -39,6 +39,7 @@
 
 class CORE_EXPORT QgsWkbTypes
 {
+    Q_GADGET
   public:
 
     /**
@@ -142,6 +143,9 @@ class CORE_EXPORT QgsWkbTypes
       UnknownGeometry,
       NullGeometry
     };
+    Q_ENUM( GeometryType )
+    Q_DECLARE_FLAGS( GeometryTypes, GeometryType )
+    Q_FLAG( GeometryTypes )
 
     /**
      * Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
@@ -990,5 +994,7 @@ class CORE_EXPORT QgsWkbTypes
 
     static const QMap<Type, wkbEntry> ENTRIES;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsWkbTypes::GeometryTypes )
 
 #endif // QGSWKBTYPES_H

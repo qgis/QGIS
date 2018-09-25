@@ -17,6 +17,8 @@
 
 #include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
+#include "qgswkbtypes.h"
+
 class QgsOWSConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
