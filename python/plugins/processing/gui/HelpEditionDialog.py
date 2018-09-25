@@ -52,6 +52,7 @@ class HelpEditionDialog(BASE, WIDGET):
     ALG_CREATOR = 'ALG_CREATOR'
     ALG_HELP_CREATOR = 'ALG_HELP_CREATOR'
     ALG_VERSION = 'ALG_VERSION'
+    SHORT_DESCRIPTION = 'SHORT_DESCRIPTION'
 
     def __init__(self, alg):
         super(HelpEditionDialog, self).__init__(None)
@@ -102,6 +103,8 @@ class HelpEditionDialog(BASE, WIDGET):
 
     def fillTree(self):
         item = TreeDescriptionItem(self.tr('Algorithm description'), self.ALG_DESC)
+        self.tree.addTopLevelItem(item)
+        item = TreeDescriptionItem(self.tr('Short description'), self.SHORT_DESCRIPTION)
         self.tree.addTopLevelItem(item)
         parametersItem = TreeDescriptionItem(self.tr('Input parameters'), None)
         self.tree.addTopLevelItem(parametersItem)
