@@ -45,7 +45,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsScopedProxyProgressTask)
 
 from qgis.gui import QgsProcessingAlgorithmDialogBase
-from qgis.utils import OverrideCursor
+from qgis.utils import OverrideCursor, iface
 
 from processing.gui.BatchPanel import BatchPanel
 from processing.gui.AlgorithmExecutor import execute
@@ -61,8 +61,8 @@ import codecs
 
 class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
-    def __init__(self, alg):
-        super().__init__()
+    def __init__(self, alg, parent=None):
+        super().__init__(parent)
 
         self.setAlgorithm(alg)
 
