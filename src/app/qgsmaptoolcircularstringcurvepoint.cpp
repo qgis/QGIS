@@ -43,7 +43,7 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
     {
       if ( !mTempRubberBand )
       {
-        mTempRubberBand = createGeometryRubberBand( layerType, true );
+        mTempRubberBand = createGeometryRubberBand( mLayerType, true );
         mTempRubberBand->show();
       }
 
@@ -57,7 +57,7 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
     {
       if ( !mRubberBand )
       {
-        mRubberBand = createGeometryRubberBand( layerType );
+        mRubberBand = createGeometryRubberBand( mLayerType );
         mRubberBand->show();
       }
 
