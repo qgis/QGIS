@@ -289,6 +289,9 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
     def id(self):
         return 'qgis'
 
+    def helpId(self):
+        return 'qgis'
+
     def name(self):
         return 'QGIS'
 

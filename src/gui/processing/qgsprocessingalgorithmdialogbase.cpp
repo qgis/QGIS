@@ -143,6 +143,11 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
     textShortHelp->setHtml( algHelp );
     connect( textShortHelp, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::linkClicked );
   }
+
+  if ( algorithm->helpUrl().isEmpty() && algorithm->provider()->helpId().isEmpty() )
+  {
+    mButtonBox->removeButton( mButtonBox->button( QDialogButtonBox::Help ) );
+  }
 }
 
 QgsProcessingAlgorithm *QgsProcessingAlgorithmDialogBase::algorithm()
