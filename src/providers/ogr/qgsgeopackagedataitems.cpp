@@ -193,6 +193,12 @@ QList<QAction *> QgsGeoPackageCollectionItem::actions( QWidget *parent )
   connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageCollectionItem::addTable );
   lst.append( actionAddTable );
 
+  // Run VACUUM
+  QAction *actionVacuumDb = new QAction( tr( "Compact database (VACUUM)" ), parent );
+  connect( actionVacuumDb, &QAction::triggered, this, &QgsGeoPackageConnectionItem::vacuumGeoPackageDbAction );
+  lst.append( actionVacuumDb );
+
+
   return lst;
 }
 
@@ -374,7 +380,6 @@ QList<QAction *> QgsGeoPackageConnectionItem::actions( QWidget *parent )
   QAction *actionVacuumDb = new QAction( tr( "Compact database (VACUUM)" ), parent );
   connect( actionVacuumDb, &QAction::triggered, this, &QgsGeoPackageConnectionItem::vacuumGeoPackageDbAction );
   lst.append( actionVacuumDb );
-
 
   return lst;
 }
