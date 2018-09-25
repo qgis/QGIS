@@ -43,7 +43,7 @@ void QgsMapToolRegularPolygonCenterCorner::cadCanvasReleaseEvent( QgsMapMouseEve
     {
       if ( !mTempRubberBand )
       {
-        mTempRubberBand = createGeometryRubberBand( layerType, true );
+        mTempRubberBand = createGeometryRubberBand( mLayerType, true );
         mTempRubberBand->show();
 
         createNumberSidesSpinBox();

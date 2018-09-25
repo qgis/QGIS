@@ -108,7 +108,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     if ( !mTempRubberBand )
     {
-      mTempRubberBand = createGeometryRubberBand( layerType, true );
+      mTempRubberBand = createGeometryRubberBand( mLayerType, true );
       mTempRubberBand->show();
     }
     else

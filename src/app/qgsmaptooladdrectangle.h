@@ -77,8 +77,8 @@ class APP_EXPORT QgsMapToolAddRectangle: public QgsMapToolCapture
     //! Returns the side. \see mSide
     int side( ) const { return mSide; }
 
-    //! Layertype which will be used for rubberband
-    QgsWkbTypes::GeometryType layerType = QgsWkbTypes::LineGeometry;
+    //! Layer type which will be used for rubberband
+    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
 
   private:
     //! Convenient member for the azimuth of the rotated rectangle or when map is rotated.

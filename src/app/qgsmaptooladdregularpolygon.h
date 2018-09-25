@@ -62,8 +62,8 @@ class APP_EXPORT QgsMapToolAddRegularPolygon: public QgsMapToolCapture
     //! Regular shape as a regular polygon
     QgsRegularPolygon mRegularPolygon;
 
-    //! Layertype which will be used for rubberband
-    QgsWkbTypes::GeometryType layerType = QgsWkbTypes::LineGeometry;
+    //! Layer type which will be used for rubberband
+    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
 
 };
 
