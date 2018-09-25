@@ -1280,11 +1280,11 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
     {
       Q_FOREACH ( const QString &s, var.toStringList() )
       {
-        resultStringList << s;
+        processVariant( s );
       }
     }
     else if ( var.canConvert<QgsProperty>() )
-      resultStringList << var.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+      processVariant( var.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() ) );
     else if ( var.canConvert<QgsProcessingOutputLayerDefinition>() )
     {
       // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
@@ -1292,7 +1292,7 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
       QVariant sink = fromVar.sink;
       if ( sink.canConvert<QgsProperty>() )
       {
-        resultStringList << sink.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+        processVariant( sink.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() ) );
       }
     }
     else if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( var ) ) )
@@ -1301,15 +1301,16 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
     }
     else
     {
-      resultStringList << var.toString();
+      QgsMapLayer *alayer = QgsProcessingUtils::mapLayerFromString( var.toString(), context );
+      if ( alayer )
+        layers << alayer;
     }
   };
 
   processVariant( val );
 
-  if ( layers.isEmpty() && ( resultStringList.isEmpty() || resultStringList.at( 0 ).isEmpty() ) )
+  if ( layers.isEmpty() )
   {
-    resultStringList.clear();
     // check default
     if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( definition->defaultValue() ) ) )
     {
@@ -1325,19 +1326,12 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
         }
         else
         {
-          resultStringList << var.toString();
+          processVariant( var );
         }
       }
     }
     else
-      resultStringList << definition->defaultValue().toString();
-  }
-
-  Q_FOREACH ( const QString &s, resultStringList )
-  {
-    QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( s, context );
-    if ( layer )
-      layers << layer;
+      processVariant( definition->defaultValue() );
   }
 
   return layers;

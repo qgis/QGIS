@@ -3066,6 +3066,13 @@ void TestQgsProcessing::parameterLayerList()
   QCOMPARE( layers.at( 0 ), v1 );
   QCOMPARE( layers.at( 1 )->publicSource(), raster2 );
 
+  // mix of existing layer and ID (and check we keep order)
+  params.insert( "non_optional",  QVariantList() << QVariant::fromValue( v1 ) << v2->id() );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << v1 << v2 );
+
+  params.insert( "non_optional",  QVariantList() << v1->id() << QVariant::fromValue( v2 ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << v1 << v2 );
+
   // empty string
   params.insert( "non_optional",  QString( "" ) );
   QVERIFY( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ).isEmpty() );
