@@ -29,23 +29,41 @@
 class QgsRasterLayer;
 class QgsFeedback;
 
-
-struct ANALYSIS_EXPORT QgsRasterCalculatorEntry
+/**
+ * \ingroup analysis
+ * \class QgsRasterCalculatorEntry
+ * Represents an individual raster layer/band number entry within a raster calculation.
+*/
+class ANALYSIS_EXPORT QgsRasterCalculatorEntry
 {
 #ifdef SIP_RUN
-  % TypeHeaderCode
+    % TypeHeaderCode
 #include <qgsrastercalculator.h>
-  % End
+    % End
 #endif
 
-  QString ref; //name
-  QgsRasterLayer *raster; //pointer to rasterlayer
-  int bandNumber; //raster band number
+  public:
+
+    /**
+     * Name of entry.
+     */
+    QString ref;
+
+    /**
+     * Raster layer associated with entry.
+     */
+    QgsRasterLayer *raster = nullptr;
+
+    /**
+     * Band number for entry. Numbering for bands usually starts at 1 for the first band, not 0.
+     */
+    int bandNumber = 1;
 };
 
 /**
  * \ingroup analysis
- * Raster calculator class*/
+ * Performs raster layer calculations.
+*/
 class ANALYSIS_EXPORT QgsRasterCalculator
 {
   public:

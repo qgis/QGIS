@@ -10,22 +10,31 @@
 
 
 
-
-struct QgsRasterCalculatorEntry
+class QgsRasterCalculatorEntry
 {
+%Docstring
+Represents an individual raster layer/band number entry within a raster calculation.
+%End
+
+%TypeHeaderCode
+#include "qgsrastercalculator.h"
 %TypeHeaderCode
 #include <qgsrastercalculator.h>
 %End
+%End
+  public:
 
-  QString ref; //name
-  QgsRasterLayer *raster; //pointer to rasterlayer
-  int bandNumber; //raster band number
+    QString ref;
+
+    QgsRasterLayer *raster;
+
+    int bandNumber;
 };
 
 class QgsRasterCalculator
 {
 %Docstring
-Raster calculator class*
+Performs raster layer calculations.
 %End
 
 %TypeHeaderCode
