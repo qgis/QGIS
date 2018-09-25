@@ -45,7 +45,7 @@ Constructor for QgsProcessingModelAlgorithm.
 
     virtual QString shortHelpString() const;
 
-    virtual QString helpUrl() const;
+    virtual QString shortDescription() const;
 
     virtual Flags flags() const;
 

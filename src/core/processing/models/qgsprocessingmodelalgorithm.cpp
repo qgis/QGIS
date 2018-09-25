@@ -70,14 +70,15 @@ QString QgsProcessingModelAlgorithm::svgIconPath() const
 
 QString QgsProcessingModelAlgorithm::shortHelpString() const
 {
-  if ( mHelpContent.contains( QStringLiteral( "ALG_DESC" ) ) )
-    return mHelpContent.value( QStringLiteral( "ALG_DESC" ) ).toString();
-  return QString();
+  if ( mHelpContent.empty() )
+    return QString();
+
+  return QgsProcessingUtils::formatHelpMapAsHtml( mHelpContent, this );
 }
 
-QString QgsProcessingModelAlgorithm::helpUrl() const
+QString QgsProcessingModelAlgorithm::shortDescription() const
 {
-  return QgsProcessingUtils::formatHelpMapAsHtml( mHelpContent, this );
+  return mHelpContent.value( QStringLiteral( "SHORT_DESCRIPTION" ) ).toString();
 }
 
 QgsProcessingAlgorithm::Flags QgsProcessingModelAlgorithm::flags() const
