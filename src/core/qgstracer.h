@@ -70,6 +70,7 @@ class CORE_EXPORT QgsTracer : public QObject
 
     /**
      * Sets the \a renderContext used for tracing only on visible features.
+     * \since QGIS 3.4
      */
     void setRenderContext( const QgsRenderContext *renderContext );
 
@@ -169,6 +170,7 @@ class CORE_EXPORT QgsTracer : public QObject
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
     void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
     void onDataChanged( );
+    void onStyleChanged( );
     void onLayerDestroyed( QObject *obj );
 
   private:

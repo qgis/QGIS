@@ -20,6 +20,12 @@
 #include <qgstracer.h>
 #include <qgsvectorlayer.h>
 #include "qgsproject.h"
+#include "qgscategorizedsymbolrenderer.h"
+#include "qgssettings.h"
+#include "qgslayertree.h"
+#include "qgslayertreemodel.h"
+#include "qgsmapsettings.h"
+#include "qgssnappingutils.h"
 
 class TestQgsTracer : public QObject
 {
@@ -36,6 +42,7 @@ class TestQgsTracer : public QObject
     void testReprojection();
     void testCurved();
     void testOffset();
+    void testInvisible();
 
   private:
 
@@ -154,6 +161,97 @@ void TestQgsTracer::testSimple()
   QCOMPARE( points5.count(), 0 );
 
   delete vl;
+}
+
+void TestQgsTracer::testInvisible()
+{
+  QgsVectorLayer *mVL = new QgsVectorLayer( QStringLiteral( "Linestring?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsFeature f1, f2, f3, f4;
+  int idx = mVL->fields().indexFromName( QStringLiteral( "fld" ) );
+  QVERIFY( idx != -1 );
+  f1.initAttributes( 1 );
+  f2.initAttributes( 1 );
+  f3.initAttributes( 1 );
+  f4.initAttributes( 1 );
+
+  /* This shape - nearly a square (one side is shifted to have exactly one shortest
+   * path between corners):
+   * 0,10 +----+  20,10
+   *      |   /
+   * 0,0  +--+  10,0
+   */
+  QgsGeometry geom = QgsGeometry::fromWkt( "LINESTRING(0 0, 0 10)" );
+  f1.setGeometry( geom );
+  f1.setAttribute( idx, QVariant( 2 ) );
+  geom = QgsGeometry::fromWkt( "LINESTRING(0 0, 10 0)" );
+  f2.setGeometry( geom );
+  f2.setAttribute( idx, QVariant( 1 ) );
+  geom = QgsGeometry::fromWkt( "LINESTRING(0 10, 20 10)" );
+  f3.setGeometry( geom );
+  f3.setAttribute( idx, QVariant( 1 ) );
+  geom = QgsGeometry::fromWkt( "LINESTRING(10 0, 20 10)" );
+  f4.setGeometry( geom );
+  f4.setAttribute( idx, QVariant( 1 ) );
+  QgsFeatureList flist;
+  flist << f1 << f2 << f3 << f4;
+
+  mVL->dataProvider()->addFeatures( flist );
+
+  QgsProject::instance()->addMapLayer( mVL );
+
+  QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
+  renderer->setClassAttribute( QStringLiteral( "fld" ) );
+  renderer->setSourceSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry ) );
+  renderer->addCategory( QgsRendererCategory( "2", QgsSymbol::defaultSymbol( QgsWkbTypes::LineGeometry ), QStringLiteral( "2" ) ) );
+  mVL->setRenderer( renderer );
+
+  //create legend with symbology nodes for categorized renderer
+  QgsLayerTree *root = new QgsLayerTree();
+  QgsLayerTreeLayer *n = new QgsLayerTreeLayer( mVL );
+  root->addChildNode( n );
+  QgsLayerTreeModel *m = new QgsLayerTreeModel( root, nullptr );
+  m->refreshLayerLegend( n );
+
+  QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
+  QCOMPARE( nodes.length(), 1 );
+  //uncheck all and test that all nodes are unchecked
+  static_cast< QgsSymbolLegendNode * >( nodes.at( 0 ) )->uncheckAllItems();
+  Q_FOREACH ( QgsLayerTreeModelLegendNode *ln, nodes )
+  {
+    QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Unchecked );
+  }
+
+  QgsMapSettings mapSettings;
+  mapSettings.setOutputSize( QSize( 100, 100 ) );
+  mapSettings.setExtent( QgsRectangle( 0, 0, 1, 1 ) );
+  QVERIFY( mapSettings.hasValidSettings() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mVL );
+
+  QgsSnappingUtils u;
+  u.setMapSettings( mapSettings );
+  u.setEnableSnappingForInvisibleFeature( false );
+  u.setCurrentLayer( mVL );
+
+  QgsSnappingConfig snappingConfig = u.config();
+  snappingConfig.setEnabled( true );
+  snappingConfig.setTolerance( 10 );
+  snappingConfig.setUnits( QgsTolerance::Pixels );
+  snappingConfig.setMode( QgsSnappingConfig::ActiveLayer );
+  u.setConfig( snappingConfig );
+  QgsTracer tracer;
+  tracer.setLayers( QList<QgsVectorLayer *>() << mVL );
+
+  QgsPolylineXY points1 = tracer.findShortestPath( QgsPointXY( 10, 0 ), QgsPointXY( 0, 10 ) );
+  QCOMPARE( points1.count(), 3 );
+  QCOMPARE( points1[0], QgsPointXY( 10, 0 ) );
+  QCOMPARE( points1[1], QgsPointXY( 0, 0 ) );
+  QCOMPARE( points1[2], QgsPointXY( 0, 10 ) );
+
+  QgsRenderContext renderContext = QgsRenderContext::fromMapSettings( mapSettings );
+  tracer.setRenderContext( &renderContext );
+  points1 = tracer.findShortestPath( QgsPointXY( 10, 0 ), QgsPointXY( 0, 10 ) );
+  QCOMPARE( points1.count(), 0 );
+
 }
 
 void TestQgsTracer::testPolygon()

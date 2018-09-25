@@ -24,6 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsexception.h"
 #include "qgsrenderer.h"
+#include "qgssettings.h"
 
 #include <queue>
 #include <vector>
@@ -459,8 +460,7 @@ QgsTracer::QgsTracer() = default;
 bool QgsTracer::initGraph()
 {
   if ( mGraph )
-    return true;
-  // already initialized
+    return true; // already initialized
 
   mHasTopologyProblem = false;
 
@@ -475,15 +475,17 @@ bool QgsTracer::initGraph()
 
   t1.start();
   int featuresCounted = 0;
+  bool enableInvisibleFeature = QgsSettings().value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool();
   for ( QgsVectorLayer *vl : qgis::as_const( mLayers ) )
   {
     QgsFeatureRequest request;
 
     bool filter = false;
-    std::unique_ptr< QgsFeatureRenderer > renderer( vl->renderer() ? vl->renderer()->clone() : nullptr );
+    std::unique_ptr< QgsFeatureRenderer > renderer;
     QgsRenderContext *ctx = nullptr;
-    if ( mRenderContext )
+    if ( !enableInvisibleFeature && mRenderContext )
     {
+      renderer.reset( vl->renderer() ? vl->renderer()->clone() : nullptr );
       mRenderContext->expressionContext() << QgsExpressionContextUtils::layerScope( vl );
       ctx = mRenderContext.get();
       if ( renderer )
@@ -602,6 +604,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer *> &layers )
     disconnect( layer, &QgsVectorLayer::geometryChanged, this, &QgsTracer::onGeometryChanged );
     disconnect( layer, &QgsVectorLayer::attributeValueChanged, this, &QgsTracer::onAttributeValueChanged );
     disconnect( layer, &QgsVectorLayer::dataChanged, this, &QgsTracer::onDataChanged );
+    disconnect( layer, &QgsVectorLayer::styleChanged, this, &QgsTracer::onStyleChanged );
     disconnect( layer, &QObject::destroyed, this, &QgsTracer::onLayerDestroyed );
   }
 
@@ -702,12 +705,19 @@ void QgsTracer::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVaria
   Q_UNUSED( fid );
   Q_UNUSED( idx );
   Q_UNUSED( value );
-  invalidateGraph();
+  if ( mRenderContext )
+    invalidateGraph();
 }
 
 void QgsTracer::onDataChanged( )
 {
   invalidateGraph();
+}
+
+void QgsTracer::onStyleChanged( )
+{
+  if ( mRenderContext )
+    invalidateGraph();
 }
 
 void QgsTracer::onLayerDestroyed( QObject *obj )
