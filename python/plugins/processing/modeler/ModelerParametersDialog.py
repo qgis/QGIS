@@ -308,13 +308,17 @@ class ModelerParametersDialog(QDialog):
                         value = value[0]
                     elif isinstance(value, list) and len(value) == 0:
                         value = None
-                if value is None:
-                    value = param.defaultValue()
 
                 wrapper = self.wrappers[param.name()]
                 if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
+                    if value is None:
+                        value = QgsProcessingModelChildParameterSource.fromStaticValue(param.defaultValue())
+
                     wrapper.setWidgetValue(value)
                 else:
+                    if value is None:
+                        value = param.defaultValue()
+
                     if isinstance(value,
                                   QgsProcessingModelChildParameterSource) and value.source() == QgsProcessingModelChildParameterSource.StaticValue:
                         value = value.staticValue()
