@@ -97,7 +97,6 @@ namespace QgsWms
     if ( !ok )
     {
       const QString msg = QString( "%1 request error for %2" ).arg( name( mName ), url.toString() );
-      QgsMessageLog::logMessage( msg );
       QgsServerParameterDefinition::raiseError( msg );
     }
 
