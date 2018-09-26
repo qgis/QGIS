@@ -418,7 +418,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
 
     // 4. passed attribute value
     // note - deliberately not using else if!
-    if ( !v.isValid() && attributes.contains( idx ) )
+    if ( v.isValid() && attributes.contains( idx ) && !layer->primaryKeyAttributes().contains(idx) )
     {
       v = attributes.value( idx );
     }
