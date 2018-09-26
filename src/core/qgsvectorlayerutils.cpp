@@ -380,8 +380,16 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
     bool checkUnique = true;
 
     // in order of priority:
+    // 1. passed attribute value
+    if ( attributes.contains( idx )
+         && !layer->primaryKeyAttributes().contains( idx )
+         && !( fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique ) )
+    {
+      v = attributes.value( idx );
+    }
 
-    // 1. client side default expression
+    // 2. client side default expression
+    // note - deliberately not using else if!
     if ( layer->defaultValueDefinition( idx ).isValid() )
     {
       // client side default expression set - takes precedence over all. Why? Well, this is the only default
@@ -390,7 +398,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
       v = layer->defaultValue( idx, newFeature, evalContext );
     }
 
-    // 2. provider side default value clause
+    // 3. provider side default value clause
     // note - not an else if deliberately. Users may return null from a default value expression to fallback to provider defaults
     if ( !v.isValid() && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
     {
@@ -403,7 +411,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
       }
     }
 
-    // 3. provider side default literal
+    // 4. provider side default literal
     // note - deliberately not using else if!
     if ( !v.isValid() && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
     {
@@ -414,13 +422,6 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
         //trust that the provider default has been sensibly set not to violate any constraints
         checkUnique = false;
       }
-    }
-
-    // 4. passed attribute value
-    // note - deliberately not using else if!
-    if ( attributes.contains( idx ) && !layer->primaryKeyAttributes().contains( idx ) )
-    {
-      v = attributes.value( idx );
     }
 
     // last of all... check that unique constraints are respected
