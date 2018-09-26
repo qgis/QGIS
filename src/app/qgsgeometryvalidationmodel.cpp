@@ -1,6 +1,7 @@
 #include "qgsgeometryvalidationmodel.h"
 
 #include "qgsvectorlayer.h"
+#include "qgssinglegeometrycheck.h"
 
 #include <QIcon>
 
@@ -55,7 +56,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
       if ( featureItem.errors.count() > 1 )
         return tr( "%1: %n Errors", "", featureItem.errors.count() ).arg( featureTitle );
       else if ( featureItem.errors.count() == 1 )
-        return tr( "%1: %2" ).arg( featureTitle, featureItem.errors.at( 0 ).what() );
+        return tr( "%1: %2" ).arg( featureTitle, featureItem.errors.at( 0 )->description() );
 #if 0
       else
         return tr( "%1: No Errors" ).arg( featureTitle );
@@ -101,7 +102,7 @@ void QgsGeometryValidationModel::setCurrentLayer( QgsVectorLayer *currentLayer )
   endResetModel();
 }
 
-void QgsGeometryValidationModel::onGeometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<QgsGeometry::Error> &errors )
+void QgsGeometryValidationModel::onGeometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<std::shared_ptr<QgsSingleGeometryCheckError>> &errors )
 {
   auto &layerErrors = mErrorStorage[layer];
 

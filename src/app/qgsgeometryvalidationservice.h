@@ -24,8 +24,10 @@ email                : matthias@opengis.ch
 class QgsProject;
 class QgsMapLayer;
 class QgsVectorLayer;
-// TODO: Should be retrieved from registry!!
-class QgsIsValidGeometryCheck;
+class QgsGeometryCheck;
+class QgsSingleGeometryCheck;
+class QgsSingleGeometryCheckError;
+
 
 
 /**
@@ -52,7 +54,7 @@ class QgsGeometryValidationService : public QObject
     typedef QList<FeatureError> FeatureErrors;
 
     QgsGeometryValidationService( QgsProject *project );
-    ~QgsGeometryValidationService();
+    ~QgsGeometryValidationService() = default;
 
     /**
      * Returns if a validation is active for the specified \a feature on
@@ -62,7 +64,7 @@ class QgsGeometryValidationService : public QObject
 
   signals:
     void geometryCheckStarted( QgsVectorLayer *layer, QgsFeatureId fid );
-    void geometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<QgsGeometry::Error> &errors );
+    void geometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<std::shared_ptr<QgsSingleGeometryCheckError>> &errors );
 
   private slots:
     void onLayersAdded( const QList<QgsMapLayer *> &layers );
@@ -71,15 +73,15 @@ class QgsGeometryValidationService : public QObject
     void onFeatureDeleted( QgsVectorLayer *layer, QgsFeatureId fid );
 
   private:
+    void enableLayerChecks( QgsVectorLayer *layer );
+
     void cancelChecks( QgsVectorLayer *layer, QgsFeatureId fid );
 
     void processFeature( QgsVectorLayer *layer, QgsFeatureId fid );
 
-    QgsIsValidGeometryCheck *mIsValidGeometryCheck;
+    QgsProject *mProject = nullptr;
 
-    QgsProject *mProject;
-
-    QMap<QgsVectorLayer *, bool> mActiveChecks;
+    QHash<QgsVectorLayer *, QList< QgsSingleGeometryCheck * > > mSingleFeatureChecks;
 };
 
 #endif // QGSGEOMETRYVALIDATIONSERVICE_H

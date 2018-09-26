@@ -25,7 +25,7 @@ class QgsGeometryValidationModel : public QAbstractItemModel
     void setCurrentLayer( QgsVectorLayer *currentLayer );
 
   private slots:
-    void onGeometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<QgsGeometry::Error> &errors );
+    void onGeometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<std::shared_ptr<QgsSingleGeometryCheckError> > &errors );
     void onGeometryCheckStarted( QgsVectorLayer *layer, QgsFeatureId fid );
 
   private:
@@ -39,7 +39,7 @@ class QgsGeometryValidationModel : public QAbstractItemModel
       {}
 
       QgsFeatureId fid; // TODO INITIALIZE PROPERLY
-      QList<QgsGeometry::Error> errors;
+      QList<std::shared_ptr<QgsSingleGeometryCheckError>> errors;
     };
 
     int errorsForFeature( QgsVectorLayer *layer, QgsFeatureId fid );

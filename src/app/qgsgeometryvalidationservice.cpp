@@ -17,19 +17,15 @@ email                : matthias@opengis.ch
 #include "qgsgeometryvalidationservice.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-
-// TODO: Replace with registry
-#include "qgsisvalidgeometrycheck.h"
+#include "qgsgeometryoptions.h"
+#include "qgsanalysis.h"
+#include "qgsgeometrycheckregistry.h"
+#include "qgsgeometrycheckfactory.h"
 
 QgsGeometryValidationService::QgsGeometryValidationService( QgsProject *project )
+  : mProject( project )
 {
   connect( project, &QgsProject::layersAdded, this, &QgsGeometryValidationService::onLayersAdded );
-  // TODO: should not provide a nullptr context
-  mIsValidGeometryCheck = new QgsIsValidGeometryCheck( nullptr, QVariantMap() );
-}
-
-QgsGeometryValidationService::~QgsGeometryValidationService()
-{
 }
 
 bool QgsGeometryValidationService::validationActive( QgsVectorLayer *layer, QgsFeatureId feature ) const
@@ -56,6 +52,8 @@ void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &la
       {
         onFeatureDeleted( vectorLayer, fid );
       } );
+
+      enableLayerChecks( vectorLayer );
     }
   }
 }
@@ -78,6 +76,50 @@ void QgsGeometryValidationService::onFeatureDeleted( QgsVectorLayer *layer, QgsF
   cancelChecks( layer, fid );
 }
 
+void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
+{
+  // TODO: finish all ongoing checks
+  qDeleteAll( mSingleFeatureChecks.value( layer ) );
+
+  // TODO: ownership and lifetime of the context!!
+  auto context = new QgsGeometryCheckContext( 1, mProject->crs(), mProject->transformContext() );
+  QList<QgsGeometryCheck *> layerChecks;
+
+  QgsGeometryCheckRegistry *checkRegistry = QgsAnalysis::instance()->geometryCheckRegistry();
+
+  const QStringList activeChecks = layer->geometryOptions()->geometryChecks();
+
+  const QList<QgsGeometryCheckFactory *> singleCheckFactories = checkRegistry->geometryCheckFactories( layer, QgsGeometryCheck::SingleGeometryCheck );
+
+  for ( QgsGeometryCheckFactory *factory : singleCheckFactories )
+  {
+    const QString checkId = factory->id();
+    if ( activeChecks.contains( checkId ) )
+    {
+      const QVariantMap checkConfiguration = layer->geometryOptions()->checkConfiguration( checkId );
+      layerChecks.append( factory->createGeometryCheck( context, checkConfiguration ) );
+    }
+  }
+
+  QList<QgsSingleGeometryCheck *> singleGeometryChecks;
+  for ( QgsGeometryCheck *check : qgis::as_const( layerChecks ) )
+  {
+    Q_ASSERT( dynamic_cast<QgsSingleGeometryCheck *>( check ) );
+    singleGeometryChecks.append( dynamic_cast<QgsSingleGeometryCheck *>( check ) );
+  }
+
+  mSingleFeatureChecks.insert( layer, singleGeometryChecks );
+
+#if 0
+  const QList<QgsGeometryCheckFactory *> topologyCheckFactories = checkRegistry->geometryCheckFactories( layer, QgsGeometryCheck::SingleLayerTopologyCheck );
+
+  for ( const QString &check : activeChecks )
+  {
+    checkRegistry->geometryCheckFactories( layer, QgsGeometryCheck::SingleLayerTopologyCheck );
+  }
+#endif
+}
+
 void QgsGeometryValidationService::cancelChecks( QgsVectorLayer *layer, QgsFeatureId fid )
 {
 
@@ -88,7 +130,22 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
   emit geometryCheckStarted( layer, fid );
 
   QgsFeature feature = layer->getFeature( fid );
+
+  const auto &checks = mSingleFeatureChecks.value( layer );
+
+  // The errors are going to be sent out via a signal. We cannot keep ownership in here (or can we?)
+  // nor can we be sure that a single slot is connected to the signal. So make it a shared_ptr.
+  QList<std::shared_ptr<QgsSingleGeometryCheckError>> allErrors;
+  for ( QgsSingleGeometryCheck *check : checks )
+  {
+    const auto errors = check->processGeometry( feature.geometry() );
+
+    for ( auto error : errors )
+      allErrors.append( std::shared_ptr<QgsSingleGeometryCheckError>( error ) );
+  }
+
+  emit geometryCheckCompleted( layer, fid, allErrors );
   // TODO: this is a bit hardcore
-  const auto errors = mIsValidGeometryCheck->processGeometry( feature.geometry() );
+  // const auto errors = mIsValidGeometryCheck->processGeometry( feature.geometry() );
   // emit geometryCheckCompleted( layer, fid, errors );
 }
