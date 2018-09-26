@@ -52,6 +52,7 @@ class TestQgsLayerTree : public QObject
     void testLayerDeleted();
     void testFindGroups();
     void testUtilsCollectMapLayers();
+    void testUtilsCountMapLayers();
 
   private:
 
@@ -685,6 +686,25 @@ void TestQgsLayerTree::testUtilsCollectMapLayers()
   QCOMPARE( set1, QSet<QgsMapLayer *>() << vl1 << vl2 );
   QCOMPARE( set2, QSet<QgsMapLayer *>() << vl1 );
   QCOMPARE( set3, QSet<QgsMapLayer *>() << vl2 );
+}
+
+void TestQgsLayerTree::testUtilsCountMapLayers()
+{
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+
+  QgsProject project;
+  project.addMapLayer( vl );
+
+  QgsLayerTree root;
+  QgsLayerTreeGroup *nodeGrp = root.addGroup( "grp" );
+
+  QCOMPARE( QgsLayerTreeUtils::countMapLayerInTree( &root, vl ), 0 );
+
+  root.addLayer( vl );
+  QCOMPARE( QgsLayerTreeUtils::countMapLayerInTree( &root, vl ), 1 );
+
+  nodeGrp->addLayer( vl );
+  QCOMPARE( QgsLayerTreeUtils::countMapLayerInTree( &root, vl ), 2 );
 }
 
 

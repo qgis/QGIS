@@ -17,6 +17,7 @@
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 #include "qgsquerybuilder.h"
 #include "qgsvectorlayer.h"
@@ -54,12 +55,10 @@ void QgsLayerTreeViewFilterIndicatorProvider::onAddedChildren( QgsLayerTreeNode 
       QgsLayerTreeLayer *childLayerNode = QgsLayerTree::toLayer( childNode );
       if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( childLayerNode->layer() ) )
       {
-        if ( vlayer )
-        {
+        if ( QgsLayerTreeUtils::countMapLayerInTree( mLayerTreeView->layerTreeModel()->rootGroup(), vlayer ) == 1 )
           connect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onSubsetStringChanged );
 
-          addOrRemoveIndicator( childLayerNode, vlayer );
-        }
+        addOrRemoveIndicator( childLayerNode, vlayer );
       }
       else if ( !childLayerNode->layer() )
       {
@@ -89,7 +88,7 @@ void QgsLayerTreeViewFilterIndicatorProvider::onWillRemoveChildren( QgsLayerTree
       QgsLayerTreeLayer *childLayerNode = QgsLayerTree::toLayer( childNode );
       if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( childLayerNode->layer() ) )
       {
-        if ( vlayer )
+        if ( QgsLayerTreeUtils::countMapLayerInTree( mLayerTreeView->layerTreeModel()->rootGroup(), vlayer ) == 1 )
           disconnect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onSubsetStringChanged );
       }
     }

@@ -17,6 +17,7 @@
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 
 
@@ -51,7 +52,8 @@ void QgsLayerTreeViewNonRemovableIndicatorProvider::onAddedChildren( QgsLayerTre
       QgsLayerTreeLayer *childLayerNode = QgsLayerTree::toLayer( childNode );
       if ( QgsMapLayer *layer = childLayerNode->layer() )
       {
-        connect( layer, &QgsMapLayer::flagsChanged, this, &QgsLayerTreeViewNonRemovableIndicatorProvider::onFlagsChanged );
+        if ( QgsLayerTreeUtils::countMapLayerInTree( mLayerTreeView->layerTreeModel()->rootGroup(), layer ) == 1 )
+          connect( layer, &QgsMapLayer::flagsChanged, this, &QgsLayerTreeViewNonRemovableIndicatorProvider::onFlagsChanged );
         addOrRemoveIndicator( childLayerNode, layer );
       }
       else if ( !childLayerNode->layer() )
@@ -81,7 +83,10 @@ void QgsLayerTreeViewNonRemovableIndicatorProvider::onWillRemoveChildren( QgsLay
     {
       QgsLayerTreeLayer *childLayerNode = QgsLayerTree::toLayer( childNode );
       if ( childLayerNode->layer() )
-        disconnect( childLayerNode->layer(), &QgsMapLayer::flagsChanged, this, &QgsLayerTreeViewNonRemovableIndicatorProvider::onFlagsChanged );
+      {
+        if ( QgsLayerTreeUtils::countMapLayerInTree( mLayerTreeView->layerTreeModel()->rootGroup(), childLayerNode->layer() ) == 1 )
+          disconnect( childLayerNode->layer(), &QgsMapLayer::flagsChanged, this, &QgsLayerTreeViewNonRemovableIndicatorProvider::onFlagsChanged );
+      }
     }
   }
 }

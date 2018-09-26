@@ -437,3 +437,19 @@ QSet<QgsMapLayer *> QgsLayerTreeUtils::collectMapLayersRecursive( const QList<Qg
   _collectMapLayers( nodes, layersSet );
   return layersSet;
 }
+
+int QgsLayerTreeUtils::countMapLayerInTree( QgsLayerTreeNode *tree, QgsMapLayer *layer )
+{
+  if ( QgsLayerTree::isLayer( tree ) )
+  {
+    if ( QgsLayerTree::toLayer( tree )->layer() == layer )
+      return 1;
+    return 0;
+  }
+
+  int cnt = 0;
+  const QList<QgsLayerTreeNode *> children = tree->children();
+  for ( QgsLayerTreeNode *child : children )
+    cnt += countMapLayerInTree( child, layer );
+  return cnt;
+}
