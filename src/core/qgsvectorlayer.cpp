@@ -2926,7 +2926,7 @@ bool QgsVectorLayer::commitChanges()
 
   bool canCommit = true;
 
-  emit canCommitChanges( canCommit );
+  emit canCommitChanges( &canCommit );
 
   if ( !canCommit )
     return false;

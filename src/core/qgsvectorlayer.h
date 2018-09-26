@@ -2122,7 +2122,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \since QGIS 3.4
      */
-    void canCommitChanges( bool &canCommit );
+    void canCommitChanges( bool *canCommit );
 
     //! Is emitted, before changes are committed to the data provider
     void beforeCommitChanges();

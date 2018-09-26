@@ -2354,7 +2354,7 @@ Is emitted, when editing on this layer has started
 Is emitted, when edited changes successfully have been written to the data provider
 %End
 
-    void canCommitChanges( bool &canCommit );
+    void canCommitChanges( bool *canCommit );
 %Docstring
 Emitted when a layer wants to commit changes to the data provider.
 Can be used to prevent the layer from being saved by setting ``canCommit`` to false.
