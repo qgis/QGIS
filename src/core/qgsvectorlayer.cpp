@@ -2924,14 +2924,10 @@ bool QgsVectorLayer::commitChanges()
     return false;
   }
 
-  bool canCommit = true;
-
-  emit canCommitChanges( &canCommit );
-
-  if ( !canCommit )
-    return false;
-
   emit beforeCommitChanges();
+
+  if ( !mAllowCommit )
+    return false;
 
   bool success = mEditBuffer->commitChanges( mCommitErrors );
 
@@ -4851,6 +4847,20 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
   }
 
   return labeling;
+}
+
+bool QgsVectorLayer::allowCommit() const
+{
+  return mAllowCommit;
+}
+
+void QgsVectorLayer::setAllowCommit( bool allowCommit )
+{
+  if ( mAllowCommit == allowCommit )
+    return;
+
+  mAllowCommit = allowCommit;
+  emit allowCommitChanged();
 }
 
 QgsGeometryOptions *QgsVectorLayer::geometryOptions() const
