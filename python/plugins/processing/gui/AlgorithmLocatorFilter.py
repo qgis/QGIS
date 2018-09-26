@@ -136,7 +136,7 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
         # collect results in main thread, since this method is inexpensive and
         # accessing the processing registry/current layer is not thread safe
 
-        if iface.activeLayer() is None or iface.activeLayer().type() != QgsMapLayer.VectorLayer or not iface.activeLayer().selectedFeatureCount():
+        if iface.activeLayer() is None or iface.activeLayer().type() != QgsMapLayer.VectorLayer or not iface.activeLayer().selectedFeatureCount() or not iface.activeLayer().isEditable():
             return
 
         for a in QgsApplication.processingRegistry().algorithms():
