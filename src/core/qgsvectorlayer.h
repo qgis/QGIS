@@ -2026,7 +2026,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \since QGIS 3.4
      */
-    bool allowCommit()() const;
+    bool allowCommit() const;
 
     /**
      * Controls, if the layer is allowed to commit changes. If this is set to false
@@ -2044,7 +2044,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \since QGIS 3.4
      */
-    void setAllowCommit()( bool allowCommit() );
+    void setAllowCommit( bool allowCommit );
 
   public slots:
 

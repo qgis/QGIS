@@ -2239,7 +2239,7 @@ Configuration and logic to apply automatically on any edit happening on this lay
 .. versionadded:: 3.4
 %End
 
-    bool allowCommit()() const;
+    bool allowCommit() const;
 %Docstring
 Controls, if the layer is allowed to commit changes. If this is set to false
 it will not be possible to commit changes on this layer. This can be used to
@@ -2258,7 +2258,7 @@ When calling :py:func:`commitChanges`, this flag is checked just after the
 .. versionadded:: 3.4
 %End
 
-    void setAllowCommit()( bool allowCommit() );
+    void setAllowCommit( bool allowCommit );
 %Docstring
 Controls, if the layer is allowed to commit changes. If this is set to false
 it will not be possible to commit changes on this layer. This can be used to
