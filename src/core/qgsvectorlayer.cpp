@@ -2924,6 +2924,13 @@ bool QgsVectorLayer::commitChanges()
     return false;
   }
 
+  bool canCommit = true;
+
+  emit canCommitChanges( canCommit );
+
+  if ( !canCommit )
+    return false;
+
   emit beforeCommitChanges();
 
   bool success = mEditBuffer->commitChanges( mCommitErrors );

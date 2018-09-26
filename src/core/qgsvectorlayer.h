@@ -2114,6 +2114,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Is emitted, when edited changes successfully have been written to the data provider
     void editingStopped();
 
+    /**
+     * Emitted when a layer wants to commit changes to the data provider.
+     * Can be used to prevent the layer from being saved by setting \a canCommit to false.
+     *
+     * It is the developers responsibility to inform the user about this in a suitable manner.
+     *
+     * \since QGIS 3.4
+     */
+    void canCommitChanges( bool &canCommit );
+
     //! Is emitted, before changes are committed to the data provider
     void beforeCommitChanges();
 
