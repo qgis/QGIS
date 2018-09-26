@@ -17,6 +17,7 @@
 
 #include "qgsfeaturepool.h"
 #include "qgsgeometrycollection.h"
+#include "qgsmultipolygon.h"
 #include "qgscurvepolygon.h"
 #include "qgscurve.h"
 #include "qgslinestring.h"
