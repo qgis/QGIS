@@ -20,6 +20,7 @@
 #include <QDialogButtonBox>
 #include <QFileInfo>
 #include <QFileDialog>
+#include <QMessageBox>
 
 #include "qgssettings.h"
 #include "qgisapp.h"
@@ -62,7 +63,6 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDwgImportDialog::showHelp );
 
   QgsSettings s;
-  leDatabase->setText( s.value( QStringLiteral( "/DwgImport/lastDatabase" ), "" ).toString() );
   cbExpandInserts->setChecked( s.value( QStringLiteral( "/DwgImport/lastExpandInserts" ), true ).toBool() );
   cbMergeLayers->setChecked( s.value( QStringLiteral( "/DwgImport/lastMergeLayers" ), false ).toBool() );
   cbUseCurves->setChecked( s.value( QStringLiteral( "/DwgImport/lastUseCurves" ), true ).toBool() );
@@ -88,7 +88,6 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
 QgsDwgImportDialog::~QgsDwgImportDialog()
 {
   QgsSettings s;
-  s.setValue( QStringLiteral( "/DwgImport/lastDatabase" ), leDatabase->text() );
   s.setValue( QStringLiteral( "/DwgImport/lastExpandInserts" ), cbExpandInserts->isChecked() );
   s.setValue( QStringLiteral( "/DwgImport/lastMergeLayers" ), cbMergeLayers->isChecked() );
   s.setValue( QStringLiteral( "/DwgImport/lastUseCurves" ), cbUseCurves->isChecked() );
@@ -124,11 +123,31 @@ void QgsDwgImportDialog::updateUI()
 
 void QgsDwgImportDialog::pbBrowseDatabase_clicked()
 {
-  QString dir( leDatabase->text().isEmpty() ? QDir::homePath() : QFileInfo( leDatabase->text() ).canonicalPath() );
+  QgsSettings s;
+  QString dir( s.value( QStringLiteral( "/DwgImport/lastDirDatabase" ), QDir::homePath() ).toString() );
   QString filename = QFileDialog::getSaveFileName( this, tr( "Specify GeoPackage database" ), dir, tr( "GeoPackage database" ) + " (*.gpkg *.GPKG)", nullptr, QFileDialog::DontConfirmOverwrite );
   if ( filename.isEmpty() )
     return;
-  leDatabase->setText( filename );
+
+  QFileInfo fi( filename );
+  if ( fi.exists() && ( QMessageBox::question( this,
+                        tr( "File exists" ),
+                        tr( "The file already exists. Do you want to overwrite the existing file?" ),
+                        QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel ) )
+  {
+    leDatabase->clear();
+    return;
+  }
+  else
+  {
+
+    if ( !( filename.endsWith( ".gpkg" ) || filename.endsWith( ".GPKG" ) ) )
+      filename.append( ".gpkg" );
+
+    leDatabase->setText( filename );
+    s.setValue( QStringLiteral( "/DwgImport/lastDirDatabase" ), QFileInfo( filename ).canonicalPath() );
+  }
+
   updateUI();
 }
 
