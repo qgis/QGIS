@@ -16,6 +16,7 @@
 #include "qgslayertreeviewmemoryindicator.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
@@ -51,7 +52,8 @@ void QgsLayerTreeViewMemoryIndicatorProvider::onAddedChildren( QgsLayerTreeNode 
       {
         if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layerNode->layer() ) )
         {
-          connect( vlayer, &QgsVectorLayer::dataSourceChanged, this, &QgsLayerTreeViewMemoryIndicatorProvider::onDataSourceChanged );
+          if ( QgsLayerTreeUtils::countMapLayerInTree( mLayerTreeView->layerTreeModel()->rootGroup(), vlayer ) == 1 )
+            connect( vlayer, &QgsVectorLayer::dataSourceChanged, this, &QgsLayerTreeViewMemoryIndicatorProvider::onDataSourceChanged );
           addOrRemoveIndicator( childNode, vlayer );
         }
         else if ( !layerNode->layer() )
@@ -82,7 +84,7 @@ void QgsLayerTreeViewMemoryIndicatorProvider::onWillRemoveChildren( QgsLayerTree
       QgsLayerTreeLayer *childLayerNode = QgsLayerTree::toLayer( childNode );
       if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( childLayerNode->layer() ) )
       {
-        if ( vlayer )
+        if ( QgsLayerTreeUtils::countMapLayerInTree( mLayerTreeView->layerTreeModel()->rootGroup(), childLayerNode->layer() ) == 1 )
           disconnect( vlayer, &QgsVectorLayer::dataSourceChanged, this, &QgsLayerTreeViewMemoryIndicatorProvider::onDataSourceChanged );
       }
     }
