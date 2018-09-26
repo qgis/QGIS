@@ -75,7 +75,8 @@ QStringList QgsGeometryMissingVertexCheck::resolutionMethods() const
 
 void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polygon, QgsFeaturePool *featurePool, QList<QgsGeometryCheckError *> &errors, const QgsGeometryCheckerUtils::LayerFeature &layerFeature ) const
 {
-  std::unique_ptr<QgsGeometryCollection> boundaries = qgis::make_unique<QgsGeometryCollection>();
+  const QgsFeature &currentFeature = layerFeature.feature();
+  std::unique_ptr<QgsMultiPolygon> boundaries = qgis::make_unique<QgsMultiPolygon>();
 
   std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( polygon->exteriorRing(), mContext->tolerance );
   boundaries->addGeometry( geomEngine->buffer( mContext->tolerance, 5 ) );
@@ -92,15 +93,15 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
 
   const QgsFeatureIds fids = featurePool->getIntersects( boundaries->boundingBox() );
 
-  QgsFeature feature;
+  QgsFeature compareFeature;
   for ( QgsFeatureId fid : fids )
   {
-    if ( fid == layerFeature.feature().id() )
+    if ( fid == currentFeature.id() )
       continue;
 
-    if ( featurePool->getFeature( fid, feature ) )
+    if ( featurePool->getFeature( fid, compareFeature ) )
     {
-      QgsVertexIterator vertexIterator = feature.geometry().vertices();
+      QgsVertexIterator vertexIterator = compareFeature.geometry().vertices();
       while ( vertexIterator.hasNext() )
       {
         const QgsPoint &pt = vertexIterator.next();
@@ -111,7 +112,18 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
 
           if ( closestVertex.distance( pt ) > mContext->tolerance )
           {
-            errors.append( new QgsGeometryCheckError( this, layerFeature, QgsPointXY( pt ) ) );
+            bool alreadyReported = false;
+            for ( QgsGeometryCheckError *error : qgis::as_const( errors ) )
+            {
+              // Only list missing vertices once
+              if ( error->featureId() == currentFeature.id() && error->location() == QgsPointXY( pt ) )
+              {
+                alreadyReported = true;
+                break;
+              }
+            }
+            if ( !alreadyReported )
+              errors.append( new QgsGeometryCheckError( this, layerFeature, QgsPointXY( pt ) ) );
           }
         }
       }
