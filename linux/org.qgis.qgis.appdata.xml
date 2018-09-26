@@ -3,6 +3,9 @@
   <id>org.qgis.qgis.desktop</id>
   <name>QGIS Desktop</name>
   <summary>Create, edit, visualise, analyse and publish geospatial information</summary>
+<screenshots>
+    <screenshot><image type="source">https://qgis.org/en/_static/images/about-screenshot.png</image></screenshot>
+  </screenshots>
   <description>
     <p>QGIS is a user friendly Open Source Geographic Information System (GIS) licensed under the GNU General Public License. QGIS is an official project of the Open Source Geospatial Foundation (OSGeo).</p>
     <p>It runs on Linux, Unix, Mac OSX, Windows and Android and supports numerous vector, raster, and database formats and functionalities.</p>
