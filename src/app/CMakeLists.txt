@@ -13,6 +13,7 @@ SET(QGIS_APP_SRCS
   qgsappwindowmanager.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
+  qgsappscreenshots.cpp
   qgsjoindialog.cpp
   qgsannotationwidget.cpp
   qgsattributeactiondialog.cpp
@@ -236,6 +237,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsaddattrdialog.h
   qgsalignrasterdialog.h
   qgsappbrowserproviders.h
+  qgsappscreenshots.h
   qgsjoindialog.h
   qgsaddtaborgroup.h
   qgsannotationwidget.h

@@ -149,6 +149,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsauthcertutils.h"
 #include "qgsauthsslerrorsdialog.h"
 #endif
+#include "qgsappscreenshots.h"
 #include "qgsbookmarks.h"
 #include "qgsbrowserdockwidget.h"
 #include "qgsadvanceddigitizingdockwidget.h"
@@ -13060,6 +13061,12 @@ QMap<QString, QModelIndex> QgisApp::getBookmarkIndexMap()
 void QgisApp::zoomToBookmarkIndex( const QModelIndex &index )
 {
   mBookMarksDockWidget->zoomToBookmarkIndex( index );
+}
+
+void QgisApp::takeAppScreenShots( const QString &saveDirectory, const int categories )
+{
+  QgsAppScreenShots ass( saveDirectory );
+  ass.takeScreenshots( QgsAppScreenShots::Categories( categories ) );
 }
 
 // Slot that gets called when the project file was saved with an older
