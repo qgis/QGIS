@@ -52,6 +52,10 @@ void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &la
       {
         onFeatureDeleted( vectorLayer, fid );
       } );
+      connect( vectorLayer, &QgsVectorLayer::beforeCommitChanges, this, [this, vectorLayer]()
+      {
+        onBeforeCommitChanges( vectorLayer );
+      } );
 
       enableLayerChecks( vectorLayer );
     }
@@ -74,6 +78,14 @@ void QgsGeometryValidationService::onGeometryChanged( QgsVectorLayer *layer, Qgs
 void QgsGeometryValidationService::onFeatureDeleted( QgsVectorLayer *layer, QgsFeatureId fid )
 {
   cancelChecks( layer, fid );
+}
+
+void QgsGeometryValidationService::onBeforeCommitChanges( QgsVectorLayer *layer )
+{
+  if ( !mTopologyChecksOk.value( layer ) )
+  {
+    triggerTopologyChecks( layer );
+  }
 }
 
 void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
@@ -145,7 +157,9 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
   }
 
   emit geometryCheckCompleted( layer, fid, allErrors );
-  // TODO: this is a bit hardcore
-  // const auto errors = mIsValidGeometryCheck->processGeometry( feature.geometry() );
-  // emit geometryCheckCompleted( layer, fid, errors );
+}
+
+void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer )
+{
+
 }

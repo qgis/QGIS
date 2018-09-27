@@ -71,6 +71,7 @@ class QgsGeometryValidationService : public QObject
     void onFeatureAdded( QgsVectorLayer *layer, QgsFeatureId fid );
     void onGeometryChanged( QgsVectorLayer *layer, QgsFeatureId fid, const QgsGeometry &geometry );
     void onFeatureDeleted( QgsVectorLayer *layer, QgsFeatureId fid );
+    void onBeforeCommitChanges( QgsVectorLayer *layer );
 
   private:
     void enableLayerChecks( QgsVectorLayer *layer );
@@ -79,9 +80,12 @@ class QgsGeometryValidationService : public QObject
 
     void processFeature( QgsVectorLayer *layer, QgsFeatureId fid );
 
+    void triggerTopologyChecks( QgsVectorLayer *layer );
+
     QgsProject *mProject = nullptr;
 
     QHash<QgsVectorLayer *, QList< QgsSingleGeometryCheck * > > mSingleFeatureChecks;
+    QHash<QgsVectorLayer *, bool > mTopologyChecksOk;
 };
 
 #endif // QGSGEOMETRYVALIDATIONSERVICE_H
