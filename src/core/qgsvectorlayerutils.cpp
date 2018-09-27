@@ -380,11 +380,12 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
     bool checkUnique = true;
 
     // in order of priority:
-    // 1. passed attribute value
+    // 1. passed attribute value and if field does not have a unique constraint like primary key
     if ( attributes.contains( idx )
          && !( fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique ) )
     {
       v = attributes.value( idx );
+      checkUnique = false;
     }
 
     // 2. client side default expression
