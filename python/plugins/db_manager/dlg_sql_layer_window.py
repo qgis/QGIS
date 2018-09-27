@@ -161,9 +161,8 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
                         item.setCheckState(Qt.Checked)
             else:
                 keyColumn = uri.keyColumn()
-                for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
-                    if item.data() == keyColumn:
-                        self.uniqueCombo.setCurrentIndex(self.uniqueModel.indexFromItem(item).row())
+                if self.uniqueModel.findItems(keyColumn):
+                    self.uniqueCombo.setEditText(keyColumn)
 
         # Finally layer name, filter and selectAtId
         self.layerNameEdit.setText(layer.name())
