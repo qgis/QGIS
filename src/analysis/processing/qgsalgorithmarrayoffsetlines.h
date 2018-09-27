@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmparallellines.h
+                         qgsalgorithmarrayoffsetlines.h
                          ---------------------
     begin                : July 2018
     copyright            : (C) 2018 by Nyall Dawson
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMPARALLELLINES_H
-#define QGSALGORITHMPARALLELLINES_H
+#ifndef QGSALGORITHMARRAYOFFSETLINES_H
+#define QGSALGORITHMARRAYOFFSETLINES_H
 
 #define SIP_NO_FILE
 
@@ -28,12 +28,12 @@
 /**
  * Native create parallel lines algorithm.
  */
-class QgsCreateParallelLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+class QgsCreateArrayOffsetLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
 
   public:
 
-    QgsCreateParallelLinesAlgorithm() = default;
+    QgsCreateArrayOffsetLinesAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -41,7 +41,7 @@ class QgsCreateParallelLinesAlgorithm : public QgsProcessingFeatureBasedAlgorith
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
-    QgsCreateParallelLinesAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsCreateArrayOffsetLinesAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QList<int> inputLayerTypes() const override;
 
@@ -71,6 +71,6 @@ class QgsCreateParallelLinesAlgorithm : public QgsProcessingFeatureBasedAlgorith
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMPARALLELLINES_H
+#endif // QGSALGORITHMARRAYOFFSETLINES_H
 
 

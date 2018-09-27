@@ -6111,8 +6111,8 @@ tests:
         name: expected/feature_array.shp
         type: vector
 
-  - algorithm: native:parallellines
-    name: Create parallel lines
+  - algorithm: native:arrayoffsetlines
+    name: Array of offset (parallel) lines
     params:
       COUNT: 3
       INPUT:
