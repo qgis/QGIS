@@ -1064,7 +1064,6 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self._img_diff_error(r, h, "WMS_GetMap_Highlight_Point")
 
     # TODO make Server Getmap work with SLD Highlight feature and enable test
-    @unittest.expectedFailure
     def test_wms_getmap_highlight_line(self):
         # checks SLD stroke-width works for Lines See issue 19795 comments
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -1074,7 +1073,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "REQUEST": "GetMap",
             "LAYERS": "Country_Labels",
             "HIGHLIGHT_GEOM": "LINESTRING(-15000000 8055310, 2500000 8055310)",
-            "HIGHLIGHT_SYMBOL": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"1.1.0\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd\" xmlns:se=\"http://www.opengis.net/se\"><UserStyle><se:FeatureTypeStyle><se:Rule><se:LineSymbolizer><se:Stroke><se:SvgParameter name=\"stroke\">%23ff0000</se:SvgParameter><se:SvgParameter name=\"stroke-opacity\">1</se:SvgParameter><se:SvgParameter name=\"stroke-width\">17.3</se:SvgParameter><se:SvgParameter name=\"stroke-linejoin\">bevel</se:SvgParameter></se:Stroke></se:LineSymbolizer></se:Rule></se:FeatureTypeStyle></UserStyle></StyledLayerDescriptor>",
+            "HIGHLIGHT_SYMBOL": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"1.1.0\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd\" xmlns:se=\"http://www.opengis.net/se\"><UserStyle><se:FeatureTypeStyle><se:Rule><se:LineSymbolizer><se:Stroke><se:SvgParameter name=\"stroke\">%23ff0000</se:SvgParameter><se:SvgParameter name=\"stroke-opacity\">1</se:SvgParameter><se:SvgParameter name=\"stroke-width\">17.3</se:SvgParameter><se:SvgParameter name=\"stroke-linecap\">round</se:SvgParameter></se:Stroke></se:LineSymbolizer></se:Rule></se:FeatureTypeStyle></UserStyle></StyledLayerDescriptor>",
             "HIGHLIGHT_LABELSTRING": "",
             "HIGHLIGHT_LABELSIZE": "10",
             "HIGHLIGHT_LABELCOLOR": "black",
