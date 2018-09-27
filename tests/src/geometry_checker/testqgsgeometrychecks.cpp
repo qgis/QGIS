@@ -547,7 +547,7 @@ void TestQgsGeometryChecks::testMissingVertexCheck()
   check.collectErrors( checkErrors, messages );
   listErrors( checkErrors, messages );
 
-  const QString layerId = testContext.second.first()->layerId();
+  const QString layerId = layers.values().first();
   QVERIFY( searchCheckErrors( checkErrors, layerId, 0, QgsPointXY( 0.251153, -0.460895 ), QgsVertexId() ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, layerId, 3, QgsPointXY( 0.257985, -0.932886 ), QgsVertexId() ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, layerId, 5, QgsPointXY( 0.59781, -0.480033 ), QgsVertexId() ).size() == 1 );
