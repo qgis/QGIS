@@ -382,7 +382,6 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
     // in order of priority:
     // 1. passed attribute value
     if ( attributes.contains( idx )
-         && !layer->primaryKeyAttributes().contains( idx )
          && !( fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique ) )
     {
       v = attributes.value( idx );
@@ -390,7 +389,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
 
     // 2. client side default expression
     // note - deliberately not using else if!
-    if ( layer->defaultValueDefinition( idx ).isValid() )
+    if ( !v.isValid() && layer->defaultValueDefinition( idx ).isValid() )
     {
       // client side default expression set - takes precedence over all. Why? Well, this is the only default
       // which QGIS users have control over, so we assume that they're deliberately overriding any
