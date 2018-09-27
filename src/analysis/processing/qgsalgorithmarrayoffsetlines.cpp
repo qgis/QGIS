@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmparallellines.cpp
+                         qgsalgorithmarrayoffsetlines.cpp
                          ---------------------
     begin                : July 2018
     copyright            : (C) 2018 by Nyall Dawson
@@ -15,57 +15,57 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmparallellines.h"
+#include "qgsalgorithmarrayoffsetlines.h"
 
 ///@cond PRIVATE
 
-QString QgsCreateParallelLinesAlgorithm::name() const
+QString QgsCreateArrayOffsetLinesAlgorithm::name() const
 {
-  return QStringLiteral( "parallellines" );
+  return QStringLiteral( "arrayoffsetlines" );
 }
 
-QString QgsCreateParallelLinesAlgorithm::displayName() const
+QString QgsCreateArrayOffsetLinesAlgorithm::displayName() const
 {
   return QObject::tr( "Array of offset (parallel) lines" );
 }
 
-QStringList QgsCreateParallelLinesAlgorithm::tags() const
+QStringList QgsCreateArrayOffsetLinesAlgorithm::tags() const
 {
   return QObject::tr( "offset,parallel,duplicate,create,spaced,copy,features,objects,step,repeat" ).split( ',' );
 }
 
-QString QgsCreateParallelLinesAlgorithm::group() const
+QString QgsCreateArrayOffsetLinesAlgorithm::group() const
 {
   return QObject::tr( "Vector creation" );
 }
 
-QString QgsCreateParallelLinesAlgorithm::groupId() const
+QString QgsCreateArrayOffsetLinesAlgorithm::groupId() const
 {
   return QStringLiteral( "vectorcreation" );
 }
 
-QString QgsCreateParallelLinesAlgorithm::outputName() const
+QString QgsCreateArrayOffsetLinesAlgorithm::outputName() const
 {
   return QObject::tr( "Offset lines" );
 }
 
-QString QgsCreateParallelLinesAlgorithm::shortHelpString() const
+QString QgsCreateArrayOffsetLinesAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates copies of line features in a layer, by creating multiple offset versions of each feature. "
                       "Each copy is offset by a preset distance." );
 }
 
-QString QgsCreateParallelLinesAlgorithm::shortDescription() const
+QString QgsCreateArrayOffsetLinesAlgorithm::shortDescription() const
 {
   return QObject::tr( "Creates multiple offset copies of lines from a layer." );
 }
 
-QgsCreateParallelLinesAlgorithm *QgsCreateParallelLinesAlgorithm::createInstance() const
+QgsCreateArrayOffsetLinesAlgorithm *QgsCreateArrayOffsetLinesAlgorithm::createInstance() const
 {
-  return new QgsCreateParallelLinesAlgorithm();
+  return new QgsCreateArrayOffsetLinesAlgorithm();
 }
 
-void QgsCreateParallelLinesAlgorithm::initParameters( const QVariantMap & )
+void QgsCreateArrayOffsetLinesAlgorithm::initParameters( const QVariantMap & )
 {
   std::unique_ptr< QgsProcessingParameterNumber > count = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "COUNT" ),
       QObject::tr( "Number of features to create" ), QgsProcessingParameterNumber::Integer,
@@ -96,12 +96,12 @@ void QgsCreateParallelLinesAlgorithm::initParameters( const QVariantMap & )
   addParameter( miterLimitParam.release() );
 }
 
-QList<int> QgsCreateParallelLinesAlgorithm::inputLayerTypes() const
+QList<int> QgsCreateArrayOffsetLinesAlgorithm::inputLayerTypes() const
 {
   return QList< int >() << QgsProcessing::TypeVectorLine;
 }
 
-bool QgsCreateParallelLinesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+bool QgsCreateArrayOffsetLinesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mCount = parameterAsInt( parameters, QStringLiteral( "COUNT" ), context );
   mDynamicCount = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "COUNT" ) );
@@ -120,7 +120,7 @@ bool QgsCreateParallelLinesAlgorithm::prepareAlgorithm( const QVariantMap &param
   return true;
 }
 
-QgsFeatureList QgsCreateParallelLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
+QgsFeatureList QgsCreateArrayOffsetLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   QgsFeatureList result = QgsFeatureList();
 
@@ -169,7 +169,7 @@ QgsFeatureList QgsCreateParallelLinesAlgorithm::processFeature( const QgsFeature
   return result;
 }
 
-QgsFields QgsCreateParallelLinesAlgorithm::outputFields( const QgsFields &inputFields ) const
+QgsFields QgsCreateArrayOffsetLinesAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields output = inputFields;
   output.append( QgsField( QStringLiteral( "instance" ), QVariant::Int ) );

@@ -140,7 +140,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         LINESTRING_AND_POLYGON_ONLY_NOT_M_NOT_Z = {t: (t.rfind('M') < 1 and t.find('Z') == -1 and (t.find('LineString') >= 0 or t.find('Polygon') >= 0)) for t in _all_true().keys()}
 
         self._support_inplace_edit_tester('native:smoothgeometry', LINESTRING_AND_POLYGON_ONLY)
-        self._support_inplace_edit_tester('native:parallellines', LINESTRING_ONLY)
+        self._support_inplace_edit_tester('native:arrayoffsetlines', LINESTRING_ONLY)
         self._support_inplace_edit_tester('native:arraytranslatedfeatures', GEOMETRY_ONLY)
         self._support_inplace_edit_tester('native:reprojectlayer', GEOMETRY_ONLY)
         self._support_inplace_edit_tester('qgis:densifygeometries', LINESTRING_AND_POLYGON_ONLY)
