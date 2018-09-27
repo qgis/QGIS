@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+class QScreen;
 class QgsVectorLayer;
 
 class QgsAppScreenShots
@@ -16,6 +17,13 @@ class QgsAppScreenShots
       GrabWholeWindow
     };
     Q_ENUM( GrabMode )
+
+    enum Reference
+    {
+      Widget,
+      QgisApp,
+      Screen
+    };
 
     enum Category
     {
@@ -31,10 +39,11 @@ class QgsAppScreenShots
     void takeScreenshots( Categories categories = nullptr );
 
   private:
-    void takeVectorLayerProperties();
-
-
+    QScreen *screen( QWidget *widget = nullptr );
+    void moveWidgetTo( QWidget *widget, Qt::Corner corner, Reference reference = Screen );
     void saveScreenshot( const QString &name, QWidget *widget = nullptr, GrabMode mode = GrabWidgetAndFrame );
+
+    void takeVectorLayerProperties();
 
     QString mSaveDirectory;
     QgsVectorLayer *mVectorLayer = nullptr;
