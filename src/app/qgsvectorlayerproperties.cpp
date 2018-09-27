@@ -412,17 +412,29 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
     mPrecisionUnitsLabel->setText( QStringLiteral( "[%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
 
-    QLayout *layout = new QVBoxLayout();
-    const QList<QgsGeometryCheckFactory *> factories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mLayer, QgsGeometryCheck::Flag::SingleGeometryCheck );
+    QLayout *geometryCheckLayout = new QVBoxLayout();
+    const QList<QgsGeometryCheckFactory *> geometryCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mLayer, QgsGeometryCheck::Flag::SingleGeometryCheck );
     const QStringList activeChecks = mLayer->geometryOptions()->geometryChecks();
-    for ( const QgsGeometryCheckFactory *factory : factories )
+    for ( const QgsGeometryCheckFactory *factory : geometryCheckFactories )
     {
       QCheckBox *cb = new QCheckBox( factory->description() );
       cb->setChecked( activeChecks.contains( factory->id() ) );
       mGeometryCheckFactoriesGroupBoxes.insert( cb, factory->id() );
-      layout->addWidget( cb );
+      geometryCheckLayout->addWidget( cb );
     }
-    mGeometryValidationGroupBox->setLayout( layout );
+    mGeometryValidationGroupBox->setLayout( geometryCheckLayout );
+
+    QLayout *topologyCheckLayout = new QVBoxLayout();
+    const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mLayer, QgsGeometryCheck::Flag::SingleLayerTopologyCheck );
+
+    for ( const QgsGeometryCheckFactory *factory : topologyCheckFactories )
+    {
+      QCheckBox *cb = new QCheckBox( factory->description() );
+      cb->setChecked( activeChecks.contains( factory->id() ) );
+      mGeometryCheckFactoriesGroupBoxes.insert( cb, factory->id() );
+      topologyCheckLayout->addWidget( cb );
+    }
+    mTopologyChecksGroupBox->setLayout( topologyCheckLayout );
   }
   else
   {
