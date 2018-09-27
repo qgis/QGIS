@@ -396,6 +396,9 @@ int main( int argc, char *argv[] )
   QgsApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QgsApplication::setApplicationName( QStringLiteral( "QGIS3" ) );
 
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
 #ifdef Q_OS_MACX
