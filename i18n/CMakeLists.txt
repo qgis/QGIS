@@ -1,7 +1,6 @@
 FIND_PROGRAM(QT_LRELEASE_EXECUTABLE NAMES lrelease-qt5 lrelease)
 
 MACRO(ADD_TRANSLATION_FILES _sources )
-
     FOREACH (_current_FILE ${ARGN})
       GET_FILENAME_COMPONENT(_in ${_current_FILE} ABSOLUTE)
       GET_FILENAME_COMPONENT(_basename ${_current_FILE} NAME_WE)
@@ -33,7 +32,7 @@ IF (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     COMMAND ${PYTHON_EXECUTABLE}
     ARGS ${CMAKE_SOURCE_DIR}/scripts/ts2appinfo.py "${CMAKE_BINARY_DIR}"
     COMMENT "Updating appinfo files..."
-    DEPENDS ${QM_FILES}
+    DEPENDS ${QM_FILES} ${CMAKE_SOURCE_DIR}/linux/org.qgis.qgis.desktop.in ${CMAKE_SOURCE_DIR}/linux/org.qgis.qgis.appdata.xml.in
   )
 
   SET(MD_FILES ${CMAKE_BINARY_DIR}/org.qgis.qgis.desktop ${CMAKE_BINARY_DIR}/org.qgis.qgis.appdata.xml)
