@@ -63,7 +63,8 @@ void QgsAppScreenShots::saveScreenshot( const QString &name, QWidget *widget, Gr
   }
   if ( !widget || mode != GrabWidget )
   {
-    pix = scr->grabWindow( 0, x, y, w, h );
+    WId wid = widget ? widget->winId() : 0;
+    pix = scr->grabWindow( wid, x, y, w, h );
   }
 
   const QString &fileName = mSaveDirectory + "/" + name + ".png";
@@ -94,6 +95,7 @@ void QgsAppScreenShots::moveWidgetTo( QWidget *widget, Qt::Corner corner, Refere
     case Qt::BottomRightCorner:
     case Qt::TopRightCorner:
     case Qt::TopLeftCorner:
+      // TODO
       return;
   }
 }
@@ -118,10 +120,13 @@ void QgsAppScreenShots::takeScreenshots( Categories categories )
     takeVectorLayerProperties();
 }
 
+
+// ----------------------
 // !!!!! SCREENSHOTS !!!!
 
 void QgsAppScreenShots::takeVectorLayerProperties()
 {
+  QString rootName = QLatin1String( "vectorlayerproperties_" );
   QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mVectorLayer, QgisApp::instance() );
   dlg->show();
   // ----------------
@@ -133,7 +138,7 @@ void QgsAppScreenShots::takeVectorLayerProperties()
     QCoreApplication::processEvents();
     QString name = dlg->mOptionsListWidget->item( row )[0].text().toLower();
     name.replace( " ", "_" );
-//saveScreenshot( name, dlg );
+    saveScreenshot( rootName + name, dlg );
   }
   // ------------------
   // style menu clicked
@@ -143,7 +148,7 @@ void QgsAppScreenShots::takeVectorLayerProperties()
   QCoreApplication::processEvents();
   dlg->mBtnStyle->click();
   QCoreApplication::processEvents();
-  saveScreenshot( "style", dlg );
+  saveScreenshot( rootName + "style_menu", dlg );
   QCoreApplication::processEvents();
   dlg->mBtnStyle->menu()->hide();
   QCoreApplication::processEvents();
