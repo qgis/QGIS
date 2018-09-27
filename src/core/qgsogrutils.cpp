@@ -18,6 +18,7 @@
 #include "qgslogger.h"
 #include "qgsgeometry.h"
 #include "qgsfields.h"
+#include "qgslinestring.h"
 #include <QTextCodec>
 #include <QUuid>
 #include <cpl_error.h>
@@ -269,10 +270,67 @@ bool QgsOgrUtils::readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature &featur
   return true;
 }
 
+std::unique_ptr< QgsPoint > ogrGeometryToQgsPoint( OGRGeometryH geom )
+{
+  QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( OGR_G_GetGeometryType( geom ) );
+
+  double x, y, z, m;
+  OGR_G_GetPointZM( geom, 0, &x, &y, &z, &m );
+  return qgis::make_unique< QgsPoint >( wkbType, x, y, z, m );
+}
+
+std::unique_ptr< QgsLineString > ogrGeometryToQgsLineString( OGRGeometryH geom )
+{
+  QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( OGR_G_GetGeometryType( geom ) );
+
+  int count = OGR_G_GetPointCount( geom );
+  QVector< double > x( count );
+  QVector< double > y( count );
+  QVector< double > z;
+  double *pz = nullptr;
+  if ( QgsWkbTypes::hasZ( wkbType ) )
+  {
+    z.resize( count );
+    pz = z.data();
+  }
+  double *pm = nullptr;
+  QVector< double > m;
+  if ( QgsWkbTypes::hasM( wkbType ) )
+  {
+    m.resize( count );
+    pm = m.data();
+  }
+  OGR_G_GetPointsZM( geom, x.data(), sizeof( double ), y.data(), sizeof( double ), pz, sizeof( double ), pm, sizeof( double ) );
+
+  return qgis::make_unique< QgsLineString>( x, y, z, m, wkbType == QgsWkbTypes::LineString25D );
+}
+
 QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
 {
   if ( !geom )
     return QgsGeometry();
+
+  QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( OGR_G_GetGeometryType( geom ) );
+  // optimised case for some geometry classes, avoiding wkb conversion on OGR/QGIS sides
+  // TODO - extend to other classes!
+  switch ( QgsWkbTypes::flatType( wkbType ) )
+  {
+    case QgsWkbTypes::Point:
+    {
+      return QgsGeometry( ogrGeometryToQgsPoint( geom ) );
+    }
+
+    case QgsWkbTypes::LineString:
+    {
+      // optimised case for line -- avoid wkb conversion
+      return QgsGeometry( ogrGeometryToQgsLineString( geom ) );
+    }
+
+    default:
+      break;
+  };
+
+  // Fallback to inefficient WKB conversions
 
   // get the wkb representation
   int memorySize = OGR_G_WkbSize( geom );

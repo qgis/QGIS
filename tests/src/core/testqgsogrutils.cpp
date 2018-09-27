@@ -38,6 +38,8 @@ class TestQgsOgrUtils: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void ogrGeometryToQgsGeometry();
+    void ogrGeometryToQgsGeometry2_data();
+    void ogrGeometryToQgsGeometry2();
     void readOgrFeatureGeometry();
     void getOgrFeatureAttribute();
     void readOgrFeatureAttributes();
@@ -102,6 +104,55 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
 
   OGR_F_Destroy( oFeat );
   OGR_DS_Destroy( hDS );
+
+  ogrGeom = nullptr;
+  QByteArray wkt( "point( 1.1 2.2)" );
+  char *wktChar = wkt.data();
+  OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
+  geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
+  QCOMPARE( geom.asWkt( 3 ), QStringLiteral( "Point (1.1 2.2)" ) );
+
+}
+
+void TestQgsOgrUtils::ogrGeometryToQgsGeometry2_data()
+{
+  QTest::addColumn<QString>( "wkt" );
+  QTest::addColumn<int>( "type" );
+
+  QTest::newRow( "point" ) << QStringLiteral( "Point (1.1 2.2)" ) << static_cast< int >( QgsWkbTypes::Point );
+  QTest::newRow( "pointz" ) << QStringLiteral( "PointZ (1.1 2.2 3.3)" ) <<  static_cast< int >( QgsWkbTypes::Point25D ); // ogr uses 25d for z
+  QTest::newRow( "pointm" ) << QStringLiteral( "PointM (1.1 2.2 3.3)" ) <<  static_cast< int >( QgsWkbTypes::PointM );
+  QTest::newRow( "pointzm" ) << QStringLiteral( "PointZM (1.1 2.2 3.3 4.4)" ) <<  static_cast< int >( QgsWkbTypes::PointZM );
+  QTest::newRow( "point25d" ) << QStringLiteral( "Point25D (1.1 2.2 3.3)" ) <<  static_cast< int >( QgsWkbTypes::Point25D );
+
+  QTest::newRow( "linestring" ) << QStringLiteral( "LineString (1.1 2.2, 3.3 4.4)" ) << static_cast< int >( QgsWkbTypes::LineString );
+  QTest::newRow( "linestringz" ) << QStringLiteral( "LineStringZ (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( QgsWkbTypes::LineString25D ); // ogr uses 25d for z
+  QTest::newRow( "linestringm" ) << QStringLiteral( "LineStringM (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( QgsWkbTypes::LineStringM );
+  QTest::newRow( "linestringzm" ) << QStringLiteral( "LineStringZM (1.1 2.2 3.3 4.4, 5.5 6.6 7.7 8.8)" ) <<  static_cast< int >( QgsWkbTypes::LineStringZM );
+  QTest::newRow( "linestring25d" ) << QStringLiteral( "LineString25D (1.1 2.2 3.3, 4.4 5.5 6.6)" ) <<  static_cast< int >( QgsWkbTypes::LineString25D );
+}
+
+void TestQgsOgrUtils::ogrGeometryToQgsGeometry2()
+{
+  QFETCH( QString, wkt );
+  QFETCH( int, type );
+
+  QgsGeometry input = QgsGeometry::fromWkt( wkt );
+  QVERIFY( !input.isNull() );
+
+  // to OGR Geometry
+  QByteArray wkb( input.asWkb() );
+  OGRGeometryH ogrGeom = nullptr;
+
+  QCOMPARE( OGR_G_CreateFromWkb( reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), nullptr, &ogrGeom, wkb.length() ), OGRERR_NONE );
+
+  // back again!
+  QgsGeometry geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
+  QCOMPARE( static_cast< int >( geom.wkbType() ), type );
+
+  // bit of trickiness here - QGIS wkt conversion changes 25D -> Z, so account for that
+  wkt.replace( QStringLiteral( "25D" ), QStringLiteral( "Z" ) );
+  QCOMPARE( geom.asWkt( 3 ), wkt );
 }
 
 void TestQgsOgrUtils::readOgrFeatureGeometry()

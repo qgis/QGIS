@@ -2853,6 +2853,19 @@ void TestQgsGeometry::lineString()
   QCOMPARE( fromArray4.xAt( 2 ), 3.0 );
   QCOMPARE( fromArray4.yAt( 2 ), 13.0 );
   QCOMPARE( fromArray4.zAt( 2 ), 23.0 );
+  fromArray4 = QgsLineString( xx, yy, zz, QVector< double >(), true );  // LineString25D
+  QCOMPARE( fromArray4.wkbType(), QgsWkbTypes::LineString25D );
+  QCOMPARE( fromArray4.numPoints(), 3 );
+  QCOMPARE( fromArray4.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray4.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray4.zAt( 0 ), 21.0 );
+  QCOMPARE( fromArray4.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray4.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray4.zAt( 1 ), 22.0 );
+  QCOMPARE( fromArray4.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray4.yAt( 2 ), 13.0 );
+  QCOMPARE( fromArray4.zAt( 2 ), 23.0 );
+
   // unbalanced -> z ignored
   zz = QVector< double >() << 21 << 22;
   QgsLineString fromArray5( xx, yy, zz );
