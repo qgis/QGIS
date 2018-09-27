@@ -28,6 +28,7 @@
 #include "qgsgeometryfollowboundariescheck.h"
 #include "qgsgeometrygapcheck.h"
 #include "qgsgeometryholecheck.h"
+#include "qgsgeometrymissingvertexcheck.h"
 #include "qgsgeometrylineintersectioncheck.h"
 #include "qgsgeometrylinelayerintersectioncheck.h"
 #include "qgsgeometrymultipartcheck.h"
@@ -81,6 +82,7 @@ class TestQgsGeometryChecks: public QObject
     void testDuplicateNodesCheck();
     void testFollowBoundariesCheck();
     void testGapCheck();
+    void testMissingVertexCheck();
     void testHoleCheck();
     void testLineIntersectionCheck();
     void testLineLayerIntersectionCheck();
@@ -526,6 +528,33 @@ void TestQgsGeometryChecks::testGapCheck()
   } ) );
   context->featurePools[layers["gap_layer.shp"]]->getFeature( 0, f );
   QVERIFY( f.geometry().area() > areaOld );
+
+  cleanupTestContext( context );
+}
+
+void TestQgsGeometryChecks::testMissingVertexCheck()
+{
+  QTemporaryDir dir;
+  QMap<QString, QString> layers;
+  layers.insert( QStringLiteral( "missing_vertex.gpkg" ), QString() );
+  QgsGeometryCheckerContext *context = createTestContext( dir, layers );
+
+  // Test detection
+  QList<QgsGeometryCheckError *> checkErrors;
+  QStringList messages;
+
+  QgsGeometryMissingVertexCheck check( context );
+  check.collectErrors( checkErrors, messages );
+  listErrors( checkErrors, messages );
+
+  const QString layerId = layers.values().first();
+  QVERIFY( searchCheckErrors( checkErrors, layerId, 0, QgsPointXY( 0.251153, -0.460895 ), QgsVertexId() ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layerId, 3, QgsPointXY( 0.257985, -0.932886 ), QgsVertexId() ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layerId, 5, QgsPointXY( 0.59781, -0.480033 ), QgsVertexId() ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layerId, 5, QgsPointXY( 0.605252, -0.664875 ), QgsVertexId() ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layerId, 4, QgsPointXY( 0.259197, -0.478311 ), QgsVertexId() ).size() == 1 );
+
+  QCOMPARE( checkErrors.size(), 5 );
 
   cleanupTestContext( context );
 }
