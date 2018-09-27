@@ -142,6 +142,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--dxf-scale-denom scale]\tscale for dxf output\n" )
       << QStringLiteral( "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n" )
       << QStringLiteral( "\t[--dxf-map-theme maptheme]\tmap theme to use for dxf output\n" )
+      << QStringLiteral( "\t[--take-screenshots output_path]\ttake screen shots for the user documentation\n" )
       << QStringLiteral( "\t[--profile name]\tload a named profile from the users profiles folder.\n" )
       << QStringLiteral( "\t[--profiles-path path]\tpath to store user profile folders. Will create profiles inside a {path}\\profiles folder \n" )
       << QStringLiteral( "\t[--version-migration]\tforce the settings migration from older version if found\n" )
@@ -529,6 +530,9 @@ int main( int argc, char *argv[] )
   QString dxfMapTheme;
   QgsRectangle dxfExtent;
 
+  bool takeScreenShots = false;
+  QString screenShotsPath;
+
   // This behavior will set initial extent of map canvas, but only if
   // there are no command line arguments. This gives a usable map
   // extent when qgis starts with no layers loaded. When layers are
@@ -744,6 +748,11 @@ int main( int argc, char *argv[] )
         else if ( arg == QLatin1String( "--dxf-map-theme" ) )
         {
           dxfMapTheme = args[++i];
+        }
+        else if ( arg == QLatin1String( "--take-screenshots" ) )
+        {
+          takeScreenShots = true;
+          screenShotsPath = args[++i];
         }
 #ifdef HAVE_OPENCL
         else if ( arg == QLatin1String( "--openclprogramfolder" ) )
@@ -1456,6 +1465,11 @@ int main( int argc, char *argv[] )
   }
 
 #endif
+
+  if ( takeScreenShots )
+  {
+    qgis->takeAppScreenShots( screenShotsPath );
+  }
 
   /////////////////////////////////////////////////////////////////////
   // Continue on to interactive gui...
