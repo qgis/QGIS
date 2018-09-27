@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmarrayfeatures.h
+                         qgsalgorithmarraytranslatedfeatures.h
                          ---------------------
     begin                : July 2018
     copyright            : (C) 2018 by Nyall Dawson
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMARRAYFEATURES_H
-#define QGSALGORITHMARRAYFEATURES_H
+#ifndef QGSALGORITHMARRAYTRANSLATEDFEATURES_H
+#define QGSALGORITHMARRAYTRANSLATEDFEATURES_H
 
 #define SIP_NO_FILE
 
@@ -28,12 +28,12 @@
 /**
  * Native create array of features algorithm.
  */
-class QgsArrayFeaturesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+class QgsArrayTranslatedFeaturesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
 
   public:
 
-    QgsArrayFeaturesAlgorithm() = default;
+    QgsArrayTranslatedFeaturesAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -41,7 +41,7 @@ class QgsArrayFeaturesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
-    QgsArrayFeaturesAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsArrayTranslatedFeaturesAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:
@@ -78,6 +78,6 @@ class QgsArrayFeaturesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMARRAYFEATURES_H
+#endif // QGSALGORITHMARRAYTRANSLATEDFEATURES_H
 
 

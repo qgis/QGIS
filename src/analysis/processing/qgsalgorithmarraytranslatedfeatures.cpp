@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmarrayfeatures.cpp
+                         qgsalgorithmarraytranslatedfeatures.cpp
                          ---------------------
     begin                : July 2018
     copyright            : (C) 2018 by Nyall Dawson
@@ -15,57 +15,57 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmarrayfeatures.h"
+#include "qgsalgorithmarraytranslatedfeatures.h"
 
 ///@cond PRIVATE
 
-QString QgsArrayFeaturesAlgorithm::name() const
+QString QgsArrayTranslatedFeaturesAlgorithm::name() const
 {
-  return QStringLiteral( "arrayfeatures" );
+  return QStringLiteral( "arraytranslatedfeatures" );
 }
 
-QString QgsArrayFeaturesAlgorithm::displayName() const
+QString QgsArrayTranslatedFeaturesAlgorithm::displayName() const
 {
   return QObject::tr( "Array of translated features" );
 }
 
-QStringList QgsArrayFeaturesAlgorithm::tags() const
+QStringList QgsArrayTranslatedFeaturesAlgorithm::tags() const
 {
   return QObject::tr( "translate,parallel,offset,duplicate,grid,spaced,moved,copy,features,objects,step,repeat" ).split( ',' );
 }
 
-QString QgsArrayFeaturesAlgorithm::group() const
+QString QgsArrayTranslatedFeaturesAlgorithm::group() const
 {
   return QObject::tr( "Vector creation" );
 }
 
-QString QgsArrayFeaturesAlgorithm::groupId() const
+QString QgsArrayTranslatedFeaturesAlgorithm::groupId() const
 {
   return QStringLiteral( "vectorcreation" );
 }
 
-QString QgsArrayFeaturesAlgorithm::outputName() const
+QString QgsArrayTranslatedFeaturesAlgorithm::outputName() const
 {
   return QObject::tr( "Translated" );
 }
 
-QString QgsArrayFeaturesAlgorithm::shortHelpString() const
+QString QgsArrayTranslatedFeaturesAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates copies of features in a layer, by creating multiple translated versions of each feature. "
                       "Each copy is incrementally displaced by a preset amount in the x/y/z/m axis." );
 }
 
-QString QgsArrayFeaturesAlgorithm::shortDescription() const
+QString QgsArrayTranslatedFeaturesAlgorithm::shortDescription() const
 {
   return QObject::tr( "Creates multiple translated copies of features in a layer." );
 }
 
-QgsArrayFeaturesAlgorithm *QgsArrayFeaturesAlgorithm::createInstance() const
+QgsArrayTranslatedFeaturesAlgorithm *QgsArrayTranslatedFeaturesAlgorithm::createInstance() const
 {
-  return new QgsArrayFeaturesAlgorithm();
+  return new QgsArrayTranslatedFeaturesAlgorithm();
 }
 
-void QgsArrayFeaturesAlgorithm::initParameters( const QVariantMap & )
+void QgsArrayTranslatedFeaturesAlgorithm::initParameters( const QVariantMap & )
 {
   std::unique_ptr< QgsProcessingParameterNumber > count = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "COUNT" ),
       QObject::tr( "Number of features to create" ), QgsProcessingParameterNumber::Integer,
@@ -108,7 +108,7 @@ void QgsArrayFeaturesAlgorithm::initParameters( const QVariantMap & )
   addParameter( mOffset.release() );
 }
 
-bool QgsArrayFeaturesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+bool QgsArrayTranslatedFeaturesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mCount = parameterAsInt( parameters, QStringLiteral( "COUNT" ), context );
   mDynamicCount = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "COUNT" ) );
@@ -138,7 +138,7 @@ bool QgsArrayFeaturesAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   return true;
 }
 
-QgsFeatureList QgsArrayFeaturesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
+QgsFeatureList QgsArrayTranslatedFeaturesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   QgsFeatureList result = QgsFeatureList();
 
@@ -199,7 +199,7 @@ QgsFeatureList QgsArrayFeaturesAlgorithm::processFeature( const QgsFeature &feat
   return result;
 }
 
-QgsWkbTypes::Type QgsArrayFeaturesAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+QgsWkbTypes::Type QgsArrayTranslatedFeaturesAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
   QgsWkbTypes::Type wkb = inputWkbType;
   if ( mDeltaZ != 0 )
@@ -209,7 +209,7 @@ QgsWkbTypes::Type QgsArrayFeaturesAlgorithm::outputWkbType( QgsWkbTypes::Type in
   return wkb;
 }
 
-QgsFields QgsArrayFeaturesAlgorithm::outputFields( const QgsFields &inputFields ) const
+QgsFields QgsArrayTranslatedFeaturesAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields output = inputFields;
   output.append( QgsField( QStringLiteral( "instance" ), QVariant::Int ) );
