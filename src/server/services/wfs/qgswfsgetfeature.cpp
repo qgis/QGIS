@@ -22,6 +22,9 @@
 #include "qgswfsutils.h"
 #include "qgsserverprojectutils.h"
 #include "qgsfields.h"
+#include "qgsfieldformatterregistry.h"
+#include "qgsfieldformatter.h"
+#include "qgsdatetimefieldformatter.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
@@ -61,6 +64,8 @@ namespace QgsWfs
     };
 
     QString createFeatureGeoJSON( QgsFeature *feat, const createFeatureParams &params );
+
+    QString encodeValueToText( const QVariant &value, const QgsEditorWidgetSetup &setup );
 
     QDomElement createFeatureGML2( QgsFeature *feat, QDomDocument &doc, const createFeatureParams &params, const QgsProject *project );
 
@@ -1335,10 +1340,12 @@ namespace QgsWfs
         {
           continue;
         }
-        QString attributeName = fields.at( idx ).name();
+        const QgsField field = fields.at( idx );
+        const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
+        QString attributeName = field.name();
 
         QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
-        QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
+        QDomText fieldText = doc.createTextNode( encodeValueToText( featureAttributes[idx], setup ) );
         fieldElem.appendChild( fieldText );
         typeNameElement.appendChild( fieldElem );
       }
@@ -1430,10 +1437,12 @@ namespace QgsWfs
         {
           continue;
         }
-        QString attributeName = fields.at( idx ).name();
+        const QgsField field = fields.at( idx );
+        const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
+        QString attributeName = field.name();
 
         QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
-        QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
+        QDomText fieldText = doc.createTextNode( encodeValueToText( featureAttributes[idx], setup ) );
         fieldElem.appendChild( fieldText );
         typeNameElement.appendChild( fieldElem );
       }
@@ -1441,7 +1450,74 @@ namespace QgsWfs
       return featureElement;
     }
 
+    QString encodeValueToText( const QVariant &value, const QgsEditorWidgetSetup &setup )
+    {
+      if ( value.isNull() )
+        return QStringLiteral( "null" );
 
+      if ( setup.type() ==  QStringLiteral( "DateTime" ) )
+      {
+        QgsDateTimeFieldFormatter fieldFormatter;
+        const QVariantMap config = setup.config();
+        const QString fieldFormat = config.value( QStringLiteral( "field_format" ), fieldFormatter.defaultFormat( value.type() ) ).toString();
+        QDateTime date = value.toDateTime();
+
+        if ( date.isValid() )
+        {
+          return date.toString( fieldFormat );
+        }
+      }
+      else if ( setup.type() ==  QStringLiteral( "Range" ) )
+      {
+        const QVariantMap config = setup.config();
+        if ( config.contains( QStringLiteral( "Precision" ) ) )
+        {
+          // if precision is defined, use it
+          bool ok;
+          int precision( config[ QStringLiteral( "Precision" ) ].toInt( &ok ) );
+          if ( ok )
+            return QString::number( value.toDouble(), 'f', precision );
+        }
+      }
+
+      switch ( value.type() )
+      {
+        case QVariant::Int:
+        case QVariant::UInt:
+        case QVariant::LongLong:
+        case QVariant::ULongLong:
+        case QVariant::Double:
+          return value.toString();
+
+        case QVariant::Bool:
+          return value.toBool() ? QStringLiteral( "true" ) : QStringLiteral( "false" );
+
+        case QVariant::StringList:
+        case QVariant::List:
+        case QVariant::Map:
+        {
+          QString v = QgsJsonUtils::encodeValue( value );
+
+          //do we need CDATA
+          if ( v.indexOf( '<' ) != -1 || v.indexOf( '&' ) != -1 )
+            v.prepend( QStringLiteral( "<![CDATA[" ) ).append( QStringLiteral( "]]>" ) );
+
+          return v;
+        }
+
+        default:
+        case QVariant::String:
+        {
+          QString v = value.toString();
+
+          //do we need CDATA
+          if ( v.indexOf( '<' ) != -1 || v.indexOf( '&' ) != -1 )
+            v.prepend( QStringLiteral( "<![CDATA[" ) ).append( QStringLiteral( "]]>" ) );
+
+          return v;
+        }
+      }
+    }
 
 
   } // namespace
