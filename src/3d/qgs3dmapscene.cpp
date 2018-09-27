@@ -188,7 +188,7 @@ void Qgs3DMapScene::registerPickHandler( Qgs3DMapScenePickHandler *pickHandler )
     {
       Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker( entity );
       entity->addComponent( picker );
-      connect( picker, &Qt3DRender::QObjectPicker::pressed, this, &Qgs3DMapScene::onLayerEntityPickEvent );
+      connect( picker, &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapScene::onLayerEntityPickEvent );
     }
   }
 

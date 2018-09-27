@@ -124,7 +124,7 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
   else if ( !mMapTool && tool )
   {
     mEngine->window()->installEventFilter( this );
-    mScene->cameraController()->setEnabled( false );
+    mScene->cameraController()->setEnabled( tool->allowsCameraControls() );
     mEngine->window()->setCursor( tool->cursor() );
   }
 
