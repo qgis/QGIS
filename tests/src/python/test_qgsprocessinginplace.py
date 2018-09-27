@@ -141,7 +141,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
 
         self._support_inplace_edit_tester('native:smoothgeometry', LINESTRING_AND_POLYGON_ONLY)
         self._support_inplace_edit_tester('native:parallellines', LINESTRING_ONLY)
-        self._support_inplace_edit_tester('native:arrayfeatures', GEOMETRY_ONLY)
+        self._support_inplace_edit_tester('native:arraytranslatedfeatures', GEOMETRY_ONLY)
         self._support_inplace_edit_tester('native:reprojectlayer', GEOMETRY_ONLY)
         self._support_inplace_edit_tester('qgis:densifygeometries', LINESTRING_AND_POLYGON_ONLY)
         self._support_inplace_edit_tester('qgis:densifygeometriesgivenaninterval', LINESTRING_AND_POLYGON_ONLY)
@@ -454,13 +454,13 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         # Check selected
         self.assertEqual(len(self.multipoly_vl.selectedFeatureIds()), 2)
 
-    def test_arrayfeatures(self):
+    def test_arraytranslatedfeatures(self):
         """Check that this runs correctly and additional attributes are dropped"""
 
         old_count = self.vl.featureCount()
 
         old_features, new_features = self._alg_tester(
-            'native:arrayfeatures',
+            'native:arraytranslatedfeatures',
             self.vl,
             {
                 'COUNT': 2,
