@@ -98,6 +98,17 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PolygonGeometry};}
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
 
+    QString description() const override;
+    QString id() const override;
+    QgsGeometryCheck::Flags flags() const override;
+
+///@cond private
+    static QString factoryDescription() SIP_SKIP;
+    static QString factoryId() SIP_SKIP;
+    static QgsGeometryCheck::Flags factoryFlags() SIP_SKIP;
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP;
+///@endcond private
 
     enum ResolutionMethod { Subtract, NoChange };
 
