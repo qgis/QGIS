@@ -92,6 +92,13 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 ///@endcond private
 
+    static QString factoryDescription() { return tr( "Overlap" ); }
+    static QString factoryId() { return QStringLiteral( "QgsGeometryOverlapCheck" ); }
+    static QgsGeometryCheck::Flags factoryFlags() {return QgsGeometryCheck::SingleLayerTopologyCheck;}
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PolygonGeometry};}
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
+
+
     enum ResolutionMethod { Subtract, NoChange };
 
   private:

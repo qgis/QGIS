@@ -97,6 +97,12 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 ///@endcond private
 
+    static QString factoryDescription() { return tr( "Gap" ); }
+    static QString factoryId() { return QStringLiteral( "QgsGeometryGapCheck" ); }
+    static QgsGeometryCheck::Flags factoryFlags() {return QgsGeometryCheck::SingleLayerTopologyCheck;}
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PolygonGeometry};}
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
+
     enum ResolutionMethod { MergeLongestEdge, NoChange };
 
   private:
