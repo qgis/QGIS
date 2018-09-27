@@ -116,6 +116,10 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.presetCombo.activated[str].connect(self.loadPreset)
         self.presetCombo.activated[str].connect(self.presetName.setText)
 
+        self.editSql.textChanged.connect(self.updatePresetButtonsState)
+        self.presetName.textChanged.connect(self.updatePresetButtonsState)
+        self.presetCombo.currentIndexChanged.connect(self.updatePresetButtonsState)
+
         self.updatePresetsCombobox()
 
         self.geomCombo.setEditable(True)
@@ -185,6 +189,12 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
 
     def getQueryHash(self, name):
         return 'q%s' % md5(name.encode('utf8')).hexdigest()
+
+    def updatePresetButtonsState(self, *args):
+        """Slot called when the combo box or the sql or the query name have changed:
+           sets store button state"""
+        self.presetStore.setEnabled(bool(self._getSqlQuery() and self.presetName.text()))
+        self.presetDelete.setEnabled(bool(self.presetCombo.currentIndex() != -1))
 
     def updatePresetsCombobox(self):
         self.presetCombo.clear()
