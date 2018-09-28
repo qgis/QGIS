@@ -70,7 +70,7 @@ static void buildSnapIndex( QgsFeatureIterator &fi, QgsSpatialIndex &index, QVec
       if ( ids.isEmpty() )
       {
         // add to tree and to structure
-        index.insertFeature( pntId, pt.boundingBox() );
+        index.addFeature( pntId, pt.boundingBox() );
 
         AnchorPoint xp;
         xp.x = pt.x();

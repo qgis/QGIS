@@ -118,7 +118,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
     }
 
     splitGeoms.insert( aSplitFeature.id(), aSplitFeature.geometry() );
-    spatialIndex.insertFeature( aSplitFeature );
+    spatialIndex.addFeature( aSplitFeature );
   }
 
   QgsFeature outFeat;

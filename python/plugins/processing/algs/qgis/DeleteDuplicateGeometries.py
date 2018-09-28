@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsFeatureRequest,
                        QgsProcessingException,
                        QgsFeatureSink,
+                       QgsSpatialIndex,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -71,11 +72,13 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
         features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]))
         total = 100.0 / source.featureCount() if source.featureCount() else 0
         geoms = dict()
+        index = QgsSpatialIndex()
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
 
             geoms[f.id()] = f.geometry()
+            #index.insertFeature
             feedback.setProgress(int(current * total))
 
         cleaned = dict(geoms)

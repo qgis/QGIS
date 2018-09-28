@@ -446,7 +446,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
                 QgsFeature f;
                 f.setId( mFile->recordId() );
                 f.setGeometry( geom );
-                mSpatialIndex->insertFeature( f );
+                mSpatialIndex->addFeature( f );
               }
             }
             else
@@ -501,7 +501,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
             QgsFeature f;
             f.setId( mFile->recordId() );
             f.setGeometry( QgsGeometry::fromPointXY( pt ) );
-            mSpatialIndex->insertFeature( f );
+            mSpatialIndex->addFeature( f );
           }
         }
         else
@@ -770,7 +770,7 @@ void QgsDelimitedTextProvider::rescanFile() const
         mExtent.combineExtentWith( bbox );
       }
       if ( buildSpatialIndex )
-        mSpatialIndex->insertFeature( f );
+        mSpatialIndex->addFeature( f );
     }
     if ( buildSubsetIndex )
       mSubsetIndex.append( ( quintptr ) f.id() );

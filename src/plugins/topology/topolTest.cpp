@@ -1369,7 +1369,7 @@ QgsSpatialIndex *topolTest::createIndex( QgsVectorLayer *layer, const QgsRectang
 
     if ( f.hasGeometry() )
     {
-      index->insertFeature( f );
+      index->addFeature( f );
       mFeatureMap2[f.id()] = FeatureLayer( layer, f );
     }
   }

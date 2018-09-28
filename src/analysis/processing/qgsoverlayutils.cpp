@@ -298,7 +298,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
     std::unique_ptr< QgsGeometryEngine > g1engine;
 
     geometries.insert( fid1, g1 );
-    index.insertFeature( f );
+    index.addFeature( f );
 
     QgsRectangle bbox( f.geometry().boundingBox() );
     const QList<QgsFeatureId> ids = index.intersects( bbox );
@@ -335,7 +335,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       QgsFeature fx( newFid );
       fx.setGeometry( geomIntersection );
 
-      index.insertFeature( fx );
+      index.addFeature( fx );
 
       // figure out which feature IDs belong to this intersection. Some of the IDs can be of the newly
       // created geometries - in such case we need to retrieve original IDs
@@ -365,7 +365,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
 
         QgsFeature f1x( fid1 );
         f1x.setGeometry( g12 );
-        index.insertFeature( f1x );
+        index.addFeature( f1x );
       }
 
       //
@@ -386,7 +386,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
 
         QgsFeature f2x( fid2 );
         f2x.setGeometry( g21 );
-        index.insertFeature( f2x );
+        index.addFeature( f2x );
       }
 
       // update our temporary copy of the geometry to what is left from it
