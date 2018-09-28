@@ -4599,7 +4599,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
       {
         queryGeomTableName = sqlite3_column_table_name( stmt, 1 );
       }
-      // 2. check if the table has a useable ROWID
+      // 2. check if the table has a usable ROWID
       if ( ! queryGeomTableName.isEmpty() )
       {
         sql = QStringLiteral( "SELECT ROWID FROM %1 WHERE ROWID IS NOT NULL LIMIT 1" ).arg( quotedIdentifier( queryGeomTableName ) );
