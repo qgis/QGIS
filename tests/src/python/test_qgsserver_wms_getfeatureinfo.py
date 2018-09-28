@@ -259,7 +259,6 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'test_project_values.qgz')
 
     # TODO make filter work with gpkg and move test inside testGetFeatureInfoFilter function
-    @unittest.expectedFailure
     def testGetFeatureInfoFilterGPKG(self):
         # 'test_project.qgz' ='test_project.qgs' but with a gpkg source + different fid
         # Regression for #8656 Test getfeatureinfo response xml with gpkg datasource
