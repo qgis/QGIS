@@ -265,7 +265,8 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         # layer with default value expression based on geometry
         layer.setDefaultValueDefinition(2, QgsDefaultValue('3*$x'))
         f = QgsVectorLayerUtils.createFeature(layer, g)
-        self.assertEqual(f.attributes(), ['a', NULL, 12.0]) #adjusted so that input value and output feature are the same
+        #adjusted so that input value and output feature are the same
+        self.assertEqual(f.attributes(), ['a', NULL, 6.0])
         layer.setDefaultValueDefinition(2, QgsDefaultValue(None))
 
         # test with violated unique constraints
