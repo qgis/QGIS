@@ -230,9 +230,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! Flag indicating if the layer data source is based on a query
     bool mIsQuery = false;
 
-    //! String containing the name of the table that provides the geometry if the layer data source is based on a query
-    QString mQueryGeomTableName;
-
     //! Flag indicating if ROWID has been injected in the query
     bool mRowidInjectedInQuery = false;
 

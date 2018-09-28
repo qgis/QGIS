@@ -4592,27 +4592,29 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     {
       // Check if we can get use the ROWID from the table that provides the geometry
       sqlite3_stmt *stmt = nullptr;
+      //! String containing the name of the table that provides the geometry if the layer data source is based on a query
+      QString queryGeomTableName;
       // 1. find the table that provides geometry
       if ( sqlite3_prepare_v2( mSqliteHandle, sql.toUtf8().constData(), -1, &stmt, nullptr ) == SQLITE_OK )
       {
-        mQueryGeomTableName = sqlite3_column_table_name( stmt, 1 );
+        queryGeomTableName = sqlite3_column_table_name( stmt, 1 );
       }
       // 2. check if the table has a useable ROWID
-      if ( ! mQueryGeomTableName.isEmpty() )
+      if ( ! queryGeomTableName.isEmpty() )
       {
-        sql = QStringLiteral( "SELECT ROWID FROM %1 WHERE ROWID IS NOT NULL LIMIT 1" ).arg( quotedIdentifier( mQueryGeomTableName ) );
+        sql = QStringLiteral( "SELECT ROWID FROM %1 WHERE ROWID IS NOT NULL LIMIT 1" ).arg( quotedIdentifier( queryGeomTableName ) );
         ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
         if ( ret != SQLITE_OK || rows != 1 )
         {
-          mQueryGeomTableName = QString();
+          queryGeomTableName = QString();
         }
       }
       // 3. check if ROWID injection works
-      if ( ! mQueryGeomTableName.isEmpty() )
+      if ( ! queryGeomTableName.isEmpty() )
       {
         QString newSql( mQuery.replace( QStringLiteral( "SELECT " ),
                                         QStringLiteral( "SELECT %1.%2, " )
-                                        .arg( quotedIdentifier( mQueryGeomTableName ), QStringLiteral( "ROWID" ) ),
+                                        .arg( quotedIdentifier( queryGeomTableName ), QStringLiteral( "ROWID" ) ),
                                         Qt::CaseInsensitive ) );
         sql = QStringLiteral( "SELECT ROWID FROM %1 WHERE ROWID IS NOT NULL LIMIT 1" ).arg( newSql );
         ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
