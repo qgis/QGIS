@@ -396,7 +396,7 @@ int main( int argc, char **argv )
       feature.setGeometry( QgsGeometry::fromPointXY( point ) );
       feature.setValid( true );
       centroids.insert( area, feature );
-      spatialIndex.insertFeature( feature );
+      spatialIndex.addFeature( feature );
     }
 
     G_message( "Attaching input polygons to cleaned areas" );
