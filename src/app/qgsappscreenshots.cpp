@@ -115,7 +115,7 @@ QScreen *QgsAppScreenShots::screen( QWidget *widget )
   return screen;
 }
 
-void QgsAppScreenShots::takeScreenshots( Categories categories )
+void QgsAppScreenShots::takePicturesOf( Categories categories )
 {
   if ( !categories || categories.testFlag( VectorLayerProperties ) )
     takeVectorLayerProperties();

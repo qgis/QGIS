@@ -13066,7 +13066,7 @@ void QgisApp::zoomToBookmarkIndex( const QModelIndex &index )
 void QgisApp::takeAppScreenShots( const QString &saveDirectory, const int categories )
 {
   QgsAppScreenShots ass( saveDirectory );
-  ass.takeScreenshots( QgsAppScreenShots::Categories( categories ) );
+  ass.takePicturesOf( QgsAppScreenShots::Categories( categories ) );
 }
 
 // Slot that gets called when the project file was saved with an older

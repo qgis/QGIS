@@ -52,7 +52,7 @@ class QgsAppScreenShots
     QgsAppScreenShots( const QString &saveDirectory );
 
     //! if categories is null, then takes all categories
-    void takeScreenshots( Categories categories = nullptr );
+    void takePicturesOf( Categories categories = nullptr );
 
   private:
     QScreen *screen( QWidget *widget = nullptr );
