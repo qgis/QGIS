@@ -259,7 +259,8 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         layer.setDefaultValueDefinition(2, QgsDefaultValue('3*4'))
         f = QgsVectorLayerUtils.createFeature(layer)
         self.assertEqual(f.attributes(), ['a', NULL, 6.0])
-        # we do not expect the default value expression to take precedence over the attribute map
+        # we do not expect the default value expression to 
+        # take precedence over the attribute map
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'a', 2: 6.0})
         self.assertEqual(f.attributes(), ['a', NULL, 6.0])
         # layer with default value expression based on geometry
