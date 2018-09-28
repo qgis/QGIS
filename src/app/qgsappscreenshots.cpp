@@ -18,6 +18,7 @@
 #include <QWindow>
 #include <QScreen>
 #include <QImageWriter>
+#include <QTransform>
 
 #include "qgsappscreenshots.h"
 
@@ -38,10 +39,7 @@ QgsAppScreenShots::QgsAppScreenShots( const QString &saveDirectory )
 void QgsAppScreenShots::saveScreenshot( const QString &name, QWidget *widget, GrabMode mode )
 {
   QPixmap pix;
-  int x = 0;
-  int y = 0;
-  int w = -1;
-  int h = -1;
+  QRect geom;
 
   QScreen *scr = screen( widget );
   if ( widget )
@@ -53,18 +51,21 @@ void QgsAppScreenShots::saveScreenshot( const QString &name, QWidget *widget, Gr
     }
     else if ( mode == GrabWidgetAndFrame )
     {
-      const QRect geom = widget->frameGeometry();
-      QPoint tl = geom.topLeft();
-      x = tl.x();
-      y = tl.y();
-      w = geom.width();
-      h = geom.height();
+      geom = widget->frameGeometry();
     }
   }
   if ( !widget || mode != GrabWidget )
   {
     WId wid = widget ? widget->winId() : 0;
-    pix = scr->grabWindow( wid, x, y, w, h );
+    pix = scr->grabWindow( wid );
+    if ( !geom.isEmpty() )
+    {
+      qreal dpr = scr->devicePixelRatio();
+      pix = pix.copy( static_cast<int>( geom.x() * dpr ),
+                      static_cast<int>( geom.y() * dpr ),
+                      static_cast<int>( geom.width() * dpr ),
+                      static_cast<int>( geom.height() * dpr ) );
+    }
   }
 
   const QString &fileName = mSaveDirectory + "/" + name + ".png";
