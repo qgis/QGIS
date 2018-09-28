@@ -60,7 +60,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * This constructor is more efficient then calling setPoints()
      * or repeatedly calling addVertex()
      *
-     * If the \z vector is filled, then the geometry type will either
+     * If the \a z vector is filled, then the geometry type will either
      * be a LineStringZ(M) or LineString25D depending on the \a is25DType
      * argument. If \a is25DType is true (and the \a m vector is unfilled) then
      * the created Linestring will be a LineString25D type. Otherwise, the
