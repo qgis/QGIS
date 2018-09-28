@@ -4819,18 +4819,28 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
     return QString();
   }
 
+  QString geomColumnExpr;
+  if ( dsUri.geometryColumn().isEmpty() )
+  {
+    geomColumnExpr = QStringLiteral( "IS NULL" );
+  }
+  else
+  {
+    geomColumnExpr = QStringLiteral( "=" ) + QgsPostgresConn::quotedValue( dsUri.geometryColumn() );
+  }
+
   QString selectQmlQuery = QString( "SELECT styleQML"
                                     " FROM layer_styles"
                                     " WHERE f_table_catalog=%1"
                                     " AND f_table_schema=%2"
                                     " AND f_table_name=%3"
-                                    " AND f_geometry_column=%4"
+                                    " AND f_geometry_column %4"
                                     " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
                                     ",update_time DESC LIMIT 1" )
                            .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                            .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                            .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                           .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
+                           .arg( geomColumnExpr );
 
   QgsPostgresResult result( conn->PQexec( selectQmlQuery ) );
 
