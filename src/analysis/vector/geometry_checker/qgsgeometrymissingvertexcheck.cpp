@@ -37,9 +37,9 @@ void QgsGeometryMissingVertexCheck::collectErrors( const QMap<QString, QgsFeatur
   if ( feedback )
     feedback->setProgress( feedback->progress() + 1.0 );
 
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
 
-  QgsFeaturePool *featurePool = mContext->featurePools.value( featureIds.firstKey() );
+  QgsFeaturePool *featurePool = featurePools.value( featureIds.firstKey() );
 
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), nullptr, mContext, true );
 
