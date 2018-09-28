@@ -86,21 +86,21 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE QgsPointXY pointXY( double x, double y ) const;
+    Q_INVOKABLE static QgsPointXY pointXY( double x, double y );
 
     /**
       * Creates QgsPoint in QML
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE QgsPoint point( double x, double y, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) const;
+    Q_INVOKABLE static QgsPoint point( double x, double y, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() );
 
     /**
       * Converts QGeoCoordinate to QgsPoint
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE QgsPoint coordinateToPoint( const QGeoCoordinate &coor ) const;
+    Q_INVOKABLE static QgsPoint coordinateToPoint( const QGeoCoordinate &coor );
 
     /**
       * Transforms point between different crs from QML
@@ -121,20 +121,20 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       * Returns whether file on path exists
       * \since QGIS 3.4
       */
-    Q_INVOKABLE bool fileExists( const QString &path ) const;
+    Q_INVOKABLE static bool fileExists( const QString &path );
 
     /**
      * Extracts filename from path
      * \since QGIS 3.4
      */
-    Q_INVOKABLE QString getFileName( const QString &path ) const;
+    Q_INVOKABLE static QString getFileName( const QString &path );
 
     /**
       * Log message in QgsMessageLog
       */
-    Q_INVOKABLE void logMessage( const QString &message,
-                                 const QString &tag = QString( "QgsQuick" ),
-                                 Qgis::MessageLevel level = Qgis::Warning );
+    Q_INVOKABLE static void logMessage( const QString &message,
+                                        const QString &tag = QString( "QgsQuick" ),
+                                        Qgis::MessageLevel level = Qgis::Warning );
 
     /**
       * QgsQuickFeatureLayerPair factory for tuple of QgsFeature and QgsVectorLayer used in QgsQUick library.
@@ -143,14 +143,14 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE QgsQuickFeatureLayerPair featureFactory( const QgsFeature &feature, QgsVectorLayer *layer = nullptr ) const;
+    Q_INVOKABLE static QgsQuickFeatureLayerPair featureFactory( const QgsFeature &feature, QgsVectorLayer *layer = nullptr );
 
     /**
       * Returns QUrl to image from library's /images folder.
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE const QUrl getThemeIcon( const QString &name ) const;
+    Q_INVOKABLE static const QUrl getThemeIcon( const QString &name );
 
     /**
       * Returns url to field editor component for a feature form.
@@ -159,7 +159,7 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE const QUrl getEditorComponentSource( const QString &widgetName );
+    Q_INVOKABLE static const QUrl getEditorComponentSource( const QString &widgetName );
 
     /**
      * \copydoc QgsCoordinateFormatter::format()

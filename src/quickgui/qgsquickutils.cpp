@@ -43,17 +43,17 @@ QgsCoordinateReferenceSystem QgsQuickUtils::coordinateReferenceSystemFromEpsgId(
   return QgsCoordinateReferenceSystem::fromEpsgId( epsg );
 }
 
-QgsPointXY QgsQuickUtils::pointXY( double x, double y ) const
+QgsPointXY QgsQuickUtils::pointXY( double x, double y )
 {
   return QgsPointXY( x, y );
 }
 
-QgsPoint QgsQuickUtils::point( double x, double y, double z, double m ) const
+QgsPoint QgsQuickUtils::point( double x, double y, double z, double m )
 {
   return QgsPoint( x, y, z, m );
 }
 
-QgsPoint QgsQuickUtils::coordinateToPoint( const QGeoCoordinate &coor ) const
+QgsPoint QgsQuickUtils::coordinateToPoint( const QGeoCoordinate &coor )
 {
   return QgsPoint( coor.longitude(), coor.latitude(), coor.altitude() );
 }
@@ -85,14 +85,14 @@ double QgsQuickUtils::screenUnitsToMeters( QgsQuickMapSettings *mapSettings, int
   return mDistanceArea.measureLine( p1, p2 );
 }
 
-bool QgsQuickUtils::fileExists( const QString &path ) const
+bool QgsQuickUtils::fileExists( const QString &path )
 {
   QFileInfo check_file( path );
   // check if file exists and if yes: Is it really a file and no directory?
   return ( check_file.exists() && check_file.isFile() );
 }
 
-QString QgsQuickUtils::getFileName( const QString &path ) const
+QString QgsQuickUtils::getFileName( const QString &path )
 {
   QFileInfo fileInfo( path );
   QString filename( fileInfo.fileName() );
@@ -104,12 +104,12 @@ void QgsQuickUtils::logMessage( const QString &message, const QString &tag, Qgis
   QgsMessageLog::logMessage( message, tag, level );
 }
 
-QgsQuickFeatureLayerPair QgsQuickUtils::featureFactory( const QgsFeature &feature, QgsVectorLayer *layer ) const
+QgsQuickFeatureLayerPair QgsQuickUtils::featureFactory( const QgsFeature &feature, QgsVectorLayer *layer )
 {
   return QgsQuickFeatureLayerPair( feature, layer );
 }
 
-const QUrl QgsQuickUtils::getThemeIcon( const QString &name ) const
+const QUrl QgsQuickUtils::getThemeIcon( const QString &name )
 {
   QString path = QStringLiteral( "qrc:/%1.svg" ).arg( name );
   QgsDebugMsg( QStringLiteral( "Using icon %1 from %2" ).arg( name, path ) );
