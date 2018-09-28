@@ -15,11 +15,13 @@ email                : matthias@opengis.ch
 
 #include "qgsgeometryvalidationdock.h"
 #include "qgsgeometryvalidationmodel.h"
+#include "qgsmapcanvas.h"
 
 #include <QButtonGroup>
 
-QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QWidget *parent, Qt::WindowFlags flags )
+QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
+  , mMapCanvas( mapCanvas )
 {
   setupUi( this );
 
@@ -27,8 +29,9 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QWid
   connect( mPreviousButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::gotoPreviousError );
   connect( mZoomToProblemButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::zoomToProblem );
   connect( mZoomToFeatureButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::zoomToFeature );
-
-  onCurrentErrorChanged( QModelIndex(), QModelIndex() );
+  connect( mMapCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
+  connect( mMapCanvas, &QgsMapCanvas::transformContextChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
 }
 
 QgsGeometryValidationModel *QgsGeometryValidationDock::geometryValidationModel() const
@@ -59,16 +62,41 @@ void QgsGeometryValidationDock::gotoPreviousError()
 void QgsGeometryValidationDock::zoomToProblem()
 {
   mLastZoomToAction = ZoomToProblem;
+  if ( !currentIndex().isValid() )
+    return;
+
+  QgsRectangle problemExtent = currentIndex().data( QgsGeometryValidationModel::ProblemExtentRole ).value<QgsRectangle>();
+  QgsRectangle mapExtent = mLayerTransform.transform( problemExtent );
+  mMapCanvas->zoomToFeatureExtent( mapExtent );
 }
 
 void QgsGeometryValidationDock::zoomToFeature()
 {
   mLastZoomToAction = ZoomToFeature;
-  // mErrorListView->currentIndex().data( )
+  if ( !currentIndex().isValid() )
+    return;
+
+  QgsRectangle featureExtent = currentIndex().data( QgsGeometryValidationModel::FeatureExtentRole ).value<QgsRectangle>();
+  QgsRectangle mapExtent = mLayerTransform.transform( featureExtent );
+  mMapCanvas->zoomToFeatureExtent( mapExtent );
+}
+
+void QgsGeometryValidationDock::updateLayerTransform()
+{
+  if ( !mMapCanvas->currentLayer() )
+    return;
+
+  mLayerTransform = QgsCoordinateTransform( mMapCanvas->currentLayer()->crs(), mMapCanvas->mapSettings().destinationCrs(), mMapCanvas->mapSettings().transformContext() );
+}
+
+QModelIndex QgsGeometryValidationDock::currentIndex() const
+{
+  return mErrorListView->selectionModel()->currentIndex();
 }
 
 void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &current, const QModelIndex &previous )
 {
+  Q_UNUSED( previous )
   mNextButton->setEnabled( current.isValid() && current.row() < mGeometryValidationModel->rowCount() - 1 );
   mPreviousButton->setEnabled( current.isValid() && current.row() > 0 );
 
@@ -83,5 +111,6 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
 
     case ZoomToFeature:
       zoomToFeature();
+      break;
   }
 }

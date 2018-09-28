@@ -11,7 +11,8 @@ QgsGeometryValidationModel::QgsGeometryValidationModel( QgsGeometryValidationSer
 {
   connect( mGeometryValidationService, &QgsGeometryValidationService::geometryCheckCompleted, this, &QgsGeometryValidationModel::onGeometryCheckCompleted );
   connect( mGeometryValidationService, &QgsGeometryValidationService::geometryCheckStarted, this, &QgsGeometryValidationModel::onGeometryCheckStarted );
-  connect( mGeometryValidationService, &QgsGeometryValidationService::topologyChecksUpdated, this, &QgsGeometryValidationModel::onTopologyChecksUpdated, Qt::QueuedConnection );
+  connect( mGeometryValidationService, &QgsGeometryValidationService::topologyChecksUpdated, this, &QgsGeometryValidationModel::onTopologyChecksUpdated );
+  connect( mGeometryValidationService, &QgsGeometryValidationService::topologyChecksCleared, this, &QgsGeometryValidationModel::onTopologyChecksCleared );
 }
 
 QModelIndex QgsGeometryValidationModel::index( int row, int column, const QModelIndex &parent ) const
@@ -60,6 +61,18 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
           featureTitle = fid;
 
         return tr( "%1: %2" ).arg( featureTitle, topologyError->description() );
+      }
+
+      case FeatureExtentRole:
+      {
+        const QgsFeatureId fid = topologyError->featureId();
+        const QgsFeature feature = mCurrentLayer->getFeature( fid ); // TODO: this should be cached!
+        return feature.geometry().boundingBox();
+      }
+
+      case ProblemExtentRole:
+      {
+        return topologyError->affectedAreaBBox();
       }
     }
   }
@@ -195,7 +208,7 @@ void QgsGeometryValidationModel::onTopologyChecksUpdated( QgsVectorLayer *layer,
 
   if ( layer == currentLayer() )
   {
-    const int oldRowCount = rowCount( QModelIndex() );
+    const int oldRowCount = rowCount();
     beginInsertRows( QModelIndex(), oldRowCount, oldRowCount + errors.size() );
   }
 
@@ -204,6 +217,23 @@ void QgsGeometryValidationModel::onTopologyChecksUpdated( QgsVectorLayer *layer,
   if ( layer == currentLayer() )
   {
     endInsertRows();
+  }
+}
+
+void QgsGeometryValidationModel::onTopologyChecksCleared( QgsVectorLayer *layer )
+{
+  auto &topologyLayerErrors = mTopologyErrorStorage[layer];
+  if ( topologyLayerErrors.empty() )
+    return;
+
+  if ( layer == currentLayer() )
+  {
+    beginRemoveRows( QModelIndex(), mErrorStorage.size(), rowCount() - 1 );
+  }
+  topologyLayerErrors.clear();
+  if ( layer == currentLayer() )
+  {
+    endRemoveRows();
   }
 }
 

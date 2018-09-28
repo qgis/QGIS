@@ -932,7 +932,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     mInfoBar->pushWarning( tr( "Geometry Validation" ), message );
   } );
-  mGeometryValidationDock = new QgsGeometryValidationDock( tr( "Geometry Validation" ) );
+  mGeometryValidationDock = new QgsGeometryValidationDock( tr( "Geometry Validation" ), mMapCanvas );
   mGeometryValidationModel = new QgsGeometryValidationModel( mGeometryValidationService.get(), mGeometryValidationDock );
   connect( this, &QgisApp::activeLayerChanged, mGeometryValidationModel, [this]( QgsMapLayer * layer )
   {

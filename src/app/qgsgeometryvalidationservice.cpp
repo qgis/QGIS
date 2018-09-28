@@ -196,11 +196,24 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
 
 void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer )
 {
+  emit topologyChecksCleared( layer );
+
   QFutureWatcher<void> *futureWatcher = mLayerCheckStates[layer].topologyCheckFutureWatcher;
   if ( futureWatcher )
   {
-    // TODO: kill!!
-    delete futureWatcher;
+    // Make sure no more checks are started first
+    futureWatcher->cancel();
+
+    // Tell all checks to stop asap
+    const auto feedbacks = mLayerCheckStates[layer].topologyCheckFeedbacks;
+    for ( QgsFeedback *feedback : feedbacks )
+    {
+      if ( feedback )
+        feedback->cancel();
+    }
+
+    // The future watcher will take care of deleting
+    mLayerCheckStates[layer].topologyCheckFeedbacks.clear();
   }
 
   QgsFeatureIds checkFeatureIds = layer->editBuffer()->changedGeometries().keys().toSet();
@@ -209,7 +222,6 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
   // TODO: ownership of these objects...
   QgsVectorLayerFeaturePool *featurePool = new QgsVectorLayerFeaturePool( layer );
   QList<QgsGeometryCheckError *> &allErrors = mLayerCheckStates[layer].topologyCheckErrors;
-  QgsFeedback *feedback = new QgsFeedback();
   QMap<QString, QgsFeatureIds> layerIds;
   layerIds.insert( layer->id(), checkFeatureIds );
   QgsGeometryCheck::LayerFeatureIds layerFeatureIds( layerIds );
@@ -219,12 +231,19 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
 
   const QList<QgsGeometryCheck *> checks = mLayerCheckStates[layer].topologyChecks;
 
-  QFuture<void> future = QtConcurrent::map( checks, [featurePools, &allErrors, feedback, layerFeatureIds, layer, this]( const QgsGeometryCheck * check )
+  QMap<const QgsGeometryCheck *, QgsFeedback *> feedbacks;
+  for ( QgsGeometryCheck *check : checks )
+    feedbacks.insert( check, new QgsFeedback() );
+
+  mLayerCheckStates[layer].topologyCheckFeedbacks = feedbacks.values();
+
+  QFuture<void> future = QtConcurrent::map( checks, [featurePools, &allErrors, layerFeatureIds, layer, feedbacks, this]( const QgsGeometryCheck * check )
   {
     // Watch out with the layer pointer in here. We are running in a thread, so we do not want to actually use it
     // except for using its address to report the error.
     QList<QgsGeometryCheckError *> errors;
     QStringList messages; // Do we really need these?
+    QgsFeedback *feedback = feedbacks.value( check );
 
     check->collectErrors( featurePools, errors, messages, feedback, layerFeatureIds );
     QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Write );
@@ -235,18 +254,24 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
     {
       sharedErrors.append( std::shared_ptr<QgsGeometryCheckError>( error ) );
     }
-    emit topologyChecksUpdated( layer, sharedErrors );
+    if ( !feedback->isCanceled() )
+      emit topologyChecksUpdated( layer, sharedErrors );
+
     errorLocker.unlock();
   } );
 
   futureWatcher = new QFutureWatcher<void>();
   futureWatcher->setFuture( future );
 
-  connect( futureWatcher, &QFutureWatcherBase::finished, this, [&allErrors, layer, this]()
+  connect( futureWatcher, &QFutureWatcherBase::finished, this, [&allErrors, layer, feedbacks, futureWatcher, this]()
   {
     QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Read );
     layer->setAllowCommit( allErrors.empty() );
     errorLocker.unlock();
+    qDeleteAll( feedbacks.values() );
+    futureWatcher->deleteLater();
+    if ( mLayerCheckStates[layer].topologyCheckFutureWatcher == futureWatcher )
+      mLayerCheckStates[layer].topologyCheckFutureWatcher = nullptr;
   } );
 
   mLayerCheckStates[layer].topologyCheckFutureWatcher = futureWatcher;

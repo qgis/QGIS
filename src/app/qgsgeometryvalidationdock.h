@@ -18,7 +18,9 @@ email                : matthias@opengis.ch
 
 #include "ui_qgsgeometryvalidationdockbase.h"
 #include "qgsdockwidget.h"
+#include "qgscoordinatetransform.h"
 
+class QgsMapCanvas;
 class QgsGeometryValidationModel;
 
 /**
@@ -29,7 +31,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     Q_OBJECT
 
   public:
-    QgsGeometryValidationDock( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 
     QgsGeometryValidationModel *geometryValidationModel() const;
     void setGeometryValidationModel( QgsGeometryValidationModel *geometryValidationModel );
@@ -40,6 +42,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     void gotoPreviousError();
     void zoomToProblem();
     void zoomToFeature();
+    void updateLayerTransform();
 
   private:
     enum ZoomToAction
@@ -50,6 +53,9 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     ZoomToAction mLastZoomToAction = ZoomToFeature;
     QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
     QButtonGroup *mZoomToButtonGroup = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
+    QgsCoordinateTransform mLayerTransform;
+    QModelIndex currentIndex() const;
 };
 
 #endif // QGSGEOMETRYVALIDATIONPANEL_H
