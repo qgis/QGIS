@@ -11,6 +11,7 @@ QgsGeometryValidationModel::QgsGeometryValidationModel( QgsGeometryValidationSer
 {
   connect( mGeometryValidationService, &QgsGeometryValidationService::geometryCheckCompleted, this, &QgsGeometryValidationModel::onGeometryCheckCompleted );
   connect( mGeometryValidationService, &QgsGeometryValidationService::geometryCheckStarted, this, &QgsGeometryValidationModel::onGeometryCheckStarted );
+  connect( mGeometryValidationService, &QgsGeometryValidationService::topologyChecksUpdated, this, &QgsGeometryValidationModel::onTopologyChecksUpdated, Qt::QueuedConnection );
 }
 
 QModelIndex QgsGeometryValidationModel::index( int row, int column, const QModelIndex &parent ) const
@@ -28,7 +29,7 @@ QModelIndex QgsGeometryValidationModel::parent( const QModelIndex &child ) const
 int QgsGeometryValidationModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
-  return mErrorStorage.value( mCurrentLayer ).size();
+  return mErrorStorage.value( mCurrentLayer ).size() + mTopologyErrorStorage.value( mCurrentLayer ).size();
 }
 
 int QgsGeometryValidationModel::columnCount( const QModelIndex &parent ) const
@@ -41,37 +42,63 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
 {
   const auto &layerErrors = mErrorStorage.value( mCurrentLayer );
 
-  const auto &featureItem = layerErrors.at( index.row() );
-
-  switch ( role )
+  if ( index.row() >= layerErrors.size() )
   {
-    case Qt::DisplayRole:
-    {
-      QgsFeature feature = mCurrentLayer->getFeature( featureItem.fid ); // TODO: this should be cached!
-      mExpressionContext.setFeature( feature );
-      QString featureTitle = mDisplayExpression.evaluate( &mExpressionContext ).toString();
-      if ( featureTitle.isEmpty() )
-        featureTitle = featureItem.fid;
+    // Topology error
+    const auto &topologyErrors = mTopologyErrorStorage.value( mCurrentLayer );
+    auto topologyError = topologyErrors.at( index.row() - layerErrors.size() );
 
-      if ( featureItem.errors.count() > 1 )
-        return tr( "%1: %n Errors", "", featureItem.errors.count() ).arg( featureTitle );
-      else if ( featureItem.errors.count() == 1 )
-        return tr( "%1: %2" ).arg( featureTitle, featureItem.errors.at( 0 )->description() );
-#if 0
-      else
-        return tr( "%1: No Errors" ).arg( featureTitle );
-#endif
+    switch ( role )
+    {
+      case Qt::DisplayRole:
+      {
+        const QgsFeatureId fid = topologyError->featureId();
+        const QgsFeature feature = mCurrentLayer->getFeature( fid ); // TODO: this should be cached!
+        mExpressionContext.setFeature( feature );
+        QString featureTitle = mDisplayExpression.evaluate( &mExpressionContext ).toString();
+        if ( featureTitle.isEmpty() )
+          featureTitle = fid;
+
+        return tr( "%1: %2" ).arg( featureTitle, topologyError->description() );
+      }
     }
+  }
+  else
+  {
+    // Geometry error
+    const auto &featureItem = layerErrors.at( index.row() );
 
-
-    case Qt::DecorationRole:
+    switch ( role )
     {
-      if ( mGeometryValidationService->validationActive( mCurrentLayer, featureItem.fid ) )
-        return QgsApplication::getThemeIcon( "/mActionTracing.svg" );
-      else
+      case Qt::DisplayRole:
+      {
+        QgsFeature feature = mCurrentLayer->getFeature( featureItem.fid ); // TODO: this should be cached!
+        mExpressionContext.setFeature( feature );
+        QString featureTitle = mDisplayExpression.evaluate( &mExpressionContext ).toString();
+        if ( featureTitle.isEmpty() )
+          featureTitle = featureItem.fid;
+
+        if ( featureItem.errors.count() > 1 )
+          return tr( "%1: %n Errors", "", featureItem.errors.count() ).arg( featureTitle );
+        else if ( featureItem.errors.count() == 1 )
+          return tr( "%1: %2" ).arg( featureTitle, featureItem.errors.at( 0 )->description() );
+        else
+          return QVariant();
+      }
+
+      case Qt::DecorationRole:
+      {
+        if ( mGeometryValidationService->validationActive( mCurrentLayer, featureItem.fid ) )
+          return QgsApplication::getThemeIcon( "/mActionTracing.svg" );
+        else
+          return QVariant();
+      }
+
+      default:
         return QVariant();
     }
   }
+
 
   return QVariant();
 }
@@ -159,6 +186,24 @@ void QgsGeometryValidationModel::onGeometryCheckStarted( QgsVectorLayer *layer, 
       QModelIndex modelIndex = index( featureIdx, 0, QModelIndex() );
       emit dataChanged( modelIndex, modelIndex );
     }
+  }
+}
+
+void QgsGeometryValidationModel::onTopologyChecksUpdated( QgsVectorLayer *layer, const QList<std::shared_ptr<QgsGeometryCheckError> > &errors )
+{
+  auto &topologyLayerErrors = mTopologyErrorStorage[layer];
+
+  if ( layer == currentLayer() )
+  {
+    const int oldRowCount = rowCount( QModelIndex() );
+    beginInsertRows( QModelIndex(), oldRowCount, oldRowCount + errors.size() );
+  }
+
+  topologyLayerErrors.append( errors );
+
+  if ( layer == currentLayer() )
+  {
+    endInsertRows();
   }
 }
 

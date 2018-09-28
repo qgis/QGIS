@@ -27,6 +27,7 @@ class QgsGeometryValidationModel : public QAbstractItemModel
   private slots:
     void onGeometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<std::shared_ptr<QgsSingleGeometryCheckError> > &errors );
     void onGeometryCheckStarted( QgsVectorLayer *layer, QgsFeatureId fid );
+    void onTopologyChecksUpdated( QgsVectorLayer *layer, const QList<std::shared_ptr<QgsGeometryCheckError> > &errors );
 
   private:
     struct FeatureErrors
@@ -50,6 +51,7 @@ class QgsGeometryValidationModel : public QAbstractItemModel
     mutable QgsExpressionContext mExpressionContext;
 
     QMap<QgsVectorLayer *, QList< FeatureErrors > > mErrorStorage;
+    QMap<QgsVectorLayer *, QList< std::shared_ptr< QgsGeometryCheckError > > > mTopologyErrorStorage;
 };
 
 #endif // QGSGEOMETRYVALIDATIONMODEL_H

@@ -18,6 +18,8 @@ email                : matthias@opengis.ch
 
 #include <QObject>
 #include <QMap>
+#include <QFuture>
+#include <QReadWriteLock>
 
 #include "qgsfeature.h"
 
@@ -27,7 +29,7 @@ class QgsVectorLayer;
 class QgsGeometryCheck;
 class QgsSingleGeometryCheck;
 class QgsSingleGeometryCheckError;
-
+class QgsGeometryCheckError;
 
 
 /**
@@ -65,6 +67,9 @@ class QgsGeometryValidationService : public QObject
   signals:
     void geometryCheckStarted( QgsVectorLayer *layer, QgsFeatureId fid );
     void geometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<std::shared_ptr<QgsSingleGeometryCheckError>> &errors );
+    void topologyChecksUpdated( QgsVectorLayer *layer, const QList<std::shared_ptr<QgsGeometryCheckError> > &errors );
+
+    void warning( const QString &message );
 
   private slots:
     void onLayersAdded( const QList<QgsMapLayer *> &layers );
@@ -84,8 +89,16 @@ class QgsGeometryValidationService : public QObject
 
     QgsProject *mProject = nullptr;
 
-    QHash<QgsVectorLayer *, QList< QgsSingleGeometryCheck * > > mSingleFeatureChecks;
-    QHash<QgsVectorLayer *, bool > mTopologyChecksOk;
+    struct VectorCheckState
+    {
+      QList< QgsSingleGeometryCheck * > singleFeatureChecks;
+      QList< QgsGeometryCheck * > topologyChecks;
+      QFutureWatcher<void> *topologyCheckFutureWatcher = nullptr;
+      QList<QgsGeometryCheckError *> topologyCheckErrors;
+    };
+
+    QReadWriteLock mTopologyCheckLock;
+    QHash<QgsVectorLayer *, VectorCheckState> mLayerCheckStates;
 };
 
 #endif // QGSGEOMETRYVALIDATIONSERVICE_H

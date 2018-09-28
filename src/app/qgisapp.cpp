@@ -928,6 +928,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsAnalysis::instance()->geometryCheckRegistry()->initialize();
 
   mGeometryValidationService = qgis::make_unique<QgsGeometryValidationService>( QgsProject::instance() );
+  connect( mGeometryValidationService.get(), &QgsGeometryValidationService::warning, this, [this]( const QString & message )
+  {
+    mInfoBar->pushWarning( tr( "Geometry Validation" ), message );
+  } );
   mGeometryValidationDock = new QgsGeometryValidationDock( tr( "Geometry Validation" ) );
   mGeometryValidationModel = new QgsGeometryValidationModel( mGeometryValidationService.get(), mGeometryValidationDock );
   connect( this, &QgisApp::activeLayerChanged, mGeometryValidationModel, [this]( QgsMapLayer * layer )
