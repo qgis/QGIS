@@ -501,6 +501,15 @@ A Collection: logical collection of layers or subcollections, e.g. GRASS locatio
 
     static QIcon iconDir(); // shared icon: open/closed directory
     static QIcon iconDataCollection(); // default icon for data collection
+
+  protected:
+
+    static QIcon openDirIcon();
+%Docstring
+Shared open directory icon.
+
+.. versionadded:: 3.4
+%End
 };
 
 class QgsDirectoryItem : QgsDataCollectionItem

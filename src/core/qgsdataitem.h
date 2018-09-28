@@ -522,6 +522,14 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 
     static QIcon iconDir(); // shared icon: open/closed directory
     static QIcon iconDataCollection(); // default icon for data collection
+
+  protected:
+
+    /**
+     * Shared open directory icon.
+     * \since QGIS 3.4
+     */
+    static QIcon openDirIcon();
 };
 
 /**
