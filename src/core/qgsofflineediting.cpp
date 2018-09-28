@@ -523,11 +523,19 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       const QgsFields providerFields = layer->dataProvider()->fields();
       for ( const auto &field : providerFields )
       {
+        QString primaryKey;
+        if ( field.name() == pkFieldName )
+          primaryKey = QStringLiteral( "PRIMARY KEY" );
+
+        QString autoincrement;
         QString dataType;
         QVariant::Type type = field.type();
         if ( type == QVariant::Int || type == QVariant::LongLong )
         {
           dataType = QStringLiteral( "INTEGER" );
+          if ( field.name() == pkFieldName )
+            autoincrement = QStringLiteral( "AUTOINCREMENT" );
+
         }
         else if ( type == QVariant::Double )
         {
@@ -542,9 +550,8 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
           showWarning( tr( "%1: Unknown data type %2. Not using type affinity for the field." ).arg( field.name(), QVariant::typeToName( type ) ) );
         }
 
-        sql += delim + QStringLiteral( "'%1' %2" ).arg( field.name(), dataType );
-        if ( field.name() == pkFieldName )
-          sql += QStringLiteral( " PRIMARY KEY AUTOINCREMENT" );
+        sql += delim + QStringLiteral( "'%1' %2 %3 %4" ).arg( field.name(), dataType, primaryKey, autoincrement );
+
         delim = ',';
       }
       sql += ')';
