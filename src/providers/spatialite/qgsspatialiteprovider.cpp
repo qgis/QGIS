@@ -5768,16 +5768,26 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
 
   sqlite3 *sqliteHandle = handle->handle();
 
+  QString geomColumnExpr;
+  if ( dsUri.geometryColumn().isEmpty() )
+  {
+    geomColumnExpr = QStringLiteral( "IS NULL" );
+  }
+  else
+  {
+    geomColumnExpr = QStringLiteral( "=" ) + QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() );
+  }
+
   QString selectQmlQuery = QString( "SELECT styleQML"
                                     " FROM layer_styles"
                                     " WHERE f_table_schema %1"
                                     " AND f_table_name=%2"
-                                    " AND f_geometry_column=%3"
+                                    " AND f_geometry_column %3"
                                     " ORDER BY CASE WHEN useAsDefault THEN 1 ELSE 2 END"
                                     ",update_time DESC LIMIT 1" )
                            .arg( QgsSpatiaLiteProvider::tableSchemaCondition( dsUri ) )
                            .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.table() ) )
-                           .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() ) );
+                           .arg( geomColumnExpr );
 
   char **results = nullptr;
   int rows;
