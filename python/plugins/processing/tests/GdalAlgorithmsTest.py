@@ -194,6 +194,21 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         path, layer = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback, False)
         self.assertEqual(path, source)
 
+        # geopackage with layer
+        source = os.path.join(testDataPath, 'custom', 'circular_strings.gpkg')
+        vl2 = QgsVectorLayer(source + '|layername=circular_strings')
+        self.assertTrue(vl2.isValid())
+        p.addMapLayer(vl2)
+        path, layer = alg.getOgrCompatibleSource('INPUT', {'INPUT': vl2.id()}, context, feedback, True)
+        self.assertEqual(path, source)
+        self.assertEqual(layer, 'circular_strings')
+        vl3 = QgsVectorLayer(source + '|layername=circular_strings_with_line')
+        self.assertTrue(vl3.isValid())
+        p.addMapLayer(vl3)
+        path, layer = alg.getOgrCompatibleSource('INPUT', {'INPUT': vl3.id()}, context, feedback, True)
+        self.assertEqual(path, source)
+        self.assertEqual(layer, 'circular_strings_with_line')
+
     def testGetOgrCompatibleSourceFromFeatureSource(self):
         # create a memory layer and add to project and context
         layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",

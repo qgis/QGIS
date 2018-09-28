@@ -629,8 +629,23 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
 
 QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  bool requiresTranslation = selectedFeaturesOnly;
-  if ( !selectedFeaturesOnly )
+  bool requiresTranslation = false;
+
+  // if we are only looking for selected features then we have to export back to disk,
+  // as we need to subset only selected features, a concept which doesn't exist outside QGIS!
+  requiresTranslation = requiresTranslation || selectedFeaturesOnly;
+
+  // if the data provider is NOT ogr, then we HAVE to convert. Otherwise we run into
+  // issues with data providers like spatialite, delimited text where the format can be
+  // opened outside of QGIS, but with potentially very different behavior!
+  requiresTranslation = requiresTranslation || vl->dataProvider()->name() != QLatin1String( "ogr" );
+
+  // if the layer has a feature filter set, then we HAVE to convert. Feature filters are
+  // a purely QGIS concept.
+  requiresTranslation = requiresTranslation || !vl->subsetString().isEmpty();
+
+  // Check if layer is a disk based format and if so if the layer's path has a compatible filename suffix
+  if ( !requiresTranslation )
   {
     const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( vl->dataProvider()->name(), vl->source() );
     if ( parts.contains( QLatin1String( "path" ) ) )
