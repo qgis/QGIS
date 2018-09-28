@@ -115,7 +115,6 @@ QString QgsClipboard::generateClipboardText() const
           }
         }
 
-        // QgsDebugMsg("about to traverse fields.");
         for ( int idx = 0; idx < attributes.count(); ++idx )
         {
           // QgsDebugMsg(QString("inspecting field '%1'.").arg(it2->toString()));

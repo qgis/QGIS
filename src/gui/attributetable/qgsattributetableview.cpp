@@ -104,6 +104,30 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
     }
     i++;
   }
+  mConfig = config;
+}
+
+QList<QgsFeatureId> QgsAttributeTableView::selectedFeaturesIds() const
+{
+  // In order to get the ids in the right sorted order based on the view we have to get the feature ids first
+  // from the selection manager which is in the order the user selected them when clicking
+  // then get the model index, sort that, and finally return the new sorted features ids.
+  const QgsFeatureIds featureIds = mFeatureSelectionManager->selectedFeatureIds();
+  QModelIndexList indexList;
+  for ( const QgsFeatureId &id : featureIds )
+  {
+    QModelIndex index = mFilterModel->fidToIndex( id );
+    indexList << index;
+  }
+
+  std::sort( indexList.begin(), indexList.end() );
+  QList<QgsFeatureId> ids;
+  for ( const QModelIndex &index : indexList )
+  {
+    QgsFeatureId id = mFilterModel->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
+    ids.append( id );
+  }
+  return ids;
 }
 
 void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel *filterModel )
@@ -153,7 +177,7 @@ void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionMana
 
 QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
 {
-  QgsAttributeTableConfig attributeTableConfig = mFilterModel->layer()->attributeTableConfig();
+  QgsAttributeTableConfig attributeTableConfig = mConfig;
 
   QToolButton *toolButton = nullptr;
   QWidget *container = nullptr;

@@ -167,6 +167,13 @@ Set the expression used for sorting the table and feature list.
 Gets the expression used for sorting the table and feature list.
 %End
 
+    QgsAttributeTableConfig attributeTableConfig() const;
+%Docstring
+The config used for the attribute table.
+
+:return: The config used for the attribute table.
+%End
+
   public slots:
 
     void setCurrentEditSelection( const QgsFeatureIds &fids );
