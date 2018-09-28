@@ -177,7 +177,8 @@ QString QgsHandleBadLayers::filename( int row )
   if ( type == QLatin1String( "vector" ) )
   {
     const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( provider, datasource );
-    return parts.value( QLatin1String( "path" ) ).toString();
+    // if parts is empty then provider doesn't handle this method!
+    return parts.empty() ? datasource : parts.value( QLatin1String( "path" ) ).toString();
   }
   else
   {
