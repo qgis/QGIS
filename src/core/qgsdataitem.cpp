@@ -89,6 +89,20 @@ QIcon QgsDataCollectionItem::iconDataCollection()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
 }
 
+QIcon QgsDataCollectionItem::openDirIcon()
+{
+  static QIcon sIcon;
+
+  if ( sIcon.isNull() )
+  {
+    // initialize shared icons
+    QStyle *style = QApplication::style();
+    sIcon = QIcon( style->standardIcon( QStyle::SP_DirOpenIcon ) );
+  }
+
+  return sIcon;
+}
+
 QIcon QgsDataCollectionItem::iconDir()
 {
   static QIcon sIcon;
@@ -97,7 +111,7 @@ QIcon QgsDataCollectionItem::iconDir()
   {
     // initialize shared icons
     QStyle *style = QApplication::style();
-    sIcon = QIcon( style->standardPixmap( QStyle::SP_DirClosedIcon ) );
+    sIcon = QIcon( style->standardIcon( QStyle::SP_DirClosedIcon ) );
     sIcon.addPixmap( style->standardPixmap( QStyle::SP_DirOpenIcon ),
                      QIcon::Normal, QIcon::On );
   }
@@ -737,8 +751,15 @@ void QgsDirectoryItem::init()
 
 QIcon QgsDirectoryItem::icon()
 {
+  // still loading? show the spinner
   if ( state() == Populating )
     return QgsDataItem::icon();
+
+  // loaded? show the open dir icon
+  if ( state() == Populated )
+    return openDirIcon();
+
+  // show the closed dir icon
   return iconDir();
 }
 
@@ -1555,6 +1576,8 @@ QgsProjectHomeItem::QgsProjectHomeItem( QgsDataItem *parent, const QString &name
 
 QIcon QgsProjectHomeItem::icon()
 {
+  if ( state() == Populating )
+    return QgsDirectoryItem::icon();
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconQgsProjectFile.svg" ) );
 }
 
