@@ -67,26 +67,41 @@ class ANALYSIS_EXPORT QgsGeometryCheck
 #endif
     };
 
+    /**
+     * Description of a change to indicate at which level a change occured.
+     *
+     * \since Python bindings since QGIS 3.4
+     */
     enum ChangeWhat
     {
-      ChangeFeature,
-      ChangePart,
-      ChangeRing,
-      ChangeNode
+      ChangeFeature, //!< This change happens on feature level
+      ChangePart,    //!< This change happens on part level
+      ChangeRing,    //!< This change happens on ring level
+      ChangeNode     //!< This change happens on node level
     };
 
+    /**
+     * Description of the type of a change.
+     *
+     * \since Python bindings since QGIS 3.4
+     */
     enum ChangeType
     {
-      ChangeAdded,
-      ChangeRemoved,
-      ChangeChanged
+      ChangeAdded,   //!< Something has been added
+      ChangeRemoved, //!< Something has been removed
+      ChangeChanged  //!< Something has been updated
     };
 
+    /**
+     * The type of a check.
+     *
+     * \since Python bindings since QGIS 3.4
+     */
     enum CheckType
     {
-      FeatureNodeCheck,
-      FeatureCheck,
-      LayerCheck
+      FeatureNodeCheck, //!< The check controls individual nodes
+      FeatureCheck,     //!< The check controls geometries as a whole
+      LayerCheck        //!< The check controls a whole layer (topology checks)
     };
 
     enum Flag
@@ -98,16 +113,37 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     Q_DECLARE_FLAGS( Flags, Flag )
     Q_FLAG( Flags )
 
+    /**
+     * Descripts a change to fix a geometry.
+     *
+     * \since Python bindings since QGIS 3.4
+     */
     struct Change
     {
       Change() = default;
+
+      /**
+       * Create a new Change
+       */
       Change( ChangeWhat _what, ChangeType _type, QgsVertexId _vidx = QgsVertexId() )
         : what( _what )
         , type( _type )
         , vidx( _vidx )
       {}
+
+      /**
+       * What level this change affects.
+       */
       ChangeWhat what;
+
+      /**
+       * What action this change performs.
+       */
       ChangeType type;
+
+      /**
+       * The index of the part / ring / vertex, depending on \see what.
+       */
       QgsVertexId vidx;
       bool operator==( const Change &other )
       {
@@ -115,8 +151,15 @@ class ANALYSIS_EXPORT QgsGeometryCheck
       }
     };
 
+    /**
+     * A collection of changes.
+     * Grouped by layer id and feature id.
+     */
     typedef QMap<QString, QMap<QgsFeatureId, QList<Change> > > Changes;
 
+    /**
+     * Create a new geometry check.
+     */
     QgsGeometryCheck( CheckType checkType,
                       const QgsGeometryCheckContext *context,
                       const QVariantMap &configuration )
@@ -134,17 +177,76 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     }
 #endif
 
+    /**
+     * Returns if this geometry check is compatible with \a layer.
+     * By default it checks for the geometry type in \a compatibleGeometryTypes().
+     *
+     * \since QGIS 3.4
+     */
     virtual bool isCompatible( QgsVectorLayer *layer ) const;
+
+    /**
+     * A list of geometry types for which this check can be performed.
+     *
+     * \since QGIS 3.4
+     */
     virtual QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const = 0;
+
+    /**
+     * Flags for this geometry check.
+     */
     virtual QgsGeometryCheck::Flags flags() const {return nullptr;}
 
-    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
-    //! Fix the error \a error with the specified \a method.
+    /**
+     * The main worker method.
+     * Check all features available from \a featurePools and write errors found to \a errors.
+     * Other status messages can be written to \a messages.
+     * Progress should be reported to \a feedback. Only features and layers listed in \a ids should be checked.
+     *
+     * \since QGIS 3.4
+     */
+    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors SIP_INOUT, QStringList &messages SIP_INOUT, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
+
+    /**
+     * Fix the error \a error with the specified \a method.
+     *
+     * \since QGIS 3.4
+     */
     virtual void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes SIP_INOUT ) const SIP_SKIP;
+
+    /**
+     * Returns a list of descriptions for available resolutions for errors. The index will be passed as ``method`` to \see fixError().
+     *
+     * \since QGIS 3.4
+     */
     virtual QStringList resolutionMethods() const = 0;
+
+    /**
+     * Returns a human readable description for this check.
+     *
+     * \since QGIS 3.4
+     */
     virtual QString description() const = 0;
+
+    /**
+     * Returns an id for this check.
+     *
+     * \since QGIS 3.4
+     */
     virtual QString id() const = 0;
+
+    /**
+     * Returns the check type.
+     *
+     * \since QGIS 3.4
+     */
     CheckType checkType() const { return mCheckType; }
+
+    /**
+     * Returns the context
+     *
+     * \since QGIS 3.4
+     */
     const QgsGeometryCheckContext *context() const { return mContext; }
 
   protected:

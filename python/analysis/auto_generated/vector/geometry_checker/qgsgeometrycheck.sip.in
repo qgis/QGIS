@@ -79,9 +79,16 @@ the Free Software Foundation; either version 2 of the License, or     *
     struct Change
     {
       Change();
+
       Change( ChangeWhat _what, ChangeType _type, QgsVertexId _vidx = QgsVertexId() );
+%Docstring
+Create a new Change
+%End
+
       ChangeWhat what;
+
       ChangeType type;
+
       QgsVertexId vidx;
       bool operator==( const Change &other );
     };
@@ -91,19 +98,77 @@ the Free Software Foundation; either version 2 of the License, or     *
     QgsGeometryCheck( CheckType checkType,
                       const QgsGeometryCheckContext *context,
                       const QVariantMap &configuration );
+%Docstring
+Create a new geometry check.
+%End
     virtual ~QgsGeometryCheck();
 
 
     virtual bool isCompatible( QgsVectorLayer *layer ) const;
-    virtual QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const = 0;
-    virtual QgsGeometryCheck::Flags flags() const;
+%Docstring
+Returns if this geometry check is compatible with ``layer``.
+By default it checks for the geometry type in ``compatibleGeometryTypes``().
 
-    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = 0, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
+.. versionadded:: 3.4
+%End
+
+    virtual QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const = 0;
+%Docstring
+A list of geometry types for which this check can be performed.
+
+.. versionadded:: 3.4
+%End
+
+    virtual QgsGeometryCheck::Flags flags() const;
+%Docstring
+Flags for this geometry check.
+%End
+
+    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors /In,Out/, QStringList &messages /In,Out/, QgsFeedback *feedback = 0, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
+%Docstring
+The main worker method.
+Check all features available from ``featurePools`` and write errors found to ``errors``.
+Other status messages can be written to ``messages``.
+Progress should be reported to ``feedback``. Only features and layers listed in ``ids`` should be checked.
+
+.. versionadded:: 3.4
+%End
+
+
     virtual QStringList resolutionMethods() const = 0;
+%Docstring
+Returns a list of descriptions for available resolutions for errors. The index will be passed as ``method`` to :py:func:`fixError`.
+
+.. versionadded:: 3.4
+%End
+
     virtual QString description() const = 0;
+%Docstring
+Returns a human readable description for this check.
+
+.. versionadded:: 3.4
+%End
+
     virtual QString id() const = 0;
+%Docstring
+Returns an id for this check.
+
+.. versionadded:: 3.4
+%End
+
     CheckType checkType() const;
+%Docstring
+Returns the check type.
+
+.. versionadded:: 3.4
+%End
+
     const QgsGeometryCheckContext *context() const;
+%Docstring
+Returns the context
+
+.. versionadded:: 3.4
+%End
 
   protected:
 
