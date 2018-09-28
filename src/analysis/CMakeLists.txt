@@ -166,7 +166,7 @@ SET(QGIS_ANALYSIS_SRCS
   vector/geometry_checker/qgsgeometryselfintersectioncheck.cpp
   vector/geometry_checker/qgsgeometrysliverpolygoncheck.cpp
   vector/geometry_checker/qgsgeometrytypecheck.cpp
-  vector/geometry_checker/qgsisvalidgeometrycheck.cpp
+  vector/geometry_checker/qgsgeometryisvalidcheck.cpp
   vector/geometry_checker/qgssinglegeometrycheck.cpp
   vector/geometry_checker/qgssinglegeometrycheck.cpp
   vector/geometry_checker/qgsvectordataproviderfeaturepool.cpp
@@ -306,7 +306,7 @@ SET(QGIS_ANALYSIS_HDRS
   vector/geometry_checker/qgsgeometrysliverpolygoncheck.h
   vector/geometry_checker/qgsgeometrytypecheck.h
   vector/geometry_checker/qgssinglegeometrycheck.h
-  vector/geometry_checker/qgsisvalidgeometrycheck.h
+  vector/geometry_checker/qgsgeometryisvalidcheck.h
   vector/geometry_checker/qgsgeometrycheckregistry.h
   vector/geometry_checker/qgsgeometrycheckfactory.h
 )

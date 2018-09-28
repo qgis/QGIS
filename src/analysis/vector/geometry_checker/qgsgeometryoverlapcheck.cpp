@@ -229,7 +229,7 @@ QString QgsGeometryOverlapCheck::factoryId()
 
 QgsGeometryCheck::Flags QgsGeometryOverlapCheck::factoryFlags()
 {
-  return QgsGeometryCheck::SingleLayerTopologyCheck;
+  return QgsGeometryCheck::AvailableInValidation;
 }
 
 QList<QgsWkbTypes::GeometryType> QgsGeometryOverlapCheck::factoryCompatibleGeometryTypes()

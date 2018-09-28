@@ -256,7 +256,7 @@ QString QgsGeometryGapCheck::factoryId()
 
 QgsGeometryCheck::Flags QgsGeometryGapCheck::factoryFlags()
 {
-  return QgsGeometryCheck::SingleLayerTopologyCheck;
+  return QgsGeometryCheck::AvailableInValidation;
 }
 
 QList<QgsWkbTypes::GeometryType> QgsGeometryGapCheck::factoryCompatibleGeometryTypes()

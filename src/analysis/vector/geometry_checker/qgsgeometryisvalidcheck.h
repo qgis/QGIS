@@ -1,5 +1,5 @@
 /***************************************************************************
-                      qgsisvalidgeometrycheck.h
+                      qgsgeometryisvalidcheck.h
                      --------------------------------------
 Date                 : 7.9.2018
 Copyright            : (C) 2018 by Matthias Kuhn
@@ -13,36 +13,34 @@ email                : matthias@opengis.ch
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSISVALIDGEOMETRYCHECK_H
-#define QGSISVALIDGEOMETRYCHECK_H
+#ifndef QGSGEOMETRYISVALIDCHECK_H
+#define QGSGEOMETRYISVALIDCHECK_H
 
 #define SIP_NO_FILE
 
 #include "qgssinglegeometrycheck.h"
 
 /**
- * Checks if geometries are valid.
+ * Checks if geometries are valid using the configured method of
  */
-class ANALYSIS_EXPORT QgsIsValidGeometryCheck : public QgsSingleGeometryCheck
+class ANALYSIS_EXPORT QgsGeometryIsValidCheck : public QgsSingleGeometryCheck
 {
   public:
-    explicit QgsIsValidGeometryCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
-      : QgsSingleGeometryCheck( FeatureNodeCheck, context, configuration ) {}
+    explicit QgsGeometryIsValidCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 
-    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
-    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
-    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override;
     QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
-
     QStringList resolutionMethods() const override;
-    QString factoryDescription() const { return tr( "Is Valid" ); }
     QString description() const override { return factoryDescription(); }
-    QString factoryId() const
-    {
-      return QStringLiteral( "QgsIsValidCheck" );
-    }
-
     QString id() const override { return factoryId(); }
+
+///@cond private
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP;
+    static QString factoryDescription() SIP_SKIP;
+    static QString factoryId() SIP_SKIP;
+    static QgsGeometryCheck::Flags factoryFlags() SIP_SKIP;
+///@endcond
 };
 
-#endif // QGSISVALIDGEOMETRYCHECK_H
+#endif // QGSGEOMETRYISVALIDCHECK_H

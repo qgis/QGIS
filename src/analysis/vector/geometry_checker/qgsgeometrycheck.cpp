@@ -31,6 +31,11 @@ bool QgsGeometryCheck::isCompatible( QgsVectorLayer *layer ) const
   return compatibleGeometryTypes().contains( layer->geometryType() );
 }
 
+QgsGeometryCheck::Flags QgsGeometryCheck::flags() const
+{
+  return nullptr;
+}
+
 void QgsGeometryCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, QgsGeometryCheck::Changes &changes ) const
 {
   Q_UNUSED( featurePools )

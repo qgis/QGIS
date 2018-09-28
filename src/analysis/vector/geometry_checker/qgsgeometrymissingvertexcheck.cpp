@@ -181,5 +181,5 @@ QString QgsGeometryMissingVertexCheck::factoryId()
 
 QgsGeometryCheck::Flags QgsGeometryMissingVertexCheck::factoryFlags()
 {
-  return QgsGeometryCheck::SingleLayerTopologyCheck;
+  return QgsGeometryCheck::AvailableInValidation;
 }

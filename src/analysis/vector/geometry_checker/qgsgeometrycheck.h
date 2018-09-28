@@ -104,11 +104,12 @@ class ANALYSIS_EXPORT QgsGeometryCheck
       LayerCheck        //!< The check controls a whole layer (topology checks)
     };
 
+    /**
+     * Flags for geometry checks.
+     */
     enum Flag
     {
-      SingleGeometryCheck = 1 << 1,
-      SingleLayerTopologyCheck = 1 << 2,
-      AvailableInValidation = 1 << 3
+      AvailableInValidation = 1 << 1 //!< This geometry check should be available in layer validation on the vector layer peroperties
     };
     Q_DECLARE_FLAGS( Flags, Flag )
     Q_FLAG( Flags )
@@ -195,7 +196,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     /**
      * Flags for this geometry check.
      */
-    virtual QgsGeometryCheck::Flags flags() const {return nullptr;}
+    virtual QgsGeometryCheck::Flags flags() const;
 
     /**
      * The main worker method.

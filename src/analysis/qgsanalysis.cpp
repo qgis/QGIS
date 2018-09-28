@@ -24,6 +24,7 @@
 #include "qgsgeometrygapcheck.h"
 #include "qgsgeometrymissingvertexcheck.h"
 #include "qgsgeometryoverlapcheck.h"
+#include "qgsgeometryisvalidcheck.h"
 
 QgsAnalysis *QgsAnalysis::instance()
 {
@@ -42,6 +43,7 @@ QgsAnalysis::QgsAnalysis()
   qRegisterMetaType< QList<std::shared_ptr<QgsGeometryCheckError> > >( "QList<std::shared_ptr<QgsGeometryCheckError>>" );
 
   mGeometryCheckRegistry->registerGeometryCheck( new QgsGeometryCheckFactoryT<QgsGeometrySelfIntersectionCheck>() );
+  mGeometryCheckRegistry->registerGeometryCheck( new QgsGeometryCheckFactoryT<QgsGeometryIsValidCheck>() );
   mGeometryCheckRegistry->registerGeometryCheck( new QgsGeometryCheckFactoryT<QgsGeometryGapCheck>() );
   mGeometryCheckRegistry->registerGeometryCheck( new QgsGeometryCheckFactoryT<QgsGeometryOverlapCheck>() );
   mGeometryCheckRegistry->registerGeometryCheck( new QgsGeometryCheckFactoryT<QgsGeometryMissingVertexCheck>() );

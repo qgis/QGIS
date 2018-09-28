@@ -13,13 +13,22 @@ email                : matthias@opengis.ch
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsisvalidgeometrycheck.h"
+#include "qgsgeometryisvalidcheck.h"
 #include "qgsfeature.h"
 #include "qgssettings.h"
 #include "qgsgeos.h"
 #include "qgsgeometryvalidator.h"
 
-QList<QgsSingleGeometryCheckError *> QgsIsValidGeometryCheck::processGeometry( const QgsGeometry &geometry ) const
+QgsGeometryIsValidCheck::QgsGeometryIsValidCheck(const QgsGeometryCheckContext* context, const QVariantMap& configuration)
+  : QgsSingleGeometryCheck( FeatureNodeCheck, context, configuration )
+{}
+
+QList<QgsWkbTypes::GeometryType> QgsGeometryIsValidCheck::compatibleGeometryTypes() const
+{
+  return factoryCompatibleGeometryTypes();
+}
+
+QList<QgsSingleGeometryCheckError *> QgsGeometryIsValidCheck::processGeometry( const QgsGeometry &geometry ) const
 {
   QVector<QgsGeometry::Error> errors;
 
@@ -45,7 +54,33 @@ QList<QgsSingleGeometryCheckError *> QgsIsValidGeometryCheck::processGeometry( c
   return result;
 }
 
-QStringList QgsIsValidGeometryCheck::resolutionMethods() const
+QStringList QgsGeometryIsValidCheck::resolutionMethods() const
 {
   return QStringList();
 }
+///@cond private
+QList<QgsWkbTypes::GeometryType> QgsGeometryIsValidCheck::factoryCompatibleGeometryTypes()
+{
+  return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry};
+}
+
+bool QgsGeometryIsValidCheck::factoryIsCompatible(QgsVectorLayer* layer) SIP_SKIP
+{
+  return factoryCompatibleGeometryTypes().contains( layer->geometryType() );
+}
+
+QString QgsGeometryIsValidCheck::factoryDescription()
+{
+  return tr( "Is Valid" );
+}
+
+QString QgsGeometryIsValidCheck::factoryId()
+{
+  return QStringLiteral( "QgsIsValidCheck" );
+}
+
+QgsGeometryCheck::Flags QgsGeometryIsValidCheck::factoryFlags()
+{
+  return AvailableInValidation;
+}
+///@endcond

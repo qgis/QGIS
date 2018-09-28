@@ -69,8 +69,6 @@ the Free Software Foundation; either version 2 of the License, or     *
 
     enum Flag
     {
-      SingleGeometryCheck,
-      SingleLayerTopologyCheck,
       AvailableInValidation
     };
     typedef QFlags<QgsGeometryCheck::Flag> Flags;
