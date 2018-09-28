@@ -128,6 +128,7 @@ void QgsMapToolReverseLine::canvasReleaseEvent( QgsMapMouseEvent *e )
       emit messageEmitted( tr( "Couldn't reverse the selected part." ) );
     }
   }
+  mRubberBand.reset();
 }
 
 QgsGeometry QgsMapToolReverseLine::partUnderPoint( QPoint point, QgsFeatureId &fid, int &partNum )
