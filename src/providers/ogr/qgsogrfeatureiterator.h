@@ -96,6 +96,9 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     QgsCoordinateTransform mTransform;
     QgsOgrDatasetSharedPtr mSharedDS = nullptr;
 
+    bool mFirstFieldIsFid = false;
+    QgsFields mFieldsWithoutFid;
+
     bool fetchFeatureWithId( QgsFeatureId id, QgsFeature &feature ) const;
 };
 

@@ -44,6 +44,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   , mFilterFids( mRequest.filterFids() )
   , mFilterFidsIt( mFilterFids.constBegin() )
   , mSharedDS( source->mSharedDS )
+  , mFirstFieldIsFid( source->mFirstFieldIsFid )
+  , mFieldsWithoutFid( source->mFieldsWithoutFid )
 {
   // Since connection timeout for OGR connections is problematic and can lead to crashes, disable for now.
   mRequest.setTimeout( -1 );
@@ -82,6 +84,15 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
       mOgrOrigLayer = mOgrLayer;
       mOgrLayerWithFid = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, QString(), true, &mOrigFidAdded );
       mOgrLayer = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString, true, &mOrigFidAdded );
+
+      OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( mOgrLayer );
+      QByteArray fidColumn( OGR_L_GetFIDColumn( mOgrLayer ) );
+      mFirstFieldIsFid = !fidColumn.isEmpty() && OGR_FD_GetFieldIndex( fdef, fidColumn ) < 0;
+
+      mFieldsWithoutFid.clear();
+      for ( int i = ( mFirstFieldIsFid ) ? 1 : 0; i < mSource->mFields.size(); i++ )
+        mFieldsWithoutFid.append( mSource->mFields.at( i ) );
+
       if ( !mOgrLayer )
       {
         close();
@@ -404,15 +415,15 @@ bool QgsOgrFeatureIterator::close()
 
 void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature &f, int attindex ) const
 {
-  if ( mSource->mFirstFieldIsFid && attindex == 0 )
+  if ( mFirstFieldIsFid && attindex == 0 )
   {
     f.setAttribute( 0, static_cast<qint64>( OGR_F_GetFID( ogrFet ) ) );
     return;
   }
 
-  int attindexWithoutFid = ( mSource->mFirstFieldIsFid ) ? attindex - 1 : attindex;
+  int attindexWithoutFid = ( mFirstFieldIsFid ) ? attindex - 1 : attindex;
   bool ok = false;
-  QVariant value = QgsOgrUtils::getOgrFeatureAttribute( ogrFet, mSource->mFieldsWithoutFid, attindexWithoutFid, mSource->mEncoding, &ok );
+  QVariant value = QgsOgrUtils::getOgrFeatureAttribute( ogrFet, mFieldsWithoutFid, attindexWithoutFid, mSource->mEncoding, &ok );
   if ( !ok )
     return;
 
