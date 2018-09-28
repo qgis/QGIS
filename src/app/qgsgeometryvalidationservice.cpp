@@ -32,7 +32,6 @@ email                : matthias@opengis.ch
 QgsGeometryValidationService::QgsGeometryValidationService( QgsProject *project )
   : mProject( project )
 {
-  qRegisterMetaType< QList<std::shared_ptr<QgsGeometryCheckError> > >( "QList<std::shared_ptr<QgsGeometryCheckError>>" );
   connect( project, &QgsProject::layersAdded, this, &QgsGeometryValidationService::onLayersAdded );
 }
 
