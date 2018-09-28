@@ -115,7 +115,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         else:
             # vector layer, but not OGR - get OGR compatible path
             # TODO - handle "selected features only" mode!!
-            ogr_data_path = GdalUtils.ogrConnectionString(input_layer.dataProvider().dataSourceUri(), context)
+            ogr_data_path = GdalUtils.ogrConnectionStringFromLayer(input_layer)
             ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
         return ogr_data_path, ogr_layer_name
 
