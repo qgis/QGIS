@@ -15,6 +15,8 @@
 
 #include "qgsmeshrendereractivedatasetwidget.h"
 
+#include <QDateTime>
+
 #include "qgis.h"
 #include "qgsmeshlayer.h"
 #include "qgsmessagelog.h"
@@ -24,11 +26,19 @@ QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget 
   : QWidget( parent )
 {
   setupUi( this );
+
+  connect( mTimeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged );
+  connect( mDatasetSlider, &QSlider::valueChanged, mTimeComboBox, &QComboBox::setCurrentIndex );
+
+  connect( mFirstDatasetButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onFirstTimeClicked );
+  connect( mPreviousDatasetButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onPreviousTimeClicked );
+  connect( mNextDatasetButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onNextTimeClicked );
+  connect( mLastDatasetButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onLastTimeClicked );
+
   connect( mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::activeScalarGroupChanged,
            this, &QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged );
   connect( mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::activeVectorGroupChanged,
            this, &QgsMeshRendererActiveDatasetWidget::onActiveVectorGroupChanged );
-  connect( mDatasetSlider, &QSlider::valueChanged, this, &QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged );
 }
 
 void QgsMeshRendererActiveDatasetWidget::setLayer( QgsMeshLayer *layer )
@@ -57,18 +67,49 @@ QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::activeVectorDataset() co
   return mActiveVectorDataset;
 }
 
-void QgsMeshRendererActiveDatasetWidget::setSliderRange()
+void QgsMeshRendererActiveDatasetWidget::setTimeRange()
 {
   int datasetCount = 1;
+  int groupWithMaximumDatasets = -1;
+
   if ( mMeshLayer && mMeshLayer->dataProvider() )
   {
     for ( int i = 0; i < mMeshLayer->dataProvider()->datasetGroupCount(); ++i )
     {
-      datasetCount = std::max( mMeshLayer->dataProvider()->datasetCount( i ), datasetCount );
+      int currentCount = mMeshLayer->dataProvider()->datasetCount( i );
+      if ( currentCount > datasetCount )
+      {
+        datasetCount = currentCount;
+        groupWithMaximumDatasets = i;
+      }
     }
   }
+
+  // update slider
   mDatasetSlider->setMinimum( 0 );
   mDatasetSlider->setMaximum( datasetCount - 1 );
+
+  // update combobox
+  mTimeComboBox->clear();
+  if ( groupWithMaximumDatasets > -1 )
+  {
+    for ( int i = 0; i < datasetCount; ++i )
+    {
+      QgsMeshDatasetIndex index( groupWithMaximumDatasets, i );
+      QgsMeshDatasetMetadata meta = mMeshLayer->dataProvider()->datasetMetadata( index );
+      double time = meta.time();
+      mTimeComboBox->addItem( timeToString( time ), time );
+    }
+  }
+
+  // enable/disable time controls depending on whether the data set is time varying
+  bool isTimeVarying = datasetCount > 1;
+  mTimeComboBox->setEnabled( isTimeVarying );
+  mDatasetSlider->setEnabled( isTimeVarying );
+  mFirstDatasetButton->setEnabled( isTimeVarying );
+  mPreviousDatasetButton->setEnabled( isTimeVarying );
+  mNextDatasetButton->setEnabled( isTimeVarying );
+  mLastDatasetButton->setEnabled( isTimeVarying );
 }
 
 void QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged( int groupIndex )
@@ -79,8 +120,8 @@ void QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged( int groupIn
   mActiveScalarDatasetGroup = groupIndex;
 
   // keep the same timestep if possible
-  int val = mDatasetSlider->value();
-  onActiveDatasetChanged( val );
+  int val = mTimeComboBox->currentIndex();
+  mTimeComboBox->setCurrentIndex( val );
   emit activeScalarGroupChanged( mActiveScalarDatasetGroup );
 }
 
@@ -92,9 +133,8 @@ void QgsMeshRendererActiveDatasetWidget::onActiveVectorGroupChanged( int groupIn
   mActiveVectorDatasetGroup = groupIndex;
 
   // keep the same timestep if possible
-  int val = mDatasetSlider->value();
-  mDatasetSlider->setValue( val );
-  onActiveDatasetChanged( val );
+  int val = mTimeComboBox->currentIndex();
+  mTimeComboBox->setCurrentIndex( val );
   emit activeVectorGroupChanged( mActiveVectorDatasetGroup );
 }
 
@@ -129,9 +169,34 @@ void QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged( int value )
 
   if ( changed )
   {
+    whileBlocking( mDatasetSlider )->setValue( value );
     updateMetadata();
     emit widgetChanged();
   }
+}
+
+void QgsMeshRendererActiveDatasetWidget::onFirstTimeClicked()
+{
+  mTimeComboBox->setCurrentIndex( 0 );
+}
+
+void QgsMeshRendererActiveDatasetWidget::onPreviousTimeClicked()
+{
+  int idx = mTimeComboBox->currentIndex() - 1;
+  if ( idx >= 0 )
+    mTimeComboBox->setCurrentIndex( idx );
+}
+
+void QgsMeshRendererActiveDatasetWidget::onNextTimeClicked()
+{
+  int idx = mTimeComboBox->currentIndex() + 1;
+  if ( idx < mTimeComboBox->count() )
+    mTimeComboBox->setCurrentIndex( idx );
+}
+
+void QgsMeshRendererActiveDatasetWidget::onLastTimeClicked()
+{
+  mTimeComboBox->setCurrentIndex( mTimeComboBox->count() - 1 );
 }
 
 void QgsMeshRendererActiveDatasetWidget::updateMetadata()
@@ -183,6 +248,12 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata()
   mActiveDatasetMetadata->setText( msg );
 }
 
+QString QgsMeshRendererActiveDatasetWidget::timeToString( double val )
+{
+  // time val should be in hours
+  qint64 seconds = static_cast<qint64>( val * 3600.0 );
+  return QDateTime::fromSecsSinceEpoch( seconds ).toString( "hh:mm:ss" );
+}
 
 QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datasetIndex )
 {
@@ -240,13 +311,15 @@ void QgsMeshRendererActiveDatasetWidget::syncToLayer()
     mActiveVectorDataset = QgsMeshDatasetIndex();
   }
 
-  setSliderRange();
+  setTimeRange();
 
   int val = 0;
   if ( mActiveScalarDataset.isValid() )
     val = mActiveScalarDataset.dataset();
   else if ( mActiveVectorDataset.isValid() )
     val = mActiveVectorDataset.dataset();
-  mDatasetSlider->setValue( val );
-  onActiveDatasetChanged( val );
+
+  whileBlocking( mTimeComboBox )->setCurrentIndex( val );
+  whileBlocking( mDatasetSlider )->setValue( val );
+  updateMetadata();
 }
