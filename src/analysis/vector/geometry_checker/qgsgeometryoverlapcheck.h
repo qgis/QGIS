@@ -72,6 +72,9 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
 class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
 {
   public:
+
+    enum ResolutionMethod { Subtract, NoChange };
+
     QgsGeometryOverlapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
@@ -91,26 +94,6 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP;
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 ///@endcond private
-
-    static QString factoryDescription() { return tr( "Overlap" ); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryOverlapCheck" ); }
-    static QgsGeometryCheck::Flags factoryFlags() {return QgsGeometryCheck::SingleLayerTopologyCheck;}
-    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PolygonGeometry};}
-    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
-
-    QString description() const override;
-    QString id() const override;
-    QgsGeometryCheck::Flags flags() const override;
-
-///@cond private
-    static QString factoryDescription() SIP_SKIP;
-    static QString factoryId() SIP_SKIP;
-    static QgsGeometryCheck::Flags factoryFlags() SIP_SKIP;
-    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;
-    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP;
-///@endcond private
-
-    enum ResolutionMethod { Subtract, NoChange };
 
   private:
     const double mOverlapThresholdMapUnits;

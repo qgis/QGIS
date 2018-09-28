@@ -76,6 +76,8 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
 class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
 {
   public:
+    enum ResolutionMethod { MergeLongestEdge, NoChange };
+
     explicit QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
@@ -96,14 +98,6 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP;
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 ///@endcond private
-
-    static QString factoryDescription() { return tr( "Gap" ); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryGapCheck" ); }
-    static QgsGeometryCheck::Flags factoryFlags() {return QgsGeometryCheck::SingleLayerTopologyCheck;}
-    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PolygonGeometry};}
-    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
-
-    enum ResolutionMethod { MergeLongestEdge, NoChange };
 
   private:
     bool mergeWithNeighbor( const QMap<QString, QgsFeaturePool *> &featurePools,
