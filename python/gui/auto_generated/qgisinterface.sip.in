@@ -602,7 +602,9 @@ status bar (do not use the native Qt statusBar() method).
 
     virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 );
 %Docstring
-Take screenshots for the user documentation
+Take screenshots for user documentation
+@param saveDirectory path were the screenshots will be saved
+@param categories an int as a flag value of QgsAppScreenShots.Categories
 
 .. versionadded:: 3.4
 %End

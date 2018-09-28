@@ -529,7 +529,9 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QgsStatusBar *statusBarIface() = 0;
 
     /**
-     * Take screenshots for the user documentation
+     * Take screenshots for user documentation
+     * @param saveDirectory path were the screenshots will be saved
+     * @param categories an int as a flag value of QgsAppScreenShots::Categories
      * \since QGIS 3.4
      */
     virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) {Q_UNUSED( saveDirectory ); Q_UNUSED( categories );}
