@@ -56,6 +56,7 @@
 #include <QDebug>
 
 #include <gdalwarper.h>
+#include <gdal.h>
 #include <ogr_srs_api.h>
 #include <cpl_conv.h>
 #include <cpl_string.h>
@@ -930,70 +931,78 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
   if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
     return QString();
 
-  if ( strcmp( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalDataset ) ), "netCDF" ) == 0 || strcmp( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalDataset ) ), "GTiff" ) == 0 )
-  {
-    char **GDALmetadata = GDALGetMetadata( mGdalDataset, nullptr );
+  QString generatedBandName = QgsRasterDataProvider::generateBandName( bandNumber );
+  GDALRasterBandH myGdalBand = getBand( bandNumber );
+  QString gdalBandName(GDALGetDescription(myGdalBand));
 
-    if ( GDALmetadata )
-    {
-      QStringList metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
-      QStringList dimExtraValues;
-      QMap< QString, QString > unitsMap;
-      for ( QStringList::const_iterator i = metadata.constBegin();
-            i != metadata.constEnd(); ++i )
-      {
-        QString val( *i );
-        if ( !val.startsWith( QLatin1String( "NETCDF_DIM_EXTRA" ) ) && !val.startsWith( QLatin1String( "GTIFF_DIM_EXTRA" ) ) && !val.contains( QLatin1String( "#units=" ) ) )
-          continue;
-        QStringList values = val.split( '=' );
-        val = values.at( 1 );
-        if ( values.at( 0 ) == QLatin1String( "NETCDF_DIM_EXTRA" ) || values.at( 0 ) == QLatin1String( "GTIFF_DIM_EXTRA" ) )
-        {
-          dimExtraValues = val.replace( '{', QString() ).replace( '}', QString() ).split( ',' );
-          //http://qt-project.org/doc/qt-4.8/qregexp.html#capturedTexts
-        }
-        else
-        {
-          unitsMap[ values.at( 0 ).split( '#' ).at( 0 )] = val;
-        }
-      }
-      if ( !dimExtraValues.isEmpty() )
-      {
-        QStringList bandNameValues;
-        GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, bandNumber );
-        GDALmetadata = GDALGetMetadata( gdalBand, nullptr );
-
-        if ( GDALmetadata )
-        {
-          metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
-          for ( QStringList::const_iterator i = metadata.constBegin();
-                i != metadata.constEnd(); ++i )
-          {
-            QString val( *i );
-            if ( !val.startsWith( QLatin1String( "NETCDF_DIM_" ) ) && !val.startsWith( QLatin1String( "GTIFF_DIM_" ) ) )
-              continue;
-            QStringList values = val.split( '=' );
-            for ( QStringList::const_iterator j = dimExtraValues.constBegin();
-                  j != dimExtraValues.constEnd(); ++j )
-            {
-              QString dim = ( *j );
-              if ( values.at( 0 ) != "NETCDF_DIM_" + dim && values.at( 0 ) != "GTIFF_DIM_" + dim )
-                continue;
-              if ( unitsMap.contains( dim ) && !unitsMap[ dim ].isEmpty() && unitsMap[ dim ] != QLatin1String( "none" ) )
-                bandNameValues.append( dim + '=' + values.at( 1 ) + " (" + unitsMap[ dim ] + ')' );
-              else
-                bandNameValues.append( dim + '=' + values.at( 1 ) );
-            }
+  QgsSettings settings;
+  switch(settings.value(QStringLiteral( "/qgis/useOfRasterBandNames" )).toInt()) {
+      case 0 :
+          return generatedBandName;
+      case 1 :
+          if ( !gdalBandName.isEmpty() ) {
+              return gdalBandName;
           }
-        }
+          // if we didn't find a band name use the generated one
+          break;
+      case 2 :
+          return gdalBandName + QStringLiteral(" (") + generatedBandName + QStringLiteral(")");
+      case 3 :
+          return generatedBandName + QStringLiteral(" (") + gdalBandName + QStringLiteral(")");
+      case 4 :
+          if ( strcmp( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalDataset ) ), "netCDF" ) == 0 || strcmp( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalDataset ) ), "GTiff" ) == 0 ) {
+              char **GDALmetadata = GDALGetMetadata(mGdalDataset, nullptr);
 
-        if ( !bandNameValues.isEmpty() )
-          return tr( "Band" ) + QStringLiteral( " %1 / %2" ) .arg( bandNumber, 1 + ( int ) std::log10( ( float ) bandCount() ), 10, QChar( '0' ) ).arg( bandNameValues.join( QStringLiteral( " / " ) ) );
-      }
-    }
+              if (GDALmetadata) {
+                  QStringList metadata = QgsOgrUtils::cStringListToQStringList(GDALmetadata);
+                  QStringList dimExtraValues;
+                  QMap<QString, QString> unitsMap;
+                  for (QStringList::const_iterator i = metadata.constBegin(); i != metadata.constEnd(); ++i) {
+                      QString val(*i);
+                      if (!val.startsWith(QLatin1String("NETCDF_DIM_EXTRA")) && !val.startsWith(QLatin1String("GTIFF_DIM_EXTRA")) && !val.contains(QLatin1String("#units=")))
+                          continue;
+                      QStringList values = val.split('=');
+                      val = values.at(1);
+                      if (values.at(0) == QLatin1String("NETCDF_DIM_EXTRA") || values.at(0) == QLatin1String("GTIFF_DIM_EXTRA")) {
+                          dimExtraValues = val.replace('{', QString()).replace('}', QString()).split(',');
+                          //http://qt-project.org/doc/qt-4.8/qregexp.html#capturedTexts
+                      } else {
+                          unitsMap[values.at(0).split('#').at(0)] = val;
+                      }
+                  }
+                  if (!dimExtraValues.isEmpty()) {
+                      QStringList bandNameValues;
+                      GDALRasterBandH gdalBand = GDALGetRasterBand(mGdalDataset, bandNumber);
+                      GDALmetadata = GDALGetMetadata(gdalBand, nullptr);
+
+                      if (GDALmetadata) {
+                          metadata = QgsOgrUtils::cStringListToQStringList(GDALmetadata);
+                          for (QStringList::const_iterator i = metadata.constBegin(); i != metadata.constEnd(); ++i) {
+                              QString val(*i);
+                              if (!val.startsWith(QLatin1String("NETCDF_DIM_")) && !val.startsWith(QLatin1String("GTIFF_DIM_")))
+                                  continue;
+                              QStringList values = val.split('=');
+                              for (QStringList::const_iterator j = dimExtraValues.constBegin(); j != dimExtraValues.constEnd(); ++j) {
+                                  QString dim = (*j);
+                                  if (values.at(0) != "NETCDF_DIM_" + dim && values.at(0) != "GTIFF_DIM_" + dim)
+                                      continue;
+                                  if (unitsMap.contains(dim) && !unitsMap[dim].isEmpty() && unitsMap[dim] != QLatin1String("none"))
+                                      bandNameValues.append(dim + '=' + values.at(1) + " (" + unitsMap[dim] + ')');
+                                  else
+                                      bandNameValues.append(dim + '=' + values.at(1));
+                              }
+                          }
+                      }
+
+                      if (!bandNameValues.isEmpty())
+                          return tr("Band") + QStringLiteral(" %1 / %2").arg(bandNumber, 1 + (int) std::log10((float) bandCount()), 10, QChar('0')).arg(bandNameValues.join(QStringLiteral(" / ")));
+                  }
+              }
+          }
+          break;
   }
 
-  return QgsRasterDataProvider::generateBandName( bandNumber );
+  return generatedBandName;
 }
 
 QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
