@@ -68,7 +68,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     };
 
     /**
-     * Description of a change to indicate at which level a change occured.
+     * Description of a change to indicate at which level a change occurred.
      *
      * \since Python bindings since QGIS 3.4
      */

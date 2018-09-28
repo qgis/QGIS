@@ -19,7 +19,7 @@ email                : matthias@opengis.ch
 #include "qgsgeos.h"
 #include "qgsgeometryvalidator.h"
 
-QgsGeometryIsValidCheck::QgsGeometryIsValidCheck(const QgsGeometryCheckContext* context, const QVariantMap& configuration)
+QgsGeometryIsValidCheck::QgsGeometryIsValidCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsSingleGeometryCheck( FeatureNodeCheck, context, configuration )
 {}
 
@@ -43,7 +43,7 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryIsValidCheck::processGeometry( c
     errors.append( error );
   } );
 
-  // We are already on a thread here normally, no reason to start yet another one. Run synchroneously.
+  // We are already on a thread here normally, no reason to start yet another one. Run synchronously.
   validator.run();
 
   QList<QgsSingleGeometryCheckError *> result;
@@ -64,7 +64,7 @@ QList<QgsWkbTypes::GeometryType> QgsGeometryIsValidCheck::factoryCompatibleGeome
   return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry};
 }
 
-bool QgsGeometryIsValidCheck::factoryIsCompatible(QgsVectorLayer* layer) SIP_SKIP
+bool QgsGeometryIsValidCheck::factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP
 {
   return factoryCompatibleGeometryTypes().contains( layer->geometryType() );
 }
