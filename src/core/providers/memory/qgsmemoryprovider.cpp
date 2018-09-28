@@ -395,7 +395,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
 
       // update spatial index
       if ( mSpatialIndex )
-        mSpatialIndex->insertFeature( *it );
+        mSpatialIndex->addFeature( *it );
     }
 
     mNextFeatureId++;
@@ -541,7 +541,7 @@ bool QgsMemoryProvider::changeGeometryValues( const QgsGeometryMap &geometry_map
 
     // update spatial index
     if ( mSpatialIndex )
-      mSpatialIndex->insertFeature( *fit );
+      mSpatialIndex->addFeature( *fit );
   }
 
   updateExtents();
@@ -583,9 +583,9 @@ bool QgsMemoryProvider::createSpatialIndex()
     mSpatialIndex = new QgsSpatialIndex();
 
     // add existing features to index
-    for ( QgsFeatureMap::const_iterator it = mFeatures.constBegin(); it != mFeatures.constEnd(); ++it )
+    for ( QgsFeatureMap::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it )
     {
-      mSpatialIndex->insertFeature( *it );
+      mSpatialIndex->addFeature( *it );
     }
   }
   return true;

@@ -14,7 +14,7 @@
 
 
 
-class QgsSpatialIndex
+class QgsSpatialIndex : QgsFeatureSink
 {
 %Docstring
 
@@ -75,18 +75,49 @@ Copy constructor
 
 
 
-    bool insertFeature( const QgsFeature &feature );
+ bool insertFeature( const QgsFeature &feature ) /Deprecated/;
 %Docstring
 Adds a ``feature`` to the index.
+
+.. deprecated:: Use addFeature() instead
 %End
 
-    bool insertFeature( QgsFeatureId id, const QgsRectangle &bounds );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
+
+%Docstring
+Adds a ``feature`` to the index.
+
+The ``flags`` argument is ignored.
+
+.. versionadded:: 3.4
+%End
+
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
+
+%Docstring
+Adds a list of ``features`` to the index.
+
+The ``flags`` argument is ignored.
+
+.. seealso:: :py:func:`addFeature`
+%End
+
+ bool insertFeature( QgsFeatureId id, const QgsRectangle &bounds ) /Deprecated/;
 %Docstring
 Add a feature ``id`` to the index with a specified bounding box.
 
 :return: true if feature was successfully added to index.
 
-.. versionadded:: 3.0
+.. deprecated:: Use addFeature() instead
+%End
+
+    bool addFeature( QgsFeatureId id, const QgsRectangle &bounds );
+%Docstring
+Add a feature ``id`` to the index with a specified bounding box.
+
+:return: true if feature was successfully added to index.
+
+.. versionadded:: 3.4
 %End
 
     bool deleteFeature( const QgsFeature &feature );

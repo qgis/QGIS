@@ -116,7 +116,7 @@ class PointsDisplacement(QgisAlgorithm):
 
             other_features_within_radius = index.intersects(searchRect(point))
             if not other_features_within_radius:
-                index.insertFeature(f)
+                index.addFeature(f)
                 group = [f]
                 clustered_groups.append(group)
                 group_index[f.id()] = len(clustered_groups) - 1

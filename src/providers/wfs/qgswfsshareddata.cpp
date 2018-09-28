@@ -1037,7 +1037,7 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
       f.initAttributes( 1 );
       f.setAttribute( 0, QVariant( bDownloadLimit ) );
       mRegions.push_back( f );
-      mCachedRegions.insertFeature( f );
+      mCachedRegions.addFeature( f );
     }
   }
 

@@ -768,7 +768,7 @@ QgsGeometry QgsInternalGeometrySnapper::snapFeature( const QgsFeature &feature )
     }
   }
   mProcessedGeometries.insert( feat.id(), geometry );
-  mProcessedIndex.insertFeature( feat );
+  mProcessedIndex.addFeature( feat );
   mFirstFeature = false;
   return geometry;
 }

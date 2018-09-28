@@ -57,7 +57,7 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
     }
     locker.changeMode( QgsReadWriteLocker::Write );
     mFeatureCache.insert( id, new QgsFeature( feature ) );
-    mIndex.insertFeature( feature );
+    mIndex.addFeature( feature );
   }
   return true;
 }
@@ -90,7 +90,8 @@ void QgsFeaturePool::insertFeature( const QgsFeature &feature )
 {
   QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
   mFeatureCache.insert( feature.id(), new QgsFeature( feature ) );
-  mIndex.insertFeature( feature );
+  QgsFeature indexFeature( feature );
+  mIndex.addFeature( indexFeature );
 }
 
 void QgsFeaturePool::refreshCache( const QgsFeature &feature )
