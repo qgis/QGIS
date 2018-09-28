@@ -34,8 +34,22 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     QgsGeometryValidationModel *geometryValidationModel() const;
     void setGeometryValidationModel( QgsGeometryValidationModel *geometryValidationModel );
 
+  private slots:
+    void onCurrentErrorChanged( const QModelIndex &current, const QModelIndex &previous );
+    void gotoNextError();
+    void gotoPreviousError();
+    void zoomToProblem();
+    void zoomToFeature();
+
   private:
+    enum ZoomToAction
+    {
+      ZoomToFeature,
+      ZoomToProblem
+    };
+    ZoomToAction mLastZoomToAction = ZoomToFeature;
     QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
+    QButtonGroup *mZoomToButtonGroup = nullptr;
 };
 
 #endif // QGSGEOMETRYVALIDATIONPANEL_H

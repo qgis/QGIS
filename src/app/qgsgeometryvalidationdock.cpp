@@ -16,10 +16,19 @@ email                : matthias@opengis.ch
 #include "qgsgeometryvalidationdock.h"
 #include "qgsgeometryvalidationmodel.h"
 
+#include <QButtonGroup>
+
 QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
 {
   setupUi( this );
+
+  connect( mNextButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::gotoNextError );
+  connect( mPreviousButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::gotoPreviousError );
+  connect( mZoomToProblemButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::zoomToProblem );
+  connect( mZoomToFeatureButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::zoomToFeature );
+
+  onCurrentErrorChanged( QModelIndex(), QModelIndex() );
 }
 
 QgsGeometryValidationModel *QgsGeometryValidationDock::geometryValidationModel() const
@@ -31,4 +40,48 @@ void QgsGeometryValidationDock::setGeometryValidationModel( QgsGeometryValidatio
 {
   mGeometryValidationModel = geometryValidationModel;
   mErrorListView->setModel( mGeometryValidationModel );
+
+  connect( mErrorListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsGeometryValidationDock::onCurrentErrorChanged );
+}
+
+void QgsGeometryValidationDock::gotoNextError()
+{
+  QItemSelectionModel *selectionModel = mErrorListView->selectionModel();
+  selectionModel->setCurrentIndex( mGeometryValidationModel->index( selectionModel->currentIndex().row() + 1, 0, QModelIndex() ), QItemSelectionModel::ClearAndSelect );
+}
+
+void QgsGeometryValidationDock::gotoPreviousError()
+{
+  QItemSelectionModel *selectionModel = mErrorListView->selectionModel();
+  selectionModel->setCurrentIndex( mGeometryValidationModel->index( selectionModel->currentIndex().row() - 1, 0, QModelIndex() ), QItemSelectionModel::ClearAndSelect );
+}
+
+void QgsGeometryValidationDock::zoomToProblem()
+{
+  mLastZoomToAction = ZoomToProblem;
+}
+
+void QgsGeometryValidationDock::zoomToFeature()
+{
+  mLastZoomToAction = ZoomToFeature;
+  // mErrorListView->currentIndex().data( )
+}
+
+void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &current, const QModelIndex &previous )
+{
+  mNextButton->setEnabled( current.isValid() && current.row() < mGeometryValidationModel->rowCount() - 1 );
+  mPreviousButton->setEnabled( current.isValid() && current.row() > 0 );
+
+  mProblemDetailWidget->setVisible( current.isValid() );
+  mProblemDescriptionLabel->setText( current.data().toString() );
+
+  switch ( mLastZoomToAction )
+  {
+    case  ZoomToProblem:
+      zoomToProblem();
+      break;
+
+    case ZoomToFeature:
+      zoomToFeature();
+  }
 }
