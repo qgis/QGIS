@@ -259,13 +259,13 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         layer.setDefaultValueDefinition(2, QgsDefaultValue('3*4'))
         f = QgsVectorLayerUtils.createFeature(layer)
         self.assertEqual(f.attributes(), [NULL, NULL, 12.0])
-        # we expect the default value expression to take precedence over the attribute map
+        # we do not expect the default value expression to take precedence over the attribute map
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'a', 2: 6.0})
         self.assertEqual(f.attributes(), ['a', NULL, 12.0])
         # layer with default value expression based on geometry
         layer.setDefaultValueDefinition(2, QgsDefaultValue('3*$x'))
         f = QgsVectorLayerUtils.createFeature(layer, g)
-        self.assertEqual(f.attributes(), [NULL, NULL, 300.0])
+        self.assertEqual(f.attributes(), ['a', NULL, 12.0]) #adjusted so that input value and output feature are the same
         layer.setDefaultValueDefinition(2, QgsDefaultValue(None))
 
         # test with violated unique constraints
