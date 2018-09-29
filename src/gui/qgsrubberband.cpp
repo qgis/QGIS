@@ -231,6 +231,18 @@ void QgsRubberBand::setToGeometry( const QgsGeometry &geom, QgsVectorLayer *laye
   addGeometry( geom, layer );
 }
 
+void QgsRubberBand::setToGeometry( const QgsGeometry &geom, const QgsCoordinateReferenceSystem &crs )
+{
+  if ( geom.isNull() )
+  {
+    reset( mGeometryType );
+    return;
+  }
+
+  reset( geom.type() );
+  addGeometry( geom, crs );
+}
+
 void QgsRubberBand::addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer )
 {
   QgsGeometry geom = geometry;
