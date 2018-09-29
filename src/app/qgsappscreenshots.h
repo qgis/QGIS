@@ -58,13 +58,16 @@ class QgsAppScreenShots
     //! if categories is null, then takes all categories
     void takePicturesOf( Categories categories = nullptr );
 
+    //! set gradient size
+    void setGradientSize( int size );
+
   private:
     QScreen *screen( QWidget *widget = nullptr );
     void moveWidgetTo( QWidget *widget, Qt::Corner corner, Reference reference = Screen );
     //! take and directly save screenshot
     void takeScreenshot( const QString &name, QWidget *widget = nullptr, GrabMode mode = GrabWidgetAndFrame );
     //! take screenshot and return pixmap
-    QPixmap takeScreenshot( QWidget *widget = nullptr, GrabMode mode = GrabWidgetAndFrame );
+    QPixmap takeScreenshot( QWidget *widget = nullptr, GrabMode mode = GrabWidgetAndFrame, QRect crop = QRect(), bool gradient = false );
 
     /**
      * save screenshot from pixmap
@@ -73,12 +76,13 @@ class QgsAppScreenShots
      * @param crop the crop can have only one dimension (empty but not null rect)
      * @param gradient
      */
-    void saveScreenshot( QPixmap &pixmap, const QString &name, QRect crop = QRect(), bool gradient = false );
+    void saveScreenshot( QPixmap &pixmap, const QString &name );
 
     void takeVectorLayerProperties();
     void take25dSymbol();
 
     QString mSaveDirectory;
+    int mGradientSize = 200;
     QgsVectorLayer *mLineLayer = nullptr;
     QgsVectorLayer *mPolygonLayer = nullptr;
 };

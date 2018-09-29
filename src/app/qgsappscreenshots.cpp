@@ -46,9 +46,9 @@ QgsAppScreenShots::QgsAppScreenShots( const QString &saveDirectory )
                                         << mPolygonLayer );
 }
 
-QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode )
+QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode, QRect crop, bool gradient )
 {
-  QPixmap pix;
+  QPixmap pixmap;
   QRect geom;
 
   QScreen *scr = screen( widget );
@@ -57,7 +57,7 @@ QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode )
     widget->raise();
     if ( mode == GrabWidget )
     {
-      pix = widget->grab();
+      pixmap = widget->grab();
     }
     else if ( mode == GrabWidgetAndFrame )
     {
@@ -67,27 +67,17 @@ QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode )
   if ( !widget || mode != GrabWidget )
   {
     WId wid = widget ? widget->winId() : 0;
-    pix = scr->grabWindow( wid );
+    pixmap = scr->grabWindow( wid );
     if ( !geom.isEmpty() )
     {
       qreal dpr = scr->devicePixelRatio();
-      pix = pix.copy( static_cast<int>( geom.x() * dpr ),
-                      static_cast<int>( geom.y() * dpr ),
-                      static_cast<int>( geom.width() * dpr ),
-                      static_cast<int>( geom.height() * dpr ) );
+      pixmap = pixmap.copy( static_cast<int>( geom.x() * dpr ),
+                            static_cast<int>( geom.y() * dpr ),
+                            static_cast<int>( geom.width() * dpr ),
+                            static_cast<int>( geom.height() * dpr ) );
     }
   }
-  return pix;
-}
 
-void QgsAppScreenShots::takeScreenshot( const QString &name, QWidget *widget, QgsAppScreenShots::GrabMode mode )
-{
-  QPixmap pixmap = takeScreenshot( widget, mode );
-  saveScreenshot( pixmap, name );
-}
-
-void QgsAppScreenShots::saveScreenshot( QPixmap &pixmap, const QString &name, QRect crop, bool gradient )
-{
   if ( !crop.isNull() )
   {
     if ( crop.height() == 0 )
@@ -96,13 +86,20 @@ void QgsAppScreenShots::saveScreenshot( QPixmap &pixmap, const QString &name, QR
       crop.setWidth( pixmap.width() );
   }
   if ( !crop.isEmpty() )
+  {
+    qreal dpr = scr->devicePixelRatio();
+    crop = QRect( static_cast<int>( crop.x() * dpr ),
+                  static_cast<int>( crop.y() * dpr ),
+                  static_cast<int>( crop.width() * dpr ),
+                  static_cast<int>( crop.height() * dpr ) );
     pixmap = pixmap.copy( crop );
+  }
 
 
   if ( gradient )
   {
     QImage img = pixmap.toImage();
-    QLinearGradient linearGrad( QPointF( 0, pixmap.height() - 200 ), QPointF( 0, pixmap.height() - 20 ) );
+    QLinearGradient linearGrad( QPointF( 0, pixmap.height() - mGradientSize ), QPointF( 0, pixmap.height() - mGradientSize / 10 ) );
     linearGrad.setColorAt( 0, Qt::transparent );
     linearGrad.setColorAt( 1, Qt::white );
 
@@ -113,6 +110,17 @@ void QgsAppScreenShots::saveScreenshot( QPixmap &pixmap, const QString &name, QR
     pixmap = QPixmap::fromImage( img );
   }
 
+  return pixmap;
+}
+
+void QgsAppScreenShots::takeScreenshot( const QString &name, QWidget *widget, QgsAppScreenShots::GrabMode mode )
+{
+  QPixmap pixmap = takeScreenshot( widget, mode );
+  saveScreenshot( pixmap, name );
+}
+
+void QgsAppScreenShots::saveScreenshot( QPixmap &pixmap, const QString &name )
+{
   const QString &fileName = mSaveDirectory + "/" + name + ".png";
   pixmap.save( fileName );
   QgsMessageLog::logMessage( QString( "Screenshot saved: %1" ).arg( fileName ) );
@@ -166,6 +174,11 @@ void QgsAppScreenShots::takePicturesOf( Categories categories )
 
   if ( !categories || categories.testFlag( VectorLayerProperties ) )
     takeVectorLayerProperties();
+}
+
+void QgsAppScreenShots::setGradientSize( int size )
+{
+  mGradientSize = size;
 }
 
 
@@ -224,8 +237,9 @@ void QgsAppScreenShots::take25dSymbol()
   QCoreApplication::processEvents();
   dlg->adjustSize();
   QCoreApplication::processEvents();
-  QPixmap pixmap = takeScreenshot( dlg );
-  saveScreenshot( pixmap, rootName + QLatin1String( "25dsymbol" ), QRect( 0, 0, 0, 800 ), true );
+  int cropHeight = w->mAdvancedConfigurationBox->mapTo( dlg, w->mAdvancedConfigurationBox->frameGeometry().bottomLeft() ).y();
+  QPixmap pixmap = takeScreenshot( dlg, GrabWidgetAndFrame, QRect( 0, 0, 0, cropHeight ), true );
+  saveScreenshot( pixmap, rootName + QLatin1String( "25dsymbol" ) );
 
 // exit properly
   dlg->close();
