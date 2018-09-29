@@ -17,6 +17,12 @@
 
 #include "qgsserverparameters.h"
 #include "qgsserverexception.h"
+#include "qgsnetworkcontentfetcher.h"
+#include "qgsmessagelog.h"
+#include <QObject>
+#include <QUrl>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 
 //
 // QgsServerParameterDefinition
@@ -198,6 +204,92 @@ QgsRectangle QgsServerParameterDefinition::toRectangle( bool &ok ) const
   }
 
   return extent;
+}
+
+QString QgsServerParameterDefinition::loadUrl( bool &ok ) const
+{
+  ok = true;
+
+  // Get URL
+  QUrl url = toUrl( ok );
+  if ( !ok )
+  {
+    return QString();
+  }
+
+  // fetching content
+  QgsNetworkContentFetcher fetcher;
+  QEventLoop loop;
+  QObject::connect( &fetcher, &QgsNetworkContentFetcher::finished, &loop, &QEventLoop::quit );
+
+  QgsMessageLog::logMessage(
+    QObject::tr( "Request started [url: %1]" ).arg( url.toString() ),
+    QStringLiteral( "Server" ) );
+  QNetworkRequest request( url );
+  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+  request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+  fetcher.fetchContent( request );
+
+  //wait until content fetched
+  loop.exec( QEventLoop::ExcludeUserInputEvents );
+
+  QNetworkReply *reply = fetcher.reply();
+  if ( !reply )
+  {
+    ok = false;
+    QgsMessageLog::logMessage(
+      QObject::tr( "Request failed [error: no reply - url: %1]" ).arg( url.toString() ),
+      QStringLiteral( "Server" ) );
+    return QString();
+  }
+
+  QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+  if ( !status.isNull() && status.toInt() >= 400 )
+  {
+    ok = false;
+    if ( reply->error() != QNetworkReply::NoError )
+    {
+      QgsMessageLog::logMessage(
+        QObject::tr( "Request failed [error: %1 - url: %2]" ).arg( reply->errorString(), reply->url().toString() ),
+        QStringLiteral( "Server" ) );
+    }
+    QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+    QgsMessageLog::logMessage(
+      QObject::tr( "Request error [status: %1 - reason phrase: %2] for %3" ).arg( status.toInt() ).arg( phrase.toString(), reply->url().toString() ),
+      QStringLiteral( "Server" ) );
+    return QString();
+  }
+
+  if ( reply->error() != QNetworkReply::NoError )
+  {
+    ok = false;
+    QgsMessageLog::logMessage(
+      QObject::tr( "Request failed [error: %1 - url: %2]" ).arg( reply->errorString(), reply->url().toString() ),
+      QStringLiteral( "Server" ) );
+    return QString();
+  }
+
+  QgsMessageLog::logMessage(
+    QObject::tr( "Request finished [url: %1]" ).arg( url.toString() ),
+    QStringLiteral( "Server" ) );
+
+  QString content = fetcher.contentAsString();
+  ok = ( !content.isEmpty() );
+  return content;
+}
+
+QUrl QgsServerParameterDefinition::toUrl( bool &ok ) const
+{
+  ok = true;
+  QUrl val;
+
+  if ( !mValue.toString().isEmpty() )
+  {
+    val = mValue.toUrl();
+  }
+
+  ok = ( !val.isEmpty() && val.isValid() );
+  return val;
 }
 
 int QgsServerParameterDefinition::toInt( bool &ok ) const

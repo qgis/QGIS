@@ -170,7 +170,7 @@ namespace QgsWms
     QList<QgsMapLayer *> layers;
     QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
 
-    QString sld = mWmsParameters.sld();
+    QString sld = mWmsParameters.sldBody();
     if ( !sld.isEmpty() )
       layers = sldStylizedLayers( sld );
     else
@@ -312,7 +312,7 @@ namespace QgsWms
     restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
 
     // init stylized layers according to LAYERS/STYLES or SLD
-    QString sld = mWmsParameters.sld();
+    QString sld = mWmsParameters.sldBody();
     if ( !sld.isEmpty() )
     {
       layers = sldStylizedLayers( sld );
@@ -661,7 +661,7 @@ namespace QgsWms
     restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
 
     // init stylized layers according to LAYERS/STYLES or SLD
-    QString sld = mWmsParameters.sld();
+    QString sld = mWmsParameters.sldBody();
     if ( !sld.isEmpty() )
     {
       layers = sldStylizedLayers( sld );
@@ -749,7 +749,7 @@ namespace QgsWms
     restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
 
     // init stylized layers according to LAYERS/STYLES or SLD
-    QString sld = mWmsParameters.sld();
+    QString sld = mWmsParameters.sldBody();
     if ( !sld.isEmpty() )
     {
       layers = sldStylizedLayers( sld );
@@ -903,7 +903,7 @@ namespace QgsWms
     restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
 
     // init stylized layers according to LAYERS/STYLES or SLD
-    QString sld = mWmsParameters.sld();
+    QString sld = mWmsParameters.sldBody();
     if ( !sld.isEmpty() )
       layers = sldStylizedLayers( sld );
     else
