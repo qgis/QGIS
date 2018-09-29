@@ -19,6 +19,7 @@
 #include <QScreen>
 #include <QImageWriter>
 #include <QIcon>
+#include <QImage>
 
 #include "qgsappscreenshots.h"
 
@@ -45,7 +46,7 @@ QgsAppScreenShots::QgsAppScreenShots( const QString &saveDirectory )
                                         << mPolygonLayer );
 }
 
-void QgsAppScreenShots::saveScreenshot( const QString &name, QWidget *widget, GrabMode mode )
+QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode )
 {
   QPixmap pix;
   QRect geom;
@@ -76,11 +77,45 @@ void QgsAppScreenShots::saveScreenshot( const QString &name, QWidget *widget, Gr
                       static_cast<int>( geom.height() * dpr ) );
     }
   }
+  return pix;
+}
+
+void QgsAppScreenShots::takeScreenshot( const QString &name, QWidget *widget, QgsAppScreenShots::GrabMode mode )
+{
+  QPixmap pixmap = takeScreenshot( widget, mode );
+  saveScreenshot( pixmap, name );
+}
+
+void QgsAppScreenShots::saveScreenshot( QPixmap &pixmap, const QString &name, QRect crop, bool gradient )
+{
+  if ( !crop.isNull() )
+  {
+    if ( crop.height() == 0 )
+      crop.setHeight( pixmap.height() );
+    if ( crop.width() == 0 )
+      crop.setWidth( pixmap.width() );
+  }
+  if ( !crop.isEmpty() )
+    pixmap = pixmap.copy( crop );
+
+
+  if ( gradient )
+  {
+    QImage img = pixmap.toImage();
+    QLinearGradient linearGrad( QPointF( 0, pixmap.height() - 200 ), QPointF( 0, pixmap.height() - 20 ) );
+    linearGrad.setColorAt( 0, Qt::transparent );
+    linearGrad.setColorAt( 1, Qt::white );
+
+    // create image and fill it with gradient
+    QImage image( pixmap.width(), pixmap.height(), QImage::Format_ARGB32 );
+    QPainter painter( &img );
+    painter.fillRect( img.rect(), linearGrad );
+    pixmap = QPixmap::fromImage( img );
+  }
 
   const QString &fileName = mSaveDirectory + "/" + name + ".png";
-  pix.save( fileName );
-  QMetaEnum metaEnum = QMetaEnum::fromType<GrabMode>();
-  QgsMessageLog::logMessage( QString( "Screenshot saved: %1 (%2)" ).arg( fileName, metaEnum.key( mode ) ) );
+  pixmap.save( fileName );
+  QgsMessageLog::logMessage( QString( "Screenshot saved: %1" ).arg( fileName ) );
 }
 
 void QgsAppScreenShots::moveWidgetTo( QWidget *widget, Qt::Corner corner, Reference reference )
@@ -151,7 +186,7 @@ void QgsAppScreenShots::takeVectorLayerProperties()
     QCoreApplication::processEvents();
     QString name = dlg->mOptionsListWidget->item( row )[0].text().toLower();
     name.replace( " ", "_" );
-    saveScreenshot( rootName + name, dlg );
+    takeScreenshot( rootName + name, dlg );
   }
   // ------------------
   // style menu clicked
@@ -161,7 +196,7 @@ void QgsAppScreenShots::takeVectorLayerProperties()
   QCoreApplication::processEvents();
   dlg->mBtnStyle->click();
   QCoreApplication::processEvents();
-  saveScreenshot( rootName + "style_menu", dlg );
+  takeScreenshot( rootName + "style_menu", dlg );
   QCoreApplication::processEvents();
   dlg->mBtnStyle->menu()->hide();
   QCoreApplication::processEvents();
@@ -189,7 +224,8 @@ void QgsAppScreenShots::take25dSymbol()
   QCoreApplication::processEvents();
   dlg->adjustSize();
   QCoreApplication::processEvents();
-  saveScreenshot( rootName + QLatin1String( "25dsymbol" ), dlg );
+  QPixmap pixmap = takeScreenshot( dlg );
+  saveScreenshot( pixmap, rootName + QLatin1String( "25dsymbol" ), QRect( 0, 0, 0, 800 ), true );
 
 // exit properly
   dlg->close();

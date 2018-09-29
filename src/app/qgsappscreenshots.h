@@ -18,6 +18,7 @@
 #define QGSAPPSCREENSHOTS_H
 
 #include <QObject>
+#include <QRect>
 
 class QScreen;
 class QgsVectorLayer;
@@ -60,7 +61,19 @@ class QgsAppScreenShots
   private:
     QScreen *screen( QWidget *widget = nullptr );
     void moveWidgetTo( QWidget *widget, Qt::Corner corner, Reference reference = Screen );
-    void saveScreenshot( const QString &name, QWidget *widget = nullptr, GrabMode mode = GrabWidgetAndFrame );
+    //! take and directly save screenshot
+    void takeScreenshot( const QString &name, QWidget *widget = nullptr, GrabMode mode = GrabWidgetAndFrame );
+    //! take screenshot and return pixmap
+    QPixmap takeScreenshot( QWidget *widget = nullptr, GrabMode mode = GrabWidgetAndFrame );
+
+    /**
+     * save screenshot from pixmap
+     * @param pixmap
+     * @param name
+     * @param crop the crop can have only one dimension (empty but not null rect)
+     * @param gradient
+     */
+    void saveScreenshot( QPixmap &pixmap, const QString &name, QRect crop = QRect(), bool gradient = false );
 
     void takeVectorLayerProperties();
     void take25dSymbol();
