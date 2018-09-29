@@ -350,10 +350,10 @@ QPolygonF QgsMapSettings::visiblePolygon() const
   const QSize &sz = outputSize();
   const QgsMapToPixel &m2p = mapToPixel();
 
-  poly << m2p.toMapCoordinatesF( 0,          0 ).toQPointF();
-  poly << m2p.toMapCoordinatesF( sz.width(), 0 ).toQPointF();
-  poly << m2p.toMapCoordinatesF( sz.width(), sz.height() ).toQPointF();
-  poly << m2p.toMapCoordinatesF( 0,          sz.height() ).toQPointF();
+  poly << m2p.toMapCoordinates( 0.0,                             0.0 ).toQPointF();
+  poly << m2p.toMapCoordinates( static_cast<double>( sz.width() ), 0.0 ).toQPointF();
+  poly << m2p.toMapCoordinates( static_cast<double>( sz.width() ), static_cast<double>( sz.height() ) ).toQPointF();
+  poly << m2p.toMapCoordinates( 0.0,                             static_cast<double>( sz.height() ) ).toQPointF();
 
   return poly;
 }

@@ -681,7 +681,7 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage &img, const QgsMapSettings &m
   // This is a hack to pass QgsMapCanvasItem::setRect what it
   // expects (encoding of position and size of the item)
   const QgsMapToPixel &m2p = mapSettings.mapToPixel();
-  QgsPointXY topLeft = m2p.toMapPoint( 0, 0 );
+  QgsPointXY topLeft = m2p.toMapCoordinates( 0, 0 );
   double res = m2p.mapUnitsPerPixel();
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + img.width()*res, topLeft.y() - img.height()*res );
   return rect;
@@ -1558,7 +1558,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
 
   // zoom map to mouse cursor by scaling
   QgsPointXY oldCenter = center();
-  QgsPointXY mousePos( getCoordinateTransform()->toMapPoint( e->x(), e->y() ) );
+  QgsPointXY mousePos( getCoordinateTransform()->toMapCoordinates( e->x(), e->y() ) );
   QgsPointXY newCenter( mousePos.x() + ( ( oldCenter.x() - mousePos.x() ) * signedWheelFactor ),
                         mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * signedWheelFactor ) );
 
@@ -1599,7 +1599,7 @@ void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
   else
   {
     // transform the mouse pos to map coordinates
-    QgsPointXY center  = getCoordinateTransform()->toMapPoint( x, y );
+    QgsPointXY center  = getCoordinateTransform()->toMapCoordinates( x, y );
     QgsRectangle r = mapSettings().visibleExtent();
     r.scale( scaleFactor, &center );
     setExtent( r, true );

@@ -524,7 +524,7 @@ void QgsRubberBand::updateRect()
   // This is an hack to pass QgsMapCanvasItem::setRect what it
   // expects (encoding of position and size of the item)
   qreal res = m2p.mapUnitsPerPixel();
-  QgsPointXY topLeft = m2p.toMapPoint( r.xMinimum(), r.yMinimum() );
+  QgsPointXY topLeft = m2p.toMapCoordinates( r.xMinimum(), r.yMinimum() );
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + r.width()*res, topLeft.y() - r.height()*res );
 
   setRect( rect );
