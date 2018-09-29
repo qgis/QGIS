@@ -42,10 +42,13 @@ void QgsLayerTreeEmbeddedConfigWidget::setLayer( QgsMapLayer *layer )
   Q_FOREACH ( const QString &providerId, QgsGui::layerTreeEmbeddedWidgetRegistry()->providers() )
   {
     QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId );
-    QStandardItem *item = new QStandardItem( provider->name() );
-    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    item->setData( provider->id(), Qt::UserRole + 1 );
-    modelAvailable->appendRow( item );
+    if ( provider->supportsLayer( mLayer ) )
+    {
+      QStandardItem *item = new QStandardItem( provider->name() );
+      item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      item->setData( provider->id(), Qt::UserRole + 1 );
+      modelAvailable->appendRow( item );
+    }
   }
   mListAvailable->setModel( modelAvailable );
 
