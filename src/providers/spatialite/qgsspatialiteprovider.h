@@ -230,6 +230,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! Flag indicating if the layer data source is based on a query
     bool mIsQuery = false;
 
+    //! Flag indicating if ROWID has been injected in the query
+    bool mRowidInjectedInQuery = false;
+
     //! Flag indicating if the layer data source is based on a plain Table
     bool mTableBased = false;
 

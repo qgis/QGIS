@@ -355,6 +355,8 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause,
     if ( limit >= 0 )
       sql += QStringLiteral( " LIMIT %1" ).arg( limit );
 
+    // qDebug() << sql;
+
     if ( sqlite3_prepare_v2( mHandle->handle(), sql.toUtf8().constData(), -1, &sqliteStatement, nullptr ) != SQLITE_OK )
     {
       // some error occurred
