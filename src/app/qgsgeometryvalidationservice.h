@@ -31,6 +31,7 @@ class QgsSingleGeometryCheck;
 class QgsSingleGeometryCheckError;
 class QgsGeometryCheckError;
 class QgsFeedback;
+class QgsFeaturePool;
 
 /**
  * This service connects to all layers in a project and triggers validation
@@ -63,6 +64,8 @@ class QgsGeometryValidationService : public QObject
      * \a layer.
      */
     bool validationActive( QgsVectorLayer *layer, QgsFeatureId feature ) const;
+
+    void fixError( const QgsGeometryCheckError *error, int method );
 
   signals:
     void geometryCheckStarted( QgsVectorLayer *layer, QgsFeatureId fid );
@@ -101,6 +104,7 @@ class QgsGeometryValidationService : public QObject
 
     QReadWriteLock mTopologyCheckLock;
     QHash<QgsVectorLayer *, VectorCheckState> mLayerCheckStates;
+    QMap<QString, QgsFeaturePool *> mFeaturePools;
 };
 
 #endif // QGSGEOMETRYVALIDATIONSERVICE_H

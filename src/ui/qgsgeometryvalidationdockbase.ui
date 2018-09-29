@@ -28,17 +28,17 @@
     <item row="3" column="0" colspan="3">
      <widget class="QWidget" name="mProblemDetailWidget" native="true">
       <layout class="QGridLayout" name="gridLayout">
-       <item row="1" column="1">
-        <widget class="QPushButton" name="mZoomToProblemButton">
-         <property name="text">
-          <string>Zoom To Problem</string>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="0">
         <widget class="QPushButton" name="mZoomToFeatureButton">
          <property name="text">
           <string>Zoom To Feature</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="mZoomToProblemButton">
+         <property name="text">
+          <string>Zoom To Problem</string>
          </property>
         </widget>
        </item>
@@ -47,6 +47,11 @@
          <property name="text">
           <string>Detailed Desctiption</string>
          </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <widget class="QWidget" name="mResolutionWidget" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout"/>
         </widget>
        </item>
       </layout>
@@ -93,6 +98,7 @@
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>

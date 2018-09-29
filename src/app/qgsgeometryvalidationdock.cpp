@@ -15,7 +15,12 @@ email                : matthias@opengis.ch
 
 #include "qgsgeometryvalidationdock.h"
 #include "qgsgeometryvalidationmodel.h"
+#include "qgsgeometryvalidationservice.h"
 #include "qgsmapcanvas.h"
+#include "qgsrubberband.h"
+#include "qgsvectorlayer.h"
+#include "qgsgeometrycheck.h"
+#include "qgsgeometrycheckerror.h"
 
 #include <QButtonGroup>
 
@@ -32,7 +37,22 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   connect( mMapCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
   connect( mMapCanvas, &QgsMapCanvas::transformContextChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
+
+  mFeatureRubberband = new QgsRubberBand( mMapCanvas );
+  mErrorRubberband = new QgsRubberBand( mMapCanvas );
+  mErrorLocationRubberband = new QgsRubberBand( mMapCanvas );
+
+  double scaleFactor = mMapCanvas->fontMetrics().xHeight() * .2;
+
+  mFeatureRubberband->setColor( QColor( 250, 180, 180, 100 ) );
+  mFeatureRubberband->setWidth( scaleFactor );
+  mErrorRubberband->setColor( QColor( 180, 250, 180, 100 ) );
+  mErrorRubberband->setWidth( scaleFactor );
+  mErrorLocationRubberband->setIcon( QgsRubberBand::ICON_X );
+  mErrorLocationRubberband->setWidth( scaleFactor * 3 );
+  mErrorLocationRubberband->setColor( QColor( 180, 180, 250, 100 ) );
 }
+
 
 QgsGeometryValidationModel *QgsGeometryValidationDock::geometryValidationModel() const
 {
@@ -89,6 +109,16 @@ void QgsGeometryValidationDock::updateLayerTransform()
   mLayerTransform = QgsCoordinateTransform( mMapCanvas->currentLayer()->crs(), mMapCanvas->mapSettings().destinationCrs(), mMapCanvas->mapSettings().transformContext() );
 }
 
+QgsGeometryValidationService *QgsGeometryValidationDock::geometryValidationService() const
+{
+  return mGeometryValidationService;
+}
+
+void QgsGeometryValidationDock::setGeometryValidationService( QgsGeometryValidationService *geometryValidationService )
+{
+  mGeometryValidationService = geometryValidationService;
+}
+
 QModelIndex QgsGeometryValidationDock::currentIndex() const
 {
   return mErrorListView->selectionModel()->currentIndex();
@@ -102,6 +132,38 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
 
   mProblemDetailWidget->setVisible( current.isValid() );
   mProblemDescriptionLabel->setText( current.data().toString() );
+  {
+    QgsGeometryCheckError *error = current.data( QgsGeometryValidationModel::GeometryCheckErrorRole ).value<QgsGeometryCheckError *>();
+    while ( QPushButton *btn =  mResolutionWidget->findChild<QPushButton *>() )
+      delete btn;
+    const QStringList resolutionMethods = error->check()->resolutionMethods();
+    int resolutionIndex = 0;
+    for ( const QString &resolutionMethod : resolutionMethods )
+    {
+      QPushButton *resolveBtn = new QPushButton( resolutionMethod );
+      connect( resolveBtn, &QPushButton::clicked, this, [resolutionIndex, error, this]()
+      {
+        mGeometryValidationService->fixError( error, resolutionIndex );
+      } );
+      mResolutionWidget->layout()->addWidget( resolveBtn );
+      resolutionIndex++;
+    }
+  }
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+  if ( vlayer )
+  {
+    QgsGeometry featureGeometry = current.data( QgsGeometryValidationModel::FeatureGeometryRole ).value<QgsGeometry>();
+    QgsGeometry errorGeometry = current.data( QgsGeometryValidationModel::ErrorGeometryRole ).value<QgsGeometry>();
+    QgsPointXY locationGeometry = current.data( QgsGeometryValidationModel::ErrorLocationGeometryRole ).value<QgsPointXY>();
+    qDebug() << "feature geom : " << featureGeometry.asWkt();
+    qDebug() << "error   geom : " << errorGeometry.asWkt();
+    qDebug() << "locationgeom : " << QgsGeometry( new QgsPoint( locationGeometry ) ).asWkt();
+
+    mFeatureRubberband->setToGeometry( featureGeometry );
+    mErrorRubberband->setToGeometry( errorGeometry );
+    mErrorLocationRubberband->setToGeometry( QgsGeometry( new QgsPoint( locationGeometry ) ) );
+  }
 
   switch ( mLastZoomToAction )
   {

@@ -78,6 +78,12 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
   public:
     enum ResolutionMethod { MergeLongestEdge, NoChange };
 
+    /**
+     * The \a configuration accepts a "gapThreshold" key which specifies
+     * the maximum gap size in squared map units. Any gaps which are larger
+     * than this area are accepted. If "gapThreshold" is set to 0, the check
+     * is disabled.
+     */
     explicit QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }

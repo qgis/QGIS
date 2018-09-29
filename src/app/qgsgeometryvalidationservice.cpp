@@ -40,6 +40,13 @@ bool QgsGeometryValidationService::validationActive( QgsVectorLayer *layer, QgsF
   return false;
 }
 
+void QgsGeometryValidationService::fixError( const QgsGeometryCheckError *error, int method )
+{
+  QgsGeometryCheck::Changes changes;
+  QgsGeometryCheckError *nonconsterr = const_cast<QgsGeometryCheckError *>( error );
+  error->check()->fixError( mFeaturePools, nonconsterr, method, QMap<QString, int>(), changes );
+}
+
 void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &layers )
 {
   for ( QgsMapLayer *layer : layers )
@@ -122,7 +129,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
   qDeleteAll( mLayerCheckStates[layer].topologyChecks );
 
   // TODO: ownership and lifetime of the context!!
-  auto context = new QgsGeometryCheckContext( 1, mProject->crs(), mProject->transformContext() );
+  auto context = new QgsGeometryCheckContext( 8, mProject->crs(), mProject->transformContext() );
   QList<QgsGeometryCheck *> layerChecks;
 
   QgsGeometryCheckRegistry *checkRegistry = QgsAnalysis::instance()->geometryCheckRegistry();
@@ -216,18 +223,33 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
     mLayerCheckStates[layer].topologyCheckFeedbacks.clear();
   }
 
-  QgsFeatureIds checkFeatureIds = layer->editBuffer()->changedGeometries().keys().toSet();
-  checkFeatureIds.unite( layer->editBuffer()->addedFeatures().keys().toSet() );
+  QgsFeatureIds affectedFeatureIds = layer->editBuffer()->changedGeometries().keys().toSet();
+  affectedFeatureIds.unite( layer->editBuffer()->addedFeatures().keys().toSet() );
 
   // TODO: ownership of these objects...
   QgsVectorLayerFeaturePool *featurePool = new QgsVectorLayerFeaturePool( layer );
   QList<QgsGeometryCheckError *> &allErrors = mLayerCheckStates[layer].topologyCheckErrors;
   QMap<QString, QgsFeatureIds> layerIds;
+
+  QgsFeatureRequest request = QgsFeatureRequest( affectedFeatureIds ).setSubsetOfAttributes( QgsAttributeList() );
+  QgsFeatureIterator it = layer->getFeatures( request );
+  QgsFeature feature;
+  QgsRectangle area;
+  while ( it.nextFeature( feature ) )
+  {
+    area.combineExtentWith( feature.geometry().boundingBox() );
+  }
+
+  QgsFeatureRequest areaRequest = QgsFeatureRequest().setFilterRect( area );
+  QgsFeatureIds checkFeatureIds = featurePool->getFeatures( areaRequest );
+
   layerIds.insert( layer->id(), checkFeatureIds );
   QgsGeometryCheck::LayerFeatureIds layerFeatureIds( layerIds );
 
-  QMap<QString, QgsFeaturePool *> featurePools;
-  featurePools.insert( layer->id(), featurePool );
+  if ( !mFeaturePools.contains( layer->id() ) )
+  {
+    mFeaturePools.insert( layer->id(), featurePool );
+  }
 
   const QList<QgsGeometryCheck *> checks = mLayerCheckStates[layer].topologyChecks;
 
@@ -237,7 +259,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
 
   mLayerCheckStates[layer].topologyCheckFeedbacks = feedbacks.values();
 
-  QFuture<void> future = QtConcurrent::map( checks, [featurePools, &allErrors, layerFeatureIds, layer, feedbacks, this]( const QgsGeometryCheck * check )
+  QFuture<void> future = QtConcurrent::map( checks, [&allErrors, layerFeatureIds, layer, feedbacks, this]( const QgsGeometryCheck * check )
   {
     // Watch out with the layer pointer in here. We are running in a thread, so we do not want to actually use it
     // except for using its address to report the error.
@@ -245,7 +267,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
     QStringList messages; // Do we really need these?
     QgsFeedback *feedback = feedbacks.value( check );
 
-    check->collectErrors( featurePools, errors, messages, feedback, layerFeatureIds );
+    check->collectErrors( mFeaturePools, errors, messages, feedback, layerFeatureIds );
     QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Write );
     allErrors.append( errors );
 

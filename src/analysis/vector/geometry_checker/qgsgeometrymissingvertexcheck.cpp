@@ -71,11 +71,32 @@ void QgsGeometryMissingVertexCheck::fixError( const QMap<QString, QgsFeaturePool
   {
     error->setFixed( method );
   }
+  if ( method == AddMissingVertex )
+  {
+    QgsFeaturePool *featurePool = featurePools[ error->layerId() ];
+
+    QgsFeature feature;
+    featurePool->getFeature( error->featureId(), feature );
+
+    QgsPointXY pointOnSegment; // Should be equal to location
+    int vertexIndex;
+    QgsGeometry geometry = feature.geometry();
+    geometry.closestSegmentWithContext( error->location(), pointOnSegment, vertexIndex );
+    geometry.insertVertex( QgsPoint( error->location() ), vertexIndex );
+    feature.setGeometry( geometry );
+
+    featurePool->updateFeature( feature );
+    // TODO update "changes" structure
+
+    error->setFixed( method );
+  }
 }
 
 QStringList QgsGeometryMissingVertexCheck::resolutionMethods() const
 {
-  static QStringList methods = QStringList() << tr( "No action" );
+  static QStringList methods = QStringList()
+                               << tr( "No action" )
+                               << tr( "Add missing vertex" );
   return methods;
 }
 

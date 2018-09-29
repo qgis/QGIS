@@ -47,6 +47,12 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     bool getFeature( QgsFeatureId id, QgsFeature &feature );
 
     /**
+     * Warm the cache ...
+     * TODO write more docs
+     */
+    QgsFeatureIds getFeatures( const QgsFeatureRequest &request ) SIP_SKIP;
+
+    /**
      * Updates a feature in this pool.
      * Implementations will update the feature on the layer or on the data provider.
      */

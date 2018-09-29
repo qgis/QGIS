@@ -62,6 +62,23 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
   return true;
 }
 
+QgsFeatureIds QgsFeaturePool::getFeatures( const QgsFeatureRequest &request )
+{
+  QgsFeatureIds fids;
+
+  std::unique_ptr<QgsVectorLayerFeatureSource> source = QgsVectorLayerUtils::getFeatureSource( mLayer );
+
+  QgsFeatureIterator it = source->getFeatures( request );
+  QgsFeature feature;
+  while ( it.nextFeature( feature ) )
+  {
+    insertFeature( feature );
+    fids << feature.id();
+  }
+
+  return fids;
+}
+
 QgsFeatureIds QgsFeaturePool::allFeatureIds() const
 {
   return mFeatureIds;

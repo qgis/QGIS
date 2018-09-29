@@ -31,6 +31,7 @@ It will be retrieved from the cache or from the underlying layer if unavailable.
 If the feature is neither available from the cache nor from the layer it will return false.
 %End
 
+
     virtual void updateFeature( QgsFeature &feature ) = 0;
 %Docstring
 Updates a feature in this pool.

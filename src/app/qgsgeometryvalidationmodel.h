@@ -16,7 +16,11 @@ class QgsGeometryValidationModel : public QAbstractItemModel
     enum Roles
     {
       FeatureExtentRole = Qt::UserRole,
-      ProblemExtentRole
+      ProblemExtentRole,
+      ErrorGeometryRole,
+      FeatureGeometryRole,
+      ErrorLocationGeometryRole,
+      GeometryCheckErrorRole
     };
 
     QgsGeometryValidationModel( QgsGeometryValidationService *geometryValidationService, QObject *parent = nullptr );

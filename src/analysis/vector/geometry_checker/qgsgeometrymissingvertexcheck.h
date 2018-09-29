@@ -37,7 +37,8 @@ class ANALYSIS_EXPORT QgsGeometryMissingVertexCheck : public QgsGeometryCheck
   public:
     enum ResolutionMethod
     {
-      NoChange
+      NoChange,
+      AddMissingVertex
     };
 
     explicit QgsGeometryMissingVertexCheck( const QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfiguration );

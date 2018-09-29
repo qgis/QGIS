@@ -22,6 +22,8 @@ email                : matthias@opengis.ch
 
 class QgsMapCanvas;
 class QgsGeometryValidationModel;
+class QgsGeometryValidationService;
+class QgsRubberBand;
 
 /**
  * @brief The QgsGeometryValidationDock class
@@ -35,6 +37,9 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
 
     QgsGeometryValidationModel *geometryValidationModel() const;
     void setGeometryValidationModel( QgsGeometryValidationModel *geometryValidationModel );
+
+    QgsGeometryValidationService *geometryValidationService() const;
+    void setGeometryValidationService( QgsGeometryValidationService *geometryValidationService );
 
   private slots:
     void onCurrentErrorChanged( const QModelIndex &current, const QModelIndex &previous );
@@ -52,10 +57,14 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     };
     ZoomToAction mLastZoomToAction = ZoomToFeature;
     QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
+    QgsGeometryValidationService *mGeometryValidationService = nullptr;
     QButtonGroup *mZoomToButtonGroup = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsCoordinateTransform mLayerTransform;
     QModelIndex currentIndex() const;
+    QgsRubberBand *mFeatureRubberband = nullptr;
+    QgsRubberBand *mErrorRubberband = nullptr;
+    QgsRubberBand *mErrorLocationRubberband = nullptr;
 };
 
 #endif // QGSGEOMETRYVALIDATIONPANEL_H
