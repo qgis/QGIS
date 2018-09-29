@@ -237,7 +237,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     int partSize( int geometryIndex ) const;
 
     /**
-     * Sets this rubber band to the geometry of an existing feature.
+     * Sets this rubber band to \a geom.
      * This is useful for feature highlighting.
      * In contrast to addGeometry(), this method does also change the geometry type of the rubberband.
      *  \param geom the geometry object
@@ -245,6 +245,17 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
     void setToGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
+
+    /**
+     * Sets this rubber band to \a geometry.
+     * In contrast to addGeometry(), this method does also change the geometry type of the rubberband.
+     * The coordinate reference system of the geometry can be specified with \a crs. If an invalid \a crs
+     * is passed, the geometry will not be reprojected and needs to be in canvas crs already.
+     * By default, no reprojection is done.
+     *
+     * \since QGIS 3.4
+     */
+    void setToGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
      * Sets this rubber band to a map canvas rectangle

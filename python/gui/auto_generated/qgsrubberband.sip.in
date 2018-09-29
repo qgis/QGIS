@@ -212,13 +212,24 @@ Returns number of vertices in feature part
 
     void setToGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
 %Docstring
-Sets this rubber band to the geometry of an existing feature.
+Sets this rubber band to ``geom``.
 This is useful for feature highlighting.
 In contrast to addGeometry(), this method does also change the geometry type of the rubberband.
 
 :param geom: the geometry object
 :param layer: the layer containing the feature, used for coord transformation to map
               crs. In case of 0 pointer, the coordinates are not going to be transformed.
+%End
+
+    void setToGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+Sets this rubber band to ``geometry``.
+In contrast to addGeometry(), this method does also change the geometry type of the rubberband.
+The coordinate reference system of the geometry can be specified with ``crs``. If an invalid ``crs``
+is passed, the geometry will not be reprojected and needs to be in canvas crs already.
+By default, no reprojection is done.
+
+.. versionadded:: 3.4
 %End
 
     void setToCanvasRectangle( QRect rect );
