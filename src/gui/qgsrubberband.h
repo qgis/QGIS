@@ -32,7 +32,7 @@ class QPaintEvent;
  * A class for drawing transient features (e.g. digitizing lines) on the map.
  *
  * The QgsRubberBand class provides a transparent overlay widget
-  for tracking the mouse while drawing polylines or polygons.
+ * for tracking the mouse while drawing polylines or polygons.
  */
 class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 {
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**
      * Creates a new RubberBand.
      *  \param mapCanvas The map canvas to draw onto.
-     *         Its CRS will be used map points onto screen coordinates.
+     *         Its CRS will be used to map points onto screen coordinates.
      * The ownership is transferred to this canvas.
      *  \param geometryType Defines how the data should be drawn onto the screen.
      *         QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry or QgsWkbTypes::PointGeometry
