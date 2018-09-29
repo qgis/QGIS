@@ -362,7 +362,7 @@ void QgsHighlight::paint( QPainter *p )
       QRgb *line = nullptr;
       for ( int r = 0; r < image.height(); r++ )
       {
-        line = ( QRgb * )image.scanLine( r );
+        line = static_cast<QRgb *>( image.scanLine( r ) );
         for ( int c = 0; c < image.width(); c++ )
         {
           int alpha = qAlpha( line[c] );
