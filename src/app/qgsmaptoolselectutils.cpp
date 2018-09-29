@@ -82,8 +82,8 @@ QgsRectangle QgsMapToolSelectUtils::expandSelectRectangle( QgsPointXY mapPoint, 
 
   const QgsMapToPixel *transform = canvas->getCoordinateTransform();
   QgsPointXY point = transform->transform( mapPoint );
-  QgsPointXY ll = transform->toMapCoordinates( point.x() - boxSize, point.y() + boxSize );
-  QgsPointXY ur = transform->toMapCoordinates( point.x() + boxSize, point.y() - boxSize );
+  QgsPointXY ll = transform->toMapCoordinates( static_cast<int>( point.x() - boxSize ), static_cast<int>( point.y() + boxSize ) );
+  QgsPointXY ur = transform->toMapCoordinates( static_cast<int>( point.x() + boxSize ), static_cast<int>( point.y() - boxSize ) );
   return QgsRectangle( ll, ur );
 }
 

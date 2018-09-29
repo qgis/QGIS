@@ -79,8 +79,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     // TODO: provide a method of QgsMapToPixel to fetch map center
     //       in geographical units
     QgsPointXY center = mapToPixel.toMapCoordinates(
-                          mapToPixel.mapWidth() / 2.0,
-                          mapToPixel.mapHeight() / 2.0
+                          static_cast<int>( mapToPixel.mapWidth() / 2.0 ),
+                          static_cast<int>( mapToPixel.mapHeight() / 2.0 )
                         );
     mapToPixel.setMapRotation( 0, center.x(), center.y() );
   }
