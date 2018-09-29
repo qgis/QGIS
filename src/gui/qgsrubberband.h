@@ -87,13 +87,17 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     /**
      * Creates a new RubberBand.
-     *  \param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
-     *  \param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
+     *  \param mapCanvas The map canvas to draw onto.
+     *         Its CRS will be used map points onto screen coordinates.
+     * The ownership is transferred to this canvas.
+     *  \param geometryType Defines how the data should be drawn onto the screen.
+     *         QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry or QgsWkbTypes::PointGeometry
      */
     QgsRubberBand( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
     /**
-     * Sets the color for the rubberband
+     * Sets the color for the rubberband.
+     * Shorthand method to set fill and stroke color with a single call.
      *  \param color  The color used to render this rubberband
      */
     void setColor( const QColor &color );
