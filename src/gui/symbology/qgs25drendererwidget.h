@@ -58,6 +58,8 @@ class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, protected Ui::
     void apply() override SIP_FORCE;
 
     Qgs25DRenderer *mRenderer = nullptr;
+
+    friend class QgsAppScreenShots;
 };
 
 #endif // QGS25DRENDERERWIDGET_H

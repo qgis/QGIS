@@ -18,7 +18,7 @@
 #include <QWindow>
 #include <QScreen>
 #include <QImageWriter>
-#include <QTransform>
+#include <QIcon>
 
 #include "qgsappscreenshots.h"
 
@@ -27,13 +27,22 @@
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
 #include "qgisapp.h"
+#include "qgsrendererpropertiesdialog.h"
+#include "qgs25drendererwidget.h"
+#include "qgsapplication.h"
+
 
 QgsAppScreenShots::QgsAppScreenShots( const QString &saveDirectory )
   : mSaveDirectory( saveDirectory )
 {
   QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double&key=pk" );
-  mVectorLayer = new QgsVectorLayer( layerDef, QStringLiteral( "Layer" ), QStringLiteral( "memory" ) );
-  QgsProject::instance()->addMapLayer( mVectorLayer );
+  mLineLayer = new QgsVectorLayer( layerDef, QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
+  layerDef = QStringLiteral( "Polygon?crs=epsg:2056&field=pk:integer&field=my_text:string&field=my_integer:integer&field=height:double&key=pk" );
+  mPolygonLayer = new QgsVectorLayer( layerDef, QStringLiteral( "Polygon Layer" ), QStringLiteral( "memory" ) );
+
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>()
+                                        << mLineLayer
+                                        << mPolygonLayer );
 }
 
 void QgsAppScreenShots::saveScreenshot( const QString &name, QWidget *widget, GrabMode mode )
@@ -117,6 +126,9 @@ QScreen *QgsAppScreenShots::screen( QWidget *widget )
 
 void QgsAppScreenShots::takePicturesOf( Categories categories )
 {
+  if ( !categories || categories.testFlag( Symbol25D ) )
+    take25dSymbol();
+
   if ( !categories || categories.testFlag( VectorLayerProperties ) )
     takeVectorLayerProperties();
 }
@@ -128,7 +140,7 @@ void QgsAppScreenShots::takePicturesOf( Categories categories )
 void QgsAppScreenShots::takeVectorLayerProperties()
 {
   QString rootName = QLatin1String( "vectorlayerproperties_" );
-  QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mVectorLayer, QgisApp::instance() );
+  QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mLineLayer, QgisApp::instance() );
   dlg->show();
   // ----------------
   // do all the pages
@@ -155,6 +167,31 @@ void QgsAppScreenShots::takeVectorLayerProperties()
   QCoreApplication::processEvents();
 
   // exit properly
+  dlg->close();
+  dlg->deleteLater();
+}
+
+void QgsAppScreenShots::take25dSymbol()
+{
+  QString rootName = QLatin1String( "vectorlayerproperties_" );
+  QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mPolygonLayer, QgisApp::instance() );
+  dlg->show();
+  dlg->mOptionsListWidget->setCurrentRow( 2 );
+  Q_ASSERT( dlg->mOptionsListWidget->currentItem()->icon().pixmap( 24, 24 ).toImage()
+            == QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/symbology.svg" ) ).pixmap( 24, 24 ).toImage() );
+  int idx = dlg->mRendererDialog->cboRenderers->findData( QLatin1String( "25dRenderer" ) );
+  Q_ASSERT( idx >= 0 );
+  dlg->mRendererDialog->cboRenderers->setCurrentIndex( idx );
+  QCoreApplication::processEvents();
+  Qgs25DRendererWidget *w = dynamic_cast<Qgs25DRendererWidget *>( dlg->mRendererDialog->mActiveWidget );
+  w->mHeightWidget->setField( QLatin1String( "height" ) );
+  Q_ASSERT( w->mHeightWidget->expression() == QLatin1String( "\"height\"" ) );
+  QCoreApplication::processEvents();
+  dlg->adjustSize();
+  QCoreApplication::processEvents();
+  saveScreenshot( rootName + QLatin1String( "25dsymbol" ), dlg );
+
+// exit properly
   dlg->close();
   dlg->deleteLater();
 }

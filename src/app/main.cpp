@@ -143,6 +143,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n" )
       << QStringLiteral( "\t[--dxf-map-theme maptheme]\tmap theme to use for dxf output\n" )
       << QStringLiteral( "\t[--take-screenshots output_path]\ttake screen shots for the user documentation\n" )
+      << QStringLiteral( "\t[--screenshots-categories categories]\tspecify the categories of screenshot to be used (see QgsAppScreenShots::Categories).\n" )
       << QStringLiteral( "\t[--profile name]\tload a named profile from the users profiles folder.\n" )
       << QStringLiteral( "\t[--profiles-path path]\tpath to store user profile folders. Will create profiles inside a {path}\\profiles folder \n" )
       << QStringLiteral( "\t[--version-migration]\tforce the settings migration from older version if found\n" )
@@ -532,6 +533,7 @@ int main( int argc, char *argv[] )
 
   bool takeScreenShots = false;
   QString screenShotsPath;
+  int screenShotsCategories = 0;
 
   // This behavior will set initial extent of map canvas, but only if
   // there are no command line arguments. This gives a usable map
@@ -753,6 +755,10 @@ int main( int argc, char *argv[] )
         {
           takeScreenShots = true;
           screenShotsPath = args[++i];
+        }
+        else if ( arg == QLatin1String( "--screenshots-categories" ) )
+        {
+          screenShotsCategories = args[++i].toInt();
         }
 #ifdef HAVE_OPENCL
         else if ( arg == QLatin1String( "--openclprogramfolder" ) )
@@ -1242,7 +1248,7 @@ int main( int argc, char *argv[] )
   int h = 300 * qApp->desktop()->logicalDpiY() / 96;
 
   QSplashScreen *mypSplash = new QSplashScreen( myPixmap.scaled( w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
-  if ( !myHideSplash && !settings.value( QStringLiteral( "qgis/hideSplash" ) ).toBool() )
+  if ( !takeScreenShots && !myHideSplash && !settings.value( QStringLiteral( "qgis/hideSplash" ) ).toBool() )
   {
     //for win and linux we can just automask and png transparency areas will be used
     mypSplash->setMask( myPixmap.mask() );
@@ -1468,7 +1474,7 @@ int main( int argc, char *argv[] )
 
   if ( takeScreenShots )
   {
-    qgis->takeAppScreenShots( screenShotsPath );
+    qgis->takeAppScreenShots( screenShotsPath, screenShotsCategories );
   }
 
   /////////////////////////////////////////////////////////////////////

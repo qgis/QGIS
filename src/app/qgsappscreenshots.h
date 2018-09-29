@@ -41,9 +41,12 @@ class QgsAppScreenShots
       Screen
     };
 
+    //! Not part of the API to avoid cluttering
     enum Category
     {
-      VectorLayerProperties = 1,
+      All = 0,
+      Symbol25D,
+      VectorLayerProperties,
     };
     Q_ENUM( Category )
     Q_DECLARE_FLAGS( Categories, Category )
@@ -60,9 +63,11 @@ class QgsAppScreenShots
     void saveScreenshot( const QString &name, QWidget *widget = nullptr, GrabMode mode = GrabWidgetAndFrame );
 
     void takeVectorLayerProperties();
+    void take25dSymbol();
 
     QString mSaveDirectory;
-    QgsVectorLayer *mVectorLayer = nullptr;
+    QgsVectorLayer *mLineLayer = nullptr;
+    QgsVectorLayer *mPolygonLayer = nullptr;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAppScreenShots::Categories )
