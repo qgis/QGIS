@@ -67,6 +67,7 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     bool close() override;
 
   protected:
+    bool checkFeature( gdal::ogr_feature_unique_ptr & fet, QgsFeature &feature ) ;
     bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
