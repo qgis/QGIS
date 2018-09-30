@@ -41,7 +41,14 @@ QgsGeometryCheckerUtils::LayerFeature::LayerFeature( const QgsFeaturePool *pool,
   const QgsCoordinateTransform transform( pool->crs(), context->mapCrs, context->transformContext );
   if ( useMapCrs && context->mapCrs.isValid() && !transform.isShortCircuited() )
   {
-    mGeometry.transform( transform );
+    try
+    {
+      mGeometry.transform( transform );
+    }
+    catch ( const QgsCsException &e )
+    {
+      QgsDebugMsg( "Shrug. What shall we do with a geometry that cannot be converted?" );
+    }
   }
 }
 

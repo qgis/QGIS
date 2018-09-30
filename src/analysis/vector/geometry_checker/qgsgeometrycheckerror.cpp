@@ -65,8 +65,15 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
     if ( vl )
     {
       QgsCoordinateTransform ct( vl->crs(), check->context()->mapCrs, check->context()->transformContext );
-      mGeometry.transform( ct );
-      mErrorLocation = ct.transform( mErrorLocation );
+      try
+      {
+        mGeometry.transform( ct );
+        mErrorLocation = ct.transform( mErrorLocation );
+      }
+      catch ( const QgsCsException &e )
+      {
+        QgsDebugMsg( "Can not show error in current map coordinate reference system" );
+      }
     }
   }
 }
