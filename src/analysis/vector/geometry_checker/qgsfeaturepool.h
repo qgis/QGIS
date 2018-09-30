@@ -61,12 +61,16 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     /**
      * Returns the complete set of feature ids in this pool.
      * Note that this concerns the features governed by this pool, which are not necessarily all cached.
+     *
+     * \note not available in Python bindings
      */
     QgsFeatureIds allFeatureIds() const SIP_SKIP;
 
     /**
      * Get all feature ids in the bounding box \a rect. It will use a spatial index to
      * determine the ids.
+     *
+     * \note not available in Python bindings
      */
     QgsFeatureIds getIntersects( const QgsRectangle &rect ) const SIP_SKIP;
 
@@ -84,7 +88,7 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
      * the pointer will need to be checked for validity
      * before usage.
      *
-     * \note Not available in Python
+     * \note not available in Python bindings
      */
     QPointer<QgsVectorLayer> layerPtr() const SIP_SKIP;
 
@@ -127,6 +131,8 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
      * Set all the feature ids governed by this feature pool.
      * Should be called by subclasses constructor and whenever
      * they insert a new feature.
+     *
+     * \note not available in Python bindings
      */
     void setFeatureIds( const QgsFeatureIds &ids ) SIP_SKIP;
 
