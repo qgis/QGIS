@@ -32,10 +32,11 @@ class ANALYSIS_EXPORT QgsGeometryPointInPolygonCheck : public QgsGeometryCheck
     void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
-    QString factoryDescription() const { return tr( "Point not in polygon" ); }
+    static QString factoryDescription() { return tr( "Point not in polygon" ); }
     QString description() const override { return factoryDescription(); }
-    QString factoryId() const { return QStringLiteral( "QgsGeometryPointInPolygonCheck" ); }
+    static QString factoryId() { return QStringLiteral( "QgsGeometryPointInPolygonCheck" ); }
     QString id() const override { return factoryId(); }
+    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
     enum ResolutionMethod { NoChange };

@@ -32,10 +32,11 @@ class ANALYSIS_EXPORT QgsGeometryMultipartCheck : public QgsSingleGeometryCheck
     QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
-    QString factoryDescription() const { return tr( "Multipart object with only one feature" ); }
+    static QString factoryDescription() { return tr( "Multipart object with only one feature" ); }
     QString description() const override { return factoryDescription(); }
-    QString factoryId() const { return QStringLiteral( "QgsGeometryMultipartCheck" ); }
+    static QString factoryId() { return QStringLiteral( "QgsGeometryMultipartCheck" ); }
     QString id() const override { return factoryId(); }
+    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
     static QgsGeometryCheck::CheckType factoryCheckType() { return QgsGeometryCheck::FeatureCheck; }
 
     enum ResolutionMethod { ConvertToSingle, RemoveObject, NoChange };

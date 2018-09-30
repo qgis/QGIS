@@ -250,6 +250,11 @@ QgsGeometryOverlapCheckError::QgsGeometryOverlapCheckError( const QgsGeometryChe
 
 }
 
+QString QgsGeometryOverlapCheckError::description() const
+{
+  return QCoreApplication::translate( "QgsGeometryTypeCheckError", "Overlap with %1:%2" ).arg( mOverlappedFeature.first, QString::number( mOverlappedFeature.second ) );
+}
+
 QgsGeometryCheck::CheckType QgsGeometryOverlapCheck::factoryCheckType()
 {
   return QgsGeometryCheck::LayerCheck;

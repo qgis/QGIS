@@ -62,6 +62,7 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateCheck : public QgsGeometryCheck
     QStringList resolutionMethods() const override;
     QString description() const override { return factoryDescription(); }
     QString id() const override { return factoryId(); }
+    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
 
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }

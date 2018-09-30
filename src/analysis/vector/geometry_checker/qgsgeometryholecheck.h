@@ -31,10 +31,11 @@ class ANALYSIS_EXPORT QgsGeometryHoleCheck : public QgsGeometryCheck
     void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
-    QString factoryDescription() const { return tr( "Polygon with hole" ); }
+    static QString factoryDescription() { return tr( "Polygon with hole" ); }
     QString description() const override { return factoryDescription(); }
-    QString factoryId() const { return QStringLiteral( "QgsGeometryHoleCheck" ); }
+    static QString factoryId() { return QStringLiteral( "QgsGeometryHoleCheck" ); }
     QString id() const override { return factoryId(); }
+    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
     static QgsGeometryCheck::CheckType factoryCheckType() { return QgsGeometryCheck::FeatureCheck; }
 
     enum ResolutionMethod { RemoveHoles, NoChange };

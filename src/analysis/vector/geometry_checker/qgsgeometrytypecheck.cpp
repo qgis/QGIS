@@ -157,7 +157,7 @@ QStringList QgsGeometryTypeCheck::resolutionMethods() const
   return methods;
 }
 
-QString QgsGeometryTypeCheck::factoryDescription() const
+QString QgsGeometryTypeCheck::factoryDescription()
 {
   return tr( "Geometry type" );
 }
@@ -167,7 +167,7 @@ QString QgsGeometryTypeCheck::description() const
   return factoryDescription();
 }
 
-QString QgsGeometryTypeCheck::factoryId() const
+QString QgsGeometryTypeCheck::factoryId()
 {
   return QStringLiteral( "QgsGeometryTypeCheck" );
 }
@@ -180,6 +180,11 @@ QgsGeometryCheck::CheckType QgsGeometryTypeCheck::factoryCheckType()
 QString QgsGeometryTypeCheck::id() const
 {
   return factoryId();
+}
+
+QgsGeometryCheck::CheckType QgsGeometryTypeCheck::checkType() const
+{
+  return factoryCheckType();
 }
 
 bool QgsGeometryTypeCheckError::isEqual( const QgsSingleGeometryCheckError *other ) const

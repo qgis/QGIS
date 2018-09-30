@@ -53,11 +53,12 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheck : public QgsSingleGeometryCheck
     QStringList resolutionMethods() const override;
     QString description() const override;
     QString id() const override;
+    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
 
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP {return {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
-    QString factoryDescription() const SIP_SKIP;
-    QString factoryId() const SIP_SKIP;
+    static QString factoryDescription() SIP_SKIP;
+    static QString factoryId() SIP_SKIP;
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
   private:

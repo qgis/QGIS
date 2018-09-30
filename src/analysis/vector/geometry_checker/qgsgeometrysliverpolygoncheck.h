@@ -29,9 +29,9 @@ class ANALYSIS_EXPORT QgsGeometrySliverPolygonCheck : public QgsGeometryAreaChec
       mThresholdMapUnits = configurationValue<double>( "threshold" );
       mMaxArea = configurationValue<double>( "maxArea" );
     }
-    QString factoryDescription() const { return tr( "Sliver polygon" ); }
+    static QString factoryDescription() { return tr( "Sliver polygon" ); }
     QString description() const override { return factoryDescription(); }
-    QString factoryId() const { return QStringLiteral( "QgsGeometrySliverPolygonCheck" ); }
+    static QString factoryId() { return QStringLiteral( "QgsGeometrySliverPolygonCheck" ); }
     QString id() const override { return factoryId(); }
 
   private:
