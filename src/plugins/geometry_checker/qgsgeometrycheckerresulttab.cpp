@@ -57,14 +57,16 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
   mFixedCount = 0;
   mCloseable = true;
 
-  for ( const QString &layerId : mChecker->featurePools().keys() )
+  const QStringList layers = mChecker->featurePools().keys();
+  for ( const QString &layerId : layers )
   {
     QgsVectorLayer *layer = mChecker->featurePools()[layerId]->layer();
-    QTreeWidgetItem *item = new QTreeWidgetItem( ui.treeWidgetMergeAttribute, QStringList() << layer->name() << "" );
+    QTreeWidgetItem *item = new QTreeWidgetItem( ui.treeWidgetMergeAttribute, QStringList() << layer->name() << QString() );
     QComboBox *attribCombo = new QComboBox();
-    for ( int i = 0, n = layer->fields().count(); i < n; ++i )
+    const QgsFields fields = layer->fields();
+    for ( const QgsField &field : fields )
     {
-      attribCombo->addItem( layer->fields().at( i ).name() );
+      attribCombo->addItem( field.name() );
     }
     attribCombo->setCurrentIndex( 0 );
     connect( attribCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateMergeAttributeIndices() ) );
@@ -339,7 +341,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   {
     items.append( ui.tableWidgetErrors->selectedItems() );
   }
-  for ( QTableWidgetItem *item : items )
+  for ( QTableWidgetItem *item : qgis::as_const( items ) )
   {
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( item->row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
 
