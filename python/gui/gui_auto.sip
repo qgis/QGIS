@@ -12,7 +12,6 @@
 %Include auto_generated/qgsmaplayerconfigwidgetfactory.sip
 %Include auto_generated/qgsmapmouseevent.sip
 %Include auto_generated/qgsmaptip.sip
-%Include auto_generated/qgsrubberband.sip
 %Include auto_generated/qgssnapindicator.sip
 %Include auto_generated/qgstablewidgetitem.sip
 %Include auto_generated/qgsuserinputwidget.sip
@@ -188,6 +187,7 @@
 %Include auto_generated/qgsrasterlayersaveasdialog.sip
 %Include auto_generated/qgsrasterpyramidsoptionswidget.sip
 %Include auto_generated/qgsrelationeditorwidget.sip
+%Include auto_generated/qgsrubberband.sip
 %Include auto_generated/qgsscalecombobox.sip
 %Include auto_generated/qgsscalerangewidget.sip
 %Include auto_generated/qgsscalevisibilitydialog.sip
