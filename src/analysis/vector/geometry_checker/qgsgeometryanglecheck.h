@@ -25,7 +25,7 @@ class ANALYSIS_EXPORT QgsGeometryAngleCheck : public QgsGeometryCheck
   public:
     QgsGeometryAngleCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
       : QgsGeometryCheck( FeatureNodeCheck, context, configuration )
-      , mMinAngle( configuration.value( "minAngle", 0.0 ).toDouble() )
+      , mMinAngle( configuration.value( QStringLiteral( "minAngle" ), 0.0 ).toDouble() )
     {}
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }

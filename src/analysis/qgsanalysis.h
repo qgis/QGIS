@@ -41,8 +41,6 @@ class ANALYSIS_EXPORT QgsAnalysis
     //! QgsAnalysis cannot be copied
     QgsAnalysis &operator=( const QgsAnalysis &other ) = delete;
 
-    ~QgsAnalysis();
-
     /**
      * Returns a pointer to the singleton instance.
      */

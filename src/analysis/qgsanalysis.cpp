@@ -48,8 +48,3 @@ QgsAnalysis::QgsAnalysis()
   mGeometryCheckRegistry->registerGeometryCheck( new QgsGeometryCheckFactoryT<QgsGeometryOverlapCheck>() );
   mGeometryCheckRegistry->registerGeometryCheck( new QgsGeometryCheckFactoryT<QgsGeometryMissingVertexCheck>() );
 }
-
-QgsAnalysis::~QgsAnalysis()
-{
-
-}
