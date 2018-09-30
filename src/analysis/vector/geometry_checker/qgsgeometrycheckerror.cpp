@@ -78,9 +78,9 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
   }
 }
 
-const QgsAbstractGeometry *QgsGeometryCheckError::geometry() const
+QgsGeometry QgsGeometryCheckError::geometry() const
 {
-  return mGeometry.constGet();
+  return mGeometry;
 }
 
 QgsRectangle QgsGeometryCheckError::affectedAreaBBox() const

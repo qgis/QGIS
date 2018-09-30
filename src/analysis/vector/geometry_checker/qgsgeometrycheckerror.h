@@ -47,7 +47,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     const QString &layerId() const { return mLayerId; }
     QgsFeatureId featureId() const { return mFeatureId; }
     // In map units
-    const QgsAbstractGeometry *geometry() const;
+    QgsGeometry geometry() const;
     // In map units
     virtual QgsRectangle affectedAreaBBox() const;
     virtual QString description() const { return mCheck->description(); }

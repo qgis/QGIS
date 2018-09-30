@@ -161,7 +161,8 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
   QgsFeature mergeFeature;
   int mergePartIdx = -1;
 
-  const QgsAbstractGeometry *errGeometry = QgsGeometryCheckerUtils::getGeomPart( err->geometry(), 0 );
+  const QgsGeometry geometry = err->geometry();
+  const QgsAbstractGeometry *errGeometry = QgsGeometryCheckerUtils::getGeomPart( geometry.constGet(), 0 );
 
   const auto layerIds = err->neighbors().keys();
   // Search for touching neighboring geometries
