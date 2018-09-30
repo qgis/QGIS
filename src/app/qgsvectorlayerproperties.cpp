@@ -413,7 +413,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mPrecisionUnitsLabel->setText( QStringLiteral( "[%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
 
     QLayout *geometryCheckLayout = new QVBoxLayout();
-    const QList<QgsGeometryCheckFactory *> geometryCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mLayer, QgsGeometryCheck::Flag::SingleGeometryCheck );
+    const QList<QgsGeometryCheckFactory *> geometryCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mLayer, QgsGeometryCheck::FeatureNodeCheck, QgsGeometryCheck::Flag::AvailableInValidation );
     const QStringList activeChecks = mLayer->geometryOptions()->geometryChecks();
     for ( const QgsGeometryCheckFactory *factory : geometryCheckFactories )
     {
@@ -425,7 +425,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mGeometryValidationGroupBox->setLayout( geometryCheckLayout );
 
     QLayout *topologyCheckLayout = new QVBoxLayout();
-    const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mLayer, QgsGeometryCheck::Flag::SingleLayerTopologyCheck );
+    const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mLayer, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
 
     for ( const QgsGeometryCheckFactory *factory : topologyCheckFactories )
     {
