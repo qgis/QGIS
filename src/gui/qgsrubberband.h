@@ -43,6 +43,10 @@ class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
   public:
 
     Q_PROPERTY( QColor fillColor READ fillColor WRITE setFillColor )
+    Q_PROPERTY( QColor strokeColor READ strokeColor WRITE setStrokeColor )
+    Q_PROPERTY( int iconSize READ iconSize WRITE setIconSize )
+    Q_PROPERTY( QColor secondaryStrokeColor READ secondaryStrokeColor WRITE setSecondaryStrokeColor )
+    Q_PROPERTY( int width READ width WRITE setWidth )
 
     //! Icons
     enum IconType
