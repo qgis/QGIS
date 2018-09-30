@@ -925,7 +925,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::initLayouts, this, QStringLiteral( "Initialize layouts support" ) );
 
   startProfile( QStringLiteral( "Geometry validation" ) );
-  QgsAnalysis::instance()->geometryCheckRegistry()->initialize();
 
   mGeometryValidationService = qgis::make_unique<QgsGeometryValidationService>( QgsProject::instance() );
   connect( mGeometryValidationService.get(), &QgsGeometryValidationService::warning, this, [this]( const QString & message )

@@ -136,7 +136,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
 
   const QStringList activeChecks = layer->geometryOptions()->geometryChecks();
 
-  const QList<QgsGeometryCheckFactory *> singleCheckFactories = checkRegistry->geometryCheckFactories( layer, QgsGeometryCheck::SingleGeometryCheck );
+  const QList<QgsGeometryCheckFactory *> singleCheckFactories = checkRegistry->geometryCheckFactories( layer, QgsGeometryCheck::FeatureNodeCheck, QgsGeometryCheck::AvailableInValidation );
 
   for ( QgsGeometryCheckFactory *factory : singleCheckFactories )
   {
@@ -159,7 +159,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
 
   // Topology checks
   QList<QgsGeometryCheck *> topologyChecks;
-  const QList<QgsGeometryCheckFactory *> topologyCheckFactories = checkRegistry->geometryCheckFactories( layer, QgsGeometryCheck::SingleLayerTopologyCheck );
+  const QList<QgsGeometryCheckFactory *> topologyCheckFactories = checkRegistry->geometryCheckFactories( layer, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::AvailableInValidation );
 
   for ( QgsGeometryCheckFactory *factory : topologyCheckFactories )
   {
