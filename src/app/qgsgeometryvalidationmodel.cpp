@@ -56,11 +56,17 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
         const QgsFeatureId fid = topologyError->featureId();
         const QgsFeature feature = mCurrentLayer->getFeature( fid ); // TODO: this should be cached!
         mExpressionContext.setFeature( feature );
-        QString featureTitle = mDisplayExpression.evaluate( &mExpressionContext ).toString();
-        if ( featureTitle.isEmpty() )
-          featureTitle = fid;
+        const QVariant featureTitle = mDisplayExpression.evaluate( &mExpressionContext );
 
-        return tr( "%1: %2" ).arg( featureTitle, topologyError->description() );
+        if ( featureTitle.isNull() )
+        {
+          return topologyError->description();
+        }
+        else
+        {
+          return tr( "%1: %2" ).arg( featureTitle.toString(), topologyError->description() );
+        }
+
       }
 
       case FeatureExtentRole:
@@ -77,7 +83,8 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
 
       case ErrorGeometryRole:
       {
-        return topologyError->geometry();
+        // TODO: save as QgsGeometry already in the error
+        return QgsGeometry( topologyError->geometry()->clone() );
       }
 
       case FeatureGeometryRole:

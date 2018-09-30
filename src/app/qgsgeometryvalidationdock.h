@@ -50,11 +50,15 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     void updateLayerTransform();
 
   private:
+
     enum ZoomToAction
     {
       ZoomToFeature,
       ZoomToProblem
     };
+
+    void showHighlight( const QModelIndex &current );
+
     ZoomToAction mLastZoomToAction = ZoomToFeature;
     QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
     QgsGeometryValidationService *mGeometryValidationService = nullptr;

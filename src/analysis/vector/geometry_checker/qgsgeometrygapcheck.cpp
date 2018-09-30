@@ -124,7 +124,6 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     // Add error
     double area = gapGeom->area();
     errors.append( new QgsGeometryGapCheckError( this, QString(), QgsGeometry( gapGeom.release() ), neighboringIds, area, gapAreaBBox ) );
-
   }
 }
 

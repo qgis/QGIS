@@ -42,15 +42,18 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   mErrorRubberband = new QgsRubberBand( mMapCanvas );
   mErrorLocationRubberband = new QgsRubberBand( mMapCanvas );
 
-  double scaleFactor = mMapCanvas->fontMetrics().xHeight() * .2;
+  double scaleFactor = mMapCanvas->fontMetrics().xHeight() * .4;
 
-  mFeatureRubberband->setColor( QColor( 250, 180, 180, 100 ) );
   mFeatureRubberband->setWidth( scaleFactor );
+  mFeatureRubberband->setStrokeColor( QColor( 100, 255, 100, 100 ) );
+
   mErrorRubberband->setColor( QColor( 180, 250, 180, 100 ) );
   mErrorRubberband->setWidth( scaleFactor );
+
   mErrorLocationRubberband->setIcon( QgsRubberBand::ICON_X );
-  mErrorLocationRubberband->setWidth( scaleFactor * 3 );
-  mErrorLocationRubberband->setColor( QColor( 180, 180, 250, 100 ) );
+  mErrorLocationRubberband->setWidth( scaleFactor );
+  mErrorLocationRubberband->setIconSize( scaleFactor * 5 );
+  mErrorLocationRubberband->setColor( QColor( 50, 255, 50, 255 ) );
 }
 
 
@@ -150,20 +153,7 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
     }
   }
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-  if ( vlayer )
-  {
-    QgsGeometry featureGeometry = current.data( QgsGeometryValidationModel::FeatureGeometryRole ).value<QgsGeometry>();
-    QgsGeometry errorGeometry = current.data( QgsGeometryValidationModel::ErrorGeometryRole ).value<QgsGeometry>();
-    QgsPointXY locationGeometry = current.data( QgsGeometryValidationModel::ErrorLocationGeometryRole ).value<QgsPointXY>();
-    qDebug() << "feature geom : " << featureGeometry.asWkt();
-    qDebug() << "error   geom : " << errorGeometry.asWkt();
-    qDebug() << "locationgeom : " << QgsGeometry( new QgsPoint( locationGeometry ) ).asWkt();
-
-    mFeatureRubberband->setToGeometry( featureGeometry );
-    mErrorRubberband->setToGeometry( errorGeometry );
-    mErrorLocationRubberband->setToGeometry( QgsGeometry( new QgsPoint( locationGeometry ) ) );
-  }
+  showHighlight( current );
 
   switch ( mLastZoomToAction )
   {
@@ -174,5 +164,36 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
     case ZoomToFeature:
       zoomToFeature();
       break;
+  }
+}
+
+void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+  if ( vlayer )
+  {
+    QgsGeometry featureGeometry = current.data( QgsGeometryValidationModel::FeatureGeometryRole ).value<QgsGeometry>();
+    QgsGeometry errorGeometry = current.data( QgsGeometryValidationModel::ErrorGeometryRole ).value<QgsGeometry>();
+    QgsPointXY locationGeometry = current.data( QgsGeometryValidationModel::ErrorLocationGeometryRole ).value<QgsPointXY>();
+
+    mFeatureRubberband->setToGeometry( featureGeometry );
+
+
+    QPropertyAnimation *animation = new QPropertyAnimation( mFeatureRubberband, "fillColor" );
+    animation->setEasingCurve( QEasingCurve::OutQuad );
+    connect( animation, &QPropertyAnimation::finished, animation, &QPropertyAnimation::deleteLater );
+    connect( animation, &QPropertyAnimation::valueChanged, this, [this]
+    {
+      mFeatureRubberband->update();
+    } );
+
+    animation->setDuration( 2000 );
+    animation->setStartValue( QColor( 100, 255, 100, 255 ) );
+    animation->setEndValue( QColor( 100, 255, 100, 0 ) );
+
+    animation->start();
+
+    // mErrorRubberband->setToGeometry( errorGeometry );
+    mErrorLocationRubberband->setToGeometry( QgsGeometry( new QgsPoint( locationGeometry ) ) );
   }
 }
