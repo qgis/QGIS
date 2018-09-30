@@ -97,13 +97,38 @@ QgsGeometryCheckerUtils::LayerFeatures::iterator::iterator( const QStringList::c
   nextLayerFeature( true );
 }
 
+QgsGeometryCheckerUtils::LayerFeatures::iterator::iterator( const QgsGeometryCheckerUtils::LayerFeatures::iterator &rh )
+{
+  mLayerIt = rh.mLayerIt;
+  mFeatureIt = rh.mFeatureIt;
+  mParent = rh.mParent;
+  mCurrentFeature = qgis::make_unique<LayerFeature>( *rh.mCurrentFeature.get() );
+}
+
 bool QgsGeometryCheckerUtils::LayerFeature::useMapCrs() const
 {
   return mMapCrs;
 }
 QgsGeometryCheckerUtils::LayerFeatures::iterator::~iterator()
 {
-  delete mCurrentFeature;
+}
+
+QgsGeometryCheckerUtils::LayerFeatures::iterator QgsGeometryCheckerUtils::LayerFeatures::iterator::operator++( int )
+{
+  iterator tmp( *this );
+  ++*this;
+  return tmp;
+}
+
+const QgsGeometryCheckerUtils::LayerFeature &QgsGeometryCheckerUtils::LayerFeatures::iterator::operator*() const
+{
+  Q_ASSERT( mCurrentFeature );
+  return *mCurrentFeature;
+}
+
+bool QgsGeometryCheckerUtils::LayerFeatures::iterator::operator!=( const QgsGeometryCheckerUtils::LayerFeatures::iterator &other )
+{
+  return mLayerIt != other.mLayerIt || mFeatureIt != other.mFeatureIt;
 }
 
 const QgsGeometryCheckerUtils::LayerFeatures::iterator &QgsGeometryCheckerUtils::LayerFeatures::iterator::operator++()
@@ -127,8 +152,7 @@ bool QgsGeometryCheckerUtils::LayerFeatures::iterator::nextLayerFeature( bool be
   }
   // End
   mFeatureIt = QgsFeatureIds::const_iterator();
-  delete mCurrentFeature;
-  mCurrentFeature = nullptr;
+  mCurrentFeature.reset();
   return false;
 }
 
@@ -173,8 +197,7 @@ bool QgsGeometryCheckerUtils::LayerFeatures::iterator::nextFeature( bool begin )
     QgsFeature feature;
     if ( featurePool->getFeature( *mFeatureIt, feature ) && feature.geometry() && feature.geometry().constGet() )
     {
-      delete mCurrentFeature;
-      mCurrentFeature = new LayerFeature( mParent->mFeaturePools[*mLayerIt], feature, mParent->mContext, mParent->mUseMapCrs );
+      mCurrentFeature.reset( new LayerFeature( mParent->mFeaturePools[*mLayerIt], feature, mParent->mContext, mParent->mUseMapCrs ) );
       return true;
     }
     ++mFeatureIt;
@@ -223,6 +246,16 @@ QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFe
       mFeatureIds.insert( layerId, QgsFeatureIds() );
     }
   }
+}
+
+QgsGeometryCheckerUtils::LayerFeatures::iterator QgsGeometryCheckerUtils::LayerFeatures::begin() const
+{
+  return iterator( mLayerIds.constBegin(), this );
+}
+
+QgsGeometryCheckerUtils::LayerFeatures::iterator QgsGeometryCheckerUtils::LayerFeatures::end() const
+{
+  return iterator( mLayerIds.end(), this );
 }
 
 /////////////////////////////////////////////////////////////////////////////

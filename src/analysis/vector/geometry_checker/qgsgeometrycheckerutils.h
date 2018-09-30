@@ -101,11 +101,12 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
         {
           public:
             iterator( const QList<QString>::const_iterator &layerIt, const LayerFeatures *parent );
+            iterator( const iterator &rh );
             ~iterator();
             const iterator &operator++();
-            iterator operator++( int ) { iterator tmp( *this ); ++*this; return tmp; }
-            const LayerFeature &operator*() const { Q_ASSERT( mCurrentFeature ); return *mCurrentFeature; }
-            bool operator!=( const iterator &other ) { return mLayerIt != other.mLayerIt || mFeatureIt != other.mFeatureIt; }
+            iterator operator++( int );
+            const LayerFeature &operator*() const;
+            bool operator!=( const iterator &other );
 
           private:
             bool nextLayerFeature( bool begin );
@@ -113,12 +114,12 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
             bool nextFeature( bool begin );
             QList<QString>::const_iterator mLayerIt;
             QgsFeatureIds::const_iterator mFeatureIt;
-            const LayerFeatures *mParent;
-            const LayerFeature *mCurrentFeature = nullptr;
+            const LayerFeatures *mParent = nullptr;
+            std::unique_ptr<LayerFeature> mCurrentFeature;
         };
 
-        iterator begin() const { return iterator( mLayerIds.constBegin(), this ); }
-        iterator end() const { return iterator( mLayerIds.end(), this ); }
+        iterator begin() const;
+        iterator end() const;
 
 #endif
 
