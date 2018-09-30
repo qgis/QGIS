@@ -96,7 +96,11 @@ for line in lines:
 
             t = line.strip()[len(prefix) + 1:]
             for lang in strings[t]:
-                f.write("{}[{}]={}\n".format(prefix, lang, strings[t][lang].decode("utf-8")))
+                l = "{}[{}]={}\n".format(prefix, lang, strings[t][lang])
+                try:
+                    f.write(l.decode("utf-8"))
+                except AttributeError:
+                    f.write(l)
 
         elif line.startswith(prefix + "["):
             skip = True
