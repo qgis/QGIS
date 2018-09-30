@@ -14,9 +14,6 @@
  ***************************************************************************/
 
 #include "qgsgeometrycheckcontext.h"
-#include "qgsreadwritelocker.h"
-#include "qgsthreadingutils.h"
-#include "qgsvectorlayer.h"
 
 QgsGeometryCheckContext::QgsGeometryCheckContext( int precision, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &transformContext )
   : tolerance( std::pow( 10, -precision ) )
