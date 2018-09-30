@@ -248,8 +248,8 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
 
   feature.setValid( true );
   geometryToDestinationCrs( feature, mTransform );
-   return true;
- }
+  return true;
+}
 
 bool QgsOgrFeatureIterator::checkFeature( gdal::ogr_feature_unique_ptr &fet, QgsFeature &feature )
 {
@@ -298,36 +298,39 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 
   // OSM layers (especially large ones) need the GDALDataset::GetNextFeature() call rather than OGRLayer::GetNextFeature()
   // see more details here: https://trac.osgeo.org/gdal/wiki/rfc66_randomlayerreadwrite
-  if ( mSource->mDriverName == QLatin1String( "OSM" ) ) 
-  {
 
-    while ( fet.reset( GDALDatasetGetNextFeature( mConn->ds, nullptr, nullptr, nullptr, nullptr )), fet )
+#ifdef GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
+  if ( mSource->mDriverName == QLatin1String( "OSM" ) )
+  {
+    OGRLayerH nextFeatureBelongingLayer;
+    while ( fet.reset( GDALDatasetGetNextFeature( mConn->ds, &nextFeatureBelongingLayer, nullptr, nullptr, nullptr ) ), fet )
     {
-      if ( checkFeature( fet, feature ) ) 
+      if ( checkFeature( fet, feature ) && QString::compare( QString::fromLatin1( OGR_L_GetName( nextFeatureBelongingLayer ) ), mSource->mLayerName ) == 0 )
       {
         return true;
       }
-      else 
-      {
-        continue;
-      }
     }
   }
-  else 
+  else
   {
 
     while ( fet.reset( OGR_L_GetNextFeature( mOgrLayer ) ), fet )
     {
-      if ( checkFeature( fet, feature ) ) 
+      if ( checkFeature( fet, feature ) )
       {
         return true;
       }
-      else 
-      {
-        continue;
-      }
-    } 
+    }
   }
+#else
+  while ( fet.reset( OGR_L_GetNextFeature( mOgrLayer ) ), fet )
+  {
+    if ( checkFeature( fet, feature ) )
+    {
+      return true;
+    }
+  }
+#endif
 
   close();
   return false;
