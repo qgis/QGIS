@@ -83,8 +83,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
 
       case ErrorGeometryRole:
       {
-        // TODO: save as QgsGeometry already in the error
-        return QgsGeometry( topologyError->geometry()->clone() );
+        return topologyError->geometry();
       }
 
       case FeatureGeometryRole:
