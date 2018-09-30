@@ -21,7 +21,10 @@ email                : matthias@opengis.ch
 #include "qgssinglegeometrycheck.h"
 
 /**
- * Checks if geometries are valid using the configured method of
+ * Checks if geometries are valid using the backend configured in the QGIS settings.
+ * This does not offer any fixes but makes sure that all geometries are valid.
+ *
+ * \since QGIS 3.4
  */
 class ANALYSIS_EXPORT QgsGeometryIsValidCheck : public QgsSingleGeometryCheck
 {
