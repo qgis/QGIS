@@ -29,8 +29,9 @@
 
 
 
-QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, const QMap<QString, QgsFeaturePool *> &featurePools )
+QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckContext *context, const QMap<QString, QgsFeaturePool *> &featurePools )
   : mChecks( checks )
+  , mContext( context )
   , mFeaturePools( featurePools )
 {
   for ( auto it = featurePools.constBegin(); it != mFeaturePools.constEnd(); ++it )

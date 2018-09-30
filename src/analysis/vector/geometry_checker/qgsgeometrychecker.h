@@ -41,7 +41,7 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
 {
     Q_OBJECT
   public:
-    QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, const QMap<QString, QgsFeaturePool *> &featurePools );
+    QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckContext *context SIP_TRANSFER, const QMap<QString, QgsFeaturePool *> &featurePools );
     ~QgsGeometryChecker() override;
     QFuture<void> execute( int *totalSteps = nullptr );
     bool fixError( QgsGeometryCheckError *error, int method, bool triggerRepaint = false );
@@ -67,7 +67,7 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
     };
 
     QList<QgsGeometryCheck *> mChecks;
-    QgsGeometryCheckContext *mContext;
+    QgsGeometryCheckContext *mContext = nullptr;
     QList<QgsGeometryCheckError *> mCheckErrors;
     QStringList mMessages;
     QMutex mErrorListMutex;

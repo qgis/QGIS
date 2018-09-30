@@ -437,7 +437,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
       checks.append( check );
     }
   }
-  QgsGeometryChecker *checker = new QgsGeometryChecker( checks, featurePools );
+  QgsGeometryChecker *checker = new QgsGeometryChecker( checks, context, featurePools );
 
   emit checkerStarted( checker );
 
