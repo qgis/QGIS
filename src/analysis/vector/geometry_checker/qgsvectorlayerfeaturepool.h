@@ -23,7 +23,7 @@ email                : matthias@opengis.ch
 
 /**
  * \ingroup analysis
- * A feature pool based on a vector data provider.
+ * A feature pool based on a vector layer.
  *
  * \since QGIS 3.4
  */
