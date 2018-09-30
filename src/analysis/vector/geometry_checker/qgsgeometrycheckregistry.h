@@ -34,6 +34,8 @@ struct QgsGeometryCheckContext;
  *
  * QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
  * QgsAnalysis::geometryCheckRegistry().
+ *
+ * \since QGIS 3.4
  */
 class ANALYSIS_EXPORT QgsGeometryCheckRegistry
 {
@@ -43,9 +45,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckRegistry
      * Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
      * QgsAnalysis::geometryCheckRegistry().
      */
-    QgsGeometryCheckRegistry();
-
-    void initialize();
+    QgsGeometryCheckRegistry() = default;
 
     /**
      * Destructor
@@ -54,7 +54,14 @@ class ANALYSIS_EXPORT QgsGeometryCheckRegistry
      */
     ~QgsGeometryCheckRegistry();
 
-    QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfig ) SIP_TRANSFER;
+    /**
+     * Create a new geometryCheck of type \a checkId
+     * Pass the \a context and \a geometryCheckConfiguration to the newly created check.
+     * Ownership is transferred to the caller.
+     *
+     * \since QGIS 3.4
+     */
+    QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfig ) SIP_FACTORY;
 
     /**
      * Get all geometry check factories that are compatible with \a layer and have all of the \a flags set.
@@ -63,6 +70,11 @@ class ANALYSIS_EXPORT QgsGeometryCheckRegistry
      */
     QList<QgsGeometryCheckFactory *> geometryCheckFactories( QgsVectorLayer *layer, QgsGeometryCheck::Flags flags = nullptr ) const;
 
+    /**
+     * Register a new geometry check factory.
+     *
+     * \since QGIS 3.4
+     */
     void registerGeometryCheck( QgsGeometryCheckFactory *checkFactory SIP_TRANSFER );
 
   private:

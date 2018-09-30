@@ -18,16 +18,6 @@
 #include "qgis.h"
 
 
-QgsGeometryCheckRegistry::QgsGeometryCheckRegistry()
-{
-
-}
-
-void QgsGeometryCheckRegistry::initialize()
-{
-
-}
-
 QgsGeometryCheckRegistry::~QgsGeometryCheckRegistry()
 {
   qDeleteAll( mGeometryCheckFactories.values() );
