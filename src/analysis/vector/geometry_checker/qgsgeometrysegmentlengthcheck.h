@@ -24,7 +24,7 @@ class ANALYSIS_EXPORT QgsGeometrySegmentLengthCheck : public QgsGeometryCheck
 {
   public:
     QgsGeometrySegmentLengthCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
-      : QgsGeometryCheck( FeatureNodeCheck, context, configuration )
+      : QgsGeometryCheck( context, configuration )
       , mMinLengthMapUnits( configuration.value( "minSegmentLength" ).toDouble() )
     {}
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
@@ -37,6 +37,7 @@ class ANALYSIS_EXPORT QgsGeometrySegmentLengthCheck : public QgsGeometryCheck
     QString description() const override { return factoryDescription(); }
     QString factoryId() const { return QStringLiteral( "QgsGeometrySegmentLengthCheck" ); }
     QString id() const override { return factoryId(); }
+    static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
     enum ResolutionMethod { NoChange };
 

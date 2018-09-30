@@ -24,8 +24,7 @@ class ANALYSIS_EXPORT QgsGeometryMultipartCheck : public QgsSingleGeometryCheck
 {
   public:
     explicit QgsGeometryMultipartCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
-      : QgsSingleGeometryCheck( FeatureCheck,
-                                context,
+      : QgsSingleGeometryCheck( context,
                                 configuration ) {}
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
@@ -37,6 +36,7 @@ class ANALYSIS_EXPORT QgsGeometryMultipartCheck : public QgsSingleGeometryCheck
     QString description() const override { return factoryDescription(); }
     QString factoryId() const { return QStringLiteral( "QgsGeometryMultipartCheck" ); }
     QString id() const override { return factoryId(); }
+    static QgsGeometryCheck::CheckType factoryCheckType() { return QgsGeometryCheck::FeatureCheck; }
 
     enum ResolutionMethod { ConvertToSingle, RemoveObject, NoChange };
 };

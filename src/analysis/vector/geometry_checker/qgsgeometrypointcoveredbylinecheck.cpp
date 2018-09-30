@@ -90,3 +90,8 @@ QStringList QgsGeometryPointCoveredByLineCheck::resolutionMethods() const
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;
 }
+
+QgsGeometryCheck::CheckType QgsGeometryPointCoveredByLineCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureNodeCheck;
+}

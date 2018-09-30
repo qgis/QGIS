@@ -23,8 +23,10 @@
 class ANALYSIS_EXPORT QgsGeometryDegeneratePolygonCheck : public QgsGeometryCheck
 {
   public:
+    enum ResolutionMethod { DeleteRing, NoChange };
+
     explicit QgsGeometryDegeneratePolygonCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
-      : QgsGeometryCheck( FeatureNodeCheck, context, configuration ) {}
+      : QgsGeometryCheck( context, configuration ) {}
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PolygonGeometry}; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
@@ -35,8 +37,8 @@ class ANALYSIS_EXPORT QgsGeometryDegeneratePolygonCheck : public QgsGeometryChec
     QString description() const override { return factoryDescription(); }
     QString factoryId() const { return QStringLiteral( "QgsGeometryDegeneratePolygonCheck" ); }
     QString id() const override { return factoryId(); }
+    static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
-    enum ResolutionMethod { DeleteRing, NoChange };
   private:
 };
 

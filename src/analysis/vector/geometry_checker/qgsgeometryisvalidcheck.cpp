@@ -20,7 +20,7 @@ email                : matthias@opengis.ch
 #include "qgsgeometryvalidator.h"
 
 QgsGeometryIsValidCheck::QgsGeometryIsValidCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
-  : QgsSingleGeometryCheck( FeatureNodeCheck, context, configuration )
+  : QgsSingleGeometryCheck( context, configuration )
 {}
 
 QList<QgsWkbTypes::GeometryType> QgsGeometryIsValidCheck::compatibleGeometryTypes() const
@@ -82,5 +82,10 @@ QString QgsGeometryIsValidCheck::factoryId()
 QgsGeometryCheck::Flags QgsGeometryIsValidCheck::factoryFlags()
 {
   return AvailableInValidation;
+}
+
+QgsGeometryCheck::CheckType QgsGeometryIsValidCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureNodeCheck;
 }
 ///@endcond

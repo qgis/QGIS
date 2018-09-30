@@ -172,6 +172,11 @@ QString QgsGeometryTypeCheck::factoryId() const
   return QStringLiteral( "QgsGeometryTypeCheck" );
 }
 
+QgsGeometryCheck::CheckType QgsGeometryTypeCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureCheck;
+}
+
 QString QgsGeometryTypeCheck::id() const
 {
   return factoryId();

@@ -49,6 +49,7 @@ class ANALYSIS_EXPORT QgsGeometryMissingVertexCheck : public QgsGeometryCheck
     QString id() const override;
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override;
     QgsGeometryCheck::Flags flags() const override;
+    QgsGeometryCheck::CheckType checkType() const override;
 
 ///@cond private
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;
@@ -56,6 +57,7 @@ class ANALYSIS_EXPORT QgsGeometryMissingVertexCheck : public QgsGeometryCheck
     static QString factoryDescription() SIP_SKIP;
     static QString factoryId() SIP_SKIP;
     static QgsGeometryCheck::Flags factoryFlags() SIP_SKIP;
+    static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 ///@endcond
 
   private:

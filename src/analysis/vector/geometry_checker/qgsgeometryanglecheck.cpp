@@ -19,6 +19,11 @@
 #include "qgsfeaturepool.h"
 #include "qgsgeometrycheckerror.h"
 
+QList<QgsWkbTypes::GeometryType> QgsGeometryAngleCheck::compatibleGeometryTypes() const
+{
+  return factoryCompatibleGeometryTypes();
+}
+
 void QgsGeometryAngleCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
@@ -154,4 +159,44 @@ QStringList QgsGeometryAngleCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "Delete node with small angle" ) << tr( "No action" );
   return methods;
+}
+
+QString QgsGeometryAngleCheck::id() const
+{
+  return factoryId();
+}
+
+QString QgsGeometryAngleCheck::factoryDescription()
+{
+  return tr( "Minimal angle" );
+}
+
+QString QgsGeometryAngleCheck::description() const
+{
+  return factoryDescription();
+}
+
+QgsGeometryCheck::CheckType QgsGeometryAngleCheck::checkType() const
+{
+  return factoryCheckType();
+}
+
+QList<QgsWkbTypes::GeometryType> QgsGeometryAngleCheck::factoryCompatibleGeometryTypes()
+{
+  return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry};
+}
+
+bool QgsGeometryAngleCheck::factoryIsCompatible( QgsVectorLayer *layer )
+{
+  return factoryCompatibleGeometryTypes().contains( layer->geometryType() );
+}
+
+QString QgsGeometryAngleCheck::factoryId()
+{
+  return QStringLiteral( "QgsGeometryAngleCheck" );
+}
+
+QgsGeometryCheck::CheckType QgsGeometryAngleCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureNodeCheck;
 }

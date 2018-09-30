@@ -24,7 +24,7 @@ class ANALYSIS_EXPORT QgsGeometryHoleCheck : public QgsGeometryCheck
 {
   public:
     explicit QgsGeometryHoleCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
-      : QgsGeometryCheck( FeatureCheck, context, configuration ) {}
+      : QgsGeometryCheck( context, configuration ) {}
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PolygonGeometry}; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
@@ -35,6 +35,7 @@ class ANALYSIS_EXPORT QgsGeometryHoleCheck : public QgsGeometryCheck
     QString description() const override { return factoryDescription(); }
     QString factoryId() const { return QStringLiteral( "QgsGeometryHoleCheck" ); }
     QString id() const override { return factoryId(); }
+    static QgsGeometryCheck::CheckType factoryCheckType() { return QgsGeometryCheck::FeatureCheck; }
 
     enum ResolutionMethod { RemoveHoles, NoChange };
 };

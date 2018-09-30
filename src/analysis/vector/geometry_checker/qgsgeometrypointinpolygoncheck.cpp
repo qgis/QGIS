@@ -83,3 +83,8 @@ QStringList QgsGeometryPointInPolygonCheck::resolutionMethods() const
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;
 }
+
+QgsGeometryCheck::CheckType QgsGeometryPointInPolygonCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureNodeCheck;
+}

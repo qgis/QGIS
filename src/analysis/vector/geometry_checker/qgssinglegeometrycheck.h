@@ -135,10 +135,9 @@ class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError
 class ANALYSIS_EXPORT QgsSingleGeometryCheck : public QgsGeometryCheck
 {
   public:
-    QgsSingleGeometryCheck( CheckType checkType,
-                            const QgsGeometryCheckContext *context,
+    QgsSingleGeometryCheck( const QgsGeometryCheckContext *context,
                             const QVariantMap &configuration )
-      : QgsGeometryCheck( checkType, context, configuration )
+      : QgsGeometryCheck( context, configuration )
     {}
 
     void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools,

@@ -44,7 +44,7 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheck : public QgsSingleGeometryCheck
 {
   public:
     QgsGeometryTypeCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration, int allowedTypes )
-      : QgsSingleGeometryCheck( FeatureCheck, context, configuration )
+      : QgsSingleGeometryCheck( context, configuration )
       , mAllowedTypes( allowedTypes )
     {}
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
@@ -58,6 +58,7 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheck : public QgsSingleGeometryCheck
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     QString factoryDescription() const SIP_SKIP;
     QString factoryId() const SIP_SKIP;
+    static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
   private:
     enum ResolutionMethod { Convert, Delete, NoChange };

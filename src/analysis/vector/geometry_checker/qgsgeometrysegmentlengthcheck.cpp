@@ -114,3 +114,8 @@ QStringList QgsGeometrySegmentLengthCheck::resolutionMethods() const
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;
 }
+
+QgsGeometryCheck::CheckType QgsGeometrySegmentLengthCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureNodeCheck;
+}

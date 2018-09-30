@@ -86,6 +86,7 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     QString description() const override;
     QString id() const override;
     QgsGeometryCheck::Flags flags() const override;
+    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
 
 ///@cond private
     static QString factoryDescription() SIP_SKIP;
@@ -93,6 +94,7 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     static QgsGeometryCheck::Flags factoryFlags() SIP_SKIP;
     static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP;
+    static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 ///@endcond private
 
     enum ResolutionMethod { MergeLongestEdge, NoChange };

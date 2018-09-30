@@ -113,3 +113,8 @@ QStringList QgsGeometryDuplicateNodesCheck::resolutionMethods() const
   static QStringList methods = QStringList() << tr( "Delete duplicate node" ) << tr( "No action" );
   return methods;
 }
+
+QgsGeometryCheck::CheckType QgsGeometryDuplicateNodesCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureNodeCheck;
+}

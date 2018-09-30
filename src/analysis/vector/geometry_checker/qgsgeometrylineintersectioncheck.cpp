@@ -94,3 +94,8 @@ QStringList QgsGeometryLineIntersectionCheck::resolutionMethods() const
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;
 }
+
+QgsGeometryCheck::CheckType QgsGeometryLineIntersectionCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureNodeCheck;
+}

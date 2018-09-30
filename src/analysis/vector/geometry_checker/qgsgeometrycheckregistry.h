@@ -68,7 +68,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckRegistry
      *
      * \since QGIS 3.4
      */
-    QList<QgsGeometryCheckFactory *> geometryCheckFactories( QgsVectorLayer *layer, QgsGeometryCheck::Flags flags = nullptr ) const;
+    QList<QgsGeometryCheckFactory *> geometryCheckFactories( QgsVectorLayer *layer,  QgsGeometryCheck::CheckType type, QgsGeometryCheck::Flags flags = nullptr ) const;
 
     /**
      * Register a new geometry check factory.

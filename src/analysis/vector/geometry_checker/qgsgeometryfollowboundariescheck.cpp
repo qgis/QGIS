@@ -22,7 +22,7 @@
 #include "qgsgeometrycheckerror.h"
 
 QgsGeometryFollowBoundariesCheck::QgsGeometryFollowBoundariesCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration, QgsVectorLayer *checkLayer )
-  : QgsGeometryCheck( FeatureNodeCheck, context, configuration )
+  : QgsGeometryCheck( context, configuration )
 {
   mCheckLayer = checkLayer;
   if ( mCheckLayer )
@@ -109,4 +109,9 @@ QStringList QgsGeometryFollowBoundariesCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;
+}
+
+QgsGeometryCheck::CheckType QgsGeometryFollowBoundariesCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureNodeCheck;
 }

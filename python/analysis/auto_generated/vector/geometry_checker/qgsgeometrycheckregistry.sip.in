@@ -44,7 +44,7 @@ Ownership is transferred to the caller.
 .. versionadded:: 3.4
 %End
 
-    QList<QgsGeometryCheckFactory *> geometryCheckFactories( QgsVectorLayer *layer, QgsGeometryCheck::Flags flags = 0 ) const;
+    QList<QgsGeometryCheckFactory *> geometryCheckFactories( QgsVectorLayer *layer,  QgsGeometryCheck::CheckType type, QgsGeometryCheck::Flags flags = 0 ) const;
 %Docstring
 Get all geometry check factories that are compatible with ``layer`` and have all of the ``flags`` set.
 

@@ -23,22 +23,31 @@
 class ANALYSIS_EXPORT QgsGeometryAngleCheck : public QgsGeometryCheck
 {
   public:
+    enum ResolutionMethod
+    {
+      DeleteNode,
+      NoChange
+    };
+
     QgsGeometryAngleCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
-      : QgsGeometryCheck( FeatureNodeCheck, context, configuration )
+      : QgsGeometryCheck( context, configuration )
       , mMinAngle( configuration.value( QStringLiteral( "minAngle" ), 0.0 ).toDouble() )
     {}
-    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
-    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
-    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+
     void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
-    QStringList resolutionMethods() const override;
-    QString factoryDescription() const { return tr( "Minimal angle" ); }
-    QString description() const override { return factoryDescription(); }
-    QString factoryId() const { return QStringLiteral( "QgsGeometryAngleCheck" ); }
-    QString id() const override { return factoryId(); }
 
-    enum ResolutionMethod { DeleteNode, NoChange };
+    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override;
+    QStringList resolutionMethods() const override;
+    QString id() const override;
+    QString description() const override;
+    QgsGeometryCheck::CheckType checkType() const override;
+
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP;
+    static QString factoryDescription() SIP_SKIP;
+    static QString factoryId() SIP_SKIP;
+    static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
   private:
     double mMinAngle;

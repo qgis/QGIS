@@ -21,7 +21,7 @@
 
 
 QgsGeometryOverlapCheck::QgsGeometryOverlapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
-  : QgsGeometryCheck( LayerCheck, context, configuration )
+  : QgsGeometryCheck( context, configuration )
   , mOverlapThresholdMapUnits( configurationValue<double>( "maxOverlapArea" ) )
 
 {
@@ -248,4 +248,9 @@ QgsGeometryOverlapCheckError::QgsGeometryOverlapCheckError( const QgsGeometryChe
 
 {
 
+}
+
+QgsGeometryCheck::CheckType QgsGeometryOverlapCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::LayerCheck;
 }

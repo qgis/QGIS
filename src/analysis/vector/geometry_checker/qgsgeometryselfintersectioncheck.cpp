@@ -357,3 +357,8 @@ QString QgsGeometrySelfIntersectionCheck::factoryId()
 {
   return QStringLiteral( "QgsGeometrySelfIntersectionCheck" );
 }
+
+QgsGeometryCheck::CheckType QgsGeometrySelfIntersectionCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureNodeCheck;
+}

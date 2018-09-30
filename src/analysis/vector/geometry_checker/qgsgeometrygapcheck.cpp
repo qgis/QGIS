@@ -24,7 +24,7 @@
 #include "geos_c.h"
 
 QgsGeometryGapCheck::QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
-  : QgsGeometryCheck( LayerCheck, context, configuration )
+  : QgsGeometryCheck( context, configuration )
   ,  mGapThresholdMapUnits( configuration.value( "gapThreshold" ).toDouble() )
 
 {
@@ -267,4 +267,9 @@ QList<QgsWkbTypes::GeometryType> QgsGeometryGapCheck::factoryCompatibleGeometryT
 bool QgsGeometryGapCheck::factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP
 {
   return factoryCompatibleGeometryTypes().contains( layer->geometryType() );
+}
+
+QgsGeometryCheck::CheckType QgsGeometryGapCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::LayerCheck;
 }

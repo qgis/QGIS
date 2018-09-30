@@ -90,3 +90,8 @@ QStringList QgsGeometryDegeneratePolygonCheck::resolutionMethods() const
   static QStringList methods = QStringList() << tr( "Delete feature" ) << tr( "No action" );
   return methods;
 }
+
+QgsGeometryCheck::CheckType QgsGeometryDegeneratePolygonCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureNodeCheck;
+}

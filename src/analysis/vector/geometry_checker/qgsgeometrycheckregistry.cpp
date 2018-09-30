@@ -32,12 +32,12 @@ QgsGeometryCheck *QgsGeometryCheckRegistry::geometryCheck( const QString &checkI
     return nullptr;
 }
 
-QList<QgsGeometryCheckFactory *> QgsGeometryCheckRegistry::geometryCheckFactories( QgsVectorLayer *layer, QgsGeometryCheck::Flags flags ) const
+QList<QgsGeometryCheckFactory *> QgsGeometryCheckRegistry::geometryCheckFactories( QgsVectorLayer *layer, QgsGeometryCheck::CheckType type, QgsGeometryCheck::Flags flags ) const
 {
   QList<QgsGeometryCheckFactory *> factories;
   for ( QgsGeometryCheckFactory *factory : mGeometryCheckFactories )
   {
-    if ( ( factory->flags() & flags ) == flags && factory->isCompatible( layer ) )
+    if ( factory->checkType() == type && ( factory->flags() & flags ) == flags && factory->isCompatible( layer ) )
       factories << factory;
   }
   return factories;

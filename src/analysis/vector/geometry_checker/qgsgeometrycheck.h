@@ -161,13 +161,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     /**
      * Create a new geometry check.
      */
-    QgsGeometryCheck( CheckType checkType,
-                      const QgsGeometryCheckContext *context,
-                      const QVariantMap &configuration )
-      : mCheckType( checkType )
-      , mContext( context )
-      , mConfiguration( configuration )
-    {}
+    QgsGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
     virtual ~QgsGeometryCheck() = default;
 
 #ifndef SIP_RUN
@@ -241,7 +235,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      *
      * \since QGIS 3.4
      */
-    CheckType checkType() const { return mCheckType; }
+    virtual CheckType checkType() const = 0;
 
     /**
      * Returns the context
@@ -256,7 +250,6 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     void deleteFeatureGeometryPart( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const SIP_SKIP;
     void deleteFeatureGeometryRing( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const SIP_SKIP;
 
-    const CheckType mCheckType;
     const QgsGeometryCheckContext *mContext;
     QVariantMap mConfiguration;
 

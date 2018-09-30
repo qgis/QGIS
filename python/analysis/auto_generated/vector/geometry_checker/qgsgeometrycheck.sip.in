@@ -93,9 +93,7 @@ Create a new Change
 
     typedef QMap<QString, QMap<QgsFeatureId, QList<Change> > > Changes;
 
-    QgsGeometryCheck( CheckType checkType,
-                      const QgsGeometryCheckContext *context,
-                      const QVariantMap &configuration );
+    QgsGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 %Docstring
 Create a new geometry check.
 %End
@@ -154,7 +152,7 @@ Returns an id for this check.
 .. versionadded:: 3.4
 %End
 
-    CheckType checkType() const;
+    virtual CheckType checkType() const = 0;
 %Docstring
 Returns the check type.
 

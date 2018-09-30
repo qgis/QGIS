@@ -141,3 +141,13 @@ QStringList QgsGeometryDuplicateCheck::resolutionMethods() const
                                << tr( "Remove duplicates" );
   return methods;
 }
+
+QString QgsGeometryDuplicateCheck::factoryId()
+{
+  return QStringLiteral( "QgsGeometryDuplicateCheck" );
+}
+
+QgsGeometryCheck::CheckType QgsGeometryDuplicateCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureCheck;
+}

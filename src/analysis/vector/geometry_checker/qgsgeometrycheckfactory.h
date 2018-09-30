@@ -46,15 +46,35 @@ class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
      */
     virtual ~QgsGeometryCheckFactory() = default;
 
+    /**
+     * Create a new geometry check with \a context and \a configuration.
+     */
     virtual QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) const = 0 SIP_FACTORY;
 
+    /**
+     * The unique id for this geometry check.
+     */
     virtual QString id() const = 0;
 
+    /**
+     * A human readable description for this check.
+     */
     virtual QString description() const = 0;
 
+    /**
+     * Checks if this check should be made available for \a layer.
+     */
     virtual bool isCompatible( QgsVectorLayer *layer ) const = 0;
 
+    /**
+     * Flags for this check.
+     */
     virtual QgsGeometryCheck::Flags flags() const = 0;
+
+    /**
+     * The type of this check.
+     */
+    virtual QgsGeometryCheck::CheckType checkType() const = 0;
 };
 
 template<class T>
@@ -86,6 +106,10 @@ class QgsGeometryCheckFactoryT : public QgsGeometryCheckFactory
       return T::factoryFlags();
     }
 
+    QgsGeometryCheck::CheckType checkType() const override
+    {
+      return T::factoryCheckType();
+    }
 };
 
 
