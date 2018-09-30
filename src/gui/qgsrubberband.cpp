@@ -49,6 +49,9 @@ void QgsRubberBand::setColor( const QColor &color )
 
 void QgsRubberBand::setFillColor( const QColor &color )
 {
+  if ( mBrush.color() == color )
+    return;
+
   mBrush.setColor( color );
 }
 

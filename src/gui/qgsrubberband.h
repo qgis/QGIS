@@ -18,10 +18,13 @@
 #include "qgsmapcanvasitem.h"
 #include "qgis.h"
 #include "qgsgeometry.h"
+
 #include <QBrush>
 #include <QList>
 #include <QPen>
 #include <QPolygon>
+#include <QObject>
+
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
@@ -34,9 +37,12 @@ class QPaintEvent;
  * The QgsRubberBand class provides a transparent overlay widget
  * for tracking the mouse while drawing polylines or polygons.
  */
-class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
+class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
 {
+    Q_OBJECT
   public:
+
+    Q_PROPERTY( QColor fillColor READ fillColor WRITE setFillColor )
 
     //! Icons
     enum IconType

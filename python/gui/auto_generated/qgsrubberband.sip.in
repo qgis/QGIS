@@ -8,7 +8,9 @@
 
 
 
-class QgsRubberBand: QgsMapCanvasItem
+
+
+class QgsRubberBand : QObject, QgsMapCanvasItem
 {
 %Docstring
 A class for drawing transient features (e.g. digitizing lines) on the map.
@@ -21,6 +23,7 @@ for tracking the mouse while drawing polylines or polygons.
 #include "qgsrubberband.h"
 %End
   public:
+
 
     enum IconType
     {
