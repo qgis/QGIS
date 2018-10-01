@@ -522,6 +522,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsrasterlayersaveasdialog.h
   qgsrasterpyramidsoptionswidget.h
   qgsrelationeditorwidget.h
+  qgsrubberband.h
   qgsscalecombobox.h
   qgsscalerangewidget.h
   qgsscalevisibilitydialog.h
@@ -778,7 +779,6 @@ SET(QGIS_GUI_HDRS
   qgsmaplayerconfigwidgetfactory.h
   qgsmapmouseevent.h
   qgsmaptip.h
-  qgsrubberband.h
   qgssnapindicator.h
   qgssqlcomposerdialog.h
   qgstablewidgetitem.h
