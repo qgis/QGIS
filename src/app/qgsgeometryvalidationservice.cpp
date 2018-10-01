@@ -259,8 +259,13 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
   QgsFeatureIds affectedFeatureIds = layer->editBuffer()->changedGeometries().keys().toSet();
   affectedFeatureIds.unite( layer->editBuffer()->addedFeatures().keys().toSet() );
 
-  // TODO: ownership of these objects...
-  QgsVectorLayerFeaturePool *featurePool = new QgsVectorLayerFeaturePool( layer );
+  QgsFeaturePool *featurePool = mFeaturePools.value( layer->id() );
+  if ( !featurePool )
+  {
+    featurePool = new QgsVectorLayerFeaturePool( layer );
+    mFeaturePools.insert( layer->id(), featurePool );
+  }
+
   QList<QgsGeometryCheckError *> &allErrors = mLayerChecks[layer].topologyCheckErrors;
   QMap<QString, QgsFeatureIds> layerIds;
 
@@ -278,11 +283,6 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
 
   layerIds.insert( layer->id(), checkFeatureIds );
   QgsGeometryCheck::LayerFeatureIds layerFeatureIds( layerIds );
-
-  if ( !mFeaturePools.contains( layer->id() ) )
-  {
-    mFeaturePools.insert( layer->id(), featurePool );
-  }
 
   const QList<QgsGeometryCheck *> checks = mLayerChecks[layer].topologyChecks;
 
