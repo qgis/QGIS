@@ -715,7 +715,14 @@ class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsFontMarkerSymbolLayer from a property map (see properties())
+%End
+
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+%Docstring
+Creates a new QgsFontMarkerSymbolLayer from an SLD XML ``element``.
+%End
 
 
     virtual QString layerType() const;
@@ -741,66 +748,128 @@ class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
 
 
     QString fontFamily() const;
+%Docstring
+Returns the font family name for the associated font which will be used to render the point.
+
+.. seealso:: :py:func:`setFontFamily`
+%End
+
     void setFontFamily( const QString &family );
+%Docstring
+Sets the font ``family`` for the font which will be used to render the point.
+
+.. seealso:: :py:func:`fontFamily`
+%End
 
     QChar character() const;
+%Docstring
+Returns the character used when rendering points.
+
+.. seealso:: :py:func:`setCharacter`
+%End
+
     void setCharacter( QChar ch );
+%Docstring
+Sets the character used when rendering points.
+
+.. seealso:: :py:func:`character`
+%End
 
     virtual QColor strokeColor() const;
     virtual void setStrokeColor( const QColor &color );
 
     double strokeWidth() const;
 %Docstring
-Gets stroke width.
+Returns the marker's stroke width. Units are retrieved by strokeWidthUnit()
+
+.. seealso:: :py:func:`setStrokeWidth`
+
+.. seealso:: :py:func:`strokeWidthUnit`
+
+.. seealso:: :py:func:`strokeWidthMapUnitScale`
 
 .. versionadded:: 2.16
 %End
 
     void setStrokeWidth( double width );
 %Docstring
-Set stroke width.
+Set's the marker's stroke ``width``. Units are set by setStrokeWidthUnit().
+
+.. seealso:: :py:func:`strokeWidth`
+
+.. seealso:: :py:func:`setStrokeWidthUnit`
+
+.. seealso:: :py:func:`setStrokeWidthMapUnitScale`
 
 .. versionadded:: 2.16
 %End
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 %Docstring
-Gets stroke width unit.
+Returns the stroke width unit.
+
+.. seealso:: :py:func:`setStrokeWidthUnit`
+
+.. seealso:: :py:func:`strokeWidth`
+
+.. seealso:: :py:func:`strokeWidthMapUnitScale`
 
 .. versionadded:: 2.16
 %End
 
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Set stroke width unit.
+Sets the stroke width ``unit``.
+
+.. seealso:: :py:func:`strokeWidthUnit`
+
+.. seealso:: :py:func:`setStrokeWidth`
+
+.. seealso:: :py:func:`setStrokeWidthMapUnitScale`
 
 .. versionadded:: 2.16
 %End
 
     const QgsMapUnitScale &strokeWidthMapUnitScale() const;
 %Docstring
-Gets stroke width map unit scale.
+Returns the stroke width map unit scale.
+
+.. seealso:: :py:func:`setStrokeWidthMapUnitScale`
+
+.. seealso:: :py:func:`strokeWidth`
+
+.. seealso:: :py:func:`strokeWidthUnit`
 
 .. versionadded:: 2.16
 %End
 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
-Set stroke width map unit scale.
+Sets the stroke width map unit ``scale``.
+
+.. seealso:: :py:func:`strokeWidthMapUnitScale`
+
+.. seealso:: :py:func:`setStrokeWidth`
+
+.. seealso:: :py:func:`setStrokeWidthUnit`
 
 .. versionadded:: 2.16
 %End
 
     Qt::PenJoinStyle penJoinStyle() const;
 %Docstring
-Gets stroke join style.
+Returns the stroke join style.
+
+.. seealso:: :py:func:`setPenJoinStyle`
 
 .. versionadded:: 2.16
 %End
 
     void setPenJoinStyle( Qt::PenJoinStyle style );
 %Docstring
-Set stroke join style.
+Sets the stroke join ``style``.
+
+.. seealso:: :py:func:`penJoinStyle`
 
 .. versionadded:: 2.16
 %End
