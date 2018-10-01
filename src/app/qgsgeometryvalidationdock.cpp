@@ -48,7 +48,7 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   mFeatureRubberband->setWidth( scaleFactor );
   mFeatureRubberband->setStrokeColor( QColor( 100, 255, 100, 100 ) );
 
-  mErrorRubberband->setColor( QColor( 180, 250, 180, 100 ) );
+  mErrorRubberband->setColor( QColor( "#ffee58ff" ) );
   mErrorRubberband->setWidth( scaleFactor );
 
   mErrorLocationRubberband->setIcon( QgsRubberBand::ICON_X );
@@ -193,22 +193,36 @@ void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
 
     mFeatureRubberband->setToGeometry( featureGeometry );
 
-
-    QPropertyAnimation *animation = new QPropertyAnimation( mFeatureRubberband, "fillColor" );
-    animation->setEasingCurve( QEasingCurve::OutQuad );
-    connect( animation, &QPropertyAnimation::finished, animation, &QPropertyAnimation::deleteLater );
-    connect( animation, &QPropertyAnimation::valueChanged, this, [this]
+    QPropertyAnimation *featureAnimation = new QPropertyAnimation( mFeatureRubberband, "fillColor" );
+    featureAnimation->setEasingCurve( QEasingCurve::OutQuad );
+    connect( featureAnimation, &QPropertyAnimation::finished, featureAnimation, &QPropertyAnimation::deleteLater );
+    connect( featureAnimation, &QPropertyAnimation::valueChanged, this, [this]
     {
       mFeatureRubberband->update();
     } );
 
-    animation->setDuration( 2000 );
-    animation->setStartValue( QColor( 100, 255, 100, 255 ) );
-    animation->setEndValue( QColor( 100, 255, 100, 0 ) );
+    featureAnimation->setDuration( 2000 );
+    featureAnimation->setStartValue( QColor( 100, 255, 100, 255 ) );
+    featureAnimation->setEndValue( QColor( 100, 255, 100, 0 ) );
 
-    animation->start();
+    featureAnimation->start();
 
-    // mErrorRubberband->setToGeometry( errorGeometry );
-    mErrorLocationRubberband->setToGeometry( QgsGeometry( new QgsPoint( locationGeometry ) ) );
+    mErrorRubberband->setToGeometry( errorGeometry );
+
+    QPropertyAnimation *errorAnimation = new QPropertyAnimation( mErrorRubberband, "fillColor" );
+    errorAnimation->setEasingCurve( QEasingCurve::OutQuad );
+    connect( errorAnimation, &QPropertyAnimation::finished, featureAnimation, &QPropertyAnimation::deleteLater );
+    connect( errorAnimation, &QPropertyAnimation::valueChanged, this, [this]
+    {
+      mErrorRubberband->update();
+    } );
+
+    errorAnimation->setStartValue( QColor( "#ffee58ff" ) );
+    errorAnimation->setEndValue( QColor( "#ffee5800" ) );
+
+    errorAnimation->setDuration( 2000 );
+    errorAnimation->start();
+
+    mErrorLocationRubberband->setToGeometry( QgsGeometry( qgis::make_unique<QgsPoint>( locationGeometry ) ) );
   }
 }
