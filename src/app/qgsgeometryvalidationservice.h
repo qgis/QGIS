@@ -32,6 +32,7 @@ class QgsSingleGeometryCheckError;
 class QgsGeometryCheckError;
 class QgsFeedback;
 class QgsFeaturePool;
+struct QgsGeometryCheckContext;
 
 /**
  * This service connects to all layers in a project and triggers validation
@@ -95,17 +96,19 @@ class QgsGeometryValidationService : public QObject
 
     QgsProject *mProject = nullptr;
 
-    struct VectorCheckState
+    struct VectorLayerCheckInformation
     {
       QList< QgsSingleGeometryCheck * > singleFeatureChecks;
       QList< QgsGeometryCheck *> topologyChecks;
       QFutureWatcher<void> *topologyCheckFutureWatcher = nullptr;
       QList<QgsFeedback *> topologyCheckFeedbacks; // will be deleted when topologyCheckFutureWatcher is delteed
       QList<QgsGeometryCheckError *> topologyCheckErrors;
+      QList<QMetaObject::Connection> connections;
+      QgsGeometryCheckContext *context = nullptr;
     };
 
     QReadWriteLock mTopologyCheckLock;
-    QHash<QgsVectorLayer *, VectorCheckState> mLayerCheckStates;
+    QHash<QgsVectorLayer *, VectorLayerCheckInformation> mLayerChecks;
     QMap<QString, QgsFeaturePool *> mFeaturePools;
 };
 
