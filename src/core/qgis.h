@@ -449,12 +449,11 @@ CORE_EXPORT qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
 CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 
 /**
- * Compares two QVariant values and return whether they are equal, it takes into
- * account null values.
+ * Compares two QVariant values and returns whether they are equal, NULL values are treated as equal.
  *
  * \param lhs first value
- * @param rhs second value
- * @return true if values are equal
+ * \param rhs second value
+ * \return true if values are equal
  */
 CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
 

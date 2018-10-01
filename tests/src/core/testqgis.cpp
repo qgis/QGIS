@@ -362,17 +362,32 @@ void TestQgis::testQgsRound()
 
 void TestQgis::testQgsVariantEqual()
 {
-  QVariant lhs;
-  QVariant rhs;
 
-  QVERIFY( lhs == rhs );
-  lhs.setValue( 0 );
-  QVERIFY( lhs != rhs );
-  rhs.setValue( 0 );
-  QVERIFY( lhs == rhs );
-  lhs.setValue( 1.2345 );
-  rhs.setValue( 1.2345 );
-  QVERIFY( lhs == rhs );
+  // Invalid
+  QVERIFY( qgsVariantEqual( QVariant(), QVariant() ) );
+  QVERIFY( QVariant() == QVariant() );
+
+  // Zero
+  QVERIFY( qgsVariantEqual( QVariant( 0 ), QVariant( 0.0f ) ) );
+  QVERIFY( QVariant( 0 ) == QVariant( 0.0f ) );
+
+  // Double
+  QVERIFY( qgsVariantEqual( QVariant( 1.234 ), QVariant( 1.234 ) ) );
+  QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::Int ) ) );
+
+  // This is what we actually wanted to fix with qgsVariantEqual
+  // zero != NULL
+  QVERIFY( ! qgsVariantEqual( QVariant( 0 ), QVariant( QVariant::Int ) ) );
+  QVERIFY( ! qgsVariantEqual( QVariant( 0 ), QVariant( QVariant::Double ) ) );
+  QVERIFY( ! qgsVariantEqual( QVariant( 0.0f ), QVariant( QVariant::Int ) ) );
+  QVERIFY( ! qgsVariantEqual( QVariant( 0.0f ), QVariant( QVariant::Double ) ) );
+  QVERIFY( QVariant( 0 ) == QVariant( QVariant::Int ) );
+
+  // NULL identities
+  QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::Int ) ) );
+  QVERIFY( qgsVariantEqual( QVariant( QVariant::Double ), QVariant( QVariant::Double ) ) );
+
+
 }
 
 
