@@ -280,6 +280,17 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         got = [feat for feat in vl.getFeatures()]
         self.assertEqual(len(got), 1)
 
+        testdata_path = unitTestDataPath('provider')
+        gpkg = os.path.join(testdata_path, 'bug_19826.gpkg')
+        vl = QgsVectorLayer('{}|layerid=0'.format(gpkg, 'test', 'ogr'))
+        vl.setSubsetString("name = 'two'")
+        got = [feat for feat in vl.getFeatures()]
+        self.assertEqual(len(got), 1)
+
+        attributes = got[0].attributes()
+        self.assertEqual(attributes[0], 2)
+        self.assertEqual(attributes[1], 'two')
+
     def testStyle(self):
 
         # First test with invalid URI
