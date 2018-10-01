@@ -261,13 +261,15 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   QStringList ogrSupportedDbDriverNames;
   ogrSupportedDbDriverNames << QStringLiteral( "GPKG" ) << QStringLiteral( "db" ) << QStringLiteral( "gdb" );
 
-  // return item without testing if:
-  // scanExtSetting
-  // or zipfile and scan zip == "Basic scan"
+  // skip archived item in favor of OGR if scanExtSetting && scanZipSetting is basic
+  if ( scanExtSetting && ( is_vsizip || is_vsitar || is_vsigzip ) && scanZipSetting == QLatin1String( "basic" ) )
+  {
+    return nullptr;
+  }
+
+  // return item without testing if scanExtSetting is true
   // netCDF files can be both raster or vector, so fallback to opening
-  if ( ( scanExtSetting ||
-         ( ( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) ) &&
-       suffix != QLatin1String( "nc" ) )
+  if ( scanExtSetting  && !is_vsizip && !is_vsigzip && !is_vsitar && suffix != QLatin1String( "nc" ) )
   {
     // Skip this layer if it's handled by ogr:
     if ( ogrSupportedDbLayersExtensions.contains( suffix ) )
