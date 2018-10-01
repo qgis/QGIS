@@ -91,11 +91,20 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
         return topologyError->geometry();
       }
 
+      case ErrorFeatureIdRole:
+      {
+        return topologyError->featureId();
+      }
+
       case FeatureGeometryRole:
       {
         const QgsFeatureId fid = topologyError->featureId();
-        const QgsFeature feature = mCurrentLayer->getFeature( fid ); // TODO: this should be cached!
-        return feature.geometry();
+        if ( !FID_IS_NULL( fid ) )
+        {
+          const QgsFeature feature = mCurrentLayer->getFeature( fid ); // TODO: this should be cached!
+          return feature.geometry();
+        }
+        return QgsGeometry();
       }
 
       case ErrorLocationGeometryRole:
@@ -147,6 +156,11 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
       {
         // Not (yet?) used
         break;
+      }
+
+      case ErrorFeatureIdRole:
+      {
+        return featureItem.fid;
       }
 
       case FeatureExtentRole:

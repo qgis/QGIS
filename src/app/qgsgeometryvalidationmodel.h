@@ -18,6 +18,7 @@ class QgsGeometryValidationModel : public QAbstractItemModel
       FeatureExtentRole = Qt::UserRole,
       ProblemExtentRole,
       ErrorGeometryRole,
+      ErrorFeatureIdRole,
       FeatureGeometryRole,
       ErrorLocationGeometryRole,
       GeometryCheckErrorRole,

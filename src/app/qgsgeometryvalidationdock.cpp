@@ -178,6 +178,9 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
     }
   }
 
+  bool hasFeature = !FID_IS_NULL( current.data( QgsGeometryValidationModel::ErrorFeatureIdRole ) );
+  mZoomToFeatureButton->setEnabled( hasFeature );
+
   showHighlight( current );
 
   switch ( mLastZoomToAction )
