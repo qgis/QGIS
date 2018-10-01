@@ -70,12 +70,6 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateCheck : public QgsGeometryCheck
     static QString factoryId();
     static QgsGeometryCheck::CheckType factoryCheckType();
 
-    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
-    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
-    static QString factoryDescription() { return tr( "Duplicate" ); }
-    static QString factoryId();
-    static QgsGeometryCheck::CheckType factoryCheckType();
-
     enum ResolutionMethod { NoChange, RemoveDuplicates };
 };
 
