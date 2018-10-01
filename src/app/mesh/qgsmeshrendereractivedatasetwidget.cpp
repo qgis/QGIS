@@ -27,7 +27,7 @@ QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget 
 {
   setupUi( this );
 
-  connect( mTimeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged );
+  connect( mTimeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshRendererActiveDatasetWidget::onActiveTimeChanged );
   connect( mDatasetSlider, &QSlider::valueChanged, mTimeComboBox, &QComboBox::setCurrentIndex );
 
   connect( mFirstDatasetButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onFirstTimeClicked );
@@ -69,9 +69,10 @@ QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::activeVectorDataset() co
 
 void QgsMeshRendererActiveDatasetWidget::setTimeRange()
 {
-  int datasetCount = 1;
+  // figure out which dataset group contains the greatest number of datasets.
+  // this group will be used to initialize the time combo box.
+  int datasetCount = 0;
   int groupWithMaximumDatasets = -1;
-
   if ( mMeshLayer && mMeshLayer->dataProvider() )
   {
     for ( int i = 0; i < mMeshLayer->dataProvider()->datasetGroupCount(); ++i )
@@ -120,8 +121,7 @@ void QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged( int groupIn
   mActiveScalarDatasetGroup = groupIndex;
 
   // keep the same timestep if possible
-  int val = mTimeComboBox->currentIndex();
-  mTimeComboBox->setCurrentIndex( val );
+  onActiveTimeChanged( mTimeComboBox->currentIndex() );
   emit activeScalarGroupChanged( mActiveScalarDatasetGroup );
 }
 
@@ -133,12 +133,11 @@ void QgsMeshRendererActiveDatasetWidget::onActiveVectorGroupChanged( int groupIn
   mActiveVectorDatasetGroup = groupIndex;
 
   // keep the same timestep if possible
-  int val = mTimeComboBox->currentIndex();
-  mTimeComboBox->setCurrentIndex( val );
+  onActiveTimeChanged( mTimeComboBox->currentIndex() );
   emit activeVectorGroupChanged( mActiveVectorDatasetGroup );
 }
 
-void QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged( int value )
+void QgsMeshRendererActiveDatasetWidget::onActiveTimeChanged( int value )
 {
   if ( !mMeshLayer || !mMeshLayer->dataProvider() )
     return;
@@ -153,7 +152,6 @@ void QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged( int value )
   {
     mActiveScalarDataset = activeScalarDataset;
     changed = true;
-    emit activeScalarDatasetChanged( mActiveScalarDataset );
   }
 
   QgsMeshDatasetIndex activeVectorDataset(
@@ -164,7 +162,6 @@ void QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged( int value )
   {
     mActiveVectorDataset = activeVectorDataset;
     changed = true;
-    emit activeVectorDatasetChanged( mActiveVectorDataset );
   }
 
   if ( changed )
@@ -251,14 +248,9 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata()
 QString QgsMeshRendererActiveDatasetWidget::timeToString( double val )
 {
   // time val should be in hours
-#if QT_VERSION >= 0x050800
-  qint64 seconds = static_cast<qint64>( val * 3600.0 );
-  return QDateTime::fromSecsSinceEpoch( seconds ).toString( "hh:mm:ss" );
-#else
-  QDateTime t;
-  t.setTime_t( static_cast<uint>( val * 3600.0 ) );
-  return t.toString( "hh:mm:ss" );
-#endif
+  int seconds = static_cast<int>( qgsRound( val * 3600.0, 0 ) );
+  QTime t = QTime( 0, 0 ).addSecs( seconds );
+  return t.toString();  // the format is "HH:mm:ss"
 }
 
 QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datasetIndex )
