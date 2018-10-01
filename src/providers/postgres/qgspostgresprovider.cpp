@@ -2118,7 +2118,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       if ( i == flist.size() )
       {
-        if ( v == defVal && defVal.isNull() == v.isNull() )
+        if ( qgsVariantEqual( v, defVal ) )
         {
           if ( defVal.isNull() )
           {
