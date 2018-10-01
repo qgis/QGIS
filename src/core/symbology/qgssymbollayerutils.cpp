@@ -4189,14 +4189,14 @@ void QgsSymbolLayerUtils::applyScaleDependency( QDomDocument &doc, QDomElement &
   if ( !props.value( QStringLiteral( "scaleMinDenom" ), QString() ).isEmpty() )
   {
     QDomElement scaleMinDenomElem = doc.createElement( QStringLiteral( "se:MinScaleDenominator" ) );
-    scaleMinDenomElem.appendChild( doc.createTextNode( props.value( QStringLiteral( "scaleMinDenom" ), QString() ) ) );
+    scaleMinDenomElem.appendChild( doc.createTextNode( qgsDoubleToString( props.value( QStringLiteral( "scaleMinDenom" ) ).toDouble() ) ) );
     ruleElem.appendChild( scaleMinDenomElem );
   }
 
   if ( !props.value( QStringLiteral( "scaleMaxDenom" ), QString() ).isEmpty() )
   {
     QDomElement scaleMaxDenomElem = doc.createElement( QStringLiteral( "se:MaxScaleDenominator" ) );
-    scaleMaxDenomElem.appendChild( doc.createTextNode( props.value( QStringLiteral( "scaleMaxDenom" ), QString() ) ) );
+    scaleMaxDenomElem.appendChild( doc.createTextNode( qgsDoubleToString( props.value( QStringLiteral( "scaleMaxDenom" ) ).toDouble() ) ) );
     ruleElem.appendChild( scaleMaxDenomElem );
   }
 }
