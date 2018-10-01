@@ -13,6 +13,9 @@ email                : matthias@opengis.ch
  *                                                                         *
  ***************************************************************************/
 
+#include <QButtonGroup>
+
+
 #include "qgsgeometryvalidationdock.h"
 #include "qgsgeometryvalidationmodel.h"
 #include "qgsgeometryvalidationservice.h"
@@ -21,8 +24,11 @@ email                : matthias@opengis.ch
 #include "qgsvectorlayer.h"
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgsanalysis.h"
+#include "qgsgeometrycheckregistry.h"
+#include "qgsgeometryoptions.h"
+#include "qgsgeometrycheckfactory.h"
 
-#include <QButtonGroup>
 
 QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
@@ -34,6 +40,7 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   connect( mPreviousButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::gotoPreviousError );
   connect( mZoomToProblemButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::zoomToProblem );
   connect( mZoomToFeatureButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::zoomToFeature );
+  connect( mMapCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsGeometryValidationDock::onCurrentLayerChanged );
   connect( mMapCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
   connect( mMapCanvas, &QgsMapCanvas::transformContextChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
@@ -180,6 +187,27 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
       zoomToFeature();
       break;
   }
+}
+
+void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )
+{
+  // activate icon
+  bool enabled = false;
+  QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( layer );
+  if ( vl && vl->isSpatial() )
+  {
+    const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( vl, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
+    const QStringList activeChecks = vl->geometryOptions()->geometryChecks();
+    for ( const QgsGeometryCheckFactory *factory : topologyCheckFactories )
+    {
+      if ( activeChecks.contains( factory->id() ) )
+      {
+        enabled = true;
+        break;
+      }
+    }
+  }
+  mTopologyChecksPendingButton->setEnabled( enabled );
 }
 
 void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )

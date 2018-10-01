@@ -43,6 +43,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
 
   private slots:
     void onCurrentErrorChanged( const QModelIndex &current, const QModelIndex &previous );
+    void onCurrentLayerChanged( QgsMapLayer *layer );
     void gotoNextError();
     void gotoPreviousError();
     void zoomToProblem();
