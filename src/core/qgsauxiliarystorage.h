@@ -320,7 +320,8 @@ class CORE_EXPORT QgsAuxiliaryStorage
     QString currentFileName() const;
 
     /**
-     * Returns the underlying error string when something went wrong.
+     * Returns the underlying error string describing potential errors
+     * hapenning in saveAs(). Empty by default.
      *
      * \since QGIS 3.4
      */
