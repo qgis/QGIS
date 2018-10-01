@@ -306,3 +306,8 @@ uint qHash( const QVariant &variant )
 
   return std::numeric_limits<uint>::max();
 }
+
+bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
+{
+  return lhs.isNull() == rhs.isNull() && lhs == rhs;
+}

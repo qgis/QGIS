@@ -45,6 +45,7 @@ class TestQgis : public QObject
     void qVariantCompare();
     void testQgsAsConst();
     void testQgsRound();
+    void testQgsVariantEqual();
 
   private:
     QString mReport;
@@ -357,6 +358,21 @@ void TestQgis::testQgsRound()
   QGSCOMPARENEAR( qgsRound( 9.87654321987654321, 14 ), 9.876543219876543, 0.00000000000001 );
   QGSCOMPARENEAR( qgsRound( 9998.87654321987654321, 14 ), 9998.876543219876543, 0.00000000000001 );
   QGSCOMPARENEAR( qgsRound( 9999999.87654321987654321, 14 ), 9999999.876543219876543, 0.00000000000001 );
+}
+
+void TestQgis::testQgsVariantEqual()
+{
+  QVariant lhs;
+  QVariant rhs;
+
+  QVERIFY( lhs == rhs );
+  lhs.setValue( 0 );
+  QVERIFY( lhs != rhs );
+  rhs.setValue( 0 );
+  QVERIFY( lhs == rhs );
+  lhs.setValue( 1.2345 );
+  rhs.setValue( 1.2345 );
+  QVERIFY( lhs == rhs );
 }
 
 
