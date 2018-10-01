@@ -765,6 +765,38 @@ void TestQgsGeometryChecks::testOverlapCheck()
   cleanupTestContext( testContext );
 }
 
+void TestQgsGeometryChecks::testOverlapCheckNoMaxArea()
+{
+  QTemporaryDir dir;
+  QMap<QString, QString> layers;
+  layers.insert( QStringLiteral("point_layer.shp"), QString() );
+  layers.insert( QStringLiteral("line_layer.shp"), QString() );
+  layers.insert( QStringLiteral("polygon_layer.shp"), QString() );
+
+  auto testContext = createTestContext( dir, layers );
+
+  // Test detection
+  QList<QgsGeometryCheckError *> checkErrors;
+  QStringList messages;
+
+  QVariantMap configuration;
+  configuration.insert( "maxOverlapArea", 0.0 );
+
+  QgsGeometryOverlapCheck check( testContext.first, configuration );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
+  listErrors( checkErrors, messages );
+
+  QList<QgsGeometryCheckError *> errs1;
+  QCOMPARE( checkErrors.size(), 4 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"] ).isEmpty() );
+  errs1 = searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 10 );
+  QCOMPARE( errs1.size(), 2 );
+  errs1 = searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 9 );
+  QCOMPARE( errs1.size(), 2 );
+}
+
 void TestQgsGeometryChecks::testPointCoveredByLineCheck()
 {
   QTemporaryDir dir;
