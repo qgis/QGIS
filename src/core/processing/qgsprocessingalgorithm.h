@@ -32,7 +32,6 @@
 class QgsProcessingProvider;
 class QgsProcessingFeedback;
 class QgsFeatureSink;
-class QgsProcessingFeedback;
 class QgsProcessingModelAlgorithm;
 class QgsProcessingAlgorithmConfigurationWidget;
 
