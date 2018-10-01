@@ -256,8 +256,12 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
   emit topologyChecksCleared( layer );
   cancelTopologyCheck( layer );
 
-  QgsFeatureIds affectedFeatureIds = layer->editBuffer()->changedGeometries().keys().toSet();
-  affectedFeatureIds.unite( layer->editBuffer()->addedFeatures().keys().toSet() );
+  QgsFeatureIds affectedFeatureIds;
+  if ( layer->editBuffer() )
+  {
+    affectedFeatureIds = layer->editBuffer()->changedGeometries().keys().toSet();
+    affectedFeatureIds.unite( layer->editBuffer()->addedFeatures().keys().toSet() );
+  }
 
   QgsFeaturePool *featurePool = mFeaturePools.value( layer->id() );
   if ( !featurePool )
