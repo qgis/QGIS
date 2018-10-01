@@ -25,13 +25,34 @@
 class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckError
 {
   public:
+
+    struct OverLappedFeature
+    {
+      public:
+        OverLappedFeature( QgsVectorLayer *vl, QgsFeatureId fid )
+          : mLayerId( vl->id() )
+          , mLayerName( vl->name() )
+          , mFeatureId( fid )
+        {}
+
+        QString layerId() const {return mLayerId;}
+        QString layerName() const {return mLayerName;}
+        QgsFeatureId featureId() const {return mFeatureId;}
+        bool operator==( const OverLappedFeature &other ) const {return mLayerId == other.layerId() && mFeatureId == other.featureId();}
+
+      private:
+        QString mLayerId;
+        QString mLayerName;
+        QgsFeatureId mFeatureId;
+    };
+
     QgsGeometryOverlapCheckError( const QgsGeometryCheck *check,
                                   const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
                                   const QgsGeometry &geometry,
                                   const QgsPointXY &errorLocation,
                                   const QVariant &value,
                                   const QgsGeometryCheckerUtils::LayerFeature &overlappedFeature );
-    const QPair<QString, QgsFeatureId> &overlappedFeature() const { return mOverlappedFeature; }
+    const OverLappedFeature &overlappedFeature() const { return mOverlappedFeature; }
 
     bool isEqual( QgsGeometryCheckError *other ) const override
     {
@@ -56,7 +77,7 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
       {
         return false;
       }
-      if ( changes.value( mOverlappedFeature.first ).keys().contains( mOverlappedFeature.second ) )
+      if ( changes.value( mOverlappedFeature.layerId() ).keys().contains( mOverlappedFeature.featureId() ) )
       {
         return false;
       }
@@ -66,7 +87,7 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
     QString description() const override;
 
   private:
-    QPair<QString, QgsFeatureId> mOverlappedFeature;
+    OverLappedFeature mOverlappedFeature;
 };
 
 class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
