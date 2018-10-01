@@ -35,11 +35,6 @@ QgsGeometryValidationService::QgsGeometryValidationService( QgsProject *project 
   connect( project, &QgsProject::layersAdded, this, &QgsGeometryValidationService::onLayersAdded );
 }
 
-bool QgsGeometryValidationService::validationActive( QgsVectorLayer *layer, QgsFeatureId feature ) const
-{
-  return false;
-}
-
 void QgsGeometryValidationService::fixError( const QgsGeometryCheckError *error, int method )
 {
   QgsGeometryCheck::Changes changes;

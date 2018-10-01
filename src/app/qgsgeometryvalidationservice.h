@@ -60,12 +60,6 @@ class QgsGeometryValidationService : public QObject
     QgsGeometryValidationService( QgsProject *project );
     ~QgsGeometryValidationService() = default;
 
-    /**
-     * Returns if a validation is active for the specified \a feature on
-     * \a layer.
-     */
-    bool validationActive( QgsVectorLayer *layer, QgsFeatureId feature ) const;
-
     void fixError( const QgsGeometryCheckError *error, int method );
 
     void triggerTopologyChecks( QgsVectorLayer *layer );

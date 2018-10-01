@@ -131,10 +131,13 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
 
       case Qt::DecorationRole:
       {
+#if 0
         if ( mGeometryValidationService->validationActive( mCurrentLayer, featureItem.fid ) )
           return QgsApplication::getThemeIcon( "/mActionTracing.svg" );
         else
           return QVariant();
+#endif
+        break;
       }
 
       case GeometryCheckErrorRole:
@@ -213,7 +216,7 @@ void QgsGeometryValidationModel::onGeometryCheckCompleted( QgsVectorLayer *layer
   int featureIdx = errorsForFeature( layer, fid );
 
   // The last check for this feature finished: remove
-  if ( featureIdx > -1 && errors.empty() && !mGeometryValidationService->validationActive( layer, fid ) )
+  if ( featureIdx > -1 && errors.empty() ) // && !mGeometryValidationService->validationActive( layer, fid ) )
   {
     if ( mCurrentLayer == layer )
       beginRemoveRows( QModelIndex(), featureIdx, featureIdx );
