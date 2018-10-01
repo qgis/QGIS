@@ -288,14 +288,21 @@ Returns the path of the current database used. It may be different from
 the target filename if the auxiliary storage is opened in copy mode.
 %End
 
-    bool saveAs( const QString &filename ) const;
+    QString errorString() const;
+%Docstring
+Returns the underlying error string when something went wrong.
+
+.. versionadded:: 3.4
+%End
+
+    bool saveAs( const QString &filename );
 %Docstring
 Saves the current database to a new path.
 
 :return: true if everything is saved, false otherwise
 %End
 
-    bool saveAs( const QgsProject &project ) const;
+    bool saveAs( const QgsProject &project );
 %Docstring
 Saves the current database to a new path for a specific project.
 Actually, the current filename of the project is used to deduce the
