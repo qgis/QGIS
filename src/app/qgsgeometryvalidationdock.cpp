@@ -110,8 +110,11 @@ void QgsGeometryValidationDock::zoomToFeature()
     return;
 
   QgsRectangle featureExtent = currentIndex().data( QgsGeometryValidationModel::FeatureExtentRole ).value<QgsRectangle>();
-  QgsRectangle mapExtent = mLayerTransform.transform( featureExtent );
-  mMapCanvas->zoomToFeatureExtent( mapExtent );
+  if ( !featureExtent.isEmpty() )
+  {
+    QgsRectangle mapExtent = mLayerTransform.transform( featureExtent );
+    mMapCanvas->zoomToFeatureExtent( mapExtent );
+  }
 }
 
 void QgsGeometryValidationDock::triggerTopologyChecks()

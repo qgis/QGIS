@@ -31,8 +31,6 @@
 class QgsGeometryCheckError;
 class QgsFeaturePool;
 
-#define FEATUREID_NULL std::numeric_limits<QgsFeatureId>::min()
-
 class ANALYSIS_EXPORT QgsGeometryCheck
 {
     Q_GADGET

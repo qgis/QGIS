@@ -74,6 +74,8 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
       case FeatureExtentRole:
       {
         const QgsFeatureId fid = topologyError->featureId();
+        if ( FID_IS_NULL( fid ) )
+          return QgsRectangle();
         const QgsFeature feature = mCurrentLayer->getFeature( fid ); // TODO: this should be cached!
         return feature.geometry().boundingBox();
       }

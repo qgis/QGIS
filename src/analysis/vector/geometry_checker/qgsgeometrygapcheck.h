@@ -20,6 +20,7 @@
 
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgsfeatureid.h"
 
 class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
 {
@@ -30,7 +31,7 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
                               const QMap<QString, QgsFeatureIds> &neighbors,
                               double area,
                               const QgsRectangle &gapAreaBBox )
-      : QgsGeometryCheckError( check, layerId, FEATUREID_NULL, geometry, geometry.constGet()->centroid(), QgsVertexId(), area, ValueArea )
+      : QgsGeometryCheckError( check, layerId, FID_NULL, geometry, geometry.constGet()->centroid(), QgsVertexId(), area, ValueArea )
       , mNeighbors( neighbors )
       , mGapAreaBBox( gapAreaBBox )
     {
