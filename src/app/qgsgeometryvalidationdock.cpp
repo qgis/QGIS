@@ -14,7 +14,7 @@ email                : matthias@opengis.ch
  ***************************************************************************/
 
 #include <QButtonGroup>
-
+#include <QToolButton>
 
 #include "qgsgeometryvalidationdock.h"
 #include "qgsgeometryvalidationmodel.h"
@@ -39,6 +39,7 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   QFont font = mProblemDescriptionLabel->font();
   font.setBold( true );
   mProblemDescriptionLabel->setFont( font );
+  mErrorListView->setAlternatingRowColors( true );
 
   connect( mNextButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::gotoNextError );
   connect( mPreviousButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::gotoPreviousError );
@@ -166,20 +167,24 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
   QgsGeometryCheckError *error = current.data( QgsGeometryValidationModel::GeometryCheckErrorRole ).value<QgsGeometryCheckError *>();
   if ( error )
   {
-    while ( QPushButton *btn =  mResolutionWidget->findChild<QPushButton *>() )
-      delete btn;
     const QStringList resolutionMethods = error->check()->resolutionMethods();
+    QGridLayout *layout = new QGridLayout( mResolutionWidget );
     int resolutionIndex = 0;
     for ( const QString &resolutionMethod : resolutionMethods )
     {
-      QPushButton *resolveBtn = new QPushButton( resolutionMethod );
+      QToolButton *resolveBtn = new QToolButton( mResolutionWidget );
+      resolveBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) ) );
+      layout->addWidget( resolveBtn, resolutionIndex, 0 );
+      QLabel *resolveLabel = new QLabel( resolutionMethod, mResolutionWidget );
+      resolveLabel->setWordWrap( true );
+      layout->addWidget( resolveLabel, resolutionIndex, 1 );
       connect( resolveBtn, &QPushButton::clicked, this, [resolutionIndex, error, this]()
       {
         mGeometryValidationService->fixError( error, resolutionIndex );
       } );
-      mResolutionWidget->layout()->addWidget( resolveBtn );
       resolutionIndex++;
     }
+    mResolutionWidget->setLayout( layout );
   }
 
   bool hasFeature = !FID_IS_NULL( current.data( QgsGeometryValidationModel::ErrorFeatureIdRole ) );
