@@ -373,7 +373,6 @@ void TestQgis::testQgsVariantEqual()
 
   // Double
   QVERIFY( qgsVariantEqual( QVariant( 1.234 ), QVariant( 1.234 ) ) );
-  QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::Int ) ) );
 
   // This is what we actually wanted to fix with qgsVariantEqual
   // zero != NULL
