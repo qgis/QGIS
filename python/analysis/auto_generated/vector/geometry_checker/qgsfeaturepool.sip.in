@@ -90,6 +90,7 @@ To be used by implementations of ``deleteFeature``.
 %End
 
 
+
   private:
     QgsFeaturePool( const QgsFeaturePool &other );
 };

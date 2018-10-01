@@ -186,6 +186,7 @@ SET(QGIS_ANALYSIS_MOC_HDRS
 
   vector/geometry_checker/qgsgeometrychecker.h
   vector/geometry_checker/qgsgeometrycheck.h
+  vector/geometry_checker/qgsvectorlayerfeaturepool.h
 )
 
 INCLUDE_DIRECTORIES(SYSTEM ${SPATIALITE_INCLUDE_DIR})
@@ -252,7 +253,6 @@ SET(QGIS_ANALYSIS_HDRS
   vector/geometry_checker/qgsgeometrycheckerutils.h
   vector/geometry_checker/qgsfeaturepool.h
   vector/geometry_checker/qgsvectordataproviderfeaturepool.h
-  vector/geometry_checker/qgsvectorlayerfeaturepool.h
 
   interpolation/qgsinterpolator.h
   interpolation/qgsgridfilewriter.h

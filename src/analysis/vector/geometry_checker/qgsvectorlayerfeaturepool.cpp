@@ -17,29 +17,14 @@ email                : matthias@opengis.ch
 #include "qgsthreadingutils.h"
 
 #include "qgsfeaturerequest.h"
+#include "qgsvectorlayer.h"
 
 QgsVectorLayerFeaturePool::QgsVectorLayerFeaturePool( QgsVectorLayer *layer )
-  : QgsFeaturePool( layer )
+  : QObject()
+  , QgsFeaturePool( layer )
 {
-  // Build spatial index
-  QgsFeature feature;
-  QgsFeatureRequest req;
-  QgsFeatureIds featureIds;
-
-  QgsFeatureIterator it = layer->getFeatures( req );
-  while ( it.nextFeature( feature ) )
-  {
-    if ( feature.geometry() )
-    {
-      insertFeature( feature );
-      featureIds.insert( feature.id() );
-    }
-    else
-    {
-      featureIds.remove( feature.id() );
-    }
-  }
-  setFeatureIds( featureIds );
+  connect( layer, &QgsVectorLayer::featureDeleted, this, &QgsVectorLayerFeaturePool::onFeatureDeleted );
+  connect( layer, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayerFeaturePool::onGeometryChanged );
 }
 
 bool QgsVectorLayerFeaturePool::addFeature( QgsFeature &feature, Flags flags )
@@ -146,4 +131,20 @@ void QgsVectorLayerFeaturePool::deleteFeature( QgsFeatureId fid )
       lyr->deleteFeatures( QgsFeatureIds() << fid );
     }
   } );
+}
+
+void QgsVectorLayerFeaturePool::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geometry )
+{
+  if ( isFeatureCached( fid ) )
+  {
+    QgsFeature feature;
+    getFeature( fid, feature );
+    feature.setGeometry( geometry );
+    updateFeature( feature );
+  }
+}
+
+void QgsVectorLayerFeaturePool::onFeatureDeleted( QgsFeatureId fid )
+{
+  deleteFeature( fid );
 }

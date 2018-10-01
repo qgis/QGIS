@@ -27,8 +27,10 @@ email                : matthias@opengis.ch
  *
  * \since QGIS 3.4
  */
-class ANALYSIS_EXPORT QgsVectorLayerFeaturePool : public QgsFeaturePool
+class ANALYSIS_EXPORT QgsVectorLayerFeaturePool : public QObject, public QgsFeaturePool
 {
+    Q_OBJECT
+
   public:
     QgsVectorLayerFeaturePool( QgsVectorLayer *layer );
 
@@ -36,6 +38,10 @@ class ANALYSIS_EXPORT QgsVectorLayerFeaturePool : public QgsFeaturePool
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
     void updateFeature( QgsFeature &feature ) override;
     void deleteFeature( QgsFeatureId fid ) override;
+
+  private slots:
+    void onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geometry );
+    void onFeatureDeleted( QgsFeatureId fid );
 };
 
 #endif // QGSVECTORLAYERFEATUREPOOL_H
