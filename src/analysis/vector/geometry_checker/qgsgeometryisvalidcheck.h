@@ -20,6 +20,17 @@ email                : matthias@opengis.ch
 
 #include "qgssinglegeometrycheck.h"
 
+class ANALYSIS_EXPORT QgsGeometryIsValidCheckError : public QgsSingleGeometryCheckError
+{
+  public:
+    QgsGeometryIsValidCheckError( const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, const QString &errorDescription );
+
+    QString description() const override;
+
+  private:
+    QString mDescription;
+};
+
 /**
  * Checks if geometries are valid using the backend configured in the QGIS settings.
  * This does not offer any fixes but makes sure that all geometries are valid.

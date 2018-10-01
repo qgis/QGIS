@@ -49,7 +49,11 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryIsValidCheck::processGeometry( c
   QList<QgsSingleGeometryCheckError *> result;
   for ( const auto &error : qgis::as_const( errors ) )
   {
-    result << new QgsSingleGeometryCheckError( this, geometry, QgsGeometry( qgis::make_unique<QgsPoint>( error.where() ) ) );
+    QgsGeometry errorGeometry;
+    if ( error.hasWhere() )
+      errorGeometry = QgsGeometry( qgis::make_unique<QgsPoint>( error.where() ) );
+
+    result << new QgsGeometryIsValidCheckError( this, geometry, errorGeometry, error.what() );
   }
   return result;
 }
@@ -89,3 +93,15 @@ QgsGeometryCheck::CheckType QgsGeometryIsValidCheck::factoryCheckType()
   return QgsGeometryCheck::FeatureNodeCheck;
 }
 ///@endcond
+
+QgsGeometryIsValidCheckError::QgsGeometryIsValidCheckError( const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, const QString &errorDescription )
+  : QgsSingleGeometryCheckError( check, geometry, errorLocation )
+  , mDescription( errorDescription )
+{
+
+}
+
+QString QgsGeometryIsValidCheckError::description() const
+{
+  return mDescription;
+}
