@@ -45,6 +45,7 @@
 #include "qgsvariantdelegate.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsapplication.h"
 
 QgsSettingsTree::QgsSettingsTree( QWidget *parent )
   : QTreeWidget( parent )
@@ -62,10 +63,7 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
 
   mRefreshTimer.setInterval( 2000 );
 
-  mGroupIcon.addPixmap( style()->standardPixmap( QStyle::SP_DirClosedIcon ),
-                        QIcon::Normal, QIcon::Off );
-  mGroupIcon.addPixmap( style()->standardPixmap( QStyle::SP_DirOpenIcon ),
-                        QIcon::Normal, QIcon::On );
+  mGroupIcon = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderOpen.svg" ) );
   mKeyIcon = style()->standardIcon( QStyle::SP_FileIcon );
 
   setEditTriggers( QAbstractItemView::AllEditTriggers );

@@ -91,32 +91,12 @@ QIcon QgsDataCollectionItem::iconDataCollection()
 
 QIcon QgsDataCollectionItem::openDirIcon()
 {
-  static QIcon sIcon;
-
-  if ( sIcon.isNull() )
-  {
-    // initialize shared icons
-    QStyle *style = QApplication::style();
-    sIcon = QIcon( style->standardIcon( QStyle::SP_DirOpenIcon ) );
-  }
-
-  return sIcon;
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderOpen.svg" ) );
 }
 
 QIcon QgsDataCollectionItem::iconDir()
 {
-  static QIcon sIcon;
-
-  if ( sIcon.isNull() )
-  {
-    // initialize shared icons
-    QStyle *style = QApplication::style();
-    sIcon = QIcon( style->standardIcon( QStyle::SP_DirClosedIcon ) );
-    sIcon.addPixmap( style->standardPixmap( QStyle::SP_DirOpenIcon ),
-                     QIcon::Normal, QIcon::On );
-  }
-
-  return sIcon;
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolder.svg" ) );
 }
 
 QIcon QgsFavoritesItem::iconFavorites()
@@ -981,7 +961,7 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
   setHeaderLabels( labels );
 
   QStyle *style = QApplication::style();
-  QIcon iconDirectory = QIcon( style->standardIcon( QStyle::SP_DirClosedIcon ) );
+  QIcon iconDirectory = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderOpen.svg" ) );
   QIcon iconFile = QIcon( style->standardIcon( QStyle::SP_FileIcon ) );
   QIcon iconDirLink = QIcon( style->standardIcon( QStyle::SP_DirLinkIcon ) );
   QIcon iconFileLink = QIcon( style->standardIcon( QStyle::SP_FileLinkIcon ) );

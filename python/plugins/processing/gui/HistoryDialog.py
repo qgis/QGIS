@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import warnings
 
+from qgis.core import QgsApplication
 from qgis.gui import QgsGui
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
@@ -52,8 +53,7 @@ class HistoryDialog(BASE, WIDGET):
 
         QgsGui.instance().enableAutoGeometryRestore(self)
 
-        self.groupIcon = self.style().standardIcon(
-            QStyle.SP_DirClosedIcon)
+        self.groupIcon = QgsApplication.getThemeIcon('mIconFolder.svg')
 
         self.keyIcon = self.style().standardIcon(QStyle.SP_FileIcon)
 
