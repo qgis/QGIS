@@ -290,7 +290,8 @@ the target filename if the auxiliary storage is opened in copy mode.
 
     QString errorString() const;
 %Docstring
-Returns the underlying error string when something went wrong.
+Returns the underlying error string describing potential errors
+hapenning in saveAs(). Empty by default.
 
 .. versionadded:: 3.4
 %End
