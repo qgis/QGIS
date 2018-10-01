@@ -915,7 +915,6 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     //! Constructs SVG fill symbol layer with picture from given absolute path to a SVG file
     QgsSVGFillSymbolLayer( const QString &svgFilePath, double width = 20, double rotation = 0.0 );
     QgsSVGFillSymbolLayer( const QByteArray &svgData, double width = 20, double rotation = 0.0 );
-    ~QgsSVGFillSymbolLayer() override;
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
@@ -1004,8 +1003,6 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QString mSvgFilePath;
     //! SVG view box (to keep the aspect ratio
     QRectF mSvgViewBox;
-    //! SVG pattern image
-    QImage *mSvgPattern = nullptr;
 
     //param(fill), param(stroke), param(stroke-width) are going
     //to be replaced in memory
