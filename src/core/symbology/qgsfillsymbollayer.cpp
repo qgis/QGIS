@@ -1724,7 +1724,6 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString &svgFilePath, double
   mSvgStrokeColor = QColor( 35, 35, 35 );
   mSvgStrokeWidth = 0.2;
   setDefaultSvgParams();
-  mSvgPattern = nullptr;
 }
 
 QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray &svgData, double width, double angle )
@@ -1742,12 +1741,6 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray &svgData, double 
   mSvgStrokeWidth = 0.2;
   setSubSymbol( new QgsLineSymbol() );
   setDefaultSvgParams();
-  mSvgPattern = nullptr;
-}
-
-QgsSVGFillSymbolLayer::~QgsSVGFillSymbolLayer()
-{
-  delete mSvgPattern;
 }
 
 void QgsSVGFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
@@ -1926,14 +1919,11 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush &brush, const QString &svgFileP
     return;
   }
 
-  delete mSvgPattern;
-  mSvgPattern = nullptr;
   double size = context.renderContext().convertToPainterUnits( patternWidth, patternWidthUnit, patternWidthMapUnitScale );
 
   if ( static_cast< int >( size ) < 1.0 || 10000.0 < size )
   {
-    mSvgPattern = new QImage();
-    brush.setTextureImage( *mSvgPattern );
+    brush.setTextureImage( QImage() );
   }
   else
   {
@@ -1950,23 +1940,23 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush &brush, const QString &svgFileP
       {
         hwRatio = static_cast< double >( patternPict.height() ) / static_cast< double >( patternPict.width() );
       }
-      mSvgPattern = new QImage( static_cast< int >( size ), static_cast< int >( size * hwRatio ), QImage::Format_ARGB32_Premultiplied );
-      mSvgPattern->fill( 0 ); // transparent background
+      patternImage = QImage( static_cast< int >( size ), static_cast< int >( size * hwRatio ), QImage::Format_ARGB32_Premultiplied );
+      patternImage.fill( 0 ); // transparent background
 
-      QPainter p( mSvgPattern );
+      QPainter p( &patternImage );
       p.drawPicture( QPointF( size / 2, size * hwRatio / 2 ), patternPict );
     }
 
     QTransform brushTransform;
     if ( !qgsDoubleNear( context.opacity(), 1.0 ) )
     {
-      QImage transparentImage = fitsInCache ? patternImage.copy() : mSvgPattern->copy();
+      QImage transparentImage = patternImage.copy();
       QgsSymbolLayerUtils::multiplyImageOpacity( &transparentImage, context.opacity() );
       brush.setTextureImage( transparentImage );
     }
     else
     {
-      brush.setTextureImage( fitsInCache ? patternImage : *mSvgPattern );
+      brush.setTextureImage( patternImage );
     }
     brush.setTransform( brushTransform );
   }
@@ -3631,7 +3621,7 @@ QgsSymbolLayer *QgsRasterFillSymbolLayer::create( const QgsStringMap &properties
 
   symbolLayer->restoreOldDataDefinedProperties( properties );
 
-  return symbolLaye.release()r;
+  return symbolLayer.release();
 }
 
 void QgsRasterFillSymbolLayer::resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving )

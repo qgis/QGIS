@@ -1027,7 +1027,6 @@ the appropriate pixel dimensions of the output device*
 Constructs SVG fill symbol layer with picture from given absolute path to a SVG file
 %End
     QgsSVGFillSymbolLayer( const QByteArray &svgData, double width = 20, double rotation = 0.0 );
-    ~QgsSVGFillSymbolLayer();
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
