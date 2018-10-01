@@ -19,7 +19,7 @@
 #define SIP_NO_FILE
 
 #define CL_HPP_ENABLE_EXCEPTIONS
-// Targeting version 1.10 because it's the best compromise
+// Set target version to 1.10 because it's the best compromise
 // between features and compatibility with "older" graphics
 // cards
 #define CL_HPP_MINIMUM_OPENCL_VERSION 110
