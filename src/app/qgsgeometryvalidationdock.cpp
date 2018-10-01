@@ -36,6 +36,10 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
 {
   setupUi( this );
 
+  QFont font = mProblemDescriptionLabel->font();
+  font.setBold( true );
+  mProblemDescriptionLabel->setFont( font );
+
   connect( mNextButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::gotoNextError );
   connect( mPreviousButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::gotoPreviousError );
   connect( mZoomToProblemButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::zoomToProblem );
