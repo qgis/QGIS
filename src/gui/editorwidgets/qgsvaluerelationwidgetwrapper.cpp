@@ -179,7 +179,23 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
   }
   else if ( mComboBox )
   {
-    mComboBox->setCurrentIndex( mComboBox->findData( value ) );
+    // findData fails to tell a 0 from a NULL
+    // See: "Value relation, value 0 = NULL" - https://issues.qgis.org/issues/19981
+    int idx = -1; // default to not found
+    for ( int i = 0; i < mComboBox->count(); i++ )
+    {
+      QVariant v( mComboBox->itemData( i ) );
+      if ( ( v.isNull() && !value.isNull() ) || ( !v.isNull() && value.isNull() ) )
+      {
+        continue;
+      }
+      if ( v == value )
+      {
+        idx = i;
+        break;
+      }
+    }
+    mComboBox->setCurrentIndex( idx );
   }
   else if ( mLineEdit )
   {
