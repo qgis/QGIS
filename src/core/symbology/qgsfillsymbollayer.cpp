@@ -2734,7 +2734,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
     polygons.append( QPolygonF() << p5 << p6 );
   }
 
-  Q_FOREACH ( const QPolygonF &polygon, polygons )
+  for ( const QPolygonF &polygon : qgis::as_const( polygons ) )
   {
     fillLineSymbol->renderPolyline( polygon, context.feature(), lineRenderContext, -1, context.selected() );
   }
