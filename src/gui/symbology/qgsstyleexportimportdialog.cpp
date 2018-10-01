@@ -26,6 +26,7 @@
 #include "qgsguiutils.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsstylemodel.h"
 
 #include <QInputDialog>
 #include <QCloseEvent>
@@ -53,12 +54,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::clearSelection );
 
-  QStandardItemModel *model = new QStandardItemModel( listItems );
-  listItems->setModel( model );
-  connect( listItems->selectionModel(), &QItemSelectionModel::selectionChanged,
-           this, &QgsStyleExportImportDialog::selectionChanged );
-
-  mTempStyle = new QgsStyle();
+  mTempStyle = qgis::make_unique< QgsStyle >();
   mTempStyle->createMemoryDatabase();
 
   // TODO validate
@@ -92,6 +88,9 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
 
     label->setText( tr( "Select items to import" ) );
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Import" ) );
+
+    mModel = new QgsStyleModel( mTempStyle.get(), this );
+    listItems->setModel( mModel );
   }
   else
   {
@@ -113,12 +112,19 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
     tagHintLabel->setHidden( true );
 
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Export" ) );
-    if ( !populateStyles( mStyle ) )
-    {
-      QApplication::postEvent( this, new QCloseEvent() );
-    }
 
+    mModel = new QgsStyleModel( mStyle, this );
   }
+
+  double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
+  listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
+
+  mModel->addDesiredIconSize( listItems->iconSize() );
+  listItems->setModel( mModel );
+
+  connect( listItems->selectionModel(), &QItemSelectionModel::selectionChanged,
+           this, &QgsStyleExportImportDialog::selectionChanged );
+
   // use Ok button for starting import and export operations
   disconnect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsStyleExportImportDialog::doExportImport );
@@ -155,7 +161,7 @@ void QgsStyleExportImportDialog::doExportImport()
     mFileName = fileName;
 
     mCursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
-    moveStyles( &selection, mStyle, mTempStyle );
+    moveStyles( &selection, mStyle, mTempStyle.get() );
     if ( !mTempStyle->exportXml( mFileName ) )
     {
       mCursorOverride.reset();
@@ -175,11 +181,8 @@ void QgsStyleExportImportDialog::doExportImport()
   else // import
   {
     mCursorOverride = qgis::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
-    moveStyles( &selection, mTempStyle, mStyle );
+    moveStyles( &selection, mTempStyle.get(), mStyle );
 
-    // clear model
-    QStandardItemModel *model = qobject_cast<QStandardItemModel *>( listItems->model() );
-    model->clear();
     accept();
     mCursorOverride.reset();
   }
@@ -188,60 +191,19 @@ void QgsStyleExportImportDialog::doExportImport()
   mTempStyle->clear();
 }
 
-bool QgsStyleExportImportDialog::populateStyles( QgsStyle *style )
+bool QgsStyleExportImportDialog::populateStyles()
 {
   QgsTemporaryCursorOverride override( Qt::WaitCursor );
 
   // load symbols and color ramps from file
-  if ( mDialogMode == Import )
+  // NOTE mTempStyle is style here
+  mTempStyle->clear();
+  if ( !mTempStyle->importXml( mFileName ) )
   {
-    // NOTE mTempStyle is style here
-    if ( !style->importXml( mFileName ) )
-    {
-      override.release();
-      QMessageBox::warning( this, tr( "Import Symbols or Color Ramps" ),
-                            tr( "An error occurred during import:\n%1" ).arg( style->errorString() ) );
-      return false;
-    }
-  }
-
-  QStandardItemModel *model = qobject_cast<QStandardItemModel *>( listItems->model() );
-  model->clear();
-
-  // populate symbols
-  QStringList styleNames = style->symbolNames();
-  QString name;
-
-  for ( int i = 0; i < styleNames.count(); ++i )
-  {
-    name = styleNames[i];
-    QStringList tags = style->tagsOfSymbol( QgsStyle::SymbolEntity, name );
-    std::unique_ptr< QgsSymbol > symbol( style->symbol( name ) );
-    if ( !symbol )
-      continue;
-    QStandardItem *item = new QStandardItem( name );
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol.get(), listItems->iconSize(), 15 );
-    item->setIcon( icon );
-    item->setToolTip( QStringLiteral( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( QStringLiteral( ", " ) ) : tr( "Not tagged" ) ) );
-    // Set font to 10points to show reasonable text
-    QFont itemFont = item->font();
-    itemFont.setPointSize( 10 );
-    item->setFont( itemFont );
-    model->appendRow( item );
-  }
-
-  // and color ramps
-  styleNames = style->colorRampNames();
-
-  for ( int i = 0; i < styleNames.count(); ++i )
-  {
-    name = styleNames[i];
-    std::unique_ptr< QgsColorRamp > ramp( style->colorRamp( name ) );
-
-    QStandardItem *item = new QStandardItem( name );
-    QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), listItems->iconSize(), 15 );
-    item->setIcon( icon );
-    model->appendRow( item );
+    override.release();
+    QMessageBox::warning( this, tr( "Import Symbols or Color Ramps" ),
+                          tr( "An error occurred during import:\n%1" ).arg( mTempStyle->errorString() ) );
+    return false;
   }
   return true;
 }
@@ -264,7 +226,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList *selection, QgsStyl
   for ( int i = 0; i < selection->size(); ++i )
   {
     index = selection->at( i );
-    symbolName = index.model()->data( index, 0 ).toString();
+    symbolName = mModel->data( mModel->index( index.row(), QgsStyleModel::Name ), Qt::DisplayRole ).toString();
     std::unique_ptr< QgsSymbol > symbol( src->symbol( symbolName ) );
     std::unique_ptr< QgsColorRamp > ramp;
 
@@ -405,7 +367,6 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList *selection, QgsStyl
 QgsStyleExportImportDialog::~QgsStyleExportImportDialog()
 {
   delete mTempFile;
-  delete mTempStyle;
   delete mGroupSelectionDlg;
 }
 
@@ -423,7 +384,7 @@ void QgsStyleExportImportDialog::selectSymbols( const QStringList &symbolNames )
 {
   Q_FOREACH ( const QString &symbolName, symbolNames )
   {
-    QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, 0 ), Qt::DisplayRole, symbolName, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
+    QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, QgsStyleModel::Name ), Qt::DisplayRole, symbolName, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
     Q_FOREACH ( const QModelIndex &index, indexes )
     {
       listItems->selectionModel()->select( index, QItemSelectionModel::Select );
@@ -435,7 +396,7 @@ void QgsStyleExportImportDialog::deselectSymbols( const QStringList &symbolNames
 {
   Q_FOREACH ( const QString &symbolName, symbolNames )
   {
-    QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, 0 ), Qt::DisplayRole, symbolName, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
+    QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, QgsStyleModel::Name ), Qt::DisplayRole, symbolName, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
     Q_FOREACH ( const QModelIndex &index, indexes )
     {
       QItemSelection deselection( index, index );
@@ -536,7 +497,7 @@ void QgsStyleExportImportDialog::importFileChanged( const QString &path )
   if ( QFileInfo::exists( mFileName ) )
   {
     mTempStyle->clear();
-    populateStyles( mTempStyle );
+    populateStyles();
     mImportFileWidget->setDefaultRoot( pathInfo.absolutePath() );
     QgsSettings settings;
     settings.setValue( QStringLiteral( "StyleManager/lastImportDir" ), pathInfo.absolutePath(), QgsSettings::Gui );
@@ -596,7 +557,7 @@ void QgsStyleExportImportDialog::httpFinished()
     mTempFile->flush();
     mTempFile->close();
     mTempStyle->clear();
-    populateStyles( mTempStyle );
+    populateStyles();
   }
 }
 
