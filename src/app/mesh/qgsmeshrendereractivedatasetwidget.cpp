@@ -251,8 +251,14 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata()
 QString QgsMeshRendererActiveDatasetWidget::timeToString( double val )
 {
   // time val should be in hours
+#if QT_VERSION >= 0x050800
   qint64 seconds = static_cast<qint64>( val * 3600.0 );
   return QDateTime::fromSecsSinceEpoch( seconds ).toString( "hh:mm:ss" );
+#else
+  QDateTime t;
+  t.setTime_t( static_cast<uint>( val * 3600.0 ) );
+  return t.toString( "hh:mm:ss" );
+#endif
 }
 
 QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datasetIndex )
