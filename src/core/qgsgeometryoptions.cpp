@@ -27,6 +27,7 @@ bool QgsGeometryOptions::removeDuplicateNodes() const
 void QgsGeometryOptions::setRemoveDuplicateNodes( bool value )
 {
   mRemoveDuplicateNodes = value;
+  emit removeDuplicateNodesChanged();
 }
 
 double QgsGeometryOptions::geometryPrecision() const
@@ -37,6 +38,7 @@ double QgsGeometryOptions::geometryPrecision() const
 void QgsGeometryOptions::setGeometryPrecision( double value )
 {
   mGeometryPrecision = value;
+  emit geometryPrecisionChanged();
 }
 
 bool QgsGeometryOptions::isActive() const
@@ -61,6 +63,7 @@ QStringList QgsGeometryOptions::geometryChecks() const
 void QgsGeometryOptions::setGeometryChecks( const QStringList &geometryChecks )
 {
   mGeometryChecks = geometryChecks;
+  emit geometryChecksChanged();
 }
 
 QVariantMap QgsGeometryOptions::checkConfiguration( const QString &checkId ) const
@@ -71,6 +74,7 @@ QVariantMap QgsGeometryOptions::checkConfiguration( const QString &checkId ) con
 void QgsGeometryOptions::setCheckConfiguration( const QString &checkId, const QVariantMap &checkConfiguration )
 {
   mCheckConfiguration[checkId] = checkConfiguration;
+  emit checkConfigurationChanged();
 }
 
 void QgsGeometryOptions::writeXml( QDomNode &node ) const

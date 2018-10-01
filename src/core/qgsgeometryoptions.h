@@ -22,6 +22,8 @@
 #include "qgis_sip.h"
 #include "qgsgeometry.h"
 
+#include <QObject>
+
 /**
  * \ingroup core
  *
@@ -30,8 +32,10 @@
  *
  * \since QGIS 3.4
  */
-class CORE_EXPORT QgsGeometryOptions
+class CORE_EXPORT QgsGeometryOptions : public QObject
 {
+    Q_OBJECT
+
   public:
 
     /**
@@ -126,6 +130,38 @@ class CORE_EXPORT QgsGeometryOptions
      * \since QGIS 3.4
      */
     void readXml( const QDomNode &node );
+
+  signals:
+
+    /**
+     * Access the configuration for the check \a checkId.
+     *
+     * \since QGIS 3.4
+     */
+    void checkConfigurationChanged();
+
+    /**
+     * A list of activated geometry checks.
+     *
+     * \since QGIS 3.4
+     */
+    void geometryChecksChanged();
+
+    /**
+     * Automatically remove duplicate nodes on all geometries which are edited on this layer.
+     *
+     * \since QGIS 3.4
+     */
+    void removeDuplicateNodesChanged();
+
+    /**
+     * The precision in which geometries on this layer should be saved.
+     * Geometries which are edited on this layer will be rounded to multiples of this value (snap to grid).
+     * Set to 0.0 to disable.
+     *
+     * \since QGIS 3.4
+     */
+    void geometryPrecisionChanged();
 
   private:
 
