@@ -23,6 +23,8 @@ email                : matthias@opengis.ch
 
 // 64 bit feature ids
 typedef qint64 QgsFeatureId SIP_SKIP;
+#define FID_NULL            std::numeric_limits<QgsFeatureId>::min()
+#define FID_IS_NULL(fid)    (fid==std::numeric_limits<QgsFeatureId>::min())
 #define FID_IS_NEW(fid)     (fid<0)
 #define FID_TO_NUMBER(fid)  static_cast<qint64>(fid)
 #define FID_TO_STRING(fid)  QString::number( fid )
