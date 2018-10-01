@@ -47,8 +47,11 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     bool getFeature( QgsFeatureId id, QgsFeature &feature );
 
     /**
-     * Warm the cache ...
-     * TODO write more docs
+     * Get features for the provided \a request. No features will be fetched
+     * from the cache and the request is sent directly to the underlying feature source.
+     * Results of the request are cached in the pool and the ids of all the features
+     * are returned. This can be used to warm the cache for a particular area of interest
+     * (bounding box) or other set of features.
      */
     QgsFeatureIds getFeatures( const QgsFeatureRequest &request ) SIP_SKIP;
 
