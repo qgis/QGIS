@@ -41,10 +41,10 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   mProblemDescriptionLabel->setFont( font );
   mErrorListView->setAlternatingRowColors( true );
 
-  connect( mNextButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::gotoNextError );
-  connect( mPreviousButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::gotoPreviousError );
-  connect( mZoomToProblemButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::zoomToProblem );
-  connect( mZoomToFeatureButton, &QPushButton::clicked, this, &QgsGeometryValidationDock::zoomToFeature );
+  connect( mNextButton, &QToolButton::clicked, this, &QgsGeometryValidationDock::gotoNextError );
+  connect( mPreviousButton, &QToolButton::clicked, this, &QgsGeometryValidationDock::gotoPreviousError );
+  connect( mZoomToProblemButton, &QToolButton::clicked, this, &QgsGeometryValidationDock::zoomToProblem );
+  connect( mZoomToFeatureButton, &QToolButton::clicked, this, &QgsGeometryValidationDock::zoomToFeature );
   connect( mMapCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsGeometryValidationDock::onCurrentLayerChanged );
   connect( mMapCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
@@ -178,7 +178,7 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
       QLabel *resolveLabel = new QLabel( resolutionMethod, mResolutionWidget );
       resolveLabel->setWordWrap( true );
       layout->addWidget( resolveLabel, resolutionIndex, 1 );
-      connect( resolveBtn, &QPushButton::clicked, this, [resolutionIndex, error, this]()
+      connect( resolveBtn, &QToolButton::clicked, this, [resolutionIndex, error, this]()
       {
         mGeometryValidationService->fixError( error, resolutionIndex );
       } );
