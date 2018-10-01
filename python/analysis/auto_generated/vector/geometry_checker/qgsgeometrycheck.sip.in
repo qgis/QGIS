@@ -120,7 +120,7 @@ A list of geometry types for which this check can be performed.
 Flags for this geometry check.
 %End
 
-    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors /In,Out/, QStringList &messages /In,Out/, QgsFeedback *feedback = 0, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
+    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors /In,Out/, QStringList &messages /In,Out/, QgsFeedback *feedback, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
 %Docstring
 The main worker method.
 Check all features available from ``featurePools`` and write errors found to ``errors``.

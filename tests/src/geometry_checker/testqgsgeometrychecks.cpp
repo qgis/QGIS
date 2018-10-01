@@ -41,6 +41,7 @@
 #include "qgsgeometrysliverpolygoncheck.h"
 #include "qgsvectordataproviderfeaturepool.h"
 #include "qgsproject.h"
+#include "qgsfeedback.h"
 
 #include "qgsgeometrytypecheck.h"
 
@@ -88,6 +89,7 @@ class TestQgsGeometryChecks: public QObject
     void testLineLayerIntersectionCheck();
     void testMultipartCheck();
     void testOverlapCheck();
+    void testOverlapCheckNoMaxArea();
     void testPointCoveredByLineCheck();
     void testPointInPolygonCheck();
     void testSegmentLengthCheck();
@@ -125,7 +127,8 @@ void TestQgsGeometryChecks::testAngleCheck()
   configuration.insert( "minAngle", 15 );
 
   QgsGeometryAngleCheck check( testContext.first, configuration );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QList<QgsGeometryCheckError *> errs1;
@@ -203,7 +206,8 @@ void TestQgsGeometryChecks::testAreaCheck()
   configuration.insert( "areaThreshold", 0.04 );
 
   QgsGeometryAreaCheck check( testContext.first, configuration );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QList<QgsGeometryCheckError *> errs1;
@@ -295,7 +299,8 @@ void TestQgsGeometryChecks::testContainedCheck()
   QStringList messages;
 
   QgsGeometryContainedCheck check( testContext.first, QVariantMap() );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QList<QgsGeometryCheckError *> errs1;
@@ -332,7 +337,8 @@ void TestQgsGeometryChecks::testDangleCheck()
   QStringList messages;
 
   QgsGeometryDangleCheck check( testContext.first, QVariantMap() );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QList<QgsGeometryCheckError *> errs1;
@@ -369,7 +375,8 @@ void TestQgsGeometryChecks::testDegeneratePolygonCheck()
   QStringList messages;
 
   QgsGeometryDegeneratePolygonCheck check( testContext.first, QVariantMap() );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QList<QgsGeometryCheckError *> errs1;
@@ -404,7 +411,8 @@ void TestQgsGeometryChecks::testDuplicateCheck()
   QStringList messages;
 
   QgsGeometryDuplicateCheck check( testContext.first, QVariantMap() );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QList<QgsGeometryCheckError *> errs1;
@@ -448,7 +456,8 @@ void TestQgsGeometryChecks::testDuplicateNodesCheck()
   QStringList messages;
 
   QgsGeometryDuplicateNodesCheck check( testContext.first, QVariantMap() );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QList<QgsGeometryCheckError *> errs1;
@@ -487,7 +496,8 @@ void TestQgsGeometryChecks::testFollowBoundariesCheck()
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometryFollowBoundariesCheck( testContext.first, QVariantMap(), testContext.second[layers["follow_ref.shp"]]->layer() ).collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  QgsGeometryFollowBoundariesCheck( testContext.first, QVariantMap(), testContext.second[layers["follow_ref.shp"]]->layer() ).collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 2 );
@@ -512,7 +522,8 @@ void TestQgsGeometryChecks::testGapCheck()
   configuration.insert( "gapThreshold", 0.01 );
 
   QgsGeometryGapCheck check( testContext.first, configuration );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QList<QgsGeometryCheckError *> errs1;
@@ -553,7 +564,8 @@ void TestQgsGeometryChecks::testMissingVertexCheck()
   QStringList messages;
 
   QgsGeometryMissingVertexCheck check( testContext.first, QVariantMap() );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   const QString layerId = testContext.second.first()->layerId();
@@ -582,7 +594,8 @@ void TestQgsGeometryChecks::testHoleCheck()
   QStringList messages;
 
   QgsGeometryHoleCheck check( testContext.first, QVariantMap() );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QList<QgsGeometryCheckError *> errs1;
@@ -620,7 +633,8 @@ void TestQgsGeometryChecks::testLineIntersectionCheck()
   QStringList messages;
 
   QgsGeometryLineIntersectionCheck check( testContext.first, QVariantMap() );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 1 );
@@ -648,7 +662,8 @@ void TestQgsGeometryChecks::testLineLayerIntersectionCheck()
   configuration.insert( "checkLayer", layers["polygon_layer.shp"] );
 
   QgsGeometryLineLayerIntersectionCheck check( testContext.first, configuration );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 5 );
@@ -677,7 +692,8 @@ void TestQgsGeometryChecks::testMultipartCheck()
   QStringList messages;
 
   QgsGeometryMultipartCheck check( testContext.first, QVariantMap() );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"] ).isEmpty() );
@@ -728,6 +744,7 @@ void TestQgsGeometryChecks::testOverlapCheck()
   layers.insert( "point_layer.shp", "" );
   layers.insert( "line_layer.shp", "" );
   layers.insert( "polygon_layer.shp", "" );
+
   auto testContext = createTestContext( dir, layers );
 
   // Test detection
@@ -738,7 +755,8 @@ void TestQgsGeometryChecks::testOverlapCheck()
   configuration.insert( "maxOverlapArea", 0.01 );
 
   QgsGeometryOverlapCheck check( testContext.first, configuration );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QList<QgsGeometryCheckError *> errs1;
@@ -769,9 +787,9 @@ void TestQgsGeometryChecks::testOverlapCheckNoMaxArea()
 {
   QTemporaryDir dir;
   QMap<QString, QString> layers;
-  layers.insert( QStringLiteral("point_layer.shp"), QString() );
-  layers.insert( QStringLiteral("line_layer.shp"), QString() );
-  layers.insert( QStringLiteral("polygon_layer.shp"), QString() );
+  layers.insert( QStringLiteral( "point_layer.shp" ), QString() );
+  layers.insert( QStringLiteral( "line_layer.shp" ), QString() );
+  layers.insert( QStringLiteral( "polygon_layer.shp" ), QString() );
 
   auto testContext = createTestContext( dir, layers );
 
@@ -811,7 +829,8 @@ void TestQgsGeometryChecks::testPointCoveredByLineCheck()
   QStringList messages;
 
   QgsGeometryPointCoveredByLineCheck errs( testContext.first, QVariantMap() );
-  errs.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  errs.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"] ).isEmpty() );
@@ -837,7 +856,8 @@ void TestQgsGeometryChecks::testPointInPolygonCheck()
   QStringList messages;
 
   QgsGeometryPointInPolygonCheck check( testContext.first, QVariantMap() );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"] ).isEmpty() );
@@ -866,7 +886,8 @@ void TestQgsGeometryChecks::testSegmentLengthCheck()
   configuration.insert( "minSegmentLength", 0.03 );
 
   QgsGeometrySegmentLengthCheck check( testContext.first, configuration );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 4 );
@@ -893,7 +914,8 @@ void TestQgsGeometryChecks::testSelfContactCheck()
   QStringList messages;
 
   QgsGeometrySelfContactCheck check( testContext.first, QVariantMap() );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 3 );
@@ -919,7 +941,8 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
   QStringList messages;
 
   QgsGeometrySelfIntersectionCheck check( testContext.first, QVariantMap() );
-  check.collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QList<QgsGeometryCheckError *> errs1;
@@ -1026,7 +1049,8 @@ void TestQgsGeometryChecks::testSliverPolygonCheck()
   configuration.insert( "threshold", 20 );
   configuration.insert( "maxArea", 0.04 );
 
-  QgsGeometrySliverPolygonCheck( testContext.first, configuration ).collectErrors( testContext.second, checkErrors, messages );
+  QgsFeedback feedback;
+  QgsGeometrySliverPolygonCheck( testContext.first, configuration ).collectErrors( testContext.second, checkErrors, messages, &feedback );
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 2 );
