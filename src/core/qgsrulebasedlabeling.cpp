@@ -54,7 +54,7 @@ QList<QgsAbstractLabelProvider *> QgsRuleBasedLabelProvider::subProviders()
 
 ////////////////////
 
-QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings *settings, int scaleMinDenom, int scaleMaxDenom, const QString &filterExp, const QString &description, bool elseRule )
+QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings *settings, double scaleMinDenom, double scaleMaxDenom, const QString &filterExp, const QString &description, bool elseRule )
   : mSettings( settings )
   , mMaximumScale( scaleMinDenom )
   , mMinimumScale( scaleMaxDenom )
@@ -256,9 +256,9 @@ QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument &doc, const QgsReadWr
   }
   if ( !mFilterExp.isEmpty() )
     ruleElem.setAttribute( QStringLiteral( "filter" ), mFilterExp );
-  if ( mMaximumScale != 0 )
+  if ( !qgsDoubleNear( mMaximumScale, 0 ) )
     ruleElem.setAttribute( QStringLiteral( "scalemindenom" ), mMaximumScale );
-  if ( mMinimumScale != 0 )
+  if ( !qgsDoubleNear( mMinimumScale, 0 ) )
     ruleElem.setAttribute( QStringLiteral( "scalemaxdenom" ), mMinimumScale );
   if ( !mDescription.isEmpty() )
     ruleElem.setAttribute( QStringLiteral( "description" ), mDescription );

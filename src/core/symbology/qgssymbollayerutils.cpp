@@ -4201,22 +4201,22 @@ void QgsSymbolLayerUtils::applyScaleDependency( QDomDocument &doc, QDomElement &
   }
 }
 
-void QgsSymbolLayerUtils::mergeScaleDependencies( int mScaleMinDenom, int mScaleMaxDenom, QgsStringMap &props )
+void QgsSymbolLayerUtils::mergeScaleDependencies( double mScaleMinDenom, double mScaleMaxDenom, QgsStringMap &props )
 {
-  if ( mScaleMinDenom != 0 )
+  if ( !qgsDoubleNear( mScaleMinDenom, 0 ) )
   {
     bool ok;
-    int parentScaleMinDenom = props.value( QStringLiteral( "scaleMinDenom" ), QStringLiteral( "0" ) ).toInt( &ok );
+    double parentScaleMinDenom = props.value( QStringLiteral( "scaleMinDenom" ), QStringLiteral( "0" ) ).toDouble( &ok );
     if ( !ok || parentScaleMinDenom <= 0 )
       props[ QStringLiteral( "scaleMinDenom" )] = QString::number( mScaleMinDenom );
     else
       props[ QStringLiteral( "scaleMinDenom" )] = QString::number( std::max( parentScaleMinDenom, mScaleMinDenom ) );
   }
 
-  if ( mScaleMaxDenom != 0 )
+  if ( !qgsDoubleNear( mScaleMaxDenom, 0 ) )
   {
     bool ok;
-    int parentScaleMaxDenom = props.value( QStringLiteral( "scaleMaxDenom" ), QStringLiteral( "0" ) ).toInt( &ok );
+    double parentScaleMaxDenom = props.value( QStringLiteral( "scaleMaxDenom" ), QStringLiteral( "0" ) ).toDouble( &ok );
     if ( !ok || parentScaleMaxDenom <= 0 )
       props[ QStringLiteral( "scaleMaxDenom" )] = QString::number( mScaleMaxDenom );
     else
