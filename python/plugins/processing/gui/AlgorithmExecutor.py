@@ -241,7 +241,8 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
     # store output values to use them later as basenames for all outputs
     outputs = {}
     for out in alg.destinationParameterDefinitions():
-        outputs[out.name()] = parameters[out.name()]
+        if out.name() in parameters:
+            outputs[out.name()] = parameters[out.name()]
 
     # now run all the algorithms
     for i, f in enumerate(sink_list):
@@ -250,6 +251,9 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
 
         parameters[paramToIter] = f
         for out in alg.destinationParameterDefinitions():
+            if out.name() not in outputs:
+                continue
+
             o = outputs[out.name()]
             parameters[out.name()] = QgsProcessingUtils.generateIteratingDestination(o, i, context)
         feedback.setProgressText(QCoreApplication.translate('AlgorithmExecutor', 'Executing iteration {0}/{1}…').format(i, len(sink_list)))
