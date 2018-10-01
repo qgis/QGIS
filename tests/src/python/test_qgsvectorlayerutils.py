@@ -258,25 +258,26 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         # layer with default value expression
         layer.setDefaultValueDefinition(2, QgsDefaultValue('3*4'))
         f = QgsVectorLayerUtils.createFeature(layer)
-        self.assertEqual(f.attributes(), ['a', NULL, 6.0])
-        # we do not expect the default value expression to 
-        # take precedence over the attribute map
+        self.assertEqual(f.attributes(), [NULL, NULL, 12])
+        # we do not expect the default value expression to take precedence over the attribute map
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'a', 2: 6.0})
         self.assertEqual(f.attributes(), ['a', NULL, 6.0])
         # layer with default value expression based on geometry
         layer.setDefaultValueDefinition(2, QgsDefaultValue('3*$x'))
         f = QgsVectorLayerUtils.createFeature(layer, g)
         #adjusted so that input value and output feature are the same
-        self.assertEqual(f.attributes(), ['a', NULL, 6.0])
+        self.assertEqual(f.attributes(), [NULL, NULL, 300.0])
         layer.setDefaultValueDefinition(2, QgsDefaultValue(None))
 
         # test with violated unique constraints
         layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique)
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
-        self.assertEqual(f.attributes(), ['test_1', 128, NULL])
+        # since field 1 has Unique Constraint, it ignores value 123 that already has been set
+        self.assertEqual(f.attributes(), ['test_1', NULL, NULL])
         layer.setFieldConstraint(0, QgsFieldConstraints.ConstraintUnique)
+        # since field 0 and 1 already have values test_1 and 123, the output must be NULL
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
-        self.assertEqual(f.attributes(), ['test_4', 128, NULL])
+        self.assertEqual(f.attributes(), [NULL, NULL, NULL])
 
     def testDuplicateFeature(self):
         """ test duplicating a feature """
