@@ -75,6 +75,14 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
 
     enum ResolutionMethod { Subtract, NoChange };
 
+    /**
+     * Checks for overlapping polygons.
+     *
+     * In \a configuration a maxOverlapArea parameter can be passed. In case this parameter is set
+     * to something else than 0.0, the error will only be reported if the overlapping area is smaller
+     * than maxOverlapArea.
+     * Overlapping areas smaller than the reducedTolerance parameter of the \a context are ignored.
+     */
     QgsGeometryOverlapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
