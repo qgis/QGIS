@@ -55,14 +55,12 @@ QList<QgsAbstractLabelProvider *> QgsRuleBasedLabelProvider::subProviders()
 ////////////////////
 
 QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings *settings, int scaleMinDenom, int scaleMaxDenom, const QString &filterExp, const QString &description, bool elseRule )
-  : mParent( nullptr )
-  , mSettings( settings )
+  : mSettings( settings )
   , mMaximumScale( scaleMinDenom )
   , mMinimumScale( scaleMaxDenom )
   , mFilterExp( filterExp )
   , mDescription( description )
   , mElseRule( elseRule )
-  , mIsActive( true )
 
 {
   initFilter();
