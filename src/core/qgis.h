@@ -449,6 +449,16 @@ CORE_EXPORT qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
 CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 
 /**
+ * Compares two QVariant values and returns whether they are equal, NULL values are treated as equal.
+ *
+ * \param lhs first value
+ * \param rhs second value
+ * \return true if values are equal
+ */
+CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
+
+
+/**
  * Compares two QVariant values and returns whether the first is greater than the second.
  * Useful for sorting lists of variants, correctly handling sorting of the various
  * QVariant data types (such as strings, numeric values, dates and times)

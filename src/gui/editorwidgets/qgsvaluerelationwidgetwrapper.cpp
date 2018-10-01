@@ -185,7 +185,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
     for ( int i = 0; i < mComboBox->count(); i++ )
     {
       QVariant v( mComboBox->itemData( i ) );
-      if ( v.isNull() == value.isNull() && v == value )
+      if ( qgsVariantEqual( v, value ) )
       {
         idx = i;
         break;

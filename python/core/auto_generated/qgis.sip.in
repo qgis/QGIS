@@ -187,6 +187,17 @@ QVariant data types (such as strings, numeric values, dates and times)
 .. seealso:: :py:func:`qgsVariantGreaterThan`
 %End
 
+bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
+%Docstring
+Compares two QVariant values and returns whether they are equal, NULL values are treated as equal.
+
+:param lhs: first value
+:param rhs: second value
+
+:return: true if values are equal
+%End
+
+
 bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 %Docstring
 Compares two QVariant values and returns whether the first is greater than the second.

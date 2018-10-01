@@ -189,7 +189,7 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
       const QList<QVariant> &rhsl = rhs.toList();
 
       int i, n = std::min( lhsl.size(), rhsl.size() );
-      for ( i = 0; i < n && lhsl[i].type() == rhsl[i].type() && lhsl[i].isNull() == rhsl[i].isNull() && lhsl[i] == rhsl[i]; i++ )
+      for ( i = 0; i < n && lhsl[i].type() == rhsl[i].type() && qgsVariantEqual( lhsl[i], rhsl[i] ); i++ )
         ;
 
       if ( i == n )
@@ -305,4 +305,9 @@ uint qHash( const QVariant &variant )
   }
 
   return std::numeric_limits<uint>::max();
+}
+
+bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
+{
+  return lhs.isNull() == rhs.isNull() && lhs == rhs;
 }
