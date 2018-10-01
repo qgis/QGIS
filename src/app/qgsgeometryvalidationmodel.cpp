@@ -2,6 +2,7 @@
 
 #include "qgsvectorlayer.h"
 #include "qgssinglegeometrycheck.h"
+#include "qgsfeatureid.h"
 
 #include <QIcon>
 
@@ -121,7 +122,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
         mExpressionContext.setFeature( feature );
         QString featureTitle = mDisplayExpression.evaluate( &mExpressionContext ).toString();
         if ( featureTitle.isEmpty() )
-          featureTitle = featureItem.fid;
+          featureTitle = FID_TO_STRING( featureItem.fid );
 
         if ( featureItem.errors.count() > 1 )
           return tr( "%1: %n Errors", "", featureItem.errors.count() ).arg( featureTitle );
