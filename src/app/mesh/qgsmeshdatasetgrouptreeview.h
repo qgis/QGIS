@@ -191,9 +191,6 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView : public QTreeView
     //! Selected dataset group for vectors changed. -1 for invalid group
     void activeVectorGroupChanged( int groupIndex );
 
-  private slots:
-    // void onSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
-
   private:
     void setActiveGroupFromActiveDataset();
 
