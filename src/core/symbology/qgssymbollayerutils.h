@@ -654,7 +654,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
       * Merges the local scale limits, if any, with the ones already in the map, if any
       * \since QGIS 3.0
       */
-    static void mergeScaleDependencies( int mScaleMinDenom, int mScaleMaxDenom, QgsStringMap &props );
+    static void mergeScaleDependencies( double mScaleMinDenom, double mScaleMaxDenom, QgsStringMap &props );
 
     /**
      * Encodes a reference to a parametric SVG into SLD, as a succession of parametric SVG using URL parameters,
