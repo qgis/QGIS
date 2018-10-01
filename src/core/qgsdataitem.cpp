@@ -809,8 +809,7 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
       continue;
     }
 
-    // vsizip support was added to GDAL/OGR 1.6 but GDAL_VERSION_NUM not available here
-    //   so we assume it's available anyway
+    if ( fileInfo.suffix() == QLatin1String( "zip" ) )
     {
       QgsDataItem *item = QgsZipItem::itemFromPath( this, path, name, mPath + '/' + name );
       if ( item )
@@ -1262,7 +1261,6 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren( const QString &favDir, 
 
 //-----------------------------------------------------------------------
 QStringList QgsZipItem::sProviderNames = QStringList();
-QVector<dataItem_t *> QgsZipItem::sDataItemPtr = QVector<dataItem_t *>();
 
 
 QgsZipItem::QgsZipItem( QgsDataItem *parent, const QString &name, const QString &path )
@@ -1287,51 +1285,8 @@ void QgsZipItem::init()
 
   if ( sProviderNames.isEmpty() )
   {
-    // QStringList keys = QgsProviderRegistry::instance()->providerList();
-    // only use GDAL and OGR providers as we use the VSIFILE mechanism
-    QStringList keys;
-    // keys << "ogr" << "gdal";
-    keys << QStringLiteral( "gdal" ) << QStringLiteral( "ogr" );
-
-    for ( const auto &k : qgis::as_const( keys ) )
-    {
-      QgsDebugMsgLevel( "provider " + k, 3 );
-      // some providers hangs with empty uri (PostGIS) etc...
-      // -> using libraries directly
-      std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( k ) );
-      if ( library )
-      {
-        dataCapabilities_t *dataCapabilities = reinterpret_cast< dataCapabilities_t * >( cast_to_fptr( library->resolve( "dataCapabilities" ) ) );
-        if ( !dataCapabilities )
-        {
-          QgsDebugMsg( library->fileName() + " does not have dataCapabilities" );
-          continue;
-        }
-        if ( dataCapabilities() == QgsDataProvider::NoDataCapabilities )
-        {
-          QgsDebugMsg( library->fileName() + " has NoDataCapabilities" );
-          continue;
-        }
-        QgsDebugMsg( QString( "%1 dataCapabilities : %2" ).arg( library->fileName() ).arg( dataCapabilities() ) );
-
-        dataItem_t *dataItem = reinterpret_cast< dataItem_t * >( cast_to_fptr( library->resolve( "dataItem" ) ) );
-        if ( ! dataItem )
-        {
-          QgsDebugMsg( library->fileName() + " does not have dataItem" );
-          continue;
-        }
-
-        // mLibraries.append( library );
-        sDataItemPtr.append( dataItem );
-        sProviderNames.append( k );
-      }
-      else
-      {
-        //QgsDebugMsg ( "Cannot get provider " + k );
-      }
-    }
+    sProviderNames << QStringLiteral( "OGR" ) << QStringLiteral( "OGR" );
   }
-
 }
 
 QVector<QgsDataItem *> QgsZipItem::createChildren()
@@ -1343,7 +1298,7 @@ QVector<QgsDataItem *> QgsZipItem::createChildren()
 
   mZipFileList.clear();
 
-  QgsDebugMsgLevel( QString( "mFilePath = %1 path = %2 name= %3 scanZipSetting= %4 vsiPrefix= %5" ).arg( mFilePath, path(), name(), scanZipSetting, mVsiPrefix ), 2 );
+  QgsDebugMsgLevel( QString( "mFilePath = %1 path = %2 name= %3 scanZipSetting= %4 vsiPrefix= %5" ).arg( mFilePath, path(), name(), scanZipSetting, mVsiPrefix ), 3 );
 
   // if scanZipBrowser == no: skip to the next file
   if ( scanZipSetting == QLatin1String( "no" ) )
@@ -1354,6 +1309,8 @@ QVector<QgsDataItem *> QgsZipItem::createChildren()
   // first get list of files
   getZipFileList();
 
+  const QList<QgsDataItemProvider *> providers = QgsApplication::dataItemProviderRegistry()->providers();
+
   // loop over files inside zip
   Q_FOREACH ( const QString &fileName, mZipFileList )
   {
@@ -1361,11 +1318,13 @@ QVector<QgsDataItem *> QgsZipItem::createChildren()
     tmpPath = mVsiPrefix + mFilePath + '/' + fileName;
     QgsDebugMsgLevel( "tmpPath = " + tmpPath, 3 );
 
-    // Q_FOREACH( dataItem_t *dataItem, mDataItemPtr )
-    for ( int i = 0; i < sProviderNames.size(); i++ )
+    for ( QgsDataItemProvider *provider : providers )
     {
+      if ( !sProviderNames.contains( provider->name() ) )
+        continue;
+
       // ugly hack to remove .dbf file if there is a .shp file
-      if ( sProviderNames[i] == QLatin1String( "ogr" ) )
+      if ( provider->name() == QStringLiteral( "OGR" ) )
       {
         if ( info.suffix().compare( QLatin1String( "dbf" ), Qt::CaseInsensitive ) == 0 )
         {
@@ -1378,26 +1337,19 @@ QVector<QgsDataItem *> QgsZipItem::createChildren()
         }
       }
 
-      // try to get data item from provider
-      dataItem_t *dataItem = sDataItemPtr.at( i );
-      if ( dataItem )
+      QgsDebugMsgLevel( QString( "trying to load item %1 with %2" ).arg( tmpPath, provider->name() ), 3 );
+      QgsDataItem *item = provider->createDataItem( tmpPath, this );
+      if ( item )
       {
-        QgsDebugMsgLevel( QString( "trying to load item %1 with %2" ).arg( tmpPath, sProviderNames.at( i ) ), 3 );
-        QgsDataItem *item = dataItem( tmpPath, this );
-        if ( item )
-        {
-          QgsDebugMsgLevel( "loaded item", 3 );
-          // the item comes with zipped file name, set the name to relative path within zip file
-          item->setName( fileName );
-          children.append( item );
-        }
-        else
-        {
-          QgsDebugMsgLevel( "not loaded item", 3 );
-        }
+        // the item comes with zipped file name, set the name to relative path within zip file
+        item->setName( fileName );
+        children.append( item );
+      }
+      else
+      {
+        QgsDebugMsgLevel( "not loaded item", 3 );
       }
     }
-
   }
 
   return children;
@@ -1412,7 +1364,6 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
 {
   QgsSettings settings;
   QString scanZipSetting = settings.value( QStringLiteral( "qgis/scanZipInBrowser2" ), "basic" ).toString();
-  int zipFileCount = 0;
   QStringList zipFileList;
   QString vsiPrefix = QgsZipItem::vsiPrefix( filePath );
   QgsZipItem *zipItem = nullptr;
@@ -1462,48 +1413,8 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
     QgsDebugMsgLevel( "returning zipItem", 3 );
     return zipItem;
   }
-  // if 1 or 0 child found, create a single data item using the normal path or the full path given by QgsZipItem
-  else
-  {
-    QString vsiPath = vsiPrefix + filePath;
-    if ( zipItem )
-    {
-      QVector<QgsDataItem *> children = zipItem->children();
-      if ( children.size() == 1 )
-      {
-        // take the name of the only child so we can get a normal data item from it
-        QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( children.first() );
-        if ( layerItem )
-          vsiPath = layerItem->uri();
-      }
-      zipFileCount = zipFileList.count();
-      delete zipItem;
-    }
 
-    QgsDebugMsgLevel( QString( "will try to create a normal dataItem from filePath= %2 or vsiPath = %3" ).arg( filePath, vsiPath ), 3 );
-
-    // try to open using registered providers (gdal and ogr)
-    for ( int i = 0; i < sProviderNames.size(); i++ )
-    {
-      dataItem_t *dataItem = sDataItemPtr.at( i );
-      if ( dataItem )
-      {
-        QgsDataItem *item = nullptr;
-        // try first with normal path (Passthru)
-        // this is to simplify .qml handling, and without this some tests will fail
-        // (e.g. testZipItemVectorTransparency(), second test)
-        if ( ( sProviderNames.at( i ) == QLatin1String( "ogr" ) ) ||
-             ( sProviderNames.at( i ) == QLatin1String( "gdal" ) && zipFileCount == 1 ) )
-          item = dataItem( filePath, parent );
-        // try with /vsizip/
-        if ( ! item )
-          item = dataItem( vsiPath, parent );
-        if ( item )
-          return item;
-      }
-    }
-  }
-
+  // if 1 or 0 child found, let provider(s) create individual items
   return nullptr;
 }
 

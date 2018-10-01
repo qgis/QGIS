@@ -44,7 +44,6 @@ QGISEXTERN QStringList wildcards();
 
 QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
 
-
 QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
                                   const QString &name, const QString &path, const QString &uri, LayerType layerType, bool isSubLayer )
   : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
@@ -501,7 +500,6 @@ bool QgsOgrDataCollectionItem::createConnection( const QString &name, const QStr
 
 
 // ---------------------------------------------------------------------------
-
 
 QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
