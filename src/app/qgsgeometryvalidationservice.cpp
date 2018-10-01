@@ -129,7 +129,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
   qDeleteAll( mLayerCheckStates[layer].topologyChecks );
 
   // TODO: ownership and lifetime of the context!!
-  auto context = new QgsGeometryCheckContext( 8, mProject->crs(), mProject->transformContext() );
+  auto context = new QgsGeometryCheckContext( log10( layer->geometryOptions()->geometryPrecision() ) * -1, mProject->crs(), mProject->transformContext() );
   QList<QgsGeometryCheck *> layerChecks;
 
   QgsGeometryCheckRegistry *checkRegistry = QgsAnalysis::instance()->geometryCheckRegistry();
