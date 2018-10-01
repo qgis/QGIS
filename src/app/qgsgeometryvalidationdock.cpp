@@ -37,6 +37,7 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   connect( mMapCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
   connect( mMapCanvas, &QgsMapCanvas::transformContextChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
+  connect( mTopologyChecksPendingButton, &QToolButton::clicked, this, &QgsGeometryValidationDock::triggerTopologyChecks );
 
   mFeatureRubberband = new QgsRubberBand( mMapCanvas );
   mErrorRubberband = new QgsRubberBand( mMapCanvas );
@@ -54,6 +55,8 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   mErrorLocationRubberband->setWidth( scaleFactor );
   mErrorLocationRubberband->setIconSize( scaleFactor * 5 );
   mErrorLocationRubberband->setColor( QColor( 50, 255, 50, 255 ) );
+
+  mProblemDetailWidget->setVisible( false );
 }
 
 
@@ -104,6 +107,13 @@ void QgsGeometryValidationDock::zoomToFeature()
   mMapCanvas->zoomToFeatureExtent( mapExtent );
 }
 
+void QgsGeometryValidationDock::triggerTopologyChecks()
+{
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+  if ( layer )
+    mGeometryValidationService->triggerTopologyChecks( layer );
+}
+
 void QgsGeometryValidationDock::updateLayerTransform()
 {
   if ( !mMapCanvas->currentLayer() )
@@ -130,13 +140,18 @@ QModelIndex QgsGeometryValidationDock::currentIndex() const
 void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &current, const QModelIndex &previous )
 {
   Q_UNUSED( previous )
+
+  mProblemDetailWidget->setVisible( current.isValid() );
+
   mNextButton->setEnabled( current.isValid() && current.row() < mGeometryValidationModel->rowCount() - 1 );
   mPreviousButton->setEnabled( current.isValid() && current.row() > 0 );
 
   mProblemDetailWidget->setVisible( current.isValid() );
-  mProblemDescriptionLabel->setText( current.data().toString() );
+  mProblemDescriptionLabel->setText( current.data( QgsGeometryValidationModel::DetailsRole ).toString() );
+
+  QgsGeometryCheckError *error = current.data( QgsGeometryValidationModel::GeometryCheckErrorRole ).value<QgsGeometryCheckError *>();
+  if ( error )
   {
-    QgsGeometryCheckError *error = current.data( QgsGeometryValidationModel::GeometryCheckErrorRole ).value<QgsGeometryCheckError *>();
     while ( QPushButton *btn =  mResolutionWidget->findChild<QPushButton *>() )
       delete btn;
     const QStringList resolutionMethods = error->check()->resolutionMethods();

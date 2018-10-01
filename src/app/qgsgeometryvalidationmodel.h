@@ -20,7 +20,8 @@ class QgsGeometryValidationModel : public QAbstractItemModel
       ErrorGeometryRole,
       FeatureGeometryRole,
       ErrorLocationGeometryRole,
-      GeometryCheckErrorRole
+      GeometryCheckErrorRole,
+      DetailsRole
     };
 
     QgsGeometryValidationModel( QgsGeometryValidationService *geometryValidationService, QObject *parent = nullptr );

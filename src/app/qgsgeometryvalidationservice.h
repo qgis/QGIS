@@ -67,6 +67,8 @@ class QgsGeometryValidationService : public QObject
 
     void fixError( const QgsGeometryCheckError *error, int method );
 
+    void triggerTopologyChecks( QgsVectorLayer *layer );
+
   signals:
     void geometryCheckStarted( QgsVectorLayer *layer, QgsFeatureId fid );
     void geometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<std::shared_ptr<QgsSingleGeometryCheckError>> &errors );
@@ -88,8 +90,6 @@ class QgsGeometryValidationService : public QObject
     void cancelChecks( QgsVectorLayer *layer, QgsFeatureId fid );
 
     void processFeature( QgsVectorLayer *layer, QgsFeatureId fid );
-
-    void triggerTopologyChecks( QgsVectorLayer *layer );
 
     QgsProject *mProject = nullptr;
 

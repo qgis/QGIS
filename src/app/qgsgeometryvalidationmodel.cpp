@@ -52,6 +52,8 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
     switch ( role )
     {
       case Qt::DisplayRole:
+        FALLTHROUGH;
+      case DetailsRole:
       {
         const QgsFeatureId fid = topologyError->featureId();
         const QgsFeature feature = mCurrentLayer->getFeature( fid ); // TODO: this should be cached!
@@ -133,6 +135,40 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
           return QgsApplication::getThemeIcon( "/mActionTracing.svg" );
         else
           return QVariant();
+      }
+
+      case GeometryCheckErrorRole:
+      {
+        // Not (yet?) used
+        break;
+      }
+
+      case FeatureExtentRole:
+      {
+        return mCurrentLayer->getFeature( featureItem.fid ).geometry().boundingBox();
+      }
+
+      case ErrorLocationGeometryRole:
+      {
+        QgsSingleGeometryCheckError *error = featureItem.errors.first().get();
+        return error->errorLocation();
+      }
+
+      case ProblemExtentRole:
+      {
+        QgsSingleGeometryCheckError *error = featureItem.errors.first().get();
+        return error->errorLocation().boundingBox();
+      }
+
+      case DetailsRole:
+      {
+        QStringList details;
+        for ( const std::shared_ptr<QgsSingleGeometryCheckError> &error : qgis::as_const( featureItem.errors ) )
+        {
+          details << error->description();
+        }
+
+        return details.join( '\n' );
       }
 
       default:
