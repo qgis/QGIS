@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsgdaldataitems.h"
 #include "qgsgdalprovider.h"
 #include "qgslogger.h"
@@ -125,13 +126,9 @@ static QStringList sExtensions = QStringList();
 static QStringList sWildcards = QStringList();
 static QMutex sBuildingFilters;
 
-QGISEXTERN int dataCapabilities()
+QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
-  return QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net;
-}
-
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
-{
+  QString path( pathIn );
   if ( path.isEmpty() )
     return nullptr;
 
@@ -261,15 +258,12 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   QStringList ogrSupportedDbDriverNames;
   ogrSupportedDbDriverNames << QStringLiteral( "GPKG" ) << QStringLiteral( "db" ) << QStringLiteral( "gdb" );
 
-  // skip archived item in favor of OGR if scanExtSetting && scanZipSetting is basic
-  if ( scanExtSetting && ( is_vsizip || is_vsitar || is_vsigzip ) && scanZipSetting == QLatin1String( "basic" ) )
-  {
-    return nullptr;
-  }
-
-  // return item without testing if scanExtSetting is true
-  // netCDF files can be both raster or vector, so fallback to opening
-  if ( scanExtSetting  && !is_vsizip && !is_vsigzip && !is_vsitar && suffix != QLatin1String( "nc" ) )
+  // return item without testing if:
+  // scanExtSetting
+  // or zipfile and scan zip == "Basic scan"
+  if ( ( scanExtSetting ||
+         ( ( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) ) &&
+       suffix != QLatin1String( "nc" ) )
   {
     // Skip this layer if it's handled by ogr:
     if ( ogrSupportedDbLayersExtensions.contains( suffix ) )

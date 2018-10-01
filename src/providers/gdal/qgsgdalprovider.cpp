@@ -25,7 +25,9 @@
 #include "qgsauthmanager.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdataitem.h"
+#include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
+#include "qgsgdaldataitems.h"
 #include "qgshtmlutils.h"
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
@@ -3220,6 +3222,12 @@ QGISEXTERN void cleanupProvider()
   // calling GDALDestroyDriverManager()
 }
 
+QGISEXTERN QList< QgsDataItemProvider * > *dataItemProviders()
+{
+  QList< QgsDataItemProvider * > *providers = new QList< QgsDataItemProvider * >();
+  *providers << new QgsGdalDataItemProvider;
+  return providers;
+}
 
 #ifdef HAVE_GUI
 

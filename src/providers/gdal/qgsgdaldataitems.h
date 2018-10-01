@@ -16,6 +16,8 @@
 #define QGSGDALDATAITEMS_H
 
 #include "qgsdataitem.h"
+#include "qgsdataitemprovider.h"
+#include "qgsdataprovider.h"
 
 class QgsGdalLayerItem : public QgsLayerItem
 {
@@ -35,6 +37,17 @@ class QgsGdalLayerItem : public QgsLayerItem
     QVector<QgsDataItem *> createChildren() override;
 
     QString layerName() const override;
+};
+
+//! Provider for GDAL root data item
+class QgsGdalDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override { return QStringLiteral( "GDAL" ); }
+
+    int capabilities() override { return QgsDataProvider::File | QgsDataProvider::Dir; }
+
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
 
 #endif // QGSGDALDATAITEMS_H
