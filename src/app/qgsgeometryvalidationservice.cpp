@@ -174,6 +174,27 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
   mLayerCheckStates[layer].topologyChecks = topologyChecks;
 }
 
+void QgsGeometryValidationService::cancelTopologyCheck( QgsVectorLayer *layer )
+{
+  QFutureWatcher<void> *futureWatcher = mLayerCheckStates[layer].topologyCheckFutureWatcher;
+  if ( futureWatcher )
+  {
+    // Make sure no more checks are started first
+    futureWatcher->cancel();
+
+    // Tell all checks to stop asap
+    const auto feedbacks = mLayerCheckStates[layer].topologyCheckFeedbacks;
+    for ( QgsFeedback *feedback : feedbacks )
+    {
+      if ( feedback )
+        feedback->cancel();
+    }
+
+    futureWatcher->waitForFinished();
+    mLayerCheckStates[layer].topologyCheckFutureWatcher = nullptr;
+  }
+}
+
 void QgsGeometryValidationService::cancelChecks( QgsVectorLayer *layer, QgsFeatureId fid )
 {
 
@@ -204,24 +225,7 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
 void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer )
 {
   emit topologyChecksCleared( layer );
-
-  QFutureWatcher<void> *futureWatcher = mLayerCheckStates[layer].topologyCheckFutureWatcher;
-  if ( futureWatcher )
-  {
-    // Make sure no more checks are started first
-    futureWatcher->cancel();
-
-    // Tell all checks to stop asap
-    const auto feedbacks = mLayerCheckStates[layer].topologyCheckFeedbacks;
-    for ( QgsFeedback *feedback : feedbacks )
-    {
-      if ( feedback )
-        feedback->cancel();
-    }
-
-    // The future watcher will take care of deleting
-    mLayerCheckStates[layer].topologyCheckFeedbacks.clear();
-  }
+  cancelTopologyCheck( layer );
 
   QgsFeatureIds affectedFeatureIds = layer->editBuffer()->changedGeometries().keys().toSet();
   affectedFeatureIds.unite( layer->editBuffer()->addedFeatures().keys().toSet() );
@@ -282,7 +286,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
     errorLocker.unlock();
   } );
 
-  futureWatcher = new QFutureWatcher<void>();
+  QFutureWatcher<void> *futureWatcher = new QFutureWatcher<void>();
   futureWatcher->setFuture( future );
 
   connect( futureWatcher, &QFutureWatcherBase::finished, this, [&allErrors, layer, feedbacks, futureWatcher, this]()
