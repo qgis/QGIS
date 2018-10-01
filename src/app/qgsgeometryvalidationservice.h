@@ -84,7 +84,7 @@ class QgsGeometryValidationService : public QObject
 
     void cancelTopologyCheck( QgsVectorLayer *layer );
 
-    void cancelChecks( QgsVectorLayer *layer, QgsFeatureId fid );
+    void invalidateTopologyChecks( QgsVectorLayer *layer );
 
     void processFeature( QgsVectorLayer *layer, QgsFeatureId fid );
 
