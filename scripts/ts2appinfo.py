@@ -85,7 +85,7 @@ for elem in ['name', 'summary', 'description']:
 
 d.write(sys.argv[1] + "/org.qgis.qgis.appdata.xml", encoding="UTF-8", xml_declaration=True)
 
-f = open(sys.argv[1] + "/org.qgis.qgis.desktop", "w")
+f = open(sys.argv[1] + "/org.qgis.qgis.desktop", "w", encoding="utf-8")
 
 for line in lines:
     skip = False
@@ -97,10 +97,7 @@ for line in lines:
             t = line.strip()[len(prefix) + 1:]
             for lang in strings[t]:
                 l = "{}[{}]={}\n".format(prefix, lang, strings[t][lang])
-                try:
-                    f.write(l.decode("utf-8"))
-                except AttributeError:
-                    f.write(l)
+                f.write(l)
 
         elif line.startswith(prefix + "["):
             skip = True
