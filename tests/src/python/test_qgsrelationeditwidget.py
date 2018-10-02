@@ -190,7 +190,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         btn.click()
         # magically the above code selects the feature here...
 
-        link_feature = list(next(self.vl_link.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0])))))[0]
+        link_feature = next(self.vl_link.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0])))))
         self.assertIsNotNone(link_feature[0])
 
         self.assertEqual(self.table_view.model().rowCount(), 1)
@@ -199,19 +199,19 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         Check if a linked feature can be unlinked
         """
-        wrapper = self.createWrapper(self.vl_b)   # NOQA
+        wrapper=self.createWrapper(self.vl_b)   # NOQA
 
         # All authors are listed
         self.assertEqual(self.table_view.model().rowCount(), 4)
 
-        it = self.vl_a.getFeatures(
+        it=self.vl_a.getFeatures(
             QgsFeatureRequest().setFilterExpression('"name" IN (\'Richard Helm\', \'Ralph Johnson\')'))
 
         self.widget.featureSelectionManager().select([f.id() for f in it])
 
         self.assertEqual(2, self.widget.featureSelectionManager().selectedFeatureCount())
 
-        btn = self.widget.findChild(QToolButton, 'mUnlinkFeatureButton')
+        btn=self.widget.findChild(QToolButton, 'mUnlinkFeatureButton')
         btn.click()
 
         # This is actually more checking that the database on delete action is properly set on the relation
@@ -223,18 +223,18 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         Test the automatic discovery of relations
         """
-        relations = self.relMgr.discoverRelations([], [self.vl_a, self.vl_b, self.vl_link])
-        relations = {r.name(): r for r in relations}
+        relations=self.relMgr.discoverRelations([], [self.vl_a, self.vl_b, self.vl_link])
+        relations={r.name(): r for r in relations}
         self.assertEqual({'books_authors_fk_book_fkey', 'books_authors_fk_author_fkey'}, set(relations.keys()))
 
-        ba2b = relations['books_authors_fk_book_fkey']
+        ba2b=relations['books_authors_fk_book_fkey']
         self.assertTrue(ba2b.isValid())
         self.assertEqual('books_authors', ba2b.referencingLayer().name())
         self.assertEqual('books', ba2b.referencedLayer().name())
         self.assertEqual([0], ba2b.referencingFields())
         self.assertEqual([0], ba2b.referencedFields())
 
-        ba2a = relations['books_authors_fk_author_fkey']
+        ba2a=relations['books_authors_fk_author_fkey']
         self.assertTrue(ba2a.isValid())
         self.assertEqual('books_authors', ba2a.referencingLayer().name())
         self.assertEqual('authors', ba2a.referencedLayer().name())
@@ -250,9 +250,9 @@ class TestQgsRelationEditWidget(unittest.TestCase):
 
         :return: None
         """
-        lyrs = [self.vl_a, self.vl_b, self.vl_link]
+        lyrs=[self.vl_a, self.vl_b, self.vl_link]
 
-        self.transaction = QgsTransaction.create(lyrs)
+        self.transaction=QgsTransaction.create(lyrs)
         self.transaction.begin()
         for l in lyrs:
             l.startEditing()
@@ -265,12 +265,12 @@ class TestQgsRelationEditWidget(unittest.TestCase):
 
         :return: None
         """
-        lyrs = [self.vl_a, self.vl_b, self.vl_link]
+        lyrs=[self.vl_a, self.vl_b, self.vl_link]
         for l in lyrs:
             l.commitChanges()
         self.transaction.rollback()
 
-    def createWrapper(self, layer, filter=None):
+    def createWrapper(self, layer, filter = None):
         """
         Basic setup of a relation widget wrapper.
         Will create a new wrapper and set its feature to the one and only book
@@ -283,28 +283,28 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         :return: The created wrapper
         """
         if layer == self.vl_b:
-            relation = self.rel_b
-            nmrel = self.rel_a
+            relation=self.rel_b
+            nmrel=self.rel_a
         else:
-            relation = self.rel_a
-            nmrel = self.rel_b
+            relation=self.rel_a
+            nmrel=self.rel_b
 
-        self.wrapper = QgsRelationWidgetWrapper(layer, relation)
+        self.wrapper=QgsRelationWidgetWrapper(layer, relation)
         self.wrapper.setConfig({'nm-rel': nmrel.id()})
-        context = QgsAttributeEditorContext()
+        context=QgsAttributeEditorContext()
         context.setVectorLayerTools(self.vltools)
         self.wrapper.setContext(context)
 
-        self.widget = self.wrapper.widget()
+        self.widget=self.wrapper.widget()
         self.widget.show()
 
-        request = QgsFeatureRequest()
+        request=QgsFeatureRequest()
         if filter:
             request.setFilterExpression(filter)
-        book = next(layer.getFeatures(request))
+        book=next(layer.getFeatures(request))
         self.wrapper.setFeature(book)
 
-        self.table_view = self.widget.findChild(QTableView)
+        self.table_view=self.widget.findChild(QTableView)
         return self.wrapper
 
 
@@ -321,7 +321,7 @@ class VlTools(QgsVectorLayerTools):
         :param values: An array of values that shall be used for the next inserted record
         :return: None
         """
-        self.values = values
+        self.values=values
 
     def addFeature(self, layer, defaultValues, defaultGeometry):
         """
@@ -331,16 +331,16 @@ class VlTools(QgsVectorLayerTools):
         :param defaultGeometry: a default geometry that may be provided by QGIS
         :return: tuple(ok, f) where ok is if the layer added the feature and f is the added feature
         """
-        values = list()
+        values=list()
         for i, v in enumerate(self.values):
             if v:
                 values.append(v)
             else:
                 values.append(layer.dataProvider().defaultValueClause(i))
-        f = QgsFeature(layer.fields())
+        f=QgsFeature(layer.fields())
         f.setAttributes(self.values)
         f.setGeometry(defaultGeometry)
-        ok = layer.addFeature(f)
+        ok=layer.addFeature(f)
 
         return ok, f
 
