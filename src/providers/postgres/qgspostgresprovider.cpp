@@ -590,7 +590,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
 
         Q_FOREACH ( const QgsFeatureId featureId, featureIds )
         {
-          expr += delim + FID_TO_STRING( pkType == PktOid ? featureId : pkType == PktUint64 ? featureId : FID2PKINT( featureId ) );
+          expr += delim + FID_TO_STRING( ( pkType == PktOid ? featureId : pkType == PktUint64 ? featureId : FID2PKINT( featureId ) ) );
           delim = ',';
         }
         expr += ')';
