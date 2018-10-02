@@ -96,7 +96,7 @@ class QgsGeometryValidationService : public QObject
       QList< QgsGeometryCheck *> topologyChecks;
       QFutureWatcher<void> *topologyCheckFutureWatcher = nullptr;
       QList<QgsFeedback *> topologyCheckFeedbacks; // will be deleted when topologyCheckFutureWatcher is delteed
-      QList<QgsGeometryCheckError *> topologyCheckErrors;
+      QList<std::shared_ptr<QgsGeometryCheckError>> topologyCheckErrors;
       QList<QMetaObject::Connection> connections;
       QgsGeometryCheckContext *context = nullptr;
     };

@@ -270,7 +270,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
     mFeaturePools.insert( layer->id(), featurePool );
   }
 
-  QList<QgsGeometryCheckError *> &allErrors = mLayerChecks[layer].topologyCheckErrors;
+  QList<std::shared_ptr<QgsGeometryCheckError>> &allErrors = mLayerChecks[layer].topologyCheckErrors;
   QMap<QString, QgsFeatureIds> layerIds;
 
   QgsFeatureRequest request = QgsFeatureRequest( affectedFeatureIds ).setSubsetOfAttributes( QgsAttributeList() );
@@ -306,13 +306,13 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
 
     check->collectErrors( mFeaturePools, errors, messages, feedback, layerFeatureIds );
     QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Write );
-    allErrors.append( errors );
 
     QList<std::shared_ptr<QgsGeometryCheckError> > sharedErrors;
     for ( QgsGeometryCheckError *error : errors )
     {
       sharedErrors.append( std::shared_ptr<QgsGeometryCheckError>( error ) );
     }
+    allErrors.append(sharedErrors);
     if ( !feedback->isCanceled() )
       emit topologyChecksUpdated( layer, sharedErrors );
 
