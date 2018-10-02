@@ -35,11 +35,38 @@ QgsGeometryValidationService::QgsGeometryValidationService( QgsProject *project 
   connect( project, &QgsProject::layersAdded, this, &QgsGeometryValidationService::onLayersAdded );
 }
 
-void QgsGeometryValidationService::fixError( const QgsGeometryCheckError *error, int method )
+void QgsGeometryValidationService::fixError( QgsGeometryCheckError *error, int method )
 {
   QgsGeometryCheck::Changes changes;
-  QgsGeometryCheckError *nonconsterr = const_cast<QgsGeometryCheckError *>( error );
-  error->check()->fixError( mFeaturePools, nonconsterr, method, QMap<QString, int>(), changes );
+  error->check()->fixError( mFeaturePools, error, method, QMap<QString, int>(), changes );
+  error->setFixed( method );
+
+  QgsFeaturePool *featurePool = mFeaturePools.value( error->layerId() );
+
+  QgsVectorLayer *layer;
+
+  if ( featurePool )
+    layer = featurePool->layer();
+  else
+  {
+    // Some checks don't tell us on which layer they are because they are able to do cross-layer checks.
+    // E.g. the gap check will report in such a way
+
+    for ( auto layerCheck = mLayerChecks.constBegin(); layerCheck != mLayerChecks.constEnd(); ++layerCheck )
+    {
+      const QList<std::shared_ptr<QgsGeometryCheckError>> &topologyCheckErrors = layerCheck.value().topologyCheckErrors;
+      for ( const auto &checkError : topologyCheckErrors )
+      {
+        if ( checkError.get() == error )
+        {
+          layer = layerCheck.key();
+          break;
+        }
+      }
+    }
+  }
+
+  emit topologyErrorUpdated( layer, error );
 }
 
 void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &layers )

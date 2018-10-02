@@ -60,7 +60,7 @@ class QgsGeometryValidationService : public QObject
     QgsGeometryValidationService( QgsProject *project );
     ~QgsGeometryValidationService() = default;
 
-    void fixError( const QgsGeometryCheckError *error, int method );
+    void fixError( QgsGeometryCheckError *error, int method );
 
     void triggerTopologyChecks( QgsVectorLayer *layer );
 
