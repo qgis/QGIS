@@ -134,9 +134,6 @@ class ParametersPanel(BASE, WIDGET):
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
 
-            if self.in_place and param.name() in ('INPUT', 'OUTPUT'):
-                continue
-
             if param.isDestination():
                 continue
             else:
@@ -154,6 +151,13 @@ class ParametersPanel(BASE, WIDGET):
                     wrapper.registerProcessingContextGenerator(self.context_generator)
                 else:
                     widget = wrapper.widget
+
+                if self.in_place and param.name() in ('INPUT', 'OUTPUT'):
+                    # don't show the input/output parameter widgets in in-place mode
+                    # we still need to CREATE them, because other wrappers may need to interact
+                    # with them (e.g. those parameters which need the input layer for field
+                    # selections/crs properties/etc)
+                    continue
 
                 if widget is not None:
                     if is_python_wrapper:
