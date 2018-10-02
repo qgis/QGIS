@@ -299,13 +299,13 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
   // OSM layers (especially large ones) need the GDALDataset::GetNextFeature() call rather than OGRLayer::GetNextFeature()
   // see more details here: https://trac.osgeo.org/gdal/wiki/rfc66_randomlayerreadwrite
 
-#ifdef GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
   if ( mSource->mDriverName == QLatin1String( "OSM" ) )
   {
     OGRLayerH nextFeatureBelongingLayer;
     while ( fet.reset( GDALDatasetGetNextFeature( mConn->ds, &nextFeatureBelongingLayer, nullptr, nullptr, nullptr ) ), fet )
     {
-      if ( checkFeature( fet, feature ) && QString::compare( QString::fromLatin1( OGR_L_GetName( nextFeatureBelongingLayer ) ), mSource->mLayerName ) == 0 )
+      if ( nextFeatureBelongingLayer == mOgrLayer && checkFeature( fet, feature ) )
       {
         return true;
       }
