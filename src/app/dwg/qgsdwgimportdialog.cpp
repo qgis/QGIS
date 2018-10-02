@@ -46,19 +46,19 @@
 #include "qgsproperty.h"
 #include "qgslayertree.h"
 #include "qgsguiutils.h"
+#include "qgsfilewidget.h"
 
 QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDwgImportDialog::buttonBox_accepted );
-  connect( pbBrowseDatabase, &QPushButton::clicked, this, &QgsDwgImportDialog::pbBrowseDatabase_clicked );
+  connect( mDatabaseFileWidget, &QgsFileWidget::fileChanged, this, &QgsDwgImportDialog::mDatabaseFileWidget_textChanged );
   connect( pbBrowseDrawing, &QPushButton::clicked, this, &QgsDwgImportDialog::pbBrowseDrawing_clicked );
   connect( pbImportDrawing, &QPushButton::clicked, this, &QgsDwgImportDialog::pbImportDrawing_clicked );
   connect( pbLoadDatabase, &QPushButton::clicked, this, &QgsDwgImportDialog::pbLoadDatabase_clicked );
   connect( pbSelectAll, &QPushButton::clicked, this, &QgsDwgImportDialog::pbSelectAll_clicked );
   connect( pbDeselectAll, &QPushButton::clicked, this, &QgsDwgImportDialog::pbDeselectAll_clicked );
-  connect( leDatabase, &QLineEdit::textChanged, this, &QgsDwgImportDialog::leDatabase_textChanged );
   connect( leLayerGroup, &QLineEdit::textChanged, this, &QgsDwgImportDialog::leLayerGroup_textChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDwgImportDialog::showHelp );
 
@@ -66,6 +66,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   cbExpandInserts->setChecked( s.value( QStringLiteral( "/DwgImport/lastExpandInserts" ), true ).toBool() );
   cbMergeLayers->setChecked( s.value( QStringLiteral( "/DwgImport/lastMergeLayers" ), false ).toBool() );
   cbUseCurves->setChecked( s.value( QStringLiteral( "/DwgImport/lastUseCurves" ), true ).toBool() );
+  mDatabaseFileWidget->setDefaultRoot( s.value( QStringLiteral( "/DwgImport/lastDirDatabase" ), QDir::homePath() ).toString() );
 
   leDrawing->setReadOnly( true );
   pbImportDrawing->setHidden( true );
@@ -100,9 +101,9 @@ void QgsDwgImportDialog::updateUI()
   bool dbReadable = false;
   bool dwgReadable = false;
 
-  if ( !leDatabase->text().isEmpty() )
+  if ( !mDatabaseFileWidget->filePath().isEmpty() )
   {
-    QFileInfo fi( leDatabase->text() );
+    QFileInfo fi( mDatabaseFileWidget->filePath() );
     dbAvailable = fi.exists() ? fi.isWritable() : QFileInfo( fi.path() ).isWritable();
     dbReadable = fi.exists() && fi.isReadable();
   }
@@ -121,39 +122,10 @@ void QgsDwgImportDialog::updateUI()
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( mLayers->rowCount() > 0 && !leLayerGroup->text().isEmpty() );
 }
 
-void QgsDwgImportDialog::pbBrowseDatabase_clicked()
+void QgsDwgImportDialog::mDatabaseFileWidget_textChanged( const QString &filename )
 {
   QgsSettings s;
-  QString dir( s.value( QStringLiteral( "/DwgImport/lastDirDatabase" ), QDir::homePath() ).toString() );
-  QString filename = QFileDialog::getSaveFileName( this, tr( "Specify GeoPackage database" ), dir, tr( "GeoPackage database" ) + " (*.gpkg *.GPKG)", nullptr, QFileDialog::DontConfirmOverwrite );
-  if ( filename.isEmpty() )
-    return;
-
-  QFileInfo fi( filename );
-  if ( fi.exists() && ( QMessageBox::question( this,
-                        tr( "File exists" ),
-                        tr( "The file already exists. Do you want to overwrite the existing file?" ),
-                        QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel ) )
-  {
-    leDatabase->clear();
-    return;
-  }
-  else
-  {
-
-    if ( !( filename.endsWith( ".gpkg" ) || filename.endsWith( ".GPKG" ) ) )
-      filename.append( ".gpkg" );
-
-    leDatabase->setText( filename );
-    s.setValue( QStringLiteral( "/DwgImport/lastDirDatabase" ), QFileInfo( filename ).canonicalPath() );
-  }
-
-  updateUI();
-}
-
-void QgsDwgImportDialog::leDatabase_textChanged( const QString &text )
-{
-  Q_UNUSED( text );
+  s.setValue( QStringLiteral( "/DwgImport/lastDirDatabase" ), QFileInfo( filename ).canonicalPath() );
   updateUI();
 }
 
@@ -165,7 +137,7 @@ void QgsDwgImportDialog::leLayerGroup_textChanged( const QString &text )
 
 void QgsDwgImportDialog::pbLoadDatabase_clicked()
 {
-  if ( !QFileInfo::exists( leDatabase->text() ) )
+  if ( !QFileInfo::exists( mDatabaseFileWidget->filePath() ) )
     return;
 
   QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
@@ -174,7 +146,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
 
   QgsVectorLayer::LayerOptions options;
   options.loadDefaultStyle = false;
-  std::unique_ptr<QgsVectorLayer> d( new QgsVectorLayer( QStringLiteral( "%1|layername=drawing" ).arg( leDatabase->text() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options ) );
+  std::unique_ptr<QgsVectorLayer> d( new QgsVectorLayer( QStringLiteral( "%1|layername=drawing" ).arg( mDatabaseFileWidget->filePath() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options ) );
   if ( d && d->isValid() )
   {
     int idxPath = d->fields().lookupField( QStringLiteral( "path" ) );
@@ -209,7 +181,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
 
   lblMessage->setVisible( lblVisible );
 
-  std::unique_ptr<QgsVectorLayer> l( new QgsVectorLayer( QStringLiteral( "%1|layername=layers" ).arg( leDatabase->text() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options ) );
+  std::unique_ptr<QgsVectorLayer> l( new QgsVectorLayer( QStringLiteral( "%1|layername=layers" ).arg( mDatabaseFileWidget->filePath() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options ) );
   if ( l && l->isValid() )
   {
     int idxName = l->fields().lookupField( QStringLiteral( "name" ) );
@@ -268,7 +240,7 @@ void QgsDwgImportDialog::pbImportDrawing_clicked()
 {
   QgsTemporaryCursorOverride waitCursor( Qt::BusyCursor );
 
-  QgsDwgImporter importer( leDatabase->text(), mCrsSelector->crs() );
+  QgsDwgImporter importer( mDatabaseFileWidget->filePath(), mCrsSelector->crs() );
 
   QString error;
   if ( importer.import( leDrawing->text(), error, cbExpandInserts->isChecked(), cbUseCurves->isChecked() ) )
@@ -287,7 +259,7 @@ QgsVectorLayer *QgsDwgImportDialog::layer( QgsLayerTreeGroup *layerGroup, const 
 {
   QgsVectorLayer::LayerOptions options;
   options.loadDefaultStyle = false;
-  QgsVectorLayer *l = new QgsVectorLayer( QStringLiteral( "%1|layername=%2" ).arg( leDatabase->text(), table ), table, QStringLiteral( "ogr" ), options );
+  QgsVectorLayer *l = new QgsVectorLayer( QStringLiteral( "%1|layername=%2" ).arg( mDatabaseFileWidget->filePath(), table ), table, QStringLiteral( "ogr" ), options );
   l->setSubsetString( QStringLiteral( "%1space=0 AND block=-1" ).arg( layerFilter ) );
 
   if ( l->featureCount() == 0 )
