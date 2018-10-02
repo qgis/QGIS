@@ -20,8 +20,12 @@
 #include "qgslogger.h"
 #include "qgsmssqlprovider.h"
 
-QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString &connectionName, bool useEstimatedMetadata )
-  : mConnectionName( connectionName )
+QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool useEstimatedMetadata )
+  : mService( service )
+  , mHost( host )
+  , mDatabase( database )
+  , mUsername( username )
+  , mPassword( password )
   , mUseEstimatedMetadata( useEstimatedMetadata )
   , mStopped( false )
 {
@@ -67,7 +71,7 @@ void QgsMssqlGeomColumnTypeThread::run()
                             layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( layerProperty.sql ) );
 
       // issue the sql query
-      QSqlDatabase db = QSqlDatabase::database( QgsMssqlProvider::dbConnectionName( mConnectionName ) );
+      QSqlDatabase db = QgsMssqlProvider::GetDatabase( mService, mHost, mDatabase, mUsername, mPassword );
       if ( !QgsMssqlProvider::OpenDatabase( db ) )
       {
         QgsDebugMsg( db.lastError().text() );
