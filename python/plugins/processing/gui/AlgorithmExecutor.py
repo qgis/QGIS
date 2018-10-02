@@ -124,7 +124,12 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
                 raise QgsProcessingException(tr("Selected algorithm and parameter configuration are not compatible with in-place modifications."))
             field_idxs = range(len(active_layer.fields()))
             feature_iterator = active_layer.getFeatures(QgsFeatureRequest(active_layer.selectedFeatureIds())) if parameters['INPUT'].selectedFeaturesOnly else active_layer.getFeatures()
-            for f in feature_iterator:
+            step = 100 / len(active_layer.selectedFeatureIds()) if active_layer.selectedFeatureIds() else 1
+            for current, f in enumerate(feature_iterator):
+                feedback.setProgress(current * step)
+                if feedback.isCanceled():
+                    break
+
                 # need a deep copy, because python processFeature implementations may return
                 # a shallow copy from processFeature
                 input_feature = QgsFeature(f)
