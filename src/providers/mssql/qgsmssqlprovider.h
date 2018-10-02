@@ -139,6 +139,11 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     QgsCoordinateReferenceSystem crs() const override;
 
+    /**
+     * Returns a thread-safe connection name for use with QSqlDatabase
+     */
+    static QString dbConnectionName( const QString &name );
+
   protected:
     //! Loads fields from input file to member attributeFields
     QVariant::Type DecodeSqlType( const QString &sqlTypeName );
