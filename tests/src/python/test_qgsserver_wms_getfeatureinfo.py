@@ -322,6 +322,35 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\''),
                                  'wms_getfeatureinfo_filter_no_width')
 
+    def testGetFeatureInfoTolerance(self):
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=layer3&styles=&' +
+                                 'VERSION=1.3.0&' +
+                                 'info_format=text%2Fxml&' +
+                                 'width=400&height=200' +
+                                 '&bbox=913119.2,5605988.9,913316.0,5606047.4' +
+                                 '&CRS=EPSG:3857' +
+                                 '&FEATURE_COUNT=10' +
+                                 '&WITH_GEOMETRY=False' +
+                                 '&QUERY_LAYERS=layer3&I=193&J=100' +
+                                 '&FI_POINT_TOLERANCE=0',
+                                 'wms_getfeatureinfo_point_tolerance_0_text_xml',
+                                 'test_project_values.qgz')
+
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=layer3&styles=&' +
+                                 'VERSION=1.3.0&' +
+                                 'info_format=text%2Fxml&' +
+                                 'width=400&height=200' +
+                                 '&bbox=913119.2,5605988.9,913316.0,5606047.4' +
+                                 '&CRS=EPSG:3857' +
+                                 '&FEATURE_COUNT=10' +
+                                 '&WITH_GEOMETRY=False' +
+                                 '&QUERY_LAYERS=layer3&I=193&J=100' +
+                                 '&FI_POINT_TOLERANCE=20',
+                                 'wms_getfeatureinfo_point_tolerance_20_text_xml',
+                                 'test_project_values.qgz')
+
 
 if __name__ == '__main__':
     unittest.main()
