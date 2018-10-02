@@ -79,8 +79,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     // TODO: provide a method of QgsMapToPixel to fetch map center
     //       in geographical units
     QgsPointXY center = mapToPixel.toMapCoordinates(
-                          mapToPixel.mapWidth() / 2.0,
-                          mapToPixel.mapHeight() / 2.0
+                          static_cast<int>( mapToPixel.mapWidth() / 2.0 ),
+                          static_cast<int>( mapToPixel.mapHeight() / 2.0 )
                         );
     mapToPixel.setMapRotation( 0, center.x(), center.y() );
   }
@@ -188,10 +188,10 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   mRasterViewPort->mBottomRightPoint.setY( std::ceil( mRasterViewPort->mBottomRightPoint.y() ) );
   // recalc myRasterExtent to aligned values
   myRasterExtent.set(
-    mapToPixel.toMapCoordinatesF( mRasterViewPort->mTopLeftPoint.x(),
-                                  mRasterViewPort->mBottomRightPoint.y() ),
-    mapToPixel.toMapCoordinatesF( mRasterViewPort->mBottomRightPoint.x(),
-                                  mRasterViewPort->mTopLeftPoint.y() )
+    mapToPixel.toMapCoordinates( mRasterViewPort->mTopLeftPoint.x(),
+                                 mRasterViewPort->mBottomRightPoint.y() ),
+    mapToPixel.toMapCoordinates( mRasterViewPort->mBottomRightPoint.x(),
+                                 mRasterViewPort->mTopLeftPoint.y() )
   );
 
   //raster viewport top left / bottom right are already rounded to int

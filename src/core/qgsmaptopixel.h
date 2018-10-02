@@ -117,10 +117,11 @@ class CORE_EXPORT QgsMapToPixel
     }
 #endif
 
+    //! Transform device coordinates to map (world) coordinates
     QgsPointXY toMapCoordinates( int x, int y ) const;
 
     //! Transform device coordinates to map (world) coordinates
-    QgsPointXY toMapCoordinatesF( double x, double y ) const;
+    QgsPointXY toMapCoordinates( double x, double y ) const SIP_PYNAME( toMapCoordinatesF );
 
     /**
      * Transform device coordinates to map (world) coordinates
@@ -129,7 +130,11 @@ class CORE_EXPORT QgsMapToPixel
      */
     QgsPointXY toMapCoordinates( QPoint p ) const;
 
-    QgsPointXY toMapPoint( double x, double y ) const;
+    /**
+     * Transform device coordinates to map (world) coordinates
+     * \deprecated since QGIS 3.4 use toMapCoordinates instead
+     */
+    Q_DECL_DEPRECATED QgsPointXY toMapPoint( double x, double y ) const;
 
     /**
      * Set map units per pixel

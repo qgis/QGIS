@@ -18,6 +18,17 @@ This page tries to maintain a list with incompatible changes that happened in pr
 
 
 
+QGIS 3.4        {#qgis_api_break_3_4}
+========
+
+QgsMapToPixel       {#qgis_api_break_3_4_qgsmaptopixel}
+-------------
+
+- toMapCoordinatesF have been renamed to toMapCoordinates (as a double overload) for C++ only (Python keeps toMapCoordinatesF).
+- toMapPoint has been deprecated in favor of toMapCoordinates.
+
+
+
 QGIS 3.0        {#qgis_api_break_3_0}
 ========
 
