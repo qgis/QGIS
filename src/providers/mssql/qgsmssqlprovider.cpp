@@ -233,6 +233,12 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( const QString &service, const QStrin
   else
     connectionName = service;
 
+  // Starting with Qt 5.11, sharing the same connection between threads is not allowed.
+  // We use a dedicated connection for each thread requiring access to the database,
+  // using the thread address as connection name.
+  const QString threadAddress = QStringLiteral( ":0x%1" ).arg( reinterpret_cast< quintptr >( QThread::currentThreadId() ), 16 );
+  connectionName += threadAddress;
+
   if ( !QSqlDatabase::contains( connectionName ) )
   {
     db = QSqlDatabase::addDatabase( QStringLiteral( "QODBC" ), connectionName );
