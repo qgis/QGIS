@@ -117,7 +117,6 @@ QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget *parent )
   mHeaderGridLayout->addItem( new QWidgetItem( mUriLabel ), 1, 1 );
 }
 
-///@cond PRIVATE
 class ProjectionSettingRestorer
 {
   public:
@@ -137,7 +136,6 @@ class ProjectionSettingRestorer
 
     QString previousSetting;
 };
-///@endcond PRIVATE
 
 void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 {
