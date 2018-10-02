@@ -52,8 +52,15 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
 
     switch ( role )
     {
+      case Qt::DecorationRole:
+        if ( topologyError->status() == QgsGeometryCheckError::StatusFixed )
+          return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
+        else
+          return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmLineIntersection.svg" ) );
+
       case Qt::DisplayRole:
         FALLTHROUGH;
+
       case DetailsRole:
       {
         const QgsFeatureId fid = topologyError->featureId();
