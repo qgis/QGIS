@@ -51,21 +51,11 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
 
   BuildStatement( request );
 
-  // connect to the database
-  mDatabase = QgsMssqlProvider::GetDatabase( mSource->mService, mSource->mHost, mSource->mDatabaseName, mSource->mUserName, mSource->mPassword );
-
-  if ( !mDatabase.open() )
-  {
-    QgsDebugMsg( "Failed to open database" );
-    QgsDebugMsg( mDatabase.lastError().text() );
-    return;
-  }
-
-  // create sql query
-  mQuery.reset( new QSqlQuery( mDatabase ) );
-
-  // start selection
-  rewind();
+  // WARNING - we can't obtain the database connection now, as this method should be
+  // run from the main thread, yet iteration can be done in a different thread.
+  // This would result in failure, because QSqlDatabase instances cannot be used
+  // from a different thread where they were created. Instead, we defer creation
+  // of the database until the first feature is fetched.
 }
 
 
@@ -293,6 +283,27 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   feature.setValid( false );
+
+  if ( !mDatabase.isValid() )
+  {
+    // No existing connection, so set it up now. It's safe to do here as we're now in
+    // the thread were iteration is actually occurring.
+    mDatabase = QgsMssqlProvider::GetDatabase( mSource->mService, mSource->mHost, mSource->mDatabaseName, mSource->mUserName, mSource->mPassword );
+
+    if ( !mDatabase.open() )
+    {
+      QgsDebugMsg( "Failed to open database" );
+      QgsDebugMsg( mDatabase.lastError().text() );
+      return false;
+    }
+
+    // create sql query
+    mQuery.reset( new QSqlQuery( mDatabase ) );
+
+    // start selection
+    if ( !rewind() )
+      return false;
+  }
 
   if ( !mQuery )
     return false;
