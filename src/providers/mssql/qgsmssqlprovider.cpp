@@ -1503,7 +1503,7 @@ QString QgsMssqlProvider::dbConnectionName( const QString &name )
   // Starting with Qt 5.11, sharing the same connection between threads is not allowed.
   // We use a dedicated connection for each thread requiring access to the database,
   // using the thread address as connection name.
-  const QString threadAddress = QStringLiteral( ":0x%1" ).arg( reinterpret_cast< quintptr >( QThread::currentThreadId() ), 16 );
+  const QString threadAddress = QStringLiteral( ":0x%1" ).arg( QString::number( reinterpret_cast< quintptr >( QThread::currentThread() ), 16 ) );
   return name + threadAddress;
 }
 
