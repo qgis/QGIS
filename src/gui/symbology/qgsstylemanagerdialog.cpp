@@ -255,7 +255,6 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
 
   double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
   listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
-  listItems->setGridSize( QSize( static_cast< int >( iconSize * 1.2 ), static_cast< int >( iconSize * 1.1 ) ) ); // ~120,110 on low dpi
 
   populateList();
 }
@@ -287,6 +286,9 @@ void QgsStyleManagerDialog::populateSymbols( const QStringList &symbolNames, boo
       QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol.get(), listItems->iconSize(), static_cast< int >( listItems->iconSize().width() * 0.16 ) );
       item->setIcon( icon );
       item->setData( name ); // used to find out original name when user edited the name
+      QFont f = item->data( Qt::FontRole ).value< QFont >();
+      f.setPointSize( 9 );
+      item->setData( f, Qt::FontRole );
       item->setCheckable( check );
       item->setToolTip( QStringLiteral( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( QStringLiteral( ", " ) ) : tr( "Not tagged" ) ) );
       // add to model

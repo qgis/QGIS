@@ -237,9 +237,12 @@
          </property>
          <property name="iconSize">
           <size>
-           <width>0</width>
-           <height>0</height>
+           <width>77</width>
+           <height>70</height>
           </size>
+         </property>
+         <property name="textElideMode">
+          <enum>Qt::ElideNone</enum>
          </property>
          <property name="movement">
           <enum>QListView::Static</enum>
@@ -249,12 +252,6 @@
          </property>
          <property name="spacing">
           <number>5</number>
-         </property>
-         <property name="gridSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
          </property>
          <property name="viewMode">
           <enum>QListView::IconMode</enum>
