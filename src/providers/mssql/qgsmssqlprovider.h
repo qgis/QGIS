@@ -184,7 +184,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     mutable QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
 
     // The database object
-    QSqlDatabase mDatabase;
+    mutable QSqlDatabase mDatabase;
 
     // The current sql query
     QSqlQuery mQuery;
@@ -213,6 +213,8 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     // Sets the error messages
     void setLastError( const QString &error );
+
+    QSqlQuery createQuery() const;
 
     static void mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
     static QgsWkbTypes::Type getWkbType( const QString &wkbType );
