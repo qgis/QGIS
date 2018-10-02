@@ -28,7 +28,7 @@ typedef qint64 QgsFeatureId SIP_SKIP;
 #define FID_IS_NEW(fid)     ( fid < 0 && fid != std::numeric_limits<QgsFeatureId>::min() )
 #define FID_TO_NUMBER(fid)  static_cast<qint64>( fid )
 #define FID_TO_STRING(fid)  ( fid != std::numeric_limits<QgsFeatureId>::min() ? QString::number( fid ) : QStringLiteral( "NULL" ) )
-#define STRING_TO_FID(str)  ( ( fid != QLatin1String( "NULL" ) ) ? (str).toLongLong() : std::numeric_limits<QgsFeatureId>::min() )
+#define STRING_TO_FID(str)  ( (str).toLongLong() )
 
 #ifndef SIP_RUN
 typedef QSet<QgsFeatureId> QgsFeatureIds;
