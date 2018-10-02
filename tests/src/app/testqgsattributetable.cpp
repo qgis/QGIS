@@ -160,7 +160,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   QgsFeatureIterator fit = tempLayer->dataProvider()->getFeatures();
   QgsFeature f;
   QVERIFY( fit.nextFeature( f ) );
-  double expected = 1009089817.0;
+  double expected = 1005721496.78008;
   QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 1.0 );
 
   // change project area unit, check calculation respects unit
@@ -172,7 +172,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   // check result
   fit = tempLayer->dataProvider()->getFeatures();
   QVERIFY( fit.nextFeature( f ) );
-  expected = 389.6117565069;
+  expected = 388.311240;
   QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 }
 

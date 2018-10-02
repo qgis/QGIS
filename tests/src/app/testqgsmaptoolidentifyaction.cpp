@@ -449,7 +449,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QCOMPARE( result.length(), 1 );
   QString derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal, WGS84)" )];
   double area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  QGSCOMPARENEAR( area, 1009089817.0, 1.0 );
+  QGSCOMPARENEAR( area, 1005721496.780000, 1.0 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Cartesian)" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( area, 1005640568.0, 1.0 );
@@ -460,7 +460,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QCOMPARE( result.length(), 1 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal, WGS84)" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  QGSCOMPARENEAR( area, 389.6117, 0.001 );
+  QGSCOMPARENEAR( area, 388.311000, 0.001 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Cartesian)" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( area, 388.280000, 0.001 );
@@ -472,7 +472,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QCOMPARE( result.length(), 1 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Ellipsoidal, WGS84)" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  QGSCOMPARENEAR( area, 389.6117, 0.001 );
+  QGSCOMPARENEAR( area, 388.311000, 0.001 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area (Cartesian)" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
   QGSCOMPARENEAR( area, 388.280000, 0.001 );
