@@ -381,10 +381,17 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
 
     // in order of priority:
     // 1. passed attribute value and if field does not have a unique constraint like primary key
-    if ( attributes.contains( idx )
-         && !( fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique ) )
+    if ( attributes.contains( idx ) )
     {
       v = attributes.value( idx );
+      if ( fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique
+           && QgsVectorLayerUtils::valueExists( layer, idx, v ) )
+      {
+        // unique constraint violated
+        QVariant uniqueValue = QgsVectorLayerUtils::createUniqueValue( layer, idx, v );
+        if ( uniqueValue.isValid() )
+          v = uniqueValue;
+      }
       checkUnique = false;
     }
 

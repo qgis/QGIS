@@ -272,12 +272,12 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         # test with violated unique constraints
         layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique)
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
-        # since field 1 has Unique Constraint, it ignores value 123 that already has been set
-        self.assertEqual(f.attributes(), ['test_1', NULL, NULL])
+        # since field 1 has Unique Constraint, it ignores value 123 that already has been set and sets to 128
+        self.assertEqual(f.attributes(), ['test_1', 128, NULL])
         layer.setFieldConstraint(0, QgsFieldConstraints.ConstraintUnique)
-        # since field 0 and 1 already have values test_1 and 123, the output must be NULL
+        # since field 0 and 1 already have values test_1 and 123, the output must be a new unique value
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
-        self.assertEqual(f.attributes(), [NULL, NULL, NULL])
+        self.assertEqual(f.attributes(), ['test_4', 128, NULL])
 
     def testDuplicateFeature(self):
         """ test duplicating a feature """

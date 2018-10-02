@@ -813,12 +813,16 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # User's choice will not be respected if the value violates unique constraints.
         # See https://issues.qgis.org/issues/19936
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5, 3: 'map'})
-        #changed so that createFeature respects user choice
+        # changed so that createFeature respects user choice
         self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'map', None, None])
 
-        # test take vector layer default value expression overrides postgres provider default clause
         vl.setDefaultValueDefinition(3, QgsDefaultValue("'mappy'"))
+        # test ignore vector layer default value expression overrides postgres provider default clause,
+        # due to user's choice
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5, 3: 'map'})
+        self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'map', None, None])
+        # Since user did not enter a default for field 3, test must return the default value chosen
+        f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5})
         self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'mappy', None, None])
 
     # See https://issues.qgis.org/issues/15188

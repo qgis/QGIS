@@ -190,7 +190,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         btn.click()
         # magically the above code selects the feature here...
 
-        link_feature = list(next(self.vl_link.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0])))))
+        link_feature = list(next(self.vl_link.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0])))))[0]
         self.assertIsNotNone(link_feature[0])
 
         self.assertEqual(self.table_view.model().rowCount(), 1)
