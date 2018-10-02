@@ -45,7 +45,7 @@ class QgsGdalDataItemProvider : public QgsDataItemProvider
   public:
     QString name() override { return QStringLiteral( "GDAL" ); }
 
-    int capabilities() override { return QgsDataProvider::File | QgsDataProvider::Dir; }
+    int capabilities() override { return QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net; }
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
