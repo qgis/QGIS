@@ -389,6 +389,7 @@ QDialog *QgsProcessingAlgorithmDialogBase::createProgressDialog()
   QgsProcessingAlgorithmProgressDialog *dialog = new QgsProcessingAlgorithmProgressDialog( this );
   dialog->setWindowModality( Qt::ApplicationModal );
   dialog->setWindowTitle( windowTitle() );
+  dialog->setGeometry( geometry() ); // match size/position to this dialog
   connect( progressBar, &QProgressBar::valueChanged, dialog->progressBar(), &QProgressBar::setValue );
   connect( dialog->cancelButton(), &QPushButton::clicked, buttonCancel, &QPushButton::click );
   dialog->logTextEdit()->setHtml( txtLog->toHtml() );
@@ -580,7 +581,6 @@ QgsProcessingAlgorithmProgressDialog::QgsProcessingAlgorithmProgressDialog( QWid
   : QDialog( parent )
 {
   setupUi( this );
-  QgsGui::enableAutoGeometryRestore( this );
 }
 
 QProgressBar *QgsProcessingAlgorithmProgressDialog::progressBar()
