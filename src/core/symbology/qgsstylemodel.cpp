@@ -74,15 +74,16 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
           if ( role == Qt::ToolTipRole )
           {
-            QString tooltip = QStringLiteral( "<b>%1</b><br><i>%2</i>" ).arg( name,
+            QString tooltip = QStringLiteral( "<h3>%1</h3><p><i>%2</i>" ).arg( name,
                               tags.count() > 0 ? tags.join( QStringLiteral( ", " ) ) : tr( "Not tagged" ) );
 
             // create very large preview image
             std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
             if ( symbol )
             {
-              int size = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).width( 'X' ) * 20 );
-              QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( size, size ), size / 20 );
+              int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).width( 'X' ) * 23 );
+              int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
+              QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( width, height ), height / 20 );
               QByteArray data;
               QBuffer buffer( &data );
               pm.save( &buffer, "PNG", 100 );
