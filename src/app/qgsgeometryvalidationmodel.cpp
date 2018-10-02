@@ -56,7 +56,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
         if ( topologyError->status() == QgsGeometryCheckError::StatusFixed )
           return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
         else
-          return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmLineIntersection.svg" ) );
+          return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmLineIntersections.svg" ) );
 
       case Qt::DisplayRole:
         FALLTHROUGH;
