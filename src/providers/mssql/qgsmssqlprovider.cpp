@@ -233,19 +233,14 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( const QString &service, const QStrin
   else
     connectionName = service;
 
-  // Starting with Qt 5.11, sharing the same connection between threads is not allowed.
-  // We use a dedicated connection for each thread requiring access to the database,
-  // using the thread address as connection name.
-  const QString threadAddress = QStringLiteral( ":0x%1" ).arg( reinterpret_cast< quintptr >( QThread::currentThreadId() ), 16 );
-  connectionName += threadAddress;
-
-  if ( !QSqlDatabase::contains( connectionName ) )
+  const QString threadSafeConnectionName = QgsMssqlProvider::dbConnectionName( connectionName );
+  if ( !QSqlDatabase::contains( threadSafeConnectionName ) )
   {
-    db = QSqlDatabase::addDatabase( QStringLiteral( "QODBC" ), connectionName );
+    db = QSqlDatabase::addDatabase( QStringLiteral( "QODBC" ), threadSafeConnectionName );
     db.setConnectOptions( QStringLiteral( "SQL_ATTR_CONNECTION_POOLING=SQL_CP_ONE_PER_HENV" ) );
   }
   else
-    db = QSqlDatabase::database( connectionName );
+    db = QSqlDatabase::database( threadSafeConnectionName );
 
   db.setHostName( host );
   QString connectionString;
@@ -1524,6 +1519,15 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs() const
     }
   }
   return mCrs;
+}
+
+QString QgsMssqlProvider::dbConnectionName( const QString &name )
+{
+  // Starting with Qt 5.11, sharing the same connection between threads is not allowed.
+  // We use a dedicated connection for each thread requiring access to the database,
+  // using the thread address as connection name.
+  const QString threadAddress = QStringLiteral( ":0x%1" ).arg( reinterpret_cast< quintptr >( QThread::currentThreadId() ), 16 );
+  return name + threadAddress;
 }
 
 QString QgsMssqlProvider::subsetString() const
