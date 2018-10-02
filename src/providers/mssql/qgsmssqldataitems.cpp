@@ -220,8 +220,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
         {
           if ( !mColumnTypeThread )
           {
-            mColumnTypeThread = new QgsMssqlGeomColumnTypeThread(
-              connectionName, true /* use estimated metadata */ );
+            mColumnTypeThread = new QgsMssqlGeomColumnTypeThread( mService, mHost, mDatabase, mUsername, mPassword, true /* use estimated metadata */ );
 
             connect( mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::setLayerType,
                      this, &QgsMssqlConnectionItem::setLayerType );
