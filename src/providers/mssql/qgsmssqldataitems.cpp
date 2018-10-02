@@ -264,6 +264,10 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
       setAsPopulated();
     }
   }
+  else
+  {
+    setAsPopulated();
+  }
 
   return children;
 }
