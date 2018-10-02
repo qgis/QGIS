@@ -123,9 +123,10 @@ void QgsColorSwatchGrid::updateTooltip( const int colorIdx )
     QString colorName = mColors.at( colorIdx ).second;
 
     // create very large preview swatch, because the grid itself has only tiny preview icons
-    int size = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 15 );
-    int margin = static_cast< int >( size * 0.1 );
-    QImage icon = QImage( size + 2 * margin, size + 2 * margin, QImage::Format_ARGB32 );
+    int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 23 );
+    int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
+    int margin = static_cast< int >( height * 0.1 );
+    QImage icon = QImage( width + 2 * margin, height + 2 * margin, QImage::Format_ARGB32 );
     icon.fill( Qt::transparent );
 
     QPainter p;
@@ -135,14 +136,14 @@ void QgsColorSwatchGrid::updateTooltip( const int colorIdx )
     QBrush checkBrush = QBrush( transparentBackground() );
     p.setPen( Qt::NoPen );
     p.setBrush( checkBrush );
-    p.drawRect( margin, margin, size, size );
+    p.drawRect( margin, margin, width, height );
 
     //draw color over pattern
     p.setBrush( QBrush( mColors.at( colorIdx ).first ) );
 
     //draw border
     p.setPen( QColor( 197, 197, 197 ) );
-    p.drawRect( margin, margin, size, size );
+    p.drawRect( margin, margin, width, height );
     p.end();
 
     QByteArray data;
