@@ -157,14 +157,43 @@ bool QgsColorButton::event( QEvent *e )
 {
   if ( e->type() == QEvent::ToolTip )
   {
-    QString name = this->color().name();
-    int hue = this->color().hue();
-    int value = this->color().value();
-    int saturation = this->color().saturation();
-    QString info = QString( "HEX: %1 \n"
-                            "RGB: %2 \n"
-                            "HSV: %3,%4,%5" ).arg( name,
-                                QgsSymbolLayerUtils::encodeColor( this->color() ) )
+    QString name = mColor.name();
+    int hue = mColor.hue();
+    int value = mColor.value();
+    int saturation = mColor.saturation();
+
+    // create very large preview swatch
+    int size = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 15 );
+    int margin = static_cast< int >( size * 0.1 );
+    QImage icon = QImage( size + 2 * margin, size + 2 * margin, QImage::Format_ARGB32 );
+    icon.fill( Qt::transparent );
+
+    QPainter p;
+    p.begin( &icon );
+
+    //start with checkboard pattern
+    QBrush checkBrush = QBrush( transparentBackground() );
+    p.setPen( Qt::NoPen );
+    p.setBrush( checkBrush );
+    p.drawRect( margin, margin, size, size );
+
+    //draw color over pattern
+    p.setBrush( QBrush( mColor ) );
+
+    //draw border
+    p.setPen( QColor( 197, 197, 197 ) );
+    p.drawRect( margin, margin, size, size );
+    p.end();
+
+    QByteArray data;
+    QBuffer buffer( &data );
+    icon.save( &buffer, "PNG", 100 );
+
+    QString info = QStringLiteral( "<b>HEX</b> %1<br>"
+                                   "<b>RGB</b> %2<br>"
+                                   "<b>HSV</b> %3,%4,%5<p>"
+                                   "<img src='data:image/png;base64, %0'>" ).arg( QString( data.toBase64() ), name,
+                                       QgsSymbolLayerUtils::encodeColor( this->color() ) )
                    .arg( hue ).arg( saturation ).arg( value );
     setToolTip( info );
   }

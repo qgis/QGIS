@@ -71,8 +71,29 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
         case Name:
         {
           const QStringList tags = mStyle->tagsOfSymbol( isColorRamp ? QgsStyle::ColorrampEntity : QgsStyle::SymbolEntity, name );
-          return role != Qt::ToolTipRole ? name
-                 : QStringLiteral( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( QStringLiteral( ", " ) ) : tr( "Not tagged" ) );
+
+          if ( role == Qt::ToolTipRole )
+          {
+            QString tooltip = QStringLiteral( "<b>%1</b><br><i>%2</i>" ).arg( name,
+                              tags.count() > 0 ? tags.join( QStringLiteral( ", " ) ) : tr( "Not tagged" ) );
+
+            // create very large preview image
+            std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
+            if ( symbol )
+            {
+              int size = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).width( 'X' ) * 20 );
+              QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( size, size ), size / 20 );
+              QByteArray data;
+              QBuffer buffer( &data );
+              pm.save( &buffer, "PNG", 100 );
+              tooltip += QStringLiteral( "<p><img src='data:image/png;base64, %3'>" ).arg( QString( data.toBase64() ) );
+            }
+            return tooltip;
+          }
+          else
+          {
+            return name;
+          }
         }
         case Tags:
           return mStyle->tagsOfSymbol( isColorRamp ? QgsStyle::ColorrampEntity : QgsStyle::SymbolEntity, name ).join( QStringLiteral( ", " ) );
