@@ -150,6 +150,8 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     {
       if ( layer->isValid() )
       {
+        bool ok = false;
+        layer->loadDefaultMetadata( ok );
         layerCrs = layer->crs();
         layerMetadata = layer->htmlMetadata();
       }
@@ -163,6 +165,8 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     {
       if ( layer->isValid() )
       {
+        bool ok = false;
+        layer->loadDefaultMetadata( ok );
         layerCrs = layer->crs();
         layerMetadata = layer->htmlMetadata();
       }
@@ -176,6 +180,8 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     {
       if ( layer->isValid() )
       {
+        bool ok = false;
+        layer->loadDefaultMetadata( ok );
         layerCrs = layer->crs();
         layerMetadata = layer->htmlMetadata();
       }
