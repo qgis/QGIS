@@ -111,8 +111,7 @@ QVariant QgsFavoritesItem::sortKey() const
 
 QIcon QgsZipItem::iconZip()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconZip.png" ) );
-// icon from http://www.softicons.com/free-icons/application-icons/mega-pack-icons-1-by-nikolay-verin/winzip-folder-icon
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconZip.svg" ) );
 }
 
 QgsAnimatedIcon *QgsDataItem::sPopulatingIcon = nullptr;
@@ -802,14 +801,16 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     QString path = dir.absoluteFilePath( name );
     QFileInfo fileInfo( path );
 
-    if ( fileInfo.suffix() == QLatin1String( "qgs" ) || fileInfo.suffix() == QLatin1String( "qgz" ) )
+    if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 ||
+         fileInfo.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
     {
       QgsDataItem *item = new QgsProjectItem( this, fileInfo.completeBaseName(), path );
       children.append( item );
       continue;
     }
 
-    if ( fileInfo.suffix() == QLatin1String( "zip" ) )
+    if ( fileInfo.suffix().compare( QLatin1String( "zip" ), Qt::CaseInsensitive ) == 0 ||
+         fileInfo.suffix().compare( QLatin1String( "tar" ), Qt::CaseInsensitive ) == 0 )
     {
       QgsDataItem *item = QgsZipItem::itemFromPath( this, path, name, mPath + '/' + name );
       if ( item )
@@ -1280,12 +1281,12 @@ QgsZipItem::QgsZipItem( QgsDataItem *parent, const QString &name, const QString 
 void QgsZipItem::init()
 {
   mType = Collection; //Zip??
-  mIconName = QStringLiteral( "/mIconZip.png" );
+  mIconName = QStringLiteral( "/mIconZip.svg" );
   mVsiPrefix = vsiPrefix( mFilePath );
 
   if ( sProviderNames.isEmpty() )
   {
-    sProviderNames << QStringLiteral( "OGR" ) << QStringLiteral( "OGR" );
+    sProviderNames << QStringLiteral( "OGR" ) << QStringLiteral( "GDAL" );
   }
 }
 
@@ -1408,13 +1409,12 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
   }
 
   // only display if has children or if is not populated
-  if ( zipItem && ( !populated || zipItem->rowCount() > 1 ) )
+  if ( zipItem && ( !populated || zipItem->rowCount() > 0 ) )
   {
     QgsDebugMsgLevel( "returning zipItem", 3 );
     return zipItem;
   }
 
-  // if 1 or 0 child found, let provider(s) create individual items
   return nullptr;
 }
 
