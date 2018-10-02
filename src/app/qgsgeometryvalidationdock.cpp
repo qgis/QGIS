@@ -83,6 +83,7 @@ void QgsGeometryValidationDock::setGeometryValidationModel( QgsGeometryValidatio
   mErrorListView->setModel( mGeometryValidationModel );
 
   connect( mErrorListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsGeometryValidationDock::onCurrentErrorChanged );
+  connect( mGeometryValidationModel, &QgsGeometryValidationModel::rowsRemoved, this, &QgsGeometryValidationDock::updateCurrentError );
 }
 
 void QgsGeometryValidationDock::gotoNextError()
@@ -145,6 +146,15 @@ QgsGeometryValidationService *QgsGeometryValidationDock::geometryValidationServi
 void QgsGeometryValidationDock::setGeometryValidationService( QgsGeometryValidationService *geometryValidationService )
 {
   mGeometryValidationService = geometryValidationService;
+}
+
+void QgsGeometryValidationDock::updateCurrentError()
+{
+  mFeatureRubberband->hide();
+  mErrorRubberband->hide();
+  mErrorLocationRubberband->hide();
+
+  onCurrentErrorChanged( currentIndex(), QModelIndex() );
 }
 
 QModelIndex QgsGeometryValidationDock::currentIndex() const

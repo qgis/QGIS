@@ -43,6 +43,7 @@ class QgsGeometryValidationModel : public QAbstractItemModel
     void onGeometryCheckStarted( QgsVectorLayer *layer, QgsFeatureId fid );
     void onTopologyChecksUpdated( QgsVectorLayer *layer, const QList<std::shared_ptr<QgsGeometryCheckError> > &errors );
     void onTopologyChecksCleared( QgsVectorLayer *layer );
+    void onTopologyErrorUpdated( QgsVectorLayer *layer, QgsGeometryCheckError *error );
 
   private:
     struct FeatureErrors

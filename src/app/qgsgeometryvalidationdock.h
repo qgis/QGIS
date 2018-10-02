@@ -42,6 +42,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     void setGeometryValidationService( QgsGeometryValidationService *geometryValidationService );
 
   private slots:
+    void updateCurrentError();
     void onCurrentErrorChanged( const QModelIndex &current, const QModelIndex &previous );
     void onCurrentLayerChanged( QgsMapLayer *layer );
     void gotoNextError();

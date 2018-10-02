@@ -14,6 +14,7 @@ QgsGeometryValidationModel::QgsGeometryValidationModel( QgsGeometryValidationSer
   connect( mGeometryValidationService, &QgsGeometryValidationService::geometryCheckStarted, this, &QgsGeometryValidationModel::onGeometryCheckStarted );
   connect( mGeometryValidationService, &QgsGeometryValidationService::topologyChecksUpdated, this, &QgsGeometryValidationModel::onTopologyChecksUpdated );
   connect( mGeometryValidationService, &QgsGeometryValidationService::topologyChecksCleared, this, &QgsGeometryValidationModel::onTopologyChecksCleared );
+  connect( mGeometryValidationService, &QgsGeometryValidationService::topologyErrorUpdated, this, &QgsGeometryValidationModel::onTopologyErrorUpdated );
 }
 
 QModelIndex QgsGeometryValidationModel::index( int row, int column, const QModelIndex &parent ) const
@@ -76,7 +77,6 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
         {
           return tr( "%1: %2" ).arg( featureTitle.toString(), topologyError->description() );
         }
-
       }
 
       case FeatureExtentRole:
@@ -325,6 +325,23 @@ void QgsGeometryValidationModel::onTopologyChecksCleared( QgsVectorLayer *layer 
   if ( layer == currentLayer() )
   {
     endRemoveRows();
+  }
+}
+
+void QgsGeometryValidationModel::onTopologyErrorUpdated( QgsVectorLayer *layer, QgsGeometryCheckError *error )
+{
+  if ( layer == mCurrentLayer )
+  {
+    int i = 0;
+    for ( const auto &currentError : qgis::as_const( mTopologyErrorStorage[layer] ) )
+    {
+      if ( currentError.get() == error )
+      {
+        QModelIndex idx = index( i, 0, QModelIndex() );
+        emit dataChanged( idx, idx );
+      }
+      ++i;
+    }
   }
 }
 
