@@ -208,7 +208,7 @@ void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )
 {
   // activate icon
   bool enabled = false;
-  QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( layer );
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
   if ( vl && vl->isSpatial() )
   {
     const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( vl, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
