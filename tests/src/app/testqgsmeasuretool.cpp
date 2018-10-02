@@ -200,7 +200,7 @@ void TestQgsMeasureTool::testAreaCalculation()
   // check result
   QString measureString = dlg->editTotal->text();
   double measured = measureString.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  double expected = 1009089817.0;
+  double expected = 1005721496.780000;
   QGSCOMPARENEAR( measured, expected, 1.0 );
 
   // change project area unit, check calculation respects unit
@@ -219,7 +219,7 @@ void TestQgsMeasureTool::testAreaCalculation()
   // check result
   measureString = dlg2->editTotal->text();
   measured = measureString.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  expected = 389.6117565069;
+  expected = 388.311000;
   QGSCOMPARENEAR( measured, expected, 0.001 );
 }
 
