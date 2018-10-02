@@ -85,7 +85,7 @@ void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &la
       {
         cleanupLayerChecks( vectorLayer );
         mLayerChecks.remove( vectorLayer );
-      });
+      } );
 
       enableLayerChecks( vectorLayer );
     }
@@ -141,7 +141,7 @@ void QgsGeometryValidationService::onBeforeCommitChanges( QgsVectorLayer *layer 
   }
 }
 
-void QgsGeometryValidationService::cleanupLayerChecks(QgsVectorLayer* layer)
+void QgsGeometryValidationService::cleanupLayerChecks( QgsVectorLayer *layer )
 {
   if ( !mLayerChecks.contains( layer ) )
     return;
@@ -174,7 +174,10 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
     return;
   }
 
-  checkInformation.context = new QgsGeometryCheckContext( log10( layer->geometryOptions()->geometryPrecision() ) * -1, mProject->crs(), mProject->transformContext() );
+  int precision = log10( layer->geometryOptions()->geometryPrecision() ) * -1;
+  if ( precision == 0 )
+    precision = 8;
+  checkInformation.context = qgis::make_unique<QgsGeometryCheckContext>( precision, mProject->crs(), mProject->transformContext() );
 
   QList<QgsGeometryCheck *> layerChecks;
 
@@ -355,7 +358,8 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
     {
       sharedErrors.append( std::shared_ptr<QgsGeometryCheckError>( error ) );
     }
-    allErrors.append(sharedErrors);
+
+    allErrors.append( sharedErrors );
     if ( !feedback->isCanceled() )
       emit topologyChecksUpdated( layer, sharedErrors );
 
