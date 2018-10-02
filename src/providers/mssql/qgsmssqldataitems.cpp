@@ -448,6 +448,8 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
         else
           populate();
       } );
+
+      QgsApplication::taskManager()->addTask( exportTask.release() );
     }
     else
     {
