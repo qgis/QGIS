@@ -1469,7 +1469,7 @@ QIcon QgsProjectHomeItem::icon()
 {
   if ( state() == Populating )
     return QgsDirectoryItem::icon();
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconQgsProjectFile.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderProject.svg" ) );
 }
 
 QVariant QgsProjectHomeItem::sortKey() const
