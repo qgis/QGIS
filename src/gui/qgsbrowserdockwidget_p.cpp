@@ -117,6 +117,28 @@ QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget *parent )
   mHeaderGridLayout->addItem( new QWidgetItem( mUriLabel ), 1, 1 );
 }
 
+///@cond PRIVATE
+class ProjectionSettingRestorer
+{
+  public:
+
+    ProjectionSettingRestorer()
+    {
+      QgsSettings settings;
+      previousSetting = settings.value( QStringLiteral( "/Projections/defaultBehavior" ) ).toString();
+      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "useProject" ) );
+    }
+
+    ~ProjectionSettingRestorer()
+    {
+      QgsSettings settings;
+      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), previousSetting );
+    }
+
+    QString previousSetting;
+};
+///@endcond PRIVATE
+
 void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 {
   QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
@@ -129,13 +151,11 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   QString layerMetadata = tr( "Error" );
   QgsCoordinateReferenceSystem layerCrs;
 
+  QString defaultProjectionOption = QgsSettings().value( QStringLiteral( "Projections/defaultBehavior" ), "prompt" ).toString();
   // temporarily override /Projections/defaultBehavior to avoid dialog prompt
-  QgsSettings settings;
-  QString defaultProjectionOption = settings.value( QStringLiteral( "Projections/defaultBehavior" ), "prompt" ).toString();
-  if ( settings.value( QStringLiteral( "Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
-  {
-    settings.setValue( QStringLiteral( "Projections/defaultBehavior" ), "useProject" );
-  }
+  // TODO - remove when there is a cleaner way to block the unknown projection dialog!
+  ProjectionSettingRestorer restorer;
+  ( void )restorer; // no warnings
 
   // find root item
   // we need to create a temporary layer to get metadata
@@ -193,12 +213,6 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     return;
   }
 
-  // restore /Projections/defaultBehavior
-  if ( defaultProjectionOption == QLatin1String( "prompt" ) )
-  {
-    settings.setValue( QStringLiteral( "Projections/defaultBehavior" ), defaultProjectionOption );
-  }
-
   mNameLabel->setText( layerItem->name() );
   mUriLabel->setText( layerItem->uri() );
   mProviderLabel->setText( layerItem->providerKey() );
@@ -212,7 +226,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     QgsCoordinateReferenceSystem defaultCrs =
       QgsProject::instance()->crs();
     if ( layerCrs == defaultCrs )
-      mNoticeLabel->setText( "NOTICE: Layer srs set from project (" + defaultCrs.authid() + ')' );
+      mNoticeLabel->setText( "NOTICE: Layer CRS set from project (" + defaultCrs.authid() + ')' );
   }
 
   if ( mNoticeLabel->text().isEmpty() )
