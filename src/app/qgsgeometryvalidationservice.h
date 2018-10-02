@@ -22,6 +22,7 @@ email                : matthias@opengis.ch
 #include <QReadWriteLock>
 
 #include "qgsfeature.h"
+#include "qgsgeometrycheckcontext.h"
 
 class QgsProject;
 class QgsMapLayer;
@@ -32,7 +33,6 @@ class QgsSingleGeometryCheckError;
 class QgsGeometryCheckError;
 class QgsFeedback;
 class QgsFeaturePool;
-struct QgsGeometryCheckContext;
 
 /**
  * This service connects to all layers in a project and triggers validation
@@ -69,6 +69,7 @@ class QgsGeometryValidationService : public QObject
     void geometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<std::shared_ptr<QgsSingleGeometryCheckError>> &errors );
     void topologyChecksUpdated( QgsVectorLayer *layer, const QList<std::shared_ptr<QgsGeometryCheckError> > &errors );
     void topologyChecksCleared( QgsVectorLayer *layer );
+    void topologyErrorUpdated( QgsVectorLayer *layer, QgsGeometryCheckError *error );
 
     void warning( const QString &message );
 
@@ -80,6 +81,7 @@ class QgsGeometryValidationService : public QObject
     void onBeforeCommitChanges( QgsVectorLayer *layer );
 
   private:
+    void cleanupLayerChecks( QgsVectorLayer *layer );
     void enableLayerChecks( QgsVectorLayer *layer );
 
     void cancelTopologyCheck( QgsVectorLayer *layer );
@@ -98,7 +100,7 @@ class QgsGeometryValidationService : public QObject
       QList<QgsFeedback *> topologyCheckFeedbacks; // will be deleted when topologyCheckFutureWatcher is delteed
       QList<std::shared_ptr<QgsGeometryCheckError>> topologyCheckErrors;
       QList<QMetaObject::Connection> connections;
-      QgsGeometryCheckContext *context = nullptr;
+      std::shared_ptr<QgsGeometryCheckContext> context;
     };
 
     QReadWriteLock mTopologyCheckLock;

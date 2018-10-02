@@ -81,6 +81,12 @@ void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &la
         enableLayerChecks( vectorLayer );
       }, Qt::UniqueConnection );
 
+      connect( vectorLayer, &QgsVectorLayer::destroyed, this, [vectorLayer, this]()
+      {
+        cleanupLayerChecks( vectorLayer );
+        mLayerChecks.remove( vectorLayer );
+      });
+
       enableLayerChecks( vectorLayer );
     }
   }
@@ -100,8 +106,8 @@ void QgsGeometryValidationService::onGeometryChanged( QgsVectorLayer *layer, Qgs
   Q_UNUSED( geometry )
   // It would be nice to use the geometry here for the tests.
   // But:
-  // 1. other codepaths to the checks also have no geometry (feature added / feature deleted)
-  // 2. and looking it up from the edit buffer (in memory) is really fast.
+  //  1. other codepaths to the checks also have no geometry (feature added / feature deleted)
+  //  2. and looking it up from the edit buffer (in memory) is really fast.
   // so in short: it's still a good idea, but not as important as on first thought.
 
   if ( !mLayerChecks[layer].topologyChecks.empty() )
@@ -135,9 +141,9 @@ void QgsGeometryValidationService::onBeforeCommitChanges( QgsVectorLayer *layer 
   }
 }
 
-void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
+void QgsGeometryValidationService::cleanupLayerChecks(QgsVectorLayer* layer)
 {
-  if ( layer->geometryOptions()->geometryChecks().empty() && !mLayerChecks.contains( layer ) )
+  if ( !mLayerChecks.contains( layer ) )
     return;
 
   VectorLayerCheckInformation &checkInformation = mLayerChecks[layer];
@@ -146,7 +152,17 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
 
   qDeleteAll( checkInformation.singleFeatureChecks );
   qDeleteAll( checkInformation.topologyChecks );
-  delete checkInformation.context;
+  checkInformation.context.reset();
+}
+
+void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
+{
+  if ( layer->geometryOptions()->geometryChecks().empty() && !mLayerChecks.contains( layer ) )
+    return;
+
+  VectorLayerCheckInformation &checkInformation = mLayerChecks[layer];
+
+  cleanupLayerChecks( layer );
 
   if ( layer->geometryOptions()->geometryChecks().empty() )
   {
@@ -174,7 +190,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
     if ( activeChecks.contains( checkId ) )
     {
       const QVariantMap checkConfiguration = layer->geometryOptions()->checkConfiguration( checkId );
-      layerChecks.append( factory->createGeometryCheck( checkInformation.context, checkConfiguration ) );
+      layerChecks.append( factory->createGeometryCheck( checkInformation.context.get(), checkConfiguration ) );
     }
   }
 
@@ -197,7 +213,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
     if ( activeChecks.contains( checkId ) )
     {
       const QVariantMap checkConfiguration = layer->geometryOptions()->checkConfiguration( checkId );
-      topologyChecks.append( factory->createGeometryCheck( checkInformation.context, checkConfiguration ) );
+      topologyChecks.append( factory->createGeometryCheck( checkInformation.context.get(), checkConfiguration ) );
     }
   }
 
