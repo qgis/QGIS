@@ -625,7 +625,7 @@ QString QgsLayerItem::iconName( QgsLayerItem::LayerType layerType )
       return QStringLiteral( "/mIconPolygonLayer.svg" );
     // TODO add a new icon for generic Vector layers
     case Vector :
-      return QStringLiteral( "/mIconPolygonLayer.svg" );
+      return QStringLiteral( "/mIconVector.svg" );
     case TableLayer:
     case Table:
       return QStringLiteral( "/mIconTableLayer.svg" );
