@@ -645,7 +645,7 @@ void QgsDistanceArea::computeAreaInit()
   }
 
   double a2 = ( mSemiMajor * mSemiMajor );
-  double e2 = 1 - ( a2 / ( mSemiMinor * mSemiMinor ) );
+  double e2 = 1 - ( ( mSemiMinor * mSemiMinor ) / a2 );
   double e4, e6;
 
   m_TwoPI = M_PI + M_PI;

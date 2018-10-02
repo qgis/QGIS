@@ -239,7 +239,7 @@ void TestQgsDistanceArea::collections()
   //collection of polygons
   QgsGeometry polys( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) ).release() );
   result = myDa.measureArea( polys );
-  QGSCOMPARENEAR( result, 670434859475LL, 1 );
+  QGSCOMPARENEAR( result, 663136985074LL, 1 );
   result = myDa.measureLength( polys );
   QGSCOMPARENEAR( result, 0, 4 * std::numeric_limits<double>::epsilon() );
 
@@ -247,7 +247,7 @@ void TestQgsDistanceArea::collections()
   QgsGeometry mixed( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70), Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) ).release() );
   //measure area specifically
   result = myDa.measureArea( mixed );
-  QGSCOMPARENEAR( result, 670434859475LL, 1 );
+  QGSCOMPARENEAR( result, 663136985075LL, 1 );
   //measure length
   result = myDa.measureLength( mixed );
   QGSCOMPARENEAR( result, 12006159, 1 );
@@ -312,12 +312,12 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   units = da.areaUnits();
   QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
   // should always be in Meters Squared
-  QGSCOMPARENEAR( area, 37416879192.9, 0.1 );
+  QGSCOMPARENEAR( area, 36918093794.1, 0.1 );
   QCOMPARE( units, QgsUnitTypes::AreaSquareMeters );
 
   // test converting the resultant area
   area = da.convertAreaMeasurement( area, QgsUnitTypes::AreaSquareMiles );
-  QGSCOMPARENEAR( area, 14446.7378, 0.001 );
+  QGSCOMPARENEAR( area, 14254.155703, 0.001 );
 
   // now try with a source CRS which is in feet
   ring.clear();
@@ -350,13 +350,13 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   area = da.measureArea( polygon );
   units = da.areaUnits();
   QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
-  QGSCOMPARENEAR( area, 184149.37, 1.0 );
+  QGSCOMPARENEAR( area, 185818.590966, 1.0 );
   QCOMPARE( units, QgsUnitTypes::AreaSquareMeters );
 
   // test converting the resultant area
   area = da.convertAreaMeasurement( area, QgsUnitTypes::AreaSquareYards );
   QgsDebugMsg( QString( "measured %1 in sq yrds" ).arg( area ) );
-  QGSCOMPARENEAR( area, 220240.8172549, 0.3 );
+  QGSCOMPARENEAR( area, 222237.185213, 0.3 );
 }
 
 void TestQgsDistanceArea::emptyPolygon()
