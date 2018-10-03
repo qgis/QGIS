@@ -1519,6 +1519,9 @@ QString  QgsMssqlProvider::name() const
 
 bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
 {
+  if ( theSQL.trimmed() == mSqlWhereClause )
+    return true;
+
   QString prevWhere = mSqlWhereClause;
 
   mSqlWhereClause = theSQL.trimmed();
