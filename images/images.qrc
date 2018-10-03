@@ -445,6 +445,8 @@
         <file>themes/default/mIconFieldInteger.svg</file>
         <file>themes/default/mIconFieldText.svg</file>
         <file>themes/default/mIconFieldTime.svg</file>
+        <file>themes/default/mIconFile.svg</file>
+        <file>themes/default/mIconFileLink.svg</file>
         <file>themes/default/mIconGeonode.svg</file>
         <file>themes/default/mIconInfo.svg</file>
         <file>themes/default/mIconImport.gif</file>
@@ -716,6 +718,7 @@
         <file>themes/default/mActionAdd3DMap.svg</file>
         <file>themes/default/mIndicatorNonRemovable.svg</file>
         <file>themes/default/mIconFolder.svg</file>
+        <file>themes/default/mIconFolderLink.svg</file>
         <file>themes/default/mIconFolderOpen.svg</file>
         <file>themes/default/mIconFolderProject.svg</file>
     </qresource>
