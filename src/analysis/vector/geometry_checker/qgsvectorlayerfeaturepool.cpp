@@ -135,12 +135,13 @@ void QgsVectorLayerFeaturePool::deleteFeature( QgsFeatureId fid )
 
 void QgsVectorLayerFeaturePool::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geometry )
 {
+  Q_UNUSED( geometry )
+
   if ( isFeatureCached( fid ) )
   {
     QgsFeature feature;
     getFeature( fid, feature );
-    feature.setGeometry( geometry );
-    updateFeature( feature );
+    refreshCache( feature );
   }
 }
 
