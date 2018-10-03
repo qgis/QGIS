@@ -251,6 +251,20 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
   return true;
 }
 
+bool QgsOgrFeatureIterator::checkFeature( gdal::ogr_feature_unique_ptr &fet, QgsFeature &feature )
+{
+  if ( !readFeature( std::move( fet ), feature ) )
+    return false;
+
+  if ( !mFilterRect.isNull() && ( !feature.hasGeometry() || feature.geometry().isEmpty() ) )
+    return false;
+
+  // we have a feature, end this cycle
+  feature.setValid( true );
+  geometryToDestinationCrs( feature, mTransform );
+  return true;
+}
+
 bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
@@ -282,20 +296,41 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 
   gdal::ogr_feature_unique_ptr fet;
 
+  // OSM layers (especially large ones) need the GDALDataset::GetNextFeature() call rather than OGRLayer::GetNextFeature()
+  // see more details here: https://trac.osgeo.org/gdal/wiki/rfc66_randomlayerreadwrite
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
+  if ( mSource->mDriverName == QLatin1String( "OSM" ) )
+  {
+    OGRLayerH nextFeatureBelongingLayer;
+    while ( fet.reset( GDALDatasetGetNextFeature( mConn->ds, &nextFeatureBelongingLayer, nullptr, nullptr, nullptr ) ), fet )
+    {
+      if ( nextFeatureBelongingLayer == mOgrLayer && checkFeature( fet, feature ) )
+      {
+        return true;
+      }
+    }
+  }
+  else
+  {
+
+    while ( fet.reset( OGR_L_GetNextFeature( mOgrLayer ) ), fet )
+    {
+      if ( checkFeature( fet, feature ) )
+      {
+        return true;
+      }
+    }
+  }
+#else
   while ( fet.reset( OGR_L_GetNextFeature( mOgrLayer ) ), fet )
   {
-    if ( !readFeature( std::move( fet ), feature ) )
-      continue;
-
-    if ( !mFilterRect.isNull() && ( !feature.hasGeometry() || feature.geometry().isEmpty() ) )
-      continue;
-
-    // we have a feature, end this cycle
-    feature.setValid( true );
-    geometryToDestinationCrs( feature, mTransform );
-    return true;
-
-  } // while
+    if ( checkFeature( fet, feature ) )
+    {
+      return true;
+    }
+  }
+#endif
 
   close();
   return false;
