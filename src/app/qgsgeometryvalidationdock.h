@@ -24,6 +24,7 @@ class QgsMapCanvas;
 class QgsGeometryValidationModel;
 class QgsGeometryValidationService;
 class QgsRubberBand;
+class QgisApp;
 
 /**
  * @brief The QgsGeometryValidationDock class
@@ -33,7 +34,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     Q_OBJECT
 
   public:
-    QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QgisApp *parent = nullptr, Qt::WindowFlags flags = nullptr );
 
     QgsGeometryValidationModel *geometryValidationModel() const;
     void setGeometryValidationModel( QgsGeometryValidationModel *geometryValidationModel );
@@ -51,6 +52,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     void zoomToFeature();
     void triggerTopologyChecks();
     void updateLayerTransform();
+    void onRowsInserted();
 
   private:
 
@@ -67,6 +69,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     QgsGeometryValidationService *mGeometryValidationService = nullptr;
     QButtonGroup *mZoomToButtonGroup = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgisApp *mApp = nullptr;
     QgsCoordinateTransform mLayerTransform;
     QModelIndex currentIndex() const;
     QgsRubberBand *mFeatureRubberband = nullptr;

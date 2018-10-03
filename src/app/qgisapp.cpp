@@ -931,7 +931,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     mInfoBar->pushWarning( tr( "Geometry Validation" ), message );
   } );
-  mGeometryValidationDock = new QgsGeometryValidationDock( tr( "Geometry Validation" ), mMapCanvas );
+  mGeometryValidationDock = new QgsGeometryValidationDock( tr( "Geometry Validation" ), mMapCanvas, this );
   mGeometryValidationModel = new QgsGeometryValidationModel( mGeometryValidationService.get(), mGeometryValidationDock );
   connect( this, &QgisApp::activeLayerChanged, mGeometryValidationModel, [this]( QgsMapLayer * layer )
   {
@@ -939,7 +939,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   } );
   mGeometryValidationDock->setGeometryValidationModel( mGeometryValidationModel );
   mGeometryValidationDock->setGeometryValidationService( mGeometryValidationService.get() );
-  addDockWidget( Qt::RightDockWidgetArea, mGeometryValidationDock );
   endProfile();
 
   QgsApplication::annotationRegistry()->addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "FormAnnotationItem" ), &QgsFormAnnotation::create ) );
@@ -1442,6 +1441,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     mCentralContainer->setCurrentIndex( 0 );
   } );
+  mGeometryValidationDock->close();
 } // QgisApp ctor
 
 QgisApp::QgisApp()

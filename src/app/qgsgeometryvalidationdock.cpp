@@ -28,11 +28,13 @@ email                : matthias@opengis.ch
 #include "qgsgeometrycheckregistry.h"
 #include "qgsgeometryoptions.h"
 #include "qgsgeometrycheckfactory.h"
+#include "qgisapp.h"
 
 
-QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags flags )
+QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QgisApp *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
   , mMapCanvas( mapCanvas )
+  , mApp( parent )
 {
   setupUi( this );
 
@@ -84,7 +86,7 @@ void QgsGeometryValidationDock::setGeometryValidationModel( QgsGeometryValidatio
 
   connect( mErrorListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsGeometryValidationDock::onCurrentErrorChanged );
   connect( mGeometryValidationModel, &QgsGeometryValidationModel::rowsRemoved, this, &QgsGeometryValidationDock::updateCurrentError );
-  connect( mGeometryValidationModel, &QgsGeometryValidationModel::rowsInserted, this, &QgsGeometryValidationDock::raise );
+  connect( mGeometryValidationModel, &QgsGeometryValidationModel::rowsInserted, this, &QgsGeometryValidationDock::onRowsInserted );
 }
 
 void QgsGeometryValidationDock::gotoNextError()
@@ -137,6 +139,15 @@ void QgsGeometryValidationDock::updateLayerTransform()
     return;
 
   mLayerTransform = QgsCoordinateTransform( mMapCanvas->currentLayer()->crs(), mMapCanvas->mapSettings().destinationCrs(), mMapCanvas->mapSettings().transformContext() );
+}
+
+void QgsGeometryValidationDock::onRowsInserted()
+{
+  if ( !isVisible() )
+  {
+    mApp->addDockWidget( Qt::RightDockWidgetArea, this );
+  }
+  raise();
 }
 
 QgsGeometryValidationService *QgsGeometryValidationDock::geometryValidationService() const
