@@ -160,7 +160,10 @@ void QgsGeometryValidationDock::updateCurrentError()
 
 QModelIndex QgsGeometryValidationDock::currentIndex() const
 {
-  return mErrorListView->selectionModel()->currentIndex();
+  if ( !mGeometryValidationModel->rowCount() )
+    return QModelIndex();
+  else
+    return mErrorListView->selectionModel()->currentIndex();
 }
 
 void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &current, const QModelIndex &previous )
