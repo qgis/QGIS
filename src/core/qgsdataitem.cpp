@@ -94,6 +94,11 @@ QIcon QgsDataCollectionItem::openDirIcon()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderOpen.svg" ) );
 }
 
+QIcon QgsDataCollectionItem::homeDirIcon()
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderHome.svg" ) );
+}
+
 QIcon QgsDataCollectionItem::iconDir()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolder.svg" ) );
@@ -730,6 +735,9 @@ void QgsDirectoryItem::init()
 
 QIcon QgsDirectoryItem::icon()
 {
+  if ( mDirPath == QDir::homePath() )
+    return homeDirIcon();
+
   // still loading? show the spinner
   if ( state() == Populating )
     return QgsDataItem::icon();

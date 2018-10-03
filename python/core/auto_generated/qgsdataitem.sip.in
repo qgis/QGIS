@@ -510,6 +510,13 @@ Shared open directory icon.
 
 .. versionadded:: 3.4
 %End
+
+    static QIcon homeDirIcon();
+%Docstring
+Shared home directory icon.
+
+.. versionadded:: 3.4
+%End
 };
 
 class QgsDirectoryItem : QgsDataCollectionItem
