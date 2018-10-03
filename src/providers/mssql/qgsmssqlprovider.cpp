@@ -190,7 +190,7 @@ QgsFeatureIterator QgsMssqlProvider::getFeatures( const QgsFeatureRequest &reque
 {
   if ( !mValid )
   {
-    QgsDebugMsg( "Read attempt on an invalid mssql data source" );
+    QgsDebugMsg( QStringLiteral( "Read attempt on an invalid mssql data source" ) );
     return QgsFeatureIterator();
   }
 
@@ -215,8 +215,6 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( const QString &service, const QStrin
   QString connectionName;
 
   // create a separate database connection for each feature source
-  QgsDebugMsg( "Creating a separate database connection" );
-
   if ( service.isEmpty() )
   {
     if ( !host.isEmpty() )
@@ -224,7 +222,7 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( const QString &service, const QStrin
 
     if ( database.isEmpty() )
     {
-      QgsDebugMsg( "QgsMssqlProvider database name not specified" );
+      QgsDebugMsg( QStringLiteral( "QgsMssqlProvider database name not specified" ) );
       return db;
     }
 
@@ -276,7 +274,9 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( const QString &service, const QStrin
     db.setPassword( password );
 
   db.setDatabaseName( connectionString );
-  QgsDebugMsg( connectionString );
+
+  // only uncomment temporarily -- it can show connection password otherwise!
+  // QgsDebugMsg( connectionString );
   return db;
 }
 
@@ -337,7 +337,7 @@ QVariant::Type QgsMssqlProvider::DecodeSqlType( const QString &sqlTypeName )
   }
   else
   {
-    QgsDebugMsg( QString( "Unknown field type: %1" ).arg( sqlTypeName ) );
+    QgsDebugMsg( QStringLiteral( "Unknown field type: %1" ).arg( sqlTypeName ) );
     // Everything else just dumped as a string.
     type = QVariant::String;
   }
@@ -547,7 +547,7 @@ QString QgsMssqlProvider::quotedValue( const QVariant &value )
       return value.toString();
 
     case QVariant::Bool:
-      return value.toBool() ? "1" : "0";
+      return QString( value.toBool() ? '1' : '0' );
 
     default:
     case QVariant::String:
@@ -703,7 +703,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
                            !query.value( 2 ).isNull() ||
                            !query.value( 3 ).isNull() ) )
     {
-      QgsDebugMsg( "Found extents in spatial index" );
+      QgsDebugMsg( QStringLiteral( "Found extents in spatial index" ) );
       mExtent.setXMinimum( query.value( 0 ).toDouble() );
       mExtent.setYMinimum( query.value( 1 ).toDouble() );
       mExtent.setXMaximum( query.value( 2 ).toDouble() );
@@ -765,7 +765,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
   while ( query.next() )
   {
     QByteArray ar = query.value( 0 ).toByteArray();
-    unsigned char *wkb = mParser.ParseSqlGeometry( ( unsigned char * )ar.data(), ar.size() );
+    unsigned char *wkb = mParser.ParseSqlGeometry( reinterpret_cast< unsigned char * >( ar.data() ), ar.size() );
     if ( wkb )
     {
       geom.fromWkb( wkb, mParser.GetWkbLen() );
@@ -1515,7 +1515,7 @@ QString QgsMssqlProvider::subsetString() const
 QString  QgsMssqlProvider::name() const
 {
   return TEXT_PROVIDER_KEY;
-} // ::name()
+}
 
 bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
 {
@@ -1773,7 +1773,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
   }
 
   // set up spatial reference id
-  int srid = 0;
+  long srid = 0;
   if ( srs.isValid() )
   {
     srid = srs.srsid();
@@ -2000,7 +2000,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
 
   if ( !QgsMssqlProvider::OpenDatabase( mDatabase ) )
   {
-    QgsDebugMsg( "Error connecting to database" );
+    QgsDebugMsg( QStringLiteral( "Error connecting to database" ) );
     QgsDebugMsg( mDatabase.lastError().text() );
     return false;
   }
@@ -2014,7 +2014,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toInt() == 0 )
   {
-    QgsDebugMsg( "Need to create styles table" );
+    QgsDebugMsg( QStringLiteral( "Need to create styles table" ) );
     bool execOk = query.exec( QString( "CREATE TABLE [dbo].[layer_styles]("
                                        "[id] int IDENTITY(1,1) PRIMARY KEY,"
                                        "[f_table_catalog] [varchar](1024) NULL,"
@@ -2046,7 +2046,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     uiFileColumn = QStringLiteral( ",ui" );
     uiFileValue = QStringLiteral( ",XMLPARSE(DOCUMENT %1)" ).arg( uiFileContent );
   }
-  QgsDebugMsg( "Ready to insert new style" );
+  QgsDebugMsg( QStringLiteral( "Ready to insert new style" ) );
   // Note: in the construction of the INSERT and UPDATE strings the qmlStyle and sldStyle values
   // can contain user entered strings, which may themselves include %## values that would be
   // replaced by the QString.arg function.  To ensure that the final SQL string is not corrupt these
@@ -2064,7 +2064,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
                 .arg( QgsMssqlProvider::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
                 .arg( QgsMssqlProvider::quotedValue( qmlStyle ) )
                 .arg( QgsMssqlProvider::quotedValue( sldStyle ) )
-                .arg( useAsDefault ? "1" : "0" )
+                .arg( useAsDefault ? QStringLiteral( "1" ) : QStringLiteral( "0" ) )
                 .arg( QgsMssqlProvider::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
                 .arg( QgsMssqlProvider::quotedValue( dsUri.username() ) )
                 .arg( uiFileColumn )
@@ -2086,7 +2086,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   if ( !query.exec( checkQuery ) )
   {
     QgsDebugMsg( query.lastError().text() );
-    QgsDebugMsg( "Check Query failed" );
+    QgsDebugMsg( QStringLiteral( "Check Query failed" ) );
     return false;
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toString() == styleName )
@@ -2097,11 +2097,11 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
     {
       errCause = QObject::tr( "Operation aborted. No changes were made in the database" );
-      QgsDebugMsg( "User selected not to overwrite styles" );
+      QgsDebugMsg( QStringLiteral( "User selected not to overwrite styles" ) );
       return false;
     }
 
-    QgsDebugMsg( "Updating styles" );
+    QgsDebugMsg( QStringLiteral( "Updating styles" ) );
     sql = QString( "UPDATE layer_styles "
                    " SET useAsDefault=%1"
                    ",styleQML=%2"
@@ -2113,7 +2113,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
                    " AND f_table_name=%8"
                    " AND f_geometry_column=%9"
                    " AND styleName=%10" )
-          .arg( useAsDefault ? "1" : "0" )
+          .arg( useAsDefault ? QStringLiteral( "1" ) : QStringLiteral( "0" ) )
           .arg( QgsMssqlProvider::quotedValue( qmlStyle ) )
           .arg( QgsMssqlProvider::quotedValue( sldStyle ) )
           .arg( QgsMssqlProvider::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
@@ -2139,7 +2139,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     sql = QStringLiteral( "%1; %2;" ).arg( removeDefaultSql, sql );
   }
 
-  QgsDebugMsg( "Inserting styles" );
+  QgsDebugMsg( QStringLiteral( "Inserting styles" ) );
   QgsDebugMsg( sql );
   bool execOk = query.exec( sql );
 
@@ -2159,7 +2159,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
 
   if ( !QgsMssqlProvider::OpenDatabase( mDatabase ) )
   {
-    QgsDebugMsg( "Error connecting to database" );
+    QgsDebugMsg( QStringLiteral( "Error connecting to database" ) );
     QgsDebugMsg( mDatabase.lastError().text() );
     return QString();
   }
@@ -2181,7 +2181,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
 
   if ( !query.exec( selectQmlQuery ) )
   {
-    QgsDebugMsg( "Load of style failed" );
+    QgsDebugMsg( QStringLiteral( "Load of style failed" ) );
     QString msg = query.lastError().text();
     errCause = msg;
     QgsDebugMsg( msg );
@@ -2204,7 +2204,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
 
   if ( !QgsMssqlProvider::OpenDatabase( mDatabase ) )
   {
-    QgsDebugMsg( "Error connecting to database" );
+    QgsDebugMsg( QStringLiteral( "Error connecting to database" ) );
     QgsDebugMsg( mDatabase.lastError().text() );
     return -1;
   }
@@ -2284,7 +2284,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
 
   if ( !QgsMssqlProvider::OpenDatabase( mDatabase ) )
   {
-    QgsDebugMsg( "Error connecting to database" );
+    QgsDebugMsg( QStringLiteral( "Error connecting to database" ) );
     QgsDebugMsg( mDatabase.lastError().text() );
     return QString();
   }
