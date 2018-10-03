@@ -29,6 +29,8 @@
 #include <QStyle>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QInputDialog>
+#include <QMessageBox>
 
 #include "qgis.h"
 #include "qgsdataitem.h"
@@ -913,6 +915,31 @@ bool QgsDirectoryItem::hiddenPath( const QString &path )
 QList<QAction *> QgsDirectoryItem::actions( QWidget *parent )
 {
   QList<QAction *> result;
+
+  QAction *createFolder = new QAction( tr( "New Directory…" ), parent );
+  connect( createFolder, &QAction::triggered, this, [ = ]
+  {
+    bool ok = false;
+    const QString name = QInputDialog::getText( parent, tr( "Create Directory" ), tr( "Directory name" ), QLineEdit::Normal, QString(), &ok );
+    if ( ok && !name.isEmpty() )
+    {
+      QDir dir( mDirPath );
+      if ( !dir.mkdir( name ) )
+      {
+        QMessageBox::warning( parent, tr( "Create Directory" ), tr( "Could not create directory “%1”" ).arg( QDir::toNativeSeparators( dir.absoluteFilePath( name ) ) ) );
+      }
+      else
+      {
+        refresh();
+      }
+    }
+  } );
+  result << createFolder;
+
+  QAction *sep = new QAction();
+  sep->setSeparator( true );
+  result << sep;
+
   QAction *openFolder = new QAction( tr( "Open Directory…" ), parent );
   connect( openFolder, &QAction::triggered, this, [ = ]
   {
