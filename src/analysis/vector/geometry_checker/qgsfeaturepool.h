@@ -14,8 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
-
 #ifndef QGS_FEATUREPOOL_H
 #define QGS_FEATUREPOOL_H
 
@@ -34,7 +32,7 @@ class QgsVectorLayer;
  * \ingroup analysis
  * A feature pool is based on a vector layer and caches features.
  */
-class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
+class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
 {
 
   public:
@@ -63,14 +61,18 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
     /**
      * Returns the complete set of feature ids in this pool.
      * Note that this concerns the features governed by this pool, which are not necessarily all cached.
+     *
+     * \note not available in Python bindings
      */
-    QgsFeatureIds allFeatureIds() const;
+    QgsFeatureIds allFeatureIds() const SIP_SKIP;
 
     /**
      * Get all feature ids in the bounding box \a rect. It will use a spatial index to
      * determine the ids.
+     *
+     * \note not available in Python bindings
      */
-    QgsFeatureIds getIntersects( const QgsRectangle &rect ) const;
+    QgsFeatureIds getIntersects( const QgsRectangle &rect ) const SIP_SKIP;
 
     /**
      * Get a pointer to the underlying layer.
@@ -85,8 +87,10 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
      * will need to be done on the main thread and
      * the pointer will need to be checked for validity
      * before usage.
+     *
+     * \note not available in Python bindings
      */
-    QPointer<QgsVectorLayer> layerPtr() const;
+    QPointer<QgsVectorLayer> layerPtr() const SIP_SKIP;
 
     /**
      * The layer id of the layer.
@@ -127,10 +131,17 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink
      * Set all the feature ids governed by this feature pool.
      * Should be called by subclasses constructor and whenever
      * they insert a new feature.
+     *
+     * \note not available in Python bindings
      */
-    void setFeatureIds( const QgsFeatureIds &ids );
+    void setFeatureIds( const QgsFeatureIds &ids ) SIP_SKIP;
 
   private:
+#ifdef SIP_RUN
+    QgsFeaturePool( const QgsFeaturePool &other )
+    {}
+#endif
+
     static const int CACHE_SIZE = 1000;
     QCache<QgsFeatureId, QgsFeature> mFeatureCache;
     QPointer<QgsVectorLayer> mLayer;

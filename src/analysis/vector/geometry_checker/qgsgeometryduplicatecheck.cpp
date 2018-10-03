@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometryduplicatecheck.h"
 #include "qgsspatialindex.h"
@@ -37,10 +38,10 @@ QString QgsGeometryDuplicateCheckError::duplicatesString( const QMap<QString, Qg
 }
 
 
-void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+void QgsGeometryDuplicateCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, mContext, true );
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
+  QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext, true );
   QList<QString> layerIds = featureIds.keys();
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
@@ -57,7 +58,7 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
     QMap<QString, QList<QgsFeatureId>> duplicates;
 
     QgsWkbTypes::GeometryType geomType = layerFeatureA.feature().geometry().type();
-    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, QList<QString>() << layerFeatureA.layer()->id() << layerIds, bboxA, {geomType}, mContext );
+    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featurePools, QList<QString>() << layerFeatureA.layer()->id() << layerIds, bboxA, {geomType}, mContext );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
       // > : only report overlaps within same layer once
@@ -79,14 +80,14 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
     }
     if ( !duplicates.isEmpty() )
     {
-      errors.append( new QgsGeometryDuplicateCheckError( this, layerFeatureA, layerFeatureA.geometry().constGet()->centroid(), duplicates ) );
+      errors.append( new QgsGeometryDuplicateCheckError( this, layerFeatureA, layerFeatureA.geometry().constGet()->centroid(), featurePools, duplicates ) );
     }
   }
 }
 
-void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
+void QgsGeometryDuplicateCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
-  QgsFeaturePool *featurePoolA = mContext->featurePools[ error->layerId() ];
+  QgsFeaturePool *featurePoolA = featurePools[ error->layerId() ];
   QgsFeature featureA;
   if ( !featurePoolA->getFeature( error->featureId(), featureA ) )
   {
@@ -106,7 +107,7 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
     QgsGeometryDuplicateCheckError *duplicateError = static_cast<QgsGeometryDuplicateCheckError *>( error );
     for ( const QString &layerIdB : duplicateError->duplicates().keys() )
     {
-      QgsFeaturePool *featurePoolB = mContext->featurePools[ layerIdB ];
+      QgsFeaturePool *featurePoolB = featurePools[ layerIdB ];
       for ( QgsFeatureId idB : duplicateError->duplicates()[layerIdB] )
       {
         QgsFeature featureB;
@@ -139,4 +140,14 @@ QStringList QgsGeometryDuplicateCheck::resolutionMethods() const
                                << tr( "No action" )
                                << tr( "Remove duplicates" );
   return methods;
+}
+
+QString QgsGeometryDuplicateCheck::factoryId()
+{
+  return QStringLiteral( "QgsGeometryDuplicateCheck" );
+}
+
+QgsGeometryCheck::CheckType QgsGeometryDuplicateCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureCheck;
 }

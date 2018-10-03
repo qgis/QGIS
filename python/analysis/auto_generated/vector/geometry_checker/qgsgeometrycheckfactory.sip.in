@@ -1,0 +1,84 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckfactory.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsGeometryCheckFactory /Abstract/
+{
+
+%TypeHeaderCode
+#include "qgsgeometrycheckfactory.h"
+%End
+  public:
+
+    virtual ~QgsGeometryCheckFactory();
+
+    virtual QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) const = 0 /Factory/;
+%Docstring
+Create a new geometry check with ``context`` and ``configuration``.
+%End
+
+    virtual QString id() const = 0;
+%Docstring
+The unique id for this geometry check.
+%End
+
+    virtual QString description() const = 0;
+%Docstring
+A human readable description for this check.
+%End
+
+    virtual bool isCompatible( QgsVectorLayer *layer ) const = 0;
+%Docstring
+Checks if this check should be made available for ``layer``.
+%End
+
+    virtual QgsGeometryCheck::Flags flags() const = 0;
+%Docstring
+Flags for this check.
+%End
+
+    virtual QgsGeometryCheck::CheckType checkType() const = 0;
+%Docstring
+The type of this check.
+%End
+};
+
+template<T>
+class QgsGeometryCheckFactoryT : QgsGeometryCheckFactory
+{
+
+%TypeHeaderCode
+#include "qgsgeometrycheckfactory.h"
+%End
+  public:
+    virtual QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) const;
+
+    virtual QString description() const;
+
+    virtual QString id() const;
+
+    virtual bool isCompatible( QgsVectorLayer *layer ) const;
+
+    virtual QgsGeometryCheck::Flags flags() const;
+
+    virtual QgsGeometryCheck::CheckType checkType() const;
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckfactory.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

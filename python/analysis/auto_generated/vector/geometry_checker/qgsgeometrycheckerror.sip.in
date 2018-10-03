@@ -1,0 +1,101 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckerror.h         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsGeometryCheckError
+{
+%Docstring
+*************************************************************************
+
+This program is free software; you can redistribute it and/or modify  *
+it under the terms of the GNU General Public License as published by  *
+the Free Software Foundation; either version 2 of the License, or     *
+(at your option) any later version.                                   *
+
+**************************************************************************
+%End
+
+%TypeHeaderCode
+#include "qgsgeometrycheckerror.h"
+%End
+  public:
+    enum Status { StatusPending, StatusFixFailed, StatusFixed, StatusObsolete };
+    enum ValueType { ValueLength, ValueArea, ValueOther };
+
+    QgsGeometryCheckError( const QgsGeometryCheck *check,
+                           const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
+                           const QgsPointXY &errorLocation,
+                           QgsVertexId vidx = QgsVertexId(),
+                           const QVariant &value = QVariant(),
+                           ValueType valueType = ValueOther );
+
+    virtual ~QgsGeometryCheckError();
+
+
+    const QgsGeometryCheck *check() const;
+    const QString &layerId() const;
+    QgsFeatureId featureId() const;
+    QgsGeometry geometry() const;
+    virtual QgsRectangle affectedAreaBBox() const;
+    virtual QString description() const;
+    const QgsPointXY &location() const;
+    QVariant value() const;
+    ValueType valueType() const;
+    const QgsVertexId &vidx() const;
+    Status status() const;
+    QString resolutionMessage() const;
+    void setFixed( int method );
+    void setFixFailed( const QString &reason );
+    void setObsolete();
+
+    virtual bool isEqual( QgsGeometryCheckError *other ) const;
+%Docstring
+Check if this error is equal to ``other``.
+Is reimplemented by subclasses with additional information, comparison
+of base information is done in parent class.
+%End
+
+    virtual bool closeMatch( QgsGeometryCheckError * /*other*/ ) const;
+%Docstring
+Check if this error is almost equal to ``other``.
+If this returns true, it can be used to update existing errors after re-checking.
+%End
+
+    virtual void update( const QgsGeometryCheckError *other );
+%Docstring
+Update this error with the information from \other.
+Will be used to update existing errors whenever they are re-checked.
+%End
+
+
+  protected:
+    QgsGeometryCheckError( const QgsGeometryCheck *check,
+                           const QString &layerId,
+                           QgsFeatureId featureId,
+                           const QgsGeometry &geometry,
+                           const QgsPointXY &errorLocation,
+                           QgsVertexId vidx = QgsVertexId(),
+                           const QVariant &value = QVariant(),
+                           ValueType valueType = ValueOther );
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckerror.h         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

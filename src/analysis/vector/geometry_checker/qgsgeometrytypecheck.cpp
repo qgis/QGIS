@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrytypecheck.h"
 #include "qgsgeometrycollection.h"
 #include "qgsmulticurve.h"
@@ -23,9 +24,9 @@
 #include "qgsfeaturepool.h"
 
 
-QList<QgsSingleGeometryCheckError *> QgsGeometryTypeCheck::processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const
+
+QList<QgsSingleGeometryCheckError *> QgsGeometryTypeCheck::processGeometry( const QgsGeometry &geometry ) const
 {
-  Q_UNUSED( configuration )
   QList<QgsSingleGeometryCheckError *> errors;
   const QgsAbstractGeometry *geom = geometry.constGet();
   QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
@@ -36,9 +37,9 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryTypeCheck::processGeometry( cons
   return errors;
 }
 
-void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
+void QgsGeometryTypeCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
-  QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
+  QgsFeaturePool *featurePool = featurePools[ error->layerId() ];
   QgsFeature feature;
   if ( !featurePool->getFeature( error->featureId(), feature ) )
   {
@@ -156,6 +157,36 @@ QStringList QgsGeometryTypeCheck::resolutionMethods() const
   return methods;
 }
 
+QString QgsGeometryTypeCheck::factoryDescription()
+{
+  return tr( "Geometry type" );
+}
+
+QString QgsGeometryTypeCheck::description() const
+{
+  return factoryDescription();
+}
+
+QString QgsGeometryTypeCheck::factoryId()
+{
+  return QStringLiteral( "QgsGeometryTypeCheck" );
+}
+
+QgsGeometryCheck::CheckType QgsGeometryTypeCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureCheck;
+}
+
+QString QgsGeometryTypeCheck::id() const
+{
+  return factoryId();
+}
+
+QgsGeometryCheck::CheckType QgsGeometryTypeCheck::checkType() const
+{
+  return factoryCheckType();
+}
+
 bool QgsGeometryTypeCheckError::isEqual( const QgsSingleGeometryCheckError *other ) const
 {
   return QgsSingleGeometryCheckError::isEqual( other ) &&
@@ -164,5 +195,5 @@ bool QgsGeometryTypeCheckError::isEqual( const QgsSingleGeometryCheckError *othe
 
 QString QgsGeometryTypeCheckError::description() const
 {
-  return QStringLiteral( "%1 (%2)" ).arg( mCheck->errorDescription(), QgsWkbTypes::displayString( mFlatType ) );
+  return QStringLiteral( "%1 (%2)" ).arg( mCheck->description(), QgsWkbTypes::displayString( mFlatType ) );
 }

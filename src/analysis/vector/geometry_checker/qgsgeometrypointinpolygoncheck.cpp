@@ -13,14 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrypointinpolygoncheck.h"
 #include "qgspolygon.h"
 #include "qgsgeometryengine.h"
+#include "qgsgeometrycheckerror.h"
 
-void QgsGeometryPointInPolygonCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+void QgsGeometryPointInPolygonCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, mContext, true );
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
@@ -38,7 +40,7 @@ void QgsGeometryPointInPolygonCheck::collectErrors( QList<QgsGeometryCheckError 
       // Check whether point is contained by a fully contained by a polygon
       QgsRectangle rect( point->x() - mContext->tolerance, point->y() - mContext->tolerance,
                          point->x() + mContext->tolerance, point->y() + mContext->tolerance );
-      QgsGeometryCheckerUtils::LayerFeatures checkFeatures( mContext->featurePools, featureIds.keys(), rect, {QgsWkbTypes::PolygonGeometry}, mContext );
+      QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {QgsWkbTypes::PolygonGeometry}, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
         ++nTested;
@@ -62,8 +64,10 @@ void QgsGeometryPointInPolygonCheck::collectErrors( QList<QgsGeometryCheckError 
   }
 }
 
-void QgsGeometryPointInPolygonCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes & /*changes*/ ) const
+void QgsGeometryPointInPolygonCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes & /*changes*/ ) const
 {
+  Q_UNUSED( featurePools )
+
   if ( method == NoChange )
   {
     error->setFixed( method );
@@ -78,4 +82,9 @@ QStringList QgsGeometryPointInPolygonCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;
+}
+
+QgsGeometryCheck::CheckType QgsGeometryPointInPolygonCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureNodeCheck;
 }

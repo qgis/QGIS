@@ -23,15 +23,22 @@
 class ANALYSIS_EXPORT QgsGeometrySegmentLengthCheck : public QgsGeometryCheck
 {
   public:
-    QgsGeometrySegmentLengthCheck( QgsGeometryCheckerContext *context, double minLengthMapUnits )
-      : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context )
-    , mMinLengthMapUnits( minLengthMapUnits )
+    QgsGeometrySegmentLengthCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
+      : QgsGeometryCheck( context, configuration )
+      , mMinLengthMapUnits( configuration.value( "minSegmentLength" ).toDouble() )
     {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
-    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
+    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Minimal segment length" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometrySegmentLengthCheck" ); }
+    static QString factoryDescription() { return tr( "Minimal segment length" ); }
+    QString description() const override { return factoryDescription(); }
+    static QString factoryId() { return QStringLiteral( "QgsGeometrySegmentLengthCheck" ); }
+    QString id() const override { return factoryId(); }
+    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
+    static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
     enum ResolutionMethod { NoChange };
 

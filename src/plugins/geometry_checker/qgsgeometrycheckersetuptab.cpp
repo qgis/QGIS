@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckersetuptab.h"
 #include "qgsgeometrycheckerresulttab.h"
 #include "qgsgeometrychecker.h"
@@ -425,7 +426,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     featurePools.insert( layer->id(), new QgsVectorDataProviderFeaturePool( layer, selectedOnly ) );
   }
 
-  QgsGeometryCheckerContext *context = new QgsGeometryCheckerContext( ui.spinBoxTolerance->value(), QgsProject::instance()->crs(), featurePools, QgsProject::instance()->transformContext() );
+  QgsGeometryCheckContext *context = new QgsGeometryCheckContext( ui.spinBoxTolerance->value(), QgsProject::instance()->crs(), QgsProject::instance()->transformContext() );
 
   QList<QgsGeometryCheck *> checks;
   for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )
@@ -436,7 +437,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
       checks.append( check );
     }
   }
-  QgsGeometryChecker *checker = new QgsGeometryChecker( checks, context );
+  QgsGeometryChecker *checker = new QgsGeometryChecker( checks, context, featurePools );
 
   emit checkerStarted( checker );
 

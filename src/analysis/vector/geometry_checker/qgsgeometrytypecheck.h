@@ -43,15 +43,24 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsSingleGeometryCheckE
 class ANALYSIS_EXPORT QgsGeometryTypeCheck : public QgsSingleGeometryCheck
 {
   public:
-    QgsGeometryTypeCheck( QgsGeometryCheckerContext *context, int allowedTypes )
-      : QgsSingleGeometryCheck( FeatureCheck, {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context )
-    , mAllowedTypes( allowedTypes )
+    QgsGeometryTypeCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration, int allowedTypes )
+      : QgsSingleGeometryCheck( context, configuration )
+      , mAllowedTypes( allowedTypes )
     {}
-    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const override;
-    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
+    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
+    void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Geometry type" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometryTypeCheck" ); }
+    QString description() const override;
+    QString id() const override;
+    QgsGeometryCheck::CheckType checkType() const override;
+
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP {return {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
+    static QString factoryDescription() SIP_SKIP;
+    static QString factoryId() SIP_SKIP;
+    static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
+
   private:
     enum ResolutionMethod { Convert, Delete, NoChange };
     int mAllowedTypes;

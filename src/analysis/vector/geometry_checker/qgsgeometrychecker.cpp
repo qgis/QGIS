@@ -14,23 +14,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrychecker.h"
-#include "qgsgeometrycheck.h"
-#include "qgsfeaturepool.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-
 #include <QtConcurrentMap>
 #include <QFutureWatcher>
 #include <QMutex>
 #include <QTimer>
 
+#include "qgsgeometrycheckcontext.h"
+#include "qgsgeometrychecker.h"
+#include "qgsgeometrycheck.h"
+#include "qgsfeaturepool.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
+#include "qgsgeometrycheckerror.h"
 
-QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckerContext *context )
+
+
+QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckContext *context, const QMap<QString, QgsFeaturePool *> &featurePools )
   : mChecks( checks )
   , mContext( context )
+  , mFeaturePools( featurePools )
 {
-  for ( auto it = mContext->featurePools.constBegin(); it != mContext->featurePools.constEnd(); ++it )
+  for ( auto it = featurePools.constBegin(); it != mFeaturePools.constEnd(); ++it )
   {
     if ( it.value()->layer() )
     {
@@ -45,7 +49,7 @@ QgsGeometryChecker::~QgsGeometryChecker()
 {
   qDeleteAll( mCheckErrors );
   qDeleteAll( mChecks );
-  for ( auto it = mContext->featurePools.constBegin(); it != mContext->featurePools.constEnd(); ++it )
+  for ( auto it = mFeaturePools.constBegin(); it != mFeaturePools.constEnd(); ++it )
   {
     if ( it.value()->layer() )
     {
@@ -64,11 +68,11 @@ QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
     *totalSteps = 0;
     for ( QgsGeometryCheck *check : qgis::as_const( mChecks ) )
     {
-      for ( auto it = mContext->featurePools.constBegin(); it != mContext->featurePools.constEnd(); ++it )
+      for ( auto it = mFeaturePools.constBegin(); it != mFeaturePools.constEnd(); ++it )
       {
         if ( check->checkType() <= QgsGeometryCheck::FeatureCheck )
         {
-          *totalSteps += check->isCompatible( it.value()->layer()->geometryType() ) ? it.value()->allFeatureIds().size() : 0;
+          *totalSteps += check->isCompatible( it.value()->layer() ) ? it.value()->allFeatureIds().size() : 0;
         }
         else
         {
@@ -93,7 +97,7 @@ QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
 
 void QgsGeometryChecker::emitProgressValue()
 {
-  emit progressValue( mProgressCounter );
+  emit progressValue( mFeedback.progress() );
 }
 
 bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, bool triggerRepaint )
@@ -110,7 +114,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   QgsGeometryCheck::Changes changes;
   QgsRectangle recheckArea = error->affectedAreaBBox();
 
-  error->check()->fixError( error, method, mMergeAttributeIndices, changes );
+  error->check()->fixError( mFeaturePools, error, method, mMergeAttributeIndices, changes );
 #if 0
   QTextStream( stdout ) << " * Status: " << error->resolutionMessage() << endl;
   static QVector<QString> strChangeWhat = { "ChangeFeature", "ChangePart", "ChangeRing", "ChangeNode" };
@@ -144,7 +148,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   for ( auto it = changes.constBegin(); it != changes.constEnd(); ++it )
   {
     const QMap<QgsFeatureId, QList<QgsGeometryCheck::Change>> &layerChanges = it.value();
-    QgsFeaturePool *featurePool = mContext->featurePools[it.key()];
+    QgsFeaturePool *featurePool = mFeaturePools[it.key()];
     QgsCoordinateTransform t( featurePool->layer()->crs(), mContext->mapCrs, QgsProject::instance() );
     for ( auto layerChangeIt = layerChanges.constBegin(); layerChangeIt != layerChanges.constEnd(); ++layerChangeIt )
     {
@@ -181,9 +185,9 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   }
   recheckArea.grow( 10 * mContext->tolerance );
   QMap<QString, QgsFeatureIds> recheckAreaFeatures;
-  for ( const QString &layerId : mContext->featurePools.keys() )
+  for ( const QString &layerId : mFeaturePools.keys() )
   {
-    QgsFeaturePool *featurePool = mContext->featurePools[layerId];
+    QgsFeaturePool *featurePool = mFeaturePools[layerId];
     QgsCoordinateTransform t( mContext->mapCrs, featurePool->layer()->crs(), QgsProject::instance() );
     recheckAreaFeatures[layerId] = featurePool->getIntersects( t.transform( recheckArea ) );
   }
@@ -196,14 +200,14 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
     {
       if ( !recheckAreaFeatures.isEmpty() )
       {
-        check->collectErrors( recheckErrors, mMessages, nullptr, recheckAreaFeatures );
+        check->collectErrors( mFeaturePools, recheckErrors, mMessages, nullptr, recheckAreaFeatures );
       }
     }
     else
     {
       if ( !recheckFeatures.isEmpty() )
       {
-        check->collectErrors( recheckErrors, mMessages, nullptr, recheckFeatures );
+        check->collectErrors( mFeaturePools, recheckErrors, mMessages, nullptr, recheckFeatures );
       }
     }
   }
@@ -269,19 +273,19 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   {
     for ( const QString &layerId : changes.keys() )
     {
-      mContext->featurePools[layerId]->layer()->triggerRepaint();
+      mFeaturePools[layerId]->layer()->triggerRepaint();
     }
   }
 
   return true;
 }
 
-void QgsGeometryChecker::runCheck( const QgsGeometryCheck *check )
+void QgsGeometryChecker::runCheck( const QMap<QString, QgsFeaturePool *> &featurePools, const QgsGeometryCheck *check )
 {
   // Run checks
   QList<QgsGeometryCheckError *> errors;
   QStringList messages;
-  check->collectErrors( errors, messages, &mProgressCounter );
+  check->collectErrors( featurePools, errors, messages, &mFeedback );
   mErrorListMutex.lock();
   mCheckErrors.append( errors );
   mMessages.append( messages );
@@ -299,5 +303,5 @@ QgsGeometryChecker::RunCheckWrapper::RunCheckWrapper( QgsGeometryChecker *instan
 
 void QgsGeometryChecker::RunCheckWrapper::operator()( const QgsGeometryCheck *check )
 {
-  mInstance->runCheck( check );
+  mInstance->runCheck( mInstance->mFeaturePools, check );
 }
