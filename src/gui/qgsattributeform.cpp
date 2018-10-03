@@ -1654,7 +1654,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         addWidgetWrapper( eww );
 
         newWidgetInfo.widget->setObjectName( fields.at( fldIdx ).name() );
-        newWidgetInfo.hint = fields.at( fieldDef->idx() ).comment();
+        newWidgetInfo.hint = fields.at( fldIdx ).comment();
       }
 
       newWidgetInfo.labelOnTop = mLayer->editFormConfig().labelOnTop( fieldDef->idx() );
