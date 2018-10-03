@@ -203,7 +203,7 @@ class SqlResultModel(BaseTableModel):
         try:
             if len(header) > 0:
                 data = self.db._fetchall(c)
-            self._affectedRows = c.rowcount
+            self._affectedRows = len(data)
         except DbError:
             # nothing to fetch!
             data = []
