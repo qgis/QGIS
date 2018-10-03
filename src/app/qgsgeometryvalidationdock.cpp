@@ -185,6 +185,9 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
   QgsGeometryCheckError *error = current.data( QgsGeometryValidationModel::GeometryCheckErrorRole ).value<QgsGeometryCheckError *>();
   if ( error )
   {
+    while ( QWidget *w = mResolutionWidget->findChild<QWidget *>() )
+      delete w;
+
     delete mResolutionWidget->layout();
     const QStringList resolutionMethods = error->check()->resolutionMethods();
     QGridLayout *layout = new QGridLayout( mResolutionWidget );
