@@ -319,6 +319,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
   }
 
   QList<std::shared_ptr<QgsGeometryCheckError>> &allErrors = mLayerChecks[layer].topologyCheckErrors;
+  allErrors.clear();
   QMap<QString, QgsFeatureIds> layerIds;
 
   QgsFeatureRequest request = QgsFeatureRequest( affectedFeatureIds ).setSubsetOfAttributes( QgsAttributeList() );
