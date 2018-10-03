@@ -64,7 +64,7 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
   mRefreshTimer.setInterval( 2000 );
 
   mGroupIcon = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderOpen.svg" ) );
-  mKeyIcon = style()->standardIcon( QStyle::SP_FileIcon );
+  mKeyIcon = QgsApplication::getThemeIcon( QStringLiteral( "mIconDeselected.svg" ) );
 
   setEditTriggers( QAbstractItemView::AllEditTriggers );
 
