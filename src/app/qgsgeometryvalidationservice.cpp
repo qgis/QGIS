@@ -139,6 +139,9 @@ void QgsGeometryValidationService::onBeforeCommitChanges( QgsVectorLayer *layer 
     {
       emit warning( tr( "Can not save yet, we'll need to run some topology checks on your dataset first..." ) );
     }
+
+    mLayerChecks[layer].commitPending = true;
+
     triggerTopologyChecks( layer );
   }
 }
@@ -193,7 +196,7 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
       precision = 8;
   }
 
-  checkInformation.context = qgis::make_unique<QgsGeometryCheckContext>( precision, mProject->crs(), mProject->transformContext() );
+  checkInformation.context = qgis::make_unique<QgsGeometryCheckContext>( 10, mProject->crs(), mProject->transformContext() );
 
   QList<QgsGeometryCheck *> layerChecks;
 
@@ -311,6 +314,7 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
   QgsFeature feature = layer->getFeature( fid );
 
   const auto &checks = mLayerChecks[layer].singleFeatureChecks;
+  mLayerChecks[layer].singleFeatureCheckErrors.remove( fid );
 
   // The errors are going to be sent out via a signal. We cannot keep ownership in here (or can we?)
   // nor can we be sure that a single slot is connected to the signal. So make it a shared_ptr.
@@ -322,6 +326,9 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
     for ( auto error : errors )
       allErrors.append( std::shared_ptr<QgsSingleGeometryCheckError>( error ) );
   }
+
+  if ( !allErrors.empty() )
+    mLayerChecks[layer].singleFeatureCheckErrors.insert( fid, allErrors );
 
   emit geometryCheckCompleted( layer, fid, allErrors );
 }
@@ -408,6 +415,10 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
     futureWatcher->deleteLater();
     if ( mLayerChecks[layer].topologyCheckFutureWatcher == futureWatcher )
       mLayerChecks[layer].topologyCheckFutureWatcher = nullptr;
+
+    if ( allErrors.empty() && !mLayerChecks[layer].singleFeatureCheckErrors.empty() && mLayerChecks[layer].commitPending )
+      layer->commitChanges();
+    mLayerChecks[layer].commitPending = false;
   } );
 
   mLayerChecks[layer].topologyCheckFutureWatcher = futureWatcher;

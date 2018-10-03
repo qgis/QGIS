@@ -98,12 +98,14 @@ class QgsGeometryValidationService : public QObject
     struct VectorLayerCheckInformation
     {
       QList< QgsSingleGeometryCheck * > singleFeatureChecks;
+      QMap<QgsFeatureId, QList< std::shared_ptr<QgsSingleGeometryCheckError > > > singleFeatureCheckErrors;
       QList< QgsGeometryCheck *> topologyChecks;
       QFutureWatcher<void> *topologyCheckFutureWatcher = nullptr;
       QList<QgsFeedback *> topologyCheckFeedbacks; // will be deleted when topologyCheckFutureWatcher is delteed
       QList<std::shared_ptr<QgsGeometryCheckError>> topologyCheckErrors;
       QList<QMetaObject::Connection> connections;
       std::shared_ptr<QgsGeometryCheckContext> context;
+      bool commitPending = false;
     };
 
     QReadWriteLock mTopologyCheckLock;
