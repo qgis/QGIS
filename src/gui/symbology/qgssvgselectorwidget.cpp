@@ -332,7 +332,7 @@ QgsSvgSelectorGroupsModel::QgsSvgSelectorGroupsModel( QObject *parent )
     baseGroup->setData( QVariant( svgPaths.at( i ) ) );
     baseGroup->setEditable( false );
     baseGroup->setCheckable( false );
-    baseGroup->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
+    baseGroup->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) ) );
     baseGroup->setToolTip( dir.path() );
     parentItem->appendRow( baseGroup );
     parentPaths << svgPaths.at( i );
@@ -361,7 +361,7 @@ void QgsSvgSelectorGroupsModel::addPath( const QString &parentPath, const QStrin
   group->setEditable( false );
   group->setCheckable( false );
   group->setToolTip( fullPath );
-  group->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
+  group->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) ) );
   parentGroup->appendRow( group );
   mPathItemHash.insert( fullPath, group );
 }
