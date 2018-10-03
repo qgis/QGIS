@@ -38,9 +38,7 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
 {
   setupUi( this );
 
-  QFont font = mProblemDescriptionLabel->font();
-  font.setBold( true );
-  mProblemDescriptionLabel->setFont( font );
+  mProblemDescriptionLabel->setStyleSheet( QStringLiteral( "font: bold" ) );
   mErrorListView->setAlternatingRowColors( true );
 
   connect( mNextButton, &QToolButton::clicked, this, &QgsGeometryValidationDock::gotoNextError );
