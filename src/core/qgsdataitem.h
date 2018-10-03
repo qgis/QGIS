@@ -530,6 +530,12 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
      * \since QGIS 3.4
      */
     static QIcon openDirIcon();
+
+    /**
+     * Shared home directory icon.
+     * \since QGIS 3.4
+     */
+    static QIcon homeDirIcon();
 };
 
 /**
