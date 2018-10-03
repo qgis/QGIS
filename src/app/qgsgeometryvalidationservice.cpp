@@ -127,6 +127,8 @@ void QgsGeometryValidationService::onFeatureDeleted( QgsVectorLayer *layer, QgsF
     invalidateTopologyChecks( layer );
   }
 
+  mLayerChecks[layer].singleFeatureCheckErrors.remove( fid );
+
   // There should be no geometry errors on an inexistent feature, right?
   emit geometryCheckCompleted( layer, fid, QList<std::shared_ptr<QgsSingleGeometryCheckError>>() );
 }
