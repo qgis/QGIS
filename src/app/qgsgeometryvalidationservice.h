@@ -33,10 +33,16 @@ class QgsSingleGeometryCheckError;
 class QgsGeometryCheckError;
 class QgsFeedback;
 class QgsFeaturePool;
+class QgsMessageBar;
+class QgsMessageBarItem;
 
 /**
  * This service connects to all layers in a project and triggers validation
  * of features whenever they are edited.
+ * It is responsible for executing validation checks and sending out signals
+ * upon failure and success.
+ * It will also make sure, that a layer can only be saved, if all errors have
+ * been resolved.
  */
 class QgsGeometryValidationService : public QObject
 {
@@ -64,6 +70,8 @@ class QgsGeometryValidationService : public QObject
 
     void triggerTopologyChecks( QgsVectorLayer *layer );
 
+    void setMessageBar( QgsMessageBar *messageBar );
+
   signals:
     void geometryCheckStarted( QgsVectorLayer *layer, QgsFeatureId fid );
     void geometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<std::shared_ptr<QgsSingleGeometryCheckError>> &errors );
@@ -72,6 +80,7 @@ class QgsGeometryValidationService : public QObject
     void topologyErrorUpdated( QgsVectorLayer *layer, QgsGeometryCheckError *error );
 
     void warning( const QString &message );
+    void clearWarning();
 
   private slots:
     void onLayersAdded( const QList<QgsMapLayer *> &layers );
@@ -82,6 +91,7 @@ class QgsGeometryValidationService : public QObject
     void onEditingStopped( QgsVectorLayer *layer );
 
   private:
+    void showMessage( const QString &message );
     void cleanupLayerChecks( QgsVectorLayer *layer );
     void enableLayerChecks( QgsVectorLayer *layer );
 
@@ -111,6 +121,9 @@ class QgsGeometryValidationService : public QObject
     QReadWriteLock mTopologyCheckLock;
     QHash<QgsVectorLayer *, VectorLayerCheckInformation> mLayerChecks;
     QMap<QString, QgsFeaturePool *> mFeaturePools;
+    QgsMessageBar *mMessageBar = nullptr;
+    QgsMessageBarItem *mMessageBarItem = nullptr;
+
 };
 
 #endif // QGSGEOMETRYVALIDATIONSERVICE_H

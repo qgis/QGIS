@@ -927,10 +927,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   startProfile( QStringLiteral( "Geometry validation" ) );
 
   mGeometryValidationService = qgis::make_unique<QgsGeometryValidationService>( QgsProject::instance() );
-  connect( mGeometryValidationService.get(), &QgsGeometryValidationService::warning, this, [this]( const QString & message )
-  {
-    mInfoBar->pushWarning( tr( "Geometry Validation" ), message );
-  } );
+  mGeometryValidationService->setMessageBar( mInfoBar );
   mGeometryValidationDock = new QgsGeometryValidationDock( tr( "Geometry Validation" ), mMapCanvas, this );
   mGeometryValidationModel = new QgsGeometryValidationModel( mGeometryValidationService.get(), mGeometryValidationDock );
   connect( this, &QgisApp::activeLayerChanged, mGeometryValidationModel, [this]( QgsMapLayer * layer )

@@ -25,6 +25,8 @@ email                : matthias@opengis.ch
 #include "qgsvectorlayerfeaturepool.h"
 #include "qgsfeedback.h"
 #include "qgsreadwritelocker.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 
 #include <QtConcurrent>
 #include <QFutureWatcher>
@@ -139,7 +141,7 @@ void QgsGeometryValidationService::onBeforeCommitChanges( QgsVectorLayer *layer 
   {
     if ( !layer->allowCommit() )
     {
-      emit warning( tr( "Can not save yet, we'll need to run some topology checks on your dataset first..." ) );
+      showMessage( tr( "Running geometry validation checks before saving ..." ) );
     }
 
     mLayerChecks[layer].commitPending = true;
@@ -152,6 +154,14 @@ void QgsGeometryValidationService::onEditingStopped( QgsVectorLayer *layer )
 {
   cancelTopologyCheck( layer );
   clearTopologyChecks( layer );
+}
+
+void QgsGeometryValidationService::showMessage( const QString &message )
+{
+  mMessageBar->popWidget( mMessageBarItem );
+  mMessageBarItem = QgsMessageBar::createMessage( tr( "Geometry Validation" ),  message );
+  mMessageBarItem->setDuration( 5 );
+  mMessageBar->pushItem( mMessageBarItem );
 }
 
 void QgsGeometryValidationService::cleanupLayerChecks( QgsVectorLayer *layer )
@@ -335,6 +345,11 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
   emit geometryCheckCompleted( layer, fid, allErrors );
 }
 
+void QgsGeometryValidationService::setMessageBar( QgsMessageBar *messageBar )
+{
+  mMessageBar = messageBar;
+}
+
 void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer )
 {
   cancelTopologyCheck( layer );
@@ -418,8 +433,20 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
     if ( mLayerChecks[layer].topologyCheckFutureWatcher == futureWatcher )
       mLayerChecks[layer].topologyCheckFutureWatcher = nullptr;
 
-    if ( allErrors.empty() && !mLayerChecks[layer].singleFeatureCheckErrors.empty() && mLayerChecks[layer].commitPending )
+    if ( !allErrors.empty() || !mLayerChecks[layer].singleFeatureCheckErrors.empty() )
+    {
+      if ( mLayerChecks[layer].commitPending )
+        showMessage( tr( "Geometry errors have been found. Please fix the errors before saving the layer." ) );
+      else
+        showMessage( tr( "Geometry errors have been found." ) );
+    }
+    if ( allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty() && mLayerChecks[layer].commitPending )
+    {
       layer->commitChanges();
+      mMessageBar->popWidget( mMessageBarItem );
+      mMessageBarItem = nullptr;
+    }
+
     mLayerChecks[layer].commitPending = false;
   } );
 
