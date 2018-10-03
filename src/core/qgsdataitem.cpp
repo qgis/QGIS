@@ -920,13 +920,22 @@ QList<QAction *> QgsDirectoryItem::actions( QWidget *parent )
   connect( createFolder, &QAction::triggered, this, [ = ]
   {
     bool ok = false;
-    const QString name = QInputDialog::getText( parent, tr( "Create Directory" ), tr( "Directory name" ), QLineEdit::Normal, QString(), &ok );
+
+    QWidget *parentWindow = parent;
+    while ( parentWindow->parentWidget() )
+      parentWindow = parentWindow->parentWidget();
+
+    const QString name = QInputDialog::getText( parentWindow, tr( "Create Directory" ), tr( "Directory name" ), QLineEdit::Normal, QString(), &ok );
     if ( ok && !name.isEmpty() )
     {
       QDir dir( mDirPath );
-      if ( !dir.mkdir( name ) )
+      if ( QFileInfo::exists( dir.absoluteFilePath( name ) ) )
       {
-        QMessageBox::warning( parent, tr( "Create Directory" ), tr( "Could not create directory “%1”" ).arg( QDir::toNativeSeparators( dir.absoluteFilePath( name ) ) ) );
+        QMessageBox::critical( parentWindow, tr( "Create Directory" ), tr( "The path “%1” already exists." ).arg( QDir::toNativeSeparators( dir.absoluteFilePath( name ) ) ) );
+      }
+      else if ( !dir.mkdir( name ) )
+      {
+        QMessageBox::critical( parentWindow, tr( "Create Directory" ), tr( "Could not create directory “%1”." ).arg( QDir::toNativeSeparators( dir.absoluteFilePath( name ) ) ) );
       }
       else
       {
@@ -936,7 +945,7 @@ QList<QAction *> QgsDirectoryItem::actions( QWidget *parent )
   } );
   result << createFolder;
 
-  QAction *sep = new QAction();
+  QAction *sep = new QAction( parent );
   sep->setSeparator( true );
   result << sep;
 
@@ -1522,7 +1531,7 @@ QList<QAction *> QgsProjectHomeItem::actions( QWidget *parent )
   connect( setHome, &QAction::triggered, this, [ = ]
   {
     QString oldHome = QgsProject::instance()->homePath();
-    QString newPath = QFileDialog::getExistingDirectory( parent, tr( "Select Project Home Directory" ), oldHome );
+    QString newPath = QFileDialog::getExistingDirectory( parent->window(), tr( "Select Project Home Directory" ), oldHome );
     if ( !newPath.isEmpty() )
     {
       QgsProject::instance()->setPresetHomePath( newPath );
