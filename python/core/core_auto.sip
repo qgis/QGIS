@@ -54,7 +54,6 @@
 %Include auto_generated/qgsfields.sip
 %Include auto_generated/qgsfileutils.sip
 %Include auto_generated/qgsfontutils.sip
-%Include auto_generated/qgsgeometryoptions.sip
 %Include auto_generated/qgsgeometrysimplifier.sip
 %Include auto_generated/qgshistogram.sip
 %Include auto_generated/qgshstoreutils.sip
@@ -327,6 +326,7 @@
 %Include auto_generated/qgsfieldproxymodel.sip
 %Include auto_generated/qgsfiledownloader.sip
 %Include auto_generated/qgsfeaturefiltermodel.sip
+%Include auto_generated/qgsgeometryoptions.sip
 %Include auto_generated/qgsgeometryvalidator.sip
 %Include auto_generated/qgsgml.sip
 %Include auto_generated/qgsgmlschema.sip
