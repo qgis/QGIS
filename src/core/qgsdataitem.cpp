@@ -960,11 +960,10 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
   labels << tr( "Name" ) << tr( "Size" ) << tr( "Date" ) << tr( "Permissions" ) << tr( "Owner" ) << tr( "Group" ) << tr( "Type" );
   setHeaderLabels( labels );
 
-  QStyle *style = QApplication::style();
-  QIcon iconDirectory = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderOpen.svg" ) );
-  QIcon iconFile = QIcon( style->standardIcon( QStyle::SP_FileIcon ) );
-  QIcon iconDirLink = QIcon( style->standardIcon( QStyle::SP_DirLinkIcon ) );
-  QIcon iconFileLink = QIcon( style->standardIcon( QStyle::SP_FileLinkIcon ) );
+  QIcon iconDirectory = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) );
+  QIcon iconFile = QgsApplication::getThemeIcon( QStringLiteral( "mIconFile.svg" ) );
+  QIcon iconDirLink = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderLink.svg" ) );
+  QIcon iconFileLink = QgsApplication::getThemeIcon( QStringLiteral( "mIconFileLink.svg" ) );
 
   QList<QTreeWidgetItem *> items;
 
