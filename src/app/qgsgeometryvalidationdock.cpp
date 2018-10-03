@@ -85,6 +85,7 @@ void QgsGeometryValidationDock::setGeometryValidationModel( QgsGeometryValidatio
   mErrorListView->setModel( mGeometryValidationModel );
 
   connect( mErrorListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsGeometryValidationDock::onCurrentErrorChanged );
+  connect( mGeometryValidationModel, &QgsGeometryValidationModel::dataChanged, this, &QgsGeometryValidationDock::onDataChanged );
   connect( mGeometryValidationModel, &QgsGeometryValidationModel::rowsRemoved, this, &QgsGeometryValidationDock::updateCurrentError );
   connect( mGeometryValidationModel, &QgsGeometryValidationModel::rowsInserted, this, &QgsGeometryValidationDock::onRowsInserted );
 }
@@ -141,6 +142,15 @@ void QgsGeometryValidationDock::updateLayerTransform()
   mLayerTransform = QgsCoordinateTransform( mMapCanvas->currentLayer()->crs(), mMapCanvas->mapSettings().destinationCrs(), mMapCanvas->mapSettings().transformContext() );
 }
 
+void QgsGeometryValidationDock::onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles )
+{
+  Q_UNUSED( bottomRight )
+  Q_UNUSED( roles )
+
+  if ( currentIndex() == topLeft )
+    updateCurrentError();
+}
+
 void QgsGeometryValidationDock::onRowsInserted()
 {
   if ( !isVisible() )
@@ -162,9 +172,15 @@ void QgsGeometryValidationDock::setGeometryValidationService( QgsGeometryValidat
 
 void QgsGeometryValidationDock::updateCurrentError()
 {
+  if ( mGeometryValidationModel->rowCount() == 0 )
+    mErrorListView->selectionModel()->clearCurrentIndex();
+
   mFeatureRubberband->hide();
+  mFeatureRubberband->update();
   mErrorRubberband->hide();
+  mErrorRubberband->update();
   mErrorLocationRubberband->hide();
+  mErrorLocationRubberband->update();
 
   onCurrentErrorChanged( currentIndex(), QModelIndex() );
 }
@@ -200,30 +216,35 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
       delete w;
 
     delete mResolutionWidget->layout();
-    const QStringList resolutionMethods = error->check()->resolutionMethods();
-    QGridLayout *layout = new QGridLayout( mResolutionWidget );
-    int resolutionIndex = 0;
-    for ( const QString &resolutionMethod : resolutionMethods )
+
+    if ( error->status() != QgsGeometryCheckError::StatusFixed )
     {
-      QToolButton *resolveBtn = new QToolButton( mResolutionWidget );
-      resolveBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) ) );
-      layout->addWidget( resolveBtn, resolutionIndex, 0 );
-      QLabel *resolveLabel = new QLabel( resolutionMethod, mResolutionWidget );
-      resolveLabel->setWordWrap( true );
-      layout->addWidget( resolveLabel, resolutionIndex, 1 );
-      connect( resolveBtn, &QToolButton::clicked, this, [resolutionIndex, error, this]()
+      const QStringList resolutionMethods = error->check()->resolutionMethods();
+      QGridLayout *layout = new QGridLayout( mResolutionWidget );
+      int resolutionIndex = 0;
+      for ( const QString &resolutionMethod : resolutionMethods )
       {
-        mGeometryValidationService->fixError( error, resolutionIndex );
-      } );
-      resolutionIndex++;
+        QToolButton *resolveBtn = new QToolButton( mResolutionWidget );
+        resolveBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) ) );
+        layout->addWidget( resolveBtn, resolutionIndex, 0 );
+        QLabel *resolveLabel = new QLabel( resolutionMethod, mResolutionWidget );
+        resolveLabel->setWordWrap( true );
+        layout->addWidget( resolveLabel, resolutionIndex, 1 );
+        connect( resolveBtn, &QToolButton::clicked, this, [resolutionIndex, error, this]()
+        {
+          mGeometryValidationService->fixError( error, resolutionIndex );
+        } );
+        resolutionIndex++;
+      }
+
+      mResolutionWidget->setLayout( layout );
+
+      showHighlight( current );
     }
-    mResolutionWidget->setLayout( layout );
   }
 
   bool hasFeature = !FID_IS_NULL( current.data( QgsGeometryValidationModel::ErrorFeatureIdRole ) );
   mZoomToFeatureButton->setEnabled( hasFeature );
-
-  showHighlight( current );
 
   switch ( mLastZoomToAction )
   {

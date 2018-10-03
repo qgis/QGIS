@@ -143,6 +143,12 @@ void QgsGeometryValidationService::onBeforeCommitChanges( QgsVectorLayer *layer 
   }
 }
 
+void QgsGeometryValidationService::onEditingStopped( QgsVectorLayer *layer )
+{
+  cancelTopologyCheck( layer );
+  clearTopologyChecks( layer );
+}
+
 void QgsGeometryValidationService::cleanupLayerChecks( QgsVectorLayer *layer )
 {
   if ( !mLayerChecks.contains( layer ) )
@@ -256,6 +262,11 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
   {
     onBeforeCommitChanges( layer );
   }, Qt::UniqueConnection );
+  checkInformation.connections
+      << connect( layer, &QgsVectorLayer::editingStopped, this, [this, layer]()
+  {
+    onEditingStopped( layer );
+  }, Qt::UniqueConnection );
 }
 
 void QgsGeometryValidationService::cancelTopologyCheck( QgsVectorLayer *layer )
@@ -277,6 +288,14 @@ void QgsGeometryValidationService::cancelTopologyCheck( QgsVectorLayer *layer )
     futureWatcher->waitForFinished();
     mLayerChecks[layer].topologyCheckFutureWatcher = nullptr;
   }
+}
+
+void QgsGeometryValidationService::clearTopologyChecks( QgsVectorLayer *layer )
+{
+  QList<std::shared_ptr<QgsGeometryCheckError>> &allErrors = mLayerChecks[layer].topologyCheckErrors;
+  allErrors.clear();
+
+  emit topologyChecksCleared( layer );
 }
 
 void QgsGeometryValidationService::invalidateTopologyChecks( QgsVectorLayer *layer )
@@ -309,8 +328,8 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
 
 void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer )
 {
-  emit topologyChecksCleared( layer );
   cancelTopologyCheck( layer );
+  clearTopologyChecks( layer );
 
   QgsFeatureIds affectedFeatureIds;
   if ( layer->editBuffer() )
@@ -327,7 +346,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
   }
 
   QList<std::shared_ptr<QgsGeometryCheckError>> &allErrors = mLayerChecks[layer].topologyCheckErrors;
-  allErrors.clear();
+
   QMap<QString, QgsFeatureIds> layerIds;
 
   QgsFeatureRequest request = QgsFeatureRequest( affectedFeatureIds ).setSubsetOfAttributes( QgsAttributeList() );

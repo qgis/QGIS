@@ -79,12 +79,15 @@ class QgsGeometryValidationService : public QObject
     void onGeometryChanged( QgsVectorLayer *layer, QgsFeatureId fid, const QgsGeometry &geometry );
     void onFeatureDeleted( QgsVectorLayer *layer, QgsFeatureId fid );
     void onBeforeCommitChanges( QgsVectorLayer *layer );
+    void onEditingStopped( QgsVectorLayer *layer );
 
   private:
     void cleanupLayerChecks( QgsVectorLayer *layer );
     void enableLayerChecks( QgsVectorLayer *layer );
 
     void cancelTopologyCheck( QgsVectorLayer *layer );
+
+    void clearTopologyChecks( QgsVectorLayer *layer );
 
     void invalidateTopologyChecks( QgsVectorLayer *layer );
 
