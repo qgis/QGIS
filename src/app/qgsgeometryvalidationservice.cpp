@@ -176,9 +176,17 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
     return;
   }
 
-  int precision = log10( layer->geometryOptions()->geometryPrecision() ) * -1;
-  if ( precision == 0 )
+  int precision = 0;
+  if ( layer->geometryOptions()->geometryPrecision() == 0 )
     precision = 8;
+  else
+  {
+    precision = log10( layer->geometryOptions()->geometryPrecision() ) * -1;
+
+    if ( precision < 1 || precision > 13 )
+      precision = 8;
+  }
+
   checkInformation.context = qgis::make_unique<QgsGeometryCheckContext>( precision, mProject->crs(), mProject->transformContext() );
 
   QList<QgsGeometryCheck *> layerChecks;
