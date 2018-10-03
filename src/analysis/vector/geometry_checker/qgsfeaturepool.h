@@ -148,8 +148,8 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     /**
      * Checks if the feature \a fid is cached.
      *
-     * \since QGIS 3.4
      * \note not available in Python bindings
+     * \since QGIS 3.4
      */
     bool isFeatureCached( QgsFeatureId fid ) SIP_SKIP;
 
