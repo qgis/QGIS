@@ -204,7 +204,10 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     if ( item->parent() && !inFavDirs )
     {
       // only non-root directories can be added as favorites
-      menu->addAction( tr( "Add as a Favorite" ), this, SLOT( addFavorite() ) );
+      QAction *addAsFavorite = new QAction( tr( "Add as a Favorite" ), this );
+      addAsFavorite->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavourites.svg" ) ) );
+      menu->addAction( addAsFavorite );
+      connect( addAsFavorite, &QAction::triggered, this, &QgsBrowserDockWidget::addFavorite );
     }
     else if ( inFavDirs )
     {
