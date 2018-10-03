@@ -295,6 +295,9 @@ void QgsGeometryValidationModel::onGeometryCheckStarted( QgsVectorLayer *layer, 
 
 void QgsGeometryValidationModel::onTopologyChecksUpdated( QgsVectorLayer *layer, const QList<std::shared_ptr<QgsGeometryCheckError> > &errors )
 {
+  if ( errors.empty() )
+    return;
+
   auto &topologyLayerErrors = mTopologyErrorStorage[layer];
 
   if ( layer == currentLayer() )
