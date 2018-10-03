@@ -139,7 +139,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Detailed Desctiption</string>
+          <string>Detailed Description</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
