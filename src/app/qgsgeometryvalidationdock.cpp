@@ -173,11 +173,16 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
   mPreviousButton->setEnabled( current.isValid() && current.row() > 0 );
 
   mProblemDetailWidget->setVisible( current.isValid() );
+
+  if ( !current.isValid() )
+    return;
+
   mProblemDescriptionLabel->setText( current.data( QgsGeometryValidationModel::DetailsRole ).toString() );
 
   QgsGeometryCheckError *error = current.data( QgsGeometryValidationModel::GeometryCheckErrorRole ).value<QgsGeometryCheckError *>();
   if ( error )
   {
+    delete mResolutionWidget->layout();
     const QStringList resolutionMethods = error->check()->resolutionMethods();
     QGridLayout *layout = new QGridLayout( mResolutionWidget );
     int resolutionIndex = 0;

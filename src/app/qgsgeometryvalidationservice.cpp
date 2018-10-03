@@ -66,6 +66,8 @@ void QgsGeometryValidationService::fixError( QgsGeometryCheckError *error, int m
     }
   }
 
+  layer->triggerRepaint();
+
   emit topologyErrorUpdated( layer, error );
 }
 

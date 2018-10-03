@@ -333,7 +333,8 @@ void QgsGeometryValidationModel::onTopologyErrorUpdated( QgsVectorLayer *layer, 
   if ( layer == mCurrentLayer )
   {
     int i = 0;
-    for ( const auto &currentError : qgis::as_const( mTopologyErrorStorage[layer] ) )
+    const auto &errors = mTopologyErrorStorage[layer];
+    for ( const auto &currentError : errors )
     {
       if ( currentError.get() == error )
       {
