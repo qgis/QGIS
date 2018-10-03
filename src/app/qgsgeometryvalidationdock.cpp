@@ -260,13 +260,33 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
 
 void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )
 {
-  // activate icon
-  bool enabled = false;
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-  if ( vl && vl->isSpatial() )
+  if ( layer == mCurrentLayer )
+    return;
+
+  if ( mCurrentLayer )
   {
-    const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( vl, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
-    const QStringList activeChecks = vl->geometryOptions()->geometryChecks();
+    disconnect( mCurrentLayer, &QgsVectorLayer::editingStarted, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
+    disconnect( mCurrentLayer, &QgsVectorLayer::editingStopped, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
+  }
+
+  mCurrentLayer = qobject_cast<QgsVectorLayer *>( layer );
+
+  if ( mCurrentLayer )
+  {
+    connect( mCurrentLayer, &QgsVectorLayer::editingStarted, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
+    connect( mCurrentLayer, &QgsVectorLayer::editingStopped, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
+  }
+
+  onLayerEditingStatusChanged();
+}
+
+void QgsGeometryValidationDock::onLayerEditingStatusChanged()
+{
+  bool enabled = false;
+  if ( mCurrentLayer && mCurrentLayer->isSpatial() && mCurrentLayer->isEditable() )
+  {
+    const QList<QgsGeometryCheckFactory *> topologyCheckFactories = QgsAnalysis::instance()->geometryCheckRegistry()->geometryCheckFactories( mCurrentLayer, QgsGeometryCheck::LayerCheck, QgsGeometryCheck::Flag::AvailableInValidation );
+    const QStringList activeChecks = mCurrentLayer->geometryOptions()->geometryChecks();
     for ( const QgsGeometryCheckFactory *factory : topologyCheckFactories )
     {
       if ( activeChecks.contains( factory->id() ) )

@@ -25,6 +25,7 @@ class QgsGeometryValidationModel;
 class QgsGeometryValidationService;
 class QgsRubberBand;
 class QgisApp;
+class QgsVectorLayer;
 
 /**
  * @brief The QgsGeometryValidationDock class
@@ -46,6 +47,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     void updateCurrentError();
     void onCurrentErrorChanged( const QModelIndex &current, const QModelIndex &previous );
     void onCurrentLayerChanged( QgsMapLayer *layer );
+    void onLayerEditingStatusChanged();
     void gotoNextError();
     void gotoPreviousError();
     void zoomToProblem();
@@ -76,6 +78,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     QgsRubberBand *mFeatureRubberband = nullptr;
     QgsRubberBand *mErrorRubberband = nullptr;
     QgsRubberBand *mErrorLocationRubberband = nullptr;
+    QgsVectorLayer *mCurrentLayer;
 };
 
 #endif // QGSGEOMETRYVALIDATIONPANEL_H
