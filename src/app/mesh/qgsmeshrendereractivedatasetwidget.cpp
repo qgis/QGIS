@@ -87,10 +87,13 @@ void QgsMeshRendererActiveDatasetWidget::setTimeRange()
   }
 
   // update slider
+  mDatasetSlider->blockSignals( true );
   mDatasetSlider->setMinimum( 0 );
   mDatasetSlider->setMaximum( datasetCount - 1 );
+  mDatasetSlider->blockSignals( false );
 
   // update combobox
+  mTimeComboBox->blockSignals( true );
   mTimeComboBox->clear();
   if ( groupWithMaximumDatasets > -1 )
   {
@@ -102,6 +105,7 @@ void QgsMeshRendererActiveDatasetWidget::setTimeRange()
       mTimeComboBox->addItem( timeToString( time ), time );
     }
   }
+  mTimeComboBox->blockSignals( false );
 
   // enable/disable time controls depending on whether the data set is time varying
   bool isTimeVarying = datasetCount > 1;
