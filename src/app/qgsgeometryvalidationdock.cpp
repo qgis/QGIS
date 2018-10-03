@@ -34,7 +34,7 @@ email                : matthias@opengis.ch
 QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QgisApp *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
   , mMapCanvas( mapCanvas )
-  , mApp( parent )
+  , mQgisApp( parent )
 {
   setupUi( this );
 
@@ -153,7 +153,7 @@ void QgsGeometryValidationDock::onRowsInserted()
 {
   if ( !isVisible() )
   {
-    mApp->addDockWidget( Qt::RightDockWidgetArea, this );
+    mQgisApp->addDockWidget( Qt::RightDockWidgetArea, this );
   }
   raise();
 }

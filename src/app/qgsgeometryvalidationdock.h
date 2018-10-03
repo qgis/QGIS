@@ -72,7 +72,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     QgsGeometryValidationService *mGeometryValidationService = nullptr;
     QButtonGroup *mZoomToButtonGroup = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
-    QgisApp *mApp = nullptr;
+    QgisApp *mQgisApp = nullptr;
     QgsCoordinateTransform mLayerTransform;
     QModelIndex currentIndex() const;
     QgsRubberBand *mFeatureRubberband = nullptr;
