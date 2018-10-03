@@ -744,6 +744,13 @@ QIcon QgsDirectoryItem::icon()
   if ( state() == Populating )
     return QgsDataItem::icon();
 
+  // symbolic link? use link icon
+  QFileInfo fi( mDirPath );
+  if ( fi.isDir() && fi.isSymLink() )
+  {
+    return QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderLink.svg" ) );
+  }
+
   // loaded? show the open dir icon
   if ( state() == Populated )
     return openDirIcon();
