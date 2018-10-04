@@ -66,8 +66,8 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
          */
         const QgsGeometry &geometry() const;
         QString id() const;
-        bool operator==( const LayerFeature &other ) const;
-        bool operator!=( const LayerFeature &other ) const;
+        bool operator==( const QgsGeometryCheckerUtils::LayerFeature &other ) const;
+        bool operator!=( const QgsGeometryCheckerUtils::LayerFeature &other ) const;
 
         /**
          * Returns if the geometry is reprojected to the map CRS or not.
@@ -105,7 +105,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
             ~iterator();
             const iterator &operator++();
             iterator operator++( int );
-            const LayerFeature &operator*() const;
+            const QgsGeometryCheckerUtils::LayerFeature &operator*() const;
             bool operator!=( const iterator &other );
 
           private:
@@ -115,7 +115,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckerUtils
             QList<QString>::const_iterator mLayerIt;
             QgsFeatureIds::const_iterator mFeatureIt;
             const LayerFeatures *mParent = nullptr;
-            std::unique_ptr<LayerFeature> mCurrentFeature;
+            std::unique_ptr<QgsGeometryCheckerUtils::LayerFeature> mCurrentFeature;
         };
 
         iterator begin() const;

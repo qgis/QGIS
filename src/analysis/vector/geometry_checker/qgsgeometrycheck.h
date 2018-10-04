@@ -126,7 +126,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
       /**
        * Create a new Change
        */
-      Change( ChangeWhat _what, ChangeType _type, QgsVertexId _vidx = QgsVertexId() )
+      Change( QgsGeometryCheck::ChangeWhat _what, QgsGeometryCheck::ChangeType _type, QgsVertexId _vidx = QgsVertexId() )
         : what( _what )
         , type( _type )
         , vidx( _vidx )
@@ -135,18 +135,18 @@ class ANALYSIS_EXPORT QgsGeometryCheck
       /**
        * What level this change affects.
        */
-      ChangeWhat what;
+      QgsGeometryCheck::ChangeWhat what;
 
       /**
        * What action this change performs.
        */
-      ChangeType type;
+      QgsGeometryCheck::ChangeType type;
 
       /**
        * The index of the part / ring / vertex, depending on \see what.
        */
       QgsVertexId vidx;
-      bool operator==( const Change &other )
+      bool operator==( const QgsGeometryCheck::Change &other )
       {
         return what == other.what && type == other.type && vidx == other.vidx;
       }
@@ -156,7 +156,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      * A collection of changes.
      * Grouped by layer id and feature id.
      */
-    typedef QMap<QString, QMap<QgsFeatureId, QList<Change> > > Changes;
+    typedef QMap<QString, QMap<QgsFeatureId, QList<QgsGeometryCheck::Change> > > Changes;
 
     /**
      * Create a new geometry check.

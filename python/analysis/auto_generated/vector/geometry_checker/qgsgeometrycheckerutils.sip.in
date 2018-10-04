@@ -62,8 +62,8 @@ If useMapCrs was specified, it will already be reprojected into the
 CRS specified in the context specified in the constructor.
 %End
         QString id() const;
-        bool operator==( const LayerFeature &other ) const;
-        bool operator!=( const LayerFeature &other ) const;
+        bool operator==( const QgsGeometryCheckerUtils::LayerFeature &other ) const;
+        bool operator!=( const QgsGeometryCheckerUtils::LayerFeature &other ) const;
 
         bool useMapCrs() const;
 %Docstring

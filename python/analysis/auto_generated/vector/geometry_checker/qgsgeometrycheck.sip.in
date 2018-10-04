@@ -78,20 +78,20 @@ the Free Software Foundation; either version 2 of the License, or     *
     {
       Change();
 
-      Change( ChangeWhat _what, ChangeType _type, QgsVertexId _vidx = QgsVertexId() );
+      Change( QgsGeometryCheck::ChangeWhat _what, QgsGeometryCheck::ChangeType _type, QgsVertexId _vidx = QgsVertexId() );
 %Docstring
 Create a new Change
 %End
 
-      ChangeWhat what;
+      QgsGeometryCheck::ChangeWhat what;
 
-      ChangeType type;
+      QgsGeometryCheck::ChangeType type;
 
       QgsVertexId vidx;
-      bool operator==( const Change &other );
+      bool operator==( const QgsGeometryCheck::Change &other );
     };
 
-    typedef QMap<QString, QMap<QgsFeatureId, QList<Change> > > Changes;
+    typedef QMap<QString, QMap<QgsFeatureId, QList<QgsGeometryCheck::Change> > > Changes;
 
     QgsGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 %Docstring
