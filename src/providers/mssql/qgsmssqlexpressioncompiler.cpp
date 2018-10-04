@@ -18,7 +18,7 @@
 
 QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source )
   : QgsSqlExpressionCompiler( source->mFields,
-                              QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::CaseInsensitiveStringMatch )
+                              QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
 {
 
 }
@@ -77,4 +77,9 @@ QString QgsMssqlExpressionCompiler::quotedValue( const QVariant &value, bool &ok
     default:
       return QgsSqlExpressionCompiler::quotedValue( value, ok );
   }
+}
+
+QString QgsMssqlExpressionCompiler::castToReal( const QString &value ) const
+{
+  return QStringLiteral( "CAST((%1) AS REAL)" ).arg( value );
 }
