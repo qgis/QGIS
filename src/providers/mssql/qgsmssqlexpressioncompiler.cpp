@@ -83,3 +83,8 @@ QString QgsMssqlExpressionCompiler::castToReal( const QString &value ) const
 {
   return QStringLiteral( "CAST((%1) AS REAL)" ).arg( value );
 }
+
+QString QgsMssqlExpressionCompiler::castToInt( const QString &value ) const
+{
+  return QStringLiteral( "CAST((%1) AS integer)" ).arg( value );
+}
