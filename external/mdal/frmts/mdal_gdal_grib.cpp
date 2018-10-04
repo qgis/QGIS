@@ -4,20 +4,20 @@
 */
 
 
-#include "mdal_grib.hpp"
+#include "mdal_gdal_grib.hpp"
 #include "mdal_utils.hpp"
 #include <string>
 #include <limits>
 
-MDAL::LoaderGrib::LoaderGrib( const std::string &gribFile )
+MDAL::LoaderGdalGrib::LoaderGdalGrib( const std::string &gribFile )
   : MDAL::LoaderGdal( gribFile, "GRIB" ),
     mRefTime( std::numeric_limits<double>::min() )
 {}
 
-bool MDAL::LoaderGrib::parseBandInfo( const MDAL::GdalDataset *cfGDALDataset,
-                                      const metadata_hash &metadata, std::string &band_name,
-                                      double *time, bool *is_vector, bool *is_x
-                                    )
+bool MDAL::LoaderGdalGrib::parseBandInfo( const MDAL::GdalDataset *cfGDALDataset,
+    const metadata_hash &metadata, std::string &band_name,
+    double *time, bool *is_vector, bool *is_x
+                                        )
 {
   MDAL_UNUSED( cfGDALDataset );
 

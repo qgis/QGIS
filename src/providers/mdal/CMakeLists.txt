@@ -66,11 +66,11 @@ IF (WITH_INTERNAL_MDAL)
   IF(GDAL_FOUND)
     SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal.cpp
-      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_grib.cpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal_grib.cpp
     )
     SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal.hpp
-      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_grib.hpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal_grib.hpp
     )
     SET (HAVE_GDAL TRUE)
   ENDIF(GDAL_FOUND)
@@ -87,6 +87,15 @@ IF (WITH_INTERNAL_MDAL)
     )
     SET (HAVE_NETCDF TRUE)
   ENDIF(NETCDF_FOUND)
+
+  IF(GDAL_FOUND AND NETCDF_FOUND)
+    SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal_netcdf.cpp
+    )
+    SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal_netcdf.hpp
+    )
+  ENDIF(GDAL_FOUND AND NETCDF_FOUND)
 
   # create mdal_config.h
   CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/external/mdal/cmake_templates/mdal_config.hpp.in ${CMAKE_BINARY_DIR}/mdal_config.hpp)
