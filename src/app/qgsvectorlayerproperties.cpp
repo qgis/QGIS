@@ -1165,12 +1165,6 @@ void QgsVectorLayerProperties::loadStyle()
 
   //get the list of styles in the db
   int sectionLimit = mLayer->listStylesInDatabase( ids, names, descriptions, errorMsg );
-  if ( !errorMsg.isNull() )
-  {
-    QMessageBox::warning( this, tr( "Load Styles from Database" ), errorMsg );
-    return;
-  }
-
   QgsVectorLayerLoadStyleDialog dlg( mLayer );
   dlg.initializeLists( ids, names, descriptions, sectionLimit );
 
