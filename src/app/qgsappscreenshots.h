@@ -21,7 +21,9 @@
 #include <QRect>
 
 class QScreen;
+
 class QgsVectorLayer;
+class QgsRasterLayer;
 
 class QgsAppScreenShots
 {
@@ -48,6 +50,7 @@ class QgsAppScreenShots
       All = 0,
       GlobalOptions = 1 << 0,
       VectorLayerProperties = 1 << 1,
+      RasterLayerProperties = 1 << 2,
     };
     Q_ENUM( Category )
     Q_DECLARE_FLAGS( Categories, Category )
@@ -81,11 +84,13 @@ class QgsAppScreenShots
     void takeVectorLayerProperties();
     void takeVectorLayerProperties25DSymbol();
     void takeGlobalOptions();
+    void takeRasterLayerProperties();
 
     QString mSaveDirectory;
     int mGradientSize = 200;
     QgsVectorLayer *mLineLayer = nullptr;
     QgsVectorLayer *mPolygonLayer = nullptr;
+    QgsRasterLayer *mRasterLayer = nullptr;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAppScreenShots::Categories )

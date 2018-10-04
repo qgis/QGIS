@@ -34,6 +34,8 @@
 #include "qgsoptions.h"
 #include "qgsguiutils.h"
 #include "qgsvectorlayerjoininfo.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayerproperties.h"
 
 
 QgsAppScreenShots::QgsAppScreenShots( const QString &saveDirectory )
@@ -44,6 +46,11 @@ QgsAppScreenShots::QgsAppScreenShots( const QString &saveDirectory )
   layerDef = QStringLiteral( "Polygon?crs=epsg:2056&field=pk:integer&field=my_text:string&field=my_integer:integer&field=height:double&key=pk" );
   mPolygonLayer = new QgsVectorLayer( layerDef, QStringLiteral( "Polygon Layer" ), QStringLiteral( "memory" ) );
 
+  QString dataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  mRasterLayer = new QgsRasterLayer( dataPath + "/raster/with_color_table.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  Q_ASSERT( mRasterLayer->isValid() );
+
+  // add join
   QgsVectorLayerJoinInfo join;
   join.setTargetFieldName( "fk_polygon" );
   join.setJoinLayer( mPolygonLayer );
@@ -53,9 +60,11 @@ QgsAppScreenShots::QgsAppScreenShots( const QString &saveDirectory )
   join.setCascadedDelete( true );
   mLineLayer->addJoin( join );
 
+  // add layers to project
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>()
                                         << mLineLayer
-                                        << mPolygonLayer );
+                                        << mPolygonLayer
+                                        << mRasterLayer );
 }
 
 QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode, QRect crop, bool gradient )
@@ -208,6 +217,9 @@ void QgsAppScreenShots::takePicturesOf( Categories categories )
     takeVectorLayerProperties25DSymbol();
     takeVectorLayerProperties();
   }
+
+  if ( !categories || categories.testFlag( RasterLayerProperties ) )
+    takeRasterLayerProperties();
 }
 
 void QgsAppScreenShots::setGradientSize( int size )
@@ -312,6 +324,29 @@ void QgsAppScreenShots::takeGlobalOptions()
   QCoreApplication::processEvents(); // seems a second call is needed, the tabble might not be fully displayed otherwise
   takeScreenshot( QStringLiteral( "advanced_with_settings_shown" ), folder, dlg );
 
+  // exit properly
+  dlg->close();
+  dlg->deleteLater();
+}
+
+//---------------
+
+void QgsAppScreenShots::takeRasterLayerProperties()
+{
+  QString folder = QLatin1String( "working_with_raster/img/auto_generated/raster_layer_properties" );
+  QgsRasterLayerProperties *dlg = new QgsRasterLayerProperties( mRasterLayer, QgisApp::instance()->mapCanvas() );
+  dlg->show();
+  // ----------------
+  // do all the pages
+  for ( int row = 0; row < dlg->mOptionsListWidget->count(); ++row )
+  {
+    dlg->mOptionsListWidget->setCurrentRow( row );
+    dlg->adjustSize();
+    QCoreApplication::processEvents();
+    QString name = dlg->mOptionsListWidget->item( row )[0].text().toLower();
+    name.replace( " ", "_" ).replace( "&", "and" );
+    takeScreenshot( name, folder, dlg );
+  }
   // exit properly
   dlg->close();
   dlg->deleteLater();
