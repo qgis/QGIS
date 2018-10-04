@@ -33,7 +33,6 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   mCompleter->setFilterMode( Qt::MatchContains );
   setCompleter( mCompleter );
   mCompleter->setWidget( this );
-  mModel->setReloadTimerInterval( 1000 );
   connect( mModel, &QgsFeatureFilterModel::sourceLayerChanged, this, &QgsFeatureListComboBox::sourceLayerChanged );
   connect( mModel, &QgsFeatureFilterModel::displayExpressionChanged, this, &QgsFeatureListComboBox::displayExpressionChanged );
   connect( mModel, &QgsFeatureFilterModel::filterExpressionChanged, this, &QgsFeatureListComboBox::filterExpressionChanged );

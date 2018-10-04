@@ -178,11 +178,6 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
      */
     void setAllowNull( bool allowNull );
 
-    /**
-     * Set the model reload timer interval in milliseconds
-     */
-    void setReloadTimerInterval( int interval );
-
   signals:
 
     /**
