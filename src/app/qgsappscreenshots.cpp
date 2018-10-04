@@ -193,11 +193,11 @@ void QgsAppScreenShots::takePicturesOf( Categories categories )
   if ( !categories || categories.testFlag( GlobalOptions ) )
     takeGlobalOptions();
 
-  if ( !categories || categories.testFlag( Symbol25D ) )
-    take25dSymbol();
-
   if ( !categories || categories.testFlag( VectorLayerProperties ) )
+  {
     takeVectorLayerProperties();
+    takeVectorLayerProperties25DSymbol();
+  }
 }
 
 void QgsAppScreenShots::setGradientSize( int size )
@@ -245,7 +245,7 @@ void QgsAppScreenShots::takeVectorLayerProperties()
 
 //---------------
 
-void QgsAppScreenShots::take25dSymbol()
+void QgsAppScreenShots::takeVectorLayerProperties25DSymbol()
 {
   QString folder = QLatin1String( "working_with_vector/img/auto_generated/vector_layer_properties/" );
   QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mPolygonLayer, QgisApp::instance() );

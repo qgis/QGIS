@@ -46,9 +46,8 @@ class QgsAppScreenShots
     enum Category
     {
       All = 0,
-      GlobalOptions = 1 << 1,
-      Symbol25D = 1 << 2,
-      VectorLayerProperties = 1 << 3,
+      GlobalOptions = 1 << 0,
+      VectorLayerProperties = 1 << 1,
     };
     Q_ENUM( Category )
     Q_DECLARE_FLAGS( Categories, Category )
@@ -80,7 +79,7 @@ class QgsAppScreenShots
     void saveScreenshot( QPixmap &pixmap, const QString &name, const QString &folder );
 
     void takeVectorLayerProperties();
-    void take25dSymbol();
+    void takeVectorLayerProperties25DSymbol();
     void takeGlobalOptions();
 
     QString mSaveDirectory;
