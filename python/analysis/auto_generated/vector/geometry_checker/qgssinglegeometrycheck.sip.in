@@ -114,11 +114,11 @@ Subclasses need to implement the processGeometry method.
     QgsSingleGeometryCheck( const QgsGeometryCheckContext *context,
                             const QVariantMap &configuration );
 
-    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools,
+     virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools,
                         QList<QgsGeometryCheckError *> &errors,
                         QStringList &messages,
                         QgsFeedback *feedback = 0,
-                        const QgsGeometryCheck::LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const final;
+                        const QgsGeometryCheck::LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const ${SIP_FINAL};
 
     virtual QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const = 0;
 %Docstring

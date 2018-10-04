@@ -144,7 +144,7 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheck : public QgsGeometryCheck
                         QList<QgsGeometryCheckError *> &errors,
                         QStringList &messages,
                         QgsFeedback *feedback = nullptr,
-                        const QgsGeometryCheck::LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const final;
+                        const QgsGeometryCheck::LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const FINAL;
 
     /**
      * Check the \a geometry for errors. It may make use of \a configuration options.
