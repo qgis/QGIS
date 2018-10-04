@@ -80,11 +80,13 @@ QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode, QRect
 
   if ( !crop.isNull() )
   {
+    qreal dpr = scr->devicePixelRatio();
     if ( crop.height() == 0 )
-      crop.setHeight( pixmap.height() );
+      crop.setHeight( static_cast<int>( pixmap.height() / dpr ) );
     if ( crop.width() == 0 )
-      crop.setWidth( pixmap.width() );
+      crop.setWidth( static_cast<int>( pixmap.width() / dpr ) );
   }
+
   if ( !crop.isEmpty() )
   {
     qreal dpr = scr->devicePixelRatio();
@@ -94,7 +96,6 @@ QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode, QRect
                   static_cast<int>( crop.height() * dpr ) );
     pixmap = pixmap.copy( crop );
   }
-
 
   if ( gradient )
   {
@@ -113,17 +114,35 @@ QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode, QRect
   return pixmap;
 }
 
-void QgsAppScreenShots::takeScreenshot( const QString &name, QWidget *widget, QgsAppScreenShots::GrabMode mode )
+void QgsAppScreenShots::takeScreenshot( const QString &name, const QString &folder, QWidget *widget, QgsAppScreenShots::GrabMode mode )
 {
   QPixmap pixmap = takeScreenshot( widget, mode );
-  saveScreenshot( pixmap, name );
+  saveScreenshot( pixmap, name, folder );
 }
 
-void QgsAppScreenShots::saveScreenshot( QPixmap &pixmap, const QString &name )
+void QgsAppScreenShots::saveScreenshot( QPixmap &pixmap, const QString &name, const QString &folder )
 {
-  const QString &fileName = mSaveDirectory + "/" + name + ".png";
-  pixmap.save( fileName );
-  QgsMessageLog::logMessage( QString( "Screenshot saved: %1" ).arg( fileName ) );
+  const QDir topDirectory( mSaveDirectory );
+  if ( !topDirectory.exists() )
+  {
+    QgsMessageLog::logMessage( QString( "Directory does not exist: %1" ).arg( mSaveDirectory ), QString(), Qgis::Critical );
+    return;
+  }
+
+  const QDir directory( topDirectory.absolutePath() + "/" + folder );
+  const QString fileName =  directory.absolutePath() + "/" + name + ".png";
+  if ( !directory.exists() )
+  {
+    if ( !topDirectory.mkpath( folder ) )
+    {
+      QgsMessageLog::logMessage( QString( "Could not create directory %1 in %2" ).arg( folder, mSaveDirectory ), QString(), Qgis::Critical );
+      return;
+    }
+  }
+  if ( pixmap.save( fileName ) )
+    QgsMessageLog::logMessage( QString( "Screenshot saved: %1" ).arg( fileName ) );
+  else
+    QgsMessageLog::logMessage( QString( "Failed to save screenshot: %1" ).arg( fileName ), QString(), Qgis::Critical );
 }
 
 void QgsAppScreenShots::moveWidgetTo( QWidget *widget, Qt::Corner corner, Reference reference )
@@ -187,6 +206,7 @@ void QgsAppScreenShots::setGradientSize( int size )
 
 void QgsAppScreenShots::takeVectorLayerProperties()
 {
+  QString folder = QLatin1String( "working_with_vector/img/auto_generated" );
   QString rootName = QLatin1String( "vectorlayerproperties_" );
   QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mLineLayer, QgisApp::instance() );
   dlg->show();
@@ -199,7 +219,7 @@ void QgsAppScreenShots::takeVectorLayerProperties()
     QCoreApplication::processEvents();
     QString name = dlg->mOptionsListWidget->item( row )[0].text().toLower();
     name.replace( " ", "_" );
-    takeScreenshot( rootName + name, dlg );
+    takeScreenshot( rootName + name, folder, dlg );
   }
   // ------------------
   // style menu clicked
@@ -209,7 +229,7 @@ void QgsAppScreenShots::takeVectorLayerProperties()
   QCoreApplication::processEvents();
   dlg->mBtnStyle->click();
   QCoreApplication::processEvents();
-  takeScreenshot( rootName + "style_menu", dlg );
+  takeScreenshot( rootName + "style_menu", folder, dlg );
   QCoreApplication::processEvents();
   dlg->mBtnStyle->menu()->hide();
   QCoreApplication::processEvents();
@@ -219,8 +239,11 @@ void QgsAppScreenShots::takeVectorLayerProperties()
   dlg->deleteLater();
 }
 
+//---------------
+
 void QgsAppScreenShots::take25dSymbol()
 {
+  QString folder = QLatin1String( "working_with_vector/img/auto_generated" );
   QString rootName = QLatin1String( "vectorlayerproperties_" );
   QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mPolygonLayer, QgisApp::instance() );
   dlg->show();
@@ -239,9 +262,9 @@ void QgsAppScreenShots::take25dSymbol()
   QCoreApplication::processEvents();
   int cropHeight = w->mAdvancedConfigurationBox->mapTo( dlg, w->mAdvancedConfigurationBox->frameGeometry().bottomLeft() ).y();
   QPixmap pixmap = takeScreenshot( dlg, GrabWidgetAndFrame, QRect( 0, 0, 0, cropHeight ), true );
-  saveScreenshot( pixmap, rootName + QLatin1String( "25dsymbol" ) );
+  saveScreenshot( pixmap, rootName + QLatin1String( "25dsymbol" ), folder );
 
-// exit properly
+  // exit properly
   dlg->close();
   dlg->deleteLater();
 }
