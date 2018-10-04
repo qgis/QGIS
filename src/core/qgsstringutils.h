@@ -262,7 +262,7 @@ class CORE_EXPORT QgsStringUtils
     static QString insertLinks( const QString &string, bool *foundLinks = nullptr );
 
     /**
-     * Automatically wraps a \string by inserting new line characters at appropriate locations in the string.
+     * Automatically wraps a \a string by inserting new line characters at appropriate locations in the string.
      *
      * The \a length argument specifies either the minimum or maximum length of lines desired, depending
      * on whether \a useMaxLineLength is true. If \a useMaxLineLength is true, then the string will be wrapped
