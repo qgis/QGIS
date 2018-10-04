@@ -739,10 +739,9 @@ void QgsMssqlSourceSelect::setSearchExpression( const QString &regexp )
   Q_UNUSED( regexp );
 }
 
-void QgsMssqlSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+void QgsMssqlSourceSelect::treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & )
 {
-  Q_UNUSED( deselected )
-  emit enableButtons( !selected.isEmpty() );
+  emit enableButtons( !mTablesTreeView->selectionModel()->selection().isEmpty() );
 }
 
 void QgsMssqlSourceSelect::showHelp()

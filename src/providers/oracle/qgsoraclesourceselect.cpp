@@ -674,10 +674,9 @@ void QgsOracleSourceSelect::loadTableFromCache()
   finishList();
 }
 
-void QgsOracleSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+void QgsOracleSourceSelect::treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & )
 {
-  Q_UNUSED( deselected )
-  emit enableButtons( !selected.isEmpty() );
+  emit enableButtons( !mTablesTreeView->selectionModel()->selection().isEmpty() );
 }
 
 void QgsOracleSourceSelect::showHelp()
