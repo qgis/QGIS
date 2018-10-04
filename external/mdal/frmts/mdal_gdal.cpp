@@ -545,6 +545,7 @@ void MDAL::LoaderGdal::parseBandIsVector( std::string &band_name, bool *is_vecto
        MDAL::startsWith( band_name, "x-", MDAL::CaseInsensitive ) ||
        MDAL::contains( band_name, "u-component", MDAL::CaseInsensitive ) ||
        MDAL::contains( band_name, "u component", MDAL::CaseInsensitive ) ||
+       MDAL::contains( band_name, "U wind component", MDAL::CaseInsensitive ) ||
        MDAL::contains( band_name, "x-component", MDAL::CaseInsensitive ) ||
        MDAL::contains( band_name, "x component", MDAL::CaseInsensitive ) )
   {
@@ -555,6 +556,7 @@ void MDAL::LoaderGdal::parseBandIsVector( std::string &band_name, bool *is_vecto
             MDAL::startsWith( band_name, "y-", MDAL::CaseInsensitive ) ||
             MDAL::contains( band_name, "v-component", MDAL::CaseInsensitive ) ||
             MDAL::contains( band_name, "v component", MDAL::CaseInsensitive ) ||
+            MDAL::contains( band_name, "V wind component", MDAL::CaseInsensitive ) ||
             MDAL::contains( band_name, "y-component", MDAL::CaseInsensitive ) ||
             MDAL::contains( band_name, "y component", MDAL::CaseInsensitive ) )
   {
@@ -571,6 +573,8 @@ void MDAL::LoaderGdal::parseBandIsVector( std::string &band_name, bool *is_vecto
   {
     band_name = MDAL::replace( band_name, "u-component of", "", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "v-component of", "", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "U wind component", "wind", MDAL::CaseInsensitive );
+    band_name = MDAL::replace( band_name, "V wind component", "wind", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "x-component of", "", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "y-component of", "", MDAL::CaseInsensitive );
     band_name = MDAL::replace( band_name, "u-component", "", MDAL::CaseInsensitive );
