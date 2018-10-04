@@ -551,6 +551,11 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &document,
                                     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
+  // save categories
+  QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayer::StyleCategories>();
+  QString categoriesKeys( metaEnum.valueToKeys( static_cast<int>( categories ) ) );
+  layerElement.setAttribute( QStringLiteral( "style_categories" ), categoriesKeys );
+
   if ( categories.testFlag( Rendering ) )
   {
     // use scale dependent visibility flag

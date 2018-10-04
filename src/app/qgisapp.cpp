@@ -8884,6 +8884,7 @@ void QgisApp::copyStyle( QgsMapLayer *sourceLayer, QgsMapLayer::StyleCategories 
     }
     // Copies data in text form as well, so the XML can be pasted into a text editor
     clipboard()->setData( QGSCLIPBOARD_STYLE_MIME, doc.toByteArray(), doc.toString() );
+
     // Enables the paste menu element
     mActionPasteStyle->setEnabled( true );
   }
