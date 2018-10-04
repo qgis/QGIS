@@ -46,6 +46,8 @@ class TestQgsSqliteUtils : public QObject
 
     void testPrintfAscii();
     void testPrintfUtf8();
+    void testQuotedString_data();
+    void testQuotedString();
 };
 
 
@@ -88,6 +90,24 @@ void TestQgsSqliteUtils::testPrintfUtf8()
   QString lowerTag( tag.toLower() );
   QString query( QgsSqlite3Mprintf( "SELECT id FROM tag WHERE LOWER(name)='%q'", lowerTag.toUtf8().constData() ) );
   QCOMPARE( query, QString( "SELECT id FROM tag WHERE LOWER(name)='%1'" ).arg( lowerTag ) );
+}
+
+void TestQgsSqliteUtils::testQuotedString_data()
+{
+  QTest::addColumn<QString>( "input" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "test 1" ) << "university of qgis" << "'university of qgis'";
+  QTest::newRow( "test 2" ) << "university of 'qgis'" << "'university of ''qgis'''";
+  QTest::newRow( "test NULL" ) << QString() << "NULL";
+}
+
+void TestQgsSqliteUtils::testQuotedString()
+{
+  QFETCH( QString, input );
+  QFETCH( QString, expected );
+
+  QCOMPARE( QgsSqliteUtils::quotedString( input ), expected );
 }
 
 

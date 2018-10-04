@@ -104,9 +104,6 @@ class QgsSpatiaLiteConnection : public QObject
      */
     bool getTableInfoAbstractInterface( sqlite3 *handle, bool loadGeometrylessTables );
 
-    //! Cleaning well-formatted SQL strings
-    QString quotedValue( QString value ) const;
-
     //! Checks if geometry_columns_auth table exists
     bool checkGeometryColumnsAuth( sqlite3 *handle );
 

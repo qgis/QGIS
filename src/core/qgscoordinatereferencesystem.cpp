@@ -498,7 +498,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
 
   QString mySql = "select srs_id,description,projection_acronym,"
                   "ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo "
-                  "from tbl_srs where " + expression + '=' + quotedValue( value ) + " order by deprecated";
+                  "from tbl_srs where " + expression + '=' + QgsSqliteUtils::quotedString( value ) + " order by deprecated";
   statement = database.prepare( mySql, myResult );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK && statement.step() == SQLITE_ROW )
@@ -729,7 +729,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
    * We try to match the proj string to and srsid using the following logic:
    * - perform a whole text search on proj4 string (if not null)
    */
-  myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( myProj4String ) + " order by deprecated" );
+  myRecord = getRecord( "select * from tbl_srs where parameters=" + QgsSqliteUtils::quotedString( myProj4String ) + " order by deprecated" );
   if ( myRecord.empty() )
   {
     // Ticket #722 - aaronr
@@ -764,7 +764,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
       myStart2 = myLat2RegExp.indexIn( proj4String, myStart2 );
       proj4StringModified.replace( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN, lat1Str );
       QgsDebugMsgLevel( "trying proj4string match with swapped lat_1,lat_2", 4 );
-      myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( proj4StringModified.trimmed() ) + " order by deprecated" );
+      myRecord = getRecord( "select * from tbl_srs where parameters=" + QgsSqliteUtils::quotedString( proj4StringModified.trimmed() ) + " order by deprecated" );
     }
   }
 
@@ -785,7 +785,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
     QStringList myParams;
     Q_FOREACH ( const QString &param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
     {
-      QString arg = QStringLiteral( "' '||parameters||' ' LIKE %1" ).arg( quotedValue( QStringLiteral( "% %1 %" ).arg( param.trimmed() ) ) );
+      QString arg = QStringLiteral( "' '||parameters||' ' LIKE %1" ).arg( QgsSqliteUtils::quotedString( QStringLiteral( "% %1 %" ).arg( param.trimmed() ) ) );
       if ( param.startsWith( QLatin1String( "+datum=" ) ) )
       {
         datum = arg;
@@ -1234,8 +1234,8 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
   // needed to populate the list
   QString mySql = QString( "select srs_id,parameters from tbl_srs where "
                            "projection_acronym=%1 and ellipsoid_acronym=%2 order by deprecated" )
-                  .arg( quotedValue( d->mProjectionAcronym ),
-                        quotedValue( d->mEllipsoidAcronym ) );
+                  .arg( QgsSqliteUtils::quotedString( d->mProjectionAcronym ),
+                        QgsSqliteUtils::quotedString( d->mEllipsoidAcronym ) );
   // Get the full path name to the sqlite3 spatial reference database.
   QString myDatabaseFileName = QgsApplication::srsDatabaseFilePath();
 
@@ -1620,19 +1620,19 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
   {
     mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
             + QString::number( USER_CRS_START_ID )
-            + ',' + quotedValue( name )
-            + ',' + quotedValue( projectionAcronym() )
-            + ',' + quotedValue( ellipsoidAcronym() )
-            + ',' + quotedValue( toProj4() )
+            + ',' + QgsSqliteUtils::quotedString( name )
+            + ',' + QgsSqliteUtils::quotedString( projectionAcronym() )
+            + ',' + QgsSqliteUtils::quotedString( ellipsoidAcronym() )
+            + ',' + QgsSqliteUtils::quotedString( toProj4() )
             + ",0)"; // <-- is_geo shamelessly hard coded for now
   }
   else
   {
     mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
-            + quotedValue( name )
-            + ',' + quotedValue( projectionAcronym() )
-            + ',' + quotedValue( ellipsoidAcronym() )
-            + ',' + quotedValue( toProj4() )
+            + QgsSqliteUtils::quotedString( name )
+            + ',' + QgsSqliteUtils::quotedString( projectionAcronym() )
+            + ',' + QgsSqliteUtils::quotedString( ellipsoidAcronym() )
+            + ',' + QgsSqliteUtils::quotedString( toProj4() )
             + ",0)"; // <-- is_geo shamelessly hard coded for now
   }
   sqlite3_database_unique_ptr database;
@@ -1705,12 +1705,6 @@ long QgsCoordinateReferenceSystem::getRecordCount()
     }
   }
   return myRecordCount;
-}
-
-QString QgsCoordinateReferenceSystem::quotedValue( QString value )
-{
-  value.replace( '\'', QLatin1String( "''" ) );
-  return value.prepend( '\'' ).append( '\'' );
 }
 
 // adapted from gdal/ogr/ogr_srs_dict.cpp
@@ -1951,8 +1945,8 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       {
         errMsg = nullptr;
         sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1,description=%2,deprecated=%3 WHERE auth_name='EPSG' AND auth_id=%4" )
-              .arg( quotedValue( proj4 ) )
-              .arg( quotedValue( name ) )
+              .arg( QgsSqliteUtils::quotedString( proj4 ) )
+              .arg( QgsSqliteUtils::quotedString( name ) )
               .arg( deprecated ? 1 : 0 )
               .arg( it.key() );
 
@@ -1989,10 +1983,10 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       }
 
       sql = QStringLiteral( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) VALUES (%1,%2,%3,%4,%5,'EPSG',%5,%6,%7)" )
-            .arg( quotedValue( name ),
-                  quotedValue( projRegExp.cap( 1 ) ),
-                  quotedValue( ellps ),
-                  quotedValue( proj4 ) )
+            .arg( QgsSqliteUtils::quotedString( name ),
+                  QgsSqliteUtils::quotedString( projRegExp.cap( 1 ) ),
+                  QgsSqliteUtils::quotedString( ellps ),
+                  QgsSqliteUtils::quotedString( proj4 ) )
             .arg( it.key() )
             .arg( OSRIsGeographic( crs ) )
             .arg( deprecated ? 1 : 0 );
@@ -2081,9 +2075,9 @@ int QgsCoordinateReferenceSystem::syncDatabase()
           if ( proj4 != params )
           {
             sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1 WHERE auth_name=%2 AND auth_id=%3" )
-                  .arg( quotedValue( proj4 ),
-                        quotedValue( auth_name ),
-                        quotedValue( auth_id ) );
+                  .arg( QgsSqliteUtils::quotedString( proj4 ),
+                        QgsSqliteUtils::quotedString( auth_name ),
+                        QgsSqliteUtils::quotedString( auth_id ) );
 
             if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) == SQLITE_OK )
             {
@@ -2291,7 +2285,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
       int idx = map[i].idx;
       Q_ASSERT( idx != -1 );
       Q_ASSERT( idx < n );
-      v.insert( i, *values[ idx ] ? quotedValue( values[idx] ) : QStringLiteral( "NULL" ) );
+      v.insert( i, *values[ idx ] ? QgsSqliteUtils::quotedString( values[idx] ) : QStringLiteral( "NULL" ) );
     }
     CSLDestroy( values );
 

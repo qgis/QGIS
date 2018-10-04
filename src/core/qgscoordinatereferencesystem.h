@@ -741,9 +741,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Helper for getting number of user CRS already in db
     long getRecordCount();
 
-    //! Helper for sql-safe value quoting
-    static QString quotedValue( QString value );
-
     /**
      * Initialize the CRS object by looking up CRS database in path given in db argument,
      * using first CRS entry where expression = 'value'

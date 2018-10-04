@@ -421,11 +421,11 @@ bool QgsNewSpatialiteLayerDialog::apply()
   if ( mGeometryTypeBox->currentIndex() != 0 )
   {
     QString sqlAddGeom = QStringLiteral( "select AddGeometryColumn(%1,%2,%3,%4,%5)" )
-                         .arg( quotedValue( leLayerName->text() ),
-                               quotedValue( leGeometryColumn->text() ) )
+                         .arg( QgsSqliteUtils::quotedString( leLayerName->text() ),
+                               QgsSqliteUtils::quotedString( leGeometryColumn->text() ) )
                          .arg( mCrsId.split( ':' ).value( 1, QStringLiteral( "0" ) ).toInt() )
-                         .arg( quotedValue( selectedType() ) )
-                         .arg( quotedValue( selectedZM() ) );
+                         .arg( QgsSqliteUtils::quotedString( selectedType() ) )
+                         .arg( QgsSqliteUtils::quotedString( selectedZM() ) );
     QgsDebugMsg( sqlAddGeom );
 
     rc = sqlite3_exec( database.get(), sqlAddGeom.toUtf8(), nullptr, nullptr, &errmsg );
@@ -439,8 +439,8 @@ bool QgsNewSpatialiteLayerDialog::apply()
     }
 
     QString sqlCreateIndex = QStringLiteral( "select CreateSpatialIndex(%1,%2)" )
-                             .arg( quotedValue( leLayerName->text() ),
-                                   quotedValue( leGeometryColumn->text() ) );
+                             .arg( QgsSqliteUtils::quotedString( leLayerName->text() ),
+                                   QgsSqliteUtils::quotedString( leGeometryColumn->text() ) );
     QgsDebugMsg( sqlCreateIndex );
 
     rc = sqlite3_exec( database.get(), sqlCreateIndex.toUtf8(), nullptr, nullptr, &errmsg );
@@ -486,12 +486,6 @@ QString QgsNewSpatialiteLayerDialog::quotedIdentifier( QString id )
 {
   id.replace( '\"', QLatin1String( "\"\"" ) );
   return id.prepend( '\"' ).append( '\"' );
-}
-
-QString QgsNewSpatialiteLayerDialog::quotedValue( QString value )
-{
-  value.replace( '\'', QLatin1String( "''" ) );
-  return value.prepend( '\'' ).append( '\'' );
 }
 
 void QgsNewSpatialiteLayerDialog::showHelp()
