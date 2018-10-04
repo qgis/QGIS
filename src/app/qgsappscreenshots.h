@@ -46,8 +46,9 @@ class QgsAppScreenShots
     enum Category
     {
       All = 0,
-      Symbol25D,
-      VectorLayerProperties,
+      GlobalOptions = 1 << 1,
+      Symbol25D = 1 << 2,
+      VectorLayerProperties = 1 << 3,
     };
     Q_ENUM( Category )
     Q_DECLARE_FLAGS( Categories, Category )
@@ -80,6 +81,7 @@ class QgsAppScreenShots
 
     void takeVectorLayerProperties();
     void take25dSymbol();
+    void takeGlobalOptions();
 
     QString mSaveDirectory;
     int mGradientSize = 200;

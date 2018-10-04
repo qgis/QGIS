@@ -31,6 +31,8 @@
 #include "qgsrendererpropertiesdialog.h"
 #include "qgs25drendererwidget.h"
 #include "qgsapplication.h"
+#include "qgsoptions.h"
+#include "qgsguiutils.h"
 
 
 QgsAppScreenShots::QgsAppScreenShots( const QString &saveDirectory )
@@ -188,6 +190,9 @@ QScreen *QgsAppScreenShots::screen( QWidget *widget )
 
 void QgsAppScreenShots::takePicturesOf( Categories categories )
 {
+  if ( !categories || categories.testFlag( GlobalOptions ) )
+    takeGlobalOptions();
+
   if ( !categories || categories.testFlag( Symbol25D ) )
     take25dSymbol();
 
@@ -206,8 +211,7 @@ void QgsAppScreenShots::setGradientSize( int size )
 
 void QgsAppScreenShots::takeVectorLayerProperties()
 {
-  QString folder = QLatin1String( "working_with_vector/img/auto_generated" );
-  QString rootName = QLatin1String( "vectorlayerproperties_" );
+  QString folder = QLatin1String( "working_with_vector/img/auto_generated/vector_layer_properties" );
   QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mLineLayer, QgisApp::instance() );
   dlg->show();
   // ----------------
@@ -218,8 +222,8 @@ void QgsAppScreenShots::takeVectorLayerProperties()
     dlg->adjustSize();
     QCoreApplication::processEvents();
     QString name = dlg->mOptionsListWidget->item( row )[0].text().toLower();
-    name.replace( " ", "_" );
-    takeScreenshot( rootName + name, folder, dlg );
+    name.replace( " ", "_" ).replace( "&", "and" );
+    takeScreenshot( name, folder, dlg );
   }
   // ------------------
   // style menu clicked
@@ -229,7 +233,7 @@ void QgsAppScreenShots::takeVectorLayerProperties()
   QCoreApplication::processEvents();
   dlg->mBtnStyle->click();
   QCoreApplication::processEvents();
-  takeScreenshot( rootName + "style_menu", folder, dlg );
+  takeScreenshot( "style_menu", folder, dlg );
   QCoreApplication::processEvents();
   dlg->mBtnStyle->menu()->hide();
   QCoreApplication::processEvents();
@@ -243,8 +247,7 @@ void QgsAppScreenShots::takeVectorLayerProperties()
 
 void QgsAppScreenShots::take25dSymbol()
 {
-  QString folder = QLatin1String( "working_with_vector/img/auto_generated" );
-  QString rootName = QLatin1String( "vectorlayerproperties_" );
+  QString folder = QLatin1String( "working_with_vector/img/auto_generated/vector_layer_properties/" );
   QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mPolygonLayer, QgisApp::instance() );
   dlg->show();
   dlg->mOptionsListWidget->setCurrentRow( 2 );
@@ -262,10 +265,43 @@ void QgsAppScreenShots::take25dSymbol()
   QCoreApplication::processEvents();
   int cropHeight = w->mAdvancedConfigurationBox->mapTo( dlg, w->mAdvancedConfigurationBox->frameGeometry().bottomLeft() ).y();
   QPixmap pixmap = takeScreenshot( dlg, GrabWidgetAndFrame, QRect( 0, 0, 0, cropHeight ), true );
-  saveScreenshot( pixmap, rootName + QLatin1String( "25dsymbol" ), folder );
+  saveScreenshot( pixmap, QLatin1String( "25dsymbol" ), folder );
 
   // exit properly
   dlg->close();
   dlg->deleteLater();
 }
 
+//---------------
+
+void QgsAppScreenShots::takeGlobalOptions()
+{
+  QString folder = QLatin1String( "introduction/img/auto_generated/global_options/" );
+  QgsOptions *dlg = QgisApp::instance()->createOptionsDialog();
+  dlg->setMinimumHeight( 600 );
+  dlg->show();
+  QCoreApplication::processEvents();
+  for ( int row = 0; row < dlg->mOptionsListWidget->count(); ++row )
+  {
+    dlg->mOptionsListWidget->setCurrentRow( row );
+    dlg->adjustSize();
+    QCoreApplication::processEvents();
+    QString name = dlg->mOptionsListWidget->item( row )[0].text().toLower();
+    name.replace( " ", "_" ).replace( "&", "and" );
+    takeScreenshot( name, folder, dlg );
+  }
+  // -----------------
+  // advanced settings
+  dlg->mOptionsListWidget->setCurrentRow( 15 );
+  QCoreApplication::processEvents();
+  Q_ASSERT( dlg->mOptionsListWidget->currentItem()->icon().pixmap( 24, 24 ).toImage()
+            == QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ).pixmap( 24, 24 ).toImage() );
+  dlg->mAdvancedSettingsEditor->show();
+  QCoreApplication::processEvents();
+  QCoreApplication::processEvents(); // seems a second call is needed, the tabble might not be fully displayed otherwise
+  takeScreenshot( QStringLiteral( "advanced_with_settings_shown" ), folder, dlg );
+
+  // exit properly
+  dlg->close();
+  dlg->deleteLater();
+}

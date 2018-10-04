@@ -10282,11 +10282,8 @@ QMap< QString, QString > QgisApp::optionsPagesMap()
   return mOptionsPagesMap;
 }
 
-void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
+QgsOptions *QgisApp::createOptionsDialog( QWidget *parent )
 {
-  QgsSettings mySettings;
-  QString oldScales = mySettings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
-
   QList< QgsOptionsWidgetFactory * > factories;
   Q_FOREACH ( const QPointer< QgsOptionsWidgetFactory > &f, mOptionsWidgetFactories )
   {
@@ -10294,7 +10291,16 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
     if ( f )
       factories << f;
   }
-  std::unique_ptr< QgsOptions > optionsDialog( new QgsOptions( parent, QgsGuiUtils::ModalDialogFlags, factories ) );
+  return new QgsOptions( parent, QgsGuiUtils::ModalDialogFlags, factories );
+}
+
+void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
+{
+  std::unique_ptr< QgsOptions > optionsDialog( createOptionsDialog( parent ) );
+
+  QgsSettings mySettings;
+  QString oldScales = mySettings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
+
   if ( !currentPage.isEmpty() )
   {
     optionsDialog->setCurrentPage( currentPage );

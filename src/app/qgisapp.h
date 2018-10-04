@@ -76,6 +76,7 @@ class QgsMapToolDigitizeFeature;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapToolIdentifyAction;
 class QgsMapToolSelect;
+class QgsOptions;
 class QgsPluginLayer;
 class QgsPluginLayer;
 class QgsPluginManager;
@@ -1962,6 +1963,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Populates project "load from" / "save to" menu based on project storages (when the menu is about to be shown)
     void populateProjectStorageMenu( QMenu *menu, bool saving );
 
+    //! Create the option dialog
+    QgsOptions *createOptionsDialog( QWidget *parent = nullptr );
+
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
     // actions for menus and toolbars -----------------
@@ -2134,7 +2138,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! interface to QgisApp for plugins
     QgisAppInterface *mQgisInterface = nullptr;
-    friend class QgisAppInterface;
 
     QSplashScreen *mSplash = nullptr;
     //! list of recently opened/saved project files
@@ -2301,6 +2304,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool mBlockActiveLayerChanged = false;
 
     friend class TestQgisAppPython;
+    friend class QgisAppInterface;
+    friend class QgsAppScreenShots;
 };
 
 #ifdef ANDROID
