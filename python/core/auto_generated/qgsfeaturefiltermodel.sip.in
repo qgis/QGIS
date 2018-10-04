@@ -147,6 +147,11 @@ Add a NULL entry to the list.
 Add a NULL entry to the list.
 %End
 
+    void setReloadTimerInterval( int interval );
+%Docstring
+Set the model reload timer interval in milliseconds
+%End
+
   signals:
 
     void sourceLayerChanged();
