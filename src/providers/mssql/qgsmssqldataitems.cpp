@@ -136,8 +136,6 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
     return children;
   }
 
-  QString connectionName = db.connectionName();
-
   // build sql statement
   QString query( QStringLiteral( "select " ) );
   if ( mUseGeometryColumns )

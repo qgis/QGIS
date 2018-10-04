@@ -106,7 +106,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     QString mFallbackStatement;
 
     // Field index of FID column
-    long mFidCol = -1;
+    int mFidCol = -1;
 
     // List of attribute indices to fetch with nextFeature calls
     QgsAttributeList mAttributesToFetch;
