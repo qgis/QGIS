@@ -260,7 +260,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
                 # set the new model
                 model = self.db.sqlResultModel(sql, self)
                 self.viewResult.setModel(model)
-                self.lblResult.setText(self.tr("{0} rows, {1:.1f} seconds").format(model.affectedRows(), model.secs()))
+                self.lblResult.setText(self.tr("{0} rows, {1:.3f} seconds").format(model.affectedRows(), model.secs()))
                 cols = self.viewResult.model().columnNames()
                 for col in cols:
                     quotedCols.append(self.db.connector.quoteId(col))

@@ -192,9 +192,7 @@ class SqlResultModel(BaseTableModel):
 
         t = QTime()
         t.start()
-        c = self.db._execute(None, str(sql))
-        self._secs = t.elapsed() / 1000.0
-        del t
+        c = self.db._execute(None, sql)
 
         self._affectedRows = 0
         data = []
@@ -205,7 +203,7 @@ class SqlResultModel(BaseTableModel):
         try:
             if len(header) > 0:
                 data = self.db._fetchall(c)
-            self._affectedRows = c.rowcount
+            self._affectedRows = len(data)
         except DbError:
             # nothing to fetch!
             data = []
@@ -216,7 +214,9 @@ class SqlResultModel(BaseTableModel):
         # commit before closing the cursor to make sure that the changes are stored
         self.db._commit()
         c.close()
+        self._secs = t.elapsed() / 1000.0
         del c
+        del t
 
     def secs(self):
         return self._secs
