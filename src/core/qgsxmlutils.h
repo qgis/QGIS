@@ -16,13 +16,16 @@
 #define QGSXMLUTILS_H
 
 class QDomDocument;
-class QDomElement;
 
 class QgsRectangle;
+
+#include <QDomElement>
 
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsunittypes.h"
+
+
 
 /**
  * \ingroup core
@@ -75,6 +78,23 @@ class CORE_EXPORT QgsXmlUtils
      * Read a QVariant from a QDomElement.
      */
     static QVariant readVariant( const QDomElement &element );
+
+    template<class T> static T readFlagAttribute( const QDomElement &element, const QString &attributeName, T defaultValue ) SIP_SKIP
+    {
+      T value = defaultValue;
+      // Get source categories
+      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      QString sourceCategoriesStr( element.attribute( attributeName, metaEnum.valueToKeys( static_cast<int>( defaultValue ) ) ) );
+      if ( metaEnum.isValid() )
+      {
+        bool ok = false;
+        const char *vs = sourceCategoriesStr.toUtf8().data();
+        int newValue = metaEnum.keysToValue( vs, &ok );
+        if ( ok )
+          value = static_cast<T>( newValue );
+      }
+      return value;
+    }
 };
 
 
