@@ -79,6 +79,15 @@ class CORE_EXPORT QgsXmlUtils
      */
     static QVariant readVariant( const QDomElement &element );
 
+    /**
+     * Read a flag value from an attribute of the element.
+     * \param element the element to read the attribute from
+     * \param attributeName the attribute name
+     * \param defaultValue the default value as a flag
+     * \note The flag value is a text as returned by \see QMetaEnum::valueToKeys.
+     *       The flag must have been declared with Q_ENUM macro.
+     * \since QGIS 3.4
+     */
     template<class T> static T readFlagAttribute( const QDomElement &element, const QString &attributeName, T defaultValue ) SIP_SKIP
     {
       T value = defaultValue;
