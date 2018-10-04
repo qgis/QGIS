@@ -30,6 +30,7 @@ class QgsMssqlExpressionCompiler : public QgsSqlExpressionCompiler
     Result compileNode( const QgsExpressionNode *node, QString &result ) override;
     QString quotedValue( const QVariant &value, bool &ok ) override;
     QString castToReal( const QString &value ) const override;
+    QString castToInt( const QString &value ) const override;
 
 };
 

@@ -85,7 +85,6 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             '\'x\' || "name" IS NOT NULL',
             '\'x\' || "name" IS NULL',
             '"name" ~ \'[OP]ra[gne]+\'',
-            'pk = 9 // 4',
             'false and NULL',
             'true and NULL',
             'NULL and false',
