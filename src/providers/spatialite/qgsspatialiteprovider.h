@@ -144,7 +144,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     static int computeMultiWKB3Dsize( const unsigned char *p_in, int little_endian,
                                       int endian_arch );
     static QString quotedIdentifier( QString id );
-    static QString quotedValue( QString value );
 
     struct SLFieldNotFound {}; //! Exception to throw
 

@@ -141,7 +141,7 @@ bool  QgsCustomProjectionDialog::deleteCrs( const QString &id )
 {
   sqlite3_database_unique_ptr database;
 
-  QString sql = "delete from tbl_srs where srs_id=" + quotedValue( id );
+  QString sql = "delete from tbl_srs where srs_id=" + QgsSqliteUtils::quotedString( id );
   QgsDebugMsg( sql );
   //check the db is available
   int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
@@ -191,7 +191,7 @@ void  QgsCustomProjectionDialog::insertProjection( const QString &projectionAcro
   else
   {
     // Set up the query to retrieve the projection information needed to populate the PROJECTION list
-    QString srsSql = "select acronym,name,notes,parameters from tbl_projection where acronym=" + quotedValue( projectionAcronym );
+    QString srsSql = "select acronym,name,notes,parameters from tbl_projection where acronym=" + QgsSqliteUtils::quotedString( projectionAcronym );
 
     sqlite3_statement_unique_ptr srsPreparedStatement = srsDatabase.prepare( srsSql, srsResult );
     if ( srsResult == SQLITE_OK )
@@ -201,10 +201,10 @@ void  QgsCustomProjectionDialog::insertProjection( const QString &projectionAcro
         QgsDebugMsg( "Trying to insert projection" );
         // We have the result from system srs.db. Now insert into user db.
         sql = "insert into tbl_projection(acronym,name,notes,parameters) values ("
-              + quotedValue( srsPreparedStatement.columnAsText( 0 ) )
-              + ',' + quotedValue( srsPreparedStatement.columnAsText( 1 ) )
-              + ',' + quotedValue( srsPreparedStatement.columnAsText( 2 ) )
-              + ',' + quotedValue( srsPreparedStatement.columnAsText( 3 ) )
+              + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 0 ) )
+              + ',' + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 1 ) )
+              + ',' + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 2 ) )
+              + ',' + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 3 ) )
               + ')';
         sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
         if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
@@ -239,12 +239,12 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem parameters
   else
   {
     sql = "update tbl_srs set description="
-          + quotedValue( name )
-          + ",projection_acronym=" + quotedValue( projectionAcronym )
-          + ",ellipsoid_acronym=" + quotedValue( ellipsoidAcronym )
-          + ",parameters=" + quotedValue( parameters.toProj4() )
+          + QgsSqliteUtils::quotedString( name )
+          + ",projection_acronym=" + QgsSqliteUtils::quotedString( projectionAcronym )
+          + ",ellipsoid_acronym=" + QgsSqliteUtils::quotedString( ellipsoidAcronym )
+          + ",parameters=" + QgsSqliteUtils::quotedString( parameters.toProj4() )
           + ",is_geo=0" // <--shamelessly hard coded for now
-          + " where srs_id=" + quotedValue( id )
+          + " where srs_id=" + QgsSqliteUtils::quotedString( id )
           ;
     QgsDebugMsg( sql );
     sqlite3_database_unique_ptr database;
@@ -519,12 +519,6 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
   pj_free( proj );
   pj_free( wgs84Proj );
   pj_ctx_free( pContext );
-}
-
-QString QgsCustomProjectionDialog::quotedValue( QString value )
-{
-  value.replace( '\'', QLatin1String( "''" ) );
-  return value.prepend( '\'' ).append( '\'' );
 }
 
 void QgsCustomProjectionDialog::showHelp()

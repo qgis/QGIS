@@ -91,6 +91,16 @@ sqlite3_statement_unique_ptr sqlite3_database_unique_ptr::prepare( const QString
   return s;
 }
 
+QString QgsSqliteUtils::quotedString( const QString &value )
+{
+  if ( value.isNull() )
+    return QStringLiteral( "NULL" );
+
+  QString v = value;
+  v.replace( '\'', QLatin1String( "''" ) );
+  return v.prepend( '\'' ).append( '\'' );
+}
+
 QString QgsSqlite3Mprintf( const char *format, ... )
 {
   va_list ap;
