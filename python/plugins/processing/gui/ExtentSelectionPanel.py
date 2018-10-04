@@ -97,17 +97,23 @@ class ExtentSelectionPanel(BASE, WIDGET):
 
     def selectExtent(self):
         popupmenu = QMenu()
+        useCanvasExtentAction = QAction(
+            QCoreApplication.translate("ExtentSelectionPanel", 'Use Canvas Extent'),
+            self.btnSelect)
         useLayerExtentAction = QAction(
-            QCoreApplication.translate("ExtentSelectionPanel", 'Use Layer/Canvas Extent…'),
+            QCoreApplication.translate("ExtentSelectionPanel", 'Use Layer Extent…'),
             self.btnSelect)
         selectOnCanvasAction = QAction(
             self.tr('Select Extent on Canvas'), self.btnSelect)
 
-        popupmenu.addAction(useLayerExtentAction)
+        popupmenu.addAction(useCanvasExtentAction)
         popupmenu.addAction(selectOnCanvasAction)
+        popupmenu.addSeparator()
+        popupmenu.addAction(useLayerExtentAction)
 
         selectOnCanvasAction.triggered.connect(self.selectOnCanvas)
         useLayerExtentAction.triggered.connect(self.useLayerExtent)
+        useCanvasExtentAction.triggered.connect(self.useCanvasExtent)
 
         if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
             useMincoveringExtentAction = QAction(
@@ -123,11 +129,8 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.leText.setText('')
 
     def useLayerExtent(self):
-        CANVAS_KEY = 'Canvas Extent'
         extentsDict = {}
-        extentsDict[CANVAS_KEY] = {"extent": iface.mapCanvas().extent(),
-                                   "authid": iface.mapCanvas().mapSettings().destinationCrs().authid()}
-        extents = [CANVAS_KEY]
+        extents = []
         layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
         for layer in layers:
             authid = layer.crs().authid()
@@ -142,6 +145,10 @@ class ExtentSelectionPanel(BASE, WIDGET):
                                           self.tr('Use extent from'), extents, 0, False)
         if ok:
             self.setValueFromRect(QgsReferencedRectangle(extentsDict[item]["extent"], QgsCoordinateReferenceSystem(extentsDict[item]["authid"])))
+
+    def useCanvasExtent(self):
+        self.setValueFromRect(QgsReferencedRectangle(iface.mapCanvas().extent(),
+                                                     iface.mapCanvas().mapSettings().destinationCrs()))
 
     def selectOnCanvas(self):
         canvas = iface.mapCanvas()
