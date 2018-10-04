@@ -229,7 +229,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
       {
         QString part;
         part = compiler.result();
-        part += clause.ascending() ? " ASC" : " DESC";
+        part += clause.ascending() ? QStringLiteral( " ASC" ) : QStringLiteral( " DESC" );
         orderByParts << part;
       }
       else
@@ -292,7 +292,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
 
     if ( !mDatabase.open() )
     {
-      QgsDebugMsg( "Failed to open database" );
+      QgsDebugMsg( QStringLiteral( "Failed to open database" ) );
       QgsDebugMsg( mDatabase.lastError().text() );
       return false;
     }
@@ -310,7 +310,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
 
   if ( !mQuery->isActive() )
   {
-    QgsDebugMsg( "Read attempt on inactive query" );
+    QgsDebugMsg( QStringLiteral( "Read attempt on inactive query" ) );
     return false;
   }
 
@@ -336,7 +336,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
       QByteArray ar = mQuery->record().value( mSource->mGeometryColName ).toByteArray();
       if ( !ar.isEmpty() )
       {
-        if ( unsigned char *wkb = mParser.ParseSqlGeometry( ( unsigned char * )ar.data(), ar.size() ) )
+        if ( unsigned char *wkb = mParser.ParseSqlGeometry( reinterpret_cast< unsigned char * >( ar.data() ), ar.size() ) )
         {
           QgsGeometry g;
           g.fromWkb( wkb, mParser.GetWkbLen() );
@@ -374,7 +374,7 @@ bool QgsMssqlFeatureIterator::rewind()
 
   if ( mStatement.isEmpty() )
   {
-    QgsDebugMsg( "QgsMssqlFeatureIterator::rewind on empty statement" );
+    QgsDebugMsg( QStringLiteral( "QgsMssqlFeatureIterator::rewind on empty statement" ) );
     return false;
   }
 
