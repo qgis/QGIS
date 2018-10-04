@@ -1014,73 +1014,9 @@ static QVariant fcnWordwrap( const QVariantList &values, const QgsExpressionCont
     QString str = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
     qlonglong wrap = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
 
-    if ( !str.isEmpty() && wrap != 0 )
-    {
-      QString newstr;
-      QRegExp rx;
-      QString customdelimiter = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
-      int delimiterlength;
+    QString customdelimiter = QgsExpressionUtils::getStringValue( values.at( 2 ), parent );
 
-      if ( customdelimiter.length() > 0 )
-      {
-        rx.setPatternSyntax( QRegExp::FixedString );
-        rx.setPattern( customdelimiter );
-        delimiterlength = customdelimiter.length();
-      }
-      else
-      {
-        // \x200B is a ZERO-WIDTH SPACE, needed for worwrap to support a number of complex scripts (Indic, Arabic, etc.)
-        rx.setPattern( QStringLiteral( "[\\s\\x200B]" ) );
-        delimiterlength = 1;
-      }
-
-
-      QStringList lines = str.split( '\n' );
-      int strlength, strcurrent, strhit, lasthit;
-
-      for ( int i = 0; i < lines.size(); i++ )
-      {
-        strlength = lines[i].length();
-        strcurrent = 0;
-        strhit = 0;
-        lasthit = 0;
-
-        while ( strcurrent < strlength )
-        {
-          // positive wrap value = desired maximum line width to wrap
-          // negative wrap value = desired minimum line width before wrap
-          if ( wrap > 0 )
-          {
-            //first try to locate delimiter backwards
-            strhit = lines[i].lastIndexOf( rx, strcurrent + wrap );
-            if ( strhit == lasthit || strhit == -1 )
-            {
-              //if no new backward delimiter found, try to locate forward
-              strhit = lines[i].indexOf( rx, strcurrent + std::labs( wrap ) );
-            }
-            lasthit = strhit;
-          }
-          else
-          {
-            strhit = lines[i].indexOf( rx, strcurrent + std::labs( wrap ) );
-          }
-          if ( strhit > -1 )
-          {
-            newstr.append( lines[i].midRef( strcurrent, strhit - strcurrent ) );
-            newstr.append( '\n' );
-            strcurrent = strhit + delimiterlength;
-          }
-          else
-          {
-            newstr.append( lines[i].midRef( strcurrent ) );
-            strcurrent = strlength;
-          }
-        }
-        if ( i < lines.size() - 1 ) newstr.append( '\n' );
-      }
-
-      return QVariant( newstr );
-    }
+    return QgsStringUtils::wordWrap( str, static_cast< int >( wrap ), wrap > 0, customdelimiter );
   }
 
   return QVariant();
