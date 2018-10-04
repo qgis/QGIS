@@ -1059,16 +1059,32 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
     styleFile.updateRevision( thisVersion );
   }
 
-  //Test for matching geometry type on vector layers when applying, if geometry type is given in the style
-  if ( type() == QgsMapLayer::VectorLayer && !myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).isNull() )
+  // Get source categories
+  QgsMapLayer::StyleCategories sourceCategories = QgsMapLayer::AllStyleCategories;
+  QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayer::StyleCategories>();
+  QString sourceCategoriesStr( myRoot.attribute( "style_categories", metaEnum.valueToKeys( static_cast<int>( QgsMapLayer::AllStyleCategories ) ) ) );
+  if ( metaEnum.isValid() )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( this );
-    QgsWkbTypes::GeometryType importLayerGeometryType = static_cast<QgsWkbTypes::GeometryType>( myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).text().toInt() );
-    if ( vl->geometryType() != importLayerGeometryType &&
-         ( categories.testFlag( QgsMapLayer::Symbology ) || categories.testFlag( QgsMapLayer::Symbology3D ) ) )
+    bool ok = false;
+    const char *vs = sourceCategoriesStr.toUtf8().data();
+    int newValue = metaEnum.keysToValue( vs, &ok );
+    if ( ok )
+      sourceCategories = static_cast<QgsMapLayer::StyleCategories>( newValue );
+  }
+
+  //Test for matching geometry type on vector layers when applying, if geometry type is given in the style
+  if ( ( sourceCategories.testFlag( QgsMapLayer::Symbology ) || sourceCategories.testFlag( QgsMapLayer::Symbology3D ) ) &&
+       ( categories.testFlag( QgsMapLayer::Symbology ) || categories.testFlag( QgsMapLayer::Symbology3D ) ) )
+  {
+    if ( type() == QgsMapLayer::VectorLayer && !myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).isNull() )
     {
-      myErrorMessage = tr( "Cannot apply style with symbology to layer with a different geometry type" );
-      return false;
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( this );
+      QgsWkbTypes::GeometryType importLayerGeometryType = static_cast<QgsWkbTypes::GeometryType>( myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).text().toInt() );
+      if ( vl->geometryType() != importLayerGeometryType )
+      {
+        myErrorMessage = tr( "Cannot apply style with symbology to layer with a different geometry type" );
+        return false;
+      }
     }
   }
 
