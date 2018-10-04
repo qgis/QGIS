@@ -81,16 +81,28 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
   QgsAttributeList attrs = subsetOfAttributes ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
 
-  // ensure that all attributes required for expression filter are being fetched
-  if ( subsetOfAttributes && request.filterType() == QgsFeatureRequest::FilterExpression )
+  if ( subsetOfAttributes )
   {
-    //ensure that all fields required for filter expressions are prepared
-    QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
-    attributeIndexes += attrs.toSet();
-    attrs = attributeIndexes.toList();
+    // ensure that all attributes required for expression filter are being fetched
+    if ( request.filterType() == QgsFeatureRequest::FilterExpression )
+    {
+      //ensure that all fields required for filter expressions are prepared
+      QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
+      attributeIndexes += attrs.toSet();
+      attrs = attributeIndexes.toList();
+    }
+
+    // ensure that all attributes required for order by are fetched
+    const QSet< QString > orderByAttributes = mRequest.orderBy().usedAttributes();
+    for ( const QString &attr : orderByAttributes )
+    {
+      int attrIndex = mSource->mFields.lookupField( attr );
+      if ( !attrs.contains( attrIndex ) )
+        attrs << attrIndex;
+    }
   }
 
-  Q_FOREACH ( int i, attrs )
+  for ( int i : qgis::as_const( attrs ) )
   {
     QString fieldname = mSource->mFields.at( i ).name();
     if ( mSource->mFidColName == fieldname )
@@ -269,7 +281,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     mOrderByClause = QStringLiteral( " ORDER BY %1" ).arg( orderByParts.join( QStringLiteral( "," ) ) );
   }
 
-  QgsDebugMsg( mStatement );
+  QgsDebugMsg( mStatement + " " + mOrderByClause );
 #if 0
   if ( fieldCount == 0 )
   {
