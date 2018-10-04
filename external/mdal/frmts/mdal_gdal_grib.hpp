@@ -3,8 +3,8 @@
  Copyright (C) 2018 Peter Petrik (zilolv at gmail dot com)
 */
 
-#ifndef MDAL_GRIB_HPP
-#define MDAL_GRIB_HPP
+#ifndef MDAL_GDAL_GRIB_HPP
+#define MDAL_GDAL_GRIB_HPP
 
 #include "mdal_gdal.hpp"
 #include "mdal_data_model.hpp"
@@ -14,10 +14,10 @@
 namespace MDAL
 {
 
-  class LoaderGrib: public LoaderGdal
+  class LoaderGdalGrib: public LoaderGdal
   {
     public:
-      LoaderGrib( const std::string &gribFile );
+      LoaderGdalGrib( const std::string &gribFile );
     private:
       bool parseBandInfo( const MDAL::GdalDataset *cfGDALDataset,
                           const metadata_hash &metadata, std::string &band_name,
@@ -35,4 +35,4 @@ namespace MDAL
   };
 
 } // namespace MDAL
-#endif // MDAL_GRIB_HPP
+#endif // MDAL_GDAL_GRIB_HPP
