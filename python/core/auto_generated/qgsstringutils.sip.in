@@ -261,6 +261,20 @@ links.
 
 .. versionadded:: 3.0
 %End
+
+    static QString wordWrap( const QString &string, int length, bool useMaxLineLength = true, const QString &customDelimiter = QString() );
+%Docstring
+Automatically wraps a \string by inserting new line characters at appropriate locations in the string.
+
+The ``length`` argument specifies either the minimum or maximum length of lines desired, depending
+on whether ``useMaxLineLength`` is true. If ``useMaxLineLength`` is true, then the string will be wrapped
+so that each line ideally will not exceed ``length`` of characters. If ``useMaxLineLength`` is false, then
+the string will be wrapped so that each line will ideally exceed ``length`` of characters.
+
+A custom delimiter can be specified to use instead of space characters.
+
+.. versionadded:: 3.4
+%End
 };
 
 /************************************************************************
