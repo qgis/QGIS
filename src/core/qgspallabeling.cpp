@@ -124,6 +124,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::FontWordSpacing, QgsPropertyDefinition( "FontWordSpacing", QObject::tr( "Word spacing" ), QgsPropertyDefinition::Double, origin ) },
     { QgsPalLayerSettings::FontBlendMode, QgsPropertyDefinition( "FontBlendMode", QObject::tr( "Text blend mode" ), QgsPropertyDefinition::BlendMode, origin ) },
     { QgsPalLayerSettings::MultiLineWrapChar, QgsPropertyDefinition( "MultiLineWrapChar", QObject::tr( "Wrap character" ), QgsPropertyDefinition::String, origin ) },
+    { QgsPalLayerSettings::AutoWrapLength, QgsPropertyDefinition( "AutoWrapLength", QObject::tr( "Automatic word wrap line length" ), QgsPropertyDefinition::IntegerPositive, origin ) },
     { QgsPalLayerSettings::MultiLineHeight, QgsPropertyDefinition( "MultiLineHeight", QObject::tr( "Line height" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { QgsPalLayerSettings::MultiLineAlignment, QgsPropertyDefinition( "MultiLineAlignment", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line alignment" ), QObject::tr( "string " ) + "[<b>Left</b>|<b>Center</b>|<b>Right</b>|<b>Follow</b>]", origin ) },
     { QgsPalLayerSettings::DirSymbDraw, QgsPropertyDefinition( "DirSymbDraw", QObject::tr( "Draw direction symbol" ), QgsPropertyDefinition::Boolean, origin ) },
@@ -321,6 +322,8 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
 
   // text formatting
   wrapChar = s.wrapChar;
+  autoWrapLength = s.autoWrapLength;
+  useMaxLineLengthForAutoWrap = s.useMaxLineLengthForAutoWrap;
   multilineAlign = s.multilineAlign;
   addDirectionSymbol = s.addDirectionSymbol;
   leftDirectionSymbol = s.leftDirectionSymbol;
@@ -532,6 +535,9 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
 
   // text formatting
   wrapChar = layer->customProperty( QStringLiteral( "labeling/wrapChar" ) ).toString();
+  autoWrapLength = layer->customProperty( QStringLiteral( "labeling/autoWrapLength" ) ).toInt();
+  useMaxLineLengthForAutoWrap = layer->customProperty( QStringLiteral( "labeling/useMaxLineLengthForAutoWrap" ), QStringLiteral( "1" ) ).toBool();
+
   multilineAlign = static_cast< MultiLineAlign >( layer->customProperty( QStringLiteral( "labeling/multilineAlign" ), QVariant( MultiFollowPlacement ) ).toUInt() );
   addDirectionSymbol = layer->customProperty( QStringLiteral( "labeling/addDirectionSymbol" ) ).toBool();
   leftDirectionSymbol = layer->customProperty( QStringLiteral( "labeling/leftDirectionSymbol" ), QVariant( "<" ) ).toString();
@@ -739,6 +745,8 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   // text formatting
   QDomElement textFormatElem = elem.firstChildElement( QStringLiteral( "text-format" ) );
   wrapChar = textFormatElem.attribute( QStringLiteral( "wrapChar" ) );
+  autoWrapLength = textFormatElem.attribute( QStringLiteral( "autoWrapLength" ), QStringLiteral( "0" ) ).toInt();
+  useMaxLineLengthForAutoWrap = textFormatElem.attribute( QStringLiteral( "useMaxLineLengthForAutoWrap" ), QStringLiteral( "1" ) ).toInt();
   multilineAlign = static_cast< MultiLineAlign >( textFormatElem.attribute( QStringLiteral( "multilineAlign" ), QString::number( MultiFollowPlacement ) ).toUInt() );
   addDirectionSymbol = textFormatElem.attribute( QStringLiteral( "addDirectionSymbol" ) ).toInt();
   leftDirectionSymbol = textFormatElem.attribute( QStringLiteral( "leftDirectionSymbol" ), QStringLiteral( "<" ) );
@@ -953,6 +961,8 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   // text formatting
   QDomElement textFormatElem = doc.createElement( QStringLiteral( "text-format" ) );
   textFormatElem.setAttribute( QStringLiteral( "wrapChar" ), wrapChar );
+  textFormatElem.setAttribute( QStringLiteral( "autoWrapLength" ), autoWrapLength );
+  textFormatElem.setAttribute( QStringLiteral( "useMaxLineLengthForAutoWrap" ), useMaxLineLengthForAutoWrap );
   textFormatElem.setAttribute( QStringLiteral( "multilineAlign" ), static_cast< unsigned int >( multilineAlign ) );
   textFormatElem.setAttribute( QStringLiteral( "addDirectionSymbol" ), addDirectionSymbol );
   textFormatElem.setAttribute( QStringLiteral( "leftDirectionSymbol" ), leftDirectionSymbol );
@@ -1046,6 +1056,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, QString t
   QgsRenderContext *rc = context ? context : scopedRc.get();
 
   QString wrapchr = wrapChar;
+  int evalAutoWrapLength = autoWrapLength;
   double multilineH = mFormat.lineHeight();
 
   bool addDirSymb = addDirectionSymbol;
@@ -1058,6 +1069,11 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, QString t
     if ( dataDefinedValues.contains( QgsPalLayerSettings::MultiLineWrapChar ) )
     {
       wrapchr = dataDefinedValues.value( QgsPalLayerSettings::MultiLineWrapChar ).toString();
+    }
+
+    if ( dataDefinedValues.contains( QgsPalLayerSettings::AutoWrapLength ) )
+    {
+      evalAutoWrapLength = dataDefinedValues.value( QgsPalLayerSettings::AutoWrapLength, evalAutoWrapLength ).toInt();
     }
 
     if ( dataDefinedValues.contains( QgsPalLayerSettings::MultiLineHeight ) )
@@ -1094,6 +1110,9 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, QString t
   {
     rc->expressionContext().setOriginalValueVariable( wrapChar );
     wrapchr = mDataDefinedProperties.value( QgsPalLayerSettings::MultiLineWrapChar, rc->expressionContext(), wrapchr ).toString();
+
+    rc->expressionContext().setOriginalValueVariable( evalAutoWrapLength );
+    evalAutoWrapLength = mDataDefinedProperties.value( QgsPalLayerSettings::AutoWrapLength, rc->expressionContext(), evalAutoWrapLength ).toInt();
 
     rc->expressionContext().setOriginalValueVariable( multilineH );
     multilineH = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::MultiLineHeight, rc->expressionContext(), multilineH );
@@ -1140,7 +1159,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, QString t
   }
 
   double w = 0.0, h = 0.0;
-  QStringList multiLineSplit = QgsPalLabeling::splitToLines( text, wrapchr );
+  QStringList multiLineSplit = QgsPalLabeling::splitToLines( text, wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
   int lines = multiLineSplit.size();
 
   double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
@@ -2422,6 +2441,12 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
     wrapchr = exprVal.toString();
   }
 
+  int evalAutoWrapLength = autoWrapLength;
+  if ( dataDefinedValEval( DDInt, QgsPalLayerSettings::AutoWrapLength, exprVal, context.expressionContext(), evalAutoWrapLength ) )
+  {
+    evalAutoWrapLength = exprVal.toInt();
+  }
+
   // data defined multiline height?
   dataDefinedValEval( DDDouble, QgsPalLayerSettings::MultiLineHeight, exprVal, context.expressionContext() );
 
@@ -2844,13 +2869,14 @@ bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry &geometry, Q
   return false;
 }
 
-QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wrapCharacter )
+QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wrapCharacter, const int autoWrapLength, const bool useMaxLineLengthWhenAutoWrapping )
 {
   QStringList multiLineSplit;
   if ( !wrapCharacter.isEmpty() && wrapCharacter != QLatin1String( "\n" ) )
   {
     //wrap on both the wrapchr and new line characters
-    Q_FOREACH ( const QString &line, text.split( wrapCharacter ) )
+    const QStringList lines = text.split( wrapCharacter );
+    for ( const QString &line : lines )
     {
       multiLineSplit.append( line.split( '\n' ) );
     }
@@ -2860,6 +2886,17 @@ QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wr
     multiLineSplit = text.split( '\n' );
   }
 
+  // apply auto wrapping to each manually created line
+  if ( autoWrapLength != 0 )
+  {
+    QStringList autoWrappedLines;
+    autoWrappedLines.reserve( multiLineSplit.count() );
+    for ( const QString &line : qgis::as_const( multiLineSplit ) )
+    {
+      autoWrappedLines.append( QgsStringUtils::wordWrap( line, autoWrapLength, useMaxLineLengthWhenAutoWrapping ).split( '\n' ) );
+    }
+    multiLineSplit = autoWrappedLines;
+  }
   return multiLineSplit;
 }
 
@@ -3044,7 +3081,12 @@ void QgsPalLabeling::dataDefinedTextFormatting( QgsPalLayerSettings &tmpLyr,
     tmpLyr.wrapChar = ddValues.value( QgsPalLayerSettings::MultiLineWrapChar ).toString();
   }
 
-  if ( !tmpLyr.wrapChar.isEmpty() || tmpLyr.getLabelExpression()->expression().contains( QLatin1String( "wordwrap" ) ) )
+  if ( ddValues.contains( QgsPalLayerSettings::AutoWrapLength ) )
+  {
+    tmpLyr.autoWrapLength = ddValues.value( QgsPalLayerSettings::AutoWrapLength ).toInt();
+  }
+
+  if ( !tmpLyr.wrapChar.isEmpty() || tmpLyr.getLabelExpression()->expression().contains( QLatin1String( "wordwrap" ) ) || tmpLyr.autoWrapLength > 0 )
   {
 
     if ( ddValues.contains( QgsPalLayerSettings::MultiLineHeight ) )

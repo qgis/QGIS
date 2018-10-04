@@ -264,7 +264,7 @@ links.
 
     static QString wordWrap( const QString &string, int length, bool useMaxLineLength = true, const QString &customDelimiter = QString() );
 %Docstring
-Automatically wraps a \string by inserting new line characters at appropriate locations in the string.
+Automatically wraps a ``string`` by inserting new line characters at appropriate locations in the string.
 
 The ``length`` argument specifies either the minimum or maximum length of lines desired, depending
 on whether ``useMaxLineLength`` is true. If ``useMaxLineLength`` is true, then the string will be wrapped

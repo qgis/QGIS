@@ -269,6 +269,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
       // text formatting
       MultiLineWrapChar = 31,
+      AutoWrapLength = 101,
       MultiLineHeight = 32,
       MultiLineAlignment = 33,
       DirSymbDraw = 34,
@@ -416,6 +417,27 @@ class CORE_EXPORT QgsPalLayerSettings
      * label text will be replaced with new line characters.
      */
     QString wrapChar;
+
+    /**
+     * If non-zero, indicates that label text should be automatically wrapped to (ideally) the specified
+     * number of characters. If zero, auto wrapping is disabled.
+     *
+     * \see useMaxLineLengthForAutoWrap
+     * \since QGIS 3.4
+     */
+    int autoWrapLength = 0;
+
+    /**
+     * If true, indicates that when auto wrapping label text the autoWrapLength length indicates the maximum
+     * ideal length of text lines. If false, then autoWrapLength indicates the ideal minimum length of text
+     * lines.
+     *
+     * If autoWrapLength is 0 then this value has no effect.
+     *
+     * \see autoWrapLength
+     * \since QGIS 3.4
+     */
+    bool useMaxLineLengthForAutoWrap = true;
 
     //! Horizontal alignment of multi-line labels.
     MultiLineAlign multilineAlign;
@@ -986,14 +1008,18 @@ class CORE_EXPORT QgsPalLabeling
     static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() );
 
     /**
-     * Splits a text string to a list of separate lines, using a specified wrap character.
+     * Splits a \a text string to a list of separate lines, using a specified wrap character (\a wrapCharacter).
      * The text string will be split on either newline characters or the wrap character.
-     * \param text text string to split
-     * \param wrapCharacter additional character to wrap on
-     * \returns list of text split to lines
+     *
+     * Since QGIS 3.4 the \a autoWrapLength argument can be used to specify an ideal length of line to automatically
+     * wrap text to (automatic wrapping is disabled if \a autoWrapLength is 0). This automatic wrapping is performed
+     * after processing wrapping using \a wrapCharacter. When auto wrapping is enabled, the \a useMaxLineLengthWhenAutoWrapping
+     * argument controls whether the lines should be wrapped to an ideal maximum of \a autoWrapLength characters, or
+     * if false then the lines are wrapped to an ideal minimum length of \a autoWrapLength characters.
+     *
      * \since QGIS 2.9
      */
-    static QStringList splitToLines( const QString &text, const QString &wrapCharacter );
+    static QStringList splitToLines( const QString &text, const QString &wrapCharacter, int autoWrapLength = 0, bool useMaxLineLengthWhenAutoWrapping = true );
 
     /**
      * Splits a text string to a list of graphemes, which are the smallest allowable character
