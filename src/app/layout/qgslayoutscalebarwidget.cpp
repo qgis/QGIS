@@ -97,7 +97,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mFillColor2Button->setColorDialogTitle( tr( "Select Alternate Fill Color" ) );
   mFillColor2Button->setAllowOpacity( true );
   mFillColor2Button->setContext( QStringLiteral( "composer" ) );
-  mFillColor2Button->setNoColorString( tr( "Transparent fill" ) );
+  mFillColor2Button->setNoColorString( tr( "Transparent Fill" ) );
   mFillColor2Button->setShowNoColor( true );
 
   mFontButton->setDialogTitle( tr( "Scalebar Font" ) );
@@ -106,7 +106,7 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mStrokeColorButton->setColorDialogTitle( tr( "Select Line Color" ) );
   mStrokeColorButton->setAllowOpacity( true );
   mStrokeColorButton->setContext( QStringLiteral( "composer" ) );
-  mStrokeColorButton->setNoColorString( tr( "Transparent line" ) );
+  mStrokeColorButton->setNoColorString( tr( "Transparent Line" ) );
   mStrokeColorButton->setShowNoColor( true );
 
   if ( mScalebar )

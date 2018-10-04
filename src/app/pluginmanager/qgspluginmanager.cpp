@@ -181,10 +181,10 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   buttonDeleteRep->setEnabled( false );
 
   // Add context menu to the plugins list view
-  QAction *actionSortByName = new QAction( tr( "sort by name" ), vwPlugins );
-  QAction *actionSortByDownloads = new QAction( tr( "sort by downloads" ), vwPlugins );
-  QAction *actionSortByVote = new QAction( tr( "sort by vote" ), vwPlugins );
-  QAction *actionSortByStatus = new QAction( tr( "sort by status" ), vwPlugins );
+  QAction *actionSortByName = new QAction( tr( "Sort by Name" ), vwPlugins );
+  QAction *actionSortByDownloads = new QAction( tr( "Sort by Downloads" ), vwPlugins );
+  QAction *actionSortByVote = new QAction( tr( "Sort by Vote" ), vwPlugins );
+  QAction *actionSortByStatus = new QAction( tr( "Sort by Status" ), vwPlugins );
   actionSortByName->setCheckable( true );
   actionSortByDownloads->setCheckable( true );
   actionSortByVote->setCheckable( true );
@@ -1071,12 +1071,12 @@ void QgsPluginManager::addToRepositoryList( const QMap<QString, QString> &reposi
   // If it's the second item on the tree, change the button text to plural form and add the filter context menu
   if ( buttonRefreshRepos->isEnabled() && treeRepositories->actions().count() < 1 )
   {
-    buttonRefreshRepos->setText( tr( "Reload all repositories" ) );
-    QAction *actionEnableThisRepositoryOnly = new QAction( tr( "Only show plugins from selected repository" ), treeRepositories );
+    buttonRefreshRepos->setText( tr( "Reload all Repositories" ) );
+    QAction *actionEnableThisRepositoryOnly = new QAction( tr( "Only Show Plugins from Selected Repository" ), treeRepositories );
     treeRepositories->addAction( actionEnableThisRepositoryOnly );
     connect( actionEnableThisRepositoryOnly, &QAction::triggered, this, &QgsPluginManager::setRepositoryFilter );
     treeRepositories->setContextMenuPolicy( Qt::ActionsContextMenu );
-    QAction *actionClearFilter = new QAction( tr( "Clear filter" ), treeRepositories );
+    QAction *actionClearFilter = new QAction( tr( "Clear Filter" ), treeRepositories );
     actionClearFilter->setEnabled( repository.value( QStringLiteral( "inspection_filter" ) ) == QLatin1String( "true" ) );
     treeRepositories->addAction( actionClearFilter );
     connect( actionClearFilter, &QAction::triggered, this, &QgsPluginManager::clearRepositoryFilter );

@@ -115,7 +115,7 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   mBackgroundColorButton->setAllowOpacity( true );
   mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
   mBackgroundColorButton->setShowNoColor( true );
-  mBackgroundColorButton->setNoColorString( tr( "No background" ) );
+  mBackgroundColorButton->setNoColorString( tr( "No Background" ) );
 
   updateGuiElements();
 

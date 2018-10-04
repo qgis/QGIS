@@ -74,7 +74,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   {
     dialog->setContextMenuPolicy( Qt::ActionsContextMenu );
 
-    QAction *a = new QAction( tr( "Run actions" ), dialog );
+    QAction *a = new QAction( tr( "Run Actions" ), dialog );
     a->setEnabled( false );
     dialog->addAction( a );
 
