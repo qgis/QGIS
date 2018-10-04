@@ -33,15 +33,25 @@
 #include "qgsapplication.h"
 #include "qgsoptions.h"
 #include "qgsguiutils.h"
+#include "qgsvectorlayerjoininfo.h"
 
 
 QgsAppScreenShots::QgsAppScreenShots( const QString &saveDirectory )
   : mSaveDirectory( saveDirectory )
 {
-  QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double&key=pk" );
+  QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=fk_polygon:integer&field=my_double:double&key=pk" );
   mLineLayer = new QgsVectorLayer( layerDef, QStringLiteral( "Line Layer" ), QStringLiteral( "memory" ) );
   layerDef = QStringLiteral( "Polygon?crs=epsg:2056&field=pk:integer&field=my_text:string&field=my_integer:integer&field=height:double&key=pk" );
   mPolygonLayer = new QgsVectorLayer( layerDef, QStringLiteral( "Polygon Layer" ), QStringLiteral( "memory" ) );
+
+  QgsVectorLayerJoinInfo join;
+  join.setTargetFieldName( "fk_polygon" );
+  join.setJoinLayer( mPolygonLayer );
+  join.setJoinFieldName( "pk" );
+  join.setUsingMemoryCache( true );
+  join.setEditable( true );
+  join.setCascadedDelete( true );
+  mLineLayer->addJoin( join );
 
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>()
                                         << mLineLayer
@@ -195,8 +205,8 @@ void QgsAppScreenShots::takePicturesOf( Categories categories )
 
   if ( !categories || categories.testFlag( VectorLayerProperties ) )
   {
-    takeVectorLayerProperties();
     takeVectorLayerProperties25DSymbol();
+    takeVectorLayerProperties();
   }
 }
 
@@ -214,6 +224,7 @@ void QgsAppScreenShots::takeVectorLayerProperties()
   QString folder = QLatin1String( "working_with_vector/img/auto_generated/vector_layer_properties" );
   QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mLineLayer, QgisApp::instance() );
   dlg->show();
+  dlg->mJoinTreeWidget->expandAll(); // expand join tree
   // ----------------
   // do all the pages
   for ( int row = 0; row < dlg->mOptionsListWidget->count(); ++row )
