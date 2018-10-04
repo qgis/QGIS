@@ -111,7 +111,8 @@ void QgsFeatureListComboBox::onItemSelected( const QModelIndex &index )
 
 void QgsFeatureListComboBox::onCurrentIndexChanged( int i )
 {
-  mIsCurrentlyEdited = false;
+  if ( !mHasStoredEditState )
+    mIsCurrentlyEdited = false;
   QModelIndex modelIndex = mModel->index( i, 0, QModelIndex() );
   mModel->setExtraIdentifierValue( mModel->data( modelIndex, QgsFeatureFilterModel::IdentifierValueRole ) );
   mLineEdit->setText( mModel->data( modelIndex, QgsFeatureFilterModel::ValueRole ).toString() );
@@ -130,13 +131,19 @@ void QgsFeatureListComboBox::onActivated( QModelIndex modelIndex )
 void QgsFeatureListComboBox::storeLineEditState()
 {
   if ( mIsCurrentlyEdited )
+  {
+    mHasStoredEditState = true;
     mLineEditState.store( mLineEdit );
+  }
 }
 
 void QgsFeatureListComboBox::restoreLineEditState()
 {
   if ( mIsCurrentlyEdited )
+  {
+    mHasStoredEditState = false;
     mLineEditState.restore( mLineEdit );
+  }
 }
 
 int QgsFeatureListComboBox::nullIndex() const

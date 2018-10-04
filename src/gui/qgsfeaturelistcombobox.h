@@ -220,6 +220,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     QgsFilterLineEdit *mLineEdit;
     bool mPopupRequested = false;
     bool mIsCurrentlyEdited = false;
+    bool mHasStoredEditState = false;
     LineEditState mLineEditState;
 };
 
