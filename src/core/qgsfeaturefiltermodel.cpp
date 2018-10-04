@@ -549,8 +549,3 @@ void QgsFeatureFilterModel::setExtraIdentifierValue( const QVariant &extraIdenti
 
   emit extraIdentifierValueChanged();
 }
-
-void QgsFeatureFilterModel::setReloadTimerInterval( int interval )
-{
-  mReloadTimer.setInterval( interval );
-}
