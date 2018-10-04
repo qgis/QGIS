@@ -136,7 +136,7 @@ class OneSideBuffer(GdalAlgorithm):
             other_fields.append(f.name())
 
         if other_fields:
-            other_fields = ', {}'.format(','.join(other_fields))
+            other_fields = ',*'
         else:
             other_fields = ''
 
