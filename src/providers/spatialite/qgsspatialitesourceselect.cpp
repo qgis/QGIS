@@ -583,10 +583,9 @@ void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString &regexp )
   Q_UNUSED( regexp );
 }
 
-void QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+void QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & )
 {
-  Q_UNUSED( deselected )
-  emit enableButtons( !selected.isEmpty() );
+  emit enableButtons( !mTablesTreeView->selectionModel()->selection().isEmpty() );
 }
 
 void QgsSpatiaLiteSourceSelect::showHelp()
