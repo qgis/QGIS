@@ -74,13 +74,13 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         f = next(vl.getFeatures(QgsFeatureRequest()))
 
         date_idx = vl.fields().lookupField('date_field')
-        assert isinstance(f.attributes()[date_idx], QDate)
+        self.assertIsInstance(f.attributes()[date_idx], QDate)
         self.assertEqual(f.attributes()[date_idx], QDate(2004, 3, 4))
         time_idx = vl.fields().lookupField('time_field')
-        assert isinstance(f.attributes()[time_idx], QTime)
+        self.assertIsInstance(f.attributes()[time_idx], QTime)
         self.assertEqual(f.attributes()[time_idx], QTime(13, 41, 52))
         datetime_idx = vl.fields().lookupField('datetime_field')
-        assert isinstance(f.attributes()[datetime_idx], QDateTime)
+        self.assertIsInstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(
             QDate(2004, 3, 4), QTime(13, 41, 52)))
 

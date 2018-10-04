@@ -321,10 +321,28 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
 
     for ( int i = 0; i < mAttributesToFetch.count(); i++ )
     {
-      QVariant v = mQuery->value( i );
+      const QVariant originalValue = mQuery->value( i );
       QgsField fld = mSource->mFields.at( mAttributesToFetch.at( i ) );
+      QVariant v = originalValue;
       if ( v.type() != fld.type() )
-        v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
+        v = QgsVectorDataProvider::convertValue( fld.type(), originalValue.toString() );
+
+      // second chance for time fields -- time fields are not correctly handled by sql server driver on linux (maybe win too?)
+      if ( v.isNull() && fld.type() == QVariant::Time && originalValue.isValid() && originalValue.type() == QVariant::ByteArray )
+      {
+        // time fields can be returned as byte arrays... woot
+        const QByteArray ba = originalValue.toByteArray();
+        if ( ba.length() >= 5 )
+        {
+          const int hours = ba.at( 0 );
+          const int mins = ba.at( 2 );
+          const int seconds = ba.at( 4 );
+          v = QTime( hours, mins, seconds );
+          if ( !v.isValid() ) // can't handle it
+            v = QVariant( QVariant::Time );
+        }
+      }
+
       feature.setAttribute( mAttributesToFetch.at( i ), v );
     }
 
