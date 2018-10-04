@@ -200,6 +200,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     void storeLineEditState();
     void restoreLineEditState();
     void onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>() );
+    void setValueToNull();
 
   private:
     struct LineEditState
