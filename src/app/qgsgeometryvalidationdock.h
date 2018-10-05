@@ -78,7 +78,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     QgsRubberBand *mFeatureRubberband = nullptr;
     QgsRubberBand *mErrorRubberband = nullptr;
     QgsRubberBand *mErrorLocationRubberband = nullptr;
-    QgsVectorLayer *mCurrentLayer;
+    QgsVectorLayer *mCurrentLayer = nullptr;
 };
 
 #endif // QGSGEOMETRYVALIDATIONPANEL_H
