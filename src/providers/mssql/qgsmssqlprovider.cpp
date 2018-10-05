@@ -573,6 +573,11 @@ QString QgsMssqlProvider::storageType() const
 // Returns the minimum value of an attribute
 QVariant QgsMssqlProvider::minimumValue( int index ) const
 {
+  if ( index < 0 || index >= mAttributeFields.count() )
+  {
+    return QVariant();
+  }
+
   // get the field name
   QgsField fld = mAttributeFields.at( index );
   QString sql = QStringLiteral( "select min([%1]) from " )
@@ -605,6 +610,11 @@ QVariant QgsMssqlProvider::minimumValue( int index ) const
 // Returns the maximum value of an attribute
 QVariant QgsMssqlProvider::maximumValue( int index ) const
 {
+  if ( index < 0 || index >= mAttributeFields.count() )
+  {
+    return QVariant();
+  }
+
   // get the field name
   QgsField fld = mAttributeFields.at( index );
   QString sql = QStringLiteral( "select max([%1]) from " )
@@ -637,6 +647,10 @@ QVariant QgsMssqlProvider::maximumValue( int index ) const
 QSet<QVariant> QgsMssqlProvider::uniqueValues( int index, int limit ) const
 {
   QSet<QVariant> uniqueValues;
+  if ( index < 0 || index >= mAttributeFields.count() )
+  {
+    return uniqueValues;
+  }
 
   // get the field name
   QgsField fld = mAttributeFields.at( index );
