@@ -551,6 +551,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) override;
 
+    void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) override;
+
 
   private slots:
 

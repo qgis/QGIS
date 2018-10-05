@@ -223,5 +223,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     bool mDisableRenderTypeComboBoxCurrentIndexChanged = false;
 
     bool mMetadataFilled;
+
+    friend class QgsAppScreenShots;
 };
 #endif

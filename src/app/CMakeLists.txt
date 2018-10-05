@@ -13,6 +13,7 @@ SET(QGIS_APP_SRCS
   qgsappwindowmanager.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
+  qgsappscreenshots.cpp
   qgsjoindialog.cpp
   qgsannotationwidget.cpp
   qgsattributeactiondialog.cpp
@@ -236,6 +237,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsaddattrdialog.h
   qgsalignrasterdialog.h
   qgsappbrowserproviders.h
+  qgsappscreenshots.h
   qgsjoindialog.h
   qgsaddtaborgroup.h
   qgsannotationwidget.h
@@ -540,6 +542,10 @@ ENDIF (POSTGRES_FOUND)
 IF (PROJ_HAS_INFO)
   ADD_DEFINITIONS(-DPROJ_HAS_INFO)
 ENDIF (PROJ_HAS_INFO)
+
+# Test data dir for QgsAppScreenShots
+ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
+
 
 SET(IMAGE_RCCS ../../images/images.qrc)
 

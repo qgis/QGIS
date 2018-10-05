@@ -153,6 +153,8 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
 
   private:
     bool mDockMode;
+
+    friend class QgsAppScreenShots;
 };
 
 

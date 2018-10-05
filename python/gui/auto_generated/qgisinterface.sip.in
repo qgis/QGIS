@@ -600,6 +600,15 @@ status bar (do not use the native Qt statusBar() method).
 .. versionadded:: 3.0
 %End
 
+    virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 );
+%Docstring
+Take screenshots for user documentation
+@param saveDirectory path where the screenshots will be saved
+@param categories an int as a flag value of QgsAppScreenShots.Categories
+
+.. versionadded:: 3.4
+%End
+
   public slots: // TODO: do these functions really need to be slots?
 
 

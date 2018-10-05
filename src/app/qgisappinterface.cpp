@@ -789,3 +789,8 @@ bool QgisAppInterface::askForDatumTransform( QgsCoordinateReferenceSystem source
 {
   return qgis->askUserForDatumTransform( sourceCrs, destinationCrs );
 }
+
+void QgisAppInterface::takeAppScreenShots( const QString &saveDirectory, const int categories )
+{
+  return qgis->takeAppScreenShots( saveDirectory, categories );
+}
