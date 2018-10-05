@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "vertextool/qgsvertexentry.h"
+#include "qgsmaplayer.h"
+#include "qgsmapcanvas.h"
 
 QgsVertexEntry::QgsVertexEntry( QgsMapCanvas *canvas, QgsMapLayer *layer, const QgsPoint &p, QgsVertexId vertexId, const QString &tooltip, QgsVertexMarker::IconType type, int penWidth )
   : mSelected( false )

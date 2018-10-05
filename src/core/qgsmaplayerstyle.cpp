@@ -16,6 +16,8 @@
 #include "qgsmaplayerstyle.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsreadwritecontext.h"
+#include "qgsmaplayer.h"
+
 
 #include "qgslogger.h"
 

@@ -20,7 +20,7 @@
 
 #include <QList>
 
-#include "qgsmaplayer.h"
+class QgsMapLayer;
 
 /**
  * \ingroup server

@@ -40,7 +40,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsprojectproperty.h"
-#include "qgsmaplayer.h"
 #include "qgsmaplayerstore.h"
 #include "qgsarchive.h"
 #include "qgsreadwritecontext.h"
@@ -70,6 +69,7 @@ class QgsLayoutManager;
 class QgsLayerTree;
 class QgsLabelingEngineSettings;
 class QgsAuxiliaryStorage;
+class QgsMapLayer;
 
 /**
  * \ingroup core

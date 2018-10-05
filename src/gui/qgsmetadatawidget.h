@@ -23,9 +23,10 @@
 #include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdataprovider.h"
-#include "qgsmaplayer.h"
 #include "qgslayermetadata.h"
 #include "ui_qgsmetadatawidget.h"
+
+class QgsMapLayer;
 
 /**
  * \ingroup gui
