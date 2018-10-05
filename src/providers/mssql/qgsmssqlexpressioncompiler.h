@@ -31,6 +31,7 @@ class QgsMssqlExpressionCompiler : public QgsSqlExpressionCompiler
     QString quotedValue( const QVariant &value, bool &ok ) override;
     QString castToReal( const QString &value ) const override;
     QString castToInt( const QString &value ) const override;
+    QString sqlFunctionFromFunctionName( const QString &fnName ) const override;
 
 };
 
