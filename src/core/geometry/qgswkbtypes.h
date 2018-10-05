@@ -18,11 +18,11 @@
 #ifndef QGSWKBTYPES_H
 #define QGSWKBTYPES_H
 
+#include <QObject>
 #include <QMap>
 #include <QString>
 
 #include "qgis_core.h"
-#include "qgis.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -39,6 +39,7 @@
 
 class CORE_EXPORT QgsWkbTypes
 {
+    Q_GADGET
   public:
 
     /**
@@ -142,6 +143,7 @@ class CORE_EXPORT QgsWkbTypes
       UnknownGeometry,
       NullGeometry
     };
+    Q_ENUM( GeometryType )
 
     /**
      * Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.

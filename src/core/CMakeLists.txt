@@ -700,6 +700,7 @@ SET(QGIS_CORE_MOC_HDRS
   geometry/qgsabstractgeometry.h
   geometry/qgsgeometry.h
   geometry/qgspoint.h
+  geometry/qgswkbtypes.h
 
   geocms/geonode/qgsgeonoderequest.h
 
@@ -1160,7 +1161,6 @@ SET(QGIS_CORE_HDRS
   geometry/qgstriangle.h
   geometry/qgssurface.h
   geometry/qgswkbptr.h
-  geometry/qgswkbtypes.h
 
   3d/qgs3drendererregistry.h
   3d/qgsabstract3drenderer.h

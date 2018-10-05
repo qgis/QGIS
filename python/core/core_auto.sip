@@ -295,7 +295,6 @@
 %Include auto_generated/geometry/qgstriangle.sip
 %Include auto_generated/geometry/qgssurface.sip
 %Include auto_generated/geometry/qgswkbptr.sip
-%Include auto_generated/geometry/qgswkbtypes.sip
 %Include auto_generated/./3d/qgs3drendererregistry.sip
 %Include auto_generated/./3d/qgsabstract3drenderer.sip
 %Include auto_generated/fieldformatter/qgsrangefieldformatter.sip
@@ -396,6 +395,7 @@
 %Include auto_generated/geometry/qgsabstractgeometry.sip
 %Include auto_generated/geometry/qgsgeometry.sip
 %Include auto_generated/geometry/qgspoint.sip
+%Include auto_generated/geometry/qgswkbtypes.sip
 %Include auto_generated/geocms/geonode/qgsgeonoderequest.sip
 %Include auto_generated/gps/qgsgpsconnection.sip
 %Include auto_generated/gps/qgsgpsdetector.sip
