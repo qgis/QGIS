@@ -18,13 +18,13 @@
 
 #include "ui_qgsexpressionselectiondialogbase.h"
 #include "qgis.h"
-
-#include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
 #include "qgshelp.h"
 
 #include <QDialog>
 #include "qgis_gui.h"
+
+class QgsMapCanvas;
 
 /**
  * \ingroup gui

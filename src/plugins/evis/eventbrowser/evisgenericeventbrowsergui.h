@@ -32,13 +32,14 @@
 
 #include "qgsmaptool.h"
 #include "qgsfeature.h"
-#include "qgsmapcanvas.h"
 #include "qgisinterface.h"
 #include "qgsvectordataprovider.h"
 
 #include "evisconfiguration.h"
 
 #include "ui_evisgenericeventbrowserguibase.h"
+
+class QgsMapCanvas;
 
 /**
 * \class eVisGenericEventBrowserGui

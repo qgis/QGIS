@@ -38,6 +38,7 @@
 #include "qgssettings.h"
 #include "qgsstatusbar.h"
 #include "gmath.h"
+#include "qgsmapcanvas.h"
 
 // QWT Charting widget
 

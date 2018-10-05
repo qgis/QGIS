@@ -28,6 +28,7 @@
 #include "qgsmaprenderertask.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgsmapcanvas.h"
 
 #include <QClipboard>
 #include <QCheckBox>
