@@ -62,7 +62,7 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
   mDbStyleUIFileWidget->setDefaultRoot( myLastUsedDir );
   mDbStyleUIFileWidget->setFilter( tr( "Qt Designer UI file (*.ui)" ) );
   connect( mDbStyleUIFileWidget, &QgsFileWidget::fileChanged, this, &QgsVectorLayerSaveStyleDialog::readUiFileContent );
-  connect( mHelpButton, &QPushButton::clicked, this, &QgsVectorLayerSaveStyleDialog::showDbHelp );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerSaveStyleDialog::showHelp );
 
   // save to file setup
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsVectorLayerSaveStyleDialog::updateSaveButtonState );
@@ -154,7 +154,7 @@ void QgsVectorLayerSaveStyleDialog::readUiFileContent( const QString &filePath )
   }
 }
 
-void QgsVectorLayerSaveStyleDialog::showDbHelp()
+void QgsVectorLayerSaveStyleDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#save-and-share-layer-properties" ) );
 }

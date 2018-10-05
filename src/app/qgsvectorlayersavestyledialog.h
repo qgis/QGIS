@@ -53,7 +53,7 @@ class QgsVectorLayerSaveStyleDialog : public QDialog, private Ui::QgsVectorLayer
 
   private slots:
     void updateSaveButtonState();
-    void showDbHelp();
+    void showHelp();
     void readUiFileContent( const QString &filePath );
 
   private:
