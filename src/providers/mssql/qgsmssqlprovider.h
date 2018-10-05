@@ -67,6 +67,9 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
     QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
+    QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
+                                       QgsFeedback *feedback = nullptr ) const override;
+
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
 
     QgsWkbTypes::Type wkbType() const override;
