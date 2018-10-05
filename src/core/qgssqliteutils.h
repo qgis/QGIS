@@ -141,6 +141,7 @@ class CORE_EXPORT sqlite3_database_unique_ptr : public std::unique_ptr< sqlite3,
 /**
  * Contains utilities for working with Sqlite data sources.
  * \note not available in Python bindings
+ * \ingroup core
  * \since QGIS 3.4
  */
 class CORE_EXPORT QgsSqliteUtils
