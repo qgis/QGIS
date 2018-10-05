@@ -81,8 +81,10 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.buttonBox().addButton(self.runAsBatchButton, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
         else:
             self.runAsBatchButton = None
-            self.buttonBox().button(QDialogButtonBox.Ok).setText('Modify Selected Features')
-            self.buttonBox().button(QDialogButtonBox.Close).setText('Cancel')
+            has_selection = iface.activeLayer() and (iface.activeLayer().selectedFeatureCount() > 0)
+            self.buttonBox().button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("AlgorithmDialog", "Modify Selected Features")
+                                                                 if has_selection else QCoreApplication.translate("AlgorithmDialog", "Modify All Features"))
+            self.buttonBox().button(QDialogButtonBox.Close).setText(QCoreApplication.translate("AlgorithmDialog", "Cancel"))
 
     def getParametersPanel(self, alg, parent):
         return ParametersPanel(parent, alg, self.in_place)
