@@ -1981,6 +1981,15 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       {
         ellps = ellipseRegExp.cap( 1 );
       }
+      else
+      {
+        // satisfy not null constraint on ellipsoid_acronym field
+        // possibly we should drop the constraint, yet the crses with missing ellipsoid_acronym are malformed
+        // and will result in oddities within other areas of QGIS (e.g. project ellipsoid won't be correctly
+        // set for these CRSes). Better just hack around and make the constraint happy for now,
+        // and hope that the definitions get corrected in future.
+        ellps = "";
+      }
 
       sql = QStringLiteral( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) VALUES (%1,%2,%3,%4,%5,'EPSG',%5,%6,%7)" )
             .arg( QgsSqliteUtils::quotedString( name ),
