@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
+#include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"

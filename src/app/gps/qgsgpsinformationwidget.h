@@ -21,7 +21,6 @@
 
 #include "gmath.h"
 #include "info.h"
-#include "qgsmapcanvas.h"
 #include "qgsgpsmarker.h"
 #include "qgsmaptoolcapture.h"
 #include <qwt_plot_curve.h>
@@ -35,6 +34,7 @@ class QextSerialPort;
 class QgsGpsConnection;
 class QgsGpsTrackerThread;
 struct QgsGpsInformation;
+class QgsMapCanvas;
 
 class QFile;
 class QColor;
