@@ -530,7 +530,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Take screenshots for user documentation
-     * @param saveDirectory path were the screenshots will be saved
+     * @param saveDirectory path where the screenshots will be saved
      * @param categories an int as a flag value of QgsAppScreenShots::Categories
      * \since QGIS 3.4
      */
