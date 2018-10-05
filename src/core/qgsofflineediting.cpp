@@ -257,6 +257,11 @@ void QgsOfflineEditing::synchronize()
       updateMapThemes( offlineLayer, remoteLayer );
       updateLayerOrder( offlineLayer, remoteLayer );
 
+      // remove properties from t
+      remoteLayer->removeCustomProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE );
+      remoteLayer->removeCustomProperty( CUSTOM_PROPERTY_REMOTE_SOURCE );
+      remoteLayer->removeCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER );
+
       // apply layer edit log
       QString qgisLayerId = layer->id();
       QString sql = QStringLiteral( "SELECT \"id\" FROM 'log_layer_ids' WHERE \"qgis_id\" = '%1'" ).arg( qgisLayerId );
@@ -736,6 +741,13 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       showWarning( newLayer->commitErrors().join( QStringLiteral( "\n" ) ) );
     }
 
+    // register this layer with the central layers registry
+    QgsProject::instance()->addMapLayers(
+      QList<QgsMapLayer *>() << newLayer );
+
+    // copy style
+    copySymbology( layer, newLayer );
+
     // mark as offline layer
     newLayer->setCustomProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE, true );
 
@@ -743,12 +755,6 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
     newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_SOURCE, layer->source() );
     newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, layer->providerType() );
 
-    // register this layer with the central layers registry
-    QgsProject::instance()->addMapLayers(
-      QList<QgsMapLayer *>() << newLayer );
-
-    // copy style
-    copySymbology( layer, newLayer );
 
     QgsLayerTreeGroup *layerTreeRoot = QgsProject::instance()->layerTreeRoot();
     // Find the parent group of the original layer
@@ -969,12 +975,11 @@ void QgsOfflineEditing::copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLay
   QString error;
   QDomDocument doc;
   QgsReadWriteContext context;
-  QgsMapLayer::StyleCategories categories = static_cast<QgsMapLayer::StyleCategories>( QgsMapLayer::AllStyleCategories ) & ~QgsMapLayer::CustomProperties;
-  sourceLayer->exportNamedStyle( doc, error, context, categories );
+  sourceLayer->exportNamedStyle( doc, error, context );
 
   if ( error.isEmpty() )
   {
-    targetLayer->importNamedStyle( doc, error, categories );
+    targetLayer->importNamedStyle( doc, error );
   }
   if ( !error.isEmpty() )
   {
