@@ -18,7 +18,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsmaplayer.h"
 #include "qgsmaplayerstyle.h"
 
 #include <QByteArray>
@@ -28,6 +27,8 @@
 
 
 class QDomElement;
+
+class QgsMapLayer;
 
 /**
  * \ingroup core
