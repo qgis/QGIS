@@ -309,8 +309,8 @@ class ProviderTestCase(FeatureSourceTestCase):
         assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
 
     def testMinValue(self):
-        self.assertIsNone(self.source.minimumValue(-1))
-        self.assertIsNone(self.source.minimumValue(1000))
+        self.assertFalse(self.source.minimumValue(-1))
+        self.assertFalse(self.source.minimumValue(1000))
 
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('cnt')), -200)
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('name')), 'Apple')
@@ -323,8 +323,8 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertEqual(min_value, 200)
 
     def testMaxValue(self):
-        self.assertIsNone(self.source.maximumValue(-1))
-        self.assertIsNone(self.source.maximumValue(1000))
+        self.assertFalse(self.source.maximumValue(-1))
+        self.assertFalse(self.source.maximumValue(1000))
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('cnt')), 400)
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('name')), 'Pear')
 
