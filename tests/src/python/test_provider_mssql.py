@@ -20,7 +20,7 @@ from qgis.core import (QgsSettings,
                        QgsVectorLayer,
                        QgsFeatureRequest,
                        QgsFeature,
-                       QgsFields,
+                       QgsWkbTypes,
                        QgsField,
                        QgsGeometry,
                        QgsPointXY,
@@ -197,6 +197,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
 
         new_layer = QgsVectorLayer(uri, 'new', 'mssql')
         self.assertTrue(new_layer.isValid())
+        self.assertEqual(new_layer.wkbType(), QgsWkbTypes.Point)
         self.assertEqual([f.name() for f in new_layer.fields()], ['qgs_fid', 'id', 'fldtxt', 'fldint'])
 
         features = [f.attributes() for f in new_layer.getFeatures()]
@@ -208,7 +209,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(geom, ['Point (1 2)', '', 'Point (3 2)', 'Point (4 3)'])
 
     def testCreateLayerMultiPoint(self):
-        layer = QgsVectorLayer("MultiPoint?field=id:integer&field=fldtxt:string&field=fldint:integer",
+        layer = QgsVectorLayer("MultiPoint?crs=epsg:3111&field=id:integer&field=fldtxt:string&field=fldint:integer",
                                "addfeat", "memory")
         pr = layer.dataProvider()
         f = QgsFeature()
@@ -222,11 +223,13 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         pr.addFeatures([f, f2, f3])
 
         uri = '{} table="qgis_test"."new_table_multipoint" sql='.format(self.dbconn)
-        error, message = QgsVectorLayerExporter.exportLayer(layer, uri, 'mssql', QgsCoordinateReferenceSystem('EPSG:4326'))
+        error, message = QgsVectorLayerExporter.exportLayer(layer, uri, 'mssql', QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(error, QgsVectorLayerExporter.NoError)
 
         new_layer = QgsVectorLayer(uri, 'new', 'mssql')
         self.assertTrue(new_layer.isValid())
+        self.assertEqual(new_layer.wkbType(), QgsWkbTypes.MultiPoint)
+        self.assertEqual(new_layer.crs().authid(), 'EPSG:3111')
         self.assertEqual([f.name() for f in new_layer.fields()], ['qgs_fid', 'id', 'fldtxt', 'fldint'])
 
         features = [f.attributes() for f in new_layer.getFeatures()]
@@ -235,6 +238,34 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
                                     [3, 3, 'test2', NULL]])
         geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
         self.assertEqual(geom, ['MultiPoint ((1 2),(3 4))', '', 'MultiPoint ((7 8))'])
+
+    def testInsertPolygonInMultiPolygon(self):
+        layer = QgsVectorLayer("MultiPolygon?crs=epsg:4326&field=id:integer", "addfeat", "memory")
+        pr = layer.dataProvider()
+        f = QgsFeature()
+        f.setAttributes([1])
+        f.setGeometry(QgsGeometry.fromWkt('MultiPolygon(((0 0, 1 0, 1 1, 0 1, 0 0)),((10 0, 11 0, 11 1, 10 1, 10 0)))'))
+        pr.addFeatures([f])
+
+        uri = '{} table="qgis_test"."new_table_multipolygon" sql='.format(self.dbconn)
+        error, message = QgsVectorLayerExporter.exportLayer(layer, uri, 'mssql', QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(error, QgsVectorLayerExporter.NoError)
+
+        new_layer = QgsVectorLayer(uri, 'new', 'mssql')
+        self.assertTrue(new_layer.isValid())
+        self.assertEqual(new_layer.wkbType(), QgsWkbTypes.MultiPolygon)
+        geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
+        self.assertEqual(geom, ['MultiPolygon (((0 0, 1 0, 1 1, 0 1, 0 0)),((10 0, 11 0, 11 1, 10 1, 10 0)))'])
+
+        # add single part
+        f2 = QgsFeature()
+        f2.setAttributes([2])
+        f2.setGeometry(QgsGeometry.fromWkt('Polygon((30 0, 31 0, 31 1, 30 1, 30 0))'))
+        self.assertTrue(new_layer.dataProvider().addFeatures([f2]))
+
+        # should become multipart
+        geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
+        self.assertEqual(geom, ['MultiPolygon (((0 0, 1 0, 1 1, 0 1, 0 0)),((10 0, 11 0, 11 1, 10 1, 10 0)))', 'MultiPolygon (((30 0, 31 0, 31 1, 30 1, 30 0)))'])
 
 
 if __name__ == '__main__':
