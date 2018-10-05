@@ -99,6 +99,8 @@ QPixmap QgsAppScreenShots::takeScreenshot( QWidget *widget, GrabMode mode, QRect
     }
   }
 
+  pixmap.setDevicePixelRatio( scr->devicePixelRatio() );
+
   if ( !crop.isNull() )
   {
     qreal dpr = scr->devicePixelRatio();
