@@ -26,7 +26,6 @@
 #include "qgsfeedback.h"
 #include "qgsvectorlayerutils.h"
 #include "qgstaskmanager.h"
-#include "qgsvectorlayer.h"
 
 #include "qgis_app.h"
 
@@ -37,7 +36,7 @@ class QgsDockBrowserTreeView;
 class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserTreeFilterProxyModel;
-
+class QgsVectorLayer;
 
 /**
  * \class QgsStatisticsValueGatherer
