@@ -690,6 +690,56 @@ QSet<QVariant> QgsMssqlProvider::uniqueValues( int index, int limit ) const
   return uniqueValues;
 }
 
+QStringList QgsMssqlProvider::uniqueStringsMatching( int index, const QString &substring, int limit, QgsFeedback *feedback ) const
+{
+  QStringList results;
+
+  if ( index < 0 || index >= mAttributeFields.count() )
+  {
+    return results;
+  }
+
+  // get the field name
+  QgsField fld = mAttributeFields.at( index );
+  QString sql = QStringLiteral( "select distinct " );
+
+  if ( limit > 0 )
+  {
+    sql += QStringLiteral( " top %1 " ).arg( limit );
+  }
+
+  sql += QStringLiteral( "[%1] from " )
+         .arg( fld.name() );
+
+  sql += QStringLiteral( "[%1].[%2] WHERE" ).arg( mSchemaName, mTableName );
+
+  if ( !mSqlWhereClause.isEmpty() )
+  {
+    sql += QStringLiteral( " (%1) AND" ).arg( mSqlWhereClause );
+  }
+
+  sql += QStringLiteral( " [%1] LIKE '%%2%'" ).arg( fld.name(), substring );
+
+  QSqlQuery query = createQuery();
+  query.setForwardOnly( true );
+
+  if ( !query.exec( sql ) )
+  {
+    QgsDebugMsg( query.lastError().text() );
+  }
+
+  if ( query.isActive() )
+  {
+    // read all features
+    while ( query.next() )
+    {
+      results << query.value( 0 ).toString();
+      if ( feedback && feedback->isCanceled() )
+        break;
+    }
+  }
+  return results;
+}
 
 // update the extent, wkb type and srid for this layer
 void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
