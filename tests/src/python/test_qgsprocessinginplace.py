@@ -349,8 +349,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         alg = self.registry.createAlgorithmById(alg_name)
 
         self.assertIsNotNone(alg)
-        parameters['INPUT'] = QgsProcessingFeatureSourceDefinition(
-            input_layer.id(), True)
+        parameters['INPUT'] = input_layer
         parameters['OUTPUT'] = 'memory:'
 
         old_features = [f for f in input_layer.getFeatures()]
@@ -363,14 +362,9 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         feedback = ConsoleFeedBack()
 
         input_layer.rollBack()
-        with self.assertRaises(QgsProcessingException) as cm:
-            execute_in_place_run(
-                alg, input_layer, parameters, context=context, feedback=feedback, raise_exceptions=True)
-
         ok = False
-        input_layer.startEditing()
         ok, _ = execute_in_place_run(
-            alg, input_layer, parameters, context=context, feedback=feedback, raise_exceptions=True)
+            alg, parameters, context=context, feedback=feedback, raise_exceptions=True)
         new_features = [f for f in input_layer.getFeatures()]
 
         # Check ret values
@@ -438,6 +432,39 @@ class TestQgsProcessingInPlace(unittest.TestCase):
                 'DELTA_Z': 1.1,
             }
         )
+
+    def test_select_all_features(self):
+        """Check that if there is no selection, the alg will run on all features"""
+
+        self.vl.rollBack()
+        self.vl.removeSelection()
+        old_count = self.vl.featureCount()
+
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+        feedback = ConsoleFeedBack()
+
+        alg = self.registry.createAlgorithmById('native:translategeometry')
+
+        self.assertIsNotNone(alg)
+
+        parameters = {
+            'DELTA_X': 1.1,
+            'DELTA_Y': 1.1,
+        }
+        parameters['INPUT'] = self.vl
+        parameters['OUTPUT'] = 'memory:'
+
+        old_features = [f for f in self.vl.getFeatures()]
+
+        ok, _ = execute_in_place_run(
+            alg, parameters, context=context, feedback=feedback, raise_exceptions=True)
+        new_features = [f for f in self.vl.getFeatures()]
+
+        self.assertEqual(len(new_features), old_count)
+
+        # Check all are selected
+        self.assertEqual(len(self.vl.selectedFeatureIds()), old_count)
 
     def test_multi_to_single(self):
         """Check that the geometry type is still multi after the alg is run"""
