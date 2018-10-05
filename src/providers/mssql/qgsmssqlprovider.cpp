@@ -1073,6 +1073,10 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     if ( !mGeometryColName.isEmpty() )
     {
       QgsGeometry geom = it->geometry();
+      if ( QgsWkbTypes::isMultiType( mWkbType ) && !geom.isMultipart() )
+      {
+        geom.convertToMultiType();
+      }
       if ( mUseWkb )
       {
         QByteArray bytea = geom.asWkb();
