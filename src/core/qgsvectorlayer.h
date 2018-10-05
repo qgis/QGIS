@@ -2024,9 +2024,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * When calling \see commitChanges(), this flag is checked just after the
      * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
      *
+     * \note Not available in Python bindings
+     *
      * \since QGIS 3.4
      */
-    bool allowCommit() const;
+    bool allowCommit() const SIP_SKIP;
 
     /**
      * Controls, if the layer is allowed to commit changes. If this is set to false
@@ -2042,9 +2044,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * When calling \see commitChanges(), this flag is checked just after the
      * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
      *
+     * \note Not available in Python bindings
+     *
      * \since QGIS 3.4
      */
-    void setAllowCommit( bool allowCommit );
+    void setAllowCommit( bool allowCommit ) SIP_SKIP;
 
   public slots:
 

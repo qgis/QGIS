@@ -2239,43 +2239,7 @@ Configuration and logic to apply automatically on any edit happening on this lay
 .. versionadded:: 3.4
 %End
 
-    bool allowCommit() const;
-%Docstring
-Controls, if the layer is allowed to commit changes. If this is set to false
-it will not be possible to commit changes on this layer. This can be used to
-define checks on a layer that need to be pass before the layer can be saved.
-If you use this API, make sure that:
 
-- the user is visibly informed that his changes were not saved and what he needs
-to do in order to be able to save the changes.
-
-- to set the property back to true, once the user has fixed his data.
-
-When calling :py:func:`commitChanges`, this flag is checked just after the
-
-.. seealso:: :py:func:`beforeCommitChanges`
-
-.. versionadded:: 3.4
-%End
-
-    void setAllowCommit( bool allowCommit );
-%Docstring
-Controls, if the layer is allowed to commit changes. If this is set to false
-it will not be possible to commit changes on this layer. This can be used to
-define checks on a layer that need to be pass before the layer can be saved.
-If you use this API, make sure that:
-
-- the user is visibly informed that his changes were not saved and what he needs
-to do in order to be able to save the changes.
-
-- to set the property back to true, once the user has fixed his data.
-
-When calling :py:func:`commitChanges`, this flag is checked just after the
-
-.. seealso:: :py:func:`beforeCommitChanges`
-
-.. versionadded:: 3.4
-%End
 
   public slots:
 
