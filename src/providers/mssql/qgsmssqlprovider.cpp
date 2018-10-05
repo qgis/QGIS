@@ -1710,10 +1710,8 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
   if ( wkbType != QgsWkbTypes::NoGeometry && geometryColumn.isEmpty() )
     geometryColumn = QStringLiteral( "geom" );
 
-  if ( primaryKey.isEmpty() )
-    primaryKey = QStringLiteral( "qgs_fid" );
-
   // get the pk's name and type
+  bool createdNewPk = false;
 
   // if no pk name was passed, define the new pk field name
   if ( primaryKey.isEmpty() )
@@ -1729,6 +1727,7 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
         i = 0;
       }
     }
+    createdNewPk = true;
   }
   else
   {
@@ -1879,7 +1878,8 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
 
   if ( fields.size() > 0 )
   {
-    int offset = 0;
+    // if we had to create a primary key column, we start the old columns from 1
+    int offset = createdNewPk ? 1 : 0;
 
     // get the list of fields
     QList<QgsField> flist;
