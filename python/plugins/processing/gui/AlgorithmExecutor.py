@@ -41,7 +41,8 @@ from qgis.core import (Qgis,
                        QgsExpression,
                        QgsWkbTypes,
                        QgsGeometry,
-                       QgsVectorLayerUtils)
+                       QgsVectorLayerUtils,
+                       QgsVectorLayer)
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 from qgis.utils import iface
@@ -70,13 +71,11 @@ def execute(alg, parameters, context=None, feedback=None):
         return False, {}
 
 
-def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=None, raise_exceptions=False):
+def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exceptions=False):
     """Executes an algorithm modifying features in-place in the input layer.
 
     :param alg: algorithm to run
     :type alg: QgsProcessingAlgorithm
-    :param active_layer: the editable layer
-    :type active_layer: QgsVectoLayer
     :param parameters: parameters of the algorithm
     :type parameters: dict
     :param context: context, defaults to None
@@ -95,6 +94,8 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
     if context is None:
         context = dataobjects.createContext(feedback)
 
+    active_layer = parameters['INPUT']
+
     # Run some checks and prepare the layer for in-place execution by:
     # - getting the active layer and checking that it is a vector
     # - making the layer editable if it was not already
@@ -106,6 +107,9 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
     try:
         if active_layer is None:
             raise QgsProcessingException(tr("There is not active layer."))
+
+        if not isinstance(active_layer, QgsVectorLayer):
+            raise QgsProcessingException(tr("Active layer is not a vector layer."))
 
         if not active_layer.isEditable():
             if not active_layer.startEditing():
@@ -150,7 +154,7 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
             if not alg.supportInPlaceEdit(active_layer):
                 raise QgsProcessingException(tr("Selected algorithm and parameter configuration are not compatible with in-place modifications."))
             field_idxs = range(len(active_layer.fields()))
-            feature_iterator = active_layer.getFeatures(QgsFeatureRequest(active_layer.selectedFeatureIds())) if parameters['INPUT'].selectedFeaturesOnly else active_layer.getFeatures()
+            feature_iterator = active_layer.getFeatures(QgsFeatureRequest(active_layer.selectedFeatureIds()))
             step = 100 / len(active_layer.selectedFeatureIds()) if active_layer.selectedFeatureIds() else 1
             for current, f in enumerate(feature_iterator):
                 feedback.setProgress(current * step)
@@ -223,7 +227,9 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
 
 
 def execute_in_place(alg, parameters, context=None, feedback=None):
-    """Executes an algorithm modifying features in-place in the active layer.
+    """Executes an algorithm modifying features in-place, if the INPUT
+    parameter is not defined, the current active layer will be used as
+    INPUT.
 
     :param alg: algorithm to run
     :type alg: QgsProcessingAlgorithm
@@ -238,10 +244,11 @@ def execute_in_place(alg, parameters, context=None, feedback=None):
     :rtype: tuple
     """
 
-    parameters['INPUT'] = QgsProcessingFeatureSourceDefinition(iface.activeLayer().id(), True)
-    ok, results = execute_in_place_run(alg, iface.activeLayer(), parameters, context=context, feedback=feedback)
+    if not 'INPUT' in parameters or not parameters['INPUT']:
+        parameters['INPUT'] = iface.activeLayer()
+    ok, results = execute_in_place_run(alg, parameters, context=context, feedback=feedback)
     if ok:
-        iface.activeLayer().triggerRepaint()
+        parameters['INPUT'].triggerRepaint()
     return ok, results
 
 

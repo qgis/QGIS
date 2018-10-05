@@ -349,8 +349,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         alg = self.registry.createAlgorithmById(alg_name)
 
         self.assertIsNotNone(alg)
-        parameters['INPUT'] = QgsProcessingFeatureSourceDefinition(
-            input_layer.id(), True)
+        parameters['INPUT'] = input_layer
         parameters['OUTPUT'] = 'memory:'
 
         old_features = [f for f in input_layer.getFeatures()]
@@ -365,7 +364,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         input_layer.rollBack()
         ok = False
         ok, _ = execute_in_place_run(
-            alg, input_layer, parameters, context=context, feedback=feedback, raise_exceptions=True)
+            alg, parameters, context=context, feedback=feedback, raise_exceptions=True)
         new_features = [f for f in input_layer.getFeatures()]
 
         # Check ret values
@@ -453,14 +452,13 @@ class TestQgsProcessingInPlace(unittest.TestCase):
             'DELTA_X': 1.1,
             'DELTA_Y': 1.1,
         }
-        parameters['INPUT'] = QgsProcessingFeatureSourceDefinition(
-            self.vl.id(), True)
+        parameters['INPUT'] = self.vl
         parameters['OUTPUT'] = 'memory:'
 
         old_features = [f for f in self.vl.getFeatures()]
 
         ok, _ = execute_in_place_run(
-            alg, self.vl, parameters, context=context, feedback=feedback, raise_exceptions=True)
+            alg, parameters, context=context, feedback=feedback, raise_exceptions=True)
         new_features = [f for f in self.vl.getFeatures()]
 
         self.assertEqual(len(new_features), old_count)

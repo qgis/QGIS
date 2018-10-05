@@ -71,6 +71,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         self.feedback_dialog = None
         self.in_place = in_place
+        self.active_layer = iface.activeLayer()
 
         self.setAlgorithm(alg)
         self.setMainWidget(self.getParametersPanel(alg, self))
@@ -81,10 +82,11 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.buttonBox().addButton(self.runAsBatchButton, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
         else:
             self.runAsBatchButton = None
-            has_selection = iface.activeLayer() and (iface.activeLayer().selectedFeatureCount() > 0)
+            has_selection = self.active_layer and (self.active_layer.selectedFeatureCount() > 0)
             self.buttonBox().button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("AlgorithmDialog", "Modify Selected Features")
                                                                  if has_selection else QCoreApplication.translate("AlgorithmDialog", "Modify All Features"))
             self.buttonBox().button(QDialogButtonBox.Close).setText(QCoreApplication.translate("AlgorithmDialog", "Cancel"))
+            self.setWindowTitle(self.windowTitle() + ' | ' + self.active_layer.name())
 
     def getParametersPanel(self, alg, parent):
         return ParametersPanel(parent, alg, self.in_place)
@@ -110,7 +112,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             if not param.isDestination():
 
                 if self.in_place and param.name() == 'INPUT':
-                    parameters[param.name()] = iface.activeLayer()
+                    parameters[param.name()] = self.active_layer
                     continue
 
                 try:
