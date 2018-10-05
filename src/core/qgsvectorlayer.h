@@ -2010,6 +2010,46 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     QgsGeometryOptions *geometryOptions() const;
 
+    /**
+     * Controls, if the layer is allowed to commit changes. If this is set to false
+     * it will not be possible to commit changes on this layer. This can be used to
+     * define checks on a layer that need to be pass before the layer can be saved.
+     * If you use this API, make sure that:
+     *
+     *  - the user is visibly informed that his changes were not saved and what he needs
+     *    to do in order to be able to save the changes.
+     *
+     *  - to set the property back to true, once the user has fixed his data.
+     *
+     * When calling \see commitChanges(), this flag is checked just after the
+     * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.4
+     */
+    bool allowCommit() const SIP_SKIP;
+
+    /**
+     * Controls, if the layer is allowed to commit changes. If this is set to false
+     * it will not be possible to commit changes on this layer. This can be used to
+     * define checks on a layer that need to be pass before the layer can be saved.
+     * If you use this API, make sure that:
+     *
+     *  - the user is visibly informed that his changes were not saved and what he needs
+     *    to do in order to be able to save the changes.
+     *
+     *  - to set the property back to true, once the user has fixed his data.
+     *
+     * When calling \see commitChanges(), this flag is checked just after the
+     * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.4
+     */
+    void setAllowCommit( bool allowCommit ) SIP_SKIP;
+
   public slots:
 
     /**
@@ -2101,6 +2141,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! This signal is emitted when modifications has been done on layer
     void layerModified();
+
+    /**
+     * Emitted whenever the allowCommitChanged() property of this layer changes.
+     *
+     * \since QGIS 3.4
+     */
+    void allowCommitChanged();
 
     //! Is emitted, when layer is checked for modifications. Use for last-minute additions
     void beforeModifiedCheck() const;
@@ -2501,6 +2548,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsVectorLayerFeatureCounter *mFeatureCounter = nullptr;
 
     std::unique_ptr<QgsGeometryOptions> mGeometryOptions;
+
+    bool mAllowCommit = true;
 
     friend class QgsVectorLayerFeatureSource;
 };

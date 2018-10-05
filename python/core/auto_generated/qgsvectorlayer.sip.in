@@ -2239,6 +2239,8 @@ Configuration and logic to apply automatically on any edit happening on this lay
 .. versionadded:: 3.4
 %End
 
+
+
   public slots:
 
     void select( QgsFeatureId featureId );
@@ -2332,6 +2334,13 @@ This signal is emitted when selection was changed
     void layerModified();
 %Docstring
 This signal is emitted when modifications has been done on layer
+%End
+
+    void allowCommitChanged();
+%Docstring
+Emitted whenever the allowCommitChanged() property of this layer changes.
+
+.. versionadded:: 3.4
 %End
 
     void beforeModifiedCheck() const;
