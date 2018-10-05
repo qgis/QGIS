@@ -16,7 +16,17 @@ import qgis  # NOQA
 
 import os
 
-from qgis.core import QgsSettings, QgsVectorLayer, QgsFeatureRequest
+from qgis.core import (QgsSettings,
+                       QgsVectorLayer,
+                       QgsFeatureRequest,
+                       QgsFeature,
+                       QgsFields,
+                       QgsField,
+                       QgsGeometry,
+                       QgsPointXY,
+                       NULL,
+                       QgsVectorLayerExporter,
+                       QgsCoordinateReferenceSystem)
 
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
 
@@ -163,6 +173,68 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertIsInstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(
             QDate(2004, 3, 4), QTime(13, 41, 52)))
+
+    def testCreateLayer(self):
+        layer = QgsVectorLayer("Point?field=id:integer&field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+        pr = layer.dataProvider()
+        f = QgsFeature()
+        f.setAttributes([1, "test", 1])
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
+        f2 = QgsFeature()
+        f2.setAttributes([2, "test2", 3])
+        f3 = QgsFeature()
+        f3.setAttributes([3, "test2", NULL])
+        f3.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(3, 2)))
+        f4 = QgsFeature()
+        f4.setAttributes([4, NULL, 3])
+        f4.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(4, 3)))
+        pr.addFeatures([f, f2, f3, f4])
+
+        uri = '{} table="qgis_test"."new_table" sql='.format(self.dbconn)
+        error, message = QgsVectorLayerExporter.exportLayer(layer, uri, 'mssql', QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(error, QgsVectorLayerExporter.NoError)
+
+        new_layer = QgsVectorLayer(uri, 'new', 'mssql')
+        self.assertTrue(new_layer.isValid())
+        self.assertEqual([f.name() for f in new_layer.fields()], ['qgs_fid', 'id', 'fldtxt', 'fldint'])
+
+        features = [f.attributes() for f in new_layer.getFeatures()]
+        self.assertEqual(features, [[1, 1, 'test', 1],
+                                    [2, 2, 'test2', 3],
+                                    [3, 3, 'test2', NULL],
+                                    [4, 4, NULL, 3]])
+        geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
+        self.assertEqual(geom, ['Point (1 2)', '', 'Point (3 2)', 'Point (4 3)'])
+
+    def testCreateLayerMultiPoint(self):
+        layer = QgsVectorLayer("MultiPoint?field=id:integer&field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+        pr = layer.dataProvider()
+        f = QgsFeature()
+        f.setAttributes([1, "test", 1])
+        f.setGeometry(QgsGeometry.fromWkt('MultiPoint(1 2, 3 4)'))
+        f2 = QgsFeature()
+        f2.setAttributes([2, "test2", 3])
+        f3 = QgsFeature()
+        f3.setAttributes([3, "test2", NULL])
+        f3.setGeometry(QgsGeometry.fromWkt('MultiPoint(7 8)'))
+        pr.addFeatures([f, f2, f3])
+
+        uri = '{} table="qgis_test"."new_table_multipoint" sql='.format(self.dbconn)
+        error, message = QgsVectorLayerExporter.exportLayer(layer, uri, 'mssql', QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(error, QgsVectorLayerExporter.NoError)
+
+        new_layer = QgsVectorLayer(uri, 'new', 'mssql')
+        self.assertTrue(new_layer.isValid())
+        self.assertEqual([f.name() for f in new_layer.fields()], ['qgs_fid', 'id', 'fldtxt', 'fldint'])
+
+        features = [f.attributes() for f in new_layer.getFeatures()]
+        self.assertEqual(features, [[1, 1, 'test', 1],
+                                    [2, 2, 'test2', 3],
+                                    [3, 3, 'test2', NULL]])
+        geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
+        self.assertEqual(geom, ['MultiPoint ((1 2),(3 4))', '', 'MultiPoint ((7 8))'])
 
 
 if __name__ == '__main__':
