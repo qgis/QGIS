@@ -309,6 +309,9 @@ class ProviderTestCase(FeatureSourceTestCase):
         assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
 
     def testMinValue(self):
+        self.assertIsNone(self.source.minimumValue(-1))
+        self.assertIsNone(self.source.minimumValue(1000))
+
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('cnt')), -200)
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('name')), 'Apple')
 
@@ -320,6 +323,8 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertEqual(min_value, 200)
 
     def testMaxValue(self):
+        self.assertIsNone(self.source.maximumValue(-1))
+        self.assertIsNone(self.source.maximumValue(1000))
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('cnt')), 400)
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('name')), 'Pear')
 
@@ -362,6 +367,9 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertTrue(provider_extent.isNull())
 
     def testUnique(self):
+        self.assertEqual(self.source.uniqueValues(-1), set())
+        self.assertEqual(self.source.uniqueValues(1000), set())
+
         self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('cnt'))),
                          set([-200, 100, 200, 300, 400]))
         assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(
@@ -376,6 +384,9 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertEqual(set(values), set([200, 300]))
 
     def testUniqueStringsMatching(self):
+        self.assertEqual(self.source.uniqueStringsMatching(-1, 'a'), [])
+        self.assertEqual(self.source.uniqueStringsMatching(100001, 'a'), [])
+
         field_index = self.source.fields().lookupField('name')
         self.assertEqual(set(self.source.uniqueStringsMatching(field_index, 'a')), set(['Pear', 'Orange', 'Apple']))
         # test case insensitive
