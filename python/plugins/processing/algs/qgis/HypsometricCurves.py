@@ -69,7 +69,7 @@ class HypsometricCurves(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.BOUNDARY_LAYER,
                                                               self.tr('Boundary layer'), [QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterNumber(self.STEP,
-                                                       self.tr('Step'), type=QgsProcessingParameterNumber.Double, minValue=0.0, maxValue=999999999.999999, defaultValue=100.0))
+                                                       self.tr('Step'), type=QgsProcessingParameterNumber.Double, minValue=0.0, defaultValue=100.0))
         self.addParameter(QgsProcessingParameterBoolean(self.USE_PERCENTAGE,
                                                         self.tr('Use % of area instead of absolute value'), defaultValue=False))
 

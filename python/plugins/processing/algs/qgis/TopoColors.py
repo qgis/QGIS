@@ -82,7 +82,7 @@ class TopoColor(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterDistance(self.MIN_DISTANCE,
                                                          self.tr('Minimum distance between features'),
                                                          parentParameterName=self.INPUT, minValue=0.0,
-                                                         maxValue=999999999.0, defaultValue=0.0))
+                                                         defaultValue=0.0))
         balance_by = [self.tr('By feature count'),
                       self.tr('By assigned area'),
                       self.tr('By distance between colors')]

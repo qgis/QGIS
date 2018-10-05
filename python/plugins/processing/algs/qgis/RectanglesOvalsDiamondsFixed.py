@@ -71,15 +71,14 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.SHAPE,
                                                      self.tr('Buffer shape'), options=self.shapes))
         self.addParameter(QgsProcessingParameterDistance(self.WIDTH, self.tr('Width'), parentParameterName=self.INPUT,
-                                                         minValue=0.0000001, maxValue=999999999.0, defaultValue=1.0))
+                                                         minValue=0.0000001, defaultValue=1.0))
         self.addParameter(QgsProcessingParameterDistance(self.HEIGHT, self.tr('Height'), parentParameterName=self.INPUT,
-                                                         minValue=0.0000001, maxValue=999999999.0, defaultValue=1.0))
+                                                         minValue=0.0000001, defaultValue=1.0))
         self.addParameter(QgsProcessingParameterNumber(self.ROTATION, self.tr('Rotation'), type=QgsProcessingParameterNumber.Double,
                                                        minValue=0.0, maxValue=360.0, optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.SEGMENTS,
                                                        self.tr('Number of segments'),
                                                        minValue=1,
-                                                       maxValue=999999999,
                                                        defaultValue=36))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,

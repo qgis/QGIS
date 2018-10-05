@@ -78,7 +78,7 @@ class VoronoiPolygons(QgisAlgorithm):
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.BUFFER, self.tr('Buffer region (% of extent)'),
-                minValue=0.0, maxValue=9999999999, defaultValue=0.0))
+                minValue=0.0, defaultValue=0.0))
         self.addParameter(
             QgsProcessingParameterFeatureSink(
                 self.OUTPUT, self.tr('Voronoi polygons'),
