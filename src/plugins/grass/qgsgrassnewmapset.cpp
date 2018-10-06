@@ -1258,7 +1258,7 @@ void QgsGrassNewMapset::createMapset()
     QString error;
     G_TRY
     {
-      ret = G_make_location( location.toUtf8().data(), &mCellHead, mProjInfo, mProjUnits );
+      ret = G_make_location( location.toUtf8().constData(), &mCellHead, mProjInfo, mProjUnits );
     }
     G_CATCH( QgsGrass::Exception & e )
     {

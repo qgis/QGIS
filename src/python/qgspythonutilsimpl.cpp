@@ -297,7 +297,7 @@ bool QgsPythonUtilsImpl::runStringUnsafe( const QString &command, bool single )
   // TODO: convert special characters from unicode strings u"…" to \uXXXX
   // so that they're not mangled to utf-8
   // (non-unicode strings can be mangled)
-  PyObject *obj = PyRun_String( command.toUtf8().data(), single ? Py_single_input : Py_file_input, mMainDict, mMainDict );
+  PyObject *obj = PyRun_String( command.toUtf8().constData(), single ? Py_single_input : Py_file_input, mMainDict, mMainDict );
   bool res = nullptr == PyErr_Occurred();
   Py_XDECREF( obj );
 
@@ -520,7 +520,7 @@ bool QgsPythonUtilsImpl::evalString( const QString &command, QString &result )
   PyGILState_STATE gstate;
   gstate = PyGILState_Ensure();
 
-  PyObject *res = PyRun_String( command.toUtf8().data(), Py_eval_input, mMainDict, mMainDict );
+  PyObject *res = PyRun_String( command.toUtf8().constData(), Py_eval_input, mMainDict, mMainDict );
   bool success = nullptr != res;
 
   // TODO: error handling

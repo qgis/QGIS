@@ -666,11 +666,11 @@ QString QgsApplication::resolvePkgPath()
       ABISYM( mBuildSourcePath ) = f.readLine().trimmed();
       ABISYM( mBuildOutputPath ) = f.readLine().trimmed();
       QgsDebugMsgLevel( QStringLiteral( "Running from build directory!" ), 4 );
-      QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( ABISYM( mBuildSourcePath ).toUtf8().data() ), 4 );
-      QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( ABISYM( mBuildOutputPath ).toUtf8().data() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( ABISYM( mBuildSourcePath ).toUtf8().constData() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( ABISYM( mBuildOutputPath ).toUtf8().constData() ), 4 );
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
       ABISYM( mCfgIntDir ) = appPath.split( '/', QString::SkipEmptyParts ).last();
-      qDebug( "- cfg: %s", ABISYM( mCfgIntDir ).toUtf8().data() );
+      qDebug( "- cfg: %s", ABISYM( mCfgIntDir ).toUtf8().constData() );
 #endif
     }
   }

@@ -614,7 +614,7 @@ class CORE_EXPORT QgsExpression
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = QStringLiteral( "<QgsExpression: '%1'>" ).arg( sipCpp->expression() );
-    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 

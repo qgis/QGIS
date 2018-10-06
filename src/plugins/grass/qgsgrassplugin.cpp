@@ -579,7 +579,7 @@ void QgsGrassPlugin::newVector()
   G_TRY
   {
     Map = QgsGrass::vectNewMapStruct();
-    Vect_open_new( Map, name.toUtf8().data(), 0 );
+    Vect_open_new( Map, name.toUtf8().constData(), 0 );
 
     Vect_build( Map );
     Vect_set_release_support( Map );

@@ -251,7 +251,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = QStringLiteral( "<QgsCircle: %1>" ).arg( sipCpp->toString() );
-    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 };
