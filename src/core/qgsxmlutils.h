@@ -97,8 +97,7 @@ class CORE_EXPORT QgsXmlUtils
       if ( metaEnum.isValid() )
       {
         bool ok = false;
-        const char *vs = sourceCategoriesStr.toUtf8().data();
-        int newValue = metaEnum.keysToValue( vs, &ok );
+        int newValue = metaEnum.keysToValue( sourceCategoriesStr.toUtf8().data(), &ok );
         if ( ok )
           value = static_cast<T>( newValue );
       }
