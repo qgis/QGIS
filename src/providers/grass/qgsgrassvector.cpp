@@ -118,7 +118,7 @@ QgsFields QgsGrassVectorLayer::fields()
     QgsDebugMsg( "open database " + mDatabase + " by driver " + mDriver );
     QgsGrass::lock();
     QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(),  mGrassObject.mapset() );
-    dbDriver *driver = db_start_driver_open_database( mDriver.toUtf8().data(), mDatabase.toUtf8().data() );
+    dbDriver *driver = db_start_driver_open_database( mDriver.toUtf8().constData(), mDatabase.toUtf8().constData() );
 
     if ( !driver )
     {
@@ -131,7 +131,7 @@ QgsFields QgsGrassVectorLayer::fields()
 
       dbString tableName;
       db_init_string( &tableName );
-      db_set_string( &tableName, mTable.toUtf8().data() );
+      db_set_string( &tableName, mTable.toUtf8().constData() );
 
       dbTable *table = nullptr;
       if ( db_describe_table( driver, &tableName, &table ) != DB_OK )
@@ -229,7 +229,7 @@ bool QgsGrassVector::openHead()
   G_TRY
   {
     map = QgsGrass::vectNewMapStruct();
-    level = Vect_open_old_head( map, ( char * ) mGrassObject.name().toUtf8().data(), ( char * ) mGrassObject.mapset().toUtf8().data() );
+    level = Vect_open_old_head( map, ( char * ) mGrassObject.name().toUtf8().constData(), ( char * ) mGrassObject.mapset().toUtf8().constData() );
   }
   G_CATCH( QgsGrass::Exception & e )
   {

@@ -76,7 +76,7 @@ void QgsMacNative::currentAppActivateIgnoringOtherApps()
 
 void QgsMacNative::openFileExplorerAndSelectFile( const QString &path )
 {
-  NSString *pathStr = [[NSString alloc] initWithUTF8String:path.toUtf8().data()];
+  NSString *pathStr = [[NSString alloc] initWithUTF8String:path.toUtf8().constData()];
   NSArray *fileURLs = [NSArray arrayWithObjects:[NSURL fileURLWithPath:pathStr], nil];
   [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:fileURLs];
 }

@@ -73,12 +73,12 @@ void closeMaps()
   if ( tmpMap )
   {
     Vect_close( tmpMap );
-    Vect_delete( sTmpName.toUtf8().data() );
+    Vect_delete( sTmpName.toUtf8().constData() );
   }
   if ( finalMap )
   {
     Vect_close( finalMap );
-    Vect_delete( sFinalName.toUtf8().data() );
+    Vect_delete( sFinalName.toUtf8().constData() );
   }
   if ( driver )
   {
@@ -161,7 +161,7 @@ int main( int argc, char **argv )
   {
     tmpMap = QgsGrass::vectNewMapStruct();
     // TODO: use Vect_open_tmp_new with GRASS 7
-    Vect_open_new( tmpMap, sTmpName.toUtf8().data(), 0 );
+    Vect_open_new( tmpMap, sTmpName.toUtf8().constData(), 0 );
     map = tmpMap;
   }
 
@@ -440,7 +440,7 @@ int main( int argc, char **argv )
     G_message( "Copying lines from temporary map" );
     Vect_copy_map_lines( tmpMap, finalMap );
     Vect_close( tmpMap );
-    Vect_delete( sTmpName.toUtf8().data() );
+    Vect_delete( sTmpName.toUtf8().constData() );
 
     int centroidsCount = centroids.size();
     count = 0;

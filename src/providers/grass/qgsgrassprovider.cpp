@@ -548,7 +548,7 @@ bool QgsGrassProvider::isGrassEditable( void )
     return false;
 
   /* Check if current user is owner of mapset */
-  if ( G_mapset_permissions2( mGrassObject.gisdbase().toUtf8().data(), mGrassObject.location().toUtf8().data(), mGrassObject.mapset().toUtf8().data() ) != 1 )
+  if ( G_mapset_permissions2( mGrassObject.gisdbase().toUtf8().constData(), mGrassObject.location().toUtf8().constData(), mGrassObject.mapset().toUtf8().constData() ) != 1 )
     return false;
 
   // TODO: check format? (cannot edit OGR layers)
@@ -952,7 +952,7 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
   db_init_string( &dbstr );
   QString query;
   query.sprintf( "select * from %s where %s = %d", fi->table, fi->key, cat );
-  db_set_string( &dbstr, query.toUtf8().data() );
+  db_set_string( &dbstr, query.toUtf8().constData() );
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
 

@@ -582,12 +582,12 @@ void QgsGrass::setMapset( const QString &gisdbase, const QString &location, cons
 
   // Set principal GRASS variables (in memory)
 #ifdef Q_OS_WIN
-  G_setenv_nogisrc( "GISDBASE", shortPath( gisdbase ).toUtf8().data() );
+  G_setenv_nogisrc( "GISDBASE", shortPath( gisdbase ).toUtf8().constData() );
 #else
-  G_setenv_nogisrc( "GISDBASE", gisdbase.toUtf8().data() );
+  G_setenv_nogisrc( "GISDBASE", gisdbase.toUtf8().constData() );
 #endif
-  G_setenv_nogisrc( "LOCATION_NAME", location.toUtf8().data() );
-  G_setenv_nogisrc( "MAPSET", mapset.toUtf8().data() );
+  G_setenv_nogisrc( "LOCATION_NAME", location.toUtf8().constData() );
+  G_setenv_nogisrc( "MAPSET", mapset.toUtf8().constData() );
 
   // Add all available mapsets to search path
   // Why? Other mapsets should not be necessary.
@@ -994,11 +994,11 @@ QString QgsGrass::openMapset( const QString &gisdbase,
   putEnv( QStringLiteral( "GISRC" ), sGisrc );
 
   // Reinitialize GRASS
-  G_setenv_nogisrc( "GISRC", sGisrc.toUtf8().data() );
+  G_setenv_nogisrc( "GISRC", sGisrc.toUtf8().constData() );
 #ifdef Q_OS_WIN
   G_setenv_nogisrc( "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
 #else
-  G_setenv_nogisrc( "GISDBASE", gisdbase.toUtf8().data() );
+  G_setenv_nogisrc( "GISDBASE", gisdbase.toUtf8().constData() );
 #endif
   G_setenv_nogisrc( "LOCATION_NAME", location.toLocal8Bit().data() );
   G_setenv_nogisrc( "MAPSET", mapset.toLocal8Bit().data() );
@@ -1614,7 +1614,7 @@ void QgsGrass::region( const QString &gisdbase,
   QgsGrass::setLocation( gisdbase, location );
 
   // In GRASS 7 G__get_window does not return error code and calls G_fatal_error on error
-  G_FATAL_THROW( G_get_element_window( window, ( char * ) "", ( char * ) "WIND", mapset.toUtf8().data() ) );
+  G_FATAL_THROW( G_get_element_window( window, ( char * ) "", ( char * ) "WIND", mapset.toUtf8().constData() ) );
 }
 
 void QgsGrass::region( struct Cell_head *window )
@@ -1780,7 +1780,7 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, const QString &gisdbase,
     QString error = tr( "Cannot read raster map region (%1/%2/%3)" ).arg( gisdbase, location, mapset );
     G_TRY
     {
-      Rast_get_cellhd( map.toUtf8().data(), mapset.toUtf8().data(), window );
+      Rast_get_cellhd( map.toUtf8().constData(), mapset.toUtf8().constData(), window );
     }
     G_CATCH( QgsGrass::Exception & e )
     {
@@ -1807,7 +1807,7 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, const QString &gisdbase,
     {
       Map = vectNewMapStruct();
       Vect_set_open_level( 2 );
-      level = Vect_open_old_head( Map, map.toUtf8().data(), mapset.toUtf8().data() );
+      level = Vect_open_old_head( Map, map.toUtf8().constData(), mapset.toUtf8().constData() );
     }
     G_CATCH( QgsGrass::Exception & e )
     {
@@ -1865,7 +1865,7 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, const QString &gisdbase,
     // G__get_window does not return error code in GRASS 7 and calls G_fatal_error on error
     G_TRY
     {
-      G_get_element_window( window, ( char * ) "windows", map.toUtf8().data(), mapset.toUtf8().data() );
+      G_get_element_window( window, ( char * ) "windows", map.toUtf8().constData(), mapset.toUtf8().constData() );
     }
     G_CATCH( QgsGrass::Exception & e )
     {
@@ -2227,7 +2227,7 @@ QList<QgsGrass::Color> QgsGrass::colors( const QString &gisdbase, const QString 
       QgsGrass::Color c;
       if ( list[i].isEmpty() )
         continue;
-      if ( sscanf( list[i].toUtf8().data(), "%lf %lf %d %d %d %d %d %d", &( c.value1 ), &( c.value2 ), &( c.red1 ), &( c.green1 ), &( c.blue1 ), &( c.red2 ), &( c.green2 ), &( c.blue2 ) ) != 8 )
+      if ( sscanf( list[i].toUtf8().constData(), "%lf %lf %d %d %d %d %d %d", &( c.value1 ), &( c.value2 ), &( c.red1 ), &( c.green1 ), &( c.blue1 ), &( c.red2 ), &( c.green2 ), &( c.blue2 ) ) != 8 )
       {
         throw QgsGrass::Exception( "Cannot parse GRASS colors" + list[i] + " (" + str + " ) " );
       }
@@ -2346,7 +2346,7 @@ void QgsGrass::createVectorMap( const QgsGrassObject &object, QString &error )
   G_TRY
   {
     Map = vectNewMapStruct();
-    Vect_open_new( Map, object.name().toUtf8().data(), 0 );
+    Vect_open_new( Map, object.name().toUtf8().constData(), 0 );
     Vect_build( Map );
     Vect_set_release_support( Map );
     Vect_close( Map );
@@ -2491,7 +2491,7 @@ bool QgsGrass::isExternal( const QgsGrassObject &object )
   {
     QgsGrass::setLocation( object.gisdbase(), object.location() );
     struct GDAL_link *gdal;
-    gdal = Rast_get_gdal_link( object.name().toUtf8().data(), object.mapset().toUtf8().data() );
+    gdal = Rast_get_gdal_link( object.name().toUtf8().constData(), object.mapset().toUtf8().constData() );
     if ( gdal )
     {
       isExternal = true;
