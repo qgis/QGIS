@@ -19,6 +19,9 @@
 #define QGSLAYERRESTORER_H
 
 #include <QList>
+#include <QDomDocument>
+
+#include "qgsfeatureid.h"
 
 class QgsMapLayer;
 
@@ -30,16 +33,6 @@ class QgsMapLayer;
  */
 class QgsLayerRestorer
 {
-    struct QgsLayerSettings
-    {
-      QString name;
-      double mOpacity;
-      QString mNamedStyle;
-      QDomDocument mSldStyle;
-      QString mFilter;
-      QgsFeatureIds mSelectedFeatureIds;
-    };
-
   public:
 
     /**
@@ -56,6 +49,16 @@ class QgsLayerRestorer
     ~QgsLayerRestorer();
 
   private:
+    struct QgsLayerSettings
+    {
+      QString name;
+      double mOpacity;
+      QString mNamedStyle;
+      QDomDocument mSldStyle;
+      QString mFilter;
+      QgsFeatureIds mSelectedFeatureIds;
+    };
+
     QMap<QgsMapLayer *, QgsLayerSettings> mLayerSettings;
 };
 
