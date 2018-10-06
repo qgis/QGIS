@@ -94,7 +94,10 @@ namespace QgsWms
                              const QString &version, const QgsServerRequest &request,
                              QgsServerResponse &response, bool projectSettings )
   {
-    QgsAccessControl *accessControl = serverIface->accessControls();
+    QgsAccessControl *accessControl = nullptr;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    accessControl = serverIface->accessControls();
+#endif
 
     QDomDocument doc;
     const QDomDocument *capabilitiesDocument = nullptr;
@@ -110,7 +113,10 @@ namespace QgsWms
       cache = accessControl->fillCacheKey( cacheKeyList );
     QString cacheKey = cacheKeyList.join( '-' );
 
-    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
+    QgsServerCacheManager *cacheManager = nullptr;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    cacheManager = serverIface->cacheManager();
+#endif
     if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
     {
       capabilitiesDocument = &doc;
