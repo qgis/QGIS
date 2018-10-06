@@ -55,6 +55,7 @@
 #include "qgshuesaturationfilter.h"
 #include "qgshillshaderendererwidget.h"
 #include "qgssettings.h"
+#include "qgsmaplayerlegend.h"
 
 #include <QDesktopServices>
 #include <QTableWidgetItem>
@@ -1052,8 +1053,12 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->setCustomProperty( "WMSPublishDataSourceUrl", mPublishDataSourceUrlCheckBox->isChecked() );
   mRasterLayer->setCustomProperty( "WMSBackgroundLayer", mBackgroundLayerCheckBox->isChecked() );
 
-  // update symbology
+
+  // update symbology (this is now disconnected)
   emit refreshLegend( mRasterLayer->id(), false );
+
+  // Force a redraw of the legend
+  mRasterLayer->setLegend( QgsMapLayerLegend::defaultRasterLegend( mRasterLayer ) );
 
   //make sure the layer is redrawn
   mRasterLayer->triggerRepaint();
