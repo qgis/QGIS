@@ -8629,6 +8629,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
     }
 
     QgsGeometry geom = featureIt->geometry();
+    bool geomWasInvalid = geom.isEmpty() || geom.isNull( );
     if ( featureIt->hasGeometry() )
     {
       // convert geometry to match destination layer
@@ -8653,7 +8654,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
       // avoid intersection if enabled in digitize settings
       geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
     }
-    if ( geom.isEmpty() || geom.isNull( ) )
+    if ( ! geomWasInvalid && ( geom.isEmpty() || geom.isNull( ) ) )
       invalidGeometriesCount++;
 
     // now create new feature using pasted feature as a template. This automatically handles default
