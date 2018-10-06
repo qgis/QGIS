@@ -1188,7 +1188,13 @@ bool QgsGeometry::disjoint( const QgsGeometry &geometry ) const
 
 bool QgsGeometry::equals( const QgsGeometry &geometry ) const
 {
-  if ( !d->geometry || geometry.isNull() )
+
+  if ( isNull() && geometry.isNull() )
+  {
+    return true;
+  }
+
+  if ( isNull() )
   {
     return false;
   }
