@@ -299,11 +299,13 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
     }
   }
 
+  QString newLayerName( layerName );
   std::unique_ptr< QgsVectorFileWriter > writer = qgis::make_unique< QgsVectorFileWriter >(
         uri, encoding, fields, wkbType,
         srs, driverName, dsOptions, layerOptions, nullptr,
         QgsVectorFileWriter::NoSymbology, nullptr,
-        layerName, action );
+        layerName, action, &newLayerName );
+  layerName = newLayerName;
 
   QgsVectorFileWriter::WriterError error = writer->hasError();
   if ( error )
