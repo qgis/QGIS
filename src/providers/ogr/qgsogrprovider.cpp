@@ -6275,7 +6275,7 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
                                  ogrGeometryType );
 
 
-  GDALDatasetH hDS = GDALOpenEx( filePath.toLocal8Bit().data(), GDAL_OF_RASTER | GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
+  GDALDatasetH hDS = GDALOpenEx( filePath.toUtf8().constData(), GDAL_OF_RASTER | GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
   if ( hDS  && ( ! layerName.isEmpty() || layerIndex != -1 ) )
   {
     // If we have got a name we convert it into an index
@@ -6285,7 +6285,7 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
       for ( int i = 0; i < GDALDatasetGetLayerCount( hDS ); i++ )
       {
         OGRLayerH hL = GDALDatasetGetLayer( hDS, i );
-        if ( layerName == QString( OGR_L_GetName( hL ) ) )
+        if ( layerName == QString::fromUtf8( OGR_L_GetName( hL ) ) )
         {
           layerIndex = i;
           break;
