@@ -4441,6 +4441,68 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
   return newuri;
 }
 
+static QStringList splitSubLayerDef( const QString &subLayerDef )
+{
+  QStringList elements = subLayerDef.split( QgsDataProvider::SUBLAYER_SEPARATOR );
+  // merge back parts of the name that may have been split
+  while ( elements.size() > 5 )
+  {
+    elements[1] += ":" + elements[2];
+    elements.removeAt( 2 );
+  }
+  return elements;
+}
+
+static void setupVectorLayer( const QString &vectorLayerPath,
+                              const QStringList &sublayers,
+                              QgsVectorLayer *&layer,
+                              const QString &providerKey,
+                              const QgsVectorLayer::LayerOptions &options )
+{
+  //set friendly name for datasources with only one layer
+  QgsSettings settings;
+  QStringList elements = splitSubLayerDef( sublayers.at( 0 ) );
+  QString rawLayerName = elements.size() >= 2 ? elements.at( 1 ) : QString();
+  QString subLayerNameFormatted = rawLayerName;
+  if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+  {
+    subLayerNameFormatted =  QgsMapLayer::formatLayerName( subLayerNameFormatted );
+  }
+
+  if ( elements.size() >= 4 && layer->name().compare( rawLayerName, Qt::CaseInsensitive ) != 0
+       && layer->name().compare( subLayerNameFormatted, Qt::CaseInsensitive ) != 0 )
+  {
+    layer->setName( QStringLiteral( "%1 %2" ).arg( layer->name(), rawLayerName ) );
+  }
+
+  // Systematically add a layername= option to OGR datasets in case
+  // the current single layer dataset becomes layer a multi-layer one.
+  // Except for a few select extensions, known to be always single layer dataset.
+  QFileInfo fi( vectorLayerPath );
+  QString ext = fi.suffix().toLower();
+  if ( providerKey == QLatin1String( "ogr" ) &&
+       ext != QLatin1String( "shp" ) &&
+       ext != QLatin1String( "mif" ) &&
+       ext != QLatin1String( "tab" ) &&
+       ext != QLatin1String( "csv" ) &&
+       ext != QLatin1String( "geojson" ) &&
+       ! vectorLayerPath.contains( QStringLiteral( "layerid=" ) ) &&
+       ! vectorLayerPath.contains( QStringLiteral( "layername=" ) ) )
+  {
+    auto uriParts = QgsProviderRegistry::instance()->decodeUri(
+                      layer->providerType(), layer->dataProvider()->dataSourceUri() );
+    QString composedURI( uriParts.value( QLatin1String( "path" ) ).toString() );
+    composedURI += "|layername=" + rawLayerName;
+
+    auto newLayer = qgis::make_unique<QgsVectorLayer>( composedURI, layer->name(), QStringLiteral( "ogr" ), options );
+    if ( newLayer && newLayer->isValid() )
+    {
+      delete layer;
+      layer = newLayer.release();
+    }
+  }
+}
+
 bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType )
 {
   bool wasfrozen = mMapCanvas->isFrozen();
@@ -4523,19 +4585,8 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       }
       else if ( !sublayers.isEmpty() ) // there is 1 layer of data available
       {
-        //set friendly name for datasources with only one layer
-        QStringList elements = sublayers.at( 0 ).split( QgsDataProvider::SUBLAYER_SEPARATOR );
-        QString subLayerNameFormatted = elements.size() >= 2 ? elements.at( 1 ) : QString();
-        if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
-        {
-          subLayerNameFormatted =  QgsMapLayer::formatLayerName( subLayerNameFormatted );
-        }
-
-        if ( elements.size() >= 4 && layer->name().compare( elements.at( 1 ), Qt::CaseInsensitive ) != 0
-             && layer->name().compare( subLayerNameFormatted, Qt::CaseInsensitive ) != 0 )
-        {
-          layer->setName( QStringLiteral( "%1 %2" ).arg( layer->name(), elements.at( 1 ) ) );
-        }
+        setupVectorLayer( src, sublayers, layer,
+                          QStringLiteral( "ogr" ), options );
 
         myList << layer;
       }
@@ -4938,14 +4989,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     // OGR provider returns items in this format:
     // <layer_index>:<name>:<feature_count>:<geom_type>
 
-    QStringList elements = sublayer.split( QgsDataProvider::SUBLAYER_SEPARATOR );
-    // merge back parts of the name that may have been split
-    while ( elements.size() > 5 )
-    {
-      elements[1] += ":" + elements[2];
-      elements.removeAt( 2 );
-    }
-
+    QStringList elements = splitSubLayerDef( sublayer );
     if ( elements.count() >= 4 )
     {
       QgsSublayersDialog::LayerDefinition def;
@@ -4978,18 +5022,11 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   if ( !chooseSublayersDialog.exec() )
     return;
 
-  QString uri = layer->source();
   QString name = layer->name();
-  //the separator char & was changed to | to be compatible
-  //with url for protocol drivers
-  if ( uri.contains( '|', Qt::CaseSensitive ) )
-  {
-    // If we get here, there are some options added to the filename.
-    // A valid uri is of the form: filename&option1=value1&option2=value2,...
-    // We want only the filename here, so we get the first part of the split.
-    QStringList theURIParts = uri.split( '|' );
-    uri = theURIParts.at( 0 );
-  }
+
+  auto uriParts = QgsProviderRegistry::instance()->decodeUri(
+                    layer->providerType(), layer->dataProvider()->dataSourceUri() );
+  QString uri( uriParts.value( QLatin1String( "path" ) ).toString() );
 
   // The uri must contain the actual uri of the vectorLayer from which we are
   // going to load the sublayers.
@@ -10679,18 +10716,8 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
       QStringList sublayers = layer->dataProvider()->subLayers();
       if ( !sublayers.isEmpty() )
       {
-        QStringList elements = sublayers.at( 0 ).split( QgsDataProvider::SUBLAYER_SEPARATOR );
-        QString subLayerNameFormatted = elements.size() >= 2 ? elements.at( 1 ) : QString();
-        if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
-        {
-          subLayerNameFormatted =  QgsMapLayer::formatLayerName( subLayerNameFormatted );
-        }
-
-        if ( elements.size() >= 4 && layer->name().compare( elements.at( 1 ), Qt::CaseInsensitive ) != 0
-             && layer->name().compare( subLayerNameFormatted, Qt::CaseInsensitive ) != 0 )
-        {
-          layer->setName( QStringLiteral( "%1 %2" ).arg( layer->name(), elements.at( 1 ) ) );
-        }
+        setupVectorLayer( vectorLayerPath, sublayers, layer,
+                          providerKey, options );
       }
 
       myList << layer;
