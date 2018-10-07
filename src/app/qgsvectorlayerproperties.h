@@ -133,8 +133,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
   signals:
 
     //! Emitted when changes to layer were saved to update legend
-    void refreshLegend( const QString &layerID, bool expandItem );
-    void refreshLegend( const QString &layerID );
+    Q_DECL_DEPRECATED void refreshLegend( const QString &layerID, bool expandItem ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void refreshLegend( const QString &layerID ) SIP_DEPRECATED;
 
     void toggleEditing( QgsMapLayer * );
 
