@@ -756,7 +756,7 @@ void QgsMapCanvas::saveAsImage( const QString &fileName, QPixmap *theQPixmap, co
   {
     item = i.previous();
 
-    if ( !item || dynamic_cast< QgsMapCanvasAnnotationItem * >( item ) )
+    if ( !( item && dynamic_cast< QgsMapCanvasAnnotationItem * >( item ) ) )
     {
       continue;
     }
