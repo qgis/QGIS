@@ -16,6 +16,8 @@ email                : morb at ozemail dot com dot au
 #ifndef QGSGEOMETRY_H
 #define QGSGEOMETRY_H
 
+#include <functional>
+
 #include <QDomDocument>
 #include <QSet>
 #include <QString>

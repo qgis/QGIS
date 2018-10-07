@@ -18,6 +18,8 @@
 
 #define SIP_NO_FILE
 
+#include <functional>
+
 #include "qgspointxy.h"
 
 class QgsGeometry;

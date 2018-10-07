@@ -15,6 +15,8 @@
 #ifndef QGSWFSREQUEST_H
 #define QGSWFSREQUEST_H
 
+#include <functional>
+
 #include <QObject>
 #include <QNetworkRequest>
 #include <QNetworkReply>
