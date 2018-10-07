@@ -370,6 +370,12 @@ void myMessageOutput( QtMsgType type, const char *msg )
       myPrint( "Critical: %s\n", msg );
       break;
     case QtWarningMsg:
+    {
+      // Ignore libpng iCPP known incorrect SRGB profile errors
+      // (which are thrown by 3rd party components we have no control over and have low value anyway).
+      if ( strncmp( msg, "libpng warning: iCCP: known incorrect sRGB profile", 50 ) == 0 )
+        break;
+
       myPrint( "Warning: %s\n", msg );
 
 #ifdef QGISDEBUG
@@ -391,6 +397,8 @@ void myMessageOutput( QtMsgType type, const char *msg )
       }
 
       break;
+    }
+
     case QtFatalMsg:
     {
       myPrint( "Fatal: %s\n", msg );
