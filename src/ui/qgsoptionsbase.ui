@@ -188,7 +188,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/symbology.svg</normaloff>:/images/themes/default/propertyicons/symbology.svg</iconset>
+            <normaloff>:/images/themes/default/propertyicons/colors.svg</normaloff>:/images/themes/default/propertyicons/colors.svg</iconset>
           </property>
          </item>
          <item>
