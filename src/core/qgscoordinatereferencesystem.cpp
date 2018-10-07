@@ -1612,6 +1612,10 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
     proj4String = toProj4();
   }
 
+  // ellipsoid acroynym column is incorrect marked as not null in many crs database instances,
+  // hack around this by using an empty string instead
+  const QString quotedEllipsoidString = ellipsoidAcronym().isNull() ? "''" : QgsSqliteUtils::quotedString( ellipsoidAcronym() );
+
   //if this is the first record we need to ensure that its srs_id is 10000. For
   //any rec after that sqlite3 will take care of the autonumbering
   //this was done to support sqlite 3.0 as it does not yet support
@@ -1622,7 +1626,7 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
             + QString::number( USER_CRS_START_ID )
             + ',' + QgsSqliteUtils::quotedString( name )
             + ',' + QgsSqliteUtils::quotedString( projectionAcronym() )
-            + ',' + QgsSqliteUtils::quotedString( ellipsoidAcronym() )
+            + ',' + quotedEllipsoidString
             + ',' + QgsSqliteUtils::quotedString( toProj4() )
             + ",0)"; // <-- is_geo shamelessly hard coded for now
   }
@@ -1631,7 +1635,7 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
     mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
             + QgsSqliteUtils::quotedString( name )
             + ',' + QgsSqliteUtils::quotedString( projectionAcronym() )
-            + ',' + QgsSqliteUtils::quotedString( ellipsoidAcronym() )
+            + ',' + quotedEllipsoidString
             + ',' + QgsSqliteUtils::quotedString( toProj4() )
             + ",0)"; // <-- is_geo shamelessly hard coded for now
   }
