@@ -18,8 +18,11 @@
 #include "qgsmssqlconnection.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsdatasourceuri.h"
 #include <QSqlDatabase>
 #include <QThread>
+#include <QSqlError>
+#include <QSqlQuery>
 
 int QgsMssqlConnection::sConnectionId = 0;
 
@@ -152,6 +155,67 @@ void QgsMssqlConnection::setInvalidGeometryHandlingDisabled( const QString &name
 {
   QgsSettings settings;
   settings.setValue( "/MSSQL/connections/" + name + "/disableInvalidGeometryHandling", disabled );
+}
+
+bool QgsMssqlConnection::dropTable( const QString &uri, QString *errorMessage )
+{
+  QgsDataSourceUri dsUri( uri );
+
+  // connect to database
+  QSqlDatabase db = getDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  const QString schema = dsUri.schema();
+  const QString table = dsUri.table();
+
+  if ( !openDatabase( db ) )
+  {
+    if ( errorMessage )
+      *errorMessage = db.lastError().text();
+    return false;
+  }
+
+  QSqlQuery q = QSqlQuery( db );
+  q.setForwardOnly( true );
+  const QString sql = QString( "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) DROP TABLE [%1].[%2]\n"
+                               "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'" )
+                      .arg( schema,
+                            table );
+  if ( !q.exec( sql ) )
+  {
+    if ( errorMessage )
+      *errorMessage = q.lastError().text();
+    return false;
+  }
+
+  return true;
+}
+
+bool QgsMssqlConnection::truncateTable( const QString &uri, QString *errorMessage )
+{
+  QgsDataSourceUri dsUri( uri );
+
+  // connect to database
+  QSqlDatabase db = getDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+  const QString schema = dsUri.schema();
+  const QString table = dsUri.table();
+
+  if ( !openDatabase( db ) )
+  {
+    if ( errorMessage )
+      *errorMessage = db.lastError().text();
+    return false;
+  }
+
+  QSqlQuery q = QSqlQuery( db );
+  q.setForwardOnly( true );
+  const QString sql = QStringLiteral( "TRUNCATE TABLE [%1].[%2]" ).arg( schema, table );
+  if ( !q.exec( sql ) )
+  {
+    if ( errorMessage )
+      *errorMessage = q.lastError().text();
+    return false;
+  }
+
+  return true;
 }
 
 QString QgsMssqlConnection::dbConnectionName( const QString &name )
