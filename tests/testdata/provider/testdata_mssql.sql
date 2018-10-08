@@ -19,6 +19,9 @@ GO
 DROP TABLE IF EXISTS qgis_test.[new_table_multipolygon];
 GO
 
+DROP TABLE IF EXISTS qgis_test.[float_dec];
+GO
+
 DROP SCHEMA qgis_test;
 GO
 
@@ -49,6 +52,13 @@ CREATE TABLE qgis_test.[date_times] (
 );
 GO
 
+CREATE TABLE qgis_test.[float_dec] (
+       id integer PRIMARY KEY,
+       float_field float,
+       dec_field decimal(7,3)
+);
+GO
+
 INSERT INTO qgis_test.[someData] (pk, cnt, name, name2, num_char, geom) VALUES
 (5, -200, NULL, 'NuLl', '5', geometry::STGeomFromText( 'Point(-71.123 78.23)', 4326 )),
 (3,  300, 'Pear', 'PEaR', '3', NULL),
@@ -69,6 +79,9 @@ GO
 INSERT INTO qgis_test.[date_times] (id, date_field, time_field, datetime_field ) VALUES
  (1, '2004-03-04', '13:41:52', '2004-03-04 13:41:52' );
 
+INSERT INTO qgis_test.[float_dec] (id, float_field, dec_field ) VALUES
+ (1, 1.1111111111, 1.123 );
+GO
 
 
 

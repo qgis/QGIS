@@ -378,8 +378,8 @@ void QgsMssqlProvider::loadFields()
             QgsField(
               query.value( 3 ).toString(), sqlType,
               sqlTypeName,
-              query.value( 7 ).toInt(),
-              query.value( 8 ).toInt() ) );
+              query.value( 6 ).toInt(),
+              sqlTypeName == QLatin1String( "decimal" ) ? query.value( 8 ).toInt() : -1 ) );
         }
         else if ( sqlType == QVariant::Date || sqlType == QVariant::DateTime || sqlType == QVariant::Time )
         {
