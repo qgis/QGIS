@@ -176,6 +176,35 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(
             QDate(2004, 3, 4), QTime(13, 41, 52)))
 
+    def testFloatDecimalFields(self):
+        vl = QgsVectorLayer('%s table="qgis_test"."float_dec" sql=' %
+                            (self.dbconn), "testprec", "mssql")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.dataProvider().fields()
+        self.assertEqual(fields.at(fields.indexFromName(
+            'float_field')).type(), QVariant.Double)
+        self.assertEqual(fields.at(fields.indexFromName(
+            'float_field')).length(), 15)
+        self.assertEqual(fields.at(fields.indexFromName(
+            'float_field')).precision(), -1)
+
+        self.assertEqual(fields.at(fields.indexFromName(
+            'dec_field')).type(), QVariant.Double)
+        self.assertEqual(fields.at(fields.indexFromName(
+            'dec_field')).length(), 7)
+        self.assertEqual(fields.at(fields.indexFromName(
+            'dec_field')).precision(), 3)
+
+        f = next(vl.getFeatures(QgsFeatureRequest()))
+
+        float_idx = vl.fields().lookupField('float_field')
+        self.assertIsInstance(f.attributes()[float_idx], float)
+        self.assertAlmostEqual(f.attributes()[float_idx], 1.1111111111, 5)
+        dec_idx = vl.fields().lookupField('dec_field')
+        self.assertIsInstance(f.attributes()[dec_idx], float)
+        self.assertEqual(f.attributes()[dec_idx], 1.123)
+
     def testCreateLayer(self):
         layer = QgsVectorLayer("Point?field=id:integer&field=fldtxt:string&field=fldint:integer",
                                "addfeat", "memory")
