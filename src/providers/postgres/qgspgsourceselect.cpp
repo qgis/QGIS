@@ -253,6 +253,11 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   mProxyModel.setFilterCaseSensitivity( Qt::CaseInsensitive );
   mProxyModel.setSourceModel( &mTableModel );
 
+  // Do not do dynamic sorting - otherwise whenever user selects geometry type / srid / pk columns,
+  // that item suddenly jumps to the end of the list (because the item gets changed) which is very annoying.
+  // The list gets sorted in finishList() method when the listing of tables and views has finished.
+  mProxyModel.setDynamicSortFilter( false );
+
   mTablesTreeView->setModel( &mProxyModel );
   mTablesTreeView->setSortingEnabled( true );
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
