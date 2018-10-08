@@ -17,6 +17,7 @@
 
 #include "qgsmssqlconnection.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 #include <QSqlDatabase>
 #include <QThread>
 
@@ -103,6 +104,42 @@ bool QgsMssqlConnection::openDatabase( QSqlDatabase &db )
     }
   }
   return true;
+}
+
+bool QgsMssqlConnection::geometryColumnsOnly( const QString &name )
+{
+  QgsSettings settings;
+  return settings.value( "/MSSQL/connections/" + name + "/geometryColumnsOnly", false ).toBool();
+}
+
+void QgsMssqlConnection::setGeometryColumnsOnly( const QString &name, bool enabled )
+{
+  QgsSettings settings;
+  settings.setValue( "/MSSQL/connections/" + name + "/geometryColumnsOnly", enabled );
+}
+
+bool QgsMssqlConnection::allowGeometrylessTables( const QString &name )
+{
+  QgsSettings settings;
+  return settings.value( "/MSSQL/connections/" + name + "/allowGeometrylessTables", false ).toBool();
+}
+
+void QgsMssqlConnection::setAllowGeometrylessTables( const QString &name, bool enabled )
+{
+  QgsSettings settings;
+  settings.setValue( "/MSSQL/connections/" + name + "/allowGeometrylessTables", enabled );
+}
+
+bool QgsMssqlConnection::useEstimatedMetadata( const QString &name )
+{
+  QgsSettings settings;
+  return settings.value( "/MSSQL/connections/" + name + "/estimatedMetadata", false ).toBool();
+}
+
+void QgsMssqlConnection::setUseEstimatedMetadata( const QString &name, bool enabled )
+{
+  QgsSettings settings;
+  settings.setValue( "/MSSQL/connections/" + name + "/estimatedMetadata", enabled );
 }
 
 QString QgsMssqlConnection::dbConnectionName( const QString &name )

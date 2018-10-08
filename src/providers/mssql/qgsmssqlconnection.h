@@ -42,6 +42,46 @@ class QgsMssqlConnection
 
     static bool openDatabase( QSqlDatabase &db );
 
+    /**
+     * Returns true if the connection with matching \a name should
+     * only look in the geometry_columns metadata table when scanning for tables.
+     *
+     * \see setGeometryColumnsOnly()
+     */
+    static bool geometryColumnsOnly( const QString &name );
+
+    /**
+     * Sets whether the connection with matching \a name should
+     * only look in the geometry_columns metadata table when scanning for tables.
+     *
+     * \see geometryColumnsOnly()
+     */
+    static void setGeometryColumnsOnly( const QString &name, bool enabled );
+
+    /**
+     * Returns true if the connection with matching \a name should
+     * show geometryless tables when scanning for tables.
+     */
+    static bool allowGeometrylessTables( const QString &name );
+
+    /**
+     * Sets whether the connection with matching \a name should
+     * show geometryless tables when scanning for tables.
+     */
+    static void setAllowGeometrylessTables( const QString &name, bool enabled );
+
+    /**
+     * Returns true if the connection with matching \a name should
+     * use estimated table parameters.
+     */
+    static bool useEstimatedMetadata( const QString &name );
+
+    /**
+     * Sets whether the connection with matching \a name should
+     * use estimated table parameters.
+     */
+    static void setUseEstimatedMetadata( const QString &name, bool enabled );
+
   private:
 
     /**
