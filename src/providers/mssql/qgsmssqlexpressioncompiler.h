@@ -29,7 +29,7 @@ class QgsMssqlExpressionCompiler : public QgsSqlExpressionCompiler
   protected:
     Result compileNode( const QgsExpressionNode *node, QString &result ) override;
     QString quotedValue( const QVariant &value, bool &ok ) override;
-    QString quotedIdentifier( const QString& identifier ) override;
+    QString quotedIdentifier( const QString &identifier ) override;
     QString castToReal( const QString &value ) const override;
     QString castToInt( const QString &value ) const override;
     QString sqlFunctionFromFunctionName( const QString &fnName ) const override;
