@@ -315,7 +315,12 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       }
     }
   }
-
+  else if ( role == Qt::BackgroundColorRole )
+  {
+    QColor bgColor = node->customProperty( QStringLiteral( "backgroundColor" ), QColor() ).value<QColor>();
+    if ( bgColor.isValid() )
+      return bgColor;
+  }
   return QVariant();
 }
 
