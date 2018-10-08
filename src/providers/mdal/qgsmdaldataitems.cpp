@@ -18,6 +18,7 @@
 #include "qgssettings.h"
 
 #include <QFileInfo>
+#include <mutex>
 
 
 QgsMdalLayerItem::QgsMdalLayerItem( QgsDataItem *parent,

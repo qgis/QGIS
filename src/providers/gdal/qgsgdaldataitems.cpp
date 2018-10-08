@@ -20,6 +20,7 @@
 #include "qgsogrutils.h"
 
 #include <QFileInfo>
+#include <mutex>
 
 // defined in qgsgdalprovider.cpp
 void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QStringList &extensions, QStringList &wildcards );

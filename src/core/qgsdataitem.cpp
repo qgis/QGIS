@@ -31,6 +31,7 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <mutex>
 
 #include "qgis.h"
 #include "qgsdataitem.h"
