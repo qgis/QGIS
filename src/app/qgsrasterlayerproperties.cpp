@@ -1053,12 +1053,6 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->setCustomProperty( "WMSPublishDataSourceUrl", mPublishDataSourceUrlCheckBox->isChecked() );
   mRasterLayer->setCustomProperty( "WMSBackgroundLayer", mBackgroundLayerCheckBox->isChecked() );
 
-
-  // update symbology (this is now deprecated and disconnected)
-  Q_NOWARN_DEPRECATED_PUSH
-  emit refreshLegend( mRasterLayer->id(), false );
-  Q_NOWARN_DEPRECATED_POP
-
   // Force a redraw of the legend
   mRasterLayer->setLegend( QgsMapLayerLegend::defaultRasterLegend( mRasterLayer ) );
 

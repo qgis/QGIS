@@ -139,10 +139,6 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     void urlClicked( const QUrl &url );
 
-  signals:
-    //! Emitted when changes to layer were saved to update legend
-    Q_DECL_DEPRECATED void refreshLegend( const QString &layerID, bool expandItem ) SIP_DEPRECATED;
-
   private:
     QPushButton *mBtnStyle = nullptr;
     QPushButton *mBtnMetadata = nullptr;

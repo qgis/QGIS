@@ -13424,20 +13424,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer )
 
   if ( mapLayer->type() == QgsMapLayer::RasterLayer )
   {
-#if 0 // See note above about reusing this
-    QgsRasterLayerProperties *rlp = nullptr;
-    if ( rlp )
-    {
-      rlp->sync();
-    }
-    else
-    {
-      rlp = new QgsRasterLayerProperties( ml, mMapCanvas, this );
-      // handled by rendererChanged() connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), mLayerTreeView, SLOT( refreshLayerSymbology( QString ) ) );
-    }
-#else
     QgsRasterLayerProperties *rasterLayerPropertiesDialog = new QgsRasterLayerProperties( mapLayer, mMapCanvas, this );
-#endif
     // Cannot use exec here due to raster transparency map tool:
     // in order to pass focus to the canvas, the dialog needs to
     // be hidden and shown in non-modal mode.
@@ -13469,20 +13456,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
-#if 0 // See note above about reusing this
-    QgsVectorLayerProperties *vlp = nullptr;
-    if ( vlp )
-    {
-      vlp->syncToLayer();
-    }
-    else
-    {
-      vlp = new QgsVectorLayerProperties( vlayer, this );
-      // handled by rendererChanged() connect( vlp, SIGNAL( refreshLegend( QString ) ), mLayerTreeView, SLOT( refreshLayerSymbology( QString ) ) );
-    }
-#else
     QgsVectorLayerProperties *vectorLayerPropertiesDialog = new QgsVectorLayerProperties( vlayer, this );
-#endif
     Q_FOREACH ( QgsMapLayerConfigWidgetFactory *factory, mMapLayerPanelFactories )
     {
       vectorLayerPropertiesDialog->addPropertiesPageFactory( factory );
