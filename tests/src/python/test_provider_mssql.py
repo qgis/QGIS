@@ -298,6 +298,21 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
         self.assertEqual(geom, ['MultiPolygon (((0 0, 1 0, 1 1, 0 1, 0 0)),((10 0, 11 0, 11 1, 10 1, 10 0)))', 'MultiPolygon (((30 0, 31 0, 31 1, 30 1, 30 0)))'])
 
+    def testMultiGeomColumns(self):
+        uri = '{} table="qgis_test"."multiGeomColumns" (geom1) sql='.format(self.dbconn)
+        new_layer = QgsVectorLayer(uri, 'new', 'mssql')
+        self.assertTrue(new_layer.isValid())
+
+        geom = {f[0]: f.geometry().asWkt() for f in new_layer.getFeatures()}
+        self.assertEqual(geom, {1: 'Point (2 3)', 2: 'Point (3 4)', 3: '', 4: 'Point (5 6)', 5: 'Point (1 2)'})
+
+        uri = '{} table="qgis_test"."multiGeomColumns" (geom2) sql='.format(self.dbconn)
+        new_layer2 = QgsVectorLayer(uri, 'new', 'mssql')
+        self.assertTrue(new_layer2.isValid())
+
+        geom = {f[0]: f.geometry().asWkt() for f in new_layer2.getFeatures()}
+        self.assertEqual(geom, {1: 'LineString (2 3, 4 5)', 2: 'LineString (3 4, 5 6)', 3: 'LineString (1 2, 3 4)', 4: 'LineString (5 6, 7 8)', 5: ''})
+
     def testInvalidGeometries(self):
         """ Test what happens when SQL Server is a POS and throws an exception on encountering an invalid geometry """
         vl = QgsVectorLayer('%s srid=4167 type=POLYGON table="qgis_test"."invalid_polys" (ogr_geometry) sql=' %
