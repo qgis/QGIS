@@ -54,11 +54,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     ~QgsMssqlProvider() override;
 
-    static QSqlDatabase GetDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password );
-
     QgsAbstractFeatureSource *featureSource() const override;
-
-    static bool OpenDatabase( QSqlDatabase db );
 
     /* Implementation of functions from QgsVectorDataProvider */
 
@@ -141,11 +137,6 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     );
 
     QgsCoordinateReferenceSystem crs() const override;
-
-    /**
-     * Returns a thread-safe connection name for use with QSqlDatabase
-     */
-    static QString dbConnectionName( const QString &name );
 
   protected:
     //! Loads fields from input file to member attributeFields

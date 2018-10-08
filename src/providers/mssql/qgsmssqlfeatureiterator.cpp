@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsexception.h"
+#include "qgsmssqlconnection.h"
 
 #include <QObject>
 #include <QTextStream>
@@ -300,7 +301,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
   {
     // No existing connection, so set it up now. It's safe to do here as we're now in
     // the thread were iteration is actually occurring.
-    mDatabase = QgsMssqlProvider::GetDatabase( mSource->mService, mSource->mHost, mSource->mDatabaseName, mSource->mUserName, mSource->mPassword );
+    mDatabase = QgsMssqlConnection::getDatabase( mSource->mService, mSource->mHost, mSource->mDatabaseName, mSource->mUserName, mSource->mPassword );
 
     if ( !mDatabase.open() )
     {

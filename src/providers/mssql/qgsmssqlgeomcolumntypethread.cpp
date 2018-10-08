@@ -19,6 +19,7 @@
 
 #include "qgslogger.h"
 #include "qgsmssqlprovider.h"
+#include "qgsmssqlconnection.h"
 
 QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool useEstimatedMetadata )
   : mService( service )
@@ -71,8 +72,8 @@ void QgsMssqlGeomColumnTypeThread::run()
                             layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( layerProperty.sql ) );
 
       // issue the sql query
-      QSqlDatabase db = QgsMssqlProvider::GetDatabase( mService, mHost, mDatabase, mUsername, mPassword );
-      if ( !QgsMssqlProvider::OpenDatabase( db ) )
+      QSqlDatabase db = QgsMssqlConnection::getDatabase( mService, mHost, mDatabase, mUsername, mPassword );
+      if ( !QgsMssqlConnection::openDatabase( db ) )
       {
         QgsDebugMsg( db.lastError().text() );
         continue;

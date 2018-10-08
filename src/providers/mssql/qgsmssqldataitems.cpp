@@ -26,6 +26,7 @@
 #include "qgsmssqlprovider.h"
 #include "qgssettings.h"
 #include "qgsmessageoutput.h"
+#include "qgsmssqlconnection.h"
 
 #ifdef HAVE_GUI
 #include "qgsmssqlsourceselect.h"
@@ -128,9 +129,9 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
 
   readConnectionSettings();
 
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( mService, mHost, mDatabase, mUsername, mPassword );
+  QSqlDatabase db = QgsMssqlConnection::getDatabase( mService, mHost, mDatabase, mUsername, mPassword );
 
-  if ( !QgsMssqlProvider::OpenDatabase( db ) )
+  if ( !QgsMssqlConnection::openDatabase( db ) )
   {
     children.append( new QgsErrorItem( this, db.lastError().text(), mPath + "/error" ) );
     return children;
