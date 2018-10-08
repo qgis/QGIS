@@ -30,7 +30,6 @@ from qgis.core import (QgsSettings,
                        QgsCoordinateReferenceSystem)
 
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
-
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
 from providertestbase import ProviderTestCase
@@ -44,18 +43,18 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = "service='Driver={ODBC Driver 13 for SQL Server};server=127.0.0.1;uid=SA;pwd=<YourStrong!Passw0rd>' user='SA' password='<YourStrong!Passw0rd>'"
-
+	# These are the connection details for the SQL Server instance running on Travis
+        cls.dbconn = "service='testsqlserver' user=sa password='<YourStrong!Passw0rd>' "
         if 'QGIS_MSSQLTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_MSSQLTEST_DB']
         # Create test layers
         cls.vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'mssql')
-        assert(cls.vl.isValid())
+        assert cls.vl.isValid(), cls.vl.dataProvider().error()
         cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'mssql')
-        assert(cls.poly_vl.isValid())
+        assert cls.poly_vl.isValid(), cls.poly_vl.dataProvider().error()
         cls.poly_provider = cls.poly_vl.dataProvider()
 
     @classmethod

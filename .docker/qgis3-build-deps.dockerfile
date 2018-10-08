@@ -7,10 +7,12 @@ LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Ve
 # && echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
 # && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 314DF160 \
 
+
 RUN  apt-get update \
   && apt-get install -y software-properties-common \
   && apt-get update \
   && apt-get install -y \
+    apt-transport-https \
     bison \
     ca-certificates \
     ccache \
@@ -40,6 +42,7 @@ RUN  apt-get update \
     libqt5quick5 \
     libqt5quickcontrols2-5 \
     libqt5scintilla2-dev \
+    libqt5sql5-odbc \
     libqt5sql5-sqlite \
     libqt5svg5-dev \
     libqt5webkit5-dev \
@@ -111,6 +114,19 @@ RUN  apt-get update \
     oauthlib \
     pyopenssl \
   && apt-get clean
+
+
+# MSSQL: client side
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | tee /etc/apt/sources.list.d/msprod.list
+RUN apt-get update
+RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17 mssql-tools
+
+# Avoid sqlcmd termination due to locale -- see https://github.com/Microsoft/mssql-docker/issues/163
+RUN echo "nb_NO.UTF-8 UTF-8" > /etc/locale.gen
+RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+RUN locale-gen
+
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
