@@ -24,4 +24,4 @@ if "%ARCH%"=="x86" (
 
 set CONFIGONLY=1
 
-package-nightly.cmd 3.1.0 99 qgis-test %ARCH%
+package-nightly.cmd 3.3.0 99 qgis-dev %ARCH%
