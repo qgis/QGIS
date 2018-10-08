@@ -205,6 +205,8 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     // SQL statement used to limit the features retrieved
     QString mSqlWhereClause;
 
+    bool mDisableInvalidGeometryHandling = false;
+
     // Sets the error messages
     void setLastError( const QString &error );
 

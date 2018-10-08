@@ -142,6 +142,18 @@ void QgsMssqlConnection::setUseEstimatedMetadata( const QString &name, bool enab
   settings.setValue( "/MSSQL/connections/" + name + "/estimatedMetadata", enabled );
 }
 
+bool QgsMssqlConnection::isInvalidGeometryHandlingDisabled( const QString &name )
+{
+  QgsSettings settings;
+  return settings.value( "/MSSQL/connections/" + name + "/disableInvalidGeometryHandling", false ).toBool();
+}
+
+void QgsMssqlConnection::setInvalidGeometryHandlingDisabled( const QString &name, bool disabled )
+{
+  QgsSettings settings;
+  settings.setValue( "/MSSQL/connections/" + name + "/disableInvalidGeometryHandling", disabled );
+}
+
 QString QgsMssqlConnection::dbConnectionName( const QString &name )
 {
   // Starting with Qt 5.11, sharing the same connection between threads is not allowed.

@@ -61,26 +61,62 @@ class QgsMssqlConnection
     /**
      * Returns true if the connection with matching \a name should
      * show geometryless tables when scanning for tables.
+     *
+     * \see setAllowGeometrylessTables()
      */
     static bool allowGeometrylessTables( const QString &name );
 
     /**
      * Sets whether the connection with matching \a name should
      * show geometryless tables when scanning for tables.
+     *
+     * \see allowGeometrylessTables()
      */
     static void setAllowGeometrylessTables( const QString &name, bool enabled );
 
     /**
      * Returns true if the connection with matching \a name should
      * use estimated table parameters.
+     *
+     * \see setUseEstimatedMetadata()
      */
     static bool useEstimatedMetadata( const QString &name );
 
     /**
      * Sets whether the connection with matching \a name should
      * use estimated table parameters.
+     *
+     * \see useEstimatedMetadata()
      */
     static void setUseEstimatedMetadata( const QString &name, bool enabled );
+
+    /**
+     * Returns true if the connection with matching \a name should
+     * skip all handling of records with invalid geometry.
+     *
+     * This speeds up the provider, however, if any invalid geometries
+     * are present in a table then the result is unpredictable and may
+     * include missing records. Only check this option if you are certain
+     * that all geometries present in the database are valid, and any newly
+     * added geometries or tables will also be valid.
+     *
+     * \see setInvalidGeometryHandlingDisabled()
+     */
+    static bool isInvalidGeometryHandlingDisabled( const QString &name );
+
+    /**
+     * Sets whether the the connection with matching \a name should
+     * skip all handling of records with invalid geometry.
+     *
+     * This speeds up the provider, however, if any invalid geometries
+     * are present in a table then the result is unpredictable and may
+     * include missing records. Only check this option if you are certain
+     * that all geometries present in the database are valid, and any newly
+     * added geometries or tables will also be valid.
+     *
+     * \see isInvalidGeometryHandlingDisabled()
+     */
+    static void setInvalidGeometryHandlingDisabled( const QString &name, bool disabled );
 
   private:
 
