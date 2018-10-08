@@ -818,7 +818,6 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
 
 void QgsAttributeForm::updateContainersVisibility()
 {
-
   mExpressionContext << QgsExpressionContextUtils::formScope( QgsFeature( mFeature ), mContext.attributeFormModeString() );
 
   const QVector<ContainerInformation *> infos = mContainerVisibilityInformation;
@@ -1198,7 +1197,10 @@ void QgsAttributeForm::init()
           tabWidget = nullptr;
           WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
           layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
-          registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
+          if ( containerDef->visibilityExpression().enabled() )
+          {
+            registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
+          }
           column += 2;
         }
         else
@@ -1744,7 +1746,10 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         if ( childDef->type() == QgsAttributeEditorElement::AeTypeContainer )
         {
           QgsAttributeEditorContainer *containerDef = static_cast<QgsAttributeEditorContainer *>( childDef );
-          registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
+          if ( containerDef->visibilityExpression().enabled() )
+          {
+            registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
+          }
         }
 
         if ( widgetInfo.labelText.isNull() )
