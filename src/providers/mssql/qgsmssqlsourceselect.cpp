@@ -437,13 +437,15 @@ void QgsMssqlSourceSelect::addButtonClicked()
   QgsDebugMsg( QStringLiteral( "mConnInfo:%1" ).arg( mConnInfo ) );
   mSelectedTables.clear();
 
+  const bool disableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( cmbConnections->currentText() );
+
   const QModelIndexList selection = mTablesTreeView->selectionModel()->selection().indexes();
   for ( const QModelIndex &idx : selection )
   {
     if ( idx.column() != QgsMssqlTableModel::DbtmTable )
       continue;
 
-    QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mConnInfo, mUseEstimatedMetadata );
+    QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mConnInfo, mUseEstimatedMetadata, disableInvalidGeometryHandling );
     if ( uri.isNull() )
       continue;
 
@@ -672,9 +674,10 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   }
 
   QModelIndex idx = mProxyModel.mapToSource( index );
-  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsMssqlTableModel::DbtmTable ) )->text();
+  const QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsMssqlTableModel::DbtmTable ) )->text();
+  const bool disableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( cmbConnections->currentText() );
 
-  std::unique_ptr< QgsVectorLayer > vlayer = qgis::make_unique< QgsVectorLayer>( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, QStringLiteral( "mssql" ) );
+  std::unique_ptr< QgsVectorLayer > vlayer = qgis::make_unique< QgsVectorLayer>( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata, disableInvalidGeometryHandling ), tableName, QStringLiteral( "mssql" ) );
 
   if ( !vlayer->isValid() )
   {

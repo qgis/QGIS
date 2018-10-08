@@ -61,6 +61,8 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
     // SQL statement used to limit the features retrieved
     QString mSqlWhereClause;
 
+    bool mDisableInvalidGeometryHandling = false;
+
     QgsCoordinateReferenceSystem mCrs;
 
     // Return True if this feature source has spatial attributes.
@@ -116,6 +118,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
 
     bool mExpressionCompiled = false;
     bool mOrderByCompiled = false;
+    bool mDisableInvalidGeometryHandling = false;
 
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;

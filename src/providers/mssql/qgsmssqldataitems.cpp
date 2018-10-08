@@ -40,7 +40,7 @@
 #include <QProgressDialog>
 
 // ---------------------------------------------------------------------------
-QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem *parent, QString name, QString path )
+QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
   , mUseGeometryColumns( false )
   , mUseEstimatedMetadata( false )
@@ -109,7 +109,7 @@ void QgsMssqlConnectionItem::refresh()
     int index = findItem( mChildren, item );
     if ( index >= 0 )
     {
-      ( ( QgsMssqlSchemaItem * )mChildren.at( index ) )->addLayers( item );
+      static_cast< QgsMssqlSchemaItem * >( mChildren.at( index ) )->addLayers( item );
       delete item;
       continue;
     }
@@ -154,6 +154,8 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
     query += QLatin1String( " union all select sys.schemas.name, sys.objects.name, null, null, 'NONE' from sys.objects join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id where not exists (select * from sys.columns sc1 join sys.types on sc1.system_type_id = sys.types.system_type_id where (sys.types.name = 'geometry' or sys.types.name = 'geography') and sys.objects.object_id = sc1.object_id) and (sys.objects.type = 'U' or sys.objects.type = 'V')" );
   }
 
+  const bool disableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( mName );
+
   // issue the sql query
   QSqlQuery q = QSqlQuery( db );
   q.setForwardOnly( true );
@@ -181,7 +183,8 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
         {
           Q_FOREACH ( QgsDataItem *child2, child->children() )
           {
-            if ( child2->name() == layer.tableName )
+            QgsMssqlLayerItem *layerItem = qobject_cast< QgsMssqlLayerItem *>( child2 );
+            if ( child2->name() == layer.tableName && layerItem && layerItem->disableInvalidGeometryHandling() == disableInvalidGeometryHandling )
             {
               newLayers.append( child2 );
               skip = true; // already added
@@ -202,7 +205,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
       {
         if ( child->name() == layer.schemaName )
         {
-          schemaItem = ( QgsMssqlSchemaItem * )child;
+          schemaItem = static_cast< QgsMssqlSchemaItem * >( child );
           break;
         }
       }
@@ -289,14 +292,14 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
   {
     if ( child->name() == layerProperty.schemaName )
     {
-      schemaItem = ( QgsMssqlSchemaItem * )child;
+      schemaItem = static_cast< QgsMssqlSchemaItem * >( child );
       break;
     }
   }
 
   if ( !schemaItem )
   {
-    QgsDebugMsg( QString( "schema item for %1 not found." ).arg( layerProperty.schemaName ) );
+    QgsDebugMsg( QStringLiteral( "schema item for %1 not found." ).arg( layerProperty.schemaName ) );
     return;
   }
 
@@ -315,7 +318,7 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
     QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList[i] );
     if ( wkbType == QgsWkbTypes::Unknown )
     {
-      QgsDebugMsg( QString( "unsupported geometry type:%1" ).arg( typeList[i] ) );
+      QgsDebugMsg( QStringLiteral( "unsupported geometry type:%1" ).arg( typeList[i] ) );
       continue;
     }
 
@@ -476,7 +479,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
 
 
 // ---------------------------------------------------------------------------
-QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsMssqlLayerProperty layerProperty )
+QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, const QString &path, QgsLayerItem::LayerType layerType, const QgsMssqlLayerProperty &layerProperty )
   : QgsLayerItem( parent, name, path, QString(), layerType, QStringLiteral( "mssql" ) )
   , mLayerProperty( layerProperty )
 {
@@ -489,6 +492,11 @@ QgsMssqlLayerItem *QgsMssqlLayerItem::createClone()
   return new QgsMssqlLayerItem( mParent, mName, mPath, mLayerType, mLayerProperty );
 }
 
+bool QgsMssqlLayerItem::disableInvalidGeometryHandling() const
+{
+  return mDisableInvalidGeometryHandling;
+}
+
 QString QgsMssqlLayerItem::createUri()
 {
   QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString();
@@ -496,7 +504,7 @@ QString QgsMssqlLayerItem::createUri()
 
   if ( !connItem )
   {
-    QgsDebugMsg( "connection item not found." );
+    QgsDebugMsg( QStringLiteral( "connection item not found." ) );
     return QString();
   }
 
@@ -504,12 +512,16 @@ QString QgsMssqlLayerItem::createUri()
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
   uri.setSrid( mLayerProperty.srid );
   uri.setWkbType( QgsMssqlTableModel::wkbTypeFromMssql( mLayerProperty.type ) );
-  QgsDebugMsg( QString( "layer uri: %1" ).arg( uri.uri() ) );
+  uri.setUseEstimatedMetadata( QgsMssqlConnection::useEstimatedMetadata( connItem->name() ) );
+  mDisableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( connItem->name() );
+  uri.setParam( QStringLiteral( "disableInvalidGeometryHandling" ), mDisableInvalidGeometryHandling ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+
+  QgsDebugMsg( QStringLiteral( "layer uri: %1" ).arg( uri.uri() ) );
   return uri.uri();
 }
 
 // ---------------------------------------------------------------------------
-QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem *parent, QString name, QString path )
+QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
@@ -519,7 +531,6 @@ QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem *parent, QString name, QStri
 
 QVector<QgsDataItem *> QgsMssqlSchemaItem::createChildren()
 {
-  QgsDebugMsg( "Entering." );
   return QVector<QgsDataItem *>();
 }
 
@@ -533,7 +544,7 @@ void QgsMssqlSchemaItem::addLayers( QgsDataItem *newLayers )
     {
       continue;
     }
-    QgsMssqlLayerItem *layer = ( ( QgsMssqlLayerItem * )child )->createClone();
+    QgsMssqlLayerItem *layer = static_cast< QgsMssqlLayerItem * >( child )->createClone();
     addChildItem( layer, true );
   }
 }
@@ -591,7 +602,7 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
 }
 
 // ---------------------------------------------------------------------------
-QgsMssqlRootItem::QgsMssqlRootItem( QgsDataItem *parent, QString name, QString path )
+QgsMssqlRootItem::QgsMssqlRootItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = QStringLiteral( "mIconMssql.svg" );

@@ -30,6 +30,7 @@
 
 QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>( source, ownSource, request )
+  , mDisableInvalidGeometryHandling( source->mDisableInvalidGeometryHandling )
 {
   mClosed = false;
 
@@ -141,7 +142,10 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
         <<  qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' <<  qgsDoubleToString( mFilterRect.yMaximum() ) << ", "
         <<  qgsDoubleToString( mFilterRect.xMinimum() ) << ' ' <<  qgsDoubleToString( mFilterRect.yMinimum() );
 
-    mStatement += QStringLiteral( " where [%1].STIsValid() = 1 AND [%1].STIntersects([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
+    mStatement += QStringLiteral( " WHERE " );
+    if ( !mDisableInvalidGeometryHandling )
+      mStatement += QStringLiteral( "[%1].STIsValid() = 1 AND " ).arg( mSource->mGeometryColName );
+    mStatement += QStringLiteral( "[%1].STIntersects([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
                     mSource->mGeometryColName, mSource->mGeometryColType, r, QString::number( mSource->mSRId ) );
     filterAdded = true;
   }
@@ -495,6 +499,7 @@ QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider *p )
   , mDatabaseName( p->mDatabaseName )
   , mHost( p->mHost )
   , mSqlWhereClause( p->mSqlWhereClause )
+  , mDisableInvalidGeometryHandling( p->mDisableInvalidGeometryHandling )
   , mCrs( p->crs() )
 {}
 

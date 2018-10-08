@@ -52,6 +52,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
     cb_geometryColumns->setChecked( QgsMssqlConnection::geometryColumnsOnly( connName ) );
     cb_allowGeometrylessTables->setChecked( QgsMssqlConnection::allowGeometrylessTables( connName ) );
     cb_useEstimatedMetadata->setChecked( QgsMssqlConnection::useEstimatedMetadata( connName ) );
+    mCheckNoInvalidGeometryHandling->setChecked( QgsMssqlConnection::isInvalidGeometryHandlingDisabled( connName ) );
 
     if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
     {
@@ -116,6 +117,7 @@ void QgsMssqlNewConnection::accept()
   QgsMssqlConnection::setGeometryColumnsOnly( connName, cb_geometryColumns->isChecked() );
   QgsMssqlConnection::setAllowGeometrylessTables( connName, cb_allowGeometrylessTables->isChecked() );
   QgsMssqlConnection::setUseEstimatedMetadata( connName, cb_useEstimatedMetadata->isChecked() );
+  QgsMssqlConnection::setInvalidGeometryHandlingDisabled( connName, mCheckNoInvalidGeometryHandling->isChecked() );
 
   QDialog::accept();
 }
