@@ -19,6 +19,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+
 #include "qgswfsutils.h"
 #include "qgsserverprojectutils.h"
 #include "qgsfields.h"
@@ -31,6 +33,8 @@
 #include "qgsfilterrestorer.h"
 #include "qgsogcutils.h"
 #include "qgswfstransaction.h"
+#include "qgsproject.h"
+
 
 namespace QgsWfs
 {

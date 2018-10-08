@@ -130,6 +130,7 @@ SET(QGIS_ANALYSIS_SRCS
 
   network/qgsgraph.cpp
   network/qgsgraphbuilder.cpp
+  network/qgsgraphbuilderinterface.cpp
   network/qgsnetworkspeedstrategy.cpp
   network/qgsnetworkdistancestrategy.cpp
   network/qgsvectorlayerdirector.cpp

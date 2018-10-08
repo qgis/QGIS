@@ -19,6 +19,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QRegularExpression>
+
 #include "qgsmodule.h"
 #include "qgswmsutils.h"
 #include "qgsmediancut.h"

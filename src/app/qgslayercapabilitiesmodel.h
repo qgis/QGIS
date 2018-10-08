@@ -19,12 +19,15 @@
 #define QGSLAYERCAPABILITIESMODEL_H
 
 #include <QObject>
+#include <QSortFilterProxyModel>
 
 #include "qgis_app.h"
-#include "qgsproject.h"
 
 class QgsLayerTreeModel;
 class QgsLayerTreeNode;
+class QgsProject;
+class QgsMapLayer;
+
 
 class APP_EXPORT QgsLayerCapabilitiesModel : public QSortFilterProxyModel
 {

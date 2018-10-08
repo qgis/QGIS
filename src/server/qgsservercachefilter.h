@@ -23,10 +23,11 @@
 #include <QMultiMap>
 #include <QDomDocument>
 #include <QObject>
-#include "qgsproject.h"
 #include "qgsserverrequest.h"
 #include "qgis_server.h"
 #include "qgis_sip.h"
+
+class QgsProject;
 
 SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 
