@@ -679,7 +679,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     case Qt::EditRole:
       return val;
 
-    case Qt::BackgroundColorRole:
+    case Qt::BackgroundRole:
     case Qt::TextColorRole:
     case Qt::DecorationRole:
     case Qt::FontRole:
@@ -704,7 +704,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
       if ( style.isValid() )
       {
-        if ( role == Qt::BackgroundColorRole && style.validBackgroundColor() )
+        if ( role == Qt::BackgroundRole && style.validBackgroundColor() )
           return style.backgroundColor();
         if ( role == Qt::TextColorRole && style.validTextColor() )
           return style.textColor();
@@ -754,6 +754,8 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
       mChangedCellBounds.setBottom( index.row() );
     }
   }
+
+  mRowStylesMap.remove( index.row() );
 
   return true;
 }
