@@ -25,7 +25,7 @@ GO
 DROP TABLE IF EXISTS qgis_test.[multiGeomColumns];
 GO
 
-DROP TABLE IF EXISTS qgis_test.[sacrificalLamb];
+DROP TABLE IF EXISTS qgis_test.[sacrificialLamb];
 GO
 
 DROP SCHEMA qgis_test;
@@ -72,7 +72,7 @@ CREATE TABLE qgis_test.[multiGeomColumns] (
 );
 GO
 
-CREATE TABLE qgis_test.[sacrificalLamb] (
+CREATE TABLE qgis_test.[sacrificialLamb] (
     pk integer PRIMARY KEY
 );
 GO
@@ -101,7 +101,7 @@ INSERT INTO qgis_test.[float_dec] (id, float_field, dec_field ) VALUES
  (1, 1.1111111111, 1.123 );
 GO
 
-INSERT INTO qgis_test.[sacrificalLamb] (pk) VALUES
+INSERT INTO qgis_test.[sacrificialLamb] (pk) VALUES
  (1);
 GO
 
