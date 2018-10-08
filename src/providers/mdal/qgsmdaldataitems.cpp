@@ -60,8 +60,8 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   if ( !info.isFile() )
     return nullptr;
 
-  // get supported extensions
-  if ( sExtensions.isEmpty() )
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]( )
   {
     // TODO ask MDAL for extensions !
     sExtensions << QStringLiteral( "2dm" )
@@ -72,7 +72,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
                 << QStringLiteral( "grib1" )
                 << QStringLiteral( "grib2" )
                 << QStringLiteral( "nc" );
-  }
+  } );
 
   // Filter files by extension
   if ( !sExtensions.contains( suffix ) )

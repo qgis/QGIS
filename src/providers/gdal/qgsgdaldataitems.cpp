@@ -184,18 +184,13 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
     return nullptr;
 
   // get supported extensions
-  if ( sExtensions.isEmpty() )
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]
   {
-    // this code may be executed by more threads at once!
-    // use a mutex to make sure this does not happen (so there's no crash on start)
-    QMutexLocker locker( &sBuildingFilters );
-    if ( sExtensions.isEmpty() )
-    {
-      buildSupportedRasterFileFilterAndExtensions( sFilterString, sExtensions, sWildcards );
-      QgsDebugMsgLevel( "extensions: " + sExtensions.join( " " ), 2 );
-      QgsDebugMsgLevel( "wildcards: " + sWildcards.join( " " ), 2 );
-    }
-  }
+    buildSupportedRasterFileFilterAndExtensions( sFilterString, sExtensions, sWildcards );
+    QgsDebugMsgLevel( "extensions: " + sExtensions.join( " " ), 2 );
+    QgsDebugMsgLevel( "wildcards: " + sWildcards.join( " " ), 2 );
+  } );
 
   // skip *.aux.xml files (GDAL auxiliary metadata files),
   // *.shp.xml files (ESRI metadata) and *.tif.xml files (TIFF metadata)

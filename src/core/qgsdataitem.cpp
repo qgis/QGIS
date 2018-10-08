@@ -1334,10 +1334,11 @@ void QgsZipItem::init()
   mIconName = QStringLiteral( "/mIconZip.svg" );
   mVsiPrefix = vsiPrefix( mFilePath );
 
-  if ( sProviderNames.isEmpty() )
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]
   {
     sProviderNames << QStringLiteral( "OGR" ) << QStringLiteral( "GDAL" );
-  }
+  } );
 }
 
 QVector<QgsDataItem *> QgsZipItem::createChildren()

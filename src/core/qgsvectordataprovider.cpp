@@ -33,6 +33,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include <mutex>
 
 QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options )
   : QgsDataProvider( uri, options )
@@ -605,7 +606,8 @@ static bool _compareEncodings( const QString &s1, const QString &s2 )
 
 QStringList QgsVectorDataProvider::availableEncodings()
 {
-  if ( sEncodings.isEmpty() )
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]
   {
     Q_FOREACH ( const QString &codec, QTextCodec::availableCodecs() )
     {
@@ -658,10 +660,11 @@ QStringList QgsVectorDataProvider::availableEncodings()
     smEncodings << "TIS-620";
     smEncodings << "System";
 #endif
-  }
 
-  // Do case-insensitive sorting of encodings
-  std::sort( sEncodings.begin(), sEncodings.end(), _compareEncodings );
+    // Do case-insensitive sorting of encodings
+    std::sort( sEncodings.begin(), sEncodings.end(), _compareEncodings );
+
+  } );
 
   return sEncodings;
 }
