@@ -418,20 +418,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cmbPromptRasterSublayers->addItem( tr( "Load all" ) );
   cmbPromptRasterSublayers->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/promptForRasterSublayers" ), 0 ).toInt() );
 
-  // decide how qgis should use band names (if present) in raster sources
-  // 0 = Band Number        -> Default behavior is to just use band numbers
-  // 1 = Band Name          -> Uses available band name
-  // 2 = Band Name & Number -> Uses available band name with a band number-> "name (band #)"
-  // 3 = Band Name & Number -> Uses band number with available band name-> "band # (name)"
-  // 4 = Use _DIM_EXTRA      -> Uses "_DIM_EXTRA" metadata attribute in netCDF and geotiff
-  cmbUseOfRasterBandNames->clear();
-  cmbUseOfRasterBandNames->addItem( tr( "Band Number" ) );
-  cmbUseOfRasterBandNames->addItem( tr( "Band Name" ) );
-  cmbUseOfRasterBandNames->addItem( tr( "Band Name & Number" ) );
-  cmbUseOfRasterBandNames->addItem( tr( "Band Number & Name" ) );
-  cmbUseOfRasterBandNames->addItem( tr( "Use _DIM_EXTRA" ) );
-  cmbUseOfRasterBandNames->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/useOfRasterBandNames" ), 0 ).toInt() );
-
   // Scan for valid items in the browser dock
   cmbScanItemsInBrowser->clear();
   cmbScanItemsInBrowser->addItem( tr( "Check file contents" ), "contents" ); // 0
@@ -1403,7 +1389,6 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableView" ), mAttrTableViewComboBox->currentData() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableRowCache" ), spinBoxAttrTableRowCache->value() );
   mSettings->setValue( QStringLiteral( "/qgis/promptForRasterSublayers" ), cmbPromptRasterSublayers->currentIndex() );
-  mSettings->setValue( QStringLiteral( "/qgis/useOfRasterBandNames" ), cmbUseOfRasterBandNames->currentIndex() );
   mSettings->setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ),
                        cmbScanItemsInBrowser->currentData().toString() );
   mSettings->setValue( QStringLiteral( "/qgis/scanZipInBrowser2" ),
