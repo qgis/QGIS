@@ -206,9 +206,9 @@ void QgsFieldConditionalFormatWidget::setPresets( const QList<QgsConditionalStyl
     if ( style.isValid() )
     {
       QStandardItem *item = new QStandardItem( QStringLiteral( "abc - 123" ) );
-      if ( style.backgroundColor().isValid() )
+      if ( style.validBackgroundColor() )
         item->setBackground( style.backgroundColor() );
-      if ( style.textColor().isValid() )
+      if ( style.validTextColor() )
         item->setForeground( style.textColor() );
       if ( style.symbol() )
         item->setIcon( style.icon() );
