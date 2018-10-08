@@ -487,6 +487,60 @@ QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, 
   setState( Populated );
 }
 
+QList<QAction *> QgsMssqlLayerItem::actions( QWidget *actionParent )
+{
+  QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( parent() ? parent()->parent() : nullptr );
+
+  QList<QAction *> lst;
+
+  // delete
+  QAction *actionDeleteLayer = new QAction( tr( "Delete Table" ), actionParent );
+  connect( actionDeleteLayer, &QAction::triggered, this, [ = ]
+  {
+    if ( QMessageBox::question( nullptr, QObject::tr( "Delete Table" ),
+                                QObject::tr( "Are you sure you want to delete [%1].[%2]?" ).arg( mLayerProperty.schemaName, mLayerProperty.tableName ),
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      return;
+
+    QString errCause;
+    bool res = QgsMssqlConnection::dropTable( mUri, &errCause );
+    if ( !res )
+    {
+      QMessageBox::warning( nullptr, tr( "Delete Table" ), errCause );
+    }
+    else
+    {
+      QMessageBox::information( nullptr, tr( "Delete Table" ), tr( "Table deleted successfully." ) );
+      if ( connItem )
+        connItem->refresh();
+    }
+  } );
+  lst.append( actionDeleteLayer );
+
+  // truncate
+  QAction *actionTruncateLayer = new QAction( tr( "Truncate Table" ), actionParent );
+  connect( actionTruncateLayer, &QAction::triggered, this, [ = ]
+  {
+    if ( QMessageBox::question( nullptr, QObject::tr( "Truncate Table" ),
+                                QObject::tr( "Are you sure you want to truncate [%1].[%2]?\n\nThis will delete all data within the table." ).arg( mLayerProperty.schemaName, mLayerProperty.tableName ),
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      return;
+
+    QString errCause;
+    bool res = QgsMssqlConnection::truncateTable( mUri, &errCause );
+    if ( !res )
+    {
+      QMessageBox::warning( nullptr, tr( "Truncate Table" ), errCause );
+    }
+    else
+    {
+      QMessageBox::information( nullptr, tr( "Truncate Table" ), tr( "Table truncated successfully." ) );
+    }
+  } );
+  lst.append( actionTruncateLayer );
+  return lst;
+}
+
 QgsMssqlLayerItem *QgsMssqlLayerItem::createClone()
 {
   return new QgsMssqlLayerItem( mParent, mName, mPath, mLayerType, mLayerProperty );

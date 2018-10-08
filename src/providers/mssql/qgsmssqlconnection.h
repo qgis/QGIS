@@ -118,6 +118,16 @@ class QgsMssqlConnection
      */
     static void setInvalidGeometryHandlingDisabled( const QString &name, bool disabled );
 
+    /**
+     * Drops the table referenced by \a uri.
+     */
+    static bool dropTable( const QString &uri, QString *errorMessage );
+
+    /**
+     * Truncates the table referenced by \a uri.
+     */
+    static bool truncateTable( const QString &uri, QString *errorMessage );
+
   private:
 
     /**

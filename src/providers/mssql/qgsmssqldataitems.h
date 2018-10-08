@@ -126,7 +126,9 @@ class QgsMssqlLayerItem : public QgsLayerItem
 
   public:
     QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, const QString &path, QgsLayerItem::LayerType layerType, const QgsMssqlLayerProperty &layerProperties );
-
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
+#endif
     QString createUri();
 
     QgsMssqlLayerItem *createClone();
