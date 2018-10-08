@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmssqldataitems.h"
+#include "qgsmssqlconnection.h"
 
 #include "qgsmssqlgeomcolumntypethread.h"
 #include "qgslogger.h"
@@ -71,9 +72,9 @@ void QgsMssqlConnectionItem::readConnectionSettings()
     mPassword = settings.value( key + "/password" ).toString();
   }
 
-  mUseGeometryColumns = settings.value( key + "/geometryColumns", false ).toBool();
-  mUseEstimatedMetadata = settings.value( key + "/estimatedMetadata", false ).toBool();
-  mAllowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", true ).toBool();
+  mUseGeometryColumns = QgsMssqlConnection::useEstimatedMetadata( mName );
+  mUseEstimatedMetadata = QgsMssqlConnection::useEstimatedMetadata( mName );
+  mAllowGeometrylessTables = QgsMssqlConnection::allowGeometrylessTables( mName );
 
   mConnInfo = "dbname='" + mDatabase + "' host='" + mHost + "' user='" + mUsername + "' password='" + mPassword + '\'';
   if ( !mService.isEmpty() )
@@ -356,12 +357,10 @@ QList<QAction *> QgsMssqlConnectionItem::actions( QWidget *parent )
   return lst;
 }
 
-void QgsMssqlConnectionItem::setAllowGeometrylessTables( bool allow )
+void QgsMssqlConnectionItem::setAllowGeometrylessTables( const bool allow )
 {
   mAllowGeometrylessTables = allow;
-  QString key = "/MSSQL/connections/" + mName;
-  QgsSettings settings;
-  settings.setValue( key + "/allowGeometrylessTables", allow );
+  QgsMssqlConnection::setAllowGeometrylessTables( mName, allow );
   refresh();
 }
 
