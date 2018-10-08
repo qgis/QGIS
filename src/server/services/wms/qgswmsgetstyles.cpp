@@ -18,13 +18,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+
 #include "qgswmsutils.h"
 #include "qgswmsgetstyles.h"
 #include "qgsserverprojectutils.h"
 
+#include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerstylemanager.h"
+
 
 namespace QgsWms
 {

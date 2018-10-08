@@ -18,8 +18,12 @@
 #ifndef QGSSERVERPROJECTUTILS_H
 #define QGSSERVERPROJECTUTILS_H
 
+#include <QString>
+
 #include "qgis_server.h"
-#include "qgsproject.h"
+
+class QgsProject;
+class QgsRectangle;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode

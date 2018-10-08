@@ -18,7 +18,6 @@
 #define QGSHANDLEBADLAYERS_H
 
 #include "ui_qgshandlebadlayersbase.h"
-#include "qgsproject.h"
 #include "qgsprojectbadlayerhandler.h"
 #include "qgis_app.h"
 

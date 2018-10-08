@@ -19,12 +19,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+
 #include "qgswfsutils.h"
 #include "qgsserverprojectutils.h"
 #include "qgsfields.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
+#include "qgsproject.h"
 #include "qgsfeatureiterator.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"

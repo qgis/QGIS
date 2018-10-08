@@ -18,9 +18,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgswmsutils.h"
 #include "qgswmsdescribelayer.h"
 #include "qgsserverprojectutils.h"
+#include "qgsproject.h"
 
 namespace QgsWms
 {

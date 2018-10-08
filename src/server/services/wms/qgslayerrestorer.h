@@ -20,6 +20,7 @@
 
 #include <QList>
 #include <QDomDocument>
+#include <QMap>
 
 #include "qgsfeatureid.h"
 
@@ -49,6 +50,7 @@ class QgsLayerRestorer
     ~QgsLayerRestorer();
 
   private:
+
     struct QgsLayerSettings
     {
       QString name;
