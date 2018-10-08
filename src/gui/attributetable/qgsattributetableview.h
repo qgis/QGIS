@@ -22,6 +22,7 @@
 #include "qgsfeatureid.h"
 
 #include "qgis_gui.h"
+#include "qgsattributetableconfig.h"
 
 class QgsAttributeTableDelegate;
 class QgsAttributeTableFilterModel;
@@ -34,6 +35,7 @@ class QgsVectorLayerCache;
 class QMenu;
 class QProgressDialog;
 class QgsAttributeTableConfig;
+class QgsFeature;
 
 /**
  * \ingroup gui
@@ -79,6 +81,13 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * \since QGIS 2.16
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
+
+    /**
+     * Returns the selected features in the attribute table in table sorted order.
+     * \returns The selected features in the attribute table in the order sorted by the table.
+     * \since QGIS 3.4
+     */
+    QList<QgsFeatureId> selectedFeaturesIds() const;
 
   protected:
 
@@ -179,6 +188,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     int mRowSectionAnchor = 0;
     QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag = QItemSelectionModel::Select;
     QMap< QModelIndex, QWidget * > mActionWidgets;
+    QgsAttributeTableConfig mConfig;
 };
 
 #endif

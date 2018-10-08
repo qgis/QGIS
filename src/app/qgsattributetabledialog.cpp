@@ -26,6 +26,7 @@
 
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
 #include "qgsexpressionbuilderwidget.h"
@@ -50,6 +51,8 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgsfieldproxymodel.h"
 #include "qgsgui.h"
+#include "qgsclipboard.h"
+#include "qgsfeaturestore.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -762,7 +765,46 @@ void QgsAttributeTableDialog::mActionCutSelectedRows_triggered()
 
 void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
 {
-  QgisApp::instance()->copySelectionToClipboard( mLayer );
+  if ( mMainView->view() == QgsDualView::AttributeTable )
+  {
+    const QList<QgsFeatureId> featureIds = mMainView->tableView()->selectedFeaturesIds();
+    QgsFeatureStore featureStore;
+    QgsFields fields = QgsFields( mLayer->fields() );
+    QStringList fieldNames;
+
+    const auto configs = mMainView->attributeTableConfig().columns();
+    for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : configs )
+    {
+      if ( columnConfig.hidden )
+      {
+        int fieldIndex = fields.lookupField( columnConfig.name );
+        fields.remove( fieldIndex );
+        continue;
+      }
+      fieldNames << columnConfig.name;
+    }
+    featureStore.setFields( fields );
+
+    QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest( featureIds.toSet() )
+                            .setSubsetOfAttributes( fieldNames, mLayer->fields() ) );
+    QgsFeatureMap featureMap;
+    QgsFeature feature;
+    while ( it.nextFeature( feature ) )
+    {
+      QgsVectorLayerUtils::matchAttributesToFields( feature, fields );
+      featureMap[feature.id()] = feature;
+    }
+    for ( const QgsFeatureId &id : featureIds )
+    {
+      featureStore.addFeature( featureMap[id] );
+    }
+
+    QgisApp::instance()->clipboard()->replaceWithCopyOf( featureStore );
+  }
+  else
+  {
+    QgisApp::instance()->copySelectionToClipboard( mLayer );
+  }
 }
 
 void QgsAttributeTableDialog::mActionPasteFeatures_triggered()
