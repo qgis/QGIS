@@ -56,6 +56,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     }
 
     QString tip;
+    bool withTipButSelectable = false;
     if ( wkbType == QgsWkbTypes::Unknown )
     {
       tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
@@ -67,6 +68,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     else if ( !layerProperty.pkCols.isEmpty() )
     {
       tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
+      withTipButSelectable = true;
     }
 
     QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
@@ -101,6 +103,16 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
     pkItem->setData( "", Qt::UserRole + 2 );
 
+    if ( !layerProperty.pkCols.isEmpty() )
+    {
+      // If we have a view with multiple possible columns to be used as the primary key, for convenience
+      // let's select the first one - this is what the browser dock already does. We risk that a wrong column
+      // will be used, but most of the time we should be fine.
+      QString firstCol = layerProperty.pkCols[0];
+      pkItem->setText( firstCol );
+      pkItem->setData( QStringList( firstCol ), Qt::UserRole + 2 );
+    }
+
     QStandardItem *selItem = new QStandardItem( QString() );
     selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
     selItem->setCheckState( Qt::Checked );
@@ -123,15 +135,17 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
 
     Q_FOREACH ( QStandardItem *item, childItemList )
     {
+      if ( tip.isEmpty() || withTipButSelectable )
+        item->setFlags( item->flags() | Qt::ItemIsSelectable );
+      else
+        item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
+
       if ( tip.isEmpty() )
       {
-        item->setFlags( item->flags() | Qt::ItemIsSelectable );
         item->setToolTip( QString() );
       }
       else
       {
-        item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
-
         if ( item == schemaNameItem )
           item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
 
