@@ -298,6 +298,25 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
         self.assertEqual(geom, ['MultiPolygon (((0 0, 1 0, 1 1, 0 1, 0 0)),((10 0, 11 0, 11 1, 10 1, 10 0)))', 'MultiPolygon (((30 0, 31 0, 31 1, 30 1, 30 0)))'])
 
+    def testOverwriteExisting(self):
+        layer = QgsVectorLayer("NoGeometry?field=pk:integer", "addfeat", "memory")
+        pr = layer.dataProvider()
+        f = QgsFeature()
+        f.setAttributes([133])
+        pr.addFeatures([f])
+
+        uri = '{} table="qgis_test"."sacrificalLamb" sql='.format(self.dbconn)
+        new_layer = QgsVectorLayer(uri, 'new', 'mssql')
+        self.assertTrue(new_layer.isValid())
+        self.assertEqual([f.attributes() for f in new_layer.getFeatures()], [[1]])
+
+        # try to overwrite
+        error, message = QgsVectorLayerExporter.exportLayer(layer, uri, 'mssql', QgsCoordinateReferenceSystem())
+        self.assertEqual(error, QgsVectorLayerExporter.ErrCreateLayer)
+
+        # should not have overwritten features
+        self.assertEqual([f.attributes() for f in new_layer.getFeatures()], [[1]])
+
     def testMultiGeomColumns(self):
         uri = '{} table="qgis_test"."multiGeomColumns" (geom1) sql='.format(self.dbconn)
         new_layer = QgsVectorLayer(uri, 'new', 'mssql')

@@ -25,6 +25,9 @@ GO
 DROP TABLE IF EXISTS qgis_test.[multiGeomColumns];
 GO
 
+DROP TABLE IF EXISTS qgis_test.[sacrificalLamb];
+GO
+
 DROP SCHEMA qgis_test;
 GO
 
@@ -69,6 +72,11 @@ CREATE TABLE qgis_test.[multiGeomColumns] (
 );
 GO
 
+CREATE TABLE qgis_test.[sacrificalLamb] (
+    pk integer PRIMARY KEY
+);
+GO
+
 INSERT INTO qgis_test.[someData] (pk, cnt, name, name2, num_char, geom) VALUES
 (5, -200, NULL, 'NuLl', '5', geometry::STGeomFromText( 'Point(-71.123 78.23)', 4326 )),
 (3,  300, 'Pear', 'PEaR', '3', NULL),
@@ -91,6 +99,10 @@ INSERT INTO qgis_test.[date_times] (id, date_field, time_field, datetime_field )
 
 INSERT INTO qgis_test.[float_dec] (id, float_field, dec_field ) VALUES
  (1, 1.1111111111, 1.123 );
+GO
+
+INSERT INTO qgis_test.[sacrificalLamb] (pk) VALUES
+ (1);
 GO
 
 INSERT INTO qgis_test.[multiGeomColumns] (pk, geom1, geom2) VALUES
