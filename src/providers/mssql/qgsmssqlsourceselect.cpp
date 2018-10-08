@@ -293,7 +293,7 @@ void QgsMssqlSourceSelect::cmbConnections_activated( int )
   settings.setValue( QStringLiteral( "MSSQL/connections/selected" ), cmbConnections->currentText() );
 
   cbxAllowGeometrylessTables->blockSignals( true );
-  cbxAllowGeometrylessTables->setChecked( settings.value( "/MSSQL/connections/" + cmbConnections->currentText() + "/allowGeometrylessTables", false ).toBool() );
+  cbxAllowGeometrylessTables->setChecked( QgsMssqlConnection::allowGeometrylessTables( cmbConnections->currentText() ) );
   cbxAllowGeometrylessTables->blockSignals( false );
 }
 
@@ -495,11 +495,9 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
     password = settings.value( key + "/password" ).toString();
   }
 
-  bool useGeometryColumns = settings.value( key + "/geometryColumns", false ).toBool();
-
+  bool useGeometryColumns = QgsMssqlConnection::geometryColumnsOnly( cmbConnections->currentText() );
   bool allowGeometrylessTables = cbxAllowGeometrylessTables->isChecked();
-
-  bool estimateMetadata = settings.value( key + "/estimatedMetadata", true ).toBool();
+  bool estimateMetadata = QgsMssqlConnection::useEstimatedMetadata( cmbConnections->currentText() );
 
   mConnInfo = "dbname='" + database + '\'';
   if ( !host.isEmpty() )

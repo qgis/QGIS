@@ -50,7 +50,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
     listDatabase->addItem( settings.value( key + "/database" ).toString() );
     listDatabase->setCurrentRow( 0 );
     cb_geometryColumns->setChecked( QgsMssqlConnection::geometryColumnsOnly( connName ) );
-    cb_allowGeometrylessTables->setChecked( QgsMssqlConnection::geometryColumnsOnly( connName ) );
+    cb_allowGeometrylessTables->setChecked( QgsMssqlConnection::allowGeometrylessTables( connName ) );
     cb_useEstimatedMetadata->setChecked( QgsMssqlConnection::useEstimatedMetadata( connName ) );
 
     if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
