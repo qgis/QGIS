@@ -28,6 +28,19 @@ QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const 
   if ( node->nodeType() == QgsExpressionNode::ntBinaryOperator )
   {
     const QgsExpressionNodeBinaryOperator *bin( static_cast<const QgsExpressionNodeBinaryOperator *>( node ) );
+    switch ( bin->op() )
+    {
+      // special handling
+      case QgsExpressionNodeBinaryOperator::boPow:
+      case QgsExpressionNodeBinaryOperator::boRegexp:
+      case QgsExpressionNodeBinaryOperator::boConcat:
+        break;
+
+      default:
+        // fallback to default handling
+        return QgsSqlExpressionCompiler::compileNode( node, result );;
+    }
+
     QString op1, op2;
 
     Result result1 = compileNode( bin->opLeft(), op1 );
@@ -51,7 +64,6 @@ QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const 
       default:
         break;
     }
-
   }
 
   //fallback to default handling
@@ -72,7 +84,7 @@ QString QgsMssqlExpressionCompiler::quotedValue( const QVariant &value, bool &ok
   {
     case QVariant::Bool:
       //no boolean literal support in mssql, so fake it
-      return value.toBool() ? "(1=1)" : "(1=0)";
+      return value.toBool() ? QStringLiteral( "(1=1)" ) : QStringLiteral( "(1=0)" );
 
     default:
       return QgsSqlExpressionCompiler::quotedValue( value, ok );
