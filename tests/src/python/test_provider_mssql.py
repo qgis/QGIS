@@ -305,7 +305,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         f.setAttributes([133])
         pr.addFeatures([f])
 
-        uri = '{} table="qgis_test"."sacrificalLamb" sql='.format(self.dbconn)
+        uri = '{} table="qgis_test"."sacrificialLamb" sql='.format(self.dbconn)
         new_layer = QgsVectorLayer(uri, 'new', 'mssql')
         self.assertTrue(new_layer.isValid())
         self.assertEqual([f.attributes() for f in new_layer.getFeatures()], [[1]])
