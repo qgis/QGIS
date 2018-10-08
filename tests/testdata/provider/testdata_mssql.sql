@@ -22,6 +22,9 @@ GO
 DROP TABLE IF EXISTS qgis_test.[float_dec];
 GO
 
+DROP TABLE IF EXISTS qgis_test.[multiGeomColumns];
+GO
+
 DROP SCHEMA qgis_test;
 GO
 
@@ -59,6 +62,13 @@ CREATE TABLE qgis_test.[float_dec] (
 );
 GO
 
+CREATE TABLE qgis_test.[multiGeomColumns] (
+    pk integer PRIMARY KEY,
+    geom1 geometry,
+    geom2 geometry
+);
+GO
+
 INSERT INTO qgis_test.[someData] (pk, cnt, name, name2, num_char, geom) VALUES
 (5, -200, NULL, 'NuLl', '5', geometry::STGeomFromText( 'Point(-71.123 78.23)', 4326 )),
 (3,  300, 'Pear', 'PEaR', '3', NULL),
@@ -83,7 +93,14 @@ INSERT INTO qgis_test.[float_dec] (id, float_field, dec_field ) VALUES
  (1, 1.1111111111, 1.123 );
 GO
 
-
+INSERT INTO qgis_test.[multiGeomColumns] (pk, geom1, geom2) VALUES
+(5, geometry::STGeomFromText( 'Point( 1 2 )', 4326 ), NULL),
+(3, NULL, geometry::STGeomFromText( 'LineString( 1 2, 3 4 )', 4326 )),
+(1, geometry::STGeomFromText( 'Point( 2 3 )', 4326 ), geometry::STGeomFromText( 'LineString( 2 3, 4 5 )', 4326 )),
+(2, geometry::STGeomFromText( 'Point( 3 4 )', 4326 ), geometry::STGeomFromText( 'LineString( 3 4, 5 6 )', 4326 )),
+(4, geometry::STGeomFromText( 'Point( 5 6 )', 4326 ), geometry::STGeomFromText( 'LineString( 5 6, 7 8 )', 4326 ))
+;
+GO
 
 /** Contains invalid polygons **/
 SET ANSI_NULLS ON

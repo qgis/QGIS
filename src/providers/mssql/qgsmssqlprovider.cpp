@@ -338,10 +338,15 @@ void QgsMssqlProvider::loadFields()
     QStringList pkCandidates;
     while ( query.next() )
     {
-      QString sqlTypeName = query.value( 5 ).toString();
-      if ( sqlTypeName == QLatin1String( "geometry" ) || sqlTypeName == QLatin1String( "geography" ) )
+      const QString colName = query.value( 3 ).toString();
+      const QString sqlTypeName = query.value( 5 ).toString();
+
+      // if we don't have an explicitly set geometry column name, and this is a geometry column, then use it
+      // but if we DO have an explicitly set geometry column name, then load the other information if this is that column
+      if ( ( mGeometryColName.isEmpty() && ( sqlTypeName == QLatin1String( "geometry" ) || sqlTypeName == QLatin1String( "geography" ) ) )
+           || colName == mGeometryColName )
       {
-        mGeometryColName = query.value( 3 ).toString();
+        mGeometryColName = colName;
         mGeometryColType = sqlTypeName;
         mParser.IsGeography = sqlTypeName == QLatin1String( "geography" );
       }
@@ -350,7 +355,7 @@ void QgsMssqlProvider::loadFields()
         QVariant::Type sqlType = DecodeSqlType( sqlTypeName );
         if ( sqlTypeName == QLatin1String( "int identity" ) || sqlTypeName == QLatin1String( "bigint identity" ) )
         {
-          mFidColName = query.value( 3 ).toString();
+          mFidColName = colName;
           isIdentity = true;
         }
         else if ( sqlTypeName == QLatin1String( "int" ) || sqlTypeName == QLatin1String( "bigint" ) )
@@ -368,7 +373,7 @@ void QgsMssqlProvider::loadFields()
           }
           mAttributeFields.append(
             QgsField(
-              query.value( 3 ).toString(), sqlType,
+              colName, sqlType,
               sqlTypeName,
               length ) );
         }
@@ -376,7 +381,7 @@ void QgsMssqlProvider::loadFields()
         {
           mAttributeFields.append(
             QgsField(
-              query.value( 3 ).toString(), sqlType,
+              colName, sqlType,
               sqlTypeName,
               query.value( 6 ).toInt(),
               sqlTypeName == QLatin1String( "decimal" ) ? query.value( 8 ).toInt() : -1 ) );
@@ -385,7 +390,7 @@ void QgsMssqlProvider::loadFields()
         {
           mAttributeFields.append(
             QgsField(
-              query.value( 3 ).toString(), sqlType,
+              colName, sqlType,
               sqlTypeName,
               -1,
               -1 ) );
@@ -394,7 +399,7 @@ void QgsMssqlProvider::loadFields()
         {
           mAttributeFields.append(
             QgsField(
-              query.value( 3 ).toString(), sqlType,
+              colName, sqlType,
               sqlTypeName ) );
         }
 
