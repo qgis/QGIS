@@ -24,6 +24,7 @@
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlprovider.h"
 #include "qgssettings.h"
+#include "qgsmssqlconnection.h"
 
 QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -170,7 +171,7 @@ bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
     database = item->text();
   }
 
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( txtService->text().trimmed(),
+  QSqlDatabase db = QgsMssqlConnection::getDatabase( txtService->text().trimmed(),
                     txtHost->text().trimmed(),
                     database,
                     txtUsername->text().trimmed(),
@@ -203,7 +204,7 @@ void QgsMssqlNewConnection::listDatabases()
   listDatabase->clear();
   QString queryStr = QStringLiteral( "SELECT name FROM master..sysdatabases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')" );
 
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( txtService->text().trimmed(),
+  QSqlDatabase db = QgsMssqlConnection::getDatabase( txtService->text().trimmed(),
                     txtHost->text().trimmed(),
                     QStringLiteral( "master" ),
                     txtUsername->text().trimmed(),

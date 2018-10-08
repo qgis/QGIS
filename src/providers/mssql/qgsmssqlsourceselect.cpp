@@ -28,6 +28,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsmssqlconnection.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -511,9 +512,9 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
     mConnInfo += " service='" + service + '\'';
 
   QgsDebugMsg( QStringLiteral( "GetDatabase" ) );
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( service, host, database, username, password );
+  QSqlDatabase db = QgsMssqlConnection::getDatabase( service, host, database, username, password );
 
-  if ( !QgsMssqlProvider::OpenDatabase( db ) )
+  if ( !QgsMssqlConnection::openDatabase( db ) )
   {
     // Let user know we couldn't initialize the MSSQL provider
     QMessageBox::warning( this,
