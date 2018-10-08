@@ -1819,6 +1819,26 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
       return QgsVectorLayerExporter::ErrCreateLayer;
     }
   }
+  else
+  {
+    // test for existing
+    sql = QStringLiteral( "SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')" )
+          .arg( schemaName, tableName );
+    if ( !q.exec( sql ) )
+    {
+      if ( errorMessage )
+        *errorMessage = q.lastError().text();
+      return QgsVectorLayerExporter::ErrCreateLayer;
+    }
+
+    // if we got a hit, abort!!
+    if ( q.next() )
+    {
+      if ( errorMessage )
+        *errorMessage = tr( "Table [%1].[%2] already exists" ).arg( schemaName, tableName );
+      return QgsVectorLayerExporter::ErrCreateLayer;
+    }
+  }
 
   if ( !geometryColumn.isEmpty() )
   {
