@@ -754,8 +754,10 @@ void QgsVectorLayerProperties::apply()
   mLayer->geometryOptions()->setRemoveDuplicateNodes( mRemoveDuplicateNodesCheckbox->isChecked() );
   mLayer->geometryOptions()->setGeometryPrecision( mGeometryPrecisionSpinBox->value() );
 
-  // update symbology
+  // update symbology (this is now deprecated and disconnected)
+  Q_NOWARN_DEPRECATED_PUSH
   emit refreshLegend( mLayer->id() );
+  Q_NOWARN_DEPRECATED_POP
 
   mLayer->triggerRepaint();
   // notify the project we've made a change
