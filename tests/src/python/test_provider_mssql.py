@@ -24,6 +24,7 @@ from qgis.core import (QgsSettings,
                        QgsField,
                        QgsGeometry,
                        QgsPointXY,
+                       QgsRectangle,
                        NULL,
                        QgsVectorLayerExporter,
                        QgsCoordinateReferenceSystem)
@@ -43,7 +44,8 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = "dbname='gis' host=localhost\sqlexpress"
+        cls.dbconn = "service='Driver={ODBC Driver 13 for SQL Server};server=127.0.0.1;uid=SA;pwd=<YourStrong!Passw0rd>' user='SA' password='<YourStrong!Passw0rd>'"
+
         if 'QGIS_MSSQLTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_MSSQLTEST_DB']
         # Create test layers
@@ -271,7 +273,9 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         """ Test what happens when SQL Server is a POS and throws an exception on encountering an invalid geometry """
         vl = QgsVectorLayer('%s srid=4167 type=POLYGON table="qgis_test"."invalid_polys" (ogr_geometry) sql=' %
                             (self.dbconn), "testinvalid", "mssql")
-        assert(vl.isValid())
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.dataProvider().extent().toString(1), QgsRectangle(173.953, -41.513, 173.967, -41.502).toString(1))
 
         #burn through features - don't want SQL server to trip up on the invalid ones
         count = 0
@@ -286,6 +290,37 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         # two invalid geometry features
         self.assertEqual(count, 37)
         # sorry... you get NO chance to see these features exist and repair them... because SQL server. Use PostGIS instead and live a happier life!
+
+        # with estimated metadata
+        vl = QgsVectorLayer('%s srid=4167 type=POLYGON  estimatedmetadata=true table="qgis_test"."invalid_polys" (ogr_geometry) sql=' %
+                            (self.dbconn), "testinvalid", "mssql")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().extent().toString(1), QgsRectangle(173.954, -41.513, 173.967, -41.502).toString(1))
+
+        # Now, play on the edge! Let's disable invalid geometry handling and watch things crash and burn
+        vl = QgsVectorLayer('%s srid=4167 type=POLYGON table="qgis_test"."invalid_polys" (ogr_geometry) disableInvalidGeometryHandling="1" sql=' %
+                            (self.dbconn), "testinvalid", "mssql")
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.dataProvider().extent().toString(1), 'Empty') # HAHA - you asked for it
+        #burn through features - don't expect anything wrong here yet
+        count = 0
+        for f in vl.dataProvider().getFeatures():
+            count += 1
+        self.assertEqual(count, 39)
+        count = 0
+
+        for f in vl.dataProvider().getFeatures(QgsFeatureRequest(QgsRectangle(173, -42, 174, -41))):
+            count += 1
+        # now you only get 1 feature *sad trumpet*
+        self.assertEqual(count, 1)
+        count = 0
+
+        # same, with estimated metadata
+        vl = QgsVectorLayer('%s srid=4167 type=POLYGON  estimatedmetadata=true table="qgis_test"."invalid_polys" (ogr_geometry) disableInvalidGeometryHandling="1" sql=' %
+                            (self.dbconn), "testinvalid", "mssql")
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().extent().toString(1), 'Empty')
 
 
 if __name__ == '__main__':

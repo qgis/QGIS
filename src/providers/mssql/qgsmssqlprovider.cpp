@@ -724,9 +724,9 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
     if ( mGeometryColType == QLatin1String( "geometry" ) )
     {
       if ( mDisableInvalidGeometryHandling )
-        statement = QStringLiteral( "select min(case when ([%1].STIsValid() = 1) THEN [%1].STEnvelope().STPointN(1).STX  else NULL end), min(case when ([%1].STIsValid() = 1) THEN [%1].STEnvelope().STPointN(1).STY else NULL end), max(case when ([%1].STIsValid() = 1) THEN [%1].STEnvelope().STPointN(3).STX else NULL end), max(case when ([%1].STIsValid() = 1) THEN [%1].STEnvelope().STPointN(3).STY else NULL end)" ).arg( mGeometryColName );
-      else
         statement = QStringLiteral( "select min([%1].STEnvelope().STPointN(1).STX), min([%1].STEnvelope().STPointN(1).STY), max([%1].STEnvelope().STPointN(3).STX), max([%1].STEnvelope().STPointN(3).STY)" ).arg( mGeometryColName );
+      else
+        statement = QStringLiteral( "select min(case when ([%1].STIsValid() = 1) THEN [%1].STEnvelope().STPointN(1).STX  else NULL end), min(case when ([%1].STIsValid() = 1) THEN [%1].STEnvelope().STPointN(1).STY else NULL end), max(case when ([%1].STIsValid() = 1) THEN [%1].STEnvelope().STPointN(3).STX else NULL end), max(case when ([%1].STIsValid() = 1) THEN [%1].STEnvelope().STPointN(3).STY else NULL end)" ).arg( mGeometryColName );
     }
     else
     {
