@@ -62,6 +62,7 @@ FORMATS = [
     'ODS',
     'XLSX',
     'PDF',
+    'GPKG'
 ]
 
 EXTS = [
@@ -87,6 +88,7 @@ EXTS = [
     '.ods',
     '.xlsx',
     '.pdf',
+    '.gpkg'
 ]
 
 
@@ -127,7 +129,7 @@ class Ogr2Ogr(GdalAlgorithm):
         output = ogrConnectionString(outFile)
         options = unicode(self.getParameterValue(self.OPTIONS))
 
-        if outFormat == 'SQLite' and os.path.isfile(output):
+        if outFormat in ('SQLite', 'GPKG') and os.path.isfile(output):
             os.remove(output)
 
         arguments = []
