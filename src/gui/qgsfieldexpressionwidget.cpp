@@ -15,6 +15,8 @@
 ***************************************************************************/
 
 #include <QHBoxLayout>
+#include <QObject>
+#include <QKeyEvent>
 
 #include "qgsapplication.h"
 #include "qgsfieldexpressionwidget.h"
@@ -62,12 +64,12 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   connect( mButton, &QAbstractButton::clicked, this, &QgsFieldExpressionWidget::editExpression );
   connect( mFieldProxyModel, &QAbstractItemModel::modelAboutToBeReset, this, &QgsFieldExpressionWidget::beforeResetModel );
   connect( mFieldProxyModel, &QAbstractItemModel::modelReset, this, &QgsFieldExpressionWidget::afterResetModel );
-  // NW TODO - Fix in 2.6
-//  connect( mCombo->lineEdit(), SIGNAL( returnPressed() ), this, SIGNAL( returnPressed() ) );
 
   mExpressionContext = QgsExpressionContext();
   mExpressionContext << QgsExpressionContextUtils::globalScope()
                      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+
+  mCombo->installEventFilter( this );
 }
 
 void QgsFieldExpressionWidget::setExpressionDialogTitle( const QString &title )
@@ -267,6 +269,20 @@ void QgsFieldExpressionWidget::afterResetModel()
 {
   // Restore expression
   mCombo->lineEdit()->setText( mBackupExpression );
+}
+
+bool QgsFieldExpressionWidget::eventFilter( QObject *watched, QEvent *event )
+{
+  if ( watched == mCombo && event->type() == QEvent::KeyPress )
+  {
+    QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
+    if ( keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return )
+    {
+      expressionEditingFinished();
+      return true;
+    }
+  }
+  return QObject::eventFilter( watched, event );
 }
 
 bool QgsFieldExpressionWidget::allowEvalErrors() const
