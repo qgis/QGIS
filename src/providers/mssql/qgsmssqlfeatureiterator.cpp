@@ -145,8 +145,12 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     mStatement += QStringLiteral( " WHERE " );
     if ( !mDisableInvalidGeometryHandling )
       mStatement += QStringLiteral( "[%1].STIsValid() = 1 AND " ).arg( mSource->mGeometryColName );
-    mStatement += QStringLiteral( "[%1].STIntersects([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
-                    mSource->mGeometryColName, mSource->mGeometryColType, r, QString::number( mSource->mSRId ) );
+
+    // use the faster filter method only when we don't need an exact intersect test -- filter doesn't give exact
+    // results when the layer has a spatial index
+    QString test = mRequest.flags() & QgsFeatureRequest::ExactIntersect ? QStringLiteral( "STIntersects" ) : QStringLiteral( "Filter" );
+    mStatement += QStringLiteral( "[%1].%2([%3]::STGeomFromText('POLYGON((%4))',%5)) = 1" ).arg(
+                    mSource->mGeometryColName, test, mSource->mGeometryColType, r, QString::number( mSource->mSRId ) );
     filterAdded = true;
   }
 
