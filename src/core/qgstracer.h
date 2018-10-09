@@ -66,7 +66,7 @@ class CORE_EXPORT QgsTracer : public QObject
      * Sets the \a crs and \a transformContext used for tracing.
      * \see destinationCrs()
      */
-    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext );
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 
     /**
      * Sets the \a renderContext used for tracing only on visible features.

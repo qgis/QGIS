@@ -623,10 +623,10 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer *> &layers )
   invalidateGraph();
 }
 
-void QgsTracer::setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext )
+void QgsTracer::setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )
 {
   mCRS = crs;
-  mTransformContext = transformContext;
+  mTransformContext = context;
   invalidateGraph();
 }
 
