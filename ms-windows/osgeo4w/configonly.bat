@@ -24,4 +24,23 @@ if "%ARCH%"=="x86" (
 
 set CONFIGONLY=1
 
-package-nightly.cmd 3.1.0 99 qgis-test %ARCH%
+setlocal enabledelayedexpansion
+
+for /f "tokens=*" %%L in (..\..\CMakeLists.txt) do (
+        set L=%%L
+        set V=!L:SET(CPACK_PACKAGE_VERSION_=!
+        if not !V!==!L! (
+                set V=!V:"=!
+                set V=!V:^)=!
+                set _major=!V:MAJOR =!
+                set _minor=!V:MINOR =!
+                set _patch=!V:PATCH =!
+                if not !_major!==!V! set MAJOR=!_major!
+                if not !_minor!==!V! set MINOR=!_minor!
+                if not !_patch!==!V! set PATCH=!_patch!
+        )
+)
+
+package-nightly.cmd %MAJOR%.%MINOR%.%PATCH% 99 qgis-test %ARCH%
+
+endlocal
