@@ -617,3 +617,10 @@ void QgsCollapsibleGroupBox::saveState() const
     mSettings->setValue( key + QStringLiteral( "/collapsed" ), isCollapsed() );
 }
 
+
+void QgsGroupBoxCollapseButton::mouseReleaseEvent( QMouseEvent *event )
+{
+  mAltDown = ( event->modifiers() & ( Qt::AltModifier | Qt::ControlModifier ) );
+  mShiftDown = ( event->modifiers() & Qt::ShiftModifier );
+  QToolButton::mouseReleaseEvent( event );
+}

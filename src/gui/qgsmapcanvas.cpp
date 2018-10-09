@@ -25,7 +25,6 @@ email                : sherman at mrcc.com
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QKeyEvent>
-#include <QMouseEvent>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QPixmap>

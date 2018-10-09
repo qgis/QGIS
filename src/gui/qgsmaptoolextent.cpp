@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 
-#include <QMouseEvent>
 
 #include "qgsmaptoolextent.h"
 #include "qgsmapcanvas.h"

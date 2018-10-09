@@ -16,8 +16,6 @@
 #ifndef QGSLAYOUTVIEWRUBBERBAND_H
 #define QGSLAYOUTVIEWRUBBERBAND_H
 
-#include <QMouseEvent>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include <QBrush>

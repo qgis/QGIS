@@ -32,6 +32,7 @@
 #include "qgsactionmanager.h"
 #include "qgsactionmenu.h"
 #include "qgsidentifyresultsdialog.h"
+#include "qgsmapmouseevent.h"
 
 #include <QTimer>
 

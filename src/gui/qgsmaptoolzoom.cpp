@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 
-#include <QMouseEvent>
 #include <QRect>
 #include <QColor>
 #include <QCursor>

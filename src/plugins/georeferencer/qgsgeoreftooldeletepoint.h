@@ -16,8 +16,6 @@
 #ifndef QGSGEOREFTOOLDELETEPOINT_H
 #define QGSGEOREFTOOLDELETEPOINT_H
 
-#include <QMouseEvent>
-
 #include "qgsmaptoolemitpoint.h"
 
 class QgsPointXY;

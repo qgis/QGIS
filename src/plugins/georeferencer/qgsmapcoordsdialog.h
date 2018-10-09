@@ -13,7 +13,6 @@
 #define MAPCOORDSDIALOG_H
 
 #include <QDialog>
-#include <QMouseEvent>
 
 #include "qgsmaptoolemitpoint.h"
 #include "qgssnapindicator.h"
