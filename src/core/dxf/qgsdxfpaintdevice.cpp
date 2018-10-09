@@ -17,6 +17,7 @@
 
 #include "qgsdxfpaintdevice.h"
 #include "qgsdxfpaintengine.h"
+#include "qgspoint.h"
 
 QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport *dxf )
 {

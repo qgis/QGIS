@@ -13,6 +13,7 @@
 
 
 
+
 class QgsCircle : QgsEllipse
 {
 %Docstring

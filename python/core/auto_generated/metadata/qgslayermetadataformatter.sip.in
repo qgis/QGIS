@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayerMetadataFormatter
 {
 %Docstring

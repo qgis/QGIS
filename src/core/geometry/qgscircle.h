@@ -22,11 +22,12 @@
 
 #include "qgis_core.h"
 #include "qgsellipse.h"
-#include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgsrectangle.h"
 #include "qgscircularstring.h"
 
+
+class QgsPoint;
 
 /**
  * \ingroup core

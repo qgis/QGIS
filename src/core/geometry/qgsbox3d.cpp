@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsbox3d.h"
+#include "qgspoint.h"
 
 
 QgsBox3d::QgsBox3d( double xmin, double ymin, double zmin, double xmax, double ymax, double zmax )
