@@ -19,7 +19,7 @@
 #include "qgslinestring.h"
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
 #include <memory>
 
 QgsMapToolEllipseCenter2Points::QgsMapToolEllipseCenter2Points( QgsMapToolCapture *parentTool,

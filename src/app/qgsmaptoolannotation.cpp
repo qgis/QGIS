@@ -15,6 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDialog>
+#include <QMouseEvent>
+
 #include "qgsmaptoolannotation.h"
 #include "qgsannotation.h"
 #include "qgsformannotationdialog.h"
@@ -30,8 +33,8 @@
 #include "qgsproject.h"
 #include "qgsexception.h"
 #include "qgsannotationmanager.h"
-#include <QDialog>
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+
 
 QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )

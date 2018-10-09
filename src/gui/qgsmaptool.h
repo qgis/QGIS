@@ -19,7 +19,6 @@
 #include "qgsconfig.h"
 #include "qgis.h"
 #include "qgsmessagebar.h"
-#include "qgsmapmouseevent.h"
 
 #include <QCursor>
 #include <QString>
@@ -40,6 +39,7 @@ class QgsRectangle;
 class QPoint;
 class QAction;
 class QAbstractButton;
+class QgsMapMouseEvent;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode

@@ -37,6 +37,7 @@
 #include "qgsselectedfeature.h"
 #include "qgsvertexeditor.h"
 #include "qgsvertexentry.h"
+#include "qgsmapmouseevent.h"
 
 #include <QMenu>
 #include <QRubberBand>

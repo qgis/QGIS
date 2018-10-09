@@ -21,7 +21,7 @@
 #include "qgspointrotationitem.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
 
 #include "qgisapp.h"
 #include "qgsapplication.h"

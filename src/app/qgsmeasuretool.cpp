@@ -28,9 +28,10 @@
 #include "qgssettings.h"
 #include "qgsproject.h"
 #include "qgssnapindicator.h"
+#include "qgsmapmouseevent.h"
 
 #include <QMessageBox>
-#include <QMouseEvent>
+
 
 QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
   : QgsMapTool( canvas )

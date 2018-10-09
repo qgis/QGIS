@@ -1,4 +1,5 @@
 /*
+ *
 ** File: eviseventidtool.cpp
 ** Author: Peter J. Ersts ( ersts at amnh.org )
 ** Creation Date: 2007-03-19
@@ -24,6 +25,11 @@
 ** National Oceanic and Atmospheric Administration or the Department of Commerce.
 **
 **/
+
+
+#include <QObject>
+#include <QMessageBox>
+
 #include "eviseventidtool.h"
 
 #include "qgsmaptopixel.h"
@@ -31,9 +37,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfeatureiterator.h"
+#include "qgsmapmouseevent.h"
 
-#include <QObject>
-#include <QMessageBox>
 
 /**
 * Constructor for the id style tool, this tool inherits the QgsMapTool and requires a pointer to

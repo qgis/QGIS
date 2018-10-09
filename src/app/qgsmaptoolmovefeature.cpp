@@ -25,9 +25,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertools.h"
 #include "qgssnapindicator.h"
+#include "qgsmapmouseevent.h"
 
 #include <QMessageBox>
-#include <QMouseEvent>
 #include <QSettings>
 #include <limits>
 

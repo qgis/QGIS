@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include <QGraphicsProxyWidget>
-#include <QMouseEvent>
 #include <QGridLayout>
 #include <QLabel>
 
@@ -30,7 +29,7 @@
 #include "qgssnappingconfig.h"
 #include "qgssettings.h"
 #include "qgisapp.h"
-
+#include "qgsmapmouseevent.h"
 #include "qgslogger.h"
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )

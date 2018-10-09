@@ -20,8 +20,8 @@
 #include "qgsmaptoolsplitparts.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsmapmouseevent.h"
 
-#include <QMouseEvent>
 
 QgsMapToolSplitParts::QgsMapToolSplitParts( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )

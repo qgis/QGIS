@@ -18,7 +18,7 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
 
 QgsMapToolRegularPolygonCenterPoint::QgsMapToolRegularPolygonCenterPoint( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )

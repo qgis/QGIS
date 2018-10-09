@@ -20,6 +20,7 @@
 #include "qgsgeometry.h"
 #include "qgis_app.h"
 #include "ui_qgsoffsetuserinputwidget.h"
+#include "qgspointlocator.h"
 
 class QGridLayout;
 

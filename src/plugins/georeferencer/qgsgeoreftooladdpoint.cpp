@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgsmapcanvas.h"
-
 #include "qgsgeoreftooladdpoint.h"
+#include "qgsmapmouseevent.h"
 
 QgsGeorefToolAddPoint::QgsGeorefToolAddPoint( QgsMapCanvas *canvas )
   : QgsMapToolEmitPoint( canvas )

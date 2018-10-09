@@ -26,7 +26,7 @@
 #include "qgisapp.h"
 #include "qgssettings.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
 
 #include <cmath>
 #include <cfloat>

@@ -18,7 +18,8 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+
 
 QgsMapToolCircle2Points::QgsMapToolCircle2Points( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )

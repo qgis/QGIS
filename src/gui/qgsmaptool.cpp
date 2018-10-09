@@ -19,6 +19,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
 #include "qgssettings.h"
+#include "qgsmapmouseevent.h"
 
 #include <QAction>
 #include <QAbstractButton>

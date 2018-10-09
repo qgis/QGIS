@@ -18,6 +18,7 @@
 
 
 #include "qgsmaptooladvanceddigitizing.h"
+#include "qgspointlocator.h"
 #include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
 

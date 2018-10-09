@@ -22,7 +22,8 @@
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include "qgisapp.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+
 
 QgsMapToolCircle3Tangents::QgsMapToolCircle3Tangents( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )

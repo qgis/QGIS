@@ -25,9 +25,9 @@
 #include "qgisapp.h"
 #include "qgsproperty.h"
 #include "qgssymbollayerutils.h"
+#include "qgsmapmouseevent.h"
 
 #include <QGraphicsPixmapItem>
-#include <QMouseEvent>
 
 QgsMapToolOffsetPointSymbol::QgsMapToolOffsetPointSymbol( QgsMapCanvas *canvas )
   : QgsMapToolPointSymbol( canvas )
