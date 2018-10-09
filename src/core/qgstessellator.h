@@ -24,7 +24,6 @@ class QgsMultiPolygon;
 
 #include <QVector>
 #include <memory>
-#include "qgspoint.h"
 
 /**
  * \ingroup core

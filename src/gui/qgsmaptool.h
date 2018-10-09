@@ -19,7 +19,6 @@
 #include "qgsconfig.h"
 #include "qgis.h"
 #include "qgsmessagebar.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 
 #include <QCursor>
@@ -35,6 +34,7 @@ class QgsRenderContext;
 class QKeyEvent;
 class QMouseEvent;
 class QWheelEvent;
+class QgsPoint;
 class QgsPointXY;
 class QgsRectangle;
 class QPoint;

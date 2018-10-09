@@ -18,6 +18,8 @@
 #ifndef QGSLAYERMETADATAFORMATTER_H
 #define QGSLAYERMETADATAFORMATTER_H
 
+#include <QCoreApplication>
+
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgslayermetadata.h"

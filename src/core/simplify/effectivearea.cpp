@@ -23,6 +23,7 @@
  **********************************************************************/
 
 #include "effectivearea.h"
+#include "qgspoint.h"
 
 static MINHEAP initiate_minheap( int npoints )
 {
