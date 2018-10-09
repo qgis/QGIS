@@ -18,7 +18,6 @@
 
 #include "qgsconfig.h"
 #include "qgis.h"
-#include "qgsmessagebar.h"
 
 #include <QCursor>
 #include <QString>

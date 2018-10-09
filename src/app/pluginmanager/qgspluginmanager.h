@@ -27,10 +27,10 @@
 #include "qgsoptionsdialogbase.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include "qgsmessagebar.h"
 
 class QgsPluginSortFilterProxyModel;
 class QgsPythonUtils;
+class QgsMessageBar;
 
 const int PLUGMAN_TAB_ALL = 0;
 const int PLUGMAN_TAB_INSTALLED = 1;

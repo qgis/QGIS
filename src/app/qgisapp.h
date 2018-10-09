@@ -101,9 +101,7 @@ class QgsVectorLayerTools;
 class QgsWelcomePage;
 class QgsOptionsWidgetFactory;
 class QgsStatusBar;
-
 class QgsUserProfileManagerWidgetFactory;
-
 class Qgs3DMapCanvasDockWidget;
 
 class QDomDocument;
@@ -116,15 +114,12 @@ class QgsAdvancedDigitizingDockWidget;
 class QgsGpsInformationWidget;
 class QgsStatisticalSummaryDockWidget;
 class QgsMapCanvasTracer;
-
 class QgsDecorationItem;
-
 class QgsMessageLogViewer;
 class QgsMessageBar;
-
+class QgsMessageBarItem;
 class QgsDataItem;
 class QgsTileScaleWidget;
-
 class QgsLabelingWidget;
 class QgsLayerStylingWidget;
 class QgsDiagramProperties;
@@ -145,9 +140,7 @@ class QgsProxyProgressTask;
 
 #include "qgsauthmanager.h"
 #include "qgsconfig.h"
-#include "qgsfeature.h"
 #include "qgspointxy.h"
-#include "qgsmessagebar.h"
 #include "qgsmimedatautils.h"
 #include "qgswelcomepageitemsmodel.h"
 #include "qgsraster.h"

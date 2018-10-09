@@ -22,7 +22,7 @@
 #include "qgssettings.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
-
+#include "qgsmessagebar.h"
 
 
 QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *layer, QWidget *parent )

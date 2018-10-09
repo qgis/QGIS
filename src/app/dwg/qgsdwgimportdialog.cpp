@@ -47,6 +47,8 @@
 #include "qgslayertree.h"
 #include "qgsguiutils.h"
 #include "qgsfilewidget.h"
+#include "qgsmessagebar.h"
+
 
 QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

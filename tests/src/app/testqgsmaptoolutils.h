@@ -20,6 +20,8 @@
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+
 
 /**
  * \ingroup UnitTests

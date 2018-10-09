@@ -22,7 +22,6 @@
 #include "qgis_sip.h"
 
 #include "qgsexpressioncontext.h"
-#include "qgsmessagebar.h"
 #include "qgsrectangle.h"
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"

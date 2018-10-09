@@ -23,6 +23,7 @@
 #include "qgspoint.h"
 #include "qgisapp.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
 
 
 QgsMapToolCircle3Tangents::QgsMapToolCircle3Tangents( QgsMapToolCapture *parentTool,

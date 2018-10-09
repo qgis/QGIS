@@ -39,6 +39,7 @@
 #include "qgslayoutitemmap.h"
 #include "qgsprintlayout.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
 #include "qgsmessageviewer.h"
 #include "qgsgui.h"
 #include "qgsfeedback.h"

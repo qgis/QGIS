@@ -15,12 +15,20 @@
 
 #include "qgs3dmapcanvasdockwidget.h"
 
+#include <QBoxLayout>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QProgressBar>
+#include <QToolBar>
+#include <QUrl>
+
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapconfigwidget.h"
 #include "qgs3dmapscene.h"
 #include "qgscameracontroller.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
 
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
@@ -28,12 +36,7 @@
 #include "qgs3dmaptoolidentify.h"
 #include "qgs3dutils.h"
 
-#include <QBoxLayout>
-#include <QDialog>
-#include <QDialogButtonBox>
-#include <QProgressBar>
-#include <QToolBar>
-#include <QUrl>
+
 
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   : QgsDockWidget( parent )

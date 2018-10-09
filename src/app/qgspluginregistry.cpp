@@ -31,6 +31,7 @@
 #include "qgisapp.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsmessagebar.h"
 
 #ifdef WITH_BINDINGS
 #include "qgspythonutils.h"

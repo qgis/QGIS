@@ -21,7 +21,6 @@
 #include <QList>
 #include <QMap>
 #include "qgsmapunitscale.h"
-#include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsrendercontext.h"
 #include "qgsproperty.h"
@@ -44,6 +43,7 @@ class QgsMarkerSymbolLayer;
 class QgsLineSymbolLayer;
 class QgsFillSymbolLayer;
 class QgsSymbolRenderContext;
+class QgsFeature;
 class QgsFeatureRenderer;
 class QgsCurve;
 class QgsPolygon;
