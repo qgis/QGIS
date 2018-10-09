@@ -3086,21 +3086,16 @@ void QgsPalLabeling::dataDefinedTextFormatting( QgsPalLayerSettings &tmpLyr,
     tmpLyr.autoWrapLength = ddValues.value( QgsPalLayerSettings::AutoWrapLength ).toInt();
   }
 
-  if ( !tmpLyr.wrapChar.isEmpty() || tmpLyr.getLabelExpression()->expression().contains( QLatin1String( "wordwrap" ) ) || tmpLyr.autoWrapLength > 0 )
+  if ( ddValues.contains( QgsPalLayerSettings::MultiLineHeight ) )
   {
+    QgsTextFormat format = tmpLyr.format();
+    format.setLineHeight( ddValues.value( QgsPalLayerSettings::MultiLineHeight ).toDouble() );
+    tmpLyr.setFormat( format );
+  }
 
-    if ( ddValues.contains( QgsPalLayerSettings::MultiLineHeight ) )
-    {
-      QgsTextFormat format = tmpLyr.format();
-      format.setLineHeight( ddValues.value( QgsPalLayerSettings::MultiLineHeight ).toDouble() );
-      tmpLyr.setFormat( format );
-    }
-
-    if ( ddValues.contains( QgsPalLayerSettings::MultiLineAlignment ) )
-    {
-      tmpLyr.multilineAlign = static_cast< QgsPalLayerSettings::MultiLineAlign >( ddValues.value( QgsPalLayerSettings::MultiLineAlignment ).toInt() );
-    }
-
+  if ( ddValues.contains( QgsPalLayerSettings::MultiLineAlignment ) )
+  {
+    tmpLyr.multilineAlign = static_cast< QgsPalLayerSettings::MultiLineAlign >( ddValues.value( QgsPalLayerSettings::MultiLineAlignment ).toInt() );
   }
 
   if ( ddValues.contains( QgsPalLayerSettings::DirSymbDraw ) )
