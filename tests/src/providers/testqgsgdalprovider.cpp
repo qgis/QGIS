@@ -257,5 +257,33 @@ void TestQgsGdalProvider::bandName()
   delete provider;
 }
 
+void TestQgsGdalProvider::bandNameNoDescription()
+{
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
+  QVERIFY( rp );
+  if ( rp )
+  {
+    qDebug() << "Band Name 1: " << rp->generateBandName( 1 );
+    QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1" ) );
+  }
+  delete provider;
+}
+
+void TestQgsGdalProvider::bandNameWithDescription()
+{
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_desc.tif";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
+  QVERIFY( rp );
+  if ( rp )
+  {
+    qDebug() << "Band Name 1: " << rp->generateBandName( 1 );
+    QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1: 1.234 um" ) );
+  }
+  delete provider;
+}
+
 QGSTEST_MAIN( TestQgsGdalProvider )
 #include "testqgsgdalprovider.moc"
