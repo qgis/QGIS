@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include <QDialog>
-#include <QMouseEvent>
 
 #include "qgsmaptoolannotation.h"
 #include "qgsannotation.h"

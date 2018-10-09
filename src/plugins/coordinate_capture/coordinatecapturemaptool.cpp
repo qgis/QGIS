@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include <QSettings>
-#include <QMouseEvent>
 #include <QCursor>
 #include <QPixmap>
 

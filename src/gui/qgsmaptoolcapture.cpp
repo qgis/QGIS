@@ -34,7 +34,6 @@
 #include <QAction>
 #include <QCursor>
 #include <QPixmap>
-#include <QMouseEvent>
 #include <QStatusBar>
 
 

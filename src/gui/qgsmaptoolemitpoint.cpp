@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
 
 #include "qgsmaptoolemitpoint.h"
 #include "qgsmapcanvas.h"

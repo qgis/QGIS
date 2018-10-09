@@ -24,6 +24,7 @@
 
 #include "testqgsmaptoolutils.h"
 #include "qgsmaptoolreverseline.h"
+#include "qgsmapmouseevent.h"
 
 
 class TestQgsMapToolReverseLine : public QObject

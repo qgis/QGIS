@@ -33,7 +33,6 @@
 #include "qgsfeatureaction.h"
 #include "qgisapp.h"
 
-#include <QMouseEvent>
 #include <QSettings>
 
 QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode )

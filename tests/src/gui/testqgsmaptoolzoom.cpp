@@ -17,12 +17,13 @@
 #include <QString>
 #include <QCoreApplication>
 #include <QWidget>
-#include <QMouseEvent>
 
-#include <qgsmaptoolzoom.h>
-#include <qgsapplication.h>
-#include <qgsmapcanvas.h>
-#include <qgslogger.h>
+#include "qgsmaptoolzoom.h"
+#include "qgsapplication.h"
+#include "qgsmapcanvas.h"
+#include "qgslogger.h"
+#include "qgsmapmouseevent.h"
+
 
 class TestQgsMapToolZoom : public QObject
 {

@@ -16,11 +16,14 @@
  ***************************************************************************/
 
 #include "qgsmeshdataprovider.h"
+#include "qgsrectangle.h"
 #include "qgis.h"
 
 
-QgsMeshDatasetIndex::QgsMeshDatasetIndex( int group, int dataset ):
-  mGroupIndex( group ), mDatasetIndex( dataset ) {}
+
+QgsMeshDatasetIndex::QgsMeshDatasetIndex( int group, int dataset )
+  : mGroupIndex( group ), mDatasetIndex( dataset )
+{}
 
 int QgsMeshDatasetIndex::group() const
 {
