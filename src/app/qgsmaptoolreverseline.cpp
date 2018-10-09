@@ -26,8 +26,8 @@
 #include "qgisapp.h"
 #include "qgslinestring.h"
 #include "qgsmultilinestring.h"
+#include "qgsmapmouseevent.h"
 
-#include <QMouseEvent>
 
 QgsMapToolReverseLine::QgsMapToolReverseLine( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )

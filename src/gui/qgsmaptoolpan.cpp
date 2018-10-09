@@ -13,12 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolpan.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaptopixel.h"
 #include <QBitmap>
 #include <QCursor>
 #include <QMouseEvent>
+
+#include "qgsmaptoolpan.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptopixel.h"
+#include "qgsmapmouseevent.h"
+
 
 
 QgsMapToolPan::QgsMapToolPan( QgsMapCanvas *canvas )

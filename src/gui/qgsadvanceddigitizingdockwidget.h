@@ -16,21 +16,23 @@
 #ifndef QGSADVANCEDDIGITIZINGDOCK
 #define QGSADVANCEDDIGITIZINGDOCK
 
-#include "qgsdockwidget.h"
-#include "qgsmapmouseevent.h"
-#include "qgsmessagebaritem.h"
+#include <QList>
+
+#include <memory>
 
 #include "ui_qgsadvanceddigitizingdockwidgetbase.h"
 #include "qgis_gui.h"
 #include "qgis.h"
-#include <memory>
+#include "qgsdockwidget.h"
+#include "qgsmessagebaritem.h"
+#include "qgspointxy.h"
 
 
 class QgsAdvancedDigitizingCanvasItem;
 class QgsMapCanvas;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
-class QgsPointXY;
+class QgsMapMouseEvent;
 
 /**
  * \ingroup gui

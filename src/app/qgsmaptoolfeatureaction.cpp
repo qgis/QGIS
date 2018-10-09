@@ -33,9 +33,9 @@
 #include "qgisapp.h"
 #include "qgsgui.h"
 #include "qgsstatusbar.h"
+#include "qgsmapmouseevent.h"
 
 #include <QSettings>
-#include <QMouseEvent>
 #include <QStatusBar>
 
 QgsMapToolFeatureAction::QgsMapToolFeatureAction( QgsMapCanvas *canvas )

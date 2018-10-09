@@ -20,6 +20,8 @@
 #include "qgssnappingutils.h"
 #include "qgspointxy.h"
 #include "qgsmapcanvas.h"
+#include "qgspointlocator.h"
+
 
 #include "ui_qgsmapcoordsdialogbase.h"
 
@@ -30,35 +32,15 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
     Q_OBJECT
 
   public:
-    explicit QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
-      : QgsMapTool( canvas )
-    {
-      mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
-    }
+    explicit QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas );
 
-    void canvasMoveEvent( QgsMapMouseEvent *e ) override
-    {
-      mSnapIndicator->setMatch( mapPointMatch( e ) );
-    }
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
-    void canvasPressEvent( QgsMapMouseEvent *e ) override
-    {
-      QgsPointLocator::Match m = mapPointMatch( e );
-      emit canvasClicked( m.isValid() ? m.point() : toMapCoordinates( e->pos() ), e->button() );
-    }
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
-    void canvasReleaseEvent( QgsMapMouseEvent *e ) override
-    {
-      QgsMapTool::canvasReleaseEvent( e );
-      emit mouseReleased();
-    }
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    void deactivate() override
-    {
-      mSnapIndicator->setMatch( QgsPointLocator::Match() );
-
-      QgsMapTool::deactivate();
-    }
+    void deactivate() override;
 
   signals:
     void canvasClicked( const QgsPointXY &point, Qt::MouseButton button );
@@ -66,11 +48,7 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
 
   private:
 
-    QgsPointLocator::Match mapPointMatch( QMouseEvent *e )
-    {
-      QgsPointXY pnt = toMapCoordinates( e->pos() );
-      return canvas()->snappingUtils()->snapToMap( pnt );
-    }
+    QgsPointLocator::Match mapPointMatch( QMouseEvent *e );
 
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 };

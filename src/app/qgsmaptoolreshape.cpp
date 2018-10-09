@@ -21,8 +21,8 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
+#include "qgsmapmouseevent.h"
 
-#include <QMouseEvent>
 
 QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )

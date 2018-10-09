@@ -24,8 +24,8 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgisapp.h"
+#include "qgsmapmouseevent.h"
 
-#include <QMouseEvent>
 
 QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), CaptureNone )

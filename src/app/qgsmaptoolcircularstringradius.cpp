@@ -22,8 +22,9 @@
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include "qgsstatusbar.h"
+#include "qgsmapmouseevent.h"
+
 #include <QDoubleSpinBox>
-#include <QMouseEvent>
 #include <cmath>
 
 QgsMapToolCircularStringRadius::QgsMapToolCircularStringRadius( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )

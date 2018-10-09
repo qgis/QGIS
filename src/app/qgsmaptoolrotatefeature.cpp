@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
 #include <QSettings>
 #include <QEvent>
 #include <QHBoxLayout>
@@ -34,6 +33,7 @@
 #include "qgisapp.h"
 #include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
+#include "qgsmapmouseevent.h"
 
 
 QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *parent )

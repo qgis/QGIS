@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgsmapcanvas.h"
-
 #include "qgsgeoreftooldeletepoint.h"
+#include "qgsmapmouseevent.h"
 
 QgsGeorefToolDeletePoint::QgsGeorefToolDeletePoint( QgsMapCanvas *canvas )
   : QgsMapToolEmitPoint( canvas )

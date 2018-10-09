@@ -48,6 +48,7 @@ email                : sherman at mrcc.com
 #include "qgsmapcanvasmap.h"
 #include "qgsmapcanvassnappingutils.h"
 #include "qgsmaplayer.h"
+#include "qgsmapmouseevent.h"
 #include "qgsmaptoolpan.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptopixel.h"

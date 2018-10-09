@@ -39,9 +39,9 @@
 #include "qgsstatusbar.h"
 #include "qgsactionscoperegistry.h"
 #include "qgsproxyprogresstask.h"
-
 #include "qgssettings.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+
 #include <QCursor>
 #include <QPixmap>
 #include <QStatusBar>

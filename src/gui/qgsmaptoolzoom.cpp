@@ -13,17 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolzoom.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaptopixel.h"
-#include "qgsrubberband.h"
 
 #include <QMouseEvent>
 #include <QRect>
 #include <QColor>
 #include <QCursor>
 #include <QPixmap>
+
+#include "qgsmaptoolzoom.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptopixel.h"
+#include "qgsrubberband.h"
 #include "qgslogger.h"
+#include "qgsmapmouseevent.h"
+
 
 
 QgsMapToolZoom::QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut )

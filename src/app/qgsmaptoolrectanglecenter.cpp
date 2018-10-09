@@ -20,7 +20,8 @@
 #include "qgsmapcanvas.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+
 #include <memory>
 
 QgsMapToolRectangleCenter::QgsMapToolRectangleCenter( QgsMapToolCapture *parentTool,

@@ -19,7 +19,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+
 
 QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas )
   : QgsMapToolLabel( canvas )

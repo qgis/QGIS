@@ -18,6 +18,8 @@
 
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgis_app.h"
+#include "qgspointxy.h"
+#include "qgsfeatureid.h"
 
 class QgsSnapIndicator;
 

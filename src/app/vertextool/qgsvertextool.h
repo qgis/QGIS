@@ -21,6 +21,8 @@
 #include "qgis_app.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsgeometry.h"
+#include "qgspointlocator.h"
+
 
 class QRubberBand;
 
