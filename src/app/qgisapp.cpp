@@ -1881,10 +1881,11 @@ void QgisApp::readRecentProjects()
   std::sort( projectKeys.begin(), projectKeys.end() );
 
   int pinPos = 0;
-  Q_FOREACH ( int key, projectKeys )
+  const uint maxProjects = QgsSettings().value( QStringLiteral( "maxRecentProjects" ), 20, QgsSettings::App ).toUInt();
+  for ( int i = 0; i < projectKeys.count(); ++i )
   {
     QgsWelcomePageItemsModel::RecentProjectData data;
-    settings.beginGroup( QString::number( key ) );
+    settings.beginGroup( QString::number( projectKeys.at( i ) ) );
     data.title = settings.value( QStringLiteral( "title" ) ).toString();
     data.path = settings.value( QStringLiteral( "path" ) ).toString();
     data.previewImagePath = settings.value( QStringLiteral( "previewImage" ) ).toString();
@@ -1900,6 +1901,8 @@ void QgisApp::readRecentProjects()
     {
       mRecentProjects.append( data );
     }
+    if ( mRecentProjects.count() >= maxProjects )
+      break;
   }
   settings.endGroup();
 }
