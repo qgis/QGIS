@@ -23,6 +23,7 @@
 #include <QThread>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSet>
 
 int QgsMssqlConnection::sConnectionId = 0;
 
@@ -216,6 +217,88 @@ bool QgsMssqlConnection::truncateTable( const QString &uri, QString *errorMessag
   }
 
   return true;
+}
+
+bool QgsMssqlConnection::createSchema( const QString &uri, const QString &schemaName, QString *errorMessage )
+{
+  QgsDataSourceUri dsUri( uri );
+
+  // connect to database
+  QSqlDatabase db = getDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+
+  if ( !openDatabase( db ) )
+  {
+    if ( errorMessage )
+      *errorMessage = db.lastError().text();
+    return false;
+  }
+
+  QSqlQuery q = QSqlQuery( db );
+  q.setForwardOnly( true );
+  const QString sql = QStringLiteral( "CREATE SCHEMA [%1]" ).arg( schemaName );
+  if ( !q.exec( sql ) )
+  {
+    if ( errorMessage )
+      *errorMessage = q.lastError().text();
+    return false;
+  }
+
+  return true;
+}
+
+QStringList QgsMssqlConnection::schemas( const QString &uri, QString *errorMessage )
+{
+  QgsDataSourceUri dsUri( uri );
+
+// connect to database
+  QSqlDatabase db = getDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
+
+  if ( !openDatabase( db ) )
+  {
+    if ( errorMessage )
+      *errorMessage = db.lastError().text();
+    return QStringList();
+  }
+
+  const QString sql = QStringLiteral( "select s.name as schema_name from sys.schemas s" );
+
+  QSqlQuery q = QSqlQuery( db );
+  q.setForwardOnly( true );
+  if ( !q.exec( sql ) )
+  {
+    if ( errorMessage )
+      *errorMessage = q.lastError().text();
+    return QStringList();
+  }
+
+  QStringList result;
+
+  while ( q.next() )
+  {
+    const QString schemaName = q.value( 0 ).toString();
+    result << schemaName;
+  }
+  return result;
+}
+
+bool QgsMssqlConnection::isSystemSchema( const QString &schema )
+{
+  static QSet< QString > sSystemSchemas
+  {
+    QStringLiteral( "db_owner" ),
+    QStringLiteral( "db_securityadmin" ),
+    QStringLiteral( "db_accessadmin" ),
+    QStringLiteral( "db_backupoperator" ),
+    QStringLiteral( "db_ddladmin" ),
+    QStringLiteral( "db_datawriter" ),
+    QStringLiteral( "db_datareader" ),
+    QStringLiteral( "db_denydatawriter" ),
+    QStringLiteral( "db_denydatareader" ),
+    QStringLiteral( "INFORMATION_SCHEMA" ),
+    QStringLiteral( "sys" )
+  };
+
+  return sSystemSchemas.contains( schema );
 }
 
 QString QgsMssqlConnection::dbConnectionName( const QString &name )
