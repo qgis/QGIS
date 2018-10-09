@@ -72,7 +72,7 @@ void QgsMssqlConnectionItem::readConnectionSettings()
     mPassword = settings.value( key + "/password" ).toString();
   }
 
-  mUseGeometryColumns = QgsMssqlConnection::useEstimatedMetadata( mName );
+  mUseGeometryColumns = QgsMssqlConnection::geometryColumnsOnly( mName );
   mUseEstimatedMetadata = QgsMssqlConnection::useEstimatedMetadata( mName );
   mAllowGeometrylessTables = QgsMssqlConnection::allowGeometrylessTables( mName );
 
