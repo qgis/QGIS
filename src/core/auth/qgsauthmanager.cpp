@@ -41,6 +41,7 @@
 #include "keychain.h"
 
 // QGIS includes
+#include "qgsapplication.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthcrypto.h"
 #include "qgsauthmethod.h"
@@ -111,15 +112,28 @@ QSqlDatabase QgsAuthManager::authDatabaseConnection() const
   if ( isDisabled() )
     return authdb;
 
-  QString connectionname = QStringLiteral( "authentication.configs" );
-  if ( !QSqlDatabase::contains( connectionname ) )
+  QString connectionName = QStringLiteral( "authentication.configs" );
+  // Sharing the same connection between threads is not allowed.
+  // We use a dedicated connection for each thread requiring access to the database,
+  // using the thread address as connection name.
+  const QString threadAddress = QStringLiteral( ":0x%1" ).arg( reinterpret_cast< quintptr >( QThread::currentThreadId() ), 16 );
+  connectionName += threadAddress;
+  if ( !QSqlDatabase::contains( connectionName ) )
   {
-    authdb = QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ), connectionname );
+    authdb = QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ), connectionName );
     authdb.setDatabaseName( authenticationDatabasePath() );
+    // for background threads, remove database when current thread finishes
+    if ( QThread::currentThread() != QgsApplication::instance()->thread() )
+    {
+      connect( QThread::currentThread(), &QThread::finished, QThread::currentThread(), [connectionName]
+      {
+        QSqlDatabase::removeDatabase( connectionName );
+      } );
+    }
   }
   else
   {
-    authdb = QSqlDatabase::database( connectionname );
+    authdb = QSqlDatabase::database( connectionName );
   }
   if ( !authdb.isOpen() )
   {
