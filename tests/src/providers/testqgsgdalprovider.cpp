@@ -251,11 +251,7 @@ void TestQgsGdalProvider::bandName()
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
-  if ( rp )
-  {
-    qDebug() << "Band Name 1: " << rp->generateBandName( 1 );
-    QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1 / wvln=1.234 (um)" ) );
-  }
+  QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1: wvln=1.234 (um)" ) );
   delete provider;
 }
 
@@ -265,11 +261,7 @@ void TestQgsGdalProvider::bandNameNoDescription()
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
-  if ( rp )
-  {
-    qDebug() << "Band Name 1: " << rp->generateBandName( 1 );
-    QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1" ) );
-  }
+  QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1" ) );
   delete provider;
 }
 
@@ -279,11 +271,7 @@ void TestQgsGdalProvider::bandNameWithDescription()
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
-  if ( rp )
-  {
-    qDebug() << "Band Name 1: " << rp->generateBandName( 1 );
-    QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1: 1.234 um" ) );
-  }
+  QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1: 1.234 um" ) );
   delete provider;
 }
 
