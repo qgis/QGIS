@@ -52,6 +52,8 @@ class TestQgsGdalProvider : public QObject
     void isRepresentableValue();
     void mask();
     void bandName(); // test band name based on `gtiff` tags (#7317)
+    void bandNameNoDescription(); // test band name for when no description or tags available (#16047)
+    void bandNameWithDescription(); // test band name for when description available (#16047)
 
   private:
     QString mTestDataDir;
