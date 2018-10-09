@@ -1093,7 +1093,7 @@ namespace QgsWfs
       typeName = typeName.section( ':', 1, 1 );
 
     QDomNodeList propertyNodeList = actionElem.elementsByTagName( QStringLiteral( "Property" ) );
-    if ( propertyNodeList.size() != 1 )
+    if ( propertyNodeList.isEmpty() )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "Update action element must have one or more Property element" ) );
     }
