@@ -38,6 +38,7 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QProgressDialog>
+#include <QInputDialog>
 
 // ---------------------------------------------------------------------------
 QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
@@ -161,6 +162,8 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
   q.setForwardOnly( true );
   ( void )q.exec( query );
 
+  QSet< QString > addedSchemas;
+
   if ( q.isActive() )
   {
     QVector<QgsDataItem *> newLayers;
@@ -214,6 +217,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
       {
         schemaItem = new QgsMssqlSchemaItem( this, layer.schemaName, mPath + '/' + layer.schemaName );
         schemaItem->setState( Populating );
+        addedSchemas.insert( layer.schemaName );
         children.append( schemaItem );
       }
 
@@ -249,6 +253,23 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
         if ( findItem( newLayers, child2 ) < 0 )
           child->deleteChildItem( child2 );
       }
+    }
+
+    // add missing schemas (i.e., empty schemas)
+    const QString uri = connInfo();
+    const QStringList allSchemas = QgsMssqlConnection::schemas( uri, nullptr );
+    for ( const QString &schema : allSchemas )
+    {
+      if ( addedSchemas.contains( schema ) )
+        continue;
+
+      if ( QgsMssqlConnection::isSystemSchema( schema ) )
+        continue;
+
+      QgsMssqlSchemaItem *schemaItem = new QgsMssqlSchemaItem( this, schema, mPath + '/' + schema );
+      schemaItem->setState( Populated ); // no tables
+      addedSchemas.insert( schema );
+      children.append( schemaItem );
     }
 
     // spawn threads (new layers will be added later on)
@@ -343,11 +364,20 @@ bool QgsMssqlConnectionItem::equal( const QgsDataItem *other )
 QList<QAction *> QgsMssqlConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
-  QAction *actionShowNoGeom = new QAction( tr( "Show Non-Spatial Tables" ), parent );
-  actionShowNoGeom->setCheckable( true );
-  actionShowNoGeom->setChecked( mAllowGeometrylessTables );
-  connect( actionShowNoGeom, &QAction::toggled, this, &QgsMssqlConnectionItem::setAllowGeometrylessTables );
-  lst.append( actionShowNoGeom );
+
+  QAction *actionRefresh = new QAction( tr( "Refresh" ), parent );
+  connect( actionRefresh, &QAction::triggered, this, [ = ]
+  {
+    refresh();
+    if ( mParent )
+      mParent->refreshConnections();
+  } );
+  lst.append( actionRefresh );
+
+  QAction *separator = new QAction( parent );
+  separator->setSeparator( true );
+  lst.append( separator );
+
 
   QAction *actionEdit = new QAction( tr( "Edit Connection…" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsMssqlConnectionItem::editConnection );
@@ -357,6 +387,20 @@ QList<QAction *> QgsMssqlConnectionItem::actions( QWidget *parent )
   connect( actionDelete, &QAction::triggered, this, &QgsMssqlConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
+  QAction *sep = new QAction( parent );
+  sep->setSeparator( true );
+  lst << sep;
+
+  QAction *actionShowNoGeom = new QAction( tr( "Show Non-spatial Tables" ), parent );
+  actionShowNoGeom->setCheckable( true );
+  actionShowNoGeom->setChecked( mAllowGeometrylessTables );
+  connect( actionShowNoGeom, &QAction::toggled, this, &QgsMssqlConnectionItem::setAllowGeometrylessTables );
+  lst.append( actionShowNoGeom );
+
+  QAction *actionCreateSchema = new QAction( tr( "Create Schema…" ), parent );
+  connect( actionCreateSchema, &QAction::triggered, this, &QgsMssqlConnectionItem::createSchema );
+  lst.append( actionCreateSchema );
+
   return lst;
 }
 
@@ -365,6 +409,27 @@ void QgsMssqlConnectionItem::setAllowGeometrylessTables( const bool allow )
   mAllowGeometrylessTables = allow;
   QgsMssqlConnection::setAllowGeometrylessTables( mName, allow );
   refresh();
+}
+
+void QgsMssqlConnectionItem::createSchema()
+{
+  QString schemaName = QInputDialog::getText( nullptr, tr( "Create Schema" ), tr( "Schema name:" ) );
+  if ( schemaName.isEmpty() )
+    return;
+
+  QString uri = connInfo();
+  QString error;
+  if ( !QgsMssqlConnection::createSchema( uri, schemaName, &error ) )
+  {
+    QMessageBox::warning( nullptr, tr( "Create Schema" ), tr( "Unable to create schema %1\n%2" ).arg( schemaName,
+                          error ) );
+    return;
+  }
+
+  refresh();
+  // the parent should be updated
+  if ( mParent )
+    mParent->refreshConnections();
 }
 
 void QgsMssqlConnectionItem::editConnection()
@@ -379,6 +444,11 @@ void QgsMssqlConnectionItem::editConnection()
 
 void QgsMssqlConnectionItem::deleteConnection()
 {
+  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Connection" ),
+                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( mName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
   QgsMssqlSourceSelect::deleteConnection( mName );
   // the parent should be updated
   mParent->refreshConnections();
@@ -586,6 +656,21 @@ QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem *parent, const QString &name
 QVector<QgsDataItem *> QgsMssqlSchemaItem::createChildren()
 {
   return QVector<QgsDataItem *>();
+}
+
+QList<QAction *> QgsMssqlSchemaItem::actions( QWidget *parent )
+{
+  QList<QAction *> lst;
+
+  QAction *actionRefresh = new QAction( tr( "Refresh" ), parent );
+  connect( actionRefresh, &QAction::triggered, this, [ = ]
+  {
+    if ( mParent )
+      mParent->refresh();
+  } );
+  lst.append( actionRefresh );
+
+  return lst;
 }
 
 void QgsMssqlSchemaItem::addLayers( QgsDataItem *newLayers )

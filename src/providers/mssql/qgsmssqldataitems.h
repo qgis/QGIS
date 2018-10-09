@@ -80,6 +80,7 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     void editConnection();
     void deleteConnection();
     void setAllowGeometrylessTables( bool allow );
+    void createSchema();
 #endif
 
     void setLayerType( QgsMssqlLayerProperty layerProperty );
@@ -112,6 +113,10 @@ class QgsMssqlSchemaItem : public QgsDataCollectionItem
     QgsMssqlSchemaItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
+
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
+#endif
 
     QgsMssqlLayerItem *addLayer( const QgsMssqlLayerProperty &layerProperty, bool refresh );
     void refresh() override {} // do not refresh directly

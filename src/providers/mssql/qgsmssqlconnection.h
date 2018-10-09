@@ -18,6 +18,8 @@
 #ifndef QGSMSSQLCONNECTION_H
 #define QGSMSSQLCONNECTION_H
 
+#include <QStringList>
+
 class QString;
 class QSqlDatabase;
 
@@ -127,6 +129,21 @@ class QgsMssqlConnection
      * Truncates the table referenced by \a uri.
      */
     static bool truncateTable( const QString &uri, QString *errorMessage );
+
+    /**
+     * Creates a new schema under connection specified by \a uri.
+     */
+    static bool createSchema( const QString &uri, const QString &schemaName, QString *errorMessage );
+
+    /**
+     * Returns a list of all schemas on the connection specified \a uri.
+     */
+    static QStringList schemas( const QString &uri, QString *errorMessage );
+
+    /**
+     * Returns true if the given \a schema is a system schema.
+     */
+    static bool isSystemSchema( const QString &schema );
 
   private:
 
