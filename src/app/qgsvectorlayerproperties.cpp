@@ -63,6 +63,7 @@
 #include "qgsgeometryoptions.h"
 #include "qgsvectorlayersavestyledialog.h"
 #include "qgsvectorlayerloadstyledialog.h"
+#include "qgsmessagebar.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"

@@ -28,6 +28,7 @@
 #include "qgsgeometryutils.h"
 #include <memory>
 #include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
 
 QgsMapToolCircle2TangentsPoint::QgsMapToolCircle2TangentsPoint( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )

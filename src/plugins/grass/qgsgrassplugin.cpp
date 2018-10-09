@@ -26,6 +26,7 @@
 #include "qgsgrassselect.h"
 #include "qgsgrasstools.h"
 #include "qgsgrassutils.h"
+#include "qgsmessagebar.h"
 
 // includes
 #include "qgisinterface.h"

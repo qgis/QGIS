@@ -15,8 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmapsavedialog.h"
 
+#include <QClipboard>
+#include <QCheckBox>
+#include <QFileDialog>
+#include <QImage>
+#include <QList>
+#include <QPainter>
+#include <QPrinter>
+#include <QSpinBox>
+
+#include "qgsmapsavedialog.h"
+#include "qgsguiutils.h"
 #include "qgis.h"
 #include "qgisapp.h"
 #include "qgsscalecalculator.h"
@@ -29,15 +39,8 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
 
-#include <QClipboard>
-#include <QCheckBox>
-#include <QFileDialog>
-#include <QImage>
-#include <QList>
-#include <QPainter>
-#include <QPrinter>
-#include <QSpinBox>
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 

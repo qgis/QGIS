@@ -13,34 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssymbol.h"
-#include "qgssymbollayer.h"
-
-#include "qgslinesymbollayer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsmaptopixelgeometrysimplifier.h"
-
-#include "qgslogger.h"
-#include "qgsrendercontext.h" // for bigSymbolPreview
-
-#include "qgsproject.h"
-#include "qgsstyle.h"
-#include "qgspainteffect.h"
-#include "qgseffectstack.h"
-
-#include "qgsvectorlayer.h"
-
-#include "qgsgeometry.h"
-#include "qgsmultipoint.h"
-#include "qgsgeometrycollection.h"
-#include "qgslinestring.h"
-#include "qgspolygon.h"
-#include "qgsclipper.h"
-#include "qgsproperty.h"
-#include "qgscolorschemeregistry.h"
-
 #include <QColor>
 #include <QImage>
 #include <QPainter>
@@ -50,6 +22,31 @@
 #include <cmath>
 #include <map>
 #include <random>
+
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+
+#include "qgslinesymbollayer.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgslogger.h"
+#include "qgsrendercontext.h" // for bigSymbolPreview
+#include "qgsproject.h"
+#include "qgsstyle.h"
+#include "qgspainteffect.h"
+#include "qgseffectstack.h"
+#include "qgsvectorlayer.h"
+#include "qgsfeature.h"
+#include "qgsgeometry.h"
+#include "qgsmultipoint.h"
+#include "qgsgeometrycollection.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
+#include "qgsclipper.h"
+#include "qgsproperty.h"
+#include "qgscolorschemeregistry.h"
 
 inline
 QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )

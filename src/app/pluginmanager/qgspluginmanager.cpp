@@ -35,6 +35,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsconfig.h"
+#include "qgsmessagebar.h"
 #include "qgsproviderregistry.h"
 #include "qgspluginregistry.h"
 #include "qgspluginsortfilterproxymodel.h"

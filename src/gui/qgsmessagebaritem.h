@@ -19,7 +19,6 @@
 
 #include "qgsmessagebaritem.h"
 #include "qgis.h"
-#include "qgsmessagebar.h"
 
 #include <QWidget>
 #include <QIcon>
@@ -27,6 +26,7 @@
 #include "qgis_gui.h"
 
 class QTextBrowser;
+class QLabel;
 
 /**
  * \ingroup gui

@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QLayout>
+
 #include "qgsselectbyformdialog.h"
 #include "qgsattributeform.h"
 #include "qgsmapcanvas.h"
 #include "qgssettings.h"
+#include "qgsmessagebar.h"
 
-#include <QLayout>
 
 QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAttributeEditorContext &context, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
