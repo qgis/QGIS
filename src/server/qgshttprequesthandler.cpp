@@ -602,7 +602,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
       {
         continue; //only http and ftp supported at the moment
       }
-      value = QUrl::fromPercentEncoding( fileContents );
+      value = QString( fileContents );
 #else
       QgsMessageLog::logMessage( "http and ftp methods not supported with Qt5." );
       continue;
