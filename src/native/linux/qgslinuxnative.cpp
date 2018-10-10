@@ -26,7 +26,7 @@
 
 QgsNative::Capabilities QgsLinuxNative::capabilities() const
 {
-  return NativeDesktopNotifications;
+  return NativeDesktopNotifications | NativeFilePropertiesDialog;
 }
 
 void QgsLinuxNative::initializeMainWindow( QWindow *,
@@ -55,6 +55,26 @@ void QgsLinuxNative::openFileExplorerAndSelectFile( const QString &path )
   if ( iface.lastError().type() != QDBusError::NoError )
   {
     QgsNative::openFileExplorerAndSelectFile( path );
+  }
+}
+
+void QgsLinuxNative::showFileProperties( const QString &path )
+{
+  if ( !QDBusConnection::sessionBus().isConnected() )
+  {
+    QgsNative::showFileProperties( path );
+    return;
+  }
+
+  QDBusInterface iface( QStringLiteral( "org.freedesktop.FileManager1" ),
+                        QStringLiteral( "/org/freedesktop/FileManager1" ),
+                        QStringLiteral( "org.freedesktop.FileManager1" ),
+                        QDBusConnection::sessionBus() );
+
+  iface.call( QDBus::NoBlock, QStringLiteral( "ShowItemProperties" ), QStringList( QUrl::fromLocalFile( path ).toString() ), QStringLiteral( "QGIS" ) );
+  if ( iface.lastError().type() != QDBusError::NoError )
+  {
+    QgsNative::showFileProperties( path );
   }
 }
 
