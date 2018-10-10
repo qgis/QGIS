@@ -1362,8 +1362,13 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${SQLITE3_LIBRARY}
   ${SPATIALITE_LIBRARY}
   ${LIBZIP_LIBRARY}
-  Qt5::SerialPort
 )
+
+IF (Qt5SerialPort_FOUND)
+  TARGET_LINK_LIBRARIES(qgis_core
+    Qt5::SerialPort
+  )
+ENDIF (Qt5SerialPort_FOUND)
 
 IF (Qt5Positioning_FOUND)
   TARGET_LINK_LIBRARIES(qgis_core

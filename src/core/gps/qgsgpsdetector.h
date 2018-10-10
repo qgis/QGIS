@@ -21,7 +21,6 @@
 #include <QObject>
 #include <QList>
 #include <QPair>
-#include <QSerialPort>
 
 #include "qgis_core.h"
 
