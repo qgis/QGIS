@@ -1524,11 +1524,6 @@
     <string>Ctrl+Shift+P</string>
    </property>
   </action>
-  <action name="actiondsfg">
-   <property name="text">
-    <string>dsfg</string>
-   </property>
-  </action>
   <action name="mActionOptions">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">

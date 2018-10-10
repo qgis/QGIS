@@ -278,7 +278,7 @@ border-radius: 2px;</string>
                <item>
                 <widget class="QPushButton" name="mAddDatasetButton">
                  <property name="text">
-                  <string>Assign extra dataset to mesh</string>
+                  <string>Assign Extra Dataset to Mesh</string>
                  </property>
                 </widget>
                </item>

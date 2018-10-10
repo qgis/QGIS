@@ -104,8 +104,8 @@
        <property name="focusPolicy" >
         <enum>Qt::NoFocus</enum>
        </property>
-       <property name="text" >
-        <string>Abort fetching</string>
+       <property name="text">
+        <string>Abort Fetching</string>
        </property>
        <property name="autoDefault" >
         <bool>false</bool>
