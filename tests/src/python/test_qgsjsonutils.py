@@ -31,7 +31,7 @@ from qgis.core import (QgsJsonUtils,
                        QgsRelation,
                        QgsEditorWidgetSetup
                        )
-from qgis.PyQt.QtCore import QVariant, QTextCodec
+from qgis.PyQt.QtCore import QVariant, QTextCodec, QLocale
 
 start_app()
 codec = QTextCodec.codecForName("System")
@@ -675,6 +675,56 @@ class TestQgsJsonUtils(unittest.TestCase):
 }
 ]}"""
         self.assertEqual(exporter.exportFeatures([feature, feature2]), expected)
+
+    def testExportFeaturesWithLocale_regression20053(self):
+        """ Test exporting feature export with range widgets and locale different than C
+        Regression: https://issues.qgis.org/issues/20053 - decimal separator in csv files
+        """
+
+        source = QgsVectorLayer("Point?field=name:string&field=cost:double&field=population:int&field=date:date",
+                                "parent", "memory")
+        self.assertTrue(source.isValid())
+        fields = source.fields()
+
+        feature = QgsFeature(fields, 5)
+        feature.setGeometry(QgsGeometry(QgsPoint(5, 6)))
+        feature.setAttributes(['Valsier Peninsula', 6.8, 198000, '2018-09-10'])
+
+        exporter = QgsJsonExporter()
+
+        # single feature
+        expected = """{ "type": "FeatureCollection",
+    "features":[
+{
+   "type":"Feature",
+   "id":5,
+   "geometry":
+   {"type": "Point", "coordinates": [5, 6]},
+   "properties":{
+      "name":"Valsier Peninsula",
+      "cost":6.8,
+      "population":198000,
+      "date":"2018-09-10"
+   }
+}
+]}"""
+        self.assertEqual(exporter.exportFeatures([feature]), expected)
+
+        setup = QgsEditorWidgetSetup('Range', {
+            'AllowNull': True,
+            'Max': 2147483647,
+            'Min': -2147483648,
+            'Precision': 4,
+            'Step': 1,
+            'Style': 'SpinBox'
+        }
+        )
+        source.setEditorWidgetSetup(1, setup)
+        source.setEditorWidgetSetup(2, setup)
+
+        QLocale.setDefault(QLocale('it'))
+        exporter.setVectorLayer(source)
+        self.assertEqual(exporter.exportFeatures([feature]), expected)
 
 
 if __name__ == "__main__":
