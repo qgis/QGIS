@@ -35,6 +35,7 @@
 #include "qgsbrowserproxymodel.h"
 #include "qgsgui.h"
 #include "qgswindowmanagerinterface.h"
+#include "qgsnative.h"
 
 // browser layer properties dialog
 #include "qgsapplication.h"
@@ -221,12 +222,24 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
       menu->addAction( tr( "Remove Favorite" ), this, SLOT( removeFavorite() ) );
       menu->addSeparator();
     }
-    menu->addAction( tr( "Properties…" ), this, SLOT( showProperties() ) );
     menu->addAction( tr( "Hide from Browser" ), this, SLOT( hideItem() ) );
     QAction *action = menu->addAction( tr( "Fast Scan this Directory" ), this, SLOT( toggleFastScan() ) );
     action->setCheckable( true );
     action->setChecked( settings.value( QStringLiteral( "qgis/scanItemsFastScanUris" ),
                                         QStringList() ).toStringList().contains( item->path() ) );
+
+    menu->addAction( tr( "Properties…" ), this, SLOT( showProperties() ) );
+    if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
+    {
+      if ( QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem * >( item ) )
+      {
+        QAction *action = menu->addAction( tr( "Directory Properties…" ) );
+        connect( action, &QAction::triggered, dirItem, [ dirItem ]
+        {
+          QgsGui::nativePlatformInterface()->showFileProperties( dirItem->dirPath() );
+        } );
+      }
+    }
   }
   else if ( item->type() == QgsDataItem::Layer )
   {
@@ -270,7 +283,15 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     }
 
     menu->addAction( tr( "Add Selected Layer(s) to Canvas" ), this, SLOT( addSelectedLayers() ) );
-    menu->addAction( tr( "Properties…" ), this, SLOT( showProperties() ) );
+    menu->addAction( tr( "Layer Properties…" ), this, SLOT( showProperties() ) );
+    if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
+    {
+      QAction *action = menu->addAction( tr( "File Properties…" ) );
+      connect( action, &QAction::triggered, this, [ = ]
+      {
+        QgsGui::nativePlatformInterface()->showFileProperties( item->path() );
+      } );
+    }
   }
   else if ( item->type() == QgsDataItem::Favorites )
   {

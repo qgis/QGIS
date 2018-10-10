@@ -44,6 +44,7 @@ class NATIVE_EXPORT QgsNative : public QObject
     enum Capability
     {
       NativeDesktopNotifications = 1 << 1, //!< Native desktop notifications are supported. See showDesktopNotification().
+      NativeFilePropertiesDialog = 1 << 2, //!< Platform can show a native "file" (or folder) properties dialog.
     };
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
@@ -90,6 +91,16 @@ class NATIVE_EXPORT QgsNative : public QObject
      * \since QGIS 3.4
      */
     virtual void openFileExplorerAndSelectFile( const QString &path );
+
+    /**
+     * Opens the desktop explorer file (or folder) properties dialog, for the given \a path.
+     *
+     * The default implementation does nothing. Platforms which implement this interface should
+     * return the QgsNative::NativeFilePropertiesDialog capability.
+     *
+     * \since QGIS 3.6
+     */
+    virtual void showFileProperties( const QString &path );
 
     /**
      * Shows the application progress report, using an "undefined" total

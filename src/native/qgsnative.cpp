@@ -48,6 +48,11 @@ void QgsNative::openFileExplorerAndSelectFile( const QString &path )
   QDesktopServices::openUrl( QUrl::fromLocalFile( folder ) );
 }
 
+void QgsNative::showFileProperties( const QString & )
+{
+
+}
+
 void QgsNative::showUndefinedApplicationProgress()
 {
 

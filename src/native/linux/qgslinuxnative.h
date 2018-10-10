@@ -39,6 +39,7 @@ class NATIVE_EXPORT QgsLinuxNative : public QgsNative
                                const QString &organizationName,
                                const QString &version ) override;
     void openFileExplorerAndSelectFile( const QString &path ) override;
+    void showFileProperties( const QString &path ) override;
     void showUndefinedApplicationProgress() override;
     void setApplicationProgress( double progress ) override;
     void hideApplicationProgress() override;
