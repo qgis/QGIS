@@ -316,6 +316,15 @@ IF(WITH_CORE)
   #############################################################
   # search for Qt5
   SET(QT_MIN_VERSION 5.9.0)
+
+  # Use Qt5SerialPort optionally for GPS
+  SET (WITH_QT5SERIALPORT TRUE CACHE BOOL "Determines whether Qt5SerialPort should be tried for GPS positioning")
+  IF (WITH_QT5SERIALPORT)
+      FIND_PACKAGE(Qt5SerialPort REQUIRED)
+      # following variable is used in qgsconfig.h
+      SET (HAVE_QT5SERIALPORT TRUE)
+  ENDIF(WITH_QT5SERIALPORT)
+
   FIND_PACKAGE(Qt5Core QUIET)
   FIND_PACKAGE(Qt5Gui REQUIRED)
   FIND_PACKAGE(Qt5Widgets REQUIRED)
@@ -324,7 +333,6 @@ IF(WITH_CORE)
   FIND_PACKAGE(Qt5Svg REQUIRED)
   FIND_PACKAGE(Qt5Concurrent REQUIRED)
   FIND_PACKAGE(Qt5PrintSupport REQUIRED)
-  FIND_PACKAGE(Qt5SerialPort REQUIRED)
   FIND_PACKAGE(Qt5Positioning)
   IF (WITH_QTWEBKIT)
     FIND_PACKAGE(Qt5WebKit REQUIRED)
@@ -352,7 +360,7 @@ IF(WITH_CORE)
     IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
         FIND_PACKAGE(Qt5AndroidExtras)
     ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Android")
-        FIND_PACKAGE(QtQmlTools REQUIRED)
+        FIND_PACKAGE(QtQmlTools)
     ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
 
     # following variable is used in qgsconfig.h

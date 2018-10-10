@@ -69,5 +69,7 @@
 
 #cmakedefine HAVE_QUICK
 
+#cmakedefine HAVE_QT5SERIALPORT
+
 #endif
 
