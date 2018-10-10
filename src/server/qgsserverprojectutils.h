@@ -19,6 +19,7 @@
 #define QGSSERVERPROJECTUTILS_H
 
 #include <QString>
+#include <QHash>
 
 #include "qgis_server.h"
 
