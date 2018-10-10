@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <QSettings>
 #include <QDir>
+#include <QStringList>
 
 
 // KDE
@@ -698,7 +699,7 @@ QList<QString> ColorSchemeManager::listKDE3ColorSchemes()
   QStringList ret;
   foreach ( QString i, list )
     ret << dname + "/" + i;
-  return ret;
+  return std::move( ret );
   //return KGlobal::dirs()->findAllResources("data",
   //                                         "konsole/*.schema",
   //                                          KStandardDirs::NoDuplicates);
@@ -715,7 +716,7 @@ QList<QString> ColorSchemeManager::listColorSchemes()
   QStringList ret;
   foreach ( QString i, list )
     ret << dname + "/" + i;
-  return ret;
+  return std::move( ret );
 //    return KGlobal::dirs()->findAllResources("data",
 //                                             "konsole/*.colorscheme",
 //                                             KStandardDirs::NoDuplicates);
