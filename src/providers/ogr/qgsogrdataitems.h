@@ -100,6 +100,12 @@ class QgsOgrDataCollectionItem : public QgsDataCollectionItem
      */
     static bool createConnection( const QString &name, const QString &extensions, const QString &ogrDriverName );
 
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
+
+    static void deleteCollection( const QString &path, QPointer< QgsDataItem > parent );
+#endif
+
 };
 
 //! Provider for OGR root data item

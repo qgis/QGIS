@@ -24,6 +24,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgsogrutils.h"
+#include "qgsproviderregistry.h"
 
 #include <QFileInfo>
 #include <QTextStream>
@@ -510,6 +511,85 @@ bool QgsOgrDataCollectionItem::createConnection( const QString &name, const QStr
   return storeConnection( path, ogrDriverName );
 }
 
+#ifdef HAVE_GUI
+QList<QAction *> QgsOgrDataCollectionItem::actions( QWidget *parent )
+{
+  QList<QAction *> lst = QgsDataCollectionItem::actions( parent );
+
+  const bool isFolder = QFileInfo( mPath ).isDir();
+  // Messages are different for files and tables
+  QString message = QObject::tr( "Delete %1 “%2”…" ).arg( isFolder ? tr( "Folder" ) : tr( "File" ), mName );
+  QAction *actionDeleteLayer = new QAction( message, parent );
+
+  // IMPORTANT - we need to capture the stuff we need, and then hand the slot
+  // off to a static method. This is because it's possible for this item
+  // to be deleted in the background on us (e.g. by a parent directory refresh)
+  const QString path = mPath;
+  QPointer< QgsDataItem > parentItem( mParent );
+  connect( actionDeleteLayer, &QAction::triggered, this, [ path, parentItem ]
+  {
+    deleteCollection( path, parentItem );
+  } );
+  lst.append( actionDeleteLayer );
+
+  return lst;
+}
+
+void QgsOgrDataCollectionItem::deleteCollection( const QString &path, QPointer<QgsDataItem> parent )
+{
+  const bool isFolder = QFileInfo( path ).isDir();
+  const QString type = isFolder ? tr( "folder" ) : tr( "file" );
+  const QString typeCaps = isFolder ? tr( "Folder" ) : tr( "File" );
+  const QString title = QObject::tr( "Delete %1" ).arg( type );
+  // Check if the layer is in the project
+  const QgsMapLayer *projectLayer = nullptr;
+  const auto mapLayers = QgsProject::instance()->mapLayers();
+  for ( auto it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
+  {
+    const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( it.value()->dataProvider()->name(), it.value()->source() );
+    if ( parts.value( QStringLiteral( "path" ) ).toString() == path )
+    {
+      projectLayer = it.value();
+    }
+  }
+  if ( ! projectLayer )
+  {
+    const QString confirmMessage = QObject::tr( "Are you sure you want to delete '%1'?" ).arg( path );
+
+    if ( QMessageBox::question( nullptr, title,
+                                confirmMessage,
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      return;
+
+    bool res = false;
+    if ( isFolder )
+    {
+      // e.g. the abomination which is gdb
+      QDir dir( path );
+      res = dir.removeRecursively();
+    }
+    else
+    {
+      res = QFile::remove( path );
+    }
+    if ( !res )
+    {
+      QMessageBox::warning( nullptr, title, tr( "Could not delete %1." ).arg( type ) );
+    }
+    else
+    {
+      QMessageBox::information( nullptr, title, tr( "%1 deleted successfully." ).arg( typeCaps ) );
+      if ( parent )
+        parent->refresh();
+    }
+  }
+  else
+  {
+    QMessageBox::warning( nullptr, title, QObject::tr( "The %1 '%2' cannot be deleted because it is in the current project as '%3',"
+                          " remove it from the project and retry." ).arg( type, path, projectLayer->name() ) );
+  }
+}
+#endif
 
 // ---------------------------------------------------------------------------
 
@@ -638,10 +718,14 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
   //       with the companion variable (same name) in the gdal provider
   //       class
   // TODO: add more OGR supported multiple layers formats here!
-  QStringList ogrSupportedDbLayersExtensions;
-  ogrSupportedDbLayersExtensions << QStringLiteral( "gpkg" ) << QStringLiteral( "sqlite" ) << QStringLiteral( "db" ) << QStringLiteral( "gdb" ) << QStringLiteral( "kml" );
-  QStringList ogrSupportedDbDriverNames;
-  ogrSupportedDbDriverNames << QStringLiteral( "GPKG" ) << QStringLiteral( "db" ) << QStringLiteral( "gdb" );
+  static QStringList sOgrSupportedDbLayersExtensions { QStringLiteral( "gpkg" ),
+      QStringLiteral( "sqlite" ),
+      QStringLiteral( "db" ),
+      QStringLiteral( "gdb" ),
+      QStringLiteral( "kml" ) };
+  static QStringList sOgrSupportedDbDriverNames { QStringLiteral( "GPKG" ),
+      QStringLiteral( "db" ),
+      QStringLiteral( "gdb" ) };
 
   // Fast track: return item without testing if:
   // scanExtSetting or zipfile and scan zip == "Basic scan"
@@ -666,7 +750,7 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
     // Handle collections
     // Check if the layer has sublayers by comparing the extension
     QgsDataItem *item = nullptr;
-    if ( ! ogrSupportedDbLayersExtensions.contains( suffix ) )
+    if ( ! sOgrSupportedDbLayersExtensions.contains( suffix ) )
     {
       item = new QgsOgrLayerItem( parentItem, name, path, path, QgsLayerItem::Vector );
     }
@@ -714,7 +798,7 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
   {
     item = new QgsGeoPackageCollectionItem( parentItem, name, path );
   }
-  else if ( numLayers > 1 || ogrSupportedDbDriverNames.contains( driverName ) )
+  else if ( numLayers > 1 || sOgrSupportedDbDriverNames.contains( driverName ) )
   {
     item = new QgsOgrDataCollectionItem( parentItem, name, path );
   }
