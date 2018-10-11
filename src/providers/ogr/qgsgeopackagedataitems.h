@@ -83,6 +83,8 @@ class QgsGeoPackageCollectionItem : public QgsDataCollectionItem
     bool acceptDrop() override { return true; }
     bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
     QList<QAction *> actions( QWidget *parent ) override;
+    static void deleteGpkg( const QString &path, QPointer< QgsDataItem > parent );
+
 #endif
 
     //! Returns the layer type from \a geometryType
