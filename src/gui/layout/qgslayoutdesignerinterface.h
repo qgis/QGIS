@@ -78,6 +78,33 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      */
     virtual void selectItems( const QList< QgsLayoutItem * > &items ) = 0;
 
+    /**
+     * Toggles whether the atlas preview mode should be \a enabled in the designer.
+     *
+     * \see atlasPreviewModeEnabled()
+     * \since QGIS 3.4
+     */
+    virtual void setAtlasPreviewEnabled( bool enabled ) = 0;
+
+    /**
+     * Returns whether the atlas preview mode is enabled in the designer.
+     *
+     * \see setAtlasPreviewEnabled()
+     * \since QGIS 3.4
+     */
+    virtual bool atlasPreviewEnabled() const = 0;
+
+    /**
+     * Shows the configuration widget for the specified layout \a item.
+     *
+     * If \a bringPanelToFront is true, then the item properties panel will be automatically
+     * shown and raised to the top of the interface.
+     *
+     * \since QGIS 3.4
+     */
+    virtual void showItemOptions( QgsLayoutItem *item, bool bringPanelToFront = true ) = 0;
+
+
   public slots:
 
     /**
