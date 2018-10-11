@@ -475,11 +475,7 @@ void QgsGeoPackageCollectionItem::vacuumGeoPackageDbAction()
 {
   QString errCause;
   bool result = QgsGeoPackageCollectionItem::vacuumGeoPackageDb( mPath, mName, errCause );
-  if ( result && errCause.isEmpty() )
-  {
-    QMessageBox::information( nullptr, tr( "Database compact (VACUUM)" ), tr( "Database <b>%1</b> has been compacted successfully." ).arg( mName ) );
-  }
-  else
+  if ( !result || !errCause.isEmpty() )
   {
     QMessageBox::warning( nullptr, tr( "Database compact (VACUUM)" ), errCause );
   }
