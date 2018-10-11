@@ -200,6 +200,10 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex &index ) const
 
   if ( ptr->acceptDrop() )
     flags |= Qt::ItemIsDropEnabled;
+
+  if ( ptr->capabilities2() & QgsDataItem::Rename )
+    flags |= Qt::ItemIsEditable;
+
   return flags;
 }
 
@@ -213,7 +217,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   {
     return QVariant();
   }
-  else if ( role == Qt::DisplayRole )
+  else if ( role == Qt::DisplayRole || role == Qt::EditRole )
   {
     return item->name();
   }
@@ -247,6 +251,31 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
     // unsupported role
     return QVariant();
   }
+}
+
+bool QgsBrowserModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( !index.isValid() )
+    return false;
+
+
+  QgsDataItem *item = dataItem( index );
+  if ( !item )
+  {
+    return false;
+  }
+
+  if ( !( item->capabilities2() & QgsDataItem::Rename ) )
+    return false;
+
+  switch ( role )
+  {
+    case Qt::EditRole:
+    {
+      return item->rename( value.toString() );
+    }
+  }
+  return false;
 }
 
 QVariant QgsBrowserModel::headerData( int section, Qt::Orientation orientation, int role ) const

@@ -157,15 +157,6 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
   QgsDockWidget::showEvent( e );
 }
 
-void QgsBrowserDockWidget::keyPressEvent( QKeyEvent *event )
-{
-  if ( event->key() == Qt::Key_F2 )
-  {
-    renameFavorite();
-    event->accept();
-  }
-}
-
 void QgsBrowserDockWidget::itemDoubleClicked( const QModelIndex &index )
 {
   QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );

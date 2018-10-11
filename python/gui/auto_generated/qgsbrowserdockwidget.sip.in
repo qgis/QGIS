@@ -136,9 +136,6 @@ Connections changed in the browser
 Show event override
 %End
 
-    virtual void keyPressEvent( QKeyEvent *event );
-
-
 };
 
 

@@ -551,6 +551,11 @@ bool QgsDataItem::handleDoubleClick()
   return false;
 }
 
+bool QgsDataItem::rename( const QString & )
+{
+  return false;
+}
+
 QgsDataItem::State QgsDataItem::state() const
 {
   return mState;
@@ -1559,12 +1564,13 @@ QgsFavoriteItem::QgsFavoriteItem( QgsFavoritesItem *parent, const QString &name,
   : QgsDirectoryItem( parent, name, dirPath, path )
   , mFavorites( parent )
 {
-
+  mCapabilities |= Rename;
 }
 
-void QgsFavoriteItem::rename( const QString &name )
+bool QgsFavoriteItem::rename( const QString &name )
 {
   mFavorites->renameFavorite( dirPath(), name );
+  return true;
 }
 
 
