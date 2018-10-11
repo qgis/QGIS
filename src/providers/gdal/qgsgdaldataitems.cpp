@@ -126,16 +126,28 @@ QString QgsGdalLayerItem::layerName() const
 #ifdef HAVE_GUI
 QList<QAction *> QgsGdalLayerItem::actions( QWidget *parent )
 {
-  QList<QAction *> lst;
+  QList<QAction *> lst = QgsLayerItem::actions( parent );
+
   // Messages are different for files and tables
   const QString message = QObject::tr( "Delete File “%1”…" ).arg( mName );
   QAction *actionDeleteLayer = new QAction( message, parent );
-  connect( actionDeleteLayer, &QAction::triggered, this, &QgsGdalLayerItem::deleteLayer );
+
+  // IMPORTANT - we need to capture the stuff we need, and then hand the slot
+  // off to a static method. This is because it's possible for this item
+  // to be deleted in the background on us (e.g. by a parent directory refresh)
+  const QString uri = mUri;
+  const QString path = mPath;
+  QPointer< QgsDataItem > parentItem( mParent );
+  connect( actionDeleteLayer, &QAction::triggered, this, [ uri, path, parentItem ]
+  {
+    deleteLayer( uri, path, parentItem );
+  } );
+
   lst.append( actionDeleteLayer );
   return lst;
 }
 
-void QgsGdalLayerItem::deleteLayer()
+void QgsGdalLayerItem::deleteLayer( const QString &uri, const QString &path, QPointer< QgsDataItem > parent )
 {
   const QString title = QObject::tr( "Delete File" );
   // Check if the layer is in the project
@@ -143,14 +155,14 @@ void QgsGdalLayerItem::deleteLayer()
   const auto mapLayers = QgsProject::instance()->mapLayers();
   for ( auto it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
-    if ( it.value()->publicSource() == mUri )
+    if ( it.value()->publicSource() == uri )
     {
       projectLayer = it.value();
     }
   }
   if ( ! projectLayer )
   {
-    const QString confirmMessage = QObject::tr( "Are you sure you want to delete file '%1'?" ).arg( mPath );
+    const QString confirmMessage = QObject::tr( "Are you sure you want to delete file '%1'?" ).arg( path );
 
     if ( QMessageBox::question( nullptr, title,
                                 confirmMessage,
@@ -158,21 +170,21 @@ void QgsGdalLayerItem::deleteLayer()
       return;
 
 
-    if ( !QFile::remove( mPath ) )
+    if ( !QFile::remove( path ) )
     {
       QMessageBox::warning( nullptr, title, tr( "Could not delete file." ) );
     }
     else
     {
       QMessageBox::information( nullptr, title, tr( "File deleted successfully." ) );
-      if ( mParent )
-        mParent->refresh();
+      if ( parent )
+        parent->refresh();
     }
   }
   else
   {
     QMessageBox::warning( nullptr, title, QObject::tr( "The layer '%1' cannot be deleted because it is in the current project as '%2',"
-                          " remove it from the project and retry." ).arg( mName, projectLayer->name() ) );
+                          " remove it from the project and retry." ).arg( path, projectLayer->name() ) );
   }
 }
 #endif

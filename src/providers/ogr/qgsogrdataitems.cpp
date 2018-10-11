@@ -309,24 +309,36 @@ QString QgsOgrLayerItem::layerName() const
 #ifdef HAVE_GUI
 QList<QAction *> QgsOgrLayerItem::actions( QWidget *parent )
 {
-  QList<QAction *> lst;
+  QList<QAction *> lst = QgsLayerItem::actions( parent );
+
   // Messages are different for files and tables
   QString message = mIsSubLayer ? QObject::tr( "Delete Layer “%1”…" ).arg( mName ) : QObject::tr( "Delete File “%1”…" ).arg( mName );
   QAction *actionDeleteLayer = new QAction( message, parent );
-  connect( actionDeleteLayer, &QAction::triggered, this, &QgsOgrLayerItem::deleteLayer );
+
+  // IMPORTANT - we need to capture the stuff we need, and then hand the slot
+  // off to a static method. This is because it's possible for this item
+  // to be deleted in the background on us (e.g. by a parent directory refresh)
+  const bool isSubLayer = mIsSubLayer;
+  const QString uri = mUri;
+  const QString name = mName;
+  QPointer< QgsDataItem > parentItem( mParent );
+  connect( actionDeleteLayer, &QAction::triggered, this, [ isSubLayer, uri, name, parentItem ]
+  {
+    deleteLayer( isSubLayer, uri, name, parentItem );
+  } );
   lst.append( actionDeleteLayer );
   return lst;
 }
 
-void QgsOgrLayerItem::deleteLayer()
+void QgsOgrLayerItem::deleteLayer( const bool isSubLayer, const QString &uri, const QString &name, QPointer< QgsDataItem > parent )
 {
   // Messages are different for files and tables
-  QString title = mIsSubLayer ? QObject::tr( "Delete Layer" ) : QObject::tr( "Delete File" );
+  QString title = isSubLayer ? QObject::tr( "Delete Layer" ) : QObject::tr( "Delete File" );
   // Check if the layer is in the registry
   const QgsMapLayer *projectLayer = nullptr;
   Q_FOREACH ( const QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
   {
-    if ( layer->publicSource() == mUri )
+    if ( layer->publicSource() == uri )
     {
       projectLayer = layer;
     }
@@ -334,13 +346,13 @@ void QgsOgrLayerItem::deleteLayer()
   if ( ! projectLayer )
   {
     QString confirmMessage;
-    if ( mIsSubLayer )
+    if ( isSubLayer )
     {
-      confirmMessage = QObject::tr( "Are you sure you want to delete layer '%1' from datasource?" ).arg( mName );
+      confirmMessage = QObject::tr( "Are you sure you want to delete layer '%1' from datasource?" ).arg( name );
     }
     else
     {
-      confirmMessage = QObject::tr( "Are you sure you want to delete file '%1'?" ).arg( mUri );
+      confirmMessage = QObject::tr( "Are you sure you want to delete file '%1'?" ).arg( uri );
     }
     if ( QMessageBox::question( nullptr, title,
                                 confirmMessage,
@@ -348,22 +360,22 @@ void QgsOgrLayerItem::deleteLayer()
       return;
 
     QString errCause;
-    bool res = ::deleteLayer( mUri, errCause );
+    bool res = ::deleteLayer( uri, errCause );
     if ( !res )
     {
       QMessageBox::warning( nullptr, title, errCause );
     }
     else
     {
-      QMessageBox::information( nullptr, title, mIsSubLayer ? tr( "Layer deleted successfully." ) :  tr( "File deleted successfully." ) );
-      if ( mParent )
-        mParent->refresh();
+      QMessageBox::information( nullptr, title, isSubLayer ? tr( "Layer deleted successfully." ) :  tr( "File deleted successfully." ) );
+      if ( parent )
+        parent->refresh();
     }
   }
   else
   {
     QMessageBox::warning( nullptr, title, QObject::tr( "The layer '%1' cannot be deleted because it is in the current project as '%2',"
-                          " remove it from the project and retry." ).arg( mName, projectLayer->name() ) );
+                          " remove it from the project and retry." ).arg( name, projectLayer->name() ) );
   }
 }
 #endif

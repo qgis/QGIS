@@ -40,8 +40,9 @@ class QgsGdalLayerItem : public QgsLayerItem
 
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
-  public slots:
-    void deleteLayer();
+
+    static void deleteLayer( const QString &uri, const QString &path, QPointer< QgsDataItem > parent );
+
 #endif
 };
 

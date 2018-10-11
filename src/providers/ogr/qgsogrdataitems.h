@@ -69,8 +69,8 @@ class QgsOgrLayerItem : public QgsLayerItem
 
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
-  public slots:
-    void deleteLayer();
+
+    static void deleteLayer( bool isSubLayer, const QString &uri, const QString &name, QPointer< QgsDataItem > parent );
 #endif
   private:
     bool mIsSubLayer;
