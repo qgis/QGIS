@@ -37,6 +37,12 @@ class QgsGdalLayerItem : public QgsLayerItem
     QVector<QgsDataItem *> createChildren() override;
 
     QString layerName() const override;
+
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
+  public slots:
+    void deleteLayer();
+#endif
 };
 
 //! Provider for GDAL root data item

@@ -322,7 +322,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     Type mType;
     Capabilities mCapabilities;
-    QgsDataItem *mParent = nullptr;
+    QPointer< QgsDataItem > mParent;
     QVector<QgsDataItem *> mChildren; // easier to have it always
     State mState;
     QString mName;

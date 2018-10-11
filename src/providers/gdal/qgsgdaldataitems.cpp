@@ -18,9 +18,13 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsogrutils.h"
+#include "qgsproject.h"
+#include "qgsgdalutils.h"
 
 #include <QFileInfo>
+#include <QAction>
 #include <mutex>
+#include <QMessageBox>
 
 // defined in qgsgdalprovider.cpp
 void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QStringList &extensions, QStringList &wildcards );
@@ -119,7 +123,59 @@ QString QgsGdalLayerItem::layerName() const
   else
     return info.completeBaseName();
 }
+#ifdef HAVE_GUI
+QList<QAction *> QgsGdalLayerItem::actions( QWidget *parent )
+{
+  QList<QAction *> lst;
+  // Messages are different for files and tables
+  const QString message = QObject::tr( "Delete File “%1”…" ).arg( mName );
+  QAction *actionDeleteLayer = new QAction( message, parent );
+  connect( actionDeleteLayer, &QAction::triggered, this, &QgsGdalLayerItem::deleteLayer );
+  lst.append( actionDeleteLayer );
+  return lst;
+}
 
+void QgsGdalLayerItem::deleteLayer()
+{
+  const QString title = QObject::tr( "Delete File" );
+  // Check if the layer is in the project
+  const QgsMapLayer *projectLayer = nullptr;
+  const auto mapLayers = QgsProject::instance()->mapLayers();
+  for ( auto it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
+  {
+    if ( it.value()->publicSource() == mUri )
+    {
+      projectLayer = it.value();
+    }
+  }
+  if ( ! projectLayer )
+  {
+    const QString confirmMessage = QObject::tr( "Are you sure you want to delete file '%1'?" ).arg( mPath );
+
+    if ( QMessageBox::question( nullptr, title,
+                                confirmMessage,
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      return;
+
+
+    if ( !QFile::remove( mPath ) )
+    {
+      QMessageBox::warning( nullptr, title, tr( "Could not delete file." ) );
+    }
+    else
+    {
+      QMessageBox::information( nullptr, title, tr( "File deleted successfully." ) );
+      if ( mParent )
+        mParent->refresh();
+    }
+  }
+  else
+  {
+    QMessageBox::warning( nullptr, title, QObject::tr( "The layer '%1' cannot be deleted because it is in the current project as '%2',"
+                          " remove it from the project and retry." ).arg( mName, projectLayer->name() ) );
+  }
+}
+#endif
 // ---------------------------------------------------------------------------
 
 static QString sFilterString;
