@@ -65,7 +65,21 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsAttributeList selectedAttributes() const;
     //! Returns selected attributes that must be exported with their displayed values instead of their raw values. Added in QGIS 2.16
     QgsAttributeList attributesAsDisplayedValues() const;
+
+    /**
+     * Returns true if the "add to canvas" checkbox is checked.
+     *
+     * \see setAddToCanvas()
+     */
     bool addToCanvas() const;
+
+    /**
+     * Sets whether the  "add to canvas" checkbox should be \a checked.
+     *
+     * \see addToCanvas()
+     * \since QGIS 3.6
+     */
+    void setAddToCanvas( bool checked );
 
     /**
      * Returns type of symbology export.
