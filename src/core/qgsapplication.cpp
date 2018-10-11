@@ -61,6 +61,7 @@
 #include <QMessageBox>
 #include <QPalette>
 #include <QProcess>
+#include <QProcessEnvironment>
 #include <QIcon>
 #include <QPixmap>
 #include <QThreadPool>
@@ -270,7 +271,9 @@ void QgsApplication::init( QString profileFolder )
   // store system environment variables passed to application, before they are adjusted
   QMap<QString, QString> systemEnvVarMap;
   QString passfile( QStringLiteral( "QGIS_AUTH_PASSWORD_FILE" ) ); // QString, for comparison
-  Q_FOREACH ( const QString &varStr, QProcess::systemEnvironment() )
+
+  const auto systemEnvironment = QProcessEnvironment::systemEnvironment().toStringList();
+  for ( const QString &varStr : systemEnvironment )
   {
     int pos = varStr.indexOf( QLatin1Char( '=' ) );
     if ( pos == -1 )
@@ -947,7 +950,7 @@ QString QgsApplication::userLoginName()
     sUserName = QString( name );
   }
 
-#else
+#elseif QT_CONFIG(process)
   QProcess process;
 
   process.start( QStringLiteral( "whoami" ) );
