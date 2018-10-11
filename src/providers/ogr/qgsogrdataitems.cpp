@@ -311,7 +311,7 @@ QList<QAction *> QgsOgrLayerItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
   // Messages are different for files and tables
-  QString message = mIsSubLayer ? QObject::tr( "Delete Layer '%1'…" ).arg( mName ) : QObject::tr( "Delete File '%1'…" ).arg( QDir::toNativeSeparators( mUri ) );
+  QString message = mIsSubLayer ? QObject::tr( "Delete Layer “%1”…" ).arg( mName ) : QObject::tr( "Delete File “%1”…" ).arg( mName );
   QAction *actionDeleteLayer = new QAction( message, parent );
   connect( actionDeleteLayer, &QAction::triggered, this, &QgsOgrLayerItem::deleteLayer );
   lst.append( actionDeleteLayer );
