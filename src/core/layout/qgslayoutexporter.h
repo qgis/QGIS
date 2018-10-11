@@ -16,6 +16,7 @@
 #ifndef QGSLAYOUTEXPORTER_H
 #define QGSLAYOUTEXPORTER_H
 
+#include <QPrinter>
 #include "qgis_core.h"
 #include "qgsmargins.h"
 #include "qgslayoutrendercontext.h"
@@ -23,7 +24,8 @@
 #include <QPointer>
 #include <QSize>
 #include <QRectF>
-#include <QPrinter>
+
+#ifndef QT_NO_PRINTER
 
 class QgsLayout;
 class QPainter;
@@ -561,6 +563,8 @@ class CORE_EXPORT QgsLayoutExporter
     friend class TestQgsLayout;
 
 };
+
+#endif // ! QT_NO_PRINTER
 
 #endif //QGSLAYOUTEXPORTER_H
 

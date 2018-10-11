@@ -15,6 +15,8 @@
  ***************************************************************************/
 
 #include "qgslayoutexporter.h"
+#ifndef QT_NO_PRINTER
+
 #include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutpagecollection.h"
@@ -1622,3 +1624,4 @@ bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFile
   return w.write( image );
 }
 
+#endif // ! QT_NO_PRINTER

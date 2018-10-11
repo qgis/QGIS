@@ -46,8 +46,16 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     //! \brief Error type
     enum ErrorType
     {
-      ImageAllocationFail = 1,  // Image allocation failure
-      ImageSaveFail             // Image save failure
+      //! Image allocation failure
+      ImageAllocationFail = 1,
+      //! Image save failure
+      ImageSaveFail,
+
+      /**
+       * Format is unsupported on the platform
+       * \since QGIS 3.4
+       */
+      ImageUnsupportedFormat
     };
 
     /**

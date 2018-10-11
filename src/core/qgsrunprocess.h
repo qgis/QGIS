@@ -28,6 +28,7 @@
 #include "qgis_sip.h"
 
 class QgsMessageOutput;
+
 /**
  * \ingroup core
  * A class that executes an external program/script.
@@ -64,7 +65,7 @@ class CORE_EXPORT QgsRunProcess: public QObject SIP_NODEFAULTCTORS
     QgsMessageOutput *mOutput = nullptr;
     QString mCommand;
 
-public slots:
+  public slots:
     void stdoutAvailable();
     void stderrAvailable();
     void processError( QProcess::ProcessError );

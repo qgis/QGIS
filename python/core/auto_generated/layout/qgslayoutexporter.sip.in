@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayoutExporter
 {
 %Docstring
@@ -359,6 +360,7 @@ Subclasses can override this method to customize page file naming.
 %End
 
 };
+
 
 
 
