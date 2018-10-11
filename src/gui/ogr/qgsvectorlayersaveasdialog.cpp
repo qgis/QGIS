@@ -861,6 +861,11 @@ bool QgsVectorLayerSaveAsDialog::addToCanvas() const
   return mAddToCanvas->isChecked();
 }
 
+void QgsVectorLayerSaveAsDialog::setAddToCanvas( bool enabled )
+{
+  mAddToCanvas->setChecked( enabled );
+}
+
 int QgsVectorLayerSaveAsDialog::symbologyExport() const
 {
   return mSymbologyExportComboBox->currentData().toInt();

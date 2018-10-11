@@ -703,7 +703,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   public slots:
     //! save current vector layer
-    void saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false );
+    QString saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false, bool defaultToAddToMap = true );
 
     /**
      * Makes a memory layer permanent, by prompting users to save the layer to a disk-based (OGR)
@@ -716,7 +716,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! save qrl definition for the current layer
     void saveAsLayerDefinition();
     //! save current raster layer
-    void saveAsRasterFile( QgsRasterLayer *layer = nullptr );
+    QString saveAsRasterFile( QgsRasterLayer *layer = nullptr, bool defaultAddToCanvas = true );
     //! Process the list of URIs that have been dropped in QGIS
     void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
     //! Convenience function to open either a project or a layer file.
@@ -1841,16 +1841,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void setLayoutAtlasFeature( QgsPrintLayout *layout, QgsMapLayer *layer, const QgsFeature &feat );
 
-    void saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false );
+    QString saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false, bool defaultToAddToMap = true );
 
-    void saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected,
-                                  const std::function< void ( const QString &newFilename,
-                                      bool addToCanvas,
-                                      const QString &layerName,
-                                      const QString &encoding,
-                                      const QString &vectorFileName )> &onSuccess, const std::function< void ( int error, const QString &errorMessage ) > &onFailure,
-                                  int dialogOptions = QgsVectorLayerSaveAsDialog::AllOptions,
-                                  const QString &dialogTitle = QString() );
+    QString saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected, bool defaultToAddToMap,
+                                     const std::function< void ( const QString &newFilename,
+                                         bool addToCanvas,
+                                         const QString &layerName,
+                                         const QString &encoding,
+                                         const QString &vectorFileName )> &onSuccess, const std::function< void ( int error, const QString &errorMessage ) > &onFailure,
+                                     int dialogOptions = QgsVectorLayerSaveAsDialog::AllOptions,
+                                     const QString &dialogTitle = QString() );
 
     //! Sets project properties, including map untis
     void projectProperties( const QString  &currentPage = QString() );

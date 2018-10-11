@@ -7160,22 +7160,23 @@ void QgisApp::attributeTable( QgsAttributeTableFilterModel::FilterMode filter )
   // the dialog will be deleted by itself on close
 }
 
-void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
+QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defaultAddToCanvas )
 {
   if ( !rasterLayer )
     rasterLayer = qobject_cast<QgsRasterLayer *>( activeLayer() );
 
   if ( !rasterLayer )
   {
-    return;
+    return QString();
   }
 
   QgsRasterLayerSaveAsDialog d( rasterLayer, rasterLayer->dataProvider(),
                                 mMapCanvas->extent(), rasterLayer->crs(),
                                 mMapCanvas->mapSettings().destinationCrs(),
                                 this );
+  d.setAddToCanvas( defaultAddToCanvas );
   if ( d.exec() == QDialog::Rejected )
-    return;
+    return QString();
 
   QgsSettings settings;
   settings.setValue( QStringLiteral( "UI/lastRasterFileDir" ), QFileInfo( d.outputFileName() ).absolutePath() );
@@ -7205,7 +7206,7 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
     if ( !pipe->set( rasterLayer->dataProvider()->clone() ) )
     {
       QgsDebugMsg( QStringLiteral( "Cannot set pipe provider" ) );
-      return;
+      return QString();
     }
 
     QgsRasterNuller *nuller = new QgsRasterNuller();
@@ -7216,7 +7217,7 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
     if ( !pipe->insert( 1, nuller ) )
     {
       QgsDebugMsg( QStringLiteral( "Cannot set pipe nuller" ) );
-      return;
+      return QString();
     }
 
     // add projector if necessary
@@ -7227,7 +7228,7 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
       if ( !pipe->insert( 2, projector ) )
       {
         QgsDebugMsg( QStringLiteral( "Cannot set pipe projector" ) );
-        return;
+        return QString();
       }
     }
   }
@@ -7240,14 +7241,14 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
     if ( !projector )
     {
       QgsDebugMsg( QStringLiteral( "Cannot get pipe projector" ) );
-      return;
+      return QString();
     }
     projector->setCrs( rasterLayer->crs(), d.outputCrs() );
   }
 
   if ( !pipe->last() )
   {
-    return;
+    return QString();
   }
   fileWriter.setCreateOptions( d.createOptions() );
 
@@ -7309,26 +7310,28 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
   } );
 
   QgsApplication::taskManager()->addTask( writerTask );
+  return d.outputFileName();
 }
 
 
-void QgisApp::saveAsFile( QgsMapLayer *layer, bool onlySelected )
+QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const bool defaultToAddToMap )
 {
   if ( !layer )
     layer = activeLayer();
 
   if ( !layer )
-    return;
+    return QString();
 
   QgsMapLayer::LayerType layerType = layer->type();
   if ( layerType == QgsMapLayer::RasterLayer )
   {
-    saveAsRasterFile( qobject_cast<QgsRasterLayer *>( layer ) );
+    return saveAsRasterFile( qobject_cast<QgsRasterLayer *>( layer ), defaultToAddToMap );
   }
   else if ( layerType == QgsMapLayer::VectorLayer )
   {
-    saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ), true, onlySelected );
+    return saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ), true, onlySelected, defaultToAddToMap );
   }
+  return QString();
 }
 
 void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
@@ -7371,7 +7374,7 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
     }
   };
 
-  saveAsVectorFileGeneral( layer, true, false, onSuccess, onFailure, 0, tr( "Save Scratch Layer" ) );
+  saveAsVectorFileGeneral( layer, true, false, true, onSuccess, onFailure, 0, tr( "Save Scratch Layer" ) );
 }
 
 void QgisApp::saveAsLayerDefinition()
@@ -7475,7 +7478,7 @@ QgisAppFieldValueConverter *QgisAppFieldValueConverter::clone() const
 
 ///@endcond
 
-void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected )
+QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected, bool defaultToAddToMap )
 {
   if ( !vlayer )
   {
@@ -7483,7 +7486,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
   }
 
   if ( !vlayer )
-    return;
+    return QString();
 
   const QString layerId = vlayer->id();
 
@@ -7521,10 +7524,10 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
     }
   };
 
-  saveAsVectorFileGeneral( vlayer, symbologyOption, onlySelected, onSuccess, onFailure );
+  return saveAsVectorFileGeneral( vlayer, symbologyOption, onlySelected, defaultToAddToMap, onSuccess, onFailure );
 }
 
-void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected, const std::function<void( const QString &, bool, const QString &, const QString &, const QString & )> &onSuccess, const std::function<void ( int, const QString & )> &onFailure, int options, const QString &dialogTitle )
+QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected, bool defaultToAddToMap, const std::function<void( const QString &, bool, const QString &, const QString &, const QString & )> &onSuccess, const std::function<void ( int, const QString & )> &onFailure, int options, const QString &dialogTitle )
 {
   QgsCoordinateReferenceSystem destCRS;
 
@@ -7540,11 +7543,13 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
   dialog->setMapCanvas( mMapCanvas );
   dialog->setIncludeZ( QgsWkbTypes::hasZ( vlayer->wkbType() ) );
   dialog->setOnlySelected( onlySelected );
+  dialog->setAddToCanvas( defaultToAddToMap );
 
+  QString vectorFilename;
   if ( dialog->exec() == QDialog::Accepted )
   {
     QString encoding = dialog->encoding();
-    QString vectorFilename = dialog->filename();
+    vectorFilename = dialog->filename();
     QString format = dialog->format();
     QStringList datasourceOptions = dialog->datasourceOptions();
     bool autoGeometryType = dialog->automaticGeometryType();
@@ -7612,6 +7617,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
   }
 
   delete dialog;
+  return vectorFilename;
 }
 
 void QgisApp::layerProperties()

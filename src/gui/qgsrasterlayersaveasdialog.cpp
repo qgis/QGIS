@@ -378,6 +378,11 @@ bool QgsRasterLayerSaveAsDialog::addToCanvas() const
   return mAddToCanvas->isChecked();
 }
 
+void QgsRasterLayerSaveAsDialog::setAddToCanvas( bool checked )
+{
+  mAddToCanvas->setChecked( checked );
+}
+
 QString QgsRasterLayerSaveAsDialog::outputFileName() const
 {
   QString fileName = mFilename->filePath();

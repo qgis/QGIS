@@ -18,6 +18,7 @@
 #include "qgsstyle.h"
 #include "qgisapp.h"
 #include "qgslayoutmanagerdialog.h"
+#include "qgsrasterlayer.h"
 
 QgsAppWindowManager::~QgsAppWindowManager()
 {
@@ -44,6 +45,16 @@ QWidget *QgsAppWindowManager::openStandardDialog( QgsWindowManagerInterface::Sta
     }
   }
   return nullptr;
+}
+
+QString QgsAppWindowManager::executeExportVectorLayerDialog( QgsVectorLayer *layer )
+{
+  return QgisApp::instance()->saveAsFile( layer, false, false );
+}
+
+QString QgsAppWindowManager::executeExportRasterLayerDialog( QgsRasterLayer *layer )
+{
+  return QgisApp::instance()->saveAsFile( layer, false, false );
 }
 
 QWidget *QgsAppWindowManager::openApplicationDialog( QgsAppWindowManager::ApplicationDialog dialog )

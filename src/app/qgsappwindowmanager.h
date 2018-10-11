@@ -41,6 +41,8 @@ class QgsAppWindowManager : public QgsWindowManagerInterface
     ~QgsAppWindowManager();
 
     QWidget *openStandardDialog( QgsWindowManagerInterface::StandardDialog dialog ) override;
+    QString executeExportVectorLayerDialog( QgsVectorLayer *layer ) override;
+    QString executeExportRasterLayerDialog( QgsRasterLayer *layer ) override;
 
     /**
      * Opens an instance of a application QGIS dialog. Depending on the dialog,
