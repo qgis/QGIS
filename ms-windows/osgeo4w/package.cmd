@@ -48,7 +48,6 @@ if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=%PF86%\Windows Kits\8.0\L
 if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 
 set CMAKE_OPT=^
-	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python36/sip.exe ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex_i.lib
 goto cmake
 
@@ -60,7 +59,6 @@ if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 
 set CMAKE_OPT=^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
-	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python36/sip.exe ^
 	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
@@ -133,6 +131,8 @@ if errorlevel 1 goto error
 
 if "%CMAKEGEN%"=="" set CMAKEGEN=Ninja
 
+for %%i in (%PYTHONHOME%) do set PYVER=%%~ni
+
 cmake -G "%CMAKEGEN%" ^
 	-D CMAKE_CXX_COMPILER="%CMAKE_COMPILER_PATH:\=/%/cl.exe" ^
 	-D CMAKE_C_COMPILER="%CMAKE_COMPILER_PATH:\=/%/cl.exe" ^
@@ -160,8 +160,9 @@ cmake -G "%CMAKEGEN%" ^
 	-D SQLITE3_LIBRARY=%O4W_ROOT%/lib/sqlite3_i.lib ^
 	-D SPATIALITE_LIBRARY=%O4W_ROOT%/lib/spatialite_i.lib ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python3.exe ^
-	-D PYTHON_INCLUDE_PATH=%O4W_ROOT%/apps/Python36/include ^
-	-D PYTHON_LIBRARY=%O4W_ROOT%/apps/Python36/libs/python36.lib ^
+	-D SIP_BINARY_PATH=%PYTHONHOME:\=/%/sip.exe ^
+	-D PYTHON_INCLUDE_PATH=%PYTHONHOME:\=/%/include ^
+	-D PYTHON_LIBRARY=%PYTHONHOME:\=/%/libs/%PYVER%.lib ^
 	-D QT_LIBRARY_DIR=%O4W_ROOT%/lib ^
 	-D QT_HEADERS_DIR=%O4W_ROOT%/apps/qt5/include ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
@@ -367,7 +368,7 @@ move %OSGEO4W_ROOT%\apps\qt5\plugins\designer\qgis_customwidgets.dll %PKGDIR%\qt
 if errorlevel 1 (echo move of customwidgets failed & goto error)
 
 if not exist %PKGDIR%\python\PyQt5\uic\widget-plugins mkdir %PKGDIR%\python\PyQt5\uic\widget-plugins
-move %OSGEO4W_ROOT%\apps\Python36\Lib\site-packages\PyQt5\uic\widget-plugins\qgis_customwidgets.py %PKGDIR%\python\PyQt5\uic\widget-plugins
+move %PYTHONHOME%\Lib\site-packages\PyQt5\uic\widget-plugins\qgis_customwidgets.py %PKGDIR%\python\PyQt5\uic\widget-plugins
 if errorlevel 1 (echo move of customwidgets binding failed & goto error)
 
 if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAGENAME%
