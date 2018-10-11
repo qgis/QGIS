@@ -244,7 +244,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     /**
      * Sets the capabilities for the data item.
      *
-     * \see capabilities()
+     * \see capabilities2()
      */
     virtual void setCapabilities( Capabilities capabilities ) { mCapabilities = capabilities; }
 

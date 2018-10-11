@@ -234,7 +234,7 @@ Returns the capabilities for the data item.
 %Docstring
 Sets the capabilities for the data item.
 
-.. seealso:: :py:func:`capabilities`
+.. seealso:: :py:func:`capabilities2`
 %End
 
 
