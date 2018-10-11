@@ -60,7 +60,9 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     QgsLayoutView *view() override;
     QgsMessageBar *messageBar() override;
     void selectItems( const QList< QgsLayoutItem * > &items ) override;
-
+    void setAtlasPreviewEnabled( bool enabled ) override;
+    bool atlasPreviewEnabled() const override;
+    void showItemOptions( QgsLayoutItem *item, bool bringPanelToFront = true ) override;
   public slots:
 
     void close() override;
@@ -138,6 +140,21 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      * Returns the designer's message bar.
      */
     QgsMessageBar *messageBar();
+
+
+    /**
+     * Toggles whether the atlas preview mode should be \a enabled in the designer.
+     *
+     * \see atlasPreviewModeEnabled()
+     */
+    void setAtlasPreviewEnabled( bool enabled );
+
+    /**
+     * Returns whether the atlas preview mode is enabled in the designer.
+     *
+     * \see setAtlasPreviewEnabled()
+     */
+    bool atlasPreviewEnabled() const;
 
     /**
      * Sets the specified feature as the current atlas feature

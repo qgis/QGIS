@@ -127,6 +127,21 @@ void QgsAppLayoutDesignerInterface::selectItems( const QList<QgsLayoutItem *> &i
   mDesigner->selectItems( items );
 }
 
+void QgsAppLayoutDesignerInterface::setAtlasPreviewEnabled( bool enabled )
+{
+  mDesigner->setAtlasPreviewEnabled( enabled );
+}
+
+bool QgsAppLayoutDesignerInterface::atlasPreviewEnabled() const
+{
+  return mDesigner->atlasPreviewEnabled();
+}
+
+void QgsAppLayoutDesignerInterface::showItemOptions( QgsLayoutItem *item, bool bringPanelToFront )
+{
+  mDesigner->showItemOptions( item, bringPanelToFront );
+}
+
 void QgsAppLayoutDesignerInterface::close()
 {
   mDesigner->close();
@@ -4313,6 +4328,17 @@ void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> &items )
 QgsMessageBar *QgsLayoutDesignerDialog::messageBar()
 {
   return mMessageBar;
+}
+
+void QgsLayoutDesignerDialog::setAtlasPreviewEnabled( bool enabled )
+{
+  whileBlocking( mActionAtlasPreview )->setChecked( enabled );
+  atlasPreviewTriggered( enabled );
+}
+
+bool QgsLayoutDesignerDialog::atlasPreviewEnabled() const
+{
+  return mActionAtlasPreview->isChecked();
 }
 
 void QgsLayoutDesignerDialog::setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat )
