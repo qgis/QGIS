@@ -24,7 +24,7 @@ include(CheckLibraryExists)
 
 # try to use sqlite framework on mac
 # want clean framework path, not unix compatibility path
-IF (APPLE)
+IF (APPLE AND NOT IOS)
   IF (CMAKE_FIND_FRAMEWORK MATCHES "FIRST"
       OR CMAKE_FRAMEWORK_PATH MATCHES "ONLY"
       OR NOT CMAKE_FIND_FRAMEWORK)
@@ -39,7 +39,7 @@ IF (APPLE)
     ENDIF (SPATIALITE_INCLUDE_DIR)
     SET (CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
   ENDIF ()
-ENDIF (APPLE)
+ENDIF (APPLE AND NOT IOS)
 
 FIND_PATH(SPATIALITE_INCLUDE_DIR spatialite.h
   /usr/include
