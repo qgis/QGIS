@@ -210,7 +210,8 @@ class CORE_EXPORT QgsDataItem : public QObject
       SetCrs            = 1 << 0, //!< Can set CRS on layer or group of layers
       Fertile           = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
       Fast              = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
-      Collapse          = 1 << 3  //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
+      Collapse          = 1 << 3,  //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
+      Rename            = 1 << 4, //!< Item can be renamed
     };
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
@@ -220,11 +221,30 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) { Q_UNUSED( crs ); return false; }
 
-    // ### QGIS 3 - rename to capabilities()
+    /**
+     * Sets a new \a name for the item, and returns true if the item was successfully renamed.
+     *
+     * Items which implement this method should return the QgsDataItem::Rename capability.
+     *
+     * The default implementation does nothing.
+     *
+     * \since QGIS 3.4
+     */
+    virtual bool rename( const QString &name );
+
+    // ### QGIS 4 - rename to capabilities()
+
+    /**
+     * Returns the capabilities for the data item.
+     *
+     * \see setCapabilities()
+     */
     virtual Capabilities capabilities2() const { return mCapabilities; }
 
     /**
      * Sets the capabilities for the data item.
+     *
+     * \see capabilities()
      */
     virtual void setCapabilities( Capabilities capabilities ) { mCapabilities = capabilities; }
 
@@ -782,10 +802,7 @@ class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
 
     QgsFavoriteItem( QgsFavoritesItem *parent, const QString &name, const QString &dirPath, const QString &path );
 
-    /**
-     * Sets a new \a name for the favorite, storing the new name permanently for the favorite.
-     */
-    void rename( const QString &name );
+    bool rename( const QString &name ) override;
 
   private:
 
