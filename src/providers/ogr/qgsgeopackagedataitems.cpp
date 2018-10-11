@@ -27,6 +27,7 @@
 #include "qgsogrdataitems.h"
 #ifdef HAVE_GUI
 #include "qgsnewgeopackagelayerdialog.h"
+#include "qgsproxyprogresstask.h"
 #endif
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayerexporter.h"
@@ -535,6 +536,8 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
 
 bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &path, const QString &name, QString &errCause )
 {
+  QgsScopedProxyProgressTask task( tr( "Vacuuming %1" ).arg( name ) );
+
   bool result = false;
   // Better safe than sorry
   if ( ! path.isEmpty( ) )
