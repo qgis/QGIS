@@ -166,6 +166,7 @@ void QgsRunProcess::processError( QProcess::ProcessError err )
 #else
 QgsRunProcess::QgsRunProcess( const QString &action, bool )
 {
+  Q_UNUSED( action )
   QgsDebugMsg( "Skipping command: " + action );
 }
 
