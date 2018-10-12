@@ -62,6 +62,7 @@ class TestQgsLineFillSymbol : public QObject
     void lineFillSymbol();
     void lineFillSymbolOffset();
     void lineFillLargeOffset();
+    void lineFillNegativeAngle();
 
     void dataDefinedSubSymbol();
 
@@ -171,6 +172,17 @@ void TestQgsLineFillSymbol::lineFillLargeOffset()
   mLineFill->setOffset( -8 );
   QVERIFY( imageCheck( "symbol_linefill_large_negoffset" ) );
   mLineFill->setOffset( 0 );
+}
+
+void TestQgsLineFillSymbol::lineFillNegativeAngle()
+{
+  mLineFill->setOffset( -8 );
+  mLineFill->setDistance( 2.2 );
+  mLineFill->setLineAngle( -130 );
+  QVERIFY( imageCheck( "symbol_linefill_negangle" ) );
+  mLineFill->setOffset( 0 );
+  mLineFill->setLineAngle( 45 );
+  mLineFill->setDistance( 5 );
 }
 
 void TestQgsLineFillSymbol::dataDefinedSubSymbol()

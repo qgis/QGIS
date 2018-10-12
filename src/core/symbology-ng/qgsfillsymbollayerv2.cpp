@@ -2630,6 +2630,9 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
 
   //create image
   int height, width;
+  lineAngle = fmod( lineAngle, 360 );
+  if ( lineAngle < 0 )
+    lineAngle += 360;
   if ( qgsDoubleNear( lineAngle, 0 ) || qgsDoubleNear( lineAngle, 360 ) || qgsDoubleNear( lineAngle, 180 ) )
   {
     height = outputPixelDist;
@@ -2655,7 +2658,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
     height = qAbs( height );
     width = qAbs( width );
 
-    outputPixelDist = height * cos( lineAngle * M_PI / 180 );
+    outputPixelDist = qAbs( height * cos( lineAngle * M_PI / 180 ) );
 
     // Round offset to correspond to one pixel height, otherwise lines may
     // be shifted on tile border if offset falls close to pixel center
