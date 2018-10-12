@@ -694,6 +694,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns pointer to the identify map tool - used by identify tool in 3D view
     QgsMapToolIdentifyAction *identifyMapTool() const { return mMapTools.mIdentify; }
 
+    /**
+     * Take screenshots for user documentation
+     * @param saveDirectory path were the screenshots will be saved
+     * @param categories an int as a flag value of QgsAppScreenShots::Categories
+     */
+    void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 );
+
   public slots:
     //! save current vector layer
     void saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false );
@@ -1967,6 +1974,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Populates project "load from" / "save to" menu based on project storages (when the menu is about to be shown)
     void populateProjectStorageMenu( QMenu *menu, bool saving );
 
+    //! Create the option dialog
+    QgsOptions *createOptionsDialog( QWidget *parent = nullptr );
+
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
     // actions for menus and toolbars -----------------
@@ -2139,7 +2149,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! interface to QgisApp for plugins
     QgisAppInterface *mQgisInterface = nullptr;
-    friend class QgisAppInterface;
 
     QSplashScreen *mSplash = nullptr;
     //! list of recently opened/saved project files
@@ -2305,7 +2314,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! True if we are blocking the activeLayerChanged signal from being emitted
     bool mBlockActiveLayerChanged = false;
 
+    std::unique_ptr<QgsGeometryValidationService> mGeometryValidationService;
+    QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
+    QgsGeometryValidationDock *mGeometryValidationDock = nullptr;
+
     friend class TestQgisAppPython;
+    friend class QgisAppInterface;
+    friend class QgsAppScreenShots;
 };
 
 #ifdef ANDROID

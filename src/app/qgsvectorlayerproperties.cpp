@@ -793,9 +793,6 @@ void QgsVectorLayerProperties::apply()
   }
   mLayer->geometryOptions()->setGeometryChecks( activeChecks );
 
-  // update symbology
-  emit refreshLegend( mLayer->id() );
-
   mLayer->triggerRepaint();
   // notify the project we've made a change
   QgsProject::instance()->setDirty( true );
