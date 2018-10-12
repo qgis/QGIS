@@ -60,6 +60,8 @@ class TestQgsLineFillSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void lineFillSymbol();
+    void lineFillSymbolOffset();
+
     void dataDefinedSubSymbol();
 
   private:
@@ -145,6 +147,18 @@ void TestQgsLineFillSymbol::lineFillSymbol()
 
   mLineFill->setSubSymbol( lineSymbol );
   QVERIFY( imageCheck( "symbol_linefill" ) );
+}
+
+void TestQgsLineFillSymbol::lineFillSymbolOffset()
+{
+  mReport += QLatin1String( "<h2>Line fill symbol renderer test</h2>\n" );
+
+  mLineFill->setOffset( 0.5 );
+  QVERIFY( imageCheck( "symbol_linefill_posoffset" ) );
+
+  mLineFill->setOffset( -0.5 );
+  QVERIFY( imageCheck( "symbol_linefill_negoffset" ) );
+  mLineFill->setOffset( 0 );
 }
 
 void TestQgsLineFillSymbol::dataDefinedSubSymbol()
