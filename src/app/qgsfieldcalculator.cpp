@@ -163,169 +163,177 @@ void QgsFieldCalculator::accept()
 {
   builder->saveToRecent( QStringLiteral( "fieldcalc" ) );
 
-  if ( !mVectorLayer )
-    return;
-
-  // Set up QgsDistanceArea each time we (re-)calculate
-  QgsDistanceArea myDa;
-
-  myDa.setSourceCrs( mVectorLayer->crs(), QgsProject::instance()->transformContext() );
-  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
-
-  QString calcString = builder->expressionText();
-  QgsExpression exp( calcString );
-  exp.setGeomCalculator( &myDa );
-  exp.setDistanceUnits( QgsProject::instance()->distanceUnits() );
-  exp.setAreaUnits( QgsProject::instance()->areaUnits() );
-
-  QgsExpressionContext expContext( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
-
-  if ( !exp.prepare( &expContext ) )
+  if ( ! mVectorLayer )
   {
-    QMessageBox::critical( nullptr, tr( "Evaluation Error" ), exp.evalErrorString() );
     return;
   }
-
-  bool updatingGeom = false;
-
-  // Test for creating expression field based on ! mUpdateExistingGroupBox checked rather
-  // than on mNewFieldGroupBox checked, as if the provider does not support adding attributes
-  // then mUpdateExistingGroupBox is set to not checkable, and hence is not checked.  This
-  // is a minimum fix to resolve this - better would be some GUI redesign...
-  if ( ! mUpdateExistingGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() )
+  else  // Need a scope for the blocker let's keep the else for clarity
   {
-    mVectorLayer->addExpressionField( calcString, fieldDefinition() );
-  }
-  else
-  {
-    if ( !mVectorLayer->isEditable() )
-      mVectorLayer->startEditing();
 
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+    QgsSignalBlocker<QgsVectorLayer> vectorBlocker( mVectorLayer );
 
-    mVectorLayer->beginEditCommand( QStringLiteral( "Field calculator" ) );
+    // Set up QgsDistanceArea each time we (re-)calculate
+    QgsDistanceArea myDa;
 
-    //update existing field
-    if ( mUpdateExistingGroupBox->isChecked() || !mNewFieldGroupBox->isEnabled() )
+    myDa.setSourceCrs( mVectorLayer->crs(), QgsProject::instance()->transformContext() );
+    myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+
+    QString calcString = builder->expressionText();
+    QgsExpression exp( calcString );
+    exp.setGeomCalculator( &myDa );
+    exp.setDistanceUnits( QgsProject::instance()->distanceUnits() );
+    exp.setAreaUnits( QgsProject::instance()->areaUnits() );
+
+    QgsExpressionContext expContext( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
+
+    if ( !exp.prepare( &expContext ) )
     {
-      if ( mExistingFieldComboBox->currentData().toString() == QLatin1String( "geom" ) )
-      {
-        //update geometry
-        mAttributeId = -1;
-        updatingGeom = true;
-      }
-      else
-      {
-        QMap<QString, int>::const_iterator fieldIt = mFieldMap.constFind( mExistingFieldComboBox->currentText() );
-        if ( fieldIt != mFieldMap.constEnd() )
-        {
-          mAttributeId = fieldIt.value();
-        }
-      }
+      QMessageBox::critical( nullptr, tr( "Evaluation Error" ), exp.evalErrorString() );
+      return;
+    }
+
+    bool updatingGeom = false;
+
+    // Test for creating expression field based on ! mUpdateExistingGroupBox checked rather
+    // than on mNewFieldGroupBox checked, as if the provider does not support adding attributes
+    // then mUpdateExistingGroupBox is set to not checkable, and hence is not checked.  This
+    // is a minimum fix to resolve this - better would be some GUI redesign...
+    if ( ! mUpdateExistingGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() )
+    {
+      mVectorLayer->addExpressionField( calcString, fieldDefinition() );
     }
     else
     {
-      //create new field
-      const QgsField newField = fieldDefinition();
+      if ( !mVectorLayer->isEditable() )
+        mVectorLayer->startEditing();
 
-      if ( !mVectorLayer->addAttribute( newField ) )
+      QApplication::setOverrideCursor( Qt::WaitCursor );
+
+      mVectorLayer->beginEditCommand( QStringLiteral( "Field calculator" ) );
+
+      //update existing field
+      if ( mUpdateExistingGroupBox->isChecked() || !mNewFieldGroupBox->isEnabled() )
       {
-        QApplication::restoreOverrideCursor();
-        QMessageBox::critical( nullptr, tr( "Create New Field" ), tr( "Could not add the new field to the provider." ) );
-        mVectorLayer->destroyEditCommand();
-        return;
-      }
-
-      //get index of the new field
-      const QgsFields &fields = mVectorLayer->fields();
-
-      for ( int idx = 0; idx < fields.count(); ++idx )
-      {
-        if ( fields.at( idx ).name() == mOutputFieldNameLineEdit->text() )
+        if ( mExistingFieldComboBox->currentData().toString() == QLatin1String( "geom" ) )
         {
-          mAttributeId = idx;
-          break;
+          //update geometry
+          mAttributeId = -1;
+          updatingGeom = true;
         }
-      }
-
-      //update expression context with new fields
-      expContext.setFields( mVectorLayer->fields() );
-      if ( ! exp.prepare( &expContext ) )
-      {
-        QApplication::restoreOverrideCursor();
-        QMessageBox::critical( nullptr, tr( "Evaluation Error" ), exp.evalErrorString() );
-        return;
-      }
-    }
-
-    if ( mAttributeId == -1 && !updatingGeom )
-    {
-      mVectorLayer->destroyEditCommand();
-      QApplication::restoreOverrideCursor();
-      return;
-    }
-
-    //go through all the features and change the new attribute
-    QgsFeature feature;
-    bool calculationSuccess = true;
-    QString error;
-
-    bool useGeometry = exp.needsGeometry();
-    int rownum = 1;
-
-    QgsField field = !updatingGeom ? mVectorLayer->fields().at( mAttributeId ) : QgsField();
-
-    bool newField = !mUpdateExistingGroupBox->isChecked();
-    QVariant emptyAttribute;
-    if ( newField )
-      emptyAttribute = QVariant( field.type() );
-
-    QgsFeatureRequest req = QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
-    if ( mOnlyUpdateSelectedCheckBox->isChecked() )
-    {
-      req.setFilterFids( mVectorLayer->selectedFeatureIds() );
-    }
-    QgsFeatureIterator fit = mVectorLayer->getFeatures( req );
-    while ( fit.nextFeature( feature ) )
-    {
-      expContext.setFeature( feature );
-      expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), rownum, true ) );
-
-      QVariant value = exp.evaluate( &expContext );
-      if ( exp.hasEvalError() )
-      {
-        calculationSuccess = false;
-        error = exp.evalErrorString();
-        break;
-      }
-      else if ( updatingGeom )
-      {
-        if ( value.canConvert< QgsGeometry >() )
+        else
         {
-          QgsGeometry geom = value.value< QgsGeometry >();
-          mVectorLayer->changeGeometry( feature.id(), geom );
+          QMap<QString, int>::const_iterator fieldIt = mFieldMap.constFind( mExistingFieldComboBox->currentText() );
+          if ( fieldIt != mFieldMap.constEnd() )
+          {
+            mAttributeId = fieldIt.value();
+          }
         }
       }
       else
       {
-        ( void )field.convertCompatible( value );
-        mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value, newField ? emptyAttribute : feature.attributes().value( mAttributeId ) );
+        //create new field
+        const QgsField newField = fieldDefinition();
+
+        if ( !mVectorLayer->addAttribute( newField ) )
+        {
+          QApplication::restoreOverrideCursor();
+          QMessageBox::critical( nullptr, tr( "Create New Field" ), tr( "Could not add the new field to the provider." ) );
+          mVectorLayer->destroyEditCommand();
+          return;
+        }
+
+        //get index of the new field
+        const QgsFields &fields = mVectorLayer->fields();
+
+        for ( int idx = 0; idx < fields.count(); ++idx )
+        {
+          if ( fields.at( idx ).name() == mOutputFieldNameLineEdit->text() )
+          {
+            mAttributeId = idx;
+            break;
+          }
+        }
+
+        //update expression context with new fields
+        expContext.setFields( mVectorLayer->fields() );
+        if ( ! exp.prepare( &expContext ) )
+        {
+          QApplication::restoreOverrideCursor();
+          QMessageBox::critical( nullptr, tr( "Evaluation Error" ), exp.evalErrorString() );
+          return;
+        }
       }
 
-      rownum++;
+      if ( mAttributeId == -1 && !updatingGeom )
+      {
+        mVectorLayer->destroyEditCommand();
+        QApplication::restoreOverrideCursor();
+        return;
+      }
+
+      //go through all the features and change the new attribute
+      QgsFeature feature;
+      bool calculationSuccess = true;
+      QString error;
+
+      bool useGeometry = exp.needsGeometry();
+      int rownum = 1;
+
+      QgsField field = !updatingGeom ? mVectorLayer->fields().at( mAttributeId ) : QgsField();
+
+      bool newField = !mUpdateExistingGroupBox->isChecked();
+      QVariant emptyAttribute;
+      if ( newField )
+        emptyAttribute = QVariant( field.type() );
+
+      QgsFeatureRequest req = QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
+      if ( mOnlyUpdateSelectedCheckBox->isChecked() )
+      {
+        req.setFilterFids( mVectorLayer->selectedFeatureIds() );
+      }
+      QgsFeatureIterator fit = mVectorLayer->getFeatures( req );
+      while ( fit.nextFeature( feature ) )
+      {
+        expContext.setFeature( feature );
+        expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), rownum, true ) );
+
+        QVariant value = exp.evaluate( &expContext );
+        if ( exp.hasEvalError() )
+        {
+          calculationSuccess = false;
+          error = exp.evalErrorString();
+          break;
+        }
+        else if ( updatingGeom )
+        {
+          if ( value.canConvert< QgsGeometry >() )
+          {
+            QgsGeometry geom = value.value< QgsGeometry >();
+            mVectorLayer->changeGeometry( feature.id(), geom );
+          }
+        }
+        else
+        {
+          ( void )field.convertCompatible( value );
+          mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value, newField ? emptyAttribute : feature.attributes().value( mAttributeId ) );
+        }
+
+        rownum++;
+      }
+
+      QApplication::restoreOverrideCursor();
+
+      if ( !calculationSuccess )
+      {
+        QMessageBox::critical( nullptr, tr( "Evaluation Error" ), tr( "An error occurred while evaluating the calculation string:\n%1" ).arg( error ) );
+        mVectorLayer->destroyEditCommand();
+        return;
+      }
+      mVectorLayer->endEditCommand();
     }
-
-    QApplication::restoreOverrideCursor();
-
-    if ( !calculationSuccess )
-    {
-      QMessageBox::critical( nullptr, tr( "Evaluation Error" ), tr( "An error occurred while evaluating the calculation string:\n%1" ).arg( error ) );
-      mVectorLayer->destroyEditCommand();
-      return;
-    }
-
-    mVectorLayer->endEditCommand();
   }
+  // Vector signals unlocked! Tell the world that the layer has changed
+  mVectorLayer->dataChanged();
   QDialog::accept();
 }
 
