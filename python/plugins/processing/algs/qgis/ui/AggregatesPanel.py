@@ -26,21 +26,12 @@ __copyright__ = '(C) 2017, Arnaud Morvan'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import (
-    QItemSelectionModel,
-    QAbstractTableModel,
-    QModelIndex,
+    QCoreApplication,
     QVariant,
     Qt,
-    pyqtSlot,
 )
-from qgis.PyQt.QtGui import QBrush
 from qgis.PyQt.QtWidgets import (
     QComboBox,
-    QHeaderView,
-    QLineEdit,
-    QSpacerItem,
-    QMessageBox,
-    QSpinBox,
     QStyledItemDelegate,
 )
 
@@ -54,8 +45,8 @@ from processing.algs.qgis.ui.FieldsMappingPanel import (
     FieldTypeDelegate,
 )
 
-
-AGGREGATES = ['first_value']
+AGGREGATES = dict()
+AGGREGATES['first_value'] = QCoreApplication.translate('aggregation', 'Returns the value from the first feature')
 for function in QgsExpression.Functions():
     if function.name()[0] == '_':
         continue
@@ -66,8 +57,7 @@ for function in QgsExpression.Functions():
         if function.name() in ('aggregate',
                                'relation_aggregate'):
             continue
-        AGGREGATES.append(function.name())
-AGGREGATES = sorted(AGGREGATES)
+        AGGREGATES[function.name()] = function.helpText()
 
 
 class AggregatesModel(FieldsMappingModel):
@@ -146,8 +136,9 @@ class AggregateDelegate(QStyledItemDelegate):
 
     def createEditor(self, parent, option, index):
         editor = QComboBox(parent)
-        for function in AGGREGATES:
-            editor.addItem(function, function)
+        for i, aggregate in enumerate(sorted(AGGREGATES.keys())):
+            editor.insertItem(i, aggregate, aggregate)
+            editor.setItemData(i, AGGREGATES[aggregate], Qt.ToolTipRole)
         return editor
 
     def setEditorData(self, editor, index):
