@@ -2580,7 +2580,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext &
 
     // Round offset to correspond to one pixel height, otherwise lines may
     // be shifted on tile border if offset falls close to pixel center
-    int offsetHeight = std::round( std::fabs( outputPixelOffset / std::cos( lineAngle * M_PI / 180 ) ) );
+    int offsetHeight = static_cast< int >( std::round( outputPixelOffset / std::cos( lineAngle * M_PI / 180 ) ) );
     outputPixelOffset = offsetHeight * std::cos( lineAngle * M_PI / 180 );
   }
 
