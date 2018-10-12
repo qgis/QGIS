@@ -1039,6 +1039,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     }
 
     /**
+     * Query the layer for the geometry at the given id.
+     * If there is no such feature, the returned geometry will be null.
+     * In such case, it is not distinguishable from a feature with empty geometry
+     */
+    QgsGeometry getGeometry( QgsFeatureId fid ) const;
+
+    /**
      * Query the layer for the features with the given ids.
      */
     inline QgsFeatureIterator getFeatures( const QgsFeatureIds &fids )
