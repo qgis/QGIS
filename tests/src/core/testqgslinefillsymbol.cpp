@@ -55,6 +55,7 @@ class TestQgsLineFillSymbol : public QObject
 
     void lineFillSymbol();
     void lineFillSymbolOffset();
+    void lineFillLargeOffset();
 
     void dataDefinedSubSymbol();
 
@@ -150,6 +151,17 @@ void TestQgsLineFillSymbol::lineFillSymbolOffset()
 
   mLineFill->setOffset( -0.5 );
   QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_negoffset" ) ) );
+  mLineFill->setOffset( 0 );
+}
+
+void TestQgsLineFillSymbol::lineFillLargeOffset()
+{
+  // test line fill with large offset compared to line distance
+  mLineFill->setOffset( 8 );
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_large_posoffset" ) ) );
+
+  mLineFill->setOffset( -8 );
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_large_negoffset" ) ) );
   mLineFill->setOffset( 0 );
 }
 
