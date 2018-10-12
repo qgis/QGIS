@@ -53,7 +53,7 @@ IF(APPLE)
   )
 ENDIF(APPLE)
 
-IF(WIN32)
+IF(MSVC)
   SET(QGIS_APP_WIN32_SRCS
     ../../external/wintoast/src/wintoastlib.cpp
     win/qgswinnative.cpp
@@ -65,7 +65,7 @@ IF(WIN32)
   SET(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
     ${QGIS_APP_WIN32_SRCS}
   )
-ENDIF(WIN32)
+ENDIF(MSVC)
 
 IF(UNIX AND NOT APPLE AND NOT ANDROID)
   SET(QGIS_APP_LINUX_SRCS
@@ -91,11 +91,11 @@ IF(APPLE)
   )
 ENDIF(APPLE)
 
-IF(WIN32)
+IF(MSVC)
   SET (QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS}
      win/qgswinnative.h
   )
-ENDIF(WIN32)
+ENDIF(MSVC)
 
 IF(UNIX)
   SET (QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS}
@@ -108,11 +108,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-IF(WIN32)
+IF(MSVC)
   INCLUDE_DIRECTORIES(SYSTEM
       ../../external/wintoast/src
   )
-ENDIF(WIN32)
+ENDIF(MSVC)
 
 #############################################################
 # qgis_native library
@@ -168,13 +168,13 @@ IF (APPLE)
   TARGET_LINK_LIBRARIES(qgis_native Qt5::MacExtras)
 ENDIF (APPLE)
 
-IF (WIN32)
+IF (MSVC)
   FIND_PACKAGE(Qt5WinExtras)
 
   TARGET_LINK_LIBRARIES(qgis_native shell32)
   TARGET_LINK_LIBRARIES(qgis_native ${Qt5Widget_LIBRARIES} ${QT_QTMAIN_LIBRARY})
   TARGET_LINK_LIBRARIES(qgis_native Qt5::WinExtras)
-ENDIF (WIN32)
+ENDIF (MSVC)
 # install
 
 INSTALL(TARGETS qgis_native
