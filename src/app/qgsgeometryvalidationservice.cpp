@@ -323,7 +323,7 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
 {
   emit geometryCheckStarted( layer, fid );
 
-  QgsFeature feature = layer->getFeature( fid );
+  QgsGeometry geometry = layer->getGeometry( fid );
 
   const auto &checks = mLayerChecks[layer].singleFeatureChecks;
   mLayerChecks[layer].singleFeatureCheckErrors.remove( fid );
@@ -333,7 +333,7 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
   QList<std::shared_ptr<QgsSingleGeometryCheckError>> allErrors;
   for ( QgsSingleGeometryCheck *check : checks )
   {
-    const auto errors = check->processGeometry( feature.geometry() );
+    const auto errors = check->processGeometry( geometry );
 
     for ( auto error : errors )
       allErrors.append( std::shared_ptr<QgsSingleGeometryCheckError>( error ) );
