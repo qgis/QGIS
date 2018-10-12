@@ -249,7 +249,7 @@ bool QgsGeometryOverlapCheck::factoryIsCompatible( QgsVectorLayer *layer ) SIP_S
 
 QgsGeometryOverlapCheckError::QgsGeometryOverlapCheckError( const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsGeometry &geometry, const QgsPointXY &errorLocation, const QVariant &value, const QgsGeometryCheckerUtils::LayerFeature &overlappedFeature )
   : QgsGeometryCheckError( check, layerFeature.layer()->id(), layerFeature.feature().id(), geometry, errorLocation, QgsVertexId(), value, ValueArea )
-  , mOverlappedFeature( OverLappedFeature( overlappedFeature.layer(), overlappedFeature.feature().id() ) )
+  , mOverlappedFeature( OverlappedFeature( overlappedFeature.layer(), overlappedFeature.feature().id() ) )
 {
 
 }

@@ -26,10 +26,10 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
 {
   public:
 
-    struct OverLappedFeature
+    struct OverlappedFeature
     {
       public:
-        OverLappedFeature( QgsVectorLayer *vl, QgsFeatureId fid )
+        OverlappedFeature( QgsVectorLayer *vl, QgsFeatureId fid )
           : mLayerId( vl->id() )
           , mLayerName( vl->name() )
           , mFeatureId( fid )
@@ -38,7 +38,7 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
         QString layerId() const {return mLayerId;}
         QString layerName() const {return mLayerName;}
         QgsFeatureId featureId() const {return mFeatureId;}
-        bool operator==( const OverLappedFeature &other ) const {return mLayerId == other.layerId() && mFeatureId == other.featureId();}
+        bool operator==( const OverlappedFeature &other ) const {return mLayerId == other.layerId() && mFeatureId == other.featureId();}
 
       private:
         QString mLayerId;
@@ -52,7 +52,7 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
                                   const QgsPointXY &errorLocation,
                                   const QVariant &value,
                                   const QgsGeometryCheckerUtils::LayerFeature &overlappedFeature );
-    const OverLappedFeature &overlappedFeature() const { return mOverlappedFeature; }
+    const OverlappedFeature &overlappedFeature() const { return mOverlappedFeature; }
 
     bool isEqual( QgsGeometryCheckError *other ) const override
     {
@@ -87,7 +87,7 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
     QString description() const override;
 
   private:
-    OverLappedFeature mOverlappedFeature;
+    OverlappedFeature mOverlappedFeature;
 };
 
 class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
