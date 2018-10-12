@@ -54,6 +54,8 @@ class TestQgsLineFillSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void lineFillSymbol();
+    void lineFillSymbolOffset();
+
     void dataDefinedSubSymbol();
 
   private:
@@ -79,7 +81,7 @@ void TestQgsLineFillSymbol::initTestCase()
   QgsApplication::showSettings();
 
   //create some objects that will be used in all tests...
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString myDataDir( QStringLiteral( TEST_DATA_DIR ) ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 
   //
@@ -136,7 +138,19 @@ void TestQgsLineFillSymbol::lineFillSymbol()
   QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
 
   mLineFill->setSubSymbol( lineSymbol );
-  QVERIFY( imageCheck( "symbol_linefill" ) );
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill" ) ) );
+}
+
+void TestQgsLineFillSymbol::lineFillSymbolOffset()
+{
+  mReport += QLatin1String( "<h2>Line fill symbol renderer test</h2>\n" );
+
+  mLineFill->setOffset( 0.5 );
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_posoffset" ) ) );
+
+  mLineFill->setOffset( -0.5 );
+  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_negoffset" ) ) );
+  mLineFill->setOffset( 0 );
 }
 
 void TestQgsLineFillSymbol::dataDefinedSubSymbol()
@@ -150,7 +164,7 @@ void TestQgsLineFillSymbol::dataDefinedSubSymbol()
   QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
   lineSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
   mLineFill->setSubSymbol( lineSymbol );
-  QVERIFY( imageCheck( "datadefined_subsymbol" ) );
+  QVERIFY( imageCheck( QStringLiteral( "datadefined_subsymbol" ) ) );
 }
 
 //
