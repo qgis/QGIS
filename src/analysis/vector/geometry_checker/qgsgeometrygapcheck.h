@@ -76,8 +76,15 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
 
 class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
 {
+    Q_GADGET
   public:
-    enum ResolutionMethod { MergeLongestEdge, NoChange };
+    //! Resolution methods for geometry gap checks
+    enum ResolutionMethod
+    {
+      MergeLongestEdge,
+      NoChange
+    };
+    Q_ENUM( ResolutionMethod )
 
     /**
      * The \a configuration accepts a "gapThreshold" key which specifies

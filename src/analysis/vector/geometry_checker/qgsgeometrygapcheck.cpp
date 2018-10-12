@@ -136,25 +136,31 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
 
 void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
-  if ( method == NoChange )
+  QMetaEnum metaEnum = QMetaEnum::fromType<QgsGeometryGapCheck::ResolutionMethod>();
+  if ( !metaEnum.isValid() || !metaEnum.valueToKey( method ) )
   {
-    error->setFixed( method );
-  }
-  else if ( method == MergeLongestEdge )
-  {
-    QString errMsg;
-    if ( mergeWithNeighbor( featurePools, static_cast<QgsGeometryGapCheckError *>( error ), changes, errMsg ) )
-    {
-      error->setFixed( method );
-    }
-    else
-    {
-      error->setFixFailed( tr( "Failed to merge with neighbor: %1" ).arg( errMsg ) );
-    }
+    error->setFixFailed( tr( "Unknown method" ) );
   }
   else
   {
-    error->setFixFailed( tr( "Unknown method" ) );
+    ResolutionMethod methodValue = static_cast<ResolutionMethod>( method );
+    switch ( methodValue )
+    {
+      case NoChange:
+        error->setFixed( method );
+        break;
+      case MergeLongestEdge:
+        QString errMsg;
+        if ( mergeWithNeighbor( featurePools, static_cast<QgsGeometryGapCheckError *>( error ), changes, errMsg ) )
+        {
+          error->setFixed( method );
+        }
+        else
+        {
+          error->setFixFailed( tr( "Failed to merge with neighbor: %1" ).arg( errMsg ) );
+        }
+        break;
+    }
   }
 }
 
