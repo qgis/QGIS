@@ -41,8 +41,9 @@ RELEASE_DIR=$(pwd)/release-mxe
 
 # End configuration
 
-
-
+# Original target (does not support posix threads)
+# TARGET=${TARGET}
+TARGET=i686-w64-mingw32.shared.posix
 
 if [[ "$COMMAND" != *"package"* ]]; then
   [ -d ${BUILD_DIR} ]  && rm -rf ${BUILD_DIR}
@@ -54,6 +55,13 @@ if [[ "$COMMAND" != *"package"* ]]; then
 
 fi
 
+# Patch for 5.11
+echo '#include "qwebframe.h"' > ${MXE}/usr/${TARGET}/qt5/include/QtWebKitWidgets/QWebFrame
+echo '#include "qwebview.h"' > ${MXE}/usr/${TARGET}/qt5/include/QtWebKitWidgets/QWebView
+echo '#include "qwebpage.h"' > ${MXE}/usr/${TARGET}/qt5/include/QtWebKitWidgets/QWebPage
+echo '#include "qwebelement.h"' > ${MXE}/usr/${TARGET}/qt5/include/QtWebKitWidgets/QWebElement
+cp ${MXE}/usr/${TARGET}/include/windows.h ${MXE}/usr/${TARGET}/include/Windows.h
+cp ${MXE}/usr/${TARGET}/include/shlobj.h ${MXE}/usr/${TARGET}/include/ShlObj.h
 pushd .
 
 cd ${BUILD_DIR}
@@ -62,7 +70,7 @@ cd ${BUILD_DIR}
 
 if [[ "$COMMAND" != *"package"* ]]; then
 
-    ${MXE}/usr/bin/i686-w64-mingw32.shared-cmake .. \
+    ${MXE}/usr/bin/${TARGET}-cmake .. \
         -DCMAKE_BUILD_TYPE=RelWithDebugInfo \
         -DCMAKE_INSTALL_PREFIX=${RELEASE_DIR} \
         -DENABLE_TESTS=OFF \
@@ -72,7 +80,7 @@ if [[ "$COMMAND" != *"package"* ]]; then
         -DWITH_ASTYLE=OFF \
         -DWITH_SERVER=OFF \
         -DWITH_BINDINGS=FALSE \
-        -DQT_LRELEASE_EXECUTABLE=${MXE}/usr/i686-w64-mingw32.shared/qt5/bin/lrelease \
+        -DQT_LRELEASE_EXECUTABLE=${MXE}/usr/${TARGET}/qt5/bin/lrelease \
         $ARGS
 
 
@@ -82,12 +90,12 @@ fi
 
 # Collect deps
 
-$PYDEPLOY --build=${RELEASE_DIR} --objdump=${MXE}/usr/bin/i686-w64-mingw32.shared-objdump ${RELEASE_DIR}/qgis.exe
+$PYDEPLOY --build=${RELEASE_DIR} --objdump=${MXE}/usr/bin/${TARGET}-objdump ${RELEASE_DIR}/qgis.exe
 for dll in $(ls ${RELEASE_DIR}/*.dll); do \
-    $PYDEPLOY --build=${RELEASE_DIR} --objdump=${MXE}/usr/bin/i686-w64-mingw32.shared-objdump $dll; \
+    $PYDEPLOY --build=${RELEASE_DIR} --objdump=${MXE}/usr/bin/${TARGET}-objdump $dll; \
 done
 
-cp -r ${MXE}/usr/i686-w64-mingw32.shared/qt5/plugins ${RELEASE_DIR}/qt5plugins
+cp -r ${MXE}/usr/${TARGET}/qt5/plugins ${RELEASE_DIR}/qt5plugins
 
 cat <<__TXT__ > ${RELEASE_DIR}/qt.conf
 [Paths]
@@ -99,7 +107,7 @@ __TXT__
 cd ${RELEASE_DIR}/..
 ZIP_NAME=mxe-release-$(date +%Y-%m-%d-%H-%I-%S).zip
 zip -r ${ZIP_NAME} $(basename ${RELEASE_DIR})
-cp ${ZIP_NAME} ${DIR}
+mv ${ZIP_NAME} ${DIR}
 
 popd
 
