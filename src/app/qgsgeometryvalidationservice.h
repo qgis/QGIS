@@ -51,8 +51,7 @@ class QgsGeometryValidationService : public QObject
   public:
     struct FeatureError
     {
-      FeatureError()
-      {}
+      FeatureError() = default;
       FeatureError( QgsFeatureId fid, QgsGeometry::Error error )
         : featureId( fid )
         , error( error )
@@ -64,7 +63,6 @@ class QgsGeometryValidationService : public QObject
     typedef QList<FeatureError> FeatureErrors;
 
     QgsGeometryValidationService( QgsProject *project );
-    ~QgsGeometryValidationService() = default;
 
     void fixError( QgsGeometryCheckError *error, int method );
 
