@@ -261,5 +261,5 @@ bool QgsMapLayerStyleCategoriesModel::setData( const QModelIndex &index, const Q
 
 Qt::ItemFlags QgsMapLayerStyleCategoriesModel::flags( const QModelIndex & ) const
 {
-  return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+  return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
 }
