@@ -26,9 +26,6 @@ set -e
 
 COMMAND=$1
 
-# Current directory
-_PWD=`pwd`
-
 # Location of current script
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PYDEPLOY=${DIR}/deploy.py
