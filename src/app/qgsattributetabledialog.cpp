@@ -715,14 +715,19 @@ void QgsAttributeTableDialog::mActionOpenFieldCalculator_triggered()
   QgsAttributeTableModel *masterModel = mMainView->masterModel();
 
   QgsFieldCalculator calc( mLayer, this );
+  masterModel->layerCache()->blockSignals( true );
   if ( calc.exec() == QDialog::Accepted )
   {
+    masterModel->layerCache()->blockSignals( false );
     int col = masterModel->fieldCol( calc.changedAttributeId() );
-
     if ( col >= 0 )
     {
       masterModel->reload( masterModel->index( 0, col ), masterModel->index( masterModel->rowCount() - 1, col ) );
     }
+  }
+  else
+  {
+    masterModel->layerCache()->blockSignals( false );
   }
 }
 
