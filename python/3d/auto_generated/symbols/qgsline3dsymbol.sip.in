@@ -1,0 +1,111 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/symbols/qgsline3dsymbol.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsLine3DSymbol : QgsAbstract3DSymbol
+{
+%Docstring
+3D symbol that draws linestring geometries as planar polygons (created from lines using a buffer with given thickness).
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsline3dsymbol.h"
+%End
+  public:
+    QgsLine3DSymbol();
+%Docstring
+Constructor for QgsLine3DSymbol
+%End
+
+    virtual QString type() const;
+    virtual QgsAbstract3DSymbol *clone() const /Factory/;
+
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+
+    AltitudeClamping altitudeClamping() const;
+%Docstring
+Returns method that determines altitude (whether to clamp to feature to terrain)
+%End
+    void setAltitudeClamping( AltitudeClamping altClamping );
+%Docstring
+Sets method that determines altitude (whether to clamp to feature to terrain)
+%End
+
+    AltitudeBinding altitudeBinding() const;
+%Docstring
+Returns method that determines how altitude is bound to individual vertices
+%End
+    void setAltitudeBinding( AltitudeBinding altBinding );
+%Docstring
+Sets method that determines how altitude is bound to individual vertices
+%End
+
+    float width() const;
+%Docstring
+Returns width of the line symbol (in map units)
+%End
+    void setWidth( float width );
+%Docstring
+Sets width of the line symbol (in map units)
+%End
+
+    float height() const;
+%Docstring
+Returns height (altitude) of the symbol (in map units)
+%End
+    void setHeight( float height );
+%Docstring
+Sets height (altitude) of the symbol (in map units)
+%End
+
+    float extrusionHeight() const;
+%Docstring
+Returns extrusion height (in map units)
+%End
+    void setExtrusionHeight( float extrusionHeight );
+%Docstring
+Sets extrusion height (in map units)
+%End
+
+    bool renderAsSimpleLines() const;
+%Docstring
+Returns whether the renderer will render data with simple lines (otherwise it uses buffer)
+%End
+    void setRenderAsSimpleLines( bool enabled );
+%Docstring
+Sets whether the renderer will render data with simple lines (otherwise it uses buffer)
+%End
+
+    QgsPhongMaterialSettings material() const;
+%Docstring
+Returns material used for shading of the symbol
+%End
+    void setMaterial( const QgsPhongMaterialSettings &material );
+%Docstring
+Sets material used for shading of the symbol
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/symbols/qgsline3dsymbol.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

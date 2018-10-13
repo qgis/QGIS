@@ -67,9 +67,9 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
     void setMaterial( const QgsPhongMaterialSettings &material ) { mMaterial = material; }
 
     //! Returns front/back culling mode
-    Qt3DRender::QCullFace::CullingMode cullingMode() const { return mCullingMode; }
+    Qt3DRender::QCullFace::CullingMode cullingMode() const { return mCullingMode; } SIP_SKIP
     //! Sets front/back culling mode
-    void setCullingMode( Qt3DRender::QCullFace::CullingMode mode ) { mCullingMode = mode; }
+    void setCullingMode( Qt3DRender::QCullFace::CullingMode mode ) { mCullingMode = mode; } SIP_SKIP
 
     //! Returns whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
     bool invertNormals() const { return mInvertNormals; }

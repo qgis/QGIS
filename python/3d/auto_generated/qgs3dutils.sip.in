@@ -1,0 +1,37 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3dutils.h                                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+enum AltitudeClamping
+{
+  AltClampAbsolute,
+  AltClampRelative,
+  AltClampTerrain,
+};
+
+
+enum AltitudeBinding
+{
+  AltBindVertex,
+  AltBindCentroid,
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgs3dutils.h                                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

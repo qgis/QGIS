@@ -16,6 +16,8 @@
 #ifndef QGS3DUTILS_H
 #define QGS3DUTILS_H
 
+#include "qgis_sip.h"
+
 class QgsLineString;
 class QgsPolygon;
 
@@ -43,6 +45,8 @@ enum AltitudeBinding
   AltBindCentroid,    //!< Clamp just centroid of feature
 };
 
+
+#ifndef SIP_RUN
 
 /**
  * \ingroup 3d
@@ -113,5 +117,7 @@ class _3D_EXPORT Qgs3DUtils
     static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2,
         const QgsCoordinateTransformContext &context );
 };
+
+#endif
 
 #endif // QGS3DUTILS_H
