@@ -40,7 +40,9 @@
 #include "qgsconfig.h"
 
 // use GDAL VSI mechanism
+#ifndef CPL_SUPRESS_CPLUSPLUS
 #define CPL_SUPRESS_CPLUSPLUS
+#endif
 #include "cpl_vsi.h"
 #include "cpl_string.h"
 

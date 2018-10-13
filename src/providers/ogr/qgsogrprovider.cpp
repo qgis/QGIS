@@ -21,7 +21,9 @@ email                : sherman at mrcc.com
 #include "qgsmessagelog.h"
 #include "qgslocalec.h"
 
+#ifndef CPL_SUPRESS_CPLUSPLUS
 #define CPL_SUPRESS_CPLUSPLUS
+#endif
 #include <gdal.h>         // to collect version information
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
