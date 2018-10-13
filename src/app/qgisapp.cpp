@@ -7090,13 +7090,14 @@ void QgisApp::fieldCalculator()
 
 void QgisApp::attributeTable( QgsAttributeTableFilterModel::FilterMode filter )
 {
-  QgsVectorLayer *myLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
-  if ( !myLayer )
+  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  if ( !vectorLayer )
   {
     return;
   }
 
-  QgsAttributeTableDialog *mDialog = new QgsAttributeTableDialog( myLayer, filter );
+  QgsAttributeTableDialog *mDialog = new QgsAttributeTableDialog( vectorLayer, filter );
+
   mDialog->show();
   // the dialog will be deleted by itself on close
 }

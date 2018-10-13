@@ -111,6 +111,18 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mActionExpressionSelect, &QAction::triggered, this, &QgsAttributeTableDialog::mActionExpressionSelect_triggered );
   connect( mMainView, &QgsDualView::showContextMenuExternally, this, &QgsAttributeTableDialog::showContextMenu );
 
+  // Block/unblock table updates (feature cache signals)
+  connect( QgsApplication::instance(), &QgsApplication::attributeTableUpdateBlocked, [ = ]( const QgsVectorLayer * layer )
+  {
+    if ( layer == mLayer )
+      this->blockCacheUpdateSignals( true );
+  } );
+  connect( QgsApplication::instance(), &QgsApplication::attributeTableUpdateUnblocked, [ = ]( const QgsVectorLayer * layer )
+  {
+    if ( layer == mLayer )
+      this->blockCacheUpdateSignals( false );
+  } );
+
   const QgsFields fields = mLayer->fields();
   for ( const QgsField &field : fields )
   {
@@ -715,19 +727,13 @@ void QgsAttributeTableDialog::mActionOpenFieldCalculator_triggered()
   QgsAttributeTableModel *masterModel = mMainView->masterModel();
 
   QgsFieldCalculator calc( mLayer, this );
-  masterModel->layerCache()->blockSignals( true );
   if ( calc.exec() == QDialog::Accepted )
   {
-    masterModel->layerCache()->blockSignals( false );
     int col = masterModel->fieldCol( calc.changedAttributeId() );
     if ( col >= 0 )
     {
       masterModel->reload( masterModel->index( 0, col ), masterModel->index( masterModel->rowCount() - 1, col ) );
     }
-  }
-  else
-  {
-    masterModel->layerCache()->blockSignals( false );
   }
 }
 
@@ -1135,6 +1141,15 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
 }
 
+void QgsAttributeTableDialog::blockCacheUpdateSignals( const bool block )
+{
+  QgsAttributeTableModel *masterModel = mMainView->masterModel();
+
+  if ( ! masterModel )
+    return;
+
+  masterModel->layerCache()->blockSignals( block );
+}
 
 void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
 {
