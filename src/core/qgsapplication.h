@@ -49,7 +49,6 @@ class QgsLayoutItemRegistry;
 class QgsAuthManager;
 class QgsNetworkContentFetcherRegistry;
 class QTranslator;
-class QgsVectorLayer;
 
 /**
  * \ingroup core
