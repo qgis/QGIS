@@ -1535,15 +1535,6 @@ void QgsApplication::collectTranslatableObjects( QgsTranslationContext *translat
   emit requestForTranslatableObjects( translationContext );
 }
 
-void QgsApplication::unblockAttributeTableUpdates( const QgsVectorLayer *layer )
-{
-  emit attributeTableUpdateUnblocked( layer );
-}
-
-void QgsApplication::blockAttributeTableUpdates( const QgsVectorLayer *layer )
-{
-  emit attributeTableUpdateBlocked( layer );
-}
 
 QString QgsApplication::nullRepresentation()
 {

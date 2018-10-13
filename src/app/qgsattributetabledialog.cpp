@@ -112,16 +112,19 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mMainView, &QgsDualView::showContextMenuExternally, this, &QgsAttributeTableDialog::showContextMenu );
 
   // Block/unblock table updates (feature cache signals)
-  connect( QgsApplication::instance(), &QgsApplication::attributeTableUpdateBlocked, [ = ]( const QgsVectorLayer * layer )
+  connect( QgisApp::instance(), &QgisApp::attributeTableUpdateBlocked, [ = ]( const QgsVectorLayer * layer )
   {
     if ( layer == mLayer )
       this->blockCacheUpdateSignals( true );
   } );
-  connect( QgsApplication::instance(), &QgsApplication::attributeTableUpdateUnblocked, [ = ]( const QgsVectorLayer * layer )
+  connect( QgisApp::instance(), &QgisApp::attributeTableUpdateUnblocked, [ = ]( const QgsVectorLayer * layer )
   {
     if ( layer == mLayer )
       this->blockCacheUpdateSignals( false );
   } );
+  // Massive rollbacks can also freeze the GUI due to the feature cache signals
+  connect( mLayer, &QgsVectorLayer::beforeRollBack, [ = ] { this->blockCacheUpdateSignals( true ); } );
+  connect( mLayer, &QgsVectorLayer::afterRollBack, [ = ] { this->blockCacheUpdateSignals( false ); } );
 
   const QgsFields fields = mLayer->fields();
   for ( const QgsField &field : fields )

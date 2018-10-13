@@ -9189,6 +9189,17 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   return res;
 }
 
+
+void QgisApp::unblockAttributeTableUpdates( const QgsVectorLayer *layer )
+{
+  emit attributeTableUpdateUnblocked( layer );
+}
+
+void QgisApp::blockAttributeTableUpdates( const QgsVectorLayer *layer )
+{
+  emit attributeTableUpdateBlocked( layer );
+}
+
 void QgisApp::saveActiveLayerEdits()
 {
   saveEdits( activeLayer(), true, true );

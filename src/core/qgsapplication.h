@@ -758,20 +758,6 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     void collectTranslatableObjects( QgsTranslationContext *translationContext );
 
-    /**
-     * Emits the signal to block updates for attribute tables connected a particular \a layer
-     *
-     * \since QGIS 3.4
-     */
-    void blockAttributeTableUpdates( const QgsVectorLayer *layer );
-
-    /**
-     * Emits the signal to unblock updates for attribute tables connected a particular \a layer
-     *
-     * \since QGIS 3.4
-     */
-    void unblockAttributeTableUpdates( const QgsVectorLayer *layer );
-
 
 #ifdef SIP_RUN
     SIP_IF_FEATURE( ANDROID )
@@ -803,20 +789,6 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.4
      */
     void requestForTranslatableObjects( QgsTranslationContext *translationContext );
-
-    /**
-     * Emitted when attribute table updates for a particular \a layer must be blocked
-     *
-     * \since QGIS 3.4
-     */
-    void attributeTableUpdateBlocked( const QgsVectorLayer *layer );
-
-    /**
-     * Emitted when all attribute table updates for a particular \a layer must be unblocked
-     *
-     * \since QGIS 3.4
-     */
-    void attributeTableUpdateUnblocked( const QgsVectorLayer *layer );
 
 
   private:

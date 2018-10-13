@@ -824,20 +824,6 @@ Emits the signal to collect all the strings of .qgs to be included in ts file
 .. versionadded:: 3.4
 %End
 
-    void blockAttributeTableUpdates( const QgsVectorLayer *layer );
-%Docstring
-Emits the signal to block updates for attribute tables connected a particular ``layer``
-
-.. versionadded:: 3.4
-%End
-
-    void unblockAttributeTableUpdates( const QgsVectorLayer *layer );
-%Docstring
-Emits the signal to unblock updates for attribute tables connected a particular ``layer``
-
-.. versionadded:: 3.4
-%End
-
 
 %If (ANDROID)
     //dummy method to workaround sip generation issue
@@ -863,20 +849,6 @@ Emitted whenever a custom global variable changes.
 %Docstring
 Emitted when project strings which require translation are being collected for inclusion in a .ts file.
 In order to register translatable strings, connect to this signal and register the strings within the specified ``translationContext``.
-
-.. versionadded:: 3.4
-%End
-
-    void attributeTableUpdateBlocked( const QgsVectorLayer *layer );
-%Docstring
-Emitted when attribute table updates for a particular ``layer`` must be blocked
-
-.. versionadded:: 3.4
-%End
-
-    void attributeTableUpdateUnblocked( const QgsVectorLayer *layer );
-%Docstring
-Emitted when all attribute table updates for a particular ``layer`` must be unblocked
 
 .. versionadded:: 3.4
 %End
