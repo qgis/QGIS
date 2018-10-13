@@ -19,8 +19,10 @@ set -e
 
 # Usage: you can pass an optional "package" command to skip the build
 #        and directly go to the packaging
-#        This script needs to be called from the main QGIS directory, the 
+#        This script needs to be called from the main QGIS directory, the
 #        one which contains CMakeLists.txt
+#        The artifact will be saved as a zip package in the directory
+#        from which this script is launched.
 
 COMMAND=$1
 
@@ -32,12 +34,12 @@ PYDEPLOY=${DIR}/deploy.py
 # Configuration: change this!
 
 # Location of mxe install dir
-MXE=${HOME}/dev/mxe/
+MXE=${MXE:-/mxe/}
 
 # Directory for build
 BUILD_DIR=$(pwd)/build-mxe
 # Directory where the artifact will be saved
-RELEASE_DIR=$(pwd)/release-mxe
+RELEASE_DIR=$(pwd)/qgis-mxe-release
 
 # End configuration
 
@@ -49,10 +51,8 @@ if [[ "$COMMAND" != *"package"* ]]; then
   [ -d ${BUILD_DIR} ]  && rm -rf ${BUILD_DIR}
   [ -d ${RELEASE_DIR} ] && rm -rf ${RELEASE_DIR}
   # Make sure dirs exist
-
   [ -d ${BUILD_DIR} ] || mkdir ${BUILD_DIR}
   [ -d ${RELEASE_DIR} ] || mkdir ${RELEASE_DIR}
-
 fi
 
 # Patch for 5.11
@@ -83,7 +83,6 @@ if [[ "$COMMAND" != *"package"* ]]; then
         -DQT_LRELEASE_EXECUTABLE=${MXE}/usr/${TARGET}/qt5/bin/lrelease \
         $ARGS
 
-
     make -j16 install
 
 fi
@@ -105,9 +104,11 @@ __TXT__
 # Make the zip
 
 cd ${RELEASE_DIR}/..
-ZIP_NAME=mxe-release-$(date +%Y-%m-%d-%H-%I-%S).zip
+ZIP_NAME=qgis-mxe-release-$(date +%Y-%m-%d-%H-%I-%S).zip
 zip -r ${ZIP_NAME} $(basename ${RELEASE_DIR})
-mv ${ZIP_NAME} ${DIR}
+
+# Cleanup
+rm -rf ${RELEASE_DIR}
 
 popd
 
