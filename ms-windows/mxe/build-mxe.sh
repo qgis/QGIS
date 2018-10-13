@@ -109,7 +109,6 @@ __TXT__
 cd ${RELEASE_DIR}/..
 ZIP_NAME=qgis-mxe-release-$(date +%Y-%m-%d-%H-%I-%S).zip
 zip -r ${ZIP_NAME} $(basename ${RELEASE_DIR})
-mv ${ZIP_NAME} ${_PWD}
 
 # Cleanup
 rm -rf ${RELEASE_DIR}
