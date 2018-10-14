@@ -536,6 +536,10 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
 
   QgsField fld = layer->fields().at( fieldindex );
 
+  QSet< QString >referencedColumns = exp.referencedColumns();
+  referencedColumns.insert( fld.name() ); // need existing column value to store old attribute when changing field values
+  request.setSubsetOfAttributes( referencedColumns, layer->fields() );
+
   //go through all the features and change the new attributes
   QgsFeatureIterator fit = layer->getFeatures( request );
   QgsFeature feature;
