@@ -15,6 +15,7 @@
 
 #include "qgs3dmapsettings.h"
 
+#include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsdemterraingenerator.h"
 //#include "quantizedmeshterraingenerator.h"

@@ -97,7 +97,7 @@ void QgsPoint3DSymbolWidget::onOverwriteMaterialChecked( int state )
 
 void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
 {
-  cboAltClamping->setCurrentIndex( ( int ) symbol.altitudeClamping() );
+  cboAltClamping->setCurrentIndex( static_cast<int>( symbol.altitudeClamping() ) );
 
   QVariantMap vm = symbol.shapeProperties();
   int index = cboShape->findData( symbol.shape() );
@@ -209,8 +209,8 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
   tr.rotate( rot );
 
   QgsPoint3DSymbol sym;
-  sym.setAltitudeClamping( ( AltitudeClamping ) cboAltClamping->currentIndex() );
-  sym.setShape( ( QgsPoint3DSymbol::Shape ) cboShape->itemData( cboShape->currentIndex() ).toInt() );
+  sym.setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
+  sym.setShape( static_cast<QgsPoint3DSymbol::Shape>( cboShape->itemData( cboShape->currentIndex() ).toInt() ) );
   sym.setShapeProperties( vm );
   sym.setMaterial( widgetMaterial->material() );
   sym.setTransform( tr );

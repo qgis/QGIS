@@ -1,37 +1,51 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/3d/qgs3dutils.h                                                  *
+ * src/3d/qgs3dtypes.h                                                  *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
 
-
-
-
-
-enum AltitudeClamping
+class Qgs3DTypes
 {
-  AltClampAbsolute,
-  AltClampRelative,
-  AltClampTerrain,
+%Docstring
+Defines enumerations and other auxilliary types for QGIS 3D
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgs3dtypes.h"
+%End
+  public:
+    enum AltitudeClamping
+    {
+      AltClampAbsolute,
+      AltClampRelative,
+      AltClampTerrain,
+    };
+
+    enum AltitudeBinding
+    {
+      AltBindVertex,
+      AltBindCentroid,
+    };
+
+    enum CullingMode
+    {
+      NoCulling,
+      Front,
+      Back,
+      FrontAndBack
+    };
 };
-
-
-enum AltitudeBinding
-{
-  AltBindVertex,
-  AltBindCentroid,
-};
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/3d/qgs3dutils.h                                                  *
+ * src/3d/qgs3dtypes.h                                                  *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

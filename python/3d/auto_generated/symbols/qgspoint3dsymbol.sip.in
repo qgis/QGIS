@@ -36,11 +36,11 @@ Constructor for QgsPoint3DSymbol.
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
 
-    AltitudeClamping altitudeClamping() const;
+    Qgs3DTypes::AltitudeClamping altitudeClamping() const;
 %Docstring
 Returns method that determines altitude (whether to clamp to feature to terrain)
 %End
-    void setAltitudeClamping( AltitudeClamping altClamping );
+    void setAltitudeClamping( Qgs3DTypes::AltitudeClamping altClamping );
 %Docstring
 Sets method that determines altitude (whether to clamp to feature to terrain)
 %End

@@ -15,6 +15,8 @@
 
 #include "qgspolygon3dsymbol.h"
 
+#include "qgs3dutils.h"
+
 QgsAbstract3DSymbol *QgsPolygon3DSymbol::clone() const
 {
   return new QgsPolygon3DSymbol( *this );

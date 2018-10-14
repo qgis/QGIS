@@ -112,13 +112,13 @@ SIPIFYDIFF=sipify.$REV.diff
 true > "$SIPIFYDIFF"
 for f in $MODIFIED; do
   # if cpp header
-  if [[ $f =~ ^src\/(core|gui|analysis|server)\/.*\.h$ ]]; then
+  if [[ $f =~ ^src\/(core|gui|analysis|server|3d)\/.*\.h$ ]]; then
     # look if corresponding SIP file
-    sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server)/@@; s@\.h$@.sip@' <<<"$f" )
+    sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server|3d)/@@; s@\.h$@.sip@' <<<"$f" )
     pyfile=$(${GP}sed -E 's@([^\/]+\/)*([^\/]+)\.sip@\2.py@;' <<< "$sip_file")
-    module=$(${GP}sed -r 's@src/(core|gui|analysis|server)/.*$@\1@' <<<"$f" )
+    module=$(${GP}sed -r 's@src/(core|gui|analysis|server|3d)/.*$@\1@' <<<"$f" )
     if grep -Fq "$sip_file" "${TOPLEVEL}"/python/"${module}"/"${module}"_auto.sip; then
-      sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server)@\1/auto_generated@; s@\.h$@.sip.in@' <<<"$f" )
+      sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server|3d)@\1/auto_generated@; s@\.h$@.sip.in@' <<<"$f" )
       m=python/$sip_file.$REV.prepare
       touch python/"$sip_file"
       cp python/"$sip_file" "$m"

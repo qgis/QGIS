@@ -83,6 +83,7 @@ SET(QGIS_3D_HDRS
   qgsabstract3dengine.h
   qgs3dmapscene.h
   qgs3dmapsettings.h
+  qgs3dtypes.h
   qgs3dutils.h
   qgscameracontroller.h
   qgscamerapose.h

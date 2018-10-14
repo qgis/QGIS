@@ -24,7 +24,6 @@
 #include "qgsabstract3dsymbol.h"
 
 #include "qgsphongmaterialsettings.h"
-#include "qgs3dutils.h"
 
 #include "qgsmaplayerref.h"
 

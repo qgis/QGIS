@@ -36,20 +36,20 @@ Constructor for QgsPolygon3DSymbol
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
 
-    AltitudeClamping altitudeClamping() const;
+    Qgs3DTypes::AltitudeClamping altitudeClamping() const;
 %Docstring
 Returns method that determines altitude (whether to clamp to feature to terrain)
 %End
-    void setAltitudeClamping( AltitudeClamping altClamping );
+    void setAltitudeClamping( Qgs3DTypes::AltitudeClamping altClamping );
 %Docstring
 Sets method that determines altitude (whether to clamp to feature to terrain)
 %End
 
-    AltitudeBinding altitudeBinding() const;
+    Qgs3DTypes::AltitudeBinding altitudeBinding() const;
 %Docstring
 Returns method that determines how altitude is bound to individual vertices
 %End
-    void setAltitudeBinding( AltitudeBinding altBinding );
+    void setAltitudeBinding( Qgs3DTypes::AltitudeBinding altBinding );
 %Docstring
 Sets method that determines how altitude is bound to individual vertices
 %End
@@ -81,6 +81,14 @@ Returns material used for shading of the symbol
 Sets material used for shading of the symbol
 %End
 
+    Qgs3DTypes::CullingMode cullingMode() const;
+%Docstring
+Returns front/back culling mode
+%End
+    void setCullingMode( Qgs3DTypes::CullingMode mode );
+%Docstring
+Sets front/back culling mode
+%End
 
     bool invertNormals() const;
 %Docstring
