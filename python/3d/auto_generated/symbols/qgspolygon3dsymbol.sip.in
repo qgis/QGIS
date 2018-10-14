@@ -15,6 +15,11 @@ class QgsPolygon3DSymbol : QgsAbstract3DSymbol
 %Docstring
 3D symbol that draws polygon geometries as planar polygons, optionally extruded (with added walls).
 
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
 .. versionadded:: 3.0
 %End
 

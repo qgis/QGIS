@@ -19,6 +19,11 @@ class QgsVectorLayer3DRendererMetadata : Qgs3DRendererAbstractMetadata
 %Docstring
 Metadata for vector layer 3D renderer to allow creation of its instances from XML
 
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
 .. versionadded:: 3.0
 %End
 

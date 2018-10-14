@@ -19,6 +19,11 @@ Abstract base class for 3D symbols that are used by VectorLayer3DRenderer object
 
 3D symbol objects define appearance of GIS data.
 
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
 .. versionadded:: 3.0
 %End
 

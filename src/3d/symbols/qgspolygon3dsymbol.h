@@ -27,6 +27,10 @@
 /**
  * \ingroup 3d
  * 3D symbol that draws polygon geometries as planar polygons, optionally extruded (with added walls).
+ *
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings as a tech preview only.
+ *
  * \since QGIS 3.0
  */
 class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
