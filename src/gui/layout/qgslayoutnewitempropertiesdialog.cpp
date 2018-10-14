@@ -26,7 +26,7 @@ QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Q
 {
   setupUi( this );
 
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   //make button exclusive
   QButtonGroup *buttonGroup = new QButtonGroup( this );
