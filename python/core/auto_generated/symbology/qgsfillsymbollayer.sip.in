@@ -680,11 +680,11 @@ Base class for polygon renderers generating texture images*
 
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Sets the units for the symbol's stroke width.
-
-:param unit: symbol units
+Sets the ``units`` fo the symbol's stroke width.
 
 .. seealso:: :py:func:`strokeWidthUnit`
+
+.. seealso:: :py:func:`setStrokeWidthMapUnitScale`
 %End
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
@@ -692,31 +692,49 @@ Sets the units for the symbol's stroke width.
 Returns the units for the symbol's stroke width.
 
 .. seealso:: :py:func:`setStrokeWidthUnit`
+
+.. seealso:: :py:func:`strokeWidthMapUnitScale`
 %End
 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the stroke width map unit ``scale``.
+
+.. seealso:: :py:func:`strokeWidthMapUnitScale`
+
+.. seealso:: :py:func:`setStrokeWidth`
+
+.. seealso:: :py:func:`setStrokeWidthUnit`
+%End
+
     const QgsMapUnitScale &strokeWidthMapUnitScale() const;
+%Docstring
+Returns the stroke width map unit scale.
+
+.. seealso:: :py:func:`setStrokeWidthMapUnitScale`
+
+.. seealso:: :py:func:`strokeWidth`
+
+.. seealso:: :py:func:`strokeWidthUnit`
+
+.. versionadded:: 2.16
+%End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
 
-
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
 
     virtual QgsMapUnitScale mapUnitScale() const;
 
-
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
-
 
     virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 
     virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
 
-
     virtual Qt::PenStyle dxfPenStyle() const;
-
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
@@ -750,12 +768,20 @@ A class for filling symbols with a repeated raster image.
     enum FillCoordinateMode
     {
       Feature,
-      Viewport
+      Viewport,
     };
 
     QgsRasterFillSymbolLayer( const QString &imageFilePath = QString() );
+%Docstring
+Constructor for QgsRasterFillSymbolLayer, using a raster fill from the
+specified ``imageFilePath``.
+%End
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsRasterFillSymbolLayer from a ``properties`` map. The caller takes
+ownership of the returned object.
+%End
 
     static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
@@ -1000,36 +1026,43 @@ Returns the map unit scale for the image's width.
 
   protected:
 
-
-
-
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
-%Docstring
-Path to the image file
-%End
 
 };
 
 class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
 {
 %Docstring
-A class for svg fill patterns. The class automatically scales the pattern to
-the appropriate pixel dimensions of the output device*
+A class for filling symbols with a repeated SVG file.
 %End
 
 %TypeHeaderCode
 #include "qgsfillsymbollayer.h"
 %End
   public:
+
     QgsSVGFillSymbolLayer( const QString &svgFilePath, double width = 20, double rotation = 0.0 );
 %Docstring
-Constructs SVG fill symbol layer with picture from given absolute path to a SVG file
+Constructor for QgsSVGFillSymbolLayer, using the SVG picture at the specified absolute file path.
 %End
+
     QgsSVGFillSymbolLayer( const QByteArray &svgData, double width = 20, double rotation = 0.0 );
+%Docstring
+Constructor for QgsSVGFillSymbolLayer, using the specified SVG picture data.
+%End
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsSVGFillSymbolLayer from a ``properties`` map. The caller takes
+ownership of the returned object.
+%End
+
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+%Docstring
+Creates a new QgsSVGFillSymbolLayer from a SLD ``element``. The caller takes
+ownership of the returned object.
+%End
 
     static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
@@ -1042,41 +1075,145 @@ Used internally when reading/writing symbols.
 
     virtual QString layerType() const;
 
-
     virtual void startRender( QgsSymbolRenderContext &context );
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-
     virtual QgsStringMap properties() const;
 
-
     virtual QgsSVGFillSymbolLayer *clone() const /Factory/;
-
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
 
 
     void setSvgFilePath( const QString &svgPath );
+%Docstring
+Sets the path to the SVG file to render in the fill.
+
+This is usually an absolute file path. Other supported options include
+- relative paths to folders from the user's SVG search paths
+- base64 encoded content, prefixed with a 'base64:' string
+- http(s) paths
+
+.. seealso:: :py:func:`svgFilePath`
+%End
+
     QString svgFilePath() const;
+%Docstring
+Returns the path to the SVG file used to render the fill.
+
+.. seealso:: :py:func:`setSvgFilePath`
+%End
+
     void setPatternWidth( double width );
+%Docstring
+Sets the ``width`` to render the SVG content as within the fill (i.e. the pattern repeat/tile size).
+
+Units are specified by setPatternWidthUnit()
+
+.. seealso:: :py:func:`patternWidth`
+
+.. seealso:: :py:func:`setPatternWidthUnit`
+
+.. seealso:: :py:func:`setPatternWidthMapUnitScale`
+%End
+
     double patternWidth() const;
+%Docstring
+Returns the width of the rendered SVG content within the fill (i.e. the pattern repeat/tile size).
+
+Units are retrieved by patternWidthUnit()
+
+.. seealso:: :py:func:`setPatternWidth`
+
+.. seealso:: :py:func:`patternWidthUnit`
+
+.. seealso:: :py:func:`patternWidthMapUnitScale`
+%End
 
     void setSvgFillColor( const QColor &c );
+%Docstring
+Sets the fill color used for rendering the SVG content.
+
+Fill color is only supported for parameterized SVG files. Color opacity is
+ignored if the SVG file does not support parameterized fill opacity.
+
+.. seealso:: :py:func:`svgFillColor`
+
+.. seealso:: :py:func:`setSvgStrokeColor`
+%End
+
     QColor svgFillColor() const;
+%Docstring
+Returns the fill color used for rendering the SVG content.
+
+Fill color is only supported for parameterized SVG files.
+
+.. seealso:: :py:func:`setSvgFillColor`
+
+.. seealso:: :py:func:`svgStrokeColor`
+%End
 
     void setSvgStrokeColor( const QColor &c );
+%Docstring
+Sets the stroke color used for rendering the SVG content.
+
+Stroke color is only supported for parameterized SVG files. Color opacity is
+ignored if the SVG file does not support parameterized outline opacity.
+
+.. seealso:: :py:func:`svgStrokeColor`
+
+.. seealso:: :py:func:`setSvgFillColor`
+%End
+
     QColor svgStrokeColor() const;
+%Docstring
+Returns the stroke color used for rendering the SVG content.
+
+Stroke color is only supported for parameterized SVG files.
+
+.. seealso:: :py:func:`setSvgStrokeColor`
+
+.. seealso:: :py:func:`svgFillColor`
+%End
+
     void setSvgStrokeWidth( double w );
+%Docstring
+Sets the stroke width used for rendering the SVG content.
+
+Stroke width is only supported for parameterized SVG files. Units are
+specified via setSvgStrokeWidthUnit()
+
+.. seealso:: :py:func:`svgStrokeWidth`
+
+.. seealso:: :py:func:`setSvgStrokeWidthUnit`
+
+.. seealso:: :py:func:`setSvgStrokeWidthMapUnitScale`
+%End
+
     double svgStrokeWidth() const;
+%Docstring
+Returns the stroke width used for rendering the SVG content.
+
+Stroke width is only supported for parameterized SVG files. Units are
+retrieved via setSvgStrokeWidthUnit()
+
+.. seealso:: :py:func:`setSvgStrokeWidth`
+
+.. seealso:: :py:func:`svgStrokeWidthUnit`
+
+.. seealso:: :py:func:`svgStrokeWidthMapUnitScale`
+%End
 
     void setPatternWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Sets the units for the width of the SVG images in the pattern.
-
-:param unit: width units
+Sets the ``unit`` for the width of the SVG images in the pattern.
 
 .. seealso:: :py:func:`patternWidthUnit`
+
+.. seealso:: :py:func:`setPatternWidth`
+
+.. seealso:: :py:func:`setPatternWidthMapUnitScale`
 %End
 
     QgsUnitTypes::RenderUnit patternWidthUnit() const;
@@ -1084,18 +1221,43 @@ Sets the units for the width of the SVG images in the pattern.
 Returns the units for the width of the SVG images in the pattern.
 
 .. seealso:: :py:func:`setPatternWidthUnit`
+
+.. seealso:: :py:func:`patternWidth`
+
+.. seealso:: :py:func:`patternWidthMapUnitScale`
 %End
 
     void setPatternWidthMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the pattern's width.
+
+.. seealso:: :py:func:`patternWidthMapUnitScale`
+
+.. seealso:: :py:func:`setPatternWidth`
+
+.. seealso:: :py:func:`setPatternWidthUnit`
+%End
+
     const QgsMapUnitScale &patternWidthMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the pattern's width.
+
+.. seealso:: :py:func:`setPatternWidthMapUnitScale`
+
+.. seealso:: :py:func:`patternWidth`
+
+.. seealso:: :py:func:`patternWidthUnit`
+%End
 
     void setSvgStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Sets the units for the stroke width.
-
-:param unit: width units
+Sets the ``unit`` for the stroke width.
 
 .. seealso:: :py:func:`svgStrokeWidthUnit`
+
+.. seealso:: :py:func:`setSvgStrokeWidth`
+
+.. seealso:: :py:func:`setSvgStrokeWidthMapUnitScale`
 %End
 
     QgsUnitTypes::RenderUnit svgStrokeWidthUnit() const;
@@ -1103,10 +1265,33 @@ Sets the units for the stroke width.
 Returns the units for the stroke width.
 
 .. seealso:: :py:func:`setSvgStrokeWidthUnit`
+
+.. seealso:: :py:func:`svgStrokeWidth`
+
+.. seealso:: :py:func:`svgStrokeWidthMapUnitScale`
 %End
 
     void setSvgStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the pattern's stroke.
+
+.. seealso:: :py:func:`svgStrokeWidthMapUnitScale`
+
+.. seealso:: :py:func:`setSvgStrokeWidth`
+
+.. seealso:: :py:func:`setSvgStrokeWidthUnit`
+%End
+
     const QgsMapUnitScale &svgStrokeWidthMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the pattern's stroke.
+
+.. seealso:: :py:func:`setSvgStrokeWidthMapUnitScale`
+
+.. seealso:: :py:func:`svgStrokeWidth`
+
+.. seealso:: :py:func:`svgStrokeWidthUnit`
+%End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
@@ -1119,8 +1304,6 @@ Returns the units for the stroke width.
 
 
   protected:
-
-
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
