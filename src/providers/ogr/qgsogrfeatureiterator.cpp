@@ -311,7 +311,7 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
   // see more details here: https://trac.osgeo.org/gdal/wiki/rfc66_randomlayerreadwrite
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
-  if ( mSource->mDriverName == QLatin1String( "OSM" ) )
+  if ( !QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mSource->mDriverName ) )
   {
     OGRLayerH nextFeatureBelongingLayer;
     while ( fet.reset( GDALDatasetGetNextFeature( mConn->ds, &nextFeatureBelongingLayer, nullptr, nullptr, nullptr ) ), fet )
@@ -323,6 +323,7 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
     }
   }
   else
+#endif
   {
 
     while ( fet.reset( OGR_L_GetNextFeature( mOgrLayer ) ), fet )
@@ -333,18 +334,23 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
       }
     }
   }
-#else
-  while ( fet.reset( OGR_L_GetNextFeature( mOgrLayer ) ), fet )
-  {
-    if ( checkFeature( fet, feature ) )
-    {
-      return true;
-    }
-  }
-#endif
 
   close();
   return false;
+}
+
+void QgsOgrFeatureIterator::resetReading()
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
+  if ( !QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mSource->mDriverName ) )
+  {
+    GDALDatasetResetReading( mConn->ds );
+  }
+  else
+#endif
+  {
+    OGR_L_ResetReading( mOgrLayer );
+  }
 }
 
 
@@ -355,7 +361,7 @@ bool QgsOgrFeatureIterator::rewind()
   if ( mClosed || !mOgrLayer )
     return false;
 
-  OGR_L_ResetReading( mOgrLayer );
+  resetReading();
 
   mFilterFidsIt = mFilterFids.constBegin();
 
@@ -387,7 +393,7 @@ bool QgsOgrFeatureIterator::close()
   // Will for example release SQLite3 statements
   if ( mOgrLayer )
   {
-    OGR_L_ResetReading( mOgrLayer );
+    resetReading();
   }
 
   if ( mOgrOrigLayer )

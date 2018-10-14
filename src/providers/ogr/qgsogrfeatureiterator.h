@@ -100,6 +100,8 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     QgsFields mFieldsWithoutFid;
 
     bool fetchFeatureWithId( QgsFeatureId id, QgsFeature &feature ) const;
+
+    void resetReading();
 };
 
 #endif // QGSOGRFEATUREITERATOR_H
