@@ -23,6 +23,7 @@ QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
   : QTreeView( parent )
   , mSettingsSection( QStringLiteral( "browser" ) )
 {
+  setEditTriggers( QAbstractItemView::EditKeyPressed );
 }
 
 void QgsBrowserTreeView::setModel( QAbstractItemModel *model )
