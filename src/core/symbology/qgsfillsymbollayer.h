@@ -637,34 +637,47 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
 
     /**
-     * Sets the units for the symbol's stroke width.
-     * \param unit symbol units
+     * Sets the \a units fo the symbol's stroke width.
      * \see strokeWidthUnit()
+     * \see setStrokeWidthMapUnitScale()
     */
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
     /**
      * Returns the units for the symbol's stroke width.
      * \see setStrokeWidthUnit()
+     * \see strokeWidthMapUnitScale()
     */
     QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
+    /**
+     * Sets the stroke width map unit \a scale.
+     *
+     * \see strokeWidthMapUnitScale()
+     * \see setStrokeWidth()
+     * \see setStrokeWidthUnit()
+     */
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mStrokeWidthMapUnitScale = scale; }
+
+    /**
+     * Returns the stroke width map unit scale.
+     *
+     * \see setStrokeWidthMapUnitScale()
+     * \see strokeWidth()
+     * \see strokeWidthUnit()
+     *
+     * \since QGIS 2.16
+    */
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
-
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
-
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
-
     double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
     QColor dxfColor( QgsSymbolRenderContext &context ) const override;
-
     Qt::PenStyle dxfPenStyle() const override;
-
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
   protected:
@@ -697,14 +710,23 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 {
   public:
 
+    //! Fill coordinate modes, dictates fill tiling behavior
     enum FillCoordinateMode
     {
-      Feature,
-      Viewport
+      Feature, //!< Tiling is based on feature bounding box
+      Viewport, //!< Tiling is based on complete map viewport
     };
 
+    /**
+     * Constructor for QgsRasterFillSymbolLayer, using a raster fill from the
+     * specified \a imageFilePath.
+     */
     QgsRasterFillSymbolLayer( const QString &imageFilePath = QString() );
 
+    /**
+     * Creates a new QgsRasterFillSymbolLayer from a \a properties map. The caller takes
+     * ownership of the returned object.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     /**
@@ -883,6 +905,10 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
   protected:
 
+    void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
+
+  private:
+
     //! Path to the image file
     QString mImageFilePath;
     FillCoordinateMode mCoordinateMode = QgsRasterFillSymbolLayer::Feature;
@@ -896,10 +922,6 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsUnitTypes::RenderUnit mWidthUnit = QgsUnitTypes::RenderPixels;
     QgsMapUnitScale mWidthMapUnitScale;
 
-    void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
-
-  private:
-
     //! Applies the image pattern to the brush
     void applyPattern( QBrush &brush, const QString &imageFilePath, double width, double opacity,
                        const QgsSymbolRenderContext &context );
@@ -907,16 +929,32 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
 /**
  * \ingroup core
- * A class for svg fill patterns. The class automatically scales the pattern to
-   the appropriate pixel dimensions of the output device*/
+ * A class for filling symbols with a repeated SVG file.
+*/
 class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 {
   public:
-    //! Constructs SVG fill symbol layer with picture from given absolute path to a SVG file
+
+    /**
+     * Constructor for QgsSVGFillSymbolLayer, using the SVG picture at the specified absolute file path.
+     */
     QgsSVGFillSymbolLayer( const QString &svgFilePath, double width = 20, double rotation = 0.0 );
+
+    /**
+     * Constructor for QgsSVGFillSymbolLayer, using the specified SVG picture data.
+     */
     QgsSVGFillSymbolLayer( const QByteArray &svgData, double width = 20, double rotation = 0.0 );
 
+    /**
+     * Creates a new QgsSVGFillSymbolLayer from a \a properties map. The caller takes
+     * ownership of the returned object.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+
+    /**
+     * Creates a new QgsSVGFillSymbolLayer from a SLD \a element. The caller takes
+     * ownership of the returned object.
+     */
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     /**
@@ -929,60 +967,189 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     // implemented from base classes
 
     QString layerType() const override;
-
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
-
     QgsStringMap properties() const override;
-
     QgsSVGFillSymbolLayer *clone() const override SIP_FACTORY;
-
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
-    //getters and setters
+    /**
+     * Sets the path to the SVG file to render in the fill.
+     *
+     * This is usually an absolute file path. Other supported options include
+     * - relative paths to folders from the user's SVG search paths
+     * - base64 encoded content, prefixed with a 'base64:' string
+     * - http(s) paths
+     *
+     * \see svgFilePath()
+     */
     void setSvgFilePath( const QString &svgPath );
+
+    /**
+     * Returns the path to the SVG file used to render the fill.
+     *
+     * \see setSvgFilePath()
+     */
     QString svgFilePath() const { return mSvgFilePath; }
+
+    /**
+     * Sets the \a width to render the SVG content as within the fill (i.e. the pattern repeat/tile size).
+     *
+     * Units are specified by setPatternWidthUnit()
+     *
+     * \see patternWidth()
+     * \see setPatternWidthUnit()
+     * \see setPatternWidthMapUnitScale(*)
+     */
     void setPatternWidth( double width ) { mPatternWidth = width;}
+
+    /**
+     * Returns the width of the rendered SVG content within the fill (i.e. the pattern repeat/tile size).
+     *
+     * Units are retrieved by patternWidthUnit()
+     *
+     * \see setPatternWidth()
+     * \see patternWidthUnit()
+     * \see patternWidthMapUnitScale(*)
+     */
     double patternWidth() const { return mPatternWidth; }
 
+    /**
+     * Sets the fill color used for rendering the SVG content.
+     *
+     * Fill color is only supported for parameterized SVG files. Color opacity is
+     * ignored if the SVG file does not support parameterized fill opacity.
+     *
+     * \see svgFillColor()
+     * \see setSvgStrokeColor()
+     */
     void setSvgFillColor( const QColor &c ) { setColor( c );  }
+
+    /**
+     * Returns the fill color used for rendering the SVG content.
+     *
+     * Fill color is only supported for parameterized SVG files.
+     *
+     * \see setSvgFillColor()
+     * \see svgStrokeColor()
+     */
     QColor svgFillColor() const { return color(); }
 
+    /**
+     * Sets the stroke color used for rendering the SVG content.
+     *
+     * Stroke color is only supported for parameterized SVG files. Color opacity is
+     * ignored if the SVG file does not support parameterized outline opacity.
+     *
+     * \see svgStrokeColor()
+     * \see setSvgFillColor()
+     */
     void setSvgStrokeColor( const QColor &c ) { mSvgStrokeColor = c; }
+
+    /**
+     * Returns the stroke color used for rendering the SVG content.
+     *
+     * Stroke color is only supported for parameterized SVG files.
+     *
+     * \see setSvgStrokeColor()
+     * \see svgFillColor()
+     */
     QColor svgStrokeColor() const { return mSvgStrokeColor; }
+
+    /**
+     * Sets the stroke width used for rendering the SVG content.
+     *
+     * Stroke width is only supported for parameterized SVG files. Units are
+     * specified via setSvgStrokeWidthUnit()
+     *
+     * \see svgStrokeWidth()
+     * \see setSvgStrokeWidthUnit()
+     * \see setSvgStrokeWidthMapUnitScale()
+     */
     void setSvgStrokeWidth( double w ) { mSvgStrokeWidth = w; }
+
+    /**
+     * Returns the stroke width used for rendering the SVG content.
+     *
+     * Stroke width is only supported for parameterized SVG files. Units are
+     * retrieved via setSvgStrokeWidthUnit()
+     *
+     * \see setSvgStrokeWidth()
+     * \see svgStrokeWidthUnit()
+     * \see svgStrokeWidthMapUnitScale()
+     */
     double svgStrokeWidth() const { return mSvgStrokeWidth; }
 
     /**
-     * Sets the units for the width of the SVG images in the pattern.
-     * \param unit width units
+     * Sets the \a unit for the width of the SVG images in the pattern.
+     *
      * \see patternWidthUnit()
+     * \see setPatternWidth()
+     * \see setPatternWidthMapUnitScale()
     */
     void setPatternWidthUnit( QgsUnitTypes::RenderUnit unit ) { mPatternWidthUnit = unit; }
 
     /**
      * Returns the units for the width of the SVG images in the pattern.
+     *
      * \see setPatternWidthUnit()
+     * \see patternWidth()
+     * \see patternWidthMapUnitScale()
     */
     QgsUnitTypes::RenderUnit patternWidthUnit() const { return mPatternWidthUnit; }
 
+    /**
+     * Sets the map unit \a scale for the pattern's width.
+     *
+     * \see patternWidthMapUnitScale()
+     * \see setPatternWidth()
+     * \see setPatternWidthUnit()
+     */
     void setPatternWidthMapUnitScale( const QgsMapUnitScale &scale ) { mPatternWidthMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the pattern's width.
+     *
+     * \see setPatternWidthMapUnitScale()
+     * \see patternWidth()
+     * \see patternWidthUnit()
+     */
     const QgsMapUnitScale &patternWidthMapUnitScale() const { return mPatternWidthMapUnitScale; }
 
     /**
-     * Sets the units for the stroke width.
-     * \param unit width units
+     * Sets the \a unit for the stroke width.
+     *
      * \see svgStrokeWidthUnit()
+     * \see setSvgStrokeWidth()
+     * \see setSvgStrokeWidthMapUnitScale()
     */
     void setSvgStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mSvgStrokeWidthUnit = unit; }
 
     /**
      * Returns the units for the stroke width.
+     *
      * \see setSvgStrokeWidthUnit()
+     * \see svgStrokeWidth()
+     * \see svgStrokeWidthMapUnitScale()
     */
     QgsUnitTypes::RenderUnit svgStrokeWidthUnit() const { return mSvgStrokeWidthUnit; }
 
+    /**
+     * Sets the map unit \a scale for the pattern's stroke.
+     *
+     * \see svgStrokeWidthMapUnitScale()
+     * \see setSvgStrokeWidth()
+     * \see setSvgStrokeWidthUnit()
+     */
     void setSvgStrokeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mSvgStrokeWidthMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the pattern's stroke.
+     *
+     * \see setSvgStrokeWidthMapUnitScale()
+     * \see svgStrokeWidth()
+     * \see svgStrokeWidthUnit()
+     */
     const QgsMapUnitScale &svgStrokeWidthMapUnitScale() const { return mSvgStrokeWidthMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
@@ -992,9 +1159,14 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsMapUnitScale mapUnitScale() const override;
 
   protected:
+
+    void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
+
+  private:
+
     //! Width of the pattern (in output units)
-    double mPatternWidth;
-    QgsUnitTypes::RenderUnit mPatternWidthUnit;
+    double mPatternWidth = 20;
+    QgsUnitTypes::RenderUnit mPatternWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mPatternWidthMapUnitScale;
 
     //! SVG data
@@ -1006,14 +1178,11 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 
     //param(fill), param(stroke), param(stroke-width) are going
     //to be replaced in memory
-    QColor mSvgStrokeColor;
-    double mSvgStrokeWidth;
-    QgsUnitTypes::RenderUnit mSvgStrokeWidthUnit;
+    QColor mSvgStrokeColor = QColor( 35, 35, 35 );
+    double mSvgStrokeWidth = 0.2;
+    QgsUnitTypes::RenderUnit mSvgStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mSvgStrokeWidthMapUnitScale;
 
-    void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
-
-  private:
     //! Helper function that gets the view box from the byte array
     void storeViewBox();
     void setDefaultSvgParams(); //fills mSvgFillColor, mSvgStrokeColor, mSvgStrokeWidth with default values for mSvgFilePath

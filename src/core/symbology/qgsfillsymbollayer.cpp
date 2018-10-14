@@ -1712,31 +1712,23 @@ QSet<QString> QgsImageFillSymbolLayer::usedAttributes( const QgsRenderContext &c
 QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString &svgFilePath, double width, double angle )
   : QgsImageFillSymbolLayer()
   , mPatternWidth( width )
-  , mPatternWidthUnit( QgsUnitTypes::RenderMillimeters )
-  , mSvgStrokeWidthUnit( QgsUnitTypes::RenderMillimeters )
 {
   setSvgFilePath( svgFilePath );
   mStrokeWidth = 0.3;
   mAngle = angle;
   mColor = QColor( 255, 255, 255 );
-  mSvgStrokeColor = QColor( 35, 35, 35 );
-  mSvgStrokeWidth = 0.2;
   setDefaultSvgParams();
 }
 
 QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray &svgData, double width, double angle )
   : QgsImageFillSymbolLayer()
   , mPatternWidth( width )
-  , mPatternWidthUnit( QgsUnitTypes::RenderMillimeters )
   , mSvgData( svgData )
-  , mSvgStrokeWidthUnit( QgsUnitTypes::RenderMillimeters )
 {
   storeViewBox();
   mStrokeWidth = 0.3;
   mAngle = angle;
   mColor = QColor( 255, 255, 255 );
-  mSvgStrokeColor = QColor( 35, 35, 35 );
-  mSvgStrokeWidth = 0.2;
   setSubSymbol( new QgsLineSymbol() );
   setDefaultSvgParams();
 }
