@@ -1317,7 +1317,6 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double mLineWidth = 0;
     QgsUnitTypes::RenderUnit mLineWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mLineWidthMapUnitScale;
-    QColor mColor;
     //! Vector line angle in degrees (0 = horizontal, counterclockwise)
     double mLineAngle = 45.0;
     //! Offset perpendicular to line direction
