@@ -27,6 +27,7 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsguiutils.h"
+#include "qgsproxyprogresstask.h"
 
 #include <QMessageBox>
 
@@ -289,8 +290,15 @@ void QgsFieldCalculator::accept()
       req.setFilterFids( mVectorLayer->selectedFeatureIds() );
     }
     QgsFeatureIterator fit = mVectorLayer->getFeatures( req );
+
+    std::unique_ptr< QgsScopedProxyProgressTask > task = qgis::make_unique< QgsScopedProxyProgressTask >( tr( "Calculating field" ) );
+    long long count = mOnlyUpdateSelectedCheckBox->isChecked() ? mVectorLayer->selectedFeatureCount() : mVectorLayer->featureCount();
+    long long i = 0;
     while ( fit.nextFeature( feature ) )
     {
+      i++;
+      task->setProgress( i / static_cast< double >( count ) * 100 );
+
       expContext.setFeature( feature );
       expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), rownum, true ) );
 
@@ -323,6 +331,7 @@ void QgsFieldCalculator::accept()
     if ( !calculationSuccess )
     {
       cursorOverride.release();
+      task.reset();
       QMessageBox::critical( nullptr, tr( "Evaluation Error" ), tr( "An error occurred while evaluating the calculation string:\n%1" ).arg( error ) );
       mVectorLayer->destroyEditCommand();
       return;

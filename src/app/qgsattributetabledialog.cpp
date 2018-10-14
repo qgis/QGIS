@@ -53,6 +53,8 @@
 #include "qgsgui.h"
 #include "qgsclipboard.h"
 #include "qgsfeaturestore.h"
+#include "qgsguiutils.h"
+#include "qgsproxyprogresstask.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -503,10 +505,6 @@ void QgsAttributeTableDialog::formFilterSet( const QString &filter, QgsAttribute
 
 void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const QString &fieldName, const QString &expression, const QgsFeatureIds &filteredIds )
 {
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
-  mLayer->beginEditCommand( QStringLiteral( "Field calculator" ) );
-
   int fieldindex = layer->fields().indexFromName( fieldName );
   if ( fieldindex < 0 )
   {
@@ -515,6 +513,9 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
     QMessageBox::critical( nullptr, tr( "Update Attributes" ), tr( "An error occurred while trying to update the field %1" ).arg( fieldName ) );
     return;
   }
+
+  QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
+  mLayer->beginEditCommand( QStringLiteral( "Field calculator" ) );
 
   bool calculationSuccess = true;
   QString error;
@@ -542,6 +543,12 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
 
   //go through all the features and change the new attributes
   QgsFeatureIterator fit = layer->getFeatures( request );
+
+  std::unique_ptr< QgsScopedProxyProgressTask > task = qgis::make_unique< QgsScopedProxyProgressTask >( tr( "Calculating field" ) );
+
+  long long count = !filteredIds.isEmpty() ? filteredIds.size() : layer->featureCount();
+  long long i = 0;
+
   QgsFeature feature;
   while ( fit.nextFeature( feature ) )
   {
@@ -549,6 +556,9 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
     {
       continue;
     }
+
+    i++;
+    task->setProgress( i / static_cast< double >( count ) * 100 );
 
     context.setFeature( feature );
     context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), rownum, true ) );
@@ -571,7 +581,8 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
     rownum++;
   }
 
-  QApplication::restoreOverrideCursor();
+  cursorOverride.release();
+  task.reset();
 
   if ( !calculationSuccess )
   {
