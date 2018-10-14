@@ -329,10 +329,20 @@ QUrl QgsWFSFeatureDownloader::buildURL( qint64 startIndex, int maxFeatures, bool
   else if ( !mShared->mRect.isNull() )
   {
     bool invertAxis = false;
-    if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) && !mShared->mURI.ignoreAxisOrientation() &&
-         mShared->mSourceCRS.hasAxisInverted() )
+    if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) &&
+         !mShared->mURI.ignoreAxisOrientation() )
     {
-      invertAxis = true;
+      // This is a bit nasty, but if the server reports OGC::CRS84
+      // mSourceCRS will report hasAxisInverted() == false, but srsName()
+      // will be urn:ogc:def:crs:EPSG::4326, so axis inversion is needed...
+      if ( mShared->srsName() == QLatin1String( "urn:ogc:def:crs:EPSG::4326" ) )
+      {
+        invertAxis = true;
+      }
+      else if ( mShared->mSourceCRS.hasAxisInverted() )
+      {
+        invertAxis = true;
+      }
     }
     if ( mShared->mURI.invertAxisOrientation() )
     {
