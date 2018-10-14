@@ -269,7 +269,7 @@ void QgsFieldCalculator::accept()
 
     // Begin feature modifications, block updates for attr tables
     // connected to this layer
-    QgisApp::instance()->blockAttributeTableUpdates( mVectorLayer );
+    QgisApp::instance()->blockAttributeTableUpdates( mVectorLayer, true );
 
     //go through all the features and change the new attribute
     QgsFeature feature;
@@ -321,7 +321,7 @@ void QgsFieldCalculator::accept()
       rownum++;
     }
 
-    QgisApp::instance()->unblockAttributeTableUpdates( mVectorLayer );
+    QgisApp::instance()->blockAttributeTableUpdates( mVectorLayer, false );
 
     QApplication::restoreOverrideCursor();
 

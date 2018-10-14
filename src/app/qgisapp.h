@@ -1009,18 +1009,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void triggerCrashHandler();
 
     /**
-     * Emits the signal to block updates for attribute tables connected a particular \a layer
+     * Emits the signal to set the \a blocked state of attribute tables connected a particular \a layer
      *
      * \since QGIS 3.4
      */
-    void blockAttributeTableUpdates( const QgsVectorLayer *layer );
-
-    /**
-     * Emits the signal to unblock updates for attribute tables connected a particular \a layer
-     *
-     * \since QGIS 3.4
-     */
-    void unblockAttributeTableUpdates( const QgsVectorLayer *layer );
+    void blockAttributeTableUpdates( const QgsVectorLayer *layer, const bool blocked );
 
   protected:
 
@@ -1756,18 +1749,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void activeLayerChanged( QgsMapLayer *layer );
 
     /**
-     * Emitted when attribute table updates for a particular \a layer must be blocked
+     * Emitted when \a blocked status of attribute table updates for a particular \a layer must change
      *
      * \since QGIS 3.4
      */
-    void attributeTableUpdateBlocked( const QgsVectorLayer *layer );
-
-    /**
-     * Emitted when all attribute table updates for a particular \a layer must be unblocked
-     *
-     * \since QGIS 3.4
-     */
-    void attributeTableUpdateUnblocked( const QgsVectorLayer *layer );
+    void attributeTableUpdateBlocked( const QgsVectorLayer *layer, const bool blocked );
 
   private:
     void startProfile( const QString &name );

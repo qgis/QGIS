@@ -9190,16 +9190,6 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 }
 
 
-void QgisApp::unblockAttributeTableUpdates( const QgsVectorLayer *layer )
-{
-  emit attributeTableUpdateUnblocked( layer );
-}
-
-void QgisApp::blockAttributeTableUpdates( const QgsVectorLayer *layer )
-{
-  emit attributeTableUpdateBlocked( layer );
-}
-
 void QgisApp::saveActiveLayerEdits()
 {
   saveEdits( activeLayer(), true, true );
@@ -14161,4 +14151,9 @@ void QgisApp::triggerCrashHandler()
 #ifdef Q_OS_WIN
   RaiseException( 0x12345678, 0, 0, nullptr );
 #endif
+}
+
+void QgisApp::blockAttributeTableUpdates( const QgsVectorLayer *layer, const bool blocked )
+{
+  emit attributeTableUpdateBlocked( layer, blocked );
 }
