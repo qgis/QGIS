@@ -490,7 +490,6 @@ QgsGdalProvider::~QgsGdalProvider()
 }
 
 
-// This was used by raster layer to reload data
 void QgsGdalProvider::closeDataset()
 {
   if ( !mValid )
@@ -504,6 +503,8 @@ void QgsGdalProvider::closeDataset()
 
   GDALClose( mGdalDataset );
   mGdalDataset = nullptr;
+
+  closeCachedGdalHandlesFor( this );
 }
 
 QString QgsGdalProvider::htmlMetadata()
@@ -2956,8 +2957,7 @@ bool QgsGdalProvider::remove()
   if ( mGdalDataset )
   {
     GDALDriverH driver = GDALGetDatasetDriver( mGdalDataset );
-    GDALClose( mGdalDataset );
-    mGdalDataset = nullptr;
+    closeDataset();
 
     CPLErrorReset();
     CPLErr err = GDALDeleteDataset( driver, dataSourceUri( true ).toUtf8().constData() );
