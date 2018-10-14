@@ -25,6 +25,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsgeometry.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QMessageBox>
 
@@ -48,6 +49,8 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   connect( mCreateVirtualFieldCheckbox, &QCheckBox::stateChanged, this, &QgsFieldCalculator::mCreateVirtualFieldCheckbox_stateChanged );
   connect( mOutputFieldNameLineEdit, &QLineEdit::textChanged, this, &QgsFieldCalculator::mOutputFieldNameLineEdit_textChanged );
   connect( mOutputFieldTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsFieldCalculator::mOutputFieldTypeComboBox_activated );
+
+  QgsGui::enableAutoGeometryRestore( this );
 
   if ( !vl )
     return;
@@ -148,15 +151,6 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   mInfoIcon->setPixmap( style()->standardPixmap( QStyle::SP_MessageBoxInformation ) );
 
   setOkButtonState();
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsFieldCalculator/geometry" ) ).toByteArray() );
-}
-
-QgsFieldCalculator::~QgsFieldCalculator()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/QgsFieldCalculator/geometry" ), saveGeometry() );
 }
 
 void QgsFieldCalculator::accept()
