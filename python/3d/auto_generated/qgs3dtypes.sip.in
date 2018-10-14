@@ -11,7 +11,7 @@
 class Qgs3DTypes
 {
 %Docstring
-Defines enumerations and other auxilliary types for QGIS 3D
+Defines enumerations and other auxiliary types for QGIS 3D
 
 .. warning::
 
