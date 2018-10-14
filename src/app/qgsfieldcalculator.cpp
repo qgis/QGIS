@@ -26,6 +26,7 @@
 #include "qgsgeometry.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsguiutils.h"
 
 #include <QMessageBox>
 
@@ -197,7 +198,7 @@ void QgsFieldCalculator::accept()
     if ( !mVectorLayer->isEditable() )
       mVectorLayer->startEditing();
 
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+    QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
 
     mVectorLayer->beginEditCommand( QStringLiteral( "Field calculator" ) );
 
@@ -226,7 +227,7 @@ void QgsFieldCalculator::accept()
 
       if ( !mVectorLayer->addAttribute( newField ) )
       {
-        QApplication::restoreOverrideCursor();
+        cursorOverride.release();
         QMessageBox::critical( nullptr, tr( "Create New Field" ), tr( "Could not add the new field to the provider." ) );
         mVectorLayer->destroyEditCommand();
         return;
@@ -248,7 +249,7 @@ void QgsFieldCalculator::accept()
       expContext.setFields( mVectorLayer->fields() );
       if ( ! exp.prepare( &expContext ) )
       {
-        QApplication::restoreOverrideCursor();
+        cursorOverride.release();
         QMessageBox::critical( nullptr, tr( "Evaluation Error" ), exp.evalErrorString() );
         return;
       }
@@ -257,7 +258,6 @@ void QgsFieldCalculator::accept()
     if ( mAttributeId == -1 && !updatingGeom )
     {
       mVectorLayer->destroyEditCommand();
-      QApplication::restoreOverrideCursor();
       return;
     }
 
@@ -317,10 +317,9 @@ void QgsFieldCalculator::accept()
 
     QgisApp::instance()->blockAttributeTableUpdates( mVectorLayer, false );
 
-    QApplication::restoreOverrideCursor();
-
     if ( !calculationSuccess )
     {
+      cursorOverride.release();
       QMessageBox::critical( nullptr, tr( "Evaluation Error" ), tr( "An error occurred while evaluating the calculation string:\n%1" ).arg( error ) );
       mVectorLayer->destroyEditCommand();
       return;
