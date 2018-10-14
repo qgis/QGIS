@@ -33,7 +33,7 @@ QgsLayoutImageExportOptionsDialog::QgsLayoutImageExportOptionsDialog( QWidget *p
 
   connect( mClipToContentGroupBox, &QGroupBox::toggled, this, &QgsLayoutImageExportOptionsDialog::clipToContentsToggled );
 
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 }
 
 void QgsLayoutImageExportOptionsDialog::setResolution( double resolution )

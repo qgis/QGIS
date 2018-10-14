@@ -48,7 +48,7 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   connect( mTemplatesDefaultDirBtn, &QPushButton::pressed, this, &QgsLayoutManagerDialog::mTemplatesDefaultDirBtn_pressed );
   connect( mTemplatesUserDirBtn, &QPushButton::pressed, this, &QgsLayoutManagerDialog::mTemplatesUserDirBtn_pressed );
 
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
   mTemplateFileWidget->setStorageMode( QgsFileWidget::GetFile );
   mTemplateFileWidget->setFilter( tr( "Layout templates" ) + QStringLiteral( " (*.qpt *.QPT)" ) );
   mTemplateFileWidget->setDialogTitle( tr( "Select a Template" ) );
