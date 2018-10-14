@@ -3485,6 +3485,102 @@ http://schemas.opengis.net/ows/1.1.0/owsAll.xsd">
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename'", 'test', 'WFS')
         self.assertTrue(vl.isValid())
 
+    def testGeometryCollectionAsMultiLineString(self):
+        """Test https://issues.qgis.org/issues/19571 """
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_gc_as_mls'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=1.1.0'), 'wb') as f:
+            f.write("""
+<wfs:WFS_Capabilities version="1.1.0" xmlns="http://www.opengis.net/wfs" xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:gml="http://schemas.opengis.net/gml">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:OGC:1.3:CRS84</DefaultCRS>
+      <WGS84BoundingBox>
+        <LowerCorner>2 49</LowerCorner>
+        <UpperCorner>3 50</UpperCorner>
+      </WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=my:typename'), 'wb') as f:
+            f.write("""
+<schema
+   targetNamespace="http://my"
+   xmlns:my="http://my"
+   xmlns:ogc="http://www.opengis.net/ogc"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   xmlns="http://www.w3.org/2001/XMLSchema"
+   xmlns:gml="http://www.opengis.net/gml"
+   elementFormDefault="qualified" version="0.1" >
+  <import namespace="http://www.opengis.net/gml"
+          schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd" />
+  <element name="typename"
+           type="my:typenameType"
+           substitutionGroup="gml:_Feature" />
+  <complexType name="typenameType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element name="geometryProperty" type="gml:GeometryPropertyType" minOccurs="0" maxOccurs="1"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+</schema>
+""".encode('UTF-8'))
+
+        get_features = """
+<wfs:FeatureCollection
+   xmlns:my="http://my"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:wfs="http://www.opengis.net/wfs"
+   xmlns:ogc="http://www.opengis.net/ogc">
+      <gml:boundedBy>
+        <gml:Envelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+            <gml:lowerCorner>2 49</gml:lowerCorner>
+            <gml:upperCorner>3 50</gml:upperCorner>
+        </gml:Envelope>
+      </gml:boundedBy>
+    <gml:featureMember>
+      <my:typename gml:id="typename.1">
+        <my:geometryProperty>
+          <gml:MultiGeometry srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+            <gml:geometryMember>
+              <gml:LineString>
+                <gml:coordinates>2,49 3,50</gml:coordinates>
+              </gml:LineString>
+            </gml:geometryMember>
+          </gml:MultiGeometry>
+        </my:geometryProperty>
+      </my:typename>
+    </gml:featureMember>
+</wfs:FeatureCollection>
+"""
+
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&MAXFEATURES=1&SRSNAME=urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
+            f.write(get_features.encode('UTF-8'))
+
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.1.0&TYPENAME=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326"""), 'wb') as f:
+            f.write(get_features.encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.1.0'", 'test', 'WFS')
+        self.assertTrue(vl.isValid())
+
+        got_f = [f for f in vl.getFeatures()]
+        geom = got_f[0].geometry().constGet()
+        geom_string = geom.asWkt()
+        geom_string = re.sub(r'\.\d+', '', geom_string)
+        self.assertEqual(geom_string, 'MultiLineString ((2 49, 3 50))')
+
+        reference = QgsGeometry.fromRect(QgsRectangle(2, 49, 3, 50))
+        vl_extent = QgsGeometry.fromRect(vl.extent())
+        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
+
 
 if __name__ == '__main__':
     unittest.main()
