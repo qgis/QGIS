@@ -281,6 +281,9 @@ void QgsFieldCalculator::accept()
       emptyAttribute = QVariant( field.type() );
 
     QgsFeatureRequest req = QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
+    QSet< QString > referencedColumns = exp.referencedColumns();
+    referencedColumns.insert( field.name() ); // need existing column value to store old attribute when changing field values
+    req.setSubsetOfAttributes( referencedColumns, mVectorLayer->fields() );
     if ( mOnlyUpdateSelectedCheckBox->isChecked() )
     {
       req.setFilterFids( mVectorLayer->selectedFeatureIds() );
