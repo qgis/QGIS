@@ -156,15 +156,14 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
  The function accepts the following parameters
 
-
  : param [any]: Define any parameters you want to pass to your function before
  the following arguments.
  : param feature: The current feature
  : param parent: The QgsExpression object
  : param context: If there is an argument called ``context`` found at the last
- position, this variable will contain a ``QgsExpressionContext``
- object, that gives access to various additional information like
- expression variables. E.g. ``context.variable( 'layer_id' )``
+                   position, this variable will contain a ``QgsExpressionContext``
+                   object, that gives access to various additional information like
+                   expression variables. E.g. ``context.variable( 'layer_id' )``
  : returns: The result of the expression.
 
 
@@ -173,18 +172,17 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
 
  : param args: Defines the number of arguments. With ``args = 'auto'`` the number of
-     arguments will automatically be extracted from the signature.
-     With ``args = -1``, any number of arguments are accepted.
+               arguments will automatically be extracted from the signature.
+               With ``args = -1``, any number of arguments are accepted.
  : param group: The name of the group under which this expression function will
- be listed.
+                be listed.
  : param handlesnull: Set this to True if your function has custom handling for NULL values.
-   If False, the result will always be NULL as soon as any parameter is NULL.
-   Defaults to False.
-   : param usesgeometry : Set this to False if your function does not access
-     feature.geometry(). Defaults to True.
-     : param referenced_columns: An array of attribute names that are required to run
-     this function. Defaults to
-     [QgsFeatureRequest.ALL_ATTRIBUTES].
+                     If False, the result will always be NULL as soon as any parameter is NULL.
+                     Defaults to False.
+ : param usesgeometry : Set this to False if your function does not access
+                        feature.geometry(). Defaults to True.
+ : param referenced_columns: An array of attribute names that are required to run
+                             this function. Defaults to [QgsFeatureRequest.ALL_ATTRIBUTES].
      """")" ) );
 }
 
