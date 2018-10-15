@@ -43,7 +43,8 @@ class MultipleInputDialog(BASE, WIDGET):
         super(MultipleInputDialog, self).__init__(None)
         self.setupUi(self)
 
-        self.lstLayers.setSelectionMode(QAbstractItemView.NoSelection)
+        self.lstLayers.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.lstLayers.setDragDropMode(QAbstractItemView.InternalMove)
 
         self.options = options
         self.selectedoptions = selectedoptions or []
@@ -69,8 +70,10 @@ class MultipleInputDialog(BASE, WIDGET):
         model = QStandardItemModel()
         for i, option in enumerate(self.options):
             item = QStandardItem(option)
+            item.setData(i, Qt.UserRole)
             item.setCheckState(Qt.Checked if i in self.selectedoptions else Qt.Unchecked)
             item.setCheckable(True)
+            item.setDropEnabled(False)
             model.appendRow(item)
 
         self.lstLayers.setModel(model)
@@ -78,10 +81,10 @@ class MultipleInputDialog(BASE, WIDGET):
     def accept(self):
         self.selectedoptions = []
         model = self.lstLayers.model()
-        for i in xrange(model.rowCount()):
+        for i in range(model.rowCount()):
             item = model.item(i)
             if item.checkState() == Qt.Checked:
-                self.selectedoptions.append(i)
+                self.selectedoptions.append(item.data(Qt.UserRole))
         QDialog.accept(self)
 
     def reject(self):
