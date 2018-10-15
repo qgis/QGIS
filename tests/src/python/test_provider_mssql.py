@@ -163,11 +163,6 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             return
         super().testSubsetString()
 
-    def testGetFeaturesThreadSafety(self):
-        if os.environ.get('TRAVIS', '') == 'true':
-            return
-        super().testGetFeaturesThreadSafety()
-
     def testOrderBy(self):
         if os.environ.get('TRAVIS', '') == 'true':
             return
