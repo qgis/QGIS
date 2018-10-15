@@ -12,6 +12,24 @@
 
 
 
+class QgsGeometryCheckFactory /Abstract/
+{
+%Docstring
+
+A factory for geometry checks.
+
+.. note::
+
+   This class is a technology preview and unstable API.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsgeometrycheckfactory.h"
+%End
+  public:
+
     virtual ~QgsGeometryCheckFactory();
 
     virtual QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) const = 0 /Factory/;
