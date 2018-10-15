@@ -2322,7 +2322,8 @@ namespace QgsWms
     double mapUnitTolerance = 0.0;
     if ( ml->geometryType() == QgsWkbTypes::PolygonGeometry )
     {
-      if ( ! mWmsParameters.polygonTolerance().isEmpty() )
+      if ( ! mWmsParameters.polygonTolerance().isEmpty()
+           && mWmsParameters.polygonToleranceAsInt() > 0 )
       {
         mapUnitTolerance = mWmsParameters.polygonToleranceAsInt() * rct.mapToPixel().mapUnitsPerPixel();
       }
