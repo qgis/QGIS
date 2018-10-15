@@ -26,6 +26,8 @@
 #include <QStyleOptionGroupBox>
 #include <QScrollArea>
 
+const QString COLLAPSE_HIDE_BORDER_FIX = QStringLiteral( " QgsCollapsibleGroupBoxBasic { border: none; }" );
+
 QgsCollapsibleGroupBoxBasic::QgsCollapsibleGroupBoxBasic( QWidget *parent )
   : QGroupBox( parent )
 {
@@ -382,8 +384,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
     ss += QLatin1String( "  background-color: rgba(0,0,0,0)" );
   }
   ss += '}';
-  mStyleSheet = styleSheet() + ss;
-  setStyleSheet( mStyleSheet );
+  setStyleSheet( styleSheet() + ss );
 
   // clear toolbutton default background and border and apply offset
   QString ssd;
@@ -444,9 +445,15 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
   // handle child widgets so they don't paint while hidden
   const char *hideKey = "CollGrpBxHide";
 
+  QString ss = styleSheet();
   if ( mCollapsed )
   {
-    setStyleSheet( mStyleSheet + " QgsCollapsibleGroupBoxBasic { border: none; }" );
+    if ( !ss.contains( COLLAPSE_HIDE_BORDER_FIX ) )
+    {
+      ss += COLLAPSE_HIDE_BORDER_FIX;
+      setStyleSheet( ss );
+    }
+
     Q_FOREACH ( QObject *child, children() )
     {
       QWidget *w = qobject_cast<QWidget *>( child );
@@ -459,7 +466,12 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
   }
   else // on expand
   {
-    setStyleSheet( mStyleSheet );
+    if ( ss.contains( COLLAPSE_HIDE_BORDER_FIX ) )
+    {
+      ss.replace( COLLAPSE_HIDE_BORDER_FIX, QString() );
+      setStyleSheet( ss );
+    }
+
     Q_FOREACH ( QObject *child, children() )
     {
       QWidget *w = qobject_cast<QWidget *>( child );
