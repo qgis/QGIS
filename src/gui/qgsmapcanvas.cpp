@@ -1543,6 +1543,12 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
       return;
   }
 
+  if ( e->delta() == 0 )
+  {
+    e->accept();
+    return;
+  }
+
   double zoomFactor = mWheelZoomFactor;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
