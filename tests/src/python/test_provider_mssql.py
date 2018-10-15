@@ -153,11 +153,6 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             return
         super().testGetFeaturesUncompiled()
 
-    def testGetFeaturesExp(self):
-        if os.environ.get('TRAVIS', '') == 'true':
-            return
-        super().testGetFeaturesExp()
-
     def testOrderBy(self):
         if os.environ.get('TRAVIS', '') == 'true':
             return
