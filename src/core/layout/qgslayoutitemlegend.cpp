@@ -106,21 +106,23 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
     if ( mForceResize )
     {
       mForceResize = false;
+
       //set new rect, respecting position mode and data defined size/position
-      QRectF targetRect = QRectF( pos().x(), pos().y(), size.width(), size.height() );
-      attemptSetSceneRect( targetRect );
+      QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( size, sizeWithUnits().units() );
+      attemptResize( newSize );
     }
     else if ( size.height() > rect().height() || size.width() > rect().width() )
     {
       //need to resize box
-      QRectF targetRect = QRectF( pos().x(), pos().y(), rect().width(), rect().height() );
-      if ( size.height() > targetRect.height() )
-        targetRect.setHeight( size.height() );
-      if ( size.width() > rect().width() )
-        targetRect.setWidth( size.width() );
+      QSizeF targetSize = rect().size();
+      if ( size.height() > targetSize.height() )
+        targetSize.setHeight( size.height() );
+      if ( size.width() > targetSize.width() )
+        targetSize.setWidth( size.width() );
 
+      QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( targetSize, sizeWithUnits().units() );
       //set new rect, respecting position mode and data defined size/position
-      attemptSetSceneRect( targetRect );
+      attemptResize( newSize );
     }
   }
   QgsLayoutItem::paint( painter, itemStyle, pWidget );
