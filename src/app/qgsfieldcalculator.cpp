@@ -163,8 +163,10 @@ void QgsFieldCalculator::accept()
 {
   builder->saveToRecent( QStringLiteral( "fieldcalc" ) );
 
-  if ( !mVectorLayer )
+  if ( ! mVectorLayer )
+  {
     return;
+  }
 
   // Set up QgsDistanceArea each time we (re-)calculate
   QgsDistanceArea myDa;
@@ -265,6 +267,10 @@ void QgsFieldCalculator::accept()
       return;
     }
 
+    // Begin feature modifications, block updates for attr tables
+    // connected to this layer
+    QgisApp::instance()->blockAttributeTableUpdates( mVectorLayer, true );
+
     //go through all the features and change the new attribute
     QgsFeature feature;
     bool calculationSuccess = true;
@@ -315,6 +321,8 @@ void QgsFieldCalculator::accept()
       rownum++;
     }
 
+    QgisApp::instance()->blockAttributeTableUpdates( mVectorLayer, false );
+
     QApplication::restoreOverrideCursor();
 
     if ( !calculationSuccess )
@@ -323,7 +331,6 @@ void QgsFieldCalculator::accept()
       mVectorLayer->destroyEditCommand();
       return;
     }
-
     mVectorLayer->endEditCommand();
   }
   QDialog::accept();

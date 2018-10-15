@@ -757,6 +757,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     void collectTranslatableObjects( QgsTranslationContext *translationContext );
 
+
 #ifdef SIP_RUN
     SIP_IF_FEATURE( ANDROID )
     //dummy method to workaround sip generation issue
@@ -787,6 +788,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.4
      */
     void requestForTranslatableObjects( QgsTranslationContext *translationContext );
+
 
   private:
 
