@@ -187,6 +187,9 @@ class QgsWFSSharedData : public QObject
         EPSG:XXXX srsName and not EPSG urns */
     bool mGetFeatureEPSGDotHonoursEPSGOrder;
 
+    //! Geometry type of the features in this layer
+    QgsWkbTypes::Type mWKBType = QgsWkbTypes::Unknown;
+
   private:
 
     //! Main mutex to protect most data members that can be modified concurrently

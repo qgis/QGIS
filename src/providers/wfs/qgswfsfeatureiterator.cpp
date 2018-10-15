@@ -18,6 +18,10 @@
 #include "qgsmessagelog.h"
 #include "qgsgeometry.h"
 #include "qgsgml.h"
+#include "qgsgeometrycollection.h"
+#include "qgsmultipoint.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipolygon.h"
 #include "qgsogcutils.h"
 #include "qgswfsconstants.h"
 #include "qgswfsfeatureiterator.h"
@@ -329,10 +333,20 @@ QUrl QgsWFSFeatureDownloader::buildURL( qint64 startIndex, int maxFeatures, bool
   else if ( !mShared->mRect.isNull() )
   {
     bool invertAxis = false;
-    if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) && !mShared->mURI.ignoreAxisOrientation() &&
-         mShared->mSourceCRS.hasAxisInverted() )
+    if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) &&
+         !mShared->mURI.ignoreAxisOrientation() )
     {
-      invertAxis = true;
+      // This is a bit nasty, but if the server reports OGC::CRS84
+      // mSourceCRS will report hasAxisInverted() == false, but srsName()
+      // will be urn:ogc:def:crs:EPSG::4326, so axis inversion is needed...
+      if ( mShared->srsName() == QLatin1String( "urn:ogc:def:crs:EPSG::4326" ) )
+      {
+        invertAxis = true;
+      }
+      else if ( mShared->mSourceCRS.hasAxisInverted() )
+      {
+        invertAxis = true;
+      }
     }
     if ( mShared->mURI.invertAxisOrientation() )
     {
@@ -710,6 +724,49 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
             QgsGeometry g = f.geometry();
             g.transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
             f.setGeometry( g );
+          }
+
+          // If receiving a geometry collection, but expecting a multipoint/...,
+          // then try to convert it
+          if ( f.hasGeometry() &&
+               f.geometry().wkbType() == QgsWkbTypes::GeometryCollection &&
+               ( mShared->mWKBType == QgsWkbTypes::MultiPoint ||
+                 mShared->mWKBType == QgsWkbTypes::MultiLineString ||
+                 mShared->mWKBType == QgsWkbTypes::MultiPolygon ) )
+          {
+            QgsWkbTypes::Type singleType = QgsWkbTypes::singleType( mShared->mWKBType );
+            auto g = f.geometry().constGet();
+            auto gc = qgsgeometry_cast<QgsGeometryCollection *>( g );
+            bool allExpectedType = true;
+            for ( int i = 0; i < gc->numGeometries(); ++i )
+            {
+              if ( gc->geometryN( i )->wkbType() != singleType )
+              {
+                allExpectedType = false;
+                break;
+              }
+            }
+            if ( allExpectedType )
+            {
+              QgsGeometryCollection *newGC;
+              if ( mShared->mWKBType == QgsWkbTypes::MultiPoint )
+              {
+                newGC =  new QgsMultiPoint();
+              }
+              else if ( mShared->mWKBType == QgsWkbTypes::MultiLineString )
+              {
+                newGC = new QgsMultiLineString();
+              }
+              else
+              {
+                newGC = new QgsMultiPolygon();
+              }
+              for ( int i = 0; i < gc->numGeometries(); ++i )
+              {
+                newGC->addGeometry( gc->geometryN( i )->clone() );
+              }
+              f.setGeometry( QgsGeometry( newGC ) );
+            }
           }
 
           featureList.push_back( QgsWFSFeatureGmlIdPair( f, gmlId ) );
