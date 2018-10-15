@@ -60,7 +60,7 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   mFeatureRubberband->setWidth( scaleFactor );
   mFeatureRubberband->setStrokeColor( QColor( 100, 255, 100, 100 ) );
 
-  mErrorRubberband->setColor( QColor( "#ffee58ff" ) );
+  mErrorRubberband->setColor( QColor( 255, 238, 88, 255 ) );
   mErrorRubberband->setWidth( scaleFactor );
 
   mErrorLocationRubberband->setIcon( QgsRubberBand::ICON_X );
@@ -332,8 +332,8 @@ void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
       mErrorRubberband->update();
     } );
 
-    errorAnimation->setStartValue( QColor( "#ffee58ff" ) );
-    errorAnimation->setEndValue( QColor( "#ffee5800" ) );
+    errorAnimation->setStartValue( QColor( 255, 238, 88, 255 ) );
+    errorAnimation->setEndValue( QColor( 255, 238, 88, 0 ) );
 
     errorAnimation->setDuration( 2000 );
     errorAnimation->start();
