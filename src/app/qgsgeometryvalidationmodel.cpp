@@ -75,8 +75,6 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
           return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmLineIntersections.svg" ) );
 
       case Qt::DisplayRole:
-        FALLTHROUGH;
-
       case DetailsRole:
       {
         const QgsFeatureId fid = topologyError->featureId();
