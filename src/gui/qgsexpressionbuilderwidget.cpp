@@ -388,6 +388,7 @@ void QgsExpressionBuilderWidget::loadFieldNames()
   loadFieldNames( mLayer->fields() );
 }
 
+
 void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields &fields )
 {
   if ( fields.isEmpty() )
@@ -396,13 +397,14 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields &fields )
   txtExpressionString->setFields( fields );
 
   QStringList fieldNames;
-  //Q_FOREACH ( const QgsField& field, fields )
   fieldNames.reserve( fields.count() );
   for ( int i = 0; i < fields.count(); ++i )
   {
-    QString fieldName = fields.at( i ).name();
+    QgsField field = fields.at( i );
+    QString fieldName = field.name();
     fieldNames << fieldName;
-    registerItem( QStringLiteral( "Fields and Values" ), fieldName, " \"" + fieldName + "\" ", QString(), QgsExpressionItem::Field, false, i );
+    QIcon icon = fields.iconForField( i );
+    registerItem( QStringLiteral( "Fields and Values" ), fieldName, " \"" + fieldName + "\" ", QString(), QgsExpressionItem::Field, false, i, icon );
   }
 //  highlighter->addFields( fieldNames );
 }
@@ -465,11 +467,12 @@ void QgsExpressionBuilderWidget::registerItem( const QString &group,
     const QString &label,
     const QString &expressionText,
     const QString &helpText,
-    QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder )
+    QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder, QIcon icon )
 {
   QgsExpressionItem *item = new QgsExpressionItem( label, expressionText, helpText, type );
   item->setData( label, Qt::UserRole );
   item->setData( sortOrder, QgsExpressionItem::CUSTOM_SORT_ROLE );
+  item->setIcon( icon );
 
   // Look up the group and insert the new function.
   if ( mExpressionGroups.contains( group ) )
