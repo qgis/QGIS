@@ -62,8 +62,7 @@ class QgsGeometryValidationModel : public QAbstractItemModel
   private:
     struct FeatureErrors
     {
-      FeatureErrors()
-      {}
+      FeatureErrors() = default;
 
       FeatureErrors( QgsFeatureId fid )
         : fid( fid )

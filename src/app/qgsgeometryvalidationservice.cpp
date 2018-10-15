@@ -45,7 +45,7 @@ void QgsGeometryValidationService::fixError( QgsGeometryCheckError *error, int m
 
   QgsFeaturePool *featurePool = mFeaturePools.value( error->layerId() );
 
-  QgsVectorLayer *layer;
+  QgsVectorLayer *layer = nullptr;
 
   if ( featurePool )
     layer = featurePool->layer();
