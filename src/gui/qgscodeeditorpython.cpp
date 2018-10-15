@@ -99,6 +99,7 @@ void QgsCodeEditorPython::setSciLexerPython()
 
   setMarginVisible( true );
   setFoldingVisible( true );
+  setIndentationsUseTabs( false );
 }
 
 

@@ -65,8 +65,7 @@ initfile = os.path.join(expressionspath, "__init__.py")
 if not os.path.exists(initfile):
     open(initfile, "w").close()
 
-template = """\"\"\"
-from qgis.core import *
+template = """from qgis.core import *
 from qgis.gui import *
 
 @qgsfunction(args='auto', group='Custom')
@@ -81,6 +80,8 @@ def my_sum(value1, value2, feature, parent):
     \"\"\"
     return value1 + value2
 """
+
+default_expression_template = template
 
 
 try:

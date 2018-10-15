@@ -310,7 +310,7 @@ void QgsExpressionBuilderWidget::newFunctionFile( const QString &fileName )
   cmbFileNames->setCurrentRow( 0 );
 
   QString templatetxt;
-  QgsPythonRunner::eval( QStringLiteral( "qgis.user.expressions.template" ), templatetxt );
+  QgsPythonRunner::eval( QStringLiteral( "qgis.user.default_expression_template" ), templatetxt );
   txtPython->setText( templatetxt );
   saveFunctionFile( fileName );
 }
