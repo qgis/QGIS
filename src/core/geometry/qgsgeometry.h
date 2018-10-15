@@ -1449,6 +1449,14 @@ class CORE_EXPORT QgsGeometry
          */
         bool hasWhere() const;
 
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+        QString str = QStringLiteral( "<QgsGeometry.Error: %1>" ).arg( sipCpp->what() );
+        sipRes = PyUnicode_FromString( str.toUtf8().data() );
+        % End
+#endif
+
       private:
         QString mMessage;
         QgsPointXY mLocation;

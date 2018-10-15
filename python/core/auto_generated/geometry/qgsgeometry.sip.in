@@ -1497,6 +1497,12 @@ The coordinates at which the error is located and should be visualized.
 True if the location available from :py:func:`where` is valid.
 %End
 
+        SIP_PYOBJECT __repr__();
+%MethodCode
+        QString str = QStringLiteral( "<QgsGeometry.Error: %1>" ).arg( sipCpp->what() );
+        sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
+
     };
 
     enum ValidationMethod
