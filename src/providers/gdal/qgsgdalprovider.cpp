@@ -392,7 +392,7 @@ bool QgsGdalProvider::cacheGdalHandlesForLaterReuse( QgsGdalProvider *provider,
       {
         mgDatasetCacheSize --;
         DatasetPair pair = mgDatasetCache[ candidateProvider ].takeLast();
-        if ( pair.mGdalBaseDataset )
+        if ( pair.mGdalBaseDataset != pair.mGdalDataset )
         {
           GDALDereferenceDataset( pair.mGdalBaseDataset );
         }
@@ -435,7 +435,7 @@ void QgsGdalProvider::closeCachedGdalHandlesFor( QgsGdalProvider *provider )
     {
       mgDatasetCacheSize --;
       DatasetPair pair = iter.value().takeLast();
-      if ( pair.mGdalBaseDataset )
+      if ( pair.mGdalBaseDataset != pair.mGdalDataset )
       {
         GDALDereferenceDataset( pair.mGdalBaseDataset );
       }
@@ -464,7 +464,7 @@ QgsGdalProvider::~QgsGdalProvider()
     }
     else
     {
-      if ( mGdalBaseDataset )
+      if ( mGdalBaseDataset != mGdalDataset )
       {
         GDALDereferenceDataset( mGdalBaseDataset );
       }
@@ -490,7 +490,6 @@ QgsGdalProvider::~QgsGdalProvider()
 }
 
 
-// This was used by raster layer to reload data
 void QgsGdalProvider::closeDataset()
 {
   if ( !mValid )
@@ -499,11 +498,16 @@ void QgsGdalProvider::closeDataset()
   }
   mValid = false;
 
-  GDALDereferenceDataset( mGdalBaseDataset );
+  if ( mGdalBaseDataset != mGdalDataset )
+  {
+    GDALDereferenceDataset( mGdalBaseDataset );
+  }
   mGdalBaseDataset = nullptr;
 
   GDALClose( mGdalDataset );
   mGdalDataset = nullptr;
+
+  closeCachedGdalHandlesFor( this );
 }
 
 QString QgsGdalProvider::htmlMetadata()
@@ -2605,7 +2609,6 @@ void QgsGdalProvider::initBaseDataset()
     {
       QgsLogger::warning( QStringLiteral( "Warped VRT Creation failed." ) );
       mGdalDataset = mGdalBaseDataset;
-      GDALReferenceDataset( mGdalDataset );
     }
     else
     {
@@ -2615,7 +2618,6 @@ void QgsGdalProvider::initBaseDataset()
   else
   {
     mGdalDataset = mGdalBaseDataset;
-    GDALReferenceDataset( mGdalDataset );
   }
 
   if ( !hasGeoTransform )
@@ -2644,12 +2646,7 @@ void QgsGdalProvider::initBaseDataset()
     {
       appendError( ERRMSG( tr( "Cannot get GDAL raster band: %1" ).arg( msg ) ) );
 
-      GDALDereferenceDataset( mGdalBaseDataset );
-      mGdalBaseDataset = nullptr;
-
-      GDALClose( mGdalDataset );
-      mGdalDataset = nullptr;
-      mValid = false;
+      closeDataset();
       return;
     }
     // if there are subdatasets, leave the dataset open for subsequent queries
@@ -2956,8 +2953,7 @@ bool QgsGdalProvider::remove()
   if ( mGdalDataset )
   {
     GDALDriverH driver = GDALGetDatasetDriver( mGdalDataset );
-    GDALClose( mGdalDataset );
-    mGdalDataset = nullptr;
+    closeDataset();
 
     CPLErrorReset();
     CPLErr err = GDALDeleteDataset( driver, dataSourceUri( true ).toUtf8().constData() );
