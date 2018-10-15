@@ -68,9 +68,12 @@ void QgsGeometryValidationService::fixError( QgsGeometryCheckError *error, int m
     }
   }
 
-  layer->triggerRepaint();
+  if ( layer )
+  {
+    layer->triggerRepaint();
 
-  emit topologyErrorUpdated( layer, error );
+    emit topologyErrorUpdated( layer, error );
+  }
 }
 
 void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &layers )
