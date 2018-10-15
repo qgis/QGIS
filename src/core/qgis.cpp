@@ -119,13 +119,13 @@ void *qgsMalloc( size_t size )
 {
   if ( size == 0 || long( size ) < 0 )
   {
-    QgsDebugMsg( QString( "Negative or zero size %1." ).arg( size ) );
+    QgsDebugMsg( QStringLiteral( "Negative or zero size %1." ).arg( size ) );
     return nullptr;
   }
   void *p = malloc( size );
   if ( !p )
   {
-    QgsDebugMsg( QString( "Allocation of %1 bytes failed." ).arg( size ) );
+    QgsDebugMsg( QStringLiteral( "Allocation of %1 bytes failed." ).arg( size ) );
   }
   return p;
 }
@@ -134,7 +134,7 @@ void *qgsCalloc( size_t nmemb, size_t size )
 {
   if ( nmemb == 0 || long( nmemb ) < 0 || size == 0 || long( size ) < 0 )
   {
-    QgsDebugMsg( QString( "Negative or zero nmemb %1 or size %2." ).arg( nmemb ).arg( size ) );
+    QgsDebugMsg( QStringLiteral( "Negative or zero nmemb %1 or size %2." ).arg( nmemb ).arg( size ) );
     return nullptr;
   }
   void *p = qgsMalloc( nmemb * size );

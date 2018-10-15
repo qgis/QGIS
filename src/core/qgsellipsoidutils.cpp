@@ -102,7 +102,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   // row for this ellipsoid wasn't found?
   if ( radius.isEmpty() || parameter2.isEmpty() )
   {
-    QgsDebugMsg( QString( "setEllipsoid: no row in tbl_ellipsoid for acronym '%1'" ).arg( ellipsoid ) );
+    QgsDebugMsg( QStringLiteral( "setEllipsoid: no row in tbl_ellipsoid for acronym '%1'" ).arg( ellipsoid ) );
     params.valid = false;
     sEllipsoidCacheLock.lockForWrite();
     sEllipsoidCache.insert( ellipsoid, params );
@@ -115,7 +115,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
     params.semiMajor = radius.midRef( 2 ).toDouble();
   else
   {
-    QgsDebugMsg( QString( "setEllipsoid: wrong format of radius field: '%1'" ).arg( radius ) );
+    QgsDebugMsg( QStringLiteral( "setEllipsoid: wrong format of radius field: '%1'" ).arg( radius ) );
     params.valid = false;
     sEllipsoidCacheLock.lockForWrite();
     sEllipsoidCache.insert( ellipsoid, params );
@@ -138,7 +138,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   }
   else
   {
-    QgsDebugMsg( QString( "setEllipsoid: wrong format of parameter2 field: '%1'" ).arg( parameter2 ) );
+    QgsDebugMsg( QStringLiteral( "setEllipsoid: wrong format of parameter2 field: '%1'" ).arg( parameter2 ) );
     params.valid = false;
     sEllipsoidCacheLock.lockForWrite();
     sEllipsoidCache.insert( ellipsoid, params );
@@ -146,7 +146,7 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
     return params;
   }
 
-  QgsDebugMsgLevel( QString( "setEllipsoid: a=%1, b=%2, 1/f=%3" ).arg( params.semiMajor ).arg( params.semiMinor ).arg( params.inverseFlattening ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "setEllipsoid: a=%1, b=%2, 1/f=%3" ).arg( params.semiMajor ).arg( params.semiMinor ).arg( params.inverseFlattening ), 4 );
 
 
   // get spatial ref system for ellipsoid
@@ -196,7 +196,7 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
   result = database.open_v2( QgsApplication::srsDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
   if ( result )
   {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( database.errorMessage() ) );
+    QgsDebugMsg( QStringLiteral( "Can't open database: %1" ).arg( database.errorMessage() ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     Q_ASSERT( result == 0 );

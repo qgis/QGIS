@@ -306,11 +306,11 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix()
     if ( strcmp( configNew, CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) != 0 )
       QgsLogger::warning( QStringLiteral( "GDAL_FIX_ESRI_WKT could not be set to %1 : %2" )
                           .arg( configNew, CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) );
-    QgsDebugMsgLevel( QString( "set GDAL_FIX_ESRI_WKT : %1" ).arg( configNew ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "set GDAL_FIX_ESRI_WKT : %1" ).arg( configNew ), 4 );
   }
   else
   {
-    QgsDebugMsgLevel( QString( "GDAL_FIX_ESRI_WKT was already set : %1" ).arg( configNew ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "GDAL_FIX_ESRI_WKT was already set : %1" ).arg( configNew ), 4 );
   }
 }
 
@@ -598,7 +598,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
     QgsDebugMsg( "\n---------------------------------------------------------------" );
     QgsDebugMsg( "This CRS could *** NOT *** be set from the supplied Wkt " );
     QgsDebugMsg( "INPUT: " + wkt );
-    QgsDebugMsg( QString( "UNUSED WKT: %1" ).arg( pWkt ) );
+    QgsDebugMsg( QStringLiteral( "UNUSED WKT: %1" ).arg( pWkt ) );
     QgsDebugMsg( "---------------------------------------------------------------\n" );
 
     sCRSWktLock.lockForWrite();
@@ -1646,7 +1646,7 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
   myResult = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open or create database %1: %2" )
+    QgsDebugMsg( QStringLiteral( "Can't open or create database %1: %2" )
                  .arg( QgsApplication::qgisUserDatabaseFilePath(),
                        database.errorMessage() ) );
     return false;
@@ -1694,7 +1694,7 @@ long QgsCoordinateReferenceSystem::getRecordCount()
   myResult = database.open_v2( QgsApplication::qgisUserDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( database.errorMessage() ) );
+    QgsDebugMsg( QStringLiteral( "Can't open database: %1" ).arg( database.errorMessage() ) );
     return 0;
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
@@ -1975,7 +1975,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       QRegExp projRegExp( "\\+proj=(\\S+)" );
       if ( projRegExp.indexIn( proj4 ) < 0 )
       {
-        QgsDebugMsgLevel( QString( "EPSG %1: no +proj argument found [%2]" ).arg( it.key() ).arg( proj4 ), 4 );
+        QgsDebugMsgLevel( QStringLiteral( "EPSG %1: no +proj argument found [%2]" ).arg( it.key() ).arg( proj4 ), 4 );
         continue;
       }
 
@@ -2110,12 +2110,12 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         }
         else
         {
-          QgsDebugMsgLevel( QString( "could not retrieve proj string for %1 from PROJ" ).arg( input ), 4 );
+          QgsDebugMsgLevel( QStringLiteral( "could not retrieve proj string for %1 from PROJ" ).arg( input ), 4 );
         }
       }
       else
       {
-        QgsDebugMsgLevel( QString( "could not retrieve crs for %1 from PROJ" ).arg( input ), 3 );
+        QgsDebugMsgLevel( QStringLiteral( "could not retrieve crs for %1 from PROJ" ).arg( input ), 3 );
       }
 
       pj_free( pj );

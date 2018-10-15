@@ -367,7 +367,7 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
     //something went wrong in getSurroundingTriangles, set the normal to (0,0,0)
     if ( mNormVec->size() <= mNormVec->count() )//allocate more memory if necessary
     {
-      QgsDebugMsg( QString( "resizing mNormVec from %1 to %2" ).arg( mNormVec->size() ).arg( mNormVec->size() + 1 ) );
+      QgsDebugMsg( QStringLiteral( "resizing mNormVec from %1 to %2" ).arg( mNormVec->size() ).arg( mNormVec->size() + 1 ) );
       mNormVec->resize( mNormVec->size() + 1 );
     }
 

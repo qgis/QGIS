@@ -293,7 +293,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   {
     if ( fileEncoding.compare( metadata.compulsoryEncoding, Qt::CaseInsensitive ) != 0 )
     {
-      QgsDebugMsg( QString( "forced %1 encoding for %2" ).arg( metadata.compulsoryEncoding, driverName ) );
+      QgsDebugMsg( QStringLiteral( "forced %1 encoding for %2" ).arg( metadata.compulsoryEncoding, driverName ) );
       fileEncoding = metadata.compulsoryEncoding;
     }
 
@@ -305,7 +305,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     options = new char *[ datasourceOptions.size() + 1 ];
     for ( int i = 0; i < datasourceOptions.size(); i++ )
     {
-      QgsDebugMsg( QString( "-dsco=%1" ).arg( datasourceOptions[i] ) );
+      QgsDebugMsg( QStringLiteral( "-dsco=%1" ).arg( datasourceOptions[i] ) );
       options[i] = CPLStrdup( datasourceOptions[i].toLocal8Bit().constData() );
     }
     options[ datasourceOptions.size()] = nullptr;
@@ -410,7 +410,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     options = new char *[ layerOptions.size() + 1 ];
     for ( int i = 0; i < layerOptions.size(); i++ )
     {
-      QgsDebugMsg( QString( "-lco=%1" ).arg( layerOptions[i] ) );
+      QgsDebugMsg( QStringLiteral( "-lco=%1" ).arg( layerOptions[i] ) );
       options[i] = CPLStrdup( layerOptions[i].toLocal8Bit().constData() );
     }
     options[ layerOptions.size()] = nullptr;
@@ -654,7 +654,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     }
 
     int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( name ) );
-    QgsDebugMsg( QString( "returned field index for %1: %2" ).arg( name ).arg( ogrIdx ) );
+    QgsDebugMsg( QStringLiteral( "returned field index for %1: %2" ).arg( name ).arg( ogrIdx ) );
     if ( ogrIdx < 0 || existingIdxs.contains( ogrIdx ) )
     {
       // GDAL 1.7 not just truncates, but launders more aggressivly.
@@ -2080,11 +2080,11 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
   qint64 fid = FID_TO_NUMBER( feature.id() );
   if ( fid > std::numeric_limits<int>::max() )
   {
-    QgsDebugMsg( QString( "feature id %1 too large." ).arg( fid ) );
+    QgsDebugMsg( QStringLiteral( "feature id %1 too large." ).arg( fid ) );
     OGRErr err = OGR_F_SetFID( poFeature.get(), static_cast<long>( fid ) );
     if ( err != OGRERR_NONE )
     {
-      QgsDebugMsg( QString( "Failed to set feature id to %1: %2 (OGR error: %3)" )
+      QgsDebugMsg( QStringLiteral( "Failed to set feature id to %1: %2 (OGR error: %3)" )
                    .arg( feature.id() )
                    .arg( err ).arg( CPLGetLastErrorMsg() )
                  );
@@ -2807,7 +2807,7 @@ bool QgsVectorFileWriter::deleteShapeFile( const QString &fileName )
     QFile f( dir.canonicalPath() + '/' + file );
     if ( !f.remove() )
     {
-      QgsDebugMsg( QString( "Removing file %1 failed: %2" ).arg( file, f.errorString() ) );
+      QgsDebugMsg( QStringLiteral( "Removing file %1 failed: %2" ).arg( file, f.errorString() ) );
       ok = false;
     }
   }

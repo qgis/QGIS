@@ -56,7 +56,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   {
     fontSize = oldFontPointSize.toInt();
   }
-  QgsDebugMsg( QString( "fontPointSize: %1" ).arg( fontSize ) );
+  QgsDebugMsg( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ) );
   opts.insert( QStringLiteral( "fontPointSize" ), settings.value( QStringLiteral( "fontPointSize" ), QVariant( fontSize ) ) );
 
   QString fontFamily = mDefaultFont.family();
@@ -76,7 +76,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
     }
     delete tempFont;
   }
-  QgsDebugMsg( QString( "fontFamily: %1" ).arg( fontFamily ) );
+  QgsDebugMsg( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ) );
   opts.insert( QStringLiteral( "fontFamily" ), QVariant( fontFamily ) );
 
   bool gbxCustom = ( mMacStyle );
@@ -97,11 +97,11 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 
   // QgisApp-wide font
   QString fontSize = opts.value( QStringLiteral( "fontPointSize" ) ).toString();
-  QgsDebugMsg( QString( "fontPointSize: %1" ).arg( fontSize ) );
+  QgsDebugMsg( QStringLiteral( "fontPointSize: %1" ).arg( fontSize ) );
   if ( fontSize.isEmpty() ) { return; }
 
   QString fontFamily = opts.value( QStringLiteral( "fontFamily" ) ).toString();
-  QgsDebugMsg( QString( "fontFamily: %1" ).arg( fontFamily ) );
+  QgsDebugMsg( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ) );
   if ( fontFamily.isEmpty() ) { return; }
 
   ss += QStringLiteral( "* { font: %1pt \"%2\"} " ).arg( fontSize, fontFamily );
@@ -123,7 +123,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 
   // QGroupBox and QgsCollapsibleGroupBox, mostly for Ubuntu and Mac
   bool gbxCustom = opts.value( QStringLiteral( "groupBoxCustom" ) ).toBool();
-  QgsDebugMsg( QString( "groupBoxCustom: %1" ).arg( gbxCustom ) );
+  QgsDebugMsg( QStringLiteral( "groupBoxCustom: %1" ).arg( gbxCustom ) );
 
   ss += QLatin1String( "QGroupBox{" );
   // doesn't work for QGroupBox::title
@@ -198,7 +198,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
     }
   }
 
-  QgsDebugMsg( QString( "Stylesheet built: %1" ).arg( ss ) );
+  QgsDebugMsg( QStringLiteral( "Stylesheet built: %1" ).arg( ss ) );
 
   emit appStyleSheetChanged( ss );
 }
@@ -220,7 +220,7 @@ void QgisAppStyleSheet::saveToSettings( const QMap<QString, QVariant> &opts )
 void QgisAppStyleSheet::setActiveValues()
 {
   mStyle = qApp->style()->objectName(); // active style name (lowercase)
-  QgsDebugMsg( QString( "Style name: %1" ).arg( mStyle ) );
+  QgsDebugMsg( QStringLiteral( "Style name: %1" ).arg( mStyle ) );
 
   mMotifStyle = mStyle.contains( QLatin1String( "motif" ) ); // motif
   mCdeStyle = mStyle.contains( QLatin1String( "cde" ) ); // cde

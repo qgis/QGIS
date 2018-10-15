@@ -785,7 +785,7 @@ void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom,
 
     if ( ! qgisModel->insertRecord( -1, record ) )
     {
-      QgsDebugMsg( QString( "Could not move bookmark: %1" )
+      QgsDebugMsg( QStringLiteral( "Could not move bookmark: %1" )
                    .arg( qgisModel->database().lastError().text() ) );
       return;
     }

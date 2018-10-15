@@ -481,7 +481,7 @@ QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, QString &errorTitle,
     // Handle network errors
     if ( reply->error() != QNetworkReply::NoError )
     {
-      QgsDebugMsg( QString( "Network error: %1" ).arg( reply->errorString() ) );
+      QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( reply->errorString() ) );
       errorTitle = QStringLiteral( "Network error" );
       errorText = reply->errorString();
       return QByteArray();
@@ -518,7 +518,7 @@ QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &erro
   {
     errorTitle = QStringLiteral( "Parsing error" );
     errorText = err.errorString();
-    QgsDebugMsg( QString( "Parsing error: %1" ).arg( err.errorString() ) );
+    QgsDebugMsg( QStringLiteral( "Parsing error: %1" ).arg( err.errorString() ) );
     return QVariantMap();
   }
   return doc.object().toVariantMap();
@@ -792,7 +792,7 @@ QUrl QgsArcGisRestUtils::parseUrl( const QUrl &url )
     // Qt5 does URL encoding from some reason (of the FILTER parameter for example)
     modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrlString.toUtf8() );
     modifiedUrlString.replace( QStringLiteral( "fake_qgis_http_endpoint/" ), QStringLiteral( "fake_qgis_http_endpoint_" ) );
-    QgsDebugMsg( QString( "Get %1" ).arg( modifiedUrlString ) );
+    QgsDebugMsg( QStringLiteral( "Get %1" ).arg( modifiedUrlString ) );
     modifiedUrlString = modifiedUrlString.mid( QStringLiteral( "http://" ).size() );
     QString args = modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) );
     if ( modifiedUrlString.size() > 150 )
@@ -860,7 +860,7 @@ void QgsArcGisAsyncQuery::handleReply()
   // Handle network errors
   if ( mReply->error() != QNetworkReply::NoError )
   {
-    QgsDebugMsg( QString( "Network error: %1" ).arg( mReply->errorString() ) );
+    QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( mReply->errorString() ) );
     emit failed( QStringLiteral( "Network error" ), mReply->errorString() );
     return;
   }

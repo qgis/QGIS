@@ -267,12 +267,12 @@ void QgsProjectionSelectionTreeWidget::applySelection( int column, QString value
   QList<QTreeWidgetItem *> nodes = lstCoordinateSystems->findItems( value, Qt::MatchExactly | Qt::MatchRecursive, column );
   if ( !nodes.isEmpty() )
   {
-    QgsDebugMsgLevel( QString( "found %1,%2" ).arg( column ).arg( value ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "found %1,%2" ).arg( column ).arg( value ), 4 );
     lstCoordinateSystems->setCurrentItem( nodes.first() );
   }
   else
   {
-    QgsDebugMsgLevel( QString( "nothing found for %1,%2" ).arg( column ).arg( value ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "nothing found for %1,%2" ).arg( column ).arg( value ), 4 );
     // deselect the selected item to avoid confusing the user
     lstCoordinateSystems->clearSelection();
     lstRecent->clearSelection();
@@ -453,7 +453,7 @@ QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &
                 .arg( expression,
                       lvi->text( QgisCrsIdColumn ) );
 
-  QgsDebugMsgLevel( QString( "Finding selected attribute using : %1" ).arg( sql ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Finding selected attribute using : %1" ).arg( sql ), 4 );
   rc = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
   // XXX Need to free memory from the error msg if one is set
   QString attributeValue;
@@ -778,12 +778,12 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( 
     QList<QTreeWidgetItem *> nodes = lstRecent->findItems( current->text( QgisCrsIdColumn ), Qt::MatchExactly, QgisCrsIdColumn );
     if ( !nodes.isEmpty() )
     {
-      QgsDebugMsgLevel( QString( "found srs %1 in recent" ).arg( current->text( QgisCrsIdColumn ) ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "found srs %1 in recent" ).arg( current->text( QgisCrsIdColumn ) ), 4 );
       lstRecent->setCurrentItem( nodes.first() );
     }
     else
     {
-      QgsDebugMsgLevel( QString( "srs %1 not recent" ).arg( current->text( QgisCrsIdColumn ) ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "srs %1 not recent" ).arg( current->text( QgisCrsIdColumn ) ), 4 );
       lstRecent->clearSelection();
       lstCoordinateSystems->setFocus( Qt::OtherFocusReason );
     }
@@ -964,7 +964,7 @@ long QgsProjectionSelectionTreeWidget::getLargestCrsIdMatch( const QString &sql 
     result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, nullptr );
     if ( result )
     {
-      QgsDebugMsg( QString( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( database ) ) );
+      QgsDebugMsg( QStringLiteral( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( database ) ) );
       //no need for assert because user db may not have been created yet
       return 0;
     }
@@ -1044,7 +1044,7 @@ QStringList QgsProjectionSelectionTreeWidget::authorities()
   int result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( result )
   {
-    QgsDebugMsg( QString( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( database ) ) );
+    QgsDebugMsg( QStringLiteral( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( database ) ) );
     //no need for assert because user db may not have been created yet
     return QStringList();
   }

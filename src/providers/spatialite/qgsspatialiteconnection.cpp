@@ -692,17 +692,17 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
 
   if ( shared && sHandles.contains( dbPath ) )
   {
-    QgsDebugMsg( QString( "Using cached connection for %1" ).arg( dbPath ) );
+    QgsDebugMsg( QStringLiteral( "Using cached connection for %1" ).arg( dbPath ) );
     sHandles[dbPath]->ref++;
     return sHandles[dbPath];
   }
 
-  QgsDebugMsg( QString( "New sqlite connection for " ) + dbPath );
+  QgsDebugMsg( QStringLiteral( "New sqlite connection for " ) + dbPath );
   spatialite_database_unique_ptr database;
   if ( database.open_v2( dbPath, shared ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, nullptr ) )
   {
     // failure
-    QgsDebugMsg( QString( "Failure while connecting to: %1\n%2" )
+    QgsDebugMsg( QStringLiteral( "Failure while connecting to: %1\n%2" )
                  .arg( dbPath,
                        QString::fromUtf8( sqlite3_errmsg( database.get() ) ) ) );
     return nullptr;
@@ -712,7 +712,7 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
   if ( !checkMetadata( database.get() ) )
   {
     // failure
-    QgsDebugMsg( QString( "Failure while connecting to: %1\n\ninvalid metadata tables" ).arg( dbPath ) );
+    QgsDebugMsg( QStringLiteral( "Failure while connecting to: %1\n\ninvalid metadata tables" ).arg( dbPath ) );
     return nullptr;
   }
   // activating Foreign Key constraints

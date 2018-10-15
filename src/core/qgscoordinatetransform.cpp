@@ -266,10 +266,10 @@ QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &rect, Transf
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   QgsDebugMsg( "Rect projection..." );
-  QgsDebugMsg( QString( "Xmin : %1 --> %2" ).arg( rect.xMinimum() ).arg( x1 ) );
-  QgsDebugMsg( QString( "Ymin : %1 --> %2" ).arg( rect.yMinimum() ).arg( y1 ) );
-  QgsDebugMsg( QString( "Xmax : %1 --> %2" ).arg( rect.xMaximum() ).arg( x2 ) );
-  QgsDebugMsg( QString( "Ymax : %1 --> %2" ).arg( rect.yMaximum() ).arg( y2 ) );
+  QgsDebugMsg( QStringLiteral( "Xmin : %1 --> %2" ).arg( rect.xMinimum() ).arg( x1 ) );
+  QgsDebugMsg( QStringLiteral( "Ymin : %1 --> %2" ).arg( rect.yMinimum() ).arg( y1 ) );
+  QgsDebugMsg( QStringLiteral( "Xmax : %1 --> %2" ).arg( rect.xMaximum() ).arg( x2 ) );
+  QgsDebugMsg( QStringLiteral( "Ymax : %1 --> %2" ).arg( rect.yMaximum() ).arg( y2 ) );
 #endif
   return QgsRectangle( x1, y1, x2, y2 );
 }
@@ -610,7 +610,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   double xorg = *x;
   double yorg = *y;
-  QgsDebugMsg( QString( "[[[[[[ Number of points to transform: %1 ]]]]]]" ).arg( numPoints ) );
+  QgsDebugMsg( QStringLiteral( "[[[[[[ Number of points to transform: %1 ]]]]]]" ).arg( numPoints ) );
 #endif
 
 #ifdef QGISDEBUG
@@ -700,7 +700,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     }
   }
 #ifdef COORDINATE_TRANSFORM_VERBOSE
-  QgsDebugMsg( QString( "[[[[[[ Projected %1, %2 to %3, %4 ]]]]]]" )
+  QgsDebugMsg( QStringLiteral( "[[[[[[ Projected %1, %2 to %3, %4 ]]]]]]" )
                .arg( xorg, 0, 'g', 15 ).arg( yorg, 0, 'g', 15 )
                .arg( *x, 0, 'g', 15 ).arg( *y, 0, 'g', 15 ) );
 #endif

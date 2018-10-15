@@ -47,7 +47,7 @@ void QgsRasterLayerRendererFeedback::onNewData()
 
   // TODO: update only the area that got new data
 
-  QgsDebugMsg( QString( "new raster preview! %1" ).arg( mLastPreview.msecsTo( QTime::currentTime() ) ) );
+  QgsDebugMsg( QStringLiteral( "new raster preview! %1" ).arg( mLastPreview.msecsTo( QTime::currentTime() ) ) );
   QTime t;
   t.start();
   QgsRasterBlockFeedback feedback;
@@ -56,7 +56,7 @@ void QgsRasterLayerRendererFeedback::onNewData()
   QgsRasterIterator iterator( mR->mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( mR->mPainter, mR->mRasterViewPort, mR->mMapToPixel, &feedback );
-  QgsDebugMsg( QString( "total raster preview time: %1 ms" ).arg( t.elapsed() ) );
+  QgsDebugMsg( QStringLiteral( "total raster preview time: %1 ms" ).arg( t.elapsed() ) );
   mLastPreview = QTime::currentTime();
 }
 
@@ -202,21 +202,21 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   //mapToPixel.mapUnitsPerPixel() is less then 1,
   //so we will just get the pixel data and then render these special cases differently in paintImageToCanvas()
 
-  QgsDebugMsgLevel( QString( "mapUnitsPerPixel = %1" ).arg( mapToPixel.mapUnitsPerPixel() ), 3 );
-  QgsDebugMsgLevel( QString( "mWidth = %1" ).arg( layer->width() ), 3 );
-  QgsDebugMsgLevel( QString( "mHeight = %1" ).arg( layer->height() ), 3 );
-  QgsDebugMsgLevel( QString( "myRasterExtent.xMinimum() = %1" ).arg( myRasterExtent.xMinimum() ), 3 );
-  QgsDebugMsgLevel( QString( "myRasterExtent.xMaximum() = %1" ).arg( myRasterExtent.xMaximum() ), 3 );
-  QgsDebugMsgLevel( QString( "myRasterExtent.yMinimum() = %1" ).arg( myRasterExtent.yMinimum() ), 3 );
-  QgsDebugMsgLevel( QString( "myRasterExtent.yMaximum() = %1" ).arg( myRasterExtent.yMaximum() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "mapUnitsPerPixel = %1" ).arg( mapToPixel.mapUnitsPerPixel() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "mWidth = %1" ).arg( layer->width() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "mHeight = %1" ).arg( layer->height() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "myRasterExtent.xMinimum() = %1" ).arg( myRasterExtent.xMinimum() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "myRasterExtent.xMaximum() = %1" ).arg( myRasterExtent.xMaximum() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "myRasterExtent.yMinimum() = %1" ).arg( myRasterExtent.yMinimum() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "myRasterExtent.yMaximum() = %1" ).arg( myRasterExtent.yMaximum() ), 3 );
 
-  QgsDebugMsgLevel( QString( "mTopLeftPoint.x() = %1" ).arg( mRasterViewPort->mTopLeftPoint.x() ), 3 );
-  QgsDebugMsgLevel( QString( "mBottomRightPoint.x() = %1" ).arg( mRasterViewPort->mBottomRightPoint.x() ), 3 );
-  QgsDebugMsgLevel( QString( "mTopLeftPoint.y() = %1" ).arg( mRasterViewPort->mTopLeftPoint.y() ), 3 );
-  QgsDebugMsgLevel( QString( "mBottomRightPoint.y() = %1" ).arg( mRasterViewPort->mBottomRightPoint.y() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "mTopLeftPoint.x() = %1" ).arg( mRasterViewPort->mTopLeftPoint.x() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "mBottomRightPoint.x() = %1" ).arg( mRasterViewPort->mBottomRightPoint.x() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "mTopLeftPoint.y() = %1" ).arg( mRasterViewPort->mTopLeftPoint.y() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "mBottomRightPoint.y() = %1" ).arg( mRasterViewPort->mBottomRightPoint.y() ), 3 );
 
-  QgsDebugMsgLevel( QString( "mWidth = %1" ).arg( mRasterViewPort->mWidth ), 3 );
-  QgsDebugMsgLevel( QString( "mHeight = %1" ).arg( mRasterViewPort->mHeight ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "mWidth = %1" ).arg( mRasterViewPort->mWidth ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "mHeight = %1" ).arg( mRasterViewPort->mHeight ), 3 );
 
   // /\/\/\ - added to handle zoomed-in rasters
 
@@ -271,7 +271,7 @@ bool QgsRasterLayerRenderer::render()
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( mPainter, mRasterViewPort, mMapToPixel, mFeedback );
 
-  QgsDebugMsgLevel( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
 
   return true;
 }

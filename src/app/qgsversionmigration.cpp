@@ -89,13 +89,13 @@ bool Qgs2To3Migration::requiresMigration()
     {
       QStringList parts = line.split( '=' );
       mMigrationFileVersion = parts.at( 1 ).toInt();
-      QgsDebugMsg( QString( "File version is=%1" ).arg( mMigrationFileVersion ) );
+      QgsDebugMsg( QStringLiteral( "File version is=%1" ).arg( mMigrationFileVersion ) );
     }
     migrationFile.close();
   }
   else
   {
-    QgsDebugMsg( QString( "Can not open %1" ).arg( migrationFile.fileName() ) );
+    QgsDebugMsg( QStringLiteral( "Can not open %1" ).arg( migrationFile.fileName() ) );
     mMigrationFileVersion = settingsMigrationVersion;
   }
 
@@ -107,7 +107,7 @@ QgsError Qgs2To3Migration::migrateStyles()
   QgsError error;
   QString oldHome = QStringLiteral( "%1/.qgis2" ).arg( QDir::homePath() );
   QString oldStyleFile = QStringLiteral( "%1/symbology-ng-style.db" ).arg( oldHome );
-  QgsDebugMsg( QString( "OLD STYLE FILE %1" ).arg( oldStyleFile ) );
+  QgsDebugMsg( QStringLiteral( "OLD STYLE FILE %1" ).arg( oldStyleFile ) );
   QSqlDatabase db = QSqlDatabase::addDatabase( "QSQLITE", "migration" );
   db.setDatabaseName( oldStyleFile );
   if ( !db.open() )
@@ -150,7 +150,7 @@ QgsError Qgs2To3Migration::migrateStyles()
       }
 
       QDomElement symElement = doc.documentElement();
-      QgsDebugMsg( QString( "MIGRATION: Importing %1" ).arg( name ) );
+      QgsDebugMsg( QStringLiteral( "MIGRATION: Importing %1" ).arg( name ) );
       QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( symElement, QgsReadWriteContext() );
       tags << "QGIS 2";
       if ( style->symbolId( name ) == 0 )
@@ -245,7 +245,7 @@ QgsError Qgs2To3Migration::migrateSettings()
 
       if ( oldKey.contains( oldKey ) )
       {
-        QgsDebugMsg( QString( " -> %1 -> %2" ).arg( oldKey, newKey ) );
+        QgsDebugMsg( QStringLiteral( " -> %1 -> %2" ).arg( oldKey, newKey ) );
         newSettings.setValue( newKey, mOldSettings->value( oldKey ) );
       }
     }

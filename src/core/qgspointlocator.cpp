@@ -710,7 +710,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       {
         Q_UNUSED( e );
         // See https://issues.qgis.org/issues/12634
-        QgsDebugMsg( QString( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
+        QgsDebugMsg( QStringLiteral( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
       }
     }
     request.setFilterRect( rect );

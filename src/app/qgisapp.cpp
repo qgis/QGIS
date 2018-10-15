@@ -1388,7 +1388,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   profiler->endGroup();
 
   QgsDebugMsg( "PROFILE TIMES" );
-  QgsDebugMsg( QString( "PROFILE TIMES TOTAL - %1 " ).arg( profiler->totalTime() ) );
+  QgsDebugMsg( QStringLiteral( "PROFILE TIMES TOTAL - %1 " ).arg( profiler->totalTime() ) );
 #ifdef QGISDEBUG
   QList<QPair<QString, double> > profileTimes = profiler->profileTimes();
   QList<QPair<QString, double> >::const_iterator it = profileTimes.constBegin();
@@ -1396,7 +1396,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     QString name = ( *it ).first;
     double time = ( *it ).second;
-    QgsDebugMsg( QString( " - %1 - %2" ).arg( name ).arg( time ) );
+    QgsDebugMsg( QStringLiteral( " - %1 - %2" ).arg( name ).arg( time ) );
   }
 #endif
 
@@ -3700,7 +3700,7 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
 
   dock->mapCanvas()->setLayers( mMapCanvas->layers() );
   dock->mapCanvas()->setExtent( mMapCanvas->extent() );
-  QgsDebugMsgLevel( QString( "QgisApp::createNewMapCanvas -2- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "QgisApp::createNewMapCanvas -2- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
   dock->mapCanvas()->setDestinationCrs( QgsProject::instance()->crs() );
   dock->mapCanvas()->freeze( false );
   return dock->mapCanvas();
@@ -4425,7 +4425,7 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
     if ( testCrs == mMapCanvas->mapSettings().destinationCrs() )
     {
       newuri.replace( QRegExp( "crs=[^&]+" ), "crs=" + c );
-      QgsDebugMsg( QString( "Changing layer crs to %1, new uri: %2" ).arg( c, uri ) );
+      QgsDebugMsg( QStringLiteral( "Changing layer crs to %1, new uri: %2" ).arg( c, uri ) );
       break;
     }
   }
@@ -4437,7 +4437,7 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
     if ( fmt == lastImageEncoding )
     {
       newuri.replace( QRegExp( "format=[^&]+" ), "format=" + fmt );
-      QgsDebugMsg( QString( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ) );
+      QgsDebugMsg( QStringLiteral( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ) );
       break;
     }
   }
@@ -4573,7 +4573,7 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       layer->setProviderEncoding( enc );
 
       QStringList sublayers = layer->dataProvider()->subLayers();
-      QgsDebugMsg( QString( "got valid layer with %1 sublayers" ).arg( sublayers.count() ) );
+      QgsDebugMsg( QStringLiteral( "got valid layer with %1 sublayers" ).arg( sublayers.count() ) );
 
       // If the newly created layer has more than 1 layer of data available, we show the
       // sublayers selection dialog so the user can select the sublayers to actually load.
@@ -4712,7 +4712,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
     return false;
 
   zipItem->populate();
-  QgsDebugMsg( QString( "Path= %1 got zipitem with %2 children" ).arg( path ).arg( zipItem->rowCount() ) );
+  QgsDebugMsg( QStringLiteral( "Path= %1 got zipitem with %2 children" ).arg( path ).arg( zipItem->rowCount() ) );
 
   // if 1 or 0 child found, exit so a normal item is created by gdal or ogr provider
   if ( zipItem->rowCount() <= 1 )
@@ -4745,7 +4745,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
       if ( !layerItem )
         continue;
 
-      QgsDebugMsgLevel( QString( "item path=%1 provider=%2" ).arg( item->path(), layerItem->providerKey() ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "item path=%1 provider=%2" ).arg( item->path(), layerItem->providerKey() ), 2 );
 
       QgsSublayersDialog::LayerDefinition def;
       def.layerId = i;
@@ -4785,7 +4785,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
     if ( !layerItem )
       continue;
 
-    QgsDebugMsg( QString( "item path=%1 provider=%2" ).arg( item->path(), layerItem->providerKey() ) );
+    QgsDebugMsg( QStringLiteral( "item path=%1 provider=%2" ).arg( item->path(), layerItem->providerKey() ) );
     if ( layerItem->providerKey() == QLatin1String( "gdal" ) )
     {
       if ( addRasterLayer( item->path(), QFileInfo( item->name() ).completeBaseName() ) )
@@ -4809,7 +4809,7 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     return;
 
   QStringList sublayers = layer->subLayers();
-  QgsDebugMsg( QString( "raster has %1 sublayers" ).arg( layer->subLayers().size() ) );
+  QgsDebugMsg( QStringLiteral( "raster has %1 sublayers" ).arg( layer->subLayers().size() ) );
 
   if ( sublayers.empty() )
     return;
@@ -5358,7 +5358,7 @@ bool QgisApp::fileNewFromTemplate( const QString &fileName )
     return false; //cancel pressed
   }
 
-  QgsDebugMsg( QString( "loading project template: %1" ).arg( fileName ) );
+  QgsDebugMsg( QStringLiteral( "loading project template: %1" ).arg( fileName ) );
   if ( addProject( fileName ) )
   {
     // set null filename so we don't override the template
@@ -7145,7 +7145,7 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
   if ( d.mode() == QgsRasterLayerSaveAsDialog::RawDataMode )
   {
     QgsDebugMsg( "Writing raw data" );
-    //QgsDebugMsg( QString( "Writing raw data" ).arg( pos ) );
+    //QgsDebugMsg( QStringLiteral( "Writing raw data" ).arg( pos ) );
     pipe.reset( new QgsRasterPipe() );
     if ( !pipe->set( rasterLayer->dataProvider()->clone() ) )
     {
@@ -8827,7 +8827,7 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
   layer->startEditing();
   for ( const QgsField &f : clipboard()->fields() )
   {
-    QgsDebugMsg( QString( "field %1 (%2)" ).arg( f.name(), QVariant::typeToName( f.type() ) ) );
+    QgsDebugMsg( QStringLiteral( "field %1 (%2)" ).arg( f.name(), QVariant::typeToName( f.type() ) ) );
     if ( !layer->addAttribute( f ) )
     {
       messageBar()->pushMessage( tr( "Paste features" ),
@@ -8874,7 +8874,7 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
     return nullptr;
   }
 
-  QgsDebugMsg( QString( "%1 features pasted to temporary scratch layer" ).arg( layer->featureCount() ) );
+  QgsDebugMsg( QStringLiteral( "%1 features pasted to temporary scratch layer" ).arg( layer->featureCount() ) );
   return layer;
 }
 
@@ -9518,7 +9518,7 @@ void QgisApp::userRotation()
 void QgisApp::projectCrsChanged()
 {
   updateCrsStatusBar();
-  QgsDebugMsgLevel( QString( "QgisApp::setupConnections -1- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "QgisApp::setupConnections -1- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
   mMapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
 
   // handle datum transforms
@@ -10121,7 +10121,7 @@ void QgisApp::loadPythonSupport()
   pythonlibName.prepend( "lib" );
 #endif
   QString version = QStringLiteral( "%1.%2.%3" ).arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 ).arg( Qgis::QGIS_VERSION_INT % 100 );
-  QgsDebugMsg( QString( "load library %1 (%2)" ).arg( pythonlibName, version ) );
+  QgsDebugMsg( QStringLiteral( "load library %1 (%2)" ).arg( pythonlibName, version ) );
   QLibrary pythonlib( pythonlibName, version );
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
   // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
@@ -10669,7 +10669,7 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
   if ( authok && layer && layer->isValid() )
   {
     QStringList sublayers = layer->dataProvider()->subLayers();
-    QgsDebugMsg( QString( "got valid layer with %1 sublayers" ).arg( sublayers.count() ) );
+    QgsDebugMsg( QStringLiteral( "got valid layer with %1 sublayers" ).arg( sublayers.count() ) );
 
     // If the newly created layer has more than 1 layer of data available, we show the
     // sublayers selection dialog so the user can select the sublayers to actually load.
@@ -10835,7 +10835,7 @@ void QgisApp::newMapCanvas()
     setupDockWidget( dock, true );
     dock->mapCanvas()->setLayers( mMapCanvas->layers() );
     dock->mapCanvas()->setExtent( mMapCanvas->extent() );
-    QgsDebugMsgLevel( QString( "QgisApp::newMapCanvas() -4- : QgsProject::instance()->crs().description[%1] ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "QgisApp::newMapCanvas() -4- : QgsProject::instance()->crs().description[%1] ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
     dock->mapCanvas()->setDestinationCrs( QgsProject::instance()->crs() );
     dock->mapCanvas()->freeze( false );
   }
@@ -12963,7 +12963,7 @@ void QgisApp::keyReleaseEvent( QKeyEvent *event )
 
 void QgisApp::keyPressEvent( QKeyEvent *e )
 {
-  // QgsDebugMsg( QString( "%1 (keypress received)" ).arg( e->text() ) );
+  // QgsDebugMsg( QStringLiteral( "%1 (keypress received)" ).arg( e->text() ) );
   emit keyPressed( e );
 
   //cancel rendering progress with esc key
@@ -13615,7 +13615,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
     timer->stop();
   }
 
-  QgsDebugMsg( QString( "SSL errors occurred accessing URL:\n%1" ).arg( reply->request().url().toString() ) );
+  QgsDebugMsg( QStringLiteral( "SSL errors occurred accessing URL:\n%1" ).arg( reply->request().url().toString() ) );
 
   QString hostport( QStringLiteral( "%1:%2" )
                     .arg( reply->url().host() )
@@ -13628,7 +13628,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
 
   if ( errscache.contains( dgsthostport ) )
   {
-    QgsDebugMsg( QString( "Ignored SSL errors cahced item found, ignoring errors if they match for %1" ).arg( hostport ) );
+    QgsDebugMsg( QStringLiteral( "Ignored SSL errors cahced item found, ignoring errors if they match for %1" ).arg( hostport ) );
     const QSet<QSslError::SslError> &errenums( errscache.value( dgsthostport ) );
     bool ignore = !errenums.isEmpty();
     int errmatched = 0;
@@ -13647,12 +13647,12 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
 
     if ( ignore && errenums.size() == errmatched )
     {
-      QgsDebugMsg( QString( "Errors matched cached item's, ignoring all for %1" ).arg( hostport ) );
+      QgsDebugMsg( QStringLiteral( "Errors matched cached item's, ignoring all for %1" ).arg( hostport ) );
       reply->ignoreSslErrors();
       return;
     }
 
-    QgsDebugMsg( QString( "Errors %1 for cached item for %2" )
+    QgsDebugMsg( QStringLiteral( "Errors %1 for cached item for %2" )
                  .arg( errenums.isEmpty() ? "not found" : "did not match",
                        hostport ) );
   }
@@ -13665,7 +13665,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
   {
     if ( reply )
     {
-      QgsDebugMsg( QString( "All SSL errors ignored for %1" ).arg( hostport ) );
+      QgsDebugMsg( QStringLiteral( "All SSL errors ignored for %1" ).arg( hostport ) );
       reply->ignoreSslErrors();
     }
   }

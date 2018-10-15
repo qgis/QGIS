@@ -87,7 +87,7 @@ void QgsGeomColumnTypeThread::run()
       {
         if ( dontResolveType )
         {
-          QgsDebugMsg( QString( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName, layerProperty.tableName ) );
+          QgsDebugMsg( QStringLiteral( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName, layerProperty.tableName ) );
           continue;
         }
 

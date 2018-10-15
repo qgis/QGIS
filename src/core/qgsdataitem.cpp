@@ -139,7 +139,7 @@ QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent, const QSt
 
 QgsDataItem::~QgsDataItem()
 {
-  QgsDebugMsgLevel( QString( "mName = %1 mPath = %2 mChildren.size() = %3" ).arg( mName, mPath ).arg( mChildren.size() ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "mName = %1 mPath = %2 mChildren.size() = %3" ).arg( mName, mPath ).arg( mChildren.size() ), 2 );
   Q_FOREACH ( QgsDataItem *child, mChildren )
   {
     if ( !child ) // should not happen
@@ -281,7 +281,7 @@ QVector<QgsDataItem *> QgsDataItem::runCreateChildren( QgsDataItem *item )
   QTime time;
   time.start();
   QVector <QgsDataItem *> children = item->createChildren();
-  QgsDebugMsgLevel( QString( "%1 children created in %2 ms" ).arg( children.size() ).arg( time.elapsed() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "%1 children created in %2 ms" ).arg( children.size() ).arg( time.elapsed() ), 3 );
   // Children objects must be pushed to main thread.
   Q_FOREACH ( QgsDataItem *child, children )
   {
@@ -291,13 +291,13 @@ QVector<QgsDataItem *> QgsDataItem::runCreateChildren( QgsDataItem *item )
     if ( qApp )
       child->moveToThread( qApp->thread() ); // moves also children
   }
-  QgsDebugMsgLevel( QString( "finished path %1: %2 children" ).arg( item->path() ).arg( children.size() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "finished path %1: %2 children" ).arg( item->path() ).arg( children.size() ), 3 );
   return children;
 }
 
 void QgsDataItem::childrenCreated()
 {
-  QgsDebugMsgLevel( QString( "path = %1 children.size() = %2" ).arg( path() ).arg( mFutureWatcher->result().size() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "path = %1 children.size() = %2" ).arg( path() ).arg( mFutureWatcher->result().size() ), 3 );
 
   if ( deferredDelete() )
   {
@@ -461,7 +461,7 @@ void QgsDataItem::setParent( QgsDataItem *parent )
 void QgsDataItem::addChildItem( QgsDataItem *child, bool refresh )
 {
   Q_ASSERT( child );
-  QgsDebugMsgLevel( QString( "path = %1 add child #%2 - %3 - %4" ).arg( mPath ).arg( mChildren.size() ).arg( child->mName ).arg( child->mType ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "path = %1 add child #%2 - %3 - %4" ).arg( mPath ).arg( mChildren.size() ).arg( child->mName ).arg( child->mType ), 3 );
 
   //calculate position to insert child
   int i;
@@ -563,7 +563,7 @@ QgsDataItem::State QgsDataItem::state() const
 
 void QgsDataItem::setState( State state )
 {
-  QgsDebugMsgLevel( QString( "item %1 set state %2 -> %3" ).arg( path() ).arg( this->state() ).arg( state ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "item %1 set state %2 -> %3" ).arg( path() ).arg( this->state() ).arg( state ), 3 );
   if ( state == mState )
     return;
 
@@ -710,7 +710,7 @@ QgsDataCollectionItem::~QgsDataCollectionItem()
 #if 0
   Q_FOREACH ( QgsDataItem *i, mChildren )
   {
-    QgsDebugMsgLevel( QString( "delete child = 0x%0" ).arg( static_cast<qlonglong>( i ), 8, 16, QLatin1Char( '0' ) ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "delete child = 0x%0" ).arg( static_cast<qlonglong>( i ), 8, 16, QLatin1Char( '0' ) ), 2 );
     delete i;
   }
 #endif
@@ -784,7 +784,7 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
 
     QString subdirPath = dir.absoluteFilePath( subdir );
 
-    QgsDebugMsgLevel( QString( "creating subdir: %1" ).arg( subdirPath ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "creating subdir: %1" ).arg( subdirPath ), 2 );
 
     QString path = mPath + '/' + subdir; // may differ from subdirPath
     if ( QgsDirectoryItem::hiddenPath( path ) )
@@ -974,7 +974,7 @@ QList<QAction *> QgsDirectoryItem::actions( QWidget *parent )
 
 void QgsDirectoryItem::childrenCreated()
 {
-  QgsDebugMsgLevel( QString( "mRefreshLater = %1" ).arg( mRefreshLater ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "mRefreshLater = %1" ).arg( mRefreshLater ), 3 );
 
   if ( mRefreshLater )
   {
@@ -1244,7 +1244,7 @@ void QgsFavoritesItem::removeDirectory( QgsDirectoryItem *item )
   int idx = findItem( mChildren, item );
   if ( idx < 0 )
   {
-    QgsDebugMsg( QString( "favorites item %1 not found" ).arg( item->path() ) );
+    QgsDebugMsg( QStringLiteral( "favorites item %1 not found" ).arg( item->path() ) );
     return;
   }
 
@@ -1356,7 +1356,7 @@ QVector<QgsDataItem *> QgsZipItem::createChildren()
 
   mZipFileList.clear();
 
-  QgsDebugMsgLevel( QString( "mFilePath = %1 path = %2 name= %3 scanZipSetting= %4 vsiPrefix= %5" ).arg( mFilePath, path(), name(), scanZipSetting, mVsiPrefix ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "mFilePath = %1 path = %2 name= %3 scanZipSetting= %4 vsiPrefix= %5" ).arg( mFilePath, path(), name(), scanZipSetting, mVsiPrefix ), 3 );
 
   // if scanZipBrowser == no: skip to the next file
   if ( scanZipSetting == QLatin1String( "no" ) )
@@ -1395,7 +1395,7 @@ QVector<QgsDataItem *> QgsZipItem::createChildren()
         }
       }
 
-      QgsDebugMsgLevel( QString( "trying to load item %1 with %2" ).arg( tmpPath, provider->name() ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "trying to load item %1 with %2" ).arg( tmpPath, provider->name() ), 3 );
       QgsDataItem *item = provider->createDataItem( tmpPath, this );
       if ( item )
       {
@@ -1427,7 +1427,7 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
   QgsZipItem *zipItem = nullptr;
   bool populated = false;
 
-  QgsDebugMsgLevel( QString( "path = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4" ).arg( path, name, scanZipSetting, vsiPrefix ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "path = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4" ).arg( path, name, scanZipSetting, vsiPrefix ), 3 );
 
   // don't scan if scanZipBrowser == no
   if ( scanZipSetting == QLatin1String( "no" ) )
@@ -1457,11 +1457,11 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
     {
       zipItem->populate( zipItem->createChildren() );
       populated = true; // there is no QgsDataItem::isPopulated() function
-      QgsDebugMsgLevel( QString( "Got zipItem with %1 children, path=%2, name=%3" ).arg( zipItem->rowCount() ).arg( zipItem->path(), zipItem->name() ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "Got zipItem with %1 children, path=%2, name=%3" ).arg( zipItem->rowCount() ).arg( zipItem->path(), zipItem->name() ), 3 );
     }
     else
     {
-      QgsDebugMsgLevel( QString( "Delaying populating zipItem with path=%1, name=%2" ).arg( zipItem->path(), zipItem->name() ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "Delaying populating zipItem with path=%1, name=%2" ).arg( zipItem->path(), zipItem->name() ), 3 );
     }
   }
 
@@ -1484,7 +1484,7 @@ QStringList QgsZipItem::getZipFileList()
   QgsSettings settings;
   QString scanZipSetting = settings.value( QStringLiteral( "qgis/scanZipInBrowser2" ), "basic" ).toString();
 
-  QgsDebugMsgLevel( QString( "mFilePath = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4" ).arg( mFilePath, name(), scanZipSetting, mVsiPrefix ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "mFilePath = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4" ).arg( mFilePath, name(), scanZipSetting, mVsiPrefix ), 3 );
 
   // if scanZipBrowser == no: skip to the next file
   if ( scanZipSetting == QLatin1String( "no" ) )
@@ -1493,14 +1493,14 @@ QStringList QgsZipItem::getZipFileList()
   }
 
   // get list of files inside zip file
-  QgsDebugMsgLevel( QString( "Open file %1 with gdal vsi" ).arg( mVsiPrefix + mFilePath ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "Open file %1 with gdal vsi" ).arg( mVsiPrefix + mFilePath ), 3 );
   char **papszSiblingFiles = VSIReadDirRecursive( QString( mVsiPrefix + mFilePath ).toLocal8Bit().constData() );
   if ( papszSiblingFiles )
   {
     for ( int i = 0; papszSiblingFiles[i]; i++ )
     {
       tmpPath = papszSiblingFiles[i];
-      QgsDebugMsgLevel( QString( "Read file %1" ).arg( tmpPath ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "Read file %1" ).arg( tmpPath ), 3 );
       // skip directories (files ending with /)
       if ( tmpPath.right( 1 ) != QLatin1String( "/" ) )
         mZipFileList << tmpPath;
@@ -1509,7 +1509,7 @@ QStringList QgsZipItem::getZipFileList()
   }
   else
   {
-    QgsDebugMsg( QString( "Error reading %1" ).arg( mFilePath ) );
+    QgsDebugMsg( QStringLiteral( "Error reading %1" ).arg( mFilePath ) );
   }
 
   return mZipFileList;

@@ -289,7 +289,7 @@ void QgsRasterLayer::draw( QPainter *theQPainter,
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( theQPainter, rasterViewPort, qgsMapToPixel );
 
-  QgsDebugMsgLevel( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ), 4 );
 } //end of draw method
 
 QgsLegendColorList QgsRasterLayer::legendSymbologyItems() const
@@ -630,7 +630,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   if ( mDataProvider->providerCapabilities() & QgsRasterDataProvider::ReadLayerMetadata )
   {
     setMetadata( mDataProvider->layerMetadata() );
-    QgsDebugMsgLevel( QString( "Set Data provider QgsLayerMetadata identifier[%1]" ).arg( metadata().identifier() ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Set Data provider QgsLayerMetadata identifier[%1]" ).arg( metadata().identifier() ), 4 );
   }
 
   if ( provider == QLatin1String( "gdal" ) )
@@ -833,10 +833,10 @@ void QgsRasterLayer::computeMinMax( int band,
   {
     const double myLower = mmo.cumulativeCutLower();
     const double myUpper = mmo.cumulativeCutUpper();
-    QgsDebugMsgLevel( QString( "myLower = %1 myUpper = %2" ).arg( myLower ).arg( myUpper ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "myLower = %1 myUpper = %2" ).arg( myLower ).arg( myUpper ), 4 );
     mDataProvider->cumulativeCut( band, myLower, myUpper, min, max, extent, sampleSize );
   }
-  QgsDebugMsgLevel( QString( "band = %1 min = %2 max = %3" ).arg( band ).arg( min ).arg( max ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "band = %1 min = %2 max = %3" ).arg( band ).arg( min ).arg( max ), 4 );
 
 }
 
@@ -858,7 +858,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     bool generateLookupTableFlag,
     QgsRasterRenderer *rasterRenderer )
 {
-  QgsDebugMsgLevel( QString( "theAlgorithm = %1 limits = %2 extent.isEmpty() = %3" ).arg( algorithm ).arg( limits ).arg( extent.isEmpty() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "theAlgorithm = %1 limits = %2 extent.isEmpty() = %3" ).arg( algorithm ).arg( limits ).arg( extent.isEmpty() ), 4 );
   if ( !rasterRenderer || !mDataProvider )
   {
     return;
@@ -1517,7 +1517,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     QDomElement bandElement = noDataBandList.at( i ).toElement();
     bool ok;
     int bandNo = bandElement.attribute( QStringLiteral( "bandNo" ) ).toInt( &ok );
-    QgsDebugMsgLevel( QString( "bandNo = %1" ).arg( bandNo ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "bandNo = %1" ).arg( bandNo ), 4 );
     if ( ok && ( bandNo > 0 ) && ( bandNo <= mDataProvider->bandCount() ) )
     {
       mDataProvider->setUseSourceNoDataValue( bandNo, bandElement.attribute( QStringLiteral( "useSrcNoData" ) ).toInt() );
@@ -1531,7 +1531,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
         QDomElement rangeElement = rangeList.at( j ).toElement();
         QgsRasterRange myNoDataRange( rangeElement.attribute( QStringLiteral( "min" ) ).toDouble(),
                                       rangeElement.attribute( QStringLiteral( "max" ) ).toDouble() );
-        QgsDebugMsgLevel( QString( "min = %1 %2" ).arg( rangeElement.attribute( "min" ) ).arg( myNoDataRange.min() ), 4 );
+        QgsDebugMsgLevel( QStringLiteral( "min = %1 %2" ).arg( rangeElement.attribute( "min" ) ).arg( myNoDataRange.min() ), 4 );
         myNoDataRangeList << myNoDataRange;
       }
       mDataProvider->setUserNoDataValue( bandNo, myNoDataRangeList );

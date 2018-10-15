@@ -211,7 +211,7 @@ void QgsOWSSourceSelect::populateFormats()
     {
       // We cannot always say that the format is not supported by GDAL because
       // server can use strange names, but format itself is supported
-      QgsDebugMsg( QString( "format %1 unknown" ).arg( format ) );
+      QgsDebugMsg( QStringLiteral( "format %1 unknown" ).arg( format ) );
     }
 
     mFormatComboBox->insertItem( i, label );
@@ -328,7 +328,7 @@ QgsTreeWidgetItem *QgsOWSSourceSelect::createItem(
   const QMap<int, int> &layerParents,
   const QMap<int, QStringList> &layerParentNames )
 {
-  QgsDebugMsg( QString( "id = %1 layerAndStyleCount = %2 names = %3 " ).arg( id ).arg( layerAndStyleCount ).arg( names.join( "," ) ) );
+  QgsDebugMsg( QStringLiteral( "id = %1 layerAndStyleCount = %2 names = %3 " ).arg( id ).arg( layerAndStyleCount ).arg( names.join( "," ) ) );
   if ( items.contains( id ) )
     return items[id];
 
@@ -481,7 +481,7 @@ void QgsOWSSourceSelect::mTilesetsTableWidget_itemClicked( QTableWidgetItem *ite
   mTilesetsTableWidget->clearSelection();
   if ( !wasSelected )
   {
-    QgsDebugMsg( QString( "selecting current row %1" ).arg( mTilesetsTableWidget->currentRow() ) );
+    QgsDebugMsg( QStringLiteral( "selecting current row %1" ).arg( mTilesetsTableWidget->currentRow() ) );
     mTilesetsTableWidget->selectRow( mTilesetsTableWidget->currentRow() );
     mCurrentTileset = rowItem;
   }

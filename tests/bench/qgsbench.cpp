@@ -128,7 +128,7 @@ QgsBench::QgsBench( int width, int height, int iterations )
   , mParallel( false )
 {
 
-  QgsDebugMsg( QString( "mIterations = %1" ).arg( mIterations ) );
+  QgsDebugMsg( QStringLiteral( "mIterations = %1" ).arg( mIterations ) );
 
   connect( QgsProject::instance(), &QgsProject::readProject,
            this, &QgsBench::readProject );

@@ -737,14 +737,14 @@ void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString &text )
     }
     if ( row != -1 ) break;
   }
-  QgsDebugMsg( QString( "row = %1 column =%2" ).arg( row ).arg( column ) );
+  QgsDebugMsg( QStringLiteral( "row = %1 column =%2" ).arg( row ).arg( column ) );
 
   if ( column == 0 )
   {
     QLineEdit *toLineEdit = dynamic_cast<QLineEdit *>( mNoDataTableWidget->cellWidget( row, 1 ) );
     if ( !toLineEdit ) return;
     bool toChanged = mNoDataToEdited.value( row );
-    QgsDebugMsg( QString( "toChanged = %1" ).arg( toChanged ) );
+    QgsDebugMsg( QStringLiteral( "toChanged = %1" ).arg( toChanged ) );
     if ( !toChanged )
     {
       toLineEdit->setText( lineEdit->text() );

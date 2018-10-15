@@ -213,7 +213,7 @@ void QgsNewVectorLayerDialog::attributes( QList< QPair<QString, QString> > &at )
     QTreeWidgetItem *item = *it;
     QString type = QStringLiteral( "%1;%2;%3" ).arg( item->text( 1 ), item->text( 2 ), item->text( 3 ) );
     at.push_back( qMakePair( item->text( 0 ), type ) );
-    QgsDebugMsg( QString( "appending %1//%2" ).arg( item->text( 0 ), type ) );
+    QgsDebugMsg( QStringLiteral( "appending %1//%2" ).arg( item->text( 0 ), type ) );
     ++it;
   }
 }
@@ -264,7 +264,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
   QgsWkbTypes::Type geometrytype = geomDialog.selectedType();
   QString fileformat = geomDialog.selectedFileFormat();
   QString enc = geomDialog.selectedFileEncoding();
-  QgsDebugMsg( QString( "New file format will be: %1" ).arg( fileformat ) );
+  QgsDebugMsg( QStringLiteral( "New file format will be: %1" ).arg( fileformat ) );
 
   QList< QPair<QString, QString> > attributes;
   geomDialog.attributes( attributes );

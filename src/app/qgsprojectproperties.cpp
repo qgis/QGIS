@@ -906,13 +906,13 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->setCrs( srs );
     if ( srs.isValid() )
     {
-      QgsDebugMsgLevel( QString( "Selected CRS " ) + srs.description(), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Selected CRS " ) + srs.description(), 4 );
       // write the currently selected projections _proj string_ to project settings
-      QgsDebugMsgLevel( QString( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( srs.toProj4() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( srs.toProj4() ), 4 );
     }
     else
     {
-      QgsDebugMsgLevel( QString( "CRS set to no projection!" ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "CRS set to no projection!" ), 4 );
     }
 
     // mark selected projection for push to front

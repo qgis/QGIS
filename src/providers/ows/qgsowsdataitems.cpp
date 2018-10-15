@@ -86,7 +86,7 @@ QVector<QgsDataItem *> QgsOWSConnectionItem::createChildren()
   for ( auto it = serviceItems.constBegin(); it != serviceItems.constEnd(); ++it )
   {
     QgsDataItem *item = it.key();
-    QgsDebugMsg( QString( "serviceItems.size = %1 layerCount = %2 rowCount = %3" ).arg( serviceItems.size() ).arg( layerCount ).arg( item->rowCount() ) );
+    QgsDebugMsg( QStringLiteral( "serviceItems.size = %1 layerCount = %2 rowCount = %3" ).arg( serviceItems.size() ).arg( layerCount ).arg( item->rowCount() ) );
     QString providerKey = it.value();
     if ( serviceItems.size() == 1 || layerCount <= 30 || item->rowCount() <= 10 )
     {

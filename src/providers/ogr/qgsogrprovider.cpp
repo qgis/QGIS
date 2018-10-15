@@ -178,7 +178,7 @@ void QgsOgrProvider::repack()
 
   // run REPACK on shape files
   QByteArray sql = QByteArray( "REPACK " ) + mOgrOrigLayer->name();   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
-  QgsDebugMsg( QString( "SQL: %1" ).arg( QString::fromUtf8( sql ) ) );
+  QgsDebugMsg( QStringLiteral( "SQL: %1" ).arg( QString::fromUtf8( sql ) ) );
   CPLErrorReset();
   mOgrOrigLayer->ExecuteSQLNoReturn( sql );
   if ( CPLGetLastErrorType() != CE_None )
@@ -574,7 +574,7 @@ QgsTransaction *QgsOgrProvider::transaction() const
 
 void QgsOgrProvider::setTransaction( QgsTransaction *transaction )
 {
-  QgsDebugMsg( QString( "set transaction %1" ).arg( transaction != nullptr ) );
+  QgsDebugMsg( QStringLiteral( "set transaction %1" ).arg( transaction != nullptr ) );
   // static_cast since layers cannot be added to a transaction of a non-matching provider
   mTransaction = static_cast<QgsOgrTransaction *>( transaction );
 }
@@ -742,7 +742,7 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
     return;
   }
 
-  QgsDebugMsg( QString( "id = %1 name = %2 layerGeomType = %3" ).arg( i ).arg( layerName ).arg( layerGeomType ) );
+  QgsDebugMsg( QStringLiteral( "id = %1 name = %2 layerGeomType = %3" ).arg( i ).arg( layerName ).arg( layerGeomType ) );
 
   if ( wkbFlatten( layerGeomType ) != wkbUnknown )
   {
@@ -1185,7 +1185,7 @@ QgsRectangle QgsOgrProvider::extent() const
     {
       // works with unquoted layerName
       QByteArray sql = QByteArray( "RECOMPUTE EXTENT ON " ) + mOgrOrigLayer->name();
-      QgsDebugMsg( QString( "SQL: %1" ).arg( QString::fromUtf8( sql ) ) );
+      QgsDebugMsg( QStringLiteral( "SQL: %1" ).arg( QString::fromUtf8( sql ) ) );
       mOgrOrigLayer->ExecuteSQLNoReturn( sql );
     }
 #endif
@@ -1490,7 +1490,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
           break;
 
         case OFTString:
-          QgsDebugMsgLevel( QString( "Writing string attribute %1 with %2, encoding %3" )
+          QgsDebugMsgLevel( QStringLiteral( "Writing string attribute %1 with %2, encoding %3" )
                             .arg( qgisAttId )
                             .arg( attrVal.toString(),
                                   textEncoding()->name().data() ), 3 );
@@ -2157,7 +2157,7 @@ bool QgsOgrProvider::createSpatialIndex()
   if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
   {
     QByteArray sql = QByteArray( "CREATE SPATIAL INDEX ON " ) + quotedIdentifier( layerName );  // quote the layer name so spaces are handled
-    QgsDebugMsg( QString( "SQL: %1" ).arg( QString::fromUtf8( sql ) ) );
+    QgsDebugMsg( QStringLiteral( "SQL: %1" ).arg( QString::fromUtf8( sql ) ) );
     mOgrOrigLayer->ExecuteSQLNoReturn( sql );
 
     QFileInfo fi( mFilePath );     // to get the base name
@@ -2579,7 +2579,7 @@ QString createFilters( const QString &type )
     // theoreticaly we can open those files because there exists a
     // driver for them, the user will have to use the "All Files" to
     // open datasets with no explicitly defined file name extension.
-    QgsDebugMsg( QString( "Driver count: %1" ).arg( OGRGetDriverCount() ) );
+    QgsDebugMsg( QStringLiteral( "Driver count: %1" ).arg( OGRGetDriverCount() ) );
 
     bool kmlFound = false;
     bool dwgFound = false;
@@ -2955,7 +2955,7 @@ QString createFilters( const QString &type )
         {
           // NOP, we don't know anything about the current driver
           // with regards to a proper file filter string
-          QgsDebugMsg( QString( "Unknown driver %1 for file filters." ).arg( driverName ) );
+          QgsDebugMsg( QStringLiteral( "Unknown driver %1 for file filters." ).arg( driverName ) );
         }
       }
 
@@ -3165,7 +3165,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
                                        const QList< QPair<QString, QString> > &attributes,
                                        const QgsCoordinateReferenceSystem &srs = QgsCoordinateReferenceSystem() )
 {
-  QgsDebugMsg( QString( "Creating empty vector layer with format: %1" ).arg( format ) );
+  QgsDebugMsg( QStringLiteral( "Creating empty vector layer with format: %1" ).arg( format ) );
 
   QgsApplication::registerOgrDrivers();
   OGRSFDriverH driver = OGRGetDriverByName( format.toLatin1() );
@@ -3180,7 +3180,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   {
     if ( !uri.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
     {
-      QgsDebugMsg( QString( "uri %1 doesn't end with .shp" ).arg( uri ) );
+      QgsDebugMsg( QStringLiteral( "uri %1 doesn't end with .shp" ).arg( uri ) );
       return false;
     }
 
@@ -3369,7 +3369,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     }
   }
 
-  QgsDebugMsg( QString( "GDAL Version number %1" ).arg( GDAL_VERSION_NUM ) );
+  QgsDebugMsg( QStringLiteral( "GDAL Version number %1" ).arg( GDAL_VERSION_NUM ) );
   if ( reference )
   {
     OSRRelease( reference );
@@ -3456,7 +3456,7 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
 
   sql += " ORDER BY " + textEncoding()->fromUnicode( fld.name() ) + " ASC";  // quoting of fieldname produces a syntax error
 
-  QgsDebugMsg( QString( "SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
+  QgsDebugMsg( QStringLiteral( "SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
   QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
   if ( !l )
   {
@@ -3501,7 +3501,7 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
 
   sql += " ORDER BY " + textEncoding()->fromUnicode( fld.name() ) + " ASC";  // quoting of fieldname produces a syntax error
 
-  QgsDebugMsg( QString( "SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
+  QgsDebugMsg( QStringLiteral( "SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
   QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
   if ( !l )
   {
@@ -3542,7 +3542,7 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
   QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
   if ( !l )
   {
-    QgsDebugMsg( QString( "Failed to execute SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
+    QgsDebugMsg( QStringLiteral( "Failed to execute SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
     return QgsVectorDataProvider::minimumValue( index );
   }
 
@@ -3576,7 +3576,7 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
   QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
   if ( !l )
   {
-    QgsDebugMsg( QString( "Failed to execute SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
+    QgsDebugMsg( QStringLiteral( "Failed to execute SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
     return QgsVectorDataProvider::maximumValue( index );
   }
 
@@ -3774,12 +3774,12 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
           {
             const char *pszRet = OGR_F_GetFieldAsString( hFeat.get(), 0 );
             bSuccess = EQUAL( pszRet, "delete" );
-            QgsDebugMsg( QString( "Return: %1" ).arg( pszRet ) );
+            QgsDebugMsg( QStringLiteral( "Return: %1" ).arg( pszRet ) );
           }
         }
         else if ( CPLGetLastErrorType() != CE_None )
         {
-          QgsDebugMsg( QString( "Return: %1" ).arg( CPLGetLastErrorMsg() ) );
+          QgsDebugMsg( QStringLiteral( "Return: %1" ).arg( CPLGetLastErrorMsg() ) );
         }
         GDALDatasetReleaseResultSet( hDS, hSqlLyr );
         CPLPopErrorHandler();
@@ -3815,7 +3815,7 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
             if ( hFeat != nullptr )
             {
               const char *pszRet = OGR_F_GetFieldAsString( hFeat.get(), 0 );
-              QgsDebugMsg( QString( "Return: %1" ).arg( pszRet ) );
+              QgsDebugMsg( QStringLiteral( "Return: %1" ).arg( pszRet ) );
             }
             GDALDatasetReleaseResultSet( hDS, hSqlLyr );
           }
@@ -4036,7 +4036,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
   {
     QByteArray sql = encoding->fromUnicode( subsetString );
 
-    QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
+    QgsDebugMsg( QStringLiteral( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
     subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
   }
   else
@@ -4058,7 +4058,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
       }
 
       QByteArray sql = sqlPart1 + ", " + fidColumn + " as \"" + ORIG_OGC_FID + '"' + sqlPart3;
-      QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
+      QgsDebugMsg( QStringLiteral( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
       subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
 
       // See https://lists.osgeo.org/pipermail/qgis-developer/2017-September/049802.html
@@ -4066,7 +4066,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
       if ( !subsetLayer )
       {
         QByteArray sql = sqlPart1 + ", " + "FID as \"" + ORIG_OGC_FID + '"' + sqlPart3;
-        QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
+        QgsDebugMsg( QStringLiteral( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
         subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
       }
     }
@@ -4074,7 +4074,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
     if ( !subsetLayer )
     {
       QByteArray sql = sqlPart1 + sqlPart3;
-      QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
+      QgsDebugMsg( QStringLiteral( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
       subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
       origFidAddAttempted = false;
     }
@@ -4115,7 +4115,7 @@ void QgsOgrProvider::open( OpenMode mode )
       mFilePath = vsiPrefix + mFilePath;
       setDataSourceUri( mFilePath );
     }
-    QgsDebugMsg( QString( "Trying %1 syntax, mFilePath= %2" ).arg( vsiPrefix, mFilePath ) );
+    QgsDebugMsg( QStringLiteral( "Trying %1 syntax, mFilePath= %2" ).arg( vsiPrefix, mFilePath ) );
   }
 
   QgsDebugMsgLevel( "mFilePath: " + mFilePath, 3 );
@@ -4321,7 +4321,7 @@ bool QgsOgrProvider::_enterUpdateMode( bool implicit )
   if ( mUpdateModeStackDepth == 0 )
   {
     Q_ASSERT( mDynamicWriteAccess );
-    QgsDebugMsg( QString( "Reopening %1 in update mode" ).arg( dataSourceUri() ) );
+    QgsDebugMsg( QStringLiteral( "Reopening %1 in update mode" ).arg( dataSourceUri() ) );
     close();
     open( implicit ? OpenModeForceUpdate : OpenModeForceUpdateRepackOff );
     if ( !mOgrLayer || !mWriteAccess )
@@ -4391,7 +4391,7 @@ bool QgsOgrProvider::leaveUpdateMode()
   }
   if ( mUpdateModeStackDepth == 0 )
   {
-    QgsDebugMsg( QString( "Reopening %1 in read-only mode" ).arg( dataSourceUri() ) );
+    QgsDebugMsg( QStringLiteral( "Reopening %1 in read-only mode" ).arg( dataSourceUri() ) );
     close();
     open( OpenModeForceReadOnly );
     if ( !mOgrLayer )
@@ -4682,7 +4682,7 @@ void QgsOgrProviderUtils::invalidateCachedLastModifiedDate( const QString &dsNam
   auto iter = sMapDSNameToLastModifiedDate.find( dsName );
   if ( iter != sMapDSNameToLastModifiedDate.end() )
   {
-    QgsDebugMsg( QString( "invalidating last modified date for %1" ).arg( dsName ) );
+    QgsDebugMsg( QStringLiteral( "invalidating last modified date for %1" ).arg( dsName ) );
     iter.value() = iter.value().addSecs( -10 );
   }
 }
@@ -5060,7 +5060,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
   {
     if ( checkModificationDateAgainstCache && !canUseOpenedDatasets( dsName ) )
     {
-      QgsDebugMsg( QString( "Cannot reuse existing opened dataset(s) on %1 since it has been modified" ).arg( dsName ) );
+      QgsDebugMsg( QStringLiteral( "Cannot reuse existing opened dataset(s) on %1 since it has been modified" ).arg( dsName ) );
       invalidateCachedDatasets( dsName );
       iter = sMapSharedDS.find( ident );
       Q_ASSERT( iter == sMapSharedDS.end() );

@@ -658,7 +658,7 @@ QImage QgsWmsLegendNode::getLegendGraphic() const
 
 QVariant QgsWmsLegendNode::data( int role ) const
 {
-  //QgsDebugMsg( QString("XXX data called with role %1 -- mImage size is %2x%3").arg(role).arg(mImage.width()).arg(mImage.height()) );
+  //QgsDebugMsg( QStringLiteral("XXX data called with role %1 -- mImage size is %2x%3").arg(role).arg(mImage.width()).arg(mImage.height()) );
 
   if ( role == Qt::DecorationRole )
   {
@@ -718,7 +718,7 @@ void QgsWmsLegendNode::getLegendGraphicErrored( const QString &msg )
   if ( ! mFetcher ) return; // must be coming after finish
 
   mImage = renderMessage( msg );
-  //QgsDebugMsg( QString("XXX emitting dataChanged after writing an image of %1x%2").arg(mImage.width()).arg(mImage.height()) );
+  //QgsDebugMsg( QStringLiteral("XXX emitting dataChanged after writing an image of %1x%2").arg(mImage.width()).arg(mImage.height()) );
 
   emit dataChanged();
 
@@ -733,13 +733,13 @@ void QgsWmsLegendNode::getLegendGraphicFinished( const QImage &image )
 {
   if ( ! mFetcher ) return; // must be coming after error
 
-  //QgsDebugMsg( QString("XXX legend graphic finished, image is %1x%2").arg(theImage.width()).arg(theImage.height()) );
+  //QgsDebugMsg( QStringLiteral("XXX legend graphic finished, image is %1x%2").arg(theImage.width()).arg(theImage.height()) );
   if ( ! image.isNull() )
   {
     if ( image != mImage )
     {
       mImage = image;
-      //QgsDebugMsg( QString("XXX emitting dataChanged") );
+      //QgsDebugMsg( QStringLiteral("XXX emitting dataChanged") );
       emit dataChanged();
     }
     mValid = true; // only if not null I guess
@@ -749,7 +749,7 @@ void QgsWmsLegendNode::getLegendGraphicFinished( const QImage &image )
 
 void QgsWmsLegendNode::invalidateMapBasedData()
 {
-  //QgsDebugMsg( QString("XXX invalidateMapBasedData called") );
+  //QgsDebugMsg( QStringLiteral("XXX invalidateMapBasedData called") );
   // TODO: do this only if this extent != prev extent ?
   mValid = false;
   emit dataChanged();

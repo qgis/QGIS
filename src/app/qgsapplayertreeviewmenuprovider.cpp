@@ -570,12 +570,12 @@ QList< LegendLayerAction > QgsAppLayerTreeViewMenuProvider::legendLayerActions( 
 #ifdef QGISDEBUG
   if ( mLegendLayerActionMap.contains( type ) )
   {
-    QgsDebugMsg( QString( "legendLayerActions for layers of type %1:" ).arg( type ) );
+    QgsDebugMsg( QStringLiteral( "legendLayerActions for layers of type %1:" ).arg( type ) );
 
     Q_FOREACH ( const LegendLayerAction &lyrAction, mLegendLayerActionMap[ type ] )
     {
       Q_UNUSED( lyrAction );
-      QgsDebugMsg( QString( "%1/%2 - %3 layers" ).arg( lyrAction.menu, lyrAction.action->text() ).arg( lyrAction.layers.count() ) );
+      QgsDebugMsg( QStringLiteral( "%1/%2 - %3 layers" ).arg( lyrAction.menu, lyrAction.action->text() ).arg( lyrAction.layers.count() ) );
     }
   }
 #endif

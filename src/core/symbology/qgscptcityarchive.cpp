@@ -393,7 +393,7 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
       }
       else
       {
-        QgsDebugMsg( QString( "at offset=%1 invalid color" ).arg( offset ) );
+        QgsDebugMsg( QStringLiteral( "at offset=%1 invalid color" ).arg( offset ) );
       }
     }
     else
@@ -480,7 +480,7 @@ void QgsCptCityArchive::initArchives( bool loadAll )
       QgsCptCityArchive::initArchive( it.key(), it.value() );
     else
     {
-      QgsDebugMsg( QString( "not loading archive [%1] because dir %2 does not exist " ).arg( it.key(), it.value() ) );
+      QgsDebugMsg( QStringLiteral( "not loading archive [%1] because dir %2 does not exist " ).arg( it.key(), it.value() ) );
     }
   }
   sDefaultArchiveName = defArchiveName;
@@ -562,7 +562,7 @@ bool QgsCptCityDataItem::hasChildren()
 
 void QgsCptCityDataItem::addChildItem( QgsCptCityDataItem *child, bool refresh )
 {
-  QgsDebugMsg( QString( "add child #%1 - %2 - %3" ).arg( mChildren.size() ).arg( child->mName ).arg( child->mType ) );
+  QgsDebugMsg( QStringLiteral( "add child #%1 - %2 - %3" ).arg( mChildren.size() ).arg( child->mName ).arg( child->mType ) );
 
   int i;
   if ( type() == ColorRamp )
@@ -832,7 +832,7 @@ QVector< QgsCptCityDataItem * > QgsCptCityCollectionItem::childrenRamps( bool re
   {
     QgsCptCityCollectionItem *collectionItem = dynamic_cast<QgsCptCityCollectionItem *>( childItem );
     QgsCptCityColorRampItem *rampItem = dynamic_cast<QgsCptCityColorRampItem *>( childItem );
-    QgsDebugMsgLevel( QString( "child path= %1 coll= %2 ramp = %3" ).arg( childItem->path() ).arg( nullptr != collectionItem ).arg( nullptr != rampItem ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "child path= %1 coll= %2 ramp = %3" ).arg( childItem->path() ).arg( nullptr != collectionItem ).arg( nullptr != rampItem ), 2 );
     if ( collectionItem && recursive )
     {
       collectionItem->populate();
@@ -856,7 +856,7 @@ QVector< QgsCptCityDataItem * > QgsCptCityCollectionItem::childrenRamps( bool re
   // delete invalid items - this is not efficient, but should only happens once
   Q_FOREACH ( QgsCptCityDataItem *deleteItem, deleteItems )
   {
-    QgsDebugMsg( QString( "item %1 is invalid, will be deleted" ).arg( deleteItem->path() ) );
+    QgsDebugMsg( QStringLiteral( "item %1 is invalid, will be deleted" ).arg( deleteItem->path() ) );
     int i = mChildren.indexOf( deleteItem );
     if ( i != -1 )
       mChildren.remove( i );
@@ -920,7 +920,7 @@ QVector<QgsCptCityDataItem *> QgsCptCityDirectoryItem::createChildren()
       children << childItem;
   }
 
-  QgsDebugMsg( QString( "name= %1 path= %2 found %3 children" ).arg( mName, mPath ).arg( children.count() ) );
+  QgsDebugMsg( QStringLiteral( "name= %1 path= %2 found %3 children" ).arg( mName, mPath ).arg( children.count() ) );
 
   return children;
 }
@@ -1095,7 +1095,7 @@ QgsCptCityDataItem *QgsCptCityDirectoryItem::dataItem( QgsCptCityDataItem *paren
   QStringList dirEntries = dirItem->dirEntries();
   QMap< QString, QStringList > rampsMap = dirItem->rampsMap();
 
-  QgsDebugMsg( QString( "item has %1 dirs and %2 ramps" ).arg( dirEntries.count() ).arg( rampsMap.count() ) );
+  QgsDebugMsg( QStringLiteral( "item has %1 dirs and %2 ramps" ).arg( dirEntries.count() ).arg( rampsMap.count() ) );
 
   // return item if has at least one subdir
   if ( !dirEntries.isEmpty() )
@@ -1175,7 +1175,7 @@ QVector<QgsCptCityDataItem *> QgsCptCitySelectionItem::createChildren()
     }
   }
 
-  QgsDebugMsg( QString( "path= %1 inserted %2 children" ).arg( mPath ).arg( children.count() ) );
+  QgsDebugMsg( QStringLiteral( "path= %1 inserted %2 children" ).arg( mPath ).arg( children.count() ) );
 
   return children;
 }
@@ -1312,7 +1312,7 @@ void QgsCptCityBrowserModel::addRootItems()
   {
     mRootItems = mArchive->selectionItems();
   }
-  QgsDebugMsg( QString( "added %1 root items" ).arg( mRootItems.size() ) );
+  QgsDebugMsg( QStringLiteral( "added %1 root items" ).arg( mRootItems.size() ) );
 }
 
 void QgsCptCityBrowserModel::removeRootItems()

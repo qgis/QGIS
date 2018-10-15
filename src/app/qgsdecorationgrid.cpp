@@ -221,7 +221,7 @@ void QgsDecorationGrid::render( const QgsMapSettings &mapSettings, QgsRenderCont
   yGridLines( mapSettings, verticalLines );
   QList< QPair< qreal, QLineF > > horizontalLines;
   xGridLines( mapSettings, horizontalLines );
-  //QgsDebugMsg( QString("grid has %1 vertical and %2 horizontal lines").arg( verticalLines.size() ).arg( horizontalLines.size() ) );
+  //QgsDebugMsg( QStringLiteral("grid has %1 vertical and %2 horizontal lines").arg( verticalLines.size() ).arg( horizontalLines.size() ) );
 
   QList< QPair< qreal, QLineF > >::const_iterator vIt = verticalLines.constBegin();
   QList< QPair< qreal, QLineF > >::const_iterator hIt = horizontalLines.constBegin();
@@ -777,7 +777,7 @@ bool QgsDecorationGrid::getIntervalFromExtent( double *values, bool useXAxis )
     interval = ( extent.xMaximum() - extent.xMinimum() ) / 5;
   else
     interval = ( extent.yMaximum() - extent.yMinimum() ) / 5;
-  QgsDebugMsg( QString( "interval: %1" ).arg( interval ) );
+  QgsDebugMsg( QStringLiteral( "interval: %1" ).arg( interval ) );
   if ( !qgsDoubleNear( interval, 0.0 ) )
   {
     double interval2 = 0;
@@ -785,7 +785,7 @@ bool QgsDecorationGrid::getIntervalFromExtent( double *values, bool useXAxis )
     if ( factor != 0 )
     {
       interval2 = std::round( interval / factor ) * factor;
-      QgsDebugMsg( QString( "interval2: %1" ).arg( interval2 ) );
+      QgsDebugMsg( QStringLiteral( "interval2: %1" ).arg( interval2 ) );
       if ( !qgsDoubleNear( interval2, 0.0 ) )
         interval = interval2;
     }
@@ -840,9 +840,9 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double *values )
   ratio = extent.yMinimum() / values[1];
   values[3] = ( ratio - std::floor( ratio ) ) * values[1];
 
-  QgsDebugMsg( QString( "xmax: %1 xmin: %2 width: %3 xInterval: %4 xOffset: %5" ).arg(
+  QgsDebugMsg( QStringLiteral( "xmax: %1 xmin: %2 width: %3 xInterval: %4 xOffset: %5" ).arg(
                  extent.xMaximum() ).arg( extent.xMinimum() ).arg( rlayer->width() ).arg( values[0] ).arg( values[2] ) );
-  QgsDebugMsg( QString( "ymax: %1 ymin: %2 height: %3 yInterval: %4 yOffset: %5" ).arg(
+  QgsDebugMsg( QStringLiteral( "ymax: %1 ymin: %2 height: %3 yInterval: %4 yOffset: %5" ).arg(
                  extent.yMaximum() ).arg( extent.yMinimum() ).arg( rlayer->height() ).arg( values[1] ).arg( values[3] ) );
 
   return true;

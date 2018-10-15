@@ -99,7 +99,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QString vectorProvider = type == QLatin1String( "vector" ) ? provider : tr( "none" );
     bool providerFileBased = ( QgsProviderRegistry::instance()->providerCapabilities( provider ) & QgsDataProvider::File ) != 0;
 
-    QgsDebugMsg( QString( "name=%1 type=%2 provider=%3 datasource='%4'" )
+    QgsDebugMsg( QStringLiteral( "name=%1 type=%2 provider=%3 datasource='%4'" )
                  .arg( name,
                        type,
                        vectorProvider,

@@ -69,7 +69,7 @@ void QgsWcsCapabilities::parseUri()
   {
     mCacheLoadControl = QgsNetworkAccessManager::cacheLoadControlFromName( cache );
   }
-  QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
+  QgsDebugMsg( QStringLiteral( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
 }
 
 // TODO: return if successful
@@ -137,9 +137,9 @@ bool QgsWcsCapabilities::sendRequest( QString const &url )
   }
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mCacheLoadControl );
-  QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
+  QgsDebugMsg( QStringLiteral( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
 
-  QgsDebugMsg( QString( "getcapabilities: %1" ).arg( url ) );
+  QgsDebugMsg( QStringLiteral( "getcapabilities: %1" ).arg( url ) );
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
   if ( !setAuthorizationReply( mCapabilitiesReply ) )
   {
@@ -357,7 +357,7 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
       request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
       mCapabilitiesReply->deleteLater();
-      QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
+      QgsDebugMsg( QStringLiteral( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
       mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
       if ( !setAuthorizationReply( mCapabilitiesReply ) )
       {
@@ -731,7 +731,7 @@ void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const &e, QgsWc
   {
     mCoverageParentIdentifiers[ coverageSummary.orderId ] = QStringList() << coverageSummary.identifier << coverageSummary.title << coverageSummary.abstract;
   }
-  QgsDebugMsg( QString( "coverage orderId = %1 identifier = %2" ).arg( coverageSummary.orderId ).arg( coverageSummary.identifier ) );
+  QgsDebugMsg( QStringLiteral( "coverage orderId = %1 identifier = %2" ).arg( coverageSummary.orderId ).arg( coverageSummary.identifier ) );
 }
 
 bool QgsWcsCapabilities::convertToDom( QByteArray const &xml )
@@ -843,7 +843,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   QList<QDomElement> envelopeElements = domElements( coverageOfferingElement, QStringLiteral( "domainSet.spatialDomain.Envelope" ) );
 
-  QgsDebugMsg( QString( "%1 envelopeElements found" ).arg( envelopeElements.size() ) );
+  QgsDebugMsg( QStringLiteral( "%1 envelopeElements found" ).arg( envelopeElements.size() ) );
 
   Q_FOREACH ( const QDomElement &el, envelopeElements )
   {
@@ -870,7 +870,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   QList<QDomElement> timePeriodElements = domElements( coverageOfferingElement, QStringLiteral( "domainSet.temporalDomain.timePeriod" ) );
 
-  QgsDebugMsg( QString( "%1 timePeriod found" ).arg( timePeriodElements.size() ) );
+  QgsDebugMsg( QStringLiteral( "%1 timePeriod found" ).arg( timePeriodElements.size() ) );
 
   Q_FOREACH ( const QDomElement &el, timePeriodElements )
   {
@@ -946,7 +946,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
   // we could calculate image size from GridCRS.GridOffsets (if available)
   QList<QDomElement> boundingBoxElements = domElements( docElem, QStringLiteral( "CoverageDescription.Domain.SpatialDomain.BoundingBox" ) );
 
-  QgsDebugMsg( QString( "%1 BoundingBox found" ).arg( boundingBoxElements.size() ) );
+  QgsDebugMsg( QStringLiteral( "%1 BoundingBox found" ).arg( boundingBoxElements.size() ) );
 
   Q_FOREACH ( const QDomElement &el, boundingBoxElements )
   {
@@ -979,7 +979,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
       QgsDebugMsg( "BoundingBox: " + authid + " : " + box.toString() );
     }
   }
-  QgsDebugMsg( QString( "width = %1 height = %2" ).arg( coverage->width ).arg( coverage->height ) );
+  QgsDebugMsg( QStringLiteral( "width = %1 height = %2" ).arg( coverage->width ).arg( coverage->height ) );
 
   // Each georectified coverage should have GridCRS
   QDomElement gridCRSElement = domElement( docElem, QStringLiteral( "CoverageDescription.Domain.SpatialDomain.GridCRS" ) );
@@ -998,7 +998,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
 
   QList<QDomElement> timePeriodElements = domElements( docElem, QStringLiteral( "CoverageDescription.Domain.TemporalDomain.timePeriod" ) );
 
-  QgsDebugMsg( QString( "%1 timePeriod found" ).arg( timePeriodElements.size() ) );
+  QgsDebugMsg( QStringLiteral( "%1 timePeriod found" ).arg( timePeriodElements.size() ) );
 
   Q_FOREACH ( const QDomElement &el, timePeriodElements )
   {
@@ -1126,7 +1126,7 @@ void QgsWcsCapabilities::parseCoverageSummary( QDomElement const &e, QgsWcsCover
 
   if ( parent && parent->orderId > 1 ) // ignore Contents to put them on top level
   {
-    QgsDebugMsg( QString( "coverage orderId = %1 identifier = %2 has parent %3" ).arg( coverageSummary.orderId ).arg( coverageSummary.identifier ).arg( parent->orderId ) );
+    QgsDebugMsg( QStringLiteral( "coverage orderId = %1 identifier = %2 has parent %3" ).arg( coverageSummary.orderId ).arg( coverageSummary.identifier ).arg( parent->orderId ) );
     mCoverageParents[ coverageSummary.orderId ] = parent->orderId;
   }
 
@@ -1140,7 +1140,7 @@ void QgsWcsCapabilities::parseCoverageSummary( QDomElement const &e, QgsWcsCover
   {
     mCoverageParentIdentifiers[ coverageSummary.orderId ] = QStringList() << coverageSummary.identifier << coverageSummary.title << coverageSummary.abstract;
   }
-  QgsDebugMsg( QString( "coverage orderId = %1 identifier = %2" ).arg( coverageSummary.orderId ).arg( coverageSummary.identifier ) );
+  QgsDebugMsg( QStringLiteral( "coverage orderId = %1 identifier = %2" ).arg( coverageSummary.orderId ).arg( coverageSummary.identifier ) );
 
 }
 

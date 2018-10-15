@@ -364,10 +364,10 @@ bool QgsAttributeForm::saveEdits()
             continue;
           }
 
-          QgsDebugMsg( QString( "Updating field %1" ).arg( i ) );
-          QgsDebugMsg( QString( "dst:'%1' (type:%2, isNull:%3, isValid:%4)" )
+          QgsDebugMsg( QStringLiteral( "Updating field %1" ).arg( i ) );
+          QgsDebugMsg( QStringLiteral( "dst:'%1' (type:%2, isNull:%3, isValid:%4)" )
                        .arg( dst.at( i ).toString(), dst.at( i ).typeName() ).arg( dst.at( i ).isNull() ).arg( dst.at( i ).isValid() ) );
-          QgsDebugMsg( QString( "src:'%1' (type:%2, isNull:%3, isValid:%4)" )
+          QgsDebugMsg( QStringLiteral( "src:'%1' (type:%2, isNull:%3, isValid:%4)" )
                        .arg( src.at( i ).toString(), src.at( i ).typeName() ).arg( src.at( i ).isNull() ).arg( src.at( i ).isValid() ) );
 
           newValues[i] = dst.at( i );
@@ -1149,7 +1149,7 @@ void QgsAttributeForm::init()
   if ( mContext.allowCustomUi() && mLayer->editFormConfig().layout() == QgsEditFormConfig::UiFileLayout &&
        !mLayer->editFormConfig().uiForm().isEmpty() )
   {
-    QgsDebugMsg( QString( "loading form: %1" ).arg( mLayer->editFormConfig().uiForm() ) );
+    QgsDebugMsg( QStringLiteral( "loading form: %1" ).arg( mLayer->editFormConfig().uiForm() ) );
     const QString path = mLayer->editFormConfig().uiForm();
     QFile *file = QgsApplication::instance()->networkContentFetcherRegistry()->localFile( path );
     if ( file && file->open( QFile::ReadOnly ) )
@@ -1594,7 +1594,7 @@ void QgsAttributeForm::initPython()
 
       QgsPythonRunner::run( form );
 
-      QgsDebugMsg( QString( "running featureForm init: %1" ).arg( mPyFormVarName ) );
+      QgsDebugMsg( QStringLiteral( "running featureForm init: %1" ).arg( mPyFormVarName ) );
 
       // Legacy
       if ( numArgs == QLatin1String( "3" ) )

@@ -266,7 +266,7 @@ bool QgsGPXFeatureIterator::readRoute( const QgsRoute &rte, QgsFeature &feature 
 
 bool QgsGPXFeatureIterator::readTrack( const QgsTrack &trk, QgsFeature &feature )
 {
-  //QgsDebugMsg( QString( "GPX feature track segments: %1" ).arg( trk.segments.size() ) );
+  //QgsDebugMsg( QStringLiteral( "GPX feature track segments: %1" ).arg( trk.segments.size() ) );
 
   QgsGeometry *geometry = readTrackGeometry( trk );
 

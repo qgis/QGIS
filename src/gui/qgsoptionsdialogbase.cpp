@@ -279,7 +279,7 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
       }
       if ( shw && shw->isValid() )
       {
-        QgsDebugMsgLevel( QString( "Registering: %1" ).arg( w->objectName() ), 4 );
+        QgsDebugMsgLevel( QStringLiteral( "Registering: %1" ).arg( w->objectName() ), 4 );
         mRegisteredSearchWidgets.append( qMakePair( shw, i ) );
       }
       else

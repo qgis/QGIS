@@ -64,7 +64,7 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connNa
     }
 
     QString authcfg = settings.value( key + "/authcfg" ).toString();
-    QgsDebugMsg( QString( "authcfg: %1" ).arg( authcfg ) );
+    QgsDebugMsg( QStringLiteral( "authcfg: %1" ).arg( authcfg ) );
     mAuthSettings->setConfigId( authcfg );
 
     txtName->setText( connName );
@@ -79,7 +79,7 @@ void QgsDb2NewConnection::accept()
   QString baseKey = QStringLiteral( "/DB2/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
   bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
-  QgsDebugMsg( QString( "hasAuthConfigID: %1" ).arg( hasAuthConfigID ) );
+  QgsDebugMsg( QStringLiteral( "hasAuthConfigID: %1" ).arg( hasAuthConfigID ) );
   if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked( ) &&
        QMessageBox::question( this,
                               tr( "Saving Passwords" ),

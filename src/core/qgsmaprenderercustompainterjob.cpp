@@ -116,7 +116,7 @@ void QgsMapRendererCustomPainterJob::cancel()
 
   mFutureWatcher.waitForFinished();
 
-  QgsDebugMsgLevel( QString( "QPAINER cancel waited %1 ms" ).arg( t.elapsed() / 1000.0 ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "QPAINER cancel waited %1 ms" ).arg( t.elapsed() / 1000.0 ), 5 );
 
   futureFinished();
 
@@ -152,7 +152,7 @@ void QgsMapRendererCustomPainterJob::waitForFinished()
 
   mFutureWatcher.waitForFinished();
 
-  QgsDebugMsgLevel( QString( "waitForFinished: %1 ms" ).arg( t.elapsed() / 1000.0 ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "waitForFinished: %1 ms" ).arg( t.elapsed() / 1000.0 ), 4 );
 
   futureFinished();
 }
@@ -339,7 +339,7 @@ void QgsMapRendererJob::drawLabeling( const QgsMapSettings &settings, QgsRenderC
     labelingEngine2->run( renderContext );
   }
 
-  QgsDebugMsg( QString( "Draw labeling took (seconds): %1" ).arg( t.elapsed() / 1000. ) );
+  QgsDebugMsg( QStringLiteral( "Draw labeling took (seconds): %1" ).arg( t.elapsed() / 1000. ) );
 }
 
 

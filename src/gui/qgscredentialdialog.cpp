@@ -59,7 +59,7 @@ bool QgsCredentialDialog::request( const QString &realm, QString &username, QStr
   {
     QgsDebugMsg( "emitting signal" );
     emit credentialsRequested( realm, &username, &password, message, &ok );
-    QgsDebugMsg( QString( "signal returned %1 (username=%2, password=%3)" ).arg( ok ? "true" : "false", username, password ) );
+    QgsDebugMsg( QStringLiteral( "signal returned %1 (username=%2, password=%3)" ).arg( ok ? "true" : "false", username, password ) );
   }
   else
   {
@@ -90,7 +90,7 @@ void QgsCredentialDialog::requestCredentials( const QString &realm, QString *use
 
   QgsDebugMsg( "exec()" );
   *ok = exec() == QDialog::Accepted;
-  QgsDebugMsg( QString( "exec(): %1" ).arg( *ok ? "true" : "false" ) );
+  QgsDebugMsg( QStringLiteral( "exec(): %1" ).arg( *ok ? "true" : "false" ) );
 
   QApplication::restoreOverrideCursor();
 
@@ -155,7 +155,7 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
 
     QgsDebugMsg( "exec()" );
     *ok = exec() == QDialog::Accepted;
-    QgsDebugMsg( QString( "exec(): %1" ).arg( *ok ? "true" : "false" ) );
+    QgsDebugMsg( QStringLiteral( "exec(): %1" ).arg( *ok ? "true" : "false" ) );
 
     if ( *ok )
     {

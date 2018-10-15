@@ -136,7 +136,7 @@ void TestQgsWcsPublicServers::init()
       QJsonObject::ConstIterator paramsIt = serverParams.constBegin();
       for ( ; paramsIt != serverParams.constEnd(); paramsIt++ )
       {
-        QgsDebugMsg( QString( "params value: %1" ).arg( paramsIt.value().toString() ) );
+        QgsDebugMsg( QStringLiteral( "params value: %1" ).arg( paramsIt.value().toString() ) );
         server.params.insert( paramsIt.key(), paramsIt.value().toString() );
       }
 
@@ -484,7 +484,7 @@ void TestQgsWcsPublicServers::test()
               }
               delete myBlock;
             }
-            QgsDebugMsg( QString( "%1 values" ).arg( myValues.size() ) );
+            QgsDebugMsg( QStringLiteral( "%1 values" ).arg( myValues.size() ) );
             myLog << provider + QStringLiteral( "_valuesCount:%1" ).arg( myValues.size() );
 
             // Verify image colors
@@ -497,7 +497,7 @@ void TestQgsWcsPublicServers::test()
                 if ( !myColors.contains( color ) ) myColors.insert( color );
               }
             }
-            QgsDebugMsg( QString( "%1 colors" ).arg( myColors.size() ) );
+            QgsDebugMsg( QStringLiteral( "%1 colors" ).arg( myColors.size() ) );
             myLog << provider + QStringLiteral( "_colorsCount:%1" ).arg( myColors.size() );
           }
           else
@@ -935,16 +935,16 @@ int main( int argc, char *argv[] )
         return 2;   // XXX need standard exit codes
 
       default:
-        QgsDebugMsg( QString( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
+        QgsDebugMsg( QStringLiteral( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
         return 1;   // XXX need standard exit codes
     }
 
   }
 
-  QgsDebugMsg( QString( "myServer = %1" ).arg( myServer ) );
-  QgsDebugMsg( QString( "myCoverage = %1" ).arg( myCoverage ) );
-  QgsDebugMsg( QString( "myMaxCoverages = %1" ).arg( myMaxCoverages ) );
-  QgsDebugMsg( QString( "myVersion = %1" ).arg( myVersion ) );
+  QgsDebugMsg( QStringLiteral( "myServer = %1" ).arg( myServer ) );
+  QgsDebugMsg( QStringLiteral( "myCoverage = %1" ).arg( myCoverage ) );
+  QgsDebugMsg( QStringLiteral( "myMaxCoverages = %1" ).arg( myMaxCoverages ) );
+  QgsDebugMsg( QStringLiteral( "myVersion = %1" ).arg( myVersion ) );
 
   if ( !myCoverage.isEmpty() && myServer.isEmpty() )
   {
@@ -952,7 +952,7 @@ int main( int argc, char *argv[] )
     return 1;
   }
 
-  QgsDebugMsg( QString( "optind = %1 argc = %2" ).arg( optind ).arg( argc ) );
+  QgsDebugMsg( QStringLiteral( "optind = %1 argc = %2" ).arg( optind ).arg( argc ) );
   if ( optind > argc - 1 )
   {
     std::cerr << "CACHE_DIR missing.\n";

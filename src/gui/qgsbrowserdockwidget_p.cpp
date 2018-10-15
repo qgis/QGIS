@@ -158,7 +158,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   // find root item
   // we need to create a temporary layer to get metadata
   // we could use a provider but the metadata is not as complete and "pretty"  and this is easier
-  QgsDebugMsg( QString( "creating temporary layer using path %1" ).arg( layerItem->path() ) );
+  QgsDebugMsg( QStringLiteral( "creating temporary layer using path %1" ).arg( layerItem->path() ) );
   if ( type == QgsMapLayer::RasterLayer )
   {
     QgsDebugMsg( "creating raster layer" );
@@ -383,7 +383,7 @@ void QgsBrowserTreeFilterProxyModel::setBrowserModel( QgsBrowserModel *model )
 
 void QgsBrowserTreeFilterProxyModel::setFilterSyntax( const QString &syntax )
 {
-  QgsDebugMsg( QString( "syntax = %1" ).arg( syntax ) );
+  QgsDebugMsg( QStringLiteral( "syntax = %1" ).arg( syntax ) );
   if ( mPatternSyntax == syntax )
     return;
   mPatternSyntax = syntax;
@@ -392,7 +392,7 @@ void QgsBrowserTreeFilterProxyModel::setFilterSyntax( const QString &syntax )
 
 void QgsBrowserTreeFilterProxyModel::setFilter( const QString &filter )
 {
-  QgsDebugMsg( QString( "filter = %1" ).arg( mFilter ) );
+  QgsDebugMsg( QStringLiteral( "filter = %1" ).arg( mFilter ) );
   if ( mFilter == filter )
     return;
   mFilter = filter;
@@ -407,7 +407,7 @@ void QgsBrowserTreeFilterProxyModel::setCaseSensitive( bool caseSensitive )
 
 void QgsBrowserTreeFilterProxyModel::updateFilter()
 {
-  QgsDebugMsg( QString( "filter = %1 syntax = %2" ).arg( mFilter, mPatternSyntax ) );
+  QgsDebugMsg( QStringLiteral( "filter = %1 syntax = %2" ).arg( mFilter, mPatternSyntax ) );
   mREList.clear();
   if ( mPatternSyntax == QLatin1String( "normal" ) )
   {
@@ -445,7 +445,7 @@ bool QgsBrowserTreeFilterProxyModel::filterAcceptsString( const QString &value )
   {
     Q_FOREACH ( const QRegExp &rx, mREList )
     {
-      QgsDebugMsg( QString( "value: [%1] rx: [%2] match: %3" ).arg( value, rx.pattern() ).arg( rx.exactMatch( value ) ) );
+      QgsDebugMsg( QStringLiteral( "value: [%1] rx: [%2] match: %3" ).arg( value, rx.pattern() ).arg( rx.exactMatch( value ) ) );
       if ( rx.exactMatch( value ) )
         return true;
     }
@@ -454,7 +454,7 @@ bool QgsBrowserTreeFilterProxyModel::filterAcceptsString( const QString &value )
   {
     Q_FOREACH ( const QRegExp &rx, mREList )
     {
-      QgsDebugMsg( QString( "value: [%1] rx: [%2] match: %3" ).arg( value, rx.pattern() ).arg( rx.indexIn( value ) ) );
+      QgsDebugMsg( QStringLiteral( "value: [%1] rx: [%2] match: %3" ).arg( value, rx.pattern() ).arg( rx.indexIn( value ) ) );
       if ( rx.indexIn( value ) != -1 )
         return true;
     }
@@ -492,7 +492,7 @@ bool QgsBrowserTreeFilterProxyModel::filterAcceptsDescendant( const QModelIndex 
 
   for ( int i = 0; i < mModel->rowCount( sourceIndex ); i++ )
   {
-    QgsDebugMsg( QString( "i = %1" ).arg( i ) );
+    QgsDebugMsg( QStringLiteral( "i = %1" ).arg( i ) );
     QModelIndex sourceChildIndex = mModel->index( i, 0, sourceIndex );
     if ( filterAcceptsItem( sourceChildIndex ) )
       return true;

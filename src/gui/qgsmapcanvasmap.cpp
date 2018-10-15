@@ -63,7 +63,7 @@ void QgsMapCanvasMap::paint( QPainter *painter )
   int w = std::round( mItemSize.width() ) - 2, h = std::round( mItemSize.height() ) - 2; // setRect() makes the size +2 :-(
   if ( mImage.size() != QSize( w, h ) )
   {
-    QgsDebugMsg( QString( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" ).arg( mImage.width() ).arg( mImage.height() ).arg( w ).arg( h ) );
+    QgsDebugMsg( QStringLiteral( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" ).arg( mImage.width() ).arg( mImage.height() ).arg( w ).arg( h ) );
     // This happens on zoom events when ::paint is called before
     // the renderer has completed
   }

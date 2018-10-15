@@ -181,7 +181,7 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
       horizontalAlignment = QgsTextRenderer::AlignRight;
       break;
     default:
-      QgsDebugMsg( QString( "Unknown placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
+      QgsDebugMsg( QStringLiteral( "Unknown placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
   }
 
   //Paint label to canvas

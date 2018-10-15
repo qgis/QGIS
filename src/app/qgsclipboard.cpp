@@ -64,7 +64,7 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
 
 void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore )
 {
-  QgsDebugMsg( QString( "features count = %1" ).arg( featureStore.features().size() ) );
+  QgsDebugMsg( QStringLiteral( "features count = %1" ).arg( featureStore.features().size() ) );
   mFeatureFields = featureStore.fields();
   mFeatureClipboard = featureStore.features();
   mCRS = featureStore.crs();
@@ -185,7 +185,7 @@ void QgsClipboard::setSystemClipboard()
 #endif
   cb->setMimeData( m, QClipboard::Clipboard );
 
-  QgsDebugMsgLevel( QString( "replaced system clipboard with: %1." ).arg( textCopy ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "replaced system clipboard with: %1." ).arg( textCopy ), 4 );
 }
 
 QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const QgsFields &fields ) const

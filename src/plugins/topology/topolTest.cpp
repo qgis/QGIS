@@ -1379,7 +1379,7 @@ QgsSpatialIndex *topolTest::createIndex( QgsVectorLayer *layer, const QgsRectang
 
 ErrorList topolTest::runTest( const QString &testName, QgsVectorLayer *layer1, QgsVectorLayer *layer2, ValidateType type )
 {
-  QgsDebugMsg( QString( "Running test %1" ).arg( testName ) );
+  QgsDebugMsg( QStringLiteral( "Running test %1" ).arg( testName ) );
   ErrorList errors;
 
   if ( !layer1 )

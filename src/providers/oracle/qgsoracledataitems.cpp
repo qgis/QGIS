@@ -373,7 +373,7 @@ QString QgsOracleLayerItem::createUri()
   uri.setWkbType( mLayerProperty.types.at( 0 ) );
   if ( mLayerProperty.isView && mLayerProperty.pkCols.size() > 0 )
     uri.setKeyColumn( mLayerProperty.pkCols[0] );
-  QgsDebugMsgLevel( QString( QStringLiteral( "layer uri: %1" ) ).arg( uri.uri() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri() ), 3 );
   return uri.uri();
 }
 

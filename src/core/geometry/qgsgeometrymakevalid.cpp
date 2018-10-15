@@ -348,7 +348,7 @@ static bool lwcollection_make_geos_friendly( QgsGeometryCollection *g );
 // Ensure the geometry is "structurally" valid (enough for GEOS to accept it)
 static bool lwgeom_make_geos_friendly( QgsAbstractGeometry *geom )
 {
-  QgsDebugMsg( QString( "lwgeom_make_geos_friendly enter (type %1)" ).arg( geom->wkbType() ) );
+  QgsDebugMsg( QStringLiteral( "lwgeom_make_geos_friendly enter (type %1)" ).arg( geom->wkbType() ) );
   switch ( QgsWkbTypes::flatType( geom->wkbType() ) )
   {
     case QgsWkbTypes::Point:
@@ -374,7 +374,7 @@ static bool lwgeom_make_geos_friendly( QgsAbstractGeometry *geom )
       break;
 
     default:
-      QgsDebugMsg( QString( "lwgeom_make_geos_friendly: unsupported input geometry type: %1" ).arg( geom->wkbType() ) );
+      QgsDebugMsg( QStringLiteral( "lwgeom_make_geos_friendly: unsupported input geometry type: %1" ).arg( geom->wkbType() ) );
       break;
   }
   return false;

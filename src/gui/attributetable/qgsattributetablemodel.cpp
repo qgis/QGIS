@@ -73,7 +73,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 
 bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
 {
-  QgsDebugMsgLevel( QString( "loading feature %1" ).arg( fid ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "loading feature %1" ).arg( fid ), 3 );
 
   if ( fid == std::numeric_limits<int>::min() )
   {
@@ -100,7 +100,7 @@ void QgsAttributeTableModel::featuresDeleted( const QgsFeatureIds &fids )
 
   Q_FOREACH ( QgsFeatureId fid, fids )
   {
-    QgsDebugMsgLevel( QString( "(%2) fid: %1, size: %3" ).arg( fid ).arg( mFeatureRequest.filterType() ).arg( mIdRowMap.size() ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "(%2) fid: %1, size: %3" ).arg( fid ).arg( mFeatureRequest.filterType() ).arg( mIdRowMap.size() ), 4 );
 
     int row = idToRow( fid );
     if ( row != -1 )
@@ -160,7 +160,7 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
 
 #ifdef QGISDEBUG
   if ( 3 <= QgsLogger::debugLevel() )
-    QgsDebugMsgLevel( QString( "remove %2 rows at %1 (rows %3, ids %4)" ).arg( row ).arg( count ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "remove %2 rows at %1 (rows %3, ids %4)" ).arg( row ).arg( count ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 3 );
 #endif
 
   // clean old references
@@ -185,14 +185,14 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
 #ifdef QGISDEBUG
   if ( 4 <= QgsLogger::debugLevel() )
   {
-    QgsDebugMsgLevel( QString( "after removal rows %1, ids %2" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "after removal rows %1, ids %2" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 4 );
     QgsDebugMsgLevel( "id->row", 4 );
     for ( QHash<QgsFeatureId, int>::const_iterator it = mIdRowMap.constBegin(); it != mIdRowMap.constEnd(); ++it )
-      QgsDebugMsgLevel( QString( "%1->%2" ).arg( FID_TO_STRING( it.key() ) ).arg( *it ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "%1->%2" ).arg( FID_TO_STRING( it.key() ) ).arg( *it ), 4 );
 
     QgsDebugMsgLevel( "row->id", 4 );
     for ( QHash<int, QgsFeatureId>::const_iterator it = mRowIdMap.constBegin(); it != mRowIdMap.constEnd(); ++it )
-      QgsDebugMsgLevel( QString( "%1->%2" ).arg( it.key() ).arg( FID_TO_STRING( *it ) ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "%1->%2" ).arg( it.key() ).arg( FID_TO_STRING( *it ) ), 4 );
   }
 #endif
 
@@ -205,7 +205,7 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
 
 void QgsAttributeTableModel::featureAdded( QgsFeatureId fid, bool resettingModel )
 {
-  QgsDebugMsgLevel( QString( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
   bool featOk = true;
 
   if ( mFeat.id() != fid )
@@ -294,7 +294,7 @@ void QgsAttributeTableModel::fieldFormatterRemoved( QgsFieldFormatter *fieldForm
 
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
-  QgsDebugMsgLevel( QString( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( mFeatureRequest.filterType() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( mFeatureRequest.filterType() ), 3 );
 
   for ( SortCache &cache : mSortCaches )
   {
@@ -510,7 +510,7 @@ int QgsAttributeTableModel::idToRow( QgsFeatureId id ) const
 {
   if ( !mIdRowMap.contains( id ) )
   {
-    QgsDebugMsg( QString( "idToRow: id %1 not in the map" ).arg( id ) );
+    QgsDebugMsg( QStringLiteral( "idToRow: id %1 not in the map" ).arg( id ) );
     return -1;
   }
 
@@ -541,7 +541,7 @@ QgsFeatureId QgsAttributeTableModel::rowToId( const int row ) const
 {
   if ( !mRowIdMap.contains( row ) )
   {
-    QgsDebugMsg( QString( "rowToId: row %1 not in the map" ).arg( row ) );
+    QgsDebugMsg( QStringLiteral( "rowToId: row %1 not in the map" ).arg( row ) );
     // return negative infinite (to avoid collision with newly added features)
     return std::numeric_limits<int>::min();
   }

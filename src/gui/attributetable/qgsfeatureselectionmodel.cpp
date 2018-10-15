@@ -73,7 +73,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
 {
   QgsFeatureIds ids;
 
-  QgsDebugMsg( QString( "Index count: %1" ).arg( selection.indexes().size() ) );
+  QgsDebugMsg( QStringLiteral( "Index count: %1" ).arg( selection.indexes().size() ) );
 
   Q_FOREACH ( const QModelIndex &index, selection.indexes() )
   {

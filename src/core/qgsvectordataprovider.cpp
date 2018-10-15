@@ -347,7 +347,7 @@ QgsAttrPalIndexNameHash QgsVectorDataProvider::palAttributeIndexNames() const
 
 bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 {
-  QgsDebugMsgLevel( QString( "field name = %1 type = %2 length = %3 precision = %4" )
+  QgsDebugMsgLevel( QStringLiteral( "field name = %1 type = %2 length = %3 precision = %4" )
                     .arg( field.name(),
                           QVariant::typeToName( field.type() ) )
                     .arg( field.length() )
@@ -355,7 +355,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 
   Q_FOREACH ( const NativeType &nativeType, mNativeTypes )
   {
-    QgsDebugMsgLevel( QString( "native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5" )
+    QgsDebugMsgLevel( QStringLiteral( "native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5" )
                       .arg( QVariant::typeToName( nativeType.mType ) )
                       .arg( nativeType.mMinLen )
                       .arg( nativeType.mMaxLen )

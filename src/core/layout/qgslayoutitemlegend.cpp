@@ -181,7 +181,7 @@ void QgsLayoutItemLegend::adjustBoxSize()
 
   QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
   QSizeF size = legendRenderer.minimumSize();
-  QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
+  QgsDebugMsg( QStringLiteral( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
   {
     QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( size, sizeWithUnits().units() );

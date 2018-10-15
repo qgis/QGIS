@@ -878,7 +878,7 @@ int DualEdgeTriangulation::getOppositePoint( int p1, int p2 )
 
   if ( theedge == -10 )//there is no edge between p1 and p2
   {
-    QgsDebugMsg( QString( "warning, error: the points are: %1 and %2" ).arg( p1 ).arg( p2 ) );
+    QgsDebugMsg( QStringLiteral( "warning, error: the points are: %1 and %2" ).arg( p1 ).arg( p2 ) );
     return -10;
   }
 
@@ -1026,7 +1026,7 @@ bool DualEdgeTriangulation::getTriangle( double x, double y, QgsPoint &p1, int &
   }
   else//problems
   {
-    QgsDebugMsg( QString( "problem: the edge is: %1" ).arg( edge ) );
+    QgsDebugMsg( QStringLiteral( "problem: the edge is: %1" ).arg( edge ) );
     return false;
   }
 }
@@ -1692,7 +1692,7 @@ void DualEdgeTriangulation::ruppertRefinement()
   //debugging: print out all the angles below the minimum for a test
   for ( std::multimap<double, int>::const_iterator it = angle_edge.begin(); it != angle_edge.end(); ++it )
   {
-    QgsDebugMsg( QString( "angle: %1" ).arg( it->first ) );
+    QgsDebugMsg( QStringLiteral( "angle: %1" ).arg( it->first ) );
   }
 
 
@@ -1706,7 +1706,7 @@ void DualEdgeTriangulation::ruppertRefinement()
   while ( !edge_angle.empty() )
   {
     minangle = angle_edge.begin()->first;
-    QgsDebugMsg( QString( "minangle: %1" ).arg( minangle ) );
+    QgsDebugMsg( QStringLiteral( "minangle: %1" ).arg( minangle ) );
     minedge = angle_edge.begin()->second;
     minedgenext = mHalfEdge[minedge]->getNext();
     minedgenextnext = mHalfEdge[minedgenext]->getNext();
@@ -1730,7 +1730,7 @@ void DualEdgeTriangulation::ruppertRefinement()
     if ( !pointInside( circumcenter.x(), circumcenter.y() ) )
     {
       //put all three edges to dontexamine and remove them from the other maps
-      QgsDebugMsg( QString( "put circumcenter %1//%2 on dontexamine list because it is outside the convex hull" )
+      QgsDebugMsg( QStringLiteral( "put circumcenter %1//%2 on dontexamine list because it is outside the convex hull" )
                    .arg( circumcenter.x() ).arg( circumcenter.y() ) );
       dontexamine.insert( minedge );
       edge_angle.erase( minedge );
@@ -2124,12 +2124,12 @@ void DualEdgeTriangulation::ruppertRefinement()
     {
       if ( pointno == -100 )
       {
-        QgsDebugMsg( QString( "put circumcenter %1//%2 on dontexamine list because of numerical instabilities" )
+        QgsDebugMsg( QStringLiteral( "put circumcenter %1//%2 on dontexamine list because of numerical instabilities" )
                      .arg( circumcenter.x() ).arg( circumcenter.y() ) );
       }
       else if ( pointno == mTwiceInsPoint )
       {
-        QgsDebugMsg( QString( "put circumcenter %1//%2 on dontexamine list because it is already inserted" )
+        QgsDebugMsg( QStringLiteral( "put circumcenter %1//%2 on dontexamine list because it is already inserted" )
                      .arg( circumcenter.x() ).arg( circumcenter.y() ) );
         //test, if the point is present in the triangulation
         bool flag = false;
@@ -2305,7 +2305,7 @@ void DualEdgeTriangulation::ruppertRefinement()
   //debugging: print out all edge of dontexamine
   for ( QSet<int>::iterator it = dontexamine.begin(); it != dontexamine.end(); ++it )
   {
-    QgsDebugMsg( QString( "edge nr. %1 is in dontexamine" ).arg( *it ) );
+    QgsDebugMsg( QStringLiteral( "edge nr. %1 is in dontexamine" ).arg( *it ) );
   }
 #endif
 }
@@ -2498,7 +2498,7 @@ bool DualEdgeTriangulation::pointInside( double x, double y )
   {
     if ( runs > MAX_BASE_ITERATIONS )//prevents endless loops
     {
-      QgsDebugMsg( QString( "warning, instability detected: Point coordinates: %1//%2" ).arg( x ).arg( y ) );
+      QgsDebugMsg( QStringLiteral( "warning, instability detected: Point coordinates: %1//%2" ).arg( x ).arg( y ) );
       return false;
     }
 
@@ -2687,7 +2687,7 @@ bool DualEdgeTriangulation::readFromTAFF( QString filename )
     hf2->setBreak( break2 );
     hf2->setForced( forced2 );
 
-    // QgsDebugMsg( QString( "inserting half edge pair %1" ).arg( i ) );
+    // QgsDebugMsg( QStringLiteral( "inserting half edge pair %1" ).arg( i ) );
     mHalfEdge.insert( nr1, hf1 );
     mHalfEdge.insert( nr2, hf2 );
 
@@ -2752,7 +2752,7 @@ bool DualEdgeTriangulation::readFromTAFF( QString filename )
 
     QgsPoint *p = new QgsPoint( x, y, z );
 
-    // QgsDebugMsg( QString( "inserting point %1" ).arg( i ) );
+    // QgsDebugMsg( QStringLiteral( "inserting point %1" ).arg( i ) );
     mPointVector.insert( i, p );
 
     if ( i == 0 )
@@ -3099,7 +3099,7 @@ int DualEdgeTriangulation::splitHalfEdge( int edge, float position )
   {
     mPointVector.resize( mPointVector.count() + 1 );
   }
-  QgsDebugMsg( QString( "inserting point nr. %1, %2//%3//%4" ).arg( mPointVector.count() ).arg( p->x() ).arg( p->y() ).arg( p->z() ) );
+  QgsDebugMsg( QStringLiteral( "inserting point nr. %1, %2//%3//%4" ).arg( mPointVector.count() ).arg( p->x() ).arg( p->y() ).arg( p->z() ) );
   mPointVector.insert( mPointVector.count(), p );
 
   //insert the six new halfedges

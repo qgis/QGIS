@@ -79,7 +79,7 @@ void QgsEncodingFileDialog::saveUsedEncoding()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "UI/encoding" ), encoding() );
-  QgsDebugMsg( QString( "Set encoding " + encoding() + " as default." ) );
+  QgsDebugMsg( QStringLiteral( "Set encoding %1 as default." ).arg( encoding() ) );
 }
 
 void QgsEncodingFileDialog::addCancelAll()

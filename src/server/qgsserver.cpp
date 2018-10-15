@@ -143,7 +143,7 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QString &
   if ( !projectFile.isEmpty() )
   {
     cfPath = projectFile;
-    QgsDebugMsg( QString( "QGIS_PROJECT_FILE:%1" ).arg( cfPath ) );
+    QgsDebugMsg( QStringLiteral( "QGIS_PROJECT_FILE:%1" ).arg( cfPath ) );
   }
   else
   {
@@ -154,7 +154,7 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QString &
     else
     {
       cfPath = configPath;
-      QgsDebugMsg( QString( "MAP:%1" ).arg( cfPath ) );
+      QgsDebugMsg( QStringLiteral( "MAP:%1" ).arg( cfPath ) );
     }
   }
   return cfPath;

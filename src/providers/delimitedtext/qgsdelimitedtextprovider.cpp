@@ -225,15 +225,15 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
 
   // All good, so pull out the types from the string.  Currently only returning integer, real, and string types
 
-  QgsDebugMsg( QString( "Reading field types from %1" ).arg( csvtInfo.fileName() ) );
-  QgsDebugMsg( QString( "Field type string: %1" ).arg( strTypeList ) );
+  QgsDebugMsg( QStringLiteral( "Reading field types from %1" ).arg( csvtInfo.fileName() ) );
+  QgsDebugMsg( QStringLiteral( "Field type string: %1" ).arg( strTypeList ) );
 
   int pos = 0;
   QRegExp reType( "(integer|real|double|string|date|datetime|time)" );
 
   while ( ( pos = reType.indexIn( strTypeList, pos ) ) != -1 )
   {
-    QgsDebugMsg( QString( "Found type: %1" ).arg( reType.cap( 1 ) ) );
+    QgsDebugMsg( QStringLiteral( "Found type: %1" ).arg( reType.cap( 1 ) ) );
     types << reType.cap( 1 );
     pos += reType.matchedLength();
   }
@@ -1029,14 +1029,14 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
     {
       if ( ! mCachedSubsetString.isNull() && mSubsetString == mCachedSubsetString )
       {
-        QgsDebugMsg( QString( "DelimitedText: Resetting cached subset string %1" ).arg( mSubsetString ) );
+        QgsDebugMsg( QStringLiteral( "DelimitedText: Resetting cached subset string %1" ).arg( mSubsetString ) );
         mUseSpatialIndex = mCachedUseSpatialIndex;
         mUseSubsetIndex = mCachedUseSubsetIndex;
         resetCachedSubset();
       }
       else
       {
-        QgsDebugMsg( QString( "DelimitedText: Setting new subset string %1" ).arg( mSubsetString ) );
+        QgsDebugMsg( QStringLiteral( "DelimitedText: Setting new subset string %1" ).arg( mSubsetString ) );
         // Reset the subset index
         rescanFile();
         // Encode the subset string into the data source URI.
@@ -1046,10 +1046,10 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
     else
     {
       // If not already using temporary subset, then cache the current subset
-      QgsDebugMsg( QString( "DelimitedText: Setting temporary subset string %1" ).arg( mSubsetString ) );
+      QgsDebugMsg( QStringLiteral( "DelimitedText: Setting temporary subset string %1" ).arg( mSubsetString ) );
       if ( mCachedSubsetString.isNull() )
       {
-        QgsDebugMsg( QString( "DelimitedText: Caching previous subset %1" ).arg( previousSubset ) );
+        QgsDebugMsg( QStringLiteral( "DelimitedText: Caching previous subset %1" ).arg( previousSubset ) );
         mCachedSubsetString = previousSubset;
         mCachedUseSpatialIndex = mUseSpatialIndex;
         mCachedUseSubsetIndex = mUseSubsetIndex;

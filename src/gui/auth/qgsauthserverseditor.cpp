@@ -310,7 +310,7 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
 
   if ( !QgsApplication::authManager()->existsSslCertCustomConfig( digest, hostport ) )
   {
-    QgsDebugMsg( QString( "SSL custom config does not exist in database for host:port, id %1:" )
+    QgsDebugMsg( QStringLiteral( "SSL custom config does not exist in database for host:port, id %1:" )
                  .arg( hostport, digest ) );
     return;
   }
