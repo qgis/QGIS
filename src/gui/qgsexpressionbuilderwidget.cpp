@@ -294,7 +294,18 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString &path )
     cmbFileNames->addItem( item );
   }
   if ( !cmbFileNames->currentItem() )
+  {
     cmbFileNames->setCurrentRow( 0 );
+  }
+
+  if ( cmbFileNames->count() == 0 )
+  {
+    // Create default sample entry.
+    newFunctionFile( "default" );
+    txtPython->setText( QString( "'''\n#Sample custom function file\n "
+                                 "(uncomment to use and customize or Add button to create a new file) \n%1 \n '''" ).arg( txtPython->text() ) );
+    saveFunctionFile( "default" );
+  }
 }
 
 void QgsExpressionBuilderWidget::newFunctionFile( const QString &fileName )
