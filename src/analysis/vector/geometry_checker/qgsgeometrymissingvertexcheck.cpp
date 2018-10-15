@@ -72,28 +72,42 @@ void QgsGeometryMissingVertexCheck::fixError( const QMap<QString, QgsFeaturePool
 {
   Q_UNUSED( featurePools )
   Q_UNUSED( changes )
-  if ( method == NoChange )
+
+  QMetaEnum metaEnum = QMetaEnum::fromType<QgsGeometryMissingVertexCheck::ResolutionMethod>();
+  if ( !metaEnum.isValid() || !metaEnum.valueToKey( method ) )
   {
-    error->setFixed( method );
+    error->setFixFailed( tr( "Unknown method" ) );
   }
-  if ( method == AddMissingVertex )
+  else
   {
-    QgsFeaturePool *featurePool = featurePools[ error->layerId() ];
+    ResolutionMethod methodValue = static_cast<ResolutionMethod>( method );
+    switch ( methodValue )
+    {
+      case NoChange:
+        error->setFixed( method );
+        break;
 
-    QgsFeature feature;
-    featurePool->getFeature( error->featureId(), feature );
+      case AddMissingVertex:
+      {
+        QgsFeaturePool *featurePool = featurePools[ error->layerId() ];
 
-    QgsPointXY pointOnSegment; // Should be equal to location
-    int vertexIndex;
-    QgsGeometry geometry = feature.geometry();
-    geometry.closestSegmentWithContext( error->location(), pointOnSegment, vertexIndex );
-    geometry.insertVertex( QgsPoint( error->location() ), vertexIndex );
-    feature.setGeometry( geometry );
+        QgsFeature feature;
+        featurePool->getFeature( error->featureId(), feature );
 
-    featurePool->updateFeature( feature );
-    // TODO update "changes" structure
+        QgsPointXY pointOnSegment; // Should be equal to location
+        int vertexIndex;
+        QgsGeometry geometry = feature.geometry();
+        geometry.closestSegmentWithContext( error->location(), pointOnSegment, vertexIndex );
+        geometry.insertVertex( QgsPoint( error->location() ), vertexIndex );
+        feature.setGeometry( geometry );
 
-    error->setFixed( method );
+        featurePool->updateFeature( feature );
+        // TODO update "changes" structure
+
+        error->setFixed( method );
+      }
+      break;
+    }
   }
 }
 
