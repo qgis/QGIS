@@ -702,8 +702,6 @@ Sets the stroke width map unit ``scale``.
 
 .. seealso:: :py:func:`strokeWidthMapUnitScale`
 
-.. seealso:: :py:func:`setStrokeWidth`
-
 .. seealso:: :py:func:`setStrokeWidthUnit`
 %End
 
@@ -712,8 +710,6 @@ Sets the stroke width map unit ``scale``.
 Returns the stroke width map unit scale.
 
 .. seealso:: :py:func:`setStrokeWidthMapUnitScale`
-
-.. seealso:: :py:func:`strokeWidth`
 
 .. seealso:: :py:func:`strokeWidthUnit`
 
@@ -1135,8 +1131,8 @@ Units are retrieved by patternWidthUnit()
 %Docstring
 Sets the fill color used for rendering the SVG content.
 
-Fill color is only supported for parameterized SVG files. Color opacity is
-ignored if the SVG file does not support parameterized fill opacity.
+Fill color is only supported for parametrized SVG files. Color opacity is
+ignored if the SVG file does not support parametrized fill opacity.
 
 .. seealso:: :py:func:`svgFillColor`
 
@@ -1147,7 +1143,7 @@ ignored if the SVG file does not support parameterized fill opacity.
 %Docstring
 Returns the fill color used for rendering the SVG content.
 
-Fill color is only supported for parameterized SVG files.
+Fill color is only supported for parametrized SVG files.
 
 .. seealso:: :py:func:`setSvgFillColor`
 
@@ -1158,8 +1154,8 @@ Fill color is only supported for parameterized SVG files.
 %Docstring
 Sets the stroke color used for rendering the SVG content.
 
-Stroke color is only supported for parameterized SVG files. Color opacity is
-ignored if the SVG file does not support parameterized outline opacity.
+Stroke color is only supported for parametrized SVG files. Color opacity is
+ignored if the SVG file does not support parametrized outline opacity.
 
 .. seealso:: :py:func:`svgStrokeColor`
 
@@ -1170,7 +1166,7 @@ ignored if the SVG file does not support parameterized outline opacity.
 %Docstring
 Returns the stroke color used for rendering the SVG content.
 
-Stroke color is only supported for parameterized SVG files.
+Stroke color is only supported for parametrized SVG files.
 
 .. seealso:: :py:func:`setSvgStrokeColor`
 
@@ -1181,7 +1177,7 @@ Stroke color is only supported for parameterized SVG files.
 %Docstring
 Sets the stroke width used for rendering the SVG content.
 
-Stroke width is only supported for parameterized SVG files. Units are
+Stroke width is only supported for parametrized SVG files. Units are
 specified via setSvgStrokeWidthUnit()
 
 .. seealso:: :py:func:`svgStrokeWidth`
@@ -1195,7 +1191,7 @@ specified via setSvgStrokeWidthUnit()
 %Docstring
 Returns the stroke width used for rendering the SVG content.
 
-Stroke width is only supported for parameterized SVG files. Units are
+Stroke width is only supported for parametrized SVG files. Units are
 retrieved via setSvgStrokeWidthUnit()
 
 .. seealso:: :py:func:`setSvgStrokeWidth`

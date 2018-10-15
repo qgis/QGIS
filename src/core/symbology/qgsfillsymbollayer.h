@@ -654,7 +654,6 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
      * Sets the stroke width map unit \a scale.
      *
      * \see strokeWidthMapUnitScale()
-     * \see setStrokeWidth()
      * \see setStrokeWidthUnit()
      */
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mStrokeWidthMapUnitScale = scale; }
@@ -663,7 +662,6 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
      * Returns the stroke width map unit scale.
      *
      * \see setStrokeWidthMapUnitScale()
-     * \see strokeWidth()
      * \see strokeWidthUnit()
      *
      * \since QGIS 2.16
@@ -999,7 +997,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
      *
      * \see patternWidth()
      * \see setPatternWidthUnit()
-     * \see setPatternWidthMapUnitScale(*)
+     * \see setPatternWidthMapUnitScale()
      */
     void setPatternWidth( double width ) { mPatternWidth = width;}
 
@@ -1010,15 +1008,15 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
      *
      * \see setPatternWidth()
      * \see patternWidthUnit()
-     * \see patternWidthMapUnitScale(*)
+     * \see patternWidthMapUnitScale()
      */
     double patternWidth() const { return mPatternWidth; }
 
     /**
      * Sets the fill color used for rendering the SVG content.
      *
-     * Fill color is only supported for parameterized SVG files. Color opacity is
-     * ignored if the SVG file does not support parameterized fill opacity.
+     * Fill color is only supported for parametrized SVG files. Color opacity is
+     * ignored if the SVG file does not support parametrized fill opacity.
      *
      * \see svgFillColor()
      * \see setSvgStrokeColor()
@@ -1028,7 +1026,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     /**
      * Returns the fill color used for rendering the SVG content.
      *
-     * Fill color is only supported for parameterized SVG files.
+     * Fill color is only supported for parametrized SVG files.
      *
      * \see setSvgFillColor()
      * \see svgStrokeColor()
@@ -1038,8 +1036,8 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     /**
      * Sets the stroke color used for rendering the SVG content.
      *
-     * Stroke color is only supported for parameterized SVG files. Color opacity is
-     * ignored if the SVG file does not support parameterized outline opacity.
+     * Stroke color is only supported for parametrized SVG files. Color opacity is
+     * ignored if the SVG file does not support parametrized outline opacity.
      *
      * \see svgStrokeColor()
      * \see setSvgFillColor()
@@ -1049,7 +1047,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     /**
      * Returns the stroke color used for rendering the SVG content.
      *
-     * Stroke color is only supported for parameterized SVG files.
+     * Stroke color is only supported for parametrized SVG files.
      *
      * \see setSvgStrokeColor()
      * \see svgFillColor()
@@ -1059,7 +1057,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     /**
      * Sets the stroke width used for rendering the SVG content.
      *
-     * Stroke width is only supported for parameterized SVG files. Units are
+     * Stroke width is only supported for parametrized SVG files. Units are
      * specified via setSvgStrokeWidthUnit()
      *
      * \see svgStrokeWidth()
@@ -1071,7 +1069,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     /**
      * Returns the stroke width used for rendering the SVG content.
      *
-     * Stroke width is only supported for parameterized SVG files. Units are
+     * Stroke width is only supported for parametrized SVG files. Units are
      * retrieved via setSvgStrokeWidthUnit()
      *
      * \see setSvgStrokeWidth()
