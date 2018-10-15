@@ -15,7 +15,9 @@ Email                : sherman at mrcc dot com
 #include <QtTest/QtTest>
 #include <QPixmap>
 
+#ifndef CPL_SUPRESS_CPLUSPLUS
 #define CPL_SUPRESS_CPLUSPLUS
+#endif
 #include <gdal.h>
 
 //header for class being tested

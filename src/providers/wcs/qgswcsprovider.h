@@ -44,7 +44,9 @@ class QNetworkAccessManager;
 class QNetworkReply;
 class QNetworkRequest;
 
+#ifndef CPL_SUPRESS_CPLUSPLUS
 #define CPL_SUPRESS_CPLUSPLUS
+#endif
 #include <gdal.h>
 #include "cpl_conv.h"
 

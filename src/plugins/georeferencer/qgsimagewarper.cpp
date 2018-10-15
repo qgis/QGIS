@@ -252,15 +252,14 @@ int QgsImageWarper::warpFile( const QString& input,
                                    adfGeoTransform );
 
   // Initialize and execute the warp operation.
-  GDALWarpOperation oOperation;
-  oOperation.Initialize( psWarpOptions );
+  GDALWarpOperationH oOperation = GDALCreateWarpOperation( psWarpOptions );
 
   progressDialog->show();
   progressDialog->raise();
   progressDialog->activateWindow();
 
-  eErr = oOperation.ChunkAndWarpImage( 0, 0, destPixels, destLines );
-//  eErr = oOperation.ChunkAndWarpMulti(0, 0, destPixels, destLines);
+  eErr = GDALChunkAndWarpImage( oOperation, 0, 0, destPixels, destLines );
+  // eErr = GDALChunkAndWarpMulti( oOperation, 0, 0, destPixels, destLines );
 
   destroyGeoToPixelTransform( psWarpOptions->pTransformerArg );
   GDALDestroyWarpOptions( psWarpOptions );
