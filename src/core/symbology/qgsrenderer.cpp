@@ -279,7 +279,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
   {
     rendererType = QStringLiteral( "singleSymbol" );
   }
-  QgsDebugMsg( QString( "Instantiating a '%1' renderer..." ).arg( rendererType ) );
+  QgsDebugMsg( QStringLiteral( "Instantiating a '%1' renderer..." ).arg( rendererType ) );
 
   // create the renderer and return it
   QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererType );

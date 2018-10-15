@@ -39,12 +39,12 @@ void QgsProjectPropertyValue::dump( int tabs ) const
 
     for ( const auto &string : sl )
     {
-      QgsDebugMsg( QString( "%1[%2] " ).arg( tabString, string ) );
+      QgsDebugMsg( QStringLiteral( "%1[%2] " ).arg( tabString, string ) );
     }
   }
   else
   {
-    QgsDebugMsg( QString( "%1%2" ).arg( tabString, mValue.toString() ) );
+    QgsDebugMsg( QStringLiteral( "%1%2" ).arg( tabString, mValue.toString() ) );
   }
 #endif
 }
@@ -59,7 +59,7 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
 
   if ( typeString.isNull() )
   {
-    QgsDebugMsg( QString( "null ``type'' attribute for %1" ).arg( keyNode.nodeName() ) );
+    QgsDebugMsg( QStringLiteral( "null ``type'' attribute for %1" ).arg( keyNode.nodeName() ) );
 
     return false;
   }
@@ -81,7 +81,7 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
   switch ( type )
   {
     case QVariant::Invalid:
-      QgsDebugMsg( QString( "invalid value type %1 .. " ).arg( typeString ) );
+      QgsDebugMsg( QStringLiteral( "invalid value type %1 .. " ).arg( typeString ) );
       return false;
 
     case QVariant::Map:
@@ -113,7 +113,7 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
         }
         else
         {
-          QgsDebugMsg( QString( "non <value> element ``%1'' in string list" ).arg( values.item( i ).nodeName() ) );
+          QgsDebugMsg( QStringLiteral( "non <value> element ``%1'' in string list" ).arg( values.item( i ).nodeName() ) );
         }
 
         ++i;
@@ -218,7 +218,7 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
 #endif
 
     default :
-      QgsDebugMsg( QString( "unsupported value type %1 .. not propertly translated to QVariant" ).arg( typeString ) );
+      QgsDebugMsg( QStringLiteral( "unsupported value type %1 .. not propertly translated to QVariant" ).arg( typeString ) );
   }
 
   return true;
@@ -297,7 +297,7 @@ void QgsProjectPropertyKey::dump( int tabs ) const
 
   tabString.fill( '\t', tabs );
 
-  QgsDebugMsg( QString( "%1name: %2" ).arg( tabString, name() ) );
+  QgsDebugMsg( QStringLiteral( "%1name: %2" ).arg( tabString, name() ) );
 
   tabs++;
   tabString.fill( '\t', tabs );
@@ -313,17 +313,17 @@ void QgsProjectPropertyKey::dump( int tabs ) const
 
         if ( QVariant::StringList == propertyValue->value().type() )
         {
-          QgsDebugMsg( QString( "%1key: <%2>  value:" ).arg( tabString, i.key() ) );
+          QgsDebugMsg( QStringLiteral( "%1key: <%2>  value:" ).arg( tabString, i.key() ) );
           propertyValue->dump( tabs + 1 );
         }
         else
         {
-          QgsDebugMsg( QString( "%1key: <%2>  value: %3" ).arg( tabString, i.key(), propertyValue->value().toString() ) );
+          QgsDebugMsg( QStringLiteral( "%1key: <%2>  value: %3" ).arg( tabString, i.key(), propertyValue->value().toString() ) );
         }
       }
       else
       {
-        QgsDebugMsg( QString( "%1key: <%2>  subkey: <%3>" )
+        QgsDebugMsg( QStringLiteral( "%1key: <%2>  subkey: <%3>" )
                      .arg( tabString,
                            i.key(),
                            static_cast<QgsProjectPropertyKey *>( i.value() )->name() ) );
@@ -372,7 +372,7 @@ bool QgsProjectPropertyKey::readXml( const QDomNode &keyNode )
 
       if ( !mProperties[subkeys.item( i ).nodeName()]->readXml( subkey ) )
       {
-        QgsDebugMsg( QString( "unable to parse key value %1" ).arg( subkeys.item( i ).nodeName() ) );
+        QgsDebugMsg( QStringLiteral( "unable to parse key value %1" ).arg( subkeys.item( i ).nodeName() ) );
       }
     }
     else // otherwise it's a subkey, so just recurse on down the remaining keys
@@ -383,7 +383,7 @@ bool QgsProjectPropertyKey::readXml( const QDomNode &keyNode )
 
       if ( !mProperties[subkeys.item( i ).nodeName()]->readXml( subkey ) )
       {
-        QgsDebugMsg( QString( "unable to parse subkey %1" ).arg( subkeys.item( i ).nodeName() ) );
+        QgsDebugMsg( QStringLiteral( "unable to parse subkey %1" ).arg( subkeys.item( i ).nodeName() ) );
       }
     }
 

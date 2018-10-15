@@ -485,7 +485,7 @@ void QgsIdentifyMenu::triggerMapLayerAction()
           return;
         }
       }
-      QgsDebugMsg( QString( "Identify menu: could not retrieve feature for action %1" ).arg( action->text() ) );
+      QgsDebugMsg( QStringLiteral( "Identify menu: could not retrieve feature for action %1" ).arg( action->text() ) );
     }
   }
 }

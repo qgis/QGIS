@@ -203,7 +203,7 @@ void QgsMapLayerStore::onMapLayerDeleted( QObject *obj )
 
   if ( !id.isNull() )
   {
-    QgsDebugMsg( QString( "Map layer deleted without unregistering! %1" ).arg( id ) );
+    QgsDebugMsg( QStringLiteral( "Map layer deleted without unregistering! %1" ).arg( id ) );
     mMapLayers.remove( id );
   }
 }

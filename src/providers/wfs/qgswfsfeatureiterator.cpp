@@ -1094,7 +1094,7 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( const QVector<QgsWFSFeat
 // hence it is safe to quite the loop
 void QgsWFSFeatureIterator::featureReceived( int /*featureCount*/ )
 {
-  //QgsDebugMsg( QString("QgsWFSFeatureIterator::featureReceived %1 features").arg(featureCount) );
+  //QgsDebugMsg( QStringLiteral("QgsWFSFeatureIterator::featureReceived %1 features").arg(featureCount) );
   if ( mLoop )
     mLoop->quit();
 }

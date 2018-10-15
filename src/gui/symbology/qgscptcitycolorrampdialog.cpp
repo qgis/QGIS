@@ -97,7 +97,7 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp 
     return;
   QgsDebugMsg( "archive: " + mArchive->archiveName() );
 
-  QgsDebugMsg( QString( "ramp name= %1 variant= %2 - %3 variants" ).arg( mRamp.schemeName(), mRamp.variantName() ).arg( mRamp.variantList().count() ) );
+  QgsDebugMsg( QStringLiteral( "ramp name= %1 variant= %2 - %3 variants" ).arg( mRamp.schemeName(), mRamp.variantName() ).arg( mRamp.variantList().count() ) );
 
   // model / view
   QgsDebugMsg( "loading model/view objects" );
@@ -138,7 +138,7 @@ void QgsCptCityColorRampDialog::populateVariants()
 {
   QStringList variantList = mRamp.variantList();
 
-  QgsDebugMsg( QString( "ramp %1%2 has %3 variants" ).arg( mRamp.schemeName(), mRamp.variantName() ).arg( variantList.count() ) );
+  QgsDebugMsg( QStringLiteral( "ramp %1%2 has %3 variants" ).arg( mRamp.schemeName(), mRamp.variantName() ).arg( variantList.count() ) );
 
   cboVariantName->blockSignals( true );
   cboVariantName->clear();
@@ -182,7 +182,7 @@ void QgsCptCityColorRampDialog::populateVariants()
     // try to set the original variant again (if exists)
     int idx = -1;
     QString newVariant = mRamp.variantName();
-    QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
+    QgsDebugMsg( QStringLiteral( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
     if ( newVariant != QString() )
     {
       if ( newVariant.startsWith( '-' ) || newVariant.startsWith( '_' ) )
@@ -213,7 +213,7 @@ void QgsCptCityColorRampDialog::mTreeView_clicked( const QModelIndex &index )
   QgsCptCityDataItem *item = mModel->dataItem( sourceIndex );
   if ( ! item )
     return;
-  QgsDebugMsg( QString( "item %1 clicked" ).arg( item->name() ) );
+  QgsDebugMsg( QStringLiteral( "item %1 clicked" ).arg( item->name() ) );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   updateTreeView( item );
 }
@@ -230,7 +230,7 @@ void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem *item, bool r
     if ( resetRamp )
     {
       mRamp.setName( QString(), QString() );
-      QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
+      QgsDebugMsg( QStringLiteral( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
       lblSchemeName->clear();
       populateVariants();
     }
@@ -255,7 +255,7 @@ void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem *item, bool r
   }
   else
   {
-    QgsDebugMsg( QString( "item %1 has invalid type %2" ).arg( item->path() ).arg( static_cast<int>( item->type() ) ) );
+    QgsDebugMsg( QStringLiteral( "item %1 has invalid type %2" ).arg( item->path() ).arg( static_cast<int>( item->type() ) ) );
   }
 }
 
@@ -267,7 +267,7 @@ void QgsCptCityColorRampDialog::mListWidget_itemClicked( QListWidgetItem *item )
     buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
     lblSchemeName->setText( QFileInfo( rampItem->name() ).fileName() );
     mRamp.copy( &rampItem->ramp() );
-    QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
+    QgsDebugMsg( QStringLiteral( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
     populateVariants();
   }
   else
@@ -298,7 +298,7 @@ void QgsCptCityColorRampDialog::tabBar_currentChanged( int index )
   }
   else
   {
-    QgsDebugMsg( QString( "invalid index %1" ).arg( index ) );
+    QgsDebugMsg( QStringLiteral( "invalid index %1" ).arg( index ) );
     setTreeModel( mAuthorsModel );
     mArchiveViewType = QgsCptCityBrowserModel::Authors;
   }
@@ -443,7 +443,7 @@ void QgsCptCityColorRampDialog::cboVariantName_currentIndexChanged( int index )
   Q_UNUSED( index );
   if ( cboVariantName->currentIndex() != -1 )
     mRamp.setVariantName( cboVariantName->currentData( Qt::UserRole ).toString() );
-  QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
+  QgsDebugMsg( QStringLiteral( "variant= %1 - %2 variants" ).arg( mRamp.variantName() ).arg( mRamp.variantList().count() ) );
   updatePreview();
   emit changed();
 }
@@ -499,7 +499,7 @@ void QgsCptCityColorRampDialog::updateUi()
 
 bool QgsCptCityColorRampDialog::saveAsGradientRamp() const
 {
-  QgsDebugMsg( QString( "result: %1 checked: %2" ).arg( result() ).arg( cboConvertStandard->isChecked() ) );
+  QgsDebugMsg( QStringLiteral( "result: %1 checked: %2" ).arg( result() ).arg( cboConvertStandard->isChecked() ) );
   // if "save as standard gradient" is checked, convert to QgsVectorGradientColorRamp
   return ( result() == Accepted && cboConvertStandard->isChecked() );
 }
@@ -604,7 +604,7 @@ bool QgsCptCityColorRampDialog::updateRamp()
   mRamp.setVariantList( childItem->ramp().variantList() );
 
   // found child, update tree
-  QgsDebugMsg( QString( "found item %1" ).arg( mRamp.schemeName() ) );
+  QgsDebugMsg( QStringLiteral( "found item %1" ).arg( mRamp.schemeName() ) );
   lblSchemeName->setText( QFileInfo( mRamp.schemeName() ).fileName() );
   QModelIndex parentIndex = modelIndex.parent();
   QModelIndex selIndex = mTreeFilter->mapFromSource( parentIndex );
@@ -620,7 +620,7 @@ bool QgsCptCityColorRampDialog::updateRamp()
   {
     if ( mListRamps.at( i ) == childItem )
     {
-      QgsDebugMsg( QString( "found matching item %1 target=%2" ).arg( mListRamps.at( i )->path(), childItem->path() ) );
+      QgsDebugMsg( QStringLiteral( "found matching item %1 target=%2" ).arg( mListRamps.at( i )->path(), childItem->path() ) );
       QListWidgetItem *listItem = mListWidget->item( i );
       mListWidget->setCurrentItem( listItem );
       // mListWidget_itemClicked( listItem );

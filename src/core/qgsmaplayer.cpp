@@ -882,7 +882,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
 
 bool QgsMapLayer::loadNamedPropertyFromDatabase( const QString &db, const QString &uri, QString &xml, QgsMapLayer::PropertyType type )
 {
-  QgsDebugMsgLevel( QString( "db = %1 uri = %2" ).arg( db, uri ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "db = %1 uri = %2" ).arg( db, uri ), 4 );
 
   bool resultFlag = false;
 
@@ -892,7 +892,7 @@ bool QgsMapLayer::loadNamedPropertyFromDatabase( const QString &db, const QStrin
 
   int myResult;
 
-  QgsDebugMsgLevel( QString( "Trying to load style or metadata for \"%1\" from \"%2\"" ).arg( uri, db ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Trying to load style or metadata for \"%1\" from \"%2\"" ).arg( uri, db ), 4 );
 
   if ( db.isEmpty() || !QFile( db ).exists() )
     return false;
@@ -938,7 +938,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag, QgsMa
 
 QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag, StyleCategories categories )
 {
-  QgsDebugMsgLevel( QString( "uri = %1 myURI = %2" ).arg( uri, publicSource() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "uri = %1 myURI = %2" ).arg( uri, publicSource() ), 4 );
 
   resultFlag = false;
 
@@ -951,7 +951,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   QFile myFile( uri );
   if ( myFile.open( QFile::ReadOnly ) )
   {
-    QgsDebugMsgLevel( QString( "file found %1" ).arg( uri ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "file found %1" ).arg( uri ), 2 );
     // read file
     resultFlag = myDocument.setContent( &myFile, &myErrorMessage, &line, &column );
     if ( !resultFlag )
@@ -961,7 +961,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   else
   {
     QFileInfo project( QgsProject::instance()->fileName() );
-    QgsDebugMsgLevel( QString( "project fileName: %1" ).arg( project.absoluteFilePath() ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "project fileName: %1" ).arg( project.absoluteFilePath() ), 4 );
 
     QString xml;
     switch ( type )

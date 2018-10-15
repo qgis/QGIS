@@ -132,7 +132,7 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
       if ( ok )
       {
         currentUrl = currentUrl.trimmed();
-        QgsDebugMsg( QString( "exprVal Source Url:%1" ).arg( currentUrl ) );
+        QgsDebugMsg( QStringLiteral( "exprVal Source Url:%1" ).arg( currentUrl ) );
       }
       if ( currentUrl.isEmpty() )
       {

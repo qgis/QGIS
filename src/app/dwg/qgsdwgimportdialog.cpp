@@ -190,7 +190,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
     int idxColor = l->fields().lookupField( QStringLiteral( "ocolor" ) );
     int idxFlags = l->fields().lookupField( QStringLiteral( "flags" ) );
 
-    QgsDebugMsg( QString( "idxName:%1 idxColor:%2 idxFlags:%3" ).arg( idxName ).arg( idxColor ).arg( idxFlags ) );
+    QgsDebugMsg( QStringLiteral( "idxName:%1 idxColor:%2 idxFlags:%3" ).arg( idxName ).arg( idxColor ).arg( idxFlags ) );
 
     QgsFeatureIterator fit = l->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() << idxName << idxColor << idxFlags ) );
     QgsFeature f;
@@ -202,7 +202,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
       int row = mLayers->rowCount();
       mLayers->setRowCount( row + 1 );
 
-      QgsDebugMsg( QString( "name:%1 color:%2 flags:%3" ).arg( f.attribute( idxName ).toString() ).arg( f.attribute( idxColor ).toInt() ).arg( f.attribute( idxFlags ).toString(), 0, 16 ) );
+      QgsDebugMsg( QStringLiteral( "name:%1 color:%2 flags:%3" ).arg( f.attribute( idxName ).toString() ).arg( f.attribute( idxColor ).toInt() ).arg( f.attribute( idxFlags ).toString(), 0, 16 ) );
 
       QTableWidgetItem *item = nullptr;
       item = new QTableWidgetItem( f.attribute( idxName ).toString() );
@@ -278,7 +278,7 @@ QgsVectorLayer *QgsDwgImportDialog::layer( QgsLayerTreeGroup *layerGroup, const 
 void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &name, const QStringList &layers, bool visible )
 {
   QgsLayerTreeGroup *layerGroup = group->addGroup( name );
-  QgsDebugMsg( QString( " %1" ).arg( name ) ) ;
+  QgsDebugMsg( QStringLiteral( " %1" ).arg( name ) ) ;
   Q_ASSERT( layerGroup );
 
   QString layerFilter;

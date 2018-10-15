@@ -641,7 +641,7 @@ void QgsRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &featureids )
       int idx = mRelation.referencingLayer()->fields().lookupField( fieldPair.referencingField() );
       if ( idx < 0 )
       {
-        QgsDebugMsg( QString( "referencing field %1 not found" ).arg( fieldPair.referencingField() ) );
+        QgsDebugMsg( QStringLiteral( "referencing field %1 not found" ).arg( fieldPair.referencingField() ) );
         return;
       }
       QgsField fld = mRelation.referencingLayer()->fields().at( idx );

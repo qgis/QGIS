@@ -205,10 +205,10 @@ void QgsRuleBasedRendererWidget::editRule( const QModelIndex &index )
 void QgsRuleBasedRendererWidget::removeRule()
 {
   QItemSelection sel = viewRules->selectionModel()->selection();
-  QgsDebugMsg( QString( "REMOVE RULES!!! ranges: %1" ).arg( sel.count() ) );
+  QgsDebugMsg( QStringLiteral( "REMOVE RULES!!! ranges: %1" ).arg( sel.count() ) );
   Q_FOREACH ( const QItemSelectionRange &range, sel )
   {
-    QgsDebugMsg( QString( "RANGE: r %1 - %2" ).arg( range.top() ).arg( range.bottom() ) );
+    QgsDebugMsg( QStringLiteral( "RANGE: r %1 - %2" ).arg( range.top() ).arg( range.bottom() ) );
     if ( range.isValid() )
       mModel->removeRows( range.top(), range.bottom() - range.top() + 1, range.parent() );
   }
@@ -456,7 +456,7 @@ void QgsRuleBasedRendererWidget::restoreSectionWidths()
 void QgsRuleBasedRendererWidget::copy()
 {
   QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
-  QgsDebugMsg( QString( "%1" ).arg( indexlist.count() ) );
+  QgsDebugMsg( QStringLiteral( "%1" ).arg( indexlist.count() ) );
 
   if ( indexlist.isEmpty() )
     return;
@@ -609,7 +609,7 @@ void QgsRuleBasedRendererWidget::countFeatures()
 #ifdef QGISDEBUG
   Q_FOREACH ( QgsRuleBasedRenderer::Rule *rule, countMap.keys() )
   {
-    QgsDebugMsg( QString( "rule: %1 count %2" ).arg( rule->label() ).arg( countMap[rule].count ) );
+    QgsDebugMsg( QStringLiteral( "rule: %1 count %2" ).arg( rule->label() ).arg( countMap[rule].count ) );
   }
 #endif
 
@@ -1199,7 +1199,7 @@ bool QgsRuleBasedRendererModel::removeRows( int row, int count, const QModelInde
   if ( row < 0 || row >= parentRule->children().count() )
     return false;
 
-  QgsDebugMsg( QString( "Called: row %1 count %2 parent ~~%3~~" ).arg( row ).arg( count ).arg( parentRule->dump() ) );
+  QgsDebugMsg( QStringLiteral( "Called: row %1 count %2 parent ~~%3~~" ).arg( row ).arg( count ).arg( parentRule->dump() ) );
 
   beginRemoveRows( parent, row, row + count - 1 );
 
@@ -1227,7 +1227,7 @@ void QgsRuleBasedRendererModel::insertRule( const QModelIndex &parent, int befor
 {
   beginInsertRows( parent, before, before );
 
-  QgsDebugMsg( QString( "insert before %1 rule: %2" ).arg( before ).arg( newrule->dump() ) );
+  QgsDebugMsg( QStringLiteral( "insert before %1 rule: %2" ).arg( before ).arg( newrule->dump() ) );
 
   QgsRuleBasedRenderer::Rule *parentRule = ruleForIndex( parent );
   parentRule->insertChild( before, newrule );

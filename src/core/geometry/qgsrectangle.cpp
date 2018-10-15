@@ -142,7 +142,7 @@ QString QgsRectangle::toString( int precision ) const
           .arg( mXmax, 0, 'f', precision )
           .arg( mYmax, 0, 'f', precision );
 
-  QgsDebugMsgLevel( QString( "Extents : %1" ).arg( rep ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Extents : %1" ).arg( rep ), 4 );
 
   return rep;
 }

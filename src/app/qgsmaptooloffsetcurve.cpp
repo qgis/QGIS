@@ -491,7 +491,7 @@ void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match
       int vertex = match.vertexIndex();
       QgsVertexId vertexId;
       geom.vertexIdFromVertexNr( vertex, vertexId );
-      QgsDebugMsg( QString( "%1" ).arg( vertexId.ring ) );
+      QgsDebugMsg( QStringLiteral( "%1" ).arg( vertexId.ring ) );
 
       if ( !geom.isMultipart() )
       {

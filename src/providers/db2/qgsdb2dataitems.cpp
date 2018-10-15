@@ -103,7 +103,7 @@ bool QgsDb2ConnectionItem::ConnInfoFromParameters(
 bool QgsDb2ConnectionItem::ConnInfoFromSettings( const QString connName,
     QString &connInfo, QString &errorMsg )
 {
-  QgsDebugMsg( QString( "Get settings for connection '%1'" ).arg( connInfo ) );
+  QgsDebugMsg( QStringLiteral( "Get settings for connection '%1'" ).arg( connInfo ) );
   QgsSettings settings;
   QString key = "/DB2/connections/" + connName;
 
@@ -333,7 +333,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
       continue;
     }
 
-    QgsDebugMsg( QString( "uri: %1; name: %2; key: %3" ).arg( u.uri, u.name, u.providerKey ) );
+    QgsDebugMsg( QStringLiteral( "uri: %1; name: %2; key: %3" ).arg( u.uri, u.name, u.providerKey ) );
     // open the source layer
     QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
 
@@ -455,7 +455,7 @@ QgsDb2LayerItem::QgsDb2LayerItem( QgsDataItem *parent, QString name, QString pat
   : QgsLayerItem( parent, name, path, QString(), layerType, PROVIDER_KEY )
   , mLayerProperty( layerProperty )
 {
-  QgsDebugMsg( QString( "new db2 layer created : %1" ).arg( layerType ) );
+  QgsDebugMsg( QStringLiteral( "new db2 layer created : %1" ).arg( layerType ) );
   mUri = createUri();
   setState( Populated );
 }

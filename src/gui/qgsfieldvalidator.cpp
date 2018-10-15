@@ -155,7 +155,7 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   }
   else
   {
-    QgsDebugMsg( QString( "unsupported type %1 for validation" ).arg( mField.type() ) );
+    QgsDebugMsg( QStringLiteral( "unsupported type %1 for validation" ).arg( mField.type() ) );
     return Invalid;
   }
 

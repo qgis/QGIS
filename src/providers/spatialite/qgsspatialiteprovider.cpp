@@ -330,7 +330,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
     }
     catch ( SLException &e )
     {
-      QgsDebugMsg( QString( "creation of data source %1 failed. %2" )
+      QgsDebugMsg( QStringLiteral( "creation of data source %1 failed. %2" )
                    .arg( tableName,
                          e.errorMessage() )
                  );
@@ -468,7 +468,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
       int ret = sqlite3_exec( mSqliteHandle, ( "PRAGMA " + pragma ).toUtf8(), nullptr, nullptr, &errMsg );
       if ( ret != SQLITE_OK )
       {
-        QgsDebugMsg( QString( "PRAGMA " ) + pragma + QString( " failed : %1" ).arg( errMsg ? errMsg : "" ) );
+        QgsDebugMsg( QStringLiteral( "PRAGMA " ) + pragma + QString( " failed : %1" ).arg( errMsg ? errMsg : "" ) );
       }
       sqlite3_free( errMsg );
     }
@@ -5460,7 +5460,7 @@ QGISEXTERN bool createDb( const QString &dbPath, QString &errCause )
 
   QFileInfo fullPath = QFileInfo( dbPath );
   QDir path = fullPath.dir();
-  QgsDebugMsg( QString( "making this dir: %1" ).arg( path.absolutePath() ) );
+  QgsDebugMsg( QStringLiteral( "making this dir: %1" ).arg( path.absolutePath() ) );
 
   // Must be sure there is destination directory ~/.qgis
   QDir().mkpath( path.absolutePath() );

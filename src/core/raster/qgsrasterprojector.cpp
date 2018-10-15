@@ -179,7 +179,7 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
       break;
     }
   }
-  QgsDebugMsgLevel( QString( "CPMatrix size: mCPRows = %1 mCPCols = %2" ).arg( mCPRows ).arg( mCPCols ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "CPMatrix size: mCPRows = %1 mCPCols = %2" ).arg( mCPRows ).arg( mCPCols ), 4 );
   mDestRowsPerMatrixRow = static_cast< float >( mDestRows ) / ( mCPRows - 1 );
   mDestColsPerMatrixCol = static_cast< float >( mDestCols ) / ( mCPCols - 1 );
 
@@ -311,7 +311,7 @@ void ProjectorData::calcSrcRowsCols()
     // For now, we take cell sizes projected to source but not to source axes
     double myDestColsPerMatrixCell = static_cast< double >( mDestCols ) / mCPCols;
     double myDestRowsPerMatrixCell = static_cast< double >( mDestRows ) / mCPRows;
-    QgsDebugMsgLevel( QString( "myDestColsPerMatrixCell = %1 myDestRowsPerMatrixCell = %2" ).arg( myDestColsPerMatrixCell ).arg( myDestRowsPerMatrixCell ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "myDestColsPerMatrixCell = %1 myDestRowsPerMatrixCell = %2" ).arg( myDestColsPerMatrixCell ).arg( myDestRowsPerMatrixCell ), 4 );
     for ( int i = 0; i < mCPRows - 1; i++ )
     {
       for ( int j = 0; j < mCPCols - 1; j++ )
@@ -355,18 +355,18 @@ void ProjectorData::calcSrcRowsCols()
   // is changing WMS content
   myMinSize *= 0.75;
 
-  QgsDebugMsgLevel( QString( "mMaxSrcXRes = %1 mMaxSrcYRes = %2" ).arg( mMaxSrcXRes ).arg( mMaxSrcYRes ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "mMaxSrcXRes = %1 mMaxSrcYRes = %2" ).arg( mMaxSrcXRes ).arg( mMaxSrcYRes ), 4 );
   // mMaxSrcXRes, mMaxSrcYRes may be 0 - no limit (WMS)
   double myMinXSize = mMaxSrcXRes > myMinSize ? mMaxSrcXRes : myMinSize;
   double myMinYSize = mMaxSrcYRes > myMinSize ? mMaxSrcYRes : myMinSize;
-  QgsDebugMsgLevel( QString( "myMinXSize = %1 myMinYSize = %2" ).arg( myMinXSize ).arg( myMinYSize ), 4 );
-  QgsDebugMsgLevel( QString( "mSrcExtent.width = %1 mSrcExtent.height = %2" ).arg( mSrcExtent.width() ).arg( mSrcExtent.height() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "myMinXSize = %1 myMinYSize = %2" ).arg( myMinXSize ).arg( myMinYSize ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "mSrcExtent.width = %1 mSrcExtent.height = %2" ).arg( mSrcExtent.width() ).arg( mSrcExtent.height() ), 4 );
 
   // we have to round to keep alignment set in calcSrcExtent
   mSrcRows = static_cast< int >( std::round( mSrcExtent.height() / myMinYSize ) );
   mSrcCols = static_cast< int >( std::round( mSrcExtent.width() / myMinXSize ) );
 
-  QgsDebugMsgLevel( QString( "mSrcRows = %1 mSrcCols = %2" ).arg( mSrcRows ).arg( mSrcCols ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "mSrcRows = %1 mSrcCols = %2" ).arg( mSrcRows ).arg( mSrcCols ), 4 );
 }
 
 
@@ -437,8 +437,8 @@ bool ProjectorData::srcRowCol( int destRow, int destCol, int *srcRow, int *srcCo
 bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int *srcCol )
 {
 #ifdef QGISDEBUG
-  QgsDebugMsgLevel( QString( "theDestRow = %1" ).arg( destRow ), 5 );
-  QgsDebugMsgLevel( QString( "theDestRow = %1 mDestExtent.yMaximum() = %2 mDestYRes = %3" ).arg( destRow ).arg( mDestExtent.yMaximum() ).arg( mDestYRes ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "theDestRow = %1" ).arg( destRow ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "theDestRow = %1 mDestExtent.yMaximum() = %2 mDestYRes = %3" ).arg( destRow ).arg( mDestExtent.yMaximum() ).arg( mDestYRes ), 5 );
 #endif
 
   // Get coordinate of center of destination cell
@@ -447,7 +447,7 @@ bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int
   double z = 0;
 
 #ifdef QGISDEBUG
-  QgsDebugMsgLevel( QString( "x = %1 y = %2" ).arg( x ).arg( y ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "x = %1 y = %2" ).arg( x ).arg( y ), 5 );
 #endif
 
   if ( mInverseCt.isValid() )
@@ -456,7 +456,7 @@ bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int
   }
 
 #ifdef QGISDEBUG
-  QgsDebugMsgLevel( QString( "x = %1 y = %2" ).arg( x ).arg( y ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "x = %1 y = %2" ).arg( x ).arg( y ), 5 );
 #endif
 
   if ( !mExtent.contains( QgsPointXY( x, y ) ) )
@@ -467,8 +467,8 @@ bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int
   *srcRow = static_cast< int >( std::floor( ( mSrcExtent.yMaximum() - y ) / mSrcYRes ) );
   *srcCol = static_cast< int >( std::floor( ( x - mSrcExtent.xMinimum() ) / mSrcXRes ) );
 #ifdef QGISDEBUG
-  QgsDebugMsgLevel( QString( "mSrcExtent.yMinimum() = %1 mSrcExtent.yMaximum() = %2 mSrcYRes = %3" ).arg( mSrcExtent.yMinimum() ).arg( mSrcExtent.yMaximum() ).arg( mSrcYRes ), 5 );
-  QgsDebugMsgLevel( QString( "theSrcRow = %1 srcCol = %2" ).arg( *srcRow ).arg( *srcCol ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "mSrcExtent.yMinimum() = %1 mSrcExtent.yMaximum() = %2 mSrcYRes = %3" ).arg( mSrcExtent.yMinimum() ).arg( mSrcExtent.yMaximum() ).arg( mSrcYRes ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "theSrcRow = %1 srcCol = %2" ).arg( *srcRow ).arg( *srcCol ), 5 );
 #endif
 
   // With epsg 32661 (Polar Stereographic) it was happening that *srcCol == mSrcCols
@@ -553,7 +553,7 @@ void ProjectorData::insertRows( const QgsCoordinateTransform &ct )
       myRow.append( QgsPointXY() );
       myLegalRow.append( false );
     }
-    QgsDebugMsgLevel( QString( "insert new row at %1" ).arg( 1 + r * 2 ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "insert new row at %1" ).arg( 1 + r * 2 ), 3 );
     mCPMatrix.insert( 1 + r * 2, myRow );
     mCPLegalMatrix.insert( 1 + r * 2, myLegalRow );
   }
@@ -609,7 +609,7 @@ void ProjectorData::calcCP( int row, int col, const QgsCoordinateTransform &ct )
 
 bool ProjectorData::calcRow( int row, const QgsCoordinateTransform &ct )
 {
-  QgsDebugMsgLevel( QString( "theRow = %1" ).arg( row ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "theRow = %1" ).arg( row ), 3 );
   for ( int i = 0; i < mCPCols; i++ )
   {
     calcCP( row, i, ct );
@@ -620,7 +620,7 @@ bool ProjectorData::calcRow( int row, const QgsCoordinateTransform &ct )
 
 bool ProjectorData::calcCol( int col, const QgsCoordinateTransform &ct )
 {
-  QgsDebugMsgLevel( QString( "theCol = %1" ).arg( col ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "theCol = %1" ).arg( col ), 3 );
   for ( int i = 0; i < mCPRows; i++ )
   {
     calcCP( i, col, ct );
@@ -736,8 +736,8 @@ QString QgsRasterProjector::precisionLabel( Precision precision )
 
 QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  QgsDebugMsgLevel( QString( "extent:\n%1" ).arg( extent.toString() ), 4 );
-  QgsDebugMsgLevel( QString( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "extent:\n%1" ).arg( extent.toString() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
   if ( !mInput )
   {
     QgsDebugMsgLevel( "Input not set", 4 );
@@ -757,8 +757,8 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
 
   ProjectorData pd( extent, width, height, mInput, inverseCt, mPrecision );
 
-  QgsDebugMsgLevel( QString( "srcExtent:\n%1" ).arg( pd.srcExtent().toString() ), 4 );
-  QgsDebugMsgLevel( QString( "srcCols = %1 srcRows = %2" ).arg( pd.srcCols() ).arg( pd.srcRows() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "srcExtent:\n%1" ).arg( pd.srcExtent().toString() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "srcCols = %1 srcRows = %2" ).arg( pd.srcCols() ).arg( pd.srcRows() ), 4 );
 
   // If we zoom out too much, projector srcRows / srcCols maybe 0, which can cause problems in providers
   if ( pd.srcRows() <= 0 || pd.srcCols() <= 0 )
@@ -828,12 +828,12 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
       char *destBits = outputBlock->bits( destIndex );
       if ( !srcBits )
       {
-        // QgsDebugMsg( QString( "Cannot get input block data: row = %1 col = %2" ).arg( i ).arg( j ) );
+        // QgsDebugMsg( QStringLiteral( "Cannot get input block data: row = %1 col = %2" ).arg( i ).arg( j ) );
         continue;
       }
       if ( !destBits )
       {
-        // QgsDebugMsg( QString( "Cannot set output block data: srcRow = %1 srcCol = %2" ).arg( srcRow ).arg( srcCol ) );
+        // QgsDebugMsg( QStringLiteral( "Cannot set output block data: srcRow = %1 srcCol = %2" ).arg( srcRow ).arg( srcCol ) );
         continue;
       }
       memcpy( destBits, srcBits, pixelSize );

@@ -68,7 +68,7 @@ void QgsServiceNativeLoader::loadModules( const QString &modulePath, QgsServiceR
 #endif
 
   qDebug() << QString( "Checking %1 for native services modules" ).arg( moduleDir.path() );
-  //QgsDebugMsg( QString( "Checking %1 for native services modules" ).arg( moduleDir.path() ) );
+  //QgsDebugMsg( QStringLiteral( "Checking %1 for native services modules" ).arg( moduleDir.path() ) );
 
   for ( const QFileInfo &fi : moduleDir.entryInfoList() )
   {
@@ -93,7 +93,7 @@ QgsServiceModule *QgsServiceNativeLoader::loadNativeModule( const QString &locat
   }
 
   QLibrary lib( location );
-  //QgsDebugMsg( QString( "Loading native module %1" ).arg( location ) );
+  //QgsDebugMsg( QStringLiteral( "Loading native module %1" ).arg( location ) );
   qDebug() << QString( "Loading native module %1" ).arg( location );
   if ( !lib.load() )
   {

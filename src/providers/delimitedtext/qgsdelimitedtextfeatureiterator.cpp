@@ -86,7 +86,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
       mFeatureIds = mSource->mSpatialIndex->intersects( mFilterRect );
       // Sort for efficient sequential retrieval
       std::sort( mFeatureIds.begin(), mFeatureIds.end() );
-      QgsDebugMsg( QString( "Layer has spatial index - selected %1 features from index" ).arg( mFeatureIds.size() ) );
+      QgsDebugMsg( QStringLiteral( "Layer has spatial index - selected %1 features from index" ).arg( mFeatureIds.size() ) );
       mMode = FeatureIds;
       mTestSubset = false;
       mTestGeometry = mTestGeometryExact;
@@ -115,7 +115,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     // If we have a subset index then use it..
     if ( mMode == FileScan && mSource->mUseSubsetIndex )
     {
-      QgsDebugMsg( QString( "Layer has subset index - use %1 items from subset index" ).arg( mSource->mSubsetIndex.size() ) );
+      QgsDebugMsg( QStringLiteral( "Layer has subset index - use %1 items from subset index" ).arg( mSource->mSubsetIndex.size() ) );
       mTestSubset = false;
       mMode = SubsetIndex;
     }
@@ -169,10 +169,10 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     mRequest.setSubsetOfAttributes( attrs );
   }
 
-  QgsDebugMsg( QString( "Iterator is scanning file: " ) + ( mMode == FileScan ? "Yes" : "No" ) );
-  QgsDebugMsg( QString( "Iterator is loading geometries: " ) + ( mLoadGeometry ? "Yes" : "No" ) );
-  QgsDebugMsg( QString( "Iterator is testing geometries: " ) + ( mTestGeometry ? "Yes" : "No" ) );
-  QgsDebugMsg( QString( "Iterator is testing subset: " ) + ( mTestSubset ? "Yes" : "No" ) );
+  QgsDebugMsg( QStringLiteral( "Iterator is scanning file: " ) + ( mMode == FileScan ? "Yes" : "No" ) );
+  QgsDebugMsg( QStringLiteral( "Iterator is loading geometries: " ) + ( mLoadGeometry ? "Yes" : "No" ) );
+  QgsDebugMsg( QStringLiteral( "Iterator is testing geometries: " ) + ( mTestGeometry ? "Yes" : "No" ) );
+  QgsDebugMsg( QStringLiteral( "Iterator is testing subset: " ) + ( mTestSubset ? "Yes" : "No" ) );
 
   rewind();
 }

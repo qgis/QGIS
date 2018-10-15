@@ -150,7 +150,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
 
   QString nullValue = QgsApplication::nullRepresentation();
 
-  QgsDebugMsg( QString( "nullValue: %1" ).arg( nullValue ) );
+  QgsDebugMsg( QStringLiteral( "nullValue: %1" ).arg( nullValue ) );
 
   Q_FOREACH ( const QVariant &var, values )
   {
@@ -166,7 +166,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
     myItem->setEditable( false );
     myItem->setData( var, Qt::UserRole + 1 );
     mModelValues->insertRow( mModelValues->rowCount(), myItem );
-    QgsDebugMsg( QString( "Value is null: %1\nvalue: %2" ).arg( var.isNull() ).arg( var.isNull() ? nullValue : var.toString() ) );
+    QgsDebugMsg( QStringLiteral( "Value is null: %1\nvalue: %2" ).arg( var.isNull() ).arg( var.isNull() ? nullValue : var.toString() ) );
   }
 }
 

@@ -90,12 +90,12 @@ void QgsUndoWidget::indexChanged( int curIndx )
 
   if ( offset != 0 )
   {
-    QgsDebugMsgLevel( QString( "curIndx : %1" ).arg( curIndx ), 4 );
-    QgsDebugMsgLevel( QString( "offset  : %1" ).arg( offset ), 4 );
-    QgsDebugMsgLevel( QString( "curCount: %1" ).arg( curCount ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "curIndx : %1" ).arg( curIndx ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "offset  : %1" ).arg( offset ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "curCount: %1" ).arg( curCount ), 4 );
     if ( lastRedo )
     {
-      QgsDebugMsgLevel( QString( "lastRedo: true" ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "lastRedo: true" ), 4 );
     }
   }
 

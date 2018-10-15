@@ -61,7 +61,7 @@ void QgsCodeEditorPython::setSciLexerPython()
   // check if the file is a prepared apis file.
   //QString mPapFileName = QFileInfo( mAPISFilesList[0] ).fileName();
   //QString isPapFile = mPapFileName.right( 3 );
-  //QgsDebugMsg( QString( "file extension: %1" ).arg( isPapFile ) );
+  //QgsDebugMsg( QStringLiteral( "file extension: %1" ).arg( isPapFile ) );
 
   if ( mAPISFilesList.isEmpty() )
   {
@@ -84,7 +84,7 @@ void QgsCodeEditorPython::setSciLexerPython()
     {
       if ( !QFileInfo::exists( mAPISFilesList[i] ) )
       {
-        QgsDebugMsg( QString( "The apis file %1 was not found" ).arg( mAPISFilesList.at( i ) ) );
+        QgsDebugMsg( QStringLiteral( "The apis file %1 was not found" ).arg( mAPISFilesList.at( i ) ) );
         return;
       }
       else
@@ -106,13 +106,13 @@ void QgsCodeEditorPython::setSciLexerPython()
 void QgsCodeEditorPython::loadAPIs( const QList<QString> &filenames )
 {
   mAPISFilesList = filenames;
-  //QgsDebugMsg( QString( "The apis files: %1" ).arg( mAPISFilesList[0] ) );
+  //QgsDebugMsg( QStringLiteral( "The apis files: %1" ).arg( mAPISFilesList[0] ) );
   setSciLexerPython();
 }
 
 bool QgsCodeEditorPython::loadScript( const QString &script )
 {
-  QgsDebugMsg( QString( "The script file: %1" ).arg( script ) );
+  QgsDebugMsg( QStringLiteral( "The script file: %1" ).arg( script ) );
   QFile file( script );
   if ( !file.open( QIODevice::ReadOnly ) )
   {

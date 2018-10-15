@@ -458,17 +458,17 @@ int main( int argc, char *argv[] )
 
       if ( setrlimit( RLIMIT_NOFILE, &rescLimit ) == 0 )
       {
-        QgsDebugMsg( QString( "Mac RLIMIT_NOFILE Soft/Hard NEW: %1 / %2" )
+        QgsDebugMsg( QStringLiteral( "Mac RLIMIT_NOFILE Soft/Hard NEW: %1 / %2" )
                      .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ) );
       }
     }
     Q_UNUSED( oldSoft ); //avoid warnings
-    QgsDebugMsg( QString( "Mac RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
+    QgsDebugMsg( QStringLiteral( "Mac RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
                  .arg( oldSoft ).arg( oldHard ) );
   }
 #endif
 
-  QgsDebugMsg( QString( "Starting qgis main" ) );
+  QgsDebugMsg( QStringLiteral( "Starting qgis main" ) );
 #ifdef WIN32  // Windows
 #ifdef _MSC_VER
   _set_fmode( _O_BINARY );
@@ -524,7 +524,7 @@ int main( int argc, char *argv[] )
   bool mySkipVersionCheck = false;
   bool hideBrowser = false;
 #if defined(ANDROID)
-  QgsDebugMsg( QString( "Android: Splash hidden" ) );
+  QgsDebugMsg( QStringLiteral( "Android: Splash hidden" ) );
   myHideSplash = true;
 #endif
 
@@ -571,10 +571,10 @@ int main( int argc, char *argv[] )
 
 // TODO Fix android
 #if defined(ANDROID)
-  QgsDebugMsg( QString( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
+  QgsDebugMsg( QStringLiteral( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
   //put all QGIS settings in the same place
   configpath = QgsApplication::qgisSettingsDirPath();
-  QgsDebugMsg( QString( "Android: configpath set to %1" ).arg( configpath ) );
+  QgsDebugMsg( QStringLiteral( "Android: configpath set to %1" ).arg( configpath ) );
 #endif
 
   QStringList args;
@@ -886,7 +886,7 @@ int main( int argc, char *argv[] )
     else if ( globalSettings.contains( QStringLiteral( "core/profilesPath" ) ) )
     {
       configLocalStorageLocation = globalSettings.value( QStringLiteral( "core/profilesPath" ), "" ).toString();
-      QgsDebugMsg( QString( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ) );
+      QgsDebugMsg( QStringLiteral( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ) );
     }
 
     // If it is still empty at this point we get it from the standard location.
@@ -1305,7 +1305,7 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   for ( const QString &layerName : qgis::as_const( sFileList ) )
   {
-    QgsDebugMsg( QString( "Trying to load file : %1" ).arg( layerName ) );
+    QgsDebugMsg( QStringLiteral( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files
     if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
          !layerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) &&

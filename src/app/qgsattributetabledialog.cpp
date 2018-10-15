@@ -1133,7 +1133,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
 
 void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
 {
-  QgsDebugMsg( QString( "Delete %1" ).arg( fid ) );
+  QgsDebugMsg( QStringLiteral( "Delete %1" ).arg( fid ) );
   mLayer->deleteFeature( fid );
 }
 

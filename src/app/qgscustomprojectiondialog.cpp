@@ -91,13 +91,13 @@ void QgsCustomProjectionDialog::populateList()
   int result = database.open_v2( QgsApplication::qgisUserDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
   if ( result != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( database.errorMessage() ) );
+    QgsDebugMsg( QStringLiteral( "Can't open database: %1" ).arg( database.errorMessage() ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     Q_ASSERT( result == SQLITE_OK );
   }
   QString sql = QStringLiteral( "select srs_id,description,parameters from tbl_srs" );
-  QgsDebugMsg( QString( "Query to populate existing list:%1" ).arg( sql ) );
+  QgsDebugMsg( QStringLiteral( "Query to populate existing list:%1" ).arg( sql ) );
   preparedStatement = database.prepare( sql, result );
   if ( result == SQLITE_OK )
   {
@@ -120,7 +120,7 @@ void QgsCustomProjectionDialog::populateList()
   }
   else
   {
-    QgsDebugMsg( QString( "Populate list query failed: %1" ).arg( sql ) );
+    QgsDebugMsg( QStringLiteral( "Populate list query failed: %1" ).arg( sql ) );
   }
   preparedStatement.reset();
 
@@ -147,7 +147,7 @@ bool  QgsCustomProjectionDialog::deleteCrs( const QString &id )
   int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( result != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
+    QgsDebugMsg( QStringLiteral( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
                  QgsApplication::qgisUserDatabaseFilePath() ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
@@ -157,7 +157,7 @@ bool  QgsCustomProjectionDialog::deleteCrs( const QString &id )
     sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
     if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
     {
-      QgsDebugMsg( QString( "failed to remove CRS from database in custom projection dialog: %1 [%2]" ).arg( sql, database.errorMessage() ) );
+      QgsDebugMsg( QStringLiteral( "failed to remove CRS from database in custom projection dialog: %1 [%2]" ).arg( sql, database.errorMessage() ) );
     }
   }
 
@@ -176,7 +176,7 @@ void  QgsCustomProjectionDialog::insertProjection( const QString &projectionAcro
   int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( result != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
+    QgsDebugMsg( QStringLiteral( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
                  QgsApplication::qgisUserDatabaseFilePath() ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
@@ -185,7 +185,7 @@ void  QgsCustomProjectionDialog::insertProjection( const QString &projectionAcro
   int srsResult = srsDatabase.open( QgsApplication::srsDatabaseFilePath() );
   if ( result != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database %1 [%2]" ).arg( QgsApplication::srsDatabaseFilePath(),
+    QgsDebugMsg( QStringLiteral( "Can't open database %1 [%2]" ).arg( QgsApplication::srsDatabaseFilePath(),
                  srsDatabase.errorMessage() ) );
   }
   else
@@ -209,13 +209,13 @@ void  QgsCustomProjectionDialog::insertProjection( const QString &projectionAcro
         sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
         if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
         {
-          QgsDebugMsg( QString( "Update or insert failed in custom projection dialog: %1 [%2]" ).arg( sql, database.errorMessage() ) );
+          QgsDebugMsg( QStringLiteral( "Update or insert failed in custom projection dialog: %1 [%2]" ).arg( sql, database.errorMessage() ) );
         }
       }
     }
     else
     {
-      QgsDebugMsg( QString( "prepare failed: %1 [%2]" ).arg( srsSql, srsDatabase.errorMessage() ) );
+      QgsDebugMsg( QStringLiteral( "prepare failed: %1 [%2]" ).arg( srsSql, srsDatabase.errorMessage() ) );
     }
   }
 }
@@ -227,7 +227,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem parameters
   int returnId;
   QString projectionAcronym = parameters.projectionAcronym();
   QString ellipsoidAcronym = parameters.ellipsoidAcronym();
-  QgsDebugMsg( QString( "Saving a CRS:%1, %2, %3" ).arg( name, parameters.toProj4() ).arg( newEntry ) );
+  QgsDebugMsg( QStringLiteral( "Saving a CRS:%1, %2, %3" ).arg( name, parameters.toProj4() ).arg( newEntry ) );
   if ( newEntry )
   {
     returnId = parameters.saveAsUserCrs( name );
@@ -252,7 +252,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem parameters
     int result = database.open( QgsApplication::qgisUserDatabaseFilePath() );
     if ( result != SQLITE_OK )
     {
-      QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
+      QgsDebugMsg( QStringLiteral( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( database.errorMessage(),
                    QgsApplication::qgisUserDatabaseFilePath() ) );
       // XXX This will likely never happen since on open, sqlite creates the
       //     database if it does not exist.
@@ -261,7 +261,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem parameters
     sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
     if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
     {
-      QgsDebugMsg( QString( "failed to write to database in custom projection dialog: %1 [%2]" ).arg( sql, database.errorMessage() ) );
+      QgsDebugMsg( QStringLiteral( "failed to write to database in custom projection dialog: %1 [%2]" ).arg( sql, database.errorMessage() ) );
     }
 
     preparedStatement.reset();
@@ -406,7 +406,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
     }
     if ( ! saveSuccess )
     {
-      QgsDebugMsg( QString( "Error when saving CRS '%1'" ).arg( mCustomCRSnames[i] ) );
+      QgsDebugMsg( QStringLiteral( "Error when saving CRS '%1'" ).arg( mCustomCRSnames[i] ) );
     }
   }
   QgsDebugMsg( "We remove the deleted CRS." );
@@ -415,7 +415,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
     saveSuccess &= deleteCrs( mDeletedCRSs[i] );
     if ( ! saveSuccess )
     {
-      QgsDebugMsg( QString( "Problem for layer '%1'" ).arg( mCustomCRSparameters[i] ) );
+      QgsDebugMsg( QStringLiteral( "Problem for layer '%1'" ).arg( mCustomCRSparameters[i] ) );
     }
   }
   if ( saveSuccess )
@@ -446,7 +446,7 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
   projCtx pContext = pj_ctx_alloc();
   projPJ proj = pj_init_plus_ctx( pContext, teParameters->toPlainText().toLocal8Bit().data() );
 
-  QgsDebugMsg( QString( "Proj: %1" ).arg( teParameters->toPlainText() ) );
+  QgsDebugMsg( QStringLiteral( "Proj: %1" ).arg( teParameters->toPlainText() ) );
 
   if ( !proj )
   {

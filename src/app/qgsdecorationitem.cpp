@@ -75,5 +75,5 @@ void QgsDecorationItem::setName( const char *name )
   mNameConfig = name;
   mNameConfig.remove( ' ' );
   mNameTranslated = tr( name );
-  QgsDebugMsg( QString( "name=%1 nameconfig=%2 nametrans=%3" ).arg( mName, mNameConfig, mNameTranslated ) );
+  QgsDebugMsg( QStringLiteral( "name=%1 nameconfig=%2 nametrans=%3" ).arg( mName, mNameConfig, mNameTranslated ) );
 }

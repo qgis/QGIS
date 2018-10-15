@@ -138,7 +138,7 @@ void QgsTabWidget::synchronizeIndexes()
       nextWidget = widget( i + 1 );
     }
     it->sourceIndex = i;
-    QgsDebugMsg( QString( "Tab %1 (%2): %3" ).arg( it->sourceIndex ).arg( it->label ).arg( i ) );
+    QgsDebugMsg( QStringLiteral( "Tab %1 (%2): %3" ).arg( it->sourceIndex ).arg( it->label ).arg( i ) );
   }
 }
 

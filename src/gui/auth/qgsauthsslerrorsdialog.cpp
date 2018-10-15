@@ -109,7 +109,7 @@ void QgsAuthSslErrorsDialog::loadUnloadCertificate( bool load )
     return;
   }
   wdgtSslConfig->setEnabled( true );
-  QgsDebugMsg( QString( "Loading certificate for host:port = %1" ).arg( mHostPort ) );
+  QgsDebugMsg( QStringLiteral( "Loading certificate for host:port = %1" ).arg( mHostPort ) );
   wdgtSslConfig->setSslCertificate( mSslConfiguration.peerCertificate(), mHostPort );
   if ( !mSslErrors.isEmpty() )
   {

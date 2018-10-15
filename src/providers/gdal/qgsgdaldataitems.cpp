@@ -83,7 +83,7 @@ QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
   if ( !mSublayers.isEmpty() )
   {
     QgsDataItem *childItem = nullptr;
-    QgsDebugMsgLevel( QString( "got %1 sublayers" ).arg( mSublayers.count() ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "got %1 sublayers" ).arg( mSublayers.count() ), 3 );
     for ( int i = 0; i < mSublayers.count(); i++ )
     {
       QString name = mSublayers[i];
@@ -351,7 +351,7 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
     }
     // add the item
     QStringList sublayers;
-    QgsDebugMsgLevel( QString( "adding item name=%1 path=%2" ).arg( name, path ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "adding item name=%1 path=%2" ).arg( name, path ), 2 );
     QgsLayerItem *item = new QgsGdalLayerItem( parentItem, name, path, path, &sublayers );
     if ( item )
       return item;
@@ -367,7 +367,7 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
 
   if ( ! hDS )
   {
-    QgsDebugMsg( QString( "GDALOpen error # %1 : %2 " ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
+    QgsDebugMsg( QStringLiteral( "GDALOpen error # %1 : %2 " ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
     return nullptr;
   }
 

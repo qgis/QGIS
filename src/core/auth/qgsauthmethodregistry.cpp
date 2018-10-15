@@ -63,7 +63,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
   mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*authmethod.so" ) ) );
 #endif
 
-  QgsDebugMsg( QString( "Checking for auth method plugins in: %1" ).arg( mLibraryDirectory.path() ) );
+  QgsDebugMsg( QStringLiteral( "Checking for auth method plugins in: %1" ).arg( mLibraryDirectory.path() ) );
 
   if ( mLibraryDirectory.count() == 0 )
   {
@@ -102,7 +102,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
     QLibrary myLib( fi.filePath() );
     if ( !myLib.load() )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (lib not loadable): %2" ).arg( myLib.fileName(), myLib.errorString() ) );
+      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (lib not loadable): %2" ).arg( myLib.fileName(), myLib.errorString() ) );
       continue;
     }
 
@@ -110,14 +110,14 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
     isauthmethod_t *isAuthMethod = reinterpret_cast< isauthmethod_t * >( cast_to_fptr( myLib.resolve( "isAuthMethod" ) ) );
     if ( !isAuthMethod )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (no isAuthMethod method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (no isAuthMethod method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
     // check to see if this is an auth method plugin
     if ( !isAuthMethod() )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (not an auth method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (not an auth method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
@@ -125,14 +125,14 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
     description_t *pDesc = reinterpret_cast< description_t * >( cast_to_fptr( myLib.resolve( "description" ) ) );
     if ( !pDesc )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (no description method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (no description method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
     methodkey_t *pKey = reinterpret_cast< methodkey_t * >( cast_to_fptr( myLib.resolve( "authMethodKey" ) ) );
     if ( !pKey )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (no authMethodKey method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (no authMethodKey method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
@@ -151,7 +151,7 @@ QgsAuthMethodRegistry::~QgsAuthMethodRegistry()
 
   while ( it != mAuthMethods.end() )
   {
-    QgsDebugMsgLevel( QString( "cleanup: %1" ).arg( it->first ), 5 );
+    QgsDebugMsgLevel( QStringLiteral( "cleanup: %1" ).arg( it->first ), 5 );
     QString lib = it->second->library();
     QLibrary myLib( lib );
     if ( myLib.isLoaded() )
@@ -296,7 +296,7 @@ std::unique_ptr<QgsAuthMethod> QgsAuthMethodRegistry::authMethod( const QString 
   classFactoryFunction_t *classFactory = reinterpret_cast< classFactoryFunction_t * >( cast_to_fptr( myLib.resolve( "classFactory" ) ) );
   if ( !classFactory )
   {
-    QgsDebugMsg( QString( "Failed to load %1: no classFactory method" ).arg( lib ) );
+    QgsDebugMsg( QStringLiteral( "Failed to load %1: no classFactory method" ).arg( lib ) );
     return nullptr;
   }
 
@@ -308,7 +308,7 @@ std::unique_ptr<QgsAuthMethod> QgsAuthMethodRegistry::authMethod( const QString 
     return nullptr;
   }
 
-  QgsDebugMsg( QString( "Instantiated the auth method plugin: %1" ).arg( authMethod->key() ) );
+  QgsDebugMsg( QStringLiteral( "Instantiated the auth method plugin: %1" ).arg( authMethod->key() ) );
   return authMethod;
 }
 

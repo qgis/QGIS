@@ -69,7 +69,7 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
   if ( !pythonlib_inst )
   {
     //using stderr on purpose because we want end users to see this [TS]
-    QgsDebugMsg( QString( "Couldn't resolve python support library's instance() symbol." ) );
+    QgsDebugMsg( QStringLiteral( "Couldn't resolve python support library's instance() symbol." ) );
     return false;
   }
 

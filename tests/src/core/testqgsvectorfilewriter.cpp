@@ -398,7 +398,7 @@ void TestQgsVectorFileWriter::regression1141()
 {
 #if defined(linux)
   const char *cs = nl_langinfo( CODESET );
-  QgsDebugMsg( QString( "CODESET:%1" ).arg( cs ? cs : "unset" ) );
+  QgsDebugMsg( QStringLiteral( "CODESET:%1" ).arg( cs ? cs : "unset" ) );
   if ( !cs || strcmp( cs, "UTF-8" ) != 0 )
   {
     QSKIP( "This test requires a UTF-8 locale", SkipSingle );

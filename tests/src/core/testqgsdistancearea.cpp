@@ -203,8 +203,8 @@ void TestQgsDistanceArea::test_distances()
       QgsPointXY p1( myLineList[1].toDouble(), myLineList[0].toDouble() );
       QgsPointXY p2( myLineList[4].toDouble(), myLineList[3].toDouble() );
       double result = myDa.measureLine( p1, p2 );
-      // QgsDebugMsg( QString( "Distance from %1 to %2 is %3" ).arg( p1.toString( 15 ) ).arg( p2.toString( 15 ) ).arg( result, 0, 'g', 15 ) );
-      // QgsDebugMsg( QString( "Distance should be %1" ).arg( myLineList[6] ) );
+      // QgsDebugMsg( QStringLiteral( "Distance from %1 to %2 is %3" ).arg( p1.toString( 15 ) ).arg( p2.toString( 15 ) ).arg( result, 0, 'g', 15 ) );
+      // QgsDebugMsg( QStringLiteral( "Distance should be %1" ).arg( myLineList[6] ) );
       // Check result is less than 0.5mm from expected.
       QGSCOMPARENEAR( result, myLineList[6].toDouble(), 0.0005 );
     }
@@ -302,7 +302,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   double area = da.measureArea( polygon );
   QgsUnitTypes::AreaUnit units = da.areaUnits();
 
-  QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
+  QgsDebugMsg( QStringLiteral( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
 
   QVERIFY( ( qgsDoubleNear( area, 3.0, 0.00000001 ) && units == QgsUnitTypes::AreaSquareDegrees )
            || ( qgsDoubleNear( area, 37176087091.5, 0.1 ) && units == QgsUnitTypes::AreaSquareMeters ) );
@@ -310,7 +310,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   da.setEllipsoid( QStringLiteral( "WGS84" ) );
   area = da.measureArea( polygon );
   units = da.areaUnits();
-  QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
+  QgsDebugMsg( QStringLiteral( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
   // should always be in Meters Squared
   QGSCOMPARENEAR( area, 36918093794.1, 0.1 );
   QCOMPARE( units, QgsUnitTypes::AreaSquareMeters );
@@ -337,7 +337,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   // measurement should be in square feet
   area = da.measureArea( polygon );
   units = da.areaUnits();
-  QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
+  QgsDebugMsg( QStringLiteral( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
   QGSCOMPARENEAR( area, 2000000, 0.001 );
   QCOMPARE( units, QgsUnitTypes::AreaSquareFeet );
 
@@ -349,13 +349,13 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   // now should be in Square Meters again
   area = da.measureArea( polygon );
   units = da.areaUnits();
-  QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
+  QgsDebugMsg( QStringLiteral( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
   QGSCOMPARENEAR( area, 185818.590966, 1.0 );
   QCOMPARE( units, QgsUnitTypes::AreaSquareMeters );
 
   // test converting the resultant area
   area = da.convertAreaMeasurement( area, QgsUnitTypes::AreaSquareYards );
-  QgsDebugMsg( QString( "measured %1 in sq yrds" ).arg( area ) );
+  QgsDebugMsg( QStringLiteral( "measured %1 in sq yrds" ).arg( area ) );
   QGSCOMPARENEAR( area, 222237.185213, 0.3 );
 }
 

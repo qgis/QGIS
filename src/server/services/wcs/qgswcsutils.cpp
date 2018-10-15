@@ -82,7 +82,7 @@ namespace QgsWcs
     }
     catch ( QgsCsException &e )
     {
-      QgsDebugMsg( QString( "Transform error caught: %1. Using original layer extent." ).arg( e.what() ) );
+      QgsDebugMsg( QStringLiteral( "Transform error caught: %1. Using original layer extent." ).arg( e.what() ) );
       BBox = layer->extent();
     }
     QDomElement lonLatElem = doc.createElement( QStringLiteral( "lonLatEnvelope" ) );

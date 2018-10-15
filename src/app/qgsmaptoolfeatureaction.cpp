@@ -118,7 +118,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
   {
     Q_UNUSED( cse );
     // catch exception for 'invalid' point and proceed with no features found
-    QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
+    QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
   QgsAction defaultAction = layer->actions()->defaultAction( QStringLiteral( "Canvas" ) );

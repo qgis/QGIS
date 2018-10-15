@@ -355,7 +355,7 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
 
 void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
 {
-  QgsDebugMsg( QString( "rowCount() = %1" ).arg( mModel->rowCount( mProxyModel->mapToSource( index ) ) ) );
+  QgsDebugMsg( QStringLiteral( "rowCount() = %1" ).arg( mModel->rowCount( mProxyModel->mapToSource( index ) ) ) );
   QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
 
   if ( item && item->type() == QgsDataItem::Project )

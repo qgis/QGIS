@@ -102,7 +102,7 @@ void QgsProviderRegistry::init()
   mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*.so" ) ) );
 #endif
 
-  QgsDebugMsg( QString( "Checking %1 for provider plugins" ).arg( mLibraryDirectory.path() ) );
+  QgsDebugMsg( QStringLiteral( "Checking %1 for provider plugins" ).arg( mLibraryDirectory.path() ) );
 
   if ( mLibraryDirectory.count() == 0 )
   {
@@ -138,7 +138,7 @@ void QgsProviderRegistry::init()
     QLibrary myLib( fi.filePath() );
     if ( !myLib.load() )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (lib not loadable): %2" ).arg( myLib.fileName(), myLib.errorString() ) );
+      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (lib not loadable): %2" ).arg( myLib.fileName(), myLib.errorString() ) );
       continue;
     }
 
@@ -147,7 +147,7 @@ void QgsProviderRegistry::init()
     isprovider_t *hasType = reinterpret_cast< isprovider_t * >( cast_to_fptr( myLib.resolve( "type" ) ) );
     if ( hasType )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (has type method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (has type method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
@@ -155,14 +155,14 @@ void QgsProviderRegistry::init()
     isprovider_t *isProvider = reinterpret_cast< isprovider_t * >( cast_to_fptr( myLib.resolve( "isProvider" ) ) );
     if ( !isProvider )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (no isProvider method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (no isProvider method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
     // check to see if this is a provider plugin
     if ( !isProvider() )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (not a provider)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (not a provider)" ).arg( myLib.fileName() ) );
       continue;
     }
 
@@ -170,14 +170,14 @@ void QgsProviderRegistry::init()
     description_t *pDesc = reinterpret_cast< description_t * >( cast_to_fptr( myLib.resolve( "description" ) ) );
     if ( !pDesc )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (no description method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (no description method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
     providerkey_t *pKey = reinterpret_cast< providerkey_t * >( cast_to_fptr( myLib.resolve( "providerKey" ) ) );
     if ( !pKey )
     {
-      QgsDebugMsg( QString( "Checking %1: ...invalid (no providerKey method)" ).arg( myLib.fileName() ) );
+      QgsDebugMsg( QStringLiteral( "Checking %1: ...invalid (no providerKey method)" ).arg( myLib.fileName() ) );
       continue;
     }
 
@@ -214,7 +214,7 @@ void QgsProviderRegistry::init()
       if ( !fileVectorFilters.isEmpty() )
         mVectorFileFilters += fileVectorFilters;
 
-      QgsDebugMsg( QString( "Checking %1: ...loaded OK (%2 file filters)" ).arg( myLib.fileName() ).arg( fileVectorFilters.split( ";;" ).count() ) );
+      QgsDebugMsg( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( myLib.fileName() ).arg( fileVectorFilters.split( ";;" ).count() ) );
     }
 
     // now get raster file filters, if any
@@ -230,7 +230,7 @@ void QgsProviderRegistry::init()
       if ( !fileRasterFilters.isEmpty() )
         mRasterFileFilters += fileRasterFilters;
 
-      QgsDebugMsg( QString( "Checking %1: ...loaded OK (%2 file filters)" ).arg( myLib.fileName() ).arg( fileRasterFilters.split( ";;" ).count() ) );
+      QgsDebugMsg( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( myLib.fileName() ).arg( fileRasterFilters.split( ";;" ).count() ) );
     }
 
     // call initProvider() if such function is available - allows provider to register its services to QGIS
@@ -252,7 +252,7 @@ void QgsProviderRegistry::clean()
 
   while ( it != mProviders.end() )
   {
-    QgsDebugMsgLevel( QString( "cleanup:%1" ).arg( it->first ), 5 );
+    QgsDebugMsgLevel( QStringLiteral( "cleanup:%1" ).arg( it->first ), 5 );
     QString lib = it->second->library();
     if ( !lib.isEmpty() )
     {
@@ -424,7 +424,7 @@ QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey
   classFactoryFunction_t *classFactory = reinterpret_cast< classFactoryFunction_t * >( cast_to_fptr( myLib.resolve( "classFactory" ) ) );
   if ( !classFactory )
   {
-    QgsDebugMsg( QString( "Failed to load %1: no classFactory method" ).arg( lib ) );
+    QgsDebugMsg( QStringLiteral( "Failed to load %1: no classFactory method" ).arg( lib ) );
     return nullptr;
   }
 
@@ -436,7 +436,7 @@ QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey
     return nullptr;
   }
 
-  QgsDebugMsg( QString( "Instantiated the data provider plugin: %1" ).arg( dataProvider->name() ) );
+  QgsDebugMsg( QStringLiteral( "Instantiated the data provider plugin: %1" ).arg( dataProvider->name() ) );
   return dataProvider;
 } // QgsProviderRegistry::setDataProvider
 
