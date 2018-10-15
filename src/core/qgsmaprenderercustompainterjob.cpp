@@ -312,7 +312,7 @@ void QgsMapRendererCustomPainterJob::doRender()
     mPainter->drawImage( 0, 0, *mLabelJob.img );
   }
 
-  QgsDebugMsg( "Rendering completed in (seconds): " + QString( "%1" ).arg( renderTime.elapsed() / 1000.0 ) );
+  QgsDebugMsgLevel( "Rendering completed in (seconds): " + QString( "%1" ).arg( renderTime.elapsed() / 1000.0 ), 2 );
 }
 
 
