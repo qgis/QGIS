@@ -1193,6 +1193,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 /**
  * \ingroup core
  * \class QgsLinePatternFillSymbolLayer
+ * A symbol fill consisting of repeated parallel lines.
  */
 class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 {
@@ -1200,27 +1201,44 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsLinePatternFillSymbolLayer();
     ~QgsLinePatternFillSymbolLayer() override;
 
+    /**
+     * Creates a new QgsLinePatternFillSymbolLayer from a \a properties map. The caller takes
+     * ownership of the returned object.
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+
+    /**
+     * Creates a new QgsLinePatternFillSymbolLayer from a SLD \a element. The caller takes
+     * ownership of the returned object.
+     */
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     QString layerType() const override;
-
     void startRender( QgsSymbolRenderContext &context ) override;
-
     void stopRender( QgsSymbolRenderContext &context ) override;
-
     QgsStringMap properties() const override;
-
     QgsLinePatternFillSymbolLayer *clone() const override SIP_FACTORY;
-
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
-
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
 
     QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
 
-    //getters and setters
+    /**
+     * Sets the angle for the parallel lines used to fill the symbol.
+     *
+     * Angles are in degrees, clockwise from North.
+     *
+     * \see lineAngle()
+     */
     void setLineAngle( double a ) { mLineAngle = a; }
+
+    /**
+     * Returns the angle for the parallel lines used to fill the symbol.
+     *
+     * Angles are in degrees, clockwise from North.
+     *
+     * \see setLineAngle()
+     */
     double lineAngle() const { return mLineAngle; }
 
     /**
@@ -1238,16 +1256,54 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     */
     double distance() const { return mDistance; }
 
+    /**
+     * Sets the width of the line subsymbol used to render the parallel lines
+     * in the fill.
+     *
+     * \see lineWidth()
+     */
     void setLineWidth( double w );
+
+    /**
+     * Returns the width of the line subsymbol used to render the parallel lines
+     * in the fill.
+     *
+     * \see setLineWidth()
+     */
     double lineWidth() const { return mLineWidth; }
+
     void setColor( const QColor &c ) override;
     QColor color() const override;
+
+    /**
+     * Sets the \a offset distance for lines within the fill, which is
+     * the distance to offset the parallel lines from their normal
+     * position.
+     *
+     * Units are specified via setOffsetUnit().
+     *
+     * \see offset()
+     * \see setOffsetUnit()
+     * \see setOffsetMapUnitScale()
+     */
     void setOffset( double offset ) { mOffset = offset; }
+
+    /**
+     * Returns the offset distance for lines within the fill, which is
+     * the distance to offset the parallel lines from their normal
+     * position.
+     *
+     * Units are retrieved via offsetUnit().
+     *
+     * \see setOffset()
+     * \see offsetUnit()
+     * \see offsetMapUnitScale()
+     */
     double offset() const { return mOffset; }
 
     /**
-     * Sets the units for the distance between lines in the fill pattern.
-     * \param unit distance units
+     * Sets the \a unit for the distance between lines in the fill pattern.
+     *
      * \see distanceUnit()
      * \see setDistance()
     */
@@ -1255,58 +1311,107 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     /**
      * Returns the units for the distance between lines in the fill pattern.
+     *
      * \see setDistanceUnit()
      * \see distance()
     */
     QgsUnitTypes::RenderUnit distanceUnit() const { return mDistanceUnit; }
 
+    /**
+     * Sets the map unit \a scale for the pattern's line distance.
+     *
+     * \see distanceMapUnitScale()
+     * \see setDistance()
+     * \see setDistanceUnit()
+     */
     void setDistanceMapUnitScale( const QgsMapUnitScale &scale ) { mDistanceMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the pattern's line distance.
+     *
+     * \see setDistanceMapUnitScale()
+     * \see distance()
+     * \see distanceUnit()
+     */
     const QgsMapUnitScale &distanceMapUnitScale() const { return mDistanceMapUnitScale; }
 
     /**
-     * Sets the units for the line's width.
-     * \param unit width units
+     * Sets the \a unit for the line's width.
+     *
      * \see lineWidthUnit()
     */
     void setLineWidthUnit( QgsUnitTypes::RenderUnit unit ) { mLineWidthUnit = unit; }
 
     /**
      * Returns the units for the line's width.
+     *
      * \see setLineWidthUnit()
     */
     QgsUnitTypes::RenderUnit lineWidthUnit() const { return mLineWidthUnit; }
 
+    /**
+     * Sets the map unit \a scale for the pattern's line width.
+     *
+     * \see lineWidthMapUnitScale()
+     * \see setLineWidth()
+     * \see setLineWidthUnit()
+     */
     void setLineWidthMapUnitScale( const QgsMapUnitScale &scale ) { mLineWidthMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the pattern's line width.
+     *
+     * \see setLineWidthMapUnitScale()
+     * \see lineWidth()
+     * \see lineWidthUnit()
+     */
     const QgsMapUnitScale &lineWidthMapUnitScale() const { return mLineWidthMapUnitScale; }
 
     /**
-     * Sets the units for the line pattern's offset.
-     * \param unit offset units
+     * Sets the \a unit for the line pattern's offset.
+
      * \see offsetUnit()
     */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
 
     /**
      * Returns the units for the line pattern's offset.
+     *
      * \see setOffsetUnit()
     */
     QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
+    /**
+     * Sets the map unit \a scale for the pattern's line offset.
+     *
+     * \see offsetMapUnitScale()
+     * \see setOffset()
+     * \see setOffsetUnit()
+     */
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the pattern's line offset.
+     *
+     * \see setOffsetMapUnitScale()
+     * \see offset()
+     * \see offsetUnit()
+     */
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
-
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
-
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsSymbol *subSymbol() override;
-
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
   protected:
+
+    void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
+
+  private:
     //! Distance (in mm or map units) between lines
     double mDistance = 5.0;
     QgsUnitTypes::RenderUnit mDistanceUnit = QgsUnitTypes::RenderMillimeters;
@@ -1322,9 +1427,6 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 
-    void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
-
-  private:
 #ifdef SIP_RUN
     QgsLinePatternFillSymbolLayer( const QgsLinePatternFillSymbolLayer &other );
 #endif
