@@ -941,6 +941,16 @@ QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest &request
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( new QgsVectorLayerFeatureSource( this ), true, request ) );
 }
 
+QgsGeometry QgsVectorLayer::getGeometry( QgsFeatureId fid ) const
+{
+  QgsFeature feature;
+  getFeatures( QgsFeatureRequest( fid ).setFlags( QgsFeatureRequest::SubsetOfAttributes ) ).nextFeature( feature );
+  if ( feature.isValid() )
+    return feature.geometry();
+  else
+    return QgsGeometry();
+}
+
 bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
