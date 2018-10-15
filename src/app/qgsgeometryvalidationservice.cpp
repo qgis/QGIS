@@ -134,7 +134,7 @@ void QgsGeometryValidationService::onFeatureDeleted( QgsVectorLayer *layer, QgsF
 
   mLayerChecks[layer].singleFeatureCheckErrors.remove( fid );
 
-  // There should be no geometry errors on an inexistent feature, right?
+  // There should be no geometry errors on a non-existent feature, right?
   emit geometryCheckCompleted( layer, fid, QList<std::shared_ptr<QgsSingleGeometryCheckError>>() );
 }
 
@@ -144,7 +144,7 @@ void QgsGeometryValidationService::onBeforeCommitChanges( QgsVectorLayer *layer 
   {
     if ( !layer->allowCommit() )
     {
-      showMessage( tr( "Running geometry validation checks before saving ..." ) );
+      showMessage( tr( "Running geometry validation checks before saving…" ) );
     }
 
     mLayerChecks[layer].commitPending = true;
