@@ -31,6 +31,16 @@
 class QgsGeometryCheckError;
 class QgsFeaturePool;
 
+/**
+ * \ingroup analysis
+ * This class manages all known geometry check factories.
+ *
+ * QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
+ * QgsAnalysis::geometryCheckRegistry().
+ *
+ * \note This class is a technology preview and unstable API.
+ * \since QGIS 3.4
+ */
 class ANALYSIS_EXPORT QgsGeometryCheck
 {
     Q_GADGET

@@ -15,6 +15,12 @@ class QgsFeaturePool : QgsFeatureSink /Abstract/
 {
 %Docstring
 A feature pool is based on a vector layer and caches features.
+
+.. note::
+
+   This class is a technology preview and unstable API.
+
+.. versionadded:: 3.4
 %End
 
 %TypeHeaderCode

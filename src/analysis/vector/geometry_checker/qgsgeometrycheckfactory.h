@@ -34,8 +34,12 @@ struct QgsGeometryCheckContext;
 
 /**
  * \ingroup analysis
- */
-class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
+ *
+ * A factory for geometry checks.
+ *
+ * \note This class is a technology preview and unstable API.
+ * \since QGIS 3.4
+ */class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
 {
   public:
 

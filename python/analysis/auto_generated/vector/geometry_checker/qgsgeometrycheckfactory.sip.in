@@ -12,14 +12,6 @@
 
 
 
-class QgsGeometryCheckFactory /Abstract/
-{
-
-%TypeHeaderCode
-#include "qgsgeometrycheckfactory.h"
-%End
-  public:
-
     virtual ~QgsGeometryCheckFactory();
 
     virtual QgsGeometryCheck *createGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration ) const = 0 /Factory/;
