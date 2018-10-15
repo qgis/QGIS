@@ -15,6 +15,7 @@
 
 #include "qgspoint3dsymbol.h"
 
+#include "qgs3dutils.h"
 #include "qgsreadwritecontext.h"
 #include "qgsxmlutils.h"
 

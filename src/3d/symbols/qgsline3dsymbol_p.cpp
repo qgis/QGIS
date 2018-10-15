@@ -174,7 +174,7 @@ Qt3DRender::QGeometryRenderer *QgsLine3DSymbolEntityNode::rendererSimple( const 
     if ( f.geometry().isNull() )
       continue;
 
-    if ( symbol.altitudeBinding() == AltBindCentroid )
+    if ( symbol.altitudeBinding() == Qgs3DTypes::AltBindCentroid )
       centroid = QgsPoint( f.geometry().centroid().asPoint() );
 
     QgsGeometry geom = f.geometry();

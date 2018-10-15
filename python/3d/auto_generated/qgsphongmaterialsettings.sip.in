@@ -1,0 +1,85 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsphongmaterialsettings.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsPhongMaterialSettings
+{
+%Docstring
+Basic shading material used for rendering based on the Phong shading model
+with three color components: ambient, diffuse and specular.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsphongmaterialsettings.h"
+%End
+  public:
+    QgsPhongMaterialSettings();
+
+    QColor ambient() const;
+%Docstring
+Returns ambient color component
+%End
+    QColor diffuse() const;
+%Docstring
+Returns diffuse color component
+%End
+    QColor specular() const;
+%Docstring
+Returns specular color component
+%End
+    float shininess() const;
+%Docstring
+Returns shininess of the surface
+%End
+
+    void setAmbient( const QColor &ambient );
+%Docstring
+Sets ambient color component
+%End
+    void setDiffuse( const QColor &diffuse );
+%Docstring
+Sets diffuse color component
+%End
+    void setSpecular( const QColor &specular );
+%Docstring
+Sets specular color component
+%End
+    void setShininess( float shininess );
+%Docstring
+Sets shininess of the surface
+%End
+
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads settings from a DOM element
+%End
+    void writeXml( QDomElement &elem ) const;
+%Docstring
+Writes settings to a DOM element
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsphongmaterialsettings.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

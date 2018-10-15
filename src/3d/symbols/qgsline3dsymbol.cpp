@@ -15,6 +15,8 @@
 
 #include "qgsline3dsymbol.h"
 
+#include "qgs3dutils.h"
+
 QgsAbstract3DSymbol *QgsLine3DSymbol::clone() const
 {
   return new QgsLine3DSymbol( *this );
