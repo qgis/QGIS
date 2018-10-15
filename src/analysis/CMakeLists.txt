@@ -152,7 +152,6 @@ SET(QGIS_ANALYSIS_SRCS
   vector/geometry_checker/qgsgeometryduplicatecheck.cpp
   vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp
   vector/geometry_checker/qgsgeometryfollowboundariescheck.cpp
-  vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp
   vector/geometry_checker/qgsgeometrygapcheck.cpp
   vector/geometry_checker/qgsgeometrymissingvertexcheck.cpp
   vector/geometry_checker/qgsgeometryholecheck.cpp
@@ -188,6 +187,7 @@ SET(QGIS_ANALYSIS_MOC_HDRS
   vector/geometry_checker/qgsgeometrycheck.h
   vector/geometry_checker/qgsvectorlayerfeaturepool.h
   vector/geometry_checker/qgsgeometrygapcheck.h
+  vector/geometry_checker/qgsgeometrymissingvertexcheck.h
 )
 
 INCLUDE_DIRECTORIES(SYSTEM ${SPATIALITE_INCLUDE_DIR})
@@ -293,7 +293,6 @@ SET(QGIS_ANALYSIS_HDRS
   vector/geometry_checker/qgsgeometryduplicatecheck.h
   vector/geometry_checker/qgsgeometryduplicatenodescheck.h
   vector/geometry_checker/qgsgeometryfollowboundariescheck.h
-  vector/geometry_checker/qgsgeometrymissingvertexcheck.h
   vector/geometry_checker/qgsgeometryholecheck.h
   vector/geometry_checker/qgsgeometrylineintersectioncheck.h
   vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.h

@@ -34,12 +34,15 @@ class QgsCurvePolygon;
  */
 class ANALYSIS_EXPORT QgsGeometryMissingVertexCheck : public QgsGeometryCheck
 {
+    Q_GADGET
+
   public:
     enum ResolutionMethod
     {
       NoChange,
       AddMissingVertex
     };
+    Q_ENUM( ResolutionMethod )
 
     explicit QgsGeometryMissingVertexCheck( const QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfiguration );
     void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
