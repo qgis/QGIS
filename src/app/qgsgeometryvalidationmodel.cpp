@@ -78,7 +78,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
       case DetailsRole:
       {
         const QgsFeatureId fid = topologyError->featureId();
-        const QgsFeature feature = mCurrentLayer->getFeature( fid ); // TODO: this should be cached!
+        const QgsFeature feature = getFeature( fid );
         mExpressionContext.setFeature( feature );
         const QVariant featureTitle = mDisplayExpression.evaluate( &mExpressionContext );
 
@@ -97,7 +97,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
         const QgsFeatureId fid = topologyError->featureId();
         if ( FID_IS_NULL( fid ) )
           return QgsRectangle();
-        const QgsFeature feature = mCurrentLayer->getFeature( fid ); // TODO: this should be cached!
+        const QgsFeature feature = getFeature( fid );
         return feature.geometry().boundingBox();
       }
 
@@ -121,7 +121,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
         const QgsFeatureId fid = topologyError->featureId();
         if ( !FID_IS_NULL( fid ) )
         {
-          const QgsFeature feature = mCurrentLayer->getFeature( fid ); // TODO: this should be cached!
+          const QgsFeature feature = getFeature( fid );
           return feature.geometry();
         }
         return QgsGeometry();
@@ -147,7 +147,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
     {
       case Qt::DisplayRole:
       {
-        QgsFeature feature = mCurrentLayer->getFeature( featureItem.fid ); // TODO: this should be cached!
+        QgsFeature feature = getFeature( featureItem.fid );
         mExpressionContext.setFeature( feature );
         QString featureTitle = mDisplayExpression.evaluate( &mExpressionContext ).toString();
         if ( featureTitle.isEmpty() )
@@ -185,7 +185,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
 
       case FeatureExtentRole:
       {
-        return mCurrentLayer->getFeature( featureItem.fid ).geometry().boundingBox();
+        return getFeature( featureItem.fid ).geometry().boundingBox();
       }
 
       case ErrorLocationGeometryRole:
@@ -232,11 +232,13 @@ void QgsGeometryValidationModel::setCurrentLayer( QgsVectorLayer *currentLayer )
 
   beginResetModel();
   mCurrentLayer = currentLayer;
+  mCachedFeature.setValid( false );
   if ( mCurrentLayer )
   {
     mDisplayExpression = mCurrentLayer ? mCurrentLayer->displayExpression() : QString();
     mExpressionContext = QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( mCurrentLayer ) );
     mDisplayExpression.prepare( &mExpressionContext );
+    mRequiredAttributes = mDisplayExpression.referencedColumns().toList();
   }
   else
   {
@@ -374,4 +376,16 @@ int QgsGeometryValidationModel::errorsForFeature( QgsVectorLayer *layer, QgsFeat
     idx++;
   }
   return -1;
+}
+
+QgsFeature QgsGeometryValidationModel::getFeature( QgsFeatureId fid ) const
+{
+  if ( fid != mCachedFeature.id() || !mCachedFeature.isValid() )
+  {
+    QgsFeatureRequest request;
+    request.setFilterFid( fid );
+    request.setSubsetOfAttributes( mRequiredAttributes, mCurrentLayer->fields() );
+    mCachedFeature = mCurrentLayer->getFeature( fid );
+  }
+  return mCachedFeature;
 }

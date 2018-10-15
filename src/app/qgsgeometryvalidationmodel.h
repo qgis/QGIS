@@ -68,19 +68,23 @@ class QgsGeometryValidationModel : public QAbstractItemModel
         : fid( fid )
       {}
 
-      QgsFeatureId fid; // TODO INITIALIZE PROPERLY
+      QgsFeatureId fid = FID_NULL;
       QList<std::shared_ptr<QgsSingleGeometryCheckError>> errors;
     };
 
     int errorsForFeature( QgsVectorLayer *layer, QgsFeatureId fid );
 
+    QgsFeature getFeature( QgsFeatureId fid ) const;
+
     QgsGeometryValidationService *mGeometryValidationService = nullptr;
     QgsVectorLayer *mCurrentLayer = nullptr;
     mutable QgsExpression mDisplayExpression;
+    mutable QStringList mRequiredAttributes;
     mutable QgsExpressionContext mExpressionContext;
 
     QMap<QgsVectorLayer *, QList< FeatureErrors > > mErrorStorage;
     QMap<QgsVectorLayer *, QList< std::shared_ptr< QgsGeometryCheckError > > > mTopologyErrorStorage;
+    mutable QgsFeature mCachedFeature;
 };
 
 #endif // QGSGEOMETRYVALIDATIONMODEL_H
