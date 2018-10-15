@@ -155,7 +155,7 @@ void QgsGeometryValidationDock::onRowsInserted()
   {
     mQgisApp->addDockWidget( Qt::RightDockWidgetArea, this );
   }
-  raise();
+  setUserVisible( true );
 }
 
 QgsGeometryValidationService *QgsGeometryValidationDock::geometryValidationService() const
