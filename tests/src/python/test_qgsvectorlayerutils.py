@@ -275,7 +275,7 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         # since field 1 has Unique Constraint, it ignores value 123 that already has been set and sets to 128
         self.assertEqual(f.attributes(), ['test_1', 128, NULL])
         layer.setFieldConstraint(0, QgsFieldConstraints.ConstraintUnique)
-        # since field 0 and 1 already have values test_1 and 123, the output must be null
+        # since field 0 and 1 already have values test_1 and 123, the output must be a new unique value
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
         self.assertEqual(f.attributes(), ['test_4', 128, NULL])
 
