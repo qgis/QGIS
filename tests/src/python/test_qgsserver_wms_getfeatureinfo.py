@@ -351,6 +351,34 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'wms_getfeatureinfo_point_tolerance_20_text_xml',
                                  'test_project_values.qgz')
 
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=ls2d&styles=&' +
+                                 'VERSION=1.3.0&' +
+                                 'info_format=text%2Fxml&' +
+                                 'width=400&height=200' +
+                                 '&bbox=-50396.4,-2783.0,161715.8,114108.6' +
+                                 '&CRS=EPSG:3857' +
+                                 '&FEATURE_COUNT=10' +
+                                 '&WITH_GEOMETRY=False' +
+                                 '&QUERY_LAYERS=ls2d&I=153&J=147' +
+                                 '&FI_LINE_TOLERANCE=0',
+                                 'wms_getfeatureinfo_line_tolerance_0_text_xml',
+                                 'test_project_values.qgz')
+
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=ls2d&styles=&' +
+                                 'VERSION=1.3.0&' +
+                                 'info_format=text%2Fxml&' +
+                                 'width=400&height=200' +
+                                 '&bbox=-50396.4,-2783.0,161715.8,114108.6' +
+                                 '&CRS=EPSG:3857' +
+                                 '&FEATURE_COUNT=10' +
+                                 '&WITH_GEOMETRY=False' +
+                                 '&QUERY_LAYERS=ls2d&I=153&J=147' +
+                                 '&FI_LINE_TOLERANCE=20',
+                                 'wms_getfeatureinfo_line_tolerance_20_text_xml',
+                                 'test_project_values.qgz')
+
 
 if __name__ == '__main__':
     unittest.main()
