@@ -2174,12 +2174,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void beforeRollBack();
 
     /**
-     * Is emitted, after changes are rolled back
-     * \since QGIS 3.4
-     */
-    void afterRollBack();
-
-    /**
      * Will be emitted, when a new attribute has been added to this vector layer.
      * Applies only to types QgsFields::OriginEdit, QgsFields::OriginProvider and QgsFields::OriginExpression
      *

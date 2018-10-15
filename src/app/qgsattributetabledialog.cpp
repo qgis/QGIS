@@ -113,16 +113,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mActionExpressionSelect, &QAction::triggered, this, &QgsAttributeTableDialog::mActionExpressionSelect_triggered );
   connect( mMainView, &QgsDualView::showContextMenuExternally, this, &QgsAttributeTableDialog::showContextMenu );
 
-  // Block/unblock table updates (feature cache signals)
-  connect( QgisApp::instance(), &QgisApp::attributeTableUpdateBlocked, this, [ = ]( const QgsVectorLayer * layer, const bool blocked )
-  {
-    if ( layer == mLayer )
-      this->blockCacheUpdateSignals( blocked );
-  } );
-  // Massive rollbacks can also freeze the GUI due to the feature cache signals
-  connect( mLayer, &QgsVectorLayer::beforeRollBack, this, [ = ] { this->blockCacheUpdateSignals( true ); } );
-  connect( mLayer, &QgsVectorLayer::afterRollBack, this, [ = ] { this->blockCacheUpdateSignals( false ); } );
-
   const QgsFields fields = mLayer->fields();
   for ( const QgsField &field : fields )
   {
@@ -743,6 +733,7 @@ void QgsAttributeTableDialog::mActionOpenFieldCalculator_triggered()
   if ( calc.exec() == QDialog::Accepted )
   {
     int col = masterModel->fieldCol( calc.changedAttributeId() );
+
     if ( col >= 0 )
     {
       masterModel->reload( masterModel->index( 0, col ), masterModel->index( masterModel->rowCount() - 1, col ) );
@@ -1154,15 +1145,6 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
 }
 
-void QgsAttributeTableDialog::blockCacheUpdateSignals( const bool block )
-{
-  QgsAttributeTableModel *masterModel = mMainView->masterModel();
-
-  if ( ! masterModel )
-    return;
-
-  masterModel->layerCache()->blockSignals( block );
-}
 
 void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
 {

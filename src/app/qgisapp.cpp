@@ -7091,14 +7091,13 @@ void QgisApp::fieldCalculator()
 
 void QgisApp::attributeTable( QgsAttributeTableFilterModel::FilterMode filter )
 {
-  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
-  if ( !vectorLayer )
+  QgsVectorLayer *myLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  if ( !myLayer )
   {
     return;
   }
 
-  QgsAttributeTableDialog *mDialog = new QgsAttributeTableDialog( vectorLayer, filter );
-
+  QgsAttributeTableDialog *mDialog = new QgsAttributeTableDialog( myLayer, filter );
   mDialog->show();
   // the dialog will be deleted by itself on close
 }
@@ -9189,7 +9188,6 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
   return res;
 }
-
 
 void QgisApp::saveActiveLayerEdits()
 {
@@ -14147,9 +14145,4 @@ void QgisApp::triggerCrashHandler()
 #ifdef Q_OS_WIN
   RaiseException( 0x12345678, 0, 0, nullptr );
 #endif
-}
-
-void QgisApp::blockAttributeTableUpdates( const QgsVectorLayer *layer, const bool blocked )
-{
-  emit attributeTableUpdateBlocked( layer, blocked );
 }

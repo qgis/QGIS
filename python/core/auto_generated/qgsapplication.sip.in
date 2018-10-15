@@ -824,7 +824,6 @@ Emits the signal to collect all the strings of .qgs to be included in ts file
 .. versionadded:: 3.4
 %End
 
-
 %If (ANDROID)
     //dummy method to workaround sip generation issue
     bool x11EventFilter( XEvent *event );
@@ -852,7 +851,6 @@ In order to register translatable strings, connect to this signal and register t
 
 .. versionadded:: 3.4
 %End
-
 
 };
 

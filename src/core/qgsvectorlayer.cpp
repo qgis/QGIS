@@ -2983,8 +2983,6 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
 
   mEditBuffer->rollBack();
 
-  emit afterRollBack();
-
   if ( isModified() )
   {
     // new undo stack roll back method

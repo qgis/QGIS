@@ -242,7 +242,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     void updateMultiEditButtonState();
     void deleteFeature( QgsFeatureId fid );
-    void blockCacheUpdateSignals( const bool block );
 
     friend class TestQgsAttributeTable;
 };

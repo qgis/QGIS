@@ -2379,13 +2379,6 @@ Is emitted, before changes are committed to the data provider
 Is emitted, before changes are rolled back
 %End
 
-    void afterRollBack();
-%Docstring
-Is emitted, after changes are rolled back
-
-.. versionadded:: 3.4
-%End
-
     void attributeAdded( int idx );
 %Docstring
 Will be emitted, when a new attribute has been added to this vector layer.
