@@ -424,6 +424,14 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
       }
     }
 
+    // 5. passed attribute value
+    // note - deliberately not using else if!
+    if ( !v.isValid() && attributes.contains( idx ) )
+    {
+      v = attributes.value( idx );
+    }
+
+
     // last of all... check that unique constraints are respected
     // we can't handle not null or expression constraints here, since there's no way to pick a sensible
     // value if the constraint is violated
