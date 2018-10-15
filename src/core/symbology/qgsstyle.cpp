@@ -1600,6 +1600,10 @@ bool QgsStyle::importXml( const QString &filename )
     return false;
   }
 
+  QgsReadWriteContext rwContext;
+  QgsPathResolver resolver;
+  rwContext.setPathResolver( QgsPathResolver( filename ) );
+
   QgsSymbolMap symbols;
 
   QDomElement symbolsElement = docEl.firstChildElement( QStringLiteral( "symbols" ) );
@@ -1628,7 +1632,7 @@ bool QgsStyle::importXml( const QString &filename )
           favorite = true;
         }
 
-        QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( e, QgsReadWriteContext() );
+        QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( e, rwContext );
         if ( symbol )
         {
           addSymbol( name, symbol );
