@@ -293,6 +293,10 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertEqual(f.attributes(), ['test_5', 131, NULL])
         layer.setDefaultValueDefinition(1, QgsDefaultValue(None))
 
+        # test with manually correct unique constraint
+        f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 132})
+        self.assertEqual(f.attributes(), ['test_5', 132, NULL])
+
     def testDuplicateFeature(self):
         """ test duplicating a feature """
 
