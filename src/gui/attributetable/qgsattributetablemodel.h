@@ -391,6 +391,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     int mExtraColumns = 0;
 
+    //! Edit command or rollback is running
+    bool mBulkEditCommandRunning = false;
+
     friend class TestQgsAttributeTable;
 
 };
