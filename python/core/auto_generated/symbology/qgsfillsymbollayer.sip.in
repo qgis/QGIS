@@ -1308,6 +1308,9 @@ Returns the map unit scale for the pattern's stroke.
 
 class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
 {
+%Docstring
+A symbol fill consisting of repeated parallel lines.
+%End
 
 %TypeHeaderCode
 #include "qgsfillsymbollayer.h"
@@ -1317,25 +1320,28 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     ~QgsLinePatternFillSymbolLayer();
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+%Docstring
+Creates a new QgsLinePatternFillSymbolLayer from a ``properties`` map. The caller takes
+ownership of the returned object.
+%End
+
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+%Docstring
+Creates a new QgsLinePatternFillSymbolLayer from a SLD ``element``. The caller takes
+ownership of the returned object.
+%End
 
     virtual QString layerType() const;
 
-
     virtual void startRender( QgsSymbolRenderContext &context );
-
 
     virtual void stopRender( QgsSymbolRenderContext &context );
 
-
     virtual QgsStringMap properties() const;
-
 
     virtual QgsLinePatternFillSymbolLayer *clone() const /Factory/;
 
-
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
-
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
@@ -1343,7 +1349,22 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
 
     void setLineAngle( double a );
+%Docstring
+Sets the angle for the parallel lines used to fill the symbol.
+
+Angles are in degrees, clockwise from North.
+
+.. seealso:: :py:func:`lineAngle`
+%End
+
     double lineAngle() const;
+%Docstring
+Returns the angle for the parallel lines used to fill the symbol.
+
+Angles are in degrees, clockwise from North.
+
+.. seealso:: :py:func:`setLineAngle`
+%End
 
     void setDistance( double d );
 %Docstring
@@ -1366,19 +1387,59 @@ Returns the distance between lines in the fill pattern. Units are retrieved by d
 %End
 
     void setLineWidth( double w );
+%Docstring
+Sets the width of the line subsymbol used to render the parallel lines
+in the fill.
+
+.. seealso:: :py:func:`lineWidth`
+%End
+
     double lineWidth() const;
+%Docstring
+Returns the width of the line subsymbol used to render the parallel lines
+in the fill.
+
+.. seealso:: :py:func:`setLineWidth`
+%End
+
     virtual void setColor( const QColor &c );
 
     virtual QColor color() const;
 
+
     void setOffset( double offset );
+%Docstring
+Sets the ``offset`` distance for lines within the fill, which is
+the distance to offset the parallel lines from their normal
+position.
+
+Units are specified via setOffsetUnit().
+
+.. seealso:: :py:func:`offset`
+
+.. seealso:: :py:func:`setOffsetUnit`
+
+.. seealso:: :py:func:`setOffsetMapUnitScale`
+%End
+
     double offset() const;
+%Docstring
+Returns the offset distance for lines within the fill, which is
+the distance to offset the parallel lines from their normal
+position.
+
+Units are retrieved via offsetUnit().
+
+.. seealso:: :py:func:`setOffset`
+
+.. seealso:: :py:func:`offsetUnit`
+
+.. seealso:: :py:func:`offsetMapUnitScale`
+%End
 
     void setDistanceUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Sets the units for the distance between lines in the fill pattern.
-
-:param unit: distance units
+Sets the ``unit`` for the distance between lines in the fill pattern.
 
 .. seealso:: :py:func:`distanceUnit`
 
@@ -1395,13 +1456,30 @@ Returns the units for the distance between lines in the fill pattern.
 %End
 
     void setDistanceMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the pattern's line distance.
+
+.. seealso:: :py:func:`distanceMapUnitScale`
+
+.. seealso:: :py:func:`setDistance`
+
+.. seealso:: :py:func:`setDistanceUnit`
+%End
+
     const QgsMapUnitScale &distanceMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the pattern's line distance.
+
+.. seealso:: :py:func:`setDistanceMapUnitScale`
+
+.. seealso:: :py:func:`distance`
+
+.. seealso:: :py:func:`distanceUnit`
+%End
 
     void setLineWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Sets the units for the line's width.
-
-:param unit: width units
+Sets the ``unit`` for the line's width.
 
 .. seealso:: :py:func:`lineWidthUnit`
 %End
@@ -1414,13 +1492,30 @@ Returns the units for the line's width.
 %End
 
     void setLineWidthMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the pattern's line width.
+
+.. seealso:: :py:func:`lineWidthMapUnitScale`
+
+.. seealso:: :py:func:`setLineWidth`
+
+.. seealso:: :py:func:`setLineWidthUnit`
+%End
+
     const QgsMapUnitScale &lineWidthMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the pattern's line width.
+
+.. seealso:: :py:func:`setLineWidthMapUnitScale`
+
+.. seealso:: :py:func:`lineWidth`
+
+.. seealso:: :py:func:`lineWidthUnit`
+%End
 
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Sets the units for the line pattern's offset.
-
-:param unit: offset units
+Sets the ``unit`` for the line pattern's offset.
 
 .. seealso:: :py:func:`offsetUnit`
 %End
@@ -1433,22 +1528,38 @@ Returns the units for the line pattern's offset.
 %End
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the pattern's line offset.
+
+.. seealso:: :py:func:`offsetMapUnitScale`
+
+.. seealso:: :py:func:`setOffset`
+
+.. seealso:: :py:func:`setOffsetUnit`
+%End
+
     const QgsMapUnitScale &offsetMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the pattern's line offset.
+
+.. seealso:: :py:func:`setOffsetMapUnitScale`
+
+.. seealso:: :py:func:`offset`
+
+.. seealso:: :py:func:`offsetUnit`
+%End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
 
-
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
 
     virtual QgsMapUnitScale mapUnitScale() const;
 
-
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
     virtual QgsSymbol *subSymbol();
-
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
@@ -1457,9 +1568,6 @@ Returns the units for the line pattern's offset.
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
-%Docstring
-Offset perpendicular to line direction
-%End
 
   private:
     QgsLinePatternFillSymbolLayer( const QgsLinePatternFillSymbolLayer &other );
