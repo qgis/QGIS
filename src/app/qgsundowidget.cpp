@@ -38,6 +38,11 @@ QgsUndoWidget::QgsUndoWidget( QWidget *parent, QgsMapCanvas *mapCanvas )
   mPreviousCount = 0;
 }
 
+void QgsUndoWidget::setButtonsVisible( bool show )
+{
+  undoButton->setVisible( show );
+  redoButton->setVisible( show );
+}
 
 void QgsUndoWidget::destroyStack()
 {
