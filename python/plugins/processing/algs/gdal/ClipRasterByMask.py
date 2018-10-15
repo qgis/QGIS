@@ -78,7 +78,7 @@ class ClipRasterByMask(GdalAlgorithm):
                                                         self.tr('Create an output alpha band'),
                                                         defaultValue=False))
         self.addParameter(QgsProcessingParameterBoolean(self.CROP_TO_CUTLINE,
-                                                        self.tr('Crop the extent of the target dataset to the extent of the cutline'),
+                                                        self.tr('Match the extent of the clipped raster to the extent of the mask layer'),
                                                         defaultValue=True))
         self.addParameter(QgsProcessingParameterBoolean(self.KEEP_RESOLUTION,
                                                         self.tr('Keep resolution of output raster'),
