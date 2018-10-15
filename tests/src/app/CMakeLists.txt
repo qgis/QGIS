@@ -18,6 +18,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
+  ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_SOURCE_DIR}/src/app
@@ -110,4 +111,5 @@ ADD_QGIS_TEST(measuretool testqgsmeasuretool.cpp)
 ADD_QGIS_TEST(vertextool testqgsvertextool.cpp)
 ADD_QGIS_TEST(vectorlayersaveasdialogtest testqgsvectorlayersaveasdialog.cpp)
 ADD_QGIS_TEST(maptoolreverselinetest testqgsmaptoolreverseline.cpp)
+ADD_QGIS_TEST(qgsvectorlayerpropertiestest testqgsvectorlayerproperties.cpp)
 

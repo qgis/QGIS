@@ -33,6 +33,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   // available widgets tree
   QGridLayout *availableWidgetsWidgetLayout = new QGridLayout;
   mAvailableWidgetsTree = new DnDTree( mLayer );
+  mAvailableWidgetsTree->setObjectName( "mAvailableWidgetsTree" );
   availableWidgetsWidgetLayout->addWidget( mAvailableWidgetsTree );
   availableWidgetsWidgetLayout->setMargin( 0 );
   mAvailableWidgetsWidget->setLayout( availableWidgetsWidgetLayout );
@@ -782,9 +783,18 @@ QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, in
   mConstraintStrength.insert( QgsFieldConstraints::ConstraintUnique, mFieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
   mConstraintStrength.insert( QgsFieldConstraints::ConstraintExpression, mFieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
   mConstraintDescription = mFieldConstraints.constraintDescription();
-  const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( layer, layer->fields().field( idx ).name() );
-  mEditorWidgetType = setup.type();
-  mEditorWidgetConfig = setup.config();
+
+  if ( layer->attributeTableConfig().columns()[idx].hidden )
+  {
+    mEditorWidgetType = "Hidden";
+    mEditorWidgetConfig = QVariantMap();
+  }
+  else
+  {
+    const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( layer, layer->fields().field( idx ).name() );
+    mEditorWidgetType = setup.type();
+    mEditorWidgetConfig = setup.config();
+  }
 }
 
 QgsAttributesFormProperties::FieldConfig::operator QVariant()

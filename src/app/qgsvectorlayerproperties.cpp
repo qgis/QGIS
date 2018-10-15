@@ -625,6 +625,11 @@ void QgsVectorLayerProperties::apply()
     {
       columns[i].hidden = !mActionDialog->showWidgetInAttributeTable();
     }
+    else
+    {
+      QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, columns[i].name );
+      columns[i].hidden = ( setup.type() == QLatin1String( "Hidden" ) );
+    }
   }
 
   attributeTableConfig.setColumns( columns );
