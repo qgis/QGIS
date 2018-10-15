@@ -272,25 +272,25 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         # test with violated unique constraints
         layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique)
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
-        # since field 1 has Unique Constraint, it ignores value 123 that already has been set
-        self.assertEqual(f.attributes(), ['test_1', NULL, NULL])
+        # since field 1 has Unique Constraint, it ignores value 123 that already has been set and sets to 128
+        self.assertEqual(f.attributes(), ['test_1', 128, NULL])
         layer.setFieldConstraint(0, QgsFieldConstraints.ConstraintUnique)
         # since field 0 and 1 already have values test_1 and 123, the output must be null
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
-        self.assertEqual(f.attributes(), [NULL, NULL, NULL])
+        self.assertEqual(f.attributes(), ['test_4', 128, NULL])
 
         # test with violated unique constraints and default value expression providing unique value
         layer.setDefaultValueDefinition(1, QgsDefaultValue('130'))
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
         # since field 1 has Unique Constraint, it ignores value 123 that already has been set and adds the default value
-        self.assertEqual(f.attributes(), [NULL, 130, NULL])
+        self.assertEqual(f.attributes(), ['test_4', 130, NULL])
         # fallback: test with violated unique constraints and default value expression providing already existing value
         # add the feature with the default value:
         self.assertTrue(layer.dataProvider().addFeatures([f]))
-        f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_2', 1: 123})
+        f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
         # since field 1 has Unique Constraint, it ignores value 123 that already has been set and adds the default value
         # and since the default value providing an already existing value (130) it generates a unique value (next int: 131)
-        self.assertEqual(f.attributes(), [NULL, 131, NULL])
+        self.assertEqual(f.attributes(), ['test_5', 131, NULL])
         layer.setDefaultValueDefinition(1, QgsDefaultValue(None))
 
     def testDuplicateFeature(self):
