@@ -79,8 +79,20 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
 
 
     QModelIndex findItem( QgsDataItem *item, QgsDataItem *parent = 0 ) const;
+%Docstring
+Returns the model index corresponding to the specified data ``item``.
+If the item was not found, an invalid QModelIndex is returned.
+
+If the ``parent`` item is argument is specified, then only items which are children
+of ``parent`` are searched. If no ``parent`` is specified, then all items within
+the model are searched.
+%End
 
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
+%Docstring
+Returns the data item at the specified index, or a None if no item
+exists at the index.
+%End
 
     void refresh( const QString &path );
 %Docstring
