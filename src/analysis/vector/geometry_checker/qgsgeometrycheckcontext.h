@@ -24,6 +24,7 @@
 /**
  * Base configuration for geometry checks.
  *
+ * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4
  */
 struct ANALYSIS_EXPORT QgsGeometryCheckContext

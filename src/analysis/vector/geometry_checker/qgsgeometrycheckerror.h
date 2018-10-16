@@ -25,7 +25,13 @@
 
 class QgsPointXY;
 
-
+/**
+ * \ingroup analysis
+ * This represents an error reported by a geometry check.
+ *
+ * \note This class is a technology preview and unstable API.
+ * \since QGIS 3.4
+ */
 class ANALYSIS_EXPORT QgsGeometryCheckError
 {
   public:

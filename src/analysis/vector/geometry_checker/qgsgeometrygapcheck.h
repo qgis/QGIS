@@ -20,6 +20,7 @@
 
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgsfeatureid.h"
 
 class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
 {
@@ -30,7 +31,7 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
                               const QMap<QString, QgsFeatureIds> &neighbors,
                               double area,
                               const QgsRectangle &gapAreaBBox )
-      : QgsGeometryCheckError( check, layerId, FEATUREID_NULL, geometry, geometry.constGet()->centroid(), QgsVertexId(), area, ValueArea )
+      : QgsGeometryCheckError( check, layerId, FID_NULL, geometry, geometry.constGet()->centroid(), QgsVertexId(), area, ValueArea )
       , mNeighbors( neighbors )
       , mGapAreaBBox( gapAreaBBox )
     {
@@ -75,11 +76,26 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
 
 class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
 {
+    Q_GADGET
   public:
+    //! Resolution methods for geometry gap checks
+    enum ResolutionMethod
+    {
+      MergeLongestEdge,
+      NoChange
+    };
+    Q_ENUM( ResolutionMethod )
+
+    /**
+     * The \a configuration accepts a "gapThreshold" key which specifies
+     * the maximum gap size in squared map units. Any gaps which are larger
+     * than this area are accepted. If "gapThreshold" is set to 0, the check
+     * is disabled.
+     */
     explicit QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
-    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
 
@@ -96,8 +112,6 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP;
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 ///@endcond private
-
-    enum ResolutionMethod { MergeLongestEdge, NoChange };
 
   private:
     bool mergeWithNeighbor( const QMap<QString, QgsFeaturePool *> &featurePools,

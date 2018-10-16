@@ -31,8 +31,16 @@
 class QgsGeometryCheckError;
 class QgsFeaturePool;
 
-#define FEATUREID_NULL std::numeric_limits<QgsFeatureId>::min()
-
+/**
+ * \ingroup analysis
+ * This class manages all known geometry check factories.
+ *
+ * QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
+ * QgsAnalysis::geometryCheckRegistry().
+ *
+ * \note This class is a technology preview and unstable API.
+ * \since QGIS 3.4
+ */
 class ANALYSIS_EXPORT QgsGeometryCheck
 {
     Q_GADGET
@@ -200,7 +208,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      *
      * \since QGIS 3.4
      */
-    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors SIP_INOUT, QStringList &messages SIP_INOUT, QgsFeedback *feedback = nullptr, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
+    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors SIP_INOUT, QStringList &messages SIP_INOUT, QgsFeedback *feedback, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
 
     /**
      * Fix the error \a error with the specified \a method.

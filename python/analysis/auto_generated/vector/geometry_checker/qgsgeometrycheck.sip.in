@@ -10,24 +10,19 @@
 
 
 
-
 class QgsGeometryCheck
 {
 %Docstring
-*************************************************************************
-qgsgeometrycheck.h
----------------------
-begin                : September 2014
-copyright            : (C) 2014 by Sandro Mani / Sourcepole AG
-email                : smani at sourcepole dot ch
-**************************************************************************
+This class manages all known geometry check factories.
 
-This program is free software; you can redistribute it and/or modify  *
-it under the terms of the GNU General Public License as published by  *
-the Free Software Foundation; either version 2 of the License, or     *
-(at your option) any later version.                                   *
+QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsAnalysis.geometryCheckRegistry()`
 
-**************************************************************************
+.. note::
+
+   This class is a technology preview and unstable API.
+
+.. versionadded:: 3.4
 %End
 
 %TypeHeaderCode
@@ -120,7 +115,7 @@ A list of geometry types for which this check can be performed.
 Flags for this geometry check.
 %End
 
-    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors /In,Out/, QStringList &messages /In,Out/, QgsFeedback *feedback = 0, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
+    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors /In,Out/, QStringList &messages /In,Out/, QgsFeedback *feedback, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
 %Docstring
 The main worker method.
 Check all features available from ``featurePools`` and write errors found to ``errors``.

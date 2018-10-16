@@ -44,6 +44,13 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     geomList.append( layerFeature.geometry().constGet()->clone() );
+
+    if ( feedback->isCanceled() )
+    {
+      qDeleteAll( geomList );
+      geomList.clear();
+      break;
+    }
   }
 
   if ( geomList.isEmpty() )
@@ -97,7 +104,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     }
 
     // Skip gaps above threshold
-    if ( gapGeom->area() > mGapThresholdMapUnits || gapGeom->area() < mContext->reducedTolerance )
+    if ( ( mGapThresholdMapUnits > 0 && gapGeom->area() > mGapThresholdMapUnits ) || gapGeom->area() < mContext->reducedTolerance )
     {
       continue;
     }
@@ -124,31 +131,36 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     // Add error
     double area = gapGeom->area();
     errors.append( new QgsGeometryGapCheckError( this, QString(), QgsGeometry( gapGeom.release() ), neighboringIds, area, gapAreaBBox ) );
-
   }
 }
 
 void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
-  if ( method == NoChange )
+  QMetaEnum metaEnum = QMetaEnum::fromType<QgsGeometryGapCheck::ResolutionMethod>();
+  if ( !metaEnum.isValid() || !metaEnum.valueToKey( method ) )
   {
-    error->setFixed( method );
-  }
-  else if ( method == MergeLongestEdge )
-  {
-    QString errMsg;
-    if ( mergeWithNeighbor( featurePools, static_cast<QgsGeometryGapCheckError *>( error ), changes, errMsg ) )
-    {
-      error->setFixed( method );
-    }
-    else
-    {
-      error->setFixFailed( tr( "Failed to merge with neighbor: %1" ).arg( errMsg ) );
-    }
+    error->setFixFailed( tr( "Unknown method" ) );
   }
   else
   {
-    error->setFixFailed( tr( "Unknown method" ) );
+    ResolutionMethod methodValue = static_cast<ResolutionMethod>( method );
+    switch ( methodValue )
+    {
+      case NoChange:
+        error->setFixed( method );
+        break;
+      case MergeLongestEdge:
+        QString errMsg;
+        if ( mergeWithNeighbor( featurePools, static_cast<QgsGeometryGapCheckError *>( error ), changes, errMsg ) )
+        {
+          error->setFixed( method );
+        }
+        else
+        {
+          error->setFixFailed( tr( "Failed to merge with neighbor: %1" ).arg( errMsg ) );
+        }
+        break;
+    }
   }
 }
 

@@ -1929,7 +1929,7 @@ bool QgsVertexTool::matchEdgeCenterTest( const QgsPointLocator::Match &m, const 
     QgsGeometry lineGeom = QgsGeometry::fromPolylineXY( QgsPolylineXY() << p0 << p1 );
     lineGeom = extentGeom.intersection( lineGeom );
     QgsPolylineXY polyline = lineGeom.asPolyline();
-    Q_ASSERT( polyline.count() == 2 );
+    Q_ASSERT_X( polyline.count() == 2, "QgsVertexTool::matchEdgeCenterTest", QgsLineString( polyline ).asWkt().toUtf8().constData() );
     p0 = polyline[0];
     p1 = polyline[1];
   }

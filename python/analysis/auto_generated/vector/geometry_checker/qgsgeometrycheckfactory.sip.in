@@ -14,6 +14,16 @@
 
 class QgsGeometryCheckFactory /Abstract/
 {
+%Docstring
+
+A factory for geometry checks.
+
+.. note::
+
+   This class is a technology preview and unstable API.
+
+.. versionadded:: 3.4
+%End
 
 %TypeHeaderCode
 #include "qgsgeometrycheckfactory.h"

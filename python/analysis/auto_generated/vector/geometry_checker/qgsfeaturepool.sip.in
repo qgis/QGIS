@@ -15,6 +15,12 @@ class QgsFeaturePool : QgsFeatureSink /Abstract/
 {
 %Docstring
 A feature pool is based on a vector layer and caches features.
+
+.. note::
+
+   This class is a technology preview and unstable API.
+
+.. versionadded:: 3.4
 %End
 
 %TypeHeaderCode
@@ -30,6 +36,7 @@ Retrieve the feature with the specified ``id`` into ``feature``.
 It will be retrieved from the cache or from the underlying layer if unavailable.
 If the feature is neither available from the cache nor from the layer it will return false.
 %End
+
 
     virtual void updateFeature( QgsFeature &feature ) = 0;
 %Docstring
@@ -87,6 +94,7 @@ To be used by implementations of ``updateFeature``.
 Removes a feature from the cache and the spatial index.
 To be used by implementations of ``deleteFeature``.
 %End
+
 
 
   private:

@@ -17,6 +17,10 @@ class QgsSingleGeometryCheckError
 
 An error from a QgsSingleGeometryCheck.
 
+.. note::
+
+   This class is a technology preview and unstable API.
+
 .. versionadded:: 3.4
 %End
 
@@ -77,6 +81,10 @@ class QgsGeometryCheckErrorSingle : QgsGeometryCheckError
 
 Wraps a QgsSingleGeometryError into a standard :py:class:`QgsGeometryCheckError`.
 The single error can be obtained via singleError.
+
+.. note::
+
+   This class is a technology preview and unstable API.
 
 .. versionadded:: 3.4
 %End

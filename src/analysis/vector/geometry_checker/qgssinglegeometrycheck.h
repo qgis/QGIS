@@ -33,6 +33,7 @@ class QgsSingleGeometryCheck;
  *
  * An error from a QgsSingleGeometryCheck.
  *
+ * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4
  */
 class ANALYSIS_EXPORT QgsSingleGeometryCheckError
@@ -104,6 +105,7 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheckError
  * Wraps a QgsSingleGeometryError into a standard QgsGeometryCheckError.
  * The single error can be obtained via singleError.
  *
+ * \note This class is a technology preview and unstable API.
  * \since QGIS 3.4
  */
 class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError

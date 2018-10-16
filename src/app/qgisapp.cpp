@@ -79,6 +79,10 @@
 #include "qgsziputils.h"
 #include "qgsbrowsermodel.h"
 #include "qgsvectorlayerjoinbuffer.h"
+#include "qgsgeometryvalidationservice.h"
+
+#include "qgsanalysis.h"
+#include "qgsgeometrycheckregistry.h"
 
 #ifdef HAVE_3D
 #include "qgsabstract3drenderer.h"
@@ -406,6 +410,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaptoolrotatelabel.h"
 #include "qgsmaptoolchangelabelproperties.h"
 #include "qgsmaptoolreverseline.h"
+#include "qgsgeometryvalidationmodel.h"
+#include "qgsgeometryvalidationdock.h"
 
 #include "vertextool/qgsvertextool.h"
 
@@ -778,7 +784,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // what type of project to auto-open
   mProjOpen = settings.value( QStringLiteral( "qgis/projOpenAtLaunch" ), 0 ).toInt();
 
-
   startProfile( QStringLiteral( "Welcome page" ) );
   mWelcomePage = new QgsWelcomePage( skipVersionCheck );
   connect( mWelcomePage, &QgsWelcomePage::projectRemoved, this, [ this ]( int row )
@@ -917,6 +922,20 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::init3D, this, QStringLiteral( "Initialize 3D support" ) );
   functionProfile( &QgisApp::initNativeProcessing, this, QStringLiteral( "Initialize native processing" ) );
   functionProfile( &QgisApp::initLayouts, this, QStringLiteral( "Initialize layouts support" ) );
+
+  startProfile( QStringLiteral( "Geometry validation" ) );
+
+  mGeometryValidationService = qgis::make_unique<QgsGeometryValidationService>( QgsProject::instance() );
+  mGeometryValidationService->setMessageBar( mInfoBar );
+  mGeometryValidationDock = new QgsGeometryValidationDock( tr( "Geometry Validation" ), mMapCanvas, this );
+  mGeometryValidationModel = new QgsGeometryValidationModel( mGeometryValidationService.get(), mGeometryValidationDock );
+  connect( this, &QgisApp::activeLayerChanged, mGeometryValidationModel, [this]( QgsMapLayer * layer )
+  {
+    mGeometryValidationModel->setCurrentLayer( qobject_cast<QgsVectorLayer *>( layer ) );
+  } );
+  mGeometryValidationDock->setGeometryValidationModel( mGeometryValidationModel );
+  mGeometryValidationDock->setGeometryValidationService( mGeometryValidationService.get() );
+  endProfile();
 
   QgsApplication::annotationRegistry()->addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "FormAnnotationItem" ), &QgsFormAnnotation::create ) );
   connect( QgsProject::instance()->annotationManager(), &QgsAnnotationManager::annotationAdded, this, &QgisApp::annotationCreated );
@@ -1418,6 +1437,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     mCentralContainer->setCurrentIndex( 0 );
   } );
+  mGeometryValidationDock->close();
 } // QgisApp ctor
 
 QgisApp::QgisApp()
@@ -6940,11 +6960,18 @@ void QgisApp::labelingFontNotFound( QgsVectorLayer *vlayer, const QString &fontf
 
 void QgisApp::commitError( QgsVectorLayer *vlayer )
 {
+  const QStringList commitErrors = vlayer->commitErrors();
+  if ( !vlayer->allowCommit() && commitErrors.empty() )
+  {
+    QgsMessageLog::logMessage( tr( "Could not save changes. Geometry validation failed." ) );
+    return;
+  }
+
   QgsMessageViewer *mv = new QgsMessageViewer();
   mv->setWindowTitle( tr( "Commit Errors" ) );
   mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
                              + "\n\n"
-                             + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) )
+                             + tr( "Errors: %1\n" ).arg( commitErrors.join( QStringLiteral( "\n  " ) ) )
                            );
 
   QToolButton *showMore = new QToolButton();

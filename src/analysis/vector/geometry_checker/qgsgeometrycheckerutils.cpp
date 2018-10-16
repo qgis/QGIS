@@ -302,12 +302,12 @@ QList<const QgsLineString *> QgsGeometryCheckerUtils::polygonRings( const QgsPol
 
 void QgsGeometryCheckerUtils::filter1DTypes( QgsAbstractGeometry *geom )
 {
-  if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
+  if ( qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
   {
     QgsGeometryCollection *geomCollection = static_cast<QgsGeometryCollection *>( geom );
     for ( int nParts = geom->partCount(), iPart = nParts - 1; iPart >= 0; --iPart )
     {
-      if ( !dynamic_cast<QgsSurface *>( geomCollection->geometryN( iPart ) ) )
+      if ( !qgsgeometry_cast<QgsSurface *>( geomCollection->geometryN( iPart ) ) )
       {
         geomCollection->removeGeometry( iPart );
       }
