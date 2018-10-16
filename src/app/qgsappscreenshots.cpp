@@ -52,9 +52,9 @@ QgsAppScreenShots::QgsAppScreenShots( const QString &saveDirectory )
 
   // add join
   QgsVectorLayerJoinInfo join;
-  join.setTargetFieldName( "fk_polygon" );
+  join.setTargetFieldName( QStringLiteral( "fk_polygon" ) );
   join.setJoinLayer( mPolygonLayer );
-  join.setJoinFieldName( "pk" );
+  join.setJoinFieldName( QStringLiteral( "pk" ) );
   join.setUsingMemoryCache( true );
   join.setEditable( true );
   join.setCascadedDelete( true );
@@ -148,7 +148,7 @@ void QgsAppScreenShots::saveScreenshot( QPixmap &pixmap, const QString &name, co
   const QDir topDirectory( mSaveDirectory );
   if ( !topDirectory.exists() )
   {
-    QgsMessageLog::logMessage( QString( "Directory does not exist: %1" ).arg( mSaveDirectory ), QString(), Qgis::Critical );
+    QgsMessageLog::logMessage( QStringLiteral( "Directory does not exist: %1" ).arg( mSaveDirectory ), QString(), Qgis::Critical );
     return;
   }
 
@@ -158,14 +158,14 @@ void QgsAppScreenShots::saveScreenshot( QPixmap &pixmap, const QString &name, co
   {
     if ( !topDirectory.mkpath( folder ) )
     {
-      QgsMessageLog::logMessage( QString( "Could not create directory %1 in %2" ).arg( folder, mSaveDirectory ), QString(), Qgis::Critical );
+      QgsMessageLog::logMessage( QStringLiteral( "Could not create directory %1 in %2" ).arg( folder, mSaveDirectory ), QString(), Qgis::Critical );
       return;
     }
   }
   if ( pixmap.save( fileName ) )
-    QgsMessageLog::logMessage( QString( "Screenshot saved: %1" ).arg( fileName ) );
+    QgsMessageLog::logMessage( QStringLiteral( "Screenshot saved: %1" ).arg( fileName ) );
   else
-    QgsMessageLog::logMessage( QString( "Failed to save screenshot: %1" ).arg( fileName ), QString(), Qgis::Critical );
+    QgsMessageLog::logMessage( QStringLiteral( "Failed to save screenshot: %1" ).arg( fileName ), QString(), Qgis::Critical );
 }
 
 void QgsAppScreenShots::moveWidgetTo( QWidget *widget, Qt::Corner corner, Reference reference )
@@ -235,7 +235,7 @@ void QgsAppScreenShots::setGradientSize( int size )
 
 void QgsAppScreenShots::takeVectorLayerProperties()
 {
-  QString folder = QLatin1String( "working_with_vector/img/auto_generated/vector_layer_properties" );
+  QString folder = QStringLiteral( "working_with_vector/img/auto_generated/vector_layer_properties" );
   QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mLineLayer, QgisApp::instance() );
   dlg->show();
   dlg->mJoinTreeWidget->expandAll(); // expand join tree
@@ -247,7 +247,7 @@ void QgsAppScreenShots::takeVectorLayerProperties()
     dlg->adjustSize();
     QCoreApplication::processEvents();
     QString name = dlg->mOptionsListWidget->item( row )[0].text().toLower();
-    name.replace( " ", "_" ).replace( "&", "and" );
+    name.replace( QLatin1String( " " ), QLatin1String( "_" ) ).replace( QLatin1String( "&" ), QLatin1String( "and" ) );
     takeScreenshot( name, folder, dlg );
   }
   // ------------------
@@ -258,7 +258,7 @@ void QgsAppScreenShots::takeVectorLayerProperties()
   QCoreApplication::processEvents();
   dlg->mBtnStyle->click();
   QCoreApplication::processEvents();
-  takeScreenshot( "style_menu", folder, dlg );
+  takeScreenshot( QStringLiteral( "style_menu" ), folder, dlg );
   QCoreApplication::processEvents();
   dlg->mBtnStyle->menu()->hide();
   QCoreApplication::processEvents();
@@ -272,7 +272,7 @@ void QgsAppScreenShots::takeVectorLayerProperties()
 
 void QgsAppScreenShots::takeVectorLayerProperties25DSymbol()
 {
-  QString folder = QLatin1String( "working_with_vector/img/auto_generated/vector_layer_properties/" );
+  QString folder = QStringLiteral( "working_with_vector/img/auto_generated/vector_layer_properties/" );
   QgsVectorLayerProperties *dlg = new QgsVectorLayerProperties( mPolygonLayer, QgisApp::instance() );
   dlg->show();
   dlg->mOptionsListWidget->setCurrentRow( 2 );
@@ -283,14 +283,14 @@ void QgsAppScreenShots::takeVectorLayerProperties25DSymbol()
   dlg->mRendererDialog->cboRenderers->setCurrentIndex( idx );
   QCoreApplication::processEvents();
   Qgs25DRendererWidget *w = dynamic_cast<Qgs25DRendererWidget *>( dlg->mRendererDialog->mActiveWidget );
-  w->mHeightWidget->setField( QLatin1String( "height" ) );
+  w->mHeightWidget->setField( QStringLiteral( "height" ) );
   Q_ASSERT( w->mHeightWidget->expression() == QLatin1String( "\"height\"" ) );
   QCoreApplication::processEvents();
   dlg->adjustSize();
   QCoreApplication::processEvents();
   int cropHeight = w->mAdvancedConfigurationBox->mapTo( dlg, w->mAdvancedConfigurationBox->frameGeometry().bottomLeft() ).y();
   QPixmap pixmap = takeScreenshot( dlg, GrabWidgetAndFrame, QRect( 0, 0, 0, cropHeight ), true );
-  saveScreenshot( pixmap, QLatin1String( "25dsymbol" ), folder );
+  saveScreenshot( pixmap, QStringLiteral( "25dsymbol" ), folder );
 
   // exit properly
   dlg->close();
@@ -301,7 +301,7 @@ void QgsAppScreenShots::takeVectorLayerProperties25DSymbol()
 
 void QgsAppScreenShots::takeGlobalOptions()
 {
-  QString folder = QLatin1String( "introduction/img/auto_generated/global_options/" );
+  QString folder = QStringLiteral( "introduction/img/auto_generated/global_options/" );
   QgsOptions *dlg = QgisApp::instance()->createOptionsDialog();
   dlg->setMinimumHeight( 600 );
   dlg->show();
@@ -312,7 +312,7 @@ void QgsAppScreenShots::takeGlobalOptions()
     dlg->adjustSize();
     QCoreApplication::processEvents();
     QString name = dlg->mOptionsListWidget->item( row )[0].text().toLower();
-    name.replace( " ", "_" ).replace( "&", "and" );
+    name.replace( QLatin1String( " " ), QLatin1String( "_" ) ).replace( QLatin1String( "&" ), QLatin1String( "and" ) );
     takeScreenshot( name, folder, dlg );
   }
   // -----------------
@@ -335,7 +335,7 @@ void QgsAppScreenShots::takeGlobalOptions()
 
 void QgsAppScreenShots::takeRasterLayerProperties()
 {
-  QString folder = QLatin1String( "working_with_raster/img/auto_generated/raster_layer_properties" );
+  QString folder = QStringLiteral( "working_with_raster/img/auto_generated/raster_layer_properties" );
   QgsRasterLayerProperties *dlg = new QgsRasterLayerProperties( mRasterLayer, QgisApp::instance()->mapCanvas() );
   dlg->show();
   // ----------------
@@ -346,7 +346,7 @@ void QgsAppScreenShots::takeRasterLayerProperties()
     dlg->adjustSize();
     QCoreApplication::processEvents();
     QString name = dlg->mOptionsListWidget->item( row )[0].text().toLower();
-    name.replace( " ", "_" ).replace( "&", "and" );
+    name.replace( QLatin1String( " " ), QLatin1String( "_" ) ).replace( QLatin1String( "&" ), QLatin1String( "and" ) );
     takeScreenshot( name, folder, dlg );
   }
   // exit properly

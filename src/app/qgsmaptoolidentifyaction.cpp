@@ -256,8 +256,8 @@ void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore &featureSt
 void QgsMapToolIdentifyAction::setClickContextScope( const QgsPointXY &point )
 {
   QgsExpressionContextScope clickScope;
-  clickScope.addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_x" ), point.x(), true ) );
-  clickScope.addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_y" ), point.y(), true ) );
+  clickScope.addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_x" ), point.x(), true ) );
+  clickScope.addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_y" ), point.y(), true ) );
 
   resultsDialog()->setExpressionContextScope( clickScope );
 

@@ -28,11 +28,12 @@ QString QgsGeometryDuplicateCheckError::duplicatesString( const QMap<QString, Qg
   {
     str.append( featurePools[it.key()]->layer()->name() + ":" );
     QStringList ids;
+    ids.reserve( it.value().length() );
     for ( QgsFeatureId id : it.value() )
     {
       ids.append( QString::number( id ) );
     }
-    str.back() += ids.join( "," );
+    str.back() += ids.join( ',' );
   }
   return str.join( QStringLiteral( "; " ) );
 }

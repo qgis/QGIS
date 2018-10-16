@@ -101,7 +101,7 @@ void QgsPolygon3DSymbolEntity::addEntityForNotSelectedPolygons( const Qgs3DMapSe
 
   // build the entity
   QgsPolygon3DSymbolEntityNode *entity = new QgsPolygon3DSymbolEntityNode( map, layer, symbol, req );
-  entity->findChild<Qt3DRender::QGeometryRenderer *>()->setObjectName( "main" ); // temporary measure to distinguish between "selected" and "main"
+  entity->findChild<Qt3DRender::QGeometryRenderer *>()->setObjectName( QStringLiteral( "main" ) ); // temporary measure to distinguish between "selected" and "main"
   entity->addComponent( mat );
   entity->addComponent( tform );
   entity->setParent( this );

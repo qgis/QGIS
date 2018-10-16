@@ -141,9 +141,9 @@ class APP_EXPORT QgsSimplifyUserInputWidget : public QWidget, private Ui::Simpli
     void updateStatusText( const QString &text );
     void enableOkButton( bool enabled );
 
-    void setConfig( const QgsMapToolSimplify::Method &method, const double &tolerance,
-                    const QgsTolerance::UnitType &units, const double &smoothOffset,
-                    const int &smoothIterations );
+    void setConfig( QgsMapToolSimplify::Method method, double tolerance,
+                    QgsTolerance::UnitType units, double smoothOffset,
+                    int smoothIterations );
 
   signals:
     void accepted();

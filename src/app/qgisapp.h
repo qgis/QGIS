@@ -1937,7 +1937,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * The \a isFloating and \a dockGeometry arguments can be used to specify an initial floating state
      * and widget geometry rect for the dock.
      */
-    void setupDockWidget( QDockWidget *dockWidget, bool isFloating = false, const QRect &dockGeometry = QRect(),
+    void setupDockWidget( QDockWidget *dockWidget, bool isFloating = false, QRect dockGeometry = QRect(),
                           Qt::DockWidgetArea area = Qt::RightDockWidgetArea );
 
     /**

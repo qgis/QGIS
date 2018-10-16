@@ -71,18 +71,18 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettin
 
 void QgsDemTerrainGenerator::writeXml( QDomElement &elem ) const
 {
-  elem.setAttribute( "layer", mLayer.layerId );
-  elem.setAttribute( "resolution", mResolution );
-  elem.setAttribute( "skirt-height", mSkirtHeight );
+  elem.setAttribute( QStringLiteral( "layer" ), mLayer.layerId );
+  elem.setAttribute( QStringLiteral( "resolution" ), mResolution );
+  elem.setAttribute( QStringLiteral( "skirt-height" ), mSkirtHeight );
 
   // crs is not read/written - it should be the same as destination crs of the map
 }
 
 void QgsDemTerrainGenerator::readXml( const QDomElement &elem )
 {
-  mLayer = QgsMapLayerRef( elem.attribute( "layer" ) );
-  mResolution = elem.attribute( "resolution" ).toInt();
-  mSkirtHeight = elem.attribute( "skirt-height" ).toFloat();
+  mLayer = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
+  mResolution = elem.attribute( QStringLiteral( "resolution" ) ).toInt();
+  mSkirtHeight = elem.attribute( QStringLiteral( "skirt-height" ) ).toFloat();
 
   // crs is not read/written - it should be the same as destination crs of the map
 }

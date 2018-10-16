@@ -1425,7 +1425,7 @@ void QgsLayoutMapWidget::mOverviewListWidget_itemChanged( QListWidgetItem *item 
     return;
   }
 
-  mMapItem->beginCommand( "Rename Overview" );
+  mMapItem->beginCommand( QStringLiteral( "Rename Overview" ) );
   overview->setName( item->text() );
   mMapItem->endCommand();
   if ( item->isSelected() )

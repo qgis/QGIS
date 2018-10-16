@@ -87,7 +87,7 @@ QgsOffscreen3DEngine::~QgsOffscreen3DEngine()
   delete mOffscreenSurface;
 }
 
-void QgsOffscreen3DEngine::setSize( const QSize &s )
+void QgsOffscreen3DEngine::setSize( QSize s )
 {
   mSize = s;
 

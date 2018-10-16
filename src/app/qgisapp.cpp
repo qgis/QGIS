@@ -481,7 +481,7 @@ static void setTitleBarText_( QWidget &qgisApp )
   }
   if ( !caption.isEmpty() )
   {
-    caption += " - ";
+    caption += QLatin1String( " - " );
   }
   if ( QgsProject::instance()->isDirty() )
     caption.prepend( '*' );
@@ -3198,7 +3198,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMssqlLayer.svg" ) ) );
   mActionAddDb2Layer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDb2Layer.svg" ) ) );
 #ifdef HAVE_ORACLE
-  mActionAddOracleLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddOracleLayer.svg" ) );
+  mActionAddOracleLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOracleLayer.svg" ) ) );
 #endif
   mActionRemoveLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ) );
   mActionDuplicateLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateLayer.svg" ) ) );
@@ -3743,7 +3743,7 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name )
 }
 
 
-void QgisApp::setupDockWidget( QDockWidget *dockWidget, bool isFloating, const QRect &dockGeometry, Qt::DockWidgetArea area )
+void QgisApp::setupDockWidget( QDockWidget *dockWidget, bool isFloating, QRect dockGeometry, Qt::DockWidgetArea area )
 {
   dockWidget->setFloating( isFloating );
   if ( dockGeometry.isEmpty() )
@@ -4034,7 +4034,7 @@ void QgisApp::createMapTips()
   // set the delay to 0.850 seconds or time defined in the Settings
   // timer will be started next time the mouse moves
   QgsSettings settings;
-  int timerInterval = settings.value( "qgis/mapTipsDelay", 850 ).toInt();
+  int timerInterval = settings.value( QStringLiteral( "qgis/mapTipsDelay" ), 850 ).toInt();
   mpMapTipsTimer->setInterval( timerInterval );
   mpMapTipsTimer->setSingleShot( true );
 
@@ -4458,7 +4458,7 @@ static void setupVectorLayer( const QString &vectorLayerPath,
                               const QStringList &sublayers,
                               QgsVectorLayer *&layer,
                               const QString &providerKey,
-                              const QgsVectorLayer::LayerOptions &options )
+                              QgsVectorLayer::LayerOptions options )
 {
   //set friendly name for datasources with only one layer
   QgsSettings settings;
@@ -4492,7 +4492,7 @@ static void setupVectorLayer( const QString &vectorLayerPath,
   {
     auto uriParts = QgsProviderRegistry::instance()->decodeUri(
                       layer->providerType(), layer->dataProvider()->dataSourceUri() );
-    QString composedURI( uriParts.value( QLatin1String( "path" ) ).toString() );
+    QString composedURI( uriParts.value( QStringLiteral( "path" ) ).toString() );
     composedURI += "|layername=" + rawLayerName;
 
     auto newLayer = qgis::make_unique<QgsVectorLayer>( composedURI, layer->name(), QStringLiteral( "ogr" ), options );
@@ -5027,7 +5027,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
 
   auto uriParts = QgsProviderRegistry::instance()->decodeUri(
                     layer->providerType(), layer->dataProvider()->dataSourceUri() );
-  QString uri( uriParts.value( QLatin1String( "path" ) ).toString() );
+  QString uri( uriParts.value( QStringLiteral( "path" ) ).toString() );
 
   // The uri must contain the actual uri of the vectorLayer from which we are
   // going to load the sublayers.
@@ -10249,29 +10249,29 @@ QMap< QString, QString > QgisApp::settingPagesMap()
 {
   if ( mSettingPagesMap.isEmpty() )
   {
-    mSettingPagesMap.insert( tr( "Style Manager" ), "stylemanager" );
-    mSettingPagesMap.insert( tr( "Keyboard Shortcuts" ), "shortcuts" );
-    mSettingPagesMap.insert( tr( "Custom Projections" ), "customprojection" );
-    mSettingPagesMap.insert( tr( "Interface Customization" ), "customize" );
+    mSettingPagesMap.insert( tr( "Style Manager" ), QStringLiteral( "stylemanager" ) );
+    mSettingPagesMap.insert( tr( "Keyboard Shortcuts" ), QStringLiteral( "shortcuts" ) );
+    mSettingPagesMap.insert( tr( "Custom Projections" ), QStringLiteral( "customprojection" ) );
+    mSettingPagesMap.insert( tr( "Interface Customization" ), QStringLiteral( "customize" ) );
   }
   return mSettingPagesMap;
 }
 
 void QgisApp::showSettings( const QString &page )
 {
-  if ( page == "stylemanager" )
+  if ( page == QLatin1String( "stylemanager" ) )
   {
     showStyleManager();
   }
-  else if ( page == "shortcuts" )
+  else if ( page == QLatin1String( "shortcuts" ) )
   {
     configureShortcuts();
   }
-  else if ( page == "customprojection" )
+  else if ( page == QLatin1String( "customprojection" ) )
   {
     customProjection();
   }
-  else if ( page == "customize" )
+  else if ( page == QLatin1String( "customize" ) )
   {
     customize();
   }

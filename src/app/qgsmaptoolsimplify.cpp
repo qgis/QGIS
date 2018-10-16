@@ -79,11 +79,11 @@ QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
   setFocusProxy( mButtonBox );
 }
 
-void QgsSimplifyUserInputWidget::setConfig( const QgsMapToolSimplify::Method &method,
-    const double &tolerance,
-    const QgsTolerance::UnitType &units,
-    const double &smoothOffset,
-    const int &smoothIterations )
+void QgsSimplifyUserInputWidget::setConfig( QgsMapToolSimplify::Method method,
+    double tolerance,
+    QgsTolerance::UnitType units,
+    double smoothOffset,
+    int smoothIterations )
 {
   mMethodComboBox->setCurrentIndex( mMethodComboBox->findData( method ) );
 

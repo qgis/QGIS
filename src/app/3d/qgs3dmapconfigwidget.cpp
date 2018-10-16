@@ -164,5 +164,5 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
 
   double tile0width = tGen->extent().width();
   int zoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, spinMapResolution->value(), spinGroundError->value() );
-  labelZoomLevels->setText( QString( "0 - %1" ).arg( zoomLevel ) );
+  labelZoomLevels->setText( QStringLiteral( "0 - %1" ).arg( zoomLevel ) );
 }

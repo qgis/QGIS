@@ -74,7 +74,7 @@ const QgsGeometry &QgsGeometryCheckerUtils::LayerFeature::geometry() const
 
 QString QgsGeometryCheckerUtils::LayerFeature::id() const
 {
-  return QString( "%1:%2" ).arg( layer()->name() ).arg( mFeature.id() );
+  return QStringLiteral( "%1:%2" ).arg( layer()->name() ).arg( mFeature.id() );
 }
 
 bool QgsGeometryCheckerUtils::LayerFeature::operator==( const LayerFeature &other ) const

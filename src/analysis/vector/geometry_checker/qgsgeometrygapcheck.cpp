@@ -25,7 +25,7 @@
 
 QgsGeometryGapCheck::QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )
-  ,  mGapThresholdMapUnits( configuration.value( "gapThreshold" ).toDouble() )
+  ,  mGapThresholdMapUnits( configuration.value( QStringLiteral( "gapThreshold" ) ).toDouble() )
 
 {
 

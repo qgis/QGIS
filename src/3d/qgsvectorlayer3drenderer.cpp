@@ -27,7 +27,7 @@
 
 
 QgsVectorLayer3DRendererMetadata::QgsVectorLayer3DRendererMetadata()
-  : Qgs3DRendererAbstractMetadata( "vector" )
+  : Qgs3DRendererAbstractMetadata( QStringLiteral( "vector" ) )
 {
 }
 
@@ -81,11 +81,11 @@ Qt3DCore::QEntity *QgsVectorLayer3DRenderer::createEntity( const Qgs3DMapSetting
   if ( !mSymbol || !vl )
     return nullptr;
 
-  if ( mSymbol->type() == "polygon" )
+  if ( mSymbol->type() == QLatin1String( "polygon" ) )
     return new QgsPolygon3DSymbolEntity( map, vl, *static_cast<QgsPolygon3DSymbol *>( mSymbol.get() ) );
-  else if ( mSymbol->type() == "point" )
+  else if ( mSymbol->type() == QLatin1String( "point" ) )
     return new QgsPoint3DSymbolEntity( map, vl, *static_cast<QgsPoint3DSymbol *>( mSymbol.get() ) );
-  else if ( mSymbol->type() == "line" )
+  else if ( mSymbol->type() == QLatin1String( "line" ) )
     return new QgsLine3DSymbolEntity( map, vl, *static_cast<QgsLine3DSymbol *>( mSymbol.get() ) );
   else
     return nullptr;
@@ -95,12 +95,12 @@ void QgsVectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteCo
 {
   QDomDocument doc = elem.ownerDocument();
 
-  elem.setAttribute( "layer", mLayerRef.layerId );
+  elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
 
-  QDomElement elemSymbol = doc.createElement( "symbol" );
+  QDomElement elemSymbol = doc.createElement( QStringLiteral( "symbol" ) );
   if ( mSymbol )
   {
-    elemSymbol.setAttribute( "type", mSymbol->type() );
+    elemSymbol.setAttribute( QStringLiteral( "type" ), mSymbol->type() );
     mSymbol->writeXml( elemSymbol, context );
   }
   elem.appendChild( elemSymbol );
@@ -108,16 +108,16 @@ void QgsVectorLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteCo
 
 void QgsVectorLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mLayerRef = QgsMapLayerRef( elem.attribute( "layer" ) );
+  mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
 
-  QDomElement elemSymbol = elem.firstChildElement( "symbol" );
-  QString symbolType = elemSymbol.attribute( "type" );
+  QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
+  QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
   QgsAbstract3DSymbol *symbol = nullptr;
-  if ( symbolType == "polygon" )
+  if ( symbolType == QLatin1String( "polygon" ) )
     symbol = new QgsPolygon3DSymbol;
-  else if ( symbolType == "point" )
+  else if ( symbolType == QLatin1String( "point" ) )
     symbol = new QgsPoint3DSymbol;
-  else if ( symbolType == "line" )
+  else if ( symbolType == QLatin1String( "line" ) )
     symbol = new QgsLine3DSymbol;
 
   if ( symbol )

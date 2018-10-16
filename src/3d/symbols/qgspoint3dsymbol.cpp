@@ -39,7 +39,7 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
   elem.setAttribute( QStringLiteral( "shape" ), shapeToString( mShape ) );
 
   QVariantMap shapePropertiesCopy( mShapeProperties );
-  shapePropertiesCopy["model"] = QVariant( context.pathResolver().writePath( shapePropertiesCopy["model"].toString() ) );
+  shapePropertiesCopy[QStringLiteral( "model" )] = QVariant( context.pathResolver().writePath( shapePropertiesCopy[QStringLiteral( "model" )].toString() ) );
 
   QDomElement elemShapeProperties = doc.createElement( QStringLiteral( "shape-properties" ) );
   elemShapeProperties.appendChild( QgsXmlUtils::writeVariant( shapePropertiesCopy, doc ) );
@@ -62,7 +62,7 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   QDomElement elemShapeProperties = elem.firstChildElement( QStringLiteral( "shape-properties" ) );
   mShapeProperties = QgsXmlUtils::readVariant( elemShapeProperties.firstChildElement() ).toMap();
-  mShapeProperties["model"] = QVariant( context.pathResolver().readPath( mShapeProperties["model"].toString() ) );
+  mShapeProperties[QStringLiteral( "model" )] = QVariant( context.pathResolver().readPath( mShapeProperties[QStringLiteral( "model" )].toString() ) );
 
   QDomElement elemTransform = elem.firstChildElement( QStringLiteral( "transform" ) );
   mTransform = Qgs3DUtils::stringToMatrix4x4( elemTransform.attribute( QStringLiteral( "matrix" ) ) );

@@ -139,7 +139,7 @@ void QgsGeometryCheck::deleteFeatureGeometryRing( const QMap<QString, QgsFeature
   }
 }
 
-double QgsGeometryCheck::scaleFactor( QPointer<QgsVectorLayer> layer ) const
+double QgsGeometryCheck::scaleFactor( const QPointer<QgsVectorLayer> &layer ) const
 {
   double scaleFactor = 1.0;
 

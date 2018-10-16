@@ -91,7 +91,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
 
   //load Fields
 
-  DnDTreeItemData catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Fields", "Fields" );
+  DnDTreeItemData catItemData = DnDTreeItemData( DnDTreeItemData::Container, QStringLiteral( "Fields" ), QStringLiteral( "Fields" ) );
   QTreeWidgetItem *catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
 
   const QgsFields fields = mLayer->fields();
@@ -845,15 +845,15 @@ QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormPro
     switch ( data.type() )
     {
       case QgsAttributesFormProperties::DnDTreeItemData::Field:
-        newItem->setIcon( 0, QgsApplication::getThemeIcon( "/mFieldIcon.svg" ) );
+        newItem->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mFieldIcon.svg" ) ) );
         break;
 
       case QgsAttributesFormProperties::DnDTreeItemData::Relation:
-        newItem->setIcon( 0, QgsApplication::getThemeIcon( "/mRelationIcon.svg" ) );
+        newItem->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mRelationIcon.svg" ) ) );
         break;
 
       case QgsAttributesFormProperties::DnDTreeItemData::Container:
-        newItem->setIcon( 0, QgsApplication::getThemeIcon( "/mContainerIcon.svg" ) );
+        newItem->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mContainerIcon.svg" ) ) );
         break;
 
       case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
@@ -1213,11 +1213,11 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       QgsFieldExpressionWidget *expressionWidget = new QgsFieldExpressionWidget;
       expressionWidget->setLayer( mLayer );
       QToolButton *addExpressionButton = new QToolButton();
-      addExpressionButton->setIcon( QgsApplication::getThemeIcon( "/symbologyAdd.svg" ) );
+      addExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
 
       connect( addExpressionButton, &QAbstractButton::clicked, this, [ = ]
       {
-        qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expressionWidget->expression().replace( '"', "\\\"" ) ) );
+        qmlCode->insertPlainText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expressionWidget->expression().replace( '"', QLatin1String( "\\\"" ) ) ) );
       } );
 
       layout->addRow( tr( "Title" ), title );
@@ -1291,7 +1291,7 @@ DnDTree::Type DnDTree::type() const
   return mType;
 }
 
-void DnDTree::setType( const Type &value )
+void DnDTree::setType( DnDTree::Type value )
 {
   mType = value;
 }

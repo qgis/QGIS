@@ -20,7 +20,7 @@
 
 QgsGeometryCheckRegistry::~QgsGeometryCheckRegistry()
 {
-  qDeleteAll( mGeometryCheckFactories.values() );
+  qDeleteAll( mGeometryCheckFactories );
 }
 
 QgsGeometryCheck *QgsGeometryCheckRegistry::geometryCheck( const QString &checkId, QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfig )

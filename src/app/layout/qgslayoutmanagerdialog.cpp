@@ -231,7 +231,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
     {
       QDomElement layoutElem = templateDoc.documentElement();
       if ( !layoutElem.isNull() )
-        storedTitle = layoutElem.attribute( "name" );
+        storedTitle = layoutElem.attribute( QStringLiteral( "name" ) );
     }
   }
 

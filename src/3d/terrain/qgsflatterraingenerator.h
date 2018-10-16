@@ -19,9 +19,28 @@
 #include "qgis_3d.h"
 
 #include "qgsterraingenerator.h"
-
+#include "qgsterraintileloader_p.h"
 #include "qgsrectangle.h"
+#include <Qt3DExtras/QPlaneGeometry>
 
+///@cond PRIVATE
+
+//! Chunk loader for flat terrain implementation
+class FlatTerrainChunkLoader : public QgsTerrainTileLoader
+{
+    Q_OBJECT
+
+  public:
+    //! Construct the loader for a node
+    FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *mNode );
+
+    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+
+  private:
+    Qt3DExtras::QPlaneGeometry *mTileGeometry = nullptr;
+};
+
+///@endcond
 
 /**
  * \ingroup 3d

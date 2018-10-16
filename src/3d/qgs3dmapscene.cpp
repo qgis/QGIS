@@ -446,7 +446,7 @@ void Qgs3DMapScene::onLayerEntityPickEvent( Qt3DRender::QPickEvent *event )
       // unfortunately we can't access which sub-entity triggered the pick event
       // so as a temporary workaround let's just ignore the entity with selection
       // and hope the event was the main entity (QTBUG-58206)
-      if ( geomRenderer->objectName() != "main" )
+      if ( geomRenderer->objectName() != QLatin1String( "main" ) )
         continue;
 
       if ( QgsTessellatedPolygonGeometry *g = qobject_cast<QgsTessellatedPolygonGeometry *>( geomRenderer->geometry() ) )
@@ -510,7 +510,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     // This is a bit of a hack and it should be handled in QgsMapLayer::setRenderer3D() but in qgis_core
     // the vector layer 3D renderer class is not available. Maybe we need an intermediate map layer 3D renderer
     // class in qgis_core that can be used to handle this case nicely.
-    if ( layer->type() == QgsMapLayer::VectorLayer && renderer->type() == "vector" )
+    if ( layer->type() == QgsMapLayer::VectorLayer && renderer->type() == QLatin1String( "vector" ) )
     {
       static_cast<QgsVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
     }
