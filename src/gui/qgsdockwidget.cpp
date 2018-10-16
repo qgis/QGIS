@@ -17,6 +17,7 @@
 
 
 #include "qgsdockwidget.h"
+#include <QAction>
 
 
 QgsDockWidget::QgsDockWidget( QWidget *parent, Qt::WindowFlags flags )
@@ -55,6 +56,27 @@ void QgsDockWidget::toggleUserVisible()
 bool QgsDockWidget::isUserVisible() const
 {
   return mVisibleAndActive;
+}
+
+void QgsDockWidget::setLinkedAction( QAction *action )
+{
+  mAction = action;
+  if ( !mAction->isCheckable() )
+    mAction->setCheckable( true );
+  mAction->setChecked( isUserVisible() );
+  connect( mAction, &QAction::toggled, this, [ = ]( bool visible )
+  {
+    setUserVisible( visible );
+  } );
+  connect( this, &QgsDockWidget::visibilityChanged, mAction, [ = ]( bool visible )
+  {
+    mAction->setChecked( visible );
+  } );
+}
+
+QAction *QgsDockWidget::linkedAction()
+{
+  return mAction;
 }
 
 void QgsDockWidget::closeEvent( QCloseEvent *e )
