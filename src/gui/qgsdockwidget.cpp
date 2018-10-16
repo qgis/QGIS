@@ -58,7 +58,7 @@ bool QgsDockWidget::isUserVisible() const
   return mVisibleAndActive;
 }
 
-void QgsDockWidget::setLinkedAction( QAction *action )
+void QgsDockWidget::setToggleVisibilityAction( QAction *action )
 {
   mAction = action;
   if ( !mAction->isCheckable() )
@@ -74,7 +74,7 @@ void QgsDockWidget::setLinkedAction( QAction *action )
   } );
 }
 
-QAction *QgsDockWidget::linkedAction()
+QAction *QgsDockWidget::toggleVisibilityAction()
 {
   return mAction;
 }

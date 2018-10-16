@@ -61,18 +61,18 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * Links an \a action to the dock, so that toggling the action will automatically set the dock's visibility
      * to suit (and changing the dock visibility will update the action's state).
      *
-     * \see linkedAction()
+     * \see toggleVisibilityAction()
      * \since QGIS 3.4
      */
-    void setLinkedAction( QAction *action );
+    void setToggleVisibilityAction( QAction *action );
 
     /**
      * Returns the action linked to the dock.
      *
-     * \see setLinkedAction()
+     * \see setToggleVisibilityAction()
      * \since QGIS 3.4
      */
-    QAction *linkedAction();
+    QAction *toggleVisibilityAction();
 
   public slots:
 
