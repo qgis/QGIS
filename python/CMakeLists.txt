@@ -142,17 +142,6 @@ IF (WITH_GUI)
   )
 ENDIF ()
 
-IF (WITH_3D)
-  INCLUDE_DIRECTORIES(
-    ${CMAKE_SOURCE_DIR}/src/3d
-    ${CMAKE_SOURCE_DIR}/src/3d/chunks
-    ${CMAKE_SOURCE_DIR}/src/3d/symbols
-    ${CMAKE_SOURCE_DIR}/src/3d/terrain
-
-    ${CMAKE_BINARY_DIR}/src/3d
-  )
-ENDIF ()
-
 IF(NOT ENABLE_TESTS)
   SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} TESTS)
 ENDIF(NOT ENABLE_TESTS)
@@ -232,6 +221,13 @@ ENDIF (WITH_GUI)
 
 # 3D module
 IF (WITH_3D)
+  INCLUDE_DIRECTORIES(
+    ${CMAKE_SOURCE_DIR}/src/3d
+    ${CMAKE_SOURCE_DIR}/src/3d/chunks
+    ${CMAKE_SOURCE_DIR}/src/3d/symbols
+    ${CMAKE_SOURCE_DIR}/src/3d/terrain
+    ${CMAKE_BINARY_DIR}/src/3d
+  )
   SET(PY_MODULES ${PY_MODULES} 3d)
 
   FILE(GLOB_RECURSE sip_files_3d 3d/*.sip 3d/*.sip.in)
@@ -309,7 +305,7 @@ IF(WITH_QSCIAPI)
   SET(QGIS_PYTHON_API_FILE "${CMAKE_BINARY_DIR}/python/qsci_apis/PyQGIS.api")
 
   ADD_CUSTOM_TARGET(qsci-api ALL
-    DEPENDS python_module_qgis__gui python_module_qgis__core python_module_qgis__analysis)
+    DEPENDS python_module_qgis__gui python_module_qgis__core python_module_qgis__analysis python_module_qgis__server python_module_qgis__3d)
 
   # run update/concatenate command
   ADD_CUSTOM_COMMAND(TARGET qsci-api
