@@ -1650,11 +1650,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void toggleFilterLegendByExpression( bool );
     void updateFilterLegend();
 
-    /**
-     * Shows the statistical summary dock widget and brings it to the foreground
-     */
-    void showStatisticsDockWidget( bool show );
-
     //! Pushes a layer error to the message bar
     void onLayerError( const QString &msg );
 
