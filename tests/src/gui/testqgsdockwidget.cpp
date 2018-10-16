@@ -236,13 +236,13 @@ void TestQgsDockWidget::testAction()
   QAction *a1 = new QAction( w );
   QAction *a2 = new QAction( w );
 
-  QVERIFY( ! d1->linkedAction() );
-  d1->setLinkedAction( a1 );
-  d2->setLinkedAction( a2 );
+  QVERIFY( ! d1->toggleVisibilityAction() );
+  d1->setToggleVisibilityAction( a1 );
+  d2->setToggleVisibilityAction( a2 );
   QVERIFY( a1->isCheckable() );
   QVERIFY( a2->isCheckable() );
-  QCOMPARE( d1->linkedAction(), a1 );
-  QCOMPARE( d2->linkedAction(), a2 );
+  QCOMPARE( d1->toggleVisibilityAction(), a1 );
+  QCOMPARE( d2->toggleVisibilityAction(), a2 );
 
   QVERIFY( d2->isUserVisible() );
   QVERIFY( a2->isChecked() );
