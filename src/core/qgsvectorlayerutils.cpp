@@ -384,20 +384,12 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
     if ( attributes.contains( idx ) )
     {
       v = attributes.value( idx );
-      if ( fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique
-           && QgsVectorLayerUtils::valueExists( layer, idx, v ) )
-      {
-        // unique constraint violated
-        QVariant uniqueValue = QgsVectorLayerUtils::createUniqueValue( layer, idx, v );
-        if ( uniqueValue.isValid() )
-          v = uniqueValue;
-      }
-      checkUnique = false;
     }
 
     // 2. client side default expression
     // note - deliberately not using else if!
-    if ( !v.isValid() && layer->defaultValueDefinition( idx ).isValid() )
+    if ( ( !v.isValid() || ( fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique  && QgsVectorLayerUtils::valueExists( layer, idx, v ) ) )
+         && layer->defaultValueDefinition( idx ).isValid() )
     {
       // client side default expression set - takes precedence over all. Why? Well, this is the only default
       // which QGIS users have control over, so we assume that they're deliberately overriding any
@@ -407,7 +399,8 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
 
     // 3. provider side default value clause
     // note - not an else if deliberately. Users may return null from a default value expression to fallback to provider defaults
-    if ( !v.isValid() && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
+    if ( ( !v.isValid() || ( fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique  && QgsVectorLayerUtils::valueExists( layer, idx, v ) ) )
+         && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
     {
       int providerIndex = fields.fieldOriginIndex( idx );
       QString providerDefault = layer->dataProvider()->defaultValueClause( providerIndex );
@@ -420,7 +413,8 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
 
     // 4. provider side default literal
     // note - deliberately not using else if!
-    if ( !v.isValid() && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
+    if ( ( !v.isValid() || ( fields.at( idx ).constraints().constraints() & QgsFieldConstraints::ConstraintUnique  && QgsVectorLayerUtils::valueExists( layer, idx, v ) ) )
+         && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
     {
       int providerIndex = fields.fieldOriginIndex( idx );
       v = layer->dataProvider()->defaultValue( providerIndex );
@@ -429,6 +423,13 @@ QgsFeature QgsVectorLayerUtils::createFeature( const QgsVectorLayer *layer, cons
         //trust that the provider default has been sensibly set not to violate any constraints
         checkUnique = false;
       }
+    }
+
+    // 5. passed attribute value
+    // note - deliberately not using else if!
+    if ( !v.isValid() && attributes.contains( idx ) )
+    {
+      v = attributes.value( idx );
     }
 
     // last of all... check that unique constraints are respected

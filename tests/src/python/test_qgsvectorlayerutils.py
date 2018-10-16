@@ -279,6 +279,24 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
         self.assertEqual(f.attributes(), ['test_4', 128, NULL])
 
+        # test with violated unique constraints and default value expression providing unique value
+        layer.setDefaultValueDefinition(1, QgsDefaultValue('130'))
+        f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
+        # since field 1 has Unique Constraint, it ignores value 123 that already has been set and adds the default value
+        self.assertEqual(f.attributes(), ['test_4', 130, NULL])
+        # fallback: test with violated unique constraints and default value expression providing already existing value
+        # add the feature with the default value:
+        self.assertTrue(layer.dataProvider().addFeatures([f]))
+        f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
+        # since field 1 has Unique Constraint, it ignores value 123 that already has been set and adds the default value
+        # and since the default value providing an already existing value (130) it generates a unique value (next int: 131)
+        self.assertEqual(f.attributes(), ['test_5', 131, NULL])
+        layer.setDefaultValueDefinition(1, QgsDefaultValue(None))
+
+        # test with manually correct unique constraint
+        f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 132})
+        self.assertEqual(f.attributes(), ['test_5', 132, NULL])
+
     def testDuplicateFeature(self):
         """ test duplicating a feature """
 
