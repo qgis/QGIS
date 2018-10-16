@@ -48,6 +48,7 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     void onCurrentErrorChanged( const QModelIndex &current, const QModelIndex &previous );
     void onCurrentLayerChanged( QgsMapLayer *layer );
     void onLayerEditingStatusChanged();
+    void onLayerDestroyed( QObject *layer );
     void gotoNextError();
     void gotoPreviousError();
     void zoomToProblem();

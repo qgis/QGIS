@@ -265,6 +265,7 @@ void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )
   {
     disconnect( mCurrentLayer, &QgsVectorLayer::editingStarted, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
     disconnect( mCurrentLayer, &QgsVectorLayer::editingStopped, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
+    disconnect( mCurrentLayer, &QgsVectorLayer::destroyed, this, &QgsGeometryValidationDock::onLayerDestroyed );
   }
 
   mCurrentLayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -273,6 +274,7 @@ void QgsGeometryValidationDock::onCurrentLayerChanged( QgsMapLayer *layer )
   {
     connect( mCurrentLayer, &QgsVectorLayer::editingStarted, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
     connect( mCurrentLayer, &QgsVectorLayer::editingStopped, this, &QgsGeometryValidationDock::onLayerEditingStatusChanged );
+    connect( mCurrentLayer, &QgsVectorLayer::destroyed, this, &QgsGeometryValidationDock::onLayerDestroyed );
   }
 
   onLayerEditingStatusChanged();
@@ -295,6 +297,12 @@ void QgsGeometryValidationDock::onLayerEditingStatusChanged()
     }
   }
   mTopologyChecksPendingButton->setEnabled( enabled );
+}
+
+void QgsGeometryValidationDock::onLayerDestroyed( QObject *layer )
+{
+  if ( layer == mCurrentLayer )
+    mCurrentLayer = nullptr;
 }
 
 void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
