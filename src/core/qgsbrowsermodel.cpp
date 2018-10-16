@@ -75,7 +75,7 @@ void QgsBrowserModel::updateProjectHome()
   mProjectHome = home.isNull() ? nullptr : new QgsProjectHomeItem( nullptr, tr( "Project Home" ), home, QStringLiteral( PROJECT_HOME_PREFIX ) + home );
   if ( mProjectHome )
   {
-    connectItem( mProjectHome );
+    setupItemConnections( mProjectHome );
 
     beginInsertRows( QModelIndex(), 0, 0 );
     mRootItems.insert( 0, mProjectHome );
@@ -90,14 +90,14 @@ void QgsBrowserModel::addRootItems()
   // give the home directory a prominent third place
   QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(), QStringLiteral( HOME_PREFIX ) + QDir::homePath() );
   item->setSortKey( QStringLiteral( " 2" ) );
-  connectItem( item );
+  setupItemConnections( item );
   mRootItems << item;
 
   // add favorite directories
   mFavorites = new QgsFavoritesItem( nullptr, tr( "Favorites" ) );
   if ( mFavorites )
   {
-    connectItem( mFavorites );
+    setupItemConnections( mFavorites );
     mRootItems << mFavorites;
   }
 
@@ -113,7 +113,7 @@ void QgsBrowserModel::addRootItems()
     item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
     mDriveItems.insert( path, item );
 
-    connectItem( item );
+    setupItemConnections( item );
     mRootItems << item;
   }
 
@@ -142,7 +142,7 @@ void QgsBrowserModel::addRootItems()
       // Forward the signal from the root items to the model (and then to the app)
       connect( item, &QgsDataItem::connectionsChanged, this, &QgsBrowserModel::connectionsChanged );
       QgsDebugMsgLevel( "Add new top level item : " + item->name(), 4 );
-      connectItem( item );
+      setupItemConnections( item );
       providerMap.insertMulti( capabilities, item );
     }
   }
@@ -367,6 +367,11 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString 
   return QModelIndex(); // not found
 }
 
+void QgsBrowserModel::connectItem( QgsDataItem * )
+{
+  // deprecated, no use
+}
+
 void QgsBrowserModel::reload()
 {
   // TODO: put items creating currently children in threads to deleteLater (does not seem urget because reload() is not used in QGIS)
@@ -415,7 +420,7 @@ void QgsBrowserModel::refreshDrives()
       item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
 
       mDriveItems.insert( path, item );
-      connectItem( item );
+      setupItemConnections( item );
 
       beginInsertRows( QModelIndex(), mRootItems.count(), mRootItems.count() );
       mRootItems << item;
@@ -508,7 +513,7 @@ void QgsBrowserModel::itemStateChanged( QgsDataItem *item, QgsDataItem::State ol
   emit stateChanged( idx, oldState );
 }
 
-void QgsBrowserModel::connectItem( QgsDataItem *item )
+void QgsBrowserModel::setupItemConnections( QgsDataItem *item )
 {
   connect( item, &QgsDataItem::beginInsertItems,
            this, &QgsBrowserModel::beginInsertItems );
