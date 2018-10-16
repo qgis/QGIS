@@ -614,51 +614,51 @@ Take screenshots for user documentation
 
     virtual void zoomFull() = 0;
 %Docstring
-Zoom to full extent of map layers
+Zooms to the full extent of all map layers.
 %End
 
     virtual void zoomToPrevious() = 0;
 %Docstring
-Zoom to previous view extent
+Zooms to the previous view extent.
 %End
 
     virtual void zoomToNext() = 0;
 %Docstring
-Zoom to next view extent
+Zooms to the next view extent.
 %End
 
     virtual void zoomToActiveLayer() = 0;
 %Docstring
-Zoom to extent of the active layer
+Zooms to extent of the active layer.
 %End
 
     virtual QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey ) = 0;
 %Docstring
-Add a vector layer
+Adds a vector layer to the current project.
 %End
 
     virtual QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName = QString() ) = 0;
 %Docstring
-Add a raster layer given a raster layer file name
+Adds a raster layer to the current project, given a raster layer file name.
 %End
 
     virtual QgsRasterLayer *addRasterLayer( const QString &url, const QString &layerName, const QString &providerKey ) = 0;
 %Docstring
-Add a WMS layer
+Adds a raster layer to the current project, from the specified raster data provider.
 %End
 
     virtual QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 %Docstring
-Add a mesh layer
+Adds a mesh layer to the current project.
 %End
 
     virtual bool addProject( const QString &project ) = 0;
 %Docstring
-Add a project
+Adds (opens) a project
 %End
     virtual void newProject( bool promptToSaveFlag = false ) = 0;
 %Docstring
-Start a blank project
+Starts a new blank project
 %End
 
     virtual void reloadConnections( ) = 0;
@@ -810,7 +810,7 @@ Add a toolbar
 
     virtual void openMessageLog() = 0;
 %Docstring
-Open the message log dock widget *
+Opens the message log dock widget.
 %End
 
     virtual void addUserInputWidget( QWidget *widget ) = 0;
@@ -1065,7 +1065,8 @@ QGIS documentation, set useQgisDocDirectory to false.
 
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
 %Docstring
-Open feature form
+Open feature form.
+Returns true if dialog was accepted (if shown modal, true otherwise).
 
 :param l: vector layer
 :param f: feature to show/modify
