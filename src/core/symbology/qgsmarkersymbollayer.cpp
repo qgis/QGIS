@@ -2013,11 +2013,11 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   double hwRatio = 1.0;
   if ( !context.renderContext().forceVectorOutput() && !rotated )
   {
-    usePict = false;
     QImage img = QgsApplication::svgCache()->svgAsImage( path, size, fillColor, strokeColor, strokeWidth,
                  context.renderContext().scaleFactor(), fitsInCache, aspectRatio );
     if ( fitsInCache && img.width() > 1 )
     {
+      usePict = false;
       //consider transparency
       if ( !qgsDoubleNear( context.opacity(), 1.0 ) )
       {
