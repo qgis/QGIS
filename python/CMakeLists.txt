@@ -305,7 +305,7 @@ IF(WITH_QSCIAPI)
   SET(QGIS_PYTHON_API_FILE "${CMAKE_BINARY_DIR}/python/qsci_apis/PyQGIS.api")
 
   ADD_CUSTOM_TARGET(qsci-api ALL
-    DEPENDS python_module_qgis__gui python_module_qgis__core python_module_qgis__analysis python_module_qgis__server python_module_qgis__3d)
+    DEPENDS python_module_qgis__gui python_module_qgis__core python_module_qgis__analysis)
 
   # run update/concatenate command
   ADD_CUSTOM_COMMAND(TARGET qsci-api
