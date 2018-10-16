@@ -33,7 +33,6 @@ class QModelIndex;
 class QgsDockBrowserTreeView;
 class QgsLayerItem;
 class QgsDataItem;
-class QgsBrowserTreeFilterProxyModel;
 class QgsVectorLayer;
 
 /**
