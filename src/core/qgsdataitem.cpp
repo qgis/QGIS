@@ -611,13 +611,29 @@ QgsLayerItem::QgsLayerItem( QgsDataItem *parent, const QString &name, const QStr
 
 QgsMapLayer::LayerType QgsLayerItem::mapLayerType() const
 {
-  if ( mLayerType == QgsLayerItem::Raster )
-    return QgsMapLayer::RasterLayer;
-  if ( mLayerType == QgsLayerItem::Mesh )
-    return QgsMapLayer::MeshLayer;
-  if ( mLayerType == QgsLayerItem::Plugin )
-    return QgsMapLayer::PluginLayer;
-  return QgsMapLayer::VectorLayer;
+  switch ( mLayerType )
+  {
+    case QgsLayerItem::Raster:
+      return QgsMapLayer::RasterLayer;
+
+    case QgsLayerItem::Mesh:
+      return QgsMapLayer::MeshLayer;
+
+    case QgsLayerItem::Plugin:
+      return QgsMapLayer::PluginLayer;
+
+    case QgsLayerItem::NoType:
+    case QgsLayerItem::Vector:
+    case QgsLayerItem::Point:
+    case QgsLayerItem::Polygon:
+    case QgsLayerItem::Line:
+    case QgsLayerItem::TableLayer:
+    case QgsLayerItem::Table:
+    case QgsLayerItem::Database:
+      return QgsMapLayer::VectorLayer;
+  }
+
+  return QgsMapLayer::VectorLayer; // no warnings
 }
 
 QString QgsLayerItem::layerTypeAsString( QgsLayerItem::LayerType layerType )
