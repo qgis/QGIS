@@ -541,33 +541,49 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /* Exposed functions */
 
-    //! Zoom to full extent of map layers
+    /**
+     * Zooms to the full extent of all map layers.
+     */
     virtual void zoomFull() = 0;
 
-    //! Zoom to previous view extent
+    /**
+     * Zooms to the previous view extent.
+     */
     virtual void zoomToPrevious() = 0;
 
-    //! Zoom to next view extent
+    /**
+     * Zooms to the next view extent.
+     */
     virtual void zoomToNext() = 0;
 
-    //! Zoom to extent of the active layer
+    /**
+     * Zooms to extent of the active layer.
+     */
     virtual void zoomToActiveLayer() = 0;
 
-    //! Add a vector layer
+    /**
+     * Adds a vector layer to the current project.
+     */
     virtual QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey ) = 0;
 
-    //! Add a raster layer given a raster layer file name
+    /**
+     * Adds a raster layer to the current project, given a raster layer file name.
+     */
     virtual QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName = QString() ) = 0;
 
-    //! Add a WMS layer
+    /**
+     * Adds a raster layer to the current project, from the specified raster data provider.
+     */
     virtual QgsRasterLayer *addRasterLayer( const QString &url, const QString &layerName, const QString &providerKey ) = 0;
 
-    //! Add a mesh layer
+    /**
+     * Adds a mesh layer to the current project.
+     */
     virtual QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 
-    //! Add a project
+    //! Adds (opens) a project
     virtual bool addProject( const QString &project ) = 0;
-    //! Start a blank project
+    //! Starts a new blank project
     virtual void newProject( bool promptToSaveFlag = false ) = 0;
 
     /**
@@ -686,7 +702,9 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void addToolBar( QToolBar *toolbar SIP_TRANSFER, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 
-    //! Open the message log dock widget *
+    /**
+     * Opens the message log dock widget.
+     */
     virtual void openMessageLog() = 0;
 
     //! Adds a widget to the user input tool bar.
@@ -867,7 +885,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 SIP_DEPRECATED;
 
     /**
-     * Open feature form
+     * Open feature form.
+     * Returns true if dialog was accepted (if shown modal, true otherwise).
      * \param l vector layer
      * \param f feature to show/modify
      * \param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
