@@ -102,8 +102,20 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     bool canFetchMore( const QModelIndex &parent ) const override;
     void fetchMore( const QModelIndex &parent ) override;
 
+    /**
+     * Returns the model index corresponding to the specified data \a item.
+     * If the item was not found, an invalid QModelIndex is returned.
+     *
+     * If the \a parent item is argument is specified, then only items which are children
+     * of \a parent are searched. If no \a parent is specified, then all items within
+     * the model are searched.
+     */
     QModelIndex findItem( QgsDataItem *item, QgsDataItem *parent = nullptr ) const;
 
+    /**
+     * Returns the data item at the specified index, or a nullptr if no item
+     * exists at the index.
+     */
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
 
     //! Refresh item specified by path
@@ -205,6 +217,9 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QMap< QString, QgsDataItem * > mDriveItems;
 
     void removeRootItem( QgsDataItem *item );
+
+    friend class TestQgsBrowserModel;
+    friend class TestQgsBrowserProxyModel;
 };
 
 #endif // QGSBROWSERMODEL_H

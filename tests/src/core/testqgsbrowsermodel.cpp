@@ -75,6 +75,7 @@ void TestQgsBrowserModel::testModel()
 
   // add a root child
   QgsDataCollectionItem *rootItem1 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Test" ), QStringLiteral( "root1" ) );
+  QVERIFY( !model.findItem( rootItem1 ).isValid() );
   model.connectItem( rootItem1 );
   model.mRootItems.append( rootItem1 );
 
@@ -94,6 +95,7 @@ void TestQgsBrowserModel::testModel()
   QCOMPARE( model.data( root1Index ).toString(), QStringLiteral( "Test" ) );
   QCOMPARE( model.data( root1Index, QgsBrowserModel::PathRole ).toString(), QStringLiteral( "root1" ) );
   QCOMPARE( model.dataItem( root1Index ), rootItem1 );
+  QCOMPARE( model.findItem( rootItem1 ), root1Index );
 
   // second root item
   QgsDataCollectionItem *rootItem2 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Test2" ), QStringLiteral( "root2" ) );
@@ -109,6 +111,7 @@ void TestQgsBrowserModel::testModel()
   QCOMPARE( model.data( root2Index ).toString(), QStringLiteral( "Test2" ) );
   QCOMPARE( model.data( root2Index, QgsBrowserModel::PathRole ).toString(), QStringLiteral( "root2" ) );
   QCOMPARE( model.dataItem( root2Index ), rootItem2 );
+  QCOMPARE( model.findItem( rootItem2 ), root2Index );
 
   // child item
   QgsDataCollectionItem *childItem1 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child1" ), QStringLiteral( "child1" ) );
@@ -124,6 +127,11 @@ void TestQgsBrowserModel::testModel()
   QCOMPARE( model.data( child1Index ).toString(), QStringLiteral( "Child1" ) );
   QCOMPARE( model.data( child1Index, QgsBrowserModel::PathRole ).toString(), QStringLiteral( "child1" ) );
   QCOMPARE( model.dataItem( child1Index ), childItem1 );
+  QCOMPARE( model.findItem( childItem1 ), child1Index );
+  QCOMPARE( model.findItem( childItem1, rootItem1 ), child1Index );
+  // search for child in wrong parent
+  QVERIFY( !model.findItem( childItem1, rootItem2 ).isValid() );
+
 
 }
 
