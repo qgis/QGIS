@@ -29,6 +29,7 @@ import AlgorithmsTestBase
 from processing.algs.gdal.OgrToPostGis import OgrToPostGis
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.algs.gdal.AssignProjection import AssignProjection
+from processing.algs.gdal.Buffer import Buffer
 from processing.algs.gdal.ClipRasterByExtent import ClipRasterByExtent
 from processing.algs.gdal.ClipRasterByMask import ClipRasterByMask
 from processing.algs.gdal.Dissolve import Dissolve
@@ -47,7 +48,10 @@ from processing.algs.gdal.buildvrt import buildvrt
 from processing.algs.gdal.hillshade import hillshade
 from processing.algs.gdal.ogr2ogr import ogr2ogr
 from processing.algs.gdal.ogrinfo import ogrinfo
+from processing.algs.gdal.OffsetCurve import OffsetCurve
 from processing.algs.gdal.OgrToPostGis import OgrToPostGis
+from processing.algs.gdal.OneSideBuffer import OneSideBuffer
+from processing.algs.gdal.PointsAlongLines import PointsAlongLines
 from processing.algs.gdal.proximity import proximity
 from processing.algs.gdal.rasterize import rasterize
 from processing.algs.gdal.retile import retile
@@ -357,6 +361,47 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['gdal_edit.py',
              '-a_srs EPSG:3111 ' +
              source])
+
+    def testBuffer(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'polys.gml')
+        source_with_space = os.path.join(testDataPath, 'filename with spaces.gml')
+        alg = Buffer()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'DISTANCE': 5,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Buffer(geometry, 5.0) AS geometry,* FROM \'polys2\'" ' +
+                 '-f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'DISTANCE': 5,
+                                        'DISSOLVE': True,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(ST_Buffer(geometry, 5.0)) AS geometry,* FROM \'polys2\'" ' +
+                 '-f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'DISTANCE': 5,
+                                        'EXPLODE_COLLECTIONS': True,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Buffer(geometry, 5.0) AS geometry,* FROM \'polys2\'" ' +
+                 '-explodecollections -f "ESRI Shapefile"'])
 
     def testGdalTranslate(self):
         context = QgsProcessingContext()
@@ -2237,6 +2282,85 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-of GTiff ' +
                  source + ' ' +
                  outsource])
+
+    def testOffsetCurve(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'polys.gml')
+        source_with_space = os.path.join(testDataPath, 'filename with spaces.gml')
+        alg = OffsetCurve()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'DISTANCE': 5,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_OffsetCurve(geometry, 5.0) AS geometry,* FROM \'polys2\'" ' +
+                 '-f "ESRI Shapefile"'])
+
+    def testOneSidedBuffer(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'polys.gml')
+        source_with_space = os.path.join(testDataPath, 'filename with spaces.gml')
+        alg = OneSideBuffer()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'DISTANCE': 5,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_SingleSidedBuffer(geometry, 5.0, 0) AS geometry,* FROM \'polys2\'" ' +
+                 '-f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'DISTANCE': 5,
+                                        'DISSOLVE': True,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Union(ST_SingleSidedBuffer(geometry, 5.0, 0)) AS geometry,* FROM \'polys2\'" ' +
+                 '-f "ESRI Shapefile"'])
+
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'DISTANCE': 5,
+                                        'EXPLODE_COLLECTIONS': True,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_SingleSidedBuffer(geometry, 5.0, 0) AS geometry,* FROM \'polys2\'" ' +
+                 '-explodecollections -f "ESRI Shapefile"'])
+
+    def testPointsAlongLines(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'polys.gml')
+        source_with_space = os.path.join(testDataPath, 'filename with spaces.gml')
+        alg = PointsAlongLines()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'DISTANCE': 0.2,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['ogr2ogr',
+                 outdir + '/check.shp ' +
+                 source + ' ' +
+                 '-dialect sqlite -sql "SELECT ST_Line_Interpolate_Point(geometry, 0.2) AS geometry,* FROM \'polys2\'" ' +
+                 '-f "ESRI Shapefile"'])
 
 
 class TestGdalOgrToPostGis(unittest.TestCase):
