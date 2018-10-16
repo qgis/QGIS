@@ -13,32 +13,38 @@
                                                                                                                                                          
   <gml:featureMember>
     <ogr:SELECT fid="lines.0">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7.70710678118655,2.0</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometry><gml:Point srsName="EPSG:4326"><gml:coordinates>7.70710678118655,2.0</gml:coordinates></gml:Point></ogr:geometry>
+      <ogr:GEOMETRY><gml:Point srsName="EPSG:4326"><gml:coordinates>7.70710678118655,2.0</gml:coordinates></gml:Point></ogr:GEOMETRY>
     </ogr:SELECT>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:SELECT fid="lines.1">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>-0.5,-1.0</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometry><gml:Point srsName="EPSG:4326"><gml:coordinates>-0.5,-1.0</gml:coordinates></gml:Point></ogr:geometry>
+      <ogr:GEOMETRY><gml:Point srsName="EPSG:4326"><gml:coordinates>-0.5,-1.0</gml:coordinates></gml:Point></ogr:GEOMETRY>
     </ogr:SELECT>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:SELECT fid="lines.2">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2,1</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometry><gml:Point srsName="EPSG:4326"><gml:coordinates>2,1</gml:coordinates></gml:Point></ogr:geometry>
+      <ogr:GEOMETRY><gml:Point srsName="EPSG:4326"><gml:coordinates>2,1</gml:coordinates></gml:Point></ogr:GEOMETRY>
     </ogr:SELECT>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:SELECT fid="lines.3">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3.5,1.0</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometry><gml:Point srsName="EPSG:4326"><gml:coordinates>3.5,1.0</gml:coordinates></gml:Point></ogr:geometry>
+      <ogr:GEOMETRY><gml:Point srsName="EPSG:4326"><gml:coordinates>3.5,1.0</gml:coordinates></gml:Point></ogr:GEOMETRY>
     </ogr:SELECT>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:SELECT fid="lines.4">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7.75,-3.0</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometry><gml:Point srsName="EPSG:4326"><gml:coordinates>7.75,-3.0</gml:coordinates></gml:Point></ogr:geometry>
+      <ogr:GEOMETRY><gml:Point srsName="EPSG:4326"><gml:coordinates>7.75,-3.0</gml:coordinates></gml:Point></ogr:GEOMETRY>
     </ogr:SELECT>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:SELECT fid="lines.5">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7,-2</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometry><gml:Point srsName="EPSG:4326"><gml:coordinates>7,-2</gml:coordinates></gml:Point></ogr:geometry>
+      <ogr:GEOMETRY><gml:Point srsName="EPSG:4326"><gml:coordinates>7,-2</gml:coordinates></gml:Point></ogr:GEOMETRY>
     </ogr:SELECT>
   </gml:featureMember>
 </ogr:FeatureCollection>
