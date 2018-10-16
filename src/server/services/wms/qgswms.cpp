@@ -175,7 +175,7 @@ class QgsWmsModule: public QgsServiceModule
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      QgsDebugMsg( "WMSModule::registerSelf called" );
+      QgsDebugMsg( QStringLiteral( "WMSModule::registerSelf called" ) );
       registry.registerService( new  QgsWms::Service( "1.3.0", serverIface ) );
     }
 };

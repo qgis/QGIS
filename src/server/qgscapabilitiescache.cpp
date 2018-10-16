@@ -65,7 +65,7 @@ void QgsCapabilitiesCache::removeCapabilitiesDocument( const QString &path )
 
 void QgsCapabilitiesCache::removeChangedEntry( const QString &path )
 {
-  QgsDebugMsg( "Remove capabilities cache entry because file changed" );
+  QgsDebugMsg( QStringLiteral( "Remove capabilities cache entry because file changed" ) );
   mCachedCapabilities.remove( path );
   mFileSystemWatcher.removePath( path );
 }

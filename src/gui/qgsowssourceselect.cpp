@@ -117,14 +117,14 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   populateConnectionList();
 
   QgsSettings settings;
-  QgsDebugMsg( "restoring geometry" );
+  QgsDebugMsg( QStringLiteral( "restoring geometry" ) );
   restoreGeometry( settings.value( QStringLiteral( "Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
 }
 
 QgsOWSSourceSelect::~QgsOWSSourceSelect()
 {
   QgsSettings settings;
-  QgsDebugMsg( "saving geometry" );
+  QgsDebugMsg( QStringLiteral( "saving geometry" ) );
   settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
 }
 
@@ -373,7 +373,7 @@ void QgsOWSSourceSelect::mConnectButton_clicked()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QgsDebugMsg( "call populateLayerList" );
+  QgsDebugMsg( QStringLiteral( "call populateLayerList" ) );
   populateLayerList();
 
   QApplication::restoreOverrideCursor();
@@ -711,7 +711,7 @@ void QgsOWSSourceSelect::searchFinished()
     }
     else
     {
-      QgsDebugMsg( "setContent failed" );
+      QgsDebugMsg( QStringLiteral( "setContent failed" ) );
       showStatusMessage( tr( "parse error at row %1, column %2: %3" ).arg( line ).arg( column ).arg( error ) );
     }
   }

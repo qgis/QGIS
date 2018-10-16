@@ -82,7 +82,7 @@ bool QgsDwgImporter::exec( const QString &sql, bool logError )
 {
   if ( !mDs )
   {
-    QgsDebugMsg( "No data source" );
+    QgsDebugMsg( QStringLiteral( "No data source" ) );
     return false;
   }
 
@@ -91,7 +91,7 @@ bool QgsDwgImporter::exec( const QString &sql, bool logError )
   OGRLayerH layer = OGR_DS_ExecuteSQL( mDs.get(), sql.toUtf8().constData(), nullptr, nullptr );
   if ( layer )
   {
-    QgsDebugMsg( "Unexpected result set" );
+    QgsDebugMsg( QStringLiteral( "Unexpected result set" ) );
     OGR_DS_ReleaseResultSet( mDs.get(), layer );
     return false;
   }
@@ -111,7 +111,7 @@ OGRLayerH QgsDwgImporter::query( const QString &sql )
 {
   if ( !mDs )
   {
-    QgsDebugMsg( "No data source" );
+    QgsDebugMsg( QStringLiteral( "No data source" ) );
     return nullptr;
   }
 
@@ -120,7 +120,7 @@ OGRLayerH QgsDwgImporter::query( const QString &sql )
   OGRLayerH layer = OGR_DS_ExecuteSQL( mDs.get(), sql.toUtf8().constData(), nullptr, nullptr );
   if ( !layer )
   {
-    QgsDebugMsg( "Result expected" );
+    QgsDebugMsg( QStringLiteral( "Result expected" ) );
     return layer;
   }
 
@@ -1225,7 +1225,7 @@ void QgsDwgImporter::addEntity( OGRFeatureDefnH dfn, OGRFeatureH f, const DRW_En
   QString linetype = linetypeString( data.lineType, data.layer );
   if ( linetype == QLatin1String( "1" ) )
   {
-    QgsDebugMsg( "Linetype == 1" );
+    QgsDebugMsg( QStringLiteral( "Linetype == 1" ) );
   }
   setString( dfn, f, QStringLiteral( "linetype" ), linetype.toUtf8().constData() );
   setInteger( dfn, f, QStringLiteral( "ocolor" ), data.color );
@@ -1357,7 +1357,7 @@ bool QgsDwgImporter::curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoun
   size_t vertexnum = data.vertlist.size();
   if ( vertexnum == 0 )
   {
-    QgsDebugMsg( "polyline without points" );
+    QgsDebugMsg( QStringLiteral( "polyline without points" ) );
     return false;
   }
 
@@ -1423,7 +1423,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
   size_t vertexnum = data.vertlist.size();
   if ( vertexnum == 0 )
   {
-    QgsDebugMsg( "LWPolyline without vertices" );
+    QgsDebugMsg( QStringLiteral( "LWPolyline without vertices" ) );
     return;
   }
 
@@ -1619,7 +1619,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
   size_t vertexnum = data.vertlist.size();
   if ( vertexnum == 0 )
   {
-    QgsDebugMsg( "Polyline without vertices" );
+    QgsDebugMsg( QStringLiteral( "Polyline without vertices" ) );
     return;
   }
 
@@ -2425,7 +2425,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
   OGRLayerH blocks = OGR_DS_GetLayerByName( mDs.get(),  "blocks" );
   if ( !blocks )
   {
-    QgsDebugMsg( "could not open layer 'blocks'" );
+    QgsDebugMsg( QStringLiteral( "could not open layer 'blocks'" ) );
     return false;
   }
 
@@ -2459,7 +2459,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
   OGRLayerH inserts = OGR_DS_GetLayerByName( mDs.get(),  "inserts" );
   if ( !inserts )
   {
-    QgsDebugMsg( "could not open layer 'inserts'" );
+    QgsDebugMsg( QStringLiteral( "could not open layer 'inserts'" ) );
     return false;
   }
 
@@ -2532,7 +2532,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
     QString blockLinetype = QString::fromUtf8( OGR_F_GetFieldAsString( insert.get(), linetypeIdx ) );
     if ( blockLinetype == QLatin1String( "1" ) )
     {
-      QgsDebugMsg( "blockLinetype == 1" );
+      QgsDebugMsg( QStringLiteral( "blockLinetype == 1" ) );
     }
     double blockLinewidth = OGR_F_GetFieldAsDouble( insert.get(), linewidthIdx );
 

@@ -267,7 +267,7 @@ void QgsSelectedFeature::createVertexMap()
 
   if ( !mGeometry )
   {
-    QgsDebugMsg( "Loading feature" );
+    QgsDebugMsg( QStringLiteral( "Loading feature" ) );
     updateGeometry( nullptr );
   }
 

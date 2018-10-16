@@ -474,7 +474,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     }
     case QgsAttributeEditorElement::AeTypeInvalid:
     {
-      QgsDebugMsg( "Not loading invalid attribute editor type..." );
+      QgsDebugMsg( QStringLiteral( "Not loading invalid attribute editor type..." ) );
       break;
     }
   }

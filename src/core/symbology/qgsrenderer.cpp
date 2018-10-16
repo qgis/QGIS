@@ -245,7 +245,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
 
       if ( ruleCount > 1 )
       {
-        QgsDebugMsg( "more Rule elements found: need a RuleRenderer" );
+        QgsDebugMsg( QStringLiteral( "more Rule elements found: need a RuleRenderer" ) );
         needRuleRenderer = true;
       }
 
@@ -257,7 +257,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
              ruleChildElem.localName() == QLatin1String( "MinScaleDenominator" ) ||
              ruleChildElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
         {
-          QgsDebugMsg( "Filter or Min/MaxScaleDenominator element found: need a RuleRenderer" );
+          QgsDebugMsg( QStringLiteral( "Filter or Min/MaxScaleDenominator element found: need a RuleRenderer" ) );
           needRuleRenderer = true;
           break;
         }

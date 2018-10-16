@@ -387,11 +387,11 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
       }
     }
 
-    QgsDebugMsg( "native type matches" );
+    QgsDebugMsg( QStringLiteral( "native type matches" ) );
     return true;
   }
 
-  QgsDebugMsg( "no sufficient native type found" );
+  QgsDebugMsg( QStringLiteral( "no sufficient native type found" ) );
   return false;
 }
 

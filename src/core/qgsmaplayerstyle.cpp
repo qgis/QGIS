@@ -72,7 +72,7 @@ void QgsMapLayerStyle::writeToLayer( QgsMapLayer *layer ) const
   QDomDocument doc( QStringLiteral( "qgis" ) );
   if ( !doc.setContent( mXmlData ) )
   {
-    QgsDebugMsg( "Failed to parse XML of previously stored XML data - this should not happen!" );
+    QgsDebugMsg( QStringLiteral( "Failed to parse XML of previously stored XML data - this should not happen!" ) );
     return;
   }
 

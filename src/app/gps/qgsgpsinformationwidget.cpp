@@ -834,7 +834,7 @@ void QgsGpsInformationWidget::mBtnAddVertex_clicked()
 
 void QgsGpsInformationWidget::addVertex()
 {
-  QgsDebugMsg( "Adding Vertex" );
+  QgsDebugMsg( QStringLiteral( "Adding Vertex" ) );
 
   if ( !mpRubberBand )
   {

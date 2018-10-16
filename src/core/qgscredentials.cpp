@@ -24,7 +24,7 @@ void QgsCredentials::setInstance( QgsCredentials *instance )
 {
   if ( sInstance )
   {
-    QgsDebugMsg( "already registered an instance of QgsCredentials" );
+    QgsDebugMsg( QStringLiteral( "already registered an instance of QgsCredentials" ) );
   }
 
   sInstance = instance;
@@ -73,7 +73,7 @@ bool QgsCredentials::getMasterPassword( QString &password, bool stored )
 {
   if ( requestMasterPassword( password, stored ) )
   {
-    QgsDebugMsg( "requested master password" );
+    QgsDebugMsg( QStringLiteral( "requested master password" ) );
     return true;
   }
   return false;

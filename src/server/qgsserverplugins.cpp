@@ -73,17 +73,17 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
     return false;
   }
 
-  QgsDebugMsg( "Python support library's instance() symbol resolved." );
+  QgsDebugMsg( QStringLiteral( "Python support library's instance() symbol resolved." ) );
   sPythonUtils = pythonlib_inst();
   sPythonUtils->initServerPython( interface );
 
   if ( sPythonUtils && sPythonUtils->isEnabled() )
   {
-    QgsDebugMsg( "Python support ENABLED :-)" );
+    QgsDebugMsg( QStringLiteral( "Python support ENABLED :-)" ) );
   }
   else
   {
-    QgsDebugMsg( "Python support FAILED :-(" );
+    QgsDebugMsg( QStringLiteral( "Python support FAILED :-(" ) );
     return false;
   }
 

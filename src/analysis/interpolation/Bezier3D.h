@@ -82,13 +82,13 @@ inline Bezier3D::Bezier3D( ParametricLine *parent, QVector<QgsPoint *> *controlp
 inline void Bezier3D::add( ParametricLine *pl )
 {
   Q_UNUSED( pl );
-  QgsDebugMsg( "Error!!!!! A Bezier-curve can not be parent of a ParametricLine." );
+  QgsDebugMsg( QStringLiteral( "Error!!!!! A Bezier-curve can not be parent of a ParametricLine." ) );
 }
 
 inline void Bezier3D::remove( int i )
 {
   Q_UNUSED( i );
-  QgsDebugMsg( "Error!!!!! A Bezier-curve has no children to remove." );
+  QgsDebugMsg( QStringLiteral( "Error!!!!! A Bezier-curve has no children to remove." ) );
 }
 
 //-----------------------------------------------setters and getters---------------------------------------------------------------

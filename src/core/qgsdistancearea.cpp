@@ -330,7 +330,7 @@ double QgsDistanceArea::measureLine( const QgsPointXY &p1, const QgsPointXY &p2 
     }
     else
     {
-      QgsDebugMsgLevel( "Cartesian calculation on canvas coordinates", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Cartesian calculation on canvas coordinates" ), 4 );
       result = p2.distance( p1 );
     }
   }

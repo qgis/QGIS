@@ -47,7 +47,7 @@ QgsGeometryCheckerUtils::LayerFeature::LayerFeature( const QgsFeaturePool *pool,
     }
     catch ( const QgsCsException &e )
     {
-      QgsDebugMsg( "Shrug. What shall we do with a geometry that cannot be converted?" );
+      QgsDebugMsg( QStringLiteral( "Shrug. What shall we do with a geometry that cannot be converted?" ) );
     }
   }
 }

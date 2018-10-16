@@ -157,7 +157,7 @@ void QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged( int index )
       break;
 
     default:
-      QgsDebugMsg( "unexpected index" );
+      QgsDebugMsg( QStringLiteral( "unexpected index" ) );
       break;
   }
 }
@@ -285,7 +285,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
   bool loaded = myLib->load();
   if ( loaded )
   {
-    QgsDebugMsg( "ogr provider loaded" );
+    QgsDebugMsg( QStringLiteral( "ogr provider loaded" ) );
 
     typedef bool ( *createEmptyDataSourceProc )( const QString &, const QString &, const QString &, QgsWkbTypes::Type,
         const QList< QPair<QString, QString> > &, const QgsCoordinateReferenceSystem & );
@@ -302,13 +302,13 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
       }
       else
       {
-        QgsDebugMsg( "geometry type not recognised" );
+        QgsDebugMsg( QStringLiteral( "geometry type not recognised" ) );
         return QString();
       }
     }
     else
     {
-      QgsDebugMsg( "Resolving newEmptyDataSource(...) failed" );
+      QgsDebugMsg( QStringLiteral( "Resolving newEmptyDataSource(...) failed" ) );
       return QString();
     }
   }

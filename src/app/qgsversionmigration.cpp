@@ -234,7 +234,7 @@ QgsError Qgs2To3Migration::migrateSettings()
 
   if ( keys.count() > 0 )
   {
-    QgsDebugMsg( "MIGRATION: Translating settings keys" );
+    QgsDebugMsg( QStringLiteral( "MIGRATION: Translating settings keys" ) );
     QList<QPair<QString, QString>>::iterator i;
     for ( i = keys.begin(); i != keys.end(); ++i )
     {

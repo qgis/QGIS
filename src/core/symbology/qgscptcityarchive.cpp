@@ -214,7 +214,7 @@ QgsStringMap QgsCptCityArchive::copyingInfo( const QString &fileName )
   QDomElement authorsElement = docElem.firstChildElement( QStringLiteral( "authors" ) );
   if ( authorsElement.isNull() )
   {
-    QgsDebugMsg( "authors tag missing" );
+    QgsDebugMsg( QStringLiteral( "authors tag missing" ) );
   }
   else
   {
@@ -237,7 +237,7 @@ QgsStringMap QgsCptCityArchive::copyingInfo( const QString &fileName )
   QDomElement licenseElement = docElem.firstChildElement( QStringLiteral( "license" ) );
   if ( licenseElement.isNull() )
   {
-    QgsDebugMsg( "license tag missing" );
+    QgsDebugMsg( QStringLiteral( "license tag missing" ) );
   }
   else
   {
@@ -256,7 +256,7 @@ QgsStringMap QgsCptCityArchive::copyingInfo( const QString &fileName )
   QDomElement element = docElem.firstChildElement( QStringLiteral( "src" ) );
   if ( element.isNull() )
   {
-    QgsDebugMsg( "src tag missing" );
+    QgsDebugMsg( QStringLiteral( "src tag missing" ) );
   }
   else
   {
@@ -306,13 +306,13 @@ QgsStringMap QgsCptCityArchive::description( const QString &fileName )
   QDomElement e = docElem.firstChildElement( QStringLiteral( "name" ) );
   if ( e.isNull() )
   {
-    QgsDebugMsg( "name tag missing" );
+    QgsDebugMsg( QStringLiteral( "name tag missing" ) );
   }
   descMap[ QStringLiteral( "name" )] = e.text().simplified();
   e = docElem.firstChildElement( QStringLiteral( "full" ) );
   if ( e.isNull() )
   {
-    QgsDebugMsg( "full tag missing" );
+    QgsDebugMsg( QStringLiteral( "full tag missing" ) );
   }
   descMap[ QStringLiteral( "full" )] = e.text().simplified();
 
@@ -359,7 +359,7 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
   }
   if ( rampsElement.isNull() )
   {
-    QgsDebugMsg( "linearGradient tag missing" );
+    QgsDebugMsg( QStringLiteral( "linearGradient tag missing" ) );
     return colorMap;
   }
 
@@ -1602,9 +1602,9 @@ void QgsCptCityBrowserModel::beginInsertItems( QgsCptCityDataItem *parent, int f
   QModelIndex idx = findItem( parent );
   if ( !idx.isValid() )
     return;
-  QgsDebugMsg( "valid" );
+  QgsDebugMsg( QStringLiteral( "valid" ) );
   beginInsertRows( idx, first, last );
-  QgsDebugMsg( "end" );
+  QgsDebugMsg( QStringLiteral( "end" ) );
 }
 void QgsCptCityBrowserModel::endInsertItems()
 {
@@ -1693,7 +1693,7 @@ bool QgsCptCityBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction
   QgsCptCityDataItem *destItem = dataItem( parent );
   if ( !destItem )
   {
-    QgsDebugMsg( "DROP PROBLEM!" );
+    QgsDebugMsg( QStringLiteral( "DROP PROBLEM!" ) );
     return false;
   }
 

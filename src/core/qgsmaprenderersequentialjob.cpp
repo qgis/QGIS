@@ -23,7 +23,7 @@ QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings &
   : QgsMapRendererQImageJob( settings )
 
 {
-  QgsDebugMsgLevel( "SEQUENTIAL construct", 5 );
+  QgsDebugMsgLevel( QStringLiteral( "SEQUENTIAL construct" ), 5 );
 
   mImage = QImage( mSettings.outputSize(), mSettings.outputImageFormat() );
   mImage.setDotsPerMeterX( 1000 * settings.outputDpi() / 25.4 );
@@ -33,11 +33,11 @@ QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings &
 
 QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
 {
-  QgsDebugMsgLevel( "SEQUENTIAL destruct", 5 );
+  QgsDebugMsgLevel( QStringLiteral( "SEQUENTIAL destruct" ), 5 );
   if ( isActive() )
   {
     // still running!
-    QgsDebugMsgLevel( "SEQUENTIAL destruct -- still running! (canceling)", 5 );
+    QgsDebugMsgLevel( QStringLiteral( "SEQUENTIAL destruct -- still running! (canceling)" ), 5 );
     cancel();
   }
 
@@ -56,7 +56,7 @@ void QgsMapRendererSequentialJob::start()
 
   mErrors.clear();
 
-  QgsDebugMsgLevel( "SEQUENTIAL START", 5 );
+  QgsDebugMsgLevel( QStringLiteral( "SEQUENTIAL START" ), 5 );
 
   Q_ASSERT( !mInternalJob && !mPainter );
 
@@ -76,7 +76,7 @@ void QgsMapRendererSequentialJob::cancel()
   if ( !isActive() )
     return;
 
-  QgsDebugMsgLevel( "sequential - cancel internal", 5 );
+  QgsDebugMsgLevel( QStringLiteral( "sequential - cancel internal" ), 5 );
   mInternalJob->cancel();
 
   Q_ASSERT( !mInternalJob && !mPainter );
@@ -87,7 +87,7 @@ void QgsMapRendererSequentialJob::cancelWithoutBlocking()
   if ( !isActive() )
     return;
 
-  QgsDebugMsgLevel( "sequential - cancel internal", 5 );
+  QgsDebugMsgLevel( QStringLiteral( "sequential - cancel internal" ), 5 );
   mInternalJob->cancelWithoutBlocking();
 }
 
@@ -127,7 +127,7 @@ QImage QgsMapRendererSequentialJob::renderedImage()
 
 void QgsMapRendererSequentialJob::internalFinished()
 {
-  QgsDebugMsgLevel( "SEQUENTIAL finished", 5 );
+  QgsDebugMsgLevel( QStringLiteral( "SEQUENTIAL finished" ), 5 );
 
   mPainter->end();
   delete mPainter;

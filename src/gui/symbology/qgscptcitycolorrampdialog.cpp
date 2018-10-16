@@ -100,7 +100,7 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp 
   QgsDebugMsg( QStringLiteral( "ramp name= %1 variant= %2 - %3 variants" ).arg( mRamp.schemeName(), mRamp.variantName() ).arg( mRamp.variantList().count() ) );
 
   // model / view
-  QgsDebugMsg( "loading model/view objects" );
+  QgsDebugMsg( QStringLiteral( "loading model/view objects" ) );
 
   delete mAuthorsModel;
   mAuthorsModel = new QgsCptCityBrowserModel( this, mArchive, QgsCptCityBrowserModel::Authors );
@@ -111,7 +111,7 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp 
 
   mTreeView->setSelectionMode( QAbstractItemView::SingleSelection );
   mTreeView->setColumnHidden( 1, true );
-  QgsDebugMsg( "done loading model/view objects" );
+  QgsDebugMsg( QStringLiteral( "done loading model/view objects" ) );
 
   // setup ui
   tabBar->blockSignals( true );
@@ -222,7 +222,7 @@ void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem *item, bool r
 {
   if ( ! item )
   {
-    QgsDebugMsg( "invalid item" );
+    QgsDebugMsg( QStringLiteral( "invalid item" ) );
     return;
   }
   if ( item->type() == QgsCptCityDataItem::Directory )
@@ -272,7 +272,7 @@ void QgsCptCityColorRampDialog::mListWidget_itemClicked( QListWidgetItem *item )
   }
   else
   {
-    QgsDebugMsg( "invalid item" );
+    QgsDebugMsg( QStringLiteral( "invalid item" ) );
   }
 }
 
@@ -534,7 +534,7 @@ void QgsCptCityColorRampDialog::updateListWidget( QgsCptCityDataItem *item )
   }
   else
   {
-    QgsDebugMsg( "invalid item" );
+    QgsDebugMsg( QStringLiteral( "invalid item" ) );
   }
   mListWidget->blockSignals( false );
 }
@@ -677,7 +677,7 @@ void QgsCptCityColorRampDialog::refreshModel( const QModelIndex &index )
     }
     else
     {
-      QgsDebugMsg( "invalid item" );
+      QgsDebugMsg( QStringLiteral( "invalid item" ) );
     }
   }
 

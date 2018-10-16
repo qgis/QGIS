@@ -96,35 +96,35 @@ void QgsNmeaConnection::processStringBuffer()
           QgsDebugMsg( substring );
           processGgaSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
-          QgsDebugMsg( "*******************GPS data received****************" );
+          QgsDebugMsg( QStringLiteral( "*******************GPS data received****************" ) );
         }
         else if ( substring.startsWith( QLatin1String( "$GPRMC" ) ) || substring.startsWith( QLatin1String( "$GNRMC" ) ) )
         {
           QgsDebugMsg( substring );
           processRmcSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
-          QgsDebugMsg( "*******************GPS data received****************" );
+          QgsDebugMsg( QStringLiteral( "*******************GPS data received****************" ) );
         }
         else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) )
         {
           QgsDebugMsg( substring );
           processGsvSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
-          QgsDebugMsg( "*******************GPS data received****************" );
+          QgsDebugMsg( QStringLiteral( "*******************GPS data received****************" ) );
         }
         else if ( substring.startsWith( QLatin1String( "$GPVTG" ) ) )
         {
           QgsDebugMsg( substring );
           processVtgSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
-          QgsDebugMsg( "*******************GPS data received****************" );
+          QgsDebugMsg( QStringLiteral( "*******************GPS data received****************" ) );
         }
         else if ( substring.startsWith( QLatin1String( "$GPGSA" ) ) )
         {
           QgsDebugMsg( substring );
           processGsaSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
-          QgsDebugMsg( "*******************GPS data received****************" );
+          QgsDebugMsg( QStringLiteral( "*******************GPS data received****************" ) );
         }
         emit nmeaSentenceReceived( substring );  // added to be able to save raw data
       }
@@ -187,9 +187,9 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
       mLastGPSInformation.utcDateTime.setTimeSpec( Qt::UTC );
       mLastGPSInformation.utcDateTime.setDate( date );
       mLastGPSInformation.utcDateTime.setTime( time );
-      QgsDebugMsg( "utc time:" );
+      QgsDebugMsg( QStringLiteral( "utc time:" ) );
       QgsDebugMsg( mLastGPSInformation.utcDateTime.toString() );
-      QgsDebugMsg( "local time:" );
+      QgsDebugMsg( QStringLiteral( "local time:" ) );
       QgsDebugMsg( mLastGPSInformation.utcDateTime.toLocalTime().toString() );
     }
   }

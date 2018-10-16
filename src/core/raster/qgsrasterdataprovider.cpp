@@ -54,7 +54,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 
   if ( block->isEmpty() )
   {
-    QgsDebugMsg( "Couldn't create raster block" );
+    QgsDebugMsg( QStringLiteral( "Couldn't create raster block" ) );
     return block;
   }
 
@@ -63,7 +63,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 
   if ( tmpExtent.isEmpty() )
   {
-    QgsDebugMsg( "Extent outside provider extent" );
+    QgsDebugMsg( QStringLiteral( "Extent outside provider extent" ) );
     block->setIsNoData();
     return block;
   }
@@ -111,7 +111,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
          fromCol < 0 || fromCol >= width || toCol < 0 || toCol >= width )
     {
       // Should not happen
-      QgsDebugMsg( "Row or column limits out of range" );
+      QgsDebugMsg( QStringLiteral( "Row or column limits out of range" ) );
       return block;
     }
 
@@ -166,7 +166,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 
         if ( tmpRow < 0 || tmpRow >= tmpHeight || tmpCol < 0 || tmpCol >= tmpWidth )
         {
-          QgsDebugMsg( "Source row or column limits out of range" );
+          QgsDebugMsg( QStringLiteral( "Source row or column limits out of range" ) );
           block->setIsNoData(); // so that the problem becomes obvious and fixed
           delete tmpBlock;
           return block;
@@ -184,7 +184,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
         }
         if ( !bits )
         {
-          QgsDebugMsg( "Cannot set output block data." );
+          QgsDebugMsg( QStringLiteral( "Cannot set output block data." ) );
           continue;
         }
         memcpy( bits, tmpBits, pixelSize );
@@ -329,7 +329,7 @@ bool QgsRasterDataProvider::writeBlock( QgsRasterBlock *block, int band, int xOf
     return false;
   if ( !isEditable() )
   {
-    QgsDebugMsg( "writeBlock() called on read-only provider." );
+    QgsDebugMsg( QStringLiteral( "writeBlock() called on read-only provider." ) );
     return false;
   }
   return write( block->bits(), band, block->width(), block->height(), xOffset, yOffset );
@@ -344,7 +344,7 @@ QList<QPair<QString, QString> > QgsRasterDataProvider::pyramidResamplingMethods(
     QList<QPair<QString, QString> > *methods = pPyramidResamplingMethods();
     if ( !methods )
     {
-      QgsDebugMsg( "provider pyramidResamplingMethods returned no methods" );
+      QgsDebugMsg( QStringLiteral( "provider pyramidResamplingMethods returned no methods" ) );
     }
     else
     {
@@ -353,7 +353,7 @@ QList<QPair<QString, QString> > QgsRasterDataProvider::pyramidResamplingMethods(
   }
   else
   {
-    QgsDebugMsg( "Could not resolve pyramidResamplingMethods provider library" );
+    QgsDebugMsg( QStringLiteral( "Could not resolve pyramidResamplingMethods provider library" ) );
   }
   return QList<QPair<QString, QString> >();
 }

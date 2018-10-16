@@ -41,7 +41,7 @@ bool TestQgsSQLComposerDialog::runTest()
   //const char* travis = getenv( "TRAVIS_OS_NAME" );
   //if ( travis && strcmp( travis, "osx" ) == 0 )
   //{
-  //  QgsDebugMsg( "Test disabled" );
+  //  QgsDebugMsg( QStringLiteral( "Test disabled" ) );
   //  return false;
   //}
   return true;

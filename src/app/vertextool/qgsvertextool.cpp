@@ -76,7 +76,7 @@ static bool isEndpointAtVertexIndex( const QgsGeometry &geom, int vertexIndex )
   }
   else
   {
-    QgsDebugMsg( "is_endpoint_at_vertex_index: unexpected geometry type!" );
+    QgsDebugMsg( QStringLiteral( "is_endpoint_at_vertex_index: unexpected geometry type!" ) );
     return false;
   }
 }
@@ -105,7 +105,7 @@ int adjacentVertexIndexToEndpoint( const QgsGeometry &geom, int vertexIndex )
   }
   else
   {
-    QgsDebugMsg( "adjacent_vertex_index_to_endpoint: unexpected geometry type!" );
+    QgsDebugMsg( QStringLiteral( "adjacent_vertex_index_to_endpoint: unexpected geometry type!" ) );
   }
   return -1;
 }
@@ -1525,7 +1525,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   QgsVertexId vid;
   if ( !geom.vertexIdFromVertexNr( dragVertexId, vid ) )
   {
-    QgsDebugMsg( "invalid vertex index" );
+    QgsDebugMsg( QStringLiteral( "invalid vertex index" ) );
     return;
   }
 
@@ -1543,7 +1543,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
     if ( !geomTmp->insertVertex( vid, pt ) )
     {
-      QgsDebugMsg( "append vertex failed!" );
+      QgsDebugMsg( QStringLiteral( "append vertex failed!" ) );
       return;
     }
   }
@@ -1551,7 +1551,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   {
     if ( !geomTmp->moveVertex( vid, QgsPoint( layerPoint ) ) )
     {
-      QgsDebugMsg( "move vertex failed!" );
+      QgsDebugMsg( QStringLiteral( "move vertex failed!" ) );
       return;
     }
   }
@@ -1614,7 +1614,7 @@ void QgsVertexTool::addExtraVerticesToEdits( QgsVertexTool::VertexEdits &edits, 
 
     if ( !topoGeom.moveVertex( point.x(), point.y(), topo.vertexId ) )
     {
-      QgsDebugMsg( "[topo] move vertex failed!" );
+      QgsDebugMsg( QStringLiteral( "[topo] move vertex failed!" ) );
       continue;
     }
     edits[topo.layer][topo.fid] = topoGeom;

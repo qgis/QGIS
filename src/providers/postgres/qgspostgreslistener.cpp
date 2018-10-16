@@ -33,7 +33,7 @@ extern "C"
 std::unique_ptr< QgsPostgresListener > QgsPostgresListener::create( const QString &connString )
 {
   std::unique_ptr< QgsPostgresListener > res( new QgsPostgresListener( connString ) );
-  QgsDebugMsg( "starting notification listener" );
+  QgsDebugMsg( QStringLiteral( "starting notification listener" ) );
   res->start();
   res->mMutex.lock();
   res->mIsReadyCondition.wait( &res->mMutex );
@@ -50,9 +50,9 @@ QgsPostgresListener::QgsPostgresListener( const QString &connString )
 QgsPostgresListener::~QgsPostgresListener()
 {
   mStop = true;
-  QgsDebugMsg( "stopping the loop" );
+  QgsDebugMsg( QStringLiteral( "stopping the loop" ) );
   wait();
-  QgsDebugMsg( "notification listener stopped" );
+  QgsDebugMsg( QStringLiteral( "notification listener stopped" ) );
 }
 
 void QgsPostgresListener::run()
@@ -63,7 +63,7 @@ void QgsPostgresListener::run()
   PGresult *res = PQexec( conn, "LISTEN qgis" );
   if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
   {
-    QgsDebugMsg( "error in listen" );
+    QgsDebugMsg( QStringLiteral( "error in listen" ) );
     PQclear( res );
     PQfinish( conn );
     mMutex.lock();
@@ -79,7 +79,7 @@ void QgsPostgresListener::run()
   const int sock = PQsocket( conn );
   if ( sock < 0 )
   {
-    QgsDebugMsg( "error in socket" );
+    QgsDebugMsg( QStringLiteral( "error in socket" ) );
     PQfinish( conn );
     return;
   }
@@ -94,10 +94,10 @@ void QgsPostgresListener::run()
     timeout.tv_sec = 1;
     timeout.tv_usec = 0;
 
-    QgsDebugMsg( "select in the loop" );
+    QgsDebugMsg( QStringLiteral( "select in the loop" ) );
     if ( select( sock + 1, &input_mask, nullptr, nullptr, &timeout ) < 0 )
     {
-      QgsDebugMsg( "error in select" );
+      QgsDebugMsg( QStringLiteral( "error in select" ) );
       break;
     }
 
@@ -112,12 +112,12 @@ void QgsPostgresListener::run()
     }
     else
     {
-      QgsDebugMsg( "not a notify" );
+      QgsDebugMsg( QStringLiteral( "not a notify" ) );
     }
 
     if ( mStop )
     {
-      QgsDebugMsg( "stop from main thread" );
+      QgsDebugMsg( QStringLiteral( "stop from main thread" ) );
       break;
     }
   }

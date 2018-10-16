@@ -323,7 +323,7 @@ void QgsGpsPlugin::convertGPSFile( const QString &inputFileName,
       convertStrings << QStringLiteral( "-x" ) << QStringLiteral( "transform,wpt=trk,del" );
       break;
     default:
-      QgsDebugMsg( "Illegal conversion index!" );
+      QgsDebugMsg( QStringLiteral( "Illegal conversion index!" ) );
       return;
   }
 
@@ -380,7 +380,7 @@ void QgsGpsPlugin::convertGPSFile( const QString &inputFileName,
                        layerName, QStringLiteral( "gpx" ) );
       break;
     default:
-      QgsDebugMsg( "Illegal conversion index!" );
+      QgsDebugMsg( QStringLiteral( "Illegal conversion index!" ) );
       return;
   }
 

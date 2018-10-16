@@ -66,10 +66,10 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
     if ( idx > -1 )
     {
       result = upperName;
-      QgsDebugMsg( "return Complete" );
+      QgsDebugMsg( QStringLiteral( "return Complete" ) );
       return Complete;
     }
-    QgsDebugMsg( "return Fail" );
+    QgsDebugMsg( QStringLiteral( "return Fail" ) );
     return Fail;
   }
 // Seemed necessary in initial Python testing but can't identify failing case now
@@ -93,12 +93,12 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
     QgsDebugMsg( QStringLiteral( "type: %1; typeName: %2" ).arg( n->value().type() ).arg( n->value().typeName() ) );
     if ( ok )
     {
-      QgsDebugMsg( "return Complete" );
+      QgsDebugMsg( QStringLiteral( "return Complete" ) );
       return Complete;
     }
     else
     {
-      QgsDebugMsg( "return Fail" );
+      QgsDebugMsg( QStringLiteral( "return Fail" ) );
       return Fail;
     }
 
@@ -169,7 +169,7 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
         return compileResult;
 
       case QgsExpressionNodeBinaryOperator::boILike:
-        QgsDebugMsg( "ILIKE is not supported by DB2" );
+        QgsDebugMsg( QStringLiteral( "ILIKE is not supported by DB2" ) );
         return Fail;
       /*
         result = QString( "%1 LIKE %2" ).arg( left, right );
@@ -179,7 +179,7 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
         */
 
       case QgsExpressionNodeBinaryOperator::boNotILike:
-        QgsDebugMsg( "NOT ILIKE is not supported by DB2" );
+        QgsDebugMsg( QStringLiteral( "NOT ILIKE is not supported by DB2" ) );
         return Fail;
       /*
         result = QString( "%1 NOT LIKE %2" ).arg( left, right );

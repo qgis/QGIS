@@ -72,7 +72,7 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
       }
       catch ( const QgsCsException &e )
       {
-        QgsDebugMsg( "Can not show error in current map coordinate reference system" );
+        QgsDebugMsg( QStringLiteral( "Can not show error in current map coordinate reference system" ) );
       }
     }
   }

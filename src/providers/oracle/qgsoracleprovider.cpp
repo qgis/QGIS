@@ -207,7 +207,7 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
 
 QgsOracleProvider::~QgsOracleProvider()
 {
-  QgsDebugMsg( "deconstructing." );
+  QgsDebugMsg( QStringLiteral( "deconstructing." ) );
 
   disconnectDb();
 }
@@ -364,7 +364,7 @@ void QgsOracleProvider::appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const
     break;
 
     case PktUnknown:
-      QgsDebugMsg( "Unknown key type" );
+      QgsDebugMsg( QStringLiteral( "Unknown key type" ) );
       break;
   }
 }
@@ -745,7 +745,7 @@ bool QgsOracleProvider::loadFields()
 
 bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
 {
-  QgsDebugMsg( "Checking for permissions on the relation" );
+  QgsDebugMsg( QStringLiteral( "Checking for permissions on the relation" ) );
 
   mEnabledCapabilities = QgsVectorDataProvider::SelectAtId;
 
@@ -2080,7 +2080,7 @@ bool QgsOracleProvider::changeGeometryValues( const QgsGeometryMap &geometry_map
     returnvalue = false;
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 
   return returnvalue;
 }
@@ -2497,7 +2497,7 @@ bool QgsOracleProvider::createSpatialIndex()
   }
   else
   {
-    QgsDebugMsg( "geographic CRS" );
+    QgsDebugMsg( QStringLiteral( "geographic CRS" ) );
   }
 
   if ( !mHasSpatialIndex )
@@ -2855,7 +2855,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
     return QgsVectorLayerExporter::ErrInvalidLayer;
   }
 
-  QgsDebugMsg( "layer loaded" );
+  QgsDebugMsg( QStringLiteral( "layer loaded" ) );
 
   // add fields to the layer
   oldToNewAttrIdxMap->clear();
@@ -2920,7 +2920,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
 
       if ( fld.name() == geometryColumn )
       {
-        QgsDebugMsg( "Found a field with the same name of the geometry column. Skip it!" );
+        QgsDebugMsg( QStringLiteral( "Found a field with the same name of the geometry column. Skip it!" ) );
         continue;
       }
 
@@ -2952,11 +2952,11 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
       return QgsVectorLayerExporter::ErrAttributeCreationFailed;
     }
 
-    QgsDebugMsg( "Done creating fields" );
+    QgsDebugMsg( QStringLiteral( "Done creating fields" ) );
   }
   else
   {
-    QgsDebugMsg( "No fields created." );
+    QgsDebugMsg( QStringLiteral( "No fields created." ) );
   }
 
   delete provider;
@@ -3268,7 +3268,7 @@ QGISEXTERN bool saveStyle( const QString &uri,
   }
   else if ( qry.value( 0 ).toInt() == 0 )
   {
-    QgsDebugMsg( "Creating layer style table." );
+    QgsDebugMsg( QStringLiteral( "Creating layer style table." ) );
 
     if ( !qry.exec( "CREATE TABLE layer_styles("
                     "id INTEGER PRIMARY KEY,"
@@ -3370,7 +3370,7 @@ QGISEXTERN bool saveStyle( const QString &uri,
   if ( !qry.prepare( sql ) )
   {
     errCause = QObject::tr( "Could not prepare insert/update [%1]" ).arg( qry.lastError().text() );
-    QgsDebugMsg( "prepare insert/update failed" );
+    QgsDebugMsg( QStringLiteral( "prepare insert/update failed" ) );
     conn->disconnect();
     return false;
   }
@@ -3391,7 +3391,7 @@ QGISEXTERN bool saveStyle( const QString &uri,
   if ( !qry.exec() )
   {
     errCause = QObject::tr( "Could not execute insert/update [%1]" ).arg( qry.lastError().text() );
-    QgsDebugMsg( "execute insert/update failed" );
+    QgsDebugMsg( QStringLiteral( "execute insert/update failed" ) );
     conn->disconnect();
     return false;
   }
@@ -3415,7 +3415,7 @@ QGISEXTERN bool saveStyle( const QString &uri,
          ) )
     {
       errCause = QObject::tr( "Could not reset default status [%1]" ).arg( qry.lastError().text() );
-      QgsDebugMsg( "execute update failed" );
+      QgsDebugMsg( QStringLiteral( "execute update failed" ) );
       conn->disconnect();
       return false;
     }

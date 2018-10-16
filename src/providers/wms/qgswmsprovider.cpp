@@ -166,7 +166,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
   // 3) http://xxx.xxx.xx/yyy/yyy?zzz=www
 
   mValid = true;
-  QgsDebugMsg( "exiting constructor." );
+  QgsDebugMsg( QStringLiteral( "exiting constructor." ) );
 }
 
 
@@ -194,7 +194,7 @@ QString QgsWmsProvider::prepareUri( QString uri )
 
 QgsWmsProvider::~QgsWmsProvider()
 {
-  QgsDebugMsg( "deconstructing." );
+  QgsDebugMsg( QStringLiteral( "deconstructing." ) );
 }
 
 QgsWmsProvider *QgsWmsProvider::clone() const
@@ -332,7 +332,7 @@ bool QgsWmsProvider::addLayers()
   if ( mSettings.mTiled )
     mTileLayer = nullptr;
 
-  QgsDebugMsg( "Exiting." );
+  QgsDebugMsg( QStringLiteral( "Exiting." ) );
 
   return true;
 }
@@ -344,11 +344,11 @@ void QgsWmsProvider::setConnectionName( QString const &connName )
 
 void QgsWmsProvider::setLayerOrder( QStringList const &layers )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsg( QStringLiteral( "Entering." ) );
 
   if ( layers.size() != mSettings.mActiveSubLayers.size() )
   {
-    QgsDebugMsg( "Invalid layer list length" );
+    QgsDebugMsg( QStringLiteral( "Invalid layer list length" ) );
     return;
   }
 
@@ -374,7 +374,7 @@ void QgsWmsProvider::setLayerOrder( QStringList const &layers )
     mSettings.mActiveSubStyles.append( styleMap[ layers[i] ] );
   }
 
-  QgsDebugMsg( "Exiting." );
+  QgsDebugMsg( QStringLiteral( "Exiting." ) );
 }
 
 
@@ -614,7 +614,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
 {
   if ( qApp && qApp->thread() == QThread::currentThread() )
   {
-    QgsDebugMsg( "Trying to draw a WMS image on the main thread. Stop it!" );
+    QgsDebugMsg( QStringLiteral( "Trying to draw a WMS image on the main thread. Stop it!" ) );
   }
 
   // compose the URL query string for the WMS server.
@@ -678,7 +678,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     }
     else
     {
-      QgsDebugMsg( "empty tile size" );
+      QgsDebugMsg( QStringLiteral( "empty tile size" ) );
       return image;
     }
 
@@ -1184,7 +1184,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 
   Q_ASSERT( mCaps.isValid() );
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 
   return true;
 }
@@ -1406,7 +1406,7 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const &xml, QStr
 
       if ( tagName == QLatin1String( "ServiceException" ) )
       {
-        QgsDebugMsg( "  ServiceException." );
+        QgsDebugMsg( QStringLiteral( "  ServiceException." ) );
         parseServiceException( e, errorTitle, errorText );
       }
 
@@ -1414,7 +1414,7 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const &xml, QStr
     n = n.nextSibling();
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 
   return true;
 }
@@ -1590,7 +1590,7 @@ bool QgsWmsProvider::calculateExtent() const
       return true;
     }
 
-    QgsDebugMsg( "no extent returned" );
+    QgsDebugMsg( QStringLiteral( "no extent returned" ) );
     return false;
   }
   else
@@ -1642,12 +1642,12 @@ int QgsWmsProvider::capabilities() const
 
   if ( mSettings.mTiled && mTileLayer )
   {
-    QgsDebugMsg( "Tiled." );
+    QgsDebugMsg( QStringLiteral( "Tiled." ) );
     canIdentify = !mTileLayer->getFeatureInfoURLs.isEmpty() || !getFeatureInfoUrl().isNull();
   }
   else
   {
-    QgsDebugMsg( "Not tiled." );
+    QgsDebugMsg( QStringLiteral( "Not tiled." ) );
     // Test for the ability to use the Identify map tool
     for ( QStringList::const_iterator it = mSettings.mActiveSubLayers.begin();
           it != mSettings.mActiveSubLayers.end();
@@ -2606,7 +2606,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     if ( it == m.constEnd() ||
          ( it != m.constBegin() && vres - prev.key() < it.key() - vres ) )
     {
-      QgsDebugMsg( "back to previous res" );
+      QgsDebugMsg( QStringLiteral( "back to previous res" ) );
       it = prev;
     }
 
@@ -2721,7 +2721,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
 
     if ( mIdentifyResultBodies.isEmpty() ) // no result
     {
-      QgsDebugMsg( "mIdentifyResultBodies is empty" );
+      QgsDebugMsg( QStringLiteral( "mIdentifyResultBodies is empty" ) );
       continue;
     }
     else if ( mIdentifyResultBodies.size() == 1 )
@@ -2823,7 +2823,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
         }
         if ( mIdentifyResultBodies.size() == 2 ) // GML+XSD
         {
-          QgsDebugMsg( "Multipart with 2 parts - expected GML + XSD" );
+          QgsDebugMsg( QStringLiteral( "Multipart with 2 parts - expected GML + XSD" ) );
           // How to find which part is GML and which XSD? Both have
           // Content-Type: application/binary
           // different are Content-Disposition but it is not reliable.
@@ -3041,7 +3041,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
             const QJsonValue props = f.value( QLatin1String( "properties" ) );
             if ( !props.isObject() )
             {
-              QgsDebugMsg( "no properties found" );
+              QgsDebugMsg( QStringLiteral( "no properties found" ) );
               continue;
             }
 
@@ -3119,7 +3119,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
 
 void QgsWmsProvider::identifyReplyFinished()
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
   mIdentifyResultHeaders.clear();
   mIdentifyResultBodies.clear();
 
@@ -3155,7 +3155,7 @@ void QgsWmsProvider::identifyReplyFinished()
     QgsNetworkReplyParser parser( mIdentifyReply );
     if ( !parser.isValid() )
     {
-      QgsDebugMsg( "Cannot parse reply" );
+      QgsDebugMsg( QStringLiteral( "Cannot parse reply" ) );
       mErrorFormat = QStringLiteral( "text/plain" );
       mError = tr( "Cannot parse getfeatureinfo: %1" ).arg( parser.error() );
       emit statusChanged( mError );
@@ -3318,7 +3318,7 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle &
 
   if ( lurl.isEmpty() )
   {
-    QgsDebugMsg( "getLegendGraphic url is empty" );
+    QgsDebugMsg( QStringLiteral( "getLegendGraphic url is empty" ) );
     return QUrl();
   }
 
@@ -3391,7 +3391,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const 
 
   if ( lurl.isEmpty() )
   {
-    QgsDebugMsg( "getLegendGraphic url is empty" );
+    QgsDebugMsg( QStringLiteral( "getLegendGraphic url is empty" ) );
     return QImage();
   }
 
@@ -3425,7 +3425,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const 
   mLegendGraphicFetcher->setProperty( "legendExtent", QVariant::fromValue( mapExtent.toRectF() ) );
   loop.exec( QEventLoop::ExcludeUserInputEvents );
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 
   return mGetLegendGraphicImage;
 }
@@ -3459,7 +3459,7 @@ QgsImageFetcher *QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings *
        scale == mGetLegendGraphicScale &&
        !mGetLegendGraphicImage.isNull() )
   {
-    QgsDebugMsg( "Emitting cached image fetcher" );
+    QgsDebugMsg( QStringLiteral( "Emitting cached image fetcher" ) );
     // return a cached image, skipping the load
     return new QgsCachedImageFetcher( mGetLegendGraphicImage );
   }
@@ -3714,11 +3714,11 @@ void QgsWmsImageDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint6
 
 void QgsWmsImageDownloadHandler::canceled()
 {
-  QgsDebugMsg( "Caught canceled() signal" );
+  QgsDebugMsg( QStringLiteral( "Caught canceled() signal" ) );
   if ( mCacheReply )
   {
     // abort the reply if it is still active
-    QgsDebugMsg( "Aborting WMS network request" );
+    QgsDebugMsg( QStringLiteral( "Aborting WMS network request" ) );
     mCacheReply->abort();
   }
 }
@@ -3794,7 +3794,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
     stat.cacheMisses++;
 #endif
 #if defined(QGISDEBUG)
-  QgsDebugMsgLevel( "raw headers:", 3 );
+  QgsDebugMsgLevel( QStringLiteral( "raw headers:" ), 3 );
   Q_FOREACH ( const QNetworkReply::RawHeaderPair &pair, reply->rawHeaderPairs() )
   {
     QgsDebugMsgLevel( QStringLiteral( " %1:%2" )
@@ -4009,10 +4009,10 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
 
 void QgsWmsTiledImageDownloadHandler::canceled()
 {
-  QgsDebugMsg( "Caught canceled() signal" );
+  QgsDebugMsg( QStringLiteral( "Caught canceled() signal" ) );
   Q_FOREACH ( QNetworkReply *reply, mReplies )
   {
-    QgsDebugMsg( "Aborting tiled network request" );
+    QgsDebugMsg( QStringLiteral( "Aborting tiled network request" ) );
     reply->abort();
   }
 }
@@ -4105,7 +4105,7 @@ QgsWmsLegendDownloadHandler::~QgsWmsLegendDownloadHandler()
   if ( mReply )
   {
     // Send finished if not done yet ?
-    QgsDebugMsg( "WMSLegendDownloader destroyed while still processing reply" );
+    QgsDebugMsg( QStringLiteral( "WMSLegendDownloader destroyed while still processing reply" ) );
     mReply->deleteLater();
   }
   mReply = nullptr;
@@ -4187,7 +4187,7 @@ QgsWmsLegendDownloadHandler::finished()
   // or ::errored() should have been called before ::finished
   Q_ASSERT( mReply->error() == QNetworkReply::NoError );
 
-  QgsDebugMsg( "reply OK" );
+  QgsDebugMsg( QStringLiteral( "reply OK" ) );
   QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
   if ( !redirect.isNull() )
   {

@@ -281,7 +281,7 @@ void QgsMultiBandColorRendererWidget::loadMinMax( int bandNo, double min, double
   }
   else // should not happen
   {
-    QgsDebugMsg( "Band not found" );
+    QgsDebugMsg( QStringLiteral( "Band not found" ) );
     return;
   }
 

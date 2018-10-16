@@ -67,7 +67,7 @@ bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
   QString wkt = crs.toWkt();
   if ( GDALSetProjection( hDS.get(), wkt.toLocal8Bit().data() ) != CE_None )
   {
-    QgsDebugMsg( "Could not set CRS" );
+    QgsDebugMsg( QStringLiteral( "Could not set CRS" ) );
     return false;
   }
 
@@ -345,7 +345,7 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
       CPLPopErrorHandler();
       if ( !hDriver || GDALGetDriverShortName( hDriver ) == QLatin1String( "OGR_VRT" ) )
       {
-        QgsDebugMsgLevel( "Skipping VRT file because root is not a GDAL VRT", 2 );
+        QgsDebugMsgLevel( QStringLiteral( "Skipping VRT file because root is not a GDAL VRT" ), 2 );
         return nullptr;
       }
     }

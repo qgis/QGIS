@@ -430,12 +430,12 @@ QString QgsPythonUtilsImpl::getTypeAsString( PyObject *obj )
 
   if ( PyType_Check( obj ) )
   {
-    QgsDebugMsg( "got type" );
+    QgsDebugMsg( QStringLiteral( "got type" ) );
     return QString( ( ( PyTypeObject * )obj )->tp_name );
   }
   else
   {
-    QgsDebugMsg( "got object" );
+    QgsDebugMsg( QStringLiteral( "got object" ) );
     return PyObjectToQString( obj );
   }
 }
@@ -509,7 +509,7 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject *obj )
   }
 
   // some problem with conversion to Unicode string
-  QgsDebugMsg( "unable to convert PyObject to a QString!" );
+  QgsDebugMsg( QStringLiteral( "unable to convert PyObject to a QString!" ) );
   return QStringLiteral( "(qgis error)" );
 }
 

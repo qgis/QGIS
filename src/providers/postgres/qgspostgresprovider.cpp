@@ -301,7 +301,7 @@ QgsPostgresProvider::~QgsPostgresProvider()
 {
   disconnectDb();
 
-  QgsDebugMsg( "deconstructing." );
+  QgsDebugMsg( QStringLiteral( "deconstructing." ) );
 }
 
 
@@ -1108,7 +1108,7 @@ void QgsPostgresProvider::setEditorWidgets()
 
 bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 {
-  QgsDebugMsg( "Checking for permissions on the relation" );
+  QgsDebugMsg( QStringLiteral( "Checking for permissions on the relation" ) );
 
   QgsPostgresResult testAccess;
   if ( !mIsQuery )
@@ -1322,7 +1322,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
     // no primary or unique indizes found
     if ( res.PQntuples() == 0 )
     {
-      QgsDebugMsg( "Relation has no primary key -- investigating alternatives" );
+      QgsDebugMsg( QStringLiteral( "Relation has no primary key -- investigating alternatives" ) );
 
       // Two options here. If the relation is a table, see if there is
       // an oid column that can be used instead.
@@ -1333,7 +1333,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
 
       if ( type == Relkind::OrdinaryTable || type == Relkind::PartitionedTable )
       {
-        QgsDebugMsg( "Relation is a table. Checking to see if it has an oid column." );
+        QgsDebugMsg( QStringLiteral( "Relation is a table. Checking to see if it has an oid column." ) );
 
         mPrimaryKeyAttrs.clear();
 
@@ -2318,7 +2318,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &id )
 
   if ( mIsQuery )
   {
-    QgsDebugMsg( "Cannot delete features (is a query)" );
+    QgsDebugMsg( QStringLiteral( "Cannot delete features (is a query)" ) );
     return false;
   }
 
@@ -2381,7 +2381,7 @@ bool QgsPostgresProvider::truncate()
 
   if ( mIsQuery )
   {
-    QgsDebugMsg( "Cannot truncate (is a query)" );
+    QgsDebugMsg( QStringLiteral( "Cannot truncate (is a query)" ) );
     return false;
   }
 
@@ -2848,7 +2848,7 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
       throw PGException( result );
     }
 
-    QgsDebugMsg( "iterating over the map of changed geometries..." );
+    QgsDebugMsg( QStringLiteral( "iterating over the map of changed geometries..." ) );
 
     for ( QgsGeometryMap::const_iterator iter = geometry_map.constBegin();
           iter != geometry_map.constEnd();
@@ -2946,7 +2946,7 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
 
   conn->unlock();
 
-  QgsDebugMsg( "leaving." );
+  QgsDebugMsg( QStringLiteral( "leaving." ) );
 
   return returnvalue;
 }
@@ -3090,7 +3090,7 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
 
   conn->unlock();
 
-  QgsDebugMsg( "leaving." );
+  QgsDebugMsg( QStringLiteral( "leaving." ) );
 
   return returnvalue;
 }
@@ -4005,7 +4005,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
     return QgsVectorLayerExporter::ErrInvalidLayer;
   }
 
-  QgsDebugMsg( "layer loaded" );
+  QgsDebugMsg( QStringLiteral( "layer loaded" ) );
 
   // add fields to the layer
   if ( oldToNewAttrIdxMap )
@@ -4025,7 +4025,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
       {
         //the "lowercaseFieldNames" option does not affect the name of the geometry column, so we perform
         //this test before converting the field name to lowercase
-        QgsDebugMsg( "Found a field with the same name of the geometry column. Skip it!" );
+        QgsDebugMsg( QStringLiteral( "Found a field with the same name of the geometry column. Skip it!" ) );
         continue;
       }
 
@@ -4084,7 +4084,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
       return QgsVectorLayerExporter::ErrAttributeCreationFailed;
     }
 
-    QgsDebugMsg( "Done creating fields" );
+    QgsDebugMsg( QStringLiteral( "Done creating fields" ) );
   }
   return QgsVectorLayerExporter::NoError;
 }

@@ -176,7 +176,7 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
   {
     if ( driver.isEmpty() || host.isEmpty() || databaseName.isEmpty() )
     {
-      QgsDebugMsg( "service not provided, a required argument is empty." );
+      QgsDebugMsg( QStringLiteral( "service not provided, a required argument is empty." ) );
       return db;
     }
     connectionName = databaseName + ".";
@@ -189,12 +189,12 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
   /* if new database connection */
   if ( !QSqlDatabase::contains( connectionName ) )
   {
-    QgsDebugMsg( "new connection. create new QODBC mapping" );
+    QgsDebugMsg( QStringLiteral( "new connection. create new QODBC mapping" ) );
     db = QSqlDatabase::addDatabase( QStringLiteral( "QODBC3" ), connectionName );
   }
   else  /* if existing database connection */
   {
-    QgsDebugMsg( "found existing connection, use the existing one" );
+    QgsDebugMsg( QStringLiteral( "found existing connection, use the existing one" ) );
     db = QSqlDatabase::database( connectionName );
   }
   db.setHostName( host );
@@ -264,12 +264,12 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
 
 bool QgsDb2Provider::openDatabase( QSqlDatabase db )
 {
-  QgsDebugMsg( "openDatabase" );
+  QgsDebugMsg( QStringLiteral( "openDatabase" ) );
   if ( !db.isOpen() )
   {
     if ( !db.open() )
     {
-      QgsDebugMsg( "Database could not be opened." );
+      QgsDebugMsg( QStringLiteral( "Database could not be opened." ) );
       return false;
     }
   }
@@ -468,7 +468,7 @@ QgsFeatureIterator QgsDb2Provider::getFeatures( const QgsFeatureRequest &request
 {
   if ( !mValid )
   {
-    QgsDebugMsg( "Read attempt on an invalid db2 data source" );
+    QgsDebugMsg( QStringLiteral( "Read attempt on an invalid db2 data source" ) );
     return QgsFeatureIterator();
   }
 
@@ -503,7 +503,7 @@ long QgsDb2Provider::featureCount() const
   }
   else
   {
-    QgsDebugMsg( "Failed" );
+    QgsDebugMsg( QStringLiteral( "Failed" ) );
     QgsDebugMsg( query.lastError().text() );
     return -1;
   }
@@ -602,7 +602,7 @@ void QgsDb2Provider::updateStatistics() const
   }
   else
   {
-    QgsDebugMsg( "Couldn't get srid from geometry columns" );
+    QgsDebugMsg( QStringLiteral( "Couldn't get srid from geometry columns" ) );
   }
 
   // Try to get the srid from the data if srid isn't already set
@@ -628,7 +628,7 @@ void QgsDb2Provider::updateStatistics() const
     }
     else
     {
-      QgsDebugMsg( "Couldn't get srid from data" );
+      QgsDebugMsg( QStringLiteral( "Couldn't get srid from data" ) );
     }
   }
 }
@@ -773,7 +773,7 @@ bool QgsDb2Provider::deleteFeatures( const QgsFeatureIds &id )
 
 bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
-  QgsDebugMsg( "Entering" );
+  QgsDebugMsg( QStringLiteral( "Entering" ) );
   if ( attr_map.isEmpty() )
     return true;
 
@@ -917,7 +917,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
   }
   if ( !mDatabase.transaction() )
   {
-    QgsDebugMsg( "transaction failed" );
+    QgsDebugMsg( QStringLiteral( "transaction failed" ) );
     return false;
   }
   QSqlQuery query = QSqlQuery( mDatabase );
@@ -952,14 +952,14 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
   }
   else if ( mAttributeFields.count() != attrs.count() )
   {
-    QgsDebugMsg( "Count mismatch - failing" );
+    QgsDebugMsg( QStringLiteral( "Count mismatch - failing" ) );
     return false;
   }
 
 
   if ( attrs.count() != mAttributeFields.count() )
   {
-    QgsDebugMsg( "field counts don't match" );
+    QgsDebugMsg( QStringLiteral( "field counts don't match" ) );
 //  return false;
   }
 
@@ -1011,7 +1011,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
   statement += ") VALUES (" + values + ')';
   QgsDebugMsg( statement );
 
-  QgsDebugMsg( "Prepare statement" );
+  QgsDebugMsg( QStringLiteral( "Prepare statement" ) );
   // use prepared statement to prevent from sql injection
   if ( !query.prepare( statement ) )
   {
@@ -1304,7 +1304,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
     }
     else
     {
-      QgsDebugMsg( "Couldn't get srs_name from db2gse.st_spatial_reference_systems" );
+      QgsDebugMsg( QStringLiteral( "Couldn't get srs_name from db2gse.st_spatial_reference_systems" ) );
     }
   }
 
@@ -1540,7 +1540,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
         }
         else
         {
-          QgsDebugMsg( "Register successful" );
+          QgsDebugMsg( QStringLiteral( "Register successful" ) );
         }
       }
 
@@ -1557,7 +1557,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
     q.setForwardOnly( true );
 
   }
-  QgsDebugMsg( "successfully created empty layer" );
+  QgsDebugMsg( QStringLiteral( "successfully created empty layer" ) );
   return QgsVectorLayerExporter::NoError;
 }
 
@@ -1726,7 +1726,7 @@ QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderR
 QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
   Q_UNUSED( path );
-  QgsDebugMsg( "DB2: Browser Panel; data item detected." );
+  QgsDebugMsg( QStringLiteral( "DB2: Browser Panel; data item detected." ) );
   return new QgsDb2RootItem( parentItem, PROVIDER_KEY, QStringLiteral( "DB2:" ) );
 }
 

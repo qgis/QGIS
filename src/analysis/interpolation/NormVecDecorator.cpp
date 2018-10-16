@@ -95,7 +95,7 @@ bool NormVecDecorator::calcNormal( double x, double y, Vector3D *result )
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -129,7 +129,7 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
 
     if ( ( ( vlist.count() ) % 4 ) != 0 ) //number of items in vlist has to be a multiple of 4
     {
-      QgsDebugMsg( "warning, wrong number of items in vlist" );
+      QgsDebugMsg( QStringLiteral( "warning, wrong number of items in vlist" ) );
       return false;
     }
 
@@ -142,7 +142,7 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
       numberofruns++;
       if ( numberofruns > limit )
       {
-        QgsDebugMsg( "warning, a probable endless loop is detected" );
+        QgsDebugMsg( QStringLiteral( "warning, a probable endless loop is detected" ) );
         return false;
       }
 
@@ -189,7 +189,7 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
         {
           if ( !pointfound )//the point with coordinates x, y was in no triangle
           {
-            QgsDebugMsg( "warning: point (x,y) was in no triangle" );
+            QgsDebugMsg( QStringLiteral( "warning: point (x,y) was in no triangle" ) );
             return false;
           }
           result->standardise();
@@ -219,7 +219,7 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 
@@ -241,7 +241,7 @@ bool NormVecDecorator::calcPoint( double x, double y, QgsPoint &result )
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -272,7 +272,7 @@ bool NormVecDecorator::getTriangle( double x, double y, QgsPoint &p1, Vector3D *
       }
       else
       {
-        QgsDebugMsg( "warning, null pointer" );
+        QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
         return false;
       }
       return true;
@@ -285,7 +285,7 @@ bool NormVecDecorator::getTriangle( double x, double y, QgsPoint &p1, Vector3D *
 
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -298,7 +298,7 @@ NormVecDecorator::PointState NormVecDecorator::getState( int pointno ) const
   }
   else
   {
-    QgsDebugMsg( "warning, number below 0" );
+    QgsDebugMsg( QStringLiteral( "warning, number below 0" ) );
     return mPointState->at( 0 );//just to avoid a compiler warning
   }
 }
@@ -338,7 +338,7 @@ bool NormVecDecorator::getTriangle( double x, double y, QgsPoint &p1, int &ptn1,
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -389,7 +389,7 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
 
   if ( ( vlist.count() % 4 ) != 0 ) //number of items in vlist has to be a multiple of 4
   {
-    QgsDebugMsg( "warning, wrong number of items in vlist" );
+    QgsDebugMsg( QStringLiteral( "warning, wrong number of items in vlist" ) );
     return false;
   }
 
@@ -522,7 +522,7 @@ void NormVecDecorator::eliminateHorizontalTriangles()
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
   }
 }
 
@@ -534,7 +534,7 @@ void NormVecDecorator::setState( int pointno, PointState s )
   }
   else
   {
-    QgsDebugMsg( "warning, pointno>0" );
+    QgsDebugMsg( QStringLiteral( "warning, pointno>0" ) );
   }
 }
 
@@ -565,7 +565,7 @@ bool NormVecDecorator::swapEdge( double x, double y )
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }

@@ -202,7 +202,7 @@ bool QgsCoordinateReferenceSystem::createFromId( const long id, CrsType type )
       break;
     default:
       //THIS IS BAD...THIS PART OF CODE SHOULD NEVER BE REACHED...
-      QgsDebugMsg( "Unexpected case reached!" );
+      QgsDebugMsg( QStringLiteral( "Unexpected case reached!" ) );
   };
   return result;
 }
@@ -585,7 +585,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 
   if ( wkt.isEmpty() )
   {
-    QgsDebugMsgLevel( "theWkt is uninitialized, operation failed", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "theWkt is uninitialized, operation failed" ), 4 );
     return d->mIsValid;
   }
   QByteArray ba = wkt.toLatin1();
@@ -595,11 +595,11 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 
   if ( myInputResult != OGRERR_NONE )
   {
-    QgsDebugMsg( "\n---------------------------------------------------------------" );
-    QgsDebugMsg( "This CRS could *** NOT *** be set from the supplied Wkt " );
+    QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
+    QgsDebugMsg( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ) );
     QgsDebugMsg( "INPUT: " + wkt );
     QgsDebugMsg( QStringLiteral( "UNUSED WKT: %1" ).arg( pWkt ) );
-    QgsDebugMsg( "---------------------------------------------------------------\n" );
+    QgsDebugMsg( QStringLiteral( "---------------------------------------------------------------\n" ) );
 
     sCRSWktLock.lockForWrite();
     sWktCache.insert( wkt, *this );
@@ -763,7 +763,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
       myStart2 = 0;
       myStart2 = myLat2RegExp.indexIn( proj4String, myStart2 );
       proj4StringModified.replace( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN, lat1Str );
-      QgsDebugMsgLevel( "trying proj4string match with swapped lat_1,lat_2", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "trying proj4string match with swapped lat_1,lat_2" ), 4 );
       myRecord = getRecord( "select * from tbl_srs where parameters=" + QgsSqliteUtils::quotedString( proj4StringModified.trimmed() ) + " order by deprecated" );
     }
   }
@@ -855,7 +855,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   // if we failed to look up the projection in database, don't worry. we can still use it :)
   if ( !d->mIsValid )
   {
-    QgsDebugMsgLevel( "Projection is not found in databases.", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Projection is not found in databases." ), 4 );
     //setProj4String will set mIsValidFlag to true if there is no issue
     setProj4String( myProj4String );
   }
@@ -908,7 +908,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     }
     if ( statement.step() != SQLITE_DONE )
     {
-      QgsDebugMsgLevel( "Multiple records found in srs.db", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Multiple records found in srs.db" ), 4 );
       myMap.clear();
     }
   }
@@ -924,7 +924,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     myFileInfo.setFile( myDatabaseFileName );
     if ( !myFileInfo.exists() )
     {
-      QgsDebugMsg( "user qgis.db not found" );
+      QgsDebugMsg( QStringLiteral( "user qgis.db not found" ) );
       return myMap;
     }
 
@@ -950,7 +950,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
 
       if ( statement.step() != SQLITE_DONE )
       {
-        QgsDebugMsgLevel( "Multiple records found in srs.db", 4 );
+        QgsDebugMsgLevel( QStringLiteral( "Multiple records found in srs.db" ), 4 );
         myMap.clear();
       }
     }
@@ -1128,7 +1128,7 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
   projPJ proj = pj_init_plus_ctx( pContext, proj4String.trimmed().toLatin1().constData() );
   if ( !proj )
   {
-    QgsDebugMsgLevel( "proj.4 string rejected by pj_init_plus_ctx()", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "proj.4 string rejected by pj_init_plus_ctx()" ), 4 );
     d->mIsValid = false;
   }
   else
@@ -1496,7 +1496,7 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int srsId )
     myFileInfo.setFile( myDatabaseFileName );
     if ( !myFileInfo.exists() ) //its unlikely that this condition will ever be reached
     {
-      QgsDebugMsg( "users qgis.db not found" );
+      QgsDebugMsg( QStringLiteral( "users qgis.db not found" ) );
       return QString();
     }
   }
@@ -1562,7 +1562,7 @@ CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::customCrsValidation()
 
 void QgsCoordinateReferenceSystem::debugPrint()
 {
-  QgsDebugMsg( "***SpatialRefSystem***" );
+  QgsDebugMsg( QStringLiteral( "***SpatialRefSystem***" ) );
   QgsDebugMsg( "* Valid : " + ( d->mIsValid ? QString( "true" ) : QString( "false" ) ) );
   QgsDebugMsg( "* SrsId : " + QString::number( d->mSrsId ) );
   QgsDebugMsg( "* Proj4 : " + toProj4() );
@@ -1570,15 +1570,15 @@ void QgsCoordinateReferenceSystem::debugPrint()
   QgsDebugMsg( "* Desc. : " + d->mDescription );
   if ( mapUnits() == QgsUnitTypes::DistanceMeters )
   {
-    QgsDebugMsg( "* Units : meters" );
+    QgsDebugMsg( QStringLiteral( "* Units : meters" ) );
   }
   else if ( mapUnits() == QgsUnitTypes::DistanceFeet )
   {
-    QgsDebugMsg( "* Units : feet" );
+    QgsDebugMsg( QStringLiteral( "* Units : feet" ) );
   }
   else if ( mapUnits() == QgsUnitTypes::DistanceDegrees )
   {
-    QgsDebugMsg( "* Units : degrees" );
+    QgsDebugMsg( QStringLiteral( "* Units : degrees" ) );
   }
 }
 
@@ -1600,7 +1600,7 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
 {
   if ( !d->mIsValid )
   {
-    QgsDebugMsgLevel( "Can't save an invalid CRS!", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Can't save an invalid CRS!" ), 4 );
     return -1;
   }
 

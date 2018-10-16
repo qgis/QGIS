@@ -270,7 +270,7 @@ void QgsOfflineEditing::synchronize()
         QgsDebugMsgLevel( QStringLiteral( "Found %1 commits" ).arg( commitNo ), 4 );
         for ( int i = 0; i < commitNo; i++ )
         {
-          QgsDebugMsgLevel( "Apply commits chronologically", 4 );
+          QgsDebugMsgLevel( QStringLiteral( "Apply commits chronologically" ), 4 );
           // apply commits chronologically
           applyAttributesAdded( remoteLayer, database.get(), layerId, i );
           applyAttributeValueChanges( offlineLayer, remoteLayer, database.get(), layerId, i );
@@ -304,7 +304,7 @@ void QgsOfflineEditing::synchronize()
       }
       else
       {
-        QgsDebugMsg( "Could not find the layer id in the edit logs!" );
+        QgsDebugMsg( QStringLiteral( "Could not find the layer id in the edit logs!" ) );
       }
       // Invalidate the connection to force a reload if the project is put offline
       // again with the same path
@@ -322,7 +322,7 @@ void QgsOfflineEditing::synchronize()
     }
     else
     {
-      QgsDebugMsg( "Remote layer is not valid!" );
+      QgsDebugMsg( QStringLiteral( "Remote layer is not valid!" ) );
     }
   }
 
@@ -1085,13 +1085,13 @@ sqlite3_database_unique_ptr QgsOfflineEditing::openLoggingDb()
     int rc = database.open( absoluteDbPath );
     if ( rc != SQLITE_OK )
     {
-      QgsDebugMsg( "Could not open the SpatiaLite logging database" );
+      QgsDebugMsg( QStringLiteral( "Could not open the SpatiaLite logging database" ) );
       showWarning( tr( "Could not open the SpatiaLite logging database" ) );
     }
   }
   else
   {
-    QgsDebugMsg( "dbPath is empty!" );
+    QgsDebugMsg( QStringLiteral( "dbPath is empty!" ) );
   }
   return database;
 }

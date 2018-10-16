@@ -311,11 +311,11 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   }
 
   //set client encoding to Unicode because QString uses UTF-8 anyway
-  QgsDebugMsg( "setting client encoding to UNICODE" );
+  QgsDebugMsg( QStringLiteral( "setting client encoding to UNICODE" ) );
   int errcode = PQsetClientEncoding( mConn, QStringLiteral( "UNICODE" ).toLocal8Bit() );
   if ( errcode == 0 )
   {
-    QgsDebugMsg( "encoding successfully set" );
+    QgsDebugMsg( QStringLiteral( "encoding successfully set" ) );
   }
   else if ( errcode == -1 )
   {
@@ -326,7 +326,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
     QgsMessageLog::logMessage( tr( "undefined return value from encoding setting" ), tr( "PostGIS" ) );
   }
 
-  QgsDebugMsg( "Connection to the database was successful" );
+  QgsDebugMsg( QStringLiteral( "Connection to the database was successful" ) );
 
   deduceEndian();
 
@@ -335,7 +335,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   {
     /* Check to see if we have GEOS support and if not, warn the user about
        the problems they will see :) */
-    QgsDebugMsg( "Checking for GEOS support" );
+    QgsDebugMsg( QStringLiteral( "Checking for GEOS support" ) );
 
     if ( !hasGEOS() )
     {
@@ -344,7 +344,7 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
 
     if ( hasTopology() )
     {
-      QgsDebugMsg( "Topology support available!" );
+      QgsDebugMsg( QStringLiteral( "Topology support available!" ) );
     }
   }
 
@@ -428,7 +428,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   QgsPostgresResult result;
   QgsPostgresLayerProperty layerProperty;
 
-  //QgsDebugMsg( "Entering." );
+  //QgsDebugMsg( QStringLiteral( "Entering." ) );
 
   mLayersSupported.clear();
 
@@ -576,7 +576,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
       if ( isView && layerProperty.pkCols.empty() )
       {
-        //QgsDebugMsg( "no key columns found." );
+        //QgsDebugMsg( QStringLiteral( "no key columns found." ) );
         continue;
       }
 
@@ -697,7 +697,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       addColumnInfo( layerProperty, schemaName, tableName, isView );
       if ( isView && layerProperty.pkCols.empty() )
       {
-        //QgsDebugMsg( "no key columns found." );
+        //QgsDebugMsg( QStringLiteral( "no key columns found." ) );
         continue;
       }
 
@@ -805,7 +805,7 @@ bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers
 
   layers = mLayersSupported;
 
-  //QgsDebugMsg( "Exiting." );
+  //QgsDebugMsg( QStringLiteral( "Exiting." ) );
 
   return true;
 }
@@ -937,7 +937,7 @@ QString QgsPostgresConn::postgisVersion()
   }
 
   // checking for topology support
-  QgsDebugMsg( "Checking for topology support" );
+  QgsDebugMsg( QStringLiteral( "Checking for topology support" ) );
   mTopologyAvailable = false;
   if ( mPostgisVersionMajor > 1 )
   {
@@ -952,12 +952,12 @@ QString QgsPostgresConn::postgisVersion()
 
   if ( mPostgresqlVersion >= 90000 )
   {
-    QgsDebugMsg( "Checking for pointcloud support" );
+    QgsDebugMsg( QStringLiteral( "Checking for pointcloud support" ) );
     result = PQexec( QStringLiteral( "SELECT oid FROM pg_catalog.pg_extension WHERE extname = 'pointcloud_postgis'" ), false );
     if ( result.PQntuples() == 1 )
     {
       mPointcloudAvailable = true;
-      QgsDebugMsg( "Pointcloud support available!" );
+      QgsDebugMsg( QStringLiteral( "Pointcloud support available!" ) );
     }
   }
 
@@ -1119,7 +1119,7 @@ bool QgsPostgresConn::closeCursor( const QString &cursorName )
 
   if ( --mOpenCursors == 0 && !mTransaction )
   {
-    QgsDebugMsgLevel( "Committing read-only transaction", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Committing read-only transaction" ), 4 );
     PQexecNR( QStringLiteral( "COMMIT" ) );
   }
 
@@ -1411,12 +1411,12 @@ void QgsPostgresConn::deduceEndian()
   QgsPostgresResult res( PQexec( QStringLiteral( "select regclass('pg_class')::oid" ) ) );
   QString oidValue = res.PQgetvalue( 0, 0 );
 
-  QgsDebugMsg( "Creating binary cursor" );
+  QgsDebugMsg( QStringLiteral( "Creating binary cursor" ) );
 
   // get the same value using a binary cursor
   openCursor( QStringLiteral( "oidcursor" ), QStringLiteral( "select regclass('pg_class')::oid" ) );
 
-  QgsDebugMsg( "Fetching a record and attempting to get check endian-ness" );
+  QgsDebugMsg( QStringLiteral( "Fetching a record and attempting to get check endian-ness" ) );
 
   res = PQexec( QStringLiteral( "fetch forward 1 from oidcursor" ) );
 

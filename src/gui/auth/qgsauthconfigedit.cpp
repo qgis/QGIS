@@ -243,7 +243,7 @@ void QgsAuthConfigEdit::saveConfig()
 
   if ( !mconfig.isValid() )
   {
-    QgsDebugMsg( "Save auth config FAILED: config invalid" );
+    QgsDebugMsg( QStringLiteral( "Save auth config FAILED: config invalid" ) );
     return;
   }
 

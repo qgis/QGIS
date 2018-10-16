@@ -57,7 +57,7 @@ bool QgsCredentialDialog::request( const QString &realm, QString &username, QStr
   bool ok;
   if ( qApp->thread() != QThread::currentThread() )
   {
-    QgsDebugMsg( "emitting signal" );
+    QgsDebugMsg( QStringLiteral( "emitting signal" ) );
     emit credentialsRequested( realm, &username, &password, message, &ok );
     QgsDebugMsg( QStringLiteral( "signal returned %1 (username=%2, password=%3)" ).arg( ok ? "true" : "false", username, password ) );
   }
@@ -71,7 +71,7 @@ bool QgsCredentialDialog::request( const QString &realm, QString &username, QStr
 void QgsCredentialDialog::requestCredentials( const QString &realm, QString *username, QString *password, const QString &message, bool *ok )
 {
   Q_ASSERT( qApp->thread() == thread() && thread() == QThread::currentThread() );
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsg( QStringLiteral( "Entering." ) );
   stackedWidget->setCurrentIndex( 0 );
 
   chkbxPasswordHelperEnable->setChecked( QgsApplication::authManager()->passwordHelperEnabled() );
@@ -88,7 +88,7 @@ void QgsCredentialDialog::requestCredentials( const QString &realm, QString *use
 
   QApplication::setOverrideCursor( Qt::ArrowCursor );
 
-  QgsDebugMsg( "exec()" );
+  QgsDebugMsg( QStringLiteral( "exec()" ) );
   *ok = exec() == QDialog::Accepted;
   QgsDebugMsg( QStringLiteral( "exec(): %1" ).arg( *ok ? "true" : "false" ) );
 
@@ -109,7 +109,7 @@ bool QgsCredentialDialog::requestMasterPassword( QString &password, bool stored 
   bool ok;
   if ( qApp->thread() != QThread::currentThread() )
   {
-    QgsDebugMsg( "emitting signal" );
+    QgsDebugMsg( QStringLiteral( "emitting signal" ) );
     emit credentialsRequestedMasterPassword( &password, stored, &ok );
   }
   else
@@ -121,7 +121,7 @@ bool QgsCredentialDialog::requestMasterPassword( QString &password, bool stored 
 
 void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, bool stored, bool *ok )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsg( QStringLiteral( "Entering." ) );
   stackedWidget->setCurrentIndex( 1 );
   leMasterPass->setFocus();
 
@@ -153,7 +153,7 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
     s.setWidth( width() );
     resize( s );
 
-    QgsDebugMsg( "exec()" );
+    QgsDebugMsg( QStringLiteral( "exec()" ) );
     *ok = exec() == QDialog::Accepted;
     QgsDebugMsg( QStringLiteral( "exec(): %1" ).arg( *ok ? "true" : "false" ) );
 

@@ -170,7 +170,7 @@ void QgsRelationManager::readProject( const QDomDocument &doc, QgsReadWriteConte
   }
   else
   {
-    QgsDebugMsg( "No relations data present in this document" );
+    QgsDebugMsg( QStringLiteral( "No relations data present in this document" ) );
   }
 
   emit relationsLoaded();
@@ -182,7 +182,7 @@ void QgsRelationManager::writeProject( QDomDocument &doc )
   QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
   if ( !nl.count() )
   {
-    QgsDebugMsg( "Unable to find qgis element in project file" );
+    QgsDebugMsg( QStringLiteral( "Unable to find qgis element in project file" ) );
     return;
   }
   QDomNode qgisNode = nl.item( 0 );  // there should only be one

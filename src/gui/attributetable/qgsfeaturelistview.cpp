@@ -146,7 +146,7 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
   }
   else
   {
-    QgsDebugMsg( "No model assigned to this view" );
+    QgsDebugMsg( QStringLiteral( "No model assigned to this view" ) );
   }
 }
 

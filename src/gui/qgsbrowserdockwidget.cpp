@@ -312,7 +312,7 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex &index )
     }
     else
     {
-      QgsDebugMsg( "invalid item" );
+      QgsDebugMsg( QStringLiteral( "invalid item" ) );
     }
 
     if ( item && ( item->capabilities2() & QgsDataItem::Fertile ) )

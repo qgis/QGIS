@@ -762,7 +762,7 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
   }
   else
   {
-    QgsDebugMsg( "Unknown geometry type, count features for each geometry type" );
+    QgsDebugMsg( QStringLiteral( "Unknown geometry type, count features for each geometry type" ) );
     // Add virtual sublayers for supported geometry types if layer type is unknown
     // Count features for geometry types
     QMap<OGRwkbGeometryType, int> fCount;
@@ -1178,7 +1178,7 @@ QgsRectangle QgsOgrProvider::extent() const
     mExtent.reset( new OGREnvelope() );
 
     // get the extent_ (envelope) of the layer
-    QgsDebugMsg( "Starting get extent" );
+    QgsDebugMsg( QStringLiteral( "Starting get extent" ) );
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,2)
     if ( mForceRecomputeExtent && mValid && mGDALDriverName == QLatin1String( "GPKG" ) && mOgrOrigLayer )
@@ -1222,7 +1222,7 @@ QgsRectangle QgsOgrProvider::extent() const
       mOgrLayer->ResetReading();
     }
 
-    QgsDebugMsg( "Finished get extent" );
+    QgsDebugMsg( QStringLiteral( "Finished get extent" ) );
   }
 
   mExtentRect.set( mExtent->MinX, mExtent->MinY, mExtent->MaxX, mExtent->MaxY );
@@ -1903,9 +1903,9 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
   }
 
   // check the validity of the layer
-  QgsDebugMsgLevel( "checking validity", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "checking validity" ), 4 );
   loadFields();
-  QgsDebugMsgLevel( "Done checking validity", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Done checking validity" ), 4 );
 
   invalidateCachedExtent( false );
 
@@ -2288,7 +2288,7 @@ bool QgsOgrProvider::doInitialActionsForEdition()
   // If mUpdateModeStackDepth > 0, it means that an updateMode is already active and that we have write access
   if ( mUpdateModeStackDepth == 0 )
   {
-    QgsDebugMsg( "Enter update mode implictly" );
+    QgsDebugMsg( QStringLiteral( "Enter update mode implictly" ) );
     if ( !_enterUpdateMode( true ) )
       return false;
   }
@@ -3427,7 +3427,7 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
   }
   else
   {
-    QgsDebugMsg( "no spatial reference found" );
+    QgsDebugMsg( QStringLiteral( "no spatial reference found" ) );
   }
 
   return srs;
@@ -3460,7 +3460,7 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
   QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
   if ( !l )
   {
-    QgsDebugMsg( "Failed to execute SQL" );
+    QgsDebugMsg( QStringLiteral( "Failed to execute SQL" ) );
     return QgsVectorDataProvider::uniqueValues( index, limit );
   }
 
@@ -3505,7 +3505,7 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
   QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
   if ( !l )
   {
-    QgsDebugMsg( "Failed to execute SQL" );
+    QgsDebugMsg( QStringLiteral( "Failed to execute SQL" ) );
     return QgsVectorDataProvider::uniqueStringsMatching( index, substring, limit, feedback );
   }
 
@@ -3763,7 +3763,7 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
         }
 
         CPLPushErrorHandler( CPLQuietErrorHandler );
-        QgsDebugMsg( "GPKG: Trying to return to delete mode" );
+        QgsDebugMsg( QStringLiteral( "GPKG: Trying to return to delete mode" ) );
         OGRLayerH hSqlLyr = GDALDatasetExecuteSQL( hDS,
                             "PRAGMA journal_mode = delete",
                             nullptr, nullptr );
@@ -3792,11 +3792,11 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
       {
         if ( openedAsUpdate )
         {
-          QgsDebugMsg( "GPKG: Trying again" );
+          QgsDebugMsg( QStringLiteral( "GPKG: Trying again" ) );
         }
         else
         {
-          QgsDebugMsg( "GPKG: Trying to return to delete mode" );
+          QgsDebugMsg( QStringLiteral( "GPKG: Trying to return to delete mode" ) );
         }
         CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "DELETE" );
         hDS = GDALOpenEx( datasetName.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
@@ -4167,7 +4167,7 @@ void QgsOgrProvider::open( OpenMode mode )
     mWriteAccess = false;
     if ( !openReadOnly )
     {
-      QgsDebugMsg( "OGR failed to opened in update mode, trying in read-only mode" );
+      QgsDebugMsg( QStringLiteral( "OGR failed to opened in update mode, trying in read-only mode" ) );
     }
 
     // try to open read-only
@@ -4212,7 +4212,7 @@ void QgsOgrProvider::open( OpenMode mode )
       {
         computeCapabilities();
       }
-      QgsDebugMsg( "Data source is valid" );
+      QgsDebugMsg( QStringLiteral( "Data source is valid" ) );
     }
     else
     {
@@ -5883,7 +5883,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
       bool ok = OGR_L_SetFeature( hLayer, hFeature.get() ) == 0;
       if ( !ok )
       {
-        QgsDebugMsg( "Could not unset previous useAsDefault style" );
+        QgsDebugMsg( QStringLiteral( "Could not unset previous useAsDefault style" ) );
       }
     }
   }

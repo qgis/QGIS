@@ -147,7 +147,7 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
 {
   if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
   {
-    QgsDebugMsg( "Cannot delete features (missing DeleteFeature capability)" );
+    QgsDebugMsg( QStringLiteral( "Cannot delete features (missing DeleteFeature capability)" ) );
     return false;
   }
 
@@ -155,7 +155,7 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
   {
     if ( !mAddedFeatures.contains( fid ) )
     {
-      QgsDebugMsg( "Cannot delete features (in the list of added features)" );
+      QgsDebugMsg( QStringLiteral( "Cannot delete features (in the list of added features)" ) );
       return false;
     }
   }
@@ -163,7 +163,7 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
   {
     if ( mDeletedFeatureIds.contains( fid ) )
     {
-      QgsDebugMsg( "Cannot delete features (in the list of deleted features)" );
+      QgsDebugMsg( QStringLiteral( "Cannot delete features (in the list of deleted features)" ) );
       return false;
     }
   }
@@ -176,7 +176,7 @@ bool QgsVectorLayerEditBuffer::deleteFeatures( const QgsFeatureIds &fids )
 {
   if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
   {
-    QgsDebugMsg( "Cannot delete features (missing DeleteFeatures capability)" );
+    QgsDebugMsg( QStringLiteral( "Cannot delete features (missing DeleteFeatures capability)" ) );
     return false;
   }
 

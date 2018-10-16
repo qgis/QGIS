@@ -294,7 +294,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 #if 0
   if ( fieldCount == 0 )
   {
-    QgsDebugMsg( "QgsMssqlProvider::select no fields have been requested" );
+    QgsDebugMsg( QStringLiteral( "QgsMssqlProvider::select no fields have been requested" ) );
     mStatement.clear();
   }
 #endif

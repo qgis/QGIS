@@ -34,7 +34,7 @@ bool QgsPythonRunner::run( const QString &command, const QString &messageOnError
   }
   else
   {
-    QgsDebugMsg( "Unable to run Python command: runner not available!" );
+    QgsDebugMsg( QStringLiteral( "Unable to run Python command: runner not available!" ) );
     return false;
   }
 }
@@ -47,7 +47,7 @@ bool QgsPythonRunner::eval( const QString &command, QString &result )
   }
   else
   {
-    QgsDebugMsg( "Unable to run Python command: runner not available!" );
+    QgsDebugMsg( QStringLiteral( "Unable to run Python command: runner not available!" ) );
     return false;
   }
 }

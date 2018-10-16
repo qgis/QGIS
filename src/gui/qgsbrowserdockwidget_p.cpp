@@ -161,7 +161,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   QgsDebugMsg( QStringLiteral( "creating temporary layer using path %1" ).arg( layerItem->path() ) );
   if ( type == QgsMapLayer::RasterLayer )
   {
-    QgsDebugMsg( "creating raster layer" );
+    QgsDebugMsg( QStringLiteral( "creating raster layer" ) );
     // should copy code from addLayer() to split uri ?
     std::unique_ptr<QgsRasterLayer> layer( new QgsRasterLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() ) );
     if ( layer )
@@ -177,7 +177,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   }
   else if ( type == QgsMapLayer::MeshLayer )
   {
-    QgsDebugMsg( "creating mesh layer" );
+    QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
     std::unique_ptr<QgsMeshLayer> layer( new QgsMeshLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() ) );
     if ( layer )
     {
@@ -192,7 +192,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   }
   else if ( type == QgsMapLayer::VectorLayer )
   {
-    QgsDebugMsg( "creating vector layer" );
+    QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
     std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
     if ( layer )
     {

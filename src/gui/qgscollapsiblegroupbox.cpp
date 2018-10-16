@@ -106,7 +106,7 @@ void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent *event )
   }
   else
   {
-    QgsDebugMsgLevel( "did not find a QScrollArea parent", 5 );
+    QgsDebugMsgLevel( QStringLiteral( "did not find a QScrollArea parent" ), 5 );
   }
 
   updateStyle();
@@ -237,7 +237,7 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
        && ( mAltDown || mShiftDown )
        && !mSyncGroup.isEmpty() )
   {
-    QgsDebugMsg( "Alt or Shift key down, syncing group" );
+    QgsDebugMsg( QStringLiteral( "Alt or Shift key down, syncing group" ) );
     // get pointer to parent or grandparent widget
     if ( parentWidget() )
     {
@@ -282,7 +282,7 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
     }
     else
     {
-      QgsDebugMsg( "did not find a sync parent" );
+      QgsDebugMsg( QStringLiteral( "did not find a sync parent" ) );
     }
   }
 

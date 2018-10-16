@@ -539,7 +539,7 @@ void QgsProjectionSelectionTreeWidget::loadUserCrsList( QSet<QString> *crsFilter
   if ( mUserProjListDone )
     return;
 
-  QgsDebugMsgLevel( "Fetching user projection list...", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Fetching user projection list..." ), 4 );
 
   // convert our Coordinate Reference System filter into the SQL expression
   QString sqlFilter = ogcWmsCrsFilterAsSqlExpression( crsFilter );
@@ -563,7 +563,7 @@ void QgsProjectionSelectionTreeWidget::loadUserCrsList( QSet<QString> *crsFilter
   //return straight away if the user has not created any custom projections
   if ( !QFileInfo::exists( databaseFileName ) )
   {
-    QgsDebugMsg( "Users qgis.db not found...skipping" );
+    QgsDebugMsg( QStringLiteral( "Users qgis.db not found...skipping" ) );
     mUserProjListDone = true;
     return;
   }
@@ -755,11 +755,11 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
 // New coordinate system selected from the list
 void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
-  QgsDebugMsgLevel( "Entered.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   if ( !current )
   {
-    QgsDebugMsgLevel( "no current item", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
     return;
   }
 
@@ -802,11 +802,11 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_itemDoubleClicked( Q
 {
   Q_UNUSED( column );
 
-  QgsDebugMsgLevel( "Entered.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   if ( !current )
   {
-    QgsDebugMsgLevel( "no current item", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
     return;
   }
 
@@ -818,11 +818,11 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_itemDoubleClicked( Q
 
 void QgsProjectionSelectionTreeWidget::lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
-  QgsDebugMsgLevel( "Entered.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   if ( !current )
   {
-    QgsDebugMsgLevel( "no current item", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
     return;
   }
 
@@ -837,11 +837,11 @@ void QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked( QTreeWidgetI
 {
   Q_UNUSED( column );
 
-  QgsDebugMsgLevel( "Entered.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   if ( !current )
   {
-    QgsDebugMsgLevel( "no current item", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
     return;
   }
 

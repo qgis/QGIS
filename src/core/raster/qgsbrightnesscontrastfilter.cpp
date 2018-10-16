@@ -28,7 +28,7 @@ QgsBrightnessContrastFilter::QgsBrightnessContrastFilter( QgsRasterInterface *in
 
 QgsBrightnessContrastFilter *QgsBrightnessContrastFilter::clone() const
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   QgsBrightnessContrastFilter *filter = new QgsBrightnessContrastFilter( nullptr );
   filter->setBrightness( mBrightness );
   filter->setContrast( mContrast );
@@ -67,38 +67,38 @@ Qgis::DataType QgsBrightnessContrastFilter::dataType( int bandNo ) const
 
 bool QgsBrightnessContrastFilter::setInput( QgsRasterInterface *input )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
   // Brightness filter can only work with single band ARGB32_Premultiplied
   if ( !input )
   {
-    QgsDebugMsgLevel( "No input", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "No input" ), 4 );
     return false;
   }
 
   if ( !mOn )
   {
     // In off mode we can connect to anything
-    QgsDebugMsgLevel( "OK", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "OK" ), 4 );
     mInput = input;
     return true;
   }
 
   if ( input->bandCount() < 1 )
   {
-    QgsDebugMsg( "No input band" );
+    QgsDebugMsg( QStringLiteral( "No input band" ) );
     return false;
   }
 
   if ( input->dataType( 1 ) != Qgis::ARGB32_Premultiplied &&
        input->dataType( 1 ) != Qgis::ARGB32 )
   {
-    QgsDebugMsg( "Unknown input data type" );
+    QgsDebugMsg( QStringLiteral( "Unknown input data type" ) );
     return false;
   }
 
   mInput = input;
-  QgsDebugMsgLevel( "OK", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "OK" ), 4 );
   return true;
 }
 
@@ -118,13 +118,13 @@ QgsRasterBlock *QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  co
   std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNumber, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugMsg( "No raster data!" );
+    QgsDebugMsg( QStringLiteral( "No raster data!" ) );
     return outputBlock.release();
   }
 
   if ( mBrightness == 0 && mContrast == 0 )
   {
-    QgsDebugMsgLevel( "No brightness changes.", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "No brightness changes." ), 4 );
     return inputBlock.release();
   }
 
