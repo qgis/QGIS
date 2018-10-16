@@ -1,0 +1,180 @@
+/***************************************************************************
+     testqgsbrowsermodel.cpp
+     --------------------------------------
+    Date                 : October 2018
+    Copyright            : (C) 2018 Nyall Dawson
+    Email                : nyall dot dawson at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#include "qgstest.h"
+
+#include <QObject>
+#include <QString>
+#include <QStringList>
+
+//qgis includes...
+#include "qgsdataitem.h"
+#include "qgsvectorlayer.h"
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgsbrowsermodel.h"
+
+class TestQgsBrowserModel : public QObject
+{
+    Q_OBJECT
+
+  private slots:
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
+
+    void testValid();
+    void testDirItemChildren();
+    void testModel();
+
+  private:
+    QgsDirectoryItem *mDirItem = nullptr;
+    QString mScanItemsSetting;
+    bool isValidDirItem( QgsDirectoryItem *item );
+};
+
+void TestQgsBrowserModel::initTestCase()
+{
+  //
+  // Runs once before any tests are run
+  //
+  // init QGIS's paths - true means that all path will be inited from prefix
+  QgsApplication::init();
+  QgsApplication::initQgis();
+  QgsApplication::showSettings();
+
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+
+  //create a directory item that will be used in all tests...
+  mDirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
+}
+
+void TestQgsBrowserModel::cleanupTestCase()
+{
+  if ( mDirItem )
+    delete mDirItem;
+
+  QgsApplication::exitQgis();
+}
+
+bool TestQgsBrowserModel::isValidDirItem( QgsDirectoryItem *item )
+{
+  return ( item && item->hasChildren() );
+}
+
+void TestQgsBrowserModel::testValid()
+{
+  if ( mDirItem )
+  {
+    QgsDebugMsg( QStringLiteral( "dirItem has %1 children" ).arg( mDirItem->rowCount() ) );
+  }
+  QVERIFY( isValidDirItem( mDirItem ) );
+}
+
+void TestQgsBrowserModel::testDirItemChildren()
+{
+  QgsSettings settings;
+  QStringList tmpSettings;
+  tmpSettings << QString() << QStringLiteral( "contents" ) << QStringLiteral( "extension" );
+  Q_FOREACH ( const QString &tmpSetting, tmpSettings )
+  {
+    settings.setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ), tmpSetting );
+    QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
+    QVERIFY( isValidDirItem( dirItem ) );
+
+    QVector<QgsDataItem *> children = dirItem->createChildren();
+    for ( int i = 0; i < children.size(); i++ )
+    {
+      QgsDataItem *dataItem = children[i];
+      QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( dataItem );
+      if ( ! layerItem )
+        continue;
+
+      // test .vrt and .gz files are not loaded by gdal and ogr
+      QFileInfo info( layerItem->path() );
+      QString lFile = info.fileName();
+      QString lProvider = layerItem->providerKey();
+      QString errStr = QStringLiteral( "layer #%1 - %2 provider = %3 tmpSetting = %4" ).arg( i ).arg( lFile, lProvider, tmpSetting );
+
+      QgsDebugMsg( QStringLiteral( "testing child name=%1 provider=%2 path=%3 tmpSetting = %4" ).arg( layerItem->name(), lProvider, lFile, tmpSetting ) );
+
+      if ( lFile == QLatin1String( "landsat.tif" ) )
+      {
+        QVERIFY2( lProvider == "gdal", errStr.toLocal8Bit().constData() );
+      }
+      else if ( lFile == QLatin1String( "points.vrt" ) )
+      {
+        QVERIFY2( lProvider == "ogr", errStr.toLocal8Bit().constData() );
+      }
+      else if ( lFile == QLatin1String( "landsat.vrt" ) )
+      {
+        QVERIFY2( lProvider == "gdal", errStr.toLocal8Bit().constData() );
+      }
+      else if ( lFile == QLatin1String( "landsat_b1.tif.gz" ) )
+      {
+        QVERIFY2( lProvider == "gdal", errStr.toLocal8Bit().constData() );
+      }
+      else if ( lFile == QLatin1String( "points3.geojson.gz" ) )
+      {
+        QVERIFY2( lProvider == "ogr", errStr.toLocal8Bit().constData() );
+      }
+
+      // test layerName() does not include extension for gdal and ogr items (bug #5621)
+      QString lName = layerItem->layerName();
+      errStr = QStringLiteral( "layer #%1 - %2 lName = %3 tmpSetting = %4" ).arg( i ).arg( lFile, lName, tmpSetting );
+
+      if ( lFile == QLatin1String( "landsat.tif" ) )
+      {
+        QVERIFY2( lName == "landsat", errStr.toLocal8Bit().constData() );
+      }
+      else if ( lFile == QLatin1String( "points.shp" ) )
+      {
+        QVERIFY2( lName == "points", errStr.toLocal8Bit().constData() );
+      }
+      else if ( lFile == QLatin1String( "landsat_b1.tif.gz" ) )
+      {
+        QVERIFY2( lName == "landsat_b1", errStr.toLocal8Bit().constData() );
+      }
+      else if ( lFile == QLatin1String( "points3.geojson.gz" ) )
+      {
+        QVERIFY2( lName == "points3", errStr.toLocal8Bit().constData() );
+      }
+
+    }
+    qDeleteAll( children );
+
+    delete dirItem;
+  }
+}
+
+void TestQgsBrowserModel::testModel()
+{
+  QgsBrowserModel model;
+
+  // empty
+  QCOMPARE( model.rowCount(), 0 );
+  QCOMPARE( model.columnCount(), 1 );
+  QVERIFY( !model.data( QModelIndex() ).isValid() );
+  QVERIFY( !model.flags( QModelIndex() ) );
+  QVERIFY( !model.hasChildren() );
+
+}
+
+QGSTEST_MAIN( TestQgsBrowserModel )
+#include "testqgsbrowsermodel.moc"
