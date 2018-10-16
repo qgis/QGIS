@@ -400,6 +400,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     //! Clears the flag for massive changes operations and tells the view to update
     void bulkEditCommandEnded();
 
+    //! Changed attribute values within a bulk edit command
+    QMap<QPair<QgsFeatureId, int>, QVariant> mAttributeValueChanges;
+
     friend class TestQgsAttributeTable;
 
 };

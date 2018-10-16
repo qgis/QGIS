@@ -301,9 +301,12 @@ void QgsAttributeTableModel::fieldFormatterRemoved( QgsFieldFormatter *fieldForm
 
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
-  // Skip all updates if an edit command is running
+  // Defer all updates if an edit command is running
   if ( mBulkEditCommandRunning )
+  {
+    mAttributeValueChanges.insert( QPair<QgsFeatureId, int>( fid, idx ), value );
     return;
+  }
   QgsDebugMsgLevel( QStringLiteral( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( mFeatureRequest.filterType() ), 3 );
 
   for ( SortCache &cache : mSortCaches )
@@ -810,13 +813,44 @@ bool QgsAttributeTableModel::fieldIsEditable( const QgsVectorLayer &layer, int f
 void QgsAttributeTableModel::bulkEditCommandStarted()
 {
   mBulkEditCommandRunning = true;
+  mAttributeValueChanges.clear();
 }
 
 void QgsAttributeTableModel::bulkEditCommandEnded()
 {
-  // Invalidate the whole model
   mBulkEditCommandRunning = false;
-  emit dataChanged( createIndex( 0, 0 ), createIndex( rowCount() - 1, columnCount() - 1 ) );
+  // Full model update if the changed rows are more than half the total rows
+  // or if their count is > 1000
+  int minRow = rowCount();
+  int minCol = columnCount();
+  int maxRow = 0;
+  int maxCol = 0;
+  bool fullModelUpdate = mAttributeValueChanges.count() >= 1000 ||
+                         mAttributeValueChanges.count() >= rowCount() * 0.5;
+  const auto keys = mAttributeValueChanges.keys();
+  for ( const auto &key : keys )
+  {
+
+    attributeValueChanged( key.first, key.second, mAttributeValueChanges.value( key ) );
+    int row( idToRow( key.first ) );
+    int col( fieldCol( key.second ) );
+    if ( ! fullModelUpdate )
+    {
+      QModelIndex index( createIndex( row, col ) );
+      emit dataChanged( index, index );
+    }
+    else
+    {
+      minRow = std::min<int>( row, minRow );
+      minCol = std::min<int>( col, minCol );
+      maxRow = std::max<int>( row, maxRow );
+      maxCol = std::max<int>( col, maxCol );
+    }
+  }
+  // Invalidates the whole model: triggers an update in the view
+  if ( fullModelUpdate )
+    emit dataChanged( createIndex( minRow, minCol ), createIndex( maxRow, maxCol ) );
+  mAttributeValueChanges.clear();
 }
 
 void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
