@@ -339,7 +339,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void exportToRaster();
     void exportToPdf();
     void exportToSvg();
-    void showAtlasSettings( bool checked );
     void atlasPreviewTriggered( bool checked );
     void atlasPageComboEditingFinished();
     void atlasNext();
@@ -355,7 +354,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void exportReportToSvg();
     void exportReportToPdf();
     void printReport();
-    void showReportSettings( bool checked );
 
     void pageSetup();
 
