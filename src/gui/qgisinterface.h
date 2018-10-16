@@ -885,7 +885,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 SIP_DEPRECATED;
 
     /**
-     * Open feature form.
+     * Opens a new feature form.
      * Returns true if dialog was accepted (if shown modal, true otherwise).
      * \param l vector layer
      * \param f feature to show/modify

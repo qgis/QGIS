@@ -1065,7 +1065,7 @@ QGIS documentation, set useQgisDocDirectory to false.
 
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
 %Docstring
-Open feature form.
+Opens a new feature form.
 Returns true if dialog was accepted (if shown modal, true otherwise).
 
 :param l: vector layer
