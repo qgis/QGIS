@@ -914,6 +914,32 @@ tests:
         name: expected/zm_dropped.shp
         type: vector
 
+  - algorithm: native:explodehstorefield
+    name: Test explode HStore field with all keys
+    params:
+      EXPECTED_FIELDS: ''
+      FIELD: hstore
+      INPUT:
+        name: custom/hstore.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/hstore_all_keys.gml
+        type: vector
+
+  - algorithm: native:explodehstorefield
+    name: Test explode HStore field with 2 fields
+    params:
+      EXPECTED_FIELDS: internet_access,cuisine,doesntexist
+      FIELD: hstore
+      INPUT:
+        name: custom/hstore.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/hstore_two_fields.gml
+        type: vector
+
   - algorithm: native:pointonsurface
     name: Point on polygon surface
     params:
