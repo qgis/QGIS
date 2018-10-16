@@ -310,7 +310,7 @@ int QgsBrowserModel::rowCount( const QModelIndex &parent ) const
 bool QgsBrowserModel::hasChildren( const QModelIndex &parent ) const
 {
   if ( !parent.isValid() )
-    return true; // root item: its children are top level items
+    return !mRootItems.isEmpty(); // root item: its children are top level items
 
   QgsDataItem *item = dataItem( parent );
   return item && item->hasChildren();

@@ -79,6 +79,7 @@ SET(TESTS
  testqgsauthconfig.cpp
  testqgsauthmanager.cpp
  testqgsblendmodes.cpp
+ testqgsbrowsermodel.cpp
  testqgscadutils.cpp
  testqgsclipper.cpp
  testqgscolorscheme.cpp
