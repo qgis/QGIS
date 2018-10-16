@@ -32,6 +32,7 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsnewnamedialog.h"
+#include "qgsbrowserproxymodel.h"
 
 // browser layer properties dialog
 #include "qgsapplication.h"
@@ -74,16 +75,16 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserModel
   action->setSeparator( true );
   menu->addAction( action );
   action = new QAction( tr( "Normal" ), group );
-  action->setData( "normal" );
+  action->setData( QgsBrowserProxyModel::Normal );
   action->setCheckable( true );
   action->setChecked( true );
   menu->addAction( action );
   action = new QAction( tr( "Wildcard(s)" ), group );
-  action->setData( "wildcard" );
+  action->setData( QgsBrowserProxyModel::Wildcards );
   action->setCheckable( true );
   menu->addAction( action );
   action = new QAction( tr( "Regular Expression" ), group );
-  action->setData( "regexp" );
+  action->setData( QgsBrowserProxyModel::RegularExpression );
   action->setCheckable( true );
   menu->addAction( action );
 
@@ -118,7 +119,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
   }
   if ( ! mProxyModel )
   {
-    mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
+    mProxyModel = new QgsBrowserProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
     mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 or more instances of the browser
     mBrowserView->setBrowserModel( mModel );
@@ -489,7 +490,7 @@ void QgsBrowserDockWidget::setFilter()
 {
   QString filter = mLeFilter->text();
   if ( mProxyModel )
-    mProxyModel->setFilter( filter );
+    mProxyModel->setFilterString( filter );
 }
 
 void QgsBrowserDockWidget::updateProjectHome()
@@ -502,14 +503,15 @@ void QgsBrowserDockWidget::setFilterSyntax( QAction *action )
 {
   if ( !action || ! mProxyModel )
     return;
-  mProxyModel->setFilterSyntax( action->data().toString() );
+
+  mProxyModel->setFilterSyntax( static_cast< QgsBrowserProxyModel::FilterSyntax >( action->data().toInt() ) );
 }
 
 void QgsBrowserDockWidget::setCaseSensitive( bool caseSensitive )
 {
   if ( ! mProxyModel )
     return;
-  mProxyModel->setCaseSensitive( caseSensitive );
+  mProxyModel->setFilterCaseSensitivity( caseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive );
 }
 
 int QgsBrowserDockWidget::selectedItemsCount()
