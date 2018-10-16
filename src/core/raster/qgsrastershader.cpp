@@ -30,7 +30,7 @@ QgsRasterShader::QgsRasterShader( double minimumValue, double maximumValue )
   , mMaximumValue( maximumValue )
   , mRasterShaderFunction( new QgsRasterShaderFunction( mMinimumValue, mMaximumValue ) )
 {
-  QgsDebugMsgLevel( "called.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "called." ), 4 );
 }
 
 bool QgsRasterShader::shade( double value, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlpha )
@@ -55,7 +55,7 @@ bool QgsRasterShader::shade( double redValue, double greenValue, double blueValu
 
 void QgsRasterShader::setRasterShaderFunction( QgsRasterShaderFunction *function )
 {
-  QgsDebugMsgLevel( "called.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "called." ), 4 );
 
   if ( mRasterShaderFunction.get() == function )
     return;

@@ -71,7 +71,7 @@ QgsRasterFileWriter::QgsRasterFileWriter()
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
     const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
   if ( !pipe )
   {
@@ -100,7 +100,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
 
   if ( !iface->sourceInput() )
   {
-    QgsDebugMsg( "iface->srcInput() == 0" );
+    QgsDebugMsg( QStringLiteral( "iface->srcInput() == 0" ) );
     return SourceProviderError;
   }
 #ifdef QGISDEBUG
@@ -150,7 +150,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRast
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
     const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   if ( !iter )
   {
     return SourceProviderError;
@@ -165,7 +165,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
   QgsRasterDataProvider *srcProvider = const_cast<QgsRasterDataProvider *>( dynamic_cast<const QgsRasterDataProvider *>( iface->sourceInput() ) );
   if ( !srcProvider )
   {
-    QgsDebugMsg( "Cannot get source data provider" );
+    QgsDebugMsg( QStringLiteral( "Cannot get source data provider" ) );
     return SourceProviderError;
   }
 
@@ -341,7 +341,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
 {
   Q_UNUSED( pipe );
   Q_UNUSED( destHasNoDataValueList );
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
   const QgsRasterInterface *iface = iter->input();
   const QgsRasterDataProvider *srcProvider = dynamic_cast<const QgsRasterDataProvider *>( iface->sourceInput() );
@@ -401,7 +401,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
           }
         }
 
-        QgsDebugMsgLevel( "Done", 4 );
+        QgsDebugMsgLevel( QStringLiteral( "Done" ), 4 );
         return NoError; //reached last tile, bail out
       }
       // TODO: verify if NoDataConflict happened, to do that we need the whole pipe or nuller interface
@@ -472,14 +472,14 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     ++fileIndex;
   }
 
-  QgsDebugMsgLevel( "Done", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Done" ), 4 );
   return ( feedback && feedback->isCanceled() ) ? WriteCanceled : NoError;
 }
 
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
     const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   if ( !iter )
   {
     return SourceProviderError;
@@ -908,7 +908,7 @@ QgsRasterDataProvider *QgsRasterFileWriter::initOutput( int nCols, int nRows, co
 
     if ( !destProvider )
     {
-      QgsDebugMsg( "No provider created" );
+      QgsDebugMsg( QStringLiteral( "No provider created" ) );
     }
 
     return destProvider;

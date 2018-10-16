@@ -877,7 +877,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValid( const GEOSGeometry *gin, QString &er
     case GEOS_MULTIPOINT:
     case GEOS_POINT:
       // points are always valid, but we might have invalid ordinate values
-      QgsDebugMsg( "PUNTUAL geometry resulted invalid to GEOS -- dunno how to clean that up" );
+      QgsDebugMsg( QStringLiteral( "PUNTUAL geometry resulted invalid to GEOS -- dunno how to clean that up" ) );
       return nullptr;
 
     case GEOS_LINESTRING:
@@ -911,12 +911,12 @@ std::unique_ptr< QgsAbstractGeometry > _qgis_lwgeom_make_valid( const QgsAbstrac
   geos::unique_ptr geosgeom = QgsGeos::asGeos( lwgeom_in );
   if ( !geosgeom )
   {
-    QgsDebugMsg( "Original geom can't be converted to GEOS - will try cleaning that up first" );
+    QgsDebugMsg( QStringLiteral( "Original geom can't be converted to GEOS - will try cleaning that up first" ) );
 
     std::unique_ptr<QgsAbstractGeometry> lwgeom_in_clone( lwgeom_in->clone() );
     if ( !lwgeom_make_geos_friendly( lwgeom_in_clone.get() ) )
     {
-      QgsDebugMsg( "Could not make a valid geometry out of input" );
+      QgsDebugMsg( QStringLiteral( "Could not make a valid geometry out of input" ) );
     }
 
     // try again as we did cleanup now
@@ -931,7 +931,7 @@ std::unique_ptr< QgsAbstractGeometry > _qgis_lwgeom_make_valid( const QgsAbstrac
   }
   else
   {
-    QgsDebugMsgLevel( "original geom converted to GEOS", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "original geom converted to GEOS" ), 4 );
   }
 
   GEOSGeometry *geosout = LWGEOM_GEOS_makeValid( geosgeom.get(), errorMessage );

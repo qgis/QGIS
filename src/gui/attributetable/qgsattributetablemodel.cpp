@@ -186,11 +186,11 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   if ( 4 <= QgsLogger::debugLevel() )
   {
     QgsDebugMsgLevel( QStringLiteral( "after removal rows %1, ids %2" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 4 );
-    QgsDebugMsgLevel( "id->row", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "id->row" ), 4 );
     for ( QHash<QgsFeatureId, int>::const_iterator it = mIdRowMap.constBegin(); it != mIdRowMap.constEnd(); ++it )
       QgsDebugMsgLevel( QStringLiteral( "%1->%2" ).arg( FID_TO_STRING( it.key() ) ).arg( *it ), 4 );
 
-    QgsDebugMsgLevel( "row->id", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "row->id" ), 4 );
     for ( QHash<int, QgsFeatureId>::const_iterator it = mRowIdMap.constBegin(); it != mRowIdMap.constEnd(); ++it )
       QgsDebugMsgLevel( QStringLiteral( "%1->%2" ).arg( it.key() ).arg( FID_TO_STRING( *it ) ), 4 );
   }

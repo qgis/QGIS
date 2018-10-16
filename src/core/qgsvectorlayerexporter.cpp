@@ -93,7 +93,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 
   mAttributeCount++;
 
-  QgsDebugMsg( "Created empty layer" );
+  QgsDebugMsg( QStringLiteral( "Created empty layer" ) );
 
   QString uriUpdated( uri );
   // HACK sorry...

@@ -1203,12 +1203,12 @@ QgsGeometry::OperationResult QgsVectorLayer::addPart( const QList<QgsPointXY> &p
 
   if ( mSelectedFeatureIds.empty() )
   {
-    QgsDebugMsgLevel( "Number of selected features < 1", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Number of selected features < 1" ), 3 );
     return QgsGeometry::OperationResult::SelectionIsEmpty;
   }
   else if ( mSelectedFeatureIds.size() > 1 )
   {
-    QgsDebugMsgLevel( "Number of selected features > 1", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Number of selected features > 1" ), 3 );
     return QgsGeometry::OperationResult::SelectionIsGreaterThanOne;
   }
 
@@ -1229,12 +1229,12 @@ QgsGeometry::OperationResult QgsVectorLayer::addPart( const QgsPointSequence &po
 
   if ( mSelectedFeatureIds.empty() )
   {
-    QgsDebugMsgLevel( "Number of selected features <1", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Number of selected features <1" ), 3 );
     return QgsGeometry::OperationResult::SelectionIsEmpty;
   }
   else if ( mSelectedFeatureIds.size() > 1 )
   {
-    QgsDebugMsgLevel( "Number of selected features >1", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Number of selected features >1" ), 3 );
     return QgsGeometry::OperationResult::SelectionIsGreaterThanOne;
   }
 
@@ -1255,12 +1255,12 @@ QgsGeometry::OperationResult QgsVectorLayer::addPart( QgsCurve *ring )
 
   if ( mSelectedFeatureIds.empty() )
   {
-    QgsDebugMsgLevel( "Number of selected features <1", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Number of selected features <1" ), 3 );
     return QgsGeometry::OperationResult::SelectionIsEmpty;
   }
   else if ( mSelectedFeatureIds.size() > 1 )
   {
-    QgsDebugMsgLevel( "Number of selected features >1", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Number of selected features >1" ), 3 );
     return QgsGeometry::OperationResult::SelectionIsGreaterThanOne;
   }
 

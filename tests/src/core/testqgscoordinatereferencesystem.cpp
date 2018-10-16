@@ -738,7 +738,7 @@ void TestQgsCoordinateReferenceSystem::hasAxisInverted()
 void TestQgsCoordinateReferenceSystem::debugPrint(
   QgsCoordinateReferenceSystem &crs )
 {
-  QgsDebugMsg( "***SpatialRefSystem***" );
+  QgsDebugMsg( QStringLiteral( "***SpatialRefSystem***" ) );
   QgsDebugMsg( "* Valid : " + ( crs.isValid() ? QString( "true" ) :
                                 QString( "false" ) ) );
   QgsDebugMsg( "* SrsId : " + QString::number( crs.srsid() ) );
@@ -749,15 +749,15 @@ void TestQgsCoordinateReferenceSystem::debugPrint(
   QgsDebugMsg( "* Desc. : " + crs.description() );
   if ( crs.mapUnits() == QgsUnitTypes::DistanceMeters )
   {
-    QgsDebugMsg( "* Units : meters" );
+    QgsDebugMsg( QStringLiteral( "* Units : meters" ) );
   }
   else if ( crs.mapUnits() == QgsUnitTypes::DistanceFeet )
   {
-    QgsDebugMsg( "* Units : feet" );
+    QgsDebugMsg( QStringLiteral( "* Units : feet" ) );
   }
   else if ( crs.mapUnits() == QgsUnitTypes::DistanceDegrees )
   {
-    QgsDebugMsg( "* Units : degrees" );
+    QgsDebugMsg( QStringLiteral( "* Units : degrees" ) );
   }
 }
 

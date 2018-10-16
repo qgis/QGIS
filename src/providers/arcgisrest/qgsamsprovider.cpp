@@ -453,7 +453,7 @@ void QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle &viewExtent, 
   draw( viewExtent, width, height );
   if ( mCachedImage.width() != width || mCachedImage.height() != height )
   {
-    QgsDebugMsg( "Unexpected image size for block" );
+    QgsDebugMsg( QStringLiteral( "Unexpected image size for block" ) );
     return;
   }
   std::memcpy( data, mCachedImage.constBits(), mCachedImage.bytesPerLine() * mCachedImage.height() );

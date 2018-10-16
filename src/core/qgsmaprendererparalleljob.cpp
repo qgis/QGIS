@@ -198,7 +198,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
   // compose final image
   mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
 
-  QgsDebugMsg( "PARALLEL layers finished" );
+  QgsDebugMsg( QStringLiteral( "PARALLEL layers finished" ) );
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) && !mLabelJob.context.renderingStopped() )
   {
@@ -219,7 +219,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
 
 void QgsMapRendererParallelJob::renderingFinished()
 {
-  QgsDebugMsg( "PARALLEL finished" );
+  QgsDebugMsg( QStringLiteral( "PARALLEL finished" ) );
 
   logRenderingTime( mLayerJobs, mLabelJob );
 
@@ -267,7 +267,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
   }
   catch ( ... )
   {
-    QgsDebugMsg( "Caught unhandled unknown exception" );
+    QgsDebugMsg( QStringLiteral( "Caught unhandled unknown exception" ) );
   }
   job.renderingTime += t.elapsed();
   QgsDebugMsgLevel( QStringLiteral( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layer ? job.layer->id() : QString() ), 2 );
@@ -311,7 +311,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
     }
     catch ( ... )
     {
-      QgsDebugMsg( "Caught unhandled unknown exception" );
+      QgsDebugMsg( QStringLiteral( "Caught unhandled unknown exception" ) );
     }
 
     painter.end();

@@ -65,7 +65,7 @@ void QgsActionManager::addAction( const QgsAction &action )
     mLayer->dataProvider()->setListening( true );
     if ( !mOnNotifyConnected )
     {
-      QgsDebugMsg( "connecting to notify" );
+      QgsDebugMsg( QStringLiteral( "connecting to notify" ) );
       connect( mLayer->dataProvider(), &QgsDataProvider::notify, this, &QgsActionManager::onNotifyRunActions );
       mOnNotifyConnected = true;
     }

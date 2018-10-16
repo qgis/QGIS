@@ -468,7 +468,7 @@ QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack &trk )
   unsigned char *geo = new unsigned char[size];
   if ( !geo )
   {
-    QgsDebugMsg( "Track too large!" );
+    QgsDebugMsg( QStringLiteral( "Track too large!" ) );
     return nullptr;
   }
 

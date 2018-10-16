@@ -910,7 +910,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeom
     intersectGeometry.reset( GEOSIntersection_r( geosinit.ctxt, mGeos.get(), polygon ) );
     if ( !intersectGeometry )
     {
-      QgsDebugMsg( "intersectGeometry is nullptr" );
+      QgsDebugMsg( QStringLiteral( "intersectGeometry is nullptr" ) );
       continue;
     }
 

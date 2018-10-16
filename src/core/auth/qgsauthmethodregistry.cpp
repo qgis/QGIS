@@ -278,7 +278,7 @@ std::unique_ptr<QgsAuthMethod> QgsAuthMethodRegistry::authMethod( const QString 
   }
   else
   {
-    QgsDebugMsg( "dlopen succeeded" );
+    QgsDebugMsg( QStringLiteral( "dlopen succeeded" ) );
     dlclose( handle );
   }
 

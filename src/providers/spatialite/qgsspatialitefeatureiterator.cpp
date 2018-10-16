@@ -238,7 +238,7 @@ bool QgsSpatiaLiteFeatureIterator::fetchFeature( QgsFeature &feature )
 
   if ( !sqliteStatement )
   {
-    QgsDebugMsg( "Invalid current SQLite statement" );
+    QgsDebugMsg( QStringLiteral( "Invalid current SQLite statement" ) );
     close();
     return false;
   }

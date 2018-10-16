@@ -79,7 +79,7 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, int canvasW
   }
   if ( canvasWidth == 0 || qgsDoubleNear( mDpi, 0.0 ) )
   {
-    QgsDebugMsg( "Can't calculate scale from the input values" );
+    QgsDebugMsg( QStringLiteral( "Can't calculate scale from the input values" ) );
     return 0;
   }
   double scale = ( delta * conversionFactor ) / ( static_cast< double >( canvasWidth ) / mDpi );

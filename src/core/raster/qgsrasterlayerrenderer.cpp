@@ -90,7 +90,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
   if ( rendererContext.coordinateTransform().isValid() )
   {
-    QgsDebugMsgLevel( "coordinateTransform set -> project extents.", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "coordinateTransform set -> project extents." ), 4 );
     if ( rendererContext.extent().xMinimum() == std::numeric_limits<double>::lowest() &&
          rendererContext.extent().yMinimum() == std::numeric_limits<double>::lowest() &&
          rendererContext.extent().xMaximum() == std::numeric_limits<double>::max() &&
@@ -128,7 +128,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   }
   else
   {
-    QgsDebugMsgLevel( "coordinateTransform not set", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "coordinateTransform not set" ), 4 );
     myProjectedViewExtent = rendererContext.extent();
     myProjectedLayerExtent = layer->extent();
   }
@@ -137,7 +137,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   QgsRectangle myRasterExtent = myProjectedViewExtent.intersect( myProjectedLayerExtent );
   if ( myRasterExtent.isEmpty() )
   {
-    QgsDebugMsg( "draw request outside view extent." );
+    QgsDebugMsg( QStringLiteral( "draw request outside view extent." ) );
     // nothing to do
     return;
   }

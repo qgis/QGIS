@@ -163,12 +163,12 @@ void QgsGeoNodeRequest::setProtocol( const QString &protocol )
 
 void QgsGeoNodeRequest::replyFinished()
 {
-  QgsDebugMsg( "Reply finished" );
+  QgsDebugMsg( QStringLiteral( "Reply finished" ) );
   if ( !mIsAborted && mGeoNodeReply )
   {
     if ( mGeoNodeReply->error() == QNetworkReply::NoError )
     {
-      QgsDebugMsg( "reply OK" );
+      QgsDebugMsg( QStringLiteral( "reply OK" ) );
       QVariant redirect = mGeoNodeReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {
@@ -228,7 +228,7 @@ void QgsGeoNodeRequest::replyFinished()
         }
         else
         {
-          QgsDebugMsg( "No cache for capabilities!" );
+          QgsDebugMsg( QStringLiteral( "No cache for capabilities!" ) );
         }
 
         mHttpGeoNodeResponse = mGeoNodeReply->readAll();

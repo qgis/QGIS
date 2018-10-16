@@ -743,7 +743,7 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
       CPLPopErrorHandler();
       if ( !hDriver || GDALGetDriverShortName( hDriver ) == QLatin1String( "VRT" ) )
       {
-        QgsDebugMsgLevel( "Skipping VRT file because root is not a OGR VRT", 2 );
+        QgsDebugMsgLevel( QStringLiteral( "Skipping VRT file because root is not a OGR VRT" ), 2 );
         return nullptr;
       }
     }

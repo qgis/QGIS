@@ -929,7 +929,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
 
   if ( layers.isEmpty() )
   {
-    QgsDebugMsg( "no layers for symbol" );
+    QgsDebugMsg( QStringLiteral( "no layers for symbol" ) );
     return nullptr;
   }
 
@@ -1085,7 +1085,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
     QgsWkbTypes::GeometryType geomType,
     QgsSymbolLayerList &layers )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
 
   if ( element.isNull() )
     return false;
@@ -1100,7 +1100,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
     QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
     if ( graphicElem.isNull() )
     {
-      QgsDebugMsg( "Graphic element not found in PointSymbolizer" );
+      QgsDebugMsg( QStringLiteral( "Graphic element not found in PointSymbolizer" ) );
     }
     else
     {
@@ -1142,7 +1142,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
     QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
     if ( strokeElem.isNull() )
     {
-      QgsDebugMsg( "Stroke element not found in LineSymbolizer" );
+      QgsDebugMsg( QStringLiteral( "Stroke element not found in LineSymbolizer" ) );
     }
     else
     {
@@ -1179,7 +1179,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
     QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
     if ( fillElem.isNull() && strokeElem.isNull() )
     {
-      QgsDebugMsg( "neither Fill nor Stroke element not found in PolygonSymbolizer" );
+      QgsDebugMsg( QStringLiteral( "neither Fill nor Stroke element not found in PolygonSymbolizer" ) );
     }
     else
     {
@@ -1236,7 +1236,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::createFillLayerFromSld( QDomElement &elemen
   QDomElement fillElem = element.firstChildElement( QStringLiteral( "Fill" ) );
   if ( fillElem.isNull() )
   {
-    QgsDebugMsg( "Fill element not found" );
+    QgsDebugMsg( QStringLiteral( "Fill element not found" ) );
     return nullptr;
   }
 
@@ -1259,7 +1259,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::createLineLayerFromSld( QDomElement &elemen
   QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
   if ( strokeElem.isNull() )
   {
-    QgsDebugMsg( "Stroke element not found" );
+    QgsDebugMsg( QStringLiteral( "Stroke element not found" ) );
     return nullptr;
   }
 
@@ -1278,7 +1278,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::createMarkerLayerFromSld( QDomElement &elem
   QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
   if ( graphicElem.isNull() )
   {
-    QgsDebugMsg( "Graphic element not found" );
+    QgsDebugMsg( QStringLiteral( "Graphic element not found" ) );
     return nullptr;
   }
 
@@ -1485,7 +1485,7 @@ bool QgsSymbolLayerUtils::needSvgFill( QDomElement &element )
 
 bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &element, QgsSymbolLayerList &layerList )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
 
   /* SE 1.1 says about PolygonSymbolizer:
   if a point geometry is referenced instead of a polygon,
@@ -1792,7 +1792,7 @@ void QgsSymbolLayerUtils::fillToSld( QDomDocument &doc, QDomElement &element, Qt
 
 bool QgsSymbolLayerUtils::fillFromSld( QDomElement &element, Qt::BrushStyle &brushStyle, QColor &color )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
 
   brushStyle = Qt::SolidPattern;
   color = QColor( 128, 128, 128 );
@@ -1933,7 +1933,7 @@ bool QgsSymbolLayerUtils::lineFromSld( QDomElement &element,
                                        Qt::PenJoinStyle *penJoinStyle, Qt::PenCapStyle *penCapStyle,
                                        QVector<qreal> *customDashPattern, double *dashOffset )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
 
   penStyle = Qt::SolidLine;
   color = QColor( 0, 0, 0 );
@@ -2041,7 +2041,7 @@ bool QgsSymbolLayerUtils::lineFromSld( QDomElement &element,
           }
           else
           {
-            QgsDebugMsg( "custom dash pattern required but not provided. Using default dash pattern." );
+            QgsDebugMsg( QStringLiteral( "custom dash pattern required but not provided. Using default dash pattern." ) );
             penStyle = Qt::DashLine;
           }
         }
@@ -2146,7 +2146,7 @@ bool QgsSymbolLayerUtils::externalGraphicFromSld( QDomElement &element,
     QString &path, QString &mime,
     QColor &color, double &size )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
   Q_UNUSED( color );
 
   QDomElement externalGraphicElem = element.firstChildElement( QStringLiteral( "ExternalGraphic" ) );
@@ -2201,7 +2201,7 @@ bool QgsSymbolLayerUtils::externalMarkerFromSld( QDomElement &element,
     QString &path, QString &format, int &markIndex,
     QColor &color, double &size )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
 
   color = QColor();
   markIndex = -1;
@@ -2281,7 +2281,7 @@ bool QgsSymbolLayerUtils::wellKnownMarkerFromSld( QDomElement &element,
     QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle,
     double &strokeWidth, double &size )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
 
   name = QStringLiteral( "square" );
   color = QColor();
@@ -2668,7 +2668,7 @@ void QgsSymbolLayerUtils::createOnlineResourceElement( QDomDocument &doc, QDomEl
 
 bool QgsSymbolLayerUtils::onlineResourceFromSldElement( QDomElement &element, QString &path, QString &format )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
 
   QDomElement onlineResourceElem = element.firstChildElement( QStringLiteral( "OnlineResource" ) );
   if ( onlineResourceElem.isNull() )
@@ -3531,7 +3531,7 @@ void QgsSymbolLayerUtils::multiplyImageOpacity( QImage *image, qreal opacity )
   QImage::Format format = image->format();
   if ( format != QImage::Format_ARGB32_Premultiplied && format != QImage::Format_ARGB32 )
   {
-    QgsDebugMsg( "no alpha channel." );
+    QgsDebugMsg( QStringLiteral( "no alpha channel." ) );
     return;
   }
 
@@ -3775,7 +3775,7 @@ QString QgsSymbolLayerUtils::svgSymbolNameToPath( const QString &n, const QgsPat
     QgsDebugMsgLevel( "Alternative svg path: " + myLocalPath, 3 );
     if ( QFile( myLocalPath ).exists() )
     {
-      QgsDebugMsgLevel( "Svg found in alternative path", 3 );
+      QgsDebugMsgLevel( QStringLiteral( "Svg found in alternative path" ), 3 );
       return QFileInfo( myLocalPath ).canonicalFilePath();
     }
   }

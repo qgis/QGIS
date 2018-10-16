@@ -111,7 +111,7 @@ QTreeWidgetItem *QgsCustomizationDialog::item( const QString &path, QTreeWidgetI
       }
     }
   }
-  QgsDebugMsg( "not found" );
+  QgsDebugMsg( QStringLiteral( "not found" ) );
   return nullptr;
 }
 
@@ -849,13 +849,13 @@ void QgsCustomization::customizeWidget( const QString &path, QWidget *widget, QS
       QLayout *l = widget->layout();
       if ( l )
       {
-        QgsDebugMsg( "remove" );
+        QgsDebugMsg( QStringLiteral( "remove" ) );
         QgsCustomization::removeFromLayout( l, w );
         w->hide();
       }
       else
       {
-        QgsDebugMsg( "hide" );
+        QgsDebugMsg( QStringLiteral( "hide" ) );
         w->hide();
       }
     }
@@ -896,7 +896,7 @@ void QgsCustomization::preNotify( QObject *receiver, QEvent *event, bool *done )
     }
     else if ( widget && event->type() == QEvent::MouseButtonPress )
     {
-      //QgsDebugMsg( "click" );
+      //QgsDebugMsg( QStringLiteral( "click" ) );
       if ( pDialog && pDialog->isVisible() )
       {
         QMouseEvent *e = static_cast<QMouseEvent *>( event );

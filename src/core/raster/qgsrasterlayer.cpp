@@ -118,7 +118,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
   , mProviderKey( providerKey )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   init();
 
   QgsDataProvider::ProviderOptions providerOptions;
@@ -175,7 +175,7 @@ bool QgsRasterLayer::isValidRasterFileName( const QString &fileNameQString, QStr
   isvalidrasterfilename_t *pValid = reinterpret_cast< isvalidrasterfilename_t * >( cast_to_fptr( QgsProviderRegistry::instance()->function( "gdal",  "isValidRasterFileName" ) ) );
   if ( ! pValid )
   {
-    QgsDebugMsg( "Could not resolve isValidRasterFileName in gdal provider library" );
+    QgsDebugMsg( QStringLiteral( "Could not resolve isValidRasterFileName in gdal provider library" ) );
     return false;
   }
 
@@ -265,7 +265,7 @@ void QgsRasterLayer::draw( QPainter *theQPainter,
                            QgsRasterViewPort *rasterViewPort,
                            const QgsMapToPixel *qgsMapToPixel )
 {
-  QgsDebugMsgLevel( " 3 arguments", 4 );
+  QgsDebugMsgLevel( QStringLiteral( " 3 arguments" ), 4 );
   QTime time;
   time.start();
   //
@@ -495,18 +495,18 @@ QString QgsRasterLayer::htmlMetadata() const
 QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
 {
   //TODO: This function should take dimensions
-  QgsDebugMsgLevel( "entered.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "entered." ), 4 );
 
   // Only do this for the GDAL provider?
   // Maybe WMS can do this differently using QImage::numColors and QImage::color()
   if ( mDataProvider->colorInterpretation( bandNumber ) == QgsRaster::PaletteIndex )
   {
-    QgsDebugMsgLevel( "....found paletted image", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "....found paletted image" ), 4 );
     QgsColorRampShader myShader;
     QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = mDataProvider->colorTable( bandNumber );
     if ( !myColorRampItemList.isEmpty() )
     {
-      QgsDebugMsgLevel( "....got color ramp item list", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "....got color ramp item list" ), 4 );
       myShader.setColorRampItemList( myColorRampItemList );
       myShader.setColorRampType( QgsColorRampShader::Discrete );
       // Draw image
@@ -590,7 +590,7 @@ void QgsRasterLayer::init()
 
 void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   mValid = false; // assume the layer is invalid until we determine otherwise
 
   mPipe.remove( mDataProvider ); // deletes if exists
@@ -615,7 +615,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
     appendError( ERR( tr( "Cannot instantiate the '%1' data provider" ).arg( mProviderKey ) ) );
     return;
   }
-  QgsDebugMsgLevel( "Data provider created", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Data provider created" ), 4 );
   mDataProvider->setParent( this );
 
   // Set data provider into pipe even if not valid so that it is deleted with pipe (with layer)
@@ -796,7 +796,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   //mark the layer as valid
   mValid = true;
 
-  QgsDebugMsgLevel( "exiting.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "exiting." ), 4 );
 } // QgsRasterLayer::setDataProvider
 
 void QgsRasterLayer::closeDataProvider()
@@ -1160,7 +1160,7 @@ bool QgsRasterLayer::defaultContrastEnhancementSettings(
 
   if ( key.isEmpty() )
   {
-    QgsDebugMsg( "No default contrast enhancement for this drawing style" );
+    QgsDebugMsg( QStringLiteral( "No default contrast enhancement for this drawing style" ) );
     myAlgorithm = QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( QString() );
     myLimits = QgsRasterMinMaxOrigin::limitsFromString( QString() );
     return false;
@@ -1181,7 +1181,7 @@ bool QgsRasterLayer::defaultContrastEnhancementSettings(
 
 void QgsRasterLayer::setDefaultContrastEnhancement()
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
   QgsContrastEnhancement::ContrastEnhancementAlgorithm myAlgorithm;
   QgsRasterMinMaxOrigin::Limits myLimits;
@@ -1192,11 +1192,11 @@ void QgsRasterLayer::setDefaultContrastEnhancement()
 
 void QgsRasterLayer::setLayerOrder( QStringList const &layers )
 {
-  QgsDebugMsgLevel( "entered.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "entered." ), 4 );
 
   if ( mDataProvider )
   {
-    QgsDebugMsgLevel( "About to mDataProvider->setLayerOrder(layers).", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "About to mDataProvider->setLayerOrder(layers)." ), 4 );
     mDataProvider->setLayerOrder( layers );
   }
 
@@ -1207,7 +1207,7 @@ void QgsRasterLayer::setSubLayerVisibility( const QString &name, bool vis )
 
   if ( mDataProvider )
   {
-    QgsDebugMsgLevel( "About to mDataProvider->setSubLayerVisibility(name, vis).", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "About to mDataProvider->setSubLayerVisibility(name, vis)." ), 4 );
     mDataProvider->setSubLayerVisibility( name, vis );
   }
 
@@ -1220,7 +1220,7 @@ QDateTime QgsRasterLayer::timestamp() const
 
 void QgsRasterLayer::setRenderer( QgsRasterRenderer *renderer )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   if ( !renderer )
   {
     return;
@@ -1409,7 +1409,7 @@ bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, Qgs
 
 bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   // Make sure to read the file first so stats etc are initialized properly!
 
   //process provider key
@@ -1443,7 +1443,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     // The old WMS URI format does not contain all the information, we add them here.
     if ( !mDataSource.contains( QLatin1String( "crs=" ) ) && !mDataSource.contains( QLatin1String( "format=" ) ) )
     {
-      QgsDebugMsgLevel( "Old WMS URI format detected -> adding params", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Old WMS URI format detected -> adding params" ), 4 );
       QgsDataSourceUri uri;
       uri.setEncodedUri( mDataSource );
       QDomElement layerElement = rpNode.firstChildElement( QStringLiteral( "wmsSublayer" ) );
@@ -1498,7 +1498,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     // TODO: very bad, we have to load twice!!! Make QgsDataProvider::timestamp() static?
     if ( stamp < mDataProvider->dataTimestamp() )
     {
-      QgsDebugMsg( "data changed, reload provider" );
+      QgsDebugMsg( QStringLiteral( "data changed, reload provider" ) );
       closeDataProvider();
       init();
       setDataProvider( mProviderKey );
@@ -1736,7 +1736,7 @@ QString QgsRasterLayer::decodedSource( const QString &source, const QString &pro
     if ( !src.contains( QLatin1String( "type=" ) ) &&
          !src.contains( QLatin1String( "crs=" ) ) && !src.contains( QLatin1String( "format=" ) ) )
     {
-      QgsDebugMsg( "Old WMS URI format detected -> converting to new format" );
+      QgsDebugMsg( QStringLiteral( "Old WMS URI format detected -> converting to new format" ) );
       QgsDataSourceUri uri;
       if ( !src.startsWith( QLatin1String( "http:" ) ) )
       {
@@ -1884,11 +1884,11 @@ int QgsRasterLayer::height() const
 /////////////////////////////////////////////////////////
 bool QgsRasterLayer::update()
 {
-  QgsDebugMsgLevel( "entered.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "entered." ), 4 );
   // Check if data changed
   if ( mDataProvider->dataTimestamp() > mDataProvider->timestamp() )
   {
-    QgsDebugMsgLevel( "reload data", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "reload data" ), 4 );
     closeDataProvider();
     init();
     QgsDataProvider::ProviderOptions providerOptions;

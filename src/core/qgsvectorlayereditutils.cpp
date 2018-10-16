@@ -667,7 +667,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
 
     if ( !mLayer->insertVertex( p.x(), p.y(), fid, segmentAfterVertex ) )
     {
-      QgsDebugMsg( "failed to insert topo point" );
+      QgsDebugMsg( QStringLiteral( "failed to insert topo point" ) );
     }
   }
 

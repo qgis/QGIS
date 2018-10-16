@@ -148,7 +148,7 @@ QgsPointXY QgsMapToolCapture::tracingStartPoint()
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( "transformation to layer coordinate failed" );
+    QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
     return QgsPointXY();
   }
 }
@@ -354,7 +354,7 @@ int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   if ( !vlayer )
   {
-    QgsDebugMsg( "no vector layer" );
+    QgsDebugMsg( QStringLiteral( "no vector layer" ) );
     return 1;
   }
   try
@@ -369,7 +369,7 @@ int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
-    QgsDebugMsg( "transformation to layer coordinate failed" );
+    QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
     return 2;
   }
 
@@ -434,7 +434,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
 {
   if ( mode() == CaptureNone )
   {
-    QgsDebugMsg( "invalid capture mode" );
+    QgsDebugMsg( QStringLiteral( "invalid capture mode" ) );
     return 2;
   }
 
@@ -728,7 +728,7 @@ void QgsMapToolCapture::validateGeometry()
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );
   connect( mValidator, &QThread::finished, this, &QgsMapToolCapture::validationFinished );
   mValidator->start();
-  QgsDebugMsgLevel( "Validation started", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Validation started" ), 4 );
 }
 
 void QgsMapToolCapture::addError( QgsGeometry::Error e )

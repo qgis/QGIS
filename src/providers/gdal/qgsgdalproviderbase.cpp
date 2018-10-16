@@ -42,7 +42,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   //Invalid band number, segfault prevention
   if ( 0 >= bandNumber )
   {
-    QgsDebugMsg( "Invalid parameter" );
+    QgsDebugMsg( QStringLiteral( "Invalid parameter" ) );
     return ct;
   }
 
@@ -51,7 +51,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
 
   if ( myGdalColorTable )
   {
-    QgsDebugMsg( "Color table found" );
+    QgsDebugMsg( QStringLiteral( "Color table found" ) );
 
     // load category labels
     char **categoryNames = GDALGetRasterCategoryNames( myGdalBand );
@@ -123,7 +123,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
         }
         else
         {
-          QgsDebugMsg( "Color interpretation type not supported yet" );
+          QgsDebugMsg( QStringLiteral( "Color interpretation type not supported yet" ) );
           return ct;
         }
       }
@@ -135,7 +135,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
     return ct;
   }
 
-  QgsDebugMsg( "Color table loaded successfully" );
+  QgsDebugMsg( QStringLiteral( "Color table loaded successfully" ) );
   return ct;
 }
 

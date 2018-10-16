@@ -42,7 +42,7 @@ bool MathUtils::calcBarycentricCoordinates( double x, double y, QgsPoint *p1, Qg
   }
   else//null pointer
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -58,7 +58,7 @@ bool MathUtils::BarycentricToXY( double u, double v, double w, QgsPoint *p1, Qgs
 
     if ( area == 0 )
     {
-      QgsDebugMsg( "warning, p1, p2 and p3 are in a line" );
+      QgsDebugMsg( QStringLiteral( "warning, p1, p2 and p3 are in a line" ) );
       return false;
     }
 
@@ -93,7 +93,7 @@ bool MathUtils::BarycentricToXY( double u, double v, double w, QgsPoint *p1, Qgs
   }
   else//null pointer
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -130,7 +130,7 @@ bool MathUtils::circumcenter( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint
     //if one of the denominator is zero we will have problems
     if ( denominator == 0 )
     {
-      QgsDebugMsg( "error: the three points are in a line" );
+      QgsDebugMsg( QStringLiteral( "error: the three points are in a line" ) );
       return false;
     }
     else
@@ -155,7 +155,7 @@ bool MathUtils::circumcenter( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -213,7 +213,7 @@ double MathUtils::distPointFromLine( QgsPoint *thepoint, QgsPoint *p1, QgsPoint 
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return 0;
   }
 }
@@ -258,7 +258,7 @@ bool MathUtils::inCircle( QgsPoint *testp, QgsPoint *p1, QgsPoint *p2, QgsPoint 
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -303,7 +303,7 @@ double MathUtils::leftOf( const QgsPoint &thepoint, const QgsPoint *p1, const Qg
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return 0;
   }
 }
@@ -346,7 +346,7 @@ bool MathUtils::lineIntersection( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsP
 
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -399,7 +399,7 @@ bool MathUtils::lineIntersection( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsP
 
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -425,7 +425,7 @@ double MathUtils::triArea( QgsPoint *pa, QgsPoint *pb, QgsPoint *pc )
   }
   else//null pointer
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return 0;
   }
 }
@@ -434,7 +434,7 @@ double MathUtils::calcCubicHermitePoly( int n, int i, double t )
 {
   if ( n != 3 || i > n )
   {
-    QgsDebugMsg( "error, can't calculate hermite polynom" );
+    QgsDebugMsg( QStringLiteral( "error, can't calculate hermite polynom" ) );
   }
 
   if ( n == 3 && i == 0 )
@@ -458,7 +458,7 @@ double MathUtils::calcCubicHermitePoly( int n, int i, double t )
   }
   else//something went wrong
   {
-    QgsDebugMsg( "unexpected error" );
+    QgsDebugMsg( QStringLiteral( "unexpected error" ) );
     return 0;
   }
 }
@@ -467,7 +467,7 @@ double MathUtils::cFDerCubicHermitePoly( int n, int i, double t )
 {
   if ( n != 3 || i > n )
   {
-    QgsDebugMsg( "error, can't calculate hermite polynom" );
+    QgsDebugMsg( QStringLiteral( "error, can't calculate hermite polynom" ) );
   }
 
   if ( n == 3 && i == 0 )
@@ -497,7 +497,7 @@ double MathUtils::cFDerCubicHermitePoly( int n, int i, double t )
   }
   else
   {
-    QgsDebugMsg( "unexpected error" );
+    QgsDebugMsg( QStringLiteral( "unexpected error" ) );
     return 0;
   }
 }
@@ -545,7 +545,7 @@ bool MathUtils::normalLeft( Vector3D *v1, Vector3D *result, double length )
 
     if ( d < 0 )//no solution in R
     {
-      QgsDebugMsg( "Determinant Error" );
+      QgsDebugMsg( QStringLiteral( "Determinant Error" ) );
       return false;
     }
 
@@ -602,7 +602,7 @@ bool MathUtils::normalRight( Vector3D *v1, Vector3D *result, double length )
 
     if ( d < 0 )//no solution in R
     {
-      QgsDebugMsg( "Determinant Error" );
+      QgsDebugMsg( QStringLiteral( "Determinant Error" ) );
       return false;
     }
 
@@ -664,7 +664,7 @@ double MathUtils::crossVec( QgsPoint *first, Vector3D *vec1, QgsPoint *second, V
     }
     else//if a division by zero would occur
     {
-      QgsDebugMsg( "warning: vectors are parallel" );
+      QgsDebugMsg( QStringLiteral( "warning: vectors are parallel" ) );
       return 0;
     }
   }
@@ -672,7 +672,7 @@ double MathUtils::crossVec( QgsPoint *first, Vector3D *vec1, QgsPoint *second, V
 
   else//null pointer
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return 0;
   }
 }
@@ -714,7 +714,7 @@ bool MathUtils::normalMinDistance( Vector3D *tangent, Vector3D *target, Vector3D
     double xgalpha1 = 1 / ( 2 * xt * xt * yw * yw * zt * zt - 2 * zt * zt * zt * xt * zw * xw + yt * yt * yt * yt * zw * zw + yt * yt * zw * zw * zt * zt + xt * xt * yt * yt * xw * xw + xt * xt * yw * yw * yt * yt - 2 * xt * xt * xt * zt * zw * xw + yt * yt * yt * yt * xw * xw + yt * yt * yw * yw * zt * zt + 2 * xt * xt * yt * yt * zw * zw - 2 * yt * yt * yt * yw * zt * zw + zt * zt * xt * xt * zw * zw + zt * zt * zt * zt * xw * xw + xt * xt * zt * zt * xw * xw + 2 * zt * zt * xw * xw * yt * yt - 2 * xt * xt * yw * zt * yt * zw - 2 * xt * yt * yt * yt * xw * yw - 2 * xt * xt * xt * yw * yt * xw - 2 * xt * zt * zt * xw * yt * yw - 2 * xt * zt * xw * yt * yt * zw - 2 * yw * zt * zt * zt * yt * zw + xt * xt * xt * xt * yw * yw + yw * yw * zt * zt * zt * zt + xt * xt * xt * xt * zw * zw );
     if ( xgalpha1 < 0 )
     {
-      QgsDebugMsg( "warning, only complex solution of xg" );
+      QgsDebugMsg( QStringLiteral( "warning, only complex solution of xg" ) );
       return false;
     }
     xg1 = std::sqrt( xgalpha1 ) * ( -yt * yw * xt + yt * yt * xw + xw * zt * zt - zt * xt * zw );
@@ -724,7 +724,7 @@ bool MathUtils::normalMinDistance( Vector3D *tangent, Vector3D *target, Vector3D
     double ygalpha1 = 1 / ( 2 * xt * xt * yw * yw * zt * zt - 2 * zt * zt * zt * xt * zw * xw + yt * yt * yt * yt * zw * zw + yt * yt * zw * zw * zt * zt + xt * xt * yt * yt * xw * xw + xt * xt * yw * yw * yt * yt - 2 * xt * xt * xt * zt * zw * xw + yt * yt * yt * yt * xw * xw + yt * yt * yw * yw * zt * zt + 2 * xt * xt * yt * yt * zw * zw - 2 * yt * yt * yt * yw * zt * zw + zt * zt * xt * xt * zw * zw + zt * zt * zt * zt * xw * xw + xt * xt * zt * zt * xw * xw + 2 * zt * zt * xw * xw * yt * yt - 2 * xt * xt * yw * zt * yt * zw - 2 * xt * yt * yt * yt * xw * yw - 2 * xt * xt * xt * yw * yt * xw - 2 * xt * zt * zt * xw * yt * yw - 2 * xt * zt * xw * yt * yt * zw - 2 * yw * zt * zt * zt * yt * zw + xt * xt * xt * xt * yw * yw + yw * yw * zt * zt * zt * zt + xt * xt * xt * xt * zw * zw );
     if ( ygalpha1 < 0 )
     {
-      QgsDebugMsg( "warning, only complex solution of yg" );
+      QgsDebugMsg( QStringLiteral( "warning, only complex solution of yg" ) );
       return false;
     }
     yg1 = -sqrt( ygalpha1 ) * ( -yw * xt * xt - zt * zt * yw + zt * yt * zw + yt * xw * xt );
@@ -734,7 +734,7 @@ bool MathUtils::normalMinDistance( Vector3D *tangent, Vector3D *target, Vector3D
     double zgalpha1 = 1 / ( 2 * xt * xt * yw * yw * zt * zt - 2 * zt * zt * zt * xt * zw * xw + yt * yt * yt * yt * zw * zw + yt * yt * zw * zw * zt * zt + xt * xt * yt * yt * xw * xw + xt * xt * yw * yw * yt * yt - 2 * xt * xt * xt * zt * zw * xw + yt * yt * yt * yt * xw * xw + yt * yt * yw * yw * zt * zt + 2 * xt * xt * yt * yt * zw * zw - 2 * yt * yt * yt * yw * zt * zw + zt * zt * xt * xt * zw * zw + zt * zt * zt * zt * xw * xw + xt * xt * zt * zt * xw * xw + 2 * zt * zt * xw * xw * yt * yt - 2 * xt * xt * yw * zt * yt * zw - 2 * xt * yt * yt * yt * xw * yw - 2 * xt * xt * xt * yw * yt * xw - 2 * xt * zt * zt * xw * yt * yw - 2 * xt * zt * xw * yt * yt * zw - 2 * yw * zt * zt * zt * yt * zw + xt * xt * xt * xt * yw * yw + yw * yw * zt * zt * zt * zt + xt * xt * xt * xt * zw * zw );
     if ( zgalpha1 < 0 )
     {
-      QgsDebugMsg( "warning, only complex solution of zg" );
+      QgsDebugMsg( QStringLiteral( "warning, only complex solution of zg" ) );
       return false;
     }
     zg1 = -sqrt( zgalpha1 ) * ( yt * yw * zt - yt * yt * zw + xw * zt * xt - xt * xt * zw );
@@ -760,7 +760,7 @@ bool MathUtils::normalMinDistance( Vector3D *tangent, Vector3D *target, Vector3D
 
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -778,7 +778,7 @@ double MathUtils::planeTest( QgsPoint *test, QgsPoint *pt1, QgsPoint *pt2, QgsPo
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return 0;
   }
 }
@@ -794,7 +794,7 @@ double MathUtils::angle( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *p4 
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return 0;
   }
 }

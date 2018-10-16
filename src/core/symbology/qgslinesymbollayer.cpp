@@ -428,7 +428,7 @@ QString QgsSimpleLineSymbolLayer::ogrFeatureStyle( double mmScaleFactor, double 
 
 QgsSymbolLayer *QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
 
   QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
   if ( strokeElem.isNull() )
@@ -1464,7 +1464,7 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
 
 QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
 
   QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
   if ( strokeElem.isNull() )

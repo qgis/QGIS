@@ -233,7 +233,7 @@ void QgsAuthSslImportDialog::socketDisconnected()
 
 void QgsAuthSslImportDialog::socketEncrypted()
 {
-  QgsDebugMsg( "socketEncrypted entered" );
+  QgsDebugMsg( QStringLiteral( "socketEncrypted entered" ) );
   if ( !mSocket )
     return;  // might have disconnected already
 

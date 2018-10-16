@@ -376,7 +376,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       void *handle = dlopen( lib.toLocal8Bit().data(), RTLD_LAZY | RTLD_GLOBAL );
       if ( !handle )
       {
-        QgsDebugMsg( "Error in dlopen: " );
+        QgsDebugMsg( QStringLiteral( "Error in dlopen: " ) );
         QgsDebugMsg( dlerror() );
       }
       else
@@ -425,7 +425,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
       else
       {
-        QgsDebugMsg( "Plugin name not returned when queried" );
+        QgsDebugMsg( QStringLiteral( "Plugin name not returned when queried" ) );
       }
       if ( pDesc )
       {
@@ -433,7 +433,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
       else
       {
-        QgsDebugMsg( "Plugin description not returned when queried" );
+        QgsDebugMsg( QStringLiteral( "Plugin description not returned when queried" ) );
       }
       if ( pCat )
       {
@@ -441,7 +441,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
       else
       {
-        QgsDebugMsg( "Plugin category not returned when queried" );
+        QgsDebugMsg( QStringLiteral( "Plugin category not returned when queried" ) );
       }
       if ( pVersion )
       {
@@ -449,7 +449,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
       else
       {
-        QgsDebugMsg( "Plugin version not returned when queried" );
+        QgsDebugMsg( QStringLiteral( "Plugin version not returned when queried" ) );
       }
       if ( pIcon )
       {
@@ -1438,7 +1438,7 @@ void QgsPluginManager::setRepositoryFilter()
 
 void QgsPluginManager::clearRepositoryFilter()
 {
-  QgsDebugMsg( "Enabling all repositories back" );
+  QgsDebugMsg( QStringLiteral( "Enabling all repositories back" ) );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().setRepositoryInspectionFilter()" ) );
 }
 
@@ -1446,7 +1446,7 @@ void QgsPluginManager::clearRepositoryFilter()
 
 void QgsPluginManager::buttonRefreshRepos_clicked()
 {
-  QgsDebugMsg( "Refreshing repositories..." );
+  QgsDebugMsg( QStringLiteral( "Refreshing repositories..." ) );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().reloadAndExportData()" ) );
 }
 
@@ -1454,7 +1454,7 @@ void QgsPluginManager::buttonRefreshRepos_clicked()
 
 void QgsPluginManager::buttonAddRep_clicked()
 {
-  QgsDebugMsg( "Adding repository connection..." );
+  QgsDebugMsg( QStringLiteral( "Adding repository connection..." ) );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().addRepository()" ) );
 }
 

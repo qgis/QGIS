@@ -60,7 +60,7 @@ QgsRasterPipe::~QgsRasterPipe()
 
 bool QgsRasterPipe::connect( QVector<QgsRasterInterface *> interfaces )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   for ( int i = 1; i < interfaces.size(); i++ )
   {
     if ( ! interfaces[i]->setInput( interfaces[i - 1] ) )
@@ -94,7 +94,7 @@ bool QgsRasterPipe::insert( int idx, QgsRasterInterface *interface )
     success = true;
     mInterfaces.insert( idx, interface );
     setRole( interface, idx );
-    QgsDebugMsgLevel( "inserted OK", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "inserted OK" ), 4 );
   }
 
   // Connect or reconnect (after the test) interfaces
@@ -121,7 +121,7 @@ bool QgsRasterPipe::replace( int idx, QgsRasterInterface *interface )
     delete mInterfaces.at( idx );
     mInterfaces[idx] = interface;
     setRole( interface, idx );
-    QgsDebugMsgLevel( "replaced OK", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "replaced OK" ), 4 );
   }
 
   // Connect or reconnect (after the test) interfaces
@@ -281,7 +281,7 @@ bool QgsRasterPipe::remove( int idx )
     unsetRole( mInterfaces.at( idx ) );
     delete mInterfaces.at( idx );
     mInterfaces.remove( idx );
-    QgsDebugMsgLevel( "removed OK", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "removed OK" ), 4 );
   }
 
   // Connect or reconnect (after the test) interfaces

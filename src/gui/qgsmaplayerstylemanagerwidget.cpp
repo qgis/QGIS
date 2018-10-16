@@ -111,7 +111,7 @@ void QgsMapLayerStyleManagerWidget::currentStyleChanged( const QString &name )
 
 void QgsMapLayerStyleManagerWidget::styleAdded( const QString &name )
 {
-  QgsDebugMsg( "Style added" );
+  QgsDebugMsg( QStringLiteral( "Style added" ) );
   QStandardItem *item = new QStandardItem( name );
   mModel->appendRow( item );
 }
@@ -171,7 +171,7 @@ void QgsMapLayerStyleManagerWidget::removeStyle()
   }
   else
   {
-    QgsDebugMsg( "Failed to remove current style" );
+    QgsDebugMsg( QStringLiteral( "Failed to remove current style" ) );
   }
 
 }

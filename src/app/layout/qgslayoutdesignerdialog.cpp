@@ -1261,7 +1261,7 @@ void QgsLayoutDesignerDialog::dropEvent( QDropEvent *event )
     // [pzion 20150805] Work around
     if ( fileName.startsWith( "/.file/id=" ) )
     {
-      QgsDebugMsg( "Mac dropped URL with /.file/id= (converting)" );
+      QgsDebugMsg( QStringLiteral( "Mac dropped URL with /.file/id= (converting)" ) );
       CFStringRef relCFStringRef =
         CFStringCreateWithCString(
           kCFAllocatorDefault,

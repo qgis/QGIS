@@ -175,7 +175,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
     if ( ok )
       *ok = false;
 
-    QgsDebugMsg( "ogrFet->GetFieldDefnRef(attindex) returns NULL" );
+    QgsDebugMsg( QStringLiteral( "ogrFet->GetFieldDefnRef(attindex) returns NULL" ) );
     return QVariant();
   }
 

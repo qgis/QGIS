@@ -312,7 +312,7 @@ bool QgsNewSpatialiteLayerDialog::createDb()
     bool loaded = myLib->load();
     if ( loaded )
     {
-      QgsDebugMsg( "SpatiaLite provider loaded" );
+      QgsDebugMsg( QStringLiteral( "SpatiaLite provider loaded" ) );
 
       typedef bool ( *createDbProc )( const QString &, QString & );
       createDbProc createDbPtr = ( createDbProc ) cast_to_fptr( myLib->resolve( "createDb" ) );

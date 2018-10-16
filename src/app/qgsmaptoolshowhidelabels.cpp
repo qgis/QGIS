@@ -240,7 +240,7 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer *vlayer,
   const QgsLabelingResults *labelingResults = mCanvas->labelingResults();
   if ( !labelingResults )
   {
-    QgsDebugMsg( "No labeling engine" );
+    QgsDebugMsg( QStringLiteral( "No labeling engine" ) );
     return false;
   }
 

@@ -573,7 +573,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
   {
     if ( rendererEntry.widgetCreateFunction ) //single band color data renderer e.g. has no widget
     {
-      QgsDebugMsg( "renderer has widgetCreateFunction" );
+      QgsDebugMsg( QStringLiteral( "renderer has widgetCreateFunction" ) );
       // Current canvas extent (used to calc min/max) in layer CRS
       QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
       if ( oldWidget && ( !oldRenderer || rendererName != oldRenderer->type() ) )
@@ -662,7 +662,7 @@ void QgsRasterLayerProperties::sync()
     }
   }
 
-  QgsDebugMsg( "populate transparency tab" );
+  QgsDebugMsg( QStringLiteral( "populate transparency tab" ) );
 
   /*
    * Style tab (brightness and contrast)
@@ -725,12 +725,12 @@ void QgsRasterLayerProperties::sync()
 
   populateTransparencyTable( mRasterLayer->renderer() );
 
-  QgsDebugMsg( "populate colormap tab" );
+  QgsDebugMsg( QStringLiteral( "populate colormap tab" ) );
   /*
    * Transparent Pixel Tab
    */
 
-  QgsDebugMsg( "populate general tab" );
+  QgsDebugMsg( QStringLiteral( "populate general tab" ) );
   /*
    * General Tab
    */
@@ -757,7 +757,7 @@ void QgsRasterLayerProperties::sync()
   pixmapPalette->repaint();
 #endif
 
-  QgsDebugMsg( "populate metadata tab" );
+  QgsDebugMsg( QStringLiteral( "populate metadata tab" ) );
   /*
    * Metadata Tab
    */
@@ -837,7 +837,7 @@ void QgsRasterLayerProperties::apply()
    */
   mLegendConfigEmbeddedWidget->applyToLayer();
 
-  QgsDebugMsg( "apply processing symbology tab" );
+  QgsDebugMsg( QStringLiteral( "apply processing symbology tab" ) );
   /*
    * Symbology Tab
    */
@@ -848,7 +848,7 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->brightnessFilter()->setBrightness( mSliderBrightness->value() );
   mRasterLayer->brightnessFilter()->setContrast( mSliderContrast->value() );
 
-  QgsDebugMsg( "processing transparency tab" );
+  QgsDebugMsg( QStringLiteral( "processing transparency tab" ) );
   /*
    * Transparent Pixel Tab
    */
@@ -926,7 +926,7 @@ void QgsRasterLayerProperties::apply()
     rasterRenderer->setOpacity( mOpacityWidget->opacity() );
   }
 
-  QgsDebugMsg( "processing general tab" );
+  QgsDebugMsg( QStringLiteral( "processing general tab" ) );
   /*
    * General Tab
    */

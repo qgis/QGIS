@@ -357,7 +357,7 @@ void QgsAuthAuthoritiesEditor::showCertInfo( QTreeWidgetItem *item )
 
   if ( !cacertscache.contains( digest ) )
   {
-    QgsDebugMsg( "Certificate Authority not in CA certs cache" );
+    QgsDebugMsg( QStringLiteral( "Certificate Authority not in CA certs cache" ) );
     return;
   }
 
@@ -478,7 +478,7 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
 
   if ( !item )
   {
-    QgsDebugMsg( "Current tree widget item not set" );
+    QgsDebugMsg( QStringLiteral( "Current tree widget item not set" ) );
     return;
   }
 
@@ -496,7 +496,7 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
 
   if ( !mappedcerts.contains( digest ) )
   {
-    QgsDebugMsg( "Certificate Authority not in mapped database CAs" );
+    QgsDebugMsg( QStringLiteral( "Certificate Authority not in mapped database CAs" ) );
     return;
   }
 

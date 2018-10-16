@@ -50,7 +50,7 @@ void QgsIdentifyMenu::setMaxLayerDisplay( int maxLayerDisplay )
 {
   if ( maxLayerDisplay < 0 )
   {
-    QgsDebugMsg( "invalid value for number of layers displayed." );
+    QgsDebugMsg( QStringLiteral( "invalid value for number of layers displayed." ) );
   }
   mMaxLayerDisplay = maxLayerDisplay;
 }
@@ -60,7 +60,7 @@ void QgsIdentifyMenu::setMaxFeatureDisplay( int maxFeatureDisplay )
 {
   if ( maxFeatureDisplay < 0 )
   {
-    QgsDebugMsg( "invalid value for number of layers displayed." );
+    QgsDebugMsg( QStringLiteral( "invalid value for number of layers displayed." ) );
   }
   mMaxFeatureDisplay = maxFeatureDisplay;
 }
@@ -506,7 +506,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::results( QAction *act
   QVariant varData = action->data();
   if ( !varData.isValid() )
   {
-    QgsDebugMsg( "Identify menu: could not retrieve results from menu entry (invalid data)" );
+    QgsDebugMsg( QStringLiteral( "Identify menu: could not retrieve results from menu entry (invalid data)" ) );
     return idResults;
   }
 
@@ -533,7 +533,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::results( QAction *act
 
   if ( !hasData )
   {
-    QgsDebugMsg( "Identify menu: could not retrieve results from menu entry (no data found)" );
+    QgsDebugMsg( QStringLiteral( "Identify menu: could not retrieve results from menu entry (no data found)" ) );
     return idResults;
   }
 
@@ -552,7 +552,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::results( QAction *act
 
   if ( !mLayerIdResults.contains( actData.mLayer ) )
   {
-    QgsDebugMsg( "Identify menu: could not retrieve results from menu entry (layer not found)" );
+    QgsDebugMsg( QStringLiteral( "Identify menu: could not retrieve results from menu entry (layer not found)" ) );
     return idResults;
   }
 
@@ -573,7 +573,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::results( QAction *act
     }
   }
 
-  QgsDebugMsg( "Identify menu: could not retrieve results from menu entry (don't know what happened')" );
+  QgsDebugMsg( QStringLiteral( "Identify menu: could not retrieve results from menu entry (don't know what happened')" ) );
   return idResults;
 }
 

@@ -406,7 +406,7 @@ QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey
   }
   else
   {
-    QgsDebugMsg( "dlopen succeeded" );
+    QgsDebugMsg( QStringLiteral( "dlopen succeeded" ) );
     dlclose( handle );
   }
 

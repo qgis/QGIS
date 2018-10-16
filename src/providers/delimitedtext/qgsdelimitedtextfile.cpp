@@ -364,7 +364,7 @@ void QgsDelimitedTextFile::setTypeCSV( const QString &delim, const QString &quot
   mDefinitionValid = !mDelimChars.isEmpty();
   if ( ! mDefinitionValid )
   {
-    QgsDebugMsg( "Invalid empty delimiter defined for text file delimiter" );
+    QgsDebugMsg( QStringLiteral( "Invalid empty delimiter defined for text file delimiter" ) );
   }
 }
 

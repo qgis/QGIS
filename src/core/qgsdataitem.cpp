@@ -151,7 +151,7 @@ QgsDataItem::~QgsDataItem()
   if ( mFutureWatcher && !mFutureWatcher->isFinished() )
   {
     // this should not usually happen (until the item was deleted directly when createChildren was running)
-    QgsDebugMsg( "mFutureWatcher not finished (should not happen) -> waitForFinished()" );
+    QgsDebugMsg( QStringLiteral( "mFutureWatcher not finished (should not happen) -> waitForFinished()" ) );
     mDeferredDelete = true;
     mFutureWatcher->waitForFinished();
   }
@@ -188,7 +188,7 @@ void QgsDataItem::deleteLater()
 
   if ( mFutureWatcher && !mFutureWatcher->isFinished() )
   {
-    QgsDebugMsg( "mFutureWatcher not finished -> schedule to delete later" );
+    QgsDebugMsg( QStringLiteral( "mFutureWatcher not finished -> schedule to delete later" ) );
     mDeferredDelete = true;
   }
   else
@@ -301,7 +301,7 @@ void QgsDataItem::childrenCreated()
 
   if ( deferredDelete() )
   {
-    QgsDebugMsg( "Item was scheduled to be deleted later" );
+    QgsDebugMsg( QStringLiteral( "Item was scheduled to be deleted later" ) );
     QObject::deleteLater();
     return;
   }
@@ -978,7 +978,7 @@ void QgsDirectoryItem::childrenCreated()
 
   if ( mRefreshLater )
   {
-    QgsDebugMsgLevel( "directory changed during createChidren() -> refresh() again", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "directory changed during createChidren() -> refresh() again" ), 3 );
     mRefreshLater = false;
     setState( Populated );
     refresh();
@@ -1405,7 +1405,7 @@ QVector<QgsDataItem *> QgsZipItem::createChildren()
       }
       else
       {
-        QgsDebugMsgLevel( "not loaded item", 3 );
+        QgsDebugMsgLevel( QStringLiteral( "not loaded item" ), 3 );
       }
     }
   }
@@ -1468,7 +1468,7 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
   // only display if has children or if is not populated
   if ( zipItem && ( !populated || zipItem->rowCount() > 0 ) )
   {
-    QgsDebugMsgLevel( "returning zipItem", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "returning zipItem" ), 3 );
     return zipItem;
   }
 

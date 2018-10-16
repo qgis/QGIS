@@ -561,7 +561,7 @@ void QgsLayerTreeModel::setLayerTreeNodeFont( int nodeType, const QFont &font )
   }
   else
   {
-    QgsDebugMsgLevel( "invalid node type", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "invalid node type" ), 4 );
   }
 }
 
@@ -574,7 +574,7 @@ QFont QgsLayerTreeModel::layerTreeNodeFont( int nodeType ) const
     return mFontLayer;
   else
   {
-    QgsDebugMsgLevel( "invalid node type", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "invalid node type" ), 4 );
     return QFont();
   }
 }

@@ -85,11 +85,11 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
       return false;
 
     case QVariant::Map:
-      QgsDebugMsg( "no support for QVariant::Map" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Map" ) );
       return false;
 
     case QVariant::List:
-      QgsDebugMsg( "no support for QVariant::List" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::List" ) );
       return false;
 
     case QVariant::String:
@@ -124,39 +124,39 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
     }
 
     case QVariant::Font:
-      QgsDebugMsg( "no support for QVariant::Font" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Font" ) );
       return false;
 
     case QVariant::Pixmap:
-      QgsDebugMsg( "no support for QVariant::Pixmap" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Pixmap" ) );
       return false;
 
     case QVariant::Brush:
-      QgsDebugMsg( "no support for QVariant::Brush" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Brush" ) );
       return false;
 
     case QVariant::Rect:
-      QgsDebugMsg( "no support for QVariant::Rect" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Rect" ) );
       return false;
 
     case QVariant::Size:
-      QgsDebugMsg( "no support for QVariant::Size" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Size" ) );
       return false;
 
     case QVariant::Color:
-      QgsDebugMsg( "no support for QVariant::Color" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Color" ) );
       return false;
 
     case QVariant::Palette:
-      QgsDebugMsg( "no support for QVariant::Palette" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Palette" ) );
       return false;
 
     case QVariant::Point:
-      QgsDebugMsg( "no support for QVariant::Point" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Point" ) );
       return false;
 
     case QVariant::Image:
-      QgsDebugMsg( "no support for QVariant::Image" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Image" ) );
       return false;
 
     case QVariant::Int:
@@ -180,31 +180,31 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
       break;
 
     case QVariant::Polygon:
-      QgsDebugMsg( "no support for QVariant::Polygon" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Polygon" ) );
       return false;
 
     case QVariant::Region:
-      QgsDebugMsg( "no support for QVariant::Region" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Region" ) );
       return false;
 
     case QVariant::Bitmap:
-      QgsDebugMsg( "no support for QVariant::Bitmap" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Bitmap" ) );
       return false;
 
     case QVariant::Cursor:
-      QgsDebugMsg( "no support for QVariant::Cursor" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Cursor" ) );
       return false;
 
     case QVariant::BitArray :
-      QgsDebugMsg( "no support for QVariant::BitArray" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::BitArray" ) );
       return false;
 
     case QVariant::KeySequence :
-      QgsDebugMsg( "no support for QVariant::KeySequence" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::KeySequence" ) );
       return false;
 
     case QVariant::Pen :
-      QgsDebugMsg( "no support for QVariant::Pen" );
+      QgsDebugMsg( QStringLiteral( "no support for QVariant::Pen" ) );
       return false;
 
 #if 0 // Currently unsupported variant types
@@ -283,7 +283,7 @@ QVariant QgsProjectPropertyKey::value() const
 
   if ( !foundQgsProperty )
   {
-    QgsDebugMsg( "key has null child" );
+    QgsDebugMsg( QStringLiteral( "key has null child" ) );
     return QVariant();     // just return an QVariant::Invalid
   }
 

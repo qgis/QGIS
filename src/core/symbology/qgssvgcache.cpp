@@ -913,12 +913,12 @@ void QgsSvgCache::removeCacheEntry( const QString &s, QgsSvgCacheEntry *entry )
 
 void QgsSvgCache::printEntryList()
 {
-  QgsDebugMsg( "****************svg cache entry list*************************" );
+  QgsDebugMsg( QStringLiteral( "****************svg cache entry list*************************" ) );
   QgsDebugMsg( "Cache size: " + QString::number( mTotalSize ) );
   QgsSvgCacheEntry *entry = mLeastRecentEntry;
   while ( entry )
   {
-    QgsDebugMsg( "***Entry:" );
+    QgsDebugMsg( QStringLiteral( "***Entry:" ) );
     QgsDebugMsg( "File:" + entry->path );
     QgsDebugMsg( "Size:" + QString::number( entry->size ) );
     QgsDebugMsg( "Width scale factor" + QString::number( entry->widthScaleFactor ) );

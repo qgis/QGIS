@@ -372,7 +372,7 @@ QgsCoordinateTransformContext QgsMapSettings::transformContext() const
 {
 #ifdef QGISDEBUG
   if ( !mHasTransformContext )
-    QgsDebugMsgLevel( "No QgsCoordinateTransformContext context set for transform", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "No QgsCoordinateTransformContext context set for transform" ), 4 );
 #endif
 
   return mTransformContext;

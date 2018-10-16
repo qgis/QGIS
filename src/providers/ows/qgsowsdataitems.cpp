@@ -65,7 +65,7 @@ QVector<QgsDataItem *> QgsOWSConnectionItem::createChildren()
     QgsDataItem *item = dItem( path, this );  // empty path -> top level
     if ( !item )
     {
-      QgsDebugMsg( "Connection not found by provider" );
+      QgsDebugMsg( QStringLiteral( "Connection not found by provider" ) );
       continue;
     }
 

@@ -85,7 +85,7 @@ static QList<int> _makeNodeOrder( QgsLayerTreeLayer *nodeLayer )
 {
   if ( !nodeLayer->layer() || !nodeLayer->layer()->legend() )
   {
-    QgsDebugMsg( "Legend node order manipulation is invalid without existing legend" );
+    QgsDebugMsg( QStringLiteral( "Legend node order manipulation is invalid without existing legend" ) );
     return QList<int>();
   }
 
@@ -167,7 +167,7 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
     {
       if ( usedIndices.contains( idx ) )
       {
-        QgsDebugMsg( "invalid node order. ignoring." );
+        QgsDebugMsg( QStringLiteral( "invalid node order. ignoring." ) );
         return;
       }
 

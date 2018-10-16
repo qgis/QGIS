@@ -36,7 +36,7 @@ class SampleService: public QgsService
     {
       Q_UNUSED( project );
       Q_UNUSED( request );
-      QgsDebugMsg( "SampleService::executeRequest called" );
+      QgsDebugMsg( QStringLiteral( "SampleService::executeRequest called" ) );
       response.write( QString( "Hello world from myService" ) );
     }
 };
@@ -48,7 +48,7 @@ class QgsSampleModule: public QgsServiceModule
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
       Q_UNUSED( serverIface );
-      QgsDebugMsg( "SampleModule::registerSelf called" );
+      QgsDebugMsg( QStringLiteral( "SampleModule::registerSelf called" ) );
       registry.registerService( new  SampleService() );
     }
 };

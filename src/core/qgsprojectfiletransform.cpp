@@ -108,7 +108,7 @@ void QgsProjectFileTransform::dump()
 
 void QgsProjectFileTransform::transform081to090()
 {
-  QgsDebugMsg( "Entering..." );
+  QgsDebugMsg( QStringLiteral( "Entering..." ) );
   if ( ! mDom.isNull() )
   {
     // Start with inserting a mapcanvas element and populate it
@@ -119,7 +119,7 @@ void QgsProjectFileTransform::transform081to090()
     QDomNode qgis = mDom.firstChildElement( QStringLiteral( "qgis" ) );
     if ( ! qgis.isNull() )
     {
-      QgsDebugMsg( "Populating new mapcanvas" );
+      QgsDebugMsg( QStringLiteral( "Populating new mapcanvas" ) );
 
       // Create a mapcanvas
       mapCanvas = mDom.createElement( QStringLiteral( "mapcanvas" ) );
@@ -197,7 +197,7 @@ void QgsProjectFileTransform::transform081to090()
         if ( id == legendLayerFile.attribute( QStringLiteral( "layerid" ) ) )
         {
           // Found a the legend layer that matches the maplayer
-          QgsDebugMsg( "Found matching id" );
+          QgsDebugMsg( QStringLiteral( "Found matching id" ) );
 
           // Set visible flag from maplayer to legendlayer
           legendLayerFile.setAttribute( QStringLiteral( "visible" ), mapLayer.attribute( QStringLiteral( "visible" ) ) );
@@ -376,7 +376,7 @@ void QgsProjectFileTransform::transform0110to1000()
 
 void QgsProjectFileTransform::transform1100to1200()
 {
-  QgsDebugMsg( "Entering..." );
+  QgsDebugMsg( QStringLiteral( "Entering..." ) );
   if ( mDom.isNull() )
     return;
 

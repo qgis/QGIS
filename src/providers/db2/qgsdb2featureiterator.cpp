@@ -244,7 +244,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
         // Not supported by DB2
         // NULLs are last in ascending order
         mOrderByCompiled = false;
-        QgsDebugMsg( "ascending with nullsFirst not supported" );
+        QgsDebugMsg( QStringLiteral( "ascending with nullsFirst not supported" ) );
         break;
       }
 
@@ -253,7 +253,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
       QgsDebugMsg( "expression: " + expression.dump() );
       if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
       {
-        QgsDebugMsg( "compile complete" );
+        QgsDebugMsg( QStringLiteral( "compile complete" ) );
         QString part;
         part = compiler.result();
         part += clause.ascending() ? " ASC" : " DESC";
@@ -310,19 +310,19 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature &feature )
   feature.setValid( false );
   if ( mClosed )
   {
-    QgsDebugMsg( "iterator closed" );
+    QgsDebugMsg( QStringLiteral( "iterator closed" ) );
     return false;
   }
 
   if ( !mQuery )
   {
-    QgsDebugMsg( "Read attempt on no query" );
+    QgsDebugMsg( QStringLiteral( "Read attempt on no query" ) );
     return false;
   }
 
   if ( !mQuery->isActive() )
   {
-    QgsDebugMsg( "Read attempt on inactive query" );
+    QgsDebugMsg( QStringLiteral( "Read attempt on inactive query" ) );
     return false;
   }
 
@@ -378,7 +378,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature &feature )
       }
       else
       {
-        QgsDebugMsg( "Geometry is empty" );
+        QgsDebugMsg( QStringLiteral( "Geometry is empty" ) );
         feature.clearGeometry();
       }
     }
@@ -406,7 +406,7 @@ bool QgsDb2FeatureIterator::rewind()
 
   if ( mStatement.isEmpty() )
   {
-    QgsDebugMsg( "rewind on empty statement" );
+    QgsDebugMsg( QStringLiteral( "rewind on empty statement" ) );
     return false;
   }
 
@@ -422,7 +422,7 @@ bool QgsDb2FeatureIterator::rewind()
     close();
     return false;
   }
-  QgsDebugMsg( "leaving rewind" );
+  QgsDebugMsg( QStringLiteral( "leaving rewind" ) );
   QgsDebugMsg( mQuery->lastError().text() );
   mFetchCount = 0;
   return true;
@@ -437,7 +437,7 @@ bool QgsDb2FeatureIterator::close()
   {
     if ( !mQuery->isActive() )
     {
-      QgsDebugMsg( "QgsDb2FeatureIterator::close on inactive query" );
+      QgsDebugMsg( QStringLiteral( "QgsDb2FeatureIterator::close on inactive query" ) );
     }
     else
     {

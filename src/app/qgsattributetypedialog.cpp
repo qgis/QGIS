@@ -166,7 +166,7 @@ void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type )
     }
     else
     {
-      QgsDebugMsg( "Oops, couldn't create editor widget config dialog..." );
+      QgsDebugMsg( QStringLiteral( "Oops, couldn't create editor widget config dialog..." ) );
     }
   }
 

@@ -26,13 +26,13 @@
 QgsRasterProjector::QgsRasterProjector()
   : QgsRasterInterface( nullptr )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 }
 
 
 QgsRasterProjector *QgsRasterProjector::clone() const
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   QgsRasterProjector *projector = new QgsRasterProjector;
   projector->mSrcCRS = mSrcCRS;
   projector->mDestCRS = mDestCRS;
@@ -90,7 +90,7 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
   , mMaxSrcXRes( 0 )
   , mMaxSrcYRes( 0 )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
   // Get max source resolution and extent if possible
   if ( input )
@@ -166,7 +166,7 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
     }
     if ( myColsOK && myRowsOK )
     {
-      QgsDebugMsgLevel( "CP matrix within tolerance", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "CP matrix within tolerance" ), 4 );
       break;
     }
     // What is the maximum reasonable size of transformatio matrix?
@@ -174,7 +174,7 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
     if ( mCPRows * mCPCols > 0.25 * mDestRows * mDestCols )
       //if ( mCPRows * mCPCols > mDestRows * mDestCols )
     {
-      QgsDebugMsgLevel( "Too large CP matrix", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Too large CP matrix" ), 4 );
       mApproximate = false;
       break;
     }
@@ -183,7 +183,7 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
   mDestRowsPerMatrixRow = static_cast< float >( mDestRows ) / ( mCPRows - 1 );
   mDestColsPerMatrixCol = static_cast< float >( mDestCols ) / ( mCPCols - 1 );
 
-  QgsDebugMsgLevel( "CPMatrix:", 5 );
+  QgsDebugMsgLevel( QStringLiteral( "CPMatrix:" ), 5 );
   QgsDebugMsgLevel( cpToString(), 5 );
 
   // init helper points
@@ -346,7 +346,7 @@ void ProjectorData::calcSrcRowsCols()
     }
     else
     {
-      QgsDebugMsg( "Cannot get src extent/size" );
+      QgsDebugMsg( QStringLiteral( "Cannot get src extent/size" ) );
     }
   }
 
@@ -740,7 +740,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
   if ( !mInput )
   {
-    QgsDebugMsgLevel( "Input not set", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Input not set" ), 4 );
     return new QgsRasterBlock();
   }
 
@@ -749,7 +749,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
 
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
   {
-    QgsDebugMsgLevel( "No projection necessary", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "No projection necessary" ), 4 );
     return mInput->block( bandNo, extent, width, height, feedback );
   }
 
@@ -763,14 +763,14 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
   // If we zoom out too much, projector srcRows / srcCols maybe 0, which can cause problems in providers
   if ( pd.srcRows() <= 0 || pd.srcCols() <= 0 )
   {
-    QgsDebugMsgLevel( "Zero srcRows or srcCols", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Zero srcRows or srcCols" ), 4 );
     return new QgsRasterBlock();
   }
 
   std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNo, pd.srcExtent(), pd.srcCols(), pd.srcRows(), feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugMsg( "No raster data!" );
+    QgsDebugMsg( QStringLiteral( "No raster data!" ) );
     return new QgsRasterBlock();
   }
 
@@ -783,7 +783,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
   }
   if ( !outputBlock->isValid() )
   {
-    QgsDebugMsg( "Cannot create block" );
+    QgsDebugMsg( QStringLiteral( "Cannot create block" ) );
     return outputBlock.release();
   }
 

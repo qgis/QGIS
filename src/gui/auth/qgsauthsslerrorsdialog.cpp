@@ -104,7 +104,7 @@ void QgsAuthSslErrorsDialog::loadUnloadCertificate( bool load )
   grpbxSslErrors->setCollapsed( load );
   if ( !load )
   {
-    QgsDebugMsg( "Unloading certificate and host:port" );
+    QgsDebugMsg( QStringLiteral( "Unloading certificate and host:port" ) );
     clearCertificateConfig();
     return;
   }

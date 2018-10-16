@@ -80,7 +80,7 @@ bool QgsRelationAggregateSearchWidgetWrapper::applyDirectly()
 void QgsRelationAggregateSearchWidgetWrapper::setExpression( const QString &value )
 {
   Q_UNUSED( value )
-  QgsDebugMsg( "Not supported" );
+  QgsDebugMsg( QStringLiteral( "Not supported" ) );
 }
 
 bool QgsRelationAggregateSearchWidgetWrapper::eventFilter( QObject *watched, QEvent *event )

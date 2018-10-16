@@ -25,7 +25,7 @@ void TriDecorator::addLine( const QVector<QgsPoint> &points, QgsInterpolator::So
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
   }
 }
 
@@ -38,7 +38,7 @@ int TriDecorator::addPoint( const QgsPoint &p )
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return 0;
   }
 }
@@ -51,7 +51,7 @@ void TriDecorator::performConsistencyTest()
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
   }
 }
 
@@ -64,7 +64,7 @@ bool TriDecorator::calcNormal( double x, double y, Vector3D *result )
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -78,7 +78,7 @@ bool TriDecorator::calcPoint( double x, double y, QgsPoint &result )
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -92,7 +92,7 @@ QgsPoint *TriDecorator::getPoint( int i ) const
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return nullptr;
   }
 }
@@ -106,7 +106,7 @@ bool TriDecorator::getTriangle( double x, double y, QgsPoint &p1, int &n1, QgsPo
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -120,7 +120,7 @@ bool TriDecorator::getTriangle( double x, double y, QgsPoint &p1, QgsPoint &p2, 
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -133,7 +133,7 @@ int TriDecorator::getNumberOfPoints() const
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -147,7 +147,7 @@ int TriDecorator::getOppositePoint( int p1, int p2 )
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return 0;
   }
 }
@@ -173,7 +173,7 @@ double TriDecorator::getXMax() const
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return 0;
   }
 }
@@ -187,7 +187,7 @@ double TriDecorator::getXMin() const
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return 0;
   }
 }
@@ -200,7 +200,7 @@ double TriDecorator::getYMax() const
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return 0;
   }
 }
@@ -214,7 +214,7 @@ double TriDecorator::getYMin() const
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return 0;
   }
 }
@@ -227,7 +227,7 @@ void TriDecorator::setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b 
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
   }
 }
 
@@ -239,7 +239,7 @@ void TriDecorator::setEdgeColor( int r, int g, int b )
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
   }
 }
 
@@ -251,7 +251,7 @@ void TriDecorator::setForcedEdgeColor( int r, int g, int b )
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
   }
 }
 
@@ -263,7 +263,7 @@ void TriDecorator::setBreakEdgeColor( int r, int g, int b )
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
   }
 }
 
@@ -275,7 +275,7 @@ void TriDecorator::setTriangleInterpolator( TriangleInterpolator *interpolator )
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
   }
 }
 
@@ -287,7 +287,7 @@ void TriDecorator::eliminateHorizontalTriangles()
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
   }
 }
 
@@ -299,7 +299,7 @@ void TriDecorator::ruppertRefinement()
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
   }
 }
 
@@ -312,7 +312,7 @@ bool TriDecorator::pointInside( double x, double y )
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -326,7 +326,7 @@ bool TriDecorator::swapEdge( double x, double y )
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
@@ -339,7 +339,7 @@ QList<int> *TriDecorator::getPointsAroundEdge( double x, double y )
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
     return nullptr;
   }
 }

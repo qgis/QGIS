@@ -542,7 +542,7 @@ bool QgsRuleBasedLabelingModel::removeRows( int row, int count, const QModelInde
     }
     else
     {
-      QgsDebugMsg( "trying to remove invalid index - this should not happen!" );
+      QgsDebugMsg( QStringLiteral( "trying to remove invalid index - this should not happen!" ) );
     }
   }
 

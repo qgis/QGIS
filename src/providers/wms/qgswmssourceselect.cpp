@@ -145,21 +145,21 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   populateConnectionList();
 
   QgsSettings settings;
-  QgsDebugMsg( "restoring geometry" );
+  QgsDebugMsg( QStringLiteral( "restoring geometry" ) );
   restoreGeometry( settings.value( QStringLiteral( "Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
 }
 
 QgsWMSSourceSelect::~QgsWMSSourceSelect()
 {
   QgsSettings settings;
-  QgsDebugMsg( "saving geometry" );
+  QgsDebugMsg( QStringLiteral( "saving geometry" ) );
   settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
 }
 
 void QgsWMSSourceSelect::refresh()
 {
   // Reload WMS connections and update the GUI
-  QgsDebugMsg( "Refreshing WMS connections ..." );
+  QgsDebugMsg( QStringLiteral( "Refreshing WMS connections ..." ) );
   populateConnectionList();
 }
 
@@ -1213,7 +1213,7 @@ void QgsWMSSourceSelect::searchFinished()
     }
     else
     {
-      QgsDebugMsg( "setContent failed" );
+      QgsDebugMsg( QStringLiteral( "setContent failed" ) );
       showStatusMessage( tr( "parse error at row %1, column %2: %3" ).arg( line ).arg( column ).arg( error ) );
     }
   }

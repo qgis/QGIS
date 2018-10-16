@@ -363,11 +363,11 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
   if ( action == CreateOrOverwriteFile )
   {
-    QgsDebugMsg( "Created data source" );
+    QgsDebugMsg( QStringLiteral( "Created data source" ) );
   }
   else
   {
-    QgsDebugMsg( "Opened data source in update mode" );
+    QgsDebugMsg( QStringLiteral( "Opened data source in update mode" ) );
   }
 
   // use appropriate codec
@@ -481,7 +481,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
   OGRFeatureDefnH defn = OGR_L_GetLayerDefn( mLayer );
 
-  QgsDebugMsg( "created layer" );
+  QgsDebugMsg( QStringLiteral( "created layer" ) );
 
   // create the fields
   QgsDebugMsg( "creating " + QString::number( fields.size() ) + " fields" );
@@ -687,7 +687,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     }
   }
 
-  QgsDebugMsg( "Done creating fields" );
+  QgsDebugMsg( QStringLiteral( "Done creating fields" ) );
 
   mWkbType = geometryType;
 
@@ -2316,7 +2316,7 @@ QgsVectorFileWriter::~QgsVectorFileWriter()
   {
     if ( OGRERR_NONE != OGR_L_CommitTransaction( mLayer ) )
     {
-      QgsDebugMsg( "Error while committing transaction on OGRLayer." );
+      QgsDebugMsg( QStringLiteral( "Error while committing transaction on OGRLayer." ) );
     }
   }
 

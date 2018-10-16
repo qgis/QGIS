@@ -111,7 +111,7 @@ bool QgsCoordinateTransformPrivate::initialize()
   {
     // Pass through with no projection since we have no idea what the layer
     // coordinates are and projecting them may not be appropriate
-    QgsDebugMsgLevel( "Source CRS is invalid!", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Source CRS is invalid!" ), 4 );
     return false;
   }
 
@@ -120,7 +120,7 @@ bool QgsCoordinateTransformPrivate::initialize()
     //No destination projection is set so we set the default output projection to
     //be the same as input proj.
     mDestCRS = mSourceCRS;
-    QgsDebugMsgLevel( "Destination CRS is invalid!", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Destination CRS is invalid!" ), 4 );
     return false;
   }
 
@@ -174,22 +174,22 @@ bool QgsCoordinateTransformPrivate::initialize()
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   if ( mIsValid )
   {
-    QgsDebugMsg( "------------------------------------------------------------" );
-    QgsDebugMsg( "The OGR Coordinate transformation for this layer was set to" );
+    QgsDebugMsg( QStringLiteral( "------------------------------------------------------------" ) );
+    QgsDebugMsg( QStringLiteral( "The OGR Coordinate transformation for this layer was set to" ) );
     QgsLogger::debug<QgsCoordinateReferenceSystem>( "Input", mSourceCRS, __FILE__, __FUNCTION__, __LINE__ );
     QgsLogger::debug<QgsCoordinateReferenceSystem>( "Output", mDestCRS, __FILE__, __FUNCTION__, __LINE__ );
-    QgsDebugMsg( "------------------------------------------------------------" );
+    QgsDebugMsg( QStringLiteral( "------------------------------------------------------------" ) );
   }
   else
   {
-    QgsDebugMsg( "------------------------------------------------------------" );
-    QgsDebugMsg( "The OGR Coordinate transformation FAILED TO INITIALIZE!" );
-    QgsDebugMsg( "------------------------------------------------------------" );
+    QgsDebugMsg( QStringLiteral( "------------------------------------------------------------" ) );
+    QgsDebugMsg( QStringLiteral( "The OGR Coordinate transformation FAILED TO INITIALIZE!" ) );
+    QgsDebugMsg( QStringLiteral( "------------------------------------------------------------" ) );
   }
 #else
   if ( !mIsValid )
   {
-    QgsDebugMsg( "Coordinate transformation failed to initialize!" );
+    QgsDebugMsg( QStringLiteral( "Coordinate transformation failed to initialize!" ) );
   }
 #endif
 
@@ -201,13 +201,13 @@ bool QgsCoordinateTransformPrivate::initialize()
     // If the source and destination projection are the same, set the short
     // circuit flag (no transform takes place)
     mShortCircuit = true;
-    QgsDebugMsgLevel( "Source/Dest CRS equal, shortcircuit is set.", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Source/Dest CRS equal, shortcircuit is set." ), 3 );
   }
   else
   {
     // Transform must take place
     mShortCircuit = false;
-    QgsDebugMsgLevel( "Source/Dest CRS not equal, shortcircuit is not set.", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Source/Dest CRS not equal, shortcircuit is not set." ), 3 );
   }
   return mIsValid;
 }

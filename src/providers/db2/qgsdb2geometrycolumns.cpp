@@ -24,7 +24,7 @@ QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase &db )
   : mDatabase( db )
   , mEnvironment( ENV_LUW )
 {
-  QgsDebugMsg( "constructing" );
+  QgsDebugMsg( QStringLiteral( "constructing" ) );
 }
 
 QgsDb2GeometryColumns::~QgsDb2GeometryColumns()
@@ -67,7 +67,7 @@ QString QgsDb2GeometryColumns::open( const QString &schemaName, const QString &t
        so SQLCODE -206 is returned when specifying non-existent columns. */
     if ( mQuery.lastError().nativeErrorCode() == QStringLiteral( "-206" ) )
     {
-      QgsDebugMsg( "Try query with no extents" );
+      QgsDebugMsg( QStringLiteral( "Try query with no extents" ) );
       mQuery.clear();
 
       if ( !mQuery.exec( queryNoExtents ) )
@@ -76,7 +76,7 @@ QString QgsDb2GeometryColumns::open( const QString &schemaName, const QString &t
       }
       else
       {
-        QgsDebugMsg( "success; must be z/OS" );
+        QgsDebugMsg( QStringLiteral( "success; must be z/OS" ) );
         mEnvironment = ENV_ZOS;
         nativeError.clear();
       }

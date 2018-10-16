@@ -242,7 +242,7 @@ QList<QSslCertificate> QgsAuthCertUtils::certsFromString( const QString &pemtext
   certs = QSslCertificate::fromData( pemtext.toLatin1(), QSsl::Pem );
   if ( certs.isEmpty() )
   {
-    QgsDebugMsg( "Parsed cert(s) EMPTY" );
+    QgsDebugMsg( QStringLiteral( "Parsed cert(s) EMPTY" ) );
   }
   return certs;
 }
@@ -670,7 +670,7 @@ QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert
     QCA::Certificate acert( QCA::Certificate::fromPEM( qcert.toPem(), &res, QStringLiteral( "qca-ossl" ) ) );
     if ( res != QCA::ConvertGood || acert.isNull() )
     {
-      QgsDebugMsg( "Certificate could not be converted to QCA cert" );
+      QgsDebugMsg( QStringLiteral( "Certificate could not be converted to QCA cert" ) );
       return QString();
     }
   }
@@ -754,7 +754,7 @@ QCA::Certificate QgsAuthCertUtils::qtCertToQcaCert( const QSslCertificate &cert 
   QCA::Certificate qcacert( QCA::Certificate::fromPEM( cert.toPem(), &res, QStringLiteral( "qca-ossl" ) ) );
   if ( res != QCA::ConvertGood || qcacert.isNull() )
   {
-    QgsDebugMsg( "Certificate could not be converted to QCA cert" );
+    QgsDebugMsg( QStringLiteral( "Certificate could not be converted to QCA cert" ) );
     qcacert = QCA::Certificate();
   }
   return qcacert;
@@ -939,13 +939,13 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
   QCA::Certificate qcacert( QCA::Certificate::fromPEM( cert.toPem(), &res, QStringLiteral( "qca-ossl" ) ) );
   if ( res != QCA::ConvertGood || qcacert.isNull() )
   {
-    QgsDebugMsg( "Certificate could not be converted to QCA cert" );
+    QgsDebugMsg( QStringLiteral( "Certificate could not be converted to QCA cert" ) );
     return usages;
   }
 
   if ( qcacert.isCA() )
   {
-    QgsDebugMsg( "Certificate has 'CA:TRUE' basic constraint" );
+    QgsDebugMsg( QStringLiteral( "Certificate has 'CA:TRUE' basic constraint" ) );
     usages << QgsAuthCertUtils::CertAuthorityUsage;
   }
 
@@ -954,12 +954,12 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
   {
     if ( certconst.known() == QCA::KeyCertificateSign )
     {
-      QgsDebugMsg( "Certificate has 'Certificate Sign' key usage" );
+      QgsDebugMsg( QStringLiteral( "Certificate has 'Certificate Sign' key usage" ) );
       usages << QgsAuthCertUtils::CertIssuerUsage;
     }
     else if ( certconst.known() == QCA::ServerAuth )
     {
-      QgsDebugMsg( "Certificate has 'server authentication' extended key usage" );
+      QgsDebugMsg( QStringLiteral( "Certificate has 'server authentication' extended key usage" ) );
       usages << QgsAuthCertUtils::TlsServerUsage;
     }
   }
@@ -1039,13 +1039,13 @@ bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
   QCA::Certificate qcacert( QCA::Certificate::fromPEM( cert.toPem(), &res, QString( "qca-ossl" ) ) );
   if ( res != QCA::ConvertGood || qcacert.isNull() )
   {
-    QgsDebugMsg( "Certificate could not be converted to QCA cert" );
+    QgsDebugMsg( QStringLiteral( "Certificate could not be converted to QCA cert" ) );
     return false;
   }
 
   if ( qcacert.isCA() )
   {
-    QgsDebugMsg( "SSL server certificate has 'CA:TRUE' basic constraint (and should not)" );
+    QgsDebugMsg( QStringLiteral( "SSL server certificate has 'CA:TRUE' basic constraint (and should not)" ) );
     return false;
   }
 
@@ -1054,7 +1054,7 @@ bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
   {
     if ( certconst.known() == QCA::KeyCertificateSign )
     {
-      QgsDebugMsg( "SSL server certificate has 'Certificate Sign' key usage (and should not)" );
+      QgsDebugMsg( QStringLiteral( "SSL server certificate has 'Certificate Sign' key usage (and should not)" ) );
       return false;
     }
   }
@@ -1068,22 +1068,22 @@ bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
   {
     if ( certconst.known() == QCA::DigitalSignature )
     {
-      QgsDebugMsg( "SSL server certificate has 'digital signature' key usage" );
+      QgsDebugMsg( QStringLiteral( "SSL server certificate has 'digital signature' key usage" ) );
       dsignature = true;
     }
     else if ( certconst.known() == QCA::KeyEncipherment )
     {
-      QgsDebugMsg( "SSL server certificate has 'key encipherment' key usage" );
+      QgsDebugMsg( QStringLiteral( "SSL server certificate has 'key encipherment' key usage" ) );
       keyencrypt = true;
     }
     else if ( certconst.known() == QCA::KeyAgreement )
     {
-      QgsDebugMsg( "SSL server certificate has 'key agreement' key usage" );
+      QgsDebugMsg( QStringLiteral( "SSL server certificate has 'key agreement' key usage" ) );
       keyencrypt = true;
     }
     else if ( certconst.known() == QCA::ServerAuth )
     {
-      QgsDebugMsg( "SSL server certificate has 'server authentication' extended key usage" );
+      QgsDebugMsg( QStringLiteral( "SSL server certificate has 'server authentication' extended key usage" ) );
       serverauth = true;
     }
   }
@@ -1122,12 +1122,12 @@ bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
     {
       if ( certconst.known() == QCA::EncipherOnly )
       {
-        QgsDebugMsg( "SSL server public key has 'encipher only' key usage" );
+        QgsDebugMsg( QStringLiteral( "SSL server public key has 'encipher only' key usage" ) );
         encipheronly = true;
       }
       else if ( certconst.known() == QCA::DecipherOnly )
       {
-        QgsDebugMsg( "SSL server public key has 'decipher only' key usage" );
+        QgsDebugMsg( QStringLiteral( "SSL server public key has 'decipher only' key usage" ) );
         decipheronly = true;
       }
     }
@@ -1393,7 +1393,7 @@ QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useI
   }
   else
   {
-    QgsDebugMsg( "Key is not DSA, RSA: validation is not supported by QCA" );
+    QgsDebugMsg( QStringLiteral( "Key is not DSA, RSA: validation is not supported by QCA" ) );
   }
   if ( ! keyValid )
   {

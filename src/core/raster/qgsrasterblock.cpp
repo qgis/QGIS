@@ -69,7 +69,7 @@ bool QgsRasterBlock::reset( Qgis::DataType dataType, int width, int height )
 
   if ( typeIsNumeric( dataType ) )
   {
-    QgsDebugMsgLevel( "Numeric type", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Numeric type" ), 4 );
     qgssize tSize = typeSize( dataType );
     QgsDebugMsgLevel( QStringLiteral( "allocate %1 bytes" ).arg( tSize * width * height ), 4 );
     mData = qgsMalloc( tSize * width * height );
@@ -81,13 +81,13 @@ bool QgsRasterBlock::reset( Qgis::DataType dataType, int width, int height )
   }
   else if ( typeIsColor( dataType ) )
   {
-    QgsDebugMsgLevel( "Color type", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Color type" ), 4 );
     QImage::Format format = imageFormat( dataType );
     mImage = new QImage( width, height, format );
   }
   else
   {
-    QgsDebugMsg( "Wrong data type" );
+    QgsDebugMsg( QStringLiteral( "Wrong data type" ) );
     return false;
   }
 
@@ -233,18 +233,18 @@ void QgsRasterBlock::resetNoDataValue()
 
 bool QgsRasterBlock::setIsNoData()
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   if ( typeIsNumeric( mDataType ) )
   {
     if ( mHasNoDataValue )
     {
       if ( !mData )
       {
-        QgsDebugMsg( "Data block not allocated" );
+        QgsDebugMsg( QStringLiteral( "Data block not allocated" ) );
         return false;
       }
 
-      QgsDebugMsgLevel( "set mData to mNoDataValue", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "set mData to mNoDataValue" ), 4 );
       int dataTypeSize = typeSize( mDataType );
       QByteArray noDataByteArray = valueBytes( mDataType, mNoDataValue );
 
@@ -264,7 +264,7 @@ bool QgsRasterBlock::setIsNoData()
           return false;
         }
       }
-      QgsDebugMsgLevel( "set mNoDataBitmap to 1", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "set mNoDataBitmap to 1" ), 4 );
       memset( mNoDataBitmap, 0xff, mNoDataBitmapSize );
     }
     return true;
@@ -274,10 +274,10 @@ bool QgsRasterBlock::setIsNoData()
     // image
     if ( !mImage )
     {
-      QgsDebugMsg( "Image not allocated" );
+      QgsDebugMsg( QStringLiteral( "Image not allocated" ) );
       return false;
     }
-    QgsDebugMsgLevel( "Fill image", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Fill image" ), 4 );
     mImage->fill( NO_DATA_COLOR );
     return true;
   }
@@ -294,18 +294,18 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect exceptRect )
   bottom = std::max( 0, std::min( bottom, mHeight - 1 ) );
   right = std::max( 0, std::min( right, mWidth - 1 ) );
 
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   if ( typeIsNumeric( mDataType ) )
   {
     if ( mHasNoDataValue )
     {
       if ( !mData )
       {
-        QgsDebugMsg( "Data block not allocated" );
+        QgsDebugMsg( QStringLiteral( "Data block not allocated" ) );
         return false;
       }
 
-      QgsDebugMsgLevel( "set mData to mNoDataValue", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "set mData to mNoDataValue" ), 4 );
       int dataTypeSize = typeSize( mDataType );
       QByteArray noDataByteArray = valueBytes( mDataType, mNoDataValue );
 
@@ -346,7 +346,7 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect exceptRect )
           return false;
         }
       }
-      QgsDebugMsgLevel( "set mNoDataBitmap to 1", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "set mNoDataBitmap to 1" ), 4 );
 
       char *nodataRow = new char[mNoDataBitmapWidth]; // full row of no data
       // TODO: we can simply set all bytes to 11111111 (~0) I think
@@ -390,13 +390,13 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect exceptRect )
     // image
     if ( !mImage )
     {
-      QgsDebugMsg( "Image not allocated" );
+      QgsDebugMsg( QStringLiteral( "Image not allocated" ) );
       return false;
     }
 
     if ( mImage->width() != mWidth ||  mImage->height() != mHeight )
     {
-      QgsDebugMsg( "Image and block size differ" );
+      QgsDebugMsg( QStringLiteral( "Image and block size differ" ) );
       return false;
     }
 
@@ -405,7 +405,7 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect exceptRect )
     // TODO: support different depths
     if ( mImage->depth() != 32 )
     {
-      QgsDebugMsg( "Unsupported image depth" );
+      QgsDebugMsg( QStringLiteral( "Unsupported image depth" ) );
       return false;
     }
 
@@ -520,7 +520,7 @@ bool QgsRasterBlock::convert( Qgis::DataType destDataType )
 
     if ( !data )
     {
-      QgsDebugMsg( "Cannot convert raster block" );
+      QgsDebugMsg( QStringLiteral( "Cannot convert raster block" ) );
       return false;
     }
     qgsFree( mData );
@@ -635,7 +635,7 @@ QString QgsRasterBlock::printValue( double value )
     }
   }
   // Should not happen
-  QgsDebugMsg( "Cannot correctly parse printed value" );
+  QgsDebugMsg( QStringLiteral( "Cannot correctly parse printed value" ) );
   return s;
 }
 
@@ -656,7 +656,7 @@ QString QgsRasterBlock::printValue( float value )
     }
   }
   // Should not happen
-  QgsDebugMsg( "Cannot correctly parse printed value" );
+  QgsDebugMsg( QStringLiteral( "Cannot correctly parse printed value" ) );
   return s;
 }
 
@@ -718,7 +718,7 @@ QByteArray QgsRasterBlock::valueBytes( Qgis::DataType dataType, double value )
       memcpy( data, &d, size );
       break;
     default:
-      QgsDebugMsg( "Data type is not supported" );
+      QgsDebugMsg( QStringLiteral( "Data type is not supported" ) );
   }
   return ba;
 }

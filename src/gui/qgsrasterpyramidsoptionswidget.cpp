@@ -177,7 +177,7 @@ void QgsRasterPyramidsOptionsWidget::cbxPyramidsFormat_currentIndexChanged( int 
       format = QgsRaster::PyramidsErdas;
       break;
     default:
-      QgsDebugMsg( "Should not happen !" );
+      QgsDebugMsg( QStringLiteral( "Should not happen !" ) );
       format = QgsRaster::PyramidsGTiff;
       break;
   }

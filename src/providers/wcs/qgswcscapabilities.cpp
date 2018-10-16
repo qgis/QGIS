@@ -105,11 +105,11 @@ QgsWcsCapabilitiesProperty QgsWcsCapabilities::capabilities()
 
 bool QgsWcsCapabilities::supportedCoverages( QVector<QgsWcsCoverageSummary> &coverageSummary )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsg( QStringLiteral( "Entering." ) );
 
   coverageSummary = mCoveragesSupported;
 
-  QgsDebugMsg( "Exiting." );
+  QgsDebugMsg( QStringLiteral( "Exiting." ) );
 
   return true;
 }
@@ -252,7 +252,7 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( const QString &preferredVer
     return false;
   }
 
-  QgsDebugMsg( "Converting to Dom." );
+  QgsDebugMsg( QStringLiteral( "Converting to Dom." ) );
 
   bool domOK;
   domOK = parseCapabilitiesDom( mCapabilitiesResponse, mCapabilities );
@@ -296,7 +296,7 @@ bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool force
   QgsWcsCoverageSummary *coverage = coverageSummary( identifier );
   if ( !coverage )
   {
-    QgsDebugMsg( "coverage not found" );
+    QgsDebugMsg( QStringLiteral( "coverage not found" ) );
     return false;
   }
 
@@ -309,7 +309,7 @@ bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool force
     return false;
   }
 
-  QgsDebugMsg( "Converting to Dom." );
+  QgsDebugMsg( QStringLiteral( "Converting to Dom." ) );
 
   bool domOK = false;
   if ( mVersion.startsWith( QLatin1String( "1.0" ) ) )
@@ -388,7 +388,7 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
     QNetworkRequest request = mCapabilitiesReply->request();
     if ( request.attribute( QNetworkRequest::CacheLoadControlAttribute ).toInt() == QNetworkRequest::AlwaysCache )
     {
-      QgsDebugMsg( "Resend request with PreferCache" );
+      QgsDebugMsg( QStringLiteral( "Resend request with PreferCache" ) );
       request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
 
       mCapabilitiesReply->deleteLater();
@@ -434,7 +434,7 @@ QString QgsWcsCapabilities::stripNS( const QString &name )
 
 bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapabilitiesProperty &capabilities )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
 #ifdef QGISDEBUG
   QFile file( QDir::tempPath() + "/qgis-wcs-capabilities.xml" );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -708,7 +708,7 @@ void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const &e, QgsWc
   QList<QDomElement> posElements = domElements( e, QStringLiteral( "lonLatEnvelope.pos" ) );
   if ( posElements.size() != 2 )
   {
-    QgsDebugMsg( "Wrong number of pos elements" );
+    QgsDebugMsg( QStringLiteral( "Wrong number of pos elements" ) );
   }
   else
   {
@@ -736,7 +736,7 @@ void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const &e, QgsWc
 
 bool QgsWcsCapabilities::convertToDom( QByteArray const &xml )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
   // Convert completed document into a Dom
   QString errorMsg;
   int errorLine;
@@ -852,7 +852,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
     QList<QDomElement> posElements = domElements( el, QStringLiteral( "pos" ) );
     if ( posElements.size() != 2 )
     {
-      QgsDebugMsg( "Wrong number of pos elements" );
+      QgsDebugMsg( QStringLiteral( "Wrong number of pos elements" ) );
       continue;
     }
 
@@ -1105,7 +1105,7 @@ void QgsWcsCapabilities::parseCoverageSummary( QDomElement const &e, QgsWcsCover
 
       if ( tagName == QLatin1String( "CoverageSummary" ) )
       {
-        QgsDebugMsg( "      Nested coverage." );
+        QgsDebugMsg( QStringLiteral( "      Nested coverage." ) );
 
         QgsWcsCoverageSummary subCoverageSummary;
 

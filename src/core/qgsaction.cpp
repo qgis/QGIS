@@ -55,7 +55,7 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
 {
   if ( !isValid() )
   {
-    QgsDebugMsg( "Invalid action cannot be run" );
+    QgsDebugMsg( QStringLiteral( "Invalid action cannot be run" ) );
     return;
   }
 

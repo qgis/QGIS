@@ -432,7 +432,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
       QgsSymbolLevelItem &item = level[i];
       if ( !features.contains( item.symbol() ) )
       {
-        QgsDebugMsg( "level item's symbol not found!" );
+        QgsDebugMsg( QStringLiteral( "level item's symbol not found!" ) );
         continue;
       }
       int layer = item.layer();

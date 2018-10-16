@@ -146,7 +146,7 @@ void QgsMapLayerStyleGuiUtils::removeStyle()
   bool res = layer->styleManager()->removeStyle( layer->styleManager()->currentStyle() );
   if ( !res )
   {
-    QgsDebugMsg( "Failed to remove current style" );
+    QgsDebugMsg( QStringLiteral( "Failed to remove current style" ) );
   }
 }
 

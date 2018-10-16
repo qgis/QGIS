@@ -130,7 +130,7 @@ void QgsPluginRegistry::addPlugin( const QString &key, const QgsPluginMetadata &
 
 void QgsPluginRegistry::dump()
 {
-  QgsDebugMsg( "PLUGINS IN REGISTRY: key -> (name, library)" );
+  QgsDebugMsg( QStringLiteral( "PLUGINS IN REGISTRY: key -> (name, library)" ) );
   for ( QMap<QString, QgsPluginMetadata>::const_iterator it = mPlugins.constBegin();
         it != mPlugins.constEnd();
         ++it )
@@ -144,7 +144,7 @@ void QgsPluginRegistry::dump()
 #ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    QgsDebugMsg( "PYTHON PLUGINS IN REGISTRY:" );
+    QgsDebugMsg( QStringLiteral( "PYTHON PLUGINS IN REGISTRY:" ) );
     Q_FOREACH ( const QString &pluginName, mPythonUtils->listActivePlugins() )
     {
       Q_UNUSED( pluginName );
@@ -518,7 +518,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
   {
     // check for python plugins system-wide
     QStringList pluginList = mPythonUtils->pluginList();
-    QgsDebugMsg( "Loading python plugins" );
+    QgsDebugMsg( QStringLiteral( "Loading python plugins" ) );
 
     QStringList corePlugins = QStringList();
     corePlugins << QStringLiteral( "GdalTools" );
@@ -579,7 +579,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
   }
 #endif
 
-  QgsDebugMsg( "Plugin loading completed" );
+  QgsDebugMsg( QStringLiteral( "Plugin loading completed" ) );
 }
 
 

@@ -332,7 +332,7 @@ void TestQgsWcsPublicServers::test()
       QVector<QgsWcsCoverageSummary> myCoverages;
       if ( !myCapabilities.supportedCoverages( myCoverages ) )
       {
-        QgsDebugMsg( "Cannot get list of coverages" );
+        QgsDebugMsg( QStringLiteral( "Cannot get list of coverages" ) );
         myVersionLog << QStringLiteral( "error:Cannot get list of coverages" );
         continue;
       }
@@ -502,7 +502,7 @@ void TestQgsWcsPublicServers::test()
           }
           else
           {
-            QgsDebugMsg( "Layer is not valid" );
+            QgsDebugMsg( QStringLiteral( "Layer is not valid" ) );
             myLog << provider + "_error:Layer is not valid";
           }
           myLog << provider + QStringLiteral( "_time:%1" ).arg( time.elapsed() / 1000., 0, 'f', 2 );
@@ -521,7 +521,7 @@ void TestQgsWcsPublicServers::test()
       }
       if ( !mCoverage.isEmpty() && ! myCoverageFound )
       {
-        QgsDebugMsg( "Coverage not found" );
+        QgsDebugMsg( QStringLiteral( "Coverage not found" ) );
       }
       QFile myVersionLogFile( myVersionLogPath );
       Q_ASSERT( myVersionLogFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) );

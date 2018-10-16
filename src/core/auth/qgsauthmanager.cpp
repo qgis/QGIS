@@ -154,10 +154,10 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
     return true;
   mAuthInit = true;
 
-  QgsDebugMsg( "Initializing QCA..." );
+  QgsDebugMsg( QStringLiteral( "Initializing QCA..." ) );
   mQcaInitializer = new QCA::Initializer( QCA::Practical, 256 );
 
-  QgsDebugMsg( "QCA initialized." );
+  QgsDebugMsg( QStringLiteral( "QCA initialized." ) );
   QCA::scanForPlugins();
 
   QgsDebugMsg( QStringLiteral( "QCA Plugin Diagnostics Context: %1" ).arg( QCA::pluginDiagnosticText() ) );
@@ -174,7 +174,7 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
     return isDisabled();
   }
 
-  QgsDebugMsg( "Prioritizing qca-ossl over all other QCA providers..." );
+  QgsDebugMsg( QStringLiteral( "Prioritizing qca-ossl over all other QCA providers..." ) );
   const QCA::ProviderList provds = QCA::providers();
   QStringList prlist;
   for ( QCA::Provider *p : provds )
@@ -190,7 +190,7 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
   }
   QgsDebugMsg( QStringLiteral( "QCA provider priorities: %1" ).arg( prlist.join( ", " ) ) );
 
-  QgsDebugMsg( "Populating auth method registry" );
+  QgsDebugMsg( QStringLiteral( "Populating auth method registry" ) );
   QgsAuthMethodRegistry *authreg = QgsAuthMethodRegistry::instance( pluginPath );
 
   QStringList methods = authreg->authMethodList();
@@ -241,7 +241,7 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
     }
     if ( dbinfo.size() > 0 )
     {
-      QgsDebugMsg( "Auth db exists and has data" );
+      QgsDebugMsg( QStringLiteral( "Auth db exists and has data" ) );
 
       if ( !createCertTables() )
         return false;
@@ -280,7 +280,7 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
         {
           if ( setMasterPassword( masterpass, true ) )
           {
-            QgsDebugMsg( "Authentication master password set from QGIS_AUTH_PASSWORD_FILE" );
+            QgsDebugMsg( QStringLiteral( "Authentication master password set from QGIS_AUTH_PASSWORD_FILE" ) );
           }
           else
           {
@@ -300,7 +300,7 @@ bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabas
   }
   else
   {
-    QgsDebugMsg( "Auth db does not exist: creating through QSqlDatabase initial connection" );
+    QgsDebugMsg( QStringLiteral( "Auth db does not exist: creating through QSqlDatabase initial connection" ) );
 
     if ( !createConfigTables() )
       return false;
@@ -373,7 +373,7 @@ bool QgsAuthManager::createCertTables()
 {
   QMutexLocker locker( mMutex );
   // NOTE: these tables were added later, so IF NOT EXISTS is used
-  QgsDebugMsg( "Creating cert tables in auth db" );
+  QgsDebugMsg( QStringLiteral( "Creating cert tables in auth db" ) );
 
   QSqlQuery query( authDatabaseConnection() );
 
@@ -457,7 +457,7 @@ bool QgsAuthManager::isDisabled() const
 {
   if ( mAuthDisabled )
   {
-    QgsDebugMsg( "Authentication system DISABLED: QCA's qca-ossl (OpenSSL) plugin is missing" );
+    QgsDebugMsg( QStringLiteral( "Authentication system DISABLED: QCA's qca-ossl (OpenSSL) plugin is missing" ) );
   }
   return mAuthDisabled;
 }
@@ -478,16 +478,16 @@ bool QgsAuthManager::setMasterPassword( bool verify )
 
   if ( mMasterPass.isEmpty() )
   {
-    QgsDebugMsg( "Master password is not yet set by user" );
+    QgsDebugMsg( QStringLiteral( "Master password is not yet set by user" ) );
     if ( !masterPasswordInput() )
     {
-      QgsDebugMsg( "Master password input canceled by user" );
+      QgsDebugMsg( QStringLiteral( "Master password input canceled by user" ) );
       return false;
     }
   }
   else
   {
-    QgsDebugMsg( "Master password is set" );
+    QgsDebugMsg( QStringLiteral( "Master password is set" ) );
     if ( !verify )
       return true;
   }
@@ -495,7 +495,7 @@ bool QgsAuthManager::setMasterPassword( bool verify )
   if ( !verifyMasterPassword() )
     return false;
 
-  QgsDebugMsg( "Master password is set and verified" );
+  QgsDebugMsg( QStringLiteral( "Master password is set and verified" ) );
   return true;
 }
 
@@ -577,7 +577,7 @@ bool QgsAuthManager::verifyMasterPassword( const QString &compare )
     }
     else
     {
-      QgsDebugMsg( "Master password: verified against hash in database" );
+      QgsDebugMsg( QStringLiteral( "Master password: verified against hash in database" ) );
       if ( compare.isNull() )
         emit masterPasswordVerified( true );
     }
@@ -595,7 +595,7 @@ bool QgsAuthManager::verifyMasterPassword( const QString &compare )
     }
     else
     {
-      QgsDebugMsg( "Master password: hash stored in database" );
+      QgsDebugMsg( QStringLiteral( "Master password: hash stored in database" ) );
     }
     // double-check storing
     if ( !masterPasswordCheckAgainstDb() )
@@ -610,7 +610,7 @@ bool QgsAuthManager::verifyMasterPassword( const QString &compare )
     }
     else
     {
-      QgsDebugMsg( "Master password: verified against hash in database" );
+      QgsDebugMsg( QStringLiteral( "Master password: verified against hash in database" ) );
       emit masterPasswordVerified( true );
     }
   }
@@ -643,7 +643,7 @@ bool QgsAuthManager::resetMasterPassword( const QString &newpass, const QString 
   if ( !backupAuthenticationDatabase( &dbbackup ) )
     return false;
 
-  QgsDebugMsg( "Master password reset: backed up current database" );
+  QgsDebugMsg( QStringLiteral( "Master password reset: backed up current database" ) );
 
   // create new database and connection
   authDatabaseConnection();
@@ -665,7 +665,7 @@ bool QgsAuthManager::resetMasterPassword( const QString &newpass, const QString 
   }
   if ( ok )
   {
-    QgsDebugMsg( "Master password reset: cleared current password from database" );
+    QgsDebugMsg( QStringLiteral( "Master password reset: cleared current password from database" ) );
   }
 
   // mMasterPass empty, set new password (don't verify, since not stored yet)
@@ -681,7 +681,7 @@ bool QgsAuthManager::resetMasterPassword( const QString &newpass, const QString 
   }
   if ( ok )
   {
-    QgsDebugMsg( "Master password reset: stored new password in database" );
+    QgsDebugMsg( QStringLiteral( "Master password reset: stored new password in database" ) );
   }
 
   // verify it stored password properly
@@ -703,7 +703,7 @@ bool QgsAuthManager::resetMasterPassword( const QString &newpass, const QString 
   }
   if ( ok )
   {
-    QgsDebugMsg( "Master password reset: re-encrypted configs in database" );
+    QgsDebugMsg( QStringLiteral( "Master password reset: re-encrypted configs in database" ) );
   }
 
   // verify it all worked
@@ -745,7 +745,7 @@ bool QgsAuthManager::resetMasterPassword( const QString &newpass, const QString 
     QFile::rename( dbbackup, authenticationDatabasePath() );
     mMasterPass = prevpass;
     authDatabaseConnection();
-    QgsDebugMsg( "Master password reset FAILED: reinstated previous password and database" );
+    QgsDebugMsg( QStringLiteral( "Master password reset FAILED: reinstated previous password and database" ) );
 
     // assign error db backup
     if ( backuppath )
@@ -770,7 +770,7 @@ bool QgsAuthManager::resetMasterPassword( const QString &newpass, const QString 
       *backuppath = dbbackup;
   }
 
-  QgsDebugMsg( "Master password reset: SUCCESS" );
+  QgsDebugMsg( QStringLiteral( "Master password reset: SUCCESS" ) );
   emit authDatabaseChanged();
   return true;
 }
@@ -938,7 +938,7 @@ void QgsAuthManager::updateConfigAuthMethods()
 
   if ( query.isActive() )
   {
-    QgsDebugMsg( "Synching existing auth config and their auth methods" );
+    QgsDebugMsg( QStringLiteral( "Synching existing auth config and their auth methods" ) );
     mConfigAuthMethods.clear();
     QStringList cfgmethods;
     while ( query.next() )
@@ -1381,7 +1381,7 @@ bool QgsAuthManager::eraseAuthenticationDatabase( bool backup, QString *backuppa
 
   mMasterPass = QString();
 
-  QgsDebugMsg( "Creating Auth db through QSqlDatabase initial connection" );
+  QgsDebugMsg( QStringLiteral( "Creating Auth db through QSqlDatabase initial connection" ) );
 
   QSqlDatabase authConn = authDatabaseConnection();
   if ( !authConn.isValid() || !authConn.isOpen() )
@@ -1686,12 +1686,12 @@ bool QgsAuthManager::storeCertIdentity( const QSslCertificate &cert, const QSslK
   QMutexLocker locker( mMutex );
   if ( cert.isNull() )
   {
-    QgsDebugMsg( "Passed certificate is null" );
+    QgsDebugMsg( QStringLiteral( "Passed certificate is null" ) );
     return false;
   }
   if ( key.isNull() )
   {
-    QgsDebugMsg( "Passed private key is null" );
+    QgsDebugMsg( QStringLiteral( "Passed private key is null" ) );
     return false;
   }
 
@@ -1911,7 +1911,7 @@ bool QgsAuthManager::removeCertIdentity( const QString &id )
   QMutexLocker locker( mMutex );
   if ( id.isEmpty() )
   {
-    QgsDebugMsg( "Passed bundle ID is empty" );
+    QgsDebugMsg( QStringLiteral( "Passed bundle ID is empty" ) );
     return false;
   }
 
@@ -1939,7 +1939,7 @@ bool QgsAuthManager::storeSslCertCustomConfig( const QgsAuthConfigSslServer &con
   QMutexLocker locker( mMutex );
   if ( config.isNull() )
   {
-    QgsDebugMsg( "Passed config is null" );
+    QgsDebugMsg( QStringLiteral( "Passed config is null" ) );
     return false;
   }
 
@@ -1983,7 +1983,7 @@ const QgsAuthConfigSslServer QgsAuthManager::sslCertCustomConfig( const QString 
 
   if ( id.isEmpty() || hostport.isEmpty() )
   {
-    QgsDebugMsg( "Passed config ID or host:port is empty" );
+    QgsDebugMsg( QStringLiteral( "Passed config ID or host:port is empty" ) );
     return config;
   }
 
@@ -2025,7 +2025,7 @@ const QgsAuthConfigSslServer QgsAuthManager::sslCertCustomConfigByHost( const QS
 
   if ( hostport.isEmpty() )
   {
-    QgsDebugMsg( "Passed host:port is empty" );
+    QgsDebugMsg( QStringLiteral( "Passed host:port is empty" ) );
     return config;
   }
 
@@ -2091,7 +2091,7 @@ bool QgsAuthManager::existsSslCertCustomConfig( const QString &id, const QString
   QMutexLocker locker( mMutex );
   if ( id.isEmpty() || hostport.isEmpty() )
   {
-    QgsDebugMsg( "Passed config ID or host:port is empty" );
+    QgsDebugMsg( QStringLiteral( "Passed config ID or host:port is empty" ) );
     return false;
   }
 
@@ -2129,7 +2129,7 @@ bool QgsAuthManager::removeSslCertCustomConfig( const QString &id, const QString
   QMutexLocker locker( mMutex );
   if ( id.isEmpty() || hostport.isEmpty() )
   {
-    QgsDebugMsg( "Passed config ID or host:port is empty" );
+    QgsDebugMsg( QStringLiteral( "Passed config ID or host:port is empty" ) );
     return false;
   }
 
@@ -2165,7 +2165,7 @@ void QgsAuthManager::dumpIgnoredSslErrorsCache_()
   QMutexLocker locker( mMutex );
   if ( !mIgnoredSslErrorsCache.isEmpty() )
   {
-    QgsDebugMsg( "Ignored SSL errors cache items:" );
+    QgsDebugMsg( QStringLiteral( "Ignored SSL errors cache items:" ) );
     QHash<QString, QSet<QSslError::SslError> >::const_iterator i = mIgnoredSslErrorsCache.constBegin();
     while ( i != mIgnoredSslErrorsCache.constEnd() )
     {
@@ -2180,7 +2180,7 @@ void QgsAuthManager::dumpIgnoredSslErrorsCache_()
   }
   else
   {
-    QgsDebugMsg( "Ignored SSL errors cache EMPTY" );
+    QgsDebugMsg( QStringLiteral( "Ignored SSL errors cache EMPTY" ) );
   }
 }
 
@@ -2189,7 +2189,7 @@ bool QgsAuthManager::updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigS
   QMutexLocker locker( mMutex );
   if ( config.isNull() )
   {
-    QgsDebugMsg( "Passed config is null" );
+    QgsDebugMsg( QStringLiteral( "Passed config is null" ) );
     return false;
   }
 
@@ -2231,7 +2231,7 @@ bool QgsAuthManager::updateIgnoredSslErrorsCache( const QString &shahostport, co
 
   if ( errors.isEmpty() )
   {
-    QgsDebugMsg( "Passed errors list empty" );
+    QgsDebugMsg( QStringLiteral( "Passed errors list empty" ) );
     return false;
   }
 
@@ -2246,7 +2246,7 @@ bool QgsAuthManager::updateIgnoredSslErrorsCache( const QString &shahostport, co
 
   if ( errs.isEmpty() )
   {
-    QgsDebugMsg( "Passed errors list does not contain errors" );
+    QgsDebugMsg( QStringLiteral( "Passed errors list does not contain errors" ) );
     return false;
   }
 
@@ -2268,7 +2268,7 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
 
   if ( !authDbQuery( &query ) )
   {
-    QgsDebugMsg( "Rebuild of ignored SSL errors cache FAILED" );
+    QgsDebugMsg( QStringLiteral( "Rebuild of ignored SSL errors cache FAILED" ) );
     return false;
   }
 
@@ -2308,12 +2308,12 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
   {
     mIgnoredSslErrorsCache.clear();
     mIgnoredSslErrorsCache = nextcache;
-    QgsDebugMsg( "Rebuild of ignored SSL errors cache SUCCEEDED" );
+    QgsDebugMsg( QStringLiteral( "Rebuild of ignored SSL errors cache SUCCEEDED" ) );
     dumpIgnoredSslErrorsCache_();
     return true;
   }
 
-  QgsDebugMsg( "Rebuild of ignored SSL errors cache SAME AS BEFORE" );
+  QgsDebugMsg( QStringLiteral( "Rebuild of ignored SSL errors cache SAME AS BEFORE" ) );
   dumpIgnoredSslErrorsCache_();
   return true;
 }
@@ -2324,7 +2324,7 @@ bool QgsAuthManager::storeCertAuthorities( const QList<QSslCertificate> &certs )
   QMutexLocker locker( mMutex );
   if ( certs.isEmpty() )
   {
-    QgsDebugMsg( "Passed certificate list has no certs" );
+    QgsDebugMsg( QStringLiteral( "Passed certificate list has no certs" ) );
     return false;
   }
 
@@ -2343,7 +2343,7 @@ bool QgsAuthManager::storeCertAuthority( const QSslCertificate &cert )
   // as user may want to ignore that SSL connection error
   if ( cert.isNull() )
   {
-    QgsDebugMsg( "Passed certificate is null" );
+    QgsDebugMsg( QStringLiteral( "Passed certificate is null" ) );
     return false;
   }
 
@@ -2411,7 +2411,7 @@ bool QgsAuthManager::existsCertAuthority( const QSslCertificate &cert )
   QMutexLocker locker( mMutex );
   if ( cert.isNull() )
   {
-    QgsDebugMsg( "Passed certificate is null" );
+    QgsDebugMsg( QStringLiteral( "Passed certificate is null" ) );
     return false;
   }
 
@@ -2449,7 +2449,7 @@ bool QgsAuthManager::removeCertAuthority( const QSslCertificate &cert )
   QMutexLocker locker( mMutex );
   if ( cert.isNull() )
   {
-    QgsDebugMsg( "Passed certificate is null" );
+    QgsDebugMsg( QStringLiteral( "Passed certificate is null" ) );
     return false;
   }
 
@@ -2565,7 +2565,7 @@ bool QgsAuthManager::storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthC
   QMutexLocker locker( mMutex );
   if ( cert.isNull() )
   {
-    QgsDebugMsg( "Passed certificate is null" );
+    QgsDebugMsg( QStringLiteral( "Passed certificate is null" ) );
     return false;
   }
 
@@ -2604,7 +2604,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::certTrustPolicy( const QSslCer
   QMutexLocker locker( mMutex );
   if ( cert.isNull() )
   {
-    QgsDebugMsg( "Passed certificate is null" );
+    QgsDebugMsg( QStringLiteral( "Passed certificate is null" ) );
     return QgsAuthCertUtils::DefaultTrust;
   }
 
@@ -2642,7 +2642,7 @@ bool QgsAuthManager::removeCertTrustPolicies( const QList<QSslCertificate> &cert
   QMutexLocker locker( mMutex );
   if ( certs.empty() )
   {
-    QgsDebugMsg( "Passed certificate list has no certs" );
+    QgsDebugMsg( QStringLiteral( "Passed certificate list has no certs" ) );
     return false;
   }
 
@@ -2659,7 +2659,7 @@ bool QgsAuthManager::removeCertTrustPolicy( const QSslCertificate &cert )
   QMutexLocker locker( mMutex );
   if ( cert.isNull() )
   {
-    QgsDebugMsg( "Passed certificate is null" );
+    QgsDebugMsg( QStringLiteral( "Passed certificate is null" ) );
     return false;
   }
 
@@ -2741,7 +2741,7 @@ bool QgsAuthManager::rebuildCertTrustCache()
 
   if ( !authDbQuery( &query ) )
   {
-    QgsDebugMsg( "Rebuild of cert trust policy cache FAILED" );
+    QgsDebugMsg( QStringLiteral( "Rebuild of cert trust policy cache FAILED" ) );
     return false;
   }
 
@@ -2761,7 +2761,7 @@ bool QgsAuthManager::rebuildCertTrustCache()
     }
   }
 
-  QgsDebugMsg( "Rebuild of cert trust policy cache SUCCEEDED" );
+  QgsDebugMsg( QStringLiteral( "Rebuild of cert trust policy cache SUCCEEDED" ) );
   return true;
 }
 
@@ -2829,7 +2829,7 @@ bool QgsAuthManager::rebuildTrustedCaCertsCache()
 {
   QMutexLocker locker( mMutex );
   mTrustedCaCertsCache = trustedCaCerts();
-  QgsDebugMsg( "Rebuilt trusted cert authorities cache" );
+  QgsDebugMsg( QStringLiteral( "Rebuilt trusted cert authorities cache" ) );
   // TODO: add some error trapping for the operation
   return true;
 }
@@ -2915,7 +2915,7 @@ void QgsAuthManager::tryToStartDbErase()
   if ( mScheduledDbEraseRequestCount >= trycutoff )
   {
     setScheduledAuthDatabaseErase( false );
-    QgsDebugMsg( "authDatabaseEraseRequest emitting/scheduling canceled" );
+    QgsDebugMsg( QStringLiteral( "authDatabaseEraseRequest emitting/scheduling canceled" ) );
     return;
   }
   else
@@ -2932,10 +2932,10 @@ void QgsAuthManager::tryToStartDbErase()
 
     mMutex->unlock();
 
-    QgsDebugMsg( "authDatabaseEraseRequest emitted" );
+    QgsDebugMsg( QStringLiteral( "authDatabaseEraseRequest emitted" ) );
     return;
   }
-  QgsDebugMsg( "authDatabaseEraseRequest emit skipped" );
+  QgsDebugMsg( QStringLiteral( "authDatabaseEraseRequest emit skipped" ) );
 }
 
 

@@ -827,7 +827,7 @@ void QgsLayoutLegendWidget::resetLayerNodeToDefaults()
 
 void QgsLayoutLegendWidget::mCountToolButton_clicked( bool checked )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
   if ( !mLegend )
   {
     return;

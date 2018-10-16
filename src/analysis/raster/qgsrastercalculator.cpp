@@ -169,7 +169,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
       //write scanline to the dataset
       if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, mNumOutputColumns, 1, calcData, mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugMsg( "RasterIO error!" );
+        QgsDebugMsg( QStringLiteral( "RasterIO error!" ) );
       }
 
       delete[] calcData;

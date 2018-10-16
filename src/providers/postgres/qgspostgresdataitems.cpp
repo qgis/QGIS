@@ -499,7 +499,7 @@ QString QgsPGLayerItem::createUri()
 
   if ( !connItem )
   {
-    QgsDebugMsg( "connection item not found." );
+    QgsDebugMsg( QStringLiteral( "connection item not found." ) );
     return QString();
   }
 

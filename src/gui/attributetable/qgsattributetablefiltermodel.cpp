@@ -415,7 +415,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   mFilteredFeatures.clear();
   if ( !layer()->renderer() )
   {
-    QgsDebugMsg( "Cannot get renderer" );
+    QgsDebugMsg( QStringLiteral( "Cannot get renderer" ) );
     return;
   }
 
@@ -424,7 +424,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   const QgsMapSettings &ms = mCanvas->mapSettings();
   if ( !layer()->isInScaleRange( ms.scale() ) )
   {
-    QgsDebugMsg( "Out of scale limits" );
+    QgsDebugMsg( QStringLiteral( "Out of scale limits" ) );
   }
   else
   {

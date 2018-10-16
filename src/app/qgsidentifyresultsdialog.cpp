@@ -239,7 +239,7 @@ QSize QgsIdentifyResultsWebView::sizeHint() const
   }
   else
   {
-    QgsDebugMsg( "parent not available" );
+    QgsDebugMsg( QStringLiteral( "parent not available" ) );
   }
 
   // Always keep some minimum size, e.g. if page is not yet loaded
@@ -1045,7 +1045,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   QgsRasterLayer *rlayer = rasterLayer( item );
   if ( !vlayer && !rlayer )
   {
-    QgsDebugMsg( "Item does not belong to a layer." );
+    QgsDebugMsg( QStringLiteral( "Item does not belong to a layer." ) );
     return;
   }
 
@@ -1917,7 +1917,7 @@ void QgsIdentifyResultsDialog::copyFeature()
 
   if ( !item ) // should not happen
   {
-    QgsDebugMsg( "Selected item is not feature" );
+    QgsDebugMsg( QStringLiteral( "Selected item is not feature" ) );
     return;
   }
 
@@ -1934,7 +1934,7 @@ void QgsIdentifyResultsDialog::toggleFeatureSelection()
 
   if ( !item ) // should not happen
   {
-    QgsDebugMsg( "Selected item is not feature" );
+    QgsDebugMsg( QStringLiteral( "Selected item is not feature" ) );
     return;
   }
 
@@ -1953,7 +1953,7 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
   QComboBox *combo = qobject_cast<QComboBox *>( sender() );
   if ( !combo )
   {
-    QgsDebugMsg( "sender is not QComboBox" );
+    QgsDebugMsg( QStringLiteral( "sender is not QComboBox" ) );
     return;
   }
 
@@ -1962,7 +1962,7 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
   QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( combo->itemData( index, Qt::UserRole + 1 ).value<QObject *>() );
   if ( !layer )
   {
-    QgsDebugMsg( "cannot get raster layer" );
+    QgsDebugMsg( QStringLiteral( "cannot get raster layer" ) );
     return;
   }
 
@@ -1973,7 +1973,7 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
   QTreeWidgetItem *layItem = layerItem( layer );
   if ( !layItem )
   {
-    QgsDebugMsg( "cannot get layer item" );
+    QgsDebugMsg( QStringLiteral( "cannot get layer item" ) );
     return;
   }
 

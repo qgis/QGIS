@@ -215,7 +215,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   {
     Q_UNUSED( cse );
     // catch exception for 'invalid' point and leave existing selection unchanged
-    QgsDebugMsg( "Caught CRS exception " );
+    QgsDebugMsg( QStringLiteral( "Caught CRS exception " ) );
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "CRS Exception" ),
       QObject::tr( "Selection extends beyond layer's coordinate system" ),

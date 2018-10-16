@@ -131,10 +131,10 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
   QgsPkiConfigBundle *pkibundle = getPkiConfigBundle( authcfg );
   if ( !pkibundle || !pkibundle->isValid() )
   {
-    QgsDebugMsg( "Update URI items FAILED: PKI bundle invalid" );
+    QgsDebugMsg( QStringLiteral( "Update URI items FAILED: PKI bundle invalid" ) );
     return false;
   }
-  QgsDebugMsg( "Update URI items: PKI bundle valid" );
+  QgsDebugMsg( QStringLiteral( "Update URI items: PKI bundle valid" ) );
 
   QString pkiTempFileBase = QStringLiteral( "tmppki_%1.pem" );
 
@@ -247,7 +247,7 @@ void QgsAuthPkcs12Method::updateMethodConfig( QgsAuthMethodConfig &mconfig )
   QMutexLocker locker( &mMutex );
   if ( mconfig.hasConfig( QStringLiteral( "oldconfigstyle" ) ) )
   {
-    QgsDebugMsg( "Updating old style auth method config" );
+    QgsDebugMsg( QStringLiteral( "Updating old style auth method config" ) );
 
     QStringList conflist = mconfig.config( QStringLiteral( "oldconfigstyle" ) ).split( QStringLiteral( "|||" ) );
     mconfig.setConfig( QStringLiteral( "bundlepath" ), conflist.at( 0 ) );

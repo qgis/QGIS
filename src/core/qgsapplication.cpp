@@ -368,7 +368,7 @@ bool QgsApplication::notify( QObject *receiver, QEvent *event )
   }
   catch ( ... )
   {
-    QgsDebugMsg( "Caught unhandled unknown exception" );
+    QgsDebugMsg( QStringLiteral( "Caught unhandled unknown exception" ) );
     if ( qApp->thread() == QThread::currentThread() )
       QMessageBox::critical( activeWindow(), tr( "Exception" ), tr( "unknown exception" ) );
   }
@@ -1437,7 +1437,7 @@ void QgsApplication::applyGdalSkippedDrivers()
 {
   ABISYM( mGdalSkipList ).removeDuplicates();
   QString myDriverList = ABISYM( mGdalSkipList ).join( QStringLiteral( " " ) );
-  QgsDebugMsg( "Gdal Skipped driver list set to:" );
+  QgsDebugMsg( QStringLiteral( "Gdal Skipped driver list set to:" ) );
   QgsDebugMsg( myDriverList );
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
   GDALAllRegister(); //to update driver list and skip missing ones

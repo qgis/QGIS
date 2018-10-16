@@ -331,7 +331,7 @@ QgsAbstractFeatureSource::~QgsAbstractFeatureSource()
   while ( !mActiveIterators.empty() )
   {
     QgsAbstractFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsg( "closing active iterator" );
+    QgsDebugMsg( QStringLiteral( "closing active iterator" ) );
     it->close();
   }
 }

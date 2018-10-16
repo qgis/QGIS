@@ -40,7 +40,7 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
 
     if ( uri[i] == '=' )
     {
-      QgsDebugMsg( "parameter name expected before =" );
+      QgsDebugMsg( QStringLiteral( "parameter name expected before =" ) );
       i++;
       continue;
     }
@@ -102,7 +102,7 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
 
           if ( i == uri.length() )
           {
-            QgsDebugMsg( "closing parenthesis missing" );
+            QgsDebugMsg( QStringLiteral( "closing parenthesis missing" ) );
           }
 
           mGeometryColumn = uri.mid( start, i - start );
@@ -154,7 +154,7 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
       }
       else if ( pname == QLatin1String( "connect_timeout" ) )
       {
-        QgsDebugMsg( "connection timeout ignored" );
+        QgsDebugMsg( QStringLiteral( "connection timeout ignored" ) );
       }
       else if ( pname == QLatin1String( "dbname" ) )
       {
@@ -166,7 +166,7 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
       }
       else if ( pname == QLatin1String( "hostaddr" ) )
       {
-        QgsDebugMsg( "database host ip address ignored" );
+        QgsDebugMsg( QStringLiteral( "database host ip address ignored" ) );
       }
       else if ( pname == QLatin1String( "port" ) )
       {
@@ -178,11 +178,11 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
       }
       else if ( pname == QLatin1String( "tty" ) )
       {
-        QgsDebugMsg( "backend debug tty ignored" );
+        QgsDebugMsg( QStringLiteral( "backend debug tty ignored" ) );
       }
       else if ( pname == QLatin1String( "options" ) )
       {
-        QgsDebugMsg( "backend debug options ignored" );
+        QgsDebugMsg( QStringLiteral( "backend debug options ignored" ) );
       }
       else if ( pname == QLatin1String( "sslmode" ) )
       {
@@ -197,11 +197,11 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
       }
       else if ( pname == QLatin1String( "krbsrvname" ) )
       {
-        QgsDebugMsg( "kerberos server name ignored" );
+        QgsDebugMsg( QStringLiteral( "kerberos server name ignored" ) );
       }
       else if ( pname == QLatin1String( "gsslib" ) )
       {
-        QgsDebugMsg( "gsslib ignored" );
+        QgsDebugMsg( QStringLiteral( "gsslib ignored" ) );
       }
       else
       {
@@ -408,7 +408,7 @@ QString QgsDataSourceUri::getValue( const QString &uri, int &i )
     {
       if ( i == uri.length() )
       {
-        QgsDebugMsg( "unterminated quoted string in connection info string" );
+        QgsDebugMsg( QStringLiteral( "unterminated quoted string in connection info string" ) );
         return pval;
       }
 

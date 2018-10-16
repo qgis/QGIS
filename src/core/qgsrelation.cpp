@@ -364,7 +364,7 @@ void QgsRelation::updateRelationStatus()
 
   if ( d->mRelationId.isEmpty() )
   {
-    QgsDebugMsg( "Invalid relation: no ID" );
+    QgsDebugMsg( QStringLiteral( "Invalid relation: no ID" ) );
     d->mValid = false;
   }
   else
@@ -383,7 +383,7 @@ void QgsRelation::updateRelationStatus()
     {
       if ( d->mFieldPairs.count() < 1 )
       {
-        QgsDebugMsgLevel( "Invalid relation: no pair of field is specified.", 4 );
+        QgsDebugMsgLevel( QStringLiteral( "Invalid relation: no pair of field is specified." ), 4 );
         d->mValid = false;
       }
 

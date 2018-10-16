@@ -1387,7 +1387,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 #endif
   profiler->endGroup();
 
-  QgsDebugMsg( "PROFILE TIMES" );
+  QgsDebugMsg( QStringLiteral( "PROFILE TIMES" ) );
   QgsDebugMsg( QStringLiteral( "PROFILE TIMES TOTAL - %1 " ).arg( profiler->totalTime() ) );
 #ifdef QGISDEBUG
   QList<QPair<QString, double> > profileTimes = profiler->profileTimes();
@@ -1596,7 +1596,7 @@ void QgisApp::dropEvent( QDropEvent *event )
     // [pzion 20150805] Work around
     if ( fileName.startsWith( "/.file/id=" ) )
     {
-      QgsDebugMsg( "Mac dropped URL with /.file/id= (converting)" );
+      QgsDebugMsg( QStringLiteral( "Mac dropped URL with /.file/id= (converting)" ) );
       CFStringRef relCFStringRef =
         CFStringCreateWithCString(
           kCFAllocatorDefault,
@@ -4292,7 +4292,7 @@ void QgisApp::restoreWindowState()
 
   if ( !restoreState( settings.value( QStringLiteral( "UI/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultUIstate ), sizeof defaultUIstate ) ).toByteArray() ) )
   {
-    QgsDebugMsg( "restore of UI state failed" );
+    QgsDebugMsg( QStringLiteral( "restore of UI state failed" ) );
   }
 
   if ( settings.value( QStringLiteral( "UI/hidebrowser" ), false ).toBool() )
@@ -4305,7 +4305,7 @@ void QgisApp::restoreWindowState()
   // restore window geometry
   if ( !restoreGeometry( settings.value( QStringLiteral( "UI/geometry" ) ).toByteArray() ) )
   {
-    QgsDebugMsg( "restore of UI geometry failed" );
+    QgsDebugMsg( QStringLiteral( "restore of UI geometry failed" ) );
     // default to 80% of screen size, at 10% from top left corner
     resize( QDesktopWidget().availableGeometry( this ).size() * 0.8 );
     QSize pos = QDesktopWidget().availableGeometry( this ).size() * 0.1;
@@ -5778,7 +5778,7 @@ bool QgisApp::addProject( const QString &projectFile )
   }
 
   mMapCanvas->updateScale();
-  QgsDebugMsg( "Scale restored..." );
+  QgsDebugMsg( QStringLiteral( "Scale restored..." ) );
 
   mActionFilterLegend->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "Legend" ), QStringLiteral( "filterByMap" ) ) );
 
@@ -6655,7 +6655,7 @@ void QgisApp::stopRendering()
 //reimplements method from base (gui) class
 void QgisApp::hideAllLayers()
 {
-  QgsDebugMsg( "hiding all layers!" );
+  QgsDebugMsg( QStringLiteral( "hiding all layers!" ) );
   mLayerTreeView->layerTreeModel()->rootGroup()->setItemVisibilityCheckedRecursive( false );
 
 }
@@ -6664,14 +6664,14 @@ void QgisApp::hideAllLayers()
 // reimplements method from base (gui) class
 void QgisApp::showAllLayers()
 {
-  QgsDebugMsg( "Showing all layers!" );
+  QgsDebugMsg( QStringLiteral( "Showing all layers!" ) );
   mLayerTreeView->layerTreeModel()->rootGroup()->setItemVisibilityCheckedRecursive( true );
 }
 
 //reimplements method from base (gui) class
 void QgisApp::hideSelectedLayers()
 {
-  QgsDebugMsg( "hiding selected layers!" );
+  QgsDebugMsg( QStringLiteral( "hiding selected layers!" ) );
 
   Q_FOREACH ( QgsLayerTreeNode *node, mLayerTreeView->selectedNodes() )
   {
@@ -6694,7 +6694,7 @@ void QgisApp::hideDeselectedLayers()
 // reimplements method from base (gui) class
 void QgisApp::showSelectedLayers()
 {
-  QgsDebugMsg( "show selected layers!" );
+  QgsDebugMsg( QStringLiteral( "show selected layers!" ) );
 
   Q_FOREACH ( QgsLayerTreeNode *node, mLayerTreeView->selectedNodes() )
   {
@@ -6710,7 +6710,7 @@ void QgisApp::showSelectedLayers()
 
 void QgisApp::zoomIn()
 {
-  QgsDebugMsg( "Setting map tool to zoomIn" );
+  QgsDebugMsg( QStringLiteral( "Setting map tool to zoomIn" ) );
 
   mMapCanvas->setMapTool( mMapTools.mZoomIn );
 }
@@ -7144,12 +7144,12 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
 
   if ( d.mode() == QgsRasterLayerSaveAsDialog::RawDataMode )
   {
-    QgsDebugMsg( "Writing raw data" );
+    QgsDebugMsg( QStringLiteral( "Writing raw data" ) );
     //QgsDebugMsg( QStringLiteral( "Writing raw data" ).arg( pos ) );
     pipe.reset( new QgsRasterPipe() );
     if ( !pipe->set( rasterLayer->dataProvider()->clone() ) )
     {
-      QgsDebugMsg( "Cannot set pipe provider" );
+      QgsDebugMsg( QStringLiteral( "Cannot set pipe provider" ) );
       return;
     }
 
@@ -7160,7 +7160,7 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
     }
     if ( !pipe->insert( 1, nuller ) )
     {
-      QgsDebugMsg( "Cannot set pipe nuller" );
+      QgsDebugMsg( QStringLiteral( "Cannot set pipe nuller" ) );
       return;
     }
 
@@ -7171,7 +7171,7 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
       projector->setCrs( rasterLayer->crs(), d.outputCrs() );
       if ( !pipe->insert( 2, projector ) )
       {
-        QgsDebugMsg( "Cannot set pipe projector" );
+        QgsDebugMsg( QStringLiteral( "Cannot set pipe projector" ) );
         return;
       }
     }
@@ -7179,12 +7179,12 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
   else // RenderedImageMode
   {
     // clone the whole pipe
-    QgsDebugMsg( "Writing rendered image" );
+    QgsDebugMsg( QStringLiteral( "Writing rendered image" ) );
     pipe.reset( new QgsRasterPipe( *rasterLayer->pipe() ) );
     QgsRasterProjector *projector = pipe->projector();
     if ( !projector )
     {
-      QgsDebugMsg( "Cannot get pipe projector" );
+      QgsDebugMsg( QStringLiteral( "Cannot get pipe projector" ) );
       return;
     }
     projector->setCrs( rasterLayer->crs(), d.outputCrs() );
@@ -8870,7 +8870,7 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
   }
   if ( ! layer->addFeatures( convertedFeatures ) || !layer->commitChanges() )
   {
-    QgsDebugMsg( "Cannot add features or commit changes" );
+    QgsDebugMsg( QStringLiteral( "Cannot add features or commit changes" ) );
     return nullptr;
   }
 
@@ -12720,7 +12720,7 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
   else
     layer = new QgsRasterLayer( uri, baseName, providerKey );
 
-  QgsDebugMsg( "Constructed new layer" );
+  QgsDebugMsg( QStringLiteral( "Constructed new layer" ) );
 
   QgsError error;
   QString title;
@@ -13611,7 +13611,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
   QTimer *timer = reply->findChild<QTimer *>( QStringLiteral( "timeoutTimer" ) );
   if ( timer )
   {
-    QgsDebugMsg( "Stopping network reply timeout" );
+    QgsDebugMsg( QStringLiteral( "Stopping network reply timeout" ) );
     timer->stop();
   }
 
@@ -13678,7 +13678,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
     QTimer *timer = reply->findChild<QTimer *>( QStringLiteral( "timeoutTimer" ) );
     if ( timer )
     {
-      QgsDebugMsg( "Restarting network reply timeout" );
+      QgsDebugMsg( QStringLiteral( "Restarting network reply timeout" ) );
       timer->setSingleShot( true );
       timer->start( s.value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), "60000" ).toInt() );
     }
@@ -13724,7 +13724,7 @@ void QgisApp::eraseAuthenticationDatabase()
     QgsLayerTreeGroup *layertree( QgsProject::instance()->layerTreeRoot() );
     if ( layertree && layertree->customProperty( QStringLiteral( "loading" ) ).toBool() )
     {
-      QgsDebugMsg( "Project loading, skipping auth db erase" );
+      QgsDebugMsg( QStringLiteral( "Project loading, skipping auth db erase" ) );
       QgsApplication::authManager()->setScheduledAuthDatabaseEraseRequestEmitted( false );
       return;
     }

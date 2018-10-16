@@ -327,14 +327,14 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
 {
   if ( !index.isValid() )
   {
-    QgsDebugMsg( "invalid index" );
+    QgsDebugMsg( QStringLiteral( "invalid index" ) );
     return QString();
   }
 
   QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt();
   if ( wkbType == QgsWkbTypes::Unknown )
   {
-    QgsDebugMsg( "unknown geometry type" );
+    QgsDebugMsg( QStringLiteral( "unknown geometry type" ) );
     // no geometry type selected
     return QString();
   }
@@ -345,7 +345,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   if ( !s0.isEmpty() && s0.intersect( s1 ).isEmpty() )
   {
     // no valid primary candidate selected
-    QgsDebugMsg( "no pk candidate selected" );
+    QgsDebugMsg( QStringLiteral( "no pk candidate selected" ) );
     return QString();
   }
 
@@ -363,7 +363,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
     srid.toInt( &ok );
     if ( !ok )
     {
-      QgsDebugMsg( "srid not numeric" );
+      QgsDebugMsg( QStringLiteral( "srid not numeric" ) );
       return QString();
     }
   }

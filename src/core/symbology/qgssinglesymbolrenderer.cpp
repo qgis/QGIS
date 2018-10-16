@@ -178,7 +178,7 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
   QDomElement ruleElem = element.firstChildElement( QStringLiteral( "Rule" ) );
   if ( ruleElem.isNull() )
   {
-    QgsDebugMsg( "no Rule elements found!" );
+    QgsDebugMsg( QStringLiteral( "no Rule elements found!" ) );
     return nullptr;
   }
 

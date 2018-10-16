@@ -717,7 +717,7 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::create( QDomElement &rul
     }
     else
     {
-      QgsDebugMsg( "failed to init a child rule!" );
+      QgsDebugMsg( QStringLiteral( "failed to init a child rule!" ) );
     }
     childRuleElem = childRuleElem.nextSiblingElement( QStringLiteral( "rule" ) );
   }

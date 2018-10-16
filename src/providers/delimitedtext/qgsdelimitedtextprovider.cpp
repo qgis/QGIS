@@ -319,7 +319,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
     messages.append( tr( "File cannot be opened or delimiter parameters are not valid" ) );
     reportErrors( messages );
-    QgsDebugMsg( "Delimited text source invalid - filename or delimiter parameters" );
+    QgsDebugMsg( QStringLiteral( "Delimited text source invalid - filename or delimiter parameters" ) );
     return;
   }
 
@@ -351,7 +351,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   if ( !messages.isEmpty() )
   {
     reportErrors( messages );
-    QgsDebugMsg( "Delimited text source invalid - missing geometry fields" );
+    QgsDebugMsg( QStringLiteral( "Delimited text source invalid - missing geometry fields" ) );
     return;
   }
 
@@ -734,7 +734,7 @@ void QgsDelimitedTextProvider::rescanFile() const
   if ( !messages.isEmpty() )
   {
     reportErrors( messages );
-    QgsDebugMsg( "Delimited text source invalid on rescan - missing geometry fields" );
+    QgsDebugMsg( QStringLiteral( "Delimited text source invalid on rescan - missing geometry fields" ) );
     mValid = false;
     return;
   }

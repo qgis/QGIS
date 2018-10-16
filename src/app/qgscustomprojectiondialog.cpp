@@ -65,7 +65,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   fileInfo.setFile( QgsApplication::qgisSettingsDirPath() );
   if ( !fileInfo.exists() )
   {
-    QgsDebugMsg( "The qgis.db does not exist" );
+    QgsDebugMsg( QStringLiteral( "The qgis.db does not exist" ) );
   }
 
   populateList();
@@ -198,7 +198,7 @@ void  QgsCustomProjectionDialog::insertProjection( const QString &projectionAcro
     {
       if ( srsPreparedStatement.step() == SQLITE_ROW )
       {
-        QgsDebugMsg( "Trying to insert projection" );
+        QgsDebugMsg( QStringLiteral( "Trying to insert projection" ) );
         // We have the result from system srs.db. Now insert into user db.
         sql = "insert into tbl_projection(acronym,name,notes,parameters) values ("
               + QgsSqliteUtils::quotedString( srsPreparedStatement.columnAsText( 0 ) )
@@ -373,7 +373,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
     mCustomCRSparameters[i] = teParameters->toPlainText();
   }
 
-  QgsDebugMsg( "We save the modified CRS." );
+  QgsDebugMsg( QStringLiteral( "We save the modified CRS." ) );
 
   //Check if all CRS are valid:
   QgsCoordinateReferenceSystem CRS;
@@ -409,7 +409,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
       QgsDebugMsg( QStringLiteral( "Error when saving CRS '%1'" ).arg( mCustomCRSnames[i] ) );
     }
   }
-  QgsDebugMsg( "We remove the deleted CRS." );
+  QgsDebugMsg( QStringLiteral( "We remove the deleted CRS." ) );
   for ( int i = 0; i < mDeletedCRSs.size(); ++i )
   {
     saveSuccess &= deleteCrs( mDeletedCRSs[i] );
