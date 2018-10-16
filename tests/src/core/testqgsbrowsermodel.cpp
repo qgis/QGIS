@@ -76,7 +76,7 @@ void TestQgsBrowserModel::testModel()
   // add a root child
   QgsDataCollectionItem *rootItem1 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Test" ), QStringLiteral( "root1" ) );
   QVERIFY( !model.findItem( rootItem1 ).isValid() );
-  model.connectItem( rootItem1 );
+  model.setupItemConnections( rootItem1 );
   model.mRootItems.append( rootItem1 );
 
   QCOMPARE( model.rowCount(), 1 );
@@ -99,7 +99,7 @@ void TestQgsBrowserModel::testModel()
 
   // second root item
   QgsDataCollectionItem *rootItem2 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Test2" ), QStringLiteral( "root2" ) );
-  model.connectItem( rootItem2 );
+  model.setupItemConnections( rootItem2 );
   model.mRootItems.append( rootItem2 );
 
   QCOMPARE( model.rowCount(), 2 );
@@ -115,7 +115,7 @@ void TestQgsBrowserModel::testModel()
 
   // child item
   QgsDataCollectionItem *childItem1 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child1" ), QStringLiteral( "child1" ) );
-  model.connectItem( childItem1 );
+  model.setupItemConnections( childItem1 );
   rootItem1->addChild( childItem1 );
 
   QCOMPARE( model.rowCount(), 2 );
@@ -135,16 +135,13 @@ void TestQgsBrowserModel::testModel()
 
   // more children
   QgsDataCollectionItem *childItem2 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child2" ), QStringLiteral( "child2" ) );
-  model.connectItem( childItem2 );
   rootItem1->addChildItem( childItem2, true );
 
   QgsDataCollectionItem *childItem3 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child3" ), QStringLiteral( "child3" ) );
-  model.connectItem( childItem3 );
   childItem2->addChildItem( childItem3, true );
   QCOMPARE( childItem2->rowCount(), 1 );
 
   QgsDataCollectionItem *childItem4 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child4" ), QStringLiteral( "child4" ) );
-  model.connectItem( childItem4 );
   rootItem2->addChildItem( childItem4, true );
 
   QCOMPARE( model.rowCount(), 2 );
