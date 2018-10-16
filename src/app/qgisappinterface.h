@@ -553,6 +553,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) override;
 
+    QgsBrowserModel *browserModel() override;
 
   private slots:
 
