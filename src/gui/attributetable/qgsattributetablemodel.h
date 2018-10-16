@@ -391,8 +391,14 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     int mExtraColumns = 0;
 
-    //! Edit command or rollback is running
+    //! Flag for massive changes operations, set by edit command or rollback
     bool mBulkEditCommandRunning = false;
+
+    //! Sets the flag for massive changes operations
+    void bulkEditCommandStarted();
+
+    //! Clears the flag for massive changes operations and tells the view to update
+    void bulkEditCommandEnded();
 
     friend class TestQgsAttributeTable;
 

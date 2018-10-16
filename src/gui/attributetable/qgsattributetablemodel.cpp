@@ -66,10 +66,9 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
   connect( layer(), &QgsVectorLayer::attributeDeleted, this, &QgsAttributeTableModel::attributeDeleted );
   connect( layer(), &QgsVectorLayer::updatedFields, this, &QgsAttributeTableModel::updatedFields );
 
-  connect( layer(), &QgsVectorLayer::editCommandStarted, this, [ = ]( const QString ) { mBulkEditCommandRunning = true; } );
-  connect( layer(), &QgsVectorLayer::editCommandEnded, this, [ = ]   { mBulkEditCommandRunning = false; } );
-  connect( layer(), &QgsVectorLayer::beforeRollBack, this, [ = ] { mBulkEditCommandRunning = true; } );
-  connect( layer(), &QgsVectorLayer::afterRollBack, this, [ = ] { mBulkEditCommandRunning = false; } );
+  connect( layer(), &QgsVectorLayer::editCommandStarted, this, &QgsAttributeTableModel::bulkEditCommandStarted );
+  connect( layer(), &QgsVectorLayer::beforeRollBack, this,  &QgsAttributeTableModel::bulkEditCommandStarted );
+  connect( layer(), &QgsVectorLayer::afterRollBack, this, &QgsAttributeTableModel::bulkEditCommandEnded );
 
   connect( layer(), &QgsVectorLayer::editCommandEnded, this, &QgsAttributeTableModel::editCommandEnded );
   connect( mLayerCache, &QgsVectorLayerCache::attributeValueChanged, this, &QgsAttributeTableModel::attributeValueChanged );
@@ -263,6 +262,7 @@ void QgsAttributeTableModel::editCommandEnded()
   // do not do reload(...) due would trigger (dataChanged) row sort
   // giving issue: https://issues.qgis.org/issues/15976
   mChangedCellBounds = QRect();
+  bulkEditCommandEnded( );
 }
 
 void QgsAttributeTableModel::attributeDeleted( int idx )
@@ -805,6 +805,18 @@ bool QgsAttributeTableModel::fieldIsEditable( const QgsVectorLayer &layer, int f
   return ( layer.isEditable() &&
            !layer.editFormConfig().readOnly( fieldIndex ) &&
            ( ( layer.dataProvider() && layer.dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) || FID_IS_NEW( fid ) ) );
+}
+
+void QgsAttributeTableModel::bulkEditCommandStarted()
+{
+  mBulkEditCommandRunning = true;
+}
+
+void QgsAttributeTableModel::bulkEditCommandEnded()
+{
+  // Invalidate the whole model
+  mBulkEditCommandRunning = false;
+  emit dataChanged( createIndex( 0, 0 ), createIndex( rowCount() - 1, columnCount() - 1 ) );
 }
 
 void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
