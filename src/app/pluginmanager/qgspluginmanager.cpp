@@ -1401,7 +1401,7 @@ void QgsPluginManager::buttonInstallFromZip_clicked()
   if ( !showInstallFromZipWarning || msgbox.result() == QMessageBox::Yes )
   {
     QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installFromZipFile(r'%1')" ).arg( mZipFileWidget->filePath() ) );
-    mZipFileWidget->setFilePath( "" );
+    mZipFileWidget->setFilePath( QLatin1String( "" ) );
   }
 }
 

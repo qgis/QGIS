@@ -87,7 +87,7 @@ QgsRectangle QgsMapToolSelectUtils::expandSelectRectangle( QgsPointXY mapPoint, 
   return QgsRectangle( ll, ur );
 }
 
-void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers )
+void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qt::KeyboardModifiers modifiers )
 {
   QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
   if ( modifiers & Qt::ShiftModifier && modifiers & Qt::ControlModifier )
@@ -101,7 +101,7 @@ void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const 
   setSelectedFeatures( canvas, selectGeometry, behavior, doContains );
 }
 
-void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers )
+void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qt::KeyboardModifiers modifiers )
 {
   QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
   if ( !vlayer )

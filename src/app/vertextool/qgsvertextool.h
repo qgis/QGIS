@@ -198,13 +198,13 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
      * Initialize rectangle that is being dragged to select vertices.
      * Argument point0 is in screen coordinates.
      */
-    void startSelectionRect( const QPoint &point0 );
+    void startSelectionRect( QPoint point0 );
 
     /**
      * Update bottom-right corner of the existing selection rectangle.
      * Argument point1 is in screen coordinates.
      */
-    void updateSelectionRect( const QPoint &point1 );
+    void updateSelectionRect( QPoint point1 );
 
     void stopSelectionRect();
 

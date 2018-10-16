@@ -97,9 +97,9 @@ QString Qgs3DUtils::altClampingToString( Qgs3DTypes::AltitudeClamping altClamp )
 
 Qgs3DTypes::AltitudeClamping Qgs3DUtils::altClampingFromString( const QString &str )
 {
-  if ( str == "absolute" )
+  if ( str == QLatin1String( "absolute" ) )
     return Qgs3DTypes::AltClampAbsolute;
-  else if ( str == "terrain" )
+  else if ( str == QLatin1String( "terrain" ) )
     return Qgs3DTypes::AltClampTerrain;
   else   // "relative"  (default)
     return Qgs3DTypes::AltClampRelative;
@@ -119,7 +119,7 @@ QString Qgs3DUtils::altBindingToString( Qgs3DTypes::AltitudeBinding altBind )
 
 Qgs3DTypes::AltitudeBinding Qgs3DUtils::altBindingFromString( const QString &str )
 {
-  if ( str == "vertex" )
+  if ( str == QLatin1String( "vertex" ) )
     return Qgs3DTypes::AltBindVertex;
   else  // "centroid"  (default)
     return Qgs3DTypes::AltBindCentroid;
@@ -227,6 +227,7 @@ QString Qgs3DUtils::matrix4x4toString( const QMatrix4x4 &m )
 {
   const float *d = m.constData();
   QStringList elems;
+  elems.reserve( 16 );
   for ( int i = 0; i < 16; ++i )
     elems << QString::number( d[i] );
   return elems.join( ' ' );
@@ -289,7 +290,7 @@ QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLa
  * qt3d /src/threed/painting/qglpainter.cpp
  * no changes in the code
  */
-static inline uint outcode( const QVector4D &v )
+static inline uint outcode( QVector4D v )
 {
   // For a discussion of outcodes see pg 388 Dunn & Parberry.
   // For why you can't just test if the point is in a bounding box

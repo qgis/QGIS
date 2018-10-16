@@ -421,7 +421,7 @@ void QgsMapToolSelectionHandler::deleteDistanceWidget()
   mDistanceWidget = nullptr;
 }
 
-void QgsMapToolSelectionHandler::radiusValueEntered( const double &radius, const Qt::KeyboardModifiers &modifiers )
+void QgsMapToolSelectionHandler::radiusValueEntered( double radius, Qt::KeyboardModifiers modifiers )
 {
   if ( !mSelectionRubberBand )
     return;
@@ -439,7 +439,7 @@ void QgsMapToolSelectionHandler::cancel()
   mSelectionActive = false;
 }
 
-void QgsMapToolSelectionHandler::updateRadiusRubberband( const double &radius )
+void QgsMapToolSelectionHandler::updateRadiusRubberband( double radius )
 {
   if ( !mSelectionRubberBand )
     initRubberBand();

@@ -107,30 +107,30 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
   switch ( cboShape->currentIndex() )
   {
     case 0:  // sphere
-      spinRadius->setValue( vm["radius"].toDouble() );
+      spinRadius->setValue( vm[QStringLiteral( "radius" )].toDouble() );
       break;
     case 1:  // cylinder
-      spinRadius->setValue( vm["radius"].toDouble() );
-      spinLength->setValue( vm["length"].toDouble() );
+      spinRadius->setValue( vm[QStringLiteral( "radius" )].toDouble() );
+      spinLength->setValue( vm[QStringLiteral( "length" )].toDouble() );
       break;
     case 2:  // cube
-      spinSize->setValue( vm["size"].toDouble() );
+      spinSize->setValue( vm[QStringLiteral( "size" )].toDouble() );
       break;
     case 3:  // cone
-      spinTopRadius->setValue( vm["topRadius"].toDouble() );
-      spinBottomRadius->setValue( vm["bottomRadius"].toDouble() );
-      spinLength->setValue( vm["length"].toDouble() );
+      spinTopRadius->setValue( vm[QStringLiteral( "topRadius" )].toDouble() );
+      spinBottomRadius->setValue( vm[QStringLiteral( "bottomRadius" )].toDouble() );
+      spinLength->setValue( vm[QStringLiteral( "length" )].toDouble() );
       break;
     case 4:  // plane
-      spinSize->setValue( vm["size"].toDouble() );
+      spinSize->setValue( vm[QStringLiteral( "size" )].toDouble() );
       break;
     case 5:  // torus
-      spinRadius->setValue( vm["radius"].toDouble() );
-      spinMinorRadius->setValue( vm["minorRadius"].toDouble() );
+      spinRadius->setValue( vm[QStringLiteral( "radius" )].toDouble() );
+      spinMinorRadius->setValue( vm[QStringLiteral( "minorRadius" )].toDouble() );
       break;
     case 6:  // 3d model
-      lineEditModel->setText( vm["model"].toString() );
-      bool overwriteMaterial = vm["overwriteMaterial"].toBool();
+      lineEditModel->setText( vm[QStringLiteral( "model" )].toString() );
+      bool overwriteMaterial = vm[QStringLiteral( "overwriteMaterial" )].toBool();
       widgetMaterial->setEnabled( overwriteMaterial );
       cbOverwriteMaterial->setChecked( overwriteMaterial );
       break;
@@ -172,30 +172,30 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
   switch ( cboShape->currentIndex() )
   {
     case 0:  // sphere
-      vm["radius"] = spinRadius->value();
+      vm[QStringLiteral( "radius" )] = spinRadius->value();
       break;
     case 1:  // cylinder
-      vm["radius"] = spinRadius->value();
-      vm["length"] = spinLength->value();
+      vm[QStringLiteral( "radius" )] = spinRadius->value();
+      vm[QStringLiteral( "length" )] = spinLength->value();
       break;
     case 2:  // cube
-      vm["size"] = spinSize->value();
+      vm[QStringLiteral( "size" )] = spinSize->value();
       break;
     case 3:  // cone
-      vm["topRadius"] = spinTopRadius->value();
-      vm["bottomRadius"] = spinBottomRadius->value();
-      vm["length"] = spinLength->value();
+      vm[QStringLiteral( "topRadius" )] = spinTopRadius->value();
+      vm[QStringLiteral( "bottomRadius" )] = spinBottomRadius->value();
+      vm[QStringLiteral( "length" )] = spinLength->value();
       break;
     case 4:  // plane
-      vm["size"] = spinSize->value();
+      vm[QStringLiteral( "size" )] = spinSize->value();
       break;
     case 5:  // torus
-      vm["radius"] = spinRadius->value();
-      vm["minorRadius"] = spinMinorRadius->value();
+      vm[QStringLiteral( "radius" )] = spinRadius->value();
+      vm[QStringLiteral( "minorRadius" )] = spinMinorRadius->value();
       break;
     case 6:  // model
-      vm["model"] = lineEditModel->text();
-      vm["overwriteMaterial"] = cbOverwriteMaterial->isChecked();
+      vm[QStringLiteral( "model" )] = lineEditModel->text();
+      vm[QStringLiteral( "overwriteMaterial" )] = cbOverwriteMaterial->isChecked();
       break;
   }
 

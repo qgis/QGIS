@@ -44,6 +44,8 @@ class QgsTerrainTileEntity;
  */
 class QgsTerrainTileLoader : public QgsChunkLoader
 {
+    Q_OBJECT
+
   public:
     //! Constructs loader for a chunk node
     QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *mNode );

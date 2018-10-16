@@ -54,7 +54,7 @@ QgsChunkNode::~QgsChunkNode()
     delete mChildren[i];
 }
 
-bool QgsChunkNode::allChildChunksResident( const QTime &currentTime ) const
+bool QgsChunkNode::allChildChunksResident( QTime currentTime ) const
 {
   for ( int i = 0; i < 4; ++i )
   {

@@ -22,7 +22,7 @@
 
 QgsGeometryOverlapCheck::QgsGeometryOverlapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )
-  , mOverlapThresholdMapUnits( configurationValue<double>( "maxOverlapArea" ) )
+  , mOverlapThresholdMapUnits( configurationValue<double>( QStringLiteral( "maxOverlapArea" ) ) )
 
 {
 

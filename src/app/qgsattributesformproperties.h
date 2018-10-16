@@ -266,7 +266,7 @@ class DnDTree : public QTreeWidget
 
 
     Type type() const;
-    void setType( const Type &value );
+    void setType( DnDTree::Type value );
 
   protected:
     void dragMoveEvent( QDragMoveEvent *event ) override;

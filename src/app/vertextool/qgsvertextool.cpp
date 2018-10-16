@@ -1888,7 +1888,7 @@ void QgsVertexTool::highlightAdjacentVertex( double offset )
   zoomToVertex( vertex );  // make sure the vertex is visible
 }
 
-void QgsVertexTool::startSelectionRect( const QPoint &point0 )
+void QgsVertexTool::startSelectionRect( QPoint point0 )
 {
   Q_ASSERT( !mSelectionRect );
   mSelectionRect.reset( new QRect() );
@@ -1896,7 +1896,7 @@ void QgsVertexTool::startSelectionRect( const QPoint &point0 )
   mSelectionRectItem = new QRubberBand( QRubberBand::Rectangle, canvas() );
 }
 
-void QgsVertexTool::updateSelectionRect( const QPoint &point1 )
+void QgsVertexTool::updateSelectionRect( QPoint point1 )
 {
   Q_ASSERT( mSelectionRect );
   mSelectionRect->setBottomRight( point1 );

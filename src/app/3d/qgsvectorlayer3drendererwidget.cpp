@@ -62,7 +62,7 @@ void QgsVectorLayer3DRendererWidget::setLayer( QgsVectorLayer *layer )
   mLayer = layer;
 
   QgsAbstract3DRenderer *r = layer->renderer3D();
-  if ( r && r->type() == "vector" )
+  if ( r && r->type() == QLatin1String( "vector" ) )
   {
     QgsVectorLayer3DRenderer *vectorRenderer = static_cast<QgsVectorLayer3DRenderer *>( r );
     setRenderer( vectorRenderer );
@@ -88,7 +88,7 @@ void QgsVectorLayer3DRendererWidget::setRenderer( const QgsVectorLayer3DRenderer
   {
     case QgsWkbTypes::PointGeometry:
       pageIndex = 2;
-      if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == "point" )
+      if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == QLatin1String( "point" ) )
       {
         whileBlocking( widgetPoint )->setSymbol( *static_cast<const QgsPoint3DSymbol *>( mRenderer->symbol() ) );
       }
@@ -100,7 +100,7 @@ void QgsVectorLayer3DRendererWidget::setRenderer( const QgsVectorLayer3DRenderer
 
     case QgsWkbTypes::LineGeometry:
       pageIndex = 1;
-      if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == "line" )
+      if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == QLatin1String( "line" ) )
       {
         whileBlocking( widgetLine )->setSymbol( *static_cast<const QgsLine3DSymbol *>( mRenderer->symbol() ) );
       }
@@ -112,7 +112,7 @@ void QgsVectorLayer3DRendererWidget::setRenderer( const QgsVectorLayer3DRenderer
 
     case QgsWkbTypes::PolygonGeometry:
       pageIndex = 3;
-      if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == "polygon" )
+      if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == QLatin1String( "polygon" ) )
       {
         whileBlocking( widgetPolygon )->setSymbol( *static_cast<const QgsPolygon3DSymbol *>( mRenderer->symbol() ), vlayer );
       }

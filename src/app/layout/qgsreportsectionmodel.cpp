@@ -70,7 +70,7 @@ QVariant QgsReportSectionModel::data( const QModelIndex &index, int role ) const
             QPixmap pixmap( icon.pixmap( 16, 16 ) );
 
             QPainter painter( &pixmap );
-            painter.drawPixmap( 0, 0, 16, 16, QgsApplication::getThemePixmap( "/mActionToggleEditing.svg" ) );
+            painter.drawPixmap( 0, 0, 16, 16, QgsApplication::getThemePixmap( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
             painter.end();
 
             return QIcon( pixmap );

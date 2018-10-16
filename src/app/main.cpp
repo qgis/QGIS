@@ -973,7 +973,7 @@ int main( int argc, char *argv[] )
   QgsApplication myApp( argc, argv, myUseGuiFlag );
 
   // Settings migration is only supported on the default profile for now.
-  if ( profileName == "default" )
+  if ( profileName == QLatin1String( "default" ) )
   {
     // Note: this flag is ka version number so that we can reset it once we change the version.
     // Note2: Is this a good idea can we do it better.

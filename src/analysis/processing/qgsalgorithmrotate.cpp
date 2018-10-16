@@ -83,7 +83,7 @@ bool QgsRotateFeaturesAlgorithm::prepareAlgorithm( const QVariantMap &parameters
   if ( mDynamicAngle )
     mAngleProperty = parameters.value( QStringLiteral( "ANGLE" ) ).value< QgsProperty >();
 
-  mUseAnchor = parameters.value( "ANCHOR" ).isValid();
+  mUseAnchor = parameters.value( QStringLiteral( "ANCHOR" ) ).isValid();
   if ( mUseAnchor )
   {
     mAnchor = parameterAsPoint( parameters, QStringLiteral( "ANCHOR" ), context );

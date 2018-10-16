@@ -253,7 +253,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     const QgsGeometryCheckContext *mContext;
     QVariantMap mConfiguration;
 
-    double scaleFactor( QPointer<QgsVectorLayer> layer ) const SIP_SKIP;
+    double scaleFactor( const QPointer<QgsVectorLayer> &layer ) const SIP_SKIP;
 };
 
 #endif // QGS_GEOMETRY_CHECK_H

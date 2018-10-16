@@ -51,7 +51,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   if ( !mDeco.enabled() && mDeco.mLabelText.isEmpty() )
   {
     QDate now = QDate::currentDate();
-    QString defaultString = QString( "%1 %2 %3" ).arg( QChar( 0x00A9 ), QgsProject::instance()->metadata().author(), now.toString( QStringLiteral( "yyyy" ) ) );
+    QString defaultString = QStringLiteral( "%1 %2 %3" ).arg( QChar( 0x00A9 ), QgsProject::instance()->metadata().author(), now.toString( QStringLiteral( "yyyy" ) ) );
     txtCopyrightText->setPlainText( defaultString );
   }
   else

@@ -19,6 +19,7 @@
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
 #include "qgsterrainentity_p.h"
+#include "qgsvector3d.h"
 
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
@@ -42,7 +43,9 @@ class Qgs3DMapToolIdentifyPickHandler : public Qgs3DMapScenePickHandler
 
 void Qgs3DMapToolIdentifyPickHandler::handlePickOnVectorLayer( QgsVectorLayer *vlayer, QgsFeatureId id, const QVector3D &worldIntersection )
 {
-  QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( worldIntersection, mIdentifyTool->mCanvas->map()->origin() );
+  QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( worldIntersection.x(),
+                          worldIntersection.y(),
+                          worldIntersection.z() ), mIdentifyTool->mCanvas->map()->origin() );
   QgsPoint pt( mapCoords.x(), mapCoords.y(), mapCoords.z() );
 
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
@@ -93,7 +96,10 @@ void Qgs3DMapToolIdentify::onTerrainPicked( Qt3DRender::QPickEvent *event )
   if ( event->button() != Qt3DRender::QPickEvent::LeftButton )
     return;
 
-  QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( event->worldIntersection(), mCanvas->map()->origin() );
+  const QVector3D worldIntersection = event->worldIntersection();
+  QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( worldIntersection.x(),
+                          worldIntersection.y(),
+                          worldIntersection.z() ), mCanvas->map()->origin() );
   QgsPointXY mapPoint( mapCoords.x(), mapCoords.y() );
 
   // estimate search radius

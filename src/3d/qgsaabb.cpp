@@ -55,7 +55,7 @@ float QgsAABB::distanceFromPoint( float x, float y, float z ) const
   return sqrt( dx * dx + dy * dy + dz * dz );
 }
 
-float QgsAABB::distanceFromPoint( const QVector3D &v ) const
+float QgsAABB::distanceFromPoint( QVector3D v ) const
 {
   return distanceFromPoint( v.x(), v.y(), v.z() );
 }
