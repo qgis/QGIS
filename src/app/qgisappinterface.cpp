@@ -792,5 +792,10 @@ bool QgisAppInterface::askForDatumTransform( QgsCoordinateReferenceSystem source
 
 void QgisAppInterface::takeAppScreenShots( const QString &saveDirectory, const int categories )
 {
-  return qgis->takeAppScreenShots( saveDirectory, categories );
+  qgis->takeAppScreenShots( saveDirectory, categories );
+}
+
+QgsBrowserModel *QgisAppInterface::browserModel()
+{
+  return qgis->mBrowserModel;
 }

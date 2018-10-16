@@ -48,6 +48,7 @@ class QgsOptionsWidgetFactory;
 class QgsLocatorFilter;
 class QgsStatusBar;
 class QgsMeshLayer;
+class QgsBrowserModel;
 
 #include <QObject>
 #include <QFont>
@@ -936,6 +937,13 @@ class GUI_EXPORT QgisInterface : public QObject
       * \since 3.0
       */
     virtual bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) = 0;
+
+    /**
+     * Returns the application browser model. Using this shared model is more efficient than
+     * creating a new browser model for every use.
+     * \since QGIS 3.4
+     */
+    virtual QgsBrowserModel *browserModel() = 0;
 
   signals:
 

@@ -1144,6 +1144,14 @@ is chosen. Dialog is shown only if global option is set accordingly.
 .. versionadded:: 3.0
 %End
 
+    virtual QgsBrowserModel *browserModel() = 0;
+%Docstring
+Returns the application browser model. Using this shared model is more efficient than
+creating a new browser model for every use.
+
+.. versionadded:: 3.4
+%End
+
   signals:
 
     void currentLayerChanged( QgsMapLayer *layer );
