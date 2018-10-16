@@ -151,6 +151,7 @@ SET(QGIS_CORE_SRCS
   qgsauxiliarystorage.cpp
   qgsbearingutils.cpp
   qgsbrowsermodel.cpp
+  qgsbrowserproxymodel.cpp
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
   qgscacheindexfeatureid.cpp
@@ -590,6 +591,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsanimatedicon.h
   qgsauxiliarystorage.h
   qgsbrowsermodel.h
+  qgsbrowserproxymodel.h
   qgscoordinatereferencesystem.h
   qgscredentials.h
   qgsdataitem.h

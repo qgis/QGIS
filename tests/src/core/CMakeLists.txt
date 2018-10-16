@@ -80,6 +80,7 @@ SET(TESTS
  testqgsauthmanager.cpp
  testqgsblendmodes.cpp
  testqgsbrowsermodel.cpp
+ testqgsbrowserproxymodel.cpp
  testqgscadutils.cpp
  testqgsclipper.cpp
  testqgscolorscheme.cpp

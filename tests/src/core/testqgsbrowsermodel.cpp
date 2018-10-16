@@ -146,6 +146,7 @@ void TestQgsBrowserModel::testModel()
 
   QCOMPARE( model.rowCount(), 2 );
   root1Index = model.index( 0, 0 );
+  root2Index = model.index( 1, 0 );
   QCOMPARE( model.rowCount( root1Index ), 2 );
   child1Index = model.index( 0, 0, root1Index );
   QCOMPARE( model.data( child1Index ).toString(), QStringLiteral( "Child1" ) );

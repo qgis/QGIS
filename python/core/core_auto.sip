@@ -312,6 +312,7 @@
 %Include auto_generated/qgsanimatedicon.sip
 %Include auto_generated/qgsauxiliarystorage.sip
 %Include auto_generated/qgsbrowsermodel.sip
+%Include auto_generated/qgsbrowserproxymodel.sip
 %Include auto_generated/qgscoordinatereferencesystem.sip
 %Include auto_generated/qgscredentials.sip
 %Include auto_generated/qgsdataitem.sip
