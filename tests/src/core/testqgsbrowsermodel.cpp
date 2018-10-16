@@ -133,6 +133,34 @@ void TestQgsBrowserModel::testModel()
   QVERIFY( !model.findItem( childItem1, rootItem2 ).isValid() );
 
 
+  // more children
+  QgsDataCollectionItem *childItem2 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child2" ), QStringLiteral( "child2" ) );
+  model.connectItem( childItem2 );
+  rootItem1->addChildItem( childItem2, true );
+
+  QgsDataCollectionItem *childItem3 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child3" ), QStringLiteral( "child3" ) );
+  model.connectItem( childItem3 );
+  childItem2->addChildItem( childItem3, true );
+  QCOMPARE( childItem2->rowCount(), 1 );
+
+  QgsDataCollectionItem *childItem4 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child4" ), QStringLiteral( "child4" ) );
+  model.connectItem( childItem4 );
+  rootItem2->addChildItem( childItem4, true );
+
+  QCOMPARE( model.rowCount(), 2 );
+  root1Index = model.index( 0, 0 );
+  QCOMPARE( model.rowCount( root1Index ), 2 );
+  child1Index = model.index( 0, 0, root1Index );
+  QCOMPARE( model.data( child1Index ).toString(), QStringLiteral( "Child1" ) );
+  QModelIndex child2Index = model.index( 1, 0, root1Index );
+  QCOMPARE( model.data( child2Index ).toString(), QStringLiteral( "Child2" ) );
+  QCOMPARE( model.rowCount( child1Index ), 0 );
+  QCOMPARE( model.dataItem( child2Index ), childItem2 );
+  QCOMPARE( childItem2->rowCount(), 1 );
+  QCOMPARE( model.rowCount( child2Index ), 1 );
+  QCOMPARE( model.data( model.index( 0, 0, child2Index ) ).toString(), QStringLiteral( "Child3" ) );
+  QCOMPARE( model.rowCount( root2Index ), 1 );
+  QCOMPARE( model.data( model.index( 0, 0, root2Index ) ).toString(), QStringLiteral( "Child4" ) );
 }
 
 QGSTEST_MAIN( TestQgsBrowserModel )
