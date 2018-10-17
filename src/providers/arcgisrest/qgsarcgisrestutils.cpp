@@ -125,12 +125,12 @@ static std::unique_ptr< QgsPoint > parsePoint( const QVariantList &coordList, Qg
 
 static std::unique_ptr< QgsCircularString > parseCircularString( const QVariantMap &curveData, QgsWkbTypes::Type pointType, const QgsPoint &startPoint )
 {
-  QVariantList coordsList = curveData[QStringLiteral( "c" )].toList();
+  const QVariantList coordsList = curveData[QStringLiteral( "c" )].toList();
   if ( coordsList.isEmpty() )
     return nullptr;
   QVector<QgsPoint> points;
   points.append( startPoint );
-  foreach ( const QVariant &coordData, coordsList )
+  for ( const QVariant &coordData : coordsList )
   {
     std::unique_ptr< QgsPoint > point = parsePoint( coordData.toList(), pointType );
     if ( !point )
@@ -150,7 +150,7 @@ static std::unique_ptr< QgsCompoundCurve > parseCompoundCurve( const QVariantLis
   std::unique_ptr< QgsCompoundCurve > compoundCurve = qgis::make_unique< QgsCompoundCurve >();
   QgsLineString *lineString = new QgsLineString();
   compoundCurve->addCurve( lineString );
-  foreach ( const QVariant &curveData, curvesList )
+  for ( const QVariant &curveData : curvesList )
   {
     if ( curveData.type() == QVariant::List )
     {
@@ -230,7 +230,7 @@ static std::unique_ptr< QgsMultiCurve > parseEsriGeometryPolyline( const QVarian
   if ( pathsList.isEmpty() )
     return nullptr;
   std::unique_ptr< QgsMultiCurve > multiCurve = qgis::make_unique< QgsMultiCurve >();
-  foreach ( const QVariant &pathData, pathsList )
+  for ( const QVariant &pathData : qgis::as_const( pathsList ) )
   {
     std::unique_ptr< QgsCompoundCurve > curve = parseCompoundCurve( pathData.toList(), pointType );
     if ( !curve )
@@ -392,7 +392,7 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QList
     QString &errorTitle, QString &errorText, QgsFeedback *feedback )
 {
   QStringList ids;
-  foreach ( int id, objectIds )
+  for ( int id : objectIds )
   {
     ids.append( QString::number( id ) );
   }
@@ -413,8 +413,8 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QList
     queryUrl.addQueryItem( QStringLiteral( "returnGeometry" ), QStringLiteral( "false" ) );
     queryUrl.addQueryItem( QStringLiteral( "outFields" ), outFields );
   }
-  queryUrl.addQueryItem( QStringLiteral( "returnM" ), fetchM ? "true" : "false" );
-  queryUrl.addQueryItem( QStringLiteral( "returnZ" ), fetchZ ? "true" : "false" );
+  queryUrl.addQueryItem( QStringLiteral( "returnM" ), fetchM ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  queryUrl.addQueryItem( QStringLiteral( "returnZ" ), fetchZ ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   if ( !filterRect.isNull() )
   {
     queryUrl.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1,%2,%3,%4" )

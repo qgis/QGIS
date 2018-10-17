@@ -100,7 +100,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
       const QVariantMap attributesData = featureData[QStringLiteral( "attributes" )].toMap();
       feature.setFields( mFields );
       QgsAttributes attributes( mFields.size() );
-      foreach ( int idx, fetchAttribIdx )
+      for ( int idx : qgis::as_const( fetchAttribIdx ) )
       {
         QVariant attribute = attributesData[mFields.at( idx ).name()];
         if ( attribute.isNull() )

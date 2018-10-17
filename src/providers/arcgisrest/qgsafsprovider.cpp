@@ -122,7 +122,8 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   QString objectIdFieldName;
 
   // Read fields
-  foreach ( const QVariant &fieldData, layerData["fields"].toList() )
+  const QVariantList fields = layerData.value( QStringLiteral( "fields" ) ).toList();
+  for ( const QVariant &fieldData : fields )
   {
     const QVariantMap fieldDataMap = fieldData.toMap();
     const QString fieldName = fieldDataMap[QStringLiteral( "name" )].toString();
@@ -189,7 +190,8 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
       break;
     }
   }
-  foreach ( const QVariant &objectId, objectIdData["objectIds"].toList() )
+  const QVariantList objectIds = objectIdData.value( QStringLiteral( "objectIds" ) ).toList();
+  for ( const QVariant &objectId : objectIds )
   {
     mSharedData->mObjectIds.append( objectId.toInt() );
   }
