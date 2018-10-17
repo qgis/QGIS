@@ -209,7 +209,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayertreeviewembeddedindicator.h"
 #include "qgslayertreeviewfilterindicator.h"
 #include "qgslayertreeviewmemoryindicator.h"
-#include "qgslayertreeviewbadlayerindicatorprovider.h"
+#include "qgslayertreeviewbadlayerindicator.h"
 #include "qgslayertreeviewnonremovableindicator.h"
 #include "qgslayout.h"
 #include "qgslayoutatlas.h"

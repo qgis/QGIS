@@ -1,9 +1,10 @@
 /***************************************************************************
-  qgslayertreeviewmemoryindicator.h
-  --------------------------------------
-  Date                 : July 2018
-  Copyright            : (C) 2018 by Nyall Dawson
-  Email                : nyall dot dawson at gmail dot com
+  qgslayertreeviewbadlayerindicatorprovider.cpp - QgsLayerTreeViewBadLayerIndicatorProvider
+
+ ---------------------
+ begin                : 17.10.2018
+ copyright            : (C) 2018 by Alessandro Pasotti
+ email                : elpaso@itopen.it
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,20 +14,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslayertreeviewmemoryindicator.h"
-#include "qgslayertreeview.h"
+#include "qgslayertreeviewbadlayerindicator.h"
 #include "qgslayertree.h"
-#include "qgslayertreemodel.h"
+#include "qgslayertreeview.h"
 #include "qgslayertreeutils.h"
+#include "qgslayertreemodel.h"
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
 
-QgsLayerTreeViewMemoryIndicatorProvider::QgsLayerTreeViewMemoryIndicatorProvider( QgsLayerTreeView *view )
+QgsLayerTreeViewBadLayerIndicatorProvider::QgsLayerTreeViewBadLayerIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
 {
 }
 
-void QgsLayerTreeViewMemoryIndicatorProvider::onIndicatorClicked( const QModelIndex &index )
+void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModelIndex &index )
 {
   QgsLayerTreeNode *node = mLayerTreeView->layerTreeModel()->index2node( index );
   if ( !QgsLayerTree::isLayer( node ) )
@@ -36,25 +37,20 @@ void QgsLayerTreeViewMemoryIndicatorProvider::onIndicatorClicked( const QModelIn
   if ( !vlayer )
     return;
 
-  QgisApp::instance()->makeMemoryLayerPermanent( vlayer );
+  // TODO: open source select dialog
 }
 
-
-bool QgsLayerTreeViewMemoryIndicatorProvider::acceptLayer( QgsMapLayer *layer )
+QString QgsLayerTreeViewBadLayerIndicatorProvider::iconName()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer )
-    return false;
-  return  vlayer->dataProvider()->name() == QLatin1String( "memory" );
+  return QStringLiteral( "/mIndicatorBadLayer.svg" );
 }
 
-QString QgsLayerTreeViewMemoryIndicatorProvider::iconName()
+QString QgsLayerTreeViewBadLayerIndicatorProvider::tooltipText()
 {
-  return QStringLiteral( "/mIndicatorMemory.svg" );
+  return tr( "<b>Bad layer!</b><br>Layer data source could not be found, click here to set a new data source." );
 }
 
-QString QgsLayerTreeViewMemoryIndicatorProvider::tooltipText()
+bool QgsLayerTreeViewBadLayerIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 {
-  return tr( "<b>Temporary scratch layer only!</b><br>Contents will be discarded after closing this project" );
+  return ! layer->isValid();
 }
-
