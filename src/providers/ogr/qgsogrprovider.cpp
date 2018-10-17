@@ -93,8 +93,6 @@ static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName );
 
 static bool IsLocalFile( const QString &path );
 
-static const QByteArray ORIG_OGC_FID = "__orig_ogc_fid";
-
 QMutex QgsOgrProviderUtils::sGlobalMutex( QMutex::Recursive );
 
 QMap< QgsOgrProviderUtils::DatasetIdentification,
@@ -1041,12 +1039,6 @@ void QgsOgrProvider::loadFields()
     QString name = textEncoding()->toUnicode( OGR_Fld_GetNameRef( fldDef ) );
 #endif
 
-    if ( name == ORIG_OGC_FID )
-    {
-      // don't ever report this field, it's for internal purposes only!
-      continue;
-    }
-
     if ( mAttributeFields.indexFromName( name ) != -1 )
     {
 
@@ -1132,10 +1124,7 @@ void QgsOgrProviderUtils::setRelevantFields( OGRLayerH ogrLayer, int fieldCount,
         if ( OGRFieldDefnH field = OGR_FD_GetFieldDefn( featDefn, firstAttrIsFid ? i - 1 : i ) )
         {
           const char *fieldName = OGR_Fld_GetNameRef( field );
-          if ( qstrcmp( fieldName, ORIG_OGC_FID ) != 0 )
-          {
-            ignoredFields.append( fieldName );
-          }
+          ignoredFields.append( fieldName );
         }
       }
     }
@@ -1196,7 +1185,7 @@ QgsRectangle QgsOgrProvider::extent() const
     mExtent->MaxY = -std::numeric_limits<double>::max();
 
     // TODO: This can be expensive, do we really need it!
-    if ( mOgrLayer == mOgrOrigLayer.get() )
+    if ( mOgrLayer == mOgrOrigLayer.get() && mSubsetString.isEmpty() )
     {
       mOgrLayer->GetExtent( mExtent.get(), true );
     }
@@ -1853,14 +1842,28 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
       pushError( tr( "OGR[%1] error %2: %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
       return false;
     }
-    mOgrSqlLayer = QgsOgrProviderUtils::getSqlLayer( mOgrOrigLayer.get(), subsetLayerH, theSQL );
-    Q_ASSERT( mOgrSqlLayer.get() );
-    mOgrLayer = mOgrSqlLayer.get();
+    if ( layer != subsetLayerH )
+    {
+      mOgrSqlLayer = QgsOgrProviderUtils::getSqlLayer( mOgrOrigLayer.get(), subsetLayerH, theSQL );
+      Q_ASSERT( mOgrSqlLayer.get() );
+      mOgrLayer = mOgrSqlLayer.get();
+    }
+    else
+    {
+      mOgrSqlLayer.reset();
+      mOgrLayer = mOgrOrigLayer.get();
+    }
   }
   else
   {
     mOgrSqlLayer.reset();
     mOgrLayer = mOgrOrigLayer.get();
+    QMutex *mutex = nullptr;
+    OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
+    {
+      QMutexLocker locker( mutex );
+      OGR_L_SetAttributeFilter( layer, nullptr );
+    }
   }
   mSubsetString = theSQL;
 
@@ -4012,14 +4015,11 @@ OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type 
   }
 }
 
-OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString, bool addOriginalFid, bool *origFidAdded )
+OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString )
 {
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( layer ) );
   GDALDriverH driver = GDALGetDatasetDriver( ds );
   QString driverName = GDALGetDriverShortName( driver );
-  bool origFidAddAttempted = false;
-  if ( origFidAdded )
-    *origFidAdded = false;
 
   if ( driverName == QLatin1String( "ODBC" ) ) //the odbc driver does not like schema names for subset
   {
@@ -4041,56 +4041,8 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
   }
   else
   {
-    QByteArray sqlPart1 = "SELECT *";
-    QByteArray sqlPart3 = " FROM " + quotedIdentifier( layerName, driverName );
-    if ( !subsetString.isEmpty() )
-      sqlPart3 += " WHERE " + encoding->fromUnicode( subsetString );
-
-    if ( addOriginalFid )
-    {
-      origFidAddAttempted = true;
-
-      QByteArray fidColumn = OGR_L_GetFIDColumn( layer );
-      // Fallback to FID if OGR_L_GetFIDColumn returns nothing
-      if ( fidColumn.isEmpty() )
-      {
-        fidColumn = "FID";
-      }
-
-      QByteArray sql = sqlPart1 + ", " + fidColumn + " as \"" + ORIG_OGC_FID + '"' + sqlPart3;
-      QgsDebugMsg( QStringLiteral( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
-      subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
-
-      // See https://lists.osgeo.org/pipermail/qgis-developer/2017-September/049802.html
-      // If execute SQL fails because it did not find the fidColumn, retry with hardcoded FID
-      if ( !subsetLayer )
-      {
-        QByteArray sql = sqlPart1 + ", " + "FID as \"" + ORIG_OGC_FID + '"' + sqlPart3;
-        QgsDebugMsg( QStringLiteral( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
-        subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
-      }
-    }
-    // If that also fails (or we never wanted to add the original FID), just continue without the orig_ogc_fid
-    if ( !subsetLayer )
-    {
-      QByteArray sql = sqlPart1 + sqlPart3;
-      QgsDebugMsg( QStringLiteral( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
-      subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
-      origFidAddAttempted = false;
-    }
-  }
-
-  // Check if last column is orig_ogc_fid
-  if ( origFidAddAttempted && subsetLayer )
-  {
-    OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( subsetLayer );
-    int fieldCount = OGR_FD_GetFieldCount( fdef );
-    if ( fieldCount > 0 )
-    {
-      OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, fieldCount - 1 );
-      if ( origFidAdded )
-        *origFidAdded = qstrcmp( OGR_Fld_GetNameRef( fldDef ), ORIG_OGC_FID ) == 0;
-    }
+    OGR_L_SetAttributeFilter( layer, encoding->fromUnicode( subsetString ).constData() );
+    subsetLayer = layer;
   }
 
   return subsetLayer;
@@ -4511,6 +4463,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
                      ds->hDS, layerIndex );
           if ( hLayer )
           {
+            OGR_L_SetAttributeFilter( hLayer, nullptr );
             layerName = QString::fromUtf8( OGR_L_GetName( hLayer ) );
           }
         }
@@ -4566,6 +4519,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
                    ds->hDS, layerIndex );
         if ( hLayer )
         {
+          OGR_L_SetAttributeFilter( hLayer, nullptr );
           layerName = QString::fromUtf8( OGR_L_GetName( hLayer ) );
         }
       }
@@ -4649,6 +4603,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
             errCause = QObject::tr( "Cannot find layer %1." ).arg( layerName );
             return nullptr;
           }
+          OGR_L_SetAttributeFilter( hLayer, nullptr );
 
           QgsOgrLayerUniquePtr layer = QgsOgrLayer::CreateForLayer(
                                          iter.key(), layerName, ds, hLayer );
@@ -5092,6 +5047,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
           errCause = QObject::tr( "Cannot find layer %1." ).arg( layerName );
           return nullptr;
         }
+        OGR_L_SetAttributeFilter( hLayer, nullptr );
 
         QgsOgrLayerUniquePtr layer = QgsOgrLayer::CreateForLayer(
                                        ident, layerName, ds, hLayer );
@@ -5239,7 +5195,7 @@ bool QgsOgrDataset::executeSQLNoReturn( const QString &sql )
 }
 
 
-OGRLayerH QgsOgrDataset::createSQLResultLayer( QTextCodec *encoding, const QString &layerName, int layerIndex )
+OGRLayerH QgsOgrDataset::getLayerFromNameOrIndex( const QString &layerName, int layerIndex )
 {
   QMutexLocker locker( &mutex() );
 
@@ -5252,9 +5208,7 @@ OGRLayerH QgsOgrDataset::createSQLResultLayer( QTextCodec *encoding, const QStri
   {
     layer = GDALDatasetGetLayer( mDs->hDS, layerIndex );
   }
-  if ( !layer )
-    return nullptr;
-  return QgsOgrProviderUtils::setSubsetString( layer, mDs->hDS, encoding, QString(), false, nullptr );
+  return layer;
 }
 
 void QgsOgrDataset::releaseResultSet( OGRLayerH hSqlLayer )
