@@ -25,6 +25,7 @@ class QgsDataItem;
 
 /**
  * \class QgsBrowserProxyModel
+ * \ingroup core
  * A QSortFilterProxyModel subclass for filtering and sorting browser model items.
  * \since QGIS 3.4
  */

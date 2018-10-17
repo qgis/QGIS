@@ -120,9 +120,7 @@ items, i.e. it does not fetch children.
  void connectItem( QgsDataItem *item ) /Deprecated/;
 %Docstring
 
-.. deprecated:: since QGIS 3.4 -- this method has no effect, and is dangerous to call
-in earlier QGIS versions. Any usage should be removed (and will have no harmful
-side-effects!).
+.. deprecated:: Deprecated since QGIS 3.4 -- this method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
 %End
 
     bool initialized() const;
