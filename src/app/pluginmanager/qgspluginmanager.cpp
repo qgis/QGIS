@@ -128,7 +128,13 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   mPluginsDetailsSplitter->restoreState( settings.value( QStringLiteral( "Windows/PluginManager/secondSplitterState" ) ).toByteArray() );
   // 2) The current mOptionsListWidget index (it will overwrite the "tab" setting of QgsOptionsDialogBase that handles the stackedWidget page
   // instead of the mOptionsListWidget index). Then the signal connected above will update the relevant page as well.
-  mOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "Windows/PluginManager/option" ), 0 ).toInt() );
+  int option = settings.value( QStringLiteral( "Windows/PluginManager/option" ), 0 ).toInt();
+  mOptionsListWidget->setCurrentRow( option );
+  if ( option == 0 )
+  {
+    // The first option won't fire the currentRowChanged signal, so initialize the first tab explicitly
+    setCurrentTab( 0 );
+  }
 
   // Hide widgets only suitable with Python support enabled (they will be uncovered back in setPythonUtils)
   buttonUpgradeAll->hide();
