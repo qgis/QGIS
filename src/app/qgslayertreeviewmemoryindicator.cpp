@@ -48,13 +48,15 @@ bool QgsLayerTreeViewMemoryIndicatorProvider::acceptLayer( QgsMapLayer *layer )
   return  vlayer->dataProvider()->name() == QLatin1String( "memory" );
 }
 
-QString QgsLayerTreeViewMemoryIndicatorProvider::iconName()
+QString QgsLayerTreeViewMemoryIndicatorProvider::iconName( QgsMapLayer *layer )
 {
+  Q_UNUSED( layer );
   return QStringLiteral( "/mIndicatorMemory.svg" );
 }
 
-QString QgsLayerTreeViewMemoryIndicatorProvider::tooltipText()
+QString QgsLayerTreeViewMemoryIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
+  Q_UNUSED( layer );
   return tr( "<b>Temporary scratch layer only!</b><br>Contents will be discarded after closing this project" );
 }
 

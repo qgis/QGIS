@@ -31,8 +31,8 @@ class QgsLayerTreeViewMemoryIndicatorProvider : public QgsLayerTreeViewIndicator
 
   private:
     bool acceptLayer( QgsMapLayer *layer ) override;
-    QString iconName() override;
-    QString tooltipText() override;
+    QString iconName( QgsMapLayer *layer ) override;
+    QString tooltipText( QgsMapLayer *layer ) override;
 };
 
 #endif // QGSLAYERTREEVIEWMEMORYINDICATOR_H

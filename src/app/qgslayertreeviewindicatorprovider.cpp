@@ -3,8 +3,8 @@
 
  ---------------------
  begin                : 17.10.2018
- copyright            : (C) 2018 by ale
- email                : [your-email-here]
+ copyright            : (C) 2018 by Alessandro Pasotti
+ email                : elpaso@itopen.it
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -82,7 +82,7 @@ void QgsLayerTreeViewIndicatorProvider::onWillRemoveChildren( QgsLayerTreeNode *
     {
       QgsLayerTreeLayer *childLayerNode = QgsLayerTree::toLayer( childNode );
       if ( QgsLayerTreeUtils::countMapLayerInTree( mLayerTreeView->layerTreeModel()->rootGroup(), childLayerNode->layer() ) == 1 )
-          disconnectSignals( childLayerNode->layer() );
+        disconnectSignals( childLayerNode->layer() );
     }
   }
 }
@@ -121,7 +121,7 @@ void QgsLayerTreeViewIndicatorProvider::onLayerChanged()
   }
 }
 
-void QgsLayerTreeViewIndicatorProvider::connectSignals(QgsMapLayer* layer)
+void QgsLayerTreeViewIndicatorProvider::connectSignals( QgsMapLayer *layer )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
@@ -129,7 +129,7 @@ void QgsLayerTreeViewIndicatorProvider::connectSignals(QgsMapLayer* layer)
   connect( vlayer, &QgsVectorLayer::dataSourceChanged, this, &QgsLayerTreeViewIndicatorProvider::onLayerChanged );
 }
 
-void QgsLayerTreeViewIndicatorProvider::disconnectSignals(QgsMapLayer* layer)
+void QgsLayerTreeViewIndicatorProvider::disconnectSignals( QgsMapLayer *layer )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
@@ -137,17 +137,17 @@ void QgsLayerTreeViewIndicatorProvider::disconnectSignals(QgsMapLayer* layer)
   disconnect( vlayer, &QgsVectorLayer::dataSourceChanged, this, &QgsLayerTreeViewIndicatorProvider::onLayerChanged );
 }
 
-std::unique_ptr< QgsLayerTreeViewIndicator > QgsLayerTreeViewIndicatorProvider::newIndicator()
+std::unique_ptr< QgsLayerTreeViewIndicator > QgsLayerTreeViewIndicatorProvider::newIndicator( QgsMapLayer *layer )
 {
   std::unique_ptr< QgsLayerTreeViewIndicator > indicator = qgis::make_unique< QgsLayerTreeViewIndicator >( this );
-  indicator->setIcon( QgsApplication::getThemeIcon( iconName() ) );
-  indicator->setToolTip( tooltipText() );
+  indicator->setIcon( QgsApplication::getThemeIcon( iconName( layer ) ) );
+  indicator->setToolTip( tooltipText( layer ) );
   connect( indicator.get(), &QgsLayerTreeViewIndicator::clicked, this, &QgsLayerTreeViewIndicatorProvider::onIndicatorClicked );
   mIndicators.insert( indicator.get() );
   return indicator;
 }
 
-void QgsLayerTreeViewIndicatorProvider::addOrRemoveIndicator(QgsLayerTreeNode *node, QgsMapLayer* layer )
+void QgsLayerTreeViewIndicatorProvider::addOrRemoveIndicator( QgsLayerTreeNode *node, QgsMapLayer *layer )
 {
 
   if ( acceptLayer( layer ) )
@@ -159,12 +159,15 @@ void QgsLayerTreeViewIndicatorProvider::addOrRemoveIndicator(QgsLayerTreeNode *n
     {
       if ( mIndicators.contains( indicator ) )
       {
+        // Update just in case ...
+        indicator->setToolTip( tooltipText( layer ) );
+        indicator->setIcon( QgsApplication::getThemeIcon( iconName( layer ) ) );
         return;
       }
     }
 
     // it does not exist: need to create a new one
-    mLayerTreeView->addIndicator( node, newIndicator().release() );
+    mLayerTreeView->addIndicator( node, newIndicator( layer ).release() );
   }
   else
   {

@@ -3,8 +3,8 @@
 
  ---------------------
  begin                : 17.10.2018
- copyright            : (C) 2018 by ale
- email                : [your-email-here]
+ copyright            : (C) 2018 by Alessandro Pasotti
+ email                : elpaso@itopen.it
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -66,9 +66,9 @@ class QgsLayerTreeViewIndicatorProvider : public QObject
   private:
     //! Layer filter
     virtual bool acceptLayer( QgsMapLayer *layer ) = 0;
-    virtual QString iconName() = 0;
-    virtual QString tooltipText() = 0;
-    virtual std::unique_ptr< QgsLayerTreeViewIndicator > newIndicator();
+    virtual QString iconName( QgsMapLayer *layer ) = 0;
+    virtual QString tooltipText( QgsMapLayer *layer ) = 0;
+    virtual std::unique_ptr< QgsLayerTreeViewIndicator > newIndicator( QgsMapLayer *layer );
     virtual void addOrRemoveIndicator( QgsLayerTreeNode *node, QgsMapLayer *layer );
 
   protected:

@@ -33,8 +33,8 @@ class QgsLayerTreeViewBadLayerIndicatorProvider : public QgsLayerTreeViewIndicat
     void onIndicatorClicked( const QModelIndex &index ) override;
 
   private:
-    QString iconName() override;
-    QString tooltipText() override;
+    QString iconName( QgsMapLayer *layer ) override;
+    QString tooltipText( QgsMapLayer *layer ) override;
     bool acceptLayer( QgsMapLayer *layer ) override;
 };
 
