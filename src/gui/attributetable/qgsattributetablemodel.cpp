@@ -261,7 +261,6 @@ void QgsAttributeTableModel::editCommandEnded()
 {
   // do not do reload(...) due would trigger (dataChanged) row sort
   // giving issue: https://issues.qgis.org/issues/15976
-  mChangedCellBounds = QRect();
   bulkEditCommandEnded( );
 }
 
@@ -301,13 +300,13 @@ void QgsAttributeTableModel::fieldFormatterRemoved( QgsFieldFormatter *fieldForm
 
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
-  // Defer all updates if an edit command is running
+  // Defer all updates if a bulk edit/rollback command is running
   if ( mBulkEditCommandRunning )
   {
     mAttributeValueChanges.insert( QPair<QgsFeatureId, int>( fid, idx ), value );
     return;
   }
-  QgsDebugMsgLevel( QStringLiteral( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( mFeatureRequest.filterType() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( mFeatureRequest.filterType() ), 2 );
 
   for ( SortCache &cache : mSortCaches )
   {
@@ -744,30 +743,6 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
   if ( !layer()->isModified() )
     return false;
 
-  if ( mChangedCellBounds.isNull() )
-  {
-    mChangedCellBounds = QRect( index.column(), index.row(), 1, 1 );
-  }
-  else
-  {
-    if ( index.column() < mChangedCellBounds.left() )
-    {
-      mChangedCellBounds.setLeft( index.column() );
-    }
-    if ( index.row() < mChangedCellBounds.top() )
-    {
-      mChangedCellBounds.setTop( index.row() );
-    }
-    if ( index.column() > mChangedCellBounds.right() )
-    {
-      mChangedCellBounds.setRight( index.column() );
-    }
-    if ( index.row() > mChangedCellBounds.bottom() )
-    {
-      mChangedCellBounds.setBottom( index.row() );
-    }
-  }
-
   mRowStylesMap.remove( index.row() );
 
   return true;
@@ -820,36 +795,43 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
 {
   mBulkEditCommandRunning = false;
   // Full model update if the changed rows are more than half the total rows
-  // or if their count is > 1000
-  int minRow = rowCount();
-  int minCol = columnCount();
-  int maxRow = 0;
-  int maxCol = 0;
-  bool fullModelUpdate = mAttributeValueChanges.count() >= 1000 ||
-                         mAttributeValueChanges.count() >= rowCount() * 0.5;
-  const auto keys = mAttributeValueChanges.keys();
-  for ( const auto &key : keys )
-  {
+  // or if their count is > layer cache size
+  int changeCount( mAttributeValueChanges.count() );
+  bool fullModelUpdate = changeCount > mLayerCache->cacheSize() ||
+                         changeCount > rowCount() * 0.5;
 
-    attributeValueChanged( key.first, key.second, mAttributeValueChanges.value( key ) );
-    int row( idToRow( key.first ) );
-    int col( fieldCol( key.second ) );
-    if ( ! fullModelUpdate )
+  QgsDebugMsgLevel( QStringLiteral( "Bulk edit command ended with %1 modified rows over (%4), cache size is %2, starting %3 update." )
+                    .arg( changeCount )
+                    .arg( mLayerCache->cacheSize() )
+                    .arg( fullModelUpdate ? QStringLiteral( "full" ) :  QStringLiteral( "incremental" ) )
+                    .arg( rowCount() ),
+                    3 );
+  // Invalidates the whole model
+  if ( fullModelUpdate )
+  {
+    // Invalidates the cache (there is no API for doing this directly)
+    mLayerCache->layer()->dataChanged();
+    emit dataChanged( createIndex( 0, 0 ), createIndex( rowCount() - 1, columnCount() - 1 ) );
+  }
+  else
+  {
+    int minRow = rowCount();
+    int minCol = columnCount();
+    int maxRow = 0;
+    int maxCol = 0;
+    const auto keys = mAttributeValueChanges.keys();
+    for ( const auto &key : keys )
     {
-      QModelIndex index( createIndex( row, col ) );
-      emit dataChanged( index, index );
-    }
-    else
-    {
+      attributeValueChanged( key.first, key.second, mAttributeValueChanges.value( key ) );
+      int row( idToRow( key.first ) );
+      int col( fieldCol( key.second ) );
       minRow = std::min<int>( row, minRow );
       minCol = std::min<int>( col, minCol );
       maxRow = std::max<int>( row, maxRow );
       maxCol = std::max<int>( col, maxCol );
     }
-  }
-  // Invalidates the whole model: triggers an update in the view
-  if ( fullModelUpdate )
     emit dataChanged( createIndex( minRow, minCol ), createIndex( maxRow, maxCol ) );
+  }
   mAttributeValueChanges.clear();
 }
 
