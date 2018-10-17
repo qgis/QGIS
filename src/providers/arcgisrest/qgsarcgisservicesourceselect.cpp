@@ -118,11 +118,11 @@ void QgsArcGisServiceSourceSelect::populateImageEncodings( const QStringList &av
     delete item;
   }
   bool first = true;
-  QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-  foreach ( const QString &encoding, availableEncodings )
+  const QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+  for ( const QString &encoding : availableEncodings )
   {
     bool supported = false;
-    foreach ( const QByteArray &fmt, supportedFormats )
+    for ( const QByteArray &fmt : supportedFormats )
     {
       if ( encoding.startsWith( fmt, Qt::CaseInsensitive ) )
       {
@@ -149,9 +149,9 @@ QString QgsArcGisServiceSourceSelect::getSelectedImageEncoding() const
 
 void QgsArcGisServiceSourceSelect::populateConnectionList()
 {
-  QStringList conns = QgsOwsConnection::connectionList( mServiceName );
+  const QStringList conns = QgsOwsConnection::connectionList( mServiceName );
   cmbConnections->clear();
-  foreach ( const QString &item, conns )
+  for ( const QString &item : conns )
   {
     cmbConnections->addItem( item );
   }
@@ -383,7 +383,8 @@ void QgsArcGisServiceSourceSelect::changeCrsFilter()
     if ( crsIterator != mAvailableCRS.constEnd() )
     {
       QSet<QString> crsNames;
-      foreach ( const QString &crsName, crsIterator.value() )
+      const QStringList crsNamesList = crsIterator.value();
+      for ( const QString &crsName : crsNamesList )
       {
         crsNames.insert( crsName );
       }

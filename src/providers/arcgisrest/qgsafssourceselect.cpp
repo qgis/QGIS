@@ -45,7 +45,8 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
   }
 
   QStringList layerErrors;
-  foreach ( const QVariant &layerInfo, serviceInfoMap["layers"].toList() )
+  const QVariantList layers = serviceInfoMap.value( QStringLiteral( "layers" ) ).toList();
+  for ( const QVariant &layerInfo : layers )
   {
     const QVariantMap layerInfoMap = layerInfo.toMap();
     if ( !layerInfoMap[QStringLiteral( "id" )].isValid() )
