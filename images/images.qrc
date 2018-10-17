@@ -718,6 +718,7 @@
         <file>themes/default/mActionReverseLine.svg</file>
         <file>themes/default/mActionAdd3DMap.svg</file>
         <file>themes/default/mIndicatorNonRemovable.svg</file>
+        <file>themes/default/mIndicatorBadLayer.svg</file>
         <file>themes/default/mIconFolder.svg</file>
         <file>themes/default/mIconFolderHome.svg</file>
         <file>themes/default/mIconFolderLink.svg</file>
