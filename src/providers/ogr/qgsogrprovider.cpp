@@ -1504,7 +1504,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
     }
   }
 
-  if ( mOgrLayer->CreateFeature( feature.get() ) != OGRERR_NONE )
+  if ( mOgrOrigLayer->CreateFeature( feature.get() ) != OGRERR_NONE )
   {
     pushError( tr( "OGR error creating feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
     returnValue = false;
@@ -1627,7 +1627,7 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
       break;
   }
 
-  if ( mOgrLayer->CreateField( fielddefn.get(), true ) != OGRERR_NONE )
+  if ( mOgrOrigLayer->CreateField( fielddefn.get(), true ) != OGRERR_NONE )
   {
     pushError( tr( "OGR error creating field %1: %2" ).arg( field.name(), CPLGetLastErrorMsg() ) );
     return false;
@@ -2045,7 +2045,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       }
     }
 
-    if ( mOgrLayer->SetFeature( of.get() ) != OGRERR_NONE )
+    if ( mOgrOrigLayer->SetFeature( of.get() ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( fid ).arg( CPLGetLastErrorMsg() ) );
     }
@@ -2059,7 +2059,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   if ( mTransaction )
     mTransaction->dirtyLastSavePoint();
 
-  if ( mOgrLayer->SyncToDisk() != OGRERR_NONE )
+  if ( mOgrOrigLayer->SyncToDisk() != OGRERR_NONE )
   {
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
@@ -2124,7 +2124,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     }
 
 
-    if ( mOgrLayer->SetFeature( theOGRFeature.get() ) != OGRERR_NONE )
+    if ( mOgrOrigLayer->SetFeature( theOGRFeature.get() ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
       continue;
@@ -2266,7 +2266,7 @@ bool QgsOgrProvider::deleteFeature( QgsFeatureId id )
   if ( !doInitialActionsForEdition() )
     return false;
 
-  if ( mOgrLayer->DeleteFeature( FID_TO_NUMBER( id ) ) != OGRERR_NONE )
+  if ( mOgrOrigLayer->DeleteFeature( FID_TO_NUMBER( id ) ) != OGRERR_NONE )
   {
     pushError( tr( "OGR error deleting feature %1: %2" ).arg( id ).arg( CPLGetLastErrorMsg() ) );
     return false;
@@ -2383,19 +2383,19 @@ void QgsOgrProvider::computeCapabilities()
       ability |= QgsVectorDataProvider::SelectAtId;
     }
 
-    if ( mWriteAccessPossible && mOgrLayer->TestCapability( "SequentialWrite" ) )
+    if ( mWriteAccessPossible && mOgrOrigLayer->TestCapability( "SequentialWrite" ) )
       // true if the CreateFeature() method works for this layer.
     {
       ability |= QgsVectorDataProvider::AddFeatures;
     }
 
-    if ( mWriteAccessPossible && mOgrLayer->TestCapability( "DeleteFeature" ) )
+    if ( mWriteAccessPossible && mOgrOrigLayer->TestCapability( "DeleteFeature" ) )
       // true if this layer can delete its features
     {
       ability |= DeleteFeatures;
     }
 
-    if ( mWriteAccessPossible && mOgrLayer->TestCapability( "RandomWrite" ) )
+    if ( mWriteAccessPossible && mOgrOrigLayer->TestCapability( "RandomWrite" ) )
       // true if the SetFeature() method is operational on this layer.
     {
       // TODO According to http://shapelib.maptools.org/ (Shapefile C Library V1.2)
@@ -2443,17 +2443,17 @@ void QgsOgrProvider::computeCapabilities()
     }
 #endif
 
-    if ( mWriteAccessPossible && mOgrLayer->TestCapability( "CreateField" ) )
+    if ( mWriteAccessPossible && mOgrOrigLayer->TestCapability( "CreateField" ) )
     {
       ability |= AddAttributes;
     }
 
-    if ( mWriteAccessPossible && mOgrLayer->TestCapability( "DeleteField" ) )
+    if ( mWriteAccessPossible && mOgrOrigLayer->TestCapability( "DeleteField" ) )
     {
       ability |= DeleteAttributes;
     }
 
-    if ( mWriteAccessPossible && mOgrLayer->TestCapability( "AlterFieldDefn" ) )
+    if ( mWriteAccessPossible && mOgrOrigLayer->TestCapability( "AlterFieldDefn" ) )
     {
       ability |= RenameAttributes;
     }
