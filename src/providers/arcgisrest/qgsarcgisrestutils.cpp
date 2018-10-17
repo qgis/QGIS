@@ -521,7 +521,15 @@ QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &erro
     QgsDebugMsg( QStringLiteral( "Parsing error: %1" ).arg( err.errorString() ) );
     return QVariantMap();
   }
-  return doc.object().toVariantMap();
+  const QVariantMap res = doc.object().toVariantMap();
+  if ( res.contains( QStringLiteral( "error" ) ) )
+  {
+    const QVariantMap error = res.value( QStringLiteral( "error" ) ).toMap();
+    errorText = error.value( QStringLiteral( "message" ) ).toString();
+    errorTitle = QObject::tr( "Error %1" ).arg( error.value( QStringLiteral( "code" ) ).toString() );
+    return QVariantMap();
+  }
+  return res;
 }
 
 std::unique_ptr<QgsSymbol> QgsArcGisRestUtils::parseEsriSymbolJson( const QVariantMap &symbolData )
