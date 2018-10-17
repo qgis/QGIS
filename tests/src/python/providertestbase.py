@@ -365,6 +365,7 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.source.setSubsetString(None)
             self.assertEqual(count, 0)
             self.assertTrue(provider_extent.isNull())
+            self.assertEqual(self.source.featureCount(), 5)
 
     def testUnique(self):
         self.assertEqual(self.source.uniqueValues(-1), set())
@@ -921,3 +922,29 @@ class ProviderTestCase(FeatureSourceTestCase):
         context.setFeature(feat)
         exp = QgsExpression('get_feature(\'{layer}\', \'pk\', 5)'.format(layer=self.vl.id()))
         exp.evaluate(context)
+
+    def testEmptySubsetOfAttributesWithSubsetString(self):
+
+        if self.source.supportsSubsetString():
+            try:
+                # Add a subset string
+                subset = self.getSubsetString()
+                self.source.setSubsetString(subset)
+
+                # First test, in a regular way
+                features = [f for f in self.source.getFeatures()]
+                count = len(features)
+                self.assertEqual(count, 3)
+                has_geometry = features[0].hasGeometry()
+
+                # Ask for no attributes
+                request = QgsFeatureRequest().setSubsetOfAttributes([])
+                # Make sure we still retrieve features !
+                features = [f for f in self.source.getFeatures(request)]
+                count = len(features)
+                self.assertEqual(count, 3)
+                # Check that we still get a geometry if we add one before
+                self.assertEqual(features[0].hasGeometry(), has_geometry)
+
+            finally:
+                self.source.setSubsetString(None)

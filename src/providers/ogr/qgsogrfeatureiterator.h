@@ -79,11 +79,8 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature &f, int attindex ) const;
 
     QgsOgrConn *mConn = nullptr;
-    OGRLayerH mOgrLayer = nullptr;
-    OGRLayerH mOgrOrigLayer = nullptr;
-    OGRLayerH mOgrLayerWithFid = nullptr;
-
-    bool mOrigFidAdded = false;
+    OGRLayerH mOgrLayer = nullptr; // when mOgrLayerUnfiltered != null and mOgrLayer != mOgrLayerUnfiltered, this is a SQL layer
+    OGRLayerH mOgrLayerOri = nullptr; // only set when there's a mSubsetString. In which case this a regular OGR layer. Potentially == mOgrLayer
 
     //! Sets to true, if geometry is in the requested columns
     bool mFetchGeometry = false;

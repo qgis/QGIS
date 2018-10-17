@@ -279,17 +279,44 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         vl.setSubsetString("SELECT fid, foo FROM test WHERE foo = 'baz'")
         got = [feat for feat in vl.getFeatures()]
         self.assertEqual(len(got), 1)
+        del vl
 
         testdata_path = unitTestDataPath('provider')
-        gpkg = os.path.join(testdata_path, 'bug_19826.gpkg')
-        vl = QgsVectorLayer('{}|layerid=0'.format(gpkg, 'test', 'ogr'))
+        shutil.copy(os.path.join(testdata_path, 'bug_19826.gpkg'), tmpfile)
+        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile, 'test', 'ogr'))
         vl.setSubsetString("name = 'two'")
         got = [feat for feat in vl.getFeatures()]
         self.assertEqual(len(got), 1)
 
         attributes = got[0].attributes()
+        self.assertEqual(got[0].id(), 2)
         self.assertEqual(attributes[0], 2)
         self.assertEqual(attributes[1], 'two')
+        self.assertNotEqual(attributes[2], None)
+
+        # Request by FeatureId on a subset layer
+        got = [feat for feat in vl.getFeatures(QgsFeatureRequest(2))]
+        self.assertEqual(len(got), 1)
+        attributes = got[0].attributes()
+        self.assertEqual(got[0].id(), 2)
+        self.assertEqual(attributes[0], 2)
+        self.assertEqual(attributes[1], 'two')
+        self.assertNotEqual(attributes[2], None)
+
+        request = QgsFeatureRequest(2).setSubsetOfAttributes([0])
+        got = [feat for feat in vl.getFeatures(request)]
+        self.assertEqual(len(got), 1)
+        attributes = got[0].attributes()
+        self.assertEqual(got[0].id(), 2)
+        self.assertEqual(attributes[0], 2)
+        self.assertEqual(attributes[1], None)
+        self.assertEqual(attributes[2], None)
+
+        # Request by FeatureId on a subset layer. The name = 'two' filter
+        # only returns FID 2, so requesting on FID 1 should return nothing
+        # but this is broken now.
+        got = [feat for feat in vl.getFeatures(QgsFeatureRequest(1))]
+        self.assertEqual(len(got), 1) # this is the current behavior, broken
 
     def testStyle(self):
 
@@ -896,8 +923,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateSpatialIndex)
         self.assertTrue(vl.dataProvider().createSpatialIndex())
 
-    def testSubSetStringEditable_bug17795(self):
-        """Test that a layer is not editable after setting a subset and it's reverted to editable after the filter is removed"""
+    def testSubSetStringEditable_bug17795_but_with_modified_behavior(self):
+        """Test that a layer is editable after setting a subset"""
 
         tmpfile = os.path.join(self.basetestpath, 'testSubSetStringEditable_bug17795.gpkg')
         shutil.copy(TEST_DATA_DIR + '/' + 'provider/bug_17795.gpkg', tmpfile)
@@ -917,7 +944,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
         vl.setSubsetString('"category" = \'one\'')
         self.assertTrue(vl.isValid())
-        self.assertFalse(vl.dataProvider().capabilities() & isEditable)
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
 
         vl.setSubsetString('')
         self.assertTrue(vl.dataProvider().capabilities() & isEditable)
