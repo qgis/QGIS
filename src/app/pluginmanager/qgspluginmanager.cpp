@@ -68,7 +68,6 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   mPythonUtils = nullptr;
 
   setupUi( this );
-  connect( vwPlugins, &QListView::clicked, this, &QgsPluginManager::vwPlugins_clicked );
   connect( vwPlugins, &QListView::doubleClicked, this, &QgsPluginManager::vwPlugins_doubleClicked );
   connect( wvDetails, &QgsWebView::linkClicked, this, &QgsPluginManager::wvDetails_linkClicked );
   connect( leFilter, &QgsFilterLineEdit::textChanged, this, &QgsPluginManager::leFilter_textChanged );
@@ -128,7 +127,13 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   mPluginsDetailsSplitter->restoreState( settings.value( QStringLiteral( "Windows/PluginManager/secondSplitterState" ) ).toByteArray() );
   // 2) The current mOptionsListWidget index (it will overwrite the "tab" setting of QgsOptionsDialogBase that handles the stackedWidget page
   // instead of the mOptionsListWidget index). Then the signal connected above will update the relevant page as well.
-  mOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "Windows/PluginManager/option" ), 0 ).toInt() );
+  int option = settings.value( QStringLiteral( "Windows/PluginManager/option" ), 0 ).toInt();
+  mOptionsListWidget->setCurrentRow( option );
+  if ( option == 0 )
+  {
+    // The first option won't fire the currentRowChanged signal, so initialize the first tab explicitly
+    setCurrentTab( 0 );
+  }
 
   // Hide widgets only suitable with Python support enabled (they will be uncovered back in setPythonUtils)
   buttonUpgradeAll->hide();
@@ -1238,28 +1243,10 @@ void QgsPluginManager::currentPluginChanged( const QModelIndex &index )
 {
   if ( index.column() == 0 )
   {
-    // Do exactly the same as if a plugin was clicked
-    vwPlugins_clicked( index );
-  }
-}
-
-
-
-void QgsPluginManager::vwPlugins_clicked( const QModelIndex &index )
-{
-  if ( index.column() == 0 )
-  {
     // If the model has been filtered, the index row in the proxy won't match the index row in the underlying model
     // so we need to jump through this little hoop to get the correct item
     QModelIndex realIndex = mModelProxy->mapToSource( index );
     QStandardItem *mypItem = mModelPlugins->itemFromIndex( realIndex );
-    if ( !mypItem->isEnabled() )
-    {
-      //The item is inactive (uncompatible or broken plugin), so it can't be selected. Display it's data anyway.
-      vwPlugins->clearSelection();
-    }
-    // Display details in any case: selection changed, inactive button clicked,
-    // or previously selected plugin clicked (while details view contains the welcome message for a category)
     showPluginDetails( mypItem );
   }
 }

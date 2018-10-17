@@ -600,7 +600,6 @@ class QgsPluginInstaller(QObject):
             loadPlugin(pluginName)
             plugins.getAllInstalled()
             plugins.rebuild()
-            self.exportPluginsToManager()
 
             if settings.contains('/PythonPlugins/' + pluginName):
                 if settings.value('/PythonPlugins/' + pluginName, False, bool):
@@ -613,6 +612,7 @@ class QgsPluginInstaller(QObject):
                 if startPlugin(pluginName):
                     settings.setValue('/PythonPlugins/' + pluginName, True)
 
+            self.exportPluginsToManager()
             msg = "<b>%s</b>" % self.tr("Plugin installed successfully")
         else:
             msg = "<b>%s:</b> %s" % (self.tr("Plugin installation failed"), infoString)
