@@ -208,7 +208,8 @@ QgsActiveLayerFeaturesLocatorFilter *QgsActiveLayerFeaturesLocatorFilter::clone(
 
 void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext &context )
 {
-  if ( string.length() < 3 || context.usingPrefix )
+  // Normally skip very short search strings, unless when specifically searching using this filter
+  if ( string.length() < 3 && !context.usingPrefix )
     return;
 
   bool allowNumeric = false;
@@ -330,7 +331,8 @@ QgsAllLayersFeaturesLocatorFilter *QgsAllLayersFeaturesLocatorFilter::clone() co
 
 void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext &context )
 {
-  if ( string.length() < 3 || context.usingPrefix )
+  // Normally skip very short search strings, unless when specifically searching using this filter
+  if ( string.length() < 3 && !context.usingPrefix )
     return;
 
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
