@@ -493,8 +493,7 @@ class CORE_EXPORT QgsFeatureRequest
     const Flags &flags() const { return mFlags; }
 
     /**
-     * Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
-     * To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
+     * Set a subset of attributes that will be fetched.
      */
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
 
