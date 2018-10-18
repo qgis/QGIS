@@ -57,7 +57,7 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
         header, body = self._execute_request(query_string)
         return (header, body, query_string)
 
-    def wms_request_compare(self, request, extra, reference_file=None, project='test_project.qgs', version='1.3.0'):
+    def wms_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs', version='1.3.0'):
         response_header, response_body, query_string = self.wms_request(request, extra, project, version)
         response = response_header + response_body
         reference_path = self.testdata_path + (request.lower() if not reference_file else reference_file) + '.txt'
