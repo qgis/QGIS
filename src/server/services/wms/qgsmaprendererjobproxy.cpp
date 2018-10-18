@@ -56,6 +56,13 @@ namespace QgsWms
       renderJob.setFeatureFilterProvider( mFeatureFilterProvider );
 #endif
       renderJob.start();
+
+      // Allows the main thread to manage blocking call coming from rendering
+      // threads (see discussion in #18988).
+      QEventLoop loop;
+      QObject::connect( &renderJob, &QgsMapRendererParallelJob::finished, &loop, &QEventLoop::quit );
+      loop.exec();
+
       renderJob.waitForFinished();
       *image = renderJob.renderedImage();
       mPainter.reset( new QPainter( image ) );
