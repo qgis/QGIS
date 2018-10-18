@@ -51,7 +51,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   mRequest.setTimeout( -1 );
   if ( mSharedDS )
   {
-    mOgrLayer = mSharedDS->createSQLResultLayer( mSource->mEncoding, mSource->mLayerName, mSource->mLayerIndex );
+    mOgrLayer = mSharedDS->getLayerFromNameOrIndex( mSource->mLayerName, mSource->mLayerIndex );
     if ( !mOgrLayer )
     {
       return;
@@ -81,13 +81,9 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
 
     if ( !mSource->mSubsetString.isEmpty() )
     {
-      mOgrOrigLayer = mOgrLayer;
-      mOgrLayerWithFid = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, QString(), true, &mOrigFidAdded );
-      mOgrLayer = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString, true, &mOrigFidAdded );
-
-      OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( mOgrLayer );
-      QByteArray fidColumn( OGR_L_GetFIDColumn( mOgrLayer ) );
-      mFirstFieldIsFid = !fidColumn.isEmpty() && OGR_FD_GetFieldIndex( fdef, fidColumn ) < 0;
+      mOgrLayerOri = mOgrLayer;
+      mOgrLayer = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString );
+      // If the mSubsetString was a full SELECT ...., then mOgrLayer will be a OGR SQL layer != mOgrLayerOri
 
       mFieldsWithoutFid.clear();
       for ( int i = ( mFirstFieldIsFid ) ? 1 : 0; i < mSource->mFields.size(); i++ )
@@ -122,8 +118,6 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
                    ( mSource->mOgrGeometryTypeFilter != wkbUnknown );
 
   QgsAttributeList attrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
-  if ( mOrigFidAdded )
-    attrs << mSource->mFields.count();
 
   // ensure that all attributes required for expression filter are being fetched
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && request.filterType() == QgsFeatureRequest::FilterExpression )
@@ -158,23 +152,23 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   // filter if we choose to ignore them (fixes #11223)
   if ( ( mSource->mDriverName != QLatin1String( "VRT" ) && mSource->mDriverName != QLatin1String( "OGR_VRT" ) ) || mFilterRect.isNull() )
   {
-    QgsOgrProviderUtils::setRelevantFields( mOgrLayer, mSource->mFields.count() + ( mOrigFidAdded ? 1 : 0 ), mFetchGeometry, attrs, mSource->mFirstFieldIsFid );
-    if ( mOgrLayerWithFid )
-      QgsOgrProviderUtils::setRelevantFields( mOgrLayerWithFid, mSource->mFields.count() + ( mOrigFidAdded ? 1 : 0 ), mFetchGeometry, attrs, mSource->mFirstFieldIsFid );
+    QgsOgrProviderUtils::setRelevantFields( mOgrLayer, mSource->mFields.count(), mFetchGeometry, attrs, mSource->mFirstFieldIsFid );
+    if ( mOgrLayerOri && mOgrLayerOri != mOgrLayer )
+      QgsOgrProviderUtils::setRelevantFields( mOgrLayerOri, mSource->mFields.count(), mFetchGeometry, attrs, mSource->mFirstFieldIsFid );
   }
 
   // spatial query to select features
   if ( !mFilterRect.isNull() )
   {
     OGR_L_SetSpatialFilterRect( mOgrLayer, mFilterRect.xMinimum(), mFilterRect.yMinimum(), mFilterRect.xMaximum(), mFilterRect.yMaximum() );
-    if ( mOgrLayerWithFid )
-      OGR_L_SetSpatialFilterRect( mOgrLayerWithFid, mFilterRect.xMinimum(), mFilterRect.yMinimum(), mFilterRect.xMaximum(), mFilterRect.yMaximum() );
+    if ( mOgrLayerOri && mOgrLayerOri != mOgrLayer )
+      OGR_L_SetSpatialFilterRect( mOgrLayerOri, mFilterRect.xMinimum(), mFilterRect.yMinimum(), mFilterRect.xMaximum(), mFilterRect.yMaximum() );
   }
   else
   {
     OGR_L_SetSpatialFilter( mOgrLayer, nullptr );
-    if ( mOgrLayerWithFid )
-      OGR_L_SetSpatialFilter( mOgrLayerWithFid, nullptr );
+    if ( mOgrLayerOri && mOgrLayerOri != mOgrLayer )
+      OGR_L_SetSpatialFilter( mOgrLayerOri, nullptr );
   }
 
   if ( request.filterType() == QgsFeatureRequest::FilterExpression
@@ -194,6 +188,12 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     if ( result == QgsSqlExpressionCompiler::Complete || result == QgsSqlExpressionCompiler::Partial )
     {
       QString whereClause = compiler->result();
+      if ( !mSource->mSubsetString.isEmpty() && mOgrLayer == mOgrLayerOri )
+      {
+        whereClause = QStringLiteral( "(" ) + mSource->mSubsetString +
+                      QStringLiteral( ") AND (" ) + whereClause +
+                      QStringLiteral( ")" );
+      }
       if ( OGR_L_SetAttributeFilter( mOgrLayer, mSource->mEncoding->fromUnicode( whereClause ).constData() ) == OGRERR_NONE )
       {
         //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
@@ -201,14 +201,14 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
         mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
       }
     }
-    else
+    else if ( mSource->mSubsetString.isEmpty() )
     {
       OGR_L_SetAttributeFilter( mOgrLayer, nullptr );
     }
 
     delete compiler;
   }
-  else
+  else if ( mSource->mSubsetString.isEmpty() )
   {
     OGR_L_SetAttributeFilter( mOgrLayer, nullptr );
   }
@@ -235,19 +235,7 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
 {
   feature.setValid( false );
   gdal::ogr_feature_unique_ptr fet;
-  if ( mOrigFidAdded )
-  {
-    // if we have been using the original fid as feature IDs (e.g. as a result of a subset
-    // string in place), then we need to request features from the original, unfiltered
-    // OGR layer. Otherwise the feature IDs we request will correspond to features in the
-    // filtered layer, not the original layer!
-    OGR_L_ResetReading( mOgrLayerWithFid );
-    fet.reset( OGR_L_GetFeature( mOgrLayerWithFid, FID_TO_NUMBER( id ) ) );
-  }
-  else
-  {
-    fet.reset( OGR_L_GetFeature( mOgrLayer, FID_TO_NUMBER( id ) ) );
-  }
+  fet.reset( OGR_L_GetFeature( mOgrLayer, FID_TO_NUMBER( id ) ) );
 
   if ( !fet )
   {
@@ -375,11 +363,7 @@ bool QgsOgrFeatureIterator::close()
   {
     iteratorClosed();
 
-    if ( mOgrLayer )
-    {
-      mSharedDS->releaseResultSet( mOgrLayer );
-      mOgrLayer = nullptr;
-    }
+    mOgrLayer = nullptr;
     mSharedDS.reset();
     mClosed = true;
     return true;
@@ -396,13 +380,14 @@ bool QgsOgrFeatureIterator::close()
     resetReading();
   }
 
-  if ( mOgrOrigLayer )
+  if ( mOgrLayerOri )
   {
-    GDALDatasetReleaseResultSet( mConn->ds, mOgrLayer );
-    GDALDatasetReleaseResultSet( mConn->ds, mOgrLayerWithFid );
-    mOgrLayer = mOgrOrigLayer;
-    mOgrOrigLayer = nullptr;
-    mOgrLayerWithFid = nullptr;
+    if ( mOgrLayer != mOgrLayerOri )
+    {
+      GDALDatasetReleaseResultSet( mConn->ds, mOgrLayer );
+    }
+    mOgrLayer = nullptr;
+    mOgrLayerOri = nullptr;
   }
 
   if ( mConn )
@@ -438,19 +423,7 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
 
 bool QgsOgrFeatureIterator::readFeature( gdal::ogr_feature_unique_ptr fet, QgsFeature &feature ) const
 {
-  if ( mOrigFidAdded )
-  {
-    OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( mOgrLayer );
-    int lastField = OGR_FD_GetFieldCount( fdef ) - 1;
-    if ( lastField >= 0 )
-      feature.setId( OGR_F_GetFieldAsInteger64( fet.get(), lastField ) );
-    else
-      feature.setId( OGR_F_GetFID( fet.get() ) );
-  }
-  else
-  {
-    feature.setId( OGR_F_GetFID( fet.get() ) );
-  }
+  feature.setId( OGR_F_GetFID( fet.get() ) );
   feature.initAttributes( mSource->mFields.count() );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
@@ -508,7 +481,8 @@ bool QgsOgrFeatureIterator::readFeature( gdal::ogr_feature_unique_ptr fet, QgsFe
   else
   {
     // all attributes
-    for ( int idx = 0; idx < mSource->mFields.count(); ++idx )
+    const auto fieldCount = mSource->mFields.count();
+    for ( int idx = 0; idx < fieldCount; ++idx )
     {
       getFeatureAttribute( fet.get(), feature, idx );
     }
