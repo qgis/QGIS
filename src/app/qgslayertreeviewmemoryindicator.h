@@ -27,7 +27,7 @@ class QgsLayerTreeViewMemoryIndicatorProvider : public QgsLayerTreeViewIndicator
 
   protected slots:
 
-    void onIndicatorClicked( const QModelIndex &index ) override;
+    void onIndicatorClicked( const QModelIndex &index );
 
   private:
     bool acceptLayer( QgsMapLayer *layer ) override;

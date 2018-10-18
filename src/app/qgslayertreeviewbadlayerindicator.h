@@ -30,7 +30,7 @@ class QgsLayerTreeViewBadLayerIndicatorProvider : public QgsLayerTreeViewIndicat
     explicit QgsLayerTreeViewBadLayerIndicatorProvider( QgsLayerTreeView *view );
 
   private slots:
-    void onIndicatorClicked( const QModelIndex &index ) override;
+    void onIndicatorClicked( const QModelIndex &index );
 
   private:
     QString iconName( QgsMapLayer *layer ) override;

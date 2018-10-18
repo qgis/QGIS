@@ -34,9 +34,9 @@ class QgsLayerTreeViewFilterIndicatorProvider : public QgsLayerTreeViewIndicator
 
     // QgsLayerTreeViewIndicatorProvider interface
   protected slots:
-    void onIndicatorClicked( const QModelIndex &index ) override;
-    void connectSignals( QgsMapLayer *layer ) override;
-    void disconnectSignals( QgsMapLayer *layer ) override;
+    void onIndicatorClicked( const QModelIndex &index ) ;
+    void connectSignals( QgsMapLayer *layer ) ;
+    void disconnectSignals( QgsMapLayer *layer ) ;
 };
 
 #endif // QGSLAYERTREEVIEWFILTERINDICATOR_H

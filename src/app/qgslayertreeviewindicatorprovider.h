@@ -38,8 +38,8 @@ class QgsMapLayer;
  *
  * Subclasses may override:
  * - onIndicatorClicked() default implementation does nothing
- * - connectSignals() default implementation connects vector layers to dataSourceChanged
- * - disconnectSignals() default implementation disconnects vector layers from dataSourceChanged
+ * - connectSignals() default implementation connects vector layers to dataSourceChanged()
+ * - disconnectSignals() default implementation disconnects vector layers from dataSourceChanged()
  */
 class QgsLayerTreeViewIndicatorProvider : public QObject
 {
@@ -49,27 +49,39 @@ class QgsLayerTreeViewIndicatorProvider : public QObject
     explicit QgsLayerTreeViewIndicatorProvider( QgsLayerTreeView *view );
 
   protected slots:
+
+    // Subclasses MAY override:
+    //! Action on indicator clicked, default implementation does nothing
+    void onIndicatorClicked( const QModelIndex &index ) { Q_UNUSED( index ) }
+    //! Connect signals, default implementation connects vector layers to dataSourceChanged()
+    void connectSignals( QgsMapLayer *layer );
+    //! Disconnect signals, default implementation disconnects vector layers from dataSourceChanged()
+    void disconnectSignals( QgsMapLayer *layer );
+    // End MAY overrides
+
     //! Connects to signals of layers newly added to the tree
-    virtual void onAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
+    void onAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     //! Disconnects from layers about to be removed from the tree
-    virtual void onWillRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
-    virtual void onLayerLoaded();
+    void onWillRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
+    void onLayerLoaded();
     //! Adds/removes indicator of a layer
-    virtual void onLayerChanged();
-    //! Action on indicator clicked
-    virtual void onIndicatorClicked( const QModelIndex &index ) { Q_UNUSED( index ) }
-    //! Connect signals
-    virtual void connectSignals( QgsMapLayer *layer );
-    //! Disconnect signals
-    virtual void disconnectSignals( QgsMapLayer *layer );
+    void onLayerChanged();
 
   private:
-    //! Layer filter
+
+    // Subclasses MUST override:
+    //! Layer filter: layers that pass the test will get the indicator
     virtual bool acceptLayer( QgsMapLayer *layer ) = 0;
+    //! Returns the icon name for the given \a layer, icon name is passed to QgsApplication::getThemeIcon()
     virtual QString iconName( QgsMapLayer *layer ) = 0;
+    //! Returns the tooltip text for the given \a layer
     virtual QString tooltipText( QgsMapLayer *layer ) = 0;
-    virtual std::unique_ptr< QgsLayerTreeViewIndicator > newIndicator( QgsMapLayer *layer );
-    virtual void addOrRemoveIndicator( QgsLayerTreeNode *node, QgsMapLayer *layer );
+    // End MUST overrides
+
+    //! Indicator factory
+    std::unique_ptr< QgsLayerTreeViewIndicator > newIndicator( QgsMapLayer *layer );
+    //! Add or remove the indicator to the given node
+    void addOrRemoveIndicator( QgsLayerTreeNode *node, QgsMapLayer *layer );
 
   protected:
     QgsLayerTreeView *mLayerTreeView = nullptr;
