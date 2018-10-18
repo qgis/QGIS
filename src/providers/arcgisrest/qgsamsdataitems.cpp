@@ -22,6 +22,7 @@
 #ifdef HAVE_GUI
 #include "qgsamssourceselect.h"
 #include "qgsnewhttpconnection.h"
+#include "qgsarcgisresttokenmanagerdialog.h"
 #endif
 
 #include <QImageReader>
@@ -53,7 +54,19 @@ QList<QAction *> QgsAmsRootItem::actions( QWidget *parent )
 {
   QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsAmsRootItem::newConnection );
-  return QList<QAction *>() << actionNew;
+
+  QAction *tokenManager = new QAction( tr( "Manage Tokens…" ), parent );
+  connect( tokenManager, &QAction::triggered, this, [ = ]()
+  {
+    QgsArcGisRestTokenManagerDialog dlg( parent );
+    if ( dlg.exec() )
+    {
+      refresh();
+    }
+
+  } );
+
+  return QList<QAction *>() << actionNew << tokenManager;
 }
 
 
@@ -94,7 +107,9 @@ QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
 {
   QVector<QgsDataItem *> layers;
   QString errorTitle, errorMessage;
-  QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( mUrl, errorTitle, errorMessage );
+
+  const QString token = QgsArcGisRestTokenManager::token( mUrl );
+  QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( mUrl, token, errorTitle,  errorMessage );
   if ( serviceData.isEmpty() )
   {
     return layers;
@@ -150,6 +165,23 @@ QList<QAction *> QgsAmsConnectionItem::actions( QWidget *parent )
   QAction *actionDelete = new QAction( tr( "Delete" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsAmsConnectionItem::deleteConnection );
   lst.append( actionDelete );
+
+  QAction *sep = new QAction();
+  sep->setSeparator( true );
+  lst.append( sep );
+
+  QAction *tokenManager = new QAction( tr( "Manage Tokens…" ), parent );
+  connect( tokenManager, &QAction::triggered, this, [ = ]()
+  {
+    QgsArcGisRestTokenManagerDialog dlg( parent );
+    if ( dlg.exec() )
+    {
+      refresh();
+    }
+
+  } );
+
+  lst << tokenManager;
 
   return lst;
 }

@@ -68,8 +68,10 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
 
   // Query
   QString errorTitle, errorMessage;
+
+  const QString token = QgsArcGisRestTokenManager::token( mDataSource.param( QStringLiteral( "url" ) ) );
   const QVariantMap queryData = QgsArcGisRestUtils::getObjects(
-                                  mDataSource.param( QStringLiteral( "url" ) ), objectIds, mDataSource.param( QStringLiteral( "crs" ) ), true,
+                                  mDataSource.param( QStringLiteral( "url" ) ), token, objectIds, mDataSource.param( QStringLiteral( "crs" ) ), true,
                                   fetchAttribNames, QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
                                   filterRect, errorTitle, errorMessage, feedback );
 
@@ -156,10 +158,10 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
   QString errorTitle;
   QString errorText;
 
-
+  const QString token = QgsArcGisRestTokenManager::token( mDataSource.param( QStringLiteral( "url" ) ) );
   const QList<quint32> featuresInRect = QgsArcGisRestUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
                                         mObjectIdFieldName,
-                                        extent, errorTitle, errorText, feedback );
+                                        extent, errorTitle, errorText, token, feedback );
 
   QgsFeatureIds ids;
   for ( quint32 id : featuresInRect )

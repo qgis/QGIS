@@ -131,10 +131,13 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   mLegendFetcher = new QgsAmsLegendFetcher( this );
 
   QgsDataSourceUri dataSource( dataSourceUri() );
-  mServiceInfo = QgsArcGisRestUtils::getServiceInfo( dataSource.param( QStringLiteral( "url" ) ), mErrorTitle, mError );
-  mLayerInfo = QgsArcGisRestUtils::getLayerInfo( dataSource.param( QStringLiteral( "url" ) ) + "/" + dataSource.param( QStringLiteral( "layer" ) ), mErrorTitle, mError );
 
-  QVariantMap extentData = mLayerInfo[QStringLiteral( "extent" )].toMap();
+  const QString token = QgsArcGisRestTokenManager::token( dataSource.param( QStringLiteral( "url" ) ) );
+
+  mServiceInfo = QgsArcGisRestUtils::getServiceInfo( dataSource.param( QStringLiteral( "url" ) ), token, mErrorTitle, mError );
+  mLayerInfo = QgsArcGisRestUtils::getLayerInfo( dataSource.param( QStringLiteral( "url" ) ) + "/" + dataSource.param( QStringLiteral( "layer" ) ), token, mErrorTitle, mError );
+
+  const QVariantMap extentData = mLayerInfo.value( QStringLiteral( "extent" ) ).toMap();
   mExtent.setXMinimum( extentData[QStringLiteral( "xmin" )].toDouble() );
   mExtent.setYMinimum( extentData[QStringLiteral( "ymin" )].toDouble() );
   mExtent.setXMaximum( extentData[QStringLiteral( "xmax" )].toDouble() );
@@ -258,6 +261,7 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
     return;
   }
   QgsDataSourceUri dataSource( dataSourceUri() );
+  const QString token = QgsArcGisRestTokenManager::token( dataSource.param( QStringLiteral( "url" ) ) );
 
   // Use of tiles currently only implemented if service CRS is meter based
   if ( mServiceInfo[QStringLiteral( "singleFusedMapCache" )].toBool() && mCrs.mapUnits() == QgsUnitTypes::DistanceMeters )
@@ -349,7 +353,7 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
     requestUrl.addQueryItem( QStringLiteral( "layers" ), QStringLiteral( "show:%1" ).arg( dataSource.param( QStringLiteral( "layer" ) ) ) );
     requestUrl.addQueryItem( QStringLiteral( "transparent" ), QStringLiteral( "true" ) );
     requestUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "image" ) );
-    QByteArray reply = QgsArcGisRestUtils::queryService( requestUrl, mErrorTitle, mError );
+    QByteArray reply = QgsArcGisRestUtils::queryService( requestUrl, token, mErrorTitle, mError );
     mCachedImage = QImage::fromData( reply, dataSource.param( QStringLiteral( "format" ) ).toLatin1() );
     if ( mCachedImage.format() != QImage::Format_ARGB32 )
     {
@@ -399,7 +403,9 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
   queryUrl.addQueryItem( QStringLiteral( "imageDisplay" ), QStringLiteral( "%1,%2,%3" ).arg( width ).arg( height ).arg( dpi ) );
   queryUrl.addQueryItem( QStringLiteral( "mapExtent" ), QStringLiteral( "%1,%2,%3,%4" ).arg( extent.xMinimum(), 0, 'f' ).arg( extent.yMinimum(), 0, 'f' ).arg( extent.xMaximum(), 0, 'f' ).arg( extent.yMaximum(), 0, 'f' ) );
   queryUrl.addQueryItem( QStringLiteral( "tolerance" ), QStringLiteral( "10" ) );
-  const QVariantList queryResults = QgsArcGisRestUtils::queryServiceJSON( queryUrl, mErrorTitle, mError ).value( QStringLiteral( "results" ) ).toList();
+
+  const QString token = QgsArcGisRestTokenManager::token( dataSource.param( QStringLiteral( "url" ) ) );
+  const QVariantList queryResults = QgsArcGisRestUtils::queryServiceJSON( queryUrl, token, mErrorTitle, mError ).value( QStringLiteral( "results" ) ).toList();
 
   QMap<int, QVariant> entries;
 

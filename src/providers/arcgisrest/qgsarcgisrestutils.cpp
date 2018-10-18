@@ -30,6 +30,7 @@
 #include "qgsfeedback.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
+#include "qgssettings.h"
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsmarkersymbollayer.h"
@@ -43,6 +44,75 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+//
+// QgsArcGisRestTokenManager
+//
+
+void QgsArcGisRestTokenManager::setToken( const QString &serverPrefix, const QString &token )
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "ArcGIS/tokens/" ) + cleanServerName( serverPrefix ), token, QgsSettings::Providers );
+}
+
+QMap<QString, QString> QgsArcGisRestTokenManager::tokens()
+{
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "ArcGIS/tokens/" ), QgsSettings::Providers );
+
+  const QStringList servers = settings.childKeys();
+  QMap<QString, QString> res;
+  for ( const QString &server : servers )
+    res.insert( server, settings.value( server ).toString() );
+
+  return res;
+}
+
+void QgsArcGisRestTokenManager::setTokens( const QMap<QString, QString> &tokens )
+{
+  QgsSettings settings;
+
+  // delete existing first
+  settings.remove( QStringLiteral( "ArcGIS/tokens/" ), QgsSettings::Providers );
+
+  for ( auto it = tokens.constBegin(); it != tokens.constEnd(); ++it )
+  {
+    QString server = cleanServerName( it.key() );
+    settings.setValue( QStringLiteral( "ArcGIS/tokens/" ) + server, it.value(), QgsSettings::Providers );
+  }
+}
+
+QString QgsArcGisRestTokenManager::token( const QString &u )
+{
+  QString t;
+  int currentMatchLength = 0;
+
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "ArcGIS/tokens/" ), QgsSettings::Providers );
+
+  const QStringList servers = settings.childKeys();
+  for ( const QString &server : servers )
+  {
+    if ( u.contains( server, Qt::CaseInsensitive ) && server.length() > currentMatchLength )
+    {
+      t = settings.value( server ).toString();
+      currentMatchLength = server.length();
+    }
+  }
+  return t;
+}
+
+QString QgsArcGisRestTokenManager::cleanServerName( const QString &server )
+{
+  QString s = server;
+  s.replace( QStringLiteral( "https://" ), QString() );
+  s.replace( QStringLiteral( "http://" ), QString() );
+  return s;
+}
+
+
+//
+// QgsArcGisRestUtils
+//
 
 QVariant::Type QgsArcGisRestUtils::mapEsriFieldType( const QString &esriFieldType )
 {
@@ -351,23 +421,23 @@ QgsCoordinateReferenceSystem QgsArcGisRestUtils::parseSpatialReference( const QV
 }
 
 
-QVariantMap QgsArcGisRestUtils::getServiceInfo( const QString &baseurl, QString &errorTitle, QString &errorText )
+QVariantMap QgsArcGisRestUtils::getServiceInfo( const QString &baseurl, const QString &token, QString &errorTitle, QString &errorText )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer?f=json
   QUrl queryUrl( baseurl );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  return queryServiceJSON( queryUrl, errorTitle, errorText );
+  return queryServiceJSON( queryUrl, token, errorTitle, errorText );
 }
 
-QVariantMap QgsArcGisRestUtils::getLayerInfo( const QString &layerurl, QString &errorTitle, QString &errorText )
+QVariantMap QgsArcGisRestUtils::getLayerInfo( const QString &layerurl, const QString &token, QString &errorTitle, QString &errorText )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1?f=json
   QUrl queryUrl( layerurl );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  return queryServiceJSON( queryUrl, errorTitle, errorText );
+  return queryServiceJSON( queryUrl, token, errorTitle, errorText );
 }
 
-QVariantMap QgsArcGisRestUtils::getObjectIds( const QString &layerurl, const QString &objectIdFieldName, QString &errorTitle, QString &errorText, const QgsRectangle &bbox )
+QVariantMap QgsArcGisRestUtils::getObjectIds( const QString &layerurl, const QString &token, const QString &objectIdFieldName, QString &errorTitle, QString &errorText, const QgsRectangle &bbox )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=objectid%3Dobjectid&returnIdsOnly=true&f=json
   QUrl queryUrl( layerurl + "/query" );
@@ -382,10 +452,10 @@ QVariantMap QgsArcGisRestUtils::getObjectIds( const QString &layerurl, const QSt
     queryUrl.addQueryItem( QStringLiteral( "geometryType" ), QStringLiteral( "esriGeometryEnvelope" ) );
     queryUrl.addQueryItem( QStringLiteral( "spatialRel" ), QStringLiteral( "esriSpatialRelEnvelopeIntersects" ) );
   }
-  return queryServiceJSON( queryUrl, errorTitle, errorText );
+  return queryServiceJSON( queryUrl, token, errorTitle, errorText );
 }
 
-QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QList<quint32> &objectIds, const QString &crs,
+QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QString &token, const QList<quint32> &objectIds, const QString &crs,
     bool fetchGeometry, const QStringList &fetchAttributes,
     bool fetchM, bool fetchZ,
     const QgsRectangle &filterRect,
@@ -423,10 +493,10 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QList
     queryUrl.addQueryItem( QStringLiteral( "geometryType" ), QStringLiteral( "esriGeometryEnvelope" ) );
     queryUrl.addQueryItem( QStringLiteral( "spatialRel" ), QStringLiteral( "esriSpatialRelEnvelopeIntersects" ) );
   }
-  return queryServiceJSON( queryUrl, errorTitle, errorText, feedback );
+  return queryServiceJSON( queryUrl,  token, errorTitle, errorText, feedback );
 }
 
-QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl, const QString &objectIdField, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, QgsFeedback *feedback )
+QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl, const QString &objectIdField, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &token, QgsFeedback *feedback )
 {
   QUrl queryUrl( layerurl + "/query" );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
@@ -437,7 +507,7 @@ QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl
                          .arg( filterRect.xMaximum(), 0, 'f', -1 ).arg( filterRect.yMaximum(), 0, 'f', -1 ) );
   queryUrl.addQueryItem( QStringLiteral( "geometryType" ), QStringLiteral( "esriGeometryEnvelope" ) );
   queryUrl.addQueryItem( QStringLiteral( "spatialRel" ), QStringLiteral( "esriSpatialRelEnvelopeIntersects" ) );
-  const QVariantMap objectIdData = queryServiceJSON( queryUrl, errorTitle, errorText, feedback );
+  const QVariantMap objectIdData = queryServiceJSON( queryUrl, token, errorTitle, errorText, feedback );
 
   if ( objectIdData.isEmpty() )
   {
@@ -445,19 +515,26 @@ QList<quint32> QgsArcGisRestUtils::getObjectIdsByExtent( const QString &layerurl
   }
 
   QList<quint32> ids;
-  foreach ( const QVariant &objectId, objectIdData["objectIds"].toList() )
+  const QVariantList objectIdsList = objectIdData[QStringLiteral( "objectIds" )].toList();
+  ids.reserve( objectIdsList.size() );
+  for ( const QVariant &objectId : objectIdsList )
   {
     ids << objectId.toInt();
   }
   return ids;
 }
 
-QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, QString &errorTitle, QString &errorText, QgsFeedback *feedback )
+QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, const QString &token, QString &errorTitle, QString &errorText, QgsFeedback *feedback )
 {
   QEventLoop loop;
   QUrl url = parseUrl( u );
 
   QNetworkRequest request( url );
+  if ( !token.isEmpty() )
+  {
+    request.setRawHeader( "X-Esri-Authorization",  QStringLiteral( "Bearer %1 " ).arg( token ).toLocal8Bit() );
+  }
+
   QNetworkReply *reply = nullptr;
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
@@ -501,9 +578,9 @@ QByteArray QgsArcGisRestUtils::queryService( const QUrl &u, QString &errorTitle,
   return result;
 }
 
-QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &errorTitle, QString &errorText, QgsFeedback *feedback )
+QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, const QString &token, QString &errorTitle, QString &errorText, QgsFeedback *feedback )
 {
-  QByteArray reply = queryService( url, errorTitle, errorText, feedback );
+  QByteArray reply = queryService( url, token, errorTitle, errorText, feedback );
   if ( !errorTitle.isEmpty() )
   {
     return QVariantMap();

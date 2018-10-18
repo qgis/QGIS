@@ -43,13 +43,14 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   mSharedData.reset( new QgsAfsSharedData() );
   mSharedData->mGeometryType = QgsWkbTypes::Unknown;
   mSharedData->mDataSource = QgsDataSourceUri( uri );
+  const QString token = QgsArcGisRestTokenManager::token( mSharedData->mDataSource.param( QStringLiteral( "url" ) ) );
 
   // Set CRS
   mSharedData->mSourceCRS.createFromString( mSharedData->mDataSource.param( QStringLiteral( "crs" ) ) );
 
   // Get layer info
   QString errorTitle, errorMessage;
-  const QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), errorTitle, errorMessage );
+  const QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), token, errorTitle, errorMessage );
   if ( layerData.isEmpty() )
   {
     pushError( errorTitle + ": " + errorMessage );
@@ -163,7 +164,8 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   // Read OBJECTIDs of all features: these may not be a continuous sequence,
   // and we need to store these to iterate through the features. This query
   // also returns the name of the ObjectID field.
-  QVariantMap objectIdData = QgsArcGisRestUtils::getObjectIds( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), objectIdFieldName, errorTitle, errorMessage, limitBbox ? mSharedData->mExtent : QgsRectangle() );
+  QVariantMap objectIdData = QgsArcGisRestUtils::getObjectIds( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), token,
+                             objectIdFieldName, errorTitle,  errorMessage, limitBbox ? mSharedData->mExtent : QgsRectangle() );
   if ( objectIdData.isEmpty() )
   {
     appendError( QgsErrorMessage( tr( "getObjectIds failed: %1 - %2" ).arg( errorTitle, errorMessage ), QStringLiteral( "AFSProvider" ) ) );

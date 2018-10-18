@@ -43,10 +43,12 @@ IF (WITH_GUI)
   SET(AFS_SRCS ${AFS_SRCS}
     qgsafssourceselect.cpp
     qgsarcgisservicesourceselect.cpp
+    qgsarcgisresttokenmanagerdialog.cpp
   )
   SET(AFS_MOC_HDRS ${AFS_MOC_HDRS}
     qgsafssourceselect.h
     qgsarcgisservicesourceselect.h
+    qgsarcgisresttokenmanagerdialog.h
   )
 ENDIF ()
 
@@ -94,10 +96,12 @@ IF (WITH_GUI)
   SET(AMS_SRCS ${AMS_SRCS}
     qgsamssourceselect.cpp
     qgsarcgisservicesourceselect.cpp
+    qgsarcgisresttokenmanagerdialog.cpp
   )
   SET(AMS_MOC_HDRS ${AMS_MOC_HDRS}
     qgsamssourceselect.h
     qgsarcgisservicesourceselect.h
+    qgsarcgisresttokenmanagerdialog.h
   )
 ENDIF ()
 
