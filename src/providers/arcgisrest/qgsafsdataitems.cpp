@@ -21,6 +21,7 @@
 #ifdef HAVE_GUI
 #include "qgsnewhttpconnection.h"
 #include "qgsafssourceselect.h"
+#include "qgsarcgisresttokenmanagerdialog.h"
 #endif
 
 #include <QMessageBox>
@@ -55,7 +56,19 @@ QList<QAction *> QgsAfsRootItem::actions( QWidget *parent )
 {
   QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsAfsRootItem::newConnection );
-  return QList<QAction *>() << actionNew;
+
+  QAction *tokenManager = new QAction( tr( "Manage Tokens…" ), parent );
+  connect( tokenManager, &QAction::triggered, this, [ = ]()
+  {
+    QgsArcGisRestTokenManagerDialog dlg( parent );
+    if ( dlg.exec() )
+    {
+      refresh();
+    }
+
+  } );
+
+  return QList<QAction *>() << actionNew << tokenManager;
 }
 
 QWidget *QgsAfsRootItem::paramWidget()
@@ -96,10 +109,11 @@ QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
 {
   const QgsOwsConnection connection( QStringLiteral( "arcgisfeatureserver" ), mConnName );
   const QString url = connection.uri().param( QStringLiteral( "url" ) );
+  const QString token = QgsArcGisRestTokenManager::token( url );
 
   QVector<QgsDataItem *> layers;
   QString errorTitle, errorMessage;
-  const QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( url, errorTitle, errorMessage );
+  const QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( url, token, errorTitle, errorMessage );
   if ( serviceData.isEmpty() )
   {
     if ( !errorMessage.isEmpty() )
@@ -157,6 +171,23 @@ QList<QAction *> QgsAfsConnectionItem::actions( QWidget *parent )
   QAction *actionDelete = new QAction( tr( "Delete Connection" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsAfsConnectionItem::deleteConnection );
   lst.append( actionDelete );
+
+  QAction *sep = new QAction();
+  sep->setSeparator( true );
+  lst.append( sep );
+
+  QAction *tokenManager = new QAction( tr( "Manage Tokens…" ), parent );
+  connect( tokenManager, &QAction::triggered, this, [ = ]()
+  {
+    QgsArcGisRestTokenManagerDialog dlg( parent );
+    if ( dlg.exec() )
+    {
+      refresh();
+    }
+
+  } );
+
+  lst << tokenManager;
 
   return lst;
 }

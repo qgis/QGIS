@@ -22,11 +22,12 @@
 #ifdef HAVE_GUI
 #include "qgsamssourceselect.h"
 #include "qgsnewhttpconnection.h"
+#include "qgsarcgisresttokenmanagerdialog.h"
 #endif
 
 #include <QImageReader>
 
-QgsAmsRootItem::QgsAmsRootItem( QgsDataItem *parent, QString name, QString path )
+QgsAmsRootItem::QgsAmsRootItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast | Collapse;
@@ -38,7 +39,8 @@ QVector<QgsDataItem *> QgsAmsRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
 
-  Q_FOREACH ( const QString &connName, QgsOwsConnection::connectionList( "arcgismapserver" ) )
+  const QStringList connectionList = QgsOwsConnection::connectionList( QStringLiteral( "arcgismapserver" ) );
+  for ( const QString &connName : connectionList )
   {
     QgsOwsConnection connection( QStringLiteral( "arcgismapserver" ), connName );
     QString path = "ams:/" + connName;
@@ -52,7 +54,19 @@ QList<QAction *> QgsAmsRootItem::actions( QWidget *parent )
 {
   QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsAmsRootItem::newConnection );
-  return QList<QAction *>() << actionNew;
+
+  QAction *tokenManager = new QAction( tr( "Manage Tokens…" ), parent );
+  connect( tokenManager, &QAction::triggered, this, [ = ]()
+  {
+    QgsArcGisRestTokenManagerDialog dlg( parent );
+    if ( dlg.exec() )
+    {
+      refresh();
+    }
+
+  } );
+
+  return QList<QAction *>() << actionNew << tokenManager;
 }
 
 
@@ -82,7 +96,7 @@ void QgsAmsRootItem::newConnection()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAmsConnectionItem::QgsAmsConnectionItem( QgsDataItem *parent, QString name, QString path, QString url )
+QgsAmsConnectionItem::QgsAmsConnectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &url )
   : QgsDataCollectionItem( parent, name, path )
   , mUrl( url )
 {
@@ -93,7 +107,9 @@ QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
 {
   QVector<QgsDataItem *> layers;
   QString errorTitle, errorMessage;
-  QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( mUrl, errorTitle, errorMessage );
+
+  const QString token = QgsArcGisRestTokenManager::token( mUrl );
+  QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( mUrl, token, errorTitle,  errorMessage );
   if ( serviceData.isEmpty() )
   {
     return layers;
@@ -102,10 +118,11 @@ QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
   QString authid = QgsArcGisRestUtils::parseSpatialReference( serviceData[QStringLiteral( "spatialReference" )].toMap() ).authid();
   QString format = QStringLiteral( "jpg" );
   bool found = false;
-  QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-  foreach ( const QString &encoding, serviceData["supportedImageFormatTypes"].toString().split( ',' ) )
+  const QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+  const QStringList supportedImageFormatTypes = serviceData.value( QStringLiteral( "supportedImageFormatTypes" ) ).toString().split( ',' );
+  for ( const QString &encoding : supportedImageFormatTypes )
   {
-    foreach ( const QByteArray &fmt, supportedFormats )
+    for ( const QByteArray &fmt : supportedFormats )
     {
       if ( encoding.startsWith( fmt, Qt::CaseInsensitive ) )
       {
@@ -118,7 +135,8 @@ QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
       break;
   }
 
-  foreach ( const QVariant &layerInfo, serviceData["layers"].toList() )
+  const QVariantList layersList = serviceData.value( QStringLiteral( "layers" ) ).toList();
+  for ( const QVariant &layerInfo : layersList )
   {
     QVariantMap layerInfoMap = layerInfo.toMap();
     QString id = layerInfoMap[QStringLiteral( "id" )].toString();
@@ -131,7 +149,7 @@ QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
 
 bool QgsAmsConnectionItem::equal( const QgsDataItem *other )
 {
-  const QgsAmsConnectionItem *o = dynamic_cast<const QgsAmsConnectionItem *>( other );
+  const QgsAmsConnectionItem *o = qobject_cast<const QgsAmsConnectionItem *>( other );
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 
@@ -147,6 +165,23 @@ QList<QAction *> QgsAmsConnectionItem::actions( QWidget *parent )
   QAction *actionDelete = new QAction( tr( "Delete" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsAmsConnectionItem::deleteConnection );
   lst.append( actionDelete );
+
+  QAction *sep = new QAction();
+  sep->setSeparator( true );
+  lst.append( sep );
+
+  QAction *tokenManager = new QAction( tr( "Manage Tokens…" ), parent );
+  connect( tokenManager, &QAction::triggered, this, [ = ]()
+  {
+    QgsArcGisRestTokenManagerDialog dlg( parent );
+    if ( dlg.exec() )
+    {
+      refresh();
+    }
+
+  } );
+
+  lst << tokenManager;
 
   return lst;
 }
