@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgsalgorithmbuffer.h"
+#include "qgswkbtypes.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -163,6 +165,22 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
+}
+
+QgsProcessingAlgorithm::Flags QgsBufferAlgorithm::flags() const
+{
+  Flags f = QgsProcessingAlgorithm::flags();
+  f |= QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+  return f;
+}
+
+bool QgsBufferAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
+{
+  const QgsVectorLayer *vlayer = qobject_cast< const QgsVectorLayer * >( layer );
+  if ( !vlayer )
+    return false;
+  QgsWkbTypes::GeometryType inPlaceGeometryType = vlayer->geometryType();
+  return inPlaceGeometryType == QgsWkbTypes::GeometryType::PolygonGeometry;
 }
 
 ///@endcond
