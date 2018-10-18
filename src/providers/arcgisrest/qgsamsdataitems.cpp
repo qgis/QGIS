@@ -38,10 +38,10 @@ QVector<QgsDataItem *> QgsAmsRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
 
-  const QStringList connectionList = QgsOwsConnection::connectionList( QStringLiteral( "arcgismapserver" ) );
+  const QStringList connectionList = QgsOwsConnection::connectionList( QStringLiteral( "ARCGISMAPSERVER" ) );
   for ( const QString &connName : connectionList )
   {
-    QgsOwsConnection connection( QStringLiteral( "arcgismapserver" ), connName );
+    QgsOwsConnection connection( QStringLiteral( "ARCGISMAPSERVER" ), connName );
     QString path = "ams:/" + connName;
     connections.append( new QgsAmsConnectionItem( this, connName, path, connection.uri().param( QStringLiteral( "url" ) ) ) );
   }
@@ -94,7 +94,11 @@ QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
 {
   QVector<QgsDataItem *> layers;
   QString errorTitle, errorMessage;
-  QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( mUrl, errorTitle, errorMessage );
+
+  QgsOwsConnection connection( QStringLiteral( "ARCGISMAPSERVER" ), mName );
+
+  const QString authcfg = connection.uri().param( QStringLiteral( "authcfg" ) );
+  QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( mUrl, authcfg, errorTitle,  errorMessage );
   if ( serviceData.isEmpty() )
   {
     return layers;
@@ -125,7 +129,7 @@ QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
   {
     QVariantMap layerInfoMap = layerInfo.toMap();
     QString id = layerInfoMap[QStringLiteral( "id" )].toString();
-    QgsAmsLayerItem *layer = new QgsAmsLayerItem( this, mName, mUrl, id, layerInfoMap[QStringLiteral( "name" )].toString(), authid, format );
+    QgsAmsLayerItem *layer = new QgsAmsLayerItem( this, mName, mUrl, id, layerInfoMap[QStringLiteral( "name" )].toString(), authid, format, authcfg );
     layers.append( layer );
   }
 
@@ -174,10 +178,12 @@ void QgsAmsConnectionItem::deleteConnection()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAmsLayerItem::QgsAmsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format )
+QgsAmsLayerItem::QgsAmsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg )
   : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Raster, QStringLiteral( "arcgismapserver" ) )
 {
   mUri = QStringLiteral( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( authid, format, id, url );
+  if ( !authcfg.isEmpty() )
+    mUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
   setState( Populated );
   mIconName = QStringLiteral( "mIconAms.svg" );
 }

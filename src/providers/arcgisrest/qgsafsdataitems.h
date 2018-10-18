@@ -69,7 +69,7 @@ class QgsAfsLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsAfsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &title, const QString &authid );
+    QgsAfsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &title, const QString &authid, const QString &authcfg );
 };
 
 #endif // QGSAFSDATAITEMS_H

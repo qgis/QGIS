@@ -26,7 +26,7 @@
 
 
 QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QgsArcGisServiceSourceSelect( QStringLiteral( "ArcGisMapServer" ), QgsArcGisServiceSourceSelect::MapService, parent, fl, widgetMode )
+  : QgsArcGisServiceSourceSelect( QStringLiteral( "ARCGISMAPSERVER" ), QgsArcGisServiceSourceSelect::MapService, parent, fl, widgetMode )
 {
 
   // import/export of connections not supported yet
@@ -37,7 +37,9 @@ QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
 {
   QString errorTitle, errorMessage;
-  QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( connection.uri().param( QStringLiteral( "url" ) ), errorTitle, errorMessage );
+
+  const QString authcfg = connection.uri().param( QStringLiteral( "authcfg" ) );
+  const QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( connection.uri().param( QStringLiteral( "url" ) ), authcfg, errorTitle, errorMessage );
   if ( serviceInfoMap.isEmpty() )
   {
     QMessageBox::warning( this, tr( "Error" ), tr( "Failed to retrieve service capabilities:\n%1: %2" ).arg( errorTitle, errorMessage ) );
@@ -57,7 +59,8 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
     }
 
     // Get layer info
-    QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( connection.uri().param( QStringLiteral( "url" ) ) + "/" + layerInfoMap[QStringLiteral( "id" )].toString(), errorTitle, errorMessage );
+    QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( connection.uri().param( QStringLiteral( "url" ) ) + "/" + layerInfoMap[QStringLiteral( "id" )].toString(),
+                            authcfg, errorTitle, errorMessage );
     if ( layerData.isEmpty() )
     {
       layerErrors.append( QStringLiteral( "Layer %1: %2 - %3" ).arg( layerInfoMap[QStringLiteral( "id" )].toString(), errorTitle, errorMessage ) );

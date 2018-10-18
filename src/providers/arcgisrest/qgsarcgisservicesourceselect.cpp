@@ -144,7 +144,7 @@ void QgsArcGisServiceSourceSelect::populateImageEncodings( const QStringList &av
 
 QString QgsArcGisServiceSourceSelect::getSelectedImageEncoding() const
 {
-  return mImageEncodingGroup ? mImageEncodingGroup->checkedButton()->text() : QString();
+  return mImageEncodingGroup && mImageEncodingGroup->checkedButton() ? mImageEncodingGroup->checkedButton()->text() : QString();
 }
 
 void QgsArcGisServiceSourceSelect::populateConnectionList()
