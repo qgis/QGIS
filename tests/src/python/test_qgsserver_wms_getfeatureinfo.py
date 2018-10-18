@@ -407,6 +407,26 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'wms_getfeatureinfo_polygon_tolerance_20_text_xml',
                                  'test_project_values.qgz')
 
+    def testGetFeatureInfoPostgresTypes(self):
+        #compare json list output with file
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=json' +
+                                 '&info_format=text%2Fxml' +
+                                 '&srs=EPSG%3A3857' +
+                                 '&QUERY_LAYERS=json' +
+                                 '&FILTER=json' + urllib.parse.quote(':"pk" = 1'),
+                                 'get_postgres_types_json_list',
+                                 'test_project_postgres_types.qgs')
+
+        #compare dict output with file
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=json' +
+                                 '&info_format=text%2Fxml' +
+                                 '&srs=EPSG%3A3857' +
+                                 '&QUERY_LAYERS=json' +
+                                 '&FILTER=json' + urllib.parse.quote(':"pk" = 2'),
+                                 'get_postgres_types_json_dict',
+                                 'test_project_postgres_types.qgs')
 
 if __name__ == '__main__':
     unittest.main()
