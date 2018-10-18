@@ -138,20 +138,19 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
     else
     {
       QMenu *featureMenu = new QMenu();
-      for ( int i = 0; i < features.count(); i++ )
+      for ( int idx = 0; idx < features.count(); idx++ )
       {
-        QAction *featureAction = featureMenu->addAction( FID_TO_STRING( features.at( i ).id() ) );
-        connect( featureAction, &QAction::triggered, this, [ = ] { doActionForFeature( layer, features.at( i ), point );} );
+        QAction *featureAction = featureMenu->addAction( FID_TO_STRING( features.at( idx ).id() ) );
+        connect( featureAction, &QAction::triggered, this, [ = ] { doActionForFeature( layer, features.at( idx ), point );} );
       }
       QAction *allFeatureAction = featureMenu->addAction( tr( "All Features" ) );
       connect( allFeatureAction, &QAction::triggered, this, [ = ]
       {
-        for ( int i = 0; i < features.count(); i++ )
+        for ( int idx = 0; idx < features.count(); idx++ )
         {
-          doActionForFeature( layer, features.at( i ), point );
+          doActionForFeature( layer, features.at( idx ), point );
         }
       } );
-
       featureMenu->exec( position );
     }
     return true;
@@ -159,7 +158,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
   return false;
 }
 
-void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, QgsFeature feat, QgsPointXY point )
+void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, const QgsFeature &feature, const QgsPointXY &point )
 {
   QgsAction defaultAction = layer->actions()->defaultAction( QStringLiteral( "Canvas" ) );
   if ( defaultAction.isValid() )
@@ -175,14 +174,14 @@ void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, QgsFeat
     actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), QStringLiteral( "Canvas" ), true ) );
     context << actionScope;
 
-    defaultAction.run( layer, feat, context );
+    defaultAction.run( layer, feature, context );
   }
   else
   {
     QgsMapLayerAction *mapLayerAction = QgsGui::mapLayerActionRegistry()->defaultActionForLayer( layer );
     if ( mapLayerAction )
     {
-      mapLayerAction->triggerForFeature( layer, &feat );
+      mapLayerAction->triggerForFeature( layer, &feature );
     }
   }
 }

@@ -53,7 +53,7 @@ class APP_EXPORT QgsMapToolFeatureAction : public QgsMapTool
 
   private:
     bool doAction( QgsVectorLayer *layer, int x, int y );
-    void doActionForFeature( QgsVectorLayer *layer, QgsFeature feat, QgsPointXY point );
+    void doActionForFeature( QgsVectorLayer *layer, const QgsFeature &feature, const QgsPointXY &point );
 };
 
 #endif
