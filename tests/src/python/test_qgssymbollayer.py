@@ -384,6 +384,27 @@ class TestQgsSymbolLayer(unittest.TestCase):
 
         self.assertTrue(self.imageCheck('symbol_layer', 'symbollayer_disabled', image))
 
+    def testRenderFilteredShapefileLayer(self):
+        """ test that rendering a filtered shapefile layer works"""
+
+        polys_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        polys_layer = QgsVectorLayer(polys_shp, 'Polygons', 'ogr')
+        polys_layer.setSubsetString('value=20')
+        QgsProject.instance().addMapLayer(polys_layer)
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-133, 22, -70, 52))
+        ms.setLayers([polys_layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_layer')
+        renderchecker.setControlName('expected_filtered_shapefile_layer')
+        self.assertTrue(renderchecker.runTest('filtered_shapefile_layer'))
+        QgsProject.instance().removeMapLayer(polys_layer)
+
     def testRenderFillLayerDataDefined(self):
         """ test that rendering a fill symbol with data defined enabled layer works"""
 
