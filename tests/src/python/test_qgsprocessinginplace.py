@@ -17,6 +17,8 @@ from qgis.core import (
     QgsFeature, QgsGeometry, QgsSettings, QgsApplication, QgsMemoryProviderUtils, QgsWkbTypes, QgsField, QgsFields, QgsProcessingFeatureSourceDefinition, QgsProcessingContext, QgsProcessingFeedback, QgsCoordinateReferenceSystem, QgsProject, QgsProcessingException
 )
 from processing.core.Processing import Processing
+from processing.core.ProcessingConfig import ProcessingConfig
+from processing.tools import dataobjects
 from processing.gui.AlgorithmExecutor import execute_in_place_run
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtTest import QSignalSpy
@@ -658,6 +660,71 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         wkt1, wkt2 = [f.geometry().asWkt() for f in new_features]
         self.assertEqual(wkt1, 'PolygonZ ((0 0 1, 1 1 2.25, 2 0 4, 0 0 1))')
         self.assertEqual(wkt2, 'PolygonZ ((1 1 2.25, 0 2 3, 2 2 1, 1 1 2.25))')
+
+    def _test_difference_on_invalid_geometries(self, geom_option):
+        polygon_layer = self._make_layer('Polygon')
+        self.assertTrue(polygon_layer.startEditing())
+        f = QgsFeature(polygon_layer.fields())
+        f.setAttributes([1])
+        # Flake!
+        f.setGeometry(QgsGeometry.fromWkt('Polygon ((0 0, 2 2, 0 2, 2 0, 0 0))'))
+        self.assertTrue(f.isValid())
+        self.assertTrue(polygon_layer.addFeatures([f]))
+        polygon_layer.commitChanges()
+        polygon_layer.rollBack()
+        self.assertEqual(polygon_layer.featureCount(), 1)
+
+        overlay_layer = self._make_layer('Polygon')
+        self.assertTrue(overlay_layer.startEditing())
+        f = QgsFeature(overlay_layer.fields())
+        f.setAttributes([1])
+        f.setGeometry(QgsGeometry.fromWkt('Polygon ((0 0, 2 0, 2 2, 0 2, 0 0))'))
+        self.assertTrue(f.isValid())
+        self.assertTrue(overlay_layer.addFeatures([f]))
+        overlay_layer.commitChanges()
+        overlay_layer.rollBack()
+        self.assertEqual(overlay_layer.featureCount(), 1)
+
+        QgsProject.instance().addMapLayers([polygon_layer, overlay_layer])
+
+        old_features = [f for f in polygon_layer.getFeatures()]
+
+        # 'Ignore features with invalid geometries' = 1
+        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, geom_option)
+
+        feedback = ConsoleFeedBack()
+        context = dataobjects.createContext(feedback)
+        context.setProject(QgsProject.instance())
+
+        alg = self.registry.createAlgorithmById('native:difference')
+        self.assertIsNotNone(alg)
+
+        parameters = {
+            'OVERLAY': overlay_layer,
+            'INPUT': polygon_layer,
+            'OUTPUT': ':memory',
+        }
+
+        old_features = [f for f in polygon_layer.getFeatures()]
+
+        self.assertTrue(polygon_layer.startEditing())
+        polygon_layer.selectAll()
+        ok, _ = execute_in_place_run(
+            alg, parameters, context=context, feedback=feedback, raise_exceptions=True)
+
+        new_features = [f for f in polygon_layer.getFeatures()]
+
+        return old_features, new_features
+
+    def test_difference_on_invalid_geometries(self):
+        """Test #20147 difference deletes invalid geometries"""
+
+        old_features, new_features = self._test_difference_on_invalid_geometries(1)
+        self.assertEqual(len(new_features), 1)
+        old_features, new_features = self._test_difference_on_invalid_geometries(0)
+        self.assertEqual(len(new_features), 1)
+        old_features, new_features = self._test_difference_on_invalid_geometries(2)
+        self.assertEqual(len(new_features), 1)
 
 
 if __name__ == '__main__':
