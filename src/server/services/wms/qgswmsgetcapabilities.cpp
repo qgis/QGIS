@@ -1017,7 +1017,24 @@ namespace QgsWms
             appendCrsElementsToLayer( doc, layerElem, crsList, outputCrsList );
 
             //Ex_GeographicBoundingBox
-            appendLayerBoundingBoxes( doc, layerElem, l->extent(), l->crs(), crsList, outputCrsList, project );
+            QgsRectangle extent = l->extent();  // layer extent by default
+            if ( l->type() == QgsMapLayer::VectorLayer )
+            {
+              QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
+              if ( vl && vl->featureCount() == 0 )
+              {
+                // if there's no feature, use the wms extent defined in the
+                // project...
+                extent = QgsServerProjectUtils::wmsExtent( *project );
+                if ( extent.isNull() )
+                {
+                  // or the CRS extent otherwise
+                  extent = vl->crs().bounds();
+                }
+              }
+            }
+
+            appendLayerBoundingBoxes( doc, layerElem, extent, l->crs(), crsList, outputCrsList, project );
           }
 
           // add details about supported styles of the layer
