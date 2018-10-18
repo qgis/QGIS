@@ -428,5 +428,43 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'get_postgres_types_json_dict',
                                  'test_project_postgres_types.qgs')
 
+        #compare decoded json field list
+        response_header, response_body, query_string = self.wms_request('GetFeatureInfo',
+                                                                        '&layers=json' +
+                                                                        '&info_format=text%2Fxml' +
+                                                                        '&srs=EPSG%3A3857' +
+                                                                        '&QUERY_LAYERS=json' +
+                                                                        '&FILTER=json' + urllib.parse.quote(':"pk" = 1'),
+                                                                        'test_project_postgres_types.qgs')
+        root = ET.fromstring(response_body)
+        for attribute in root.iter('Attribute'):
+            if attribute.get('name') == 'jvalue':
+                self.assertIsInstance(attribute.get('value'), list)
+                self.assertEqual(attribute.get('value'), [1, 2, 3])
+                self.assertEqual(attribute.get('value'), [1.0, 2.0, 3.0])
+            if attribute.get('name') == 'jbvalue':
+                self.assertIsInstance(attribute.get('value'), list)
+                self.assertEqual(attribute.get('value'), [4, 5, 6])
+                self.assertEqual(attribute.get('value'), [4.0, 5.0, 6.0])
+
+        #compare decoded json field dict
+        response_header, response_body, query_string = self.wms_request('GetFeatureInfo',
+                                                                        '&layers=json' +
+                                                                        '&info_format=text%2Fxml' +
+                                                                        '&srs=EPSG%3A3857' +
+                                                                        '&QUERY_LAYERS=json' +
+                                                                        '&FILTER=json' + urllib.parse.quote(':"pk" = 2'),
+                                                                        'test_project_postgres_types.qgs')
+        root = ET.fromstring(response_body)
+        for attribute in root.iter('Attribute'):
+            if attribute.get('name') == 'jvalue':
+                self.assertIsInstance(attribute.get('value'), dict)
+                self.assertEqual(attribute.get('value'), {'a': 1, 'b': 2})
+                self.assertEqual(attribute.get('value'), {'a': 1.0, 'b': 2.0})
+            if attribute.get('name') == 'jbvalue':
+                self.assertIsInstance(attribute.get('value'), dict)
+                self.assertEqual(attribute.get('value'), {'c': 4, 'd': 5})
+                self.assertEqual(attribute.get('value'), {'c': 4.0, 'd': 5.0})
+
 if __name__ == '__main__':
     unittest.main()

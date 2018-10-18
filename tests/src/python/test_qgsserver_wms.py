@@ -48,15 +48,18 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
     # Set to True to re-generate reference files for this class
     regenerate_reference = False
 
-    def wms_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs', version='1.3.0'):
+    def wms_request(self, request, extra=None, project='test_project.qgs', version='1.3.0'):
         project = self.testdata_path + project
         assert os.path.exists(project), "Project file not found: " + project
-
         query_string = 'https://www.qgis.org/?MAP=%s&SERVICE=WMS&VERSION=%s&REQUEST=%s' % (urllib.parse.quote(project), version, request)
         if extra is not None:
             query_string += extra
         header, body = self._execute_request(query_string)
-        response = header + body
+        return (header, body, query_string)
+
+    def wms_request_compare(self, request, extra, reference_file=None, project='test_project.qgs', version='1.3.0'):
+        response_header, response_body, query_string = self.wms_request(request, extra, project, version)
+        response = response_header + response_body
         reference_path = self.testdata_path + (request.lower() if not reference_file else reference_file) + '.txt'
         self.store_reference(reference_path, response)
         f = open(reference_path, 'rb')
