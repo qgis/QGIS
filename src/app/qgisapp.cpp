@@ -11134,7 +11134,7 @@ bool QgisApp::checkMemoryLayers()
     if ( it.value() && it.value()->dataProvider()->name() == QLatin1String( "memory" ) )
     {
       QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( it.value() );
-      if ( vl && vl->featureCount() != 0 )
+      if ( vl && vl->featureCount() != 0 && !vl->customProperty( QStringLiteral( "skipMemoryLayersCheck" ) ).toInt() )
       {
         hasMemoryLayers = true;
         break;
