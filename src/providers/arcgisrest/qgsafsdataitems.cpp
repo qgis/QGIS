@@ -41,7 +41,7 @@ QVector<QgsDataItem *> QgsAfsRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
 
-  const QStringList connectionList = QgsOwsConnection::connectionList( "ARCGISFEATURESERVER" );
+  const QStringList connectionList = QgsOwsConnection::connectionList( QStringLiteral( "ARCGISFEATURESERVER" ) );
   for ( const QString &connName : connectionList )
   {
     const QString path = QStringLiteral( "afs:/" ) + connName;
