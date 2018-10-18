@@ -318,6 +318,51 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         got = [feat for feat in vl.getFeatures(QgsFeatureRequest(1))]
         self.assertEqual(len(got), 1) # this is the current behavior, broken
 
+    def testEditSubsetString(self):
+
+        tmpfile = os.path.join(self.basetestpath, 'testEditSubsetString.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbMultiPolygon)
+        lyr.CreateField(ogr.FieldDefn('foo', ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f['foo'] = 'bar'
+        lyr.CreateFeature(f)
+        f = None
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f['foo'] = 'baz'
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile), 'test', 'ogr')
+        self.assertEqual(vl.dataProvider().featureCount(), 2)
+
+        # Test adding features
+        vl.setSubsetString("foo = 'baz'")
+        self.assertTrue(vl.startEditing())
+        feature = QgsFeature(vl.fields())
+        feature['foo'] = 'abc'
+        vl.addFeature(feature)
+        vl.commitChanges()
+        vl.setSubsetString(None)
+        self.assertEqual(vl.dataProvider().featureCount(), 3)
+
+        # Test deleting a feature
+        vl.setSubsetString("foo = 'baz'")
+        self.assertTrue(vl.startEditing())
+        vl.deleteFeature(1)
+        vl.commitChanges()
+        vl.setSubsetString(None)
+        self.assertEqual(vl.dataProvider().featureCount(), 2)
+
+        # Test editing a feature
+        vl.setSubsetString("foo = 'baz'")
+        self.assertTrue(vl.startEditing())
+        vl.changeAttributeValue(2, 1, 'xx')
+        vl.commitChanges()
+        vl.setSubsetString(None)
+        self.assertEqual(set((feat['foo'] for feat in vl.getFeatures())), set(['xx', 'abc']))
+
     def testStyle(self):
 
         # First test with invalid URI
