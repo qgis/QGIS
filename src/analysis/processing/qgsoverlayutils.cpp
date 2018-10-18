@@ -92,6 +92,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
 
   QgsFeature featA;
   QgsFeatureRequest requestA;
+  requestA.setInvalidGeometryCheck( context.invalidGeometryCheck() );
   if ( outputAttrs == OutputBA )
     requestA.setDestinationCrs( sourceB.sourceCrs(), context.transformContext() );
   QgsFeatureIterator fitA = sourceA.getFeatures( requestA );
