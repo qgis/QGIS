@@ -75,7 +75,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  if ( !doAction( vlayer, e->x(), e->y(), e->originalPixelPoint() ) )
+  if ( !doAction( vlayer, e->x(), e->y() ) )
     QgisApp::instance()->statusBarIface()->showMessage( tr( "No features at this position found." ) );
 }
 
@@ -89,12 +89,13 @@ void QgsMapToolFeatureAction::deactivate()
   QgsMapTool::deactivate();
 }
 
-bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y, QPoint pixelpos )
+bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
 {
   if ( !layer )
     return false;
 
   QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
+  QPoint position = mCanvas->mapToGlobal( QPoint( x + 5, y + 5 ) );
 
   QgsRectangle r;
 
@@ -151,7 +152,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y, QPo
         }
       } );
 
-      featureMenu->exec( pixelpos );
+      featureMenu->exec( position );
     }
     return true;
   }
