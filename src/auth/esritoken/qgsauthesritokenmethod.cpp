@@ -59,8 +59,7 @@ QString QgsAuthEsriTokenMethod::displayDescription() const
 bool QgsAuthEsriTokenMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
     const QString &dataprovider )
 {
-  Q_UNUSED( dataprovider )
-  QMutexLocker locker( &mMutex );
+  Q_UNUSED( dataprovider );
   QgsAuthMethodConfig mconfig = getMethodConfig( authcfg );
   if ( !mconfig.isValid() )
   {
