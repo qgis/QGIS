@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgsmaptool.h"
+#include "qgsfeature.h"
 
 #include <QObject>
 #include <QPointer>
@@ -52,6 +53,7 @@ class APP_EXPORT QgsMapToolFeatureAction : public QgsMapTool
 
   private:
     bool doAction( QgsVectorLayer *layer, int x, int y );
+    void doActionForFeature( QgsVectorLayer *layer, QgsFeature feat, QgsPointXY point );
 };
 
 #endif

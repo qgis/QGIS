@@ -15,7 +15,6 @@
 
 #include "qgsmaptoolfeatureaction.h"
 
-#include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
@@ -121,36 +120,49 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
     QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
-  QgsAction defaultAction = layer->actions()->defaultAction( QStringLiteral( "Canvas" ) );
-
+  QMenu *featureMenu = new QMenu();
   QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
   QgsFeature feat;
+
+  int numberOfFeatures = 0;
   while ( fit.nextFeature( feat ) )
   {
-    if ( defaultAction.isValid() )
-    {
-      // define custom substitutions: layer id and clicked coords
-      QgsExpressionContext context;
-      context << QgsExpressionContextUtils::globalScope()
-              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-              << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
-      QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
-      actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_x" ), point.x(), true ) );
-      actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_y" ), point.y(), true ) );
-      actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), QStringLiteral( "Canvas" ), true ) );
-      context << actionScope;
-
-      defaultAction.run( layer, feat, context );
-    }
-    else
-    {
-      QgsMapLayerAction *mapLayerAction = QgsGui::mapLayerActionRegistry()->defaultActionForLayer( layer );
-      if ( mapLayerAction )
-      {
-        mapLayerAction->triggerForFeature( layer, &feat );
-      }
-    }
+    QAction *featureAction = featureMenu->addAction( FID_TO_STRING( feat.id() ) );
+    connect( featureAction, &QAction::triggered, this, [ = ] { doActionForFeature( layer, feat, point );} );
+    numberOfFeatures++;
   }
 
+  if ( numberOfFeatures == 0 )
+    return false;
+  else
+    featureMenu->exec( point.toQPointF().toPoint() );
   return true;
+}
+
+void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, QgsFeature feat, QgsPointXY point )
+{
+  QgsAction defaultAction = layer->actions()->defaultAction( QStringLiteral( "Canvas" ) );
+  if ( defaultAction.isValid() )
+  {
+    // define custom substitutions: layer id and clicked coords
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+            << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
+    QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
+    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_x" ), point.x(), true ) );
+    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_y" ), point.y(), true ) );
+    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), QStringLiteral( "Canvas" ), true ) );
+    context << actionScope;
+
+    defaultAction.run( layer, feat, context );
+  }
+  else
+  {
+    QgsMapLayerAction *mapLayerAction = QgsGui::mapLayerActionRegistry()->defaultActionForLayer( layer );
+    if ( mapLayerAction )
+    {
+      mapLayerAction->triggerForFeature( layer, &feat );
+    }
+  }
 }
