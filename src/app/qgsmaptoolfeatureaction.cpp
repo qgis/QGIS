@@ -75,7 +75,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  if ( !doAction( vlayer, e->x(), e->y(), e->pixelPoint() ) )
+  if ( !doAction( vlayer, e->x(), e->y(), e->originalPixelPoint() ) )
     QgisApp::instance()->statusBarIface()->showMessage( tr( "No features at this position found." ) );
 }
 
@@ -142,6 +142,15 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y, QPo
         QAction *featureAction = featureMenu->addAction( FID_TO_STRING( features.at( i ).id() ) );
         connect( featureAction, &QAction::triggered, this, [ = ] { doActionForFeature( layer, features.at( i ), point );} );
       }
+      QAction *allFeatureAction = featureMenu->addAction( tr( "All Features" ) );
+      connect( allFeatureAction, &QAction::triggered, this, [ = ]
+      {
+        for ( int i = 0; i < features.count(); i++ )
+        {
+          doActionForFeature( layer, features.at( i ), point );
+        }
+      } );
+
       featureMenu->exec( pixelpos );
     }
     return true;
