@@ -124,6 +124,14 @@ typedef QSet<int> QgsAttributeIds;
  *
  * An example url is "Point?crs=epsg:4326&field=id:integer&field=name:string(20)&index=yes"
  *
+ * Since QGIS 3.4 when closing a project, the application shows a warning about potential data
+ * loss if there are any non-empty memory layers present. If your memory layer should not
+ * trigger such warning, it is possible to suppress that by setting the following custom variable:
+ * \code{.py}
+ *   layer.setCustomProperty("skipMemoryLayersCheck", 1)
+ * \endcode
+ *
+ *
  * \subsection ogr OGR data provider (ogr)
  *
  * Accesses data using the OGR drivers (http://www.gdal.org/ogr/ogr_formats.html). The url
