@@ -309,7 +309,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     virtual void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 
     /**
-     * Launched when eatures have been deleted
+     * Launched when features have been deleted
      * \param fids feature ids
      */
     virtual void featuresDeleted( const QgsFeatureIds &fids );
@@ -378,18 +378,21 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     std::vector<SortCache> mSortCaches;
 
-    /**
-     * Holds the bounds of changed cells while an update operation is running
-     * top    = min row
-     * left   = min column
-     * bottom = max row
-     * right  = max column
-     */
-    QRect mChangedCellBounds;
-
     QgsAttributeEditorContext mEditorContext;
 
     int mExtraColumns = 0;
+
+    //! Flag for massive changes operations, set by edit command or rollback
+    bool mBulkEditCommandRunning = false;
+
+    //! Sets the flag for massive changes operations
+    void bulkEditCommandStarted();
+
+    //! Clears the flag for massive changes operations, updates/rebuilds the layer cache and tells the view to update
+    void bulkEditCommandEnded();
+
+    //! Changed attribute values within a bulk edit command
+    QMap<QPair<QgsFeatureId, int>, QVariant> mAttributeValueChanges;
 
     friend class TestQgsAttributeTable;
 

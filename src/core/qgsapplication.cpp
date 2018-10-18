@@ -1528,7 +1528,6 @@ void QgsApplication::collectTranslatableObjects( QgsTranslationContext *translat
   emit requestForTranslatableObjects( translationContext );
 }
 
-
 QString QgsApplication::nullRepresentation()
 {
   ApplicationMembers *appMembers = members();
