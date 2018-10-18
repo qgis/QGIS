@@ -473,6 +473,9 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       if ( !layerName.isEmpty() )
         uri += QStringLiteral( "|layername=%1" ).arg( layerName );
       std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( uri, destination, providerKey ) );
+      if ( !layerName.isEmpty() )
+        layer->setName( layerName );
+
       // update destination to layer ID
       destination = layer->id();
 
