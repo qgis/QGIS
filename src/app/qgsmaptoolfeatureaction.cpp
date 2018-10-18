@@ -75,7 +75,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  if ( !doAction( vlayer, e->x(), e->y() ) )
+  if ( !doAction( vlayer, e->x(), e->y(), e->pixelPoint() ) )
     QgisApp::instance()->statusBarIface()->showMessage( tr( "No features at this position found." ) );
 }
 
@@ -89,7 +89,7 @@ void QgsMapToolFeatureAction::deactivate()
   QgsMapTool::deactivate();
 }
 
-bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
+bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y, QPoint pixelpos )
 {
   if ( !layer )
     return false;
@@ -120,23 +120,33 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
     QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
-  QMenu *featureMenu = new QMenu();
+  QgsFeature f;
+  QgsFeatureList features;
   QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
-  QgsFeature feat;
-
-  int numberOfFeatures = 0;
-  while ( fit.nextFeature( feat ) )
+  while ( fit.nextFeature( f ) )
   {
-    QAction *featureAction = featureMenu->addAction( FID_TO_STRING( feat.id() ) );
-    connect( featureAction, &QAction::triggered, this, [ = ] { doActionForFeature( layer, feat, point );} );
-    numberOfFeatures++;
+    features.append( f );
   }
 
-  if ( numberOfFeatures == 0 )
-    return false;
-  else
-    featureMenu->exec( point.toQPointF().toPoint() );
-  return true;
+  if ( !features.isEmpty() )
+  {
+    if ( features.count() == 1 )
+    {
+      doActionForFeature( layer, features.first(), point );
+    }
+    else
+    {
+      QMenu *featureMenu = new QMenu();
+      for ( int i = 0; i < features.count(); i++ )
+      {
+        QAction *featureAction = featureMenu->addAction( FID_TO_STRING( features.at( i ).id() ) );
+        connect( featureAction, &QAction::triggered, this, [ = ] { doActionForFeature( layer, features.at( i ), point );} );
+      }
+      featureMenu->exec( pixelpos );
+    }
+    return true;
+  }
+  return false;
 }
 
 void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, QgsFeature feat, QgsPointXY point )

@@ -52,7 +52,7 @@ class APP_EXPORT QgsMapToolFeatureAction : public QgsMapTool
     void deactivate() override;
 
   private:
-    bool doAction( QgsVectorLayer *layer, int x, int y );
+    bool doAction( QgsVectorLayer *layer, int x, int y, QPoint pixelpos );
     void doActionForFeature( QgsVectorLayer *layer, QgsFeature feat, QgsPointXY point );
 };
 
