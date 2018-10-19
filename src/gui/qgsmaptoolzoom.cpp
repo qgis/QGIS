@@ -91,14 +91,16 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
   // We are not really dragging in this case. This is sometimes caused by
   // a pen based computer reporting a press, move, and release, all the
   // one point.
-  if ( mDragging && ( mZoomRect.topLeft() == mZoomRect.bottomRight() ) )
+  if ( !mDragging || ( mZoomRect.topLeft() - mZoomRect.bottomRight() ).manhattanLength() < mMinPixelZoom )
   {
     mDragging = false;
     delete mRubberBand;
     mRubberBand = nullptr;
-  }
 
-  if ( mDragging )
+    // change to zoom in/out by the default multiple
+    mCanvas->zoomWithCenter( e->x(), e->y(), !zoomOut );
+  }
+  else
   {
     mDragging = false;
     delete mRubberBand;
@@ -125,11 +127,6 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
     mCanvas->zoomByFactor( zoomOut ? 1.0 / sf : sf, &c );
 
     mCanvas->refresh();
-  }
-  else // not dragging
-  {
-    // change to zoom in/out by the default multiple
-    mCanvas->zoomWithCenter( e->x(), e->y(), !zoomOut );
   }
 }
 

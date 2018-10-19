@@ -45,6 +45,8 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
   protected:
     //! stores actual zoom rect
     QRect mZoomRect;
+    // minimum pixel size of diagonal of the zoom rectangle
+    int mMinPixelZoom = 20;
 
     //! indicates whether we're zooming in or out
     bool mZoomOut;
