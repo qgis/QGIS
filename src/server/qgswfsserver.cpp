@@ -39,6 +39,7 @@
 #include "qgsogcutils.h"
 #include "qgsaccesscontrol.h"
 #include "qgsjsonutils.h"
+#include "qgswkbtypes.h"
 
 #include <QImage>
 #include <QPainter>
@@ -582,6 +583,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         }
         layerCrs = layer->crs();
 
+        bool isMultiGeom = QgsWKBTypes::isMultiType( QGis::fromOldWkbType( layer->wkbType() ) );
+
         QgsFeatureRequest fReq;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
         fReq.setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
@@ -629,7 +632,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               if ( featureCounter == 0 )
                 startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-              setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes() );
+              setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes(), isMultiGeom );
 
               fid = "";
               ++featCounter;
@@ -722,7 +725,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
                   if ( featureCounter >= startIndex )
                   {
-                    setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes() );
+                    setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes(), isMultiGeom );
                     ++featCounter;
                   }
                   ++featureCounter;
@@ -740,7 +743,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
             if ( featureCounter >= startIndex )
             {
-              setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes() );
+              setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes(), isMultiGeom );
               ++featCounter;
             }
             ++featureCounter;
@@ -1007,6 +1010,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
                         searchRect.yMaximum() + 1. / pow( 10., layerPrec ) );
       layerCrs = layer->crs();
 
+      bool isMultiGeom = QgsWKBTypes::isMultiType( QGis::fromOldWkbType( layer->wkbType() ) );
+
       if ( featureIdOk )
       {
         Q_FOREACH ( const QString &fidStr, featureIdList )
@@ -1023,7 +1028,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           if ( featureCounter == 0 )
             startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-          setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes() );
+          setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes(), isMultiGeom );
           ++featCounter;
           ++featureCounter;
         }
@@ -1072,7 +1077,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
               if ( featureCounter >= startIndex )
               {
-                setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes() );
+                setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes(), isMultiGeom );
                 ++featCounter;
               }
               ++featureCounter;
@@ -1109,7 +1114,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             if ( featureCounter == 0 )
               startGetFeature( request, format, layerPrec, layerCrs, &searchRect );
 
-            setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes() );
+            setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes(), isMultiGeom );
 
             fid = "";
             ++featCounter;
@@ -1148,7 +1153,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
             if ( featureCounter >= startIndex )
             {
-              setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes() );
+              setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes(), isMultiGeom );
               ++featCounter;
             }
             ++featureCounter;
@@ -1197,7 +1202,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
                 if ( featureCounter >= startIndex )
                 {
-                  setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes() );
+                  setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes(), isMultiGeom );
                   ++featCounter;
                 }
                 ++featureCounter;
@@ -1236,7 +1241,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
           if ( featureCounter >= startIndex )
           {
-            setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes() );
+            setGetFeature( request, format, &feature, featCounter, layerPrec, layerCrs, attrIndexes, provider->pkAttributeIndexes(), isMultiGeom );
             ++featCounter;
           }
           ++featureCounter;
@@ -1413,7 +1418,7 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
 }
 
 void QgsWFSServer::setGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes,
-                                  const QgsAttributeList& pkAttributes ) /*const*/
+                                  const QgsAttributeList& pkAttributes, bool isMultiGeom ) /*const*/
 {
   if ( !feat->isValid() )
     return;
@@ -1443,12 +1448,12 @@ void QgsWFSServer::setGetFeature( QgsRequestHandler& request, const QString& for
     QDomElement featureElement;
     if ( format == "GML3" )
     {
-      featureElement = createFeatureGML3( feat, gmlDoc, prec, crs, attrIndexes, pkAttributes );
+      featureElement = createFeatureGML3( feat, gmlDoc, prec, crs, attrIndexes, pkAttributes, isMultiGeom );
       gmlDoc.appendChild( featureElement );
     }
     else
     {
-      featureElement = createFeatureGML2( feat, gmlDoc, prec, crs, attrIndexes, pkAttributes );
+      featureElement = createFeatureGML2( feat, gmlDoc, prec, crs, attrIndexes, pkAttributes, isMultiGeom );
       gmlDoc.appendChild( featureElement );
     }
 
@@ -2054,7 +2059,7 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
 }
 
 QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes,
-    const QgsAttributeList& pkAttributes ) /*const*/
+    const QgsAttributeList& pkAttributes, bool isMultiGeom ) /*const*/
 {
   //gml:FeatureMember
   QDomElement featureElement = doc.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
@@ -2066,6 +2071,12 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
   featureElement.appendChild( typeNameElement );
 
   const QgsGeometry* geom = feat->constGeometry();
+  if ( isMultiGeom && QgsWKBTypes::isSingleType( QGis::fromOldWkbType( geom->wkbType() ) ) )
+  {
+    QgsGeometry cloneGeom( *geom );
+    cloneGeom.convertToMultiType();
+    geom = &cloneGeom;
+  }
   if ( geom && mWithGeom && mGeometryName != "NONE" )
   {
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
@@ -2138,7 +2149,7 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
 }
 
 QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes,
-    const QgsAttributeList& pkAttributes ) /*const*/
+    const QgsAttributeList& pkAttributes, bool isMultiGeom ) /*const*/
 {
   //gml:FeatureMember
   QDomElement featureElement = doc.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
@@ -2150,6 +2161,12 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
   featureElement.appendChild( typeNameElement );
 
   const QgsGeometry* geom = feat->constGeometry();
+  if ( isMultiGeom && QgsWKBTypes::isSingleType( QGis::fromOldWkbType( geom->wkbType() ) ) )
+  {
+    QgsGeometry cloneGeom( *geom );
+    cloneGeom.convertToMultiType();
+    geom = &cloneGeom;
+  }
   if ( geom && mWithGeom && mGeometryName != "NONE" )
   {
     QDomElement geomElem = doc.createElement( "qgs:geometry" );

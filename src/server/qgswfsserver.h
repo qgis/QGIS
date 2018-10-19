@@ -118,7 +118,7 @@ class QgsWFSServer: public QgsOWSServer
 
     void startGetFeature( QgsRequestHandler& request, const QString& format, int prec, QgsCoordinateReferenceSystem& crs, QgsRectangle* rect );
     void setGetFeature( QgsRequestHandler& request, const QString& format, QgsFeature* feat, int featIdx, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes,
-                        const QgsAttributeList& pkAttributes = QgsAttributeList() );
+                        const QgsAttributeList& pkAttributes = QgsAttributeList(), bool isMultiGeom = false );
     void endGetFeature( QgsRequestHandler& request, const QString& format );
 
     //method for transaction
@@ -130,11 +130,11 @@ class QgsWFSServer: public QgsOWSServer
 
     //methods to write GML2
     QDomElement createFeatureGML2( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes,
-                                   const QgsAttributeList& pkAttributes = QgsAttributeList() ) /*const*/;
+                                   const QgsAttributeList& pkAttributes = QgsAttributeList(), bool isMultiGeom = false ) /*const*/;
 
     //methods to write GML3
     QDomElement createFeatureGML3( QgsFeature* feat, QDomDocument& doc, int prec, QgsCoordinateReferenceSystem& crs, const QgsAttributeList& attrIndexes,
-                                   const QgsAttributeList& pkAttributes = QgsAttributeList() ) /*const*/;
+                                   const QgsAttributeList& pkAttributes = QgsAttributeList(), bool isMultiGeom = false ) /*const*/;
 
     //methods to encode value to string for text node
     QString encodeValueToText( const QVariant& value );
