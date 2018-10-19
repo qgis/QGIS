@@ -78,8 +78,12 @@ QList<QgsLabelFeature *> QgsVectorLayerDiagramProvider::labelFeatures( QgsRender
   QgsFeatureRequest request;
   request.setFilterRect( layerExtent );
   request.setSubsetOfAttributes( attributeNames, mFields );
+  const QgsFeatureFilterProvider *featureFilterProvider = context.featureFilterProvider();
+  if ( featureFilterProvider )
+  {
+    featureFilterProvider->filterFeatures( qobject_cast<QgsVectorLayer *>( mLayer ), request );
+  }
   QgsFeatureIterator fit = mSource->getFeatures( request );
-
 
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
