@@ -1,17 +1,17 @@
 /***************************************************************************
-  qgstracer.h
-  --------------------------------------
-  Date                 : January 2016
-  Copyright            : (C) 2016 by Martin Dobias
-  Email                : wonder dot sk at gmail dot com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+ qgstracer.h
+ --------------------------------------
+ Date                 : January 2016
+ Copyright            : (C) 2016 by Martin Dobias
+ Email                : wonder dot sk at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
 
 #ifndef QGSTRACER_H
 #define QGSTRACER_H
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsTracer : public QObject
     QgsCoordinateReferenceSystem destinationCrs() const { return mCRS; }
 
     /**
-     * Sets the \a crs and \a transformContext used for tracing.
+     * Sets the \a crs and transform \a context used for tracing.
      * \see destinationCrs()
      */
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );

@@ -50,7 +50,7 @@ Returns the CRS used for tracing.
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 %Docstring
-Sets the ``crs`` and ``transformContext`` used for tracing.
+Sets the ``crs`` and transform ``context`` used for tracing.
 
 .. seealso:: :py:func:`destinationCrs`
 %End
