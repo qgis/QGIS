@@ -25,7 +25,7 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
@@ -97,6 +97,16 @@
           <widget class="QPushButton" name="presetDelete">
            <property name="text">
             <string>Delete</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="presetSaveAsFile">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Save the query as SQL file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>Save As File</string>
            </property>
           </widget>
          </item>
@@ -226,7 +236,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QTableView" name="viewResult">
@@ -498,7 +508,6 @@ unique values</string>
   <tabstop>queryBuilderBtn</tabstop>
   <tabstop>presetCombo</tabstop>
   <tabstop>presetName</tabstop>
-  <tabstop>presetStore</tabstop>
   <tabstop>presetDelete</tabstop>
   <tabstop>editSql</tabstop>
   <tabstop>btnExecute</tabstop>

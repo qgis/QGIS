@@ -26,8 +26,8 @@ from builtins import next
 from builtins import str
 from hashlib import md5
 
-from qgis.PyQt.QtCore import Qt, pyqtSignal
-from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate, QTableWidgetItem
+from qgis.PyQt.QtCore import Qt, pyqtSignal, QDir
+from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate, QTableWidgetItem, QFileDialog
 from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
 from qgis.PyQt.Qsci import QsciAPIs
 
@@ -120,6 +120,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.btnClear.clicked.connect(self.clearSql)
 
         self.presetStore.clicked.connect(self.storePreset)
+        self.presetSaveAsFile.clicked.connect(self.saveAsFilePreset)
         self.presetDelete.clicked.connect(self.deletePreset)
         self.presetCombo.activated[str].connect(self.loadPreset)
         self.presetCombo.activated[str].connect(self.presetName.setText)
@@ -227,6 +228,21 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self.presetCombo.setCurrentIndex(self.presetCombo.count() - 1)
         else:
             self.presetCombo.setCurrentIndex(index)
+
+    def saveAsFilePreset(self):
+        query = self._getSqlQuery()
+        if query == "":
+            return
+
+        filename, ext = QFileDialog.getSaveFileName(
+            self,
+            'Save SQL Query',
+            QDir.homePath(),
+            "SQL File (*.sql)")
+
+        if filename:
+            with open(filename, 'w') as f:
+                f.write(query)
 
     def deletePreset(self):
         name = self.presetCombo.currentText()
