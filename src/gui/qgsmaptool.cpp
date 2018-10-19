@@ -130,6 +130,11 @@ QAction *QgsMapTool::action()
   return mAction;
 }
 
+bool QgsMapTool::isActive() const
+{
+  return mCanvas && mCanvas->mapTool() == this;
+}
+
 void QgsMapTool::setButton( QAbstractButton *button )
 {
   mButton = button;
@@ -143,6 +148,8 @@ QAbstractButton *QgsMapTool::button()
 void QgsMapTool::setCursor( const QCursor &cursor )
 {
   mCursor = cursor;
+  if ( isActive() )
+    mCanvas->setCursor( mCursor );
 }
 
 
