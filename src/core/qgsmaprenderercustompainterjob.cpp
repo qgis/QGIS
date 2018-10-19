@@ -60,7 +60,7 @@ void QgsMapRendererCustomPainterJob::start()
   prepareTime.start();
 
   // clear the background
-  mPainter->fillRect( 0, 0, mSettings.physicalSize().width(), mSettings.physicalSize().height(), mSettings.backgroundColor() );
+  mPainter->fillRect( 0, 0, mSettings.deviceOutputSize().width(), mSettings.deviceOutputSize().height(), mSettings.backgroundColor() );
 
   mPainter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( QgsMapSettings::Antialiasing ) );
 

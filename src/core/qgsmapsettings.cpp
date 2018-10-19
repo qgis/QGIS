@@ -240,7 +240,7 @@ void QgsMapSettings::setDevicePixelRatio( int dpr )
   mDevicePixelRatio = dpr;
 }
 
-QSize QgsMapSettings::physicalSize() const
+QSize QgsMapSettings::deviceOutputSize() const
 {
   return outputSize() * mDevicePixelRatio;
 }

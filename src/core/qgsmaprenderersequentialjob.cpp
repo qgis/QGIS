@@ -25,7 +25,7 @@ QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings &
 {
   QgsDebugMsgLevel( QStringLiteral( "SEQUENTIAL construct" ), 5 );
 
-  mImage = QImage( mSettings.physicalSize(), mSettings.outputImageFormat() );
+  mImage = QImage( mSettings.deviceOutputSize(), mSettings.outputImageFormat() );
   mImage.setDevicePixelRatio( mSettings.devicePixelRatio() );
   mImage.setDotsPerMeterX( 1000 * settings.outputDpi() / 25.4 );
   mImage.setDotsPerMeterY( 1000 * settings.outputDpi() / 25.4 );

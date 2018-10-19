@@ -325,7 +325,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     if ( mCache || !painter || needTemporaryImage( ml ) )
     {
       // Flattened image for drawing when a blending mode is set
-      QImage *mypFlattenedImage = new QImage( mSettings.physicalSize(),
+      QImage *mypFlattenedImage = new QImage( mSettings.deviceOutputSize(),
                                               mSettings.outputImageFormat() );
       mypFlattenedImage->setDevicePixelRatio( mSettings.devicePixelRatio() );
       if ( mypFlattenedImage->isNull() )
@@ -375,7 +375,7 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
     {
       // Flattened image for drawing labels
       QImage *mypFlattenedImage = nullptr;
-      mypFlattenedImage = new QImage( mSettings.physicalSize(),
+      mypFlattenedImage = new QImage( mSettings.deviceOutputSize(),
                                       mSettings.outputImageFormat() );
       mypFlattenedImage->setDevicePixelRatio( mSettings.devicePixelRatio() );
       if ( mypFlattenedImage->isNull() )
@@ -448,7 +448,7 @@ void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob &job )
 
 QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const LayerRenderJobs &jobs, const LabelRenderJob &labelJob )
 {
-  QImage image( settings.physicalSize(), settings.outputImageFormat() );
+  QImage image( settings.deviceOutputSize(), settings.outputImageFormat() );
   image.setDevicePixelRatio( settings.devicePixelRatio() );
   image.fill( settings.backgroundColor().rgba() );
 

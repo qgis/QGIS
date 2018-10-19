@@ -94,12 +94,12 @@ class CORE_EXPORT QgsMapSettings
     void setDevicePixelRatio( int dpr );
 
     /**
-     * Returns the physical size of the map canvas
+     * Returns the device output size of the map canvas
      * This is equivalent to the output size multiplicated
-     * by the device pixel ratio
+     * by the device pixel ratio.
      * \since QGIS 3.4
      */
-    QSize physicalSize() const;
+    QSize deviceOutputSize() const;
 
     /**
      * Returns the rotation of the resulting map image, in degrees clockwise.

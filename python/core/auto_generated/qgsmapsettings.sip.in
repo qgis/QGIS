@@ -74,11 +74,11 @@ Sets the device pixel ratio
 .. versionadded:: 3.4
 %End
 
-    QSize physicalSize() const;
+    QSize deviceOutputSize() const;
 %Docstring
-Returns the physical size of the map canvas
+Returns the device output size of the map canvas
 This is equivalent to the output size multiplicated
-by the device pixel ratio
+by the device pixel ratio.
 
 .. versionadded:: 3.4
 %End
