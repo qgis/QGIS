@@ -34,6 +34,10 @@ constructor
 
     virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
 
+    virtual void keyPressEvent( QKeyEvent *e );
+
+    virtual void keyReleaseEvent( QKeyEvent *e );
+
     virtual void deactivate();
 
 
@@ -41,6 +45,12 @@ constructor
 
 
 
+
+
+    void updateCursor();
+%Docstring
+Flag to indicate a map canvas drag operation is taking place
+%End
 };
 
 /************************************************************************
