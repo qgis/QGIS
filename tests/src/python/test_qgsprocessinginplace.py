@@ -134,7 +134,8 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         Z_ONLY = {t: t.find('Z') > 0 for t in _all_true().keys()}
         M_ONLY = {t: t.rfind('M') > 0 for t in _all_true().keys()}
         NOT_M = {t: t.rfind('M') < 1 and t != 'NoGeometry' for t in _all_true().keys()}
-        POLYGON_ONLY = {t: t in ('Polygon', 'MultiPolygon') for t in _all_true().keys()}
+        POLYGON_ONLY = {t: t.find('Polygon') for t in _all_true().keys()}
+        POLYGON_ONLY_NOT_M_NOT_Z = {t: t in ('Polygon', 'MultiPolygon') for t in _all_true().keys()}
         MULTI_ONLY = {t: t.find('Multi') == 0 for t in _all_true().keys()}
         SINGLE_ONLY = {t: t.find('Multi') == -1 for t in _all_true().keys()}
         LINESTRING_AND_POLYGON_ONLY = {t: (t.find('LineString') >= 0 or t.find('Polygon') >= 0) for t in _all_true().keys()}
@@ -151,9 +152,9 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self._support_inplace_edit_tester('native:explodelines', LINESTRING_ONLY)
         self._support_inplace_edit_tester('native:extendlines', LINESTRING_ONLY)
         self._support_inplace_edit_tester('native:fixgeometries', NOT_M)
-        self._support_inplace_edit_tester('native:minimumenclosingcircle', POLYGON_ONLY)
-        self._support_inplace_edit_tester('native:multiringconstantbuffer', POLYGON_ONLY)
-        self._support_inplace_edit_tester('native:orientedminimumboundingbox', POLYGON_ONLY)
+        self._support_inplace_edit_tester('native:minimumenclosingcircle', POLYGON_ONLY_NOT_M_NOT_Z)
+        self._support_inplace_edit_tester('native:multiringconstantbuffer', POLYGON_ONLY_NOT_M_NOT_Z)
+        self._support_inplace_edit_tester('native:orientedminimumboundingbox', POLYGON_ONLY_NOT_M_NOT_Z)
         self._support_inplace_edit_tester('qgis:orthogonalize', LINESTRING_AND_POLYGON_ONLY)
         self._support_inplace_edit_tester('native:removeduplicatevertices', GEOMETRY_ONLY)
         self._support_inplace_edit_tester('native:rotatefeatures', GEOMETRY_ONLY)
@@ -174,6 +175,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self._support_inplace_edit_tester('native:difference', GEOMETRY_ONLY)
         self._support_inplace_edit_tester('native:dropgeometries', ALL)
         self._support_inplace_edit_tester('native:splitwithlines', LINESTRING_AND_POLYGON_ONLY)
+        self._support_inplace_edit_tester('native:buffer', POLYGON_ONLY_NOT_M_NOT_Z)
 
     def _make_compatible_tester(self, feature_wkt, layer_wkb_name, attrs=[1]):
         layer = self._make_layer(layer_wkb_name)

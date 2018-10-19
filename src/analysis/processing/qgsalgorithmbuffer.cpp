@@ -179,8 +179,8 @@ bool QgsBufferAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
   const QgsVectorLayer *vlayer = qobject_cast< const QgsVectorLayer * >( layer );
   if ( !vlayer )
     return false;
-  QgsWkbTypes::GeometryType inPlaceGeometryType = vlayer->geometryType();
-  return inPlaceGeometryType == QgsWkbTypes::GeometryType::PolygonGeometry;
+  //Only Polygons
+  return vlayer->wkbType() == QgsWkbTypes::Type::Polygon || vlayer->wkbType() == QgsWkbTypes::Type::MultiPolygon;
 }
 
 ///@endcond
