@@ -62,7 +62,6 @@ scaled by 50% in order to have a constant visible size.
     QgsLayoutItemRenderContext( const QgsLayoutItemRenderContext &rh );
 };
 
-
 class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInterface
 {
 %Docstring
@@ -86,6 +85,12 @@ Base class for graphical items within a :py:class:`QgsLayout`.
 #include "qgslayoutitempage.h"
 %End
 %ConvertToSubClassCode
+
+    // FREAKKKKIIN IMPORTANT!!!!!!!!!!!
+    // IF YOU PUT SOMETHING HERE, PUT IT IN QgsLayoutObject CASTING *****ALSO******
+    // (it's not enough for it to be in only one of the places, as sip inconsistently
+    // decides which casting code to perform here)
+
     // the conversions have to be static, because they're using multiple inheritance
     // (seen in PyQt4 .sip files for some QGraphicsItem classes)
     switch ( sipCpp->type() )
@@ -135,8 +140,11 @@ Base class for graphical items within a :py:class:`QgsLayout`.
         sipType = sipType_QgsLayoutFrame;
         *sipCppRet = static_cast<QgsLayoutFrame *>( sipCpp );
         break;
+
+      // did you read that comment above? NO? Go read it now. You're about to break stuff.
+
       default:
-        sipType = 0;
+        sipType = NULL;
     }
 %End
   public:
