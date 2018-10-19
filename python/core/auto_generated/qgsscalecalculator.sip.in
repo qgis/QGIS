@@ -57,7 +57,7 @@ Set the map units
 Returns current map units
 %End
 
-    double calculate( const QgsRectangle &mapExtent, int canvasWidth );
+    double calculate( const QgsRectangle &mapExtent, double canvasWidth );
 %Docstring
 Calculate the scale denominator
 
