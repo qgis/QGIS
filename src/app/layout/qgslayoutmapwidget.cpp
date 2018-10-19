@@ -483,7 +483,7 @@ void QgsLayoutMapWidget::mScaleLineEdit_editingFinished()
     return;
   }
 
-  if ( std::round( scaleDenominator ) == std::round( mMapItem->scale() ) )
+  if ( qgsDoubleNear( scaleDenominator, mMapItem->scale() ) )
     return;
 
   mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map Scale" ) );
@@ -604,10 +604,14 @@ void QgsLayoutMapWidget::updateGuiElements()
   double scale = mMapItem->scale();
 
   //round scale to an appropriate number of decimal places
-  if ( scale >= 10 )
+  if ( scale >= 10000 )
   {
-    //round scale to integer if it's greater than 10
+    //round scale to integer if it's greater than 10000
     mScaleLineEdit->setText( QLocale().toString( mMapItem->scale(), 'f', 0 ) );
+  }
+  else if ( scale >= 10 )
+  {
+    mScaleLineEdit->setText( QLocale().toString( mMapItem->scale(), 'f', 3 ) );
   }
   else if ( scale >= 1 )
   {
