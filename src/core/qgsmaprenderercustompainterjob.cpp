@@ -329,9 +329,12 @@ void QgsMapRendererJob::drawLabeling( const QgsMapSettings &settings, QgsRenderC
   // Reset the composition mode before rendering the labels
   painter->setCompositionMode( QPainter::CompositionMode_SourceOver );
 
+  const std::unique_ptr< QgsFeatureFilterProvider > featureFilterProvider( renderContext.featureFilterProvider()->clone() );
+
   // TODO: this is not ideal - we could override rendering stopped flag that has been set in meanwhile
   renderContext = QgsRenderContext::fromMapSettings( settings );
   renderContext.setPainter( painter );
+  renderContext.setFeatureFilterProvider( featureFilterProvider.get() );
 
   if ( labelingEngine2 )
   {
