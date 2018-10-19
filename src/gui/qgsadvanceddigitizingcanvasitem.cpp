@@ -79,7 +79,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     snapSegmentPix2 = toCanvasCoordinates( snappedSegment[1] );
   }
 
-  painter->setRenderHints( QPainter::Antialiasing );
+  painter->setRenderHint( QPainter::Antialiasing );
   painter->setCompositionMode( QPainter::CompositionMode_Difference );
 
   // Draw point snap
@@ -208,10 +208,8 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     if ( draw )
     {
-      painter->drawLine( 0,
-                         y,
-                         boundingRect().width(),
-                         y );
+      painter->drawLine( QPointF( 0, y ),
+                         QPointF( boundingRect().width(), y ) );
     }
   }
 
