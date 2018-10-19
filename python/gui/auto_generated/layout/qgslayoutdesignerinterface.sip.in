@@ -91,12 +91,230 @@ shown and raised to the top of the interface.
 %End
 
 
+    virtual QMenu *layoutMenu() = 0;
+%Docstring
+Returns a reference to the designer's "Layout" menu.
+
+.. seealso:: :py:func:`editMenu`
+
+.. seealso:: :py:func:`viewMenu`
+
+.. seealso:: :py:func:`itemsMenu`
+
+.. seealso:: :py:func:`atlasMenu`
+
+.. seealso:: :py:func:`reportMenu`
+
+.. seealso:: :py:func:`settingsMenu`
+
+.. versionadded:: 3.4
+%End
+
+    virtual QMenu *editMenu() = 0;
+%Docstring
+Returns a reference to the designer's "Edit" menu.
+
+.. seealso:: :py:func:`layoutMenu`
+
+.. seealso:: :py:func:`viewMenu`
+
+.. seealso:: :py:func:`itemsMenu`
+
+.. seealso:: :py:func:`atlasMenu`
+
+.. seealso:: :py:func:`reportMenu`
+
+.. seealso:: :py:func:`settingsMenu`
+
+.. versionadded:: 3.4
+%End
+
+    virtual QMenu *viewMenu() = 0;
+%Docstring
+Returns a reference to the designer's "View" menu.
+
+.. seealso:: :py:func:`layoutMenu`
+
+.. seealso:: :py:func:`editMenu`
+
+.. seealso:: :py:func:`itemsMenu`
+
+.. seealso:: :py:func:`atlasMenu`
+
+.. seealso:: :py:func:`reportMenu`
+
+.. seealso:: :py:func:`settingsMenu`
+
+.. versionadded:: 3.4
+%End
+
+    virtual QMenu *itemsMenu() = 0;
+%Docstring
+Returns a reference to the designer's "Items" menu.
+
+.. seealso:: :py:func:`layoutMenu`
+
+.. seealso:: :py:func:`editMenu`
+
+.. seealso:: :py:func:`viewMenu`
+
+.. seealso:: :py:func:`atlasMenu`
+
+.. seealso:: :py:func:`reportMenu`
+
+.. seealso:: :py:func:`settingsMenu`
+
+.. versionadded:: 3.4
+%End
+
+    virtual QMenu *atlasMenu() = 0;
+%Docstring
+Returns a reference to the designer's "Atlas" menu.
+
+Note that this may not exist or may be hidden if the designer is in report mode.
+
+.. seealso:: :py:func:`layoutMenu`
+
+.. seealso:: :py:func:`editMenu`
+
+.. seealso:: :py:func:`viewMenu`
+
+.. seealso:: :py:func:`itemsMenu`
+
+.. seealso:: :py:func:`reportMenu`
+
+.. seealso:: :py:func:`settingsMenu`
+
+.. versionadded:: 3.4
+%End
+
+    virtual QMenu *reportMenu() = 0;
+%Docstring
+Returns a reference to the designer's "Report" menu.
+
+Note that this may not exist or may be hidden if the designer is not in report mode.
+
+.. seealso:: :py:func:`layoutMenu`
+
+.. seealso:: :py:func:`editMenu`
+
+.. seealso:: :py:func:`viewMenu`
+
+.. seealso:: :py:func:`itemsMenu`
+
+.. seealso:: :py:func:`atlasMenu`
+
+.. seealso:: :py:func:`settingsMenu`
+
+.. versionadded:: 3.4
+%End
+
+    virtual QMenu *settingsMenu() = 0;
+%Docstring
+Returns a reference to the designer's "Settings" menu.
+
+.. seealso:: :py:func:`layoutMenu`
+
+.. seealso:: :py:func:`editMenu`
+
+.. seealso:: :py:func:`viewMenu`
+
+.. seealso:: :py:func:`itemsMenu`
+
+.. seealso:: :py:func:`atlasMenu`
+
+.. seealso:: :py:func:`reportMenu`
+
+.. versionadded:: 3.4
+%End
+
+    virtual QToolBar *layoutToolbar() = 0;
+%Docstring
+Returns a reference to the designer's "Layout" toolbar.
+
+.. seealso:: :py:func:`navigationToolbar`
+
+.. seealso:: :py:func:`actionsToolbar`
+
+.. seealso:: :py:func:`atlasToolbar`
+
+.. versionadded:: 3.4
+%End
+
+    virtual QToolBar *navigationToolbar() = 0;
+%Docstring
+Returns a reference to the designer's "Navigation" toolbar.
+
+.. seealso:: :py:func:`layoutToolbar`
+
+.. seealso:: :py:func:`actionsToolbar`
+
+.. seealso:: :py:func:`atlasToolbar`
+
+.. versionadded:: 3.4
+%End
+
+    virtual QToolBar *actionsToolbar() = 0;
+%Docstring
+Returns a reference to the designer's "Actions" toolbar.
+
+.. seealso:: :py:func:`layoutToolbar`
+
+.. seealso:: :py:func:`navigationToolbar`
+
+.. seealso:: :py:func:`atlasToolbar`
+
+.. versionadded:: 3.4
+%End
+
+    virtual QToolBar *atlasToolbar() = 0;
+%Docstring
+Returns a reference to the designer's "Atlas" toolbar.
+
+Note that this toolbar may not exist or may be hidden if the
+designer is in report mode.
+
+.. seealso:: :py:func:`layoutToolbar`
+
+.. seealso:: :py:func:`navigationToolbar`
+
+.. seealso:: :py:func:`actionsToolbar`
+
+.. versionadded:: 3.4
+%End
+
+    virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dock ) = 0;
+%Docstring
+Adds a ``dock`` widget to the layout designer, in the specified dock ``area``.
+
+.. seealso:: :py:func:`removeDockWidget`
+
+.. versionadded:: 3.4
+%End
+
+    virtual void removeDockWidget( QDockWidget *dock ) = 0;
+%Docstring
+Removes the specified ``dock`` widget from layout designer (without deleting it).
+
+.. seealso:: :py:func:`addDockWidget`
+
+.. versionadded:: 3.4
+%End
+
   public slots:
 
     virtual void close() = 0;
 %Docstring
 Closes the layout designer.
 %End
+
+    virtual void showRulers( bool visible ) = 0;
+%Docstring
+Toggles whether or not the rulers should be ``visible`` in the designer.
+
+.. versionadded:: 3.4
+%End
+
 
 };
 

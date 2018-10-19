@@ -776,10 +776,18 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Remove action from the Web menu
     virtual void removePluginWebMenu( const QString &name, QAction *action ) = 0;
 
-    //! Add a dock widget to the main window
+    /**
+     * Adds a \a dock widget to the main window, in the specified dock \a area.
+     *
+     * \see removeDockWidget()
+     */
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
 
-    //! Remove specified dock widget from main window (doesn't delete it).
+    /**
+     * Removes the specified \a dock widget from main window (without deleting it).
+     *
+     * \see addDockWidget()
+     */
     virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
 
     //! Open layer properties dialog

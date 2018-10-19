@@ -916,12 +916,16 @@ Remove action from the Web menu
 
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
 %Docstring
-Add a dock widget to the main window
+Adds a ``dock`` widget to the main window, in the specified dock ``area``.
+
+.. seealso:: :py:func:`removeDockWidget`
 %End
 
     virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
 %Docstring
-Remove specified dock widget from main window (doesn't delete it).
+Removes the specified ``dock`` widget from main window (without deleting it).
+
+.. seealso:: :py:func:`addDockWidget`
 %End
 
     virtual void showLayerProperties( QgsMapLayer *l ) = 0;

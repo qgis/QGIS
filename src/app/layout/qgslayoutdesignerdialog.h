@@ -63,9 +63,24 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     void setAtlasPreviewEnabled( bool enabled ) override;
     bool atlasPreviewEnabled() const override;
     void showItemOptions( QgsLayoutItem *item, bool bringPanelToFront = true ) override;
+    QMenu *layoutMenu() override;
+    QMenu *editMenu() override;
+    QMenu *viewMenu() override;
+    QMenu *itemsMenu() override;
+    QMenu *atlasMenu() override;
+    QMenu *reportMenu() override;
+    QMenu *settingsMenu() override;
+    QToolBar *layoutToolbar() override;
+    QToolBar *navigationToolbar() override;
+    QToolBar *actionsToolbar() override;
+    QToolBar *atlasToolbar() override;
+    void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dock ) override;
+    void removeDockWidget( QDockWidget *dock ) override;
+
   public slots:
 
     void close() override;
+    void showRulers( bool visible ) override;
 
   private:
 
@@ -76,7 +91,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
  * \ingroup app
  * \brief A window for designing layouts.
  */
-class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesignerBase
+class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerBase
 {
     Q_OBJECT
 
