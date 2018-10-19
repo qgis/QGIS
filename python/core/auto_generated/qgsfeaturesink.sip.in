@@ -22,6 +22,14 @@ An interface for objects which accept features via addFeature(s) methods.
 %End
   public:
 
+    enum SinkFlag
+    {
+
+      RegeneratePrimaryKey,
+    };
+    typedef QFlags<QgsFeatureSink::SinkFlag> SinkFlags;
+
+
     enum Flag
     {
 

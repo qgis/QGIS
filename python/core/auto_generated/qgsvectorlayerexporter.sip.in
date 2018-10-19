@@ -77,7 +77,8 @@ Writes the contents of vector layer to a different datasource.
                             QgsWkbTypes::Type geometryType,
                             const QgsCoordinateReferenceSystem &crs,
                             bool overwrite = false,
-                            const QMap<QString, QVariant> &options = QMap<QString, QVariant>() );
+                            const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
+                            QgsFeatureSink::SinkFlags sinkOptions = 0 );
 %Docstring
 Constructor for QgsVectorLayerExporter.
 
