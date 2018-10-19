@@ -313,6 +313,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
       job.cached = true;
       job.imageInitialized = true;
       job.img = new QImage( mCache->cacheImage( ml->id() ) );
+      job.img->setDevicePixelRatio( mSettings.devicePixelRatio() );
       job.renderer = nullptr;
       job.context.setPainter( nullptr );
       continue;
@@ -324,10 +325,9 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     if ( mCache || !painter || needTemporaryImage( ml ) )
     {
       // Flattened image for drawing when a blending mode is set
-      QImage *mypFlattenedImage = nullptr;
-      mypFlattenedImage = new QImage( mSettings.outputSize().width(),
-                                      mSettings.outputSize().height(),
-                                      mSettings.outputImageFormat() );
+      QImage *mypFlattenedImage = new QImage( mSettings.deviceOutputSize(),
+                                              mSettings.outputImageFormat() );
+      mypFlattenedImage->setDevicePixelRatio( mSettings.devicePixelRatio() );
       if ( mypFlattenedImage->isNull() )
       {
         mErrors.append( Error( ml->id(), tr( "Insufficient memory for image %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
@@ -366,6 +366,7 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
     job.cached = true;
     job.complete = true;
     job.img = new QImage( mCache->cacheImage( LABEL_CACHE_ID ) );
+    Q_ASSERT( job.img->devicePixelRatio() == mSettings.devicePixelRatio() );
     job.context.setPainter( nullptr );
   }
   else
@@ -374,9 +375,9 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
     {
       // Flattened image for drawing labels
       QImage *mypFlattenedImage = nullptr;
-      mypFlattenedImage = new QImage( mSettings.outputSize().width(),
-                                      mSettings.outputSize().height(),
+      mypFlattenedImage = new QImage( mSettings.deviceOutputSize(),
                                       mSettings.outputImageFormat() );
+      mypFlattenedImage->setDevicePixelRatio( mSettings.devicePixelRatio() );
       if ( mypFlattenedImage->isNull() )
       {
         mErrors.append( Error( QStringLiteral( "labels" ), tr( "Insufficient memory for label image %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
@@ -447,7 +448,8 @@ void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob &job )
 
 QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const LayerRenderJobs &jobs, const LabelRenderJob &labelJob )
 {
-  QImage image( settings.outputSize(), settings.outputImageFormat() );
+  QImage image( settings.deviceOutputSize(), settings.outputImageFormat() );
+  image.setDevicePixelRatio( settings.devicePixelRatio() );
   image.fill( settings.backgroundColor().rgba() );
 
   QPainter painter( &image );

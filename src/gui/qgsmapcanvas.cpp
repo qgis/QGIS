@@ -31,9 +31,11 @@ email                : sherman at mrcc.com
 #include <QRect>
 #include <QTextStream>
 #include <QResizeEvent>
+#include <QScreen>
 #include <QString>
 #include <QStringList>
 #include <QWheelEvent>
+#include <QWindow>
 
 #include "qgis.h"
 #include "qgssettings.h"
@@ -163,10 +165,16 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
 
   QSize s = viewport()->size();
   mSettings.setOutputSize( s );
+  mSettings.setDevicePixelRatio( devicePixelRatio() );
   setSceneRect( 0, 0, s.width(), s.height() );
   mScene->setSceneRect( QRectF( 0, 0, s.width(), s.height() ) );
 
   moveCanvasContents( true );
+
+  // keep device pixel ratio up to date on screen or resolution change
+  connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * ) {mSettings.setDevicePixelRatio( devicePixelRatio() );} );
+  if ( window()->windowHandle() )
+    connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, [ = ]( qreal ) {mSettings.setDevicePixelRatio( devicePixelRatio() );} );
 
   connect( &mMapUpdateTimer, &QTimer::timeout, this, &QgsMapCanvas::mapUpdateTimeout );
   mMapUpdateTimer.setInterval( 250 );
@@ -682,7 +690,8 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage &img, const QgsMapSettings &m
   // expects (encoding of position and size of the item)
   const QgsMapToPixel &m2p = mapSettings.mapToPixel();
   QgsPointXY topLeft = m2p.toMapCoordinates( 0, 0 );
-  double res = m2p.mapUnitsPerPixel();
+  Q_ASSERT( img.devicePixelRatio() == mapSettings.devicePixelRatio() );
+  double res = m2p.mapUnitsPerPixel() / img.devicePixelRatioF();
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + img.width()*res, topLeft.y() - img.height()*res );
   return rect;
 }

@@ -60,14 +60,17 @@ void QgsMapRendererCustomPainterJob::start()
   prepareTime.start();
 
   // clear the background
-  mPainter->fillRect( 0, 0, mSettings.outputSize().width(), mSettings.outputSize().height(), mSettings.backgroundColor() );
+  mPainter->fillRect( 0, 0, mSettings.deviceOutputSize().width(), mSettings.deviceOutputSize().height(), mSettings.backgroundColor() );
 
   mPainter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( QgsMapSettings::Antialiasing ) );
 
 #ifndef QT_NO_DEBUG
   QPaintDevice *paintDevice = mPainter->device();
-  QString errMsg = QStringLiteral( "pre-set DPI not equal to painter's DPI (%1 vs %2)" ).arg( paintDevice->logicalDpiX() ).arg( mSettings.outputDpi() );
-  Q_ASSERT_X( qgsDoubleNear( paintDevice->logicalDpiX(), mSettings.outputDpi() ), "Job::startRender()", errMsg.toLatin1().data() );
+  QString errMsg = QStringLiteral( "pre-set DPI not equal to painter's DPI (%1 vs %2)" )
+                   .arg( paintDevice->logicalDpiX() )
+                   .arg( mSettings.outputDpi() );
+  Q_ASSERT_X( qgsDoubleNear( paintDevice->logicalDpiX(), mSettings.outputDpi() ),
+              "Job::startRender()", errMsg.toLatin1().data() );
 #endif
 
   mLabelingEngineV2.reset();
