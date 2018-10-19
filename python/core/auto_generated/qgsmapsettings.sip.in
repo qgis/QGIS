@@ -60,6 +60,29 @@ Returns the size of the resulting map image
 Sets the size of the resulting map image
 %End
 
+    int devicePixelRatio() const;
+%Docstring
+Returns device pixel ratio
+
+.. versionadded:: 3.4
+%End
+
+    void setDevicePixelRatio( int dpr );
+%Docstring
+Sets the device pixel ratio
+
+.. versionadded:: 3.4
+%End
+
+    QSize physicalSize() const;
+%Docstring
+Returns the physical size of the map canvas
+This is equivalent to the output size multiplicated
+by the device pixel ratio
+
+.. versionadded:: 3.4
+%End
+
     double rotation() const;
 %Docstring
 Returns the rotation of the resulting map image, in degrees clockwise.

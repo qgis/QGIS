@@ -83,7 +83,12 @@ void QgsMapCanvasMap::paint( QPainter *painter )
     painter->drawImage( QRectF( ul.x(), ul.y(), lr.x() - ul.x(), lr.y() - ul.y() ), imIt->first, QRect( 0, 0, imIt->first.width(), imIt->first.height() ) );
   }
 
+  qDebug() << "map painter: " << w << h << mImage.size() << mImage.devicePixelRatioF();
   painter->drawImage( QRect( 0, 0, w, h ), mImage );
+  //Q_ASSERT(mImage.isNull() || mImage.devicePixelRatio()==2);
+  //QImage img = mImage;
+  //img.setDevicePixelRatio(2);
+  //painter->drawImage( 0,0, img );
 
   // For debugging:
 #if 0

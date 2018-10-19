@@ -163,6 +163,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
 
   QSize s = viewport()->size();
   mSettings.setOutputSize( s );
+  mSettings.setDevicePixelRatio( devicePixelRatio() );
   setSceneRect( 0, 0, s.width(), s.height() );
   mScene->setSceneRect( QRectF( 0, 0, s.width(), s.height() ) );
 
@@ -682,7 +683,8 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage &img, const QgsMapSettings &m
   // expects (encoding of position and size of the item)
   const QgsMapToPixel &m2p = mapSettings.mapToPixel();
   QgsPointXY topLeft = m2p.toMapCoordinates( 0, 0 );
-  double res = m2p.mapUnitsPerPixel();
+  Q_ASSERT( img.devicePixelRatio() == mapSettings.devicePixelRatio() );
+  double res = m2p.mapUnitsPerPixel() / img.devicePixelRatioF();
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + img.width()*res, topLeft.y() - img.height()*res );
   return rect;
 }
