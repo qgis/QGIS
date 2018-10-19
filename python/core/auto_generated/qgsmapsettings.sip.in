@@ -60,14 +60,14 @@ Returns the size of the resulting map image
 Sets the size of the resulting map image
 %End
 
-    int devicePixelRatio() const;
+    float devicePixelRatio() const;
 %Docstring
 Returns device pixel ratio
 
 .. versionadded:: 3.4
 %End
 
-    void setDevicePixelRatio( int dpr );
+    void setDevicePixelRatio( float dpr );
 %Docstring
 Sets the device pixel ratio
 

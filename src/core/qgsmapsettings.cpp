@@ -230,12 +230,12 @@ void QgsMapSettings::setOutputSize( QSize size )
   updateDerived();
 }
 
-int QgsMapSettings::devicePixelRatio() const
+float QgsMapSettings::devicePixelRatio() const
 {
   return mDevicePixelRatio;
 }
 
-void QgsMapSettings::setDevicePixelRatio( int dpr )
+void QgsMapSettings::setDevicePixelRatio( float dpr )
 {
   mDevicePixelRatio = dpr;
 }

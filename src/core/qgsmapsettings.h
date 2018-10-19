@@ -85,13 +85,13 @@ class CORE_EXPORT QgsMapSettings
      * Returns device pixel ratio
      * \since QGIS 3.4
      */
-    int devicePixelRatio() const;
+    float devicePixelRatio() const;
 
     /**
      * Sets the device pixel ratio
      * \since QGIS 3.4
      */
-    void setDevicePixelRatio( int dpr );
+    void setDevicePixelRatio( float dpr );
 
     /**
      * Returns the device output size of the map canvas
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsMapSettings
     double mDpi;
 
     QSize mSize;
-    int mDevicePixelRatio = 1;
+    float mDevicePixelRatio = 1.0;
 
     QgsRectangle mExtent;
 
