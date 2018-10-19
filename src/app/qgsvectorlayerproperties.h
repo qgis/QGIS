@@ -188,8 +188,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
 
-    QMenu *mLoadStyleMenu = nullptr;
-
     QAction *mActionLoadStyle = nullptr;
     QAction *mActionSaveStyle = nullptr;
 
