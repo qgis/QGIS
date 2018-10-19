@@ -31,9 +31,11 @@ email                : sherman at mrcc.com
 #include <QRect>
 #include <QTextStream>
 #include <QResizeEvent>
+#include <QScreen>
 #include <QString>
 #include <QStringList>
 #include <QWheelEvent>
+#include <QWindow>
 
 #include "qgis.h"
 #include "qgssettings.h"
@@ -168,6 +170,10 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   mScene->setSceneRect( QRectF( 0, 0, s.width(), s.height() ) );
 
   moveCanvasContents( true );
+
+  // keep device pixel ratio up to date on screen or resolution change
+  connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * ) {mSettings.setDevicePixelRatio( devicePixelRatio() );} );
+  connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, [ = ]( qreal ) {mSettings.setDevicePixelRatio( devicePixelRatio() );} );
 
   connect( &mMapUpdateTimer, &QTimer::timeout, this, &QgsMapCanvas::mapUpdateTimeout );
   mMapUpdateTimer.setInterval( 250 );
