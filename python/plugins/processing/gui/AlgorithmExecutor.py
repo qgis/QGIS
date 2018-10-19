@@ -183,7 +183,7 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
                 else:
                     active_layer.deleteFeature(f.id())
                     # Get the new ids
-                    old_ids = set([f.id() for f in active_layer.getFeatures()])
+                    old_ids = set([f.id() for f in active_layer.getFeatures(req)])
                     if not active_layer.addFeatures(new_features):
                         raise QgsProcessingException(tr("Error adding processed features back into the layer."))
                     new_ids = set([f.id() for f in active_layer.getFeatures(req)])
