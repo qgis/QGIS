@@ -494,6 +494,10 @@ class CORE_EXPORT QgsFeatureRequest
 
     /**
      * Set a subset of attributes that will be fetched.
+     *
+     * An empty attributes list indicates that no attributes will be fetched.
+     * To revert a call to setSubsetOfAttributes and fetch all available attributes,
+     * the SubsetOfAttributes flag should be removed from the request.
      */
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
 
