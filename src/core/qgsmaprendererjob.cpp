@@ -366,7 +366,7 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
     job.cached = true;
     job.complete = true;
     job.img = new QImage( mCache->cacheImage( LABEL_CACHE_ID ) );
-    Q_ASSERT( job.img->devicePixelRatio() == 2 );
+    Q_ASSERT( job.img->devicePixelRatio() == mSettings.devicePixelRatio() );
     job.context.setPainter( nullptr );
   }
   else
