@@ -408,7 +408,8 @@ Writes a layer out to a vector file.
                          const QStringList &datasourceOptions = QStringList(),
                          const QStringList &layerOptions = QStringList(),
                          QString *newFilename = 0,
-                         QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology
+                         QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
+                         QgsFeatureSink::SinkFlags sinkFlags = 0
                        );
 
 
