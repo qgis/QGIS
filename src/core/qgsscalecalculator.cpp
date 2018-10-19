@@ -47,7 +47,7 @@ QgsUnitTypes::DistanceUnit QgsScaleCalculator::mapUnits() const
   return mMapUnits;
 }
 
-double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, int canvasWidth )
+double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canvasWidth )
 {
   double conversionFactor = 0;
   double delta = 0;
@@ -77,7 +77,7 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, int canvasW
       delta = calculateGeographicDistance( mapExtent );
       break;
   }
-  if ( canvasWidth == 0 || qgsDoubleNear( mDpi, 0.0 ) )
+  if ( qgsDoubleNear( canvasWidth, 0. ) || qgsDoubleNear( mDpi, 0.0 ) )
   {
     QgsDebugMsg( QStringLiteral( "Can't calculate scale from the input values" ) );
     return 0;

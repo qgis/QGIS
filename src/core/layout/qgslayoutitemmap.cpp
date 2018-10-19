@@ -837,21 +837,21 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       // rasterize
       double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( style ) * 25.4;
       double layoutUnitsInInches = mLayout ? mLayout->convertFromLayoutUnits( 1, QgsUnitTypes::LayoutInches ).length() : 1;
-      int widthInPixels = std::round( boundingRect().width() * layoutUnitsInInches * destinationDpi );
-      int heightInPixels = std::round( boundingRect().height() * layoutUnitsInInches * destinationDpi );
+      int widthInPixels = static_cast< int >( std::round( boundingRect().width() * layoutUnitsInInches * destinationDpi ) );
+      int heightInPixels = static_cast< int >( std::round( boundingRect().height() * layoutUnitsInInches * destinationDpi ) );
       QImage image = QImage( widthInPixels, heightInPixels, QImage::Format_ARGB32 );
 
       image.fill( Qt::transparent );
-      image.setDotsPerMeterX( 1000 * destinationDpi / 25.4 );
-      image.setDotsPerMeterY( 1000 * destinationDpi / 25.4 );
+      image.setDotsPerMeterX( static_cast< int >( std::round( 1000 * destinationDpi / 25.4 ) ) );
+      image.setDotsPerMeterY( static_cast< int >( std::round( 1000 * destinationDpi / 25.4 ) ) );
       double dotsPerMM = destinationDpi / 25.4;
       QPainter p( &image );
 
       QPointF tl = -boundingRect().topLeft();
-      QRect imagePaintRect( std::round( tl.x() * dotsPerMM ),
-                            std::round( tl.y() * dotsPerMM ),
-                            std::round( thisPaintRect.width() * dotsPerMM ),
-                            std::round( thisPaintRect.height() * dotsPerMM ) );
+      QRect imagePaintRect( static_cast< int >( std::round( tl.x() * dotsPerMM ) ),
+                            static_cast< int >( std::round( tl.y() * dotsPerMM ) ),
+                            static_cast< int >( std::round( thisPaintRect.width() * dotsPerMM ) ),
+                            static_cast< int >( std::round( thisPaintRect.height() * dotsPerMM ) ) );
       p.setClipRect( imagePaintRect );
 
       p.translate( imagePaintRect.topLeft() );
@@ -884,7 +884,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
       painter->save();
       painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
-      painter->drawImage( std::round( -tl.x()* dotsPerMM ), std::round( -tl.y() * dotsPerMM ), image );
+      painter->drawImage( QPointF( -tl.x()* dotsPerMM, -tl.y() * dotsPerMM ), image );
       painter->scale( dotsPerMM, dotsPerMM );
       painter->restore();
     }
@@ -994,8 +994,8 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   double widthLayoutUnits = ext.width() * mapUnitsToLayoutUnits();
   double heightLayoutUnits = ext.height() * mapUnitsToLayoutUnits();
 
-  int w = widthLayoutUnits * mPreviewScaleFactor;
-  int h = heightLayoutUnits * mPreviewScaleFactor;
+  int w = static_cast< int >( std::round( widthLayoutUnits * mPreviewScaleFactor ) );
+  int h = static_cast< int >( std::round( heightLayoutUnits * mPreviewScaleFactor ) );
 
   // limit size of image for better performance
   if ( w > 5000 || h > 5000 )
@@ -1003,12 +1003,12 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
     if ( w > h )
     {
       w = 5000;
-      h = w * heightLayoutUnits / widthLayoutUnits;
+      h = static_cast< int>( std::round( w * heightLayoutUnits / widthLayoutUnits ) );
     }
     else
     {
       h = 5000;
-      w = h * widthLayoutUnits / heightLayoutUnits;
+      w = static_cast< int >( std::round( h * widthLayoutUnits / heightLayoutUnits ) );
     }
   }
 
@@ -1018,8 +1018,8 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   mCacheRenderingImage.reset( new QImage( w, h, QImage::Format_ARGB32 ) );
 
   // set DPI of the image
-  mCacheRenderingImage->setDotsPerMeterX( 1000 * w / widthLayoutUnits );
-  mCacheRenderingImage->setDotsPerMeterY( 1000 * h / heightLayoutUnits );
+  mCacheRenderingImage->setDotsPerMeterX( static_cast< int >( std::round( 1000 * w / widthLayoutUnits ) ) );
+  mCacheRenderingImage->setDotsPerMeterY( static_cast< int >( std::round( 1000 * h / heightLayoutUnits ) ) );
 
   if ( hasBackground() )
   {
