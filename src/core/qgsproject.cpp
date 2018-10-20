@@ -932,24 +932,23 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   Q_CHECK_PTR( mapLayer ); // NOLINT
 
   // have the layer restore state that is stored in Dom node
-  if ( mapLayer->readLayerXml( layerElem, context ) && mapLayer->isValid() )
+  bool layerIsValid = mapLayer->readLayerXml( layerElem, context ) && mapLayer->isValid();
+  QList<QgsMapLayer *> myLayers;
+  myLayers << mapLayer;
+  if ( layerIsValid )
   {
     emit readMapLayer( mapLayer, layerElem );
-
-    QList<QgsMapLayer *> myLayers;
-    myLayers << mapLayer;
     addMapLayers( myLayers );
-
-    return true;
   }
   else
   {
-    delete mapLayer;
-
+    // It's a bad layer: do not add to legend (the user will decide if she wants to do so)
+    addMapLayers( myLayers, false );
+    myLayers.first();
     QgsDebugMsg( "Unable to load " + type + " layer" );
     brokenNodes.push_back( layerElem );
-    return false;
   }
+  return layerIsValid;
 }
 
 bool QgsProject::read( const QString &filename )
@@ -1292,8 +1291,10 @@ bool QgsProject::readProjectFile( const QString &filename )
     }
   }
 
-  // make sure the are just valid layers
-  QgsLayerTreeUtils::removeInvalidLayers( mRootGroup );
+  // After bad layer handling we might still have invalid layers,
+  // store them in case the user wanted to handle them later
+  // or she wanted to pass them through when saving
+  QgsLayerTreeUtils::storeInvalidLayersProperties( mRootGroup, doc.get() );
 
   mRootGroup->removeCustomProperty( QStringLiteral( "loading" ) );
 
@@ -1749,10 +1750,27 @@ bool QgsProject::writeProjectFile( const QString &filename )
       QHash< QString, QPair< QString, bool> >::const_iterator emIt = mEmbeddedLayers.constFind( ml->id() );
       if ( emIt == mEmbeddedLayers.constEnd() )
       {
-        // general layer metadata
-        QDomElement maplayerElem = doc->createElement( QStringLiteral( "maplayer" ) );
-
-        ml->writeLayerXml( maplayerElem, *doc, context );
+        QDomElement maplayerElem;
+        // If layer is not valid, let's try to restore saved properties from invalidLayerProperties
+        if ( ml->isValid() )
+        {
+          // general layer metadata
+          maplayerElem = doc->createElement( QStringLiteral( "maplayer" ) );
+          ml->writeLayerXml( maplayerElem, *doc, context );
+        }
+        else if ( ml->customPropertyKeys().contains( QStringLiteral( "invalidLayerProperties" ) ) )
+        {
+          QDomDocument document;
+          if ( document.setContent( ml->customProperty( QStringLiteral( "invalidLayerProperties" ) ).toString() ) )
+          {
+            maplayerElem = document.firstChildElement();
+            maplayerElem.setAttribute( QStringLiteral( "invalidLayerProperties" ), QStringLiteral( "true" ) );
+          }
+          else
+          {
+            QgsDebugMsg( QStringLiteral( "Could not restore bad layer properties %1 from saved invalidLayerProperties" ).arg( ml->id() ) );
+          }
+        }
 
         emit writeMapLayer( ml, maplayerElem, *doc );
 
