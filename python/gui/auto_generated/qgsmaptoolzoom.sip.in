@@ -47,10 +47,6 @@ constructor
 
 
 
-    void updateCursor();
-%Docstring
-Flag to indicate a map canvas drag operation is taking place
-%End
 };
 
 /************************************************************************

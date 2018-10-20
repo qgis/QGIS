@@ -63,6 +63,7 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
     QCursor mZoomOutCursor;
     QCursor mZoomInCursor;
 
+  private:
     void updateCursor();
 };
 

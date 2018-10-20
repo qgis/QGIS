@@ -65,15 +65,8 @@ void QgsMapToolZoom::canvasMoveEvent( QgsMapMouseEvent *e )
   mZoomRect.setBottomRight( e->pos() );
   if ( mRubberBand )
   {
-    if ( mZoomOut )
-    {
-      mRubberBand->hide();
-    }
-    else
-    {
-      mRubberBand->setToCanvasRectangle( mZoomRect );
-      mRubberBand->show();
-    }
+    mRubberBand->setToCanvasRectangle( mZoomRect );
+    mRubberBand->show();
   }
 }
 
@@ -96,7 +89,7 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
   // a pen based computer reporting a press, move, and release, all the
   // one point.
   bool tooShort = ( mZoomRect.topLeft() - mZoomRect.bottomRight() ).manhattanLength() < mMinPixelZoom;
-  if ( !mDragging || tooShort || mZoomOut )
+  if ( !mDragging || tooShort )
   {
     mDragging = false;
     delete mRubberBand;
