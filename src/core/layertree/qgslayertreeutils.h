@@ -19,6 +19,7 @@
 #include <qnamespace.h>
 #include <QList>
 #include <QPair>
+#include <QDomNodeList>
 #include "qgis_core.h"
 
 class QDomElement;
@@ -58,8 +59,14 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! Returns true if any of the layers is modified
     static bool layersModified( const QList<QgsLayerTreeLayer *> &layerNodes );
 
-    //! Remove layer nodes that refer to invalid layers
+    //! Removes layer nodes that refer to invalid layers
     static void removeInvalidLayers( QgsLayerTreeGroup *group );
+
+    /**
+     * Stores in a custom layer node property the layer properties XML information for an invalid layer
+     * \since 3.6
+     */
+    static void storeInvalidLayersProperties( QgsLayerTreeGroup *group, const QDomDocument *doc );
 
     //! Remove subtree of embedded groups and replaces it with a custom property embedded-visible-layers
     static void replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup *group );
