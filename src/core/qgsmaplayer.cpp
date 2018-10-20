@@ -283,12 +283,6 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   QgsCoordinateReferenceSystem::setCustomCrsValidation( savedValidation );
   mCRS = savedCRS;
 
-  // Abort if any error in layer, such as not found.
-  if ( layerError )
-  {
-    return false;
-  }
-
   // the internal name is just the data source basename
   //QFileInfo dataSourceFileInfo( mDataSource );
   //internalName = dataSourceFileInfo.baseName();
@@ -387,7 +381,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
   mMetadata.readMetadataXml( metadataElem );
 
-  return true;
+  return ! layerError;
 } // bool QgsMapLayer::readLayerXML
 
 
