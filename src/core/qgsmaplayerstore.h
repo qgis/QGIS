@@ -135,7 +135,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      *                      the layers yourself. Not available in Python.
      *
      * \returns a list of the map layers that were added
-     *         successfully. If a layer is invalid, or already exists in the store,
+     *         successfully. If a layer already exists in the store,
      *         it will not be part of the returned list.
      *
      * \see addMapLayer()

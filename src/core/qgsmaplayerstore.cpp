@@ -55,9 +55,9 @@ QList<QgsMapLayer *> QgsMapLayerStore::addMapLayers( const QList<QgsMapLayer *> 
   QList<QgsMapLayer *> myResultList;
   Q_FOREACH ( QgsMapLayer *myLayer, layers )
   {
-    if ( !myLayer || !myLayer->isValid() )
+    if ( !myLayer )
     {
-      QgsDebugMsg( QStringLiteral( "Cannot add invalid layers" ) );
+      QgsDebugMsg( QStringLiteral( "Cannot add null layers" ) );
       continue;
     }
     //check the layer is not already registered!
