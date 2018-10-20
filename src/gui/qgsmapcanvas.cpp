@@ -691,7 +691,11 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage &img, const QgsMapSettings &m
   const QgsMapToPixel &m2p = mapSettings.mapToPixel();
   QgsPointXY topLeft = m2p.toMapCoordinates( 0, 0 );
   Q_ASSERT( img.devicePixelRatio() == mapSettings.devicePixelRatio() );
+#if QT_VERSION >= 0x050600
   double res = m2p.mapUnitsPerPixel() / img.devicePixelRatioF();
+#else
+  double res = m2p.mapUnitsPerPixel() / img.devicePixelRatio();
+#endif
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + img.width()*res, topLeft.y() - img.height()*res );
   return rect;
 }
