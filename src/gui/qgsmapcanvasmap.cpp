@@ -61,11 +61,11 @@ QRectF QgsMapCanvasMap::boundingRect() const
 void QgsMapCanvasMap::paint( QPainter *painter )
 {
   // setRect() makes the size +2 :-(
-  int w = std::round( mItemSize.width() ) - 2;
-  int h = std::round( mItemSize.height() ) - 2;
+  int w = std::round( mItemSize.width() * mImage.devicePixelRatioF() ) - 2;
+  int h = std::round( mItemSize.height() * mImage.devicePixelRatioF() ) - 2;
 
   bool scale = false;
-  if ( mImage.size() != QSize( w, h )*mImage.devicePixelRatioF() )
+  if ( mImage.size() != QSize( w, h ) * mImage.devicePixelRatioF() )
   {
     QgsDebugMsg( QStringLiteral( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" )
                  .arg( mImage.width() / mImage.devicePixelRatioF() )
