@@ -32,11 +32,12 @@ class QgsLayerTreeViewFilterIndicatorProvider : public QgsLayerTreeViewIndicator
     QString iconName( QgsMapLayer *layer ) override;
     QString tooltipText( QgsMapLayer *layer ) override;
 
-    // QgsLayerTreeViewIndicatorProvider interface
   protected slots:
-    void onIndicatorClicked( const QModelIndex &index ) ;
-    void connectSignals( QgsMapLayer *layer ) ;
-    void disconnectSignals( QgsMapLayer *layer ) ;
+    void onIndicatorClicked( const QModelIndex &index ) override;
+
+  protected:
+    void connectSignals( QgsMapLayer *layer ) override ;
+    void disconnectSignals( QgsMapLayer *layer ) override;
 };
 
 #endif // QGSLAYERTREEVIEWFILTERINDICATOR_H

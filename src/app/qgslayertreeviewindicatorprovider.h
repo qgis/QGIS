@@ -48,15 +48,18 @@ class QgsLayerTreeViewIndicatorProvider : public QObject
 
     explicit QgsLayerTreeViewIndicatorProvider( QgsLayerTreeView *view );
 
-  protected slots:
+  protected:
 
     // Subclasses MAY override:
-    //! Action on indicator clicked, default implementation does nothing
-    void onIndicatorClicked( const QModelIndex &index ) { Q_UNUSED( index ) }
     //! Connect signals, default implementation connects vector layers to dataSourceChanged()
-    void connectSignals( QgsMapLayer *layer );
+    virtual void connectSignals( QgsMapLayer *layer );
     //! Disconnect signals, default implementation disconnects vector layers from dataSourceChanged()
-    void disconnectSignals( QgsMapLayer *layer );
+    virtual void disconnectSignals( QgsMapLayer *layer );
+
+  protected slots:
+
+    //! Action on indicator clicked, default implementation does nothing
+    virtual void onIndicatorClicked( const QModelIndex &index ) { Q_UNUSED( index ) }
     // End MAY overrides
 
     //! Connects to signals of layers newly added to the tree
