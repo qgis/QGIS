@@ -31,13 +31,14 @@
 QgsMapToolZoom::QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut )
   : QgsMapTool( canvas )
   , mZoomOut( zoomOut )
+  , mNativeZoomOut( zoomOut )
   , mDragging( false )
+  , mZoomOutCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) )
+  , mZoomInCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) )
 
 {
   mToolName = tr( "Zoom" );
-  // set the cursor
-  mCursor = zoomOut ? QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
-            QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn );
+  updateCursor();
 }
 
 QgsMapToolZoom::~QgsMapToolZoom()
@@ -84,21 +85,20 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
   if ( e->button() != Qt::LeftButton )
     return;
 
-  bool zoomOut = mZoomOut;
-  if ( e->modifiers() & Qt::AltModifier )
-    zoomOut = !zoomOut;
-
   // We are not really dragging in this case. This is sometimes caused by
   // a pen based computer reporting a press, move, and release, all the
   // one point.
-  if ( mDragging && ( mZoomRect.topLeft() == mZoomRect.bottomRight() ) )
+  bool tooShort = ( mZoomRect.topLeft() - mZoomRect.bottomRight() ).manhattanLength() < mMinPixelZoom;
+  if ( !mDragging || tooShort )
   {
     mDragging = false;
     delete mRubberBand;
     mRubberBand = nullptr;
-  }
 
-  if ( mDragging )
+    // change to zoom in/out by the default multiple
+    mCanvas->zoomWithCenter( e->x(), e->y(), !mZoomOut );
+  }
+  else
   {
     mDragging = false;
     delete mRubberBand;
@@ -122,14 +122,9 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
     const QgsMapToPixel *m2p = mCanvas->getCoordinateTransform();
     QgsPointXY c = m2p->toMapCoordinates( mZoomRect.center() );
 
-    mCanvas->zoomByFactor( zoomOut ? 1.0 / sf : sf, &c );
+    mCanvas->zoomByFactor( mZoomOut ? 1.0 / sf : sf, &c );
 
     mCanvas->refresh();
-  }
-  else // not dragging
-  {
-    // change to zoom in/out by the default multiple
-    mCanvas->zoomWithCenter( e->x(), e->y(), !zoomOut );
   }
 }
 
@@ -139,4 +134,32 @@ void QgsMapToolZoom::deactivate()
   mRubberBand = nullptr;
 
   QgsMapTool::deactivate();
+}
+
+void QgsMapToolZoom::updateCursor()
+{
+  setCursor( mZoomOut ? mZoomOutCursor : mZoomInCursor );
+}
+
+void QgsMapToolZoom::keyPressEvent( QKeyEvent *e )
+{
+  if ( e->key() == Qt::Key_Alt )
+  {
+    mZoomOut = !mZoomOut;
+    updateCursor();
+  }
+}
+
+void QgsMapToolZoom::keyReleaseEvent( QKeyEvent *e )
+{
+  // key press events are not caught wile the mouse is pressed
+  // so we can't mess if we are already dragging
+  // we need to go back to native state, as it cannot be determine
+  // (since the press event is not detected while mouse is pressed)
+
+  if ( e->key() == Qt::Key_Alt )
+  {
+    mZoomOut = mNativeZoomOut;
+    updateCursor();
+  }
 }

@@ -138,6 +138,12 @@ class GUI_EXPORT QgsMapTool : public QObject
     QAction *action();
 
     /**
+     * Returns if the current map tool active on the map canvas
+     * \since QGIS 3.4
+     */
+    bool isActive() const;
+
+    /**
      * Use this to associate a button to this maptool. It has the same meaning
      * as setAction() function except it works with a button instead of an QAction. */
     void setButton( QAbstractButton *button );

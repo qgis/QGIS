@@ -118,6 +118,13 @@ the previously used toolbutton to pop out. *
 Returns associated action with map tool or NULL if no action is associated
 %End
 
+    bool isActive() const;
+%Docstring
+Returns if the current map tool active on the map canvas
+
+.. versionadded:: 3.4
+%End
+
     void setButton( QAbstractButton *button );
 %Docstring
 Use this to associate a button to this maptool. It has the same meaning

@@ -34,10 +34,16 @@ constructor
 
     virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
 
+    virtual void keyPressEvent( QKeyEvent *e );
+
+    virtual void keyReleaseEvent( QKeyEvent *e );
+
     virtual void deactivate();
 
 
   protected:
+
+
 
 
 
