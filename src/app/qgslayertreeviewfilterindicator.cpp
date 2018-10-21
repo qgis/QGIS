@@ -61,6 +61,7 @@ QString QgsLayerTreeViewFilterIndicatorProvider::tooltipText( QgsMapLayer *layer
 
 void QgsLayerTreeViewFilterIndicatorProvider::connectSignals( QgsMapLayer *layer )
 {
+  QgsLayerTreeViewIndicatorProvider::connectSignals( layer );
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
     return;
@@ -69,6 +70,7 @@ void QgsLayerTreeViewFilterIndicatorProvider::connectSignals( QgsMapLayer *layer
 
 void QgsLayerTreeViewFilterIndicatorProvider::disconnectSignals( QgsMapLayer *layer )
 {
+  QgsLayerTreeViewIndicatorProvider::disconnectSignals( layer );
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
     return;

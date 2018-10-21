@@ -40,16 +40,18 @@ QString QgsLayerTreeViewNonRemovableIndicatorProvider::tooltipText( QgsMapLayer 
 
 bool QgsLayerTreeViewNonRemovableIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 {
-  return layer->flags() & QgsMapLayer::Removable;
+  return ! layer->flags().testFlag( QgsMapLayer::LayerFlag::Removable );
 }
 
 void QgsLayerTreeViewNonRemovableIndicatorProvider::connectSignals( QgsMapLayer *layer )
 {
+  QgsLayerTreeViewIndicatorProvider::connectSignals( layer );
   connect( layer, &QgsMapLayer::flagsChanged, this, &QgsLayerTreeViewNonRemovableIndicatorProvider::onLayerChanged );
 }
 
 void QgsLayerTreeViewNonRemovableIndicatorProvider::disconnectSignals( QgsMapLayer *layer )
 {
+  QgsLayerTreeViewIndicatorProvider::disconnectSignals( layer );
   disconnect( layer, &QgsMapLayer::flagsChanged, this, &QgsLayerTreeViewNonRemovableIndicatorProvider::onLayerChanged );
 }
 
