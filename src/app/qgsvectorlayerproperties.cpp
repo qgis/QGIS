@@ -1663,11 +1663,6 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage( bool reset )
     mAuxiliaryStorageFieldsLineEdit->setText( QString() );
     mAuxiliaryStorageFeaturesLineEdit->setText( QString() );
   }
-
-  if ( reset && labelingDialog )
-  {
-    labelingDialog->setLayer( mLayer );
-  }
 }
 
 void QgsVectorLayerProperties::onAuxiliaryLayerNew()
