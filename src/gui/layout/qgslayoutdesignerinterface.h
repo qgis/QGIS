@@ -38,6 +38,16 @@ class QToolBar;
  * This interface can be used by plugins and scripts to interact with
  * open layout designer dialogs.
  *
+ * \note Layout designer dialogs are transitory. They are created only on demand
+ * (when a user opens the dialog) and are deleted as soon as the user closes the dialog.
+ * There can be multiple designer dialogs open at any one time, and each is a separate
+ * instance of the dialog and QgsLayoutDesignerInterface. Accordingly, plugins must
+ * take care to react to newly created designer dialogs and apply their customizations
+ * to all newly created dialogs. This can be done by listening for the QgisInterface::layoutDesignerOpened
+ * signal. Plugins must also listen for the QgisInterface::layoutDesignerWillBeClosed
+ * signal and gracefully cleanup any customisations before the designer dialog is
+ * deleted.
+ *
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
@@ -112,6 +122,8 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
     /**
      * Returns a reference to the designer's "Layout" menu.
      *
+     * \note See class documentation for notes regarding handling customisation of designer dialogs.
+     *
      * \see editMenu()
      * \see viewMenu()
      * \see itemsMenu()
@@ -125,6 +137,8 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
 
     /**
      * Returns a reference to the designer's "Edit" menu.
+     *
+     * \note See class documentation for notes regarding handling customisation of designer dialogs.
      *
      * \see layoutMenu()
      * \see viewMenu()
@@ -140,6 +154,8 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
     /**
      * Returns a reference to the designer's "View" menu.
      *
+     * \note See class documentation for notes regarding handling customisation of designer dialogs.
+     *
      * \see layoutMenu()
      * \see editMenu()
      * \see itemsMenu()
@@ -153,6 +169,8 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
 
     /**
      * Returns a reference to the designer's "Items" menu.
+     *
+     * \note See class documentation for notes regarding handling customisation of designer dialogs.
      *
      * \see layoutMenu()
      * \see editMenu()
@@ -170,6 +188,8 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      *
      * Note that this may not exist or may be hidden if the designer is in report mode.
      *
+     * \note See class documentation for notes regarding handling customisation of designer dialogs.
+     *
      * \see layoutMenu()
      * \see editMenu()
      * \see viewMenu()
@@ -186,6 +206,8 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      *
      * Note that this may not exist or may be hidden if the designer is not in report mode.
      *
+     * \note See class documentation for notes regarding handling customisation of designer dialogs.
+     *
      * \see layoutMenu()
      * \see editMenu()
      * \see viewMenu()
@@ -199,6 +221,8 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
 
     /**
      * Returns a reference to the designer's "Settings" menu.
+     *
+     * \note See class documentation for notes regarding handling customisation of designer dialogs.
      *
      * \see layoutMenu()
      * \see editMenu()
@@ -214,6 +238,8 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
     /**
      * Returns a reference to the designer's "Layout" toolbar.
      *
+     * \note See class documentation for notes regarding handling customisation of designer dialogs.
+     *
      * \see navigationToolbar()
      * \see actionsToolbar()
      * \see atlasToolbar()
@@ -225,6 +251,8 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
     /**
      * Returns a reference to the designer's "Navigation" toolbar.
      *
+     * \note See class documentation for notes regarding handling customisation of designer dialogs.
+     *
      * \see layoutToolbar()
      * \see actionsToolbar()
      * \see atlasToolbar()
@@ -235,6 +263,8 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
 
     /**
      * Returns a reference to the designer's "Actions" toolbar.
+     *
+     * \note See class documentation for notes regarding handling customisation of designer dialogs.
      *
      * \see layoutToolbar()
      * \see navigationToolbar()
@@ -250,6 +280,8 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      * Note that this toolbar may not exist or may be hidden if the
      * designer is in report mode.
      *
+     * \note See class documentation for notes regarding handling customisation of designer dialogs.
+     *
      * \see layoutToolbar()
      * \see navigationToolbar()
      * \see actionsToolbar()
@@ -261,6 +293,8 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
     /**
      * Adds a \a dock widget to the layout designer, in the specified dock \a area.
      *
+     * \note See class documentation for notes regarding handling customisation of designer dialogs.
+     *
      * \see removeDockWidget()
      *
      * \since QGIS 3.4
@@ -269,6 +303,8 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
 
     /**
      * Removes the specified \a dock widget from layout designer (without deleting it).
+     *
+     * \note See class documentation for notes regarding handling customisation of designer dialogs.
      *
      * \see addDockWidget()
      *
