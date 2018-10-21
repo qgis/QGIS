@@ -71,7 +71,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     QgsFeatureIterator selectedFeatures = vlayer->getSelectedFeatures();
     QgsFeature firstSelectedFeature;
     if ( selectedFeatures.nextFeature( firstSelectedFeature ) )
-      if ( !firstSelectedFeature.geometry().isNull() )
+      if ( firstSelectedFeature.geometry().isNull() )
         isGeometryEmpty = true;
   }
 
