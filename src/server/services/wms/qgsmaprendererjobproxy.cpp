@@ -58,7 +58,7 @@ namespace QgsWms
       renderJob.start();
 
       // Allows the main thread to manage blocking call coming from rendering
-      // threads (see discussion in #18988).
+      // threads (see discussion in https://issues.qgis.org/issues/18988).
       QEventLoop loop;
       QObject::connect( &renderJob, &QgsMapRendererParallelJob::finished, &loop, &QEventLoop::quit );
       loop.exec();
