@@ -71,15 +71,17 @@ void QgsMapCanvasMap::paint( QPainter *painter )
   if ( mImage.size() != QSize( w, h ) * mImage.devicePixelRatio() )
 #endif
   {
-    QgsDebugMsg( QStringLiteral( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" )
 #if QT_VERSION >= 0x050600
+    QgsDebugMsg( QStringLiteral( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" )
                  .arg( mImage.width() / mImage.devicePixelRatioF() )
                  .arg( mImage.height() / mImage.devicePixelRatioF() )
+                 .arg( w ).arg( h ) );
 #else
+    QgsDebugMsg( QStringLiteral( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" )
                  .arg( mImage.width() / mImage.devicePixelRatio() )
                  .arg( mImage.height() / mImage.devicePixelRatio() )
-#endif
                  .arg( w ).arg( h ) );
+#endif
     // This happens on zoom events when ::paint is called before
     // the renderer has completed
     scale = true;
