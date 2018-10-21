@@ -1775,7 +1775,8 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDeleteField()
   const QString msg = tr( "Are you sure you want to delete auxiliary field %1 for %2?" ).arg( item->text( 1 ), item->text( 0 ) );
 
   QMessageBox::StandardButton reply;
-  reply = QMessageBox::question( this, "Delete Auxiliary Field", msg, QMessageBox::Yes | QMessageBox::No );
+  const QString title = QObject::tr( "Delete Auxiliary Field" );
+  reply = QMessageBox::question( this, title, msg, QMessageBox::Yes | QMessageBox::No );
 
   if ( reply == QMessageBox::Yes )
   {
