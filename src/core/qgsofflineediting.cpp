@@ -638,9 +638,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       options = CSLSetNameValue( options, "OVERWRITE", "YES" );
       options = CSLSetNameValue( options, "IDENTIFIER", tr( "%1 (offline)" ).arg( layer->name() ).toUtf8().constData() );
       options = CSLSetNameValue( options, "DESCRIPTION", layer->dataComment().toUtf8().constData() );
-#if 0
-      options = CSLSetNameValue( options, "FID", featureId.toUtf8().constData() );
-#endif
+      options = CSLSetNameValue( options, "FID", "gpkg_id" );
 
       if ( layer->isSpatial() )
       {
@@ -750,7 +748,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       // fill gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
       QgsAttributes attrs = f.attributes();
       int column = 0;
-      if ( containerType == GPKG && layer->dataProvider()->fields().lookupField( "fid" ) == -1 )
+      if ( containerType == GPKG && layer->dataProvider()->fields().lookupField( "gpkg_fid" ) == -1 )
       {
         // newAttrs has an addition FID attribute, so we have to add a dummy in the original set
         column++;
