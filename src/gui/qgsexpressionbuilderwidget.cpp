@@ -57,7 +57,6 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( mValuesListView, &QListView::doubleClicked, this, &QgsExpressionBuilderWidget::mValuesListView_doubleClicked );
 
   mValueGroupBox->hide();
-  mLoadGroupBox->hide();
 //  highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
 
   mModel = new QStandardItemModel();
@@ -228,7 +227,6 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
     mValuesModel->setStringList( values );
   }
 
-  mLoadGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
   mValueGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
 
   // Show the help for the current item.
