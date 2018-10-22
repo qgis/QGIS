@@ -63,6 +63,13 @@ Returns the master layout displayed in the designer.
 .. seealso:: :py:func:`layout`
 %End
 
+    virtual QWidget *window() = 0;
+%Docstring
+Returns a pointer to the designer window.
+
+.. versionadded:: 3.4
+%End
+
     virtual QgsLayoutView *view() = 0;
 %Docstring
 Returns the layout view utilized by the designer.

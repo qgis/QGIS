@@ -86,6 +86,13 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
     virtual QgsMasterLayoutInterface *masterLayout() = 0;
 
     /**
+     * Returns a pointer to the designer window.
+     *
+     * \since QGIS 3.4
+     */
+    virtual QWidget *window() = 0;
+
+    /**
      * Returns the layout view utilized by the designer.
      * \see layout()
      */

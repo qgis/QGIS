@@ -55,6 +55,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 
   public:
     QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog );
+    QWidget *window() override;
     QgsLayout *layout() override;
     QgsMasterLayoutInterface *masterLayout() override;
     QgsLayoutView *view() override;

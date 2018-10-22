@@ -102,6 +102,11 @@ QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerD
   , mDesigner( dialog )
 {}
 
+QWidget *QgsAppLayoutDesignerInterface::window()
+{
+  return mDesigner;
+}
+
 QgsLayout *QgsAppLayoutDesignerInterface::layout()
 {
   return mDesigner->currentLayout();
