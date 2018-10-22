@@ -944,7 +944,12 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       }
     }
 
-    statement += ") VALUES (" + values + ')';
+    statement += QStringLiteral( ") " );
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
+    {
+      statement += QStringLiteral( " OUTPUT inserted." ) + mFidColName;
+    }
+    statement += QStringLiteral( " VALUES (" ) + values + ')';
 
     // use prepared statement to prevent from sql injection
     if ( !query.prepare( statement ) )
@@ -1067,19 +1072,6 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
     if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      statement = QStringLiteral( "SELECT IDENT_CURRENT('%1.%2')" ).arg( mSchemaName, mTableName );
-
-      if ( !query.exec( statement ) )
-      {
-        QString msg = query.lastError().text();
-        QgsDebugMsg( msg );
-        if ( !mSkipFailures )
-        {
-          pushError( msg );
-          return false;
-        }
-      }
-
       if ( !query.next() )
       {
         QString msg = query.lastError().text();
