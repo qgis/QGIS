@@ -557,6 +557,7 @@ QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, 
   setState( Populated );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsMssqlLayerItem::actions( QWidget *actionParent )
 {
   QgsMssqlConnectionItem *connItem = qobject_cast<QgsMssqlConnectionItem *>( parent() ? parent()->parent() : nullptr );
@@ -610,6 +611,7 @@ QList<QAction *> QgsMssqlLayerItem::actions( QWidget *actionParent )
   lst.append( actionTruncateLayer );
   return lst;
 }
+#endif
 
 QgsMssqlLayerItem *QgsMssqlLayerItem::createClone()
 {
@@ -658,6 +660,7 @@ QVector<QgsDataItem *> QgsMssqlSchemaItem::createChildren()
   return QVector<QgsDataItem *>();
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsMssqlSchemaItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
@@ -672,6 +675,7 @@ QList<QAction *> QgsMssqlSchemaItem::actions( QWidget *parent )
 
   return lst;
 }
+#endif
 
 void QgsMssqlSchemaItem::addLayers( QgsDataItem *newLayers )
 {

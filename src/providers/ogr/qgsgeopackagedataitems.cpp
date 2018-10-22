@@ -13,6 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QAction>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QInputDialog>
+
 #include <sqlite3.h>
 
 #include "qgssqliteutils.h"
@@ -27,18 +32,13 @@
 #include "qgsogrdataitems.h"
 #ifdef HAVE_GUI
 #include "qgsnewgeopackagelayerdialog.h"
-#include "qgsproxyprogresstask.h"
 #endif
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsgeopackagerasterwritertask.h"
 #include "qgstaskmanager.h"
 #include "qgsproviderregistry.h"
-
-#include <QAction>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QInputDialog>
+#include "qgsproxyprogresstask.h"
 
 QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
 
