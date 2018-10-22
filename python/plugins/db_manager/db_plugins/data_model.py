@@ -177,7 +177,7 @@ class SqlResultModelAsync(QObject):
 class SqlResultModelTask(QgsTask):
 
     def __init__(self, db, sql, parent):
-        super().__init__()
+        super().__init__(description=QApplication.translate("DBManagerPlugin","DB Manager executing SQL"))
         self.db = db
         self.sql = sql
         self.parent = parent
