@@ -17,7 +17,7 @@ import qgis  # NOQA
 from PyQt5.QtCore import QVariant
 from qgis.testing import unittest, start_app
 from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularString, QgsCompoundCurve,\
-    QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField
+    QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField, QgsError
 
 start_app()
 
@@ -120,6 +120,10 @@ class TestPython__repr__(unittest.TestCase):
     def testQgsFieldRepr(self):
         f = QgsField('field_name', QVariant.Double, 'double')
         self.assertEqual(f.__repr__(), "<QgsField: field_name (double)>")
+
+    def testQgsErrorRepr(self):
+        e = QgsError('you done wrong son', 'dad')
+        self.assertEqual(e.__repr__(), "<QgsError: dad you done wrong son>")
 
 
 if __name__ == "__main__":
