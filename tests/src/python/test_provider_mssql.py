@@ -117,6 +117,10 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         return vl
 
     def getEditableLayer(self):
+        # Triggers a segfault in the sql server odbc driver on Travis - TODO test with more recent Ubuntu base image
+        if os.environ.get('TRAVIS', '') == 'true':
+            return
+
         return self.getSource()
 
     def enableCompiler(self):
