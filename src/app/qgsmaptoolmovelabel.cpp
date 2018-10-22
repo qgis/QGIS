@@ -57,11 +57,14 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
 
   int xCol = -1, yCol = -1;
 
-  if ( !mCurrentLabel.pos.isDiagram &&  !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+  if ( !mCurrentLabel.pos.isDiagram && !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
   {
     QgsPalIndexes indexes;
 
     if ( createAuxiliaryFields( indexes ) )
+      return;
+
+    if ( !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
       return;
 
     xCol = indexes[ QgsPalLayerSettings::PositionX ];
@@ -72,6 +75,9 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
     QgsDiagramIndexes indexes;
 
     if ( createAuxiliaryFields( indexes ) )
+      return;
+
+    if ( !diagramMoveable( vlayer, xCol, yCol ) )
       return;
 
     xCol = indexes[ QgsDiagramLayerSettings::PositionX ];
