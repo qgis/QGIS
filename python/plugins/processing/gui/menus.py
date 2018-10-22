@@ -32,7 +32,7 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
-from qgis.core import QgsApplication, QgsMessageLog, QgsStringUtils, QgsProcessingAlgorithm
+from qgis.core import QgsApplication, QgsMessageLog, QgsProcessingAlgorithm, QgsSettings, QgsStringUtils
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -182,11 +182,15 @@ def removeMenus():
 
 
 def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, addButton=False):
+    settings = QgsSettings()
     if actionText is None:
-        if alg.flags() & QgsProcessingAlgorithm.FlagDisplayNameIsLiteral:
-            alg_title = alg.displayName()
-        else:
+        if settings.value('locale/userLocale', '').startswith('en') \
+                and not (alg.flags() & QgsProcessingAlgorithm.FlagDisplayNameIsLiteral):
+            # Capitalize menu entry if the current language is English
+            # and the algorithm name is not an untranslatable static literal string
             alg_title = QgsStringUtils.capitalize(alg.displayName(), QgsStringUtils.TitleCase)
+        else:
+            alg_title = alg.displayName()
         actionText = alg_title + QCoreApplication.translate('Processing', '…')
     action = QAction(icon or alg.icon(), actionText, iface.mainWindow())
     alg_id = alg.id()

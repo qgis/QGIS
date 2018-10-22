@@ -123,10 +123,18 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
 {
   mAlgorithm = algorithm;
   QString title;
-  if ( algorithm->flags() & QgsProcessingAlgorithm::FlagDisplayNameIsLiteral )
-    title = mAlgorithm->displayName();
-  else
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString().startsWith( "en" ) &&
+       !( algorithm->flags() & QgsProcessingAlgorithm::FlagDisplayNameIsLiteral ) )
+  {
+    // Capitalize algorithm dialog title if the current language is English
+    // and the algorithm name is not an untranslatable static literal string
     title = QgsStringUtils::capitalize( mAlgorithm->displayName(), QgsStringUtils::TitleCase );
+  }
+  else
+  {
+    title = mAlgorithm->displayName();
+  }
   setWindowTitle( title );
 
   QString algHelp = formatHelp( algorithm );
