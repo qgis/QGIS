@@ -1412,6 +1412,11 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &id )
   return true;
 }
 
+void QgsMssqlProvider::updateExtents()
+{
+  mExtent.setMinimal();
+}
+
 QgsVectorDataProvider::Capabilities QgsMssqlProvider::capabilities() const
 {
   QgsVectorDataProvider::Capabilities cap = CreateAttributeIndex | AddFeatures | AddAttributes;
