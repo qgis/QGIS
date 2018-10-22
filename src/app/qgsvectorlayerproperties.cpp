@@ -1602,7 +1602,7 @@ void QgsVectorLayerProperties::showHelp()
   }
 }
 
-void QgsVectorLayerProperties::updateAuxiliaryStoragePage( bool reset )
+void QgsVectorLayerProperties::updateAuxiliaryStoragePage()
 {
   const QgsAuxiliaryLayer *alayer = mLayer->auxiliaryLayer();
 
@@ -1663,11 +1663,6 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage( bool reset )
     mAuxiliaryStorageFieldsLineEdit->setText( QString() );
     mAuxiliaryStorageFeaturesLineEdit->setText( QString() );
   }
-
-  if ( reset && labelingDialog )
-  {
-    labelingDialog->setLayer( mLayer );
-  }
 }
 
 void QgsVectorLayerProperties::onAuxiliaryLayerNew()
@@ -1680,7 +1675,7 @@ void QgsVectorLayerProperties::onAuxiliaryLayerNew()
   QgsNewAuxiliaryLayerDialog dlg( mLayer, this );
   if ( dlg.exec() == QDialog::Accepted )
   {
-    updateAuxiliaryStoragePage( true );
+    updateAuxiliaryStoragePage();
   }
 }
 
@@ -1700,7 +1695,7 @@ void QgsVectorLayerProperties::onAuxiliaryLayerClear()
     QApplication::setOverrideCursor( Qt::WaitCursor );
     alayer->clear();
     QApplication::restoreOverrideCursor();
-    updateAuxiliaryStoragePage( true );
+    updateAuxiliaryStoragePage();
     mLayer->triggerRepaint();
   }
 }
@@ -1731,7 +1726,7 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDelete()
     mLayer->setAuxiliaryLayer(); // remove auxiliary layer
     QgsAuxiliaryStorage::deleteTable( uri );
     QApplication::restoreOverrideCursor();
-    updateAuxiliaryStoragePage( true );
+    updateAuxiliaryStoragePage();
     mLayer->triggerRepaint();
   }
 }
@@ -1820,7 +1815,7 @@ void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
       labelingDialog->labelingGui()->deactivateField( static_cast<QgsPalLayerSettings::Property>( key ) );
     }
 
-    updateAuxiliaryStoragePage( true );
+    updateAuxiliaryStoragePage();
     mSourceFieldsPropertiesDialog->init();
   }
   else
