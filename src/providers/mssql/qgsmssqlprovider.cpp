@@ -1385,6 +1385,9 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &id )
   if ( mFidColName.isEmpty() )
     return false;
 
+  if ( id.empty() )
+    return true; // for consistency providers return true to an empty list
+
   QString featureIds;
   for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
   {
