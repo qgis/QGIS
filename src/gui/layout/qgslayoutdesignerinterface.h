@@ -52,6 +52,16 @@ class QToolBar;
  */
 class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsLayoutDesignerInterface *>( sipCpp ) )
+      sipType = sipType_QgsLayoutDesignerInterface;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_OBJECT
 
   public:

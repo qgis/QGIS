@@ -36,6 +36,12 @@ open layout designer dialogs.
 %TypeHeaderCode
 #include "qgslayoutdesignerinterface.h"
 %End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsLayoutDesignerInterface *>( sipCpp ) )
+      sipType = sipType_QgsLayoutDesignerInterface;
+    else
+      sipType = NULL;
+%End
   public:
 
     QgsLayoutDesignerInterface( QObject *parent /TransferThis/ = 0 );
