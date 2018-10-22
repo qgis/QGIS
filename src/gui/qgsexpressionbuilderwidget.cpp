@@ -604,8 +604,6 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
   QString casestring = QStringLiteral( "CASE WHEN condition THEN result END" );
   registerItem( QStringLiteral( "Conditionals" ), QStringLiteral( "CASE" ), casestring );
 
-  registerItem( QStringLiteral( "Fields and Values" ), QStringLiteral( "NULL" ), QStringLiteral( "NULL" ) );
-
   // Load the functions from the QgsExpression class
   int count = QgsExpression::functionCount();
   for ( int i = 0; i < count; i++ )
