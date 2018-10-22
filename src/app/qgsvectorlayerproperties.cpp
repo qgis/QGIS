@@ -1775,7 +1775,8 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDeleteField()
   const QString msg = tr( "Are you sure you want to delete auxiliary field %1 for %2?" ).arg( item->text( 1 ), item->text( 0 ) );
 
   QMessageBox::StandardButton reply;
-  reply = QMessageBox::question( this, "Delete Auxiliary Field", msg, QMessageBox::Yes | QMessageBox::No );
+  const QString title = QObject::tr( "Delete Auxiliary Field" );
+  reply = QMessageBox::question( this, title, msg, QMessageBox::Yes | QMessageBox::No );
 
   if ( reply == QMessageBox::Yes )
   {
@@ -1821,5 +1822,13 @@ void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
 
     updateAuxiliaryStoragePage( true );
     mSourceFieldsPropertiesDialog->init();
+  }
+  else
+  {
+    const QString title = QObject::tr( "Delete Auxiliary Field" );
+    const int timeout = QgisApp::instance()->messageTimeout();
+    const QString errors = mLayer->auxiliaryLayer()->commitErrors().join( QStringLiteral( "\n  " ) );
+    const QString msg = QObject::tr( "Unable to remove auxiliary field (%1)" ).arg( errors );
+    QgisApp::instance()->messageBar()->pushMessage( title, msg, Qgis::Warning, timeout );
   }
 }
