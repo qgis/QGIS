@@ -638,7 +638,23 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       options = CSLSetNameValue( options, "OVERWRITE", "YES" );
       options = CSLSetNameValue( options, "IDENTIFIER", tr( "%1 (offline)" ).arg( layer->name() ).toUtf8().constData() );
       options = CSLSetNameValue( options, "DESCRIPTION", layer->dataComment().toUtf8().constData() );
-      options = CSLSetNameValue( options, "FID", "gpkg_id" );
+
+      //the FID-name should not exist in the original data
+      QString fidBase( QStringLiteral( "fid" ) );
+      QString fid = fidBase;
+      int counter = 1;
+      while ( layer->dataProvider()->fields().lookupField( fid ) >= 0 && counter < 10000 )
+      {
+        fid = fidBase + '_' + QString::number( counter );
+        counter++;
+      }
+      if ( counter == 10000 )
+      {
+        showWarning( tr( "Cannot make FID-name for GPKG " ) );
+        return nullptr;
+      }
+
+      options = CSLSetNameValue( options, "FID", fid.toUtf8().constData() );
 
       if ( layer->isSpatial() )
       {
@@ -748,11 +764,9 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       // fill gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
       QgsAttributes attrs = f.attributes();
       int column = 0;
-      if ( containerType == GPKG && layer->dataProvider()->fields().lookupField( "gpkg_fid" ) == -1 )
-      {
-        // newAttrs has an addition FID attribute, so we have to add a dummy in the original set
+      // on GPKG newAttrs has an addition FID attribute, so we have to add a dummy in the original set
+      if ( containerType == GPKG )
         column++;
-      }
       QgsAttributes newAttrs( attrs.count() + column );
       for ( int it = 0; it < attrs.count(); ++it )
       {
