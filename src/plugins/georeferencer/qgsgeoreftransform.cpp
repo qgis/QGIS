@@ -26,6 +26,10 @@
 #include <cassert>
 #include <limits>
 
+#if !defined(GDAL_COMPUTE_VERSION) || GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,0,0)
+#define CPLsnprintf snprintf
+#endif
+
 /**
  * A simple transform which is paremetrized by a translation and anistotropic scale.
  */
