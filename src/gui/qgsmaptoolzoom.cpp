@@ -38,7 +38,7 @@ QgsMapToolZoom::QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut )
 
 {
   mToolName = tr( "Zoom" );
-  updateCursor();
+  setZoomMode( mNativeZoomOut, true );
 }
 
 QgsMapToolZoom::~QgsMapToolZoom()
@@ -52,6 +52,8 @@ void QgsMapToolZoom::canvasMoveEvent( QgsMapMouseEvent *e )
   if ( !( e->buttons() & Qt::LeftButton ) )
     return;
 
+  setZoomMode( e->modifiers().testFlag( Qt::AltModifier ) ^ mNativeZoomOut );
+
   if ( !mDragging )
   {
     mDragging = true;
@@ -62,6 +64,7 @@ void QgsMapToolZoom::canvasMoveEvent( QgsMapMouseEvent *e )
     mRubberBand->setColor( color );
     mZoomRect.setTopLeft( e->pos() );
   }
+
   mZoomRect.setBottomRight( e->pos() );
   if ( mRubberBand )
   {
@@ -84,6 +87,8 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
+
+  setZoomMode( e->modifiers().testFlag( Qt::AltModifier ) ^ mNativeZoomOut );
 
   // We are not really dragging in this case. This is sometimes caused by
   // a pen based computer reporting a press, move, and release, all the
@@ -136,8 +141,12 @@ void QgsMapToolZoom::deactivate()
   QgsMapTool::deactivate();
 }
 
-void QgsMapToolZoom::updateCursor()
+void QgsMapToolZoom::setZoomMode( bool zoomOut, bool force )
 {
+  if ( !force && zoomOut == mZoomOut )
+    return;
+
+  mZoomOut = zoomOut;
   setCursor( mZoomOut ? mZoomOutCursor : mZoomInCursor );
 }
 
@@ -145,21 +154,17 @@ void QgsMapToolZoom::keyPressEvent( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Alt )
   {
-    mZoomOut = !mZoomOut;
-    updateCursor();
+    setZoomMode( !mNativeZoomOut );
   }
 }
 
 void QgsMapToolZoom::keyReleaseEvent( QKeyEvent *e )
 {
   // key press events are not caught wile the mouse is pressed
-  // so we can't mess if we are already dragging
-  // we need to go back to native state, as it cannot be determine
-  // (since the press event is not detected while mouse is pressed)
+  // this is detected in map canvas move event
 
   if ( e->key() == Qt::Key_Alt )
   {
-    mZoomOut = mNativeZoomOut;
-    updateCursor();
+    setZoomMode( mNativeZoomOut );
   }
 }
