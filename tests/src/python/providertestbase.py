@@ -511,6 +511,14 @@ class ProviderTestCase(FeatureSourceTestCase):
             # add empty list, should return true for consistency
             self.assertTrue(l.dataProvider().addFeatures([]))
 
+            # ensure that returned features have been given the correct id
+            f = next(l.getFeatures(QgsFeatureRequest().setFilterFid(added[0].id())))
+            self.assertTrue(f.isValid())
+            self.assertEqual(f['cnt'], -220)
+
+            f = next(l.getFeatures(QgsFeatureRequest().setFilterFid(added[1].id())))
+            self.assertTrue(f.isValid())
+            self.assertEqual(f['cnt'], 330)
         else:
             # expect fail
             self.assertFalse(l.dataProvider().addFeatures([f1, f2]),
