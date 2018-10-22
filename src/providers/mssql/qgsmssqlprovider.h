@@ -58,6 +58,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     /* Implementation of functions from QgsVectorDataProvider */
 
+    void updateExtents() override;
     QString storageType() const override;
     QStringList subLayers() const override;
     QVariant minimumValue( int index ) const override;
