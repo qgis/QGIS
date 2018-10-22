@@ -30,6 +30,7 @@ from qgis.core import (QgsSettings,
                        QgsCoordinateReferenceSystem)
 
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
 from providertestbase import ProviderTestCase
@@ -50,16 +51,73 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         # Create test layers
         cls.vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'mssql')
-        assert cls.vl.isValid(), cls.vl.dataProvider().error()
+        assert cls.vl.isValid(), cls.vl.dataProvider().error().message()
         cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'mssql')
-        assert cls.poly_vl.isValid(), cls.poly_vl.dataProvider().error()
+        assert cls.poly_vl.isValid(), cls.poly_vl.dataProvider().error().message()
         cls.poly_provider = cls.poly_vl.dataProvider()
+
+        cls.conn = QSqlDatabase.addDatabase('QODBC')
+        cls.conn.setDatabaseName('testsqlserver')
+        if 'QGIS_MSSQLTEST_DB' in os.environ:
+            cls.conn.setDatabaseName('QGIS_MSSQLTEST_DB')
+        cls.conn.setUserName('SA')
+        cls.conn.setPassword('<YourStrong!Passw0rd>')
+        assert cls.conn.open(), cls.conn.lastError().text()
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+        pass
+
+    def setUp(self):
+        for t in ['new_table', 'new_table_multipoint', 'new_table_multipolygon']:
+            self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.[{}]'.format(t))
+
+    def execSQLCommand(self, sql):
+        self.assertTrue(self.conn)
+        query = QSqlQuery(self.conn)
+        self.assertTrue(query.exec_(sql), sql + ': ' + query.lastError().text())
+        query.finish()
+
+    def getSource(self):
+        # create temporary table for edit tests
+        self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.edit_data')
+        self.execSQLCommand(
+            """CREATE TABLE qgis_test.edit_data (pk INTEGER PRIMARY KEY,cnt integer, name nvarchar(max), name2 nvarchar(max), num_char nvarchar(max), geom geometry)""")
+
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."edit_data" (geom) sql=',
+            'test', 'mssql')
+
+        self.assertTrue(vl.isValid(), vl.dataProvider().error().message())
+
+        f1 = QgsFeature()
+        f1.setAttributes([5, -200, NULL, 'NuLl', '5'])
+        f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
+
+        f2 = QgsFeature()
+        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3'])
+
+        f3 = QgsFeature()
+        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1'])
+        f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
+
+        f4 = QgsFeature()
+        f4.setAttributes([2, 200, 'Apple', 'Apple', '2'])
+        f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
+
+        f5 = QgsFeature()
+        f5.setAttributes([4, 400, 'Honey', 'Honey', '4'])
+        f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
+
+        self.assertTrue(vl.dataProvider().addFeatures([f1, f2, f3, f4, f5]))
+
+        return vl
+
+    def getEditableLayer(self):
+        return self.getSource()
 
     def enableCompiler(self):
         QgsSettings().setValue('/qgis/compileExpressions', True)
