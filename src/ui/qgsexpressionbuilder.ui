@@ -488,6 +488,20 @@
                  </attribute>
                 </widget>
                </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="layoutWidget2">
+              <layout class="QVBoxLayout" name="verticalLayout_2">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QTextEdit" name="txtHelpText">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
                <item>
                 <widget class="QFrame" name="mValueGroupBox">
                  <layout class="QGridLayout" name="gridLayout_5">
@@ -495,7 +509,7 @@
                    <number>0</number>
                   </property>
                   <property name="topMargin">
-                   <number>0</number>
+                   <number>10</number>
                   </property>
                   <property name="rightMargin">
                    <number>0</number>
@@ -503,24 +517,6 @@
                   <property name="bottomMargin">
                    <number>0</number>
                   </property>
-                  <item row="4" column="0">
-                   <widget class="QWidget" name="mLoadGroupBox" native="true">
-                    <layout class="QHBoxLayout" name="horizontalLayout">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                    </layout>
-                   </widget>
-                  </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_4">
                     <property name="sizePolicy">
@@ -570,17 +566,6 @@
                    </layout>
                   </item>
                  </layout>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="layoutWidget2">
-              <layout class="QVBoxLayout" name="verticalLayout_2">
-               <item>
-                <widget class="QTextEdit" name="txtHelpText">
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
                 </widget>
                </item>
               </layout>
@@ -838,6 +823,36 @@ Saved scripts are auto loaded on QGIS startup.</string>
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
