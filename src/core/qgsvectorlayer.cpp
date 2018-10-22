@@ -3942,6 +3942,9 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
 
 void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlendMode )
 {
+  if ( mFeatureBlendMode == featureBlendMode )
+    return;
+
   mFeatureBlendMode = featureBlendMode;
   emit featureBlendModeChanged( featureBlendMode );
   emit styleChanged();
@@ -3954,6 +3957,8 @@ QPainter::CompositionMode QgsVectorLayer::featureBlendMode() const
 
 void QgsVectorLayer::setOpacity( double opacity )
 {
+  if ( qgsDoubleNear( mLayerOpacity, opacity ) )
+    return;
   mLayerOpacity = opacity;
   emit opacityChanged( opacity );
   emit styleChanged();
