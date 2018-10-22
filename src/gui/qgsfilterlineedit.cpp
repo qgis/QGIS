@@ -37,6 +37,7 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue 
 
   connect( this, &QLineEdit::textChanged, this,
            &QgsFilterLineEdit::onTextChanged );
+
 }
 
 void QgsFilterLineEdit::setShowClearButton( bool visible )
@@ -71,17 +72,8 @@ void QgsFilterLineEdit::updateClearIcon()
     addAction( mClearAction, QLineEdit::TrailingPosition );
     connect( mClearAction, &QAction::triggered, this, &QgsFilterLineEdit::clearValue );
   }
-  else if ( !showClear && mClearAction )
-  {
-    // pretty freakin weird... seems the deleteLater call on the mClearAction
-    // isn't sufficient to actually remove the action from the line edit, and
-    // a kind of "ghost" action gets left behind... resulting in duplicate
-    // clear actions appearing if later we re-create the action.
-    // in summary: don't remove this "removeAction" call!
-    removeAction( mClearAction );
-    mClearAction->deleteLater();
-    mClearAction = nullptr;
-  }
+  if ( mClearAction )
+    mClearAction->setVisible( showClear );
 }
 
 void QgsFilterLineEdit::focusInEvent( QFocusEvent *e )
