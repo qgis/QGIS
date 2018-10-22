@@ -750,12 +750,9 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       // fill gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
       QgsAttributes attrs = f.attributes();
       int column = 0;
-      int indexOfFid = layer->dataProvider()->fields().lookupField( "fid" );
-      if ( containerType == GPKG && ( indexOfFid == -1 || ( layer->dataProvider()->fields().at( indexOfFid ).type() != QVariant::Int
-                                      && layer->dataProvider()->fields().at( indexOfFid ).type() != QVariant::LongLong ) ) )
+      if ( containerType == GPKG && layer->dataProvider()->fields().lookupField( "fid" ) == -1 )
       {
-        // newAttrs (1) has an additional attribute (fid) that is (2) of the correct type
-        // so we have to add a dummy because otherwise it messes up with the amount of attributes
+        // newAttrs has an addition FID attribute, so we have to add a dummy in the original set
         column++;
       }
       QgsAttributes newAttrs( attrs.count() + column );
