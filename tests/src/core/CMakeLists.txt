@@ -147,6 +147,7 @@ SET(TESTS
  testqgslegendrenderer.cpp
  testqgscentroidfillsymbol.cpp
  testqgslinefillsymbol.cpp
+ testqgsmapdevicepixelratio.cpp
  testqgsmaplayerstylemanager.cpp
  testqgsmaplayer.cpp
  testqgsmaprendererjob.cpp
