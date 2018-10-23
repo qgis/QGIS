@@ -330,7 +330,13 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           for ( int row = 0; row < model->rowCount(); ++row )
           {
             QModelIndex index = model->index( row, 0 );
+#if QT_VERSION <= 0x050601
+            // in Qt 5.6.1 and former, QVariant does not correctly convert enum using value
+            // see https://bugreports.qt.io/browse/QTBUG-53384
+            QgsMapLayer::StyleCategory category = static_cast<QgsMapLayer::StyleCategory>( model->data( index, Qt::UserRole ).toInt() );
+#else
             QgsMapLayer::StyleCategory category = model->data( index, Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
+#endif
             QString name = model->data( index, Qt::DisplayRole ).toString();
             QString tooltip = model->data( index, Qt::ToolTipRole ).toString();
             QIcon icon = model->data( index, Qt::DecorationRole ).value<QIcon>();
@@ -369,7 +375,13 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                 for ( int row = 0; row < model->rowCount(); ++row )
                 {
                   QModelIndex index = model->index( row, 0 );
+#if QT_VERSION <= 0x050601
+                  // in Qt 5.6.1 and former, QVariant does not correctly convert enum using value
+                  // see https://bugreports.qt.io/browse/QTBUG-53384
+                  QgsMapLayer::StyleCategory category = static_cast<QgsMapLayer::StyleCategory>( model->data( index, Qt::UserRole ).toInt() );
+#else
                   QgsMapLayer::StyleCategory category = model->data( index, Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
+#endif
                   QString name = model->data( index, Qt::DisplayRole ).toString();
                   QString tooltip = model->data( index, Qt::ToolTipRole ).toString();
                   QIcon icon = model->data( index, Qt::DecorationRole ).value<QIcon>();

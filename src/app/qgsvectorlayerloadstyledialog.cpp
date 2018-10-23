@@ -111,7 +111,13 @@ QgsMapLayer::StyleCategories QgsVectorLayerLoadStyleDialog::styleCategories() co
 
 QgsVectorLayerProperties::StyleType QgsVectorLayerLoadStyleDialog::currentStyleType() const
 {
+#if QT_VERSION <= 0x050601
+  // in Qt 5.6.1 and former, QVariant does not correctly convert enum using value
+  // see https://bugreports.qt.io/browse/QTBUG-53384
+  QgsVectorLayerProperties::StyleType type = static_cast<QgsVectorLayerProperties::StyleType>( mStyleTypeComboBox->currentData().toInt() );
+#else
   QgsVectorLayerProperties::StyleType type = mStyleTypeComboBox->currentData().value<QgsVectorLayerProperties::StyleType>();
+#endif
   if ( type == QgsVectorLayerProperties::QML )
   {
     QFileInfo fi( mFileWidget->filePath() );
