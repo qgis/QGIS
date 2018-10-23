@@ -60,6 +60,20 @@ Reloads the data.
 Cancels the pending query and the parent task.
 %End
 
+    QString exceptionText() const;
+%Docstring
+Returns the exception text or an empty string if no exceptions were raised
+
+.. versionadded:: 3.4
+%End
+
+    void setExceptionText( const QString &exceptionText );
+%Docstring
+Sets the ``exceptionText``
+
+.. versionadded:: 3.4
+%End
+
 };
 
 /************************************************************************
