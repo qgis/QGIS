@@ -33,7 +33,7 @@ from qgis.gui import (QgsLayerTreeMapCanvasBridge,
 
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
-import sip
+from qgis.PyQt import sip
 
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
