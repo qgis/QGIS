@@ -157,7 +157,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
 
 void QgsLayoutMapWidget::setReportTypeString( const QString &string )
 {
-  mAtlasCheckBox->setTitle( tr( "Controlled by %1" ).arg( string ) );
+  mAtlasCheckBox->setTitle( tr( "Controlled by %1" ).arg( string == tr( "atlas" ) ? tr( "Atlas" ) : tr( "Report" ) ) );
   mAtlasPredefinedScaleRadio->setToolTip( tr( "Use one of the predefined scales of the project where the %1 feature best fits." ).arg( string ) );
 }
 
