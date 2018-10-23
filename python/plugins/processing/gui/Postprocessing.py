@@ -60,6 +60,9 @@ def set_layer_name(layer, context_layer_details):
             path = source_parts.get('path', '')
             if path:
                 layer.setName(os.path.splitext(os.path.basename(path))[0])
+            elif context_layer_details.name:
+                # fallback to parameter's name -- shouldn't happen!
+                layer.setName(context_layer_details.name)
     else:
         layer.setName(context_layer_details.name)
 
