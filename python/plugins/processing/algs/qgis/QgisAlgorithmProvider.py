@@ -59,6 +59,7 @@ from .Datasources2Vrt import Datasources2Vrt
 from .DefineProjection import DefineProjection
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
+from .DeleteDuplicateFields import DeleteDuplicateFields
 from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
@@ -171,6 +172,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 DefineProjection(),
                 Delaunay(),
                 DeleteColumn(),
+                DeleteDuplicateFields(),
                 DeleteDuplicateGeometries(),
                 DensifyGeometries(),
                 DensifyGeometriesInterval(),
