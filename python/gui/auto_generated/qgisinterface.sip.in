@@ -969,6 +969,8 @@ Register a new tab in the vector layer properties dialog.
    Ownership of the factory is not transferred, and the factory must
    be unregistered when plugin is unloaded.
 
+.. seealso:: :py:class:`QgsMapLayerConfigWidgetFactory`
+
 .. seealso:: :py:func:`unregisterMapLayerConfigWidgetFactory`
 
 .. versionadded:: 2.16
@@ -977,6 +979,8 @@ Register a new tab in the vector layer properties dialog.
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 %Docstring
 Unregister a previously registered tab in the vector layer properties dialog.
+
+.. seealso:: :py:class:`QgsMapLayerConfigWidgetFactory`
 
 .. seealso:: :py:func:`registerMapLayerConfigWidgetFactory`
 
@@ -992,6 +996,8 @@ Register a new tab in the options dialog.
    Ownership of the factory is not transferred, and the factory must
    be unregistered when plugin is unloaded.
 
+.. seealso:: :py:class:`QgsOptionsWidgetFactory`
+
 .. seealso:: :py:func:`unregisterOptionsWidgetFactory`
 
 .. versionadded:: 3.0
@@ -1000,6 +1006,8 @@ Register a new tab in the options dialog.
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 %Docstring
 Unregister a previously registered tab in the options dialog.
+
+.. seealso:: :py:class:`QgsOptionsWidgetFactory`
 
 .. seealso:: :py:func:`registerOptionsWidgetFactory`
 
@@ -1015,6 +1023,8 @@ Register a new custom drop handler.
    Ownership of the factory is not transferred, and the factory must
    be unregistered when plugin is unloaded.
 
+.. seealso:: :py:class:`QgsCustomDropHandler`
+
 .. seealso:: :py:func:`unregisterCustomDropHandler`
 
 .. versionadded:: 3.0
@@ -1023,6 +1033,8 @@ Register a new custom drop handler.
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 %Docstring
 Unregister a previously registered custom drop handler.
+
+.. seealso:: :py:class:`QgsCustomDropHandler`
 
 .. seealso:: :py:func:`registerCustomDropHandler`
 
@@ -1038,6 +1050,8 @@ Register a new custom drop ``handler`` for layout windows.
    Ownership of the factory is not transferred, and the factory must
    be unregistered when plugin is unloaded.
 
+.. seealso:: :py:class:`QgsLayoutCustomDropHandler`
+
 .. seealso:: :py:func:`unregisterCustomLayoutDropHandler`
 
 .. versionadded:: 3.0
@@ -1046,6 +1060,8 @@ Register a new custom drop ``handler`` for layout windows.
     virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 %Docstring
 Unregister a previously registered custom drop ``handler`` for layout windows.
+
+.. seealso:: :py:class:`QgsLayoutCustomDropHandler`
 
 .. seealso:: :py:func:`registerCustomLayoutDropHandler`
 

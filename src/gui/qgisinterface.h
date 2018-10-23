@@ -816,6 +816,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Register a new tab in the vector layer properties dialog.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
+     * \see QgsMapLayerConfigWidgetFactory
      * \see unregisterMapLayerConfigWidgetFactory()
      * \since QGIS 2.16
      */
@@ -823,6 +824,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Unregister a previously registered tab in the vector layer properties dialog.
+     * \see QgsMapLayerConfigWidgetFactory
      * \see registerMapLayerConfigWidgetFactory()
      * \since QGIS 2.16
     */
@@ -832,6 +834,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Register a new tab in the options dialog.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
+     * \see QgsOptionsWidgetFactory
      * \see unregisterOptionsWidgetFactory()
      * \since QGIS 3.0
      */
@@ -839,6 +842,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Unregister a previously registered tab in the options dialog.
+     * \see QgsOptionsWidgetFactory
      * \see registerOptionsWidgetFactory()
      * \since QGIS 3.0
     */
@@ -848,6 +852,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Register a new custom drop handler.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
+     * \see QgsCustomDropHandler
      * \see unregisterCustomDropHandler()
      * \since QGIS 3.0
      */
@@ -855,6 +860,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Unregister a previously registered custom drop handler.
+     * \see QgsCustomDropHandler
      * \see registerCustomDropHandler()
      * \since QGIS 3.0
      */
@@ -864,6 +870,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Register a new custom drop \a handler for layout windows.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
+     * \see QgsLayoutCustomDropHandler
      * \see unregisterCustomLayoutDropHandler()
      * \since QGIS 3.0
      */
@@ -871,6 +878,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Unregister a previously registered custom drop \a handler for layout windows.
+     * \see QgsLayoutCustomDropHandler
      * \see registerCustomLayoutDropHandler()
      * \since QGIS 3.0
      */
