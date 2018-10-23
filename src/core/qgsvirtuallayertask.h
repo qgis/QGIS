@@ -69,7 +69,7 @@ class CORE_EXPORT QgsVirtualLayerTask : public QgsTask
     void cancel() override;
 
     /**
-     * Return the exception text or an empty string if no exceptions were raised
+     * Returns the exception text or an empty string if no exceptions were raised
      * \since QGIS 3.4
      */
     QString exceptionText() const;

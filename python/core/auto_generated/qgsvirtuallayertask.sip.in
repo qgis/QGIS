@@ -62,7 +62,7 @@ Cancels the pending query and the parent task.
 
     QString exceptionText() const;
 %Docstring
-Return the exception text or an empty string if no exceptions were raised
+Returns the exception text or an empty string if no exceptions were raised
 
 .. versionadded:: 3.4
 %End
