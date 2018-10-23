@@ -843,6 +843,17 @@ class QgsVectorFileWriterMetadataContainer
                              QStringLiteral( "COMMA" ) // Default value
                            ) );
 
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
+      layerOptions.insert( QStringLiteral( "STRING_QUOTING" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "Double-quote strings. IF_AMBIGUOUS means that string values that look like numbers will be quoted." ),
+                             QStringList()
+                             << QStringLiteral( "IF_AMBIGUOUS" )
+                             << QStringLiteral( "IF_NEEDED" )
+                             << QStringLiteral( "ALWAYS" ),
+                             QStringLiteral( "IF_AMBIGUOUS" ) // Default value
+                           ) );
+#endif
+
       layerOptions.insert( QStringLiteral( "WRITE_BOM" ), new QgsVectorFileWriter::BoolOption(
                              QObject::tr( "Write a UTF-8 Byte Order Mark (BOM) at the start of the file." ),
                              false  // Default value
