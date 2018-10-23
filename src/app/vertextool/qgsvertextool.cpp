@@ -1580,6 +1580,9 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     }
   }
 
+  if ( mVertexEditor )
+    mVertexEditor->updateEditor( dragLayer, mSelectedFeature.get() );
+
   setHighlightedVertices( mSelectedVertices );  // update positions of existing highlighted vertices
   setHighlightedVerticesVisible( true );  // time to show highlighted vertices again
 }
@@ -1632,9 +1635,22 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
     layer->beginEditCommand( tr( "Moved vertex" ) );
     QHash<QgsFeatureId, QgsGeometry>::iterator it2 = layerEdits.begin();
     for ( ; it2 != layerEdits.end(); ++it2 )
+    {
       layer->changeGeometry( it2.key(), it2.value() );
+      for ( int i = 0; i < mSelectedVertices.length(); ++i )
+      {
+        if ( mSelectedVertices.at( i ).layer == layer && mSelectedVertices.at( i ).fid == it2.value() )
+        {
+          mSelectedFeature->selectVertex( mSelectedVertices.at( i ).vertexId );
+        }
+      }
+    }
     layer->endEditCommand();
     layer->triggerRepaint();
+
+
+    if ( mVertexEditor )
+      mVertexEditor->updateEditor( layer, mSelectedFeature.get() );
   }
 }
 
