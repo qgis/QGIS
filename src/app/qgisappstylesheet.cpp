@@ -68,13 +68,12 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   // make sure family exists on system
   if ( fontFamily != mDefaultFont.family() )
   {
-    QFont *tempFont = new QFont( fontFamily );
-    if ( tempFont->family() != fontFamily )
+    QFont tempFont( fontFamily );
+    if ( tempFont.family() != fontFamily )
     {
       // missing from system, drop back to default
       fontFamily = mDefaultFont.family();
     }
-    delete tempFont;
   }
   QgsDebugMsg( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ) );
   opts.insert( QStringLiteral( "fontFamily" ), QVariant( fontFamily ) );
