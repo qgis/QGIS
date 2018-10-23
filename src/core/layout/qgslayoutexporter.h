@@ -497,6 +497,12 @@ class CORE_EXPORT QgsLayoutExporter
     QImage createImage( const ImageExportSettings &settings, int page, QRectF &bounds, bool &skipPage ) const;
 
     /**
+     * Returns the page number of the first page to be exported from the layout, skipping any pages
+     * which have been excluded from export.
+     */
+    static int firstPageToBeExported( QgsLayout *layout );
+
+    /**
      * Saves an image to a file, possibly using format specific options (e.g. LZW compression for tiff)
     */
     static bool saveImage( const QImage &image, const QString &imageFilename, const QString &imageFormat, QgsProject *projectForMetadata );
