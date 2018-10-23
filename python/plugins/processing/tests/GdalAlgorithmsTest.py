@@ -27,14 +27,17 @@ __revision__ = ':%H$'
 
 import AlgorithmsTestBase
 from processing.algs.gdal.ogr2ogrtopostgis import Ogr2OgrToPostGis
+from processing.algs.gdal.ogr2ogr import Ogr2Ogr
 
 import nose2
 import shutil
-
+import os
 from qgis.testing import (
     start_app,
     unittest
 )
+
+testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
 class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
@@ -53,6 +56,29 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
 
     def test_definition_file(self):
         return 'gdal_algorithm_tests.yaml'
+
+    def testOgr2Ogr(self):
+        source = os.path.join(testDataPath, 'polys.gml')
+
+        alg = Ogr2Ogr()
+        alg.setParameterValue('INPUT_LAYER', source)
+        alg.setParameterValue('FORMAT', 0)
+        alg.setOutputValue('OUTPUT_LAYER', 'd:/temp/check.shp')
+        self.assertEqual(
+            alg.getConsoleCommands(),
+            ['ogr2ogr',
+             '-f "ESRI Shapefile" "d:/temp/check.shp" ' +
+             source + ' polys2'])
+
+        alg = Ogr2Ogr()
+        alg.setParameterValue('INPUT_LAYER', source)
+        alg.setParameterValue('FORMAT', 22)
+        alg.setOutputValue('OUTPUT_LAYER', 'd:/temp/check.gpkg')
+        self.assertEqual(
+            alg.getConsoleCommands(),
+            ['ogr2ogr',
+             '-f GPKG "d:/temp/check.gpkg" ' +
+             source + ' polys2'])
 
 
 class TestGdalOgr2OgrToPostgis(unittest.TestCase):
