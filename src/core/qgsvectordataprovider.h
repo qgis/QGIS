@@ -518,7 +518,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *
      * \since QGIS 3.2
      */
-    virtual QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const;
+    virtual QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
 
     static QVariant convertValue( QVariant::Type type, const QString &value );
 
