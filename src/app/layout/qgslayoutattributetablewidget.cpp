@@ -483,6 +483,8 @@ void QgsLayoutAttributeTableWidget::updateGuiElements()
   mEmptyFrameCheckBox->setChecked( mFrame->hidePageIfEmpty() );
   mHideEmptyBgCheckBox->setChecked( mFrame->hideBackgroundIfEmpty() );
 
+  updateDataDefinedButton( mLayerSourceDDBtn );
+
   toggleSourceControls();
 
   blockAllSignals( false );
