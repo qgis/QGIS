@@ -84,3 +84,16 @@ QVariantMap QgsHstoreUtils::parse( const QString &string )
 
   return map;
 }
+
+QString QgsHstoreUtils::build( const QVariantMap &map )
+{
+  QStringList list;
+  for ( QVariantMap::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
+  {
+    QString key = it.key();
+    QString value = it.value().toString();
+    list << QString( "\"%1\"=>\"%2\"" ).arg( key.replace( "\\", "\\\\" ).replace( "\"", "\\\"" ),
+         value.replace( "\\", "\\\\" ).replace( "\"", "\\\"" ) );
+  }
+  return list.join( ',' );
+}

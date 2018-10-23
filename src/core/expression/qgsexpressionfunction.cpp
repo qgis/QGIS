@@ -4316,17 +4316,7 @@ static QVariant fcnHstoreToMap( const QVariantList &values, const QgsExpressionC
 static QVariant fcnMapToHstore( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariantMap map = QgsExpressionUtils::getMapValue( values.at( 0 ), parent );
-  QStringList list;
-
-  for ( QVariantMap::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
-  {
-    QString key = it.key();
-    QString value = it.value().toString();
-    list << QString( "\"%1\"=>\"%2\"" ).arg( key.replace( "\\", "\\\\" ).replace( "\"", "\\\"" ),
-         value.replace( "\\", "\\\\" ).replace( "\"", "\\\"" ) );
-  }
-
-  return list.join( ',' );
+  return QgsHstoreUtils::build( map );
 }
 
 static QVariant fcnMap( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )

@@ -40,6 +40,13 @@ namespace QgsHstoreUtils
    */
   CORE_EXPORT QVariantMap parse( const QString &string );
 
+  /**
+   * Build a hstore-formatted string from a QVariantMap.
+   * \param map The map to format as a string
+   * \since QGIS 3.4
+   */
+  CORE_EXPORT QString build( const QVariantMap &map );
+
 };
 
 #endif //QGSHSTOREUTILS_H
