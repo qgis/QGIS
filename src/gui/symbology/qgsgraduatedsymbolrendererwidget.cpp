@@ -527,6 +527,12 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   // default to collapsed symmetric group for ui simplicity
   mGroupBoxSymmetric->setCollapsed( true ); //
 
+  //ensure mutually exclusive visibility for symmetric group sub items
+  bool isVisibleCboSymmetryPointForPretty = ( cboGraduatedMode->currentData() == QgsGraduatedSymbolRenderer::Pretty );
+
+  cboSymmetryPointForPretty->setVisible( isVisibleCboSymmetryPointForPretty );
+  spinSymmetryPointForOtherMethods->setVisible( !isVisibleCboSymmetryPointForPretty );
+
   // menus for data-defined rotation/size
   QMenu *advMenu = new QMenu( this );
 
