@@ -22,6 +22,7 @@
 #include "qgis_app.h"
 
 class QSpinBox;
+class QgsSnapIndicator;
 
 class APP_EXPORT QgsMapToolAddRegularPolygon: public QgsMapToolCapture
 {
@@ -64,6 +65,9 @@ class APP_EXPORT QgsMapToolAddRegularPolygon: public QgsMapToolCapture
 
     //! Layer type which will be used for rubberband
     QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
+
+    //! Snapping indicators
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
 };
 

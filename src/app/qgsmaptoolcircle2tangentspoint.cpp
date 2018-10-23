@@ -29,6 +29,7 @@
 #include <memory>
 #include "qgsmapmouseevent.h"
 #include "qgsmessagebar.h"
+#include "qgssnapindicator.h"
 
 QgsMapToolCircle2TangentsPoint::QgsMapToolCircle2TangentsPoint( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )
@@ -102,6 +103,9 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
 void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint( e->mapPoint() );
+
+  mSnapIndicator->setMatch( e->mapPointMatch() );
+
   EdgesOnlyFilter filter;
   QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
 

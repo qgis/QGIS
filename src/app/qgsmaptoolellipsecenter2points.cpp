@@ -20,6 +20,7 @@
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include "qgsmapmouseevent.h"
+#include "qgssnapindicator.h"
 #include <memory>
 
 QgsMapToolEllipseCenter2Points::QgsMapToolEllipseCenter2Points( QgsMapToolCapture *parentTool,
@@ -57,6 +58,8 @@ void QgsMapToolEllipseCenter2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
 void QgsMapToolEllipseCenter2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   QgsPoint point = mapPoint( *e );
+
+  mSnapIndicator->setMatch( e->mapPointMatch() );
 
   if ( mTempRubberBand )
   {

@@ -24,6 +24,7 @@
 #include "qgisapp.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmessagebar.h"
+#include "qgssnapindicator.h"
 
 
 QgsMapToolCircle3Tangents::QgsMapToolCircle3Tangents( QgsMapToolCapture *parentTool,
@@ -76,6 +77,9 @@ void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 void QgsMapToolCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   QgsPoint point = mapPoint( *e );
+
+  mSnapIndicator->setMatch( e->mapPointMatch() );
+
   EdgesOnlyFilter filter;
   QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( point, &filter );
 

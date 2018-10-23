@@ -22,6 +22,7 @@
 #include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include <memory>
+#include "qgssnapindicator.h"
 
 QgsMapToolRectangle3Points::QgsMapToolRectangle3Points( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )
@@ -57,6 +58,8 @@ void QgsMapToolRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 void QgsMapToolRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   QgsPoint point = mapPoint( *e );
+
+  mSnapIndicator->setMatch( e->mapPointMatch() );
 
   if ( mTempRubberBand )
   {

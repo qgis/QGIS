@@ -19,6 +19,7 @@
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include "qgsmapmouseevent.h"
+#include "qgssnapindicator.h"
 
 
 QgsMapToolCircleCenterPoint::QgsMapToolCircleCenterPoint( QgsMapToolCapture *parentTool,
@@ -57,6 +58,9 @@ void QgsMapToolCircleCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 void QgsMapToolCircleCenterPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   QgsPoint point = mapPoint( *e );
+
+  mSnapIndicator->setMatch( e->mapPointMatch() );
+
   if ( mTempRubberBand )
   {
     mCircle = QgsCircle().fromCenterPoint( mPoints.at( 0 ), point );

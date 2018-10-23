@@ -23,11 +23,13 @@
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include "qgisapp.h"
+#include "qgssnapindicator.h"
 
 QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
   , mShowCenterPointRubberBand( false )
+  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
 {
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddCircularString::stopCapturing );
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddCircularString::stopCapturing );
