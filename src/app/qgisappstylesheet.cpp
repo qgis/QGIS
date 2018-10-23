@@ -222,63 +222,21 @@ void QgisAppStyleSheet::setActiveValues()
   mStyle = qApp->style()->objectName(); // active style name (lowercase)
   QgsDebugMsg( QStringLiteral( "Style name: %1" ).arg( mStyle ) );
 
-  mMotifStyle = mStyle.contains( QLatin1String( "motif" ) ); // motif
-  mCdeStyle = mStyle.contains( QLatin1String( "cde" ) ); // cde
-  mPlastqStyle = mStyle.contains( QLatin1String( "plastique" ) ); // plastique
-  mCleanLkStyle = mStyle.contains( QLatin1String( "cleanlooks" ) ); // cleanlooks
-  mGtkStyle = mStyle.contains( QLatin1String( "gtk" ) ); // gtk+
-  mWinStyle = mStyle.contains( QLatin1String( "windows" ) ); // windows
-  mWinXpStyle = mStyle.contains( QLatin1String( "windowsxp" ) ); // windowsxp
-  mWinVistaStyle = mStyle.contains( QLatin1String( "windowsvista" ) ); // windowsvista
   mMacStyle = mStyle.contains( QLatin1String( "macintosh" ) ); // macintosh (aqua)
   mOxyStyle = mStyle.contains( QLatin1String( "oxygen" ) ); // oxygen
 
   mDefaultFont = qApp->font(); // save before it is changed in any way
 
   // platforms, specific
-#ifdef Q_OS_LINUX
-  mLinuxOS = true;
-#else
-  mLinuxOS = false;
-#endif
 #ifdef Q_OS_WIN
   mWinOS = true;
 #else
   mWinOS = false;
 #endif
-#ifdef Q_OS_MAC
-  mMacOS = true;
-#else
-  mMacOS = false;
-#endif
 #ifdef ANDROID
   mAndroidOS = true;
 #else
   mAndroidOS = false;
-#endif
-
-  // platforms, general
-#ifdef Q_OS_UNIX
-  mUnix = true;
-#else
-  mUnix = false;
-#endif
-
-  // window servers
-#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
-  mX11WS = true;
-#else
-  mX11WS = false;
-#endif
-#ifdef Q_OS_WIN
-  mWinWS = true;
-#else
-  mWinWS = false;
-#endif
-#ifdef Q_OS_MAC
-  mMacWS = true;
-#else
-  mMacWS = false;
 #endif
 
 }
