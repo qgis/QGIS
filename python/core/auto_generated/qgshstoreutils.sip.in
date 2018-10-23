@@ -24,6 +24,15 @@ Returns a QVariantMap object containing the key and values from a hstore-formatt
 .. versionadded:: 3.4
 %End
 
+  QString build( const QVariantMap &map );
+%Docstring
+Build a hstore-formatted string from a QVariantMap.
+
+:param map: The map to format as a string
+
+.. versionadded:: 3.4
+%End
+
 };
 
 /************************************************************************
