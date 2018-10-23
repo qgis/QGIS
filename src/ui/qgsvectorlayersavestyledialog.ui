@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Save layer style</string>
+   <string>Save Layer Style</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="1">
