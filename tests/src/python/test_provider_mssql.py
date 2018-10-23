@@ -66,6 +66,10 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         cls.conn.setPassword('<YourStrong!Passw0rd>')
         assert cls.conn.open(), cls.conn.lastError().text()
 
+        # Triggers a segfault in the sql server odbc driver on Travis - TODO test with more recent Ubuntu base image
+        if os.environ.get('TRAVIS', '') == 'true':
+            del cls.getEditableLayer
+
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
@@ -117,10 +121,6 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         return vl
 
     def getEditableLayer(self):
-        # Triggers a segfault in the sql server odbc driver on Travis - TODO test with more recent Ubuntu base image
-        if os.environ.get('TRAVIS', '') == 'true':
-            return
-
         return self.getSource()
 
     def enableCompiler(self):
