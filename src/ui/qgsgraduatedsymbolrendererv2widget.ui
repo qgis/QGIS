@@ -360,6 +360,16 @@ Negative rounds to powers of 10</string>
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QCheckBox" name="cbxLinkBoundaries">
+           <property name="text">
+            <string>Link class boundaries</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item>
@@ -470,20 +480,6 @@ Negative rounds to powers of 10</string>
          </item>
         </layout>
        </item>
-       <item>
-        <layout class="QHBoxLayout" name="_2">
-         <item>
-          <widget class="QCheckBox" name="cbxLinkBoundaries">
-           <property name="text">
-            <string>Link class boundaries</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab_2">
@@ -552,12 +548,12 @@ Negative rounds to powers of 10</string>
   <tabstop>viewGraduated</tabstop>
   <tabstop>cboGraduatedMode</tabstop>
   <tabstop>spinGraduatedClasses</tabstop>
+  <tabstop>cbxLinkBoundaries</tabstop>
   <tabstop>btnGraduatedClassify</tabstop>
   <tabstop>btnGraduatedAdd</tabstop>
   <tabstop>btnGraduatedDelete</tabstop>
   <tabstop>btnDeleteAllClasses</tabstop>
   <tabstop>btnAdvanced</tabstop>
-  <tabstop>cbxLinkBoundaries</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
