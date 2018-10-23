@@ -68,6 +68,12 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsVectorLayerSaveStyleDialog::updateSaveButtonState );
   mFileWidget->setStorageMode( QgsFileWidget::SaveFile );
   mFileWidget->setDefaultRoot( myLastUsedDir );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
+  {
+    QgsSettings settings;
+    QFileInfo tmplFileInfo( path );
+    settings.setValue( QStringLiteral( "style/lastStyleDir" ), tmplFileInfo.absolutePath() );
+  } );
 
   // fill style categories
   mModel = new QgsMapLayerStyleCategoriesModel( this );
