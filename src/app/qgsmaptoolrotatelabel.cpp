@@ -83,6 +83,9 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
       QgsPalIndexes indexes;
       if ( createAuxiliaryFields( indexes ) )
         return;
+
+      if ( !labelIsRotatable( mCurrentLabel.layer, mCurrentLabel.settings, rotationCol ) )
+        return;
     }
 
     if ( currentLabelDataDefinedRotation( mCurrentRotation, hasRotationValue, rotationCol, true ) )
