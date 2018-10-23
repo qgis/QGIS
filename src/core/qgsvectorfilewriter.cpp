@@ -847,8 +847,8 @@ class QgsVectorFileWriterMetadataContainer
       layerOptions.insert( QStringLiteral( "STRING_QUOTING" ), new QgsVectorFileWriter::SetOption(
                              QObject::tr( "Double-quote strings. IF_AMBIGUOUS means that string values that look like numbers will be quoted." ),
                              QStringList()
-                             << QStringLiteral( "IF_AMBIGUOUS" )
                              << QStringLiteral( "IF_NEEDED" )
+                             << QStringLiteral( "IF_AMBIGUOUS" )
                              << QStringLiteral( "ALWAYS" ),
                              QStringLiteral( "IF_AMBIGUOUS" ) // Default value
                            ) );
