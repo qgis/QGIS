@@ -1564,7 +1564,7 @@ void QgsOptions::saveOptions()
 
   //default snap mode
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), mSnappingEnabledDefault->isChecked() );
-  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), ( QgsSnappingConfig::SnappingType )mDefaultSnapModeComboBox->currentData().toInt() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), static_cast<QgsSnappingConfig::SnappingType>( mDefaultSnapModeComboBox->currentData().toInt() ) );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), mDefaultSnappingToleranceSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), mSearchRadiusVertexEditSpinBox->value() );
   mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ),
@@ -1597,7 +1597,13 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/disable_enter_attribute_values_dialog" ), chkDisableAttributeValuesDlg->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/validate_geometries" ), mValidateGeometries->currentIndex() );
 
+#if QT_VERSION <= 0x050601
+  // since in Qt 5.6.1, QVariant does not correctly convert enum using value
+  // see https://bugreports.qt.io/browse/QTBUG-53384
+  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), static_cast<QgsGeometry::JoinStyle>( mOffsetJoinStyleComboBox->currentData().toInt() ) );
+#else
   mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), mOffsetJoinStyleComboBox->currentData().value<QgsGeometry::JoinStyle>() );
+#endif
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), mOffsetQuadSegSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), mCurveOffsetMiterLimitComboBox->value() );
 
