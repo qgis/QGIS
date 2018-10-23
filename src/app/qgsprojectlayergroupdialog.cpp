@@ -194,14 +194,14 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
       return;
     }
   }
-  QString errorMesssage;
+  QString errorMessage;
   int errorLine;
-  if ( !projectDom.setContent( &projectFile, &errorMesssage, &errorLine ) )
+  if ( !projectDom.setContent( &projectFile, &errorMessage, &errorLine ) )
   {
     QgsDebugMsg( QStringLiteral( "Error reading the project file %1 at line %2: %3" )
                  .arg( projectFile.fileName() )
                  .arg( errorLine )
-                 .arg( errorMesssage ) );
+                 .arg( errorMessage ) );
     return;
   }
 
