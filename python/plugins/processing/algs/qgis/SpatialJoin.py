@@ -42,7 +42,9 @@ from qgis.core import (QgsFields,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterString,
-                       QgsProcessingOutputNumber)
+                       QgsProcessingOutputNumber,
+                       QgsSpatialIndex,
+                       QgsFeature)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
@@ -214,6 +216,11 @@ class SpatialJoin(QgisAlgorithm):
         joined_count = 0
         unjoined_count = 0
 
+        # creating a spatial index to speedup requisitions
+        source_id_dict = {feat.id(): feat for feat in source.getFeatures(request)}
+        source_spatial_idx = QgsSpatialIndex()
+        list(map(source_spatial_idx.insertFeature, source_id_dict.values()))
+
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
@@ -224,8 +231,8 @@ class SpatialJoin(QgisAlgorithm):
             bbox = f.geometry().boundingBox()
             engine = None
 
-            request = QgsFeatureRequest().setFilterRect(bbox)
-            for test_feat in source.getFeatures(request):
+            for test_feat_id in source_spatial_idx.intersects(bbox):
+                test_feat = source_id_dict[test_feat_id]
                 if feedback.isCanceled():
                     break
                 if method == 1 and test_feat.id() in added_set:
@@ -257,7 +264,8 @@ class SpatialJoin(QgisAlgorithm):
 
         if not discard_nomatch or non_matching_sink is not None:
             remaining = remaining.difference(added_set)
-            for f in source.getFeatures(QgsFeatureRequest().setFilterFids(list(remaining))):
+            for remaining_id in remaining:
+                f = source_id_dict[remaining_id]
                 if feedback.isCanceled():
                     break
                 if sink is not None:
