@@ -25,9 +25,11 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgssettings.h"
 #include "qgsrasterfilewriter.h"
+#include "qgsvectorlayer.h"
 #include "cpl_string.h"
 #include "qgsproject.h"
 #include <gdal.h>
+#include "qgsmessagelog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -918,8 +920,9 @@ bool QgsRasterLayerSaveAsDialog::outputLayerExists() const
     uri = outputFileName();
   }
 
-  std::unique_ptr< QgsRasterLayer > layer( new QgsRasterLayer( uri, "", QStringLiteral( "gdal" ) ) );
-  return layer->isValid();
+  std::unique_ptr< QgsRasterLayer > rastLayer( new QgsRasterLayer( uri, "", QStringLiteral( "gdal" ) ) );
+  std::unique_ptr< QgsVectorLayer > vectLayer( new QgsVectorLayer( uri, "", QStringLiteral( "ogr" ) ) );
+  return ( rastLayer->isValid() || vectLayer->isValid() );
 }
 
 void QgsRasterLayerSaveAsDialog::accept()
