@@ -146,8 +146,8 @@ void QgsMapSettings::updateDerived()
     }
   }
 
-  double myHeight = mSize.height() * mDevicePixelRatio;
-  double myWidth = mSize.width() * mDevicePixelRatio;
+  double myHeight = mSize.height();
+  double myWidth = mSize.width();
 
   if ( !myWidth || !myHeight )
   {
@@ -180,7 +180,7 @@ void QgsMapSettings::updateDerived()
   mVisibleExtent.set( dxmin, dymin, dxmax, dymax );
 
   // update the scale
-  mScaleCalculator.setDpi( mDpi );
+  mScaleCalculator.setDpi( mDpi * mDevicePixelRatio );
   mScale = mScaleCalculator.calculate( mVisibleExtent, mSize.width() );
 
   mMapToPixel.setParameters( mapUnitsPerPixel(),
@@ -238,6 +238,7 @@ float QgsMapSettings::devicePixelRatio() const
 void QgsMapSettings::setDevicePixelRatio( float dpr )
 {
   mDevicePixelRatio = dpr;
+  updateDerived();
 }
 
 QSize QgsMapSettings::deviceOutputSize() const
