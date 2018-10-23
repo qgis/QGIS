@@ -166,6 +166,13 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
 
         self.wms_request_compare('GetCapabilities', reference_file='wms_getcapabilities_without_title', project='test_project_without_title.qgs')
 
+    def test_wms_getcapabilitie_empty_spatial_layer(self):
+        # The project contains a spatial layer without feature and the WMS
+        # extent is not configured in the project.
+        self.wms_request_compare('GetCapabilities',
+                                 reference_file='wms_getcapabilities_empty_spatial_layer',
+                                 project='test_project_empty_spatial_layer.qgz')
+
     def test_wms_getcapabilities_versions(self):
         # default version 1.3.0 when empty VERSION parameter
         project = os.path.join(self.testdata_path, "test_project.qgs")

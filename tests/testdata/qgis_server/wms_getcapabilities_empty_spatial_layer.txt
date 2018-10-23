@@ -1,0 +1,132 @@
+*****
+Content-Type: text/xml; charset=utf-8
+
+<?xml version="1.0" encoding="utf-8"?>
+<WMS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:qgs="http://www.qgis.org/wms" xmlns="http://www.opengis.net/wms" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd http://www.qgis.org/wms https://www.qgis.org/?*****" version="1.3.0" xmlns:sld="http://www.opengis.net/sld">
+ <Service>
+  <Name>WMS</Name>
+  <KeywordList>
+   <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
+  </KeywordList>
+  <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+  <Fees>None</Fees>
+  <AccessConstraints>None</AccessConstraints>
+ </Service>
+ <Capability>
+  <Request>
+   <GetCapabilities>
+    <Format>text/xml</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetCapabilities>
+   <GetMap>
+    <Format>image/jpeg</Format>
+    <Format>image/png</Format>
+    <Format>image/png; mode=16bit</Format>
+    <Format>image/png; mode=8bit</Format>
+    <Format>image/png; mode=1bit</Format>
+    <Format>application/dxf</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetMap>
+   <GetFeatureInfo>
+    <Format>text/plain</Format>
+    <Format>text/html</Format>
+    <Format>text/xml</Format>
+    <Format>application/vnd.ogc.gml</Format>
+    <Format>application/vnd.ogc.gml/3.1.1</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetFeatureInfo>
+   <sld:GetLegendGraphic>
+    <Format>image/jpeg</Format>
+    <Format>image/png</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </sld:GetLegendGraphic>
+   <sld:DescribeLayer>
+    <Format>text/xml</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </sld:DescribeLayer>
+   <qgs:GetStyles>
+    <Format>text/xml</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </qgs:GetStyles>
+  </Request>
+  <Exception>
+   <Format>XML</Format>
+  </Exception>
+  <sld:UserDefinedSymbolization SupportSLD="1" RemoteWCS="0" UserLayer="0" InlineFeature="0" RemoteWFS="0" UserStyle="1"/>
+  <Layer>
+   <KeywordList>
+    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
+   </KeywordList>
+   <CRS>CRS:84</CRS>
+   <CRS>EPSG:4326</CRS>
+   <CRS>EPSG:3857</CRS>
+   <EX_GeographicBoundingBox>
+    <westBoundLongitude>-180</westBoundLongitude>
+    <eastBoundLongitude>180</eastBoundLongitude>
+    <southBoundLatitude>-81.8182</southBoundLatitude>
+    <northBoundLatitude>81.8182</northBoundLatitude>
+   </EX_GeographicBoundingBox>
+   <BoundingBox maxy="1.6824e+7" maxx="2.00375e+7" miny="-1.6824e+7" CRS="EPSG:3857" minx="-2.00375e+7"/>
+   <BoundingBox maxy="180" maxx="81.8182" miny="-180" CRS="EPSG:4326" minx="-81.8182"/>
+   <Layer queryable="1">
+    <Name>empty_spatial_layer</Name>
+    <Title>empty_spatial_layer</Title>
+    <CRS>CRS:84</CRS>
+    <CRS>EPSG:4326</CRS>
+    <CRS>EPSG:3857</CRS>
+    <EX_GeographicBoundingBox>
+     <westBoundLongitude>-180</westBoundLongitude>
+     <eastBoundLongitude>180</eastBoundLongitude>
+     <southBoundLatitude>-90</southBoundLatitude>
+     <northBoundLatitude>90</northBoundLatitude>
+    </EX_GeographicBoundingBox>
+    <BoundingBox maxy="1.6824e+7" maxx="2.00375e+7" miny="-1.6824e+7" CRS="EPSG:3857" minx="-2.00375e+7"/>
+    <BoundingBox maxy="180" maxx="90" miny="-180" CRS="EPSG:4326" minx="-90"/>
+    <Style>
+     <Name>default</Name>
+     <Title>default</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+     </LegendURL>
+    </Style>
+   </Layer>
+  </Layer>
+ </Capability>
+</WMS_Capabilities>
