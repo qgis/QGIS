@@ -50,9 +50,6 @@ class BaseError(Exception):
     def __unicode__(self):
         return self.msg
 
-    def __str__(self):
-        return str(self).encode('utf-8')
-
 
 class InvalidDataException(BaseError):
     pass
