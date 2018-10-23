@@ -81,7 +81,7 @@
      <item>
       <widget class="QLineEdit" name="txtLegendFormat">
        <property name="toolTip">
-        <string>Template for the legend text associated with each classification.  
+        <string>Template for the legend text associated with each classification.
 Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot; for the upper bound.</string>
        </property>
        <property name="alignment">
@@ -390,14 +390,14 @@ Negative rounds to powers of 10</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
+          <item row="0" column="0" rowspan="2">
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>Around</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="2">
+          <item row="1" column="1">
            <widget class="QComboBox" name="cboSymmetryPointForPretty"/>
           </item>
           <item row="2" column="0" colspan="2">
