@@ -64,11 +64,21 @@ QgsMeshVectorRenderer::QgsMeshVectorRenderer( const QgsTriangularMesh &m,
   , mCfg( settings )
   , mDataOnVertices( dataIsOnVertices )
   , mOutputSize( size )
+  , mBufferedExtent( context.extent() )
 {
   // should be checked in caller
   Q_ASSERT( !mDatasetValuesMag.empty() );
   Q_ASSERT( !std::isnan( mMinMag ) );
   Q_ASSERT( !std::isnan( mMaxMag ) );
+
+  // we need to expand out the extent so that it includes
+  // arrows which start or end up outside of the
+  // actual visible extent
+  double extension = context.convertToMapUnits( mMaxMag, QgsUnitTypes::RenderPixels );
+  mBufferedExtent.setXMinimum( mBufferedExtent.xMinimum() - extension );
+  mBufferedExtent.setXMaximum( mBufferedExtent.xMaximum() + extension );
+  mBufferedExtent.setYMinimum( mBufferedExtent.yMinimum() - extension );
+  mBufferedExtent.setYMaximum( mBufferedExtent.yMaximum() + extension );
 }
 
 QgsMeshVectorRenderer::~QgsMeshVectorRenderer() = default;
@@ -91,7 +101,7 @@ void QgsMeshVectorRenderer::draw()
   pen.setColor( mCfg.color() );
   painter->setPen( pen );
 
-  const QList<int> trianglesInExtent = mTriangularMesh.faceIndexesForRectangle( mContext.extent() );
+  const QList<int> trianglesInExtent = mTriangularMesh.faceIndexesForRectangle( mBufferedExtent );
 
   if ( mCfg.isOnUserDefinedGrid() )
     drawVectorDataOnGrid( trianglesInExtent );
@@ -180,11 +190,11 @@ bool QgsMeshVectorRenderer::calcVectorLineEnd(
 
   vectorLength = sqrt( xDist * xDist + yDist * yDist );
 
-  // Check to see if any of the coords are outside the QImage area, if so, skip the whole vector
-  if ( lineStart.x() < 0 || lineStart.x() > mOutputSize.width() ||
-       lineStart.y() < 0 || lineStart.y() > mOutputSize.height() ||
-       lineEnd.x() < 0   || lineEnd.x() > mOutputSize.width() ||
-       lineEnd.y() < 0   || lineEnd.y() > mOutputSize.height() )
+  // Check to see if both of the coords are outside the QImage area, if so, skip the whole vector
+  if ( ( lineStart.x() < 0 || lineStart.x() > mOutputSize.width() ||
+         lineStart.y() < 0 || lineStart.y() > mOutputSize.height() ) &&
+       ( lineEnd.x() < 0   || lineEnd.x() > mOutputSize.width() ||
+         lineEnd.y() < 0   || lineEnd.y() > mOutputSize.height() ) )
     return true;
 
   return false; //success
@@ -213,7 +223,7 @@ void QgsMeshVectorRenderer::drawVectorDataOnVertices( const QList<int> &triangle
       drawnVertices.insert( i );
 
       const QgsMeshVertex &vertex = vertices.at( i );
-      if ( !mContext.extent().contains( vertex ) )
+      if ( !mBufferedExtent.contains( vertex ) )
         continue;
 
       double xVal = mDatasetValuesX[i];
@@ -240,7 +250,7 @@ void QgsMeshVectorRenderer::drawVectorDataOnFaces( const QList<int> &trianglesIn
       break;
 
     QgsPointXY center = centroids.at( i );
-    if ( !mContext.extent().contains( center ) )
+    if ( !mBufferedExtent.contains( center ) )
       continue;
 
     double xVal = mDatasetValuesX[i];
