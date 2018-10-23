@@ -38,12 +38,18 @@ QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
   connect( listMapLayers, &QListView::doubleClicked, this, &QgsLayoutLegendLayersDialog::accept );
 
   connect( mFilterLineEdit, &QLineEdit::textChanged, mModel, &QgsMapLayerProxyModel::setFilterString );
+  connect( mCheckBoxVisibleLayers, &QCheckBox::toggled, this, &QgsLayoutLegendLayersDialog::filterVisible );
 }
 
 QgsLayoutLegendLayersDialog::~QgsLayoutLegendLayersDialog()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/LayoutLegendLayers/geometry" ), saveGeometry() );
+}
+
+void QgsLayoutLegendLayersDialog::setVisibleLayers( const QList<QgsMapLayer *> &layers )
+{
+  mVisibleLayers = layers;
 }
 
 QList< QgsMapLayer *> QgsLayoutLegendLayersDialog::selectedLayers() const
@@ -64,4 +70,12 @@ QList< QgsMapLayer *> QgsLayoutLegendLayersDialog::selectedLayers() const
       layers << layer;
   }
   return layers;
+}
+
+void QgsLayoutLegendLayersDialog::filterVisible( bool enabled )
+{
+  if ( enabled )
+    mModel->setLayerWhitelist( mVisibleLayers );
+  else
+    mModel->setLayerWhitelist( QList< QgsMapLayer * >() );
 }
