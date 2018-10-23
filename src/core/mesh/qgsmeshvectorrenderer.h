@@ -83,6 +83,13 @@ class QgsMeshVectorRenderer
                             double magnitude //in
                           );
 
+    /**
+     * Calculates the buffer size
+     * needed to draw arrows which have
+     * start or end point outside the
+     * visible canvas extent (in pixels)
+     */
+    double calcExtentBufferSize() const;
 
     const QgsTriangularMesh &mTriangularMesh;
     const QVector<double> &mDatasetValuesX;
@@ -94,13 +101,6 @@ class QgsMeshVectorRenderer
     const QgsMeshRendererVectorSettings &mCfg;
     bool mDataOnVertices = true;
     QSize mOutputSize;
-
-    /**
-     * Canvas extent buffered by vector maximum magnitude
-     * Needed to draw arrows which have
-     * start or end point outside the
-     * visible canvas extent
-     */
     QgsRectangle mBufferedExtent;
 };
 
