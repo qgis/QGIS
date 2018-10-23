@@ -134,7 +134,7 @@ class CORE_EXPORT QgsMapToPixel
      * Transform device coordinates to map (world) coordinates
      * \deprecated since QGIS 3.4 use toMapCoordinates instead
      */
-    Q_DECL_DEPRECATED QgsPointXY toMapPoint( double x, double y ) const;
+    Q_DECL_DEPRECATED QgsPointXY toMapPoint( double x, double y ) const SIP_DEPRECATED;
 
     /**
      * Set map units per pixel

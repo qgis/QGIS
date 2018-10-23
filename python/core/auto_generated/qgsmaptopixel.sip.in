@@ -113,7 +113,7 @@ Transform device coordinates to map (world) coordinates
 :return: QgsPointXY in map coorndiates
 %End
 
- QgsPointXY toMapPoint( double x, double y ) const;
+ QgsPointXY toMapPoint( double x, double y ) const /Deprecated/;
 %Docstring
 Transform device coordinates to map (world) coordinates
 
