@@ -81,7 +81,7 @@ void QgsLayoutConfigObject::initializeDataDefinedButton( QgsPropertyOverrideButt
 {
   button->blockSignals( true );
   button->init( key, mLayoutObject->dataDefinedProperties(), QgsLayoutObject::propertyDefinitions(), coverageLayer() );
-  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLayoutConfigObject::updateDataDefinedProperty );
+  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLayoutConfigObject::updateDataDefinedProperty, Qt::UniqueConnection );
   button->registerExpressionContextGenerator( mLayoutObject );
   button->blockSignals( false );
 }
@@ -96,6 +96,10 @@ void QgsLayoutConfigObject::updateDataDefinedButton( QgsPropertyOverrideButton *
 
   QgsLayoutObject::DataDefinedProperty key = static_cast< QgsLayoutObject::DataDefinedProperty >( button->propertyKey() );
   whileBlocking( button )->setToProperty( mLayoutObject->dataDefinedProperties().property( key ) );
+
+  // In case the button was initialized to a different config object, we need to reconnect to it here (see https://issues.qgis.org/issues/18694 )
+  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLayoutConfigObject::updateDataDefinedProperty, Qt::UniqueConnection );
+  button->registerExpressionContextGenerator( mLayoutObject );
 }
 
 QgsLayoutAtlas *QgsLayoutConfigObject::layoutAtlas() const
