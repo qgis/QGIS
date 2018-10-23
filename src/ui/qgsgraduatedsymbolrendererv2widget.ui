@@ -365,7 +365,7 @@ Negative rounds to powers of 10</string>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mGroupBoxSymmetric">
          <property name="title">
-          <string>Symmetic Classification</string>
+          <string>Symmetric Classification</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
