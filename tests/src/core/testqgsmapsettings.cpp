@@ -37,6 +37,7 @@ class TestQgsMapSettings: public QObject
     void testDefaults();
     void visibleExtent();
     void mapUnitsPerPixel();
+    void testDevicePixelRatio();
     void visiblePolygon();
     void testIsLayerVisible();
     void testMapLayerListUtils();
@@ -135,6 +136,19 @@ void TestQgsMapSettings::mapUnitsPerPixel()
 
   ms.setOutputSize( QSize( 1000, 500 ) );
   QCOMPARE( ms.mapUnitsPerPixel(), 0.2 );
+}
+
+void TestQgsMapSettings::testDevicePixelRatio()
+{
+  QgsMapSettings ms;
+  ms.setOutputSize( QSize( 100, 50 ) );
+  ms.setExtent( QgsRectangle( 0, 0, 100, 100 ) );
+  ms.setDevicePixelRatio( 1 );
+  double scale = ms.scale();
+  ms.setDevicePixelRatio( 1.5 );
+  ms.setExtent( QgsRectangle( 0, 0, 100, 100 ) );
+  QCOMPARE( ms.outputSize() * 1.5, ms.deviceOutputSize() );
+  QCOMPARE( scale * 1.5, ms.scale() );
 }
 
 void TestQgsMapSettings::visiblePolygon()
