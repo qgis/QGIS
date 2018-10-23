@@ -103,7 +103,10 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
   QgsDebugMsg( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ) );
   if ( fontFamily.isEmpty() ) { return; }
 
-  ss += QStringLiteral( "* { font: %1pt \"%2\"} " ).arg( fontSize, fontFamily );
+  const QString defaultSize = QString::number( mDefaultFont.pointSize() );
+  const QString defaultFamily = mDefaultFont.family();
+  if ( fontSize != defaultSize || fontFamily != defaultFamily )
+    ss += QStringLiteral( "* { font: %1pt \"%2\"} " ).arg( fontSize, fontFamily );
 
 #if QT_VERSION >= 0x050900
   // Fix for macOS Qt 5.9+, where close boxes do not show on document mode tab bar tabs
