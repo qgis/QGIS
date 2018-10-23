@@ -2403,6 +2403,14 @@ void QgisApp::createActionGroups()
 
 void QgisApp::setAppStyleSheet( const QString &stylesheet )
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+  // avoid crash on stylesheet change -- see https://bugreports.qt.io/browse/QTBUG-69204
+  static bool sOnce = false;
+  if ( sOnce )
+    return;
+  sOnce = true;
+#endif
+
   setStyleSheet( stylesheet );
 
   // cascade styles to any current layout designers
