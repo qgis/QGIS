@@ -47,6 +47,9 @@ class LayoutContextPreviewSettingRestorer
       mLayout->renderContext().mIsPreviewRender = mPreviousSetting;
     }
 
+    LayoutContextPreviewSettingRestorer( const LayoutContextPreviewSettingRestorer &other ) = delete;
+    LayoutContextPreviewSettingRestorer &operator=( const LayoutContextPreviewSettingRestorer &other ) = delete;
+
   private:
     QgsLayout *mLayout = nullptr;
     bool mPreviousSetting = false;
@@ -74,6 +77,9 @@ class LayoutGuideHider
         it.key()->item()->setVisible( it.value() );
       }
     }
+
+    LayoutGuideHider( const LayoutGuideHider &other ) = delete;
+    LayoutGuideHider &operator=( const LayoutGuideHider &other ) = delete;
 
   private:
     QgsLayout *mLayout = nullptr;
@@ -107,6 +113,9 @@ class LayoutItemHider
         it.key()->setVisible( it.value() );
       }
     }
+
+    LayoutItemHider( const LayoutItemHider &other ) = delete;
+    LayoutItemHider &operator=( const LayoutItemHider &other ) = delete;
 
   private:
 
@@ -206,6 +215,9 @@ class LayoutItemCacheSettingRestorer
       }
     }
 
+    LayoutItemCacheSettingRestorer( const LayoutItemCacheSettingRestorer &other ) = delete;
+    LayoutItemCacheSettingRestorer &operator=( const LayoutItemCacheSettingRestorer &other ) = delete;
+
   private:
     QgsLayout *mLayout = nullptr;
     QHash< QGraphicsItem *, QGraphicsItem::CacheMode > mPrevCacheMode;
@@ -295,6 +307,9 @@ class LayoutContextSettingsRestorer
       mLayout->renderContext().setFlags( mPreviousFlags );
       mLayout->renderContext().setCurrentExportLayer( mPreviousExportLayer );
     }
+
+    LayoutContextSettingsRestorer( const LayoutContextSettingsRestorer &other ) = delete;
+    LayoutContextSettingsRestorer &operator=( const LayoutContextSettingsRestorer &other ) = delete;
 
   private:
     QgsLayout *mLayout = nullptr;
@@ -1118,7 +1133,7 @@ void QgsLayoutExporter::updatePrinterPageSize( QgsLayout *layout, QPrinter &prin
   printer.setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
 }
 
-QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, QRectF bounds, const QString &filename, int svgLayerId, const QString &layerName, QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const
+QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds, const QString &filename, int svgLayerId, const QString &layerName, QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const
 {
   QBuffer svgBuffer;
   {
@@ -1572,13 +1587,13 @@ bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFile
   }
   if ( projectForMetadata )
   {
-    w.setText( "Author", projectForMetadata->metadata().author() );
+    w.setText( QStringLiteral( "Author" ), projectForMetadata->metadata().author() );
     const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
-    w.setText( "Creator", creator );
-    w.setText( "Producer", creator );
-    w.setText( "Subject", projectForMetadata->metadata().abstract() );
-    w.setText( "Created", projectForMetadata->metadata().creationDateTime().toString( Qt::ISODate ) );
-    w.setText( "Title", projectForMetadata->metadata().title() );
+    w.setText( QStringLiteral( "Creator" ), creator );
+    w.setText( QStringLiteral( "Producer" ), creator );
+    w.setText( QStringLiteral( "Subject" ), projectForMetadata->metadata().abstract() );
+    w.setText( QStringLiteral( "Created" ), projectForMetadata->metadata().creationDateTime().toString( Qt::ISODate ) );
+    w.setText( QStringLiteral( "Title" ), projectForMetadata->metadata().title() );
 
     const QgsAbstractMetadataBase::KeywordMap keywords = projectForMetadata->metadata().keywords();
     QStringList allKeywords;
@@ -1587,7 +1602,7 @@ bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFile
       allKeywords.append( QStringLiteral( "%1: %2" ).arg( it.key(), it.value().join( ',' ) ) );
     }
     const QString keywordString = allKeywords.join( ';' );
-    w.setText( "Keywords", keywordString );
+    w.setText( QStringLiteral( "Keywords" ), keywordString );
   }
   return w.write( image );
 }

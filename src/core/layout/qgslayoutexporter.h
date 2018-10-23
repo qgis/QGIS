@@ -543,7 +543,7 @@ class CORE_EXPORT QgsLayoutExporter
 
     static void updatePrinterPageSize( QgsLayout *layout, QPrinter &printer, int page );
 
-    ExportResult renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, QRectF bounds,
+    ExportResult renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, const QRectF &bounds,
                                      const QString &filename, int svgLayerId, const QString &layerName,
                                      QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const;
 
