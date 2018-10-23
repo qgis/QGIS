@@ -26,7 +26,7 @@ from qgis.core import (QgsLocator,
 from qgis.PyQt.QtCore import QVariant, pyqtSignal, QCoreApplication
 from time import sleep
 from qgis.testing import start_app, unittest
-import sip
+from qgis.PyQt import sip
 start_app()
 
 

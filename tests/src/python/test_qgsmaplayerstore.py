@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import QgsMapLayerStore, QgsVectorLayer, QgsMapLayer
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QT_VERSION_STR
-import sip
+from qgis.PyQt import sip
 from qgis.PyQt.QtTest import QSignalSpy
 from time import sleep
 

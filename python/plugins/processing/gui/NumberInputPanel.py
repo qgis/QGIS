@@ -27,10 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 import math
-import sip
 import warnings
 
 from qgis.PyQt import uic
+from qgis.PyQt import sip
 from qgis.PyQt.QtCore import pyqtSignal, QSize
 from qgis.PyQt.QtWidgets import QDialog, QLabel, QComboBox
 
