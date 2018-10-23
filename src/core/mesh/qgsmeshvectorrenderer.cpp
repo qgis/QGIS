@@ -74,7 +74,7 @@ QgsMeshVectorRenderer::QgsMeshVectorRenderer( const QgsTriangularMesh &m,
   // we need to expand out the extent so that it includes
   // arrows which start or end up outside of the
   // actual visible extent
-  double extension = context.convertToMapUnits( mMaxMag, QgsUnitTypes::RenderPixels );
+  double extension = context.convertToMapUnits( calcExtentBufferSize(), QgsUnitTypes::RenderPixels );
   mBufferedExtent.setXMinimum( mBufferedExtent.xMinimum() - extension );
   mBufferedExtent.setXMaximum( mBufferedExtent.xMaximum() + extension );
   mBufferedExtent.setYMinimum( mBufferedExtent.yMinimum() - extension );
@@ -198,6 +198,39 @@ bool QgsMeshVectorRenderer::calcVectorLineEnd(
     return true;
 
   return false; //success
+}
+
+double QgsMeshVectorRenderer::calcExtentBufferSize() const
+{
+  double buffer;
+  switch ( mCfg.shaftLengthMethod() )
+  {
+    case QgsMeshRendererVectorSettings::ArrowScalingMethod::MinMax:
+    {
+      buffer = mContext.convertToPainterUnits( mCfg.maxShaftLength(),
+               QgsUnitTypes::RenderUnit::RenderMillimeters );
+      break;
+    }
+    case QgsMeshRendererVectorSettings::ArrowScalingMethod::Scaled:
+    {
+      buffer = mCfg.scaleFactor() * mMaxMag;
+      break;
+    }
+    case QgsMeshRendererVectorSettings::ArrowScalingMethod::Fixed:
+    {
+      buffer = mContext.convertToPainterUnits( mCfg.fixedShaftLength(),
+               QgsUnitTypes::RenderUnit::RenderMillimeters );
+      break;
+    }
+  }
+
+  if ( mCfg.filterMax() >= 0 && buffer > mCfg.filterMax() )
+    buffer = mCfg.filterMax();
+
+  if ( buffer < 0.0 )
+    buffer = 0.0;
+
+  return buffer;
 }
 
 
