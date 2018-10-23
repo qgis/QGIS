@@ -1024,7 +1024,7 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPrinter &printer,
   // Also an issue with PDF paper size using QPrinter::NativeFormat on Mac (always outputs portrait letter-size)
   printer.setOutputFormat( QPrinter::PdfFormat );
 
-  updatePrinterPageSize( layout, printer, 0 );
+  updatePrinterPageSize( layout, printer, firstPageToBeExported( layout ) );
 
   // TODO: add option for this in layout
   // May not work on Windows or non-X11 Linux. Works fine on Mac using QPrinter::NativeFormat
@@ -1043,7 +1043,7 @@ void QgsLayoutExporter::preparePrint( QgsLayout *layout, QPrinter &printer, bool
 
   if ( setFirstPageSize )
   {
-    updatePrinterPageSize( layout, printer, 0 );
+    updatePrinterPageSize( layout, printer, firstPageToBeExported( layout ) );
   }
 }
 
@@ -1564,6 +1564,21 @@ QImage QgsLayoutExporter::createImage( const QgsLayoutExporter::ImageExportSetti
   {
     return renderPageToImage( page, settings.imageSize, settings.dpi );
   }
+}
+
+int QgsLayoutExporter::firstPageToBeExported( QgsLayout *layout )
+{
+  const int pageCount = layout->pageCollection()->pageCount();
+  for ( int i = 0; i < pageCount; ++i )
+  {
+    if ( !layout->pageCollection()->shouldExportPage( i ) )
+    {
+      continue;
+    }
+
+    return i;
+  }
+  return 0; // shouldn't really matter -- we aren't exporting ANY pages!
 }
 
 QString QgsLayoutExporter::generateFileName( const PageExportDetails &details ) const
