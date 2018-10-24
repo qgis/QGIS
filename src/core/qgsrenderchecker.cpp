@@ -194,7 +194,9 @@ bool QgsRenderChecker::runTest( const QString &testName,
   mElapsedTime = myTime.elapsed();
 
   QImage myImage = job.renderedImage();
+#if QT_VERSION >= 0x050600
   Q_ASSERT( myImage.devicePixelRatioF() == mMapSettings.devicePixelRatio() );
+#endif
 
   //
   // Save the pixmap to disk so the user can make a
