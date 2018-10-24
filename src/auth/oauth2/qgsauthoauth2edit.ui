@@ -75,7 +75,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabCustom">
        <attribute name="title">
@@ -203,8 +203,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>401</width>
-             <height>516</height>
+             <width>406</width>
+             <height>441</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout">
@@ -632,7 +632,7 @@
          <number>0</number>
         </property>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_5" stretch="3,1">
+         <layout class="QVBoxLayout" name="verticalLayout_5" stretch="1,0">
           <property name="spacing">
            <number>0</number>
           </property>
@@ -673,23 +673,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QPlainTextEdit" name="pteDefinedDesc">
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="undoRedoEnabled">
+           <widget class="QTextBrowser" name="pteDefinedDesc">
+            <property name="openExternalLinks">
              <bool>false</bool>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-            <property name="plainText">
-             <string>Defined configurations are JSON-formatted files, with a single configuration per file. This allows configurations to be swapped out via filesystem tools without affecting user configurations. It is recommended to use the Configure tab’s export function, then edit the resulting file. See QGIS documentation for further details.</string>
-            </property>
-            <property name="textInteractionFlags">
-             <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
             </property>
            </widget>
           </item>
@@ -854,7 +840,7 @@
             <x>0</x>
             <y>0</y>
             <width>413</width>
-            <height>283</height>
+            <height>306</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">

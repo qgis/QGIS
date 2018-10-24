@@ -17,6 +17,7 @@
 
 #include <QDir>
 #include <QFileDialog>
+#include <QDesktopServices>
 
 #include "qgsapplication.h"
 #include "qgsauthguiutils.h"
@@ -48,6 +49,13 @@ QgsAuthOAuth2Edit::QgsAuthOAuth2Edit( QWidget *parent )
   setupConnections();
 
   loadFromOAuthConfig( mOAuthConfigCustom.get() );
+  updatePredefinedLocationsTooltip();
+
+  pteDefinedDesc->setOpenLinks( false );
+  connect( pteDefinedDesc, &QTextBrowser::anchorClicked, this, [ = ]( const QUrl & url )
+  {
+    QDesktopServices::openUrl( url );
+  } );
 }
 
 
@@ -496,6 +504,7 @@ void QgsAuthOAuth2Edit::definedCustomDirChanged( const QString &path )
   bool ok = pinfo.exists() || pinfo.isDir();
 
   leDefinedDirPath->setStyleSheet( ok ? QString() : QgsAuthGuiUtils::redTextStyleSheet() );
+  updatePredefinedLocationsTooltip();
 
   if ( ok )
   {
@@ -649,6 +658,7 @@ void QgsAuthOAuth2Edit::loadDefinedConfigs()
 {
   whileBlocking( lstwdgDefinedConfigs )->clear();
   updateDefinedConfigsCache();
+  updatePredefinedLocationsTooltip();
 
   QgsStringMap::const_iterator i = mDefinedConfigsCache.constBegin();
   while ( i != mDefinedConfigsCache.constEnd() )
@@ -1137,5 +1147,32 @@ void QgsAuthOAuth2Edit::getSoftwareStatementConfig()
     connect( configReply, &QNetworkReply::finished, this, &QgsAuthOAuth2Edit::configReplyFinished, Qt::QueuedConnection );
     connect( configReply, qgis::overload<QNetworkReply::NetworkError>::of( &QNetworkReply::error ), this, &QgsAuthOAuth2Edit::networkError, Qt::QueuedConnection );
   }
+}
+
+void QgsAuthOAuth2Edit::updatePredefinedLocationsTooltip()
+{
+  const QStringList dirs = QgsAuthOAuth2Config::configLocations( leDefinedDirPath->text() );
+  QString locationList;
+  QString locationListHtml;
+  for ( const QString &dir : dirs )
+  {
+    if ( !locationList.isEmpty() )
+      locationList += '\n';
+    if ( locationListHtml.isEmpty() )
+      locationListHtml = QStringLiteral( "<ul>" );
+    locationList += QStringLiteral( "• %1" ).arg( dir );
+    locationListHtml += QStringLiteral( "<li><a href=\"%1\">%2</a></li>" ).arg( QUrl::fromLocalFile( dir ).toString(), dir );
+  }
+  if ( !locationListHtml.isEmpty() )
+    locationListHtml += QStringLiteral( "</ul>" );
+
+  QString tip = QStringLiteral( "<p>" ) + tr( "Defined configurations are JSON-formatted files, with a single configuration per file. "
+                "This allows configurations to be swapped out via filesystem tools without affecting user "
+                "configurations. It is recommended to use the Configure tab’s export function, then edit the "
+                "resulting file. See QGIS documentation for further details." ) + QStringLiteral( "</p><p>" ) +
+                tr( "Configurations files can be placed in the directories:" ) + QStringLiteral( "</p>" ) + locationListHtml;
+  pteDefinedDesc->setHtml( tip );
+
+  lstwdgDefinedConfigs->setToolTip( tr( "Configuration files can be placed in the directories:\n\n%1" ).arg( locationList ) );
 }
 

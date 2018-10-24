@@ -151,6 +151,8 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
 
     QString currentDefinedConfig() const { return mDefinedId; }
 
+    void updatePredefinedLocationsTooltip();
+
     std::unique_ptr<QgsAuthOAuth2Config> mOAuthConfigCustom;
     QgsStringMap mDefinedConfigsCache;
     QString mDefinedId;

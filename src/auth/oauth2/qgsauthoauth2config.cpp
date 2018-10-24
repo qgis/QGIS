@@ -700,24 +700,29 @@ QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
   return configs;
 }
 
+QStringList QgsAuthOAuth2Config::configLocations( const QString &extradir )
+{
+  QStringList dirs;
+  // in order of override preference, i.e. user over pkg dir
+  dirs << QgsAuthOAuth2Config::oauth2ConfigsPkgDataDir()
+       << QgsAuthOAuth2Config::oauth2ConfigsUserSettingsDir();
+
+  if ( !extradir.isEmpty() )
+  {
+    // configs of similar IDs in this dir will override existing in standard dirs
+    dirs << extradir;
+  }
+  return dirs;
+}
+
 QgsStringMap QgsAuthOAuth2Config::mappedOAuth2ConfigsCache( QObject *parent, const QString &extradir )
 {
   QgsStringMap configs;
   bool ok = false;
 
   // Load from default locations
-  QStringList configdirs;
-  // in order of override preference, i.e. user over pkg dir
-  configdirs << QgsAuthOAuth2Config::oauth2ConfigsPkgDataDir()
-             << QgsAuthOAuth2Config::oauth2ConfigsUserSettingsDir();
-
-  if ( !extradir.isEmpty() )
-  {
-    // configs of similar IDs in this dir will override existing in standard dirs
-    configdirs << extradir;
-  }
-
-  for ( const auto &configdir : qgis::as_const( configdirs ) )
+  const QStringList configdirs = configLocations( extradir );
+  for ( const auto &configdir : configdirs )
   {
     QFileInfo configdirinfo( configdir );
     if ( !configdirinfo.exists() || !configdirinfo.isDir() )
@@ -748,7 +753,7 @@ QString QgsAuthOAuth2Config::oauth2ConfigsPkgDataDir()
 // static
 QString QgsAuthOAuth2Config::oauth2ConfigsUserSettingsDir()
 {
-  return QgsApplication::qgisSettingsDirPath() + QStringLiteral( "/oauth2_configs" );
+  return QgsApplication::qgisSettingsDirPath() + QStringLiteral( "oauth2_configs" );
 }
 
 // static
