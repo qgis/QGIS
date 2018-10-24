@@ -1116,6 +1116,11 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
   {
     request.setFlags( QgsFeatureRequest::NoGeometry );
   }
+  else
+  {
+    // force geometry extraction if the filter requests it
+    request.setFlags( request.flags() & ~QgsFeatureRequest::NoGeometry );
+  }
   QgsFeatureIterator featIt = mLayer->getFeatures( request );
 
   QgsFeature f;
