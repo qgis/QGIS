@@ -24,6 +24,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgspostgresconn.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -31,6 +32,8 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
 
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( btnConnect, &QPushButton::clicked, this, &QgsPgNewConnection::btnConnect_clicked );
   connect( cb_geometryColumnsOnly, &QCheckBox::clicked, this, &QgsPgNewConnection::cb_geometryColumnsOnly_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPgNewConnection::showHelp );

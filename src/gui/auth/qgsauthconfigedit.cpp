@@ -24,7 +24,7 @@
 #include "qgsauthmethodedit.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
-
+#include "qgsgui.h"
 
 QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, const QString &dataprovider )
   : QDialog( parent )
@@ -92,6 +92,8 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
 
     leName->setFocus();
   }
+
+  QgsGui::enableAutoGeometryRestore( this );
 }
 
 void QgsAuthConfigEdit::populateAuthMethods()
