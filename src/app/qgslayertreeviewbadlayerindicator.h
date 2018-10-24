@@ -1,9 +1,10 @@
 /***************************************************************************
-  qgslayertreeviewmemoryindicator.h
-  --------------------------------------
-  Date                 : July 2018
-  Copyright            : (C) 2018 by Nyall Dawson
-  Email                : nyall dot dawson at gmail dot com
+  qgslayertreeviewbadlayerindicatorprovider.h - QgsLayerTreeViewBadLayerIndicatorProvider
+
+ ---------------------
+ begin                : 17.10.2018
+ copyright            : (C) 2018 by Alessandro Pasotti
+ email                : elpaso@itopen.it
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -12,27 +13,29 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-#ifndef QGSLAYERTREEVIEWMEMORYINDICATOR_H
-#define QGSLAYERTREEVIEWMEMORYINDICATOR_H
+#ifndef QGSLAYERTREEVIEWBADLAYERINDICATORPROVIDER_H
+#define QGSLAYERTREEVIEWBADLAYERINDICATORPROVIDER_H
 
 #include "qgslayertreeviewindicatorprovider.h"
 
-//! Adds indicators showing whether layers are memory layers.
-class QgsLayerTreeViewMemoryIndicatorProvider : public QgsLayerTreeViewIndicatorProvider
+#include <QObject>
+
+
+//! Indicators for bad layers
+class QgsLayerTreeViewBadLayerIndicatorProvider : public QgsLayerTreeViewIndicatorProvider
 {
     Q_OBJECT
+
   public:
-    explicit QgsLayerTreeViewMemoryIndicatorProvider( QgsLayerTreeView *view );
+    explicit QgsLayerTreeViewBadLayerIndicatorProvider( QgsLayerTreeView *view );
 
   protected slots:
-
     void onIndicatorClicked( const QModelIndex &index ) override;
 
   private:
-    bool acceptLayer( QgsMapLayer *layer ) override;
     QString iconName( QgsMapLayer *layer ) override;
     QString tooltipText( QgsMapLayer *layer ) override;
+    bool acceptLayer( QgsMapLayer *layer ) override;
 };
 
-#endif // QGSLAYERTREEVIEWMEMORYINDICATOR_H
+#endif // QGSLAYERTREEVIEWBADLAYERINDICATORPROVIDER_H

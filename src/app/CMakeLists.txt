@@ -60,10 +60,12 @@ SET(QGIS_APP_SRCS
   qgslabelinggui.cpp
   qgslabelingwidget.cpp
   qgslayercapabilitiesmodel.cpp
+  qgslayertreeviewindicatorprovider.cpp
   qgslayertreeviewembeddedindicator.cpp
   qgslayertreeviewfilterindicator.cpp
   qgslayertreeviewmemoryindicator.cpp
   qgslayertreeviewnonremovableindicator.cpp
+  qgslayertreeviewbadlayerindicator.cpp
   qgsmapcanvasdockwidget.cpp
   qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
@@ -289,10 +291,12 @@ SET (QGIS_APP_MOC_HDRS
   qgslabelingwidget.h
   qgslabelpropertydialog.h
   qgslayercapabilitiesmodel.h
+  qgslayertreeviewindicatorprovider.h
   qgslayertreeviewembeddedindicator.h
   qgslayertreeviewmemoryindicator.h
   qgslayertreeviewfilterindicator.h
   qgslayertreeviewnonremovableindicator.h
+  qgslayertreeviewbadlayerindicator.h
   qgsmapcanvasdockwidget.h
   qgsmaplayerstylecategoriesmodel.h
   qgsmaplayerstyleguiutils.h
