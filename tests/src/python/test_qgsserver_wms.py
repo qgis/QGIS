@@ -153,18 +153,14 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         # Empty title in project leads to a Layer element without Name, Title
         # and Abstract tags. However, it should still have a CRS and a BBOX
         # according to OGC specifications tests.
-        project = os.path.join(self.testdata_path, "test_project_without_title.qgs")
-        qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(project),
-            "SERVICE": "WMS",
-            "VERSION": "1.3.0",
-            "REQUEST": "GetCapabilities",
-            "STYLES": ""
-        }.items())])
-
-        r, h = self._result(self._execute_request(qs))
-
         self.wms_request_compare('GetCapabilities', reference_file='wms_getcapabilities_without_title', project='test_project_without_title.qgs')
+
+    def test_wms_getcapabilitie_empty_spatial_layer(self):
+        # The project contains a spatial layer without feature and the WMS
+        # extent is not configured in the project.
+        self.wms_request_compare('GetCapabilities',
+                                 reference_file='wms_getcapabilities_empty_spatial_layer',
+                                 project='test_project_empty_spatial_layer.qgz')
 
     def test_wms_getcapabilities_versions(self):
         # default version 1.3.0 when empty VERSION parameter
@@ -175,7 +171,6 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
             "REQUEST": "GetCapabilities",
         }.items())])
 
-        r, h = self._result(self._execute_request(qs))
         self.wms_request_compare(qs, reference_file='wms_getcapabilities_1_3_0', version='')
 
         # default version 1.3.0 when VERSION = 1.3.0 parameter
@@ -186,7 +181,6 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
             "REQUEST": "GetCapabilities",
         }.items())])
 
-        r, h = self._result(self._execute_request(qs))
         self.wms_request_compare(qs, reference_file='wms_getcapabilities_1_3_0', version='1.3.0')
 
         # version 1.1.1
@@ -207,7 +201,6 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
             "REQUEST": "GetCapabilities",
         }.items())])
 
-        r, h = self._result(self._execute_request(qs))
         self.wms_request_compare(qs, reference_file='wms_getcapabilities_1_3_0', version='33.33.33')
 
     def test_wms_getcapabilities_url(self):
