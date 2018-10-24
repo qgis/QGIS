@@ -141,10 +141,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   cmbStyle->addItems( filteredStyles );
 
-  QStringList themes = QgsApplication::uiThemes().keys();
-  cmbUITheme->addItems( themes );
-
-  connect( cmbUITheme, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::uiThemeChanged );
+  cmbUITheme->addItem( tr( "auto (based on system)" ), QStringLiteral( "auto" ) );
+  const QStringList themes = QgsApplication::uiThemes().keys();
+  for ( const QString &theme : themes )
+    cmbUITheme->addItem( theme, theme );
+  connect( cmbUITheme, &QComboBox::currentTextChanged, this, [ = ]( const QString & ) {this->uiThemeChanged( cmbUITheme->currentData().toString() );} );
 
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify Highlight Color" ) );
   mIdentifyHighlightColorButton->setAllowOpacity( true );
@@ -566,8 +567,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QString name = mSettings->value( QStringLiteral( "/qgis/style" ) ).toString();
   cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
 
-  QString theme = QgsApplication::themeName();
-  cmbUITheme->setCurrentIndex( cmbUITheme->findText( theme, Qt::MatchFixedString ) );
+  QString theme = mSettings->value( QStringLiteral( "UI/Theme" ), QStringLiteral( "auto" ) ).toString();
+  cmbUITheme->setCurrentIndex( cmbUITheme->findData( theme ) );
 
   mNativeColorDialogsChkBx->setChecked( mSettings->value( QStringLiteral( "/qgis/native_color_dialogs" ), false ).toBool() );
 
@@ -1235,7 +1236,7 @@ void QgsOptions::uiThemeChanged( const QString &theme )
   if ( theme == QgsApplication::themeName() )
     return;
 
-  QgsApplication::setUITheme( theme );
+  QgisApp::instance()->setTheme( theme );
 }
 
 void QgsOptions::mProjectOnLaunchCmbBx_currentIndexChanged( int indx )
@@ -1264,7 +1265,7 @@ void QgsOptions::saveOptions()
 {
   QgsSettings settings;
 
-  mSettings->setValue( QStringLiteral( "UI/UITheme" ), cmbUITheme->currentText() );
+  mSettings->setValue( QStringLiteral( "UI/Theme" ), cmbUITheme->currentData().toString() );
 
   // custom environment variables
   mSettings->setValue( QStringLiteral( "qgis/customEnvVarsUse" ), QVariant( mCustomVariablesChkBx->isChecked() ) );

@@ -2001,16 +2001,10 @@ int QgisApp::dockedToolbarIconSize( int standardToolbarIconSize ) const
 
 void QgisApp::readSettings()
 {
-  QgsSettings settings;
-  QString themeName = settings.value( QStringLiteral( "UI/UITheme" ), "default" ).toString();
+  migrateOldSettings();
 
-  if ( themeName == QStringLiteral( "default" ) &&
-       QgsGui::instance()->nativePlatformInterface()->hasDarkTheme() )
-  {
-    QString darkTheme = QStringLiteral( "Night Mapping" );
-    if ( QgsApplication::uiThemes().contains( darkTheme ) )
-      themeName = darkTheme;
-  }
+  QgsSettings settings;
+  QString themeName = settings.value( QStringLiteral( "UI/Theme" ), "auto" ).toString();
   setTheme( themeName );
 
   // Read legacy settings
@@ -2024,6 +2018,23 @@ void QgisApp::readSettings()
   }
 }
 
+void QgisApp::migrateOldSettings()
+{
+  QgsSettings settings;
+  // Migrate new auto theme
+  if ( settings.contains( QStringLiteral( "UI/UITheme" ) ) )
+  {
+    if ( !settings.contains( QStringLiteral( "UI/Theme" ) ) )
+    {
+      QString oldTheme = settings.value( QStringLiteral( "UI/UITheme" ) ).toString();
+      if ( oldTheme == QStringLiteral( "default" ) )
+        settings.setValue( QStringLiteral( "UI/Theme" ), QStringLiteral( "auto" ) );
+      else
+        settings.setValue( QStringLiteral( "UI/Theme" ), oldTheme );
+    }
+    settings.remove( QStringLiteral( "UI/UITheme" ) );
+  }
+}
 
 //////////////////////////////////////////////////////////////////////
 //            Set Up the gui toolbars, menus, statusbar etc
@@ -3208,7 +3219,16 @@ void QgisApp::setTheme( const QString &themeName )
   for the user to choose from.
   */
 
-  QgsApplication::setUITheme( themeName );
+  QString theme = themeName;
+  QString lightTheme = QStringLiteral( "default" );
+  QString darkTheme = QStringLiteral( "Night Mapping" );
+  if ( !QgsApplication::uiThemes().contains( darkTheme ) )
+    darkTheme = QStringLiteral( "default" );
+
+  if ( theme == QStringLiteral( "auto" ) )
+    theme = QgsGui::instance()->nativePlatformInterface()->hasDarkTheme() ? darkTheme : lightTheme;
+
+  QgsApplication::setUITheme( theme );
 
   //QgsDebugMsg("Setting theme to \n" + themeName);
   mActionNewProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileNew.svg" ) ) );

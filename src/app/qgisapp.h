@@ -1872,6 +1872,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setupLayerTreeViewFromSettings();
 
     void readSettings();
+    void migrateOldSettings();
     void writeSettings();
     void createActions();
     void createActionGroups();
