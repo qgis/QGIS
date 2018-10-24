@@ -25,5 +25,5 @@ __revision__ = '$Format:%H$'
 
 try:
     from PyQt5.sip import *
-except ModuleNotFoundError:
+except ImportError:
     from sip import *
