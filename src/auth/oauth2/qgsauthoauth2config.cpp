@@ -334,7 +334,16 @@ bool QgsAuthOAuth2Config::loadConfigTxt(
         QgsDebugMsg( QStringLiteral( "Error parsing JSON: %1" ).arg( QString( errStr ) ) );
         return res;
       }
-      QJsonWrapper::qvariant2qobject( variant.toMap(), this );
+      const QVariantMap variantMap = variant.toMap();
+      // safety check -- qvariant2qobject asserts if an non-matching property is found in the json
+      for ( QVariantMap::const_iterator iter = variantMap.constBegin(); iter != variantMap.constEnd(); ++iter )
+      {
+        QVariant property = this->property( iter.key().toLatin1() );
+        if ( !property.isValid() ) // e.g. not a auth config json file
+          return false;
+      }
+
+      QJsonWrapper::qvariant2qobject( variantMap, this );
       break;
     }
     default:
