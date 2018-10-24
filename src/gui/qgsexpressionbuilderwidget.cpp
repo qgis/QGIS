@@ -154,38 +154,38 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   mFunctionBuilderHelp->setEdgeMode( QsciScintilla::EdgeNone );
   mFunctionBuilderHelp->setEdgeColumn( 0 );
   mFunctionBuilderHelp->setReadOnly( true );
-  mFunctionBuilderHelp->setText( tr( R"("""Define a new function using the @qgsfunction decorator.
-
- The function accepts the following parameters
-
- : param [any]: Define any parameters you want to pass to your function before
- the following arguments.
- : param feature: The current feature
- : param parent: The QgsExpression object
- : param context: If there is an argument called ``context`` found at the last
-                   position, this variable will contain a ``QgsExpressionContext``
-                   object, that gives access to various additional information like
-                   expression variables. E.g. ``context.variable( 'layer_id' )``
- : returns: The result of the expression.
-
-
-
- The @qgsfunction decorator accepts the following arguments:
-
-
- : param args: Defines the number of arguments. With ``args = 'auto'`` the number of
-               arguments will automatically be extracted from the signature.
-               With ``args = -1``, any number of arguments are accepted.
- : param group: The name of the group under which this expression function will
-                be listed.
- : param handlesnull: Set this to True if your function has custom handling for NULL values.
-                     If False, the result will always be NULL as soon as any parameter is NULL.
-                     Defaults to False.
- : param usesgeometry : Set this to False if your function does not access
-                        feature.geometry(). Defaults to True.
- : param referenced_columns: An array of attribute names that are required to run
-                             this function. Defaults to [QgsFeatureRequest.ALL_ATTRIBUTES].
-     """")" ) );
+  mFunctionBuilderHelp->setText( tr( "\"\"\"Define a new function using the @qgsfunction decorator.\n\
+\n\
+ The function accepts the following parameters\n\
+\n\
+ : param [any]: Define any parameters you want to pass to your function before\n\
+ the following arguments.\n\
+ : param feature: The current feature\n\
+ : param parent: The QgsExpression object\n\
+ : param context: If there is an argument called ``context`` found at the last\n\
+                   position, this variable will contain a ``QgsExpressionContext``\n\
+                   object, that gives access to various additional information like\n\
+                   expression variables. E.g. ``context.variable( 'layer_id' )``\n\
+ : returns: The result of the expression.\n\
+\n\
+\n\
+\n\
+ The @qgsfunction decorator accepts the following arguments:\n\
+\n\
+\n\
+ : param args: Defines the number of arguments. With ``args = 'auto'`` the number of\n\
+               arguments will automatically be extracted from the signature.\n\
+               With ``args = -1``, any number of arguments are accepted.\n\
+ : param group: The name of the group under which this expression function will\n\
+                be listed.\n\
+ : param handlesnull: Set this to True if your function has custom handling for NULL values.\n\
+                     If False, the result will always be NULL as soon as any parameter is NULL.\n\
+                     Defaults to False.\n\
+ : param usesgeometry : Set this to False if your function does not access\n\
+                        feature.geometry(). Defaults to True.\n\
+ : param referenced_columns: An array of attribute names that are required to run\n\
+                             this function. Defaults to [QgsFeatureRequest.ALL_ATTRIBUTES].\n\
+     \"\"\"" ) );
 }
 
 
@@ -875,72 +875,72 @@ void QgsExpressionBuilderWidget::createMarkers( const QgsExpressionNode *inNode 
   switch ( inNode->nodeType() )
   {
     case QgsExpressionNode::NodeType::ntFunction:
+    {
+      const QgsExpressionNodeFunction *node = static_cast<const QgsExpressionNodeFunction *>( inNode );
+      txtExpressionString->SendScintilla( QsciScintilla::SCI_SETINDICATORCURRENT, FUNCTION_MARKER_ID );
+      txtExpressionString->SendScintilla( QsciScintilla::SCI_SETINDICATORVALUE, node->fnIndex() );
+      int start = inNode->parserFirstColumn - 1;
+      int end = inNode->parserLastColumn - 1;
+      int start_pos = txtExpressionString->positionFromLineIndex( inNode->parserFirstLine - 1, start );
+      txtExpressionString->SendScintilla( QsciScintilla::SCI_INDICATORFILLRANGE, start_pos, end - start );
+      if ( node->args() )
       {
-        const QgsExpressionNodeFunction *node = static_cast<const QgsExpressionNodeFunction *>( inNode );
-        txtExpressionString->SendScintilla( QsciScintilla::SCI_SETINDICATORCURRENT, FUNCTION_MARKER_ID );
-        txtExpressionString->SendScintilla( QsciScintilla::SCI_SETINDICATORVALUE, node->fnIndex() );
-        int start = inNode->parserFirstColumn - 1;
-        int end = inNode->parserLastColumn - 1;
-        int start_pos = txtExpressionString->positionFromLineIndex( inNode->parserFirstLine - 1, start );
-        txtExpressionString->SendScintilla( QsciScintilla::SCI_INDICATORFILLRANGE, start_pos, end - start );
-        if ( node->args() )
+        const QList< QgsExpressionNode * > nodeList = node->args()->list();
+        for ( QgsExpressionNode *n : nodeList )
         {
-          const QList< QgsExpressionNode * > nodeList = node->args()->list();
-          for ( QgsExpressionNode *n : nodeList )
-          {
-            createMarkers( n );
-          }
+          createMarkers( n );
         }
-        break;
       }
+      break;
+    }
     case QgsExpressionNode::NodeType::ntLiteral:
-      {
-        break;
-      }
+    {
+      break;
+    }
     case QgsExpressionNode::NodeType::ntUnaryOperator:
-      {
-        const QgsExpressionNodeUnaryOperator *node = static_cast<const QgsExpressionNodeUnaryOperator *>( inNode );
-        createMarkers( node->operand() );
-        break;
-      }
+    {
+      const QgsExpressionNodeUnaryOperator *node = static_cast<const QgsExpressionNodeUnaryOperator *>( inNode );
+      createMarkers( node->operand() );
+      break;
+    }
     case QgsExpressionNode::NodeType::ntBinaryOperator:
-      {
-        const QgsExpressionNodeBinaryOperator *node = static_cast<const QgsExpressionNodeBinaryOperator *>( inNode );
-        createMarkers( node->opLeft() );
-        createMarkers( node->opRight() );
-        break;
-      }
+    {
+      const QgsExpressionNodeBinaryOperator *node = static_cast<const QgsExpressionNodeBinaryOperator *>( inNode );
+      createMarkers( node->opLeft() );
+      createMarkers( node->opRight() );
+      break;
+    }
     case QgsExpressionNode::NodeType::ntColumnRef:
-      {
-        break;
-      }
+    {
+      break;
+    }
     case QgsExpressionNode::NodeType::ntInOperator:
+    {
+      const QgsExpressionNodeInOperator *node = static_cast<const QgsExpressionNodeInOperator *>( inNode );
+      if ( node->list() )
       {
-        const QgsExpressionNodeInOperator *node = static_cast<const QgsExpressionNodeInOperator *>( inNode );
-        if ( node->list() )
+        const QList< QgsExpressionNode * > nodeList = node->list()->list();
+        for ( QgsExpressionNode *n : nodeList )
         {
-          const QList< QgsExpressionNode * > nodeList = node->list()->list();
-          for ( QgsExpressionNode *n : nodeList )
-          {
-            createMarkers( n );
-          }
+          createMarkers( n );
         }
-        break;
       }
+      break;
+    }
     case QgsExpressionNode::NodeType::ntCondition:
+    {
+      const QgsExpressionNodeCondition *node = static_cast<const QgsExpressionNodeCondition *>( inNode );
+      for ( QgsExpressionNodeCondition::WhenThen *cond : node->conditions() )
       {
-        const QgsExpressionNodeCondition *node = static_cast<const QgsExpressionNodeCondition *>( inNode );
-        for ( QgsExpressionNodeCondition::WhenThen *cond : node->conditions() )
-        {
-          createMarkers( cond->whenExp() );
-          createMarkers( cond->thenExp() );
-        }
-        if ( node->elseExp() )
-        {
-          createMarkers( node->elseExp() );
-        }
-        break;
+        createMarkers( cond->whenExp() );
+        createMarkers( cond->thenExp() );
       }
+      if ( node->elseExp() )
+      {
+        createMarkers( node->elseExp() );
+      }
+      break;
+    }
   }
 }
 
