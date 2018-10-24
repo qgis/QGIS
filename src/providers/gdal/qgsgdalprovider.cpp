@@ -105,6 +105,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, QgsError error )
     , mYBlockSize( 0 )
     , mGdalBaseDataset( nullptr )
     , mGdalDataset( nullptr )
+    , mStatisticsAreReliable( false )
 {
   mGeoTransform[0] =  0;
   mGeoTransform[1] =  1;
@@ -127,6 +128,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
     , mYBlockSize( 0 )
     , mGdalBaseDataset( nullptr )
     , mGdalDataset( nullptr )
+    , mStatisticsAreReliable( false )
 {
   mGeoTransform[0] =  0;
   mGeoTransform[1] =  1;
@@ -240,7 +242,15 @@ QgsGdalProvider::~QgsGdalProvider()
   }
   if ( mGdalDataset )
   {
+    // Check if already a PAM (persistent auxiliary metadata) file exists
+    QString pamFile = dataSourceUri() + QLatin1String( ".aux.xml" );
+    bool pamFileAlreadyExists = QFileInfo( pamFile ).exists();
+
     GDALClose( mGdalDataset );
+
+    // If GDAL created a PAM file right now by using estimated metadata, delete it right away
+    if ( !mStatisticsAreReliable && !pamFileAlreadyExists && QFileInfo( pamFile ).exists() )
+      QFile( pamFile ).remove();
   }
 }
 
@@ -2443,6 +2453,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
     myerval = GDALComputeRasterStatistics( myGdalBand, bApproxOK,
                                            &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
                                            progressCallback, &myProg );
+    mStatisticsAreReliable = true;
   }
   else
   {
