@@ -6810,6 +6810,8 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
 
     if ( !qgsAction.icon().isNull() )
       mActionFeatureAction->setIcon( qgsAction.icon() );
+    else
+      mActionFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionActive.svg" ) ) );
   }
   else
   {
@@ -6826,6 +6828,8 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
 
       if ( !mapLayerAction->icon().isNull() )
         mActionFeatureAction->setIcon( mapLayerAction->icon() );
+      else
+        mActionFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionActive.svg" ) ) );
     }
     else
     {
