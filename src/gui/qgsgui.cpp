@@ -42,6 +42,7 @@
 #include "qgslogger.h"
 #include "qgsprocessingrecentalgorithmlog.h"
 #include "qgswindowmanagerinterface.h"
+#include "qgssettings.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -111,6 +112,19 @@ QgsWindowManagerInterface *QgsGui::windowManager()
 void QgsGui::setWindowManager( QgsWindowManagerInterface *manager )
 {
   instance()->mWindowManager.reset( manager );
+}
+
+QgsGui::HigFlags QgsGui::higFlags()
+{
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString().startsWith( "en" ) )
+  {
+    return HigMenuTextIsTitleCase | HigDialogTitleIsTitleCase;
+  }
+  else
+  {
+    return NULL;
+  }
 }
 
 QgsGui::~QgsGui()

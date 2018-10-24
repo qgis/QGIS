@@ -123,10 +123,14 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
 {
   mAlgorithm = algorithm;
   QString title;
-  if ( algorithm->flags() & QgsProcessingAlgorithm::FlagDisplayNameIsLiteral )
-    title = mAlgorithm->displayName();
-  else
+  if ( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) and !( algorithm->flags() & QgsProcessingAlgorithm::FlagDisplayNameIsLiteral ) )
+  {
     title = QgsStringUtils::capitalize( mAlgorithm->displayName(), QgsStringUtils::TitleCase );
+  }
+  else
+  {
+    title = mAlgorithm->displayName();
+  }
   setWindowTitle( title );
 
   QString algHelp = formatHelp( algorithm );
