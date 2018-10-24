@@ -284,4 +284,5 @@ void QgsMessageBarItem::urlClicked( const QUrl &url )
     QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
+  dismiss();
 }
