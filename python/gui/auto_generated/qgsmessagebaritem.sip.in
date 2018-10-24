@@ -84,6 +84,17 @@ returns the duration in second of the message
 returns the styleSheet
 %End
 
+  public slots:
+
+    void dismiss();
+%Docstring
+Dismisses the item, removing it from the message bar and deleting
+it. Calling this on items which have not been added to a message bar
+has no effect.
+
+.. versionadded:: 3.4
+%End
+
   signals:
     void styleChanged( const QString &styleSheet );
 %Docstring

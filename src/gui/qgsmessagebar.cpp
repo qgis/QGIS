@@ -267,6 +267,9 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
 void QgsMessageBar::pushItem( QgsMessageBarItem *item )
 {
   resetCountdown();
+
+  item->mMessageBar = this;
+
   // avoid duplicated widget
   popWidget( item );
   showItem( item );

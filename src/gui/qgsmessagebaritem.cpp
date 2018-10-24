@@ -269,6 +269,14 @@ QgsMessageBarItem *QgsMessageBarItem::setDuration( int duration )
   return this;
 }
 
+void QgsMessageBarItem::dismiss()
+{
+  if ( !mMessageBar )
+    return;
+
+  mMessageBar->popWidget( this );
+}
+
 void QgsMessageBarItem::urlClicked( const QUrl &url )
 {
   QFileInfo file( url.toLocalFile() );
