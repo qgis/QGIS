@@ -218,6 +218,13 @@ class QgsAuthOAuth2Config : public QObject
       ConfigFormat format = JSON,
       bool *ok = nullptr );
 
+    /**
+     * Returns an ordered list of locations from which stored configuration files
+     * will be loaded. The list is in ascending order of precedence, so configuration
+     * files from later items will override those from earlier locations.
+     */
+    static QStringList configLocations( const QString &extradir = QString() );
+
     //! Load and parse standard directories of configs (e.g. JSON) to a mapped cache
     static QgsStringMap mappedOAuth2ConfigsCache( QObject *parent, const QString &extradir = QString::null );
 
