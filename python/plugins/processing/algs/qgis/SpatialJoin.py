@@ -227,7 +227,7 @@ class SpatialJoin(QgisAlgorithm):
         )
         # since map returns a map object, we use it with a list operator to apply the
         # spatialIdxAlias function into each element of the feature request.
-        list(map(spatialIdxAlias, source.getFeatures(request)))
+        list(map(spatialIdxAlias, source.getFeatures()))
 
         for current, f in enumerate(features):
             if feedback.isCanceled():
@@ -263,7 +263,8 @@ class SpatialJoin(QgisAlgorithm):
                             # join attributes and add
                             attributes = test_feat.attributes()
                             attributes.extend(join_attributes)
-                            output_feature = test_feat
+                            # copy test_feat
+                            output_feature = QgsFeature(test_feat)
                             output_feature.setAttributes(attributes)
                             sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
                         break
