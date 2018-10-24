@@ -69,7 +69,8 @@ void QgsO2::initOAuthConfig()
   mIsLocalHost = isLocalHost( QUrl( localpolicy.arg( mOAuth2Config->redirectPort() ) ) );
 
   setTokenUrl( mOAuth2Config->tokenUrl() );
-  setRefreshTokenUrl( mOAuth2Config->refreshTokenUrl() );
+  // refresh token url is marked as optional -- we use the token url if user has not specified a specific refresh URL
+  setRefreshTokenUrl( !mOAuth2Config->refreshTokenUrl().isEmpty() ? mOAuth2Config->refreshTokenUrl() : mOAuth2Config->tokenUrl() );
 
   setScope( mOAuth2Config->scope() );
   // TODO: add support to O2 (or this class?) for state query param
