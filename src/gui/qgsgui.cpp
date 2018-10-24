@@ -123,7 +123,7 @@ QgsGui::HigFlags QgsGui::higFlags()
   }
   else
   {
-    return NULL;
+    return nullptr;
   }
 }
 
