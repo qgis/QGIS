@@ -25,12 +25,15 @@
 #include "qgsmssqlprovider.h"
 #include "qgssettings.h"
 #include "qgsmssqlconnection.h"
+#include "qgsgui.h"
 
 QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mOriginalConnName( connName )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( btnListDatabase, &QPushButton::clicked, this, &QgsMssqlNewConnection::btnListDatabase_clicked );
   connect( btnConnect, &QPushButton::clicked, this, &QgsMssqlNewConnection::btnConnect_clicked );
   connect( cb_trustedConnection, &QCheckBox::clicked, this, &QgsMssqlNewConnection::cb_trustedConnection_clicked );
