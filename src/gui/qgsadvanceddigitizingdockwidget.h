@@ -26,6 +26,7 @@
 #include "qgsdockwidget.h"
 #include "qgsmessagebaritem.h"
 #include "qgspointxy.h"
+#include "qgspointlocator.h"
 
 
 class QgsAdvancedDigitizingCanvasItem;
@@ -255,6 +256,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     const CadConstraint *constraintY() const { return mYConstraint.get(); }
     //! Constraint on a common angle
     bool commonAngleConstraint() const { return !qgsDoubleNear( mCommonAngleConstraint, 0.0 ); }
+    //! SnapMatch for indicator
+    QgsPointLocator::Match mapPointMatch() const { return mSnapMatch; }
 
     /**
      * Removes all points from the CAD point list
@@ -485,6 +488,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     QAction *mEnableAction = nullptr;
     QMap< QAction *, double > mCommonAngleActions; // map the common angle actions with their angle values
 
+    // Snap indicator
+
+    QgsPointLocator::Match mSnapMatch;
   private:
 #ifdef SIP_RUN
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)
