@@ -85,6 +85,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
       ${CMAKE_SOURCE_DIR}/src/gui/effects
       ${CMAKE_SOURCE_DIR}/src/gui/layertree
+      ${CMAKE_SOURCE_DIR}/src/gui/layout
       ${CMAKE_SOURCE_DIR}/src/gui/locator
       ${CMAKE_SOURCE_DIR}/src/gui/processing
       ${CMAKE_SOURCE_DIR}/src/gui/raster
