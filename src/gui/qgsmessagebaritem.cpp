@@ -116,29 +116,29 @@ void QgsMessageBarItem::writeContent()
   QString contentStyleSheet;
   if ( mLevel == Qgis::Success )
   {
-    mStyleSheet = "QgsMessageBar { background-color: #dff0d8; border: 1px solid #8e998a; } "
-                  "QLabel,QTextEdit { color: black; } ";
-    contentStyleSheet = "<style> a, a:visited, a:hover { color:#268300; } </style>";
+    mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #dff0d8; border: 1px solid #8e998a; } "
+                                  "QLabel,QTextEdit { color: black; } " );
+    contentStyleSheet = QStringLiteral( "<style> a, a:visited, a:hover { color:#268300; } </style>" );
   }
   else if ( mLevel == Qgis::Critical )
   {
-    mStyleSheet = "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
-                  "QLabel,QTextEdit { color: white; } ";
-    contentStyleSheet = "<style>a, a:visited, a:hover { color:#4e0001; }</style>";
+    mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
+                                  "QLabel,QTextEdit { color: white; } " );
+    contentStyleSheet = QStringLiteral( "<style>a, a:visited, a:hover { color:#4e0001; }</style>" );
   }
   else if ( mLevel == Qgis::Warning )
   {
-    mStyleSheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
-                  "QLabel,QTextEdit { color: black; } ";
-    contentStyleSheet = "<style>a, a:visited, a:hover { color:#945a00; }</style>";
+    mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
+                                  "QLabel,QTextEdit { color: black; } " );
+    contentStyleSheet = QStringLiteral( "<style>a, a:visited, a:hover { color:#945a00; }</style>" );
   }
   else if ( mLevel == Qgis::Info )
   {
-    mStyleSheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
-                  "QLabel,QTextEdit { color: #2554a1; } ";
-    contentStyleSheet = "<style>a, a:visited, a:hover { color:#3bb2fe; }</style>";
+    mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
+                                  "QLabel,QTextEdit { color: #2554a1; } " );
+    contentStyleSheet = QStringLiteral( "<style>a, a:visited, a:hover { color:#3bb2fe; }</style>" );
   }
-  mStyleSheet += QLatin1String( "QLabel#mItemCount { font-style: italic; }" );
+  mStyleSheet += QStringLiteral( "QLabel#mItemCount { font-style: italic; }" );
 
   // TITLE AND TEXT
   if ( mTitle.isEmpty() && mText.isEmpty() )
