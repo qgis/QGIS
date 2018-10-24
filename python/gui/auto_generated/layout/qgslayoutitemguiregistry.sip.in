@@ -178,8 +178,6 @@ Creates a new empty item GUI registry.
 
 QgsLayoutItemGuiRegistry is not usually directly created, but rather accessed through
 :py:func:`QgsGui.layoutItemGuiRegistry()`
-
-.. seealso:: :py:func:`populate`
 %End
 
     ~QgsLayoutItemGuiRegistry();

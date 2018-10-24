@@ -91,7 +91,7 @@ Selects the specified ``items``.
 %Docstring
 Toggles whether the atlas preview mode should be ``enabled`` in the designer.
 
-.. seealso:: :py:func:`atlasPreviewModeEnabled`
+.. seealso:: :py:func:`atlasPreviewEnabled`
 
 .. versionadded:: 3.4
 %End
