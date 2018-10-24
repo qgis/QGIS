@@ -23,6 +23,8 @@
 #include <QString>
 #include <QPixmap>
 
+#include <QDebug>
+
 
 @interface QgsUserNotificationCenterDelegate : NSObject <NSUserNotificationCenterDelegate>
 @end
@@ -117,4 +119,9 @@ QgsNative::NotificationResult QgsMacNative::showDesktopNotification( const QStri
   NotificationResult result;
   result.successful = true;
   return result;
+}
+
+bool QgsMacNative::hasDarkTheme()
+{
+  return ( NSApp.effectiveAppearance.name != NSAppearanceNameAqua );
 }

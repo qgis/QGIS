@@ -136,6 +136,11 @@ class NATIVE_EXPORT QgsNative : public QObject
     virtual void setApplicationBadgeCount( int count );
 
     /**
+     * This is used to force the use of the dark theme
+     */
+    virtual bool hasDarkTheme() {return false;}
+
+    /**
      * Notification settings, for use with showDesktopNotification().
      */
     struct NotificationSettings
