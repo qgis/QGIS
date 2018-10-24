@@ -339,8 +339,6 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
      *
      * QgsLayoutItemGuiRegistry is not usually directly created, but rather accessed through
      * QgsGui::layoutItemGuiRegistry().
-     *
-     * \see populate()
     */
     QgsLayoutItemGuiRegistry( QObject *parent = nullptr );
 

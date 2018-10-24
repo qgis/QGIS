@@ -193,14 +193,22 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsL
 {
     Q_OBJECT
   public:
+
+    /**
+     * Constructs a QgsLayoutItemPropertiesWidget with a \a parent and for the given layout \a item.
+     */
     QgsLayoutItemPropertiesWidget( QWidget *parent, QgsLayoutItem *item );
 
+    //! Returns the position mode
     QgsLayoutItem::ReferencePoint positionMode() const;
 
+    //! Determines if the background of the group box shall be shown
     void showBackgroundGroup( bool showGroup );
 
+    //! Determines if the frame of the group box shall be shown
     void showFrameGroup( bool showGroup );
 
+    //! Sets the layout item
     void setItem( QgsLayoutItem *item );
 
   protected slots:

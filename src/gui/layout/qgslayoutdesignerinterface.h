@@ -111,7 +111,7 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
     /**
      * Toggles whether the atlas preview mode should be \a enabled in the designer.
      *
-     * \see atlasPreviewModeEnabled()
+     * \see atlasPreviewEnabled()
      * \since QGIS 3.4
      */
     virtual void setAtlasPreviewEnabled( bool enabled ) = 0;
