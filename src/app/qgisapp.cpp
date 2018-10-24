@@ -3027,7 +3027,6 @@ void QgisApp::createStatusBar()
   mScaleWidget = new QgsStatusBarScaleWidget( mMapCanvas, mStatusBar );
   mScaleWidget->setObjectName( QStringLiteral( "mScaleWidget" ) );
   mScaleWidget->setFont( myFont );
-  connect( mScaleWidget, &QgsStatusBarScaleWidget::scaleLockChanged, mMapCanvas, &QgsMapCanvas::setScaleLocked );
   mStatusBar->addPermanentWidget( mScaleWidget, 0 );
 
   // zoom widget
@@ -3036,6 +3035,8 @@ void QgisApp::createStatusBar()
   mMagnifierWidget->setFont( myFont );
   connect( mMapCanvas, &QgsMapCanvas::magnificationChanged, mMagnifierWidget, &QgsStatusBarMagnifierWidget::updateMagnification );
   connect( mMagnifierWidget, &QgsStatusBarMagnifierWidget::magnificationChanged, mMapCanvas, &QgsMapCanvas::setMagnificationFactor );
+  connect( mMagnifierWidget, &QgsStatusBarMagnifierWidget::scaleLockChanged, mMapCanvas, &QgsMapCanvas::setScaleLocked );
+  connect( mMagnifierWidget, &QgsStatusBarMagnifierWidget::scaleLockChanged, mScaleWidget, &QgsStatusBarScaleWidget::setLocked );
   mMagnifierWidget->updateMagnification( QSettings().value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble() );
   mStatusBar->addPermanentWidget( mMagnifierWidget, 0 );
 
