@@ -243,6 +243,10 @@ Constraint on the Y coordinate
 %Docstring
 Constraint on a common angle
 %End
+    QgsPointLocator::Match mapPointMatch() const;
+%Docstring
+SnapMatch for indicator
+%End
 
     void clearPoints();
 %Docstring

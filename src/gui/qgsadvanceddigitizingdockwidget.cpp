@@ -557,6 +557,8 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   // set the point coordinates in the map event
   e->setMapPoint( point );
 
+  mSnapMatch = context.snappingUtils->snapToMap( point );
+
   // update the point list
   updateCurrentPoint( point );
 
