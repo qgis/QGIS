@@ -171,6 +171,8 @@ class ProcessingPlugin:
         QgsApplication.dataItemProviderRegistry().addProvider(self.item_provider)
         self.locator_filter = AlgorithmLocatorFilter()
         iface.registerLocatorFilter(self.locator_filter)
+        # Invalidate the locator filter for in-place when active layer changes
+        iface.currentLayerChanged.connect(lambda _: self.iface.invalidateLocatorResults())
         self.edit_features_locator_filter = InPlaceAlgorithmLocatorFilter()
         iface.registerLocatorFilter(self.edit_features_locator_filter)
         Processing.initialize()
