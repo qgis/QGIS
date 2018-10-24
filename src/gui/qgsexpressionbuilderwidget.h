@@ -217,7 +217,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void registerItem( const QString &group, const QString &label, const QString &expressionText,
                        const QString &helpText = QString(),
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
-                       bool highlightedItem = false, int sortOrder = 1 );
+                       bool highlightedItem = false, int sortOrder = 1,
+                       QIcon icon = QIcon() );
 
     bool isExpressionValid();
 
