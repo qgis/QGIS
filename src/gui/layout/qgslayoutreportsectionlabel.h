@@ -44,8 +44,9 @@ class GUI_EXPORT QgsLayoutReportSectionLabel: public QGraphicsRectItem
      */
     QgsLayoutReportSectionLabel( QgsLayout *layout, QgsLayoutView *view );
 
-    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
+    //! Sets the \a label.
     void setLabel( const QString &label );
 
   private:
