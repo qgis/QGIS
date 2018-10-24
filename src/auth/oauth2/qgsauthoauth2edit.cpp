@@ -149,7 +149,7 @@ void QgsAuthOAuth2Edit::setupConnections()
 
   connect( btnSoftStatementDir, &QToolButton::clicked, this, &QgsAuthOAuth2Edit::getSoftStatementDir );
   connect( leSoftwareStatementJwtPath, &QLineEdit::textChanged, this, &QgsAuthOAuth2Edit::softwareStatementJwtPathChanged );
-  connect( leSoftwareStatementConfigUrl, &QLineEdit::textChanged, [ = ]( const QString & txt )
+  connect( leSoftwareStatementConfigUrl, &QLineEdit::textChanged, this, [ = ]( const QString & txt )
   {
     btnRegister->setEnabled( ! leSoftwareStatementJwtPath->text().isEmpty()
                              && ( QUrl( txt ).isValid() || ! mRegistrationEndpoint.isEmpty() ) );
@@ -263,7 +263,7 @@ void QgsAuthOAuth2Edit::loadConfig( const QgsStringMap &configmap )
 
   //QgsDebugMsg( QStringLiteral( "oauth2config: " ).arg( configmap.value( QStringLiteral( "oauth2config" ) ) ) );
 
-  if ( configmap.contains( QLatin1Literal( "oauth2config" ) ) )
+  if ( configmap.contains( QStringLiteral( "oauth2config" ) ) )
   {
     tabConfigs->setCurrentIndex( customTab() );
     QByteArray configtxt = configmap.value( QStringLiteral( "oauth2config" ) ).toUtf8();
@@ -294,7 +294,7 @@ void QgsAuthOAuth2Edit::loadConfig( const QgsStringMap &configmap )
       QgsDebugMsg( QStringLiteral( "FAILED to load OAuth2 config: empty config txt" ) );
     }
   }
-  else if ( configmap.contains( QLatin1Literal( "definedid" ) ) )
+  else if ( configmap.contains( QStringLiteral( "definedid" ) ) )
   {
     tabConfigs->setCurrentIndex( definedTab() );
     QString definedid = configmap.value( QStringLiteral( "definedid" ) );
@@ -960,7 +960,7 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
   }
   mRegistrationEndpoint = QString();
   file.close();
-  mSoftwareStatement.insert( "software_statement", softwareStatementBase64 );
+  mSoftwareStatement.insert( QStringLiteral( "software_statement" ), softwareStatementBase64 );
   QList<QByteArray> payloadParts( softwareStatementBase64.split( '.' ) );
   if ( payloadParts.count() < 2 )
   {
@@ -971,15 +971,15 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
   QByteArray decoded = QByteArray::fromBase64( payload/*, QByteArray::Base64UrlEncoding*/ );
   QByteArray errStr;
   bool res = false;
-  QMap<QString, QVariant> jsonData = QJsonWrapper::parseJson( decoded, &res, &errStr ).toMap();
+  const QMap<QString, QVariant> jsonData = QJsonWrapper::parseJson( decoded, &res, &errStr ).toMap();
   if ( !res )
   {
     QgsDebugMsg( QStringLiteral( "Error parsing JSON: %1" ).arg( QString( errStr ) ) );
     return;
   }
-  if ( jsonData.contains( QLatin1Literal( "grant_types" ) ) && jsonData.contains( QLatin1Literal( "redirect_uris" ) ) )
+  if ( jsonData.contains( QStringLiteral( "grant_types" ) ) && jsonData.contains( QStringLiteral( "redirect_uris" ) ) )
   {
-    QStringList grantTypes( jsonData[QLatin1Literal( "grant_types" ) ].toStringList() );
+    const QStringList grantTypes( jsonData[QStringLiteral( "grant_types" ) ].toStringList() );
     if ( grantTypes.count( ) )
     {
       QString grantType = grantTypes[0];
@@ -993,7 +993,7 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
       }
     }
     //Set redirect_uri
-    QStringList  redirectUris( jsonData[QLatin1Literal( "redirect_uris" ) ].toStringList() );
+    const QStringList  redirectUris( jsonData[QStringLiteral( "redirect_uris" ) ].toStringList() );
     if ( redirectUris.count( ) )
     {
       QString redirectUri = redirectUris[0];
@@ -1005,9 +1005,9 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
     QgsDebugMsgLevel( QStringLiteral( "Error software statement is invalid: %1" ).arg( path ), 4 );
     return;
   }
-  if ( jsonData.contains( QLatin1Literal( "registration_endpoint" ) ) )
+  if ( jsonData.contains( QStringLiteral( "registration_endpoint" ) ) )
   {
-    mRegistrationEndpoint = jsonData[QLatin1Literal( "registration_endpoint" )].toString();
+    mRegistrationEndpoint = jsonData[QStringLiteral( "registration_endpoint" )].toString();
     leSoftwareStatementConfigUrl->setText( mRegistrationEndpoint );
   }
   QgsDebugMsgLevel( QStringLiteral( "JSON: %1" ).arg( QString::fromLocal8Bit( decoded.data() ) ), 4 );
@@ -1032,14 +1032,14 @@ void QgsAuthOAuth2Edit::configReplyFinished()
     // I haven't found any docs about the content of this confg JSON file
     // I assume that registration_endpoint is all that it MUST contain.
     // But we also MAY have other optional information here
-    if ( config.contains( QLatin1Literal( "registration_endpoint" ) ) )
+    if ( config.contains( QStringLiteral( "registration_endpoint" ) ) )
     {
-      if ( config.contains( QLatin1Literal( "authorization_endpoint" ) ) )
-        leRequestUrl->setText( config.value( QLatin1Literal( "authorization_endpoint" ) ).toString() );
-      if ( config.contains( QLatin1Literal( "token_endpoint" ) ) )
-        leTokenUrl->setText( config.value( QLatin1Literal( "token_endpoint" ) ).toString() );
+      if ( config.contains( QStringLiteral( "authorization_endpoint" ) ) )
+        leRequestUrl->setText( config.value( QStringLiteral( "authorization_endpoint" ) ).toString() );
+      if ( config.contains( QStringLiteral( "token_endpoint" ) ) )
+        leTokenUrl->setText( config.value( QStringLiteral( "token_endpoint" ) ).toString() );
 
-      registerSoftStatement( config.value( QLatin1Literal( "registration_endpoint" ) ).toString() );
+      registerSoftStatement( config.value( QStringLiteral( "registration_endpoint" ) ).toString() );
     }
     else
     {
@@ -1066,22 +1066,22 @@ void QgsAuthOAuth2Edit::registerReplyFinished()
 
     // According to RFC 7591 sec. 3.2.1.  Client Information Response the only
     // required field is client_id
-    leClientId->setText( clientInfo.value( QLatin1Literal( "client_id" ) ).toString() );
-    if ( clientInfo.contains( QLatin1Literal( "client_secret" ) ) )
-      leClientSecret->setText( clientInfo.value( QLatin1Literal( "client_secret" ) ).toString() );
-    if ( clientInfo.contains( QLatin1Literal( "authorization_endpoint" ) ) )
-      leRequestUrl->setText( clientInfo.value( QLatin1Literal( "authorization_endpoint" ) ).toString() );
-    if ( clientInfo.contains( QLatin1Literal( "token_endpoint" ) ) )
-      leTokenUrl->setText( clientInfo.value( QLatin1Literal( "token_endpoint" ) ).toString() );
-    if ( clientInfo.contains( QLatin1Literal( "scopes" ) ) )
-      leScope->setText( clientInfo.value( QLatin1Literal( "scopes" ) ).toString() );
+    leClientId->setText( clientInfo.value( QStringLiteral( "client_id" ) ).toString() );
+    if ( clientInfo.contains( QStringLiteral( "client_secret" ) ) )
+      leClientSecret->setText( clientInfo.value( QStringLiteral( "client_secret" ) ).toString() );
+    if ( clientInfo.contains( QStringLiteral( "authorization_endpoint" ) ) )
+      leRequestUrl->setText( clientInfo.value( QStringLiteral( "authorization_endpoint" ) ).toString() );
+    if ( clientInfo.contains( QStringLiteral( "token_endpoint" ) ) )
+      leTokenUrl->setText( clientInfo.value( QStringLiteral( "token_endpoint" ) ).toString() );
+    if ( clientInfo.contains( QStringLiteral( "scopes" ) ) )
+      leScope->setText( clientInfo.value( QStringLiteral( "scopes" ) ).toString() );
 
     tabConfigs->setCurrentIndex( 0 );
   }
   else
   {
     QString errorMsg = QStringLiteral( "Client registration failed with error: %1" ).arg( registerReply->errorString() );
-    QgsMessageLog::logMessage( errorMsg, QLatin1Literal( "OAuth2" ), Qgis::Critical );
+    QgsMessageLog::logMessage( errorMsg, QStringLiteral( "OAuth2" ), Qgis::Critical );
   }
   mDownloading = false;
   registerReply->deleteLater();
@@ -1092,7 +1092,7 @@ void QgsAuthOAuth2Edit::networkError( QNetworkReply::NetworkError error )
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
   qWarning() << "QgsAuthOAuth2Edit::onNetworkError: " << error << ": " << reply->errorString();
   QString errorMsg = QStringLiteral( "Network error: %1" ).arg( reply->errorString() );
-  QgsMessageLog::logMessage( errorMsg, QLatin1Literal( "OAuth2" ), Qgis::Critical );
+  QgsMessageLog::logMessage( errorMsg, QStringLiteral( "OAuth2" ), Qgis::Critical );
   qDebug() << "QgsAuthOAuth2Edit::onNetworkError: " << reply->readAll();
 }
 
