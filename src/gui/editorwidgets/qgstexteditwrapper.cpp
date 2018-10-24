@@ -229,8 +229,13 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
   // For numbers, remove the group separator that might cause validation errors
   // when the user is editing the field value.
   // We are checking for editable layer because in the form field context we do not
-  // want to strip the separator unless the layer is editable
-  if ( layer() && layer()->isEditable() && ! QLocale().groupSeparator().isNull() && field().isNumeric() )
+  // want to strip the separator unless the layer is editable.
+  // Also check that we have something like a number in the value to avoid
+  // stripping out dots from nextval when we have a schema: see https://issues.qgis.org/issues/20200
+  // "Wrong sequence detection with Postgres"
+  bool canConvertToDouble;
+  QLocale().toDouble( v, &canConvertToDouble );
+  if ( canConvertToDouble && layer() && layer()->isEditable() && ! QLocale().groupSeparator().isNull() && field().isNumeric() )
   {
     v = v.remove( QLocale().groupSeparator() );
   }
