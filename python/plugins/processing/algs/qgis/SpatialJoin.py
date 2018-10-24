@@ -217,9 +217,14 @@ class SpatialJoin(QgisAlgorithm):
         unjoined_count = 0
 
         # creating a spatial index to speedup requisitions
-        source_id_dict = {feat.id(): feat for feat in source.getFeatures(request)}
+        source_id_dict = dict()
         source_spatial_idx = QgsSpatialIndex()
-        list(map(source_spatial_idx.insertFeature, source_id_dict.values()))
+        spatialIdxAlias = lambda x:self.buildSpatialIndex(
+            feat=x,
+            source_id_dict=source_id_dict,
+            source_spatial_idx=source_spatial_idx
+            )
+        list(map(spatialIdxAlias, source.getFeatures(request)))
 
         for current, f in enumerate(features):
             if feedback.isCanceled():
@@ -282,3 +287,7 @@ class SpatialJoin(QgisAlgorithm):
         result[self.JOINED_COUNT] = len(added_set)
 
         return result
+    
+    def buildSpatialIndex(self, feat, source_id_dict, source_spatial_idx):
+        source_spatial_idx.insertFeature(feat)
+        source_id_dict[feat.id()] = feat
