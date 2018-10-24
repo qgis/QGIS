@@ -714,7 +714,6 @@ void QgsApplication::setUITheme( const QString &themeName )
 {
   // Loop all style sheets, find matching name, load it.
   QHash<QString, QString> themes = QgsApplication::uiThemes();
-
   if ( themeName == QStringLiteral( "default" ) || !themes.contains( themeName ) )
   {
     setThemeName( QStringLiteral( "default" ) );
@@ -761,7 +760,8 @@ void QgsApplication::setUITheme( const QString &themeName )
     stylesheetname = autostylesheet;
   }
 
-  QString styleSheet = QStringLiteral( "file:///%1" ).arg( stylesheetname );
+  QString styleSheet = QStringLiteral( "file:///" );
+  styleSheet.append( stylesheetname );
   qApp->setStyleSheet( styleSheet );
   setThemeName( themeName );
 }
