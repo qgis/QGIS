@@ -66,6 +66,7 @@ void QgsO2::initOAuthConfig()
   QgsDebugMsg( QStringLiteral( "localpolicy(w/port): %1" ).arg( localpolicy.arg( mOAuth2Config->redirectPort() ) ) );
   setLocalhostPolicy( localpolicy );
   setLocalPort( mOAuth2Config->redirectPort() );
+  mIsLocalHost = isLocalHost( QUrl( localpolicy.arg( mOAuth2Config->redirectPort() ) ) );
 
   setTokenUrl( mOAuth2Config->tokenUrl() );
   setRefreshTokenUrl( mOAuth2Config->refreshTokenUrl() );
