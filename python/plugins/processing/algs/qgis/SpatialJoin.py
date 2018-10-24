@@ -219,11 +219,14 @@ class SpatialJoin(QgisAlgorithm):
         # creating a spatial index to speedup requisitions
         source_id_dict = dict()
         source_spatial_idx = QgsSpatialIndex()
-        spatialIdxAlias = lambda x:self.buildSpatialIndex(
+
+        def spatialIdxAlias(x): return self.buildSpatialIndex(
             feat=x,
             source_id_dict=source_id_dict,
             source_spatial_idx=source_spatial_idx
-            )
+        )
+        # since map returns a map object, we use it with a list operator to apply the
+        # spatialIdxAlias function into each element of the feature request.
         list(map(spatialIdxAlias, source.getFeatures(request)))
 
         for current, f in enumerate(features):
@@ -287,7 +290,12 @@ class SpatialJoin(QgisAlgorithm):
         result[self.JOINED_COUNT] = len(added_set)
 
         return result
-    
+
     def buildSpatialIndex(self, feat, source_id_dict, source_spatial_idx):
+        """
+        Method that adds a feature (feat) to spatial index (source_spatial_idx)
+        and adds it to a dictionary (source_id_dict). This method is to be used
+        along side with python map for performance.
+        """
         source_spatial_idx.insertFeature(feat)
         source_id_dict[feat.id()] = feat
