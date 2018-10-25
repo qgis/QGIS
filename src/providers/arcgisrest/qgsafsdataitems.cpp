@@ -41,7 +41,7 @@ QVector<QgsDataItem *> QgsAfsRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
 
-  const QStringList connectionList = QgsOwsConnection::connectionList( "arcgisfeatureserver" );
+  const QStringList connectionList = QgsOwsConnection::connectionList( QStringLiteral( "ARCGISFEATURESERVER" ) );
   for ( const QString &connName : connectionList )
   {
     const QString path = QStringLiteral( "afs:/" ) + connName;
@@ -94,12 +94,13 @@ QgsAfsConnectionItem::QgsAfsConnectionItem( QgsDataItem *parent, const QString &
 
 QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
 {
-  const QgsOwsConnection connection( QStringLiteral( "arcgisfeatureserver" ), mConnName );
+  const QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), mConnName );
   const QString url = connection.uri().param( QStringLiteral( "url" ) );
+  const QString authcfg = connection.uri().param( QStringLiteral( "authcfg" ) );
 
   QVector<QgsDataItem *> layers;
   QString errorTitle, errorMessage;
-  const QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( url, errorTitle, errorMessage );
+  const QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( url, authcfg, errorTitle, errorMessage );
   if ( serviceData.isEmpty() )
   {
     if ( !errorMessage.isEmpty() )
@@ -124,7 +125,7 @@ QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
       continue;
     }
     const QString id = layerInfoMap.value( QStringLiteral( "id" ) ).toString();
-    QgsAfsLayerItem *layer = new QgsAfsLayerItem( this, mName, url + '/' + id, layerInfoMap.value( QStringLiteral( "name" ) ).toString(), authid );
+    QgsAfsLayerItem *layer = new QgsAfsLayerItem( this, mName, url + '/' + id, layerInfoMap.value( QStringLiteral( "name" ) ).toString(), authid, authcfg );
     layers.append( layer );
   }
 
@@ -133,7 +134,7 @@ QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
 
 bool QgsAfsConnectionItem::equal( const QgsDataItem *other )
 {
-  const QgsAfsConnectionItem *o = dynamic_cast<const QgsAfsConnectionItem *>( other );
+  const QgsAfsConnectionItem *o = qobject_cast<const QgsAfsConnectionItem *>( other );
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 
@@ -200,10 +201,12 @@ void QgsAfsConnectionItem::refreshConnection()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAfsLayerItem::QgsAfsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &title, const QString &authid )
+QgsAfsLayerItem::QgsAfsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &title, const QString &authid, const QString &authcfg )
   : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Vector, QStringLiteral( "arcgisfeatureserver" ) )
 {
   mUri = QStringLiteral( "crs='%1' url='%2'" ).arg( authid, url );
+  if ( !authcfg.isEmpty() )
+    mUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
   setState( Populated );
   mIconName = QStringLiteral( "mIconAfs.svg" );
 }

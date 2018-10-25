@@ -328,7 +328,8 @@ def startPlugin(packageName):
 
     errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
 
-    start = time.clock()
+    start = time.process_time()
+
     # create an instance of the plugin
     try:
         plugins[packageName] = package.classFactory(iface)
@@ -350,7 +351,7 @@ def startPlugin(packageName):
 
     # add to active plugins
     active_plugins.append(packageName)
-    end = time.clock()
+    end = time.process_time()
     plugin_times[packageName] = "{0:02f}s".format(end - start)
 
     return True

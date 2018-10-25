@@ -59,11 +59,18 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * z and m types accordingly.
      * This constructor is more efficient then calling setPoints()
      * or repeatedly calling addVertex()
+     *
+     * If the \a z vector is filled, then the geometry type will either
+     * be a LineStringZ(M) or LineString25D depending on the \a is25DType
+     * argument. If \a is25DType is true (and the \a m vector is unfilled) then
+     * the created Linestring will be a LineString25D type. Otherwise, the
+     * LineString will be LineStringZ (or LineStringZM) type.
+     *
      * \since QGIS 3.0
      */
     QgsLineString( const QVector<double> &x, const QVector<double> &y,
                    const QVector<double> &z = QVector<double>(),
-                   const QVector<double> &m = QVector<double>() );
+                   const QVector<double> &m = QVector<double>(), bool is25DType = false );
 
     /**
      * Constructs a linestring with a single segment from \a p1 to \a p2.
@@ -353,7 +360,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = QStringLiteral( "<QgsLineString: %1>" ).arg( sipCpp->asWkt() );
-    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 

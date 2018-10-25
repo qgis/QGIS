@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include <QGraphicsProxyWidget>
-#include <QMouseEvent>
 #include <QGridLayout>
 #include <QLabel>
 
@@ -30,7 +29,7 @@
 #include "qgssnappingconfig.h"
 #include "qgssettings.h"
 #include "qgisapp.h"
-
+#include "qgsmapmouseevent.h"
 #include "qgslogger.h"
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
@@ -95,7 +94,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
         bool hasM = QgsWkbTypes::hasZ( mLayer->wkbType() );
         if ( hasZ || hasM )
         {
-          emit messageEmitted( QString( "layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using offset tool." )
+          emit messageEmitted( QStringLiteral( "layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using offset tool." )
                                .arg( mLayer->name() )
                                .arg( hasZ ? "Z" : "" )
                                .arg( hasZ && hasM ? "/" : "" )
@@ -120,7 +119,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 }
 
-void QgsMapToolOffsetCurve::applyOffset( const double &offset, const Qt::KeyboardModifiers &modifiers )
+void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers modifiers )
 {
   if ( !mLayer || offset == 0.0 )
   {
@@ -351,7 +350,7 @@ void QgsMapToolOffsetCurve::applyOffset( const double &offset, const Qt::Keyboar
   else
   {
     mLayer->destroyEditCommand();
-    emit messageEmitted( "Could not apply offset", Qgis::Critical );
+    emit messageEmitted( QStringLiteral( "Could not apply offset" ), Qgis::Critical );
   }
 
   deleteRubberBandAndGeometry();
@@ -492,7 +491,7 @@ void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match
       int vertex = match.vertexIndex();
       QgsVertexId vertexId;
       geom.vertexIdFromVertexNr( vertex, vertexId );
-      QgsDebugMsg( QString( "%1" ).arg( vertexId.ring ) );
+      QgsDebugMsg( QStringLiteral( "%1" ).arg( vertexId.ring ) );
 
       if ( !geom.isMultipart() )
       {
@@ -647,7 +646,7 @@ QgsOffsetUserWidget::QgsOffsetUserWidget( QWidget *parent )
 
   connect( mJoinStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettings().setEnumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), ( QgsGeometry::JoinStyle )mJoinStyleComboBox->currentData().toInt() ); emit offsetConfigChanged(); } );
   connect( mQuadrantSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, [ = ]( const int quadSegments ) { QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), quadSegments ); emit offsetConfigChanged(); } );
-  connect( mMiterLimitSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, [ = ]( const double & miterLimit ) { QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), miterLimit ); emit offsetConfigChanged(); } );
+  connect( mMiterLimitSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, [ = ]( double miterLimit ) { QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), miterLimit ); emit offsetConfigChanged(); } );
   connect( mCapStyleComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, [ = ] { QgsSettings().setEnumValue( QStringLiteral( "/qgis/digitizing/offset_cap_style" ), ( QgsGeometry::EndCapStyle ) mCapStyleComboBox->currentData().toInt() ); emit offsetConfigChanged(); } );
 
   bool showAdvanced = s.value( QStringLiteral( "/qgis/digitizing/offset_show_advanced" ), false ).toBool();

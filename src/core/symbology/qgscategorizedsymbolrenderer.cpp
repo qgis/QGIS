@@ -167,7 +167,7 @@ QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString &attrN
   {
     if ( !cat.symbol() )
     {
-      QgsDebugMsg( "invalid symbol in a category! ignoring..." );
+      QgsDebugMsg( QStringLiteral( "invalid symbol in a category! ignoring..." ) );
     }
     mCategories << cat;
   }
@@ -205,7 +205,7 @@ QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value, 
   {
     if ( mSymbolHash.isEmpty() )
     {
-      QgsDebugMsg( "there are no hashed symbols!!!" );
+      QgsDebugMsg( QStringLiteral( "there are no hashed symbols!!!" ) );
     }
     else
     {
@@ -322,7 +322,7 @@ void QgsCategorizedSymbolRenderer::addCategory( const QgsRendererCategory &cat )
 {
   if ( !cat.symbol() )
   {
-    QgsDebugMsg( "invalid symbol in a category! ignoring..." );
+    QgsDebugMsg( QStringLiteral( "invalid symbol in a category! ignoring..." ) );
     return;
   }
 
@@ -450,6 +450,19 @@ QSet<QString> QgsCategorizedSymbolRenderer::usedAttributes( const QgsRenderConte
     }
   }
   return attributes;
+}
+
+bool QgsCategorizedSymbolRenderer::filterNeedsGeometry() const
+{
+  QgsExpression testExpr( mAttrName );
+  if ( !testExpr.hasParserError() )
+  {
+    QgsExpressionContext context;
+    context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) ); // unfortunately no layer access available!
+    testExpr.prepare( &context );
+    return testExpr.needsGeometry();
+  }
+  return false;
 }
 
 QString QgsCategorizedSymbolRenderer::dump() const

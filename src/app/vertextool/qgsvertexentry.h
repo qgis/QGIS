@@ -18,8 +18,9 @@
 
 #include "qgspoint.h"
 #include "qgsvertexmarker.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
+
+class QgsMapLayer;
+class QgsMapCanvas;
 
 class QgsVertexEntry
 {

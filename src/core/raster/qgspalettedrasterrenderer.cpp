@@ -131,7 +131,7 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  cons
 
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugMsg( "No raster data!" );
+    QgsDebugMsg( QStringLiteral( "No raster data!" ) );
     return outputBlock.release();
   }
 

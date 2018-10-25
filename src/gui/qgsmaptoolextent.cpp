@@ -13,11 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
+
+
 #include "qgsmaptoolextent.h"
 #include "qgsmapcanvas.h"
 #include "qgswkbtypes.h"
-
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
 
 
 QgsMapToolExtent::QgsMapToolExtent( QgsMapCanvas *canvas )

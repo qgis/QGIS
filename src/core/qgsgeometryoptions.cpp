@@ -27,6 +27,7 @@ bool QgsGeometryOptions::removeDuplicateNodes() const
 void QgsGeometryOptions::setRemoveDuplicateNodes( bool value )
 {
   mRemoveDuplicateNodes = value;
+  emit removeDuplicateNodesChanged();
 }
 
 double QgsGeometryOptions::geometryPrecision() const
@@ -37,6 +38,7 @@ double QgsGeometryOptions::geometryPrecision() const
 void QgsGeometryOptions::setGeometryPrecision( double value )
 {
   mGeometryPrecision = value;
+  emit geometryPrecisionChanged();
 }
 
 bool QgsGeometryOptions::isActive() const
@@ -53,13 +55,43 @@ void QgsGeometryOptions::apply( QgsGeometry &geometry ) const
     geometry.removeDuplicateNodes();
 }
 
+QStringList QgsGeometryOptions::geometryChecks() const
+{
+  return mGeometryChecks;
+}
+
+void QgsGeometryOptions::setGeometryChecks( const QStringList &geometryChecks )
+{
+  mGeometryChecks = geometryChecks;
+  emit geometryChecksChanged();
+}
+
+QVariantMap QgsGeometryOptions::checkConfiguration( const QString &checkId ) const
+{
+  return mCheckConfiguration.value( checkId ).toMap();
+}
+
+void QgsGeometryOptions::setCheckConfiguration( const QString &checkId, const QVariantMap &checkConfiguration )
+{
+  mCheckConfiguration[checkId] = checkConfiguration;
+  emit checkConfigurationChanged();
+}
+
 void QgsGeometryOptions::writeXml( QDomNode &node ) const
 {
-  QDomElement geometryOptionsElement = node.ownerDocument().createElement( QStringLiteral( "geometryOptions" ) );
+  QDomDocument doc = node.ownerDocument();
+  QDomElement geometryOptionsElement = doc.createElement( QStringLiteral( "geometryOptions" ) );
   node.appendChild( geometryOptionsElement );
 
   geometryOptionsElement.setAttribute( QStringLiteral( "removeDuplicateNodes" ), mRemoveDuplicateNodes ? 1 : 0 );
   geometryOptionsElement.setAttribute( QStringLiteral( "geometryPrecision" ), mGeometryPrecision );
+
+  QDomElement activeCheckListElement = QgsXmlUtils::writeVariant( mGeometryChecks, doc );
+  activeCheckListElement.setTagName( QStringLiteral( "activeChecks" ) );
+  geometryOptionsElement.appendChild( activeCheckListElement );
+  QDomElement checkConfigurationElement = QgsXmlUtils::writeVariant( mCheckConfiguration, doc );
+  checkConfigurationElement.setTagName( QStringLiteral( "checkConfiguration" ) );
+  geometryOptionsElement.appendChild( checkConfigurationElement );
 }
 
 void QgsGeometryOptions::readXml( const QDomNode &node )
@@ -67,4 +99,12 @@ void QgsGeometryOptions::readXml( const QDomNode &node )
   QDomElement geometryOptionsElement = node.toElement();
   setGeometryPrecision( geometryOptionsElement.attribute( QStringLiteral( "geometryPrecision" ),  QStringLiteral( "0.0" ) ).toDouble() );
   setRemoveDuplicateNodes( geometryOptionsElement.attribute( QStringLiteral( "removeDuplicateNodes" ),  QStringLiteral( "0" ) ).toInt() == 1 );
+
+  QDomElement activeChecksElem = node.namedItem( QStringLiteral( "activeChecks" ) ).toElement();
+  const QVariant activeChecks = QgsXmlUtils::readVariant( activeChecksElem );
+  setGeometryChecks( activeChecks.toStringList() );
+
+  QDomElement checkConfigurationElem = node.namedItem( QStringLiteral( "checkConfiguration" ) ).toElement();
+  const QVariant checkConfiguration = QgsXmlUtils::readVariant( checkConfigurationElem );
+  mCheckConfiguration = checkConfiguration.toMap();
 }

@@ -13,7 +13,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-import sip
+from qgis.PyQt import sip
 import tempfile
 import shutil
 import os
@@ -462,6 +462,48 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertEqual(metadata['KEYWORDS'], 'KWx: kw3,kw4;kw: kw1,kw2')
         self.assertEqual(metadata['SUBJECT'], 'proj abstract')
         self.assertEqual(metadata['TITLE'], 'proj title')
+
+    def testExportToPdfSkipFirstPage(self):
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+
+        # page 1 is excluded from export
+        page1 = l.pageCollection().page(0)
+        page1.setExcludeFromExports(True)
+
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        l.pageCollection().addPage(page2)
+
+        item2 = QgsLayoutItemShape(l)
+        item2.attemptSetSceneRect(QRectF(10, 20, 100, 150))
+        item2.attemptMove(QgsLayoutPoint(10, 20), page=1)
+        fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, fill)
+        fill.setColor(Qt.cyan)
+        fill.setStrokeStyle(Qt.NoPen)
+        item2.setSymbol(fill_symbol)
+        l.addItem(item2)
+
+        exporter = QgsLayoutExporter(l)
+        # setup settings
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.dpi = 80
+        settings.rasterizeWholeImage = False
+        settings.forceVectorOutput = False
+        settings.exportMetadata = True
+
+        pdf_file_path = os.path.join(self.basetestpath, 'test_exporttopdfdpi_skip_first.pdf')
+        self.assertEqual(exporter.exportToPdf(pdf_file_path, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(pdf_file_path))
+
+        rendered_page_1 = os.path.join(self.basetestpath, 'test_exporttopdfdpi_skip_first.png')
+        dpi = 80
+        pdfToPng(pdf_file_path, rendered_page_1, dpi=dpi, page=1)
+
+        self.assertTrue(self.checkImage('test_exporttopdfdpi_skip_first', 'exporttopdfdpi_page2', rendered_page_1, size_tolerance=1))
 
     def testExportToSvg(self):
         md = QgsProject.instance().metadata()

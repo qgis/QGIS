@@ -43,7 +43,7 @@ QString QgsProcessingProvider::svgIconPath() const
 
 QString QgsProcessingProvider::helpId() const
 {
-  return id();
+  return QString();
 }
 
 QString QgsProcessingProvider::longName() const

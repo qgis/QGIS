@@ -78,7 +78,7 @@ void QgsSvgSelectorLoader::loadPath( const QString &path )
   if ( mCanceled )
     return;
 
-  // QgsDebugMsg( QString( "loading path: %1" ).arg( path ) );
+  // QgsDebugMsg( QStringLiteral( "loading path: %1" ).arg( path ) );
 
   if ( path.isEmpty() )
   {
@@ -114,7 +114,7 @@ void QgsSvgSelectorLoader::loadPath( const QString &path )
 
       QString newPath = dir.path() + '/' + item;
       loadPath( newPath );
-      // QgsDebugMsg( QString( "added path: %1" ).arg( newPath ) );
+      // QgsDebugMsg( QStringLiteral( "added path: %1" ).arg( newPath ) );
     }
   }
 }
@@ -129,7 +129,7 @@ void QgsSvgSelectorLoader::loadImages( const QString &path )
 
     // TODO test if it is correct SVG
     QString svgPath = dir.path() + '/' + item;
-    // QgsDebugMsg( QString( "adding svg: %1" ).arg( svgPath ) );
+    // QgsDebugMsg( QStringLiteral( "adding svg: %1" ).arg( svgPath ) );
 
     // add it to the list of queued SVGs
     mQueuedSvgs << svgPath;
@@ -332,12 +332,12 @@ QgsSvgSelectorGroupsModel::QgsSvgSelectorGroupsModel( QObject *parent )
     baseGroup->setData( QVariant( svgPaths.at( i ) ) );
     baseGroup->setEditable( false );
     baseGroup->setCheckable( false );
-    baseGroup->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
+    baseGroup->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) ) );
     baseGroup->setToolTip( dir.path() );
     parentItem->appendRow( baseGroup );
     parentPaths << svgPaths.at( i );
     mPathItemHash.insert( svgPaths.at( i ), baseGroup );
-    QgsDebugMsg( QString( "SVG base path %1: %2" ).arg( i ).arg( baseGroup->data().toString() ) );
+    QgsDebugMsg( QStringLiteral( "SVG base path %1: %2" ).arg( i ).arg( baseGroup->data().toString() ) );
   }
   mLoader->setParentPaths( parentPaths );
   connect( mLoader, &QgsSvgGroupLoader::foundPath, this, &QgsSvgSelectorGroupsModel::addPath );
@@ -361,7 +361,7 @@ void QgsSvgSelectorGroupsModel::addPath( const QString &parentPath, const QStrin
   group->setEditable( false );
   group->setCheckable( false );
   group->setToolTip( fullPath );
-  group->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
+  group->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) ) );
   parentGroup->appendRow( group );
   mPathItemHash.insert( fullPath, group );
 }

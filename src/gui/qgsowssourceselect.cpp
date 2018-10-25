@@ -117,14 +117,14 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   populateConnectionList();
 
   QgsSettings settings;
-  QgsDebugMsg( "restoring geometry" );
+  QgsDebugMsg( QStringLiteral( "restoring geometry" ) );
   restoreGeometry( settings.value( QStringLiteral( "Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
 }
 
 QgsOWSSourceSelect::~QgsOWSSourceSelect()
 {
   QgsSettings settings;
-  QgsDebugMsg( "saving geometry" );
+  QgsDebugMsg( QStringLiteral( "saving geometry" ) );
   settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
 }
 
@@ -211,7 +211,7 @@ void QgsOWSSourceSelect::populateFormats()
     {
       // We cannot always say that the format is not supported by GDAL because
       // server can use strange names, but format itself is supported
-      QgsDebugMsg( QString( "format %1 unknown" ).arg( format ) );
+      QgsDebugMsg( QStringLiteral( "format %1 unknown" ).arg( format ) );
     }
 
     mFormatComboBox->insertItem( i, label );
@@ -328,7 +328,7 @@ QgsTreeWidgetItem *QgsOWSSourceSelect::createItem(
   const QMap<int, int> &layerParents,
   const QMap<int, QStringList> &layerParentNames )
 {
-  QgsDebugMsg( QString( "id = %1 layerAndStyleCount = %2 names = %3 " ).arg( id ).arg( layerAndStyleCount ).arg( names.join( "," ) ) );
+  QgsDebugMsg( QStringLiteral( "id = %1 layerAndStyleCount = %2 names = %3 " ).arg( id ).arg( layerAndStyleCount ).arg( names.join( "," ) ) );
   if ( items.contains( id ) )
     return items[id];
 
@@ -373,7 +373,7 @@ void QgsOWSSourceSelect::mConnectButton_clicked()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QgsDebugMsg( "call populateLayerList" );
+  QgsDebugMsg( QStringLiteral( "call populateLayerList" ) );
   populateLayerList();
 
   QApplication::restoreOverrideCursor();
@@ -481,7 +481,7 @@ void QgsOWSSourceSelect::mTilesetsTableWidget_itemClicked( QTableWidgetItem *ite
   mTilesetsTableWidget->clearSelection();
   if ( !wasSelected )
   {
-    QgsDebugMsg( QString( "selecting current row %1" ).arg( mTilesetsTableWidget->currentRow() ) );
+    QgsDebugMsg( QStringLiteral( "selecting current row %1" ).arg( mTilesetsTableWidget->currentRow() ) );
     mTilesetsTableWidget->selectRow( mTilesetsTableWidget->currentRow() );
     mCurrentTileset = rowItem;
   }
@@ -711,7 +711,7 @@ void QgsOWSSourceSelect::searchFinished()
     }
     else
     {
-      QgsDebugMsg( "setContent failed" );
+      QgsDebugMsg( QStringLiteral( "setContent failed" ) );
       showStatusMessage( tr( "parse error at row %1, column %2: %3" ).arg( line ).arg( column ).arg( error ) );
     }
   }

@@ -37,13 +37,13 @@ double QgsScaleCalculator::dpi()
 
 void QgsScaleCalculator::setMapUnits( QgsUnitTypes::DistanceUnit mapUnits )
 {
-  QgsDebugMsgLevel( QString( "Map units set to %1" ).arg( QString::number( mapUnits ) ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "Map units set to %1" ).arg( QString::number( mapUnits ) ), 3 );
   mMapUnits = mapUnits;
 }
 
 QgsUnitTypes::DistanceUnit QgsScaleCalculator::mapUnits() const
 {
-  QgsDebugMsgLevel( QString( "Map units returned as %1" ).arg( QString::number( mMapUnits ) ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Map units returned as %1" ).arg( QString::number( mMapUnits ) ), 4 );
   return mMapUnits;
 }
 
@@ -79,11 +79,11 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, int canvasW
   }
   if ( canvasWidth == 0 || qgsDoubleNear( mDpi, 0.0 ) )
   {
-    QgsDebugMsg( "Can't calculate scale from the input values" );
+    QgsDebugMsg( QStringLiteral( "Can't calculate scale from the input values" ) );
     return 0;
   }
   double scale = ( delta * conversionFactor ) / ( static_cast< double >( canvasWidth ) / mDpi );
-  QgsDebugMsgLevel( QString( "scale = %1 conversionFactor = %2" ).arg( scale ).arg( conversionFactor ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "scale = %1 conversionFactor = %2" ).arg( scale ).arg( conversionFactor ), 4 );
   return scale;
 }
 

@@ -118,5 +118,5 @@ void QgsLayoutTableBackgroundColorsDialog::setGuiElementValues()
   mDefaultColorButton->setAllowOpacity( true );
   mDefaultColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mDefaultColorButton->setShowNoColor( true );
-  mDefaultColorButton->setNoColorString( tr( "No background" ) );
+  mDefaultColorButton->setNoColorString( tr( "No Background" ) );
 }

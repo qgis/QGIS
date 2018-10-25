@@ -45,7 +45,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
     mTextEdit->setDocument( mTextDocument.get() );
   }
 
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
   mFontColorButton->setAllowOpacity( true );

@@ -16,6 +16,8 @@
 #ifndef QGS3DUTILS_H
 #define QGS3DUTILS_H
 
+#include "qgis_sip.h"
+
 class QgsLineString;
 class QgsPolygon;
 
@@ -23,26 +25,11 @@ class QgsAbstract3DEngine;
 class Qgs3DMapScene;
 
 #include "qgs3dmapsettings.h"
+#include "qgs3dtypes.h"
 #include "qgsaabb.h"
 
-#include <Qt3DRender/QCullFace>
 
-//! how to handle altitude of vector features
-enum AltitudeClamping
-{
-  AltClampAbsolute,   //!< Z_final = z_geometry
-  AltClampRelative,   //!< Z_final = z_terrain + z_geometry
-  AltClampTerrain,    //!< Z_final = z_terrain
-};
-
-
-//! how to handle clamping of vertices of individual features
-enum AltitudeBinding
-{
-  AltBindVertex,      //!< Clamp every vertex of feature
-  AltBindCentroid,    //!< Clamp just centroid of feature
-};
-
+#ifndef SIP_RUN
 
 /**
  * \ingroup 3d
@@ -67,26 +54,26 @@ class _3D_EXPORT Qgs3DUtils
     static int maxZoomLevel( double tile0width, double tileResolution, double maxError );
 
     //! Converts a value from AltitudeClamping enum to a string
-    static QString altClampingToString( AltitudeClamping altClamp );
+    static QString altClampingToString( Qgs3DTypes::AltitudeClamping altClamp );
     //! Converts a string to a value from AltitudeClamping enum
-    static AltitudeClamping altClampingFromString( const QString &str );
+    static Qgs3DTypes::AltitudeClamping altClampingFromString( const QString &str );
 
     //! Converts a value from AltitudeBinding enum to a string
-    static QString altBindingToString( AltitudeBinding altBind );
+    static QString altBindingToString( Qgs3DTypes::AltitudeBinding altBind );
     //! Converts a string to a value from AltitudeBinding enum
-    static AltitudeBinding altBindingFromString( const QString &str );
+    static Qgs3DTypes::AltitudeBinding altBindingFromString( const QString &str );
 
     //! Converts a value from CullingMode enum to a string
-    static QString cullingModeToString( Qt3DRender::QCullFace::CullingMode mode );
+    static QString cullingModeToString( Qgs3DTypes::CullingMode mode );
     //! Converts a string to a value from CullingMode enum
-    static Qt3DRender::QCullFace::CullingMode cullingModeFromString( const QString &str );
+    static Qgs3DTypes::CullingMode cullingModeFromString( const QString &str );
 
     //! Clamps altitude of a vertex according to the settings, returns Z value
-    static float clampAltitude( const QgsPoint &p, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const QgsPoint &centroid, const Qgs3DMapSettings &map );
+    static float clampAltitude( const QgsPoint &p, Qgs3DTypes::AltitudeClamping altClamp, Qgs3DTypes::AltitudeBinding altBind, float height, const QgsPoint &centroid, const Qgs3DMapSettings &map );
     //! Clamps altitude of vertices of a linestring according to the settings
-    static void clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map );
+    static void clampAltitudes( QgsLineString *lineString, Qgs3DTypes::AltitudeClamping altClamp, Qgs3DTypes::AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map );
     //! Clamps altitude of vertices of a polygon according to the settings
-    static bool clampAltitudes( QgsPolygon *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Qgs3DMapSettings &map );
+    static bool clampAltitudes( QgsPolygon *polygon, Qgs3DTypes::AltitudeClamping altClamp, Qgs3DTypes::AltitudeBinding altBind, float height, const Qgs3DMapSettings &map );
 
     //! Converts a 4x4 transform matrix to a string
     static QString matrix4x4toString( const QMatrix4x4 &m );
@@ -96,7 +83,7 @@ class _3D_EXPORT Qgs3DUtils
     /**
      * Calculates (x,y,z) positions of a (multi)point in the Point vector layers
      */
-    static QList<QVector3D> positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, AltitudeClamping altClamp );
+    static QList<QVector3D> positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, Qgs3DTypes::AltitudeClamping altClamp );
 
     /**
         Returns true if bbox is completely outside the current viewing volume.
@@ -113,5 +100,7 @@ class _3D_EXPORT Qgs3DUtils
     static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2,
         const QgsCoordinateTransformContext &context );
 };
+
+#endif
 
 #endif // QGS3DUTILS_H

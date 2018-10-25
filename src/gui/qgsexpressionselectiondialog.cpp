@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
+#include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
@@ -31,7 +32,7 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
 {
   setupUi( this );
 
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   connect( mActionSelect, &QAction::triggered, this, &QgsExpressionSelectionDialog::mActionSelect_triggered );
   connect( mActionAddToSelection, &QAction::triggered, this, &QgsExpressionSelectionDialog::mActionAddToSelection_triggered );
@@ -136,7 +137,7 @@ void QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked()
 
   QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( mExpressionBuilder->expressionText() )
                               .setExpressionContext( context )
-                              .setSubsetOfAttributes( QgsAttributeList() );
+                              .setNoAttributes();
 
   QgsFeatureIterator features = mLayer->getFeatures( request );
 

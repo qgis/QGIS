@@ -140,6 +140,28 @@ Converts the parameter into a color.
 :return: A color
 %End
 
+    QUrl toUrl( bool &ok ) const;
+%Docstring
+Converts the parameter into an url.
+
+:param ok: True if there's no error during the conversion, false otherwise
+
+:return: An url
+
+.. versionadded:: 3.4
+%End
+
+    QString loadUrl( bool &ok ) const;
+%Docstring
+Loads the data associated to the parameter converted into an url.
+
+:param ok: True if there's no error during the load, false otherwise
+
+:return: The content loaded
+
+.. versionadded:: 3.4
+%End
+
     static void raiseError( const QString &msg );
 %Docstring
 Raises an exception in case of an invalid parameters.

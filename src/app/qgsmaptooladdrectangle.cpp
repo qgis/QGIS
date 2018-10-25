@@ -183,4 +183,8 @@ void QgsMapToolAddRectangle::clean()
   }
 
   mRectangle = QgsBox3d();
+
+  QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
+  if ( vLayer )
+    mLayerType = vLayer->geometryType();
 }

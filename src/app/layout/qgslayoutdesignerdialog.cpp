@@ -39,6 +39,7 @@
 #include "qgslayoutitemmap.h"
 #include "qgsprintlayout.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
 #include "qgsmessageviewer.h"
 #include "qgsgui.h"
 #include "qgsfeedback.h"
@@ -101,6 +102,11 @@ QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerD
   , mDesigner( dialog )
 {}
 
+QWidget *QgsAppLayoutDesignerInterface::window()
+{
+  return mDesigner;
+}
+
 QgsLayout *QgsAppLayoutDesignerInterface::layout()
 {
   return mDesigner->currentLayout();
@@ -126,9 +132,94 @@ void QgsAppLayoutDesignerInterface::selectItems( const QList<QgsLayoutItem *> &i
   mDesigner->selectItems( items );
 }
 
+void QgsAppLayoutDesignerInterface::setAtlasPreviewEnabled( bool enabled )
+{
+  mDesigner->setAtlasPreviewEnabled( enabled );
+}
+
+bool QgsAppLayoutDesignerInterface::atlasPreviewEnabled() const
+{
+  return mDesigner->atlasPreviewEnabled();
+}
+
+void QgsAppLayoutDesignerInterface::showItemOptions( QgsLayoutItem *item, bool bringPanelToFront )
+{
+  mDesigner->showItemOptions( item, bringPanelToFront );
+}
+
+QMenu *QgsAppLayoutDesignerInterface::layoutMenu()
+{
+  return mDesigner->mLayoutMenu;
+}
+
+QMenu *QgsAppLayoutDesignerInterface::editMenu()
+{
+  return mDesigner->menuEdit;
+}
+
+QMenu *QgsAppLayoutDesignerInterface::viewMenu()
+{
+  return mDesigner->mMenuView;
+}
+
+QMenu *QgsAppLayoutDesignerInterface::itemsMenu()
+{
+  return mDesigner->menuLayout;
+}
+
+QMenu *QgsAppLayoutDesignerInterface::atlasMenu()
+{
+  return mDesigner->mMenuAtlas;
+}
+
+QMenu *QgsAppLayoutDesignerInterface::reportMenu()
+{
+  return mDesigner->mMenuReport;
+}
+
+QMenu *QgsAppLayoutDesignerInterface::settingsMenu()
+{
+  return mDesigner->menuSettings;
+}
+
+QToolBar *QgsAppLayoutDesignerInterface::layoutToolbar()
+{
+  return mDesigner->mLayoutToolbar;
+}
+
+QToolBar *QgsAppLayoutDesignerInterface::navigationToolbar()
+{
+  return mDesigner->mNavigationToolbar;
+}
+
+QToolBar *QgsAppLayoutDesignerInterface::actionsToolbar()
+{
+  return mDesigner->mActionsToolbar;
+}
+
+QToolBar *QgsAppLayoutDesignerInterface::atlasToolbar()
+{
+  return mDesigner->mAtlasToolbar;
+}
+
+void QgsAppLayoutDesignerInterface::addDockWidget( Qt::DockWidgetArea area, QDockWidget *dock )
+{
+  mDesigner->addDockWidget( area, dock );
+}
+
+void QgsAppLayoutDesignerInterface::removeDockWidget( QDockWidget *dock )
+{
+  mDesigner->removeDockWidget( dock );
+}
+
 void QgsAppLayoutDesignerInterface::close()
 {
   mDesigner->close();
+}
+
+void QgsAppLayoutDesignerInterface::showRulers( bool visible )
+{
+  mDesigner->showRulers( visible );
 }
 
 
@@ -225,8 +316,6 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionShowPage, &QAction::triggered, this, &QgsLayoutDesignerDialog::showPages );
 
   connect( mActionPasteInPlace, &QAction::triggered, this, &QgsLayoutDesignerDialog::pasteInPlace );
-
-  connect( mActionAtlasSettings, &QAction::triggered, this, &QgsLayoutDesignerDialog::showAtlasSettings );
   connect( mActionAtlasPreview, &QAction::triggered, this, &QgsLayoutDesignerDialog::atlasPreviewTriggered );
   connect( mActionAtlasNext, &QAction::triggered, this, &QgsLayoutDesignerDialog::atlasNext );
   connect( mActionAtlasPrev, &QAction::triggered, this, &QgsLayoutDesignerDialog::atlasPrevious );
@@ -237,7 +326,6 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionExportAtlasAsSVG, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportAtlasToSvg );
   connect( mActionExportAtlasAsPDF, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportAtlasToPdf );
 
-  connect( mActionReportSettings, &QAction::triggered, this, &QgsLayoutDesignerDialog::showReportSettings );
   connect( mActionExportReportAsImage, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportReportToRaster );
   connect( mActionExportReportAsSVG, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportReportToSvg );
   connect( mActionExportReportAsPDF, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportReportToPdf );
@@ -686,11 +774,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   mAtlasDock = new QgsDockWidget( tr( "Atlas" ), this );
   mAtlasDock->setObjectName( QStringLiteral( "AtlasDock" ) );
-  connect( mAtlasDock, &QDockWidget::visibilityChanged, mActionAtlasSettings, &QAction::setChecked );
+  mAtlasDock->setToggleVisibilityAction( mActionAtlasSettings );
 
   mReportDock = new QgsDockWidget( tr( "Report Organizer" ), this );
   mReportDock->setObjectName( QStringLiteral( "ReportDock" ) );
-  connect( mReportDock, &QDockWidget::visibilityChanged, mActionReportSettings, &QAction::setChecked );
+  mReportDock->setToggleVisibilityAction( mActionReportSettings );
 
   const QList<QDockWidget *> docks = findChildren<QDockWidget *>();
   for ( QDockWidget *dock : docks )
@@ -1245,7 +1333,7 @@ void QgsLayoutDesignerDialog::dropEvent( QDropEvent *event )
     // [pzion 20150805] Work around
     if ( fileName.startsWith( "/.file/id=" ) )
     {
-      QgsDebugMsg( "Mac dropped URL with /.file/id= (converting)" );
+      QgsDebugMsg( QStringLiteral( "Mac dropped URL with /.file/id= (converting)" ) );
       CFStringRef relCFStringRef =
         CFStringCreateWithCString(
           kCFAllocatorDefault,
@@ -1882,7 +1970,6 @@ void QgsLayoutDesignerDialog::exportToRaster()
 
   QgsLayoutExporter exporter( mLayout );
 
-  QFileInfo fi( fileNExt.first );
   QgsLayoutExporter::ExportResult result = exporter.exportToImage( fileNExt.first, settings );
 
   proxyTask->finalize( result == QgsLayoutExporter::Success );
@@ -2159,14 +2246,6 @@ void QgsLayoutDesignerDialog::exportToSvg()
 
   mView->setPaintingEnabled( true );
   mLayout->project()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), prevSettingLabelsAsOutlines );
-}
-
-void QgsLayoutDesignerDialog::showAtlasSettings( bool checked )
-{
-  if ( !mAtlasDock )
-    return;
-
-  mAtlasDock->setUserVisible( checked );
 }
 
 void QgsLayoutDesignerDialog::atlasPreviewTriggered( bool checked )
@@ -2904,8 +2983,6 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
   pdfSettings.forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
 
-  QFileInfo fi( outputFileName );
-
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
   std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
@@ -3295,8 +3372,6 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
   pdfSettings.rasterizeWholeImage = rasterize;
   pdfSettings.forceVectorOutput = forceVectorOutput;
 
-  QFileInfo fi( outputFileName );
-
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
   std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 0, this );
@@ -3502,14 +3577,6 @@ void QgsLayoutDesignerDialog::printReport()
   }
 
   mView->setPaintingEnabled( true );
-}
-
-void QgsLayoutDesignerDialog::showReportSettings( bool checked )
-{
-  if ( !mReportDock )
-    return;
-
-  mReportDock->setUserVisible( checked );
 }
 
 void QgsLayoutDesignerDialog::pageSetup()
@@ -4312,6 +4379,17 @@ void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> &items )
 QgsMessageBar *QgsLayoutDesignerDialog::messageBar()
 {
   return mMessageBar;
+}
+
+void QgsLayoutDesignerDialog::setAtlasPreviewEnabled( bool enabled )
+{
+  whileBlocking( mActionAtlasPreview )->setChecked( enabled );
+  atlasPreviewTriggered( enabled );
+}
+
+bool QgsLayoutDesignerDialog::atlasPreviewEnabled() const
+{
+  return mActionAtlasPreview->isChecked();
 }
 
 void QgsLayoutDesignerDialog::setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat )

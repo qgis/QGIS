@@ -89,6 +89,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -101,8 +102,20 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     bool canFetchMore( const QModelIndex &parent ) const override;
     void fetchMore( const QModelIndex &parent ) override;
 
+    /**
+     * Returns the model index corresponding to the specified data \a item.
+     * If the item was not found, an invalid QModelIndex is returned.
+     *
+     * If the \a parent item is argument is specified, then only items which are children
+     * of \a parent are searched. If no \a parent is specified, then all items within
+     * the model are searched.
+     */
     QModelIndex findItem( QgsDataItem *item, QgsDataItem *parent = nullptr ) const;
 
+    /**
+     * Returns the data item at the specified index, or a nullptr if no item
+     * exists at the index.
+     */
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
 
     //! Refresh item specified by path
@@ -123,7 +136,10 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     //! \note not available in Python bindings
     static QModelIndex findPath( QAbstractItemModel *model, const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly ) SIP_SKIP;
 
-    void connectItem( QgsDataItem *item );
+    /**
+     * \deprecated Deprecated since QGIS 3.4 -- this method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
+     */
+    Q_DECL_DEPRECATED void connectItem( QgsDataItem *item ) SIP_DEPRECATED;
 
     /**
      * Returns true if the model has been initialized.
@@ -145,6 +161,15 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
   public slots:
     //! Reload the whole model
     void reload();
+
+    /**
+     * Refreshes the list of drive items, removing any corresponding to removed
+     * drives and adding newly added drives.
+     *
+     * \since QGIS 3.4
+     */
+    void refreshDrives();
+
     void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
@@ -192,6 +217,14 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
   private:
     bool mInitialized = false;
+    QMap< QString, QgsDataItem * > mDriveItems;
+
+    void setupItemConnections( QgsDataItem *item );
+
+    void removeRootItem( QgsDataItem *item );
+
+    friend class TestQgsBrowserModel;
+    friend class TestQgsBrowserProxyModel;
 };
 
 #endif // QGSBROWSERMODEL_H

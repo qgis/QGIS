@@ -70,7 +70,7 @@ static void buildSnapIndex( QgsFeatureIterator &fi, QgsSpatialIndex &index, QVec
       if ( ids.isEmpty() )
       {
         // add to tree and to structure
-        index.insertFeature( pntId, pt.boundingBox() );
+        index.addFeature( pntId, pt.boundingBox() );
 
         AnchorPoint xp;
         xp.x = pt.x();
@@ -244,7 +244,7 @@ static bool snapLineString( QgsLineString *linestring, QgsSpatialIndex &index, Q
     if ( !newVerticesAlongSegment.isEmpty() )
     {
       // sort by distance along the segment
-      std::sort( newVerticesAlongSegment.begin(), newVerticesAlongSegment.end(), []( const AnchorAlongSegment & p1, const AnchorAlongSegment & p2 )
+      std::sort( newVerticesAlongSegment.begin(), newVerticesAlongSegment.end(), []( AnchorAlongSegment p1, AnchorAlongSegment p2 )
       {
         return ( p1.along < p2.along ? -1 : ( p1.along > p2.along ) );
       } );
@@ -314,7 +314,7 @@ int QgsGeometrySnapperSingleSource::run( const QgsFeatureSource &source, QgsFeat
   QgsSpatialIndex index;
   QVector<AnchorPoint> pnts;
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   QgsFeatureIterator fi = source.getFeatures( request );
   buildSnapIndex( fi, index, pnts, feedback, count, totalCount );
 

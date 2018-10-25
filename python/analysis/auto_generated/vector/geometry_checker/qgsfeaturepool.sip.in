@@ -1,0 +1,110 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsfeaturepool.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsFeaturePool : QgsFeatureSink /Abstract/
+{
+%Docstring
+A feature pool is based on a vector layer and caches features.
+
+.. note::
+
+   This class is a technology preview and unstable API.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsfeaturepool.h"
+%End
+  public:
+    QgsFeaturePool( QgsVectorLayer *layer );
+    virtual ~QgsFeaturePool();
+
+    bool getFeature( QgsFeatureId id, QgsFeature &feature );
+%Docstring
+Retrieve the feature with the specified ``id`` into ``feature``.
+It will be retrieved from the cache or from the underlying layer if unavailable.
+If the feature is neither available from the cache nor from the layer it will return false.
+%End
+
+
+    virtual void updateFeature( QgsFeature &feature ) = 0;
+%Docstring
+Updates a feature in this pool.
+Implementations will update the feature on the layer or on the data provider.
+%End
+
+    virtual void deleteFeature( QgsFeatureId fid ) = 0;
+%Docstring
+Removes a feature from this pool.
+Implementations will remove the feature from the layer or from the data provider.
+%End
+
+
+
+    QgsVectorLayer *layer() const;
+%Docstring
+Get a pointer to the underlying layer.
+May return a ``None`` if the layer has been deleted.
+This must only be called from the main thread.
+%End
+
+
+    QString layerId() const;
+%Docstring
+The layer id of the layer.
+%End
+
+    QgsWkbTypes::GeometryType geometryType() const;
+%Docstring
+The geometry type of this layer.
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+The coordinate reference system of this layer.
+%End
+
+  protected:
+
+    void insertFeature( const QgsFeature &feature );
+%Docstring
+Inserts a feature into the cache and the spatial index.
+To be used by implementations of ``addFeature``.
+%End
+
+    void refreshCache( const QgsFeature &feature );
+%Docstring
+Changes a feature in the cache and the spatial index.
+To be used by implementations of ``updateFeature``.
+%End
+
+    void removeFeature( const QgsFeatureId featureId );
+%Docstring
+Removes a feature from the cache and the spatial index.
+To be used by implementations of ``deleteFeature``.
+%End
+
+
+
+  private:
+    QgsFeaturePool( const QgsFeaturePool &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsfeaturepool.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

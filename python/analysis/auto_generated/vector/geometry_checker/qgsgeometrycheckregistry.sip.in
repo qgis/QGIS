@@ -1,0 +1,73 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckregistry.h      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsGeometryCheckRegistry
+{
+%Docstring
+This class manages all known geometry check factories.
+
+QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsAnalysis.geometryCheckRegistry()`
+
+.. note::
+
+   This class is a technology preview and unstable API.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsgeometrycheckregistry.h"
+%End
+  public:
+
+    QgsGeometryCheckRegistry();
+%Docstring
+Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsAnalysis.geometryCheckRegistry()`
+%End
+
+    ~QgsGeometryCheckRegistry();
+
+    QgsGeometryCheck *geometryCheck( const QString &checkId, QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfig ) /Factory/;
+%Docstring
+Create a new geometryCheck of type ``checkId``
+Pass the ``context`` and ``geometryCheckConfiguration`` to the newly created check.
+Ownership is transferred to the caller.
+
+.. versionadded:: 3.4
+%End
+
+    QList<QgsGeometryCheckFactory *> geometryCheckFactories( QgsVectorLayer *layer,  QgsGeometryCheck::CheckType type, QgsGeometryCheck::Flags flags = 0 ) const;
+%Docstring
+Get all geometry check factories that are compatible with ``layer`` and have all of the ``flags`` set.
+
+.. versionadded:: 3.4
+%End
+
+    void registerGeometryCheck( QgsGeometryCheckFactory *checkFactory /Transfer/ );
+%Docstring
+Register a new geometry check factory.
+
+.. versionadded:: 3.4
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckregistry.h      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

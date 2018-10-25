@@ -253,6 +253,11 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   mProxyModel.setFilterCaseSensitivity( Qt::CaseInsensitive );
   mProxyModel.setSourceModel( &mTableModel );
 
+  // Do not do dynamic sorting - otherwise whenever user selects geometry type / srid / pk columns,
+  // that item suddenly jumps to the end of the list (because the item gets changed) which is very annoying.
+  // The list gets sorted in finishList() method when the listing of tables and views has finished.
+  mProxyModel.setDynamicSortFilter( false );
+
   mTablesTreeView->setModel( &mProxyModel );
   mTablesTreeView->setSortingEnabled( true );
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
@@ -608,7 +613,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
 {
   if ( !index.parent().isValid() )
   {
-    QgsDebugMsg( "schema item found" );
+    QgsDebugMsg( QStringLiteral( "schema item found" ) );
     return;
   }
 
@@ -618,7 +623,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   QString uri = mTableModel.layerURI( idx, connectionInfo( false ), mUseEstimatedMetadata );
   if ( uri.isNull() )
   {
-    QgsDebugMsg( "no uri" );
+    QgsDebugMsg( QStringLiteral( "no uri" ) );
     return;
   }
 

@@ -150,15 +150,31 @@ This widget can be embedded into other layout item widgets.
 #include "qgslayoutitemwidget.h"
 %End
   public:
+
     QgsLayoutItemPropertiesWidget( QWidget *parent, QgsLayoutItem *item );
+%Docstring
+Constructs a QgsLayoutItemPropertiesWidget with a ``parent`` and for the given layout ``item``.
+%End
 
     QgsLayoutItem::ReferencePoint positionMode() const;
+%Docstring
+Returns the position mode
+%End
 
     void showBackgroundGroup( bool showGroup );
+%Docstring
+Determines if the background of the group box shall be shown
+%End
 
     void showFrameGroup( bool showGroup );
+%Docstring
+Determines if the frame of the group box shall be shown
+%End
 
     void setItem( QgsLayoutItem *item );
+%Docstring
+Sets the layout item
+%End
 
   protected slots:
     void initializeDataDefinedButtons();

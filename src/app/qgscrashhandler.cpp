@@ -31,7 +31,7 @@
 #ifdef _MSC_VER
 LONG WINAPI QgsCrashHandler::handle( LPEXCEPTION_POINTERS exception )
 {
-  QgsDebugMsg( "CRASH!!!" );
+  QgsDebugMsg( QStringLiteral( "CRASH!!!" ) );
 
   DWORD processID = GetCurrentProcessId();
   DWORD threadID = GetCurrentThreadId();

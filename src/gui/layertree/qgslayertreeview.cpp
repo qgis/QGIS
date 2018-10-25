@@ -19,6 +19,7 @@
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgslayertreeutils.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
 #include "qgsgui.h"
@@ -354,6 +355,13 @@ QList<QgsMapLayer *> QgsLayerTreeView::selectedLayers() const
       list << node->layer();
   }
   return list;
+}
+
+QList<QgsMapLayer *> QgsLayerTreeView::selectedLayersRecursive() const
+{
+  const QList<QgsLayerTreeNode *> nodes = layerTreeModel()->indexes2nodes( selectionModel()->selectedIndexes(), false );
+  QSet<QgsMapLayer *> layersSet = QgsLayerTreeUtils::collectMapLayersRecursive( nodes );
+  return layersSet.toList();
 }
 
 void QgsLayerTreeView::addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator )

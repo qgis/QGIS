@@ -20,7 +20,8 @@
 #include "qgspoint.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+
 
 QgsMapToolEllipseExtent::QgsMapToolEllipseExtent( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )
@@ -38,7 +39,7 @@ void QgsMapToolEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
-      mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+      mTempRubberBand = createGeometryRubberBand( mLayerType, true );
       mTempRubberBand->show();
     }
   }

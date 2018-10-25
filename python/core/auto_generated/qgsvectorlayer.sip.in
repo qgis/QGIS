@@ -65,6 +65,13 @@ to the data provider definition. type is one of "integer", "double", "string".
 
 An example url is "Point?crs=epsg:4326&field=id:integer&field=name:string(20)&index=yes"
 
+Since QGIS 3.4 when closing a project, the application shows a warning about potential data
+loss if there are any non-empty memory layers present. If your memory layer should not
+trigger such warning, it is possible to suppress that by setting the following custom variable:
+.. code-block:: python
+
+       layer.setCustomProperty("skipMemoryLayersCheck", 1)
+
 \subsection ogr OGR data provider (ogr)
 
 Accesses data using the OGR drivers (http://www.gdal.org/ogr/ogr_formats.html). The url
@@ -1054,6 +1061,12 @@ Query the layer for features matching a given expression.
 %Docstring
 Query the layer for the feature with the given id.
 If there is no such feature, the returned feature will be invalid.
+%End
+
+    QgsGeometry getGeometry( QgsFeatureId fid ) const;
+%Docstring
+Query the layer for the geometry at the given id.
+If there is no such feature, the returned geometry will be invalid.
 %End
 
     QgsFeatureIterator getFeatures( const QgsFeatureIds &fids );
@@ -2239,6 +2252,8 @@ Configuration and logic to apply automatically on any edit happening on this lay
 .. versionadded:: 3.4
 %End
 
+
+
   public slots:
 
     void select( QgsFeatureId featureId );
@@ -2334,6 +2349,13 @@ This signal is emitted when selection was changed
 This signal is emitted when modifications has been done on layer
 %End
 
+    void allowCommitChanged();
+%Docstring
+Emitted whenever the allowCommitChanged() property of this layer changes.
+
+.. versionadded:: 3.4
+%End
+
     void beforeModifiedCheck() const;
 %Docstring
 Is emitted, when layer is checked for modifications. Use for last-minute additions
@@ -2362,6 +2384,13 @@ Is emitted, before changes are committed to the data provider
     void beforeRollBack();
 %Docstring
 Is emitted, before changes are rolled back
+%End
+
+    void afterRollBack();
+%Docstring
+Is emitted, after changes are rolled back
+
+.. versionadded:: 3.4
 %End
 
     void attributeAdded( int idx );

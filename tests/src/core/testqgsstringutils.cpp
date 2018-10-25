@@ -38,6 +38,8 @@ class TestQgsStringUtils : public QObject
     void titleCase();
     void ampersandEncode_data();
     void ampersandEncode();
+    void wordWrap_data();
+    void wordWrap();
 
 };
 
@@ -204,6 +206,35 @@ void TestQgsStringUtils::ampersandEncode()
   QFETCH( QString, expected );
   QCOMPARE( QgsStringUtils::ampersandEncode( input ), expected );
 
+}
+
+void TestQgsStringUtils::wordWrap_data()
+{
+  QTest::addColumn<QString>( "input" );
+  QTest::addColumn<int>( "length" );
+  QTest::addColumn<bool>( "isMax" );
+  QTest::addColumn<QString>( "delimiter" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "wordwrap" ) << "university of qgis" << 13 << true << QString() << "university of\nqgis";
+  QTest::newRow( "optional parameters unspecified" ) << "test string" << 5 << true << QString() << "test\nstring";
+  QTest::newRow( "wordwrap with delim" ) << "university of qgis" << 13 << true << QStringLiteral( " " ) << "university of\nqgis";
+  QTest::newRow( "wordwrap min" ) << "university of qgis" << 3 << false << QStringLiteral( " " ) << "university\nof qgis";
+  QTest::newRow( "wordwrap min with delim" ) << "university of qgis" << 3 << false << QStringLiteral( " " ) << "university\nof qgis";
+  QTest::newRow( "wordwrap on multi line" ) << "university of qgis\nsupports many multiline" << 5 << false << QStringLiteral( " " ) << "university\nof qgis\nsupports\nmany multiline";
+  QTest::newRow( "wordwrap on zero-space width" ) << QStringLiteral( "test%1zero-width space" ).arg( QChar( 8203 ) ) << 4 << false << QString() << "test\nzero-width\nspace";
+  QTest::newRow( "optional parameters specified" ) << "testxstring" << 5 << true << "x" << "test\nstring";
+}
+
+void TestQgsStringUtils::wordWrap()
+{
+  QFETCH( QString, input );
+  QFETCH( int, length );
+  QFETCH( bool, isMax );
+  QFETCH( QString, delimiter );
+  QFETCH( QString, expected );
+
+  QCOMPARE( QgsStringUtils::wordWrap( input, length, isMax, delimiter ), expected );
 }
 
 

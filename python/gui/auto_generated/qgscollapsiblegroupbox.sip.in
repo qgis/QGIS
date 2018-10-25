@@ -29,6 +29,7 @@ class QgsGroupBoxCollapseButton : QToolButton
   protected:
     virtual void mouseReleaseEvent( QMouseEvent *event );
 
+
 };
 
 
@@ -116,7 +117,6 @@ Visual fixes for when group box is collapsed/expanded
     void updateStyle();
     QRect titleRect() const;
     void clearModifiers();
-
 
 
 };

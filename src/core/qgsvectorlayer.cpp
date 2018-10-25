@@ -400,7 +400,7 @@ void QgsVectorLayer::selectByRect( QgsRectangle &rect, QgsVectorLayer::SelectBeh
   QgsFeatureIterator features = getFeatures( QgsFeatureRequest()
                                 .setFilterRect( rect )
                                 .setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoGeometry )
-                                .setSubsetOfAttributes( QgsAttributeList() ) );
+                                .setNoAttributes() );
 
   QgsFeature feat;
   while ( features.nextFeature( feat ) )
@@ -423,7 +423,7 @@ void QgsVectorLayer::selectByExpression( const QString &expression, QgsVectorLay
     QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( expression )
                                 .setExpressionContext( context )
                                 .setFlags( QgsFeatureRequest::NoGeometry )
-                                .setSubsetOfAttributes( QgsAttributeList() );
+                                .setNoAttributes();
 
     QgsFeatureIterator features = getFeatures( request );
 
@@ -535,7 +535,7 @@ void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle &rect )
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
                                         .setFilterRect( rect )
                                         .setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect )
-                                        .setSubsetOfAttributes( QgsAttributeList() ) );
+                                        .setNoAttributes() );
 
   QgsFeatureIds selectIds;
   QgsFeatureIds deselectIds;
@@ -634,7 +634,7 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
   {
     QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
                                           .setFilterFids( mSelectedFeatureIds )
-                                          .setSubsetOfAttributes( QgsAttributeList() ) );
+                                          .setNoAttributes() );
 
     while ( fit.nextFeature( fet ) )
     {
@@ -647,7 +647,7 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
   else
   {
     QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                          .setSubsetOfAttributes( QgsAttributeList() ) );
+                                          .setNoAttributes() );
 
     while ( fit.nextFeature( fet ) )
     {
@@ -846,7 +846,7 @@ QgsRectangle QgsVectorLayer::extent() const
   else
   {
     QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                          .setSubsetOfAttributes( QgsAttributeList() ) );
+                                          .setNoAttributes() );
 
     QgsFeature fet;
     while ( fit.nextFeature( fet ) )
@@ -939,6 +939,16 @@ QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest &request
     return QgsFeatureIterator();
 
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( new QgsVectorLayerFeatureSource( this ), true, request ) );
+}
+
+QgsGeometry QgsVectorLayer::getGeometry( QgsFeatureId fid ) const
+{
+  QgsFeature feature;
+  getFeatures( QgsFeatureRequest( fid ).setFlags( QgsFeatureRequest::SubsetOfAttributes ) ).nextFeature( feature );
+  if ( feature.isValid() )
+    return feature.geometry();
+  else
+    return QgsGeometry();
 }
 
 bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
@@ -1193,12 +1203,12 @@ QgsGeometry::OperationResult QgsVectorLayer::addPart( const QList<QgsPointXY> &p
 
   if ( mSelectedFeatureIds.empty() )
   {
-    QgsDebugMsgLevel( "Number of selected features < 1", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Number of selected features < 1" ), 3 );
     return QgsGeometry::OperationResult::SelectionIsEmpty;
   }
   else if ( mSelectedFeatureIds.size() > 1 )
   {
-    QgsDebugMsgLevel( "Number of selected features > 1", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Number of selected features > 1" ), 3 );
     return QgsGeometry::OperationResult::SelectionIsGreaterThanOne;
   }
 
@@ -1219,12 +1229,12 @@ QgsGeometry::OperationResult QgsVectorLayer::addPart( const QgsPointSequence &po
 
   if ( mSelectedFeatureIds.empty() )
   {
-    QgsDebugMsgLevel( "Number of selected features <1", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Number of selected features <1" ), 3 );
     return QgsGeometry::OperationResult::SelectionIsEmpty;
   }
   else if ( mSelectedFeatureIds.size() > 1 )
   {
-    QgsDebugMsgLevel( "Number of selected features >1", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Number of selected features >1" ), 3 );
     return QgsGeometry::OperationResult::SelectionIsGreaterThanOne;
   }
 
@@ -1245,12 +1255,12 @@ QgsGeometry::OperationResult QgsVectorLayer::addPart( QgsCurve *ring )
 
   if ( mSelectedFeatureIds.empty() )
   {
-    QgsDebugMsgLevel( "Number of selected features <1", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Number of selected features <1" ), 3 );
     return QgsGeometry::OperationResult::SelectionIsEmpty;
   }
   else if ( mSelectedFeatureIds.size() > 1 )
   {
-    QgsDebugMsgLevel( "Number of selected features >1", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Number of selected features >1" ), 3 );
     return QgsGeometry::OperationResult::SelectionIsGreaterThanOne;
   }
 
@@ -1602,7 +1612,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   if ( mDataProvider->capabilities() & QgsVectorDataProvider::ReadLayerMetadata )
   {
     setMetadata( mDataProvider->layerMetadata() );
-    QgsDebugMsgLevel( QString( "Set Data provider QgsLayerMetadata identifier[%1]" ).arg( metadata().identifier() ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Set Data provider QgsLayerMetadata identifier[%1]" ).arg( metadata().identifier() ), 4 );
   }
 
   // TODO: Check if the provider has the capability to send fullExtentCalculated
@@ -1933,19 +1943,19 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         {
           //if it has alias
           alias = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ), aliasElem.attribute( QStringLiteral( "name" ) ) );
-          QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:fieldaliases" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ) + " source " + aliasElem.attribute( QStringLiteral( "name" ) ), 1 );
+          QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:fieldaliases" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ) + " source " + aliasElem.attribute( QStringLiteral( "name" ) ), 3 );
         }
         else
         {
           //if it has no alias, it should be the fields translation
           alias = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ), field );
-          QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:fieldaliases" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ) + " source " + field, 1 );
+          QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:fieldaliases" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ) + " source " + field, 3 );
           //if it gets the exact field value, there has been no translation (or not even translation loaded) - so no alias should be generated;
           if ( alias == aliasElem.attribute( QStringLiteral( "field" ) ) )
             alias.clear();
         }
 
-        QgsDebugMsgLevel( "field " + field + " origalias " + aliasElem.attribute( QStringLiteral( "name" ) ) + " trans " + alias, 1 );
+        QgsDebugMsgLevel( "field " + field + " origalias " + aliasElem.attribute( QStringLiteral( "name" ) ) + " trans " + alias, 3 );
         mAttributeAliasMap.insert( field, alias );
       }
     }
@@ -2926,6 +2936,9 @@ bool QgsVectorLayer::commitChanges()
 
   emit beforeCommitChanges();
 
+  if ( !mAllowCommit )
+    return false;
+
   bool success = mEditBuffer->commitChanges( mCommitErrors );
 
   if ( success )
@@ -2970,6 +2983,8 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
 
   mEditBuffer->rollBack();
 
+  emit afterRollBack();
+
   if ( isModified() )
   {
     // new undo stack roll back method
@@ -3009,6 +3024,7 @@ const QgsFeatureIds &QgsVectorLayer::selectedFeatureIds() const
 QgsFeatureList QgsVectorLayer::selectedFeatures() const
 {
   QgsFeatureList features;
+  features.reserve( mSelectedFeatureIds.count() );
   QgsFeature f;
 
   if ( mSelectedFeatureIds.count() <= 8 )
@@ -3927,6 +3943,9 @@ QVariant QgsVectorLayer::aggregate( QgsAggregateCalculator::Aggregate aggregate,
 
 void QgsVectorLayer::setFeatureBlendMode( QPainter::CompositionMode featureBlendMode )
 {
+  if ( mFeatureBlendMode == featureBlendMode )
+    return;
+
   mFeatureBlendMode = featureBlendMode;
   emit featureBlendModeChanged( featureBlendMode );
   emit styleChanged();
@@ -3939,6 +3958,8 @@ QPainter::CompositionMode QgsVectorLayer::featureBlendMode() const
 
 void QgsVectorLayer::setOpacity( double opacity )
 {
+  if ( qgsDoubleNear( mLayerOpacity, opacity ) )
+    return;
   mLayerOpacity = opacity;
   emit opacityChanged( opacity );
   emit styleChanged();
@@ -4844,6 +4865,20 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
   }
 
   return labeling;
+}
+
+bool QgsVectorLayer::allowCommit() const
+{
+  return mAllowCommit;
+}
+
+void QgsVectorLayer::setAllowCommit( bool allowCommit )
+{
+  if ( mAllowCommit == allowCommit )
+    return;
+
+  mAllowCommit = allowCommit;
+  emit allowCommitChanged();
 }
 
 QgsGeometryOptions *QgsVectorLayer::geometryOptions() const

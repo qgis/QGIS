@@ -80,9 +80,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         if mode == self.ASK_FOR_INPUT_MODE:
             self.btnChooseInputFile.clicked.connect(self.chooseInputFile)
-            # self.cboInputLayer.lineEdit().editingFinished.connect(self.updateInputLayer)
-            self.cboInputLayer.editTextChanged.connect(self.inputPathChanged)
-            # self.cboInputLayer.currentIndexChanged.connect(self.updateInputLayer)
+            self.cboInputLayer.currentTextChanged.connect(self.updateInputLayer)
             self.btnUpdateInputLayer.clicked.connect(self.updateInputLayer)
 
             self.editPrimaryKey.setText(self.default_pk)
@@ -158,15 +156,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
         settings.setValue("/db_manager/lastUsedDir", QFileInfo(filename).filePath())
         settings.setValue("/UI/lastVectorFileFilter", lastVectorFormat)
 
-        self.cboInputLayer.setEditText(filename)
-
-    def inputPathChanged(self, path):
-        if self.cboInputLayer.currentIndex() < 0:
-            return
-        self.cboInputLayer.blockSignals(True)
         self.cboInputLayer.setCurrentIndex(-1)
-        self.cboInputLayer.setEditText(path)
-        self.cboInputLayer.blockSignals(False)
+        self.cboInputLayer.setEditText(filename)
 
     def reloadInputLayer(self):
         """ create the input layer and update available options """

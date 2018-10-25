@@ -21,7 +21,7 @@
 #include "qgspointrotationitem.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
@@ -82,6 +82,9 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
     {
       QgsPalIndexes indexes;
       if ( createAuxiliaryFields( indexes ) )
+        return;
+
+      if ( !labelIsRotatable( mCurrentLabel.layer, mCurrentLabel.settings, rotationCol ) )
         return;
     }
 

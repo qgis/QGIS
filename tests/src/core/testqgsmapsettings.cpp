@@ -37,6 +37,7 @@ class TestQgsMapSettings: public QObject
     void testDefaults();
     void visibleExtent();
     void mapUnitsPerPixel();
+    void testDevicePixelRatio();
     void visiblePolygon();
     void testIsLayerVisible();
     void testMapLayerListUtils();
@@ -137,6 +138,19 @@ void TestQgsMapSettings::mapUnitsPerPixel()
   QCOMPARE( ms.mapUnitsPerPixel(), 0.2 );
 }
 
+void TestQgsMapSettings::testDevicePixelRatio()
+{
+  QgsMapSettings ms;
+  ms.setOutputSize( QSize( 100, 50 ) );
+  ms.setExtent( QgsRectangle( 0, 0, 100, 100 ) );
+  ms.setDevicePixelRatio( 1 );
+  double scale = ms.scale();
+  ms.setDevicePixelRatio( 1.5 );
+  ms.setExtent( QgsRectangle( 0, 0, 100, 100 ) );
+  QCOMPARE( ms.outputSize() * 1.5, ms.deviceOutputSize() );
+  QCOMPARE( scale * 1.5, ms.scale() );
+}
+
 void TestQgsMapSettings::visiblePolygon()
 {
   QgsMapSettings ms;
@@ -176,6 +190,8 @@ void TestQgsMapSettings::testIsLayerVisible()
   QList<QgsMapLayer *> layers;
   layers << vlA << vlB;
 
+  QgsProject::instance()->addMapLayers( layers );
+
   QgsMapSettings ms;
   ms.setLayers( layers );
   QgsExpressionContext context;
@@ -184,6 +200,11 @@ void TestQgsMapSettings::testIsLayerVisible()
   // test checking for visible layer by id
   QgsExpression e( QStringLiteral( "is_layer_visible( '%1' )" ).arg( vlA-> id() ) );
   QVariant r = e.evaluate( &context );
+  QCOMPARE( r.toBool(), true );
+
+  // test checking for visible layer by direct map layer object
+  QgsExpression e4( QStringLiteral( "is_layer_visible(array_get( @map_layers, 0 ) )" ) );
+  r = e4.evaluate( &context );
   QCOMPARE( r.toBool(), true );
 
   // test checking for visible layer by name
@@ -196,8 +217,16 @@ void TestQgsMapSettings::testIsLayerVisible()
   r = e3.evaluate( &context );
   QCOMPARE( r.toBool(), false );
 
-  delete vlA;
-  delete vlB;
+  QgsProject::instance()->removeMapLayer( vlA );
+  r = e.evaluate( &context );
+  QCOMPARE( r.toBool(), false ); // layer is deleted
+  r = e2.evaluate( &context );
+  QCOMPARE( r.toBool(), true ); // layer still exists
+
+  QgsProject::instance()->removeMapLayer( vlB );
+  r = e2.evaluate( &context );
+  QCOMPARE( r.toBool(), false ); // layer is deleted
+
 }
 
 void TestQgsMapSettings::testMapLayerListUtils()

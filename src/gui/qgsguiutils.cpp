@@ -99,7 +99,7 @@ namespace QgsGuiUtils
     }
 
 #ifdef QGISDEBUG
-    QgsDebugMsg( "Available Filters Map: " );
+    QgsDebugMsg( QStringLiteral( "Available Filters Map: " ) );
     for ( QMap<QString, QString>::iterator it = filterMap.begin(); it != filterMap.end(); ++it )
     {
       QgsDebugMsg( it.key() + "  :  " + it.value() );

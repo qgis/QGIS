@@ -533,7 +533,7 @@ QVariant QgsFeatureFilterModel::extraIdentifierValue() const
 
 void QgsFeatureFilterModel::setExtraIdentifierValue( const QVariant &extraIdentifierValue )
 {
-  if ( extraIdentifierValue == mExtraIdentifierValue && extraIdentifierValue.isNull() == mExtraIdentifierValue.isNull() && mExtraIdentifierValue.isValid() )
+  if ( qgsVariantEqual( extraIdentifierValue, mExtraIdentifierValue ) && mExtraIdentifierValue.isValid() )
     return;
 
   if ( mIsSettingExtraIdentifierValue )

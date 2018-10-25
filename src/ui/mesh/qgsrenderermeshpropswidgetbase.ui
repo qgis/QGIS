@@ -68,6 +68,32 @@
          </property>
         </widget>
        </item>
+      <item>
+       <widget class="QgsCollapsibleGroupBox" name="mActiveDatasetBlendingMode">
+        <property name="title">
+         <string>Layer Rendering</string>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="">
+           <property name="text">
+            <string>Blending mode</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
        <item>
         <spacer name="verticalSpacer_3">
          <property name="orientation">
@@ -297,6 +323,17 @@
    <class>QgsMeshRendererVectorSettingsWidget</class>
    <extends>QWidget</extends>
    <header>mesh/qgsmeshrenderervectorsettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

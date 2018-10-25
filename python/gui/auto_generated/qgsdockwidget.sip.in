@@ -49,6 +49,25 @@ any other tabs.
 .. seealso:: :py:func:`toggleUserVisible`
 %End
 
+    void setToggleVisibilityAction( QAction *action );
+%Docstring
+Links an ``action`` to the dock, so that toggling the action will automatically set the dock's visibility
+to suit (and changing the dock visibility will update the action's state).
+
+.. seealso:: :py:func:`toggleVisibilityAction`
+
+.. versionadded:: 3.4
+%End
+
+    QAction *toggleVisibilityAction();
+%Docstring
+Returns the action linked to the dock.
+
+.. seealso:: :py:func:`setToggleVisibilityAction`
+
+.. versionadded:: 3.4
+%End
+
   public slots:
 
     void setUserVisible( bool visible );

@@ -119,13 +119,13 @@ void *qgsMalloc( size_t size )
 {
   if ( size == 0 || long( size ) < 0 )
   {
-    QgsDebugMsg( QString( "Negative or zero size %1." ).arg( size ) );
+    QgsDebugMsg( QStringLiteral( "Negative or zero size %1." ).arg( size ) );
     return nullptr;
   }
   void *p = malloc( size );
   if ( !p )
   {
-    QgsDebugMsg( QString( "Allocation of %1 bytes failed." ).arg( size ) );
+    QgsDebugMsg( QStringLiteral( "Allocation of %1 bytes failed." ).arg( size ) );
   }
   return p;
 }
@@ -134,7 +134,7 @@ void *qgsCalloc( size_t nmemb, size_t size )
 {
   if ( nmemb == 0 || long( nmemb ) < 0 || size == 0 || long( size ) < 0 )
   {
-    QgsDebugMsg( QString( "Negative or zero nmemb %1 or size %2." ).arg( nmemb ).arg( size ) );
+    QgsDebugMsg( QStringLiteral( "Negative or zero nmemb %1 or size %2." ).arg( nmemb ).arg( size ) );
     return nullptr;
   }
   void *p = qgsMalloc( nmemb * size );
@@ -189,7 +189,7 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
       const QList<QVariant> &rhsl = rhs.toList();
 
       int i, n = std::min( lhsl.size(), rhsl.size() );
-      for ( i = 0; i < n && lhsl[i].type() == rhsl[i].type() && lhsl[i].isNull() == rhsl[i].isNull() && lhsl[i] == rhsl[i]; i++ )
+      for ( i = 0; i < n && lhsl[i].type() == rhsl[i].type() && qgsVariantEqual( lhsl[i], rhsl[i] ); i++ )
         ;
 
       if ( i == n )
@@ -305,4 +305,9 @@ uint qHash( const QVariant &variant )
   }
 
   return std::numeric_limits<uint>::max();
+}
+
+bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs )
+{
+  return lhs.isNull() == rhs.isNull() && lhs == rhs;
 }

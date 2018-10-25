@@ -187,7 +187,7 @@
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
-           <normaloff>:/images/themes/default/mActionFilterTableFields.svg</normaloff>:/images/themes/default/mActionFilterTableFields.svg</iconset>
+           <normaloff>:/images/themes/default/mActionIconView.svg</normaloff>:/images/themes/default/mActionIconView.svg</iconset>
          </property>
          <property name="checkable">
           <bool>true</bool>

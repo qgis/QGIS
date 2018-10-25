@@ -600,56 +600,65 @@ status bar (do not use the native Qt statusBar() method).
 .. versionadded:: 3.0
 %End
 
+    virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 );
+%Docstring
+Take screenshots for user documentation
+@param saveDirectory path where the screenshots will be saved
+@param categories an int as a flag value of QgsAppScreenShots.Categories
+
+.. versionadded:: 3.4
+%End
+
   public slots: // TODO: do these functions really need to be slots?
 
 
     virtual void zoomFull() = 0;
 %Docstring
-Zoom to full extent of map layers
+Zooms to the full extent of all map layers.
 %End
 
     virtual void zoomToPrevious() = 0;
 %Docstring
-Zoom to previous view extent
+Zooms to the previous view extent.
 %End
 
     virtual void zoomToNext() = 0;
 %Docstring
-Zoom to next view extent
+Zooms to the next view extent.
 %End
 
     virtual void zoomToActiveLayer() = 0;
 %Docstring
-Zoom to extent of the active layer
+Zooms to extent of the active layer.
 %End
 
     virtual QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey ) = 0;
 %Docstring
-Add a vector layer
+Adds a vector layer to the current project.
 %End
 
     virtual QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName = QString() ) = 0;
 %Docstring
-Add a raster layer given a raster layer file name
+Adds a raster layer to the current project, given a raster layer file name.
 %End
 
     virtual QgsRasterLayer *addRasterLayer( const QString &url, const QString &layerName, const QString &providerKey ) = 0;
 %Docstring
-Add a WMS layer
+Adds a raster layer to the current project, from the specified raster data provider.
 %End
 
     virtual QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 %Docstring
-Add a mesh layer
+Adds a mesh layer to the current project.
 %End
 
     virtual bool addProject( const QString &project ) = 0;
 %Docstring
-Add a project
+Adds (opens) a project
 %End
     virtual void newProject( bool promptToSaveFlag = false ) = 0;
 %Docstring
-Start a blank project
+Starts a new blank project
 %End
 
     virtual void reloadConnections( ) = 0;
@@ -801,7 +810,7 @@ Add a toolbar
 
     virtual void openMessageLog() = 0;
 %Docstring
-Open the message log dock widget *
+Opens the message log dock widget.
 %End
 
     virtual void addUserInputWidget( QWidget *widget ) = 0;
@@ -907,12 +916,16 @@ Remove action from the Web menu
 
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
 %Docstring
-Add a dock widget to the main window
+Adds a ``dock`` widget to the main window, in the specified dock ``area``.
+
+.. seealso:: :py:func:`removeDockWidget`
 %End
 
     virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
 %Docstring
-Remove specified dock widget from main window (doesn't delete it).
+Removes the specified ``dock`` widget from main window (without deleting it).
+
+.. seealso:: :py:func:`addDockWidget`
 %End
 
     virtual void showLayerProperties( QgsMapLayer *l ) = 0;
@@ -956,6 +969,8 @@ Register a new tab in the vector layer properties dialog.
    Ownership of the factory is not transferred, and the factory must
    be unregistered when plugin is unloaded.
 
+.. seealso:: :py:class:`QgsMapLayerConfigWidgetFactory`
+
 .. seealso:: :py:func:`unregisterMapLayerConfigWidgetFactory`
 
 .. versionadded:: 2.16
@@ -964,6 +979,8 @@ Register a new tab in the vector layer properties dialog.
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 %Docstring
 Unregister a previously registered tab in the vector layer properties dialog.
+
+.. seealso:: :py:class:`QgsMapLayerConfigWidgetFactory`
 
 .. seealso:: :py:func:`registerMapLayerConfigWidgetFactory`
 
@@ -979,6 +996,8 @@ Register a new tab in the options dialog.
    Ownership of the factory is not transferred, and the factory must
    be unregistered when plugin is unloaded.
 
+.. seealso:: :py:class:`QgsOptionsWidgetFactory`
+
 .. seealso:: :py:func:`unregisterOptionsWidgetFactory`
 
 .. versionadded:: 3.0
@@ -987,6 +1006,8 @@ Register a new tab in the options dialog.
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 %Docstring
 Unregister a previously registered tab in the options dialog.
+
+.. seealso:: :py:class:`QgsOptionsWidgetFactory`
 
 .. seealso:: :py:func:`registerOptionsWidgetFactory`
 
@@ -1002,6 +1023,8 @@ Register a new custom drop handler.
    Ownership of the factory is not transferred, and the factory must
    be unregistered when plugin is unloaded.
 
+.. seealso:: :py:class:`QgsCustomDropHandler`
+
 .. seealso:: :py:func:`unregisterCustomDropHandler`
 
 .. versionadded:: 3.0
@@ -1010,6 +1033,8 @@ Register a new custom drop handler.
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 %Docstring
 Unregister a previously registered custom drop handler.
+
+.. seealso:: :py:class:`QgsCustomDropHandler`
 
 .. seealso:: :py:func:`registerCustomDropHandler`
 
@@ -1025,6 +1050,8 @@ Register a new custom drop ``handler`` for layout windows.
    Ownership of the factory is not transferred, and the factory must
    be unregistered when plugin is unloaded.
 
+.. seealso:: :py:class:`QgsLayoutCustomDropHandler`
+
 .. seealso:: :py:func:`unregisterCustomLayoutDropHandler`
 
 .. versionadded:: 3.0
@@ -1033,6 +1060,8 @@ Register a new custom drop ``handler`` for layout windows.
     virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 %Docstring
 Unregister a previously registered custom drop ``handler`` for layout windows.
+
+.. seealso:: :py:class:`QgsLayoutCustomDropHandler`
 
 .. seealso:: :py:func:`registerCustomLayoutDropHandler`
 
@@ -1056,7 +1085,8 @@ QGIS documentation, set useQgisDocDirectory to false.
 
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
 %Docstring
-Open feature form
+Opens a new feature form.
+Returns true if dialog was accepted (if shown modal, true otherwise).
 
 :param l: vector layer
 :param f: feature to show/modify
@@ -1133,6 +1163,14 @@ is chosen. Dialog is shown only if global option is set accordingly.
 :return: true if a datum transform has been specifically chosen by user or only one is available.
 
 .. versionadded:: 3.0
+%End
+
+    virtual QgsBrowserModel *browserModel() = 0;
+%Docstring
+Returns the application browser model. Using this shared model is more efficient than
+creating a new browser model for every use.
+
+.. versionadded:: 3.4
 %End
 
   signals:

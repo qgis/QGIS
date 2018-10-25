@@ -106,6 +106,10 @@ void QgsMapToolAddCircularString::deactivate()
 
 void QgsMapToolAddCircularString::activate()
 {
+
+  QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
+  if ( vLayer )
+    mLayerType = vLayer->geometryType();
   if ( mParentTool )
   {
     mParentTool->deleteTempRubberBand();
@@ -124,7 +128,7 @@ void QgsMapToolAddCircularString::activate()
           mPoints.append( QgsPoint( mapPoint ) );
           if ( !mTempRubberBand )
           {
-            mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+            mTempRubberBand = createGeometryRubberBand( mLayerType, true );
             mTempRubberBand->show();
           }
           QgsCircularString *c = new QgsCircularString();

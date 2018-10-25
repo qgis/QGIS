@@ -45,6 +45,8 @@
 #include <QFile>
 #include <QMessageBox>
 
+#include <ogr_srs_api.h>
+
 extern "C"
 {
 #include <sqlite3.h>
@@ -220,7 +222,7 @@ void QgsOfflineEditing::synchronize()
     }
   }
 
-  QgsDebugMsgLevel( QString( "Found %1 offline layers" ).arg( offlineLayers.count() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Found %1 offline layers" ).arg( offlineLayers.count() ), 4 );
   for ( int l = 0; l < offlineLayers.count(); l++ )
   {
     QgsMapLayer *layer = offlineLayers.at( l );
@@ -267,10 +269,10 @@ void QgsOfflineEditing::synchronize()
 
         // TODO: only get commitNos of this layer?
         int commitNo = getCommitNo( database.get() );
-        QgsDebugMsgLevel( QString( "Found %1 commits" ).arg( commitNo ), 4 );
+        QgsDebugMsgLevel( QStringLiteral( "Found %1 commits" ).arg( commitNo ), 4 );
         for ( int i = 0; i < commitNo; i++ )
         {
-          QgsDebugMsgLevel( "Apply commits chronologically", 4 );
+          QgsDebugMsgLevel( QStringLiteral( "Apply commits chronologically" ), 4 );
           // apply commits chronologically
           applyAttributesAdded( remoteLayer, database.get(), layerId, i );
           applyAttributeValueChanges( offlineLayer, remoteLayer, database.get(), layerId, i );
@@ -304,7 +306,7 @@ void QgsOfflineEditing::synchronize()
       }
       else
       {
-        QgsDebugMsg( "Could not find the layer id in the edit logs!" );
+        QgsDebugMsg( QStringLiteral( "Could not find the layer id in the edit logs!" ) );
       }
       // Invalidate the connection to force a reload if the project is put offline
       // again with the same path
@@ -322,7 +324,7 @@ void QgsOfflineEditing::synchronize()
     }
     else
     {
-      QgsDebugMsg( "Remote layer is not valid!" );
+      QgsDebugMsg( QStringLiteral( "Remote layer is not valid!" ) );
     }
   }
 
@@ -507,7 +509,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
     return nullptr;
 
   QString tableName = layer->id();
-  QgsDebugMsgLevel( QString( "Creating offline table %1 ..." ).arg( tableName ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Creating offline table %1 ..." ).arg( tableName ), 4 );
 
   // new layer
   QgsVectorLayer *newLayer = nullptr;
@@ -630,18 +632,94 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
     }
     case GPKG:
     {
-      QgsVectorFileWriter::SaveVectorOptions options;
-      options.driverName = QStringLiteral( "GPKG" );
-      options.layerName = tableName;
-      options.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteLayer;
-      options.onlySelectedFeatures = onlySelected;
+      // Set options
+      char **options = nullptr;
 
-      QString error;
-      if ( QgsVectorFileWriter::writeAsVectorFormat( layer, offlineDbPath, options, &error ) != QgsVectorFileWriter::NoError )
+      options = CSLSetNameValue( options, "OVERWRITE", "YES" );
+      options = CSLSetNameValue( options, "IDENTIFIER", tr( "%1 (offline)" ).arg( layer->name() ).toUtf8().constData() );
+      options = CSLSetNameValue( options, "DESCRIPTION", layer->dataComment().toUtf8().constData() );
+
+      //the FID-name should not exist in the original data
+      QString fidBase( QStringLiteral( "fid" ) );
+      QString fid = fidBase;
+      int counter = 1;
+      while ( layer->dataProvider()->fields().lookupField( fid ) >= 0 && counter < 10000 )
       {
-        showWarning( tr( "Packaging layer %1 failed: %2" ).arg( layer->name(), error ) );
+        fid = fidBase + '_' + QString::number( counter );
+        counter++;
+      }
+      if ( counter == 10000 )
+      {
+        showWarning( tr( "Cannot make FID-name for GPKG " ) );
         return nullptr;
       }
+
+      options = CSLSetNameValue( options, "FID", fid.toUtf8().constData() );
+
+      if ( layer->isSpatial() )
+      {
+        options = CSLSetNameValue( options, "GEOMETRY_COLUMN", "geom" );
+        options = CSLSetNameValue( options, "SPATIAL_INDEX", "YES" );
+      }
+
+      OGRSFDriverH hDriver = nullptr;
+      OGRSpatialReferenceH hSRS = OSRNewSpatialReference( layer->crs().toWkt().toLocal8Bit().data() );
+      gdal::ogr_datasource_unique_ptr hDS( OGROpen( offlineDbPath.toUtf8().constData(), true, &hDriver ) );
+      OGRLayerH hLayer = OGR_DS_CreateLayer( hDS.get(), tableName.toUtf8().constData(), hSRS, static_cast<OGRwkbGeometryType>( layer->wkbType() ), options );
+      CSLDestroy( options );
+      if ( hSRS )
+        OSRRelease( hSRS );
+      if ( !hLayer )
+      {
+        showWarning( tr( "Creation of layer failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+        return nullptr;
+      }
+
+      const QgsFields providerFields = layer->dataProvider()->fields();
+      for ( const auto &field : providerFields )
+      {
+        const QString fieldName( field.name() );
+        const QVariant::Type type = field.type();
+        OGRFieldType ogrType( OFTString );
+        if ( type == QVariant::Int )
+          ogrType = OFTInteger;
+        else if ( type == QVariant::LongLong )
+          ogrType = OFTInteger64;
+        else if ( type == QVariant::Double )
+          ogrType = OFTReal;
+        else if ( type == QVariant::Time )
+          ogrType = OFTTime;
+        else if ( type == QVariant::Date )
+          ogrType = OFTDate;
+        else if ( type == QVariant::DateTime )
+          ogrType = OFTDateTime;
+        else
+          ogrType = OFTString;
+
+        int ogrWidth = field.length();
+
+        gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( fieldName.toUtf8().constData(), ogrType ) );
+        OGR_Fld_SetWidth( fld.get(), ogrWidth );
+
+        if ( OGR_L_CreateField( hLayer, fld.get(), true ) != OGRERR_NONE )
+        {
+          showWarning( tr( "Creation of field %1 failed (OGR error: %2)" )
+                       .arg( fieldName, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+          return nullptr;
+        }
+      }
+
+      // In GDAL >= 2.0, the driver implements a deferred creation strategy, so
+      // issue a command that will force table creation
+      CPLErrorReset();
+      OGR_L_ResetReading( hLayer );
+      if ( CPLGetLastErrorType() != CE_None )
+      {
+        QString msg( tr( "Creation of layer failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+        showWarning( msg );
+        return nullptr;
+      }
+      hDS.reset();
 
       QString uri = QStringLiteral( "%1|layername=%2" ).arg( offlineDbPath,  tableName );
       newLayer = new QgsVectorLayer( uri, layer->name() + " (offline)", QStringLiteral( "ogr" ) );
@@ -684,9 +762,12 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
 
       // NOTE: SpatiaLite provider ignores position of geometry column
       // fill gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
-      int column = 0;
       QgsAttributes attrs = f.attributes();
-      QgsAttributes newAttrs( attrs.count() );
+      int column = 0;
+      // on GPKG newAttrs has an addition FID attribute, so we have to add a dummy in the original set
+      if ( containerType == GPKG )
+        column++;
+      QgsAttributes newAttrs( attrs.count() + column );
       for ( int it = 0; it < attrs.count(); ++it )
       {
         newAttrs[column++] = attrs.at( it );
@@ -706,7 +787,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       int layerId = getOrCreateLayerId( db, newLayer->id() );
       QList<QgsFeatureId> offlineFeatureIds;
 
-      QgsFeatureIterator fit = newLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() ) );
+      QgsFeatureIterator fit = newLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setNoAttributes() );
       while ( fit.nextFeature( f ) )
       {
         offlineFeatureIds << f.id();
@@ -894,7 +975,7 @@ void QgsOfflineEditing::applyAttributeValueChanges( QgsVectorLayer *offlineLayer
   for ( int i = 0; i < values.size(); i++ )
   {
     QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
-    QgsDebugMsgLevel( QString( "Offline changeAttributeValue %1 = %2" ).arg( QString( attrLookup[ values.at( i ).attr ] ), values.at( i ).value ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Offline changeAttributeValue %1 = %2" ).arg( QString( attrLookup[ values.at( i ).attr ] ), values.at( i ).value ), 4 );
     remoteLayer->changeAttributeValue( fid, attrLookup[ values.at( i ).attr ], values.at( i ).value );
 
     emit progressUpdated( i + 1 );
@@ -927,7 +1008,7 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer *remoteLayer, sqlite3 *d
   QMap < QgsFeatureId, bool /*dummy*/ > newRemoteFids;
   QgsFeature f;
 
-  QgsFeatureIterator fit = remoteLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator fit = remoteLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setNoAttributes() );
 
   emit progressModeSet( QgsOfflineEditing::ProcessFeatures, remoteLayer->featureCount() );
 
@@ -1085,13 +1166,13 @@ sqlite3_database_unique_ptr QgsOfflineEditing::openLoggingDb()
     int rc = database.open( absoluteDbPath );
     if ( rc != SQLITE_OK )
     {
-      QgsDebugMsg( "Could not open the SpatiaLite logging database" );
+      QgsDebugMsg( QStringLiteral( "Could not open the SpatiaLite logging database" ) );
       showWarning( tr( "Could not open the SpatiaLite logging database" ) );
     }
   }
   else
   {
-    QgsDebugMsg( "dbPath is empty!" );
+    QgsDebugMsg( QStringLiteral( "dbPath is empty!" ) );
   }
   return database;
 }

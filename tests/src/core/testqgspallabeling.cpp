@@ -61,6 +61,14 @@ void TestQgsPalLabeling::wrapChar()
   QCOMPARE( QgsPalLabeling::splitToLines( "mixed new line\nand char", QString( " " ) ), QStringList() << "mixed" << "new" << "line" << "and" << "char" );
   QCOMPARE( QgsPalLabeling::splitToLines( "no matching chars", QString( "#" ) ), QStringList() << "no matching chars" );
   QCOMPARE( QgsPalLabeling::splitToLines( "no\nmatching\nchars", QString( "#" ) ), QStringList() << "no" << "matching" << "chars" );
+
+  // with auto wrap
+  QCOMPARE( QgsPalLabeling::splitToLines( "with auto wrap", QString(), 12, true ), QStringList() << "with auto" << "wrap" );
+  QCOMPARE( QgsPalLabeling::splitToLines( "with auto wrap", QString(), 6, false ), QStringList() << "with auto" << "wrap" );
+
+  // manual wrap character should take precedence
+  QCOMPARE( QgsPalLabeling::splitToLines( QStringLiteral( "with auto-wrap and manual-wrap" ), QStringLiteral( "-" ), 12, true ), QStringList() << "with auto" << "wrap and" << "manual" << "wrap" );
+  QCOMPARE( QgsPalLabeling::splitToLines( QStringLiteral( "with auto-wrap and manual-wrap" ), QStringLiteral( "-" ), 6, false ), QStringList() << "with auto" << "wrap and" << "manual" << "wrap" );
 }
 
 void TestQgsPalLabeling::graphemes()

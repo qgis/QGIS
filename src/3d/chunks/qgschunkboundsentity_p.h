@@ -28,6 +28,10 @@
 //
 
 #include <Qt3DCore/QEntity>
+#include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QGeometry>
+#include <QVector3D>
+#include <Qt3DRender/QGeometryRenderer>
 
 class QgsAABB;
 class AABBMesh;
@@ -40,6 +44,8 @@ class AABBMesh;
  */
 class QgsChunkBoundsEntity : public Qt3DCore::QEntity
 {
+    Q_OBJECT
+
   public:
     //! Constructs the entity
     QgsChunkBoundsEntity( Qt3DCore::QNode *parent = nullptr );
@@ -49,6 +55,43 @@ class QgsChunkBoundsEntity : public Qt3DCore::QEntity
 
   private:
     AABBMesh *mAabbMesh = nullptr;
+};
+
+
+class LineMeshGeometry : public Qt3DRender::QGeometry
+{
+    Q_OBJECT
+
+  public:
+    LineMeshGeometry( Qt3DCore::QNode *parent = nullptr );
+
+    int vertexCount()
+    {
+      return mVertices.size();
+    }
+
+    void setVertices( const QList<QVector3D> &vertices );
+
+  private:
+    Qt3DRender::QAttribute *mPositionAttribute = nullptr;
+    Qt3DRender::QBuffer *mVertexBuffer = nullptr;
+    QList<QVector3D> mVertices;
+
+};
+
+
+//! Geometry renderer for axis aligned bounding boxes - draws a box edges as lines
+class AABBMesh : public Qt3DRender::QGeometryRenderer
+{
+    Q_OBJECT
+
+  public:
+    AABBMesh( Qt3DCore::QNode *parent = nullptr );
+
+    void setBoxes( const QList<QgsAABB> &bboxes );
+
+  private:
+    LineMeshGeometry *mLineMeshGeo = nullptr;
 };
 
 /// @endcond

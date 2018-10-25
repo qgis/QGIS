@@ -29,6 +29,7 @@
 #include "qgsexpressioncontextscopegenerator.h"
 #include "qgsfileutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsproviderregistry.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -595,34 +596,67 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
 
   QString s = QObject::tr( "<html><body><h2>Algorithm description</h2>\n" );
   s += QStringLiteral( "<p>" ) + getText( QStringLiteral( "ALG_DESC" ) ) + QStringLiteral( "</p>\n" );
-  s += QObject::tr( "<h2>Input parameters</h2>\n" );
 
+  QString inputs;
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, algorithm->parameterDefinitions() )
   {
-    s += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
-    s += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
+    inputs += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
+    inputs += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
   }
-  s += QObject::tr( "<h2>Outputs</h2>\n" );
+  if ( !inputs.isEmpty() )
+    s += QObject::tr( "<h2>Input parameters</h2>\n" ) + inputs;
+
+  QString outputs;
   Q_FOREACH ( const QgsProcessingOutputDefinition *def, algorithm->outputDefinitions() )
   {
-    s += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
-    s += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
+    outputs += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
+    outputs += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
   }
+  if ( !outputs.isEmpty() )
+    s += QObject::tr( "<h2>Outputs</h2>\n" ) + outputs;
+
   s += QLatin1String( "<br>" );
-  s += QObject::tr( "<p align=\"right\">Algorithm author: %1</p>" ).arg( getText( QStringLiteral( "ALG_CREATOR" ) ) );
-  s += QObject::tr( "<p align=\"right\">Help author: %1</p>" ).arg( getText( QStringLiteral( "ALG_HELP_CREATOR" ) ) );
-  s += QObject::tr( "<p align=\"right\">Algorithm version: %1</p>" ).arg( getText( QStringLiteral( "ALG_VERSION" ) ) );
+  if ( !map.value( QStringLiteral( "ALG_CREATOR" ) ).toString().isEmpty() )
+    s += QObject::tr( "<p align=\"right\">Algorithm author: %1</p>" ).arg( getText( QStringLiteral( "ALG_CREATOR" ) ) );
+  if ( !map.value( QStringLiteral( "ALG_HELP_CREATOR" ) ).toString().isEmpty() )
+    s += QObject::tr( "<p align=\"right\">Help author: %1</p>" ).arg( getText( QStringLiteral( "ALG_HELP_CREATOR" ) ) );
+  if ( !map.value( QStringLiteral( "ALG_VERSION" ) ).toString().isEmpty() )
+    s += QObject::tr( "<p align=\"right\">Algorithm version: %1</p>" ).arg( getText( QStringLiteral( "ALG_VERSION" ) ) );
+
   s += QStringLiteral( "</body></html>" );
   return s;
 }
 
 QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl, bool selectedFeaturesOnly, const QString &baseName, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  bool requiresTranslation = selectedFeaturesOnly;
-  if ( !selectedFeaturesOnly )
+  bool requiresTranslation = false;
+
+  // if we are only looking for selected features then we have to export back to disk,
+  // as we need to subset only selected features, a concept which doesn't exist outside QGIS!
+  requiresTranslation = requiresTranslation || selectedFeaturesOnly;
+
+  // if the data provider is NOT ogr, then we HAVE to convert. Otherwise we run into
+  // issues with data providers like spatialite, delimited text where the format can be
+  // opened outside of QGIS, but with potentially very different behavior!
+  requiresTranslation = requiresTranslation || vl->dataProvider()->name() != QLatin1String( "ogr" );
+
+  // if the layer has a feature filter set, then we HAVE to convert. Feature filters are
+  // a purely QGIS concept.
+  requiresTranslation = requiresTranslation || !vl->subsetString().isEmpty();
+
+  // Check if layer is a disk based format and if so if the layer's path has a compatible filename suffix
+  if ( !requiresTranslation )
   {
-    QFileInfo fi( vl->source() );
-    requiresTranslation = !compatibleFormats.contains( fi.suffix(), Qt::CaseInsensitive );
+    const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( vl->dataProvider()->name(), vl->source() );
+    if ( parts.contains( QLatin1String( "path" ) ) )
+    {
+      QFileInfo fi( parts.value( QLatin1String( "path" ) ).toString() );
+      requiresTranslation = !compatibleFormats.contains( fi.suffix(), Qt::CaseInsensitive );
+    }
+    else
+    {
+      requiresTranslation = true; // not a disk-based format
+    }
   }
 
   if ( requiresTranslation )
@@ -727,7 +761,9 @@ QgsFields QgsProcessingUtils::indicesToFields( const QList<int> &indices, const 
 QgsProcessingFeatureSource::QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource )
   : mSource( originalSource )
   , mOwnsSource( ownsOriginalSource )
-  , mInvalidGeometryCheck( context.invalidGeometryCheck() )
+  , mInvalidGeometryCheck( QgsWkbTypes::geometryType( mSource->wkbType() ) == QgsWkbTypes::PointGeometry
+                           ? QgsFeatureRequest::GeometryNoCheck // never run geometry validity checks for point layers!
+                           : context.invalidGeometryCheck() )
   , mInvalidGeometryCallback( context.invalidGeometryCallback() )
   , mTransformErrorCallback( context.transformErrorCallback() )
 {}

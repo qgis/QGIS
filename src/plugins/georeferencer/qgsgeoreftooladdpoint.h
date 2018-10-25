@@ -16,7 +16,6 @@
 #ifndef QGSGEOREFTOOLADDPOINT_H
 #define QGSGEOREFTOOLADDPOINT_H
 
-#include <QMouseEvent>
 
 #include "qgsmaptoolemitpoint.h"
 

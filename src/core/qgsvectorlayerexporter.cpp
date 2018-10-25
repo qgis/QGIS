@@ -93,7 +93,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 
   mAttributeCount++;
 
-  QgsDebugMsg( "Created empty layer" );
+  QgsDebugMsg( QStringLiteral( "Created empty layer" ) );
 
   QString uriUpdated( uri );
   // HACK sorry...
@@ -169,7 +169,7 @@ bool QgsVectorLayerExporter::addFeature( QgsFeature &feat, Flags )
     if ( dstIdx < 0 )
       continue;
 
-    QgsDebugMsgLevel( QString( "moving field from pos %1 to %2" ).arg( i ).arg( dstIdx ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "moving field from pos %1 to %2" ).arg( i ).arg( dstIdx ), 3 );
     newFeat.setAttribute( dstIdx, attrs.at( i ) );
   }
 

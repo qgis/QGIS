@@ -16,7 +16,6 @@
 #ifndef QGSGEOREFTOOLMOVEPOINT_H
 #define QGSGEOREFTOOLMOVEPOINT_H
 
-#include <QMouseEvent>
 #include <QRubberBand>
 
 #include "qgsmaptool.h"

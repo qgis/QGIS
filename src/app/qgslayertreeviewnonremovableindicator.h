@@ -16,39 +16,29 @@
 #ifndef QGSLAYERTREEVIEWNONREMOVABLEINDICATOR_H
 #define QGSLAYERTREEVIEWNONREMOVABLEINDICATOR_H
 
-#include "qgslayertreeviewindicator.h"
+#include "qgslayertreeviewindicatorprovider.h"
 
 #include <QSet>
 #include <memory>
 
-class QgsLayerTreeNode;
-class QgsLayerTreeView;
-class QgsMapLayer;
-
-class QgsLayerTreeViewNonRemovableIndicatorProvider : public QObject
+class QgsLayerTreeViewNonRemovableIndicatorProvider : public QgsLayerTreeViewIndicatorProvider
 {
     Q_OBJECT
   public:
     explicit QgsLayerTreeViewNonRemovableIndicatorProvider( QgsLayerTreeView *view );
 
-  private slots:
-    //! Connects to signals of layers newly added to the tree
-    void onAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
-    //! Disconnects from layers about to be removed from the tree
-    void onWillRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
-    //! Starts listening to layer provider's dataChanged signal
-    void onLayerLoaded();
-    void onFlagsChanged();
-
   private:
-    std::unique_ptr< QgsLayerTreeViewIndicator > newIndicator();
-    void addOrRemoveIndicator( QgsLayerTreeNode *node, QgsMapLayer *layer );
+    QString iconName( QgsMapLayer *layer ) override;
+    QString tooltipText( QgsMapLayer *layer ) override;
+    bool acceptLayer( QgsMapLayer *layer ) override;
 
-  private:
-    QgsLayerTreeView *mLayerTreeView = nullptr;
-    QIcon mIcon;
-    QSet<QgsLayerTreeViewIndicator *> mIndicators;
+  protected:
+
+    void connectSignals( QgsMapLayer *layer ) override;
+    void disconnectSignals( QgsMapLayer *layer ) override;
+
 };
+
 
 
 #endif // QGSLAYERTREEVIEWNONREMOVABLEINDICATOR_H

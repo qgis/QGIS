@@ -699,7 +699,19 @@ void QgsLayoutLegendWidget::mAddToolButton_clicked()
     return;
   }
 
+  QList< QgsMapLayer * > visibleLayers;
+  if ( mLegend->linkedMap() )
+  {
+    visibleLayers = mLegend->linkedMap()->layersToRender();
+  }
+  if ( visibleLayers.isEmpty() )
+  {
+    // just use current canvas layers as visible layers
+    visibleLayers = QgisApp::instance()->mapCanvas()->layers();
+  }
+
   QgsLayoutLegendLayersDialog addDialog( this );
+  addDialog.setVisibleLayers( visibleLayers );
   if ( addDialog.exec() == QDialog::Accepted )
   {
     const QList<QgsMapLayer *> layers = addDialog.selectedLayers();
@@ -827,7 +839,7 @@ void QgsLayoutLegendWidget::resetLayerNodeToDefaults()
 
 void QgsLayoutLegendWidget::mCountToolButton_clicked( bool checked )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
   if ( !mLegend )
   {
     return;

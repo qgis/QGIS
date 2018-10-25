@@ -703,7 +703,7 @@ inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssiz
       return static_cast< double >( ( static_cast< double * >( data ) )[index] );
       break;
     default:
-      QgsDebugMsg( QString( "Data type %1 is not supported" ).arg( type ) );
+      QgsDebugMsg( QStringLiteral( "Data type %1 is not supported" ).arg( type ) );
       break;
   }
 
@@ -738,7 +738,7 @@ inline void QgsRasterBlock::writeValue( void *data, Qgis::DataType type, qgssize
       ( static_cast< double * >( data ) )[index] = value;
       break;
     default:
-      QgsDebugMsg( QString( "Data type %1 is not supported" ).arg( type ) );
+      QgsDebugMsg( QStringLiteral( "Data type %1 is not supported" ).arg( type ) );
       break;
   }
 }

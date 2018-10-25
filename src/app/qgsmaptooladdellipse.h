@@ -54,6 +54,8 @@ class APP_EXPORT QgsMapToolAddEllipse: public QgsMapToolCapture
     QgsEllipse mEllipse;
     //! convenient method to return the number of segments
     unsigned int segments( ) { return QgsSettings().value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt() * 12; }
+    //! Layer type which will be used for rubberband
+    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
 
 };
 

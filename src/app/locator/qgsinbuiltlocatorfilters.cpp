@@ -208,7 +208,8 @@ QgsActiveLayerFeaturesLocatorFilter *QgsActiveLayerFeaturesLocatorFilter::clone(
 
 void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext &context )
 {
-  if ( string.length() < 3 || context.usingPrefix )
+  // Normally skip very short search strings, unless when specifically searching using this filter
+  if ( string.length() < 3 && !context.usingPrefix )
     return;
 
   bool allowNumeric = false;
@@ -278,7 +279,7 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
       if ( attrString.contains( string, Qt::CaseInsensitive ) )
       {
         if ( idx < mAttributeAliases.count() )
-          result.displayString = QString( "%1 (%2)" ).arg( attrString, mAttributeAliases[idx] );
+          result.displayString = QStringLiteral( "%1 (%2)" ).arg( attrString, mAttributeAliases[idx] );
         else
           result.displayString = attrString;
         break;
@@ -330,7 +331,8 @@ QgsAllLayersFeaturesLocatorFilter *QgsAllLayersFeaturesLocatorFilter::clone() co
 
 void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext &context )
 {
-  if ( string.length() < 3 || context.usingPrefix )
+  // Normally skip very short search strings, unless when specifically searching using this filter
+  if ( string.length() < 3 && !context.usingPrefix )
     return;
 
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
@@ -518,8 +520,8 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
 QMap<QString, QString> QgsSettingsLocatorFilter::settingsPage( const QString &type,  const QString &page )
 {
   QMap<QString, QString> returnPage;
-  returnPage.insert( "type", type );
-  returnPage.insert( "page", page );
+  returnPage.insert( QStringLiteral( "type" ), type );
+  returnPage.insert( QStringLiteral( "page" ), page );
   return returnPage;
 }
 
@@ -527,18 +529,18 @@ void QgsSettingsLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
 
   QMap<QString, QString> settingsPage = qvariant_cast<QMap<QString, QString>>( result.userData );
-  QString type = settingsPage.value( "type" );
-  QString page = settingsPage.value( "page" );
+  QString type = settingsPage.value( QStringLiteral( "type" ) );
+  QString page = settingsPage.value( QStringLiteral( "page" ) );
 
-  if ( type == "optionpage" )
+  if ( type == QLatin1String( "optionpage" ) )
   {
     QgisApp::instance()->showOptionsDialog( QgisApp::instance(), page );
   }
-  else if ( type == "projectpropertypage" )
+  else if ( type == QLatin1String( "projectpropertypage" ) )
   {
     QgisApp::instance()->showProjectProperties( page );
   }
-  else if ( type == "settingspage" )
+  else if ( type == QLatin1String( "settingspage" ) )
   {
     QgisApp::instance()->showSettings( page );
   }

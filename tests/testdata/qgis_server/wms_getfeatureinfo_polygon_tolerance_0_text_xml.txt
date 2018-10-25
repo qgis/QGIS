@@ -1,0 +1,6 @@
+*****
+Content-Type: text/xml; charset=utf-8
+
+<GetFeatureInfoResponse>
+ <Layer name="p2d">
+</GetFeatureInfoResponse>

@@ -403,7 +403,7 @@ bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition()
 void QgsDelimitedTextSourceSelect::updateFieldLists()
 {
   // Update the x and y field drop-down boxes
-  QgsDebugMsg( "Updating field lists" );
+  QgsDebugMsg( QStringLiteral( "Updating field lists" ) );
 
   disconnect( cmbXField, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDelimitedTextSourceSelect::enableAccept );
   disconnect( cmbYField, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDelimitedTextSourceSelect::enableAccept );

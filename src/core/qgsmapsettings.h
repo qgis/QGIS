@@ -48,10 +48,12 @@ class QgsMapRendererJob;
  * In order to set up QgsMapSettings instance, it is necessary to set at least
  * few members: extent, output size and layers.
  *
- * QgsMapSettings and QgsMapRendererJob (+subclasses) are intended to replace
- * QgsMapRenderer class that existed before QGIS 2.4. The advantage of the new
- * classes is that they separate the settings from the rendering and provide
- * asynchronous API for map rendering.
+ * Some systems use high DPI scaling that is an alternative to the traditional
+ * DPI scaling. The operating system provides Qt with a scaling ratio and it
+ * scales window, event, and desktop geometry. The Cocoa platform plugin sets
+ * the scaling ratio as QWindow::devicePixelRatio().
+ * To properly render the map on such systems, the map settings device pixel
+ * ratio shall be set accordingly.
  *
  * \since QGIS 2.4
  */
@@ -80,6 +82,28 @@ class CORE_EXPORT QgsMapSettings
     QSize outputSize() const;
     //! Sets the size of the resulting map image
     void setOutputSize( QSize size );
+
+    /**
+     * Returns device pixel ratio
+     * Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
+     * \since QGIS 3.4
+     */
+    float devicePixelRatio() const;
+
+    /**
+     * Sets the device pixel ratio
+     * Common values are 1 for normal-dpi displays and 2 for high-dpi "retina" displays.
+     * \since QGIS 3.4
+     */
+    void setDevicePixelRatio( float dpr );
+
+    /**
+     * Returns the device output size of the map canvas
+     * This is equivalent to the output size multiplicated
+     * by the device pixel ratio.
+     * \since QGIS 3.4
+     */
+    QSize deviceOutputSize() const;
 
     /**
      * Returns the rotation of the resulting map image, in degrees clockwise.
@@ -403,6 +427,7 @@ class CORE_EXPORT QgsMapSettings
     double mDpi;
 
     QSize mSize;
+    float mDevicePixelRatio = 1.0;
 
     QgsRectangle mExtent;
 

@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QBitmap>
+#include <QCursor>
+
 #include "qgsmaptoolpan.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
-#include <QBitmap>
-#include <QCursor>
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+
 
 
 QgsMapToolPan::QgsMapToolPan( QgsMapCanvas *canvas )
@@ -81,7 +83,7 @@ void QgsMapToolPan::canvasReleaseEvent( QgsMapMouseEvent *e )
       else // add pan to mouse cursor
       {
         // transform the mouse pos to map coordinates
-        QgsPointXY center = mCanvas->getCoordinateTransform()->toMapPoint( e->x(), e->y() );
+        QgsPointXY center = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
         mCanvas->setCenter( center );
         mCanvas->refresh();
       }
@@ -127,7 +129,7 @@ void QgsMapToolPan::pinchTriggered( QPinchGesture *gesture )
       QPoint pos = gesture->centerPoint().toPoint();
       pos = mCanvas->mapFromGlobal( pos );
       // transform the mouse pos to map coordinates
-      QgsPointXY center  = mCanvas->getCoordinateTransform()->toMapPoint( pos.x(), pos.y() );
+      QgsPointXY center  = mCanvas->getCoordinateTransform()->toMapCoordinates( pos.x(), pos.y() );
       QgsRectangle r = mCanvas->extent();
       r.scale( 1 / gesture->totalScaleFactor(), &center );
       mCanvas->setExtent( r );

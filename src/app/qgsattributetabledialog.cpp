@@ -26,6 +26,7 @@
 
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
 #include "qgsexpressionbuilderwidget.h"
@@ -50,6 +51,10 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgsfieldproxymodel.h"
 #include "qgsgui.h"
+#include "qgsclipboard.h"
+#include "qgsfeaturestore.h"
+#include "qgsguiutils.h"
+#include "qgsproxyprogresstask.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -490,10 +495,6 @@ void QgsAttributeTableDialog::formFilterSet( const QString &filter, QgsAttribute
 
 void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const QString &fieldName, const QString &expression, const QgsFeatureIds &filteredIds )
 {
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
-  mLayer->beginEditCommand( QStringLiteral( "Field calculator" ) );
-
   int fieldindex = layer->fields().indexFromName( fieldName );
   if ( fieldindex < 0 )
   {
@@ -502,6 +503,9 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
     QMessageBox::critical( nullptr, tr( "Update Attributes" ), tr( "An error occurred while trying to update the field %1" ).arg( fieldName ) );
     return;
   }
+
+  QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
+  mLayer->beginEditCommand( QStringLiteral( "Field calculator" ) );
 
   bool calculationSuccess = true;
   QString error;
@@ -523,8 +527,18 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
 
   QgsField fld = layer->fields().at( fieldindex );
 
+  QSet< QString >referencedColumns = exp.referencedColumns();
+  referencedColumns.insert( fld.name() ); // need existing column value to store old attribute when changing field values
+  request.setSubsetOfAttributes( referencedColumns, layer->fields() );
+
   //go through all the features and change the new attributes
   QgsFeatureIterator fit = layer->getFeatures( request );
+
+  std::unique_ptr< QgsScopedProxyProgressTask > task = qgis::make_unique< QgsScopedProxyProgressTask >( tr( "Calculating field" ) );
+
+  long long count = !filteredIds.isEmpty() ? filteredIds.size() : layer->featureCount();
+  long long i = 0;
+
   QgsFeature feature;
   while ( fit.nextFeature( feature ) )
   {
@@ -532,6 +546,9 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
     {
       continue;
     }
+
+    i++;
+    task->setProgress( i / static_cast< double >( count ) * 100 );
 
     context.setFeature( feature );
     context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), rownum, true ) );
@@ -554,7 +571,8 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
     rownum++;
   }
 
-  QApplication::restoreOverrideCursor();
+  cursorOverride.release();
+  task.reset();
 
   if ( !calculationSuccess )
   {
@@ -762,7 +780,46 @@ void QgsAttributeTableDialog::mActionCutSelectedRows_triggered()
 
 void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
 {
-  QgisApp::instance()->copySelectionToClipboard( mLayer );
+  if ( mMainView->view() == QgsDualView::AttributeTable )
+  {
+    const QList<QgsFeatureId> featureIds = mMainView->tableView()->selectedFeaturesIds();
+    QgsFeatureStore featureStore;
+    QgsFields fields = QgsFields( mLayer->fields() );
+    QStringList fieldNames;
+
+    const auto configs = mMainView->attributeTableConfig().columns();
+    for ( const QgsAttributeTableConfig::ColumnConfig &columnConfig : configs )
+    {
+      if ( columnConfig.hidden )
+      {
+        int fieldIndex = fields.lookupField( columnConfig.name );
+        fields.remove( fieldIndex );
+        continue;
+      }
+      fieldNames << columnConfig.name;
+    }
+    featureStore.setFields( fields );
+
+    QgsFeatureIterator it = mLayer->getFeatures( QgsFeatureRequest( featureIds.toSet() )
+                            .setSubsetOfAttributes( fieldNames, mLayer->fields() ) );
+    QgsFeatureMap featureMap;
+    QgsFeature feature;
+    while ( it.nextFeature( feature ) )
+    {
+      QgsVectorLayerUtils::matchAttributesToFields( feature, fields );
+      featureMap[feature.id()] = feature;
+    }
+    for ( const QgsFeatureId &id : featureIds )
+    {
+      featureStore.addFeature( featureMap[id] );
+    }
+
+    QgisApp::instance()->clipboard()->replaceWithCopyOf( featureStore );
+  }
+  else
+  {
+    QgisApp::instance()->copySelectionToClipboard( mLayer );
+  }
 }
 
 void QgsAttributeTableDialog::mActionPasteFeatures_triggered()
@@ -1059,6 +1116,11 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
   {
     request.setFlags( QgsFeatureRequest::NoGeometry );
   }
+  else
+  {
+    // force geometry extraction if the filter requests it
+    request.setFlags( request.flags() & ~QgsFeatureRequest::NoGeometry );
+  }
   QgsFeatureIterator featIt = mLayer->getFeatures( request );
 
   QgsFeature f;
@@ -1091,7 +1153,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
 
 void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
 {
-  QgsDebugMsg( QString( "Delete %1" ).arg( fid ) );
+  QgsDebugMsg( QStringLiteral( "Delete %1" ).arg( fid ) );
   mLayer->deleteFeature( fid );
 }
 

@@ -22,9 +22,10 @@
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
 #include "qgsrubberband.h"
+#include "qgsmapmouseevent.h"
 
-#include <QMouseEvent>
 #include <limits>
+
 
 QgsMapToolDeleteRing::QgsMapToolDeleteRing( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )

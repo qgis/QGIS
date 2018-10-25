@@ -362,7 +362,7 @@ void QgsHighlight::paint( QPainter *p )
       QRgb *line = nullptr;
       for ( int r = 0; r < image.height(); r++ )
       {
-        line = ( QRgb * )image.scanLine( r );
+        line = reinterpret_cast<QRgb *>( image.scanLine( r ) );
         for ( int c = 0; c < image.width(); c++ )
         {
           int alpha = qAlpha( line[c] );
@@ -407,7 +407,7 @@ void QgsHighlight::updateRect()
     // This is an hack to pass QgsMapCanvasItem::setRect what it
     // expects (encoding of position and size of the item)
     const QgsMapToPixel &m2p = mMapCanvas->mapSettings().mapToPixel();
-    QgsPointXY topLeft = m2p.toMapPoint( 0, 0 );
+    QgsPointXY topLeft = m2p.toMapCoordinates( 0, 0 );
     double res = m2p.mapUnitsPerPixel();
     QSizeF imageSize = mMapCanvas->mapSettings().outputSize();
     QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + imageSize.width()*res, topLeft.y() - imageSize.height()*res );

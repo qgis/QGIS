@@ -67,6 +67,7 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     bool close() override;
 
   protected:
+    bool checkFeature( gdal::ogr_feature_unique_ptr &fet, QgsFeature &feature ) ;
     bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
@@ -78,11 +79,8 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature &f, int attindex ) const;
 
     QgsOgrConn *mConn = nullptr;
-    OGRLayerH mOgrLayer = nullptr;
-    OGRLayerH mOgrOrigLayer = nullptr;
-    OGRLayerH mOgrLayerWithFid = nullptr;
-
-    bool mOrigFidAdded = false;
+    OGRLayerH mOgrLayer = nullptr; // when mOgrLayerUnfiltered != null and mOgrLayer != mOgrLayerUnfiltered, this is a SQL layer
+    OGRLayerH mOgrLayerOri = nullptr; // only set when there's a mSubsetString. In which case this a regular OGR layer. Potentially == mOgrLayer
 
     //! Sets to true, if geometry is in the requested columns
     bool mFetchGeometry = false;
@@ -95,7 +93,12 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     QgsCoordinateTransform mTransform;
     QgsOgrDatasetSharedPtr mSharedDS = nullptr;
 
+    bool mFirstFieldIsFid = false;
+    QgsFields mFieldsWithoutFid;
+
     bool fetchFeatureWithId( QgsFeatureId id, QgsFeature &feature ) const;
+
+    void resetReading();
 };
 
 #endif // QGSOGRFEATUREITERATOR_H

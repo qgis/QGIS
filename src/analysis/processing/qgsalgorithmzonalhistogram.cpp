@@ -107,7 +107,7 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
 
   // First loop through the zones to build up a list of unique values across all zones to determine sink fields list
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   if ( zones->sourceCrs() != mCrs )
   {
     request.setDestinationCrs( mCrs, context.transformContext() );

@@ -35,20 +35,20 @@ QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const Q
 
   if ( type.isNull() )
   {
-    QgsDebugMsg( "cannot find ``type'' attribute" );
+    QgsDebugMsg( QStringLiteral( "cannot find ``type'' attribute" ) );
 
     return IS_BOGUS;
   }
 
   if ( "raster" == type )
   {
-    QgsDebugMsg( "is a raster" );
+    QgsDebugMsg( QStringLiteral( "is a raster" ) );
 
     return IS_RASTER;
   }
   else if ( "vector" == type )
   {
-    QgsDebugMsg( "is a vector" );
+    QgsDebugMsg( QStringLiteral( "is a vector" ) );
 
     return IS_VECTOR;
   }
@@ -64,7 +64,7 @@ QString QgsProjectBadLayerHandler::dataSource( const QDomNode &layerNode )
 
   if ( dataSourceNode.isNull() )
   {
-    QgsDebugMsg( "cannot find datasource node" );
+    QgsDebugMsg( QStringLiteral( "cannot find datasource node" ) );
 
     return QString();
   }
@@ -103,7 +103,7 @@ QgsProjectBadLayerHandler::ProviderType QgsProjectBadLayerHandler::providerType(
       return IS_FILE;
 
     default:
-      QgsDebugMsg( "unknown ``type'' attribute" );
+      QgsDebugMsg( QStringLiteral( "unknown ``type'' attribute" ) );
   }
 
   return IS_Unknown;

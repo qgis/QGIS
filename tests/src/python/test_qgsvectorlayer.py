@@ -1894,13 +1894,13 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         # check value
         f = next(temp_layer.getFeatures())
-        expected = 1009089817.0
+        expected = 1005721496.7800847
         self.assertAlmostEqual(f['area'], expected, delta=1.0)
 
         # change project area unit, check calculation respects unit
         QgsProject.instance().setAreaUnits(QgsUnitTypes.AreaSquareMiles)
         f = next(temp_layer.getFeatures())
-        expected = 389.6117565069
+        expected = 388.31124079933016
         self.assertAlmostEqual(f['area'], expected, 3)
 
     def test_ExpressionFilter(self):

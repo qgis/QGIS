@@ -16,6 +16,8 @@ email                : morb at ozemail dot com dot au
 #ifndef QGSGEOMETRY_H
 #define QGSGEOMETRY_H
 
+#include <functional>
+
 #include <QDomDocument>
 #include <QSet>
 #include <QString>
@@ -1256,7 +1258,7 @@ class CORE_EXPORT QgsGeometry
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = QStringLiteral( "<QgsGeometry: %1>" ).arg( sipCpp->asWkt() );
-    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
@@ -1446,6 +1448,14 @@ class CORE_EXPORT QgsGeometry
          * True if the location available from \see where is valid.
          */
         bool hasWhere() const;
+
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+        QString str = QStringLiteral( "<QgsGeometry.Error: %1>" ).arg( sipCpp->what() );
+        sipRes = PyUnicode_FromString( str.toUtf8().data() );
+        % End
+#endif
 
       private:
         QString mMessage;

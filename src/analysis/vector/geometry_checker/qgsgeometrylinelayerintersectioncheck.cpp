@@ -13,16 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrylinelayerintersectioncheck.h"
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 #include "qgsfeaturepool.h"
+#include "qgsgeometrycheckerror.h"
 
-void QgsGeometryLineLayerIntersectionCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+void QgsGeometryLineLayerIntersectionCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
+  Q_UNUSED( messages )
+
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
   featureIds.remove( mCheckLayer ); // Don't check layer against itself
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, mContext, true );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
@@ -36,7 +40,7 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( QList<QgsGeometryChec
       }
 
       // Check whether the line intersects with any other features of the specified layer
-      QgsGeometryCheckerUtils::LayerFeatures checkFeatures( mContext->featurePools, QStringList() << mCheckLayer, line->boundingBox(), {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, mContext );
+      QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, QStringList() << mCheckLayer, line->boundingBox(), {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
         const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();
@@ -69,8 +73,10 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( QList<QgsGeometryChec
   }
 }
 
-void QgsGeometryLineLayerIntersectionCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes & /*changes*/ ) const
+void QgsGeometryLineLayerIntersectionCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes & /*changes*/ ) const
 {
+  Q_UNUSED( featurePools )
+
   if ( method == NoChange )
   {
     error->setFixed( method );
@@ -85,4 +91,9 @@ QStringList QgsGeometryLineLayerIntersectionCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;
+}
+
+QgsGeometryCheck::CheckType QgsGeometryLineLayerIntersectionCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureNodeCheck;
 }

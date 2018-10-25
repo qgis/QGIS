@@ -11,6 +11,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <functional>
 
 #include "qgsauthoauth2config.h"
 

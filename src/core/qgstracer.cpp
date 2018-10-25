@@ -479,7 +479,6 @@ bool QgsTracer::initGraph()
   for ( QgsVectorLayer *vl : qgis::as_const( mLayers ) )
   {
     QgsFeatureRequest request;
-
     bool filter = false;
     std::unique_ptr< QgsFeatureRenderer > renderer;
     QgsRenderContext *ctx = nullptr;
@@ -498,8 +497,7 @@ bool QgsTracer::initGraph()
     }
     else
     {
-      request.setSubsetOfAttributes( QgsAttributeList() );
-
+      request.setNoAttributes();
     }
 
     request.setDestinationCrs( mCRS, mTransformContext );
@@ -565,7 +563,7 @@ bool QgsTracer::initGraph()
 
     mHasTopologyProblem = true;
 
-    QgsDebugMsg( QString( "Tracer Noding Exception: %1" ).arg( e.what() ) );
+    QgsDebugMsg( QStringLiteral( "Tracer Noding Exception: %1" ).arg( e.what() ) );
   }
 #endif
 
@@ -581,7 +579,7 @@ bool QgsTracer::initGraph()
   Q_UNUSED( timeNoding );
   Q_UNUSED( timeNodingCall );
   Q_UNUSED( timeMake );
-  QgsDebugMsg( QString( "tracer extract %1 ms, noding %2 ms (call %3 ms), make %4 ms" )
+  QgsDebugMsg( QStringLiteral( "tracer extract %1 ms, noding %2 ms (call %3 ms), make %4 ms" )
                .arg( timeExtract ).arg( timeNoding ).arg( timeNodingCall ).arg( timeMake ) );
 
   return true;
@@ -759,7 +757,7 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
 
   Q_UNUSED( tPrep );
   Q_UNUSED( tPath );
-  QgsDebugMsg( QString( "path timing: prep %1 ms, path %2 ms" ).arg( tPrep ).arg( tPath ) );
+  QgsDebugMsg( QStringLiteral( "path timing: prep %1 ms, path %2 ms" ).arg( tPrep ).arg( tPath ) );
 
   resetGraph( *mGraph );
 

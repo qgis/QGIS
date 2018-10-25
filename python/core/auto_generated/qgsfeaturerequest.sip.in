@@ -508,8 +508,20 @@ Sets flags that affect how features will be fetched
 
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
 %Docstring
-Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
-To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
+Set a subset of attributes that will be fetched.
+
+An empty attributes list indicates that no attributes will be fetched.
+To revert a call to setSubsetOfAttributes and fetch all available attributes,
+the SubsetOfAttributes flag should be removed from the request.
+%End
+
+    QgsFeatureRequest &setNoAttributes();
+%Docstring
+Set that no attributes will be fetched.
+To revert a call to setNoAttributes and fetch all or some available attributes,
+the SubsetOfAttributes flag should be removed from the request.
+
+.. versionadded:: 3.4
 %End
 
     QgsAttributeList subsetOfAttributes() const;

@@ -44,6 +44,10 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
   mMeshRendererVectorSettingsWidget->setLayer( mMeshLayer );
   syncToLayer();
 
+  //blend mode
+  mBlendModeComboBox->setBlendMode( mMeshLayer->blendMode() );
+  connect( mBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
+
   connect( mMeshRendererActiveDatasetWidget, &QgsMeshRendererActiveDatasetWidget::activeScalarGroupChanged,
            this, &QgsRendererMeshPropertiesWidget::onActiveScalarGroupChanged );
   connect( mMeshRendererActiveDatasetWidget, &QgsMeshRendererActiveDatasetWidget::activeVectorGroupChanged,
@@ -53,7 +57,6 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
   connect( mTriangularMeshGroup, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( mContoursGroupBox, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( mVectorsGroupBox, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
-
   connect( mMeshRendererActiveDatasetWidget, &QgsMeshRendererActiveDatasetWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mMeshRendererScalarSettingsWidget, &QgsMeshRendererScalarSettingsWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mMeshRendererVectorSettingsWidget, &QgsMeshRendererVectorSettingsWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
@@ -100,6 +103,9 @@ void QgsRendererMeshPropertiesWidget::apply()
   if ( activeVectorDatasetIndex.isValid() )
     settings.setVectorSettings( activeVectorDatasetIndex.group(), mMeshRendererVectorSettingsWidget->settings() );
 
+  //set the blend mode for the layer
+  mMeshLayer->setBlendMode( mBlendModeComboBox->blendMode() );
+
   mMeshLayer->setRendererSettings( settings );
   mMeshLayer->triggerRepaint();
 }
@@ -109,6 +115,9 @@ void QgsRendererMeshPropertiesWidget::syncToLayer()
   mMeshRendererActiveDatasetWidget->syncToLayer();
   mNativeMeshSettingsWidget->syncToLayer();
   mTriangularMeshSettingsWidget->syncToLayer();
+
+  mNativeMeshGroup->setChecked( mMeshLayer ? mMeshLayer->rendererSettings().nativeMeshSettings().isEnabled() : false );
+  mTriangularMeshGroup->setChecked( mMeshLayer ? mMeshLayer->rendererSettings().triangularMeshSettings().isEnabled() : false );
 
   onActiveScalarGroupChanged( mMeshRendererActiveDatasetWidget->activeScalarDatasetGroup() );
   onActiveVectorGroupChanged( mMeshRendererActiveDatasetWidget->activeVectorDatasetGroup() );

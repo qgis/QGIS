@@ -238,7 +238,7 @@ bool QgsSpatiaLiteFeatureIterator::fetchFeature( QgsFeature &feature )
 
   if ( !sqliteStatement )
   {
-    QgsDebugMsg( "Invalid current SQLite statement" );
+    QgsDebugMsg( QStringLiteral( "Invalid current SQLite statement" ) );
     close();
     return false;
   }
@@ -354,6 +354,8 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause,
 
     if ( limit >= 0 )
       sql += QStringLiteral( " LIMIT %1" ).arg( limit );
+
+    // qDebug() << sql;
 
     if ( sqlite3_prepare_v2( mHandle->handle(), sql.toUtf8().constData(), -1, &sqliteStatement, nullptr ) != SQLITE_OK )
     {
@@ -508,7 +510,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
       {
         // first column always contains the ROWID (or the primary key)
         QgsFeatureId fid = sqlite3_column_int64( stmt, ic );
-        QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 3 );
+        QgsDebugMsgLevel( QStringLiteral( "fid=%1" ).arg( fid ), 3 );
         feature.setId( fid );
       }
       else

@@ -19,13 +19,10 @@
 #ifndef QGSMAPOVERVIEWCANVAS_H
 #define QGSMAPOVERVIEWCANVAS_H
 
-
-#include <QMouseEvent>
-#include <QWheelEvent>
 #include <QWidget>
-#include <QStringList>
 #include <QPixmap>
 
+class QMouseEvent;
 class QgsMapCanvas;
 class QgsPanningWidget; // defined in .cpp
 class QgsRectangle;

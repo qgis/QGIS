@@ -18,6 +18,7 @@
 
 
 #include "qgsmaptooladvanceddigitizing.h"
+#include "qgspointlocator.h"
 #include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
 
@@ -106,10 +107,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void clean() override;
 
   private slots:
-    void validationFinished();
-    void addError( QgsGeometry::Error );
+    void addError( const QgsGeometry::Error &error );
     void currentLayerChanged( QgsMapLayer *layer );
-
 
   protected:
 
@@ -263,7 +262,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QList<QgsPointLocator::Match> mSnappingMatches;
 
     void validateGeometry();
-    QStringList mValidationWarnings;
     QgsGeometryValidator *mValidator = nullptr;
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;

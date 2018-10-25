@@ -1075,6 +1075,7 @@ Creates a new scope which contains variables and functions relating to provider 
 Registers all known core functions provided by QgsExpressionContextScope objects.
 %End
 
+      public:
 };
 
 /************************************************************************

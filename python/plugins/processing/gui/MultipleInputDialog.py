@@ -64,17 +64,17 @@ class MultipleInputDialog(BASE, WIDGET):
         self.selectedoptions = selectedoptions or []
 
         # Additional buttons
-        self.btnSelectAll = QPushButton(self.tr('Select all'))
+        self.btnSelectAll = QPushButton(self.tr('Select All'))
         self.buttonBox.addButton(self.btnSelectAll,
                                  QDialogButtonBox.ActionRole)
-        self.btnClearSelection = QPushButton(self.tr('Clear selection'))
+        self.btnClearSelection = QPushButton(self.tr('Clear Selection'))
         self.buttonBox.addButton(self.btnClearSelection,
                                  QDialogButtonBox.ActionRole)
-        self.btnToggleSelection = QPushButton(self.tr('Toggle selection'))
+        self.btnToggleSelection = QPushButton(self.tr('Toggle Selection'))
         self.buttonBox.addButton(self.btnToggleSelection,
                                  QDialogButtonBox.ActionRole)
         if self.datatype is not None:
-            btnAddFile = QPushButton(QCoreApplication.translate("MultipleInputDialog", 'Add file(s)…'))
+            btnAddFile = QPushButton(QCoreApplication.translate("MultipleInputDialog", 'Add File(s)…'))
             btnAddFile.clicked.connect(self.addFiles)
             self.buttonBox.addButton(btnAddFile,
                                      QDialogButtonBox.ActionRole)

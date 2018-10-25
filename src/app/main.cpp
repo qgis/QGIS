@@ -142,6 +142,8 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--dxf-scale-denom scale]\tscale for dxf output\n" )
       << QStringLiteral( "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n" )
       << QStringLiteral( "\t[--dxf-map-theme maptheme]\tmap theme to use for dxf output\n" )
+      << QStringLiteral( "\t[--take-screenshots output_path]\ttake screen shots for the user documentation\n" )
+      << QStringLiteral( "\t[--screenshots-categories categories]\tspecify the categories of screenshot to be used (see QgsAppScreenShots::Categories).\n" )
       << QStringLiteral( "\t[--profile name]\tload a named profile from the users profiles folder.\n" )
       << QStringLiteral( "\t[--profiles-path path]\tpath to store user profile folders. Will create profiles inside a {path}\\profiles folder \n" )
       << QStringLiteral( "\t[--version-migration]\tforce the settings migration from older version if found\n" )
@@ -152,7 +154,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--]\t\ttreat all following arguments as FILEs\n\n" )
       << QStringLiteral( "  FILE:\n" )
       << QStringLiteral( "    Files specified on the command line can include rasters,\n" )
-      << QStringLiteral( "    vectors, and QGIS project files (.qgs): \n" )
+      << QStringLiteral( "    vectors, and QGIS project files (.qgs and .qgz): \n" )
       << QStringLiteral( "     1. Rasters - supported formats include GeoTiff, DEM \n" )
       << QStringLiteral( "        and others supported by GDAL\n" )
       << QStringLiteral( "     2. Vectors - supported formats include ESRI Shapefiles\n" )
@@ -239,7 +241,7 @@ static void dumpBacktrace( unsigned int depth )
       // stdin from pipe
       if ( dup( fd[0] ) != STDIN_FILENO )
       {
-        QgsDebugMsg( "dup to stdin failed" );
+        QgsDebugMsg( QStringLiteral( "dup to stdin failed" ) );
       }
 
       close( fd[1] );        // close writing end
@@ -259,7 +261,7 @@ static void dumpBacktrace( unsigned int depth )
     {
       if ( stderr_new >= 0 )
         close( stderr_new );
-      QgsDebugMsg( "dup to stderr failed" );
+      QgsDebugMsg( QStringLiteral( "dup to stderr failed" ) );
     }
 
     close( fd[1] );  // close duped pipe
@@ -277,7 +279,7 @@ static void dumpBacktrace( unsigned int depth )
     if ( dup_stderr != STDERR_FILENO )
     {
       close( dup_stderr );
-      QgsDebugMsg( "dup to stderr failed" );
+      QgsDebugMsg( QStringLiteral( "dup to stderr failed" ) );
     }
     close( stderr_fd );
     wait( &status );
@@ -368,6 +370,12 @@ void myMessageOutput( QtMsgType type, const char *msg )
       myPrint( "Critical: %s\n", msg );
       break;
     case QtWarningMsg:
+    {
+      // Ignore libpng iCPP known incorrect SRGB profile errors
+      // (which are thrown by 3rd party components we have no control over and have low value anyway).
+      if ( strncmp( msg, "libpng warning: iCCP: known incorrect sRGB profile", 50 ) == 0 )
+        break;
+
       myPrint( "Warning: %s\n", msg );
 
 #ifdef QGISDEBUG
@@ -389,6 +397,8 @@ void myMessageOutput( QtMsgType type, const char *msg )
       }
 
       break;
+    }
+
     case QtFatalMsg:
     {
       myPrint( "Fatal: %s\n", msg );
@@ -448,17 +458,17 @@ int main( int argc, char *argv[] )
 
       if ( setrlimit( RLIMIT_NOFILE, &rescLimit ) == 0 )
       {
-        QgsDebugMsg( QString( "Mac RLIMIT_NOFILE Soft/Hard NEW: %1 / %2" )
+        QgsDebugMsg( QStringLiteral( "Mac RLIMIT_NOFILE Soft/Hard NEW: %1 / %2" )
                      .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ) );
       }
     }
     Q_UNUSED( oldSoft ); //avoid warnings
-    QgsDebugMsg( QString( "Mac RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
+    QgsDebugMsg( QStringLiteral( "Mac RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
                  .arg( oldSoft ).arg( oldHard ) );
   }
 #endif
 
-  QgsDebugMsg( QString( "Starting qgis main" ) );
+  QgsDebugMsg( QStringLiteral( "Starting qgis main" ) );
 #ifdef WIN32  // Windows
 #ifdef _MSC_VER
   _set_fmode( _O_BINARY );
@@ -514,7 +524,7 @@ int main( int argc, char *argv[] )
   bool mySkipVersionCheck = false;
   bool hideBrowser = false;
 #if defined(ANDROID)
-  QgsDebugMsg( QString( "Android: Splash hidden" ) );
+  QgsDebugMsg( QStringLiteral( "Android: Splash hidden" ) );
   myHideSplash = true;
 #endif
 
@@ -528,6 +538,10 @@ int main( int argc, char *argv[] )
   QString dxfEncoding = QStringLiteral( "CP1252" );
   QString dxfMapTheme;
   QgsRectangle dxfExtent;
+
+  bool takeScreenShots = false;
+  QString screenShotsPath;
+  int screenShotsCategories = 0;
 
   // This behavior will set initial extent of map canvas, but only if
   // there are no command line arguments. This gives a usable map
@@ -557,10 +571,10 @@ int main( int argc, char *argv[] )
 
 // TODO Fix android
 #if defined(ANDROID)
-  QgsDebugMsg( QString( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
+  QgsDebugMsg( QStringLiteral( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
   //put all QGIS settings in the same place
   configpath = QgsApplication::qgisSettingsDirPath();
-  QgsDebugMsg( QString( "Android: configpath set to %1" ).arg( configpath ) );
+  QgsDebugMsg( QStringLiteral( "Android: configpath set to %1" ).arg( configpath ) );
 #endif
 
   QStringList args;
@@ -745,6 +759,15 @@ int main( int argc, char *argv[] )
         {
           dxfMapTheme = args[++i];
         }
+        else if ( arg == QLatin1String( "--take-screenshots" ) )
+        {
+          takeScreenShots = true;
+          screenShotsPath = args[++i];
+        }
+        else if ( arg == QLatin1String( "--screenshots-categories" ) )
+        {
+          screenShotsCategories = args[++i].toInt();
+        }
 #ifdef HAVE_OPENCL
         else if ( arg == QLatin1String( "--openclprogramfolder" ) )
         {
@@ -863,7 +886,7 @@ int main( int argc, char *argv[] )
     else if ( globalSettings.contains( QStringLiteral( "core/profilesPath" ) ) )
     {
       configLocalStorageLocation = globalSettings.value( QStringLiteral( "core/profilesPath" ), "" ).toString();
-      QgsDebugMsg( QString( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ) );
+      QgsDebugMsg( QStringLiteral( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ) );
     }
 
     // If it is still empty at this point we get it from the standard location.
@@ -950,7 +973,7 @@ int main( int argc, char *argv[] )
   QgsApplication myApp( argc, argv, myUseGuiFlag );
 
   // Settings migration is only supported on the default profile for now.
-  if ( profileName == "default" )
+  if ( profileName == QLatin1String( "default" ) )
   {
     // Note: this flag is ka version number so that we can reset it once we change the version.
     // Note2: Is this a good idea can we do it better.
@@ -973,7 +996,7 @@ int main( int argc, char *argv[] )
 
       if ( runMigration )
       {
-        QgsDebugMsg( "RUNNING MIGRATION" );
+        QgsDebugMsg( QStringLiteral( "RUNNING MIGRATION" ) );
         migration->runMigration();
       }
     }
@@ -1233,7 +1256,7 @@ int main( int argc, char *argv[] )
   int h = 300 * qApp->desktop()->logicalDpiY() / 96;
 
   QSplashScreen *mypSplash = new QSplashScreen( myPixmap.scaled( w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
-  if ( !myHideSplash && !settings.value( QStringLiteral( "qgis/hideSplash" ) ).toBool() )
+  if ( !takeScreenShots && !myHideSplash && !settings.value( QStringLiteral( "qgis/hideSplash" ) ).toBool() )
   {
     //for win and linux we can just automask and png transparency areas will be used
     mypSplash->setMask( myPixmap.mask() );
@@ -1244,7 +1267,7 @@ int main( int argc, char *argv[] )
   // use restoreDefaultWindowState setting only if NOT using command line (then it is set already)
   if ( myRestoreDefaultWindowState || settings.value( QStringLiteral( "qgis/restoreDefaultWindowState" ), false ).toBool() )
   {
-    QgsDebugMsg( "Resetting /UI/state settings!" );
+    QgsDebugMsg( QStringLiteral( "Resetting /UI/state settings!" ) );
     settings.remove( QStringLiteral( "/UI/state" ) );
     settings.remove( QStringLiteral( "/qgis/restoreDefaultWindowState" ) );
   }
@@ -1282,7 +1305,7 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   for ( const QString &layerName : qgis::as_const( sFileList ) )
   {
-    QgsDebugMsg( QString( "Trying to load file : %1" ).arg( layerName ) );
+    QgsDebugMsg( QStringLiteral( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files
     if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
          !layerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) &&
@@ -1328,7 +1351,7 @@ int main( int argc, char *argv[] )
 
     if ( !ok )
     {
-      QgsDebugMsg( "Error while parsing initial extent!" );
+      QgsDebugMsg( QStringLiteral( "Error while parsing initial extent!" ) );
     }
     else
     {
@@ -1456,6 +1479,11 @@ int main( int argc, char *argv[] )
   }
 
 #endif
+
+  if ( takeScreenShots )
+  {
+    qgis->takeAppScreenShots( screenShotsPath, screenShotsCategories );
+  }
 
   /////////////////////////////////////////////////////////////////////
   // Continue on to interactive gui...

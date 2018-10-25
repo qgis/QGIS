@@ -32,7 +32,6 @@
 class QgsProcessingProvider;
 class QgsProcessingFeedback;
 class QgsFeatureSink;
-class QgsProcessingFeedback;
 class QgsProcessingModelAlgorithm;
 class QgsProcessingAlgorithmConfigurationWidget;
 
@@ -183,8 +182,9 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * helpString() or helpUrl().
      * \see helpUrl()
      * \see shortHelpString()
+     * \deprecated Unused, will be removed in QGIS 4.0
      */
-    virtual QString helpString() const;
+    Q_DECL_DEPRECATED virtual QString helpString() const SIP_DEPRECATED;
 
     /**
      * Returns a url pointing to the algorithm's help page.

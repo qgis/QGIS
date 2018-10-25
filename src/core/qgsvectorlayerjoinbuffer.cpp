@@ -549,7 +549,7 @@ bool QgsVectorLayerJoinBuffer::addFeatures( QgsFeatureList &features, QgsFeature
 
         QgsFeatureRequest request;
         request.setFlags( QgsFeatureRequest::NoGeometry );
-        request.setSubsetOfAttributes( QgsAttributeList() );
+        request.setNoAttributes();
         request.setFilterExpression( filter );
         request.setLimit( 1 );
 

@@ -476,6 +476,11 @@ QSet<QString> QgsInvertedPolygonRenderer::usedAttributes( const QgsRenderContext
   return mSubRenderer->usedAttributes( context );
 }
 
+bool QgsInvertedPolygonRenderer::filterNeedsGeometry() const
+{
+  return mSubRenderer ? mSubRenderer->filterNeedsGeometry() : false;
+}
+
 QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems() const
 {
   if ( !mSubRenderer )

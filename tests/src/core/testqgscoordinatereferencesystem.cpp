@@ -114,7 +114,7 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  QgsDebugMsg( QString( "Custom srs database: %1" ).arg( QgsApplication::qgisUserDatabaseFilePath() ) );
+  QgsDebugMsg( QStringLiteral( "Custom srs database: %1" ).arg( QgsApplication::qgisUserDatabaseFilePath() ) );
 
   qDebug() << "GEOPROJ4 constant:      " << GEOPROJ4;
   qDebug() << "GDAL version (build):   " << GDAL_RELEASE_NAME;
@@ -388,7 +388,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
   // do test with WKT definitions
   for ( int i = 0; i < myWktStrings.size() ; i++ )
   {
-    QgsDebugMsg( QString( "i=%1 wkt=%2" ).arg( i ).arg( myWktStrings[i] ) );
+    QgsDebugMsg( QStringLiteral( "i=%1 wkt=%2" ).arg( i ).arg( myWktStrings[i] ) );
     // use createFromUserInput and add the ESRI:: prefix to force morphFromESRI
     CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configOld );
     myCrs.createFromUserInput( "ESRI::" + myWktStrings[i] );
@@ -410,7 +410,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
       // use ogr to open file, make sure CRS is OK
       // this probably could be in another test, but leaving it here since it deals with CRS
       QString fileStr = QStringLiteral( TEST_DATA_DIR ) + '/' + myFiles[i];
-      QgsDebugMsg( QString( "i=%1 file=%2" ).arg( i ).arg( fileStr ) );
+      QgsDebugMsg( QStringLiteral( "i=%1 file=%2" ).arg( i ).arg( fileStr ) );
 
       QgsVectorLayer *myLayer = new QgsVectorLayer( fileStr, QString(), QStringLiteral( "ogr" ) );
       if ( !myLayer || ! myLayer->isValid() )
@@ -738,7 +738,7 @@ void TestQgsCoordinateReferenceSystem::hasAxisInverted()
 void TestQgsCoordinateReferenceSystem::debugPrint(
   QgsCoordinateReferenceSystem &crs )
 {
-  QgsDebugMsg( "***SpatialRefSystem***" );
+  QgsDebugMsg( QStringLiteral( "***SpatialRefSystem***" ) );
   QgsDebugMsg( "* Valid : " + ( crs.isValid() ? QString( "true" ) :
                                 QString( "false" ) ) );
   QgsDebugMsg( "* SrsId : " + QString::number( crs.srsid() ) );
@@ -749,15 +749,15 @@ void TestQgsCoordinateReferenceSystem::debugPrint(
   QgsDebugMsg( "* Desc. : " + crs.description() );
   if ( crs.mapUnits() == QgsUnitTypes::DistanceMeters )
   {
-    QgsDebugMsg( "* Units : meters" );
+    QgsDebugMsg( QStringLiteral( "* Units : meters" ) );
   }
   else if ( crs.mapUnits() == QgsUnitTypes::DistanceFeet )
   {
-    QgsDebugMsg( "* Units : feet" );
+    QgsDebugMsg( QStringLiteral( "* Units : feet" ) );
   }
   else if ( crs.mapUnits() == QgsUnitTypes::DistanceDegrees )
   {
-    QgsDebugMsg( "* Units : degrees" );
+    QgsDebugMsg( QStringLiteral( "* Units : degrees" ) );
   }
 }
 

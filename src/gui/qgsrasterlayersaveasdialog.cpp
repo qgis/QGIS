@@ -25,9 +25,11 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgssettings.h"
 #include "qgsrasterfilewriter.h"
+#include "qgsvectorlayer.h"
 #include "cpl_string.h"
 #include "qgsproject.h"
 #include <gdal.h>
+#include "qgsmessagelog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -737,14 +739,14 @@ void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString &text )
     }
     if ( row != -1 ) break;
   }
-  QgsDebugMsg( QString( "row = %1 column =%2" ).arg( row ).arg( column ) );
+  QgsDebugMsg( QStringLiteral( "row = %1 column =%2" ).arg( row ).arg( column ) );
 
   if ( column == 0 )
   {
     QLineEdit *toLineEdit = dynamic_cast<QLineEdit *>( mNoDataTableWidget->cellWidget( row, 1 ) );
     if ( !toLineEdit ) return;
     bool toChanged = mNoDataToEdited.value( row );
-    QgsDebugMsg( QString( "toChanged = %1" ).arg( toChanged ) );
+    QgsDebugMsg( QStringLiteral( "toChanged = %1" ).arg( toChanged ) );
     if ( !toChanged )
     {
       toLineEdit->setText( lineEdit->text() );
@@ -918,8 +920,9 @@ bool QgsRasterLayerSaveAsDialog::outputLayerExists() const
     uri = outputFileName();
   }
 
-  std::unique_ptr< QgsRasterLayer > layer( new QgsRasterLayer( uri, "", QStringLiteral( "gdal" ) ) );
-  return layer->isValid();
+  std::unique_ptr< QgsRasterLayer > rastLayer( new QgsRasterLayer( uri, "", QStringLiteral( "gdal" ) ) );
+  std::unique_ptr< QgsVectorLayer > vectLayer( new QgsVectorLayer( uri, "", QStringLiteral( "ogr" ) ) );
+  return ( rastLayer->isValid() || vectLayer->isValid() );
 }
 
 void QgsRasterLayerSaveAsDialog::accept()

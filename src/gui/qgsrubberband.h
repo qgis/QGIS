@@ -18,10 +18,13 @@
 #include "qgsmapcanvasitem.h"
 #include "qgis.h"
 #include "qgsgeometry.h"
+
 #include <QBrush>
 #include <QList>
 #include <QPen>
 #include <QPolygon>
+#include <QObject>
+
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
@@ -32,11 +35,18 @@ class QPaintEvent;
  * A class for drawing transient features (e.g. digitizing lines) on the map.
  *
  * The QgsRubberBand class provides a transparent overlay widget
-  for tracking the mouse while drawing polylines or polygons.
+ * for tracking the mouse while drawing polylines or polygons.
  */
-class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
+class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
 {
+    Q_OBJECT
   public:
+
+    Q_PROPERTY( QColor fillColor READ fillColor WRITE setFillColor )
+    Q_PROPERTY( QColor strokeColor READ strokeColor WRITE setStrokeColor )
+    Q_PROPERTY( int iconSize READ iconSize WRITE setIconSize )
+    Q_PROPERTY( QColor secondaryStrokeColor READ secondaryStrokeColor WRITE setSecondaryStrokeColor )
+    Q_PROPERTY( int width READ width WRITE setWidth )
 
     //! Icons
     enum IconType
@@ -87,13 +97,17 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     /**
      * Creates a new RubberBand.
-     *  \param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
-     *  \param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
+     *  \param mapCanvas The map canvas to draw onto.
+     *         Its CRS will be used to map points onto screen coordinates.
+     * The ownership is transferred to this canvas.
+     *  \param geometryType Defines how the data should be drawn onto the screen.
+     *         QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry or QgsWkbTypes::PointGeometry
      */
     QgsRubberBand( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
     /**
-     * Sets the color for the rubberband
+     * Sets the color for the rubberband.
+     * Shorthand method to set fill and stroke color with a single call.
      *  \param color  The color used to render this rubberband
      */
     void setColor( const QColor &color );
@@ -237,7 +251,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     int partSize( int geometryIndex ) const;
 
     /**
-     * Sets this rubber band to the geometry of an existing feature.
+     * Sets this rubber band to \a geom.
      * This is useful for feature highlighting.
      * In contrast to addGeometry(), this method does also change the geometry type of the rubberband.
      *  \param geom the geometry object
@@ -245,6 +259,17 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
     void setToGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
+
+    /**
+     * Sets this rubber band to \a geometry.
+     * In contrast to addGeometry(), this method does also change the geometry type of the rubberband.
+     * The coordinate reference system of the geometry can be specified with \a crs. If an invalid \a crs
+     * is passed, the geometry will not be reprojected and needs to be in canvas crs already.
+     * By default, no reprojection is done.
+     *
+     * \since QGIS 3.4
+     */
+    void setToGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
      * Sets this rubber band to a map canvas rectangle

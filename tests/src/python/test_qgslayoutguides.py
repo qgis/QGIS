@@ -32,7 +32,7 @@ from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.testing import start_app, unittest
 
-import sip
+from qgis.PyQt import sip
 
 start_app()
 

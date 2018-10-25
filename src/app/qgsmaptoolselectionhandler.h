@@ -133,13 +133,13 @@ class QgsMapToolSelectionHandler : public QObject
 
   private slots:
     //! update the rubber band from the input widget
-    void updateRadiusRubberband( const double &radius );
+    void updateRadiusRubberband( double radius );
 
     /**
      * triggered when the user input widget has a new value
      * either programmatically (from the mouse event) or entered by the user
      */
-    void radiusValueEntered( const double &radius, const Qt::KeyboardModifiers &modifiers );
+    void radiusValueEntered( double radius, Qt::KeyboardModifiers modifiers );
 
     //! cancel selecting (between two click events)
     void cancel();

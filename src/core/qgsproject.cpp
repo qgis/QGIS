@@ -1649,7 +1649,10 @@ bool QgsProject::write()
 
     // errors raised during writing project file are more important
     if ( !asOk && writeOk )
-      setError( tr( "Unable to save auxiliary storage" ) );
+    {
+      const QString err = mAuxiliaryStorage->errorString();
+      setError( tr( "Unable to save auxiliary storage ('%1')" ).arg( err ) );
+    }
 
     return asOk && writeOk;
   }
@@ -2614,7 +2617,8 @@ bool QgsProject::zip( const QString &filename )
 
   if ( ! saveAuxiliaryStorage( asFileName ) )
   {
-    setError( tr( "Unable to save auxiliary storage" ) );
+    const QString err = mAuxiliaryStorage->errorString();
+    setError( tr( "Unable to save auxiliary storage ('%1')" ).arg( err ) );
     return false;
   }
 

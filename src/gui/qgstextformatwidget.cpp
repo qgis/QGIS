@@ -456,10 +456,13 @@ void QgsTextFormatWidget::initWidget()
           << mShapeTypeDDBtn
           << mShowLabelDDBtn
           << mWrapCharDDBtn
+          << mAutoWrapLengthDDBtn
           << mZIndexDDBtn
           << mZIndexSpinBox
           << spinBufferSize
           << wrapCharacterEdit
+          << mAutoWrapLengthSpinBox
+          << mAutoWrapTypeComboBox
           << mCentroidRadioVisible
           << mCentroidRadioWhole
           << mDirectSymbRadioBtnAbove

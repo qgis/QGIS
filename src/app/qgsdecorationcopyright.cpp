@@ -118,7 +118,7 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
   context.painter()->setRenderHint( QPainter::Antialiasing, true );
 
   QString displayString = QgsExpression::replaceExpressionText( mLabelText, &context.expressionContext() );
-  QStringList displayStringList = displayString.split( "\n" );
+  QStringList displayStringList = displayString.split( QStringLiteral( "\n" ) );
 
   QFontMetricsF fm( mTextFormat.scaledFont( context ) );
   double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, displayStringList, &fm );
@@ -181,7 +181,7 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
       horizontalAlignment = QgsTextRenderer::AlignRight;
       break;
     default:
-      QgsDebugMsg( QString( "Unknown placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
+      QgsDebugMsg( QStringLiteral( "Unknown placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
   }
 
   //Paint label to canvas

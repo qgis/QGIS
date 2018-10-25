@@ -12,13 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsgdaldataitems.h"
 #include "qgsgdalprovider.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsogrutils.h"
+#include "qgsproject.h"
+#include "qgsgdalutils.h"
 
 #include <QFileInfo>
+#include <QAction>
+#include <mutex>
+#include <QMessageBox>
 
 // defined in qgsgdalprovider.cpp
 void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QStringList &extensions, QStringList &wildcards );
@@ -61,7 +67,7 @@ bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
   QString wkt = crs.toWkt();
   if ( GDALSetProjection( hDS.get(), wkt.toLocal8Bit().data() ) != CE_None )
   {
-    QgsDebugMsg( "Could not set CRS" );
+    QgsDebugMsg( QStringLiteral( "Could not set CRS" ) );
     return false;
   }
 
@@ -77,7 +83,7 @@ QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
   if ( !mSublayers.isEmpty() )
   {
     QgsDataItem *childItem = nullptr;
-    QgsDebugMsgLevel( QString( "got %1 sublayers" ).arg( mSublayers.count() ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "got %1 sublayers" ).arg( mSublayers.count() ), 3 );
     for ( int i = 0; i < mSublayers.count(); i++ )
     {
       QString name = mSublayers[i];
@@ -117,7 +123,71 @@ QString QgsGdalLayerItem::layerName() const
   else
     return info.completeBaseName();
 }
+#ifdef HAVE_GUI
+QList<QAction *> QgsGdalLayerItem::actions( QWidget *parent )
+{
+  QList<QAction *> lst = QgsLayerItem::actions( parent );
 
+  // Messages are different for files and tables
+  const QString message = QObject::tr( "Delete File “%1”…" ).arg( mName );
+  QAction *actionDeleteLayer = new QAction( message, parent );
+
+  // IMPORTANT - we need to capture the stuff we need, and then hand the slot
+  // off to a static method. This is because it's possible for this item
+  // to be deleted in the background on us (e.g. by a parent directory refresh)
+  const QString uri = mUri;
+  const QString path = mPath;
+  QPointer< QgsDataItem > parentItem( mParent );
+  connect( actionDeleteLayer, &QAction::triggered, this, [ uri, path, parentItem ]
+  {
+    deleteLayer( uri, path, parentItem );
+  } );
+
+  lst.append( actionDeleteLayer );
+  return lst;
+}
+
+void QgsGdalLayerItem::deleteLayer( const QString &uri, const QString &path, QPointer< QgsDataItem > parent )
+{
+  const QString title = QObject::tr( "Delete File" );
+  // Check if the layer is in the project
+  const QgsMapLayer *projectLayer = nullptr;
+  const auto mapLayers = QgsProject::instance()->mapLayers();
+  for ( auto it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
+  {
+    if ( it.value()->publicSource() == uri )
+    {
+      projectLayer = it.value();
+    }
+  }
+  if ( ! projectLayer )
+  {
+    const QString confirmMessage = QObject::tr( "Are you sure you want to delete file '%1'?" ).arg( path );
+
+    if ( QMessageBox::question( nullptr, title,
+                                confirmMessage,
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      return;
+
+
+    if ( !QFile::remove( path ) )
+    {
+      QMessageBox::warning( nullptr, title, tr( "Could not delete file." ) );
+    }
+    else
+    {
+      QMessageBox::information( nullptr, title, tr( "File deleted successfully." ) );
+      if ( parent )
+        parent->refresh();
+    }
+  }
+  else
+  {
+    QMessageBox::warning( nullptr, title, QObject::tr( "The layer '%1' cannot be deleted because it is in the current project as '%2',"
+                          " remove it from the project and retry." ).arg( path, projectLayer->name() ) );
+  }
+}
+#endif
 // ---------------------------------------------------------------------------
 
 static QString sFilterString;
@@ -125,13 +195,9 @@ static QStringList sExtensions = QStringList();
 static QStringList sWildcards = QStringList();
 static QMutex sBuildingFilters;
 
-QGISEXTERN int dataCapabilities()
+QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
-  return QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net;
-}
-
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
-{
+  QString path( pathIn );
   if ( path.isEmpty() )
     return nullptr;
 
@@ -187,18 +253,13 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     return nullptr;
 
   // get supported extensions
-  if ( sExtensions.isEmpty() )
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]
   {
-    // this code may be executed by more threads at once!
-    // use a mutex to make sure this does not happen (so there's no crash on start)
-    QMutexLocker locker( &sBuildingFilters );
-    if ( sExtensions.isEmpty() )
-    {
-      buildSupportedRasterFileFilterAndExtensions( sFilterString, sExtensions, sWildcards );
-      QgsDebugMsgLevel( "extensions: " + sExtensions.join( " " ), 2 );
-      QgsDebugMsgLevel( "wildcards: " + sWildcards.join( " " ), 2 );
-    }
-  }
+    buildSupportedRasterFileFilterAndExtensions( sFilterString, sExtensions, sWildcards );
+    QgsDebugMsgLevel( "extensions: " + sExtensions.join( " " ), 2 );
+    QgsDebugMsgLevel( "wildcards: " + sWildcards.join( " " ), 2 );
+  } );
 
   // skip *.aux.xml files (GDAL auxiliary metadata files),
   // *.shp.xml files (ESRI metadata) and *.tif.xml files (TIFF metadata)
@@ -264,7 +325,6 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   // return item without testing if:
   // scanExtSetting
   // or zipfile and scan zip == "Basic scan"
-  // netCDF files can be both raster or vector, so fallback to opening
   if ( ( scanExtSetting ||
          ( ( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) ) &&
        suffix != QLatin1String( "nc" ) )
@@ -285,13 +345,13 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
       CPLPopErrorHandler();
       if ( !hDriver || GDALGetDriverShortName( hDriver ) == QLatin1String( "OGR_VRT" ) )
       {
-        QgsDebugMsgLevel( "Skipping VRT file because root is not a GDAL VRT", 2 );
+        QgsDebugMsgLevel( QStringLiteral( "Skipping VRT file because root is not a GDAL VRT" ), 2 );
         return nullptr;
       }
     }
     // add the item
     QStringList sublayers;
-    QgsDebugMsgLevel( QString( "adding item name=%1 path=%2" ).arg( name, path ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "adding item name=%1 path=%2" ).arg( name, path ), 2 );
     QgsLayerItem *item = new QgsGdalLayerItem( parentItem, name, path, path, &sublayers );
     if ( item )
       return item;
@@ -307,7 +367,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
   if ( ! hDS )
   {
-    QgsDebugMsg( QString( "GDALOpen error # %1 : %2 " ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
+    QgsDebugMsg( QStringLiteral( "GDALOpen error # %1 : %2 " ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
     return nullptr;
   }
 

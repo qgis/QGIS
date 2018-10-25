@@ -55,7 +55,7 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
   mFeatureClipboard = src->selectedFeatures();
   mCRS = src->crs();
   mSrcLayer = src;
-  QgsDebugMsg( "replaced QGis clipboard." );
+  QgsDebugMsg( QStringLiteral( "replaced QGis clipboard." ) );
 
   setSystemClipboard();
   mUseSystemClipboard = false;
@@ -64,7 +64,7 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
 
 void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore )
 {
-  QgsDebugMsg( QString( "features count = %1" ).arg( featureStore.features().size() ) );
+  QgsDebugMsg( QStringLiteral( "features count = %1" ).arg( featureStore.features().size() ) );
   mFeatureFields = featureStore.fields();
   mFeatureClipboard = featureStore.features();
   mCRS = featureStore.crs();
@@ -115,7 +115,6 @@ QString QgsClipboard::generateClipboardText() const
           }
         }
 
-        // QgsDebugMsg("about to traverse fields.");
         for ( int idx = 0; idx < attributes.count(); ++idx )
         {
           // QgsDebugMsg(QString("inspecting field '%1'.").arg(it2->toString()));
@@ -186,7 +185,7 @@ void QgsClipboard::setSystemClipboard()
 #endif
   cb->setMimeData( m, QClipboard::Clipboard );
 
-  QgsDebugMsgLevel( QString( "replaced system clipboard with: %1." ).arg( textCopy ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "replaced system clipboard with: %1." ).arg( textCopy ), 4 );
 }
 
 QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const QgsFields &fields ) const
@@ -288,7 +287,7 @@ QgsFields QgsClipboard::retrieveFields() const
 
 QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields ) const
 {
-  QgsDebugMsg( "returning clipboard." );
+  QgsDebugMsg( QStringLiteral( "returning clipboard." ) );
   if ( !mUseSystemClipboard )
     return mFeatureClipboard;
 
@@ -307,7 +306,7 @@ void QgsClipboard::clear()
 {
   mFeatureClipboard.clear();
 
-  QgsDebugMsg( "cleared clipboard." );
+  QgsDebugMsg( QStringLiteral( "cleared clipboard." ) );
   emit changed();
 }
 
@@ -338,7 +337,7 @@ QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSyst
   QgisApp::instance()->askUserForDatumTransform( crs(), destCRS );
   QgsCoordinateTransform ct = QgsCoordinateTransform( crs(), destCRS, QgsProject::instance() );
 
-  QgsDebugMsg( "transforming clipboard." );
+  QgsDebugMsg( QStringLiteral( "transforming clipboard." ) );
   for ( QgsFeatureList::iterator iter = featureList.begin(); iter != featureList.end(); ++iter )
   {
     QgsGeometry g = iter->geometry();

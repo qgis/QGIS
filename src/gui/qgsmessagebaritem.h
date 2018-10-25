@@ -19,7 +19,6 @@
 
 #include "qgsmessagebaritem.h"
 #include "qgis.h"
-#include "qgsmessagebar.h"
 
 #include <QWidget>
 #include <QIcon>
@@ -27,6 +26,8 @@
 #include "qgis_gui.h"
 
 class QTextBrowser;
+class QLabel;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -91,6 +92,17 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     //! returns the styleSheet
     QString getStyleSheet() { return mStyleSheet; }
 
+  public slots:
+
+    /**
+     * Dismisses the item, removing it from the message bar and deleting
+     * it. Calling this on items which have not been added to a message bar
+     * has no effect.
+     *
+     * \since QGIS 3.4
+     */
+    void dismiss();
+
   signals:
     //! emitted when the message level has changed
     void styleChanged( const QString &styleSheet );
@@ -112,6 +124,9 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     QLabel *mLblIcon = nullptr;
     QString mStyleSheet;
     QTextBrowser *mTextBrowser = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
+
+    friend class QgsMessageBar;
 };
 
 #endif // qgsmessagebaritem_H

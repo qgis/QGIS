@@ -123,19 +123,19 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   mGridFramePenColorButton->setColorDialogTitle( tr( "Select Grid Frame Color" ) );
   mGridFramePenColorButton->setAllowOpacity( true );
   mGridFramePenColorButton->setContext( QStringLiteral( "composer" ) );
-  mGridFramePenColorButton->setNoColorString( tr( "Transparent frame" ) );
+  mGridFramePenColorButton->setNoColorString( tr( "Transparent Frame" ) );
   mGridFramePenColorButton->setShowNoColor( true );
 
   mGridFrameFill1ColorButton->setColorDialogTitle( tr( "Select Grid Frame Fill Color" ) );
   mGridFrameFill1ColorButton->setAllowOpacity( true );
   mGridFrameFill1ColorButton->setContext( QStringLiteral( "composer" ) );
-  mGridFrameFill1ColorButton->setNoColorString( tr( "Transparent fill" ) );
+  mGridFrameFill1ColorButton->setNoColorString( tr( "Transparent Fill" ) );
   mGridFrameFill1ColorButton->setShowNoColor( true );
 
   mGridFrameFill2ColorButton->setColorDialogTitle( tr( "Select Grid Frame Fill Color" ) );
   mGridFrameFill2ColorButton->setAllowOpacity( true );
   mGridFrameFill2ColorButton->setContext( QStringLiteral( "composer" ) );
-  mGridFrameFill2ColorButton->setNoColorString( tr( "Transparent fill" ) );
+  mGridFrameFill2ColorButton->setNoColorString( tr( "Transparent Fill" ) );
   mGridFrameFill2ColorButton->setShowNoColor( true );
 
   mGridLineStyleButton->setSymbolType( QgsSymbol::Line );

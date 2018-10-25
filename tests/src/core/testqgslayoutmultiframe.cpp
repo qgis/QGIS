@@ -460,7 +460,7 @@ void TestQgsLayoutMultiFrame::undoRedoRemovedFrame()
     // dump stack
     for ( int i = 0; i < mLayout->undoStack()->stack()->count(); ++i )
     {
-      QgsDebugMsg( QString( "%1: %2 %3" ).arg( i ).arg( mLayout->undoStack()->stack()->command( i )->text(), i + 1 == mLayout->undoStack()->stack()->index() ? QString( "<---" ) : QString() ) );
+      QgsDebugMsg( QStringLiteral( "%1: %2 %3" ).arg( i ).arg( mLayout->undoStack()->stack()->command( i )->text(), i + 1 == mLayout->undoStack()->stack()->index() ? QString( "<---" ) : QString() ) );
     }
 #endif
   };

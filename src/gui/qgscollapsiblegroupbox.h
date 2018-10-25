@@ -21,12 +21,12 @@
 #include <QGroupBox>
 #include <QPointer>
 #include <QToolButton>
-#include <QMouseEvent>
 
 #include "qgis.h"
 #include "qgssettings.h"
 #include "qgis_gui.h"
 
+class QMouseEvent;
 class QToolButton;
 class QScrollArea;
 
@@ -50,12 +50,7 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
     void setShiftDown( bool shiftdown ) { mShiftDown = shiftdown; }
 
   protected:
-    void mouseReleaseEvent( QMouseEvent *event ) override
-    {
-      mAltDown = ( event->modifiers() & ( Qt::AltModifier | Qt::ControlModifier ) );
-      mShiftDown = ( event->modifiers() & Qt::ShiftModifier );
-      QToolButton::mouseReleaseEvent( event );
-    }
+    void mouseReleaseEvent( QMouseEvent *event ) override;
 
   private:
     bool mAltDown = false;
@@ -166,8 +161,6 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
 
     QIcon mCollapseIcon;
     QIcon mExpandIcon;
-
-    QString mStyleSheet;
 };
 
 /**

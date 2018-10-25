@@ -27,6 +27,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerrenderer.h"
 #include "qgsmeshlayerutils.h"
+#include "qgspainting.h"
 #include "qgsproviderregistry.h"
 #include "qgsreadwritecontext.h"
 #include "qgsstyle.h"
@@ -271,6 +272,14 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
   if ( !elemRendererSettings.isNull() )
     mRendererSettings.readXml( elemRendererSettings );
 
+  // get and set the blend mode if it exists
+  QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
+  if ( !blendModeNode.isNull() )
+  {
+    QDomElement e = blendModeNode.toElement();
+    setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( e.text().toInt() ) ) );
+  }
+
   return true;
 }
 
@@ -286,6 +295,12 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
 
   QDomElement elemRendererSettings = mRendererSettings.writeXml( doc );
   elem.appendChild( elemRendererSettings );
+
+  // add blend mode node
+  QDomElement blendModeElement  = doc.createElement( QStringLiteral( "blendMode" ) );
+  QDomText blendModeText = doc.createTextNode( QString::number( QgsPainting::getBlendModeEnum( blendMode() ) ) );
+  blendModeElement.appendChild( blendModeText );
+  node.appendChild( blendModeElement );
 
   return true;
 }

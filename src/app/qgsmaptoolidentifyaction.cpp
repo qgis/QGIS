@@ -39,9 +39,9 @@
 #include "qgsstatusbar.h"
 #include "qgsactionscoperegistry.h"
 #include "qgsproxyprogresstask.h"
-
 #include "qgssettings.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+
 #include <QCursor>
 #include <QPixmap>
 #include <QStatusBar>
@@ -188,7 +188,7 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult> &results )
 {
   // Add new result after raster format change
-  QgsDebugMsg( QString( "%1 raster results" ).arg( results.size() ) );
+  QgsDebugMsg( QStringLiteral( "%1 raster results" ).arg( results.size() ) );
   QList<IdentifyResult>::const_iterator rresult;
   for ( rresult = results.constBegin(); rresult != results.constEnd(); ++rresult )
   {
@@ -249,15 +249,15 @@ QgsUnitTypes::AreaUnit QgsMapToolIdentifyAction::displayAreaUnits() const
 
 void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore &featureStore )
 {
-  QgsDebugMsg( QString( "features count = %1" ).arg( featureStore.features().size() ) );
+  QgsDebugMsg( QStringLiteral( "features count = %1" ).arg( featureStore.features().size() ) );
   emit copyToClipboard( featureStore );
 }
 
 void QgsMapToolIdentifyAction::setClickContextScope( const QgsPointXY &point )
 {
   QgsExpressionContextScope clickScope;
-  clickScope.addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_x" ), point.x(), true ) );
-  clickScope.addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_y" ), point.y(), true ) );
+  clickScope.addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_x" ), point.x(), true ) );
+  clickScope.addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_y" ), point.y(), true ) );
 
   resultsDialog()->setExpressionContextScope( clickScope );
 

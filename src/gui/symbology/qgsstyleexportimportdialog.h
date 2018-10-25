@@ -33,6 +33,7 @@
 class QgsStyle;
 class QgsStyleGroupSelectionDialog;
 class QgsTemporaryCursorOverride;
+class QgsStyleModel;
 
 /**
  * \ingroup gui
@@ -131,7 +132,7 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     };
 
     void downloadStyleXml( const QUrl &url );
-    bool populateStyles( QgsStyle *style );
+    bool populateStyles();
     void moveStyles( QModelIndexList *selection, QgsStyle *src, QgsStyle *dst );
 
     QProgressDialog *mProgressDlg = nullptr;
@@ -143,8 +144,10 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     QString mFileName;
     Mode mDialogMode;
 
+    QgsStyleModel *mModel = nullptr;
+
     QgsStyle *mStyle = nullptr;
-    QgsStyle *mTempStyle = nullptr;
+    std::unique_ptr< QgsStyle > mTempStyle;
     std::unique_ptr< QgsTemporaryCursorOverride > mCursorOverride;
 };
 

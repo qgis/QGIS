@@ -21,7 +21,7 @@
 
 QDomElement QgsCameraPose::writeXml( QDomDocument &doc ) const
 {
-  QDomElement elemCamera = doc.createElement( "camera-pose" );
+  QDomElement elemCamera = doc.createElement( QStringLiteral( "camera-pose" ) );
   elemCamera.setAttribute( QStringLiteral( "x" ), mCenterPoint.x() );
   elemCamera.setAttribute( QStringLiteral( "y" ), mCenterPoint.y() );
   elemCamera.setAttribute( QStringLiteral( "z" ), mCenterPoint.z() );

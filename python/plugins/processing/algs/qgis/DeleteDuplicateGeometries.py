@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsFeatureRequest,
                        QgsProcessingException,
                        QgsFeatureSink,
+                       QgsSpatialIndex,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -69,34 +70,61 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]))
+
         total = 100.0 / source.featureCount() if source.featureCount() else 0
         geoms = dict()
+        index = QgsSpatialIndex()
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
 
             geoms[f.id()] = f.geometry()
-            feedback.setProgress(int(current * total))
+            index.addFeature(f)
 
-        cleaned = dict(geoms)
+            feedback.setProgress(int(0.10 * current * total)) # takes about 10% of time
 
-        for i, g in list(geoms.items()):
+        # start by assuming everything is unique, and chop away at this list
+        unique_features = dict(geoms)
+
+        current = 0
+        for feature_id, geometry in geoms.items():
             if feedback.isCanceled():
                 break
 
-            for j in list(cleaned.keys()):
-                if i == j or i not in cleaned:
-                    continue
-                if g.isGeosEqual(cleaned[j]):
-                    del cleaned[j]
+            if feature_id not in unique_features:
+                # feature was already marked as a duplicate
+                continue
 
-        total = 100.0 / len(cleaned) if cleaned else 1
-        request = QgsFeatureRequest().setFilterFids(list(cleaned.keys()))
+            candidates = index.intersects(geometry.boundingBox())
+            candidates.remove(feature_id)
+
+            for candidate_id in candidates:
+                if candidate_id not in unique_features:
+                    # candidate already marked as a duplicate (not sure if this is possible,
+                    # since it would mean the current feature would also have to be a duplicate!
+                    # but let's be safe!)
+                    continue
+
+                if geometry.isGeosEqual(geoms[candidate_id]):
+                    # candidate is a duplicate of feature
+                    del unique_features[candidate_id]
+
+            current += 1
+            feedback.setProgress(int(0.80 * current * total) + 10)  # takes about 80% of time
+
+        total = 100.0 / len(unique_features) if unique_features else 1
+
+        # now, fetch all the feature attributes for the unique features only
+        # be super-smart and don't re-fetch geometries
+        request = QgsFeatureRequest().setFilterFids(list(unique_features.keys())).setFlags(QgsFeatureRequest.NoGeometry)
         for current, f in enumerate(source.getFeatures(request)):
             if feedback.isCanceled():
                 break
 
+            # use already fetched geometry
+            f.setGeometry(unique_features[f.id()])
             sink.addFeature(f, QgsFeatureSink.FastInsert)
-            feedback.setProgress(int(current * total))
+
+            feedback.setProgress(int(0.10 * current * total) + 90) # takes about 10% of time
 
         return {self.OUTPUT: dest_id}

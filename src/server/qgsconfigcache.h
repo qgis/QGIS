@@ -28,7 +28,9 @@
 
 #include "qgis_server.h"
 #include "qgis_sip.h"
-#include "qgsproject.h"
+
+
+class QgsProject;
 
 /**
  * \ingroup server

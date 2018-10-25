@@ -357,17 +357,17 @@ bool QgsAttributeForm::saveEdits()
         int n = 0;
         for ( int i = 0; i < dst.count(); ++i )
         {
-          if ( ( dst.at( i ) == src.at( i ) && dst.at( i ).isNull() == src.at( i ).isNull() ) // If field is not changed...
-               || !dst.at( i ).isValid()                                     // or the widget returns invalid (== do not change)
-               || !fieldIsEditable( i ) )                           // or the field cannot be edited ...
+          if ( qgsVariantEqual( dst.at( i ), src.at( i ) ) // If field is not changed...
+               || !dst.at( i ).isValid()                 // or the widget returns invalid (== do not change)
+               || !fieldIsEditable( i ) )                // or the field cannot be edited ...
           {
             continue;
           }
 
-          QgsDebugMsg( QString( "Updating field %1" ).arg( i ) );
-          QgsDebugMsg( QString( "dst:'%1' (type:%2, isNull:%3, isValid:%4)" )
+          QgsDebugMsg( QStringLiteral( "Updating field %1" ).arg( i ) );
+          QgsDebugMsg( QStringLiteral( "dst:'%1' (type:%2, isNull:%3, isValid:%4)" )
                        .arg( dst.at( i ).toString(), dst.at( i ).typeName() ).arg( dst.at( i ).isNull() ).arg( dst.at( i ).isValid() ) );
-          QgsDebugMsg( QString( "src:'%1' (type:%2, isNull:%3, isValid:%4)" )
+          QgsDebugMsg( QStringLiteral( "src:'%1' (type:%2, isNull:%3, isValid:%4)" )
                        .arg( src.at( i ).toString(), src.at( i ).typeName() ).arg( src.at( i ).isNull() ).arg( src.at( i ).isValid() ) );
 
           newValues[i] = dst.at( i );
@@ -818,7 +818,6 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
 
 void QgsAttributeForm::updateContainersVisibility()
 {
-
   mExpressionContext << QgsExpressionContextUtils::formScope( QgsFeature( mFeature ), mContext.attributeFormModeString() );
 
   const QVector<ContainerInformation *> infos = mContainerVisibilityInformation;
@@ -1150,7 +1149,7 @@ void QgsAttributeForm::init()
   if ( mContext.allowCustomUi() && mLayer->editFormConfig().layout() == QgsEditFormConfig::UiFileLayout &&
        !mLayer->editFormConfig().uiForm().isEmpty() )
   {
-    QgsDebugMsg( QString( "loading form: %1" ).arg( mLayer->editFormConfig().uiForm() ) );
+    QgsDebugMsg( QStringLiteral( "loading form: %1" ).arg( mLayer->editFormConfig().uiForm() ) );
     const QString path = mLayer->editFormConfig().uiForm();
     QFile *file = QgsApplication::instance()->networkContentFetcherRegistry()->localFile( path );
     if ( file && file->open( QFile::ReadOnly ) )
@@ -1198,7 +1197,10 @@ void QgsAttributeForm::init()
           tabWidget = nullptr;
           WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
           layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
-          registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
+          if ( containerDef->visibilityExpression().enabled() )
+          {
+            registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
+          }
           column += 2;
         }
         else
@@ -1433,19 +1435,19 @@ void QgsAttributeForm::init()
     selectButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     connect( selectButton, &QToolButton::clicked, this, &QgsAttributeForm::searchSetSelection );
     QMenu *selectMenu = new QMenu( selectButton );
-    QAction *selectAction = new QAction( tr( "Select features" ), selectMenu );
+    QAction *selectAction = new QAction( tr( "Select Features" ), selectMenu );
     selectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFormSelect.svg" ) ) );
     connect( selectAction, &QAction::triggered, this, &QgsAttributeForm::searchSetSelection );
     selectMenu->addAction( selectAction );
-    QAction *addSelectAction = new QAction( tr( "Add to current selection" ), selectMenu );
+    QAction *addSelectAction = new QAction( tr( "Add to Current Selection" ), selectMenu );
     addSelectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectAdd.svg" ) ) );
     connect( addSelectAction, &QAction::triggered, this, &QgsAttributeForm::searchAddToSelection );
     selectMenu->addAction( addSelectAction );
-    QAction *deselectAction = new QAction( tr( "Remove from current selection" ), selectMenu );
+    QAction *deselectAction = new QAction( tr( "Remove from Current Selection" ), selectMenu );
     deselectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectRemove.svg" ) ) );
     connect( deselectAction, &QAction::triggered, this, &QgsAttributeForm::searchRemoveFromSelection );
     selectMenu->addAction( deselectAction );
-    QAction *filterSelectAction = new QAction( tr( "Filter current selection" ), selectMenu );
+    QAction *filterSelectAction = new QAction( tr( "Filter Current Selection" ), selectMenu );
     filterSelectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectIntersect.svg" ) ) );
     connect( filterSelectAction, &QAction::triggered, this, &QgsAttributeForm::searchIntersectSelection );
     selectMenu->addAction( filterSelectAction );
@@ -1460,10 +1462,10 @@ void QgsAttributeForm::init()
       filterButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
       connect( filterButton, &QToolButton::clicked, this, &QgsAttributeForm::filterTriggered );
       QMenu *filterMenu = new QMenu( filterButton );
-      QAction *filterAndAction = new QAction( tr( "Filter within (\"AND\")" ), filterMenu );
+      QAction *filterAndAction = new QAction( tr( "Filter Within (\"AND\")" ), filterMenu );
       connect( filterAndAction, &QAction::triggered, this, &QgsAttributeForm::filterAndTriggered );
       filterMenu->addAction( filterAndAction );
-      QAction *filterOrAction = new QAction( tr( "Extend filter (\"OR\")" ), filterMenu );
+      QAction *filterOrAction = new QAction( tr( "Extend Filter (\"OR\")" ), filterMenu );
       connect( filterOrAction, &QAction::triggered, this, &QgsAttributeForm::filterOrTriggered );
       filterMenu->addAction( filterOrAction );
       filterButton->setMenu( filterMenu );
@@ -1592,7 +1594,7 @@ void QgsAttributeForm::initPython()
 
       QgsPythonRunner::run( form );
 
-      QgsDebugMsg( QString( "running featureForm init: %1" ).arg( mPyFormVarName ) );
+      QgsDebugMsg( QStringLiteral( "running featureForm init: %1" ).arg( mPyFormVarName ) );
 
       // Legacy
       if ( numArgs == QLatin1String( "3" ) )
@@ -1654,13 +1656,13 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         addWidgetWrapper( eww );
 
         newWidgetInfo.widget->setObjectName( fields.at( fldIdx ).name() );
-        newWidgetInfo.hint = fields.at( fieldDef->idx() ).comment();
+        newWidgetInfo.hint = fields.at( fldIdx ).comment();
       }
 
-      newWidgetInfo.labelOnTop = mLayer->editFormConfig().labelOnTop( fieldDef->idx() );
-      newWidgetInfo.labelText = mLayer->attributeDisplayName( fieldDef->idx() );
+      newWidgetInfo.labelOnTop = mLayer->editFormConfig().labelOnTop( fldIdx );
+      newWidgetInfo.labelText = mLayer->attributeDisplayName( fldIdx );
       newWidgetInfo.labelText.replace( '&', QStringLiteral( "&&" ) ); // need to escape '&' or they'll be replace by _ in the label text
-      newWidgetInfo.toolTip = QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( mLayer->attributeDisplayName( fieldDef->idx() ), newWidgetInfo.hint );
+      newWidgetInfo.toolTip = QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( mLayer->attributeDisplayName( fldIdx ), newWidgetInfo.hint );
       newWidgetInfo.showLabel = widgetDef->showLabel();
 
       break;
@@ -1744,7 +1746,10 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         if ( childDef->type() == QgsAttributeEditorElement::AeTypeContainer )
         {
           QgsAttributeEditorContainer *containerDef = static_cast<QgsAttributeEditorContainer *>( childDef );
-          registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
+          if ( containerDef->visibilityExpression().enabled() )
+          {
+            registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
+          }
         }
 
         if ( widgetInfo.labelText.isNull() )
@@ -1815,7 +1820,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
     }
 
     default:
-      QgsDebugMsg( "Unknown attribute editor widget type encountered..." );
+      QgsDebugMsg( QStringLiteral( "Unknown attribute editor widget type encountered..." ) );
       break;
   }
 

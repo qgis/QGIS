@@ -551,12 +551,12 @@ class TestQgsDistanceArea(unittest.TestCase):
 
         print(("measured {} in {}".format(area, QgsUnitTypes.toString(units))))
         # should always be in Meters Squared
-        self.assertAlmostEqual(area, 37416879192.9, delta=0.1)
+        self.assertAlmostEqual(area, 36918093794.121284, delta=0.1)
         self.assertEqual(units, QgsUnitTypes.AreaSquareMeters)
 
         # test converting the resultant area
         area = da.convertAreaMeasurement(area, QgsUnitTypes.AreaSquareMiles)
-        self.assertAlmostEqual(area, 14446.7378, delta=0.001)
+        self.assertAlmostEqual(area, 14254.155703182701, delta=0.001)
 
         # now try with a source CRS which is in feet
         polygon = QgsGeometry.fromPolygonXY(
@@ -582,12 +582,12 @@ class TestQgsDistanceArea(unittest.TestCase):
         area = da.measureArea(polygon)
         units = da.areaUnits()
         print(("measured {} in {}".format(area, QgsUnitTypes.toString(units))))
-        self.assertAlmostEqual(area, 184149.37, delta=1.0)
+        self.assertAlmostEqual(area, 185818.59096575077, delta=1.0)
         self.assertEqual(units, QgsUnitTypes.AreaSquareMeters)
 
         # test converting the resultant area
         area = da.convertAreaMeasurement(area, QgsUnitTypes.AreaSquareYards)
-        self.assertAlmostEqual(area, 220240.8172549, delta=1.0)
+        self.assertAlmostEqual(area, 222237.18521272976, delta=1.0)
 
     def testFormatDistance(self):
         """Test formatting distances"""

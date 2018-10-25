@@ -19,6 +19,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+
 #include "qgswfsutils.h"
 #include "qgsserverprojectutils.h"
 #include "qgsfields.h"
@@ -31,6 +33,8 @@
 #include "qgsfilterrestorer.h"
 #include "qgsogcutils.h"
 #include "qgswfstransaction.h"
+#include "qgsproject.h"
+
 
 namespace QgsWfs
 {
@@ -1089,7 +1093,7 @@ namespace QgsWfs
       typeName = typeName.section( ':', 1, 1 );
 
     QDomNodeList propertyNodeList = actionElem.elementsByTagName( QStringLiteral( "Property" ) );
-    if ( propertyNodeList.size() != 1 )
+    if ( propertyNodeList.isEmpty() )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "Update action element must have one or more Property element" ) );
     }

@@ -40,19 +40,31 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
+    void keyReleaseEvent( QKeyEvent *e ) override;
     void deactivate() override;
 
   protected:
     //! stores actual zoom rect
     QRect mZoomRect;
+    // minimum pixel size of diagonal of the zoom rectangle
+    int mMinPixelZoom = 20;
 
     //! indicates whether we're zooming in or out
     bool mZoomOut;
+    //! native tool
+    bool mNativeZoomOut;
 
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
 
     QgsRubberBand *mRubberBand = nullptr;
+
+    QCursor mZoomOutCursor;
+    QCursor mZoomInCursor;
+
+  private:
+    void setZoomMode( bool zoomOut, bool force = false );
 };
 
 #endif

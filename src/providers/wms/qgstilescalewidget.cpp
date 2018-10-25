@@ -55,7 +55,7 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
   mResolutions.clear();
   Q_FOREACH ( const QVariant &r, res.toList() )
   {
-    QgsDebugMsg( QString( "found resolution: %1" ).arg( r.toDouble() ) );
+    QgsDebugMsg( QStringLiteral( "found resolution: %1" ).arg( r.toDouble() ) );
     mResolutions << r.toDouble();
   }
 
@@ -82,20 +82,20 @@ void QgsTileScaleWidget::scaleChanged( double scale )
     return;
 
   double mupp = mMapCanvas->mapUnitsPerPixel();
-  QgsDebugMsg( QString( "resolution changed to %1" ).arg( mupp ) );
+  QgsDebugMsg( QStringLiteral( "resolution changed to %1" ).arg( mupp ) );
 
   int i;
   for ( i = 0; i < mResolutions.size() && mResolutions.at( i ) < mupp; i++ )
-    QgsDebugMsg( QString( "test resolution %1: %2 d:%3" ).arg( i ).arg( mResolutions.at( i ) ).arg( mupp - mResolutions.at( i ) ) );
+    QgsDebugMsg( QStringLiteral( "test resolution %1: %2 d:%3" ).arg( i ).arg( mResolutions.at( i ) ).arg( mupp - mResolutions.at( i ) ) );
 
   if ( i == mResolutions.size() ||
        ( i > 0 && mResolutions.at( i ) - mupp > mupp - mResolutions.at( i - 1 ) ) )
   {
-    QgsDebugMsg( "previous resolution" );
+    QgsDebugMsg( QStringLiteral( "previous resolution" ) );
     i--;
   }
 
-  QgsDebugMsg( QString( "selected resolution %1: %2" ).arg( i ).arg( mResolutions.at( i ) ) );
+  QgsDebugMsg( QStringLiteral( "selected resolution %1: %2" ).arg( i ).arg( mResolutions.at( i ) ) );
   mSlider->blockSignals( true );
   mSlider->setValue( i );
   mSlider->blockSignals( false );
@@ -103,7 +103,7 @@ void QgsTileScaleWidget::scaleChanged( double scale )
 
 void QgsTileScaleWidget::mSlider_valueChanged( int value )
 {
-  QgsDebugMsg( QString( "slider released at %1: %2" ).arg( mSlider->value() ).arg( mResolutions.at( mSlider->value() ) ) );
+  QgsDebugMsg( QStringLiteral( "slider released at %1: %2" ).arg( mSlider->value() ).arg( mResolutions.at( mSlider->value() ) ) );
 
   // Invert value in tooltip to match expectation (i.e. 0 = zoomed out, maximum = zoomed in)
   QToolTip::showText( QCursor::pos(), tr( "Zoom level: %1" ).arg( mSlider->maximum() - value ) + "\n" + tr( "Resolution: %1" ).arg( mResolutions.at( value ) ), this );
@@ -125,10 +125,10 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   }
 
   QgsMapCanvas *canvas = mainWindow->findChild<QgsMapCanvas *>( QStringLiteral( "theMapCanvas" ) );
-  QgsDebugMsg( QString( "canvas:%1 [%2]" ).arg( ( quint64 ) canvas, 0, 16 ).arg( canvas ? canvas->objectName() : "" ) );
+  QgsDebugMsg( QStringLiteral( "canvas:%1 [%2]" ).arg( ( quint64 ) canvas, 0, 16 ).arg( canvas ? canvas->objectName() : "" ) );
   if ( !canvas )
   {
-    QgsDebugMsg( "map canvas mapCanvas not found" );
+    QgsDebugMsg( QStringLiteral( "map canvas mapCanvas not found" ) );
     return;
   }
 
@@ -143,7 +143,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   }
   else
   {
-    QgsDebugMsg( "legend not found" );
+    QgsDebugMsg( QStringLiteral( "legend not found" ) );
   }
 
   //create the dock widget
@@ -163,7 +163,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   }
   else
   {
-    QgsDebugMsg( "panel menu not found" );
+    QgsDebugMsg( QStringLiteral( "panel menu not found" ) );
   }
 
   dock->setWidget( tws );

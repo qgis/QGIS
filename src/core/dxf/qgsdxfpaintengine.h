@@ -23,8 +23,8 @@
 #include "qgis_core.h"
 #include <QPaintEngine>
 #include "qgsabstractgeometry.h"
-#include "qgspoint.h"
 
+class QgsPoint;
 class QgsDxfExport;
 class QgsDxfPaintDevice;
 

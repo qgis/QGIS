@@ -25,8 +25,7 @@ __copyright__ = '(C) 2015, Giovanni Manghi'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsProcessing,
-                       QgsProcessingException,
+from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
@@ -61,7 +60,7 @@ class Dissolve(GdalAlgorithm):
                                                       self.tr('Dissolve field'),
                                                       None,
                                                       self.INPUT,
-                                                      QgsProcessingParameterField.Any))
+                                                      QgsProcessingParameterField.Any, optional=True))
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY,
                                                        self.tr('Geometry column name'),
                                                        defaultValue='geometry'))
@@ -85,7 +84,7 @@ class Dissolve(GdalAlgorithm):
                                                   self.tr('Numeric attribute to calculate statistics on'),
                                                   None,
                                                   self.INPUT,
-                                                  QgsProcessingParameterField.Any,
+                                                  QgsProcessingParameterField.Numeric,
                                                   optional=True))
         params.append(QgsProcessingParameterString(self.OPTIONS,
                                                    self.tr('Additional creation options'),
@@ -136,7 +135,7 @@ class Dissolve(GdalAlgorithm):
             other_fields.append(f.name())
 
         if other_fields:
-            other_fields = ', {}'.format(','.join(other_fields))
+            other_fields = ',*'
         else:
             other_fields = ''
 
@@ -154,21 +153,23 @@ class Dissolve(GdalAlgorithm):
         if self.parameterAsBool(parameters, self.COMPUTE_AREA, context):
             tokens.append("SUM(ST_Area({0})) AS area, ST_Perimeter(ST_Union({0})) AS perimeter".format(geometry))
 
-        statsField = self.parameterAsString(parameters, self.FIELD, context)
+        statsField = self.parameterAsString(parameters, self.STATISTICS_ATTRIBUTE, context)
         if statsField and self.parameterAsBool(parameters, self.COMPUTE_STATISTICS, context):
             tokens.append("SUM({0}) AS sum, MIN({0}) AS min, MAX({0}) AS max, AVG({0}) AS avg".format(statsField))
 
         params = ','.join(tokens)
         if params:
-            if self.parameterAsBool(parameters, self.KEEP_ATTRIBUTES, context):
-                sql = "SELECT ST_Union({}) AS {}{}, {} FROM {} GROUP BY {}".format(geometry, geometry, other_fields, params, layerName, fieldName)
-            else:
-                sql = "SELECT ST_Union({}) AS {}, {}, {} FROM {} GROUP BY {}".format(geometry, geometry, fieldName, params, layerName, fieldName)
+            params = ', ' + params
+
+        group_by = ''
+        if fieldName:
+            group_by = ' GROUP BY {}'.format(fieldName)
+
+        if self.parameterAsBool(parameters, self.KEEP_ATTRIBUTES, context):
+            sql = "SELECT ST_Union({}) AS {}{}{} FROM '{}'{}".format(geometry, geometry, other_fields, params, layerName, group_by)
         else:
-            if self.parameterAsBool(parameters, self.KEEP_ATTRIBUTES, context):
-                sql = "SELECT ST_Union({}) AS {}{} FROM {} GROUP BY {}".format(geometry, geometry, other_fields, layerName, fieldName)
-            else:
-                sql = "SELECT ST_Union({}) AS {}, {} FROM {} GROUP BY {}".format(geometry, geometry, fieldName, layerName, fieldName)
+            sql = "SELECT ST_Union({}) AS {}{}{} FROM '{}'{}".format(geometry, geometry, ', ' + fieldName if fieldName else '',
+                                                                     params, layerName, group_by)
 
         arguments.append(sql)
 

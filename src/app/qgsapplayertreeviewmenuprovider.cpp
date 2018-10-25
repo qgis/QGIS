@@ -39,6 +39,8 @@
 #include "qgssymbolselectordialog.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
+#include "qgsxmlutils.h"
+
 
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
@@ -328,7 +330,13 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           for ( int row = 0; row < model->rowCount(); ++row )
           {
             QModelIndex index = model->index( row, 0 );
+#if QT_VERSION <= 0x050601
+            // in Qt 5.6.1 and former, QVariant does not correctly convert enum using value
+            // see https://bugreports.qt.io/browse/QTBUG-53384
+            QgsMapLayer::StyleCategory category = static_cast<QgsMapLayer::StyleCategory>( model->data( index, Qt::UserRole ).toInt() );
+#else
             QgsMapLayer::StyleCategory category = model->data( index, Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
+#endif
             QString name = model->data( index, Qt::DisplayRole ).toString();
             QString tooltip = model->data( index, Qt::ToolTipRole ).toString();
             QIcon icon = model->data( index, Qt::DecorationRole ).value<QIcon>();
@@ -349,24 +357,44 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         {
           if ( layer->type() == QgsMapLayer::VectorLayer )
           {
-            QMenu *pasteStyleMenu = menuStyleManager->addMenu( tr( "Paste Style" ) );
-            pasteStyleMenu->setToolTipsVisible( true );
-
-            QgsMapLayerStyleCategoriesModel *model = new QgsMapLayerStyleCategoriesModel( pasteStyleMenu );
-            model->setShowAllCategories( true );
-            for ( int row = 0; row < model->rowCount(); ++row )
+            QDomDocument doc( QStringLiteral( "qgis" ) );
+            QString errorMsg;
+            int errorLine, errorColumn;
+            if ( doc.setContent( app->clipboard()->data( QGSCLIPBOARD_STYLE_MIME ), false, &errorMsg, &errorLine, &errorColumn ) )
             {
-              QModelIndex index = model->index( row, 0 );
-              QgsMapLayer::StyleCategory category = model->data( index, Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
-              QString name = model->data( index, Qt::DisplayRole ).toString();
-              QString tooltip = model->data( index, Qt::ToolTipRole ).toString();
-              QIcon icon = model->data( index, Qt::DecorationRole ).value<QIcon>();
-              QAction *copyAction = new QAction( icon, name, pasteStyleMenu );
-              copyAction->setToolTip( tooltip );
-              connect( copyAction, &QAction::triggered, this, [ = ]() {app->pasteStyle( layer, category );} );
-              pasteStyleMenu->addAction( copyAction );
-              if ( category == QgsMapLayer::AllStyleCategories )
-                pasteStyleMenu->addSeparator();
+              QDomElement myRoot = doc.firstChildElement( QStringLiteral( "qgis" ) );
+              if ( !myRoot.isNull() )
+              {
+                QMenu *pasteStyleMenu = menuStyleManager->addMenu( tr( "Paste Style" ) );
+                pasteStyleMenu->setToolTipsVisible( true );
+
+                QgsMapLayer::StyleCategories sourceCategories = QgsXmlUtils::readFlagAttribute( myRoot, QStringLiteral( "styleCategories" ), QgsMapLayer::AllStyleCategories );
+
+                QgsMapLayerStyleCategoriesModel *model = new QgsMapLayerStyleCategoriesModel( pasteStyleMenu );
+                model->setShowAllCategories( true );
+                for ( int row = 0; row < model->rowCount(); ++row )
+                {
+                  QModelIndex index = model->index( row, 0 );
+#if QT_VERSION <= 0x050601
+                  // in Qt 5.6.1 and former, QVariant does not correctly convert enum using value
+                  // see https://bugreports.qt.io/browse/QTBUG-53384
+                  QgsMapLayer::StyleCategory category = static_cast<QgsMapLayer::StyleCategory>( model->data( index, Qt::UserRole ).toInt() );
+#else
+                  QgsMapLayer::StyleCategory category = model->data( index, Qt::UserRole ).value<QgsMapLayer::StyleCategory>();
+#endif
+                  QString name = model->data( index, Qt::DisplayRole ).toString();
+                  QString tooltip = model->data( index, Qt::ToolTipRole ).toString();
+                  QIcon icon = model->data( index, Qt::DecorationRole ).value<QIcon>();
+                  QAction *pasteAction = new QAction( icon, name, pasteStyleMenu );
+                  pasteAction->setToolTip( tooltip );
+                  connect( pasteAction, &QAction::triggered, this, [ = ]() {app->pasteStyle( layer, category );} );
+                  pasteStyleMenu->addAction( pasteAction );
+                  if ( category == QgsMapLayer::AllStyleCategories )
+                    pasteStyleMenu->addSeparator();
+                  else
+                    pasteAction->setEnabled( sourceCategories.testFlag( category ) );
+                }
+              }
             }
           }
           else
@@ -554,12 +582,12 @@ QList< LegendLayerAction > QgsAppLayerTreeViewMenuProvider::legendLayerActions( 
 #ifdef QGISDEBUG
   if ( mLegendLayerActionMap.contains( type ) )
   {
-    QgsDebugMsg( QString( "legendLayerActions for layers of type %1:" ).arg( type ) );
+    QgsDebugMsg( QStringLiteral( "legendLayerActions for layers of type %1:" ).arg( type ) );
 
     Q_FOREACH ( const LegendLayerAction &lyrAction, mLegendLayerActionMap[ type ] )
     {
       Q_UNUSED( lyrAction );
-      QgsDebugMsg( QString( "%1/%2 - %3 layers" ).arg( lyrAction.menu, lyrAction.action->text() ).arg( lyrAction.layers.count() ) );
+      QgsDebugMsg( QStringLiteral( "%1/%2 - %3 layers" ).arg( lyrAction.menu, lyrAction.action->text() ).arg( lyrAction.layers.count() ) );
     }
   }
 #endif

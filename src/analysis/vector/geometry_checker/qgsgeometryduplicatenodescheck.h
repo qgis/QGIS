@@ -23,13 +23,20 @@
 class ANALYSIS_EXPORT QgsGeometryDuplicateNodesCheck : public QgsGeometryCheck
 {
   public:
-    explicit QgsGeometryDuplicateNodesCheck( QgsGeometryCheckerContext *context )
-      : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
-    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
+    explicit QgsGeometryDuplicateNodesCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
+      : QgsGeometryCheck( context, configuration ) {}
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
+    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Duplicate node" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometryDuplicateNodesCheck" ); }
+    static QString factoryDescription() { return tr( "Duplicate node" ); }
+    QString description() const override { return factoryDescription(); }
+    static QString factoryId() { return QStringLiteral( "QgsGeometryDuplicateNodesCheck" ); }
+    QString id() const override { return factoryId(); }
+    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
+    static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
     enum ResolutionMethod { RemoveDuplicates, NoChange };
 };

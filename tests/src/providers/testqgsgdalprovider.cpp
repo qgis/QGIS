@@ -52,6 +52,9 @@ class TestQgsGdalProvider : public QObject
     void isRepresentableValue();
     void mask();
     void bandName(); // test band name based on `gtiff` tags (#7317)
+    void bandNameNoDescription(); // test band name for when no description or tags available (#16047)
+    void bandNameWithDescription(); // test band name for when description available (#16047)
+    void interactionBetweenRasterChangeAndCache(); // test that updading a raster invalidates the GDAL dataset cache (#20104)
 
   private:
     QString mTestDataDir;
@@ -249,11 +252,72 @@ void TestQgsGdalProvider::bandName()
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
-  if ( rp )
-  {
-    qDebug() << "Band Name 1: " << rp->generateBandName( 1 );
-    QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1 / wvln=1.234 (um)" ) );
-  }
+  QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1: wvln=1.234 (um)" ) );
+  delete provider;
+}
+
+void TestQgsGdalProvider::bandNameNoDescription()
+{
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
+  QVERIFY( rp );
+  QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1" ) );
+  delete provider;
+}
+
+void TestQgsGdalProvider::bandNameWithDescription()
+{
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_desc.tif";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
+  QVERIFY( rp );
+  QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1: 1.234 um" ) );
+  delete provider;
+}
+
+void TestQgsGdalProvider::interactionBetweenRasterChangeAndCache()
+{
+  double geoTransform[6] = { 0, 2, 0, 0, 0, -2};
+  QgsCoordinateReferenceSystem crs;
+  QString filename = QStringLiteral( "/vsimem/temp.tif" );
+
+  // Create a all-0 dataset
+  auto provider = QgsRasterDataProvider::create(
+                    QStringLiteral( "gdal" ), filename, "GTiff", 1, Qgis::Byte, 1, 1, geoTransform, crs );
+  delete provider;
+
+  // Open it
+  provider = dynamic_cast< QgsRasterDataProvider * >(
+               QgsProviderRegistry::instance()->createProvider(
+                 QStringLiteral( "gdal" ), filename, QgsDataProvider::ProviderOptions() ) );
+  QVERIFY( provider );
+  auto rp = dynamic_cast< QgsRasterDataProvider * >( provider );
+  QVERIFY( rp );
+
+  // Create a first clone, and destroys it
+  auto rpClone = dynamic_cast< QgsRasterDataProvider *>( rp->clone() );
+  QVERIFY( rpClone );
+  QCOMPARE( rpClone->sample( QgsPointXY( 0.5, -0.5 ), 1 ), 0.0 );
+  delete rpClone;
+  // Now the main provider should have a cached GDAL dataset corresponding
+  // to the one that was used by rpClone
+
+  // Modify the raster
+  rp->setEditable( true );
+  auto rblock = new QgsRasterBlock( Qgis::Byte, 1, 1 );
+  rblock->setValue( 0, 0, 255 );
+  rp->writeBlock( rblock, 1, 0, 0 );
+  delete rblock;
+  rp->setEditable( false );
+
+  // Creates a new clone, and check that we get an updated sample value
+  rpClone = dynamic_cast< QgsRasterDataProvider *>( rp->clone() );
+  QVERIFY( rpClone );
+  QCOMPARE( rpClone->sample( QgsPointXY( 0.5, -0.5 ), 1 ), 255.0 );
+  delete rpClone;
+
+  provider->remove();
   delete provider;
 }
 

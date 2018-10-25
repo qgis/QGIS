@@ -13,6 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QAction>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QInputDialog>
+
 #include <sqlite3.h>
 
 #include "qgssqliteutils.h"
@@ -33,11 +38,7 @@
 #include "qgsgeopackagerasterwritertask.h"
 #include "qgstaskmanager.h"
 #include "qgsproviderregistry.h"
-
-#include <QAction>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QInputDialog>
+#include "qgsproxyprogresstask.h"
 
 QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
 
@@ -172,7 +173,7 @@ QWidget *QgsGeoPackageRootItem::paramWidget()
 
 QList<QAction *> QgsGeoPackageCollectionItem::actions( QWidget *parent )
 {
-  QList<QAction *> lst;
+  QList<QAction *> lst = QgsDataCollectionItem::actions( parent );
 
   if ( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ).contains( mName ) )
   {
@@ -193,7 +194,72 @@ QList<QAction *> QgsGeoPackageCollectionItem::actions( QWidget *parent )
   connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageCollectionItem::addTable );
   lst.append( actionAddTable );
 
+  QAction *sep = new QAction( parent );
+  sep->setSeparator( true );
+  lst.append( sep );
+
+  QString message = QObject::tr( "Delete %1…" ).arg( mName );
+  QAction *actionDelete = new QAction( message, parent );
+
+  // IMPORTANT - we need to capture the stuff we need, and then hand the slot
+  // off to a static method. This is because it's possible for this item
+  // to be deleted in the background on us (e.g. by a parent directory refresh)
+  const QString path = mPath;
+  QPointer< QgsDataItem > parentItem( mParent );
+  connect( actionDelete, &QAction::triggered, this, [ path, parentItem ]
+  {
+    deleteGpkg( path, parentItem );
+  } );
+  lst.append( actionDelete );
+
+  // Run VACUUM
+  QAction *actionVacuumDb = new QAction( tr( "Compact Database (VACUUM)" ), parent );
+  connect( actionVacuumDb, &QAction::triggered, this, &QgsGeoPackageConnectionItem::vacuumGeoPackageDbAction );
+  lst.append( actionVacuumDb );
+
+
   return lst;
+}
+
+void QgsGeoPackageCollectionItem::deleteGpkg( const QString &path, QPointer<QgsDataItem> parent )
+{
+  const QString title = QObject::tr( "Delete GeoPackage" );
+  // Check if the layer is in the project
+  const QgsMapLayer *projectLayer = nullptr;
+  const auto mapLayers = QgsProject::instance()->mapLayers();
+  for ( auto it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
+  {
+    const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( it.value()->dataProvider()->name(), it.value()->source() );
+    if ( parts.value( QStringLiteral( "path" ) ).toString() == path )
+    {
+      projectLayer = it.value();
+    }
+  }
+  if ( ! projectLayer )
+  {
+    const QString confirmMessage = QObject::tr( "Are you sure you want to delete '%1'?" ).arg( path );
+
+    if ( QMessageBox::question( nullptr, title,
+                                confirmMessage,
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      return;
+
+    if ( !QFile::remove( path ) )
+    {
+      QMessageBox::warning( nullptr, title, tr( "Could not delete GeoPackage." ) );
+    }
+    else
+    {
+      QMessageBox::information( nullptr, title, tr( "GeoPackage deleted successfully." ) );
+      if ( parent )
+        parent->refresh();
+    }
+  }
+  else
+  {
+    QMessageBox::warning( nullptr, title, QObject::tr( "The GeoPackage '%1' cannot be deleted because it is in the current project as '%2',"
+                          " remove it from the project and retry." ).arg( path, projectLayer->name() ) );
+  }
 }
 
 bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
@@ -371,10 +437,9 @@ QList<QAction *> QgsGeoPackageConnectionItem::actions( QWidget *parent )
   lst.append( actionAddTable );
 
   // Run VACUUM
-  QAction *actionVacuumDb = new QAction( tr( "Compact database (VACUUM)" ), parent );
+  QAction *actionVacuumDb = new QAction( tr( "Compact Database (VACUUM)" ), parent );
   connect( actionVacuumDb, &QAction::triggered, this, &QgsGeoPackageConnectionItem::vacuumGeoPackageDbAction );
   lst.append( actionVacuumDb );
-
 
   return lst;
 }
@@ -410,11 +475,7 @@ void QgsGeoPackageCollectionItem::vacuumGeoPackageDbAction()
 {
   QString errCause;
   bool result = QgsGeoPackageCollectionItem::vacuumGeoPackageDb( mPath, mName, errCause );
-  if ( result && errCause.isEmpty() )
-  {
-    QMessageBox::information( nullptr, tr( "Database compact (VACUUM)" ), tr( "Database <b>%1</b> has been compacted successfully." ).arg( mName ) );
-  }
-  else
+  if ( !result || !errCause.isEmpty() )
   {
     QMessageBox::warning( nullptr, tr( "Database compact (VACUUM)" ), errCause );
   }
@@ -471,6 +532,8 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
 
 bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &path, const QString &name, QString &errCause )
 {
+  QgsScopedProxyProgressTask task( tr( "Vacuuming %1" ).arg( name ) );
+
   bool result = false;
   // Better safe than sorry
   if ( ! path.isEmpty( ) )

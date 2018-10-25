@@ -111,11 +111,7 @@ class ConfigDialog(BASE, WIDGET):
         super(ConfigDialog, self).__init__(None)
         self.setupUi(self)
 
-        self.groupIcon = QIcon()
-        self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirClosedIcon, None), QIcon.Normal, QIcon.Off)
-        self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirOpenIcon, None), QIcon.Normal, QIcon.On)
+        self.groupIcon = QgsApplication.getThemeIcon('mIconFolder.svg')
 
         self.model = QStandardItemModel()
         self.tree.setModel(self.model)

@@ -29,6 +29,7 @@ class QgsRectangle;
 #include "qgspointxy.h"
 #include <memory>
 #include <QList>
+#include <functional>
 
 /**
  * \class QgsSpatialIndexKDBush

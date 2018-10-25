@@ -296,7 +296,7 @@ bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
       int sampleSize = 250000; // number of sample cells
       if ( !mRasterLayer->dataProvider()->hasHistogram( myIteratorInt, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize ) )
       {
-        QgsDebugMsg( QString( "band %1 does not have cached histo" ).arg( myIteratorInt ) );
+        QgsDebugMsg( QStringLiteral( "band %1 does not have cached histo" ).arg( myIteratorInt ) );
         return false;
       }
     }
@@ -341,7 +341,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
 
   if ( ! computeHistogram( false ) )
   {
-    QgsDebugMsg( QString( "raster does not have cached histogram" ) );
+    QgsDebugMsg( QStringLiteral( "raster does not have cached histogram" ) );
     stackedWidget2->setCurrentIndex( 2 );
     return;
   }
@@ -486,7 +486,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
 
     QgsRasterHistogram myHistogram = mRasterLayer->dataProvider()->histogram( myIteratorInt, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize, false, feedback.get() );
 
-    QgsDebugMsg( QString( "got raster histo for band %1 : min=%2 max=%3 count=%4" ).arg( myIteratorInt ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myHistogram.binCount ) );
+    QgsDebugMsg( QStringLiteral( "got raster histo for band %1 : min=%2 max=%3 count=%4" ).arg( myIteratorInt ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myHistogram.binCount ) );
 
     Qgis::DataType mySrcDataType = mRasterLayer->dataProvider()->sourceDataType( myIteratorInt );
     bool myDrawLines = true;
@@ -566,7 +566,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
     {
       mHistoMax = myHistogram.maximum;
     }
-    QgsDebugMsg( QString( "computed histo min = %1 max = %2" ).arg( mHistoMin ).arg( mHistoMax ) );
+    QgsDebugMsg( QStringLiteral( "computed histo min = %1 max = %2" ).arg( mHistoMin ).arg( mHistoMax ) );
     myFirstIteration = false;
   }
 
@@ -648,7 +648,7 @@ bool QgsRasterHistogramWidget::histoSaveAsImage( const QString &filename,
   QDir myDir( myInfo.dir() );
   if ( ! myDir.exists() )
   {
-    QgsDebugMsg( QString( "Error, directory %1 non-existent (theFilename = %2)" ).arg( myDir.absolutePath(), filename ) );
+    QgsDebugMsg( QStringLiteral( "Error, directory %1 non-existent (theFilename = %2)" ).arg( myDir.absolutePath(), filename ) );
     return false;
   }
 
@@ -717,7 +717,7 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
     return;
 
   // this approach is a bit of a hack, but this way we don't have to define slots for each action
-  QgsDebugMsg( QString( "band = %1 action = %2" ).arg( cboHistoBand->currentIndex() + 1 ).arg( actionName ) );
+  QgsDebugMsg( QStringLiteral( "band = %1 action = %2" ).arg( cboHistoBand->currentIndex() + 1 ).arg( actionName ) );
 
   // checkeable actions
   if ( actionName == QLatin1String( "Show markers" ) )
@@ -1015,7 +1015,7 @@ QString findClosestTickVal( double target, const QwtScaleDiv *scale, int div = 1
     }
   }
 
-  // QgsDebugMsg( QString( "target=%1 div=%2 closest=%3" ).arg( target ).arg( div ).arg( closest ) );
+  // QgsDebugMsg( QStringLiteral( "target=%1 div=%2 closest=%3" ).arg( target ).arg( div ).arg( closest ) );
   return QString::number( closest );
 }
 
@@ -1179,7 +1179,7 @@ QPair< QString, QString > QgsRasterHistogramWidget::rendererMinMax( int bandNo )
   if ( myMinMax.second.isEmpty() )
     myMinMax.second = QString::number( mHistoMax );
 
-  QgsDebugMsg( QString( "bandNo %1 got min/max [%2] [%3]" ).arg( bandNo ).arg( myMinMax.first, myMinMax.second ) );
+  QgsDebugMsg( QStringLiteral( "bandNo %1 got min/max [%2] [%3]" ).arg( bandNo ).arg( myMinMax.first, myMinMax.second ) );
 
   return myMinMax;
 }

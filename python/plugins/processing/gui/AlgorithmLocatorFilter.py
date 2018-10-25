@@ -35,6 +35,7 @@ from qgis.core import (QgsApplication,
                        QgsWkbTypes,
                        QgsMapLayer,
                        QgsFields)
+from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmExecutor import execute_in_place
@@ -136,7 +137,7 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
         # collect results in main thread, since this method is inexpensive and
         # accessing the processing registry/current layer is not thread safe
 
-        if iface.activeLayer() is None or iface.activeLayer().type() != QgsMapLayer.VectorLayer or not iface.activeLayer().selectedFeatureCount():
+        if iface.activeLayer() is None or iface.activeLayer().type() != QgsMapLayer.VectorLayer:
             return
 
         for a in QgsApplication.processingRegistry().algorithms():
@@ -170,8 +171,8 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
                 dlg.exec_()
                 return
 
-            if len(alg.parameterDefinitions()) > 2:
-                # hack!!
+            if [d for d in alg.parameterDefinitions() if
+                    d.name() not in ('INPUT', 'OUTPUT')]:
                 dlg = alg.createCustomParametersWidget(None)
                 if not dlg:
                     dlg = AlgorithmDialog(alg, True)
@@ -186,5 +187,6 @@ class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
                         pass
                     canvas.setMapTool(prevMapTool)
             else:
+                feedback = MessageBarProgress(algname=alg.displayName())
                 parameters = {}
-                execute_in_place(alg, parameters)
+                execute_in_place(alg, parameters, feedback=feedback)

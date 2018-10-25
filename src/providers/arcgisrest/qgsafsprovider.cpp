@@ -44,12 +44,15 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   mSharedData->mGeometryType = QgsWkbTypes::Unknown;
   mSharedData->mDataSource = QgsDataSourceUri( uri );
 
+  const QString authcfg = mSharedData->mDataSource.authConfigId();
+
   // Set CRS
   mSharedData->mSourceCRS.createFromString( mSharedData->mDataSource.param( QStringLiteral( "crs" ) ) );
 
   // Get layer info
   QString errorTitle, errorMessage;
-  const QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), errorTitle, errorMessage );
+  const QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ),
+                                authcfg, errorTitle, errorMessage );
   if ( layerData.isEmpty() )
   {
     pushError( errorTitle + ": " + errorMessage );
@@ -122,7 +125,8 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   QString objectIdFieldName;
 
   // Read fields
-  foreach ( const QVariant &fieldData, layerData["fields"].toList() )
+  const QVariantList fields = layerData.value( QStringLiteral( "fields" ) ).toList();
+  for ( const QVariant &fieldData : fields )
   {
     const QVariantMap fieldDataMap = fieldData.toMap();
     const QString fieldName = fieldDataMap[QStringLiteral( "name" )].toString();
@@ -139,7 +143,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     }
     if ( type == QVariant::Invalid )
     {
-      QgsDebugMsg( QString( "Skipping unsupported field %1 of type %2" ).arg( fieldName, fieldTypeString ) );
+      QgsDebugMsg( QStringLiteral( "Skipping unsupported field %1 of type %2" ).arg( fieldName, fieldTypeString ) );
       continue;
     }
     QgsField field( fieldName, type, fieldDataMap[QStringLiteral( "type" )].toString(), fieldDataMap[QStringLiteral( "length" )].toInt() );
@@ -162,7 +166,8 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   // Read OBJECTIDs of all features: these may not be a continuous sequence,
   // and we need to store these to iterate through the features. This query
   // also returns the name of the ObjectID field.
-  QVariantMap objectIdData = QgsArcGisRestUtils::getObjectIds( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), objectIdFieldName, errorTitle, errorMessage, limitBbox ? mSharedData->mExtent : QgsRectangle() );
+  QVariantMap objectIdData = QgsArcGisRestUtils::getObjectIds( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), authcfg,
+                             objectIdFieldName, errorTitle,  errorMessage, limitBbox ? mSharedData->mExtent : QgsRectangle() );
   if ( objectIdData.isEmpty() )
   {
     appendError( QgsErrorMessage( tr( "getObjectIds failed: %1 - %2" ).arg( errorTitle, errorMessage ), QStringLiteral( "AFSProvider" ) ) );
@@ -189,7 +194,8 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
       break;
     }
   }
-  foreach ( const QVariant &objectId, objectIdData["objectIds"].toList() )
+  const QVariantList objectIds = objectIdData.value( QStringLiteral( "objectIds" ) ).toList();
+  for ( const QVariant &objectId : objectIds )
   {
     mSharedData->mObjectIds.append( objectId.toInt() );
   }

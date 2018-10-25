@@ -19,13 +19,29 @@
 #define QGSMACNATIVE_H
 
 #include "qgsnative.h"
-#include <windows.h>
-#include <shlobj.h>
+#include <QAbstractNativeEventFilter>
+
+#include <Windows.h>
+#include <ShlObj.h>
 #pragma comment(lib,"Shell32.lib")
 
 class QWinTaskbarButton;
 class QWinTaskbarProgress;
 class QWindow;
+
+
+class QgsWinNativeEventFilter : public QObject, public QAbstractNativeEventFilter
+{
+    Q_OBJECT
+  public:
+
+    bool nativeEventFilter( const QByteArray &eventType, void *message, long * ) override;
+
+  signals:
+
+    void usbStorageNotification( const QString &path, bool inserted );
+};
+
 
 class NATIVE_EXPORT QgsWinNative : public QgsNative
 {
@@ -49,6 +65,8 @@ class NATIVE_EXPORT QgsWinNative : public QgsNative
     bool mWinToastInitialized = false;
     QWinTaskbarButton *mTaskButton = nullptr;
     QWinTaskbarProgress *mTaskProgress = nullptr;
+    QgsWinNativeEventFilter *mNativeEventFilter = nullptr;
+
 };
 
 #endif // QGSMACNATIVE_H

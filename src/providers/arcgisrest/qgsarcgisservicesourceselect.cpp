@@ -118,11 +118,11 @@ void QgsArcGisServiceSourceSelect::populateImageEncodings( const QStringList &av
     delete item;
   }
   bool first = true;
-  QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-  foreach ( const QString &encoding, availableEncodings )
+  const QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+  for ( const QString &encoding : availableEncodings )
   {
     bool supported = false;
-    foreach ( const QByteArray &fmt, supportedFormats )
+    for ( const QByteArray &fmt : supportedFormats )
     {
       if ( encoding.startsWith( fmt, Qt::CaseInsensitive ) )
       {
@@ -144,14 +144,14 @@ void QgsArcGisServiceSourceSelect::populateImageEncodings( const QStringList &av
 
 QString QgsArcGisServiceSourceSelect::getSelectedImageEncoding() const
 {
-  return mImageEncodingGroup ? mImageEncodingGroup->checkedButton()->text() : QString();
+  return mImageEncodingGroup && mImageEncodingGroup->checkedButton() ? mImageEncodingGroup->checkedButton()->text() : QString();
 }
 
 void QgsArcGisServiceSourceSelect::populateConnectionList()
 {
-  QStringList conns = QgsOwsConnection::connectionList( mServiceName );
+  const QStringList conns = QgsOwsConnection::connectionList( mServiceName );
   cmbConnections->clear();
-  foreach ( const QString &item, conns )
+  for ( const QString &item : conns )
   {
     cmbConnections->addItem( item );
   }
@@ -319,7 +319,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
       Q_NOWARN_DEPRECATED_PUSH
       extent = QgsCoordinateTransform( canvasCrs, pCrs ).transform( extent );
       Q_NOWARN_DEPRECATED_POP
-      QgsDebugMsg( QString( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" )
+      QgsDebugMsg( QStringLiteral( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" )
                    .arg( canvasCrs.authid(), pCrs.authid(), extent.asWktCoordinates() ) );
     }
     catch ( const QgsCsException & )
@@ -371,19 +371,20 @@ void QgsArcGisServiceSourceSelect::changeCrs()
 
 void QgsArcGisServiceSourceSelect::changeCrsFilter()
 {
-  QgsDebugMsg( "changeCRSFilter called" );
+  QgsDebugMsg( QStringLiteral( "changeCRSFilter called" ) );
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( currentIndex.isValid() )
   {
     QString currentTypename = currentIndex.sibling( currentIndex.row(), 1 ).data().toString();
-    QgsDebugMsg( QString( "the current typename is: %1" ).arg( currentTypename ) );
+    QgsDebugMsg( QStringLiteral( "the current typename is: %1" ).arg( currentTypename ) );
 
     QMap<QString, QStringList>::const_iterator crsIterator = mAvailableCRS.constFind( currentTypename );
     if ( crsIterator != mAvailableCRS.constEnd() )
     {
       QSet<QString> crsNames;
-      foreach ( const QString &crsName, crsIterator.value() )
+      const QStringList crsNamesList = crsIterator.value();
+      for ( const QString &crsName : crsNamesList )
       {
         crsNames.insert( crsName );
       }
@@ -411,7 +412,7 @@ void QgsArcGisServiceSourceSelect::cmbConnections_activated( int index )
 
 void QgsArcGisServiceSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex &index )
 {
-  QgsDebugMsg( "double-click called" );
+  QgsDebugMsg( QStringLiteral( "double-click called" ) );
   QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
   buildQuery( connection, index );
 }
@@ -419,7 +420,7 @@ void QgsArcGisServiceSourceSelect::treeWidgetItemDoubleClicked( const QModelInde
 void QgsArcGisServiceSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous )
 {
   Q_UNUSED( previous )
-  QgsDebugMsg( "treeWidget_currentRowChanged called" );
+  QgsDebugMsg( QStringLiteral( "treeWidget_currentRowChanged called" ) );
   changeCrsFilter();
   if ( mServiceType == FeatureService )
   {
@@ -430,7 +431,7 @@ void QgsArcGisServiceSourceSelect::treeWidgetCurrentRowChanged( const QModelInde
 
 void QgsArcGisServiceSourceSelect::buildQueryButtonClicked()
 {
-  QgsDebugMsg( "mBuildQueryButton click called" );
+  QgsDebugMsg( QStringLiteral( "mBuildQueryButton click called" ) );
   QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
   buildQuery( connection, treeView->selectionModel()->currentIndex() );
 }

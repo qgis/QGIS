@@ -171,6 +171,8 @@ class ProcessingPlugin:
         QgsApplication.dataItemProviderRegistry().addProvider(self.item_provider)
         self.locator_filter = AlgorithmLocatorFilter()
         iface.registerLocatorFilter(self.locator_filter)
+        # Invalidate the locator filter for in-place when active layer changes
+        iface.currentLayerChanged.connect(lambda _: self.iface.invalidateLocatorResults())
         self.edit_features_locator_filter = InPlaceAlgorithmLocatorFilter()
         iface.registerLocatorFilter(self.edit_features_locator_filter)
         Processing.initialize()
@@ -233,13 +235,13 @@ class ProcessingPlugin:
 
         self.toolbox.processingToolbar.addSeparator()
 
-        self.editSelectedAction = QAction(
+        self.editInPlaceAction = QAction(
             QgsApplication.getThemeIcon("/mActionProcessSelected.svg"),
-            self.tr('Edit Selected Features'), self.iface.mainWindow())
-        self.editSelectedAction.setObjectName('editSelectedFeatures')
-        self.editSelectedAction.setCheckable(True)
-        self.editSelectedAction.toggled.connect(self.editSelected)
-        self.toolbox.processingToolbar.addAction(self.editSelectedAction)
+            self.tr('Edit Features In-Place'), self.iface.mainWindow())
+        self.editInPlaceAction.setObjectName('editInPlaceFeatures')
+        self.editInPlaceAction.setCheckable(True)
+        self.editInPlaceAction.toggled.connect(self.editSelected)
+        self.toolbox.processingToolbar.addAction(self.editInPlaceAction)
 
         self.toolbox.processingToolbar.addSeparator()
 
@@ -266,18 +268,18 @@ class ProcessingPlugin:
         self.sync_in_place_button_state()
 
     def sync_in_place_button_state(self, layer=None):
-        """Synchronise the button state with layer state and selection"""
+        """Synchronise the button state with layer state"""
 
         if layer is None:
             layer = self.iface.activeLayer()
 
-        old_enabled_state = self.editSelectedAction.isEnabled()
+        old_enabled_state = self.editInPlaceAction.isEnabled()
 
-        new_enabled_state = layer is not None and layer.type() == QgsMapLayer.VectorLayer and layer.isEditable() and layer.selectedFeatureCount()
-        self.editSelectedAction.setEnabled(new_enabled_state)
+        new_enabled_state = layer is not None and layer.type() == QgsMapLayer.VectorLayer
+        self.editInPlaceAction.setEnabled(new_enabled_state)
 
         if new_enabled_state != old_enabled_state:
-            self.toolbox.set_in_place_edit_mode(new_enabled_state and self.editSelectedAction.isChecked())
+            self.toolbox.set_in_place_edit_mode(new_enabled_state and self.editInPlaceAction.isChecked())
 
     def openProcessingOptions(self):
         self.iface.showOptionsDialog(self.iface.mainWindow(), currentPage='processingOptions')

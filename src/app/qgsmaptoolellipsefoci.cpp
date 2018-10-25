@@ -19,7 +19,7 @@
 #include "qgslinestring.h"
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
 #include <memory>
 
 QgsMapToolEllipseFoci::QgsMapToolEllipseFoci( QgsMapToolCapture *parentTool,
@@ -38,7 +38,7 @@ void QgsMapToolEllipseFoci::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
-      mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+      mTempRubberBand = createGeometryRubberBand( mLayerType, true );
       mTempRubberBand->show();
     }
   }

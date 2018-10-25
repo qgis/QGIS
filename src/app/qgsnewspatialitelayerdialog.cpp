@@ -45,7 +45,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   : QDialog( parent, fl )
 {
   setupUi( this );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   connect( mAddAttributeButton, &QToolButton::clicked, this, &QgsNewSpatialiteLayerDialog::mAddAttributeButton_clicked );
   connect( mRemoveAttributeButton, &QToolButton::clicked, this, &QgsNewSpatialiteLayerDialog::mRemoveAttributeButton_clicked );
@@ -68,7 +68,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   mGeometryWithZCheckBox->setEnabled( false );
   mGeometryWithMCheckBox->setEnabled( false );
   leGeometryColumn->setEnabled( false );
-  leGeometryColumn->setText( "geometry" );
+  leGeometryColumn->setText( QStringLiteral( "geometry" ) );
 
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
@@ -312,7 +312,7 @@ bool QgsNewSpatialiteLayerDialog::createDb()
     bool loaded = myLib->load();
     if ( loaded )
     {
-      QgsDebugMsg( "SpatiaLite provider loaded" );
+      QgsDebugMsg( QStringLiteral( "SpatiaLite provider loaded" ) );
 
       typedef bool ( *createDbProc )( const QString &, QString & );
       createDbProc createDbPtr = ( createDbProc ) cast_to_fptr( myLib->resolve( "createDb" ) );
@@ -391,7 +391,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
   // complete the create table statement
   sql += ')';
 
-  QgsDebugMsg( QString( "Creating table in database %1" ).arg( mDatabaseComboBox->currentText() ) );
+  QgsDebugMsg( QStringLiteral( "Creating table in database %1" ).arg( mDatabaseComboBox->currentText() ) );
   QgsDebugMsg( sql );
 
   spatialite_database_unique_ptr database;
@@ -421,11 +421,11 @@ bool QgsNewSpatialiteLayerDialog::apply()
   if ( mGeometryTypeBox->currentIndex() != 0 )
   {
     QString sqlAddGeom = QStringLiteral( "select AddGeometryColumn(%1,%2,%3,%4,%5)" )
-                         .arg( quotedValue( leLayerName->text() ),
-                               quotedValue( leGeometryColumn->text() ) )
+                         .arg( QgsSqliteUtils::quotedString( leLayerName->text() ),
+                               QgsSqliteUtils::quotedString( leGeometryColumn->text() ) )
                          .arg( mCrsId.split( ':' ).value( 1, QStringLiteral( "0" ) ).toInt() )
-                         .arg( quotedValue( selectedType() ) )
-                         .arg( quotedValue( selectedZM() ) );
+                         .arg( QgsSqliteUtils::quotedString( selectedType() ) )
+                         .arg( QgsSqliteUtils::quotedString( selectedZM() ) );
     QgsDebugMsg( sqlAddGeom );
 
     rc = sqlite3_exec( database.get(), sqlAddGeom.toUtf8(), nullptr, nullptr, &errmsg );
@@ -439,8 +439,8 @@ bool QgsNewSpatialiteLayerDialog::apply()
     }
 
     QString sqlCreateIndex = QStringLiteral( "select CreateSpatialIndex(%1,%2)" )
-                             .arg( quotedValue( leLayerName->text() ),
-                                   quotedValue( leGeometryColumn->text() ) );
+                             .arg( QgsSqliteUtils::quotedString( leLayerName->text() ),
+                                   QgsSqliteUtils::quotedString( leGeometryColumn->text() ) );
     QgsDebugMsg( sqlCreateIndex );
 
     rc = sqlite3_exec( database.get(), sqlCreateIndex.toUtf8(), nullptr, nullptr, &errmsg );
@@ -486,12 +486,6 @@ QString QgsNewSpatialiteLayerDialog::quotedIdentifier( QString id )
 {
   id.replace( '\"', QLatin1String( "\"\"" ) );
   return id.prepend( '\"' ).append( '\"' );
-}
-
-QString QgsNewSpatialiteLayerDialog::quotedValue( QString value )
-{
-  value.replace( '\'', QLatin1String( "''" ) );
-  return value.prepend( '\'' ).append( '\'' );
 }
 
 void QgsNewSpatialiteLayerDialog::showHelp()

@@ -1161,7 +1161,7 @@ QString QgsSimpleMarkerSymbolLayer::ogrFeatureStyle( double mmScaleFactor, doubl
 
 QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::createFromSld( QDomElement &element )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
 
   QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
   if ( graphicElem.isNull() )
@@ -1400,7 +1400,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
   }
   else
   {
-    QgsDebugMsg( QString( "Unsupported dxf marker name %1" ).arg( encodeShape( shape ) ) );
+    QgsDebugMsg( QStringLiteral( "Unsupported dxf marker name %1" ).arg( encodeShape( shape ) ) );
     return false;
   }
 
@@ -2013,11 +2013,11 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   double hwRatio = 1.0;
   if ( !context.renderContext().forceVectorOutput() && !rotated )
   {
-    usePict = false;
     QImage img = QgsApplication::svgCache()->svgAsImage( path, size, fillColor, strokeColor, strokeWidth,
                  context.renderContext().scaleFactor(), fitsInCache, aspectRatio );
     if ( fitsInCache && img.width() > 1 )
     {
+      usePict = false;
       //consider transparency
       if ( !qgsDoubleNear( context.opacity(), 1.0 ) )
       {
@@ -2301,7 +2301,7 @@ void QgsSvgMarkerSymbolLayer::writeSldMarker( QDomDocument &doc, QDomElement &el
 
 QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
 
   QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
   if ( graphicElem.isNull() )
@@ -2940,7 +2940,7 @@ QRectF QgsFontMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &
 
 QgsSymbolLayer *QgsFontMarkerSymbolLayer::createFromSld( QDomElement &element )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
 
   QDomElement graphicElem = element.firstChildElement( QStringLiteral( "Graphic" ) );
   if ( graphicElem.isNull() )

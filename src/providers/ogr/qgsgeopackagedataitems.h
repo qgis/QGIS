@@ -37,7 +37,7 @@ class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
      */
     virtual bool executeDeleteLayer( QString &errCause );
 #ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
+    QList<QAction *> actions( QWidget *menu ) override;
   public slots:
     virtual void deleteLayer();
 #endif
@@ -83,6 +83,8 @@ class QgsGeoPackageCollectionItem : public QgsDataCollectionItem
     bool acceptDrop() override { return true; }
     bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
     QList<QAction *> actions( QWidget *parent ) override;
+    static void deleteGpkg( const QString &path, QPointer< QgsDataItem > parent );
+
 #endif
 
     //! Returns the layer type from \a geometryType

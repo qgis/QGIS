@@ -2209,7 +2209,7 @@ class TestQgsExpression: public QObject
       QgsExpression expArea2( QStringLiteral( "$area" ) );
       expArea2.setGeomCalculator( &da );
       vArea = expArea2.evaluate( &context );
-      expected = 1009089817.0;
+      expected = 1005721496.780085;
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
       // test unit conversion
       expArea2.setAreaUnits( QgsUnitTypes::AreaSquareMeters ); //default units should be square meters
@@ -2219,7 +2219,7 @@ class TestQgsExpression: public QObject
       vArea = expArea2.evaluate( &context );
       QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
       expArea2.setAreaUnits( QgsUnitTypes::AreaSquareMiles );
-      expected = 389.6117565069;
+      expected = 388.311241;
       vArea = expArea2.evaluate( &context );
       QGSCOMPARENEAR( vArea.toDouble(), expected, 0.001 );
 

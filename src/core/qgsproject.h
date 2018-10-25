@@ -40,7 +40,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsprojectproperty.h"
-#include "qgsmaplayer.h"
 #include "qgsmaplayerstore.h"
 #include "qgsarchive.h"
 #include "qgsreadwritecontext.h"
@@ -70,6 +69,7 @@ class QgsLayoutManager;
 class QgsLayerTree;
 class QgsLabelingEngineSettings;
 class QgsAuxiliaryStorage;
+class QgsMapLayer;
 
 /**
  * \ingroup core
@@ -93,6 +93,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged )
     Q_PROPERTY( QString homePath READ homePath WRITE setPresetHomePath NOTIFY homePathChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
+    Q_PROPERTY( QgsCoordinateTransformContext transformContext READ transformContext WRITE setTransformContext NOTIFY transformContextChanged )
     Q_PROPERTY( QString ellipsoid READ ellipsoid WRITE setEllipsoid NOTIFY ellipsoidChanged )
     Q_PROPERTY( QgsMapThemeCollection *mapThemeCollection READ mapThemeCollection NOTIFY mapThemeCollectionChanged )
     Q_PROPERTY( QgsSnappingConfig snappingConfig READ snappingConfig WRITE setSnappingConfig NOTIFY snappingConfigChanged )

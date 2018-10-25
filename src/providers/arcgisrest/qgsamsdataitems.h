@@ -19,13 +19,14 @@
 
 #include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
+#include "qgswkbtypes.h"
 
 
 class QgsAmsRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsAmsRootItem( QgsDataItem *parent, QString name, QString path );
+    QgsAmsRootItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
 
@@ -48,7 +49,7 @@ class QgsAmsConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsAmsConnectionItem( QgsDataItem *parent, QString name, QString path, QString url );
+    QgsAmsConnectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &url );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 #ifdef HAVE_GUI
@@ -70,7 +71,7 @@ class QgsAmsLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsAmsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format );
+    QgsAmsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format, const QString &authcfg );
 };
 
 #endif // QGSAMSDATAITEMS_H

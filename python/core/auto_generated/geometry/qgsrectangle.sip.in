@@ -325,7 +325,7 @@ Converts the rectangle to a 3D box, with the specified
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsRectangle: %1>" ).arg( sipCpp->asWktCoordinates() );
-    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
 };

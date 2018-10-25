@@ -666,7 +666,14 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     // static stuff
 
+    /**
+     * Creates a new QgsFontMarkerSymbolLayer from a property map (see properties())
+     */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+
+    /**
+     * Creates a new QgsFontMarkerSymbolLayer from an SLD XML \a element.
+     */
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     // implemented from base classes
@@ -687,53 +694,118 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     // new methods
 
+    /**
+     * Returns the font family name for the associated font which will be used to render the point.
+     *
+     * \see setFontFamily()
+     */
     QString fontFamily() const { return mFontFamily; }
+
+    /**
+     * Sets the font \a family for the font which will be used to render the point.
+     *
+     * \see fontFamily()
+     */
     void setFontFamily( const QString &family ) { mFontFamily = family; }
 
+    /**
+     * Returns the character used when rendering points.
+     *
+     * \see setCharacter()
+     */
     QChar character() const { return mChr; }
+
+    /**
+     * Sets the character used when rendering points.
+     *
+     * \see character()
+     */
     void setCharacter( QChar ch ) { mChr = ch; }
 
     QColor strokeColor() const override { return mStrokeColor; }
     void setStrokeColor( const QColor &color ) override { mStrokeColor = color; }
 
     /**
-     * Gets stroke width.
-     * \since QGIS 2.16 */
+     * Returns the marker's stroke width. Units are retrieved by strokeWidthUnit()
+     *
+     * \see setStrokeWidth()
+     * \see strokeWidthUnit()
+     * \see strokeWidthMapUnitScale()
+     *
+     * \since QGIS 2.16
+    */
     double strokeWidth() const { return mStrokeWidth; }
 
     /**
-     * Set stroke width.
-     * \since QGIS 2.16 */
+     * Set's the marker's stroke \a width. Units are set by setStrokeWidthUnit().
+     *
+     * \see strokeWidth()
+     * \see setStrokeWidthUnit()
+     * \see setStrokeWidthMapUnitScale()
+     *
+     * \since QGIS 2.16
+    */
     void setStrokeWidth( double width ) { mStrokeWidth = width; }
 
     /**
-     * Gets stroke width unit.
-     * \since QGIS 2.16 */
+     * Returns the stroke width unit.
+     *
+     * \see setStrokeWidthUnit()
+     * \see strokeWidth()
+     * \see strokeWidthMapUnitScale()
+     *
+     * \since QGIS 2.16
+    */
     QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
     /**
-     * Set stroke width unit.
-     * \since QGIS 2.16 */
+     * Sets the stroke width \a unit.
+     *
+     * \see strokeWidthUnit()
+     * \see setStrokeWidth()
+     * \see setStrokeWidthMapUnitScale()
+     * \since QGIS 2.16
+    */
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
     /**
-     * Gets stroke width map unit scale.
-     * \since QGIS 2.16 */
+     * Returns the stroke width map unit scale.
+     *
+     * \see setStrokeWidthMapUnitScale()
+     * \see strokeWidth()
+     * \see strokeWidthUnit()
+     *
+     * \since QGIS 2.16
+    */
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
     /**
-     * Set stroke width map unit scale.
-     * \since QGIS 2.16 */
+     * Sets the stroke width map unit \a scale.
+     *
+     * \see strokeWidthMapUnitScale()
+     * \see setStrokeWidth()
+     * \see setStrokeWidthUnit()
+     *
+     * \since QGIS 2.16
+     */
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mStrokeWidthMapUnitScale = scale; }
 
     /**
-     * Gets stroke join style.
-     * \since QGIS 2.16 */
+     * Returns the stroke join style.
+     *
+     * \see setPenJoinStyle()
+     *
+     * \since QGIS 2.16
+    */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 
     /**
-     * Set stroke join style.
-     * \since QGIS 2.16 */
+     * Sets the stroke join \a style.
+     *
+     * \see penJoinStyle()
+     *
+     * \since QGIS 2.16
+    */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;

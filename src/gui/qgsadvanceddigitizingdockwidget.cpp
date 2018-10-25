@@ -27,12 +27,12 @@
 #include "qgsmaptoolcapture.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmessagebaritem.h"
-#include "qgspointxy.h"
 #include "qgslinestring.h"
 #include "qgsfocuswatcher.h"
 #include "qgssettings.h"
 #include "qgssnappingutils.h"
 #include "qgsproject.h"
+#include "qgsmapmouseevent.h"
 
 
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent )

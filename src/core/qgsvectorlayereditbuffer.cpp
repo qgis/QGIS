@@ -19,6 +19,7 @@
 #include "qgsvectorlayerundocommand.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 
 //! populate two lists (ks, vs) from map - in reverse order
 template <class Key, class T> void mapToReversedLists( const QMap< Key, T > &map, QList<Key> &ks, QList<T> &vs )
@@ -48,7 +49,7 @@ bool QgsVectorLayerEditBuffer::isModified() const
 
 void QgsVectorLayerEditBuffer::undoIndexChanged( int index )
 {
-  QgsDebugMsgLevel( QString( "undo index changed %1" ).arg( index ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "undo index changed %1" ).arg( index ), 4 );
   Q_UNUSED( index );
   emit layerModified();
 }
@@ -146,7 +147,7 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
 {
   if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
   {
-    QgsDebugMsg( "Cannot delete features (missing DeleteFeature capability)" );
+    QgsDebugMsg( QStringLiteral( "Cannot delete features (missing DeleteFeature capability)" ) );
     return false;
   }
 
@@ -154,7 +155,7 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
   {
     if ( !mAddedFeatures.contains( fid ) )
     {
-      QgsDebugMsg( "Cannot delete features (in the list of added features)" );
+      QgsDebugMsg( QStringLiteral( "Cannot delete features (in the list of added features)" ) );
       return false;
     }
   }
@@ -162,7 +163,7 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
   {
     if ( mDeletedFeatureIds.contains( fid ) )
     {
-      QgsDebugMsg( "Cannot delete features (in the list of deleted features)" );
+      QgsDebugMsg( QStringLiteral( "Cannot delete features (in the list of deleted features)" ) );
       return false;
     }
   }
@@ -175,7 +176,7 @@ bool QgsVectorLayerEditBuffer::deleteFeatures( const QgsFeatureIds &fids )
 {
   if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
   {
-    QgsDebugMsg( "Cannot delete features (missing DeleteFeatures capability)" );
+    QgsDebugMsg( QStringLiteral( "Cannot delete features (missing DeleteFeatures capability)" ) );
     return false;
   }
 
@@ -605,6 +606,13 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
         // get the list of added features in reversed order
         // this will preserve the order how they have been added e.g. (-1, -2, -3) while in the map they are ordered (-3, -2, -1)
         mapToReversedLists( mAddedFeatures, ids, featuresToAdd );
+
+        // we need to strip any extra attributes here -- e.g. virtual fields, which should
+        // not be sent to the data provider. Refs #18784
+        for ( int i = 0; i < featuresToAdd.count(); ++i )
+        {
+          QgsVectorLayerUtils::matchAttributesToFields( featuresToAdd[i], provider->fields() );
+        }
 
         if ( provider->addFeatures( featuresToAdd ) )
         {

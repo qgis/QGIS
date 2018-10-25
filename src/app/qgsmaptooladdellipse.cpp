@@ -110,4 +110,8 @@ void QgsMapToolAddEllipse::clean()
   }
 
   mEllipse = QgsEllipse();
+
+  QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
+  if ( vLayer )
+    mLayerType = vLayer->geometryType();
 }

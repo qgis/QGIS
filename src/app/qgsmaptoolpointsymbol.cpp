@@ -19,8 +19,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
 #include "qgssnappingutils.h"
+#include "qgsmapmouseevent.h"
 
-#include <QMouseEvent>
 
 QgsMapToolPointSymbol::QgsMapToolPointSymbol( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )

@@ -63,7 +63,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
-          <string>Scene settings</string>
+          <string>Scene Settings</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
@@ -79,7 +79,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_4">
          <property name="title">
-          <string>Camera pose</string>
+          <string>Camera Pose</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="1" column="1">

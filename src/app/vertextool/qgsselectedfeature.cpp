@@ -28,6 +28,8 @@
 #include "qgslayertreeview.h"
 #include "qgsproject.h"
 #include "qgsstatusbar.h"
+#include "qgsmapcanvas.h"
+
 
 QgsSelectedFeature::QgsSelectedFeature( QgsFeatureId featureId,
                                         QgsVectorLayer *vlayer,
@@ -265,7 +267,7 @@ void QgsSelectedFeature::createVertexMap()
 
   if ( !mGeometry )
   {
-    QgsDebugMsg( "Loading feature" );
+    QgsDebugMsg( QStringLiteral( "Loading feature" ) );
     updateGeometry( nullptr );
   }
 

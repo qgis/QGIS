@@ -493,10 +493,21 @@ class CORE_EXPORT QgsFeatureRequest
     const Flags &flags() const { return mFlags; }
 
     /**
-     * Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
-     * To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
+     * Set a subset of attributes that will be fetched.
+     *
+     * An empty attributes list indicates that no attributes will be fetched.
+     * To revert a call to setSubsetOfAttributes and fetch all available attributes,
+     * the SubsetOfAttributes flag should be removed from the request.
      */
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
+
+    /**
+     * Set that no attributes will be fetched.
+     * To revert a call to setNoAttributes and fetch all or some available attributes,
+     * the SubsetOfAttributes flag should be removed from the request.
+     * \since QGIS 3.4
+     */
+    QgsFeatureRequest &setNoAttributes();
 
     /**
      * Returns the subset of attributes which at least need to be fetched

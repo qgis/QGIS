@@ -717,7 +717,7 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::create( QDomElement &rul
     }
     else
     {
-      QgsDebugMsg( "failed to init a child rule!" );
+      QgsDebugMsg( QStringLiteral( "failed to init a child rule!" ) );
     }
     childRuleElem = childRuleElem.nextSiblingElement( QStringLiteral( "rule" ) );
   }
@@ -740,7 +740,7 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomEleme
 {
   if ( ruleElem.localName() != QLatin1String( "Rule" ) )
   {
-    QgsDebugMsg( QString( "invalid element: Rule element expected, %1 found!" ).arg( ruleElem.tagName() ) );
+    QgsDebugMsg( QStringLiteral( "invalid element: Rule element expected, %1 found!" ).arg( ruleElem.tagName() ) );
     return nullptr;
   }
 
@@ -842,7 +842,7 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomEleme
         break;
 
       default:
-        QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
+        QgsDebugMsg( QStringLiteral( "invalid geometry type: found %1" ).arg( geomType ) );
         return nullptr;
     }
   }
@@ -914,7 +914,7 @@ void QgsRuleBasedRenderer::startRender( QgsRenderContext &context, const QgsFiel
   {
     zLevelsToNormLevels[zLevel] = ++maxNormLevel;
     mRenderQueue.append( RenderLevel( zLevel ) );
-    QgsDebugMsgLevel( QString( "zLevel %1 -> %2" ).arg( zLevel ).arg( maxNormLevel ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "zLevel %1 -> %2" ).arg( zLevel ).arg( maxNormLevel ), 4 );
   }
 
   mRootRule->setNormZLevels( zLevelsToNormLevels );

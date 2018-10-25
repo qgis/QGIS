@@ -38,6 +38,7 @@
 #include "qgssettings.h"
 #include "qgsstatusbar.h"
 #include "gmath.h"
+#include "qgsmapcanvas.h"
 
 // QWT Charting widget
 
@@ -833,7 +834,7 @@ void QgsGpsInformationWidget::mBtnAddVertex_clicked()
 
 void QgsGpsInformationWidget::addVertex()
 {
-  QgsDebugMsg( "Adding Vertex" );
+  QgsDebugMsg( QStringLiteral( "Adding Vertex" ) );
 
   if ( !mpRubberBand )
   {

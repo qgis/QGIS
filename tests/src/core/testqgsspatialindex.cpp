@@ -70,7 +70,10 @@ class TestQgsSpatialIndex : public QObject
     {
       QgsSpatialIndex index;
       Q_FOREACH ( const QgsFeature &f, _pointFeatures() )
-        index.insertFeature( f );
+      {
+        QgsFeature indexFeature( f );
+        index.addFeature( indexFeature );
+      }
 
       QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
@@ -85,9 +88,9 @@ class TestQgsSpatialIndex : public QObject
     void testQueryManualInsert()
     {
       QgsSpatialIndex index;
-      index.insertFeature( 1, QgsRectangle( 2, 3, 2, 3 ) );
-      index.insertFeature( 2, QgsRectangle( 12, 13, 12, 13 ) );
-      index.insertFeature( 3, QgsRectangle( 14, 13, 14, 13 ) );
+      index.addFeature( 1, QgsRectangle( 2, 3, 2, 3 ) );
+      index.addFeature( 2, QgsRectangle( 12, 13, 12, 13 ) );
+      index.addFeature( 3, QgsRectangle( 14, 13, 14, 13 ) );
 
       QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 1, 2, 3, 4 ) );
       QVERIFY( fids.count() == 1 );
@@ -110,7 +113,10 @@ class TestQgsSpatialIndex : public QObject
     {
       QgsSpatialIndex *index = new QgsSpatialIndex;
       Q_FOREACH ( const QgsFeature &f, _pointFeatures() )
-        index->insertFeature( f );
+      {
+        QgsFeature indexFeature( f );
+        index->addFeature( indexFeature );
+      }
 
       // create copy of the index
       QgsSpatialIndex indexCopy( *index );
@@ -154,7 +160,7 @@ class TestQgsSpatialIndex : public QObject
           QgsFeature f( i * 1000 + k );
           QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( i / 10, i % 10 ) );
           f.setGeometry( g );
-          index.insertFeature( f );
+          index.addFeature( f );
         }
       }
 
@@ -207,7 +213,7 @@ class TestQgsSpatialIndex : public QObject
         QgsFeature f;
         indexInsert = new QgsSpatialIndex;
         while ( fi.nextFeature( f ) )
-          indexInsert->insertFeature( f );
+          indexInsert->addFeature( f );
       }
       qDebug( "insert:    %d ms", t.elapsed() );
 

@@ -10,7 +10,6 @@
 
 
 
-
 typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
 
 class QgsSymbol

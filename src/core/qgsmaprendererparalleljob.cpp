@@ -61,7 +61,7 @@ void QgsMapRendererParallelJob::start()
   mLayerJobs = prepareJobs( nullptr, mLabelingEngineV2.get() );
   mLabelJob = prepareLabelingJob( nullptr, mLabelingEngineV2.get(), canUseLabelCache );
 
-  QgsDebugMsg( QString( "QThreadPool max thread count is %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
+  QgsDebugMsg( QStringLiteral( "QThreadPool max thread count is %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
 
   // start async job
 
@@ -76,7 +76,7 @@ void QgsMapRendererParallelJob::cancel()
   if ( !isActive() )
     return;
 
-  QgsDebugMsg( QString( "PARALLEL cancel at status %1" ).arg( mStatus ) );
+  QgsDebugMsg( QStringLiteral( "PARALLEL cancel at status %1" ).arg( mStatus ) );
 
   mLabelJob.context.setRenderingStopped( true );
   for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
@@ -112,7 +112,7 @@ void QgsMapRendererParallelJob::cancelWithoutBlocking()
   if ( !isActive() )
     return;
 
-  QgsDebugMsg( QString( "PARALLEL cancel at status %1" ).arg( mStatus ) );
+  QgsDebugMsg( QStringLiteral( "PARALLEL cancel at status %1" ).arg( mStatus ) );
 
   mLabelJob.context.setRenderingStopped( true );
   for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
@@ -143,7 +143,7 @@ void QgsMapRendererParallelJob::waitForFinished()
 
     mFutureWatcher.waitForFinished();
 
-    QgsDebugMsg( QString( "waitForFinished (1): %1 ms" ).arg( t.elapsed() / 1000.0 ) );
+    QgsDebugMsg( QStringLiteral( "waitForFinished (1): %1 ms" ).arg( t.elapsed() / 1000.0 ) );
 
     renderLayersFinished();
   }
@@ -157,7 +157,7 @@ void QgsMapRendererParallelJob::waitForFinished()
 
     mLabelingFutureWatcher.waitForFinished();
 
-    QgsDebugMsg( QString( "waitForFinished (2): %1 ms" ).arg( t.elapsed() / 1000.0 ) );
+    QgsDebugMsg( QStringLiteral( "waitForFinished (2): %1 ms" ).arg( t.elapsed() / 1000.0 ) );
 
     renderingFinished();
   }
@@ -198,7 +198,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
   // compose final image
   mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
 
-  QgsDebugMsg( "PARALLEL layers finished" );
+  QgsDebugMsg( QStringLiteral( "PARALLEL layers finished" ) );
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) && !mLabelJob.context.renderingStopped() )
   {
@@ -219,7 +219,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
 
 void QgsMapRendererParallelJob::renderingFinished()
 {
-  QgsDebugMsg( "PARALLEL finished" );
+  QgsDebugMsg( QStringLiteral( "PARALLEL finished" ) );
 
   logRenderingTime( mLayerJobs, mLabelJob );
 
@@ -250,7 +250,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
 
   QTime t;
   t.start();
-  QgsDebugMsgLevel( QString( "job %1 start (layer %2)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.layer ? job.layer->id() : QString() ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "job %1 start (layer %2)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.layer ? job.layer->id() : QString() ), 2 );
   try
   {
     job.renderer->render();
@@ -267,10 +267,10 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
   }
   catch ( ... )
   {
-    QgsDebugMsg( "Caught unhandled unknown exception" );
+    QgsDebugMsg( QStringLiteral( "Caught unhandled unknown exception" ) );
   }
   job.renderingTime += t.elapsed();
-  QgsDebugMsgLevel( QString( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layer ? job.layer->id() : QString() ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layer ? job.layer->id() : QString() ), 2 );
 }
 
 
@@ -311,7 +311,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
     }
     catch ( ... )
     {
-      QgsDebugMsg( "Caught unhandled unknown exception" );
+      QgsDebugMsg( QStringLiteral( "Caught unhandled unknown exception" ) );
     }
 
     painter.end();

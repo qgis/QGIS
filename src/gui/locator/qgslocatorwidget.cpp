@@ -42,7 +42,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
 #endif
 
   int placeholderMinWidth = mLineEdit->fontMetrics().width( mLineEdit->placeholderText() );
-  int minWidth = std::max( 200, ( int )( placeholderMinWidth * 1.6 ) );
+  int minWidth = std::max( 200, static_cast< int >( placeholderMinWidth * 1.8 ) );
   resize( minWidth, 30 );
   QSizePolicy sizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
   sizePolicy.setHorizontalStretch( 0 );

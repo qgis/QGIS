@@ -454,6 +454,10 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertTrue(iter_multipolygons.nextFeature(f))
         self.assertFalse(iter_multipolygons.nextFeature(f))
 
+        # Re-start an iterator (tests #20098)
+        iter_multipolygons = vl_multipolygons.getFeatures(QgsFeatureRequest())
+        self.assertTrue(iter_multipolygons.nextFeature(f))
+
 
 if __name__ == '__main__':
     unittest.main()

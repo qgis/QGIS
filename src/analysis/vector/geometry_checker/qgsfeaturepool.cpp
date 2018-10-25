@@ -57,9 +57,26 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
     }
     locker.changeMode( QgsReadWriteLocker::Write );
     mFeatureCache.insert( id, new QgsFeature( feature ) );
-    mIndex.insertFeature( feature );
+    mIndex.addFeature( feature );
   }
   return true;
+}
+
+QgsFeatureIds QgsFeaturePool::getFeatures( const QgsFeatureRequest &request )
+{
+  QgsFeatureIds fids;
+
+  std::unique_ptr<QgsVectorLayerFeatureSource> source = QgsVectorLayerUtils::getFeatureSource( mLayer );
+
+  QgsFeatureIterator it = source->getFeatures( request );
+  QgsFeature feature;
+  while ( it.nextFeature( feature ) )
+  {
+    insertFeature( feature );
+    fids << feature.id();
+  }
+
+  return fids;
 }
 
 QgsFeatureIds QgsFeaturePool::allFeatureIds() const
@@ -90,7 +107,8 @@ void QgsFeaturePool::insertFeature( const QgsFeature &feature )
 {
   QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
   mFeatureCache.insert( feature.id(), new QgsFeature( feature ) );
-  mIndex.insertFeature( feature );
+  QgsFeature indexFeature( feature );
+  mIndex.addFeature( indexFeature );
 }
 
 void QgsFeaturePool::refreshCache( const QgsFeature &feature )
@@ -120,6 +138,11 @@ void QgsFeaturePool::removeFeature( const QgsFeatureId featureId )
 void QgsFeaturePool::setFeatureIds( const QgsFeatureIds &ids )
 {
   mFeatureIds = ids;
+}
+
+bool QgsFeaturePool::isFeatureCached( QgsFeatureId fid )
+{
+  return mFeatureCache.contains( fid );
 }
 
 QgsCoordinateReferenceSystem QgsFeaturePool::crs() const

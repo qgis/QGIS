@@ -69,7 +69,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = QStringLiteral( "<QgsMultiLineString: %1>" ).arg( sipCpp->asWkt() );
-    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 

@@ -309,6 +309,9 @@ class ProviderTestCase(FeatureSourceTestCase):
         assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
 
     def testMinValue(self):
+        self.assertFalse(self.source.minimumValue(-1))
+        self.assertFalse(self.source.minimumValue(1000))
+
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('cnt')), -200)
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('name')), 'Apple')
 
@@ -320,6 +323,8 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertEqual(min_value, 200)
 
     def testMaxValue(self):
+        self.assertFalse(self.source.maximumValue(-1))
+        self.assertFalse(self.source.maximumValue(1000))
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('cnt')), 400)
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('name')), 'Pear')
 
@@ -360,8 +365,12 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.source.setSubsetString(None)
             self.assertEqual(count, 0)
             self.assertTrue(provider_extent.isNull())
+            self.assertEqual(self.source.featureCount(), 5)
 
     def testUnique(self):
+        self.assertEqual(self.source.uniqueValues(-1), set())
+        self.assertEqual(self.source.uniqueValues(1000), set())
+
         self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('cnt'))),
                          set([-200, 100, 200, 300, 400]))
         assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(
@@ -376,6 +385,9 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertEqual(set(values), set([200, 300]))
 
     def testUniqueStringsMatching(self):
+        self.assertEqual(self.source.uniqueStringsMatching(-1, 'a'), [])
+        self.assertEqual(self.source.uniqueStringsMatching(100001, 'a'), [])
+
         field_index = self.source.fields().lookupField('name')
         self.assertEqual(set(self.source.uniqueStringsMatching(field_index, 'a')), set(['Pear', 'Orange', 'Apple']))
         # test case insensitive
@@ -910,3 +922,29 @@ class ProviderTestCase(FeatureSourceTestCase):
         context.setFeature(feat)
         exp = QgsExpression('get_feature(\'{layer}\', \'pk\', 5)'.format(layer=self.vl.id()))
         exp.evaluate(context)
+
+    def testEmptySubsetOfAttributesWithSubsetString(self):
+
+        if self.source.supportsSubsetString():
+            try:
+                # Add a subset string
+                subset = self.getSubsetString()
+                self.source.setSubsetString(subset)
+
+                # First test, in a regular way
+                features = [f for f in self.source.getFeatures()]
+                count = len(features)
+                self.assertEqual(count, 3)
+                has_geometry = features[0].hasGeometry()
+
+                # Ask for no attributes
+                request = QgsFeatureRequest().setSubsetOfAttributes([])
+                # Make sure we still retrieve features !
+                features = [f for f in self.source.getFeatures(request)]
+                count = len(features)
+                self.assertEqual(count, 3)
+                # Check that we still get a geometry if we add one before
+                self.assertEqual(features[0].hasGeometry(), has_geometry)
+
+            finally:
+                self.source.setSubsetString(None)

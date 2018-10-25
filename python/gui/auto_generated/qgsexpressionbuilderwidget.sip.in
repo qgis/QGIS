@@ -198,7 +198,8 @@ preview result and for populating the list of available functions and variables.
     void registerItem( const QString &group, const QString &label, const QString &expressionText,
                        const QString &helpText = QString(),
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
-                       bool highlightedItem = false, int sortOrder = 1 );
+                       bool highlightedItem = false, int sortOrder = 1,
+                       QIcon icon = QIcon() );
 %Docstring
 Registers a node item for the expression builder.
 
@@ -209,6 +210,7 @@ Registers a node item for the expression builder.
 :param type: The type of the expression item.
 :param highlightedItem: set to true to make the item highlighted, which inserts a bold copy of the item at the top level
 :param sortOrder: sort ranking for item
+:param icon: custom icon to show for item
 %End
 
     bool isExpressionValid();

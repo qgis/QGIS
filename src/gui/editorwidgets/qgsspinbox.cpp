@@ -60,6 +60,12 @@ void QgsSpinBox::setExpressionsEnabled( const bool enabled )
 void QgsSpinBox::changeEvent( QEvent *event )
 {
   QSpinBox::changeEvent( event );
+
+  if ( event->type() == QEvent::FontChange )
+  {
+    lineEdit()->setFont( font() );
+  }
+
   mLineEdit->setShowClearButton( shouldShowClearForValue( value() ) );
 }
 

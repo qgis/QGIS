@@ -42,7 +42,7 @@ ELSE(EXISTS PYQT5_VERSION)
     ENDIF(EXISTS ${PYQT5_SIP_DIR}/Qt5)
     STRING(REGEX REPLACE ".*\npyqt_sip_flags:([^\n]+).*$" "\\1" PYQT5_SIP_FLAGS ${pyqt_config})
     STRING(REGEX REPLACE ".*\npyqt_bin_dir:([^\n]+).*$" "\\1" PYQT5_BIN_DIR ${pyqt_config})
-
+    STRING(REGEX REPLACE ".*\npyqt_sip_module:([^\n]+).*$" "\\1" PYQT5_SIP_IMPORT ${pyqt_config})
     SET(PYQT5_FOUND TRUE)
   ENDIF(pyqt_config)
 

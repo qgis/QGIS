@@ -137,7 +137,6 @@ void QgsTextEditWrapper::initWidget( QWidget *editor )
 
     mWritablePalette = mLineEdit->palette();
     mReadOnlyPalette = mLineEdit->palette();
-    mReadOnlyPalette.setColor( QPalette::Text, mWritablePalette.color( QPalette::Disabled, QPalette::Text ) );
   }
 }
 
@@ -195,7 +194,13 @@ void QgsTextEditWrapper::setEnabled( bool enabled )
     if ( enabled )
       mLineEdit->setPalette( mWritablePalette );
     else
+    {
       mLineEdit->setPalette( mReadOnlyPalette );
+      // removing frame + setting transparent background to distinguish the readonly lineEdit from a normal one
+      // did not get this working via the Palette:
+      mLineEdit->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 75%);" ) );
+    }
+    mLineEdit->setFrame( enabled );
   }
 }
 
@@ -224,8 +229,13 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
   // For numbers, remove the group separator that might cause validation errors
   // when the user is editing the field value.
   // We are checking for editable layer because in the form field context we do not
-  // want to strip the separator unless the layer is editable
-  if ( layer() && layer()->isEditable() && ! QLocale().groupSeparator().isNull() && field().isNumeric() )
+  // want to strip the separator unless the layer is editable.
+  // Also check that we have something like a number in the value to avoid
+  // stripping out dots from nextval when we have a schema: see https://issues.qgis.org/issues/20200
+  // "Wrong sequence detection with Postgres"
+  bool canConvertToDouble;
+  QLocale().toDouble( v, &canConvertToDouble );
+  if ( canConvertToDouble && layer() && layer()->isEditable() && ! QLocale().groupSeparator().isNull() && field().isNumeric() )
   {
     v = v.remove( QLocale().groupSeparator() );
   }

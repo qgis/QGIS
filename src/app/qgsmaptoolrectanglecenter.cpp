@@ -20,7 +20,8 @@
 #include "qgsmapcanvas.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+
 #include <memory>
 
 QgsMapToolRectangleCenter::QgsMapToolRectangleCenter( QgsMapToolCapture *parentTool,
@@ -39,7 +40,7 @@ void QgsMapToolRectangleCenter::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
-      mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+      mTempRubberBand = createGeometryRubberBand( mLayerType, true );
       mTempRubberBand->show();
     }
   }

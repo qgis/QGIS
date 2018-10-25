@@ -94,7 +94,7 @@ bool QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( const QVariantMap &met
     if ( !ok )
       return false;
 
-    if ( metadata.value( QStringLiteral( "EXIF_GPSLongitudeRef" ) ).toString().right( 1 ).compare( "W", Qt::CaseInsensitive ) == 0
+    if ( metadata.value( QStringLiteral( "EXIF_GPSLongitudeRef" ) ).toString().right( 1 ).compare( QLatin1String( "W" ), Qt::CaseInsensitive ) == 0
          || metadata.value( QStringLiteral( "EXIF_GPSLongitudeRef" ) ).toDouble() < 0 )
       x = -x;
   }
@@ -111,7 +111,7 @@ bool QgsImportPhotosAlgorithm::extractGeoTagFromMetadata( const QVariantMap &met
     if ( !ok )
       return false;
 
-    if ( metadata.value( QStringLiteral( "EXIF_GPSLatitudeRef" ) ).toString().right( 1 ).compare( "S", Qt::CaseInsensitive ) == 0
+    if ( metadata.value( QStringLiteral( "EXIF_GPSLatitudeRef" ) ).toString().right( 1 ).compare( QLatin1String( "S" ), Qt::CaseInsensitive ) == 0
          || metadata.value( QStringLiteral( "EXIF_GPSLatitudeRef" ) ).toDouble() < 0 )
       y = -y;
   }

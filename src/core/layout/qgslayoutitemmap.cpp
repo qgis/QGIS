@@ -29,6 +29,7 @@
 #include "qgsmaplayerlistutils.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontext.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -539,7 +540,7 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
   }
 
   // follow map theme
-  mapElem.setAttribute( QStringLiteral( "followPreset" ), mFollowVisibilityPreset ? "true" : "false" );
+  mapElem.setAttribute( QStringLiteral( "followPreset" ), mFollowVisibilityPreset ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   mapElem.setAttribute( QStringLiteral( "followPresetName" ), mFollowVisibilityPresetName );
 
   //map rotation
@@ -1178,6 +1179,8 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
   }
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layer_ids" ), layersIds, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layers" ), layers, true ) );
+
+  scope->addFunction( QStringLiteral( "is_layer_visible" ), new QgsExpressionContextUtils::GetLayerVisibility( layersInMap ) );
 
   return context;
 }
@@ -1957,9 +1960,10 @@ void QgsLayoutItemMap::updateAtlasFeature()
     }
     newExtent = QgsRectangle( xa1, ya1, xa2, ya2 );
 
-    if ( mAtlasMargin > 0.0 )
+    const double evaluatedAtlasMargin = atlasMargin();
+    if ( evaluatedAtlasMargin > 0.0 )
     {
-      newExtent.scale( 1 + mAtlasMargin );
+      newExtent.scale( 1 + evaluatedAtlasMargin );
     }
   }
 

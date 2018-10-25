@@ -11,7 +11,6 @@
 
 
 
-
 class QgsDataItem : QObject
 {
 %Docstring
@@ -200,7 +199,8 @@ Items that return valid URI will be returned in mime data when dragging a select
       SetCrs,
       Fertile,
       Fast,
-      Collapse
+      Collapse,
+      Rename,
     };
     typedef QFlags<QgsDataItem::Capability> Capabilities;
 
@@ -211,11 +211,30 @@ Writes the selected crs into data source. The original data source will be modif
 method.
 %End
 
+    virtual bool rename( const QString &name );
+%Docstring
+Sets a new ``name`` for the item, and returns true if the item was successfully renamed.
+
+Items which implement this method should return the QgsDataItem.Rename capability.
+
+The default implementation does nothing.
+
+.. versionadded:: 3.4
+%End
+
+
     virtual Capabilities capabilities2() const;
+%Docstring
+Returns the capabilities for the data item.
+
+.. seealso:: :py:func:`setCapabilities`
+%End
 
     virtual void setCapabilities( Capabilities capabilities );
 %Docstring
 Sets the capabilities for the data item.
+
+.. seealso:: :py:func:`capabilities2`
 %End
 
 
@@ -501,6 +520,22 @@ A Collection: logical collection of layers or subcollections, e.g. GRASS locatio
 
     static QIcon iconDir(); // shared icon: open/closed directory
     static QIcon iconDataCollection(); // default icon for data collection
+
+  protected:
+
+    static QIcon openDirIcon();
+%Docstring
+Shared open directory icon.
+
+.. versionadded:: 3.4
+%End
+
+    static QIcon homeDirIcon();
+%Docstring
+Shared home directory icon.
+
+.. versionadded:: 3.4
+%End
 };
 
 class QgsDirectoryItem : QgsDataCollectionItem

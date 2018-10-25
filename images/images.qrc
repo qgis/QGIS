@@ -179,6 +179,7 @@
         <file>themes/default/mActionAddBasicCircle.svg</file>
         <file>themes/default/mActionEditNodesItem.svg</file>
         <file>themes/default/mActionEditHelpContent.svg</file>
+        <file>themes/default/mActionIconView.svg</file>
         <file>themes/default/mActionIncreaseFont.svg</file>
         <file>themes/default/mActionInterfaceCustomization.svg</file>
         <file>themes/default/mActionDecreaseFont.svg</file>
@@ -444,6 +445,8 @@
         <file>themes/default/mIconFieldInteger.svg</file>
         <file>themes/default/mIconFieldText.svg</file>
         <file>themes/default/mIconFieldTime.svg</file>
+        <file>themes/default/mIconFile.svg</file>
+        <file>themes/default/mIconFileLink.svg</file>
         <file>themes/default/mIconGeonode.svg</file>
         <file>themes/default/mIconInfo.svg</file>
         <file>themes/default/mIconImport.gif</file>
@@ -478,11 +481,12 @@
         <file>themes/default/mIconTimerContinue.svg</file>
         <file>themes/default/mIconTimerPause.svg</file>
         <file>themes/default/mIconTreeView.svg</file>
+        <file>themes/default/mIconVector.svg</file>
         <file>themes/default/mIconVirtualLayer.svg</file>
         <file>themes/default/mIconWcs.svg</file>
         <file>themes/default/mIconWfs.svg</file>
         <file>themes/default/mIconWms.svg</file>
-        <file>themes/default/mIconZip.png</file>
+        <file>themes/default/mIconZip.svg</file>
         <file>themes/default/mIconZoom.svg</file>
         <file>themes/default/mIndicatorFilter.svg</file>
         <file>themes/default/mLayoutItem.svg</file>
@@ -551,6 +555,7 @@
         <file>themes/default/propertyicons/settings.svg</file>
         <file>themes/default/propertyicons/stylepreset.svg</file>
         <file>themes/default/propertyicons/symbology.svg</file>
+        <file>themes/default/propertyicons/colors.svg</file>
         <file>themes/default/propertyicons/system.svg</file>
         <file>themes/default/propertyicons/transparency.svg</file>
         <file>themes/default/propertyicons/spacer.svg</file>
@@ -713,6 +718,12 @@
         <file>themes/default/mActionReverseLine.svg</file>
         <file>themes/default/mActionAdd3DMap.svg</file>
         <file>themes/default/mIndicatorNonRemovable.svg</file>
+        <file>themes/default/mIndicatorBadLayer.svg</file>
+        <file>themes/default/mIconFolder.svg</file>
+        <file>themes/default/mIconFolderHome.svg</file>
+        <file>themes/default/mIconFolderLink.svg</file>
+        <file>themes/default/mIconFolderOpen.svg</file>
+        <file>themes/default/mIconFolderProject.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

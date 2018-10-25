@@ -17,7 +17,7 @@ import os
 
 from qgis.testing import unittest, start_app
 from qgis.core import metaEnumFromValue, metaEnumFromType, QgsTolerance, QgsMapLayer
-import sip
+from qgis.PyQt import sip
 
 start_app()
 

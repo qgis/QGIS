@@ -154,7 +154,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mSettings = new QgsSettings();
 
   double identifyValue = mSettings->value( QStringLiteral( "/Map/searchRadiusMM" ), Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
-  QgsDebugMsg( QString( "Standard Identify radius setting read from settings file: %1" ).arg( identifyValue ) );
+  QgsDebugMsg( QStringLiteral( "Standard Identify radius setting read from settings file: %1" ).arg( identifyValue ) );
   if ( identifyValue <= 0.0 )
     identifyValue = Qgis::DEFAULT_SEARCH_RADIUS_MM;
   spinBoxIdentifyValue->setMinimum( 0.0 );
@@ -566,7 +566,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QString name = mSettings->value( QStringLiteral( "/qgis/style" ) ).toString();
   cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
 
-  QString theme = QgsApplication::themeName();
+  QString theme = mSettings->value( QStringLiteral( "UI/UITheme" ), QStringLiteral( "auto" ) ).toString();
   cmbUITheme->setCurrentIndex( cmbUITheme->findText( theme, Qt::MatchFixedString ) );
 
   mNativeColorDialogsChkBx->setChecked( mSettings->value( QStringLiteral( "/qgis/native_color_dialogs" ), false ).toBool() );
@@ -1235,7 +1235,7 @@ void QgsOptions::uiThemeChanged( const QString &theme )
   if ( theme == QgsApplication::themeName() )
     return;
 
-  QgsApplication::setUITheme( theme );
+  QgisApp::instance()->setTheme( theme );
 }
 
 void QgsOptions::mProjectOnLaunchCmbBx_currentIndexChanged( int indx )
@@ -1564,7 +1564,7 @@ void QgsOptions::saveOptions()
 
   //default snap mode
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), mSnappingEnabledDefault->isChecked() );
-  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), ( QgsSnappingConfig::SnappingType )mDefaultSnapModeComboBox->currentData().toInt() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), static_cast<QgsSnappingConfig::SnappingType>( mDefaultSnapModeComboBox->currentData().toInt() ) );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), mDefaultSnappingToleranceSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), mSearchRadiusVertexEditSpinBox->value() );
   mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ),
@@ -1597,7 +1597,13 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/disable_enter_attribute_values_dialog" ), chkDisableAttributeValuesDlg->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/validate_geometries" ), mValidateGeometries->currentIndex() );
 
+#if QT_VERSION <= 0x050601
+  // in Qt 5.6.1 and former, QVariant does not correctly convert enum using value
+  // see https://bugreports.qt.io/browse/QTBUG-53384
+  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), static_cast<QgsGeometry::JoinStyle>( mOffsetJoinStyleComboBox->currentData().toInt() ) );
+#else
   mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), mOffsetJoinStyleComboBox->currentData().value<QgsGeometry::JoinStyle>() );
+#endif
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), mOffsetQuadSegSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), mCurveOffsetMiterLimitComboBox->value() );
 
@@ -2158,7 +2164,7 @@ void QgsOptions::loadGdalDriverList()
     myGdalDriverDescription = GDALGetDescription( myGdalDriver );
     myDrivers << myGdalDriverDescription;
 
-    QgsDebugMsg( QString( "driver #%1 - %2" ).arg( i ).arg( myGdalDriverDescription ) );
+    QgsDebugMsg( QStringLiteral( "driver #%1 - %2" ).arg( i ).arg( myGdalDriverDescription ) );
 
     // get driver R/W flags, taken from GDALGeneralCmdLineProcessor()
     const char *pszRWFlag, *pszVirtualIO;

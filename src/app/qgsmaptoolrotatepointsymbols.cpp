@@ -23,9 +23,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsproperty.h"
 #include "qgisapp.h"
+#include "qgsmapmouseevent.h"
+
 
 #include <QGraphicsPixmapItem>
-#include <QMouseEvent>
+
 
 QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas *canvas )
   : QgsMapToolPointSymbol( canvas )

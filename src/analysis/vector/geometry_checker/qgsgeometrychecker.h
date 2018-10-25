@@ -23,29 +23,33 @@
 #include <QList>
 #include <QMutex>
 #include <QStringList>
+
 #include "qgis_analysis.h"
+#include "qgsfeedback.h"
+#include "qgsfeatureid.h"
 
 typedef qint64 QgsFeatureId;
-typedef QSet<QgsFeatureId> QgsFeatureIds;
-struct QgsGeometryCheckerContext;
+struct QgsGeometryCheckContext;
 class QgsGeometryCheck;
 class QgsGeometryCheckError;
 class QgsMapLayer;
 class QgsVectorLayer;
+class QgsFeaturePool;
 class QMutex;
 
 class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
 {
     Q_OBJECT
   public:
-    QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckerContext *context );
+    QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckContext *context SIP_TRANSFER, const QMap<QString, QgsFeaturePool *> &featurePools );
     ~QgsGeometryChecker() override;
     QFuture<void> execute( int *totalSteps = nullptr );
     bool fixError( QgsGeometryCheckError *error, int method, bool triggerRepaint = false );
     const QList<QgsGeometryCheck *> getChecks() const { return mChecks; }
     QStringList getMessages() const { return mMessages; }
     void setMergeAttributeIndices( const QMap<QString, int> &mergeAttributeIndices ) { mMergeAttributeIndices = mergeAttributeIndices; }
-    QgsGeometryCheckerContext *getContext() const { return mContext; }
+    QgsGeometryCheckContext *getContext() const { return mContext; }
+    const QMap<QString, QgsFeaturePool *> featurePools() const {return mFeaturePools;}
 
   signals:
     void errorAdded( QgsGeometryCheckError *error );
@@ -63,14 +67,15 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
     };
 
     QList<QgsGeometryCheck *> mChecks;
-    QgsGeometryCheckerContext *mContext;
+    QgsGeometryCheckContext *mContext = nullptr;
     QList<QgsGeometryCheckError *> mCheckErrors;
     QStringList mMessages;
     QMutex mErrorListMutex;
     QMap<QString, int> mMergeAttributeIndices;
-    QAtomicInt mProgressCounter;
+    QgsFeedback mFeedback;
+    QMap<QString, QgsFeaturePool *> mFeaturePools;
 
-    void runCheck( const QgsGeometryCheck *check );
+    void runCheck( const QMap<QString, QgsFeaturePool *> &featurePools, const QgsGeometryCheck *check );
 
   private slots:
     void emitProgressValue();

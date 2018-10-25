@@ -18,7 +18,8 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+
 
 QgsMapToolCircle2Points::QgsMapToolCircle2Points( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )
@@ -36,7 +37,7 @@ void QgsMapToolCircle2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
-      mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+      mTempRubberBand = createGeometryRubberBand( mLayerType, true );
       mTempRubberBand->show();
     }
   }

@@ -104,7 +104,7 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     //fetch attributes of layer and type of its geometry attribute
     //WBC 111221: extracting geometry type here instead of getFeature allows successful
     //layer creation even when no features are retrieved (due to, e.g., BBOX or FILTER)
-    if ( !describeFeatureType( mShared->mGeometryAttribute, mShared->mFields, mWKBType ) )
+    if ( !describeFeatureType( mShared->mGeometryAttribute, mShared->mFields, mShared->mWKBType ) )
     {
       mValid = false;
       return;
@@ -120,7 +120,7 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
   }
 
   //Failed to detect feature type from describeFeatureType -> get first feature from layer to detect type
-  if ( mWKBType == QgsWkbTypes::Unknown )
+  if ( mShared->mWKBType == QgsWkbTypes::Unknown )
   {
     QgsWFSFeatureDownloader downloader( mShared.get() );
     connect( &downloader, static_cast<void ( QgsWFSFeatureDownloader::* )( QVector<QgsWFSFeatureGmlIdPair> )>( &QgsWFSFeatureDownloader::featureReceived ),
@@ -478,7 +478,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     if ( typeName == mShared->mURI.typeName() )
     {
       mShared->mGeometryAttribute = geometryAttribute;
-      mWKBType = geomType;
+      mShared->mWKBType = geomType;
       mThisTypenameFields = fields;
     }
 
@@ -665,7 +665,53 @@ void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlI
     QgsGeometry geometry = feat.geometry();
     if ( !geometry.isNull() )
     {
-      mWKBType = geometry.wkbType();
+      mShared->mWKBType = geometry.wkbType();
+
+      // Fragile heuristics that helps for
+      // https://sampleservices.luciad.com/ogc/wfs/sampleswfs?REQUEST=GetFeature&SERVICE=WFS&TYPENAME=rivers&VERSION=1.1.0
+      // In case the geometry is a geometry collection, analyze its members to
+      // see if they are of the same type. If then, assume that all features
+      // will be similar, and report the proper MultiPoint/MultiLineString/
+      // MultiPolygon type instead.
+      if ( mShared->mWKBType == QgsWkbTypes::GeometryCollection )
+      {
+        auto geomColl = geometry.asGeometryCollection();
+        mShared->mWKBType = QgsWkbTypes::Unknown;
+        for ( const auto &geom : geomColl )
+        {
+          if ( mShared->mWKBType == QgsWkbTypes::Unknown )
+          {
+            mShared->mWKBType = geom.wkbType();
+          }
+          else if ( mShared->mWKBType != geom.wkbType() )
+          {
+            mShared->mWKBType = QgsWkbTypes::Unknown;
+            break;
+          }
+        }
+        if ( mShared->mWKBType != QgsWkbTypes::Unknown )
+        {
+          if ( mShared->mWKBType == QgsWkbTypes::Point )
+          {
+            QgsDebugMsg( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of Point. Advertizing optimistically as MultiPoint" ) );
+            mShared->mWKBType = QgsWkbTypes::MultiPoint;
+          }
+          else if ( mShared->mWKBType == QgsWkbTypes::LineString )
+          {
+            QgsDebugMsg( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of LineString. Advertizing optimistically as MultiLineString" ) );
+            mShared->mWKBType = QgsWkbTypes::MultiLineString;
+          }
+          else if ( mShared->mWKBType == QgsWkbTypes::Polygon )
+          {
+            QgsDebugMsg( QStringLiteral( "Layer of unknown type. First element is a GeometryCollection of Polygon. Advertizing optimistically as MultiPolygon" ) );
+            mShared->mWKBType = QgsWkbTypes::MultiPolygon;
+          }
+          else
+          {
+            mShared->mWKBType = QgsWkbTypes::Unknown;
+          }
+        }
+      }
     }
   }
 }
@@ -744,7 +790,7 @@ void QgsWFSProvider::reloadData()
 
 QgsWkbTypes::Type QgsWFSProvider::wkbType() const
 {
-  return mWKBType;
+  return mShared->mWKBType;
 }
 
 long QgsWFSProvider::featureCount() const
@@ -1212,7 +1258,7 @@ bool QgsWFSProvider::empty() const
 {
   QgsFeature f;
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   request.setFlags( QgsFeatureRequest::NoGeometry );
 
   // Whoops, the WFS provider returns an empty iterator when we are using

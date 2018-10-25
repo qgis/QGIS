@@ -71,7 +71,7 @@ class PrepareAPIs(QObject):
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
-        print 'Usage: python <script> <pap_file> <apis_src_dir> <api_bin_dir>'
+        print('Usage: python <script> <pap_file> <apis_src_dir> <api_bin_dir>')
         sys.exit(1)
     pap_file = sys.argv[1]
     api_src_dir = sys.argv[2]

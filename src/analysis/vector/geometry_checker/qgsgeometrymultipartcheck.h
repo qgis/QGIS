@@ -23,13 +23,21 @@
 class ANALYSIS_EXPORT QgsGeometryMultipartCheck : public QgsSingleGeometryCheck
 {
   public:
-    explicit QgsGeometryMultipartCheck( QgsGeometryCheckerContext *context )
-      : QgsSingleGeometryCheck( FeatureCheck, {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
-    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry, const QVariantMap &configuration ) const override;
-    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
+    explicit QgsGeometryMultipartCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
+      : QgsSingleGeometryCheck( context,
+                                configuration ) {}
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
+    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
+    void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList resolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Multipart object with only one feature" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometryMultipartCheck" ); }
+    static QString factoryDescription() { return tr( "Multipart object with only one feature" ); }
+    QString description() const override { return factoryDescription(); }
+    static QString factoryId() { return QStringLiteral( "QgsGeometryMultipartCheck" ); }
+    QString id() const override { return factoryId(); }
+    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
+    static QgsGeometryCheck::CheckType factoryCheckType() { return QgsGeometryCheck::FeatureCheck; }
 
     enum ResolutionMethod { ConvertToSingle, RemoveObject, NoChange };
 };

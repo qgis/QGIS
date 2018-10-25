@@ -18,13 +18,13 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+
 
 QgsMapToolCircleCenterPoint::QgsMapToolCircleCenterPoint( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolAddCircle( parentTool, canvas, mode )
 {
-
 }
 
 void QgsMapToolCircleCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
@@ -37,7 +37,7 @@ void QgsMapToolCircleCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
-      mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+      mTempRubberBand = createGeometryRubberBand( mLayerType, true );
       mTempRubberBand->show();
     }
 

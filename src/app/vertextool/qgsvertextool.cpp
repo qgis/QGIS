@@ -37,6 +37,7 @@
 #include "qgsselectedfeature.h"
 #include "qgsvertexeditor.h"
 #include "qgsvertexentry.h"
+#include "qgsmapmouseevent.h"
 
 #include <QMenu>
 #include <QRubberBand>
@@ -75,7 +76,7 @@ static bool isEndpointAtVertexIndex( const QgsGeometry &geom, int vertexIndex )
   }
   else
   {
-    QgsDebugMsg( "is_endpoint_at_vertex_index: unexpected geometry type!" );
+    QgsDebugMsg( QStringLiteral( "is_endpoint_at_vertex_index: unexpected geometry type!" ) );
     return false;
   }
 }
@@ -104,7 +105,7 @@ int adjacentVertexIndexToEndpoint( const QgsGeometry &geom, int vertexIndex )
   }
   else
   {
-    QgsDebugMsg( "adjacent_vertex_index_to_endpoint: unexpected geometry type!" );
+    QgsDebugMsg( QStringLiteral( "adjacent_vertex_index_to_endpoint: unexpected geometry type!" ) );
   }
   return -1;
 }
@@ -484,7 +485,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       QgsRectangle layerRect = toLayerCoordinates( vlayer, map_rect );
       QgsFeature f;
-      QgsFeatureIterator fi = vlayer->getFeatures( QgsFeatureRequest( layerRect ).setSubsetOfAttributes( QgsAttributeList() ) );
+      QgsFeatureIterator fi = vlayer->getFeatures( QgsFeatureRequest( layerRect ).setNoAttributes() );
       while ( fi.nextFeature( f ) )
       {
         bool isFeatureSelected = vlayer->selectedFeatureIds().contains( f.id() );
@@ -993,7 +994,7 @@ QgsGeometry QgsVertexTool::cachedGeometry( const QgsVectorLayer *layer, QgsFeatu
   if ( !layerCache.contains( fid ) )
   {
     QgsFeature f;
-    layer->getFeatures( QgsFeatureRequest( fid ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f );
+    layer->getFeatures( QgsFeatureRequest( fid ).setNoAttributes() ).nextFeature( f );
     layerCache[fid] = f.geometry();
   }
 
@@ -1487,7 +1488,7 @@ QgsPointXY QgsVertexTool::matchToLayerPoint( const QgsVectorLayer *destLayer, co
   if ( match && match->hasVertex() && match->layer() && match->layer()->crs() == destLayer->crs() )
   {
     QgsFeature f;
-    QgsFeatureIterator fi = match->layer()->getFeatures( QgsFeatureRequest( match->featureId() ).setSubsetOfAttributes( QgsAttributeList() ) );
+    QgsFeatureIterator fi = match->layer()->getFeatures( QgsFeatureRequest( match->featureId() ).setNoAttributes() );
     if ( fi.nextFeature( f ) )
       return f.geometry().vertexAt( match->vertexIndex() );
   }
@@ -1524,7 +1525,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   QgsVertexId vid;
   if ( !geom.vertexIdFromVertexNr( dragVertexId, vid ) )
   {
-    QgsDebugMsg( "invalid vertex index" );
+    QgsDebugMsg( QStringLiteral( "invalid vertex index" ) );
     return;
   }
 
@@ -1542,7 +1543,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
     if ( !geomTmp->insertVertex( vid, pt ) )
     {
-      QgsDebugMsg( "append vertex failed!" );
+      QgsDebugMsg( QStringLiteral( "append vertex failed!" ) );
       return;
     }
   }
@@ -1550,7 +1551,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   {
     if ( !geomTmp->moveVertex( vid, QgsPoint( layerPoint ) ) )
     {
-      QgsDebugMsg( "move vertex failed!" );
+      QgsDebugMsg( QStringLiteral( "move vertex failed!" ) );
       return;
     }
   }
@@ -1578,6 +1579,9 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
       }
     }
   }
+
+  if ( mVertexEditor )
+    mVertexEditor->updateEditor( dragLayer, mSelectedFeature.get() );
 
   setHighlightedVertices( mSelectedVertices );  // update positions of existing highlighted vertices
   setHighlightedVerticesVisible( true );  // time to show highlighted vertices again
@@ -1613,7 +1617,7 @@ void QgsVertexTool::addExtraVerticesToEdits( QgsVertexTool::VertexEdits &edits, 
 
     if ( !topoGeom.moveVertex( point.x(), point.y(), topo.vertexId ) )
     {
-      QgsDebugMsg( "[topo] move vertex failed!" );
+      QgsDebugMsg( QStringLiteral( "[topo] move vertex failed!" ) );
       continue;
     }
     edits[topo.layer][topo.fid] = topoGeom;
@@ -1631,9 +1635,22 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
     layer->beginEditCommand( tr( "Moved vertex" ) );
     QHash<QgsFeatureId, QgsGeometry>::iterator it2 = layerEdits.begin();
     for ( ; it2 != layerEdits.end(); ++it2 )
+    {
       layer->changeGeometry( it2.key(), it2.value() );
+      for ( int i = 0; i < mSelectedVertices.length(); ++i )
+      {
+        if ( mSelectedVertices.at( i ).layer == layer && mSelectedVertices.at( i ).fid == it2.value() )
+        {
+          mSelectedFeature->selectVertex( mSelectedVertices.at( i ).vertexId );
+        }
+      }
+    }
     layer->endEditCommand();
     layer->triggerRepaint();
+
+
+    if ( mVertexEditor )
+      mVertexEditor->updateEditor( layer, mSelectedFeature.get() );
   }
 }
 
@@ -1751,7 +1768,7 @@ void QgsVertexTool::deleteVertex()
           res = layer->deleteVertex( fid, vertexId );
         if ( res != QgsVectorLayer::EmptyGeometry && res != QgsVectorLayer::Success )
         {
-          QgsDebugMsg( QString( "failed to delete vertex %1 %2 %3!" ).arg( layer->name() ).arg( fid ).arg( vertexId ) );
+          QgsDebugMsg( QStringLiteral( "failed to delete vertex %1 %2 %3!" ).arg( layer->name() ).arg( fid ).arg( vertexId ) );
           success = false;
         }
       }
@@ -1887,7 +1904,7 @@ void QgsVertexTool::highlightAdjacentVertex( double offset )
   zoomToVertex( vertex );  // make sure the vertex is visible
 }
 
-void QgsVertexTool::startSelectionRect( const QPoint &point0 )
+void QgsVertexTool::startSelectionRect( QPoint point0 )
 {
   Q_ASSERT( !mSelectionRect );
   mSelectionRect.reset( new QRect() );
@@ -1895,7 +1912,7 @@ void QgsVertexTool::startSelectionRect( const QPoint &point0 )
   mSelectionRectItem = new QRubberBand( QRubberBand::Rectangle, canvas() );
 }
 
-void QgsVertexTool::updateSelectionRect( const QPoint &point1 )
+void QgsVertexTool::updateSelectionRect( QPoint point1 )
 {
   Q_ASSERT( mSelectionRect );
   mSelectionRect->setBottomRight( point1 );
@@ -1928,7 +1945,7 @@ bool QgsVertexTool::matchEdgeCenterTest( const QgsPointLocator::Match &m, const 
     QgsGeometry lineGeom = QgsGeometry::fromPolylineXY( QgsPolylineXY() << p0 << p1 );
     lineGeom = extentGeom.intersection( lineGeom );
     QgsPolylineXY polyline = lineGeom.asPolyline();
-    Q_ASSERT( polyline.count() == 2 );
+    Q_ASSERT_X( polyline.count() == 2, "QgsVertexTool::matchEdgeCenterTest", QgsLineString( polyline ).asWkt().toUtf8().constData() );
     p0 = polyline[0];
     p1 = polyline[1];
   }

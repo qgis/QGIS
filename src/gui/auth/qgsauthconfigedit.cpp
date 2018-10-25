@@ -24,7 +24,7 @@
 #include "qgsauthmethodedit.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
-
+#include "qgsgui.h"
 
 QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, const QString &dataprovider )
   : QDialog( parent )
@@ -92,6 +92,8 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
 
     leName->setFocus();
   }
+
+  QgsGui::enableAutoGeometryRestore( this );
 }
 
 void QgsAuthConfigEdit::populateAuthMethods()
@@ -105,7 +107,7 @@ void QgsAuthConfigEdit::populateAuthMethods()
     QgsAuthMethod *authmethod = QgsApplication::authManager()->authMethod( authMethodKey );
     if ( !authmethod )
     {
-      QgsDebugMsg( QString( "Load auth method instance FAILED for auth method key (%1)" ).arg( authMethodKey ) );
+      QgsDebugMsg( QStringLiteral( "Load auth method instance FAILED for auth method key (%1)" ).arg( authMethodKey ) );
       continue;
     }
     descmap.insert( authmethod->displayDescription(), authmethod );
@@ -118,7 +120,7 @@ void QgsAuthConfigEdit::populateAuthMethods()
                                       QgsApplication::authManager()->authMethodEditWidget( it.value()->key(), this ) );
     if ( !editWidget )
     {
-      QgsDebugMsg( QString( "Load auth method edit widget FAILED for auth method key (%1)" ).arg( it.value()->key() ) );
+      QgsDebugMsg( QStringLiteral( "Load auth method edit widget FAILED for auth method key (%1)" ).arg( it.value()->key() ) );
       continue;
     }
     connect( editWidget, &QgsAuthMethodEdit::validityChanged, this, &QgsAuthConfigEdit::validateAuth );
@@ -147,13 +149,13 @@ void QgsAuthConfigEdit::loadConfig()
   QgsAuthMethodConfig mconfig;
   if ( !QgsApplication::authManager()->loadAuthenticationConfig( mAuthCfg, mconfig, true ) )
   {
-    QgsDebugMsg( QString( "Loading FAILED for authcfg: %1" ).arg( mAuthCfg ) );
+    QgsDebugMsg( QStringLiteral( "Loading FAILED for authcfg: %1" ).arg( mAuthCfg ) );
     return;
   }
 
   if ( !mconfig.isValid( true ) )
   {
-    QgsDebugMsg( QString( "Loading FAILED for authcfg (%1): invalid config" ).arg( mAuthCfg ) );
+    QgsDebugMsg( QStringLiteral( "Loading FAILED for authcfg (%1): invalid config" ).arg( mAuthCfg ) );
     return;
   }
 
@@ -164,25 +166,25 @@ void QgsAuthConfigEdit::loadConfig()
 
   QString authMethodKey = QgsApplication::authManager()->configAuthMethodKey( mAuthCfg );
 
-  QgsDebugMsg( QString( "Loading authcfg: %1" ).arg( mAuthCfg ) );
-  QgsDebugMsg( QString( "Loading auth method: %1" ).arg( authMethodKey ) );
+  QgsDebugMsg( QStringLiteral( "Loading authcfg: %1" ).arg( mAuthCfg ) );
+  QgsDebugMsg( QStringLiteral( "Loading auth method: %1" ).arg( authMethodKey ) );
 
   if ( authMethodKey.isEmpty() )
   {
-    QgsDebugMsg( QString( "Loading FAILED for authcfg (%1): no auth method found" ).arg( mAuthCfg ) );
+    QgsDebugMsg( QStringLiteral( "Loading FAILED for authcfg (%1): no auth method found" ).arg( mAuthCfg ) );
     return;
   }
 
   if ( mconfig.method() != authMethodKey )
   {
-    QgsDebugMsg( QString( "Loading FAILED for authcfg (%1): auth method and key mismatch" ).arg( mAuthCfg ) );
+    QgsDebugMsg( QStringLiteral( "Loading FAILED for authcfg (%1): auth method and key mismatch" ).arg( mAuthCfg ) );
     return;
   }
 
   int indx = authMethodIndex( authMethodKey );
   if ( indx == -1 )
   {
-    QgsDebugMsg( QString( "Loading FAILED for authcfg (%1): no edit widget loaded for auth method '%2'" )
+    QgsDebugMsg( QStringLiteral( "Loading FAILED for authcfg (%1): no edit widget loaded for auth method '%2'" )
                  .arg( mAuthCfg, authMethodKey ) );
     if ( cmbAuthMethods->count() > 0 )
     {
@@ -198,7 +200,7 @@ void QgsAuthConfigEdit::loadConfig()
   QgsAuthMethodEdit *editWidget = currentEditWidget();
   if ( !editWidget )
   {
-    QgsDebugMsg( QString( "Cast to edit widget FAILED for authcfg (%1) and auth method key (%2)" )
+    QgsDebugMsg( QStringLiteral( "Cast to edit widget FAILED for authcfg (%1) and auth method key (%2)" )
                  .arg( mAuthCfg, authMethodKey ) );
     return;
   }
@@ -223,14 +225,14 @@ void QgsAuthConfigEdit::saveConfig()
   QgsAuthMethodEdit *editWidget = currentEditWidget();
   if ( !editWidget )
   {
-    QgsDebugMsg( QString( "Cast to edit widget FAILED)" ) );
+    QgsDebugMsg( QStringLiteral( "Cast to edit widget FAILED)" ) );
     return;
   }
 
   QgsAuthMethod *authmethod = QgsApplication::authManager()->authMethod( authMethodKey );
   if ( !authmethod )
   {
-    QgsDebugMsg( QString( "Save auth config FAILED when loading auth method instance from key (%1)" ).arg( authMethodKey ) );
+    QgsDebugMsg( QStringLiteral( "Save auth config FAILED when loading auth method instance from key (%1)" ).arg( authMethodKey ) );
     return;
   }
 
@@ -243,7 +245,7 @@ void QgsAuthConfigEdit::saveConfig()
 
   if ( !mconfig.isValid() )
   {
-    QgsDebugMsg( "Save auth config FAILED: config invalid" );
+    QgsDebugMsg( QStringLiteral( "Save auth config FAILED: config invalid" ) );
     return;
   }
 
@@ -259,7 +261,7 @@ void QgsAuthConfigEdit::saveConfig()
       }
       else
       {
-        QgsDebugMsg( QString( "Updating auth config FAILED for authcfg: %1" ).arg( mAuthCfg ) );
+        QgsDebugMsg( QStringLiteral( "Updating auth config FAILED for authcfg: %1" ).arg( mAuthCfg ) );
       }
     }
     else // store new with unique ID, then delete previous
@@ -270,13 +272,13 @@ void QgsAuthConfigEdit::saveConfig()
         emit authenticationConfigStored( authCfgId );
         if ( !QgsApplication::authManager()->removeAuthenticationConfig( mAuthCfg ) )
         {
-          QgsDebugMsg( QString( "Removal of older auth config FAILED" ) );
+          QgsDebugMsg( QStringLiteral( "Removal of older auth config FAILED" ) );
         }
         mAuthCfg = authCfgId;
       }
       else
       {
-        QgsDebugMsg( QString( "Storing new auth config with user-created unique ID FAILED" ) );
+        QgsDebugMsg( QStringLiteral( "Storing new auth config with user-created unique ID FAILED" ) );
       }
     }
   }
@@ -291,7 +293,7 @@ void QgsAuthConfigEdit::saveConfig()
       }
       else
       {
-        QgsDebugMsg( QString( "Storing new auth config FAILED" ) );
+        QgsDebugMsg( QStringLiteral( "Storing new auth config FAILED" ) );
       }
     }
     else // create new with user-created unique ID
@@ -304,7 +306,7 @@ void QgsAuthConfigEdit::saveConfig()
       }
       else
       {
-        QgsDebugMsg( QString( "Storing new auth config with user-created unique ID FAILED" ) );
+        QgsDebugMsg( QStringLiteral( "Storing new auth config with user-created unique ID FAILED" ) );
       }
     }
   }
@@ -317,7 +319,7 @@ void QgsAuthConfigEdit::btnClear_clicked()
   QgsAuthMethodEdit *editWidget = currentEditWidget();
   if ( !editWidget )
   {
-    QgsDebugMsg( QString( "Cast to edit widget FAILED)" ) );
+    QgsDebugMsg( QStringLiteral( "Cast to edit widget FAILED)" ) );
     return;
   }
 
@@ -351,7 +353,7 @@ void QgsAuthConfigEdit::validateAuth()
   QgsAuthMethodEdit *editWidget = currentEditWidget();
   if ( !editWidget )
   {
-    QgsDebugMsg( QString( "Cast to edit widget FAILED" ) );
+    QgsDebugMsg( QStringLiteral( "Cast to edit widget FAILED" ) );
   }
   else
   {

@@ -20,6 +20,7 @@
 #include "qgsgeometry.h"
 #include "qgis_app.h"
 #include "ui_qgsoffsetuserinputwidget.h"
+#include "qgspointlocator.h"
 
 class QGridLayout;
 
@@ -68,7 +69,7 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     void updateGeometryAndRubberBand( double offset );
 
     //! Apply the offset either from the spin box or from the mouse event
-    void applyOffset( const double &offset, const Qt::KeyboardModifiers &modifiers );
+    void applyOffset( double offset, Qt::KeyboardModifiers modifiers );
 
     void cancel();
 

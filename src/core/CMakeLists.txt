@@ -151,6 +151,7 @@ SET(QGIS_CORE_SRCS
   qgsauxiliarystorage.cpp
   qgsbearingutils.cpp
   qgsbrowsermodel.cpp
+  qgsbrowserproxymodel.cpp
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
   qgscacheindexfeatureid.cpp
@@ -590,6 +591,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsanimatedicon.h
   qgsauxiliarystorage.h
   qgsbrowsermodel.h
+  qgsbrowserproxymodel.h
   qgscoordinatereferencesystem.h
   qgscredentials.h
   qgsdataitem.h
@@ -606,6 +608,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsfiledownloader.h
   qgsfeaturefiltermodel.h
   qgsfeaturefiltermodel_p.h
+  qgsgeometryoptions.h
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
@@ -700,6 +703,7 @@ SET(QGIS_CORE_MOC_HDRS
   geometry/qgsabstractgeometry.h
   geometry/qgsgeometry.h
   geometry/qgspoint.h
+  geometry/qgswkbtypes.h
 
   geocms/geonode/qgsgeonoderequest.h
 
@@ -868,7 +872,6 @@ SET(QGIS_CORE_HDRS
   qgsfields.h
   qgsfileutils.h
   qgsfontutils.h
-  qgsgeometryoptions.h
   qgsgeometrysimplifier.h
   qgshistogram.h
   qgshstoreutils.h
@@ -1160,7 +1163,6 @@ SET(QGIS_CORE_HDRS
   geometry/qgstriangle.h
   geometry/qgssurface.h
   geometry/qgswkbptr.h
-  geometry/qgswkbtypes.h
 
   3d/qgs3drendererregistry.h
   3d/qgsabstract3drenderer.h
@@ -1243,7 +1245,7 @@ IF (HAVE_OPENCL)
     SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
         qgsopenclutils.h
     )
-    INCLUDE_DIRECTORIES(${OpenCL_INCLUDE_DIR})
+    INCLUDE_DIRECTORIES(SYSTEM ${OpenCL_INCLUDE_DIRS})
 ENDIF (HAVE_OPENCL)
 
 

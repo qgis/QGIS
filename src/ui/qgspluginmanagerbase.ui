@@ -676,7 +676,7 @@
                 </size>
                </property>
                <property name="text">
-                <string>Install plugin</string>
+                <string>Install Plugin</string>
                </property>
               </widget>
              </item>
@@ -1054,7 +1054,7 @@ p, li { white-space: pre-wrap; }
 (useful when you uploaded a plugin there)</string>
                          </property>
                          <property name="text">
-                          <string>Reload repository</string>
+                          <string>Reload Repository</string>
                          </property>
                         </widget>
                        </item>

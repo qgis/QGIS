@@ -9,7 +9,6 @@
 
 
 
-
 class QgsLayoutViewRubberBand : QObject
 {
 %Docstring

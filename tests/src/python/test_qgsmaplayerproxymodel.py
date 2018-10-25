@@ -47,6 +47,9 @@ class TestQgsMapLayerProxyModel(unittest.TestCase):
         m.setExceptedLayerList([l2])
         self.assertEqual(m.exceptedLayerList(), [l2])
 
+        m.setLayerWhitelist([l2])
+        self.assertEqual(m.layerWhitelist(), [l2])
+
         m.setExcludedProviders(['a', 'b'])
         self.assertEqual(m.excludedProviders(), ['a', 'b'])
 
@@ -129,6 +132,55 @@ class TestQgsMapLayerProxyModel(unittest.TestCase):
         self.assertEqual(m.data(m.index(2, 0)), 'lAyEr 2')
 
         m.setFilterString('')
+        self.assertEqual(m.rowCount(), 4)
+
+    def testFilterByLayer(self):
+        """ test filtering by layer"""
+        QgsProject.instance().clear()
+        m = QgsMapLayerProxyModel()
+        l1 = QgsVectorLayer("Point?crs=EPSG:3111&field=fldtxt:string&field=fldint:integer",
+                            'layer 1', "memory")
+        QgsProject.instance().addMapLayer(l1)
+        l2 = QgsVectorLayer("Polygon?crs=EPSG:3111&field=fldtxt:string&field=fldint:integer",
+                            'lAyEr 2', "memory")
+        QgsProject.instance().addMapLayer(l2)
+        l3 = QgsVectorLayer("None?field=fldtxt:string&field=fldint:integer",
+                            'another', "memory")
+        QgsProject.instance().addMapLayer(l3)
+        l4 = QgsVectorLayer("LineString?crs=EPSG:3111&field=fldtxt:string&field=fldint:integer",
+                            'final layer', "memory")
+        QgsProject.instance().addMapLayer(l4)
+
+        self.assertEqual(m.rowCount(), 4)
+        self.assertEqual(m.data(m.index(0, 0)), 'another')
+        self.assertEqual(m.data(m.index(1, 0)), 'final layer')
+        self.assertEqual(m.data(m.index(2, 0)), 'layer 1')
+        self.assertEqual(m.data(m.index(3, 0)), 'lAyEr 2')
+
+        m.setExceptedLayerList([l1, l3])
+        self.assertEqual(m.rowCount(), 2)
+        self.assertEqual(m.data(m.index(0, 0)), 'final layer')
+        self.assertEqual(m.data(m.index(1, 0)), 'lAyEr 2')
+
+        m.setExceptedLayerIds([l2.id(), l4.id()])
+        self.assertEqual(m.rowCount(), 2)
+        self.assertEqual(m.data(m.index(0, 0)), 'another')
+        self.assertEqual(m.data(m.index(1, 0)), 'layer 1')
+
+        m.setLayerWhitelist([l1])
+        self.assertEqual(m.rowCount(), 1)
+        self.assertEqual(m.data(m.index(0, 0)), 'layer 1')
+
+        m.setExceptedLayerIds([])
+        self.assertEqual(m.rowCount(), 1)
+        self.assertEqual(m.data(m.index(0, 0)), 'layer 1')
+
+        m.setLayerWhitelist([l2, l3])
+        self.assertEqual(m.rowCount(), 2)
+        self.assertEqual(m.data(m.index(0, 0)), 'another')
+        self.assertEqual(m.data(m.index(1, 0)), 'lAyEr 2')
+
+        m.setLayerWhitelist([])
         self.assertEqual(m.rowCount(), 4)
 
 

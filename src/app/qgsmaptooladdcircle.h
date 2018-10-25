@@ -56,6 +56,8 @@ class APP_EXPORT QgsMapToolAddCircle: public QgsMapToolCapture
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
     //! Circle
     QgsCircle mCircle;
+    //! Layer type which will be used for rubberband
+    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
 
 };
 

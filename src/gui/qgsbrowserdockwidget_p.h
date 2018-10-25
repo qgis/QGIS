@@ -48,7 +48,6 @@ class QModelIndex;
 class QgsDockBrowserTreeView;
 class QgsLayerItem;
 class QgsDataItem;
-class QgsBrowserTreeFilterProxyModel;
 
 #define SIP_NO_FILE
 
@@ -203,57 +202,6 @@ class QgsDockBrowserTreeView : public QgsBrowserTreeView
   private:
     void setAction( QDropEvent *e );
 };
-
-/**
- * Utility class for filtering browser items
- */
-class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
-{
-    Q_OBJECT
-  public:
-
-    /**
-      * Constructor for QgsBrowserTreeFilterProxyModel
-      * \param parent parent widget
-      */
-    explicit QgsBrowserTreeFilterProxyModel( QObject *parent );
-    //! Sets the browser model
-    void setBrowserModel( QgsBrowserModel *model );
-    //! Gets the browser model
-    QgsBrowserModel *browserModel() { return mModel; }
-    //! Sets the filter syntax
-    void setFilterSyntax( const QString &syntax );
-    //! Sets the filter
-    void setFilter( const QString &filter );
-    //! Sets case sensitivity
-    void setCaseSensitive( bool caseSensitive );
-    //! Update filter
-    void updateFilter();
-
-  protected:
-
-    QgsBrowserModel *mModel = nullptr;
-    QString mFilter; //filter string provided
-    QVector<QRegExp> mREList; //list of filters, separated by "|"
-    QString mPatternSyntax;
-    Qt::CaseSensitivity mCaseSensitivity;
-
-    //! Filter accepts string
-    bool filterAcceptsString( const QString &value ) const;
-
-    //! It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
-
-    //! Returns true if at least one ancestor is accepted by filter
-    bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
-
-    //! Returns true if at least one descendant s accepted by filter
-    bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
-
-    //! Filter accepts item name
-    bool filterAcceptsItem( const QModelIndex &sourceIndex ) const;
-};
-
 
 /// @endcond
 

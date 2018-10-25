@@ -508,7 +508,7 @@ QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItem( QgsLayerTreeModelL
   nucleon.item = symbolItem;
   nucleon.symbolSize = im.symbolSize;
   nucleon.labelSize = im.labelSize;
-  //QgsDebugMsg( QString( "symbol height = %1 label height = %2").arg( symbolSize.height()).arg( labelSize.height() ));
+  //QgsDebugMsg( QStringLiteral( "symbol height = %1 label height = %2").arg( symbolSize.height()).arg( labelSize.height() ));
   double width = std::max( static_cast< double >( im.symbolSize.width() ), labelXOffset ) + im.labelSize.width();
   double height = std::max( im.symbolSize.height(), im.labelSize.height() );
   nucleon.size = QSizeF( width, height );

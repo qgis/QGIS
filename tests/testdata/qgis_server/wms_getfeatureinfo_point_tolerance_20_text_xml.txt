@@ -1,0 +1,15 @@
+*****
+Content-Type: text/xml; charset=utf-8
+
+<GetFeatureInfoResponse>
+ <Layer name="layer3">
+  <Feature id="1">
+   <Attribute value="1" name="id"/>
+   <Attribute value="Id no. 1 value, Id no. 2 value, Id número 3 value" name="location"/>
+  </Feature>
+  <Feature id="2">
+   <Attribute value="2" name="id"/>
+   <Attribute value="" name="location"/>
+  </Feature>
+ </Layer>
+</GetFeatureInfoResponse>

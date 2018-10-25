@@ -13,7 +13,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-import sip
+from qgis.PyQt import sip
 from qgis.core import (QgsProject,
                        QgsLayout,
                        QgsUnitTypes,

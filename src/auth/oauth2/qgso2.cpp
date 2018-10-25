@@ -66,6 +66,7 @@ void QgsO2::initOAuthConfig()
   QgsDebugMsg( QStringLiteral( "localpolicy(w/port): %1" ).arg( localpolicy.arg( mOAuth2Config->redirectPort() ) ) );
   setLocalhostPolicy( localpolicy );
   setLocalPort( mOAuth2Config->redirectPort() );
+  mIsLocalHost = isLocalHost( QUrl( localpolicy.arg( mOAuth2Config->redirectPort() ) ) );
 
   setTokenUrl( mOAuth2Config->tokenUrl() );
   setRefreshTokenUrl( mOAuth2Config->refreshTokenUrl() );
@@ -250,20 +251,23 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
       return;
     }
 
-    if ( response.contains( QStringLiteral( "state" ) ) )
+    if ( !state_.isEmpty() )
     {
-      if ( response.value( QStringLiteral( "state" ), QStringLiteral( "ignore" ) ) != state_ )
+      if ( response.contains( QStringLiteral( "state" ) ) )
       {
-        QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Verification failed: (Response returned wrong state)" ), 3 ) ;
+        if ( response.value( QStringLiteral( "state" ), QStringLiteral( "ignore" ) ) != state_ )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Verification failed: (Response returned wrong state)" ), 3 ) ;
+          emit linkingFailed();
+          return;
+        }
+      }
+      else
+      {
+        QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Verification failed: (Response does not contain state)" ), 3 );
         emit linkingFailed();
         return;
       }
-    }
-    else
-    {
-      QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Verification failed: (Response does not contain state)" ), 3 );
-      emit linkingFailed();
-      return;
     }
     // Save access code
     setCode( response.value( QString( O2_OAUTH2_GRANT_TYPE_CODE ) ) );

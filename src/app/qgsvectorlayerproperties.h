@@ -132,10 +132,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
   signals:
 
-    //! Emitted when changes to layer were saved to update legend
-    void refreshLegend( const QString &layerID, bool expandItem );
-    void refreshLegend( const QString &layerID );
-
     void toggleEditing( QgsMapLayer * );
 
   private slots:
@@ -192,8 +188,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QAction *mActionLoadMetadata = nullptr;
     QAction *mActionSaveMetadataAs = nullptr;
 
-    QMenu *mLoadStyleMenu = nullptr;
-
     QAction *mActionLoadStyle = nullptr;
     QAction *mActionSaveStyle = nullptr;
 
@@ -226,7 +220,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //! Adds a new join to mJoinTreeWidget
     void addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, int insertIndex = -1 );
 
-    void updateAuxiliaryStoragePage( bool reset = false );
+    void updateAuxiliaryStoragePage();
     void deleteAuxiliaryField( int index );
 
     QgsExpressionContext mContext;
@@ -249,8 +243,12 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;
 
+    QHash<QCheckBox *, QString> mGeometryCheckFactoriesGroupBoxes;
+
   private slots:
     void openPanel( QgsPanelWidget *panel );
+
+    friend class QgsAppScreenShots;
 };
 
 

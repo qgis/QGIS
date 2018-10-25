@@ -13,6 +13,7 @@
 
 
 
+
 typedef QVector<QgsPointXY> QgsPolylineXY;
 
 typedef QVector<QgsPoint> QgsPolyline;
@@ -1297,7 +1298,7 @@ Exports the geometry to WKT
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsGeometry: %1>" ).arg( sipCpp->asWkt() );
-    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
     QString asJson( int precision = 17 ) const;
@@ -1494,6 +1495,12 @@ The coordinates at which the error is located and should be visualized.
         bool hasWhere() const;
 %Docstring
 True if the location available from :py:func:`where` is valid.
+%End
+
+        SIP_PYOBJECT __repr__();
+%MethodCode
+        QString str = QStringLiteral( "<QgsGeometry.Error: %1>" ).arg( sipCpp->what() );
+        sipRes = PyUnicode_FromString( str.toUtf8().data() );
 %End
 
     };

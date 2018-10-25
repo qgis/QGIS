@@ -27,7 +27,7 @@ class QgsMssqlGeomColumnTypeThread : public QThread
 {
     Q_OBJECT
   public:
-    QgsMssqlGeomColumnTypeThread( const QString &connectionName, bool useEstimatedMetadata );
+    QgsMssqlGeomColumnTypeThread( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool useEstimatedMetadata );
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.
@@ -43,7 +43,11 @@ class QgsMssqlGeomColumnTypeThread : public QThread
   private:
     QgsMssqlGeomColumnTypeThread() = delete;
 
-    QString mConnectionName;
+    QString mService;
+    QString mHost;
+    QString mDatabase;
+    QString mUsername;
+    QString mPassword;
     bool mUseEstimatedMetadata;
     bool mStopped;
     QList<QgsMssqlLayerProperty> layerProperties;

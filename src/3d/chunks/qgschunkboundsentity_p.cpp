@@ -15,36 +15,13 @@
 
 #include "qgschunkboundsentity_p.h"
 
-#include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
-#include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DExtras/QPhongMaterial>
 
 #include "qgsaabb.h"
 
 
 ///@cond PRIVATE
-
-class LineMeshGeometry : public Qt3DRender::QGeometry
-{
-  public:
-    LineMeshGeometry( Qt3DCore::QNode *parent = nullptr );
-
-    int vertexCount()
-    {
-      return mVertices.size();
-    }
-
-    void setVertices( QList<QVector3D> vertices );
-
-  private:
-    Qt3DRender::QAttribute *mPositionAttribute = nullptr;
-    Qt3DRender::QBuffer *mVertexBuffer = nullptr;
-    QList<QVector3D> mVertices;
-
-};
-
 
 LineMeshGeometry::LineMeshGeometry( Qt3DCore::QNode *parent )
   : Qt3DRender::QGeometry( parent )
@@ -60,7 +37,7 @@ LineMeshGeometry::LineMeshGeometry( Qt3DCore::QNode *parent )
   addAttribute( mPositionAttribute );
 }
 
-void LineMeshGeometry::setVertices( QList<QVector3D> vertices )
+void LineMeshGeometry::setVertices( const QList<QVector3D> &vertices )
 {
   QByteArray vertexBufferData;
   vertexBufferData.resize( vertices.size() * 3 * sizeof( float ) );
@@ -79,19 +56,6 @@ void LineMeshGeometry::setVertices( QList<QVector3D> vertices )
 
 
 // ----------------
-
-
-//! Geometry renderer for axis aligned bounding boxes - draws a box edges as lines
-class AABBMesh : public Qt3DRender::QGeometryRenderer
-{
-  public:
-    AABBMesh( Qt3DCore::QNode *parent = nullptr );
-
-    void setBoxes( const QList<QgsAABB> &bboxes );
-
-  private:
-    LineMeshGeometry *mLineMeshGeo = nullptr;
-};
 
 
 AABBMesh::AABBMesh( Qt3DCore::QNode *parent )

@@ -45,6 +45,7 @@ class TestQgis : public QObject
     void qVariantCompare();
     void testQgsAsConst();
     void testQgsRound();
+    void testQgsVariantEqual();
 
   private:
     QString mReport;
@@ -357,6 +358,35 @@ void TestQgis::testQgsRound()
   QGSCOMPARENEAR( qgsRound( 9.87654321987654321, 14 ), 9.876543219876543, 0.00000000000001 );
   QGSCOMPARENEAR( qgsRound( 9998.87654321987654321, 14 ), 9998.876543219876543, 0.00000000000001 );
   QGSCOMPARENEAR( qgsRound( 9999999.87654321987654321, 14 ), 9999999.876543219876543, 0.00000000000001 );
+}
+
+void TestQgis::testQgsVariantEqual()
+{
+
+  // Invalid
+  QVERIFY( qgsVariantEqual( QVariant(), QVariant() ) );
+  QVERIFY( QVariant() == QVariant() );
+
+  // Zero
+  QVERIFY( qgsVariantEqual( QVariant( 0 ), QVariant( 0.0f ) ) );
+  QVERIFY( QVariant( 0 ) == QVariant( 0.0f ) );
+
+  // Double
+  QVERIFY( qgsVariantEqual( QVariant( 1.234 ), QVariant( 1.234 ) ) );
+
+  // This is what we actually wanted to fix with qgsVariantEqual
+  // zero != NULL
+  QVERIFY( ! qgsVariantEqual( QVariant( 0 ), QVariant( QVariant::Int ) ) );
+  QVERIFY( ! qgsVariantEqual( QVariant( 0 ), QVariant( QVariant::Double ) ) );
+  QVERIFY( ! qgsVariantEqual( QVariant( 0.0f ), QVariant( QVariant::Int ) ) );
+  QVERIFY( ! qgsVariantEqual( QVariant( 0.0f ), QVariant( QVariant::Double ) ) );
+  QVERIFY( QVariant( 0 ) == QVariant( QVariant::Int ) );
+
+  // NULL identities
+  QVERIFY( qgsVariantEqual( QVariant( QVariant::Int ), QVariant( QVariant::Int ) ) );
+  QVERIFY( qgsVariantEqual( QVariant( QVariant::Double ), QVariant( QVariant::Double ) ) );
+
+
 }
 
 

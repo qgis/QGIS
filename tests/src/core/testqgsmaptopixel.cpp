@@ -28,7 +28,7 @@ class TestQgsMapToPixel: public QObject
     void rotation();
     void getters();
     void fromScale();
-    void toMapPoint();
+    void toMapCoordinates();
 };
 
 void TestQgsMapToPixel::rotation()
@@ -40,7 +40,7 @@ void TestQgsMapToPixel::rotation()
   QCOMPARE( d.x(), 5.0 ); // center doesn't move
   QCOMPARE( d.y(), 5.0 );
 
-  QgsPointXY b = m2p.toMapCoordinatesF( d.x(), d.y() ); // transform back
+  QgsPointXY b = m2p.toMapCoordinates( d.x(), d.y() ); // transform back
   QCOMPARE( p, b );
 
   m2p.transform( &p ); // in place transform
@@ -106,16 +106,16 @@ void TestQgsMapToPixel::fromScale()
   QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 0.000265, 0.000001 );
 }
 
-void TestQgsMapToPixel::toMapPoint()
+void TestQgsMapToPixel::toMapCoordinates()
 {
   QgsMapToPixel m2p( 1, 5, 5, 10, 10, 90 );
-  QgsPointXY p = m2p.toMapPoint( 5, 5 );
+  QgsPointXY p = m2p.toMapCoordinates( 5, 5 );
   QCOMPARE( p, QgsPointXY( 5, 5 ) );
 
-  p = m2p.toMapPoint( 10, 10 );
+  p = m2p.toMapCoordinates( 10, 10 );
   QCOMPARE( p, QgsPointXY( 10, 10 ) );
 
-  p = m2p.toMapPoint( 20, 20 );
+  p = m2p.toMapCoordinates( 20, 20 );
   QCOMPARE( p, QgsPointXY( 20, 20 ) );
 }
 

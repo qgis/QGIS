@@ -22,11 +22,12 @@
 
 #include "qgis_core.h"
 #include "qgsellipse.h"
-#include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgsrectangle.h"
 #include "qgscircularstring.h"
 
+
+class QgsPoint;
 
 /**
  * \ingroup core
@@ -251,7 +252,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = QStringLiteral( "<QgsCircle: %1>" ).arg( sipCpp->toString() );
-    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 };

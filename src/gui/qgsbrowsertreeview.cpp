@@ -23,6 +23,7 @@ QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
   : QTreeView( parent )
   , mSettingsSection( QStringLiteral( "browser" ) )
 {
+  setEditTriggers( QAbstractItemView::EditKeyPressed );
 }
 
 void QgsBrowserTreeView::setModel( QAbstractItemModel *model )
@@ -195,7 +196,7 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex &parentIndex, int start
     QgsDebugMsgLevel( "childPath = " + childPath + " escapedChildPath = " + escapedChildPath, 2 );
     if ( mExpandPaths.contains( childPath ) || mExpandPaths.indexOf( QRegExp( "^" + escapedChildPath + "/.*" ) ) != -1 )
     {
-      QgsDebugMsgLevel( "-> expand", 2 );
+      QgsDebugMsgLevel( QStringLiteral( "-> expand" ), 2 );
       expand( childIndex );
     }
   }

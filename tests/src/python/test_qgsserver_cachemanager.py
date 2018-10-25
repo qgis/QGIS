@@ -31,6 +31,8 @@ from qgis.PyQt.QtCore import QIODevice, QFile, QByteArray, QBuffer
 from qgis.PyQt.QtGui import QImage
 from qgis.PyQt.QtXml import QDomDocument
 
+from test_qgsserver import QgsServerTestBase
+
 
 class PyServerCache(QgsServerCacheFilter):
 
@@ -144,7 +146,7 @@ class PyServerCache(QgsServerCacheFilter):
         return len(filelist) == 0
 
 
-class TestQgsServerCacheManager(unittest.TestCase):
+class TestQgsServerCacheManager(QgsServerTestBase):
 
     @classmethod
     def _handle_request(cls, qs, requestMethod=QgsServerRequest.GetMethod, data=None):
@@ -276,6 +278,92 @@ class TestQgsServerCacheManager(unittest.TestCase):
 
         self.assertTrue(cacheManager.deleteCachedDocuments(None), 'deleteCachedDocuments does not return True')
 
+    def test_getcontext(self):
+        project = self._project_path
+        assert os.path.exists(project), "Project file not found: " + project
+
+        # without cache
+        query_string = '?MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.parse.quote(project), 'GetContext')
+        header, body = self._execute_request(query_string)
+        # with cache
+        header, body = self._execute_request(query_string)
+
+        filelist = [f for f in os.listdir(self._servercache._cache_dir) if f.endswith(".xml")]
+        self.assertEqual(len(filelist), 1, 'Not enough file in cache')
+
+        cacheManager = self._server_iface.cacheManager()
+
+        self.assertTrue(cacheManager.deleteCachedDocuments(None), 'deleteCachedImages does not return True')
+
+        filelist = [f for f in os.listdir(self._servercache._cache_dir) if f.endswith(".xml")]
+        self.assertEqual(len(filelist), 0, 'All files in cache are not deleted ')
+
+    def test_describefeaturetype(self):
+        project = self._project_path
+        assert os.path.exists(project), "Project file not found: " + project
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WFS",
+            "VERSION": "1.1.0",
+            "REQUEST": "DescribeFeatureType",
+            "FEATURETYPE": "Country"
+        }.items())])
+
+        header, body = self._execute_request(qs)
+        # with cache
+        header, body = self._execute_request(qs)
+
+        filelist = [f for f in os.listdir(self._servercache._cache_dir) if f.endswith(".xml")]
+        self.assertEqual(len(filelist), 1, 'Not enough file in cache')
+
+        cacheManager = self._server_iface.cacheManager()
+
+        self.assertTrue(cacheManager.deleteCachedDocuments(None), 'deleteCachedImages does not return True')
+
+        filelist = [f for f in os.listdir(self._servercache._cache_dir) if f.endswith(".xml")]
+        self.assertEqual(len(filelist), 0, 'All files in cache are not deleted ')
+
+    def test_getlegendgraphic(self):
+        project = self._project_path
+        assert os.path.exists(project), "Project file not found: " + project
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "LAYERTITLE": "FALSE",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        # without cache
+        r, h = self._result(self._execute_request(qs))
+        self.assertEqual(
+            h.get("Content-Type"), "image/png",
+            "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Basic")
+        # with cache
+        r, h = self._result(self._execute_request(qs))
+        self.assertEqual(
+            h.get("Content-Type"), "image/png",
+            "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Basic")
+
+        filelist = [f for f in os.listdir(self._servercache._tile_cache_dir) if f.endswith(".png")]
+        self.assertEqual(len(filelist), 1, 'Not enough image in cache')
+
+        cacheManager = self._server_iface.cacheManager()
+
+        self.assertTrue(cacheManager.deleteCachedImages(None), 'deleteCachedImages does not return True')
+
+        filelist = [f for f in os.listdir(self._servercache._tile_cache_dir) if f.endswith(".png")]
+        self.assertEqual(len(filelist), 0, 'All images in cache are not deleted ')
+
     def test_gettile(self):
         project = self._project_path
         assert os.path.exists(project), "Project file not found: " + project
@@ -349,11 +437,13 @@ class TestQgsServerCacheManager(unittest.TestCase):
         self.assertEqual(
             h.get("Content-Type"), "image/png",
             "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
+        self._img_diff_error(r, h, "WMTS_GetTile_Project_3857_0", 20000)
         # with cache
         r, h = self._result(self._execute_request(qs))
         self.assertEqual(
             h.get("Content-Type"), "image/png",
             "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
+        self._img_diff_error(r, h, "WMTS_GetTile_Project_3857_0", 20000)
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
@@ -374,11 +464,13 @@ class TestQgsServerCacheManager(unittest.TestCase):
         self.assertEqual(
             h.get("Content-Type"), "image/png",
             "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
+        self._img_diff_error(r, h, "WMTS_GetTile_Project_4326_0", 20000)
         # with cache
         r, h = self._result(self._execute_request(qs))
         self.assertEqual(
             h.get("Content-Type"), "image/png",
             "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
+        self._img_diff_error(r, h, "WMTS_GetTile_Project_4326_0", 20000)
 
         filelist = [f for f in os.listdir(self._servercache._tile_cache_dir) if f.endswith(".png")]
         self.assertEqual(len(filelist), 4, 'Not enough image in cache')

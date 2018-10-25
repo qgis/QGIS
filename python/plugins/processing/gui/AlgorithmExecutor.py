@@ -41,7 +41,8 @@ from qgis.core import (Qgis,
                        QgsExpression,
                        QgsWkbTypes,
                        QgsGeometry,
-                       QgsVectorLayerUtils)
+                       QgsVectorLayerUtils,
+                       QgsVectorLayer)
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
 from qgis.utils import iface
@@ -70,124 +71,20 @@ def execute(alg, parameters, context=None, feedback=None):
         return False, {}
 
 
-def make_features_compatible(new_features, input_layer):
-    """Try to make the new features compatible with old features by:
-
-    - converting single to multi part
-    - dropping additional attributes
-    - adding back M/Z values
-    - drop Z/M
-    - convert multi part to single part
-
-    :param new_features: new features
-    :type new_features: list of QgsFeatures
-    :param input_layer: input layer
-    :type input_layer: QgsVectorLayer
-    :return: modified features
-    :rtype: list of QgsFeatures
-    """
-
-    input_wkb_type = input_layer.wkbType()
-    result_features = []
-    for new_f in new_features:
-        # Fix attributes
-        if new_f.fields().count() > 0:
-            attributes = []
-            for field in input_layer.fields():
-                if new_f.fields().indexFromName(field.name()) >= 0:
-                    attributes.append(new_f[field.name()])
-                else:
-                    attributes.append(None)
-            f = QgsFeature(input_layer.fields())
-            f.setAttributes(attributes)
-            f.setGeometry(new_f.geometry())
-            new_f = f
-        else:
-            lendiff = len(new_f.attributes()) - len(input_layer.fields())
-            if lendiff > 0:
-                f = QgsFeature(input_layer.fields())
-                f.setGeometry(new_f.geometry())
-                f.setAttributes(new_f.attributes()[:len(input_layer.fields())])
-                new_f = f
-            elif lendiff < 0:
-                f = QgsFeature(input_layer.fields())
-                f.setGeometry(new_f.geometry())
-                attributes = new_f.attributes() + [None for i in range(-lendiff)]
-                f.setAttributes(attributes)
-                new_f = f
-
-        # Check if we need geometry manipulation
-        new_f_geom_type = QgsWkbTypes.geometryType(new_f.geometry().wkbType())
-        new_f_has_geom = new_f_geom_type not in (QgsWkbTypes.UnknownGeometry, QgsWkbTypes.NullGeometry)
-        input_layer_has_geom = input_wkb_type not in (QgsWkbTypes.NoGeometry, QgsWkbTypes.Unknown)
-
-        # Drop geometry if layer is geometry-less
-        if not input_layer_has_geom and new_f_has_geom:
-            f = QgsFeature(input_layer.fields())
-            f.setAttributes(new_f.attributes())
-            new_f = f
-            result_features.append(new_f)
-            continue  # skip the rest
-
-        if input_layer_has_geom and new_f_has_geom and \
-                new_f.geometry().wkbType() != input_wkb_type:  # Fix geometry
-            # Single -> Multi
-            if (QgsWkbTypes.isMultiType(input_wkb_type) and not
-                    new_f.geometry().isMultipart()):
-                new_geom = new_f.geometry()
-                new_geom.convertToMultiType()
-                new_f.setGeometry(new_geom)
-            # Drop Z/M
-            if (new_f.geometry().constGet().is3D() and not QgsWkbTypes.hasZ(input_wkb_type)):
-                new_geom = new_f.geometry()
-                new_geom.get().dropZValue()
-                new_f.setGeometry(new_geom)
-            if (new_f.geometry().constGet().isMeasure() and not QgsWkbTypes.hasM(input_wkb_type)):
-                new_geom = new_f.geometry()
-                new_geom.get().dropMValue()
-                new_f.setGeometry(new_geom)
-            # Add Z/M back (set it to 0)
-            if (not new_f.geometry().constGet().is3D() and QgsWkbTypes.hasZ(input_wkb_type)):
-                new_geom = new_f.geometry()
-                new_geom.get().addZValue(0.0)
-                new_f.setGeometry(new_geom)
-            if (not new_f.geometry().constGet().isMeasure() and QgsWkbTypes.hasM(input_wkb_type)):
-                new_geom = new_f.geometry()
-                new_geom.get().addMValue(0.0)
-                new_f.setGeometry(new_geom)
-            # Multi -> Single
-            if (not QgsWkbTypes.isMultiType(input_wkb_type) and
-                    new_f.geometry().isMultipart()):
-                g = new_f.geometry()
-                g2 = g.constGet()
-                for i in range(g2.partCount()):
-                    # Clone or crash!
-                    g4 = QgsGeometry(g2.geometryN(i).clone())
-                    f = QgsVectorLayerUtils.createFeature(input_layer, g4, {i: new_f.attribute(i) for i in range(new_f.fields().count())})
-                    result_features.append(f)
-            else:
-                result_features.append(new_f)
-        else:
-            result_features.append(new_f)
-    return result_features
-
-
-def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=None, raise_exceptions=False):
+def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exceptions=False):
     """Executes an algorithm modifying features in-place in the input layer.
-
-    The input layer must be editable or an exception is raised.
 
     :param alg: algorithm to run
     :type alg: QgsProcessingAlgorithm
-    :param active_layer: the editable layer
-    :type active_layer: QgsVectoLayer
     :param parameters: parameters of the algorithm
     :type parameters: dict
     :param context: context, defaults to None
-    :param context: QgsProcessingContext, optional
+    :type context: QgsProcessingContext, optional
     :param feedback: feedback, defaults to None
-    :param feedback: QgsProcessingFeedback, optional
-    :raises QgsProcessingException: raised when the layer is not editable or the layer cannot be found in the current project
+    :type feedback: QgsProcessingFeedback, optional
+    :param raise_exceptions: useful for testing, if True exceptions are raised, normally exceptions will be forwarded to the feedback
+    :type raise_exceptions: boo, default to False
+    :raises QgsProcessingException: raised when there is no active layer, or it cannot be made editable
     :return: a tuple with true if success and results
     :rtype: tuple
     """
@@ -197,22 +94,56 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
     if context is None:
         context = dataobjects.createContext(feedback)
 
-    if active_layer is None or not active_layer.isEditable():
-        raise QgsProcessingException(tr("Layer is not editable or layer is None."))
+    active_layer = parameters['INPUT']
 
-    if not alg.supportInPlaceEdit(active_layer):
-        raise QgsProcessingException(tr("Selected algorithm and parameter configuration are not compatible with in-place modifications."))
+    # Run some checks and prepare the layer for in-place execution by:
+    # - getting the active layer and checking that it is a vector
+    # - making the layer editable if it was not already
+    # - selecting all features if none was selected
+    # - checking in-place support for the active layer/alg/parameters
+    # If one of the check fails and raise_exceptions is True an exception
+    # is raised, else the execution is aborted and the error reported in
+    # the feedback
+    try:
+        if active_layer is None:
+            raise QgsProcessingException(tr("There is not active layer."))
 
+        if not isinstance(active_layer, QgsVectorLayer):
+            raise QgsProcessingException(tr("Active layer is not a vector layer."))
+
+        if not active_layer.isEditable():
+            if not active_layer.startEditing():
+                raise QgsProcessingException(tr("Active layer is not editable (and editing could not be turned on)."))
+
+        if not alg.supportInPlaceEdit(active_layer):
+            raise QgsProcessingException(tr("Selected algorithm and parameter configuration are not compatible with in-place modifications."))
+    except QgsProcessingException as e:
+        if raise_exceptions:
+            raise e
+        QgsMessageLog.logMessage(str(sys.exc_info()[0]), 'Processing', Qgis.Critical)
+        if feedback is not None:
+            feedback.reportError(getattr(e, 'msg', str(e)), fatalError=True)
+        return False, {}
+
+    if not active_layer.selectedFeatureIds():
+        active_layer.selectAll()
+
+    # Make sure we are working on selected features only
+    parameters['INPUT'] = QgsProcessingFeatureSourceDefinition(active_layer.id(), True)
     parameters['OUTPUT'] = 'memory:'
 
+    req = QgsFeatureRequest(QgsExpression(r"$id < 0"))
+    req.setFlags(QgsFeatureRequest.NoGeometry)
+    req.setSubsetOfAttributes([])
+
+    # Start the execution
+    # If anything goes wrong and raise_exceptions is True an exception
+    # is raised, else the execution is aborted and the error reported in
+    # the feedback
     try:
         new_feature_ids = []
 
         active_layer.beginEditCommand(alg.displayName())
-
-        req = QgsFeatureRequest(QgsExpression(r"$id < 0"))
-        req.setFlags(QgsFeatureRequest.NoGeometry)
-        req.setSubsetOfAttributes([])
 
         # Checks whether the algorithm has a processFeature method
         if hasattr(alg, 'processFeature'):  # in-place feature editing
@@ -225,13 +156,21 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
             if not alg.supportInPlaceEdit(active_layer):
                 raise QgsProcessingException(tr("Selected algorithm and parameter configuration are not compatible with in-place modifications."))
             field_idxs = range(len(active_layer.fields()))
-            feature_iterator = active_layer.getFeatures(QgsFeatureRequest(active_layer.selectedFeatureIds())) if parameters['INPUT'].selectedFeaturesOnly else active_layer.getFeatures()
-            for f in feature_iterator:
+            iterator_req = QgsFeatureRequest(active_layer.selectedFeatureIds())
+            iterator_req.setInvalidGeometryCheck(context.invalidGeometryCheck())
+            feature_iterator = active_layer.getFeatures(iterator_req)
+            step = 100 / len(active_layer.selectedFeatureIds()) if active_layer.selectedFeatureIds() else 1
+            for current, f in enumerate(feature_iterator):
+                feedback.setProgress(current * step)
+                if feedback.isCanceled():
+                    break
+
                 # need a deep copy, because python processFeature implementations may return
                 # a shallow copy from processFeature
                 input_feature = QgsFeature(f)
                 new_features = alg.processFeature(input_feature, context, feedback)
-                new_features = make_features_compatible(new_features, active_layer)
+                new_features = QgsVectorLayerUtils.makeFeaturesCompatible(new_features, active_layer)
+
                 if len(new_features) == 0:
                     active_layer.deleteFeature(f.id())
                 elif len(new_features) == 1:
@@ -253,15 +192,35 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
             results, ok = {}, True
 
         else:  # Traditional 'run' with delete and add features cycle
+
+            # There is no way to know if some features have been skipped
+            # due to invalid geometries
+            if context.invalidGeometryCheck() == QgsFeatureRequest.GeometrySkipInvalid:
+                selected_ids = active_layer.selectedFeatureIds()
+            else:
+                selected_ids = []
+
             results, ok = alg.run(parameters, context, feedback)
 
             if ok:
                 result_layer = QgsProcessingUtils.mapLayerFromString(results['OUTPUT'], context)
                 # TODO: check if features have changed before delete/add cycle
-                active_layer.deleteFeatures(active_layer.selectedFeatureIds())
+
                 new_features = []
+
+                # Check if there are any skipped features
+                if context.invalidGeometryCheck() == QgsFeatureRequest.GeometrySkipInvalid:
+                    missing_ids = list(set(selected_ids) - set(result_layer.allFeatureIds()))
+                    if missing_ids:
+                        for f in active_layer.getFeatures(QgsFeatureRequest(missing_ids)):
+                            if not f.geometry().isGeosValid():
+                                new_features.append(f)
+
+                active_layer.deleteFeatures(active_layer.selectedFeatureIds())
+
                 for f in result_layer.getFeatures():
-                    new_features.extend(make_features_compatible([f], active_layer))
+                    new_features.extend(QgsVectorLayerUtils.
+                                        makeFeaturesCompatible([f], active_layer))
 
                 # Get the new ids
                 old_ids = set([f.id() for f in active_layer.getFeatures(req)])
@@ -286,15 +245,15 @@ def execute_in_place_run(alg, active_layer, parameters, context=None, feedback=N
             raise e
         QgsMessageLog.logMessage(str(sys.exc_info()[0]), 'Processing', Qgis.Critical)
         if feedback is not None:
-            feedback.reportError(getattr(e, 'msg', str(e)))
+            feedback.reportError(getattr(e, 'msg', str(e)), fatalError=True)
 
     return False, {}
 
 
 def execute_in_place(alg, parameters, context=None, feedback=None):
-    """Executes an algorithm modifying features in-place in the active layer.
-
-    The input layer must be editable or an exception is raised.
+    """Executes an algorithm modifying features in-place, if the INPUT
+    parameter is not defined, the current active layer will be used as
+    INPUT.
 
     :param alg: algorithm to run
     :type alg: QgsProcessingAlgorithm
@@ -309,10 +268,21 @@ def execute_in_place(alg, parameters, context=None, feedback=None):
     :rtype: tuple
     """
 
-    parameters['INPUT'] = QgsProcessingFeatureSourceDefinition(iface.activeLayer().id(), True)
-    ok, results = execute_in_place_run(alg, iface.activeLayer(), parameters, context=context, feedback=feedback)
+    if feedback is None:
+        feedback = QgsProcessingFeedback()
+    if context is None:
+        context = dataobjects.createContext(feedback)
+
+    if not 'INPUT' in parameters or not parameters['INPUT']:
+        parameters['INPUT'] = iface.activeLayer()
+    ok, results = execute_in_place_run(alg, parameters, context=context, feedback=feedback)
     if ok:
-        iface.activeLayer().triggerRepaint()
+        if isinstance(parameters['INPUT'], QgsProcessingFeatureSourceDefinition):
+            layer = alg.parameterAsVectorLayer({'INPUT': parameters['INPUT'].source}, 'INPUT', context)
+        elif isinstance(parameters['INPUT'], QgsVectorLayer):
+            layer = parameters['INPUT']
+        if layer:
+            layer.triggerRepaint()
     return ok, results
 
 
@@ -342,7 +312,8 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
     # store output values to use them later as basenames for all outputs
     outputs = {}
     for out in alg.destinationParameterDefinitions():
-        outputs[out.name()] = parameters[out.name()]
+        if out.name() in parameters:
+            outputs[out.name()] = parameters[out.name()]
 
     # now run all the algorithms
     for i, f in enumerate(sink_list):
@@ -351,6 +322,9 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
 
         parameters[paramToIter] = f
         for out in alg.destinationParameterDefinitions():
+            if out.name() not in outputs:
+                continue
+
             o = outputs[out.name()]
             parameters[out.name()] = QgsProcessingUtils.generateIteratingDestination(o, i, context)
         feedback.setProgressText(QCoreApplication.translate('AlgorithmExecutor', 'Executing iteration {0}/{1}…').format(i, len(sink_list)))

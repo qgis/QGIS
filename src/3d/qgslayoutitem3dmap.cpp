@@ -211,7 +211,7 @@ bool QgsLayoutItem3DMap::writePropertiesToElement( QDomElement &element, QDomDoc
 bool QgsLayoutItem3DMap::readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context )
 {
   Q_UNUSED( document );
-  QDomElement elemSettings = element.firstChildElement( "qgis3d" );
+  QDomElement elemSettings = element.firstChildElement( QStringLiteral( "qgis3d" ) );
   if ( !elemSettings.isNull() )
   {
     mSettings.reset( new Qgs3DMapSettings );
@@ -220,7 +220,7 @@ bool QgsLayoutItem3DMap::readPropertiesFromElement( const QDomElement &element, 
       mSettings->resolveReferences( *mLayout->project() );
   }
 
-  QDomElement elemCameraPose = element.firstChildElement( "camera-pose" );
+  QDomElement elemCameraPose = element.firstChildElement( QStringLiteral( "camera-pose" ) );
   if ( !elemCameraPose.isNull() )
     mCameraPose.readXml( elemCameraPose );
 

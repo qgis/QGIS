@@ -1,0 +1,103 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsvectorlayer3drenderer.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+
+class QgsVectorLayer3DRendererMetadata : Qgs3DRendererAbstractMetadata
+{
+%Docstring
+Metadata for vector layer 3D renderer to allow creation of its instances from XML
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayer3drenderer.h"
+%End
+  public:
+    QgsVectorLayer3DRendererMetadata();
+
+    virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
+
+%Docstring
+Creates an instance of a 3D renderer based on a DOM element with renderer configuration
+%End
+};
+
+
+class QgsVectorLayer3DRenderer : QgsAbstract3DRenderer
+{
+%Docstring
+3D renderer that renders all features of a vector layer with the same 3D symbol.
+The appearance is completely defined by the symbol.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayer3drenderer.h"
+%End
+  public:
+    explicit QgsVectorLayer3DRenderer( QgsAbstract3DSymbol *s /Transfer/ = 0 );
+%Docstring
+Takes ownership of the symbol object
+%End
+
+    void setLayer( QgsVectorLayer *layer );
+%Docstring
+Sets vector layer associated with the renderer
+%End
+    QgsVectorLayer *layer() const;
+%Docstring
+Returns vector layer associated with the renderer
+%End
+
+    void setSymbol( QgsAbstract3DSymbol *symbol /Transfer/ );
+%Docstring
+Sets 3D symbol associated with the renderer. Takes ownership of the symbol
+%End
+    const QgsAbstract3DSymbol *symbol() const;
+%Docstring
+Returns 3D symbol associated with the renderer
+%End
+
+    virtual QString type() const;
+    virtual QgsVectorLayer3DRenderer *clone() const /Factory/;
+
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual void resolveReferences( const QgsProject &project );
+
+
+  private:
+    QgsVectorLayer3DRenderer( const QgsVectorLayer3DRenderer & );
+    QgsVectorLayer3DRenderer &operator=( const QgsVectorLayer3DRenderer & );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/qgsvectorlayer3drenderer.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

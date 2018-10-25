@@ -22,7 +22,9 @@
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include "qgisapp.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
+
 
 QgsMapToolCircle3Tangents::QgsMapToolCircle3Tangents( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )
@@ -79,10 +81,7 @@ void QgsMapToolCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
   if ( !mTempRubberBand )
   {
-    mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
-    mTempRubberBand->setFillColor( QColor( 0, 0, 255 ) );
-    mTempRubberBand->setStrokeColor( QColor( 0, 0, 255 ) );
-    mTempRubberBand->setStrokeWidth( 2 );
+    mTempRubberBand = createGeometryRubberBand( mLayerType, true );
     mTempRubberBand->show();
   }
   else

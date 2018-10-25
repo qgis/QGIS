@@ -104,7 +104,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   runString( "sys.path = [" + newpaths.join( QStringLiteral( "," ) ) + "] + sys.path" );
 
   // import SIP
-  if ( !runString( QStringLiteral( "import sip" ),
+  if ( !runString( QStringLiteral( "from qgis.PyQt import sip" ),
                    QObject::tr( "Couldn't load SIP module." ) + '\n' + QObject::tr( "Python support will be disabled." ) ) )
   {
     return false;
@@ -297,7 +297,7 @@ bool QgsPythonUtilsImpl::runStringUnsafe( const QString &command, bool single )
   // TODO: convert special characters from unicode strings u"…" to \uXXXX
   // so that they're not mangled to utf-8
   // (non-unicode strings can be mangled)
-  PyObject *obj = PyRun_String( command.toUtf8().data(), single ? Py_single_input : Py_file_input, mMainDict, mMainDict );
+  PyObject *obj = PyRun_String( command.toUtf8().constData(), single ? Py_single_input : Py_file_input, mMainDict, mMainDict );
   bool res = nullptr == PyErr_Occurred();
   Py_XDECREF( obj );
 
@@ -430,12 +430,12 @@ QString QgsPythonUtilsImpl::getTypeAsString( PyObject *obj )
 
   if ( PyType_Check( obj ) )
   {
-    QgsDebugMsg( "got type" );
+    QgsDebugMsg( QStringLiteral( "got type" ) );
     return QString( ( ( PyTypeObject * )obj )->tp_name );
   }
   else
   {
-    QgsDebugMsg( "got object" );
+    QgsDebugMsg( QStringLiteral( "got object" ) );
     return PyObjectToQString( obj );
   }
 }
@@ -509,7 +509,7 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject *obj )
   }
 
   // some problem with conversion to Unicode string
-  QgsDebugMsg( "unable to convert PyObject to a QString!" );
+  QgsDebugMsg( QStringLiteral( "unable to convert PyObject to a QString!" ) );
   return QStringLiteral( "(qgis error)" );
 }
 
@@ -520,7 +520,7 @@ bool QgsPythonUtilsImpl::evalString( const QString &command, QString &result )
   PyGILState_STATE gstate;
   gstate = PyGILState_Ensure();
 
-  PyObject *res = PyRun_String( command.toUtf8().data(), Py_eval_input, mMainDict, mMainDict );
+  PyObject *res = PyRun_String( command.toUtf8().constData(), Py_eval_input, mMainDict, mMainDict );
   bool success = nullptr != res;
 
   // TODO: error handling

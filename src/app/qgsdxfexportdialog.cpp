@@ -423,7 +423,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
   setupUi( this );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   connect( mVisibilityPresets, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDxfExportDialog::mVisibilityPresets_currentIndexChanged );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsDxfExportDialog::mCrsSelector_crsChanged );

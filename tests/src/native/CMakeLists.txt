@@ -65,7 +65,7 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   TARGET_LINK_LIBRARIES(qgis_${testname}
     ${Qt5Core_LIBRARIES}
     ${Qt5Test_LIBRARIES}
-    qgis_gui
+    qgis_core
     qgis_native
   )
   ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)

@@ -82,7 +82,7 @@ class TopoColor(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterDistance(self.MIN_DISTANCE,
                                                          self.tr('Minimum distance between features'),
                                                          parentParameterName=self.INPUT, minValue=0.0,
-                                                         maxValue=999999999.0, defaultValue=0.0))
+                                                         defaultValue=0.0))
         balance_by = [self.tr('By feature count'),
                       self.tr('By assigned area'),
                       self.tr('By distance between colors')]
@@ -190,7 +190,7 @@ class TopoColor(QgisAlgorithm):
                     if id_graph:
                         id_graph.add_edge(f.id(), f2.id())
 
-            index.insertFeature(f)
+            index.addFeature(f)
             i += 1
             feedback.setProgress(int(i * total))
 

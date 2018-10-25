@@ -99,7 +99,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QString vectorProvider = type == QLatin1String( "vector" ) ? provider : tr( "none" );
     bool providerFileBased = ( QgsProviderRegistry::instance()->providerCapabilities( provider ) & QgsDataProvider::File ) != 0;
 
-    QgsDebugMsg( QString( "name=%1 type=%2 provider=%3 datasource='%4'" )
+    QgsDebugMsg( QStringLiteral( "name=%1 type=%2 provider=%3 datasource='%4'" )
                  .arg( name,
                        type,
                        vectorProvider,
@@ -176,27 +176,14 @@ QString QgsHandleBadLayers::filename( int row )
 
   if ( type == QLatin1String( "vector" ) )
   {
-    if ( provider == QLatin1String( "spatialite" ) )
-    {
-      QgsDataSourceUri uri( datasource );
-      return uri.database();
-    }
-    else if ( provider == QLatin1String( "ogr" ) )
-    {
-      QStringList theURIParts = datasource.split( '|' );
-      return theURIParts[0];
-    }
-    else if ( provider == QLatin1String( "delimitedtext" ) )
-    {
-      return QUrl::fromEncoded( datasource.toLatin1() ).toLocalFile();
-    }
+    const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( provider, datasource );
+    // if parts is empty then provider doesn't handle this method!
+    return parts.empty() ? datasource : parts.value( QStringLiteral( "path" ) ).toString();
   }
   else
   {
     return datasource;
   }
-
-  return QString();
 }
 
 void QgsHandleBadLayers::setFilename( int row, const QString &filename )

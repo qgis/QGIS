@@ -182,7 +182,7 @@ bool QgsRenderChecker::runTest( const QString &testName,
   //
   mMapSettings.setBackgroundColor( qRgb( 152, 219, 249 ) );
   mMapSettings.setFlag( QgsMapSettings::Antialiasing );
-  mMapSettings.setOutputSize( QSize( myExpectedImage.width(), myExpectedImage.height() ) );
+  mMapSettings.setOutputSize( QSize( myExpectedImage.width(), myExpectedImage.height() ) / mMapSettings.devicePixelRatio() );
 
   QTime myTime;
   myTime.start();
@@ -194,6 +194,9 @@ bool QgsRenderChecker::runTest( const QString &testName,
   mElapsedTime = myTime.elapsed();
 
   QImage myImage = job.renderedImage();
+#if QT_VERSION >= 0x050600
+  Q_ASSERT( myImage.devicePixelRatioF() == mMapSettings.devicePixelRatio() );
+#endif
 
   //
   // Save the pixmap to disk so the user can make a

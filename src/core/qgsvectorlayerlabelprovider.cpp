@@ -319,7 +319,8 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     //TODO - remove when labeling is refactored to use screen units
     for ( int i = 0; i < boundLineString->numPoints(); ++i )
     {
-      QgsPointXY point = context.mapToPixel().toMapCoordinates( boundLineString->xAt( i ), boundLineString->yAt( i ) );
+      QgsPointXY point = context.mapToPixel().toMapCoordinates( static_cast<int>( boundLineString->xAt( i ) ),
+                         static_cast<int>( boundLineString->yAt( i ) ) );
       boundLineString->setXAt( i, point.x() );
       boundLineString->setYAt( i, point.y() );
     }
@@ -380,8 +381,8 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
 
   //font
   QFont dFont = lf->definedFont();
-  QgsDebugMsgLevel( QString( "PAL font tmpLyr: %1, Style: %2" ).arg( tmpLyr.format().font().toString(), tmpLyr.format().font().styleName() ), 4 );
-  QgsDebugMsgLevel( QString( "PAL font definedFont: %1, Style: %2" ).arg( dFont.toString(), dFont.styleName() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "PAL font tmpLyr: %1, Style: %2" ).arg( tmpLyr.format().font().toString(), tmpLyr.format().font().styleName() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "PAL font definedFont: %1, Style: %2" ).arg( dFont.toString(), dFont.styleName() ), 4 );
 
   QgsTextFormat format = tmpLyr.format();
   format.setFont( dFont );
@@ -611,7 +612,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     }
 
     //QgsDebugMsgLevel( "drawLabel " + txt, 4 );
-    QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar );
+    QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );
 
     QgsTextRenderer::HAlignment hAlign = QgsTextRenderer::AlignLeft;
     if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiCenter )

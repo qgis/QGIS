@@ -13,6 +13,7 @@ SET(QGIS_APP_SRCS
   qgsappwindowmanager.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
+  qgsappscreenshots.cpp
   qgsjoindialog.cpp
   qgsannotationwidget.cpp
   qgsattributeactiondialog.cpp
@@ -47,6 +48,9 @@ SET(QGIS_APP_SRCS
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
   qgsfirstrundialog.cpp
+  qgsgeometryvalidationservice.cpp
+  qgsgeometryvalidationdock.cpp
+  qgsgeometryvalidationmodel.cpp
   qgssourcefieldsproperties.cpp
   qgsattributesformproperties.cpp
   qgsidentifyresultsdialog.cpp
@@ -56,10 +60,12 @@ SET(QGIS_APP_SRCS
   qgslabelinggui.cpp
   qgslabelingwidget.cpp
   qgslayercapabilitiesmodel.cpp
+  qgslayertreeviewindicatorprovider.cpp
   qgslayertreeviewembeddedindicator.cpp
   qgslayertreeviewfilterindicator.cpp
   qgslayertreeviewmemoryindicator.cpp
   qgslayertreeviewnonremovableindicator.cpp
+  qgslayertreeviewbadlayerindicator.cpp
   qgsmapcanvasdockwidget.cpp
   qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
@@ -236,6 +242,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsaddattrdialog.h
   qgsalignrasterdialog.h
   qgsappbrowserproviders.h
+  qgsappscreenshots.h
   qgsjoindialog.h
   qgsaddtaborgroup.h
   qgsannotationwidget.h
@@ -274,6 +281,9 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributesformproperties.h
   qgsformannotationdialog.h
   qgsguivectorlayertools.h
+  qgsgeometryvalidationservice.h
+  qgsgeometryvalidationdock.h
+  qgsgeometryvalidationmodel.h
   qgshtmlannotationdialog.h
   qgsidentifyresultsdialog.h
   qgslabelengineconfigdialog.h
@@ -281,10 +291,12 @@ SET (QGIS_APP_MOC_HDRS
   qgslabelingwidget.h
   qgslabelpropertydialog.h
   qgslayercapabilitiesmodel.h
+  qgslayertreeviewindicatorprovider.h
   qgslayertreeviewembeddedindicator.h
   qgslayertreeviewmemoryindicator.h
   qgslayertreeviewfilterindicator.h
   qgslayertreeviewnonremovableindicator.h
+  qgslayertreeviewbadlayerindicator.h
   qgsmapcanvasdockwidget.h
   qgsmaplayerstylecategoriesmodel.h
   qgsmaplayerstyleguiutils.h
@@ -541,6 +553,10 @@ IF (PROJ_HAS_INFO)
   ADD_DEFINITIONS(-DPROJ_HAS_INFO)
 ENDIF (PROJ_HAS_INFO)
 
+# Test data dir for QgsAppScreenShots
+ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
+
+
 SET(IMAGE_RCCS ../../images/images.qrc)
 
 QT5_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
@@ -622,6 +638,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app/dwg
   ${CMAKE_SOURCE_DIR}/src/app/mesh
   ${CMAKE_SOURCE_DIR}/src/app/locator
+  ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
@@ -686,6 +703,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 INCLUDE_DIRECTORIES(
   ../analysis/processing
   ../analysis/raster
+  ../analysis/vector/geometry_checker
   ../core
   ../core/annotations
   ../core/auth
@@ -730,6 +748,10 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
+
+IF(HAVE_OPENCL)
+    INCLUDE_DIRECTORIES(SYSTEM ${OpenCL_INCLUDE_DIRS})
+ENDIF(HAVE_OPENCL)
 
 IF(ENABLE_MODELTEST)
   INCLUDE_DIRECTORIES(../../tests/qt_modeltest)

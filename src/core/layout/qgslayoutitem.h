@@ -102,7 +102,6 @@ class CORE_EXPORT QgsLayoutItemRenderContext
     double mViewScaleFactor = 1.0;
 };
 
-
 /**
  * \ingroup core
  * \class QgsLayoutItem
@@ -125,9 +124,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 #include "qgslayoutitempage.h"
 #endif
 
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
+
+    // FREAKKKKIIN IMPORTANT!!!!!!!!!!!
+    // IF YOU PUT SOMETHING HERE, PUT IT IN QgsLayoutObject CASTING *****ALSO******
+    // (it's not enough for it to be in only one of the places, as sip inconsistently
+    // decides which casting code to perform here)
+
     // the conversions have to be static, because they're using multiple inheritance
     // (seen in PyQt4 .sip files for some QGraphicsItem classes)
     switch ( sipCpp->type() )
@@ -177,8 +181,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
         sipType = sipType_QgsLayoutFrame;
         *sipCppRet = static_cast<QgsLayoutFrame *>( sipCpp );
         break;
+
+      // did you read that comment above? NO? Go read it now. You're about to break stuff.
+
       default:
-        sipType = 0;
+        sipType = NULL;
     }
     SIP_END
 #endif

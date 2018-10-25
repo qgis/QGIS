@@ -26,12 +26,15 @@
 #include "qgsdb2newconnection.h"
 #include "qgsdb2dataitems.h"
 #include "qgsdb2provider.h"
+#include "qgsgui.h"
 
 QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mOriginalConnName( connName )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( btnConnect, &QPushButton::clicked, this, &QgsDb2NewConnection::btnConnect_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDb2NewConnection::showHelp );
 
@@ -64,7 +67,7 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connNa
     }
 
     QString authcfg = settings.value( key + "/authcfg" ).toString();
-    QgsDebugMsg( QString( "authcfg: %1" ).arg( authcfg ) );
+    QgsDebugMsg( QStringLiteral( "authcfg: %1" ).arg( authcfg ) );
     mAuthSettings->setConfigId( authcfg );
 
     txtName->setText( connName );
@@ -79,7 +82,7 @@ void QgsDb2NewConnection::accept()
   QString baseKey = QStringLiteral( "/DB2/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
   bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
-  QgsDebugMsg( QString( "hasAuthConfigID: %1" ).arg( hasAuthConfigID ) );
+  QgsDebugMsg( QStringLiteral( "hasAuthConfigID: %1" ).arg( hasAuthConfigID ) );
   if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked( ) &&
        QMessageBox::question( this,
                               tr( "Saving Passwords" ),

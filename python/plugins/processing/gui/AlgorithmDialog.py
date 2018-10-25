@@ -66,10 +66,12 @@ from processing.tools import dataobjects
 
 class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
-    def __init__(self, alg, in_place=False):
-        super().__init__()
+    def __init__(self, alg, in_place=False, parent=None):
+        super().__init__(parent)
+
         self.feedback_dialog = None
         self.in_place = in_place
+        self.active_layer = None
 
         self.setAlgorithm(alg)
         self.setMainWidget(self.getParametersPanel(alg, self))
@@ -79,9 +81,13 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.runAsBatchButton.clicked.connect(self.runAsBatch)
             self.buttonBox().addButton(self.runAsBatchButton, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
         else:
+            self.active_layer = iface.activeLayer()
             self.runAsBatchButton = None
-            self.buttonBox().button(QDialogButtonBox.Ok).setText('Modify Selected Features')
-            self.buttonBox().button(QDialogButtonBox.Close).setText('Cancel')
+            has_selection = self.active_layer and (self.active_layer.selectedFeatureCount() > 0)
+            self.buttonBox().button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("AlgorithmDialog", "Modify Selected Features")
+                                                                 if has_selection else QCoreApplication.translate("AlgorithmDialog", "Modify All Features"))
+            self.buttonBox().button(QDialogButtonBox.Close).setText(QCoreApplication.translate("AlgorithmDialog", "Cancel"))
+            self.setWindowTitle(self.windowTitle() + ' | ' + self.active_layer.name())
 
     def getParametersPanel(self, alg, parent):
         return ParametersPanel(parent, alg, self.in_place)
@@ -107,7 +113,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             if not param.isDestination():
 
                 if self.in_place and param.name() == 'INPUT':
-                    parameters[param.name()] = iface.activeLayer()
+                    parameters[param.name()] = self.active_layer
                     continue
 
                 try:

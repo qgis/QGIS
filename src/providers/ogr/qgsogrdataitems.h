@@ -69,8 +69,8 @@ class QgsOgrLayerItem : public QgsLayerItem
 
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
-  public slots:
-    void deleteLayer();
+
+    static void deleteLayer( bool isSubLayer, const QString &uri, const QString &name, QPointer< QgsDataItem > parent );
 #endif
   private:
     bool mIsSubLayer;
@@ -100,6 +100,12 @@ class QgsOgrDataCollectionItem : public QgsDataCollectionItem
      */
     static bool createConnection( const QString &name, const QString &extensions, const QString &ogrDriverName );
 
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
+
+    static void deleteCollection( const QString &path, QPointer< QgsDataItem > parent );
+#endif
+
 };
 
 //! Provider for OGR root data item
@@ -108,7 +114,7 @@ class QgsOgrDataItemProvider : public QgsDataItemProvider
   public:
     QString name() override { return QStringLiteral( "OGR" ); }
 
-    int capabilities() override { return QgsDataProvider::File | QgsDataProvider::Dir; }
+    int capabilities() override { return QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net; }
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 

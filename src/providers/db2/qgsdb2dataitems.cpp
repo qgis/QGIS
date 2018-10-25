@@ -59,7 +59,7 @@ bool QgsDb2ConnectionItem::ConnInfoFromParameters(
   {
     if ( driver.isEmpty() || host.isEmpty() || database.isEmpty() || port.isEmpty() )
     {
-      QgsDebugMsg( "Host, port, driver or database missing" );
+      QgsDebugMsg( QStringLiteral( "Host, port, driver or database missing" ) );
       errorMsg = QStringLiteral( "Host, port, driver or database missing" );
       return false;
     }
@@ -72,7 +72,7 @@ bool QgsDb2ConnectionItem::ConnInfoFromParameters(
   {
     if ( database.isEmpty() )
     {
-      QgsDebugMsg( "Database must be specified" );
+      QgsDebugMsg( QStringLiteral( "Database must be specified" ) );
       errorMsg = QStringLiteral( "Database must be specified" );
       return false;
     }
@@ -103,7 +103,7 @@ bool QgsDb2ConnectionItem::ConnInfoFromParameters(
 bool QgsDb2ConnectionItem::ConnInfoFromSettings( const QString connName,
     QString &connInfo, QString &errorMsg )
 {
-  QgsDebugMsg( QString( "Get settings for connection '%1'" ).arg( connInfo ) );
+  QgsDebugMsg( QStringLiteral( "Get settings for connection '%1'" ).arg( connInfo ) );
   QgsSettings settings;
   QString key = "/DB2/connections/" + connName;
 
@@ -228,7 +228,7 @@ QVector<QgsDataItem *> QgsDb2ConnectionItem::createChildren()
     }
     else
     {
-      QgsDebugMsg( " DB2 layer not added " );
+      QgsDebugMsg( QStringLiteral( " DB2 layer not added " ) );
     }
   }
   return children;
@@ -298,7 +298,7 @@ void QgsDb2ConnectionItem::refreshConnection()
   Q_UNUSED( db );
   if ( errMsg.isEmpty() )
   {
-    QgsDebugMsg( "successful get db2 connection on refresh" );
+    QgsDebugMsg( QStringLiteral( "successful get db2 connection on refresh" ) );
   }
   else
   {
@@ -333,7 +333,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
       continue;
     }
 
-    QgsDebugMsg( QString( "uri: %1; name: %2; key: %3" ).arg( u.uri, u.name, u.providerKey ) );
+    QgsDebugMsg( QStringLiteral( "uri: %1; name: %2; key: %3" ).arg( u.uri, u.name, u.providerKey ) );
     // open the source layer
     QgsVectorLayer *srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
 
@@ -440,7 +440,7 @@ QWidget *QgsDb2RootItem::paramWidget()
 
 void QgsDb2RootItem::newConnection()
 {
-  QgsDebugMsg( "DB2: Browser Panel; New Connection dialog requested." );
+  QgsDebugMsg( QStringLiteral( "DB2: Browser Panel; New Connection dialog requested." ) );
   QgsDb2NewConnection newConnection( nullptr, mName );
   if ( newConnection.exec() )
   {
@@ -455,7 +455,7 @@ QgsDb2LayerItem::QgsDb2LayerItem( QgsDataItem *parent, QString name, QString pat
   : QgsLayerItem( parent, name, path, QString(), layerType, PROVIDER_KEY )
   , mLayerProperty( layerProperty )
 {
-  QgsDebugMsg( QString( "new db2 layer created : %1" ).arg( layerType ) );
+  QgsDebugMsg( QStringLiteral( "new db2 layer created : %1" ).arg( layerType ) );
   mUri = createUri();
   setState( Populated );
 }
@@ -471,7 +471,7 @@ QString QgsDb2LayerItem::createUri()
 
   if ( !connItem )
   {
-    QgsDebugMsg( "connection item not found." );
+    QgsDebugMsg( QStringLiteral( "connection item not found." ) );
     return QString();
   }
   QgsDebugMsg( "connInfo: '" + connItem->connInfo() + "'" );
@@ -493,7 +493,7 @@ QgsDb2SchemaItem::QgsDb2SchemaItem( QgsDataItem *parent, QString name, QString p
 
 QVector<QgsDataItem *> QgsDb2SchemaItem::createChildren()
 {
-  QgsDebugMsg( "schema this DB2 Entering." );
+  QgsDebugMsg( QStringLiteral( "schema this DB2 Entering." ) );
 
   QVector<QgsDataItem *>items;
 

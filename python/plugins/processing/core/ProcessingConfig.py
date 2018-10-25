@@ -293,7 +293,9 @@ class Setting:
         self.validator(value)
         self.value = value
 
-    def read(self, qsettings=QgsSettings()):
+    def read(self, qsettings=None):
+        if not qsettings:
+            qsettings = QgsSettings()
         value = qsettings.value(self.qname, None)
         if value is not None:
             if isinstance(self.value, bool):
@@ -307,7 +309,9 @@ class Setting:
             else:
                 self.value = value
 
-    def save(self, qsettings=QgsSettings()):
+    def save(self, qsettings=None):
+        if not qsettings:
+            qsettings = QgsSettings()
         if self.valuetype == self.SELECTION:
             qsettings.setValue(self.qname, self.options.index(self.value))
         else:

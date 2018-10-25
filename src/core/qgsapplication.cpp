@@ -368,7 +368,7 @@ bool QgsApplication::notify( QObject *receiver, QEvent *event )
   }
   catch ( ... )
   {
-    QgsDebugMsg( "Caught unhandled unknown exception" );
+    QgsDebugMsg( QStringLiteral( "Caught unhandled unknown exception" ) );
     if ( qApp->thread() == QThread::currentThread() )
       QMessageBox::critical( activeWindow(), tr( "Exception" ), tr( "unknown exception" ) );
   }
@@ -596,13 +596,6 @@ QCursor QgsApplication::getThemeCursor( Cursor cursor )
   {
     // Apply scaling
     float scale = Qgis::UI_SCALE_FACTOR * app->fontMetrics().height() / 32.0;
-#ifdef Q_OS_MACX
-    if ( app->devicePixelRatio() >= 2 )
-    {
-      scale *= app->devicePixelRatio();
-      activeX = activeY = 8;
-    }
-#endif
     cursorIcon = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
   }
   if ( app )
@@ -666,11 +659,11 @@ QString QgsApplication::resolvePkgPath()
       ABISYM( mBuildSourcePath ) = f.readLine().trimmed();
       ABISYM( mBuildOutputPath ) = f.readLine().trimmed();
       QgsDebugMsgLevel( QStringLiteral( "Running from build directory!" ), 4 );
-      QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( ABISYM( mBuildSourcePath ).toUtf8().data() ), 4 );
-      QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( ABISYM( mBuildOutputPath ).toUtf8().data() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( ABISYM( mBuildSourcePath ).toUtf8().constData() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( ABISYM( mBuildOutputPath ).toUtf8().constData() ), 4 );
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
       ABISYM( mCfgIntDir ) = appPath.split( '/', QString::SkipEmptyParts ).last();
-      qDebug( "- cfg: %s", ABISYM( mCfgIntDir ).toUtf8().data() );
+      qDebug( "- cfg: %s", ABISYM( mCfgIntDir ).toUtf8().constData() );
 #endif
     }
   }
@@ -1444,7 +1437,7 @@ void QgsApplication::applyGdalSkippedDrivers()
 {
   ABISYM( mGdalSkipList ).removeDuplicates();
   QString myDriverList = ABISYM( mGdalSkipList ).join( QStringLiteral( " " ) );
-  QgsDebugMsg( "Gdal Skipped driver list set to:" );
+  QgsDebugMsg( QStringLiteral( "Gdal Skipped driver list set to:" ) );
   QgsDebugMsg( myDriverList );
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
   GDALAllRegister(); //to update driver list and skip missing ones
@@ -1674,7 +1667,7 @@ bool QgsApplication::createDatabase( QString *errorMessage )
 
     if ( sqlite3_exec( database.get(), "DROP VIEW vw_srs", nullptr, nullptr, &errmsg ) != SQLITE_OK )
     {
-      QgsDebugMsg( QString( "vw_srs didn't exists in private qgis.db: %1" ).arg( errmsg ) );
+      QgsDebugMsg( QStringLiteral( "vw_srs didn't exists in private qgis.db: %1" ).arg( errmsg ) );
     }
 
     if ( sqlite3_exec( database.get(),
@@ -1706,7 +1699,7 @@ bool QgsApplication::createDatabase( QString *errorMessage )
 
 void QgsApplication::setMaxThreads( int maxThreads )
 {
-  QgsDebugMsg( QString( "maxThreads: %1" ).arg( maxThreads ) );
+  QgsDebugMsg( QStringLiteral( "maxThreads: %1" ).arg( maxThreads ) );
 
   // make sure value is between 1 and #cores, if not set to -1 (use #cores)
   // 0 could be used to disable any parallel processing
@@ -1722,7 +1715,7 @@ void QgsApplication::setMaxThreads( int maxThreads )
 
   // set max thread count in QThreadPool
   QThreadPool::globalInstance()->setMaxThreadCount( maxThreads );
-  QgsDebugMsg( QString( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
+  QgsDebugMsg( QStringLiteral( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
 }
 
 QgsTaskManager *QgsApplication::taskManager()

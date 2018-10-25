@@ -100,7 +100,7 @@ QgsRectangle QgsFeatureSource::sourceExtent() const
   QgsRectangle r;
 
   QgsFeatureRequest req;
-  req.setSubsetOfAttributes( QgsAttributeList() );
+  req.setNoAttributes();
 
   QgsFeatureIterator it = getFeatures( req );
   QgsFeature f;
@@ -116,7 +116,7 @@ QgsFeatureIds QgsFeatureSource::allFeatureIds() const
 {
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
                                         .setFlags( QgsFeatureRequest::NoGeometry )
-                                        .setSubsetOfAttributes( QgsAttributeList() ) );
+                                        .setNoAttributes() );
 
   QgsFeatureIds ids;
 

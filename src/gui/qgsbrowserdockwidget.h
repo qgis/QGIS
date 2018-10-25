@@ -32,7 +32,7 @@ class QModelIndex;
 class QgsDockBrowserTreeView;
 class QgsLayerItem;
 class QgsDataItem;
-class QgsBrowserTreeFilterProxyModel;
+class QgsBrowserProxyModel;
 
 /**
  * \ingroup gui
@@ -131,7 +131,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
 
     QgsDockBrowserTreeView *mBrowserView = nullptr;
     QgsBrowserModel *mModel = nullptr;
-    QgsBrowserTreeFilterProxyModel *mProxyModel = nullptr;
+    QgsBrowserProxyModel *mProxyModel = nullptr;
     QString mInitPath;
     bool mPropertiesWidgetEnabled;
     // height fraction

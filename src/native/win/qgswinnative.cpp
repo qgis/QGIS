@@ -21,12 +21,14 @@
 #include <QString>
 #include <QDir>
 #include <QWindow>
+#include <QAbstractEventDispatcher>
 #include <QtWinExtras/QWinTaskbarButton>
 #include <QtWinExtras/QWinTaskbarProgress>
 #include <QtWinExtras/QWinJumpList>
 #include <QtWinExtras/QWinJumpListItem>
 #include <QtWinExtras/QWinJumpListCategory>
 #include "wintoastlib.h"
+#include <Dbt.h>
 
 QgsNative::Capabilities QgsWinNative::capabilities() const
 {
@@ -57,6 +59,10 @@ void QgsWinNative::initializeMainWindow( QWindow *window,
     mWinToastInitialized = true;
     mCapabilities = mCapabilities | NativeDesktopNotifications;
   }
+
+  mNativeEventFilter = new QgsWinNativeEventFilter();
+  QAbstractEventDispatcher::instance()->installNativeEventFilter( mNativeEventFilter );
+  connect( mNativeEventFilter, &QgsWinNativeEventFilter::usbStorageNotification, this, &QgsNative::usbStorageNotification );
 }
 
 void QgsWinNative::cleanup()
@@ -155,4 +161,36 @@ QgsNative::NotificationResult QgsWinNative::showDesktopNotification( const QStri
     result.successful = true;
 
   return result;
+}
+
+bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &, void *message, long * )
+{
+  MSG *pWindowsMessage = static_cast<MSG *>( message );
+  unsigned int wParam = pWindowsMessage->wParam;
+  if ( wParam == DBT_DEVICEARRIVAL || wParam == DBT_DEVICEREMOVECOMPLETE )
+  {
+    long lParam = pWindowsMessage->lParam;
+    unsigned long deviceType = reinterpret_cast<DEV_BROADCAST_HDR *>( lParam )->dbch_devicetype;
+    if ( deviceType == DBT_DEVTYP_VOLUME )
+    {
+      // need to handle disks with multiple partitions -- these are given by a single event
+      unsigned long unitmask = reinterpret_cast<DEV_BROADCAST_VOLUME *>( lParam )->dbcv_unitmask;
+      std::vector< QString > drives;
+      char driveName[] = "A:/";
+      unitmask &= 0x3ffffff;
+      while ( unitmask )
+      {
+        if ( unitmask & 0x1 )
+          drives.emplace_back( QString::fromLatin1( driveName ) );
+        ++driveName[0];
+        unitmask >>= 1;
+      }
+
+      for ( const QString &drive : drives )
+      {
+        emit usbStorageNotification( QStringLiteral( "%1:/" ).arg( drive ), wParam == DBT_DEVICEARRIVAL );
+      }
+    }
+  }
+  return false;
 }

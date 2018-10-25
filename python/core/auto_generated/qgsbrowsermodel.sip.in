@@ -53,6 +53,8 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
 
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
 
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -77,8 +79,20 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
 
 
     QModelIndex findItem( QgsDataItem *item, QgsDataItem *parent = 0 ) const;
+%Docstring
+Returns the model index corresponding to the specified data ``item``.
+If the item was not found, an invalid QModelIndex is returned.
+
+If the ``parent`` item is argument is specified, then only items which are children
+of ``parent`` are searched. If no ``parent`` is specified, then all items within
+the model are searched.
+%End
 
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
+%Docstring
+Returns the data item at the specified index, or a None if no item
+exists at the index.
+%End
 
     void refresh( const QString &path );
 %Docstring
@@ -103,7 +117,11 @@ items, i.e. it does not fetch children.
 %End
 
 
-    void connectItem( QgsDataItem *item );
+ void connectItem( QgsDataItem *item ) /Deprecated/;
+%Docstring
+
+.. deprecated:: Deprecated since QGIS 3.4 -- this method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
+%End
 
     bool initialized() const;
 %Docstring
@@ -129,6 +147,15 @@ notify the provider dialogs of a changed connection
 %Docstring
 Reload the whole model
 %End
+
+    void refreshDrives();
+%Docstring
+Refreshes the list of drive items, removing any corresponding to removed
+drives and adding newly added drives.
+
+.. versionadded:: 3.4
+%End
+
     void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();
     void beginRemoveItems( QgsDataItem *parent, int first, int last );

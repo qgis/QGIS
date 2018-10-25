@@ -103,7 +103,7 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
   updateControls();
   updateProfiles();
 
-  QgsDebugMsg( "done" );
+  QgsDebugMsg( QStringLiteral( "done" ) );
 }
 
 void QgsRasterFormatSaveOptionsWidget::setFormat( const QString &format )
@@ -311,7 +311,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   QStringList createOptions = options();
   QString message;
 
-  QgsDebugMsg( QString( "layer: [%1] file: [%2] format: [%3]" ).arg( mRasterLayer ? mRasterLayer->id() : "none", mRasterFileName, mFormat ) );
+  QgsDebugMsg( QStringLiteral( "layer: [%1] file: [%2] format: [%3]" ).arg( mRasterLayer ? mRasterLayer->id() : "none", mRasterFileName, mFormat ) );
   // if no rasterLayer is defined, but we have a raster fileName, then create a temp. rasterLayer to validate options
   // ideally we should keep it for future access, but this is trickier
   QgsRasterLayer *rasterLayer = mRasterLayer;
@@ -340,7 +340,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   {
     if ( rasterLayer && rasterLayer->dataProvider() )
     {
-      QgsDebugMsg( "calling validate pyramids on layer's data provider" );
+      QgsDebugMsg( QStringLiteral( "calling validate pyramids on layer's data provider" ) );
       message = rasterLayer->dataProvider()->validatePyramidsConfigOptions( mPyramidsFormat, createOptions, mFormat );
     }
     else
@@ -352,7 +352,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   {
     if ( rasterLayer && rasterLayer->dataProvider() )
     {
-      QgsDebugMsg( "calling validate on layer's data provider" );
+      QgsDebugMsg( QStringLiteral( "calling validate on layer's data provider" ) );
       message = rasterLayer->dataProvider()->validateCreationOptions( createOptions, mFormat );
     }
     else
@@ -628,7 +628,7 @@ void QgsRasterFormatSaveOptionsWidget::showEvent( QShowEvent *event )
 {
   Q_UNUSED( event );
   mOptionsTable->horizontalHeader()->resizeSection( 0, mOptionsTable->width() - 115 );
-  QgsDebugMsg( "done" );
+  QgsDebugMsg( QStringLiteral( "done" ) );
 }
 
 void QgsRasterFormatSaveOptionsWidget::setOptions( const QString &options )

@@ -110,4 +110,8 @@ void QgsMapToolAddCircle::clean()
   }
 
   mCircle = QgsCircle();
+
+  QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
+  if ( vLayer )
+    mLayerType = vLayer->geometryType();
 }

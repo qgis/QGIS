@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayerrestorer.h"
+#include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"

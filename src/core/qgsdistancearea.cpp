@@ -317,20 +317,20 @@ double QgsDistanceArea::measureLine( const QgsPointXY &p1, const QgsPointXY &p2 
   {
     QgsPointXY pp1 = p1, pp2 = p2;
 
-    QgsDebugMsgLevel( QString( "Measuring from %1 to %2" ).arg( p1.toString( 4 ), p2.toString( 4 ) ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Measuring from %1 to %2" ).arg( p1.toString( 4 ), p2.toString( 4 ) ), 3 );
     if ( willUseEllipsoid() )
     {
-      QgsDebugMsgLevel( QString( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ), 4 );
-      QgsDebugMsgLevel( QString( "From proj4 : %1" ).arg( mCoordTransform.sourceCrs().toProj4() ), 4 );
-      QgsDebugMsgLevel( QString( "To   proj4 : %1" ).arg( mCoordTransform.destinationCrs().toProj4() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "From proj4 : %1" ).arg( mCoordTransform.sourceCrs().toProj4() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "To   proj4 : %1" ).arg( mCoordTransform.destinationCrs().toProj4() ), 4 );
       pp1 = mCoordTransform.transform( p1 );
       pp2 = mCoordTransform.transform( p2 );
-      QgsDebugMsgLevel( QString( "New points are %1 and %2, calculating..." ).arg( pp1.toString( 4 ), pp2.toString( 4 ) ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "New points are %1 and %2, calculating..." ).arg( pp1.toString( 4 ), pp2.toString( 4 ) ), 4 );
       result = computeDistanceBearing( pp1, pp2 );
     }
     else
     {
-      QgsDebugMsgLevel( "Cartesian calculation on canvas coordinates", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Cartesian calculation on canvas coordinates" ), 4 );
       result = p2.distance( p1 );
     }
   }
@@ -340,7 +340,7 @@ double QgsDistanceArea::measureLine( const QgsPointXY &p1, const QgsPointXY &p2 
     QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate line length." ) );
     result = 0.0;
   }
-  QgsDebugMsgLevel( QString( "The result was %1" ).arg( result ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "The result was %1" ).arg( result ), 3 );
   return result;
 }
 
@@ -363,7 +363,7 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
     }
     p2 = p1.project( distance, azimuth );
   }
-  QgsDebugMsgLevel( QString( "Converted distance of %1 %2 to %3 distance %4 %5, using azimuth[%6] from point[%7] to point[%8] sourceCrs[%9] mEllipsoid[%10] isGeographic[%11] [%12]" )
+  QgsDebugMsgLevel( QStringLiteral( "Converted distance of %1 %2 to %3 distance %4 %5, using azimuth[%6] from point[%7] to point[%8] sourceCrs[%9] mEllipsoid[%10] isGeographic[%11] [%12]" )
                     .arg( QString::number( distance, 'f', 7 ) )
                     .arg( QgsUnitTypes::toString( QgsUnitTypes::DistanceMeters ) )
                     .arg( QString::number( result, 'f', 7 ) )
@@ -645,7 +645,7 @@ void QgsDistanceArea::computeAreaInit()
   }
 
   double a2 = ( mSemiMajor * mSemiMajor );
-  double e2 = 1 - ( a2 / ( mSemiMinor * mSemiMinor ) );
+  double e2 = 1 - ( ( mSemiMinor * mSemiMinor ) / a2 );
   double e4, e6;
 
   m_TwoPI = M_PI + M_PI;
@@ -814,7 +814,7 @@ double QgsDistanceArea::convertLengthMeasurement( double length, QgsUnitTypes::D
   double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
 
   double result = length * factorUnits;
-  QgsDebugMsgLevel( QString( "Converted length of %1 %2 to %3 %4" ).arg( length )
+  QgsDebugMsgLevel( QStringLiteral( "Converted length of %1 %2 to %3 %4" ).arg( length )
                     .arg( QgsUnitTypes::toString( measureUnits ) )
                     .arg( result )
                     .arg( QgsUnitTypes::toString( toUnits ) ), 3 );
@@ -828,7 +828,7 @@ double QgsDistanceArea::convertAreaMeasurement( double area, QgsUnitTypes::AreaU
   double factorUnits = QgsUnitTypes::fromUnitToUnitFactor( measureUnits, toUnits );
 
   double result = area * factorUnits;
-  QgsDebugMsgLevel( QString( "Converted area of %1 %2 to %3 %4" ).arg( area )
+  QgsDebugMsgLevel( QStringLiteral( "Converted area of %1 %2 to %3 %4" ).arg( area )
                     .arg( QgsUnitTypes::toString( measureUnits ) )
                     .arg( result )
                     .arg( QgsUnitTypes::toString( toUnits ) ), 3 );

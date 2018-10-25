@@ -170,7 +170,7 @@ namespace QgsWms
     QList<QgsMapLayer *> layers;
     QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
 
-    QString sld = mWmsParameters.sld();
+    QString sld = mWmsParameters.sldBody();
     if ( !sld.isEmpty() )
       layers = sldStylizedLayers( sld );
     else
@@ -312,7 +312,7 @@ namespace QgsWms
     restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
 
     // init stylized layers according to LAYERS/STYLES or SLD
-    QString sld = mWmsParameters.sld();
+    QString sld = mWmsParameters.sldBody();
     if ( !sld.isEmpty() )
     {
       layers = sldStylizedLayers( sld );
@@ -661,7 +661,7 @@ namespace QgsWms
     restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
 
     // init stylized layers according to LAYERS/STYLES or SLD
-    QString sld = mWmsParameters.sld();
+    QString sld = mWmsParameters.sldBody();
     if ( !sld.isEmpty() )
     {
       layers = sldStylizedLayers( sld );
@@ -749,7 +749,7 @@ namespace QgsWms
     restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
 
     // init stylized layers according to LAYERS/STYLES or SLD
-    QString sld = mWmsParameters.sld();
+    QString sld = mWmsParameters.sldBody();
     if ( !sld.isEmpty() )
     {
       layers = sldStylizedLayers( sld );
@@ -903,7 +903,7 @@ namespace QgsWms
     restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
 
     // init stylized layers according to LAYERS/STYLES or SLD
-    QString sld = mWmsParameters.sld();
+    QString sld = mWmsParameters.sldBody();
     if ( !sld.isEmpty() )
       layers = sldStylizedLayers( sld );
     else
@@ -2322,7 +2322,8 @@ namespace QgsWms
     double mapUnitTolerance = 0.0;
     if ( ml->geometryType() == QgsWkbTypes::PolygonGeometry )
     {
-      if ( ! mWmsParameters.polygonTolerance().isEmpty() )
+      if ( ! mWmsParameters.polygonTolerance().isEmpty()
+           && mWmsParameters.polygonToleranceAsInt() > 0 )
       {
         mapUnitTolerance = mWmsParameters.polygonToleranceAsInt() * rct.mapToPixel().mapUnitsPerPixel();
       }
@@ -2333,7 +2334,8 @@ namespace QgsWms
     }
     else if ( ml->geometryType() == QgsWkbTypes::LineGeometry )
     {
-      if ( ! mWmsParameters.lineTolerance().isEmpty() )
+      if ( ! mWmsParameters.lineTolerance().isEmpty()
+           && mWmsParameters.lineToleranceAsInt() > 0 )
       {
         mapUnitTolerance = mWmsParameters.lineToleranceAsInt() * rct.mapToPixel().mapUnitsPerPixel();
       }
@@ -2344,7 +2346,8 @@ namespace QgsWms
     }
     else //points
     {
-      if ( ! mWmsParameters.pointTolerance().isEmpty() )
+      if ( ! mWmsParameters.pointTolerance().isEmpty()
+           && mWmsParameters.pointToleranceAsInt() > 0 )
       {
         mapUnitTolerance = mWmsParameters.pointToleranceAsInt() * rct.mapToPixel().mapUnitsPerPixel();
       }
@@ -2493,7 +2496,7 @@ namespace QgsWms
       }
 
       // build url for vector layer
-      QString typeName = QgsWkbTypes::geometryDisplayString( param.mGeom.type() );
+      const QString typeName = QgsWkbTypes::displayString( param.mGeom.wkbType() );
       QString url = typeName + "?crs=" + crs;
       if ( ! param.mLabel.isEmpty() )
       {

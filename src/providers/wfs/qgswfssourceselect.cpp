@@ -85,7 +85,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   treeView->setItemDelegate( mItemDelegate );
 
   QgsSettings settings;
-  QgsDebugMsg( "restoring settings" );
+  QgsDebugMsg( QStringLiteral( "restoring settings" ) );
   restoreGeometry( settings.value( QStringLiteral( "Windows/WFSSourceSelect/geometry" ) ).toByteArray() );
   cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/UseTitleLayerName" ), false ).toBool() );
   cbxFeatureCurrentViewExtent->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool() );
@@ -111,7 +111,7 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
   QApplication::restoreOverrideCursor();
 
   QgsSettings settings;
-  QgsDebugMsg( "saving settings" );
+  QgsDebugMsg( QStringLiteral( "saving settings" ) );
   settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
   settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), cbxFeatureCurrentViewExtent->isChecked() );
@@ -639,7 +639,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
 
 void QgsWFSSourceSelect::updateSql()
 {
-  QgsDebugMsg( "updateSql called" );
+  QgsDebugMsg( QStringLiteral( "updateSql called" ) );
   Q_ASSERT( mSQLComposerDialog );
 
   const QString typeName = mSQLIndex.sibling( mSQLIndex.row(), MODEL_IDX_NAME ).data().toString();
@@ -669,13 +669,13 @@ void QgsWFSSourceSelect::changeCRS()
 
 void QgsWFSSourceSelect::changeCRSFilter()
 {
-  QgsDebugMsg( "changeCRSFilter called" );
+  QgsDebugMsg( QStringLiteral( "changeCRSFilter called" ) );
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( currentIndex.isValid() )
   {
     QString currentTypename = currentIndex.sibling( currentIndex.row(), MODEL_IDX_NAME ).data().toString();
-    QgsDebugMsg( QString( "the current typename is: %1" ).arg( currentTypename ) );
+    QgsDebugMsg( QStringLiteral( "the current typename is: %1" ).arg( currentTypename ) );
 
     QMap<QString, QStringList >::const_iterator crsIterator = mAvailableCRS.constFind( currentTypename );
     if ( crsIterator != mAvailableCRS.constEnd() )
@@ -733,14 +733,14 @@ void QgsWFSSourceSelect::btnLoad_clicked()
 
 void QgsWFSSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex &index )
 {
-  QgsDebugMsg( "double-click called" );
+  QgsDebugMsg( QStringLiteral( "double-click called" ) );
   buildQuery( index );
 }
 
 void QgsWFSSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous )
 {
   Q_UNUSED( previous )
-  QgsDebugMsg( "treeWidget_currentRowChanged called" );
+  QgsDebugMsg( QStringLiteral( "treeWidget_currentRowChanged called" ) );
   changeCRSFilter();
   mBuildQueryButton->setEnabled( current.isValid() );
   emit enableButtons( current.isValid() );
@@ -748,7 +748,7 @@ void QgsWFSSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current
 
 void QgsWFSSourceSelect::buildQueryButtonClicked()
 {
-  QgsDebugMsg( "mBuildQueryButton click called" );
+  QgsDebugMsg( QStringLiteral( "mBuildQueryButton click called" ) );
   buildQuery( treeView->selectionModel()->currentIndex() );
 }
 

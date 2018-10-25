@@ -116,6 +116,10 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.presetCombo.activated[str].connect(self.loadPreset)
         self.presetCombo.activated[str].connect(self.presetName.setText)
 
+        self.editSql.textChanged.connect(self.updatePresetButtonsState)
+        self.presetName.textChanged.connect(self.updatePresetButtonsState)
+        self.presetCombo.currentIndexChanged.connect(self.updatePresetButtonsState)
+
         self.updatePresetsCombobox()
 
         self.geomCombo.setEditable(True)
@@ -145,11 +149,11 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         # First the SQL from QgsDataSourceUri table
         sql = uri.table()
         if uri.keyColumn() == '_uid_':
-            match = re.search('^\(SELECT .+ AS _uid_,\* FROM \((.*)\) AS _subq_.+_\s*\)$', sql, re.S)
+            match = re.search(r'^\(SELECT .+ AS _uid_,\* FROM \((.*)\) AS _subq_.+_\s*\)$', sql, re.S | re.X)
             if match:
                 sql = match.group(1)
         else:
-            match = re.search('^\((SELECT .+ FROM .+)\)$', sql, re.S)
+            match = re.search(r'^\((SELECT .+ FROM .+)\)$', sql, re.S | re.X)
             if match:
                 sql = match.group(1)
         # Need to check on table() since the parentheses were removed by the regexp
@@ -173,9 +177,8 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
                         item.setCheckState(Qt.Checked)
             else:
                 keyColumn = uri.keyColumn()
-                for item in self.uniqueModel.findItems("*", Qt.MatchWildcard):
-                    if item.data() == keyColumn:
-                        self.uniqueCombo.setCurrentIndex(self.uniqueModel.indexFromItem(item).row())
+                if self.uniqueModel.findItems(keyColumn):
+                    self.uniqueCombo.setEditText(keyColumn)
 
         # Finally layer name, filter and selectAtId
         self.layerNameEdit.setText(layer.name())
@@ -185,6 +188,12 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
 
     def getQueryHash(self, name):
         return 'q%s' % md5(name.encode('utf8')).hexdigest()
+
+    def updatePresetButtonsState(self, *args):
+        """Slot called when the combo box or the sql or the query name have changed:
+           sets store button state"""
+        self.presetStore.setEnabled(bool(self._getSqlQuery() and self.presetName.text()))
+        self.presetDelete.setEnabled(bool(self.presetCombo.currentIndex() != -1))
 
     def updatePresetsCombobox(self):
         self.presetCombo.clear()
@@ -250,7 +259,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
                 # set the new model
                 model = self.db.sqlResultModel(sql, self)
                 self.viewResult.setModel(model)
-                self.lblResult.setText(self.tr("{0} rows, {1:.1f} seconds").format(model.affectedRows(), model.secs()))
+                self.lblResult.setText(self.tr("{0} rows, {1:.3f} seconds").format(model.affectedRows(), model.secs()))
                 cols = self.viewResult.model().columnNames()
                 for col in cols:
                     quotedCols.append(self.db.connector.quoteId(col))

@@ -34,8 +34,12 @@ namespace QgsWmts
     QUrlQuery query = translateWmtsParamToWmsQueryItem( QStringLiteral( "GetMap" ), params, project, serverIface );
 
     // Get cached image
-    QgsAccessControl *accessControl = serverIface->accessControls();
-    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
+    QgsAccessControl *accessControl = nullptr;
+    QgsServerCacheManager *cacheManager = nullptr;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    accessControl = serverIface->accessControls();
+    cacheManager = serverIface->cacheManager();
+#endif
     if ( cacheManager )
     {
       QgsWmtsParameters::Format f = params.format();

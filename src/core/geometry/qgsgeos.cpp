@@ -91,7 +91,7 @@ static void printGEOSNotice( const char *fmt, ... )
   vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
 
-  QgsDebugMsg( QString( "GEOS notice: %1" ).arg( QString::fromUtf8( buffer ) ) );
+  QgsDebugMsg( QStringLiteral( "GEOS notice: %1" ).arg( QString::fromUtf8( buffer ) ) );
 #else
   Q_UNUSED( fmt );
 #endif
@@ -910,7 +910,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeom
     intersectGeometry.reset( GEOSIntersection_r( geosinit.ctxt, mGeos.get(), polygon ) );
     if ( !intersectGeometry )
     {
-      QgsDebugMsg( "intersectGeometry is nullptr" );
+      QgsDebugMsg( QStringLiteral( "intersectGeometry is nullptr" ) );
       continue;
     }
 

@@ -58,15 +58,16 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
 {
 }
 
-int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
+QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
 {
+  mLastError.clear();
+
   //prepare search string / tree
-  QString errorString;
-  std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, errorString ) );
+  std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
   if ( !calcNode )
   {
     //error
-    return static_cast<int>( ParserError );
+    return ParserError;
   }
 
   QMap< QString, QgsRasterBlock * > inputBlocks;
@@ -75,8 +76,16 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
   {
     if ( !it->raster ) // no raster layer in entry
     {
+      mLastError = QObject::tr( "No raster layer for entry %1" ).arg( it->ref );
       qDeleteAll( inputBlocks );
-      return static_cast< int >( InputLayerError );
+      return InputLayerError;
+    }
+
+    if ( it->bandNumber <= 0 || it->bandNumber > it->raster->bandCount() )
+    {
+      mLastError = QObject::tr( "Band number %1 is not valid for entry %2" ).arg( it->bandNumber ).arg( it->ref );
+      qDeleteAll( inputBlocks );
+      return BandError;
     }
 
     std::unique_ptr< QgsRasterBlock > block;
@@ -94,7 +103,7 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
       if ( rasterBlockFeedback->isCanceled() )
       {
         qDeleteAll( inputBlocks );
-        return static_cast< int >( Canceled );
+        return Canceled;
       }
     }
     else
@@ -103,8 +112,9 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
     }
     if ( block->isEmpty() )
     {
+      mLastError = QObject::tr( "Could not allocate required memory for %1" ).arg( it->ref );
       qDeleteAll( inputBlocks );
-      return static_cast<int>( MemoryError );
+      return MemoryError;
     }
     inputBlocks.insert( it->ref, block.release() );
   }
@@ -113,13 +123,15 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
   GDALDriverH outputDriver = openOutputDriver();
   if ( !outputDriver )
   {
-    return static_cast< int >( CreateOutputError );
+    mLastError = QObject::tr( "Could not obtain driver for %1" ).arg( mOutputFormat );
+    return CreateOutputError;
   }
 
   gdal::dataset_unique_ptr outputDataset( openOutputFile( outputDriver ) );
   if ( !outputDataset )
   {
-    return static_cast< int >( CreateOutputError );
+    mLastError = QObject::tr( "Could not create output %1" ).arg( mOutputFile );
+    return CreateOutputError;
   }
 
   GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt().toLocal8Bit().data() );
@@ -157,7 +169,7 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
       //write scanline to the dataset
       if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, mNumOutputColumns, 1, calcData, mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugMsg( "RasterIO error!" );
+        QgsDebugMsg( QStringLiteral( "RasterIO error!" ) );
       }
 
       delete[] calcData;
@@ -179,9 +191,9 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
   {
     //delete the dataset without closing (because it is faster)
     gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
-    return static_cast< int >( Canceled );
+    return Canceled;
   }
-  return static_cast< int >( Success );
+  return Success;
 }
 
 GDALDriverH QgsRasterCalculator::openOutputDriver()
@@ -228,4 +240,9 @@ void QgsRasterCalculator::outputGeoTransform( double *transform ) const
   transform[3] = mOutputRectangle.yMaximum();
   transform[4] = 0;
   transform[5] = -mOutputRectangle.height() / mNumOutputRows;
+}
+
+QString QgsRasterCalculator::lastError() const
+{
+  return mLastError;
 }

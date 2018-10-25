@@ -13,7 +13,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-import sip
+from qgis.PyQt import sip
 import tempfile
 import shutil
 import os
@@ -623,6 +623,51 @@ class TestQgsLayoutAtlas(unittest.TestCase):
 
         self.assertLess(rotatedExtent.width(), nonRotatedExtent.width() * 0.9)
         self.assertLess(rotatedExtent.height(), nonRotatedExtent.height() * 0.9)
+
+        QgsProject.instance().removeMapLayer(polygonLayer)
+
+    def test_datadefined_margin(self):
+        polygonLayer = QgsVectorLayer('Polygon?field=margin:int', 'test_polygon', 'memory')
+        poly = QgsFeature(polygonLayer.fields())
+        poly.setAttributes([0])
+        poly.setGeometry(QgsGeometry.fromWkt('Polygon((30 30, 40 30, 40 40, 30 40, 30 30))'))
+        polygonLayer.dataProvider().addFeatures([poly])
+        poly = QgsFeature(polygonLayer.fields())
+        poly.setAttributes([10])
+        poly.setGeometry(QgsGeometry.fromWkt('Polygon((10 10, 20 10, 20 20, 10 20, 10 10))'))
+        polygonLayer.dataProvider().addFeatures([poly])
+        poly = QgsFeature(polygonLayer.fields())
+        poly.setAttributes([20])
+        poly.setGeometry(QgsGeometry.fromWkt('Polygon((50 50, 60 50, 60 60, 50 60, 50 50))'))
+        polygonLayer.dataProvider().addFeatures([poly])
+        QgsProject.instance().addMapLayer(polygonLayer)
+
+        layout = QgsPrintLayout(QgsProject.instance())
+        map = QgsLayoutItemMap(layout)
+        map.setCrs(polygonLayer.crs())
+        map.attemptSetSceneRect(QRectF(20, 20, 130, 130))
+        map.setFrameEnabled(True)
+        map.setLayers([polygonLayer])
+        map.setExtent(QgsRectangle(0, 0, 100, 50))
+        layout.addLayoutItem(map)
+
+        atlas = layout.atlas()
+        atlas.setCoverageLayer(polygonLayer)
+        atlas.setEnabled(True)
+
+        map.setAtlasDriven(True)
+        map.setAtlasScalingMode(QgsLayoutItemMap.Auto)
+        map.setAtlasMargin(77.0)
+        map.dataDefinedProperties().setProperty(QgsLayoutObject.MapAtlasMargin, QgsProperty.fromExpression('margin/2'))
+
+        atlas.beginRender()
+        atlas.first()
+
+        self.assertEqual(map.extent(), QgsRectangle(25, 30, 45, 40))
+        self.assertTrue(atlas.next())
+        self.assertEqual(map.extent(), QgsRectangle(4.5, 9.75, 25.5, 20.25))
+        self.assertTrue(atlas.next())
+        self.assertEqual(map.extent(), QgsRectangle(44, 49.5, 66, 60.5))
 
         QgsProject.instance().removeMapLayer(polygonLayer)
 

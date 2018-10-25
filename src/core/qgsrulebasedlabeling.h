@@ -53,7 +53,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     {
       public:
         //! takes ownership of settings, settings may be nullptr
-        Rule( QgsPalLayerSettings *settings SIP_TRANSFER, int maximumScale = 0, int minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
+        Rule( QgsPalLayerSettings *settings SIP_TRANSFER, double maximumScale = 0, double minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
 
         //! Rules cannot be copied.
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \returns True if scale based labeling is active
          */
-        bool dependsOnScale() const { return mMinimumScale != 0 || mMaximumScale != 0; }
+        bool dependsOnScale() const { return !qgsDoubleNear( mMinimumScale, 0.0 ) || !qgsDoubleNear( mMaximumScale, 0 ); }
 
         /**
          * Returns the maximum map scale (i.e. most "zoomed in" scale) at which the label rule will be active.
@@ -324,17 +324,18 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         void updateElseRules();
 
       private:
-        Rule *mParent; // parent rule (NULL only for root rule)
+        Rule *mParent = nullptr; // parent rule (NULL only for root rule)
         std::unique_ptr<QgsPalLayerSettings> mSettings;
         double mMaximumScale = 0;
         double mMinimumScale = 0;
-        QString mFilterExp, mDescription;
-        bool mElseRule;
+        QString mFilterExp;
+        QString mDescription;
+        bool mElseRule = false;
         RuleList mChildren;
         RuleList mElseRules;
-        bool mIsActive; // whether it is enabled or not
+        bool mIsActive = true; // whether it is enabled or not
 
-        QString mRuleKey; // string used for unique identification of rule within labeling
+        QString mRuleKey = QUuid::createUuid().toString(); // string used for unique identification of rule within labeling
 
         std::unique_ptr<QgsExpression> mFilter;
 

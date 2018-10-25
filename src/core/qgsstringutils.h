@@ -260,6 +260,20 @@ class CORE_EXPORT QgsStringUtils
      * \since QGIS 3.0
      */
     static QString insertLinks( const QString &string, bool *foundLinks = nullptr );
+
+    /**
+     * Automatically wraps a \a string by inserting new line characters at appropriate locations in the string.
+     *
+     * The \a length argument specifies either the minimum or maximum length of lines desired, depending
+     * on whether \a useMaxLineLength is true. If \a useMaxLineLength is true, then the string will be wrapped
+     * so that each line ideally will not exceed \a length of characters. If \a useMaxLineLength is false, then
+     * the string will be wrapped so that each line will ideally exceed \a length of characters.
+     *
+     * A custom delimiter can be specified to use instead of space characters.
+     *
+     * \since QGIS 3.4
+     */
+    static QString wordWrap( const QString &string, int length, bool useMaxLineLength = true, const QString &customDelimiter = QString() );
 };
 
 #endif //QGSSTRINGUTILS_H

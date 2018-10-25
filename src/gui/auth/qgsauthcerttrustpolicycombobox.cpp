@@ -101,7 +101,7 @@ void QgsAuthCertTrustPolicyComboBox::highlightCurrentIndex( int indx )
     default:
       break;
   }
-  QgsDebugMsg( QString( "Set Stylesheet to : %1" ).arg( ss ) );
+  QgsDebugMsg( QStringLiteral( "Set Stylesheet to : %1" ).arg( ss ) );
   // lineEdit()->setStyleSheet( ss );
   setStyleSheet( ss );
 }

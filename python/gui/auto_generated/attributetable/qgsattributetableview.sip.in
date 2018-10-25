@@ -60,6 +60,15 @@ the appearance of the attribute table.
 .. versionadded:: 2.16
 %End
 
+    QList<QgsFeatureId> selectedFeaturesIds() const;
+%Docstring
+Returns the selected features in the attribute table in table sorted order.
+
+:return: The selected features in the attribute table in the order sorted by the table.
+
+.. versionadded:: 3.4
+%End
+
   protected:
 
     virtual void mousePressEvent( QMouseEvent *event );

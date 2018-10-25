@@ -906,13 +906,13 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->setCrs( srs );
     if ( srs.isValid() )
     {
-      QgsDebugMsgLevel( QString( "Selected CRS " ) + srs.description(), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Selected CRS " ) + srs.description(), 4 );
       // write the currently selected projections _proj string_ to project settings
-      QgsDebugMsgLevel( QString( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( srs.toProj4() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( srs.toProj4() ), 4 );
     }
     else
     {
-      QgsDebugMsgLevel( QString( "CRS set to no projection!" ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "CRS set to no projection!" ), 4 );
     }
 
     // mark selected projection for push to front
@@ -973,7 +973,7 @@ void QgsProjectProperties::apply()
     // If the user fields have changed, use them instead.
     if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
     {
-      QgsDebugMsgLevel( "Using parameteric major/minor", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Using parameteric major/minor" ), 4 );
       major = QLocale().toDouble( leSemiMajor->text() );
       minor = QLocale().toDouble( leSemiMinor->text() );
     }
@@ -2155,7 +2155,7 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
   // changing ellipsoid, save the modified coordinates
   if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
   {
-    QgsDebugMsgLevel( "Saving major/minor", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Saving major/minor" ), 4 );
     mEllipsoidList[ mEllipsoidIndex ].semiMajor = QLocale().toDouble( leSemiMajor->text() );
     mEllipsoidList[ mEllipsoidIndex ].semiMinor = QLocale().toDouble( leSemiMinor->text() );
   }
@@ -2190,7 +2190,7 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
 
 void QgsProjectProperties::projectionSelectorInitialized()
 {
-  QgsDebugMsgLevel( "Setting up ellipsoid", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Setting up ellipsoid" ), 4 );
 
   // Reading ellipsoid from settings
   QStringList mySplitEllipsoid = QgsProject::instance()->ellipsoid().split( ':' );

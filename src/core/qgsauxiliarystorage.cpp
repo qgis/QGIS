@@ -626,15 +626,33 @@ bool QgsAuxiliaryStorage::duplicateTable( const QgsDataSourceUri &ogrUri, const 
   return rc;
 }
 
-bool QgsAuxiliaryStorage::saveAs( const QString &filename ) const
+QString QgsAuxiliaryStorage::errorString() const
 {
-  if ( QFile::exists( filename ) )
-    QFile::remove( filename );
-
-  return  QFile::copy( currentFileName(), filename );
+  return mErrorString;
 }
 
-bool QgsAuxiliaryStorage::saveAs( const QgsProject &project ) const
+bool QgsAuxiliaryStorage::saveAs( const QString &filename )
+{
+  mErrorString.clear();
+
+  QFile dest( filename );
+  if ( dest.exists() && !dest.remove() )
+  {
+    mErrorString = dest.errorString();
+    return false;
+  }
+
+  QFile origin( currentFileName() );
+  if ( !origin.copy( filename ) )
+  {
+    mErrorString = origin.errorString();
+    return false;
+  }
+
+  return true;
+}
+
+bool QgsAuxiliaryStorage::saveAs( const QgsProject &project )
 {
   return saveAs( filenameForProject( project ) );
 }

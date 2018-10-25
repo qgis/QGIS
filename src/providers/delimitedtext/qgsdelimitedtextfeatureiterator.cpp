@@ -33,7 +33,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
 {
 
   // Determine mode to use based on request...
-  QgsDebugMsg( "Setting up QgsDelimitedTextIterator" );
+  QgsDebugMsg( QStringLiteral( "Setting up QgsDelimitedTextIterator" ) );
 
   // Does the layer have geometry - will revise later to determine if we actually need to
   // load it.
@@ -56,7 +56,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
 
   if ( !mFilterRect.isNull() && hasGeometry )
   {
-    QgsDebugMsg( "Configuring for rectangle select" );
+    QgsDebugMsg( QStringLiteral( "Configuring for rectangle select" ) );
     mTestGeometry = true;
     // Exact intersection test only applies for WKT geometries
     mTestGeometryExact = mRequest.flags() & QgsFeatureRequest::ExactIntersect
@@ -65,7 +65,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     // If request doesn't overlap extents, then nothing to return
     if ( ! mFilterRect.intersects( mSource->mExtent ) && !mTestSubset )
     {
-      QgsDebugMsg( "Rectangle outside layer extents - no features to return" );
+      QgsDebugMsg( QStringLiteral( "Rectangle outside layer extents - no features to return" ) );
       mMode = FeatureIds;
     }
     // If the request extents include the entire layer, then revert to
@@ -73,7 +73,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
 
     else if ( mFilterRect.contains( mSource->mExtent ) && !mTestSubset )
     {
-      QgsDebugMsg( "Rectangle contains layer extents - bypass spatial filter" );
+      QgsDebugMsg( QStringLiteral( "Rectangle contains layer extents - bypass spatial filter" ) );
       mTestGeometry = false;
     }
 
@@ -86,7 +86,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
       mFeatureIds = mSource->mSpatialIndex->intersects( mFilterRect );
       // Sort for efficient sequential retrieval
       std::sort( mFeatureIds.begin(), mFeatureIds.end() );
-      QgsDebugMsg( QString( "Layer has spatial index - selected %1 features from index" ).arg( mFeatureIds.size() ) );
+      QgsDebugMsg( QStringLiteral( "Layer has spatial index - selected %1 features from index" ).arg( mFeatureIds.size() ) );
       mMode = FeatureIds;
       mTestSubset = false;
       mTestGeometry = mTestGeometryExact;
@@ -95,7 +95,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
 
   if ( request.filterType() == QgsFeatureRequest::FilterFid )
   {
-    QgsDebugMsg( "Configuring for returning single id" );
+    QgsDebugMsg( QStringLiteral( "Configuring for returning single id" ) );
     if ( mFilterRect.isNull() || mFeatureIds.contains( request.filterFid() ) )
     {
       mFeatureIds = QList<QgsFeatureId>() << request.filterFid();
@@ -115,7 +115,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     // If we have a subset index then use it..
     if ( mMode == FileScan && mSource->mUseSubsetIndex )
     {
-      QgsDebugMsg( QString( "Layer has subset index - use %1 items from subset index" ).arg( mSource->mSubsetIndex.size() ) );
+      QgsDebugMsg( QStringLiteral( "Layer has subset index - use %1 items from subset index" ).arg( mSource->mSubsetIndex.size() ) );
       mTestSubset = false;
       mMode = SubsetIndex;
     }
@@ -123,7 +123,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   // Otherwise just have to scan the file
   if ( mMode == FileScan )
   {
-    QgsDebugMsg( "File will be scanned for desired features" );
+    QgsDebugMsg( QStringLiteral( "File will be scanned for desired features" ) );
   }
 
   // If the layer has geometry, do we really need to load it?
@@ -143,7 +143,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   }
   else
   {
-    QgsDebugMsgLevel( "Feature geometries not required", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Feature geometries not required" ), 4 );
     mLoadGeometry = false;
   }
 
@@ -169,10 +169,10 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     mRequest.setSubsetOfAttributes( attrs );
   }
 
-  QgsDebugMsg( QString( "Iterator is scanning file: " ) + ( mMode == FileScan ? "Yes" : "No" ) );
-  QgsDebugMsg( QString( "Iterator is loading geometries: " ) + ( mLoadGeometry ? "Yes" : "No" ) );
-  QgsDebugMsg( QString( "Iterator is testing geometries: " ) + ( mTestGeometry ? "Yes" : "No" ) );
-  QgsDebugMsg( QString( "Iterator is testing subset: " ) + ( mTestSubset ? "Yes" : "No" ) );
+  QgsDebugMsg( QStringLiteral( "Iterator is scanning file: " ) + ( mMode == FileScan ? "Yes" : "No" ) );
+  QgsDebugMsg( QStringLiteral( "Iterator is loading geometries: " ) + ( mLoadGeometry ? "Yes" : "No" ) );
+  QgsDebugMsg( QStringLiteral( "Iterator is testing geometries: " ) + ( mTestGeometry ? "Yes" : "No" ) );
+  QgsDebugMsg( QStringLiteral( "Iterator is testing subset: " ) + ( mTestSubset ? "Yes" : "No" ) );
 
   rewind();
 }

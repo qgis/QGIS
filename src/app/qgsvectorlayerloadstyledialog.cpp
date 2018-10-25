@@ -22,7 +22,7 @@
 #include "qgssettings.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsmaplayerstylecategoriesmodel.h"
-
+#include "qgsmessagebar.h"
 
 
 QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *layer, QWidget *parent )
@@ -68,9 +68,13 @@ QgsVectorLayerLoadStyleDialog::QgsVectorLayerLoadStyleDialog( QgsVectorLayer *la
   mFileWidget->setFilter( tr( "QGIS Layer Style File, SLD File" ) + QStringLiteral( " (*.qml *.sld)" ) );
   mFileWidget->setStorageMode( QgsFileWidget::GetFile );
   mFileWidget->setDefaultRoot( myLastUsedDir );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & )
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
     mStyleCategoriesListView->setEnabled( currentStyleType() != QgsVectorLayerProperties::SLD );
+    QgsSettings settings;
+    QFileInfo tmplFileInfo( path );
+    settings.setValue( QStringLiteral( "style/lastStyleDir" ), tmplFileInfo.absolutePath() );
+
     updateLoadButtonState();
   } );
 
@@ -111,7 +115,13 @@ QgsMapLayer::StyleCategories QgsVectorLayerLoadStyleDialog::styleCategories() co
 
 QgsVectorLayerProperties::StyleType QgsVectorLayerLoadStyleDialog::currentStyleType() const
 {
+#if QT_VERSION <= 0x050601
+  // in Qt 5.6.1 and former, QVariant does not correctly convert enum using value
+  // see https://bugreports.qt.io/browse/QTBUG-53384
+  QgsVectorLayerProperties::StyleType type = static_cast<QgsVectorLayerProperties::StyleType>( mStyleTypeComboBox->currentData().toInt() );
+#else
   QgsVectorLayerProperties::StyleType type = mStyleTypeComboBox->currentData().value<QgsVectorLayerProperties::StyleType>();
+#endif
   if ( type == QgsVectorLayerProperties::QML )
   {
     QFileInfo fi( mFileWidget->filePath() );
@@ -128,9 +138,10 @@ QString QgsVectorLayerLoadStyleDialog::filePath() const
 
 void QgsVectorLayerLoadStyleDialog::initializeLists( const QStringList &ids, const QStringList &names, const QStringList &descriptions, int sectionLimit )
 {
+  // -1 means no ids
   mSectionLimit = sectionLimit;
   int relatedTableNOfCols = sectionLimit > 0 ? 2 : 1;
-  int othersTableNOfCols = ids.count() - sectionLimit > 0 ? 2 : 1;
+  int othersTableNOfCols = ( sectionLimit >= 0 && ids.count() - sectionLimit > 0 ) ? 2 : 1;
   QString twoColsHeader( QStringLiteral( "Name;Description" ) );
   QString oneColsHeader( QStringLiteral( "No styles found in the database" ) );
   QString relatedTableHeader = relatedTableNOfCols == 1 ? oneColsHeader : twoColsHeader;
@@ -141,24 +152,27 @@ void QgsVectorLayerLoadStyleDialog::initializeLists( const QStringList &ids, con
   mRelatedTable->setHorizontalHeaderLabels( relatedTableHeader.split( ';' ) );
   mOthersTable->setHorizontalHeaderLabels( othersTableHeader.split( ';' ) );
   mRelatedTable->setRowCount( sectionLimit );
-  mOthersTable->setRowCount( ids.count() - sectionLimit );
+  mOthersTable->setRowCount( sectionLimit >= 0 ? ( ids.count() - sectionLimit ) : 0 );
   mRelatedTable->setDisabled( relatedTableNOfCols == 1 );
   mOthersTable->setDisabled( othersTableNOfCols == 1 );
 
-  for ( int i = 0; i < sectionLimit; i++ )
+  if ( sectionLimit >= 0 )
   {
-    QTableWidgetItem *item = new QTableWidgetItem( names.value( i, QString() ) );
-    item->setData( Qt::UserRole, ids[i] );
-    mRelatedTable->setItem( i, 0, item );
-    mRelatedTable->setItem( i, 1, new QTableWidgetItem( descriptions.value( i, QString() ) ) );
-  }
-  for ( int i = sectionLimit; i < ids.count(); i++ )
-  {
-    int j = i - sectionLimit;
-    QTableWidgetItem *item = new QTableWidgetItem( names.value( i, QString() ) );
-    item->setData( Qt::UserRole, ids[i] );
-    mOthersTable->setItem( j, 0, item );
-    mOthersTable->setItem( j, 1, new QTableWidgetItem( descriptions.value( i, QString() ) ) );
+    for ( int i = 0; i < sectionLimit; i++ )
+    {
+      QTableWidgetItem *item = new QTableWidgetItem( names.value( i, QString() ) );
+      item->setData( Qt::UserRole, ids[i] );
+      mRelatedTable->setItem( i, 0, item );
+      mRelatedTable->setItem( i, 1, new QTableWidgetItem( descriptions.value( i, QString() ) ) );
+    }
+    for ( int i = sectionLimit; i < ids.count(); i++ )
+    {
+      int j = i - sectionLimit;
+      QTableWidgetItem *item = new QTableWidgetItem( names.value( i, QString() ) );
+      item->setData( Qt::UserRole, ids[i] );
+      mOthersTable->setItem( j, 0, item );
+      mOthersTable->setItem( j, 1, new QTableWidgetItem( descriptions.value( i, QString() ) ) );
+    }
   }
 }
 

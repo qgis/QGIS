@@ -114,7 +114,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="1" column="1">
-       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
         </property>
@@ -160,9 +160,6 @@
         <property name="text">
          <string>Target package</string>
         </property>
-        <property name="buddy">
-         <cstring>leDatabase</cstring>
-        </property>
        </widget>
       </item>
       <item row="1" column="0">
@@ -178,16 +175,12 @@
       <item row="0" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLineEdit" name="leDatabase">
-          <property name="readOnly">
-           <bool>true</bool>
+         <widget class="QgsFileWidget" name="mDatabaseFileWidget">
+          <property name="dialogTitle">
+           <string>Select GeoPackage Database</string>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pbBrowseDatabase">
-          <property name="text">
-           <string>…</string>
+          <property name="filter">
+           <string notr="true">*.gpkg;;*.GPKG</string>
           </property>
          </widget>
         </item>
@@ -232,6 +225,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
@@ -239,8 +237,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>leDatabase</tabstop>
-  <tabstop>pbBrowseDatabase</tabstop>
   <tabstop>pbLoadDatabase</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>leDrawing</tabstop>

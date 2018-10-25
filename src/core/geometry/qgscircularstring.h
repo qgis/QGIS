@@ -153,7 +153,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str = QStringLiteral( "<QgsCircularString: %1>" ).arg( sipCpp->asWkt() );
-    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 

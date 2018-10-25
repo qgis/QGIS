@@ -13,8 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#define SIP_NO_FILE
-
 #ifndef QGS_GEOMETRY_CHECK_H
 #define QGS_GEOMETRY_CHECK_H
 
@@ -28,187 +26,242 @@
 #include "qgsvectorlayer.h"
 #include "geometry/qgsgeometry.h"
 #include "qgsgeometrycheckerutils.h"
+#include "qgssettings.h"
 
 class QgsGeometryCheckError;
 class QgsFeaturePool;
 
-#define FEATUREID_NULL std::numeric_limits<QgsFeatureId>::min()
-
-struct ANALYSIS_EXPORT QgsGeometryCheckerContext
-{
-    QgsGeometryCheckerContext( int _precision, const QgsCoordinateReferenceSystem &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools, const QgsCoordinateTransformContext &transformContext );
-    const double tolerance;
-    const double reducedTolerance;
-    const QgsCoordinateReferenceSystem mapCrs;
-    const QMap<QString, QgsFeaturePool *> featurePools;
-    const QgsCoordinateTransformContext transformContext;
-    const QgsCoordinateTransform &layerTransform( const QPointer<QgsVectorLayer> &layer );
-    double layerScaleFactor( const QPointer<QgsVectorLayer> &layer );
-
-  private:
-    QMap<QPointer<QgsVectorLayer>, QgsCoordinateTransform> mTransformCache;
-    QMap<QPointer<QgsVectorLayer>, double> mScaleFactorCache;
-    QReadWriteLock mCacheLock;
-};
-
+/**
+ * \ingroup analysis
+ * This class manages all known geometry check factories.
+ *
+ * QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
+ * QgsAnalysis::geometryCheckRegistry().
+ *
+ * \note This class is a technology preview and unstable API.
+ * \since QGIS 3.4
+ */
 class ANALYSIS_EXPORT QgsGeometryCheck
 {
+    Q_GADGET
     Q_DECLARE_TR_FUNCTIONS( QgsGeometryCheck )
 
   public:
+
+    /**
+     * A list of layers and feature ids for each of these layers.
+     * In C++, the member `ids` can be accessed directly.
+     * In Python some accessor methods will need to be written.
+     *
+     * \since QGIS 3.4
+     */
+    struct ANALYSIS_EXPORT LayerFeatureIds
+    {
+      LayerFeatureIds() = default;
+      LayerFeatureIds( const QMap<QString, QgsFeatureIds> &ids ) SIP_SKIP;
+
+      QMap<QString, QgsFeatureIds> ids SIP_SKIP;
+
+#ifndef SIP_RUN
+      QMap<QString, QgsFeatureIds> toMap() const
+      {
+        return ids;
+      }
+
+      bool isEmpty() const
+      {
+        return ids.isEmpty();
+      }
+#endif
+    };
+
+    /**
+     * Description of a change to indicate at which level a change occurred.
+     *
+     * \since Python bindings since QGIS 3.4
+     */
     enum ChangeWhat
     {
-      ChangeFeature,
-      ChangePart,
-      ChangeRing,
-      ChangeNode
+      ChangeFeature, //!< This change happens on feature level
+      ChangePart,    //!< This change happens on part level
+      ChangeRing,    //!< This change happens on ring level
+      ChangeNode     //!< This change happens on node level
     };
 
+    /**
+     * Description of the type of a change.
+     *
+     * \since Python bindings since QGIS 3.4
+     */
     enum ChangeType
     {
-      ChangeAdded,
-      ChangeRemoved,
-      ChangeChanged
+      ChangeAdded,   //!< Something has been added
+      ChangeRemoved, //!< Something has been removed
+      ChangeChanged  //!< Something has been updated
     };
 
+    /**
+     * The type of a check.
+     *
+     * \since Python bindings since QGIS 3.4
+     */
     enum CheckType
     {
-      FeatureNodeCheck,
-      FeatureCheck,
-      LayerCheck
+      FeatureNodeCheck, //!< The check controls individual nodes
+      FeatureCheck,     //!< The check controls geometries as a whole
+      LayerCheck        //!< The check controls a whole layer (topology checks)
     };
 
+    /**
+     * Flags for geometry checks.
+     */
+    enum Flag
+    {
+      AvailableInValidation = 1 << 1 //!< This geometry check should be available in layer validation on the vector layer peroperties
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+    Q_FLAG( Flags )
+
+    /**
+     * Descripts a change to fix a geometry.
+     *
+     * \since Python bindings since QGIS 3.4
+     */
     struct Change
     {
       Change() = default;
-      Change( ChangeWhat _what, ChangeType _type, QgsVertexId _vidx = QgsVertexId() )
+
+      /**
+       * Create a new Change
+       */
+      Change( QgsGeometryCheck::ChangeWhat _what, QgsGeometryCheck::ChangeType _type, QgsVertexId _vidx = QgsVertexId() )
         : what( _what )
         , type( _type )
         , vidx( _vidx )
       {}
-      ChangeWhat what;
-      ChangeType type;
+
+      /**
+       * What level this change affects.
+       */
+      QgsGeometryCheck::ChangeWhat what;
+
+      /**
+       * What action this change performs.
+       */
+      QgsGeometryCheck::ChangeType type;
+
+      /**
+       * The index of the part / ring / vertex, depending on \see what.
+       */
       QgsVertexId vidx;
-      bool operator==( const Change &other )
+      bool operator==( const QgsGeometryCheck::Change &other )
       {
         return what == other.what && type == other.type && vidx == other.vidx;
       }
     };
 
-    typedef QMap<QString, QMap<QgsFeatureId, QList<Change>>> Changes;
+    /**
+     * A collection of changes.
+     * Grouped by layer id and feature id.
+     */
+    typedef QMap<QString, QMap<QgsFeatureId, QList<QgsGeometryCheck::Change> > > Changes;
 
-    QgsGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, QgsGeometryCheckerContext *context )
-      : mCheckType( checkType )
-      , mCompatibleGeometryTypes( compatibleGeometryTypes )
-      , mContext( context )
-    {}
+    /**
+     * Create a new geometry check.
+     */
+    QgsGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
     virtual ~QgsGeometryCheck() = default;
-    virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const = 0;
-    virtual void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const = 0;
+
+#ifndef SIP_RUN
+    template <class T>
+    T configurationValue( const QString &name, const QVariant &defaultValue = QVariant() )
+    {
+      return mConfiguration.value( name, QgsSettings().value( "/geometry_checker/" + id() + "/" + name, defaultValue ) ).value<T>();
+    }
+#endif
+
+    /**
+     * Returns if this geometry check is compatible with \a layer.
+     * By default it checks for the geometry type in \a compatibleGeometryTypes().
+     *
+     * \since QGIS 3.4
+     */
+    virtual bool isCompatible( QgsVectorLayer *layer ) const;
+
+    /**
+     * A list of geometry types for which this check can be performed.
+     *
+     * \since QGIS 3.4
+     */
+    virtual QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const = 0;
+
+    /**
+     * Flags for this geometry check.
+     */
+    virtual QgsGeometryCheck::Flags flags() const;
+
+    /**
+     * The main worker method.
+     * Check all features available from \a featurePools and write errors found to \a errors.
+     * Other status messages can be written to \a messages.
+     * Progress should be reported to \a feedback. Only features and layers listed in \a ids should be checked.
+     *
+     * \since QGIS 3.4
+     */
+    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors SIP_INOUT, QStringList &messages SIP_INOUT, QgsFeedback *feedback, const LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const = 0;
+
+    /**
+     * Fix the error \a error with the specified \a method.
+     *
+     * \since QGIS 3.4
+     */
+    virtual void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes SIP_INOUT ) const SIP_SKIP;
+
+    /**
+     * Returns a list of descriptions for available resolutions for errors. The index will be passed as ``method`` to \see fixError().
+     *
+     * \since QGIS 3.4
+     */
     virtual QStringList resolutionMethods() const = 0;
-    virtual QString errorDescription() const = 0;
-    virtual QString errorName() const = 0;
-    CheckType checkType() const { return mCheckType; }
-    bool isCompatible( QgsWkbTypes::GeometryType type ) const { return mCompatibleGeometryTypes.contains( type ); }
-    QgsGeometryCheckerContext *context() const { return mContext; }
+
+    /**
+     * Returns a human readable description for this check.
+     *
+     * \since QGIS 3.4
+     */
+    virtual QString description() const = 0;
+
+    /**
+     * Returns an id for this check.
+     *
+     * \since QGIS 3.4
+     */
+    virtual QString id() const = 0;
+
+    /**
+     * Returns the check type.
+     *
+     * \since QGIS 3.4
+     */
+    virtual CheckType checkType() const = 0;
+
+    /**
+     * Returns the context
+     *
+     * \since QGIS 3.4
+     */
+    const QgsGeometryCheckContext *context() const { return mContext; }
 
   protected:
-    QMap<QString, QgsFeatureIds> allLayerFeatureIds() const;
-    void replaceFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const;
-    void deleteFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const;
-    void deleteFeatureGeometryRing( const QString &layerId, QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const;
+    QMap<QString, QgsFeatureIds> allLayerFeatureIds( const QMap<QString, QgsFeaturePool *> &featurePools ) const SIP_SKIP;
+    void replaceFeatureGeometryPart( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const SIP_SKIP;
+    void deleteFeatureGeometryPart( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const SIP_SKIP;
+    void deleteFeatureGeometryRing( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const SIP_SKIP;
 
-    const CheckType mCheckType;
-    QList<QgsWkbTypes::GeometryType> mCompatibleGeometryTypes;
-    QgsGeometryCheckerContext *mContext;
+    const QgsGeometryCheckContext *mContext;
+    QVariantMap mConfiguration;
+
+    double scaleFactor( const QPointer<QgsVectorLayer> &layer ) const SIP_SKIP;
 };
-
-
-class ANALYSIS_EXPORT QgsGeometryCheckError
-{
-  public:
-    enum Status { StatusPending, StatusFixFailed, StatusFixed, StatusObsolete };
-    enum ValueType { ValueLength, ValueArea, ValueOther };
-
-    QgsGeometryCheckError( const QgsGeometryCheck *check,
-                           const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
-                           const QgsPointXY &errorLocation,
-                           QgsVertexId vidx = QgsVertexId(),
-                           const QVariant &value = QVariant(),
-                           ValueType valueType = ValueOther );
-
-    virtual ~QgsGeometryCheckError() = default;
-
-    const QgsGeometryCheckError &operator=( const QgsGeometryCheckError & ) = delete;
-
-    const QgsGeometryCheck *check() const { return mCheck; }
-    const QString &layerId() const { return mLayerId; }
-    QgsFeatureId featureId() const { return mFeatureId; }
-    // In map units
-    const QgsAbstractGeometry *geometry() const;
-    // In map units
-    virtual QgsRectangle affectedAreaBBox() const;
-    virtual QString description() const { return mCheck->errorDescription(); }
-    // In map units
-    const QgsPointXY &location() const { return mErrorLocation; }
-    // Lengths, areas in map units
-    QVariant value() const { return mValue; }
-    ValueType valueType() const { return mValueType; }
-    const QgsVertexId &vidx() const { return mVidx; }
-    Status status() const { return mStatus; }
-    QString resolutionMessage() const { return mResolutionMessage; }
-    void setFixed( int method );
-    void setFixFailed( const QString &reason );
-    void setObsolete() { mStatus = StatusObsolete; }
-
-    /**
-     * Check if this error is equal to \a other.
-     * Is reimplemented by subclasses with additional information, comparison
-     * of base information is done in parent class.
-     */
-    virtual bool isEqual( QgsGeometryCheckError *other ) const;
-
-    /**
-     * Check if this error is almost equal to \a other.
-     * If this returns true, it can be used to update existing errors after re-checking.
-     */
-    virtual bool closeMatch( QgsGeometryCheckError * /*other*/ ) const;
-
-    /**
-     * Update this error with the information from \other.
-     * Will be used to update existing errors whenever they are re-checked.
-     */
-    virtual void update( const QgsGeometryCheckError *other );
-
-    /**
-     * Apply a list of \a changes.
-     */
-    virtual bool handleChanges( const QgsGeometryCheck::Changes &changes );
-
-  protected:
-    // Users of this constructor must ensure geometry and errorLocation are in map coordinates
-    QgsGeometryCheckError( const QgsGeometryCheck *check,
-                           const QString &layerId,
-                           QgsFeatureId featureId,
-                           const QgsGeometry &geometry,
-                           const QgsPointXY &errorLocation,
-                           QgsVertexId vidx = QgsVertexId(),
-                           const QVariant &value = QVariant(),
-                           ValueType valueType = ValueOther );
-
-    const QgsGeometryCheck *mCheck = nullptr;
-    QString mLayerId;
-    QgsFeatureId mFeatureId;
-    QgsGeometry mGeometry;
-    QgsPointXY mErrorLocation;
-    QgsVertexId mVidx;
-    QVariant mValue;
-    ValueType mValueType;
-    Status mStatus;
-    QString mResolutionMessage;
-
-};
-
-Q_DECLARE_METATYPE( QgsGeometryCheckError * )
 
 #endif // QGS_GEOMETRY_CHECK_H

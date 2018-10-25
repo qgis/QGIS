@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsserverprojectutils.h"
+#include "qgsproject.h"
 
 bool QgsServerProjectUtils::owsServiceCapabilities( const QgsProject &project )
 {

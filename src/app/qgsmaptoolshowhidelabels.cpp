@@ -22,12 +22,11 @@
 #include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
-
+#include "qgsmapmouseevent.h"
 #include "qgsmaptoolselectutils.h"
 #include "qgsrubberband.h"
 #include "qgslogger.h"
 
-#include <QMouseEvent>
 
 QgsMapToolShowHideLabels::QgsMapToolShowHideLabels( QgsMapCanvas *canvas )
   : QgsMapToolLabel( canvas )
@@ -219,7 +218,7 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer *vlayer,
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest()
                            .setFilterRect( selectGeomTrans.boundingBox() )
                            .setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect )
-                           .setSubsetOfAttributes( QgsAttributeList() ) );
+                           .setNoAttributes() );
 
   QgsFeature f;
   while ( fit.nextFeature( f ) )
@@ -241,7 +240,7 @@ bool QgsMapToolShowHideLabels::selectedLabelFeatures( QgsVectorLayer *vlayer,
   const QgsLabelingResults *labelingResults = mCanvas->labelingResults();
   if ( !labelingResults )
   {
-    QgsDebugMsg( "No labeling engine" );
+    QgsDebugMsg( QStringLiteral( "No labeling engine" ) );
     return false;
   }
 

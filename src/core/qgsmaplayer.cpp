@@ -96,7 +96,6 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   connect( this, &QgsMapLayer::crsChanged, this, &QgsMapLayer::configChanged );
   connect( this, &QgsMapLayer::nameChanged, this, &QgsMapLayer::configChanged );
 
-  connect( mStyleManager, &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayer::styleChanged );
   connect( mRefreshTimer, &QTimer::timeout, this, [ = ] { triggerRepaint( true ); } );
 }
 
@@ -207,8 +206,11 @@ QgsRectangle QgsMapLayer::extent() const
   return mExtent;
 }
 
-void QgsMapLayer::setBlendMode( QPainter::CompositionMode blendMode )
+void QgsMapLayer::setBlendMode( const QPainter::CompositionMode blendMode )
 {
+  if ( mBlendMode == blendMode )
+    return;
+
   mBlendMode = blendMode;
   emit blendModeChanged( blendMode );
   emit styleChanged();
@@ -551,6 +553,11 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &document,
                                     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
+  // save categories
+  QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayer::StyleCategories>();
+  QString categoriesKeys( metaEnum.valueToKeys( static_cast<int>( categories ) ) );
+  layerElement.setAttribute( QStringLiteral( "styleCategories" ), categoriesKeys );
+
   if ( categories.testFlag( Rendering ) )
   {
     // use scale dependent visibility flag
@@ -877,7 +884,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
 
 bool QgsMapLayer::loadNamedPropertyFromDatabase( const QString &db, const QString &uri, QString &xml, QgsMapLayer::PropertyType type )
 {
-  QgsDebugMsgLevel( QString( "db = %1 uri = %2" ).arg( db, uri ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "db = %1 uri = %2" ).arg( db, uri ), 4 );
 
   bool resultFlag = false;
 
@@ -887,7 +894,7 @@ bool QgsMapLayer::loadNamedPropertyFromDatabase( const QString &db, const QStrin
 
   int myResult;
 
-  QgsDebugMsgLevel( QString( "Trying to load style or metadata for \"%1\" from \"%2\"" ).arg( uri, db ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Trying to load style or metadata for \"%1\" from \"%2\"" ).arg( uri, db ), 4 );
 
   if ( db.isEmpty() || !QFile( db ).exists() )
     return false;
@@ -933,7 +940,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag, QgsMa
 
 QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::PropertyType type, bool &resultFlag, StyleCategories categories )
 {
-  QgsDebugMsgLevel( QString( "uri = %1 myURI = %2" ).arg( uri, publicSource() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "uri = %1 myURI = %2" ).arg( uri, publicSource() ), 4 );
 
   resultFlag = false;
 
@@ -946,7 +953,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   QFile myFile( uri );
   if ( myFile.open( QFile::ReadOnly ) )
   {
-    QgsDebugMsgLevel( QString( "file found %1" ).arg( uri ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "file found %1" ).arg( uri ), 2 );
     // read file
     resultFlag = myDocument.setContent( &myFile, &myErrorMessage, &line, &column );
     if ( !resultFlag )
@@ -956,7 +963,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   else
   {
     QFileInfo project( QgsProject::instance()->fileName() );
-    QgsDebugMsgLevel( QString( "project fileName: %1" ).arg( project.absoluteFilePath() ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "project fileName: %1" ).arg( project.absoluteFilePath() ), 4 );
 
     QString xml;
     switch ( type )
@@ -1054,15 +1061,22 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
     styleFile.updateRevision( thisVersion );
   }
 
+  // Get source categories
+  QgsMapLayer::StyleCategories sourceCategories = QgsXmlUtils::readFlagAttribute( myRoot, QStringLiteral( "styleCategories" ), QgsMapLayer::AllStyleCategories );
+
   //Test for matching geometry type on vector layers when applying, if geometry type is given in the style
-  if ( type() == QgsMapLayer::VectorLayer && !myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).isNull() )
+  if ( ( sourceCategories.testFlag( QgsMapLayer::Symbology ) || sourceCategories.testFlag( QgsMapLayer::Symbology3D ) ) &&
+       ( categories.testFlag( QgsMapLayer::Symbology ) || categories.testFlag( QgsMapLayer::Symbology3D ) ) )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( this );
-    QgsWkbTypes::GeometryType importLayerGeometryType = static_cast<QgsWkbTypes::GeometryType>( myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).text().toInt() );
-    if ( vl->geometryType() != importLayerGeometryType )
+    if ( type() == QgsMapLayer::VectorLayer && !myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).isNull() )
     {
-      myErrorMessage = tr( "Cannot apply style to layer with a different geometry type" );
-      return false;
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( this );
+      QgsWkbTypes::GeometryType importLayerGeometryType = static_cast<QgsWkbTypes::GeometryType>( myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).text().toInt() );
+      if ( vl->geometryType() != importLayerGeometryType )
+      {
+        myErrorMessage = tr( "Cannot apply style with symbology to layer with a different geometry type" );
+        return false;
+      }
     }
   }
 

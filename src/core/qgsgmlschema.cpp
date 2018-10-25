@@ -88,7 +88,7 @@ bool QgsGmlSchema::parseXSD( const QByteArray &xml )
 
   QList<QDomElement> elementElements = domElements( docElem, QStringLiteral( "element" ) );
 
-  //QgsDebugMsg( QString( "%1 elemets read" ).arg( elementElements.size() ) );
+  //QgsDebugMsg( QStringLiteral( "%1 elemets read" ).arg( elementElements.size() ) );
 
   Q_FOREACH ( const QDomElement &elementElement, elementElements )
   {
@@ -96,8 +96,8 @@ bool QgsGmlSchema::parseXSD( const QByteArray &xml )
     QString type = elementElement.attribute( QStringLiteral( "type" ) );
 
     QString gmlBaseType = xsdComplexTypeGmlBaseType( docElem, stripNS( type ) );
-    //QgsDebugMsg( QString( "gmlBaseType = %1" ).arg( gmlBaseType ) );
-    //QgsDebugMsg( QString( "name = %1 gmlBaseType = %2" ).arg( name ).arg( gmlBaseType ) );
+    //QgsDebugMsg( QStringLiteral( "gmlBaseType = %1" ).arg( gmlBaseType ) );
+    //QgsDebugMsg( QStringLiteral( "name = %1 gmlBaseType = %2" ).arg( name ).arg( gmlBaseType ) );
     // We should only use gml:AbstractFeatureType descendants which have
     // ancestor listed in gml:FeatureAssociationType (featureMember) descendant
     // But we could only loose some data if XSD was not correct, I think.
@@ -174,20 +174,20 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
         }
         else
         {
-          QgsDebugMsg( QString( "Unknown referenced GML element: %1" ).arg( ref ) );
+          QgsDebugMsg( QStringLiteral( "Unknown referenced GML element: %1" ).arg( ref ) );
         }
       }
       else
       {
         // TODO: get type from referenced element
-        QgsDebugMsg( QString( "field %1.%2 is referencing %3 - not supported" ).arg( typeName, fieldName ) );
+        QgsDebugMsg( QStringLiteral( "field %1.%2 is referencing %3 - not supported" ).arg( typeName, fieldName ) );
       }
       continue;
     }
 
     if ( fieldName.isEmpty() )
     {
-      QgsDebugMsg( QString( "field in %1 without name" ).arg( typeName ) );
+      QgsDebugMsg( QStringLiteral( "field in %1 without name" ).arg( typeName ) );
       continue;
     }
 
@@ -202,7 +202,7 @@ bool QgsGmlSchema::xsdFeatureClass( const QDomElement &element, const QString &t
     QVariant::Type fieldType = QVariant::String;
     if ( fieldTypeName.isEmpty() )
     {
-      QgsDebugMsg( QString( "Cannot get %1.%2 field type" ).arg( typeName, fieldName ) );
+      QgsDebugMsg( QStringLiteral( "Cannot get %1.%2 field type" ).arg( typeName, fieldName ) );
     }
     else
     {
@@ -330,7 +330,7 @@ bool QgsGmlSchema::guessSchema( const QByteArray &data )
   if ( res == 0 )
   {
     QString err = QString( XML_ErrorString( XML_GetErrorCode( p ) ) );
-    QgsDebugMsg( QString( "XML_Parse returned %1 error %2" ).arg( res ).arg( err ) );
+    QgsDebugMsg( QStringLiteral( "XML_Parse returned %1 error %2" ).arg( res ).arg( err ) );
     mError = QgsError( err, QStringLiteral( "GML schema" ) );
     mError.append( tr( "Cannot guess schema" ) );
   }
@@ -344,11 +344,11 @@ void QgsGmlSchema::startElement( const XML_Char *el, const XML_Char **attr )
   mLevel++;
 
   QString elementName = QString::fromUtf8( el );
-  QgsDebugMsgLevel( QString( "-> %1 %2 %3" ).arg( mLevel ).arg( elementName, mLevel >= mSkipLevel ? "skip" : "" ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "-> %1 %2 %3" ).arg( mLevel ).arg( elementName, mLevel >= mSkipLevel ? "skip" : "" ), 5 );
 
   if ( mLevel >= mSkipLevel )
   {
-    //QgsDebugMsg( QString("skip level %1").arg( mLevel ) );
+    //QgsDebugMsg( QStringLiteral("skip level %1").arg( mLevel ) );
     return;
   }
 
@@ -443,11 +443,11 @@ void QgsGmlSchema::startElement( const XML_Char *el, const XML_Char **attr )
 void QgsGmlSchema::endElement( const XML_Char *el )
 {
   QString elementName = QString::fromUtf8( el );
-  QgsDebugMsgLevel( QString( "<- %1 %2" ).arg( mLevel ).arg( elementName ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "<- %1 %2" ).arg( mLevel ).arg( elementName ), 5 );
 
   if ( mLevel >= mSkipLevel )
   {
-    //QgsDebugMsg( QString("skip level %1").arg( mLevel ) );
+    //QgsDebugMsg( QStringLiteral("skip level %1").arg( mLevel ) );
     mLevel--;
     return;
   }
@@ -492,10 +492,10 @@ void QgsGmlSchema::endElement( const XML_Char *el )
 
 void QgsGmlSchema::characters( const XML_Char *chars, int len )
 {
-  //QgsDebugMsg( QString("level %1 : %2").arg( mLevel ).arg( QString::fromUtf8( chars, len ) ) );
+  //QgsDebugMsg( QStringLiteral("level %1 : %2").arg( mLevel ).arg( QString::fromUtf8( chars, len ) ) );
   if ( mLevel >= mSkipLevel )
   {
-    //QgsDebugMsg( QString("skip level %1").arg( mLevel ) );
+    //QgsDebugMsg( QStringLiteral("skip level %1").arg( mLevel ) );
     return;
   }
 

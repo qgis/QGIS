@@ -288,7 +288,7 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
 
   if ( !item )
   {
-    QgsDebugMsg( "Current tree widget item not set" );
+    QgsDebugMsg( QStringLiteral( "Current tree widget item not set" ) );
     return;
   }
 
@@ -310,7 +310,7 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
 
   if ( !QgsApplication::authManager()->existsSslCertCustomConfig( digest, hostport ) )
   {
-    QgsDebugMsg( QString( "SSL custom config does not exist in database for host:port, id %1:" )
+    QgsDebugMsg( QStringLiteral( "SSL custom config does not exist in database for host:port, id %1:" )
                  .arg( hostport, digest ) );
     return;
   }
@@ -344,7 +344,7 @@ void QgsAuthServersEditor::btnEditServer_clicked()
 
   if ( !item )
   {
-    QgsDebugMsg( "Current tree widget item not set" );
+    QgsDebugMsg( QStringLiteral( "Current tree widget item not set" ) );
     return;
   }
 
@@ -366,7 +366,7 @@ void QgsAuthServersEditor::btnEditServer_clicked()
 
   if ( !QgsApplication::authManager()->existsSslCertCustomConfig( digest, hostport ) )
   {
-    QgsDebugMsg( "SSL custom config does not exist in database" );
+    QgsDebugMsg( QStringLiteral( "SSL custom config does not exist in database" ) );
     return;
   }
 

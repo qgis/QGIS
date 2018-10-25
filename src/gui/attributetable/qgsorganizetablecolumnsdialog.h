@@ -42,11 +42,18 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
      * Constructor
      * \param vl The concerned vector layer
      * \param parent parent object
+     * \param config attribute table config to use.
+     * \param flags window flags
+     */
+    QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QgsAttributeTableConfig config, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::Window );
+
+    /**
+     * Constructor
+     * \param vl The concerned vector layer
+     * \param parent parent object
      * \param flags window flags
      */
     QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::Window );
-
-    ~QgsOrganizeTableColumnsDialog() override;
 
     /**
      * Gets the updated configuration

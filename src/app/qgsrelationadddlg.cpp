@@ -80,7 +80,13 @@ QString QgsRelationAddDlg::relationName()
 
 QgsRelation::RelationStrength QgsRelationAddDlg::relationStrength()
 {
+#if QT_VERSION <= 0x050601
+  // in Qt 5.6.1 and former, QVariant does not correctly convert enum using value
+  // see https://bugreports.qt.io/browse/QTBUG-53384
+  return static_cast<QgsRelation::RelationStrength>( mCbxRelationStrength->currentData().toInt() );
+#else
   return mCbxRelationStrength->currentData().value<QgsRelation::RelationStrength>();
+#endif
 }
 
 void QgsRelationAddDlg::checkDefinitionValid()

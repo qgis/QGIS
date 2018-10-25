@@ -27,7 +27,8 @@
 #include "qgsspinbox.h"
 #include "qgsgeometryutils.h"
 #include <memory>
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
 
 QgsMapToolCircle2TangentsPoint::QgsMapToolCircle2TangentsPoint( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )
@@ -108,10 +109,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     if ( !mTempRubberBand )
     {
-      mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
-      mTempRubberBand->setFillColor( QColor( 0, 0, 255 ) );
-      mTempRubberBand->setStrokeColor( QColor( 0, 0, 255 ) );
-      mTempRubberBand->setStrokeWidth( 2 );
+      mTempRubberBand = createGeometryRubberBand( mLayerType, true );
       mTempRubberBand->show();
     }
     else

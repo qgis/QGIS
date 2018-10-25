@@ -54,11 +54,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     ~QgsMssqlProvider() override;
 
-    static QSqlDatabase GetDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password );
-
     QgsAbstractFeatureSource *featureSource() const override;
-
-    static bool OpenDatabase( QSqlDatabase db );
 
     /* Implementation of functions from QgsVectorDataProvider */
 
@@ -67,6 +63,9 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
     QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
+    QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
+                                       QgsFeedback *feedback = nullptr ) const override;
+
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
 
     QgsWkbTypes::Type wkbType() const override;
@@ -179,7 +178,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     mutable QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
 
     // The database object
-    QSqlDatabase mDatabase;
+    mutable QSqlDatabase mDatabase;
 
     // The current sql query
     QSqlQuery mQuery;
@@ -206,8 +205,12 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     // SQL statement used to limit the features retrieved
     QString mSqlWhereClause;
 
+    bool mDisableInvalidGeometryHandling = false;
+
     // Sets the error messages
     void setLastError( const QString &error );
+
+    QSqlQuery createQuery() const;
 
     static void mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
     static QgsWkbTypes::Type getWkbType( const QString &wkbType );

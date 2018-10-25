@@ -18,7 +18,7 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
 
 QgsMapToolRegularPolygon2Points::QgsMapToolRegularPolygon2Points( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )
@@ -46,7 +46,7 @@ void QgsMapToolRegularPolygon2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e
     {
       if ( !mTempRubberBand )
       {
-        mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+        mTempRubberBand = createGeometryRubberBand( mLayerType, true );
         mTempRubberBand->show();
 
         createNumberSidesSpinBox();

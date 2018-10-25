@@ -5,6 +5,12 @@ services:
     environment:
       - ALLOW_IP_RANGE="172.18.0.0/16"
 
+  mssql:
+    image: microsoft/mssql-server-linux:2017-latest
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: <YourStrong!Passw0rd>
+
   qgis-deps:
     tty: true
     image: qgis/qgis3-build-deps:${DOCKER_TAG}
@@ -13,6 +19,7 @@ services:
       - $HOME/.ccache:/root/.ccache  # if changed, also change env var
     links:
       - postgres
+      - mssql
     environment:
       - CCACHE_DIR=/root/.ccache
       - CTEST_BUILD_DIR=/root/QGIS

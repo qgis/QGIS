@@ -18,15 +18,16 @@
 #ifndef QGSMESHDATAPROVIDER_H
 #define QGSMESHDATAPROVIDER_H
 
-#include "qgis_core.h"
-#include "qgspoint.h"
-#include "qgsrectangle.h"
-#include "qgsdataprovider.h"
-
 #include <QVector>
 #include <QString>
 #include <QMap>
 #include <limits>
+
+#include "qgis_core.h"
+#include "qgspoint.h"
+#include "qgsdataprovider.h"
+
+class QgsRectangle;
 
 /**
  * \ingroup core

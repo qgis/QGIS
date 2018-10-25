@@ -16,28 +16,13 @@
 #include "qgsflatterraingenerator.h"
 
 #include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DExtras/QPlaneGeometry>
 
 #include "qgs3dmapsettings.h"
 #include "qgschunknode_p.h"
 #include "qgsterrainentity_p.h"
-#include "qgsterraintileloader_p.h"
 #include "qgsterraintileentity_p.h"
 
 /// @cond PRIVATE
-
-//! Chunk loader for flat terrain implementation
-class FlatTerrainChunkLoader : public QgsTerrainTileLoader
-{
-  public:
-    //! Construct the loader for a node
-    FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *mNode );
-
-    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
-
-  private:
-    Qt3DExtras::QPlaneGeometry *mTileGeometry = nullptr;
-};
 
 
 //---------------
@@ -125,9 +110,9 @@ void QgsFlatTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) c
 void QgsFlatTerrainGenerator::writeXml( QDomElement &elem ) const
 {
   QgsRectangle r = mExtent;
-  QDomElement elemExtent = elem.ownerDocument().createElement( "extent" );
-  elemExtent.setAttribute( "xmin", QString::number( r.xMinimum() ) );
-  elemExtent.setAttribute( "xmax", QString::number( r.xMaximum() ) );
+  QDomElement elemExtent = elem.ownerDocument().createElement( QStringLiteral( "extent" ) );
+  elemExtent.setAttribute( QStringLiteral( "xmin" ), QString::number( r.xMinimum() ) );
+  elemExtent.setAttribute( QStringLiteral( "xmax" ), QString::number( r.xMaximum() ) );
   elemExtent.setAttribute( "ymin", QString::number( r.yMinimum() ) );
   elemExtent.setAttribute( "ymax", QString::number( r.yMaximum() ) );
 
@@ -136,9 +121,9 @@ void QgsFlatTerrainGenerator::writeXml( QDomElement &elem ) const
 
 void QgsFlatTerrainGenerator::readXml( const QDomElement &elem )
 {
-  QDomElement elemExtent = elem.firstChildElement( "extent" );
-  double xmin = elemExtent.attribute( "xmin" ).toDouble();
-  double xmax = elemExtent.attribute( "xmax" ).toDouble();
+  QDomElement elemExtent = elem.firstChildElement( QStringLiteral( "extent" ) );
+  double xmin = elemExtent.attribute( QStringLiteral( "xmin" ) ).toDouble();
+  double xmax = elemExtent.attribute( QStringLiteral( "xmax" ) ).toDouble();
   double ymin = elemExtent.attribute( "ymin" ).toDouble();
   double ymax = elemExtent.attribute( "ymax" ).toDouble();
 

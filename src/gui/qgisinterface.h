@@ -48,6 +48,7 @@ class QgsOptionsWidgetFactory;
 class QgsLocatorFilter;
 class QgsStatusBar;
 class QgsMeshLayer;
+class QgsBrowserModel;
 
 #include <QObject>
 #include <QFont>
@@ -528,37 +529,61 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QgsStatusBar *statusBarIface() = 0;
 
+    /**
+     * Take screenshots for user documentation
+     * @param saveDirectory path where the screenshots will be saved
+     * @param categories an int as a flag value of QgsAppScreenShots::Categories
+     * \since QGIS 3.4
+     */
+    virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) {Q_UNUSED( saveDirectory ); Q_UNUSED( categories );}
+
   public slots: // TODO: do these functions really need to be slots?
 
     /* Exposed functions */
 
-    //! Zoom to full extent of map layers
+    /**
+     * Zooms to the full extent of all map layers.
+     */
     virtual void zoomFull() = 0;
 
-    //! Zoom to previous view extent
+    /**
+     * Zooms to the previous view extent.
+     */
     virtual void zoomToPrevious() = 0;
 
-    //! Zoom to next view extent
+    /**
+     * Zooms to the next view extent.
+     */
     virtual void zoomToNext() = 0;
 
-    //! Zoom to extent of the active layer
+    /**
+     * Zooms to extent of the active layer.
+     */
     virtual void zoomToActiveLayer() = 0;
 
-    //! Add a vector layer
+    /**
+     * Adds a vector layer to the current project.
+     */
     virtual QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey ) = 0;
 
-    //! Add a raster layer given a raster layer file name
+    /**
+     * Adds a raster layer to the current project, given a raster layer file name.
+     */
     virtual QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName = QString() ) = 0;
 
-    //! Add a WMS layer
+    /**
+     * Adds a raster layer to the current project, from the specified raster data provider.
+     */
     virtual QgsRasterLayer *addRasterLayer( const QString &url, const QString &layerName, const QString &providerKey ) = 0;
 
-    //! Add a mesh layer
+    /**
+     * Adds a mesh layer to the current project.
+     */
     virtual QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 
-    //! Add a project
+    //! Adds (opens) a project
     virtual bool addProject( const QString &project ) = 0;
-    //! Start a blank project
+    //! Starts a new blank project
     virtual void newProject( bool promptToSaveFlag = false ) = 0;
 
     /**
@@ -677,7 +702,9 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void addToolBar( QToolBar *toolbar SIP_TRANSFER, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 
-    //! Open the message log dock widget *
+    /**
+     * Opens the message log dock widget.
+     */
     virtual void openMessageLog() = 0;
 
     //! Adds a widget to the user input tool bar.
@@ -749,10 +776,18 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Remove action from the Web menu
     virtual void removePluginWebMenu( const QString &name, QAction *action ) = 0;
 
-    //! Add a dock widget to the main window
+    /**
+     * Adds a \a dock widget to the main window, in the specified dock \a area.
+     *
+     * \see removeDockWidget()
+     */
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
 
-    //! Remove specified dock widget from main window (doesn't delete it).
+    /**
+     * Removes the specified \a dock widget from main window (without deleting it).
+     *
+     * \see addDockWidget()
+     */
     virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
 
     //! Open layer properties dialog
@@ -781,6 +816,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Register a new tab in the vector layer properties dialog.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
+     * \see QgsMapLayerConfigWidgetFactory
      * \see unregisterMapLayerConfigWidgetFactory()
      * \since QGIS 2.16
      */
@@ -788,6 +824,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Unregister a previously registered tab in the vector layer properties dialog.
+     * \see QgsMapLayerConfigWidgetFactory
      * \see registerMapLayerConfigWidgetFactory()
      * \since QGIS 2.16
     */
@@ -797,6 +834,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Register a new tab in the options dialog.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
+     * \see QgsOptionsWidgetFactory
      * \see unregisterOptionsWidgetFactory()
      * \since QGIS 3.0
      */
@@ -804,6 +842,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Unregister a previously registered tab in the options dialog.
+     * \see QgsOptionsWidgetFactory
      * \see registerOptionsWidgetFactory()
      * \since QGIS 3.0
     */
@@ -813,6 +852,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Register a new custom drop handler.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
+     * \see QgsCustomDropHandler
      * \see unregisterCustomDropHandler()
      * \since QGIS 3.0
      */
@@ -820,6 +860,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Unregister a previously registered custom drop handler.
+     * \see QgsCustomDropHandler
      * \see registerCustomDropHandler()
      * \since QGIS 3.0
      */
@@ -829,6 +870,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Register a new custom drop \a handler for layout windows.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
+     * \see QgsLayoutCustomDropHandler
      * \see unregisterCustomLayoutDropHandler()
      * \since QGIS 3.0
      */
@@ -836,6 +878,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Unregister a previously registered custom drop \a handler for layout windows.
+     * \see QgsLayoutCustomDropHandler
      * \see registerCustomLayoutDropHandler()
      * \since QGIS 3.0
      */
@@ -858,7 +901,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 SIP_DEPRECATED;
 
     /**
-     * Open feature form
+     * Opens a new feature form.
+     * Returns true if dialog was accepted (if shown modal, true otherwise).
      * \param l vector layer
      * \param f feature to show/modify
      * \param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
@@ -928,6 +972,13 @@ class GUI_EXPORT QgisInterface : public QObject
       * \since 3.0
       */
     virtual bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) = 0;
+
+    /**
+     * Returns the application browser model. Using this shared model is more efficient than
+     * creating a new browser model for every use.
+     * \since QGIS 3.4
+     */
+    virtual QgsBrowserModel *browserModel() = 0;
 
   signals:
 

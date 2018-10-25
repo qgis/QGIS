@@ -20,6 +20,7 @@
 #include "qgsauxiliarystorage.h"
 
 #include <QMessageBox>
+#include <QPushButton>
 
 QgsNewAuxiliaryLayerDialog::QgsNewAuxiliaryLayerDialog( QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )
@@ -30,6 +31,11 @@ QgsNewAuxiliaryLayerDialog::QgsNewAuxiliaryLayerDialog( QgsVectorLayer *layer, Q
   const QgsFields fields = mLayer->fields();
   for ( const QgsField &field : fields )
     comboBox->addItem( field.name() );
+
+  if ( fields.isEmpty() )
+  {
+    buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  }
 }
 
 void QgsNewAuxiliaryLayerDialog::accept()

@@ -22,8 +22,8 @@
 #include "qgsattributedialog.h"
 #include "qgisapp.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsmapmouseevent.h"
 
-#include <QMouseEvent>
 #include <limits>
 
 QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas *canvas )

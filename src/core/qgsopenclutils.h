@@ -19,8 +19,12 @@
 #define SIP_NO_FILE
 
 #define CL_HPP_ENABLE_EXCEPTIONS
+// Set target version to 1.10 because it's the best compromise
+// between features and compatibility with "older" graphics
+// cards
 #define CL_HPP_MINIMUM_OPENCL_VERSION 110
 #define CL_HPP_TARGET_OPENCL_VERSION 110
+#define CL_TARGET_OPENCL_VERSION 110
 #include <CL/cl2.hpp>
 
 #include "qgis_core.h"

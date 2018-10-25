@@ -9,6 +9,9 @@
 
 
 
+
+
+
 class QgsXmlUtils
 {
 %Docstring
@@ -67,6 +70,7 @@ Supported types are
 %Docstring
 Read a QVariant from a QDomElement.
 %End
+
 };
 
 

@@ -15,6 +15,8 @@
 
 #include "qgsline3dsymbol.h"
 
+#include "qgs3dutils.h"
+
 QgsAbstract3DSymbol *QgsLine3DSymbol::clone() const
 {
   return new QgsLine3DSymbol( *this );
@@ -31,7 +33,7 @@ void QgsLine3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elemDataProperties.setAttribute( QStringLiteral( "alt-binding" ), Qgs3DUtils::altBindingToString( mAltBinding ) );
   elemDataProperties.setAttribute( QStringLiteral( "height" ), mHeight );
   elemDataProperties.setAttribute( QStringLiteral( "extrusion-height" ), mExtrusionHeight );
-  elemDataProperties.setAttribute( QStringLiteral( "simple-lines" ), mRenderAsSimpleLines ? "1" : "0" );
+  elemDataProperties.setAttribute( QStringLiteral( "simple-lines" ), mRenderAsSimpleLines ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemDataProperties.setAttribute( QStringLiteral( "width" ), mWidth );
   elem.appendChild( elemDataProperties );
 
@@ -50,7 +52,7 @@ void QgsLine3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mHeight = elemDataProperties.attribute( QStringLiteral( "height" ) ).toFloat();
   mExtrusionHeight = elemDataProperties.attribute( QStringLiteral( "extrusion-height" ) ).toFloat();
   mWidth = elemDataProperties.attribute( QStringLiteral( "width" ) ).toFloat();
-  mRenderAsSimpleLines = elemDataProperties.attribute( QStringLiteral( "simple-lines" ), "0" ).toInt();
+  mRenderAsSimpleLines = elemDataProperties.attribute( QStringLiteral( "simple-lines" ), QStringLiteral( "0" ) ).toInt();
 
   QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
   mMaterial.readXml( elemMaterial );

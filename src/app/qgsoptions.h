@@ -272,7 +272,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void updateActionsForCurrentColorScheme( QgsColorScheme *scheme );
 
-
+    friend class QgsAppScreenShots;
 };
 
 #endif // #ifndef QGSOPTIONS_H

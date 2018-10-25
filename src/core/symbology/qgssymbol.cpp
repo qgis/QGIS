@@ -13,34 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssymbol.h"
-#include "qgssymbollayer.h"
-
-#include "qgslinesymbollayer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsmaptopixelgeometrysimplifier.h"
-
-#include "qgslogger.h"
-#include "qgsrendercontext.h" // for bigSymbolPreview
-
-#include "qgsproject.h"
-#include "qgsstyle.h"
-#include "qgspainteffect.h"
-#include "qgseffectstack.h"
-
-#include "qgsvectorlayer.h"
-
-#include "qgsgeometry.h"
-#include "qgsmultipoint.h"
-#include "qgsgeometrycollection.h"
-#include "qgslinestring.h"
-#include "qgspolygon.h"
-#include "qgsclipper.h"
-#include "qgsproperty.h"
-#include "qgscolorschemeregistry.h"
-
 #include <QColor>
 #include <QImage>
 #include <QPainter>
@@ -50,6 +22,31 @@
 #include <cmath>
 #include <map>
 #include <random>
+
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+
+#include "qgslinesymbollayer.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgslogger.h"
+#include "qgsrendercontext.h" // for bigSymbolPreview
+#include "qgsproject.h"
+#include "qgsstyle.h"
+#include "qgspainteffect.h"
+#include "qgseffectstack.h"
+#include "qgsvectorlayer.h"
+#include "qgsfeature.h"
+#include "qgsgeometry.h"
+#include "qgsmultipoint.h"
+#include "qgsgeometrycollection.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
+#include "qgsclipper.h"
+#include "qgsproperty.h"
+#include "qgscolorschemeregistry.h"
 
 inline
 QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )
@@ -304,7 +301,7 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
         s = qgis::make_unique< QgsFillSymbol >();
         break;
       default:
-        QgsDebugMsg( "unknown layer's geometry type" );
+        QgsDebugMsg( QStringLiteral( "unknown layer's geometry type" ) );
         return nullptr;
     }
   }
@@ -466,6 +463,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
   QgsRenderContext context = customContext ? *customContext : QgsRenderContext::fromQPainter( painter );
   context.setForceVectorOutput( true );
   QgsSymbolRenderContext symbolContext( context, outputUnit(), mOpacity, false, mRenderHints, nullptr, QgsFields(), mapUnitScale() );
+  symbolContext.setOriginalGeometryType( mType == Fill ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::UnknownGeometry );
 
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
@@ -797,7 +795,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     {
       if ( mType != QgsSymbol::Marker )
       {
-        QgsDebugMsg( "point can be drawn only with marker symbol!" );
+        QgsDebugMsg( QStringLiteral( "point can be drawn only with marker symbol!" ) );
         break;
       }
 
@@ -823,7 +821,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     {
       if ( mType != QgsSymbol::Line )
       {
-        QgsDebugMsg( "linestring can be drawn only with line symbol!" );
+        QgsDebugMsg( QStringLiteral( "linestring can be drawn only with line symbol!" ) );
         break;
       }
       const QgsCurve &curve = dynamic_cast<const QgsCurve &>( *segmentizedGeometry.constGet() );
@@ -843,13 +841,13 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       QList<QPolygonF> holes;
       if ( mType != QgsSymbol::Fill )
       {
-        QgsDebugMsg( "polygon can be drawn only with fill symbol!" );
+        QgsDebugMsg( QStringLiteral( "polygon can be drawn only with fill symbol!" ) );
         break;
       }
       const QgsPolygon &polygon = dynamic_cast<const QgsPolygon &>( *segmentizedGeometry.constGet() );
       if ( !polygon.exteriorRing() )
       {
-        QgsDebugMsg( "cannot render polygon with no exterior ring" );
+        QgsDebugMsg( QStringLiteral( "cannot render polygon with no exterior ring" ) );
         break;
       }
       _getPolygon( pts, holes, context, polygon, !tileMapRendering && clipFeaturesToExtent() );
@@ -871,7 +869,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     {
       if ( mType != QgsSymbol::Marker )
       {
-        QgsDebugMsg( "multi-point can be drawn only with marker symbol!" );
+        QgsDebugMsg( QStringLiteral( "multi-point can be drawn only with marker symbol!" ) );
         break;
       }
 
@@ -905,7 +903,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     {
       if ( mType != QgsSymbol::Line )
       {
-        QgsDebugMsg( "multi-linestring can be drawn only with line symbol!" );
+        QgsDebugMsg( QStringLiteral( "multi-linestring can be drawn only with line symbol!" ) );
         break;
       }
 
@@ -943,7 +941,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     {
       if ( mType != QgsSymbol::Fill )
       {
-        QgsDebugMsg( "multi-polygon can be drawn only with fill symbol!" );
+        QgsDebugMsg( QStringLiteral( "multi-polygon can be drawn only with fill symbol!" ) );
         break;
       }
 
@@ -1017,7 +1015,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       FALLTHROUGH
     }
     default:
-      QgsDebugMsg( QString( "feature %1: unsupported wkb type %2/%3 for rendering" )
+      QgsDebugMsg( QStringLiteral( "feature %1: unsupported wkb type %2/%3 for rendering" )
                    .arg( feature.id() )
                    .arg( QgsWkbTypes::displayString( geom.constGet()->wkbType() ) )
                    .arg( geom.wkbType(), 0, 16 ) );

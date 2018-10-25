@@ -76,7 +76,7 @@ void QgsMacNative::currentAppActivateIgnoringOtherApps()
 
 void QgsMacNative::openFileExplorerAndSelectFile( const QString &path )
 {
-  NSString *pathStr = [[NSString alloc] initWithUTF8String:path.toUtf8().data()];
+  NSString *pathStr = [[NSString alloc] initWithUTF8String:path.toUtf8().constData()];
   NSArray *fileURLs = [NSArray arrayWithObjects:[NSURL fileURLWithPath:pathStr], nil];
   [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:fileURLs];
 }
@@ -117,4 +117,9 @@ QgsNative::NotificationResult QgsMacNative::showDesktopNotification( const QStri
   NotificationResult result;
   result.successful = true;
   return result;
+}
+
+bool QgsMacNative::hasDarkTheme()
+{
+  return ( NSApp.effectiveAppearance.name != NSAppearanceNameAqua );
 }

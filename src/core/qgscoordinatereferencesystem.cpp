@@ -202,7 +202,7 @@ bool QgsCoordinateReferenceSystem::createFromId( const long id, CrsType type )
       break;
     default:
       //THIS IS BAD...THIS PART OF CODE SHOULD NEVER BE REACHED...
-      QgsDebugMsg( "Unexpected case reached!" );
+      QgsDebugMsg( QStringLiteral( "Unexpected case reached!" ) );
   };
   return result;
 }
@@ -306,11 +306,11 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix()
     if ( strcmp( configNew, CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) != 0 )
       QgsLogger::warning( QStringLiteral( "GDAL_FIX_ESRI_WKT could not be set to %1 : %2" )
                           .arg( configNew, CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) );
-    QgsDebugMsgLevel( QString( "set GDAL_FIX_ESRI_WKT : %1" ).arg( configNew ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "set GDAL_FIX_ESRI_WKT : %1" ).arg( configNew ), 4 );
   }
   else
   {
-    QgsDebugMsgLevel( QString( "GDAL_FIX_ESRI_WKT was already set : %1" ).arg( configNew ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "GDAL_FIX_ESRI_WKT was already set : %1" ).arg( configNew ), 4 );
   }
 }
 
@@ -498,7 +498,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
 
   QString mySql = "select srs_id,description,projection_acronym,"
                   "ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo "
-                  "from tbl_srs where " + expression + '=' + quotedValue( value ) + " order by deprecated";
+                  "from tbl_srs where " + expression + '=' + QgsSqliteUtils::quotedString( value ) + " order by deprecated";
   statement = database.prepare( mySql, myResult );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK && statement.step() == SQLITE_ROW )
@@ -585,7 +585,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 
   if ( wkt.isEmpty() )
   {
-    QgsDebugMsgLevel( "theWkt is uninitialized, operation failed", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "theWkt is uninitialized, operation failed" ), 4 );
     return d->mIsValid;
   }
   QByteArray ba = wkt.toLatin1();
@@ -595,11 +595,11 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 
   if ( myInputResult != OGRERR_NONE )
   {
-    QgsDebugMsg( "\n---------------------------------------------------------------" );
-    QgsDebugMsg( "This CRS could *** NOT *** be set from the supplied Wkt " );
+    QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
+    QgsDebugMsg( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ) );
     QgsDebugMsg( "INPUT: " + wkt );
-    QgsDebugMsg( QString( "UNUSED WKT: %1" ).arg( pWkt ) );
-    QgsDebugMsg( "---------------------------------------------------------------\n" );
+    QgsDebugMsg( QStringLiteral( "UNUSED WKT: %1" ).arg( pWkt ) );
+    QgsDebugMsg( QStringLiteral( "---------------------------------------------------------------\n" ) );
 
     sCRSWktLock.lockForWrite();
     sWktCache.insert( wkt, *this );
@@ -729,7 +729,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
    * We try to match the proj string to and srsid using the following logic:
    * - perform a whole text search on proj4 string (if not null)
    */
-  myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( myProj4String ) + " order by deprecated" );
+  myRecord = getRecord( "select * from tbl_srs where parameters=" + QgsSqliteUtils::quotedString( myProj4String ) + " order by deprecated" );
   if ( myRecord.empty() )
   {
     // Ticket #722 - aaronr
@@ -763,8 +763,8 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
       myStart2 = 0;
       myStart2 = myLat2RegExp.indexIn( proj4String, myStart2 );
       proj4StringModified.replace( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN, lat1Str );
-      QgsDebugMsgLevel( "trying proj4string match with swapped lat_1,lat_2", 4 );
-      myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( proj4StringModified.trimmed() ) + " order by deprecated" );
+      QgsDebugMsgLevel( QStringLiteral( "trying proj4string match with swapped lat_1,lat_2" ), 4 );
+      myRecord = getRecord( "select * from tbl_srs where parameters=" + QgsSqliteUtils::quotedString( proj4StringModified.trimmed() ) + " order by deprecated" );
     }
   }
 
@@ -785,7 +785,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
     QStringList myParams;
     Q_FOREACH ( const QString &param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
     {
-      QString arg = QStringLiteral( "' '||parameters||' ' LIKE %1" ).arg( quotedValue( QStringLiteral( "% %1 %" ).arg( param.trimmed() ) ) );
+      QString arg = QStringLiteral( "' '||parameters||' ' LIKE %1" ).arg( QgsSqliteUtils::quotedString( QStringLiteral( "% %1 %" ).arg( param.trimmed() ) ) );
       if ( param.startsWith( QLatin1String( "+datum=" ) ) )
       {
         datum = arg;
@@ -855,7 +855,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   // if we failed to look up the projection in database, don't worry. we can still use it :)
   if ( !d->mIsValid )
   {
-    QgsDebugMsgLevel( "Projection is not found in databases.", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Projection is not found in databases." ), 4 );
     //setProj4String will set mIsValidFlag to true if there is no issue
     setProj4String( myProj4String );
   }
@@ -908,7 +908,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     }
     if ( statement.step() != SQLITE_DONE )
     {
-      QgsDebugMsgLevel( "Multiple records found in srs.db", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Multiple records found in srs.db" ), 4 );
       myMap.clear();
     }
   }
@@ -924,7 +924,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     myFileInfo.setFile( myDatabaseFileName );
     if ( !myFileInfo.exists() )
     {
-      QgsDebugMsg( "user qgis.db not found" );
+      QgsDebugMsg( QStringLiteral( "user qgis.db not found" ) );
       return myMap;
     }
 
@@ -950,7 +950,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
 
       if ( statement.step() != SQLITE_DONE )
       {
-        QgsDebugMsgLevel( "Multiple records found in srs.db", 4 );
+        QgsDebugMsgLevel( QStringLiteral( "Multiple records found in srs.db" ), 4 );
         myMap.clear();
       }
     }
@@ -1128,7 +1128,7 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
   projPJ proj = pj_init_plus_ctx( pContext, proj4String.trimmed().toLatin1().constData() );
   if ( !proj )
   {
-    QgsDebugMsgLevel( "proj.4 string rejected by pj_init_plus_ctx()", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "proj.4 string rejected by pj_init_plus_ctx()" ), 4 );
     d->mIsValid = false;
   }
   else
@@ -1234,8 +1234,8 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
   // needed to populate the list
   QString mySql = QString( "select srs_id,parameters from tbl_srs where "
                            "projection_acronym=%1 and ellipsoid_acronym=%2 order by deprecated" )
-                  .arg( quotedValue( d->mProjectionAcronym ),
-                        quotedValue( d->mEllipsoidAcronym ) );
+                  .arg( QgsSqliteUtils::quotedString( d->mProjectionAcronym ),
+                        QgsSqliteUtils::quotedString( d->mEllipsoidAcronym ) );
   // Get the full path name to the sqlite3 spatial reference database.
   QString myDatabaseFileName = QgsApplication::srsDatabaseFilePath();
 
@@ -1496,7 +1496,7 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int srsId )
     myFileInfo.setFile( myDatabaseFileName );
     if ( !myFileInfo.exists() ) //its unlikely that this condition will ever be reached
     {
-      QgsDebugMsg( "users qgis.db not found" );
+      QgsDebugMsg( QStringLiteral( "users qgis.db not found" ) );
       return QString();
     }
   }
@@ -1562,7 +1562,7 @@ CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::customCrsValidation()
 
 void QgsCoordinateReferenceSystem::debugPrint()
 {
-  QgsDebugMsg( "***SpatialRefSystem***" );
+  QgsDebugMsg( QStringLiteral( "***SpatialRefSystem***" ) );
   QgsDebugMsg( "* Valid : " + ( d->mIsValid ? QString( "true" ) : QString( "false" ) ) );
   QgsDebugMsg( "* SrsId : " + QString::number( d->mSrsId ) );
   QgsDebugMsg( "* Proj4 : " + toProj4() );
@@ -1570,15 +1570,15 @@ void QgsCoordinateReferenceSystem::debugPrint()
   QgsDebugMsg( "* Desc. : " + d->mDescription );
   if ( mapUnits() == QgsUnitTypes::DistanceMeters )
   {
-    QgsDebugMsg( "* Units : meters" );
+    QgsDebugMsg( QStringLiteral( "* Units : meters" ) );
   }
   else if ( mapUnits() == QgsUnitTypes::DistanceFeet )
   {
-    QgsDebugMsg( "* Units : feet" );
+    QgsDebugMsg( QStringLiteral( "* Units : feet" ) );
   }
   else if ( mapUnits() == QgsUnitTypes::DistanceDegrees )
   {
-    QgsDebugMsg( "* Units : degrees" );
+    QgsDebugMsg( QStringLiteral( "* Units : degrees" ) );
   }
 }
 
@@ -1600,7 +1600,7 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
 {
   if ( !d->mIsValid )
   {
-    QgsDebugMsgLevel( "Can't save an invalid CRS!", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Can't save an invalid CRS!" ), 4 );
     return -1;
   }
 
@@ -1612,6 +1612,10 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
     proj4String = toProj4();
   }
 
+  // ellipsoid acroynym column is incorrect marked as not null in many crs database instances,
+  // hack around this by using an empty string instead
+  const QString quotedEllipsoidString = ellipsoidAcronym().isNull() ? "''" : QgsSqliteUtils::quotedString( ellipsoidAcronym() );
+
   //if this is the first record we need to ensure that its srs_id is 10000. For
   //any rec after that sqlite3 will take care of the autonumbering
   //this was done to support sqlite 3.0 as it does not yet support
@@ -1620,19 +1624,19 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
   {
     mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
             + QString::number( USER_CRS_START_ID )
-            + ',' + quotedValue( name )
-            + ',' + quotedValue( projectionAcronym() )
-            + ',' + quotedValue( ellipsoidAcronym() )
-            + ',' + quotedValue( toProj4() )
+            + ',' + QgsSqliteUtils::quotedString( name )
+            + ',' + QgsSqliteUtils::quotedString( projectionAcronym() )
+            + ',' + quotedEllipsoidString
+            + ',' + QgsSqliteUtils::quotedString( toProj4() )
             + ",0)"; // <-- is_geo shamelessly hard coded for now
   }
   else
   {
     mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
-            + quotedValue( name )
-            + ',' + quotedValue( projectionAcronym() )
-            + ',' + quotedValue( ellipsoidAcronym() )
-            + ',' + quotedValue( toProj4() )
+            + QgsSqliteUtils::quotedString( name )
+            + ',' + QgsSqliteUtils::quotedString( projectionAcronym() )
+            + ',' + quotedEllipsoidString
+            + ',' + QgsSqliteUtils::quotedString( toProj4() )
             + ",0)"; // <-- is_geo shamelessly hard coded for now
   }
   sqlite3_database_unique_ptr database;
@@ -1642,7 +1646,7 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
   myResult = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open or create database %1: %2" )
+    QgsDebugMsg( QStringLiteral( "Can't open or create database %1: %2" )
                  .arg( QgsApplication::qgisUserDatabaseFilePath(),
                        database.errorMessage() ) );
     return false;
@@ -1690,7 +1694,7 @@ long QgsCoordinateReferenceSystem::getRecordCount()
   myResult = database.open_v2( QgsApplication::qgisUserDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( database.errorMessage() ) );
+    QgsDebugMsg( QStringLiteral( "Can't open database: %1" ).arg( database.errorMessage() ) );
     return 0;
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
@@ -1705,12 +1709,6 @@ long QgsCoordinateReferenceSystem::getRecordCount()
     }
   }
   return myRecordCount;
-}
-
-QString QgsCoordinateReferenceSystem::quotedValue( QString value )
-{
-  value.replace( '\'', QLatin1String( "''" ) );
-  return value.prepend( '\'' ).append( '\'' );
 }
 
 // adapted from gdal/ogr/ogr_srs_dict.cpp
@@ -1951,8 +1949,8 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       {
         errMsg = nullptr;
         sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1,description=%2,deprecated=%3 WHERE auth_name='EPSG' AND auth_id=%4" )
-              .arg( quotedValue( proj4 ) )
-              .arg( quotedValue( name ) )
+              .arg( QgsSqliteUtils::quotedString( proj4 ) )
+              .arg( QgsSqliteUtils::quotedString( name ) )
               .arg( deprecated ? 1 : 0 )
               .arg( it.key() );
 
@@ -1977,7 +1975,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       QRegExp projRegExp( "\\+proj=(\\S+)" );
       if ( projRegExp.indexIn( proj4 ) < 0 )
       {
-        QgsDebugMsgLevel( QString( "EPSG %1: no +proj argument found [%2]" ).arg( it.key() ).arg( proj4 ), 4 );
+        QgsDebugMsgLevel( QStringLiteral( "EPSG %1: no +proj argument found [%2]" ).arg( it.key() ).arg( proj4 ), 4 );
         continue;
       }
 
@@ -1987,12 +1985,21 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       {
         ellps = ellipseRegExp.cap( 1 );
       }
+      else
+      {
+        // satisfy not null constraint on ellipsoid_acronym field
+        // possibly we should drop the constraint, yet the crses with missing ellipsoid_acronym are malformed
+        // and will result in oddities within other areas of QGIS (e.g. project ellipsoid won't be correctly
+        // set for these CRSes). Better just hack around and make the constraint happy for now,
+        // and hope that the definitions get corrected in future.
+        ellps = "";
+      }
 
       sql = QStringLiteral( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) VALUES (%1,%2,%3,%4,%5,'EPSG',%5,%6,%7)" )
-            .arg( quotedValue( name ),
-                  quotedValue( projRegExp.cap( 1 ) ),
-                  quotedValue( ellps ),
-                  quotedValue( proj4 ) )
+            .arg( QgsSqliteUtils::quotedString( name ),
+                  QgsSqliteUtils::quotedString( projRegExp.cap( 1 ) ),
+                  QgsSqliteUtils::quotedString( ellps ),
+                  QgsSqliteUtils::quotedString( proj4 ) )
             .arg( it.key() )
             .arg( OSRIsGeographic( crs ) )
             .arg( deprecated ? 1 : 0 );
@@ -2081,9 +2088,9 @@ int QgsCoordinateReferenceSystem::syncDatabase()
           if ( proj4 != params )
           {
             sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1 WHERE auth_name=%2 AND auth_id=%3" )
-                  .arg( quotedValue( proj4 ),
-                        quotedValue( auth_name ),
-                        quotedValue( auth_id ) );
+                  .arg( QgsSqliteUtils::quotedString( proj4 ),
+                        QgsSqliteUtils::quotedString( auth_name ),
+                        QgsSqliteUtils::quotedString( auth_id ) );
 
             if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) == SQLITE_OK )
             {
@@ -2103,12 +2110,12 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         }
         else
         {
-          QgsDebugMsgLevel( QString( "could not retrieve proj string for %1 from PROJ" ).arg( input ), 4 );
+          QgsDebugMsgLevel( QStringLiteral( "could not retrieve proj string for %1 from PROJ" ).arg( input ), 4 );
         }
       }
       else
       {
-        QgsDebugMsgLevel( QString( "could not retrieve crs for %1 from PROJ" ).arg( input ), 3 );
+        QgsDebugMsgLevel( QStringLiteral( "could not retrieve crs for %1 from PROJ" ).arg( input ), 3 );
       }
 
       pj_free( pj );
@@ -2291,7 +2298,7 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
       int idx = map[i].idx;
       Q_ASSERT( idx != -1 );
       Q_ASSERT( idx < n );
-      v.insert( i, *values[ idx ] ? quotedValue( values[idx] ) : QStringLiteral( "NULL" ) );
+      v.insert( i, *values[ idx ] ? QgsSqliteUtils::quotedString( values[idx] ) : QStringLiteral( "NULL" ) );
     }
     CSLDestroy( values );
 

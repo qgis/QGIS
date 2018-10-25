@@ -454,15 +454,6 @@ error:
   return false;
 }
 
-QString QgsSpatiaLiteConnection::quotedValue( QString value ) const
-{
-  if ( value.isNull() )
-    return QStringLiteral( "NULL" );
-
-  value.replace( '\'', QLatin1String( "''" ) );
-  return value.prepend( '\'' ).append( '\'' );
-}
-
 bool QgsSpatiaLiteConnection::checkGeometryColumnsAuth( sqlite3 *handle )
 {
   int ret;
@@ -624,8 +615,8 @@ bool QgsSpatiaLiteConnection::isDeclaredHidden( sqlite3 *handle, const QString &
     return false;
   // checking if some Layer has been declared as HIDDEN
   QString sql = QString( "SELECT hidden FROM geometry_columns_auth"
-                         " WHERE f_table_name=%1 and f_geometry_column=%2" ).arg( quotedValue( table ),
-                             quotedValue( geom ) );
+                         " WHERE f_table_name=%1 and f_geometry_column=%2" ).arg( QgsSqliteUtils::quotedString( table ),
+                             QgsSqliteUtils::quotedString( geom ) );
 
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
@@ -701,17 +692,17 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
 
   if ( shared && sHandles.contains( dbPath ) )
   {
-    QgsDebugMsg( QString( "Using cached connection for %1" ).arg( dbPath ) );
+    QgsDebugMsg( QStringLiteral( "Using cached connection for %1" ).arg( dbPath ) );
     sHandles[dbPath]->ref++;
     return sHandles[dbPath];
   }
 
-  QgsDebugMsg( QString( "New sqlite connection for " ) + dbPath );
+  QgsDebugMsg( QStringLiteral( "New sqlite connection for " ) + dbPath );
   spatialite_database_unique_ptr database;
   if ( database.open_v2( dbPath, shared ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, nullptr ) )
   {
     // failure
-    QgsDebugMsg( QString( "Failure while connecting to: %1\n%2" )
+    QgsDebugMsg( QStringLiteral( "Failure while connecting to: %1\n%2" )
                  .arg( dbPath,
                        QString::fromUtf8( sqlite3_errmsg( database.get() ) ) ) );
     return nullptr;
@@ -721,13 +712,13 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
   if ( !checkMetadata( database.get() ) )
   {
     // failure
-    QgsDebugMsg( QString( "Failure while connecting to: %1\n\ninvalid metadata tables" ).arg( dbPath ) );
+    QgsDebugMsg( QStringLiteral( "Failure while connecting to: %1\n\ninvalid metadata tables" ).arg( dbPath ) );
     return nullptr;
   }
   // activating Foreign Key constraints
   ( void )sqlite3_exec( database.get(), "PRAGMA foreign_keys = 1", nullptr, nullptr, nullptr );
 
-  QgsDebugMsg( "Connection to the database was successful" );
+  QgsDebugMsg( QStringLiteral( "Connection to the database was successful" ) );
 
   QgsSqliteHandle *handle = new QgsSqliteHandle( std::move( database ), dbPath, shared );
   if ( shared )

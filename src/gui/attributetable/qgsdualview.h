@@ -198,6 +198,12 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     QString sortExpression() const;
 
+    /**
+     * The config used for the attribute table.
+     * \returns The config used for the attribute table.
+     */
+    QgsAttributeTableConfig attributeTableConfig() const;
+
   public slots:
 
     /**

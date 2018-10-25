@@ -132,6 +132,15 @@ class CORE_EXPORT QgsError
      */
     QList<QgsErrorMessage> messageList() const { return mMessageList; }
 
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsError: %1>" ).arg( sipCpp->message( QgsErrorMessage::Text ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   private:
     //! List of messages
     QList<QgsErrorMessage> mMessageList;

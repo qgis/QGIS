@@ -172,8 +172,6 @@ class DBConnector(object):
             raise ConnectionError(e)
 
         except self.execution_error_types() as e:
-            # do the rollback to avoid a "current transaction aborted, commands ignored" errors
-            self._rollback()
             raise DbError(e)
 
     def _get_cursor_columns(self, c):

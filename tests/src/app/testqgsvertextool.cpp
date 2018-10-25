@@ -21,7 +21,7 @@
 #include "qgsmapcanvassnappingutils.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-
+#include "qgsmapmouseevent.h"
 #include "vertextool/qgsvertextool.h"
 
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )

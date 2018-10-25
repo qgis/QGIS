@@ -82,12 +82,12 @@ QgsRectangle QgsMapToolSelectUtils::expandSelectRectangle( QgsPointXY mapPoint, 
 
   const QgsMapToPixel *transform = canvas->getCoordinateTransform();
   QgsPointXY point = transform->transform( mapPoint );
-  QgsPointXY ll = transform->toMapCoordinates( point.x() - boxSize, point.y() + boxSize );
-  QgsPointXY ur = transform->toMapCoordinates( point.x() + boxSize, point.y() - boxSize );
+  QgsPointXY ll = transform->toMapCoordinates( static_cast<int>( point.x() - boxSize ), static_cast<int>( point.y() + boxSize ) );
+  QgsPointXY ur = transform->toMapCoordinates( static_cast<int>( point.x() + boxSize ), static_cast<int>( point.y() - boxSize ) );
   return QgsRectangle( ll, ur );
 }
 
-void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers )
+void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qt::KeyboardModifiers modifiers )
 {
   QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
   if ( modifiers & Qt::ShiftModifier && modifiers & Qt::ControlModifier )
@@ -101,7 +101,7 @@ void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const 
   setSelectedFeatures( canvas, selectGeometry, behavior, doContains );
 }
 
-void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers )
+void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qt::KeyboardModifiers modifiers )
 {
   QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
   if ( !vlayer )
@@ -215,7 +215,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   {
     Q_UNUSED( cse );
     // catch exception for 'invalid' point and leave existing selection unchanged
-    QgsDebugMsg( "Caught CRS exception " );
+    QgsDebugMsg( QStringLiteral( "Caught CRS exception " ) );
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "CRS Exception" ),
       QObject::tr( "Selection extends beyond layer's coordinate system" ),
@@ -243,7 +243,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   if ( r )
     request.setSubsetOfAttributes( r->usedAttributes( context ), vlayer->fields() );
   else
-    request.setSubsetOfAttributes( QgsAttributeList() );
+    request.setNoAttributes();
 
   QgsFeatureIterator fit = vlayer->getFeatures( request );
 

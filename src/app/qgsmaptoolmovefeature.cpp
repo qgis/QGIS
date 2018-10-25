@@ -25,9 +25,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertools.h"
 #include "qgssnapindicator.h"
+#include "qgsmapmouseevent.h"
 
 #include <QMessageBox>
-#include <QMouseEvent>
 #include <QSettings>
 #include <limits>
 
@@ -86,7 +86,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     if ( vlayer->selectedFeatureCount() == 0 )
     {
-      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setSubsetOfAttributes( QgsAttributeList() ) );
+      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setNoAttributes() );
 
       //find the closest feature
       QgsGeometry pointGeometry = QgsGeometry::fromPointXY( layerCoords );
@@ -131,7 +131,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       mRubberBand = createRubberBand( vlayer->geometryType() );
       QgsFeature feat;
-      QgsFeatureIterator it = vlayer->getSelectedFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+      QgsFeatureIterator it = vlayer->getSelectedFeatures( QgsFeatureRequest().setNoAttributes() );
 
       bool allFeaturesInView = true;
       QgsRectangle viewRect = mCanvas->mapSettings().mapToLayerCoordinates( vlayer, mCanvas->extent() );

@@ -423,10 +423,10 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
       else  // full index strategy
         loc->init();
 
-      QgsDebugMsg( QString( "Index init: %1 ms (%2)" ).arg( tt.elapsed() ).arg( vl->id() ) );
+      QgsDebugMsg( QStringLiteral( "Index init: %1 ms (%2)" ).arg( tt.elapsed() ).arg( vl->id() ) );
       prepareIndexProgress( ++i );
     }
-    QgsDebugMsg( QString( "Prepare index total: %1 ms" ).arg( t.elapsed() ) );
+    QgsDebugMsg( QStringLiteral( "Prepare index total: %1 ms" ).arg( t.elapsed() ) );
   }
   mIsIndexing = false;
 }

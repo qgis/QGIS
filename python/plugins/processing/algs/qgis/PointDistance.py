@@ -101,7 +101,7 @@ class PointDistance(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.MATRIX_TYPE,
                                                      self.tr('Output matrix type'), options=self.mat_types, defaultValue=0))
         self.addParameter(QgsProcessingParameterNumber(self.NEAREST_POINTS,
-                                                       self.tr('Use only the nearest (k) target points'), type=QgsProcessingParameterNumber.Integer, minValue=0, maxValue=9999, defaultValue=0))
+                                                       self.tr('Use only the nearest (k) target points'), type=QgsProcessingParameterNumber.Integer, minValue=0, defaultValue=0))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Distance matrix'), QgsProcessing.TypeVectorPoint))
 

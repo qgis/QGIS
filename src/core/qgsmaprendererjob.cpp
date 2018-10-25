@@ -140,7 +140,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
         QgsRectangle extent1 = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
         QgsRectangle extent2 = ct.transformBoundingBox( extent1, QgsCoordinateTransform::ForwardTransform );
 
-        QgsDebugMsgLevel( QString( "\n0:%1 %2x%3\n1:%4\n2:%5 %6x%7 (w:%8 h:%9)" )
+        QgsDebugMsgLevel( QStringLiteral( "\n0:%1 %2x%3\n1:%4\n2:%5 %6x%7 (w:%8 h:%9)" )
                           .arg( extent.toString() ).arg( extent.width() ).arg( extent.height() )
                           .arg( extent1.toString(), extent2.toString() ).arg( extent2.width() ).arg( extent2.height() )
                           .arg( std::fabs( 1.0 - extent2.width() / extent.width() ) )
@@ -167,11 +167,11 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
         QgsPointXY ur = ct.transform( extent.xMaximum(), extent.yMaximum(),
                                       QgsCoordinateTransform::ReverseTransform );
 
-        QgsDebugMsgLevel( QString( "in:%1 (ll:%2 ur:%3)" ).arg( extent.toString(), ll.toString(), ur.toString() ), 4 );
+        QgsDebugMsgLevel( QStringLiteral( "in:%1 (ll:%2 ur:%3)" ).arg( extent.toString(), ll.toString(), ur.toString() ), 4 );
 
         extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
 
-        QgsDebugMsgLevel( QString( "out:%1 (w:%2 h:%3)" ).arg( extent.toString() ).arg( extent.width() ).arg( extent.height() ), 4 );
+        QgsDebugMsgLevel( QStringLiteral( "out:%1 (w:%2 h:%3)" ).arg( extent.toString() ).arg( extent.width() ).arg( extent.height() ), 4 );
 
         if ( ll.x() > ur.x() )
         {
@@ -208,7 +208,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
-    QgsDebugMsg( "Transform error caught" );
+    QgsDebugMsg( QStringLiteral( "Transform error caught" ) );
     extent = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
     r2     = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
   }
@@ -228,7 +228,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
   {
     bool cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
     Q_UNUSED( cacheValid );
-    QgsDebugMsgLevel( QString( "CACHE VALID: %1" ).arg( cacheValid ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "CACHE VALID: %1" ).arg( cacheValid ), 4 );
   }
 
   bool requiresLabelRedraw = !( mCache && mCache->hasCacheImage( LABEL_CACHE_ID ) );
@@ -237,7 +237,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
   {
     QgsMapLayer *ml = li.previous();
 
-    QgsDebugMsgLevel( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  blendmode:%5" )
+    QgsDebugMsgLevel( QStringLiteral( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  blendmode:%5" )
                       .arg( ml->name() )
                       .arg( ml->minimumScale() )
                       .arg( ml->maximumScale() )
@@ -247,7 +247,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
 
     if ( !ml->isInScaleRange( mSettings.scale() ) ) //|| mOverview )
     {
-      QgsDebugMsgLevel( "Layer not rendered because it is not within the defined visibility scale range", 3 );
+      QgsDebugMsgLevel( QStringLiteral( "Layer not rendered because it is not within the defined visibility scale range" ), 3 );
       continue;
     }
 
@@ -313,6 +313,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
       job.cached = true;
       job.imageInitialized = true;
       job.img = new QImage( mCache->cacheImage( ml->id() ) );
+      job.img->setDevicePixelRatio( mSettings.devicePixelRatio() );
       job.renderer = nullptr;
       job.context.setPainter( nullptr );
       continue;
@@ -324,10 +325,9 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     if ( mCache || !painter || needTemporaryImage( ml ) )
     {
       // Flattened image for drawing when a blending mode is set
-      QImage *mypFlattenedImage = nullptr;
-      mypFlattenedImage = new QImage( mSettings.outputSize().width(),
-                                      mSettings.outputSize().height(),
-                                      mSettings.outputImageFormat() );
+      QImage *mypFlattenedImage = new QImage( mSettings.deviceOutputSize(),
+                                              mSettings.outputImageFormat() );
+      mypFlattenedImage->setDevicePixelRatio( mSettings.devicePixelRatio() );
       if ( mypFlattenedImage->isNull() )
       {
         mErrors.append( Error( ml->id(), tr( "Insufficient memory for image %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
@@ -366,6 +366,7 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
     job.cached = true;
     job.complete = true;
     job.img = new QImage( mCache->cacheImage( LABEL_CACHE_ID ) );
+    Q_ASSERT( job.img->devicePixelRatio() == mSettings.devicePixelRatio() );
     job.context.setPainter( nullptr );
   }
   else
@@ -374,9 +375,9 @@ LabelRenderJob QgsMapRendererJob::prepareLabelingJob( QPainter *painter, QgsLabe
     {
       // Flattened image for drawing labels
       QImage *mypFlattenedImage = nullptr;
-      mypFlattenedImage = new QImage( mSettings.outputSize().width(),
-                                      mSettings.outputSize().height(),
+      mypFlattenedImage = new QImage( mSettings.deviceOutputSize(),
                                       mSettings.outputImageFormat() );
+      mypFlattenedImage->setDevicePixelRatio( mSettings.devicePixelRatio() );
       if ( mypFlattenedImage->isNull() )
       {
         mErrors.append( Error( QStringLiteral( "labels" ), tr( "Insufficient memory for label image %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
@@ -405,7 +406,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs &jobs )
 
       if ( mCache && !job.cached && !job.context.renderingStopped() && job.layer )
       {
-        QgsDebugMsg( "caching image for " + ( job.layer ? job.layer->id() : QString() ) );
+        QgsDebugMsgLevel( "caching image for " + ( job.layer ? job.layer->id() : QString() ), 2 );
         mCache->setCacheImage( job.layer->id(), *job.img, QList< QgsMapLayer * >() << job.layer );
       }
 
@@ -435,7 +436,7 @@ void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob &job )
   {
     if ( mCache && !job.cached && !job.context.renderingStopped() )
     {
-      QgsDebugMsg( "caching label result image" );
+      QgsDebugMsg( QStringLiteral( "caching label result image" ) );
       mCache->setCacheImage( LABEL_CACHE_ID, *job.img, _qgis_listQPointerToRaw( job.participatingLayers ) );
     }
 
@@ -447,7 +448,8 @@ void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob &job )
 
 QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const LayerRenderJobs &jobs, const LabelRenderJob &labelJob )
 {
-  QImage image( settings.outputSize(), settings.outputImageFormat() );
+  QImage image( settings.deviceOutputSize(), settings.outputImageFormat() );
+  image.setDevicePixelRatio( settings.devicePixelRatio() );
   image.fill( settings.backgroundColor().rgba() );
 
   QPainter painter( &image );

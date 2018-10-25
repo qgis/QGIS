@@ -24,6 +24,9 @@ Handles storage of information regarding WKB types and their properties.
 #include "qgswkbtypes.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum Type
     {

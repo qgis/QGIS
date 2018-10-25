@@ -84,7 +84,7 @@ void QgsMeshLayerProperties::syncToLayer()
 {
   Q_ASSERT( mRendererMeshPropertiesWidget );
 
-  QgsDebugMsg( "populate general information tab" );
+  QgsDebugMsg( QStringLiteral( "populate general information tab" ) );
   /*
    * Information Tab
    */
@@ -104,7 +104,7 @@ void QgsMeshLayerProperties::syncToLayer()
   }
   mInformationTextBrowser->setText( info );
 
-  QgsDebugMsg( "populate source tab" );
+  QgsDebugMsg( QStringLiteral( "populate source tab" ) );
   /*
    * Source Tab
    */
@@ -120,7 +120,7 @@ void QgsMeshLayerProperties::syncToLayer()
     mUriLabel->setText( tr( "Not assigned" ) );
   }
 
-  QgsDebugMsg( "populate styling tab" );
+  QgsDebugMsg( QStringLiteral( "populate styling tab" ) );
   /*
    * Styling Tab
    */
@@ -164,13 +164,13 @@ void QgsMeshLayerProperties::apply()
 {
   Q_ASSERT( mRendererMeshPropertiesWidget );
 
-  QgsDebugMsg( "processing general tab" );
+  QgsDebugMsg( QStringLiteral( "processing general tab" ) );
   /*
    * General Tab
    */
   mMeshLayer->setName( mLayerOrigNameLineEd->text() );
 
-  QgsDebugMsg( "processing style tab" );
+  QgsDebugMsg( QStringLiteral( "processing style tab" ) );
   /*
    * Style Tab
    */

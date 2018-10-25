@@ -30,12 +30,13 @@
 #include <QMouseEvent>
 #include <QWidget>
 
-#include "qgsmaplayer.h"
 #include "qgsmaptool.h"
 #include "qgsmapcanvas.h"
 #include "qgspointxy.h"
 
 #include "evisgenericeventbrowsergui.h"
+
+class QgsMapLayer;
 
 /**
 * \class eVisEventIdTool

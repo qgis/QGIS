@@ -267,12 +267,12 @@ void QgsProjectionSelectionTreeWidget::applySelection( int column, QString value
   QList<QTreeWidgetItem *> nodes = lstCoordinateSystems->findItems( value, Qt::MatchExactly | Qt::MatchRecursive, column );
   if ( !nodes.isEmpty() )
   {
-    QgsDebugMsgLevel( QString( "found %1,%2" ).arg( column ).arg( value ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "found %1,%2" ).arg( column ).arg( value ), 4 );
     lstCoordinateSystems->setCurrentItem( nodes.first() );
   }
   else
   {
-    QgsDebugMsgLevel( QString( "nothing found for %1,%2" ).arg( column ).arg( value ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "nothing found for %1,%2" ).arg( column ).arg( value ), 4 );
     // deselect the selected item to avoid confusing the user
     lstCoordinateSystems->clearSelection();
     lstRecent->clearSelection();
@@ -368,7 +368,7 @@ QString QgsProjectionSelectionTreeWidget::selectedProj4String()
   QgsDebugMsgLevel( "db = " + databaseFileName, 4 );
 
   sqlite3 *database = nullptr;
-  int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
+  int rc = sqlite3_open_v2( databaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( rc )
   {
     showDBMissingWarning( databaseFileName );
@@ -437,7 +437,7 @@ QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &
   // assuming that it will never be used anywhere else. Given the low overhead,
   // opening it each time seems to be a reasonable approach at this time.
   sqlite3 *database = nullptr;
-  int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
+  int rc = sqlite3_open_v2( databaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( rc )
   {
     QgsMessageLog::logMessage( tr( "Resource Location Error" ), tr( "Error reading database file from: \n %1\n"
@@ -453,7 +453,7 @@ QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &
                 .arg( expression,
                       lvi->text( QgisCrsIdColumn ) );
 
-  QgsDebugMsgLevel( QString( "Finding selected attribute using : %1" ).arg( sql ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Finding selected attribute using : %1" ).arg( sql ), 4 );
   rc = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
   // XXX Need to free memory from the error msg if one is set
   QString attributeValue;
@@ -539,7 +539,7 @@ void QgsProjectionSelectionTreeWidget::loadUserCrsList( QSet<QString> *crsFilter
   if ( mUserProjListDone )
     return;
 
-  QgsDebugMsgLevel( "Fetching user projection list...", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Fetching user projection list..." ), 4 );
 
   // convert our Coordinate Reference System filter into the SQL expression
   QString sqlFilter = ogcWmsCrsFilterAsSqlExpression( crsFilter );
@@ -563,7 +563,7 @@ void QgsProjectionSelectionTreeWidget::loadUserCrsList( QSet<QString> *crsFilter
   //return straight away if the user has not created any custom projections
   if ( !QFileInfo::exists( databaseFileName ) )
   {
-    QgsDebugMsg( "Users qgis.db not found...skipping" );
+    QgsDebugMsg( QStringLiteral( "Users qgis.db not found...skipping" ) );
     mUserProjListDone = true;
     return;
   }
@@ -652,7 +652,7 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
 
   // open the database containing the spatial reference data
   sqlite3 *database = nullptr;
-  int rc = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
+  int rc = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( rc )
   {
     // XXX This will likely never happen since on open, sqlite creates the
@@ -755,11 +755,11 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
 // New coordinate system selected from the list
 void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
-  QgsDebugMsgLevel( "Entered.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   if ( !current )
   {
-    QgsDebugMsgLevel( "no current item", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
     return;
   }
 
@@ -778,12 +778,12 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( 
     QList<QTreeWidgetItem *> nodes = lstRecent->findItems( current->text( QgisCrsIdColumn ), Qt::MatchExactly, QgisCrsIdColumn );
     if ( !nodes.isEmpty() )
     {
-      QgsDebugMsgLevel( QString( "found srs %1 in recent" ).arg( current->text( QgisCrsIdColumn ) ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "found srs %1 in recent" ).arg( current->text( QgisCrsIdColumn ) ), 4 );
       lstRecent->setCurrentItem( nodes.first() );
     }
     else
     {
-      QgsDebugMsgLevel( QString( "srs %1 not recent" ).arg( current->text( QgisCrsIdColumn ) ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "srs %1 not recent" ).arg( current->text( QgisCrsIdColumn ) ), 4 );
       lstRecent->clearSelection();
       lstCoordinateSystems->setFocus( Qt::OtherFocusReason );
     }
@@ -802,11 +802,11 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_itemDoubleClicked( Q
 {
   Q_UNUSED( column );
 
-  QgsDebugMsgLevel( "Entered.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   if ( !current )
   {
-    QgsDebugMsgLevel( "no current item", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
     return;
   }
 
@@ -818,11 +818,11 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_itemDoubleClicked( Q
 
 void QgsProjectionSelectionTreeWidget::lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
-  QgsDebugMsgLevel( "Entered.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   if ( !current )
   {
-    QgsDebugMsgLevel( "no current item", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
     return;
   }
 
@@ -837,11 +837,11 @@ void QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked( QTreeWidgetI
 {
   Q_UNUSED( column );
 
-  QgsDebugMsgLevel( "Entered.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   if ( !current )
   {
-    QgsDebugMsgLevel( "no current item", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
     return;
   }
 
@@ -935,7 +935,7 @@ long QgsProjectionSelectionTreeWidget::getLargestCrsIdMatch( const QString &sql 
   QString databaseFileName = QgsApplication::qgisUserDatabaseFilePath();
   if ( QFileInfo::exists( databaseFileName ) ) //only bother trying to open if the file exists
   {
-    result = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
+    result = sqlite3_open_v2( databaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, nullptr );
     if ( result )
     {
       // XXX This will likely never happen since on open, sqlite creates the
@@ -961,10 +961,10 @@ long QgsProjectionSelectionTreeWidget::getLargestCrsIdMatch( const QString &sql 
   else
   {
     //only bother looking in srs.db if it wasn't found above
-    result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
+    result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, nullptr );
     if ( result )
     {
-      QgsDebugMsg( QString( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( database ) ) );
+      QgsDebugMsg( QStringLiteral( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( database ) ) );
       //no need for assert because user db may not have been created yet
       return 0;
     }
@@ -1041,10 +1041,10 @@ QStringList QgsProjectionSelectionTreeWidget::authorities()
   const char   *tail = nullptr;
   sqlite3_stmt *stmt = nullptr;
 
-  int result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
+  int result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, nullptr );
   if ( result )
   {
-    QgsDebugMsg( QString( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( database ) ) );
+    QgsDebugMsg( QStringLiteral( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( database ) ) );
     //no need for assert because user db may not have been created yet
     return QStringList();
   }

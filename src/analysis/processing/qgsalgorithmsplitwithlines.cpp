@@ -105,7 +105,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
   QgsSpatialIndex spatialIndex;
   QMap< QgsFeatureId, QgsGeometry > splitGeoms;
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   request.setDestinationCrs( source->sourceCrs(), context.transformContext() );
 
   QgsFeatureIterator splitLines = linesSource->getFeatures( request );
@@ -118,7 +118,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
     }
 
     splitGeoms.insert( aSplitFeature.id(), aSplitFeature.geometry() );
-    spatialIndex.insertFeature( aSplitFeature );
+    spatialIndex.addFeature( aSplitFeature );
   }
 
   QgsFeature outFeat;

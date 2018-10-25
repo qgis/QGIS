@@ -190,6 +190,11 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QgsAttributeL
   return *this;
 }
 
+QgsFeatureRequest &QgsFeatureRequest::setNoAttributes()
+{
+  return setSubsetOfAttributes( QgsAttributeList() );
+}
+
 QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields )
 {
   if ( attrNames.contains( QgsFeatureRequest::ALL_ATTRIBUTES ) )
@@ -331,7 +336,7 @@ QgsAbstractFeatureSource::~QgsAbstractFeatureSource()
   while ( !mActiveIterators.empty() )
   {
     QgsAbstractFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsg( "closing active iterator" );
+    QgsDebugMsg( QStringLiteral( "closing active iterator" ) );
     it->close();
   }
 }

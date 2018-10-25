@@ -63,12 +63,6 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
 
   signals:
 
-    //! Emitted when active scalar dataset changed
-    void activeScalarDatasetChanged( QgsMeshDatasetIndex index );
-
-    //! Emitted when active vector dataset changed
-    void activeVectorDatasetChanged( QgsMeshDatasetIndex index );
-
     //! Emitted when the current scalar group gets changed
     void activeScalarGroupChanged( int groupIndex );
 
@@ -81,13 +75,19 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
   private slots:
     void onActiveScalarGroupChanged( int groupIndex );
     void onActiveVectorGroupChanged( int groupIndex );
-    void onActiveDatasetChanged( int value );
-    void updateMetadata( );
+    void onActiveTimeChanged( int value );
+    void onFirstTimeClicked();
+    void onPreviousTimeClicked();
+    void onNextTimeClicked();
+    void onLastTimeClicked();
+
     QString metadata( QgsMeshDatasetIndex datasetIndex );
 
   private:
     //! Loop through all dataset groups and find the maximum number of datasets
-    void setSliderRange();
+    void setTimeRange();
+    void updateMetadata();
+    QString timeToString( double val );
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
     int mActiveScalarDatasetGroup = -1;

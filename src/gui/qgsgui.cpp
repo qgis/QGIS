@@ -26,7 +26,11 @@
 #ifdef Q_OS_MACX
 #include "qgsmacnative.h"
 #elif defined (Q_OS_WIN)
+#ifndef __MINGW32__
 #include "qgswinnative.h"
+#else
+#include "qgsnative.h"
+#endif
 #elif defined (Q_OS_LINUX)
 #include "qgslinuxnative.h"
 #else
@@ -38,6 +42,7 @@
 #include "qgslogger.h"
 #include "qgsprocessingrecentalgorithmlog.h"
 #include "qgswindowmanagerinterface.h"
+#include "qgssettings.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -109,6 +114,19 @@ void QgsGui::setWindowManager( QgsWindowManagerInterface *manager )
   instance()->mWindowManager.reset( manager );
 }
 
+QgsGui::HigFlags QgsGui::higFlags()
+{
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString().startsWith( "en" ) )
+  {
+    return HigMenuTextIsTitleCase | HigDialogTitleIsTitleCase;
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
 QgsGui::~QgsGui()
 {
   delete mProcessingGuiRegistry;
@@ -130,7 +148,11 @@ QgsGui::QgsGui()
   macNative->setIconPath( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) );
   mNative = macNative;
 #elif defined (Q_OS_WIN)
+#ifndef __MINGW32__
   mNative = new QgsWinNative();
+#else
+  mNative = new QgsNative();
+#endif
 #elif defined(Q_OS_LINUX)
   mNative = new QgsLinuxNative();
 #else

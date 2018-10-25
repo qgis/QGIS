@@ -3066,6 +3066,13 @@ void TestQgsProcessing::parameterLayerList()
   QCOMPARE( layers.at( 0 ), v1 );
   QCOMPARE( layers.at( 1 )->publicSource(), raster2 );
 
+  // mix of existing layer and ID (and check we keep order)
+  params.insert( "non_optional",  QVariantList() << QVariant::fromValue( v1 ) << v2->id() );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << v1 << v2 );
+
+  params.insert( "non_optional",  QVariantList() << v1->id() << QVariant::fromValue( v2 ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << v1 << v2 );
+
   // empty string
   params.insert( "non_optional",  QString( "" ) );
   QVERIFY( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ).isEmpty() );
@@ -5661,6 +5668,18 @@ void TestQgsProcessing::modelerAlgorithm()
   alg.setGroup( QStringLiteral( "group2" ) );
   QCOMPARE( alg.group(), QStringLiteral( "group2" ) );
 
+  QVariantMap help;
+  alg.setHelpContent( help );
+  QVERIFY( alg.helpContent().isEmpty() );
+  QVERIFY( alg.helpUrl().isEmpty() );
+  QVERIFY( alg.shortDescription().isEmpty() );
+  help.insert( QStringLiteral( "SHORT_DESCRIPTION" ), QStringLiteral( "short" ) );
+  help.insert( QStringLiteral( "HELP_URL" ), QStringLiteral( "url" ) );
+  alg.setHelpContent( help );
+  QCOMPARE( alg.helpContent(), help );
+  QCOMPARE( alg.shortDescription(), QStringLiteral( "short" ) );
+  QCOMPARE( alg.helpUrl(), QStringLiteral( "url" ) );
+
   // child algorithms
   QMap<QString, QgsProcessingModelChildAlgorithm> algs;
   QgsProcessingModelChildAlgorithm a1;
@@ -6746,6 +6765,54 @@ void TestQgsProcessing::convertCompatible()
   t = qgis::make_unique< QgsVectorLayer >( out, "vl2" );
   QCOMPARE( t->featureCount(), static_cast< long >( ids.count() ) );
 
+  // using a feature filter -- this will require translation
+  layer->setSubsetString( "1 or 2" );
+  out = QgsProcessingUtils::convertToCompatibleFormat( layer, false, QStringLiteral( "test" ), QStringList() << "shp", QString( "shp" ), context, &feedback );
+  QVERIFY( out != layer->source() );
+  QVERIFY( out.endsWith( ".shp" ) );
+  QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
+  t = qgis::make_unique< QgsVectorLayer >( out, "vl2" );
+  QCOMPARE( t->featureCount(), layer->featureCount() );
+  layer->setSubsetString( QString() );
+
+  // non-OGR source -- must be translated, regardless of extension. (e.g. delimited text provider handles CSV very different to OGR!)
+  std::unique_ptr< QgsVectorLayer > memLayer = qgis::make_unique< QgsVectorLayer> ( "Point", "v1", "memory" );
+  for ( int i = 1; i < 6; ++i )
+  {
+    QgsFeature f( i );
+    f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
+    memLayer->dataProvider()->addFeatures( QgsFeatureList() << f );
+  }
+  out = QgsProcessingUtils::convertToCompatibleFormat( memLayer.get(), false, QStringLiteral( "test" ), QStringList() << "shp", QString( "shp" ), context, &feedback );
+  QVERIFY( out != memLayer->source() );
+  QVERIFY( out.endsWith( ".shp" ) );
+  QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
+  t = qgis::make_unique< QgsVectorLayer >( out, "vl2" );
+  QCOMPARE( t->featureCount(), memLayer->featureCount() );
+
+  //delimited text -- must be translated, regardless of extension. (delimited text provider handles CSV very different to OGR!)
+  QString csvPath = "file://" + testDataDir + "delimitedtext/testpt.csv?type=csv&useHeader=No&detectTypes=yes&xyDms=yes&geomType=none&subsetIndex=no&watchFile=no";
+  std::unique_ptr< QgsVectorLayer > csvLayer = qgis::make_unique< QgsVectorLayer >( csvPath, "vl", "delimitedtext" );
+  QVERIFY( csvLayer->isValid() );
+  out = QgsProcessingUtils::convertToCompatibleFormat( csvLayer.get(), false, QStringLiteral( "test" ), QStringList() << "csv", QString( "csv" ), context, &feedback );
+  QVERIFY( out != csvLayer->source() );
+  QVERIFY( out.endsWith( ".csv" ) );
+  QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
+  t = qgis::make_unique< QgsVectorLayer >( out, "vl2" );
+  QCOMPARE( t->featureCount(), csvLayer->featureCount() );
+
+  // geopackage with layer
+  QString gpkgPath = testDataDir + "points_gpkg.gpkg|layername=points_gpkg";
+  std::unique_ptr< QgsVectorLayer > gpkgLayer = qgis::make_unique< QgsVectorLayer >( gpkgPath, "vl" );
+  QVERIFY( gpkgLayer->isValid() );
+  out = QgsProcessingUtils::convertToCompatibleFormat( gpkgLayer.get(), false, QStringLiteral( "test" ), QStringList() << "gpkg" << "shp", QString( "shp" ), context, &feedback );
+  // layer should be returned unchanged - underlying source is compatible
+  QCOMPARE( out, gpkgLayer->source() );
+  gpkgPath = testDataDir + "points_gpkg.gpkg|layername=points_small";
+  gpkgLayer = qgis::make_unique< QgsVectorLayer >( gpkgPath, "vl" );
+  QVERIFY( gpkgLayer->isValid() );
+  out = QgsProcessingUtils::convertToCompatibleFormat( gpkgLayer.get(), false, QStringLiteral( "test" ), QStringList() << "gpkg" << "shp", QString( "shp" ), context, &feedback );
+  QCOMPARE( out, gpkgLayer->source() );
 
   // also test evaluating parameter to compatible format
   std::unique_ptr< QgsProcessingParameterDefinition > def( new QgsProcessingParameterFeatureSource( QStringLiteral( "source" ) ) );

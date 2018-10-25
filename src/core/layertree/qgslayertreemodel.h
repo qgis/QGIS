@@ -24,14 +24,12 @@
 #include <memory>
 
 #include "qgsgeometry.h"
-#include "qgsmaplayer.h"
 #include "qgslayertreemodellegendnode.h"
 
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
 class QgsMapHitTest;
-class QgsMapLayer;
 class QgsMapSettings;
 class QgsExpression;
 class QgsRenderContext;

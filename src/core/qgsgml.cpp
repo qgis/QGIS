@@ -380,7 +380,7 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties> &laye
     {
       if ( alreadyFoundGeometry )
       {
-        QgsDebugMsg( QString( "Will ignore geometry field %1 from typename %2" ).
+        QgsDebugMsg( QStringLiteral( "Will ignore geometry field %1 from typename %2" ).
                      arg( mLayerProperties[i].mGeometryAttribute, mLayerProperties[i].mName ) );
         mLayerProperties[i].mGeometryAttribute.clear();
       }
@@ -822,11 +822,11 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
   {
     if ( readEpsgFromAttribute( mEpsg, attr ) != 0 )
     {
-      QgsDebugMsg( "error, could not get epsg id" );
+      QgsDebugMsg( QStringLiteral( "error, could not get epsg id" ) );
     }
     else
     {
-      QgsDebugMsg( QString( "mEpsg = %1" ).arg( mEpsg ) );
+      QgsDebugMsg( QStringLiteral( "mEpsg = %1" ).arg( mEpsg ) );
     }
   }
 
@@ -902,7 +902,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
          !mBoundedByNullFound &&
          !createBBoxFromCoordinateString( mCurrentExtent, mStringCash ) )
     {
-      QgsDebugMsg( "creation of bounding box failed" );
+      QgsDebugMsg( QStringLiteral( "creation of bounding box failed" ) );
     }
     if ( !mCurrentExtent.isNull() && mLayerExtent.isNull() &&
          !mCurrentFeature && mFeatureCount == 0 )
@@ -1014,7 +1014,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
       }
       else
       {
-        QgsDebugMsg( "No wkb fragments" );
+        QgsDebugMsg( QStringLiteral( "No wkb fragments" ) );
         delete [] wkbPtr;
       }
     }
@@ -1053,7 +1053,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
       }
       else
       {
-        QgsDebugMsg( "no wkb fragments" );
+        QgsDebugMsg( QStringLiteral( "no wkb fragments" ) );
         delete [] wkbPtr;
       }
     }
@@ -1080,7 +1080,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     else
     {
       delete[] wkbPtr;
-      QgsDebugMsg( "no wkb fragments" );
+      QgsDebugMsg( QStringLiteral( "no wkb fragments" ) );
     }
   }
   else if ( ( parseMode == Geometry || parseMode == MultiPolygon ) && isGMLNS &&
@@ -1313,7 +1313,7 @@ int QgsGmlStreamingParser::pointsFromPosListString( QList<QgsPointXY> &points, c
 
   if ( coordinates.size() % dimension != 0 )
   {
-    QgsDebugMsg( "Wrong number of coordinates" );
+    QgsDebugMsg( QStringLiteral( "Wrong number of coordinates" ) );
   }
 
   int ncoor = coordinates.size() / dimension;

@@ -197,7 +197,7 @@ class RandomPointsPolygons(QgisAlgorithm):
                     f.setAttribute('id', nPoints)
                     f.setGeometry(geom)
                     sink.addFeature(f, QgsFeatureSink.FastInsert)
-                    index.insertFeature(f)
+                    index.addFeature(f)
                     points[nPoints] = p
                     nPoints += 1
                     feedback.setProgress(current_progress + int(nPoints * feature_total))

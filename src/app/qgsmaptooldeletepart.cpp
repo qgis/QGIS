@@ -24,8 +24,7 @@
 #include "qgssnappingutils.h"
 #include "qgstolerance.h"
 #include "qgisapp.h"
-
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
 
 QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )

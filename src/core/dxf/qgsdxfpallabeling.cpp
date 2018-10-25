@@ -48,20 +48,20 @@ QgsDxfRuleBasedLabelProvider::QgsDxfRuleBasedLabelProvider( const QgsRuleBasedLa
 
 void QgsDxfRuleBasedLabelProvider::reinit( QgsVectorLayer *layer )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsg( QStringLiteral( "Entering." ) );
   mRules->rootRule()->createSubProviders( layer, mSubProviders, this );
 }
 
 QgsVectorLayerLabelProvider *QgsDxfRuleBasedLabelProvider::createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsg( QStringLiteral( "Entering." ) );
   Q_UNUSED( withFeatureLoop );
   return new QgsDxfLabelProvider( layer, providerId, mDxfExport, settings );
 }
 
 void QgsDxfRuleBasedLabelProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsg( QStringLiteral( "Entering." ) );
   Q_ASSERT( mDxfExport );
   mDxfExport->drawLabel( layerId(), context, label, mSettings );
 }

@@ -654,7 +654,7 @@ void QgsDualView::organizeColumns()
     return;
   }
 
-  QgsOrganizeTableColumnsDialog dialog( mLayer, this );
+  QgsOrganizeTableColumnsDialog dialog( mLayer, attributeTableConfig(), this );
   if ( dialog.exec() == QDialog::Accepted )
   {
     QgsAttributeTableConfig config = dialog.config();
@@ -838,7 +838,7 @@ void QgsDualView::previewExpressionChanged( const QString &expression )
 
 void QgsDualView::onSortColumnChanged()
 {
-  QgsAttributeTableConfig cfg = mLayer->attributeTableConfig();
+  QgsAttributeTableConfig cfg = attributeTableConfig();
   if ( cfg.sortExpression() != mFilterModel->sortExpression() ||
        cfg.sortOrder() != mFilterModel->sortOrder() )
   {
@@ -916,7 +916,6 @@ void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig &config
 {
   mConfig = config;
   mConfig.update( mLayer->fields() );
-  mLayer->setAttributeTableConfig( mConfig );
   mFilterModel->setAttributeTableConfig( mConfig );
   mTableView->setAttributeTableConfig( mConfig );
 }
@@ -936,6 +935,11 @@ void QgsDualView::setSortExpression( const QString &sortExpression, Qt::SortOrde
 QString QgsDualView::sortExpression() const
 {
   return mFilterModel->sortExpression();
+}
+
+QgsAttributeTableConfig QgsDualView::attributeTableConfig() const
+{
+  return mConfig;
 }
 
 void QgsDualView::progress( int i, bool &cancel )

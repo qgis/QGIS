@@ -49,6 +49,15 @@ class QgsLayoutReportSectionLabel;
 class GUI_EXPORT QgsLayoutView: public QGraphicsView
 {
 
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsLayoutView *>( sipCpp ) )
+      sipType = sipType_QgsLayoutView;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_OBJECT
 
     Q_PROPERTY( QgsLayout *currentLayout READ currentLayout WRITE setCurrentLayout NOTIFY layoutSet )

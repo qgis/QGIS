@@ -35,7 +35,7 @@ class QgsRuleBasedLabeling : QgsAbstractVectorLayerLabeling
 #include "qgsrulebasedlabeling.h"
 %End
       public:
-        Rule( QgsPalLayerSettings *settings /Transfer/, int maximumScale = 0, int minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
+        Rule( QgsPalLayerSettings *settings /Transfer/, double maximumScale = 0, double minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
 %Docstring
 takes ownership of settings, settings may be None
 %End

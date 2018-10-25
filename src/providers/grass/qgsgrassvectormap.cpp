@@ -112,7 +112,7 @@ bool QgsGrassVectorMap::openMap()
   QgsGrass::setLocation( mGrassObject.gisdbase(), mGrassObject.location() );
 
   // Find the vector
-  const char *ms = G_find_vector2( mGrassObject.name().toUtf8().data(),  mGrassObject.mapset().toUtf8().data() );
+  const char *ms = G_find_vector2( mGrassObject.name().toUtf8().constData(),  mGrassObject.mapset().toUtf8().constData() );
 
   if ( !ms )
   {
@@ -135,7 +135,7 @@ bool QgsGrassVectorMap::openMap()
   G_TRY
   {
     Vect_set_open_level( 2 );
-    level = Vect_open_old_head( mMap, mGrassObject.name().toUtf8().data(), mGrassObject.mapset().toUtf8().data() );
+    level = Vect_open_old_head( mMap, mGrassObject.name().toUtf8().constData(), mGrassObject.mapset().toUtf8().constData() );
     Vect_close( mMap );
   }
   G_CATCH( QgsGrass::Exception & e )
@@ -167,7 +167,7 @@ bool QgsGrassVectorMap::openMap()
   G_TRY
   {
     Vect_set_open_level( level );
-    Vect_open_old( mMap, mGrassObject.name().toUtf8().data(), mGrassObject.mapset().toUtf8().data() );
+    Vect_open_old( mMap, mGrassObject.name().toUtf8().constData(), mGrassObject.mapset().toUtf8().constData() );
   }
   G_CATCH( QgsGrass::Exception & e )
   {
@@ -229,7 +229,7 @@ bool QgsGrassVectorMap::startEdit()
   {
     Vect_close( mMap );
     Vect_set_open_level( 2 );
-    level = Vect_open_update( mMap, mGrassObject.name().toUtf8().data(), mGrassObject.mapset().toUtf8().data() );
+    level = Vect_open_update( mMap, mGrassObject.name().toUtf8().constData(), mGrassObject.mapset().toUtf8().constData() );
     if ( level < 2 )
     {
       QgsDebugMsg( "Cannot open GRASS vector for update on level 2." );
@@ -247,7 +247,7 @@ bool QgsGrassVectorMap::startEdit()
     G_TRY
     {
       Vect_set_open_level( 2 );
-      level = Vect_open_old( mMap, mGrassObject.name().toUtf8().data(), mGrassObject.mapset().toUtf8().data() );
+      level = Vect_open_old( mMap, mGrassObject.name().toUtf8().constData(), mGrassObject.mapset().toUtf8().constData() );
       if ( level < 2 )
       {
         QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( QgsGrass::errorMessage() ) );

@@ -17,7 +17,16 @@
    <property name="spacing">
     <number>2</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -43,29 +52,10 @@
          <property name="title">
           <string>Advanced parameters</string>
          </property>
-         <property name="flat">
+         <property name="collapsed" stdset="0">
           <bool>true</bool>
          </property>
-         <property name="collapsed">
-          <bool>true</bool>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <property name="spacing">
-           <number>2</number>
-          </property>
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>9</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-         </layout>
+         <layout class="QVBoxLayout" name="verticalLayout_3"/>
         </widget>
        </item>
        <item>

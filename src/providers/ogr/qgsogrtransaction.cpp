@@ -52,7 +52,7 @@ bool QgsOgrTransaction::executeSql( const QString &sql, QString &errorMsg, bool 
     createSavepoint( err );
   }
 
-  QgsDebugMsg( QString( "Transaction sql: %1" ).arg( sql ) );
+  QgsDebugMsg( QStringLiteral( "Transaction sql: %1" ).arg( sql ) );
   if ( !mSharedDS->executeSQLNoReturn( sql ) )
   {
     errorMsg = CPLGetLastErrorMsg();
@@ -72,6 +72,6 @@ bool QgsOgrTransaction::executeSql( const QString &sql, QString &errorMsg, bool 
     emit dirtied( sql, name );
   }
 
-  QgsDebugMsg( QString( "... ok" ) );
+  QgsDebugMsg( QStringLiteral( "... ok" ) );
   return true;
 }

@@ -36,7 +36,7 @@ QgsColorRampShader::QgsColorRampShader( double minimumValue, double maximumValue
   , mColorRampType( type )
   , mClassificationMode( classificationMode )
 {
-  QgsDebugMsgLevel( "called.", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "called." ), 4 );
 
   setSourceColorRamp( colorRamp );
 }
