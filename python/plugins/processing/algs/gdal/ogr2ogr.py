@@ -82,7 +82,7 @@ class ogr2ogr(GdalAlgorithm):
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
-        if outputFormat == 'SQLite' and os.path.isfile(output):
+        if outputFormat in ('SQLite', 'GPKG') and os.path.isfile(output):
             raise QgsProcessingException(self.tr('Output file "{}" already exists.'.format(output)))
 
         arguments = []
