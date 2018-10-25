@@ -7398,6 +7398,11 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
   if ( filename.isEmpty() )
     return;
 
+  if ( ! filename.endsWith( QStringLiteral( ".qml" ) ) )
+  {
+    filename += QStringLiteral( ".qml" );
+  }
+
   bool defaultLoadedFlag;
   layer->saveNamedStyle( filename, defaultLoadedFlag );
 
