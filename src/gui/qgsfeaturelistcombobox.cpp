@@ -203,14 +203,6 @@ void QgsFeatureListComboBox::keyPressEvent( QKeyEvent *event )
   QComboBox::keyReleaseEvent( event );
 }
 
-bool QgsFeatureListComboBox::event( QEvent *event )
-{
-  if ( event->type() == QEvent::EnabledChange )
-    mLineEdit->setShowClearButton( true );
-
-  return QComboBox::event( event );
-}
-
 bool QgsFeatureListComboBox::allowNull() const
 {
   return mModel->allowNull();
