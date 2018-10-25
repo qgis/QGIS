@@ -333,8 +333,14 @@ bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAct
             exists = true;
           }
         }
-        if ( ! exists || QMessageBox::question( nullptr, tr( "Overwrite Layer" ),
-                                                tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( dropUri.name ), QMessageBox::Yes |  QMessageBox::No ) == QMessageBox::Yes )
+
+        if ( exists && !isVector )
+        {
+          QMessageBox::warning( nullptr, tr( "Cannot Overwrite Layer" ),
+                                tr( "Destination layer <b>%1</b> already exists. Overwriting with raster layers is not currently supported." ).arg( dropUri.name ) );
+        }
+        else if ( ! exists || QMessageBox::question( nullptr, tr( "Overwrite Layer" ),
+                  tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( dropUri.name ), QMessageBox::Yes |  QMessageBox::No ) == QMessageBox::Yes )
         {
           if ( isVector ) // Import vectors and aspatial
           {
