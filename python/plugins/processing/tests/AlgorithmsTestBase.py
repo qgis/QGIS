@@ -36,6 +36,7 @@ import shutil
 import glob
 import hashlib
 import tempfile
+import re
 
 from osgeo.gdalconst import GA_ReadOnly
 from numpy import nan_to_num
@@ -199,7 +200,8 @@ class AlgorithmsTest(object):
                 basename = os.path.basename(param['name'])
             else:
                 basename = os.path.basename(param['name'][0])
-            filepath = os.path.join(outdir, basename)
+
+            filepath = self.uri_path_join(outdir, basename)
             return filepath
         elif param['type'] == 'rasterhash':
             outdir = tempfile.mkdtemp()
@@ -215,13 +217,14 @@ class AlgorithmsTest(object):
 
     def load_layers(self, id, param):
         layers = []
-        if param['type'] in ('vector', 'table') and isinstance(param['name'], str):
-            layers.append(self.load_layer(id, param))
-        elif param['type'] in ('vector', 'table'):
-            for n in param['name']:
-                layer_param = deepcopy(param)
-                layer_param['name'] = n
-                layers.append(self.load_layer(id, layer_param))
+        if param['type'] in ('vector', 'table'):
+            if isinstance(param['name'], str) or 'uri' in param:
+                layers.append(self.load_layer(id, param))
+            else:
+                for n in param['name']:
+                    layer_param = deepcopy(param)
+                    layer_param['name'] = n
+                    layers.append(self.load_layer(id, layer_param))
         else:
             layers.append(self.load_layer(id, param))
         return layers
@@ -230,6 +233,7 @@ class AlgorithmsTest(object):
         """
         Loads a layer which was specified as parameter.
         """
+
         filepath = self.filepath_from_param(param)
 
         if 'in_place' in param and param['in_place']:
@@ -268,7 +272,22 @@ class AlgorithmsTest(object):
         if 'location' in param and param['location'] == 'qgs':
             prefix = unitTestDataPath()
 
-        return os.path.join(prefix, param['name'])
+        if 'uri' in param:
+            path = param['uri']
+        else:
+            path = param['name']
+
+        return self.uri_path_join(prefix, path)
+
+    def uri_path_join(self, prefix, filepath):
+        if filepath.startswith('ogr:'):
+            if not prefix[-1] == os.path.sep:
+                prefix += os.path.sep
+            filepath = re.sub(r"dbname='", "dbname='{}".format(prefix), filepath)
+        else:
+            filepath = os.path.join(prefix, filepath)
+
+        return filepath
 
     def check_results(self, results, context, params, expected):
         """
