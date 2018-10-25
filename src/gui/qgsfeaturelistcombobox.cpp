@@ -51,7 +51,7 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
 
   connect( this, static_cast<void( QgsFeatureListComboBox::* )( int )>( &QgsFeatureListComboBox::currentIndexChanged ), this, &QgsFeatureListComboBox::onCurrentIndexChanged );
 
-  mLineEdit = new QgsFilterLineEdit();
+  mLineEdit = new QgsFilterLineEdit( nullptr, QgsApplication::nullRepresentation() );
   mLineEdit->setSelectOnFocus( true );
   //set value of combo to null if delete button is pressed
   connect( mLineEdit, &QgsFilterLineEdit::cleared, this, [ = ] { if ( allowNull() ) setCurrentIndex( nullIndex() ); } );
