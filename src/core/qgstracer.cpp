@@ -617,6 +617,7 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer *> &layers )
     connect( layer, &QgsVectorLayer::geometryChanged, this, &QgsTracer::onGeometryChanged );
     connect( layer, &QgsVectorLayer::attributeValueChanged, this, &QgsTracer::onAttributeValueChanged );
     connect( layer, &QgsVectorLayer::dataChanged, this, &QgsTracer::onDataChanged );
+    connect( layer, &QgsVectorLayer::styleChanged, this, &QgsTracer::onStyleChanged );
     connect( layer, &QObject::destroyed, this, &QgsTracer::onLayerDestroyed );
   }
 
@@ -705,8 +706,7 @@ void QgsTracer::onAttributeValueChanged( QgsFeatureId fid, int idx, const QVaria
   Q_UNUSED( fid );
   Q_UNUSED( idx );
   Q_UNUSED( value );
-  if ( mRenderContext )
-    invalidateGraph();
+  invalidateGraph();
 }
 
 void QgsTracer::onDataChanged( )
@@ -716,8 +716,7 @@ void QgsTracer::onDataChanged( )
 
 void QgsTracer::onStyleChanged( )
 {
-  if ( mRenderContext )
-    invalidateGraph();
+  invalidateGraph();
 }
 
 void QgsTracer::onLayerDestroyed( QObject *obj )
