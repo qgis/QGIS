@@ -213,6 +213,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       * \param type The type of the expression item.
       * \param highlightedItem set to true to make the item highlighted, which inserts a bold copy of the item at the top level
       * \param sortOrder sort ranking for item
+      * \param icon custom icon to show for item
       */
     void registerItem( const QString &group, const QString &label, const QString &expressionText,
                        const QString &helpText = QString(),

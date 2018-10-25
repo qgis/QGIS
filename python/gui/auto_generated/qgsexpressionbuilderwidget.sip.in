@@ -210,6 +210,7 @@ Registers a node item for the expression builder.
 :param type: The type of the expression item.
 :param highlightedItem: set to true to make the item highlighted, which inserts a bold copy of the item at the top level
 :param sortOrder: sort ranking for item
+:param icon: custom icon to show for item
 %End
 
     bool isExpressionValid();
