@@ -1,14 +1,4 @@
 # -*- coding: utf-8 -*-
-from qgis.core import QgsProject
-from test_qgsserver_wms import TestQgsServerWMSTestBase
-from qgis.PyQt.QtCore import QSize
-from qgis.testing import unittest
-import json
-import xml.etree.ElementTree as ET
-import urllib.error
-import urllib.parse
-import urllib.request
-import re
 """QGIS Unit tests for QgsServer GetFeatureInfo WMS.
 
 From build dir, run: ctest -R PyQgsServerWMSGetFeatureInfo -V
@@ -32,8 +22,21 @@ import os
 # executions
 os.environ['QT_HASH_SEED'] = '1'
 
+import re
+import urllib.request
+import urllib.parse
+import urllib.error
+
+import xml.etree.ElementTree as ET
+import json
+
+from qgis.testing import unittest
+from qgis.PyQt.QtCore import QSize
 
 import osgeo.gdal  # NOQA
+
+from test_qgsserver_wms import TestQgsServerWMSTestBase
+from qgis.core import QgsProject
 
 
 class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
