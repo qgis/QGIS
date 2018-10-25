@@ -190,6 +190,11 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QgsAttributeL
   return *this;
 }
 
+QgsFeatureRequest &QgsFeatureRequest::setNoAttributes()
+{
+  return setSubsetOfAttributes( QgsAttributeList() );
+}
+
 QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields )
 {
   if ( attrNames.contains( QgsFeatureRequest::ALL_ATTRIBUTES ) )

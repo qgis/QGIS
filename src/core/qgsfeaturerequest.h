@@ -502,6 +502,14 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
 
     /**
+     * Set that no attributes will be fetched.
+     * To revert a call to setNoAttributes and fetch all or some available attributes,
+     * the SubsetOfAttributes flag should be removed from the request.
+     * \since QGIS 3.4
+     */
+    QgsFeatureRequest &setNoAttributes();
+
+    /**
      * Returns the subset of attributes which at least need to be fetched
      * \returns A list of attributes to be fetched
      */
