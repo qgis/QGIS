@@ -68,13 +68,12 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   // make sure family exists on system
   if ( fontFamily != mDefaultFont.family() )
   {
-    QFont *tempFont = new QFont( fontFamily );
-    if ( tempFont->family() != fontFamily )
+    QFont tempFont( fontFamily );
+    if ( tempFont.family() != fontFamily )
     {
       // missing from system, drop back to default
       fontFamily = mDefaultFont.family();
     }
-    delete tempFont;
   }
   QgsDebugMsg( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ) );
   opts.insert( QStringLiteral( "fontFamily" ), QVariant( fontFamily ) );
@@ -104,7 +103,10 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
   QgsDebugMsg( QStringLiteral( "fontFamily: %1" ).arg( fontFamily ) );
   if ( fontFamily.isEmpty() ) { return; }
 
-  ss += QStringLiteral( "* { font: %1pt \"%2\"} " ).arg( fontSize, fontFamily );
+  const QString defaultSize = QString::number( mDefaultFont.pointSize() );
+  const QString defaultFamily = mDefaultFont.family();
+  if ( fontSize != defaultSize || fontFamily != defaultFamily )
+    ss += QStringLiteral( "* { font: %1pt \"%2\"} " ).arg( fontSize, fontFamily );
 
 #if QT_VERSION >= 0x050900
   // Fix for macOS Qt 5.9+, where close boxes do not show on document mode tab bar tabs
@@ -222,63 +224,21 @@ void QgisAppStyleSheet::setActiveValues()
   mStyle = qApp->style()->objectName(); // active style name (lowercase)
   QgsDebugMsg( QStringLiteral( "Style name: %1" ).arg( mStyle ) );
 
-  mMotifStyle = mStyle.contains( QLatin1String( "motif" ) ); // motif
-  mCdeStyle = mStyle.contains( QLatin1String( "cde" ) ); // cde
-  mPlastqStyle = mStyle.contains( QLatin1String( "plastique" ) ); // plastique
-  mCleanLkStyle = mStyle.contains( QLatin1String( "cleanlooks" ) ); // cleanlooks
-  mGtkStyle = mStyle.contains( QLatin1String( "gtk" ) ); // gtk+
-  mWinStyle = mStyle.contains( QLatin1String( "windows" ) ); // windows
-  mWinXpStyle = mStyle.contains( QLatin1String( "windowsxp" ) ); // windowsxp
-  mWinVistaStyle = mStyle.contains( QLatin1String( "windowsvista" ) ); // windowsvista
   mMacStyle = mStyle.contains( QLatin1String( "macintosh" ) ); // macintosh (aqua)
   mOxyStyle = mStyle.contains( QLatin1String( "oxygen" ) ); // oxygen
 
   mDefaultFont = qApp->font(); // save before it is changed in any way
 
   // platforms, specific
-#ifdef Q_OS_LINUX
-  mLinuxOS = true;
-#else
-  mLinuxOS = false;
-#endif
 #ifdef Q_OS_WIN
   mWinOS = true;
 #else
   mWinOS = false;
 #endif
-#ifdef Q_OS_MAC
-  mMacOS = true;
-#else
-  mMacOS = false;
-#endif
 #ifdef ANDROID
   mAndroidOS = true;
 #else
   mAndroidOS = false;
-#endif
-
-  // platforms, general
-#ifdef Q_OS_UNIX
-  mUnix = true;
-#else
-  mUnix = false;
-#endif
-
-  // window servers
-#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
-  mX11WS = true;
-#else
-  mX11WS = false;
-#endif
-#ifdef Q_OS_WIN
-  mWinWS = true;
-#else
-  mWinWS = false;
-#endif
-#ifdef Q_OS_MAC
-  mMacWS = true;
-#else
-  mMacWS = false;
 #endif
 
 }

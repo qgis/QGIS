@@ -202,20 +202,30 @@ static std::unique_ptr< QgsPoint > parseEsriGeometryPoint( const QVariantMap &ge
 static std::unique_ptr< QgsMultiPoint > parseEsriGeometryMultiPoint( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
 {
   // {"points" : [[ <x1>, <y1>, <z1>, <m1> ] , [ <x2>, <y2>, <z2>, <m2> ], ... ]}
-  QVariantList coordsList = geometryData[QStringLiteral( "points" )].toList();
-  if ( coordsList.isEmpty() )
-    return nullptr;
+  const QVariantList coordsList = geometryData[QStringLiteral( "points" )].toList();
 
   std::unique_ptr< QgsMultiPoint > multiPoint = qgis::make_unique< QgsMultiPoint >();
-  Q_FOREACH ( const QVariant &coordData, coordsList )
+  for ( const QVariant &coordData : coordsList )
   {
-    QVariantList coordList = coordData.toList();
+    const QVariantList coordList = coordData.toList();
     std::unique_ptr< QgsPoint > p = parsePoint( coordList, pointType );
     if ( !p )
     {
-      return nullptr;
+      continue;
     }
     multiPoint->addGeometry( p.release() );
+  }
+
+  // second chance -- sometimes layers are reported as multipoint but features have single
+  // point geometries. Silently handle this and upgrade to multipoint.
+  std::unique_ptr< QgsPoint > p = parseEsriGeometryPoint( geometryData, pointType );
+  if ( p )
+    multiPoint->addGeometry( p.release() );
+
+  if ( multiPoint->numGeometries() == 0 )
+  {
+    // didn't find any points, so reset geometry to null
+    multiPoint.reset();
   }
   return multiPoint;
 }

@@ -470,7 +470,15 @@ QgsGdalProvider::~QgsGdalProvider()
       }
       if ( mGdalDataset )
       {
+        // Check if already a PAM (persistent auxiliary metadata) file exists
+        QString pamFile = dataSourceUri( true ) + QLatin1String( ".aux.xml" );
+        bool pamFileAlreadyExists = QFileInfo( pamFile ).exists();
+
         GDALClose( mGdalDataset );
+
+        // If GDAL created a PAM file right now by using estimated metadata, delete it right away
+        if ( !mStatisticsAreReliable && !pamFileAlreadyExists && QFileInfo( pamFile ).exists() )
+          QFile( pamFile ).remove();
       }
 
       if ( mpParent && *mpParent == this )
@@ -2468,6 +2476,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
     myerval = GDALComputeRasterStatistics( myGdalBand, bApproxOK,
                                            &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
                                            progressCallback, &myProg );
+    mStatisticsAreReliable = true;
   }
   else
   {

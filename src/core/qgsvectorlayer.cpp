@@ -3024,6 +3024,7 @@ const QgsFeatureIds &QgsVectorLayer::selectedFeatureIds() const
 QgsFeatureList QgsVectorLayer::selectedFeatures() const
 {
   QgsFeatureList features;
+  features.reserve( mSelectedFeatureIds.count() );
   QgsFeature f;
 
   if ( mSelectedFeatureIds.count() <= 8 )

@@ -136,6 +136,12 @@ class NATIVE_EXPORT QgsNative : public QObject
     virtual void setApplicationBadgeCount( int count );
 
     /**
+     * Returns true if the operating system is set to utilize a "dark" theme.
+     * \since QGIS 3.4
+     */
+    virtual bool hasDarkTheme() {return false;}
+
+    /**
      * Notification settings, for use with showDesktopNotification().
      */
     struct NotificationSettings

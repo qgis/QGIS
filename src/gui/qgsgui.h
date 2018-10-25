@@ -125,6 +125,23 @@ class GUI_EXPORT QgsGui
      */
     static void setWindowManager( QgsWindowManagerInterface *manager SIP_TRANSFER );
 
+    /**
+    * HIG flags. Currently indicate whether titles should be title case depending on the current locale.
+    * \since QGIS 3.4
+    */
+    enum HigFlag
+    {
+      HigMenuTextIsTitleCase = 1 << 0,       //!< Menu action texts should be title case
+      HigDialogTitleIsTitleCase = 1 << 1     //!< Dialog titles should be title case
+    };
+    Q_DECLARE_FLAGS( HigFlags, HigFlag )
+
+    /**
+    * Returns HIG flags. Currently indicates whether titles should be title case depending on the current locale.
+    * \since QGIS 3.4
+    */
+    static QgsGui::HigFlags higFlags();
+
     ~QgsGui();
 
   private:
@@ -148,5 +165,7 @@ class GUI_EXPORT QgsGui
 #endif
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsGui::HigFlags )
 
 #endif // QGSGUI_H

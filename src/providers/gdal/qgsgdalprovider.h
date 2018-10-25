@@ -296,6 +296,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      * Converts a world (\a x, \a y) coordinate to a pixel \a row and \a col.
      */
     bool worldToPixel( double x, double y, int &col, int &row ) const;
+
+    bool mStatisticsAreReliable = false;
 };
 
 #endif
