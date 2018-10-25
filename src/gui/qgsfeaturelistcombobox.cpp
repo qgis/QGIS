@@ -53,8 +53,7 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
 
   mLineEdit = new QgsFilterLineEdit( nullptr, QgsApplication::nullRepresentation() );
   mLineEdit->setSelectOnFocus( true );
-  //set value of combo to null if delete button is pressed
-  connect( mLineEdit, &QgsFilterLineEdit::cleared, this, [ = ] { if ( allowNull() ) setCurrentIndex( nullIndex() ); } );
+  mLineEdit->setShowClearButton( true );
 
   setEditable( true );
   setLineEdit( mLineEdit );
