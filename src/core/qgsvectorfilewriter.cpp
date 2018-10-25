@@ -2454,7 +2454,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat
     {
       req.setFilterFids( details.selectedFeatureIds );
     }
-    req.setSubsetOfAttributes( QgsAttributeList() );
+    req.setNoAttributes();
     details.geometryTypeScanIterator = layer->getFeatures( req );
   }
 

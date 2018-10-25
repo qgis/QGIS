@@ -485,7 +485,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   QgsFeatureIds refFeatureIds = mIndex.intersects( searchBounds ).toSet();
   mIndexMutex.unlock();
 
-  QgsFeatureRequest refFeatureRequest = QgsFeatureRequest().setFilterFids( refFeatureIds ).setSubsetOfAttributes( QgsAttributeList() );
+  QgsFeatureRequest refFeatureRequest = QgsFeatureRequest().setFilterFids( refFeatureIds ).setNoAttributes();
   mReferenceLayerMutex.lock();
   QgsFeature refFeature;
   QgsFeatureIterator refFeatureIt = mReferenceSource->getFeatures( refFeatureRequest );

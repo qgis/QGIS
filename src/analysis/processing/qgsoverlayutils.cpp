@@ -77,7 +77,7 @@ static bool sanitizeDifferenceResult( QgsGeometry &geom )
 void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, QgsOverlayUtils::DifferenceOutput outputAttrs )
 {
   QgsFeatureRequest requestB;
-  requestB.setSubsetOfAttributes( QgsAttributeList() );
+  requestB.setNoAttributes();
   if ( outputAttrs != OutputBA )
     requestB.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
   QgsSpatialIndex indexB( sourceB.getFeatures( requestB ), feedback );
@@ -108,7 +108,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
 
       QgsFeatureRequest request;
       request.setFilterFids( intersects );
-      request.setSubsetOfAttributes( QgsAttributeList() );
+      request.setNoAttributes();
       if ( outputAttrs != OutputBA )
         request.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
 
@@ -180,7 +180,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
   int attrCount = fieldIndicesA.count() + fieldIndicesB.count();
 
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   request.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
 
   QgsFeature outFeat;
@@ -261,14 +261,14 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
   QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( source.wkbType() ) );
 
   QgsFeatureRequest requestOnlyGeoms;
-  requestOnlyGeoms.setSubsetOfAttributes( QgsAttributeList() );
+  requestOnlyGeoms.setNoAttributes();
 
   QgsFeatureRequest requestOnlyAttrs;
   requestOnlyAttrs.setFlags( QgsFeatureRequest::NoGeometry );
 
   QgsFeatureRequest requestOnlyIds;
   requestOnlyIds.setFlags( QgsFeatureRequest::NoGeometry );
-  requestOnlyIds.setSubsetOfAttributes( QgsAttributeList() );
+  requestOnlyIds.setNoAttributes();
 
   // make a set of used feature IDs so that we do not try to reuse them for newly added features
   QgsFeature f;

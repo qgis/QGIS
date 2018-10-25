@@ -111,7 +111,7 @@ void eVisEventIdTool::select( const QgsPointXY &point )
   myRectangle = toLayerCoordinates( myLayer, myRectangle );
 
   //select features
-  QgsFeatureIterator fit = myLayer->getFeatures( QgsFeatureRequest().setFilterRect( myRectangle ).setFlags( QgsFeatureRequest::ExactIntersect ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator fit = myLayer->getFeatures( QgsFeatureRequest().setFilterRect( myRectangle ).setFlags( QgsFeatureRequest::ExactIntersect ).setNoAttributes() );
 
   QgsFeature f;
   QgsFeatureIds newSelectedFeatures;

@@ -286,7 +286,7 @@ QgsRectangle QgsMemoryProvider::extent() const
     else
     {
       QgsFeature f;
-      QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+      QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setNoAttributes() );
       while ( fi.nextFeature( f ) )
       {
         if ( f.hasGeometry() )
@@ -313,7 +313,7 @@ long QgsMemoryProvider::featureCount() const
     return mFeatures.count();
 
   // subset string set, no alternative but testing each feature
-  QgsFeatureIterator fit = QgsFeatureIterator( new QgsMemoryFeatureIterator( new QgsMemoryFeatureSource( this ), true,  QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) ) );
+  QgsFeatureIterator fit = QgsFeatureIterator( new QgsMemoryFeatureIterator( new QgsMemoryFeatureSource( this ), true,  QgsFeatureRequest().setNoAttributes() ) );
   int count = 0;
   QgsFeature feature;
   while ( fit.nextFeature( feature ) )

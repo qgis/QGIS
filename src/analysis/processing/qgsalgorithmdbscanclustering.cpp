@@ -133,7 +133,7 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
   feedback->pushInfo( QObject::tr( "Analysing clusters" ) );
   std::unordered_map< QgsFeatureId, int> idToCluster;
   idToCluster.reserve( index.size() );
-  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setNoAttributes() );
   const long featureCount = source->featureCount();
 
   int clusterCount = 0;

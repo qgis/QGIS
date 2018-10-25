@@ -695,7 +695,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     return true; // nothing to index
 
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
 
   if ( mExtent )
   {

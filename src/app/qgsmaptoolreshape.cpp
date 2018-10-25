@@ -91,7 +91,7 @@ bool QgsMapToolReshape::isBindingLine( QgsVectorLayer *vlayer, const QgsRectangl
   const QgsPointXY beginPoint = points().first();
   const QgsPointXY endPoint = points().last();
 
-  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( bbox ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( bbox ).setNoAttributes() );
   QgsFeature f;
 
   // check that extremities of the new line are contained by features
@@ -126,7 +126,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
     reshapeLineString.addZValue( defaultZValue() );
 
   //query all the features that intersect bounding box of capture line
-  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( bbox ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( bbox ).setNoAttributes() );
   QgsFeature f;
   int reshapeReturn;
   bool reshapeDone = false;

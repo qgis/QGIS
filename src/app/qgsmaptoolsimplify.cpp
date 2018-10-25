@@ -424,7 +424,7 @@ void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
   double r = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapSettings() );
   QgsRectangle selectRect = QgsRectangle( layerCoords.x() - r, layerCoords.y() - r,
                                           layerCoords.x() + r, layerCoords.y() + r );
-  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setNoAttributes() );
 
   QgsGeometry geometry = QgsGeometry::fromPointXY( layerCoords );
   double minDistance = std::numeric_limits<double>::max();
@@ -459,7 +459,7 @@ void QgsMapToolSimplify::selectFeaturesInRect()
   QgsFeatureRequest request;
   request.setFilterRect( rect );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   QgsFeatureIterator fit = vlayer->getFeatures( request );
   while ( fit.nextFeature( f ) )
     mSelectedFeatures << f;

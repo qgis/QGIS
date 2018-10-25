@@ -51,7 +51,7 @@ bool QgsVectorDataProvider::empty() const
 {
   QgsFeature f;
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   request.setFlags( QgsFeatureRequest::NoGeometry );
   request.setLimit( 1 );
   if ( getFeatures( request ).nextFeature( f ) )
@@ -102,7 +102,7 @@ bool QgsVectorDataProvider::truncate()
     return false;
 
   QgsFeatureIds toDelete;
-  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setNoAttributes() );
   QgsFeature f;
   while ( it.nextFeature( f ) )
     toDelete << f.id();

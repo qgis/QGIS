@@ -253,7 +253,7 @@ QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *fee
 
 QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback )
 {
-  d = new QgsSpatialIndexData( source.getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) ), feedback );
+  d = new QgsSpatialIndexData( source.getFeatures( QgsFeatureRequest().setNoAttributes() ), feedback );
 }
 
 QgsSpatialIndex::QgsSpatialIndex( const QgsSpatialIndex &other ) //NOLINT

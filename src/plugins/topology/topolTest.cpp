@@ -1288,14 +1288,14 @@ void topolTest::fillFeatureMap( QgsVectorLayer *layer, const QgsRectangle &exten
   QgsFeatureIterator fit;
   if ( extent.isEmpty() )
   {
-    fit = layer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+    fit = layer->getFeatures( QgsFeatureRequest().setNoAttributes() );
   }
   else
   {
     fit = layer->getFeatures( QgsFeatureRequest()
                               .setFilterRect( extent )
                               .setFlags( QgsFeatureRequest::ExactIntersect )
-                              .setSubsetOfAttributes( QgsAttributeList() ) );
+                              .setNoAttributes() );
   }
 
   QgsFeature f;
@@ -1314,14 +1314,14 @@ void topolTest::fillFeatureList( QgsVectorLayer *layer, const QgsRectangle &exte
   QgsFeatureIterator fit;
   if ( extent.isEmpty() )
   {
-    fit = layer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+    fit = layer->getFeatures( QgsFeatureRequest().setNoAttributes() );
   }
   else
   {
     fit = layer->getFeatures( QgsFeatureRequest()
                               .setFilterRect( extent )
                               .setFlags( QgsFeatureRequest::ExactIntersect )
-                              .setSubsetOfAttributes( QgsAttributeList() ) );
+                              .setNoAttributes() );
   }
 
   QgsFeature f;
@@ -1343,14 +1343,14 @@ QgsSpatialIndex *topolTest::createIndex( QgsVectorLayer *layer, const QgsRectang
   QgsFeatureIterator fit;
   if ( extent.isEmpty() )
   {
-    fit = layer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+    fit = layer->getFeatures( QgsFeatureRequest().setNoAttributes() );
   }
   else
   {
     fit = layer->getFeatures( QgsFeatureRequest()
                               .setFilterRect( extent )
                               .setFlags( QgsFeatureRequest::ExactIntersect )
-                              .setSubsetOfAttributes( QgsAttributeList() ) );
+                              .setNoAttributes() );
   }
 
 

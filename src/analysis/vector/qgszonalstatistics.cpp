@@ -209,7 +209,7 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
 
   //iterate over each polygon
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   request.setDestinationCrs( mRasterCrs, QgsProject::instance()->transformContext() );
   QgsFeatureIterator fi = vectorProvider->getFeatures( request );
   QgsFeature f;

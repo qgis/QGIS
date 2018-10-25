@@ -379,7 +379,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
 
   QMap<QString, QgsFeatureIds> layerIds;
 
-  QgsFeatureRequest request = QgsFeatureRequest( affectedFeatureIds ).setSubsetOfAttributes( QgsAttributeList() );
+  QgsFeatureRequest request = QgsFeatureRequest( affectedFeatureIds ).setNoAttributes();
   QgsFeatureIterator it = layer->getFeatures( request );
   QgsFeature feature;
   QgsRectangle area;

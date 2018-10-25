@@ -1258,7 +1258,7 @@ bool QgsWFSProvider::empty() const
 {
   QgsFeature f;
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   request.setFlags( QgsFeatureRequest::NoGeometry );
 
   // Whoops, the WFS provider returns an empty iterator when we are using
