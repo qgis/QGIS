@@ -58,6 +58,13 @@ QgsRectangle QgsRectangle::fromCenterAndSize( QgsPointXY center, double width, d
   return QgsRectangle( xMin, yMin, xMax, yMax );
 }
 
+QgsRectangle QgsRectangle::scaled( double scaleFactor, const QgsPointXY *center ) const
+{
+  QgsRectangle scaledRect = QgsRectangle( *this );
+  scaledRect.scale( scaleFactor, center );
+  return scaledRect;
+}
+
 QgsRectangle QgsRectangle::operator-( const QgsVector v ) const
 {
   double xmin = mXmin - v.x();

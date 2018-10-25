@@ -185,6 +185,13 @@ Scale the rectangle around its center point.
 Scale the rectangle around its center point.
 %End
 
+    QgsRectangle scaled( double scaleFactor, const QgsPointXY *center = 0 ) const;
+%Docstring
+Scale the rectangle around its ``center`` point.
+
+.. versionadded:: 3.4
+%End
+
     void grow( double delta );
 %Docstring
 Grows the rectangle in place by the specified amount.

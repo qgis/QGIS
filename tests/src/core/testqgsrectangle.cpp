@@ -40,6 +40,7 @@ class TestQgsRectangle: public QObject
     void isFinite();
     void combine();
     void dataStream();
+    void scale();
 };
 
 void TestQgsRectangle::isEmpty()
@@ -346,6 +347,23 @@ void TestQgsRectangle::dataStream()
   ds >> result;
 
   QCOMPARE( result, original );
+}
+
+void TestQgsRectangle::scale()
+{
+  QgsRectangle rect( 10, 20, 30, 60 );
+  rect.scale( 2 );
+  QCOMPARE( rect, QgsRectangle( 0, 0, 40, 80 ) );
+  rect.scale( .5 );
+  QCOMPARE( rect, QgsRectangle( 10, 20, 30, 60 ) );
+  QgsPointXY center( 10, 20 );
+
+  // with center
+  rect.scale( 2, &center );
+  QCOMPARE( rect, QgsRectangle( -10, -20, 30, 60 ) );
+
+  // scaled
+  QCOMPARE( rect, QgsRectangle( 10, 20, 30, 60 ).scaled( 2, &center ) );
 }
 
 QGSTEST_MAIN( TestQgsRectangle )

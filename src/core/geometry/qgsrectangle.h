@@ -262,6 +262,12 @@ class CORE_EXPORT QgsRectangle
     }
 
     /**
+     * Scale the rectangle around its \a center point.
+     * \since QGIS 3.4
+     */
+    QgsRectangle scaled( double scaleFactor, const QgsPointXY *center = nullptr ) const;
+
+    /**
      * Grows the rectangle in place by the specified amount.
      * \see buffered()
      */
