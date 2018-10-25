@@ -47,8 +47,6 @@ Returns a variant representing the current state of the widget.
 
     virtual QgsSearchWidgetWrapper::FilterFlags supportedFlags() const;
 
-    virtual QgsSearchWidgetWrapper::FilterFlags defaultFlags() const;
-
     virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const;
 
 
