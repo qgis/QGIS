@@ -1458,6 +1458,13 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                  '-f "LIBKML" "' + outdir + '/my out/check.kml" ' +
                  source + ' polys2'])
 
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'OUTPUT': outdir + '/check.gpkg'}, context, feedback),
+                ['ogr2ogr',
+                 '-f "GPKG" ' + outdir + '/check.gpkg ' +
+                 source + ' polys2'])
+
     def testOgr2PostGis(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
