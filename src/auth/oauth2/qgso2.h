@@ -55,8 +55,8 @@ class QgsO2: public O2
     //! Retrieve oauth2 state
     QString state() const  { return state_; }
 
-    //! Store oauth2 state to \a value
-    void setState( const QString &value ) { state_ = value; }
+    //! Store oauth2 state to a random value when called
+    void setState( const QString &value );
 
   public slots:
 

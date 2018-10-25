@@ -170,7 +170,7 @@ void QgsO2::link()
   setRefreshToken( QString() );
   setExpires( 0 );
 
-  if ( grantFlow_ == GrantFlowAuthorizationCode )
+  if ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowImplicit )
   {
     if ( mIsLocalHost )
     {
@@ -238,6 +238,15 @@ void QgsO2::link()
   }
 }
 
+
+void QgsO2::setState( const QString & )
+{
+  qsrand( QTime::currentTime().msec() );
+  state_ = QString::number( qrand() );
+  Q_EMIT stateChanged();
+}
+
+
 void QgsO2::onVerificationReceived( QMap<QString, QString> response )
 {
   QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Emitting closeBrowser()" ), 4 );
@@ -294,6 +303,32 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     timedReplies_.add( tokenReply );
     connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
     connect( tokenReply, qgis::overload<QNetworkReply::NetworkError>::of( &QNetworkReply::error ), this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
+  }
+  else if ( grantFlow_ == GrantFlowImplicit )
+  {
+    // Check for mandatory tokens
+    if ( response.contains( O2_OAUTH2_ACCESS_TOKEN ) )
+    {
+      qDebug() << "O2::onVerificationReceived: Access token returned for implicit flow";
+      setToken( response.value( O2_OAUTH2_ACCESS_TOKEN ) );
+      if ( response.contains( O2_OAUTH2_EXPIRES_IN ) )
+      {
+        bool ok = false;
+        int expiresIn = response.value( O2_OAUTH2_EXPIRES_IN ).toInt( &ok );
+        if ( ok )
+        {
+          qDebug() << "O2::onVerificationReceived: Token expires in" << expiresIn << "seconds";
+          setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + expiresIn );
+        }
+      }
+      setLinked( true );
+      Q_EMIT linkingSucceeded();
+    }
+    else
+    {
+      qWarning() << "O2::onVerificationReceived: Access token missing from response for implicit flow";
+      Q_EMIT linkingFailed();
+    }
   }
   else
   {
