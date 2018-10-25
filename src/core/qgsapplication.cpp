@@ -200,6 +200,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
   qRegisterMetaType<QgsStyle::StyleEntity>( "QgsStyle::StyleEntity" );
   qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
+  qRegisterMetaType<QgsAuthManager::MessageLevel>( "QgsAuthManager::MessageLevel" );
 
   ( void ) resolvePkgPath();
 
