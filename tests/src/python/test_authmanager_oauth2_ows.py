@@ -81,7 +81,6 @@ def setup_oauth(username, password, token_uri, refresh_token_uri='', authcfg_id=
         "requestTimeout": '30',
         "requestUrl": "",
         "scope": "",
-        "state": "",
         "tokenUrl": token_uri,
         "username": username,
         "version": 1
