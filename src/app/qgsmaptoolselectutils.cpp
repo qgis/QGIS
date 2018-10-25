@@ -243,7 +243,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   if ( r )
     request.setSubsetOfAttributes( r->usedAttributes( context ), vlayer->fields() );
   else
-    request.setSubsetOfAttributes( QgsAttributeList() );
+    request.setNoAttributes();
 
   QgsFeatureIterator fit = vlayer->getFeatures( request );
 

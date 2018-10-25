@@ -523,7 +523,7 @@ void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
 
     QgsFeatureRequest linkingFeaturesRequest;
     linkingFeaturesRequest.setFlags( QgsFeatureRequest::NoGeometry );
-    linkingFeaturesRequest.setSubsetOfAttributes( QgsAttributeList() );
+    linkingFeaturesRequest.setNoAttributes();
 
     QString linkingFeaturesRequestExpression;
     if ( !deletedFeaturesPks.empty() )
@@ -618,7 +618,7 @@ void QgsRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &featureids )
                        filters.join( QStringLiteral( " OR " ) ) );
 
     QgsFeatureIterator linkedIterator = mRelation.referencingLayer()->getFeatures( QgsFeatureRequest()
-                                        .setSubsetOfAttributes( QgsAttributeList() )
+                                        .setNoAttributes()
                                         .setFilterExpression( filter ) );
 
     QgsFeatureIds fids;

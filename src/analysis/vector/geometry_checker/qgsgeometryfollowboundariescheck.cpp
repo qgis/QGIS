@@ -64,7 +64,7 @@ void QgsGeometryFollowBoundariesCheck::collectErrors( const QMap<QString, QgsFea
     searchBounds.grow( mContext->tolerance );
     QgsFeatureIds refFeatureIds = mIndex->intersects( searchBounds ).toSet();
 
-    QgsFeatureRequest refFeatureRequest = QgsFeatureRequest().setFilterFids( refFeatureIds ).setSubsetOfAttributes( QgsAttributeList() );
+    QgsFeatureRequest refFeatureRequest = QgsFeatureRequest().setFilterFids( refFeatureIds ).setNoAttributes();
     QgsFeatureIterator refFeatureIt = mCheckLayer->getFeatures( refFeatureRequest );
 
     if ( refFeatureIds.isEmpty() )

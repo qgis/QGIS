@@ -74,7 +74,7 @@ void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
 
   QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter )
                               .setExpressionContext( context )
-                              .setSubsetOfAttributes( QgsAttributeList() );
+                              .setNoAttributes();
 
   QgsFeatureIterator features = mLayer->getFeatures( request );
 
@@ -122,7 +122,7 @@ void QgsSelectByFormDialog::flashFeatures( const QString &filter )
 
   QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter )
                               .setExpressionContext( context )
-                              .setSubsetOfAttributes( QgsAttributeList() );
+                              .setNoAttributes();
 
   QgsFeatureIterator features = mLayer->getFeatures( request );
   QgsFeature feat;

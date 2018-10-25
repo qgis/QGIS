@@ -510,7 +510,7 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer *layer, QSet<QStrin
   {
     QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
                                           .setFilterRect( mContext.extent() )
-                                          .setSubsetOfAttributes( QgsAttributeList() ) );
+                                          .setNoAttributes() );
 
     // total number of features that may be labeled
     QgsFeature f;

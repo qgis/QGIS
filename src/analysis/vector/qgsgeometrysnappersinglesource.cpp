@@ -314,7 +314,7 @@ int QgsGeometrySnapperSingleSource::run( const QgsFeatureSource &source, QgsFeat
   QgsSpatialIndex index;
   QVector<AnchorPoint> pnts;
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   QgsFeatureIterator fi = source.getFeatures( request );
   buildSnapIndex( fi, index, pnts, feedback, count, totalCount );
 

@@ -485,7 +485,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       QgsRectangle layerRect = toLayerCoordinates( vlayer, map_rect );
       QgsFeature f;
-      QgsFeatureIterator fi = vlayer->getFeatures( QgsFeatureRequest( layerRect ).setSubsetOfAttributes( QgsAttributeList() ) );
+      QgsFeatureIterator fi = vlayer->getFeatures( QgsFeatureRequest( layerRect ).setNoAttributes() );
       while ( fi.nextFeature( f ) )
       {
         bool isFeatureSelected = vlayer->selectedFeatureIds().contains( f.id() );
@@ -994,7 +994,7 @@ QgsGeometry QgsVertexTool::cachedGeometry( const QgsVectorLayer *layer, QgsFeatu
   if ( !layerCache.contains( fid ) )
   {
     QgsFeature f;
-    layer->getFeatures( QgsFeatureRequest( fid ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f );
+    layer->getFeatures( QgsFeatureRequest( fid ).setNoAttributes() ).nextFeature( f );
     layerCache[fid] = f.geometry();
   }
 
@@ -1488,7 +1488,7 @@ QgsPointXY QgsVertexTool::matchToLayerPoint( const QgsVectorLayer *destLayer, co
   if ( match && match->hasVertex() && match->layer() && match->layer()->crs() == destLayer->crs() )
   {
     QgsFeature f;
-    QgsFeatureIterator fi = match->layer()->getFeatures( QgsFeatureRequest( match->featureId() ).setSubsetOfAttributes( QgsAttributeList() ) );
+    QgsFeatureIterator fi = match->layer()->getFeatures( QgsFeatureRequest( match->featureId() ).setNoAttributes() );
     if ( fi.nextFeature( f ) )
       return f.geometry().vertexAt( match->vertexIndex() );
   }

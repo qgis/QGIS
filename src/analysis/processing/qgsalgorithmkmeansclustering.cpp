@@ -95,7 +95,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
   QgsFeature feat;
 
   std::vector< Feature > clusterFeatures;
-  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setNoAttributes() );
   QHash< QgsFeatureId, int > idToObj;
   while ( features.nextFeature( feat ) )
   {

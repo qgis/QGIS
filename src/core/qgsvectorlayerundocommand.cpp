@@ -165,7 +165,7 @@ void QgsVectorLayerUndoCommandChangeGeometry::undo()
       mBuffer->mChangedGeometries.remove( mFid );
 
       QgsFeature f;
-      if ( layer()->getFeatures( QgsFeatureRequest().setFilterFid( mFid ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) && f.hasGeometry() )
+      if ( layer()->getFeatures( QgsFeatureRequest().setFilterFid( mFid ).setNoAttributes() ).nextFeature( f ) && f.hasGeometry() )
       {
         emit mBuffer->geometryChanged( mFid, f.geometry() );
       }

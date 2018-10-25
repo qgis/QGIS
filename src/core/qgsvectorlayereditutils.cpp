@@ -40,7 +40,7 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
     return false;
 
   QgsFeature f;
-  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setNoAttributes() ).nextFeature( f ) || !f.hasGeometry() )
     return false; // geometry not found
 
   QgsGeometry geometry = f.geometry();
@@ -57,7 +57,7 @@ bool QgsVectorLayerEditUtils::insertVertex( const QgsPoint &point, QgsFeatureId 
     return false;
 
   QgsFeature f;
-  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setNoAttributes() ).nextFeature( f ) || !f.hasGeometry() )
     return false; // geometry not found
 
   QgsGeometry geometry = f.geometry();
@@ -80,7 +80,7 @@ bool QgsVectorLayerEditUtils::moveVertex( const QgsPoint &p, QgsFeatureId atFeat
     return false;
 
   QgsFeature f;
-  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setNoAttributes() ).nextFeature( f ) || !f.hasGeometry() )
     return false; // geometry not found
 
   QgsGeometry geometry = f.geometry();
@@ -98,7 +98,7 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId f
     return QgsVectorLayer::InvalidLayer;
 
   QgsFeature f;
-  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setNoAttributes() ).nextFeature( f ) || !f.hasGeometry() )
     return QgsVectorLayer::FetchFeatureFailed; // geometry not found
 
   QgsGeometry geometry = f.geometry();
@@ -190,7 +190,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( const QgsPointSeq
   QgsGeometry geometry;
   bool firstPart = false;
   QgsFeature f;
-  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setNoAttributes() ).nextFeature( f ) )
     return QgsGeometry::OperationResult::AddPartSelectedGeometryNotFound; //not found
 
   if ( !f.hasGeometry() )
@@ -225,7 +225,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, Q
   QgsGeometry geometry;
   bool firstPart = false;
   QgsFeature f;
-  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setNoAttributes() ).nextFeature( f ) )
     return QgsGeometry::AddPartSelectedGeometryNotFound;
 
   if ( !f.hasGeometry() )
@@ -259,7 +259,7 @@ int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx
     return 1;
 
   QgsFeature f;
-  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setNoAttributes() ).nextFeature( f ) || !f.hasGeometry() )
     return 1; //geometry not found
 
   QgsGeometry geometry = f.geometry();
@@ -632,7 +632,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
   QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest()
                            .setFilterRect( searchRect )
                            .setFlags( QgsFeatureRequest::ExactIntersect )
-                           .setSubsetOfAttributes( QgsAttributeList() ) );
+                           .setNoAttributes() );
 
   QMap<QgsFeatureId, QgsGeometry> features;
   QMap<QgsFeatureId, int> segments;

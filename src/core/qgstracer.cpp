@@ -476,7 +476,7 @@ bool QgsTracer::initGraph()
   for ( QgsVectorLayer *vl : qgis::as_const( mLayers ) )
   {
     QgsFeatureRequest request;
-    request.setSubsetOfAttributes( QgsAttributeList() );
+    request.setNoAttributes();
     request.setDestinationCrs( mCRS, mTransformContext );
     if ( !mExtent.isEmpty() )
       request.setFilterRect( mExtent );
