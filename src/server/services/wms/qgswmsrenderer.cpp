@@ -66,7 +66,6 @@
 #include "qgslayerrestorer.h"
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
-#include "qgslayoutitemlegend.h"
 #include "qgsserverexception.h"
 
 #include <QImage>
@@ -80,6 +79,7 @@
 #include "qgslayoutmanager.h"
 #include "qgslayoutexporter.h"
 #include "qgslayoutsize.h"
+#include "qgslayoutrendercontext.h"
 #include "qgslayoutmeasurement.h"
 #include "qgsprintlayout.h"
 #include "qgslayoutpagecollection.h"
@@ -450,7 +450,7 @@ namespace QgsWms
 
   bool QgsRenderer::configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings )
   {
-
+    c->renderContext().setFlag( QgsLayoutRenderContext::FlagDrawSelection, true );
     // Maps are configured first
     QList<QgsLayoutItemMap *> maps;
     c->layoutItems<QgsLayoutItemMap>( maps );

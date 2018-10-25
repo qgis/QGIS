@@ -45,6 +45,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
       FlagUseAdvancedEffects = 1 << 4, //!< Enable advanced effects such as blend modes.
       FlagForceVectorOutput = 1 << 5, //!< Force output in vector format where possible, even if items require rasterization to keep their correct appearance.
       FlagHideCoverageLayer = 1 << 6, //!< Hide coverage layer in outputs
+      FlagDrawSelection = 1 << 7, //!< Draw selection
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
