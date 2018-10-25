@@ -110,7 +110,7 @@ Sets the global window ``manager``. Ownership is transferred to the QgsGui insta
 
     static QgsGui::HigFlags higFlags();
 %Docstring
-Returns HIG flags. Currently indicates whether titles should be title case depending on the current locale.
+Returns the platform's HIG flags.
 
 .. versionadded:: 3.4
 %End

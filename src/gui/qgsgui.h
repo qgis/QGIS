@@ -126,8 +126,8 @@ class GUI_EXPORT QgsGui
     static void setWindowManager( QgsWindowManagerInterface *manager SIP_TRANSFER );
 
     /**
-    * HIG flags. Currently indicate whether titles should be title case depending on the current locale.
-    * \since QGIS 3.4
+     * HIG flags, which indicate the Human Interface Guidelines for the current platform.
+     * \since QGIS 3.4
     */
     enum HigFlag
     {
@@ -137,7 +137,7 @@ class GUI_EXPORT QgsGui
     Q_DECLARE_FLAGS( HigFlags, HigFlag )
 
     /**
-    * Returns HIG flags. Currently indicates whether titles should be title case depending on the current locale.
+    * Returns the platform's HIG flags.
     * \since QGIS 3.4
     */
     static QgsGui::HigFlags higFlags();
