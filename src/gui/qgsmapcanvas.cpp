@@ -690,7 +690,13 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage &img, const QgsMapSettings &m
   // expects (encoding of position and size of the item)
   const QgsMapToPixel &m2p = mapSettings.mapToPixel();
   QgsPointXY topLeft = m2p.toMapCoordinates( 0, 0 );
-  Q_ASSERT( img.devicePixelRatio() == mapSettings.devicePixelRatio() );
+#ifdef QGISDEBUG
+  // do not assert this, since it might lead to crashes when changing screen while rendering
+  if( img.devicePixelRatio() != mapSettings.devicePixelRatio() )
+    {
+      QgsLogger::warning( QStringLiteral( "The renderer map has a wrong device pixel ratio" ) );
+    }
+#endif
 #if QT_VERSION >= 0x050600
   double res = m2p.mapUnitsPerPixel() / img.devicePixelRatioF();
 #else
