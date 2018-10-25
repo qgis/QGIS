@@ -12,6 +12,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
 import qgis  # NOQA
 import tempfile
 
@@ -20,6 +21,7 @@ from qgis.core import (QgsReadWriteContext,
                        QgsProject)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtCore import QTemporaryDir
 
 start_app()
 
@@ -104,6 +106,15 @@ class TestQgsMapLayer(unittest.TestCase):
         message, status = layer2.loadNamedMetadata(destination)
         self.assertTrue(status)
         self.assertTrue(layer2.metadata().abstract(), 'My abstract')
+
+    def testSaveNamedStyle(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "layer", "memory")
+        dir = QTemporaryDir()
+        dir_path = dir.path()
+        style_path = os.path.join(dir_path, 'my.qml')
+        _, result = layer.saveNamedStyle(style_path)
+        self.assertTrue(result)
+        self.assertTrue(os.path.exists(style_path))
 
 
 if __name__ == '__main__':
