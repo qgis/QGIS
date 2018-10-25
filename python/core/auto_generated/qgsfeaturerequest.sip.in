@@ -515,6 +515,15 @@ To revert a call to setSubsetOfAttributes and fetch all available attributes,
 the SubsetOfAttributes flag should be removed from the request.
 %End
 
+    QgsFeatureRequest &setNoAttributes();
+%Docstring
+Set that no attributes will be fetched.
+To revert a call to setNoAttributes and fetch all or some available attributes,
+the SubsetOfAttributes flag should be removed from the request.
+
+.. versionadded:: 3.4
+%End
+
     QgsAttributeList subsetOfAttributes() const;
 %Docstring
 Returns the subset of attributes which at least need to be fetched
