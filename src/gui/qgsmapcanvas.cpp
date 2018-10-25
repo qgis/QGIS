@@ -990,8 +990,39 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
   }
 
   rect = mapSettings().layerExtentToOutputExtent( layer, rect );
+
+  // zoom in if point cannot be distinguish from others
+  // also check that rect is empty, as it might not in case of multi points
+  if ( layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
+  {
+    QgsPointXY center = mSettings.mapToLayerCoordinates( layer, rect.center() );
+    QgsRectangle extentRect = mSettings.mapToLayerCoordinates( layer, extent() );
+    QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( extentRect ).setLimit( 1000 ).setNoAttributes();
+    QgsFeatureIterator fit = layer->getFeatures( req );
+    QgsFeature f;
+    QgsPointXY closestPoint;
+    double closestSquaredDistance = extentRect.width() + extentRect.height();
+    bool pointFound = false;
+    while ( fit.nextFeature( f ) )
+    {
+      QgsPointXY point = f.geometry().asPoint();
+      double sqrDist = point.sqrDist( center );
+      if ( sqrDist > closestSquaredDistance || sqrDist < 4 * std::numeric_limits<double>::epsilon() )
+        continue;
+      pointFound = true;
+      closestPoint = point;
+      closestSquaredDistance = sqrDist;
+    }
+    if ( pointFound )
+    {
+      // combine selected point with closest point and scale this rect
+      rect.combineExtentWith( mSettings.layerToMapCoordinates( layer, closestPoint ) );
+      rect.scale( 5, &center );
+    }
+  }
+
   zoomToFeatureExtent( rect );
-} // zoomToSelected
+}
 
 void QgsMapCanvas::zoomToFeatureExtent( QgsRectangle &rect )
 {
