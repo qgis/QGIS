@@ -208,7 +208,7 @@ bool QgsFeatureListComboBox::event( QEvent *event )
   if ( event->type() == QEvent::EnabledChange )
     mLineEdit->setShowClearButton( true );
 
-  return QComboBox::event( event );;
+  return QComboBox::event( event );
 }
 
 bool QgsFeatureListComboBox::allowNull() const
