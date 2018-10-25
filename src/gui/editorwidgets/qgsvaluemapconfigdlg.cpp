@@ -23,6 +23,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
+#include <QClipboard>
+#include <QKeyEvent>
 
 QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -39,6 +41,7 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
   connect( loadFromLayerButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::loadFromLayerButtonPushed );
   connect( loadFromCSVButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::loadFromCSVButtonPushed );
   connect( tableWidget, &QTableWidget::cellChanged, this, &QgsValueMapConfigDlg::vCellChanged );
+  tableWidget->installEventFilter( this );
 }
 
 QVariantMap QgsValueMapConfigDlg::config()
@@ -196,6 +199,21 @@ void QgsValueMapConfigDlg::populateComboBox( QComboBox *comboBox, const QVariant
   }
 }
 
+bool QgsValueMapConfigDlg::eventFilter( QObject *watched, QEvent *event )
+{
+  Q_UNUSED( watched )
+  if ( event->type() == QEvent::KeyRelease )
+  {
+    QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
+    if ( keyEvent->matches( QKeySequence::Copy ) )
+    {
+      copySelectionToClipboard();
+      return true;
+    }
+  }
+  return false;
+}
+
 void QgsValueMapConfigDlg::setRow( int row, const QString &value, const QString &description )
 {
   QgsSettings settings;
@@ -217,6 +235,33 @@ void QgsValueMapConfigDlg::setRow( int row, const QString &value, const QString 
   }
   tableWidget->setItem( row, 0, valueCell );
   tableWidget->setItem( row, 1, descriptionCell );
+}
+
+void QgsValueMapConfigDlg::copySelectionToClipboard()
+{
+  QAbstractItemModel *model = tableWidget->model();
+  QItemSelectionModel *selection = tableWidget->selectionModel();
+  const QModelIndexList indexes = selection->selectedIndexes();
+
+  QString clipboardText;
+  QModelIndex previous = indexes.first();
+  std::unique_ptr<QMimeData> mimeData = qgis::make_unique<QMimeData>();
+  for ( const QModelIndex &current : indexes )
+  {
+    const QString text = model->data( current ).toString();
+    if ( current.row() != previous.row() )
+    {
+      clipboardText.append( '\n' );
+    }
+    else if ( current.column() != previous.column() )
+    {
+      clipboardText.append( '\t' );
+    }
+    clipboardText.append( text );
+    previous = current;
+  }
+  mimeData->setData( QStringLiteral( "text/plain" ), clipboardText.toUtf8() );
+  QApplication::clipboard()->setMimeData( mimeData.release() );
 }
 
 void QgsValueMapConfigDlg::addNullButtonPushed()

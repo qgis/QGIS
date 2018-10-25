@@ -51,10 +51,13 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
      */
     static void populateComboBox( QComboBox *comboBox, const QVariantMap &configuration, bool skipNull );
 
+    bool eventFilter( QObject *watched, QEvent *event ) override;
+
   private:
     void setRow( int row, const QString &value, const QString &description );
 
   private slots:
+    void copySelectionToClipboard();
     void vCellChanged( int row, int column );
     void addNullButtonPushed();
     void removeSelectedButtonPushed();
