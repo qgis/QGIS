@@ -98,7 +98,8 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   {
     std::unique_ptr<QgsAbstractGeometry> gapGeom( QgsGeometryCheckerUtils::getGeomPart( diffGeom.get(), iPart )->clone() );
     // Skip the gap between features and boundingbox
-    if ( gapGeom->boundingBox() == envelope->boundingBox() )
+    const double spacing = context()->tolerance;
+    if ( gapGeom->boundingBox().snappedToGrid( spacing ) == envelope->boundingBox().snappedToGrid( spacing ) )
     {
       continue;
     }
