@@ -301,6 +301,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     /** \brief sublayers list saved for subsequent access */
     QStringList mSubLayers;
+
+    bool mStatisticsAreReliable;
 };
 
 #endif
