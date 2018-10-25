@@ -118,3 +118,8 @@ QgsNative::NotificationResult QgsMacNative::showDesktopNotification( const QStri
   result.successful = true;
   return result;
 }
+
+bool QgsMacNative::hasDarkTheme()
+{
+  return ( NSApp.effectiveAppearance.name != NSAppearanceNameAqua );
+}

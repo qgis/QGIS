@@ -2002,8 +2002,8 @@ int QgisApp::dockedToolbarIconSize( int standardToolbarIconSize ) const
 void QgisApp::readSettings()
 {
   QgsSettings settings;
-  QString themename = settings.value( QStringLiteral( "UI/UITheme" ), "default" ).toString();
-  setTheme( themename );
+  QString themeName = settings.value( QStringLiteral( "UI/UITheme" ), "default" ).toString();
+  setTheme( themeName );
 
   // Read legacy settings
   readRecentProjects();
@@ -3208,7 +3208,21 @@ void QgisApp::setTheme( const QString &themeName )
   for the user to choose from.
   */
 
-  QgsApplication::setUITheme( themeName );
+  QString theme = themeName;
+#ifdef Q_OS_MAC
+#if QT_VERSION < QT_VERSION_CHECK( 5, 12, 0 )
+  if ( theme == QStringLiteral( "default" ) &&
+       QgsGui::instance()->nativePlatformInterface()->hasDarkTheme() )
+  {
+    QString darkTheme = QStringLiteral( "Night Mapping" );
+    if ( QgsApplication::uiThemes().contains( darkTheme ) )
+      theme = darkTheme;
+  }
+#endif
+#endif
+
+  QgsApplication::setUITheme( theme );
+
   //QgsDebugMsg("Setting theme to \n" + themeName);
   mActionNewProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileNew.svg" ) ) );
   mActionOpenProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
