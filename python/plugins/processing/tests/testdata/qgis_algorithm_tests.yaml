@@ -6232,5 +6232,22 @@ tests:
         name: expected/interpolate_point_polys.gml
         type: vector
 
+  - algorithm: native:mergevectorlayersconflictingfid
+    name: Merge vector layers with conflicting feature ids
+    params:
+      LAYERS:
+        params:
+        - name: custom/pol.gpkg|layername=pol1
+          type: vector
+        - name: custom/pol.gpkg|layername=pol2
+          type: vector
+        - name: custom/pol.gpkg|layername=pol3
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: ogr:dbname='expected/merged_pol.gpkg' table="output" (geom) sql=
+        uri: expected/merged_pol.gpkg|layername=output
+        type: vector
 
 # See ../README.md for a description of the file format
