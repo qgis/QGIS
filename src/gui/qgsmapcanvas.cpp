@@ -991,7 +991,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
 
   rect = mapSettings().layerExtentToOutputExtent( layer, rect );
 
-  // zoom in if point cannot be distinguish from others
+  // zoom in if point cannot be distinguished from others
   // also check that rect is empty, as it might not in case of multi points
   if ( layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
   {
