@@ -221,6 +221,8 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     bool mIsCurrentlyEdited = false;
     bool mHasStoredEditState = false;
     LineEditState mLineEditState;
+
+    friend class TestQgsFeatureListComboBox;
 };
 
 #endif // QGSFIELDLISTCOMBOBOX_H
