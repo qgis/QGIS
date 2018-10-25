@@ -995,8 +995,9 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
   // also check that rect is empty, as it might not in case of multi points
   if ( layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
   {
+    int scaleFactor = 5;
     QgsPointXY center = mSettings.mapToLayerCoordinates( layer, rect.center() );
-    QgsRectangle extentRect = mSettings.mapToLayerCoordinates( layer, extent() );
+    QgsRectangle extentRect = mSettings.mapToLayerCoordinates( layer, extent() ).scaled( 1.0 / scaleFactor );
     QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( extentRect ).setLimit( 1000 ).setNoAttributes();
     QgsFeatureIterator fit = layer->getFeatures( req );
     QgsFeature f;
@@ -1017,7 +1018,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
     {
       // combine selected point with closest point and scale this rect
       rect.combineExtentWith( mSettings.layerToMapCoordinates( layer, closestPoint ) );
-      rect.scale( 5, &center );
+      rect.scale( scaleFactor, &center );
     }
   }
 
