@@ -432,7 +432,6 @@ void O2::refresh() {
 
 void O2::onRefreshFinished() {
     QNetworkReply *refreshReply = qobject_cast<QNetworkReply *>(sender());
-    qDebug() << "O2::onRefreshFinished: Error" << (int)refreshReply->error() << refreshReply->errorString();
     if (refreshReply->error() == QNetworkReply::NoError) {
         QByteArray reply = refreshReply->readAll();
         QVariantMap tokens = parseTokenResponse(reply);
@@ -444,6 +443,10 @@ void O2::onRefreshFinished() {
         Q_EMIT linkingSucceeded();
         Q_EMIT refreshFinished(QNetworkReply::NoError);
         qDebug() << " New token expires in" << expires() << "seconds";
+    }
+    else
+    {
+      qDebug() << "O2::onRefreshFinished: Error" << (int)refreshReply->error() << refreshReply->errorString();
     }
     refreshReply->deleteLater();
 }
