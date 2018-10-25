@@ -147,6 +147,8 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
 
     void keyPressEvent( QKeyEvent *event ) override;
 
+    bool event( QEvent *event ) override;
+
   signals:
 
     /**
