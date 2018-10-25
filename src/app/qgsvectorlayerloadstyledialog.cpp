@@ -156,7 +156,7 @@ void QgsVectorLayerLoadStyleDialog::initializeLists( const QStringList &ids, con
   mRelatedTable->setDisabled( relatedTableNOfCols == 1 );
   mOthersTable->setDisabled( othersTableNOfCols == 1 );
 
-  if ( sectionLimit > 0 )
+  if ( sectionLimit >= 0 )
   {
     for ( int i = 0; i < sectionLimit; i++ )
     {
