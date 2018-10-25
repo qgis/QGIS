@@ -294,6 +294,8 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
     //! Returns true if clear button should be shown
     bool shouldShowClear() const;
+
+    friend class TestQgsFeatureListComboBox;
 };
 
 /// @cond PRIVATE
