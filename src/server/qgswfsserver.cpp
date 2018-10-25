@@ -2070,12 +2070,11 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
   typeNameElement.setAttribute( "fid", mTypeName + "." + gmlId );
   featureElement.appendChild( typeNameElement );
 
-  const QgsGeometry* geom = feat->constGeometry();
+  const QgsGeometry* cGeom = feat->constGeometry();
+  QgsGeometry *geom = new QgsGeometry( *cGeom );
   if ( isMultiGeom && QgsWKBTypes::isSingleType( QGis::fromOldWkbType( geom->wkbType() ) ) )
   {
-    QgsGeometry cloneGeom( *geom );
-    cloneGeom.convertToMultiType();
-    geom = &cloneGeom;
+    geom->convertToMultiType();
   }
   if ( geom && mWithGeom && mGeometryName != "NONE" )
   {
@@ -2121,6 +2120,7 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
       typeNameElement.appendChild( geomElem );
     }
   }
+  delete geom;
 
   //read all attribute values from the feature
   QgsAttributes featureAttributes = feat->attributes();
@@ -2160,12 +2160,12 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
   typeNameElement.setAttribute( "gml:id", mTypeName + "." + gmlId );
   featureElement.appendChild( typeNameElement );
 
-  const QgsGeometry* geom = feat->constGeometry();
+
+  const QgsGeometry* cGeom = feat->constGeometry();
+  QgsGeometry *geom = new QgsGeometry( *cGeom );
   if ( isMultiGeom && QgsWKBTypes::isSingleType( QGis::fromOldWkbType( geom->wkbType() ) ) )
   {
-    QgsGeometry cloneGeom( *geom );
-    cloneGeom.convertToMultiType();
-    geom = &cloneGeom;
+    geom->convertToMultiType();
   }
   if ( geom && mWithGeom && mGeometryName != "NONE" )
   {
@@ -2211,6 +2211,7 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
       typeNameElement.appendChild( geomElem );
     }
   }
+  delete geom;
 
   //read all attribute values from the feature
   QgsAttributes featureAttributes = feat->attributes();
