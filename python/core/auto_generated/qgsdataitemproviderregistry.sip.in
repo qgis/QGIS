@@ -10,7 +10,7 @@
 
 
 
-class QgsDataItemProviderRegistry
+class QgsDataItemProviderRegistry : QObject
 {
 %Docstring
 This class keeps a list of data item providers that may add items to the browser tree.
@@ -20,6 +20,7 @@ QgsDataItemProviderRegistry is not usually directly created, but rather accessed
 :py:func:`QgsApplication.dataItemProviderRegistry()`
 
 .. versionadded:: 2.10
+/
 %End
 
 %TypeHeaderCode
@@ -31,6 +32,10 @@ QgsDataItemProviderRegistry is not usually directly created, but rather accessed
 
     ~QgsDataItemProviderRegistry();
 
+    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry &rh ) = delete;
+%Docstring
+QgsDataItemProviderRegistry cannot be copied.
+%End
 
     QList<QgsDataItemProvider *> providers() const;
 %Docstring
@@ -45,6 +50,22 @@ Add a provider implementation. Takes ownership of the object.
     void removeProvider( QgsDataItemProvider *provider );
 %Docstring
 Remove provider implementation from the list (provider object is deleted)
+%End
+
+  signals:
+
+    void providerAdded( QgsDataItemProvider *provider );
+%Docstring
+Fired when a new provider has been added to the registery
+@param provider The new data provider
+/
+%End
+
+    void providerWillBeRemoved( QgsDataItemProvider *provider );
+%Docstring
+Fired when a provider will be removed from the registery
+@param provider The data provider that has been removed.
+/
 %End
 
   private:

@@ -9,6 +9,7 @@
 
 
 
+
 class QgsBrowserModel : QAbstractItemModel
 {
 %Docstring
@@ -22,6 +23,7 @@ items for the different data providers and folders accessible to users.
 QgsBrowserModel models are not initially populated and use a deferred initialization
 approach. After constructing a QgsBrowserModel, a call must be made
 to initialize() in order to populate the model.
+/
 %End
 
 %TypeHeaderCode
@@ -38,6 +40,7 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
    QgsBrowserModel models are not initially populated and use a deferred initialization
    approach. After constructing a QgsBrowserModel, a call must be made
    to initialize() in order to populate the model.
+   /
 %End
 
     ~QgsBrowserModel();
@@ -86,12 +89,14 @@ If the item was not found, an invalid QModelIndex is returned.
 If the ``parent`` item is argument is specified, then only items which are children
 of ``parent`` are searched. If no ``parent`` is specified, then all items within
 the model are searched.
+/
 %End
 
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
 %Docstring
 Returns the data item at the specified index, or a None if no item
 exists at the index.
+/
 %End
 
     void refresh( const QString &path );
@@ -113,7 +118,7 @@ items, i.e. it does not fetch children.
 :param matchFlag: supported is Qt.MatchExactly and Qt.MatchStartsWith which has reverse meaning, i.e. find
                   item with the longest match from start with path (to get as close/deep as possible to deleted item).
 
-:return: model index, invalid if item not found *
+:return: model index, invalid if item not found */
 %End
 
 
@@ -121,6 +126,7 @@ items, i.e. it does not fetch children.
 %Docstring
 
 .. deprecated:: Deprecated since QGIS 3.4 -- this method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
+/
 %End
 
     bool initialized() const;
@@ -128,6 +134,7 @@ items, i.e. it does not fetch children.
 Returns true if the model has been initialized.
 
 .. seealso:: :py:func:`initialize`
+/
 %End
 
   signals:
@@ -140,6 +147,7 @@ Emitted when item children fetch was finished
 %Docstring
 Connections changed in the browser, forwarded to the widget and used to
 notify the provider dialogs of a changed connection
+/
 %End
 
   public slots:
@@ -148,12 +156,23 @@ notify the provider dialogs of a changed connection
 Reload the whole model
 %End
 
+    bool addProvider( QgsDataItemProvider *provider );
+%Docstring
+Add a new provider to the model.
+@param provider
+@return
+/
+%End
+
+    void removeProvider( QgsDataItemProvider *provider );
+
     void refreshDrives();
 %Docstring
 Refreshes the list of drive items, removing any corresponding to removed
 drives and adding newly added drives.
 
 .. versionadded:: 3.4
+/
 %End
 
     void beginInsertItems( QgsDataItem *parent, int first, int last );
@@ -173,6 +192,7 @@ the name will be set to match ``directory``.
 .. seealso:: :py:func:`removeFavorite`
 
 .. versionadded:: 3.0
+/
 %End
 
     void removeFavorite( const QModelIndex &index );
@@ -182,6 +202,7 @@ Removes a favorite directory from its corresponding model index.
 .. seealso:: :py:func:`addFavoriteDirectory`
 
 .. versionadded:: 3.0
+/
 %End
 
     void updateProjectHome();
@@ -196,6 +217,7 @@ Hide the given path in the browser model
 Delayed initialization, needed because the provider registry must be already populated.
 
 .. seealso:: :py:func:`initialized`
+/
 %End
 
   protected:

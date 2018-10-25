@@ -16,6 +16,7 @@
 #ifndef QGSDATAITEMPROVIDERREGISTRY_H
 #define QGSDATAITEMPROVIDERREGISTRY_H
 
+#include <QObject>
 #include <QList>
 #include "qgis.h"
 
@@ -33,8 +34,9 @@ class QgsDataItemProvider;
  *
  * \since QGIS 2.10
  */
-class CORE_EXPORT QgsDataItemProviderRegistry
+class CORE_EXPORT QgsDataItemProviderRegistry : public QObject
 {
+    Q_OBJECT
   public:
 
     QgsDataItemProviderRegistry();
@@ -54,6 +56,20 @@ class CORE_EXPORT QgsDataItemProviderRegistry
 
     //! Remove provider implementation from the list (provider object is deleted)
     void removeProvider( QgsDataItemProvider *provider );
+
+  signals:
+
+    /**
+     * Fired when a new provider has been added to the registery
+     * @param provider The new data provider
+     */
+    void providerAdded( QgsDataItemProvider *provider );
+
+    /**
+     * Fired when a provider will be removed from the registery
+     * @param provider The data provider that has been removed.
+     */
+    void providerWillBeRemoved( QgsDataItemProvider *provider );
 
   private:
 #ifdef SIP_RUN

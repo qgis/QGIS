@@ -25,6 +25,8 @@
 
 #include "qgsdataitem.h"
 
+class QgsDataItemProvider;
+
 /**
  * \ingroup core
  * \class QgsBrowserWatcher
@@ -163,6 +165,15 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void reload();
 
     /**
+     * Add a new provider to the model.
+     * @param provider
+     * @return
+     */
+    bool addProvider( QgsDataItemProvider *provider );
+
+    void removeProvider( QgsDataItemProvider *provider );
+
+    /**
      * Refreshes the list of drive items, removing any corresponding to removed
      * drives and adding newly added drives.
      *
@@ -216,6 +227,8 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QgsDirectoryItem *mProjectHome = nullptr;
 
   private:
+
+    QMap<QString, QgsDataItem *> mProviderMap;
     bool mInitialized = false;
     QMap< QString, QgsDataItem * > mDriveItems;
 

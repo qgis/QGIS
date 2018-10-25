@@ -125,11 +125,15 @@ QgsDataItemProviderRegistry::~QgsDataItemProviderRegistry()
 void QgsDataItemProviderRegistry::addProvider( QgsDataItemProvider *provider )
 {
   mProviders.append( provider );
+  emit providerAdded( provider );
 }
 
 void QgsDataItemProviderRegistry::removeProvider( QgsDataItemProvider *provider )
 {
   int index = mProviders.indexOf( provider );
   if ( index >= 0 )
+  {
+    emit providerWillBeRemoved( provider );
     delete mProviders.takeAt( index );
+  }
 }

@@ -1034,6 +1034,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( mBrowserWidget, &QgsBrowserDockWidget::connectionsChanged, this, &QgisApp::connectionsChanged );
   connect( mBrowserWidget, &QgsBrowserDockWidget::openFile, this, &QgisApp::openFile );
   connect( mBrowserWidget, &QgsBrowserDockWidget::handleDropUriList, this, &QgisApp::handleDropUriList );
+  connect( QgsApplication::dataItemProviderRegistry(), &QgsDataItemProviderRegistry::providerAdded, mBrowserModel, &QgsBrowserModel::addProvider );
+  connect( QgsApplication::dataItemProviderRegistry(), &QgsDataItemProviderRegistry::providerWillBeRemoved, mBrowserModel, &QgsBrowserModel::removeProvider );
 
   mBrowserWidget2 = new QgsBrowserDockWidget( tr( "Browser (2)" ), mBrowserModel, this );
   mBrowserWidget2->setObjectName( QStringLiteral( "Browser2" ) );
