@@ -18,13 +18,13 @@
 
 #include "qgis.h"
 #include "qgsmaptool.h"
-#include "qgsfeature.h"
 
 #include <QObject>
 #include <QPointer>
 #include "qgis_app.h"
 
 class QgsVectorLayer;
+class QgsFeature;
 
 /**
   \brief Map tool for running feature actions on the current layer

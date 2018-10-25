@@ -138,7 +138,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
     else
     {
       QMenu *featureMenu = new QMenu();
-      for ( const QgsFeature &feature : features )
+      for ( const QgsFeature &feature : qgis::as_const( features ) )
       {
         QAction *featureAction = featureMenu->addAction( FID_TO_STRING( feature.id() ) );
         connect( featureAction, &QAction::triggered, this, [ = ] { doActionForFeature( layer, feature, point );} );
@@ -146,7 +146,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
       QAction *allFeatureAction = featureMenu->addAction( tr( "All Features" ) );
       connect( allFeatureAction, &QAction::triggered, this, [ = ]
       {
-        for ( const QgsFeature &feature : features )
+        for ( const QgsFeature &feature : qgis::as_const( features ) )
         {
           doActionForFeature( layer, feature, point );
         }
