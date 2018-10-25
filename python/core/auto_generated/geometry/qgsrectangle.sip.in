@@ -185,7 +185,7 @@ Scale the rectangle around its center point.
 Scale the rectangle around its center point.
 %End
 
-    QgsRectangle scaled( double scaleFactor, const QgsPointXY *center = 0 );
+    QgsRectangle scaled( double scaleFactor, const QgsPointXY *center = 0 ) const;
 %Docstring
 Scale the rectangle around its ``center`` point.
 
