@@ -20,6 +20,7 @@ email                : hugo dot mercier at oslandia dot com
 
 #include "qgsvirtuallayerprovider.h"
 #include "qgsfeatureiterator.h"
+#include "qgsgeometryengine.h"
 
 #include <memory>
 #include <QPointer>
@@ -74,6 +75,7 @@ class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSour
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
 
+    std::unique_ptr< QgsGeometryEngine > mRectEngine;
 };
 
 #endif

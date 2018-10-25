@@ -866,9 +866,9 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         v1.addJoin(joinInfo2)
         self.assertEqual(len(v1.fields()), 7)
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(v1)
-        self.assertEqual(df.query(), ('SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "B_bname", j1."bfield" AS "B_bfield", j2."cname" AS "C_cname" FROM "{}" AS t ' +
-                                      'LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id" ' +
-                                      'LEFT JOIN "{}" AS j2 ON t."c_id"=j2."id"').format(v1.id(), v2.id(), v3.id()))
+        self.assertEqual(df.query(), ('SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "B_bname", j1."bfield" AS "B_bfield", j2."cname" AS "C_cname" FROM "{}" AS t '
+                                      + 'LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id" '
+                                      + 'LEFT JOIN "{}" AS j2 ON t."c_id"=j2."id"').format(v1.id(), v2.id(), v3.id()))
 
         # test NoGeometry joined layers with field names starting with a digit or containing white spaces
         joinInfo3 = QgsVectorLayerJoinInfo()
@@ -935,6 +935,45 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         features = [f for f in vl3.getFeatures()]
         self.assertEqual(len(features), 1)
         self.assertEqual(features[0].attributes(), [1, 'a', 'b'])
+
+        QgsProject.instance().removeMapLayer(ml)
+
+    def testFiltersWithoutUid(self):
+        ml = QgsVectorLayer("Point?srid=EPSG:4326&field=a:int", "mem_no_uid", "memory")
+        self.assertEqual(ml.isValid(), True)
+        QgsProject.instance().addMapLayer(ml)
+
+        # a memory layer with 10 features
+        ml.startEditing()
+        for i in range(10):
+            f = QgsFeature(ml.fields())
+            f.setGeometry(QgsGeometry.fromWkt('POINT({} 0)'.format(i)))
+            f.setAttributes([i])
+            ml.addFeatures([f])
+        ml.commitChanges()
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from mem_no_uid')
+        vl = QgsVectorLayer(df.toString(), "vl", "virtual")
+        self.assertEqual(vl.isValid(), True)
+
+        # make sure the returned id with a filter is the same as
+        # if there is no filter
+        req = QgsFeatureRequest().setFilterRect(QgsRectangle(4.5, -1, 5.5, 1))
+        fids = [f.id() for f in vl.getFeatures(req)]
+        self.assertEqual(fids, [5])
+
+        req = QgsFeatureRequest().setFilterExpression("a = 5")
+        fids = [f.id() for f in vl.getFeatures(req)]
+        self.assertEqual(fids, [5])
+
+        req = QgsFeatureRequest().setFilterFid(5)
+        a = [(f.id(), f['a']) for f in vl.getFeatures(req)]
+        self.assertEqual(a, [(5, 5)])
+
+        req = QgsFeatureRequest().setFilterFids([5, 6, 8])
+        a = [(f.id(), f['a']) for f in vl.getFeatures(req)]
+        self.assertEqual(a, [(5, 5), (6, 6), (8, 8)])
 
         QgsProject.instance().removeMapLayer(ml)
 
