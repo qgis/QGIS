@@ -1189,6 +1189,6 @@ namespace QgsWfs
     }
 
   } // namespace v1_0_0
-} // samespace QgsWfs
+} // namespace QgsWfs
 
 

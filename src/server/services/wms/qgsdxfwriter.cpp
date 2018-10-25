@@ -75,4 +75,4 @@ namespace QgsWms
   }
 
 
-} // samespace QgsWms
+} // namespace QgsWms

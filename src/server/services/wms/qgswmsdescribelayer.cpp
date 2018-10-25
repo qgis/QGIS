@@ -190,4 +190,4 @@ namespace QgsWms
     return myDocument;
   }
 
-} // samespace QgsWms
+} // namespace QgsWms

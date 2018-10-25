@@ -68,7 +68,7 @@ namespace QgsWms
     response.write( renderer.getPrint( format ) );
   }
 
-} // samespace QgsWms
+} // namespace QgsWms
 
 
 

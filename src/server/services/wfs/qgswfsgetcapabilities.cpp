@@ -637,7 +637,7 @@ namespace QgsWfs
     return featureTypeListElement;
   }
 
-} // samespace QgsWfs
+} // namespace QgsWfs
 
 
 

@@ -35,7 +35,7 @@ namespace QgsWms
   QDomDocument getContext( QgsServerInterface *serverIface, const QgsProject *project,
                            const QString &version, const QgsServerRequest &request );
 
-} // samespace QgsWms
+} // namespace QgsWms
 
 
 

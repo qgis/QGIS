@@ -1522,7 +1522,7 @@ namespace QgsWfs
 
   } // namespace
 
-} // samespace QgsWfs
+} // namespace QgsWfs
 
 
 
