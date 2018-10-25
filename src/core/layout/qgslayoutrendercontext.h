@@ -106,6 +106,20 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     double dpi() const;
 
     /**
+     * Sets color that is used for drawing of selected vector features
+     * \see selectionColor()
+     * \since QGIS 3.4
+     */
+    void setSelectionColor( const QColor &color ) { mSelectionColor = color; }
+
+    /**
+     * Gets color that is used for drawing of selected vector features
+     * \see setSelectionColor()
+     * \since QGIS 3.4
+     */
+    QColor selectionColor() const { return mSelectionColor; }
+
+    /**
      * Returns the layout measurement converter to be used in the layout. This converter is used
      * for translating between other measurement units and the layout's native unit.
      */
@@ -206,6 +220,8 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     QgsLayout *mLayout = nullptr;
 
     int mCurrentExportLayer = -1;
+
+    QColor mSelectionColor = Qt::yellow;
 
     QgsLayoutMeasurementConverter mMeasurementConverter;
 
