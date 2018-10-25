@@ -138,17 +138,17 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
     else
     {
       QMenu *featureMenu = new QMenu();
-      for ( int idx = 0; idx < features.count(); idx++ )
+      for ( const QgsFeature &feature : features )
       {
-        QAction *featureAction = featureMenu->addAction( FID_TO_STRING( features.at( idx ).id() ) );
-        connect( featureAction, &QAction::triggered, this, [ = ] { doActionForFeature( layer, features.at( idx ), point );} );
+        QAction *featureAction = featureMenu->addAction( FID_TO_STRING( feature.id() ) );
+        connect( featureAction, &QAction::triggered, this, [ = ] { doActionForFeature( layer, feature, point );} );
       }
       QAction *allFeatureAction = featureMenu->addAction( tr( "All Features" ) );
       connect( allFeatureAction, &QAction::triggered, this, [ = ]
       {
-        for ( int idx = 0; idx < features.count(); idx++ )
+        for ( const QgsFeature &feature : features )
         {
-          doActionForFeature( layer, features.at( idx ), point );
+          doActionForFeature( layer, feature, point );
         }
       } );
       featureMenu->exec( position );
