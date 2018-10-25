@@ -1143,13 +1143,24 @@ bool QgsSpatiaLiteProvider::hasTriggers()
 
 bool QgsSpatiaLiteProvider::hasRowid()
 {
+  // first look for a field rowid declared in "pragma table_info"
+  // if present, it means it replaces the internal SQLite rowid
+  // that we are looking for
   if ( mAttributeFields.lookupField( QStringLiteral( "ROWID" ) ) >= 0 )
     return false;
 
-  // table without rowid column
-  QString sql = QStringLiteral( "SELECT rowid FROM %1 WHERE 0" ).arg( quotedIdentifier( mTableName ) );
+  // if not, test if the hidden rowid column is present
+  // and that it returns something not null
+  QString sql = QStringLiteral( "SELECT rowid FROM %1 LIMIT 1" ).arg( quotedIdentifier( mTableName ) );
+  int ret;
+  char **results = nullptr;
+  int rows;
+  int columns;
   char *errMsg = nullptr;
-  return sqlite3_exec( mSqliteHandle, sql.toUtf8(), nullptr, nullptr, &errMsg ) == SQLITE_OK;
+  ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  bool has_row_id = ret == SQLITE_OK && rows == 1 && !QString( results[1] ).isEmpty();
+  sqlite3_free_table( results );
+  return has_row_id;
 }
 
 

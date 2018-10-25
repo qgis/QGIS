@@ -31,7 +31,9 @@ from qgis.core import (QgsProviderRegistry,
                        QgsVectorLayerUtils,
                        QgsSettings,
                        QgsDefaultValue,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsFeatureRequest,
+                       QgsRectangle)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -847,6 +849,104 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         vl_no_pk = QgsVectorLayer('dbname=\'%s\' table="(select * from test_no_pk)" (geometry) sql=' % dbname, 'pk', 'spatialite')
         self.assertTrue(vl_no_pk.isValid())
         _check_features(vl_no_pk, 10)
+
+        req = QgsFeatureRequest().setFilterRect(QgsRectangle(12.5, 12.5, 13.5, 13.5))
+        self.assertEqual([(f.id(), f["name"]) for f in vl_no_pk.getFeatures(req)], [(3, "name 13")])
+
+        req = QgsFeatureRequest().setFilterFid(5)
+        self.assertEqual([(f.id(), f["name"]) for f in vl_no_pk.getFeatures(req)], [(5, "name 15")])
+
+        req = QgsFeatureRequest().setFilterFids([5, 7, 9])
+        self.assertEqual([(f.id(), f["name"]) for f in vl_no_pk.getFeatures(req)], [(5, "name 15"), (7, "name 17"), (9, "name 19")])
+
+        req = QgsFeatureRequest().setFilterExpression("name = 'name 15'")
+        self.assertEqual([(f.id(), f["name"]) for f in vl_no_pk.getFeatures(req)], [(5, "name 15")])
+
+    def testViews(self):
+        """Test if features in views have a consistent id"""
+        # create test db
+        dbname = os.path.join(tempfile.gettempdir(), "test_views.sqlite")
+        if os.path.exists(dbname):
+            os.remove(dbname)
+        con = spatialite_connect(dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = "SELECT InitSpatialMetadata()"
+        cur.execute(sql)
+
+        # simple table with primary key
+        sql = "CREATE TABLE test_table (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+
+        sql = "SELECT AddGeometryColumn('test_table', 'geometry', 4326, 'POINT', 'XY')"
+        cur.execute(sql)
+
+        for i in range(11, 21):
+            sql = "INSERT INTO test_table (id, name, geometry) "
+            sql += "VALUES ({id}, 'name {id}', GeomFromText('POINT({id} {id})', 4326))".format(id=i)
+            cur.execute(sql)
+
+        # trickier: a table with an explicit rowid column
+        sql = "CREATE TABLE test_table_rowid (rowid INTGER, id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+
+        sql = "SELECT AddGeometryColumn('test_table_rowid', 'geometry', 4326, 'POINT', 'XY')"
+        cur.execute(sql)
+
+        for i in range(11, 21):
+            sql = "INSERT INTO test_table_rowid (rowid, id, name, geometry) "
+            sql += "VALUES ({id}, {id}, 'name {id}', GeomFromText('POINT({id} {id})', 4326))".format(id=i)
+            cur.execute(sql)
+
+        # now create views without pk
+        sql = "CREATE VIEW test_view_no_pk_no_rowid AS SELECT * FROM test_table"
+        cur.execute(sql)
+        sql = "CREATE VIEW test_view_no_pk_rowid AS SELECT * FROM test_table_rowid"
+        cur.execute(sql)
+
+        # declare them as geometry tables
+        sql = "INSERT INTO geometry_columns (f_table_name,f_geometry_column,geometry_type,coord_dimension,srid,spatial_index_enabled)"
+        sql += " VALUES ('test_view_no_pk_no_rowid', 'geometry', 1, 2, 4326, 0)"
+        cur.execute(sql)
+        sql = "INSERT INTO geometry_columns (f_table_name,f_geometry_column,geometry_type,coord_dimension,srid,spatial_index_enabled)"
+        sql += " VALUES ('test_view_no_pk_rowid', 'geometry', 1, 2, 4326, 0)"
+        cur.execute(sql)
+
+        # create a second view
+        sql = "CREATE VIEW test_view_pk AS SELECT * FROM test_table"
+        cur.execute(sql)
+
+        # declare it as a view, where a rowid is mandatory
+        sql = "INSERT INTO views_geometry_columns (view_name, view_geometry, view_rowid, f_table_name, f_geometry_column, read_only)"
+        sql += " VALUES ('test_view_pk', 'geometry', 'id', 'test_table', 'geometry', 1)"
+        cur.execute(sql)
+
+        cur.execute("COMMIT")
+        con.close()
+
+        def _check_features(vl, offset):
+            self.assertTrue(vl.isValid())
+
+            req = QgsFeatureRequest().setFilterRect(QgsRectangle(12.5, 12.5, 13.5, 13.5))
+            self.assertEqual([(f.id(), f["name"]) for f in vl.getFeatures(req)], [(13 - offset, "name 13")])
+
+            req = QgsFeatureRequest().setFilterFid(15 - offset)
+            self.assertEqual([(f.id(), f["name"]) for f in vl.getFeatures(req)], [(15 - offset, "name 15")])
+
+            req = QgsFeatureRequest().setFilterFids([13 - offset, 15 - offset])
+            self.assertEqual([(f.id(), f["name"]) for f in vl.getFeatures(req)], [(13 - offset, "name 13"), (15 - offset, "name 15")])
+
+            req = QgsFeatureRequest().setFilterExpression("name = 'name 15'")
+            self.assertEqual([(f.id(), f["name"]) for f in vl.getFeatures(req)], [(15 - offset, "name 15")])
+
+        vl_pk = QgsVectorLayer('dbname=\'%s\' table="test_view_pk" (geometry) sql=' % dbname, 'view', 'spatialite')
+        _check_features(vl_pk, 0)
+
+        vl_no_pk_no_rowid = QgsVectorLayer('dbname=\'%s\' table="test_view_no_pk_no_rowid" (geometry) sql=' % dbname, 'view', 'spatialite')
+        _check_features(vl_no_pk_no_rowid, 10)
+
+        vl_no_pk_rowid = QgsVectorLayer('dbname=\'%s\' table="test_view_no_pk_rowid" (geometry) sql=' % dbname, 'view', 'spatialite')
+        _check_features(vl_no_pk_no_rowid, 10)
 
 
 if __name__ == '__main__':

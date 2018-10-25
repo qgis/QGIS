@@ -55,17 +55,33 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     return;
   }
 
-  //beware - limitAtProvider needs to be set to false if the request cannot be completely handled
+  //beware - limit needs to be set to -1 if the request cannot be completely handled
   //by the provider (e.g., utilising QGIS expression filters)
-  bool limitAtProvider = ( mRequest.limit() >= 0 );
+  long limit = mRequest.limit();
+  long offset = -1;
 
   if ( !mFilterRect.isNull() && !mSource->mGeometryColumn.isNull() )
   {
-    // some kind of MBR spatial filtering is required
-    whereClause = whereClauseRect();
-    if ( ! whereClause.isEmpty() )
+    if ( mHasPrimaryKey )
     {
-      whereClauses.append( whereClause );
+      // some kind of MBR spatial filtering is required
+      whereClause = whereClauseRect();
+      if ( ! whereClause.isEmpty() )
+      {
+        whereClauses.append( whereClause );
+      }
+    }
+    else
+    {
+      // all features are requested so that we get consistent IDs
+      // and an intersection test will be made afterward
+      if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+      {
+        // if an exact intersection is requested, prepare the geometry to intersect
+        QgsGeometry rectGeom = QgsGeometry::fromRect( mFilterRect );
+        mRectEngine.reset( QgsGeometry::createGeometryEngine( rectGeom.constGet() ) );
+        mRectEngine->prepareGeometry();
+      }
     }
   }
 
@@ -80,10 +96,24 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
   if ( request.filterType() == QgsFeatureRequest::FilterFid )
   {
-    whereClause = whereClauseFid();
-    if ( ! whereClause.isEmpty() )
+    if ( mHasPrimaryKey )
     {
-      whereClauses.append( whereClause );
+      whereClause = whereClauseFid();
+      if ( ! whereClause.isEmpty() )
+      {
+        whereClauses.append( whereClause );
+      }
+    }
+    else
+    {
+      // without primary key, an incremented integer is used as a unique id
+      if ( mRequest.filterFid() > 0 )
+      {
+        limit = 1;
+        offset = mRequest.filterFid() - 1;
+      }
+      else // never return a feature if the id is negative
+        limit = 0;
     }
   }
   else if ( request.filterType() == QgsFeatureRequest::FilterFids )
@@ -92,7 +122,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     {
       close();
     }
-    else
+    else if ( mHasPrimaryKey )
     {
       whereClauses.append( whereClauseFids() );
     }
@@ -136,12 +166,12 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       if ( result != QgsSqlExpressionCompiler::Complete )
       {
         //can't apply limit at provider side as we need to check all results using QGIS expressions
-        limitAtProvider = false;
+        limit = -1;
       }
     }
     else
     {
-      limitAtProvider = false;
+      limit = -1;
     }
   }
 
@@ -189,8 +219,8 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       mOrderByCompiled = false;
     }
 
-    if ( !mOrderByCompiled )
-      limitAtProvider = false;
+    if ( !mOrderByCompiled && mRequest.limit() >= 0 )
+      limit = -1;
 
     // also need attributes required by order by
     if ( !mOrderByCompiled && mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
@@ -205,12 +235,12 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     }
 
     // preparing the SQL statement
-    bool success = prepareStatement( whereClause, limitAtProvider ? mRequest.limit() : -1, orderByParts.join( QStringLiteral( "," ) ) );
+    bool success = prepareStatement( whereClause, limit, offset, orderByParts.join( QStringLiteral( "," ) ) );
     if ( !success && useFallbackWhereClause )
     {
       //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
       mExpressionCompiled = false;
-      success = prepareStatement( fallbackWhereClause, -1, orderByParts.join( QStringLiteral( "," ) ) );
+      success = prepareStatement( fallbackWhereClause, -1, -1, orderByParts.join( QStringLiteral( "," ) ) );
       mCompileFailed = true;
     }
 
@@ -243,16 +273,37 @@ bool QgsSpatiaLiteFeatureIterator::fetchFeature( QgsFeature &feature )
     return false;
   }
 
-  if ( !getFeature( sqliteStatement, feature ) )
+  bool skipFeature = false;
+  do
   {
-    sqlite3_finalize( sqliteStatement );
-    sqliteStatement = nullptr;
-    close();
-    return false;
-  }
+    if ( !getFeature( sqliteStatement, feature ) )
+    {
+      sqlite3_finalize( sqliteStatement );
+      sqliteStatement = nullptr;
+      close();
+      return false;
+    }
 
-  feature.setValid( true );
-  geometryToDestinationCrs( feature, mTransform );
+    feature.setValid( true );
+    geometryToDestinationCrs( feature, mTransform );
+
+    // if the FilterRect has not been applied on the query
+    // apply it here by skipping features until they intersect
+    if ( !mHasPrimaryKey && feature.hasGeometry() && !mFilterRect.isNull() )
+    {
+      if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+      {
+        // using exact test when checking for intersection
+        skipFeature = !mRectEngine->intersects( feature.geometry().constGet() );
+      }
+      else
+      {
+        // check just bounding box against rect when not using intersection
+        skipFeature = !feature.geometry().boundingBox().intersects( mFilterRect );
+      }
+    }
+  }
+  while ( skipFeature );
   return true;
 }
 
@@ -310,7 +361,7 @@ bool QgsSpatiaLiteFeatureIterator::close()
 ////
 
 
-bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause, long limit, const QString &orderBy )
+bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause, long limit, long offset, const QString &orderBy )
 {
   if ( !mHandle )
     return false;
@@ -354,6 +405,9 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause,
 
     if ( limit >= 0 )
       sql += QStringLiteral( " LIMIT %1" ).arg( limit );
+
+    if ( offset >= 0 )
+      sql += QStringLiteral( " OFFSET %1" ).arg( offset );
 
     // qDebug() << sql;
 
@@ -512,6 +566,10 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
         QgsFeatureId fid = sqlite3_column_int64( stmt, ic );
         QgsDebugMsgLevel( QStringLiteral( "fid=%1" ).arg( fid ), 3 );
         feature.setId( fid );
+      }
+      else if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
+      {
+        feature.setId( mRequest.filterFid() );
       }
       else
       {

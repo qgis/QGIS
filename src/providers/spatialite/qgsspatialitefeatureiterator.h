@@ -17,6 +17,7 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
+#include "qgsgeometryengine.h"
 
 extern "C"
 {
@@ -74,7 +75,7 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     QString whereClauseFid();
     QString whereClauseFids();
     QString mbr( const QgsRectangle &rect );
-    bool prepareStatement( const QString &whereClause, long limit = -1, const QString &orderBy = QString() );
+    bool prepareStatement( const QString &whereClause, long limit = -1, long offset = -1, const QString &orderBy = QString() );
     QString quotedPrimaryKey();
     bool getFeature( sqlite3_stmt *stmt, QgsFeature &feature );
     QString fieldName( const QgsField &fld );
@@ -105,6 +106,7 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
 
     QgsRectangle mFilterRect;
     QgsCoordinateTransform mTransform;
+    std::unique_ptr<QgsGeometryEngine> mRectEngine;
 };
 
 #endif // QGSSPATIALITEFEATUREITERATOR_H
