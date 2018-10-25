@@ -997,7 +997,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
   {
     int scaleFactor = 5;
     QgsPointXY center = mSettings.mapToLayerCoordinates( layer, rect.center() );
-    QgsRectangle extentRect = mSettings.mapToLayerCoordinates( layer, extent() ).scaled( 1.0 / scaleFactor );
+    QgsRectangle extentRect = mSettings.mapToLayerCoordinates( layer, extent() ).scaled( 1.0 / scaleFactor, &center );
     QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( extentRect ).setLimit( 1000 ).setNoAttributes();
     QgsFeatureIterator fit = layer->getFeatures( req );
     QgsFeature f;
