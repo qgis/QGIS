@@ -396,6 +396,8 @@ namespace QgsWms
         if ( ok )
           exportSettings.dpi = dpi;
       }
+      // Draw selections
+      exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       QgsLayoutExporter exporter( layout.get() );
       exporter.exportToSvg( tempOutputFile.fileName(), exportSettings );
     }
