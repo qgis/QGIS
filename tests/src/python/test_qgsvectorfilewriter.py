@@ -982,6 +982,68 @@ class TestQgsVectorFileWriter(unittest.TestCase):
 
         os.unlink(filename)
 
+    def testAddZ(self):
+        """Check adding z values to non z input."""
+        input = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=name:string(20)',
+            'test',
+            'memory')
+
+        self.assertTrue(input.isValid(), 'Provider not initialized')
+
+        ft = QgsFeature()
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
+        myResult, myFeatures = input.dataProvider().addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'add_z.geojson')
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.overrideGeometryType = QgsWkbTypes.PointZ
+        options.driverName = 'GeoJSON'
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            input,
+            dest_file_name,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+        # Open result and check
+        created_layer = QgsVectorLayer(dest_file_name, 'test', 'ogr')
+        self.assertTrue(created_layer.isValid())
+        f = next(created_layer.getFeatures(QgsFeatureRequest()))
+        self.assertEqual(f.geometry().asWkt(), 'PointZ (10 10 0)')
+
+    def testDropZ(self):
+        """Check dropping z values input."""
+        input = QgsVectorLayer(
+            'PointZ?crs=epsg:4326&field=name:string(20)',
+            'test',
+            'memory')
+
+        self.assertTrue(input.isValid(), 'Provider not initialized')
+
+        ft = QgsFeature()
+        ft.setGeometry(QgsGeometry.fromWkt('PointM(10 10 2)'))
+        myResult, myFeatures = input.dataProvider().addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'drop_z.geojson')
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.overrideGeometryType = QgsWkbTypes.PointM
+        options.driverName = 'GeoJSON'
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            input,
+            dest_file_name,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+        # Open result and check
+        created_layer = QgsVectorLayer(dest_file_name, 'test', 'ogr')
+        self.assertTrue(created_layer.isValid())
+        f = next(created_layer.getFeatures(QgsFeatureRequest()))
+        self.assertEqual(f.geometry().asWkt(), 'Point (10 10)')
+
 
 if __name__ == '__main__':
     unittest.main()
