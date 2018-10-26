@@ -2084,16 +2084,19 @@ void QgsProjectProperties::checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &
     {
       QgsLayerTreeLayer *treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
       QgsMapLayer *l = treeLayer->layer();
-      QString shortName = l->shortName();
-      if ( shortName.isEmpty() )
-        owsNames << l->name();
-      else
-        owsNames << shortName;
-      if ( l->type() == QgsMapLayer::VectorLayer )
+      if ( l )
       {
-        QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
-        if ( vl->dataProvider()->encoding() == QLatin1String( "System" ) )
-          encodingMessages << tr( "Update layer \"%1\" encoding" ).arg( l->name() );
+        QString shortName = l->shortName();
+        if ( shortName.isEmpty() )
+          owsNames << l->name();
+        else
+          owsNames << shortName;
+        if ( l->type() == QgsMapLayer::VectorLayer )
+        {
+          QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
+          if ( vl->dataProvider()->encoding() == QLatin1String( "System" ) )
+            encodingMessages << tr( "Update layer \"%1\" encoding" ).arg( l->name() );
+        }
       }
     }
   }

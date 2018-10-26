@@ -353,7 +353,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           menuStyleManager->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
         }
 
-        if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
+        if ( layer && app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
         {
           if ( layer->type() == QgsMapLayer::VectorLayer )
           {
@@ -802,7 +802,9 @@ bool QgsAppLayerTreeViewMenuProvider::removeActionEnabled()
   const QList<QgsLayerTreeLayer *> selectedLayers = mView->selectedLayerNodes();
   for ( QgsLayerTreeLayer *nodeLayer : selectedLayers )
   {
-    if ( !nodeLayer->layer()->flags().testFlag( QgsMapLayer::Removable ) )
+    // be careful with the logic here -- if nodeLayer->layer() is false, will still must return true
+    // to allow the broken layer to be removed from the project
+    if ( nodeLayer->layer() && !nodeLayer->layer()->flags().testFlag( QgsMapLayer::Removable ) )
       return false;
   }
   return true;
