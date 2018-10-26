@@ -22,6 +22,7 @@
 #include "qgis_app.h"
 
 class QgsPolygon;
+class QgsSnapIndicator;
 
 class APP_EXPORT QgsMapToolAddRectangle: public QgsMapToolCapture
 {
@@ -79,6 +80,9 @@ class APP_EXPORT QgsMapToolAddRectangle: public QgsMapToolCapture
 
     //! Layer type which will be used for rubberband
     QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
+
+    //! Snapping indicators
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
   private:
     //! Convenient member for the azimuth of the rotated rectangle or when map is rotated.

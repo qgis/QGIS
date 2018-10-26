@@ -21,6 +21,7 @@
 #include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgsmapmouseevent.h"
+#include "qgssnapindicator.h"
 
 #include <memory>
 
@@ -59,6 +60,8 @@ void QgsMapToolRectangleCenter::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 void QgsMapToolRectangleCenter::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   QgsPoint point = mapPoint( *e );
+
+  mSnapIndicator->setMatch( e->mapPointMatch() );
 
   if ( mTempRubberBand )
   {

@@ -21,6 +21,7 @@
 #include "qgis_app.h"
 
 class QgsGeometryRubberBand;
+class QgsSnapIndicator;
 
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
@@ -58,6 +59,9 @@ class APP_EXPORT QgsMapToolAddCircle: public QgsMapToolCapture
     QgsCircle mCircle;
     //! Layer type which will be used for rubberband
     QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
+
+    //! Snapping indicators
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
 };
 

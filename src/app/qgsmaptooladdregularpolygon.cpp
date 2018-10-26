@@ -22,10 +22,12 @@
 #include "qgspoint.h"
 #include "qgisapp.h"
 #include "qgsstatusbar.h"
+#include "qgssnapindicator.h"
 
 QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
+  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
 {
   clean();
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddRegularPolygon::stopCapturing );

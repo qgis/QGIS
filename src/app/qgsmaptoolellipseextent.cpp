@@ -21,6 +21,7 @@
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmapmouseevent.h"
+#include "qgssnapindicator.h"
 
 
 QgsMapToolEllipseExtent::QgsMapToolEllipseExtent( QgsMapToolCapture *parentTool,
@@ -56,6 +57,8 @@ void QgsMapToolEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 void QgsMapToolEllipseExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   QgsPoint point = mapPoint( *e );
+
+  mSnapIndicator->setMatch( e->mapPointMatch() );
 
   if ( mTempRubberBand )
   {
