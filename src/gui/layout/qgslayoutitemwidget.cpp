@@ -119,6 +119,11 @@ QgsLayoutAtlas *QgsLayoutConfigObject::layoutAtlas() const
   return printLayout->atlas();
 }
 
+void QgsLayoutConfigObject::setObject( QgsLayoutObject *object )
+{
+  mLayoutObject = object;
+}
+
 QgsVectorLayer *QgsLayoutConfigObject::coverageLayer() const
 {
   if ( !mLayoutObject )
@@ -320,6 +325,8 @@ void QgsLayoutItemPropertiesWidget::setItem( QgsLayoutItem *item )
     connect( mItem, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements );
     connect( mItem, &QgsLayoutObject::changed, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements );
   }
+
+  mConfigObject->setObject( mItem );
 
   setValuesForGuiElements();
 }
