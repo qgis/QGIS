@@ -1,52 +1,275 @@
 QGIS News
 Change history for the QGIS Project
-Friday June 22, 2018
+Friday October 26, 2018
 
 
 ------------------------------------------------------------------------
 
 
-  1. What's new in Version 3.2 'Bonn'?
-  2. What's new in Version 3.0 'Girona'?
-  3. What's new in Version 2.18 'Las Palmas'?
-  4. What's new in Version 2.16 'Nødebo'?
-  5. What's new in Version 2.14 'Essen'?
-  6. What's new in Version 2.12 'Lyon'?
-  7. What's new in Version 2.10 'Pisa'?
-  8. What's new in Version 2.8 'Wien'?
-  9. What's new in Version 2.6.0 'Brighton'?
-  10. What's new in Version 2.4.0 'Chugiak'?
-  11. Whats new in Version 2.2.0 'Valmiera'?
-  12. Whats new in Version 2.0.1 'Dufour'?
-  13. Whats new in Version 2.0.0 'Dufour'?
-  14. Whats new in Version 1.8.0 'Lisboa'?
-  15. Whats new in Version 1.7.2 'Wroclaw'?
-  16. Whats new in Version 1.7.1 'Wroclaw'?
-  17. Whats new in Version 1.7.0 'Wroclaw'?
-  18. Whats new in Version 1.6.0 'Capiapo'?
-  19. Whats new in Version 1.5.0?
-  20. Whats new in Version 1.4.0 'Enceladus'?
-  21. Whats new in Version 1.3.0 'Mimas'?
-  22. Version 1.2.0 'Daphnis'
-  23. Version 1.0.0 'Kore'
-  24. Version 0.11.0 'Metis'
-  25. Version 0.10.0 'Io'
-  26. Version 0.9.2rc1 'Ganymede'
-  27. Version 0.9.1 'Ganymede'
-  28. Version 0.9 'Ganymede'
-  29. Version 0.8 'Joesephine' .... development version
-  30. Version 0.6 'Simon'
-  31. 0.5
+  1. What's new in Version 3.4 'Madeira'?
+  2. What's new in Version 3.2 'Bonn'?
+  3. What's new in Version 3.0 'Girona'?
+  4. What's new in Version 2.18 'Las Palmas'?
+  5. What's new in Version 2.16 'Nødebo'?
+  6. What's new in Version 2.14 'Essen'?
+  7. What's new in Version 2.12 'Lyon'?
+  8. What's new in Version 2.10 'Pisa'?
+  9. What's new in Version 2.8 'Wien'?
+  10. What's new in Version 2.6.0 'Brighton'?
+  11. What's new in Version 2.4.0 'Chugiak'?
+  12. Whats new in Version 2.2.0 'Valmiera'?
+  13. Whats new in Version 2.0.1 'Dufour'?
+  14. Whats new in Version 2.0.0 'Dufour'?
+  15. Whats new in Version 1.8.0 'Lisboa'?
+  16. Whats new in Version 1.7.2 'Wroclaw'?
+  17. Whats new in Version 1.7.1 'Wroclaw'?
+  18. Whats new in Version 1.7.0 'Wroclaw'?
+  19. Whats new in Version 1.6.0 'Capiapo'?
+  20. Whats new in Version 1.5.0?
+  21. Whats new in Version 1.4.0 'Enceladus'?
+  22. Whats new in Version 1.3.0 'Mimas'?
+  23. Version 1.2.0 'Daphnis'
+  24. Version 1.0.0 'Kore'
+  25. Version 0.11.0 'Metis'
+  26. Version 0.10.0 'Io'
+  27. Version 0.9.2rc1 'Ganymede'
+  28. Version 0.9.1 'Ganymede'
+  29. Version 0.9 'Ganymede'
+  30. Version 0.8 'Joesephine' .... development version
+  31. Version 0.6 'Simon'
+  32. 0.5
 
 
 ------------------------------------------------------------------------
 
 
-Last Updated: Friday June 22, 2018
-Last Change : Friday June 22, 2018
+Last Updated: Friday October 26, 2018
+Last Change : Friday October 26, 2018
 
 
-  1. What's new in Version 3.2 'Bonn'?
+  1. What's new in Version 3.4 'Madeira'?
+  =======================================
+
+This release has following new features:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projecta: </title>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css" rel="stylesheet" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdn.rawgit.com/leafo/sticky-kit/v1.1.2/jquery.sticky-kit.min.js"></script>
+    <!-- Chosen library -->
+    <link rel="stylesheet" href="/static/chosen/chosen.min.5c28ef6cd2eb.css">
+    <script src="/static/chosen/chosen.jquery.min.a54caa75f091.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link href="/static/css/project.1e2a1cc4d9d1.css" rel="stylesheet" type="text/css" media="screen, projection" />
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse"
+                data-target="#top-navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/en/">
+            <span class="glyphicon glyphicon-home"></span>
+        </a>
+    </div>
+    <div class="collapse navbar-collapse" id="top-navbar">
+    <ul class="nav navbar-nav">
+        <li>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                All Projects <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+            </ul>
+        </li>
+    </ul>
+    <ul class="nav navbar-nav">
+        <li>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                Organisation <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="/en/create-organisation/">
+                            Create Organisation
+                        </a>
+                </li>
+                <li>
+                    <a href="/en/list-organisation/">
+                            Organisation List
+                        </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <ul class="nav navbar-nav">
+        <li>
+            <a href="/en/project/create/">Create Project</a>
+        </li>
+    </ul>
+        <ul class="nav navbar-nav navbar-right" style="margin-right: 0">
+<li class="dropdown" style="padding-left: 2pt;">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                     <span><b class="caret"></b> <img src="/static/img/language_flags/en.png" style="height: 13pt; margin-bottom: 3pt;">
+                         <span>  English</span></span>
+    </a>
+    <ul class="dropdown-menu">
+            <li>
+                <a href="/en/qgis/version/3.4.0/gnu/"
+                   class="selected"
+                   lang="en">
+                         <img src="/static/img/language_flags/en.png" style="height: 13pt; margin-bottom: 3pt;">
+                        English
+                </a>
+            </li>
+            <li>
+                <a href="/id/qgis/version/3.4.0/gnu/"
+                   class=""
+                   lang="id">
+                         <img src="/static/img/language_flags/id.png" style="height: 13pt; margin-bottom: 3pt;">
+                        Indonesian
+                </a>
+            </li>
+    </ul>
+</li>
+<li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <span><b class="caret"></b> Account</span>
+    </a>
+    <ul class="dropdown-menu">
+            <li><a href='/en/accounts/login/'>Log In</a></li>
+            <li><a href='/en/accounts/signup/'>Sign Up</a></li>
+    </ul>
+</li>
+        </ul>
+    </div>
+</nav>
+<div id="container" class="container">
+    <div class="body-content">
+    <div class="row text-center" style="margin-top: 20%;">
+        <h1 class="text-muted">404</h1>
+        <p class="lead">Sorry, but what you're looking for does not exist.</p>
+        <p class="lead text-muted">
+            This could be for any number of reasons, but most likely you followed a
+            broken link....
+        </p>
+        <p class="lead text-muted">
+            Here are the public projects you might be looking for:
+        </p>
+        <p class="lead text-muted">
+                <a href="/en/cogo/">
+                    CoGo
+                </a> |
+                <a href="/en/geonode/">
+                    GeoNode
+                </a> |
+                <a href="/en/geosafe/">
+                    GeoSAFE
+                </a> |
+                <a href="/en/inasafe/">
+                    InaSAFE
+                </a> |
+                <a href="/en/inasafe-realtime2/">
+                    InaSAFE Realtime
+                </a> |
+                <a href="/en/kartoza-docker-recipes/">
+                    Kartoza Docker Recipes
+                </a> |
+                <a href="/en/osm/">
+                    OpenStreetMap
+                </a> |
+                <a href="/en/qfield/">
+                    QField
+                </a> |
+                <a href="/en/qgis/">
+                    QGIS
+                </a> |
+                <a href="/en/sansa-catalogue/">
+                    SANSA Catalogue
+                </a> |
+                <a href="/en/stream-feature-extractor/">
+                    Stream Feature Extractor
+                </a>
+        </p>
+    </div>
+    </div>
+    <nav class="navbar navbar-default navbar-fixed-bottom center"
+         role="navigation">
+        <p class="text-center" style="padding-top: 8px">
+            This application was created by <a href="http://kartoza.com">
+            Kartoza (Pty) Ltd.
+            <img src="/static/img/kartoza.07bf4584cee3.png" alt="Linfiniti"/>
+        </a>
+            <a href="https://github.com/kartoza/projecta">
+                Available on GitHub!
+            </a>
+            <span>Version: 1.7.35
+</span>
+        </p>
+    </nav>
+</div>
+<!-- Creates the bootstrap modal where the thumbnaiul image will appear -->
+<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" >
+        <div class="modal-content" >
+            <div class="modal-body" >
+                <a href="#" id="image-url" target="_blank">
+                    <img src="" id="imagepreview">
+                </a>
+            </div>
+            Click the image to open original size image in new tab
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script   type="text/javascript" src="/static/js/contrib.b9648727b74f.js" charset="utf-8"></script>
+<script   type="text/javascript" src="/static/js/project.dd1f87ef295e.js" charset="utf-8"></script>
+<script>
+    $(function(){
+        // Paus GIF's on page load...
+        window.onload = function() {
+            Gifffer();
+        };
+        $('.tooltip-toggle').tooltip();
+        if ($('.panel-to-wrap').length) {
+            while ((panels = $(':not(.row)>.panel-to-wrap:lt(3)')).length) {
+                panels.wrapAll($('<div class="row"></div>'));
+            }
+        }
+        if ($('.thumbnail-to-wrap').length) {
+            while ((panels = $(':not(.row)>.thumbnail-to-wrap:lt(4)')).length) {
+                panels.wrapAll($('<div class="row"></div>'));
+            }
+        }
+    });
+    function copyToClipboard(text) {
+        window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+    }
+</script>
+</body>
+</html>
+-
+
+
+  2. What's new in Version 3.2 'Bonn'?
   ====================================
 
 This release has following new features:
@@ -124,7 +347,7 @@ This release has following new features:
 - Plugins: DB Manager SQL execution in background
 
 
-  2. What's new in Version 3.0 'Girona'?
+  3. What's new in Version 3.0 'Girona'?
   ======================================
 
 This release has following new features:
@@ -278,7 +501,7 @@ This release has following new features:
 - Programmability: API to allow drag'n'drop of custom browser items
 
 
-  3. What's new in Version 2.18 'Las Palmas'?
+  4. What's new in Version 2.18 'Las Palmas'?
   ===========================================
 
 This release has following new features:
@@ -308,7 +531,7 @@ This release has following new features:
 - Programmability: Expose GEOS linear referencing function to QgsGeometry
 
 
-  4. What's new in Version 2.16 'Nødebo'?
+  5. What's new in Version 2.16 'Nødebo'?
   =======================================
 
 This release has following new features:
@@ -405,7 +628,7 @@ This release has following new features:
 - Programmability: Plugins can add pages to vector layer properties
 
 
-  5. What's new in Version 2.14 'Essen'?
+  6. What's new in Version 2.14 'Essen'?
   ======================================
 
 This release has following new features:
@@ -481,7 +704,7 @@ This release has following new features:
 - User Interface : Show/hide all legend items via the the context menu
 
 
-  6. What's new in Version 2.12 'Lyon'?
+  7. What's new in Version 2.12 'Lyon'?
   =====================================
 
 This release has following new features:
@@ -535,7 +758,7 @@ This release has following new features:
 - Symbology : Add pixels as option for all symbology size unit choices
 
 
-  7. What's new in Version 2.10 'Pisa'?
+  8. What's new in Version 2.10 'Pisa'?
   =====================================
 
 This is a minor release increment with the following new features:
@@ -583,7 +806,7 @@ This is a minor release increment with the following new features:
 - User interface improvements.
 
 
-  8. What's new in Version 2.8 'Wien'?
+  9. What's new in Version 2.8 'Wien'?
   ====================================
 
 This is a minor release increment with the following feature:
@@ -616,8 +839,8 @@ This is a minor release increment with the following feature:
   DescribeLayer, python plugins.
 
 
-  9. What's new in Version 2.6.0 'Brighton'?
-  ==========================================
+  10. What's new in Version 2.6.0 'Brighton'?
+  ===========================================
 
 This is a minor release increment with the following new features:
 
@@ -662,7 +885,7 @@ This is a minor release increment with the following new features:
 - Context menu for identify tool
 
 
-  10. What's new in Version 2.4.0 'Chugiak'?
+  11. What's new in Version 2.4.0 'Chugiak'?
   ==========================================
 
 This is the minor release sports a number of great new features:
@@ -682,7 +905,7 @@ This is the minor release sports a number of great new features:
 - New Inverted Polygon renderer
 
 
-  11. Whats new in Version 2.2.0 'Valmiera'?
+  12. Whats new in Version 2.2.0 'Valmiera'?
   ==========================================
 
 This is the minor release sports a number of great new features:
@@ -723,7 +946,7 @@ This is the minor release sports a number of great new features:
 - 'Processing' can be used headless in scripts.
 
 
-  12. Whats new in Version 2.0.1 'Dufour'?
+  13. Whats new in Version 2.0.1 'Dufour'?
   ========================================
 
 This is a small bugfix release to address the missing copyright / credits for
@@ -731,7 +954,7 @@ our new splash screen and to update supporting documentation. The spanish
 translation was also updated.
 
 
-  13. Whats new in Version 2.0.0 'Dufour'?
+  14. Whats new in Version 2.0.0 'Dufour'?
   ========================================
 
 This is a new major release. Building on the foundation of
@@ -817,7 +1040,7 @@ key new features.
       you to explore the software and discover them all!
 
 
-  14. Whats new in Version 1.8.0 'Lisboa'?
+  15. Whats new in Version 1.8.0 'Lisboa'?
   ========================================
 
 This is a new feature release. Building on the foundation of
@@ -872,7 +1095,7 @@ added gdal_fillnodata to GDALTools plugin
 - Support for nesting projects within other projects
 
 
-  15. Whats new in Version 1.7.2 'Wroclaw'?
+  16. Whats new in Version 1.7.2 'Wroclaw'?
   =========================================
 
 This is a bugfix release over version 1.7.1. The following changes
@@ -919,7 +1142,7 @@ were made.
 - Fix broken Assign projection functionality in GDALTools and improve handling output file extension
 
 
-  16. Whats new in Version 1.7.1 'Wroclaw'?
+  17. Whats new in Version 1.7.1 'Wroclaw'?
   =========================================
 
 This is a bugfix release over version 1.7.0. The following changes 
@@ -982,7 +1205,7 @@ http://linfiniti.com/2011/08/improvements-to-raster-performance-in-qgis-master/]
 - Fixed a bug where map= was not being published in onlineresource url when project files are not in the same dir as cgi
 
 
-  17. Whats new in Version 1.7.0 'Wroclaw'?
+  18. Whats new in Version 1.7.0 'Wroclaw'?
   =========================================
 
 This release is named after the town of Wroclaw in Poland. The Department of
@@ -999,7 +1222,7 @@ enhancements. Once again it is impossible to document everything here that has
 changed so we will just provide a bullet list of key new features here.
 
 
-  17.1. Symbology labels and diagrams
+  18.1. Symbology labels and diagrams
   ===================================
 
 - New symbology now used by default!
@@ -1017,7 +1240,7 @@ changed so we will just provide a bullet list of key new features here.
 - Move/rotate/change label edit tools to interactively change data defined label properties.
 
 
-  17.2. New Tools
+  18.2. New Tools
   ===============
 
 - Added GUI for gdaldem.
@@ -1026,7 +1249,7 @@ changed so we will just provide a bullet list of key new features here.
 - Added voronoi polygon tool to Vector menu.
 
 
-  17.3. User interface updates
+  18.3. User interface updates
   ============================
 
 - Allow managing missing layers in a list.
@@ -1037,7 +1260,7 @@ changed so we will just provide a bullet list of key new features here.
 - General clean-ups and usability improvements.
 
 
-  17.4. CRS Handling
+  18.4. CRS Handling
   ==================
 
 - Show active crs in status bar.
@@ -1047,7 +1270,7 @@ changed so we will just provide a bullet list of key new features here.
 - Default to last selection when prompting for CRS.
 
 
-  17.5. Rasters
+  18.5. Rasters
   =============
 
 - Added AND and OR operator for raster calculator
@@ -1056,7 +1279,7 @@ changed so we will just provide a bullet list of key new features here.
 - Added raster toolbar with histogram stretch functions.
 
 
-  17.6. Providers and Data Handling
+  18.6. Providers and Data Handling
   =================================
 
 - New SQLAnywhere vector provider.
@@ -1082,7 +1305,7 @@ changed so we will just provide a bullet list of key new features here.
  - Allow OGR 'save as' without attributes (e.g., DGN/DXF).
 
 
-  17.7. Api and Developer Centric
+  18.7. Api and Developer Centric
   ===============================
 
 - Refactored attribute dialog calls to QgsFeatureAttribute.
@@ -1094,7 +1317,7 @@ changed so we will just provide a bullet list of key new features here.
   new QgsGeometry.validateGeometry function
 
 
-  17.8. QGIS Mapserver
+  18.8. QGIS Mapserver
   ====================
 
 - Ability to specify wms service capabilities in the properties 
@@ -1102,7 +1325,7 @@ changed so we will just provide a bullet list of key new features here.
 - Support for wms printing with GetPrint-Request.
 
 
-  17.9. Plugins
+  18.9. Plugins
   =============
 
 - Support for icons of plugins in the plugin manager dialog.
@@ -1110,13 +1333,13 @@ changed so we will just provide a bullet list of key new features here.
 - Removed ogr converter plugin - use 'save as' context menu rather.
 
 
-  17.10. Printing
+  18.10. Printing
   ===============
 
 - Undo/Redo support for the print composer
 
 
-  18. Whats new in Version 1.6.0 'Capiapo'?
+  19. Whats new in Version 1.6.0 'Capiapo'?
   =========================================
 
 Please note that this is a release in our 'cutting edge' release series. As
@@ -1128,7 +1351,7 @@ Once again it is impossible to document everything here that has changed so we w
 just provide a bullet list of key new features here.
 
 
-  18.1. General Improvements
+  19.1. General Improvements
   ==========================
 
 - Added gpsd support to live gps tracking.
@@ -1162,7 +1385,7 @@ caching providers (currently WMS and WFS) can synchronize with changes in
 the datasource.
 
 
-  18.2. Table of contents (TOC) improvements
+  19.2. Table of contents (TOC) improvements
   ==========================================
 
 - Added a new option to the raster legend menu that will stretch the current
@@ -1172,14 +1395,14 @@ as' option, you can now specify OGR creation options.
 - In the table of contents, it is now possible to select and remove several layers at once.
 
 
-  18.3. Labeling (New generation only)
+  19.3. Labeling (New generation only)
   ====================================
 
 - Data defined label position in labeling-ng.
 - Line wrapping, data defined font and buffer settings for labeling-ng.
 
 
-  18.4. Layer properties and symbology
+  19.4. Layer properties and symbology
   ====================================
 
 - Three new classification modes added to graduated symbol renderer (version
@@ -1200,7 +1423,7 @@ the transparency table in the raster layer properties dialog.
 the style manager more easily.
 
 
-  18.5. Map Composer
+  19.5. Map Composer
   ==================
 
 - add capability to show and manipulate composer item width/ height in item
@@ -1209,7 +1432,7 @@ position dialog.
 - Sorting for composer attribute table (several columns and ascending / descending).
 
 
-  19. Whats new in Version 1.5.0?
+  20. Whats new in Version 1.5.0?
   ===============================
 
 Please note that this is a release in our 'cutting edge' release series. As
@@ -1224,7 +1447,7 @@ Once again it is impossible to document everything here that has changed so we w
 just provide a bullet list of key new features here.
 
 
-  19.1. Main GUI
+  20.1. Main GUI
   ==============
 
 - There is a new angle measuring tool that allows you to interactively
@@ -1279,7 +1502,7 @@ only visible features in composer table or all features
 closed and reappears when reactivated.
 
 
-  19.2. WMS and WMS-C Support
+  20.2. WMS and WMS-C Support
   ===========================
 
 - WMS-C support, new spatial authorities, wms selection improvements
@@ -1292,7 +1515,7 @@ IGNF definitions in srs.db
 - WMS-C scale slider gui added and more selection improvements
 
 
-  19.3. API Updates
+  20.3. API Updates
   =================
 
 - QgsDataProvider &amp; QgsMapLayer: add dataChanged() signal, so that a
@@ -1309,7 +1532,7 @@ variables. More paths can be passed, separated by semicolon.
 - Support more GEOS operators
 
 
-  20. Whats new in Version 1.4.0 'Enceladus'?
+  21. Whats new in Version 1.4.0 'Enceladus'?
   ===========================================
 
 Please note that this is a release in our 'cutting edge' release series. As
@@ -1367,13 +1590,13 @@ For power users, you can now create customizable attribute forms using Qt
 Designer dialog UIs.
 
 
-  21. Whats new in Version 1.3.0 'Mimas'?
+  22. Whats new in Version 1.3.0 'Mimas'?
   =======================================
 
 This release includes over 30 bug fixes and several useful new features:
 
 
-  21.1. OSM plugin &amp; provider updates
+  22.1. OSM plugin &amp; provider updates
   =======================================
 
 - new OSM style files.
@@ -1385,7 +1608,7 @@ This release includes over 30 bug fixes and several useful new features:
 - other OSM related bugfixes.
 
 
-  21.2. Other notable features and improvements in this release
+  22.2. Other notable features and improvements in this release
   =============================================================
 
 - Marker size is now configurable when editing a layer.
@@ -1400,7 +1623,7 @@ This release includes over 30 bug fixes and several useful new features:
 - Zoom to a coordinate by entering it in the status bar coordinate display.
 
 
-  22. Version 1.2.0 'Daphnis'
+  23. Version 1.2.0 'Daphnis'
   ===========================
 
 Please note that this is a release in our 'cutting edge' release series. As 
@@ -1413,7 +1636,7 @@ over the QGIS 1.1.0 release. In addition we have added
 the following new features:
 
 
-  22.1. Editing
+  23.1. Editing
   =============
 
 Editing functionality in QGIS has had a major update in this release. This
@@ -1445,14 +1668,14 @@ this tool: the redraws are much faster and the map is not cluttered with
 markers. 
 
 
-  22.2. Keyboard shortcuts
+  23.2. Keyboard shortcuts
   ========================
 
 New feature: configure shortcuts for actions within main window of qgis!
 See menu Setting->Configure shortcuts
 
 
-  22.3. Map Composer
+  23.3. Map Composer
   ==================
 
 It is now possible to lock/unlock composer item positions by right mouse click.
@@ -1463,7 +1686,7 @@ It is now possible to keep the current layers in a composer map even if further
 layers are added to the main map. Export to PDF in composer is now possible.
 
 
-  22.4. Attribute tables
+  23.4. Attribute tables
   ======================
 
 It is now possible to search the attribute table within selected records only.
@@ -1479,7 +1702,7 @@ for layer attributes.  A new dialog allows loading a value map from a layer
 be respected in the attribute table.
 
 
-  22.5. Plugins
+  23.5. Plugins
   =============
 
 - The order of layers in the WMS dialog can now be changed.
@@ -1492,14 +1715,14 @@ be respected in the attribute table.
 - An new OpenStreetMap provider and plugin have been added to QGIS.
 
 
-  22.6. Projects Management
+  23.6. Projects Management
   =========================
 
 QGIS now includes support for  project relative position of file data sources
 and svgs. The saving of relative paths of file data sources is optional.
 
 
-  22.7. PostGIS & the PostgreSQL Provider
+  23.7. PostGIS & the PostgreSQL Provider
   =======================================
 
 You can now select the SSL mode when adding a new DB connection. Turning off
@@ -1508,7 +1731,7 @@ connection security is not required. Support has been added for more native
 types and for setting of column comments.
 
 
-  22.8. Symbology enhancements
+  23.8. Symbology enhancements
   ============================
 
 - allow refresh of symbols via popup menu on the renderer's symbol selection
@@ -1518,7 +1741,7 @@ types and for setting of column comments.
   independent of the mapscale)
 
 
-  22.9. Command line arguments
+  23.9. Command line arguments
   ============================
 
 Added command line argument support on windows.
@@ -1589,7 +1812,7 @@ implementation based on the SQLITE database.
 layers based on attribute data.
 
 
-  23. Version 1.0.0 'Kore'
+  24. Version 1.0.0 'Kore'
   ========================
 
 This release includes over 265 bug fixes and enhancements over the 
@@ -1618,7 +1841,7 @@ running will support a plugin that is being installed.
 - Ported all GDAL/OGR and GEOS usage to use C APIs only.
 
 
-  24. Version 0.11.0 'Metis'
+  25. Version 0.11.0 'Metis'
   ==========================
 
 This release includes over 60 bug fixes and enhancements over the 
@@ -1634,7 +1857,7 @@ QGIS 0.10.0 release. In addition we have made the following changes:
 - QML Style support for rasters and database layers
 
 
-  25. Version 0.10.0 'Io'
+  26. Version 0.10.0 'Io'
   =======================
 
 This release includes over 120 bug fixes and enhancements 
@@ -1655,7 +1878,7 @@ improvements 'under the hood'.
 - Support for migration of old projects to work in newer QGIS versions.
 
 
-  26. Version 0.9.2rc1 'Ganymede'
+  27. Version 0.9.2rc1 'Ganymede'
   ===============================
 
 - This release candidate includes over 40 bug fixes and enhancements 
@@ -1672,7 +1895,7 @@ in raster layers. Support for color ramps in raster layers.
 improvements 'under the hood'.
 
 
-  27. Version 0.9.1 'Ganymede'
+  28. Version 0.9.1 'Ganymede'
   ============================
 
 This is a bug fix release
@@ -1685,7 +1908,7 @@ This is a bug fix release
 - Python Plugin installer to install PyQGIS plugins from the repository
 
 
-  28. Version 0.9 'Ganymede'
+  29. Version 0.9 'Ganymede'
   ==========================
 
 - Python bindings - This is the major focus of this release
@@ -1700,7 +1923,7 @@ This is a bug fix release
 - Improvements to the GeoReferencer
 
 
-  29. Version 0.8 'Joesephine' .... development version
+  30. Version 0.8 'Joesephine' .... development version
   =====================================================
 
 - 2006-01-23 [timlinux] 0.7.9.10 Dropped use of qpicture and resampling for point markers in favour of
@@ -1724,7 +1947,7 @@ over time,
 grid_maker plugin
 
 
-  30. Version 0.6 'Simon'
+  31. Version 0.6 'Simon'
   =======================
 
 QGIS Change Log
@@ -1812,7 +2035,7 @@ under construction.
  save or save as (if not specified by the user). 
 
 
-  31. 0.5
+  32. 0.5
   =======
 
 - 2004-12-01 [gsherman] 0.5.0devel30 Added functions to qgsdataprovider.h to support updating the feature count
