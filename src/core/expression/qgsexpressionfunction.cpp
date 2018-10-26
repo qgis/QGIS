@@ -5015,7 +5015,7 @@ QgsArrayForeachExpressionFunction::QgsArrayForeachExpressionFunction()
   : QgsExpressionFunction( QStringLiteral( "array_foreach" ), QgsExpressionFunction::ParameterList()
                            << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) )
                            << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ),
-                           QCoreApplication::tr( "Arrays" ) )
+                           QStringLiteral( "Arrays" ) )
 {
 
 }
@@ -5109,7 +5109,7 @@ QgsArrayFilterExpressionFunction::QgsArrayFilterExpressionFunction()
   : QgsExpressionFunction( QStringLiteral( "array_filter" ), QgsExpressionFunction::ParameterList()
                            << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) )
                            << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ),
-                           QCoreApplication::tr( "Arrays" ) )
+                           QStringLiteral( "Arrays" ) )
 {
 
 }
@@ -5204,7 +5204,7 @@ QgsWithVariableExpressionFunction::QgsWithVariableExpressionFunction()
                            QgsExpressionFunction::Parameter( QStringLiteral( "name" ) )
                            << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) )
                            << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ) ),
-                           QCoreApplication::tr( "General" ) )
+                           QStringLiteral( "General" ) )
 {
 
 }
