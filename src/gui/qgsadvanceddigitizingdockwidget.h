@@ -255,7 +255,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     const CadConstraint *constraintDistance() const { return mDistanceConstraint.get(); }
     //! Returns the \a CadConstraint on the X coordinate
     const CadConstraint *constraintX() const { return mXConstraint.get(); }
-    //! Retruns the \a CadConstraint on the Y coordinate
+    //! Returns the \a CadConstraint on the Y coordinate
     const CadConstraint *constraintY() const { return mYConstraint.get(); }
     //! Returns true if a constraint on a common angle is active
     bool commonAngleConstraint() const { return !qgsDoubleNear( mCommonAngleConstraint, 0.0 ); }

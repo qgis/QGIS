@@ -238,7 +238,7 @@ Returns the ``CadConstraint`` on the X coordinate
 %End
     const CadConstraint *constraintY() const;
 %Docstring
-Retruns the ``CadConstraint`` on the Y coordinate
+Returns the ``CadConstraint`` on the Y coordinate
 %End
     bool commonAngleConstraint() const;
 %Docstring
