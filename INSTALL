@@ -1,9 +1,9 @@
 QGIS
 Building QGIS from source - step by step
-Sunday October 14, 2018
+Friday October 26, 2018
 
 
-Last Updated: Sunday October 14, 2018
+Last Updated: Friday October 26, 2018
 Last Change : Sunday October 14, 2018
 
 
@@ -444,7 +444,7 @@ The free (as in free beer) Community installer is available under:
 Download and install following packages:
 
   || Tool | Website |
-  | CMake | https://cmake.org/files/v3.7/cmake-3.7.2-win64-x64.msi |
+  | CMake | https://cmake.org/files/v3.12/cmake-3.12.3-win64-x64.msi |
   | GNU flex, GNU bison and GIT | http://cygwin.com/setup-x86.exe (32bit) or http://cygwin.com/setup-x86_64.exe (64bit) |
   | OSGeo4W | http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86.exe (32bit) or http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe (64bit) |
   | ninja | https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip |
@@ -457,7 +457,7 @@ For the QGIS build you need to install following packages from cygwin:
 
 and from OSGeo4W (select Advanced Installation):
 
-- qgis-dev-deps
+- qgis-ltr-deps
 
 This will also select packages the above packages depend on.
 
