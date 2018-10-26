@@ -218,12 +218,22 @@ class TestCase(_TestCase):
         if use_asserts:
             _TestCase.assertTrue(
                 self,
-                equal,
-                'Features (Expected fid: {}, Result fid: {}) differ in geometry: \n\n Expected geometry:\n {}\n\n Result geometry:\n {}'.format(
+                equal, ''
+                ' Features (Expected fid: {}, Result fid: {}) differ in geometry with method {}: \n\n'
+                '  At given precision ({}):\n'
+                '   Expected geometry: {}\n'
+                '   Result geometry:   {}\n\n'
+                '  Full precision:\n'
+                '   Expected geometry : {}\n'
+                '   Result geometry:   {}\n\n'.format(
                     geom0_id,
                     geom1_id,
+                    'geos' if topo_equal_check else 'wkt',
+                    precision,
                     geom0.constGet().asWkt(precision) if not geom0.isNull() else 'NULL',
-                    geom1.constGet().asWkt(precision) if not geom1.isNull() else 'NULL'
+                    geom1.constGet().asWkt(precision) if not geom1.isNull() else 'NULL',
+                    geom0.constGet().asWkt() if not geom1.isNull() else 'NULL',
+                    geom1.constGet().asWkt() if not geom0.isNull() else 'NULL'
                 )
             )
         else:
