@@ -22,6 +22,10 @@ qgis_ziplayertest
 # Flaky, see https://dash.orfeo-toolbox.org/testDetails.php?test=63061783&build=297405
 PyQgsSpatialiteProvider
 
+# Flaky, the ms odbc driver crashes a lot on the ubuntu docker image. Retest when
+# the docker base image is upgraded
+PyQgsMssqlProvider
+
 # Need a local postgres installation
 PyQgsAuthManagerPKIPostgresTest
 PyQgsAuthManagerPasswordPostgresTest
