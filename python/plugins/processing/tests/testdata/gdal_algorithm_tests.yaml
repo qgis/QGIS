@@ -109,6 +109,7 @@ tests:
       BAND: 1
       CREATE_3D: false
       FIELD_NAME: ELEV
+      CREATE_3D: true
       IGNORE_NODATA: false
       INPUT:
         name: dem.tif
