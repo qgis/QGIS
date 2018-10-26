@@ -154,7 +154,7 @@ class QgsLocatorFilterFilter : public QgsLocatorFilter
  * Custom QTreeView designed for showing the results in a QgsLocatorWidget.
  * \since QGIS 3.0
  */
-class QgsLocatorResultsView : public QTreeView
+class GUI_EXPORT QgsLocatorResultsView : public QTreeView
 {
     Q_OBJECT
 
