@@ -325,7 +325,7 @@ Negative rounds to powers of 10</string>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
+             <width>0</width>
              <height>20</height>
             </size>
            </property>
