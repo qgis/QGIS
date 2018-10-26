@@ -547,6 +547,14 @@ class CORE_EXPORT QgsRectangle
       return QVariant::fromValue( *this );
     }
 
+    /**
+     * Returns a copy of this rectangle that is snapped to a grid with
+     * the specified \a spacing between the grid lines.
+     *
+     * \since QGIS 3.4
+     */
+    QgsRectangle snappedToGrid( double spacing ) const;
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode

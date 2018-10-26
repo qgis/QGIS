@@ -41,6 +41,7 @@ class TestQgsRectangle: public QObject
     void combine();
     void dataStream();
     void scale();
+    void snappedToGrid();
 };
 
 void TestQgsRectangle::isEmpty()
@@ -364,6 +365,21 @@ void TestQgsRectangle::scale()
 
   // scaled
   QCOMPARE( rect, QgsRectangle( 10, 20, 30, 60 ).scaled( 2, &center ) );
+}
+
+void TestQgsRectangle::snappedToGrid()
+{
+  QgsRectangle original( 10.123, 20.333, 10.788, 20.788 );
+  QgsRectangle snapped = original.snappedToGrid( 0.1 );
+
+  QgsRectangle control( 10.1, 20.3, 10.8, 20.8 );
+
+  QVERIFY( qgsDoubleNear( snapped.xMinimum(), control.xMinimum(), 0.000001 ) );
+  QVERIFY( qgsDoubleNear( snapped.xMaximum(), control.xMaximum(), 0.000001 ) );
+  QVERIFY( qgsDoubleNear( snapped.yMinimum(), control.yMinimum(), 0.000001 ) );
+  QVERIFY( qgsDoubleNear( snapped.yMaximum(), control.yMaximum(), 0.000001 ) );
+
+  QCOMPARE( QgsRectangle().snappedToGrid( 0.1 ), QgsRectangle() );
 }
 
 QGSTEST_MAIN( TestQgsRectangle )

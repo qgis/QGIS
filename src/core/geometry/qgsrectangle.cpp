@@ -182,6 +182,25 @@ QgsBox3d QgsRectangle::toBox3d( double zMin, double zMax ) const
   return QgsBox3d( mXmin, mYmin, zMin, mXmax, mYmax, zMax );
 }
 
+QgsRectangle QgsRectangle::snappedToGrid( double spacing ) const
+{
+  // helper function
+  auto gridifyValue = []( double value, double spacing ) -> double
+  {
+    if ( spacing > 0 )
+      return  std::round( value / spacing ) * spacing;
+    else
+      return value;
+  };
+
+  return QgsRectangle(
+           gridifyValue( mXmin, spacing ),
+           gridifyValue( mYmin, spacing ),
+           gridifyValue( mXmax, spacing ),
+           gridifyValue( mYmax, spacing )
+         );
+}
+
 QDataStream &operator<<( QDataStream &out, const QgsRectangle &rectangle )
 {
   out << rectangle.xMinimum() << rectangle.yMinimum() << rectangle.xMaximum() << rectangle.yMaximum();
