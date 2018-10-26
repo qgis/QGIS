@@ -1676,7 +1676,7 @@ border-radius: 2px;</string>
                  <item>
                   <widget class="QDoubleSpinBox" name="mRefreshLayerIntervalSpinBox">
                    <property name="toolTip">
-                    <string>Higher values result in more simplification</string>
+                    <string>Lower values result in more data refreshing. Canvas updates are deferred in order to avoid refreshing multiple times if more than one layer has an auto update interval set.</string>
                    </property>
                    <property name="decimals">
                     <number>2</number>
