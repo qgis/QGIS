@@ -55,6 +55,7 @@ Returns the current layout context coverage layer (if set).
 Returns the atlas for the layout, if available
 %End
 
+
 };
 
 class QgsLayoutItemBaseWidget: QgsPanelWidget

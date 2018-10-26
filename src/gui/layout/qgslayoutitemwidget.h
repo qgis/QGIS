@@ -86,6 +86,15 @@ class GUI_EXPORT QgsLayoutConfigObject: public QObject
     //! Returns the atlas for the layout, if available
     QgsLayoutAtlas *layoutAtlas() const;
 
+    /**
+     * Links a new layout \a object to this QgsLayoutConfigObject. The object must be the same type as the existing
+     * object.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.4
+     */
+    void setObject( QgsLayoutObject *object ) SIP_SKIP;
+
   private slots:
     //! Must be called when a data defined button changes
     void updateDataDefinedProperty();
