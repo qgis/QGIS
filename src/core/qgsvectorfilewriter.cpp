@@ -2236,6 +2236,19 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           }
         }
 
+        // drop m/z value if not present in output wkb type
+        if ( !QgsWkbTypes::hasZ( mWkbType ) && QgsWkbTypes::hasZ( geom.wkbType() ) )
+          geom.get()->dropZValue();
+        if ( !QgsWkbTypes::hasM( mWkbType ) && QgsWkbTypes::hasM( geom.wkbType() ) )
+          geom.get()->dropMValue();
+
+        // add m/z values if not present in the input wkb type -- this is needed for formats which determine
+        // geometry type based on features, e.g. geojson
+        if ( QgsWkbTypes::hasZ( mWkbType ) && !QgsWkbTypes::hasZ( geom.wkbType() ) )
+          geom.get()->addZValue( 0 );
+        if ( QgsWkbTypes::hasM( mWkbType ) && !QgsWkbTypes::hasM( geom.wkbType() ) )
+          geom.get()->addMValue( 0 );
+
         if ( !mGeom2 )
         {
           // there's a problem when layer type is set as wkbtype Polygon
