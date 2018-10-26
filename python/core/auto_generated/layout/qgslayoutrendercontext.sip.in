@@ -29,6 +29,7 @@ Stores information relating to the current rendering settings for a layout.
       FlagUseAdvancedEffects,
       FlagForceVectorOutput,
       FlagHideCoverageLayer,
+      FlagDrawSelection,
     };
     typedef QFlags<QgsLayoutRenderContext::Flag> Flags;
 
@@ -101,6 +102,24 @@ corresponding DPI for the context's measurementConverter().
 Returns the ``dpi`` for outputting the layout.
 
 .. seealso:: :py:func:`setDpi`
+%End
+
+    void setSelectionColor( const QColor &color );
+%Docstring
+Sets color that is used for drawing of selected vector features
+
+.. seealso:: :py:func:`selectionColor`
+
+.. versionadded:: 3.4
+%End
+
+    QColor selectionColor() const;
+%Docstring
+Gets color that is used for drawing of selected vector features
+
+.. seealso:: :py:func:`setSelectionColor`
+
+.. versionadded:: 3.4
 %End
 
 

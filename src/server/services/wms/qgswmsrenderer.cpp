@@ -66,7 +66,6 @@
 #include "qgslayerrestorer.h"
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
-#include "qgslayoutitemlegend.h"
 #include "qgsserverexception.h"
 
 #include <QImage>
@@ -80,6 +79,7 @@
 #include "qgslayoutmanager.h"
 #include "qgslayoutexporter.h"
 #include "qgslayoutsize.h"
+#include "qgslayoutrendercontext.h"
 #include "qgslayoutmeasurement.h"
 #include "qgsprintlayout.h"
 #include "qgslayoutpagecollection.h"
@@ -396,6 +396,8 @@ namespace QgsWms
         if ( ok )
           exportSettings.dpi = dpi;
       }
+      // Draw selections
+      exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       QgsLayoutExporter exporter( layout.get() );
       exporter.exportToSvg( tempOutputFile.fileName(), exportSettings );
     }
@@ -413,6 +415,8 @@ namespace QgsWms
           dpi = _dpi;
       }
       exportSettings.dpi = dpi;
+      // Draw selections
+      exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       // Destination image size in px
       QgsLayoutSize layoutSize( layout->pageCollection()->page( 0 )->sizeWithUnits() );
       QgsLayoutMeasurement width( layout->convertFromLayoutUnits( layoutSize.width(), QgsUnitTypes::LayoutUnit::LayoutMillimeters ) );
@@ -435,6 +439,8 @@ namespace QgsWms
         if ( ok )
           exportSettings.dpi = dpi;
       }
+      // Draw selections
+      exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       // Export all pages
       QgsLayoutExporter exporter( layout.get() );
       exporter.exportToPdf( tempOutputFile.fileName(), exportSettings );
@@ -450,7 +456,6 @@ namespace QgsWms
 
   bool QgsRenderer::configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings )
   {
-
     // Maps are configured first
     QList<QgsLayoutItemMap *> maps;
     c->layoutItems<QgsLayoutItemMap>( maps );
@@ -1141,6 +1146,13 @@ namespace QgsWms
 
     // enable rendering optimization
     mapSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
+
+    // set selection color
+    int myRed = mProject->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
+    int myGreen = mProject->readNumEntry( "Gui", "/SelectionColorGreenPart", 255 );
+    int myBlue = mProject->readNumEntry( "Gui", "/SelectionColorBluePart", 0 );
+    int myAlpha = mProject->readNumEntry( "Gui", "/SelectionColorAlphaPart", 255 );
+    mapSettings.setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
   }
 
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,

@@ -1104,7 +1104,8 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   jobMapSettings.setFlag( QgsMapSettings::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
   jobMapSettings.setFlag( QgsMapSettings::Antialiasing, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
   jobMapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
-  jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
+  jobMapSettings.setSelectionColor( mLayout->renderContext().selectionColor() );
+  jobMapSettings.setFlag( QgsMapSettings::DrawSelection, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagDrawSelection );
   jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
   jobMapSettings.setTransformContext( mLayout->project()->transformContext() );
   jobMapSettings.setPathResolver( mLayout->project()->pathResolver() );
