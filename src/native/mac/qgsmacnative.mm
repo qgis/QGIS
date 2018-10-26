@@ -121,9 +121,9 @@ QgsNative::NotificationResult QgsMacNative::showDesktopNotification( const QStri
 
 bool QgsMacNative::hasDarkTheme()
 {
-  #if __MAC_OS_X_VERSION_MIN_REQUIRED >= 101400
-    return ( NSApp.effectiveAppearance.name != NSAppearanceNameAqua );
-  #else
-    return false;
-  #endif
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= 101400
+  return ( NSApp.effectiveAppearance.name == NSAppearanceNameDarkAqua );
+#else
+  return false;
+#endif
 }
