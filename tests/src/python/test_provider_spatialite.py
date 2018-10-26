@@ -656,14 +656,14 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         f = QgsVectorLayerUtils.createFeature(vl)
         self.assertEqual(f.attributes(), [None, "qgis 'is good", 5, 5.7, None])
 
-        # check that provider default literals take precedence over passed attribute values
+        # If an attribute map is provided, QgsVectorLayerUtils.createFeature must
+        # respect it, otherwise default values from provider are checked.
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 'qgis is great', 0: 3})
-        self.assertEqual(f.attributes(), [3, "qgis 'is good", 5, 5.7, None])
+        self.assertEqual(f.attributes(), [3, "qgis is great", 5, 5.7, None])
 
-        # test that vector layer default value expression overrides provider default literal
         vl.setDefaultValueDefinition(3, QgsDefaultValue("4*3"))
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 'qgis is great', 0: 3})
-        self.assertEqual(f.attributes(), [3, "qgis 'is good", 5, 12, None])
+        self.assertEqual(f.attributes(), [3, "qgis is great", 5, 12, None])
 
     def testCreateAttributeIndex(self):
         vl = QgsVectorLayer("dbname=%s table='test_defaults' key='id'" % self.dbname, "test_defaults", "spatialite")
