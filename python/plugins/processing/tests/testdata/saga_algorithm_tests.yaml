@@ -451,4 +451,38 @@ tests:
       SEGMENTS:
         hash: f2e71e3374eb229d387db8f87bc24d09b86ffc23d9fca85f324b566b
         type: rasterhash
-  
+
+  - algorithm: saga:multilevelbsplineinterpolation
+    name: Multilevel B Spline Interpolation
+    params:
+      EPSILON: 0.0001
+      FIELD: EC
+      METHOD: 0
+      SHAPES:
+        name: custom/points_values.gml
+        type: vector
+      TARGET_USER_FITS: 0
+      TARGET_USER_SIZE: 0.001
+    results:
+      TARGET_OUT_GRID:
+        hash: 793c02e1f71091d5dcc7523bc7a872a80d20bcb29a70797479dd7740
+        type: rasterhash
+
+  - algorithm: saga:multilevelbsplineinterpolationfromraster
+    name: Multilevel B Spline Interpolation from Raster
+    params:
+      DATATYPE: 0
+      EPSILON: 0.0001
+      GRID:
+        name: dem.tif
+        type: raster
+      LEVEL_MAX: 11
+      METHOD: 0
+      TARGET_USER_FITS: 0
+      TARGET_USER_SIZE: 0.01
+      UPDATE: false
+    results:
+      TARGET_OUT_GRID:
+        hash: 6f81c858fc7575eaff6258b6e75bf4427d0568d5134837523b730929
+        type: rasterhash
+
