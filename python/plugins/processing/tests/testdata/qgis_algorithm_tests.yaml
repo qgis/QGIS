@@ -687,6 +687,8 @@ tests:
           fields:
             fid: skip
             path: skip
+          geometry:
+            precision: 7
 
   - algorithm: native:mergevectorlayers
     name: Merge polygons
@@ -706,6 +708,8 @@ tests:
           fields:
             fid: skip
             path: skip
+          geometry:
+            precision: 7
 
   - algorithm: native:mergevectorlayers
     name: Merge polygons with CRS
