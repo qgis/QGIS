@@ -380,7 +380,11 @@ bool QgsBrowserModel::addProvider( QgsDataItemProvider *provider )
 
 void QgsBrowserModel::removeProvider( QgsDataItemProvider *provider )
 {
+  if ( !provider )
+    return;
   QgsDataItem *rootItem = mProviderMap[provider->name()];
+  if ( !rootItem )
+    return;
   removeRootItem( rootItem );
   mProviderMap.remove( provider->name() );
 }
