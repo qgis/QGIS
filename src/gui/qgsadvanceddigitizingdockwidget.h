@@ -244,19 +244,26 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
     bool constructionMode() const { return mConstructionMode; }
 
-    //! Additional constraints are used to place perpendicular/parallel segments to snapped segments on the canvas
+    /**
+     * Returns the additional constraints which are used to place
+     * perpendicular/parallel segments to snapped segments on the canvas
+     */
     AdditionalConstraint additionalConstraint() const  { return mAdditionalConstraint; }
-    //! Constraint on the angle
+    //! Returns the \a CadConstraint on the angle
     const CadConstraint *constraintAngle() const  { return mAngleConstraint.get(); }
-    //! Constraint on the distance
+    //! Returns the \a CadConstraint on the distance
     const CadConstraint *constraintDistance() const { return mDistanceConstraint.get(); }
-    //! Constraint on the X coordinate
+    //! Returns the \a CadConstraint on the X coordinate
     const CadConstraint *constraintX() const { return mXConstraint.get(); }
-    //! Constraint on the Y coordinate
+    //! Retruns the \a CadConstraint on the Y coordinate
     const CadConstraint *constraintY() const { return mYConstraint.get(); }
-    //! Constraint on a common angle
+    //! Returns true if a constraint on a common angle is active
     bool commonAngleConstraint() const { return !qgsDoubleNear( mCommonAngleConstraint, 0.0 ); }
-    //! SnapMatch for indicator
+
+    /**
+     * Returns the point locator match
+     * \since QGIS 3.4
+     */
     QgsPointLocator::Match mapPointMatch() const { return mSnapMatch; }
 
     /**
