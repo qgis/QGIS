@@ -286,6 +286,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
             "REQUEST": "GetPrint",
             "TEMPLATE": "layoutA4",
             "FORMAT": "png",
+            "LAYERS": "Country,Hello",
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country,Hello",
             "CRS": "EPSG:3857",
