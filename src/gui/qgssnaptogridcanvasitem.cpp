@@ -31,8 +31,6 @@ void QgsSnapToGridCanvasItem::paint( QPainter *painter )
 
   painter->save();
   QgsRectangle mapRect = mMapCanvas->extent();
-  if ( rect() != mapRect )
-    setRect( mapRect );
 
   painter->setRenderHints( QPainter::Antialiasing );
   painter->setCompositionMode( QPainter::CompositionMode_Difference );
@@ -144,6 +142,10 @@ void QgsSnapToGridCanvasItem::updateZoomFactor()
   try
   {
     const int threshold = 5;
+
+    const QgsRectangle extent = mMapCanvas->extent();
+    if ( extent != rect() )
+      setRect( extent );
 
     const QgsPointXY centerPoint = mMapCanvas->extent().center();
     const QPointF canvasCenter = toCanvasCoordinates( centerPoint );
