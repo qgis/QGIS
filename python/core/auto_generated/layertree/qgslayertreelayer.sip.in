@@ -39,13 +39,31 @@ Constructor for QgsLayerTreeLayer using weak references to layer ID, ``name``, p
 %End
 
     QString layerId() const;
+%Docstring
+Returns the ID for the map layer associated with this node.
+
+.. seealso:: :py:func:`layer`
+%End
 
     QgsMapLayer *layer() const;
+%Docstring
+Returns the map layer associated with this node.
+
+.. warning::
+
+   This can be (and often is!) a None, e.g. in the case of a layer node representing a layer
+   which has not yet been fully loaded into a project, or a layer node representing a layer
+   with an invalid data source. The returned pointer must ALWAYS be checked to avoid dereferencing a None.
+
+.. seealso:: :py:func:`layerId`
+%End
 
     virtual QString name() const;
 
 %Docstring
 Returns the layer's name.
+
+.. seealso:: :py:func:`setName`
 
 .. versionadded:: 3.0
 %End
@@ -54,6 +72,8 @@ Returns the layer's name.
 
 %Docstring
 Sets the layer's name.
+
+.. seealso:: :py:func:`name`
 
 .. versionadded:: 3.0
 %End
