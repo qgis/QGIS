@@ -113,6 +113,10 @@ class GUI_EXPORT QgsTaskManagerStatusBarWidget : public QToolButton
 
     QSize sizeHint() const override;
 
+  protected:
+
+    void changeEvent( QEvent *event ) override;
+
   private slots:
 
     void toggleDisplay();

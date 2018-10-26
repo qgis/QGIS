@@ -100,6 +100,11 @@ class GUI_EXPORT QgsStatusBar : public QWidget
      */
     void clearMessage();
 
+
+  protected:
+
+    void changeEvent( QEvent *event ) override;
+
   private:
 
     QHBoxLayout *mLayout = nullptr;

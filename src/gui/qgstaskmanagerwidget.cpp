@@ -609,9 +609,19 @@ QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *ma
 
 QSize QgsTaskManagerStatusBarWidget::sizeHint() const
 {
-  int width = static_cast< int >( fontMetrics().width( 'X' ) * 10 * Qgis::UI_SCALE_FACTOR );
+  int width = static_cast< int >( fontMetrics().width( 'X' ) * 20 * Qgis::UI_SCALE_FACTOR );
   int height = QToolButton::sizeHint().height();
   return QSize( width, height );
+}
+
+void QgsTaskManagerStatusBarWidget::changeEvent( QEvent *event )
+{
+  QToolButton::changeEvent( event );
+
+  if ( event->type() == QEvent::FontChange )
+  {
+    mProgressBar->setFont( font() );
+  }
 }
 
 void QgsTaskManagerStatusBarWidget::toggleDisplay()

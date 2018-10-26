@@ -3000,7 +3000,13 @@ void QgisApp::createStatusBar()
   //remove borders from children under Windows
   statusBar()->setStyleSheet( QStringLiteral( "QStatusBar::item {border: none;}" ) );
 
+  // Drop the font size in the status bar by a couple of points
+  QFont statusBarFont = font();
+  statusBarFont.setPointSize( statusBarFont.pointSize() - 2 );
+  statusBar()->setFont( statusBarFont );
+
   mStatusBar = new QgsStatusBar();
+  mStatusBar->setFont( statusBarFont );
 
   statusBar()->addPermanentWidget( mStatusBar, 10 );
 
@@ -3017,12 +3023,8 @@ void QgisApp::createStatusBar()
   connect( mMapCanvas, &QgsMapCanvas::mapCanvasRefreshed, this, &QgisApp::canvasRefreshFinished );
 
   mTaskManagerWidget = new QgsTaskManagerStatusBarWidget( QgsApplication::taskManager(), mStatusBar );
+  mTaskManagerWidget->setFont( statusBarFont );
   mStatusBar->addPermanentWidget( mTaskManagerWidget, 0 );
-
-  // Drop the font size in the status bar by a couple of points
-  QFont statusBarFont = font();
-  statusBarFont.setPointSize( statusBarFont.pointSize() - 2 );
-  statusBar()->setFont( statusBarFont );
 
   //coords status bar widget
   mCoordsEdit = new QgsStatusBarCoordinatesWidget( mStatusBar );
