@@ -831,17 +831,22 @@ QString QgsExpression::group( const QString &name )
 {
   if ( sGroups.isEmpty() )
   {
+    sGroups.insert( QStringLiteral( "Aggregates" ), tr( "Aggregates" ) );
+    sGroups.insert( QStringLiteral( "Arrays" ), tr( "Arrays" ) );
     sGroups.insert( QStringLiteral( "General" ), tr( "General" ) );
     sGroups.insert( QStringLiteral( "Operators" ), tr( "Operators" ) );
     sGroups.insert( QStringLiteral( "Conditionals" ), tr( "Conditionals" ) );
     sGroups.insert( QStringLiteral( "Fields and Values" ), tr( "Fields and Values" ) );
+    sGroups.insert( QStringLiteral( "Map Layers" ), tr( "Map Layers" ) );
+    sGroups.insert( QStringLiteral( "Maps" ), tr( "Maps" ) );
     sGroups.insert( QStringLiteral( "Math" ), tr( "Math" ) );
     sGroups.insert( QStringLiteral( "Conversions" ), tr( "Conversions" ) );
     sGroups.insert( QStringLiteral( "Date and Time" ), tr( "Date and Time" ) );
     sGroups.insert( QStringLiteral( "String" ), tr( "String" ) );
     sGroups.insert( QStringLiteral( "Color" ), tr( "Color" ) );
     sGroups.insert( QStringLiteral( "GeometryGroup" ), tr( "Geometry" ) );
-    sGroups.insert( QStringLiteral( "Record" ), tr( "Record" ) );
+    sGroups.insert( QStringLiteral( "Rasters" ), tr( "Rasters" ) );
+    sGroups.insert( QStringLiteral( "Record and Attributes" ), tr( "Record and Attributes" ) );
     sGroups.insert( QStringLiteral( "Variables" ), tr( "Variables" ) );
     sGroups.insert( QStringLiteral( "Fuzzy Matching" ), tr( "Fuzzy Matching" ) );
     sGroups.insert( QStringLiteral( "Recent (%1)" ), tr( "Recent (%1)" ) );
