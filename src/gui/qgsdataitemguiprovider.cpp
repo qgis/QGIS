@@ -34,7 +34,7 @@ void QgsDataItemGuiContext::setMessageBar( QgsMessageBar *messageBar )
 // QgsDataItemGuiProvider
 //
 
-void QgsDataItemGuiProvider::populateContextMenu( const QList<QgsDataItem *> &, QMenu *, QgsDataItemGuiContext )
+void QgsDataItemGuiProvider::populateContextMenu( QgsDataItem *, QMenu *, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
 {
 
 }

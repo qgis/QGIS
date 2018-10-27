@@ -87,15 +87,19 @@ class GUI_EXPORT QgsDataItemGuiProvider
     virtual QString name() = 0;
 
     /**
-     * Called when the given context \a menu is being populated for the given selected \a items, allowing the provider
+     * Called when the given context \a menu is being populated for the given \a item, allowing the provider
      * to add its own actions and submenus to the context menu. Additionally,
      * providers could potentially alter menus and actions added by other providers
      * if desired, or use standard QMenu API to insert their items and submenus into
      * the desired location within the context menu.
      *
+     * The \a selectedItems list contains a list of ALL currently selected items within the browser view.
+     * Subclasses can utilise this list in order to create actions which operate on multiple items
+     * at once, e.g. to allow deletion of multiple layers from a database at once.
+     *
      * When creating a context menu, this method is called for EVERY QgsDataItemGuiProvider
      * within the QgsDataItemGuiProviderRegistry. It is the QgsDataItemGuiProvider subclass'
-     * responsibility to test the selected \a items for their properties and classes and decide what actions
+     * responsibility to test the \a item and \a selectedItems for their properties and classes and decide what actions
      * (if any) are appropriate to add to the context \a menu.
      *
      * Care must be taken to correctly parent newly created sub menus and actions to the
@@ -106,7 +110,8 @@ class GUI_EXPORT QgsDataItemGuiProvider
      *
      * The base class method has no effect.
      */
-    virtual void populateContextMenu( const QList<QgsDataItem *> &items, QMenu *menu, QgsDataItemGuiContext context );
+    virtual void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                                      const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context );
 
 };
 
