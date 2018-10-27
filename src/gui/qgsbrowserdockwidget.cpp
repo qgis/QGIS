@@ -194,6 +194,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
 
   const QModelIndexList selection = mBrowserView->selectionModel()->selectedIndexes();
   QList< QgsDataItem * > selectedItems;
+  selectedItems.reserve( selection.size() );
   for ( const QModelIndex &selectedIndex : selection )
   {
     QgsDataItem *selectedItem = mProxyModel->dataItem( selectedIndex );
@@ -255,10 +256,6 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
       } );
     }
   }
-  else if ( item->type() == QgsDataItem::Favorites )
-  {
-    menu->addAction( tr( "Add a Directory…" ), this, SLOT( addFavoriteDirectory() ) );
-  }
 
   const QList<QMenu *> menus = item->menus( menu );
   QList<QAction *> actions = item->actions( menu );
@@ -308,7 +305,9 @@ void QgsBrowserDockWidget::addFavorite()
   if ( !dirItem )
     return;
 
+  Q_NOWARN_DEPRECATED_PUSH
   addFavoriteDirectory( dirItem->dirPath() );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsBrowserDockWidget::addFavoriteDirectory()
@@ -316,7 +315,9 @@ void QgsBrowserDockWidget::addFavoriteDirectory()
   QString directory = QFileDialog::getExistingDirectory( this, tr( "Add directory to favorites" ) );
   if ( !directory.isEmpty() )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     addFavoriteDirectory( directory );
+    Q_NOWARN_DEPRECATED_POP
   }
 }
 

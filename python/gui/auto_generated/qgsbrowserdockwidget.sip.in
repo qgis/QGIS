@@ -31,9 +31,12 @@ Constructor for QgsBrowserDockWidget
 :param parent: parent widget
 %End
     ~QgsBrowserDockWidget();
-    void addFavoriteDirectory( const QString &favDir, const QString &name = QString() );
+
+ void addFavoriteDirectory( const QString &favDir, const QString &name = QString() ) /Deprecated/;
 %Docstring
-Add directory to favorites
+Add directory to favorites.
+
+.. deprecated:: will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
 %End
 
     void setMessageBar( QgsMessageBar *bar );
@@ -78,9 +81,11 @@ Add current item to favorite.
 .. deprecated:: will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
 %End
 
-    void addFavoriteDirectory();
+ void addFavoriteDirectory() /Deprecated/;
 %Docstring
-Add directory from file dialog to favorite
+Add directory from file dialog to favorite.
+
+.. deprecated:: will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
 %End
 
  void removeFavorite() /Deprecated/;
