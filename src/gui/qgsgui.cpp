@@ -43,6 +43,7 @@
 #include "qgsprocessingrecentalgorithmlog.h"
 #include "qgswindowmanagerinterface.h"
 #include "qgssettings.h"
+#include "qgsdataitemguiproviderregistry.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -95,6 +96,11 @@ QgsProcessingRecentAlgorithmLog *QgsGui::processingRecentAlgorithmLog()
   return instance()->mProcessingRecentAlgorithmLog;
 }
 
+QgsDataItemGuiProviderRegistry *QgsGui::dataItemGuiProviderRegistry()
+{
+  return instance()->mDataItemGuiProviderRegistry;
+}
+
 void QgsGui::enableAutoGeometryRestore( QWidget *widget, const QString &key )
 {
   if ( widget->objectName().isEmpty() )
@@ -130,6 +136,7 @@ QgsGui::HigFlags QgsGui::higFlags()
 QgsGui::~QgsGui()
 {
   delete mProcessingGuiRegistry;
+  delete mDataItemGuiProviderRegistry;
   delete mProcessingRecentAlgorithmLog;
   delete mLayoutItemGuiRegistry;
   delete mLayerTreeEmbeddedWidgetRegistry;
@@ -168,4 +175,5 @@ QgsGui::QgsGui()
   mWidgetStateHelper = new QgsWidgetStateHelper();
   mProcessingRecentAlgorithmLog = new QgsProcessingRecentAlgorithmLog();
   mProcessingGuiRegistry = new QgsProcessingGuiRegistry();
+  mDataItemGuiProviderRegistry = new QgsDataItemGuiProviderRegistry();
 }

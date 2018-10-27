@@ -1,0 +1,44 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdataitemguiprovider.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsDataItemGuiProvider
+{
+%Docstring
+
+Abstract base class for providers which affect how QgsDataItem items behave
+within the application GUI.
+
+Providers must be registered via QgsDataItemGuiProviderRegistry.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsdataitemguiprovider.h"
+%End
+  public:
+
+    virtual ~QgsDataItemGuiProvider();
+
+    virtual QString name() = 0;
+%Docstring
+Returns the provider's name.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdataitemguiprovider.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

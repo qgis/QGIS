@@ -243,6 +243,8 @@ SET(QGIS_GUI_SRCS
   qgscredentialdialog.cpp
   qgscustomdrophandler.cpp
   qgscurveeditorwidget.cpp
+  qgsdataitemguiprovider.cpp
+  qgsdataitemguiproviderregistry.cpp
   qgsdatumtransformdialog.cpp
   qgsdatasourceselectdialog.cpp
   qgsdetaileditemdata.cpp
@@ -767,6 +769,8 @@ ENDIF(MSVC)
 SET(QGIS_GUI_HDRS
   qgsattributeforminterface.h
   qgsattributeformlegacyinterface.h
+  qgsdataitemguiprovider.h
+  qgsdataitemguiproviderregistry.h
   qgsdetaileditemdata.h
   qgsexpressionbuilderdialog.h
   qgsgeometryrubberband.h

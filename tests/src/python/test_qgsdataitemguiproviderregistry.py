@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsDataItemProviderRegistry
+"""QGIS Unit tests for QgsDataItemGuiProviderRegistry
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -14,16 +14,15 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsApplication,
-                       QgsDataItemProvider,
-                       QgsDataProvider,
-                       QgsDataItemProviderRegistry)
+from qgis.gui import (QgsGui,
+                      QgsDataItemGuiProvider,
+                      QgsDataItemGuiProviderRegistry)
 from qgis.testing import start_app, unittest
 
 app = start_app()
 
 
-class TestProvider(QgsDataItemProvider):
+class TestProvider(QgsDataItemGuiProvider):
 
     def __init__(self, name):
         super().__init__()
@@ -32,24 +31,16 @@ class TestProvider(QgsDataItemProvider):
     def name(self):
         return self._name
 
-    def capabilities(self):
-        return QgsDataProvider.File
 
-    def createDataItem(self, path, parent):
-        return None
-
-
-class TestQgsDataItemProviderRegistry(unittest.TestCase):
+class TestQgsDataItemGuiProviderRegistry(unittest.TestCase):
 
     def testAppRegistry(self):
         # ensure there is an application instance
-        self.assertIsNotNone(QgsApplication.dataItemProviderRegistry())
+        self.assertIsNotNone(QgsGui.dataItemGuiProviderRegistry())
 
     def testRegistry(self):
-        registry = QgsDataItemProviderRegistry()
+        registry = QgsDataItemGuiProviderRegistry()
         initial_providers = registry.providers()
-        self.assertTrue(initial_providers) # we expect a bunch of default providers
-        self.assertTrue([p.name() for p in initial_providers if p.name() == 'GDAL'])
 
         # add a new provider
         p1 = TestProvider('p1')
