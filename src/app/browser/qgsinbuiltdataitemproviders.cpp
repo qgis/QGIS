@@ -29,11 +29,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QDesktopServices>
-
-QgsAppDirectoryItemGuiProvider::QgsAppDirectoryItemGuiProvider()
-{
-
-}
+#include <QFileDialog>
 
 QString QgsAppDirectoryItemGuiProvider::name()
 {
@@ -213,4 +209,40 @@ void QgsAppDirectoryItemGuiProvider::showProperties( QgsDirectoryItem *item )
 
   dialog->setItem( item );
   dialog->show();
+}
+
+
+//
+// QgsProjectHomeItemGuiProvider
+//
+
+QString QgsProjectHomeItemGuiProvider::name()
+{
+  return QStringLiteral( "project_home_item" );
+}
+
+void QgsProjectHomeItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+{
+  if ( !qobject_cast< QgsProjectHomeItem * >( item ) )
+    return;
+
+  if ( !menu->actions().empty() )
+    menu->insertSeparator( menu->actions().at( 0 ) );
+
+  QAction *setHome = new QAction( tr( "Set Project Home…" ), menu );
+  connect( setHome, &QAction::triggered, this, [ = ]
+  {
+    QString oldHome = QgsProject::instance()->homePath();
+    QString newPath = QFileDialog::getExistingDirectory( QgisApp::instance(), tr( "Select Project Home Directory" ), oldHome );
+    if ( !newPath.isEmpty() )
+    {
+      QgsProject::instance()->setPresetHomePath( newPath );
+    }
+  } );
+
+  // ensure item is the first one shown
+  if ( !menu->actions().empty() )
+    menu->insertAction( menu->actions().at( 0 ), setHome );
+  else
+    menu->addAction( setHome );
 }

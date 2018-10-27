@@ -27,7 +27,6 @@
 #include <QTreeWidgetItem>
 #include <QVector>
 #include <QStyle>
-#include <QFileDialog>
 #include <mutex>
 
 #include "qgis.h"
@@ -524,7 +523,7 @@ int QgsDataItem::findItem( QVector<QgsDataItem *> items, QgsDataItem *item )
 {
   for ( int i = 0; i < items.size(); i++ )
   {
-    Q_ASSERT_X( items[i], "findItem", QString( "item %1 is nullptr" ).arg( i ).toLatin1() );
+    Q_ASSERT_X( items[i], "findItem", QStringLiteral( "item %1 is nullptr" ).arg( i ).toLatin1() );
     QgsDebugMsgLevel( QString::number( i ) + " : " + items[i]->mPath + " x " + item->mPath, 2 );
     if ( items[i]->equal( item ) )
       return i;
@@ -710,7 +709,7 @@ bool QgsLayerItem::equal( const QgsDataItem *other )
     return false;
   }
   //const QgsLayerItem *o = qobject_cast<const QgsLayerItem *> ( other );
-  const QgsLayerItem *o = dynamic_cast<const QgsLayerItem *>( other );
+  const QgsLayerItem *o = qobject_cast<const QgsLayerItem *>( other );
   if ( !o )
     return false;
 
@@ -1545,31 +1544,6 @@ QVariant QgsProjectHomeItem::sortKey() const
   return QStringLiteral( " 1" );
 }
 
-QList<QAction *> QgsProjectHomeItem::actions( QWidget *parent )
-{
-  QList<QAction *> lst = QgsDirectoryItem::actions( parent );
-  QAction *separator = new QAction( parent );
-  separator->setSeparator( true );
-  lst.append( separator );
-
-  QAction *setHome = new QAction( tr( "Set Project Home…" ), parent );
-  connect( setHome, &QAction::triggered, this, [ = ]
-  {
-    QWidget *parentWindow = parent;
-    while ( parentWindow->parentWidget() )
-      parentWindow = parentWindow->parentWidget();
-
-    QString oldHome = QgsProject::instance()->homePath();
-    QString newPath = QFileDialog::getExistingDirectory( parentWindow, tr( "Select Project Home Directory" ), oldHome );
-    if ( !newPath.isEmpty() )
-    {
-      QgsProject::instance()->setPresetHomePath( newPath );
-    }
-  } );
-  lst << setHome;
-
-  return lst;
-}
 
 QgsFavoriteItem::QgsFavoriteItem( QgsFavoritesItem *parent, const QString &name, const QString &dirPath, const QString &path )
   : QgsDirectoryItem( parent, name, dirPath, path )
