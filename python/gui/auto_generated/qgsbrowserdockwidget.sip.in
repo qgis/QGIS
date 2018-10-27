@@ -36,6 +36,26 @@ Constructor for QgsBrowserDockWidget
 Add directory to favorites
 %End
 
+    void setMessageBar( QgsMessageBar *bar );
+%Docstring
+Sets a message ``bar`` to use alongside the dock widget. Setting this allows items
+to utilise the message bar to provide non-blocking feedback to users, e.g.
+success or failure of actions.
+
+.. seealso:: :py:func:`messageBar`
+
+.. versionadded:: 3.6
+%End
+
+    QgsMessageBar *messageBar();
+%Docstring
+Returns the message bar associated with the dock.
+
+.. seealso:: :py:func:`setMessageBar`
+
+.. versionadded:: 3.6
+%End
+
   public slots:
 
     bool addLayerAtIndex( const QModelIndex &index );
