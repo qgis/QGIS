@@ -33,6 +33,7 @@ class QgsDockBrowserTreeView;
 class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserProxyModel;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -54,6 +55,26 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     ~QgsBrowserDockWidget() override;
     //! Add directory to favorites
     void addFavoriteDirectory( const QString &favDir, const QString &name = QString() );
+
+    /**
+     * Sets a message \a bar to use alongside the dock widget. Setting this allows items
+     * to utilise the message bar to provide non-blocking feedback to users, e.g.
+     * success or failure of actions.
+     *
+     * \see messageBar()
+     *
+     * \since QGIS 3.6
+     */
+    void setMessageBar( QgsMessageBar *bar );
+
+    /**
+     * Returns the message bar associated with the dock.
+     *
+     * \see setMessageBar()
+     *
+     * \since QGIS 3.6
+     */
+    QgsMessageBar *messageBar();
 
   public slots:
 
@@ -143,6 +164,8 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     bool mPropertiesWidgetEnabled;
     // height fraction
     float mPropertiesWidgetHeight;
+
+    QgsMessageBar *mMessageBar = nullptr;
 
 };
 
