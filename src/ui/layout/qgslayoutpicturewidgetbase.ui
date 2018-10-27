@@ -245,7 +245,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Loading previews...</string>
+             <string>Loading previews…</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -318,7 +318,7 @@
             <item>
              <widget class="QPushButton" name="mAddDirectoryButton">
               <property name="text">
-               <string>Add...</string>
+               <string>Add…</string>
               </property>
              </widget>
             </item>

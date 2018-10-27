@@ -1540,7 +1540,7 @@
              <item row="0" column="0">
               <widget class="QPushButton" name="compileAPIs">
                <property name="text">
-                <string>Compile APIs...</string>
+                <string>Compile APIs…</string>
                </property>
               </widget>
              </item>

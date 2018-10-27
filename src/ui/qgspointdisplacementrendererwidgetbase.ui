@@ -142,7 +142,7 @@
    <item row="4" column="0" colspan="2">
     <widget class="QPushButton" name="mRendererSettingsButton">
      <property name="text">
-      <string>Renderer Settings...</string>
+      <string>Renderer Settings…</string>
      </property>
     </widget>
    </item>

@@ -154,7 +154,7 @@
                 <string>Export configuration</string>
                </property>
                <property name="text">
-                <string>...</string>
+                <string>…</string>
                </property>
                <property name="icon">
                 <iconset resource="oauth2_resources.qrc">
@@ -174,7 +174,7 @@
                 <string>Import configuration</string>
                </property>
                <property name="text">
-                <string>...</string>
+                <string>…</string>
                </property>
                <property name="icon">
                 <iconset resource="oauth2_resources.qrc">
@@ -702,7 +702,7 @@
              <string notr="true"/>
             </property>
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
             <property name="icon">
              <iconset resource="oauth2_resources.qrc">
@@ -750,7 +750,7 @@
           <item row="1" column="2">
            <widget class="QToolButton" name="btnSoftStatementDir">
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
             <property name="icon">
              <iconset resource="oauth2_resources.qrc">

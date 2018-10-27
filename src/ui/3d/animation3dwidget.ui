@@ -52,7 +52,7 @@
         <string>Edit keyframe</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -62,7 +62,7 @@
         <string>Duplicate keyframe</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -268,7 +268,7 @@
         <string>Repeat</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>

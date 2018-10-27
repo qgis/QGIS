@@ -5429,7 +5429,7 @@ p, li { white-space: pre-wrap; }
   </layout>
   <action name="mActionImportPalette">
    <property name="text">
-    <string>Import Palette...</string>
+    <string>Import Palette…</string>
    </property>
    <property name="toolTip">
     <string>Import palette from file</string>
@@ -5445,7 +5445,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="mActionNewPalette">
    <property name="text">
-    <string>New Palette...</string>
+    <string>New Palette…</string>
    </property>
    <property name="toolTip">
     <string>Create a new palette</string>

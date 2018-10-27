@@ -252,8 +252,8 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
       return QStringList()
              << QStringLiteral( "str: 'ProjectCrs'" )
              << QObject::tr( "str: CRS auth ID (e.g. 'EPSG:3111')" )
-             << QObject::tr( "str: CRS PROJ4 (e.g. 'PROJ4:...')" )
-             << QObject::tr( "str: CRS WKT (e.g. 'WKT:...')" )
+             << QObject::tr( "str: CRS PROJ4 (e.g. 'PROJ4:…')" )
+             << QObject::tr( "str: CRS WKT (e.g. 'WKT:…')" )
              << QObject::tr( "str: layer ID. CRS of layer is used." )
              << QObject::tr( "str: layer name. CRS of layer is used." )
              << QObject::tr( "str: layer source. CRS of layer is used." )
@@ -1005,7 +1005,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSink : public QgsProcessingPa
     {
       return QStringList() << QObject::tr( "str: destination vector file, e.g. 'd:/test.shp'" )
              << QObject::tr( "str: 'memory:' to store result in temporary memory layer" )
-             << QObject::tr( "str: using vector provider ID prefix and destination URI, e.g. 'postgres:...' to store result in PostGIS table" )
+             << QObject::tr( "str: using vector provider ID prefix and destination URI, e.g. 'postgres:…' to store result in PostGIS table" )
              << QStringLiteral( "QgsProcessingOutputLayerDefinition" )
              << QStringLiteral( "QgsProperty" );
     }

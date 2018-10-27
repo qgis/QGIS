@@ -138,7 +138,7 @@
      <item>
       <widget class="QToolButton" name="btnModel">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>

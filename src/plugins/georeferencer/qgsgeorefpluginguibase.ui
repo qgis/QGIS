@@ -178,7 +178,7 @@
   </widget>
   <action name="mActionOpenRaster">
    <property name="text">
-    <string>Open Raster...</string>
+    <string>Open Raster…</string>
    </property>
    <property name="statusTip">
     <string>Open raster</string>
@@ -230,7 +230,7 @@
   </action>
   <action name="mActionTransformSettings">
    <property name="text">
-    <string>Transformation Settings...</string>
+    <string>Transformation Settings…</string>
    </property>
    <property name="statusTip">
     <string>Transformation settings</string>
@@ -315,10 +315,10 @@
   </action>
   <action name="mActionSaveGCPpoints">
    <property name="text">
-    <string>Save GCP Points as...</string>
+    <string>Save GCP Points as…</string>
    </property>
    <property name="statusTip">
-    <string>Save GCP points as...</string>
+    <string>Save GCP points as…</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -326,7 +326,7 @@
   </action>
   <action name="mActionLoadGCPpoints">
    <property name="text">
-    <string>Load GCP Points...</string>
+    <string>Load GCP Points…</string>
    </property>
    <property name="statusTip">
     <string>Load GCP points</string>
@@ -337,7 +337,7 @@
   </action>
   <action name="mActionGeorefConfig">
    <property name="text">
-    <string>Configure Georeferencer...</string>
+    <string>Configure Georeferencer…</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
@@ -345,7 +345,7 @@
   </action>
   <action name="mActionRasterProperties">
    <property name="text">
-    <string>Raster Properties...</string>
+    <string>Raster Properties…</string>
    </property>
   </action>
   <action name="mActionMoveGCPPoint">

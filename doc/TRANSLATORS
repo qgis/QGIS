@@ -1,3 +1,4 @@
+<!-- created by scripts/tsstat.pl - Edits will be lost -->
 <style>body { font-family:sans-serif; background-color:#d3d3d3; }table {font-size:80%;}th {text-align:left; }.bartodo{ background-color:red;width:100px;height:20px;}.bardone{ background-color:green;width:80px;height:20px;font-size:80%;text-align:center;padding-top:4px;height:16px;color:white;}</style><table><tr><th colspan="2" style="width:250px;">Language</th><th>Finished %</th><th>Translators</th></tr>
 
 <tr><td align="center"><img src="qrc:/images/flags/de.svg" height="20"></td><td>German</td><td><div title="finished:19035 unfinished:0 untranslated:0" class="bartodo"><div class="bardone" style="width:100px">100.0</div></div></td><td>Jürgen E. Fischer, Stephan Holl, Otto Dassau, Werner Macho</td></tr>

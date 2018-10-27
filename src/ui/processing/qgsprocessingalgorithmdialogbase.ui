@@ -111,7 +111,7 @@
              <string>Save Log to File</string>
             </property>
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
             <property name="icon">
              <iconset resource="../../../images/images.qrc">
@@ -128,7 +128,7 @@
              <string>Copy Log to Clipboard</string>
             </property>
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
             <property name="icon">
              <iconset resource="../../../images/images.qrc">
@@ -145,7 +145,7 @@
              <string>Clear Log</string>
             </property>
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
             <property name="icon">
              <iconset resource="../../../images/images.qrc">

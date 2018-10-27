@@ -125,7 +125,7 @@
      <item>
       <widget class="QPushButton" name="btnRenderingOrder">
        <property name="text">
-        <string>Symbol Levels...</string>
+        <string>Symbol Levels…</string>
        </property>
       </widget>
      </item>

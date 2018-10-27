@@ -346,7 +346,7 @@ void QgsAuthOAuth2Method::onLinkingSucceeded()
     Q_FOREACH ( const QString &key, extraTokens.keys() )
     {
       // don't expose the values in a log (unless they are only 3 chars long, of course)
-      msg += QStringLiteral( "    %1:%2...\n" ).arg( key, extraTokens.value( key ).toString().left( 3 ) );
+      msg += QStringLiteral( "    %1:%2…\n" ).arg( key, extraTokens.value( key ).toString().left( 3 ) );
     }
     QgsDebugMsg( msg );
   }
@@ -418,7 +418,7 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
 
   if ( status == 401 )
   {
-    msg = tr( "Attempting token refresh..." );
+    msg = tr( "Attempting token refresh…" );
     QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
     QString authcfg = reply->property( "authcfg" ).toString();

@@ -2087,7 +2087,7 @@
                     <item>
                      <widget class="QPushButton" name="mButtonSizeLegendSettings">
                       <property name="text">
-                       <string>Legend Entries for Diagram Size...</string>
+                       <string>Legend Entries for Diagram Size…</string>
                       </property>
                      </widget>
                     </item>

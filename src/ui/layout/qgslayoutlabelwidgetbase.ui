@@ -101,7 +101,7 @@
           <item row="2" column="0">
            <widget class="QPushButton" name="mInsertExpressionButton">
             <property name="text">
-             <string>Insert an Expression...</string>
+             <string>Insert an Expression…</string>
             </property>
            </widget>
           </item>

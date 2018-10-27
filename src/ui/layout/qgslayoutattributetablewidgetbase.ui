@@ -105,7 +105,7 @@
           <item row="7" column="0" colspan="2">
            <widget class="QPushButton" name="mAttributesPushButton">
             <property name="text">
-             <string>Attributes...</string>
+             <string>Attributes…</string>
             </property>
            </widget>
           </item>
@@ -421,7 +421,7 @@
           <item row="8" column="1">
            <widget class="QPushButton" name="mAdvancedCustomizationButton">
             <property name="text">
-             <string>Advanced Customization...</string>
+             <string>Advanced Customization…</string>
             </property>
            </widget>
           </item>

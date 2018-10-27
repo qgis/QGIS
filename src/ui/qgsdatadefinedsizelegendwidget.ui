@@ -43,7 +43,7 @@
      <item>
       <widget class="QPushButton" name="btnChangeSymbol">
        <property name="text">
-        <string>Legend Symbol...</string>
+        <string>Legend Symbol…</string>
        </property>
       </widget>
      </item>
@@ -81,7 +81,7 @@
              <string>Add a class</string>
             </property>
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
             <property name="icon">
              <iconset resource="../../images/images.qrc">
@@ -95,7 +95,7 @@
              <string>Remove selected class</string>
             </property>
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
             <property name="icon">
              <iconset resource="../../images/images.qrc">

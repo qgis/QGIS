@@ -274,7 +274,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   // Set window busy
   setCursor( Qt::WaitCursor );
   mRunButton->setEnabled( false );
-  ui.labelStatus->setText( tr( "<b>Preparing output...</b>" ) );
+  ui.labelStatus->setText( tr( "<b>Preparing output…</b>" ) );
   ui.labelStatus->show();
   QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
 
@@ -411,7 +411,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   }
 
   // Setup checker
-  ui.labelStatus->setText( tr( "<b>Building spatial index...</b>" ) );
+  ui.labelStatus->setText( tr( "<b>Building spatial index…</b>" ) );
   QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
   QMap<QString, QgsFeaturePool *> featurePools;
   for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
@@ -491,7 +491,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
 void QgsGeometryCheckerSetupTab::showCancelFeedback()
 {
   mAbortButton->setEnabled( false );
-  ui.labelStatus->setText( tr( "<b>Waiting for running checks to finish...</b>" ) );
+  ui.labelStatus->setText( tr( "<b>Waiting for running checks to finish…</b>" ) );
   ui.labelStatus->show();
   ui.progressBar->hide() ;
 }

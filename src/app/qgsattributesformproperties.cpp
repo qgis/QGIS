@@ -1123,7 +1123,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
 
       //qmlCode
       QPlainTextEdit *qmlCode = new QPlainTextEdit( itemData.qmlElementEditorConfiguration().qmlCode );
-      qmlCode->setPlaceholderText( tr( "Insert QML code here..." ) );
+      qmlCode->setPlaceholderText( tr( "Insert QML code here…" ) );
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
       QgsFeature previewFeature;
@@ -1139,7 +1139,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
 
       //templates
       QComboBox *qmlObjectTemplate = new QComboBox();
-      qmlObjectTemplate->addItem( tr( "Free text..." ) );
+      qmlObjectTemplate->addItem( tr( "Free text…" ) );
       qmlObjectTemplate->addItem( tr( "Rectangle" ) );
       qmlObjectTemplate->addItem( tr( "Pie chart" ) );
       qmlObjectTemplate->addItem( tr( "Bar chart" ) );
@@ -1150,7 +1150,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
         {
           case 0:
           {
-            qmlCode->setPlaceholderText( tr( "Insert QML code here..." ) );
+            qmlCode->setPlaceholderText( tr( "Insert QML code here…" ) );
             break;
           }
           case 1:
