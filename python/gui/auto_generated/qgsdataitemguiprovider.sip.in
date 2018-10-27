@@ -72,17 +72,22 @@ Providers must be registered via :py:class:`QgsDataItemGuiProviderRegistry`.
 Returns the provider's name.
 %End
 
-    virtual void populateContextMenu( const QList<QgsDataItem *> &items, QMenu *menu, QgsDataItemGuiContext context );
+    virtual void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                                      const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context );
 %Docstring
-Called when the given context ``menu`` is being populated for the given selected ``items``, allowing the provider
+Called when the given context ``menu`` is being populated for the given ``item``, allowing the provider
 to add its own actions and submenus to the context menu. Additionally,
 providers could potentially alter menus and actions added by other providers
 if desired, or use standard QMenu API to insert their items and submenus into
 the desired location within the context menu.
 
+The ``selectedItems`` list contains a list of ALL currently selected items within the browser view.
+Subclasses can utilise this list in order to create actions which operate on multiple items
+at once, e.g. to allow deletion of multiple layers from a database at once.
+
 When creating a context menu, this method is called for EVERY QgsDataItemGuiProvider
 within the QgsDataItemGuiProviderRegistry. It is the QgsDataItemGuiProvider subclass'
-responsibility to test the selected ``items`` for their properties and classes and decide what actions
+responsibility to test the ``item`` and ``selectedItems`` for their properties and classes and decide what actions
 (if any) are appropriate to add to the context ``menu``.
 
 Care must be taken to correctly parent newly created sub menus and actions to the

@@ -36,6 +36,8 @@
 #include "qgsgui.h"
 #include "qgswindowmanagerinterface.h"
 #include "qgsnative.h"
+#include "qgsdataitemguiproviderregistry.h"
+#include "qgsdataitemguiprovider.h"
 
 // browser layer properties dialog
 #include "qgsapplication.h"
@@ -208,6 +210,15 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   if ( !item )
     return;
 
+  const QModelIndexList selection = mBrowserView->selectionModel()->selectedIndexes();
+  QList< QgsDataItem * > selectedItems;
+  for ( const QModelIndex &selectedIndex : selection )
+  {
+    QgsDataItem *selectedItem = mProxyModel->dataItem( selectedIndex );
+    if ( selectedItem )
+      selectedItems << selectedItem;
+  }
+
   QMenu *menu = new QMenu( this );
 
   if ( item->type() == QgsDataItem::Directory )
@@ -325,6 +336,14 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
       menu->addSeparator();
     // add action to the menu
     menu->addActions( actions );
+  }
+
+  QgsDataItemGuiContext context;
+
+  const QList< QgsDataItemGuiProvider * > providers = QgsGui::instance()->dataItemGuiProviderRegistry()->providers();
+  for ( QgsDataItemGuiProvider *provider : providers )
+  {
+    provider->populateContextMenu( item, menu, selectedItems, context );
   }
 
   if ( menu->actions().isEmpty() )
