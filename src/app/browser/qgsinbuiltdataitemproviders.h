@@ -65,6 +65,21 @@ class QgsProjectHomeItemGuiProvider : public QObject, public QgsDataItemGuiProvi
 };
 
 
+class QgsFavoritesItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFavoritesItemGuiProvider() = default;
+
+    QString name() override;
+
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+
+};
+
 
 #endif // QGSINBUILTDATAITEMPROVIDERS_H
 

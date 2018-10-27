@@ -53,8 +53,12 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
       */
     explicit QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsBrowserDockWidget() override;
-    //! Add directory to favorites
-    void addFavoriteDirectory( const QString &favDir, const QString &name = QString() );
+
+    /**
+     * Add directory to favorites.
+     * \deprecated will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+     */
+    Q_DECL_DEPRECATED void addFavoriteDirectory( const QString &favDir, const QString &name = QString() ) SIP_DEPRECATED;
 
     /**
      * Sets a message \a bar to use alongside the dock widget. Setting this allows items
@@ -95,8 +99,11 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
      */
     Q_DECL_DEPRECATED void addFavorite() SIP_DEPRECATED;
 
-    //! Add directory from file dialog to favorite
-    void addFavoriteDirectory();
+    /**
+     * Add directory from file dialog to favorite.
+     * \deprecated will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+     */
+    Q_DECL_DEPRECATED void addFavoriteDirectory() SIP_DEPRECATED;
 
     /**
      * Remove from favorite.

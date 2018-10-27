@@ -246,3 +246,29 @@ void QgsProjectHomeItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
   else
     menu->addAction( setHome );
 }
+
+//
+// QgsFavoritesItemGuiProvider
+//
+
+QString QgsFavoritesItemGuiProvider::name()
+{
+  return QStringLiteral( "favorites_item" );
+}
+
+void QgsFavoritesItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+{
+  if ( item->type() != QgsDataItem::Favorites )
+    return;
+
+  QAction *addAction = new QAction( tr( "Add a Directory…" ), menu );
+  connect( addAction, &QAction::triggered, this, [ = ]
+  {
+    QString directory = QFileDialog::getExistingDirectory( QgisApp::instance(), tr( "Add Directory to Favorites" ) );
+    if ( !directory.isEmpty() )
+    {
+      QgisApp::instance()->browserModel()->addFavoriteDirectory( directory );
+    }
+  } );
+  menu->addAction( addAction );
+}
