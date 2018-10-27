@@ -787,9 +787,6 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
     QIcon icon() override;
     QVariant sortKey() const override;
 
-    QList<QAction *> actions( QWidget *parent ) override;
-
-
 };
 
 /**

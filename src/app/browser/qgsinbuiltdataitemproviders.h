@@ -31,7 +31,7 @@ class QgsAppDirectoryItemGuiProvider : public QObject, public QgsDataItemGuiProv
 
   public:
 
-    QgsAppDirectoryItemGuiProvider();
+    QgsAppDirectoryItemGuiProvider() = default;
 
     QString name() override;
 
@@ -46,6 +46,22 @@ class QgsAppDirectoryItemGuiProvider : public QObject, public QgsDataItemGuiProv
     void hideDirectory( QgsDirectoryItem *item );
     void toggleFastScan( QgsDirectoryItem *item );
     void showProperties( QgsDirectoryItem *item );
+};
+
+
+class QgsProjectHomeItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProjectHomeItemGuiProvider() = default;
+
+    QString name() override;
+
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+
 };
 
 
