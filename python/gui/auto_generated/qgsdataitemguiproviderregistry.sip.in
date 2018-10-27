@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsdataitemproviderregistry.h                               *
+ * src/gui/qgsdataitemguiproviderregistry.h                             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -9,54 +9,53 @@
 
 
 
-
-class QgsDataItemProviderRegistry
+class QgsDataItemGuiProviderRegistry
 {
 %Docstring
-This class keeps a list of data item providers that may add items to the browser tree.
-When created, it automatically adds providers from provider plugins (e.g. PostGIS, WMS, ...)
+This class keeps a list of data item GUI providers that may affect how QgsDataItems
+behave within the application GUI.
 
-QgsDataItemProviderRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.dataItemProviderRegistry()`
+QgsDataItemGuiProviderRegistry is not usually directly created, but rather accessed through
+QgsGui.instance()->dataItemGuiProviderRegistry().
 
-.. versionadded:: 2.10
+.. versionadded:: 3.6
 %End
 
 %TypeHeaderCode
-#include "qgsdataitemproviderregistry.h"
+#include "qgsdataitemguiproviderregistry.h"
 %End
   public:
 
-    QgsDataItemProviderRegistry();
+    QgsDataItemGuiProviderRegistry();
 
-    ~QgsDataItemProviderRegistry();
+    ~QgsDataItemGuiProviderRegistry();
 
 
-    QList<QgsDataItemProvider *> providers() const;
+    QList<QgsDataItemGuiProvider *> providers() const;
 %Docstring
 Returns the list of available providers.
 %End
 
-    void addProvider( QgsDataItemProvider *provider /Transfer/ );
+    void addProvider( QgsDataItemGuiProvider *provider /Transfer/ );
 %Docstring
 Adds a ``provider`` implementation to the registry. Ownership of the provider
 is transferred to the registry.
 %End
 
-    void removeProvider( QgsDataItemProvider *provider );
+    void removeProvider( QgsDataItemGuiProvider *provider );
 %Docstring
 Removes a ``provider`` implementation from the registry.
 The provider object is automatically deleted.
 %End
 
   private:
-    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry &rh );
+    QgsDataItemGuiProviderRegistry( const QgsDataItemGuiProviderRegistry &rh );
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgsdataitemproviderregistry.h                               *
+ * src/gui/qgsdataitemguiproviderregistry.h                             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

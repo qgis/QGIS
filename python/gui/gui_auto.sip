@@ -1,5 +1,7 @@
 // Include auto-generated SIP files
 %Include auto_generated/qgsattributeforminterface.sip
+%Include auto_generated/qgsdataitemguiprovider.sip
+%Include auto_generated/qgsdataitemguiproviderregistry.sip
 %Include auto_generated/qgsdetaileditemdata.sip
 %Include auto_generated/qgsexpressionbuilderdialog.sip
 %Include auto_generated/qgsgeometryrubberband.sip

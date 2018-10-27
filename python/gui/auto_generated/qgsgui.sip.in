@@ -76,6 +76,14 @@ Returns the global processing recent algorithm log, used for tracking recently u
 .. versionadded:: 3.4
 %End
 
+    static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry();
+%Docstring
+Returns the global data item GUI provider registry, used for tracking providers which affect the browser
+GUI.
+
+.. versionadded:: 3.6
+%End
+
     static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
 %Docstring
 Register the widget to allow its position to be automatically saved and restored when open and closed.
