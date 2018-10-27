@@ -71,17 +71,23 @@ false if the index is not a map layer or could not be loaded.
 Show context menu
 %End
 
-    void addFavorite();
+ void addFavorite() /Deprecated/;
 %Docstring
-Add current item to favorite
+Add current item to favorite.
+
+.. deprecated:: will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
 %End
+
     void addFavoriteDirectory();
 %Docstring
 Add directory from file dialog to favorite
 %End
-    void removeFavorite();
+
+ void removeFavorite() /Deprecated/;
 %Docstring
-Remove from favorite
+Remove from favorite.
+
+.. deprecated:: will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
 %End
 
     void refresh();
@@ -126,10 +132,14 @@ Show the layer properties
 %Docstring
 Hide current item
 %End
-    void toggleFastScan();
+
+ void toggleFastScan() /Deprecated/;
 %Docstring
 Toggle fast scan
+
+.. deprecated:: will be removed in QGIS 4.0
 %End
+
 
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 %Docstring

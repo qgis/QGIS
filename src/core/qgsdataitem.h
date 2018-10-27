@@ -605,9 +605,6 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     //! Check if the given path is hidden from the browser model
     static bool hiddenPath( const QString &path );
 
-    QList<QAction *> actions( QWidget *parent ) override;
-
-
   public slots:
     void childrenCreated() override;
     void directoryChanged();

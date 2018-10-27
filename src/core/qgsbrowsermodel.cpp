@@ -635,6 +635,14 @@ void QgsBrowserModel::removeFavorite( const QModelIndex &index )
   mFavorites->removeDirectory( item );
 }
 
+void QgsBrowserModel::removeFavorite( QgsFavoriteItem *favorite )
+{
+  if ( !favorite )
+    return;
+
+  mFavorites->removeDirectory( favorite );
+}
+
 void QgsBrowserModel::hidePath( QgsDataItem *item )
 {
   QgsSettings settings;

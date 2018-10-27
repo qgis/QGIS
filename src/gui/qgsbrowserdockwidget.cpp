@@ -185,24 +185,6 @@ void QgsBrowserDockWidget::itemDoubleClicked( const QModelIndex &index )
   }
 }
 
-void QgsBrowserDockWidget::renameFavorite()
-{
-  QgsDataItem *dataItem = mModel->dataItem( mProxyModel->mapToSource( mBrowserView->currentIndex() ) );
-  if ( !dataItem )
-    return;
-
-  QgsFavoriteItem *favorite = qobject_cast< QgsFavoriteItem * >( dataItem );
-  if ( !favorite )
-    return;
-
-  QgsNewNameDialog dlg( tr( "favorite “%1”" ).arg( favorite->name() ), favorite->name() );
-  dlg.setWindowTitle( tr( "Rename Favorite" ) );
-  if ( dlg.exec() != QDialog::Accepted || dlg.name() == favorite->name() )
-    return;
-
-  favorite->rename( dlg.name() );
-}
-
 void QgsBrowserDockWidget::showContextMenu( QPoint pt )
 {
   QModelIndex index = mProxyModel->mapToSource( mBrowserView->indexAt( pt ) );
@@ -221,48 +203,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
 
   QMenu *menu = new QMenu( this );
 
-  if ( item->type() == QgsDataItem::Directory )
-  {
-    QgsSettings settings;
-
-    bool inFavDirs = item->parent() && item->parent()->type() == QgsDataItem::Favorites;
-    if ( item->parent() && !inFavDirs )
-    {
-      // only non-root directories can be added as favorites
-      QAction *addAsFavorite = new QAction( tr( "Add as a Favorite" ), this );
-      addAsFavorite->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavourites.svg" ) ) );
-      menu->addAction( addAsFavorite );
-      connect( addAsFavorite, &QAction::triggered, this, &QgsBrowserDockWidget::addFavorite );
-    }
-    else if ( inFavDirs )
-    {
-      QAction *actionRename = new QAction( tr( "Rename Favorite…" ), this );
-      connect( actionRename, &QAction::triggered, this, &QgsBrowserDockWidget::renameFavorite );
-      menu->addAction( actionRename );
-      menu->addSeparator();
-      menu->addAction( tr( "Remove Favorite" ), this, SLOT( removeFavorite() ) );
-      menu->addSeparator();
-    }
-    menu->addAction( tr( "Hide from Browser" ), this, SLOT( hideItem() ) );
-    QAction *action = menu->addAction( tr( "Fast Scan this Directory" ), this, SLOT( toggleFastScan() ) );
-    action->setCheckable( true );
-    action->setChecked( settings.value( QStringLiteral( "qgis/scanItemsFastScanUris" ),
-                                        QStringList() ).toStringList().contains( item->path() ) );
-
-    menu->addAction( tr( "Properties…" ), this, SLOT( showProperties() ) );
-    if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
-    {
-      if ( QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem * >( item ) )
-      {
-        QAction *action = menu->addAction( tr( "Directory Properties…" ) );
-        connect( action, &QAction::triggered, dirItem, [ dirItem ]
-        {
-          QgsGui::nativePlatformInterface()->showFileProperties( dirItem->dirPath() );
-        } );
-      }
-    }
-  }
-  else if ( item->type() == QgsDataItem::Layer )
+  if ( item->type() == QgsDataItem::Layer )
   {
     QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
     if ( layerItem && ( layerItem->mapLayerType() == QgsMapLayer::VectorLayer ||

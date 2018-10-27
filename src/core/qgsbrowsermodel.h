@@ -195,6 +195,14 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      */
     void removeFavorite( const QModelIndex &index );
 
+    /**
+     * Removes a \a favorite item.
+     * \see addFavoriteDirectory()
+     * \note Not available in Python bindings
+     * \since QGIS 3.6
+     */
+    void removeFavorite( QgsFavoriteItem *favorite ) SIP_SKIP;
+
     void updateProjectHome();
 
     //! Hide the given path in the browser model

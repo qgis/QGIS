@@ -184,6 +184,7 @@ Removes a favorite directory from its corresponding model index.
 .. versionadded:: 3.0
 %End
 
+
     void updateProjectHome();
 
     void hidePath( QgsDataItem *item );

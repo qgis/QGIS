@@ -156,7 +156,7 @@ class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget, private
 /**
  * The QgsBrowserPropertiesDialog class
  */
-class QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBrowserPropertiesDialogBase
+class GUI_EXPORT QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBrowserPropertiesDialogBase
 {
     Q_OBJECT
   public:
