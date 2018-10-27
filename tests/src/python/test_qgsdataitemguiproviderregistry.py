@@ -15,8 +15,10 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.gui import (QgsGui,
+                      QgsDataItemGuiContext,
                       QgsDataItemGuiProvider,
-                      QgsDataItemGuiProviderRegistry)
+                      QgsDataItemGuiProviderRegistry,
+                      QgsMessageBar)
 from qgis.testing import start_app, unittest
 
 app = start_app()
@@ -30,6 +32,17 @@ class TestProvider(QgsDataItemGuiProvider):
 
     def name(self):
         return self._name
+
+
+class TestQgsDataItemGuiContext(unittest.TestCase):
+
+    def testContext(self):
+        context = QgsDataItemGuiContext()
+        self.assertIsNone(context.messageBar())
+
+        mb = QgsMessageBar()
+        context.setMessageBar(mb)
+        self.assertEqual(context.messageBar(), mb)
 
 
 class TestQgsDataItemGuiProviderRegistry(unittest.TestCase):

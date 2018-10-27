@@ -15,4 +15,26 @@
 
 #include "qgsdataitemguiprovider.h"
 
-// no implementation currently
+//
+// QgsDataItemGuiContext
+//
+
+QgsMessageBar *QgsDataItemGuiContext::messageBar()
+{
+  return mMessageBar;
+}
+
+void QgsDataItemGuiContext::setMessageBar( QgsMessageBar *messageBar )
+{
+  mMessageBar = messageBar;
+}
+
+
+//
+// QgsDataItemGuiProvider
+//
+
+void QgsDataItemGuiProvider::populateContextMenu( const QList<QgsDataItem *> &, QMenu *, QgsDataItemGuiContext )
+{
+
+}
