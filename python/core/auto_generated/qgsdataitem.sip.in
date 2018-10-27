@@ -597,10 +597,6 @@ Constructor.
 Check if the given path is hidden from the browser model
 %End
 
-    virtual QList<QAction *> actions( QWidget *parent );
-
-
-
   public slots:
     virtual void childrenCreated();
 

@@ -89,12 +89,20 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     //! Show context menu
     void showContextMenu( QPoint );
 
-    //! Add current item to favorite
-    void addFavorite();
+    /**
+     * Add current item to favorite.
+     * \deprecated will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+     */
+    Q_DECL_DEPRECATED void addFavorite() SIP_DEPRECATED;
+
     //! Add directory from file dialog to favorite
     void addFavoriteDirectory();
-    //! Remove from favorite
-    void removeFavorite();
+
+    /**
+     * Remove from favorite.
+     * \deprecated will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead
+     */
+    Q_DECL_DEPRECATED void removeFavorite() SIP_DEPRECATED;
 
     //! Refresh browser view model (and view)
     void refresh();
@@ -118,8 +126,14 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     void showProperties();
     //! Hide current item
     void hideItem();
-    //! Toggle fast scan
-    void toggleFastScan();
+
+    /**
+     * Toggle fast scan
+     * \deprecated will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED void toggleFastScan() SIP_DEPRECATED;
+
+    // TODO QGIS 4.0: make these private
 
     //! Selection has changed
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
@@ -140,7 +154,6 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
 
   private slots:
     void itemDoubleClicked( const QModelIndex &index );
-    void renameFavorite();
 
   private:
     //! Refresh the model

@@ -167,6 +167,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgscustomlayerorderwidget.h"
 #include "qgscustomprojectiondialog.h"
 #include "qgsdataitemproviderregistry.h"
+#include "qgsdataitemguiproviderregistry.h"
 #include "qgsdatasourceuri.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsdoublespinbox.h"
@@ -328,6 +329,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
+
+#include "browser/qgsinbuiltdataitemproviders.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
@@ -1021,6 +1024,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser" ), mBrowserModel, this );
   mBrowserWidget->setObjectName( QStringLiteral( "Browser" ) );
   mBrowserWidget->setMessageBar( mInfoBar );
+
+  QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsAppDirectoryItemGuiProvider() );
 
   QShortcut *showBrowserDock = new QShortcut( QKeySequence( tr( "Ctrl+2" ) ), this );
   connect( showBrowserDock, &QShortcut::activated, mBrowserWidget, &QgsDockWidget::toggleUserVisible );
@@ -1863,6 +1868,11 @@ void QgisApp::dataSourceManager( const QString &pageName )
   {
     mDataSourceManagerDialog->exec();
   }
+}
+
+QgsBrowserModel *QgisApp::browserModel()
+{
+  return mBrowserModel;
 }
 
 QgisAppStyleSheet *QgisApp::styleSheetBuilder()

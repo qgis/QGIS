@@ -903,6 +903,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void dataSourceManager( const QString &pageName = QString() );
 
     /**
+     * Returns the shared application browser model.
+     */
+    QgsBrowserModel *browserModel();
+
+    /**
      * Add a raster layer directly without prompting user for location
       The caller must provide information compatible with the provider plugin
       using the uri and baseName. The provider can use these

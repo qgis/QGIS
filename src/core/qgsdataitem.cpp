@@ -27,10 +27,7 @@
 #include <QTreeWidgetItem>
 #include <QVector>
 #include <QStyle>
-#include <QDesktopServices>
 #include <QFileDialog>
-#include <QInputDialog>
-#include <QMessageBox>
 #include <mutex>
 
 #include "qgis.h"
@@ -985,53 +982,6 @@ bool QgsDirectoryItem::hiddenPath( const QString &path )
   int idx = hiddenItems.indexOf( path );
   return ( idx > -1 );
 }
-
-QList<QAction *> QgsDirectoryItem::actions( QWidget *parent )
-{
-  QList<QAction *> result;
-
-  QAction *createFolder = new QAction( tr( "New Directory…" ), parent );
-  connect( createFolder, &QAction::triggered, this, [ = ]
-  {
-    bool ok = false;
-
-    QWidget *parentWindow = parent;
-    while ( parentWindow->parentWidget() )
-      parentWindow = parentWindow->parentWidget();
-
-    const QString name = QInputDialog::getText( parentWindow, tr( "Create Directory" ), tr( "Directory name" ), QLineEdit::Normal, QString(), &ok );
-    if ( ok && !name.isEmpty() )
-    {
-      QDir dir( mDirPath );
-      if ( QFileInfo::exists( dir.absoluteFilePath( name ) ) )
-      {
-        QMessageBox::critical( parentWindow, tr( "Create Directory" ), tr( "The path “%1” already exists." ).arg( QDir::toNativeSeparators( dir.absoluteFilePath( name ) ) ) );
-      }
-      else if ( !dir.mkdir( name ) )
-      {
-        QMessageBox::critical( parentWindow, tr( "Create Directory" ), tr( "Could not create directory “%1”." ).arg( QDir::toNativeSeparators( dir.absoluteFilePath( name ) ) ) );
-      }
-      else
-      {
-        refresh();
-      }
-    }
-  } );
-  result << createFolder;
-
-  QAction *sep = new QAction( parent );
-  sep->setSeparator( true );
-  result << sep;
-
-  QAction *openFolder = new QAction( tr( "Open Directory…" ), parent );
-  connect( openFolder, &QAction::triggered, this, [ = ]
-  {
-    QDesktopServices::openUrl( QUrl::fromLocalFile( mDirPath ) );
-  } );
-  result << openFolder;
-  return result;
-}
-
 
 void QgsDirectoryItem::childrenCreated()
 {
