@@ -94,7 +94,7 @@ class GUI_EXPORT QgsDataItemGuiProvider
      * the desired location within the context menu.
      *
      * The \a selectedItems list contains a list of ALL currently selected items within the browser view.
-     * Subclasses can utilise this list in order to create actions which operate on multiple items
+     * Subclasses can utilize this list in order to create actions which operate on multiple items
      * at once, e.g. to allow deletion of multiple layers from a database at once.
      *
      * When creating a context menu, this method is called for EVERY QgsDataItemGuiProvider

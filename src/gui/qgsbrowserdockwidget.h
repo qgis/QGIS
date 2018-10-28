@@ -62,7 +62,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
 
     /**
      * Sets a message \a bar to use alongside the dock widget. Setting this allows items
-     * to utilise the message bar to provide non-blocking feedback to users, e.g.
+     * to utilize the message bar to provide non-blocking feedback to users, e.g.
      * success or failure of actions.
      *
      * \see messageBar()
