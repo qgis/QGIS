@@ -30,7 +30,7 @@
 #include <QComboBox>
 #include <QLibrary>
 #include <QFileDialog>
-
+#include <QMessageBox>
 
 QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -104,6 +104,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
 
   mFileName->setStorageMode( QgsFileWidget::SaveFile );
   mFileName->setFilter( QgsVectorFileWriter::filterForDriver( mFileFormatComboBox->currentData( Qt::UserRole ).toString() ) );
+  mFileName->setConfirmOverwrite( false );
   mFileName->setDialogTitle( tr( "Save Layer As" ) );
   mFileName->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
   connect( mFileName, &QgsFileWidget::fileChanged, this, [ = ]
@@ -245,6 +246,11 @@ QString QgsNewVectorLayerDialog::filename() const
   return mFileName->filePath();
 }
 
+void QgsNewVectorLayerDialog::setFilename( const QString &filename )
+{
+  mFileName->setFilePath( filename );
+}
+
 void QgsNewVectorLayerDialog::checkOk()
 {
   bool ok = ( !mFileName->filePath().isEmpty() && mAttributeView->topLevelItemCount() > 0 );
@@ -252,14 +258,20 @@ void QgsNewVectorLayerDialog::checkOk()
 }
 
 // this is static
-QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pEnc, const QgsCoordinateReferenceSystem &crs )
+QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pEnc, const QgsCoordinateReferenceSystem &crs, const QString &initialPath )
 {
   QgsNewVectorLayerDialog geomDialog( parent );
   geomDialog.setCrs( crs );
+  if ( !initialPath.isEmpty() )
+    geomDialog.setFilename( initialPath );
   if ( geomDialog.exec() == QDialog::Rejected )
   {
     return QString();
   }
+
+  if ( QFile::exists( geomDialog.filename() ) && QMessageBox::warning( parent, tr( "New ShapeFile Layer" ), tr( "The layer already exists. Are you sure you want to overwrite the existing file?" ),
+       QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) != QMessageBox::Yes )
+    return QString();
 
   QgsWkbTypes::Type geometrytype = geomDialog.selectedType();
   QString fileformat = geomDialog.selectedFileFormat();
