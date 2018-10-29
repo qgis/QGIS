@@ -69,6 +69,7 @@
 #include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
 #include "qgsalgorithmreclassifybylayer.h"
+#include "qgsalgorithmremoveduplicatesbyattribute.h"
 #include "qgsalgorithmremoveduplicatevertices.h"
 #include "qgsalgorithmremoveholes.h"
 #include "qgsalgorithmremovenullgeometry.h"
@@ -198,6 +199,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsAlgorithmRemoveDuplicateVertices() );
   addAlgorithm( new QgsReclassifyByLayerAlgorithm() );
   addAlgorithm( new QgsReclassifyByTableAlgorithm() );
+  addAlgorithm( new QgsRemoveDuplicatesByAttributeAlgorithm() );
   addAlgorithm( new QgsRemoveHolesAlgorithm() );
   addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
   addAlgorithm( new QgsRenameLayerAlgorithm() );
