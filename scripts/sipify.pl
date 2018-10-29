@@ -753,19 +753,20 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # class declaration started
-    # https://regex101.com/r/6FWntP/10
-    if ( $LINE =~ m/^(\s*class)\s+([A-Z0-9_]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
+    # https://regex101.com/r/6FWntP/11
+    if ( $LINE =~ m/^(\s*(class|namespace))\s+([A-Z0-9_]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
         dbg_info("class definition started");
         push @ACCESS, PUBLIC;
         push @EXPORTED, 0;
         push @GLOB_BRACKET_NESTING_IDX, 0;
+        my $class_type = $2; # class or namespace
         my @template_inheritance_template = ();
         my @template_inheritance_class = ();
         do {no warnings 'uninitialized';
-            push @CLASSNAME, $3;
+            push @CLASSNAME, $4;
             if ($#CLASSNAME == 0){
                 # might be worth to add in-class classes later on
-                # in case of a tamplate based class declaration
+                # in case of a template based class declaration
                 # based on an in-class and in the same file
                 push @DECLARED_CLASSES, $CLASSNAME[$#CLASSNAME];
             }
@@ -775,11 +776,16 @@ while ($LINE_IDX < $LINE_COUNT){
                 # if class is not exported, then its methods should be (checked whenever leaving out the class)
                 $EXPORTED[-1]++;
             }
+            else
+            {
+               dbg_info("class is not exported, its method must be or specify this class in sipify.yaml as not exported.".
+                        " Otherwise you might end up in big troubles!");
+            }
         };
-        $LINE = "$1 $3";
+        $LINE = "$1 $4";
         # Inheritance
-        if ($4){
-            my $m = $4;
+        if ($5){
+            my $m = $5;
             $m =~ s/public +(\w+, *)*(Ui::\w+,? *)+//g; # remove Ui::xxx public inheritance as the namespace is causing troubles
             $m =~ s/public +//g;
             $m =~ s/[,:]?\s*private +\w+(::\w+)?//g;
@@ -828,7 +834,13 @@ while ($LINE_IDX < $LINE_COUNT){
             dbg_info("skipping class in private context");
             next;
         }
-        $ACCESS[$#ACCESS] = PRIVATE; # private by default
+        if ( $class_type eq "namespace" ) {
+            dbg_info("going public for namespaces");
+            $ACCESS[$#ACCESS] = PUBLIC; # private by default
+        } else {
+            dbg_info("going private by default");
+            $ACCESS[$#ACCESS] = PRIVATE; # private by default
+        }
 
         write_output("CLS", "$LINE\n");
 
@@ -839,7 +851,6 @@ while ($LINE_IDX < $LINE_COUNT){
 
         $COMMENT = '';
         $HEADER_CODE = 1;
-        $ACCESS[$#ACCESS] = PRIVATE;
         next;
     }
 
@@ -898,6 +909,7 @@ while ($LINE_IDX < $LINE_COUNT){
     }
     elsif ( PRIVATE ~~ @ACCESS && $SIP_RUN == 0 ) {
         $COMMENT = '';
+        dbg_info("in private and not sip run -- next");
         next;
     }
     # Skip operators
@@ -978,8 +990,9 @@ while ($LINE_IDX < $LINE_COUNT){
     };
 
     if( $LINE =~ /\b\w+_EXPORT\b/ ) {
-            $EXPORTED[-1]++;
-            $LINE =~ s/\b\w+_EXPORT\s+//g;
+        dbg_info("found EXPORT macro");
+        $EXPORTED[-1]++;
+        $LINE =~ s/\b\w+_EXPORT\s+//g;
     }
 
     # skip non-method member declaration in non-public sections
