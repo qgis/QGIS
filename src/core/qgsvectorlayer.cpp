@@ -601,16 +601,7 @@ QgsWkbTypes::GeometryType QgsVectorLayer::geometryType() const
   {
     QgsDebugMsgLevel( QStringLiteral( "invalid layer or pointer to mDataProvider is null" ), 3 );
   }
-
-  // We shouldn't get here, and if we have, other things are likely to
-  // go wrong. Code that uses the type() return value should be
-  // rewritten to cope with a value of Qgis::Unknown. To make this
-  // need known, the following message is printed every time we get
-  // here.
-  // AP: it looks like we almost always get here, since 2.x ... either we remove this
-  //     warning of take care of the problems that may occur
-  QgsDebugMsg( QStringLiteral( "WARNING: This code should never be reached. Problems may occur..." ) );
-
+  QgsDebugMsgLevel( QStringLiteral( "Vector layer with unknown geometry type." ), 3 );
   return QgsWkbTypes::UnknownGeometry;
 }
 
