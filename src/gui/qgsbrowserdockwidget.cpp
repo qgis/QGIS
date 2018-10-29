@@ -204,59 +204,6 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
 
   QMenu *menu = new QMenu( this );
 
-  if ( item->type() == QgsDataItem::Layer )
-  {
-    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
-    if ( layerItem && ( layerItem->mapLayerType() == QgsMapLayer::VectorLayer ||
-                        layerItem->mapLayerType() == QgsMapLayer::RasterLayer ) )
-    {
-      QMenu *exportMenu = new QMenu( tr( "Export Layer" ), menu );
-      menu->addMenu( exportMenu );
-      QAction *toFileAction = new QAction( tr( "To File…" ), exportMenu );
-      exportMenu->addAction( toFileAction );
-      connect( toFileAction, &QAction::triggered, layerItem, [ layerItem ]
-      {
-        switch ( layerItem->mapLayerType() )
-        {
-          case QgsMapLayer::VectorLayer:
-          {
-            std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
-            if ( layer && layer->isValid() )
-            {
-              QgsGui::instance()->windowManager()->executeExportVectorLayerDialog( layer.get() );
-            }
-            break;
-          }
-
-          case QgsMapLayer::RasterLayer:
-          {
-            std::unique_ptr<QgsRasterLayer> layer( new QgsRasterLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
-            if ( layer && layer->isValid() )
-            {
-              QgsGui::instance()->windowManager()->executeExportRasterLayerDialog( layer.get() );
-            }
-            break;
-          }
-
-          case QgsMapLayer::PluginLayer:
-          case QgsMapLayer::MeshLayer:
-            break;
-        }
-      } );
-    }
-
-    menu->addAction( tr( "Add Selected Layer(s) to Canvas" ), this, SLOT( addSelectedLayers() ) );
-    menu->addAction( tr( "Layer Properties…" ), this, SLOT( showProperties() ) );
-    if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
-    {
-      QAction *action = menu->addAction( tr( "File Properties…" ) );
-      connect( action, &QAction::triggered, this, [ = ]
-      {
-        QgsGui::nativePlatformInterface()->showFileProperties( item->path() );
-      } );
-    }
-  }
-
   const QList<QMenu *> menus = item->menus( menu );
   QList<QAction *> actions = item->actions( menu );
 

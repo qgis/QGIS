@@ -25,6 +25,8 @@
 #include "qgsnewnamedialog.h"
 #include "qgsbrowsermodel.h"
 #include "qgsbrowserdockwidget_p.h"
+#include "qgswindowmanagerinterface.h"
+#include "qgsrasterlayer.h"
 #include <QMenu>
 #include <QInputDialog>
 #include <QMessageBox>
@@ -271,4 +273,127 @@ void QgsFavoritesItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     }
   } );
   menu->addAction( addAction );
+}
+
+//
+// QgsLayerItemGuiProvider
+//
+
+QString QgsLayerItemGuiProvider::name()
+{
+  return QStringLiteral( "layer_item" );
+}
+
+void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext )
+{
+  if ( item->type() != QgsDataItem::Layer )
+    return;
+
+  QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
+  if ( layerItem && ( layerItem->mapLayerType() == QgsMapLayer::VectorLayer ||
+                      layerItem->mapLayerType() == QgsMapLayer::RasterLayer ) )
+  {
+    QMenu *exportMenu = new QMenu( tr( "Export Layer" ), menu );
+    menu->addMenu( exportMenu );
+    QAction *toFileAction = new QAction( tr( "To File…" ), exportMenu );
+    exportMenu->addAction( toFileAction );
+    connect( toFileAction, &QAction::triggered, layerItem, [ layerItem ]
+    {
+      switch ( layerItem->mapLayerType() )
+      {
+        case QgsMapLayer::VectorLayer:
+        {
+          std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
+          if ( layer && layer->isValid() )
+          {
+            QgsGui::instance()->windowManager()->executeExportVectorLayerDialog( layer.get() );
+          }
+          break;
+        }
+
+        case QgsMapLayer::RasterLayer:
+        {
+          std::unique_ptr<QgsRasterLayer> layer( new QgsRasterLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
+          if ( layer && layer->isValid() )
+          {
+            QgsGui::instance()->windowManager()->executeExportRasterLayerDialog( layer.get() );
+          }
+          break;
+        }
+
+        case QgsMapLayer::PluginLayer:
+        case QgsMapLayer::MeshLayer:
+          break;
+      }
+    } );
+  }
+
+  const QString addText = selectedItems.count() == 1 ? tr( "Add Layer to Project" )
+                          : tr( "Add Selected Layers to Project" );
+  QAction *addAction = new QAction( addText, menu );
+  connect( addAction, &QAction::triggered, this, [ = ]
+  {
+    addLayersFromItems( selectedItems );
+  } );
+  menu->addAction( addAction );
+
+  QAction *propertiesAction = new QAction( tr( "Layer Properties…" ), menu );
+  connect( propertiesAction, &QAction::triggered, this, [ = ]
+  {
+    showPropertiesForItem( layerItem );
+  } );
+  menu->addAction( propertiesAction );
+
+  if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
+  {
+    QAction *action = menu->addAction( tr( "File Properties…" ) );
+    connect( action, &QAction::triggered, this, [ = ]
+    {
+      QgsGui::nativePlatformInterface()->showFileProperties( item->path() );
+    } );
+  }
+}
+
+void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &items )
+{
+  QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
+
+  // If any of the layer items are QGIS we just open and exit the loop
+  // TODO - maybe this logic is wrong?
+  for ( const QgsDataItem *item : items )
+  {
+    if ( item && item->type() == QgsDataItem::Project )
+    {
+      if ( const QgsProjectItem *projectItem = qobject_cast<const QgsProjectItem *>( item ) )
+        QgisApp::instance()->openFile( projectItem->path(), QStringLiteral( "project" ) );
+
+      return;
+    }
+  }
+
+  QgsMimeDataUtils::UriList layerUriList;
+  layerUriList.reserve( items.size() );
+  // add items in reverse order so they are in correct order in the layers dock
+  for ( int i = items.size() - 1; i >= 0; i-- )
+  {
+    QgsDataItem *item = items.at( i );
+    if ( item && item->type() == QgsDataItem::Layer )
+    {
+      if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
+        layerUriList << layerItem->mimeUri();
+    }
+  }
+  if ( !layerUriList.isEmpty() )
+    QgisApp::instance()->handleDropUriList( layerUriList );
+}
+
+void QgsLayerItemGuiProvider::showPropertiesForItem( QgsLayerItem *item )
+{
+  if ( ! item )
+    return;
+
+  QgsBrowserPropertiesDialog *dialog = new QgsBrowserPropertiesDialog( QStringLiteral( "browser" ), QgisApp::instance() );
+  dialog->setAttribute( Qt::WA_DeleteOnClose );
+  dialog->setItem( item );
+  dialog->show();
 }
