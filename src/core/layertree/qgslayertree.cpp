@@ -20,7 +20,7 @@
 QgsLayerTree::QgsLayerTree()
 {
   connect( this, &QgsLayerTree::addedChildren, this, &QgsLayerTree::nodeAddedChildren );
-  connect( this, &QgsLayerTree::removedChildren, this, &QgsLayerTree::nodeRemovedChildren );
+  connect( this, &QgsLayerTree::willRemoveChildren, this, &QgsLayerTree::nodeRemovedChildren );
 }
 
 QgsLayerTree::QgsLayerTree( const QgsLayerTree &other )
@@ -29,7 +29,7 @@ QgsLayerTree::QgsLayerTree( const QgsLayerTree &other )
   , mHasCustomLayerOrder( other.mHasCustomLayerOrder )
 {
   connect( this, &QgsLayerTree::addedChildren, this, &QgsLayerTree::nodeAddedChildren );
-  connect( this, &QgsLayerTree::removedChildren, this, &QgsLayerTree::nodeRemovedChildren );
+  connect( this, &QgsLayerTree::willRemoveChildren, this, &QgsLayerTree::nodeRemovedChildren );
 }
 
 QList<QgsMapLayer *> QgsLayerTree::customLayerOrder() const
