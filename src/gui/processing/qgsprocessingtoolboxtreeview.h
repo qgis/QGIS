@@ -109,6 +109,8 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
      */
     QModelIndex findFirstVisibleAlgorithm( const QModelIndex &parent );
 
+    friend class TestQgsProcessingModel;
+
 };
 
 ///@endcond

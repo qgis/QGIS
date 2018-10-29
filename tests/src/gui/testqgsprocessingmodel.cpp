@@ -154,6 +154,10 @@ void TestQgsProcessingModel::testModel()
   QVERIFY( !model.providerForIndex( model.index( 0, 0, QModelIndex() ) ) );
   QVERIFY( !model.providerForIndex( model.index( 1, 0, QModelIndex() ) ) );
   QVERIFY( !model.indexForProvider( nullptr ).isValid() );
+  QVERIFY( model.index2node( QModelIndex() ) ); // root node
+  QCOMPARE( model.index2node( QModelIndex() )->nodeType(), QgsProcessingToolboxModelNode::NodeGroup );
+  QVERIFY( model.index2node( model.index( -1, 0, QModelIndex() ) ) ); // root node
+  QCOMPARE( model.index2node( QModelIndex() ), model.index2node( model.index( -1, 0, QModelIndex() ) ) );
 
   // add a provider
   DummyProvider *p1 = new DummyProvider( "p1", "provider1" );
@@ -559,6 +563,11 @@ void TestQgsProcessingModel::testView()
   QgsProcessingRecentAlgorithmLog recentLog;
   QgsProcessingToolboxTreeView view( nullptr, &registry, &recentLog );
 
+  // Check view model consistency
+  QVERIFY( view.mModel );
+  QVERIFY( view.mToolboxModel );
+  QCOMPARE( view.mModel->toolboxModel(), view.mToolboxModel );
+
   QVERIFY( !view.algorithmForIndex( QModelIndex() ) );
 
   // add a provider
@@ -636,6 +645,13 @@ void TestQgsProcessingModel::testView()
   // but if it doesn't remove the selected one, that algorithm should not be deselected
   view.setFilterString( QStringLiteral( "a" ) );
   QCOMPARE( view.selectedAlgorithm()->id(), QStringLiteral( "p2:a1" ) );
+
+  // Check view model consistency after resetting registry
+  view.setRegistry( &registry );
+  QVERIFY( view.mModel );
+  QVERIFY( view.mToolboxModel );
+  QCOMPARE( view.mModel->toolboxModel(), view.mToolboxModel );
+
 }
 
 QGSTEST_MAIN( TestQgsProcessingModel )
