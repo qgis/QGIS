@@ -31,7 +31,7 @@ QgsProcessingToolboxTreeView::QgsProcessingToolboxTreeView( QWidget *parent,
 void QgsProcessingToolboxTreeView::setRegistry( QgsProcessingRegistry *registry, QgsProcessingRecentAlgorithmLog *recentLog )
 {
   QgsProcessingToolboxProxyModel *newModel = new QgsProcessingToolboxProxyModel( this, registry, recentLog );
-  mToolboxModel = mModel->toolboxModel();
+  mToolboxModel = newModel->toolboxModel();
   setModel( newModel );
   mModel->deleteLater();
   mModel = newModel;
