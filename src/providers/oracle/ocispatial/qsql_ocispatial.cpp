@@ -99,7 +99,8 @@
 #include <cstdlib>
 
 #define QOCISPATIAL_DYNAMIC_CHUNK_SIZE 65535
-#define QOCISPATIAL_PREFETCH_MEM  10240
+#define QOCISPATIAL_PREFETCH_ROWS 10000
+#define QOCISPATIAL_PREFETCH_MEM 8388608 // 8MB
 
 // setting this define will allow using a query from a different
 // thread than its database connection.
@@ -341,8 +342,8 @@ class QOCISpatialDriverPrivate : public QSqlDriverPrivate
     OCIError *err = nullptr;
     bool transaction = false;
     int serverVersion = -1;
-    ub4 prefetchRows = 0xffffffff;
-    ub2 prefetchMem = QOCISPATIAL_PREFETCH_MEM;
+    ub4 prefetchRows = QOCISPATIAL_PREFETCH_ROWS;
+    ub4 prefetchMem = QOCISPATIAL_PREFETCH_MEM;
     QString user;
 
     OCIType *geometryTDO = nullptr;
@@ -429,7 +430,7 @@ class QOCISpatialResultPrivate: public QSqlCachedResultPrivate
     QList<QOCISDOGeometryInd *> sdoind;
     bool transaction;
     int serverVersion;
-    int prefetchRows, prefetchMem;
+    ub4 prefetchRows, prefetchMem;
     OCIType *geometryTDO = nullptr;
     QOCISDOGeometryObj *geometryObj = nullptr;
     QOCISDOGeometryInd *geometryInd = nullptr;
@@ -3833,13 +3834,13 @@ static void qParseOpts( const QString &options, QOCISpatialDriverPrivate *d )
     {
       d->prefetchRows = val.toInt( &ok );
       if ( !ok )
-        d->prefetchRows = 0xffffffff;
+        d->prefetchRows = QOCISPATIAL_PREFETCH_ROWS;
     }
     else if ( opt == QLatin1String( "OCI_ATTR_PREFETCH_MEMORY" ) )
     {
       d->prefetchMem = val.toInt( &ok );
       if ( !ok )
-        d->prefetchMem = 0xffff;
+        d->prefetchMem = QOCISPATIAL_PREFETCH_MEM;
     }
     else
     {
