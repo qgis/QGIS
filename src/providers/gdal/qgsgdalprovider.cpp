@@ -1991,6 +1991,10 @@ QStringList QgsGdalProvider::subLayers() const
   return mSubLayers;
 }
 
+QGISEXTERN int dataCapabilities()
+{
+  return QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net;
+}
 
 QGISEXTERN QVariantMap decodeUri( const QString &uri )
 {
