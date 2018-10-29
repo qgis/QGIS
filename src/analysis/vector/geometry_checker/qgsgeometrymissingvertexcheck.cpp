@@ -150,7 +150,7 @@ void QgsGeometryMissingVertexCheck::processPolygon( const QgsCurvePolygon *polyg
     if ( fid == currentFeature.id() )
       continue;
 
-    if ( featurePool->getFeature( fid, compareFeature ) )
+    if ( featurePool->getFeature( fid, compareFeature, feedback ) )
     {
       if ( feedback->isCanceled() )
         break;

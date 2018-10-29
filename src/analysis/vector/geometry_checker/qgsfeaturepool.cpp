@@ -36,7 +36,7 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer )
 
 }
 
-bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
+bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature, QgsFeedback *feedback )
 {
   QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
   QgsFeature *cachedFeature = mFeatureCache.object( id );
@@ -47,11 +47,11 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
   }
   else
   {
-    std::unique_ptr<QgsVectorLayerFeatureSource> source = QgsVectorLayerUtils::getFeatureSource( mLayer );
+    std::unique_ptr<QgsVectorLayerFeatureSource> source = QgsVectorLayerUtils::getFeatureSource( mLayer, feedback );
 
     // Feature not in cache, retrieve from layer
     // TODO: avoid always querying all attributes (attribute values are needed when merging by attribute)
-    if ( !source->getFeatures( QgsFeatureRequest( id ) ).nextFeature( feature ) )
+    if ( !source || !source->getFeatures( QgsFeatureRequest( id ) ).nextFeature( feature ) )
     {
       return false;
     }
@@ -62,11 +62,11 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
   return true;
 }
 
-QgsFeatureIds QgsFeaturePool::getFeatures( const QgsFeatureRequest &request )
+QgsFeatureIds QgsFeaturePool::getFeatures( const QgsFeatureRequest &request, QgsFeedback *feedback )
 {
   QgsFeatureIds fids;
 
-  std::unique_ptr<QgsVectorLayerFeatureSource> source = QgsVectorLayerUtils::getFeatureSource( mLayer );
+  std::unique_ptr<QgsVectorLayerFeatureSource> source = QgsVectorLayerUtils::getFeatureSource( mLayer, feedback );
 
   QgsFeatureIterator it = source->getFeatures( request );
   QgsFeature feature;

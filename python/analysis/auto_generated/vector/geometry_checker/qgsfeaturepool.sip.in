@@ -30,11 +30,12 @@ A feature pool is based on a vector layer and caches features.
     QgsFeaturePool( QgsVectorLayer *layer );
     virtual ~QgsFeaturePool();
 
-    bool getFeature( QgsFeatureId id, QgsFeature &feature );
+    bool getFeature( QgsFeatureId id, QgsFeature &feature, QgsFeedback *feedback = 0 );
 %Docstring
 Retrieve the feature with the specified ``id`` into ``feature``.
 It will be retrieved from the cache or from the underlying layer if unavailable.
 If the feature is neither available from the cache nor from the layer it will return false.
+If ``feedback`` is specified, the call may return if the feedback is canceled.
 %End
 
 

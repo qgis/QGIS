@@ -46,8 +46,9 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
      * Retrieve the feature with the specified \a id into \a feature.
      * It will be retrieved from the cache or from the underlying layer if unavailable.
      * If the feature is neither available from the cache nor from the layer it will return false.
+     * If \a feedback is specified, the call may return if the feedback is canceled.
      */
-    bool getFeature( QgsFeatureId id, QgsFeature &feature );
+    bool getFeature( QgsFeatureId id, QgsFeature &feature, QgsFeedback *feedback = nullptr );
 
     /**
      * Get features for the provided \a request. No features will be fetched
@@ -55,8 +56,9 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
      * Results of the request are cached in the pool and the ids of all the features
      * are returned. This can be used to warm the cache for a particular area of interest
      * (bounding box) or other set of features.
+     * If \a feedback is specified, the call may return if the feedback is canceled.
      */
-    QgsFeatureIds getFeatures( const QgsFeatureRequest &request ) SIP_SKIP;
+    QgsFeatureIds getFeatures( const QgsFeatureRequest &request, QgsFeedback *feedback = nullptr ) SIP_SKIP;
 
     /**
      * Updates a feature in this pool.

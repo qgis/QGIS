@@ -166,7 +166,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \note Requires Qt >= 5.10 to make use of the thread-safe implementation
      * \since QGIS 3.4
      */
-    static std::unique_ptr<QgsVectorLayerFeatureSource> getFeatureSource( QPointer<QgsVectorLayer> layer ) SIP_SKIP;
+    static std::unique_ptr<QgsVectorLayerFeatureSource> getFeatureSource( QPointer<QgsVectorLayer> layer, QgsFeedback *feedback ) SIP_SKIP;
 
     /**
      * Matches the attributes in \a feature to the specified \a fields.
