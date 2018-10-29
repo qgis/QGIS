@@ -3002,7 +3002,13 @@ void QgisApp::createStatusBar()
 
   // Drop the font size in the status bar by a couple of points
   QFont statusBarFont = font();
-  statusBarFont.setPointSize( statusBarFont.pointSize() - 2 );
+  int fontSize = statusBarFont.pointSize();
+#ifdef Q_OS_WIN
+  fontSize = std::max( fontSize - 1, 8 ); // bit less on windows, due to poor rendering of small point sizes
+#else
+  fontSize = std::max( fontSize - 2, 6 );
+#endif
+  statusBarFont.setPointSize( fontSize );
   statusBar()->setFont( statusBarFont );
 
   mStatusBar = new QgsStatusBar();
