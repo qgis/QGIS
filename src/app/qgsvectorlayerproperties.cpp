@@ -408,11 +408,12 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mGeometryPrecisionLineEdit->setValidator( new QDoubleValidator( mGeometryPrecisionLineEdit ) );
 
     mRemoveDuplicateNodesCheckbox->setChecked( mLayer->geometryOptions()->removeDuplicateNodes() );
+    double precision( mLayer->geometryOptions()->geometryPrecision() );
     bool ok = true;
-    QString precision( QLocale().toString( mLayer->geometryOptions()->geometryPrecision(), ok ) );
-    if ( ! ok )
-      precision = 0.0;
-    mGeometryPrecisionLineEdit->setText( precision );
+    QString precisionStr( QLocale().toString( precision, ok ) );
+    if ( precision == 0.0 || ! ok )
+      precisionStr = QString();
+    mGeometryPrecisionLineEdit->setText( precisionStr );
 
     mPrecisionUnitsLabel->setText( QStringLiteral( "[%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
 
