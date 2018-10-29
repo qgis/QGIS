@@ -510,14 +510,14 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
   return newFeature;
 }
 
-std::unique_ptr<QgsVectorLayerFeatureSource> QgsVectorLayerUtils::getFeatureSource( QPointer<QgsVectorLayer> layer )
+std::unique_ptr<QgsVectorLayerFeatureSource> QgsVectorLayerUtils::getFeatureSource( QPointer<QgsVectorLayer> layer, QgsFeedback *feedback )
 {
   std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
 
-  auto getFeatureSource = [ layer, &featureSource ]
+  auto getFeatureSource = [ layer, &featureSource, feedback ]
   {
 #if QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 )
-    Q_ASSERT( QThread::currentThread() == qApp->thread() );
+    Q_ASSERT( QThread::currentThread() == qApp->thread() || feedback );
 #endif
     QgsVectorLayer *lyr = layer.data();
 
@@ -527,7 +527,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsVectorLayerUtils::getFeatureSour
     }
   };
 
-  QgsThreadingUtils::runOnMainThread( getFeatureSource );
+  QgsThreadingUtils::runOnMainThread( getFeatureSource, feedback );
 
   return featureSource;
 }
