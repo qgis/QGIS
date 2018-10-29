@@ -364,6 +364,7 @@ void QgsHandleBadLayers::accept()
 {
   apply();
 
+  /*
   if ( mLayerList->rowCount() > 0  &&
        QMessageBox::warning( this,
                              tr( "Unhandled layer will be lost." ),
@@ -375,6 +376,7 @@ void QgsHandleBadLayers::accept()
   {
     return;
   }
+  */
 
   QDialog::accept();
 }
@@ -382,6 +384,7 @@ void QgsHandleBadLayers::accept()
 void QgsHandleBadLayers::reject()
 {
 
+  /*
   if ( mLayerList->rowCount() > 0  &&
        QMessageBox::warning( this,
                              tr( "Unhandled layer will be lost." ),
@@ -393,6 +396,7 @@ void QgsHandleBadLayers::reject()
   {
     return;
   }
+  */
 
   QDialog::reject();
 }
