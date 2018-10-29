@@ -544,7 +544,7 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
       if ( mLayerTreeView )
       {
         // if it's a legend node, open symbol editor directly
-        if ( QgsSymbolLegendNode *node = dynamic_cast<QgsSymbolLegendNode *>( mLayerTreeView->currentLegendNode() ) )
+        if ( QgsSymbolLegendNode *node = qobject_cast<QgsSymbolLegendNode *>( mLayerTreeView->currentLegendNode() ) )
         {
           const QgsSymbol *originalSymbol = node->symbol();
           if ( !originalSymbol )
@@ -1373,8 +1373,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   setupDuplicateFeaturesAction();
 
   // support for project storage
-  connect( mProjectFromStorageMenu, &QMenu::aboutToShow, [this] { populateProjectStorageMenu( mProjectFromStorageMenu, false ); } );
-  connect( mProjectToStorageMenu, &QMenu::aboutToShow, [this] { populateProjectStorageMenu( mProjectToStorageMenu, true ); } );
+  connect( mProjectFromStorageMenu, &QMenu::aboutToShow, this, [this] { populateProjectStorageMenu( mProjectFromStorageMenu, false ); } );
+  connect( mProjectToStorageMenu, &QMenu::aboutToShow, this, [this] { populateProjectStorageMenu( mProjectToStorageMenu, true ); } );
 
   QList<QAction *> actions = mPanelMenu->actions();
   std::sort( actions.begin(), actions.end(), cmpByText_ );
@@ -2473,7 +2473,7 @@ void QgisApp::createMenus()
   else
   {
     // on the top of the settings menu
-    QAction *before = mSettingsMenu->actions().first();
+    QAction *before = mSettingsMenu->actions().at( 0 );
     mSettingsMenu->insertMenu( before, mPanelMenu );
     mSettingsMenu->insertMenu( before, mToolbarMenu );
     mSettingsMenu->insertAction( before, mActionToggleFullScreen );
@@ -3742,7 +3742,7 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
 
   dock->mapCanvas()->setLayers( mMapCanvas->layers() );
   dock->mapCanvas()->setExtent( mMapCanvas->extent() );
-  QgsDebugMsgLevel( QStringLiteral( "QgisApp::createNewMapCanvas -2- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "QgisApp::createNewMapCanvas -2- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description(), QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
   dock->mapCanvas()->setDestinationCrs( QgsProject::instance()->crs() );
   dock->mapCanvas()->freeze( false );
   return dock->mapCanvas();
@@ -3842,7 +3842,8 @@ void QgisApp::closeAdditionalMapCanvases()
 void QgisApp::closeAdditional3DMapCanvases()
 {
 #ifdef HAVE_3D
-  for ( Qgs3DMapCanvasDockWidget *w : findChildren< Qgs3DMapCanvasDockWidget * >() )
+  const QList< Qgs3DMapCanvasDockWidget * > canvases = findChildren< Qgs3DMapCanvasDockWidget * >();
+  for ( Qgs3DMapCanvasDockWidget *w : canvases )
   {
     w->close();
     delete w;
@@ -4407,7 +4408,7 @@ void QgisApp::about()
 
     versionString += "<td>" + tr( "PostgreSQL Client Version" ) + "</td><td>";
 #ifdef HAVE_POSTGRESQL
-    versionString += PG_VERSION;
+    versionString += QStringLiteral( PG_VERSION );
 #else
     versionString += tr( "No support" );
 #endif
@@ -4784,7 +4785,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
     for ( int i = 0; i < zipItem->children().size(); i++ )
     {
       QgsDataItem *item = zipItem->children().at( i );
-      QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
+      QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
       if ( !layerItem )
         continue;
 
@@ -4824,7 +4825,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
   // add childItems
   Q_FOREACH ( QgsDataItem *item, childItems )
   {
-    QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
+    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
     if ( !layerItem )
       continue;
 
@@ -5625,7 +5626,7 @@ void QgisApp::newGeoPackageLayer()
 
 void QgisApp::showRasterCalculator()
 {
-  QgsRasterCalcDialog d( dynamic_cast<QgsRasterLayer *>( activeLayer() ), this );
+  QgsRasterCalcDialog d( qobject_cast<QgsRasterLayer *>( activeLayer() ), this );
   if ( d.exec() == QDialog::Accepted )
   {
     //invoke analysis library
@@ -5941,7 +5942,7 @@ bool QgisApp::fileSave()
   else
   {
     bool usingProjectStorage = QgsProject::instance()->projectStorage();
-    bool fileExists = usingProjectStorage ? true : QFileInfo( QgsProject::instance()->fileName() ).exists();
+    bool fileExists = usingProjectStorage ? true : QFileInfo::exists( QgsProject::instance()->fileName() );
 
     if ( fileExists && !mProjectLastModified.isNull() && mProjectLastModified != QgsProject::instance()->lastModified() )
     {
@@ -6584,6 +6585,7 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
       }
     }
 
+    docksActive.reserve( tabBars.size() );
     for ( QTabBar *tabBar : tabBars )
     {
       // remember the active tab from the docks
@@ -7394,7 +7396,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
 {
   if ( !layer )
   {
-    layer = qobject_cast<QgsMapLayer *>( activeLayer() );
+    layer = activeLayer();
   }
 
   QgsSettings settings;
@@ -7835,8 +7837,9 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   QString titleMsg = chooseMsg;
 
   QStringList layoutNames;
-  layoutNames << newTitle;
   const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
+  layoutNames.reserve( layouts.size() + 1 );
+  layoutNames << newTitle;
   for ( QgsMasterLayoutInterface *l : layouts )
   {
     layoutNames << l->name();
@@ -8094,6 +8097,7 @@ void QgisApp::populateLayoutsMenu( QMenu *menu )
   menu->clear();
   QList<QAction *> acts;
   const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
+  acts.reserve( layouts.size() );
   for ( QgsMasterLayoutInterface *layout : layouts )
   {
     QAction *a = new QAction( layout->name(), menu );
@@ -8709,6 +8713,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   // Count collapsed geometries
   int invalidGeometriesCount = 0;
 
+  newFeatures.reserve( compatibleFeatures.size() );
   for ( const auto &feature : qgis::as_const( compatibleFeatures ) )
   {
 
@@ -8734,6 +8739,7 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   }
   pasteVectorLayer->addFeatures( newFeatures );
   QgsFeatureIds newIds;
+  newIds.reserve( newFeatures.size() );
   for ( const QgsFeature &f : qgis::as_const( newFeatures ) )
   {
     newIds << f.id();
@@ -8961,7 +8967,7 @@ void QgisApp::copyStyle( QgsMapLayer *sourceLayer, QgsMapLayer::StyleCategories 
       return;
     }
     // Copies data in text form as well, so the XML can be pasted into a text editor
-    clipboard()->setData( QGSCLIPBOARD_STYLE_MIME, doc.toByteArray(), doc.toString() );
+    clipboard()->setData( QStringLiteral( QGSCLIPBOARD_STYLE_MIME ), doc.toByteArray(), doc.toString() );
 
     // Enables the paste menu element
     mActionPasteStyle->setEnabled( true );
@@ -8973,12 +8979,12 @@ void QgisApp::pasteStyle( QgsMapLayer *destinationLayer, QgsMapLayer::StyleCateg
   QgsMapLayer *selectionLayer = destinationLayer ? destinationLayer : activeLayer();
   if ( selectionLayer )
   {
-    if ( clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
+    if ( clipboard()->hasFormat( QStringLiteral( QGSCLIPBOARD_STYLE_MIME ) ) )
     {
       QDomDocument doc( QStringLiteral( "qgis" ) );
       QString errorMsg;
       int errorLine, errorColumn;
-      if ( !doc.setContent( clipboard()->data( QGSCLIPBOARD_STYLE_MIME ), false, &errorMsg, &errorLine, &errorColumn ) )
+      if ( !doc.setContent( clipboard()->data( QStringLiteral( QGSCLIPBOARD_STYLE_MIME ) ), false, &errorMsg, &errorLine, &errorColumn ) )
       {
 
         messageBar()->pushMessage( tr( "Cannot parse style" ),
@@ -9022,19 +9028,19 @@ void QgisApp::copyLayer()
   }
 
   // Copies data in text form as well, so the XML can be pasted into a text editor
-  clipboard()->setData( QGSCLIPBOARD_MAPLAYER_MIME, doc.toByteArray(), doc.toString() );
+  clipboard()->setData( QStringLiteral( QGSCLIPBOARD_MAPLAYER_MIME ), doc.toByteArray(), doc.toString() );
   // Enables the paste menu element
   mActionPasteLayer->setEnabled( true );
 }
 
 void QgisApp::pasteLayer()
 {
-  if ( clipboard()->hasFormat( QGSCLIPBOARD_MAPLAYER_MIME ) )
+  if ( clipboard()->hasFormat( QStringLiteral( QGSCLIPBOARD_MAPLAYER_MIME ) ) )
   {
     QDomDocument doc;
     QString errorMessage;
     QgsReadWriteContext readWriteContext;
-    doc.setContent( clipboard()->data( QGSCLIPBOARD_MAPLAYER_MIME ) );
+    doc.setContent( clipboard()->data( QStringLiteral( QGSCLIPBOARD_MAPLAYER_MIME ) ) );
 
     QgsLayerTreeNode *currentNode = mLayerTreeView->currentNode();
     QgsLayerTreeGroup *root = nullptr;
@@ -9581,7 +9587,7 @@ void QgisApp::userRotation()
 void QgisApp::projectCrsChanged()
 {
   updateCrsStatusBar();
-  QgsDebugMsgLevel( QStringLiteral( "QgisApp::setupConnections -1- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "QgisApp::setupConnections -1- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description(), QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
   mMapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
 
   // handle datum transforms
@@ -9745,6 +9751,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
   QString layerDupName, unSppType;
   QList<QgsMessageBarItem *> msgBars;
 
+  msgBars.reserve( selectedLyrs.size() );
   for ( QgsMapLayer *selectedLyr : selectedLyrs )
   {
     dupLayer = nullptr;
@@ -10684,15 +10691,11 @@ void QgisApp::unregisterMapLayerPropertiesFactory( QgsMapLayerConfigWidgetFactor
 void QgisApp::registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
 {
   mOptionsWidgetFactories << factory;
-  //clear mOptionsPagesMap forcing it to be repopulated next time optionsPagesMap() is called
-  mOptionsPagesMap.clear();
 }
 
 void QgisApp::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
 {
   mOptionsWidgetFactories.removeAll( factory );
-  //clear mOptionsPagesMap forcing it to be repopulated next time optionsPagesMap() is called
-  mOptionsPagesMap.clear();
 }
 
 QgsMapLayer *QgisApp::activeLayer()
@@ -10939,7 +10942,7 @@ void QgisApp::newMapCanvas()
     setupDockWidget( dock, true );
     dock->mapCanvas()->setLayers( mMapCanvas->layers() );
     dock->mapCanvas()->setExtent( mMapCanvas->extent() );
-    QgsDebugMsgLevel( QStringLiteral( "QgisApp::newMapCanvas() -4- : QgsProject::instance()->crs().description[%1] ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "QgisApp::newMapCanvas() -4- : QgsProject::instance()->crs().description[%1] ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description(), QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
     dock->mapCanvas()->setDestinationCrs( QgsProject::instance()->crs() );
     dock->mapCanvas()->freeze( false );
   }
@@ -12348,9 +12351,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
   mActionZoomToLayer->setEnabled( true );
 
   mActionCopyStyle->setEnabled( true );
-  mActionPasteStyle->setEnabled( clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) );
+  mActionPasteStyle->setEnabled( clipboard()->hasFormat( QStringLiteral( QGSCLIPBOARD_STYLE_MIME ) ) );
   mActionCopyLayer->setEnabled( true );
-  mActionPasteLayer->setEnabled( clipboard()->hasFormat( QGSCLIPBOARD_MAPLAYER_MIME ) );
+  mActionPasteLayer->setEnabled( clipboard()->hasFormat( QStringLiteral( QGSCLIPBOARD_MAPLAYER_MIME ) ) );
 
   // Vector layers
   if ( layer->type() == QgsMapLayer::VectorLayer )
@@ -13295,7 +13298,8 @@ void QgisApp::writeProject( QDomDocument &doc )
   QgsReadWriteContext readWriteContext;
   readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
   QDomElement elem3DMaps = doc.createElement( QStringLiteral( "mapViewDocks3D" ) );
-  for ( Qgs3DMapCanvasDockWidget *w : findChildren<Qgs3DMapCanvasDockWidget *>() )
+  const QList< Qgs3DMapCanvasDockWidget * > docks = findChildren<Qgs3DMapCanvasDockWidget *>();
+  for ( Qgs3DMapCanvasDockWidget *w : docks )
   {
     QDomElement elem3DMap = doc.createElement( QStringLiteral( "view" ) );
     elem3DMap.setAttribute( QStringLiteral( "name" ), w->mapCanvas3D()->objectName() );
@@ -13757,7 +13761,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
     }
 
     QgsDebugMsg( QStringLiteral( "Errors %1 for cached item for %2" )
-                 .arg( errenums.isEmpty() ? "not found" : "did not match",
+                 .arg( errenums.isEmpty() ? QStringLiteral( "not found" ) : QStringLiteral( "did not match" ),
                        hostport ) );
   }
 
@@ -14194,7 +14198,7 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, bool saving )
     QAction *action = menu->addAction( name + QChar( 0x2026 ) ); // 0x2026 = ellipsis character
     if ( saving )
     {
-      connect( action, &QAction::triggered, [this, storage]
+      connect( action, &QAction::triggered, this, [this, storage]
       {
         QString uri = storage->showSaveGui();
         if ( !uri.isEmpty() )
@@ -14231,7 +14235,7 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, bool saving )
     }
     else
     {
-      connect( action, &QAction::triggered, [this, storage]
+      connect( action, &QAction::triggered, this, [this, storage]
       {
         QString uri = storage->showLoadGui();
         if ( !uri.isEmpty() )
