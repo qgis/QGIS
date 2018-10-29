@@ -245,7 +245,6 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
                 if not dlg:
                     dlg = AlgorithmDialog(alg, self.in_place_mode, iface.mainWindow())
-                dlg.setAttribute(Qt.WA_DeleteOnClose)
                 canvas = iface.mapCanvas()
                 prevMapTool = canvas.mapTool()
                 dlg.show()
