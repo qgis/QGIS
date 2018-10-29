@@ -226,6 +226,17 @@ If the return value is 0, then the test was unsuccessful (e.g. due to testing a 
 on the line, or exactly in line with the segment) and the result is undefined.
 %End
 
+    static int leftOfLine( QgsPoint point, QgsPoint p1, QgsPoint p2 );
+%Docstring
+Returns a value < 0 if the point ``point`` is left of the line from ``p1`` -> ``p2``.
+A positive return value indicates the point is to the right of the line.
+
+If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
+on the line, or exactly in line with the segment) and the result is undefined.
+
+.. versionadded:: 3.6
+%End
+
     static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance );
 %Docstring
 Returns a point a specified ``distance`` toward a second point.

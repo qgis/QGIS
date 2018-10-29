@@ -81,6 +81,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolchangelabelproperties.cpp
   qgsmaptooldeletering.cpp
   qgsmaptooldeletepart.cpp
+  qgsmaptooltrimextendfeature.cpp
   qgsmaptoolfeatureaction.cpp
   qgsmaptoolformannotation.cpp
   qgsmaptoolhtmlannotation.cpp
@@ -315,6 +316,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolchangelabelproperties.h
   qgsmaptooldeletepart.h
   qgsmaptooldeletering.h
+  qgsmaptooltrimextendfeature.h
   qgsmaptoolfeatureaction.h
   qgsmaptoolformannotation.h
   qgsmaptoolhtmlannotation.h

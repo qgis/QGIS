@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgspoint.h"
 
 #include <QVector3D>
 

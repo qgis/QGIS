@@ -363,6 +363,7 @@
     <addaction name="mActionRotatePointSymbols"/>
     <addaction name="mActionOffsetPointSymbol"/>
     <addaction name="mActionReverseLine"/>
+    <addaction name="mActionTrimExtendFeature"/>
    </widget>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
@@ -471,6 +472,7 @@
    <addaction name="mActionReshapeFeatures"/>
    <addaction name="mActionOffsetCurve"/>
    <addaction name="mActionReverseLine"/>
+   <addaction name="mActionTrimExtendFeature"/>
    <addaction name="mActionSplitFeatures"/>
    <addaction name="mActionSplitParts"/>
    <addaction name="mActionMergeFeatures"/>
@@ -1060,6 +1062,18 @@
    </property>
    <property name="text">
     <string>Reverse line</string>
+   </property>
+  </action>
+  <action name="mActionTrimExtendFeature">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionTrimExtendFeature.svg</normaloff>:/images/themes/default/mActionTrimExtendFeature.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Trim/Extend Feature</string>
    </property>
   </action>
   <action name="mActionSnappingOptions">
