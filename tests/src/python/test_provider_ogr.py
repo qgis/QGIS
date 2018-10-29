@@ -21,6 +21,7 @@ from osgeo import gdal, ogr  # NOQA
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
                        QgsRectangle,
+                       QgsProviderRegistry,
                        QgsFeature, QgsFeatureRequest, QgsField, QgsSettings, QgsDataProvider,
                        QgsVectorDataProvider, QgsVectorLayer, QgsWkbTypes, QgsNetworkAccessManager)
 from qgis.testing import start_app, unittest
@@ -71,6 +72,10 @@ class PyQgsOGRProvider(unittest.TestCase):
         """Run after all tests"""
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
+
+    def testCapabilities(self):
+        self.assertTrue(QgsProviderRegistry.instance().providerCapabilities("ogr") & QgsDataProvider.File)
+        self.assertTrue(QgsProviderRegistry.instance().providerCapabilities("ogr") & QgsDataProvider.Dir)
 
     def testUpdateMode(self):
 

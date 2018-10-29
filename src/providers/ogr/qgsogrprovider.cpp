@@ -3397,6 +3397,11 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   return true;
 }
 
+QGISEXTERN int dataCapabilities()
+{
+  return  QgsDataProvider::File | QgsDataProvider::Dir;
+}
+
 QGISEXTERN QList< QgsDataItemProvider * > *dataItemProviders()
 {
   QList< QgsDataItemProvider * > *providers = new QList< QgsDataItemProvider * >();
