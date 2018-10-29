@@ -118,6 +118,7 @@ class CORE_EXPORT QgsThreadingUtils
         return true;
       }
 #else
+      Q_UNUSED( feedback )
       func();
       return true;
 #endif
