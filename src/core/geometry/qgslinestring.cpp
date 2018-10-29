@@ -466,7 +466,7 @@ QgsLineString *QgsLineString::curveToLine( double tolerance, SegmentationToleran
 {
   Q_UNUSED( tolerance );
   Q_UNUSED( toleranceType );
-  return static_cast<QgsLineString *>( clone() );
+  return clone();
 }
 
 int QgsLineString::numPoints() const

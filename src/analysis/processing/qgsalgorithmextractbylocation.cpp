@@ -86,6 +86,7 @@ void QgsLocationBasedAlgorithm::process( const QgsProcessingContext &context, Qg
   // we actually test the reverse of what the user wants (allowing us
   // to prepare geometries and optimise the algorithm)
   QList< Predicate > predicates;
+  predicates.reserve( selectedPredicates.count() );
   for ( int i : selectedPredicates )
   {
     predicates << reversePredicate( static_cast< Predicate >( i ) );

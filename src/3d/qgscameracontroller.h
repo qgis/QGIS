@@ -60,7 +60,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Assigns camera that should be controlled by this class. Called internally from 3D scene.
     void setCamera( Qt3DRender::QCamera *camera );
     //! Sets viewport rectangle. Called internally from 3D canvas. Allows conversion of mouse coordinates.
-    void setViewport( const QRect &viewport );
+    void setViewport( QRect viewport );
     //! Called internally from 3D scene when a new frame is generated. Updates camera according to keyboard/mouse input
     void frameTriggered( float dt );
 
