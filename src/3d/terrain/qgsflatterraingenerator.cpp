@@ -113,8 +113,8 @@ void QgsFlatTerrainGenerator::writeXml( QDomElement &elem ) const
   QDomElement elemExtent = elem.ownerDocument().createElement( QStringLiteral( "extent" ) );
   elemExtent.setAttribute( QStringLiteral( "xmin" ), QString::number( r.xMinimum() ) );
   elemExtent.setAttribute( QStringLiteral( "xmax" ), QString::number( r.xMaximum() ) );
-  elemExtent.setAttribute( "ymin", QString::number( r.yMinimum() ) );
-  elemExtent.setAttribute( "ymax", QString::number( r.yMaximum() ) );
+  elemExtent.setAttribute( QStringLiteral( "ymin" ), QString::number( r.yMinimum() ) );
+  elemExtent.setAttribute( QStringLiteral( "ymax" ), QString::number( r.yMaximum() ) );
 
   // crs is not read/written - it should be the same as destination crs of the map
 }
@@ -124,8 +124,8 @@ void QgsFlatTerrainGenerator::readXml( const QDomElement &elem )
   QDomElement elemExtent = elem.firstChildElement( QStringLiteral( "extent" ) );
   double xmin = elemExtent.attribute( QStringLiteral( "xmin" ) ).toDouble();
   double xmax = elemExtent.attribute( QStringLiteral( "xmax" ) ).toDouble();
-  double ymin = elemExtent.attribute( "ymin" ).toDouble();
-  double ymax = elemExtent.attribute( "ymax" ).toDouble();
+  double ymin = elemExtent.attribute( QStringLiteral( "ymin" ) ).toDouble();
+  double ymax = elemExtent.attribute( QStringLiteral( "ymax" ) ).toDouble();
 
   setExtent( QgsRectangle( xmin, ymin, xmax, ymax ) );
 

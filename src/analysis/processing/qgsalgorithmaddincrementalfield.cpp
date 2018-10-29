@@ -149,6 +149,7 @@ QgsFeatureList QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature
   else
   {
     QgsAttributes groupAttributes;
+    groupAttributes.reserve( mGroupedFields.size() );
     for ( int index : qgis::as_const( mGroupedFields ) )
     {
       groupAttributes << f.attribute( index );

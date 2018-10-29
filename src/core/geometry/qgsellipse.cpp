@@ -200,6 +200,7 @@ QgsPointSequence QgsEllipse::points( unsigned int segments ) const
   double m = mCenter.m();
 
   QVector<double> t;
+  t.reserve( segments );
   double azimuth = std::atan2( quadrant().at( 0 ).y() - mCenter.y(), quadrant().at( 0 ).x() - mCenter.x() );
   for ( unsigned int i = 0; i < segments; ++i )
   {

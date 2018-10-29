@@ -99,6 +99,7 @@ QgsFeatureList QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsPro
     {
       const QgsGeometryCollection *geomCollection = static_cast<const QgsGeometryCollection *>( geom.constGet() );
 
+      list.reserve( geomCollection->partCount() );
       for ( int i = 0; i < geomCollection->partCount(); ++i )
       {
         QgsGeometry partGeometry( geomCollection->geometryN( i )->clone() );

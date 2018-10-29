@@ -120,7 +120,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     /**
      * Creates a new QgsGeometry object, feeding in a geometry in GEOS format.
      */
-    static QgsGeometry geometryFromGeos( geos::unique_ptr geos );
+    static QgsGeometry geometryFromGeos( const geos::unique_ptr &geos );
 
     /**
      * Adds a new island polygon to a multipolygon feature
