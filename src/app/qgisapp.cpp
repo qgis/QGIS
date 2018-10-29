@@ -59,7 +59,6 @@
 #endif
 #include <QStatusBar>
 #include <QStringList>
-#include <QSystemTrayIcon>
 #include <QTcpSocket>
 #include <QTextStream>
 #include <QtGlobal>
@@ -1362,13 +1361,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     QgsGui::instance()->nativePlatformInterface()->setApplicationBadgeCount( count );
   } );
 
-  if ( !( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeDesktopNotifications ) )
-  {
-    mTray = new QSystemTrayIcon();
-    mTray->setIcon( QIcon( QgsApplication::appIconPath() ) );
-    mTray->hide();
-  }
-
   // supposedly all actions have been added, now register them to the shortcut manager
   QgsGui::shortcutsManager()->registerAllChildren( this );
   QgsGui::shortcutsManager()->registerAllChildren( mSnappingWidget );
@@ -1556,7 +1548,6 @@ QgisApp::~QgisApp()
   delete mPythonUtils;
 #endif
 
-  delete mTray;
   delete mDataSourceManagerDialog;
   qDeleteAll( mCustomDropHandlers );
   qDeleteAll( mCustomLayoutDropHandlers );
@@ -13989,15 +13980,8 @@ void QgisApp::showSystemNotification( const QString &title, const QString &messa
 
   if ( !result.successful )
   {
-    // fallback - use system tray notification
-    if ( mTray )
-    {
-      // Menubar icon is hidden by default. Show to enable notification bubbles
-      mTray->show();
-      mTray->showMessage( title, message );
-      // Re-hide menubar icon
-      mTray->hide();
-    }
+    // fallback - use message bar
+    messageBar()->pushInfo( title, message );
   }
   else
   {
