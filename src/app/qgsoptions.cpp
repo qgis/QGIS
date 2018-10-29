@@ -1128,6 +1128,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mRestoreDefaultWindowStateBtn, &QAbstractButton::clicked, this, &QgsOptions::restoreDefaultWindowState );
 
   restoreOptionsBaseUi();
+
+#ifdef QGISDEBUG
+  checkPageWidgetNameMap();
+#endif
 }
 
 
@@ -1136,21 +1140,22 @@ QgsOptions::~QgsOptions()
   delete mSettings;
 }
 
-QMap< QString, QString > QgsOptions::pageWidgetNameMap()
+void QgsOptions::checkPageWidgetNameMap()
 {
-  QMap< QString, QString > pageNames;
+  const QMap< QString, int > pageNames = QgisApp::instance()->optionsPagesMap();
+
+  Q_ASSERT_X( pageNames.count() == mOptionsListWidget->count(), "QgsOptions::checkPageWidgetNameMap()", "QgisApp::optionsPagesMap() is outdated, contains too many entries" );
   for ( int idx = 0; idx < mOptionsListWidget->count(); ++idx )
   {
     QWidget *currentPage = mOptionsStackedWidget->widget( idx );
     QListWidgetItem *item = mOptionsListWidget->item( idx );
     if ( currentPage && item )
     {
-      QString title = item->text();
-      QString name = currentPage->objectName();
-      pageNames.insert( title, name );
+      const QString title = item->text();
+      Q_ASSERT_X( pageNames.contains( title ), "QgsOptions::checkPageWidgetNameMap()", QStringLiteral( "QgisApp::optionsPagesMap() is outdated, please update. Missing %1" ).arg( title ).toLocal8Bit().constData() );
+      Q_ASSERT_X( pageNames.value( title ) == idx, "QgsOptions::checkPageWidgetNameMap()", QStringLiteral( "QgisApp::optionsPagesMap() is outdated, please update. %1 should be %2 not %3" ).arg( title ).arg( idx ).arg( pageNames.value( title ) ).toLocal8Bit().constData() );
     }
   }
-  return pageNames;
 }
 
 void QgsOptions::setCurrentPage( const QString &pageWidgetName )
@@ -1166,6 +1171,12 @@ void QgsOptions::setCurrentPage( const QString &pageWidgetName )
       return;
     }
   }
+}
+
+void QgsOptions::setCurrentPage( const int pageNumber )
+{
+  if ( pageNumber >= 0 && pageNumber < mOptionsStackedWidget->count() )
+    mOptionsStackedWidget->setCurrentIndex( pageNumber );
 }
 
 void QgsOptions::mProxyTypeComboBox_currentIndexChanged( int idx )

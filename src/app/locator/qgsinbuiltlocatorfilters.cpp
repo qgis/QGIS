@@ -235,7 +235,7 @@ void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const 
     }
     else if ( allowNumeric && field.isNumeric() )
     {
-      expressionParts << QStringLiteral( "%1 = %2" ).arg( QgsExpression::quotedColumnRef( field.name() ) ).arg( QString::number( numericalValue, 'g', 17 ) );
+      expressionParts << QStringLiteral( "%1 = %2" ).arg( QgsExpression::quotedColumnRef( field.name() ), QString::number( numericalValue, 'g', 17 ) );
     }
   }
 
@@ -352,8 +352,8 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     if ( !expression.needsGeometry() )
       req.setFlags( QgsFeatureRequest::NoGeometry );
     req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
-                             .arg( layer->displayExpression() )
-                             .arg( string ) );
+                             .arg( layer->displayExpression(),
+                                   string ) );
     req.setLimit( 30 );
 
     PreparedLayer preparedLayer;
@@ -474,13 +474,13 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
 {
   QMap<QString, QMap<QString, QString>> matchingSettingsPagesMap;
 
-  QMap<QString, QString> optionsPagesMap = QgisApp::instance()->optionsPagesMap();
+  QMap<QString, int > optionsPagesMap = QgisApp::instance()->optionsPagesMap();
   for ( auto optionsPagesIterator = optionsPagesMap.constBegin(); optionsPagesIterator != optionsPagesMap.constEnd(); ++optionsPagesIterator )
   {
     QString title = optionsPagesIterator.key();
     if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
     {
-      matchingSettingsPagesMap.insert( title + " (" + tr( "Options" ) + ")", settingsPage( QStringLiteral( "optionpage" ), optionsPagesIterator.value() ) );
+      matchingSettingsPagesMap.insert( title + " (" + tr( "Options" ) + ")", settingsPage( QStringLiteral( "optionpage" ), QString::number( optionsPagesIterator.value() ) ) );
     }
   }
 
@@ -534,7 +534,8 @@ void QgsSettingsLocatorFilter::triggerResult( const QgsLocatorResult &result )
 
   if ( type == QLatin1String( "optionpage" ) )
   {
-    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), page );
+    const int pageNumber = page.toInt();
+    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QString(), pageNumber );
   }
   else if ( type == QLatin1String( "projectpropertypage" ) )
   {

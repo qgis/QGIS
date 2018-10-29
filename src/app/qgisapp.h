@@ -959,7 +959,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Settings pages section
      */
     //! Gets map of option pages
-    QMap< QString, QString > optionsPagesMap();
+    QMap<QString, int> optionsPagesMap();
     //! Gets map of project property pages
     QMap< QString, QString > projectPropertiesPagesMap();
     //! Gets map of setting pages
@@ -970,7 +970,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     // End Settings pages section
 
     //! Opens the options dialog
-    void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() );
+    void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString(), int pageNumber = -1 );
 
     /**
      * Refreshes the state of the layer actions toolbar action
@@ -2281,11 +2281,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsFeature duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &feature );
     QgsFeature duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFeature &feature );
-
-    //! Internal vars supporting Settings Pages function
-    QMap< QString, QString > mOptionsPagesMap;
-    QMap< QString, QString > mProjectPropertiesPagesMap;
-    QMap< QString, QString > mSettingPagesMap;
 
     QgsProxyProgressTask *mProjectLoadingProxyTask = nullptr;
 

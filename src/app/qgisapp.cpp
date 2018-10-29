@@ -69,6 +69,7 @@
 #include <QVBoxLayout>
 #include <QWhatsThis>
 #include <QWidgetAction>
+#include <mutex>
 
 #include "qgssettings.h"
 #include "qgsnetworkaccessmanager.h"
@@ -10290,12 +10291,22 @@ void QgisApp::options()
 
 QMap< QString, QString > QgisApp::projectPropertiesPagesMap()
 {
-  if ( mProjectPropertiesPagesMap.isEmpty() )
+  static QMap< QString, QString > sProjectPropertiesPagesMap;
+  static std::once_flag initialized;
+  std::call_once( initialized, []
   {
-    std::unique_ptr< QgsProjectProperties > pp( new QgsProjectProperties( mMapCanvas, this ) );
-    mProjectPropertiesPagesMap = pp->pageWidgetNameMap();
-  }
-  return mProjectPropertiesPagesMap;
+    sProjectPropertiesPagesMap.insert( tr( "General" ), QStringLiteral( "mProjOptsGeneral" ) );
+    sProjectPropertiesPagesMap.insert( tr( "Metadata" ), QStringLiteral( "mMetadataPage" ) );
+    sProjectPropertiesPagesMap.insert( tr( "CRS" ), QStringLiteral( "mProjOptsCRS" ) );
+    sProjectPropertiesPagesMap.insert( tr( "Default Styles" ), QStringLiteral( "mProjOptsSymbols" ) );
+    sProjectPropertiesPagesMap.insert( tr( "Data Sources" ), QStringLiteral( "mTab_DataSources" ) );
+    sProjectPropertiesPagesMap.insert( tr( "Relations" ), QStringLiteral( "mTabRelations" ) );
+    sProjectPropertiesPagesMap.insert( tr( "Variables" ), QStringLiteral( "mTab_Variables" ) );
+    sProjectPropertiesPagesMap.insert( tr( "Macros" ), QStringLiteral( "mProjOptsMacros" ) );
+    sProjectPropertiesPagesMap.insert( tr( "QGIS Server" ), QStringLiteral( "mProjOptsOWS" ) );
+  } );
+
+  return sProjectPropertiesPagesMap;
 }
 
 void QgisApp::showProjectProperties( const QString &page )
@@ -10305,14 +10316,17 @@ void QgisApp::showProjectProperties( const QString &page )
 
 QMap< QString, QString > QgisApp::settingPagesMap()
 {
-  if ( mSettingPagesMap.isEmpty() )
+  static QMap< QString, QString > sSettingPagesMap;
+  static std::once_flag initialized;
+  std::call_once( initialized, []
   {
-    mSettingPagesMap.insert( tr( "Style Manager" ), QStringLiteral( "stylemanager" ) );
-    mSettingPagesMap.insert( tr( "Keyboard Shortcuts" ), QStringLiteral( "shortcuts" ) );
-    mSettingPagesMap.insert( tr( "Custom Projections" ), QStringLiteral( "customprojection" ) );
-    mSettingPagesMap.insert( tr( "Interface Customization" ), QStringLiteral( "customize" ) );
-  }
-  return mSettingPagesMap;
+    sSettingPagesMap.insert( tr( "Style Manager" ), QStringLiteral( "stylemanager" ) );
+    sSettingPagesMap.insert( tr( "Keyboard Shortcuts" ), QStringLiteral( "shortcuts" ) );
+    sSettingPagesMap.insert( tr( "Custom Projections" ), QStringLiteral( "customprojection" ) );
+    sSettingPagesMap.insert( tr( "Interface Customization" ), QStringLiteral( "customize" ) );
+  } );
+
+  return sSettingPagesMap;
 }
 
 void QgisApp::showSettings( const QString &page )
@@ -10335,21 +10349,44 @@ void QgisApp::showSettings( const QString &page )
   }
 }
 
-QMap< QString, QString > QgisApp::optionsPagesMap()
+QMap< QString, int > QgisApp::optionsPagesMap()
 {
-  if ( mOptionsPagesMap.isEmpty() )
+  static QMap< QString, int > sOptionsPagesMap;
+  static std::once_flag initialized;
+  std::call_once( initialized, []
   {
-    QList< QgsOptionsWidgetFactory * > factories;
-    Q_FOREACH ( const QPointer< QgsOptionsWidgetFactory > &f, mOptionsWidgetFactories )
+    sOptionsPagesMap.insert( tr( "General" ), 0 );
+    sOptionsPagesMap.insert( tr( "System" ), 1 );
+    sOptionsPagesMap.insert( tr( "CRS" ), 2 );
+    sOptionsPagesMap.insert( tr( "Data Sources" ), 3 );
+    sOptionsPagesMap.insert( tr( "Rendering" ), 4 );
+    sOptionsPagesMap.insert( tr( "Canvas & Legend" ), 5 );
+    sOptionsPagesMap.insert( tr( "Map Tools" ), 6 );
+    sOptionsPagesMap.insert( tr( "Colors" ), 7 );
+    sOptionsPagesMap.insert( tr( "Digitizing" ), 8 );
+    sOptionsPagesMap.insert( tr( "Layouts" ), 9 );
+    sOptionsPagesMap.insert( tr( "GDAL" ), 10 );
+    sOptionsPagesMap.insert( tr( "Variables" ), 11 );
+    sOptionsPagesMap.insert( tr( "Authentication" ), 12 );
+    sOptionsPagesMap.insert( tr( "Network" ), 13 );
+    sOptionsPagesMap.insert( tr( "Locator" ), 14 );
+    sOptionsPagesMap.insert( tr( "Advanced" ), 15 );
+    sOptionsPagesMap.insert( tr( "Acceleration" ), 16 );
+  } );
+
+  QMap< QString, int > map = sOptionsPagesMap;
+  int idx = map.count();
+  for ( const QPointer< QgsOptionsWidgetFactory > &f : qgis::as_const( mOptionsWidgetFactories ) )
+  {
+    // remove any deleted factories
+    if ( f )
     {
-      // remove any deleted factories
-      if ( f )
-        factories << f;
+      map.insert( f->title(), idx );
     }
-    std::unique_ptr< QgsOptions > f( new QgsOptions( this, QgsGuiUtils::ModalDialogFlags, factories ) );
-    mOptionsPagesMap = f->pageWidgetNameMap();
+    idx++;
   }
-  return mOptionsPagesMap;
+
+  return map;
 }
 
 QgsOptions *QgisApp::createOptionsDialog( QWidget *parent )
@@ -10364,7 +10401,7 @@ QgsOptions *QgisApp::createOptionsDialog( QWidget *parent )
   return new QgsOptions( parent, QgsGuiUtils::ModalDialogFlags, factories );
 }
 
-void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
+void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, int pageNumber )
 {
   std::unique_ptr< QgsOptions > optionsDialog( createOptionsDialog( parent ) );
 
@@ -10374,6 +10411,11 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
   if ( !currentPage.isEmpty() )
   {
     optionsDialog->setCurrentPage( currentPage );
+  }
+
+  if ( pageNumber >= 0 )
+  {
+    optionsDialog->setCurrentPage( pageNumber );
   }
 
   if ( optionsDialog->exec() )
