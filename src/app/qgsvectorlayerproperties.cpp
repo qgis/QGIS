@@ -463,7 +463,7 @@ void QgsVectorLayerProperties::toggleEditing()
 
 void QgsVectorLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory )
 {
-  if ( !factory->supportLayerPropertiesDialog() )
+  if ( !factory->supportsLayer( mLayer ) || !factory->supportLayerPropertiesDialog() )
   {
     return;
   }
