@@ -49,6 +49,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
   const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve * >( mGeometry );
   if ( multiCurve )
   {
+    linesToProcess.reserve( multiCurve->partCount() );
     for ( int i = 0; i < multiCurve->partCount(); ++i )
     {
       linesToProcess << static_cast<QgsLineString *>( multiCurve->geometryN( i )->clone() );
@@ -920,6 +921,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
   }
 
   QVector<QgsGeometry> bufferedLines;
+  bufferedLines.reserve( linesToProcess.size() );
 
   for ( std::unique_ptr< QgsLineString > &line : linesToProcess )
   {

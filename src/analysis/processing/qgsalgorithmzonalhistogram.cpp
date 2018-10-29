@@ -170,7 +170,7 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
   QgsFields newFields;
   for ( auto it = uniqueValues.constBegin(); it != uniqueValues.constEnd(); ++it )
   {
-    newFields.append( QgsField( QStringLiteral( "%1%2" ).arg( fieldPrefix ).arg( mHasNoDataValue && *it == mNodataValue ? QStringLiteral( "NODATA" ) : QString::number( *it ) ), QVariant::LongLong, QString(), -1, 0 ) );
+    newFields.append( QgsField( QStringLiteral( "%1%2" ).arg( fieldPrefix, mHasNoDataValue && *it == mNodataValue ? QStringLiteral( "NODATA" ) : QString::number( *it ) ), QVariant::LongLong, QString(), -1, 0 ) );
   }
   QgsFields fields = QgsProcessingUtils::combineFields( zones->fields(), newFields );
 

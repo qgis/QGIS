@@ -62,12 +62,12 @@ QgsCurvePolygon::QgsCurvePolygon( const QgsCurvePolygon &p )
   mWkbType = p.mWkbType;
   if ( p.mExteriorRing )
   {
-    mExteriorRing.reset( static_cast<QgsCurve *>( p.mExteriorRing->clone() ) );
+    mExteriorRing.reset( p.mExteriorRing->clone() );
   }
 
   for ( const QgsCurve *ring : p.mInteriorRings )
   {
-    mInteriorRings.push_back( static_cast<QgsCurve *>( ring->clone() ) );
+    mInteriorRings.push_back( ring->clone() );
   }
 }
 
@@ -79,12 +79,12 @@ QgsCurvePolygon &QgsCurvePolygon::operator=( const QgsCurvePolygon &p )
     QgsSurface::operator=( p );
     if ( p.mExteriorRing )
     {
-      mExteriorRing.reset( static_cast<QgsCurve *>( p.mExteriorRing->clone() ) );
+      mExteriorRing.reset( p.mExteriorRing->clone() );
     }
 
     for ( const QgsCurve *ring : p.mInteriorRings )
     {
-      mInteriorRings.push_back( static_cast<QgsCurve *>( ring->clone() ) );
+      mInteriorRings.push_back( ring->clone() );
     }
   }
   return *this;
@@ -282,6 +282,7 @@ QByteArray QgsCurvePolygon::asWkb() const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   QVector<QByteArray> wkbForRings;
+  wkbForRings.reserve( 1 + mInteriorRings.size() );
   if ( mExteriorRing )
   {
     QByteArray wkb( mExteriorRing->asWkb() );
@@ -580,6 +581,7 @@ QgsPolygon *QgsCurvePolygon::toPolygon( double tolerance, SegmentationToleranceT
   poly->setExteriorRing( mExteriorRing->curveToLine( tolerance, toleranceType ) );
 
   QVector<QgsCurve *> rings;
+  rings.reserve( mInteriorRings.size() );
   for ( const QgsCurve *ring : mInteriorRings )
   {
     rings.push_back( ring->curveToLine( tolerance, toleranceType ) );

@@ -372,13 +372,13 @@ class CORE_EXPORT QgsGeometryUtils
      * Returns a gml::coordinates DOM element.
      * \note not available in Python bindings
      */
-    static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
+    static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
 
     /**
      * Returns a gml::posList DOM element.
      * \note not available in Python bindings
      */
-    static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D, const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
+    static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D, QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
 
     /**
      * Returns a geoJSON coordinates string.

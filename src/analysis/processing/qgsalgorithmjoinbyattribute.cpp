@@ -130,6 +130,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( fieldsToCopy.empty() )
   {
     outFields2 = input2->fields();
+    fields2Indices.reserve( outFields2.count() );
     for ( int i = 0; i < outFields2.count(); ++i )
     {
       fields2Indices << i;
@@ -137,6 +138,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   }
   else
   {
+    fields2Indices.reserve( fieldsToCopy.count() );
     for ( const QString &field : fieldsToCopy )
     {
       int index = input2->fields().lookupField( field );

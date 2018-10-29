@@ -168,7 +168,7 @@ void QgsCameraController::setCamera( Qt3DRender::QCamera *camera )
   emit cameraChanged();
 }
 
-void QgsCameraController::setViewport( const QRect &viewport )
+void QgsCameraController::setViewport( QRect viewport )
 {
   if ( mViewport == viewport )
     return;
@@ -178,7 +178,7 @@ void QgsCameraController::setViewport( const QRect &viewport )
 }
 
 
-static QVector3D unproject( const QVector3D &v, const QMatrix4x4 &modelView, const QMatrix4x4 &projection, const QRect &viewport )
+static QVector3D unproject( QVector3D v, const QMatrix4x4 &modelView, const QMatrix4x4 &projection, QRect viewport )
 {
   // Reimplementation of QVector3D::unproject() - see qtbase/src/gui/math3d/qvector3d.cpp
   // The only difference is that the original implementation uses tolerance 1e-5
@@ -208,7 +208,7 @@ float find_x_on_line( float x0, float y0, float x1, float y1, float y )
   return x0 + k * d_x;
 }
 
-QPointF screen_point_to_point_on_plane( const QPointF &pt, const QRect &viewport, Qt3DRender::QCamera *camera, float y )
+QPointF screen_point_to_point_on_plane( QPointF pt, QRect viewport, Qt3DRender::QCamera *camera, float y )
 {
   // get two points of the ray
   QVector3D l0 = unproject( QVector3D( pt.x(), viewport.height() - pt.y(), 0 ), camera->viewMatrix(), camera->projectionMatrix(), viewport );
@@ -432,7 +432,7 @@ void QgsCameraController::setCameraPose( const QgsCameraPose &camPose )
 
 QDomElement QgsCameraController::writeXml( QDomDocument &doc ) const
 {
-  QDomElement elemCamera = doc.createElement( "camera" );
+  QDomElement elemCamera = doc.createElement( QStringLiteral( "camera" ) );
   elemCamera.setAttribute( QStringLiteral( "x" ), mCameraPose.centerPoint().x() );
   elemCamera.setAttribute( QStringLiteral( "y" ), mCameraPose.centerPoint().z() );
   elemCamera.setAttribute( QStringLiteral( "elev" ), mCameraPose.centerPoint().y() );
