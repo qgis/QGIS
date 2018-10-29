@@ -36,7 +36,6 @@ class QStringList;
 class QToolButton;
 class QTcpSocket;
 class QValidator;
-class QSystemTrayIcon;
 
 class QgisAppInterface;
 class QgisAppStyleSheet;
@@ -2266,8 +2265,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     bool gestureEvent( QGestureEvent *event );
     void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
-
-    QSystemTrayIcon *mTray = nullptr;
 
     QgsLocatorWidget *mLocatorWidget = nullptr;
 
