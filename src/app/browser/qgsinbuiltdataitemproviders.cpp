@@ -27,6 +27,8 @@
 #include "qgsbrowserdockwidget_p.h"
 #include "qgswindowmanagerinterface.h"
 #include "qgsrasterlayer.h"
+#include "qgsnewvectorlayerdialog.h"
+#include "qgsnewgeopackagelayerdialog.h"
 #include <QMenu>
 #include <QInputDialog>
 #include <QMessageBox>
@@ -47,8 +49,9 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
   QgsSettings settings;
 
+  QMenu *newMenu = new QMenu( tr( "New" ), menu );
 
-  QAction *createFolder = new QAction( tr( "New Directory…" ), menu );
+  QAction *createFolder = new QAction( tr( "Directory…" ), menu );
   connect( createFolder, &QAction::triggered, this, [ = ]
   {
     bool ok = false;
@@ -71,7 +74,34 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       }
     }
   } );
-  menu->addAction( createFolder );
+  newMenu->addAction( createFolder );
+
+  QAction *createGpkg = new QAction( tr( "GeoPackage…" ), newMenu );
+  createGpkg->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewGeoPackageLayer.svg" ) ) );
+  connect( createGpkg, &QAction::triggered, this, [ = ]
+  {
+    QgsNewGeoPackageLayerDialog dialog( QgisApp::instance() );
+    QDir dir( directoryItem->dirPath() );
+    dialog.setDatabasePath( dir.filePath( QStringLiteral( "new_geopackage" ) ) );
+    dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+    if ( dialog.exec() )
+      item->refresh();
+  } );
+  newMenu->addAction( createGpkg );
+
+  QAction *createShp = new QAction( tr( "ShapeFile…" ), newMenu );
+  createShp->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewVectorLayer.svg" ) ) );
+  connect( createShp, &QAction::triggered, this, [ = ]
+  {
+    QString enc;
+    QDir dir( directoryItem->dirPath() );
+    const QString newFile = QgsNewVectorLayerDialog::runAndCreateLayer( QgisApp::instance(), &enc, QgsProject::instance()->defaultCrsForNewLayers(), dir.filePath( QStringLiteral( "new_layer.shp" ) ) );
+    if ( !newFile.isEmpty() )
+      item->refresh();
+  } );
+  newMenu->addAction( createShp );
+
+  menu->addMenu( newMenu );
 
   menu->addSeparator();
 
@@ -97,7 +127,6 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
         renameFavorite( favoriteItem );
       } );
       menu->addAction( actionRename );
-      menu->addSeparator();
       QAction *removeFavoriteAction = new QAction( tr( "Remove Favorite" ), menu );
       connect( removeFavoriteAction, &QAction::triggered, this, [ = ]
       {

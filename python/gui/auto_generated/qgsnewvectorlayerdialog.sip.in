@@ -17,9 +17,12 @@ class QgsNewVectorLayerDialog: QDialog
 %End
   public:
 
-    static QString runAndCreateLayer( QWidget *parent = 0, QString *enc = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+    static QString runAndCreateLayer( QWidget *parent = 0, QString *enc = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+                                      const QString &initialPath = QString() );
 %Docstring
 Runs the dialog and creates a layer matching the dialog parameters.
+
+If the ``initialPath`` argument is specified, then the dialog will default to the specified filename.
 
 :return: fileName on success, empty string use aborted, QString() if creation failed
 %End
@@ -42,9 +45,21 @@ Returns the file format for storage
 %Docstring
 Returns the file format for storage
 %End
+
     QString filename() const;
 %Docstring
 Returns the name for the new layer
+
+.. seealso:: :py:func:`setFilename`
+%End
+
+    void setFilename( const QString &filename );
+%Docstring
+Sets the initial file name to show in the dialog.
+
+.. seealso:: :py:func:`filename`
+
+.. versionadded:: 3.6
 %End
 
     QgsCoordinateReferenceSystem crs() const;
