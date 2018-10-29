@@ -50,6 +50,12 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      */
     int count() const;
 
+    /**
+     * Returns the number of valid layers contained in the store.
+     * \since QGIS 3.6
+     */
+    int validCount() const;
+
 #ifdef SIP_RUN
 
     /**
@@ -92,6 +98,15 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * \see layers()
      */
     QMap<QString, QgsMapLayer *> mapLayers() const;
+
+    /**
+     * Returns a map of all valid layers by layer ID.
+     * \see mapLayer()
+     * \see mapLayersByName()
+     * \see layers()
+     * \since QGIS 3.6
+     */
+    QMap<QString, QgsMapLayer *> validMapLayers() const;
 
 #ifndef SIP_RUN
 

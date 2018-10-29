@@ -249,12 +249,17 @@ class TestQgsProject(unittest.TestCase):
         QgsProject.instance().removeAllMapLayers()
 
     def test_addMapLayerInvalid(self):
-        """ test that invalid map layersd can't be added to registry """
+        """ test that invalid map layers can be added to registry """
         QgsProject.instance().removeAllMapLayers()
 
-        self.assertEqual(QgsProject.instance().addMapLayer(QgsVectorLayer("Point?field=x:string", 'test', "xxx")), None)
-        self.assertEqual(len(QgsProject.instance().mapLayersByName('test')), 0)
-        self.assertEqual(QgsProject.instance().count(), 0)
+        vl = QgsVectorLayer("Point?field=x:string", 'test', "xxx")
+        self.assertEqual(QgsProject.instance().addMapLayer(vl), vl)
+        self.assertFalse(vl in QgsProject.instance().validMapLayers().values())
+        self.assertEqual(len(QgsProject.instance().mapLayersByName('test')), 1)
+        self.assertEqual(QgsProject.instance().count(), 1)
+        self.assertEqual(QgsProject.instance().validCount(), 0)
+
+        self.assertEqual(len(QgsProject.instance().validMapLayers()), 0)
 
         QgsProject.instance().removeAllMapLayers()
 
@@ -313,12 +318,15 @@ class TestQgsProject(unittest.TestCase):
         QgsProject.instance().removeAllMapLayers()
 
     def test_addMapLayersInvalid(self):
-        """ test that invalid map layersd can't be added to registry """
+        """ test that invalid map layers can be added to registry """
         QgsProject.instance().removeAllMapLayers()
 
-        self.assertEqual(QgsProject.instance().addMapLayers([QgsVectorLayer("Point?field=x:string", 'test', "xxx")]), [])
-        self.assertEqual(len(QgsProject.instance().mapLayersByName('test')), 0)
-        self.assertEqual(QgsProject.instance().count(), 0)
+        vl = QgsVectorLayer("Point?field=x:string", 'test', "xxx")
+        self.assertEqual(QgsProject.instance().addMapLayers([vl]), [vl])
+        self.assertFalse(vl in QgsProject.instance().validMapLayers().values())
+        self.assertEqual(len(QgsProject.instance().mapLayersByName('test')), 1)
+        self.assertEqual(QgsProject.instance().count(), 1)
+        self.assertEqual(QgsProject.instance().validCount(), 0)
 
         QgsProject.instance().removeAllMapLayers()
 

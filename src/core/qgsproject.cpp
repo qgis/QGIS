@@ -1499,43 +1499,46 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
 
   Q_FOREACH ( QgsMapLayer *layer, layers )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-    if ( vlayer )
+    if ( layer->isValid() )
     {
-      if ( autoTransaction() )
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      if ( vlayer )
       {
-        if ( QgsTransaction::supportsTransaction( vlayer ) )
+        if ( autoTransaction() )
         {
-          QString connString = QgsDataSourceUri( vlayer->source() ).connectionInfo();
-          QString key = vlayer->providerType();
-
-          QgsTransactionGroup *tg = mTransactionGroups.value( qMakePair( key, connString ) );
-
-          if ( !tg )
+          if ( QgsTransaction::supportsTransaction( vlayer ) )
           {
-            tg = new QgsTransactionGroup();
-            mTransactionGroups.insert( qMakePair( key, connString ), tg );
-            tgChanged = true;
+            QString connString = QgsDataSourceUri( vlayer->source() ).connectionInfo();
+            QString key = vlayer->providerType();
+
+            QgsTransactionGroup *tg = mTransactionGroups.value( qMakePair( key, connString ) );
+
+            if ( !tg )
+            {
+              tg = new QgsTransactionGroup();
+              mTransactionGroups.insert( qMakePair( key, connString ), tg );
+              tgChanged = true;
+            }
+            tg->addLayer( vlayer );
           }
-          tg->addLayer( vlayer );
         }
+        vlayer->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues() );
       }
-      vlayer->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues() );
-    }
 
-    if ( tgChanged )
-      emit transactionGroupsChanged();
+      if ( tgChanged )
+        emit transactionGroupsChanged();
 
-    connect( layer, &QgsMapLayer::configChanged, this, [ = ] { setDirty(); } );
+      connect( layer, &QgsMapLayer::configChanged, this, [ = ] { setDirty(); } );
 
-    // check if we have to update connections for layers with dependencies
-    for ( QMap<QString, QgsMapLayer *>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
-    {
-      QSet<QgsMapLayerDependency> deps = it.value()->dependencies();
-      if ( deps.contains( layer->id() ) )
+      // check if we have to update connections for layers with dependencies
+      for ( QMap<QString, QgsMapLayer *>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
       {
-        // reconnect to change signals
-        it.value()->setDependencies( deps );
+        QSet<QgsMapLayerDependency> deps = it.value()->dependencies();
+        if ( deps.contains( layer->id() ) )
+        {
+          // reconnect to change signals
+          it.value()->setDependencies( deps );
+        }
       }
     }
   }
@@ -2550,6 +2553,11 @@ int QgsProject::count() const
   return mLayerStore->count();
 }
 
+int QgsProject::validCount() const
+{
+  return mLayerStore->validCount();
+}
+
 QgsMapLayer *QgsProject::mapLayer( const QString &layerId ) const
 {
   return mLayerStore->mapLayer( layerId );
@@ -2742,6 +2750,11 @@ void QgsProject::reloadAllLayers()
 QMap<QString, QgsMapLayer *> QgsProject::mapLayers() const
 {
   return mLayerStore->mapLayers();
+}
+
+QMap<QString, QgsMapLayer *> QgsProject::validMapLayers() const
+{
+  return mLayerStore->validMapLayers();
 }
 
 QgsTransactionGroup *QgsProject::transactionGroup( const QString &providerKey, const QString &connString )

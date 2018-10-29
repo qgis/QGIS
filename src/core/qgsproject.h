@@ -690,6 +690,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Returns the number of registered layers.
     int count() const;
 
+    //! Returns the number of registered valid layers.
+    int validCount() const;
+
     /**
      * Retrieve a pointer to a registered layer by layer ID.
      * \param layerId ID of layer to retrieve
@@ -715,6 +718,15 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see layers()
      */
     QMap<QString, QgsMapLayer *> mapLayers() const;
+
+    /**
+     * Returns a map of all registered valid layers by layer ID.
+     * \see mapLayer()
+     * \see mapLayersByName()
+     * \see layers()
+     * \since QGIS 3.6
+     */
+    QMap<QString, QgsMapLayer *> validMapLayers() const;
 
     /**
      * Returns true if the project comes from a zip archive, false otherwise.
