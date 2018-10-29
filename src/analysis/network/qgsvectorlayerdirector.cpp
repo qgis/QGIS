@@ -384,6 +384,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
             {
               double distance = builder->distanceArea()->measureLine( arcPt1, arcPt2 );
               QVector< QVariant > prop;
+              prop.reserve( mStrategies.size() );
               for ( QgsNetworkStrategy *strategy : mStrategies )
               {
                 prop.push_back( strategy->cost( distance, feature ) );

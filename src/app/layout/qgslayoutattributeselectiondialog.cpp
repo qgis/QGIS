@@ -97,7 +97,7 @@ QVariant QgsLayoutAttributeTableColumnModel::data( const QModelIndex &index, int
   if ( role == Qt::UserRole )
   {
     //user role stores reference in column object
-    return qVariantFromValue( qobject_cast<QObject *>( column ) );
+    return qVariantFromValue( column );
   }
 
   switch ( index.column() )

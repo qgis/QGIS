@@ -315,6 +315,7 @@ QVector<QgsReclassifyUtils::RasterClass> QgsReclassifyByTableAlgorithm::createCl
 
   const int rows = table.count() / 3;
   QVector< QgsReclassifyUtils::RasterClass > classes;
+  classes.reserve( rows );
   for ( int row = 0; row < rows; ++row )
   {
     bool ok = false;

@@ -76,9 +76,10 @@ int QgsCompoundCurve::dimension() const
 QgsCompoundCurve::QgsCompoundCurve( const QgsCompoundCurve &curve ): QgsCurve( curve )
 {
   mWkbType = curve.wkbType();
+  mCurves.reserve( curve.mCurves.size() );
   for ( const QgsCurve *c : curve.mCurves )
   {
-    mCurves.append( static_cast<QgsCurve *>( c->clone() ) );
+    mCurves.append( c->clone() );
   }
 }
 
@@ -90,7 +91,7 @@ QgsCompoundCurve &QgsCompoundCurve::operator=( const QgsCompoundCurve &curve )
     QgsCurve::operator=( curve );
     for ( const QgsCurve *c : curve.mCurves )
     {
-      mCurves.append( static_cast<QgsCurve *>( c->clone() ) );
+      mCurves.append( c->clone() );
     }
   }
   return *this;
@@ -221,6 +222,7 @@ QByteArray QgsCompoundCurve::asWkb() const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   QVector<QByteArray> wkbForCurves;
+  wkbForCurves.reserve( mCurves.size() );
   for ( const QgsCurve *curve : mCurves )
   {
     QByteArray wkbForCurve = curve->asWkb();
