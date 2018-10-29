@@ -14,6 +14,15 @@
 
 namespace QgsHstoreUtils
 {
+%Docstring
+The QgsHstoreUtils namespace provides functions to handle hstore-formatted strings.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgshstoreutils.h"
+%End
 
   QVariantMap parse( const QString &string );
 %Docstring

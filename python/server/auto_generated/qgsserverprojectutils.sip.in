@@ -18,6 +18,16 @@
 
 namespace QgsServerProjectUtils
 {
+%Docstring
+The QgsServerProjectUtils namespace provides a way to retrieve specific
+entries from a QgsProject.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsserverprojectutils.h"
+%End
 
   bool owsServiceCapabilities( const QgsProject &project );
 %Docstring

@@ -15,6 +15,10 @@
 namespace QgsZipUtils
 {
 
+%TypeHeaderCode
+#include "qgsziputils.h"
+%End
+
   bool isZipFile( const QString &filename );
 %Docstring
 Returns true if the file name is a zipped file ( i.e with a '.qgz'

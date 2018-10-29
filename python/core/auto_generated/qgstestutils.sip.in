@@ -17,6 +17,10 @@
 namespace QgsTestUtils
 {
 
+%TypeHeaderCode
+#include "qgstestutils.h"
+%End
+
   bool testProviderIteratorThreadSafety( QgsVectorDataProvider *provider, const QgsFeatureRequest &request = QgsFeatureRequest() );
 %Docstring
 Runs a thready safety test on iterators from a vector data ``provider``, by concurrently
