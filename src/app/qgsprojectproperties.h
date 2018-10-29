@@ -48,8 +48,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Constructor
     QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    QMap< QString, QString > pageWidgetNameMap();
-
     void setCurrentPage( const QString & );
 
     ~QgsProjectProperties() override;
@@ -191,6 +189,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QgsLayerCapabilitiesModel *mLayerCapabilitiesModel = nullptr;
 
     QgsCoordinateReferenceSystem mCrs;
+
+    void checkPageWidgetNameMap();
 
     void populateStyles();
     void editSymbol( QComboBox *cbo );

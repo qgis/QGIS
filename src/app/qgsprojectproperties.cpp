@@ -850,7 +850,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   // sync metadata title and project title fields
   connect( mMetadataWidget, &QgsMetadataWidget::titleChanged, titleEdit, &QLineEdit::setText, Qt::QueuedConnection );
-  connect( titleEdit, &QLineEdit::textChanged, [ = ] { whileBlocking( mMetadataWidget )->setTitle( title() ) ;} );
+  connect( titleEdit, &QLineEdit::textChanged, this, [ = ] { whileBlocking( mMetadataWidget )->setTitle( title() ) ;} );
 
   //fill ts language checkbox
   QString i18nPath = QgsApplication::i18nPath();
@@ -877,6 +877,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   projectionSelectorInitialized();
   restoreOptionsBaseUi();
   restoreState();
+
+#ifdef QGISDEBUG
+  checkPageWidgetNameMap();
+#endif
 }
 
 QgsProjectProperties::~QgsProjectProperties()
@@ -2305,18 +2309,19 @@ void QgsProjectProperties::showHelp()
   QgsHelp::openHelp( link );
 }
 
-QMap< QString, QString > QgsProjectProperties::pageWidgetNameMap()
+void QgsProjectProperties::checkPageWidgetNameMap()
 {
-  QMap< QString, QString > pageNames;
+  const QMap< QString, QString > pageNames = QgisApp::instance()->projectPropertiesPagesMap();
+  Q_ASSERT_X( pageNames.count() == mOptionsListWidget->count(), "QgsProjectProperties::checkPageWidgetNameMap()", "QgisApp::projectPropertiesPagesMap() is outdated, contains too many entries" );
   for ( int idx = 0; idx < mOptionsListWidget->count(); ++idx )
   {
     QWidget *currentPage = mOptionsStackedWidget->widget( idx );
     QListWidgetItem *item = mOptionsListWidget->item( idx );
-    QString title = item->text();
-    QString name = currentPage->objectName();
-    pageNames.insert( title, name );
+    const QString title = item->text();
+    const QString name = currentPage->objectName();
+    Q_ASSERT_X( pageNames.contains( title ), "QgsProjectProperties::checkPageWidgetNameMap()", QStringLiteral( "QgisApp::projectPropertiesPagesMap() is outdated, please update. Missing %1" ).arg( title ).toLocal8Bit().constData() );
+    Q_ASSERT_X( pageNames.value( title ) == name, "QgsProjectProperties::checkPageWidgetNameMap()", QStringLiteral( "QgisApp::projectPropertiesPagesMap() is outdated, please update. %1 should be %2 not %3" ).arg( title, name, pageNames.value( title ) ).toLocal8Bit().constData() );
   }
-  return pageNames;
 }
 
 void QgsProjectProperties::setCurrentPage( const QString &pageWidgetName )
