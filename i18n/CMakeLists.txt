@@ -25,7 +25,7 @@ SET(TS_FILES qgis_ar.ts qgis_bg.ts qgis_bs.ts qgis_ca.ts qgis_cs.ts qgis_da.ts q
 
 ADD_TRANSLATION_FILES (QM_FILES ${TS_FILES})
 
-IF (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+IF (UNIX AND NOT APPLE)
   ADD_CUSTOM_COMMAND(
     OUTPUT ${CMAKE_BINARY_DIR}/org.qgis.qgis.desktop ${CMAKE_BINARY_DIR}/org.qgis.qgis.appdata.xml
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
@@ -39,7 +39,7 @@ IF (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
   INSTALL(FILES ${CMAKE_BINARY_DIR}/org.qgis.qgis.desktop DESTINATION share/applications)
   INSTALL(FILES ${CMAKE_BINARY_DIR}/org.qgis.qgis.appdata.xml DESTINATION share/metainfo)
-ENDIF (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+ENDIF (UNIX AND NOT APPLE)
 
 # creating a custom target is needed to make the files build
 # "ALL" means that it will be run by default
