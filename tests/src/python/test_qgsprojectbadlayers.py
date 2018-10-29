@@ -46,6 +46,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
             copyfile(os.path.join(TEST_DATA_DIR, 'lines.%s' % ext), os.path.join(temp_dir.path(), 'lines.%s' % ext))
         copyfile(os.path.join(TEST_DATA_DIR, 'raster', 'band1_byte_ct_epsg4326.tif'), os.path.join(temp_dir.path(), 'band1_byte_ct_epsg4326.tif'))
         l = QgsVectorLayer(os.path.join(temp_dir.path(), 'lines.shp'), 'lines', 'ogr')
+        wkb_type = l.wkbType()
         self.assertTrue(l.isValid())
 
         rl = QgsRasterLayer(os.path.join(temp_dir.path(), 'band1_byte_ct_epsg4326.tif'), 'raster', 'gdal')
@@ -65,8 +66,12 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         # Load the bad project
         self.assertTrue(p.read(bad_project_path))
         # Check layer is invalid
-        self.assertFalse(list(p.mapLayers().values())[0].isValid())
+        invalid = list(p.mapLayersByName('lines'))[0]
+        self.assertFalse(invalid.isValid())
+        # Try a getFeatures
+        self.assertEqual([f for f in invalid.getFeatures()], [])
         self.assertTrue(list(p.mapLayers().values())[1].isValid())
+
         # Save the project
         bad_project_path2 = os.path.join(temp_dir.path(), 'project_bad2.qgs')
         p.write(bad_project_path2)
