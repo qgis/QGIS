@@ -24,6 +24,7 @@
 
 class QgsDirectoryItem;
 class QgsFavoriteItem;
+class QgsLayerItem;
 
 class QgsAppDirectoryItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
@@ -77,6 +78,27 @@ class QgsFavoritesItemGuiProvider : public QObject, public QgsDataItemGuiProvide
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+
+};
+
+
+class QgsLayerItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsLayerItemGuiProvider() = default;
+
+    QString name() override;
+
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+
+  private:
+
+    void addLayersFromItems( const QList<QgsDataItem *> &items );
+    void showPropertiesForItem( QgsLayerItem *item );
 
 };
 
