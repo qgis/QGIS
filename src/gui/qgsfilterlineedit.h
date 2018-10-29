@@ -265,6 +265,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
   protected:
     void focusInEvent( QFocusEvent *e ) override;
+    void mouseReleaseEvent( QMouseEvent *e ) override;
 
   private slots:
     void onTextChanged( const QString &text );
@@ -286,12 +287,15 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     QString mDefaultValue;
     QString mStyleSheet;
     bool mFocusInEvent = false;
+    bool mWaitingForMouseRelease = false;
     bool mSelectOnFocus = false;
 
     QgsAnimatedIcon *mBusySpinnerAnimatedIcon = nullptr;
 
     //! Returns true if clear button should be shown
     bool shouldShowClear() const;
+
+    friend class TestQgsFeatureListComboBox;
 };
 
 /// @cond PRIVATE
