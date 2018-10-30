@@ -242,7 +242,7 @@ class FieldTypeDelegate(QStyledItemDelegate):
 
     def createEditor(self, parent, option, index):
         editor = QComboBox(parent)
-        for key, text in list(FieldsMappingModel.fieldTypes.items()):
+        for key, text in FieldsMappingModel.fieldTypes.items():
             editor.addItem(text, key)
         return editor
 
