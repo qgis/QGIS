@@ -25,6 +25,8 @@
 #include "qgsmeshlayer.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsdataitemprovider.h"
+#include "qgsdataitemproviderregistry.h"
 #include "qgssettings.h"
 
 /**
@@ -47,6 +49,7 @@ class TestQgsDataItem : public QObject
     void testValid();
     void testDirItemChildren();
     void testLayerItemType();
+    void testProjectItemCreation();
 
   private:
     QgsDirectoryItem *mDirItem = nullptr;
@@ -218,8 +221,89 @@ void TestQgsDataItem::testLayerItemType()
           QString(), QStringLiteral( "mdal" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Mesh );
+}
 
 
+class TestProjectDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override { return QStringLiteral( "project_test" ); }
+    int capabilities() override { return QgsDataProvider::File; }
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override
+    {
+      QFileInfo fileInfo( path );
+      if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 || fileInfo.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
+      {
+        return new QgsDataItem( QgsDataItem::Custom, parentItem, path, path );
+      }
+      return nullptr;
+    }
+};
+
+void TestQgsDataItem::testProjectItemCreation()
+{
+  QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), mTestDataDir + QStringLiteral( "qgis_server/" ) );
+  QVector<QgsDataItem *> children = dirItem->createChildren();
+
+  // ensure that QgsProjectItem items were created
+  bool foundQgsProject = false;
+  bool foundQgzProject = false;
+  for ( QgsDataItem *child : children )
+  {
+    if ( child->type() == QgsDataItem::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
+    {
+      foundQgsProject = true;
+      continue;
+    }
+    if ( child->type() == QgsDataItem::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgz" ) )
+    {
+      foundQgzProject = true;
+      continue;
+    }
+  }
+  QVERIFY( foundQgsProject );
+  QVERIFY( foundQgzProject );
+  delete dirItem;
+
+  // now, add a specific provider which handles project files
+  QgsApplication::dataItemProviderRegistry()->addProvider( new TestProjectDataItemProvider() );
+
+  dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), mTestDataDir + QStringLiteral( "qgis_server/" ) );
+  children = dirItem->createChildren();
+
+  // ensure that QgsProjectItem items were NOT created -- our test provider should have created custom items instead
+  foundQgsProject = false;
+  foundQgzProject = false;
+  bool foundCustomQgsProject = false;
+  bool foundCustomQgzProject = false;
+  for ( QgsDataItem *child : children )
+  {
+    if ( child->type() == QgsDataItem::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
+    {
+      foundQgsProject = true;
+      continue;
+    }
+    if ( child->type() == QgsDataItem::Project && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgz" ) )
+    {
+      foundQgzProject = true;
+      continue;
+    }
+    if ( child->type() == QgsDataItem::Custom && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgs" ) )
+    {
+      foundCustomQgsProject = true;
+      continue;
+    }
+    if ( child->type() == QgsDataItem::Custom && child->path() == mTestDataDir + QStringLiteral( "qgis_server/test_project.qgz" ) )
+    {
+      foundCustomQgzProject = true;
+      continue;
+    }
+  }
+  QVERIFY( !foundQgsProject );
+  QVERIFY( !foundQgzProject );
+  QVERIFY( foundCustomQgsProject );
+  QVERIFY( foundCustomQgzProject );
+  delete dirItem;
 }
 
 QGSTEST_MAIN( TestQgsDataItem )

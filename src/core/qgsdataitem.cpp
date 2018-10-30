@@ -878,14 +878,6 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     QString path = dir.absoluteFilePath( name );
     QFileInfo fileInfo( path );
 
-    if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 ||
-         fileInfo.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
-    {
-      QgsDataItem *item = new QgsProjectItem( this, fileInfo.completeBaseName(), path );
-      children.append( item );
-      continue;
-    }
-
     if ( fileInfo.suffix().compare( QLatin1String( "zip" ), Qt::CaseInsensitive ) == 0 ||
          fileInfo.suffix().compare( QLatin1String( "tar" ), Qt::CaseInsensitive ) == 0 )
     {
@@ -897,6 +889,7 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
       }
     }
 
+    bool createdItem = false;
     for ( QgsDataItemProvider *provider : providers )
     {
       int capabilities = provider->capabilities();
@@ -911,6 +904,20 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
       if ( item )
       {
         children.append( item );
+        createdItem = true;
+      }
+    }
+
+    if ( !createdItem )
+    {
+      // if item is a QGIS project, and no specific item provider has overridden handling of
+      // project items, then use the default project item behavior
+      if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 ||
+           fileInfo.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
+      {
+        QgsDataItem *item = new QgsProjectItem( this, fileInfo.completeBaseName(), path );
+        children.append( item );
+        continue;
       }
     }
 
