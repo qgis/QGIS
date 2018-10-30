@@ -6246,6 +6246,9 @@ tests:
         type: multi
     results:
       OUTPUT:
+        # If you ever run into this test producing Polygons instead of MultiPolygons as output
+        # that is totally expected and you are invited to replace the file merged_pol.gpkg with
+        # a single polygon version.
         name: ogr:dbname='expected/merged_pol.gpkg' table="output" (geom) sql=
         uri: expected/merged_pol.gpkg|layername=merged_pol
         type: vector
