@@ -298,6 +298,17 @@ QgsMessageBarItem *QgsMessageBar::pushWidget( QWidget *widget, Qgis::MessageLeve
 
 void QgsMessageBar::pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level, int duration )
 {
+  // keep the number of items in the message bar to a maximum of 20, avoids flooding (and freezing) of the main window
+  if ( mItems.count() > 20 )
+    mItems.removeFirst();
+
+  // block duplicate items, avoids flooding (and freezing) of the main window
+  for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
+  {
+    if ( level == ( *it )->level() && title == ( *it )->title() && text == ( *it )->text() )
+      return;
+  }
+
   QgsMessageBarItem *item = new QgsMessageBarItem( title, text, level, duration );
   pushItem( item );
 }
