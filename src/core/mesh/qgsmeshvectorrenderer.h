@@ -54,7 +54,7 @@ class QgsMeshVectorRenderer
                            bool dataIsOnVertices,
                            const QgsMeshRendererVectorSettings &settings,
                            QgsRenderContext &context,
-                           const QSize &size );
+                           QSize size );
     //! Dtor
     ~QgsMeshVectorRenderer();
 
