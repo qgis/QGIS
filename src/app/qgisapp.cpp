@@ -929,6 +929,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mGeometryValidationService = qgis::make_unique<QgsGeometryValidationService>( QgsProject::instance() );
   mGeometryValidationService->setMessageBar( mInfoBar );
   mGeometryValidationDock = new QgsGeometryValidationDock( tr( "Geometry Validation" ), mMapCanvas, this );
+  mGeometryValidationDock->hide();
   mGeometryValidationModel = new QgsGeometryValidationModel( mGeometryValidationService.get(), mGeometryValidationDock );
   connect( this, &QgisApp::activeLayerChanged, mGeometryValidationModel, [this]( QgsMapLayer * layer )
   {
@@ -1431,7 +1432,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     mCentralContainer->setCurrentIndex( 0 );
   } );
-  mGeometryValidationDock->close();
 } // QgisApp ctor
 
 QgisApp::QgisApp()
