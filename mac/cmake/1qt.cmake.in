@@ -16,12 +16,17 @@ SET (QT_FWVER "5")
 # build list of Qt frameworks to bundle
 
 # core list, includes dependencies and used by extra plugins
-SET (QTLISTQG QtCore QtGui QtWidgets QtNetwork QtXml QtSvg QtConcurrent QtPrintSupport QtPositioning QtTest QtSql)
-SET (PYQTLIST Qt QtCore QtGui QtWidgets QtNetwork QtXml QtSvg QtPrintSupport QtPositioning QtTest QtSql)
+SET (QTLISTQG QtCore QtGui QtWidgets QtNetwork QtXml QtSvg QtConcurrent QtPrintSupport QtSerialPort QtPositioning QtTest QtSql QtMacExtras)
+SET (PYQTLIST Qt QtCore QtGui QtWidgets QtNetwork QtXml QtSvg QtPrintSupport QtPositioning QtSerialPort QtTest QtSql QtMacExtras)
+
+# QtQuickWidgets appears to be implied direct dep, it needs Quick and Qml,
+# whether or not WITH_QUICK specified
+SET (QTLISTQG ${QTLISTQG} QtQuickWidgets QtQuick QtQml)
+SET (PYQTLIST ${PYQTLIST} QtQuickWidgets QtQuick QtQml)
 
 IF(@WITH_QTWEBKIT@)
-    SET (QTLISTQG ${QTLISTQG} QtWebKit QtWebKitWidgets QtSensors QtQuick QtQml QtWebChannel QtMultimedia QtMultimediaWidgets QtOpenGL)
-    SET (PYQTLIST ${PYQTLIST} QtWebKit QtWebKitWidgets QtSensors QtQuick QtQml QtWebChannel QtMultimedia QtMultimediaWidgets QtOpenGL)
+    SET (QTLISTQG ${QTLISTQG} QtWebKit QtWebKitWidgets QtSensors QtWebChannel QtMultimedia QtMultimediaWidgets QtOpenGL)
+    SET (PYQTLIST ${PYQTLIST} QtWebKit QtWebKitWidgets QtSensors QtWebChannel QtMultimedia QtMultimediaWidgets QtOpenGL)
 ENDIF ()
 
 IF(@WITH_3D@)
@@ -36,8 +41,7 @@ ENDIF ()
 
 # add Qsci.so, if available
 IF (@QSCI_FOUND@)
-    SET (QTLISTQG ${QTLISTQG} QtMacExtras)
-    SET (PYQTLIST ${PYQTLIST} Qsci QtMacExtras)
+    SET (PYQTLIST ${PYQTLIST} Qsci)
 ENDIF (@QSCI_FOUND@)
 
 MYMESSAGE ("Qt list: ${QTLISTQG}")
