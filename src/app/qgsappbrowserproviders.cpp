@@ -17,6 +17,8 @@
 #include "qgisapp.h"
 #include "qgsstyleexportimportdialog.h"
 #include "qgsstyle.h"
+#include "qgslayertreenode.h"
+#include "qgslayertree.h"
 #include <QDesktopServices>
 
 //
@@ -399,3 +401,127 @@ bool QgsStyleXmlDropHandler::handleFileDrop( const QString &file )
   return false;
 }
 
+//
+// QgsProjectRootDataItem
+//
+
+QgsProjectRootDataItem::QgsProjectRootDataItem( QgsDataItem *parent, const QString &path )
+  : QgsProjectItem( parent, QFileInfo( path ).completeBaseName(), path )
+{
+  mCapabilities = Collapse | Fertile; // collapse by default to avoid costly population on startup
+  setState( NotPopulated );
+}
+
+
+QVector<QgsDataItem *> QgsProjectRootDataItem::createChildren()
+{
+  QVector<QgsDataItem *> childItems;
+
+  QgsProject p;
+  if ( !p.read( mPath ) )
+  {
+    childItems.append( new QgsErrorItem( nullptr, p.error(), mPath + "/error" ) );
+    return childItems;
+  }
+
+  // recursively create groups and layer items for project's layer tree
+  std::function<void( QgsDataItem *parentItem, QgsLayerTreeGroup *group )> addNodes;
+  addNodes = [this, &addNodes, &childItems]( QgsDataItem * parentItem, QgsLayerTreeGroup * group )
+  {
+    const QList< QgsLayerTreeNode * > children = group->children();
+    for ( QgsLayerTreeNode *child : children )
+    {
+      switch ( child->nodeType() )
+      {
+        case QgsLayerTreeNode::NodeLayer:
+        {
+          if ( QgsLayerTreeLayer *layerNode = qobject_cast< QgsLayerTreeLayer * >( child ) )
+          {
+            QgsMapLayer *layer = layerNode->layer();
+#if 0 // TODO
+            QString style;
+            if ( layer )
+            {
+              QString errorMsg;
+              QDomDocument doc( QStringLiteral( "qgis" ) );
+              QgsReadWriteContext context;
+              context.setPathResolver( p.pathResolver() );
+              layer->exportNamedStyle( doc, errorMsg, context );
+              style = doc.toString();
+            }
+#endif
+
+            QgsLayerItem *layerItem = new QgsLayerItem( nullptr, layerNode->name(),
+                layer ? layer->source() : QString(),
+                layer ? layer->source() : QString(),
+                layer ? QgsLayerItem::typeFromMapLayer( layer ) : QgsLayerItem::NoType,
+                layer ? layer->dataProvider()->name() : QString() );
+            layerItem->setState( Populated ); // children are not expected
+            layerItem->setToolTip( layer ? layer->source() : QString() );
+            if ( parentItem == this )
+              childItems << layerItem;
+            else
+              parentItem->addChildItem( layerItem, true );
+          }
+          break;
+        }
+
+        case QgsLayerTreeNode::NodeGroup:
+        {
+          if ( QgsLayerTreeGroup *groupNode = qobject_cast< QgsLayerTreeGroup * >( child ) )
+          {
+            QgsProjectLayerTreeGroupItem *groupItem = new QgsProjectLayerTreeGroupItem( nullptr, groupNode->name() );
+            addNodes( groupItem, groupNode );
+            groupItem->setState( Populated );
+            if ( parentItem == this )
+              childItems << groupItem;
+            else
+              parentItem->addChildItem( groupItem, true );
+          }
+        }
+        break;
+      }
+    }
+  };
+
+  addNodes( this, p.layerTreeRoot() );
+  return childItems;
+}
+
+
+//
+// QgsProjectLayerTreeGroupItem
+//
+
+QgsProjectLayerTreeGroupItem::QgsProjectLayerTreeGroupItem( QgsDataItem *parent, const QString &name )
+  : QgsDataCollectionItem( parent, name )
+{
+  mIconName = QStringLiteral( "mActionFolder.svg" );
+  mCapabilities = NoCapabilities;
+  setToolTip( name );
+}
+
+
+//
+// QgsProjectDataItemProvider
+//
+
+QString QgsProjectDataItemProvider::name()
+{
+  return QStringLiteral( "project_item" );
+}
+
+int QgsProjectDataItemProvider::capabilities()
+{
+  return QgsDataProvider::File;
+}
+
+QgsDataItem *QgsProjectDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
+{
+  QFileInfo fileInfo( path );
+  if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 || fileInfo.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return new QgsProjectRootDataItem( parentItem, path );
+  }
+  return nullptr;
+}
