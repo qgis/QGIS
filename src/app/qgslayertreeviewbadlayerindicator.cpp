@@ -94,11 +94,48 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
   dlg.setLayout( &lay );
   if ( dlg.exec() == QDialog::Accepted )
   {
-    QModelIndex index = browserWidget->currentIndex();
-    if ( isItemCompatible( index ) )
+    QModelIndex idx = browserWidget->currentIndex();
+    if ( isItemCompatible( idx ) )
     {
-      const QgsDataItem *item( browserModel.dataItem( index ) );
+      const QgsDataItem *item( browserModel.dataItem( idx ) );
       layer->setDataSource( item->mimeUri().uri, layer->name(), item->mimeUri().providerKey, QgsDataProvider::ProviderOptions() );
+      // Re-apply style
+      if ( ! layer->originalXmlProperties().isEmpty() )
+      {
+        QgsReadWriteContext context;
+        context.setPathResolver( QgsProject::instance()->pathResolver() );
+        context.setProjectTranslator( QgsProject::instance() );
+        QString errorMsg;
+        QDomDocument doc;
+        if ( doc.setContent( layer->originalXmlProperties() ) )
+        {
+          QDomNode layer_node( doc.firstChild( ) );
+          if ( ! layer->readSymbology( layer_node, errorMsg, context ) )
+          {
+            QgsDebugMsg( QStringLiteral( "Failed to restore original layer style from stored XML for layer %1: %2" )
+                         .arg( layer->name( ) )
+                         .arg( errorMsg ) );
+          }
+        }
+        else
+        {
+          QgsDebugMsg( QStringLiteral( "Failed to create XML QDomDocument for layer %1: %2" )
+                       .arg( layer->name( ) )
+                       .arg( errorMsg ) );
+        }
+      }
+
+      // All the following code is necessary to refresh the layer
+      QgsLayerTreeModel *model = qobject_cast<QgsLayerTreeModel *>( mLayerTreeView->model() );
+      if ( model )
+      {
+        QgsLayerTreeLayer *tl( model->rootGroup()->findLayer( layer->id() ) );
+        if ( tl && tl->itemVisibilityChecked() )
+        {
+          tl->setItemVisibilityChecked( false );
+          tl->setItemVisibilityChecked( true );
+        }
+      }
     }
   }
   QgsSettings().setValue( QStringLiteral( "/Windows/selectDataSourceDialog/geometry" ), dlg.saveGeometry(), QgsSettings::Section::App );
