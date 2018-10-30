@@ -144,10 +144,10 @@ class PointsToPaths(QgisAlgorithm):
 
             point = f.geometry().constGet().clone()
             if group_field_index >= 0:
-                group = f[group_field_index]    # (1)
+                group = f[group_field_index]
             else:
                 group = 1
-            order = f[order_field_index]    # (1)
+            order = f[order_field_index]
             if date_format != '':
                 order = datetime.strptime(str(order), date_format)
             if group in points:
@@ -165,8 +165,7 @@ class PointsToPaths(QgisAlgorithm):
 
         current = 0
         total = 100.0 / len(points) if points else 1
-        verlist = list(points.items()) # (2)
-        for group, vertices in vertlist: # (2)
+        for group, vertices in points.items():
             if feedback.isCanceled():
                 break
 

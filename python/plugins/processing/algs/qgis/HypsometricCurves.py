@@ -225,7 +225,7 @@ class HypsometricCurves(QgisAlgorithm):
         else:
             multiplier = pX * pY
 
-        for k, v in list(out.items()):
+        for k, v in out.items():
             out[k] = v * multiplier
 
         prev = None
