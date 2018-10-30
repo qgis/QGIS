@@ -180,7 +180,7 @@ Returns the display name of the layer.
 
     virtual QgsDataProvider *dataProvider();
 %Docstring
-Returns the layer's data provider.
+Returns the layer's data provider, it may be null.
 %End
 
 

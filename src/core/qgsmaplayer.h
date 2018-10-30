@@ -232,12 +232,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString name() const;
 
     /**
-     * Returns the layer's data provider.
+     * Returns the layer's data provider, it may be null.
      */
     virtual QgsDataProvider *dataProvider();
 
     /**
-     * Returns the layer's data provider in a const-correct manner
+     * Returns the layer's data provider in a const-correct manner, it may be null.
      * \note not available in Python bindings
      */
     virtual const QgsDataProvider *dataProvider() const SIP_SKIP;
