@@ -1161,6 +1161,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   registerCustomDropHandler( new QgsPyDropHandler() );
 #endif
 
+  QgsApplication::dataItemProviderRegistry()->addProvider( new QgsProjectDataItemProvider() );
+
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
   mSplash->showMessage( tr( "Restoring loaded plugins" ), Qt::AlignHCenter | Qt::AlignBottom );

@@ -175,7 +175,7 @@ void QgsBrowserDockWidget::itemDoubleClicked( const QModelIndex &index )
     return;
   else
   {
-    // double click not handled by browser model, so use as default view expand behavior
+    // double-click not handled by browser model, so use as default view expand behavior
     if ( mBrowserView->isExpanded( index ) )
       mBrowserView->collapse( index );
     else
