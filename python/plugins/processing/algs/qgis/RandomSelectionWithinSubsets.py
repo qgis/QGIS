@@ -129,7 +129,7 @@ class RandomSelectionWithinSubsets(QgisAlgorithm):
                 if feedback.isCanceled():
                     break
 
-                classes[feature.attributes()[index]].append(feature.id())
+                classes[feature[index]].append(feature.id())
                 feedback.setProgress(int(i * total))
 
             selran = []

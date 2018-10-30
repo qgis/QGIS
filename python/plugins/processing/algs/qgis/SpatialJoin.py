@@ -234,7 +234,7 @@ class SpatialJoin(QgisAlgorithm):
 
                 join_attributes = []
                 for a in join_field_indexes:
-                    join_attributes.append(f.attributes()[a])
+                    join_attributes.append(f[a])
 
                 if engine is None:
                     engine = QgsGeometry.createGeometryEngine(f.geometry().constGet())
