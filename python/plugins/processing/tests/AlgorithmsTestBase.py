@@ -107,7 +107,7 @@ class AlgorithmsTest(object):
             for param in zip(alg.parameterDefinitions(), params):
                 parameters[param[0].name()] = param[1]
         else:
-            for k, p in list(params.items()):
+            for k, p in params.items():
                 parameters[k] = p
 
         for r, p in list(defs['results'].items()):
@@ -157,7 +157,7 @@ class AlgorithmsTest(object):
         if isinstance(params, list):
             return [self.load_param(p) for p in params]
         elif isinstance(params, dict):
-            return {key: self.load_param(p, key) for key, p in list(params.items())}
+            return {key: self.load_param(p, key) for key, p in params.items()}
         else:
             return params
 
@@ -274,7 +274,7 @@ class AlgorithmsTest(object):
         """
         Checks if result produced by an algorithm matches with the expected specification.
         """
-        for id, expected_result in list(expected.items()):
+        for id, expected_result in expected.items():
             if expected_result['type'] in ('vector', 'table'):
                 if 'compare' in expected_result and not expected_result['compare']:
                     # skipping the comparison, so just make sure output is valid

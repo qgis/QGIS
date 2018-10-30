@@ -127,7 +127,7 @@ class ConcaveHull(QgisAlgorithm):
         counter = 50. / len(edges)
         i = 0
         ids = []
-        for id, max_len in list(edges.items()):
+        for id, max_len in edges.items():
             if feedback.isCanceled():
                 break
 
