@@ -966,6 +966,31 @@ Write just the symbology information for the layer into the document
 .. versionadded:: 2.16
 %End
 
+
+    virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
+%Docstring
+Updates the data source of the layer. The layer's renderer and legend will be preserved only
+if the geometry type of the new data source matches the current geometry type of the layer.
+
+Subclasses should override this method: default implementation does nothing.
+
+:param dataSource: new layer data source
+:param baseName: base name of the layer
+:param provider: provider string
+:param options: provider options
+:param loadDefaultStyleFlag: set to true to reset the layer's style to the default for the
+                             data source
+
+.. seealso:: :py:func:`dataSourceChanged`
+
+.. versionadded:: 3.6
+%End
+
+    QString providerType() const;
+%Docstring
+Returns the provider type (provider key) for this layer
+%End
+
     QUndoStack *undoStack();
 %Docstring
 Returns pointer to layer's undo stack
@@ -1212,6 +1237,7 @@ Returns true if the refresh on provider nofification is enabled
 .. versionadded:: 3.0
 %End
 
+
   public slots:
 
     void setMinimumScale( double scale );
@@ -1434,6 +1460,15 @@ Emitted when layer's flags have been modified.
 .. versionadded:: 3.4
 %End
 
+    void dataSourceChanged();
+%Docstring
+Emitted whenever the layer's data source has been changed.
+
+.. seealso:: :py:func:`setDataSource`
+
+.. versionadded:: 3.5
+%End
+
   protected:
 
     void clone( QgsMapLayer *layer ) const;
@@ -1535,6 +1570,11 @@ Read style data common to all layer types
 .. versionadded:: 3.0
 %End
 
+    void setProviderType( const QString &providerType );
+%Docstring
+Sets the ``providerType`` (provider key)
+%End
+
 
     void appendError( const QgsErrorMessage &error );
 %Docstring
@@ -1561,6 +1601,8 @@ Sets error message
 %Docstring
 Checks whether a new set of dependencies will introduce a cycle
 %End
+
+
 
 
 };

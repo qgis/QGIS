@@ -38,6 +38,7 @@
 #include "qgslayermetadata.h"
 #include "qgsmaplayerstyle.h"
 #include "qgsreadwritecontext.h"
+#include "qgsdataprovider.h"
 
 class QgsAbstract3DRenderer;
 class QgsDataProvider;
@@ -886,6 +887,29 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
                              StyleCategories categories = AllStyleCategories ) const;
 
+
+    /**
+     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
+     * if the geometry type of the new data source matches the current geometry type of the layer.
+     *
+     * Subclasses should override this method: default implementation does nothing.
+     *
+     * \param dataSource new layer data source
+     * \param baseName base name of the layer
+     * \param provider provider string
+     * \param options provider options
+     * \param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
+     * data source
+     * \see dataSourceChanged()
+     * \since QGIS 3.6
+     */
+    virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
+
+    /**
+     * Returns the provider type (provider key) for this layer
+     */
+    QString providerType() const;
+
     //! Returns pointer to layer's undo stack
     QUndoStack *undoStack();
 
@@ -1077,6 +1101,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     bool isRefreshOnNotifyEnabled() const { return mIsRefreshOnNofifyEnabled; }
 
+
   public slots:
 
     /**
@@ -1253,6 +1278,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void flagsChanged();
 
+    /**
+     * Emitted whenever the layer's data source has been changed.
+     *
+     * \see setDataSource()
+     *
+     * \since QGIS 3.5
+     */
+    void dataSourceChanged();
+
   private slots:
 
     void onNotifiedTriggerRepaint( const QString &message );
@@ -1340,6 +1374,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context,
                           StyleCategories categories = AllStyleCategories );
 
+    //! Sets the \a providerType (provider key)
+    void setProviderType( const QString &providerType );
+
 #ifndef SIP_RUN
 #if 0
     //! Debugging member - invoked when a connect() is made to this object
@@ -1399,6 +1436,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     bool mIsRefreshOnNofifyEnabled = false;
     QString mRefreshOnNofifyMessage;
+
+    //! Data provider key (name of the data provider)
+    QString mProviderKey;
+
 
   private:
 

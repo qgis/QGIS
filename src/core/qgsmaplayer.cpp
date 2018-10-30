@@ -1573,6 +1573,21 @@ bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorM
   return false;
 }
 
+void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
+{
+  Q_UNUSED( dataSource );
+  Q_UNUSED( baseName );
+  Q_UNUSED( provider );
+  Q_UNUSED( options );
+  Q_UNUSED( loadDefaultStyleFlag );
+}
+
+
+QString QgsMapLayer::providerType() const
+{
+  return mProviderKey;
+}
+
 void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context,
                                    QgsMapLayer::StyleCategories categories )
 {
@@ -1816,6 +1831,11 @@ bool QgsMapLayer::hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers 
 bool QgsMapLayer::isReadOnly() const
 {
   return true;
+}
+
+void QgsMapLayer::setProviderType( const QString &providerType )
+{
+  mProviderKey = providerType;
 }
 
 QSet<QgsMapLayerDependency> QgsMapLayer::dependencies() const
