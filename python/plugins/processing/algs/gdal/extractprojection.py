@@ -32,8 +32,8 @@ from qgis.PyQt.QtGui import QIcon
 from osgeo import gdal, osr
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterBoolean
+from qgis.core import (QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterBoolean)
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -47,8 +47,8 @@ class ExtractProjection(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input file')))
-        self.addParameter(ParameterBoolean(self.PRJ_FILE,
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input file')))
+        self.addParameter(QgsProcessingParameterBoolean(self.PRJ_FILE,
                                            self.tr('Create also .prj file'), False))
 
     def name(self):
@@ -73,13 +73,15 @@ class ExtractProjection(GdalAlgorithm):
         return [self.commandName()]
 
     def processAlgorithm(self, parameters, context, feedback):
-        rasterPath = self.getParameterValue(self.INPUT)
-        createPrj = self.getParameterValue(self.PRJ_FILE)
-
-        raster = gdal.Open(str(rasterPath))
-        crs = raster.GetProjection()
-        geotransform = raster.GetGeoTransform()
+        createPrj = QgsProcessingParameterBoolean(self.PRJ_FILE)
+        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        rasterPath = raster.source()
+        rasterDS = gdal.Open(rasterPath, gdal.GA_ReadOnly)
+        geotransform = rasterDS.GetGeoTransform()
+        inputcrs = raster.crs()
+        crs = inputcrs.toWkt()
         raster = None
+        rasterDS = None
 
         outFileName = os.path.splitext(str(rasterPath))[0]
 
@@ -104,3 +106,5 @@ class ExtractProjection(GdalAlgorithm):
             wld.write('%0.8f\n' % (geotransform[3] +
                                    0.5 * geotransform[4] +
                                    0.5 * geotransform[5]))
+        return {}
+
