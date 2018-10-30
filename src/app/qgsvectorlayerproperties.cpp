@@ -408,7 +408,12 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mGeometryPrecisionLineEdit->setValidator( new QDoubleValidator( mGeometryPrecisionLineEdit ) );
 
     mRemoveDuplicateNodesCheckbox->setChecked( mLayer->geometryOptions()->removeDuplicateNodes() );
-    mGeometryPrecisionLineEdit->setText( QString::number( mLayer->geometryOptions()->geometryPrecision() ) );
+    double precision( mLayer->geometryOptions()->geometryPrecision() );
+    bool ok = true;
+    QString precisionStr( QLocale().toString( precision, ok ) );
+    if ( precision == 0.0 || ! ok )
+      precisionStr = QString();
+    mGeometryPrecisionLineEdit->setText( precisionStr );
 
     mPrecisionUnitsLabel->setText( QStringLiteral( "[%1]" ).arg( QgsUnitTypes::toAbbreviatedString( mLayer->crs().mapUnits() ) ) );
 
@@ -782,7 +787,11 @@ void QgsVectorLayerProperties::apply()
 #endif
 
   mLayer->geometryOptions()->setRemoveDuplicateNodes( mRemoveDuplicateNodesCheckbox->isChecked() );
-  mLayer->geometryOptions()->setGeometryPrecision( mGeometryPrecisionLineEdit->text().toDouble() );
+  bool ok = true;
+  double precision( QLocale().toDouble( mGeometryPrecisionLineEdit->text(), &ok ) );
+  if ( ! ok )
+    precision = 0.0;
+  mLayer->geometryOptions()->setGeometryPrecision( precision );
 
   QStringList activeChecks;
   QHash<QCheckBox *, QString>::const_iterator it;
