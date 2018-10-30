@@ -145,11 +145,13 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QString &providerKey,
                                 const LayerOptions &options )
   : QgsMapLayer( VectorLayer, baseName, vectorLayerPath )
-  , mProviderKey( providerKey )
   , mAuxiliaryLayer( nullptr )
   , mAuxiliaryLayerKey( QString() )
   , mReadExtentFromXml( options.readExtentFromXml )
 {
+
+  setProviderType( providerKey );
+
   mGeometryOptions = qgis::make_unique<QgsGeometryOptions>();
   mActions = new QgsActionManager( this );
   mConditionalStyles = new QgsConditionalLayerStyles();
@@ -313,12 +315,6 @@ QString QgsVectorLayer::dataComment() const
     return mDataProvider->dataComment();
   }
   return QString();
-}
-
-
-QString QgsVectorLayer::providerType() const
-{
-  return mProviderKey;
 }
 
 QgsCoordinateReferenceSystem QgsVectorLayer::sourceCrs() const
@@ -1418,14 +1414,14 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   QgsDataProvider::ProviderOptions options;
   if ( !setDataProvider( mProviderKey, options ) )
   {
-    return false;
+    QgsDebugMsg( QStringLiteral( "Could not set data provider for layer %1" ).arg( publicSource() ) );
   }
 
   QDomElement pkeyElem = pkeyNode.toElement();
   if ( !pkeyElem.isNull() )
   {
     QString encodingString = pkeyElem.attribute( QStringLiteral( "encoding" ) );
-    if ( !encodingString.isEmpty() )
+    if ( mDataProvider && !encodingString.isEmpty() )
     {
       mDataProvider->setEncoding( encodingString );
     }
@@ -1584,6 +1580,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options ) );
   if ( !mDataProvider )
   {
+    mValid = false;
     QgsDebugMsgLevel( QStringLiteral( "Unable to get data provider" ), 2 );
     return false;
   }
@@ -1597,7 +1594,6 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   if ( !mValid )
   {
     QgsDebugMsgLevel( QStringLiteral( "Invalid provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ), 2 );
-    return false;
   }
 
   if ( mDataProvider->capabilities() & QgsVectorDataProvider::ReadLayerMetadata )

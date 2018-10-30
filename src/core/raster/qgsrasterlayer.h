@@ -199,7 +199,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * */
     explicit QgsRasterLayer( const QString &uri,
                              const QString &baseName = QString(),
-                             const QString &providerKey = "gdal",
+                             const QString &providerType = "gdal",
                              const QgsRasterLayer::LayerOptions &options = QgsRasterLayer::LayerOptions() );
 
     ~QgsRasterLayer() override;
@@ -258,6 +258,20 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \since QGIS 3.2
      */
     void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options );
+
+    /**
+     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
+     * if the geometry type of the new data source matches the current geometry type of the layer.
+     * \param dataSource new layer data source
+     * \param baseName base name of the layer
+     * \param provider provider string
+     * \param options provider options
+     * \param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
+     * data source
+     * \see dataSourceChanged()
+     * \since QGIS 3.6
+     */
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false ) override;
 
     /**
      * Returns the raster layer type (which is a read only property).
@@ -452,9 +466,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QDateTime mLastModified;
 
     QgsRasterViewPort mLastViewPort;
-
-    //! [ data provider interface ] Data provider key
-    QString mProviderKey;
 
     LayerType mRasterType;
 

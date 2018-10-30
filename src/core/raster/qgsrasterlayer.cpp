@@ -116,29 +116,15 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
     // Constant that signals property not used.
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
-  , mProviderKey( providerKey )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
+  setProviderType( providerKey );
   init();
 
   QgsDataProvider::ProviderOptions providerOptions;
-  setDataProvider( providerKey, providerOptions );
-  if ( !mValid ) return;
 
-  // load default style
-  bool defaultLoadedFlag = false;
-  if ( mValid && options.loadDefaultStyle )
-  {
-    loadDefaultStyle( defaultLoadedFlag );
-  }
-  if ( !defaultLoadedFlag )
-  {
-    setDefaultContrastEnhancement();
-  }
+  setDataSource( uri, baseName, providerKey, providerOptions, options.loadDefaultStyle );
 
-  // TODO: Connect signals from the dataprovider to the qgisapp
-
-  emit statusChanged( tr( "QgsRasterLayer created" ) );
 } // QgsRasterLayer ctor
 
 QgsRasterLayer::~QgsRasterLayer()
@@ -797,7 +783,37 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   mValid = true;
 
   QgsDebugMsgLevel( QStringLiteral( "exiting." ), 4 );
-} // QgsRasterLayer::setDataProvider
+}
+
+void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
+{
+  if ( mDataProvider )
+    closeDataProvider();
+  mDataSource = dataSource;
+  mLayerName = baseName;
+  setDataProvider( provider, options );
+  if ( mValid )
+  {
+
+    // load default style
+    bool defaultLoadedFlag = false;
+    if ( loadDefaultStyleFlag )
+    {
+      loadDefaultStyle( defaultLoadedFlag );
+    }
+    if ( !defaultLoadedFlag )
+    {
+      setDefaultContrastEnhancement();
+    }
+
+    // TODO: Connect signals from the dataprovider to the qgisapp
+
+    emit statusChanged( tr( "QgsRasterLayer created" ) );
+
+    // Load default style
+  }
+  emit dataSourceChanged();
+}
 
 void QgsRasterLayer::closeDataProvider()
 {
@@ -1474,7 +1490,6 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
   QgsDataProvider::ProviderOptions providerOptions;
   setDataProvider( mProviderKey, providerOptions );
-  if ( !mValid ) return false;
 
   QString error;
   bool res = readSymbology( layer_node, error, context );
