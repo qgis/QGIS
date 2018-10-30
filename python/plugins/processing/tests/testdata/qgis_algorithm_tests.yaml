@@ -6252,5 +6252,8 @@ tests:
         name: ogr:dbname='expected/merged_pol.gpkg' table="output" (geom) sql=
         uri: expected/merged_pol.gpkg|layername=merged_pol
         type: vector
+        compare:
+          fields:
+            path: skip
 
 # See ../README.md for a description of the file format
