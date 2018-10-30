@@ -24,6 +24,7 @@
 #include "qgisapp.h"
 #include "qgsbrowsermodel.h"
 #include "qgsbrowsertreeview.h"
+#include "qgsbrowserproxymodel.h"
 
 #include <functional>
 #include <QDialog>
@@ -55,16 +56,21 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
   QString providerType( layer->providerType() );
   QgsMapLayer::LayerType layerType( layer->type() );
 
+
   // Builds the dialog to select a new data source
   QgsBrowserModel browserModel;
   browserModel.initialize();
+  QgsBrowserProxyModel proxyModel;
+  proxyModel.setBrowserModel( &browserModel );
+  proxyModel.setFilterByLayerType( true );
+  proxyModel.setLayerType( layerType );
   QDialog dlg;
   dlg.setWindowTitle( tr( "Select the new data source" ) );
   QByteArray dlgGeom( QgsSettings().value( QStringLiteral( "/Windows/selectDataSourceDialog/geometry" ), QVariant(), QgsSettings::Section::App ).toByteArray() );
   dlg.restoreGeometry( dlgGeom );
   QVBoxLayout lay( &dlg );
   QgsBrowserTreeView *browserWidget( new QgsBrowserTreeView( ) );
-  browserWidget->setModel( &browserModel );
+  browserWidget->setModel( &proxyModel );
   browserWidget->setHeaderHidden( true );
   lay.addWidget( browserWidget );
   QDialogButtonBox *buttonBox( new QDialogButtonBox( QDialogButtonBox::StandardButton::Ok | QDialogButtonBox::StandardButton::Cancel ) );
