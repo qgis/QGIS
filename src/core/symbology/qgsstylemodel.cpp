@@ -57,8 +57,8 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
   const bool isColorRamp = index.row() >= mStyle->symbolCount();
   const QString name = !isColorRamp
-                       ? mSymbolNames.at( index.row() )
-                       : mRampNames.at( index.row() - mSymbolNames.size() );
+                       ? mSymbolNames.value( index.row() )
+                       : mRampNames.value( index.row() - mSymbolNames.size() );
 
   switch ( role )
   {
@@ -187,8 +187,8 @@ bool QgsStyleModel::setData( const QModelIndex &index, const QVariant &value, in
     {
       const bool isColorRamp = index.row() >= mStyle->symbolCount();
       const QString name = !isColorRamp
-                           ? mSymbolNames.at( index.row() )
-                           : mRampNames.at( index.row() - mSymbolNames.size() );
+                           ? mSymbolNames.value( index.row() )
+                           : mRampNames.value( index.row() - mSymbolNames.size() );
       const QString newName = value.toString();
 
       return isColorRamp
