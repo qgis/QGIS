@@ -84,7 +84,7 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
     if ( index.isValid() )
     {
       const QgsLayerItem *item = qobject_cast<QgsLayerItem *>( browserModel.dataItem( index ) );
-      if ( item && item->mapLayerType() == layerType && item->providerKey() == providerType )
+      if ( item && item->mapLayerType() == layerType )
       {
         return true;
       }
