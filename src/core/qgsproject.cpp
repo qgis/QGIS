@@ -925,7 +925,6 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   if ( !mapLayer )
   {
     QgsDebugMsg( QStringLiteral( "Unable to create layer" ) );
-
     return false;
   }
 
@@ -933,18 +932,18 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   // have the layer restore state that is stored in Dom node
   bool layerIsValid = mapLayer->readLayerXml( layerElem, context ) && mapLayer->isValid();
-  QList<QgsMapLayer *> myLayers;
-  myLayers << mapLayer;
+  QList<QgsMapLayer *> newLayers;
+  newLayers << mapLayer;
   if ( layerIsValid )
   {
     emit readMapLayer( mapLayer, layerElem );
-    addMapLayers( myLayers );
+    addMapLayers( newLayers );
   }
   else
   {
     // It's a bad layer: do not add to legend (the user will decide if she wants to do so)
-    addMapLayers( myLayers, false );
-    myLayers.first();
+    addMapLayers( newLayers, false );
+    newLayers.first();
     QgsDebugMsg( "Unable to load " + type + " layer" );
     brokenNodes.push_back( layerElem );
   }
