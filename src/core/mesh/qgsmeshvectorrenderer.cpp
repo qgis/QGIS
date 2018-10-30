@@ -53,7 +53,7 @@ QgsMeshVectorRenderer::QgsMeshVectorRenderer( const QgsTriangularMesh &m,
     double datasetMagMaximumValue,
     bool dataIsOnVertices,
     const QgsMeshRendererVectorSettings &settings,
-    QgsRenderContext &context, const QSize &size )
+    QgsRenderContext &context, QSize size )
   : mTriangularMesh( m )
   , mDatasetValuesX( datasetValuesX )
   , mDatasetValuesY( datasetValuesY )
