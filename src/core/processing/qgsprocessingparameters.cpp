@@ -350,7 +350,7 @@ bool QgsProcessingParameters::parameterAsBool( const QgsProcessingParameterDefin
 
 QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsFields &fields,
     QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-    QgsProcessingContext &context, QString &destinationIdentifier, QgsFeatureSink::SinkFlags options )
+    QgsProcessingContext &context, QString &destinationIdentifier, QgsFeatureSink::SinkFlags sinkFlags )
 {
   QVariant val;
   if ( definition )
@@ -358,10 +358,10 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
     val = parameters.value( definition->name() );
   }
 
-  return parameterAsSink( definition, val, fields, geometryType, crs, context, destinationIdentifier, options );
+  return parameterAsSink( definition, val, fields, geometryType, crs, context, destinationIdentifier, sinkFlags );
 }
 
-QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context, QString &destinationIdentifier, QgsFeatureSink::SinkFlags options )
+QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context, QString &destinationIdentifier, QgsFeatureSink::SinkFlags sinkFlags )
 {
   QVariant val = value;
 
@@ -402,7 +402,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   if ( dest.isEmpty() )
     return nullptr;
 
-  std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( dest, context, fields, geometryType, crs, createOptions, options ) );
+  std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( dest, context, fields, geometryType, crs, createOptions, sinkFlags ) );
   destinationIdentifier = dest;
 
   if ( destinationProject )
@@ -4581,4 +4581,3 @@ bool QgsProcessingParameterDistance::fromVariantMap( const QVariantMap &map )
   mParentParameterName = map.value( QStringLiteral( "parent" ) ).toString();
   return true;
 }
-

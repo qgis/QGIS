@@ -159,7 +159,7 @@ class CORE_EXPORT QgsProcessingUtils
         QgsWkbTypes::Type geometryType,
         const QgsCoordinateReferenceSystem &crs,
         const QVariantMap &createOptions = QVariantMap(),
-        QgsFeatureSink::SinkFlags options = nullptr ) SIP_FACTORY;
+        QgsFeatureSink::SinkFlags sinkFlags = nullptr ) SIP_FACTORY;
 #endif
 
     /**

@@ -52,7 +52,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
     const QgsCoordinateReferenceSystem &crs,
     bool overwrite,
     const QMap<QString, QVariant> &options,
-    SinkFlags sinkOptions )
+    SinkFlags sinkFlags )
   : mErrorCount( 0 )
   , mAttributeCount( -1 )
 
@@ -126,7 +126,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
   // that will be filled by ogr with unique values.
 
   // HACK sorry
-  if ( sinkOptions.testFlag( QgsFeatureSink::SinkFlag::RegeneratePrimaryKey ) && uri.endsWith( QLatin1String( ".gpkg" ) ) )
+  if ( sinkFlags.testFlag( QgsFeatureSink::SinkFlag::RegeneratePrimaryKey ) && uri.endsWith( QLatin1String( ".gpkg" ) ) )
   {
     QString fidName = options.value( QStringLiteral( "FID" ), QStringLiteral( "FID" ) ).toString();
     int fidIdx = vectorProvider->fields().lookupField( fidName );

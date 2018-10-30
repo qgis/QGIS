@@ -619,7 +619,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      */
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags options = nullptr ) const SIP_FACTORY;
+                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = nullptr ) const SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a name to a feature source.
