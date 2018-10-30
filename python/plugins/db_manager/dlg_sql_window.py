@@ -532,7 +532,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             dictionary = getSqlDictionary()
 
         wordlist = []
-        for name, value in list(dictionary.items()):
+        for _, value in dictionary.items():
             wordlist += value  # concat lists
         wordlist = list(set(wordlist))  # remove duplicates
 

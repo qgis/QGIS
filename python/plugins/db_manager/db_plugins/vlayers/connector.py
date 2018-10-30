@@ -193,7 +193,7 @@ class VLayerConnector(DBConnector):
         reg = VLayerRegistry.instance()
         VLayerRegistry.instance().reset()
         lst = []
-        for _, l in list(QgsProject.instance().mapLayers().items()):
+        for _, l in QgsProject.instance().mapLayers():
             if l.type() == QgsMapLayer.VectorLayer:
 
                 lname = l.name()

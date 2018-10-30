@@ -96,7 +96,7 @@ def variableOutput(alg, layers, parameters, context, nocats=True):
     :param context:
     :param nocats: do not add categories.
     """
-    for outputName, typeList in list(layers.items()):
+    for outputName, typeList in layers.items():
         if not isinstance(typeList, list):
             continue
 

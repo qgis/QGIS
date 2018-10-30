@@ -77,7 +77,7 @@ class HtmlElem(object):
 
     def getAttrsHtml(self):
         html = u''
-        for k, v in list(self.attrs.items()):
+        for k, v in self.attrs.items():
             html += u' %s="%s"' % (k, v)
         return html
 
