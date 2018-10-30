@@ -202,7 +202,7 @@ bool QgsMeshVectorRenderer::calcVectorLineEnd(
 
 double QgsMeshVectorRenderer::calcExtentBufferSize() const
 {
-  double buffer;
+  double buffer = 0;
   switch ( mCfg.shaftLengthMethod() )
   {
     case QgsMeshRendererVectorSettings::ArrowScalingMethod::MinMax:
