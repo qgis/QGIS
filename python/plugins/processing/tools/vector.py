@@ -76,7 +76,7 @@ def values(source, *attributes):
 
             # convert attribute value to number
             try:
-                v = float(feature.attributes()[i])
+                v = float(feature[i])
             except:
                 v = None
 
