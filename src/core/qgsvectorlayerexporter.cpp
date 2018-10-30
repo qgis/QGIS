@@ -126,7 +126,8 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
   // that will be filled by ogr with unique values.
 
   // HACK sorry
-  if ( sinkFlags.testFlag( QgsFeatureSink::SinkFlag::RegeneratePrimaryKey ) && uri.endsWith( QLatin1String( ".gpkg" ) ) )
+  const QString path = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), uri ).value( QStringLiteral( "path" ) );
+  if ( sinkFlags.testFlag( QgsFeatureSink::SinkFlag::RegeneratePrimaryKey ) && path.endsWith( QLatin1String( ".gpkg" ) ) )
   {
     QString fidName = options.value( QStringLiteral( "FID" ), QStringLiteral( "FID" ) ).toString();
     int fidIdx = vectorProvider->fields().lookupField( fidName );
