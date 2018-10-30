@@ -45,12 +45,15 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         for ext in ('shp', 'dbf', 'shx', 'prj'):
             copyfile(os.path.join(TEST_DATA_DIR, 'lines.%s' % ext), os.path.join(temp_dir.path(), 'lines.%s' % ext))
         copyfile(os.path.join(TEST_DATA_DIR, 'raster', 'band1_byte_ct_epsg4326.tif'), os.path.join(temp_dir.path(), 'band1_byte_ct_epsg4326.tif'))
+        copyfile(os.path.join(TEST_DATA_DIR, 'raster', 'band1_byte_ct_epsg4326.tif'), os.path.join(temp_dir.path(), 'band1_byte_ct_epsg4326_copy.tif'))
         l = QgsVectorLayer(os.path.join(temp_dir.path(), 'lines.shp'), 'lines', 'ogr')
         self.assertTrue(l.isValid())
 
         rl = QgsRasterLayer(os.path.join(temp_dir.path(), 'band1_byte_ct_epsg4326.tif'), 'raster', 'gdal')
         self.assertTrue(rl.isValid())
-        self.assertTrue(p.addMapLayers([l, rl]))
+        rl_copy = QgsRasterLayer(os.path.join(temp_dir.path(), 'band1_byte_ct_epsg4326_copy.tif'), 'raster_copy', 'gdal')
+        self.assertTrue(rl_copy.isValid())
+        self.assertTrue(p.addMapLayers([l, rl, rl_copy]))
 
         # Save project
         project_path = os.path.join(temp_dir.path(), 'project.qgs')
@@ -60,14 +63,19 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         bad_project_path = os.path.join(temp_dir.path(), 'project_bad.qgs')
         with open(project_path, 'r') as infile:
             with open(bad_project_path, 'w+') as outfile:
-                outfile.write(infile.read().replace('./lines.shp', './lines-BAD_SOURCE.shp'))
+                outfile.write(infile.read().replace('./lines.shp', './lines-BAD_SOURCE.shp').replace('band1_byte_ct_epsg4326_copy.tif', 'band1_byte_ct_epsg4326_copy-BAD_SOURCE.tif'))
 
         # Load the bad project
         self.assertTrue(p.read(bad_project_path))
         # Check layer is invalid
         vector = list(p.mapLayersByName('lines'))[0]
         raster = list(p.mapLayersByName('raster'))[0]
+        raster_copy = list(p.mapLayersByName('raster_copy'))[0]
+        self.assertIsNotNone(vector.dataProvider())
+        self.assertIsNotNone(raster.dataProvider())
+        self.assertIsNotNone(raster_copy.dataProvider())
         self.assertFalse(vector.isValid())
+        self.assertFalse(raster_copy.isValid())
         # Try a getFeatures
         self.assertEqual([f for f in vector.getFeatures()], [])
         self.assertTrue(raster.isValid())
@@ -80,15 +88,17 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         good_project_path = os.path.join(temp_dir.path(), 'project_good.qgs')
         with open(bad_project_path2, 'r') as infile:
             with open(good_project_path, 'w+') as outfile:
-                outfile.write(infile.read().replace('./lines-BAD_SOURCE.shp', './lines.shp'))
+                outfile.write(infile.read().replace('./lines-BAD_SOURCE.shp', './lines.shp').replace('band1_byte_ct_epsg4326_copy-BAD_SOURCE.tif', 'band1_byte_ct_epsg4326_copy.tif'))
 
         # Load the good project
         self.assertTrue(p.read(good_project_path))
         # Check layer is valid
         vector = list(p.mapLayersByName('lines'))[0]
         raster = list(p.mapLayersByName('raster'))[0]
+        raster_copy = list(p.mapLayersByName('raster_copy'))[0]
         self.assertTrue(vector.isValid())
         self.assertTrue(raster.isValid())
+        self.assertTrue(raster_copy.isValid())
 
 
 if __name__ == '__main__':
