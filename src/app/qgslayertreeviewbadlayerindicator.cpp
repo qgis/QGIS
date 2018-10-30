@@ -20,6 +20,7 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertreemodel.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
 #include "qgisapp.h"
 #include "qgsbrowsermodel.h"
 #include "qgsbrowsertreeview.h"
@@ -40,14 +41,21 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
   if ( !QgsLayerTree::isLayer( node ) )
     return;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
-  if ( !vlayer )
+  // Only raster/vector for now are supported
+  QgsMapLayer *layer = nullptr;
+  if ( qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() ) ||
+       qobject_cast<QgsRasterLayer *>( QgsLayerTree::toLayer( node )->layer() ) )
+  {
+    layer = qobject_cast<QgsMapLayer *>( QgsLayerTree::toLayer( node )->layer() );
+  }
+  if ( !layer )
     return;
 
-  // TODO: raster layers
-
   // Get provider type
-  QString providerType( vlayer->providerType() );
+  QString providerType( layer->providerType() );
+  QgsMapLayer::LayerType layerType( layer->type() );
+
+  // Builds the dialog to select a new data source
   QgsBrowserModel browserModel;
   browserModel.initialize();
   QDialog dlg;
@@ -69,8 +77,8 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
   {
     if ( index.isValid() )
     {
-      const QgsDataItem *item( browserModel.dataItem( index ) );
-      if ( item->mimeUri().layerType == QStringLiteral( "vector" ) && item->mimeUri().providerKey == providerType )
+      const QgsLayerItem *item = qobject_cast<QgsLayerItem *>( browserModel.dataItem( index ) );
+      if ( item && item->mapLayerType() == layerType && item->providerKey() == providerType )
       {
         return true;
       }
@@ -86,12 +94,11 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
   dlg.setLayout( &lay );
   if ( dlg.exec() == QDialog::Accepted )
   {
-    // Get selected item(s)
     QModelIndex index = browserWidget->currentIndex();
     if ( isItemCompatible( index ) )
     {
       const QgsDataItem *item( browserModel.dataItem( index ) );
-      vlayer->setDataSource( item->mimeUri().uri, vlayer->name(), item->mimeUri().providerKey, QgsDataProvider::ProviderOptions() );
+      layer->setDataSource( item->mimeUri().uri, layer->name(), item->mimeUri().providerKey, QgsDataProvider::ProviderOptions() );
     }
   }
   QgsSettings().setValue( QStringLiteral( "/Windows/selectDataSourceDialog/geometry" ), dlg.saveGeometry(), QgsSettings::Section::App );
@@ -106,8 +113,7 @@ QString QgsLayerTreeViewBadLayerIndicatorProvider::iconName( QgsMapLayer *layer 
 QString QgsLayerTreeViewBadLayerIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
   Q_UNUSED( layer );
-  // TODO, click here to set a new data source.
-  return tr( "<b>Bad layer!</b><br>Layer data source could not be found." );
+  return tr( "<b>Bad layer!</b><br>Layer data source could not be found. Click to set a new data source" );
 }
 
 bool QgsLayerTreeViewBadLayerIndicatorProvider::acceptLayer( QgsMapLayer *layer )

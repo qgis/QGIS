@@ -1292,8 +1292,8 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   // After bad layer handling we might still have invalid layers,
   // store them in case the user wanted to handle them later
-  // or she wanted to pass them through when saving
-  QgsLayerTreeUtils::storeInvalidLayersProperties( mRootGroup, doc.get() );
+  // or wanted to pass them through when saving
+  QgsLayerTreeUtils::storeOriginalLayersProperties( mRootGroup, doc.get() );
 
   mRootGroup->removeCustomProperty( QStringLiteral( "loading" ) );
 
@@ -1760,17 +1760,16 @@ bool QgsProject::writeProjectFile( const QString &filename )
           maplayerElem = doc->createElement( QStringLiteral( "maplayer" ) );
           ml->writeLayerXml( maplayerElem, *doc, context );
         }
-        else if ( ml->customPropertyKeys().contains( QStringLiteral( "invalidLayerProperties" ) ) )
+        else if ( ! ml->originalXmlProperties().isEmpty() )
         {
           QDomDocument document;
-          if ( document.setContent( ml->customProperty( QStringLiteral( "invalidLayerProperties" ) ).toString() ) )
+          if ( document.setContent( ml->originalXmlProperties() ) )
           {
             maplayerElem = document.firstChildElement();
-            maplayerElem.setAttribute( QStringLiteral( "invalidLayerProperties" ), QStringLiteral( "true" ) );
           }
           else
           {
-            QgsDebugMsg( QStringLiteral( "Could not restore bad layer properties %1 from saved invalidLayerProperties" ).arg( ml->id() ) );
+            QgsDebugMsg( QStringLiteral( "Could not restore layer properties for layer %1" ).arg( ml->id() ) );
           }
         }
 

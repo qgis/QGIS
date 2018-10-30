@@ -1833,6 +1833,16 @@ bool QgsMapLayer::isReadOnly() const
   return true;
 }
 
+QString QgsMapLayer::originalXmlProperties() const
+{
+  return mOriginalXmlProperties;
+}
+
+void QgsMapLayer::setOriginalXmlProperties( const QString &originalXmlProperties )
+{
+  mOriginalXmlProperties = originalXmlProperties;
+}
+
 void QgsMapLayer::setProviderType( const QString &providerType )
 {
   mProviderKey = providerType;

@@ -1101,6 +1101,24 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     bool isRefreshOnNotifyEnabled() const { return mIsRefreshOnNofifyEnabled; }
 
+    /**
+     * Returns the XML properties of the original layer as they were when the layer
+     * was first read from the project file. In case of new layers this is normally empty.
+     *
+     * The storage format for the XML is qlr
+     *
+     * \since QGIS 3.6
+     */
+    QString originalXmlProperties() const;
+
+    /**
+     * Sets the original XML properties for the layer to  \a originalXmlProperties
+     *
+     * The storage format for the XML is qlr
+     *
+     * \since QGIS 3.6
+     */
+    void setOriginalXmlProperties( const QString &originalXmlProperties );
 
   public slots:
 
@@ -1505,6 +1523,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Renderer for 3D views
     QgsAbstract3DRenderer *m3DRenderer = nullptr;
+
+    /**
+     * Stores the original XML properties of the layer when loaded from the project
+     *
+     * This information can be used to pass through the bad layers or to reset changes on a good layer
+     */
+    QString mOriginalXmlProperties;
 
 };
 

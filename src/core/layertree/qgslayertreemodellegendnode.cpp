@@ -636,10 +636,13 @@ QImage QgsWmsLegendNode::getLegendGraphic() const
 
     QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( mLayerNode->layer() );
     const QgsLayerTreeModel *mod = model();
-    if ( ! mod ) return mImage;
+    if ( ! mod )
+      return mImage;
     const QgsMapSettings *ms = mod->legendFilterMapSettings();
 
     QgsRasterDataProvider *prov = layer->dataProvider();
+    if ( ! prov )
+      return mImage;
 
     Q_ASSERT( ! mFetcher );
     mFetcher.reset( prov->getLegendGraphicFetcher( ms ) );

@@ -63,10 +63,10 @@ class CORE_EXPORT QgsLayerTreeUtils
     static void removeInvalidLayers( QgsLayerTreeGroup *group );
 
     /**
-     * Stores in a custom layer node property the layer properties XML information for an invalid layer
+     * Stores in a layer's originalXmlProperties the layer properties information
      * \since 3.6
      */
-    static void storeInvalidLayersProperties( QgsLayerTreeGroup *group, const QDomDocument *doc );
+    static void storeOriginalLayersProperties( QgsLayerTreeGroup *group, const QDomDocument *doc );
 
     //! Remove subtree of embedded groups and replaces it with a custom property embedded-visible-layers
     static void replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup *group );

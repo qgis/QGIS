@@ -59,9 +59,9 @@ Returns true if any of the layers is modified
 Removes layer nodes that refer to invalid layers
 %End
 
-    static void storeInvalidLayersProperties( QgsLayerTreeGroup *group, const QDomDocument *doc );
+    static void storeOriginalLayersProperties( QgsLayerTreeGroup *group, const QDomDocument *doc );
 %Docstring
-Stores in a custom layer node property the layer properties XML information for an invalid layer
+Stores in a layer's originalXmlProperties the layer properties information
 
 .. versionadded:: 3.6
 %End

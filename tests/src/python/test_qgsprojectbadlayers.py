@@ -59,6 +59,18 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         project_path = os.path.join(temp_dir.path(), 'project.qgs')
         self.assertTrue(p.write(project_path))
 
+        # Re-load the project, checking for the XML properties
+        self.assertTrue(p.read(project_path))
+        vector = list(p.mapLayersByName('lines'))[0]
+        raster = list(p.mapLayersByName('raster'))[0]
+        raster_copy = list(p.mapLayersByName('raster_copy'))[0]
+        self.assertTrue(vector.originalLayerXmlProperties() != '')
+        self.assertTrue(raster.originalLayerXmlProperties() != '')
+        self.assertTrue(raster_copy.originalLayerXmlProperties() != '')
+        # Test setter
+        raster.setOriginalLayerXmlProperties('pippo')
+        self.assertEqual(raster.originalLayerXmlProperties(), 'pippo')
+
         # Now create and invalid project:
         bad_project_path = os.path.join(temp_dir.path(), 'project_bad.qgs')
         with open(project_path, 'r') as infile:

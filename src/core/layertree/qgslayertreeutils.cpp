@@ -306,7 +306,7 @@ void QgsLayerTreeUtils::removeInvalidLayers( QgsLayerTreeGroup *group )
     group->removeChildNode( node );
 }
 
-void QgsLayerTreeUtils::storeInvalidLayersProperties( QgsLayerTreeGroup *group,  const QDomDocument *doc )
+void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,  const QDomDocument *doc )
 {
   const QDomNodeList mlNodeList( doc->documentElement()
                                  .firstChildElement( QStringLiteral( "projectlayers" ) )
@@ -316,7 +316,7 @@ void QgsLayerTreeUtils::storeInvalidLayersProperties( QgsLayerTreeGroup *group, 
     if ( QgsLayerTree::isLayer( node ) )
     {
       QgsMapLayer *l( QgsLayerTree::toLayer( node )->layer() );
-      if ( l && ! l->isValid( ) )
+      if ( l )
       {
         for ( int i = 0; i < mlNodeList.count(); i++ )
         {
@@ -332,7 +332,7 @@ void QgsLayerTreeUtils::storeInvalidLayersProperties( QgsLayerTreeGroup *group, 
             QString str;
             QTextStream stream( &str );
             document.save( stream, 4 /*indent*/ );
-            l->setCustomProperty( QStringLiteral( "invalidLayerProperties" ), str );
+            l->setOriginalXmlProperties( str );
           }
         }
       }
