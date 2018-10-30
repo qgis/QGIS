@@ -21,6 +21,8 @@
 //qgis includes...
 #include "qgsdataitem.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsmeshlayer.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
@@ -44,10 +46,12 @@ class TestQgsDataItem : public QObject
 
     void testValid();
     void testDirItemChildren();
+    void testLayerItemType();
 
   private:
     QgsDirectoryItem *mDirItem = nullptr;
     QString mScanItemsSetting;
+    QString mTestDataDir;
     bool isValidDirItem( QgsDirectoryItem *item );
 };
 
@@ -62,6 +66,9 @@ void TestQgsDataItem::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+
+  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  mTestDataDir = dataDir + '/';
 
   // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
@@ -174,6 +181,45 @@ void TestQgsDataItem::testDirItemChildren()
 
     delete dirItem;
   }
+}
+
+void TestQgsDataItem::testLayerItemType()
+{
+  std::unique_ptr< QgsMapLayer > layer = qgis::make_unique< QgsVectorLayer >( mTestDataDir + "polys.shp",
+                                         QString(), QStringLiteral( "ogr" ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Polygon );
+
+  layer = qgis::make_unique< QgsVectorLayer >( mTestDataDir + "points.shp",
+          QString(), QStringLiteral( "ogr" ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Point );
+
+  layer = qgis::make_unique< QgsVectorLayer >( mTestDataDir + "lines.shp",
+          QString(), QStringLiteral( "ogr" ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Line );
+
+  layer = qgis::make_unique< QgsVectorLayer >( mTestDataDir + "nonspatial.dbf",
+          QString(), QStringLiteral( "ogr" ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::TableLayer );
+
+  layer = qgis::make_unique< QgsVectorLayer >( mTestDataDir + "invalid.dbf",
+          QString(), QStringLiteral( "ogr" ) );
+  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Vector );
+
+  layer = qgis::make_unique< QgsRasterLayer >( mTestDataDir + "rgb256x256.png",
+          QString(), QStringLiteral( "gdal" ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Raster );
+
+  layer = qgis::make_unique< QgsMeshLayer >( mTestDataDir + "mesh/quad_and_triangle.2dm",
+          QString(), QStringLiteral( "mdal" ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), QgsLayerItem::Mesh );
+
+
 }
 
 QGSTEST_MAIN( TestQgsDataItem )

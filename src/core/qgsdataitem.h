@@ -463,6 +463,12 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     //! Returns QgsMapLayer::LayerType
     QgsMapLayer::LayerType mapLayerType() const;
 
+    /**
+     * Returns the layer item type corresponding to a QgsMapLayer \a layer.
+     * \since QGIS 3.6
+     */
+    static LayerType typeFromMapLayer( QgsMapLayer *layer );
+
     //! Returns layer uri or empty string if layer cannot be created
     QString uri() const { return mUri; }
 
