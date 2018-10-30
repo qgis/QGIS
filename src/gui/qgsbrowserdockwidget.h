@@ -56,8 +56,15 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     void addFavoriteDirectory( const QString &favDir, const QString &name = QString() );
 
   public slots:
-    //! Add layer at index
-    void addLayerAtIndex( const QModelIndex &index );
+
+    /**
+     * Adds the layer corresponding to the specified model \a index.
+     *
+     * Returns true if the index was successfully intrepreted as a map layer and loaded, or
+     * false if the index is not a map layer or could not be loaded.
+     */
+    bool addLayerAtIndex( const QModelIndex &index );
+
     //! Show context menu
     void showContextMenu( QPoint );
 
