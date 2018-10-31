@@ -456,6 +456,7 @@ namespace QgsWms
 
   bool QgsRenderer::configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings )
   {
+    c->renderContext().setSelectionColor( mapSettings.selectionColor() );
     // Maps are configured first
     QList<QgsLayoutItemMap *> maps;
     c->layoutItems<QgsLayoutItemMap>( maps );
