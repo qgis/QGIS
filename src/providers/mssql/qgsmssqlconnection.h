@@ -19,6 +19,7 @@
 #define QGSMSSQLCONNECTION_H
 
 #include <QStringList>
+#include <QMutex>
 
 class QString;
 class QSqlDatabase;
@@ -153,6 +154,8 @@ class QgsMssqlConnection
     static QString dbConnectionName( const QString &name );
 
     static int sConnectionId;
+
+    static QMutex sMutex;
 };
 
 #endif // QGSMSSQLCONNECTION_H
