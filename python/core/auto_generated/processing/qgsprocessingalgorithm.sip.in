@@ -611,7 +611,7 @@ Evaluates the parameter with matching ``name`` to a static boolean value.
 %End
 
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier /Out/,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const /Factory/;
+                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = 0 ) const /Factory/;
 %Docstring
 Evaluates the parameter with matching ``name`` to a feature sink.
 
@@ -922,6 +922,13 @@ this is possible to determine in advance.
     virtual QgsProcessingFeatureSource::Flag sourceFlags() const;
 %Docstring
 Returns the processing feature source flags to be used in the algorithm.
+%End
+
+    virtual QgsFeatureSink::SinkFlags sinkFlags() const;
+%Docstring
+Returns the feature sink flags to be used for the output.
+
+.. versionadded:: 3.4.1
 %End
 
     virtual QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const;

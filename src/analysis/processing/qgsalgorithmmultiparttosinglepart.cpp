@@ -74,6 +74,11 @@ QgsProcessingFeatureSource::Flag QgsMultipartToSinglepartAlgorithm::sourceFlags(
   return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
 }
 
+QgsFeatureSink::SinkFlags QgsMultipartToSinglepartAlgorithm::sinkFlags() const
+{
+  return QgsFeatureSink::RegeneratePrimaryKey;
+}
+
 QgsFeatureList QgsMultipartToSinglepartAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   if ( !feature.hasGeometry() )

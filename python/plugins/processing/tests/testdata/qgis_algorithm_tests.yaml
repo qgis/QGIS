@@ -6232,5 +6232,28 @@ tests:
         name: expected/interpolate_point_polys.gml
         type: vector
 
+  - algorithm: native:mergevectorlayers
+    name: Merge vector layers with conflicting feature ids
+    params:
+      LAYERS:
+        params:
+        - name: custom/pol.gpkg|layername=pol1
+          type: vector
+        - name: custom/pol.gpkg|layername=pol2
+          type: vector
+        - name: custom/pol.gpkg|layername=pol3
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        # If you ever run into this test producing Polygons instead of MultiPolygons as output
+        # that is totally expected and you are invited to replace the file merged_pol.gpkg with
+        # a single polygon version.
+        name: ogr:dbname='expected/merged_pol.gpkg' table="output" (geom) sql=
+        uri: expected/merged_pol.gpkg|layername=merged_pol
+        type: vector
+        compare:
+          fields:
+            path: skip
 
 # See ../README.md for a description of the file format

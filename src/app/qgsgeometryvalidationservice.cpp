@@ -348,6 +348,9 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
   if ( !allErrors.empty() )
     mLayerChecks[layer].singleFeatureCheckErrors.insert( fid, allErrors );
 
+  if ( !mLayerChecks[layer].singleFeatureCheckErrors.empty() )
+    layer->setAllowCommit( false );
+
   emit geometryCheckCompleted( layer, fid, allErrors );
 }
 
@@ -432,7 +435,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
   connect( futureWatcher, &QFutureWatcherBase::finished, this, [&allErrors, layer, feedbacks, futureWatcher, this]()
   {
     QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Read );
-    layer->setAllowCommit( allErrors.empty() );
+    layer->setAllowCommit( allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty() );
     errorLocker.unlock();
     qDeleteAll( feedbacks.values() );
     futureWatcher->deleteLater();
