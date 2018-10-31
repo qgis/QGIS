@@ -126,9 +126,6 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
   private slots:
 
     void urlClicked( const QUrl &url );
-
-  private:
-    QgsBrowserPropertiesWrapLabel *mUriLabel = nullptr;
 };
 
 /**
