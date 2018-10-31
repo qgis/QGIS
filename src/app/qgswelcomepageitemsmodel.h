@@ -28,6 +28,10 @@ class QgsWelcomePageItemDelegate : public QStyledItemDelegate
     explicit QgsWelcomePageItemDelegate( QObject *parent = nullptr );
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
+  private:
+
+    int mRoundedRectSizePixels = 5;
 };
 
 class QgsWelcomePageItemsModel : public QAbstractListModel
