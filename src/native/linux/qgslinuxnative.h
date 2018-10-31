@@ -32,6 +32,8 @@
  */
 class NATIVE_EXPORT QgsLinuxNative : public QgsNative
 {
+    Q_OBJECT
+
   public:
     QgsNative::Capabilities capabilities() const override;
     void initializeMainWindow( QWindow *window,
