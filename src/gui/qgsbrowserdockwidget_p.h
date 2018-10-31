@@ -126,6 +126,10 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
   private slots:
 
     void urlClicked( const QUrl &url );
+
+  private:
+    std::unique_ptr<QgsMapLayer> mLayer;
+
 };
 
 /**
