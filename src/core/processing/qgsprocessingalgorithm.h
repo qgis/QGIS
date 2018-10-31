@@ -934,7 +934,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      *
      * \since QGIS 3.4.1
      */
-    virtual QgsProcessingFeatureSink::SinkFlags sinkFlags() const;
+    virtual QgsFeatureSink::SinkFlags sinkFlags() const;
 
     /**
      * Maps the input WKB geometry type (\a inputWkbType) to the corresponding
