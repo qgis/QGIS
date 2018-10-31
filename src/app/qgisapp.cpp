@@ -10378,7 +10378,9 @@ QMap< QString, int > QgisApp::optionsPagesMap()
     sOptionsPagesMap.insert( tr( "Network" ), 13 );
     sOptionsPagesMap.insert( tr( "Locator" ), 14 );
     sOptionsPagesMap.insert( tr( "Advanced" ), 15 );
+#ifdef HAVE_OPENCL
     sOptionsPagesMap.insert( tr( "Acceleration" ), 16 );
+#endif
   } );
 
   QMap< QString, int > map = sOptionsPagesMap;
