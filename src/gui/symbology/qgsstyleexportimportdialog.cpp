@@ -370,6 +370,11 @@ QgsStyleExportImportDialog::~QgsStyleExportImportDialog()
   delete mGroupSelectionDlg;
 }
 
+void QgsStyleExportImportDialog::setImportFilePath( const QString &path )
+{
+  mImportFileWidget->setFilePath( path );
+}
+
 void QgsStyleExportImportDialog::selectAll()
 {
   listItems->selectAll();
