@@ -113,37 +113,48 @@ QSqlDatabase QgsAuthManager::authDatabaseConnection() const
   if ( isDisabled() )
     return authdb;
 
+  // while everything we use from QSqlDatabase here is thread safe, we need to ensure
+  // that the connection cleanup on thread finalization happens in a predictable order
+  QMutexLocker locker( mMutex );
+
   // Sharing the same connection between threads is not allowed.
   // We use a dedicated connection for each thread requiring access to the database,
   // using the thread address as connection name.
   const QString connectionName = QStringLiteral( "authentication.configs:0x%1" ).arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
-  QgsDebugMsgLevel( QStringLiteral( "Using auth db connection name: %1 " ).arg( connectionName ), 0 );
+  QgsDebugMsgLevel( QStringLiteral( "Using auth db connection name: %1 " ).arg( connectionName ), 2 );
   if ( !QSqlDatabase::contains( connectionName ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "No existing connection, creating a new one" ), 0 );
+    QgsDebugMsgLevel( QStringLiteral( "No existing connection, creating a new one" ), 2 );
     authdb = QSqlDatabase::addDatabase( QStringLiteral( "QSQLITE" ), connectionName );
     authdb.setDatabaseName( authenticationDatabasePath() );
     // for background threads, remove database when current thread finishes
     if ( QThread::currentThread() != QgsApplication::instance()->thread() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Scheduled auth db remove on thread close" ), 0 );
-      connect( QThread::currentThread(), &QThread::finished, this, [connectionName]
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Removing outdated connection to %1 on thread exit" ).arg( connectionName ), 0 );
-        QSqlDatabase::removeDatabase( connectionName );
-      } );
-    }
+      QgsDebugMsgLevel( QStringLiteral( "Scheduled auth db remove on thread close" ), 2 );
 
-    QgsDebugMsgLevel( QStringLiteral( "Actual DB thread is: 0x%1" ).arg( reinterpret_cast<quintptr>( authdb.driver()->thread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ), 0 );
-    QgsDebugMsgLevel( QStringLiteral( "Actual DB connection name is: %1" ).arg( authdb.connectionName() ), 0 );
+      // IMPORTANT - we use a direct connection here, because the database removal must happen immediately
+      // when the thread finishes, and we cannot let this get queued on the main thread's event loop (where
+      // QgsAuthManager lives).
+      // Otherwise, the QSqlDatabase's private data's thread gets reset immediately the QThread::finished,
+      // and a subsequent call to QSqlDatabase::database with the same thread address (yep it happens, actually a lot)
+      // triggers a condition in QSqlDatabase which detects the nullptr private thread data and returns an invalid database instead.
+      // QSqlDatabase::removeDatabase is thread safe, so this is ok to do.
+      // Right about now is a good time to re-evaluate your selected career ;)
+      connect( QThread::currentThread(), &QThread::finished, this, [connectionName, this ]
+      {
+        QMutexLocker locker( mMutex );
+        QgsDebugMsgLevel( QStringLiteral( "Removing outdated connection to %1 on thread exit" ).arg( connectionName ), 2 );
+        QSqlDatabase::removeDatabase( connectionName );
+      }, Qt::DirectConnection );
+    }
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "Reusing existing connection" ), 0 );
+    QgsDebugMsgLevel( QStringLiteral( "Reusing existing connection" ), 2 );
     authdb = QSqlDatabase::database( connectionName );
-    QgsDebugMsgLevel( QStringLiteral( "Retrieved DB thread is: 0x%1" ).arg( reinterpret_cast<quintptr>( authdb.driver()->thread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ), 0 );
-    QgsDebugMsgLevel( QStringLiteral( "Retrieved DB connection name is: %1" ).arg( authdb.connectionName() ), 0 );
   }
+  locker.unlock();
+
   if ( !authdb.isOpen() )
   {
     if ( !authdb.open() )
