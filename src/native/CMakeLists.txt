@@ -4,7 +4,7 @@
 SET(NATIVE_LINK_LIBS)
 
 IF(UNIX AND NOT APPLE AND NOT ANDROID)
-FIND_PACKAGE(Qt5DBus REQUIRED)
+  FIND_PACKAGE(Qt5DBus REQUIRED)
 ENDIF(UNIX AND NOT APPLE AND NOT ANDROID)
 
 IF(APPLE)
@@ -36,7 +36,11 @@ SET(QGIS_NATIVE_SRCS
   qgsnative.cpp
 )
 
-SET (QGIS_NATIVE_MOC_HDRS
+SET(QGIS_NATIVE_MOC_HDRS
+  qgsnative.h
+)
+
+SET(QGIS_NATIVE_HDRS
   qgsnative.h
 )
 
@@ -51,40 +55,10 @@ IF(APPLE)
   SET(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
     ${QGIS_APP_OBJC_SRCS}
   )
-ENDIF(APPLE)
-
-IF(MSVC)
-  SET(QGIS_APP_WIN32_SRCS
-    ../../external/wintoast/src/wintoastlib.cpp
-    win/qgswinnative.cpp
-  )
   SET (QGIS_NATIVE_MOC_HDRS
     ${QGIS_NATIVE_MOC_HDRS}
-    win/qgswinnative.h
+    mac/qgsmacnative.h
   )
-  SET(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
-    ${QGIS_APP_WIN32_SRCS}
-  )
-ENDIF(MSVC)
-
-IF(UNIX AND NOT APPLE AND NOT ANDROID)
-  SET(QGIS_APP_LINUX_SRCS
-    linux/qgslinuxnative.cpp
-  )
-  SET(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
-    ${QGIS_APP_LINUX_SRCS}
-  )
-ENDIF(UNIX AND NOT APPLE AND NOT ANDROID)
-
-SET(QGIS_NATIVE_HDRS
-  qgsnative.h
-)
-
-QT5_WRAP_CPP(QGIS_NATIVE_MOC_SRCS ${QGIS_NATIVE_MOC_HDRS})
-
-# install headers
-
-IF(APPLE)
   SET (QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS}
     mac/qgsmacnative.h
     mac/cocoainitializer.h
@@ -92,16 +66,33 @@ IF(APPLE)
 ENDIF(APPLE)
 
 IF(MSVC)
+  SET(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
+    ../../external/wintoast/src/wintoastlib.cpp
+    win/qgswinnative.cpp
+  )
+  SET (QGIS_NATIVE_MOC_HDRS
+    ${QGIS_NATIVE_MOC_HDRS}
+    win/qgswinnative.h
+  )
   SET (QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS}
      win/qgswinnative.h
   )
 ENDIF(MSVC)
 
-IF(UNIX)
+IF(UNIX AND NOT APPLE AND NOT ANDROID)
+  SET(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
+    linux/qgslinuxnative.cpp
+  )
+  SET (QGIS_NATIVE_MOC_HDRS
+    ${QGIS_NATIVE_MOC_HDRS}
+    linux/qgslinuxnative.h
+  )
   SET (QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS}
      linux/qgslinuxnative.h
   )
-ENDIF(UNIX)
+ENDIF(UNIX AND NOT APPLE AND NOT ANDROID)
+
+QT5_WRAP_CPP(QGIS_NATIVE_MOC_SRCS ${QGIS_NATIVE_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
