@@ -62,7 +62,8 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingOutputHtml,
                        QgsProcessingUtils,
-                       QgsVectorLayer)
+                       QgsVectorLayer,
+                       QgsProviderRegistry)
 from qgis.utils import iface
 from osgeo import ogr
 
@@ -110,12 +111,15 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.params = []
         self.hardcodedStrings = []
         self.inputLayers = []
+        self.commands = []
+        self.outputCommands = []
+        self.exportedLayers = {}
         self.descriptionFile = descriptionfile
 
         # Default GRASS parameters
         self.region = None
         self.cellSize = None
-        self.snaptTolerance = None
+        self.snapTolerance = None
         self.outputType = None
         self.minArea = None
         self.alignToResolution = None
@@ -801,7 +805,18 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param external: use v.external (v.in.ogr if False).
         """
         layer = self.parameterAsVectorLayer(parameters, name, context)
-        if layer is None or layer.dataProvider().name() != 'ogr':
+
+        is_ogr_disk_based_layer = layer is not None and layer.dataProvider().name() == 'ogr'
+        if is_ogr_disk_based_layer:
+            # we only support direct reading of disk based ogr layers -- not ogr postgres layers, etc
+            source_parts = QgsProviderRegistry.instance().decodeUri('ogr', layer.source())
+            if not source_parts.get('path'):
+                is_ogr_disk_based_layer = False
+            elif source_parts.get('layerId'):
+                # no support for directly reading layers by id in grass
+                is_ogr_disk_based_layer = False
+
+        if not is_ogr_disk_based_layer:
             # parameter is not a vector layer or not an OGR layer - try to convert to a source compatible with
             # grass OGR inputs and extract selection if required
             path = self.parameterAsCompatibleSourceLayerPath(parameters, name, context,
@@ -827,28 +842,36 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             external = ProcessingConfig.getSetting(
                 Grass7Utils.GRASS_USE_VEXTERNAL)
 
+        source_parts = QgsProviderRegistry.instance().decodeUri('ogr', layer.source())
+        file_path = source_parts.get('path')
+        layer_name = source_parts.get('layerName')
+
         # safety check: we can only use external for ogr layers which support random read
         if external:
-            feedback.pushInfo('Attempting to use v.external for direct layer read')
+            if feedback is not None:
+                feedback.pushInfo('Attempting to use v.external for direct layer read')
             ds = ogr.Open(file_path)
             if ds is not None:
                 ogr_layer = ds.GetLayer()
                 if ogr_layer is None or not ogr_layer.TestCapability(ogr.OLCRandomRead):
-                    feedback.reportError('Cannot use v.external: layer does not support random read')
+                    if feedback is not None:
+                        feedback.reportError('Cannot use v.external: layer does not support random read')
                     external = False
             else:
-                feedback.reportError('Cannot use v.external: error reading layer')
+                if feedback is not None:
+                    feedback.reportError('Cannot use v.external: error reading layer')
                 external = False
 
         self.inputLayers.append(layer)
         self.setSessionProjectionFromLayer(layer)
         destFilename = 'vector_{}'.format(os.path.basename(getTempFilename()))
         self.exportedLayers[name] = destFilename
-        command = '{0}{1}{2} input="{3}" output="{4}" --overwrite -o'.format(
+        command = '{0}{1}{2} input="{3}"{4} output="{5}" --overwrite -o'.format(
             'v.external' if external else 'v.in.ogr',
             ' min_area={}'.format(self.minArea) if not external else '',
             ' snap={}'.format(self.snapTolerance) if not external else '',
-            os.path.normpath(layer.source()),
+            os.path.normpath(file_path),
+            ' layer="{}"'.format(layer_name) if layer_name else '',
             destFilename)
         self.commands.append(command)
 
