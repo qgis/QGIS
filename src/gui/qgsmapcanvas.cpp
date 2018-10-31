@@ -174,7 +174,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   // keep device pixel ratio up to date on screen or resolution change
   connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * ) {mSettings.setDevicePixelRatio( devicePixelRatio() );} );
   if ( window()->windowHandle() )
-    connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, [ = ]( qreal ) {mSettings.setDevicePixelRatio( devicePixelRatio() );} );
+    connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, [ = ]( qreal ) {mSettings.setDevicePixelRatio( devicePixelRatio() );} );
 
   connect( &mMapUpdateTimer, &QTimer::timeout, this, &QgsMapCanvas::mapUpdateTimeout );
   mMapUpdateTimer.setInterval( 250 );
