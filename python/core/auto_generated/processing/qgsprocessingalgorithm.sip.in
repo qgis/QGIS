@@ -924,6 +924,13 @@ this is possible to determine in advance.
 Returns the processing feature source flags to be used in the algorithm.
 %End
 
+    virtual QgsProcessingFeatureSink::SinkFlags sinkFlags() const;
+%Docstring
+Returns the feature sink flags to be used for the output.
+
+.. versionadded:: 3.4.1
+%End
+
     virtual QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const;
 %Docstring
 Maps the input WKB geometry type (``inputWkbType``) to the corresponding
