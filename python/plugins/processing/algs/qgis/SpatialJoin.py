@@ -189,7 +189,7 @@ class SpatialJoin(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         (non_matching_sink, non_matching_dest_id) = self.parameterAsSink(parameters, self.NON_MATCHING, context,
-                                                                         source.fields(), source.wkbType(), source.sourceCrs())
+                                                                         source.fields(), source.wkbType(), source.sourceCrs(), QgsFeatureSink.RegeneratePrimaryKey)
         if self.NON_MATCHING in parameters and parameters[self.NON_MATCHING] is not None and non_matching_sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.NON_MATCHING))
 
