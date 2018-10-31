@@ -383,7 +383,7 @@ void QgsProcessingAlgorithmDialogBase::pushDebugInfo( const QString &message )
 
 void QgsProcessingAlgorithmDialogBase::pushConsoleInfo( const QString &info )
 {
-  txtLog->append( QStringLiteral( "<code><span style=\"color:blue\">%1</darkgray></code>" ).arg( formatStringForLog( info.toHtmlEscaped() ) ) );
+  txtLog->append( QStringLiteral( "<code style=\"color:#777\">%1</code>" ).arg( formatStringForLog( info.toHtmlEscaped() ) ) );
   scrollToBottomOfLog();
   processEvents();
 }
