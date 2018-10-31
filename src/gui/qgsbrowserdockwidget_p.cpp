@@ -59,7 +59,7 @@ QgsBrowserPropertiesWrapLabel::QgsBrowserPropertiesWrapLabel( const QString &tex
   setPalette( pal );
   setLineWrapMode( QTextEdit::WidgetWidth );
   setWordWrapMode( QTextOption::WrapAnywhere );
-  connect( qobject_cast<QAbstractTextDocumentLayout *>( document()->documentLayout() ), &QAbstractTextDocumentLayout::documentSizeChanged,
+  connect( document()->documentLayout(), &QAbstractTextDocumentLayout::documentSizeChanged,
            this, &QgsBrowserPropertiesWrapLabel::adjustHeight );
   setMaximumHeight( 20 );
 }
@@ -115,9 +115,6 @@ QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget *parent )
   : QgsBrowserPropertiesWidget( parent )
 {
   setupUi( this );
-
-  mUriLabel = new QgsBrowserPropertiesWrapLabel( QString(), this );
-  mHeaderGridLayout->addItem( new QWidgetItem( mUriLabel ), 1, 1 );
 
   // we don't want links to open in the little widget, open them externally instead
   mMetadataTextBrowser->setOpenLinks( false );
@@ -218,9 +215,6 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     return;
   }
 
-  mNameLabel->setText( layerItem->name() );
-  mUriLabel->setText( layerItem->uri() );
-  mProviderLabel->setText( layerItem->providerKey() );
   QString myStyle = QgsApplication::reportStyleSheet();
   mMetadataTextBrowser->document()->setDefaultStyleSheet( myStyle );
   mMetadataTextBrowser->setHtml( layerMetadata );
@@ -240,20 +234,9 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   }
 }
 
-void QgsBrowserLayerProperties::setCondensedMode( bool condensedMode )
+void QgsBrowserLayerProperties::setCondensedMode( bool )
 {
-  if ( condensedMode )
-  {
-    mUriLabel->setLineWrapMode( QTextEdit::NoWrap );
-    mUriLabel->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    mUriLabel->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-  }
-  else
-  {
-    mUriLabel->setLineWrapMode( QTextEdit::WidgetWidth );
-    mUriLabel->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
-    mUriLabel->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
-  }
+
 }
 
 void QgsBrowserLayerProperties::urlClicked( const QUrl &url )
