@@ -482,7 +482,10 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
 void QgsWmsProvider::setQueryItem( QUrl &url, const QString &item, const QString &value )
 {
   url.removeQueryItem( item );
-  url.addQueryItem( item, value );
+  if ( value.isNull() )
+    url.addQueryItem( item, QStringLiteral( "" ) ); // skip-keyword-check
+  else
+    url.addQueryItem( item, value );
 }
 
 void QgsWmsProvider::setFormatQueryItem( QUrl &url )
