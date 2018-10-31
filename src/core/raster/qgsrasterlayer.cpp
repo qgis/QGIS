@@ -1491,6 +1491,12 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   QgsDataProvider::ProviderOptions providerOptions;
   setDataProvider( mProviderKey, providerOptions );
 
+  if ( ! mDataProvider )
+  {
+    QgsDebugMsg( QStringLiteral( "Raster data provider could not be created for %1" ).arg( mDataSource ) );
+    return false;
+  }
+
   QString error;
   bool res = readSymbology( layer_node, error, context );
 
