@@ -38,6 +38,9 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsmeshlayer.h"
+#include "qgsgui.h"
+#include "qgsnative.h"
+#include <QDesktopServices>
 
 #include <QDragEnterEvent>
 
@@ -115,6 +118,10 @@ QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget *parent )
 
   mUriLabel = new QgsBrowserPropertiesWrapLabel( QString(), this );
   mHeaderGridLayout->addItem( new QWidgetItem( mUriLabel ), 1, 1 );
+
+  // we don't want links to open in the little widget, open them externally instead
+  mMetadataTextBrowser->setOpenLinks( false );
+  connect( mMetadataTextBrowser, &QTextBrowser::anchorClicked, this, &QgsBrowserLayerProperties::urlClicked );
 }
 
 class ProjectionSettingRestorer
@@ -247,6 +254,15 @@ void QgsBrowserLayerProperties::setCondensedMode( bool condensedMode )
     mUriLabel->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
     mUriLabel->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
   }
+}
+
+void QgsBrowserLayerProperties::urlClicked( const QUrl &url )
+{
+  QFileInfo file( url.toLocalFile() );
+  if ( file.exists() && !file.isDir() )
+    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+  else
+    QDesktopServices::openUrl( url );
 }
 
 QgsBrowserDirectoryProperties::QgsBrowserDirectoryProperties( QWidget *parent )
