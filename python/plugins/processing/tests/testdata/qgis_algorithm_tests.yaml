@@ -6256,4 +6256,47 @@ tests:
           fields:
             path: skip
 
+  - algorithm: native:removeduplicatesbyattribute
+    name: Remove dupes by attribute 1
+    params:
+      FIELDS:
+      - num_field1
+      INPUT:
+        name: custom/duplicate_attributes.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/remove_duplicates1.gml
+        type: vector
+
+  - algorithm: native:removeduplicatesbyattribute
+    name: Remove dupes by attribute 2
+    params:
+      FIELDS:
+      - num_field2
+      INPUT:
+        name: custom/duplicate_attributes.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/remove_duplicates2.gml
+        type: vector
+
+  - algorithm: native:removeduplicatesbyattribute
+    name: Remove dupes by attribute 3
+    params:
+      FIELDS:
+      - num_field2
+      - text_field
+      INPUT:
+        name: custom/duplicate_attributes.gml
+        type: vector
+    results:
+      DUPLICATES:
+        name: expected/remove_duplicates_dupes.gml
+        type: vector
+      OUTPUT:
+        name: expected/remove_duplicates3.gml
+        type: vector
+
 # See ../README.md for a description of the file format
