@@ -924,7 +924,7 @@ this is possible to determine in advance.
 Returns the processing feature source flags to be used in the algorithm.
 %End
 
-    virtual QgsProcessingFeatureSink::SinkFlags sinkFlags() const;
+    virtual QgsFeatureSink::SinkFlags sinkFlags() const;
 %Docstring
 Returns the feature sink flags to be used for the output.
 
