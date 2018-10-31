@@ -459,7 +459,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                             paramName, parameters, context)
                     else:
                         self.loadVectorLayerFromParameter(
-                            paramName, parameters, context, feedback, None)
+                            paramName, parameters, context, external=None, feedback=feedback)
             # For multiple inputs, process each layer
             elif isinstance(param, QgsProcessingParameterMultipleLayers):
                 layers = self.parameterAsLayerList(parameters, paramName, context)
@@ -470,7 +470,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                         self.loadRasterLayer(layerName, layer)
                     # Add a vector layer
                     elif layer.type() == QgsMapLayer.VectorLayer:
-                        self.loadVectorLayer(layerName, layer, None)
+                        self.loadVectorLayer(layerName, layer, external=None, feedback=feedback)
 
         self.postInputs()
 
@@ -808,18 +808,19 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                                                              QgsVectorFileWriter.supportedFormatExtensions(),
                                                              feedback=feedback)
             ogr_layer = QgsVectorLayer(path, '', 'ogr')
-            self.loadVectorLayer(name, ogr_layer, external)
+            self.loadVectorLayer(name, ogr_layer, external=external, feedback=feedback)
         else:
-            # already an ogr layer source
-            self.loadVectorLayer(name, layer, external)
+            # already an ogr disk based layer source
+            self.loadVectorLayer(name, layer, external=external, feedback=feedback)
 
-    def loadVectorLayer(self, name, layer, external=False):
+    def loadVectorLayer(self, name, layer, external=False, feedback=None):
         """
         Creates a dedicated command to load a vector into
         temporary GRASS DB.
         :param name: name of the parameter
         :param layer: QgsMapLayer for the vector layer.
         :param external: use v.external (v.in.ogr if False).
+        :param feedback: feedback object
         """
         # TODO: support multiple input formats
         if external is None:
@@ -828,12 +829,15 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         # safety check: we can only use external for ogr layers which support random read
         if external:
-            ds = ogr.Open(layer.source())
+            feedback.pushInfo('Attempting to use v.external for direct layer read')
+            ds = ogr.Open(file_path)
             if ds is not None:
                 ogr_layer = ds.GetLayer()
                 if ogr_layer is None or not ogr_layer.TestCapability(ogr.OLCRandomRead):
+                    feedback.reportError('Cannot use v.external: layer does not support random read')
                     external = False
             else:
+                feedback.reportError('Cannot use v.external: error reading layer')
                 external = False
 
         self.inputLayers.append(layer)
