@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsProject.
+"""QGIS Unit tests for QgsProject bad layers handling.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -64,12 +64,12 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         vector = list(p.mapLayersByName('lines'))[0]
         raster = list(p.mapLayersByName('raster'))[0]
         raster_copy = list(p.mapLayersByName('raster_copy'))[0]
-        self.assertTrue(vector.originalLayerXmlProperties() != '')
-        self.assertTrue(raster.originalLayerXmlProperties() != '')
-        self.assertTrue(raster_copy.originalLayerXmlProperties() != '')
+        self.assertTrue(vector.originalXmlProperties() != '')
+        self.assertTrue(raster.originalXmlProperties() != '')
+        self.assertTrue(raster_copy.originalXmlProperties() != '')
         # Test setter
-        raster.setOriginalLayerXmlProperties('pippo')
-        self.assertEqual(raster.originalLayerXmlProperties(), 'pippo')
+        raster.setOriginalXmlProperties('pippo')
+        self.assertEqual(raster.originalXmlProperties(), 'pippo')
 
         # Now create and invalid project:
         bad_project_path = os.path.join(temp_dir.path(), 'project_bad.qgs')
