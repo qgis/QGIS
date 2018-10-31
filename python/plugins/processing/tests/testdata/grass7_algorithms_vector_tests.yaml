@@ -32,6 +32,7 @@ tests:
         compare:
           geometry:
             precision: 7
+          ignore_crs_check: true
 
   - algorithm: grass7:v.rast.stats
     name: V.rast.stats
@@ -271,3 +272,62 @@ tests:
       raster_output:
         hash: 7aa8e68b697e1558e6621fa23b5f1f01a5826649ffc31fd255e709a1
         type: rasterhash
+
+  - algorithm: grass7:v.buffer
+    name: Buffer with layername
+    params:
+      -c: false
+      -s: false
+      -t: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      angle: 0.0
+      cats: ''
+      distance: 10.0
+      input:
+        name: custom/pol.gpkg|layername=pol3
+        type: vector
+      scale: 1.0
+      tolerance: 0.01
+      type:
+      - 0
+      - 1
+      - 4
+      where: ''
+    results:
+      output:
+        name: expected/grass7/buffer_polys_layer3.shp
+        type: vector
+
+  - algorithm: grass7:v.buffer
+    name: Buffer with layername 2
+    params:
+      -c: false
+      -s: false
+      -t: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      angle: 0.0
+      cats: ''
+      distance: 10.0
+      input:
+        name: custom/pol.gpkg|layername=pol2
+        type: vector
+      scale: 1.0
+      tolerance: 0.01
+      type:
+      - 0
+      - 1
+      - 4
+      where: ''
+    results:
+      output:
+        name: expected/grass7/buffer_polys_layer2.shp
+        type: vector
+
