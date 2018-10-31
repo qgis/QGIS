@@ -127,7 +127,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 
   // HACK sorry
   const QString path = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), uri ).value( QStringLiteral( "path" ) ).toString();
-  if ( sinkFlags.testFlag( QgsFeatureSink::SinkFlag::RegeneratePrimaryKey ) && path.endsWith( QLatin1String( ".gpkg" ) ) )
+  if ( sinkFlags.testFlag( QgsFeatureSink::SinkFlag::RegeneratePrimaryKey ) && path.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
   {
     QString fidName = options.value( QStringLiteral( "FID" ), QStringLiteral( "FID" ) ).toString();
     int fidIdx = vectorProvider->fields().lookupField( fidName );
