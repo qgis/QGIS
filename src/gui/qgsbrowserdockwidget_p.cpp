@@ -159,6 +159,8 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   ProjectionSettingRestorer restorer;
   ( void )restorer; // no warnings
 
+  std::unique_ptr<QgsMapLayer> layer;
+
   // find root item
   // we need to create a temporary layer to get metadata
   // we could use a provider but the metadata is not as complete and "pretty"  and this is easier
@@ -167,52 +169,30 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   {
     QgsDebugMsg( QStringLiteral( "creating raster layer" ) );
     // should copy code from addLayer() to split uri ?
-    std::unique_ptr<QgsRasterLayer> layer( new QgsRasterLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() ) );
-    if ( layer )
-    {
-      if ( layer->isValid() )
-      {
-        bool ok = false;
-        layer->loadDefaultMetadata( ok );
-        layerCrs = layer->crs();
-        layerMetadata = layer->htmlMetadata();
-      }
-    }
+    layer = qgis::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
   }
   else if ( type == QgsMapLayer::MeshLayer )
   {
     QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
-    std::unique_ptr<QgsMeshLayer> layer( new QgsMeshLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() ) );
-    if ( layer )
-    {
-      if ( layer->isValid() )
-      {
-        bool ok = false;
-        layer->loadDefaultMetadata( ok );
-        layerCrs = layer->crs();
-        layerMetadata = layer->htmlMetadata();
-      }
-    }
+    layer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
   }
   else if ( type == QgsMapLayer::VectorLayer )
   {
     QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
-    std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
-    if ( layer )
-    {
-      if ( layer->isValid() )
-      {
-        bool ok = false;
-        layer->loadDefaultMetadata( ok );
-        layerCrs = layer->crs();
-        layerMetadata = layer->htmlMetadata();
-      }
-    }
+    layer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
   }
   else if ( type == QgsMapLayer::PluginLayer )
   {
     // TODO: support display of properties for plugin layers
     return;
+  }
+
+  if ( layer && layer->isValid() )
+  {
+    bool ok = false;
+    layer->loadDefaultMetadata( ok );
+    layerCrs = mLayer->crs();
+    layerMetadata = mLayer->htmlMetadata();
   }
 
   QString myStyle = QgsApplication::reportStyleSheet();
