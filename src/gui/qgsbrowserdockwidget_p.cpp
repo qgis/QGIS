@@ -183,12 +183,12 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   {
     QgsDebugMsg( QStringLiteral( "creating raster layer" ) );
     // should copy code from addLayer() to split uri ?
-    mLayer = qgis::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->uri(), layerItem->providerKey() );
+    mLayer = qgis::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
   }
   else if ( type == QgsMapLayer::MeshLayer )
   {
     QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
-    mLayer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->uri(), layerItem->providerKey() );
+    mLayer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
   }
   else if ( type == QgsMapLayer::VectorLayer )
   {
