@@ -127,7 +127,7 @@ QSqlDatabase QgsAuthManager::authDatabaseConnection() const
     if ( QThread::currentThread() != QgsApplication::instance()->thread() )
     {
       QgsDebugMsgLevel( QStringLiteral( "Scheduled auth db remove on thread close" ), 0 );
-      connect( QThread::currentThread(), &QThread::finished, QThread::currentThread(), [connectionName]
+      connect( QThread::currentThread(), &QThread::finished, this, [connectionName]
       {
         QgsDebugMsgLevel( QStringLiteral( "Removing outdated connection to %1 on thread exit" ).arg( connectionName ), 0 );
         QSqlDatabase::removeDatabase( connectionName );
