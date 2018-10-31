@@ -146,4 +146,47 @@ class QgsPyDropHandler : public QgsCustomDropHandler
     bool handleFileDrop( const QString &file ) override;
 };
 
+
+/**
+ * Custom data item for XML style libraries.
+ */
+class QgsStyleXmlDataItem : public QgsDataItem
+{
+    Q_OBJECT
+
+  public:
+
+    QgsStyleXmlDataItem( QgsDataItem *parent, const QString &name, const QString &path );
+    bool hasDragEnabled() const override;
+    QgsMimeDataUtils::Uri mimeUri() const override;
+    bool handleDoubleClick() override;
+    QList< QAction * > actions( QWidget *parent ) override;
+
+};
+
+/**
+ * Data item provider for showing style XML libraries in the browser.
+ */
+class QgsStyleXmlDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
+    int capabilities() override;
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+};
+
+/**
+ * Handles drag and drop of style XML libraries to app.
+ */
+class QgsStyleXmlDropHandler : public QgsCustomDropHandler
+{
+    Q_OBJECT
+
+  public:
+
+    QString customUriProviderKey() const override;
+    void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const override;
+    bool handleFileDrop( const QString &file ) override;
+};
+
 #endif // QGSAPPBROWSERPROVIDERS_H
