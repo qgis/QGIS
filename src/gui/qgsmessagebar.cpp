@@ -44,7 +44,9 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   setFrameShadow( QFrame::Plain );
 
   mLayout = new QGridLayout( this );
-  mLayout->setContentsMargins( 9, 1, 9, 1 );
+  const int xMargin = std::max( 9.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.45 );
+  const int yMargin = std::max( 1.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.05 );
+  mLayout->setContentsMargins( xMargin, yMargin, xMargin, yMargin );
   setLayout( mLayout );
 
   mCountProgress = new QProgressBar( this );
@@ -55,7 +57,9 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
 
   mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.svg" ) ) );
   mCountProgress->setObjectName( QStringLiteral( "mCountdown" ) );
-  mCountProgress->setFixedSize( 25, 14 );
+  const int barWidth = std::max( 25.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.25 );
+  const int barHeight = std::max( 14.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.7 );
+  mCountProgress->setFixedSize( barWidth, barHeight );
   mCountProgress->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
   mCountProgress->setTextVisible( false );
   mCountProgress->setRange( 0, 5 );
@@ -83,7 +87,9 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
     "QToolButton::menu-button { background-color: rgba(0, 0, 0, 0); }" );
   mCloseBtn->setCursor( Qt::PointingHandCursor );
   mCloseBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClose.svg" ) ) );
-  mCloseBtn->setIconSize( QSize( 18, 18 ) );
+
+  const int iconSize = std::max( 18.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.9 );
+  mCloseBtn->setIconSize( QSize( iconSize, iconSize ) );
   mCloseBtn->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
   mCloseBtn->setMenu( mCloseMenu );
   mCloseBtn->setPopupMode( QToolButton::MenuButtonPopup );
