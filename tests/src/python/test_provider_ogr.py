@@ -463,6 +463,32 @@ class PyQgsOGRProvider(unittest.TestCase):
         iter_multipolygons = vl_multipolygons.getFeatures(QgsFeatureRequest())
         self.assertTrue(iter_multipolygons.nextFeature(f))
 
+        # Test filter by id (#20308)
+        f = next(vl_multipolygons.getFeatures(QgsFeatureRequest().setFilterFid(8)))
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 8)
+
+        f = next(vl_multipolygons.getFeatures(QgsFeatureRequest().setFilterFid(1)))
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 1)
+
+        f = next(vl_multipolygons.getFeatures(QgsFeatureRequest().setFilterFid(5)))
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 5)
+
+        # 6 doesn't exist
+        it = vl_multipolygons.getFeatures(QgsFeatureRequest().setFilterFids([1, 5, 6, 8]))
+        f = next(it)
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 1)
+        f = next(it)
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 5)
+        f = next(it)
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 8)
+        del it
+
 
 if __name__ == '__main__':
     unittest.main()
