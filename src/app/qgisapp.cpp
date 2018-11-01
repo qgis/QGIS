@@ -1559,6 +1559,14 @@ QgisApp::~QgisApp()
     delete canvas;
   }
 
+  // these may have references to map layers which need to be cleaned up
+  delete mBrowserWidget;
+  mBrowserWidget = nullptr;
+  delete mBrowserWidget2;
+  mBrowserWidget2 = nullptr;
+  delete mBrowserModel;
+  mBrowserModel = nullptr;
+
   QgsGui::instance()->nativePlatformInterface()->cleanup();
 
   // This function *MUST* be the last one called, as it destroys in
