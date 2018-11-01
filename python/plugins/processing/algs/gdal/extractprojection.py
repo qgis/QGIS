@@ -52,17 +52,18 @@ class ExtractProjection(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(
-                              self.INPUT,
-                              self.tr('Input file')))
+            self.INPUT,
+            self.tr('Input file')))
         self.addParameter(QgsProcessingParameterBoolean(
-                              self.PRJ_FILE_CREATE,
-                              self.tr('Create also .prj file'), False))
-        self.addOutput(QgsProcessingOutputFile(self.WORLD_FILE,
-                                               self.tr('World file')))
+            self.PRJ_FILE_CREATE,
+            self.tr('Create also .prj file'), False))
         self.addOutput(QgsProcessingOutputFile(
-                              self.PRJ_FILE,
-                              self.tr('ESRI Shapefile prj file')))
-        
+            self.WORLD_FILE,
+            self.tr('World file')))
+        self.addOutput(QgsProcessingOutputFile(
+            self.PRJ_FILE,
+            self.tr('ESRI Shapefile prj file')))
+
     def name(self):
         return 'extractprojection'
 
@@ -93,7 +94,7 @@ class ExtractProjection(GdalAlgorithm):
         raster = self.parameterAsRasterLayer(parameters, self.INPUT,
                                              context)
         if not raster.dataProvider().name() == 'gdal':
-            raise QgsProcessingException('This algorithm can only '\
+            raise QgsProcessingException('This algorithm can only '
                                          'be used with GDAL raster layers')
         rasterPath = raster.source()
         rasterDS = gdal.Open(rasterPath, gdal.GA_ReadOnly)
@@ -116,7 +117,7 @@ class ExtractProjection(GdalAlgorithm):
             with open(outFileName + '.prj', 'wt') as prj:
                 prj.write(crs)
             results[self.PRJ_FILE] = outFileName + '.prj'
-        else:    
+        else:
             results[self.PRJ_FILE] = None
 
         with open(outFileName + '.wld', 'wt') as wld:
