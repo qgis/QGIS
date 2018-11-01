@@ -2745,14 +2745,9 @@ void QgsProject::reloadAllLayers()
   }
 }
 
-QMap<QString, QgsMapLayer *> QgsProject::mapLayers() const
+QMap<QString, QgsMapLayer *> QgsProject::mapLayers( const bool validOnly ) const
 {
-  return mLayerStore->mapLayers();
-}
-
-QMap<QString, QgsMapLayer *> QgsProject::validMapLayers() const
-{
-  return mLayerStore->validMapLayers();
+  return validOnly ? mLayerStore->validMapLayers() : mLayerStore->mapLayers();
 }
 
 QgsTransactionGroup *QgsProject::transactionGroup( const QString &providerKey, const QString &connString )

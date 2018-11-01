@@ -713,20 +713,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns a map of all registered layers by layer ID.
+     *
+     * \param validOnly if set only valid layers will be returned
      * \see mapLayer()
      * \see mapLayersByName()
      * \see layers()
      */
-    QMap<QString, QgsMapLayer *> mapLayers() const;
-
-    /**
-     * Returns a map of all registered valid layers by layer ID.
-     * \see mapLayer()
-     * \see mapLayersByName()
-     * \see layers()
-     * \since QGIS 3.6
-     */
-    QMap<QString, QgsMapLayer *> validMapLayers() const;
+    QMap<QString, QgsMapLayer *> mapLayers( const bool validOnly = false ) const;
 
     /**
      * Returns true if the project comes from a zip archive, false otherwise.
@@ -769,7 +762,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *                      the layers yourself. Not available in Python.
      *
      * \returns a list of the map layers that were added
-     *         successfully. If a layer is invalid, or already exists in the registry,
+     *         successfully. If a layer or already exists in the registry,
      *         it will not be part of the returned QList.
      *
      * \note As a side-effect QgsProject is made dirty.

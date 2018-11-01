@@ -733,28 +733,17 @@ Retrieve a list of matching registered layers by layer name.
 .. seealso:: :py:func:`mapLayers`
 %End
 
-    QMap<QString, QgsMapLayer *> mapLayers() const;
+    QMap<QString, QgsMapLayer *> mapLayers( const bool validOnly = false ) const;
 %Docstring
 Returns a map of all registered layers by layer ID.
 
-.. seealso:: :py:func:`mapLayer`
-
-.. seealso:: :py:func:`mapLayersByName`
-
-.. seealso:: :py:func:`layers`
-%End
-
-    QMap<QString, QgsMapLayer *> validMapLayers() const;
-%Docstring
-Returns a map of all registered valid layers by layer ID.
+:param validOnly: if set only valid layers will be returned
 
 .. seealso:: :py:func:`mapLayer`
 
 .. seealso:: :py:func:`mapLayersByName`
 
 .. seealso:: :py:func:`layers`
-
-.. versionadded:: 3.6
 %End
 
     bool isZipped() const;
@@ -781,7 +770,7 @@ The legendLayersAdded() signal is emitted only if addToLegend is true.
                       the layers yourself. Not available in Python.
 
 :return: a list of the map layers that were added
-         successfully. If a layer is invalid, or already exists in the registry,
+         successfully. If a layer or already exists in the registry,
          it will not be part of the returned QList.
 
 

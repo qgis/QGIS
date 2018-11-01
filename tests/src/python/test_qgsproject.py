@@ -254,12 +254,12 @@ class TestQgsProject(unittest.TestCase):
 
         vl = QgsVectorLayer("Point?field=x:string", 'test', "xxx")
         self.assertEqual(QgsProject.instance().addMapLayer(vl), vl)
-        self.assertFalse(vl in QgsProject.instance().validMapLayers().values())
+        self.assertFalse(vl in QgsProject.instance().mapLayers(True).values())
         self.assertEqual(len(QgsProject.instance().mapLayersByName('test')), 1)
         self.assertEqual(QgsProject.instance().count(), 1)
         self.assertEqual(QgsProject.instance().validCount(), 0)
 
-        self.assertEqual(len(QgsProject.instance().validMapLayers()), 0)
+        self.assertEqual(len(QgsProject.instance().mapLayers(True)), 0)
 
         QgsProject.instance().removeAllMapLayers()
 
@@ -323,7 +323,7 @@ class TestQgsProject(unittest.TestCase):
 
         vl = QgsVectorLayer("Point?field=x:string", 'test', "xxx")
         self.assertEqual(QgsProject.instance().addMapLayers([vl]), [vl])
-        self.assertFalse(vl in QgsProject.instance().validMapLayers().values())
+        self.assertFalse(vl in QgsProject.instance().mapLayers(True).values())
         self.assertEqual(len(QgsProject.instance().mapLayersByName('test')), 1)
         self.assertEqual(QgsProject.instance().count(), 1)
         self.assertEqual(QgsProject.instance().validCount(), 0)
