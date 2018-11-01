@@ -72,7 +72,7 @@ class ExtractProjection(GdalAlgorithm):
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools',
-                     'projection-export.png'))
+                                  'projection-export.png'))
 
     def group(self):
         return self.tr('Raster projections')
@@ -125,12 +125,12 @@ class ExtractProjection(GdalAlgorithm):
             wld.write('%0.8f\n' % geotransform[4])
             wld.write('%0.8f\n' % geotransform[2])
             wld.write('%0.8f\n' % geotransform[5])
-            wld.write('%0.8f\n' % (geotransform[0] +
-                                   0.5 * geotransform[1] +
-                                   0.5 * geotransform[2]))
-            wld.write('%0.8f\n' % (geotransform[3] +
-                                   0.5 * geotransform[4] +
-                                   0.5 * geotransform[5]))
+            wld.write('%0.8f\n' % (geotransform[0]
+                                   + 0.5 * geotransform[1]
+                                   + 0.5 * geotransform[2]))
+            wld.write('%0.8f\n' % (geotransform[3]
+                                   + 0.5 * geotransform[4]
+                                   + 0.5 * geotransform[5]))
         results[self.WORLD_FILE] = outFileName + '.wld'
 
         return results
