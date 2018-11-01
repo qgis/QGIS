@@ -73,7 +73,7 @@ QSqlDatabase QgsMssqlConnection::getDatabase( const QString &service, const QStr
       // and a subsequent call to QSqlDatabase::database with the same thread address (yep it happens, actually a lot)
       // triggers a condition in QSqlDatabase which detects the nullptr private thread data and returns an invalid database instead.
       // QSqlDatabase::removeDatabase is thread safe, so this is ok to do.
-      QObject::connect( QThread::currentThread(), &QThread::finished, QCoreApplication::instance(), [connectionName]
+      QObject::connect( QThread::currentThread(), &QThread::finished, QThread::currentThread(), [connectionName]
       {
         QMutexLocker locker( &sMutex );
         QSqlDatabase::removeDatabase( connectionName );
