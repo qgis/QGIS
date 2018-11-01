@@ -135,7 +135,7 @@ class TestQgsFeatureSource(unittest.TestCase):
                              2: 'Point (222639 222684)',
                              3: 'Point (333958 222684)',
                              4: 'Point (445278 334111)',
-                             5: 'Point (0 -0)'}
+                             5: 'Point (0 0)'}
         for id, f in original_features.items():
             self.assertEqual(new_features[id].attributes(), f.attributes())
             self.assertEqual(new_features[id].geometry().asWkt(0), expected_geometry[id])
