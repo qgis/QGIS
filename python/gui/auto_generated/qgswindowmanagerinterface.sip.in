@@ -47,40 +47,6 @@ Returns the dialog if shown, or None if the dialog either could not be
 created or is not supported by the window manager implementation.
 %End
 
-    virtual QString executeExportVectorLayerDialog( QgsVectorLayer *layer );
-%Docstring
-Executes the standard "Export Vector Layer" dialog for the specified ``layer``,
-and performs an export using the settings accepted in the dialog.
-
-The created vector file name is returned.
-
-Depending on the window manager implementation the actual export of the
-layer may occur in a background task, in which case calling this method
-will immediately return after the dialog has been accepted, but before
-the exported layer has been finalized.
-
-.. seealso:: :py:func:`executeExportRasterLayerDialog`
-
-.. versionadded:: 3.6
-%End
-
-    virtual QString executeExportRasterLayerDialog( QgsRasterLayer *layer );
-%Docstring
-Executes the standard "Export Raster Layer" dialog for the specified ``layer``,
-and performs an export using the settings accepted in the dialog.
-
-The created raster file name is returned.
-
-Depending on the window manager implementation the actual export of the
-layer may occur in a background task, in which case calling this method
-will immediately return after the dialog has been accepted, but before
-the exported layer has been finalized.
-
-.. seealso:: :py:func:`executeExportVectorLayerDialog`
-
-.. versionadded:: 3.6
-%End
-
 };
 
 

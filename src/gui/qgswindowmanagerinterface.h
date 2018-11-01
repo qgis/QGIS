@@ -56,48 +56,6 @@ class GUI_EXPORT QgsWindowManagerInterface
      */
     virtual QWidget *openStandardDialog( StandardDialog dialog ) = 0;
 
-    /**
-     * Executes the standard "Export Vector Layer" dialog for the specified \a layer,
-     * and performs an export using the settings accepted in the dialog.
-     *
-     * The created vector file name is returned.
-     *
-     * Depending on the window manager implementation the actual export of the
-     * layer may occur in a background task, in which case calling this method
-     * will immediately return after the dialog has been accepted, but before
-     * the exported layer has been finalized.
-     *
-     * \see executeExportRasterLayerDialog()
-     *
-     * \since QGIS 3.6
-     */
-    virtual QString executeExportVectorLayerDialog( QgsVectorLayer *layer )
-    {
-      Q_UNUSED( layer );
-      return QString();
-    }
-
-    /**
-     * Executes the standard "Export Raster Layer" dialog for the specified \a layer,
-     * and performs an export using the settings accepted in the dialog.
-     *
-     * The created raster file name is returned.
-     *
-     * Depending on the window manager implementation the actual export of the
-     * layer may occur in a background task, in which case calling this method
-     * will immediately return after the dialog has been accepted, but before
-     * the exported layer has been finalized.
-     *
-     * \see executeExportVectorLayerDialog()
-     *
-     * \since QGIS 3.6
-     */
-    virtual QString executeExportRasterLayerDialog( QgsRasterLayer *layer )
-    {
-      Q_UNUSED( layer );
-      return QString();
-    }
-
 };
 
 ///@endcond
