@@ -3,8 +3,8 @@
 
  ---------------------
  begin                : 1.11.2018
- copyright            : (C) 2018 by ale
- email                : [your-email-here]
+ copyright            : (C) 2018 by Alessandro Pasotti
+ email                : elpaso@itopen.it
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

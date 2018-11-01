@@ -3,8 +3,8 @@
 
  ---------------------
  begin                : 1.11.2018
- copyright            : (C) 2018 by ale
- email                : [your-email-here]
+ copyright            : (C) 2018 by Alessandro Pasotti
+ email                : elpaso@itopen.it
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -31,7 +31,7 @@
  * The QgsDataSourceSelectDialog class embeds the browser view to
  * select an existing data source.
  *
- * By default it allows to select all layer types, the allowed layer
+ * By default any layer type can be chosen, the valid layer
  * type can be restricted by setting a layer type filter with
  * setLayerTypeFilter(layerType) or by activating the filter
  * directly from the constructor.
@@ -65,6 +65,9 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
      */
     void setLayerTypeFilter( const QgsMapLayer::LayerType &layerType );
 
+    /**
+     * Returns the (possibly invalid) uri of the selected data source
+     */
     QgsMimeDataUtils::Uri uri() const;
 
   private slots:
