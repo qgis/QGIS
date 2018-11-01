@@ -517,6 +517,7 @@ void QgsBrowserDockWidget::showProperties()
   if ( item->type() == QgsDataItem::Layer || item->type() == QgsDataItem::Directory )
   {
     QgsBrowserPropertiesDialog *dialog = new QgsBrowserPropertiesDialog( settingsSection(), this );
+    dialog->setAttribute( Qt::WA_DeleteOnClose );
     dialog->setItem( item );
     dialog->show();
   }
