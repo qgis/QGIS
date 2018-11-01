@@ -453,14 +453,29 @@ QString QgsProjectItemGuiProvider::name()
   return QStringLiteral( "project_items" );
 }
 
-void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
+void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
 {
   if ( !item || item->type() != QgsDataItem::Project )
     return;
 
   if ( QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item ) )
   {
-    // TODO add actions
+    QAction *openAction = new QAction( tr( "Open Project" ), menu );
+    const QString projectPath = projectItem->path();
+    connect( openAction, &QAction::triggered, this, [projectPath]
+    {
+      QgisApp::instance()->openProject( projectPath );
+    } );
+    menu->addAction( openAction );
+
+    if ( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeFilePropertiesDialog )
+    {
+      QAction *action = menu->addAction( tr( "File Properties…" ) );
+      connect( action, &QAction::triggered, this, [projectPath]
+      {
+        QgsGui::nativePlatformInterface()->showFileProperties( projectPath );
+      } );
+    }
   }
 }
 
