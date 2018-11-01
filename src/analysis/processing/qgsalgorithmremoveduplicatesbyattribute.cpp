@@ -36,12 +36,12 @@ QStringList QgsRemoveDuplicatesByAttributeAlgorithm::tags() const
 
 QString QgsRemoveDuplicatesByAttributeAlgorithm::group() const
 {
-  return QObject::tr( "Vector selection" );
+  return QObject::tr( "Vector general" );
 }
 
 QString QgsRemoveDuplicatesByAttributeAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorselection" );
+  return QStringLiteral( "vectorgeneral" );
 }
 
 void QgsRemoveDuplicatesByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
