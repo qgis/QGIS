@@ -22,6 +22,7 @@
 #include "qgsannotationmanager.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include <QColorDialog>
 #include <QGraphicsScene>
 
@@ -54,6 +55,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
   setCurrentFontPropertiesToGui();
 
   QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsTextAnnotationDialog::applyTextToItem );
+  QObject::connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsTextAnnotationDialog::showHelp );
   QObject::connect( mFontComboBox, &QFontComboBox::currentFontChanged, this, &QgsTextAnnotationDialog::changeCurrentFormat );
   QObject::connect( mFontSizeSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsTextAnnotationDialog::changeCurrentFormat );
   QObject::connect( mBoldPushButton, &QPushButton::toggled, this, &QgsTextAnnotationDialog::changeCurrentFormat );
@@ -168,3 +170,7 @@ void QgsTextAnnotationDialog::deleteItem()
   mItem = nullptr;
 }
 
+void QgsTextAnnotationDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#annotation-tools" ) );
+}
