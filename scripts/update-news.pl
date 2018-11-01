@@ -15,9 +15,9 @@ use File::Temp qw/tempfile/;
 use File::Copy qw/copy/;
 use HTML::Entities qw/decode_entities/;
 
-pod2usage(1) if @ARGV!=3;
+pod2usage(1) if @ARGV!=2;
 
-my ($major,$minor,$releasename) = @ARGV;
+my ($version,$releasename) = @ARGV;
 
 
 my ($news,$tempfile) = tempfile();
@@ -28,11 +28,13 @@ while(<$in>) {
 	last if /^Last Change/;
 }
 
-my $content = `curl -s http://changelog.qgis.org/en/qgis/version/$major.$minor.0/gnu/`;
+my $content = `curl -s http://changelog.qgis.org/en/qgis/version/$version/gnu/`;
 die "Couldn't get it!" unless defined $content;
 
-print $news "\n= What's new in Version $major.$minor '$releasename'? =\n\n";
+print $news "\n= What's new in Version $version '$releasename'? =\n\n";
 print $news "This release has following new features:\n\n";
+
+die "Invalid changelog" unless $content =~ /^Changelog for QGIS/;
 
 for $_ (split /\n/, $content) {
 	next if /^Changelog /;
@@ -68,6 +70,6 @@ update-news.pl - updates the news file from changelog.qgis.org
 
 =head1 SYNOPSIS
 
-update-news.pl major minor releasename
+update-news.pl version releasename
 
 =cut
