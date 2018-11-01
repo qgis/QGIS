@@ -51,6 +51,7 @@ class APP_EXPORT QgsTextAnnotationDialog: public QDialog, private Ui::QgsTextAnn
     void deleteItem();
     void mButtonBox_clicked( QAbstractButton *button );
     void backgroundColorChanged( const QColor &color );
+    void showHelp();
 };
 
 #endif // QGSTEXTANNOTATIONDIALOG_H
