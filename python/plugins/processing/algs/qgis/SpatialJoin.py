@@ -184,12 +184,12 @@ class SpatialJoin(QgisAlgorithm):
         out_fields = QgsProcessingUtils.combineFields(source_fields, fields_to_join)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               out_fields, source.wkbType(), source.sourceCrs())
+                                               out_fields, source.wkbType(), source.sourceCrs(), QgsFeatureSink.RegeneratePrimaryKey)
         if self.OUTPUT in parameters and parameters[self.OUTPUT] is not None and sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         (non_matching_sink, non_matching_dest_id) = self.parameterAsSink(parameters, self.NON_MATCHING, context,
-                                                                         source.fields(), source.wkbType(), source.sourceCrs())
+                                                                         source.fields(), source.wkbType(), source.sourceCrs(), QgsFeatureSink.RegeneratePrimaryKey)
         if self.NON_MATCHING in parameters and parameters[self.NON_MATCHING] is not None and non_matching_sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.NON_MATCHING))
 

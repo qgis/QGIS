@@ -102,6 +102,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   const QStringList &layerOptions,
   QString *newFilename,
   SymbologyExport symbologyExport,
+  QgsFeatureSink::SinkFlags sinkFlags,
   QString *newLayer
 )
   : mError( NoError )
@@ -111,7 +112,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 {
   init( vectorFileName, fileEncoding, fields,  geometryType,
         srs, driverName, datasourceOptions, layerOptions, newFilename, nullptr,
-        QString(), CreateOrOverwriteFile, newLayer );
+        QString(), CreateOrOverwriteFile, newLayer, sinkFlags );
 }
 
 QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
@@ -135,7 +136,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
 {
   init( vectorFileName, fileEncoding, fields, geometryType, srs, driverName,
         datasourceOptions, layerOptions, newFilename, fieldValueConverter,
-        layerName, action, newLayer );
+        layerName, action, newLayer, nullptr );
 }
 
 bool QgsVectorFileWriter::supportsFeatureStyles( const QString &driverName )
@@ -171,7 +172,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
                                 FieldValueConverter *fieldValueConverter,
                                 const QString &layerNameIn,
                                 ActionOnExistingFile action,
-                                QString *newLayer )
+                                QString *newLayer, SinkFlags sinkFlags )
 {
   mRenderContext.setRendererScale( mSymbologyScale );
 
@@ -310,6 +311,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     }
     options[ datasourceOptions.size()] = nullptr;
   }
+  mAttrIdxToOgrIdx.remove( 0 );
 
   // create the data source
   if ( action == CreateOrOverwriteFile )
@@ -685,6 +687,16 @@ void QgsVectorFileWriter::init( QString vectorFileName,
       if ( ogrIdx >= 0 )
         mAttrIdxToOgrIdx.insert( fldIdx, ogrIdx );
     }
+  }
+
+  // Geopackages require a unique feature id. If the input feature stream cannot guarantee
+  // the uniqueness of the FID column, we drop it and let OGR generate new ones
+  if ( sinkFlags.testFlag( QgsFeatureSink::RegeneratePrimaryKey ) && driverName == QLatin1String( "GPKG" ) )
+  {
+    int fidIdx = fields.lookupField( QStringLiteral( "FID" ) );
+
+    if ( fidIdx >= 0 )
+      mAttrIdxToOgrIdx.remove( fidIdx );
   }
 
   QgsDebugMsg( QStringLiteral( "Done creating fields" ) );

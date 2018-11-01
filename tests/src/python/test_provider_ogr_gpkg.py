@@ -24,6 +24,7 @@ from osgeo import gdal, ogr
 from qgis.core import (QgsFeature,
                        QgsCoordinateReferenceSystem,
                        QgsFeatureRequest,
+                       QgsFeatureSink,
                        QgsFields,
                        QgsField,
                        QgsFieldConstraints,
@@ -1112,6 +1113,52 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         provider_extent = QgsGeometry.fromRect(vl.extent())
         self.assertTrue(QgsGeometry.compare(provider_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001),
                         provider_extent.asPolygon()[0])
+
+    def testRegenerateFid(self):
+        """ Test regenerating feature ids """
+
+        fields = QgsFields()
+        fields.append(QgsField('fid', QVariant.Int))
+        fields.append(QgsField('f1', QVariant.Int))
+        tmpfile = os.path.join(self.basetestpath, 'testRegenerateFid.gpkg')
+        options = {}
+        options['update'] = True
+        options['driverName'] = 'GPKG'
+        options['layerName'] = 'table1'
+        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Polygon, QgsCoordinateReferenceSystem(3111), False, options, QgsFeatureSink.RegeneratePrimaryKey)
+        self.assertFalse(exporter.errorCode(),
+                         'unexpected export error {}: {}'.format(exporter.errorCode(), exporter.errorMessage()))
+
+        feat = QgsFeature(fields)
+
+        feat['fid'] = 0
+        feat['f1'] = 10
+        exporter.addFeature(feat)
+
+        feat['fid'] = 0
+        feat['f1'] = 20
+        exporter.addFeature(feat)
+
+        feat['fid'] = 1
+        feat['f1'] = 30
+        exporter.addFeature(feat)
+
+        feat['fid'] = 1
+        feat['f1'] = 40
+        exporter.addFeature(feat)
+
+        del exporter
+        # make sure layers exist
+        lyr = QgsVectorLayer('{}|layername=table1'.format(tmpfile), "lyr1", "ogr")
+        self.assertTrue(lyr.isValid())
+        self.assertEqual(lyr.crs().authid(), 'EPSG:3111')
+        self.assertEqual(lyr.wkbType(), QgsWkbTypes.Polygon)
+
+        values = set([f['f1'] for f in lyr.getFeatures()])
+        self.assertEqual(values, set([10, 20, 30, 40]))
+
+        fids = set([f['fid'] for f in lyr.getFeatures()])
+        self.assertEqual(len(fids), 4)
 
     def testTransaction(self):
 

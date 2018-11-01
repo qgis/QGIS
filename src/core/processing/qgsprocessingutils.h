@@ -44,7 +44,6 @@ class QgsProcessingFeatureSource;
  */
 class CORE_EXPORT QgsProcessingUtils
 {
-
   public:
 
     /**
@@ -154,13 +153,13 @@ class CORE_EXPORT QgsProcessingUtils
      * The caller takes responsibility for deleting the returned sink.
      */
 #ifndef SIP_RUN
-    static QgsFeatureSink *createFeatureSink(
-      QString &destination,
-      QgsProcessingContext &context,
-      const QgsFields &fields,
-      QgsWkbTypes::Type geometryType,
-      const QgsCoordinateReferenceSystem &crs,
-      const QVariantMap &createOptions = QVariantMap() ) SIP_FACTORY;
+    static QgsFeatureSink *createFeatureSink( QString &destination,
+        QgsProcessingContext &context,
+        const QgsFields &fields,
+        QgsWkbTypes::Type geometryType,
+        const QgsCoordinateReferenceSystem &crs,
+        const QVariantMap &createOptions = QVariantMap(),
+        QgsFeatureSink::SinkFlags sinkFlags = nullptr ) SIP_FACTORY;
 #endif
 
     /**
