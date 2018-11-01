@@ -22,6 +22,7 @@
 #include "qgsproject.h"
 #include "qgsannotationmanager.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
@@ -47,6 +48,7 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
   }
 
   QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsSvgAnnotationDialog::applySettingsToItem );
+  QObject::connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsSvgAnnotationDialog::showHelp );
   QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsSvgAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
@@ -95,4 +97,9 @@ void QgsSvgAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
   {
     applySettingsToItem();
   }
+}
+
+void QgsSvgAnnotationDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#annotation-tools" ) );
 }
