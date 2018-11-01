@@ -20,7 +20,6 @@
 
 #include <QEvent>
 #include <QString>
-#include <QRegExp>
 #include <QMetaType>
 #include <QMap>
 #include <QMetaEnum>
@@ -239,9 +238,35 @@ CORE_EXPORT uint qHash( const QVariant &variant );
 inline QString qgsDoubleToString( double a, int precision = 17 )
 {
   if ( precision )
-    return QString::number( a, 'f', precision ).remove( QRegExp( "\\.?0+$" ) );
+  {
+    QString str = QString::number( a, 'f', precision );
+    if ( str.contains( QLatin1Char( '.' ) ) )
+    {
+      // remove ending 0s
+      int idx = str.length() - 1;
+      while ( str.at( idx ) == '0' && idx > 1 )
+      {
+        idx--;
+      }
+      if ( idx < str.length() - 1 )
+        str.truncate( str.at( idx ) == '.' ? idx : idx + 1 );
+    }
+    return str;
+  }
   else
-    return QString::number( a, 'f', precision );
+  {
+    // avoid printing -0
+    // see https://bugreports.qt.io/browse/QTBUG-71439
+    const QString str( QString::number( a, 'f', precision ) );
+    if ( str == QLatin1String( "-0" ) )
+    {
+      return QLatin1String( "0" );
+    }
+    else
+    {
+      return str;
+    }
+  }
 }
 
 /**

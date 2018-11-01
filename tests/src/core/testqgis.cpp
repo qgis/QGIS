@@ -169,6 +169,9 @@ void TestQgis::doubleToString()
   QCOMPARE( qgsDoubleToString( 12000, 1 ), QString( "12000" ) );
   QCOMPARE( qgsDoubleToString( 12000, 10 ), QString( "12000" ) );
   QCOMPARE( qgsDoubleToString( 12345, -1 ), QString( "12345" ) );
+  QCOMPARE( qgsDoubleToString( 12345.12300000, 7 ), QString( "12345.123" ) );
+  QCOMPARE( qgsDoubleToString( 12345.00011111, 2 ), QString( "12345" ) );
+  QCOMPARE( qgsDoubleToString( -0.000000000708115, 0 ), QString( "0" ) );
 }
 
 void TestQgis::signalBlocker()
