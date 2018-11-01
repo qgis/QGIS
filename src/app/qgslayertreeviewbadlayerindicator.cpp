@@ -83,7 +83,7 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
   {
     if ( index.isValid() )
     {
-      const QgsLayerItem *item = qobject_cast<QgsLayerItem *>( browserModel.dataItem( index ) );
+      const QgsLayerItem *item = qobject_cast<QgsLayerItem *>( proxyModel.dataItem( index ) );
       if ( item && item->mapLayerType() == layerType )
       {
         return true;
@@ -103,7 +103,7 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
     QModelIndex idx = browserWidget->currentIndex();
     if ( isItemCompatible( idx ) )
     {
-      const QgsDataItem *item( browserModel.dataItem( idx ) );
+      const QgsDataItem *item( proxyModel.dataItem( idx ) );
       layer->setDataSource( item->mimeUri().uri, layer->name(), item->mimeUri().providerKey, QgsDataProvider::ProviderOptions() );
       // Re-apply style
       if ( ! layer->originalXmlProperties().isEmpty() )
