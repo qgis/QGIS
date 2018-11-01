@@ -171,11 +171,17 @@ void QgsBrowserDockWidget::itemDoubleClicked( const QModelIndex &index )
   if ( !item )
     return;
 
-  if ( item->handleDoubleClick() )
-    return;
-  else if ( addLayerAtIndex( index ) ) // default double-click handler
-    return;
-  else
+  QgsDataItemGuiContext context = createContext();
+
+  const QList< QgsDataItemGuiProvider * > providers = QgsGui::instance()->dataItemGuiProviderRegistry()->providers();
+  for ( QgsDataItemGuiProvider *provider : providers )
+  {
+    if ( provider->handleDoubleClick( item, context ) )
+      return;
+  }
+
+  // if no providers overrode the double click handling for this item, we give the item itself a chance
+  if ( !item->handleDoubleClick() )
   {
     // double-click not handled by browser model, so use as default view expand behavior
     if ( mBrowserView->isExpanded( index ) )
@@ -223,8 +229,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     menu->addActions( actions );
   }
 
-  QgsDataItemGuiContext context;
-  context.setMessageBar( mMessageBar );
+  QgsDataItemGuiContext context = createContext();
 
   const QList< QgsDataItemGuiProvider * > providers = QgsGui::instance()->dataItemGuiProviderRegistry()->providers();
   for ( QgsDataItemGuiProvider *provider : providers )
@@ -517,6 +522,13 @@ int QgsBrowserDockWidget::selectedItemsCount()
     return selectionModel->selectedIndexes().size();
   }
   return 0;
+}
+
+QgsDataItemGuiContext QgsBrowserDockWidget::createContext()
+{
+  QgsDataItemGuiContext context;
+  context.setMessageBar( mMessageBar );
+  return context;
 }
 
 void QgsBrowserDockWidget::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )

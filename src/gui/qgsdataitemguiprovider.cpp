@@ -38,3 +38,8 @@ void QgsDataItemGuiProvider::populateContextMenu( QgsDataItem *, QMenu *, const 
 {
 
 }
+
+bool QgsDataItemGuiProvider::handleDoubleClick( QgsDataItem *, QgsDataItemGuiContext )
+{
+  return false;
+}

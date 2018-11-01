@@ -113,6 +113,13 @@ class GUI_EXPORT QgsDataItemGuiProvider
     virtual void populateContextMenu( QgsDataItem *item, QMenu *menu,
                                       const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context );
 
+    /**
+     * Called when a user double clicks on an \a item. Providers should return true
+     * if the double-click was handled and do not want other providers to handle the
+     * double-click, and to prevent the default double-click behavior for items.
+     */
+    virtual bool handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context );
+
 };
 
 #endif // QGSDATAITEMGUIPROVIDER_H

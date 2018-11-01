@@ -34,6 +34,7 @@ class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserProxyModel;
 class QgsMessageBar;
+class QgsDataItemGuiContext;
 
 /**
  * \ingroup gui
@@ -87,8 +88,11 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
      *
      * Returns true if the index was successfully intrepreted as a map layer and loaded, or
      * false if the index is not a map layer or could not be loaded.
+     *
+     * \deprecated will be removed in QGIS 4.0 - retrieve the QgsLayerItem itself
+     * and manually add to project.
      */
-    bool addLayerAtIndex( const QModelIndex &index );
+    Q_DECL_DEPRECATED bool addLayerAtIndex( const QModelIndex &index ) SIP_DEPRECATED;
 
     //! Show context menu
     void showContextMenu( QPoint );
@@ -176,6 +180,8 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     int selectedItemsCount();
     //! Settings prefix (the object name)
     QString settingsSection() { return objectName().toLower(); }
+
+    QgsDataItemGuiContext createContext();
 
     QgsDockBrowserTreeView *mBrowserView = nullptr;
     QgsBrowserModel *mModel = nullptr;
