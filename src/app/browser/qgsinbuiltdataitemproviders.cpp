@@ -335,7 +335,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
           if ( layer && layer->isValid() )
           {
-            QgsGui::instance()->windowManager()->executeExportVectorLayerDialog( layer.get() );
+            QgisApp::instance()->saveAsFile( layer.get(), false, false );
           }
           break;
         }
@@ -345,7 +345,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           std::unique_ptr<QgsRasterLayer> layer( new QgsRasterLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
           if ( layer && layer->isValid() )
           {
-            QgsGui::instance()->windowManager()->executeExportRasterLayerDialog( layer.get() );
+            QgisApp::instance()->saveAsFile( layer.get(), false, false );
           }
           break;
         }
