@@ -22,6 +22,7 @@
 #include <ogr_api.h>
 
 #include <memory>
+#include <set>
 
 class QgsOgrFeatureIterator;
 class QgsOgrProvider;
@@ -86,8 +87,9 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     bool mFetchGeometry = false;
 
     bool mExpressionCompiled = false;
-    QgsFeatureIds mFilterFids;
-    QgsFeatureIds::const_iterator mFilterFidsIt;
+    // use std::set to get sorted ids (needed for efficient QgsFeatureRequest::FilterFids requests on OSM datasource)
+    std::set<QgsFeatureId> mFilterFids;
+    std::set<QgsFeatureId>::iterator mFilterFidsIt;
 
     QgsRectangle mFilterRect;
     QgsCoordinateTransform mTransform;
