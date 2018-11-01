@@ -191,8 +191,8 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   {
     bool ok = false;
     layer->loadDefaultMetadata( ok );
-    layerCrs = mLayer->crs();
-    layerMetadata = mLayer->htmlMetadata();
+    layerCrs = layer->crs();
+    layerMetadata = layer->htmlMetadata();
   }
 
   QString myStyle = QgsApplication::reportStyleSheet();
