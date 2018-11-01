@@ -163,9 +163,18 @@ QgsNative::NotificationResult QgsWinNative::showDesktopNotification( const QStri
   return result;
 }
 
-bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &, void *message, long * )
+bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, void *message, long * )
 {
+  static const QByteArray sWindowsGenericMSG{ "windows_generic_MSG" };
+  if ( eventType != sWindowsGenericMSG )
+    return false;
+
   MSG *pWindowsMessage = static_cast<MSG *>( message );
+  if ( pWindowsMessage->message != WM_DEVICECHANGE )
+  {
+    return false;
+  }
+
   unsigned int wParam = pWindowsMessage->wParam;
   if ( wParam == DBT_DEVICEARRIVAL || wParam == DBT_DEVICEREMOVECOMPLETE )
   {
