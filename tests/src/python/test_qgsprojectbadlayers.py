@@ -39,9 +39,15 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsProjectBadLayers(unittest.TestCase):
 
-    def test_project_roundtrip(self):
-        temp_dir = QTemporaryDir()
+    def setUp(self):
         p = QgsProject.instance()
+        p.removeAllMapLayers()
+
+    def test_project_roundtrip(self):
+        """Tests that a project with bad layers can be saved without loosing them"""
+
+        p = QgsProject.instance()
+        temp_dir = QTemporaryDir()
         for ext in ('shp', 'dbf', 'shx', 'prj'):
             copyfile(os.path.join(TEST_DATA_DIR, 'lines.%s' % ext), os.path.join(temp_dir.path(), 'lines.%s' % ext))
         copyfile(os.path.join(TEST_DATA_DIR, 'raster', 'band1_byte_ct_epsg4326.tif'), os.path.join(temp_dir.path(), 'band1_byte_ct_epsg4326.tif'))
@@ -111,6 +117,90 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         self.assertTrue(vector.isValid())
         self.assertTrue(raster.isValid())
         self.assertTrue(raster_copy.isValid())
+
+    def test_project_relations(self):
+        """Tests that a project with bad layers and relations can be saved without loosing the relations"""
+
+        temp_dir = QTemporaryDir()
+        p = QgsProject.instance()
+        for ext in ('qgs', 'gpkg'):
+            copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'relation_reference_test.%s' % ext), os.path.join(temp_dir.path(), 'relation_reference_test.%s' % ext))
+
+        # Load the good project
+        project_path = os.path.join(temp_dir.path(), 'relation_reference_test.qgs')
+        self.assertTrue(p.read(project_path))
+        point_a = list(p.mapLayersByName('point_a'))[0]
+        point_b = list(p.mapLayersByName('point_b'))[0]
+        point_a_source = point_a.publicSource()
+        point_b_source = point_b.publicSource()
+        self.assertTrue(point_a.isValid())
+        self.assertTrue(point_b.isValid())
+
+        # Check relations
+        def _check_relations():
+            relation = list(p.relationManager().relations().values())[0]
+            self.assertTrue(relation.isValid())
+            self.assertEqual(relation.referencedLayer().id(), point_b.id())
+            self.assertEqual(relation.referencingLayer().id(), point_a.id())
+
+        _check_relations()
+
+        # Now build a bad project
+        bad_project_path = os.path.join(temp_dir.path(), 'relation_reference_test_bad.qgs')
+        with open(project_path, 'r') as infile:
+            with open(bad_project_path, 'w+') as outfile:
+                outfile.write(infile.read().replace('./relation_reference_test.gpkg', './relation_reference_test-BAD_SOURCE.gpkg'))
+
+        # Load the bad project
+        self.assertTrue(p.read(bad_project_path))
+        point_a = list(p.mapLayersByName('point_a'))[0]
+        point_b = list(p.mapLayersByName('point_b'))[0]
+        self.assertFalse(point_a.isValid())
+        self.assertFalse(point_b.isValid())
+
+        # This fails because relations are not valid anymore
+        with self.assertRaises(AssertionError):
+            _check_relations()
+
+        # Changing data source, relations should be restored:
+        point_a.setDataSource(point_a_source, 'point_a', 'ogr')
+        point_b.setDataSource(point_b_source, 'point_b', 'ogr')
+        self.assertTrue(point_a.isValid())
+        self.assertTrue(point_b.isValid())
+
+        # Check if relations were restored
+        _check_relations()
+
+        # Reload the bad project
+        self.assertTrue(p.read(bad_project_path))
+        point_a = list(p.mapLayersByName('point_a'))[0]
+        point_b = list(p.mapLayersByName('point_b'))[0]
+        self.assertFalse(point_a.isValid())
+        self.assertFalse(point_b.isValid())
+
+        # This fails because relations are not valid anymore
+        with self.assertRaises(AssertionError):
+            _check_relations()
+
+        # Save the bad project
+        bad_project_path2 = os.path.join(temp_dir.path(), 'relation_reference_test_bad2.qgs')
+        p.write(bad_project_path2)
+
+        # Now fix the bad project
+        bad_project_path_fixed = os.path.join(temp_dir.path(), 'relation_reference_test_bad_fixed.qgs')
+        with open(bad_project_path2, 'r') as infile:
+            with open(bad_project_path_fixed, 'w+') as outfile:
+                outfile.write(infile.read().replace('./relation_reference_test-BAD_SOURCE.gpkg', './relation_reference_test.gpkg'))
+
+        # Load the fixed project
+        self.assertTrue(p.read(bad_project_path_fixed))
+        point_a = list(p.mapLayersByName('point_a'))[0]
+        point_b = list(p.mapLayersByName('point_b'))[0]
+        point_a_source = point_a.publicSource()
+        point_b_source = point_b.publicSource()
+        self.assertTrue(point_a.isValid())
+        self.assertTrue(point_b.isValid())
+        _check_relations()
 
 
 if __name__ == '__main__':

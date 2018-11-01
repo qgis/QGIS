@@ -136,6 +136,13 @@ Emitted when relations are added or removed to the manager.
 .. versionadded:: 2.5
 %End
 
+  public slots:
+
+    void updateRelationsStatus();
+%Docstring
+Updates relations status
+%End
+
 };
 
 /************************************************************************

@@ -366,13 +366,15 @@ class CORE_EXPORT QgsRelation
      */
     Q_INVOKABLE QString resolveReferencingField( const QString &referencedField ) const;
 
-  private:
-
     /**
      * Updates the validity status of this relation.
      * Will be called internally whenever a member is changed.
+     *
+     * \since QGIS 3.6
      */
     void updateRelationStatus();
+
+  private:
 
     mutable QExplicitlySharedDataPointer<QgsRelationPrivate> d;
 };

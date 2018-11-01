@@ -141,6 +141,13 @@ class CORE_EXPORT QgsRelationManager : public QObject
      */
     void changed();
 
+  public slots:
+
+    /**
+     * Updates relations status
+     */
+    void updateRelationsStatus();
+
   private slots:
     void readProject( const QDomDocument &doc, QgsReadWriteContext &context );
     void writeProject( QDomDocument &doc );

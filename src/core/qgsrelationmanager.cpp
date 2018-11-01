@@ -50,15 +50,22 @@ QMap<QString, QgsRelation> QgsRelationManager::relations() const
 
 void QgsRelationManager::addRelation( const QgsRelation &relation )
 {
-  if ( !relation.isValid() )
-    return;
-
   mRelations.insert( relation.id(), relation );
 
   if ( mProject )
     mProject->setDirty( true );
   emit changed();
 }
+
+
+void QgsRelationManager::updateRelationsStatus()
+{
+  for ( auto relation : mRelations )
+  {
+    relation.updateRelationStatus();
+  }
+}
+
 
 void QgsRelationManager::removeRelation( const QString &id )
 {
