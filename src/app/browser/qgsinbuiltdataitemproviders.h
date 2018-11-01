@@ -94,6 +94,7 @@ class QgsLayerItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    bool handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context ) override;
 
   private:
 
@@ -102,6 +103,22 @@ class QgsLayerItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 
 };
 
+
+class QgsProjectItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProjectItemGuiProvider() = default;
+
+    QString name() override;
+
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    bool handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context ) override;
+
+};
 
 #endif // QGSINBUILTDATAITEMPROVIDERS_H
 

@@ -383,6 +383,23 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   }
 }
 
+bool QgsLayerItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext )
+{
+  if ( !item || item->type() != QgsDataItem::Layer )
+    return false;
+
+  if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
+  {
+    const QgsMimeDataUtils::UriList layerUriList = QgsMimeDataUtils::UriList() << layerItem->mimeUri();
+    QgisApp::instance()->handleDropUriList( layerUriList );
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &items )
 {
   QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
@@ -394,7 +411,7 @@ void QgsLayerItemGuiProvider::addLayersFromItems( const QList<QgsDataItem *> &it
     if ( item && item->type() == QgsDataItem::Project )
     {
       if ( const QgsProjectItem *projectItem = qobject_cast<const QgsProjectItem *>( item ) )
-        QgisApp::instance()->openFile( projectItem->path(), QStringLiteral( "project" ) );
+        QgisApp::instance()->openProject( projectItem->path() );
 
       return;
     }
@@ -425,4 +442,40 @@ void QgsLayerItemGuiProvider::showPropertiesForItem( QgsLayerItem *item )
   dialog->setAttribute( Qt::WA_DeleteOnClose );
   dialog->setItem( item );
   dialog->show();
+}
+
+//
+// QgsProjectItemGuiProvider
+//
+
+QString QgsProjectItemGuiProvider::name()
+{
+  return QStringLiteral( "project_items" );
+}
+
+void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
+{
+  if ( !item || item->type() != QgsDataItem::Project )
+    return;
+
+  if ( QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item ) )
+  {
+    // TODO add actions
+  }
+}
+
+bool QgsProjectItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext )
+{
+  if ( !item || item->type() != QgsDataItem::Project )
+    return false;
+
+  if ( QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item ) )
+  {
+    QgisApp::instance()->openProject( projectItem->path() );
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }

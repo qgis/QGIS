@@ -204,7 +204,6 @@ class APP_EXPORT QgsProjectRootDataItem : public QgsProjectItem
      */
     QgsProjectRootDataItem( QgsDataItem *parent, const QString &path );
     QVector<QgsDataItem *> createChildren() override;
-
 };
 
 /**
