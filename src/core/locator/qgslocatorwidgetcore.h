@@ -54,7 +54,7 @@ class CORE_EXPORT QgsLocatorWidgetCore : public QObject
     QgsLocator *locator() const;
 
     //! Returns the proxy model
-    QgsLocatorProxyModel *proxyModel() const;
+    Q_INVOKABLE QgsLocatorProxyModel *proxyModel() const;
 
     //! Returns true if some text to be search is pending in the queue
     bool hasQueueRequested() const;
