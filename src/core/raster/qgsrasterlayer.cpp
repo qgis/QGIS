@@ -786,6 +786,33 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 
 void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
 {
+
+  bool wasValid( isValid() );
+
+  QDomImplementation domImplementation;
+  QDomDocumentType documentType;
+  QDomDocument doc;
+  QString errorMsg;
+  QDomElement rootNode;
+
+  // Store the original style
+  if ( wasValid && ! loadDefaultStyleFlag )
+  {
+    documentType = domImplementation.createDocumentType(
+                     QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+    doc = QDomDocument( documentType );
+    rootNode = doc.createElement( QStringLiteral( "qgis" ) );
+    rootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
+    doc.appendChild( rootNode );
+    QgsReadWriteContext writeContext;
+    if ( ! writeSymbology( rootNode, doc, errorMsg, writeContext ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not store symbology for layer %1: %2" )
+                   .arg( name() )
+                   .arg( errorMsg ) );
+    }
+  }
+
   if ( mDataProvider )
     closeDataProvider();
 
@@ -809,6 +836,18 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
     {
       loadDefaultStyle( defaultLoadedFlag );
     }
+    else if ( wasValid && errorMsg.isEmpty() )  // Restore the style
+    {
+      QgsReadWriteContext readContext;
+      if ( ! readSymbology( rootNode, errorMsg, readContext ) )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not restore symbology for layer %1: %2" )
+                     .arg( name() )
+                     .arg( errorMsg ) );
+
+      }
+    }
+
     if ( !defaultLoadedFlag )
     {
       setDefaultContrastEnhancement();

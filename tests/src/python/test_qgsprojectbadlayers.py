@@ -15,22 +15,29 @@ __copyright__ = 'Copyright 2018, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+import filecmp
 
 import qgis  # NOQA
 
 from qgis.core import (QgsProject,
                        QgsVectorLayer,
+                       QgsCoordinateTransform,
+                       QgsMapSettings,
                        QgsRasterLayer,
                        QgsMapLayer,
+                       QgsRectangle,
+                       QgsDataProvider,
+                       QgsCoordinateReferenceSystem,
                        )
 from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
+from qgis.PyQt.QtGui import QFont, QColor
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
+from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir, QSize
 
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
+from utilities import (unitTestDataPath, renderMapToImage)
 from shutil import copyfile
 
 app = start_app()
@@ -42,6 +49,24 @@ class TestQgsProjectBadLayers(unittest.TestCase):
     def setUp(self):
         p = QgsProject.instance()
         p.removeAllMapLayers()
+
+    @classmethod
+    def getBaseMapSettings(cls):
+        """
+        :rtype: QgsMapSettings
+        """
+        ms = QgsMapSettings()
+        crs = QgsCoordinateReferenceSystem()
+        """:type: QgsCoordinateReferenceSystem"""
+        crs.createFromSrid(4326)
+        ms.setBackgroundColor(QColor(152, 219, 249))
+        ms.setOutputSize(QSize(420, 280))
+        ms.setOutputDpi(72)
+        ms.setFlag(QgsMapSettings.Antialiasing, True)
+        ms.setFlag(QgsMapSettings.UseAdvancedEffects, False)
+        ms.setFlag(QgsMapSettings.ForceVectorOutput, False)  # no caching?
+        ms.setDestinationCrs(crs)
+        return ms
 
     def test_project_roundtrip(self):
         """Tests that a project with bad layers can be saved without loosing them"""
@@ -201,6 +226,38 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         self.assertTrue(point_a.isValid())
         self.assertTrue(point_b.isValid())
         _check_relations()
+
+    def testStyles(self):
+        """Test that styles for rasters and vectors are kept when setDataSource is called"""
+
+        options = QgsDataProvider.ProviderOptions()
+        temp_dir = QTemporaryDir()
+        p = QgsProject.instance()
+        copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'good_layers_test.qgs'), os.path.join(temp_dir.path(), 'good_layers_test.qgs'))
+        copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'bad_layers_test.gpkg'), os.path.join(temp_dir.path(), 'bad_layers_test.gpkg'))
+
+        p = QgsProject().instance()
+        self.assertTrue(p.read(os.path.join(TEST_DATA_DIR, 'projects', 'good_layers_test.qgs')))
+
+        ms = self.getBaseMapSettings()
+        point_a = list(p.mapLayersByName('point_a'))[0]
+        point_b = list(p.mapLayersByName('point_b'))[0]
+        raster = list(p.mapLayersByName('bad_layer_raster_test'))[0]
+        self.assertTrue(point_a.isValid())
+        self.assertTrue(point_b.isValid())
+        self.assertTrue(raster.isValid())
+        ms.setExtent(QgsRectangle(2.81861, 41.98138, 2.81952, 41.9816))
+        ms.setLayers([point_a, point_b, raster])
+        image = renderMapToImage(ms)
+        print(os.path.join(temp_dir.path(), 'expected.png'))
+        self.assertTrue(image.save(os.path.join(temp_dir.path(), 'expected.png'), 'PNG'))
+
+        point_a.setDataSource(point_a.publicSource(), point_a.name(), 'ogr', options)
+        point_b.setDataSource(point_b.publicSource(), point_b.name(), 'ogr', options)
+        raster.setDataSource(raster.publicSource(), raster.name(), 'gdal', options)
+        self.assertTrue(image.save(os.path.join(temp_dir.path(), 'actual.png'), 'PNG'))
+
+        self.assertTrue(filecmp.cmp(os.path.join(temp_dir.path(), 'actual.png'), os.path.join(temp_dir.path(), 'expected.png')), False)
 
 
 if __name__ == '__main__':

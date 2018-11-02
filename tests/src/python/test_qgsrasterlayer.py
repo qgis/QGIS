@@ -722,6 +722,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myFileInfo = QFileInfo(myPath)
         myBaseName = myFileInfo.baseName()
         layer = QgsRasterLayer(myPath, myBaseName)
+        renderer = QgsSingleBandGrayRenderer(layer.dataProvider(), 2)
 
         image = layer.previewAsImage(QSize(400, 400))
         self.assertFalse(image.isNull())
@@ -738,7 +739,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertFalse(image.isNull())
         self.assertTrue(image.save(os.path.join(temp_dir.path(), 'actual.png'), "PNG"))
 
-        self.assertTrue(filecmp.cmp(os.path.join(temp_dir.path(), 'actual.png'), os.path.join(temp_dir.path(), 'expected.png')))
+        self.assertTrue(filecmp.cmp(os.path.join(temp_dir.path(), 'actual.png'), os.path.join(temp_dir.path(), 'expected.png')), False)
 
 
 if __name__ == '__main__':
