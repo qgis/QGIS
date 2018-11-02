@@ -18,7 +18,7 @@
 
 
 
-class QgsMapCanvas : QGraphicsView
+class QgsMapCanvas : QGraphicsView, QgsMapCanvasInterface
 {
 %Docstring
 Map canvas is a class for displaying all GIS data types on a canvas.
@@ -65,7 +65,8 @@ empty string before setLayers() calls can be made.
 
     void setCurrentLayer( QgsMapLayer *layer );
 
-    const QgsMapSettings &mapSettings() const /KeepReference/;
+    virtual const QgsMapSettings &mapSettings() const ${SIP_FINAL} /KeepReference/;
+
 %Docstring
 Gets access to properties used for map rendering
 

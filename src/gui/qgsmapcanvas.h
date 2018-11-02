@@ -26,6 +26,7 @@
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
 #include "qgis.h"
+#include "qgsmapcanvasinterface.h"
 
 #include <QDomDocument>
 #include <QGraphicsView>
@@ -71,7 +72,7 @@ class QgsMapCanvasAnnotationItem;
  * Map canvas is a class for displaying all GIS data types on a canvas.
  */
 
-class GUI_EXPORT QgsMapCanvas : public QGraphicsView
+class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsMapCanvasInterface
 {
 
 #ifdef SIP_RUN
@@ -119,7 +120,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * Gets access to properties used for map rendering
      * \since QGIS 2.4
      */
-    const QgsMapSettings &mapSettings() const SIP_KEEPREFERENCE;
+    const QgsMapSettings &mapSettings() const FINAL SIP_KEEPREFERENCE;
 
     /**
      * sets destination coordinate reference system

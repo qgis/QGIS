@@ -1,0 +1,42 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmapcanvasinterface.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsMapCanvasInterface
+{
+%Docstring
+The QgsMapCanvasInterface class provides a simple interface to access
+core components of a map canvas.
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsmapcanvasinterface.h"
+%End
+  public:
+    explicit QgsMapCanvasInterface();
+%Docstring
+Constructor of QgsMapCanvasInterface
+%End
+    virtual ~QgsMapCanvasInterface();
+
+    virtual const QgsMapSettings &mapSettings() const = 0 /KeepReference/;
+%Docstring
+Returns the map settings
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmapcanvasinterface.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
