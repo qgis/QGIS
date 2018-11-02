@@ -233,11 +233,20 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         options = QgsDataProvider.ProviderOptions()
         temp_dir = QTemporaryDir()
         p = QgsProject.instance()
-        copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'good_layers_test.qgs'), os.path.join(temp_dir.path(), 'good_layers_test.qgs'))
+        project_path = os.path.join(temp_dir.path(), 'good_layers_test.qgs')
+        copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'good_layers_test.qgs'), project_path)
         copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'bad_layers_test.gpkg'), os.path.join(temp_dir.path(), 'bad_layers_test.gpkg'))
+        for f in (
+                'bad_layer_raster_test.tfw',
+                'bad_layer_raster_test.tiff',
+                'bad_layer_raster_test.tiff.aux.xml',
+                'bad_layers_test.gpkg',
+                'bad_layers_test.qgs'):
+            copyfile(os.path.join(TEST_DATA_DIR, 'projects', f), os.path.join(temp_dir.path(), f))
 
         p = QgsProject().instance()
-        self.assertTrue(p.read(os.path.join(TEST_DATA_DIR, 'projects', 'good_layers_test.qgs')))
+        self.assertTrue(p.read(project_path))
+        self.assertEqual(p.count(), 3)
 
         ms = self.getBaseMapSettings()
         point_a = list(p.mapLayersByName('point_a'))[0]
@@ -252,12 +261,37 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         print(os.path.join(temp_dir.path(), 'expected.png'))
         self.assertTrue(image.save(os.path.join(temp_dir.path(), 'expected.png'), 'PNG'))
 
-        point_a.setDataSource(point_a.publicSource(), point_a.name(), 'ogr', options)
-        point_b.setDataSource(point_b.publicSource(), point_b.name(), 'ogr', options)
-        raster.setDataSource(raster.publicSource(), raster.name(), 'gdal', options)
+        point_a_source = point_a.publicSource()
+        point_b_source = point_b.publicSource()
+        raster_source = raster.publicSource()
+        point_a.setDataSource(point_a_source, point_a.name(), 'ogr', options)
+        point_b.setDataSource(point_b_source, point_b.name(), 'ogr', options)
+        raster.setDataSource(raster_source, raster.name(), 'gdal', options)
         self.assertTrue(image.save(os.path.join(temp_dir.path(), 'actual.png'), 'PNG'))
 
         self.assertTrue(filecmp.cmp(os.path.join(temp_dir.path(), 'actual.png'), os.path.join(temp_dir.path(), 'expected.png')), False)
+
+        # Now build a bad project
+        bad_project_path = os.path.join(temp_dir.path(), 'bad_layers_test.qgs')
+        with open(project_path, 'r') as infile:
+            with open(bad_project_path, 'w+') as outfile:
+                outfile.write(infile.read().replace('./bad_layers_test.', './bad_layers_test-BAD_SOURCE.').replace('bad_layer_raster_test.tiff', 'bad_layer_raster_test-BAD_SOURCE.tiff'))
+
+        self.assertTrue(p.read(bad_project_path))
+        self.assertEqual(p.count(), 3)
+        point_a = list(p.mapLayersByName('point_a'))[0]
+        point_b = list(p.mapLayersByName('point_b'))[0]
+        raster = list(p.mapLayersByName('bad_layer_raster_test'))[0]
+        self.assertFalse(point_a.isValid())
+        self.assertFalse(point_b.isValid())
+        self.assertFalse(raster.isValid())
+
+        point_a.setDataSource(point_a_source, point_a.name(), 'ogr', options)
+        point_b.setDataSource(point_b_source, point_b.name(), 'ogr', options)
+        raster.setDataSource(raster_source, raster.name(), 'gdal', options)
+        self.assertTrue(image.save(os.path.join(temp_dir.path(), 'actual_fixed.png'), 'PNG'))
+
+        self.assertTrue(filecmp.cmp(os.path.join(temp_dir.path(), 'actual_fixed.png'), os.path.join(temp_dir.path(), 'expected.png')), False)
 
 
 if __name__ == '__main__':
