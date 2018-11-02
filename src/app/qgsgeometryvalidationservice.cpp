@@ -88,6 +88,11 @@ void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &la
         enableLayerChecks( vectorLayer );
       } );
 
+      connect( vectorLayer->geometryOptions(), &QgsGeometryOptions::geometryChecksChanged, this, [this, vectorLayer]()
+      {
+        enableLayerChecks( vectorLayer );
+      } );
+
       connect( vectorLayer, &QgsVectorLayer::destroyed, this, [vectorLayer, this]()
       {
         cleanupLayerChecks( vectorLayer );
