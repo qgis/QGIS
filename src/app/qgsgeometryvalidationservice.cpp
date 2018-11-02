@@ -88,6 +88,11 @@ void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &la
         enableLayerChecks( vectorLayer );
       } );
 
+      connect( vectorLayer->geometryOptions(), &QgsGeometryOptions::geometryChecksChanged, this, [this, vectorLayer]()
+      {
+        enableLayerChecks( vectorLayer );
+      } );
+
       connect( vectorLayer, &QgsVectorLayer::destroyed, this, [vectorLayer, this]()
       {
         cleanupLayerChecks( vectorLayer );
@@ -175,9 +180,12 @@ void QgsGeometryValidationService::cleanupLayerChecks( QgsVectorLayer *layer )
   VectorLayerCheckInformation &checkInformation = mLayerChecks[layer];
 
   cancelTopologyCheck( layer );
+  clearTopologyChecks( layer );
 
   qDeleteAll( checkInformation.singleFeatureChecks );
+  checkInformation.singleFeatureChecks.clear();
   qDeleteAll( checkInformation.topologyChecks );
+  checkInformation.topologyChecks.clear();
   checkInformation.context.reset();
 }
 
@@ -315,6 +323,7 @@ void QgsGeometryValidationService::clearTopologyChecks( QgsVectorLayer *layer )
 {
   QList<std::shared_ptr<QgsGeometryCheckError>> &allErrors = mLayerChecks[layer].topologyCheckErrors;
   allErrors.clear();
+  layer->setAllowCommit( mLayerChecks[layer].singleFeatureCheckErrors.empty() );
 
   emit topologyChecksCleared( layer );
 }
@@ -363,6 +372,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
 {
   cancelTopologyCheck( layer );
   clearTopologyChecks( layer );
+  layer->setAllowCommit( false );
 
   QgsFeatureIds affectedFeatureIds;
   if ( layer->editBuffer() )
