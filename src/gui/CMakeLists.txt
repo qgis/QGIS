@@ -244,6 +244,7 @@ SET(QGIS_GUI_SRCS
   qgscustomdrophandler.cpp
   qgscurveeditorwidget.cpp
   qgsdatumtransformdialog.cpp
+  qgsdatasourceselectdialog.cpp
   qgsdetaileditemdata.cpp
   qgsdetaileditemdelegate.cpp
   qgsdetaileditemwidget.cpp
@@ -422,6 +423,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgscurveeditorwidget.h
   qgscustomdrophandler.h
   qgsdatumtransformdialog.h
+  qgsdatasourceselectdialog.h
   qgsdetaileditemdelegate.h
   qgsdetaileditemwidget.h
   qgsdial.h
@@ -787,6 +789,7 @@ SET(QGIS_GUI_HDRS
   qgsbrowserdockwidget_p.h
   qgsvertexmarker.h
   qgsdatasourcemanagerdialog.h
+  qgsdatasourceselectdialog.h
   qgsabstractdatasourcewidget.h
   qgswidgetstatehelper_p.h
   qgssourceselectprovider.h

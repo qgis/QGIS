@@ -88,6 +88,11 @@ void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &la
         enableLayerChecks( vectorLayer );
       } );
 
+      connect( vectorLayer->geometryOptions(), &QgsGeometryOptions::geometryChecksChanged, this, [this, vectorLayer]()
+      {
+        enableLayerChecks( vectorLayer );
+      } );
+
       connect( vectorLayer, &QgsVectorLayer::destroyed, this, [vectorLayer, this]()
       {
         cleanupLayerChecks( vectorLayer );
@@ -175,9 +180,12 @@ void QgsGeometryValidationService::cleanupLayerChecks( QgsVectorLayer *layer )
   VectorLayerCheckInformation &checkInformation = mLayerChecks[layer];
 
   cancelTopologyCheck( layer );
+  clearTopologyChecks( layer );
 
   qDeleteAll( checkInformation.singleFeatureChecks );
+  checkInformation.singleFeatureChecks.clear();
   qDeleteAll( checkInformation.topologyChecks );
+  checkInformation.topologyChecks.clear();
   checkInformation.context.reset();
 }
 
@@ -315,6 +323,7 @@ void QgsGeometryValidationService::clearTopologyChecks( QgsVectorLayer *layer )
 {
   QList<std::shared_ptr<QgsGeometryCheckError>> &allErrors = mLayerChecks[layer].topologyCheckErrors;
   allErrors.clear();
+  layer->setAllowCommit( mLayerChecks[layer].singleFeatureCheckErrors.empty() );
 
   emit topologyChecksCleared( layer );
 }
@@ -348,6 +357,9 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
   if ( !allErrors.empty() )
     mLayerChecks[layer].singleFeatureCheckErrors.insert( fid, allErrors );
 
+  if ( !mLayerChecks[layer].singleFeatureCheckErrors.empty() )
+    layer->setAllowCommit( false );
+
   emit geometryCheckCompleted( layer, fid, allErrors );
 }
 
@@ -360,6 +372,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
 {
   cancelTopologyCheck( layer );
   clearTopologyChecks( layer );
+  layer->setAllowCommit( false );
 
   QgsFeatureIds affectedFeatureIds;
   if ( layer->editBuffer() )
@@ -432,7 +445,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer 
   connect( futureWatcher, &QFutureWatcherBase::finished, this, [&allErrors, layer, feedbacks, futureWatcher, this]()
   {
     QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Read );
-    layer->setAllowCommit( allErrors.empty() );
+    layer->setAllowCommit( allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty() );
     errorLocker.unlock();
     qDeleteAll( feedbacks.values() );
     futureWatcher->deleteLater();

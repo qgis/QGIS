@@ -37,10 +37,15 @@ Add directory to favorites
 %End
 
   public slots:
-    void addLayerAtIndex( const QModelIndex &index );
+
+    bool addLayerAtIndex( const QModelIndex &index );
 %Docstring
-Add layer at index
+Adds the layer corresponding to the specified model ``index``.
+
+Returns true if the index was successfully intrepreted as a map layer and loaded, or
+false if the index is not a map layer or could not be loaded.
 %End
+
     void showContextMenu( QPoint );
 %Docstring
 Show context menu

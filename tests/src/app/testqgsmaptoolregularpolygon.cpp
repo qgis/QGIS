@@ -99,7 +99,7 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFrom2Points()
   QCOMPARE( mLayer->featureCount(), ( long )1 );
   QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = "LineStringZ (0 0 333, 2 1 333, 4 -0 333, 4 -2 333, 2 -3 333, -0 -2 333, 0 0 333)";
+  QString wkt = "LineStringZ (0 0 333, 2 1 333, 4 0 333, 4 -2 333, 2 -3 333, 0 -2 333, 0 0 333)";
   QCOMPARE( f.geometry().asWkt( 0 ), wkt );
 
   mLayer->rollBack();
@@ -123,7 +123,7 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndPoint()
   QCOMPARE( mLayer->featureCount(), ( long )1 );
   QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = "LineStringZ (1 2 222, 3 -0 222, 1 -2 222, -1 -2 222, -3 0 222, -1 2 222, 1 2 222)";
+  QString wkt = "LineStringZ (1 2 222, 3 0 222, 1 -2 222, -1 -2 222, -3 0 222, -1 2 222, 1 2 222)";
   QCOMPARE( f.geometry().asWkt( 0 ), wkt );
 
   mLayer->rollBack();
@@ -147,7 +147,7 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCroner()
   QCOMPARE( mLayer->featureCount(), ( long )1 );
   QgsFeature f = mLayer->getFeature( newFid );
 
-  QString wkt = "LineStringZ (2 1 111, 2 -1 111, -0 -2 111, -2 -1 111, -2 1 111, 0 2 111, 2 1 111)";
+  QString wkt = "LineStringZ (2 1 111, 2 -1 111, 0 -2 111, -2 -1 111, -2 1 111, 0 2 111, 2 1 111)";
   QCOMPARE( f.geometry().asWkt( 0 ), wkt );
 
   mLayer->rollBack();

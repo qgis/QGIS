@@ -35,7 +35,7 @@ void QgsLinuxNative::initializeMainWindow( QWindow *,
     const QString & )
 {
   // Hardcoded desktop file value matching our official .deb packages
-  mDesktopFile = QStringLiteral( "qgis.desktop" );
+  mDesktopFile = QStringLiteral( "org.qgis.qgis.desktop" );
 }
 
 void QgsLinuxNative::openFileExplorerAndSelectFile( const QString &path )

@@ -54,6 +54,8 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
   setupUi( this );
+  mDatabaseFileWidget->setStorageMode( QgsFileWidget::SaveFile );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDwgImportDialog::buttonBox_accepted );
   connect( mDatabaseFileWidget, &QgsFileWidget::fileChanged, this, &QgsDwgImportDialog::mDatabaseFileWidget_textChanged );
   connect( pbBrowseDrawing, &QPushButton::clicked, this, &QgsDwgImportDialog::pbBrowseDrawing_clicked );
@@ -222,7 +224,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
   }
   else
   {
-    QgisApp::instance()->messageBar()->pushMessage( tr( "Could not open layer list" ), Qgis::Critical, 4 );
+    bar->pushMessage( tr( "Could not open layer list" ), Qgis::Critical, 4 );
   }
 }
 
@@ -247,11 +249,11 @@ void QgsDwgImportDialog::pbImportDrawing_clicked()
   QString error;
   if ( importer.import( leDrawing->text(), error, cbExpandInserts->isChecked(), cbUseCurves->isChecked() ) )
   {
-    QgisApp::instance()->messageBar()->pushMessage( tr( "Drawing import completed." ), Qgis::Info, 4 );
+    bar->pushMessage( tr( "Drawing import completed." ), Qgis::Info, 4 );
   }
   else
   {
-    QgisApp::instance()->messageBar()->pushMessage( tr( "Drawing import failed (%1)" ).arg( error ), Qgis::Critical, 4 );
+    bar->pushMessage( tr( "Drawing import failed (%1)" ).arg( error ), Qgis::Critical, 4 );
   }
 
   pbLoadDatabase_clicked();

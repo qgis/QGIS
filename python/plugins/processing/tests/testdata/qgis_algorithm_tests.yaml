@@ -6232,5 +6232,71 @@ tests:
         name: expected/interpolate_point_polys.gml
         type: vector
 
+  - algorithm: native:mergevectorlayers
+    name: Merge vector layers with conflicting feature ids
+    params:
+      LAYERS:
+        params:
+        - name: custom/pol.gpkg|layername=pol1
+          type: vector
+        - name: custom/pol.gpkg|layername=pol2
+          type: vector
+        - name: custom/pol.gpkg|layername=pol3
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        # If you ever run into this test producing Polygons instead of MultiPolygons as output
+        # that is totally expected and you are invited to replace the file merged_pol.gpkg with
+        # a single polygon version.
+        name: ogr:dbname='expected/merged_pol.gpkg' table="output" (geom) sql=
+        uri: expected/merged_pol.gpkg|layername=merged_pol
+        type: vector
+        compare:
+          fields:
+            path: skip
+
+  - algorithm: native:removeduplicatesbyattribute
+    name: Remove dupes by attribute 1
+    params:
+      FIELDS:
+      - num_field1
+      INPUT:
+        name: custom/duplicate_attributes.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/remove_duplicates1.gml
+        type: vector
+
+  - algorithm: native:removeduplicatesbyattribute
+    name: Remove dupes by attribute 2
+    params:
+      FIELDS:
+      - num_field2
+      INPUT:
+        name: custom/duplicate_attributes.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/remove_duplicates2.gml
+        type: vector
+
+  - algorithm: native:removeduplicatesbyattribute
+    name: Remove dupes by attribute 3
+    params:
+      FIELDS:
+      - num_field2
+      - text_field
+      INPUT:
+        name: custom/duplicate_attributes.gml
+        type: vector
+    results:
+      DUPLICATES:
+        name: expected/remove_duplicates_dupes.gml
+        type: vector
+      OUTPUT:
+        name: expected/remove_duplicates3.gml
+        type: vector
 
 # See ../README.md for a description of the file format

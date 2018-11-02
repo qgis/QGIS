@@ -6376,6 +6376,18 @@ QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
   return providers;
 }
 
+QString QgsGeoPackageSourceSelectProvider::name() const { return QStringLiteral( "GeoPackage" ); }
+
+QgsAbstractDataSourceWidget *QgsGeoPackageSourceSelectProvider::createDataSourceWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ) const
+{
+  return new QgsOgrDbSourceSelect( QStringLiteral( "GPKG" ), QObject::tr( "GeoPackage" ), QObject::tr( "GeoPackage Database (*.gpkg)" ), parent, fl, widgetMode );
+}
+
+QgsAbstractDataSourceWidget *QgsOgrVectorSourceSelectProvider::createDataSourceWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ) const
+{
+  return new QgsOgrSourceSelect( parent, fl, widgetMode );
+}
+
 #endif
 
 void QgsOgrLayerReleaser::operator()( QgsOgrLayer *layer )
@@ -6396,14 +6408,4 @@ QGISEXTERN QgsTransaction *createTransaction( const QString &connString )
   return new QgsOgrTransaction( connString, ds );
 }
 
-QString QgsGeoPackageSourceSelectProvider::name() const { return QStringLiteral( "GeoPackage" ); }
 
-QgsAbstractDataSourceWidget *QgsGeoPackageSourceSelectProvider::createDataSourceWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ) const
-{
-  return new QgsOgrDbSourceSelect( QStringLiteral( "GPKG" ), QObject::tr( "GeoPackage" ), QObject::tr( "GeoPackage Database (*.gpkg)" ), parent, fl, widgetMode );
-}
-
-QgsAbstractDataSourceWidget *QgsOgrVectorSourceSelectProvider::createDataSourceWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ) const
-{
-  return new QgsOgrSourceSelect( parent, fl, widgetMode );
-}

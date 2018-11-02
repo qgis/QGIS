@@ -553,7 +553,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                          const QStringList &datasourceOptions = QStringList(),
                          const QStringList &layerOptions = QStringList(),
                          QString *newFilename = nullptr,
-                         QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology
+                         QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
+                         QgsFeatureSink::SinkFlags sinkFlags = nullptr
 #ifndef SIP_RUN
                              , QString *newLayer = nullptr
 #endif
@@ -880,7 +881,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                QStringList layerOptions, QString *newFilename,
                QgsVectorFileWriter::FieldValueConverter *fieldValueConverter,
                const QString &layerName,
-               QgsVectorFileWriter::ActionOnExistingFile action, QString *newLayer );
+               QgsVectorFileWriter::ActionOnExistingFile action, QString *newLayer, QgsFeatureSink::SinkFlags sinkFlags );
     void resetMap( const QgsAttributeList &attributes );
 
     std::unique_ptr< QgsFeatureRenderer > mRenderer;

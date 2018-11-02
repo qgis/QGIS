@@ -38,6 +38,10 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsmeshlayer.h"
+#include "qgsgui.h"
+#include "qgsnative.h"
+#include "qgsmaptoolpan.h"
+#include <QDesktopServices>
 
 #include <QDragEnterEvent>
 
@@ -56,7 +60,7 @@ QgsBrowserPropertiesWrapLabel::QgsBrowserPropertiesWrapLabel( const QString &tex
   setPalette( pal );
   setLineWrapMode( QTextEdit::WidgetWidth );
   setWordWrapMode( QTextOption::WrapAnywhere );
-  connect( qobject_cast<QAbstractTextDocumentLayout *>( document()->documentLayout() ), &QAbstractTextDocumentLayout::documentSizeChanged,
+  connect( document()->documentLayout(), &QAbstractTextDocumentLayout::documentSizeChanged,
            this, &QgsBrowserPropertiesWrapLabel::adjustHeight );
   setMaximumHeight( 20 );
 }
@@ -113,8 +117,22 @@ QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget *parent )
 {
   setupUi( this );
 
-  mUriLabel = new QgsBrowserPropertiesWrapLabel( QString(), this );
-  mHeaderGridLayout->addItem( new QWidgetItem( mUriLabel ), 1, 1 );
+  // we don't want links to open in the little widget, open them externally instead
+  mMetadataTextBrowser->setOpenLinks( false );
+  connect( mMetadataTextBrowser, &QTextBrowser::anchorClicked, this, &QgsBrowserLayerProperties::urlClicked );
+
+  mMapCanvas->setLayers( QList< QgsMapLayer * >() );
+  mMapCanvas->setMapTool( new QgsMapToolPan( mMapCanvas ) );
+  mMapCanvas->freeze( true );
+
+  connect( mTabWidget, &QTabWidget::currentChanged, this, [ = ]
+  {
+    if ( mTabWidget->currentWidget() == mPreviewTab && mMapCanvas->isFrozen() )
+    {
+      mMapCanvas->freeze( false );
+      mMapCanvas->refresh();
+    }
+  } );
 }
 
 class ProjectionSettingRestorer
@@ -155,6 +173,8 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   ProjectionSettingRestorer restorer;
   ( void )restorer; // no warnings
 
+  mLayer.reset();
+
   // find root item
   // we need to create a temporary layer to get metadata
   // we could use a provider but the metadata is not as complete and "pretty"  and this is easier
@@ -163,47 +183,17 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   {
     QgsDebugMsg( QStringLiteral( "creating raster layer" ) );
     // should copy code from addLayer() to split uri ?
-    std::unique_ptr<QgsRasterLayer> layer( new QgsRasterLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() ) );
-    if ( layer )
-    {
-      if ( layer->isValid() )
-      {
-        bool ok = false;
-        layer->loadDefaultMetadata( ok );
-        layerCrs = layer->crs();
-        layerMetadata = layer->htmlMetadata();
-      }
-    }
+    mLayer = qgis::make_unique< QgsRasterLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
   }
   else if ( type == QgsMapLayer::MeshLayer )
   {
     QgsDebugMsg( QStringLiteral( "creating mesh layer" ) );
-    std::unique_ptr<QgsMeshLayer> layer( new QgsMeshLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() ) );
-    if ( layer )
-    {
-      if ( layer->isValid() )
-      {
-        bool ok = false;
-        layer->loadDefaultMetadata( ok );
-        layerCrs = layer->crs();
-        layerMetadata = layer->htmlMetadata();
-      }
-    }
+    mLayer = qgis::make_unique < QgsMeshLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
   }
   else if ( type == QgsMapLayer::VectorLayer )
   {
     QgsDebugMsg( QStringLiteral( "creating vector layer" ) );
-    std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
-    if ( layer )
-    {
-      if ( layer->isValid() )
-      {
-        bool ok = false;
-        layer->loadDefaultMetadata( ok );
-        layerCrs = layer->crs();
-        layerMetadata = layer->htmlMetadata();
-      }
-    }
+    mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
   }
   else if ( type == QgsMapLayer::PluginLayer )
   {
@@ -211,14 +201,23 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     return;
   }
 
-  mNameLabel->setText( layerItem->name() );
-  mUriLabel->setText( layerItem->uri() );
-  mProviderLabel->setText( layerItem->providerKey() );
+  if ( mLayer && mLayer->isValid() )
+  {
+    bool ok = false;
+    mLayer->loadDefaultMetadata( ok );
+    layerCrs = mLayer->crs();
+    layerMetadata = mLayer->htmlMetadata();
+
+    mMapCanvas->setDestinationCrs( mLayer->crs() );
+    mMapCanvas->setLayers( QList< QgsMapLayer * >() << mLayer.get() );
+    mMapCanvas->zoomToFullExtent();
+  }
+
   QString myStyle = QgsApplication::reportStyleSheet();
   mMetadataTextBrowser->document()->setDefaultStyleSheet( myStyle );
   mMetadataTextBrowser->setHtml( layerMetadata );
 
-  // report if layer was set to to project crs without prompt (may give a false positive)
+// report if layer was set to to project crs without prompt (may give a false positive)
   if ( defaultProjectionOption == QLatin1String( "prompt" ) )
   {
     QgsCoordinateReferenceSystem defaultCrs =
@@ -233,20 +232,18 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   }
 }
 
-void QgsBrowserLayerProperties::setCondensedMode( bool condensedMode )
+void QgsBrowserLayerProperties::setCondensedMode( bool )
 {
-  if ( condensedMode )
-  {
-    mUriLabel->setLineWrapMode( QTextEdit::NoWrap );
-    mUriLabel->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    mUriLabel->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-  }
+
+}
+
+void QgsBrowserLayerProperties::urlClicked( const QUrl &url )
+{
+  QFileInfo file( url.toLocalFile() );
+  if ( file.exists() && !file.isDir() )
+    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
-  {
-    mUriLabel->setLineWrapMode( QTextEdit::WidgetWidth );
-    mUriLabel->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
-    mUriLabel->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
-  }
+    QDesktopServices::openUrl( url );
 }
 
 QgsBrowserDirectoryProperties::QgsBrowserDirectoryProperties( QWidget *parent )

@@ -45,6 +45,7 @@
 #include "qgssettings.h"
 #include "qgsanimatedicon.h"
 #include "qgsproject.h"
+#include "qgsvectorlayer.h"
 
 // use GDAL VSI mechanism
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
@@ -636,6 +637,43 @@ QgsMapLayer::LayerType QgsLayerItem::mapLayerType() const
   return QgsMapLayer::VectorLayer; // no warnings
 }
 
+QgsLayerItem::LayerType QgsLayerItem::typeFromMapLayer( QgsMapLayer *layer )
+{
+  switch ( layer->type() )
+  {
+    case QgsMapLayer::VectorLayer:
+    {
+      switch ( qobject_cast< QgsVectorLayer * >( layer )->geometryType() )
+      {
+        case QgsWkbTypes::PointGeometry:
+          return Point;
+
+        case QgsWkbTypes::LineGeometry:
+          return Line;
+
+        case QgsWkbTypes::PolygonGeometry:
+          return Polygon;
+
+        case QgsWkbTypes::NullGeometry:
+          return TableLayer;
+
+        case QgsWkbTypes::UnknownGeometry:
+          return Vector;
+      }
+
+      return Vector; // no warnings
+    }
+
+    case QgsMapLayer::RasterLayer:
+      return Raster;
+    case QgsMapLayer::PluginLayer:
+      return Plugin;
+    case QgsMapLayer::MeshLayer:
+      return Mesh;
+  }
+  return Vector; // no warnings
+}
+
 QString QgsLayerItem::layerTypeAsString( QgsLayerItem::LayerType layerType )
 {
   static int enumIdx = staticMetaObject.indexOfEnumerator( "LayerType" );
@@ -840,14 +878,6 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     QString path = dir.absoluteFilePath( name );
     QFileInfo fileInfo( path );
 
-    if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 ||
-         fileInfo.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
-    {
-      QgsDataItem *item = new QgsProjectItem( this, fileInfo.completeBaseName(), path );
-      children.append( item );
-      continue;
-    }
-
     if ( fileInfo.suffix().compare( QLatin1String( "zip" ), Qt::CaseInsensitive ) == 0 ||
          fileInfo.suffix().compare( QLatin1String( "tar" ), Qt::CaseInsensitive ) == 0 )
     {
@@ -859,6 +889,7 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
       }
     }
 
+    bool createdItem = false;
     for ( QgsDataItemProvider *provider : providers )
     {
       int capabilities = provider->capabilities();
@@ -873,6 +904,20 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
       if ( item )
       {
         children.append( item );
+        createdItem = true;
+      }
+    }
+
+    if ( !createdItem )
+    {
+      // if item is a QGIS project, and no specific item provider has overridden handling of
+      // project items, then use the default project item behavior
+      if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 ||
+           fileInfo.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
+      {
+        QgsDataItem *item = new QgsProjectItem( this, fileInfo.completeBaseName(), path );
+        children.append( item );
+        continue;
       }
     }
 

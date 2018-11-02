@@ -461,6 +461,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     //! User's settings (URI, authorization, layer, style, ...)
     QgsWmsSettings mSettings;
+
+    friend class TestQgsWmsProvider;
+
 };
 
 

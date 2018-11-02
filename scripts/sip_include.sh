@@ -31,7 +31,11 @@ if [[ "$OSTYPE" =~ darwin* ]]; then
   GP=g
 fi
 
-modules=(core gui analysis server)
+if [[ -n $1 ]]; then
+  modules=($1)
+else
+  modules=(core gui analysis server)
+fi
 sources=(HDRS MOC_HDRS SRCS)
 
 for module in "${modules[@]}"; do

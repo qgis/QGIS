@@ -51,7 +51,8 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
     QgsWkbTypes::Type geometryType,
     const QgsCoordinateReferenceSystem &crs,
     bool overwrite,
-    const QMap<QString, QVariant> &options )
+    const QMap<QString, QVariant> &options,
+    QgsFeatureSink::SinkFlags sinkFlags )
   : mErrorCount( 0 )
   , mAttributeCount( -1 )
 
@@ -118,6 +119,22 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 
     delete vectorProvider;
     return;
+  }
+
+  // If the result is a geopackage layer and there is already a field name FID requested which
+  // might contain duplicates, make sure to generate a new field with a unique name instead
+  // that will be filled by ogr with unique values.
+
+  // HACK sorry
+  const QString path = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), uri ).value( QStringLiteral( "path" ) ).toString();
+  if ( sinkFlags.testFlag( QgsFeatureSink::SinkFlag::RegeneratePrimaryKey ) && path.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
+  {
+    QString fidName = options.value( QStringLiteral( "FID" ), QStringLiteral( "FID" ) ).toString();
+    int fidIdx = vectorProvider->fields().lookupField( fidName );
+    if ( fidIdx != -1 )
+    {
+      mOldToNewAttrIdx.remove( fidIdx );
+    }
   }
 
   mProvider = vectorProvider;

@@ -5,7 +5,7 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <TITLE>QGIS News</TITLE>
 
-<!-- Included doc/style.css -->
+<!-- Included /home/fischer/src/qgis/doc/style.css -->
 <STYLE TYPE="text/css">
 body{  background: white;
   color: black;
@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS News</H1>
 <H2>Change history for the QGIS Project</H2>
-<H3>Friday October 26, 2018</H3>
+<H3>Thursday November 01, 2018</H3>
 </DIV>
 
 <DIV CLASS="toc">
 
   <OL>
-  <LI><A HREF="#toc1">What's new in Version 3.4 'Madeira'?</A>
+  <LI><A HREF="#toc1">What's new in Version 3.4-LTR 'Madeira'?</A>
   <LI><A HREF="#toc2">What's new in Version 3.2 'Bonn'?</A>
   <LI><A HREF="#toc3">What's new in Version 3.0 'Girona'?</A>
   <LI><A HREF="#toc4">What's new in Version 2.18 'Las Palmas'?</A>
@@ -120,233 +120,90 @@ label{  background-color: #FFFFCC;
 </DIV>
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Friday October 26, 2018
-Last Change : Friday October 26, 2018
+Last Updated: Thursday November 01, 2018
+Last Change : Thursday November 01, 2018
 </P>
 
 <A NAME="toc1"></A>
-<H1>1. What's new in Version 3.4 'Madeira'?</H1>
+<H1>1. What's new in Version 3.4-LTR 'Madeira'?</H1>
 
 <P>
 This release has following new features:
 </P>
-<P>
-&lt;!DOCTYPE html&gt;
-&lt;html lang="en"&gt;
-&lt;head&gt;
-    &lt;meta charset="utf-8"&gt;
-    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-    &lt;title&gt;Projecta: &lt;/title&gt;
-    &lt;meta http-equiv="content-type" content="text/html;charset=UTF-8"&gt;
-    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-    &lt;link href="<A HREF="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css">https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css</A>" rel="stylesheet" type="text/css" media="screen, projection" /&gt;
-    &lt;link rel="stylesheet" href="<A HREF="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css</A>"&gt;
-    &lt;link rel="stylesheet" href="<A HREF="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css</A>"&gt;
-    &lt;link rel="stylesheet" href="<A HREF="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css</A>"&gt;
-    &lt;script src="<A HREF="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js">https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js</A>"&gt;&lt;/script&gt;
-    &lt;script src="<A HREF="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js">https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js</A>"&gt;&lt;/script&gt;
-    &lt;script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"&gt;&lt;/script&gt;
-    &lt;script src="<A HREF="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js">https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js</A>"&gt;&lt;/script&gt;
-    &lt;script src="<A HREF="https://cdn.rawgit.com/leafo/sticky-kit/v1.1.2/jquery.sticky-kit.min.js">https://cdn.rawgit.com/leafo/sticky-kit/v1.1.2/jquery.sticky-kit.min.js</A>"&gt;&lt;/script&gt;
-    &lt;!-- Chosen library --&gt;
-    &lt;link rel="stylesheet" href="/static/chosen/chosen.min.5c28ef6cd2eb.css"&gt;
-    &lt;script src="/static/chosen/chosen.jquery.min.a54caa75f091.js"&gt;&lt;/script&gt;
-    &lt;link href="<A HREF="https://fonts.googleapis.com/css?family=Lato">https://fonts.googleapis.com/css?family=Lato</A>" rel="stylesheet"&gt;
-    &lt;link href="/static/css/project.1e2a1cc4d9d1.css" rel="stylesheet" type="text/css" media="screen, projection" /&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;nav class="navbar navbar-default navbar-fixed-top" role="navigation"&gt;
-    &lt;div class="navbar-header"&gt;
-        &lt;button type="button" class="navbar-toggle" data-toggle="collapse"
-                data-target="#top-navbar"&gt;
-            &lt;span class="sr-only"&gt;Toggle navigation&lt;/span&gt;
-            &lt;span class="icon-bar"&gt;&lt;/span&gt;
-            &lt;span class="icon-bar"&gt;&lt;/span&gt;
-            &lt;span class="icon-bar"&gt;&lt;/span&gt;
-        &lt;/button&gt;
-        &lt;a class="navbar-brand" href="/en/"&gt;
-            &lt;span class="glyphicon glyphicon-home"&gt;&lt;/span&gt;
-        &lt;/a&gt;
-    &lt;/div&gt;
-    &lt;div class="collapse navbar-collapse" id="top-navbar"&gt;
-    &lt;ul class="nav navbar-nav"&gt;
-        &lt;li&gt;
-            &lt;a href="#" class="dropdown-toggle" data-toggle="dropdown"&gt;
-                All Projects &lt;b class="caret"&gt;&lt;/b&gt;
-            &lt;/a&gt;
-            &lt;ul class="dropdown-menu"&gt;
-            &lt;/ul&gt;
-        &lt;/li&gt;
-    &lt;/ul&gt;
-    &lt;ul class="nav navbar-nav"&gt;
-        &lt;li&gt;
-            &lt;a href="#" class="dropdown-toggle" data-toggle="dropdown"&gt;
-                Organisation &lt;b class="caret"&gt;&lt;/b&gt;
-            &lt;/a&gt;
-            &lt;ul class="dropdown-menu"&gt;
-                &lt;li&gt;
-                    &lt;a href="/en/create-organisation/"&gt;
-                            Create Organisation
-                        &lt;/a&gt;
-                &lt;/li&gt;
-                &lt;li&gt;
-                    &lt;a href="/en/list-organisation/"&gt;
-                            Organisation List
-                        &lt;/a&gt;
-                &lt;/li&gt;
-            &lt;/ul&gt;
-        &lt;/li&gt;
-    &lt;/ul&gt;
-    &lt;ul class="nav navbar-nav"&gt;
-        &lt;li&gt;
-            &lt;a href="/en/project/create/"&gt;Create Project&lt;/a&gt;
-        &lt;/li&gt;
-    &lt;/ul&gt;
-        &lt;ul class="nav navbar-nav navbar-right" style="margin-right: 0"&gt;
-&lt;li class="dropdown" style="padding-left: 2pt;"&gt;
-    &lt;a href="#" class="dropdown-toggle" data-toggle="dropdown"&gt;
-                     &lt;span&gt;&lt;b class="caret"&gt;&lt;/b&gt; &lt;img src="/static/img/language_flags/en.png" style="height: 13pt; margin-bottom: 3pt;"&gt;
-                         &lt;span&gt;  English&lt;/span&gt;&lt;/span&gt;
-    &lt;/a&gt;
-    &lt;ul class="dropdown-menu"&gt;
-            &lt;li&gt;
-                &lt;a href="/en/qgis/version/3.4.0/gnu/"
-                   class="selected"
-                   lang="en"&gt;
-                         &lt;img src="/static/img/language_flags/en.png" style="height: 13pt; margin-bottom: 3pt;"&gt;
-                        English
-                &lt;/a&gt;
-            &lt;/li&gt;
-            &lt;li&gt;
-                &lt;a href="/id/qgis/version/3.4.0/gnu/"
-                   class=""
-                   lang="id"&gt;
-                         &lt;img src="/static/img/language_flags/id.png" style="height: 13pt; margin-bottom: 3pt;"&gt;
-                        Indonesian
-                &lt;/a&gt;
-            &lt;/li&gt;
-    &lt;/ul&gt;
-&lt;/li&gt;
-&lt;li class="dropdown"&gt;
-    &lt;a href="#" class="dropdown-toggle" data-toggle="dropdown"&gt;
-            &lt;span&gt;&lt;b class="caret"&gt;&lt;/b&gt; Account&lt;/span&gt;
-    &lt;/a&gt;
-    &lt;ul class="dropdown-menu"&gt;
-            &lt;li&gt;&lt;a href='/en/accounts/login/'&gt;Log In&lt;/a&gt;&lt;/li&gt;
-            &lt;li&gt;&lt;a href='/en/accounts/signup/'&gt;Sign Up&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-&lt;/li&gt;
-        &lt;/ul&gt;
-    &lt;/div&gt;
-&lt;/nav&gt;
-&lt;div id="container" class="container"&gt;
-    &lt;div class="body-content"&gt;
-    &lt;div class="row text-center" style="margin-top: 20%;"&gt;
-        &lt;h1 class="text-muted"&gt;404&lt;/h1&gt;
-        &lt;p class="lead"&gt;Sorry, but what you're looking for does not exist.&lt;/p&gt;
-        &lt;p class="lead text-muted"&gt;
-            This could be for any number of reasons, but most likely you followed a
-            broken link....
-        &lt;/p&gt;
-        &lt;p class="lead text-muted"&gt;
-            Here are the public projects you might be looking for:
-        &lt;/p&gt;
-        &lt;p class="lead text-muted"&gt;
-                &lt;a href="/en/cogo/"&gt;
-                    CoGo
-                &lt;/a&gt; |
-                &lt;a href="/en/geonode/"&gt;
-                    GeoNode
-                &lt;/a&gt; |
-                &lt;a href="/en/geosafe/"&gt;
-                    GeoSAFE
-                &lt;/a&gt; |
-                &lt;a href="/en/inasafe/"&gt;
-                    InaSAFE
-                &lt;/a&gt; |
-                &lt;a href="/en/inasafe-realtime2/"&gt;
-                    InaSAFE Realtime
-                &lt;/a&gt; |
-                &lt;a href="/en/kartoza-docker-recipes/"&gt;
-                    Kartoza Docker Recipes
-                &lt;/a&gt; |
-                &lt;a href="/en/osm/"&gt;
-                    OpenStreetMap
-                &lt;/a&gt; |
-                &lt;a href="/en/qfield/"&gt;
-                    QField
-                &lt;/a&gt; |
-                &lt;a href="/en/qgis/"&gt;
-                    QGIS
-                &lt;/a&gt; |
-                &lt;a href="/en/sansa-catalogue/"&gt;
-                    SANSA Catalogue
-                &lt;/a&gt; |
-                &lt;a href="/en/stream-feature-extractor/"&gt;
-                    Stream Feature Extractor
-                &lt;/a&gt;
-        &lt;/p&gt;
-    &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;nav class="navbar navbar-default navbar-fixed-bottom center"
-         role="navigation"&gt;
-        &lt;p class="text-center" style="padding-top: 8px"&gt;
-            This application was created by &lt;a href="<A HREF="http://kartoza.com">http://kartoza.com</A>"&gt;
-            Kartoza (Pty) Ltd.
-            &lt;img src="/static/img/kartoza.07bf4584cee3.png" alt="Linfiniti"/&gt;
-        &lt;/a&gt;
-            &lt;a href="<A HREF="https://github.com/kartoza/projecta">https://github.com/kartoza/projecta</A>"&gt;
-                Available on GitHub!
-            &lt;/a&gt;
-            &lt;span&gt;Version: 1.7.35
-&lt;/span&gt;
-        &lt;/p&gt;
-    &lt;/nav&gt;
-&lt;/div&gt;
-&lt;!-- Creates the bootstrap modal where the thumbnaiul image will appear --&gt;
-&lt;div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"&gt;
-    &lt;div class="modal-dialog" &gt;
-        &lt;div class="modal-content" &gt;
-            &lt;div class="modal-body" &gt;
-                &lt;a href="#" id="image-url" target="_blank"&gt;
-                    &lt;img src="" id="imagepreview"&gt;
-                &lt;/a&gt;
-            &lt;/div&gt;
-            Click the image to open original size image in new tab
-            &lt;div class="modal-footer"&gt;
-                &lt;button type="button" class="btn btn-default" data-dismiss="modal"&gt;Close&lt;/button&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-&lt;script   type="text/javascript" src="/static/js/contrib.b9648727b74f.js" charset="utf-8"&gt;&lt;/script&gt;
-&lt;script   type="text/javascript" src="/static/js/project.dd1f87ef295e.js" charset="utf-8"&gt;&lt;/script&gt;
-&lt;script&gt;
-    $(function(){
-        // Paus GIF's on page load...
-        window.onload = function() {
-            Gifffer();
-        };
-        $('.tooltip-toggle').tooltip();
-        if ($('.panel-to-wrap').length) {
-            while ((panels = $(':not(.row)&gt;.panel-to-wrap:lt(3)')).length) {
-                panels.wrapAll($('&lt;div class="row"&gt;&lt;/div&gt;'));
-            }
-        }
-        if ($('.thumbnail-to-wrap').length) {
-            while ((panels = $(':not(.row)&gt;.thumbnail-to-wrap:lt(4)')).length) {
-                panels.wrapAll($('&lt;div class="row"&gt;&lt;/div&gt;'));
-            }
-        }
-    });
-    function copyToClipboard(text) {
-        window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
-    }
-&lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;
--
-</P>
+
+<UL>
+<LI>Expressions: New expression functions and variables
+<LI>Expressions: Code completion for expression builder
+<LI>User Interface: Auto selection of exported files in file manager
+<LI>User Interface: New "Open Directory" option for disabled welcome page projects
+<LI>User Interface: UX Improvements for Temporary Scratch Layers
+<LI>User Interface: Task manager improvements
+<LI>User Interface: Hyperlinks to local vector &amp; raster datasets in the information panel
+<LI>User Interface: Style manager improvements
+<LI>User Interface: Polished browser panel interface and experience
+<LI>User Interface: QML chart and drawings widget
+<LI>Symbology: Mesh layer styling
+<LI>Symbology: Classify symmetric in graduated renderer
+<LI>Digitising: GPS tracking improvements
+<LI>Digitising: More angle choices in advanced digitizing dock
+<LI>Digitising: Vertex tool can work on the current layer only
+<LI>Digitising: Add reverse line maptools
+<LI>Digitising: Geometry Precision
+<LI>Digitising: Automatically remove duplicate nodes
+<LI>Digitising: Check for geometry validity
+<LI>Digitising: Topology checks while editing
+<LI>Data Management: Translation of QGIS projects
+<LI>Data Management: Switch Attribute Table dock mode on demand
+<LI>Data Management: New locator filter to search across all layers
+<LI>Data Management: Non-removable (required) layers highlighted in layer tree
+<LI>Data Management: Append raster layer to an existing Geopackage
+<LI>Map Composer: 3d map items
+<LI>Processing: Edit in place
+<LI>Processing: Store models inside project
+<LI>Processing: Sample Raster Values
+<LI>Processing: New 'Raster pixels to polygons' algorithm
+<LI>Processing: K Means clustering algorithm
+<LI>Processing: dbscan spatial clustering algorithm
+<LI>Processing: Improved algorithms
+<LI>Processing: Filter Vertices by M and Filter Vertices by Z algorithms
+<LI>Processing: "Array of Translated Features" algorithm
+<LI>Processing: "Array of offset (parallel) lines" algorithm
+<LI>Processing: Choice of units for non degree/unknown distances
+<LI>Processing: "Drape features to z/m" algorithms
+<LI>Processing: "Raster pixels to points" algorithm
+<LI>Processing: Line substring algorithm
+<LI>Processing: "Interpolate point on line" algorithm
+<LI>Processing: k-neighbour concave hull
+<LI>Processing: Python scripts which implement algorithms now execute the algorithm on drag and drop and browser double click
+<LI>Processing: New GDAL's rearrange band algorithm
+<LI>Processing: "Precalculated" values for model algorithm parameters
+<LI>Processing: "Categorize a layer using a style XML file" algorithm
+<LI>General: Flatpak
+<LI>General: SVG files can be embedded in projects and symbols
+<LI>General: OpenCL based acceleration
+<LI>Data Providers: OAuth2 authentication method plugin
+<LI>Data Providers: Mesh layer: New mesh layer format support
+<LI>Data Providers: Mesh layer: add function to identify value on mesh layers
+<LI>Data Providers: Mesh layer: allow to choose different vector and scalar dataset
+<LI>Data Providers:  Mesh layer: allow render vectors/arrows on the user-defined grid
+<LI>Data Providers: JSON/JSONB Type support
+<LI>Data Providers: ESRI Token Authentication support
+<LI>Data Providers: SQL Server - Invalid geometry handling
+<LI>QGIS Server: Server Cache can be manage by plugins
+<LI>QGIS Server: WMTS 1.0.0 support
+<LI>QGIS Server: Add ability to define min. scale for WMTS
+<LI>QGIS Server:  Support QGIS Server logs to stderr
+<LI>Plugins: Support for encrypted zips in the Plugin Manager
+<LI>Plugins: Offline Editing GeoPackage
+<LI>Programmability: QgsSpatialIndexKDBush
+<LI>Programmability: QgsRasterDataProvider::sample method for efficient sampling of rasters at a given point
+<LI>Programmability: New geometry API call to return a curve substring
+<LI>Programmability: sip Module API Changes
+<LI>3D Features: Improved navigation
+<LI>3D Features: Animation
+<LI>3D Features: Simple rendering of 3D linestrings
+<LI>3D Features: Identification map tool for 3D views
+</UL>
 
 <A NAME="toc2"></A>
 <H1>2. What's new in Version 3.2 'Bonn'?</H1>
@@ -3590,5 +3447,5 @@ July 6, 2002
 </DIV>
 
 <!-- html code generated by txt2tags 2.6 (http://txt2tags.org) -->
-<!-- cmdline: txt2tags -\-encoding=utf-8 -odoc/news.html -t html doc/news.t2t -->
+<!-- cmdline: txt2tags -\-encoding=utf-8 -o/home/fischer/src/qgis/debian/build/doc/news.html -t html /home/fischer/src/qgis/doc/news.t2t -->
 </BODY></HTML>

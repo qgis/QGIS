@@ -106,7 +106,7 @@ class Grass7Utils:
             si.wShowWindow = subprocess.SW_HIDE
         with subprocess.Popen(
                 [Grass7Utils.command, '-v'],
-                shell=True if isMac() else False,
+                shell=False,
                 stdout=subprocess.PIPE,
                 stdin=subprocess.DEVNULL,
                 stderr=subprocess.STDOUT,
@@ -361,7 +361,7 @@ class Grass7Utils:
 
         with subprocess.Popen(
                 command,
-                shell=True if isMac() else False,
+                shell=False,
                 stdout=subprocess.PIPE,
                 stdin=subprocess.DEVNULL,
                 stderr=subprocess.STDOUT,
@@ -379,7 +379,16 @@ class Grass7Utils:
                     if 'r.out' in line or 'v.out' in line:
                         grassOutDone = True
                     loglines.append(line)
-                    feedback.pushConsoleInfo(line)
+                    if any([l in line for l in ['WARNING', 'ERROR']]):
+                        feedback.reportError(line.strip())
+                    elif 'Segmentation fault' in line:
+                        feedback.reportError(line.strip())
+                        feedback.reportError('\n' + Grass7Utils.tr('GRASS command crashed :( Try a different set of input parameters and consult the GRASS algorithm manual for more information.') + '\n')
+                        if ProcessingConfig.getSetting(Grass7Utils.GRASS_USE_VEXTERNAL):
+                            feedback.reportError(Grass7Utils.tr(
+                                'Suggest disabling the experimental "use v.external" option from the Processing GRASS Provider options.') + '\n')
+                    elif line.strip():
+                        feedback.pushConsoleInfo(line.strip())
 
         # Some GRASS scripts, like r.mapcalculator or r.fillnulls, call
         # other GRASS scripts during execution. This may override any
@@ -390,7 +399,7 @@ class Grass7Utils:
             command, grassenv = Grass7Utils.prepareGrassExecution(outputCommands)
             with subprocess.Popen(
                     command,
-                    shell=True if isMac() else False,
+                    shell=False,
                     stdout=subprocess.PIPE,
                     stdin=subprocess.DEVNULL,
                     stderr=subprocess.STDOUT,
@@ -405,9 +414,12 @@ class Grass7Utils:
                                 line[len('GRASS_INFO_PERCENT') + 2:]))
                         except:
                             pass
-                    else:
-                        loglines.append(line)
-                        feedback.pushConsoleInfo(line)
+                    if any([l in line for l in ['WARNING', 'ERROR']]):
+                        loglines.append(line.strip())
+                        feedback.reportError(line.strip())
+                    elif line.strip():
+                        loglines.append(line.strip())
+                        feedback.pushConsoleInfo(line.strip())
 
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_CONSOLE):
             QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', Qgis.Info)

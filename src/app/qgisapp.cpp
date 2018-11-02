@@ -1149,6 +1149,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   registerCustomDropHandler( new QgsQlrDropHandler() );
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsQptDataItemProvider() );
   registerCustomDropHandler( new QgsQptDropHandler() );
+  QgsApplication::dataItemProviderRegistry()->addProvider( new QgsStyleXmlDataItemProvider() );
+  registerCustomDropHandler( new QgsStyleXmlDropHandler() );
+
   mSplash->showMessage( tr( "Starting Python" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   loadPythonSupport();
@@ -1157,6 +1160,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsPyDataItemProvider() );
   registerCustomDropHandler( new QgsPyDropHandler() );
 #endif
+
+  QgsApplication::dataItemProviderRegistry()->addProvider( new QgsProjectDataItemProvider() );
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
@@ -1558,6 +1563,13 @@ QgisApp::~QgisApp()
   {
     delete canvas;
   }
+
+  // these may have references to map layers which need to be cleaned up
+  delete mBrowserWidget;
+  mBrowserWidget = nullptr;
+  delete mBrowserWidget2;
+  mBrowserWidget2 = nullptr;
+  delete mBrowserModel;
 
   QgsGui::instance()->nativePlatformInterface()->cleanup();
 
@@ -10384,7 +10396,9 @@ QMap< QString, int > QgisApp::optionsPagesMap()
     sOptionsPagesMap.insert( tr( "Network" ), 13 );
     sOptionsPagesMap.insert( tr( "Locator" ), 14 );
     sOptionsPagesMap.insert( tr( "Advanced" ), 15 );
+#ifdef HAVE_OPENCL
     sOptionsPagesMap.insert( tr( "Acceleration" ), 16 );
+#endif
   } );
 
   QMap< QString, int > map = sOptionsPagesMap;

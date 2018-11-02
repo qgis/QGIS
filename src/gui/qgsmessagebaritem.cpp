@@ -109,7 +109,8 @@ void QgsMessageBarItem::writeContent()
     }
     icon = QgsApplication::getThemeIcon( msgIcon );
   }
-  mLblIcon->setPixmap( icon.pixmap( 24 ) );
+  const int iconSize = std::max( 24.0, fontMetrics().height() * 1.2 );
+  mLblIcon->setPixmap( icon.pixmap( iconSize ) );
 
 
   // STYLESHEETS

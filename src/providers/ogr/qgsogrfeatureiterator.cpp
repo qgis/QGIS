@@ -41,12 +41,16 @@
 
 QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>( source, ownSource, request )
-  , mFilterFids( mRequest.filterFids() )
-  , mFilterFidsIt( mFilterFids.constBegin() )
   , mSharedDS( source->mSharedDS )
   , mFirstFieldIsFid( source->mFirstFieldIsFid )
   , mFieldsWithoutFid( source->mFieldsWithoutFid )
 {
+  for ( const auto &id :  mRequest.filterFids() )
+  {
+    mFilterFids.insert( id );
+  }
+  mFilterFidsIt = mFilterFids.begin();
+
   // Since connection timeout for OGR connections is problematic and can lead to crashes, disable for now.
   mRequest.setTimeout( -1 );
   if ( mSharedDS )
@@ -235,7 +239,47 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
 {
   feature.setValid( false );
   gdal::ogr_feature_unique_ptr fet;
-  fet.reset( OGR_L_GetFeature( mOgrLayer, FID_TO_NUMBER( id ) ) );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
+  if ( !QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mSource->mDriverName ) )
+  {
+    OGRLayerH nextFeatureBelongingLayer;
+    bool found = false;
+    // First pass: try to read from the last feature, in the hope the dataset
+    // returns them in increasing feature id number (and as we use a std::set
+    // for mFilterFids, we get them in increasing number by the iterator)
+    // Second pass: reset before reading
+    for ( int passNumber = 0; passNumber < 2; passNumber++ )
+    {
+      while ( fet.reset( GDALDatasetGetNextFeature(
+                           mConn->ds, &nextFeatureBelongingLayer, nullptr, nullptr, nullptr ) ), fet )
+      {
+        if ( nextFeatureBelongingLayer == mOgrLayer )
+        {
+          if ( OGR_F_GetFID( fet.get() ) == FID_TO_NUMBER( id ) )
+          {
+            found = true;
+            break;
+          }
+        }
+      }
+      if ( found || passNumber == 1 )
+      {
+        break;
+      }
+      GDALDatasetResetReading( mConn->ds );
+    }
+
+    if ( !found )
+    {
+      return false;
+    }
+  }
+  else
+#endif
+  {
+    fet.reset( OGR_L_GetFeature( mOgrLayer, FID_TO_NUMBER( id ) ) );
+  }
 
   if ( !fet )
   {
@@ -281,10 +325,10 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
   }
   else if ( mRequest.filterType() == QgsFeatureRequest::FilterFids )
   {
-    while ( mFilterFidsIt != mFilterFids.constEnd() )
+    while ( mFilterFidsIt != mFilterFids.end() )
     {
       QgsFeatureId nextId = *mFilterFidsIt;
-      mFilterFidsIt++;
+      ++mFilterFidsIt;
 
       if ( fetchFeatureWithId( nextId, feature ) )
         return true;
@@ -351,7 +395,7 @@ bool QgsOgrFeatureIterator::rewind()
 
   resetReading();
 
-  mFilterFidsIt = mFilterFids.constBegin();
+  mFilterFidsIt = mFilterFids.begin();
 
   return true;
 }

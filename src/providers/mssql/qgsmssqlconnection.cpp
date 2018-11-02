@@ -24,8 +24,10 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QSet>
+#include <QCoreApplication>
 
 int QgsMssqlConnection::sConnectionId = 0;
+QMutex QgsMssqlConnection::sMutex{ QMutex::Recursive };
 
 QSqlDatabase QgsMssqlConnection::getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password )
 {
@@ -50,13 +52,39 @@ QSqlDatabase QgsMssqlConnection::getDatabase( const QString &service, const QStr
     connectionName = service;
 
   const QString threadSafeConnectionName = dbConnectionName( connectionName );
+
+  // while everything we use from QSqlDatabase here is thread safe, we need to ensure
+  // that the connection cleanup on thread finalization happens in a predictable order
+  QMutexLocker locker( &sMutex );
+
   if ( !QSqlDatabase::contains( threadSafeConnectionName ) )
   {
     db = QSqlDatabase::addDatabase( QStringLiteral( "QODBC" ), threadSafeConnectionName );
     db.setConnectOptions( QStringLiteral( "SQL_ATTR_CONNECTION_POOLING=SQL_CP_ONE_PER_HENV" ) );
+
+    // for background threads, remove database when current thread finishes
+    if ( QThread::currentThread() != QCoreApplication::instance()->thread() )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Scheduled auth db remove on thread close" ), 2 );
+
+      // IMPORTANT - we use a direct connection here, because the database removal must happen immediately
+      // when the thread finishes, and we cannot let this get queued on the main thread's event loop.
+      // Otherwise, the QSqlDatabase's private data's thread gets reset immediately the QThread::finished,
+      // and a subsequent call to QSqlDatabase::database with the same thread address (yep it happens, actually a lot)
+      // triggers a condition in QSqlDatabase which detects the nullptr private thread data and returns an invalid database instead.
+      // QSqlDatabase::removeDatabase is thread safe, so this is ok to do.
+      QObject::connect( QThread::currentThread(), &QThread::finished, QThread::currentThread(), [connectionName]
+      {
+        QMutexLocker locker( &sMutex );
+        QSqlDatabase::removeDatabase( connectionName );
+      }, Qt::DirectConnection );
+    }
   }
   else
+  {
     db = QSqlDatabase::database( threadSafeConnectionName );
+  }
+  locker.unlock();
 
   db.setHostName( host );
   QString connectionString;
@@ -306,6 +334,5 @@ QString QgsMssqlConnection::dbConnectionName( const QString &name )
   // Starting with Qt 5.11, sharing the same connection between threads is not allowed.
   // We use a dedicated connection for each thread requiring access to the database,
   // using the thread address as connection name.
-  const QString threadAddress = QStringLiteral( ":0x%1" ).arg( QString::number( reinterpret_cast< quintptr >( QThread::currentThread() ), 16 ) );
-  return name + threadAddress;
+  return QStringLiteral( "%1:0x%2" ).arg( name ).arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
 }

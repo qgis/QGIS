@@ -31,6 +31,7 @@ import nose2
 import shutil
 import os
 import tempfile
+import re
 
 from qgis.core import (QgsVectorLayer,
                        QgsApplication,
@@ -46,6 +47,9 @@ from qgis.testing import (
     unittest
 )
 from processing.algs.grass7.Grass7Utils import Grass7Utils
+
+
+testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
 class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
@@ -240,6 +244,65 @@ class TestGrass7AlgorithmsVectorTest(unittest.TestCase, AlgorithmsTestBase.Algor
         self.assertEqual(res.featureCount(), 2)
 
         QgsProject.instance().removeMapLayer(layer)
+
+    def testVectorLayerInput(self):
+        alg = QgsApplication.processingRegistry().createAlgorithmById('grass7:v.buffer')
+        self.assertIsNotNone(alg)
+        self.assertFalse(alg.commands)
+
+        def get_command(alg):
+            command = alg.commands[-1]
+            command = re.sub(r'output=".*?"', 'output="###"', command)
+            command = command.replace(testDataPath, 'testdata')
+            return command
+
+        # GML source
+        source = os.path.join(testDataPath, 'points.gml')
+        vl = QgsVectorLayer(source)
+        self.assertTrue(vl.isValid())
+        alg.loadVectorLayer('test_layer', vl, external=False)
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/points.gml" output="###" --overwrite -o')
+        # try with external -- not support for GML, so should fall back to v.in.ogr
+        alg.loadVectorLayer('test_layer', vl, external=True)
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/points.gml" output="###" --overwrite -o')
+
+        # SHP source
+        source = os.path.join(testDataPath, 'lines_z.shp')
+        vl = QgsVectorLayer(source)
+        self.assertTrue(vl.isValid())
+        alg.loadVectorLayer('test_layer', vl, external=False)
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/lines_z.shp" output="###" --overwrite -o')
+        # try with external -- should work for shapefile
+        alg.loadVectorLayer('test_layer', vl, external=True)
+        self.assertEqual(get_command(alg), 'v.external input="testdata/lines_z.shp" output="###" --overwrite -o')
+
+        # GPKG source
+        source = os.path.join(testDataPath, 'custom/pol.gpkg')
+        vl = QgsVectorLayer(source + '|layername=pol2')
+        self.assertTrue(vl.isValid())
+        alg.loadVectorLayer('test_layer', vl, external=False)
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/custom/pol.gpkg" layer="pol2" output="###" --overwrite -o')
+        # try with external -- should work for Geopackage (although grass itself tends to crash here!)
+        alg.loadVectorLayer('test_layer', vl, external=True)
+        self.assertEqual(get_command(alg), 'v.external input="testdata/custom/pol.gpkg" layer="pol2" output="###" --overwrite -o')
+
+        # different layer
+        source = os.path.join(testDataPath, 'custom/pol.gpkg')
+        vl = QgsVectorLayer(source + '|layername=pol3')
+        self.assertTrue(vl.isValid())
+        alg.loadVectorLayer('test_layer', vl, external=False)
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/custom/pol.gpkg" layer="pol3" output="###" --overwrite -o')
+        alg.loadVectorLayer('test_layer', vl, external=True)
+        self.assertEqual(get_command(alg), 'v.external input="testdata/custom/pol.gpkg" layer="pol3" output="###" --overwrite -o')
+
+        # GPKG no layer: you get what you get and you don't get upset
+        source = os.path.join(testDataPath, 'custom/pol.gpkg')
+        vl = QgsVectorLayer(source)
+        self.assertTrue(vl.isValid())
+        alg.loadVectorLayer('test_layer', vl, external=False)
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/custom/pol.gpkg" output="###" --overwrite -o')
+        alg.loadVectorLayer('test_layer', vl, external=True)
+        self.assertEqual(get_command(alg), 'v.external input="testdata/custom/pol.gpkg" output="###" --overwrite -o')
 
 
 if __name__ == '__main__':

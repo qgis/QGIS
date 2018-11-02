@@ -91,6 +91,8 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserModel
   action->setCheckable( true );
   menu->addAction( action );
 
+  mBrowserView->setExpandsOnDoubleClick( false );
+
   connect( mActionRefresh, &QAction::triggered, this, &QgsBrowserDockWidget::refresh );
   connect( mActionAddLayers, &QAction::triggered, this, &QgsBrowserDockWidget::addSelectedLayers );
   connect( mActionCollapse, &QAction::triggered, mBrowserView, &QgsDockBrowserTreeView::collapseAll );
@@ -169,8 +171,16 @@ void QgsBrowserDockWidget::itemDoubleClicked( const QModelIndex &index )
 
   if ( item->handleDoubleClick() )
     return;
+  else if ( addLayerAtIndex( index ) ) // default double-click handler
+    return;
   else
-    addLayerAtIndex( index ); // default double-click handler
+  {
+    // double-click not handled by browser model, so use as default view expand behavior
+    if ( mBrowserView->isExpanded( index ) )
+      mBrowserView->collapse( index );
+    else
+      mBrowserView->expand( index );
+  }
 }
 
 void QgsBrowserDockWidget::renameFavorite()
@@ -416,7 +426,7 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
   emit handleDropUriList( list );
 }
 
-void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
+bool QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
 {
   QgsDebugMsg( QStringLiteral( "rowCount() = %1" ).arg( mModel->rowCount( mProxyModel->mapToSource( index ) ) ) );
   QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
@@ -430,8 +440,9 @@ void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
       emit openFile( projectItem->path(), QStringLiteral( "project" ) );
       QApplication::restoreOverrideCursor();
     }
+    return true;
   }
-  if ( item && item->type() == QgsDataItem::Layer )
+  else if ( item && item->type() == QgsDataItem::Layer )
   {
     QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
     if ( layerItem )
@@ -440,7 +451,9 @@ void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
       addLayer( layerItem );
       QApplication::restoreOverrideCursor();
     }
+    return true;
   }
+  return false;
 }
 
 void QgsBrowserDockWidget::addSelectedLayers()
@@ -504,6 +517,7 @@ void QgsBrowserDockWidget::showProperties()
   if ( item->type() == QgsDataItem::Layer || item->type() == QgsDataItem::Directory )
   {
     QgsBrowserPropertiesDialog *dialog = new QgsBrowserPropertiesDialog( settingsSection(), this );
+    dialog->setAttribute( Qt::WA_DeleteOnClose );
     dialog->setItem( item );
     dialog->show();
   }

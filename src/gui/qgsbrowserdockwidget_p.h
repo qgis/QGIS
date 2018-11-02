@@ -123,8 +123,13 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
      */
     void setCondensedMode( bool condensedMode ) override;
 
+  private slots:
+
+    void urlClicked( const QUrl &url );
+
   private:
-    QgsBrowserPropertiesWrapLabel *mUriLabel = nullptr;
+    std::unique_ptr<QgsMapLayer> mLayer;
+
 };
 
 /**
