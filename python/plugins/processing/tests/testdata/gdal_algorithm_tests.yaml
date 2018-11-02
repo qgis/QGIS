@@ -266,6 +266,7 @@ tests:
     results:
       OUTPUT:
         hash:
+        - c3e8b2c13c40833fae7cf2c2e89ef5fc0b2d33d59668c075d36ce965
         - aca7c839c679613f4910cbdea660359f1551c104c57fea9a61795668
         - 57e2bc100ec9836e2aa7df4ccf6b5715bd3f3524a524ce47bec52f68
         - e607570f34b1c61bc622751b324023b67642b657ef4b91a80d9057cb
@@ -472,7 +473,9 @@ tests:
       TARGET_RESOLUTION: 0.0
     results:
       OUTPUT:
-        hash: 77045222f6f9d8e5fda795d1d5288eae400c51522e621861aeab68e0
+        hash: 
+        - a361e8b5af2d3405222ad2d0f03035d57b505ad5e73a83e8b8074c8e
+        - 77045222f6f9d8e5fda795d1d5288eae400c51522e621861aeab68e0
         type: rasterhash
 
 #  - algorithm: gdal:merge
