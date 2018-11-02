@@ -67,6 +67,8 @@ which may occur if the model is being updated quickly multiple times as a result
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
+    virtual QHash<int, QByteArray> roleNames() const;
+
 
   public slots:
 
