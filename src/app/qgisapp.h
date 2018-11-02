@@ -907,6 +907,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     QgsBrowserModel *browserModel();
 
+    /*
+     * Change data source for \a layer, a data source selection dialog
+     * will be opened and if accepted the data selected source will be
+     * applied.
+     *
+     * In case the layer was originally invalid and it had the original
+     * XML layer properties, the properties will be applied.
+     */
+    void changeDataSource( QgsMapLayer *layer );
+
     /**
      * Add a raster layer directly without prompting user for location
       The caller must provide information compatible with the provider plugin
@@ -936,9 +946,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * \brief overloaded version of the private addLayer method that takes a list of
      * file names instead of prompting user with a dialog.
-     \param enc encoding type for the layer
-    \param dataSourceType type of ogr datasource
-     \returns true if successfully added layer
+     * \param enc encoding type for the layer
+     * \param dataSourceType type of ogr datasource
+     * \returns true if successfully added layer
      */
     bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
 

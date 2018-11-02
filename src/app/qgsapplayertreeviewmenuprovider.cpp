@@ -138,8 +138,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
 
-      // TODO: check if it is not valid and offer set data source
-
       if ( layer && layer->isSpatial() )
       {
         menu->addAction( actions->actionZoomToLayer( mCanvas, menu ) );
@@ -201,6 +199,18 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addSeparator();
 
+      // change data source is only supported for vectors and rasters
+      if ( vlayer || rlayer )
+      {
+
+        QAction *a = new QAction( tr( "Change data source" ), menu );
+        connect( a, &QAction::triggered, [ & ]
+        {
+          QgisApp::instance()->changeDataSource( layer );
+        } );
+        menu->addAction( a );
+      }
+
       if ( vlayer )
       {
         QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
@@ -212,7 +222,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
                          QgisApp::instance(), SLOT( attributeTable() ) );
 
         // allow editing
-        int cap = vlayer->dataProvider()->capabilities();
+        unsigned int cap = vlayer->dataProvider()->capabilities();
         if ( cap & QgsVectorDataProvider::EditingCapabilities )
         {
           if ( toggleEditingAction )

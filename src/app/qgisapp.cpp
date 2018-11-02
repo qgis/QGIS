@@ -101,6 +101,7 @@
 
 #include "qgsgui.h"
 #include "qgsnative.h"
+#include "qgsdatasourceselectdialog.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -3943,7 +3944,8 @@ void QgisApp::initLayerTreeView()
   new QgsLayerTreeViewFilterIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
   new QgsLayerTreeViewEmbeddedIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
   new QgsLayerTreeViewMemoryIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
-  new QgsLayerTreeViewBadLayerIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
+  QgsLayerTreeViewBadLayerIndicatorProvider *badLayerIndicatorProvider = new QgsLayerTreeViewBadLayerIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
+  connect( badLayerIndicatorProvider, &QgsLayerTreeViewBadLayerIndicatorProvider::requestChangeDataSource, this, &QgisApp::changeDataSource );
   new QgsLayerTreeViewNonRemovableIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
 
   setupLayerTreeViewFromSettings();
@@ -3995,6 +3997,9 @@ void QgisApp::initLayerTreeView()
   actionCollapseAll->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCollapseTree.svg" ) ) );
   actionCollapseAll->setToolTip( tr( "Collapse All" ) );
   connect( actionCollapseAll, &QAction::triggered, mLayerTreeView, &QgsLayerTreeView::collapseAllNodes );
+
+  // Change data source action
+  connect( mLayerTreeView, &QgsLayerTreeView::requestChangeDataSource, this, &QgisApp::changeDataSource );
 
   QToolBar *toolbar = new QToolBar();
   toolbar->setIconSize( iconSize( true ) );
@@ -6935,6 +6940,62 @@ void QgisApp::refreshFeatureActions()
   }
 
   updateDefaultFeatureAction( mFeatureActionMenu->activeAction() );
+}
+
+void QgisApp::changeDataSource( QgsMapLayer *layer )
+{
+  // Get provider type
+  QString providerType( layer->providerType() );
+  QgsMapLayer::LayerType layerType( layer->type() );
+
+  QgsDataSourceSelectDialog dlg( true, layerType );
+
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    QgsMimeDataUtils::Uri uri( dlg.uri() );
+    if ( uri.isValid() )
+    {
+      bool layerIsValid( layer->isValid() );
+      layer->setDataSource( uri.uri, layer->name(), uri.providerKey, QgsDataProvider::ProviderOptions() );
+      // Re-apply style
+      if ( !( layerIsValid && layer->originalXmlProperties().isEmpty() ) )
+      {
+        QgsReadWriteContext context;
+        context.setPathResolver( QgsProject::instance()->pathResolver() );
+        context.setProjectTranslator( QgsProject::instance() );
+        QString errorMsg;
+        QDomDocument doc;
+        if ( doc.setContent( layer->originalXmlProperties() ) )
+        {
+          QDomNode layer_node( doc.firstChild( ) );
+          if ( ! layer->readSymbology( layer_node, errorMsg, context ) )
+          {
+            QgsDebugMsg( QStringLiteral( "Failed to restore original layer style from stored XML for layer %1: %2" )
+                         .arg( layer->name( ) )
+                         .arg( errorMsg ) );
+          }
+        }
+        else
+        {
+          QgsDebugMsg( QStringLiteral( "Failed to create XML QDomDocument for layer %1: %2" )
+                       .arg( layer->name( ) )
+                       .arg( errorMsg ) );
+        }
+      }
+
+      // All the following code is necessary to refresh the layer
+      QgsLayerTreeModel *model = qobject_cast<QgsLayerTreeModel *>( mLayerTreeView->model() );
+      if ( model )
+      {
+        QgsLayerTreeLayer *tl( model->rootGroup()->findLayer( layer->id() ) );
+        if ( tl && tl->itemVisibilityChecked() )
+        {
+          tl->setItemVisibilityChecked( false );
+          tl->setItemVisibilityChecked( true );
+        }
+      }
+    }
+  }
 }
 
 void QgisApp::measure()
