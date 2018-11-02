@@ -383,6 +383,7 @@
 %Include auto_generated/locator/qgslocator.sip
 %Include auto_generated/locator/qgslocatorfilter.sip
 %Include auto_generated/locator/qgslocatormodel.sip
+%Include auto_generated/locator/qgslocatorwidgetcore.sip
 %Include auto_generated/processing/qgsprocessingalgrunnertask.sip
 %Include auto_generated/processing/qgsprocessingfeedback.sip
 %Include auto_generated/processing/qgsprocessingprovider.sip
