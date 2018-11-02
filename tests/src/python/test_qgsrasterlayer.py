@@ -16,16 +16,25 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 import os
+import filecmp
 
-from qgis.PyQt.QtCore import QFileInfo
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtCore import QSize, QFileInfo, Qt, QTemporaryDir
+
+from qgis.PyQt.QtGui import (
+    QColor,
+    QImage,
+    QPainter,
+    QResizeEvent
+)
 from qgis.PyQt.QtXml import QDomDocument
+
 
 from qgis.core import (QgsRaster,
                        QgsRasterLayer,
                        QgsReadWriteContext,
                        QgsColorRampShader,
                        QgsContrastEnhancement,
+                       QgsDataProvider,
                        QgsProject,
                        QgsMapSettings,
                        QgsPointXY,
@@ -40,6 +49,7 @@ from qgis.core import (QgsRaster,
                        QgsGradientColorRamp)
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
+from qgis.testing.mocked import get_iface
 
 # Convenience instances in case you may need them
 # not used in this test
@@ -47,6 +57,14 @@ start_app()
 
 
 class TestQgsRasterLayer(unittest.TestCase):
+
+    def setUp(self):
+        self.iface = get_iface()
+        QgsProject.instance().removeAllMapLayers()
+
+        self.iface.mapCanvas().viewport().resize(400, 400)
+        # For some reason the resizeEvent is not delivered, fake it
+        self.iface.mapCanvas().resizeEvent(QResizeEvent(QSize(400, 400), self.iface.mapCanvas().size()))
 
     def testIdentify(self):
         myPath = os.path.join(unitTestDataPath(), 'landsat.tif')
@@ -693,6 +711,34 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         # compare xml documents
         self.assertEqual(layer_doc.toString(), clone_doc.toString())
+
+    def testSetDataSource(self):
+        """Test change data source"""
+
+        temp_dir = QTemporaryDir()
+        options = QgsDataProvider.ProviderOptions()
+        myPath = os.path.join(unitTestDataPath('raster'),
+                              'band1_float32_noct_epsg4326.tif')
+        myFileInfo = QFileInfo(myPath)
+        myBaseName = myFileInfo.baseName()
+        layer = QgsRasterLayer(myPath, myBaseName)
+
+        image = layer.previewAsImage(QSize(400, 400))
+        self.assertFalse(image.isNull())
+        self.assertTrue(image.save(os.path.join(temp_dir.path(), 'expected.png'), "PNG"))
+
+        layer.setDataSource(myPath.replace('4326.tif', '4326-BAD_SOURCE.tif'), 'bad_layer', 'gdal', options)
+        self.assertFalse(layer.isValid())
+        image = layer.previewAsImage(QSize(400, 400))
+        self.assertTrue(image.isNull())
+
+        layer.setDataSource(myPath.replace('4326-BAD_SOURCE.tif', '4326.tif'), 'bad_layer', 'gdal', options)
+        self.assertTrue(layer.isValid())
+        image = layer.previewAsImage(QSize(400, 400))
+        self.assertFalse(image.isNull())
+        self.assertTrue(image.save(os.path.join(temp_dir.path(), 'actual.png'), "PNG"))
+
+        self.assertTrue(filecmp.cmp(os.path.join(temp_dir.path(), 'actual.png'), os.path.join(temp_dir.path(), 'expected.png')))
 
 
 if __name__ == '__main__':

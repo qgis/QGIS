@@ -119,7 +119,6 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   setProviderType( providerKey );
-  init();
 
   QgsDataProvider::ProviderOptions providerOptions;
 
@@ -789,12 +788,21 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
 {
   if ( mDataProvider )
     closeDataProvider();
+
+  init();
+
+  for ( int i = mPipe.size() - 1; i >= 0; --i )
+  {
+    mPipe.remove( i );
+  }
+
   mDataSource = dataSource;
   mLayerName = baseName;
+
   setDataProvider( provider, options );
+
   if ( mValid )
   {
-
     // load default style
     bool defaultLoadedFlag = false;
     if ( loadDefaultStyleFlag )
@@ -805,14 +813,10 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
     {
       setDefaultContrastEnhancement();
     }
-
-    // TODO: Connect signals from the dataprovider to the qgisapp
-
     emit statusChanged( tr( "QgsRasterLayer created" ) );
-
-    // Load default style
   }
   emit dataSourceChanged();
+  emit dataChanged();
 }
 
 void QgsRasterLayer::closeDataProvider()
@@ -1267,8 +1271,12 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
 {
   QImage myQImage( size, format );
 
+  if ( ! isValid( ) )
+    return  QImage();
+
   myQImage.setColor( 0, bgColor.rgba() );
   myQImage.fill( 0 );  //defaults to white, set to transparent for rendering on a map
+
 
   QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
 

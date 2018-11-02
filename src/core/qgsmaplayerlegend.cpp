@@ -307,7 +307,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultRasterLayerLegend::createLayerTre
   QList<QgsLayerTreeModelLegendNode *> nodes;
 
   // temporary solution for WMS. Ideally should be done with a delegate.
-  if ( mLayer->dataProvider()->supportsLegendGraphic() )
+  if ( mLayer->dataProvider() && mLayer->dataProvider()->supportsLegendGraphic() )
   {
     nodes << new QgsWmsLegendNode( nodeLayer );
   }
