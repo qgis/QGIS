@@ -203,7 +203,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( vlayer || rlayer )
       {
 
-        QAction *a = new QAction( tr( "Change data source" ), menu );
+        QAction *a = new QAction( tr( "Change data source…" ), menu );
         connect( a, &QAction::triggered, [ = ]
         {
           QgisApp::instance()->changeDataSource( layer );
