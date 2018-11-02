@@ -6955,7 +6955,7 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
       bool layerIsValid( layer->isValid() );
       layer->setDataSource( uri.uri, layer->name(), uri.providerKey, QgsDataProvider::ProviderOptions() );
       // Re-apply style
-      if ( !( layerIsValid && layer->originalXmlProperties().isEmpty() ) )
+      if ( !( layerIsValid || layer->originalXmlProperties().isEmpty() ) )
       {
         QgsReadWriteContext context;
         context.setPathResolver( QgsProject::instance()->pathResolver() );
