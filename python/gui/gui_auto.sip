@@ -17,6 +17,7 @@
 %Include auto_generated/qgsuserinputwidget.sip
 %Include auto_generated/qgsbrowserdockwidget.sip
 %Include auto_generated/qgsvertexmarker.sip
+%Include auto_generated/qgsdatasourceselectdialog.sip
 %Include auto_generated/qgsabstractdatasourcewidget.sip
 %Include auto_generated/qgssourceselectprovider.sip
 %Include auto_generated/qgssourceselectproviderregistry.sip
