@@ -69,7 +69,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         return ms
 
     def test_project_roundtrip(self):
-        """Tests that a project with bad layers can be saved without loosing them"""
+        """Tests that a project with bad layers can be saved and restored"""
 
         p = QgsProject.instance()
         temp_dir = QTemporaryDir()
