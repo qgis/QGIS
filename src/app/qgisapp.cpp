@@ -3998,9 +3998,6 @@ void QgisApp::initLayerTreeView()
   actionCollapseAll->setToolTip( tr( "Collapse All" ) );
   connect( actionCollapseAll, &QAction::triggered, mLayerTreeView, &QgsLayerTreeView::collapseAllNodes );
 
-  // Change data source action
-  connect( mLayerTreeView, &QgsLayerTreeView::requestChangeDataSource, this, &QgisApp::changeDataSource );
-
   QToolBar *toolbar = new QToolBar();
   toolbar->setIconSize( iconSize( true ) );
   toolbar->addAction( mActionStyleDock );
