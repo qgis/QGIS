@@ -50,11 +50,13 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
     /**
      * Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
      *
+     * \param browserModel an existing browser model (typically from app), if null an instance will be created
      * \param setFilterByLayerType activates filtering by layer type
      * \param layerType sets the layer type filter, this is in effect only if filtering by layer type is also active
      * \param parent the object
      */
-    QgsDataSourceSelectDialog( bool setFilterByLayerType = false,
+    QgsDataSourceSelectDialog( QgsBrowserModel *browserModel = nullptr,
+                               bool setFilterByLayerType = false,
                                const QgsMapLayer::LayerType &layerType = QgsMapLayer::LayerType::VectorLayer,
                                QWidget *parent = nullptr );
 
@@ -75,8 +77,9 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
 
   private:
 
-    QgsBrowserModel mBrowserModel;
     QgsBrowserProxyModel mBrowserProxyModel;
+    std::unique_ptr<QgsBrowserModel> mBrowserModel;
+    bool mOwnModel = true;
     QgsMimeDataUtils::Uri mUri;
 
 };

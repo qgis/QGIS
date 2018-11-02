@@ -6945,7 +6945,7 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
   QString providerType( layer->providerType() );
   QgsMapLayer::LayerType layerType( layer->type() );
 
-  QgsDataSourceSelectDialog dlg( true, layerType );
+  QgsDataSourceSelectDialog dlg( mBrowserModel, true, layerType );
 
   if ( dlg.exec() == QDialog::Accepted )
   {
