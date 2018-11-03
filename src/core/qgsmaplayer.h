@@ -1109,7 +1109,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * \since QGIS 3.6
      */
-    QDomDocument originalXmlProperties() const;
+    QString originalXmlProperties() const;
 
     /**
      * Sets the original XML properties for the layer to  \a originalXmlProperties
@@ -1118,7 +1118,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * \since QGIS 3.6
      */
-    void setOriginalXmlProperties( const QDomDocument &originalXmlProperties );
+    void setOriginalXmlProperties( const QString &originalXmlProperties );
 
   public slots:
 
@@ -1529,7 +1529,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * This information can be used to pass through the bad layers or to reset changes on a good layer
      */
-    QDomDocument mOriginalXmlProperties;
+    QString mOriginalXmlProperties;
 
 };
 

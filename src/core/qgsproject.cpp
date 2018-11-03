@@ -1774,10 +1774,17 @@ bool QgsProject::writeProjectFile( const QString &filename )
           maplayerElem = doc->createElement( QStringLiteral( "maplayer" ) );
           ml->writeLayerXml( maplayerElem, *doc, context );
         }
-        else if ( ! ml->originalXmlProperties().isNull() )
+        else if ( ! ml->originalXmlProperties().isEmpty() )
         {
-          QDomDocument document( ml->originalXmlProperties() );
-          maplayerElem = document.firstChildElement();
+          QDomDocument document;
+          if ( document.setContent( ml->originalXmlProperties() ) )
+          {
+            maplayerElem = document.firstChildElement();
+          }
+          else
+          {
+            QgsDebugMsg( QStringLiteral( "Could not restore layer properties for layer %1" ).arg( ml->id() ) );
+          }
         }
 
         emit writeMapLayer( ml, maplayerElem, *doc );
