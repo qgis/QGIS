@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSRENDERERV2REGISTRY_H
-#define QGSRENDERERV2REGISTRY_H
+#ifndef QGSRENDERERREGISTRY_H
+#define QGSRENDERERREGISTRY_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -254,4 +254,4 @@ class CORE_EXPORT QgsRendererRegistry
     QStringList mRenderersOrder;
 };
 
-#endif // QGSRENDERERV2REGISTRY_H
+#endif // QGSRENDERERREGISTRY_H

@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSSINGLESYMBOLRENDERERV2WIDGET_H
-#define QGSSINGLESYMBOLRENDERERV2WIDGET_H
+#ifndef QGSSINGLESYMBOLRENDERERWIDGET_H
+#define QGSSINGLESYMBOLRENDERERWIDGET_H
 
 #include "qgsrendererwidget.h"
 #include "qgis.h"
@@ -64,4 +64,4 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
 };
 
 
-#endif // QGSSINGLESYMBOLRENDERERV2WIDGET_H
+#endif // QGSSINGLESYMBOLRENDERERWIDGET_H

@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSCATEGORIZEDSYMBOLRENDERERV2_H
-#define QGSCATEGORIZEDSYMBOLRENDERERV2_H
+#ifndef QGSCATEGORIZEDSYMBOLRENDERER_H
+#define QGSCATEGORIZEDSYMBOLRENDERER_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -306,4 +306,4 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     QgsLegendSymbolList baseLegendSymbolItems() const;
 };
 
-#endif // QGSCATEGORIZEDSYMBOLRENDERERV2_H
+#endif // QGSCATEGORIZEDSYMBOLRENDERER_H

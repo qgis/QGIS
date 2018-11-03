@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSRULEBASEDRENDERERV2_H
-#define QGSRULEBASEDRENDERERV2_H
+#ifndef QGSRULEBASEDRENDERER_H
+#define QGSRULEBASEDRENDERER_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -550,4 +550,4 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 #endif
 };
 
-#endif // QGSRULEBASEDRENDERERV2_H
+#endif // QGSRULEBASEDRENDERER_H

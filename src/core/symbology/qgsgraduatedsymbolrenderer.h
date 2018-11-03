@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSGRADUATEDSYMBOLRENDERERV2_H
-#define QGSGRADUATEDSYMBOLRENDERERV2_H
+#ifndef QGSGRADUATEDSYMBOLRENDERER_H
+#define QGSGRADUATEDSYMBOLRENDERER_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -527,4 +527,4 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
 };
 
-#endif // QGSGRADUATEDSYMBOLRENDERERV2_H
+#endif // QGSGRADUATEDSYMBOLRENDERER_H
