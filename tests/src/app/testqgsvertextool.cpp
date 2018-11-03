@@ -64,6 +64,7 @@ class TestQgsVertexTool : public QObject
     void testMoveMultipleVertices();
     void testMoveVertexTopo();
     void testDeleteVertexTopo();
+    void testAddVertexTopo();
     void testActiveLayerPriority();
     void testSelectedFeaturesPriority();
 
@@ -527,6 +528,37 @@ void TestQgsVertexTool::testDeleteVertexTopo()
   mLayerPolygon->undoStack()->undo();
 
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
+
+  QgsProject::instance()->setTopologicalEditing( false );
+}
+
+void TestQgsVertexTool::testAddVertexTopo()
+{
+  // test addition of a vertex on a segment shared with another geometry
+
+  // add a temporary polygon
+  QgsFeature fTmp;
+  fTmp.setGeometry( QgsGeometry::fromWkt( "POLYGON((4 4, 7 4, 7 6, 4 6, 4 4))" ) );
+  bool resAdd = mLayerPolygon->addFeature( fTmp );
+  QVERIFY( resAdd );
+  QgsFeatureId fTmpId = fTmp.id();
+
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 2 );
+
+  QgsProject::instance()->setTopologicalEditing( true );
+
+  mouseClick( 5.5, 4, Qt::LeftButton );
+  mouseClick( 5, 5, Qt::LeftButton );
+
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 3 );
+
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 5 5, 4 4, 4 1))" ) );
+  QCOMPARE( mLayerPolygon->getFeature( fTmpId ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 4, 5 5, 7 4, 7 6, 4 6, 4 4))" ) );
+
+  mLayerPolygon->undoStack()->undo();
+  mLayerPolygon->undoStack()->undo();
+
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
 
   QgsProject::instance()->setTopologicalEditing( false );
