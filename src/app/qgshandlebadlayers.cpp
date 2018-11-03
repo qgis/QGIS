@@ -26,6 +26,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsmessagebar.h"
 #include "qgssettings.h"
+#include "qgslayertreeregistrybridge.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -347,13 +348,17 @@ void QgsHandleBadLayers::editAuthCfg()
 
 void QgsHandleBadLayers::apply()
 {
+  QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
+
   QList<QgsMapLayer *> toRemove;
   for ( const auto &l : QgsProject::instance()->mapLayers( ) )
   {
     if ( ! l->isValid() )
       toRemove << l;
   }
+
   QgsProject::instance()->removeMapLayers( toRemove );
+
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {
     int idx = mLayerList->item( i, 0 )->data( Qt::UserRole ).toInt();
@@ -372,11 +377,15 @@ void QgsHandleBadLayers::apply()
       item->setForeground( QBrush( Qt::red ) );
     }
   }
+  QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( false );
+
+  if ( mLayerList->rowCount() == 0 )
+    accept();
+
 }
 
 void QgsHandleBadLayers::accept()
 {
-  apply();
 
   if ( mLayerList->rowCount() > 0  &&
        QMessageBox::warning( this,
@@ -395,6 +404,9 @@ void QgsHandleBadLayers::accept()
     if ( ! l->isValid() )
       toRemove << l;
   }
+  QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
+  QgsProject::instance()->removeMapLayers( toRemove );
+  QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( false );
   mLayerList->clear();
 
   QDialog::accept();
