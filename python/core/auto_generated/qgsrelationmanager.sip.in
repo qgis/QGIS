@@ -45,6 +45,8 @@ Gets access to the relations managed by this class.
     void addRelation( const QgsRelation &relation );
 %Docstring
 Add a relation.
+Invalid relations are added only if both referencing layer and referenced
+layer exist.
 
 :param relation: The relation to add.
 %End

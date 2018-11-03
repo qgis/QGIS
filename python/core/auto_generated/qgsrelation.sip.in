@@ -273,6 +273,7 @@ Returns a list of attributes used to form the referencing fields
     bool isValid() const;
 %Docstring
 Returns the validity of this relation. Don't use the information if it's not valid.
+A relation is considered valid if both referenced and referencig layers are valid.
 
 :return: true if the relation is valid
 %End

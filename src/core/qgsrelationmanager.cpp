@@ -50,6 +50,10 @@ QMap<QString, QgsRelation> QgsRelationManager::relations() const
 
 void QgsRelationManager::addRelation( const QgsRelation &relation )
 {
+  // Do not add relations to layers that do not exist
+  if ( !( relation.referencingLayer() && relation.referencedLayer() ) )
+    return;
+
   mRelations.insert( relation.id(), relation );
 
   if ( mProject )

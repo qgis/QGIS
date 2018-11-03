@@ -49,6 +49,9 @@ void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer * > &layer
 
 void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
 {
+  if ( ! rel.isValid() )
+    return;
+
   mRelationsTable->setSortingEnabled( false );
   int row = mRelationsTable->rowCount();
   mRelationsTable->insertRow( row );

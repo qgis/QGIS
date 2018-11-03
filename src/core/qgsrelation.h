@@ -338,6 +338,7 @@ class CORE_EXPORT QgsRelation
 
     /**
      * Returns the validity of this relation. Don't use the information if it's not valid.
+     * A relation is considered valid if both referenced and referencig layers are valid.
      *
      * \returns true if the relation is valid
      */
