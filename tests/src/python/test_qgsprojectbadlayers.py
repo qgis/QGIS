@@ -35,6 +35,7 @@ from qgis.gui import (QgsLayerTreeMapCanvasBridge,
 from qgis.PyQt.QtGui import QFont, QColor
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir, QSize
+from qgis.PyQt.QtXml import QDomDocument, QDomNode, QDomImplementation
 
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath, renderMapToImage)
@@ -99,8 +100,12 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         self.assertTrue(raster.originalXmlProperties() != '')
         self.assertTrue(raster_copy.originalXmlProperties() != '')
         # Test setter
-        raster.setOriginalXmlProperties('pippo')
-        self.assertEqual(raster.originalXmlProperties(), 'pippo')
+        domimp = QDomImplementation()
+        documentType = domimp.createDocumentType("qgis", "http://mrcc.com/qgis.dtd", "SYSTEM")
+        document = QDomDocument(documentType)
+        document.setContent("<pippo>pluto</pippo>")
+        raster.setOriginalXmlProperties(document)
+        self.assertEqual(raster.originalXmlProperties(), document)
 
         # Now create and invalid project:
         bad_project_path = os.path.join(temp_dir.path(), 'project_bad.qgs')
@@ -144,7 +149,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         self.assertTrue(raster_copy.isValid())
 
     def test_project_relations(self):
-        """Tests that a project with bad layers and relations can be saved with relations"""
+        """Tests that a project with bad layers and relations can be maintained"""
 
         temp_dir = QTemporaryDir()
         p = QgsProject.instance()
@@ -235,7 +240,6 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         p = QgsProject.instance()
         project_path = os.path.join(temp_dir.path(), 'good_layers_test.qgs')
         copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'good_layers_test.qgs'), project_path)
-        copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'bad_layers_test.gpkg'), os.path.join(temp_dir.path(), 'bad_layers_test.gpkg'))
         for f in (
                 'bad_layer_raster_test.tfw',
                 'bad_layer_raster_test.tiff',
