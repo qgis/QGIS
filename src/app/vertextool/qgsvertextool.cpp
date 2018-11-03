@@ -1372,6 +1372,26 @@ QList<QgsPointLocator::Match> QgsVertexTool::layerVerticesSnappedToPoint( QgsVec
   return myfilter.matches;
 }
 
+QList<QgsPointLocator::Match> QgsVertexTool::layerSegmentsSnappedToSegment( QgsVectorLayer *layer, const QgsPointXY &mapPoint1, const QgsPointXY &mapPoint2 )
+{
+  QList<QgsPointLocator::Match> finalMatches;
+  // we want segment matches that have exactly the same vertices as the given segment (mapPoint1, mapPoint2)
+  // so rather than doing nearest edge search which could return any segment within a tolerance,
+  // we first find matches for one endpoint and then see if there is a matching other endpoint.
+  const QList<QgsPointLocator::Match> matches1 = layerVerticesSnappedToPoint( layer, mapPoint1 );
+  for ( const QgsPointLocator::Match &m : matches1 )
+  {
+    QgsGeometry g = cachedGeometry( layer, m.featureId() );
+    int v0, v1;
+    g.adjacentVertices( m.vertexIndex(), v0, v1 );
+    if ( v0 != -1 && QgsPointXY( g.vertexAt( v0 ) ) == mapPoint2 )
+      finalMatches << QgsPointLocator::Match( QgsPointLocator::Edge, layer, m.featureId(), 0, m.point(), v0 );
+    else if ( v1 != -1 && QgsPointXY( g.vertexAt( v1 ) ) == mapPoint2 )
+      finalMatches << QgsPointLocator::Match( QgsPointLocator::Edge, layer, m.featureId(), 0, m.point(), m.vertexIndex() );
+  }
+  return finalMatches;
+}
+
 void QgsVertexTool::startDraggingAddVertex( const QgsPointLocator::Match &m )
 {
   Q_ASSERT( m.hasEdge() );
@@ -1383,6 +1403,7 @@ void QgsVertexTool::startDraggingAddVertex( const QgsPointLocator::Match &m )
   mDraggingVertexType = AddingVertex;
   mDraggingExtraVertices.clear();
   mDraggingExtraVerticesOffset.clear();
+  mDraggingExtraSegments.clear();
 
   QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
 
@@ -1397,6 +1418,36 @@ void QgsVertexTool::startDraggingAddVertex( const QgsPointLocator::Match &m )
     addDragBand( map_v0, m.point() );
   if ( v1.x() != 0 || v1.y() != 0 )
     addDragBand( map_v1, m.point() );
+
+  if ( QgsProject::instance()->topologicalEditing() )
+  {
+    // find other segments coincident with the one user just picked and store them in a list
+    // so we can add a new vertex also in those to keep topology correct
+    const auto layers = canvas()->layers();
+    for ( QgsMapLayer *layer : layers )
+    {
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      if ( !vlayer || !vlayer->isEditable() )
+        continue;
+
+      if ( vlayer->geometryType() != QgsWkbTypes::LineGeometry && vlayer->geometryType() != QgsWkbTypes::PolygonGeometry )
+        continue;
+
+      QgsPointXY pt1, pt2;
+      m.edgePoints( pt1, pt2 );
+      const auto snappedSegments = layerSegmentsSnappedToSegment( vlayer, pt1, pt2 );
+      for ( const QgsPointLocator::Match &otherMatch : snappedSegments )
+      {
+        if ( otherMatch.layer() == m.layer() &&
+             otherMatch.featureId() == m.featureId() &&
+             otherMatch.vertexIndex() == m.vertexIndex() )
+          continue;
+
+        // start dragging of snapped point of current layer
+        mDraggingExtraSegments << Vertex( otherMatch.layer(), otherMatch.featureId(), otherMatch.vertexIndex() );
+      }
+    }
+  }
 
   cadDockWidget()->setPoints( QList<QgsPointXY>() << m.point() << m.point() );
 }
@@ -1563,6 +1614,13 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   addExtraVerticesToEdits( edits, mapPoint, dragLayer, layerPoint );
 
+  if ( addingVertex && !addingAtEndpoint && QgsProject::instance()->topologicalEditing() )
+  {
+    // topo editing: when adding a vertex to an existing segment, there may be other coincident segments
+    // that also need adding the same vertex
+    addExtraSegmentsToEdits( edits, mapPoint, dragLayer, layerPoint );
+  }
+
   applyEditsToLayers( edits );
 
   if ( QgsProject::instance()->topologicalEditing() && mapPointMatch->hasEdge() && mapPointMatch->layer() )
@@ -1618,6 +1676,40 @@ void QgsVertexTool::addExtraVerticesToEdits( QgsVertexTool::VertexEdits &edits, 
     if ( !topoGeom.moveVertex( point.x(), point.y(), topo.vertexId ) )
     {
       QgsDebugMsg( QStringLiteral( "[topo] move vertex failed!" ) );
+      continue;
+    }
+    edits[topo.layer][topo.fid] = topoGeom;
+  }
+}
+
+
+void QgsVertexTool::addExtraSegmentsToEdits( QgsVertexTool::VertexEdits &edits, const QgsPointXY &mapPoint, QgsVectorLayer *dragLayer, const QgsPointXY &layerPoint )
+{
+  // insert new vertex also to other geometries/layers
+  for ( int i = 0; i < mDraggingExtraSegments.count(); ++i )
+  {
+    const Vertex &topo = mDraggingExtraSegments[i];
+
+    QHash<QgsFeatureId, QgsGeometry> &layerEdits = edits[topo.layer];
+    QgsGeometry topoGeom;
+    if ( layerEdits.contains( topo.fid ) )
+      topoGeom = QgsGeometry( edits[topo.layer][topo.fid] );
+    else
+      topoGeom = QgsGeometry( cachedGeometryForVertex( topo ) );
+
+    QgsPointXY point;
+    if ( dragLayer && topo.layer->crs() == dragLayer->crs() )
+      point = layerPoint;  // this point may come from exact match so it may be more precise
+    else
+      point = toLayerCoordinates( topo.layer, mapPoint );
+
+    QgsPoint pt( point );
+    if ( QgsWkbTypes::hasZ( topo.layer->wkbType() ) )
+      pt.addZValue( defaultZValue() );
+
+    if ( !topoGeom.insertVertex( pt, topo.vertexId + 1 ) )
+    {
+      QgsDebugMsg( QStringLiteral( "[topo] segment insert vertex failed!" ) );
       continue;
     }
     edits[topo.layer][topo.fid] = topoGeom;
