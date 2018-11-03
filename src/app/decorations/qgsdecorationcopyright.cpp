@@ -124,8 +124,14 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
   double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, displayStringList, &fm );
   double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, displayStringList, QgsTextRenderer::Point, &fm );
 
-  int deviceHeight = context.painter()->device()->height();
-  int deviceWidth = context.painter()->device()->width();
+  QPaintDevice *device = context.painter()->device();
+#if QT_VERSION < 0x050600
+  int deviceHeight = device->height() / device->devicePixelRatio();
+  int deviceWidth = device->width() / device->devicePixelRatio();
+#else
+  int deviceHeight = device->height() / device->devicePixelRatioF();
+  int deviceWidth = device->width() / device->devicePixelRatioF();
+#endif
 
   float xOffset( 0 ), yOffset( 0 );
 

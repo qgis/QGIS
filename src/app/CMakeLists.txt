@@ -27,17 +27,6 @@ SET(QGIS_APP_SRCS
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
   qgsdatumtransformtablewidget.cpp
-  qgsdecorationitem.cpp
-  qgsdecorationcopyright.cpp
-  qgsdecorationcopyrightdialog.cpp
-  qgsdecorationlayoutextent.cpp
-  qgsdecorationlayoutextentdialog.cpp
-  qgsdecorationnortharrow.cpp
-  qgsdecorationnortharrowdialog.cpp
-  qgsdecorationscalebar.cpp
-  qgsdecorationscalebardialog.cpp
-  qgsdecorationgrid.cpp
-  qgsdecorationgriddialog.cpp
   qgsdiscoverrelationsdlg.cpp
   qgsdxfexportdialog.cpp
   qgsformannotationdialog.cpp
@@ -118,6 +107,18 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsplitparts.cpp
   qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
+
+  decorations/qgsdecorationitem.cpp
+  decorations/qgsdecorationcopyright.cpp
+  decorations/qgsdecorationcopyrightdialog.cpp
+  decorations/qgsdecorationlayoutextent.cpp
+  decorations/qgsdecorationlayoutextentdialog.cpp
+  decorations/qgsdecorationnortharrow.cpp
+  decorations/qgsdecorationnortharrowdialog.cpp
+  decorations/qgsdecorationscalebar.cpp
+  decorations/qgsdecorationscalebardialog.cpp
+  decorations/qgsdecorationgrid.cpp
+  decorations/qgsdecorationgriddialog.cpp
 
   vertextool/qgsselectedfeature.cpp
   vertextool/qgsvertexentry.cpp
@@ -258,17 +259,6 @@ SET (QGIS_APP_MOC_HDRS
   qgscustomization.h
   qgscustomprojectiondialog.h
   qgsdatumtransformtablewidget.h
-  qgsdecorationitem.h
-  qgsdecorationcopyright.h
-  qgsdecorationcopyrightdialog.h
-  qgsdecorationlayoutextent.h
-  qgsdecorationlayoutextentdialog.h
-  qgsdecorationnortharrow.h
-  qgsdecorationnortharrowdialog.h
-  qgsdecorationscalebar.h
-  qgsdecorationscalebardialog.h
-  qgsdecorationgrid.h
-  qgsdecorationgriddialog.h
   qgsdelattrdialog.h
   qgsdiagramproperties.h
   qgsdiscoverrelationsdlg.h
@@ -369,6 +359,18 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolregularpolygon2points.h
   qgsmaptoolregularpolygoncenterpoint.h
   qgsmaptoolregularpolygoncentercorner.h
+
+  decorations/qgsdecorationitem.h
+  decorations/qgsdecorationcopyright.h
+  decorations/qgsdecorationcopyrightdialog.h
+  decorations/qgsdecorationlayoutextent.h
+  decorations/qgsdecorationlayoutextentdialog.h
+  decorations/qgsdecorationnortharrow.h
+  decorations/qgsdecorationnortharrowdialog.h
+  decorations/qgsdecorationscalebar.h
+  decorations/qgsdecorationscalebardialog.h
+  decorations/qgsdecorationgrid.h
+  decorations/qgsdecorationgriddialog.h
 
   vertextool/qgsselectedfeature.h
   vertextool/qgsvertexeditor.h
@@ -632,6 +634,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external/nmea
 
   ${CMAKE_SOURCE_DIR}/src/app
+  ${CMAKE_SOURCE_DIR}/src/app/decorations
   ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/app/gps
