@@ -6955,17 +6955,26 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
       bool layerIsValid( layer->isValid() );
       layer->setDataSource( uri.uri, layer->name(), uri.providerKey, QgsDataProvider::ProviderOptions() );
       // Re-apply style
-      if ( !( layerIsValid || layer->originalXmlProperties().isNull() ) )
+      if ( !( layerIsValid || layer->originalXmlProperties().isEmpty() ) )
       {
         QgsReadWriteContext context;
         context.setPathResolver( QgsProject::instance()->pathResolver() );
         context.setProjectTranslator( QgsProject::instance() );
         QString errorMsg;
-        QDomDocument doc( layer->originalXmlProperties() );
-        QDomNode layer_node( doc.firstChild( ) );
-        if ( ! layer->readSymbology( layer_node, errorMsg, context ) )
+        QDomDocument doc;
+        if ( doc.setContent( layer->originalXmlProperties() ) )
         {
-          QgsDebugMsg( QStringLiteral( "Failed to restore original layer style from stored XML for layer %1: %2" )
+          QDomNode layer_node( doc.firstChild( ) );
+          if ( ! layer->readSymbology( layer_node, errorMsg, context ) )
+          {
+            QgsDebugMsg( QStringLiteral( "Failed to restore original layer style from stored XML for layer %1: %2" )
+                         .arg( layer->name( ) )
+                         .arg( errorMsg ) );
+          }
+        }
+        else
+        {
+          QgsDebugMsg( QStringLiteral( "Failed to create XML QDomDocument for layer %1: %2" )
                        .arg( layer->name( ) )
                        .arg( errorMsg ) );
         }
