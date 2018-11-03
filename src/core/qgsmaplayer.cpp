@@ -1833,12 +1833,12 @@ bool QgsMapLayer::isReadOnly() const
   return true;
 }
 
-QString QgsMapLayer::originalXmlProperties() const
+QDomDocument QgsMapLayer::originalXmlProperties() const
 {
   return mOriginalXmlProperties;
 }
 
-void QgsMapLayer::setOriginalXmlProperties( const QString &originalXmlProperties )
+void QgsMapLayer::setOriginalXmlProperties( const QDomDocument &originalXmlProperties )
 {
   mOriginalXmlProperties = originalXmlProperties;
 }

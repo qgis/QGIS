@@ -1237,7 +1237,7 @@ Returns true if the refresh on provider nofification is enabled
 .. versionadded:: 3.0
 %End
 
-    QString originalXmlProperties() const;
+    QDomDocument originalXmlProperties() const;
 %Docstring
 Returns the XML properties of the original layer as they were when the layer
 was first read from the project file. In case of new layers this is normally empty.
@@ -1247,7 +1247,7 @@ The storage format for the XML is qlr
 .. versionadded:: 3.6
 %End
 
-    void setOriginalXmlProperties( const QString &originalXmlProperties );
+    void setOriginalXmlProperties( const QDomDocument &originalXmlProperties );
 %Docstring
 Sets the original XML properties for the layer to  ``originalXmlProperties``
 

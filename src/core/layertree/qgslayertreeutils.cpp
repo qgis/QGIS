@@ -329,10 +329,7 @@ void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,
             QDomDocument document( documentType );
             QDomElement element = mlNode.toElement();
             document.appendChild( element );
-            QString str;
-            QTextStream stream( &str );
-            document.save( stream, 4 /*indent*/ );
-            l->setOriginalXmlProperties( str );
+            l->setOriginalXmlProperties( document );
           }
         }
       }
