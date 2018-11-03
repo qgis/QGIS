@@ -98,7 +98,12 @@ QSqlDatabase QgsMssqlConnection::getDatabase( const QString &service, const QStr
 #ifdef Q_OS_WIN
     connectionString = "driver={SQL Server}";
 #else
-    connectionString = QStringLiteral( "driver={FreeTDS};port=1433" );
+    // It seems that FreeTDS driver by default uses an ancient TDS protocol version (4.2) to communicate with MS SQL
+    // which was causing various data corruption errors, for example:
+    // - truncating data from varchar columns to 255 chars - failing to read WKT for CRS
+    // - truncating binary data to 4096 bytes (see @@TEXTSIZE) - failing to parse larger geometries
+    // The added "TDS_Version=auto" should negotiate more recent version (manually setting e.g. 7.2 worked fine too)
+    connectionString = QStringLiteral( "driver={FreeTDS};port=1433;TDS_Version=auto" );
 #endif
   }
 
