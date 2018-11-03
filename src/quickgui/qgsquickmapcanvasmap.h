@@ -24,6 +24,7 @@
 
 #include "qgsmapsettings.h"
 #include "qgspoint.h"
+#include "qgsmapcanvasinterface.h"
 
 #include "qgis_quick.h"
 #include "qgsquickmapsettings.h"
@@ -49,7 +50,7 @@ class QgsLabelingResults;
  *
  * \since QGIS 3.2
  */
-class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
+class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem, public QgsMapCanvasInterface
 {
     Q_OBJECT
 
@@ -61,7 +62,7 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
      *
      * This is a readonly property.
      */
-    Q_PROPERTY( QgsQuickMapSettings *mapSettings READ mapSettings )
+    Q_PROPERTY( QgsQuickMapSettings *quickMapSettings READ quickMapSettings )
 
     /**
      * When freeze property is set to true, the map canvas does not refresh.
@@ -95,8 +96,14 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
 
     QSGNode *updatePaintNode( QSGNode *oldNode, QQuickItem::UpdatePaintNodeData * ) override;
 
-    //! \copydoc QgsQuickMapCanvasMap::mapSettings
-    QgsQuickMapSettings *mapSettings() const;
+    //! \copydoc QgsQuickMapCanvasMap::quickMapSettings
+    QgsQuickMapSettings *quickMapSettings() const;
+
+    /**
+     * Rerturn the native map settings
+     * \since QGIS 3.6
+     */
+    const QgsMapSettings &mapSettings() const override;
 
     //! \copydoc QgsQuickMapCanvasMap::freeze
     bool freeze() const;
