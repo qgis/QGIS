@@ -35,12 +35,7 @@ class TestQgsOgcUtils : public QObject
     void initTestCase()
     {
       // Needed on Qt 5 so that the serialization of XML is consistent among all executions
-#if QT_VERSION >= 0x50600
       qSetGlobalQHashSeed( 0 );
-#else
-      extern Q_CORE_EXPORT QBasicAtomicInt qt_qhash_seed;
-      qt_qhash_seed.store( 0 );
-#endif
 
       //
       // Runs once before any tests are run

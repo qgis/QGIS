@@ -97,11 +97,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.btnCancel.setText(self.tr("Cancel (ESC)"))
         self.btnCancel.setEnabled(False)
         self.btnCancel.clicked.connect(self.executeSqlCanceled)
-        try:
-            self.btnCancel.setShortcut(QKeySequence.Cancel)
-        except AttributeError:
-            # QKeySequence.Cancel only available in Qt >= 5.6
-            pass
+        self.btnCancel.setShortcut(QKeySequence.Cancel)
         self.progressBar.setEnabled(False)
         self.progressBar.setRange(0, 100)
         self.progressBar.setValue(0)

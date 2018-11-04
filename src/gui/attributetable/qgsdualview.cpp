@@ -574,11 +574,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
         continue;
 
       QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, action.id(), sourceIndex );
-#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
-      menu->addAction( action.name(), a, SLOT( execute() ) );
-#else
       menu->addAction( action.name(), a, &QgsAttributeTableAction::execute );
-#endif
     }
   }
 
@@ -592,21 +588,13 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
     Q_FOREACH ( QgsMapLayerAction *action, registeredActions )
     {
       QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( action->text(), this, action, sourceIndex );
-#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
-      menu->addAction( action->text(), a, SLOT( execut() ) );
-#else
       menu->addAction( action->text(), a, &QgsAttributeTableMapLayerAction::execute );
-#endif
     }
   }
 
   menu->addSeparator();
   QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open Form" ), this, QString(), sourceIndex );
-#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
-  menu->addAction( tr( "Open Form" ), a, SLOT( featureForm() ) );
-#else
   menu->addAction( tr( "Open Form" ), a, &QgsAttributeTableAction::featureForm );
-#endif
 }
 
 

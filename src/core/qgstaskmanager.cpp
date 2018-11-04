@@ -82,15 +82,11 @@ void QgsTask::cancel()
     return;
 
   mShouldTerminate = true;
-
-#if QT_VERSION >= 0x050500
-  //can't cancel queued tasks with qt < 5.5
   if ( mStatus == Queued || mStatus == OnHold )
   {
     // immediately terminate unstarted jobs
     terminated();
   }
-#endif
 
   if ( mStatus == Terminated )
   {
@@ -661,14 +657,11 @@ void QgsTaskManager::taskStatusChanged( int status )
   if ( id < 0 )
     return;
 
-
-#if QT_VERSION >= 0x050500
   mTaskMutex->lock();
   QgsTaskRunnableWrapper *runnable = mTasks.value( id ).runnable;
   mTaskMutex->unlock();
   if ( runnable )
     QThreadPool::globalInstance()->cancel( runnable );
-#endif
 
   if ( status == QgsTask::Terminated || status == QgsTask::Complete )
   {
@@ -770,10 +763,8 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   }
   else
   {
-#if QT_VERSION >= 0x050500
     if ( runnable )
       QThreadPool::globalInstance()->cancel( runnable );
-#endif
     if ( isParent )
     {
       //task already finished, kill it

@@ -169,13 +169,8 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
                                    ) - centerYDouble );
     // need width/height of paint device
     QPaintDevice *device = context.painter()->device();
-#if QT_VERSION < 0x050600
-    int deviceHeight = device->height() / device->devicePixelRatio();
-    int deviceWidth = device->width() / device->devicePixelRatio();
-#else
     int deviceHeight = device->height() / device->devicePixelRatioF();
     int deviceWidth = device->width() / device->devicePixelRatioF();
-#endif
 
     // Set  margin according to selected units
     int xOffset = 0;

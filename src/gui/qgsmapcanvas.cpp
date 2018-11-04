@@ -697,11 +697,7 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage &img, const QgsMapSettings &m
     QgsLogger::warning( QStringLiteral( "The renderer map has a wrong device pixel ratio" ) );
   }
 #endif
-#if QT_VERSION >= 0x050600
   double res = m2p.mapUnitsPerPixel() / img.devicePixelRatioF();
-#else
-  double res = m2p.mapUnitsPerPixel() / img.devicePixelRatio();
-#endif
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + img.width()*res, topLeft.y() - img.height()*res );
   return rect;
 }
