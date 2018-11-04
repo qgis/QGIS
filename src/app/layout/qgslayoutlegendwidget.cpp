@@ -1159,7 +1159,7 @@ QMenu *QgsLayoutLegendMenuProvider::createContextMenu()
 
   if ( QgsLayerTree::isLayer( mView->currentNode() ) )
   {
-    menu->addAction( QObject::tr( "Reset to Defaults" ), mWidget, SLOT( resetLayerNodeToDefaults() ) );
+    menu->addAction( QObject::tr( "Reset to Defaults" ), mWidget, &QgsLayoutLegendWidget::resetLayerNodeToDefaults );
     menu->addSeparator();
   }
 
@@ -1169,7 +1169,7 @@ QMenu *QgsLayoutLegendMenuProvider::createContextMenu()
   lst << QgsLegendStyle::Hidden << QgsLegendStyle::Group << QgsLegendStyle::Subgroup;
   for ( QgsLegendStyle::Style style : qgis::as_const( lst ) )
   {
-    QAction *action = menu->addAction( QgsLegendStyle::styleLabel( style ), mWidget, SLOT( setCurrentNodeStyleFromAction() ) );
+    QAction *action = menu->addAction( QgsLegendStyle::styleLabel( style ), mWidget, &QgsLayoutLegendWidget::setCurrentNodeStyleFromAction );
     action->setCheckable( true );
     action->setChecked( currentStyle == style );
     action->setData( ( int ) style );
