@@ -594,7 +594,7 @@ void QgsMapToolOffsetCurve::updateGeometryAndRubberBand( double offset )
     offsetGeom = mManipulatedGeometry.buffer( offset, quadSegments, capStyle, joinStyle, miterLimit );
   }
 
-  if ( !offsetGeom )
+  if ( offsetGeom.isNull() )
   {
     deleteRubberBandAndGeometry();
     deleteUserInputWidget();

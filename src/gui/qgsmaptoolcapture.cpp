@@ -707,7 +707,7 @@ void QgsMapToolCapture::validateGeometry()
       break;
   }
 
-  if ( !geom )
+  if ( geom.isNull() )
     return;
 
   QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;

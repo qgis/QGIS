@@ -1823,13 +1823,6 @@ class CORE_EXPORT QgsGeometry
       return QVariant::fromValue( *this );
     }
 
-    /**
-     * Returns true if the geometry is non empty (ie, isNull() returns false),
-     * or false if it is an empty, uninitialized geometry (ie, isNull() returns true).
-     * \since QGIS 3.0
-     */
-    operator bool() const;
-
   private:
 
     QgsGeometryPrivate *d; //implicitly shared data pointer

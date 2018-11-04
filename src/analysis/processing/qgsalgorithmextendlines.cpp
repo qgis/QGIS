@@ -129,7 +129,7 @@ QgsFeatureList QgsExtendLinesAlgorithm::processFeature( const QgsFeature &featur
       endDistance = mEndDistanceProperty.valueAsDouble( context.expressionContext(), endDistance );
 
     const QgsGeometry outGeometry = geometry.extendLine( startDistance, endDistance );
-    if ( !outGeometry )
+    if ( outGeometry.isNull() )
       throw QgsProcessingException( QObject::tr( "Error calculating extended line" ) ); // don't think this can actually happen!
 
     f.setGeometry( outGeometry );

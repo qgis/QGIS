@@ -583,7 +583,7 @@ ErrorList topolTest::checkGaps( QgsVectorLayer *layer1, QgsVectorLayer *layer2, 
   //qDebug() << "extent wkt - " << bufferExtent->exportToWkt();
 
   QgsGeometry diffGeoms = bufferExtent.difference( test );
-  if ( !diffGeoms )
+  if ( diffGeoms.isNull() )
   {
     qDebug() << "difference result 0-";
     return errorList;

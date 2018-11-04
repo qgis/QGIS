@@ -136,7 +136,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
       }
 
       QgsGeometry outputGeometry = f.geometry().buffer( distance, segments, endCapStyle, joinStyle, miterLimit );
-      if ( !outputGeometry )
+      if ( outputGeometry.isNull() )
       {
         QgsMessageLog::logMessage( QObject::tr( "Error calculating buffer for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), Qgis::Warning );
       }

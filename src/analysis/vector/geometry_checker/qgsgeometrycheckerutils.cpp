@@ -45,7 +45,7 @@ QgsGeometryCheckerUtils::LayerFeature::LayerFeature( const QgsFeaturePool *pool,
     {
       mGeometry.transform( transform );
     }
-    catch ( const QgsCsException &e )
+    catch ( const QgsCsException & )
     {
       QgsDebugMsg( QStringLiteral( "Shrug. What shall we do with a geometry that cannot be converted?" ) );
     }
@@ -195,7 +195,7 @@ bool QgsGeometryCheckerUtils::LayerFeatures::iterator::nextFeature( bool begin )
     if ( mParent->mFeedback )
       mParent->mFeedback->setProgress( mParent->mFeedback->progress() + 1.0 );
     QgsFeature feature;
-    if ( featurePool->getFeature( *mFeatureIt, feature ) && feature.geometry() && feature.geometry().constGet() )
+    if ( featurePool->getFeature( *mFeatureIt, feature ) && !feature.geometry().isNull() )
     {
       mCurrentFeature.reset( new LayerFeature( mParent->mFeaturePools[*mLayerIt], feature, mParent->mContext, mParent->mUseMapCrs ) );
       return true;

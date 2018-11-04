@@ -115,7 +115,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
     else
     {
       QgsGeometry centroid = feat.geometry().centroid();
-      if ( !centroid )
+      if ( centroid.isNull() )
         continue; // centroid failed, e.g. empty linestring
 
       point = QgsPointXY( *qgsgeometry_cast< const QgsPoint * >( centroid.constGet() ) );

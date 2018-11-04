@@ -355,19 +355,19 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
   layerLine->addTopologicalPoints( QgsPointXY( 2, 2 ) );
 
   QCOMPARE( layerLine->undoStack()->index(), 1 );
-  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ).asWkt() );
 
   // add point at an existing vertex
   layerLine->addTopologicalPoints( QgsPointXY( 1, 1 ) );
 
   QCOMPARE( layerLine->undoStack()->index(), 1 );
-  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ).asWkt() );
 
   // add point on segment of linestring
   layerLine->addTopologicalPoints( QgsPointXY( 1, 2 ) );
 
   QCOMPARE( layerLine->undoStack()->index(), 2 );
-  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 3)" ) );
+  QCOMPARE( layerLine->getFeature( fidLineF1 ).geometry().asWkt(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 2, 1 3)" ).asWkt() );
 
   delete layerLine;
 }

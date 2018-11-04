@@ -104,7 +104,7 @@ QgsFeatureList QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsPro
       {
         QgsGeometry partGeometry( geomCollection->geometryN( i )->clone() );
         QgsGeometry outputGeometry = partGeometry.centroid();
-        if ( !outputGeometry )
+        if ( outputGeometry.isNull() )
         {
           feedback->pushInfo( QObject::tr( "Error calculating centroid for feature %1 part %2: %3" ).arg( feature.id() ).arg( i ).arg( outputGeometry.lastError() ) );
         }
@@ -115,7 +115,7 @@ QgsFeatureList QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsPro
     else
     {
       QgsGeometry outputGeometry = feature.geometry().centroid();
-      if ( !outputGeometry )
+      if ( outputGeometry.isNull() )
       {
         feedback->pushInfo( QObject::tr( "Error calculating centroid for feature %1: %2" ).arg( feature.id() ).arg( outputGeometry.lastError() ) );
       }
