@@ -178,8 +178,6 @@ QFont QgsCodeEditor::getMonospaceFont()
   font.setFixedPitch( true );
   font.setPointSize( fontSize );
   font.setStyleHint( QFont::TypeWriter );
-  font.setStretch( QFont::SemiCondensed );
-  font.setLetterSpacing( QFont::PercentageSpacing, 87.0 );
   font.setBold( false );
   return font;
 }
