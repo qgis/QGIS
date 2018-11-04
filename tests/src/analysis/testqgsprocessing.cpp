@@ -5308,7 +5308,7 @@ void TestQgsProcessing::processingFeatureSource()
   QgsFeature f2;
   QVERIFY( source.get() );
   QVERIFY( source->getFeatures().nextFeature( f2 ) );
-  QCOMPARE( f2.geometry(), f.geometry() );
+  QCOMPARE( f2.geometry().asWkt(), f.geometry().asWkt() );
 
   // direct map layer
   params.insert( QStringLiteral( "layer" ), QVariant::fromValue( layer ) );
@@ -5316,7 +5316,7 @@ void TestQgsProcessing::processingFeatureSource()
   // can't directly match it to layer, so instead just get the feature and test that it matches what we expect
   QVERIFY( source.get() );
   QVERIFY( source->getFeatures().nextFeature( f2 ) );
-  QCOMPARE( f2.geometry(), f.geometry() );
+  QCOMPARE( f2.geometry().asWkt(), f.geometry().asWkt() );
 
   // next using property based definition
   params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( QStringLiteral( "trim('%1' + ' ')" ).arg( layer->id() ) ), false ) );
@@ -5324,7 +5324,7 @@ void TestQgsProcessing::processingFeatureSource()
   // can't directly match it to layer, so instead just get the feature and test that it matches what we expect
   QVERIFY( source.get() );
   QVERIFY( source->getFeatures().nextFeature( f2 ) );
-  QCOMPARE( f2.geometry(), f.geometry() );
+  QCOMPARE( f2.geometry().asWkt(), f.geometry().asWkt() );
 
   // we also must accept QgsProcessingOutputLayerDefinition - e.g. to allow outputs from earlier child algorithms in models
   params.insert( QStringLiteral( "layer" ), QgsProcessingOutputLayerDefinition( QgsProperty::fromValue( layer->id() ) ) );
@@ -5332,7 +5332,7 @@ void TestQgsProcessing::processingFeatureSource()
   // can't directly match it to layer, so instead just get the feature and test that it matches what we expect
   QVERIFY( source.get() );
   QVERIFY( source->getFeatures().nextFeature( f2 ) );
-  QCOMPARE( f2.geometry(), f.geometry() );
+  QCOMPARE( f2.geometry().asWkt(), f.geometry().asWkt() );
 }
 
 void TestQgsProcessing::processingFeatureSink()

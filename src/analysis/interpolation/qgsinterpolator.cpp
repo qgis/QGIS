@@ -114,7 +114,7 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
 
 bool QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, ValueSource source, double attributeValue )
 {
-  if ( !geom || geom.isEmpty() )
+  if ( geom.isNull() || geom.isEmpty() )
     return true; // nothing to do
 
   //validate source

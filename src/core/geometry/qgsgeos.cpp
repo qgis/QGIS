@@ -393,7 +393,7 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QSt
   geosGeometries.reserve( geomList.size() );
   for ( const QgsGeometry &g : geomList )
   {
-    if ( !g )
+    if ( g.isNull() )
       continue;
 
     geosGeometries << asGeos( g.constGet(), mPrecision ).release();

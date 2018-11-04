@@ -115,7 +115,7 @@ void QgsMapToolReverseLine::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     }
 
-    if ( geom )
+    if ( !geom.isNull() )
     {
       vlayer->beginEditCommand( tr( "Reverse line" ) );
       vlayer->changeGeometry( f.id(), geom );

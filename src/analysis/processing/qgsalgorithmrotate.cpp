@@ -129,7 +129,7 @@ QgsFeatureList QgsRotateFeaturesAlgorithm::processFeature( const QgsFeature &fea
     else
     {
       QgsGeometry centroid = geometry.centroid();
-      if ( centroid )
+      if ( !centroid.isNull() )
       {
         geometry.rotate( angle, centroid.asPoint() );
         f.setGeometry( geometry );
