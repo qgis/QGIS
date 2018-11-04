@@ -1639,7 +1639,7 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
       layer->changeGeometry( it2.key(), it2.value() );
       for ( int i = 0; i < mSelectedVertices.length(); ++i )
       {
-        if ( mSelectedVertices.at( i ).layer == layer && mSelectedVertices.at( i ).fid == it2.value() )
+        if ( mSelectedVertices.at( i ).layer == layer && mSelectedVertices.at( i ).fid == it2.key() )
         {
           mSelectedFeature->selectVertex( mSelectedVertices.at( i ).vertexId );
         }
