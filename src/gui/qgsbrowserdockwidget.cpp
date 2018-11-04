@@ -180,7 +180,7 @@ void QgsBrowserDockWidget::itemDoubleClicked( const QModelIndex &index )
       return;
   }
 
-  // if no providers overrode the double click handling for this item, we give the item itself a chance
+  // if no providers overrode the double-click handling for this item, we give the item itself a chance
   if ( !item->handleDoubleClick() )
   {
     // double-click not handled by browser model, so use as default view expand behavior

@@ -89,8 +89,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
      * Returns true if the index was successfully intrepreted as a map layer and loaded, or
      * false if the index is not a map layer or could not be loaded.
      *
-     * \deprecated will be removed in QGIS 4.0 - retrieve the QgsLayerItem itself
-     * and manually add to project.
+     * \deprecated will be removed in QGIS 4.0 - retrieve the QgsLayerItem itself and manually add to project.
      */
     Q_DECL_DEPRECATED bool addLayerAtIndex( const QModelIndex &index ) SIP_DEPRECATED;
 
