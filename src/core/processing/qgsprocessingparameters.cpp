@@ -264,7 +264,6 @@ QList<int> QgsProcessingParameters::parameterAsEnums( const QgsProcessingParamet
   if ( !definition )
     return QList<int>();
 
-  QVariantList resultList;
   return parameterAsEnums( definition, parameters.value( definition->name() ), context );
 }
 
