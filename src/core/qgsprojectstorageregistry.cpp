@@ -20,7 +20,7 @@
 
 QgsProjectStorageRegistry::~QgsProjectStorageRegistry()
 {
-  qDeleteAll( mBackends.values() );
+  qDeleteAll( mBackends );
 }
 
 QgsProjectStorage *QgsProjectStorageRegistry::projectStorageFromType( const QString &type )

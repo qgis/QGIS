@@ -810,7 +810,7 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
   if ( fullModelUpdate )
   {
     // Invalidates the cache (there is no API for doing this directly)
-    mLayerCache->layer()->dataChanged();
+    emit mLayerCache->layer()->dataChanged();
     emit dataChanged( createIndex( 0, 0 ), createIndex( rowCount() - 1, columnCount() - 1 ) );
   }
   else

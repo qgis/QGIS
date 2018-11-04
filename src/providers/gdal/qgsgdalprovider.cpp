@@ -472,12 +472,12 @@ QgsGdalProvider::~QgsGdalProvider()
       {
         // Check if already a PAM (persistent auxiliary metadata) file exists
         QString pamFile = dataSourceUri( true ) + QLatin1String( ".aux.xml" );
-        bool pamFileAlreadyExists = QFileInfo( pamFile ).exists();
+        bool pamFileAlreadyExists = QFileInfo::exists( pamFile );
 
         GDALClose( mGdalDataset );
 
         // If GDAL created a PAM file right now by using estimated metadata, delete it right away
-        if ( !mStatisticsAreReliable && !pamFileAlreadyExists && QFileInfo( pamFile ).exists() )
+        if ( !mStatisticsAreReliable && !pamFileAlreadyExists && QFileInfo::exists( pamFile ) )
           QFile( pamFile ).remove();
       }
 

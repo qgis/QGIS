@@ -287,7 +287,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
     {
       QSet<QString> s0( idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 2 ).toStringList().toSet() );
       QSet<QString> s1( pkCols.toSet() );
-      if ( s0.intersect( s1 ).isEmpty() )
+      if ( !s0.intersects( s1 ) )
         tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
     }
 
@@ -342,7 +342,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
   QSet<QString> s0( pkItem->data( Qt::UserRole + 1 ).toStringList().toSet() );
   QSet<QString> s1( pkItem->data( Qt::UserRole + 2 ).toStringList().toSet() );
-  if ( !s0.isEmpty() && s0.intersect( s1 ).isEmpty() )
+  if ( !s0.isEmpty() && !s0.intersects( s1 ) )
   {
     // no valid primary candidate selected
     QgsDebugMsg( QStringLiteral( "no pk candidate selected" ) );
