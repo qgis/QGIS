@@ -35,9 +35,7 @@
 #include <QVector>
 #include <QStringBuilder>
 #include <QUrl>
-#if QT_VERSION >= 0x050900
 #include <QUndoCommand>
-#endif
 
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
@@ -3272,7 +3270,6 @@ void QgsVectorLayer::destroyEditCommand()
   undoStack()->endMacro();
   undoStack()->undo();
 
-#if QT_VERSION >= 0x050900  // setObsolete is new in Qt 5.9
   // it's not directly possible to pop the last command off the stack (the destroyed one)
   // and delete, so we add a dummy obsolete command to force this to occur.
   // Pushing the new command deletes the destroyed one, and since the new
@@ -3280,7 +3277,6 @@ void QgsVectorLayer::destroyEditCommand()
   std::unique_ptr< QUndoCommand > command = qgis::make_unique< QUndoCommand >();
   command->setObsolete( true );
   undoStack()->push( command.release() );
-#endif
 
   mEditCommandActive = false;
   mDeletedFids.clear();

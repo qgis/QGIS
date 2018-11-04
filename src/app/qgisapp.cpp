@@ -712,9 +712,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   this->addAction( mActionToggleMapOnly );
   endProfile();
 
-#if QT_VERSION >= 0x050600
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
-#endif
 
   //////////
 

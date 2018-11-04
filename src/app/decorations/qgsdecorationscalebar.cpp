@@ -178,13 +178,8 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
 
   //Get canvas dimensions
   QPaintDevice *device = context.painter()->device();
-#if QT_VERSION < 0x050600
-  int deviceHeight = device->height() / device->devicePixelRatio();
-  int deviceWidth = device->width() / device->devicePixelRatio();
-#else
   int deviceHeight = device->height() / device->devicePixelRatioF();
   int deviceWidth = device->width() / device->devicePixelRatioF();
-#endif
 
   //Get map units per pixel. This can be negative at times (to do with
   //projections) and that just confuses the rest of the code in this

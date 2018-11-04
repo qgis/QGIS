@@ -411,11 +411,9 @@ void myMessageOutput( QtMsgType type, const char *msg )
       break; // silence warnings
     }
 
-#if QT_VERSION >= 0x050500
     case QtInfoMsg:
       myPrint( "Info: %s\n", msg );
       break;
-#endif
   }
 }
 

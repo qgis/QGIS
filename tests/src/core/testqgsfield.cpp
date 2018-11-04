@@ -333,9 +333,7 @@ void TestQgsField::displayString()
   QgsField doubleFieldNoPrec( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10 );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5.005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5.005005005" ) );
-#if QT_VERSION >= 0x050700
   QCOMPARE( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator, QLocale::NumberOption::DefaultNumberOptions );
-#endif
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599,999,898,999" ) );
 
   //test NULL double

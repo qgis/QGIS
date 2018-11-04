@@ -264,30 +264,9 @@ uint qHash( const QVariant &variant )
     case QVariant::Char:
       return qHash( variant.toChar() );
     case QVariant::List:
-
-#if QT_VERSION >= 0x050600
       return qHash( variant.toList() );
-#else
-      {
-        QVariantList list = variant.toList();
-        if ( list.isEmpty() )
-          return -1;
-        else
-          return qHash( list.at( 0 ) );
-      }
-#endif
     case QVariant::StringList:
-#if QT_VERSION >= 0x050600
       return qHash( variant.toStringList() );
-#else
-      {
-        QStringList list = variant.toStringList();
-        if ( list.isEmpty() )
-          return -1;
-        else
-          return qHash( list.at( 0 ) );
-      }
-#endif
     case QVariant::ByteArray:
       return qHash( variant.toByteArray() );
     case QVariant::Date:

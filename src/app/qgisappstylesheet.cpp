@@ -108,7 +108,6 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
   if ( fontSize != defaultSize || fontFamily != defaultFamily )
     ss += QStringLiteral( "* { font: %1pt \"%2\"} " ).arg( fontSize, fontFamily );
 
-#if QT_VERSION >= 0x050900
   // Fix for macOS Qt 5.9+, where close boxes do not show on document mode tab bar tabs
   // See: https://bugreports.qt.io/browse/QTBUG-61092
   //      https://bugreports.qt.io/browse/QTBUG-61742
@@ -121,7 +120,6 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
     ss += QLatin1String( "QTabBar::close-button{ image: url(:/images/themes/default/mIconCloseTab.svg); }" );
     ss += QLatin1String( "QTabBar::close-button:hover{ image: url(:/images/themes/default/mIconCloseTabHover.svg); }" );
   }
-#endif
 
   // QGroupBox and QgsCollapsibleGroupBox, mostly for Ubuntu and Mac
   bool gbxCustom = opts.value( QStringLiteral( "groupBoxCustom" ) ).toBool();

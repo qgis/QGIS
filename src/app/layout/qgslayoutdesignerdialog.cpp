@@ -248,9 +248,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   setAcceptDrops( true );
 
   setAttribute( Qt::WA_DeleteOnClose );
-#if QT_VERSION >= 0x050600
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
-#endif
 
   //create layout view
   QGridLayout *viewLayout = new QGridLayout();
