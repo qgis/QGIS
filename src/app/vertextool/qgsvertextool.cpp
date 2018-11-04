@@ -474,12 +474,9 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     // for each editable layer, select vertices
     const auto layers = canvas()->layers();
-    for ( QgsMapLayer *layer : layers )
+    const auto editableLayers = editableVectorLayers();
+    for ( QgsVectorLayer *vlayer : editableLayers )
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-      if ( !vlayer || !vlayer->isEditable() || !vlayer->isSpatial() )
-        continue;
-
       if ( mMode == ActiveLayer && vlayer != currentVectorLayer() )
         continue;
 
@@ -1165,6 +1162,65 @@ void QgsVertexTool::startDragging( QgsMapMouseEvent *e )
   }
 }
 
+QList<QgsVectorLayer *> QgsVertexTool::editableVectorLayers()
+{
+  QList<QgsVectorLayer *> editableLayers;
+  const auto layers = canvas()->layers();
+  for ( QgsMapLayer *layer : layers )
+  {
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+    if ( vlayer && vlayer->isEditable() && vlayer->isSpatial() )
+      editableLayers << vlayer;
+  }
+  return editableLayers;
+}
+
+QSet<Vertex> QgsVertexTool::findCoincidentVertices( const QSet<Vertex> &vertices )
+{
+  QSet<Vertex> topoVertices;
+  const auto editableLayers = editableVectorLayers();
+
+  for ( const Vertex &v : qgis::as_const( vertices ) )
+  {
+    QgsPointXY origPointV = cachedGeometryForVertex( v ).vertexAt( v.vertexId );
+    QgsPointXY mapPointV = toMapCoordinates( v.layer, origPointV );
+    for ( QgsVectorLayer *vlayer : editableLayers )
+    {
+      const auto snappedVertices = layerVerticesSnappedToPoint( vlayer, mapPointV );
+      for ( const QgsPointLocator::Match &otherMatch : snappedVertices )
+      {
+        Vertex otherVertex( otherMatch.layer(), otherMatch.featureId(), otherMatch.vertexIndex() );
+        if ( !vertices.contains( otherVertex ) )
+          topoVertices << otherVertex;
+      }
+    }
+  }
+  return topoVertices;
+}
+
+void QgsVertexTool::buildExtraVertices( const QSet<Vertex> &vertices, const QgsPointXY &anchorPoint, QgsVectorLayer *anchorLayer )
+{
+  for ( const Vertex &v : qgis::as_const( vertices ) )
+  {
+    if ( mDraggingVertex && v == *mDraggingVertex )
+      continue;
+
+    QgsPointXY pointV = cachedGeometryForVertex( v ).vertexAt( v.vertexId );
+
+    // Calculate position of the anchor point in the coordinates of our vertex v
+    // Try to avoid reprojection so we do not loose precision when map CRS does not match layer CRS
+    QgsPointXY anchorPointLayer;
+    if ( v.layer->crs() == anchorLayer->crs() )
+      anchorPointLayer = anchorPoint;
+    else  // reprojection is necessary: ANCHOR -> MAP -> V
+      anchorPointLayer = toLayerCoordinates( v.layer, toMapCoordinates( anchorLayer, anchorPoint ) );
+    QgsVector offset = pointV - anchorPointLayer;
+
+    mDraggingExtraVertices << v;
+    mDraggingExtraVerticesOffset << offset;
+  }
+}
+
 void QgsVertexTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
 {
   Q_ASSERT( m.hasVertex() );
@@ -1179,58 +1235,21 @@ void QgsVertexTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
 
   setHighlightedVerticesVisible( false );  // hide any extra highlight of vertices until we are done with moving
 
-  QgsPointXY origDraggingVertexPoint = geom.vertexAt( mDraggingVertex->vertexId );
-
-  // if there are other highlighted vertices, they should be dragged as well with their offset
+  QSet<Vertex> movingVertices;
+  movingVertices << *mDraggingVertex;
   for ( const Vertex &v : qgis::as_const( mSelectedVertices ) )
-  {
-    if ( v != *mDraggingVertex )
-    {
-      QgsPointXY origPointV = cachedGeometryForVertex( v ).vertexAt( v.vertexId );
-      QgsPointXY origPointLayer = origDraggingVertexPoint;
-      if ( v.layer->crs() != mDraggingVertex->layer->crs() )  // reproject if necessary
-        origPointLayer = toLayerCoordinates( v.layer, toMapCoordinates( m.layer(), origDraggingVertexPoint ) );
-      QgsVector offset = origPointV - origPointLayer;
-
-      mDraggingExtraVertices << v;
-      mDraggingExtraVerticesOffset << offset;
-    }
-  }
-
-  cadDockWidget()->setPoints( QList<QgsPointXY>() << m.point() << m.point() );
+    movingVertices << v;
 
   if ( QgsProject::instance()->topologicalEditing() )
   {
-    // support for topo editing - find extra features
-    // that have coincident point with the vertex being dragged
-    const auto layers = canvas()->layers();
-    for ( QgsMapLayer *layer : layers )
-    {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-      if ( !vlayer || !vlayer->isEditable() )
-        continue;
-
-      const auto snappedVertices = layerVerticesSnappedToPoint( vlayer, m.point() );
-      for ( const QgsPointLocator::Match &otherMatch : snappedVertices )
-      {
-        if ( otherMatch.layer() == m.layer() &&
-             otherMatch.featureId() == m.featureId() &&
-             otherMatch.vertexIndex() == m.vertexIndex() )
-          continue;
-
-        // start dragging of snapped point of current layer
-        mDraggingExtraVertices << Vertex( otherMatch.layer(), otherMatch.featureId(), otherMatch.vertexIndex() );
-        mDraggingExtraVerticesOffset << QgsVector(); // topo vertices have the same position
-      }
-    }
+    movingVertices.unite( findCoincidentVertices( movingVertices ) );
   }
 
-  // now build drag rubber bands for extra vertices
+  buildExtraVertices( movingVertices, geom.vertexAt( m.vertexIndex() ), m.layer() );
 
-  QSet<Vertex> movingVertices;
-  movingVertices << *mDraggingVertex;
-  for ( const Vertex &v : qgis::as_const( mDraggingExtraVertices ) )
-    movingVertices << v;
+  cadDockWidget()->setPoints( QList<QgsPointXY>() << m.point() << m.point() );
+
+  // now build drag rubber bands for extra vertices
 
   QgsPointXY dragVertexMapPoint = m.point();
 
@@ -1423,13 +1442,9 @@ void QgsVertexTool::startDraggingAddVertex( const QgsPointLocator::Match &m )
   {
     // find other segments coincident with the one user just picked and store them in a list
     // so we can add a new vertex also in those to keep topology correct
-    const auto layers = canvas()->layers();
-    for ( QgsMapLayer *layer : layers )
+    const auto editableLayers = editableVectorLayers();
+    for ( QgsVectorLayer *vlayer : editableLayers )
     {
-      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-      if ( !vlayer || !vlayer->isEditable() )
-        continue;
-
       if ( vlayer->geometryType() != QgsWkbTypes::LineGeometry && vlayer->geometryType() != QgsWkbTypes::PolygonGeometry )
         continue;
 
@@ -1506,13 +1521,13 @@ void QgsVertexTool::startDraggingEdge( const QgsPointLocator::Match &m, const Qg
 
   buildDragBandsForVertices( movingVertices, mapPoint );
 
-  QgsPointXY layerPoint = toLayerCoordinates( m.layer(), mapPoint );
-
-  for ( const Vertex &v : qgis::as_const( movingVertices ) )
+  if ( QgsProject::instance()->topologicalEditing() )
   {
-    mDraggingExtraVertices << v;
-    mDraggingExtraVerticesOffset << ( geom.vertexAt( v.vertexId ) - QgsPoint( layerPoint ) );
+    movingVertices.unite( findCoincidentVertices( movingVertices ) );
   }
+
+  QgsPointXY layerPoint = toLayerCoordinates( m.layer(), mapPoint );
+  buildExtraVertices( movingVertices, layerPoint, m.layer() );
 
   cadDockWidget()->setPoints( QList<QgsPointXY>() << m.point() << m.point() );
 }

@@ -184,6 +184,20 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     void applyEditsToLayers( VertexEdits &edits );
 
+    /**
+     * For the given set of vertices (possibly from multiple layers) find any another vertices that are coincident with
+     * them and not yet included in the set. This is used for topological editing to find all vertices that should be moved.
+     */
+    QSet<Vertex> findCoincidentVertices( const QSet<Vertex> &vertices );
+
+    /**
+     * For the given set of vertices, prepare mDraggingExtraVertices and mDraggingExtraVerticesOffset arrays.
+     * The parameters anchorPoint and anchorLayer are used to calculate offsets.
+     */
+    void buildExtraVertices( const QSet<Vertex> &vertices, const QgsPointXY &anchorPoint, QgsVectorLayer *anchorLayer );
+
+    //! Returns a list of canvas layers filtered to just editable spatial vector layers
+    QList<QgsVectorLayer *> editableVectorLayers();
 
     enum HighlightMode
     {
@@ -382,7 +396,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
      */
     std::unique_ptr<QgsPointLocator::Match> mNewVertexFromDoubleClick;
 
-    //! Geometry cache for fast access to geometries
+    //! Geometry cache for fast access to geometries (coordinates are in their layer's CRS)
     QHash<const QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > mCache;
 
     // support for vertex editor
