@@ -225,7 +225,7 @@ void QgsLayoutMapWidget::aboutToShowKeepLayersVisibilityPresetsMenu()
   menu->clear();
   Q_FOREACH ( const QString &presetName, QgsProject::instance()->mapThemeCollection()->mapThemes() )
   {
-    menu->addAction( presetName, this, SLOT( keepLayersVisibilityPresetSelected() ) );
+    menu->addAction( presetName, this, &QgsLayoutMapWidget::keepLayersVisibilityPresetSelected );
   }
 
   if ( menu->actions().isEmpty() )
