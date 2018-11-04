@@ -62,7 +62,7 @@ QgsFilterAlgorithmConfigurationWidget::QgsFilterAlgorithmConfigurationWidget( QW
   connect( addOutputButton, &QToolButton::clicked, this, &QgsFilterAlgorithmConfigurationWidget::addOutput );
   connect( removeOutputButton, &QToolButton::clicked, this, &QgsFilterAlgorithmConfigurationWidget::removeSelectedOutputs );
 
-  connect( mOutputExpressionWidget->selectionModel(), &QItemSelectionModel::selectionChanged, [removeOutputButton, this]
+  connect( mOutputExpressionWidget->selectionModel(), &QItemSelectionModel::selectionChanged, this, [removeOutputButton, this]
   {
     removeOutputButton->setEnabled( !mOutputExpressionWidget->selectionModel()->selectedIndexes().isEmpty() );
   } );

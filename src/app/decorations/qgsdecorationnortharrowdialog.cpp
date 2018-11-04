@@ -52,7 +52,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   spinAngle->setEnabled( !mDeco.mAutomatic );
   sliderRotation->setEnabled( !mDeco.mAutomatic );
 
-  connect( cboxAutomatic, &QAbstractButton::toggled, [ = ]( bool checked )
+  connect( cboxAutomatic, &QAbstractButton::toggled, this, [ = ]( bool checked )
   {
     spinAngle->setEnabled( !checked );
     sliderRotation->setEnabled( !checked );
