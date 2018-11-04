@@ -1268,7 +1268,7 @@ namespace QgsWfs
 
       //add geometry column (as gml)
       QgsGeometry geom = feat->geometry();
-      if ( geom && params.withGeom && params.geometryName != QLatin1String( "NONE" ) )
+      if ( !geom.isNull() && params.withGeom && params.geometryName != QLatin1String( "NONE" ) )
       {
         int prec = params.precision;
         QgsCoordinateReferenceSystem crs = params.crs;
@@ -1365,7 +1365,7 @@ namespace QgsWfs
 
       //add geometry column (as gml)
       QgsGeometry geom = feat->geometry();
-      if ( geom && params.withGeom && params.geometryName != QLatin1String( "NONE" ) )
+      if ( !geom.isNull() && params.withGeom && params.geometryName != QLatin1String( "NONE" ) )
       {
         int prec = params.precision;
         QgsCoordinateReferenceSystem crs = params.crs;

@@ -729,7 +729,7 @@ QgsGeometry::OperationResult QgsGeometry::addPart( const QgsGeometry &newPart )
   {
     return QgsGeometry::InvalidBaseGeometry;
   }
-  if ( !newPart || !newPart.d->geometry )
+  if ( newPart.isNull() || !newPart.d->geometry )
   {
     return QgsGeometry::AddPartNotMultiGeometry;
   }
@@ -752,7 +752,7 @@ QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.removeInteriorRings( minimumRingArea );
-      if ( result )
+      if ( !result.isNull() )
         results << result;
     }
     if ( results.isEmpty() )
@@ -1729,7 +1729,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.offsetCurve( distance, segments, joinStyle, miterLimit );
-      if ( result )
+      if ( !result.isNull() )
         results << result;
     }
     if ( results.isEmpty() )
@@ -1772,7 +1772,7 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.singleSidedBuffer( distance, segments, side, joinStyle, miterLimit );
-      if ( result )
+      if ( !result.isNull() )
         results << result;
     }
     if ( results.isEmpty() )
@@ -1830,7 +1830,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.extendLine( startDistance, endDistance );
-      if ( result )
+      if ( !result.isNull() )
         results << result;
     }
     if ( results.isEmpty() )
@@ -2673,11 +2673,6 @@ void QgsGeometry::convertPointList( const QgsPointSequence &input, QVector<QgsPo
   {
     output.append( QgsPointXY( p.x(), p.y() ) );
   }
-}
-
-QgsGeometry::operator bool() const
-{
-  return d->geometry.get();
 }
 
 void QgsGeometry::convertToPolyline( const QgsPointSequence &input, QgsPolylineXY &output )
