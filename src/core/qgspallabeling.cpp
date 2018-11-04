@@ -1567,7 +1567,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   }
 
   geos::unique_ptr geosObstacleGeomClone;
-  if ( obstacleGeometry )
+  if ( !obstacleGeometry.isNull() )
   {
     geosObstacleGeomClone = QgsGeos::asGeos( obstacleGeometry );
   }
@@ -2000,7 +2000,7 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature &f, QgsRenderConte
   mCurFeat = &f;
 
   QgsGeometry geom;
-  if ( obstacleGeometry )
+  if ( !obstacleGeometry.isNull() )
   {
     geom = obstacleGeometry;
   }

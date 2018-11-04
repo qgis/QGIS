@@ -133,7 +133,7 @@ QgsFeatureList QgsMultiRingConstantBufferAlgorithm::processFeature( const QgsFea
     QgsFeature out;
     currentDistance = i * distance;
     outputGeometry = feature.geometry().buffer( currentDistance, 40 );
-    if ( !outputGeometry )
+    if ( outputGeometry.isNull() )
     {
       feedback->reportError( QObject::tr( "Error calculating buffer for feature %1" ).arg( feature.id() ) );
       continue;

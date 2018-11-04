@@ -80,7 +80,6 @@ class TestQgsGeometry : public QObject
     void assignment();
     void asVariant(); //test conversion to and from a QVariant
     void isEmpty();
-    void operatorBool();
     void equality();
     void vertexIterator();
 
@@ -422,18 +421,6 @@ void TestQgsGeometry::isEmpty()
 
   QgsGeometryCollection collection;
   QVERIFY( collection.isEmpty() );
-}
-
-void TestQgsGeometry::operatorBool()
-{
-  QgsGeometry geom;
-  QVERIFY( !geom );
-
-  geom.set( new QgsPoint( 1.0, 2.0 ) );
-  QVERIFY( geom );
-
-  geom.set( nullptr );
-  QVERIFY( !geom );
 }
 
 void TestQgsGeometry::equality()
@@ -16944,7 +16931,7 @@ void TestQgsGeometry::minimalEnclosingCircle()
   result = geomTest.minimalEnclosingCircle( center, radius );
   QCOMPARE( center, QgsPointXY() );
   QCOMPARE( radius, 0.0 );
-  QCOMPARE( result, QgsGeometry() );
+  QVERIFY( result.isNull() );
 
   // caase 1
   geomTest = QgsGeometry::fromPointXY( QgsPointXY( 5, 5 ) );
@@ -16952,7 +16939,7 @@ void TestQgsGeometry::minimalEnclosingCircle()
   QCOMPARE( center, QgsPointXY( 5, 5 ) );
   QCOMPARE( radius, 0.0 );
   resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
-  QCOMPARE( result, resultTest );
+  QCOMPARE( result.asWkt(), resultTest.asWkt() );
 
   // case 2
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 3 8, 7 4 )" ) );
@@ -16960,35 +16947,35 @@ void TestQgsGeometry::minimalEnclosingCircle()
   QGSCOMPARENEARPOINT( center, QgsPointXY( 5, 6 ), 0.0001 );
   QGSCOMPARENEAR( radius, sqrt( 2 ) * 2, 0.0001 );
   resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
-  QCOMPARE( result, resultTest );
+  QCOMPARE( result.asWkt(), resultTest.asWkt() );
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "LINESTRING( 0 5, 2 2, 0 -5, -1 -1 )" ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
   resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
-  QCOMPARE( result, resultTest );
+  QCOMPARE( result.asWkt(), resultTest.asWkt() );
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5, 2 2, 0 -5, -1 -1 )" ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
   resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
-  QCOMPARE( result, resultTest );
+  QCOMPARE( result.asWkt(), resultTest.asWkt() );
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "POLYGON(( 0 5, 2 2, 0 -5, -1 -1 ))" ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
   resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
-  QCOMPARE( result, resultTest );
+  QCOMPARE( result.asWkt(), resultTest.asWkt() );
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5, 0 -5, 0 0 )" ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
   resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
-  QCOMPARE( result, resultTest );
+  QCOMPARE( result.asWkt(), resultTest.asWkt() );
 
   // case 3
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT((0 0), (5 5), (0 -5), (0 5), (-5 0))" ) );
@@ -16996,7 +16983,7 @@ void TestQgsGeometry::minimalEnclosingCircle()
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0.8333, 0.8333 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5.8926, 0.0001 );
   resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
-  QCOMPARE( result, resultTest );
+  QCOMPARE( result.asWkt(), resultTest.asWkt() );
 
 }
 

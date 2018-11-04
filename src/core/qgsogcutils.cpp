@@ -1135,7 +1135,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocumen
                                         const QString &gmlIdBase,
                                         int precision )
 {
-  if ( !geometry )
+  if ( geometry.isNull() )
     return QDomElement();
 
   // coordinate separator

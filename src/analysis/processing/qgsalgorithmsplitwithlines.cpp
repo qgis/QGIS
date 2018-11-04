@@ -192,7 +192,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
             }
 
             QgsGeometry inGeom = inGeoms.takeFirst();
-            if ( !inGeom )
+            if ( inGeom.isNull() )
               continue;
 
             if ( splitGeomEngine->intersects( inGeom.constGet() ) )
