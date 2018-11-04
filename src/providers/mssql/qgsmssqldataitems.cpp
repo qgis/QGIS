@@ -347,6 +347,14 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
     layerProperty.srid = sridList[i];
     schemaItem->addLayer( layerProperty, true );
   }
+
+  if ( typeList.isEmpty() )
+  {
+    // this suggests that retrieval of geometry type and CRS failed if no results were returned
+    // for examle due to invalid geometries in the table (WHAAAT?)
+    // but we still want to add have such table in the list
+    schemaItem->addLayer( layerProperty, true );
+  }
 }
 
 bool QgsMssqlConnectionItem::equal( const QgsDataItem *other )
@@ -727,6 +735,11 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
       {
         layerType = QgsLayerItem::TableLayer;
         tip = tr( "as geometryless table" );
+      }
+      else if ( !layerProperty.geometryColName.isEmpty() && layerProperty.type.isEmpty() )
+      {
+        // geometry column is there but we failed to determine geometry type (e.g. due to invalid geometries)
+        layerType = QgsLayerItem::Vector;
       }
       else
       {
