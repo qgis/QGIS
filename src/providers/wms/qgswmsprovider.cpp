@@ -483,7 +483,7 @@ void QgsWmsProvider::setQueryItem( QUrl &url, const QString &item, const QString
 {
   url.removeQueryItem( item );
   if ( value.isNull() )
-    url.addQueryItem( item, QStringLiteral( "" ) );  // skip-keyword-check
+    url.addQueryItem( item, "" );
   else
     url.addQueryItem( item, value );
 }

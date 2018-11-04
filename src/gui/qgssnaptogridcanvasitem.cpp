@@ -165,7 +165,7 @@ void QgsSnapToGridCanvasItem::updateZoomFactor()
     else
       mAvailableByZoomFactor = false;
   }
-  catch ( QgsCsException &e )
+  catch ( QgsCsException & )
   {
     // transform errors?
     // you've probably got worse problems than the grid with your digitizing operations in the current projection.
