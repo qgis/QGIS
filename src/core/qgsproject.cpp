@@ -665,6 +665,7 @@ void QgsProject::clear()
   mLayoutManager->clear();
   mSnappingConfig.reset();
   emit snappingConfigChanged( mSnappingConfig );
+  emit topologicalEditingChanged();
 
   mMapThemeCollection.reset( new QgsMapThemeCollection( this ) );
   emit mapThemeCollectionChanged();
@@ -1339,6 +1340,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   emit readProject( *doc );
   emit readProjectWithContext( *doc, context );
   emit snappingConfigChanged( mSnappingConfig );
+  emit topologicalEditingChanged();
 
   // if all went well, we're allegedly in pristine state
   if ( clean )
