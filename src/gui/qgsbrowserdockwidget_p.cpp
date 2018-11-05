@@ -121,6 +121,7 @@ QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget *parent )
   mMetadataTextBrowser->setOpenLinks( false );
   connect( mMetadataTextBrowser, &QTextBrowser::anchorClicked, this, &QgsBrowserLayerProperties::urlClicked );
 
+  mMapCanvas->setProperty( "browser_canvas", true );
   mMapCanvas->setLayers( QList< QgsMapLayer * >() );
   mMapCanvas->setMapTool( new QgsMapToolPan( mMapCanvas ) );
   mMapCanvas->freeze( true );
