@@ -18,6 +18,7 @@
 #include <QBoxLayout>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DRender/QRenderCapture>
+#include <QMouseEvent>
 
 #include "qgscameracontroller.h"
 #include "qgs3dmapsettings.h"
