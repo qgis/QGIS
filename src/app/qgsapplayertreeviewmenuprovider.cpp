@@ -80,7 +80,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
     {
       menu->addAction( actions->actionZoomToGroup( mCanvas, menu ) );
 
-      menu->addAction( tr( "Copy Group" ), QgisApp::instance(), SLOT( copyLayer() ) );
+      menu->addAction( tr( "Copy Group" ), QgisApp::instance(), &QgisApp::copyLayer );
       if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_MAPLAYER_MIME ) )
       {
         QAction *actionPasteLayerOrGroup = new QAction( tr( "Paste Layer/Group" ), menu );
@@ -92,13 +92,13 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addSeparator();
       menu->addAction( actions->actionAddGroup( menu ) );
-      QAction *removeAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove Group…" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      QAction *removeAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove Group…" ), QgisApp::instance(), &QgisApp::removeLayer );
       removeAction->setEnabled( removeActionEnabled() );
       menu->addSeparator();
 
       menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetCRS.png" ) ),
-                       tr( "&Set Group CRS…" ), QgisApp::instance(), SLOT( legendGroupSetCrs() ) );
-      menu->addAction( tr( "&Set Group WMS Data…" ), QgisApp::instance(), SLOT( legendGroupSetWmsData() ) );
+                       tr( "&Set Group CRS…" ), QgisApp::instance(), &QgisApp::legendGroupSetCrs );
+      menu->addAction( tr( "&Set Group WMS Data…" ), QgisApp::instance(), &QgisApp::legendGroupSetWmsData );
 
       menu->addSeparator();
 
@@ -120,7 +120,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
       {
-        menu->addAction( tr( "Paste Style" ), QgisApp::instance(), SLOT( applyStyleToGroup() ) );
+        menu->addAction( tr( "Paste Style" ), QgisApp::instance(), &QgisApp::applyStyleToGroup );
       }
 
       menu->addSeparator();
@@ -161,23 +161,23 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( rlayer )
       {
-        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomActual.svg" ) ), tr( "&Zoom to Native Resolution (100%)" ), QgisApp::instance(), SLOT( legendLayerZoomNative() ) );
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomActual.svg" ) ), tr( "&Zoom to Native Resolution (100%)" ), QgisApp::instance(), &QgisApp::legendLayerZoomNative );
 
         if ( rlayer->rasterType() != QgsRasterLayer::Palette )
-          menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
+          menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), &QgisApp::legendLayerStretchUsingCurrentExtent );
       }
 
       addCustomLayerActions( menu, layer );
       if ( layer && layer->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer *>( layer )->providerType() == QLatin1String( "virtual" ) )
       {
-        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVirtualLayer.svg" ) ), tr( "Edit Virtual Layer…" ), QgisApp::instance(), SLOT( addVirtualLayer() ) );
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVirtualLayer.svg" ) ), tr( "Edit Virtual Layer…" ), QgisApp::instance(), &QgisApp::addVirtualLayer );
       }
 
       menu->addSeparator();
 
       // duplicate layer
-      QAction *duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateLayer.svg" ) ), tr( "&Duplicate Layer" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
-      QAction *removeAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove Layer…" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      QAction *duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateLayer.svg" ) ), tr( "&Duplicate Layer" ), QgisApp::instance(), [] { QgisApp::instance()->duplicateLayers(); } );
+      QAction *removeAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove Layer…" ), QgisApp::instance(), &QgisApp::removeLayer );
       removeAction->setEnabled( removeActionEnabled() );
 
       menu->addSeparator();
@@ -207,7 +207,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         // attribute table
         menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
-                         QgisApp::instance(), SLOT( attributeTable() ) );
+                         QgisApp::instance(), [ = ] { QgisApp::instance()->attributeTable(); } );
 
         // allow editing
         int cap = vlayer->dataProvider()->capabilities();
@@ -234,7 +234,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( vlayer->dataProvider()->supportsSubsetString() )
         {
-          QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), SLOT( layerSubsetString() ) );
+          QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), &QgisApp::layerSubsetString );
           action->setEnabled( !vlayer->isEditable() );
         }
       }
@@ -244,10 +244,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( layer && layer->isSpatial() )
       {
         // set layer scale visibility
-        menu->addAction( tr( "&Set Layer Scale Visibility…" ), QgisApp::instance(), SLOT( setLayerScaleVisibility() ) );
+        menu->addAction( tr( "&Set Layer Scale Visibility…" ), QgisApp::instance(), &QgisApp::setLayerScaleVisibility );
 
         if ( !layer->isInScaleRange( mCanvas->scale() ) )
-          menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), SLOT( zoomToLayerScale() ) );
+          menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), &QgisApp::zoomToLayerScale );
 
         QMenu *menuSetCRS = new QMenu( tr( "Set CRS" ), menu );
         // set layer crs
@@ -344,7 +344,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         }
         else
         {
-          menuStyleManager->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
+          menuStyleManager->addAction( tr( "Copy Style" ), app, [ = ] { app->copyStyle(); } );
         }
 
         if ( layer && app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
@@ -387,7 +387,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           }
           else
           {
-            menuStyleManager->addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
+            menuStyleManager->addAction( tr( "Paste Style" ), app, [ = ] { app->pasteStyle(); } );
           }
         }
 
@@ -441,12 +441,12 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       {
         if ( QgisApp::instance()->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
         {
-          menu->addAction( tr( "Paste Style" ), QgisApp::instance(), SLOT( applyStyleToGroup() ) );
+          menu->addAction( tr( "Paste Style" ), QgisApp::instance(), &QgisApp::applyStyleToGroup );
         }
       }
 
       if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
-        menu->addAction( tr( "&Properties…" ), QgisApp::instance(), SLOT( layerProperties() ) );
+        menu->addAction( tr( "&Properties…" ), QgisApp::instance(), &QgisApp::layerProperties );
     }
   }
   else if ( QgsLayerTreeModelLegendNode *node = mView->layerTreeModel()->index2legendNode( idx ) )
@@ -457,9 +457,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( symbolNode->flags() & Qt::ItemIsUserCheckable )
       {
         menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ), tr( "&Show All Items" ),
-                         symbolNode, SLOT( checkAllItems() ) );
+                         symbolNode, &QgsSymbolLegendNode::checkAllItems );
         menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHideAllLayers.svg" ) ), tr( "&Hide All Items" ),
-                         symbolNode, SLOT( uncheckAllItems() ) );
+                         symbolNode, &QgsSymbolLegendNode::uncheckAllItems );
         menu->addSeparator();
       }
 
