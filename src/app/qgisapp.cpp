@@ -8203,7 +8203,15 @@ QList<QgsMapCanvasAnnotationItem *> QgisApp::annotationItems()
 
 QList<QgsMapCanvas *> QgisApp::mapCanvases()
 {
-  return findChildren< QgsMapCanvas * >();
+  // filter out browser canvases -- they are children of app, but a different
+  // kind of beast, and here we only want the main canvas or dock canvases
+  auto canvases = findChildren< QgsMapCanvas * >();
+  canvases.erase( std::remove_if( canvases.begin(), canvases.end(),
+                                  []( QgsMapCanvas * canvas )
+  {
+    return !canvas || canvas->property( "browser_canvas" ).toBool();
+  } ), canvases.end() );
+  return canvases;
 }
 
 void QgisApp::removeAnnotationItems()
