@@ -92,6 +92,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
     GRASS_RASTER_FORMAT_META = 'GRASS_RASTER_FORMAT_META'
     GRASS_VECTOR_DSCO = 'GRASS_VECTOR_DSCO'
     GRASS_VECTOR_LCO = 'GRASS_VECTOR_LCO'
+    GRASS_VECTOR_EXPORT_NOCAT = 'GRASS_VECTOR_EXPORT_NOCAT'
 
     OUTPUT_TYPES = ['auto', 'point', 'line', 'area']
     QGIS_OUTPUT_TYPES = {QgsProcessing.TypeVectorAnyGeometry: 'auto',
@@ -321,6 +322,14 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.params.append(param)
 
+            # Add a -c flag for export
+            param = QgsProcessingParameterBoolean(
+                self.GRASS_VECTOR_EXPORT_NOCAT,
+                self.tr('Also export features without category (not labeled). Otherwise only features with category are exported')
+            )
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            self.params.append(param)
+
     def getDefaultCellSize(self):
         """
         Determine a default cell size from all the raster layers.
@@ -535,7 +544,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                              self.GRASS_RASTER_FORMAT_OPT,
                              self.GRASS_RASTER_FORMAT_META,
                              self.GRASS_VECTOR_DSCO,
-                             self.GRASS_VECTOR_LCO]:
+                             self.GRASS_VECTOR_LCO,
+                             self.GRASS_VECTOR_EXPORT_NOCAT]:
                 continue
 
             # Raster and vector layers
@@ -900,10 +910,11 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         outFormat = QgsVectorFileWriter.driverForExtension(os.path.splitext(fileName)[1]).replace(' ', '_')
         dsco = self.parameterAsString(parameters, self.GRASS_VECTOR_DSCO, context)
         lco = self.parameterAsString(parameters, self.GRASS_VECTOR_LCO, context)
-        self.exportVectorLayer(grassName, fileName, layer, nocats, dataType, outFormat, dsco, lco)
+        exportnocat = self.parameterAsBool(parameters, self.GRASS_VECTOR_EXPORT_NOCAT, context)
+        self.exportVectorLayer(grassName, fileName, layer, nocats, dataType, outFormat, dsco, lco, exportnocat)
 
     def exportVectorLayer(self, grassName, fileName, layer=None, nocats=False, dataType='auto',
-                          outFormat=None, dsco=None, lco=None):
+                          outFormat=None, dsco=None, lco=None, exportnocat=False):
         """
         Creates a dedicated command to export a vector from
         temporary GRASS DB into a file via OGR.
@@ -915,19 +926,21 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param outFormat: file format for export.
         :param dsco: datasource creation options for format.
         :param lco: layer creation options for format.
+        :param exportnocat: do not export features without categories.
         """
         if outFormat is None:
             outFormat = QgsVectorFileWriter.driverForExtension(os.path.splitext(fileName)[1]).replace(' ', '_')
 
         for cmd in [self.commands, self.outputCommands]:
             cmd.append(
-                'v.out.ogr{0} type="{1}" input="{2}" output="{3}" format="{4}" {5}{6}{7} --overwrite'.format(
-                    '' if nocats else ' -c',
+                'v.out.ogr{0} type="{1}" input="{2}" output="{3}" format="{4}" {5}{6}{7}{8} --overwrite'.format(
+                    '' if nocats else '',
                     dataType, grassName, fileName,
                     outFormat,
                     'layer={}'.format(layer) if layer else '',
                     ' dsco="{}"'.format(dsco) if dsco else '',
                     ' lco="{}"'.format(lco) if lco else ''
+                    , ' -c' if exportnocat else ''
                 )
             )
 
