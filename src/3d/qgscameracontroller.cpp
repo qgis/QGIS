@@ -21,8 +21,10 @@
 #include "qgis.h"
 
 #include <QDomDocument>
+#include <Qt3DRender/QCamera>
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
+#include <Qt3DInput>
 
 
 QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
@@ -30,121 +32,32 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   , mMouseDevice( new Qt3DInput::QMouseDevice() )
   , mKeyboardDevice( new Qt3DInput::QKeyboardDevice() )
   , mMouseHandler( new Qt3DInput::QMouseHandler )
-  , mLogicalDevice( new Qt3DInput::QLogicalDevice() )
-  , mLeftMouseButtonAction( new Qt3DInput::QAction() )
-  , mLeftMouseButtonInput( new Qt3DInput::QActionInput() )
-  , mMiddleMouseButtonAction( new Qt3DInput::QAction() )
-  , mMiddleMouseButtonInput( new Qt3DInput::QActionInput() )
-  , mRightMouseButtonAction( new Qt3DInput::QAction() )
-  , mRightMouseButtonInput( new Qt3DInput::QActionInput() )
-  , mShiftAction( new Qt3DInput::QAction() )
-  , mShiftInput( new Qt3DInput::QActionInput() )
-  , mCtrlAction( new Qt3DInput::QAction() )
-  , mCtrlInput( new Qt3DInput::QActionInput() )
-  , mWheelAxis( new Qt3DInput::QAxis() )
-  , mMouseWheelInput( new Qt3DInput::QAnalogAxisInput() )
-  , mTxAxis( new Qt3DInput::QAxis() )
-  , mTyAxis( new Qt3DInput::QAxis() )
-  , mKeyboardTxPosInput( new Qt3DInput::QButtonAxisInput() )
-  , mKeyboardTyPosInput( new Qt3DInput::QButtonAxisInput() )
-  , mKeyboardTxNegInput( new Qt3DInput::QButtonAxisInput() )
-  , mKeyboardTyNegInput( new Qt3DInput::QButtonAxisInput() )
-  , mTelevAxis( new Qt3DInput::QAxis() )
-  , mKeyboardTelevPosInput( new Qt3DInput::QButtonAxisInput() )
-  , mKeyboardTelevNegInput( new Qt3DInput::QButtonAxisInput() )
+  , mKeyboardHandler( new Qt3DInput::QKeyboardHandler )
 {
 
-  // not using QAxis + QAnalogAxisInput for mouse X,Y because
-  // it is only in action when a mouse button is pressed.
   mMouseHandler->setSourceDevice( mMouseDevice );
   connect( mMouseHandler, &Qt3DInput::QMouseHandler::positionChanged,
            this, &QgsCameraController::onPositionChanged );
+  connect( mMouseHandler, &Qt3DInput::QMouseHandler::wheel,
+           this, &QgsCameraController::onWheel );
+  connect( mMouseHandler, &Qt3DInput::QMouseHandler::pressed,
+           this, &QgsCameraController::onMousePressed );
+  connect( mMouseHandler, &Qt3DInput::QMouseHandler::released,
+           this, &QgsCameraController::onMouseReleased );
   addComponent( mMouseHandler );
 
-  // TODO: keep using QAxis and QAction approach or just switch to using QMouseHandler / QKeyboardHandler?
-  // it does not feel like the former approach makes anything much simpler
+  mKeyboardHandler->setSourceDevice( mKeyboardDevice );
+  connect( mKeyboardHandler, &Qt3DInput::QKeyboardHandler::pressed,
+           this, &QgsCameraController::onKeyPressed );
+  connect( mKeyboardHandler, &Qt3DInput::QKeyboardHandler::released,
+           this, &QgsCameraController::onKeyReleased );
+  addComponent( mKeyboardHandler );
 
-  // left mouse button
-  mLeftMouseButtonInput->setButtons( QVector<int>() << Qt::LeftButton );
-  mLeftMouseButtonInput->setSourceDevice( mMouseDevice );
-  mLeftMouseButtonAction->addInput( mLeftMouseButtonInput );
-
-  // middle mouse button
-  mMiddleMouseButtonInput->setButtons( QVector<int>() << Qt::MiddleButton );
-  mMiddleMouseButtonInput->setSourceDevice( mMouseDevice );
-  mMiddleMouseButtonAction->addInput( mMiddleMouseButtonInput );
-
-  // right mouse button
-  mRightMouseButtonInput->setButtons( QVector<int>() << Qt::RightButton );
-  mRightMouseButtonInput->setSourceDevice( mMouseDevice );
-  mRightMouseButtonAction->addInput( mRightMouseButtonInput );
-
-  // Mouse Wheel (Y)
-  mMouseWheelInput->setAxis( Qt3DInput::QMouseDevice::WheelY );
-  mMouseWheelInput->setSourceDevice( mMouseDevice );
-  mWheelAxis->addInput( mMouseWheelInput );
-
-  // Keyboard shift
-  mShiftInput->setButtons( QVector<int>() << Qt::Key_Shift );
-  mShiftInput->setSourceDevice( mKeyboardDevice );
-  mShiftAction->addInput( mShiftInput );
-
-  // Keyboard ctrl
-  mCtrlInput->setButtons( QVector<int>() << Qt::Key_Control );
-  mCtrlInput->setSourceDevice( mKeyboardDevice );
-  mCtrlAction->addInput( mCtrlInput );
-
-  // Keyboard Pos Tx
-  mKeyboardTxPosInput->setButtons( QVector<int>() << Qt::Key_Right );
-  mKeyboardTxPosInput->setScale( 1.0f );
-  mKeyboardTxPosInput->setSourceDevice( mKeyboardDevice );
-  mTxAxis->addInput( mKeyboardTxPosInput );
-
-  // Keyboard Pos Ty
-  mKeyboardTyPosInput->setButtons( QVector<int>() << Qt::Key_Up );
-  mKeyboardTyPosInput->setScale( 1.0f );
-  mKeyboardTyPosInput->setSourceDevice( mKeyboardDevice );
-  mTyAxis->addInput( mKeyboardTyPosInput );
-
-  // Keyboard Neg Tx
-  mKeyboardTxNegInput->setButtons( QVector<int>() << Qt::Key_Left );
-  mKeyboardTxNegInput->setScale( -1.0f );
-  mKeyboardTxNegInput->setSourceDevice( mKeyboardDevice );
-  mTxAxis->addInput( mKeyboardTxNegInput );
-
-  // Keyboard Neg Ty
-  mKeyboardTyNegInput->setButtons( QVector<int>() << Qt::Key_Down );
-  mKeyboardTyNegInput->setScale( -1.0f );
-  mKeyboardTyNegInput->setSourceDevice( mKeyboardDevice );
-  mTyAxis->addInput( mKeyboardTyNegInput );
-
-  // Keyboard Neg Telev
-  mKeyboardTelevNegInput->setButtons( QVector<int>() << Qt::Key_PageDown );
-  mKeyboardTelevNegInput->setScale( -1.0f );
-  mKeyboardTelevNegInput->setSourceDevice( mKeyboardDevice );
-  mTelevAxis->addInput( mKeyboardTelevNegInput );
-
-  // Keyboard Pos Telev
-  mKeyboardTelevPosInput->setButtons( QVector<int>() << Qt::Key_PageUp );
-  mKeyboardTelevPosInput->setScale( 1.0f );
-  mKeyboardTelevPosInput->setSourceDevice( mKeyboardDevice );
-  mTelevAxis->addInput( mKeyboardTelevPosInput );
-
-  mLogicalDevice->addAction( mLeftMouseButtonAction );
-  mLogicalDevice->addAction( mMiddleMouseButtonAction );
-  mLogicalDevice->addAction( mRightMouseButtonAction );
-  mLogicalDevice->addAction( mShiftAction );
-  mLogicalDevice->addAction( mCtrlAction );
-  mLogicalDevice->addAxis( mWheelAxis );
-  mLogicalDevice->addAxis( mTxAxis );
-  mLogicalDevice->addAxis( mTyAxis );
-  mLogicalDevice->addAxis( mTelevAxis );
-
-  // Disable the logical device when the entity is disabled
+  // Disable the handlers when the entity is disabled
   connect( this, &Qt3DCore::QEntity::enabledChanged,
-           mLogicalDevice, &Qt3DInput::QLogicalDevice::setEnabled );
-
-  addComponent( mLogicalDevice );
+           mMouseHandler, &Qt3DInput::QMouseHandler::setEnabled );
+  connect( this, &Qt3DCore::QEntity::enabledChanged,
+           mKeyboardHandler, &Qt3DInput::QMouseHandler::setEnabled );
 }
 
 void QgsCameraController::setTerrainEntity( QgsTerrainEntity *te )
@@ -257,130 +170,7 @@ void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
 
 void QgsCameraController::frameTriggered( float dt )
 {
-  if ( mCamera == nullptr )
-    return;
-
-  QgsCameraPose oldCamPose = mCameraPose;
-  float dist = mCameraPose.distanceFromCenterPoint();
-  float yaw = mCameraPose.headingAngle();
-  float pitch = mCameraPose.pitchAngle();
-  QgsVector3D center = mCameraPose.centerPoint();
-
-  int dx = mMousePos.x() - mLastMousePos.x();
-  int dy = mMousePos.y() - mLastMousePos.y();
-  mLastMousePos = mMousePos;
-
-  double scaling = ( mCtrlAction->isActive() ? 0.1 : 1.0 );
-  dist -= scaling * dist * mWheelAxis->value() * 10 * dt;
-
-  if ( mRightMouseButtonAction->isActive() )
-  {
-    dist -= dist * dy * 0.01;
-  }
-
-  float tx = mTxAxis->value() * dt * dist * 1.5;
-  float ty = -mTyAxis->value() * dt * dist * 1.5;
-  float telev = mTelevAxis->value() * dt * 300;
-
-  mCameraPose.setDistanceFromCenterPoint( dist );
-
-  if ( !mShiftAction->isActive() && !mCtrlAction->isActive() && ( tx || ty ) )
-  {
-    // moving with keyboard - take into account yaw of camera
-    float t = sqrt( tx * tx + ty * ty );
-    float a = atan2( ty, tx ) - yaw * M_PI / 180;
-    float dx = cos( a ) * t;
-    float dy = sin( a ) * t;
-    center.set( center.x() + dx, center.y(), center.z() + dy );
-    mCameraPose.setCenterPoint( center );
-  }
-
-  if ( ( mLeftMouseButtonAction->isActive() && mShiftAction->isActive() ) || mMiddleMouseButtonAction->isActive() )
-  {
-    // rotate/tilt using mouse (camera moves as it rotates around its view center)
-    pitch += dy;
-    yaw -= dx / 2;
-    mCameraPose.setPitchAngle( pitch );
-    mCameraPose.setHeadingAngle( yaw );
-  }
-  else if ( mShiftAction->isActive() && ( mTxAxis->value() || mTyAxis->value() ) )
-  {
-    // rotate/tilt using keyboard (camera moves as it rotates around its view center)
-    pitch -= mTyAxis->value();   // down key = moving camera toward terrain
-    yaw -= mTxAxis->value();     // right key = moving camera clockwise
-    mCameraPose.setPitchAngle( pitch );
-    mCameraPose.setHeadingAngle( yaw );
-  }
-  else if ( mCtrlAction->isActive() && mLeftMouseButtonAction->isActive() )
-  {
-    // rotate/tilt using mouse (camera stays at one position as it rotates)
-    float diffPitch = 0.2 * dy;
-    float diffYaw = 0.2 * -dx / 2;
-    rotateCamera( diffPitch, diffYaw );
-  }
-  else if ( mCtrlAction->isActive() && ( mTxAxis->value() || mTyAxis->value() ) )
-  {
-    // rotate/tilt using keyboard (camera stays at one position as it rotates)
-    float diffPitch = mTyAxis->value();   // down key = rotating camera down
-    float diffYaw = -mTxAxis->value();    // right key = rotating camera to the right
-    rotateCamera( diffPitch, diffYaw );
-  }
-  else if ( mLeftMouseButtonAction->isActive() && !mShiftAction->isActive() )
-  {
-    // translation works as if one grabbed a point on the plane and dragged it
-    // i.e. find out x,z of the previous mouse point, find out x,z of the current mouse point
-    // and use the difference
-
-    float z = mLastPressedHeight;
-    QPointF p1 = screen_point_to_point_on_plane( QPointF( mMousePos - QPoint( dx, dy ) ), mViewport, mCamera, z );
-    QPointF p2 = screen_point_to_point_on_plane( QPointF( mMousePos ), mViewport, mCamera, z );
-
-    center.set( center.x() - ( p2.x() - p1.x() ), center.y(), center.z() - ( p2.y() - p1.y() ) );
-    mCameraPose.setCenterPoint( center );
-  }
-
-  if ( telev != 0 )
-  {
-    center.set( center.x(), center.y() + telev, center.z() );
-    mCameraPose.setCenterPoint( center );
-  }
-
-  if ( std::isnan( mCameraPose.centerPoint().x() ) || std::isnan( mCameraPose.centerPoint().y() ) || std::isnan( mCameraPose.centerPoint().z() ) )
-  {
-    // something went horribly wrong but we need to at least try to fix it somehow
-    qDebug() << "camera position got NaN!";
-    center.set( 0, 0, 0 );
-    mCameraPose.setCenterPoint( center );
-  }
-
-  if ( mCameraPose.pitchAngle() > 180 )
-    mCameraPose.setPitchAngle( 180 );  // prevent going over the head
-  if ( mCameraPose.pitchAngle() < 0 )
-    mCameraPose.setPitchAngle( 0 );   // prevent going over the head
-  if ( mCameraPose.distanceFromCenterPoint() < 10 )
-    mCameraPose.setDistanceFromCenterPoint( 10 );
-
-  if ( mCameraPose != oldCamPose )
-  {
-    mCameraPose.updateCamera( mCamera );
-
-    if ( mTerrainEntity && mCameraPose.centerPoint() != oldCamPose.centerPoint() )
-    {
-      // figure out our distance from terrain and update the camera's view center
-      // so that camera tilting and rotation is around a point on terrain, not an point at fixed elevation
-      QVector3D intersectionPoint;
-      QgsRayCastingUtils::Ray3D ray = QgsRayCastingUtils::rayForCameraCenter( mCamera );
-      if ( mTerrainEntity->rayIntersection( ray, intersectionPoint ) )
-      {
-        float dist = ( intersectionPoint - mCamera->position() ).length();
-        mCameraPose.setDistanceFromCenterPoint( dist );
-        mCameraPose.setCenterPoint( QgsVector3D( intersectionPoint ) );
-        mCameraPose.updateCamera( mCamera );
-      }
-    }
-
-    emit cameraChanged();
-  }
+  Q_UNUSED( dt );
 }
 
 void QgsCameraController::resetView( float distance )
@@ -453,9 +243,203 @@ void QgsCameraController::readXml( const QDomElement &elem )
   setLookingAtPoint( QgsVector3D( x, elev, y ), dist, pitch, yaw );
 }
 
+void QgsCameraController::updateCameraFromPose( bool centerPointChanged )
+{
+  if ( std::isnan( mCameraPose.centerPoint().x() ) || std::isnan( mCameraPose.centerPoint().y() ) || std::isnan( mCameraPose.centerPoint().z() ) )
+  {
+    // something went horribly wrong but we need to at least try to fix it somehow
+    qDebug() << "camera position got NaN!";
+    mCameraPose.setCenterPoint( QgsVector3D( 0, 0, 0 ) );
+  }
+
+  if ( mCameraPose.pitchAngle() > 180 )
+    mCameraPose.setPitchAngle( 180 );  // prevent going over the head
+  if ( mCameraPose.pitchAngle() < 0 )
+    mCameraPose.setPitchAngle( 0 );   // prevent going over the head
+  if ( mCameraPose.distanceFromCenterPoint() < 10 )
+    mCameraPose.setDistanceFromCenterPoint( 10 );
+
+  if ( mCamera )
+    mCameraPose.updateCamera( mCamera );
+
+  if ( mCamera && mTerrainEntity && centerPointChanged )
+  {
+    // figure out our distance from terrain and update the camera's view center
+    // so that camera tilting and rotation is around a point on terrain, not an point at fixed elevation
+    QVector3D intersectionPoint;
+    QgsRayCastingUtils::Ray3D ray = QgsRayCastingUtils::rayForCameraCenter( mCamera );
+    if ( mTerrainEntity->rayIntersection( ray, intersectionPoint ) )
+    {
+      float dist = ( intersectionPoint - mCamera->position() ).length();
+      mCameraPose.setDistanceFromCenterPoint( dist );
+      mCameraPose.setCenterPoint( QgsVector3D( intersectionPoint ) );
+      mCameraPose.updateCamera( mCamera );
+    }
+  }
+
+  emit cameraChanged();
+}
+
 void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 {
+  int dx = mouse->x() - mMousePos.x();
+  int dy = mouse->y() - mMousePos.y();
+
+  bool hasShift = ( mouse->modifiers() & Qt::ShiftModifier );
+  bool hasCtrl = ( mouse->modifiers() & Qt::ControlModifier );
+  bool hasLeftButton = ( mouse->buttons() & Qt::LeftButton );
+  bool hasMiddleButton = ( mouse->buttons() & Qt::MiddleButton );
+  bool hasRightButton = ( mouse->buttons() & Qt::RightButton );
+
+  if ( ( hasLeftButton && hasShift && !hasCtrl ) || ( hasMiddleButton && !hasShift && !hasCtrl ) )
+  {
+    // rotate/tilt using mouse (camera moves as it rotates around its view center)
+    float pitch = mCameraPose.pitchAngle();
+    float yaw = mCameraPose.headingAngle();
+    pitch += dy;
+    yaw -= dx / 2;
+    mCameraPose.setPitchAngle( pitch );
+    mCameraPose.setHeadingAngle( yaw );
+    updateCameraFromPose();
+  }
+  else if ( hasLeftButton && hasCtrl && !hasShift )
+  {
+    // rotate/tilt using mouse (camera stays at one position as it rotates)
+    float diffPitch = 0.2f * dy;
+    float diffYaw = 0.2f * -dx / 2;
+    rotateCamera( diffPitch, diffYaw );
+    updateCameraFromPose( true );
+  }
+  else if ( hasLeftButton && !hasShift && !hasCtrl )
+  {
+    // translation works as if one grabbed a point on the plane and dragged it
+    // i.e. find out x,z of the previous mouse point, find out x,z of the current mouse point
+    // and use the difference
+
+    float z = mLastPressedHeight;
+    QPointF p1 = screen_point_to_point_on_plane( QPointF( mMousePos.x(), mMousePos.y() ), mViewport, mCamera, z );
+    QPointF p2 = screen_point_to_point_on_plane( QPointF( mouse->x(), mouse->y() ), mViewport, mCamera, z );
+
+    QgsVector3D center = mCameraPose.centerPoint();
+    center.set( center.x() - ( p2.x() - p1.x() ), center.y(), center.z() - ( p2.y() - p1.y() ) );
+    mCameraPose.setCenterPoint( center );
+    updateCameraFromPose( true );
+  }
+  else if ( hasRightButton && !hasShift && !hasCtrl )
+  {
+    // zoom in/out
+    float dist = mCameraPose.distanceFromCenterPoint();
+    dist -= dist * dy * 0.01f;
+    mCameraPose.setDistanceFromCenterPoint( dist );
+    updateCameraFromPose();
+  }
+
   mMousePos = QPoint( mouse->x(), mouse->y() );
+}
+
+void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
+{
+  float scaling = ( ( wheel->modifiers() & Qt::ControlModifier ) ? 0.1f : 1.0f ) / 1000.f;
+  float dist = mCameraPose.distanceFromCenterPoint();
+  dist -= dist * scaling * wheel->angleDelta().y();
+  mCameraPose.setDistanceFromCenterPoint( dist );
+  updateCameraFromPose();
+}
+
+void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
+{
+  Q_UNUSED( mouse );
+  mKeyboardHandler->setFocus( true );
+}
+
+void QgsCameraController::onMouseReleased( Qt3DInput::QMouseEvent *mouse )
+{
+  Q_UNUSED( mouse );
+}
+
+void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
+{
+  bool hasShift = ( event->modifiers() & Qt::ShiftModifier );
+  bool hasCtrl = ( event->modifiers() & Qt::ControlModifier );
+
+  int tx = 0, ty = 0, tElev = 0;
+  switch ( event->key() )
+  {
+    case Qt::Key_Left:
+      tx -= 1;
+      break;
+    case Qt::Key_Right:
+      tx += 1;
+      break;
+
+    case Qt::Key_Up:
+      ty += 1;
+      break;
+    case Qt::Key_Down:
+      ty -= 1;
+      break;
+
+    case Qt::Key_PageDown:
+      tElev -= 1;
+      break;
+    case Qt::Key_PageUp:
+      tElev += 1;
+      break;
+  }
+
+  if ( tx || ty )
+  {
+    if ( !hasShift && !hasCtrl )
+    {
+      float yaw = mCameraPose.headingAngle();
+      float dist = mCameraPose.distanceFromCenterPoint();
+      float x = tx * dist * 0.02f;
+      float y = -ty * dist * 0.02f;
+
+      // moving with keyboard - take into account yaw of camera
+      float t = sqrt( x * x + y * y );
+      float a = atan2( y, x ) - yaw * M_PI / 180;
+      float dx = cos( a ) * t;
+      float dy = sin( a ) * t;
+
+      QgsVector3D center = mCameraPose.centerPoint();
+      center.set( center.x() + dx, center.y(), center.z() + dy );
+      mCameraPose.setCenterPoint( center );
+      updateCameraFromPose( true );
+    }
+    else if ( hasShift && !hasCtrl )
+    {
+      // rotate/tilt using keyboard (camera moves as it rotates around its view center)
+      float pitch = mCameraPose.pitchAngle();
+      float yaw = mCameraPose.headingAngle();
+      pitch -= ty;   // down key = moving camera toward terrain
+      yaw -= tx;     // right key = moving camera clockwise
+      mCameraPose.setPitchAngle( pitch );
+      mCameraPose.setHeadingAngle( yaw );
+      updateCameraFromPose();
+    }
+    else if ( hasCtrl && !hasShift )
+    {
+      // rotate/tilt using keyboard (camera stays at one position as it rotates)
+      float diffPitch = ty;   // down key = rotating camera down
+      float diffYaw = -tx;    // right key = rotating camera to the right
+      rotateCamera( diffPitch, diffYaw );
+      updateCameraFromPose( true );
+    }
+  }
+
+  if ( tElev )
+  {
+    QgsVector3D center = mCameraPose.centerPoint();
+    center.set( center.x(), center.y() + tElev * 10, center.z() );
+    mCameraPose.setCenterPoint( center );
+    updateCameraFromPose( true );
+  }
+}
+
+void QgsCameraController::onKeyReleased( Qt3DInput::QKeyEvent *event )
+{
+  Q_UNUSED( event );
 }
 
 void QgsCameraController::onPickerMousePressed( Qt3DRender::QPickEvent *pick )

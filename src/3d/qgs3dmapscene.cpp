@@ -17,7 +17,11 @@
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QMesh>
+#include <Qt3DRender/QObjectPicker>
+#include <Qt3DRender/QPickEvent>
 #include <Qt3DRender/QPickingSettings>
+#include <Qt3DRender/QPickTriangleEvent>
+#include <Qt3DRender/QPointLight>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DExtras/QForwardRenderer>
