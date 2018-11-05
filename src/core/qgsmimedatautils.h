@@ -19,6 +19,7 @@
 #include <QStringList>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 class QgsLayerItem;
 class QgsLayerTreeNode;
@@ -90,7 +91,10 @@ class CORE_EXPORT QgsMimeDataUtils
     };
     typedef QList<QgsMimeDataUtils::Uri> UriList;
 
-    static QMimeData *encodeUriList( const UriList &layers );
+    /**
+     * Encodes a URI list to a new QMimeData object.
+     */
+    static QMimeData *encodeUriList( const UriList &layers ) SIP_FACTORY;
 
     static bool isUriList( const QMimeData *data );
 
