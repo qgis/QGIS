@@ -117,7 +117,7 @@ void QgsTransactionGroup::onCommitChanges()
   {
     emit commitError( errMsg );
     // Restart editing the calling layer in the next event loop cycle
-    QTimer::singleShot( 0, triggeringLayer, SLOT( startEditing() ) );
+    QTimer::singleShot( 0, triggeringLayer, &QgsVectorLayer::startEditing );
   }
   mEditingStopping = false;
 }
@@ -144,7 +144,7 @@ void QgsTransactionGroup::onRollback()
   else
   {
     // Restart editing the calling layer in the next event loop cycle
-    QTimer::singleShot( 0, triggeringLayer, SLOT( startEditing() ) );
+    QTimer::singleShot( 0, triggeringLayer, &QgsVectorLayer::startEditing );
   }
   mEditingStopping = false;
 }

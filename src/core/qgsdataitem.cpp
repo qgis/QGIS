@@ -969,7 +969,7 @@ void QgsDirectoryItem::directoryChanged()
     // this happens when a new file appears in the directory and
     // the item's children thread will try to open the file with
     // GDAL or OGR even if it is still being written.
-    QTimer::singleShot( 100, this, SLOT( refresh() ) );
+    QTimer::singleShot( 100, this, [ = ] { refresh(); } );
   }
 }
 
@@ -1124,7 +1124,7 @@ void QgsDirectoryParamWidget::mousePressEvent( QMouseEvent *event )
     labels << tr( "Name" ) << tr( "Size" ) << tr( "Date" ) << tr( "Permissions" ) << tr( "Owner" ) << tr( "Group" ) << tr( "Type" );
     for ( int i = 0; i < labels.count(); i++ )
     {
-      QAction *action = popupMenu.addAction( labels[i], this, SLOT( showHideColumn() ) );
+      QAction *action = popupMenu.addAction( labels[i], this, &QgsDirectoryParamWidget::showHideColumn );
       action->setObjectName( QString::number( i ) );
       action->setCheckable( true );
       action->setChecked( !isColumnHidden( i ) );

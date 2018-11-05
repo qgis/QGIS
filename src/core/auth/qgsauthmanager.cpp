@@ -845,7 +845,7 @@ const QString QgsAuthManager::uniqueConfigId() const
   int len = 7;
   // sleep just a bit to make sure the current time has changed
   QEventLoop loop;
-  QTimer::singleShot( 3, &loop, SLOT( quit() ) );
+  QTimer::singleShot( 3, &loop, &QEventLoop::quit );
   loop.exec();
 
   uint seed = static_cast< uint >( QTime::currentTime().msec() );
