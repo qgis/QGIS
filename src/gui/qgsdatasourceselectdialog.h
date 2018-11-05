@@ -60,6 +60,9 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
                                const QgsMapLayer::LayerType &layerType = QgsMapLayer::LayerType::VectorLayer,
                                QWidget *parent = nullptr );
 
+
+    ~QgsDataSourceSelectDialog() override;
+
     /**
      * Sets layer type filter to \a layerType and activates the filtering
      */
