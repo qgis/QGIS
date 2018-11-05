@@ -17,6 +17,7 @@
 #include "qgsdatasourceselectdialog.h"
 #include "ui_qgsdatasourceselectdialog.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 #include "qgis.h"
 
 #include <QPushButton>
@@ -27,9 +28,8 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog( bool setFilterByLayerType,
   : QDialog( parent )
 {
   setupUi( this );
-  setWindowTitle( tr( "Select a data source" ) );
-  QByteArray dlgGeom( QgsSettings().value( QStringLiteral( "/Windows/selectDataSourceDialog/geometry" ), QVariant(), QgsSettings::Section::Gui ).toByteArray() );
-  restoreGeometry( dlgGeom );
+  setWindowTitle( tr( "Select a Data Source" ) );
+  QgsGui::enableAutoGeometryRestore( this );
 
   mBrowserModel.initialize();
   mBrowserProxyModel.setBrowserModel( &mBrowserModel );
@@ -47,13 +47,7 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog( bool setFilterByLayerType,
   connect( mBrowserTreeView, &QgsBrowserTreeView::clicked, this, &QgsDataSourceSelectDialog::onLayerSelected );
 }
 
-
-QgsDataSourceSelectDialog::~QgsDataSourceSelectDialog()
-{
-  QgsSettings().setValue( QStringLiteral( "/Windows/selectDataSourceDialog/geometry" ), saveGeometry(), QgsSettings::Section::Gui );
-}
-
-void QgsDataSourceSelectDialog::setLayerTypeFilter( const QgsMapLayer::LayerType &layerType )
+void QgsDataSourceSelectDialog::setLayerTypeFilter( QgsMapLayer::LayerType layerType )
 {
   mBrowserProxyModel.setFilterByLayerType( true );
   mBrowserProxyModel.setLayerType( layerType );

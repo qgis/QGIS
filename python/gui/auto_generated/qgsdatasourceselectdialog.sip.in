@@ -42,9 +42,7 @@ Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
 :param parent: the object
 %End
 
-    ~QgsDataSourceSelectDialog();
-
-    void setLayerTypeFilter( const QgsMapLayer::LayerType &layerType );
+    void setLayerTypeFilter( QgsMapLayer::LayerType layerType );
 %Docstring
 Sets layer type filter to ``layerType`` and activates the filtering
 %End
