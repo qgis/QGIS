@@ -17,7 +17,8 @@ import qgis  # NOQA
 from PyQt5.QtCore import QVariant
 from qgis.testing import unittest, start_app
 from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularString, QgsCompoundCurve,\
-    QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField, QgsError
+    QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField, QgsError,\
+    QgsMimeDataUtils
 
 start_app()
 
@@ -124,6 +125,12 @@ class TestPython__repr__(unittest.TestCase):
     def testQgsErrorRepr(self):
         e = QgsError('you done wrong son', 'dad')
         self.assertEqual(e.__repr__(), "<QgsError: dad you done wrong son>")
+
+    def testQgsMimeDataUri(self):
+        d = QgsMimeDataUtils.Uri()
+        d.uri = 'my_uri'
+        d.providerKey = 'my_provider'
+        self.assertEqual(d.__repr__(), "<QgsMimeDataUtils::Uri (my_provider): my_uri>")
 
 
 if __name__ == "__main__":

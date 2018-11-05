@@ -87,6 +87,14 @@ class CORE_EXPORT QgsMimeDataUtils
       QString uri;
       QStringList supportedCrs;
       QStringList supportedFormats;
+
+#ifdef SIP_RUN
+      SIP_PYOBJECT __repr__();
+      % MethodCode
+      QString str = QStringLiteral( "<QgsMimeDataUtils::Uri (%1): %2>" ).arg( sipCpp->providerKey, sipCpp->uri );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+      % End
+#endif
     };
     typedef QList<QgsMimeDataUtils::Uri> UriList;
 
