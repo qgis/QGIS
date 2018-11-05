@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCPTCITYCOLORRAMPV2DIALOG_H
-#define QGSCPTCITYCOLORRAMPV2DIALOG_H
+#ifndef QGSCPTCITYCOLORRAMPDIALOG_H
+#define QGSCPTCITYCOLORRAMPDIALOG_H
 
 
-#include "ui_qgscptcitycolorrampv2dialogbase.h"
+#include "ui_qgscptcitycolorrampdialogbase.h"
 #include "qgis.h"
 #include <QDialog>
 

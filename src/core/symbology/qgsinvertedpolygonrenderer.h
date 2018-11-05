@@ -201,4 +201,4 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
 };
 
 
-#endif // QGSMASKRENDERERV2_H
+#endif // QGSINVERTEDPOLYGONRENDERER_H

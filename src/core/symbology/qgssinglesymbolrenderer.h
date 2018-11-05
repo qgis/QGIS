@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSSINGLESYMBOLRENDERERV2_H
-#define QGSSINGLESYMBOLRENDERERV2_H
+#ifndef QGSSINGLESYMBOLRENDERER_H
+#define QGSSINGLESYMBOLRENDERER_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -126,4 +126,4 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 };
 
 
-#endif // QGSSINGLESYMBOLRENDERERV2_H
+#endif // QGSSINGLESYMBOLRENDERER_H

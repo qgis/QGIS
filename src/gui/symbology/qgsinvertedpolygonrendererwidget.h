@@ -67,4 +67,4 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, pr
 };
 
 
-#endif // QGSMASKRENDERERV2WIDGET_H
+#endif // QGSINVERTEDPOLYGONRENDERERWIDGET_H
