@@ -80,7 +80,10 @@ Gets mesh layer from uri if possible, otherwise returns 0 and error is set
     };
     typedef QList<QgsMimeDataUtils::Uri> UriList;
 
-    static QMimeData *encodeUriList( const UriList &layers );
+    static QMimeData *encodeUriList( const UriList &layers ) /Factory/;
+%Docstring
+Encodes a URI list to a new QMimeData object.
+%End
 
     static bool isUriList( const QMimeData *data );
 
