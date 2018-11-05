@@ -1062,18 +1062,18 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
       mActionPopup->addAction(
         QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormView.svg" ) ),
         vlayer->isEditable() ? tr( "Edit Feature Form…" ) : tr( "View Feature Form…" ),
-        this, SLOT( featureForm() ) );
+        this, &QgsIdentifyResultsDialog::featureForm );
     }
 
     if ( featItem->feature().isValid() )
     {
-      mActionPopup->addAction( tr( "Zoom to Feature" ), this, SLOT( zoomToFeature() ) );
-      mActionPopup->addAction( tr( "Copy Feature" ), this, SLOT( copyFeature() ) );
-      mActionPopup->addAction( tr( "Toggle Feature Selection" ), this, SLOT( toggleFeatureSelection() ) );
+      mActionPopup->addAction( tr( "Zoom to Feature" ), this, &QgsIdentifyResultsDialog::zoomToFeature );
+      mActionPopup->addAction( tr( "Copy Feature" ), this, &QgsIdentifyResultsDialog::copyFeature );
+      mActionPopup->addAction( tr( "Toggle Feature Selection" ), this, &QgsIdentifyResultsDialog::toggleFeatureSelection );
     }
 
-    mActionPopup->addAction( tr( "Copy Attribute Value" ), this, SLOT( copyAttributeValue() ) );
-    mActionPopup->addAction( tr( "Copy Feature Attributes" ), this, SLOT( copyFeatureAttributes() ) );
+    mActionPopup->addAction( tr( "Copy Attribute Value" ), this, &QgsIdentifyResultsDialog::copyAttributeValue );
+    mActionPopup->addAction( tr( "Copy Feature Attributes" ), this, &QgsIdentifyResultsDialog::copyFeatureAttributes );
 
     if ( item->parent() == featItem && item->childCount() == 0 )
     {
@@ -1086,7 +1086,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
     QTreeWidgetItem *layItem = layerItem( item );
     if ( layItem && !layItem->data( 0, GetFeatureInfoUrlRole ).toString().isEmpty() )
     {
-      mActionPopup->addAction( tr( "Copy GetFeatureInfo request URL" ), this, SLOT( copyGetFeatureInfoUrl() ) );
+      mActionPopup->addAction( tr( "Copy GetFeatureInfo request URL" ), this, &QgsIdentifyResultsDialog::copyGetFeatureInfoUrl );
     }
   }
   if ( !mActionPopup->children().isEmpty() )
@@ -1094,18 +1094,18 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
     mActionPopup->addSeparator();
   }
 
-  mActionPopup->addAction( tr( "Clear Results" ), this, SLOT( clear() ) );
-  mActionPopup->addAction( tr( "Clear Highlights" ), this, SLOT( clearHighlights() ) );
-  mActionPopup->addAction( tr( "Highlight All" ), this, SLOT( highlightAll() ) );
-  mActionPopup->addAction( tr( "Highlight Layer" ), this, SLOT( highlightLayer() ) );
+  mActionPopup->addAction( tr( "Clear Results" ), this, &QgsIdentifyResultsDialog::clear );
+  mActionPopup->addAction( tr( "Clear Highlights" ), this, &QgsIdentifyResultsDialog::clearHighlights );
+  mActionPopup->addAction( tr( "Highlight All" ), this, &QgsIdentifyResultsDialog::highlightAll );
+  mActionPopup->addAction( tr( "Highlight Layer" ), this, [ = ] { highlightLayer(); } );
   if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
   {
-    mActionPopup->addAction( tr( "Activate Layer" ), this, SLOT( activateLayer() ) );
-    mActionPopup->addAction( tr( "Layer Properties…" ), this, SLOT( layerProperties() ) );
+    mActionPopup->addAction( tr( "Activate Layer" ), this, [ = ] { activateLayer(); } );
+    mActionPopup->addAction( tr( "Layer Properties…" ), this, [ = ] { layerProperties(); } );
   }
   mActionPopup->addSeparator();
-  mActionPopup->addAction( tr( "Expand All" ), this, SLOT( expandAll() ) );
-  mActionPopup->addAction( tr( "Collapse All" ), this, SLOT( collapseAll() ) );
+  mActionPopup->addAction( tr( "Expand All" ), this, &QgsIdentifyResultsDialog::expandAll );
+  mActionPopup->addAction( tr( "Collapse All" ), this, &QgsIdentifyResultsDialog::collapseAll );
   mActionPopup->addSeparator();
 
   if ( featItem && vlayer )
@@ -1126,7 +1126,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
           continue;
 
         QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeatures[ featIdx ], vlayer, action.id(), idx, this );
-        mActionPopup->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ), action.name(), a, SLOT( execute() ) );
+        mActionPopup->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ), action.name(), a, &QgsFeatureAction::execute );
       }
     }
   }
@@ -1150,7 +1150,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
           continue;
 
         QgsIdentifyResultsDialogMapLayerAction *a = new QgsIdentifyResultsDialogMapLayerAction( ( *actionIt )->text(), this, ( *actionIt ), vlayer, &( mFeatures[ featIdx ] ) );
-        mActionPopup->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ), ( *actionIt )->text(), a, SLOT( execute() ) );
+        mActionPopup->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ), ( *actionIt )->text(), a, &QgsIdentifyResultsDialogMapLayerAction::execute );
       }
     }
   }
