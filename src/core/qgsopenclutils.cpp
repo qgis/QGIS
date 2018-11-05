@@ -302,7 +302,7 @@ bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
   {
     QgsMessageLog::logMessage( QObject::tr( "Error %1 searching for OpenCL device: %2" )
                                .arg( errorText( e.err() ), QString::fromStdString( e.what() ) ),
-                               LOGMESSAGE_TAG, Qgis::Critical );
+                               LOGMESSAGE_TAG, Qgis::Warning );
     sAvailable = false;
   }
   return sAvailable;
