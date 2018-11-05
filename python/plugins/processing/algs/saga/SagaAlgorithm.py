@@ -321,7 +321,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 filename = self.parameterAsOutputLayer(parameters, out.name(), context)
                 filename2 = os.path.splitext(filename)[0] + '.sgrd'
                 if self.cmdname == 'RGB Composite':
-                    commands.append('io_grid_image 0 -IS_RGB -GRID:"{}" -FILE:"{}"'.format(filename2, filename))
+                    commands.append('io_grid_image 0 -COLOURING 4 -GRID:"{}" -FILE:"{}"'.format(filename2, filename))
 
         # 3: Run SAGA
         commands = self.editCommands(commands)
