@@ -27,6 +27,7 @@ from qgis.core import (QgsProject,
                        QgsMapLayer,
                        QgsRectangle,
                        QgsDataProvider,
+                       QgsReadWriteContext,
                        QgsCoordinateReferenceSystem,
                        )
 from qgis.gui import (QgsLayerTreeMapCanvasBridge,
@@ -35,6 +36,7 @@ from qgis.gui import (QgsLayerTreeMapCanvasBridge,
 from qgis.PyQt.QtGui import QFont, QColor
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir, QSize
+from qgis.PyQt.QtXml import QDomDocument, QDomNode
 
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath, renderMapToImage)
@@ -68,6 +70,34 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         ms.setDestinationCrs(crs)
         return ms
 
+    def _change_data_source(self, layer, datasource, provider_key):
+        """Due to the fact that a project r/w context is not available inside
+        the map layers classes, the original style and subset string restore
+        happens in app, this function replicates app behavior"""
+
+        options = QgsDataProvider.ProviderOptions()
+
+        subset_string = ''
+        if not layer.isValid():
+            try:
+                subset_string = layer.dataProvider().subsetString()
+            except:
+                pass
+
+        layer.setDataSource(datasource, layer.name(), provider_key, options)
+
+        if subset_string:
+            layer.setSubsetString(subset_string)
+
+        self.assertTrue(layer.originalXmlProperties(), layer.name())
+        context = QgsReadWriteContext()
+        context.setPathResolver(QgsProject.instance().pathResolver())
+        errorMsg = ''
+        doc = QDomDocument()
+        self.assertTrue(doc.setContent(layer.originalXmlProperties()))
+        layer_node = QDomNode(doc.firstChild())
+        self.assertTrue(layer.readSymbology(layer_node, errorMsg, context))
+
     def test_project_roundtrip(self):
         """Tests that a project with bad layers can be saved and restored"""
 
@@ -91,6 +121,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         self.assertTrue(p.write(project_path))
 
         # Re-load the project, checking for the XML properties
+        p.removeAllMapLayers()
         self.assertTrue(p.read(project_path))
         vector = list(p.mapLayersByName('lines'))[0]
         raster = list(p.mapLayersByName('raster'))[0]
@@ -109,6 +140,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
                 outfile.write(infile.read().replace('./lines.shp', './lines-BAD_SOURCE.shp').replace('band1_byte_ct_epsg4326_copy.tif', 'band1_byte_ct_epsg4326_copy-BAD_SOURCE.tif'))
 
         # Load the bad project
+        p.removeAllMapLayers()
         self.assertTrue(p.read(bad_project_path))
         # Check layer is invalid
         vector = list(p.mapLayersByName('lines'))[0]
@@ -134,6 +166,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
                 outfile.write(infile.read().replace('./lines-BAD_SOURCE.shp', './lines.shp').replace('band1_byte_ct_epsg4326_copy-BAD_SOURCE.tif', 'band1_byte_ct_epsg4326_copy.tif'))
 
         # Load the good project
+        p.removeAllMapLayers()
         self.assertTrue(p.read(good_project_path))
         # Check layer is valid
         vector = list(p.mapLayersByName('lines'))[0]
@@ -153,6 +186,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
 
         # Load the good project
         project_path = os.path.join(temp_dir.path(), 'relation_reference_test.qgs')
+        p.removeAllMapLayers()
         self.assertTrue(p.read(project_path))
         point_a = list(p.mapLayersByName('point_a'))[0]
         point_b = list(p.mapLayersByName('point_b'))[0]
@@ -177,6 +211,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
                 outfile.write(infile.read().replace('./relation_reference_test.gpkg', './relation_reference_test-BAD_SOURCE.gpkg'))
 
         # Load the bad project
+        p.removeAllMapLayers()
         self.assertTrue(p.read(bad_project_path))
         point_a = list(p.mapLayersByName('point_a'))[0]
         point_b = list(p.mapLayersByName('point_b'))[0]
@@ -197,6 +232,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         _check_relations()
 
         # Reload the bad project
+        p.removeAllMapLayers()
         self.assertTrue(p.read(bad_project_path))
         point_a = list(p.mapLayersByName('point_a'))[0]
         point_b = list(p.mapLayersByName('point_b'))[0]
@@ -218,6 +254,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
                 outfile.write(infile.read().replace('./relation_reference_test-BAD_SOURCE.gpkg', './relation_reference_test.gpkg'))
 
         # Load the fixed project
+        p.removeAllMapLayers()
         self.assertTrue(p.read(bad_project_path_fixed))
         point_a = list(p.mapLayersByName('point_a'))[0]
         point_b = list(p.mapLayersByName('point_b'))[0]
@@ -230,7 +267,6 @@ class TestQgsProjectBadLayers(unittest.TestCase):
     def testStyles(self):
         """Test that styles for rasters and vectors are kept when setDataSource is called"""
 
-        options = QgsDataProvider.ProviderOptions()
         temp_dir = QTemporaryDir()
         p = QgsProject.instance()
         for f in (
@@ -243,50 +279,71 @@ class TestQgsProjectBadLayers(unittest.TestCase):
 
         project_path = os.path.join(temp_dir.path(), 'good_layers_test.qgs')
         p = QgsProject().instance()
+        p.removeAllMapLayers()
         self.assertTrue(p.read(project_path))
-        self.assertEqual(p.count(), 3)
+        self.assertEqual(p.count(), 4)
 
         ms = self.getBaseMapSettings()
+        point_a_copy = list(p.mapLayersByName('point_a copy'))[0]
         point_a = list(p.mapLayersByName('point_a'))[0]
         point_b = list(p.mapLayersByName('point_b'))[0]
         raster = list(p.mapLayersByName('bad_layer_raster_test'))[0]
+        self.assertTrue(point_a_copy.isValid())
         self.assertTrue(point_a.isValid())
         self.assertTrue(point_b.isValid())
         self.assertTrue(raster.isValid())
         ms.setExtent(QgsRectangle(2.81861, 41.98138, 2.81952, 41.9816))
-        ms.setLayers([point_a, point_b, raster])
+        ms.setLayers([point_a_copy, point_a, point_b, raster])
         image = renderMapToImage(ms)
-        print(os.path.join(temp_dir.path(), 'expected.png'))
         self.assertTrue(image.save(os.path.join(temp_dir.path(), 'expected.png'), 'PNG'))
 
         point_a_source = point_a.publicSource()
         point_b_source = point_b.publicSource()
         raster_source = raster.publicSource()
-        point_a.setDataSource(point_a_source, point_a.name(), 'ogr', options)
-        point_b.setDataSource(point_b_source, point_b.name(), 'ogr', options)
-        raster.setDataSource(raster_source, raster.name(), 'gdal', options)
+        self._change_data_source(point_a, point_a_source, 'ogr')
+        # Attention: we are not passing the subset string here:
+        self._change_data_source(point_a_copy, point_a_source, 'ogr')
+        self._change_data_source(point_b, point_b_source, 'ogr')
+        self._change_data_source(raster, raster_source, 'gdal')
         self.assertTrue(image.save(os.path.join(temp_dir.path(), 'actual.png'), 'PNG'))
 
         self.assertTrue(filecmp.cmp(os.path.join(temp_dir.path(), 'actual.png'), os.path.join(temp_dir.path(), 'expected.png')), False)
 
         # Now build a bad project
+        p.removeAllMapLayers()
         bad_project_path = os.path.join(temp_dir.path(), 'bad_layers_test.qgs')
         with open(project_path, 'r') as infile:
             with open(bad_project_path, 'w+') as outfile:
                 outfile.write(infile.read().replace('./bad_layers_test.', './bad_layers_test-BAD_SOURCE.').replace('bad_layer_raster_test.tiff', 'bad_layer_raster_test-BAD_SOURCE.tiff'))
 
+        p.removeAllMapLayers()
         self.assertTrue(p.read(bad_project_path))
-        self.assertEqual(p.count(), 3)
+        self.assertEqual(p.count(), 4)
+        point_a_copy = list(p.mapLayersByName('point_a copy'))[0]
         point_a = list(p.mapLayersByName('point_a'))[0]
         point_b = list(p.mapLayersByName('point_b'))[0]
         raster = list(p.mapLayersByName('bad_layer_raster_test'))[0]
         self.assertFalse(point_a.isValid())
+        self.assertFalse(point_a_copy.isValid())
         self.assertFalse(point_b.isValid())
         self.assertFalse(raster.isValid())
+        ms.setLayers([point_a_copy, point_a, point_b, raster])
+        image = renderMapToImage(ms)
+        self.assertTrue(image.save(os.path.join(temp_dir.path(), 'bad.png'), 'PNG'))
+        self.assertFalse(filecmp.cmp(os.path.join(temp_dir.path(), 'bad.png'), os.path.join(temp_dir.path(), 'expected.png')), False)
 
-        point_a.setDataSource(point_a_source, point_a.name(), 'ogr', options)
-        point_b.setDataSource(point_b_source, point_b.name(), 'ogr', options)
-        raster.setDataSource(raster_source, raster.name(), 'gdal', options)
+        self._change_data_source(point_a, point_a_source, 'ogr')
+        # We are not passing the subset string!!
+        self._change_data_source(point_a_copy, point_a_source, 'ogr')
+        self._change_data_source(point_b, point_b_source, 'ogr')
+        self._change_data_source(raster, raster_source, 'gdal')
+        self.assertTrue(point_a.isValid())
+        self.assertTrue(point_a_copy.isValid())
+        self.assertTrue(point_b.isValid())
+        self.assertTrue(raster.isValid())
+
+        ms.setLayers([point_a_copy, point_a, point_b, raster])
+        image = renderMapToImage(ms)
         self.assertTrue(image.save(os.path.join(temp_dir.path(), 'actual_fixed.png'), 'PNG'))
 
         self.assertTrue(filecmp.cmp(os.path.join(temp_dir.path(), 'actual_fixed.png'), os.path.join(temp_dir.path(), 'expected.png')), False)
