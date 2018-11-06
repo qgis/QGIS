@@ -44,6 +44,7 @@
 #include "qgsalgorithmfilter.h"
 #include "qgsalgorithmfiltervertices.h"
 #include "qgsalgorithmfixgeometries.h"
+#include "qgsalgorithmforcerhr.h"
 #include "qgsalgorithmjoinbyattribute.h"
 #include "qgsalgorithmjoinwithlines.h"
 #include "qgsalgorithmimportphotos.h"
@@ -170,6 +171,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFilterVerticesByM() );
   addAlgorithm( new QgsFilterVerticesByZ() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
+  addAlgorithm( new QgsForceRHRAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );
   addAlgorithm( new QgsInterpolatePointAlgorithm() );
   addAlgorithm( new QgsIntersectionAlgorithm() );

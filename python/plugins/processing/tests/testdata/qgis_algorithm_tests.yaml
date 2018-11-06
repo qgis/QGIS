@@ -6299,4 +6299,26 @@ tests:
         name: expected/remove_duplicates3.gml
         type: vector
 
+  - algorithm: native:forcerhr
+    name: Force right-hand-rule polys
+    params:
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/force_rhr_polys.gml
+        type: vector
+
+  - algorithm: native:forcerhr
+    name: Force right-hand-rule multipolys
+    params:
+      INPUT:
+        name: multipolys.gml|layername=multipolys
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/force_rhr_multipolys.gml
+        type: vector
+
 # See ../README.md for a description of the file format
