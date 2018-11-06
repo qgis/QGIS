@@ -311,7 +311,8 @@ void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,
   const QDomNodeList mlNodeList( doc->documentElement()
                                  .firstChildElement( QStringLiteral( "projectlayers" ) )
                                  .elementsByTagName( QStringLiteral( "maplayer" ) ) );
-  for ( QgsLayerTreeNode *node : group->children() )
+
+  std::function<void ( QgsLayerTreeNode * )> _store = [ & ]( QgsLayerTreeNode * node )
   {
     if ( QgsLayerTree::isLayer( node ) )
     {
@@ -337,6 +338,19 @@ void QgsLayerTreeUtils::storeOriginalLayersProperties( QgsLayerTreeGroup *group,
         }
       }
     }
+    else if ( QgsLayerTree::isGroup( node ) )
+    {
+      const QList<QgsLayerTreeNode *> constChildren( node->children( ) );
+      for ( const auto &childNode : constChildren )
+      {
+        _store( childNode );
+      }
+    }
+  };
+
+  for ( QgsLayerTreeNode *node : group->children() )
+  {
+    _store( node );
   }
 }
 

@@ -1500,8 +1500,8 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
   // Always set crs
   setCoordinateSystem();
 
-  // reset style if loading default style, style is missing, or geometry type has changed
-  if ( !renderer() || !legend() || geomType != geometryType() || loadDefaultStyleFlag )
+  // reset style if loading default style, style is missing, or geometry type is has changed (and layer is valid)
+  if ( !renderer() || !legend() || ( mValid && geomType != geometryType() ) || loadDefaultStyleFlag )
   {
     bool defaultLoadedFlag = false;
 

@@ -6951,10 +6951,25 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
     if ( uri.isValid() )
     {
       bool layerIsValid( layer->isValid() );
+      // Store subset string form vlayer if we are fixing a bad layer
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      QString subsetString;
+      // Get the subset string directly from the data provider because
+      // layer's method will return a null string from invalid layers
+      if ( !layerIsValid && vlayer && vlayer->dataProvider() &&
+           vlayer->dataProvider()->supportsSubsetString() &&
+           !vlayer->dataProvider()->subsetString( ).isEmpty() )
+      {
+        subsetString = vlayer->dataProvider()->subsetString();
+      }
       layer->setDataSource( uri.uri, layer->name(), uri.providerKey, QgsDataProvider::ProviderOptions() );
-      // Re-apply style
+      // Re-apply original style and subset string  when fixing bad layers
       if ( !( layerIsValid || layer->originalXmlProperties().isEmpty() ) )
       {
+        if ( ! subsetString.isEmpty() )
+        {
+          vlayer->setSubsetString( subsetString );
+        }
         QgsReadWriteContext context;
         context.setPathResolver( QgsProject::instance()->pathResolver() );
         context.setProjectTranslator( QgsProject::instance() );
