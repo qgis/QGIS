@@ -72,7 +72,7 @@ class TestQgsSymbol(unittest.TestCase):
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
-    def txestGeometryRendering(self):
+    def testGeometryRendering(self):
         '''Tests rendering a bunch of different geometries, including bad/odd geometries.'''
 
         empty_multipolygon = QgsMultiPolygon()
