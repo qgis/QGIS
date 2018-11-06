@@ -705,6 +705,33 @@ void QgsCurvePolygon::removeInvalidRings()
   mInteriorRings = validRings;
 }
 
+void QgsCurvePolygon::forceRHR()
+{
+  if ( mExteriorRing && mExteriorRing->orientation() != QgsCurve::Clockwise )
+  {
+    // flip exterior ring orientation
+    std::unique_ptr< QgsCurve > flipped( mExteriorRing->reversed() );
+    mExteriorRing = std::move( flipped );
+  }
+
+  QVector<QgsCurve *> validRings;
+  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  {
+    if ( curve && curve->orientation() != QgsCurve::CounterClockwise )
+    {
+      // flip interior ring orientation
+      QgsCurve *flipped = curve->reversed();
+      validRings << flipped;
+      delete curve;
+    }
+    else
+    {
+      validRings << curve;
+    }
+  }
+  mInteriorRings = validRings;
+}
+
 void QgsCurvePolygon::draw( QPainter &p ) const
 {
   if ( !mExteriorRing )
