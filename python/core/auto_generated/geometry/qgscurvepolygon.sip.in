@@ -136,6 +136,17 @@ For example, this removes unclosed rings and rings with less than 4 vertices.
 .. versionadded:: 3.0
 %End
 
+
+    void forceRHR();
+%Docstring
+Forces the geometry to respect the Right-Hand-Rule, in which the area that is
+bounded by the polygon is to the right of the boundary. In particular, the exterior
+ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
+direction.
+
+.. versionadded:: 3.6
+%End
+
     virtual void draw( QPainter &p ) const;
 
     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );
