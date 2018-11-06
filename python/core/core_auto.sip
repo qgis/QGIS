@@ -67,7 +67,6 @@
 %Include auto_generated/qgslegendsettings.sip
 %Include auto_generated/qgslegendstyle.sip
 %Include auto_generated/qgslogger.sip
-%Include auto_generated/qgsmapcanvasinterface.sip
 %Include auto_generated/qgsmapdecoration.sip
 %Include auto_generated/qgsmaphittest.sip
 %Include auto_generated/qgsmaplayerdependency.sip
