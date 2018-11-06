@@ -43,7 +43,7 @@ void QgsLayerTreeViewMemoryIndicatorProvider::onIndicatorClicked( const QModelIn
 bool QgsLayerTreeViewMemoryIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer )
+  if ( !( vlayer && vlayer->isValid() ) )
     return false;
   return  vlayer->dataProvider()->name() == QLatin1String( "memory" );
 }
