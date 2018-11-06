@@ -2952,8 +2952,9 @@ void QgisApp::createToolBars()
       break;
   };
   moveFeatureButton->setDefaultAction( defAction );
+  QAction *moveToolAction = mAdvancedDigitizeToolBar->insertWidget( mActionRotateFeature, moveFeatureButton );
+  moveToolAction->setObjectName( QStringLiteral( "ActionMoveFeatureTool" ) );
   connect( moveFeatureButton, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mAdvancedDigitizeToolBar->insertWidget( mActionRotateFeature, moveFeatureButton );
 
   // vertex tool button
   QToolButton *vertexToolButton = qobject_cast<QToolButton *>( mDigitizeToolBar->widgetForAction( mActionVertexTool ) );
