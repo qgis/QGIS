@@ -1140,6 +1140,9 @@ void QgsGpsInformationWidget::updateCloseFeatureButton( QgsMapLayer *lyr )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( lyr );
 
+  if ( !( vlayer && vlayer->isValid() ) )
+    return;
+
   // Add feature button tracks edit state of layer
   if ( vlayer != mpLastLayer )
   {
