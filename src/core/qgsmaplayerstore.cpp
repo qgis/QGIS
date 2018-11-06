@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include "qgsmaplayerstore.h"
+#include "qgsmaplayer.h"
 #include "qgslogger.h"
+#include <QList>
 
 QgsMapLayerStore::QgsMapLayerStore( QObject *parent )
   : QObject( parent )
@@ -30,6 +32,18 @@ QgsMapLayerStore::~QgsMapLayerStore()
 int QgsMapLayerStore::count() const
 {
   return mMapLayers.size();
+}
+
+int QgsMapLayerStore::validCount() const
+{
+  int i = 0;
+  const QList<QgsMapLayer *> cLayers = mMapLayers.values();
+  for ( const auto l : cLayers )
+  {
+    if ( l->isValid() )
+      i++;
+  }
+  return i;
 }
 
 QgsMapLayer *QgsMapLayerStore::mapLayer( const QString &layerId ) const
@@ -55,9 +69,9 @@ QList<QgsMapLayer *> QgsMapLayerStore::addMapLayers( const QList<QgsMapLayer *> 
   QList<QgsMapLayer *> myResultList;
   Q_FOREACH ( QgsMapLayer *myLayer, layers )
   {
-    if ( !myLayer || !myLayer->isValid() )
+    if ( !myLayer )
     {
-      QgsDebugMsg( QStringLiteral( "Cannot add invalid layers" ) );
+      QgsDebugMsg( QStringLiteral( "Cannot add null layers" ) );
       continue;
     }
     //check the layer is not already registered!
@@ -211,4 +225,15 @@ void QgsMapLayerStore::onMapLayerDeleted( QObject *obj )
 QMap<QString, QgsMapLayer *> QgsMapLayerStore::mapLayers() const
 {
   return mMapLayers;
+}
+
+QMap<QString, QgsMapLayer *> QgsMapLayerStore::validMapLayers() const
+{
+  QMap<QString, QgsMapLayer *> validLayers;
+  for ( const auto &id : mMapLayers.keys() )
+  {
+    if ( mMapLayers[id]->isValid() )
+      validLayers[id] = mMapLayers[id];
+  }
+  return validLayers;
 }

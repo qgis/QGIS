@@ -38,8 +38,8 @@ class QgsMapLayer;
  *
  * Subclasses may override:
  * - onIndicatorClicked() default implementation does nothing
- * - connectSignals() default implementation connects vector layers to dataSourceChanged()
- * - disconnectSignals() default implementation disconnects vector layers from dataSourceChanged()
+ * - connectSignals() default implementation connects layers to dataSourceChanged()
+ * - disconnectSignals() default implementation disconnects layers from dataSourceChanged()
  */
 class QgsLayerTreeViewIndicatorProvider : public QObject
 {
@@ -51,9 +51,9 @@ class QgsLayerTreeViewIndicatorProvider : public QObject
   protected:
 
     // Subclasses MAY override:
-    //! Connect signals, default implementation connects vector layers to dataSourceChanged()
+    //! Connect signals, default implementation connects layers to dataSourceChanged()
     virtual void connectSignals( QgsMapLayer *layer );
-    //! Disconnect signals, default implementation disconnects vector layers from dataSourceChanged()
+    //! Disconnect signals, default implementation disconnects layers from dataSourceChanged()
     virtual void disconnectSignals( QgsMapLayer *layer );
 
   protected slots:

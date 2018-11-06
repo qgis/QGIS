@@ -892,7 +892,9 @@ QStringList QgsOgrProvider::_subLayers( bool withFeatureCount )  const
 void QgsOgrProvider::setEncoding( const QString &e )
 {
   QgsSettings settings;
-  if ( ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) && settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() ) || !mOgrLayer->TestCapability( OLCStringsAsUTF8 ) )
+  if ( ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) &&
+         settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() ) ||
+       ( mOgrLayer && !mOgrLayer->TestCapability( OLCStringsAsUTF8 ) ) )
   {
     QgsVectorDataProvider::setEncoding( e );
   }
@@ -900,7 +902,6 @@ void QgsOgrProvider::setEncoding( const QString &e )
   {
     QgsVectorDataProvider::setEncoding( QStringLiteral( "UTF-8" ) );
   }
-
   loadFields();
 }
 

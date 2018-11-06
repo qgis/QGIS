@@ -22,17 +22,30 @@
 
 #include <QPushButton>
 
-QgsDataSourceSelectDialog::QgsDataSourceSelectDialog( bool setFilterByLayerType,
-    const QgsMapLayer::LayerType &layerType,
-    QWidget *parent )
+QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
+  QgsBrowserModel *browserModel,
+  bool setFilterByLayerType,
+  const QgsMapLayer::LayerType &layerType,
+  QWidget *parent )
   : QDialog( parent )
 {
+  if ( ! browserModel )
+  {
+    mBrowserModel = qgis::make_unique<QgsBrowserModel>();
+    mOwnModel = true;
+  }
+  else
+  {
+    mBrowserModel.reset( browserModel );
+    mOwnModel = false;
+  }
+
   setupUi( this );
   setWindowTitle( tr( "Select a Data Source" ) );
   QgsGui::enableAutoGeometryRestore( this );
 
-  mBrowserModel.initialize();
-  mBrowserProxyModel.setBrowserModel( &mBrowserModel );
+  mBrowserModel->initialize();
+  mBrowserProxyModel.setBrowserModel( mBrowserModel.get() );
   mBrowserTreeView->setHeaderHidden( true );
 
   if ( setFilterByLayerType )
@@ -45,6 +58,12 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog( bool setFilterByLayerType,
     buttonBox->button( QDialogButtonBox::StandardButton::Ok )->setEnabled( false );
   }
   connect( mBrowserTreeView, &QgsBrowserTreeView::clicked, this, &QgsDataSourceSelectDialog::onLayerSelected );
+}
+
+QgsDataSourceSelectDialog::~QgsDataSourceSelectDialog()
+{
+  if ( ! mOwnModel )
+    mBrowserModel.release();
 }
 
 void QgsDataSourceSelectDialog::setLayerTypeFilter( QgsMapLayer::LayerType layerType )

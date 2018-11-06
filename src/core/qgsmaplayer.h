@@ -38,6 +38,7 @@
 #include "qgslayermetadata.h"
 #include "qgsmaplayerstyle.h"
 #include "qgsreadwritecontext.h"
+#include "qgsdataprovider.h"
 
 class QgsAbstract3DRenderer;
 class QgsDataProvider;
@@ -231,12 +232,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString name() const;
 
     /**
-     * Returns the layer's data provider.
+     * Returns the layer's data provider, it may be null.
      */
     virtual QgsDataProvider *dataProvider();
 
     /**
-     * Returns the layer's data provider in a const-correct manner
+     * Returns the layer's data provider in a const-correct manner, it may be null.
      * \note not available in Python bindings
      */
     virtual const QgsDataProvider *dataProvider() const SIP_SKIP;
@@ -886,6 +887,29 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
                              StyleCategories categories = AllStyleCategories ) const;
 
+
+    /**
+     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
+     * if the geometry type of the new data source matches the current geometry type of the layer.
+     *
+     * Subclasses should override this method: default implementation does nothing.
+     *
+     * \param dataSource new layer data source
+     * \param baseName base name of the layer
+     * \param provider provider string
+     * \param options provider options
+     * \param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
+     * data source
+     * \see dataSourceChanged()
+     * \since QGIS 3.6
+     */
+    virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
+
+    /**
+     * Returns the provider type (provider key) for this layer
+     */
+    QString providerType() const;
+
     //! Returns pointer to layer's undo stack
     QUndoStack *undoStack();
 
@@ -1077,6 +1101,25 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     bool isRefreshOnNotifyEnabled() const { return mIsRefreshOnNofifyEnabled; }
 
+    /**
+     * Returns the XML properties of the original layer as they were when the layer
+     * was first read from the project file. In case of new layers this is normally empty.
+     *
+     * The storage format for the XML is qlr
+     *
+     * \since QGIS 3.6
+     */
+    QString originalXmlProperties() const;
+
+    /**
+     * Sets the original XML properties for the layer to  \a originalXmlProperties
+     *
+     * The storage format for the XML is qlr
+     *
+     * \since QGIS 3.6
+     */
+    void setOriginalXmlProperties( const QString &originalXmlProperties );
+
   public slots:
 
     /**
@@ -1253,6 +1296,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void flagsChanged();
 
+    /**
+     * Emitted whenever the layer's data source has been changed.
+     *
+     * \see setDataSource()
+     *
+     * \since QGIS 3.5
+     */
+    void dataSourceChanged();
+
   private slots:
 
     void onNotifiedTriggerRepaint( const QString &message );
@@ -1340,6 +1392,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context,
                           StyleCategories categories = AllStyleCategories );
 
+    //! Sets the \a providerType (provider key)
+    void setProviderType( const QString &providerType );
+
 #ifndef SIP_RUN
 #if 0
     //! Debugging member - invoked when a connect() is made to this object
@@ -1399,6 +1454,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     bool mIsRefreshOnNofifyEnabled = false;
     QString mRefreshOnNofifyMessage;
+
+    //! Data provider key (name of the data provider)
+    QString mProviderKey;
+
 
   private:
 
@@ -1464,6 +1523,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Renderer for 3D views
     QgsAbstract3DRenderer *m3DRenderer = nullptr;
+
+    /**
+     * Stores the original XML properties of the layer when loaded from the project
+     *
+     * This information can be used to pass through the bad layers or to reset changes on a good layer
+     */
+    QString mOriginalXmlProperties;
 
 };
 

@@ -56,7 +56,14 @@ Returns true if any of the layers is modified
 
     static void removeInvalidLayers( QgsLayerTreeGroup *group );
 %Docstring
-Remove layer nodes that refer to invalid layers
+Removes layer nodes that refer to invalid layers
+%End
+
+    static void storeOriginalLayersProperties( QgsLayerTreeGroup *group, const QDomDocument *doc );
+%Docstring
+Stores in a layer's originalXmlProperties the layer properties information
+
+.. versionadded:: 3.6
 %End
 
     static void replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup *group );

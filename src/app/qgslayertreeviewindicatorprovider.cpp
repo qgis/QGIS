@@ -20,6 +20,7 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
 #include "qgisapp.h"
 
 QgsLayerTreeViewIndicatorProvider::QgsLayerTreeViewIndicatorProvider( QgsLayerTreeView *view )
@@ -89,16 +90,20 @@ void QgsLayerTreeViewIndicatorProvider::onWillRemoveChildren( QgsLayerTreeNode *
 
 void QgsLayerTreeViewIndicatorProvider::onLayerLoaded()
 {
+
   QgsLayerTreeLayer *layerNode = qobject_cast<QgsLayerTreeLayer *>( sender() );
   if ( !layerNode )
     return;
 
-  if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layerNode->layer() ) )
+  if ( !( qobject_cast<QgsVectorLayer *>( layerNode->layer() ) || qobject_cast<QgsRasterLayer *>( layerNode->layer() ) ) )
+    return;
+
+  if ( QgsMapLayer *mapLayer = qobject_cast<QgsMapLayer *>( layerNode->layer() ) )
   {
-    if ( vlayer )
+    if ( mapLayer )
     {
-      connectSignals( vlayer );
-      addOrRemoveIndicator( layerNode, vlayer );
+      connectSignals( mapLayer );
+      addOrRemoveIndicator( layerNode, mapLayer );
     }
   }
 }
@@ -123,18 +128,18 @@ void QgsLayerTreeViewIndicatorProvider::onLayerChanged()
 
 void QgsLayerTreeViewIndicatorProvider::connectSignals( QgsMapLayer *layer )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer )
+  if ( !( qobject_cast<QgsVectorLayer *>( layer ) || qobject_cast<QgsRasterLayer *>( layer ) ) )
     return;
-  connect( vlayer, &QgsVectorLayer::dataSourceChanged, this, &QgsLayerTreeViewIndicatorProvider::onLayerChanged );
+  QgsMapLayer *mapLayer = qobject_cast<QgsMapLayer *>( layer );
+  connect( mapLayer, &QgsMapLayer::dataSourceChanged, this, &QgsLayerTreeViewIndicatorProvider::onLayerChanged );
 }
 
 void QgsLayerTreeViewIndicatorProvider::disconnectSignals( QgsMapLayer *layer )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer )
+  if ( !( qobject_cast<QgsVectorLayer *>( layer ) || qobject_cast<QgsRasterLayer *>( layer ) ) )
     return;
-  disconnect( vlayer, &QgsVectorLayer::dataSourceChanged, this, &QgsLayerTreeViewIndicatorProvider::onLayerChanged );
+  QgsMapLayer *mapLayer = qobject_cast<QgsMapLayer *>( layer );
+  disconnect( mapLayer, &QgsMapLayer::dataSourceChanged, this, &QgsLayerTreeViewIndicatorProvider::onLayerChanged );
 }
 
 std::unique_ptr< QgsLayerTreeViewIndicator > QgsLayerTreeViewIndicatorProvider::newIndicator( QgsMapLayer *layer )

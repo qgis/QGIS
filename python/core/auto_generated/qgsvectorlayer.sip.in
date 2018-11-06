@@ -738,11 +738,6 @@ Returns point, line or polygon
 Returns the WKBType or WKBUnknown in case of error
 %End
 
-    QString providerType() const;
-%Docstring
-Returns the provider type for this layer
-%End
-
     virtual QgsCoordinateReferenceSystem sourceCrs() const ${SIP_FINAL};
 
     virtual QString sourceName() const ${SIP_FINAL};
@@ -988,7 +983,8 @@ if the geometry type of the new data source matches the current geometry type of
 .. deprecated:: Use version with ProviderOptions argument instead
 %End
 
-    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
+    virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
+
 %Docstring
 Updates the data source of the layer. The layer's renderer and legend will be preserved only
 if the geometry type of the new data source matches the current geometry type of the layer.
@@ -2325,15 +2321,6 @@ by the backend data provider).
 %End
 
   signals:
-
-    void dataSourceChanged();
-%Docstring
-Emitted whenever the layer's data source has been changed.
-
-.. seealso:: :py:func:`setDataSource`
-
-.. versionadded:: 3.4
-%End
 
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 %Docstring

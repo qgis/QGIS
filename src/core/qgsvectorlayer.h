@@ -763,9 +763,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Returns the WKBType or WKBUnknown in case of error
     QgsWkbTypes::Type wkbType() const FINAL;
 
-    //! Returns the provider type for this layer
-    QString providerType() const;
-
     QgsCoordinateReferenceSystem sourceCrs() const FINAL;
     QString sourceName() const FINAL;
 
@@ -987,7 +984,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see dataSourceChanged()
      * \since QGIS 3.2
      */
-    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false ) override;
 
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
 
@@ -2136,15 +2133,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
   signals:
 
     /**
-     * Emitted whenever the layer's data source has been changed.
-     *
-     * \see setDataSource()
-     *
-     * \since QGIS 3.4
-     */
-    void dataSourceChanged();
-
-    /**
      * This signal is emitted when selection was changed
      *
      * \param selected        Newly selected feature ids
@@ -2443,9 +2431,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QString mDisplayExpression;
 
     QString mMapTipTemplate;
-
-    //! Data provider key
-    QString mProviderKey;
 
     //! The user-defined actions that are accessed from the Identify Results dialog box
     QgsActionManager *mActions = nullptr;

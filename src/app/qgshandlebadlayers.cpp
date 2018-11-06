@@ -26,6 +26,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsmessagebar.h"
 #include "qgssettings.h"
+#include "qgslayertreeregistrybridge.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -33,12 +34,17 @@
 #include <QPushButton>
 #include <QToolButton>
 #include <QMessageBox>
+#include <QDialogButtonBox>
 #include <QUrl>
 
 void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
   QApplication::setOverrideCursor( Qt::ArrowCursor );
   QgsHandleBadLayers *dialog = new QgsHandleBadLayers( layers );
+
+  dialog->buttonBox->button( QDialogButtonBox::Ignore )->setToolTip( tr( "Import all bad layers unmodified (you can fix them later)." ) );
+  dialog->buttonBox->button( QDialogButtonBox::Apply )->setToolTip( tr( "Apply fixes to bad layers (remaining bad layers will be removed from the project)." ) );
+  dialog->buttonBox->button( QDialogButtonBox::Discard )->setToolTip( tr( "Remove all bad layers from the project" ) );
 
   if ( dialog->layerCount() < layers.size() )
     QgisApp::instance()->messageBar()->pushMessage(
@@ -72,6 +78,8 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
   connect( mLayerList, &QTableWidget::itemSelectionChanged, this, &QgsHandleBadLayers::selectionChanged );
   connect( mBrowseButton, &QAbstractButton::clicked, this, &QgsHandleBadLayers::browseClicked );
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsHandleBadLayers::apply );
+  connect( buttonBox->button( QDialogButtonBox::Ignore ), &QPushButton::clicked, this, &QgsHandleBadLayers::reject );
+  connect( buttonBox->button( QDialogButtonBox::Discard ), &QPushButton::clicked, this, &QgsHandleBadLayers::accept );
 
   mLayerList->clear();
   mLayerList->setSortingEnabled( true );
@@ -340,6 +348,17 @@ void QgsHandleBadLayers::editAuthCfg()
 
 void QgsHandleBadLayers::apply()
 {
+  QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
+
+  QList<QgsMapLayer *> toRemove;
+  for ( const auto &l : QgsProject::instance()->mapLayers( ) )
+  {
+    if ( ! l->isValid() )
+      toRemove << l;
+  }
+
+  QgsProject::instance()->removeMapLayers( toRemove );
+
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {
     int idx = mLayerList->item( i, 0 )->data( Qt::UserRole ).toInt();
@@ -358,11 +377,15 @@ void QgsHandleBadLayers::apply()
       item->setForeground( QBrush( Qt::red ) );
     }
   }
+  QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( false );
+
+  if ( mLayerList->rowCount() == 0 )
+    accept();
+
 }
 
 void QgsHandleBadLayers::accept()
 {
-  apply();
 
   if ( mLayerList->rowCount() > 0  &&
        QMessageBox::warning( this,
@@ -375,26 +398,18 @@ void QgsHandleBadLayers::accept()
   {
     return;
   }
+  QList<QgsMapLayer *> toRemove;
+  for ( const auto &l : QgsProject::instance()->mapLayers( ) )
+  {
+    if ( ! l->isValid() )
+      toRemove << l;
+  }
+  QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
+  QgsProject::instance()->removeMapLayers( toRemove );
+  QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( false );
+  mLayerList->clear();
 
   QDialog::accept();
-}
-
-void QgsHandleBadLayers::reject()
-{
-
-  if ( mLayerList->rowCount() > 0  &&
-       QMessageBox::warning( this,
-                             tr( "Unhandled layer will be lost." ),
-                             tr( "There are still %n unhandled layer(s), that will be lost if you closed now.",
-                                 "unhandled layers",
-                                 mLayerList->rowCount() ),
-                             QMessageBox::Ok | QMessageBox::Cancel,
-                             QMessageBox::Cancel ) == QMessageBox::Cancel )
-  {
-    return;
-  }
-
-  QDialog::reject();
 }
 
 int QgsHandleBadLayers::layerCount()

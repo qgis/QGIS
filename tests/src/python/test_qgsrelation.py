@@ -20,6 +20,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsGeometry,
                        QgsPointXY,
                        QgsAttributeEditorElement,
+                       QgsAttributeEditorRelation,
                        QgsProject
                        )
 from utilities import unitTestDataPath
@@ -162,7 +163,10 @@ class TestQgsRelation(unittest.TestCase):
     def testValidRelationAfterChangingStyle(self):
         # load project
         myPath = os.path.join(unitTestDataPath(), 'relations.qgs')
-        QgsProject.instance().read(myPath)
+        p = QgsProject.instance()
+        self.assertTrue(p.read(myPath))
+        for l in p.mapLayers().values():
+            self.assertTrue(l.isValid())
 
         # get referenced layer
         relations = QgsProject.instance().relationManager().relations()
@@ -171,6 +175,7 @@ class TestQgsRelation(unittest.TestCase):
 
         # check that the relation is valid
         valid = False
+        self.assertEqual(len(referencedLayer.editFormConfig().tabs()[0].children()), 7)
         for tab in referencedLayer.editFormConfig().tabs():
             for t in tab.children():
                 if (t.type() == QgsAttributeEditorElement.AeTypeRelation):
@@ -179,6 +184,11 @@ class TestQgsRelation(unittest.TestCase):
 
         # update style
         referencedLayer.styleManager().setCurrentStyle("custom")
+
+        for l in p.mapLayers().values():
+            self.assertTrue(l.isValid())
+
+        self.assertEqual(len(referencedLayer.editFormConfig().tabs()[0].children()), 7)
 
         # check that the relation is still valid
         referencedLayer = relation.referencedLayer()

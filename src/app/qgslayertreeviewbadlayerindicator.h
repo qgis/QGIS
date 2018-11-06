@@ -29,8 +29,17 @@ class QgsLayerTreeViewBadLayerIndicatorProvider : public QgsLayerTreeViewIndicat
   public:
     explicit QgsLayerTreeViewBadLayerIndicatorProvider( QgsLayerTreeView *view );
 
+  signals:
+
+    /**
+     * This signal is emitted when the user clicks on the bad layer indicator icon
+     * \param maplayer for change data source request
+     */
+    void requestChangeDataSource( QgsMapLayer *maplayer );
+
   protected slots:
     void onIndicatorClicked( const QModelIndex &index ) override;
+
 
   private:
     QString iconName( QgsMapLayer *layer ) override;

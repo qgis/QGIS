@@ -57,7 +57,8 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
 
 {
   mRasterLayer = qobject_cast<QgsRasterLayer *>( layer );
-  if ( !mRasterLayer )
+
+  if ( !( mRasterLayer && mRasterLayer->isValid() ) )
     return;
 
   setupUi( this );
@@ -126,6 +127,10 @@ void QgsRendererRasterPropertiesWidget::rendererChanged()
 
 void QgsRendererRasterPropertiesWidget::apply()
 {
+
+  if ( ! mRasterLayer->isValid() )
+    return;
+
   mRasterLayer->brightnessFilter()->setBrightness( mSliderBrightness->value() );
   mRasterLayer->brightnessFilter()->setContrast( mSliderContrast->value() );
 

@@ -273,6 +273,7 @@ Returns a list of attributes used to form the referencing fields
     bool isValid() const;
 %Docstring
 Returns the validity of this relation. Don't use the information if it's not valid.
+A relation is considered valid if both referenced and referencig layers are valid.
 
 :return: true if the relation is valid
 %End
@@ -300,6 +301,14 @@ Gets the referenced field counterpart given a referencing field.
 Gets the referencing field counterpart given a referenced field.
 
 .. versionadded:: 3.0
+%End
+
+    void updateRelationStatus();
+%Docstring
+Updates the validity status of this relation.
+Will be called internally whenever a member is changed.
+
+.. versionadded:: 3.6
 %End
 
 };

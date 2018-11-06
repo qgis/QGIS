@@ -283,12 +283,6 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   QgsCoordinateReferenceSystem::setCustomCrsValidation( savedValidation );
   mCRS = savedCRS;
 
-  // Abort if any error in layer, such as not found.
-  if ( layerError )
-  {
-    return false;
-  }
-
   // the internal name is just the data source basename
   //QFileInfo dataSourceFileInfo( mDataSource );
   //internalName = dataSourceFileInfo.baseName();
@@ -387,7 +381,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
   mMetadata.readMetadataXml( metadataElem );
 
-  return true;
+  return ! layerError;
 } // bool QgsMapLayer::readLayerXML
 
 
@@ -1579,6 +1573,21 @@ bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorM
   return false;
 }
 
+void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
+{
+  Q_UNUSED( dataSource );
+  Q_UNUSED( baseName );
+  Q_UNUSED( provider );
+  Q_UNUSED( options );
+  Q_UNUSED( loadDefaultStyleFlag );
+}
+
+
+QString QgsMapLayer::providerType() const
+{
+  return mProviderKey;
+}
+
 void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context,
                                    QgsMapLayer::StyleCategories categories )
 {
@@ -1822,6 +1831,21 @@ bool QgsMapLayer::hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers 
 bool QgsMapLayer::isReadOnly() const
 {
   return true;
+}
+
+QString QgsMapLayer::originalXmlProperties() const
+{
+  return mOriginalXmlProperties;
+}
+
+void QgsMapLayer::setOriginalXmlProperties( const QString &originalXmlProperties )
+{
+  mOriginalXmlProperties = originalXmlProperties;
+}
+
+void QgsMapLayer::setProviderType( const QString &providerType )
+{
+  mProviderKey = providerType;
 }
 
 QSet<QgsMapLayerDependency> QgsMapLayer::dependencies() const

@@ -116,29 +116,14 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
     // Constant that signals property not used.
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
-  , mProviderKey( providerKey )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
-  init();
+  setProviderType( providerKey );
 
   QgsDataProvider::ProviderOptions providerOptions;
-  setDataProvider( providerKey, providerOptions );
-  if ( !mValid ) return;
 
-  // load default style
-  bool defaultLoadedFlag = false;
-  if ( mValid && options.loadDefaultStyle )
-  {
-    loadDefaultStyle( defaultLoadedFlag );
-  }
-  if ( !defaultLoadedFlag )
-  {
-    setDefaultContrastEnhancement();
-  }
+  setDataSource( uri, baseName, providerKey, providerOptions, options.loadDefaultStyle );
 
-  // TODO: Connect signals from the dataprovider to the qgisapp
-
-  emit statusChanged( tr( "QgsRasterLayer created" ) );
 } // QgsRasterLayer ctor
 
 QgsRasterLayer::~QgsRasterLayer()
@@ -797,7 +782,81 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   mValid = true;
 
   QgsDebugMsgLevel( QStringLiteral( "exiting." ), 4 );
-} // QgsRasterLayer::setDataProvider
+}
+
+void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
+{
+
+  bool wasValid( isValid() );
+
+  QDomImplementation domImplementation;
+  QDomDocumentType documentType;
+  QDomDocument doc;
+  QString errorMsg;
+  QDomElement rootNode;
+
+  // Store the original style
+  if ( wasValid && ! loadDefaultStyleFlag )
+  {
+    documentType = domImplementation.createDocumentType(
+                     QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+    doc = QDomDocument( documentType );
+    rootNode = doc.createElement( QStringLiteral( "qgis" ) );
+    rootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
+    doc.appendChild( rootNode );
+    QgsReadWriteContext writeContext;
+    if ( ! writeSymbology( rootNode, doc, errorMsg, writeContext ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Could not store symbology for layer %1: %2" )
+                   .arg( name() )
+                   .arg( errorMsg ) );
+    }
+  }
+
+  if ( mDataProvider )
+    closeDataProvider();
+
+  init();
+
+  for ( int i = mPipe.size() - 1; i >= 0; --i )
+  {
+    mPipe.remove( i );
+  }
+
+  mDataSource = dataSource;
+  mLayerName = baseName;
+
+  setDataProvider( provider, options );
+
+  if ( mValid )
+  {
+    // load default style
+    bool defaultLoadedFlag = false;
+    if ( loadDefaultStyleFlag )
+    {
+      loadDefaultStyle( defaultLoadedFlag );
+    }
+    else if ( wasValid && errorMsg.isEmpty() )  // Restore the style
+    {
+      QgsReadWriteContext readContext;
+      if ( ! readSymbology( rootNode, errorMsg, readContext ) )
+      {
+        QgsDebugMsg( QStringLiteral( "Could not restore symbology for layer %1: %2" )
+                     .arg( name() )
+                     .arg( errorMsg ) );
+
+      }
+    }
+
+    if ( !defaultLoadedFlag )
+    {
+      setDefaultContrastEnhancement();
+    }
+    emit statusChanged( tr( "QgsRasterLayer created" ) );
+  }
+  emit dataSourceChanged();
+  emit dataChanged();
+}
 
 void QgsRasterLayer::closeDataProvider()
 {
@@ -1251,8 +1310,12 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
 {
   QImage myQImage( size, format );
 
+  if ( ! isValid( ) )
+    return  QImage();
+
   myQImage.setColor( 0, bgColor.rgba() );
   myQImage.fill( 0 );  //defaults to white, set to transparent for rendering on a map
+
 
   QgsRasterViewPort *myRasterViewPort = new QgsRasterViewPort();
 
@@ -1474,7 +1537,12 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
   QgsDataProvider::ProviderOptions providerOptions;
   setDataProvider( mProviderKey, providerOptions );
-  if ( !mValid ) return false;
+
+  if ( ! mDataProvider )
+  {
+    QgsDebugMsg( QStringLiteral( "Raster data provider could not be created for %1" ).arg( mDataSource ) );
+    return false;
+  }
 
   QString error;
   bool res = readSymbology( layer_node, error, context );

@@ -50,7 +50,8 @@ QMap<QString, QgsRelation> QgsRelationManager::relations() const
 
 void QgsRelationManager::addRelation( const QgsRelation &relation )
 {
-  if ( !relation.isValid() )
+  // Do not add relations to layers that do not exist
+  if ( !( relation.referencingLayer() && relation.referencedLayer() ) )
     return;
 
   mRelations.insert( relation.id(), relation );
@@ -59,6 +60,16 @@ void QgsRelationManager::addRelation( const QgsRelation &relation )
     mProject->setDirty( true );
   emit changed();
 }
+
+
+void QgsRelationManager::updateRelationsStatus()
+{
+  for ( auto relation : mRelations )
+  {
+    relation.updateRelationStatus();
+  }
+}
+
 
 void QgsRelationManager::removeRelation( const QString &id )
 {

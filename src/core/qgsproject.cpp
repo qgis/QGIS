@@ -368,6 +368,20 @@ QgsProject::QgsProject( QObject *parent )
   connect( mLayerStore.get(), &QgsMapLayerStore::layerWasAdded, this, &QgsProject::layerWasAdded );
   if ( QgsApplication::instance() )
     connect( QgsApplication::instance(), &QgsApplication::requestForTranslatableObjects, this, &QgsProject::registerTranslatableObjects );
+  connect( mLayerStore.get(), static_cast<void ( QgsMapLayerStore::* )( const QList<QgsMapLayer *> & )>( &QgsMapLayerStore::layersWillBeRemoved ),
+           [ = ]( const QList<QgsMapLayer *> &layers )
+  {
+    for ( const auto &layer : layers )
+      disconnect( layer, &QgsMapLayer::dataSourceChanged, mRelationManager, &QgsRelationManager::updateRelationsStatus );
+  }
+         );
+  connect( mLayerStore.get(), static_cast<void ( QgsMapLayerStore::* )( const QList<QgsMapLayer *> & )>( &QgsMapLayerStore::layersAdded ),
+           [ = ]( const QList<QgsMapLayer *> &layers )
+  {
+    for ( const auto &layer : layers )
+      connect( layer, &QgsMapLayer::dataSourceChanged, mRelationManager, &QgsRelationManager::updateRelationsStatus );
+  }
+         );
 }
 
 
@@ -926,31 +940,29 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   if ( !mapLayer )
   {
     QgsDebugMsg( QStringLiteral( "Unable to create layer" ) );
-
     return false;
   }
 
   Q_CHECK_PTR( mapLayer ); // NOLINT
 
   // have the layer restore state that is stored in Dom node
-  if ( mapLayer->readLayerXml( layerElem, context ) && mapLayer->isValid() )
+  bool layerIsValid = mapLayer->readLayerXml( layerElem, context ) && mapLayer->isValid();
+  QList<QgsMapLayer *> newLayers;
+  newLayers << mapLayer;
+  if ( layerIsValid )
   {
     emit readMapLayer( mapLayer, layerElem );
-
-    QList<QgsMapLayer *> myLayers;
-    myLayers << mapLayer;
-    addMapLayers( myLayers );
-
-    return true;
+    addMapLayers( newLayers );
   }
   else
   {
-    delete mapLayer;
-
+    // It's a bad layer: do not add to legend (the user will decide if she wants to do so)
+    addMapLayers( newLayers, false );
+    newLayers.first();
     QgsDebugMsg( "Unable to load " + type + " layer" );
     brokenNodes.push_back( layerElem );
-    return false;
   }
+  return layerIsValid;
 }
 
 bool QgsProject::read( const QString &filename )
@@ -1293,8 +1305,10 @@ bool QgsProject::readProjectFile( const QString &filename )
     }
   }
 
-  // make sure the are just valid layers
-  QgsLayerTreeUtils::removeInvalidLayers( mRootGroup );
+  // After bad layer handling we might still have invalid layers,
+  // store them in case the user wanted to handle them later
+  // or wanted to pass them through when saving
+  QgsLayerTreeUtils::storeOriginalLayersProperties( mRootGroup, doc.get() );
 
   mRootGroup->removeCustomProperty( QStringLiteral( "loading" ) );
 
@@ -1500,43 +1514,46 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
 
   Q_FOREACH ( QgsMapLayer *layer, layers )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-    if ( vlayer )
+    if ( layer->isValid() )
     {
-      if ( autoTransaction() )
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      if ( vlayer )
       {
-        if ( QgsTransaction::supportsTransaction( vlayer ) )
+        if ( autoTransaction() )
         {
-          QString connString = QgsDataSourceUri( vlayer->source() ).connectionInfo();
-          QString key = vlayer->providerType();
-
-          QgsTransactionGroup *tg = mTransactionGroups.value( qMakePair( key, connString ) );
-
-          if ( !tg )
+          if ( QgsTransaction::supportsTransaction( vlayer ) )
           {
-            tg = new QgsTransactionGroup();
-            mTransactionGroups.insert( qMakePair( key, connString ), tg );
-            tgChanged = true;
+            QString connString = QgsDataSourceUri( vlayer->source() ).connectionInfo();
+            QString key = vlayer->providerType();
+
+            QgsTransactionGroup *tg = mTransactionGroups.value( qMakePair( key, connString ) );
+
+            if ( !tg )
+            {
+              tg = new QgsTransactionGroup();
+              mTransactionGroups.insert( qMakePair( key, connString ), tg );
+              tgChanged = true;
+            }
+            tg->addLayer( vlayer );
           }
-          tg->addLayer( vlayer );
         }
+        vlayer->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues() );
       }
-      vlayer->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues() );
-    }
 
-    if ( tgChanged )
-      emit transactionGroupsChanged();
+      if ( tgChanged )
+        emit transactionGroupsChanged();
 
-    connect( layer, &QgsMapLayer::configChanged, this, [ = ] { setDirty(); } );
+      connect( layer, &QgsMapLayer::configChanged, this, [ = ] { setDirty(); } );
 
-    // check if we have to update connections for layers with dependencies
-    for ( QMap<QString, QgsMapLayer *>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
-    {
-      QSet<QgsMapLayerDependency> deps = it.value()->dependencies();
-      if ( deps.contains( layer->id() ) )
+      // check if we have to update connections for layers with dependencies
+      for ( QMap<QString, QgsMapLayer *>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
       {
-        // reconnect to change signals
-        it.value()->setDependencies( deps );
+        QSet<QgsMapLayerDependency> deps = it.value()->dependencies();
+        if ( deps.contains( layer->id() ) )
+        {
+          // reconnect to change signals
+          it.value()->setDependencies( deps );
+        }
       }
     }
   }
@@ -1751,10 +1768,26 @@ bool QgsProject::writeProjectFile( const QString &filename )
       QHash< QString, QPair< QString, bool> >::const_iterator emIt = mEmbeddedLayers.constFind( ml->id() );
       if ( emIt == mEmbeddedLayers.constEnd() )
       {
-        // general layer metadata
-        QDomElement maplayerElem = doc->createElement( QStringLiteral( "maplayer" ) );
-
-        ml->writeLayerXml( maplayerElem, *doc, context );
+        QDomElement maplayerElem;
+        // If layer is not valid, let's try to restore saved properties from invalidLayerProperties
+        if ( ml->isValid() )
+        {
+          // general layer metadata
+          maplayerElem = doc->createElement( QStringLiteral( "maplayer" ) );
+          ml->writeLayerXml( maplayerElem, *doc, context );
+        }
+        else if ( ! ml->originalXmlProperties().isEmpty() )
+        {
+          QDomDocument document;
+          if ( document.setContent( ml->originalXmlProperties() ) )
+          {
+            maplayerElem = document.firstChildElement();
+          }
+          else
+          {
+            QgsDebugMsg( QStringLiteral( "Could not restore layer properties for layer %1" ).arg( ml->id() ) );
+          }
+        }
 
         emit writeMapLayer( ml, maplayerElem, *doc );
 
@@ -2534,6 +2567,11 @@ int QgsProject::count() const
   return mLayerStore->count();
 }
 
+int QgsProject::validCount() const
+{
+  return mLayerStore->validCount();
+}
+
 QgsMapLayer *QgsProject::mapLayer( const QString &layerId ) const
 {
   return mLayerStore->mapLayer( layerId );
@@ -2723,9 +2761,9 @@ void QgsProject::reloadAllLayers()
   }
 }
 
-QMap<QString, QgsMapLayer *> QgsProject::mapLayers() const
+QMap<QString, QgsMapLayer *> QgsProject::mapLayers( const bool validOnly ) const
 {
-  return mLayerStore->mapLayers();
+  return validOnly ? mLayerStore->validMapLayers() : mLayerStore->mapLayers();
 }
 
 QgsTransactionGroup *QgsProject::transactionGroup( const QString &providerKey, const QString &connString )

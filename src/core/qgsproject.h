@@ -690,6 +690,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Returns the number of registered layers.
     int count() const;
 
+    //! Returns the number of registered valid layers.
+    int validCount() const;
+
     /**
      * Retrieve a pointer to a registered layer by layer ID.
      * \param layerId ID of layer to retrieve
@@ -710,11 +713,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns a map of all registered layers by layer ID.
+     *
+     * \param validOnly if set only valid layers will be returned
      * \see mapLayer()
      * \see mapLayersByName()
      * \see layers()
      */
-    QMap<QString, QgsMapLayer *> mapLayers() const;
+    QMap<QString, QgsMapLayer *> mapLayers( const bool validOnly = false ) const;
 
     /**
      * Returns true if the project comes from a zip archive, false otherwise.
@@ -757,7 +762,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *                      the layers yourself. Not available in Python.
      *
      * \returns a list of the map layers that were added
-     *         successfully. If a layer is invalid, or already exists in the registry,
+     *         successfully. If a layer or already exists in the registry,
      *         it will not be part of the returned QList.
      *
      * \note As a side-effect QgsProject is made dirty.

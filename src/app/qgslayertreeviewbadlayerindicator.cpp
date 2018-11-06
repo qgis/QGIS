@@ -20,7 +20,16 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertreemodel.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
 #include "qgisapp.h"
+#include "qgsbrowsermodel.h"
+#include "qgsbrowsertreeview.h"
+#include "qgsbrowserproxymodel.h"
+
+#include <functional>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QDialogButtonBox>
 
 QgsLayerTreeViewBadLayerIndicatorProvider::QgsLayerTreeViewBadLayerIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
@@ -33,11 +42,12 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
   if ( !QgsLayerTree::isLayer( node ) )
     return;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
-  if ( !vlayer )
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( QgsLayerTree::toLayer( node )->layer() );
+
+  if ( !layer )
     return;
 
-  // TODO: open source select dialog
+  emit requestChangeDataSource( layer );
 }
 
 QString QgsLayerTreeViewBadLayerIndicatorProvider::iconName( QgsMapLayer *layer )
@@ -49,8 +59,7 @@ QString QgsLayerTreeViewBadLayerIndicatorProvider::iconName( QgsMapLayer *layer 
 QString QgsLayerTreeViewBadLayerIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
   Q_UNUSED( layer );
-  // TODO, click here to set a new data source.
-  return tr( "<b>Bad layer!</b><br>Layer data source could not be found." );
+  return tr( "<b>Bad layer!</b><br>Layer data source could not be found. Click to set a new data source" );
 }
 
 bool QgsLayerTreeViewBadLayerIndicatorProvider::acceptLayer( QgsMapLayer *layer )
