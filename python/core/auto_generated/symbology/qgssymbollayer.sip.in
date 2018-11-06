@@ -811,6 +811,14 @@ class QgsLineSymbolLayer : QgsSymbolLayer
 #include "qgssymbollayer.h"
 %End
   public:
+
+    enum RenderRingFilter
+    {
+      AllRings,
+      ExteriorRingOnly,
+      InteriorRingsOnly,
+    };
+
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) = 0;
 
     virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
@@ -875,8 +883,35 @@ Returns the units for the line's offset.
     virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 
 
+    RenderRingFilter ringFilter() const;
+%Docstring
+Returns the line symbol layer's ring filter, which controls which rings are
+rendered when the line symbol is being used to draw a polygon's rings.
+
+This setting has no effect when the line symbol is not being rendered
+for a polygon.
+
+.. seealso:: :py:func:`setRingFilter`
+
+.. versionadded:: 3.6
+%End
+
+    void setRingFilter( QgsLineSymbolLayer::RenderRingFilter filter );
+%Docstring
+Sets the line symbol layer's ring ``filter``, which controls which rings are
+rendered when the line symbol is being used to draw a polygon's rings.
+
+This setting has no effect when the line symbol is not being rendered
+for a polygon.
+
+.. seealso:: :py:func:`ringFilter`
+
+.. versionadded:: 3.6
+%End
+
   protected:
     QgsLineSymbolLayer( bool locked = false );
+
 
 };
 
