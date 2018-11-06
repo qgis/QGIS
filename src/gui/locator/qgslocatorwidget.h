@@ -31,7 +31,7 @@ class QgsLocator;
 class QgsFilterLineEdit;
 class QgsLocatorResultsView;
 class QgsMapCanvas;
-class QgsLocatorWidgetCore;
+class QgsLocatorModelBridge;
 
 /**
  * \class QgsLocatorWidget
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
     void resultAdded();
 
   private:
-    QgsLocatorWidgetCore *mWidgetCore = nullptr;
+    QgsLocatorModelBridge *mModelBridge = nullptr;
     QgsFilterLineEdit *mLineEdit = nullptr;
     QgsFloatingWidget *mResultsContainer = nullptr;
     QgsLocatorResultsView *mResultsView = nullptr;

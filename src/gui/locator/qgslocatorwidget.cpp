@@ -18,7 +18,7 @@
 #include "qgslocator.h"
 #include "qgslocatormodel.h"
 #include "qgslocatorwidget.h"
-#include "qgslocatorwidgetcore.h"
+#include "qgslocatormodelbridge.h"
 #include "qgsfilterlineedit.h"
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
@@ -29,7 +29,7 @@
 
 QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   : QWidget( parent )
-  , mWidgetCore( new QgsLocatorWidgetCore( this ) )
+  , mModelBridge( new QgsLocatorModelBridge( this ) )
   , mLineEdit( new QgsFilterLineEdit() )
   , mResultsView( new QgsLocatorResultsView() )
 {
@@ -70,16 +70,16 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   mResultsContainer->setLayout( containerLayout );
   mResultsContainer->hide();
 
-  mResultsView->setModel( mWidgetCore->proxyModel() );
+  mResultsView->setModel( mModelBridge->proxyModel() );
   mResultsView->setUniformRowHeights( true );
   mResultsView->setIconSize( QSize( 16, 16 ) );
   mResultsView->recalculateSize();
 
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsLocatorWidget::scheduleDelayedPopup );
   connect( mResultsView, &QAbstractItemView::activated, this, &QgsLocatorWidget::acceptCurrentEntry );
-  connect( mWidgetCore, &QgsLocatorWidgetCore::resultAdded, this, &QgsLocatorWidget::resultAdded );
-  connect( mWidgetCore, &QgsLocatorWidgetCore::isRunningChanged, this, [ = ]() {mLineEdit->setShowSpinner( mWidgetCore->isRunning() );} );
-  connect( mWidgetCore, & QgsLocatorWidgetCore::resultsCleared, this, [ = ]() {mHasSelectedResult = false;} );
+  connect( mModelBridge, &QgsLocatorModelBridge::resultAdded, this, &QgsLocatorWidget::resultAdded );
+  connect( mModelBridge, &QgsLocatorModelBridge::isRunningChanged, this, [ = ]() {mLineEdit->setShowSpinner( mModelBridge->isRunning() );} );
+  connect( mModelBridge, & QgsLocatorModelBridge::resultsCleared, this, [ = ]() {mHasSelectedResult = false;} );
 
   // have a tiny delay between typing text in line edit and showing the window
   mPopupTimer.setInterval( 100 );
@@ -95,7 +95,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   installEventFilter( this );
   window()->installEventFilter( this );
 
-  mWidgetCore->locator()->registerFilter( new QgsLocatorFilterFilter( this, this ) );
+  mModelBridge->locator()->registerFilter( new QgsLocatorFilterFilter( this, this ) );
 
   mMenu = new QMenu( this );
   QAction *menuAction = mLineEdit->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/search.svg" ) ), QLineEdit::LeadingPosition );
@@ -111,7 +111,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
 
 QgsLocator *QgsLocatorWidget::locator()
 {
-  return mWidgetCore->locator();
+  return mModelBridge->locator();
 }
 
 void QgsLocatorWidget::setMapCanvas( QgsMapCanvas *canvas )
@@ -129,8 +129,8 @@ void QgsLocatorWidget::setMapCanvas( QgsMapCanvas *canvas )
   if ( mMapCanvas )
   {
     mCanvasConnections
-    << connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, [ = ]() {mWidgetCore->updateCanvasExtent( mMapCanvas->extent() );} )
-    << connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]() {mWidgetCore->updateCanvasCrs( mMapCanvas->mapSettings().destinationCrs() );} ) ;
+    << connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, [ = ]() {mModelBridge->updateCanvasExtent( mMapCanvas->extent() );} )
+    << connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]() {mModelBridge->updateCanvasCrs( mMapCanvas->mapSettings().destinationCrs() );} ) ;
   }
 }
 
@@ -144,7 +144,7 @@ void QgsLocatorWidget::search( const QString &string )
 
 void QgsLocatorWidget::invalidateResults()
 {
-  mWidgetCore->invalidateResults();
+  mModelBridge->invalidateResults();
   mResultsContainer->hide();
 }
 
@@ -155,25 +155,25 @@ void QgsLocatorWidget::scheduleDelayedPopup()
 
 void QgsLocatorWidget::resultAdded()
 {
-  bool selectFirst = !mHasSelectedResult || mWidgetCore->proxyModel()->rowCount() == 0;
+  bool selectFirst = !mHasSelectedResult || mModelBridge->proxyModel()->rowCount() == 0;
   if ( selectFirst )
   {
     int row = -1;
     bool selectable = false;
-    while ( !selectable && row < mWidgetCore->proxyModel()->rowCount() )
+    while ( !selectable && row < mModelBridge->proxyModel()->rowCount() )
     {
       row++;
-      selectable = mWidgetCore->proxyModel()->flags( mWidgetCore->proxyModel()->index( row, 0 ) ).testFlag( Qt::ItemIsSelectable );
+      selectable = mModelBridge->proxyModel()->flags( mModelBridge->proxyModel()->index( row, 0 ) ).testFlag( Qt::ItemIsSelectable );
     }
     if ( selectable )
-      mResultsView->setCurrentIndex( mWidgetCore->proxyModel()->index( row, 0 ) );
+      mResultsView->setCurrentIndex( mModelBridge->proxyModel()->index( row, 0 ) );
   }
 }
 
 void QgsLocatorWidget::performSearch()
 {
   mPopupTimer.stop();
-  mWidgetCore->performSearch( mLineEdit->text() );
+  mModelBridge->performSearch( mLineEdit->text() );
   showList();
 }
 
@@ -185,7 +185,7 @@ void QgsLocatorWidget::showList()
 
 void QgsLocatorWidget::triggerSearchAndShowList()
 {
-  if ( mWidgetCore->proxyModel()->rowCount() == 0 )
+  if ( mModelBridge->proxyModel()->rowCount() == 0 )
     performSearch();
   else
     showList();
@@ -261,7 +261,7 @@ bool QgsLocatorWidget::eventFilter( QObject *obj, QEvent *event )
 void QgsLocatorWidget::configMenuAboutToShow()
 {
   mMenu->clear();
-  for ( QgsLocatorFilter *filter : mWidgetCore->locator()->filters() )
+  for ( QgsLocatorFilter *filter : mModelBridge->locator()->filters() )
   {
     if ( !filter->enabled() )
       continue;
@@ -275,7 +275,7 @@ void QgsLocatorWidget::configMenuAboutToShow()
       else
       {
         QStringList parts = currentText.split( ' ' );
-        if ( parts.count() > 1 && mWidgetCore->locator()->filters( parts.at( 0 ) ).count() > 0 )
+        if ( parts.count() > 1 && mModelBridge->locator()->filters( parts.at( 0 ) ).count() > 0 )
         {
           parts.pop_front();
           currentText = parts.join( ' ' );
@@ -297,7 +297,7 @@ void QgsLocatorWidget::configMenuAboutToShow()
 
 void QgsLocatorWidget::acceptCurrentEntry()
 {
-  if ( mWidgetCore->hasQueueRequested() )
+  if ( mModelBridge->hasQueueRequested() )
   {
     return;
   }
@@ -310,10 +310,10 @@ void QgsLocatorWidget::acceptCurrentEntry()
     if ( !index.isValid() )
       return;
 
-    QgsLocatorResult result = mWidgetCore->proxyModel()->data( index, QgsLocatorModel::ResultDataRole ).value< QgsLocatorResult >();
+    QgsLocatorResult result = mModelBridge->proxyModel()->data( index, QgsLocatorModel::ResultDataRole ).value< QgsLocatorResult >();
     mResultsContainer->hide();
     mLineEdit->clearFocus();
-    mWidgetCore->locator()->clearPreviousResults();
+    mModelBridge->locator()->clearPreviousResults();
     result.filter->triggerResult( result );
   }
 }

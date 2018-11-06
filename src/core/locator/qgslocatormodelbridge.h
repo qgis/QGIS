@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgslocatorwidgetcore.h
+                         qgslocatormodelbridge.h
                          ------------------
     begin                : November 2018
     copyright            : (C) 2018 by Denis Rouzaud
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLOCATORWIDGETCORE_H
-#define QGSLOCATORWIDGETCORE_H
+#ifndef QGSLOCATORMODELBRIDGE_H
+#define QGSLOCATORMODELBRIDGE_H
 
 #include <QObject>
 
@@ -33,17 +33,17 @@ class QgsLocatorProxyModel;
 
 /**
  * \ingroup core
- * The QgsLocatorWidgetCore class provides the core functionality
+ * The QgsLocatorModelBridge class provides the core functionality
  * to be used in a locator widget.
  * \since QGIS 3.6
  */
-class CORE_EXPORT QgsLocatorWidgetCore : public QObject
+class CORE_EXPORT QgsLocatorModelBridge : public QObject
 {
     Q_OBJECT
     Q_PROPERTY( bool isRunning READ isRunning NOTIFY isRunningChanged )
   public:
-    //! Constructor of QgsLocatorWidgetCore
-    explicit QgsLocatorWidgetCore( QObject *parent = nullptr );
+    //! Constructor of QgsLocatorModelBridge
+    explicit QgsLocatorModelBridge( QObject *parent = nullptr );
 
     //! Perform a search
     Q_INVOKABLE void performSearch( const QString &text );
@@ -104,4 +104,4 @@ class CORE_EXPORT QgsLocatorWidgetCore : public QObject
     QgsCoordinateReferenceSystem mCanvasCrs;
 };
 
-#endif // QGSLOCATORWIDGETCORE_H
+#endif // QGSLOCATORMODELBRIDGE_H

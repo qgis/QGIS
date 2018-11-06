@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgslocatorwidgetcore.cpp
+                         qgslocatormodelbridge.cpp
                          ------------------
     begin                : November 2018
     copyright            : (C) 2018 by Denis Rouzaud
@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslocatorwidgetcore.h"
+#include "qgslocatormodelbridge.h"
 #include "qgslocator.h"
 #include "qgslocatormodel.h"
 #include "qgsmapsettings.h"
 
-QgsLocatorWidgetCore::QgsLocatorWidgetCore( QObject *parent )
+QgsLocatorModelBridge::QgsLocatorModelBridge( QObject *parent )
   : QObject( parent )
   , mLocator( new QgsLocator( this ) )
   , mLocatorModel( new QgsLocatorModel( this ) )
@@ -28,16 +28,16 @@ QgsLocatorWidgetCore::QgsLocatorWidgetCore( QObject *parent )
   mProxyModel = new QgsLocatorProxyModel( mLocatorModel );
   mProxyModel->setSourceModel( mLocatorModel );
 
-  connect( mLocator, &QgsLocator::foundResult, this, &QgsLocatorWidgetCore::addResult );
-  connect( mLocator, &QgsLocator::finished, this, &QgsLocatorWidgetCore::searchFinished );
+  connect( mLocator, &QgsLocator::foundResult, this, &QgsLocatorModelBridge::addResult );
+  connect( mLocator, &QgsLocator::finished, this, &QgsLocatorModelBridge::searchFinished );
 }
 
-bool QgsLocatorWidgetCore::isRunning() const
+bool QgsLocatorModelBridge::isRunning() const
 {
   return mIsRunning;
 }
 
-void QgsLocatorWidgetCore::setIsRunning( bool isRunning )
+void QgsLocatorModelBridge::setIsRunning( bool isRunning )
 {
   if ( mIsRunning == isRunning )
     return;
@@ -46,30 +46,30 @@ void QgsLocatorWidgetCore::setIsRunning( bool isRunning )
   emit isRunningChanged();
 }
 
-void QgsLocatorWidgetCore::invalidateResults()
+void QgsLocatorModelBridge::invalidateResults()
 {
   mLocator->cancelWithoutBlocking();
   mLocatorModel->clear();
 }
 
-void QgsLocatorWidgetCore::updateCanvasExtent( const QgsRectangle &extent )
+void QgsLocatorModelBridge::updateCanvasExtent( const QgsRectangle &extent )
 {
   mCanvasExtent = extent;
 }
 
-void QgsLocatorWidgetCore::updateCanvasCrs( const QgsCoordinateReferenceSystem &crs )
+void QgsLocatorModelBridge::updateCanvasCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mCanvasCrs = crs;
 }
 
-void QgsLocatorWidgetCore::addResult( const QgsLocatorResult &result )
+void QgsLocatorModelBridge::addResult( const QgsLocatorResult &result )
 {
   mLocatorModel->addResult( result );
   emit resultAdded();
 }
 
 
-void QgsLocatorWidgetCore::searchFinished()
+void QgsLocatorModelBridge::searchFinished()
 {
   if ( mHasQueuedRequest )
   {
@@ -86,7 +86,7 @@ void QgsLocatorWidgetCore::searchFinished()
   }
 }
 
-void QgsLocatorWidgetCore::performSearch( const QString &text )
+void QgsLocatorModelBridge::performSearch( const QString &text )
 {
   setIsRunning( true );
   if ( mLocator->isRunning() )
@@ -107,22 +107,22 @@ void QgsLocatorWidgetCore::performSearch( const QString &text )
   }
 }
 
-QgsLocator *QgsLocatorWidgetCore::locator() const
+QgsLocator *QgsLocatorModelBridge::locator() const
 {
   return mLocator;
 }
 
-QgsLocatorProxyModel *QgsLocatorWidgetCore::proxyModel() const
+QgsLocatorProxyModel *QgsLocatorModelBridge::proxyModel() const
 {
   return mProxyModel;
 }
 
-bool QgsLocatorWidgetCore::hasQueueRequested() const
+bool QgsLocatorModelBridge::hasQueueRequested() const
 {
   return mHasQueuedRequest;
 }
 
-QgsLocatorContext QgsLocatorWidgetCore::createContext()
+QgsLocatorContext QgsLocatorModelBridge::createContext()
 {
   QgsLocatorContext context;
   context.targetExtent = mCanvasExtent;

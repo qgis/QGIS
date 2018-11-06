@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/locator/qgslocatormodelbridge.h                              *
+ * src/core/locator/qgslocatormodelbridge.h                             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -92,7 +92,7 @@ Update the canvas CRS used to create search context
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/locator/qgslocatormodelbridge.h                              *
+ * src/core/locator/qgslocatormodelbridge.h                             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
