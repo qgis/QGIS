@@ -2760,6 +2760,13 @@ void TestQgsGeometry::circularString()
   interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
   QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point (10.46 0.84)" ) );
 
+  // orientation
+  QgsCircularString orientation;
+  ( void )orientation.orientation(); // no crash
+  orientation.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 1 ) << QgsPoint( 1, 1 ) << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
+  QCOMPARE( orientation.orientation(), QgsCurve::Clockwise );
+  orientation.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
+  QCOMPARE( orientation.orientation(), QgsCurve::CounterClockwise );
 }
 
 
@@ -4767,6 +4774,14 @@ void TestQgsGeometry::lineString()
   interpolate.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) );
   interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
   QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point (11 3)" ) );
+
+  // orientation
+  QgsLineString orientation;
+  ( void )orientation.orientation(); // no crash
+  orientation.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 1 ) << QgsPoint( 1, 1 ) << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
+  QCOMPARE( orientation.orientation(), QgsCurve::Clockwise );
+  orientation.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
+  QCOMPARE( orientation.orientation(), QgsCurve::CounterClockwise );
 }
 
 void TestQgsGeometry::polygon()
@@ -11449,6 +11464,13 @@ void TestQgsGeometry::compoundCurve()
   interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
   QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point (6 0)" ) );
 
+  // orientation
+  QgsCompoundCurve orientation;
+  ( void )orientation.orientation(); // no crash
+  orientation.fromWkt( QStringLiteral( "CompoundCurve( ( 0 0, 0 1), CircularString (0 1, 1 1, 1 0), (1 0, 0 0))" ) );
+  QCOMPARE( orientation.orientation(), QgsCurve::Clockwise );
+  orientation.fromWkt( QStringLiteral( "CompoundCurve( ( 0 0, 1 0), CircularString (1 0, 1 1, 0 1), (0 1, 0 0))" ) );
+  QCOMPARE( orientation.orientation(), QgsCurve::CounterClockwise );
 }
 
 void TestQgsGeometry::multiPoint()

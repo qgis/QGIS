@@ -214,6 +214,13 @@ double QgsCurve::sinuosity() const
   return length() / d;
 }
 
+QgsCurve::Orientation QgsCurve::orientation() const
+{
+  double a = 0;
+  sumUpArea( a );
+  return a < 0 ? Clockwise : CounterClockwise;
+}
+
 void QgsCurve::clearCache() const
 {
   mBoundingBox = QgsRectangle();
