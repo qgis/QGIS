@@ -85,7 +85,7 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
 #ifdef Q_OS_MAC
   // Create action to select this window
   mWindowAction = new QAction( windowTitle(), this );
-  connect( mWindowAction, SIGNAL( triggered() ), this, &QgsLayoutManagerDialog::activate );
+  connect( mWindowAction, &QAction::triggered, this, &QgsLayoutManagerDialog::activate );
 #endif
 
   mTemplate->addItem( tr( "Empty layout" ) );
