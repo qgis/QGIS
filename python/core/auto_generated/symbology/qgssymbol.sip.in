@@ -372,6 +372,32 @@ side effects for certain symbol types.
 .. versionadded:: 2.9
 %End
 
+    void setForceRHR( bool force );
+%Docstring
+Sets whether polygon features drawn by the symbol should be reoriented to follow the
+standard right-hand-rule orientation, in which the area that is
+bounded by the polygon is to the right of the boundary. In particular, the exterior
+ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
+direction.
+
+.. seealso:: :py:func:`forceRHR`
+
+.. versionadded:: 3.6
+%End
+
+    bool forceRHR() const;
+%Docstring
+Returns true if polygon features drawn by the symbol will be reoriented to follow the
+standard right-hand-rule orientation, in which the area that is
+bounded by the polygon is to the right of the boundary. In particular, the exterior
+ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
+direction.
+
+.. seealso:: :py:func:`setForceRHR`
+
+.. versionadded:: 3.6
+%End
+
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 %Docstring
 Returns a list of attributes required to render this feature.
@@ -428,14 +454,20 @@ Creates a point in screen coordinates from a QgsPoint in map coordinates
 Creates a line string in screen coordinates from a QgsCurve in map coordinates
 %End
 
-    static QPolygonF _getPolygonRing( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent );
+    static QPolygonF _getPolygonRing( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent, bool isExteriorRing = false, bool correctRingOrientation = false );
 %Docstring
-Creates a polygon ring in screen coordinates from a QgsCurve in map coordinates
+Creates a polygon ring in screen coordinates from a QgsCurve in map coordinates.
+
+If ``correctRingOrientation`` is true then the ring will be oriented to match standard ring orientation, e.g.
+clockwise for exterior rings and counter-clockwise for interior rings.
 %End
 
-    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true );
+    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true, bool correctRingOrientation = false );
 %Docstring
 Creates a polygon in screen coordinates from a QgsPolygonXYin map coordinates
+
+If ``correctRingOrientation`` is true then the ring will be oriented to match standard ring orientation, e.g.
+clockwise for exterior rings and counter-clockwise for interior rings.
 %End
 
     QgsSymbolLayerList cloneLayers() const /Factory/;
