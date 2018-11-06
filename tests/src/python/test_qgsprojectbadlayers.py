@@ -233,9 +233,6 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         options = QgsDataProvider.ProviderOptions()
         temp_dir = QTemporaryDir()
         p = QgsProject.instance()
-        project_path = os.path.join(temp_dir.path(), 'good_layers_test.qgs')
-        copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'good_layers_test.qgs'), project_path)
-        copyfile(os.path.join(TEST_DATA_DIR, 'projects', 'bad_layers_test.gpkg'), os.path.join(temp_dir.path(), 'bad_layers_test.gpkg'))
         for f in (
                 'bad_layer_raster_test.tfw',
                 'bad_layer_raster_test.tiff',
@@ -244,6 +241,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
                 'good_layers_test.qgs'):
             copyfile(os.path.join(TEST_DATA_DIR, 'projects', f), os.path.join(temp_dir.path(), f))
 
+        project_path = os.path.join(temp_dir.path(), 'good_layers_test.qgs')
         p = QgsProject().instance()
         self.assertTrue(p.read(project_path))
         self.assertEqual(p.count(), 3)
