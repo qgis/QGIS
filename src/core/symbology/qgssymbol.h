@@ -380,6 +380,28 @@ class CORE_EXPORT QgsSymbol
     bool clipFeaturesToExtent() const { return mClipFeaturesToExtent; }
 
     /**
+     * Sets whether polygon features drawn by the symbol should be reoriented to follow the
+     * standard right-hand-rule orientation, in which the area that is
+     * bounded by the polygon is to the right of the boundary. In particular, the exterior
+     * ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
+     * direction.
+     * \see forceRHR()
+     * \since QGIS 3.6
+     */
+    void setForceRHR( bool force ) { mForceRHR = force; }
+
+    /**
+     * Returns true if polygon features drawn by the symbol will be reoriented to follow the
+     * standard right-hand-rule orientation, in which the area that is
+     * bounded by the polygon is to the right of the boundary. In particular, the exterior
+     * ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
+     * direction.
+     * \see setForceRHR()
+     * \since QGIS 3.6
+     */
+    bool forceRHR() const { return mForceRHR; }
+
+    /**
      * Returns a list of attributes required to render this feature.
      * This should include any attributes required by the symbology including
      * the ones required by expressions.
@@ -447,14 +469,21 @@ class CORE_EXPORT QgsSymbol
     static QPolygonF _getLineString( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent = true );
 
     /**
-     * Creates a polygon ring in screen coordinates from a QgsCurve in map coordinates
+     * Creates a polygon ring in screen coordinates from a QgsCurve in map coordinates.
+     *
+     * If \a correctRingOrientation is true then the ring will be oriented to match standard ring orientation, e.g.
+     * clockwise for exterior rings and counter-clockwise for interior rings.
      */
-    static QPolygonF _getPolygonRing( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent );
+    static QPolygonF _getPolygonRing( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent, bool isExteriorRing = false, bool correctRingOrientation = false );
 
     /**
      * Creates a polygon in screen coordinates from a QgsPolygonXYin map coordinates
+     *
+     * If \a correctRingOrientation is true then the ring will be oriented to match standard ring orientation, e.g.
+     * clockwise for exterior rings and counter-clockwise for interior rings.
+     *
      */
-    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true );
+    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true, bool correctRingOrientation = false );
 
     /**
      * Retrieve a cloned list of all layers that make up this symbol.
@@ -487,6 +516,7 @@ class CORE_EXPORT QgsSymbol
 
     RenderHints mRenderHints = nullptr;
     bool mClipFeaturesToExtent = true;
+    bool mForceRHR = false;
 
     Q_DECL_DEPRECATED const QgsVectorLayer *mLayer = nullptr; //current vectorlayer
 
