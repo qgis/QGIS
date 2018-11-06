@@ -122,6 +122,34 @@ tests:
         name: expected/gdal/contour.gml
         type: vector
 
+  - algorithm: gdal:extractprojection
+    name: Extract Projection (extractprojection)
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      PRJ_FILE_CREATE: True
+    results:
+      WORLD_FILE:
+        name: expected/gdal/dem.wld
+        type: file
+      PRJ_FILE:
+        name: expected/gdal/dem.prj
+        type: file
+
+  - algorithm: gdal:extractprojection
+    name: Extract Projection (extractprojection)
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      PRJ_FILE_CREATE: False
+    results:
+      WORLD_FILE:
+        name: expected/gdal/dem.wld
+        type: file
+      PRJ_FILE: None
+
   - algorithm: gdal:gdalinfo
     name: gdalinfo
     params:
