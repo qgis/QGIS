@@ -67,7 +67,6 @@ class TestQgsMarkerLineSymbol : public QObject
 
     QString mTestDataDir;
     QgsVectorLayer *mLinesLayer = nullptr;
-    QgsVectorLayer *mPolygonsLayer = nullptr;
     QgsMapSettings *mMapSettings = nullptr;
     QString mReport;
 };
