@@ -491,7 +491,7 @@ void QgsCustomizationDialog::showHelp()
 
 void QgsCustomization::addTreeItemActions( QTreeWidgetItem *parentItem, const QList<QAction *> &actions )
 {
-  Q_FOREACH ( QAction *action, actions )
+  for ( const QAction *action : actions )
   {
     if ( action->isSeparator() )
     {
@@ -500,27 +500,29 @@ void QgsCustomization::addTreeItemActions( QTreeWidgetItem *parentItem, const QL
     if ( action->menu() )
     {
       // it is a submenu
-      addTreeItemMenu( parentItem, action->menu() );
+      addTreeItemMenu( parentItem, action->menu(), action );
     }
     else
     {
       // it is an ordinary action
       QStringList strs;
       strs << action->objectName() << action->text();
-      QTreeWidgetItem *myItem = new QTreeWidgetItem( parentItem, strs );
-      myItem->setIcon( 0, action->icon() );
-      myItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
-      myItem->setCheckState( 0, Qt::Checked );
+      QTreeWidgetItem *item = new QTreeWidgetItem( parentItem, strs );
+      item->setIcon( 0, action->icon() );
+      item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+      item->setCheckState( 0, Qt::Checked );
     }
   }
 }
 
-void QgsCustomization::addTreeItemMenu( QTreeWidgetItem *parentItem, QMenu *menu )
+void QgsCustomization::addTreeItemMenu( QTreeWidgetItem *parentItem, const QMenu *menu, const QAction *action )
 {
   QStringList menustrs;
   // remove '&' which are used to mark shortcut key
   menustrs << menu->objectName() << menu->title().remove( '&' );
   QTreeWidgetItem *menuItem = new QTreeWidgetItem( parentItem, menustrs );
+  if ( action )
+    menuItem->setIcon( 0, action->icon() );
   menuItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
   menuItem->setCheckState( 0, Qt::Checked );
 
@@ -921,7 +923,7 @@ void QgsCustomization::preNotify( QObject *receiver, QEvent *event, bool *done )
   }
 }
 
-QString QgsCustomization::splashPath()
+QString QgsCustomization::splashPath() const
 {
   if ( isEnabled() )
   {

@@ -133,7 +133,7 @@ class APP_EXPORT QgsCustomization : public QObject
     void setSettings( QSettings *settings ) { mSettings = settings ;}
 
     // Return the path to the splash screen
-    QString splashPath();
+    QString splashPath() const;
 
     // Load and set default customization
     void loadDefault();
@@ -141,7 +141,7 @@ class APP_EXPORT QgsCustomization : public QObject
     // Internal Qt widget which has to bes kipped in paths
     static QStringList sInternalWidgets;
 
-    QString statusPath() { return mStatusPath; }
+    QString statusPath() const { return mStatusPath; }
 
   public slots:
     void preNotify( QObject *receiver, QEvent *event, bool *done );
@@ -160,7 +160,7 @@ class APP_EXPORT QgsCustomization : public QObject
     void createTreeItemToolbars();
     void createTreeItemDocks();
     void createTreeItemStatus();
-    void addTreeItemMenu( QTreeWidgetItem *parentItem, QMenu *menu );
+    void addTreeItemMenu( QTreeWidgetItem *parentItem, const QMenu *menu, const QAction *action = nullptr );
     void addTreeItemActions( QTreeWidgetItem *parentItem, const QList<QAction *> &actions );
     QList<QTreeWidgetItem *> mMainWindowItems;
     friend class QgsCustomizationDialog; // in order to access mMainWindowItems
