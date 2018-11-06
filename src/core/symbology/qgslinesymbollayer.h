@@ -109,9 +109,26 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     QVector<qreal> customDashVector() const { return mCustomDashVector; }
     void setCustomDashVector( const QVector<qreal> &vector ) { mCustomDashVector = vector; }
 
-    //Returns true if the line should only be drawn inside the polygon
+    /**
+     * Returns true if the line should only be drawn inside polygons, and any portion
+     * of the line which falls outside the polygon should be clipped away.
+     *
+     * This setting only has an effect when the line symbol is being
+     * used to render polygon rings.
+     *
+     * \see setDrawInsidePolygon()
+     */
     bool drawInsidePolygon() const { return mDrawInsidePolygon; }
-    //Set to true if the line should only be drawn inside the polygon
+
+    /**
+     * Sets whether the line should only be drawn inside polygons, and any portion
+     * of the line which falls outside the polygon should be clipped away.
+     *
+     * This setting only has an effect when the line symbol is being
+     * used to render polygon rings.
+     *
+     * \see drawInsidePolygon()
+     */
     void setDrawInsidePolygon( bool drawInsidePolygon ) { mDrawInsidePolygon = drawInsidePolygon; }
 
     QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const override;
