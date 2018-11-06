@@ -128,8 +128,10 @@ void QgsLocatorWidget::setMapCanvas( QgsMapCanvas *canvas )
   mMapCanvas = canvas;
   if ( mMapCanvas )
   {
+    mModelBridge->updateCanvasExtent( mMapCanvas->mapSettings().visibleExtent() );
+    mModelBridge->updateCanvasCrs( mMapCanvas->mapSettings().destinationCrs() );
     mCanvasConnections
-    << connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, [ = ]() {mModelBridge->updateCanvasExtent( mMapCanvas->extent() );} )
+    << connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, [ = ]() {mModelBridge->updateCanvasExtent( mMapCanvas->mapSettings().visibleExtent() );} )
     << connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]() {mModelBridge->updateCanvasCrs( mMapCanvas->mapSettings().destinationCrs() );} ) ;
   }
 }

@@ -18,7 +18,7 @@
 #include "qgslocatormodelbridge.h"
 #include "qgslocator.h"
 #include "qgslocatormodel.h"
-#include "qgsmapsettings.h"
+
 
 QgsLocatorModelBridge::QgsLocatorModelBridge( QObject *parent )
   : QObject( parent )
