@@ -19,13 +19,13 @@
   </projectCrs>
   <layer-tree-group>
     <customproperties/>
-    <layer-tree-layer id="point_b_d23a7df9_c9d6_4b48_9162_5fc1a7db2b96" checked="Qt::Checked" expanded="1" source="./bad_layers_test.gpkg|layername=point_b" name="point_b" providerKey="ogr">
+    <layer-tree-layer id="point_b_d23a7df9_c9d6_4b48_9162_5fc1a7db2b96" checked="Qt::Checked" expanded="1" source="./bad_layers_test-BAD_SOURCE.gpkg|layername=point_b" name="point_b" providerKey="ogr">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer id="point_a_e99cf1b1_e13e_44a8_b912_58505e7ac967" checked="Qt::Checked" expanded="1" source="./bad_layers_test.gpkg|layername=point_a" name="point_a" providerKey="ogr">
+    <layer-tree-layer id="point_a_e99cf1b1_e13e_44a8_b912_58505e7ac967" checked="Qt::Checked" expanded="1" source="./bad_layers_test-BAD_SOURCE.gpkg|layername=point_a" name="point_a" providerKey="ogr">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer id="bad_layer_raster_test_18978e96_6781_4a5d_b0bc_474994ed231a" checked="Qt::Checked" expanded="1" source="./bad_layer_raster_test.tiff" name="bad_layer_raster_test" providerKey="gdal">
+    <layer-tree-layer id="bad_layer_raster_test_18978e96_6781_4a5d_b0bc_474994ed231a" checked="Qt::Checked" expanded="1" source="./bad_layer_raster_test-BAD_SOURCE.tiff" name="bad_layer_raster_test" providerKey="gdal">
       <customproperties/>
     </layer-tree-layer>
     <custom-order enabled="0">
@@ -120,7 +120,7 @@
         <ymax>41.98181497618493552</ymax>
       </extent>
       <id>bad_layer_raster_test_18978e96_6781_4a5d_b0bc_474994ed231a</id>
-      <datasource>./bad_layer_raster_test.tiff</datasource>
+      <datasource>./bad_layer_raster_test-BAD_SOURCE.tiff</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -230,7 +230,7 @@
         <ymax>41.98154067993164063</ymax>
       </extent>
       <id>point_a_e99cf1b1_e13e_44a8_b912_58505e7ac967</id>
-      <datasource>./bad_layers_test.gpkg|layername=point_a</datasource>
+      <datasource>./bad_layers_test-BAD_SOURCE.gpkg|layername=point_a</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -575,7 +575,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>41.981597900390625</ymax>
       </extent>
       <id>point_b_d23a7df9_c9d6_4b48_9162_5fc1a7db2b96</id>
-      <datasource>./bad_layers_test.gpkg|layername=point_b</datasource>
+      <datasource>./bad_layers_test-BAD_SOURCE.gpkg|layername=point_b</datasource>
       <keywordList>
         <value></value>
       </keywordList>
