@@ -103,7 +103,26 @@ Returns the units for lengths used in the custom dash pattern.
     void setCustomDashVector( const QVector<qreal> &vector );
 
     bool drawInsidePolygon() const;
+%Docstring
+Returns true if the line should only be drawn inside polygons, and any portion
+of the line which falls outside the polygon should be clipped away.
+
+This setting only has an effect when the line symbol is being
+used to render polygon rings.
+
+.. seealso:: :py:func:`setDrawInsidePolygon`
+%End
+
     void setDrawInsidePolygon( bool drawInsidePolygon );
+%Docstring
+Sets whether the line should only be drawn inside polygons, and any portion
+of the line which falls outside the polygon should be clipped away.
+
+This setting only has an effect when the line symbol is being
+used to render polygon rings.
+
+.. seealso:: :py:func:`drawInsidePolygon`
+%End
 
     virtual QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const;
 
