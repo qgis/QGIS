@@ -213,6 +213,22 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      */
     double sinuosity() const;
 
+    //! Curve orientation
+    enum Orientation
+    {
+      Clockwise, //!< Clockwise orientation
+      CounterClockwise, //!< Counter-clockwise orientation
+    };
+
+    /**
+     * Returns the curve's orientation, e.g. clockwise or counter-clockwise.
+     *
+     * \warning The result is not predictable for non-closed curves.
+     *
+     * \since QGIS 3.6
+     */
+    Orientation orientation() const;
+
 #ifndef SIP_RUN
 
     /**
