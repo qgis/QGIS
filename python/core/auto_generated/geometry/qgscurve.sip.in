@@ -229,6 +229,23 @@ If a curve isClosed(), it has infinite sinuosity and will return NaN.
 .. versionadded:: 3.2
 %End
 
+    enum Orientation
+    {
+      Clockwise,
+      CounterClockwise,
+    };
+
+    Orientation orientation() const;
+%Docstring
+Returns the curve's orientation, e.g. clockwise or counter-clockwise.
+
+.. warning::
+
+   The result is not predictable for non-closed curves.
+
+.. versionadded:: 3.6
+%End
+
 
 
   protected:
