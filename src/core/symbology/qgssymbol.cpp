@@ -141,7 +141,7 @@ QPolygonF QgsSymbol::_getLineString( QgsRenderContext &context, const QgsCurve &
   return pts;
 }
 
-QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent )
+QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve &curve, const bool clipToExtent, const bool isExteriorRing, const bool correctRingOrientation )
 {
   const QgsCoordinateTransform ct = context.coordinateTransform();
   const QgsMapToPixel &mtp = context.mapToPixel();
@@ -154,6 +154,15 @@ QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve 
 
   if ( curve.numPoints() < 1 )
     return QPolygonF();
+
+  if ( correctRingOrientation )
+  {
+    // ensure consistent polygon ring orientation
+    if ( isExteriorRing && curve.orientation() != QgsCurve::Clockwise )
+      std::reverse( poly.begin(), poly.end() );
+    else if ( !isExteriorRing && curve.orientation() != QgsCurve::CounterClockwise )
+      std::reverse( poly.begin(), poly.end() );
+  }
 
   //clip close to view extent, if needed
   const QRectF ptsRect = poly.boundingRect();
@@ -184,14 +193,14 @@ QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve 
   return poly;
 }
 
-void QgsSymbol::_getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent )
+void QgsSymbol::_getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, const bool clipToExtent, const bool correctRingOrientation )
 {
   holes.clear();
 
-  pts = _getPolygonRing( context, *polygon.exteriorRing(), clipToExtent );
+  pts = _getPolygonRing( context, *polygon.exteriorRing(), clipToExtent, true, correctRingOrientation );
   for ( int idx = 0; idx < polygon.numInteriorRings(); idx++ )
   {
-    const QPolygonF hole = _getPolygonRing( context, *( polygon.interiorRing( idx ) ), clipToExtent );
+    const QPolygonF hole = _getPolygonRing( context, *( polygon.interiorRing( idx ) ), clipToExtent, false, correctRingOrientation );
     if ( !hole.isEmpty() ) holes.append( hole );
   }
 }
@@ -850,7 +859,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         QgsDebugMsg( QStringLiteral( "cannot render polygon with no exterior ring" ) );
         break;
       }
-      _getPolygon( pts, holes, context, polygon, !tileMapRendering && clipFeaturesToExtent() );
+      _getPolygon( pts, holes, context, polygon, !tileMapRendering && clipFeaturesToExtent(), mForceRHR );
       static_cast<QgsFillSymbol *>( this )->renderPolygon( pts, ( !holes.isEmpty() ? &holes : nullptr ), &feature, context, layer, selected );
 
       if ( drawVertexMarker && !usingSegmentizedGeometry )
@@ -980,7 +989,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
           if ( !polygon.exteriorRing() )
             break;
 
-          _getPolygon( pts, holes, context, polygon, !tileMapRendering && clipFeaturesToExtent() );
+          _getPolygon( pts, holes, context, polygon, !tileMapRendering && clipFeaturesToExtent(), mForceRHR );
           static_cast<QgsFillSymbol *>( this )->renderPolygon( pts, ( !holes.isEmpty() ? &holes : nullptr ), &feature, context, layer, selected );
 
           if ( drawVertexMarker && !usingSegmentizedGeometry )
@@ -1574,6 +1583,7 @@ QgsMarkerSymbol *QgsMarkerSymbol::clone() const
   cloneSymbol->setLayer( mLayer );
   Q_NOWARN_DEPRECATED_POP
   cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
+  cloneSymbol->setForceRHR( mForceRHR );
   return cloneSymbol;
 }
 
@@ -1793,6 +1803,7 @@ QgsLineSymbol *QgsLineSymbol::clone() const
   cloneSymbol->setLayer( mLayer );
   Q_NOWARN_DEPRECATED_POP
   cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
+  cloneSymbol->setForceRHR( mForceRHR );
   return cloneSymbol;
 }
 
@@ -1913,6 +1924,7 @@ QgsFillSymbol *QgsFillSymbol::clone() const
   cloneSymbol->setLayer( mLayer );
   Q_NOWARN_DEPRECATED_POP
   cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
+  cloneSymbol->setForceRHR( mForceRHR );
   return cloneSymbol;
 }
 
