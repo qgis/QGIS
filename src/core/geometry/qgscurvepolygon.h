@@ -133,6 +133,17 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      */
     void removeInvalidRings();
 
+
+    /**
+     * Forces the geometry to respect the Right-Hand-Rule, in which the area that is
+     * bounded by the polygon is to the right of the boundary. In particular, the exterior
+     * ring is oriented in a clockwise direction and the interior rings in a counter-clockwise
+     * direction.
+     *
+     * \since QGIS 3.6
+     */
+    void forceRHR();
+
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
