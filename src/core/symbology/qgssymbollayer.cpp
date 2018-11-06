@@ -391,6 +391,16 @@ QgsLineSymbolLayer::QgsLineSymbolLayer( bool locked )
 {
 }
 
+QgsLineSymbolLayer::RenderRingFilter QgsLineSymbolLayer::ringFilter() const
+{
+  return mRingFilter;
+}
+
+void QgsLineSymbolLayer::setRingFilter( const RenderRingFilter filter )
+{
+  mRingFilter = filter;
+}
+
 QgsFillSymbolLayer::QgsFillSymbolLayer( bool locked )
   : QgsSymbolLayer( QgsSymbol::Fill, locked )
 {
@@ -609,11 +619,30 @@ void QgsLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize
 
 void QgsLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
-  renderPolyline( points, context );
+  switch ( mRingFilter )
+  {
+    case AllRings:
+    case ExteriorRingOnly:
+      renderPolyline( points, context );
+      break;
+    case InteriorRingsOnly:
+      break;
+  }
+
   if ( rings )
   {
-    Q_FOREACH ( const QPolygonF &ring, *rings )
-      renderPolyline( ring, context );
+    switch ( mRingFilter )
+    {
+      case AllRings:
+      case InteriorRingsOnly:
+      {
+        for ( const QPolygonF &ring : qgis::as_const( *rings ) )
+          renderPolyline( ring, context );
+      }
+      break;
+      case ExteriorRingOnly:
+        break;
+    }
   }
 }
 

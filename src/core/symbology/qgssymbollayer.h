@@ -764,6 +764,15 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
 class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
 {
   public:
+
+    //! Options for filtering rings when the line symbol layer is being used to render a polygon's rings.
+    enum RenderRingFilter
+    {
+      AllRings, //!< Render both exterior and interior rings
+      ExteriorRingOnly, //!< Render the exterior ring only
+      InteriorRingsOnly, //!< Render the interior rings only
+    };
+
     virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) = 0;
 
     virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
@@ -816,6 +825,30 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
 
     double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
 
+    /**
+     * Returns the line symbol layer's ring filter, which controls which rings are
+     * rendered when the line symbol is being used to draw a polygon's rings.
+     *
+     * This setting has no effect when the line symbol is not being rendered
+     * for a polygon.
+     *
+     * \see setRingFilter()
+     * \since QGIS 3.6
+     */
+    RenderRingFilter ringFilter() const;
+
+    /**
+     * Sets the line symbol layer's ring \a filter, which controls which rings are
+     * rendered when the line symbol is being used to draw a polygon's rings.
+     *
+     * This setting has no effect when the line symbol is not being rendered
+     * for a polygon.
+     *
+     * \see ringFilter()
+     * \since QGIS 3.6
+     */
+    void setRingFilter( QgsLineSymbolLayer::RenderRingFilter filter );
+
   protected:
     QgsLineSymbolLayer( bool locked = false );
 
@@ -825,6 +858,8 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     double mOffset = 0;
     QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
+
+    RenderRingFilter mRingFilter = AllRings;
 };
 
 /**
