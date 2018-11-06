@@ -847,9 +847,6 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
       if ( QgsWkbTypes::flatType( tempGeometry.wkbType() ) == QgsWkbTypes::LineString )
       {
         QgsPolylineXY line = tempGeometry.asPolyline();
-        // Reverse the line if offset was negative, see
-        // https://issues.qgis.org/issues/13811
-        if ( dist < 0 ) std::reverse( line.begin(), line.end() );
         resultLine.append( makeOffsetGeometry( line ) );
         return resultLine;
       }
