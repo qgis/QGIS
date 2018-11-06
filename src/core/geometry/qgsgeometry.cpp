@@ -1746,14 +1746,26 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
   {
     QgsGeos geos( d->geometry.get() );
     mLastError.clear();
-    QgsAbstractGeometry *offsetGeom = geos.offsetCurve( distance, segments, joinStyle, miterLimit, &mLastError );
+
+    // GEOS can flip the curve orientation in some circumstances. So record previous orientation and correct if required
+    const QgsCurve::Orientation prevOrientation = qgsgeometry_cast< const QgsCurve * >( d->geometry.get() )->orientation();
+
+    std::unique_ptr< QgsAbstractGeometry > offsetGeom( geos.offsetCurve( distance, segments, joinStyle, miterLimit, &mLastError ) );
     if ( !offsetGeom )
     {
       QgsGeometry result;
       result.mLastError = mLastError;
       return result;
     }
-    return QgsGeometry( offsetGeom );
+
+    const QgsCurve::Orientation newOrientation = qgsgeometry_cast< const QgsCurve * >( offsetGeom.get() )->orientation();
+    if ( newOrientation != prevOrientation )
+    {
+      // GEOS has flipped line orientation, flip it back
+      std::unique_ptr< QgsAbstractGeometry > flipped( qgsgeometry_cast< const QgsCurve * >( offsetGeom.get() )->reversed() );
+      offsetGeom = std::move( flipped );
+    }
+    return QgsGeometry( std::move( offsetGeom ) );
   }
 }
 

@@ -4483,6 +4483,22 @@ class TestQgsGeometry(unittest.TestCase):
             res = g1.boundingBoxIntersects(t[1])
             self.assertEqual(res, t[2], "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(g1.asWkt(), t[1].toString(), t[2], res))
 
+    def testOffsetCurve(self):
+        tests = [
+            ["LINESTRING (0 0, 0 100, 100 100)", 1, "LineString (-1 0, -1 101, 100 101)"],
+            ["LINESTRING (0 0, 0 100, 100 100)", -1, "LineString (1 0, 1 99, 100 99)"],
+            ["LINESTRING (100 100, 0 100, 0 0)", 1, "LineString (100 99, 1 99, 1 0)"],
+            ["LINESTRING (100 100, 0 100, 0 0)", -1, "LineString (100 101, -1 101, -1 0)"],
+            ["MULTILINESTRING ((0 0, 0 100, 100 100),(100 100, 0 100, 0 0))", 1, "MultiLineString ((-1 0, -1 101, 100 101),(100 99, 1 99, 1 0))"]
+        ]
+        for t in tests:
+            g1 = QgsGeometry.fromWkt(t[0])
+            res = g1.offsetCurve(t[1], 2, QgsGeometry.JoinStyleMiter, 5)
+
+            self.assertEqual(res.asWkt(1), t[2],
+                             "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1],
+                                                                                       t[2], res.asWkt(1)))
+
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
         image = QImage(200, 200, QImage.Format_RGB32)
         image.fill(QColor(0, 0, 0))
