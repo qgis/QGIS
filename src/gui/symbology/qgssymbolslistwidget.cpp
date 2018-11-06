@@ -117,6 +117,9 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   mClipFeaturesAction = new QAction( tr( "Clip Features to Canvas Extent" ), this );
   mClipFeaturesAction->setCheckable( true );
   connect( mClipFeaturesAction, &QAction::toggled, this, &QgsSymbolsListWidget::clipFeaturesToggled );
+  mStandardizeRingsAction = new QAction( tr( "Force Right-Hand-Rule Orientation" ), this );
+  mStandardizeRingsAction->setCheckable( true );
+  connect( mStandardizeRingsAction, &QAction::toggled, this, &QgsSymbolsListWidget::forceRHRToggled );
 
   double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
   viewSymbols->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
@@ -218,6 +221,7 @@ QgsSymbolsListWidget::~QgsSymbolsListWidget()
   // This action was added to the menu by this widget, clean it up
   // The menu can be passed in the constructor, so may live longer than this widget
   btnAdvanced->menu()->removeAction( mClipFeaturesAction );
+  btnAdvanced->menu()->removeAction( mStandardizeRingsAction );
 }
 
 void QgsSymbolsListWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key )
@@ -392,6 +396,15 @@ void QgsSymbolsListWidget::updateModelFilters()
     mModel->setSmartGroupId( -1 );
     mModel->setFilterString( QString() );
   }
+}
+
+void QgsSymbolsListWidget::forceRHRToggled( bool checked )
+{
+  if ( !mSymbol )
+    return;
+
+  mSymbol->setForceRHR( checked );
+  emit changed();
 }
 
 void QgsSymbolsListWidget::openStyleManager()
@@ -687,11 +700,15 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
   mOpacityWidget->setOpacity( mSymbol->opacity() );
 
-  // Remove all previous clip actions
+  // Clean up previous advanced symbol actions
   const QList<QAction *> actionList( btnAdvanced->menu()->actions() );
   for ( const auto &action : actionList )
   {
     if ( mClipFeaturesAction->text() == action->text() )
+    {
+      btnAdvanced->menu()->removeAction( action );
+    }
+    else if ( mStandardizeRingsAction->text() == action->text() )
     {
       btnAdvanced->menu()->removeAction( action );
     }
@@ -702,12 +719,15 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     //add clip features option for line or fill symbols
     btnAdvanced->menu()->addAction( mClipFeaturesAction );
   }
+  if ( mSymbol->type() == QgsSymbol::Fill )
+  {
+    btnAdvanced->menu()->addAction( mStandardizeRingsAction );
+  }
 
   btnAdvanced->setVisible( mAdvancedMenu || !btnAdvanced->menu()->isEmpty() );
 
-  mClipFeaturesAction->blockSignals( true );
-  mClipFeaturesAction->setChecked( mSymbol->clipFeaturesToExtent() );
-  mClipFeaturesAction->blockSignals( false );
+  whileBlocking( mClipFeaturesAction )->setChecked( mSymbol->clipFeaturesToExtent() );
+  whileBlocking( mStandardizeRingsAction )->setChecked( mSymbol->forceRHR() );
 }
 
 void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex &index )

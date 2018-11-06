@@ -27,8 +27,9 @@ import qgis  # NOQA
 
 from utilities import unitTestDataPath
 
-from qgis.PyQt.QtCore import QDir
+from qgis.PyQt.QtCore import QDir, Qt
 from qgis.PyQt.QtGui import QImage, QColor, QPainter
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsGeometry,
                        QgsRectangle,
@@ -47,9 +48,13 @@ from qgis.core import (QgsGeometry,
                        QgsRenderChecker,
                        QgsSimpleMarkerSymbolLayer,
                        QgsSimpleMarkerSymbolLayerBase,
+                       QgsSimpleFillSymbolLayer,
                        QgsUnitTypes,
                        QgsWkbTypes,
-                       QgsProject
+                       QgsProject,
+                       QgsReadWriteContext,
+                       QgsSymbolLayerUtils,
+                       QgsMarkerLineSymbolLayer
                        )
 
 from qgis.testing import unittest, start_app
@@ -621,6 +626,108 @@ class TestQgsMarkerSymbol(unittest.TestCase):
         self.assertEqual(markerSymbol.symbolLayer(0).sizeMapUnitScale(), QgsMapUnitScale(3000, 4000))
         self.assertEqual(markerSymbol.symbolLayer(1).sizeMapUnitScale(), QgsMapUnitScale(3000, 4000))
         self.assertEqual(markerSymbol.symbolLayer(2).sizeMapUnitScale(), QgsMapUnitScale(3000, 4000))
+
+
+class TestQgsFillSymbol(unittest.TestCase):
+
+    def setUp(self):
+        self.report = "<h1>Python QgsFillSymbol Tests</h1>\n"
+
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
+
+    def testForceRHR(self):
+        # test forcing right hand rule during rendering
+
+        s = QgsFillSymbol()
+        s.deleteSymbolLayer(0)
+        s.appendSymbolLayer(
+            QgsSimpleFillSymbolLayer(color=QColor(255, 0, 0), strokeColor=QColor(0, 255, 0)))
+        self.assertFalse(s.forceRHR())
+        s.setForceRHR(True)
+        self.assertTrue(s.forceRHR())
+        s.setForceRHR(False)
+        self.assertFalse(s.forceRHR())
+
+        s.setForceRHR(True)
+        doc = QDomDocument()
+        context = QgsReadWriteContext()
+        element = QgsSymbolLayerUtils.saveSymbol('test', s, doc, context)
+
+        s2 = QgsSymbolLayerUtils.loadSymbol(element, context)
+        self.assertTrue(s2.forceRHR())
+
+        # rendering test
+        s3 = QgsFillSymbol()
+        s3.deleteSymbolLayer(0)
+        s3.appendSymbolLayer(
+            QgsSimpleFillSymbolLayer(color=QColor(255, 200, 200), strokeColor=QColor(0, 255, 0), strokeWidth=2))
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setPlacement(QgsMarkerLineSymbolLayer.FirstVertex)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Triangle, 4)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        s3.appendSymbolLayer(marker_line)
+
+        g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
+        rendered_image = self.renderGeometry(s3, g)
+        assert self.imageCheck('force_rhr_off', 'polygon_forcerhr_off', rendered_image)
+
+        s3.setForceRHR(True)
+        rendered_image = self.renderGeometry(s3, g)
+        assert self.imageCheck('force_rhr_on', 'polygon_forcerhr_on', rendered_image)
+
+    def renderGeometry(self, symbol, geom):
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        extent = geom.get().boundingBox()
+        # buffer extent by 10%
+        if extent.width() > 0:
+            extent = extent.buffered((extent.height() + extent.width()) / 20.0)
+        else:
+            extent = extent.buffered(10)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        try:
+            image.fill(QColor(0, 0, 0))
+            symbol.startRender(context)
+            symbol.renderFeature(f, context)
+            symbol.stopRender(context)
+        finally:
+            painter.end()
+
+        return image
+
+    def imageCheck(self, name, reference_image, image):
+        self.report += "<h2>Render {}</h2>\n".format(name)
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + 'symbol_' + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsRenderChecker()
+        checker.setControlPathPrefix("symbol")
+        checker.setControlName("expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.compareImages(name, 20)
+        self.report += checker.report()
+        print((self.report))
+        return result
 
 
 if __name__ == '__main__':
