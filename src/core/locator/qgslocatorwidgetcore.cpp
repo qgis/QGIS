@@ -18,7 +18,6 @@
 #include "qgslocatorwidgetcore.h"
 #include "qgslocator.h"
 #include "qgslocatormodel.h"
-#include "qgsmapcanvasinterface.h"
 #include "qgsmapsettings.h"
 
 QgsLocatorWidgetCore::QgsLocatorWidgetCore( QObject *parent )
@@ -31,11 +30,6 @@ QgsLocatorWidgetCore::QgsLocatorWidgetCore( QObject *parent )
 
   connect( mLocator, &QgsLocator::foundResult, this, &QgsLocatorWidgetCore::addResult );
   connect( mLocator, &QgsLocator::finished, this, &QgsLocatorWidgetCore::searchFinished );
-}
-
-void QgsLocatorWidgetCore::setMapCanvasInterface( QgsMapCanvasInterface *canvasInterface )
-{
-  mCanvasInterface = canvasInterface;
 }
 
 bool QgsLocatorWidgetCore::isRunning() const
@@ -56,6 +50,16 @@ void QgsLocatorWidgetCore::invalidateResults()
 {
   mLocator->cancelWithoutBlocking();
   mLocatorModel->clear();
+}
+
+void QgsLocatorWidgetCore::updateCanvasExtent( const QgsRectangle &extent )
+{
+  mCanvasExtent = extent;
+}
+
+void QgsLocatorWidgetCore::updateCanvasCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCanvasCrs = crs;
 }
 
 void QgsLocatorWidgetCore::addResult( const QgsLocatorResult &result )
@@ -121,10 +125,7 @@ bool QgsLocatorWidgetCore::hasQueueRequested() const
 QgsLocatorContext QgsLocatorWidgetCore::createContext()
 {
   QgsLocatorContext context;
-  if ( mCanvasInterface )
-  {
-    context.targetExtent = mCanvasInterface->mapSettings().visibleExtent();
-    context.targetExtentCrs = mCanvasInterface->mapSettings().destinationCrs();
-  }
+  context.targetExtent = mCanvasExtent;
+  context.targetExtentCrs = mCanvasCrs;
   return context;
 }

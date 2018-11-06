@@ -21,13 +21,14 @@
 #include <QObject>
 
 #include "qgis_core.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsrectangle.h"
 
 class QgsLocatorResult;
 class QgsLocator;
 class QgsLocatorContext;
 class QgsLocatorModel;
 class QgsLocatorProxyModel;
-class QgsMapCanvasInterface;
 
 
 /**
@@ -43,9 +44,6 @@ class CORE_EXPORT QgsLocatorWidgetCore : public QObject
   public:
     //! Constructor of QgsLocatorWidgetCore
     explicit QgsLocatorWidgetCore( QObject *parent = nullptr );
-
-    //! Set the map canvas interface
-    void setMapCanvasInterface( QgsMapCanvasInterface *canvasInterface );
 
     //! Perform a search
     Q_INVOKABLE void performSearch( const QString &text );
@@ -76,6 +74,12 @@ class CORE_EXPORT QgsLocatorWidgetCore : public QObject
     //! This will invalidate current search results
     void invalidateResults();
 
+    //! Update the canvas extent used to create search context
+    void updateCanvasExtent( const QgsRectangle &extent );
+
+    //! Update the canvas CRS used to create search context
+    void updateCanvasCrs( const QgsCoordinateReferenceSystem &crs );
+
   private slots:
     void searchFinished();
     void addResult( const QgsLocatorResult &result );
@@ -87,11 +91,17 @@ class CORE_EXPORT QgsLocatorWidgetCore : public QObject
     QgsLocator *mLocator = nullptr;
     QgsLocatorModel *mLocatorModel = nullptr;
     QgsLocatorProxyModel *mProxyModel = nullptr;
-    QgsMapCanvasInterface *mCanvasInterface = nullptr;
 
     QString mNextRequestedString;
     bool mHasQueuedRequest = false;
     bool mIsRunning = false;
+
+    // keep track of map canvas extent and CRS
+    // if much if needed, it would be possible to add
+    // a QgsMapCanvasController in core to achieve this
+    // see discussion in https://github.com/qgis/QGIS/pull/8404
+    QgsRectangle mCanvasExtent;
+    QgsCoordinateReferenceSystem mCanvasCrs;
 };
 
 #endif // QGSLOCATORWIDGETCORE_H

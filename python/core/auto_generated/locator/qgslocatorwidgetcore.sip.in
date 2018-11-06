@@ -30,11 +30,6 @@ to be used in a locator widget.
 Constructor of QgsLocatorWidgetCore
 %End
 
-    void setMapCanvasInterface( QgsMapCanvasInterface *canvasInterface );
-%Docstring
-Set the map canvas interface
-%End
-
     void performSearch( const QString &text );
 %Docstring
 Perform a search
@@ -80,6 +75,16 @@ Emitted when the results are cleared
     void invalidateResults();
 %Docstring
 This will invalidate current search results
+%End
+
+    void updateCanvasExtent( const QgsRectangle &extent );
+%Docstring
+Update the canvas extent used to create search context
+%End
+
+    void updateCanvasCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Update the canvas CRS used to create search context
 %End
 
 };

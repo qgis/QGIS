@@ -101,6 +101,7 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
     QgsFloatingWidget *mResultsContainer = nullptr;
     QgsLocatorResultsView *mResultsView = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
+    QList<QMetaObject::Connection> mCanvasConnections;
     QMenu *mMenu = nullptr;
 
     QTimer mFocusTimer;

@@ -116,7 +116,22 @@ QgsLocator *QgsLocatorWidget::locator()
 
 void QgsLocatorWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
-  mWidgetCore->setMapCanvasInterface( canvas );
+  if ( mMapCanvas == canvas )
+    return;
+
+  for ( const QMetaObject::Connection &conn : qgis::as_const( mCanvasConnections ) )
+  {
+    disconnect( conn );
+  }
+  mCanvasConnections.clear();
+
+  mMapCanvas = canvas;
+  if ( mMapCanvas )
+  {
+    mCanvasConnections
+    << connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, [ = ]() {mWidgetCore->updateCanvasExtent( mMapCanvas->extent() );} )
+    << connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]() {mWidgetCore->updateCanvasCrs( mMapCanvas->mapSettings().destinationCrs() );} ) ;
+  }
 }
 
 void QgsLocatorWidget::search( const QString &string )
