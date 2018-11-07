@@ -78,8 +78,7 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   mModel->setHorizontalHeaderItem( 2, new QStandardItem( QStringLiteral( "Abstract" ) ) );
   if ( serviceType == FeatureService )
   {
-    mModel->setHorizontalHeaderItem( 3, new QStandardItem( QStringLiteral( "Cache Feature" ) ) );
-    mModel->setHorizontalHeaderItem( 4, new QStandardItem( QStringLiteral( "Filter" ) ) );
+    mModel->setHorizontalHeaderItem( 3, new QStandardItem( QStringLiteral( "Filter" ) ) );
     gbImageEncoding->hide();
   }
   else
@@ -346,14 +345,13 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     QString layerTitle = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->text();  //layer title/id
     QString layerName = mModel->itemFromIndex( mModel->index( row, 1, idx.parent() ) )->text(); //layer name
     const QString layerUri = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( UrlRole ).toString();
-    bool cacheFeatures = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 3, idx.parent() ) )->checkState() == Qt::Checked : false;
-    QString filter = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 4, idx.parent() ) )->text() : QString(); //optional filter specified by user
+    QString filter = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 3, idx.parent() ) )->text() : QString(); //optional filter specified by user
     if ( cbxUseTitleLayerName->isChecked() && !layerTitle.isEmpty() )
     {
       layerName = layerTitle;
     }
     QgsRectangle layerExtent;
-    if ( mServiceType == FeatureService && ( cbxFeatureCurrentViewExtent->isChecked() || !cacheFeatures ) )
+    if ( mServiceType == FeatureService && ( cbxFeatureCurrentViewExtent->isChecked() ) )
     {
       layerExtent = extent;
     }
