@@ -28,7 +28,8 @@ from qgis.core import (NULL,
                        QgsApplication,
                        QgsSettings,
                        QgsRectangle,
-                       QgsCategorizedSymbolRenderer
+                       QgsCategorizedSymbolRenderer,
+                       QgsProviderRegistry
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -416,6 +417,14 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         used by the AFS provider.
         """
         pass
+
+    def testDecodeUri(self):
+        """
+        Test decoding an AFS uri
+        """
+        uri = self.vl.source()
+        parts = QgsProviderRegistry.instance().decodeUri(self.vl.dataProvider().name(), uri)
+        self.assertEqual(parts, {'url': 'http://' + self.basetestpath + '/fake_qgis_http_endpoint'})
 
     def testObjectIdDifferentName(self):
         """ Test that object id fields not named OBJECTID work correctly """

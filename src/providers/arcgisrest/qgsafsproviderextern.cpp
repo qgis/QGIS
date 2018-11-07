@@ -59,3 +59,12 @@ QGISEXTERN int dataCapabilities()
 {
   return  QgsDataProvider::Net;
 }
+
+QGISEXTERN QVariantMap decodeUri( const QString &uri )
+{
+  QgsDataSourceUri dsUri = QgsDataSourceUri( uri );
+
+  QVariantMap components;
+  components.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
+  return components;
+}
