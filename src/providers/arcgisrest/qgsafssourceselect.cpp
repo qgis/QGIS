@@ -110,14 +110,11 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
         QStandardItem *nameItem = new QStandardItem( name );
         QStandardItem *abstractItem = new QStandardItem( description );
         abstractItem->setToolTip( description );
-        QStandardItem *cachedItem = new QStandardItem();
         QStandardItem *filterItem = new QStandardItem();
-        cachedItem->setCheckable( true );
-        cachedItem->setCheckState( Qt::Checked );
 
         mAvailableCRS[name] = QList<QString>()  << authid;
 
-        layerItems.insert( layerId, QList<QStandardItem *>() << idItem << nameItem << abstractItem << cachedItem << filterItem );
+        layerItems.insert( layerId, QList<QStandardItem *>() << idItem << nameItem << abstractItem << filterItem );
       }
     }, serviceInfoMap, baseItemUrl );
 
@@ -158,7 +155,7 @@ void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const Q
   {
     return;
   }
-  QModelIndex filterIndex = index.sibling( index.row(), 4 );
+  QModelIndex filterIndex = index.sibling( index.row(), 3 );
   const QString url = index.sibling( index.row(), 0 ).data( UrlRole ).toString();
 
   // Query available fields
