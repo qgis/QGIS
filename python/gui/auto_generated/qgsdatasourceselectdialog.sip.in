@@ -57,6 +57,28 @@ Sets layer type filter to ``layerType`` and activates the filtering
 Returns the (possibly invalid) uri of the selected data source
 %End
 
+    void showFilterWidget( bool visible );
+%Docstring
+Show/hide filter widget
+%End
+    void setFilterSyntax( QAction * );
+%Docstring
+Sets filter syntax
+%End
+    void setCaseSensitive( bool caseSensitive );
+%Docstring
+Sets filter case sensitivity
+%End
+    void setFilter();
+%Docstring
+Apply filter to the model
+%End
+    virtual void showEvent( QShowEvent *e );
+
+%Docstring
+Scroll to last selected index and expand it's children
+%End
+
 };
 
 /************************************************************************
