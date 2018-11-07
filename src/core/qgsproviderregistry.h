@@ -108,12 +108,12 @@ class CORE_EXPORT QgsProviderRegistry
     int providerCapabilities( const QString &providerKey ) const;
 
     /**
-     * Returns the components (e.g. file path, layer name) of a provider uri
-        \param providerKey identifier of the provider
-        \param uri uri string
-        \returns map containing components
-        \note this function may not be supported by all providers, an empty map will be returned in such case
-        \since QGIS 3.4
+     * Breaks a provider data source URI into its component paths (e.g. file path, layer name).
+     * \param providerKey identifier of the provider
+     * \param uri uri string
+     * \returns map containing components. Standard components include "path", "layerName", "url".
+     * \note this function may not be supported by all providers, an empty map will be returned in such case
+     * \since QGIS 3.4
      */
     QVariantMap decodeUri( const QString &providerKey, const QString &uri );
 

@@ -96,12 +96,12 @@ Returns the provider capabilities
 
     QVariantMap decodeUri( const QString &providerKey, const QString &uri );
 %Docstring
-Returns the components (e.g. file path, layer name) of a provider uri
+Breaks a provider data source URI into its component paths (e.g. file path, layer name).
 
 :param providerKey: identifier of the provider
 :param uri: uri string
 
-:return: map containing components
+:return: map containing components. Standard components include "path", "layerName", "url".
 
 .. note::
 
