@@ -22,7 +22,7 @@
 
 void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
-  QgsApplication::messageLog()->logMessage( QObject::tr( "%1 bad layers found:" ).arg( layers.size() ) );
+  QgsApplication::messageLog()->logMessage( QObject::tr( "%1 unavailable layers found:" ).arg( layers.size() ) );
   Q_FOREACH ( const QDomNode &layer, layers )
   {
     QgsApplication::messageLog()->logMessage( QObject::tr( " * %1" ).arg( dataSource( layer ) ) );
