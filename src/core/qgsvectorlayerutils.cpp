@@ -464,15 +464,7 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
   QgsExpressionContext context = layer->createExpressionContext();
   context.setFeature( feature );
 
-  //create the attribute map
-  QgsAttributes srcAttr = feature.attributes();
-  QgsAttributeMap dstAttr;
-  for ( int src = 0; src < srcAttr.count(); ++src )
-  {
-    dstAttr[ src ] = srcAttr.at( src );
-  }
-
-  QgsFeature newFeature = createFeature( layer, feature.geometry(), dstAttr, &context );
+  QgsFeature newFeature = createFeature( layer, feature.geometry(), feature.attributes().toMap(), &context );
 
   const QList<QgsRelation> relations = project->relationManager()->referencedRelations( layer );
 
