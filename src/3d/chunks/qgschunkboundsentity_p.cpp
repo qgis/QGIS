@@ -48,9 +48,9 @@ void LineMeshGeometry::setVertices( const QList<QVector3D> &vertices )
     rawVertexArray[idx++] = v.x();
     rawVertexArray[idx++] = v.y();
     rawVertexArray[idx++] = v.z();
-    mVertices.append( v );
   }
 
+  mVertexCount = vertices.count();
   mVertexBuffer->setData( vertexBufferData );
 }
 
