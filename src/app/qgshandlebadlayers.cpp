@@ -43,8 +43,11 @@ void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
   QgsHandleBadLayers *dialog = new QgsHandleBadLayers( layers );
 
   dialog->buttonBox->button( QDialogButtonBox::Ignore )->setToolTip( tr( "Import all bad layers unmodified (you can fix them later)." ) );
+  dialog->buttonBox->button( QDialogButtonBox::Ignore )->setText( tr( "Keep bad layers" ) );
   dialog->buttonBox->button( QDialogButtonBox::Apply )->setToolTip( tr( "Apply fixes to bad layers (remaining bad layers will be removed from the project)." ) );
   dialog->buttonBox->button( QDialogButtonBox::Discard )->setToolTip( tr( "Remove all bad layers from the project" ) );
+  dialog->buttonBox->button( QDialogButtonBox::Discard )->setText( tr( "Remove bad layers" ) );
+  dialog->buttonBox->button( QDialogButtonBox::Discard )->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.svg" ) );
 
   if ( dialog->layerCount() < layers.size() )
     QgisApp::instance()->messageBar()->pushMessage(
