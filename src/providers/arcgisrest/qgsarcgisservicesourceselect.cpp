@@ -91,6 +91,7 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   mModelProxy->setSourceModel( mModel );
   mModelProxy->setSortCaseSensitivity( Qt::CaseInsensitive );
   treeView->setModel( mModelProxy );
+  treeView->setSortingEnabled( true );
 
   connect( treeView, &QAbstractItemView::doubleClicked, this, &QgsArcGisServiceSourceSelect::treeWidgetItemDoubleClicked );
   connect( treeView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsArcGisServiceSourceSelect::treeWidgetCurrentRowChanged );
@@ -265,16 +266,10 @@ void QgsArcGisServiceSourceSelect::connectToServer()
 
     if ( haveLayers )
     {
-      for ( int i = 0; i < treeView->header()->count(); ++i )
-      {
-        treeView->resizeColumnToContents( i );
-        if ( i < 2 && treeView->columnWidth( i ) > 300 )
-        {
-          treeView->setColumnWidth( i, 300 );
-        }
-      }
       treeView->selectionModel()->select( mModel->index( 0, 0 ), QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows );
       treeView->setFocus();
+
+      treeView->sortByColumn( 0, Qt::AscendingOrder );
     }
     else
     {
