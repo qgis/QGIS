@@ -21,6 +21,9 @@
 #ifdef HAVE_GUI
 #include "qgsnewhttpconnection.h"
 #include "qgsafssourceselect.h"
+#include <QMenu>
+#include <QAction>
+#include <QDesktopServices>
 #endif
 
 #include <QMessageBox>
@@ -183,6 +186,12 @@ bool QgsAfsConnectionItem::equal( const QgsDataItem *other )
 {
   const QgsAfsConnectionItem *o = qobject_cast<const QgsAfsConnectionItem *>( other );
   return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
+}
+
+QString QgsAfsConnectionItem::url() const
+{
+  const QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), mConnName );
+  return connection.uri().param( QStringLiteral( "url" ) );
 }
 
 #ifdef HAVE_GUI
@@ -381,3 +390,66 @@ QgsDataItem *QgsAfsDataItemProvider::createDataItem( const QString &path, QgsDat
 
   return nullptr;
 }
+
+#ifdef HAVE_GUI
+
+//
+// QgsAfsItemGuiProvider
+//
+
+QString QgsAfsItemGuiProvider::name()
+{
+  return QStringLiteral( "afs_items" );
+}
+
+void QgsAfsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+{
+  if ( QgsAfsConnectionItem *connectionItem = qobject_cast< QgsAfsConnectionItem * >( item ) )
+  {
+    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
+    connect( viewInfo, &QAction::triggered, this, [ = ]
+    {
+      QDesktopServices::openUrl( QUrl( connectionItem->url() ) );
+    } );
+    menu->addAction( viewInfo );
+  }
+  else if ( QgsAfsFolderItem *folderItem = qobject_cast< QgsAfsFolderItem * >( item ) )
+  {
+    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
+    connect( viewInfo, &QAction::triggered, this, [ = ]
+    {
+      QDesktopServices::openUrl( QUrl( folderItem->path() ) );
+    } );
+    menu->addAction( viewInfo );
+  }
+  else if ( QgsAfsServiceItem *serviceItem = qobject_cast< QgsAfsServiceItem * >( item ) )
+  {
+    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
+    connect( viewInfo, &QAction::triggered, this, [ = ]
+    {
+      QDesktopServices::openUrl( QUrl( serviceItem->path() ) );
+    } );
+    menu->addAction( viewInfo );
+  }
+  else if ( QgsAfsParentLayerItem *layerItem = qobject_cast< QgsAfsParentLayerItem * >( item ) )
+  {
+    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
+    connect( viewInfo, &QAction::triggered, this, [ = ]
+    {
+      QDesktopServices::openUrl( QUrl( layerItem->path() ) );
+    } );
+    menu->addAction( viewInfo );
+  }
+  else if ( QgsAfsLayerItem *layerItem = qobject_cast< QgsAfsLayerItem * >( item ) )
+  {
+    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
+    connect( viewInfo, &QAction::triggered, this, [ = ]
+    {
+      QDesktopServices::openUrl( QUrl( layerItem->path() ) );
+    } );
+    menu->addAction( viewInfo );
+    menu->addSeparator();
+  }
+}
+
+#endif

@@ -346,4 +346,16 @@ QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
   return providers;
 }
 
+#ifdef HAVE_GUI
+QGISEXTERN QList<QgsDataItemGuiProvider *> *dataItemGuiProviders()
+{
+  QList<QgsDataItemGuiProvider *> *providers = new QList<QgsDataItemGuiProvider *>();
+
+  *providers
+      << new QgsAfsItemGuiProvider();
+
+  return providers;
+}
+#endif
+
 #endif
