@@ -210,3 +210,28 @@ QgsAfsLayerItem::QgsAfsLayerItem( QgsDataItem *parent, const QString &name, cons
   setState( Populated );
   mIconName = QStringLiteral( "mIconAfs.svg" );
 }
+
+//
+// QgsAfsDataItemProvider
+//
+
+QgsDataItem *QgsAfsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
+{
+  if ( path.isEmpty() )
+  {
+    return new QgsAfsRootItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), QStringLiteral( "arcgisfeatureserver:" ) );
+  }
+
+  // path schema: afs:/connection name (used by OWS)
+  if ( path.startsWith( QLatin1String( "afs:/" ) ) )
+  {
+    QString connectionName = path.split( '/' ).last();
+    if ( QgsOwsConnection::connectionList( QStringLiteral( "arcgisfeatureserver" ) ).contains( connectionName ) )
+    {
+      QgsOwsConnection connection( QStringLiteral( "arcgisfeatureserver" ), connectionName );
+      return new QgsAfsConnectionItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), path, connection.uri().param( QStringLiteral( "url" ) ) );
+    }
+  }
+
+  return nullptr;
+}
