@@ -136,7 +136,7 @@ void QgsDataSourceSelectDialog::showEvent( QShowEvent *e )
       QModelIndex expandIndex = items.at( 0 );
       if ( expandIndex.isValid() )
       {
-        mBrowserTreeView->scrollTo( expandIndex, QgsBrowserTreeView::QgsBrowserTreeView::ScrollHint::PositionAtTop );
+        mBrowserTreeView->scrollTo( expandIndex, QgsBrowserTreeView::ScrollHint::PositionAtTop );
         mBrowserTreeView->expand( expandIndex );
       }
     }
