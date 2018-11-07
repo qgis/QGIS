@@ -18,6 +18,7 @@
 #include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
 #include "qgswkbtypes.h"
+#include "qgsdataitemprovider.h"
 
 class QgsAfsRootItem : public QgsDataCollectionItem
 {
@@ -70,6 +71,17 @@ class QgsAfsLayerItem : public QgsLayerItem
 
   public:
     QgsAfsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &title, const QString &authid, const QString &authcfg );
+};
+
+//! Provider for afs root data item
+class QgsAfsDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override { return QStringLiteral( "AFS" ); }
+
+    int capabilities() override { return QgsDataProvider::Net; }
+
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 #endif // QGSAFSDATAITEMS_H
