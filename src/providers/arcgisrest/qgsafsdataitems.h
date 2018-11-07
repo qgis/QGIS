@@ -20,6 +20,10 @@
 #include "qgswkbtypes.h"
 #include "qgsdataitemprovider.h"
 
+#ifdef HAVE_GUI
+#include "qgsdataitemguiprovider.h"
+#endif
+
 class QgsAfsRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
@@ -49,6 +53,7 @@ class QgsAfsConnectionItem : public QgsDataCollectionItem
     QgsAfsConnectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &connectionName );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
+    QString url() const;
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
 #endif
@@ -126,5 +131,25 @@ class QgsAfsDataItemProvider : public QgsDataItemProvider
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
+
+#ifdef HAVE_GUI
+
+class QgsAfsItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsAfsItemGuiProvider() = default;
+
+    QString name() override;
+
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+
+
+};
+
+#endif
 
 #endif // QGSAFSDATAITEMS_H
