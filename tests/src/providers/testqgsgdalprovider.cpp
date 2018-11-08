@@ -48,6 +48,7 @@ class TestQgsGdalProvider : public QObject
     void scaleDataType(); //test resultant data types for int raster with float scale (#11573)
     void warpedVrt(); //test loading raster which requires a warped vrt
     void noData();
+    void noDataOutsideExtent();
     void invalidNoDataInSourceIgnored();
     void isRepresentableValue();
     void mask();
@@ -147,6 +148,30 @@ void TestQgsGdalProvider::noData()
   if ( rp )
   {
     QCOMPARE( rp->sourceNoDataValue( 1 ), static_cast<double>( 255 ) );
+  }
+  delete provider;
+}
+
+void TestQgsGdalProvider::noDataOutsideExtent()
+{
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
+  QVERIFY( provider->isValid() );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
+  QVERIFY( rp );
+  if ( rp )
+  {
+    std::unique_ptr<QgsRasterBlock> block( rp->block( 1, QgsRectangle( 10, 10, 12, 12 ), 16, 16 ) );
+    QVERIFY( block );
+    QCOMPARE( block->width(), 16 );
+    QCOMPARE( block->height(), 16 );
+    for ( int y = 0; y < 16; ++y )
+    {
+      for ( int x = 0; x < 16; ++x )
+      {
+        QVERIFY( block->isNoData( y, x ) );
+      }
+    }
   }
   delete provider;
 }
