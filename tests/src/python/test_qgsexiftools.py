@@ -49,8 +49,8 @@ class TestQgsExifUtils(unittest.TestCase):
         self.assertFalse(ok)
 
     def testTagging(self):
-        self.assertFalse(QgsExifTools.geotagImage('', QgsPointXY(1, 2)))
-        self.assertFalse(QgsExifTools.geotagImage('not a path', QgsPointXY(1, 2)))
+        self.assertFalse(QgsExifTools.geoTagImage('', QgsPointXY(1, 2)))
+        self.assertFalse(QgsExifTools.geoTagImage('not a path', QgsPointXY(1, 2)))
 
         src_photo = os.path.join(TEST_DATA_DIR, 'photos', 'notags.JPG')
 
@@ -60,14 +60,14 @@ class TestQgsExifUtils(unittest.TestCase):
         tmpFile.close()
 
         shutil.copy(src_photo, tmpName)
-        self.assertTrue(QgsExifTools.geotagImage(tmpName, QgsPointXY(1.1, 3.3)))
+        self.assertTrue(QgsExifTools.geoTagImage(tmpName, QgsPointXY(1.1, 3.3)))
         tag, ok = QgsExifTools.getGeoTag(tmpName)
         self.assertTrue(ok)
         self.assertEqual(tag.asWkt(6), 'Point (1.1 3.3)')
         os.remove(tmpName)
 
         shutil.copy(src_photo, tmpName)
-        self.assertTrue(QgsExifTools.geotagImage(tmpName, QgsPointXY(-1.1, -3.3)))
+        self.assertTrue(QgsExifTools.geoTagImage(tmpName, QgsPointXY(-1.1, -3.3)))
         tag, ok = QgsExifTools.getGeoTag(tmpName)
         self.assertTrue(ok)
         self.assertEqual(tag.asWkt(6), 'Point (-1.1 -3.3)')
@@ -76,7 +76,7 @@ class TestQgsExifUtils(unittest.TestCase):
         shutil.copy(src_photo, tmpName)
         deets = QgsExifTools.GeoTagDetails()
         deets.elevation = 110.1
-        self.assertTrue(QgsExifTools.geotagImage(tmpName, QgsPointXY(1.1, 3.3), deets))
+        self.assertTrue(QgsExifTools.geoTagImage(tmpName, QgsPointXY(1.1, 3.3), deets))
         tag, ok = QgsExifTools.getGeoTag(tmpName)
         self.assertTrue(ok)
         self.assertEqual(tag.asWkt(6), 'PointZ (1.1 3.3 110.1)')
@@ -85,7 +85,7 @@ class TestQgsExifUtils(unittest.TestCase):
         shutil.copy(src_photo, tmpName)
         deets = QgsExifTools.GeoTagDetails()
         deets.elevation = -110.1
-        self.assertTrue(QgsExifTools.geotagImage(tmpName, QgsPointXY(1.1, 3.3), deets))
+        self.assertTrue(QgsExifTools.geoTagImage(tmpName, QgsPointXY(1.1, 3.3), deets))
         tag, ok = QgsExifTools.getGeoTag(tmpName)
         self.assertTrue(ok)
         self.assertEqual(tag.asWkt(6), 'PointZ (1.1 3.3 -110.1)')

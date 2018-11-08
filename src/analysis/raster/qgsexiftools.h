@@ -49,6 +49,8 @@ class ANALYSIS_EXPORT QgsExifTools
 
     /**
      * Extended image geotag details.
+     * \ingroup analysis
+     * \since QGIS 3.6
      */
     class GeoTagDetails
     {
@@ -73,8 +75,10 @@ class ANALYSIS_EXPORT QgsExifTools
      * If desired, extended GPS tags (such as elevation) can be specified via the \a details argument.
      *
      * Returns true if writing was successful.
+     *
+     * \see getGeoTag()
      */
-    static bool geotagImage( const QString &imagePath, const QgsPointXY &location, const GeoTagDetails &details = QgsExifTools::GeoTagDetails() );
+    static bool geoTagImage( const QString &imagePath, const QgsPointXY &location, const GeoTagDetails &details = QgsExifTools::GeoTagDetails() );
 };
 
 #endif // QGSEXIFTOOLS_H

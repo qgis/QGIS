@@ -38,6 +38,8 @@ the elevation as a z value.
 {
 %Docstring
 Extended image geotag details.
+
+.. versionadded:: 3.6
 %End
 
 %TypeHeaderCode
@@ -50,7 +52,7 @@ Extended image geotag details.
         double elevation;
     };
 
-    static bool geotagImage( const QString &imagePath, const QgsPointXY &location, const GeoTagDetails &details = QgsExifTools::GeoTagDetails() );
+    static bool geoTagImage( const QString &imagePath, const QgsPointXY &location, const GeoTagDetails &details = QgsExifTools::GeoTagDetails() );
 %Docstring
 Writes geotags to the image at ``imagePath``.
 
@@ -59,6 +61,8 @@ The ``location`` argument indicates the GPS location to write to the image, as a
 If desired, extended GPS tags (such as elevation) can be specified via the ``details`` argument.
 
 Returns true if writing was successful.
+
+.. seealso:: :py:func:`getGeoTag`
 %End
 };
 

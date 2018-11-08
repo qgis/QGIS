@@ -192,7 +192,7 @@ QgsPoint QgsExifTools::getGeoTag( const QString &imagePath, bool &ok )
   }
 }
 
-bool QgsExifTools::geotagImage( const QString &imagePath, const QgsPointXY &location, const GeoTagDetails &details )
+bool QgsExifTools::geoTagImage( const QString &imagePath, const QgsPointXY &location, const GeoTagDetails &details )
 {
   try
   {
