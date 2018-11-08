@@ -51,21 +51,11 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool 
 
   BuildStatement( request );
 
-  // connect to the database
-  QString errMsg;
-  mDatabase = QgsDb2Provider::getDatabase( mSource->mConnInfo, errMsg );
-
-  if ( !errMsg.isEmpty() )
-  {
-    QgsDebugMsg( "Failed to open database: " + errMsg );
-    return;
-  }
-
-  // create sql query
-  mQuery.reset( new QSqlQuery( mDatabase ) );
-
-  // start selection
-  rewind();
+  // WARNING - we can't obtain the database connection now, as this method should be
+  // run from the main thread, yet iteration can be done in a different thread.
+  // This would result in failure, because QSqlDatabase instances cannot be used
+  // from a different thread where they were created. Instead, we defer creation
+  // of the database until the first feature is fetched.
 }
 
 
@@ -308,10 +298,28 @@ bool QgsDb2FeatureIterator::nextFeatureFilterExpression( QgsFeature &f )
 bool QgsDb2FeatureIterator::fetchFeature( QgsFeature &feature )
 {
   feature.setValid( false );
-  if ( mClosed )
+
+  if ( !mDatabase.isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "iterator closed" ) );
+    // No existing connection, so set it up now. It's safe to do here as we're now in
+    // the thread were iteration is actually occurring.  
+  // connect to the database
+  QString errMsg;
+  QgsDebugMsg( QStringLiteral( "fetchFeature getDatabase" ) );
+  mDatabase = QgsDb2Provider::getDatabase( mSource->mConnInfo, errMsg );
+  QgsDebugMsg( QStringLiteral( "fetchFeature back from getDatabase" ) );
+  if ( !errMsg.isEmpty() )
+  {
+    QgsDebugMsg( "Failed to open database: " + errMsg );
     return false;
+  }
+
+  // create sql query
+  mQuery.reset( new QSqlQuery( mDatabase ) );
+
+  // start selection
+  if ( !rewind() )
+      return false;
   }
 
   if ( !mQuery )
@@ -402,7 +410,10 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature &feature )
 bool QgsDb2FeatureIterator::rewind()
 {
   if ( mClosed )
+  {
+    QgsDebugMsg( QStringLiteral( "iterator closed" ) );
     return false;
+  }
 
   if ( mStatement.isEmpty() )
   {

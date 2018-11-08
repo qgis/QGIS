@@ -186,16 +186,23 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
     connectionName = service;
   }
   QgsDebugMsg( "connectionName: " + connectionName );
+
+  // Starting with Qt 5.11, sharing the same connection between threads is not allowed.
+  // We use a dedicated connection for each thread requiring access to the database,
+  // using the thread address as connection name.
+  const QString threadSafeConnectionName = dbConnectionName( connectionName );
+  QgsDebugMsg( "threadSafeConnectionName: " + threadSafeConnectionName );
+	
   /* if new database connection */
-  if ( !QSqlDatabase::contains( connectionName ) )
+  if ( !QSqlDatabase::contains( threadSafeConnectionName ) )
   {
     QgsDebugMsg( QStringLiteral( "new connection. create new QODBC mapping" ) );
-    db = QSqlDatabase::addDatabase( QStringLiteral( "QODBC3" ), connectionName );
+    db = QSqlDatabase::addDatabase( QStringLiteral( "QODBC3" ), threadSafeConnectionName );
   }
   else  /* if existing database connection */
   {
     QgsDebugMsg( QStringLiteral( "found existing connection, use the existing one" ) );
-    db = QSqlDatabase::database( connectionName );
+    db = QSqlDatabase::database( threadSafeConnectionName );
   }
   db.setHostName( host );
   db.setPort( port.toInt() );
@@ -1747,6 +1754,14 @@ QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
          );
 }
 
+QString QgsDb2Provider::dbConnectionName( const QString &name )
+{
+  // Starting with Qt 5.11, sharing the same connection between threads is not allowed.
+  // We use a dedicated connection for each thread requiring access to the database,
+  // using the thread address as connection name.
+  const QString threadAddress = QStringLiteral( ":0x%1" ).arg( QString::number( reinterpret_cast< quintptr >( QThread::currentThread() ), 16 ) );
+  return name + threadAddress;
+}
 
 #ifdef HAVE_GUI
 

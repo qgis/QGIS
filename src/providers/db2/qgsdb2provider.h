@@ -118,6 +118,10 @@ class QgsDb2Provider : public QgsVectorDataProvider
   private:
     static void db2WkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
     static QString db2TypeName( int typeId );
+	/**
+     * Returns a thread-safe connection name for use with QSqlDatabase
+     */
+    static QString dbConnectionName( const QString &name );
 
     QgsFields mAttributeFields; //fields
     QMap<int, QVariant> mDefaultValues;
