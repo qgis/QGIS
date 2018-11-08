@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
 #include "qgsalgorithmexplodehstore.h"
 #include "qgshstoreutils.h"
 #include "qgsprocessingutils.h"
@@ -88,15 +89,13 @@ QVariantMap QgsExplodeHstoreAlgorithm::processAlgorithm( const QVariantMap &para
 
   QList<QString> fieldsToAdd;
   QHash<QgsFeatureId, QVariantMap> hstoreFeatures;
+  QList<QgsFeature> features;
 
   double step = source->featureCount() > 0 ? 50.0 / source->featureCount() : 1;
   int i = 0;
-  QgsFeatureRequest request;
-  request.setFlags( QgsFeatureRequest::NoGeometry );
-  request.setSubsetOfAttributes( QgsAttributeList() << fieldIndex );
-  QgsFeatureIterator features = source->getFeatures( request );
+  QgsFeatureIterator featIterator = source->getFeatures( );
   QgsFeature feat;
-  while ( features.nextFeature( feat ) )
+  while ( featIterator.nextFeature( feat ) )
   {
     i++;
     if ( feedback->isCanceled() )
@@ -115,6 +114,7 @@ QVariantMap QgsExplodeHstoreAlgorithm::processAlgorithm( const QVariantMap &para
         fieldsToAdd.insert( 0, key );
     }
     hstoreFeatures.insert( feat.id(), currentHStore );
+    features.append( feat );
   }
 
   if ( ! expectedFields.isEmpty() )
@@ -138,10 +138,9 @@ QVariantMap QgsExplodeHstoreAlgorithm::processAlgorithm( const QVariantMap &para
   QList<int> fieldIndicesInput = QgsProcessingUtils::fieldNamesToIndices( QStringList(), source->fields() );
   int attrCount = attrSourceCount + fieldsToAdd.count();
   QgsFeature outFeature;
-  QgsFeatureIterator featIterator = source->getFeatures( );
   step = 50.0 / i;
   i = 0;
-  while ( featIterator.nextFeature( feat ) )
+  for ( const QgsFeature &feat : qgis::as_const( features ) )
   {
     i++;
     if ( feedback->isCanceled() )
