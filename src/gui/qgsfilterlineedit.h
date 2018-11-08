@@ -286,7 +286,6 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     QString mNullValue;
     QString mDefaultValue;
     QString mStyleSheet;
-    bool mFocusInEvent = false;
     bool mWaitingForMouseRelease = false;
     bool mSelectOnFocus = false;
 

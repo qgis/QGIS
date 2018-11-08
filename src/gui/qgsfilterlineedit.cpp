@@ -89,7 +89,6 @@ void QgsFilterLineEdit::focusInEvent( QFocusEvent *e )
   QLineEdit::focusInEvent( e );
   if ( e->reason() == Qt::MouseFocusReason && ( isNull() || mSelectOnFocus ) )
   {
-    mFocusInEvent = true;
     mWaitingForMouseRelease = true;
   }
 }
