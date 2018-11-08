@@ -60,6 +60,9 @@ class CORE_EXPORT QgsLocatorModelBridge : public QObject
     //! Returns true if the a search is currently running
     bool isRunning() const;
 
+    //! Triggers the result at given index
+    void triggerResult( const QModelIndex &index );
+
   signals:
     //! Emitted when a result is added
     void resultAdded();

@@ -312,11 +312,9 @@ void QgsLocatorWidget::acceptCurrentEntry()
     if ( !index.isValid() )
       return;
 
-    QgsLocatorResult result = mModelBridge->proxyModel()->data( index, QgsLocatorModel::ResultDataRole ).value< QgsLocatorResult >();
     mResultsContainer->hide();
     mLineEdit->clearFocus();
-    mModelBridge->locator()->clearPreviousResults();
-    result.filter->triggerResult( result );
+    mModelBridge->triggerResult( index );
   }
 }
 
