@@ -44,7 +44,6 @@ void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
 
   dialog->buttonBox->button( QDialogButtonBox::Ignore )->setToolTip( tr( "Import all unavailable layers unmodified (you can fix them later)." ) );
   dialog->buttonBox->button( QDialogButtonBox::Ignore )->setText( tr( "Keep unavailable layers" ) );
-  dialog->buttonBox->button( QDialogButtonBox::Apply )->setToolTip( tr( "Apply fixes to unavailable layers (remaining unavailable layers will be removed from the project)." ) );
   dialog->buttonBox->button( QDialogButtonBox::Discard )->setToolTip( tr( "Remove all unavailable layers from the project" ) );
   dialog->buttonBox->button( QDialogButtonBox::Discard )->setText( tr( "Remove unavailable layers" ) );
   dialog->buttonBox->button( QDialogButtonBox::Discard )->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.svg" ) );
@@ -77,10 +76,13 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
   mBrowseButton = new QPushButton( tr( "Browse" ) );
   buttonBox->addButton( mBrowseButton, QDialogButtonBox::ActionRole );
   mBrowseButton->setDisabled( true );
+  mApplyButton = new QPushButton( tr( "Apply changes" ) );
+  mApplyButton->setToolTip( tr( "Apply fixes to unavailable layers (remaining unavailable layers will be removed from the project)." ) );
+  buttonBox->addButton( mApplyButton, QDialogButtonBox::ActionRole );
 
   connect( mLayerList, &QTableWidget::itemSelectionChanged, this, &QgsHandleBadLayers::selectionChanged );
   connect( mBrowseButton, &QAbstractButton::clicked, this, &QgsHandleBadLayers::browseClicked );
-  connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsHandleBadLayers::apply );
+  connect( mApplyButton, &QAbstractButton::clicked, this, &QgsHandleBadLayers::apply );
   connect( buttonBox->button( QDialogButtonBox::Ignore ), &QPushButton::clicked, this, &QgsHandleBadLayers::reject );
   connect( buttonBox->button( QDialogButtonBox::Discard ), &QPushButton::clicked, this, &QgsHandleBadLayers::accept );
 
@@ -352,7 +354,7 @@ void QgsHandleBadLayers::editAuthCfg()
 void QgsHandleBadLayers::apply()
 {
   QgsProject::instance()->layerTreeRegistryBridge()->setEnabled( true );
-
+  buttonBox->button( QDialogButtonBox::Ignore )->setEnabled( false );
   QList<QgsMapLayer *> toRemove;
   for ( const auto &l : QgsProject::instance()->mapLayers( ) )
   {

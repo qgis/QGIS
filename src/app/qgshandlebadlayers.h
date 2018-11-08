@@ -57,6 +57,7 @@ class APP_EXPORT QgsHandleBadLayers
 
   private:
     QPushButton *mBrowseButton = nullptr;
+    QPushButton *mApplyButton = nullptr;
     const QList<QDomNode> &mLayers;
     QList<int> mRows;
     QString mVectorFileFilter;
