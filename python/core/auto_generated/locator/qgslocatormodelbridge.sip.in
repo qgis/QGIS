@@ -29,6 +29,7 @@ to be used in a locator widget.
 %Docstring
 Constructor of QgsLocatorModelBridge
 %End
+    virtual ~QgsLocatorModelBridge();
 
     void performSearch( const QString &text );
 %Docstring

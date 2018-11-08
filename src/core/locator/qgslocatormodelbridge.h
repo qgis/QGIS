@@ -44,6 +44,7 @@ class CORE_EXPORT QgsLocatorModelBridge : public QObject
   public:
     //! Constructor of QgsLocatorModelBridge
     explicit QgsLocatorModelBridge( QObject *parent = nullptr );
+    virtual ~QgsLocatorModelBridge() = default;
 
     //! Perform a search
     Q_INVOKABLE void performSearch( const QString &text );
