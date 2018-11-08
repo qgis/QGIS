@@ -3,6 +3,7 @@
 %Include auto_generated/raster/qgsalignraster.sip
 %Include auto_generated/raster/qgsaspectfilter.sip
 %Include auto_generated/raster/qgsderivativefilter.sip
+%Include auto_generated/raster/qgsexiftools.sip
 %Include auto_generated/raster/qgshillshadefilter.sip
 %Include auto_generated/raster/qgskde.sip
 %Include auto_generated/raster/qgsninecellfilter.sip
