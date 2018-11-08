@@ -199,18 +199,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addSeparator();
 
-      // change data source is only supported for vectors and rasters
-      if ( vlayer || rlayer )
-      {
-
-        QAction *a = new QAction( tr( "Change data source…" ), menu );
-        connect( a, &QAction::triggered, [ = ]
-        {
-          QgisApp::instance()->changeDataSource( layer );
-        } );
-        menu->addAction( a );
-      }
-
       if ( vlayer )
       {
         QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
@@ -249,6 +237,26 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), &QgisApp::layerSubsetString );
           action->setEnabled( !vlayer->isEditable() );
         }
+      }
+
+      // change data source is only supported for vectors and rasters
+      if ( vlayer || rlayer )
+      {
+
+        QAction *a = new QAction( tr( "Change data source…" ), menu );
+        // Disable when layer is editable
+        if ( layer->isEditable() )
+        {
+          a->setEnabled( false );
+        }
+        else
+        {
+          connect( a, &QAction::triggered, [ = ]
+          {
+            QgisApp::instance()->changeDataSource( layer );
+          } );
+        }
+        menu->addAction( a );
       }
 
       menu->addSeparator();

@@ -59,7 +59,7 @@ QString QgsLayerTreeViewBadLayerIndicatorProvider::iconName( QgsMapLayer *layer 
 QString QgsLayerTreeViewBadLayerIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
   Q_UNUSED( layer );
-  return tr( "<b>Bad layer!</b><br>Layer data source could not be found. Click to set a new data source" );
+  return tr( "<b>Unavailable layer!</b><br>Layer data source could not be found. Click to set a new data source" );
 }
 
 bool QgsLayerTreeViewBadLayerIndicatorProvider::acceptLayer( QgsMapLayer *layer )
