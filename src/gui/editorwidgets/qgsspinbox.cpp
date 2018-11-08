@@ -152,9 +152,15 @@ void QgsSpinBox::setLineEditAlignment( Qt::Alignment alignment )
 void QgsSpinBox::setSpecialValueText( const QString &txt )
 {
   if ( txt.isEmpty() )
+  {
     QSpinBox::setSpecialValueText( SPECIAL_TEXT_WHEN_EMPTY );
+    mLineEdit->setNullValue( SPECIAL_TEXT_WHEN_EMPTY );
+  }
   else
+  {
     QSpinBox::setSpecialValueText( txt );
+    mLineEdit->setNullValue( txt );
+  }
 }
 
 int QgsSpinBox::valueFromText( const QString &text ) const

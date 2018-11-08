@@ -155,9 +155,15 @@ void QgsDoubleSpinBox::setLineEditAlignment( Qt::Alignment alignment )
 void QgsDoubleSpinBox::setSpecialValueText( const QString &txt )
 {
   if ( txt.isEmpty() )
+  {
     QDoubleSpinBox::setSpecialValueText( SPECIAL_TEXT_WHEN_EMPTY );
+    mLineEdit->setNullValue( SPECIAL_TEXT_WHEN_EMPTY );
+  }
   else
+  {
     QDoubleSpinBox::setSpecialValueText( txt );
+    mLineEdit->setNullValue( SPECIAL_TEXT_WHEN_EMPTY );
+  }
 }
 
 QString QgsDoubleSpinBox::stripped( const QString &originalText ) const
