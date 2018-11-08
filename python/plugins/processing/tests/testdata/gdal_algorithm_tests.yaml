@@ -148,7 +148,6 @@ tests:
       WORLD_FILE:
         name: expected/gdal/dem.wld
         type: file
-      PRJ_FILE: None
 
   - algorithm: gdal:gdalinfo
     name: gdalinfo
