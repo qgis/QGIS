@@ -71,6 +71,10 @@ BuildRequires: postgresql-devel
 BuildRequires: sqlite-devel
 BuildRequires: fcgi-devel
 
+# OpenCL
+BuildRequires: opencl-headers
+BuildRequires: ocl-icd-devel
+
 # Python stuff
 BuildRequires: python3-future
 BuildRequires: python3-jinja2
@@ -210,6 +214,7 @@ gzip ChangeLog
       -D WITH_QSPATIALITE:BOOL=TRUE \
       -D WITH_SERVER:BOOL=TRUE \
       -D WITH_3D:BOOL=TRUE \
+      -D USE_OPENCL:BOOL=TRUE \
       .
 
 make %{?_smp_mflags}
