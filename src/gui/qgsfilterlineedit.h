@@ -324,6 +324,14 @@ class SIP_SKIP QgsSpinBoxLineEdit : public QgsFilterLineEdit
       setModified( true );
       emit cleared();
     }
+
+  protected:
+    void focusInEvent( QFocusEvent *e ) override;
+    void mouseReleaseEvent( QMouseEvent *e ) override;
+
+  private:
+    bool mWaitingForMouseRelease = false;
+
 };
 /// @endcond
 

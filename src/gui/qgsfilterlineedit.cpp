@@ -212,3 +212,22 @@ bool QgsFilterLineEdit::event( QEvent *event )
 
   return QLineEdit::event( event );;
 }
+
+void QgsSpinBoxLineEdit::focusInEvent( QFocusEvent *e )
+{
+  QLineEdit::focusInEvent( e );
+  if ( e->reason() == Qt::MouseFocusReason && ( isNull() ) )
+  {
+    mWaitingForMouseRelease = true;
+  }
+}
+
+void QgsSpinBoxLineEdit::mouseReleaseEvent( QMouseEvent *e )
+{
+  QLineEdit::mouseReleaseEvent( e );
+  if ( mWaitingForMouseRelease )
+  {
+    mWaitingForMouseRelease = false;
+    clear();
+  }
+}
