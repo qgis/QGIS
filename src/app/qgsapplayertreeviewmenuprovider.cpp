@@ -200,15 +200,23 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       menu->addSeparator();
 
       // change data source is only supported for vectors and rasters
-      if ( vlayer || rlayer )
+      if ( ( vlayer || rlayer ) )
       {
 
         QAction *a = new QAction( tr( "Change data source…" ), menu );
-        connect( a, &QAction::triggered, [ = ]
+        if ( layer->isEditable() )
         {
-          QgisApp::instance()->changeDataSource( layer );
-        } );
+          a->setEnabled( false );
+        }
+        else
+        {
+          connect( a, &QAction::triggered, [ = ]
+          {
+            QgisApp::instance()->changeDataSource( layer );
+          } );
+        }
         menu->addAction( a );
+        // Disable when layer is editable
       }
 
       if ( vlayer )
