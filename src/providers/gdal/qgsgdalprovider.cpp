@@ -640,6 +640,13 @@ QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, 
     return block;
   }
 
+  if ( !mExtent.intersects( extent ) )
+  {
+    // the requested extent is completely outside of the raster's extent - nothing to do
+    block->setIsNoData();
+    return block;
+  }
+
   if ( !mExtent.contains( extent ) )
   {
     QRect subRect = QgsRasterBlock::subRect( extent, width, height, mExtent );
