@@ -34,10 +34,12 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterCrs,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterExtent,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -56,6 +58,9 @@ class ClipRasterByMask(GdalAlgorithm):
     KEEP_RESOLUTION = 'KEEP_RESOLUTION'
     OPTIONS = 'OPTIONS'
     DATA_TYPE = 'DATA_TYPE'
+    TARGET_EXTENT = 'TARGET_EXTENT'
+    TARGET_EXTENT_CRS = 'TARGET_EXTENT_CRS'
+    MULTITHREADING = 'MULTITHREADING'
     OUTPUT = 'OUTPUT'
 
     TYPES = ['Use input layer data type', 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
@@ -83,6 +88,25 @@ class ClipRasterByMask(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.KEEP_RESOLUTION,
                                                         self.tr('Keep resolution of output raster'),
                                                         defaultValue=False))
+
+        target_extent_param = QgsProcessingParameterExtent(self.TARGET_EXTENT,
+                                                           self.tr('Georeferenced extents of output file to be created'),
+                                                           optional=True)
+        target_extent_param.setFlags(target_extent_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(target_extent_param)
+
+        target_extent_crs_param = QgsProcessingParameterCrs(self.TARGET_EXTENT_CRS,
+                                                            self.tr('CRS of the target raster extent'),
+                                                            optional=True)
+        target_extent_crs_param.setFlags(target_extent_crs_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(target_extent_crs_param)
+
+
+        multithreading_param = QgsProcessingParameterBoolean(self.MULTITHREADING,
+                                                             self.tr('Use multithreaded warping implementation'),
+                                                             defaultValue=False)
+        multithreading_param.setFlags(multithreading_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(multithreading_param)
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
@@ -163,6 +187,22 @@ class ClipRasterByMask(GdalAlgorithm):
 
         if nodata is not None:
             arguments.append('-dstnodata {}'.format(nodata))
+
+        extent = self.parameterAsExtent(parameters, self.TARGET_EXTENT, context)
+        if not extent.isNull():
+            arguments.append('-te')
+            arguments.append(extent.xMinimum())
+            arguments.append(extent.yMinimum())
+            arguments.append(extent.xMaximum())
+            arguments.append(extent.yMaximum())
+
+            extentCrs = self.parameterAsCrs(parameters, self.TARGET_EXTENT_CRS, context)
+            if extentCrs:
+                arguments.append('-te_srs')
+                arguments.append(extentCrs.authid())
+
+        if self.parameterAsBool(parameters, self.MULTITHREADING, context):
+            arguments.append('-multi')
 
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
