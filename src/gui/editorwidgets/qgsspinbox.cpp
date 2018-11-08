@@ -104,6 +104,8 @@ void QgsSpinBox::changed( int value )
 void QgsSpinBox::clear()
 {
   setValue( clearValue() );
+  if ( mLineEdit->isNull() )
+    mLineEdit->clear();
 }
 
 void QgsSpinBox::setClearValue( int customValue, const QString &specialValueText )

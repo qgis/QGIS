@@ -107,6 +107,8 @@ void QgsDoubleSpinBox::changed( double value )
 void QgsDoubleSpinBox::clear()
 {
   setValue( clearValue() );
+  if ( mLineEdit->isNull() )
+    mLineEdit->clear();
 }
 
 void QgsDoubleSpinBox::setClearValue( double customValue, const QString &specialValueText )
