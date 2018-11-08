@@ -114,6 +114,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsreclassifyutils.cpp
 
   raster/qgsalignraster.cpp
+  raster/qgsexiftools.cpp
   raster/qgsninecellfilter.cpp
   raster/qgsruggednessfilter.cpp
   raster/qgsderivativefilter.cpp
@@ -239,6 +240,7 @@ SET(QGIS_ANALYSIS_HDRS
   raster/qgsalignraster.h
   raster/qgsaspectfilter.h
   raster/qgsderivativefilter.h
+  raster/qgsexiftools.h
   raster/qgshillshadefilter.h
   raster/qgskde.h
   raster/qgsninecellfilter.h
