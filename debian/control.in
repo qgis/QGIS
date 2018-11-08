@@ -10,6 +10,7 @@ Build-Depends:
  dh-python,
  flex,
  grass-dev,
+ libexiv2-dev,
  libexpat1-dev,
  libfcgi-dev,
  libgdal-dev (>= 1.11),
@@ -214,6 +215,7 @@ Architecture: any
 Section: libdevel
 Depends:
  grass-dev,
+ libexiv2-dev,
  libexpat1-dev,
  libgdal-dev (>= 1.11),
  libgeos-dev (>= 3.0.0),
