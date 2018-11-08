@@ -51,6 +51,7 @@ class TestQgsRangeWidgetWrapper : public QObject
     void test_setDoubleSmallerRange();
     void test_setDoubleLimits();
     void test_nulls();
+    void test_focus();
 
   private:
     std::unique_ptr<QgsRangeWidgetWrapper> widget0; // For field 0
@@ -328,7 +329,64 @@ void TestQgsRangeWidgetWrapper::test_nulls()
 
 }
 
+void TestQgsRangeWidgetWrapper::test_focus()
+{
+  QgsApplication::setNullRepresentation( QString( "nope" ) );
 
+  QWidget *w = new QWidget(); //required for focus events
+  QApplication::setActiveWindow( w );
+
+  QVariantMap cfg;
+  cfg.insert( QStringLiteral( "AllowNull" ), true );
+
+  widget1->setConfig( cfg );
+  QgsDoubleSpinBox *editor1 = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( w ) );
+  QVERIFY( editor1 );
+  widget1->initWidget( editor1 );
+
+  widget2->setConfig( cfg );
+  QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( w ) );
+  QVERIFY( editor2 );
+  widget2->initWidget( editor2 );
+
+  editor1->mLineEdit->setNullValue( QgsApplication::nullRepresentation() );
+  editor2->mLineEdit->setNullValue( QgsApplication::nullRepresentation() );
+
+  QVERIFY( editor1->mLineEdit->isNull() );
+  QVERIFY( editor2->mLineEdit->isNull() );
+  QVERIFY( !editor1->mLineEdit->hasFocus() );
+  QVERIFY( !editor2->mLineEdit->hasFocus() );
+  QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "nope" ) );
+  QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "nope" ) );
+
+  editor1->mLineEdit->setFocus();
+  QVERIFY( editor1->mLineEdit->hasFocus() );
+  QVERIFY( !editor2->mLineEdit->hasFocus() );
+  QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "" ) );
+  QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "nope" ) );
+
+  editor2->mLineEdit->setFocus();
+  QVERIFY( !editor1->mLineEdit->hasFocus() );
+  QVERIFY( editor2->mLineEdit->hasFocus() );
+  QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "nope" ) );
+  QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "" ) );
+
+  editor1->mLineEdit->setFocus();
+  editor1->mLineEdit->setText( QString( "151.000000000" ) );
+  QVERIFY( !editor1->mLineEdit->isNull() );
+  QVERIFY( editor2->mLineEdit->isNull() );
+  QVERIFY( editor1->mLineEdit->hasFocus() );
+  QVERIFY( !editor2->mLineEdit->hasFocus() );
+  QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "151.000000000" ) );
+  QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "nope" ) );
+
+  editor2->mLineEdit->setFocus();
+  QVERIFY( !editor1->mLineEdit->hasFocus() );
+  QVERIFY( editor2->mLineEdit->hasFocus() );
+  QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "151.000000000" ) );
+  QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "" ) );
+
+}
 
 QGSTEST_MAIN( TestQgsRangeWidgetWrapper )
 #include "testqgsrangewidgetwrapper.moc"
