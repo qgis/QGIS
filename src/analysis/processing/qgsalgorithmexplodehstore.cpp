@@ -138,7 +138,7 @@ QVariantMap QgsExplodeHstoreAlgorithm::processAlgorithm( const QVariantMap &para
   QList<int> fieldIndicesInput = QgsProcessingUtils::fieldNamesToIndices( QStringList(), source->fields() );
   int attrCount = attrSourceCount + fieldsToAdd.count();
   QgsFeature outFeature;
-  step = 50.0 / i;
+  step = !features.empty() ? 50.0 / features.count() : 1;
   i = 0;
   for ( const QgsFeature &feat : qgis::as_const( features ) )
   {
