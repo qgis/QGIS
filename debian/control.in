@@ -30,7 +30,7 @@ Build-Depends:
  pyqt5-dev-tools, pyqt5-dev, pyqt5.qsci-dev,
  python3-pyqt5, python3-pyqt5.qsci, python3-pyqt5.qtsql, python3-pyqt5.qtsvg,
  python3-gdal,
- python3-nose2, python3-yaml, python3-mock, python3-psycopg2, python3-future, python3-termcolor,
+ python3-nose2, python3-yaml, python3-mock, python3-psycopg2, python3-future, python3-termcolor, python3-owslib,
  pkg-config,
  git,
  txt2tags,

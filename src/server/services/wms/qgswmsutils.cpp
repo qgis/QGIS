@@ -45,15 +45,25 @@ namespace QgsWms
     // Build default url
     if ( href.isEmpty() )
     {
+      static QSet<QString> sFilter
+      {
+        QStringLiteral( "REQUEST" ),
+        QStringLiteral( "VERSION" ),
+        QStringLiteral( "SERVICE" ),
+        QStringLiteral( "LAYERS" ),
+        QStringLiteral( "STYLES" ),
+        QStringLiteral( "SLD_VERSION" ),
+        QStringLiteral( "_DC" )
+      };
+
       href = request.url();
       QUrlQuery q( href );
 
-      q.removeAllQueryItems( QStringLiteral( "REQUEST" ) );
-      q.removeAllQueryItems( QStringLiteral( "VERSION" ) );
-      q.removeAllQueryItems( QStringLiteral( "SERVICE" ) );
-      q.removeAllQueryItems( QStringLiteral( "LAYERS" ) );
-      q.removeAllQueryItems( QStringLiteral( "SLD_VERSION" ) );
-      q.removeAllQueryItems( QStringLiteral( "_DC" ) );
+      for ( auto param : q.queryItems() )
+      {
+        if ( sFilter.contains( param.first.toUpper() ) )
+          q.removeAllQueryItems( param.first );
+      }
 
       href.setQuery( q );
     }

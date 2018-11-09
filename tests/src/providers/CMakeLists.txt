@@ -71,9 +71,9 @@ ADD_QGIS_TEST(gdalprovidertest testqgsgdalprovider.cpp)
 
 ADD_QGIS_TEST(ogrprovidertest testqgsogrprovider.cpp)
 
-ADD_QGIS_TEST(wmscapabilititestest
+ADD_QGIS_TEST(wmscapabilitiestest
               testqgswmscapabilities.cpp)
-TARGET_LINK_LIBRARIES(qgis_wmscapabilititestest wmsprovider_a)
+TARGET_LINK_LIBRARIES(qgis_wmscapabilitiestest wmsprovider_a)
 
 ADD_QGIS_TEST(wmsprovidertest
               testqgswmsprovider.cpp)
