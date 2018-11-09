@@ -4499,6 +4499,24 @@ class TestQgsGeometry(unittest.TestCase):
                              "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1],
                                                                                        t[2], res.asWkt(1)))
 
+    def testForceRHR(self):
+        tests = [
+            ["", ""],
+            ["Point (100 100)", "Point (100 100)"],
+            ["LINESTRING (0 0, 0 100, 100 100)", "LineString (0 0, 0 100, 100 100)"],
+            ["LINESTRING (100 100, 0 100, 0 0)", "LineString (100 100, 0 100, 0 0)"],
+            ["POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))", "Polygon ((-1 -1, 0 2, 4 2, 4 0, -1 -1))"],
+            ["MULTIPOLYGON(Polygon((-1 -1, 4 0, 4 2, 0 2, -1 -1)),Polygon((100 100, 200 100, 200 200, 100 200, 100 100)))", "MultiPolygon (((-1 -1, 0 2, 4 2, 4 0, -1 -1)),((100 100, 100 200, 200 200, 200 100, 100 100)))"],
+            [
+                "GeometryCollection(Polygon((-1 -1, 4 0, 4 2, 0 2, -1 -1)),Polygon((100 100, 200 100, 200 200, 100 200, 100 100)))",
+                "GeometryCollection (Polygon ((-1 -1, 0 2, 4 2, 4 0, -1 -1)),Polygon ((100 100, 100 200, 200 200, 200 100, 100 100)))"]
+        ]
+        for t in tests:
+            g1 = QgsGeometry.fromWkt(t[0])
+            res = g1.forceRHR()
+            self.assertEqual(res.asWkt(1), t[1],
+                             "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], res.asWkt(1)))
+
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
         image = QImage(200, 200, QImage.Format_RGB32)
         image.fill(QColor(0, 0, 0))
