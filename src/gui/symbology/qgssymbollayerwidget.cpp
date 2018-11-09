@@ -194,9 +194,9 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   btnChangeColor->setColorDialogTitle( tr( "Select Line Color" ) );
   btnChangeColor->setContext( QStringLiteral( "symbology" ) );
 
-  mRingFilterComboBox->addItem( tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
-  mRingFilterComboBox->addItem( tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
-  mRingFilterComboBox->addItem( tr( "Interior Rings Only" ), QgsLineSymbolLayer::InteriorRingsOnly );
+  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconAllRings.svg" ) ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
+  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconExteriorRing.svg" ) ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
+  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconInteriorRings.svg" ) ), tr( "Interior Rings Only" ), QgsLineSymbolLayer::InteriorRingsOnly );
   connect( mRingFilterComboBox, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     if ( mLayer )
@@ -1661,9 +1661,9 @@ QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *
   mOffsetAlongLineUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                         << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  mRingFilterComboBox->addItem( tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
-  mRingFilterComboBox->addItem( tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
-  mRingFilterComboBox->addItem( tr( "Interior Rings Only" ), QgsLineSymbolLayer::InteriorRingsOnly );
+  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconAllRings.svg" ) ), tr( "All Rings" ), QgsLineSymbolLayer::AllRings );
+  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconExteriorRing.svg" ) ), tr( "Exterior Ring Only" ), QgsLineSymbolLayer::ExteriorRingOnly );
+  mRingFilterComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconInteriorRings.svg" ) ), tr( "Interior Rings Only" ), QgsLineSymbolLayer::InteriorRingsOnly );
   connect( mRingFilterComboBox, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     if ( mLayer )
