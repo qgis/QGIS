@@ -924,7 +924,14 @@ void TestQgsGeometryChecks::testSelfContactCheck()
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 5, QgsPointXY( -1.2399, -1.0502 ), QgsVertexId( 0, 0, 6 ) ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 9, QgsPointXY( -0.2080, 1.9830 ), QgsVertexId( 0, 0, 3 ) ).size() == 1 );
 
+
   cleanupTestContext( testContext );
+
+  QgsGeometryCheckContext context( 1, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateTransformContext() );
+  QgsGeometrySelfContactCheck check2( &context, QVariantMap() );
+  QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "MultiLineString ((2988987 10262483, 2988983 10262480, 2988991 10262432, 2988990 10262419, 2988977 10262419, 2988976 10262420, 2988967 10262406, 2988970 10262421, 2988971 10262424),(2995620 10301368))" ) );
+  QList<QgsSingleGeometryCheckError *> errors = check2.processGeometry( g );
+  QVERIFY( errors.isEmpty() );
 }
 
 void TestQgsGeometryChecks::testSelfIntersectionCheck()
