@@ -40,6 +40,8 @@
 #include "qgsgeometryselfintersectioncheck.h"
 #include "qgsgeometrysliverpolygoncheck.h"
 #include "qgsvectordataproviderfeaturepool.h"
+#include "qgsmultilinestring.h"
+#include "qgslinestring.h"
 #include "qgsproject.h"
 #include "qgsfeedback.h"
 
@@ -927,10 +929,17 @@ void TestQgsGeometryChecks::testSelfContactCheck()
 
   cleanupTestContext( testContext );
 
+  // https://issues.qgis.org/issues/20408
+  // test with a linestring which collapses to an empty linestring
   QgsGeometryCheckContext context( 1, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateTransformContext() );
   QgsGeometrySelfContactCheck check2( &context, QVariantMap() );
   QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "MultiLineString ((2988987 10262483, 2988983 10262480, 2988991 10262432, 2988990 10262419, 2988977 10262419, 2988976 10262420, 2988967 10262406, 2988970 10262421, 2988971 10262424),(2995620 10301368))" ) );
   QList<QgsSingleGeometryCheckError *> errors = check2.processGeometry( g );
+  QVERIFY( errors.isEmpty() );
+
+  // test with totally empty line
+  qgsgeometry_cast< QgsMultiLineString * >( g.get() )->addGeometry( new QgsLineString() );
+  errors = check2.processGeometry( g );
   QVERIFY( errors.isEmpty() );
 }
 
