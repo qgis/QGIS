@@ -194,20 +194,26 @@ class TestQgsMapLayerModel(unittest.TestCase):
     def testDisplayRoleShowCrs(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayers([l1, l2])
+        l3 = QgsVectorLayer("NoGeometry?field=fldtxt:string&field=fldint:integer",
+                            'no geom', "memory")
+
+        QgsProject.instance().addMapLayers([l1, l2, l3])
         m = QgsMapLayerModel()
         m.setShowCrs(True)
         self.assertEqual(m.data(m.index(0, 0), Qt.DisplayRole), 'l1 [EPSG:3111]')
         self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l2 [EPSG:3111]')
+        self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'no geom')
+
         m.setAllowEmptyLayer(True)
         self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
         self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l1 [EPSG:3111]')
         self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l2 [EPSG:3111]')
+        self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'no geom')
 
         m.setAdditionalItems(['a'])
-        self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'a')
+        self.assertEqual(m.data(m.index(4, 0), Qt.DisplayRole), 'a')
 
-        QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+        QgsProject.instance().removeMapLayers([l1.id(), l2.id(), l3.id()])
 
     def testLayerIdRole(self):
         l1 = create_layer('l1')
