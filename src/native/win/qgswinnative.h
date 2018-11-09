@@ -40,6 +40,10 @@ class QgsWinNativeEventFilter : public QObject, public QAbstractNativeEventFilte
   signals:
 
     void usbStorageNotification( const QString &path, bool inserted );
+
+  private:
+
+    quintptr mLastMessageHash = 0;
 };
 
 
