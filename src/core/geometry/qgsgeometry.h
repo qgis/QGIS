@@ -1416,6 +1416,15 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry makeValid() const;
 
     /**
+     * Forces geometries to respect the Right-Hand-Rule, in which the area that is bounded by a polygon
+     * is to the right of the boundary. In particular, the exterior ring is oriented in a clockwise direction
+     * and the interior rings in a counter-clockwise direction.
+     *
+     * \since QGIS 3.6
+     */
+    QgsGeometry forceRHR() const;
+
+    /**
      * \ingroup core
      */
     class CORE_EXPORT Error
