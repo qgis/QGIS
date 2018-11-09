@@ -15,8 +15,7 @@
 class QgsServerSettings
 {
 %Docstring
-QgsServerSettings provides a way to retrieve settings by prioritizing
-according to environment variables, ini file and default values.
+Provides a way to retrieve settings by prioritizing according to environment variables, ini file and default values.
 
 .. versionadded:: 3.0
 %End
@@ -95,6 +94,15 @@ Returns the QGS project file to use.
 Returns the log file.
 
 :return: the path of the log file or an empty string if none is defined.
+%End
+
+    bool logStderr() const;
+%Docstring
+Returns whether logging to stderr is activated.
+
+:return: true if logging to stderr is activated, false otherwise.
+
+.. versionadded:: 3.4
 %End
 
     qint64 cacheSize() const;

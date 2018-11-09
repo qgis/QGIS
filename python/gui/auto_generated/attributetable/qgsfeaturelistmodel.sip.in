@@ -27,6 +27,7 @@ Constructor for FeatureInfo.
 %End
 
         bool isNew;
+
         bool isEdited;
     };
 
@@ -44,7 +45,12 @@ Constructor for QgsFeatureListModel
 %End
 
     virtual void setSourceModel( QgsAttributeTableFilterModel *sourceModel );
+
     QgsVectorLayerCache *layerCache();
+%Docstring
+Returns the vector layer cache which is being used to populate the model.
+%End
+
     virtual QVariant data( const QModelIndex &index, int role ) const;
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -89,8 +95,20 @@ Returns a detailed message about errors while parsing a :py:class:`QgsExpression
 
     QString displayExpression() const;
     bool featureByIndex( const QModelIndex &index, QgsFeature &feat );
+
     QgsFeatureId idxToFid( const QModelIndex &index ) const;
-    QModelIndex fidToIdx( const QgsFeatureId fid ) const;
+%Docstring
+Returns the feature ID corresponding to an ``index`` from the model.
+
+.. seealso:: :py:func:`fidToIdx`
+%End
+
+    QModelIndex fidToIdx( QgsFeatureId fid ) const;
+%Docstring
+Returns the model index corresponding to a feature ID.
+
+.. seealso:: :py:func:`idxToFid`
+%End
 
     virtual QModelIndex mapToSource( const QModelIndex &proxyIndex ) const;
 

@@ -110,6 +110,16 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     long featureCount() const override;
 
     /**
+     * Determines if there is at least one feature available on this table.
+     *
+     * \note In contrast to the featureCount() method, this method is not
+     *       affected by estimated metadata.
+     *
+     * \since QGIS 3.4
+     */
+    bool empty() const override;
+
+    /**
      * Returns a string representation of the endian-ness for the layer
      */
     static QString endianString();
@@ -199,7 +209,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * \param value the value to convert
      * \returns a QVariant of the given type or a null QVariant
      */
-    static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value );
+    static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value, const QString &typeName );
 
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
     QgsAttrPalIndexNameHash palAttributeIndexNames() const override;

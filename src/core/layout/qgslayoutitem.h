@@ -102,7 +102,6 @@ class CORE_EXPORT QgsLayoutItemRenderContext
     double mViewScaleFactor = 1.0;
 };
 
-
 /**
  * \ingroup core
  * \class QgsLayoutItem
@@ -125,9 +124,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 #include "qgslayoutitempage.h"
 #endif
 
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
+
+    // FREAKKKKIIN IMPORTANT!!!!!!!!!!!
+    // IF YOU PUT SOMETHING HERE, PUT IT IN QgsLayoutObject CASTING *****ALSO******
+    // (it's not enough for it to be in only one of the places, as sip inconsistently
+    // decides which casting code to perform here)
+
     // the conversions have to be static, because they're using multiple inheritance
     // (seen in PyQt4 .sip files for some QGraphicsItem classes)
     switch ( sipCpp->type() )
@@ -177,11 +181,15 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
         sipType = sipType_QgsLayoutFrame;
         *sipCppRet = static_cast<QgsLayoutFrame *>( sipCpp );
         break;
+
+      // did you read that comment above? NO? Go read it now. You're about to break stuff.
+
       default:
-        sipType = 0;
+        sipType = NULL;
     }
     SIP_END
 #endif
+
 
     Q_OBJECT
     Q_PROPERTY( bool locked READ isLocked WRITE setLocked NOTIFY lockChanged )
@@ -351,14 +359,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * on a QgsLayoutItem, as some item types (e.g., groups) need to override
      * the visibility toggle.
      */
-    virtual void setVisibility( const bool visible );
+    virtual void setVisibility( bool visible );
 
     /**
      * Sets whether the item is \a locked, preventing mouse interactions with the item.
      * \see isLocked()
      * \see lockChanged()
      */
-    void setLocked( const bool locked );
+    void setLocked( bool locked );
 
     /**
      * Returns true if the item is locked, and cannot be interacted with using the mouse.
@@ -411,7 +419,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * so that the position of the reference point within the layout remains unchanged.
      * \see referencePoint()
      */
-    void setReferencePoint( const ReferencePoint &point );
+    void setReferencePoint( ReferencePoint point );
 
     /**
      * Returns the reference point for positioning of the layout item. This point is also
@@ -641,7 +649,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setFrameJoinStyle()
      * \see setFrameStrokeColor()
      */
-    virtual void setFrameStrokeWidth( const QgsLayoutMeasurement &width );
+    virtual void setFrameStrokeWidth( QgsLayoutMeasurement width );
 
     /**
      * Returns the frame's stroke width. This is only used if frameEnabled() returns true.
@@ -668,7 +676,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setFrameStrokeWidth()
      * \see setFrameStrokeColor()
      */
-    void setFrameJoinStyle( const Qt::PenJoinStyle style );
+    void setFrameJoinStyle( Qt::PenJoinStyle style );
 
     /**
      * Returns true if the item has a background.
@@ -709,7 +717,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Sets the item's composition blending \a mode.
      * \see blendMode()
      */
-    void setBlendMode( const QPainter::CompositionMode mode );
+    void setBlendMode( QPainter::CompositionMode mode );
 
     /**
      * Returns the item's opacity. This method should be used instead of
@@ -861,7 +869,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * QgsLayoutObject::AllProperties then all data defined properties for the item will be
      * refreshed.
     */
-    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
     /**
      * Sets the layout item's \a rotation, in degrees clockwise.
@@ -879,7 +887,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setItemRotation()
      * \see itemRotation()
     */
-    virtual void rotateItem( const double angle, const QPointF &transformOrigin );
+    virtual void rotateItem( double angle, QPointF transformOrigin );
 
   signals:
 
@@ -956,7 +964,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setFixedSize()
      * \see setMinimumSize()
      */
-    virtual QSizeF applyItemSizeConstraint( const QSizeF &targetSize );
+    virtual QSizeF applyItemSizeConstraint( QSizeF targetSize );
 
     /**
      * Refreshes an item's size by rechecking it against any possible item fixed
@@ -1016,12 +1024,12 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Adjusts the specified \a point at which a \a reference position of the item
      * sits and returns the top left corner of the item, if reference point were placed at the specified position.
      */
-    QPointF adjustPointForReferencePosition( const QPointF &point, const QSizeF &size, const ReferencePoint &reference ) const;
+    QPointF adjustPointForReferencePosition( QPointF point, QSizeF size, ReferencePoint reference ) const;
 
     /**
      * Returns the current position (in layout units) of a \a reference point for the item.
     */
-    QPointF positionAtReferencePoint( const ReferencePoint &reference ) const;
+    QPointF positionAtReferencePoint( ReferencePoint reference ) const;
 
     /**
      * Returns the position for the reference point of the item, if the top-left of the item
@@ -1130,14 +1138,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     bool shouldDrawAntialiased() const;
     bool shouldDrawDebugRect() const;
 
-    QSizeF applyMinimumSize( const QSizeF &targetSize );
-    QSizeF applyFixedSize( const QSizeF &targetSize );
+    QSizeF applyMinimumSize( QSizeF targetSize );
+    QSizeF applyFixedSize( QSizeF targetSize );
     QgsLayoutPoint applyDataDefinedPosition( const QgsLayoutPoint &position );
 
-    double applyDataDefinedRotation( const double rotation );
+    double applyDataDefinedRotation( double rotation );
     void updateStoredItemPosition();
-    QPointF itemPositionAtReferencePoint( const ReferencePoint reference, const QSizeF &size ) const;
-    void setScenePos( const QPointF &destinationPos );
+    QPointF itemPositionAtReferencePoint( ReferencePoint reference, QSizeF size ) const;
+    void setScenePos( QPointF destinationPos );
     bool shouldBlockUndoCommands() const;
 
     void applyDataDefinedOrientation( double &width, double &height, const QgsExpressionContext &context );

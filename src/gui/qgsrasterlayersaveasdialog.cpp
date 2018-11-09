@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsapplication.h"
+#include "qgsgdalutils.h"
 #include "qgslogger.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrasterlayer.h"
@@ -24,9 +25,11 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgssettings.h"
 #include "qgsrasterfilewriter.h"
+#include "qgsvectorlayer.h"
 #include "cpl_string.h"
 #include "qgsproject.h"
 #include <gdal.h>
+#include "qgsmessagelog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -133,8 +136,6 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   // don't restore nodata, it needs user input
   // pyramids are not necessarily built every time
 
-  mTilesGroupBox->hide();
-
   mCrsSelector->setLayerCrs( mLayerCrs );
   //default to layer CRS - see https://issues.qgis.org/issues/14209 for discussion
   mCrsSelector->setCrs( mLayerCrs );
@@ -163,20 +164,29 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
 
   if ( mTileModeCheckBox->isChecked() )
   {
+    mTilesGroupBox->show();
     mFilename->setStorageMode( QgsFileWidget::GetDirectory );
-    mFilename->setDialogTitle( tr( "Select output directory" ) );
+    mFilename->setDialogTitle( tr( "Select Output Directory" ) );
   }
   else
   {
+    mTilesGroupBox->hide();
     mFilename->setStorageMode( QgsFileWidget::SaveFile );
     mFilename->setDialogTitle( tr( "Save Layer As" ) );
   }
+
   mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastRasterFileDir" ), QDir::homePath() ).toString() );
   connect( mFilename, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )
   {
     QgsSettings settings;
     QFileInfo tmplFileInfo( filePath );
     settings.setValue( QStringLiteral( "UI/lastRasterFileDir" ), tmplFileInfo.absolutePath() );
+
+    if ( !filePath.isEmpty() && mLayerName->isEnabled() )
+    {
+      QFileInfo fileInfo( filePath );
+      mLayerName->setText( fileInfo.baseName() );
+    }
 
     if ( mTileModeCheckBox->isChecked() )
     {
@@ -234,9 +244,7 @@ void QgsRasterLayerSaveAsDialog::insertAvailableOutputFormats()
     GDALDriverH driver = GDALGetDriver( i );
     if ( driver )
     {
-      char **driverMetadata = GDALGetMetadata( driver, nullptr );
-
-      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
+      if ( QgsGdalUtils::supportsRasterCreate( driver ) )
       {
         QString driverShortName = GDALGetDriverShortName( driver );
         QString driverLongName = GDALGetDriverLongName( driver );
@@ -313,6 +321,21 @@ void QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( const QStr
              tr( "All files (*.*)" ) );
   }
   mFilename->setFilter( filter );
+
+  // Disable mTileModeCheckBox for GeoPackages
+  mTileModeCheckBox->setEnabled( outputFormat() != QStringLiteral( "GPKG" ) );
+  mFilename->setConfirmOverwrite( outputFormat() != QStringLiteral( "GPKG" ) );
+  mLayerName->setEnabled( outputFormat() == QStringLiteral( "GPKG" ) );
+  if ( mLayerName->isEnabled() )
+  {
+    QString layerName = QFileInfo( mFilename->filePath() ).baseName();
+    mLayerName->setText( layerName );
+    mTileModeCheckBox->setChecked( false );
+  }
+  else
+  {
+    mLayerName->setText( QString() );
+  }
 }
 
 int QgsRasterLayerSaveAsDialog::nColumns() const
@@ -355,24 +378,46 @@ bool QgsRasterLayerSaveAsDialog::addToCanvas() const
   return mAddToCanvas->isChecked();
 }
 
+void QgsRasterLayerSaveAsDialog::setAddToCanvas( bool checked )
+{
+  mAddToCanvas->setChecked( checked );
+}
+
 QString QgsRasterLayerSaveAsDialog::outputFileName() const
 {
-  QStringList extensions = QgsRasterFileWriter::extensionsForFormat( outputFormat() );
-  QString defaultExt;
-  if ( !extensions.empty() )
-  {
-    defaultExt = extensions.at( 0 );
-  }
-
-  // ensure the user never omits the extension from the file name
   QString fileName = mFilename->filePath();
-  QFileInfo fi( fileName );
-  if ( !fileName.isEmpty() && fi.suffix().isEmpty() )
+
+  if ( mFilename->storageMode() != QgsFileWidget::GetDirectory )
   {
-    fileName += '.' + defaultExt;
+    QStringList extensions = QgsRasterFileWriter::extensionsForFormat( outputFormat() );
+    QString defaultExt;
+    if ( !extensions.empty() )
+    {
+      defaultExt = extensions.at( 0 );
+    }
+
+    // ensure the user never omits the extension from the file name
+    QFileInfo fi( fileName );
+    if ( !fileName.isEmpty() && fi.suffix().isEmpty() )
+    {
+      fileName += '.' + defaultExt;
+    }
   }
 
   return fileName;
+}
+
+QString QgsRasterLayerSaveAsDialog::outputLayerName() const
+{
+  if ( mLayerName->text().isEmpty() && outputFormat() == QStringLiteral( "GPKG" ) && !mTileModeCheckBox->isChecked() )
+  {
+    // Always return layer name for GeoPackages
+    return QFileInfo( mFilename->filePath() ).baseName();
+  }
+  else
+  {
+    return mLayerName->text();
+  }
 }
 
 QString QgsRasterLayerSaveAsDialog::outputFormat() const
@@ -382,7 +427,35 @@ QString QgsRasterLayerSaveAsDialog::outputFormat() const
 
 QStringList QgsRasterLayerSaveAsDialog::createOptions() const
 {
-  return mCreateOptionsGroupBox->isChecked() ? mCreateOptionsWidget->options() : QStringList();
+  QStringList options = mCreateOptionsGroupBox->isChecked() ? mCreateOptionsWidget->options() : QStringList();
+  if ( outputFormat() == QStringLiteral( "GPKG" ) )
+  {
+    // Overwrite the GPKG table options
+    int indx = options.indexOf( QRegularExpression( "^RASTER_TABLE=.*", QRegularExpression::CaseInsensitiveOption | QRegularExpression::MultilineOption ) );
+    if ( indx > -1 )
+    {
+      options.replace( indx, QStringLiteral( "RASTER_TABLE=%1" ).arg( outputLayerName() ) );
+    }
+    else
+    {
+      options.append( QStringLiteral( "RASTER_TABLE=%1" ).arg( outputLayerName() ) );
+    }
+
+    // Only enable the append mode if the layer doesn't exist yet. For existing layers a 'confirm overwrite' dialog will be shown.
+    if ( !outputLayerExists() )
+    {
+      indx = options.indexOf( QRegularExpression( "^APPEND_SUBDATASET=.*", QRegularExpression::CaseInsensitiveOption | QRegularExpression::MultilineOption ) );
+      if ( indx > -1 )
+      {
+        options.replace( indx, QStringLiteral( "APPEND_SUBDATASET=YES" ) );
+      }
+      else
+      {
+        options.append( QStringLiteral( "APPEND_SUBDATASET=YES" ) );
+      }
+    }
+  }
+  return options;
 }
 
 QgsRectangle QgsRasterLayerSaveAsDialog::outputRectangle() const
@@ -671,14 +744,14 @@ void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString &text )
     }
     if ( row != -1 ) break;
   }
-  QgsDebugMsg( QString( "row = %1 column =%2" ).arg( row ).arg( column ) );
+  QgsDebugMsg( QStringLiteral( "row = %1 column =%2" ).arg( row ).arg( column ) );
 
   if ( column == 0 )
   {
     QLineEdit *toLineEdit = dynamic_cast<QLineEdit *>( mNoDataTableWidget->cellWidget( row, 1 ) );
     if ( !toLineEdit ) return;
     bool toChanged = mNoDataToEdited.value( row );
-    QgsDebugMsg( QString( "toChanged = %1" ).arg( toChanged ) );
+    QgsDebugMsg( QStringLiteral( "toChanged = %1" ).arg( toChanged ) );
     if ( !toChanged )
     {
       toLineEdit->setText( lineEdit->text() );
@@ -698,12 +771,12 @@ void QgsRasterLayerSaveAsDialog::mTileModeCheckBox_toggled( bool toggled )
 
     // Disabled (Radim), auto enabling of pyramids was making impression that
     // we (programmers) know better what you (user) want to do,
-    // certainly auto expaning was bad experience
+    // certainly auto expanding was a bad experience
 
     //if ( ! mPyramidsGroupBox->isChecked() )
     //  mPyramidsGroupBox->setChecked( true );
 
-    // Auto expanding mPyramidsGroupBox is bad - it auto crolls content of dialog
+    // Auto expanding mPyramidsGroupBox is bad - it auto scrolls content of dialog
     //if ( mPyramidsGroupBox->isCollapsed() )
     //  mPyramidsGroupBox->setCollapsed( false );
     //mPyramidsOptionsWidget->checkAllLevels( true );
@@ -711,7 +784,7 @@ void QgsRasterLayerSaveAsDialog::mTileModeCheckBox_toggled( bool toggled )
     // Show / hide tile options
     mTilesGroupBox->show();
     mFilename->setStorageMode( QgsFileWidget::GetDirectory );
-    mFilename->setDialogTitle( tr( "Select output directory" ) );
+    mFilename->setDialogTitle( tr( "Select Output Directory" ) );
   }
   else
   {
@@ -838,6 +911,42 @@ bool QgsRasterLayerSaveAsDialog::validate() const
       return false;
   }
   return true;
+}
+
+bool QgsRasterLayerSaveAsDialog::outputLayerExists() const
+{
+  QString uri;
+  if ( outputFormat() == QStringLiteral( "GPKG" ) )
+  {
+    uri = QStringLiteral( "GPKG:%1:%2" ).arg( outputFileName(), outputLayerName() );
+  }
+  else
+  {
+    uri = outputFileName();
+  }
+
+  std::unique_ptr< QgsRasterLayer > rastLayer( new QgsRasterLayer( uri, "", QStringLiteral( "gdal" ) ) );
+  std::unique_ptr< QgsVectorLayer > vectLayer( new QgsVectorLayer( uri, "", QStringLiteral( "ogr" ) ) );
+  return ( rastLayer->isValid() || vectLayer->isValid() );
+}
+
+void QgsRasterLayerSaveAsDialog::accept()
+{
+  if ( !validate() )
+  {
+    return;
+  }
+
+  if ( outputFormat() == QStringLiteral( "GPKG" ) && outputLayerExists() &&
+       QMessageBox::warning( this, tr( "Save Raster Layer" ),
+                             tr( "The layer %1 already exists in the target file, and overwriting layers in GeoPackage is not supported. "
+                                 "Do you want to overwrite the whole file?" ).arg( outputLayerName() ),
+                             QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+  {
+    return;
+  }
+
+  QDialog::accept();
 }
 
 void QgsRasterLayerSaveAsDialog::showHelp()

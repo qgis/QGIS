@@ -90,6 +90,12 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() );
 
     /**
+     * Emitted when a mesh layer has been selected for addition.
+     * \since QGIS 3.4
+     */
+    void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey );
+
+    /**
      * Emitted when one or more OGR supported layers are selected for addition
      * \param layerList list of layers protocol URIs
      * \param encoding encoding
@@ -106,9 +112,12 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      */
     void replaceVectorLayer( const QString &oldId, const QString &source, const QString &name, const QString &provider );
 
-
-    //! Emitted when a progress dialog is shown by the provider dialog
-    void progress( int, int );
+    /**
+     * Emitted when a progress dialog is shown by the provider dialog.
+     *
+     * \deprecated Since QGIS 3.4 this signal is no longer used. Use QgsProxyProgressTask instead to show progress reports.
+     */
+    Q_DECL_DEPRECATED void progress( int, int ) SIP_DEPRECATED;
 
     //! Emitted when a progress dialog is shown by the provider dialog
     void progressMessage( QString message );

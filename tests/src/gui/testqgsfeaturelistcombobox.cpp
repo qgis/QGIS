@@ -18,6 +18,7 @@
 
 #include "qgsapplication.h"
 #include "qgsfeaturelistcombobox.h"
+#include "qgsfilterlineedit.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeaturefiltermodel.h"
 #include "qgsgui.h"
@@ -25,6 +26,8 @@
 #include <memory>
 
 #include <QLineEdit>
+
+class QgsFilterLineEdit;
 
 class TestQgsFeatureListComboBox : public QObject
 {
@@ -41,17 +44,27 @@ class TestQgsFeatureListComboBox : public QObject
     void testSetGetLayer();
     void testSetGetForeignKey();
     void testAllowNull();
+    void testValuesAndSelection();
+    void nullRepresentation();
 
   private:
     void waitForLoaded( QgsFeatureListComboBox *cb );
 
     std::unique_ptr<QgsVectorLayer> mLayer;
+
+    friend class QgsFeatureListComboBox;
 };
 
 void TestQgsFeatureListComboBox::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST-FEATURELIST-COMBOBOX" ) );
+
 }
 
 void TestQgsFeatureListComboBox::cleanupTestCase()
@@ -106,8 +119,7 @@ void TestQgsFeatureListComboBox::testSetGetLayer()
 
 void TestQgsFeatureListComboBox::testSetGetForeignKey()
 {
-  QgsFeatureListComboBox *cb = new QgsFeatureListComboBox();
-  // std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
+  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
 
   QVERIFY( cb->identifierValue().isNull() );
 
@@ -117,7 +129,7 @@ void TestQgsFeatureListComboBox::testSetGetForeignKey()
   emit cb->lineEdit()->textChanged( "ro" );
   QVERIFY( cb->identifierValue().isNull() );
 
-  waitForLoaded( cb );
+  waitForLoaded( cb.get() );
 
   QVERIFY( cb->identifierValue().isNull() );
 
@@ -127,8 +139,60 @@ void TestQgsFeatureListComboBox::testSetGetForeignKey()
 
 void TestQgsFeatureListComboBox::testAllowNull()
 {
-  QVERIFY( false );
+  //QVERIFY( false );
   // Note to self: implement this!
+}
+
+void TestQgsFeatureListComboBox::testValuesAndSelection()
+{
+  QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
+  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
+
+  cb->setSourceLayer( mLayer.get() );
+  cb->setDisplayExpression( QStringLiteral( "\"raccord\"" ) );
+  cb->setAllowNull( true );
+
+  //check if everything is fine:
+  waitForLoaded( cb.get() );
+  QCOMPARE( cb->currentIndex(), cb->nullIndex() );
+  QCOMPARE( cb->currentText(), QStringLiteral( "nope" ) );
+
+  //check if text correct, selected and if the clear button disappeared:
+  cb->mLineEdit->clearValue();
+  waitForLoaded( cb.get() );
+  QCOMPARE( cb->currentIndex(), cb->nullIndex() );
+  QCOMPARE( cb->currentText(), QStringLiteral( "nope" ) );
+  QCOMPARE( cb->lineEdit()->selectedText(), QStringLiteral( "nope" ) );
+  QVERIFY( ! cb->mLineEdit->mClearAction );
+
+  //check if text is selected after receiving focus
+  cb->setFocus();
+  waitForLoaded( cb.get() );
+  QCOMPARE( cb->currentIndex(), cb->nullIndex() );
+  QCOMPARE( cb->currentText(), QStringLiteral( "nope" ) );
+  QCOMPARE( cb->lineEdit()->selectedText(), QStringLiteral( "nope" ) );
+  QVERIFY( ! cb->mLineEdit->mClearAction );
+
+  //check with another entry, clear button needs to be there then:
+  QTest::keyClicks( cb.get(), QStringLiteral( "sleeve" ) );
+  //QTest::keyClick(cb.get(), Qt::Key_Enter );
+  waitForLoaded( cb.get() );
+  QCOMPARE( cb->currentText(), QStringLiteral( "sleeve" ) );
+  QVERIFY( cb->mLineEdit->mClearAction );
+  //QVERIFY( cb->currentIndex() != cb->nullIndex());
+  //QCOMPARE( cb->model()->data( cb->currentModelIndex() ).toString(), QStringLiteral( "sleeve" )  );
+}
+
+void TestQgsFeatureListComboBox::nullRepresentation()
+{
+
+  QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
+  std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
+  cb->setAllowNull( true );
+
+  QCOMPARE( cb->lineEdit()->text(), QStringLiteral( "nope" ) );
+  QCOMPARE( cb->nullIndex(), 0 );
+
 }
 
 void TestQgsFeatureListComboBox::waitForLoaded( QgsFeatureListComboBox *cb )

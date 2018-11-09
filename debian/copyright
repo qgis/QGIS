@@ -166,9 +166,7 @@ Comment: Voronoi diagram calculator/ Delaunay triangulator
  Steve Fortune's homepage: http://netlib.bell-labs.com/cm/cs/who/sjf/index.html
 License: GPL-2+
 
-Files: external//qwtpolar-0.1/*
- external//qwtpolar-1.0/*
- external//qwtpolar-1.1.1/*
+Files: external/qwtpolar-1.1.1/*
 Copyright: 2008, Uwe Rathmann
 Comment: This library is free software; you can redistribute it and/or
  modify it under the terms of the Qwt License, Version 1.0
@@ -304,10 +302,10 @@ License: QT-Commercial or LGPL-2.1 with Digia Qt LGPL Exception 1.1 or GPL-3
 
 Files: src/providers/oracle/ocispatial/qsql_ocispatial.h
  src/providers/oracle/ocispatial/qsqlcachedresult_p.h
- src/providers/spatialite/qspatialite/qsql_spatialite.cpp
- src/providers/spatialite/qspatialite/qsql_spatialite.h
- src/providers/spatialite/qspatialite/qsqlcachedresult_p.h
- src/providers/spatialite/qspatialite/smain.cpp
+ external/qspatialite/qsql_spatialite.cpp
+ external/qspatialite/qsql_spatialite.h
+ external/qspatialite/qsqlcachedresult_p.h
+ external/qspatialite/smain.cpp
 Copyright: 2012, Digia Plc and/or its subsidiary(-ies)
 License: QT-Commercial or LGPL-2.1 with Digia Qt LGPL Exception 1.1 or GPL-3
 

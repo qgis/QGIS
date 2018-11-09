@@ -19,7 +19,6 @@
 #include <osgEarthFeatures/FeatureCursor>
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
-#include "qgsvectorlayer.h"
 
 #include "qgsglobefeatureutils.h"
 
@@ -49,7 +48,7 @@ class QgsGlobeFeatureCursor : public osgEarth::Features::FeatureCursor
       }
       else
       {
-        QgsDebugMsg( "WARNING: Returning NULL feature to osgEarth" );
+        QgsDebugMsg( QStringLiteral( "WARNING: Returning NULL feature to osgEarth" ) );
         return NULL;
       }
     }

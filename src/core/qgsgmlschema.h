@@ -116,7 +116,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
       BoundingBox,
       FeatureMembers, // gml:featureMembers
       FeatureMember, // gml:featureMember
-      Feature,  // feature element containint attrs and geo (inside gml:featureMember)
+      Feature,  // feature element containing attrs and geo (inside gml:featureMember)
       Attribute,
       Geometry
     };

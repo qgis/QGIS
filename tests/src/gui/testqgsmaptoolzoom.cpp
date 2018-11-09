@@ -17,12 +17,13 @@
 #include <QString>
 #include <QCoreApplication>
 #include <QWidget>
-#include <QMouseEvent>
 
-#include <qgsmaptoolzoom.h>
-#include <qgsapplication.h>
-#include <qgsmapcanvas.h>
-#include <qgslogger.h>
+#include "qgsmaptoolzoom.h"
+#include "qgsapplication.h"
+#include "qgsmapcanvas.h"
+#include "qgslogger.h"
+#include "qgsmapmouseevent.h"
+
 
 class TestQgsMapToolZoom : public QObject
 {
@@ -77,9 +78,9 @@ void TestQgsMapToolZoom::zeroDragArea()
   QMouseEvent releases( QEvent::MouseButtonRelease, point,
                         Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
 
-  QgsMapMouseEvent mapPress( 0, &press );
-  QgsMapMouseEvent mapMove( 0, &move );
-  QgsMapMouseEvent mapReleases( 0, &releases );
+  QgsMapMouseEvent mapPress( nullptr, &press );
+  QgsMapMouseEvent mapMove( nullptr, &move );
+  QgsMapMouseEvent mapReleases( nullptr, &releases );
 
   QgsMapToolZoom *tool = new QgsMapToolZoom( canvas, false );
   // Just set some made up extent so that we can zoom.

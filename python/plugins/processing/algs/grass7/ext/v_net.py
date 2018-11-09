@@ -96,15 +96,23 @@ def variableOutput(alg, layers, parameters, context, nocats=True):
     :param context:
     :param nocats: do not add categories.
     """
-    for outputName, typeList in list(layers.items()):
+    for outputName, typeList in layers.items():
         if not isinstance(typeList, list):
             continue
 
-        fileName = alg.parameterAsOutputLayer(parameters, outputName, context)
-        grassName = '{}{}'.format(typeList[0], alg.uniqueSuffix)
-        alg.exportVectorLayer(
-            grassName, fileName, typeList[1], typeList[2],
-            typeList[3])
+        file_name = alg.parameterAsOutputLayer(parameters, outputName, context)
+
+        src_layer = typeList[0]
+        output_type = typeList[1]
+        output_layer_number = typeList[2]
+        no_cats = typeList[3]
+
+        grass_name = '{}{}'.format(src_layer, alg.uniqueSuffix)
+        alg.exportVectorLayer(grassName=grass_name,
+                              fileName=file_name,
+                              layer=output_layer_number,
+                              nocats=no_cats,
+                              dataType=output_type)
 
 
 def processOutputs(alg, parameters, context, feedback):

@@ -223,7 +223,7 @@ class CORE_EXPORT QgsCompositionConverter
     static void readOldDataDefinedPropertyMap( const QDomElement &itemElem,
         QgsPropertyCollection &dataDefinedProperties );
 
-    static QgsProperty readOldDataDefinedProperty( const DataDefinedProperty property, const QDomElement &ddElem );
+    static QgsProperty readOldDataDefinedProperty( DataDefinedProperty property, const QDomElement &ddElem );
 
     static void initPropertyDefinitions();
 

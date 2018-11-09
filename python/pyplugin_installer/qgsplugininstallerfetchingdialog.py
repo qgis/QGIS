@@ -30,6 +30,8 @@ from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 from .ui_qgsplugininstallerfetchingbase import Ui_QgsPluginInstallerFetchingDialogBase
 from .installer_data import repositories
 
+from qgis.gui import QgsGui
+
 
 class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDialogBase):
     # ----------------------------------------- #
@@ -37,6 +39,8 @@ class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDia
     def __init__(self, parent):
         QDialog.__init__(self, parent)
         self.setupUi(self)
+        QgsGui.instance().enableAutoGeometryRestore(self)
+
         self.progressBar.setRange(0, len(repositories.allEnabled()) * 100)
         self.itemProgress = {}
         self.item = {}

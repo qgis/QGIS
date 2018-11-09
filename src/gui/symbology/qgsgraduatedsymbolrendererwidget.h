@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSGRADUATEDSYMBOLRENDERERV2WIDGET_H
-#define QGSGRADUATEDSYMBOLRENDERERV2WIDGET_H
+#ifndef QGSGRADUATEDSYMBOLRENDERERWIDGET_H
+#define QGSGRADUATEDSYMBOLRENDERERWIDGET_H
 
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgis.h"
@@ -22,7 +22,7 @@
 #include "qgsproxystyle.h"
 #include <QStandardItem>
 
-#include "ui_qgsgraduatedsymbolrendererv2widget.h"
+#include "ui_qgsgraduatedsymbolrendererwidget.h"
 #include "qgis_gui.h"
 
 #ifndef SIP_RUN
@@ -170,4 +170,4 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 };
 
 
-#endif // QGSGRADUATEDSYMBOLRENDERERV2WIDGET_H
+#endif // QGSGRADUATEDSYMBOLRENDERERWIDGET_H

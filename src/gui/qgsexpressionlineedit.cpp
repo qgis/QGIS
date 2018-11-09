@@ -55,7 +55,7 @@ void QgsExpressionLineEdit::setMultiLine( bool multiLine )
 
   if ( multiLine && !mCodeEditor )
   {
-    mCodeEditor = new QgsCodeEditorSQL();
+    mCodeEditor = new QgsCodeEditorExpression();
     mCodeEditor->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     delete mLineEdit;
     mLineEdit = nullptr;
@@ -101,6 +101,16 @@ void QgsExpressionLineEdit::setMultiLine( bool multiLine )
 
     setExpression( exp );
   }
+}
+
+QString QgsExpressionLineEdit::expectedOutputFormat() const
+{
+  return mExpectedOutputFormat;
+}
+
+void QgsExpressionLineEdit::setExpectedOutputFormat( const QString &expected )
+{
+  mExpectedOutputFormat = expected;
 }
 
 void QgsExpressionLineEdit::setGeomCalculator( const QgsDistanceArea &da )
@@ -151,6 +161,7 @@ void QgsExpressionLineEdit::editExpression()
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
 
   QgsExpressionBuilderDialog dlg( mLayer, currentExpression, this, QStringLiteral( "generic" ), context );
+  dlg.setExpectedOutputFormat( mExpectedOutputFormat );
   if ( mDa )
   {
     dlg.setGeomCalculator( *mDa );

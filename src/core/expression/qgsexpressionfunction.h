@@ -21,6 +21,8 @@
 #include <QString>
 #include <QVariant>
 #include <QSet>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #include "qgis.h"
 #include "qgis_core.h"
@@ -58,13 +60,16 @@ class CORE_EXPORT QgsExpressionFunction
          * \param name parameter name, used when named parameter are specified in an expression
          * \param optional set to true if parameter should be optional
          * \param defaultValue default value to use for optional parameters
+         * \param isSubExpression set to true if this parameter is a sub-expression
          */
         Parameter( const QString &name,
                    bool optional = false,
-                   const QVariant &defaultValue = QVariant() )
+                   const QVariant &defaultValue = QVariant(),
+                   bool isSubExpression = false )
           : mName( name )
           , mOptional( optional )
           , mDefaultValue( defaultValue )
+          , mIsSubExpression( isSubExpression )
         {}
 
         //! Returns the name of the parameter.
@@ -76,6 +81,13 @@ class CORE_EXPORT QgsExpressionFunction
         //! Returns the default value for the parameter.
         QVariant defaultValue() const { return mDefaultValue; }
 
+        /**
+         * Returns true if parameter argument is a separate sub-expression, and
+         * should not be checked while determining referenced columns for the expression.
+         * \since QGIS 3.2
+         */
+        bool isSubExpression() const { return mIsSubExpression; }
+
         bool operator==( const QgsExpressionFunction::Parameter &other ) const
         {
           return ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 );
@@ -83,8 +95,9 @@ class CORE_EXPORT QgsExpressionFunction
 
       private:
         QString mName;
-        bool mOptional;
+        bool mOptional = false;
         QVariant mDefaultValue;
+        bool mIsSubExpression = false;
     };
 
     //! List of parameters, used for function definition
@@ -485,6 +498,52 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
     std::function < bool( const QgsExpressionNodeFunction *node,  QgsExpression *parent, const QgsExpressionContext *context ) > mPrepareFunc;
     QSet<QString> mReferencedColumns;
     bool mIsStatic = false;
+};
+
+/**
+ * Handles the ``array_foreach(array, expression)`` expression function.
+ * It temporarily appends a new scope to the expression context.
+ *
+ * \ingroup core
+ * \note Not available in Python bindings
+ * \since QGIS 3.4
+ */
+class QgsArrayForeachExpressionFunction : public QgsExpressionFunction
+{
+  public:
+    QgsArrayForeachExpressionFunction();
+
+    bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
+    QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) override;
+
+    QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) override;
+
+    bool prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
+};
+
+/**
+ * Handles the ``array_filter(array, expression)`` expression function.
+ * It temporarily appends a new scope to the expression context.
+ *
+ * \ingroup core
+ * \note Not available in Python bindings
+ * \since QGIS 3.4
+ */
+class QgsArrayFilterExpressionFunction : public QgsExpressionFunction
+{
+  public:
+    QgsArrayFilterExpressionFunction();
+
+    bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
+    QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) override;
+
+    QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) override;
+
+    bool prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
 };
 
 /**

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=QGIS Desktop
+GenericName=Geographic Information System
+Icon=qgis
+TryExec=qgis
+Exec=qgis %F
+Terminal=false
+StartupNotify=false
+Categories=Qt;Education;Science;Geography;
+MimeType=application/x-qgis-project;application/x-qgis-layer-settings;application/x-qgis-layer-definition;application/x-qgis-composer-template;image/tiff;image/jpeg;image/jp2;application/x-raster-aig;application/x-raster-ecw;application/x-raster-mrsid;application/x-mapinfo-mif;application/x-esri-shape;
+Keywords=map;globe;postgis;wms;wfs;ogc;osgeo;

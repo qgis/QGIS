@@ -224,6 +224,9 @@ updateLineEditStyle will re-style (color/font) the line edit depending on conten
     virtual void changeEvent( QEvent *event );
 
 
+    virtual bool eventFilter( QObject *watched, QEvent *event );
+
+
 };
 
 /************************************************************************

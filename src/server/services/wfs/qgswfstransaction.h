@@ -129,7 +129,7 @@ namespace QgsWfs
   QDomDocument createTransactionDocument( QgsServerInterface *serverIface, const QgsProject *project,
                                           const QString &version, const QgsServerRequest &request );
 
-} // samespace QgsWfs
+} // namespace QgsWfs
 
 #endif
 

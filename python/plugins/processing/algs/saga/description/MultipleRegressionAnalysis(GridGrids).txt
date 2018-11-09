@@ -10,6 +10,6 @@ QgsProcessingParameterNumber|P_IN|P in|QgsProcessingParameterNumber.Integer|5|Fa
 QgsProcessingParameterNumber|P_OUT|P out|QgsProcessingParameterNumber.Integer|5|False|None|None
 QgsProcessingParameterRasterDestination|REGRESSION|Regression
 QgsProcessingParameterRasterDestination|RESIDUALS|Residuals
-OutputTable|INFO_COEFF|Details: Coefficients
-OutputTable|INFO_MODEL|Details: Model
-OutputTable|INFO_STEPS|Details: Steps
+QgsProcessingParameterVectorDestination|INFO_COEFF|Details: Coefficients
+QgsProcessingParameterVectorDestination|INFO_MODEL|Details: Model
+QgsProcessingParameterVectorDestination|INFO_STEPS|Details: Steps

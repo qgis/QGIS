@@ -37,7 +37,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     explicit QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
-     * Defines if a title lable should be shown for this widget.
+     * Defines if a title label should be shown for this widget.
      * Only has an effect after widget() has been called at least once.
      *
      * \since QGIS 2.18
@@ -45,7 +45,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     bool showLabel() const;
 
     /**
-     * Defines if a title lable should be shown for this widget.
+     * Defines if a title label should be shown for this widget.
      * Only has an effect after widget() has been called at least once.
      *
      * \since QGIS 2.18
@@ -103,7 +103,9 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     void setVisible( bool visible );
 
   private:
+    void aboutToSave() override;
     QgsRelation mRelation;
+    QgsRelation mNmRelation;
     QgsRelationEditorWidget *mWidget = nullptr;
 };
 

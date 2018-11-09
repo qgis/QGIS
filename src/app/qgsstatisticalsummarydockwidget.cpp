@@ -21,6 +21,8 @@
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatisticalsummary.h"
 #include "qgsvectorlayer.h"
+#include "qgsfeedback.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QTableWidget>
 #include <QAction>
@@ -141,10 +143,10 @@ void QgsStatisticalSummaryDockWidget::copyStatistics()
 
   if ( !rows.isEmpty() )
   {
-    QString text = QString( "%1\t%2\n%3" ).arg( mStatisticsTable->horizontalHeaderItem( 0 )->text(),
+    QString text = QStringLiteral( "%1\t%2\n%3" ).arg( mStatisticsTable->horizontalHeaderItem( 0 )->text(),
                    mStatisticsTable->horizontalHeaderItem( 1 )->text(),
                    rows.join( QStringLiteral( "\n" ) ) );
-    QString html = QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>%1</td></tr></table></body></html>" ).arg( text );
+    QString html = QStringLiteral( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>%1</td></tr></table></body></html>" ).arg( text );
     html.replace( QStringLiteral( "\t" ), QStringLiteral( "</td><td>" ) ).replace( QStringLiteral( "\n" ), QStringLiteral( "</td></tr><tr><td>" ) );
 
     QgsClipboard clipboard;
@@ -154,7 +156,7 @@ void QgsStatisticalSummaryDockWidget::copyStatistics()
 
 void QgsStatisticalSummaryDockWidget::refreshStatistics()
 {
-  if ( !mLayer || ( mFieldExpressionWidget->isExpression() && !mFieldExpressionWidget->isValidExpression() ) )
+  if ( !mLayer || mFieldExpressionWidget->currentField().isEmpty() || ( mFieldExpressionWidget->isExpression() && !mFieldExpressionWidget->isValidExpression() ) )
   {
     mStatisticsTable->setRowCount( 0 );
     return;
@@ -185,7 +187,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
   QgsFeatureIterator fit = QgsVectorLayerUtils::getValuesIterator( mLayer, sourceFieldExp, ok, selectedOnly );
   if ( ok )
   {
-    int featureCount = selectedOnly ? mLayer->selectedFeatureCount() : mLayer->featureCount();
+    long featureCount = selectedOnly ? mLayer->selectedFeatureCount() : mLayer->featureCount();
     std::unique_ptr< QgsStatisticsValueGatherer > gatherer = qgis::make_unique< QgsStatisticsValueGatherer >( mLayer, fit, featureCount, sourceFieldExp );
     switch ( mFieldType )
     {
@@ -198,10 +200,12 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
       case DataType::DateTime:
         connect( gatherer.get(), &QgsStatisticsValueGatherer::taskCompleted, this, &QgsStatisticalSummaryDockWidget::updateDateTimeStatistics );
         break;
+#if 0 // not required for now - we can handle all known types
       default:
         //don't know how to handle stats for this field!
         mStatisticsTable->setRowCount( 0 );
         return;
+#endif
     }
     connect( gatherer.get(), &QgsStatisticsValueGatherer::progressChanged, mCalculatingProgressBar, &QProgressBar::setValue );
     connect( gatherer.get(), &QgsStatisticsValueGatherer::taskTerminated, this, &QgsStatisticalSummaryDockWidget::gathererFinished );
@@ -220,7 +224,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
 void QgsStatisticalSummaryDockWidget::gathererFinished()
 {
   QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
-  // this may have been sent from a gathererer which was canceled previously and we don't care
+  // this may have been sent from a gatherer which was canceled previously and we don't care
   // about it anymore...
   if ( gatherer == mGatherer )
   {
@@ -233,7 +237,10 @@ void QgsStatisticalSummaryDockWidget::gathererFinished()
 
 void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
 {
-  if ( !mGatherer )
+  QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
+  // this may have been sent from a gatherer which was canceled previously and we don't care
+  // about it anymore...
+  if ( gatherer != mGatherer )
     return;
 
   QList< QVariant > variantValues = mGatherer->values();
@@ -299,7 +306,10 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
 
 void QgsStatisticalSummaryDockWidget::updateStringStatistics()
 {
-  if ( !mGatherer )
+  QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
+  // this may have been sent from a gatherer which was canceled previously and we don't care
+  // about it anymore...
+  if ( gatherer != mGatherer )
     return;
 
   QVariantList values = mGatherer->values();
@@ -346,12 +356,14 @@ void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
 
   mLayer = newLayer;
 
+  // clear expression, so that we don't force an unwanted recalculation
+  mFieldExpressionWidget->setExpression( QString() );
+  mFieldExpressionWidget->setLayer( mLayer );
+
   if ( mLayer )
   {
     connect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsStatisticalSummaryDockWidget::layerSelectionChanged );
   }
-
-  mFieldExpressionWidget->setLayer( mLayer );
 
   if ( mGatherer )
   {
@@ -385,8 +397,6 @@ void QgsStatisticalSummaryDockWidget::statActionTriggered( bool checked )
     case DataType::DateTime:
       settingsKey = QStringLiteral( "datetime" );
       break;
-    default:
-      break;
   }
 
   QgsSettings settings;
@@ -419,7 +429,10 @@ void QgsStatisticalSummaryDockWidget::layerSelectionChanged()
 
 void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics()
 {
-  if ( !mGatherer )
+  QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
+  // this may have been sent from a gatherer which was canceled previously and we don't care
+  // about it anymore...
+  if ( gatherer != mGatherer )
     return;
 
   QVariantList values = mGatherer->values();
@@ -543,8 +556,6 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
       }
       break;
     }
-    default:
-      break;
   }
 }
 
@@ -568,4 +579,50 @@ QgsStatisticalSummaryDockWidget::DataType QgsStatisticalSummaryDockWidget::field
   }
 
   return DataType::Numeric;
+}
+
+QgsStatisticsValueGatherer::QgsStatisticsValueGatherer( QgsVectorLayer *layer, const QgsFeatureIterator &fit, long featureCount, const QString &sourceFieldExp )
+  : QgsTask( tr( "Fetching statistic values" ) )
+  , mFeatureIterator( fit )
+  , mFeatureCount( featureCount )
+  , mFieldExpression( sourceFieldExp )
+{
+  mFieldIndex = layer->fields().lookupField( mFieldExpression );
+  if ( mFieldIndex == -1 )
+  {
+    // use expression, already validated
+    mExpression.reset( new QgsExpression( mFieldExpression ) );
+    mContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  }
+}
+
+bool QgsStatisticsValueGatherer::run()
+{
+  QgsFeature f;
+  int current = 0;
+  while ( mFeatureIterator.nextFeature( f ) )
+  {
+    if ( mExpression )
+    {
+      mContext.setFeature( f );
+      QVariant v = mExpression->evaluate( &mContext );
+      mValues << v;
+    }
+    else
+    {
+      mValues << f.attribute( mFieldIndex );
+    }
+
+    if ( isCanceled() )
+    {
+      return false;
+    }
+
+    current++;
+    if ( mFeatureCount > 0 )
+    {
+      setProgress( 100.0 * static_cast< double >( current ) / mFeatureCount );
+    }
+  }
+  return true;
 }

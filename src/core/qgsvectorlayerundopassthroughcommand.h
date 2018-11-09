@@ -20,6 +20,8 @@
 
 #include "qgsvectorlayereditbuffer.h"
 
+class QgsTransaction;
+
 /**
  * \ingroup core
  * \class QgsVectorLayerUndoPassthroughCommand

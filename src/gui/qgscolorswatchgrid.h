@@ -168,7 +168,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
      * Updates the widget's tooltip for a given color index
      * \param colorIdx color index to use for calculating tooltip
      */
-    void updateTooltip( const int colorIdx );
+    void updateTooltip( int colorIdx );
 
     /**
      * Generates a checkboard pattern for transparent color backgrounds

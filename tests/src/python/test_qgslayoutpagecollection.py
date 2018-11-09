@@ -13,7 +13,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-import sip
+from qgis.PyQt import sip
 
 from qgis.core import (QgsUnitTypes,
                        QgsLayout,
@@ -572,6 +572,9 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         p = QgsProject()
         l = QgsLayout(p)
         collection = l.pageCollection()
+
+        # no crash if no pages
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(1, 1)), 0)
 
         # add a page
         page = QgsLayoutItemPage(l)

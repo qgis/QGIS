@@ -200,17 +200,13 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
   protected:
 
-    /**
-     * Handle closing of the window
-     * \param event unused
-     */
-    void closeEvent( QCloseEvent *event ) override;
-
     /*
      * Handle KeyPress event of the window
      * \param event
      */
     void keyPressEvent( QKeyEvent *event ) override;
+
+    bool eventFilter( QObject *object, QEvent *ev ) override;
 
   private slots:
 
@@ -222,15 +218,17 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void runFieldCalculation( QgsVectorLayer *layer, const QString &fieldName, const QString &expression, const QgsFeatureIds &filteredIds = QgsFeatureIds() );
     void updateFieldFromExpression();
     void updateFieldFromExpressionSelected();
-    void viewModeChanged( QgsAttributeForm::Mode mode );
+    void viewModeChanged( QgsAttributeEditorContext::Mode mode );
     void formFilterSet( const QString &filter, QgsAttributeForm::FilterType type );
-    void showContextMenu( QgsActionMenu *menu, const QgsFeatureId fid );
+    void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
+    void toggleDockMode( bool docked );
 
   private:
     QMenu *mMenuActions = nullptr;
     QToolButton *mActionFeatureActions = nullptr;
 
     QgsDockWidget *mDock = nullptr;
+    QDialog *mDialog = nullptr;
     QgsDistanceArea *myDa = nullptr;
 
 
@@ -243,7 +241,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QgsAttributeEditorContext mEditorContext;
 
     void updateMultiEditButtonState();
-    void deleteFeature( const QgsFeatureId fid );
+    void deleteFeature( QgsFeatureId fid );
 
     friend class TestQgsAttributeTable;
 };

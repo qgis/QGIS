@@ -36,6 +36,8 @@ class TestQgsCoordinateTransform: public QObject
     void isValid();
     void isShortCircuited();
     void contextShared();
+    void scaleFactor();
+    void scaleFactor_data();
 
   private:
 
@@ -213,6 +215,42 @@ void TestQgsCoordinateTransform::contextShared()
   QCOMPARE( copy2.sourceDestinationDatumTransforms(), expected );
 }
 
+void TestQgsCoordinateTransform::scaleFactor()
+{
+  QFETCH( QgsCoordinateReferenceSystem, sourceCrs );
+  QFETCH( QgsCoordinateReferenceSystem, destCrs );
+  QFETCH( QgsRectangle, rect );
+  QFETCH( double, factor );
+
+  QgsCoordinateTransform ct( sourceCrs, destCrs, QgsProject::instance() );
+
+  // qDebug() << QString::number(ct.scaleFactor( rect ), 'g', 17) ;
+  QVERIFY( qgsDoubleNear( ct.scaleFactor( rect ), factor ) );
+}
+
+void TestQgsCoordinateTransform::scaleFactor_data()
+{
+  QTest::addColumn<QgsCoordinateReferenceSystem>( "sourceCrs" );
+  QTest::addColumn<QgsCoordinateReferenceSystem>( "destCrs" );
+  QTest::addColumn<QgsRectangle>( "rect" );
+  QTest::addColumn<double>( "factor" );
+
+  QTest::newRow( "Different map units" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 2056 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 4326 )
+      << QgsRectangle( 2550000, 1200000, 2550100, 1200100 )
+      << 1.1223316038381985e-5;
+  QTest::newRow( "Same map units" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 2056 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 21781 )
+      << QgsRectangle( 2550000, 1200000, 2550100, 1200100 )
+      << 1.0000000000248837;
+  QTest::newRow( "Same CRS" )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 2056 )
+      << QgsCoordinateReferenceSystem::fromEpsgId( 2056 )
+      << QgsRectangle( 2550000, 1200000, 2550100, 1200100 )
+      << 1.0;
+}
 
 void TestQgsCoordinateTransform::transformBoundingBox()
 {

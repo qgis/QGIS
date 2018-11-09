@@ -59,6 +59,12 @@ QgsDropMZValuesAlgorithm *QgsDropMZValuesAlgorithm::createInstance() const
   return new QgsDropMZValuesAlgorithm();
 }
 
+bool QgsDropMZValuesAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
+{
+  Q_UNUSED( layer );
+  return false;
+}
+
 void QgsDropMZValuesAlgorithm::initParameters( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DROP_M_VALUES" ), QObject::tr( "Drop M Values" ), false ) );

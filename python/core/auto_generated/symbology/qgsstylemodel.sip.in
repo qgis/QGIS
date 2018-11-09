@@ -1,0 +1,275 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsstylemodel.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsStyleModel: QAbstractItemModel
+{
+%Docstring
+
+A QAbstractItemModel subclass for showing symbol and color ramp entities contained
+within a QgsStyle database.
+
+.. seealso:: :py:class:`QgsStyleProxyModel`
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsstylemodel.h"
+%End
+  public:
+
+    enum Column
+    {
+      Name,
+      Tags,
+    };
+
+    enum Role
+    {
+      TypeRole,
+      TagRole,
+      SymbolTypeRole,
+    };
+
+    explicit QgsStyleModel( QgsStyle *style, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsStyleModel, for the specified ``style`` and ``parent`` object.
+
+The ``style`` object must exist for the lifetime of this model.
+%End
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+     virtual QVariant headerData( int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole ) const;
+     virtual QModelIndex index( int row, int column,
+                       const QModelIndex &parent = QModelIndex() ) const;
+    virtual QModelIndex parent( const QModelIndex &index ) const;
+
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
+
+    void addDesiredIconSize( QSize size );
+%Docstring
+Adds an additional icon ``size`` to generate for Qt.DecorationRole data.
+
+This allows style icons to be generated at an icon size which
+corresponds exactly to the view's icon size in which this model is used.
+%End
+
+};
+
+class QgsStyleProxyModel: QSortFilterProxyModel
+{
+%Docstring
+
+A QSortFilterProxyModel subclass for showing filtered symbol and color ramps entries from a QgsStyle database.
+
+.. seealso:: :py:class:`QgsStyleModel`
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsstylemodel.h"
+%End
+  public:
+
+    explicit QgsStyleProxyModel( QgsStyle *style, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsStyleProxyModel, for the specified ``style`` and ``parent`` object.
+
+The ``style`` object must exist for the lifetime of this model.
+%End
+
+    QString filterString() const;
+%Docstring
+Returns the current filter string, if set.
+
+.. seealso:: :py:func:`setFilterString`
+%End
+
+    QgsStyle::StyleEntity entityFilter() const;
+%Docstring
+Returns the style entity type filter.
+
+.. note::
+
+   This filter is only active if entityFilterEnabled() is true.
+
+.. seealso:: :py:func:`setEntityFilter`
+%End
+
+    void setEntityFilter( QgsStyle::StyleEntity filter );
+%Docstring
+Sets the style entity type ``filter``.
+
+.. note::
+
+   This filter is only active if entityFilterEnabled() is true.
+
+.. seealso:: :py:func:`entityFilter`
+%End
+
+    bool entityFilterEnabled() const;
+%Docstring
+Returns true if filtering by entity type is enabled.
+
+.. seealso:: :py:func:`setEntityFilterEnabled`
+
+.. seealso:: :py:func:`entityFilter`
+%End
+
+    void setEntityFilterEnabled( bool enabled );
+%Docstring
+Sets whether filtering by entity type is ``enabled``.
+
+If ``enabled`` is false, then the value of entityFilter() will have no
+effect on the model filtering.
+
+.. seealso:: :py:func:`entityFilterEnabled`
+
+.. seealso:: :py:func:`setEntityFilter`
+%End
+
+    QgsSymbol::SymbolType symbolType() const;
+%Docstring
+Returns the symbol type filter.
+
+.. note::
+
+   This filter is only active if symbolTypeFilterEnabled() is true, and has
+   no effect on non-symbol entities (i.e. color ramps).
+
+.. seealso:: :py:func:`setSymbolType`
+%End
+
+    void setSymbolType( QgsSymbol::SymbolType type );
+%Docstring
+Sets the symbol ``type`` filter.
+
+.. note::
+
+   This filter is only active if symbolTypeFilterEnabled() is true.
+
+.. seealso:: :py:func:`symbolType`
+%End
+
+    bool symbolTypeFilterEnabled() const;
+%Docstring
+Returns true if filtering by symbol type is enabled.
+
+.. seealso:: :py:func:`setSymbolTypeFilterEnabled`
+
+.. seealso:: :py:func:`symbolType`
+%End
+
+    void setSymbolTypeFilterEnabled( bool enabled );
+%Docstring
+Sets whether filtering by symbol type is ``enabled``.
+
+If ``enabled`` is false, then the value of symbolType() will have no
+effect on the model filtering. This has
+no effect on non-symbol entities (i.e. color ramps).
+
+.. seealso:: :py:func:`symbolTypeFilterEnabled`
+
+.. seealso:: :py:func:`setSymbolType`
+%End
+
+    void setTagId( int id );
+%Docstring
+Sets a tag ``id`` to filter style entities by. Only entities with the given
+tag will be shown in the model.
+
+Set ``id`` to -1 to disable tag filtering.
+
+.. seealso:: :py:func:`tagId`
+%End
+
+    int tagId() const;
+%Docstring
+Returns the tag id used to filter style entities by.
+
+If returned value is -1, then no tag filtering is being conducted.
+
+.. seealso:: :py:func:`setTagId`
+%End
+
+    void setSmartGroupId( int id );
+%Docstring
+Sets a smart group ``id`` to filter style entities by. Only entities within the given
+smart group will be shown in the model.
+
+Set ``id`` to -1 to disable smart group filtering.
+
+.. seealso:: :py:func:`smartGroupId`
+%End
+
+    int smartGroupId() const;
+%Docstring
+Returns the smart group id used to filter style entities by.
+
+If returned value is -1, then no smart group filtering is being conducted.
+
+.. seealso:: :py:func:`setSmartGroupId`
+%End
+
+    virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
+
+
+    bool favoritesOnly() const;
+%Docstring
+Returns true if the model is showing only favorited entities.
+
+.. seealso:: :py:func:`setFavoritesOnly`
+%End
+
+    void setFavoritesOnly( bool favoritesOnly );
+%Docstring
+Sets whether the model should show only favorited entities.
+
+.. seealso:: :py:func:`setFavoritesOnly`
+%End
+
+    void addDesiredIconSize( QSize size );
+%Docstring
+Adds an additional icon ``size`` to generate for Qt.DecorationRole data.
+
+This allows style icons to be generated at an icon size which
+corresponds exactly to the view's icon size in which this model is used.
+%End
+
+  public slots:
+
+    void setFilterString( const QString &filter );
+%Docstring
+Sets a ``filter`` string, such that only symbol entities with names matching the
+specified string will be shown.
+
+.. seealso:: :py:func:`filterString`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsstylemodel.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

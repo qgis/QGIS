@@ -21,6 +21,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include <QWidget>
+#include <memory>
 
 class QgsEditorWidgetRegistry;
 class QgsShortcutsManager;
@@ -31,6 +32,9 @@ class QgsNative;
 class QgsLayoutItemGuiRegistry;
 class QgsWidgetStateHelper;
 class QgsProcessingGuiRegistry;
+class QgsProcessingRecentAlgorithmLog;
+class QgsWindowManagerInterface;
+class QgsDataItemGuiProviderRegistry;
 
 /**
  * \ingroup gui
@@ -97,10 +101,54 @@ class GUI_EXPORT QgsGui
     static QgsProcessingGuiRegistry *processingGuiRegistry();
 
     /**
+     * Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.
+     * \since QGIS 3.4
+     */
+    static QgsProcessingRecentAlgorithmLog *processingRecentAlgorithmLog();
+
+    /**
+     * Returns the global data item GUI provider registry, used for tracking providers which affect the browser
+     * GUI.
+     * \since QGIS 3.6
+     */
+    static QgsDataItemGuiProviderRegistry *dataItemGuiProviderRegistry();
+
+    /**
      * Register the widget to allow its position to be automatically saved and restored when open and closed.
      * Use this to avoid needing to call saveGeometry() and restoreGeometry() on your widget.
      */
     static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
+
+    /**
+     * Returns the global window manager, if set.
+     * \see setWindowManager()
+     * \since QGIS 3.4
+     */
+    static QgsWindowManagerInterface *windowManager();
+
+    /**
+     * Sets the global window \a manager. Ownership is transferred to the QgsGui instance.
+     * \see windowManager()
+     * \since QGIS 3.4
+     */
+    static void setWindowManager( QgsWindowManagerInterface *manager SIP_TRANSFER );
+
+    /**
+     * HIG flags, which indicate the Human Interface Guidelines for the current platform.
+     * \since QGIS 3.4
+    */
+    enum HigFlag
+    {
+      HigMenuTextIsTitleCase = 1 << 0,       //!< Menu action texts should be title case
+      HigDialogTitleIsTitleCase = 1 << 1     //!< Dialog titles should be title case
+    };
+    Q_DECLARE_FLAGS( HigFlags, HigFlag )
+
+    /**
+    * Returns the platform's HIG flags.
+    * \since QGIS 3.4
+    */
+    static QgsGui::HigFlags higFlags();
 
     ~QgsGui();
 
@@ -117,11 +165,16 @@ class GUI_EXPORT QgsGui
     QgsMapLayerActionRegistry *mMapLayerActionRegistry = nullptr;
     QgsLayoutItemGuiRegistry *mLayoutItemGuiRegistry = nullptr;
     QgsProcessingGuiRegistry *mProcessingGuiRegistry = nullptr;
+    QgsProcessingRecentAlgorithmLog *mProcessingRecentAlgorithmLog = nullptr;
+    QgsDataItemGuiProviderRegistry *mDataItemGuiProviderRegistry = nullptr;
+    std::unique_ptr< QgsWindowManagerInterface > mWindowManager;
 
 #ifdef SIP_RUN
     QgsGui( const QgsGui &other );
 #endif
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsGui::HigFlags )
 
 #endif // QGSGUI_H

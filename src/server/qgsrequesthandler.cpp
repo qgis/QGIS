@@ -154,20 +154,6 @@ void QgsRequestHandler::setupParameters()
 {
   const QgsServerRequest::Parameters parameters = mRequest.parameters();
 
-  // SLD
-  QString value = parameters.value( QStringLiteral( "SLD" ) );
-  if ( !value.isEmpty() )
-  {
-    QgsMessageLog::logMessage( QStringLiteral( "http and ftp methods not supported with Qt5." ) );
-  }
-
-  // SLD_BODY
-  value = parameters.value( QStringLiteral( "SLD_BODY" ) );
-  if ( ! value.isEmpty() )
-  {
-    mRequest.setParameter( QStringLiteral( "SLD" ), value );
-  }
-
   //feature info format?
   QString infoFormat = parameters.value( QStringLiteral( "INFO_FORMAT" ) );
   if ( !infoFormat.isEmpty() )
@@ -228,7 +214,7 @@ void QgsRequestHandler::parseInput()
       typedef QPair<QString, QString> pair_t;
       QUrlQuery query( inputString );
       QList<pair_t> items = query.queryItems();
-      Q_FOREACH ( pair_t pair, items )
+      for ( pair_t pair : items )
       {
         // QUrl::fromPercentEncoding doesn't replace '+' with space
         const QString key = QUrl::fromPercentEncoding( pair.first.replace( '+', ' ' ).toUtf8() );

@@ -31,6 +31,9 @@
 // don't redeclare malloc/free
 #define YYINCLUDED_STDLIB_H 1
 
+// maximum number of errors encountered before parser aborts
+#define MAX_ERRORS 10
+
 struct expression_parser_context;
 #include "qgsexpressionparser.hpp"
 
@@ -177,7 +180,10 @@ root: expression { parser_ctx->rootNode = $1; }
     | error expression
         {
             delete $2;
-            yyerrok;
+            if ( parser_ctx->parserErrors.count() < MAX_ERRORS )
+              yyerrok;
+            else
+              YYABORT;
         }
    ;
 
@@ -398,7 +404,7 @@ void exp_error(YYLTYPE* yyloc,expression_parser_context* parser_ctx, const char*
   error.errorMsg = msg;
   error.errorType = parser_ctx->currentErrorType;
   parser_ctx->parserErrors.append(error);
-  // Reest the current error type for the next error.
+  // Reset the current error type for the next error.
   parser_ctx->currentErrorType = QgsExpression::ParserError::Unknown;
 
   parser_ctx->errorMsg = parser_ctx->errorMsg + "\n" + msg;

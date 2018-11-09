@@ -18,7 +18,6 @@
 
 #include <QAbstractItemModel>
 
-#include "qgsvectorlayer.h"
 #include "qgsconditionalstyle.h"
 
 class QgsFieldExpressionValuesGatherer;

@@ -16,6 +16,29 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
+     <item row="4" column="1" colspan="2">
+      <widget class="QLineEdit" name="mSymbolTags"/>
+     </item>
+     <item row="3" column="0" colspan="3">
+      <widget class="QCheckBox" name="mIgnoreXMLTags">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Do not import embedded tags</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1" colspan="2">
+      <widget class="QLabel" name="tagHintLabel">
+       <property name="text">
+        <string>Tip: separate multiple tags with commas</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="fromLabel">
        <property name="text">
@@ -23,30 +46,10 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1" colspan="2">
-      <widget class="QComboBox" name="importTypeCombo"/>
-     </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="locationLabel">
+      <widget class="QLabel" name="mLocationLabel">
        <property name="text">
         <string>Location</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="locationLineEdit"/>
-     </item>
-     <item row="1" column="2">
-      <widget class="QPushButton" name="btnBrowse">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="tagLabel">
-       <property name="text">
-        <string>Additional tag(s)</string>
        </property>
       </widget>
      </item>
@@ -63,27 +66,66 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="0" colspan="3">
-      <widget class="QCheckBox" name="mIgnoreXMLTags">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
+     <item row="0" column="1" colspan="2">
+      <widget class="QComboBox" name="importTypeCombo"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="tagLabel">
        <property name="text">
-        <string>Do not import embedded tags</string>
+        <string>Additional tag(s)</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="1" colspan="2">
-      <widget class="QLineEdit" name="mSymbolTags"/>
-     </item>
-     <item row="5" column="1" colspan="2">
-      <widget class="QLabel" name="tagHintLabel">
-       <property name="text">
-        <string>Tip: separate multiple tags with commas</string>
+     <item row="1" column="1" colspan="2">
+      <widget class="QStackedWidget" name="mLocationStackedEdit">
+       <property name="currentIndex">
+        <number>0</number>
        </property>
+       <widget class="QWidget" name="widget">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QgsFileWidget" name="mImportFileWidget" native="true"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="page">
+        <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLineEdit" name="mUrlLineEdit"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="mButtonFetch">
+           <property name="text">
+            <string>Fetch Items</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </item>
     </layout>
@@ -91,7 +133,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Select symbols to export</string>
+      <string>Select items to export</string>
      </property>
     </widget>
    </item>
@@ -130,9 +172,6 @@
      <property name="viewMode">
       <enum>QListView::IconMode</enum>
      </property>
-     <property name="uniformItemSizes">
-      <bool>true</bool>
-     </property>
      <property name="wordWrap">
       <bool>true</bool>
      </property>
@@ -150,10 +189,16 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>importTypeCombo</tabstop>
-  <tabstop>locationLineEdit</tabstop>
-  <tabstop>btnBrowse</tabstop>
   <tabstop>mFavorite</tabstop>
   <tabstop>mIgnoreXMLTags</tabstop>
   <tabstop>mSymbolTags</tabstop>

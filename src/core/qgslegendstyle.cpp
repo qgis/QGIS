@@ -84,7 +84,7 @@ QString QgsLegendStyle::styleName( Style s )
   switch ( s )
   {
     case Undefined:
-      return QLatin1String( "" );
+      return QString();
     case Hidden:
       return QStringLiteral( "hidden" );
     case Title:
@@ -98,7 +98,7 @@ QString QgsLegendStyle::styleName( Style s )
     case SymbolLabel:
       return QStringLiteral( "symbolLabel" );
   }
-  return QLatin1String( "" );
+  return QString();
 }
 
 QgsLegendStyle::Style QgsLegendStyle::styleFromName( const QString &styleName )
@@ -131,5 +131,5 @@ QString QgsLegendStyle::styleLabel( Style s )
     case SymbolLabel:
       return QObject::tr( "Symbol label" );
   }
-  return QLatin1String( "" );
+  return QString();
 }

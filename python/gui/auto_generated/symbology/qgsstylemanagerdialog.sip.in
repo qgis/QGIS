@@ -12,20 +12,40 @@
 
 class QgsStyleManagerDialog : QDialog
 {
+%Docstring
+
+A dialog allowing users to customize and populate a QgsStyle.
+%End
 
 %TypeHeaderCode
 #include "qgsstylemanagerdialog.h"
 %End
   public:
-    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent /TransferThis/ = 0 );
+
+    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+%Docstring
+Constructor for QgsStyleManagerDialog, with the specified ``parent`` widget and window ``flags``.
+
+The ``style`` argument specifies the linked QgsStyle database. Symbols and objects contained within
+this style will be shown in the dialog, and changes made within the dialog will be applied to ``style``.
+The ``style`` object must last for the lifetime of the dialog.
+%End
 
     static QString addColorRampStatic( QWidget *parent, QgsStyle *style,
                                        QString RampType = QString() );
 %Docstring
-open add color ramp dialog, return color ramp's name if the ramp has been added
+Opens the add color ramp dialog, returning the new color ramp's name if the ramp has been added.
 %End
 
   public slots:
+
+    void activate();
+%Docstring
+Raises, unminimizes and activates this window
+
+.. versionadded:: 3.4
+%End
+
     void addItem();
     void editItem();
     void removeItem();
@@ -192,15 +212,6 @@ Enables or disables the groupTree items for grouping mode
 %Docstring
 sets the text of the item with bold font
 %End
-
-
-
-
-
-
-
-
-
 
 };
 

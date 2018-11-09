@@ -19,6 +19,9 @@
 #include "qgsversioninfo.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
+#include "qgsnative.h"
+#include "qgsfileutils.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -47,7 +50,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
 
   int titleSize = QApplication::fontMetrics().height() * 1.4;
   QLabel *recentProjectsTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "Recent Projects" ) ) );
-  recentProjectsTitle->setContentsMargins( 10, 3, 0, 0 );
+  recentProjectsTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
 
   recentProjectsContainer->layout()->addWidget( recentProjectsTitle );
 
@@ -151,9 +154,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
     QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
     connect( openFolderAction, &QAction::triggered, this, [path]
     {
-      QFileInfo fi( path );
-      QString folder = fi.path();
-      QDesktopServices::openUrl( QUrl::fromLocalFile( folder ) );
+      QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( path );
     } );
     menu->addAction( openFolderAction );
   }
@@ -165,6 +166,16 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
       mModel->recheckProject( index );
     } );
     menu->addAction( rescanAction );
+
+    // add an entry to open the closest existing path to the original project file location
+    // to help users re-find moved/renamed projects!
+    const QString closestPath = QgsFileUtils::findClosestExistingPath( path );
+    QAction *openFolderAction = new QAction( tr( "Open “%1”…" ).arg( QDir::toNativeSeparators( closestPath ) ), menu );
+    connect( openFolderAction, &QAction::triggered, this, [closestPath]
+    {
+      QDesktopServices::openUrl( QUrl::fromLocalFile( closestPath ) );
+    } );
+    menu->addAction( openFolderAction );
   }
   QAction *removeProjectAction = new QAction( tr( "Remove from List" ), menu );
   connect( removeProjectAction, &QAction::triggered, this, [this, index]

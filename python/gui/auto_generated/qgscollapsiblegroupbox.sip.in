@@ -29,6 +29,7 @@ class QgsGroupBoxCollapseButton : QToolButton
   protected:
     virtual void mouseReleaseEvent( QMouseEvent *event );
 
+
 };
 
 

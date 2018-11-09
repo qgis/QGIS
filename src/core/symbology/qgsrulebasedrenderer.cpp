@@ -44,8 +44,6 @@ QgsRuleBasedRenderer::Rule::Rule( QgsSymbol *symbol, int scaleMinDenom, int scal
   , mLabel( label )
   , mDescription( description )
   , mElseRule( elseRule )
-  , mIsActive( true )
-
 {
   if ( mElseRule )
     mFilterExp = QStringLiteral( "ELSE" );
@@ -320,7 +318,7 @@ void QgsRuleBasedRenderer::Rule::toSld( QDomDocument &doc, QDomElement &element,
 
   if ( !mFilterExp.isEmpty() )
   {
-    if ( !props.value( QStringLiteral( "filter" ), QLatin1String( "" ) ).isEmpty() )
+    if ( !props.value( QStringLiteral( "filter" ), QString() ).isEmpty() )
       props[ QStringLiteral( "filter" )] += QLatin1String( " AND " );
     props[ QStringLiteral( "filter" )] += mFilterExp;
   }
@@ -356,9 +354,9 @@ void QgsRuleBasedRenderer::Rule::toSld( QDomDocument &doc, QDomElement &element,
       ruleElem.appendChild( descrElem );
     }
 
-    if ( !props.value( QStringLiteral( "filter" ), QLatin1String( "" ) ).isEmpty() )
+    if ( !props.value( QStringLiteral( "filter" ), QString() ).isEmpty() )
     {
-      QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, props.value( QStringLiteral( "filter" ), QLatin1String( "" ) ) );
+      QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, props.value( QStringLiteral( "filter" ), QString() ) );
     }
 
     QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, props );
@@ -411,9 +409,35 @@ bool QgsRuleBasedRenderer::Rule::startRender( QgsRenderContext &context, const Q
   if ( subfilters.length() > 1 || !subfilters.value( 0 ).isEmpty() )
   {
     if ( subfilters.contains( QStringLiteral( "TRUE" ) ) )
+    {
       sf = QStringLiteral( "TRUE" );
+    }
+    // If we have more than 50 rules (to stay on the safe side) make a binary tree or SQLITE will fail,
+    // see: http://issues.qgis.org/issues/19441
+    else if ( subfilters.count() > 50 )
+    {
+      std::function<QString( const QStringList & )>bt = [ &bt ]( const QStringList & subf )
+      {
+        if ( subf.count( ) == 1 )
+        {
+          return subf.at( 0 );
+        }
+        else if ( subf.count( ) == 2 )
+        {
+          return subf.join( QStringLiteral( ") OR (" ) ).prepend( '(' ).append( ')' );
+        }
+        else
+        {
+          int midpos = static_cast<int>( subf.length() / 2 );
+          return QStringLiteral( "(%1) OR (%2)" ).arg( bt( subf.mid( 0, midpos ) ) ).arg( bt( subf.mid( midpos ) ) );
+        }
+      };
+      sf = bt( subfilters );
+    }
     else
+    {
       sf = subfilters.join( QStringLiteral( ") OR (" ) ).prepend( '(' ).append( ')' );
+    }
   }
 
   // Now join the subfilters with their parent (this) based on if
@@ -693,7 +717,7 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::create( QDomElement &rul
     }
     else
     {
-      QgsDebugMsg( "failed to init a child rule!" );
+      QgsDebugMsg( QStringLiteral( "failed to init a child rule!" ) );
     }
     childRuleElem = childRuleElem.nextSiblingElement( QStringLiteral( "rule" ) );
   }
@@ -716,7 +740,7 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomEleme
 {
   if ( ruleElem.localName() != QLatin1String( "Rule" ) )
   {
-    QgsDebugMsg( QString( "invalid element: Rule element expected, %1 found!" ).arg( ruleElem.tagName() ) );
+    QgsDebugMsg( QStringLiteral( "invalid element: Rule element expected, %1 found!" ).arg( ruleElem.tagName() ) );
     return nullptr;
   }
 
@@ -818,7 +842,7 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomEleme
         break;
 
       default:
-        QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
+        QgsDebugMsg( QStringLiteral( "invalid geometry type: found %1" ).arg( geomType ) );
         return nullptr;
     }
   }
@@ -890,7 +914,7 @@ void QgsRuleBasedRenderer::startRender( QgsRenderContext &context, const QgsFiel
   {
     zLevelsToNormLevels[zLevel] = ++maxNormLevel;
     mRenderQueue.append( RenderLevel( zLevel ) );
-    QgsDebugMsgLevel( QString( "zLevel %1 -> %2" ).arg( zLevel ).arg( maxNormLevel ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "zLevel %1 -> %2" ).arg( zLevel ).arg( maxNormLevel ), 4 );
   }
 
   mRootRule->setNormZLevels( zLevelsToNormLevels );

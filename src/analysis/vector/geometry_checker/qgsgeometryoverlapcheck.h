@@ -19,20 +19,40 @@
 #define QGS_GEOMETRY_OVERLAP_CHECK_H
 
 #include "qgsgeometrycheck.h"
+#include "qgsgeometrycheckerror.h"
+
 
 class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckError
 {
   public:
+
+    struct OverlappedFeature
+    {
+      public:
+        OverlappedFeature( QgsVectorLayer *vl, QgsFeatureId fid )
+          : mLayerId( vl->id() )
+          , mLayerName( vl->name() )
+          , mFeatureId( fid )
+        {}
+
+        QString layerId() const {return mLayerId;}
+        QString layerName() const {return mLayerName;}
+        QgsFeatureId featureId() const {return mFeatureId;}
+        bool operator==( const OverlappedFeature &other ) const {return mLayerId == other.layerId() && mFeatureId == other.featureId();}
+
+      private:
+        QString mLayerId;
+        QString mLayerName;
+        QgsFeatureId mFeatureId;
+    };
+
     QgsGeometryOverlapCheckError( const QgsGeometryCheck *check,
                                   const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
-                                  QgsAbstractGeometry *geometry,
+                                  const QgsGeometry &geometry,
                                   const QgsPointXY &errorLocation,
                                   const QVariant &value,
-                                  const QgsGeometryCheckerUtils::LayerFeature &overlappedFeature )
-      : QgsGeometryCheckError( check, layerFeature.layer().id(), layerFeature.feature().id(), geometry, errorLocation, QgsVertexId(), value, ValueArea )
-      , mOverlappedFeature( qMakePair( overlappedFeature.layer().id(), overlappedFeature.feature().id() ) )
-    { }
-    const QPair<QString, QgsFeatureId> &overlappedFeature() const { return mOverlappedFeature; }
+                                  const QgsGeometryCheckerUtils::LayerFeature &overlappedFeature );
+    const OverlappedFeature &overlappedFeature() const { return mOverlappedFeature; }
 
     bool isEqual( QgsGeometryCheckError *other ) const override
     {
@@ -41,8 +61,8 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
              other->layerId() == layerId() &&
              other->featureId() == featureId() &&
              err->overlappedFeature() == overlappedFeature() &&
-             QgsGeometryCheckerUtils::pointsFuzzyEqual( location(), other->location(), mCheck->getContext()->reducedTolerance ) &&
-             std::fabs( value().toDouble() - other->value().toDouble() ) < mCheck->getContext()->reducedTolerance;
+             QgsGeometryCheckerUtils::pointsFuzzyEqual( location(), other->location(), mCheck->context()->reducedTolerance ) &&
+             std::fabs( value().toDouble() - other->value().toDouble() ) < mCheck->context()->reducedTolerance;
     }
 
     bool closeMatch( QgsGeometryCheckError *other ) const override
@@ -57,38 +77,56 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
       {
         return false;
       }
-      if ( changes.value( mOverlappedFeature.first ).keys().contains( mOverlappedFeature.second ) )
+      if ( changes.value( mOverlappedFeature.layerId() ).keys().contains( mOverlappedFeature.featureId() ) )
       {
         return false;
       }
       return true;
     }
 
-    QString description() const override { return QApplication::translate( "QgsGeometryTypeCheckError", "Overlap with %1:%2" ).arg( mOverlappedFeature.first ).arg( mOverlappedFeature.second ); }
+    QString description() const override;
 
   private:
-    QPair<QString, QgsFeatureId> mOverlappedFeature;
+    OverlappedFeature mOverlappedFeature;
 };
 
 class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
-    QgsGeometryOverlapCheck( QgsGeometryCheckerContext *context, double thresholdMapUnits )
-      : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PolygonGeometry}, context )
-    , mThresholdMapUnits( thresholdMapUnits )
-    {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
-    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
-    QStringList getResolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Overlap" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometryOverlapCheck" ); }
 
     enum ResolutionMethod { Subtract, NoChange };
 
+    /**
+     * Checks for overlapping polygons.
+     *
+     * In \a configuration a maxOverlapArea parameter can be passed. In case this parameter is set
+     * to something else than 0.0, the error will only be reported if the overlapping area is smaller
+     * than maxOverlapArea.
+     * Overlapping areas smaller than the reducedTolerance parameter of the \a context are ignored.
+     */
+    QgsGeometryOverlapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
+    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
+    QStringList resolutionMethods() const override;
+
+    QString description() const override;
+    QString id() const override;
+    QgsGeometryCheck::Flags flags() const override;
+    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
+
+///@cond private
+    static QString factoryDescription() SIP_SKIP;
+    static QString factoryId() SIP_SKIP;
+    static QgsGeometryCheck::Flags factoryFlags() SIP_SKIP;
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP;
+    static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
+///@endcond private
+
   private:
-    double mThresholdMapUnits;
+    const double mOverlapThresholdMapUnits;
+
 };
 
 #endif // QGS_GEOMETRY_OVERLAP_CHECK_H

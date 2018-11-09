@@ -23,9 +23,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsproperty.h"
 #include "qgisapp.h"
+#include "qgsmapmouseevent.h"
+
 
 #include <QGraphicsPixmapItem>
-#include <QMouseEvent>
+
 
 QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas *canvas )
   : QgsMapToolPointSymbol( canvas )
@@ -171,7 +173,7 @@ void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QgsMapMouseEvent *e )
     }
     else
     {
-      rotation = ( int )mCurrentRotationFeature;
+      rotation = static_cast<int>( mCurrentRotationFeature );
     }
 
     QSet<int>::const_iterator it = mCurrentRotationAttributes.constBegin();

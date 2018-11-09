@@ -31,6 +31,7 @@ import warnings
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QMenu, QAction, QInputDialog
 from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
@@ -96,20 +97,27 @@ class ExtentSelectionPanel(BASE, WIDGET):
 
     def selectExtent(self):
         popupmenu = QMenu()
+        useCanvasExtentAction = QAction(
+            QCoreApplication.translate("ExtentSelectionPanel", 'Use Canvas Extent'),
+            self.btnSelect)
         useLayerExtentAction = QAction(
-            self.tr('Use layer/canvas extent'), self.btnSelect)
+            QCoreApplication.translate("ExtentSelectionPanel", 'Use Layer Extent…'),
+            self.btnSelect)
         selectOnCanvasAction = QAction(
-            self.tr('Select extent on canvas'), self.btnSelect)
+            self.tr('Select Extent on Canvas'), self.btnSelect)
 
-        popupmenu.addAction(useLayerExtentAction)
+        popupmenu.addAction(useCanvasExtentAction)
         popupmenu.addAction(selectOnCanvasAction)
+        popupmenu.addSeparator()
+        popupmenu.addAction(useLayerExtentAction)
 
         selectOnCanvasAction.triggered.connect(self.selectOnCanvas)
         useLayerExtentAction.triggered.connect(self.useLayerExtent)
+        useCanvasExtentAction.triggered.connect(self.useCanvasExtent)
 
         if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
             useMincoveringExtentAction = QAction(
-                self.tr('Use min covering extent from input layers'),
+                self.tr('Use Min Covering Extent from Input Layers'),
                 self.btnSelect)
             useMincoveringExtentAction.triggered.connect(
                 self.useMinCoveringExtent)
@@ -121,11 +129,8 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.leText.setText('')
 
     def useLayerExtent(self):
-        CANVAS_KEY = 'Use canvas extent'
         extentsDict = {}
-        extentsDict[CANVAS_KEY] = {"extent": iface.mapCanvas().extent(),
-                                   "authid": iface.mapCanvas().mapSettings().destinationCrs().authid()}
-        extents = [CANVAS_KEY]
+        extents = []
         layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
         for layer in layers:
             authid = layer.crs().authid()
@@ -137,9 +142,13 @@ class ExtentSelectionPanel(BASE, WIDGET):
             extents.append(layerName)
             extentsDict[layerName] = {"extent": layer.extent(), "authid": authid}
         (item, ok) = QInputDialog.getItem(self, self.tr('Select Extent'),
-                                          self.tr('Use extent from'), extents, False)
+                                          self.tr('Use extent from'), extents, 0, False)
         if ok:
             self.setValueFromRect(QgsReferencedRectangle(extentsDict[item]["extent"], QgsCoordinateReferenceSystem(extentsDict[item]["authid"])))
+
+    def useCanvasExtent(self):
+        self.setValueFromRect(QgsReferencedRectangle(iface.mapCanvas().extent(),
+                                                     iface.mapCanvas().mapSettings().destinationCrs()))
 
     def selectOnCanvas(self):
         canvas = iface.mapCanvas()

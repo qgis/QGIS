@@ -16,6 +16,7 @@
 #include "qgsfeaturefiltermodel.h"
 #include "qgsfeaturefiltermodel_p.h"
 
+#include "qgsvectorlayer.h"
 #include "qgsconditionalstyle.h"
 
 QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
@@ -222,7 +223,7 @@ void QgsFeatureFilterModel::updateCompleter()
     std::sort( entries.begin(), entries.end(), []( const Entry & a, const Entry & b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
 
     if ( mAllowNull )
-      entries.prepend( Entry( QVariant( QVariant::Int ), tr( "NULL" ), QgsFeature() ) );
+      entries.prepend( Entry( QVariant( QVariant::Int ), QgsApplication::nullRepresentation(), QgsFeature() ) );
 
     const int newEntriesSize = entries.size();
 
@@ -255,12 +256,7 @@ void QgsFeatureFilterModel::updateCompleter()
       if ( mExtraIdentifierValueIndex != 0 )
       {
         beginMoveRows( QModelIndex(), mExtraIdentifierValueIndex, mExtraIdentifierValueIndex, QModelIndex(), 0 );
-#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
-        Entry extraEntry = mEntries.takeAt( mExtraIdentifierValueIndex );
-        mEntries.prepend( extraEntry );
-#else
         mEntries.move( mExtraIdentifierValueIndex, 0 );
-#endif
         endMoveRows();
       }
       firstRow = 1;
@@ -432,7 +428,7 @@ void QgsFeatureFilterModel::setExtraIdentifierValueUnguarded( const QVariant &ex
   {
     beginInsertRows( QModelIndex(), 0, 0 );
     if ( extraIdentifierValue.isNull() )
-      mEntries.prepend( Entry( QVariant( QVariant::Int ), QStringLiteral( "%1" ).arg( tr( "NULL" ) ), QgsFeature() ) );
+      mEntries.prepend( Entry( QVariant( QVariant::Int ), QgsApplication::nullRepresentation( ), QgsFeature() ) );
     else
       mEntries.prepend( Entry( extraIdentifierValue, QStringLiteral( "(%1)" ).arg( extraIdentifierValue.toString() ), QgsFeature() ) );
     endInsertRows();
@@ -532,7 +528,7 @@ QVariant QgsFeatureFilterModel::extraIdentifierValue() const
 
 void QgsFeatureFilterModel::setExtraIdentifierValue( const QVariant &extraIdentifierValue )
 {
-  if ( extraIdentifierValue == mExtraIdentifierValue && extraIdentifierValue.isNull() == mExtraIdentifierValue.isNull() && mExtraIdentifierValue.isValid() )
+  if ( qgsVariantEqual( extraIdentifierValue, mExtraIdentifierValue ) && mExtraIdentifierValue.isValid() )
     return;
 
   if ( mIsSettingExtraIdentifierValue )

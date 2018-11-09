@@ -22,9 +22,9 @@
 #include "qgis_sip.h"
 
 #include "qgsexpressioncontext.h"
-#include "qgsfeature.h"
-#include "qgsmessagebar.h"
 #include "qgsrectangle.h"
+#include "qgsfeatureid.h"
+#include "qgsgeometry.h"
 #include "qgis.h"
 
 #include <QDomDocument>
@@ -544,6 +544,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * context scope for the canvas.
      * \param scope new expression context scope
      * \see expressionContextScope()
+     * \see defaultExpressionContextScope()
      * \since QGIS 2.12
      */
     void setExpressionContextScope( const QgsExpressionContextScope &scope ) { mExpressionContextScope = scope; }
@@ -553,6 +554,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * into the expression context used for rendering the map, and can be used to apply specific variable
      * overrides for expression evaluation for the map canvas render.
      * \see setExpressionContextScope()
+     * \see defaultExpressionContextScope()
      * \since QGIS 2.12
      */
     QgsExpressionContextScope &expressionContextScope() { return mExpressionContextScope; }
@@ -560,10 +562,19 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
      * Returns a const reference to the expression context scope for the map canvas.
      * \see setExpressionContextScope()
+     * \see defaultExpressionContextScope()
      * \note not available in Python bindings
      * \since QGIS 2.12
      */
     const QgsExpressionContextScope &expressionContextScope() const { return mExpressionContextScope; } SIP_SKIP
+
+    /**
+     * Creates a new scope which contains default variables and functions relating to the map canvas.
+     * \see expressionContextScope()
+     * \see setExpressionContextScope()
+     * \since QGIS 3.4
+     */
+    QgsExpressionContextScope *defaultExpressionContextScope() SIP_FACTORY;
 
     /**
      * Sets the segmentation tolerance applied when rendering curved geometries
@@ -900,15 +911,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void startPreviewJob( int number );
 
   private:
-    /// this class is non-copyable
-
-    /**
-       \note
-
-       Otherwise QScopedPointer would pass the object responsibility on to the
-       copy like a hot potato leaving the copyer in a weird state.
-     */
-    QgsMapCanvas( QgsMapCanvas const & );
 
     //! encompases all map settings necessary for map rendering
     QgsMapSettings mSettings;
@@ -926,7 +928,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool mRenderFlag = true;
 
     //! current layer in legend
-    QgsMapLayer *mCurrentLayer = nullptr;
+    QPointer< QgsMapLayer > mCurrentLayer;
 
     //! graphics scene manages canvas items
     QGraphicsScene *mScene = nullptr;
@@ -999,11 +1001,19 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     QString mTheme;
 
+    QgsPointXY mCursorPoint;
+
     bool mAnnotationsVisible = true;
 
     bool mUsePreviewJobs = false;
 
     QHash< QString, int > mLastLayerRenderTime;
+
+    /**
+     * Returns the last cursor position on the canvas in geographical coordinates
+     * \since QGIS 3.4
+     */
+    QgsPointXY cursorPoint() const;
 
     /**
      * Force a resize of the map canvas item

@@ -43,4 +43,4 @@ def processOutputs(alg, parameters, context, feedback):
     if alg.parameterAsBool(parameters, '-l', context):
         dataType = 'line'
 
-    alg.exportVectorLayer(grassName, fileName, dataType)
+    alg.exportVectorLayer(grassName, fileName, dataType=dataType)

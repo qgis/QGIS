@@ -120,8 +120,8 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
   };
 
 
-  double minCoord = DBL_MAX;
-  double maxCoord = -DBL_MAX;
+  double minCoord = std::numeric_limits<double>::max();
+  double maxCoord = std::numeric_limits<double>::lowest();
   QMap< double, QgsLayoutItem * > itemCoords;
   for ( QgsLayoutItem *item : items )
   {

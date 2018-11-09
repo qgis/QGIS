@@ -21,13 +21,15 @@
 #include "ui_qgsmapsavedialog.h"
 
 #include "qgisapp.h"
-#include "qgsmapcanvas.h"
 #include "qgsmapdecoration.h"
 #include "qgsrectangle.h"
 #include "qgshelp.h"
 
 #include <QDialog>
 #include <QSize>
+
+class QgsMapCanvas;
+
 
 /**
  * \ingroup app
@@ -83,7 +85,7 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
 
   private:
 
-    void lockChanged( const bool locked );
+    void lockChanged( bool locked );
     void copyToClipboard();
 
     void updateDpi( int dpi );

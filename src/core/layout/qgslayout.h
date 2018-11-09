@@ -166,7 +166,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * If \a includeLockedItems is set to true, then locked items will also be included
      * in the returned list.
      */
-    QList<QgsLayoutItem *> selectedLayoutItems( const bool includeLockedItems = true );
+    QList<QgsLayoutItem *> selectedLayoutItems( bool includeLockedItems = true );
 
     /**
      * Clears any selected items and sets \a item as the current selection.
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * z order list. This should be called after any stacking changes
      * which deferred z-order updates.
      */
-    void updateZValues( const bool addUndoCommands = true );
+    void updateZValues( bool addUndoCommands = true );
 
     /**
      * Returns the layout item with matching \a uuid unique identifier, or a nullptr
@@ -304,13 +304,13 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns the topmost layout item at a specified \a position. Ignores paper items.
      * If \a ignoreLocked is set to true any locked items will be ignored.
      */
-    QgsLayoutItem *layoutItemAt( QPointF position, const bool ignoreLocked = false ) const;
+    QgsLayoutItem *layoutItemAt( QPointF position, bool ignoreLocked = false ) const;
 
     /**
      * Returns the topmost layout item at a specified \a position which is below a specified \a item. Ignores paper items.
      * If \a ignoreLocked is set to true any locked items will be ignored.
      */
-    QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked = false ) const;
+    QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, bool ignoreLocked = false ) const;
 
     /**
      * Sets the native measurement \a units for the layout. These also form the default unit
@@ -333,7 +333,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertFromLayoutUnits()
      * \see units()
     */
-    double convertToLayoutUnits( const QgsLayoutMeasurement &measurement ) const;
+    double convertToLayoutUnits( QgsLayoutMeasurement measurement ) const;
 
     /**
      * Converts a size into the layout's native units.
@@ -357,7 +357,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertToLayoutUnits()
      * \see units()
     */
-    QgsLayoutMeasurement convertFromLayoutUnits( const double length, const QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutMeasurement convertFromLayoutUnits( double length, QgsUnitTypes::LayoutUnit unit ) const;
 
     /**
      * Converts a \a size from the layout's native units to a specified target \a unit.
@@ -365,7 +365,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertToLayoutUnits()
      * \see units()
     */
-    QgsLayoutSize convertFromLayoutUnits( const QSizeF &size, const QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutSize convertFromLayoutUnits( QSizeF size, QgsUnitTypes::LayoutUnit unit ) const;
 
     /**
      * Converts a \a point from the layout's native units to a specified target \a unit.
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertToLayoutUnits()
      * \see units()
     */
-    QgsLayoutPoint convertFromLayoutUnits( const QPointF &point, const QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutPoint convertFromLayoutUnits( QPointF point, QgsUnitTypes::LayoutUnit unit ) const;
 
     /**
      * Returns a reference to the layout's render context, which stores information relating to the

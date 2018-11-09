@@ -24,6 +24,7 @@
 #include "qgis.h"
 #include "qgswkbtypes.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsvectorlayer.h"
 
 #include <limits>
 
@@ -39,14 +40,14 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
     return false;
 
   QgsFeature f;
-  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setNoAttributes() ).nextFeature( f ) || !f.hasGeometry() )
     return false; // geometry not found
 
   QgsGeometry geometry = f.geometry();
 
   geometry.insertVertex( x, y, beforeVertex );
 
-  mLayer->editBuffer()->changeGeometry( atFeatureId, geometry );
+  mLayer->changeGeometry( atFeatureId, geometry );
   return true;
 }
 
@@ -56,14 +57,14 @@ bool QgsVectorLayerEditUtils::insertVertex( const QgsPoint &point, QgsFeatureId 
     return false;
 
   QgsFeature f;
-  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setNoAttributes() ).nextFeature( f ) || !f.hasGeometry() )
     return false; // geometry not found
 
   QgsGeometry geometry = f.geometry();
 
   geometry.insertVertex( point, beforeVertex );
 
-  mLayer->editBuffer()->changeGeometry( atFeatureId, geometry );
+  mLayer->changeGeometry( atFeatureId, geometry );
   return true;
 }
 
@@ -79,14 +80,14 @@ bool QgsVectorLayerEditUtils::moveVertex( const QgsPoint &p, QgsFeatureId atFeat
     return false;
 
   QgsFeature f;
-  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setNoAttributes() ).nextFeature( f ) || !f.hasGeometry() )
     return false; // geometry not found
 
   QgsGeometry geometry = f.geometry();
 
   geometry.moveVertex( p, atVertex );
 
-  mLayer->editBuffer()->changeGeometry( atFeatureId, geometry );
+  mLayer->changeGeometry( atFeatureId, geometry );
   return true;
 }
 
@@ -97,7 +98,7 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId f
     return QgsVectorLayer::InvalidLayer;
 
   QgsFeature f;
-  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setNoAttributes() ).nextFeature( f ) || !f.hasGeometry() )
     return QgsVectorLayer::FetchFeatureFailed; // geometry not found
 
   QgsGeometry geometry = f.geometry();
@@ -111,7 +112,7 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId f
     geometry.set( nullptr );
   }
 
-  mLayer->editBuffer()->changeGeometry( featureId, geometry );
+  mLayer->changeGeometry( featureId, geometry );
   return !geometry.isNull() ? QgsVectorLayer::Success : QgsVectorLayer::EmptyGeometry;
 }
 
@@ -158,7 +159,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addRing( QgsCurve *ring, c
     if ( addRingReturnCode == 0 )
       if ( addRingReturnCode == QgsGeometry::Success )
       {
-        mLayer->editBuffer()->changeGeometry( f.id(), g );
+        mLayer->changeGeometry( f.id(), g );
         if ( modifiedFeatureId )
           *modifiedFeatureId = f.id();
 
@@ -189,7 +190,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( const QgsPointSeq
   QgsGeometry geometry;
   bool firstPart = false;
   QgsFeature f;
-  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setNoAttributes() ).nextFeature( f ) )
     return QgsGeometry::OperationResult::AddPartSelectedGeometryNotFound; //not found
 
   if ( !f.hasGeometry() )
@@ -211,7 +212,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( const QgsPointSeq
       //convert back to single part if required by layer
       geometry.convertToSingleType();
     }
-    mLayer->editBuffer()->changeGeometry( featureId, geometry );
+    mLayer->changeGeometry( featureId, geometry );
   }
   return errorCode;
 }
@@ -224,7 +225,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, Q
   QgsGeometry geometry;
   bool firstPart = false;
   QgsFeature f;
-  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setNoAttributes() ).nextFeature( f ) )
     return QgsGeometry::AddPartSelectedGeometryNotFound;
 
   if ( !f.hasGeometry() )
@@ -246,7 +247,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, Q
       //convert back to single part if required by layer
       geometry.convertToSingleType();
     }
-    mLayer->editBuffer()->changeGeometry( featureId, geometry );
+    mLayer->changeGeometry( featureId, geometry );
   }
   return errorCode;
 }
@@ -258,7 +259,7 @@ int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx
     return 1;
 
   QgsFeature f;
-  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.hasGeometry() )
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setNoAttributes() ).nextFeature( f ) || !f.hasGeometry() )
     return 1; //geometry not found
 
   QgsGeometry geometry = f.geometry();
@@ -266,7 +267,7 @@ int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx
   int errorCode = geometry.translate( dx, dy );
   if ( errorCode == 0 )
   {
-    mLayer->editBuffer()->changeGeometry( featureId, geometry );
+    mLayer->changeGeometry( featureId, geometry );
   }
   return errorCode;
 }
@@ -347,13 +348,13 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVect
     if ( splitFunctionReturn == QgsGeometry::OperationResult::Success )
     {
       //change this geometry
-      mLayer->editBuffer()->changeGeometry( feat.id(), featureGeom );
+      mLayer->changeGeometry( feat.id(), featureGeom );
 
       //insert new features
       for ( int i = 0; i < newGeometries.size(); ++i )
       {
         QgsFeature f = QgsVectorLayerUtils::createFeature( mLayer, newGeometries.at( i ), feat.attributes().toMap() );
-        mLayer->editBuffer()->addFeature( f );
+        mLayer->addFeature( f );
       }
 
       if ( topologicalEditing )
@@ -469,7 +470,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QVector<
 
       if ( !addPartRet )
       {
-        mLayer->editBuffer()->changeGeometry( feat.id(), featureGeom );
+        mLayer->changeGeometry( feat.id(), featureGeom );
       }
 
       if ( topologicalEditing )
@@ -631,7 +632,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
   QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest()
                            .setFilterRect( searchRect )
                            .setFlags( QgsFeatureRequest::ExactIntersect )
-                           .setSubsetOfAttributes( QgsAttributeList() ) );
+                           .setNoAttributes() );
 
   QMap<QgsFeatureId, QgsGeometry> features;
   QMap<QgsFeatureId, int> segments;
@@ -666,7 +667,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
 
     if ( !mLayer->insertVertex( p.x(), p.y(), fid, segmentAfterVertex ) )
     {
-      QgsDebugMsg( "failed to insert topo point" );
+      QgsDebugMsg( QStringLiteral( "failed to insert topo point" ) );
     }
   }
 

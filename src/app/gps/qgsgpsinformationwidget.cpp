@@ -37,6 +37,8 @@
 #include "qgswkbptr.h"
 #include "qgssettings.h"
 #include "qgsstatusbar.h"
+#include "gmath.h"
+#include "qgsmapcanvas.h"
 
 // QWT Charting widget
 
@@ -60,13 +62,18 @@
 #include <QPixmap>
 #include <QPen>
 
+
+const int MAXACQUISITIONINTERVAL = 3000; // max gps information acquisition suspension interval (in seconds)
+const int MAXDISTANCETHRESHOLD = 200; // max gps distance threshold (in meters)
+
+
 QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )
   , mpCanvas( thepCanvas )
 {
   setupUi( this );
   connect( mConnectButton, &QPushButton::toggled, this, &QgsGpsInformationWidget::mConnectButton_toggled );
-  connect( mBtnTrackColor, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnTrackColor_clicked );
+  connect( mBtnTrackColor, &QgsColorButton::colorChanged, this, &QgsGpsInformationWidget::trackColorChanged );
   connect( mSpinTrackWidth, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsGpsInformationWidget::mSpinTrackWidth_valueChanged );
   connect( mBtnPosition, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnPosition_clicked );
   connect( mBtnSignal, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSignal_clicked );
@@ -82,6 +89,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWid
   mpLastLayer = nullptr;
 
   mLastGpsPosition = QgsPointXY( 0.0, 0.0 );
+  mLastNmeaPosition.lat = nmea_degree2radian( 0.0 );
+  mLastNmeaPosition.lon = nmea_degree2radian( 0.0 );
 
   mpMapMarker = nullptr;
   mpRubberBand = nullptr;
@@ -179,12 +188,14 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWid
 #endif
   mpPlot->replot();
 
+  mBtnTrackColor->setAllowOpacity( true );
+  mBtnTrackColor->setColorDialogTitle( tr( "Track Color" ) );
   // Restore state
   QgsSettings mySettings;
   mGroupShowMarker->setChecked( mySettings.value( QStringLiteral( "gps/showMarker" ), "true" ).toBool() );
   mSliderMarkerSize->setValue( mySettings.value( QStringLiteral( "gps/markerSize" ), "12" ).toInt() );
   mSpinTrackWidth->setValue( mySettings.value( QStringLiteral( "gps/trackWidth" ), "2" ).toInt() );
-  mTrackColor = mySettings.value( QStringLiteral( "gps/trackColor" ), QColor( Qt::red ) ).value<QColor>();
+  mBtnTrackColor->setColor( mySettings.value( QStringLiteral( "gps/trackColor" ), QColor( Qt::red ) ).value<QColor>() );
   QString myPortMode = mySettings.value( QStringLiteral( "gps/portMode" ), "scanPorts" ).toString();
 
   mSpinMapExtentMultiplier->setValue( mySettings.value( QStringLiteral( "gps/mapExtentMultiplier" ), "50" ).toInt() );
@@ -250,11 +261,40 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWid
   //SLM - added functionality
   mLogFile = nullptr;
 
-  connect( QgisApp::instance()->layerTreeView(), &QgsLayerTreeView::currentLayerChanged,
+  connect( QgisApp::instance(), &QgisApp::activeLayerChanged,
            this, &QgsGpsInformationWidget::updateCloseFeatureButton );
 
   mStackedWidget->setCurrentIndex( 3 ); // force to Options
   mBtnPosition->setFocus( Qt::TabFocusReason );
+
+  mAcquisitionIntValidator = new QIntValidator( 0, MAXACQUISITIONINTERVAL, this );
+  mDistanceThresholdValidator = new QIntValidator( 0, MAXDISTANCETHRESHOLD, this );
+  mAcquisitionTimer = std::unique_ptr<QTimer>( new QTimer( this ) );
+  mAcquisitionTimer->setSingleShot( true );
+  mCboAcquisitionInterval->addItem( QStringLiteral( "0" ), 0 );
+  mCboAcquisitionInterval->addItem( QStringLiteral( "2" ), 2 );
+  mCboAcquisitionInterval->addItem( QStringLiteral( "5" ), 5 );
+  mCboAcquisitionInterval->addItem( QStringLiteral( "10" ), 10 );
+  mCboAcquisitionInterval->addItem( QStringLiteral( "15" ), 15 );
+  mCboAcquisitionInterval->addItem( QStringLiteral( "30" ), 30 );
+  mCboAcquisitionInterval->addItem( QStringLiteral( "60" ), 60 );
+  mCboDistanceThreshold->addItem( QStringLiteral( "0" ), 0 );
+  mCboDistanceThreshold->addItem( QStringLiteral( "3" ), 3 );
+  mCboDistanceThreshold->addItem( QStringLiteral( "5" ), 5 );
+  mCboDistanceThreshold->addItem( QStringLiteral( "10" ), 10 );
+  mCboDistanceThreshold->addItem( QStringLiteral( "15" ), 15 );
+
+  mCboAcquisitionInterval->setValidator( mAcquisitionIntValidator );
+  mCboDistanceThreshold->setValidator( mDistanceThresholdValidator );
+  mCboAcquisitionInterval->setCurrentText( mySettings.value( QStringLiteral( "gps/acquisitionInterval" ), 0 ).toString() );
+  mCboDistanceThreshold->setCurrentText( mySettings.value( QStringLiteral( "gps/distanceThreshold" ), 0 ).toString() );
+
+  connect( mAcquisitionTimer.get(), &QTimer::timeout,
+           this, &QgsGpsInformationWidget::switchAcquisition );
+  connect( mCboAcquisitionInterval, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ),
+           this, &QgsGpsInformationWidget::cboAcquisitionIntervalEdited );
+  connect( mCboDistanceThreshold, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ),
+           this, &QgsGpsInformationWidget::cboDistanceThresholdEdited );
 }
 
 QgsGpsInformationWidget::~QgsGpsInformationWidget()
@@ -274,11 +314,13 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   QgsSettings mySettings;
   mySettings.setValue( QStringLiteral( "gps/lastPort" ), mCboDevices->currentData().toString() );
   mySettings.setValue( QStringLiteral( "gps/trackWidth" ), mSpinTrackWidth->value() );
-  mySettings.setValue( QStringLiteral( "gps/trackColor" ), mTrackColor );
+  mySettings.setValue( QStringLiteral( "gps/trackColor" ), mBtnTrackColor->color() );
   mySettings.setValue( QStringLiteral( "gps/markerSize" ), mSliderMarkerSize->value() );
   mySettings.setValue( QStringLiteral( "gps/showMarker" ), mGroupShowMarker->isChecked() );
   mySettings.setValue( QStringLiteral( "gps/autoAddVertices" ), mCbxAutoAddVertices->isChecked() );
   mySettings.setValue( QStringLiteral( "gps/autoCommit" ), mCbxAutoCommit->isChecked() );
+  mySettings.setValue( QStringLiteral( "gps/acquisitionInterval" ), mCboAcquisitionInterval->currentText() );
+  mySettings.setValue( QStringLiteral( "gps/distanceThreshold" ), mCboDistanceThreshold->currentText() );
 
   mySettings.setValue( QStringLiteral( "gps/mapExtentMultiplier" ), mSpinMapExtentMultiplier->value() );
 
@@ -325,18 +367,18 @@ void QgsGpsInformationWidget::mSpinTrackWidth_valueChanged( int value )
   if ( mpRubberBand )
   {
     mpRubberBand->setWidth( value );
+    mpRubberBand->update();
   }
 }
 
-void QgsGpsInformationWidget::mBtnTrackColor_clicked()
+void QgsGpsInformationWidget::trackColorChanged( const QColor &color )
 {
-  QColor myColor = QColorDialog::getColor( mTrackColor, this );
-  if ( myColor.isValid() )  // check that a color was picked
+  if ( color.isValid() )  // check that a color was picked
   {
-    mTrackColor = myColor;
     if ( mpRubberBand )
     {
-      mpRubberBand->setColor( myColor );
+      mpRubberBand->setColor( color );
+      mpRubberBand->update();
     }
   }
 }
@@ -429,7 +471,7 @@ void QgsGpsInformationWidget::connectGps()
   }
 
   mGPSPlainTextEdit->appendPlainText( tr( "Connecting…" ) );
-  showStatusBarMessage( tr( "Connecting to GPS device…" ) );
+  showStatusBarMessage( tr( "Connecting to GPS device %1…" ).arg( port ) );
 
   QgsGpsDetector *detector = new QgsGpsDetector( port );
   connect( detector, static_cast < void ( QgsGpsDetector::* )( QgsGpsConnection * ) > ( &QgsGpsDetector::detected ), this, &QgsGpsInformationWidget::connected );
@@ -535,6 +577,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   }
   else  // unknown status (not likely)
   {
+
   }
 
   // set visual status indicator -- do only on change of state
@@ -639,15 +682,29 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   }
 
   QgsPointXY myNewCenter;
+  nmeaPOS newNmeaPosition;
   if ( validFlag )
   {
     myNewCenter = QgsPointXY( info.longitude, info.latitude );
+    newNmeaPosition.lat = nmea_degree2radian( info.latitude );
+    newNmeaPosition.lon = nmea_degree2radian( info.longitude );
   }
   else
   {
     myNewCenter = mLastGpsPosition;
+    newNmeaPosition = mLastNmeaPosition;
   }
+  if ( !mAcquisitionEnabled || ( nmea_distance( &newNmeaPosition, &mLastNmeaPosition ) < mDistanceThreshold ) )
+  {
+    // do not update position if update is disabled by timer or distance is under threshold
+    myNewCenter = mLastGpsPosition;
 
+  }
+  if ( validFlag && mAcquisitionEnabled )
+  {
+    // position updated by valid data, reset timer
+    switchAcquisition();
+  }
   if ( mStackedWidget->currentIndex() == 0 ) //position
   {
     mTxtLatitude->setText( QString::number( info.latitude, 'f', 8 ) );
@@ -661,25 +718,61 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     {
       mTxtDateTime->setText( info.utcDateTime.toString( mDateTimeFormat ) );  //user specified format string for testing the millisecond part of time
     }
-    mTxtSpeed->setText( tr( "%1 km/h" ).arg( info.speed, 0, 'f', 1 ) );
-    mTxtDirection->setText( QString::number( info.direction, 'f', 1 ) + QStringLiteral( "°" ) );
+    if ( std::isfinite( info.speed ) )
+    {
+      mTxtSpeed->setEnabled( true );
+      mTxtSpeed->setText( tr( "%1 km/h" ).arg( info.speed, 0, 'f', 1 ) );
+    }
+    else
+    {
+      mTxtSpeed->setEnabled( false );
+      mTxtSpeed->setText( tr( "Not available" ) );
+    }
+    if ( std::isfinite( info.direction ) )
+    {
+      mTxtDirection->setEnabled( true );
+      mTxtDirection->setText( QString::number( info.direction, 'f', 1 ) + QStringLiteral( "°" ) );
+    }
+    else
+    {
+      mTxtDirection->setEnabled( false );
+      mTxtDirection->setText( tr( "Not available" ) );
+    }
     mTxtHdop->setText( QString::number( info.hdop, 'f', 1 ) );
     mTxtVdop->setText( QString::number( info.vdop, 'f', 1 ) );
     mTxtPdop->setText( QString::number( info.pdop, 'f', 1 ) );
-    mTxtHacc->setText( QString::number( info.hacc, 'f', 1 ) + "m" );
-    mTxtVacc->setText( QString::number( info.vacc, 'f', 1 ) + "m" );
-    mTxtFixMode->setText( info.fixMode == 'A' ? tr( "Automatic" ) : info.fixMode == 'M' ? tr( "Manual" ) : QLatin1String( "" ) ); // A=automatic 2d/3d, M=manual; allowing for anything else
+    if ( std::isfinite( info.hacc ) )
+    {
+      mTxtHacc->setEnabled( true );
+      mTxtHacc->setText( QString::number( info.hacc, 'f', 1 ) + "m" );
+    }
+    else
+    {
+      mTxtHacc->setEnabled( false );
+      mTxtHacc->setText( tr( "Not available" ) );
+    }
+    if ( std::isfinite( info.vacc ) )
+    {
+      mTxtVacc->setEnabled( true );
+      mTxtVacc->setText( QString::number( info.vacc, 'f', 1 ) + "m" );
+    }
+    else
+    {
+      mTxtVacc->setEnabled( false );
+      mTxtVacc->setText( tr( "Not available" ) );
+    }
+    mTxtFixMode->setText( info.fixMode == 'A' ? tr( "Automatic" ) : info.fixMode == 'M' ? tr( "Manual" ) : QString() ); // A=automatic 2d/3d, M=manual; allowing for anything else
     mTxtFixType->setText( info.fixType == 3 ? tr( "3D" ) : info.fixType == 2 ? tr( "2D" ) : info.fixType == 1 ? tr( "No fix" ) : QString::number( info.fixType ) ); // 1=no fix, 2=2D, 3=3D; allowing for anything else
-    mTxtQuality->setText( info.quality == 2 ? tr( "Differential" ) : info.quality == 1 ? tr( "Non-differential" ) : info.quality == 0 ? tr( "No position" ) : info.quality > 2 ? QString::number( info.quality ) : QLatin1String( "" ) ); // allowing for anything else
+    mTxtQuality->setText( info.quality == 2 ? tr( "Differential" ) : info.quality == 1 ? tr( "Non-differential" ) : info.quality == 0 ? tr( "No position" ) : info.quality > 2 ? QString::number( info.quality ) : QString() ); // allowing for anything else
     mTxtSatellitesUsed->setText( QString::number( info.satellitesUsed ) );
-    mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : QLatin1String( "" ) );
+    mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : QString() );
   } //position
 
   // Avoid refreshing / panning if we haven't moved
   if ( mLastGpsPosition != myNewCenter )
   {
     mLastGpsPosition = myNewCenter;
-
+    mLastNmeaPosition = newNmeaPosition;
     // Pan based on user specified behavior
     if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
     {
@@ -741,7 +834,7 @@ void QgsGpsInformationWidget::mBtnAddVertex_clicked()
 
 void QgsGpsInformationWidget::addVertex()
 {
-  QgsDebugMsg( "Adding Vertex" );
+  QgsDebugMsg( QStringLiteral( "Adding Vertex" ) );
 
   if ( !mpRubberBand )
   {
@@ -1001,12 +1094,10 @@ void QgsGpsInformationWidget::populateDevices()
 
 void QgsGpsInformationWidget::createRubberBand()
 {
-  if ( mpRubberBand )
-  {
-    delete mpRubberBand;
-  }
+  delete mpRubberBand;
+
   mpRubberBand = new QgsRubberBand( mpCanvas, QgsWkbTypes::LineGeometry );
-  mpRubberBand->setColor( mTrackColor );
+  mpRubberBand->setColor( mBtnTrackColor->color() );
   mpRubberBand->setWidth( mSpinTrackWidth->value() );
   mpRubberBand->show();
 }
@@ -1048,6 +1139,9 @@ void QgsGpsInformationWidget::logNmeaSentence( const QString &nmeaString )
 void QgsGpsInformationWidget::updateCloseFeatureButton( QgsMapLayer *lyr )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( lyr );
+
+  if ( !( vlayer && vlayer->isValid() ) )
+    return;
 
   // Add feature button tracks edit state of layer
   if ( vlayer != mpLastLayer )
@@ -1136,4 +1230,41 @@ void QgsGpsInformationWidget::setStatusIndicator( const FixStatus statusValue )
 void QgsGpsInformationWidget::showStatusBarMessage( const QString &msg )
 {
   QgisApp::instance()->statusBarIface()->showMessage( msg );
+}
+void QgsGpsInformationWidget::setAcquisitionInterval( uint interval )
+{
+  mAcquisitionInterval = interval * 1000;
+  if ( mAcquisitionTimer->isActive() )
+    mAcquisitionTimer->stop();
+  mAcquisitionEnabled = true;
+  switchAcquisition();
+
+}
+void QgsGpsInformationWidget::setDistanceThreshold( uint distance )
+{
+  mDistanceThreshold = distance;
+}
+
+void QgsGpsInformationWidget::cboAcquisitionIntervalEdited()
+{
+  setAcquisitionInterval( mCboAcquisitionInterval->currentText().toUInt() );
+}
+
+void QgsGpsInformationWidget::cboDistanceThresholdEdited()
+{
+  setDistanceThreshold( mCboDistanceThreshold->currentText().toUInt() );
+}
+
+void QgsGpsInformationWidget::switchAcquisition()
+{
+  if ( mAcquisitionInterval > 0 )
+  {
+    if ( mAcquisitionEnabled )
+      mAcquisitionTimer->start( mAcquisitionInterval );
+    else
+      //wait only acquisitionInterval/10 for new valid data
+      mAcquisitionTimer->start( mAcquisitionInterval / 10 );
+    // anyway switch to enabled / disabled acquisition
+    mAcquisitionEnabled = !mAcquisitionEnabled;
+  }
 }

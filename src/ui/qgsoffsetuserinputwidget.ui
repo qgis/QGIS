@@ -46,7 +46,7 @@
    <item row="1" column="0">
     <widget class="QToolButton" name="mShowAdvancedButton">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
      <property name="icon">
       <iconset resource="../../images/images.qrc">

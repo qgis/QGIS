@@ -10,22 +10,30 @@
 
 
 
-
-struct QgsRasterCalculatorEntry
+class QgsRasterCalculatorEntry
 {
-%TypeHeaderCode
-#include <qgsrastercalculator.h>
+%Docstring
+Represents an individual raster layer/band number entry within a raster calculation.
+
+.. versionadded:: 2.18
 %End
 
-  QString ref; //name
-  QgsRasterLayer *raster; //pointer to rasterlayer
-  int bandNumber; //raster band number
+%TypeHeaderCode
+#include "qgsrastercalculator.h"
+%End
+  public:
+
+    QString ref;
+
+    QgsRasterLayer *raster;
+
+    int bandNumber;
 };
 
 class QgsRasterCalculator
 {
 %Docstring
-Raster calculator class*
+Performs raster layer calculations.
 %End
 
 %TypeHeaderCode
@@ -41,6 +49,7 @@ Raster calculator class*
       Canceled,
       ParserError,
       MemoryError,
+      BandError,
     };
 
     QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
@@ -74,7 +83,22 @@ QgsRasterCalculator constructor.
 .. versionadded:: 2.10
 %End
 
-    int processCalculation( QgsFeedback *feedback = 0 );
+    Result processCalculation( QgsFeedback *feedback = 0 );
+%Docstring
+Starts the calculation and writes a new raster.
+
+The optional ``feedback`` argument can be used for progress reporting and cancelation support.
+
+:return: QgsRasterCalculator.Success in case of success. If an error is encountered then
+         a description of the error can be obtained by calling lastError().
+%End
+
+    QString lastError() const;
+%Docstring
+Returns a description of the last error encountered.
+
+.. versionadded:: 3.4
+%End
 
 };
 

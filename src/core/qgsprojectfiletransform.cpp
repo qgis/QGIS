@@ -65,7 +65,7 @@ QgsProjectFileTransform::TransformItem QgsProjectFileTransform::sTransformers[] 
   // A transformer with a NULL from version means that it should be run when upgrading
   // from any version and will take care that it's not going to cause trouble if it's
   // run several times on the same file.
-  {PFV(), PFV( 2, 99, 0 ), &QgsProjectFileTransform::transform2990},
+  {PFV(), PFV( 3, 0, 0 ), &QgsProjectFileTransform::transform3000},
 };
 
 bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion &newVersion )
@@ -78,7 +78,7 @@ bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion &newVersio
     for ( std::size_t i = 0; i < sizeof( sTransformers ) / sizeof( TransformItem ); i++ )
     {
       const TransformItem &transformer = sTransformers[i];
-      if ( transformer.from == mCurrentVersion || transformer.from.isNull() )
+      if ( transformer.to >= mCurrentVersion && ( transformer.from == mCurrentVersion || transformer.from.isNull() ) )
       {
         // Run the transformer, and update the revision in every case
         ( this->*( transformer.transformFunc ) )();
@@ -92,7 +92,7 @@ bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion &newVersio
 
 void QgsProjectFileTransform::dump()
 {
-  QgsDebugMsg( QString( "Current project file version is %1.%2.%3" )
+  QgsDebugMsg( QStringLiteral( "Current project file version is %1.%2.%3" )
                .arg( mCurrentVersion.majorVersion() )
                .arg( mCurrentVersion.minorVersion() )
                .arg( mCurrentVersion.subVersion() ) );
@@ -108,7 +108,7 @@ void QgsProjectFileTransform::dump()
 
 void QgsProjectFileTransform::transform081to090()
 {
-  QgsDebugMsg( "Entering..." );
+  QgsDebugMsg( QStringLiteral( "Entering..." ) );
   if ( ! mDom.isNull() )
   {
     // Start with inserting a mapcanvas element and populate it
@@ -119,7 +119,7 @@ void QgsProjectFileTransform::transform081to090()
     QDomNode qgis = mDom.firstChildElement( QStringLiteral( "qgis" ) );
     if ( ! qgis.isNull() )
     {
-      QgsDebugMsg( "Populating new mapcanvas" );
+      QgsDebugMsg( QStringLiteral( "Populating new mapcanvas" ) );
 
       // Create a mapcanvas
       mapCanvas = mDom.createElement( QStringLiteral( "mapcanvas" ) );
@@ -138,7 +138,7 @@ void QgsProjectFileTransform::transform081to090()
       // Type is 'int', and '1' if on.
       // Create an element
       QDomElement projection = mDom.createElement( QStringLiteral( "projections" ) );
-      QgsDebugMsg( QString( "Projection flag: " ) + hasCrsTransformEnabled.text() );
+      QgsDebugMsg( QStringLiteral( "Projection flag: " ) + hasCrsTransformEnabled.text() );
       // Set flag from ProjectionsEnabled
       projection.appendChild( mDom.createTextNode( hasCrsTransformEnabled.text() ) );
       // Set new element as child of <mapcanvas>
@@ -182,14 +182,14 @@ void QgsProjectFileTransform::transform081to090()
 
     // Set the flag 'visible' to match the status of 'checked'
     QDomNodeList legendLayerFiles = mDom.elementsByTagName( QStringLiteral( "legendlayerfile" ) );
-    QgsDebugMsg( QString( "Legend layer file entries: " ) + QString::number( legendLayerFiles.count() ) );
+    QgsDebugMsg( QStringLiteral( "Legend layer file entries: " ) + QString::number( legendLayerFiles.count() ) );
     for ( int i = 0; i < mapLayers.count(); i++ )
     {
       // Get one maplayer element from list
       QDomElement mapLayer = mapLayers.item( i ).toElement();
       // Find it's id.
       QString id = mapLayer.firstChildElement( QStringLiteral( "id" ) ).text();
-      QgsDebugMsg( QString( "Handling layer " + id ) );
+      QgsDebugMsg( QStringLiteral( "Handling layer %1" ).arg( id ) );
       // Now, look it up in legend
       for ( int j = 0; j < legendLayerFiles.count(); j++ )
       {
@@ -197,7 +197,7 @@ void QgsProjectFileTransform::transform081to090()
         if ( id == legendLayerFile.attribute( QStringLiteral( "layerid" ) ) )
         {
           // Found a the legend layer that matches the maplayer
-          QgsDebugMsg( "Found matching id" );
+          QgsDebugMsg( QStringLiteral( "Found matching id" ) );
 
           // Set visible flag from maplayer to legendlayer
           legendLayerFile.setAttribute( QStringLiteral( "visible" ), mapLayer.attribute( QStringLiteral( "visible" ) ) );
@@ -216,7 +216,7 @@ void QgsProjectFileTransform::transform091to0100()
   {
     // Insert transforms here!
     QDomNodeList rasterPropertyList = mDom.elementsByTagName( QStringLiteral( "rasterproperties" ) );
-    QgsDebugMsg( QString( "Raster properties file entries: " ) + QString::number( rasterPropertyList.count() ) );
+    QgsDebugMsg( QStringLiteral( "Raster properties file entries: " ) + QString::number( rasterPropertyList.count() ) );
     for ( int i = 0; i < rasterPropertyList.count(); i++ )
     {
       // Get one rasterproperty element from list, and rename the sub-properties.
@@ -254,7 +254,7 @@ void QgsProjectFileTransform::transform091to0100()
           // --> 2r+2+2*lw = s
           // where '2r' is the old size.
           pointSize = pointSize + 2 + 2 * lineWidth;
-          QgsDebugMsg( QString( "Setting point size to %1" ).arg( pointSize ) );
+          QgsDebugMsg( QStringLiteral( "Setting point size to %1" ).arg( pointSize ) );
           QDomElement newPointSizeProperty = mDom.createElement( QStringLiteral( "pointsize" ) );
           QDomText newPointSizeTxt = mDom.createTextNode( QString::number( pointSize ) );
           newPointSizeProperty.appendChild( newPointSizeTxt );
@@ -342,7 +342,7 @@ void QgsProjectFileTransform::transform0110to1000()
       //create the layer to get the provider for int->fieldName conversion
       QgsVectorLayer::LayerOptions options;
       options.loadDefaultStyle = false;
-      QgsVectorLayer *layer = new QgsVectorLayer( dataSource, QLatin1String( "" ), providerKey, options );
+      QgsVectorLayer *layer = new QgsVectorLayer( dataSource, QString(), providerKey, options );
       if ( !layer->isValid() )
       {
         delete layer;
@@ -376,7 +376,7 @@ void QgsProjectFileTransform::transform0110to1000()
 
 void QgsProjectFileTransform::transform1100to1200()
 {
-  QgsDebugMsg( "Entering..." );
+  QgsDebugMsg( QStringLiteral( "Entering..." ) );
   if ( mDom.isNull() )
     return;
 
@@ -621,7 +621,7 @@ void QgsProjectFileTransform::transform2200to2300()
   }
 }
 
-void QgsProjectFileTransform::transform2990()
+void QgsProjectFileTransform::transform3000()
 {
   // transform OTF off to "no projection" for project
   QDomElement propsElem = mDom.firstChildElement( QStringLiteral( "qgis" ) ).toElement().firstChildElement( QStringLiteral( "properties" ) );
@@ -930,7 +930,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
       double value = strValue.toDouble();
       if ( value < 0 || value > 10000 || !qgsDoubleNear( value, static_cast< int >( value ) ) )
       {
-        QgsDebugMsg( QString( "forcing SingleBandPseudoColor value = %1" ).arg( value ) );
+        QgsDebugMsg( QStringLiteral( "forcing SingleBandPseudoColor value = %1" ).arg( value ) );
         drawingStyle = QStringLiteral( "SingleBandPseudoColor" );
         break;
       }

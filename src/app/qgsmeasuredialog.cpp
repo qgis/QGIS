@@ -167,7 +167,7 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
     if ( item )
     {
-      item->setText( 0, QLocale::system().toString( d, 'f', mDecimalPlaces ) );
+      item->setText( 0, QLocale().toString( d, 'f', mDecimalPlaces ) );
     }
   }
 }
@@ -184,7 +184,7 @@ void QgsMeasureDialog::addPoint()
   {
     if ( !mTool->done() )
     {
-      QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', mDecimalPlaces ) ) );
+      QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale().toString( 0.0, 'f', mDecimalPlaces ) ) );
       item->setTextAlignment( 0, Qt::AlignRight );
       mTable->addTopLevelItem( item );
       mTable->scrollToItem( item );
@@ -231,7 +231,7 @@ void QgsMeasureDialog::removeLastPoint()
       d = convertLength( d, mDistanceUnits );
 
       QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
-      item->setText( 0, QLocale::system().toString( d, 'f', mDecimalPlaces ) );
+      item->setText( 0, QLocale().toString( d, 'f', mDecimalPlaces ) );
       editTotal->setText( formatDistance( mTotal + d ) );
     }
     else
@@ -501,7 +501,7 @@ void QgsMeasureDialog::updateUi()
           d = convertLength( d, mDistanceUnits );
         }
 
-        QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale::system().toString( d, 'f', mDecimalPlaces ) ) );
+        QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale().toString( d, 'f', mDecimalPlaces ) ) );
         item->setTextAlignment( 0, Qt::AlignRight );
         mTable->addTopLevelItem( item );
         mTable->scrollToItem( item );

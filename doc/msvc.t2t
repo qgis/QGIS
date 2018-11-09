@@ -1,12 +1,11 @@
 
 ==Building with Microsoft Visual Studio==
 
-This section describes how to build QGIS using Visual Studio on Windows.  This
-is currently also how the binary QGIS packages are made (earlier versions used
-MinGW).
+This section describes how to build QGIS using Visual Studio (MSVC) 2015 on Windows.
+This is currently also how the binary QGIS packages are made (earlier versions used MinGW).
 
 This section describes the setup required to allow Visual Studio to be used to
-build QGIS. 
+build QGIS.
 
 ===Visual C++ Community Edition===
 
@@ -19,14 +18,10 @@ The free (as in free beer) Community installer is available under:
 Download and install following packages:
 
 || Tool | Website |
-| CMake | https://cmake.org/files/v3.7/cmake-3.7.2-win64-x64.msi |
+| CMake | https://cmake.org/files/v3.12/cmake-3.12.3-win64-x64.msi |
 | GNU flex, GNU bison and GIT | http://cygwin.com/setup-x86.exe (32bit) or http://cygwin.com/setup-x86_64.exe (64bit) |
 | OSGeo4W | http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86.exe (32bit) or http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe (64bit) |
 | ninja | https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip |
-
-OSGeo4W does not only provide ready packages for the current QGIS release and
-nightly builds of master, but also offers most of the dependencies needs to
-build it.
 
 For the QGIS build you need to install following packages from cygwin:
 - bison
@@ -36,20 +31,22 @@ For the QGIS build you need to install following packages from cygwin:
 
 and from OSGeo4W (select //Advanced Installation//):
 
-- qgis-rel-deps
+- qgis-dev-deps
 -
 
 This will also select packages the above packages depend on.
 
-If you install other packages, this might cause issues. Particularly, make sure
-**not** to install the msinttypes package. It installs a stdint.h file in
-OSGeo4W[64]\include, that conflicts with Visual Studio own stdint.h, which for
-example breaks the build of the virtuallayer provider.
+  If you install other packages, this might cause issues. Particularly, make sure
+  **not** to install the msinttypes package. It installs a stdint.h file in
+  OSGeo4W[64]\include, that conflicts with Visual Studio own stdint.h, which for
+  example breaks the build of the virtual layer provider.
 
 Earlier versions of this document also covered how to build all above
 dependencies.  If you're interested in that, check the history of this page in the Wiki
 or the SVN repository.
 
+ninja:
+  copy ninja.exe to d:\OSGeo4W64\bin\
 
 === Setting up the Visual Studio project with CMake ===
 
@@ -64,75 +61,83 @@ installed in the default locations):
 
 ```
 @echo off
-set OSGEO4W_ROOT=C:\OSGeo4W
-call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
-call "%OSGEO4W_ROOT%\bin\py3_env.bat"
-call "%OSGEO4W_ROOT%\bin\qt5_env.bat"
-
-set O4W_ROOT=%OSGEO4W_ROOT:\=/%
-set LIB_DIR=%O4W_ROOT%
-
-call "C:\Program Files\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
-path %path%;C:\Program Files\Microsoft Visual Studio 14.0\VC\bin
-
-path %PATH%;C:\Program Files\CMake\bin;c:\cygwin\bin
-
-@set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-7.2.1
-@set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
-@set LIB=%LIB%;%OSGEO4W_ROOT%\lib;%OSGEO4W_ROOT%\lib
-
-set LIB=%LIB%;%OSGEO4W_ROOT%\apps\Qt5\lib;%OSGEO4W_ROOT%\lib
-set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\apps\Qt5\include;%OSGEO4W_ROOT%\include
-
+call X:\src\qgis\ms-windows\osgeo4w\msvc-env.bat x86_64
 @cmd
 ```
 
-Start the batch file and on the command prompt checkout the QGIS source from
+Save the batch file as ``d:\OSGeo4W64\OSGeo4W-dev.bat`` and run it.
+On the command prompt checkout the QGIS source from
 git to the source directory ``QGIS``:
-
 
 ```
 git clone git://github.com/qgis/QGIS.git
 ```
 
-Create a 'build' directory somewhere. This will be where all the build output
-will be generated.
+Using configonly.cmd to create the MSVC solution file:
+  We will be using the file ms-windows/osgeo4w/configonly.cmd to create an MSVC solution file.
+  There are a few options for a solution file, following are the options: ninja, native MSVC.
+  The advantage of using native MSVC solution is that you can find the root of build problems much easily.
+  configonly.cmd is meant to create a configured build directory with a MSVC solution file:
 
-Now run ``cmake-gui`` (still from ``cmd``) and in the //Where is the source code://
-box, browse to the top level QGIS directory.
+  ```
+  configonly.cmd
+  ```
 
-In the //Where to build the binaries:// box, browse to the 'build' directory you
-created.
+Compiling QGIS with MSVC:
+  We will need to run MSVC with all the environment variables set, thus we will run it as follows:
+  Run the batch file OSGeo4W-dev.bat you created before. On the command prompt run: ``devenv``
+  From MSVC, open the solution file
+  ``d:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\qgis2.99.0.sln``
+  Try to build the solution [go grab a cup of tea, it may take a while].
+  If it fails, run it again and again until there are [hopefully] no errors.
 
-If the path to bison and flex contains blanks, you need to use the short name
-for the directory (i.e. ``C:\Program Files`` should be rewritten to
-``C:\Progra~n``, where ``n`` is the number as shown in `dir /x C:\``).
 
-Verify that the 'BINDINGS_GLOBAL_INSTALL' option is not checked, so that python
-bindings are placed into the output directory when you run the INSTALL target.
+Running QGIS from within MSVC:
+  Edit the properties of the project ALL_BUILD:
+  Debugging -> Command -> D:\OSGeo4W64\QGIS\ms-windows\osgeo4w\build-qgis-test-x86_64\output\bin\RelWithDebInfo\qgis.exe
+  Run.
+  Ignore the "These projects are out of date" message, it appeares even if no files were was changed.
 
-Hit ``Configure`` to start the configuration and select ``Visual Studio 9 2008``
-and keep ``native compilers`` and click ``Finish``.
 
-The configuration should complete without any further questions and allow you to
-click ``Generate``.
+Old alternative method that might still work using cmake-gui:
+  Create a 'build' directory somewhere. This will be where all the build output
+  will be generated.
 
-Now close ``cmake-gui`` and continue on the command prompt by starting
-``vcexpress``.  Use File / Open / Project/Solutions and open the
-qgis-x.y.z.sln File in your project directory.
+  Now run ``cmake-gui`` (still from ``cmd``) and in the //Where is the source code://
+  box, browse to the top level QGIS directory.
 
-Change ``Solution Configuration`` from ``Debug`` to ``RelWithDebInfo`` (Release
-with Debug Info)  or ``Release`` before you build QGIS using the ALL_BUILD
-target (otherwise you need debug libraries that are not included).
+  In the //Where to build the binaries:// box, browse to the 'build' directory you
+  created.
 
-After the build completed you should install QGIS using the INSTALL target.
+  If the path to bison and flex contains blanks, you need to use the short name
+  for the directory (i.e. ``C:\Program Files`` should be rewritten to
+  ``C:\Progra~n``, where ``n`` is the number as shown in `dir /x C:\``).
 
-Install QGIS by building the INSTALL project. By default this will install to
-c:\Program Files\qgis<version> (this can be changed by changing the
-CMAKE_INSTALL_PREFIX variable in cmake-gui). 
- 
-You will also either need to add all the dependency DLLs to the QGIS install
-directory or add their respective directories to your PATH.
+  Verify that the 'BINDINGS_GLOBAL_INSTALL' option is not checked, so that python
+  bindings are placed into the output directory when you run the INSTALL target.
+
+  Hit ``Configure`` to start the configuration and select ``Visual Studio 9 2008``
+  and keep ``native compilers`` and click ``Finish``.
+
+  The configuration should complete without any further questions and allow you to
+  click ``Generate``.
+
+  Now close ``cmake-gui`` and continue on the command prompt by starting
+  ``vcexpress``.  Use File / Open / Project/Solutions and open the
+  qgis-x.y.z.sln File in your project directory.
+
+  Change ``Solution Configuration`` from ``Debug`` to ``RelWithDebInfo`` (Release
+  with Debug Info)  or ``Release`` before you build QGIS using the ALL_BUILD
+  target (otherwise you need debug libraries that are not included).
+
+  After the build completed you should install QGIS using the INSTALL target.
+
+  Install QGIS by building the INSTALL project. By default this will install to
+  c:\Program Files\qgis<version> (this can be changed by changing the
+  CMAKE_INSTALL_PREFIX variable in cmake-gui).
+
+  You will also either need to add all the dependency DLLs to the QGIS install
+  directory or add their respective directories to your PATH.
 
 === Packaging ===
 
@@ -173,7 +178,7 @@ Now create a package.
 ./quickpackage.sh
 ```
 
-After this you should now have a nsis installer containing your own build 
+After this you should now have a nsis installer containing your own build
 of QGIS and all dependencies needed to run it on a windows machine.
 
 

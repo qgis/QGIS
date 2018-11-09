@@ -230,7 +230,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param id The ID valid for the chosen CRS ID type
      * \param type One of the types described in CrsType
      */ // TODO QGIS 3: remove type and always use EPSG code
-    explicit QgsCoordinateReferenceSystem( const long id, CrsType type = PostgisCrsId );
+    explicit QgsCoordinateReferenceSystem( long id, CrsType type = PostgisCrsId );
 
     //! Copy constructor
     QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs );
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \note We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
      * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
      */     // TODO QGIS 3: remove type and always use EPSG code, rename to createFromEpsg
-    bool createFromId( const long id, CrsType type = PostgisCrsId );
+    bool createFromId( long id, CrsType type = PostgisCrsId );
 
     /**
      * Sets this CRS to the given OGC WMS-format Coordinate Reference Systems.
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param srid The PostGIS SRID for the desired spatial reference system.
      * \returns True on success else false
      */     // TODO QGIS 3: remove unless really necessary - let's use EPSG codes instead
-    bool createFromSrid( const long srid );
+    bool createFromSrid( long srid );
 
     /**
      * Sets this CRS using a WKT definition.
@@ -354,7 +354,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromSrsId()
      */
-    bool createFromSrsId( const long srsId );
+    bool createFromSrsId( long srsId );
 
     /**
      * Sets this CRS by passing it a PROJ style formatted string.
@@ -649,7 +649,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param srsId The srsid used for the lookup
      * \returns QString The proj4 string
      */
-    static QString proj4FromSrsId( const int srsId );
+    static QString proj4FromSrsId( int srsId );
 
     /**
      * Set the QGIS SrsId
@@ -740,9 +740,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     //! Helper for getting number of user CRS already in db
     long getRecordCount();
-
-    //! Helper for sql-safe value quoting
-    static QString quotedValue( QString value );
 
     /**
      * Initialize the CRS object by looking up CRS database in path given in db argument,

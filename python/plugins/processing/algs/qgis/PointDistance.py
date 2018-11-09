@@ -101,7 +101,7 @@ class PointDistance(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.MATRIX_TYPE,
                                                      self.tr('Output matrix type'), options=self.mat_types, defaultValue=0))
         self.addParameter(QgsProcessingParameterNumber(self.NEAREST_POINTS,
-                                                       self.tr('Use only the nearest (k) target points'), type=QgsProcessingParameterNumber.Integer, minValue=0, maxValue=9999, defaultValue=0))
+                                                       self.tr('Use only the nearest (k) target points'), type=QgsProcessingParameterNumber.Integer, minValue=0, defaultValue=0))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Distance matrix'), QgsProcessing.TypeVectorPoint))
 
@@ -187,7 +187,7 @@ class PointDistance(QgisAlgorithm):
                 break
 
             inGeom = inFeat.geometry()
-            inID = str(inFeat.attributes()[inIdx])
+            inID = str(inFeat[inIdx])
             featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
             distList = []
             vari = 0.0
@@ -199,7 +199,7 @@ class PointDistance(QgisAlgorithm):
                 if same_source_and_target and inFeat.id() == outFeat.id():
                     continue
 
-                outID = outFeat.attributes()[outIdx]
+                outID = outFeat[outIdx]
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(),
                                             outGeom.asPoint())

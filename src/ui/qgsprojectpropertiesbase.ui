@@ -19,8 +19,8 @@
   <property name="windowTitle">
    <string>Project Properties</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_21">
+   <item row="0" column="0">
     <widget class="QSplitter" name="mOptionsSplitter">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -139,18 +139,6 @@
          </item>
          <item>
           <property name="text">
-           <string>Identify Layers</string>
-          </property>
-          <property name="toolTip">
-           <string>Identifiable layers</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/map_tools.svg</normaloff>:/images/themes/default/propertyicons/map_tools.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Data Sources</string>
           </property>
           <property name="toolTip">
@@ -242,13 +230,13 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -277,8 +265,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>778</height>
+                <width>563</width>
+                <height>833</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -291,7 +279,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="titleBox">
                  <property name="title">
-                  <string>General settings</string>
+                  <string>General Settings</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
@@ -625,7 +613,7 @@
                   </sizepolicy>
                  </property>
                  <property name="title">
-                  <string>Coordinate display</string>
+                  <string>Coordinate Display</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
@@ -709,7 +697,7 @@
                   </sizepolicy>
                  </property>
                  <property name="title">
-                  <string>Project predefined scales</string>
+                  <string>Project Predefined Scales</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -801,6 +789,32 @@
                 </widget>
                </item>
                <item>
+                <widget class="QGroupBox" name="groupBox_6">
+                 <property name="title">
+                  <string>Generate Project Translation File</string>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_4">
+                  <item>
+                   <widget class="QLabel" name="sourceLanguageLabel">
+                    <property name="text">
+                     <string>Source language</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="cbtsLocale"/>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="generateTsFileButton">
+                    <property name="text">
+                     <string>Generate TS File</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <spacer name="verticalSpacer_5">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -849,8 +863,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>579</width>
-                <height>170</height>
+                <width>547</width>
+                <height>152</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -872,7 +886,7 @@
                <item>
                 <widget class="QGroupBox" name="mDatumTransformGroupBox">
                  <property name="title">
-                  <string>Datum transformations</string>
+                  <string>Datum Transformations</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_2">
                   <item row="0" column="0">
@@ -924,15 +938,15 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>284</width>
-                <height>573</height>
+                <width>271</width>
+                <height>597</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox">
                  <property name="title">
-                  <string>Default symbols</string>
+                  <string>Default Symbols</string>
                  </property>
                  <property name="syncGroup" stdset="0">
                   <string notr="true">projstyles</string>
@@ -1200,6 +1214,10 @@
                    <property name="text">
                     <string>Style Manager</string>
                    </property>
+                   <property name="icon">
+                    <iconset resource="../../images/images.qrc">
+                     <normaloff>:/images/themes/default/mActionStyleManager.svg</normaloff>:/images/themes/default/mActionStyleManager.svg</iconset>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -1220,7 +1238,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_7">
                  <property name="title">
-                  <string>Project colors</string>
+                  <string>Project Colors</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
                   <item row="2" column="1">
@@ -1335,92 +1353,6 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mProjOptsLayers">
-          <layout class="QVBoxLayout" name="verticalLayout_9">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QgsScrollArea" name="scrollArea_3">
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="widgetResizable">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_3">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>136</width>
-                <height>100</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_10">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QGroupBox" name="groupBox_3">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>100</height>
-                  </size>
-                 </property>
-                 <property name="title">
-                  <string>Project layers</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_22">
-                  <item>
-                   <widget class="QTableWidget" name="twIdentifyLayers">
-                    <property name="sortingEnabled">
-                     <bool>true</bool>
-                    </property>
-                    <column>
-                     <property name="text">
-                      <string>Layer</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Type</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Identifiable</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Read Only</string>
-                     </property>
-                    </column>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
          <widget class="QWidget" name="mTab_DataSources">
           <layout class="QFormLayout" name="formLayout">
            <item row="0" column="0" colspan="2">
@@ -1433,7 +1365,7 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
+           <item row="1" column="0" colspan="2">
             <widget class="QCheckBox" name="mEvaluateDefaultValues">
              <property name="toolTip">
               <string>When enabled, default values will be evaluated as early as possible. This will fill default values in the add feature form already and not only create them on commit. Only supported for postgres provider.</string>
@@ -1455,22 +1387,64 @@
            </item>
            <item row="4" column="0" colspan="2">
             <widget class="QgsCollapsibleGroupBox" name="groupBox_5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
              <property name="title">
-              <string>Required layers</string>
+              <string>Layers Capabilities</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_19">
-              <item row="0" column="0" colspan="2">
-               <widget class="QLabel" name="label_31">
-                <property name="text">
-                 <string>Checked layers in this list are protected from inadvertent removal from the project.</string>
+              <property name="verticalSpacing">
+               <number>0</number>
+              </property>
+              <item row="3" column="1">
+               <spacer name="horizontalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
                 </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="0" colspan="4">
+               <widget class="QTreeView" name="mLayerCapabilitiesTree">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>1</verstretch>
+                 </sizepolicy>
                 </property>
                </widget>
               </item>
-              <item row="2" column="0" colspan="2">
-               <widget class="QListView" name="mViewRequiredLayers"/>
+              <item row="3" column="0">
+               <widget class="QPushButton" name="mLayerCapabilitiesToggleSelectionButton">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Toggle Selection</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QCheckBox" name="mShowSpatialLayersCheckBox">
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="text">
+                 <string>Show spatial layers only</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="3">
+               <widget class="QgsFilterLineEdit" name="mLayerCapabilitiesTreeFilterLineEdit"/>
               </item>
              </layout>
             </widget>
@@ -1540,8 +1514,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>165</width>
-                <height>57</height>
+                <width>157</width>
+                <height>59</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1554,7 +1528,7 @@
                <item>
                 <widget class="QGroupBox" name="grpPythonMacros">
                  <property name="title">
-                  <string>Python macros</string>
+                  <string>Python Macros</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -1602,8 +1576,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>624</width>
-                <height>2451</height>
+                <width>603</width>
+                <height>2666</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1616,7 +1590,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="grpOWSServiceCapabilities">
                  <property name="title">
-                  <string>Service capabilities</string>
+                  <string>Service Capabilities</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -2442,6 +2416,89 @@
                 </widget>
                </item>
                <item>
+                <widget class="QgsCollapsibleGroupBox" name="grpWmtsCapabilities">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>3</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="title">
+                  <string>WMTS capabilities</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_20">
+                  <item row="0" column="0">
+                   <widget class="QTreeWidget" name="twWmtsLayers">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <column>
+                     <property name="text">
+                      <string>Layer</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Published</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>PNG</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>JPEG</string>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_16">
+                    <item>
+                     <widget class="QLabel" name="mWMTSMinScaleLabel">
+                      <property name="text">
+                       <string>Minimum scale</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSpinBox" name="mWMTSMinScaleLineEdit">
+                      <property name="minimum">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <number>1000000000</number>
+                      </property>
+                      <property name="value">
+                       <number>5000</number>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="3" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_15">
+                    <item>
+                     <widget class="QLabel" name="mWMTSUrlLabel">
+                      <property name="text">
+                       <string>Advertised URL</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="mWMTSUrlLineEdit"/>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <widget class="QgsCollapsibleGroupBox" name="grpWFSCapabilities">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -2499,14 +2556,14 @@
                   <item row="1" column="1">
                    <widget class="QPushButton" name="pbnWFSLayersDeselectAll">
                     <property name="text">
-                     <string>Deselect all</string>
+                     <string>Deselect All</string>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="0">
                    <widget class="QPushButton" name="pbnWFSLayersSelectAll">
                     <property name="text">
-                     <string>Select all</string>
+                     <string>Select All</string>
                     </property>
                    </widget>
                   </item>
@@ -2565,14 +2622,14 @@
                   <item row="1" column="1">
                    <widget class="QPushButton" name="pbnWCSLayersDeselectAll">
                     <property name="text">
-                     <string>Deselect all</string>
+                     <string>Deselect All</string>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="0">
                    <widget class="QPushButton" name="pbnWCSLayersSelectAll">
                     <property name="text">
-                     <string>Select all</string>
+                     <string>Select All</string>
                     </property>
                    </widget>
                   </item>
@@ -2602,7 +2659,7 @@
                   </sizepolicy>
                  </property>
                  <property name="title">
-                  <string>Test configuration</string>
+                  <string>Test Configuration</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_24">
                   <item>
@@ -2682,7 +2739,7 @@
      </widget>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0">
     <widget class="QFrame" name="mButtonBoxFrame">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -2732,23 +2789,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
@@ -2758,6 +2798,23 @@
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2832,8 +2889,6 @@
   <tabstop>mButtonPasteColors</tabstop>
   <tabstop>mButtonImportColors</tabstop>
   <tabstop>mButtonExportColors</tabstop>
-  <tabstop>scrollArea_3</tabstop>
-  <tabstop>twIdentifyLayers</tabstop>
   <tabstop>mAutoTransaction</tabstop>
   <tabstop>mEvaluateDefaultValues</tabstop>
   <tabstop>mTrustProjectCheckBox</tabstop>
@@ -2890,6 +2945,9 @@
   <tabstop>mMaxWidthLineEdit</tabstop>
   <tabstop>mMaxHeightLineEdit</tabstop>
   <tabstop>mWMSImageQualitySpinBox</tabstop>
+  <tabstop>twWmtsLayers</tabstop>
+  <tabstop>mWMTSMinScaleLineEdit</tabstop>
+  <tabstop>mWMTSUrlLineEdit</tabstop>
   <tabstop>twWFSLayers</tabstop>
   <tabstop>pbnWFSLayersSelectAll</tabstop>
   <tabstop>pbnWFSLayersDeselectAll</tabstop>
@@ -2902,34 +2960,6 @@
   <tabstop>teOWSChecker</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

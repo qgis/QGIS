@@ -27,7 +27,9 @@
 #include "qgsspinbox.h"
 #include "qgsgeometryutils.h"
 #include <memory>
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
+#include "qgssnapindicator.h"
 
 QgsMapToolCircle2TangentsPoint::QgsMapToolCircle2TangentsPoint( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )
@@ -101,6 +103,9 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
 void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint( e->mapPoint() );
+
+  mSnapIndicator->setMatch( e->mapPointMatch() );
+
   EdgesOnlyFilter filter;
   QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
 
@@ -108,10 +113,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     if ( !mTempRubberBand )
     {
-      mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
-      mTempRubberBand->setFillColor( QColor( 0, 0, 255 ) );
-      mTempRubberBand->setStrokeColor( QColor( 0, 0, 255 ) );
-      mTempRubberBand->setStrokeWidth( 2 );
+      mTempRubberBand = createGeometryRubberBand( mLayerType, true );
       mTempRubberBand->show();
     }
     else
@@ -198,7 +200,7 @@ void QgsMapToolCircle2TangentsPoint::createRadiusSpinBox()
   mRadiusSpinBox->setValue( mRadius );
   QgisApp::instance()->addUserInputWidget( mRadiusSpinBox );
   mRadiusSpinBox->setFocus( Qt::TabFocusReason );
-  QObject::connect( mRadiusSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( radiusSpinBoxChanged( int ) ) );
+  QObject::connect( mRadiusSpinBox, qgis::overload< int >::of( &QgsSpinBox::valueChanged ), this, &QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged );
 }
 
 void QgsMapToolCircle2TangentsPoint::deleteRadiusSpinBox()

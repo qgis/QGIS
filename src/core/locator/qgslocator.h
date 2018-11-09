@@ -139,6 +139,12 @@ class CORE_EXPORT QgsLocator : public QObject
      */
     bool isRunning() const;
 
+    /**
+     * Will call clearPreviousResults on all filters
+     * \since QGIS 3.2
+     */
+    void clearPreviousResults();
+
   signals:
 
     /**

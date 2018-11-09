@@ -62,6 +62,12 @@ QgsAssignProjectionAlgorithm *QgsAssignProjectionAlgorithm::createInstance() con
   return new QgsAssignProjectionAlgorithm();
 }
 
+bool QgsAssignProjectionAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
+{
+  Q_UNUSED( layer );
+  return false;
+}
+
 void QgsAssignProjectionAlgorithm::initParameters( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Assigned CRS" ), QStringLiteral( "EPSG:4326" ) ) );

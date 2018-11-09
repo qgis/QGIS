@@ -143,7 +143,7 @@ void QgsGrassVectorMapLayer::load()
         // Read columns' description
         for ( int i = 0; i < nColumns; i++ )
         {
-          QPair<double, double> minMax( DBL_MAX, -DBL_MAX );
+          QPair<double, double> minMax( std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest() );
 
           dbColumn *column = db_get_table_column( databaseTable, i );
 
@@ -239,8 +239,8 @@ void QgsGrassVectorMapLayer::load()
                   case DB_C_TYPE_INT:
                     iv = db_get_value_int( value );
                     variant = QVariant( iv );
-                    mMinMax[i].first = std::min( mMinMax[i].first, ( double )iv );
-                    mMinMax[i].second = std::min( mMinMax[i].second, ( double )iv );
+                    mMinMax[i].first = std::min( mMinMax[i].first, static_cast<double>( iv ) );
+                    mMinMax[i].second = std::min( mMinMax[i].second, static_cast<double>( iv ) );
                     break;
                   case DB_C_TYPE_DOUBLE:
                     dv = db_get_value_double( value );

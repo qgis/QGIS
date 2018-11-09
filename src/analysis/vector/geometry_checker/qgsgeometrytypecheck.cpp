@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrytypecheck.h"
 #include "qgsgeometrycollection.h"
 #include "qgsmulticurve.h"
@@ -23,26 +24,24 @@
 #include "qgsfeaturepool.h"
 
 
-void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+
+QList<QgsSingleGeometryCheckError *> QgsGeometryTypeCheck::processGeometry( const QgsGeometry &geometry ) const
 {
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter );
-  for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
+  QList<QgsSingleGeometryCheckError *> errors;
+  const QgsAbstractGeometry *geom = geometry.constGet();
+  QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
+  if ( ( mAllowedTypes & ( 1 << type ) ) == 0 )
   {
-    const QgsAbstractGeometry *geom = layerFeature.geometry();
-    QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
-    if ( ( mAllowedTypes & ( 1 << type ) ) == 0 )
-    {
-      errors.append( new QgsGeometryTypeCheckError( this, layerFeature, geom->centroid(), type ) );
-    }
+    errors.append( new QgsGeometryTypeCheckError( this, geometry, geometry, type ) );
   }
+  return errors;
 }
 
-void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
+void QgsGeometryTypeCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
-  QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
+  QgsFeaturePool *featurePool = featurePools[ error->layerId() ];
   QgsFeature feature;
-  if ( !featurePool->get( error->featureId(), feature ) )
+  if ( !featurePool->getFeature( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -149,11 +148,52 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, c
   }
 }
 
-QStringList QgsGeometryTypeCheck::getResolutionMethods() const
+QStringList QgsGeometryTypeCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList()
                                << tr( "Convert to corresponding multi or single type if possible, otherwise delete feature" )
                                << tr( "Delete feature" )
                                << tr( "No action" );
   return methods;
+}
+
+QString QgsGeometryTypeCheck::factoryDescription()
+{
+  return tr( "Geometry type" );
+}
+
+QString QgsGeometryTypeCheck::description() const
+{
+  return factoryDescription();
+}
+
+QString QgsGeometryTypeCheck::factoryId()
+{
+  return QStringLiteral( "QgsGeometryTypeCheck" );
+}
+
+QgsGeometryCheck::CheckType QgsGeometryTypeCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureCheck;
+}
+
+QString QgsGeometryTypeCheck::id() const
+{
+  return factoryId();
+}
+
+QgsGeometryCheck::CheckType QgsGeometryTypeCheck::checkType() const
+{
+  return factoryCheckType();
+}
+
+bool QgsGeometryTypeCheckError::isEqual( const QgsSingleGeometryCheckError *other ) const
+{
+  return QgsSingleGeometryCheckError::isEqual( other ) &&
+         mFlatType == static_cast<const QgsGeometryTypeCheckError *>( other )->mFlatType;
+}
+
+QString QgsGeometryTypeCheckError::description() const
+{
+  return QStringLiteral( "%1 (%2)" ).arg( mCheck->description(), QgsWkbTypes::displayString( mFlatType ) );
 }

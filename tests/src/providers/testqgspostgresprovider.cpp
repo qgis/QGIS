@@ -23,7 +23,7 @@ class TestQgsPostgresProvider: public QObject
   private slots:
     void decodeHstore()
     {
-      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "\"1\"=>\"2\", \"a\"=>\"b, \\\"c'\", \"backslash\"=>\"\\\\\"" ) );
+      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "\"1\"=>\"2\", \"a\"=>\"b, \\\"c'\", \"backslash\"=>\"\\\\\"" ), QStringLiteral( "hstore" ) );
       QCOMPARE( decoded.type(), QVariant::Map );
 
       QVariantMap expected;
@@ -36,7 +36,7 @@ class TestQgsPostgresProvider: public QObject
 
     void decodeHstoreNoQuote()
     {
-      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "1=>2, a=>b c" ) );
+      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "1=>2, a=>b c" ), QStringLiteral( "hstore" ) );
       QCOMPARE( decoded.type(), QVariant::Map );
 
       QVariantMap expected;
@@ -48,7 +48,7 @@ class TestQgsPostgresProvider: public QObject
 
     void decodeArray2StringList()
     {
-      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{\"1\",\"2\", \"a\\\\1\" , \"\\\\\",\"b, \\\"c'\"}" ) );
+      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{\"1\",\"2\", \"a\\\\1\" , \"\\\\\",\"b, \\\"c'\"}" ), QStringLiteral( "hstore" ) );
       QCOMPARE( decoded.type(), QVariant::StringList );
 
       QStringList expected;
@@ -59,7 +59,7 @@ class TestQgsPostgresProvider: public QObject
 
     void decodeArray2StringListNoQuote()
     {
-      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{1,2, a ,b, c}" ) );
+      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{1,2, a ,b, c}" ), QStringLiteral( "hstore" ) );
       QCOMPARE( decoded.type(), QVariant::StringList );
 
       QStringList expected;
@@ -70,13 +70,59 @@ class TestQgsPostgresProvider: public QObject
 
     void decodeArray2IntList()
     {
-      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{1, 2, 3,-5,10}" ) );
+      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::StringList, QVariant::String, QStringLiteral( "{1, 2, 3,-5,10}" ), QStringLiteral( "hstore" ) );
       QCOMPARE( decoded.type(), QVariant::StringList );
 
       QVariantList expected;
       expected << QVariant( 1 ) << QVariant( 2 ) << QVariant( 3 ) << QVariant( -5 ) << QVariant( 10 );
       qDebug() << "actual: " << decoded;
       QCOMPARE( decoded.toList(), expected );
+    }
+    void decodeJsonList()
+    {
+      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "[1,2,3]" ), QStringLiteral( "json" ) );
+      QCOMPARE( decoded.type(), QVariant::List );
+
+      QVariantList expected;
+      expected.append( 1 );
+      expected.append( 2 );
+      expected.append( 3 );
+      qDebug() << "actual: " << decoded;
+      QCOMPARE( decoded.toList(), expected );
+    }
+    void decodeJsonbList()
+    {
+      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "[1,2,3]" ), QStringLiteral( "jsonb" ) );
+      QCOMPARE( decoded.type(), QVariant::List );
+
+      QVariantList expected;
+      expected.append( 1 );
+      expected.append( 2 );
+      expected.append( 3 );
+      qDebug() << "actual: " << decoded;
+      QCOMPARE( decoded.toList(), expected );
+    }
+    void decodeJsonMap()
+    {
+      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "{\"a\":1,\"b\":2}" ), QStringLiteral( "json" ) );
+      QCOMPARE( decoded.type(), QVariant::Map );
+
+      QVariantMap expected;
+      expected[QStringLiteral( "a" )] = "1";
+      expected[QStringLiteral( "b" )] = "2";
+      qDebug() << "actual: " << decoded;
+      QCOMPARE( decoded.toMap(), expected );
+    }
+    void decodeJsonbMap()
+    {
+      const QVariant decoded = QgsPostgresProvider::convertValue( QVariant::Map, QVariant::String, QStringLiteral( "{\"a\":1,\"b\":2}" ), QStringLiteral( "jsonb" ) );
+      QCOMPARE( decoded.type(), QVariant::Map );
+
+      QVariantMap expected;
+      expected[QStringLiteral( "a" )] = "1";
+      expected[QStringLiteral( "b" )] = "2";
+      qDebug() << "actual: " << decoded;
+      QCOMPARE( decoded.toMap(), expected );
     }
 };
 

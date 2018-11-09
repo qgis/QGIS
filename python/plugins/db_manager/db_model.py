@@ -31,7 +31,7 @@ from .db_plugins import supportedDbTypes, createDbPlugin
 from .db_plugins.plugin import BaseError, Table, Database
 from .dlg_db_error import DlgDbError
 
-from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils
+from qgis.core import QgsApplication, QgsDataSourceUri, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils
 from qgis.utils import OverrideCursor
 
 from . import resources_rc  # NOQA
@@ -156,6 +156,9 @@ class ConnectionItem(TreeItem):
             return self.getItemData().connectionName()
         return None
 
+    def icon(self):
+        return self.getItemData().connectionIcon()
+
     def populate(self):
         if self.populated:
             return True
@@ -234,13 +237,13 @@ class TableItem(TreeItem):
 
         # load (shared) icon with first instance of table item
         if not hasattr(TableItem, 'tableIcon'):
-            TableItem.tableIcon = QIcon(":/db_manager/icons/table.png")
+            TableItem.tableIcon = QgsApplication.getThemeIcon("/mIconTableLayer.svg")
             TableItem.viewIcon = QIcon(":/db_manager/icons/view.png")
             TableItem.viewMaterializedIcon = QIcon(":/db_manager/icons/view_materialized.png")
-            TableItem.layerPointIcon = QIcon(":/db_manager/icons/layer_point.png")
-            TableItem.layerLineIcon = QIcon(":/db_manager/icons/layer_line.png")
-            TableItem.layerPolygonIcon = QIcon(":/db_manager/icons/layer_polygon.png")
-            TableItem.layerRasterIcon = QIcon(":/db_manager/icons/layer_raster.png")
+            TableItem.layerPointIcon = QgsApplication.getThemeIcon("/mIconPointLayer.svg")
+            TableItem.layerLineIcon = QgsApplication.getThemeIcon("/mIconLineLayer.svg")
+            TableItem.layerPolygonIcon = QgsApplication.getThemeIcon("/mIconPolygonLayer.svg")
+            TableItem.layerRasterIcon = QgsApplication.getThemeIcon("/mIconRasterLayer.svg")
             TableItem.layerUnknownIcon = QIcon(":/db_manager/icons/layer_unknown.png")
 
     def data(self, column):

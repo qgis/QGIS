@@ -13,34 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssymbol.h"
-#include "qgssymbollayer.h"
-
-#include "qgslinesymbollayer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsmaptopixelgeometrysimplifier.h"
-
-#include "qgslogger.h"
-#include "qgsrendercontext.h" // for bigSymbolPreview
-
-#include "qgsproject.h"
-#include "qgsstyle.h"
-#include "qgspainteffect.h"
-#include "qgseffectstack.h"
-
-#include "qgsvectorlayer.h"
-
-#include "qgsgeometry.h"
-#include "qgsmultipoint.h"
-#include "qgsgeometrycollection.h"
-#include "qgslinestring.h"
-#include "qgspolygon.h"
-#include "qgsclipper.h"
-#include "qgsproperty.h"
-#include "qgscolorschemeregistry.h"
-
 #include <QColor>
 #include <QImage>
 #include <QPainter>
@@ -50,6 +22,31 @@
 #include <cmath>
 #include <map>
 #include <random>
+
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+
+#include "qgslinesymbollayer.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgslogger.h"
+#include "qgsrendercontext.h" // for bigSymbolPreview
+#include "qgsproject.h"
+#include "qgsstyle.h"
+#include "qgspainteffect.h"
+#include "qgseffectstack.h"
+#include "qgsvectorlayer.h"
+#include "qgsfeature.h"
+#include "qgsgeometry.h"
+#include "qgsmultipoint.h"
+#include "qgsgeometrycollection.h"
+#include "qgslinestring.h"
+#include "qgspolygon.h"
+#include "qgsclipper.h"
+#include "qgsproperty.h"
+#include "qgscolorschemeregistry.h"
 
 inline
 QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )
@@ -78,6 +75,7 @@ QgsProperty scaleWholeSymbol( double scaleFactorX, double scaleFactorY, const Qg
 
 ////////////////////
 
+Q_NOWARN_DEPRECATED_PUSH // because of deprecated mLayer
 QgsSymbol::QgsSymbol( SymbolType type, const QgsSymbolLayerList &layers )
   : mType( type )
   , mLayers( layers )
@@ -97,6 +95,7 @@ QgsSymbol::QgsSymbol( SymbolType type, const QgsSymbolLayerList &layers )
     }
   }
 }
+Q_NOWARN_DEPRECATED_POP
 
 QPolygonF QgsSymbol::_getLineString( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent )
 {
@@ -266,43 +265,43 @@ void QgsSymbol::setMapUnitScale( const QgsMapUnitScale &scale )
 
 QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
 {
-  QgsSymbol *s = nullptr;
+  std::unique_ptr< QgsSymbol > s;
 
   // override global default if project has a default for this type
   QString defaultSymbol;
   switch ( geomType )
   {
     case QgsWkbTypes::PointGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ), QLatin1String( "" ) );
+      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ) );
       break;
     case QgsWkbTypes::LineGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ), QLatin1String( "" ) );
+      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ) );
       break;
     case QgsWkbTypes::PolygonGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ), QLatin1String( "" ) );
+      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ) );
       break;
     default:
       break;
   }
   if ( !defaultSymbol.isEmpty() )
-    s = QgsStyle::defaultStyle()->symbol( defaultSymbol );
+    s.reset( QgsStyle::defaultStyle()->symbol( defaultSymbol ) );
 
   // if no default found for this type, get global default (as previously)
-  if ( ! s )
+  if ( !s )
   {
     switch ( geomType )
     {
       case QgsWkbTypes::PointGeometry:
-        s = new QgsMarkerSymbol();
+        s = qgis::make_unique< QgsMarkerSymbol >();
         break;
       case QgsWkbTypes::LineGeometry:
-        s = new QgsLineSymbol();
+        s = qgis::make_unique< QgsLineSymbol >();
         break;
       case QgsWkbTypes::PolygonGeometry:
-        s = new QgsFillSymbol();
+        s = qgis::make_unique< QgsFillSymbol >();
         break;
       default:
-        QgsDebugMsg( "unknown layer's geometry type" );
+        QgsDebugMsg( QStringLiteral( "unknown layer's geometry type" ) );
         return nullptr;
     }
   }
@@ -326,7 +325,7 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
     s->setColor( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor() );
   }
 
-  return s;
+  return s.release();
 }
 
 QgsSymbolLayer *QgsSymbol::symbolLayer( int layer )
@@ -434,7 +433,9 @@ void QgsSymbol::stopRender( QgsRenderContext &context )
 
   mSymbolRenderContext.reset( nullptr );
 
+  Q_NOWARN_DEPRECATED_PUSH
   mLayer = nullptr;
+  Q_NOWARN_DEPRECATED_POP
 }
 
 void QgsSymbol::setColor( const QColor &color )
@@ -462,6 +463,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
   QgsRenderContext context = customContext ? *customContext : QgsRenderContext::fromQPainter( painter );
   context.setForceVectorOutput( true );
   QgsSymbolRenderContext symbolContext( context, outputUnit(), mOpacity, false, mRenderHints, nullptr, QgsFields(), mapUnitScale() );
+  symbolContext.setOriginalGeometryType( mType == Fill ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::UnknownGeometry );
 
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
@@ -490,7 +492,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
 
 void QgsSymbol::exportImage( const QString &path, const QString &format, QSize size )
 {
-  if ( format.toLower() == QLatin1String( "svg" ) )
+  if ( format.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
   {
     QSvgGenerator generator;
     generator.setFileName( path );
@@ -597,7 +599,7 @@ void QgsSymbol::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap pro
   props[ QStringLiteral( "alpha" )] = QString::number( opacity() );
   double scaleFactor = 1.0;
   props[ QStringLiteral( "uom" )] = QgsSymbolLayerUtils::encodeSldUom( outputUnit(), &scaleFactor );
-  props[ QStringLiteral( "uomScale" )] = ( !qgsDoubleNear( scaleFactor, 1.0 ) ? qgsDoubleToString( scaleFactor ) : QLatin1String( "" ) );
+  props[ QStringLiteral( "uomScale" )] = ( !qgsDoubleNear( scaleFactor, 1.0 ) ? qgsDoubleToString( scaleFactor ) : QString() );
 
   for ( QgsSymbolLayerList::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
@@ -669,6 +671,20 @@ bool QgsSymbol::hasDataDefinedProperties() const
   return false;
 }
 
+void QgsSymbol::setLayer( const QgsVectorLayer *layer )
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  mLayer = layer;
+  Q_NOWARN_DEPRECATED_POP
+}
+
+const QgsVectorLayer *QgsSymbol::layer() const
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  return mLayer;
+  Q_NOWARN_DEPRECATED_POP
+}
+
 ///@cond PRIVATE
 
 /**
@@ -688,6 +704,27 @@ class ExpressionContextScopePopper
 
     QgsExpressionContext *context = nullptr;
 };
+
+/**
+ * RAII class to restore original geometry on a render context on destruction
+ */
+class GeometryRestorer
+{
+  public:
+    GeometryRestorer( QgsRenderContext &context )
+      : mContext( context ),
+        mGeometry( context.geometry() )
+    {}
+
+    ~GeometryRestorer()
+    {
+      mContext.setGeometry( mGeometry );
+    }
+
+  private:
+    QgsRenderContext &mContext;
+    const QgsAbstractGeometry *mGeometry;
+};
 ///@endcond PRIVATE
 
 void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker, int currentVertexMarkerType, int currentVertexMarkerSize )
@@ -698,6 +735,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     return;
   }
 
+  GeometryRestorer geomRestorer( context );
   QgsGeometry segmentizedGeometry = geom;
   bool usingSegmentizedGeometry = false;
   context.setGeometry( geom.constGet() );
@@ -757,7 +795,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     {
       if ( mType != QgsSymbol::Marker )
       {
-        QgsDebugMsg( "point can be drawn only with marker symbol!" );
+        QgsDebugMsg( QStringLiteral( "point can be drawn only with marker symbol!" ) );
         break;
       }
 
@@ -783,7 +821,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     {
       if ( mType != QgsSymbol::Line )
       {
-        QgsDebugMsg( "linestring can be drawn only with line symbol!" );
+        QgsDebugMsg( QStringLiteral( "linestring can be drawn only with line symbol!" ) );
         break;
       }
       const QgsCurve &curve = dynamic_cast<const QgsCurve &>( *segmentizedGeometry.constGet() );
@@ -803,13 +841,13 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       QList<QPolygonF> holes;
       if ( mType != QgsSymbol::Fill )
       {
-        QgsDebugMsg( "polygon can be drawn only with fill symbol!" );
+        QgsDebugMsg( QStringLiteral( "polygon can be drawn only with fill symbol!" ) );
         break;
       }
       const QgsPolygon &polygon = dynamic_cast<const QgsPolygon &>( *segmentizedGeometry.constGet() );
       if ( !polygon.exteriorRing() )
       {
-        QgsDebugMsg( "cannot render polygon with no exterior ring" );
+        QgsDebugMsg( QStringLiteral( "cannot render polygon with no exterior ring" ) );
         break;
       }
       _getPolygon( pts, holes, context, polygon, !tileMapRendering && clipFeaturesToExtent() );
@@ -831,7 +869,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     {
       if ( mType != QgsSymbol::Marker )
       {
-        QgsDebugMsg( "multi-point can be drawn only with marker symbol!" );
+        QgsDebugMsg( QStringLiteral( "multi-point can be drawn only with marker symbol!" ) );
         break;
       }
 
@@ -865,7 +903,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     {
       if ( mType != QgsSymbol::Line )
       {
-        QgsDebugMsg( "multi-linestring can be drawn only with line symbol!" );
+        QgsDebugMsg( QStringLiteral( "multi-linestring can be drawn only with line symbol!" ) );
         break;
       }
 
@@ -903,7 +941,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     {
       if ( mType != QgsSymbol::Fill )
       {
-        QgsDebugMsg( "multi-polygon can be drawn only with fill symbol!" );
+        QgsDebugMsg( QStringLiteral( "multi-polygon can be drawn only with fill symbol!" ) );
         break;
       }
 
@@ -974,10 +1012,10 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         break;
       }
 
-      FALLTHROUGH;
+      FALLTHROUGH
     }
     default:
-      QgsDebugMsg( QString( "feature %1: unsupported wkb type %2/%3 for rendering" )
+      QgsDebugMsg( QStringLiteral( "feature %1: unsupported wkb type %2/%3 for rendering" )
                    .arg( feature.id() )
                    .arg( QgsWkbTypes::displayString( geom.constGet()->wkbType() ) )
                    .arg( geom.wkbType(), 0, 16 ) );
@@ -1532,7 +1570,9 @@ QgsMarkerSymbol *QgsMarkerSymbol::clone() const
 {
   QgsMarkerSymbol *cloneSymbol = new QgsMarkerSymbol( cloneLayers() );
   cloneSymbol->setOpacity( mOpacity );
+  Q_NOWARN_DEPRECATED_PUSH
   cloneSymbol->setLayer( mLayer );
+  Q_NOWARN_DEPRECATED_POP
   cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   return cloneSymbol;
 }
@@ -1749,7 +1789,9 @@ QgsLineSymbol *QgsLineSymbol::clone() const
 {
   QgsLineSymbol *cloneSymbol = new QgsLineSymbol( cloneLayers() );
   cloneSymbol->setOpacity( mOpacity );
+  Q_NOWARN_DEPRECATED_PUSH
   cloneSymbol->setLayer( mLayer );
+  Q_NOWARN_DEPRECATED_POP
   cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   return cloneSymbol;
 }
@@ -1867,7 +1909,9 @@ QgsFillSymbol *QgsFillSymbol::clone() const
 {
   QgsFillSymbol *cloneSymbol = new QgsFillSymbol( cloneLayers() );
   cloneSymbol->setOpacity( mOpacity );
+  Q_NOWARN_DEPRECATED_PUSH
   cloneSymbol->setLayer( mLayer );
+  Q_NOWARN_DEPRECATED_POP
   cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   return cloneSymbol;
 }

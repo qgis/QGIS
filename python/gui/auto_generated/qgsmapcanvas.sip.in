@@ -611,6 +611,8 @@ context scope for the canvas.
 
 .. seealso:: :py:func:`expressionContextScope`
 
+.. seealso:: :py:func:`defaultExpressionContextScope`
+
 .. versionadded:: 2.12
 %End
 
@@ -622,9 +624,22 @@ overrides for expression evaluation for the map canvas render.
 
 .. seealso:: :py:func:`setExpressionContextScope`
 
+.. seealso:: :py:func:`defaultExpressionContextScope`
+
 .. versionadded:: 2.12
 %End
 
+
+    QgsExpressionContextScope *defaultExpressionContextScope() /Factory/;
+%Docstring
+Creates a new scope which contains default variables and functions relating to the map canvas.
+
+.. seealso:: :py:func:`expressionContextScope`
+
+.. seealso:: :py:func:`setExpressionContextScope`
+
+.. versionadded:: 3.4
+%End
 
     void setSegmentationTolerance( double tolerance );
 %Docstring

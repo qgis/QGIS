@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSCATEGORIZEDSYMBOLRENDERERV2WIDGET_H
-#define QGSCATEGORIZEDSYMBOLRENDERERV2WIDGET_H
+#ifndef QGSCATEGORIZEDSYMBOLRENDERERWIDGET_H
+#define QGSCATEGORIZEDSYMBOLRENDERERWIDGET_H
 
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgis.h"
@@ -25,7 +25,7 @@
 class QgsCategorizedSymbolRenderer;
 class QgsRendererCategory;
 
-#include "ui_qgscategorizedsymbolrendererv2widget.h"
+#include "ui_qgscategorizedsymbolrendererwidget.h"
 #include "qgis_gui.h"
 
 
@@ -195,4 +195,4 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     QgsExpressionContext createExpressionContext() const override;
 };
 
-#endif // QGSCATEGORIZEDSYMBOLRENDERERV2WIDGET_H
+#endif // QGSCATEGORIZEDSYMBOLRENDERERWIDGET_H

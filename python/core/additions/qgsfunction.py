@@ -22,11 +22,11 @@ import inspect
 import string
 from builtins import str
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis._core import QgsExpressionFunction, QgsExpression, QgsMessageLog, QgsFeatureRequest
+from qgis._core import QgsExpressionFunction, QgsExpression, QgsMessageLog, QgsFeatureRequest, Qgis
 
 
 def register_function(function, arg_count, group, usesgeometry=False,
-                      referenced_columns=[QgsFeatureRequest.ALL_ATTRIBUTES], **kwargs):
+                      referenced_columns=[QgsFeatureRequest.ALL_ATTRIBUTES], handlesnull=False, **kwargs):
     """
     Register a Python function to be used as a expression function.
 
@@ -50,19 +50,21 @@ def register_function(function, arg_count, group, usesgeometry=False,
     :param function:
     :param arg_count:
     :param group:
-    :param usesgeometry:
+    :param usesgeometry: 
+    :param handlesnull: Needs to be set to True if this function does not always return NULL if any parameter is NULL. Default False.
     :return:
     """
 
     class QgsPyExpressionFunction(QgsExpressionFunction):
 
         def __init__(self, func, name, args, group, helptext='', usesGeometry=True,
-                     referencedColumns=QgsFeatureRequest.ALL_ATTRIBUTES, expandargs=False):
+                     referencedColumns=QgsFeatureRequest.ALL_ATTRIBUTES, expandargs=False, handlesNull=False):
             QgsExpressionFunction.__init__(self, name, args, group, helptext)
             self.function = func
             self.expandargs = expandargs
             self.uses_geometry = usesGeometry
             self.referenced_columns = referencedColumns
+            self.handles_null = handlesNull
 
         def func(self, values, context, parent, node):
             feature = None
@@ -89,6 +91,9 @@ def register_function(function, arg_count, group, usesgeometry=False,
 
         def referencedColumns(self, node):
             return self.referenced_columns
+
+        def handlesNull(self):
+            return self.handles_null
 
     helptemplate = string.Template("""<h3>$name function</h3><br>$doc""")
     name = kwargs.get('name', function.__name__)
@@ -119,7 +124,7 @@ def register_function(function, arg_count, group, usesgeometry=False,
     function.__name__ = name
     helptext = helptemplate.safe_substitute(name=name, doc=helptext)
     f = QgsPyExpressionFunction(function, name, arg_count, group, helptext, usesgeometry, referenced_columns,
-                                expandargs)
+                                expandargs, handlesnull)
 
     # This doesn't really make any sense here but does when used from a decorator context
     # so it can stay.
@@ -131,6 +136,19 @@ def register_function(function, arg_count, group, usesgeometry=False,
 def qgsfunction(args='auto', group='custom', **kwargs):
     """
     Decorator function used to define a user expression function.
+
+    :param args: Number of parameters, set to 'auto' to accept a variable length of parameters.
+    :param group: The expression group to which this expression should be added.
+    :param \**kwargs:
+        See below
+
+    :Keyword Arguments:
+        * *referenced_columns* (``list``) --
+          An array of field names on which this expression works. Can be set to ``[QgsFeatureRequest.ALL_ATTRIBUTES]``. By default empty.
+        * *usesgeometry* (``bool``) --
+          Defines if this expression requires the geometry. By default False.
+        * *handlesnull* (``bool``) --
+          Defines if this expression has custom handling for NULL values. If False, the result will always be NULL as soon as any parameter is NULL. False by default.
 
     Example:
       @qgsfunction(2, 'test'):

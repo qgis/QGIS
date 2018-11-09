@@ -27,6 +27,7 @@
 #include <QStandardItemModel>
 #include <QTreeView>
 #include <QVBoxLayout>
+#include <QHeaderView>
 
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
@@ -206,7 +207,7 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
   }
   Q_FOREACH ( QgsGrassObject::Type type, typesCopy )
   {
-    QgsGrassObject mapsetObject( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), mapset, QLatin1String( "" ), QgsGrassObject::Mapset );
+    QgsGrassObject mapsetObject( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), mapset, QString(), QgsGrassObject::Mapset );
     QStringList maps = QgsGrass::grassObjects( mapsetObject, type );
     QStringList mapNames;
     Q_FOREACH ( const QString &map, maps )
@@ -936,7 +937,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   // TODO: implement region for multiple
   if ( mType == QgsGrassObject::Raster && region != QLatin1String( "no" ) && !mDirect && !multiple() )
   {
-    mRegionButton = new QPushButton( QgsGrassPlugin::getThemeIcon( QStringLiteral( "grass_set_region.png" ) ), QLatin1String( "" ) );
+    mRegionButton = new QPushButton( QgsGrassPlugin::getThemeIcon( QStringLiteral( "grass_set_region.png" ) ), QString() );
 
     mRegionButton->setToolTip( tr( "Use region of this map" ) );
     mRegionButton->setCheckable( true );
@@ -1014,7 +1015,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
       mUsesRegion = true;
   }
   QgsDebugMsg( QString( "mUsesRegion = %1" ).arg( mUsesRegion ) );
-  onChanged( QLatin1String( "" ) );
+  onChanged( QString() );
 }
 
 bool QgsGrassModuleInput::useRegion()
@@ -1078,7 +1079,7 @@ QgsFields QgsGrassModuleInput::currentFields()
 QgsGrassObject QgsGrassModuleInput::currentGrassObject()
 {
 
-  QgsGrassObject grassObject( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), QLatin1String( "" ), QLatin1String( "" ), mType );
+  QgsGrassObject grassObject( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), QString(), QString(), mType );
   grassObject.setFullName( mComboBox->currentText() );
   return grassObject;
 }

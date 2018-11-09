@@ -1,0 +1,561 @@
+/***************************************************************************
+                              qgsserverparameters.cpp
+                              --------------------
+  begin                : Jun 27, 2018
+  copyright            : (C) 2018 by Paul Blottiere
+  email                : paul dot blottiere at oslandia dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsserverparameters.h"
+#include "qgsserverexception.h"
+#include "qgsnetworkcontentfetcher.h"
+#include "qgsmessagelog.h"
+#include <QObject>
+#include <QUrl>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+
+//
+// QgsServerParameterDefinition
+//
+QgsServerParameterDefinition::QgsServerParameterDefinition( const QVariant::Type type,
+    const QVariant defaultValue )
+  : mType( type )
+  , mDefaultValue( defaultValue )
+{
+}
+
+QString QgsServerParameterDefinition::typeName() const
+{
+  return  QVariant::typeToName( mType );
+}
+
+QColor QgsServerParameterDefinition::toColor( bool &ok ) const
+{
+  ok = true;
+  QColor color = mDefaultValue.value<QColor>();
+  QString cStr = mValue.toString();
+
+  if ( !cStr.isEmpty() )
+  {
+    // support hexadecimal notation to define colors
+    if ( cStr.startsWith( QLatin1String( "0x" ), Qt::CaseInsensitive ) )
+    {
+      cStr.replace( 0, 2, QStringLiteral( "#" ) );
+    }
+
+    color = QColor( cStr );
+
+    ok = color.isValid();
+  }
+
+  return color;
+}
+
+QString QgsServerParameterDefinition::toString() const
+{
+  return mValue.toString();
+}
+
+QStringList QgsServerParameterDefinition::toStringList( const char delimiter ) const
+{
+  return toString().split( delimiter, QString::SkipEmptyParts );
+}
+
+QList<QgsGeometry> QgsServerParameterDefinition::toGeomList( bool &ok, const char delimiter ) const
+{
+  ok = true;
+  QList<QgsGeometry> geoms;
+
+  for ( const auto &wkt : toStringList( delimiter ) )
+  {
+    const QgsGeometry g( QgsGeometry::fromWkt( wkt ) );
+
+    if ( g.isGeosValid() )
+    {
+      geoms.append( g );
+    }
+    else
+    {
+      ok = false;
+      return QList<QgsGeometry>();
+    }
+  }
+
+  return geoms;
+}
+
+QList<QColor> QgsServerParameterDefinition::toColorList( bool &ok, const char delimiter ) const
+{
+  ok = true;
+  QList<QColor> colors;
+
+  for ( const auto &part : toStringList( delimiter ) )
+  {
+    QString cStr( part );
+    if ( !cStr.isEmpty() )
+    {
+      // support hexadecimal notation to define colors
+      if ( cStr.startsWith( QLatin1String( "0x" ), Qt::CaseInsensitive ) )
+      {
+        cStr.replace( 0, 2, QStringLiteral( "#" ) );
+      }
+
+      const QColor color = QColor( cStr );
+      ok = color.isValid();
+
+      if ( !ok )
+      {
+        return QList<QColor>();
+      }
+
+      colors.append( color );
+    }
+  }
+
+  return colors;
+}
+
+QList<int> QgsServerParameterDefinition::toIntList( bool &ok, const char delimiter ) const
+{
+  ok = true;
+  QList<int> ints;
+
+  for ( const auto &part : toStringList( delimiter ) )
+  {
+    const int val = part.toInt( &ok );
+
+    if ( !ok )
+    {
+      return QList<int>();
+    }
+
+    ints.append( val );
+  }
+
+  return ints;
+}
+
+QList<double> QgsServerParameterDefinition::toDoubleList( bool &ok, const char delimiter ) const
+{
+  ok = true;
+  QList<double> vals;
+
+  for ( const auto &part : toStringList( delimiter ) )
+  {
+    const double val = part.toDouble( &ok );
+
+    if ( !ok )
+    {
+      return QList<double>();
+    }
+
+    vals.append( val );
+  }
+
+  return vals;
+}
+
+QgsRectangle QgsServerParameterDefinition::toRectangle( bool &ok ) const
+{
+  ok = true;
+  QgsRectangle extent;
+
+  if ( !mValue.toString().isEmpty() )
+  {
+    QStringList corners = mValue.toString().split( ',' );
+
+    if ( corners.size() == 4 )
+    {
+      double d[4];
+
+      for ( int i = 0; i < 4; i++ )
+      {
+        corners[i].replace( ' ', '+' );
+        d[i] = corners[i].toDouble( &ok );
+        if ( !ok )
+        {
+          return QgsRectangle();
+        }
+      }
+
+      if ( d[0] > d[2] || d[1] > d[3] )
+      {
+        ok = false;
+        return QgsRectangle();
+      }
+
+      extent = QgsRectangle( d[0], d[1], d[2], d[3] );
+    }
+    else
+    {
+      ok = false;
+      return QgsRectangle();
+    }
+  }
+
+  return extent;
+}
+
+QString QgsServerParameterDefinition::loadUrl( bool &ok ) const
+{
+  ok = true;
+
+  // Get URL
+  QUrl url = toUrl( ok );
+  if ( !ok )
+  {
+    return QString();
+  }
+
+  // fetching content
+  QgsNetworkContentFetcher fetcher;
+  QEventLoop loop;
+  QObject::connect( &fetcher, &QgsNetworkContentFetcher::finished, &loop, &QEventLoop::quit );
+
+  QgsMessageLog::logMessage(
+    QObject::tr( "Request started [url: %1]" ).arg( url.toString() ),
+    QStringLiteral( "Server" ) );
+  QNetworkRequest request( url );
+  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+  request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+  fetcher.fetchContent( request );
+
+  //wait until content fetched
+  loop.exec( QEventLoop::ExcludeUserInputEvents );
+
+  QNetworkReply *reply = fetcher.reply();
+  if ( !reply )
+  {
+    ok = false;
+    QgsMessageLog::logMessage(
+      QObject::tr( "Request failed [error: no reply - url: %1]" ).arg( url.toString() ),
+      QStringLiteral( "Server" ) );
+    return QString();
+  }
+
+  QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+  if ( !status.isNull() && status.toInt() >= 400 )
+  {
+    ok = false;
+    if ( reply->error() != QNetworkReply::NoError )
+    {
+      QgsMessageLog::logMessage(
+        QObject::tr( "Request failed [error: %1 - url: %2]" ).arg( reply->errorString(), reply->url().toString() ),
+        QStringLiteral( "Server" ) );
+    }
+    QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+    QgsMessageLog::logMessage(
+      QObject::tr( "Request error [status: %1 - reason phrase: %2] for %3" ).arg( status.toInt() ).arg( phrase.toString(), reply->url().toString() ),
+      QStringLiteral( "Server" ) );
+    return QString();
+  }
+
+  if ( reply->error() != QNetworkReply::NoError )
+  {
+    ok = false;
+    QgsMessageLog::logMessage(
+      QObject::tr( "Request failed [error: %1 - url: %2]" ).arg( reply->errorString(), reply->url().toString() ),
+      QStringLiteral( "Server" ) );
+    return QString();
+  }
+
+  QgsMessageLog::logMessage(
+    QObject::tr( "Request finished [url: %1]" ).arg( url.toString() ),
+    QStringLiteral( "Server" ) );
+
+  QString content = fetcher.contentAsString();
+  ok = ( !content.isEmpty() );
+  return content;
+}
+
+QUrl QgsServerParameterDefinition::toUrl( bool &ok ) const
+{
+  ok = true;
+  QUrl val;
+
+  if ( !mValue.toString().isEmpty() )
+  {
+    val = mValue.toUrl();
+  }
+
+  ok = ( !val.isEmpty() && val.isValid() );
+  return val;
+}
+
+int QgsServerParameterDefinition::toInt( bool &ok ) const
+{
+  ok = true;
+  int val = mDefaultValue.toInt();
+
+  if ( !mValue.toString().isEmpty() )
+  {
+    val = mValue.toInt( &ok );
+  }
+
+  return val;
+}
+
+bool QgsServerParameterDefinition::toBool() const
+{
+  int val = mDefaultValue.toBool();
+
+  if ( !mValue.toString().isEmpty() )
+  {
+    val = mValue.toBool();
+  }
+
+  return val;
+}
+
+double QgsServerParameterDefinition::toDouble( bool &ok ) const
+{
+  ok = true;
+  double val = mDefaultValue.toDouble();
+
+  if ( !mValue.toString().isEmpty() )
+  {
+    val = mValue.toDouble( &ok );
+  }
+
+  return val;
+}
+
+bool QgsServerParameterDefinition::isValid() const
+{
+  return mValue.canConvert( mType );
+}
+
+void QgsServerParameterDefinition::raiseError( const QString &msg )
+{
+  throw QgsBadRequestException( QStringLiteral( "Invalid Parameter" ), msg );
+}
+
+//
+// QgsServerParameter
+//
+QgsServerParameter::QgsServerParameter( const QgsServerParameter::Name name,
+                                        const QVariant::Type type, const QVariant defaultValue )
+  : QgsServerParameterDefinition( type, defaultValue )
+  , mName( name )
+{
+}
+
+QString QgsServerParameter::name( const QgsServerParameter::Name name )
+{
+  if ( name == QgsServerParameter::VERSION_SERVICE )
+  {
+    return QStringLiteral( "VERSION" );
+  }
+  else
+  {
+    const QMetaEnum metaEnum( QMetaEnum::fromType<QgsServerParameter::Name>() );
+    return metaEnum.valueToKey( name );
+  }
+}
+
+QgsServerParameter::Name QgsServerParameter::name( const QString &name )
+{
+  if ( name.compare( QLatin1String( "VERSION" ) ) == 0 )
+  {
+    return QgsServerParameter::VERSION_SERVICE;
+  }
+  else
+  {
+    const QMetaEnum metaEnum( QMetaEnum::fromType<QgsServerParameter::Name>() );
+    return ( QgsServerParameter::Name ) metaEnum.keyToValue( name.toUpper().toStdString().c_str() );
+  }
+}
+
+void QgsServerParameter::raiseError() const
+{
+  const QString msg = QString( "%1 ('%2') cannot be converted into %3" ).arg( name( mName ), mValue.toString(), typeName() );
+  QgsServerParameterDefinition::raiseError( msg );
+}
+
+//
+// QgsServerParameters
+//
+QgsServerParameters::QgsServerParameters()
+{
+  save( QgsServerParameter( QgsServerParameter::SERVICE ) );
+  save( QgsServerParameter( QgsServerParameter::REQUEST ) );
+  save( QgsServerParameter( QgsServerParameter::VERSION_SERVICE ) );
+  save( QgsServerParameter( QgsServerParameter::MAP ) );
+  save( QgsServerParameter( QgsServerParameter::FILE_NAME ) );
+}
+
+QgsServerParameters::QgsServerParameters( const QUrlQuery &query )
+  : QgsServerParameters()
+{
+  load( query );
+}
+
+void QgsServerParameters::save( const QgsServerParameter &parameter )
+{
+  mParameters[ parameter.mName ] = parameter;
+}
+
+void QgsServerParameters::add( const QString &key, const QString &value )
+{
+  QUrlQuery query;
+  query.addQueryItem( key, value );
+  load( query );
+}
+
+QUrlQuery QgsServerParameters::urlQuery() const
+{
+  QUrlQuery query;
+
+  for ( auto param : toMap().toStdMap() )
+  {
+    query.addQueryItem( param.first, param.second );
+  }
+
+  return query;
+}
+
+void QgsServerParameters::remove( QgsServerParameter::Name name )
+{
+  remove( QgsServerParameter::name( name ) );
+}
+
+void QgsServerParameters::remove( const QString &key )
+{
+  if ( mUnmanagedParameters.contains( key ) )
+  {
+    mUnmanagedParameters.take( key );
+  }
+  else
+  {
+    QgsServerParameter::Name paramName = QgsServerParameter::name( key );
+    if ( mParameters.contains( paramName ) )
+    {
+      mParameters.take( paramName );
+    }
+  }
+}
+
+QString QgsServerParameters::map() const
+{
+  return value( QgsServerParameter::MAP ).toString();
+}
+
+QString QgsServerParameters::version() const
+{
+  return value( QgsServerParameter::VERSION_SERVICE ).toString();
+}
+
+QString QgsServerParameters::fileName() const
+{
+  return value( QgsServerParameter::FILE_NAME ).toString();
+}
+
+QString QgsServerParameters::service() const
+{
+  QString serviceValue = value( QgsServerParameter::SERVICE ).toString();
+
+  if ( serviceValue.isEmpty() )
+  {
+    // SERVICE not mandatory for WMS 1.3.0 GetMap & GetFeatureInfo
+    if ( request() == QLatin1String( "GetMap" ) \
+         || request() == QLatin1String( "GetFeatureInfo" ) )
+    {
+      serviceValue = "WMS";
+    }
+  }
+
+  return serviceValue;
+}
+
+QMap<QString, QString> QgsServerParameters::toMap() const
+{
+  QMap<QString, QString> params = mUnmanagedParameters;
+
+  for ( const auto &parameter : mParameters.toStdMap() )
+  {
+    if ( parameter.second.mValue.isNull() )
+      continue;
+
+    if ( parameter.second.mName == QgsServerParameter::VERSION_SERVICE )
+    {
+      params["VERSION"] = parameter.second.mValue.toString();
+    }
+    else
+    {
+      const QString paramName = QgsServerParameter::name( parameter.first );
+      params[paramName] = parameter.second.mValue.toString();
+    }
+  }
+
+  return params;
+}
+
+QString QgsServerParameters::request() const
+{
+  return value( QgsServerParameter::REQUEST ).toString();
+}
+
+QString QgsServerParameters::value( const QString &key ) const
+{
+  return value( QgsServerParameter::name( key ) ).toString();
+}
+
+QVariant QgsServerParameters::value( QgsServerParameter::Name name ) const
+{
+  return mParameters[name].mValue;
+}
+
+void QgsServerParameters::load( const QUrlQuery &query )
+{
+  // clean query string first
+  QUrlQuery cleanQuery( query );
+  cleanQuery.setQuery( query.query().replace( '+', QStringLiteral( "%20" ) ) );
+
+  // load parameters
+  for ( const auto &item : cleanQuery.queryItems( QUrl::FullyDecoded ) )
+  {
+    const QgsServerParameter::Name name = QgsServerParameter::name( item.first );
+    if ( name >= 0 )
+    {
+      mParameters[name].mValue = item.second;
+      if ( ! mParameters[name].isValid() )
+      {
+        mParameters[name].raiseError();
+      }
+    }
+    else if ( item.first.compare( QLatin1String( "VERSION" ) ) == 0 )
+    {
+      const QgsServerParameter::Name name = QgsServerParameter::VERSION_SERVICE;
+      mParameters[name].mValue = item.second;
+      if ( ! mParameters[name].isValid() )
+      {
+        mParameters[name].raiseError();
+      }
+    }
+    else if ( ! loadParameter( item.first, item.second ) )
+    {
+      mUnmanagedParameters[item.first.toUpper()] = item.second;
+    }
+  }
+}
+
+bool QgsServerParameters::loadParameter( const QString &, const QString & )
+{
+  return false;
+}
+
+void QgsServerParameters::clear()
+{
+  mParameters.clear();
+  mUnmanagedParameters.clear();
+}

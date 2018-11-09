@@ -111,6 +111,8 @@ class QgsWFSProvider : public QgsVectorDataProvider
     QString translateMetadataKey( const QString &mdKey ) const override;
     QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const override;
 
+    bool empty() const override;
+
   public slots:
 
     void reloadData() override;
@@ -132,8 +134,6 @@ class QgsWFSProvider : public QgsVectorDataProvider
     //! String used to define a subset of the layer
     QString mSubsetString;
 
-    //! Geometry type of the features in this layer
-    mutable QgsWkbTypes::Type mWKBType = QgsWkbTypes::Unknown;
     //! Flag if provider is valid
     bool mValid = true;
     //! Namespace URL of the server (comes from DescribeFeatureDocument)

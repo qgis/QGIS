@@ -14,6 +14,7 @@
 // so RTTI for casting is available in the whole module.
 %ModuleCode
 #include "qgsrelationwidgetwrapper.h"
+#include "qgsqmlwidgetwrapper.h"
 %End
 
 class QgsWidgetWrapper : QObject
@@ -37,6 +38,8 @@ changed status of the widget will be saved.
       sipType = sipType_QgsEditorWidgetWrapper;
     else if ( qobject_cast<QgsRelationWidgetWrapper *>( sipCpp ) )
       sipType = sipType_QgsRelationWidgetWrapper;
+    else if ( qobject_cast<QgsQmlWidgetWrapper *>( sipCpp ) )
+      sipType = sipType_QgsQmlWidgetWrapper;
     else
       sipType = 0;
 %End
@@ -153,6 +156,24 @@ Sets the editor widget's property collection, used for data defined overrides.
 .. seealso:: :py:func:`dataDefinedProperties`
 
 .. versionadded:: 3.0
+%End
+
+    void notifyAboutToSave();
+%Docstring
+Notify this widget, that the containing form is about to save and
+that any pending changes should be pushed to the edit buffer or they
+might be lost.
+
+.. versionadded:: 3.2
+%End
+
+  signals:
+
+    void contextChanged();
+%Docstring
+Signal when QgsAttributeEditorContext mContext changed
+
+.. versionadded:: 3.4
 %End
 
   protected:

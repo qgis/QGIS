@@ -145,7 +145,10 @@ class CORE_EXPORT QgsPointXY
      * \returns QPointF with same x and y values
      * \since QGIS 2.7
      */
-    QPointF toQPointF() const;
+    QPointF toQPointF() const
+    {
+      return QPointF( mX, mY );
+    }
 
     /**
      * Returns a string representation of the point (x, y) with a preset \a precision.
@@ -163,13 +166,19 @@ class CORE_EXPORT QgsPointXY
      * Returns the squared distance between this point a specified x, y coordinate.
      * \see distance()
     */
-    double sqrDist( double x, double y ) const;
+    double sqrDist( double x, double y ) const
+    {
+      return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
+    }
 
     /**
      * Returns the squared distance between this point another point.
      * \see distance()
     */
-    double sqrDist( const QgsPointXY &other ) const;
+    double sqrDist( const QgsPointXY &other ) const
+    {
+      return sqrDist( other.x(), other.y() );
+    }
 
     /**
      * Returns the distance between this point and a specified x, y coordinate.
@@ -178,7 +187,10 @@ class CORE_EXPORT QgsPointXY
      * \see sqrDist()
      * \since QGIS 2.16
     */
-    double distance( double x, double y ) const;
+    double distance( double x, double y ) const
+    {
+      return std::sqrt( sqrDist( x, y ) );
+    }
 
     /**
      * Returns the distance between this point and another point.
@@ -186,7 +198,10 @@ class CORE_EXPORT QgsPointXY
      * \see sqrDist()
      * \since QGIS 2.16
     */
-    double distance( const QgsPointXY &other ) const;
+    double distance( const QgsPointXY &other ) const
+    {
+      return std::sqrt( sqrDist( other ) );
+    }
 
     //! Returns the minimum distance between this point and a segment
     double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint SIP_OUT, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
@@ -210,19 +225,41 @@ class CORE_EXPORT QgsPointXY
      * \returns true if points are equal within specified tolerance
      * \since QGIS 2.9
      */
-    bool compare( const QgsPointXY &other, double epsilon = 4 * DBL_EPSILON ) const;
+    bool compare( const QgsPointXY &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const
+    {
+      return ( qgsDoubleNear( mX, other.x(), epsilon ) && qgsDoubleNear( mY, other.y(), epsilon ) );
+    }
 
     //! equality operator
-    bool operator==( const QgsPointXY &other );
+    bool operator==( const QgsPointXY &other )
+    {
+      return ( qgsDoubleNear( mX, other.x() ) && qgsDoubleNear( mY, other.y() ) );
+    }
 
     //! Inequality operator
-    bool operator!=( const QgsPointXY &other ) const;
+    bool operator!=( const QgsPointXY &other ) const
+    {
+      return !( qgsDoubleNear( mX, other.x() ) && qgsDoubleNear( mY, other.y() ) );
+    }
 
     //! Multiply x and y by the given value
-    void multiply( double scalar );
+    void multiply( double scalar )
+    {
+      mX *= scalar;
+      mY *= scalar;
+    }
 
     //! Assignment
-    QgsPointXY &operator=( const QgsPointXY &other );
+    QgsPointXY &operator=( const QgsPointXY &other )
+    {
+      if ( &other != this )
+      {
+        mX = other.x();
+        mY = other.y();
+      }
+
+      return *this;
+    }
 
     //! Calculates the vector obtained by subtracting a point from this point
     QgsVector operator-( const QgsPointXY &p ) const { return QgsVector( mX - p.mX, mY - p.mY ); }
@@ -260,9 +297,8 @@ class CORE_EXPORT QgsPointXY
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = "(" + QString::number( sipCpp->x() ) + "," + QString::number( sipCpp->y() ) + ")";
-    //QString str("(%f,%f)").arg(sipCpp->x()).arg(sipCpp->y());
-    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    QString str = QStringLiteral( "<QgsPointXY: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 
     int __len__();

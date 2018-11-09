@@ -54,7 +54,7 @@ Sets the minimum ``value`` for the raster shader.
                         int *returnRedValue /Out/,
                         int *returnGreenValue /Out/,
                         int *returnBlueValue /Out/,
-                        int *returnAlpha /Out/ );
+                        int *returnAlpha /Out/ ) const;
 %Docstring
 Generates an new RGBA value based on one input ``value``.
 
@@ -62,7 +62,7 @@ Generates an new RGBA value based on one input ``value``.
 :param returnRedValue: The red component of the new RGBA value
 :param returnGreenValue: The green component of the new RGBA value
 :param returnBlueValue: The blue component of the new RGBA value
-:param returnAlpha: The blue component of the new RGBA value
+:param returnAlpha: The alpha component of the new RGBA value
 
 :return: True if the return values are valid otherwise false
 %End
@@ -74,7 +74,7 @@ Generates an new RGBA value based on one input ``value``.
                         int *returnRedValue /Out/,
                         int *returnGreenValue /Out/,
                         int *returnBlueValue /Out/,
-                        int *returnAlpha /Out/ );
+                        int *returnAlpha /Out/ ) const;
 %Docstring
 Generates an new RGBA value based on an original RGBA value.
 

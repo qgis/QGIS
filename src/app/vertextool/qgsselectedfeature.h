@@ -16,8 +16,8 @@
 #ifndef QGSSELECTEDFEATURE_H
 #define QGSSELECTEDFEATURE_H
 
-#include "qgsfeature.h"
 #include "qgsgeometry.h"
+#include "qgsfeatureid.h"
 
 #include <QObject>
 
@@ -52,7 +52,7 @@ class QgsSelectedFeature: public QObject
      * \param vlayer vector layer in which feature is selected
      * \param canvas mapCanvas on which we are working
      */
-    void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer *vlayer, QgsMapCanvas *canvas );
+    void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer *layer, QgsMapCanvas *canvas );
 
     /**
      * Function to select vertex with number
@@ -111,7 +111,7 @@ class QgsSelectedFeature: public QObject
      * Gets the layer of the selected feature
      * \returns used vector layer
      */
-    QgsVectorLayer *vlayer();
+    QgsVectorLayer *layer();
 
     /**
      * Getter for the current geometry
@@ -193,7 +193,7 @@ class QgsSelectedFeature: public QObject
     QgsGeometry *mGeometry = nullptr;
     bool mFeatureSelected;
     bool mChangingGeometry;
-    QgsVectorLayer *mVlayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     QList<QgsVertexEntry *> mVertexMap;
     QgsMapCanvas *mCanvas = nullptr;
 

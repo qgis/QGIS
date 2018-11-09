@@ -81,7 +81,7 @@ bool QgsReportSectionLayout::writePropertiesToElement( QDomElement &element, QDo
     bodyElement.appendChild( mBody->writeXml( doc, context ) );
     element.appendChild( bodyElement );
   }
-  element.setAttribute( QStringLiteral( "bodyEnabled" ), mBodyEnabled ? "1" : "0" );
+  element.setAttribute( QStringLiteral( "bodyEnabled" ), mBodyEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   return true;
 }
 

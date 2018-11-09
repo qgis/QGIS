@@ -86,6 +86,15 @@ class GUI_EXPORT QgsLayoutConfigObject: public QObject
     //! Returns the atlas for the layout, if available
     QgsLayoutAtlas *layoutAtlas() const;
 
+    /**
+     * Links a new layout \a object to this QgsLayoutConfigObject. The object must be the same type as the existing
+     * object.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.4
+     */
+    void setObject( QgsLayoutObject *object ) SIP_SKIP;
+
   private slots:
     //! Must be called when a data defined button changes
     void updateDataDefinedProperty();
@@ -193,14 +202,22 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsL
 {
     Q_OBJECT
   public:
+
+    /**
+     * Constructs a QgsLayoutItemPropertiesWidget with a \a parent and for the given layout \a item.
+     */
     QgsLayoutItemPropertiesWidget( QWidget *parent, QgsLayoutItem *item );
 
+    //! Returns the position mode
     QgsLayoutItem::ReferencePoint positionMode() const;
 
+    //! Determines if the background of the group box shall be shown
     void showBackgroundGroup( bool showGroup );
 
+    //! Determines if the frame of the group box shall be shown
     void showFrameGroup( bool showGroup );
 
+    //! Sets the layout item
     void setItem( QgsLayoutItem *item );
 
   protected slots:

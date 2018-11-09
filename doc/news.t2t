@@ -38,6 +38,162 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= What's new in Version 3.4-LTR 'Madeira'? =
+
+This release has following new features:
+
+- Expressions: New expression functions and variables
+- Expressions: Code completion for expression builder
+- User Interface: Auto selection of exported files in file manager
+- User Interface: New "Open Directory" option for disabled welcome page projects
+- User Interface: UX Improvements for Temporary Scratch Layers
+- User Interface: Task manager improvements
+- User Interface: Hyperlinks to local vector & raster datasets in the information panel
+- User Interface: Style manager improvements
+- User Interface: Polished browser panel interface and experience
+- User Interface: QML chart and drawings widget
+- Symbology: Mesh layer styling
+- Symbology: Classify symmetric in graduated renderer
+- Digitising: GPS tracking improvements
+- Digitising: More angle choices in advanced digitizing dock
+- Digitising: Vertex tool can work on the current layer only
+- Digitising: Add reverse line maptools
+- Digitising: Geometry Precision
+- Digitising: Automatically remove duplicate nodes
+- Digitising: Check for geometry validity
+- Digitising: Topology checks while editing
+- Data Management: Translation of QGIS projects
+- Data Management: Switch Attribute Table dock mode on demand
+- Data Management: New locator filter to search across all layers
+- Data Management: Non-removable (required) layers highlighted in layer tree
+- Data Management: Append raster layer to an existing Geopackage
+- Map Composer: 3d map items
+- Processing: Edit in place
+- Processing: Store models inside project
+- Processing: Sample Raster Values
+- Processing: New 'Raster pixels to polygons' algorithm
+- Processing: K Means clustering algorithm
+- Processing: dbscan spatial clustering algorithm
+- Processing: Improved algorithms
+- Processing: Filter Vertices by M and Filter Vertices by Z algorithms
+- Processing: "Array of Translated Features" algorithm
+- Processing: "Array of offset (parallel) lines" algorithm
+- Processing: Choice of units for non degree/unknown distances
+- Processing: "Drape features to z/m" algorithms
+- Processing: "Raster pixels to points" algorithm
+- Processing: Line substring algorithm
+- Processing: "Interpolate point on line" algorithm
+- Processing: k-neighbour concave hull
+- Processing: Python scripts which implement algorithms now execute the algorithm on drag and drop and browser double click
+- Processing: New GDAL's rearrange band algorithm
+- Processing: "Precalculated" values for model algorithm parameters
+- Processing: "Categorize a layer using a style XML file" algorithm
+- General: Flatpak
+- General: SVG files can be embedded in projects and symbols
+- General: OpenCL based acceleration
+- Data Providers: OAuth2 authentication method plugin
+- Data Providers: Mesh layer: New mesh layer format support
+- Data Providers: Mesh layer: add function to identify value on mesh layers
+- Data Providers: Mesh layer: allow to choose different vector and scalar dataset
+- Data Providers:  Mesh layer: allow render vectors/arrows on the user-defined grid
+- Data Providers: JSON/JSONB Type support
+- Data Providers: ESRI Token Authentication support
+- Data Providers: SQL Server - Invalid geometry handling
+- QGIS Server: Server Cache can be manage by plugins
+- QGIS Server: WMTS 1.0.0 support
+- QGIS Server: Add ability to define min. scale for WMTS
+- QGIS Server:  Support QGIS Server logs to stderr
+- Plugins: Support for encrypted zips in the Plugin Manager
+- Plugins: Offline Editing GeoPackage
+- Programmability: QgsSpatialIndexKDBush
+- Programmability: QgsRasterDataProvider::sample method for efficient sampling of rasters at a given point
+- Programmability: New geometry API call to return a curve substring
+- Programmability: sip Module API Changes
+- 3D Features: Improved navigation
+- 3D Features: Animation
+- 3D Features: Simple rendering of 3D linestrings
+- 3D Features: Identification map tool for 3D views
+-
+
+
+= What's new in Version 3.2 'Bonn'? =
+
+This release has following new features:
+
+- Expressions: New expression functions
+- Expressions: More helpful expression builder
+- Map Tools: Simplify map tool can now also smooth features
+- Map Tools: Identify Tool with extra options
+- Map Tools: Store also expanded/collapsed state of nodes in map Themes
+- Map Tools: Auto "Zoom to Selection" mode for new map views
+- Map Tools: Choice of simplification method for simplify map tool
+- Map Tools: add zoom to related feature in forms
+- Map Tools: Cartesian areas/lengths/perimeters in identify results
+- User Interface: Layers panel: indicators for filtered map layers
+- User Interface: Allow customizing prefix of locator filters
+- User Interface: Opening of vector and raster stored on HTTP(S), FTP, or cloud services
+- User Interface: Quick calculator in locator search bar
+- User Interface: Shortcuts for toggling panels
+- User Interface: Bookmark searching in locator
+- User Interface: Close and Revert Project actions
+- User Interface: Unsaved changes indicator in title bar
+- User Interface: Configurable map tips delay
+- User Interface: Move layer or group to top of layer panel
+- User Interface: Copy statistics panel content to clipboard button
+- User Interface: Search Settings, Options, and Project Properties pages from locator
+- User Interface: Indicators for embedded layers and groups
+- Symbology: Nicer colors for new layers
+- Rendering: Improved map Copyright decoration
+- Rendering: Main window scale bar font size and family can be customized
+- Rendering: Custom SVG path and size for the north arrow decoration
+- Data Management: Refresh a materialized view
+- Data Management: Z and M support for offline editing
+- Data Management: Metadata for QGIS projects
+- Forms and Widgets: Multi-column layout for multiselect value relation widget
+- Forms and Widgets: Allow using a URL for custom attribute forms (UI file)
+- Forms and Widgets: Drill-down (cascading) forms
+- Layer Legend: Optional text on top of symbols for vector layers
+- Layer Legend: Copy&Paste Group/Layers from a QGIS project to another.
+- Map Composer: Data defined table source for attribute table items
+- Map Composer: Project metadata embedded in layout exports
+- Map Composer: Better formatting for scalebar text
+- Processing: Improved 'Join by attribute table' algorithm
+- Processing: Load script from template
+- Processing: Feature filter algorithm for processing models
+- Processing: Zonal histogram
+- Processing: Port Union, Difference and Intersection algorithms to C++
+- Processing: 'Project points (Cartesian)' algorithm
+- Processing: Dynamic parameter values for more algorithms
+- Processing: Multi-ring buffer (constant distance) algorithm
+- Processing: New "segmentize" algorithms
+- Processing: Option to create points on all polygon parts
+- Processing: Rotate Features algorithm
+- Processing: Line sinuosity in "Add Geometry Attributes"
+- Processing: Import geotagged photos
+- Processing: Swap x/y coordinate values algorithm
+- Processing: Sort order option for "Add Incremental Field"
+- Processing: Indicator for distance parameter units
+- Processing: Algorithm log can be saved/cleared/copied
+- Processing: Wedge buffer algorithm
+- Processing: Variable width buffers
+- Processing: Reclassify raster algorithms
+- Application and Project Options: Mandatory layers in project
+- Application and Project Options: Saving and loading projects in Postgresql database
+- Browser: Save/Load connections for XYZ Tiles
+- Browser: Project home path can be manually set
+- General: New zipped project file format .qgz is now the default format
+- General: Filtering for field values in Query Builder
+- General: FULL screen Map via Ctrl-Shift-Tab
+- Data Providers: Support for mesh layer
+- Data Providers: Automatically set default style for layers for ArcGIS Feature Server layers
+- Data Providers: Faster Oracle queries
+- Data Providers: Restrict table list for a Oracle database connection to a preset schema
+- Data Providers: Read only support for curved Oracle geometries
+- Plugins: Adding query history in DB Manager
+- Plugins: DB Manager SQL execution in background
+-
+
+
 = What's new in Version 3.0 'Girona'? =
 
 This release has following new features:

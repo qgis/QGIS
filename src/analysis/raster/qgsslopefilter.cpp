@@ -24,8 +24,10 @@ QgsSlopeFilter::QgsSlopeFilter( const QString &inputFile, const QString &outputF
 
 }
 
-float QgsSlopeFilter::processNineCellWindow( float *x11, float *x21, float *x31,
-    float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 )
+float QgsSlopeFilter::processNineCellWindow(
+  float *x11, float *x21, float *x31,
+  float *x12, float *x22, float *x32,
+  float *x13, float *x23, float *x33 )
 {
   float derX = calcFirstDerX( x11, x21, x31, x12, x22, x32, x13, x23, x33 );
   float derY = calcFirstDerY( x11, x21, x31, x12, x22, x32, x13, x23, x33 );

@@ -25,6 +25,14 @@
 #include "qgslayoutviewrubberband.h"
 #ifdef Q_OS_MACX
 #include "qgsmacnative.h"
+#elif defined (Q_OS_WIN)
+#ifndef __MINGW32__
+#include "qgswinnative.h"
+#else
+#include "qgsnative.h"
+#endif
+#elif defined (Q_OS_LINUX)
+#include "qgslinuxnative.h"
 #else
 #include "qgsnative.h"
 #endif
@@ -32,6 +40,10 @@
 #include "qgsshortcutsmanager.h"
 #include "qgswidgetstatehelper_p.h"
 #include "qgslogger.h"
+#include "qgsprocessingrecentalgorithmlog.h"
+#include "qgswindowmanagerinterface.h"
+#include "qgssettings.h"
+#include "qgsdataitemguiproviderregistry.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -79,18 +91,53 @@ QgsProcessingGuiRegistry *QgsGui::processingGuiRegistry()
   return instance()->mProcessingGuiRegistry;
 }
 
+QgsProcessingRecentAlgorithmLog *QgsGui::processingRecentAlgorithmLog()
+{
+  return instance()->mProcessingRecentAlgorithmLog;
+}
+
+QgsDataItemGuiProviderRegistry *QgsGui::dataItemGuiProviderRegistry()
+{
+  return instance()->mDataItemGuiProviderRegistry;
+}
+
 void QgsGui::enableAutoGeometryRestore( QWidget *widget, const QString &key )
 {
   if ( widget->objectName().isEmpty() )
   {
-    QgsDebugMsg( "WARNING: No object name set. Best for it to be set objectName when using QgsGui::enableAutoGeometryRestore" );
+    QgsDebugMsg( QStringLiteral( "WARNING: No object name set. Best for it to be set objectName when using QgsGui::enableAutoGeometryRestore" ) );
   }
   instance()->mWidgetStateHelper->registerWidget( widget, key );
+}
+
+QgsWindowManagerInterface *QgsGui::windowManager()
+{
+  return instance()->mWindowManager.get();
+}
+
+void QgsGui::setWindowManager( QgsWindowManagerInterface *manager )
+{
+  instance()->mWindowManager.reset( manager );
+}
+
+QgsGui::HigFlags QgsGui::higFlags()
+{
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString().startsWith( QLatin1String( "en" ) ) )
+  {
+    return HigMenuTextIsTitleCase | HigDialogTitleIsTitleCase;
+  }
+  else
+  {
+    return nullptr;
+  }
 }
 
 QgsGui::~QgsGui()
 {
   delete mProcessingGuiRegistry;
+  delete mDataItemGuiProviderRegistry;
+  delete mProcessingRecentAlgorithmLog;
   delete mLayoutItemGuiRegistry;
   delete mLayerTreeEmbeddedWidgetRegistry;
   delete mEditorWidgetRegistry;
@@ -104,7 +151,17 @@ QgsGui::~QgsGui()
 QgsGui::QgsGui()
 {
 #ifdef Q_OS_MAC
-  mNative = new QgsMacNative();
+  QgsMacNative *macNative = new QgsMacNative();
+  macNative->setIconPath( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) );
+  mNative = macNative;
+#elif defined (Q_OS_WIN)
+#ifndef __MINGW32__
+  mNative = new QgsWinNative();
+#else
+  mNative = new QgsNative();
+#endif
+#elif defined(Q_OS_LINUX)
+  mNative = new QgsLinuxNative();
 #else
   mNative = new QgsNative();
 #endif
@@ -116,5 +173,7 @@ QgsGui::QgsGui()
   mSourceSelectProviderRegistry = new QgsSourceSelectProviderRegistry();
   mLayoutItemGuiRegistry = new QgsLayoutItemGuiRegistry();
   mWidgetStateHelper = new QgsWidgetStateHelper();
+  mProcessingRecentAlgorithmLog = new QgsProcessingRecentAlgorithmLog();
   mProcessingGuiRegistry = new QgsProcessingGuiRegistry();
+  mDataItemGuiProviderRegistry = new QgsDataItemGuiProviderRegistry();
 }

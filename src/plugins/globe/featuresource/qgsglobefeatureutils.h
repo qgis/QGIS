@@ -26,7 +26,6 @@
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
 #include "qgslinestring.h"
-#include "qgsvectorlayer.h"
 
 class QgsGlobeFeatureUtils
 {

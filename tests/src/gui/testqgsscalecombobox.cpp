@@ -63,36 +63,36 @@ void TestQgsScaleComboBox::init()
 {
   // Create a combobox, and init with predefined scales.
   s = new QgsScaleComboBox();
-  QgsDebugMsg( QString( "Initial scale is %1" ).arg( s->scaleString() ) );
+  QgsDebugMsg( QStringLiteral( "Initial scale is %1" ).arg( s->scaleString() ) );
 }
 
 void TestQgsScaleComboBox::basic()
 {
   // Testing conversion from "1:nnn".
   enterScale( QStringLiteral( "1:2345" ) );
-  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 2345 ) ) );
+  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale().toString( 2345 ) ) );
   QCOMPARE( s->scale(), 2345.0 );
 
   // Testing conversion from number to "1:x"
   enterScale( 0.02 );
-  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 50 ) ) );
+  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale().toString( 50 ) ) );
   QCOMPARE( s->scale(), 1.0 / 0.02 );
 
   // Testing conversion from number to "1:x"
   enterScale( 42 );
-  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 42 ) ) );
+  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale().toString( 42 ) ) );
   QCOMPARE( s->scale(), 42.0 );
 
   // Testing conversion from number to "1:x,000"
-  QString str = QStringLiteral( "1%01000%01000" ).arg( QLocale::system().groupSeparator() );
+  QString str = QStringLiteral( "1%01000%01000" ).arg( QLocale().groupSeparator() );
   enterScale( str );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( str ) );
   QCOMPARE( s->scale(), 1000000.0 );
 
   // Testing conversion from number to "1:x,000" with wonky separators
   //(e.g., four digits between thousands, which should be fixed automatically)
-  str = QStringLiteral( "1%010000%01000" ).arg( QLocale::system().groupSeparator() );
-  QString fixedStr = QStringLiteral( "10%01000%01000" ).arg( QLocale::system().groupSeparator() );
+  str = QStringLiteral( "1%010000%01000" ).arg( QLocale().groupSeparator() );
+  QString fixedStr = QStringLiteral( "10%01000%01000" ).arg( QLocale().groupSeparator() );
   enterScale( str );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( fixedStr ) );
   QCOMPARE( s->scale(), 10000000.0 );
@@ -102,22 +102,22 @@ void TestQgsScaleComboBox::basic()
   enterScale( 0.24 );
 
   enterScale( QStringLiteral( "1:x:2" ) );
-  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 4 ) ) );
+  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale().toString( 4 ) ) );
   QCOMPARE( s->scale(), 4.0 );
 
   // Test setting programmatically
   s->setScale( 1.0 / 0.19 );
-  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 5 ) ) );
+  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale().toString( 5 ) ) );
   QCOMPARE( s->scale(), 5.0 );
 
   // Test setting programmatically
   s->setScaleString( QStringLiteral( "1:240" ) );
-  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 240 ) ) );
+  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale().toString( 240 ) ) );
   QCOMPARE( s->scale(), 240.0 );
 
   // Test setting programmatically illegal string
-  s->setScaleString( QStringLiteral( "1:2" ) + QLocale::system().decimalPoint() + "4" );
-  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 240 ) ) );
+  s->setScaleString( QStringLiteral( "1:2" ) + QLocale().decimalPoint() + "4" );
+  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale().toString( 240 ) ) );
   QCOMPARE( s->scale(), 240.0 );
 
 }
@@ -176,7 +176,7 @@ void TestQgsScaleComboBox::toDouble()
   //bad
   QgsScaleComboBox::toDouble( QStringLiteral( "abc" ), &ok );
   QVERIFY( !ok );
-  QgsScaleComboBox::toDouble( QStringLiteral( "" ), &ok );
+  QgsScaleComboBox::toDouble( QString(), &ok );
   QVERIFY( !ok );
   QgsScaleComboBox::toDouble( QStringLiteral( "1:" ), &ok );
   QVERIFY( !ok );
@@ -196,7 +196,7 @@ void TestQgsScaleComboBox::enterScale( const QString &scale )
 
 void TestQgsScaleComboBox::enterScale( double scale )
 {
-  enterScale( QLocale::system().toString( scale ) );
+  enterScale( QLocale().toString( scale ) );
 }
 
 void TestQgsScaleComboBox::cleanup()

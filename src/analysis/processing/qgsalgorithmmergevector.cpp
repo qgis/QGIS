@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmmergevector.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -177,7 +178,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
   }
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, outputType, outputCrs ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, outputType, outputCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -186,8 +187,10 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
   bool isMulti = QgsWkbTypes::isMultiType( outputType );
   double step = totalFeatureCount > 0 ? 100.0 / totalFeatureCount : 1;
   i = 0;
+  int layerNumber = 0;
   for ( QgsMapLayer *layer : layers )
   {
+    layerNumber++;
     if ( !layer )
       continue;
 
@@ -195,7 +198,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
     if ( !vl )
       continue;
 
-    feedback->pushInfo( QObject::tr( "Packaging layer %1/%2: %3" ).arg( i ).arg( layers.count() ).arg( layer->name() ) );
+    feedback->pushInfo( QObject::tr( "Packaging layer %1/%2: %3" ).arg( layerNumber ).arg( layers.count() ).arg( layer->name() ) );
 
     QgsFeatureIterator it = vl->getFeatures( QgsFeatureRequest().setDestinationCrs( outputCrs, context.transformContext() ) );
     QgsFeature f;

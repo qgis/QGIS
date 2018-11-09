@@ -5,7 +5,7 @@
   "arguments": [
 	{"arg":"relation", "description":"a string, representing a relation ID"},
 	{"arg":"aggregate", "description":"a string corresponding to the aggregate to calculate. Valid options are:<br /><ul><li>count</li><li>count_distinct</li><li>count_missing</li><li>min</li><li>max</li><li>sum</li><li>mean</li><li>median</li><li>stdev</li><li>stdevsample</li><li>range</li><li>minority</li><li>majority</li><li>q1: first quartile</li><li>q3: third quartile</li><li>iqr: inter quartile range</li><li>min_length: minimum string length</li><li>max_length: maximum string length</li><li>concatenate: join strings with a concatenator</li></ul>"},
-	{"arg":"calculation", "description":"sub expression or field name to aggregate"},
+	{"arg":"expression", "description":"sub expression or field name to aggregate"},
 	{"arg":"concatenator", "optional":true, "description":"optional string to use to join values for 'concatenate' aggregate"}
   ],
   "examples": [

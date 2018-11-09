@@ -45,15 +45,15 @@
 #include <QSqlDriverPlugin>
 #include <QStringList>
 
-
 class QSpatiaLiteDriverPlugin : public QSqlDriverPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QSqlDriverFactoryInterface" FILE "qspatialite.json")
+    Q_PLUGIN_METADATA( IID "org.qt-project.Qt.QSqlDriverFactoryInterface" FILE "qspatialite.json" )
+
   public:
     QSpatiaLiteDriverPlugin();
 
-    QSqlDriver* create( const QString & );
+    QSqlDriver *create( const QString & ) override;
     QStringList keys() const;
 };
 

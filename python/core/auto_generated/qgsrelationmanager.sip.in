@@ -45,6 +45,8 @@ Gets access to the relations managed by this class.
     void addRelation( const QgsRelation &relation );
 %Docstring
 Add a relation.
+Invalid relations are added only if both referencing layer and referenced
+layer exist.
 
 :param relation: The relation to add.
 %End
@@ -134,6 +136,13 @@ This signal is emitted when the relations were loaded after reading a project
 Emitted when relations are added or removed to the manager.
 
 .. versionadded:: 2.5
+%End
+
+  public slots:
+
+    void updateRelationsStatus();
+%Docstring
+Updates relations status
 %End
 
 };

@@ -28,6 +28,7 @@ QgsAdvancedDigitizingCanvasItem::QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *
   , mSnapPen( QPen( QColor( 127, 0, 0, 150 ), 1 ) )
   , mSnapLinePen( QPen( QColor( 127, 0, 0, 150 ), 1, Qt::DashLine ) )
   , mCursorPen( QPen( QColor( 127, 127, 127, 255 ), 1 ) )
+  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
   , mAdvancedDigitizingDockWidget( cadDockWidget )
 {
 }
@@ -79,7 +80,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     snapSegmentPix2 = toCanvasCoordinates( snappedSegment[1] );
   }
 
-  painter->setRenderHints( QPainter::Antialiasing );
+  painter->setRenderHint( QPainter::Antialiasing );
   painter->setCompositionMode( QPainter::CompositionMode_Difference );
 
   // Draw point snap
@@ -93,18 +94,12 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   if ( hasSnappedSegment && !snappedToVertex )
   {
     painter->setPen( mSnapPen );
-    painter->drawLine( snapSegmentPix1.x(),
-                       snapSegmentPix1.y(),
-                       snapSegmentPix2.x(),
-                       snapSegmentPix2.y() );
+    painter->drawLine( snapSegmentPix1, snapSegmentPix2 );
 
     if ( curPointExist )
     {
       painter->setPen( mSnapLinePen );
-      painter->drawLine( snapSegmentPix1.x(),
-                         snapSegmentPix1.y(),
-                         curPointPix.x(),
-                         curPointPix.y() );
+      painter->drawLine( snapSegmentPix1, curPointPix );
     }
   }
 
@@ -112,10 +107,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   if ( mAdvancedDigitizingDockWidget->additionalConstraint() != QgsAdvancedDigitizingDockWidget::NoConstraint && hasSnappedSegment )
   {
     painter->setPen( mConstruction2Pen );
-    painter->drawLine( snapSegmentPix1.x(),
-                       snapSegmentPix1.y(),
-                       snapSegmentPix2.x(),
-                       snapSegmentPix2.y() );
+    painter->drawLine( snapSegmentPix1, snapSegmentPix2 );
   }
 
   // Draw angle
@@ -139,24 +131,21 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
       a = std::atan2( -( curPoint.y() - prevPoint.y() ), curPoint.x() - prevPoint.x() );
     }
     painter->setPen( mConstruction2Pen );
-    painter->drawArc( prevPointPix.x() - 20,
-                      prevPointPix.y() - 20,
-                      40, 40,
-                      ( int )16 * -a0 * 180 / M_PI,
-                      ( int )16 * ( a0 - a ) * 180 / M_PI );
-    painter->drawLine( prevPointPix.x(),
-                       prevPointPix.y(),
-                       prevPointPix.x() + 60 * std::cos( a0 ),
-                       prevPointPix.y() + 60 * std::sin( a0 ) );
+    painter->drawArc( QRectF( prevPointPix.x() - 20,
+                              prevPointPix.y() - 20,
+                              40, 40 ),
+                      static_cast<int>( 16 * -a0 * 180 / M_PI ),
+                      static_cast<int>( 16 * ( a0 - a ) * 180 / M_PI ) );
+    painter->drawLine( prevPointPix,
+                       prevPointPix + 60 * QPointF( std::cos( a0 ), std::sin( a0 ) ) );
+
 
     if ( mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() )
     {
       painter->setPen( mLockedPen );
       double d = std::max( boundingRect().width(), boundingRect().height() );
-      painter->drawLine( prevPointPix.x() - d * std::cos( a ),
-                         prevPointPix.y() - d * std::sin( a ),
-                         prevPointPix.x() + d * std::cos( a ),
-                         prevPointPix.y() + d * std::sin( a ) );
+      painter->drawLine( prevPointPix - d * QPointF( std::cos( a ), std::sin( a ) ),
+                         prevPointPix + d * QPointF( std::cos( a ), std::sin( a ) ) );
     }
   }
 
@@ -191,10 +180,8 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     if ( draw )
     {
-      painter->drawLine( x,
-                         0,
-                         x,
-                         boundingRect().height() );
+      painter->drawLine( QPointF( x, 0 ),
+                         QPointF( x, boundingRect().height() ) );
     }
   }
 
@@ -222,10 +209,8 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     if ( draw )
     {
-      painter->drawLine( 0,
-                         y,
-                         boundingRect().width(),
-                         y );
+      painter->drawLine( QPointF( 0, y ),
+                         QPointF( boundingRect().width(), y ) );
     }
   }
 
@@ -235,33 +220,33 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     if ( curPointExist && previousPointExist )
     {
       painter->setPen( mConstruction2Pen );
-      painter->drawLine( prevPointPix.x(),
-                         prevPointPix.y(),
-                         curPointPix.x(),
-                         curPointPix.y() );
+      painter->drawLine( prevPointPix, curPointPix );
     }
 
     if ( previousPointExist && penulPointExist )
     {
       painter->setPen( mConstruction1Pen );
-      painter->drawLine( penulPointPix.x(),
-                         penulPointPix.y(),
-                         prevPointPix.x(),
-                         prevPointPix.y() );
+      painter->drawLine( penulPointPix, prevPointPix );
     }
   }
 
   if ( curPointExist )
   {
     painter->setPen( mCursorPen );
-    painter->drawLine( curPointPix.x() - 5,
-                       curPointPix.y() - 5,
-                       curPointPix.x() + 5,
-                       curPointPix.y() + 5 );
-    painter->drawLine( curPointPix.x() - 5,
-                       curPointPix.y() + 5,
-                       curPointPix.x() + 5,
-                       curPointPix.y() - 5 );
+    painter->drawLine( curPointPix + QPointF( -5, -5 ),
+                       curPointPix + QPointF( +5, +5 ) );
+    painter->drawLine( curPointPix + QPointF( -5, +5 ),
+                       curPointPix + QPointF( +5, -5 ) );
   }
+
+
+  QgsPointLocator::Match match = mAdvancedDigitizingDockWidget->mapPointMatch();
+  if ( match.isValid() )
+  {
+    mSnapIndicator->setMatch( match );
+    mSnapIndicator->setVisible( true );
+  }
+  else
+    mSnapIndicator->setVisible( false );
 
 }

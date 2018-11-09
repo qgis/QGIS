@@ -77,7 +77,7 @@ class QgsOracleConnPool : public QgsConnectionPool<QgsOracleConn *, QgsOracleCon
 
   private:
     QgsOracleConnPool();
-    ~QgsOracleConnPool();
+    ~QgsOracleConnPool() override;
 
     static QgsOracleConnPool *sInstance;
 };

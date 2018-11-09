@@ -31,7 +31,8 @@ import math
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsField,
+from qgis.core import (QgsApplication,
+                       QgsField,
                        QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
@@ -60,7 +61,10 @@ class MinimumBoundingGeometry(QgisAlgorithm):
     FIELD = 'FIELD'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'convex_hull.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmConvexHull.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmConvexHull.svg")
 
     def group(self):
         return self.tr('Vector geometry')
@@ -158,15 +162,15 @@ class MinimumBoundingGeometry(QgisAlgorithm):
 
                 if type == 0:
                     # bounding boxes - calculate on the fly for efficiency
-                    if not f.attributes()[field_index] in bounds_dict:
-                        bounds_dict[f.attributes()[field_index]] = f.geometry().boundingBox()
+                    if not f[field_index] in bounds_dict:
+                        bounds_dict[f[field_index]] = f.geometry().boundingBox()
                     else:
-                        bounds_dict[f.attributes()[field_index]].combineExtentWith(f.geometry().boundingBox())
+                        bounds_dict[f[field_index]].combineExtentWith(f.geometry().boundingBox())
                 else:
-                    if not f.attributes()[field_index] in geometry_dict:
-                        geometry_dict[f.attributes()[field_index]] = [f.geometry()]
+                    if not f[field_index] in geometry_dict:
+                        geometry_dict[f[field_index]] = [f.geometry()]
                     else:
-                        geometry_dict[f.attributes()[field_index]].append(f.geometry())
+                        geometry_dict[f[field_index]].append(f.geometry())
 
                 feedback.setProgress(int(current * total))
 

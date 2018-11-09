@@ -22,6 +22,7 @@
 #include "qgsapplication.h"
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayer.h"
+#include "qgsproxyprogresstask.h"
 
 #include <QMessageBox>
 #include <QProgressDialog>
@@ -31,7 +32,6 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause );
 // ---------------------------------------------------------------------------
 QgsOracleConnectionItem::QgsOracleConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
-  , mColumnTypeThread( nullptr )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
@@ -94,6 +94,8 @@ QVector<QgsDataItem *> QgsOracleConnectionItem::createChildren()
         QgsOracleConn::restrictToSchema( mName ),
         /* useEstimatedMetadata */ true,
         QgsOracleConn::allowGeometrylessTables( mName ) );
+    mColumnTypeTask = new QgsProxyProgressTask( tr( "Scanning tables for %1" ).arg( mName ) );
+    QgsApplication::taskManager()->addTask( mColumnTypeTask );
 
     connect( mColumnTypeThread, &QgsOracleColumnTypeThread::setLayerType,
              this, &QgsOracleConnectionItem::setLayerType );
@@ -102,8 +104,11 @@ QVector<QgsDataItem *> QgsOracleConnectionItem::createChildren()
 
     if ( QgsOracleRootItem::sMainWindow )
     {
-      connect( mColumnTypeThread, SIGNAL( progress( int, int ) ),
-               QgsOracleRootItem::sMainWindow, SLOT( showProgress( int, int ) ) );
+      connect( mColumnTypeThread, &QgsOracleColumnTypeThread::progress,
+               mColumnTypeTask, [ = ]( int i, int n )
+      {
+        mColumnTypeTask->setProxyProgress( 100.0 * static_cast< double >( i ) / n );
+      } );
       connect( mColumnTypeThread, SIGNAL( progressMessage( QString ) ),
                QgsOracleRootItem::sMainWindow, SLOT( showStatusMessage( QString ) ) );
     }
@@ -128,6 +133,9 @@ void QgsOracleConnectionItem::threadStarted()
 
 void QgsOracleConnectionItem::threadFinished()
 {
+  mColumnTypeTask->finalize( true );
+  mColumnTypeTask = nullptr;
+
   QgsDebugMsgLevel( QStringLiteral( "Entering." ), 3 );
   setAllAsPopulated();
 }
@@ -365,7 +373,7 @@ QString QgsOracleLayerItem::createUri()
   uri.setWkbType( mLayerProperty.types.at( 0 ) );
   if ( mLayerProperty.isView && mLayerProperty.pkCols.size() > 0 )
     uri.setKeyColumn( mLayerProperty.pkCols[0] );
-  QgsDebugMsgLevel( QString( QStringLiteral( "layer uri: %1" ) ).arg( uri.uri() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri() ), 3 );
   return uri.uri();
 }
 
@@ -382,10 +390,6 @@ QVector<QgsDataItem *> QgsOracleOwnerItem::createChildren()
 {
   QgsDebugMsgLevel( QStringLiteral( "Entering." ), 3 );
   return QVector<QgsDataItem *>();
-}
-
-QgsOracleOwnerItem::~QgsOracleOwnerItem()
-{
 }
 
 void QgsOracleOwnerItem::addLayer( const QgsOracleLayerProperty &layerProperty )
@@ -440,10 +444,6 @@ QgsOracleRootItem::QgsOracleRootItem( QgsDataItem *parent, const QString &name, 
 {
   mIconName = QStringLiteral( "mIconOracle.svg" );
   populate();
-}
-
-QgsOracleRootItem::~QgsOracleRootItem()
-{
 }
 
 QVector<QgsDataItem *> QgsOracleRootItem::createChildren()

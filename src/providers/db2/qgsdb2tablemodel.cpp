@@ -38,13 +38,13 @@ QgsDb2TableModel::QgsDb2TableModel()
 
 void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
 {
-  QgsDebugMsg( QString( " DB2 **** %1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7" )
+  QgsDebugMsg( QStringLiteral( " DB2 **** %1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7" )
                .arg( layerProperty.schemaName )
                .arg( layerProperty.tableName )
                .arg( layerProperty.geometryColName )
                .arg( layerProperty.type )
                .arg( layerProperty.srid )
-               .arg( layerProperty.pkCols.join( "," ) )
+               .arg( layerProperty.pkCols.join( ',' ) )
                .arg( layerProperty.sql ) );
 
   // is there already a root item with the given scheme Name?
@@ -111,7 +111,7 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
   pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
   pkItem->setData( pkCol, Qt::UserRole + 2 );
 
-  QStandardItem *selItem = new QStandardItem( QLatin1String( "" ) );
+  QStandardItem *selItem = new QStandardItem( QString() );
   selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
   selItem->setCheckState( Qt::Checked );
   selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
@@ -136,7 +136,7 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
     if ( detailsFromThread )
       flags |= Qt::ItemIsEnabled;
 
-    Q_FOREACH ( QStandardItem *item, childItemList )
+    for ( QStandardItem *item : qgis::as_const( childItemList ) )
     {
       item->setFlags( item->flags() & ~flags );
     }
@@ -211,15 +211,15 @@ void QgsDb2TableModel::setSql( const QModelIndex &index, const QString &sql )
 
 void QgsDb2TableModel::setGeometryTypesForTable( QgsDb2LayerProperty layerProperty )
 {
-  QStringList typeList = layerProperty.type.split( QStringLiteral( "," ), QString::SkipEmptyParts );
-  QStringList sridList = layerProperty.srid.split( QStringLiteral( "," ), QString::SkipEmptyParts );
+  QStringList typeList = layerProperty.type.split( ',', QString::SkipEmptyParts );
+  QStringList sridList = layerProperty.srid.split( ',', QString::SkipEmptyParts );
   Q_ASSERT( typeList.size() == sridList.size() );
 
   //find schema item and table item
   QStandardItem *schemaItem = nullptr;
   QList<QStandardItem *> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, DbtmSchema );
 
-  if ( schemaItems.size() < 1 )
+  if ( schemaItems.empty() )
   {
     return;
   }
@@ -255,7 +255,7 @@ void QgsDb2TableModel::setGeometryTypesForTable( QgsDb2LayerProperty layerProper
         row[ DbtmSrid ]->setText( tr( "Enter…" ) );
         row[ DbtmSrid ]->setFlags( row[ DbtmSrid ]->flags() | Qt::ItemIsEditable );
 
-        Q_FOREACH ( QStandardItem *item, row )
+        for ( QStandardItem *item : qgis::as_const( row ) )
         {
           item->setFlags( item->flags() | Qt::ItemIsEnabled );
         }
@@ -276,7 +276,7 @@ void QgsDb2TableModel::setGeometryTypesForTable( QgsDb2LayerProperty layerProper
         if ( layerProperty.pkCols.size() < 2 )
           flags |= Qt::ItemIsSelectable;
 
-        Q_FOREACH ( QStandardItem *item, row )
+        for ( QStandardItem *item : qgis::as_const( row ) )
         {
           item->setFlags( item->flags() | flags );
         }
@@ -298,21 +298,17 @@ QIcon QgsDb2TableModel::iconForWkbType( QgsWkbTypes::Type type )
 
   {
     case QgsWkbTypes::PointGeometry:
-      return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
-      break;
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
     case QgsWkbTypes::LineGeometry:
-      return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
-      break;
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) );
     case QgsWkbTypes::PolygonGeometry:
-      return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
-      break;
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) );
     case QgsWkbTypes::NullGeometry:
-      return QgsApplication::getThemeIcon( "/mIconTableLayer.svg" );
-      break;
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) );
     case QgsWkbTypes::UnknownGeometry:
       break;
   }
-  return QgsApplication::getThemeIcon( "/mIconLayer.png" );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
 }
 
 bool QgsDb2TableModel::setData( const QModelIndex &idx, const QVariant &value, int role )
@@ -322,11 +318,11 @@ bool QgsDb2TableModel::setData( const QModelIndex &idx, const QVariant &value, i
 
   if ( idx.column() == DbtmType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    QgsWkbTypes::GeometryType geomType = ( QgsWkbTypes::GeometryType ) idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt();
+    const QgsWkbTypes::Type wkbType = static_cast< QgsWkbTypes::Type >( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
 
-    bool ok = geomType != QgsWkbTypes::UnknownGeometry;
+    bool ok = wkbType != QgsWkbTypes::Unknown;
 
-    if ( ok && geomType != QgsWkbTypes::NullGeometry )
+    if ( ok && wkbType != QgsWkbTypes::NoGeometry )
       idx.sibling( idx.row(), DbtmSrid ).data().toInt( &ok );
 
     QStringList pkCols = idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
@@ -351,7 +347,7 @@ QString QgsDb2TableModel::layerURI( const QModelIndex &index, const QString &con
   if ( !index.isValid() )
     return QString();
 
-  QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt();
+  const QgsWkbTypes::Type wkbType = static_cast< QgsWkbTypes::Type >( itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt() );
   if ( wkbType == QgsWkbTypes::Unknown )
     // no geometry type selected
     return QString();

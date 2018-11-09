@@ -19,6 +19,8 @@
 #include "qgis_core.h"
 #include "qgis.h"
 
+#include <QVector3D>
+
 /**
  * \ingroup 3d
  * Class for storage of 3D vectors similar to QVector3D, with the difference that it uses double precision
@@ -35,6 +37,10 @@ class CORE_EXPORT QgsVector3D
     //! Constructs a vector from given coordinates
     QgsVector3D( double x, double y, double z )
       : mX( x ), mY( y ), mZ( z ) {}
+
+    //! Constructs a vector from single-precision QVector3D
+    QgsVector3D( const QVector3D &v )
+      : mX( v.x() ), mY( v.y() ), mZ( v.z() ) {}
 
     //! Returns true if all three coordinates are zero
     bool isNull() const { return mX == 0 && mY == 0 && mZ == 0; }

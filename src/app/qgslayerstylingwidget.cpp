@@ -26,6 +26,7 @@
 #include "qgsrastertransparencywidget.h"
 #include "qgsrendererpropertiesdialog.h"
 #include "qgsrendererrasterpropertieswidget.h"
+#include "qgsrenderermeshpropertieswidget.h"
 #include "qgsrasterhistogramwidget.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterrendererwidget.h"
@@ -33,6 +34,7 @@
 #include "qgsmaplayer.h"
 #include "qgsstyle.h"
 #include "qgsvectorlayer.h"
+#include "qgsmeshlayer.h"
 #include "qgsproject.h"
 #include "qgsundowidget.h"
 #include "qgsreadwritecontext.h"
@@ -44,6 +46,7 @@
 #include "qgsmaplayerstylemanagerwidget.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsrasterminmaxwidget.h"
+#include "qgisapp.h"
 
 #ifdef HAVE_3D
 #include "qgsvectorlayer3drendererwidget.h"
@@ -60,6 +63,9 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<
 {
   setupUi( this );
 
+  mOptionsListWidget->setIconSize( QgisApp::instance()->iconSize( false ) );
+  mOptionsListWidget->setMaximumWidth( static_cast< int >( mOptionsListWidget->iconSize().width() * 1.18 ) );
+
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( QgsMapLayer * ) > ( &QgsProject::layerWillBeRemoved ), this, &QgsLayerStylingWidget::layerAboutToBeRemoved );
 
   QgsSettings settings;
@@ -69,6 +75,7 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<
   mAutoApplyTimer->setSingleShot( true );
 
   mUndoWidget = new QgsUndoWidget( this, mMapCanvas );
+  mUndoWidget->setButtonsVisible( false );
   mUndoWidget->setAutoDelete( false );
   mUndoWidget->setObjectName( QStringLiteral( "Undo Styles" ) );
   mUndoWidget->hide();
@@ -188,6 +195,13 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       mOptionsListWidget->addItem( histogramItem );
       histogramItem->setToolTip( tr( "Histogram" ) );
     }
+  }
+  else if ( layer->type() == QgsMapLayer::MeshLayer )
+  {
+    QListWidgetItem *symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ), QString() );
+    symbolItem->setData( Qt::UserRole, Symbology );
+    symbolItem->setToolTip( tr( "Symbology" ) );
+    mOptionsListWidget->addItem( symbolItem );
   }
 
   Q_FOREACH ( QgsMapLayerConfigWidgetFactory *factory, mPageFactories )
@@ -335,7 +349,10 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       mVector3DWidget = widget;
     }
 #endif
-
+    else if ( QgsRendererMeshPropertiesWidget *widget = qobject_cast<QgsRendererMeshPropertiesWidget *>( current ) )
+    {
+      mMeshStyleWidget = widget;
+    }
   }
 
   mWidgetStack->clear();
@@ -481,6 +498,24 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         break;
     }
   }
+  else if ( mCurrentLayer->type() == QgsMapLayer::MeshLayer )
+  {
+    QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( mCurrentLayer );
+    switch ( row )
+    {
+      case 0: // Style
+      {
+        mMeshStyleWidget = new QgsRendererMeshPropertiesWidget( meshLayer, mMapCanvas, mWidgetStack );
+
+        mMeshStyleWidget->setDockMode( true );
+        connect( mMeshStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+        mWidgetStack->setMainPanel( mMeshStyleWidget );
+        break;
+      }
+      default:
+        break;
+    }
+  }
   else
   {
     mStackedWidget->setCurrentIndex( mNotSupportedPage );
@@ -591,5 +626,5 @@ QgsMapLayerConfigWidget *QgsLayerStyleManagerWidgetFactory::createWidget( QgsMap
 
 bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
 {
-  return ( layer->type() == QgsMapLayer::VectorLayer || layer->type() == QgsMapLayer::RasterLayer );
+  return ( layer->type() == QgsMapLayer::VectorLayer || layer->type() == QgsMapLayer::RasterLayer || layer->type() == QgsMapLayer::MeshLayer );
 }

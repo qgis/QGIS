@@ -18,9 +18,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgswmsutils.h"
 #include "qgswmsdescribelayer.h"
 #include "qgsserverprojectutils.h"
+#include "qgsproject.h"
 
 namespace QgsWms
 {
@@ -84,7 +86,7 @@ namespace QgsWms
 
     // get the wms service url defined in project or keep the one from the
     // request url
-    QString wmsHrefString = serviceUrl( request, project ).toString( QUrl::FullyDecoded );
+    QString wmsHrefString = serviceUrl( request, project ).toString();
 
     // get the wfs service url defined in project or take the same as the
     // wms service url
@@ -103,7 +105,9 @@ namespace QgsWms
     }
 
     // access control
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
+#endif
     // Use layer ids
     bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
     // WMS restricted layers
@@ -113,7 +117,7 @@ namespace QgsWms
     // WCS layers
     QStringList wcsLayerIds = QgsServerProjectUtils::wcsLayerIds( *project );
 
-    Q_FOREACH ( QgsMapLayer *layer, project->mapLayers() )
+    for ( QgsMapLayer *layer : project->mapLayers() )
     {
       QString name = layer->name();
       if ( useLayerIds )
@@ -132,10 +136,12 @@ namespace QgsWms
         throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
       }
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( accessControl && !accessControl->layerReadPermission( layer ) )
       {
         throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
       }
+#endif
 
       // Create the NamedLayer element
       QDomElement layerNode = myDocument.createElement( QStringLiteral( "LayerDescription" ) );
@@ -184,4 +190,4 @@ namespace QgsWms
     return myDocument;
   }
 
-} // samespace QgsWms
+} // namespace QgsWms

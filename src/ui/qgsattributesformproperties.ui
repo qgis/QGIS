@@ -76,7 +76,7 @@
 Use this function to add extra logic to your forms.</string>
         </property>
         <property name="text">
-         <string>...</string>
+         <string>…</string>
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
@@ -125,7 +125,7 @@ Use this function to add extra logic to your forms.</string>
       <item>
        <widget class="QToolButton" name="pbnSelectEditForm">
         <property name="text">
-         <string>...</string>
+         <string>…</string>
         </property>
        </widget>
       </item>
@@ -154,7 +154,7 @@ Use this function to add extra logic to your forms.</string>
        <item row="0" column="2">
         <widget class="QToolButton" name="mAddTabOrGroupButton">
          <property name="text">
-          <string>...</string>
+          <string>…</string>
          </property>
          <property name="icon">
           <iconset resource="../../images/images.qrc">
@@ -175,7 +175,7 @@ Use this function to add extra logic to your forms.</string>
        <item row="2" column="2">
         <widget class="QToolButton" name="mRemoveTabOrGroupButton">
          <property name="text">
-          <string>...</string>
+          <string>…</string>
          </property>
          <property name="icon">
           <iconset resource="../../images/images.qrc">

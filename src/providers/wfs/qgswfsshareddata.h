@@ -155,11 +155,11 @@ class QgsWFSSharedData : public QObject
     //! Current BBOX used by the downloader
     QgsRectangle mRect;
 
-    //! Server-side or user-side limit of downloaded features (in a single GetFeature()). Valid if > 0
+    //! Server-side or user-side limit of downloaded features (including with paging). Valid if > 0
     int mMaxFeatures;
 
-    //! Whether mMaxFeatures was set to a non 0 value for the purpose of paging
-    bool mMaxFeaturesWasSetFromDefaultForPaging;
+    //! Page size for WFS 2.0. 0 = disabled
+    int mPageSize;
 
     //! Limit of retrieved number of features for the current request
     int mRequestLimit;
@@ -186,6 +186,9 @@ class QgsWFSSharedData : public QObject
      * If the server (typically MapServer WFS 1.1) honours EPSG axis order, but returns
         EPSG:XXXX srsName and not EPSG urns */
     bool mGetFeatureEPSGDotHonoursEPSGOrder;
+
+    //! Geometry type of the features in this layer
+    QgsWkbTypes::Type mWKBType = QgsWkbTypes::Unknown;
 
   private:
 

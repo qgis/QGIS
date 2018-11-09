@@ -59,11 +59,18 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * z and m types accordingly.
      * This constructor is more efficient then calling setPoints()
      * or repeatedly calling addVertex()
+     *
+     * If the \a z vector is filled, then the geometry type will either
+     * be a LineStringZ(M) or LineString25D depending on the \a is25DType
+     * argument. If \a is25DType is true (and the \a m vector is unfilled) then
+     * the created Linestring will be a LineString25D type. Otherwise, the
+     * LineString will be LineStringZ (or LineStringZM) type.
+     *
      * \since QGIS 3.0
      */
     QgsLineString( const QVector<double> &x, const QVector<double> &y,
                    const QVector<double> &z = QVector<double>(),
-                   const QVector<double> &m = QVector<double>() );
+                   const QVector<double> &m = QVector<double>(), bool is25DType = false );
 
     /**
      * Constructs a linestring with a single segment from \a p1 to \a p2.
@@ -102,7 +109,10 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see yData()
      * \since QGIS 3.2
      */
-    const double *xData() const SIP_SKIP;
+    const double *xData() const SIP_SKIP
+    {
+      return mX.constData();
+    }
 
     /**
      * Returns a const pointer to the y vertex data.
@@ -110,7 +120,10 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see xData()
      * \since QGIS 3.2
      */
-    const double *yData() const SIP_SKIP;
+    const double *yData() const SIP_SKIP
+    {
+      return mY.constData();
+    }
 
     /**
      * Returns a const pointer to the z vertex data, or a nullptr if the linestring does
@@ -120,7 +133,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see yData()
      * \since QGIS 3.2
      */
-    const double *zData() const SIP_SKIP;
+    const double *zData() const SIP_SKIP
+    {
+      if ( mZ.empty() )
+        return nullptr;
+      else
+        return mZ.constData();
+    }
 
     /**
      * Returns a const pointer to the m vertex data, or a nullptr if the linestring does
@@ -130,7 +149,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see yData()
      * \since QGIS 3.2
      */
-    const double *mData() const SIP_SKIP;
+    const double *mData() const SIP_SKIP
+    {
+      if ( mM.empty() )
+        return nullptr;
+      else
+        return mM.constData();
+    }
 
     /**
      * Returns the z-coordinate of the specified node in the line string.
@@ -139,7 +164,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * does not have a z dimension
      * \see setZAt()
      */
-    double zAt( int index ) const;
+    double zAt( int index ) const
+    {
+      if ( index >= 0 && index < mZ.size() )
+        return mZ.at( index );
+      else
+        return std::numeric_limits<double>::quiet_NaN();
+    }
 
     /**
      * Returns the m value of the specified node in the line string.
@@ -148,7 +179,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * does not have m values
      * \see setMAt()
      */
-    double mAt( int index ) const;
+    double mAt( int index ) const
+    {
+      if ( index >= 0 && index < mM.size() )
+        return mM.at( index );
+      else
+        return std::numeric_limits<double>::quiet_NaN();
+    }
 
     /**
      * Sets the x-coordinate of the specified node in the line string.
@@ -175,7 +212,11 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \param z z-coordinate of node
      * \see zAt()
      */
-    void setZAt( int index, double z );
+    void setZAt( int index, double z )
+    {
+      if ( index >= 0 && index < mZ.size() )
+        mZ[ index ] = z;
+    }
 
     /**
      * Sets the m value of the specified node in the line string.
@@ -184,7 +225,11 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \param m m value of node
      * \see mAt()
      */
-    void setMAt( int index, double m );
+    void setMAt( int index, double m )
+    {
+      if ( index >= 0 && index < mM.size() )
+        mM[ index ] = m;
+    }
 
     /**
      * Resets the line string to match the specified list of points. The line string will
@@ -229,8 +274,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     void clear() override;
     bool isEmpty() const override;
     QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
-    bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) override;
-    virtual QPolygonF asQPolygonF() const override;
+    bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
+    QPolygonF asQPolygonF() const override;
 
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
@@ -270,8 +315,10 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool deleteVertex( QgsVertexId position ) override;
 
     QgsLineString *reversed() const override SIP_FACTORY;
+    QgsPoint *interpolatePoint( double distance ) const override SIP_FACTORY;
+    QgsLineString *curveSubstring( double startDistance, double endDistance ) const override SIP_FACTORY;
 
-    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const override;
     bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const override;
 
     QgsPoint centroid() const override;
@@ -290,6 +337,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
+    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
 
     /**
      * Cast the \a geom to a QgsLineString.
@@ -308,6 +356,14 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     QgsLineString *createEmptyWithSameType() const override SIP_FACTORY;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsLineString: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   protected:
 
     QgsRectangle calculateBoundingBox() const override;
@@ -325,7 +381,11 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \param type WKB type
      * \param wkb WKB representation of line geometry
      */
-    void fromWkbPoints( QgsWkbTypes::Type type, const QgsConstWkbPtr &wkb );
+    void fromWkbPoints( QgsWkbTypes::Type type, const QgsConstWkbPtr &wkb )
+    {
+      mWkbType = type;
+      importVerticesFromWkb( wkb );
+    }
 
     friend class QgsPolygon;
     friend class QgsTriangle;

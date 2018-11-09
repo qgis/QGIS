@@ -44,6 +44,10 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QSCINTILLA_INCLUDE_DIR}
 )
 
+IF(ENABLE_MODELTEST)
+  INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/tests/qt_modeltest)
+ENDIF(ENABLE_MODELTEST)
+
 #note for tests we should not include the moc of our
 #qtests in the executable file list as the moc is
 #directly included in the sources
@@ -123,9 +127,11 @@ ADD_QGIS_TEST(fieldexpressionwidget testqgsfieldexpressionwidget.cpp)
 ADD_QGIS_TEST(filewidget testqgsfilewidget.cpp)
 ADD_QGIS_TEST(focuswatcher testqgsfocuswatcher.cpp)
 ADD_QGIS_TEST(mapcanvastest testqgsmapcanvas.cpp)
+ADD_QGIS_TEST(messagebartest testqgsmessagebar.cpp)
 ADD_QGIS_TEST(projectionissues testprojectionissues.cpp)
 ADD_QGIS_TEST(qgsguitest testqgsgui.cpp)
 ADD_QGIS_TEST(processingguitest testprocessinggui.cpp)
+ADD_QGIS_TEST(processingmodeltest testqgsprocessingmodel.cpp)
 ADD_QGIS_TEST(rubberbandtest testqgsrubberband.cpp)
 ADD_QGIS_TEST(scalecombobox testqgsscalecombobox.cpp)
 ADD_QGIS_TEST(scalerangewidget testqgsscalerangewidget.cpp)
@@ -141,3 +147,4 @@ ADD_QGIS_TEST(layoutview testqgslayoutview.cpp)
 ADD_QGIS_TEST(valuemapwidgetwrapper testqgsvaluemapwidgetwrapper.cpp)
 ADD_QGIS_TEST(valuerelationwidgetwrapper testqgsvaluerelationwidgetwrapper.cpp)
 ADD_QGIS_TEST(relationreferencewidget testqgsrelationreferencewidget.cpp)
+ADD_QGIS_TEST(featurelistcombobox testqgsfeaturelistcombobox.cpp)

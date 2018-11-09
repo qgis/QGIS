@@ -29,7 +29,7 @@
    <item>
     <widget class="QgsCollapsibleGroupBox" name="mLoadMinMaxValuesGroupBox">
      <property name="title">
-      <string>Min / max values settings</string>
+      <string>Min / Max Value Settings</string>
      </property>
      <property name="flat">
       <bool>true</bool>

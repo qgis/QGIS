@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ###########################################################################
 #    install.sh
 #    ---------------------
@@ -14,7 +15,7 @@
 ###########################################################################
 
 mkdir build
-pushd build
+pushd build || exit
 
 export PATH=/usr/local/opt/ccache/libexec:$PATH
 HB=$(brew --prefix)
@@ -61,4 +62,4 @@ cmake \
   -DCMAKE_CXX_FLAGS="-Wno-deprecated-declarations" \
   ..
 
-popd
+popd || exit

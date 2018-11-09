@@ -42,7 +42,6 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
 
     //! Constructor
     QgsNewGeoPackageLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    ~QgsNewGeoPackageLayerDialog() override;
 
     /**
      * Sets the \a crs value for the new layer in the dialog.

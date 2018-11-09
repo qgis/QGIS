@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSDIAGRAMRENDERERV2_H
-#define QGSDIAGRAMRENDERERV2_H
+#ifndef QGSDIAGRAMRENDERER_H
+#define QGSDIAGRAMRENDERER_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -760,4 +760,4 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     QgsDataDefinedSizeLegend *mDataDefinedSizeLegend = nullptr;
 };
 
-#endif // QGSDIAGRAMRENDERERV2_H
+#endif // QGSDIAGRAMRENDERER_H

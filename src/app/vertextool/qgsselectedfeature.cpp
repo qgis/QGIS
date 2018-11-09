@@ -28,6 +28,8 @@
 #include "qgslayertreeview.h"
 #include "qgsproject.h"
 #include "qgsstatusbar.h"
+#include "qgsmapcanvas.h"
+
 
 QgsSelectedFeature::QgsSelectedFeature( QgsFeatureId featureId,
                                         QgsVectorLayer *vlayer,
@@ -60,7 +62,7 @@ QgsSelectedFeature::~QgsSelectedFeature()
 
 void QgsSelectedFeature::currentLayerChanged( QgsMapLayer *layer )
 {
-  if ( layer == mVlayer )
+  if ( layer == mLayer )
     deleteLater();
 }
 
@@ -71,7 +73,7 @@ void QgsSelectedFeature::updateGeometry( const QgsGeometry *geom )
   if ( !geom )
   {
     QgsFeature f;
-    mVlayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureId ) ).nextFeature( f );
+    mLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureId ) ).nextFeature( f );
     if ( f.hasGeometry() )
       mGeometry = new QgsGeometry( f.geometry() );
     else
@@ -83,10 +85,10 @@ void QgsSelectedFeature::updateGeometry( const QgsGeometry *geom )
   }
 }
 
-void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer *vlayer, QgsMapCanvas *canvas )
+void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer *layer, QgsMapCanvas *canvas )
 {
   mFeatureId = featureId;
-  mVlayer = vlayer;
+  mLayer = layer;
   mCanvas = canvas;
 
   delete mGeometry;
@@ -96,24 +98,24 @@ void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLa
   connect( QgisApp::instance()->layerTreeView(), &QgsLayerTreeView::currentLayerChanged, this, &QgsSelectedFeature::currentLayerChanged );
 
   // feature was deleted
-  connect( mVlayer, &QgsVectorLayer::featureDeleted, this, &QgsSelectedFeature::featureDeleted );
+  connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsSelectedFeature::featureDeleted );
 
   // rolling back
-  connect( mVlayer, &QgsVectorLayer::beforeRollBack, this, &QgsSelectedFeature::beforeRollBack );
+  connect( mLayer, &QgsVectorLayer::beforeRollBack, this, &QgsSelectedFeature::beforeRollBack );
 
   // projection or extents changed
   connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsSelectedFeature::updateVertexMarkersPosition );
   connect( canvas, &QgsMapCanvas::extentsChanged, this, &QgsSelectedFeature::updateVertexMarkersPosition );
 
   // geometry was changed
-  connect( mVlayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
+  connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
 
   replaceVertexMap();
 }
 
 void QgsSelectedFeature::beforeRollBack()
 {
-  disconnect( mVlayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
+  disconnect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
   deleteVertexMap();
 }
 
@@ -122,7 +124,7 @@ void QgsSelectedFeature::beginGeometryChange()
   Q_ASSERT( !mChangingGeometry );
   mChangingGeometry = true;
 
-  disconnect( mVlayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
+  disconnect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
 }
 
 void QgsSelectedFeature::endGeometryChange()
@@ -130,7 +132,7 @@ void QgsSelectedFeature::endGeometryChange()
   Q_ASSERT( mChangingGeometry );
   mChangingGeometry = false;
 
-  connect( mVlayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
+  connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
 }
 
 void QgsSelectedFeature::canvasLayersChanged()
@@ -148,7 +150,7 @@ void QgsSelectedFeature::geometryChanged( QgsFeatureId fid, const QgsGeometry &g
 {
   QgsDebugCall;
 
-  if ( !mVlayer || fid != mFeatureId )
+  if ( !mLayer || fid != mFeatureId )
     return;
 
   updateGeometry( &geom );
@@ -205,7 +207,7 @@ void QgsSelectedFeature::addError( QgsGeometry::Error e )
   if ( e.hasWhere() )
   {
     QgsVertexMarker *marker = new QgsVertexMarker( mCanvas );
-    marker->setCenter( mCanvas->mapSettings().layerToMapCoordinates( mVlayer, e.where() ) );
+    marker->setCenter( mCanvas->mapSettings().layerToMapCoordinates( mLayer, e.where() ) );
     marker->setIconType( QgsVertexMarker::ICON_X );
     marker->setColor( Qt::green );
     marker->setZValue( marker->zValue() + 1 );
@@ -265,7 +267,7 @@ void QgsSelectedFeature::createVertexMap()
 
   if ( !mGeometry )
   {
-    QgsDebugMsg( "Loading feature" );
+    QgsDebugMsg( QStringLiteral( "Loading feature" ) );
     updateGeometry( nullptr );
   }
 
@@ -284,7 +286,7 @@ void QgsSelectedFeature::createVertexMap()
   QgsPoint pt;
   while ( geom->nextVertex( vertexId, pt ) )
   {
-    mVertexMap.append( new QgsVertexEntry( mCanvas, mVlayer, pt, vertexId, tr( "ring %1, vertex %2" ).arg( vertexId.ring ).arg( vertexId.vertex ) ) );
+    mVertexMap.append( new QgsVertexEntry( mCanvas, mLayer, pt, vertexId, tr( "ring %1, vertex %2" ).arg( vertexId.ring ).arg( vertexId.vertex ) ) );
   }
 }
 
@@ -363,7 +365,7 @@ QList<QgsVertexEntry *> &QgsSelectedFeature::vertexMap()
   return mVertexMap;
 }
 
-QgsVectorLayer *QgsSelectedFeature::vlayer()
+QgsVectorLayer *QgsSelectedFeature::layer()
 {
-  return mVlayer;
+  return mLayer;
 }

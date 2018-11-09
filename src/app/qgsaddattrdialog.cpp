@@ -38,7 +38,7 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
 
   for ( int i = 0; i < typelist.size(); i++ )
   {
-    QgsDebugMsg( QString( "name:%1 type:%2 typeName:%3 length:%4-%5 prec:%6-%7" )
+    QgsDebugMsg( QStringLiteral( "name:%1 type:%2 typeName:%3 length:%4-%5 prec:%6-%7" )
                  .arg( typelist[i].mTypeDesc )
                  .arg( typelist[i].mType )
                  .arg( typelist[i].mTypeName )
@@ -93,7 +93,7 @@ void QgsAddAttrDialog::setPrecisionMinMax()
 
 void QgsAddAttrDialog::accept()
 {
-  if ( mIsShapeFile && mNameEdit->text().toLower() == QLatin1String( "shape" ) )
+  if ( mIsShapeFile && mNameEdit->text().compare( QLatin1String( "shape" ), Qt::CaseInsensitive ) == 0 )
   {
     QMessageBox::warning( this, tr( "Add Field" ),
                           tr( "Invalid field name. This field name is reserved and cannot be used." ) );
@@ -111,7 +111,7 @@ void QgsAddAttrDialog::accept()
 
 QgsField QgsAddAttrDialog::field() const
 {
-  QgsDebugMsg( QString( "idx:%1 name:%2 type:%3 typeName:%4 length:%5 prec:%6 comment:%7" )
+  QgsDebugMsg( QStringLiteral( "idx:%1 name:%2 type:%3 typeName:%4 length:%5 prec:%6 comment:%7" )
                .arg( mTypeBox->currentIndex() )
                .arg( mNameEdit->text() )
                .arg( mTypeBox->currentData( Qt::UserRole ).toInt() )

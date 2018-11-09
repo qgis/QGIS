@@ -18,20 +18,25 @@
 #ifndef QGS_GEOMETRY_SELFCONTACT_CHECK_H
 #define QGS_GEOMETRY_SELFCONTACT_CHECK_H
 
-#include "qgsgeometrycheck.h"
+#include "qgssinglegeometrycheck.h"
 
-class ANALYSIS_EXPORT QgsGeometrySelfContactCheck : public QgsGeometryCheck
+class ANALYSIS_EXPORT QgsGeometrySelfContactCheck : public QgsSingleGeometryCheck
 {
-    Q_OBJECT
-
   public:
-    QgsGeometrySelfContactCheck( QgsGeometryCheckerContext *context )
-      : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
-    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes & ) const override;
-    QStringList getResolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Self contact" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometrySelfContactCheck" ); }
+    QgsGeometrySelfContactCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
+      : QgsSingleGeometryCheck( context, configuration ) {}
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
+    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
+    void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes & ) const override;
+    QStringList resolutionMethods() const override;
+    static QString factoryDescription() { return tr( "Self contact" ); }
+    QString description() const override { return factoryDescription(); }
+    static QString factoryId() { return QStringLiteral( "QgsGeometrySelfContactCheck" ); }
+    QString id() const override { return factoryId(); }
+    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
+    static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
     enum ResolutionMethod { NoChange };
 };

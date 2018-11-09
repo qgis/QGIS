@@ -28,12 +28,18 @@
 /**
  * \ingroup server
  * \class QgsFilterResponseDecorator
- * Class defining decorator for calling filter's hooks
+ * \brief Class defining decorator for calling filter's hooks
+ * \since QGIS 3.0
  */
 class QgsFilterResponseDecorator: public QgsServerResponse
 {
   public:
 
+    /**
+     * Constructor for QgsFilterResponseDecorator.
+     * \param filters Map of filters to apply before terminating the response
+     * \param response Server response
+     */
     QgsFilterResponseDecorator( QgsServerFiltersMap filters, QgsServerResponse &response );
 
     /**

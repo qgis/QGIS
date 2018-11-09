@@ -22,6 +22,7 @@
 #include "qgis_app.h"
 
 class QgsGeometryRubberBand;
+class QgsSnapIndicator;
 
 class APP_EXPORT QgsMapToolAddEllipse: public QgsMapToolCapture
 {
@@ -54,6 +55,11 @@ class APP_EXPORT QgsMapToolAddEllipse: public QgsMapToolCapture
     QgsEllipse mEllipse;
     //! convenient method to return the number of segments
     unsigned int segments( ) { return QgsSettings().value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt() * 12; }
+    //! Layer type which will be used for rubberband
+    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
+
+    //! Snapping indicators
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
 };
 

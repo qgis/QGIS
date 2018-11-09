@@ -32,6 +32,7 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
   QMutexLocker locker( &layer->mFeatureSourceConstructorMutex );
   mProviderFeatureSource = layer->dataProvider()->featureSource();
   mFields = layer->fields();
+  mId = layer->id();
 
   // update layer's join caches if necessary
   if ( layer->mJoinBuffer->containsJoins() )
@@ -105,6 +106,11 @@ QgsFields QgsVectorLayerFeatureSource::fields() const
 QgsCoordinateReferenceSystem QgsVectorLayerFeatureSource::crs() const
 {
   return mCrs;
+}
+
+QString QgsVectorLayerFeatureSource::id() const
+{
+  return mId;
 }
 
 
@@ -1090,7 +1096,13 @@ QgsFeatureIterator QgsVectorLayerSelectedFeatureSource::getFeatures( const QgsFe
 {
   QgsFeatureRequest req( request );
 
-  if ( req.filterFids().isEmpty() && req.filterType() != QgsFeatureRequest::FilterFid )
+  // while QgsVectorLayerSelectedFeatureIterator will reject any features not in mSelectedFeatureIds,
+  // we still tweak the feature request to only request selected feature ids wherever we can -- this
+  // allows providers to optimise the request and avoid requesting features we don't need
+  // note that we can't do this for some request types - e.g. expression based requests, so
+  // in that case we just pass the request on to the provider and let QgsVectorLayerSelectedFeatureIterator
+  // do ALL the filtering
+  if ( req.filterFids().isEmpty() && req.filterType() == QgsFeatureRequest::FilterNone )
   {
     req.setFilterFids( mSelectedFeatureIds );
   }
@@ -1101,7 +1113,7 @@ QgsFeatureIterator QgsVectorLayerSelectedFeatureSource::getFeatures( const QgsFe
     req.setFilterFids( reqIds );
   }
 
-  return mSource.getFeatures( req );
+  return QgsFeatureIterator( new QgsVectorLayerSelectedFeatureIterator( mSelectedFeatureIds, req, mSource ) );
 }
 
 QgsCoordinateReferenceSystem QgsVectorLayerSelectedFeatureSource::sourceCrs() const
@@ -1136,3 +1148,45 @@ QgsExpressionContextScope *QgsVectorLayerSelectedFeatureSource::createExpression
   else
     return nullptr;
 }
+
+//
+// QgsVectorLayerSelectedFeatureIterator
+//
+
+///@cond PRIVATE
+QgsVectorLayerSelectedFeatureIterator::QgsVectorLayerSelectedFeatureIterator( const QgsFeatureIds &selectedFeatureIds, const QgsFeatureRequest &request, QgsVectorLayerFeatureSource &source )
+  : QgsAbstractFeatureIterator( request )
+  , mSelectedFeatureIds( selectedFeatureIds )
+{
+  QgsFeatureRequest sourceRequest = request;
+  if ( sourceRequest.filterType() == QgsFeatureRequest::FilterExpression && sourceRequest.limit() > 0 )
+  {
+    // we can't pass the request limit to the provider here - otherwise the provider will
+    // limit the number of returned features and may only return a bunch of matching features
+    // which AREN'T in the selected feature set
+    sourceRequest.setLimit( -1 );
+  }
+  mIterator = source.getFeatures( sourceRequest );
+}
+
+bool QgsVectorLayerSelectedFeatureIterator::rewind()
+{
+  return mIterator.rewind();
+}
+
+bool QgsVectorLayerSelectedFeatureIterator::close()
+{
+  return mIterator.close();
+}
+
+bool QgsVectorLayerSelectedFeatureIterator::fetchFeature( QgsFeature &f )
+{
+  while ( mIterator.nextFeature( f ) )
+  {
+    if ( mSelectedFeatureIds.contains( f.id() ) )
+      return true;
+  }
+  return false;
+}
+
+///@endcond

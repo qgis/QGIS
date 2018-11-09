@@ -11,4 +11,4 @@ QgsProcessingParameterBoolean|REFRESH         |Refresh|True
 QgsProcessingParameterNumber|LEAFSIZE|Leaf Size (for Speed Optimisation)|QgsProcessingParameterNumber.Integer|256|False|None|None
 QgsProcessingParameterRasterDestination|SEGMENTS|Segments
 QgsProcessingParameterRasterDestination|SIMILARITY|Similarity
-OutputTable|TABLE|Seeds
+QgsProcessingParameterVectorDestination|TABLE|Seeds

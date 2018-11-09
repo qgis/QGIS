@@ -17,6 +17,14 @@
         <Approximate>0</Approximate>
         <HistCounts>4|0|0|0|0|0|0|0|0|0|0|8</HistCounts>
       </HistItem>
+      <HistItem>
+        <HistMin>-0.25</HistMin>
+        <HistMax>1.25</HistMax>
+        <BucketCount>2</BucketCount>
+        <IncludeOutOfRange>0</IncludeOutOfRange>
+        <Approximate>0</Approximate>
+        <HistCounts>4|8</HistCounts>
+      </HistItem>
     </Histograms>
     <Metadata>
       <MDI key="STATISTICS_MAXIMUM">1</MDI>

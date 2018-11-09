@@ -23,8 +23,8 @@ class QgsVectorLayer;
 
 #define SIP_NO_FILE
 
-#include "qgsfeature.h"
 #include "qgsgeometry.h"
+#include "qgsfeatureid.h"
 #include <QMap>
 #include <memory>
 

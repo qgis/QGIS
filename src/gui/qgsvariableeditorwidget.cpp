@@ -15,7 +15,6 @@
 
 #include "qgsvariableeditorwidget.h"
 #include "qgsexpressioncontext.h"
-#include "qgsfeature.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
 
@@ -339,7 +338,8 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope *sc
   bool isCurrent = scopeIndex == mEditableScopeIndex;
   QTreeWidgetItem *scopeItem = mScopeToItem.value( scopeIndex );
 
-  Q_FOREACH ( const QString &name, scope->filteredVariableNames() )
+  const QStringList names = scope->filteredVariableNames();
+  for ( const QString &name : names )
   {
     QTreeWidgetItem *item = mVariableToItem.value( qMakePair( scopeIndex, name ) );
     if ( !item )
@@ -359,8 +359,9 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope *sc
 
     item->setFlags( item->flags() | Qt::ItemIsEnabled );
     item->setText( 0, name );
-    QString value = scope->variable( name ).toString();
-    item->setText( 1, value );
+    const QVariant value = scope->variable( name );
+    const QString previewString = QgsExpression::formatPreviewString( value, false );
+    item->setText( 1, previewString );
     QFont font = item->font( 0 );
     if ( readOnly || !isCurrent )
     {
@@ -384,7 +385,7 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope *sc
     {
       font.setStrikeOut( false );
       item->setToolTip( 0, name );
-      item->setToolTip( 1, value );
+      item->setToolTip( 1, previewString );
     }
     item->setFont( 0, font );
     item->setFont( 1, font );
@@ -720,7 +721,7 @@ void VariableEditorDelegate::setModelData( QWidget *widget, QAbstractItemModel *
     //edited variable name
     QString newName = lineEdit->text();
     newName = newName.trimmed();
-    newName = newName.replace( QStringLiteral( " " ), "_" );
+    newName = newName.replace( ' ', '_' );
 
     //test for validity
     if ( newName == variableName )

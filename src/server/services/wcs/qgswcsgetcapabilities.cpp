@@ -37,10 +37,34 @@ namespace QgsWcs
   void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                              const QgsServerRequest &request, QgsServerResponse &response )
   {
-    QDomDocument doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+    QgsAccessControl *accessControl = nullptr;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    accessControl = serverIface->accessControls();
+#endif
+    QDomDocument doc;
+    const QDomDocument *capabilitiesDocument = nullptr;
 
-    response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
-    response.write( doc.toByteArray() );
+    QgsServerCacheManager *cacheManager = nullptr;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    cacheManager = serverIface->cacheManager();
+#endif
+    if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
+    {
+      capabilitiesDocument = &doc;
+    }
+    else //capabilities xml not in cache. Create a new one
+    {
+      doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+
+      if ( cacheManager )
+      {
+        cacheManager->setCachedDocument( &doc, project, request, accessControl );
+      }
+      capabilitiesDocument = &doc;
+    }
+
+    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
+    response.write( capabilitiesDocument->toByteArray() );
   }
 
 
@@ -280,7 +304,7 @@ namespace QgsWcs
 #endif
 
       QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
-      QDomElement layerElem = getCoverageOffering( doc, const_cast<QgsRasterLayer *>( rLayer ), true );
+      QDomElement layerElem = getCoverageOffering( doc, const_cast<QgsRasterLayer *>( rLayer ), project, true );
 
       contentMetadataElement.appendChild( layerElem );
     }

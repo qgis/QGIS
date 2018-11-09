@@ -22,6 +22,8 @@
 #include "qgsdial.h"
 #include "qgsslider.h"
 
+
+
 QgsRangeWidgetWrapper::QgsRangeWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
 
@@ -119,7 +121,11 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
       // Note: call setMinimum here or setValue won't work
       mDoubleSpinBox->setMinimum( minval );
       mDoubleSpinBox->setValue( minval );
-      mDoubleSpinBox->setSpecialValueText( QgsApplication::nullRepresentation() );
+      QgsDoubleSpinBox *doubleSpinBox( qobject_cast<QgsDoubleSpinBox *>( mDoubleSpinBox ) );
+      if ( doubleSpinBox )
+        doubleSpinBox->setSpecialValueText( QgsApplication::nullRepresentation() );
+      else
+        mDoubleSpinBox->setSpecialValueText( QgsApplication::nullRepresentation() );
     }
     mDoubleSpinBox->setMinimum( minval );
     mDoubleSpinBox->setMaximum( maxval );
@@ -138,10 +144,14 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     int minval = min.toInt();
     if ( allowNull )
     {
-      int stepval = step.toInt();
+      int stepval = step.isValid() ? step.toInt() : 1;
       minval -= stepval;
       mIntSpinBox->setValue( minval );
-      mIntSpinBox->setSpecialValueText( QgsApplication::nullRepresentation() );
+      QgsSpinBox *intSpinBox( qobject_cast<QgsSpinBox *>( mIntSpinBox ) );
+      if ( intSpinBox )
+        intSpinBox->setSpecialValueText( QgsApplication::nullRepresentation() );
+      else
+        mIntSpinBox->setSpecialValueText( QgsApplication::nullRepresentation() );
     }
     setupIntEditor( minval, max, step, mIntSpinBox, this );
     if ( config( QStringLiteral( "Suffix" ) ).isValid() )

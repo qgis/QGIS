@@ -20,7 +20,7 @@
 
 #include "qgssymbolwidgetcontext.h"
 #include "qgssymbollayer.h"
-
+#include "qgsstylemodel.h"
 #include <QWidget>
 #include "qgis_gui.h"
 
@@ -28,6 +28,21 @@ class QgsSymbol;
 class QgsStyle;
 
 class QMenu;
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+class QgsReadOnlyStyleModel : public QgsStyleProxyModel
+{
+    Q_OBJECT
+  public:
+
+    explicit QgsReadOnlyStyleModel( QgsStyle *style, QObject *parent = nullptr );
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+
+};
+#endif
+///@endcond
 
 /**
  * \ingroup gui
@@ -83,8 +98,6 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void addSymbolToStyle();
     void saveSymbol();
 
-    void symbolAddedToStyle( const QString &name, QgsSymbol *symbol );
-
     //! Pupulates the groups combo box with available tags and smartgroups
     void populateGroups();
 
@@ -104,7 +117,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void updateAssistantSymbol();
     void opacityChanged( double value );
     void createAuxiliaryField();
-    void populateSymbolView();
+    void updateModelFilters();
 
   private:
     QgsSymbol *mSymbol = nullptr;
@@ -114,8 +127,9 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QAction *mClipFeaturesAction = nullptr;
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgsStyleProxyModel *mModel = nullptr;
+    bool mUpdatingGroups = false;
 
-    void populateSymbols( const QStringList &symbols );
     void updateSymbolColor();
     void updateSymbolInfo();
     QgsSymbolWidgetContext mContext;

@@ -109,13 +109,13 @@ QgsLayoutItemPage::Orientation QgsLayoutItemPage::decodePageOrientation( const Q
     *ok = false;
 
   QString trimmedString = string.trimmed();
-  if ( trimmedString.compare( QStringLiteral( "portrait" ), Qt::CaseInsensitive ) == 0 )
+  if ( trimmedString.compare( QLatin1String( "portrait" ), Qt::CaseInsensitive ) == 0 )
   {
     if ( ok )
       *ok = true;
     return Portrait;
   }
-  else if ( trimmedString.compare( QStringLiteral( "landscape" ), Qt::CaseInsensitive ) == 0 )
+  else if ( trimmedString.compare( QLatin1String( "landscape" ), Qt::CaseInsensitive ) == 0 )
   {
     if ( ok )
       *ok = true;

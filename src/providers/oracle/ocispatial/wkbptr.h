@@ -52,19 +52,14 @@ enum SDO_GTYPE_TT
 class QOCISpatialGeometry : public QSharedData
 {
   public:
-    QOCISpatialGeometry()
-      : isNull( true )
-      , gtype( -1 )
-      , srid( -1 )
-      , x( 0.0 )
-      , y( 0.0 )
-      , z( 0.0 )
-    {}
+    QOCISpatialGeometry() = default;
 
-    bool isNull;
-    int gtype;
-    int srid;
-    double x, y, z;
+    bool isNull = true;
+    int gtype = -1;
+    int srid = -1;
+    double x = 0.0;
+    double y = 0.0;
+    double z = 0.0;
 
     QVector<int> eleminfo;
     QVector<double> ordinates;

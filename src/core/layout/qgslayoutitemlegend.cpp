@@ -42,6 +42,8 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   connect( &layout->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsLayoutItemLegend::onAtlasEnded );
 #endif
 
+  mTitle = mSettings.title();
+
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
   connect( mLayout->project()->layerTreeRoot(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayoutItemLegend::nodeCustomPropertyChanged );
@@ -104,21 +106,23 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
     if ( mForceResize )
     {
       mForceResize = false;
+
       //set new rect, respecting position mode and data defined size/position
-      QRectF targetRect = QRectF( pos().x(), pos().y(), size.width(), size.height() );
-      attemptSetSceneRect( targetRect );
+      QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( size, sizeWithUnits().units() );
+      attemptResize( newSize );
     }
     else if ( size.height() > rect().height() || size.width() > rect().width() )
     {
       //need to resize box
-      QRectF targetRect = QRectF( pos().x(), pos().y(), rect().width(), rect().height() );
-      if ( size.height() > targetRect.height() )
-        targetRect.setHeight( size.height() );
-      if ( size.width() > rect().width() )
-        targetRect.setWidth( size.width() );
+      QSizeF targetSize = rect().size();
+      if ( size.height() > targetSize.height() )
+        targetSize.setHeight( size.height() );
+      if ( size.width() > targetSize.width() )
+        targetSize.setWidth( size.width() );
 
+      QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( targetSize, sizeWithUnits().units() );
       //set new rect, respecting position mode and data defined size/position
-      attemptSetSceneRect( targetRect );
+      attemptResize( newSize );
     }
   }
   QgsLayoutItem::paint( painter, itemStyle, pWidget );
@@ -179,7 +183,7 @@ void QgsLayoutItemLegend::adjustBoxSize()
 
   QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
   QSizeF size = legendRenderer.minimumSize();
-  QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
+  QgsDebugMsg( QStringLiteral( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
   {
     QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( size, sizeWithUnits().units() );
@@ -447,11 +451,6 @@ void QgsLayoutItemLegend::setRasterStrokeWidth( double width )
   mSettings.setRasterStrokeWidth( width );
 }
 
-void QgsLayoutItemLegend::synchronizeWithModel()
-{
-  adjustBoxSize();
-  updateFilterByMap( false );
-}
 
 void QgsLayoutItemLegend::updateLegend()
 {

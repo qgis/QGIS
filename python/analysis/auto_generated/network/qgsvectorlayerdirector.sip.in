@@ -35,7 +35,7 @@ Determine making the graph from vector line layer
                             const QString &directDirectionValue,
                             const QString &reverseDirectionValue,
                             const QString &bothDirectionValue,
-                            const Direction defaultDirection
+                            Direction defaultDirection
                           );
 %Docstring
 Default constructor

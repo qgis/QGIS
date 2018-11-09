@@ -54,7 +54,7 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
     /**
      * Returns the value map which is currently active.
      *
-     * \returns value map of vlues selected from layer
+     * \returns value map of values selected from layer
      */
     QMap<QString, QVariant> &valueMap();
 

@@ -101,11 +101,23 @@ void QgsPolygon3DSymbolEntity::addEntityForNotSelectedPolygons( const Qgs3DMapSe
 
   // build the entity
   QgsPolygon3DSymbolEntityNode *entity = new QgsPolygon3DSymbolEntityNode( map, layer, symbol, req );
+  entity->findChild<Qt3DRender::QGeometryRenderer *>()->setObjectName( QStringLiteral( "main" ) ); // temporary measure to distinguish between "selected" and "main"
   entity->addComponent( mat );
   entity->addComponent( tform );
   entity->setParent( this );
 }
 
+static Qt3DRender::QCullFace::CullingMode _qt3DcullingMode( Qgs3DTypes::CullingMode mode )
+{
+  switch ( mode )
+  {
+    case Qgs3DTypes::NoCulling:    return Qt3DRender::QCullFace::NoCulling;
+    case Qgs3DTypes::Front:        return Qt3DRender::QCullFace::Front;
+    case Qgs3DTypes::Back:         return Qt3DRender::QCullFace::Back;
+    case Qgs3DTypes::FrontAndBack: return Qt3DRender::QCullFace::FrontAndBack;
+  }
+  return Qt3DRender::QCullFace::NoCulling;
+}
 
 Qt3DExtras::QPhongMaterial *QgsPolygon3DSymbolEntity::material( const QgsPolygon3DSymbol &symbol ) const
 {
@@ -119,7 +131,7 @@ Qt3DExtras::QPhongMaterial *QgsPolygon3DSymbolEntity::material( const QgsPolygon
     for ( auto rpit = renderPasses.begin(); rpit != renderPasses.end(); ++rpit )
     {
       Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
-      cullFace->setMode( symbol.cullingMode() );
+      cullFace->setMode( _qt3DcullingMode( symbol.cullingMode() ) );
       ( *rpit )->addRenderState( cullFace );
     }
   }
@@ -141,6 +153,7 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
 {
   QgsPointXY origin( map.origin().x(), map.origin().y() );
   QList<QgsPolygon *> polygons;
+  QList<QgsFeatureId> fids;
   QList<float> extrusionHeightPerPolygon;  // will stay empty if not needed per polygon
 
   QgsExpressionContext ctx( _expressionContext3D() );
@@ -178,6 +191,7 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
       QgsPolygon *polyClone = poly->clone();
       Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), height, map );
       polygons.append( polyClone );
+      fids.append( f.id() );
       if ( hasDDExtrusion )
         extrusionHeightPerPolygon.append( extrusionHeight );
     }
@@ -190,6 +204,7 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
         QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
         Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), height, map );
         polygons.append( polyClone );
+        fids.append( f.id() );
         if ( hasDDExtrusion )
           extrusionHeightPerPolygon.append( extrusionHeight );
       }
@@ -201,7 +216,7 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
   mGeometry = new QgsTessellatedPolygonGeometry;
   mGeometry->setInvertNormals( symbol.invertNormals() );
   mGeometry->setAddBackFaces( symbol.addBackFaces() );
-  mGeometry->setPolygons( polygons, origin, symbol.extrusionHeight(), extrusionHeightPerPolygon );
+  mGeometry->setPolygons( polygons, fids, origin, symbol.extrusionHeight(), extrusionHeightPerPolygon );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( mGeometry );

@@ -26,10 +26,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import warnings
 
 try:
-    import plotly  # NOQA
-    hasPlotly = True
+    # importing plotly throws Python warnings from within the library - filter these out
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=ResourceWarning)
+        warnings.filterwarnings("ignore", category=ImportWarning)
+        import plotly  # NOQA
+        hasPlotly = True
 except:
     hasPlotly = False
 
@@ -60,7 +65,6 @@ from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
-from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
 from .ExtractSpecificVertices import ExtractSpecificVertices
 from .FieldPyculator import FieldsPyculator
@@ -79,10 +83,10 @@ from .IdwInterpolation import IdwInterpolation
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .KeepNBiggestParts import KeepNBiggestParts
+from .KNearestConcaveHull import KNearestConcaveHull
 from .LinesToPolygons import LinesToPolygons
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
-from .OffsetLine import OffsetLine
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
 from .PointsAlongGeometry import PointsAlongGeometry
@@ -96,6 +100,7 @@ from .PoleOfInaccessibility import PoleOfInaccessibility
 from .Polygonize import Polygonize
 from .PolygonsToLines import PolygonsToLines
 from .PostGISExecuteSQL import PostGISExecuteSQL
+from .PostGISExecuteAndLoadSQL import PostGISExecuteAndLoadSQL
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RandomPointsAlongLines import RandomPointsAlongLines
@@ -107,11 +112,11 @@ from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .Rasterize import RasterizeAlgorithm
 from .RasterCalculator import RasterCalculator
 from .RasterLayerStatistics import RasterLayerStatistics
+from .RasterSampling import RasterSampling
 from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RegularPoints import RegularPoints
 from .Relief import Relief
-from .ReverseLineDirection import ReverseLineDirection
 from .Ruggedness import Ruggedness
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
@@ -121,9 +126,6 @@ from .SetMValue import SetMValue
 from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
 from .SetZValue import SetZValue
-from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
-from .ShortestPathPointToLayer import ShortestPathPointToLayer
-from .ShortestPathPointToPoint import ShortestPathPointToPoint
 from .SingleSidedBuffer import SingleSidedBuffer
 from .Slope import Slope
 from .SnapGeometries import SnapGeometriesToLayer
@@ -175,7 +177,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
-                ExtendLines(),
                 ExtentFromLayer(),
                 ExtractSpecificVertices(),
                 FieldsCalculator(),
@@ -194,10 +195,10 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 KeepNBiggestParts(),
+                KNearestConcaveHull(),
                 LinesToPolygons(),
                 MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
-                OffsetLine(),
                 Orthogonalize(),
                 PointDistance(),
                 PointsAlongGeometry(),
@@ -211,6 +212,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 Polygonize(),
                 PolygonsToLines(),
                 PostGISExecuteSQL(),
+                PostGISExecuteAndLoadSQL(),
                 RandomExtract(),
                 RandomExtractWithinSubsets(),
                 RandomPointsAlongLines(),
@@ -222,11 +224,11 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 RasterCalculator(),
                 RasterizeAlgorithm(),
                 RasterLayerStatistics(),
+                RasterSampling(),
                 RectanglesOvalsDiamondsFixed(),
                 RectanglesOvalsDiamondsVariable(),
                 RegularPoints(),
                 Relief(),
-                ReverseLineDirection(),
                 Ruggedness(),
                 SelectByAttribute(),
                 SelectByExpression(),
@@ -236,9 +238,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SetRasterStyle(),
                 SetVectorStyle(),
                 SetZValue(),
-                ShortestPathLayerToPoint(),
-                ShortestPathPointToLayer(),
-                ShortestPathPointToPoint(),
                 SingleSidedBuffer(),
                 Slope(),
                 SnapGeometriesToLayer(),
@@ -288,6 +287,9 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
         return algs
 
     def id(self):
+        return 'qgis'
+
+    def helpId(self):
         return 'qgis'
 
     def name(self):

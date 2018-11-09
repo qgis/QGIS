@@ -112,7 +112,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>0</height>
       </size>
      </property>
     </spacer>
@@ -126,6 +126,13 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>minSizeSpinBox</tabstop>
+  <tabstop>maxSizeSpinBox</tabstop>
+  <tabstop>scaleMethodComboBox</tabstop>
+  <tabstop>exponentSpinBox</tabstop>
+  <tabstop>nullSizeSpinBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

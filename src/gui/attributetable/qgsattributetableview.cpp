@@ -83,7 +83,7 @@ bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
         break;
     }
   }
-  return false;
+  return QTableView::eventFilter( object, event );
 }
 
 void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConfig &config )
@@ -104,6 +104,30 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
     }
     i++;
   }
+  mConfig = config;
+}
+
+QList<QgsFeatureId> QgsAttributeTableView::selectedFeaturesIds() const
+{
+  // In order to get the ids in the right sorted order based on the view we have to get the feature ids first
+  // from the selection manager which is in the order the user selected them when clicking
+  // then get the model index, sort that, and finally return the new sorted features ids.
+  const QgsFeatureIds featureIds = mFeatureSelectionManager->selectedFeatureIds();
+  QModelIndexList indexList;
+  for ( const QgsFeatureId &id : featureIds )
+  {
+    QModelIndex index = mFilterModel->fidToIndex( id );
+    indexList << index;
+  }
+
+  std::sort( indexList.begin(), indexList.end() );
+  QList<QgsFeatureId> ids;
+  for ( const QModelIndex &index : indexList )
+  {
+    QgsFeatureId id = mFilterModel->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
+    ids.append( id );
+  }
+  return ids;
 }
 
 void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel *filterModel )
@@ -143,8 +167,7 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel *filterModel 
 
 void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager )
 {
-  if ( mFeatureSelectionManager )
-    delete mFeatureSelectionManager;
+  delete mFeatureSelectionManager;
 
   mFeatureSelectionManager = featureSelectionManager;
 
@@ -154,7 +177,7 @@ void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionMana
 
 QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
 {
-  QgsAttributeTableConfig attributeTableConfig = mFilterModel->layer()->attributeTableConfig();
+  QgsAttributeTableConfig attributeTableConfig = mConfig;
 
   QToolButton *toolButton = nullptr;
   QWidget *container = nullptr;
@@ -183,7 +206,7 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
     if ( !mFilterModel->layer()->isEditable() && action.isEnabledOnlyWhenEditable() )
       continue;
 
-    QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : QLatin1String( "" );
+    QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : QString();
     QAction *act = new QAction( action.icon(), actionTitle, container );
     act->setToolTip( action.name() );
     act->setData( "user_action" );

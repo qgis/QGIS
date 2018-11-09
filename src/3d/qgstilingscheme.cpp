@@ -21,7 +21,7 @@ QgsTilingScheme::QgsTilingScheme( const QgsRectangle &fullExtent, const QgsCoord
   : mCrs( crs )
 {
   mMapOrigin = QgsPointXY( fullExtent.xMinimum(), fullExtent.yMinimum() );
-  mBaseTileSide = qMax( fullExtent.width(), fullExtent.height() );
+  mBaseTileSide = std::max( fullExtent.width(), fullExtent.height() );
 }
 
 QgsPointXY QgsTilingScheme::tileToMap( int x, int y, int z ) const
@@ -49,7 +49,7 @@ QgsRectangle QgsTilingScheme::tileToExtent( int x, int y, int z ) const
 void QgsTilingScheme::extentToTile( const QgsRectangle &extent, int &x, int &y, int &z ) const
 {
   x = y = z = 0;  // start with root tile
-  while ( 1 )
+  while ( true )
   {
     // try to see if any child tile fully contains our extent - if so, go deeper
     if ( tileToExtent( x * 2, y * 2, z + 1 ).contains( extent ) )

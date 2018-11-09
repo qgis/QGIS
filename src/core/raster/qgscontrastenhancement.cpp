@@ -191,7 +191,7 @@ bool QgsContrastEnhancement::generateLookupTable()
   if ( !mLookupTable )
     return false;
 
-  QgsDebugMsg( "building lookup table" );
+  QgsDebugMsg( QStringLiteral( "building lookup table" ) );
   QgsDebugMsg( "***MinimumValue : " + QString::number( mMinimumValue ) );
   QgsDebugMsg( "***MaximumValue : " + QString::number( mMaximumValue ) );
   QgsDebugMsg( "***mLookupTableOffset : " + QString::number( mLookupTableOffset ) );
@@ -247,7 +247,7 @@ void QgsContrastEnhancement::setContrastEnhancementAlgorithm( ContrastEnhancemen
 
 void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancementFunction *function )
 {
-  QgsDebugMsgLevel( "called", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "called" ), 4 );
 
   if ( function )
   {

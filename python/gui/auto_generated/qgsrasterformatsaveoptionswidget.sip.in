@@ -90,7 +90,7 @@ Set pyramids format to use
 
     void helpOptions();
 %Docstring
-Opens window with options desctiption for given provider
+Opens window with options description for given provider
 and output format
 %End
 

@@ -20,6 +20,7 @@
 #include "qgslocatorfilter.h"
 #include "qgsstringutils.h"
 #include "qgsfeedback.h"
+#include "qgsmessagelog.h"
 
 
 QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
@@ -69,6 +70,9 @@ void QgsLocatorFilter::setUseWithoutPrefix( bool useWithoutPrefix )
 
 QString QgsLocatorFilter::activePrefix() const
 {
+  // do not change this to isEmpty!
+  // if any issue with an in-built locator filter
+  // do not forget to add it in QgsLocator::CORE_FILTERS
   if ( mActivePrefifx.isNull() )
     return prefix();
   else
@@ -78,5 +82,10 @@ QString QgsLocatorFilter::activePrefix() const
 void QgsLocatorFilter::setActivePrefix( const QString &activePrefix )
 {
   mActivePrefifx = activePrefix;
+}
+
+void QgsLocatorFilter::logMessage( const QString &message, Qgis::MessageLevel level )
+{
+  QgsMessageLog::logMessage( QString( "%1: %2" ).arg( name(), message ), QStringLiteral( "Locator bar" ), level );
 }
 

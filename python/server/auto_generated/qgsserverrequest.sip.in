@@ -74,6 +74,11 @@ Returns a map of query parameters with keys converted
 to uppercase
 %End
 
+    QgsServerParameters serverParameters() const;
+%Docstring
+Returns parameters
+%End
+
     void setParameter( const QString &key, const QString &value );
 %Docstring
 Set a parameter

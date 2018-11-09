@@ -17,7 +17,7 @@
 #define QGSCACHEINDEX_H
 
 #include "qgis_core.h"
-#include "qgsfeature.h" // QgsFeatureIds
+#include "qgsfeatureid.h"
 
 class QgsFeatureRequest;
 class QgsFeatureIterator;
@@ -42,7 +42,7 @@ class CORE_EXPORT QgsAbstractCacheIndex
      * Is called, whenever a feature is removed from the cache. You should update your indexes, so
      * they become invalid in case this feature was required to successfully answer a request.
      */
-    virtual void flushFeature( const QgsFeatureId fid ) = 0;
+    virtual void flushFeature( QgsFeatureId fid ) = 0;
 
     /**
      * Sometimes, the whole cache changes its state and its easier to just withdraw everything.

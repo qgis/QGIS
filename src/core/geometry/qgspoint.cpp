@@ -91,30 +91,6 @@ QgsPoint::QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z, dou
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsPoint::operator==( const QgsAbstractGeometry &other ) const
-{
-  const QgsPoint *pt = qgsgeometry_cast< const QgsPoint * >( &other );
-  if ( !pt )
-    return false;
-
-  const QgsWkbTypes::Type type = wkbType();
-
-  bool equal = pt->wkbType() == type;
-  equal &= qgsDoubleNear( pt->x(), mX, 1E-8 );
-  equal &= qgsDoubleNear( pt->y(), mY, 1E-8 );
-  if ( QgsWkbTypes::hasZ( type ) )
-    equal &= qgsDoubleNear( pt->z(), mZ, 1E-8 ) || ( std::isnan( pt->z() ) && std::isnan( mZ ) );
-  if ( QgsWkbTypes::hasM( type ) )
-    equal &= qgsDoubleNear( pt->m(), mM, 1E-8 ) || ( std::isnan( pt->m() ) && std::isnan( mM ) );
-
-  return equal;
-}
-
-bool QgsPoint::operator!=( const QgsAbstractGeometry &pt ) const
-{
-  return !operator==( pt );
-}
-
 QgsPoint *QgsPoint::clone() const
 {
   return new QgsPoint( *this );
@@ -597,29 +573,16 @@ void QgsPoint::filterVertices( const std::function<bool ( const QgsPoint & )> & 
   // no meaning for points
 }
 
-QPointF QgsPoint::toQPointF() const
+void QgsPoint::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
 {
-  return QPointF( mX, mY );
-}
-
-double QgsPoint::distance( double x, double y ) const
-{
-  return std::sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
-}
-
-double QgsPoint::distance( const QgsPoint &other ) const
-{
-  return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
-}
-
-double QgsPoint::distanceSquared( double x, double y ) const
-{
-  return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
-}
-
-double QgsPoint::distanceSquared( const QgsPoint &other ) const
-{
-  return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() );
+  QgsPoint res = transform( *this );
+  mX = res.x();
+  mY = res.y();
+  if ( is3D() )
+    mZ = res.z();
+  if ( isMeasure() )
+    mM = res.m();
+  clearCache();
 }
 
 double QgsPoint::distance3D( double x, double y, double z ) const

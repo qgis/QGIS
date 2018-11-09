@@ -113,7 +113,7 @@ class fillnodata(GdalAlgorithm):
         if self.parameterAsBool(parameters, self.NO_MASK, context):
             arguments.append('-nomask')
 
-        mask = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        mask = self.parameterAsRasterLayer(parameters, self.MASK_LAYER, context)
         if mask:
             arguments.append('-mask {}'.format(mask.source()))
 

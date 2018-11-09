@@ -260,6 +260,7 @@
      <addaction name="separator"/>
      <addaction name="mActionSetStyles"/>
      <addaction name="separator"/>
+     <addaction name="mActionDockUndock"/>
     </widget>
    </item>
   </layout>
@@ -393,7 +394,7 @@
   <action name="mActionReload">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
+     <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
    </property>
    <property name="text">
     <string>Reload the table</string>
@@ -633,6 +634,21 @@
     <string>Conditional formatting</string>
    </property>
   </action>
+  <action name="mActionDockUndock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mDockify.svg</normaloff>:/images/themes/default/mDockify.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Dock Attribute Table</string>
+   </property>
+   <property name="toolTip">
+    <string>Dock Attribute Table</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -670,6 +686,7 @@
   <tabstop>mTableViewButton</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>

@@ -153,10 +153,10 @@ of layout items.
       LayoutItem,
       LayoutGroup,
 
-      // known
+      // known item types
 
-      // WARNING
-      // values,
+      // WARNING!!!! SIP CASTING OF QgsLayoutItem and QgsLayoutMultiFrame DEPENDS on these
+      // values, and must be updated if any additional types are added
 
       LayoutPage,
       LayoutMap,
@@ -169,16 +169,18 @@ of layout items.
       LayoutScaleBar,
       LayoutFrame,
 
-      // known
+      // known multi-frame types
 
-      // WARNING
-      // values,
+      // WARNING!!!! SIP CASTING OF QgsLayoutItem and QgsLayoutMultiFrame DEPENDS on these
+      // values, and must be updated if any additional types are added
 
       LayoutHtml,
       LayoutAttributeTable,
       LayoutTextTable,
 
-      // item
+      Layout3DMap,
+
+      // item types provided by plugins
       PluginItem,
     };
 

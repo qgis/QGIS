@@ -25,6 +25,7 @@
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsproperty.h"
 #include "qgsspatialiteutils.h"
+#include "qgsvectorlayer.h"
 #include <QString>
 
 class QgsProject;
@@ -319,11 +320,19 @@ class CORE_EXPORT QgsAuxiliaryStorage
     QString currentFileName() const;
 
     /**
+     * Returns the underlying error string describing potential errors
+     * hapenning in saveAs(). Empty by default.
+     *
+     * \since QGIS 3.4
+     */
+    QString errorString() const;
+
+    /**
      * Saves the current database to a new path.
      *
      * \returns true if everything is saved, false otherwise
      */
-    bool saveAs( const QString &filename ) const;
+    bool saveAs( const QString &filename );
 
     /**
      * Saves the current database to a new path for a specific project.
@@ -332,7 +341,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
      *
      * \returns true if everything is saved, false otherwise
      */
-    bool saveAs( const QgsProject &project ) const;
+    bool saveAs( const QgsProject &project );
 
     /**
      * Saves the current database.
@@ -407,6 +416,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
     QString mFileName; // original filename
     QString mTmpFileName; // temporary filename used in copy mode
     bool mCopy = false;
+    QString mErrorString;
 };
 
 #endif

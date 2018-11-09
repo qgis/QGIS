@@ -34,16 +34,72 @@ QgsMessageLog is not usually directly created, but rather accessed through
 Constructor for QgsMessageLog.
 %End
 
-    static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::Warning );
+    static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::Warning, bool notifyUser = true );
 %Docstring
-add a message to the instance (and create it if necessary)
+Adds a ``message`` to the log instance (and creates it if necessary).
+
+If ``notifyUser`` is true, then the message should be brought to the user's attention by various UI hints.
+If it is false, the message should appear in logs silently. Note that log viewer implementations may
+only respect notification hints for certain message levels.
 %End
 
   signals:
+
     void messageReceived( const QString &message, const QString &tag, Qgis::MessageLevel level );
+%Docstring
+Emitted whenever the log receives a ``message``.
+
+This signal is emitted for all messages received by the log, regardless of the ``notifyUser`` flag's
+value for the message.
+%End
+
 
     void messageReceived( bool received );
+%Docstring
+Emitted whenever the log receives a message which is not a Qgis.Info level message
+and which has the ``notifyUser`` flag as true.
 
+If QgsMessageLogNotifyBlocker objects have been created then this signal may be
+temporarily suppressed.
+
+.. seealso:: :py:class:`QgsMessageLogNotifyBlocker`
+%End
+
+};
+
+class QgsMessageLogNotifyBlocker
+{
+%Docstring
+Temporarily blocks the application QgsMessageLog (see QgsApplication.messageLog()) from emitting the messageReceived( bool )
+signal for the lifetime of the object.
+
+Using this blocker allows messages to be logged without causing user interface hints flagging message log
+errors to be created.
+
+QgsMessageLogNotifyBlocker supports "stacked" blocking, so two QgsMessageLogNotifyBlocker created
+will both need to be destroyed before the messageReceived( bool ) signal is emitted again.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmessagelog.h"
+%End
+  public:
+
+    QgsMessageLogNotifyBlocker();
+%Docstring
+Constructor for QgsMessageLogNotifyBlocker.
+
+This will block the log from emitting the messageReceived( bool ) signal for the lifetime of this object.
+%End
+
+
+
+    ~QgsMessageLogNotifyBlocker();
+
+  private:
+    QgsMessageLogNotifyBlocker( const QgsMessageLogNotifyBlocker &other );
 };
 
 class QgsMessageLogConsole : QObject
@@ -51,18 +107,43 @@ class QgsMessageLogConsole : QObject
 %Docstring
 Default implementation of message logging interface
 
-This class outputs log messages to the standard output. Therefore it might
-be the right choice for apps without GUI.
+This class outputs log messages to the standard error. Therefore it might
+be the right choice for applications without GUI.
 %End
 
 %TypeHeaderCode
 #include "qgsmessagelog.h"
 %End
   public:
+
     QgsMessageLogConsole();
+%Docstring
+Constructor for QgsMessageLogConsole.
+%End
+
+  protected:
+
+    QString formatLogMessage( const QString &message, const QString &tag, Qgis::MessageLevel level = Qgis::Info ) const;
+%Docstring
+Formats a log message. Used by child classes.
+
+:param message: the message to format
+:param tag: the tag of the message
+:param level: the log level of the message
+
+.. versionadded:: 3.4
+%End
 
   public slots:
-    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
+
+    virtual void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
+%Docstring
+Logs a message to stderr.
+
+:param message: the message to format
+:param tag: the tag of the message
+:param level: the log level of the message
+%End
 };
 
 /************************************************************************

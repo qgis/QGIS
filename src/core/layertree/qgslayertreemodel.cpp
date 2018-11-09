@@ -25,6 +25,7 @@
 
 #include "qgsdataitem.h"
 #include "qgsmaphittest.h"
+#include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgspluginlayer.h"
@@ -257,8 +258,6 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
   else if ( role == Qt::FontRole )
   {
     QFont f( QgsLayerTree::isLayer( node ) ? mFontLayer : ( QgsLayerTree::isGroup( node ) ? mFontGroup : QFont() ) );
-    if ( node->customProperty( QStringLiteral( "embedded" ) ).toInt() )
-      f.setItalic( true );
     if ( index == mCurrentIndex )
       f.setUnderline( true );
     return f;
@@ -289,7 +288,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 
         title = "<b>" + title.toHtmlEscaped() + "</b>";
 
-        if ( layer->crs().isValid() )
+        if ( layer->isSpatial() && layer->crs().isValid() )
         {
           if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
             title += tr( " (%1 - %2)" ).arg( QgsWkbTypes::displayString( vl->wkbType() ), layer->crs().authid() ).toHtmlEscaped();
@@ -562,7 +561,7 @@ void QgsLayerTreeModel::setLayerTreeNodeFont( int nodeType, const QFont &font )
   }
   else
   {
-    QgsDebugMsgLevel( "invalid node type", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "invalid node type" ), 4 );
   }
 }
 
@@ -575,7 +574,7 @@ QFont QgsLayerTreeModel::layerTreeNodeFont( int nodeType ) const
     return mFontLayer;
   else
   {
-    QgsDebugMsgLevel( "invalid node type", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "invalid node type" ), 4 );
     return QFont();
   }
 }
@@ -1188,9 +1187,9 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
   if ( !layerLegend )
     return;
 
-  bool hasStyleOverride = mLayerStyleOverrides.contains( ml->id() );
-  if ( hasStyleOverride )
-    ml->styleManager()->setOverrideStyle( mLayerStyleOverrides.value( ml->id() ) );
+  QgsMapLayerStyleOverride styleOverride( ml );
+  if ( mLayerStyleOverrides.contains( ml->id() ) )
+    styleOverride.setOverrideStyle( mLayerStyleOverrides.value( ml->id() ) );
 
   QList<QgsLayerTreeModelLegendNode *> lstNew = layerLegend->createLayerTreeModelLegendNodes( nodeL );
 
@@ -1249,9 +1248,6 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
   mLegend[nodeL] = data;
 
   if ( !filteredLstNew.isEmpty() ) endInsertRows();
-
-  if ( hasStyleOverride )
-    ml->styleManager()->restoreOverrideStyle();
 
   // invalidate map based data even if the data is not map-based to make sure
   // the symbol sizes are computed at least once

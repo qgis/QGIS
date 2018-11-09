@@ -51,7 +51,7 @@ QgsTransaction *QgsTransaction::create( const QSet<QgsVectorLayer *> &layers )
 
   QgsVectorLayer *firstLayer = *layers.constBegin();
 
-  QString connStr = QgsDataSourceUri( firstLayer->source() ).connectionInfo( false );
+  QString connStr = connectionString( firstLayer->source() );
   QString providerKey = firstLayer->dataProvider()->name();
   std::unique_ptr<QgsTransaction> transaction( QgsTransaction::create( connStr, providerKey ) );
   if ( transaction )
@@ -81,6 +81,46 @@ QgsTransaction::~QgsTransaction()
   setLayerTransactionIds( nullptr );
 }
 
+// For the needs of the OGR provider with GeoPackage datasources, remove
+// any reference to layers in the connection string
+QString QgsTransaction::removeLayerIdOrName( const QString &str )
+{
+  QString res( str );
+
+  for ( int i = 0; i < 2; i++ )
+  {
+    int pos = res.indexOf( i == 0 ? QLatin1String( "|layername=" ) :  QLatin1String( "|layerid=" ) );
+    if ( pos >= 0 )
+    {
+      int end = res.indexOf( '|', pos + 1 );
+      if ( end >= 0 )
+      {
+        res = res.mid( 0, pos ) + res.mid( end );
+      }
+      else
+      {
+        res = res.mid( 0, pos );
+      }
+    }
+  }
+  return res;
+}
+
+///@cond PRIVATE
+QString QgsTransaction::connectionString( const QString &layerName )
+{
+  QString connString = QgsDataSourceUri( layerName ).connectionInfo( false );
+  // In the case of a OGR datasource, connectionInfo() will return an empty
+  // string. In that case, use the layer->source() itself, and strip any
+  // reference to layers from it.
+  if ( connString.isEmpty() )
+  {
+    connString = removeLayerIdOrName( layerName );
+  }
+  return connString;
+}
+///@endcond
+
 bool QgsTransaction::addLayer( QgsVectorLayer *layer )
 {
   if ( !layer )
@@ -90,17 +130,18 @@ bool QgsTransaction::addLayer( QgsVectorLayer *layer )
     return false;
 
   //test if provider supports transactions
-  if ( !layer->dataProvider() || ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::TransactionSupport ) == 0 )
+  if ( !supportsTransaction( layer ) )
     return false;
 
   if ( layer->dataProvider()->transaction() )
     return false;
 
   //connection string not compatible
-  if ( QgsDataSourceUri( layer->source() ).connectionInfo( false ) != mConnString )
+
+  if ( connectionString( layer->source() ) != mConnString )
   {
-    QgsDebugMsg( QString( "Couldn't start transaction because connection string for layer %1 : '%2' does not match '%3'" ).arg(
-                   layer->id(), QgsDataSourceUri( layer->source() ).connectionInfo( false ), mConnString ) );
+    QgsDebugMsg( QStringLiteral( "Couldn't start transaction because connection string for layer %1 : '%2' does not match '%3'" ).arg(
+                   layer->id(), connectionString( layer->source() ), mConnString ) );
     return false;
   }
 
@@ -162,11 +203,11 @@ bool QgsTransaction::rollback( QString &errorMsg )
 
 bool QgsTransaction::supportsTransaction( const QgsVectorLayer *layer )
 {
-  std::unique_ptr< QLibrary > lib( QgsProviderRegistry::instance()->createProviderLibrary( layer->providerType() ) );
-  if ( !lib )
+  //test if provider supports transactions
+  if ( !layer->dataProvider() || ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::TransactionSupport ) == 0 )
     return false;
 
-  return lib->resolve( "createTransaction" );
+  return true;
 }
 
 void QgsTransaction::onLayerDeleted()

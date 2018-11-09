@@ -43,7 +43,7 @@ class QgsOracleColumnTypeThread : public QThread
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.
-    virtual void run();
+    void run() override;
 
     bool isStopped() const { return mStopped; }
     QVector<QgsOracleLayerProperty> layerProperties() const { return mLayerProperties; }

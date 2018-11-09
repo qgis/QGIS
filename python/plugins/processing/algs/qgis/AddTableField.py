@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterEnum,
@@ -56,6 +57,9 @@ class AddTableField(QgisFeatureBasedAlgorithm):
                            self.tr('Float'),
                            self.tr('String')]
         self.field = None
+
+    def flags(self):
+        return super().flags() & ~QgsProcessingAlgorithm.FlagSupportsInPlaceEdits
 
     def initParameters(self, config=None):
         self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,

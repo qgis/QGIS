@@ -31,6 +31,7 @@
 #include <QPair>
 #include <QFileInfo>
 #include <QStringList>
+#include <QTranslator>
 
 #include "qgsunittypes.h"
 #include "qgssnappingconfig.h"
@@ -39,11 +40,13 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsprojectproperty.h"
-#include "qgsmaplayer.h"
 #include "qgsmaplayerstore.h"
 #include "qgsarchive.h"
 #include "qgsreadwritecontext.h"
 #include "qgsprojectmetadata.h"
+#include "qgstranslationcontext.h"
+#include "qgsprojecttranslator.h"
+#include "qgsattributeeditorelement.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -66,6 +69,7 @@ class QgsLayoutManager;
 class QgsLayerTree;
 class QgsLabelingEngineSettings;
 class QgsAuxiliaryStorage;
+class QgsMapLayer;
 
 /**
  * \ingroup core
@@ -82,13 +86,14 @@ class QgsAuxiliaryStorage;
 
 */
 
-class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenerator
+class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenerator, public QgsProjectTranslator
 {
     Q_OBJECT
     Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
     Q_PROPERTY( QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged )
     Q_PROPERTY( QString homePath READ homePath WRITE setPresetHomePath NOTIFY homePathChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
+    Q_PROPERTY( QgsCoordinateTransformContext transformContext READ transformContext WRITE setTransformContext NOTIFY transformContextChanged )
     Q_PROPERTY( QString ellipsoid READ ellipsoid WRITE setEllipsoid NOTIFY ellipsoidChanged )
     Q_PROPERTY( QgsMapThemeCollection *mapThemeCollection READ mapThemeCollection NOTIFY mapThemeCollectionChanged )
     Q_PROPERTY( QgsSnappingConfig snappingConfig READ snappingConfig WRITE setSnappingConfig NOTIFY snappingConfigChanged )
@@ -110,14 +115,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     ~QgsProject() override;
 
     /**
-     * Sets the project's title.
-     * \param title new title
-     *
-     * \note Since QGIS 3.2 this is just a shortcut to setting the title in the project's metadata().
-     *
-     * \see title()
-     * \since QGIS 2.4
-     */
+    * Sets the project's title.
+    * \param title new title
+    *
+    * \note Since QGIS 3.2 this is just a shortcut to setting the title in the project's metadata().
+    *
+    * \see title()
+    * \since QGIS 2.4
+    */
     void setTitle( const QString &title );
 
     /**
@@ -184,6 +189,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString absoluteFilePath() const;
 
     /**
+     * Returns full absolute path to the project folder if the project is stored in a file system - derived from fileName().
+     * Returns empty string when the project is stored in a project storage (there is no concept of paths for custom project storages).
+     * \since QGIS 3.2
+     */
+    QString absolutePath() const;
+
+    /**
      * Returns the base name of the project file without the path and without extension - derived from fileName().
      * \since QGIS 3.2
      */
@@ -245,7 +257,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
     /**
-     * Clear the project - removes all settings and resets it back to an empty, default state.
+     * Clears the project, removing all settings and resetting it back to an empty, default state.
+     * \see cleared()
      * \since QGIS 2.4
      */
     void clear();
@@ -541,18 +554,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Set a list of layers which should not be taken into account on map identification
+     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
      */
-    void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
+    Q_DECL_DEPRECATED void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * Set a list of layers which should not be taken into account on map identification
+     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
      */
-    void setNonIdentifiableLayers( const QStringList &layerIds );
+    Q_DECL_DEPRECATED void setNonIdentifiableLayers( const QStringList &layerIds );
 
     /**
      * Gets the list of layers which currently should not be taken into account on map identification
+     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
      */
-    QStringList nonIdentifiableLayers() const;
+    Q_DECL_DEPRECATED QStringList nonIdentifiableLayers() const;
 
     /**
      * Transactional editing means that on supported datasources (postgres databases) the edit state of
@@ -585,12 +601,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups() SIP_SKIP;
 
     /**
+     * Returns the matching transaction group from a provider key and connection string.
+     *
+     * Returns nullptr if a matching transaction group is not available.
+     *
+     * \since QGIS 3.2
+     */
+    QgsTransactionGroup *transactionGroup( const QString &providerKey, const QString &connString );
+
+    /**
      * Should default values be evaluated on provider side when requested and not when committed.
      *
      * \since QGIS 2.16
      */
     bool evaluateDefaultValues() const;
-
 
     /**
      * Defines if default values should be evaluated on provider side when requested and not when committed.
@@ -666,6 +690,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Returns the number of registered layers.
     int count() const;
 
+    //! Returns the number of registered valid layers.
+    int validCount() const;
+
     /**
      * Retrieve a pointer to a registered layer by layer ID.
      * \param layerId ID of layer to retrieve
@@ -686,11 +713,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Returns a map of all registered layers by layer ID.
+     *
+     * \param validOnly if set only valid layers will be returned
      * \see mapLayer()
      * \see mapLayersByName()
      * \see layers()
      */
-    QMap<QString, QgsMapLayer *> mapLayers() const;
+    QMap<QString, QgsMapLayer *> mapLayers( const bool validOnly = false ) const;
 
     /**
      * Returns true if the project comes from a zip archive, false otherwise.
@@ -733,7 +762,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *                      the layers yourself. Not available in Python.
      *
      * \returns a list of the map layers that were added
-     *         successfully. If a layer is invalid, or already exists in the registry,
+     *         successfully. If a layer or already exists in the registry,
      *         it will not be part of the returned QList.
      *
      * \note As a side-effect QgsProject is made dirty.
@@ -933,28 +962,67 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * removed from the project. The set of layers may be configured by users in project properties.
      * and it is mainly a hint for the user interface to protect users from removing layers that important
      * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
+     * \deprecated since QGIS 3.4 use QgsMapLayer::flags() instead
      * \since QGIS 3.2
      */
-    QSet<QgsMapLayer *> requiredLayers() const;
+    Q_DECL_DEPRECATED QSet<QgsMapLayer *> requiredLayers() const;
 
     /**
      * Configures a set of map layers that are required in the project and therefore they should not get
      * removed from the project. The set of layers may be configured by users in project properties.
      * and it is mainly a hint for the user interface to protect users from removing layers that important
      * in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
+     * \deprecated since QGIS 3.4 use QgsMapLayer::setFlags() instead
      * \since QGIS 3.2
      */
-    void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
+    Q_DECL_DEPRECATED void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
+
+    /**
+     * Triggers the collection strings of .qgs to be included in ts file and calls writeTsFile()
+     * \since QGIS 3.4
+     */
+    void generateTsFile( const QString &locale );
+
+    /**
+     * Translates the project with QTranslator and qm file
+     * \returns the result string (in case there is no QTranslator loaded the sourceText)
+     *
+     * \param context describing layer etc.
+     * \param sourceText is the identifier of this text
+     * \param disambiguation it's the disambiguation
+     * \param n if -1 uses the appropriate form
+     * \since QGIS 3.4
+     */
+    QString translate( const QString &context, const QString &sourceText, const char *disambiguation = nullptr, int n = -1 ) const override;
 
   signals:
-    //! emitted when project is being read
+
+    /**
+     * Emitted when the project is cleared (and additionally when an open project is cleared
+     * just before a new project is read).
+     *
+     * \see clear()
+     * \since QGIS 3.2
+     */
+    void cleared();
+
+    /**
+     * Emitted when a project is being read.
+     */
     void readProject( const QDomDocument & );
 
-    //! emitted when project is being written
+    /**
+     * Emitted when a project is being read. And passing the /a context
+     */
+    void readProjectWithContext( const QDomDocument &, QgsReadWriteContext &context );
+
+    /**
+     * Emitted when the project is being written.
+     */
     void writeProject( QDomDocument & );
 
     /**
-     * Emitted, after the basic initialization of a layer from the project
+     * Emitted after the basic initialization of a layer from the project
      * file is done. You can use this signal to read additional information
      * from the project file.
      *
@@ -964,7 +1032,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void readMapLayer( QgsMapLayer *mapLayer, const QDomElement &layerNode );
 
     /**
-     * Emitted, when a layer is being saved. You can use this method to save
+     * Emitted when a layer is being saved. You can use this method to save
      * additional information to the layer.
      *
      * \param mapLayer  The map layer which is being initialized
@@ -973,10 +1041,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void writeMapLayer( QgsMapLayer *mapLayer, QDomElement &layerElem, QDomDocument &doc );
 
-    //! emitted when the project file has been written and closed
+    /**
+     * Emitted when the project file has been written and closed.
+     */
     void projectSaved();
 
-    //! emitted when an old project file is read.
+    /**
+     * Emitted when an old project file is read.
+     */
     void oldProjectVersionWarning( const QString & );
 
     /**
@@ -997,8 +1069,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void loadingLayerMessageReceived( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages );
 
-    //! Emitted when the list of layer which are excluded from map identification changes
-    void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
+    /**
+     * Emitted when the list of layer which are excluded from map identification changes
+     * \deprecated since QGIS 3.4
+     */
+    Q_DECL_DEPRECATED void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
     //! Emitted when the file name of the project changes
     void fileNameChanged();
@@ -1011,7 +1086,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void homePathChanged();
 
-    //! emitted whenever the configuration for snapping has changed
+    /**
+     * Emitted whenever the configuration for snapping has changed.
+     */
     void snappingConfigChanged( const QgsSnappingConfig &config );
 
     /**
@@ -1240,6 +1317,25 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     */
     void setPresetHomePath( const QString &path );
 
+    /**
+     * Registers the containers that require translation into the translationContext.
+     * This is a recursive function to get all the child containers.
+     *
+     * \param translationContext where the objects will be registered
+     * \param parent parent-container containing list of children
+     * \param layerId to store under the correct context
+     * \since QGIS 3.4
+    */
+    void registerTranslatableContainers( QgsTranslationContext *translationContext, QgsAttributeEditorContainer *parent, const QString &layerId );
+
+    /**
+     * Registers the objects that require translation into the \a translationContext.
+     * So there can be created a ts file with these values.
+     *
+     * \since QGIS 3.4
+    */
+    void registerTranslatableObjects( QgsTranslationContext *translationContext );
+
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );
     void onMapLayersRemoved( const QList<QgsMapLayer *> &layers );
@@ -1248,6 +1344,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
   private:
 
     static QgsProject *sProject;
+
+    /**
+     * Set the current project instance to \a project
+     *
+     * \note this is used mainly by the server, which caches the projects and (potentially) needs to switch the current instance on every request
+     * \see instance()
+     * \note not available in Python bindings
+     * \since QGIS 3.2
+     */
+    static void setInstance( QgsProject *project ) SIP_SKIP;
 
     /**
      * Read map layers from project file.
@@ -1353,7 +1459,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsProjectMetadata mMetadata;
 
+    std::unique_ptr< QTranslator > mTranslator;
+
     friend class QgsProjectDirtyBlocker;
+
+    // Required by QGIS Server for switching the current project instance
+    friend class QgsConfigCache;
 };
 
 /**
@@ -1392,6 +1503,12 @@ class CORE_EXPORT QgsProjectDirtyBlocker
       mProject->mDirtyBlockCount++;
     }
 
+    //! QgsProjectDirtyBlocker cannot be copied
+    QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other ) = delete;
+
+    //! QgsProjectDirtyBlocker cannot be copied
+    QgsProjectDirtyBlocker &operator=( const QgsProjectDirtyBlocker &other ) = delete;
+
     ~QgsProjectDirtyBlocker()
     {
       mProject->mDirtyBlockCount--;
@@ -1399,6 +1516,10 @@ class CORE_EXPORT QgsProjectDirtyBlocker
 
   private:
     QgsProject *mProject = nullptr;
+
+#ifdef SIP_RUN
+    QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other );
+#endif
 };
 
 /**

@@ -71,6 +71,30 @@ void QgsMapMouseEvent::setMapPoint( const QgsPointXY &point )
   mPixelPoint = mapToPixelCoordinates( point );
 }
 
+void QgsMapMouseEvent::snapToGrid( double precision, const QgsCoordinateReferenceSystem &crs )
+{
+  if ( precision <= 0 )
+    return;
+
+  try
+  {
+    QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), crs, mMapCanvas->mapSettings().transformContext() );
+
+    QgsPointXY pt = ct.transform( mMapPoint );
+
+    pt.setX( std::round( pt.x() / precision ) * precision );
+    pt.setY( std::round( pt.y() / precision ) * precision );
+
+    pt = ct.transform( pt, QgsCoordinateTransform::ReverseTransform );
+
+    setMapPoint( pt );
+  }
+  catch ( QgsCsException &e )
+  {
+    Q_UNUSED( e )
+  }
+}
+
 QPoint QgsMapMouseEvent::mapToPixelCoordinates( const QgsPointXY &point )
 {
   double x = point.x(), y = point.y();

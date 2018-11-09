@@ -144,6 +144,11 @@ QString QgsPostgresExpressionCompiler::castToInt( const QString &value ) const
   return QStringLiteral( "((%1)::int)" ).arg( value );
 }
 
+QString QgsPostgresExpressionCompiler::castToText( const QString &value ) const
+{
+  return QStringLiteral( "((%1)::text)" ).arg( value );
+}
+
 QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
   switch ( node->nodeType() )
@@ -191,7 +196,7 @@ QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( con
         return Complete;
       }
 #endif
-      FALLTHROUGH;
+      FALLTHROUGH
     }
 
     default:

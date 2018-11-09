@@ -133,7 +133,7 @@ Returns true if the attribute value is valid for the field. Any constraint failu
 If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
 %End
 
-    static QgsFeature createFeature( QgsVectorLayer *layer,
+    static QgsFeature createFeature( const QgsVectorLayer *layer,
                                      const QgsGeometry &geometry = QgsGeometry(),
                                      const QgsAttributeMap &attributes = QgsAttributeMap(),
                                      QgsExpressionContext *context = 0 );
@@ -154,6 +154,67 @@ The duplicated feature will be automatically inserted into the layer.
 ``duplicateFeatureContext`` stores all the layers and the featureids of the duplicated features (incl. children)
 
 .. versionadded:: 3.0
+%End
+
+
+    static void matchAttributesToFields( QgsFeature &feature, const QgsFields &fields );
+%Docstring
+Matches the attributes in ``feature`` to the specified ``fields``.
+
+This causes the attributes contained within the given ``feature`` to be rearranged (or in
+some cases dropped) in order to match the fields and order indicated by ``fields``.
+
+The exact behavior depends on whether or not ``feature`` has a valid fields container
+set (see QgsFeature.fields()). If a fields container is set, then the names of the
+feature's fields are matched to ``fields``. In this case attributes from ``feature``
+will be rearranged or dropped in order to match the field names from ``fields``.
+
+If the ``feature`` does not have a valid fields container set, then the feature's attributes
+are simply truncated to match the number of fields present in ``fields`` (or if
+less attributes are present in ``feature`` than in ``fields``, the feature's attributes
+are padded with NULL values to match the required length).
+
+.. versionadded:: 3.4
+%End
+
+    static QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer );
+%Docstring
+Converts input ``feature`` to be compatible with the given ``layer``.
+
+This function returns a new list of transformed features compatible with the input
+layer, note that the number of features returned might be greater than one when
+converting a multi part geometry to single part
+
+The following operations will be performed to convert the input features:
+- convert single geometries to multi part
+- drop additional attributes
+- drop geometry if layer is geometry-less
+- add missing attribute fields
+- add back M/Z values (initialized to 0)
+- drop Z/M
+- convert multi part geometries to single part
+
+.. versionadded:: 3.4
+%End
+
+    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer );
+%Docstring
+Converts input ``features`` to be compatible with the given ``layer``.
+
+This function returns a new list of transformed features compatible with the input
+layer, note that the number of features returned might be greater than the number
+of input features.
+
+The following operations will be performed to convert the input features:
+- convert single geometries to multi part
+- drop additional attributes
+- drop geometry if layer is geometry-less
+- add missing attribute fields
+- add back M/Z values (initialized to 0)
+- drop Z/M
+- convert multi part geometries to single part
+
+.. versionadded:: 3.4
 %End
 
 };

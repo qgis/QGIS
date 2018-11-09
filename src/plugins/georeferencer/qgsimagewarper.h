@@ -98,7 +98,7 @@ class QgsImageWarper
 
     static bool sWarpCanceled;
 
-    GDALResampleAlg toGDALResampleAlg( const ResamplingMethod method ) const;
+    GDALResampleAlg toGDALResampleAlg( ResamplingMethod method ) const;
 };
 
 

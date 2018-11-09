@@ -52,6 +52,9 @@
 #include <QStandardItemModel>
 #include <QSvgRenderer>
 #include <QMessageBox>
+#include <QMenu>
+#include <QAction>
+#include <QInputDialog>
 
 QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
 {
@@ -440,7 +443,7 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
   btnChangeColorFill->setColorDialogTitle( tr( "Select Fill Color" ) );
   btnChangeColorFill->setContext( QStringLiteral( "symbology" ) );
   btnChangeColorFill->setShowNoColor( true );
-  btnChangeColorFill->setNoColorString( tr( "Transparent fill" ) );
+  btnChangeColorFill->setNoColorString( tr( "Transparent Fill" ) );
   btnChangeColorStroke->setAllowOpacity( true );
   btnChangeColorStroke->setColorDialogTitle( tr( "Select Stroke Color" ) );
   btnChangeColorStroke->setContext( QStringLiteral( "symbology" ) );
@@ -722,12 +725,12 @@ QgsSimpleFillSymbolLayerWidget::QgsSimpleFillSymbolLayerWidget( QgsVectorLayer *
   btnChangeColor->setColorDialogTitle( tr( "Select Fill Color" ) );
   btnChangeColor->setContext( QStringLiteral( "symbology" ) );
   btnChangeColor->setShowNoColor( true );
-  btnChangeColor->setNoColorString( tr( "Transparent fill" ) );
+  btnChangeColor->setNoColorString( tr( "Transparent Fill" ) );
   btnChangeStrokeColor->setAllowOpacity( true );
   btnChangeStrokeColor->setColorDialogTitle( tr( "Select Stroke Color" ) );
   btnChangeStrokeColor->setContext( QStringLiteral( "symbology" ) );
   btnChangeStrokeColor->setShowNoColor( true );
-  btnChangeStrokeColor->setNoColorString( tr( "Transparent stroke" ) );
+  btnChangeStrokeColor->setNoColorString( tr( "Transparent Stroke" ) );
 
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
@@ -1804,9 +1807,10 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl
   mLayer = nullptr;
 
   setupUi( this );
-  connect( mFileToolButton, &QToolButton::clicked, this, &QgsSvgMarkerSymbolLayerWidget::mFileToolButton_clicked );
-  connect( mFileLineEdit, &QLineEdit::textEdited, this, &QgsSvgMarkerSymbolLayerWidget::mFileLineEdit_textEdited );
-  connect( mFileLineEdit, &QLineEdit::editingFinished, this, &QgsSvgMarkerSymbolLayerWidget::mFileLineEdit_editingFinished );
+
+  mSvgSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "/UI/lastSVGMarkerDir" ) );
+
+  connect( mSvgSourceLineEdit, &QgsSvgSourceLineEdit::sourceChanged, this, &QgsSvgMarkerSymbolLayerWidget::svgSourceChanged );
   connect( mChangeColorButton, &QgsColorButton::colorChanged, this, &QgsSvgMarkerSymbolLayerWidget::mChangeColorButton_colorChanged );
   connect( mChangeStrokeColorButton, &QgsColorButton::colorChanged, this, &QgsSvgMarkerSymbolLayerWidget::mChangeStrokeColorButton_colorChanged );
   connect( mStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::mStrokeWidthSpinBox_valueChanged );
@@ -1944,9 +1948,7 @@ void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer 
     mChangeStrokeColorButton->setColor( stroke );
   }
 
-  mFileLineEdit->blockSignals( true );
-  mFileLineEdit->setText( layer->path() );
-  mFileLineEdit->blockSignals( false );
+  whileBlocking( mSvgSourceLineEdit )->setSource( layer->path() );
 
   mStrokeWidthSpinBox->blockSignals( true );
   mStrokeWidthSpinBox->setValue( hasDefaultStrokeWidth ? defaultStrokeWidth : layer->strokeWidth() );
@@ -2070,7 +2072,7 @@ void QgsSvgMarkerSymbolLayerWidget::setName( const QModelIndex &idx )
 {
   QString name = idx.data( Qt::UserRole ).toString();
   mLayer->setPath( name );
-  mFileLineEdit->setText( name );
+  whileBlocking( mSvgSourceLineEdit )->setSource( name );
 
   setGuiForSvg( mLayer );
   emit changed();
@@ -2154,51 +2156,9 @@ void QgsSvgMarkerSymbolLayerWidget::setOffset()
   emit changed();
 }
 
-void QgsSvgMarkerSymbolLayerWidget::mFileToolButton_clicked()
+void QgsSvgMarkerSymbolLayerWidget::svgSourceChanged( const QString &text )
 {
-  QgsSettings s;
-  QString file = QFileDialog::getOpenFileName( nullptr,
-                 tr( "Select SVG file" ),
-                 s.value( QStringLiteral( "/UI/lastSVGMarkerDir" ), QDir::homePath() ).toString(),
-                 tr( "SVG files" ) + " (*.svg)" );
-  QFileInfo fi( file );
-  if ( file.isEmpty() || !fi.exists() )
-  {
-    return;
-  }
-  mFileLineEdit->setText( file );
-  mLayer->setPath( file );
-  s.setValue( QStringLiteral( "/UI/lastSVGMarkerDir" ), fi.absolutePath() );
-  setGuiForSvg( mLayer );
-  emit changed();
-}
-
-void QgsSvgMarkerSymbolLayerWidget::mFileLineEdit_textEdited( const QString &text )
-{
-  if ( !QFileInfo::exists( text ) )
-  {
-    return;
-  }
   mLayer->setPath( text );
-  setGuiForSvg( mLayer );
-  emit changed();
-}
-
-void QgsSvgMarkerSymbolLayerWidget::mFileLineEdit_editingFinished()
-{
-  if ( !QFileInfo::exists( mFileLineEdit->text() ) )
-  {
-    QUrl url( mFileLineEdit->text() );
-    if ( !url.isValid() )
-    {
-      return;
-    }
-  }
-
-  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
-  mLayer->setPath( mFileLineEdit->text() );
-  QApplication::restoreOverrideCursor();
-
   setGuiForSvg( mLayer );
   emit changed();
 }
@@ -2288,10 +2248,8 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( QgsVectorLayer *vl, QW
 {
   mLayer = nullptr;
   setupUi( this );
-  connect( mBrowseToolButton, &QToolButton::clicked, this, &QgsSVGFillSymbolLayerWidget::mBrowseToolButton_clicked );
   connect( mTextureWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSVGFillSymbolLayerWidget::mTextureWidthSpinBox_valueChanged );
-  connect( mSVGLineEdit, &QLineEdit::textEdited, this, &QgsSVGFillSymbolLayerWidget::mSVGLineEdit_textEdited );
-  connect( mSVGLineEdit, &QLineEdit::editingFinished, this, &QgsSVGFillSymbolLayerWidget::mSVGLineEdit_editingFinished );
+  connect( mSvgSourceLineEdit, &QgsSvgSourceLineEdit::sourceChanged, this, &QgsSVGFillSymbolLayerWidget::svgSourceChanged );
   connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSVGFillSymbolLayerWidget::mRotationSpinBox_valueChanged );
   connect( mChangeColorButton, &QgsColorButton::colorChanged, this, &QgsSVGFillSymbolLayerWidget::mChangeColorButton_colorChanged );
   connect( mChangeStrokeColorButton, &QgsColorButton::colorChanged, this, &QgsSVGFillSymbolLayerWidget::mChangeStrokeColorButton_colorChanged );
@@ -2335,7 +2293,7 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     mTextureWidthSpinBox->blockSignals( true );
     mTextureWidthSpinBox->setValue( width );
     mTextureWidthSpinBox->blockSignals( false );
-    mSVGLineEdit->setText( mLayer->svgFilePath() );
+    whileBlocking( mSvgSourceLineEdit )->setSource( mLayer->svgFilePath() );
     mRotationSpinBox->blockSignals( true );
     mRotationSpinBox->setValue( mLayer->angle() );
     mRotationSpinBox->blockSignals( false );
@@ -2372,16 +2330,6 @@ QgsSymbolLayer *QgsSVGFillSymbolLayerWidget::symbolLayer()
   return mLayer;
 }
 
-void QgsSVGFillSymbolLayerWidget::mBrowseToolButton_clicked()
-{
-  QString filePath = QFileDialog::getOpenFileName( nullptr, tr( "Select SVG Texture File" ), QDir::homePath(), tr( "SVG file" ) + " (*.svg);;" + tr( "All files" ) + " (*.*)" );
-  if ( !filePath.isNull() )
-  {
-    mSVGLineEdit->setText( filePath );
-    emit changed();
-  }
-}
-
 void QgsSVGFillSymbolLayerWidget::mTextureWidthSpinBox_valueChanged( double d )
 {
   if ( mLayer )
@@ -2391,44 +2339,14 @@ void QgsSVGFillSymbolLayerWidget::mTextureWidthSpinBox_valueChanged( double d )
   }
 }
 
-void QgsSVGFillSymbolLayerWidget::mSVGLineEdit_textEdited( const QString &text )
+void QgsSVGFillSymbolLayerWidget::svgSourceChanged( const QString &text )
 {
   if ( !mLayer )
   {
     return;
   }
 
-  QFileInfo fi( text );
-  if ( !fi.exists() )
-  {
-    return;
-  }
   mLayer->setSvgFilePath( text );
-  updateParamGui();
-  emit changed();
-}
-
-void QgsSVGFillSymbolLayerWidget::mSVGLineEdit_editingFinished()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QFileInfo fi( mSVGLineEdit->text() );
-  if ( !fi.exists() )
-  {
-    QUrl url( mSVGLineEdit->text() );
-    if ( !url.isValid() )
-    {
-      return;
-    }
-  }
-
-  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
-  mLayer->setSvgFilePath( mSVGLineEdit->text() );
-  QApplication::restoreOverrideCursor();
-
   updateParamGui();
   emit changed();
 }
@@ -2437,7 +2355,7 @@ void QgsSVGFillSymbolLayerWidget::setFile( const QModelIndex &item )
 {
   QString file = item.data( Qt::UserRole ).toString();
   mLayer->setSvgFilePath( file );
-  mSVGLineEdit->setText( file );
+  whileBlocking( mSvgSourceLineEdit )->setSource( file );
 
   updateParamGui();
   emit changed();
@@ -2492,7 +2410,7 @@ void QgsSVGFillSymbolLayerWidget::updateParamGui( bool resetValues )
   QColor defaultFill, defaultStroke;
   double defaultStrokeWidth, defaultFillOpacity, defaultStrokeOpacity;
   bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultStrokeColor, hasDefaultStrokeWidth, hasDefaultStrokeOpacity;
-  QgsApplication::svgCache()->containsParams( mSVGLineEdit->text(), hasFillParam, hasDefaultFillColor, defaultFill,
+  QgsApplication::svgCache()->containsParams( mSvgSourceLineEdit->source(), hasFillParam, hasDefaultFillColor, defaultFill,
       hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
       hasStrokeParam, hasDefaultStrokeColor, defaultStroke,
       hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth,

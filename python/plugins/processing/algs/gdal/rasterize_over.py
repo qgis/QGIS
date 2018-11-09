@@ -78,8 +78,8 @@ class rasterize_over(GdalAlgorithm):
         inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         inRasterLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_RASTER), context)
 
-        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
-        ogrRasterLayer = GdalUtils.ogrConnectionString(inRasterLayer, context)[1:-1]
+        ogrLayer = GdalUtils.ogrConnectionStringFromLayer(inLayer)
+        ogrRasterLayer = GdalUtils.ogrConnectionStringFromLayer(inRasterLayer)
 
         arguments = []
         arguments.append('-a')

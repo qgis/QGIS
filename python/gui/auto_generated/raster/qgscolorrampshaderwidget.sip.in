@@ -1,0 +1,127 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgscolorrampshaderwidget.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsColorRampShaderWidget: QWidget, protected Ui::QgsColorRampShaderWidgetBase
+{
+%Docstring
+
+It has 2 ways how to use it. For raster layers, raster data provider and band is assigned and
+the Quantile classification mode can be used and the LoadFromBandButton is visible.
+
+The other mode is used to style mesh layer contours (scalar datasets)
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgscolorrampshaderwidget.h"
+%End
+  public:
+
+    QgsColorRampShaderWidget( QWidget *parent = 0 );
+%Docstring
+Creates new color ramp shader widget
+%End
+
+    void initializeForUseWithRasterLayer();
+%Docstring
+Allows quantile classification mode for raster layers
+%End
+
+    void setRasterDataProvider( QgsRasterDataProvider *dp );
+%Docstring
+Associates raster with the widget, only when used for raster layer
+%End
+
+    void setRasterBand( int band );
+%Docstring
+Sets raster band, only when used for raster layer
+%End
+
+    void setExtent( const QgsRectangle &extent );
+%Docstring
+Sets extent, only when used for raster layer
+%End
+
+    void setMinimumMaximumAndClassify( double minimum, double maximum );
+%Docstring
+Sets min max and classify color tree
+%End
+
+    void setMinimumMaximum( double minimum, double maximum );
+%Docstring
+Sets min max
+%End
+
+    double minimum() const;
+%Docstring
+Gets min value
+%End
+
+    double maximum() const;
+%Docstring
+Gets max value
+%End
+
+    QgsColorRampShader shader() const;
+%Docstring
+Returns shared function used in the renderer
+%End
+
+    void setFromShader( const QgsColorRampShader &colorRampShader );
+%Docstring
+Sets widget state from the color ramp shader
+%End
+
+  signals:
+    void minimumMaximumChangedFromTree( double minimum, double maximum );
+%Docstring
+Color ramp tree has changed
+%End
+
+    void widgetChanged();
+%Docstring
+Widget changed
+%End
+
+    void classificationModeChanged( QgsColorRampShader::ClassificationMode mode );
+%Docstring
+Classification mode changed
+%End
+
+  public slots:
+
+    void classify();
+%Docstring
+Executes the single band pseudo raster classification
+%End
+
+    void loadMinimumMaximumFromTree();
+%Docstring
+Loads min and max values from color ramp tree
+%End
+
+  protected:
+    void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
+%Docstring
+Populates color ramp tree from ramp items
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgscolorrampshaderwidget.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

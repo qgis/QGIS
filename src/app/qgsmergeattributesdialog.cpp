@@ -361,10 +361,8 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   mUpdating = false;
 }
 
-QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int col )
+QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int fieldIdx )
 {
-  int fieldIdx = mTableWidget->horizontalHeaderItem( col )->data( FieldIndex ).toInt();
-
   int i;
   for ( i = 0; i < mFeatureList.size() && mFeatureList.at( i ).id() != featureId; i++ )
     ;
@@ -556,7 +554,7 @@ void QgsMergeAttributesDialog::createRubberBandForFeature( QgsFeatureId featureI
   mSelectionRubberBand = new QgsRubberBand( mMapCanvas, mVectorLayer->geometryType() );
   mSelectionRubberBand->setColor( QColor( 255, 0, 0, 65 ) );
   QgsFeature featureToSelect;
-  mVectorLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( featureToSelect );
+  mVectorLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setNoAttributes() ).nextFeature( featureToSelect );
   mSelectionRubberBand->setToGeometry( featureToSelect.geometry(), mVectorLayer );
 }
 

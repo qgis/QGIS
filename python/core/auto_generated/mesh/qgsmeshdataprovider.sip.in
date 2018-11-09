@@ -10,6 +10,45 @@
 
 
 
+
+class QgsMeshDatasetIndex
+{
+%Docstring
+
+QgsMeshDatasetIndex is index that identifies the dataset group (e.g. wind speed)
+and a dataset in this group (e.g. magnitude of wind speed in particular time)
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
+  public:
+    QgsMeshDatasetIndex( int group = -1, int dataset = -1 );
+%Docstring
+Creates an index. -1 represents invalid group/dataset
+%End
+    int group() const;
+%Docstring
+Returns a group index
+%End
+    int dataset() const;
+%Docstring
+Returns a dataset index within group()
+%End
+    bool isValid() const;
+%Docstring
+Returns whether index is valid, ie at least groups is set
+%End
+    bool operator == ( const QgsMeshDatasetIndex &other ) const;
+    bool operator != ( const QgsMeshDatasetIndex &other ) const;
+};
+
 typedef QgsPoint QgsMeshVertex;
 
 typedef QVector<int> QgsMeshFace;
@@ -18,7 +57,7 @@ class QgsMeshDatasetValue
 {
 %Docstring
 
-QgsMeshDatasetValue represents single mesh dataset value
+QgsMeshDatasetValue represents single dataset value
 
 could be scalar or vector. Nodata values are represented by NaNs.
 
@@ -85,14 +124,82 @@ Returns y value
 
 };
 
+class QgsMeshDatasetGroupMetadata
+{
+%Docstring
 
+QgsMeshDatasetGroupMetadata is a collection of dataset group metadata
+such as whether the data is vector or scalar, name
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovider.h"
+%End
+  public:
+
+    enum DataType
+    {
+      DataOnFaces,
+      DataOnVertices
+    };
+
+    QgsMeshDatasetGroupMetadata();
+%Docstring
+Constructs an empty metadata object
+%End
+
+    QgsMeshDatasetGroupMetadata( const QString &name,
+                                 bool isScalar,
+                                 bool isOnVertices,
+                                 const QMap<QString, QString> &extraOptions );
+%Docstring
+Constructs a valid metadata object
+
+:param name: name of the dataset group
+:param isScalar: dataset contains scalar data, specifically the y-value of QgsMeshDatasetValue is NaN
+:param isOnVertices: dataset values are defined on mesh's vertices. If false, values are defined on faces.
+:param extraOptions: dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
+%End
+
+    QString name() const;
+%Docstring
+Returns name of the dataset group
+%End
+
+    QMap<QString, QString> extraOptions() const;
+%Docstring
+Returns extra metadata options, for example description
+%End
+
+    bool isVector() const;
+%Docstring
+Returns whether dataset group has vector data
+%End
+
+    bool isScalar() const;
+%Docstring
+Returns whether dataset group has scalar data
+%End
+
+    DataType dataType() const;
+%Docstring
+Returns whether dataset group data is defined on vertices or faces
+%End
+
+};
 
 class QgsMeshDatasetMetadata
 {
 %Docstring
 
 QgsMeshDatasetMetadata is a collection of mesh dataset metadata such
-as whether the data is vector or scalar, etc.
+as whether the data is valid or associated time for the dataset
 
 .. note::
 
@@ -110,38 +217,18 @@ as whether the data is vector or scalar, etc.
 Constructs an empty metadata object
 %End
 
-    QgsMeshDatasetMetadata( bool isScalar,
-                            bool isValid,
-                            bool isOnVertices,
-                            const QMap<QString, QString> &extraOptions );
+    QgsMeshDatasetMetadata( double time,
+                            bool isValid );
 %Docstring
 Constructs a valid metadata object
 
-:param isScalar: dataset contains scalar data, specifically the y-value of QgsMeshDatasetValue is NaN
+:param time: a time which this dataset represents in the dataset group
 :param isValid: dataset is loadad and valid for fetching the data
-:param isOnVertices: dataset values are defined on mesh's vertices. If false, values are defined on faces.
-:param extraOptions: dataset's extra options stored by the provider. Usually contains the name, time value, time units, data file vendor, ...
 %End
 
-    QMap<QString, QString> extraOptions() const;
+    double time() const;
 %Docstring
-Returns extra metadata options
-Usually including name, description or time variable
-%End
-
-    bool isVector() const;
-%Docstring
-Returns whether dataset has vector data
-%End
-
-    bool isScalar() const;
-%Docstring
-Returns whether dataset has scalar data
-%End
-
-    bool isOnVertices() const;
-%Docstring
-Returns whether dataset data is defined on vertices
+Returns the time value for this dataset
 %End
 
     bool isValid() const;
@@ -157,7 +244,7 @@ class QgsMeshDataSourceInterface /Abstract/
 
 Interface for mesh data sources
 
-Mesh is a  collection of vertices and faces in 2D or 3D space
+Mesh is a collection of vertices and faces in 2D or 3D space
 - vertex - XY(Z) point (in the mesh's coordinate reference system)
 - faces - sets of vertices forming a closed shape - typically triangles or quadrilaterals
 
@@ -205,11 +292,14 @@ Returns the mesh face at index
 class QgsMeshDatasetSourceInterface /Abstract/
 {
 %Docstring
-Interface for mesh datasets
+Interface for mesh datasets and dataset groups
 
 Dataset is a  collection of vector or scalar values on vertices or faces of the mesh.
 Based on the underlying data provider/format, whole dataset is either stored in memory
 or read on demand
+
+Datasets are grouped in the dataset groups. A dataset group represents a measured quantity
+(e.g. depth or wind speed), dataset represents values of the quantity in a particular time.
 
 .. note::
 
@@ -227,23 +317,62 @@ or read on demand
     virtual bool addDataset( const QString &uri ) = 0;
 %Docstring
 Associate dataset with the mesh
+
+emits dataChanged when successful
 %End
 
-    virtual int datasetCount() const = 0;
+    virtual QStringList extraDatasets() const = 0;
 %Docstring
-Returns number of datasets loaded
+Returns list of additional dataset file URIs added using addDataset() calls.
 %End
 
-    virtual QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const = 0;
+    virtual int datasetGroupCount( ) const = 0;
+%Docstring
+Returns number of datasets groups loaded
+%End
+
+    virtual int datasetCount( int groupIndex ) const = 0;
+%Docstring
+Returns number of datasets loaded in the group
+%End
+
+    int datasetCount( QgsMeshDatasetIndex index ) const;
+%Docstring
+Returns number of datasets loaded in the group
+%End
+
+    virtual QgsMeshDatasetGroupMetadata datasetGroupMetadata( int groupIndex ) const = 0;
+%Docstring
+Returns dataset group metadata
+%End
+
+    QgsMeshDatasetGroupMetadata datasetGroupMetadata( QgsMeshDatasetIndex index ) const;
+%Docstring
+Returns dataset group metadata
+%End
+
+    virtual QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const = 0;
 %Docstring
 Returns dataset metadata
 %End
 
-    virtual QgsMeshDatasetValue datasetValue( int datasetIndex, int valueIndex ) const = 0;
+    virtual QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const = 0;
 %Docstring
 Returns vector/scalar value associated with the index from the dataset
 
 See QgsMeshDatasetMetadata.isVector() to check if the returned value is vector or scalar
+%End
+
+    virtual bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const = 0;
+%Docstring
+Returns whether the face is active for particular dataset
+
+For example to represent the situation when F1 and F3 are flooded, but F2 is dry,
+some solvers store water depth on vertices V1-V8 (all non-zero values) and
+set active flag for F2 to false.
+V1 ---- V2 ---- V5-----V7
+|   F1  |   F2   | F3  |
+V3 ---- V4 ---- V6-----V8
 %End
 };
 
@@ -272,10 +401,17 @@ Ctor
 %End
 
     virtual QgsRectangle extent() const;
+
 %Docstring
 Returns the extent of the layer
 
 :return: QgsRectangle containing the extent of the layer
+%End
+
+  signals:
+    void datasetGroupsAdded( int count );
+%Docstring
+Emitted when some new dataset groups have been added
 %End
 };
 

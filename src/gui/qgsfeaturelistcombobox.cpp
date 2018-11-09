@@ -51,8 +51,10 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
 
   connect( this, static_cast<void( QgsFeatureListComboBox::* )( int )>( &QgsFeatureListComboBox::currentIndexChanged ), this, &QgsFeatureListComboBox::onCurrentIndexChanged );
 
-  mLineEdit = new QgsFilterLineEdit();
+  mLineEdit = new QgsFilterLineEdit( nullptr, QgsApplication::nullRepresentation() );
   mLineEdit->setSelectOnFocus( true );
+  mLineEdit->setShowClearButton( true );
+
   setEditable( true );
   setLineEdit( mLineEdit );
   setModel( mModel );
@@ -109,7 +111,8 @@ void QgsFeatureListComboBox::onItemSelected( const QModelIndex &index )
 
 void QgsFeatureListComboBox::onCurrentIndexChanged( int i )
 {
-  mIsCurrentlyEdited = false;
+  if ( !mHasStoredEditState )
+    mIsCurrentlyEdited = false;
   QModelIndex modelIndex = mModel->index( i, 0, QModelIndex() );
   mModel->setExtraIdentifierValue( mModel->data( modelIndex, QgsFeatureFilterModel::IdentifierValueRole ) );
   mLineEdit->setText( mModel->data( modelIndex, QgsFeatureFilterModel::ValueRole ).toString() );
@@ -128,13 +131,19 @@ void QgsFeatureListComboBox::onActivated( QModelIndex modelIndex )
 void QgsFeatureListComboBox::storeLineEditState()
 {
   if ( mIsCurrentlyEdited )
+  {
+    mHasStoredEditState = true;
     mLineEditState.store( mLineEdit );
+  }
 }
 
 void QgsFeatureListComboBox::restoreLineEditState()
 {
   if ( mIsCurrentlyEdited )
+  {
+    mHasStoredEditState = false;
     mLineEditState.restore( mLineEdit );
+  }
 }
 
 int QgsFeatureListComboBox::nullIndex() const
@@ -143,7 +152,7 @@ int QgsFeatureListComboBox::nullIndex() const
 
   if ( allowNull() )
   {
-    index = findText( tr( "NULL" ) );
+    index = findText( QgsApplication::nullRepresentation( ) );
   }
 
   return index;

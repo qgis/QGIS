@@ -4,7 +4,7 @@
   Define WFS service utility functions
   ------------------------------------
   begin                : December 20 , 2016
-  copyright            : (C) 2007 by Marco Hugentobler  ( parts fron qgswfshandler)
+  copyright            : (C) 2007 by Marco Hugentobler  ( parts from qgswfshandler)
                          (C) 2012 by René-Luc D'Hont    ( parts from qgswmshandler)
                          (C) 2014 by Alessandro Pasotti ( parts from qgswfshandler)
                          (C) 2017 by David Marteau
@@ -48,9 +48,19 @@ namespace QgsWfs
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project );
 
   /**
+   * Returns typename from vector layer
+   */
+  QString layerTypeName( const QgsMapLayer *layer );
+
+  /**
+   * Retrieve a layer by typename
+   */
+  QgsVectorLayer *layerByTypeName( const QgsProject *project, const QString &typeName );
+
+  /**
    * Transform a Filter element to a feature request
    */
-  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem );
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, const QgsProject *project = nullptr );
 
   // Define namespaces used in WFS documents
   const QString WFS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wfs" );

@@ -37,6 +37,7 @@
 #include "qgsgui.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsqmlwidgetwrapper.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -66,7 +67,7 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &featur
   , mIsSettingMultiEditFeatures( false )
   , mUnsavedMultiEditChanges( false )
   , mEditCommandMessage( tr( "Attributes changed" ) )
-  , mMode( SingleEditMode )
+  , mMode( QgsAttributeEditorContext::SingleEditMode )
 {
   init();
   initPython();
@@ -76,9 +77,9 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &featur
   connect( vl, &QgsVectorLayer::beforeAddingExpressionField, this, &QgsAttributeForm::preventFeatureRefresh );
   connect( vl, &QgsVectorLayer::beforeRemovingExpressionField, this, &QgsAttributeForm::preventFeatureRefresh );
   connect( vl, &QgsVectorLayer::selectionChanged, this, &QgsAttributeForm::layerSelectionChanged );
+  connect( this, &QgsAttributeForm::modeChanged, this, &QgsAttributeForm::updateContainersVisibility );
 
-  // constraints management
-  updateAllConstraints();
+  updateContainersVisibility();
 }
 
 QgsAttributeForm::~QgsAttributeForm()
@@ -92,7 +93,7 @@ void QgsAttributeForm::hideButtonBox()
   mButtonBox->hide();
 
   // Make sure that changes are taken into account if somebody tries to figure out if there have been some
-  if ( mMode == SingleEditMode )
+  if ( mMode == QgsAttributeEditorContext::SingleEditMode )
     connect( mLayer, &QgsVectorLayer::beforeModifiedCheck, this, &QgsAttributeForm::save );
 }
 
@@ -119,12 +120,12 @@ bool QgsAttributeForm::editable()
   return mFeature.isValid() && mLayer->isEditable();
 }
 
-void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
+void QgsAttributeForm::setMode( QgsAttributeEditorContext::Mode mode )
 {
   if ( mode == mMode )
     return;
 
-  if ( mMode == MultiEditMode )
+  if ( mMode == QgsAttributeEditorContext::MultiEditMode )
   {
     //switching out of multi edit mode triggers a save
     if ( mUnsavedMultiEditChanges )
@@ -143,7 +144,7 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
 
   mMode = mode;
 
-  if ( mButtonBox->isVisible() && mMode == SingleEditMode )
+  if ( mButtonBox->isVisible() && mMode == QgsAttributeEditorContext::SingleEditMode )
   {
     connect( mLayer, &QgsVectorLayer::beforeModifiedCheck, this, &QgsAttributeForm::save );
   }
@@ -157,33 +158,40 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
   {
     switch ( mode )
     {
-      case QgsAttributeForm::SingleEditMode:
+      case QgsAttributeEditorContext::SingleEditMode:
         w->setMode( QgsAttributeFormWidget::DefaultMode );
         break;
 
-      case QgsAttributeForm::AddFeatureMode:
+      case QgsAttributeEditorContext::AddFeatureMode:
         w->setMode( QgsAttributeFormWidget::DefaultMode );
         break;
 
-      case QgsAttributeForm::MultiEditMode:
+      case QgsAttributeEditorContext::MultiEditMode:
         w->setMode( QgsAttributeFormWidget::MultiEditMode );
         break;
 
-      case QgsAttributeForm::SearchMode:
+      case QgsAttributeEditorContext::SearchMode:
         w->setMode( QgsAttributeFormWidget::SearchMode );
         break;
 
-      case QgsAttributeForm::AggregateSearchMode:
+      case QgsAttributeEditorContext::AggregateSearchMode:
         w->setMode( QgsAttributeFormWidget::AggregateSearchMode );
         break;
 
-      case QgsAttributeForm::IdentifyMode:
+      case QgsAttributeEditorContext::IdentifyMode:
         w->setMode( QgsAttributeFormWidget::DefaultMode );
         break;
     }
   }
+  //update all form editor widget modes to match
+  for ( QgsWidgetWrapper *w : qgis::as_const( mWidgets ) )
+  {
+    QgsAttributeEditorContext newContext = w->context();
+    newContext.setAttributeFormMode( mMode );
+    w->setContext( newContext );
+  }
 
-  bool relationWidgetsVisible = ( mMode != QgsAttributeForm::MultiEditMode && mMode != QgsAttributeForm::AggregateSearchMode );
+  bool relationWidgetsVisible = ( mMode != QgsAttributeEditorContext::MultiEditMode && mMode != QgsAttributeEditorContext::AggregateSearchMode );
   for ( QgsAttributeFormRelationEditorWidget *w : findChildren<  QgsAttributeFormRelationEditorWidget * >() )
   {
     w->setVisible( relationWidgetsVisible );
@@ -191,33 +199,33 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
 
   switch ( mode )
   {
-    case QgsAttributeForm::SingleEditMode:
+    case QgsAttributeEditorContext::SingleEditMode:
       setFeature( mFeature );
       mSearchButtonBox->setVisible( false );
       break;
 
-    case QgsAttributeForm::AddFeatureMode:
+    case QgsAttributeEditorContext::AddFeatureMode:
       synchronizeEnabledState();
       mSearchButtonBox->setVisible( false );
       break;
 
-    case QgsAttributeForm::MultiEditMode:
+    case QgsAttributeEditorContext::MultiEditMode:
       resetMultiEdit( false );
       synchronizeEnabledState();
       mSearchButtonBox->setVisible( false );
       break;
 
-    case QgsAttributeForm::SearchMode:
+    case QgsAttributeEditorContext::SearchMode:
       mSearchButtonBox->setVisible( true );
       hideButtonBox();
       break;
 
-    case QgsAttributeForm::AggregateSearchMode:
+    case QgsAttributeEditorContext::AggregateSearchMode:
       mSearchButtonBox->setVisible( false );
       hideButtonBox();
       break;
 
-    case QgsAttributeForm::IdentifyMode:
+    case QgsAttributeEditorContext::IdentifyMode:
       setFeature( mFeature );
       mSearchButtonBox->setVisible( false );
       break;
@@ -246,9 +254,9 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
 
   switch ( mMode )
   {
-    case SingleEditMode:
-    case IdentifyMode:
-    case AddFeatureMode:
+    case QgsAttributeEditorContext::SingleEditMode:
+    case QgsAttributeEditorContext::IdentifyMode:
+    case QgsAttributeEditorContext::AddFeatureMode:
     {
       resetValues();
 
@@ -260,9 +268,13 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
       }
       break;
     }
-    case MultiEditMode:
-    case SearchMode:
-    case AggregateSearchMode:
+    case QgsAttributeEditorContext::SearchMode:
+    case QgsAttributeEditorContext::AggregateSearchMode:
+    {
+      resetValues();
+      break;
+    }
+    case QgsAttributeEditorContext::MultiEditMode:
     {
       //ignore setFeature
       break;
@@ -278,19 +290,19 @@ bool QgsAttributeForm::saveEdits()
 
   QgsFeature updatedFeature = QgsFeature( mFeature );
 
-  if ( mFeature.isValid() || mMode == AddFeatureMode )
+  if ( mFeature.isValid() || mMode == QgsAttributeEditorContext::AddFeatureMode )
   {
     bool doUpdate = false;
 
     // An add dialog should perform an action by default
     // and not only if attributes have "changed"
-    if ( mMode == AddFeatureMode )
+    if ( mMode == QgsAttributeEditorContext::AddFeatureMode )
       doUpdate = true;
 
     QgsAttributes src = mFeature.attributes();
     QgsAttributes dst = mFeature.attributes();
 
-    Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
+    for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
     {
       QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
       if ( eww )
@@ -324,7 +336,7 @@ bool QgsAttributeForm::saveEdits()
 
     if ( doUpdate )
     {
-      if ( mMode == AddFeatureMode )
+      if ( mMode == QgsAttributeEditorContext::AddFeatureMode )
       {
         mFeature.setValid( true );
         mLayer->beginEditCommand( mEditCommandMessage );
@@ -333,7 +345,7 @@ bool QgsAttributeForm::saveEdits()
         {
           mFeature.setAttributes( updatedFeature.attributes() );
           mLayer->endEditCommand();
-          setMode( SingleEditMode );
+          setMode( QgsAttributeEditorContext::SingleEditMode );
           changedLayer = true;
         }
         else
@@ -349,17 +361,17 @@ bool QgsAttributeForm::saveEdits()
         int n = 0;
         for ( int i = 0; i < dst.count(); ++i )
         {
-          if ( ( dst.at( i ) == src.at( i ) && dst.at( i ).isNull() == src.at( i ).isNull() ) // If field is not changed...
-               || !dst.at( i ).isValid()                                     // or the widget returns invalid (== do not change)
-               || !fieldIsEditable( i ) )                           // or the field cannot be edited ...
+          if ( qgsVariantEqual( dst.at( i ), src.at( i ) ) // If field is not changed...
+               || !dst.at( i ).isValid()                 // or the widget returns invalid (== do not change)
+               || !fieldIsEditable( i ) )                // or the field cannot be edited ...
           {
             continue;
           }
 
-          QgsDebugMsg( QString( "Updating field %1" ).arg( i ) );
-          QgsDebugMsg( QString( "dst:'%1' (type:%2, isNull:%3, isValid:%4)" )
+          QgsDebugMsg( QStringLiteral( "Updating field %1" ).arg( i ) );
+          QgsDebugMsg( QStringLiteral( "dst:'%1' (type:%2, isNull:%3, isValid:%4)" )
                        .arg( dst.at( i ).toString(), dst.at( i ).typeName() ).arg( dst.at( i ).isNull() ).arg( dst.at( i ).isValid() ) );
-          QgsDebugMsg( QString( "src:'%1' (type:%2, isNull:%3, isValid:%4)" )
+          QgsDebugMsg( QStringLiteral( "src:'%1' (type:%2, isNull:%3, isValid:%4)" )
                        .arg( src.at( i ).toString(), src.at( i ).typeName() ).arg( src.at( i ).isNull() ).arg( src.at( i ).isValid() ) );
 
           newValues[i] = dst.at( i );
@@ -417,7 +429,7 @@ void QgsAttributeForm::filterTriggered()
   QString filter = createFilterExpression();
   emit filterExpressionSet( filter, ReplaceFilter );
   if ( mContext.formMode() == QgsAttributeEditorContext::Embed )
-    setMode( SingleEditMode );
+    setMode( QgsAttributeEditorContext::SingleEditMode );
 }
 
 void QgsAttributeForm::searchZoomTo()
@@ -445,7 +457,7 @@ void QgsAttributeForm::filterAndTriggered()
     return;
 
   if ( mContext.formMode() == QgsAttributeEditorContext::Embed )
-    setMode( SingleEditMode );
+    setMode( QgsAttributeEditorContext::SingleEditMode );
   emit filterExpressionSet( filter, FilterAnd );
 }
 
@@ -456,7 +468,7 @@ void QgsAttributeForm::filterOrTriggered()
     return;
 
   if ( mContext.formMode() == QgsAttributeEditorContext::Embed )
-    setMode( SingleEditMode );
+    setMode( QgsAttributeEditorContext::SingleEditMode );
   emit filterExpressionSet( filter, FilterOr );
 }
 
@@ -489,7 +501,7 @@ void QgsAttributeForm::runSearchSelect( QgsVectorLayer::SelectBehavior behavior 
   mLayer->selectByExpression( filter, behavior );
   pushSelectedFeaturesMessage();
   if ( mContext.formMode() == QgsAttributeEditorContext::Embed )
-    setMode( SingleEditMode );
+    setMode( QgsAttributeEditorContext::SingleEditMode );
 }
 
 void QgsAttributeForm::searchSetSelection()
@@ -588,21 +600,26 @@ bool QgsAttributeForm::save()
   if ( mIsSaving )
     return true;
 
+  for ( QgsWidgetWrapper *wrapper : qgis::as_const( mWidgets ) )
+  {
+    wrapper->notifyAboutToSave();
+  }
+
   // only do the dirty checks when editing an existing feature - for new
   // features we need to add them even if the attributes are unchanged from the initial
   // default values
   switch ( mMode )
   {
-    case SingleEditMode:
-    case IdentifyMode:
-    case MultiEditMode:
+    case QgsAttributeEditorContext::SingleEditMode:
+    case QgsAttributeEditorContext::IdentifyMode:
+    case QgsAttributeEditorContext::MultiEditMode:
       if ( !mDirty )
         return true;
       break;
 
-    case AddFeatureMode:
-    case SearchMode:
-    case AggregateSearchMode:
+    case QgsAttributeEditorContext::AddFeatureMode:
+    case QgsAttributeEditorContext::SearchMode:
+    case QgsAttributeEditorContext::AggregateSearchMode:
       break;
   }
 
@@ -618,15 +635,15 @@ bool QgsAttributeForm::save()
 
   switch ( mMode )
   {
-    case SingleEditMode:
-    case IdentifyMode:
-    case AddFeatureMode:
-    case SearchMode:
-    case AggregateSearchMode:
+    case QgsAttributeEditorContext::SingleEditMode:
+    case QgsAttributeEditorContext::IdentifyMode:
+    case QgsAttributeEditorContext::AddFeatureMode:
+    case QgsAttributeEditorContext::SearchMode:
+    case QgsAttributeEditorContext::AggregateSearchMode:
       success = saveEdits();
       break;
 
-    case MultiEditMode:
+    case QgsAttributeEditorContext::MultiEditMode:
       success = saveMultiEdits();
       break;
   }
@@ -703,9 +720,9 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
 
   switch ( mMode )
   {
-    case SingleEditMode:
-    case IdentifyMode:
-    case AddFeatureMode:
+    case QgsAttributeEditorContext::SingleEditMode:
+    case QgsAttributeEditorContext::IdentifyMode:
+    case QgsAttributeEditorContext::AddFeatureMode:
     {
       Q_NOWARN_DEPRECATED_PUSH
       emit attributeChanged( eww->field().name(), value );
@@ -718,7 +735,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
 
       break;
     }
-    case MultiEditMode:
+    case QgsAttributeEditorContext::MultiEditMode:
     {
       if ( !mIsSettingMultiEditFeatures )
       {
@@ -736,8 +753,8 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
       }
       break;
     }
-    case SearchMode:
-    case AggregateSearchMode:
+    case QgsAttributeEditorContext::SearchMode:
+    case QgsAttributeEditorContext::AggregateSearchMode:
       //nothing to do
       break;
   }
@@ -792,6 +809,8 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
 
     mExpressionContext.setFeature( ft );
 
+    mExpressionContext << QgsExpressionContextUtils::formScope( ft, mContext.attributeFormModeString() );
+
     // Recheck visibility for all containers which are controlled by this value
     const QVector<ContainerInformation *> infos = mContainerInformationDependency.value( eww->field().name() );
     for ( ContainerInformation *info : infos )
@@ -799,6 +818,21 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
       info->apply( &mExpressionContext );
     }
   }
+}
+
+void QgsAttributeForm::updateContainersVisibility()
+{
+  mExpressionContext << QgsExpressionContextUtils::formScope( QgsFeature( mFeature ), mContext.attributeFormModeString() );
+
+  const QVector<ContainerInformation *> infos = mContainerVisibilityInformation;
+
+  for ( ContainerInformation *info : infos )
+  {
+    info->apply( &mExpressionContext );
+  }
+
+  //and update the constraints
+  updateAllConstraints();
 }
 
 void QgsAttributeForm::updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww )
@@ -1027,8 +1061,8 @@ void QgsAttributeForm::refreshFeature()
 void QgsAttributeForm::synchronizeEnabledState()
 {
   bool isEditable = ( mFeature.isValid()
-                      || mMode == AddFeatureMode
-                      || mMode == MultiEditMode ) && mLayer->isEditable();
+                      || mMode == QgsAttributeEditorContext::AddFeatureMode
+                      || mMode == QgsAttributeEditorContext::MultiEditMode ) && mLayer->isEditable();
 
   for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
   {
@@ -1049,7 +1083,7 @@ void QgsAttributeForm::synchronizeEnabledState()
     }
   }
 
-  if ( mMode != SearchMode )
+  if ( mMode != QgsAttributeEditorContext::SearchMode )
   {
     QStringList invalidFields, descriptions;
     bool validConstraint = currentFormValidConstraints( invalidFields, descriptions );
@@ -1119,7 +1153,7 @@ void QgsAttributeForm::init()
   if ( mContext.allowCustomUi() && mLayer->editFormConfig().layout() == QgsEditFormConfig::UiFileLayout &&
        !mLayer->editFormConfig().uiForm().isEmpty() )
   {
-    QgsDebugMsg( QString( "loading form: %1" ).arg( mLayer->editFormConfig().uiForm() ) );
+    QgsDebugMsg( QStringLiteral( "loading form: %1" ).arg( mLayer->editFormConfig().uiForm() ) );
     const QString path = mLayer->editFormConfig().uiForm();
     QFile *file = QgsApplication::instance()->networkContentFetcherRegistry()->localFile( path );
     if ( file && file->open( QFile::ReadOnly ) )
@@ -1167,7 +1201,10 @@ void QgsAttributeForm::init()
           tabWidget = nullptr;
           WidgetInfo widgetInfo = createWidgetFromDef( widgDef, formWidget, mLayer, mContext );
           layout->addWidget( widgetInfo.widget, row, column, 1, 2 );
-          registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
+          if ( containerDef->visibilityExpression().enabled() )
+          {
+            registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
+          }
           column += 2;
         }
         else
@@ -1199,7 +1236,7 @@ void QgsAttributeForm::init()
         tabWidget = nullptr;
         WidgetInfo widgetInfo = createWidgetFromDef( widgDef, container, mLayer, mContext );
         QLabel *label = new QLabel( widgetInfo.labelText );
-        label->setToolTip( QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( widgetInfo.labelText, widgetInfo.hint ) );
+        label->setToolTip( widgetInfo.toolTip );
         if ( columnCount > 1 && !widgetInfo.labelOnTop )
         {
           label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
@@ -1278,6 +1315,8 @@ void QgsAttributeForm::init()
 
       //show attribute alias if available
       QString fieldName = mLayer->attributeDisplayName( idx );
+      QString labelText = fieldName;
+      labelText.replace( '&', QStringLiteral( "&&" ) ); // need to escape '&' or they'll be replace by _ in the label text
 
       const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, field.name() );
 
@@ -1287,7 +1326,7 @@ void QgsAttributeForm::init()
       bool labelOnTop = mLayer->editFormConfig().labelOnTop( idx );
 
       // This will also create the widget
-      QLabel *l = new QLabel( fieldName );
+      QLabel *l = new QLabel( labelText );
       l->setToolTip( QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( fieldName, field.comment() ) );
       QSvgWidget *i = new QSvgWidget();
       i->setFixedSize( 18, 18 );
@@ -1400,19 +1439,19 @@ void QgsAttributeForm::init()
     selectButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     connect( selectButton, &QToolButton::clicked, this, &QgsAttributeForm::searchSetSelection );
     QMenu *selectMenu = new QMenu( selectButton );
-    QAction *selectAction = new QAction( tr( "Select features" ), selectMenu );
+    QAction *selectAction = new QAction( tr( "Select Features" ), selectMenu );
     selectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFormSelect.svg" ) ) );
     connect( selectAction, &QAction::triggered, this, &QgsAttributeForm::searchSetSelection );
     selectMenu->addAction( selectAction );
-    QAction *addSelectAction = new QAction( tr( "Add to current selection" ), selectMenu );
+    QAction *addSelectAction = new QAction( tr( "Add to Current Selection" ), selectMenu );
     addSelectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectAdd.svg" ) ) );
     connect( addSelectAction, &QAction::triggered, this, &QgsAttributeForm::searchAddToSelection );
     selectMenu->addAction( addSelectAction );
-    QAction *deselectAction = new QAction( tr( "Remove from current selection" ), selectMenu );
+    QAction *deselectAction = new QAction( tr( "Remove from Current Selection" ), selectMenu );
     deselectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectRemove.svg" ) ) );
     connect( deselectAction, &QAction::triggered, this, &QgsAttributeForm::searchRemoveFromSelection );
     selectMenu->addAction( deselectAction );
-    QAction *filterSelectAction = new QAction( tr( "Filter current selection" ), selectMenu );
+    QAction *filterSelectAction = new QAction( tr( "Filter Current Selection" ), selectMenu );
     filterSelectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectIntersect.svg" ) ) );
     connect( filterSelectAction, &QAction::triggered, this, &QgsAttributeForm::searchIntersectSelection );
     selectMenu->addAction( filterSelectAction );
@@ -1427,10 +1466,10 @@ void QgsAttributeForm::init()
       filterButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
       connect( filterButton, &QToolButton::clicked, this, &QgsAttributeForm::filterTriggered );
       QMenu *filterMenu = new QMenu( filterButton );
-      QAction *filterAndAction = new QAction( tr( "Filter within (\"AND\")" ), filterMenu );
+      QAction *filterAndAction = new QAction( tr( "Filter Within (\"AND\")" ), filterMenu );
       connect( filterAndAction, &QAction::triggered, this, &QgsAttributeForm::filterAndTriggered );
       filterMenu->addAction( filterAndAction );
-      QAction *filterOrAction = new QAction( tr( "Extend filter (\"OR\")" ), filterMenu );
+      QAction *filterOrAction = new QAction( tr( "Extend Filter (\"OR\")" ), filterMenu );
       connect( filterOrAction, &QAction::triggered, this, &QgsAttributeForm::filterOrTriggered );
       filterMenu->addAction( filterOrAction );
       filterButton->setMenu( filterMenu );
@@ -1446,7 +1485,7 @@ void QgsAttributeForm::init()
 
     layout->addWidget( mSearchButtonBox );
   }
-  mSearchButtonBox->setVisible( mMode == SearchMode );
+  mSearchButtonBox->setVisible( mMode == QgsAttributeEditorContext::SearchMode );
 
   afterWidgetInit();
 
@@ -1456,12 +1495,18 @@ void QgsAttributeForm::init()
   connect( mLayer, &QgsVectorLayer::editingStarted, this, &QgsAttributeForm::synchronizeEnabledState );
   connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsAttributeForm::synchronizeEnabledState );
 
+  // This triggers a refresh of the form widget and gives a chance to re-format the
+  // value to those widgets that have a different representation when in edit mode
+  connect( mLayer, &QgsVectorLayer::editingStarted, this, [ = ] { setFeature( feature() ); } );
+  connect( mLayer, &QgsVectorLayer::editingStopped, this,  [ = ] { setFeature( feature() ); } );
+
+
   Q_FOREACH ( QgsAttributeFormInterface *iface, mInterfaces )
   {
     iface->initForm();
   }
 
-  if ( mContext.formMode() == QgsAttributeEditorContext::Embed || mMode == SearchMode )
+  if ( mContext.formMode() == QgsAttributeEditorContext::Embed || mMode == QgsAttributeEditorContext::SearchMode )
   {
     hideButtonBox();
   }
@@ -1553,7 +1598,7 @@ void QgsAttributeForm::initPython()
 
       QgsPythonRunner::run( form );
 
-      QgsDebugMsg( QString( "running featureForm init: %1" ).arg( mPyFormVarName ) );
+      QgsDebugMsg( QStringLiteral( "running featureForm init: %1" ).arg( mPyFormVarName ) );
 
       // Legacy
       if ( numArgs == QLatin1String( "3" ) )
@@ -1615,11 +1660,13 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         addWidgetWrapper( eww );
 
         newWidgetInfo.widget->setObjectName( fields.at( fldIdx ).name() );
-        newWidgetInfo.hint = fields.at( fieldDef->idx() ).comment();
+        newWidgetInfo.hint = fields.at( fldIdx ).comment();
       }
 
-      newWidgetInfo.labelOnTop = mLayer->editFormConfig().labelOnTop( fieldDef->idx() );
-      newWidgetInfo.labelText = mLayer->attributeDisplayName( fieldDef->idx() );
+      newWidgetInfo.labelOnTop = mLayer->editFormConfig().labelOnTop( fldIdx );
+      newWidgetInfo.labelText = mLayer->attributeDisplayName( fldIdx );
+      newWidgetInfo.labelText.replace( '&', QStringLiteral( "&&" ) ); // need to escape '&' or they'll be replace by _ in the label text
+      newWidgetInfo.toolTip = QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( mLayer->attributeDisplayName( fldIdx ), newWidgetInfo.hint );
       newWidgetInfo.showLabel = widgetDef->showLabel();
 
       break;
@@ -1694,16 +1741,19 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       int row = 0;
       int column = 0;
 
-      QList<QgsAttributeEditorElement *> children = container->children();
+      const QList<QgsAttributeEditorElement *> children = container->children();
 
-      Q_FOREACH ( QgsAttributeEditorElement *childDef, children )
+      for ( QgsAttributeEditorElement *childDef : children )
       {
         WidgetInfo widgetInfo = createWidgetFromDef( childDef, myContainer, vl, context );
 
         if ( childDef->type() == QgsAttributeEditorElement::AeTypeContainer )
         {
           QgsAttributeEditorContainer *containerDef = static_cast<QgsAttributeEditorContainer *>( childDef );
-          registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
+          if ( containerDef->visibilityExpression().enabled() )
+          {
+            registerContainerInformation( new ContainerInformation( widgetInfo.widget, containerDef->visibilityExpression().data() ) );
+          }
         }
 
         if ( widgetInfo.labelText.isNull() )
@@ -1714,7 +1764,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         else
         {
           QLabel *mypLabel = new QLabel( widgetInfo.labelText );
-          mypLabel->setToolTip( QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( widgetInfo.labelText, widgetInfo.hint ) );
+          mypLabel->setToolTip( widgetInfo.toolTip );
           if ( columnCount > 1 && !widgetInfo.labelOnTop )
           {
             mypLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
@@ -1754,8 +1804,27 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       break;
     }
 
+    case QgsAttributeEditorElement::AeTypeQmlElement:
+    {
+      const QgsAttributeEditorQmlElement *elementDef = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
+
+      QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
+      qmlWrapper->setQmlCode( elementDef->qmlCode() );
+      qmlWrapper->setConfig( mLayer->editFormConfig().widgetConfig( elementDef->name() ) );
+      context.setAttributeFormMode( mMode );
+      qmlWrapper->setContext( context );
+
+      mWidgets.append( qmlWrapper );
+
+      newWidgetInfo.widget = qmlWrapper->widget();
+      newWidgetInfo.labelText = elementDef->name();
+      newWidgetInfo.labelOnTop = true;
+      newWidgetInfo.showLabel = widgetDef->showLabel();
+      break;
+    }
+
     default:
-      QgsDebugMsg( "Unknown attribute editor widget type encountered..." );
+      QgsDebugMsg( QStringLiteral( "Unknown attribute editor widget type encountered..." ) );
       break;
   }
 
@@ -1904,14 +1973,14 @@ void QgsAttributeForm::layerSelectionChanged()
 {
   switch ( mMode )
   {
-    case SingleEditMode:
-    case IdentifyMode:
-    case AddFeatureMode:
-    case SearchMode:
-    case AggregateSearchMode:
+    case QgsAttributeEditorContext::SingleEditMode:
+    case QgsAttributeEditorContext::IdentifyMode:
+    case QgsAttributeEditorContext::AddFeatureMode:
+    case QgsAttributeEditorContext::SearchMode:
+    case QgsAttributeEditorContext::AggregateSearchMode:
       break;
 
-    case MultiEditMode:
+    case QgsAttributeEditorContext::MultiEditMode:
       resetMultiEdit( true );
       break;
   }
@@ -1974,7 +2043,7 @@ void QgsAttributeForm::setMessageBar( QgsMessageBar *messageBar )
 
 QString QgsAttributeForm::aggregateFilter() const
 {
-  if ( mMode != AggregateSearchMode )
+  if ( mMode != QgsAttributeEditorContext::AggregateSearchMode )
   {
     Q_ASSERT( false );
   }
@@ -2086,7 +2155,7 @@ bool QgsAttributeForm::fieldIsEditable( int fieldIndex ) const
     int srcFieldIndex;
     const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
 
-    if ( info && !info->hasUpsertOnEdit() && mMode == QgsAttributeForm::AddFeatureMode )
+    if ( info && !info->hasUpsertOnEdit() && mMode == QgsAttributeEditorContext::AddFeatureMode )
       editable = false;
     else if ( info && info->isEditable() && info->joinLayer()->isEditable() )
       editable = fieldIsEditable( *( info->joinLayer() ), srcFieldIndex, mFeature.id() );
@@ -2127,7 +2196,7 @@ void QgsAttributeForm::updateIcon( QgsEditorWidgetWrapper *eww )
         const QString tooltip = tr( "Join settings do not allow editing" );
         reloadIcon( file, tooltip, mIconMap[eww->widget()] );
       }
-      else if ( mMode == QgsAttributeForm::AddFeatureMode && !info->hasUpsertOnEdit() )
+      else if ( mMode == QgsAttributeEditorContext::AddFeatureMode && !info->hasUpsertOnEdit() )
       {
         const QString file = QStringLiteral( "mIconJoinHasNotUpsertOnEdit.svg" );
         const QString tooltip = tr( "Join settings do not allow upsert on edit" );

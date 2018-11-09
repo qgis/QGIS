@@ -425,11 +425,11 @@ class CORE_EXPORT QgsExpressionContext
     QVariantMap variablesToMap() const;
 
     /**
-     * Returns true if the specified variable name is intended to be highlighted to the
+     * Returns true if the specified variable \a name is intended to be highlighted to the
      * user. This is used by the expression builder to more prominently display the
      * variable.
-     * \param name variable name
      * \see setHighlightedVariables()
+     * \see isHighlightedFunction()
      */
     bool isHighlightedVariable( const QString &name ) const;
 
@@ -438,8 +438,32 @@ class CORE_EXPORT QgsExpressionContext
      * is used by the expression builder to more prominently display these variables.
      * \param variableNames variable names to highlight
      * \see isHighlightedVariable()
+     * \see setHighlightedFunctions()
      */
     void setHighlightedVariables( const QStringList &variableNames );
+
+    /**
+     * Returns true if the specified function \a name is intended to be highlighted to the
+     * user. This is used by the expression builder to more prominently display the
+     * function.
+     * \see setHighlightedFunctions()
+     * \see isHighlightedVariable()
+     * \since QGIS 3.4
+     */
+    bool isHighlightedFunction( const QString &name ) const;
+
+    /**
+     * Sets the list of function \a names intended to be highlighted to the user. This
+     * is used by the expression builder to more prominently display these functions.
+     *
+     * Note that these function names may include standard functions which are not functions
+     * specific to this context, and these standard functions will also be highlighted to users.
+     *
+     * \see isHighlightedFunction()
+     * \see setHighlightedVariables()
+     * \since QGIS 3.4
+     */
+    void setHighlightedFunctions( const QStringList &names );
 
     /**
      * Returns the currently active scope from the context for a specified variable name.
@@ -714,6 +738,7 @@ class CORE_EXPORT QgsExpressionContext
 
     QList< QgsExpressionContextScope * > mStack;
     QStringList mHighlightedVariables;
+    QStringList mHighlightedFunctions;
 
     // Cache is mutable because we want to be able to add cached values to const contexts
     mutable QMap< QString, QVariant > mCachedValues;
@@ -740,11 +765,12 @@ class CORE_EXPORT QgsExpressionContextUtils
     static QgsExpressionContextScope *globalScope() SIP_FACTORY;
 
     /**
-     * Creates a new scope which contains functions and variables from the current attribute form/table feature.
+     * Creates a new scope which contains functions and variables from the current attribute form/table \a feature.
      * The variables and values in this scope will reflect the current state of the form/row being edited.
+     * The \a formMode (SingleEditMode etc.) is passed as text
      * \since QGIS 3.2
      */
-    static QgsExpressionContextScope *formScope( const QgsFeature &formFeature = QgsFeature( ) ) SIP_FACTORY;
+    static QgsExpressionContextScope *formScope( const QgsFeature &formFeature = QgsFeature( ), const QString &formMode = QString() ) SIP_FACTORY;
 
     /**
      * Sets a global context variable. This variable will be contained within scopes retrieved via
@@ -961,6 +987,23 @@ class CORE_EXPORT QgsExpressionContextUtils
      * Registers all known core functions provided by QgsExpressionContextScope objects.
      */
     static void registerContextFunctions();
+
+  private:
+
+    class GetLayerVisibility : public QgsScopedExpressionFunction
+    {
+      public:
+        GetLayerVisibility( const QList<QgsMapLayer *> &layers );
+        QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
+        QgsScopedExpressionFunction *clone() const override;
+
+      private:
+
+        const QList< QPointer< QgsMapLayer > > mLayers;
+
+    };
+
+    friend class QgsLayoutItemMap; // needs access to GetLayerVisibility
 
 };
 

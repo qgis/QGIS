@@ -3,13 +3,7 @@
 DIR=$(git rev-parse --show-toplevel)
 REV=$(git log -n1 --pretty=%H)
 
-# GNU prefix command for mac os support (gsed, gsplit)
-GP=
-if [[ "$OSTYPE" =~ darwin* ]]; then
-  GP=g
-fi
-
-pushd ${DIR} > /dev/null
+pushd ${DIR} > /dev/null || exit
 
 code=0
 modules=(core gui analysis server)
@@ -36,6 +30,6 @@ if [[ code -eq 1 ]]; then
   echo -e " If a header should not have a sip file created, add \x1B[33m#define SIP_NO_FILE\x1B[0m."
 fi
 
-popd > /dev/null
+popd > /dev/null || exit
 
 exit $code

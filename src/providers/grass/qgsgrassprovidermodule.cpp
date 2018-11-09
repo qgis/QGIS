@@ -133,7 +133,7 @@ void QgsGrassItemActions::newMapset()
   QgsDebugMsg( "existingNames = " + existingNames.join( "," ) );
   QRegExp regExp = QgsGrassObject::newNameRegExp( QgsGrassObject::Mapset );
   Qt::CaseSensitivity caseSensitivity = QgsGrass::caseSensitivity();
-  QgsNewNameDialog dialog( QLatin1String( "" ), QLatin1String( "" ), QStringList(), existingNames, regExp, caseSensitivity );
+  QgsNewNameDialog dialog( QString(), QString(), QStringList(), existingNames, regExp, caseSensitivity );
 
   if ( dialog.exec() != QDialog::Accepted )
   {
@@ -245,7 +245,7 @@ QString QgsGrassItemActions::newVectorMap()
   QgsDebugMsg( "existingNames = " + existingNames.join( "," ) );
   QRegExp regExp = QgsGrassObject::newNameRegExp( QgsGrassObject::Vector );
   Qt::CaseSensitivity caseSensitivity = QgsGrass::caseSensitivity();
-  QgsNewNameDialog dialog( QLatin1String( "" ), QLatin1String( "" ), QStringList(), existingNames, regExp, caseSensitivity );
+  QgsNewNameDialog dialog( QString(), QString(), QStringList(), existingNames, regExp, caseSensitivity );
 
   if ( dialog.exec() != QDialog::Accepted )
   {
@@ -264,7 +264,7 @@ QString QgsGrassItemActions::newVectorMap()
   if ( !error.isEmpty() )
   {
     QgsGrass::warning( error );
-    name = QLatin1String( "" );
+    name.clear();
   }
   return name;
 }
@@ -330,7 +330,7 @@ QgsGrassObjectItemBase::QgsGrassObjectItemBase( const QgsGrassObject &grassObjec
 //----------------------- QgsGrassLocationItem ------------------------------
 
 QgsGrassLocationItem::QgsGrassLocationItem( QgsDataItem *parent, QString dirPath, QString path )
-  : QgsDirectoryItem( parent, QLatin1String( "" ), dirPath, path )
+  : QgsDirectoryItem( parent, QString(), dirPath, path )
   , QgsGrassObjectItemBase( QgsGrassObject() )
 {
   // modify path to distinguish from directory, so that it can be expanded by path in browser
@@ -340,7 +340,7 @@ QgsGrassLocationItem::QgsGrassLocationItem( QgsDataItem *parent, QString dirPath
   dir.cdUp();
   QString gisdbase = dir.path();
 
-  mGrassObject = QgsGrassObject( gisdbase, mName, QLatin1String( "" ), QLatin1String( "" ), QgsGrassObject::Location );
+  mGrassObject = QgsGrassObject( gisdbase, mName, QString(), QString(), QgsGrassObject::Location );
 #ifdef HAVE_GUI
   mActions = new QgsGrassItemActions( mGrassObject, true, this );
 #endif
@@ -382,7 +382,7 @@ QIcon QgsGrassLocationItem::icon()
 QList<QgsGrassImport *> QgsGrassMapsetItem::sImports;
 
 QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem *parent, QString dirPath, QString path )
-  : QgsDirectoryItem( parent, QLatin1String( "" ), dirPath, path )
+  : QgsDirectoryItem( parent, QString(), dirPath, path )
   , QgsGrassObjectItemBase( QgsGrassObject() )
   , mRefreshLater( false )
 {
@@ -393,7 +393,7 @@ QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem *parent, QString dirPath, QS
   dir.cdUp();
   QString gisdbase = dir.path();
 
-  mGrassObject = QgsGrassObject( gisdbase, location, mName, QLatin1String( "" ), QgsGrassObject::Mapset );
+  mGrassObject = QgsGrassObject( gisdbase, location, mName, QString(), QgsGrassObject::Mapset );
 #ifdef HAVE_GUI
   mActions = new QgsGrassItemActions( mGrassObject, true, this );
 #endif

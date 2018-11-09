@@ -1,0 +1,372 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverparameters.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsServerParameterDefinition
+{
+%Docstring
+Definition of a parameter with basic conversion methods
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsserverparameters.h"
+%End
+  public:
+
+    QgsServerParameterDefinition( const QVariant::Type type = QVariant::String,
+                                  const QVariant defaultValue = QVariant( "" ) );
+%Docstring
+Constructor for QgsServerParameterDefinition.
+
+:param type: The type of the parameter
+:param defaultValue: The default value of the parameter
+%End
+
+    virtual ~QgsServerParameterDefinition();
+
+    QString typeName() const;
+%Docstring
+Returns the type of the parameter as a string.
+%End
+
+    virtual bool isValid() const;
+%Docstring
+Returns true if the parameter is valid, false otherwise.
+%End
+
+    QString toString() const;
+%Docstring
+Converts the parameter into a string.
+%End
+
+    QStringList toStringList( char delimiter = ',' ) const;
+%Docstring
+Converts the parameter into a list of strings.
+
+:param delimiter: The character used for delimiting
+
+:return: A list of strings
+%End
+
+    QList<int> toIntList( bool &ok, char delimiter = ',' ) const;
+%Docstring
+Converts the parameter into a list of integers.
+
+:param ok: True if there's no error during the conversion, false otherwise
+:param delimiter: The character used for delimiting
+
+:return: A list of integers
+%End
+
+    QList<double> toDoubleList( bool &ok, char delimiter = ',' ) const;
+%Docstring
+Converts the parameter into a list of doubles.
+
+:param ok: True if there's no error during the conversion, false otherwise
+:param delimiter: The character used for delimiting
+
+:return: A list of doubles
+%End
+
+    QList<QColor> toColorList( bool &ok, char delimiter = ',' ) const;
+%Docstring
+Converts the parameter into a list of colors.
+
+:param ok: True if there's no error during the conversion, false otherwise
+:param delimiter: The character used for delimiting
+
+:return: A list of colors
+%End
+
+    QList<QgsGeometry> toGeomList( bool &ok, char delimiter = ',' ) const;
+%Docstring
+Converts the parameter into a list of geometries.
+
+:param ok: True if there's no error during the conversion, false otherwise
+:param delimiter: The character used for delimiting
+
+:return: A list of geometries
+%End
+
+    QgsRectangle toRectangle( bool &ok ) const;
+%Docstring
+Converts the parameter into a rectangle.
+
+:param ok: True if there's no error during the conversion, false otherwise
+
+:return: A rectangle
+%End
+
+    int toInt( bool &ok ) const;
+%Docstring
+Converts the parameter into an integer.
+
+:param ok: True if there's no error during the conversion, false otherwise
+
+:return: An integer
+%End
+
+    double toDouble( bool &ok ) const;
+%Docstring
+Converts the parameter into a double.
+
+:param ok: True if there's no error during the conversion, false otherwise
+
+:return: A double
+%End
+
+    bool toBool() const;
+%Docstring
+Converts the parameter into a boolean.
+
+:return: A boolean
+%End
+
+    QColor toColor( bool &ok ) const;
+%Docstring
+Converts the parameter into a color.
+
+:param ok: True if there's no error during the conversion, false otherwise
+
+:return: A color
+%End
+
+    QUrl toUrl( bool &ok ) const;
+%Docstring
+Converts the parameter into an url.
+
+:param ok: True if there's no error during the conversion, false otherwise
+
+:return: An url
+
+.. versionadded:: 3.4
+%End
+
+    QString loadUrl( bool &ok ) const;
+%Docstring
+Loads the data associated to the parameter converted into an url.
+
+:param ok: True if there's no error during the load, false otherwise
+
+:return: The content loaded
+
+.. versionadded:: 3.4
+%End
+
+    static void raiseError( const QString &msg );
+%Docstring
+Raises an exception in case of an invalid parameters.
+
+:param msg: The message describing the exception
+            \throws QgsBadRequestException Invalid parameter exception
+%End
+
+    QVariant::Type mType;
+    QVariant mValue;
+    QVariant mDefaultValue;
+};
+
+class QgsServerParameter : QgsServerParameterDefinition
+{
+%Docstring
+Parameter common to all services (WMS, WFS, ...)
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsserverparameters.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+    enum Name
+    {
+      UNKNOWN,
+      SERVICE,
+      VERSION_SERVICE,
+      REQUEST,
+      MAP,
+      FILE_NAME
+    };
+
+    QgsServerParameter( const QgsServerParameter::Name name = QgsServerParameter::UNKNOWN,
+                        const QVariant::Type type = QVariant::String,
+                        const QVariant defaultValue = QVariant( "" ) );
+%Docstring
+Constructor for QgsServerParameter.
+
+:param name: The name of the parameter
+:param type: The type of the parameter
+:param defaultValue: The default value to use if not defined
+%End
+
+    void raiseError() const;
+%Docstring
+Raises an error in case of an invalid conversion.
+\throws QgsBadRequestException Invalid parameter exception
+%End
+
+    static QString name( const QgsServerParameter::Name name );
+%Docstring
+Converts a parameter's name into its string representation.
+%End
+
+    static QgsServerParameter::Name name( const QString &name );
+%Docstring
+Converts a string into a parameter's name (UNKNOWN in case of an
+invalid string).
+%End
+
+    QgsServerParameter::Name mName;
+};
+
+class QgsServerParameters
+{
+%Docstring
+QgsServerParameters provides an interface to retrieve and manipulate global parameters received from the client.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsserverparameters.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    QgsServerParameters();
+%Docstring
+Constructor.
+%End
+
+    QgsServerParameters( const QUrlQuery &query );
+%Docstring
+Constructor.
+%End
+
+    virtual ~QgsServerParameters();
+
+    void load( const QUrlQuery &query );
+%Docstring
+Loads new parameters.
+
+:param query: url query
+%End
+
+    void clear();
+%Docstring
+Removes all parameters.
+%End
+
+    void add( const QString &key, const QString &value );
+%Docstring
+Adds a parameter.
+
+:param key: the name of the parameter
+:param value: the value of the parameter
+%End
+
+    void remove( const QString &key );
+%Docstring
+Removes a parameter.
+
+:param key: the name of the parameter
+%End
+
+    void remove( QgsServerParameter::Name name );
+%Docstring
+Removes a parameter.
+
+:param name: The name of the parameter
+
+.. versionadded:: 3.4
+%End
+
+    QString value( const QString &key ) const;
+%Docstring
+Returns the value of a parameter.
+
+:param key: the name of the parameter
+%End
+
+    QUrlQuery urlQuery() const;
+%Docstring
+Returns a url query with underlying parameters.
+%End
+
+    QMap<QString, QString> toMap() const;
+%Docstring
+Returns all parameters in a map.
+%End
+
+    QString service() const;
+%Docstring
+Returns SERVICE parameter as a string or an empty string if not
+defined.
+
+:return: service
+%End
+
+    QString request() const;
+%Docstring
+Returns REQUEST parameter as a string or an empty string if not
+defined.
+
+:return: request
+%End
+
+    QString map() const;
+%Docstring
+Returns MAP parameter as a string or an empty string if not
+defined.
+
+:return: map
+%End
+
+    QString fileName() const;
+%Docstring
+Returns  FILE_NAME parameter as a string or an empty string if not
+defined.
+
+:return: filename
+%End
+
+    QString version() const;
+%Docstring
+Returns VERSION parameter as a string or an empty string if not
+defined.
+
+:return: version
+%End
+
+  protected:
+
+    virtual bool loadParameter( const QString &name, const QString &value );
+%Docstring
+Loads a parameter with a specific value. This method should be
+implemented in subclasses.
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverparameters.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

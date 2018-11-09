@@ -83,7 +83,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     void setConstraintStatus( const QString &constraint, const QString &description, const QString &err, QgsEditorWidgetWrapper::ConstraintResult result );
 
     /**
-     * Set the constraint result lable visible or invisible according to the layer editable status
+     * Set the constraint result label visible or invisible according to the layer editable status
      */
     void setConstraintResultVisible( bool editable );
 

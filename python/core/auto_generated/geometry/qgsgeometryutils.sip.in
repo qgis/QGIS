@@ -102,7 +102,7 @@ supported and is retrieved from the first 3D point amongst ``p1`` and
 :return: Whether the lines intersect
 %End
 
-    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, const double tolerance = 1e-8, bool acceptImproperIntersection = false );
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, double tolerance = 1e-8, bool acceptImproperIntersection = false );
 %Docstring
 Compute the intersection between two segments
 
@@ -140,7 +140,7 @@ Compute the intersection between two segments
        # (True, 'Point (0 0)', True)
 %End
 
-    static bool lineCircleIntersection( const QgsPointXY &center, const double radius,
+    static bool lineCircleIntersection( const QgsPointXY &center, double radius,
                                         const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
                                         QgsPointXY &intersection /In,Out/ );
 %Docstring
@@ -228,7 +228,18 @@ on the line, or exactly in line with the segment) and the result is undefined.
 
     static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance );
 %Docstring
-Returns a point a specified distance toward a second point.
+Returns a point a specified ``distance`` toward a second point.
+%End
+
+
+    static QgsPoint interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance );
+%Docstring
+Interpolates a point on an arc defined by three points, ``pt1``, ``pt2`` and ``pt3``. The arc will be
+interpolated by the specified ``distance`` from ``pt1``.
+
+Any z or m values present in the points will also be linearly interpolated in the output.
+
+.. versionadded:: 3.4
 %End
 
     static double ccwAngle( double dy, double dx );
@@ -244,7 +255,10 @@ Returns radius and center of the circle through pt1, pt2, pt3
 
     static bool circleClockwise( double angle1, double angle2, double angle3 );
 %Docstring
-Returns true if circle is ordered clockwise
+Returns true if the circle defined by three angles is ordered clockwise.
+
+The angles are defined counter-clockwise from the origin, i.e. using
+Euclidean angles as opposed to geographic "North up" angles.
 %End
 
     static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise );

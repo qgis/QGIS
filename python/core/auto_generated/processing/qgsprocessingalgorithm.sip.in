@@ -44,6 +44,7 @@ Abstract base class for processing algorithms.
       FlagRequiresMatchingCrs,
       FlagNoThreading,
       FlagDisplayNameIsLiteral,
+      FlagSupportsInPlaceEdits,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
@@ -139,7 +140,7 @@ about what the algorithm does and the parameters and outputs associated with it.
 .. seealso:: :py:func:`helpUrl`
 %End
 
-    virtual QString helpString() const;
+ virtual QString helpString() const /Deprecated/;
 %Docstring
 Returns a localised help string for the algorithm. Algorithm subclasses should implement either
 helpString() or helpUrl().
@@ -147,6 +148,8 @@ helpString() or helpUrl().
 .. seealso:: :py:func:`helpUrl`
 
 .. seealso:: :py:func:`shortHelpString`
+
+.. deprecated:: Unused, will be removed in QGIS 4.0
 %End
 
     virtual QString helpUrl() const;
@@ -585,6 +588,13 @@ Evaluates the parameter with matching ``name`` to a static double value.
 Evaluates the parameter with matching ``name`` to a static integer value.
 %End
 
+    QList<int> parameterAsInts( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+%Docstring
+Evaluates the parameter with matching ``name`` to a list of integer values.
+
+.. versionadded:: 3.4
+%End
+
     int parameterAsEnum( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a enum value.
@@ -601,7 +611,7 @@ Evaluates the parameter with matching ``name`` to a static boolean value.
 %End
 
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier /Out/,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const /Factory/;
+                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = 0 ) const /Factory/;
 %Docstring
 Evaluates the parameter with matching ``name`` to a feature sink.
 
@@ -804,6 +814,16 @@ should correspond to the invalid source parameter name.
 .. versionadded:: 3.2
 %End
 
+    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
+%Docstring
+Checks whether this algorithm supports in-place editing on the given ``layer``
+Default implementation returns false.
+
+:return: true if the algorithm supports in-place editing
+
+.. versionadded:: 3.4
+%End
+
   private:
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );
 };
@@ -846,6 +866,34 @@ algorithm in "chains", avoiding the need for temporary outputs in multi-step mod
 Constructor for QgsProcessingFeatureBasedAlgorithm.
 %End
 
+    virtual QgsProcessingAlgorithm::Flags flags() const;
+
+
+    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException ) = 0 /VirtualErrorHandler=processing_exception_handler/;
+%Docstring
+Processes an individual input ``feature`` from the source. Algorithms should implement their
+logic in this method for performing the algorithm's operation (e.g. replacing the feature's
+geometry with the centroid of the original feature geometry for a 'centroid' type
+algorithm).
+
+Implementations should return a list containing the modified feature. Returning an empty an list
+will indicate that this feature should be 'skipped', and will not be added to the algorithm's output.
+Subclasses can use this approach to filter the incoming features as desired.
+
+Additionally, multiple features can be returned for a single input feature. Each returned feature
+will be added to the algorithm's output. This allows for "explode" type algorithms where a single
+input feature results in multiple output features.
+
+The provided ``feedback`` object can be used to push messages to the log and for giving feedback
+to users. Note that handling of progress reports and algorithm cancelation is handled by
+the base class and subclasses do not need to reimplement this logic.
+
+Algorithms can throw a QgsProcessingException if a fatal error occurred which should
+prevent the algorithm execution from continuing. This can be annoying for users though as it
+can break valid model execution - so use with extreme caution, and consider using
+``feedback`` to instead report non-fatal processing failures for features instead.
+%End
+
   protected:
 
     virtual void initAlgorithm( const QVariantMap &configuration = QVariantMap() );
@@ -874,6 +922,13 @@ this is possible to determine in advance.
     virtual QgsProcessingFeatureSource::Flag sourceFlags() const;
 %Docstring
 Returns the processing feature source flags to be used in the algorithm.
+%End
+
+    virtual QgsFeatureSink::SinkFlags sinkFlags() const;
+%Docstring
+Returns the feature sink flags to be used for the output.
+
+.. versionadded:: 3.4.1
 %End
 
     virtual QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const;
@@ -920,30 +975,6 @@ Returns the source's coordinate reference system. This will only return a valid 
 called from a subclasses' processFeature() implementation.
 %End
 
-    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException ) = 0 /VirtualErrorHandler=processing_exception_handler/;
-%Docstring
-Processes an individual input ``feature`` from the source. Algorithms should implement their
-logic in this method for performing the algorithm's operation (e.g. replacing the feature's
-geometry with the centroid of the original feature geometry for a 'centroid' type
-algorithm).
-
-Implementations should return a list containing the modified feature. Returning an empty an list
-will indicate that this feature should be 'skipped', and will not be added to the algorithm's output.
-Subclasses can use this approach to filter the incoming features as desired.
-
-Additionally, multiple features can be returned for a single input feature. Each returned feature
-will be added to the algorithm's output. This allows for "explode" type algorithms where a single
-input feature results in multiple output features.
-
-The provided ``feedback`` object can be used to push messages to the log and for giving feedback
-to users. Note that handling of progress reports and algorithm cancelation is handled by
-the base class and subclasses do not need to reimplement this logic.
-
-Algorithms can throw a QgsProcessingException if a fatal error occurred which should
-prevent the algorithm execution from continuing. This can be annoying for users though as it
-can break valid model execution - so use with extreme caution, and consider using
-``feedback`` to instead report non-fatal processing failures for features instead.
-%End
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException );
 
@@ -952,6 +983,25 @@ can break valid model execution - so use with extreme caution, and consider usin
 %Docstring
 Returns the feature request used for fetching features to process from the
 source layer. The default implementation requests all attributes and geometry.
+%End
+
+    virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
+
+%Docstring
+Checks whether this algorithm supports in-place editing on the given ``layer``
+Default implementation for feature based algorithms run some basic compatibility
+checks based on the geometry type of the layer.
+
+:return: true if the algorithm supports in-place editing
+
+.. versionadded:: 3.4
+%End
+
+    void prepareSource( const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Read the source from ``parameters`` and ``context`` and set it
+
+.. versionadded:: 3.4
 %End
 
 };

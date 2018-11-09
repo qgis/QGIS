@@ -80,6 +80,12 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
     def setActive(self, active):
         ProcessingConfig.setSettingValue('ACTIVATE_SAGA', active)
 
+    def canBeActivated(self):
+        version = SagaUtils.getInstalledVersion(True)
+        if version is not None and version.startswith(REQUIRED_VERSION):
+            return True
+        return False
+
     def loadAlgorithms(self):
         version = SagaUtils.getInstalledVersion(True)
         if version is None:
@@ -122,14 +128,20 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
     def id(self):
         return 'saga'
 
+    def helpId(self):
+        return 'saga'
+
     def defaultVectorFileExtension(self, hasGeometry=True):
-        return 'shp'
+        return 'shp' if hasGeometry else 'dbf'
 
     def defaultRasterFileExtension(self):
         return 'sdat'
 
-    def supportedOutputTableExtensions(self):
-        return ['dbf']
+    def supportedOutputRasterLayerExtensions(self):
+        return ['sdat']
+
+    def supportedOutputVectorLayerExtensions(self):
+        return ['shp', 'dbf']
 
     def supportsNonFileBasedOutput(self):
         """

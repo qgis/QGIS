@@ -15,13 +15,14 @@
 ###########################################################################
 
 
-PATH=$PATH:$(dirname $0)
+PATH=$PATH:$(dirname "$0")
 
 set -e
 
-export elcr="$(tput el)$(tput cr)"
+elcr="$(tput el)$(tput cr)"
+export elcr
 
-find python src tests -type f -print | while read f; do
+find python src tests -type f -print | while read -r f; do
         if [ -f "$f.astyle" ]; then
 		# reformat backup
                 cp "$f.astyle" "$f"

@@ -21,6 +21,7 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
 #include "qgslayoutundostack.h"
+#include "qgsvectorlayer.h"
 
 #include <QButtonGroup>
 #include <QFileDialog>
@@ -65,12 +66,12 @@ QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polylin
   mArrowHeadStrokeColorButton->setColorDialogTitle( tr( "Select Arrow Head Stroke Color" ) );
   mArrowHeadStrokeColorButton->setAllowOpacity( true );
   mArrowHeadStrokeColorButton->setContext( QStringLiteral( "composer" ) );
-  mArrowHeadStrokeColorButton->setNoColorString( tr( "Transparent stroke" ) );
+  mArrowHeadStrokeColorButton->setNoColorString( tr( "Transparent Stroke" ) );
   mArrowHeadStrokeColorButton->setShowNoColor( true );
   mArrowHeadFillColorButton->setColorDialogTitle( tr( "Select Arrow Head Fill Color" ) );
   mArrowHeadFillColorButton->setAllowOpacity( true );
   mArrowHeadFillColorButton->setContext( QStringLiteral( "composer" ) );
-  mArrowHeadFillColorButton->setNoColorString( tr( "Transparent fill" ) );
+  mArrowHeadFillColorButton->setNoColorString( tr( "Transparent Fill" ) );
   mArrowHeadFillColorButton->setShowNoColor( true );
 
   //add widget for general composer item properties

@@ -19,9 +19,14 @@
 
 #include "qgslogger.h"
 #include "qgsmssqlprovider.h"
+#include "qgsmssqlconnection.h"
 
-QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString &connectionName, bool useEstimatedMetadata )
-  : mConnectionName( connectionName )
+QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool useEstimatedMetadata )
+  : mService( service )
+  , mHost( host )
+  , mDatabase( database )
+  , mUsername( username )
+  , mPassword( password )
   , mUseEstimatedMetadata( useEstimatedMetadata )
   , mStopped( false )
 {
@@ -52,7 +57,7 @@ void QgsMssqlGeomColumnTypeThread::run()
     {
       QString table;
       table = QStringLiteral( "%1[%2]" )
-              .arg( layerProperty.schemaName.isEmpty() ? QLatin1String( "" ) : QStringLiteral( "[%1]." ).arg( layerProperty.schemaName ),
+              .arg( layerProperty.schemaName.isEmpty() ? QString() : QStringLiteral( "[%1]." ).arg( layerProperty.schemaName ),
                     layerProperty.tableName );
 
       QString query = QString( "SELECT %3"
@@ -64,11 +69,11 @@ void QgsMssqlGeomColumnTypeThread::run()
                       .arg( layerProperty.geometryColName,
                             table,
                             mUseEstimatedMetadata ? "TOP 1" : "",
-                            layerProperty.sql.isEmpty() ? QLatin1String( "" ) : QStringLiteral( " AND %1" ).arg( layerProperty.sql ) );
+                            layerProperty.sql.isEmpty() ? QString() : QStringLiteral( " AND %1" ).arg( layerProperty.sql ) );
 
       // issue the sql query
-      QSqlDatabase db = QSqlDatabase::database( mConnectionName );
-      if ( !QgsMssqlProvider::OpenDatabase( db ) )
+      QSqlDatabase db = QgsMssqlConnection::getDatabase( mService, mHost, mDatabase, mUsername, mPassword );
+      if ( !QgsMssqlConnection::openDatabase( db ) )
       {
         QgsDebugMsg( db.lastError().text() );
         continue;

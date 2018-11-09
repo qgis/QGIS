@@ -13,6 +13,7 @@
 
 
 
+
 class QgsCircle : QgsEllipse
 {
 %Docstring
@@ -196,7 +197,7 @@ Note that this method is 2D only and does not consider the z-value of the circle
 
 
 
-    virtual void setSemiMajorAxis( const double semiMajorAxis );
+    virtual void setSemiMajorAxis( double semiMajorAxis );
 
 %Docstring
 Inherited method. Use setRadius instead.
@@ -206,7 +207,7 @@ Inherited method. Use setRadius instead.
 .. seealso:: :py:func:`setRadius`
 %End
 
-    virtual void setSemiMinorAxis( const double semiMinorAxis );
+    virtual void setSemiMinorAxis( double semiMinorAxis );
 
 %Docstring
 Inherited method. Use setRadius instead.
@@ -253,6 +254,11 @@ Returns true if the circle contains the ``point``.
     virtual QString toString( int pointPrecision = 17, int radiusPrecision = 17, int azimuthPrecision = 2 ) const;
 
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsCircle: %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 };
 
 /************************************************************************

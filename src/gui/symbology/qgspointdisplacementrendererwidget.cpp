@@ -118,7 +118,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   mCircleColorButton->setContext( QStringLiteral( "symbology" ) );
   mCircleColorButton->setAllowOpacity( true );
   mCircleColorButton->setShowNoColor( true );
-  mCircleColorButton->setNoColorString( tr( "No stroke" ) );
+  mCircleColorButton->setNoColorString( tr( "Transparent Stroke" ) );
   mLabelColorButton->setContext( QStringLiteral( "symbology" ) );
   mLabelColorButton->setColorDialogTitle( tr( "Select Color" ) );
   mLabelColorButton->setAllowOpacity( true );
@@ -222,7 +222,7 @@ void QgsPointDisplacementRendererWidget::mLabelFieldComboBox_currentIndexChanged
   {
     if ( text == tr( "None" ) )
     {
-      mRenderer->setLabelAttributeName( QLatin1String( "" ) );
+      mRenderer->setLabelAttributeName( QString() );
     }
     else
     {

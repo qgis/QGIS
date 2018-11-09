@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsaveselectedfeatures.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -26,7 +27,8 @@ QgsProcessingAlgorithm::Flags QgsSaveSelectedFeatures::flags() const
 
 void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
+                QList< int >() << QgsProcessing::TypeVector ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Selected features" ), QgsProcessing::TypeVectorPoint ) );
 }
 
@@ -37,12 +39,12 @@ QString QgsSaveSelectedFeatures::name() const
 
 QString QgsSaveSelectedFeatures::displayName() const
 {
-  return QObject::tr( "Save Selected Features" );
+  return QObject::tr( "Extract selected features" );
 }
 
 QStringList QgsSaveSelectedFeatures::tags() const
 {
-  return QObject::tr( "selection,save" ).split( ',' );
+  return QObject::tr( "selection,save,by" ).split( ',' );
 }
 
 QString QgsSaveSelectedFeatures::group() const

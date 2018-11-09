@@ -103,6 +103,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QgsRectangle extent() const override;
     bool isValid() const override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
+    double sample( const QgsPointXY &point, int band, bool *ok = nullptr, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
     int capabilities() const override;
@@ -291,6 +292,12 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Close all cached dataset for the specified provider.
     static void closeCachedGdalHandlesFor( QgsGdalProvider *provider );
 
+    /**
+     * Converts a world (\a x, \a y) coordinate to a pixel \a row and \a col.
+     */
+    bool worldToPixel( double x, double y, int &col, int &row ) const;
+
+    bool mStatisticsAreReliable = false;
 };
 
 #endif

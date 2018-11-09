@@ -20,8 +20,9 @@
 #include <QObject>
 #include <QString>
 #include <QMap>
-#include "qgsmessagebar.h"
 #include "qgis_gui.h"
+#include "qgis.h"
+
 
 /**
  * \ingroup gui

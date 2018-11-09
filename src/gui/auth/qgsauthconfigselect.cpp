@@ -56,10 +56,10 @@ QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &datapr
     btnConfigEdit->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
     btnConfigMsgClear->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClose.svg" ) ) );
 
-    btnConfigAdd->setText( QStringLiteral( "" ) );
-    btnConfigRemove->setText( QStringLiteral( "" ) );
-    btnConfigEdit->setText( QStringLiteral( "" ) );
-    btnConfigMsgClear->setText( QStringLiteral( "" ) );
+    btnConfigAdd->setText( QString() );
+    btnConfigRemove->setText( QString() );
+    btnConfigEdit->setText( QString() );
+    btnConfigMsgClear->setText( QString() );
 
     leConfigMsg->setStyleSheet( QStringLiteral( "QLineEdit{background-color: %1}" )
                                 .arg( QgsAuthGuiUtils::yellowColor().name() ) );
@@ -121,7 +121,7 @@ void QgsAuthConfigSelect::loadConfig()
 
 void QgsAuthConfigSelect::clearConfig()
 {
-  cmbConfigSelect->setToolTip( QStringLiteral( "" ) );
+  cmbConfigSelect->setToolTip( QString() );
   btnConfigEdit->setEnabled( false );
   btnConfigRemove->setEnabled( false );
 }
@@ -311,7 +311,7 @@ void QgsAuthConfigUriEdit::setDataSourceUri( const QString &datauri )
 
   mAuthCfg = authCfgFromUri();
 
-  QgsDebugMsg( QString( "Parsed authcfg ID: %1" ).arg( mAuthCfg ) );
+  QgsDebugMsg( QStringLiteral( "Parsed authcfg ID: %1" ).arg( mAuthCfg ) );
 
   wdgtAuthSelect->blockSignals( true );
   wdgtAuthSelect->setConfigId( mAuthCfg );

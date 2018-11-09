@@ -15,9 +15,54 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+#include <QList>
+#include "qgspolygon.h"
+#include "qgslinestring.h"
 #include "qgstriangularmesh.h"
 #include "qgsrendercontext.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeatureid.h"
+#include "qgsgeometry.h"
+#include "qgsrectangle.h"
+#include "qgsfeatureiterator.h"
+#include "qgslogger.h"
+
+///@cond PRIVATE
+
+QgsMeshFeatureIterator::QgsMeshFeatureIterator( QgsMesh *mesh )
+  : QgsAbstractFeatureIterator( QgsFeatureRequest() )
+  , mMesh( mesh )
+{}
+
+QgsMeshFeatureIterator::~QgsMeshFeatureIterator() = default;
+
+bool QgsMeshFeatureIterator::rewind()
+{
+  it = 0;
+  return true;
+}
+bool QgsMeshFeatureIterator::close()
+{
+  mMesh = nullptr;
+  return true;
+}
+
+bool QgsMeshFeatureIterator::fetchFeature( QgsFeature &f )
+{
+  if ( !mMesh || mMesh->faces.size() <= it )
+    return false;
+
+  const QgsMeshFace &face = mMesh->faces.at( it ) ;
+  QgsGeometry geom = QgsMeshUtils::toGeometry( face, mMesh->vertices );
+  f.setGeometry( geom );
+  f.setId( it );
+  ++it;
+  return true;
+}
+
+
+///@endcond
 
 static void ENP_centroid_step( const QPolygonF &pX, double &cx, double &cy, double &signedArea, int i, int i1 )
 {
@@ -63,30 +108,46 @@ static void ENP_centroid( const QPolygonF &pX, double &cx, double &cy )
   cy /= ( 6.0 * signedArea );
 }
 
-
 void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
 {
   Q_ASSERT( nativeMesh );
   Q_ASSERT( context );
 
+  // FIND OUT IF UPDATE IS NEEDED
+  if ( mTriangularMesh.vertices.size() >= nativeMesh->vertices.size() &&
+       mTriangularMesh.faces.size() >= nativeMesh->faces.size() &&
+       mCoordinateTransform.sourceCrs() == context->coordinateTransform().sourceCrs() &&
+       mCoordinateTransform.destinationCrs() == context->coordinateTransform().destinationCrs() )
+    return;
+
+  // CLEAN-UP
   mTriangularMesh.vertices.clear();
   mTriangularMesh.faces.clear();
   mTrianglesToNativeFaces.clear();
   mNativeMeshFaceCentroids.clear();
 
   // TRANSFORM VERTICES
-  QgsCoordinateTransform transform = context->coordinateTransform();
+  mCoordinateTransform = context->coordinateTransform();
   mTriangularMesh.vertices.resize( nativeMesh->vertices.size() );
   for ( int i = 0; i < nativeMesh->vertices.size(); ++i )
   {
     const QgsMeshVertex &vertex = nativeMesh->vertices.at( i );
-    if ( transform.isValid() )
+    if ( mCoordinateTransform.isValid() )
     {
-      QgsPointXY mapPoint = transform.transform( QgsPointXY( vertex.x(), vertex.y() ) );
-      QgsMeshVertex mapVertex( mapPoint );
-      mapVertex.setZ( vertex.z() );
-      mapVertex.setM( vertex.m() );
-      mTriangularMesh.vertices[i] = mapVertex;
+      try
+      {
+        QgsPointXY mapPoint = mCoordinateTransform.transform( QgsPointXY( vertex.x(), vertex.y() ) );
+        QgsMeshVertex mapVertex( mapPoint );
+        mapVertex.setZ( vertex.z() );
+        mapVertex.setM( vertex.m() );
+        mTriangularMesh.vertices[i] = mapVertex;
+      }
+      catch ( QgsCsException &cse )
+      {
+        Q_UNUSED( cse );
+        QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+        mTriangularMesh.vertices[i] = vertex;
+      }
     }
     else
     {
@@ -143,6 +204,9 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
     ENP_centroid( poly, cx, cy );
     mNativeMeshFaceCentroids[i] = QgsMeshVertex( cx, cy );
   }
+
+  // CALCULATE SPATIAL INDEX
+  mSpatialIndex = QgsSpatialIndex( new QgsMeshFeatureIterator( &mTriangularMesh ) );
 }
 
 const QVector<QgsMeshVertex> &QgsTriangularMesh::vertices() const
@@ -165,3 +229,54 @@ const QVector<int> &QgsTriangularMesh::trianglesToNativeFaces() const
   return mTrianglesToNativeFaces;
 }
 
+int QgsTriangularMesh::faceIndexForPoint( const QgsPointXY &point ) const
+{
+  const QList<QgsFeatureId> faceIndexes = mSpatialIndex.intersects( QgsRectangle( point, point ) );
+  for ( const QgsFeatureId fid : faceIndexes )
+  {
+    int faceIndex = static_cast<int>( fid );
+    const QgsMeshFace &face = mTriangularMesh.faces.at( faceIndex );
+    const QgsGeometry geom = QgsMeshUtils::toGeometry( face, mTriangularMesh.vertices );
+    if ( geom.contains( &point ) )
+      return faceIndex;
+  }
+  return -1;
+}
+
+QList<int> QgsTriangularMesh::faceIndexesForRectangle( const QgsRectangle &rectangle ) const
+{
+  const QList<QgsFeatureId> faceIndexes = mSpatialIndex.intersects( rectangle );
+  QList<int> indexes;
+  for ( const QgsFeatureId fid : faceIndexes )
+  {
+    int faceIndex = static_cast<int>( fid );
+    indexes.append( faceIndex );
+  }
+  return indexes;
+}
+
+QgsGeometry QgsMeshUtils::toGeometry( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices )
+{
+  QVector<QgsPoint> ring;
+  for ( int j = 0; j < face.size(); ++j )
+  {
+    int vertexId = face[j];
+    Q_ASSERT( vertexId < vertices.size() );
+    const QgsPoint &vertex = vertices[vertexId];
+    ring.append( vertex );
+  }
+  std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >();
+  polygon->setExteriorRing( new QgsLineString( ring ) );
+  return QgsGeometry( std::move( polygon ) );
+}
+
+QList<int> QgsMeshUtils::nativeFacesFromTriangles( const QList<int> &triangleIndexes, const QVector<int> &trianglesToNativeFaces )
+{
+  QSet<int> nativeFaces;
+  for ( const int triangleIndex : triangleIndexes )
+  {
+    const int nativeIndex = trianglesToNativeFaces[triangleIndex];
+    nativeFaces.insert( nativeIndex );
+  }
+  return nativeFaces.toList();
+}

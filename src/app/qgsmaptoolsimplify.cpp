@@ -26,7 +26,7 @@
 #include "qgisapp.h"
 #include "qgssettings.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
 
 #include <cmath>
 #include <cfloat>
@@ -79,11 +79,11 @@ QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
   setFocusProxy( mButtonBox );
 }
 
-void QgsSimplifyUserInputWidget::setConfig( const QgsMapToolSimplify::Method &method,
-    const double &tolerance,
-    const QgsTolerance::UnitType &units,
-    const double &smoothOffset,
-    const int &smoothIterations )
+void QgsSimplifyUserInputWidget::setConfig( QgsMapToolSimplify::Method method,
+    double tolerance,
+    QgsTolerance::UnitType units,
+    double smoothOffset,
+    int smoothIterations )
 {
   mMethodComboBox->setCurrentIndex( mMethodComboBox->findData( method ) );
 
@@ -399,9 +399,7 @@ void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent *e )
     if ( f.hasGeometry() )
       mOriginalVertexCount += f.geometry().constGet()->nCoordinates();
 
-    QgsRubberBand *rb = new QgsRubberBand( mCanvas );
-    rb->setColor( QColor( 255, 0, 0, 65 ) );
-    rb->setWidth( 2 );
+    QgsRubberBand *rb = createRubberBand();
     rb->show();
     mRubberBands << rb;
   }
@@ -426,10 +424,10 @@ void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
   double r = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapSettings() );
   QgsRectangle selectRect = QgsRectangle( layerCoords.x() - r, layerCoords.y() - r,
                                           layerCoords.x() + r, layerCoords.y() + r );
-  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setNoAttributes() );
 
   QgsGeometry geometry = QgsGeometry::fromPointXY( layerCoords );
-  double minDistance = DBL_MAX;
+  double minDistance = std::numeric_limits<double>::max();
   double currentDistance;
   QgsFeature minDistanceFeature;
   QgsFeature f;
@@ -461,7 +459,7 @@ void QgsMapToolSimplify::selectFeaturesInRect()
   QgsFeatureRequest request;
   request.setFilterRect( rect );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   QgsFeatureIterator fit = vlayer->getFeatures( request );
   while ( fit.nextFeature( f ) )
     mSelectedFeatures << f;

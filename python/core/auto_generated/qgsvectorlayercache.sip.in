@@ -151,7 +151,7 @@ Query the layer for the features with the given ids.
 Query the layer for the features which intersect the specified rectangle.
 %End
 
-    bool isFidCached( const QgsFeatureId fid ) const;
+    bool isFidCached( QgsFeatureId fid ) const;
 %Docstring
 Check if a certain feature id is cached.
 
@@ -219,6 +219,12 @@ if the feature count is unknown.
 %End
 %MethodCode
     sipRes = sipCpp->featureCount();
+%End
+
+    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    int __bool__() const;
+%MethodCode
+    sipRes = true;
 %End
 
     long featureCount() const;

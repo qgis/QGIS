@@ -30,6 +30,7 @@ class APP_EXPORT QgsMapToolRegularPolygon2Points: public QgsMapToolAddRegularPol
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
+
 };
 
 #endif // QGSMAPTOOLREGULARPOLYGON2POINTS_H

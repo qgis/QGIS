@@ -16,7 +16,7 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 
 #include "qgsvirtuallayerblob.h"
-#include <string.h>
+#include <cstring>
 #include <limits>
 
 void SpatialiteBlobHeader::readFrom( const char *p )

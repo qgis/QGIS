@@ -15,10 +15,12 @@
 
 #include "qgscolorswatchgrid.h"
 #include "qgsapplication.h"
+#include "qgssymbollayerutils.h"
 #include "qgslogger.h"
 #include <QPainter>
 #include <QMouseEvent>
 #include <QMenu>
+#include <QBuffer>
 
 #define NUMBER_COLORS_PER_ROW 10 //number of color swatches per row
 
@@ -115,15 +117,52 @@ void QgsColorSwatchGrid::updateTooltip( const int colorIdx )
 {
   if ( colorIdx >= 0 && colorIdx < mColors.length() )
   {
+    QColor color = mColors.at( colorIdx ).first;
+
     //if color has an associated name from the color scheme, use that
     QString colorName = mColors.at( colorIdx ).second;
-    if ( colorName.isEmpty() )
-    {
-      //otherwise, build a default string
-      QColor color = mColors.at( colorIdx ).first;
-      colorName = QString( tr( "rgb(%1, %2, %3)" ) ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
-    }
-    setToolTip( colorName );
+
+    // create very large preview swatch, because the grid itself has only tiny preview icons
+    int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 23 );
+    int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
+    int margin = static_cast< int >( height * 0.1 );
+    QImage icon = QImage( width + 2 * margin, height + 2 * margin, QImage::Format_ARGB32 );
+    icon.fill( Qt::transparent );
+
+    QPainter p;
+    p.begin( &icon );
+
+    //start with checkboard pattern
+    QBrush checkBrush = QBrush( transparentBackground() );
+    p.setPen( Qt::NoPen );
+    p.setBrush( checkBrush );
+    p.drawRect( margin, margin, width, height );
+
+    //draw color over pattern
+    p.setBrush( QBrush( mColors.at( colorIdx ).first ) );
+
+    //draw border
+    p.setPen( QColor( 197, 197, 197 ) );
+    p.drawRect( margin, margin, width, height );
+    p.end();
+
+    QByteArray data;
+    QBuffer buffer( &data );
+    icon.save( &buffer, "PNG", 100 );
+
+    QString info;
+    if ( !colorName.isEmpty() )
+      info += QStringLiteral( "<h3>%1</h3><p>" ).arg( colorName );
+
+    info += QStringLiteral( "<b>HEX</b> %1<br>"
+                            "<b>RGB</b> %2<br>"
+                            "<b>HSV</b> %3,%4,%5<p>" ).arg( color.name(),
+                                QgsSymbolLayerUtils::encodeColor( color ) )
+            .arg( color.hue() ).arg( color.saturation() ).arg( color.value() );
+    info += QStringLiteral( "<img src='data:image/png;base64, %0'>" ).arg( QString( data.toBase64() ) );
+
+    setToolTip( info );
+
   }
   else
   {
@@ -240,7 +279,7 @@ void QgsColorSwatchGrid::focusOutEvent( QFocusEvent *event )
 
 int QgsColorSwatchGrid::calculateHeight() const
 {
-  int numberRows = std::ceil( ( double )mColors.length() / NUMBER_COLORS_PER_ROW );
+  int numberRows = std::ceil( static_cast<double>( mColors.length() ) / NUMBER_COLORS_PER_ROW );
   return numberRows * ( mSwatchSize ) + ( numberRows - 1 ) * mSwatchSpacing + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin + mSwatchMargin;
 }
 

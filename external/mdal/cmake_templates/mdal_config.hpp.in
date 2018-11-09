@@ -1,0 +1,14 @@
+#ifndef MDAL_CONFIG_HPP
+#define MDAL_CONFIG_HPP
+
+#cmakedefine MDAL_VERSION
+
+#cmakedefine HAVE_HDF5
+
+#cmakedefine HAVE_GDAL
+
+#cmakedefine HAVE_NETCDF
+
+#endif // MDAL_CONFIG_HPP
+
+ 

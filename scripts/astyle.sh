@@ -22,13 +22,13 @@ fi
 
 min_version="3"
 astyle_version_check() {
-	[ $(printf "$($1 --version 2>&1 | cut -d ' ' -f4)\n$min_version" | sort -${SV} | head -n1) = "$min_version" ]
+	[ $(printf "$($1 --version 2>&1 | cut -d ' ' -f4)\\n$min_version" | sort -${SV} | head -n1) = "$min_version" ]
 }
 
-for ASTYLE in ${QGISSTYLE} $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle astyle
+for ASTYLE in ${QGISSTYLE} $(dirname "$0")/qgisstyle $(dirname "$0")/RelWithDebInfo/qgisstyle astyle
 do
-	if type -p $ASTYLE >/dev/null; then
-		if astyle_version_check $ASTYLE; then
+	if type -p "$ASTYLE" >/dev/null; then
+		if astyle_version_check "$ASTYLE"; then
 			break
 		fi
 	fi
@@ -43,13 +43,13 @@ fi
 if type -p tput >/dev/null; then
 	elcr="$ASTYLEPROGRESS$(tput el)$(tput cr)"
 else
-	elcr="$ASTYLEPROGRESS                   \r"
+	elcr="$ASTYLEPROGRESS                   \\r"
 fi
 
 if ! type -p flip >/dev/null; then
 	if type -p dos2unix >/dev/null; then
 		flip() {
-			dos2unix -k $2
+			dos2unix -q -k "$2"
 		}
 	else
 		echo "flip not found" >&2
@@ -66,9 +66,9 @@ if ! type -p autopep8 >/dev/null; then
 	}
 fi
 
-ASTYLEOPTS=$(dirname $0)/astyle.options
+ASTYLEOPTS=$(dirname "$0")/astyle.options
 if type -p cygpath >/dev/null; then
-	ASTYLEOPTS="$(cygpath -w $ASTYLEOPTS)"
+	ASTYLEOPTS="$(cygpath -w "$ASTYLEOPTS")"
 fi
 
 set -e
@@ -85,12 +85,12 @@ astyleit() {
 
 for f in "$@"; do
 	case "$f" in
-		src/app/gps/qwtpolar-*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|external/astyle/*|python/ext-libs/*|src/providers/spatialite/qspatialite/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|python/ext-libs/*|*/ui_*.py|*.astyle|tests/testdata/*|editors/*)
+                src/plugins/grass/qtermwidget/*|external/o2/*|external/astyle/*|external/kdbush/*|external/wintoast/*|external/qt3dextra-headers/*|python/ext-libs/*|ui_*.py|*.astyle|tests/testdata/*|editors/*)
 			echo -ne "$f skipped $elcr"
 			continue
 			;;
 
-		*.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp)
+		*.cpp|*.h|*.c|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp|*.mm)
 			if [ -x "$f" ]; then
 				chmod a-x "$f"
 			fi
@@ -108,7 +108,7 @@ for f in "$@"; do
 			;;
 
 		*.sip)
-			cmd="perl -i.prepare -pe 's/[\r\t ]+$//; s#^(\s*)/\*[*!]\s*([^\s*].*)\s*\$#\$1/** \u\$2\n#;'"
+			cmd="perl -i.prepare -pe 's/[\\r\\t ]+$//; s#^(\\s*)/\\*[*!]\\s*([^\\s*].*)\\s*\$#\$1/** \\u\$2\\n#;'"
 			;;
 
 		*)
@@ -122,9 +122,9 @@ for f in "$@"; do
 		continue
 	fi
 
-	if [[ -f $f && $(head -c 3 $f) == $'\xef\xbb\xbf' ]]; then
-		mv $f $f.bom
-		tail -c +4 $f.bom > $f
+	if [[ -f $f && $(head -c 3 "$f") == $'\xef\xbb\xbf' ]]; then
+		mv "$f" "$f".bom
+		tail -c +4 "$f".bom > "$f"
 		echo "removed BOM from $f"
 	fi
 

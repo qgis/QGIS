@@ -209,7 +209,7 @@
        <item row="5" column="0" colspan="3">
         <widget class="QGroupBox" name="groupBox1">
          <property name="title">
-          <string>New field</string>
+          <string>New Field</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
           <item row="0" column="0">
@@ -282,7 +282,7 @@
              <enum>Qt::LeftToRight</enum>
             </property>
             <property name="text">
-             <string>Add to fields list</string>
+             <string>Add to Fields List</string>
             </property>
             <property name="icon">
              <iconset resource="../../images/images.qrc">
@@ -299,7 +299,7 @@
        <item row="6" column="0" colspan="3">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
-          <string>Fields list</string>
+          <string>Fields List</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="1" column="0" colspan="3">
@@ -356,7 +356,7 @@
              <string>Delete selected field</string>
             </property>
             <property name="text">
-             <string>Remove field</string>
+             <string>Remove Field</string>
             </property>
             <property name="icon">
              <iconset resource="../../images/images.qrc">
@@ -371,9 +371,9 @@
         </widget>
        </item>
        <item row="7" column="0" colspan="3">
-        <widget class="QgsCollapsibleGroupBox" name="groupBox" native="true">
-         <property name="title" stdset="0">
-          <string>Advanced options</string>
+        <widget class="QgsCollapsibleGroupBox" name="groupBox">
+         <property name="title">
+          <string>Advanced Options</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>true</bool>

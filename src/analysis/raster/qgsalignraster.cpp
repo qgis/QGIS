@@ -615,3 +615,4 @@ double QgsAlignRaster::RasterInfo::identify( double mx, double my )
 
   return value;
 }
+

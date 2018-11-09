@@ -91,7 +91,7 @@ class CORE_EXPORT QgsProviderRegistry
 
     /**
      * Creates a new instance of a provider.
-     * \param providerKey identificator of the provider
+     * \param providerKey identifier of the provider
      * \param dataSource  string containing data source for the provider
      * \param options provider options
      * \returns new instance of provider or NULL on error
@@ -102,10 +102,20 @@ class CORE_EXPORT QgsProviderRegistry
 
     /**
      * Returns the provider capabilities
-        \param providerKey identificator of the provider
+        \param providerKey identifier of the provider
         \since QGIS 2.6
      */
     int providerCapabilities( const QString &providerKey ) const;
+
+    /**
+     * Breaks a provider data source URI into its component paths (e.g. file path, layer name).
+     * \param providerKey identifier of the provider
+     * \param uri uri string
+     * \returns map containing components. Standard components include "path", "layerName", "url".
+     * \note this function may not be supported by all providers, an empty map will be returned in such case
+     * \since QGIS 3.4
+     */
+    QVariantMap decodeUri( const QString &providerKey, const QString &uri );
 
     /**
      * Returns a new widget for selecting layers from a provider.
@@ -119,7 +129,7 @@ class CORE_EXPORT QgsProviderRegistry
 
     /**
      * Gets pointer to provider function
-     * \param providerKey identificator of the provider
+     * \param providerKey identifier of the provider
      * \param functionName name of function
      * \returns pointer to function or NULL on error. If the provider uses direct provider
      * function pointers instead of a library nullptr will be returned.
@@ -178,6 +188,14 @@ class CORE_EXPORT QgsProviderRegistry
     virtual QString protocolDrivers() const;
 
     void registerGuis( QWidget *widget );
+
+    /**
+     * \brief register a new vector data provider from its \a providerMetadata
+     * \return true on success, false if a provider with the same key was already registered
+     * \note ownership of the QgsProviderMetadata instance is transferred to the registry
+     * \since QGIS 3.2
+     */
+    bool registerProvider( QgsProviderMetadata *providerMetadata SIP_TRANSFER );
 
     /**
      * Open the given vector data source

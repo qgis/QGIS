@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayer.h"
 
 QString QgsVectorLayerJoinInfo::prefixedFieldName( const QgsField &f ) const
 {

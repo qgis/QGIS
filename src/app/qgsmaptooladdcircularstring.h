@@ -20,6 +20,7 @@
 #include "qgis_app.h"
 
 class QgsGeometryRubberBand;
+class QgsSnapIndicator;
 
 class APP_EXPORT QgsMapToolAddCircularString: public QgsMapToolCapture
 {
@@ -59,6 +60,11 @@ class APP_EXPORT QgsMapToolAddCircularString: public QgsMapToolCapture
     void createCenterPointRubberBand();
     void updateCenterPointRubberBand( const QgsPoint &pt );
     void removeCenterPointRubberBand();
+    //! Layer type which will be used for rubberband
+    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
+
+    //! Snapping indicators
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 };
 
 #endif // QGSMAPTOOLADDCIRCULARSTRING_H

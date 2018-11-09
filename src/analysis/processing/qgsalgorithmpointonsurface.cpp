@@ -102,7 +102,7 @@ QgsFeatureList QgsPointOnSurfaceAlgorithm::processFeature( const QgsFeature &f, 
       {
         QgsGeometry partGeometry( geomCollection->geometryN( i )->clone() );
         QgsGeometry outputGeometry = partGeometry.pointOnSurface();
-        if ( !outputGeometry )
+        if ( outputGeometry.isNull() )
         {
           feedback->pushInfo( QObject::tr( "Error calculating point on surface for feature %1 part %2: %3" ).arg( feature.id() ).arg( i ).arg( outputGeometry.lastError() ) );
         }
@@ -113,7 +113,7 @@ QgsFeatureList QgsPointOnSurfaceAlgorithm::processFeature( const QgsFeature &f, 
     else
     {
       QgsGeometry outputGeometry = feature.geometry().pointOnSurface();
-      if ( !outputGeometry )
+      if ( outputGeometry.isNull() )
       {
         feedback->pushInfo( QObject::tr( "Error calculating point on surface for feature %1: %2" ).arg( feature.id() ).arg( outputGeometry.lastError() ) );
       }

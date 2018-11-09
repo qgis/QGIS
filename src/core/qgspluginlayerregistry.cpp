@@ -56,7 +56,7 @@ QgsPluginLayerRegistry::~QgsPluginLayerRegistry()
 {
   if ( !mPluginLayerTypes.isEmpty() )
   {
-    QgsDebugMsg( "QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty" );
+    QgsDebugMsg( QStringLiteral( "QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty" ) );
     PluginLayerTypes::const_iterator it = mPluginLayerTypes.constBegin();
     for ( ; it != mPluginLayerTypes.constEnd(); ++it )
     {

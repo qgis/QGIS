@@ -48,7 +48,7 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   connect( mTemplatesDefaultDirBtn, &QPushButton::pressed, this, &QgsLayoutManagerDialog::mTemplatesDefaultDirBtn_pressed );
   connect( mTemplatesUserDirBtn, &QPushButton::pressed, this, &QgsLayoutManagerDialog::mTemplatesUserDirBtn_pressed );
 
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
   mTemplateFileWidget->setStorageMode( QgsFileWidget::GetFile );
   mTemplateFileWidget->setFilter( tr( "Layout templates" ) + QStringLiteral( " (*.qpt *.QPT)" ) );
   mTemplateFileWidget->setDialogTitle( tr( "Select a Template" ) );
@@ -85,7 +85,7 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
 #ifdef Q_OS_MAC
   // Create action to select this window
   mWindowAction = new QAction( windowTitle(), this );
-  connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
+  connect( mWindowAction, &QAction::triggered, this, &QgsLayoutManagerDialog::activate );
 #endif
 
   mTemplate->addItem( tr( "Empty layout" ) );
@@ -190,7 +190,7 @@ QMap<QString, QString> QgsLayoutManagerDialog::templatesFromPath( const QString 
   QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
   for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
   {
-    if ( infoIt->suffix().toLower() == QLatin1String( "qpt" ) )
+    if ( infoIt->suffix().compare( QLatin1String( "qpt" ), Qt::CaseInsensitive ) == 0 )
     {
       templateMap.insert( infoIt->baseName(), infoIt->absoluteFilePath() );
     }
@@ -231,7 +231,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
     {
       QDomElement layoutElem = templateDoc.documentElement();
       if ( !layoutElem.isNull() )
-        storedTitle = layoutElem.attribute( "name" );
+        storedTitle = layoutElem.attribute( QStringLiteral( "name" ) );
     }
   }
 

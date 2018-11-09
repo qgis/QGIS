@@ -76,6 +76,13 @@ If ``providerKey`` is not specified, the default provider key associated with th
 will be used.
 %End
 
+    void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey );
+%Docstring
+Emitted when a mesh layer has been selected for addition.
+
+.. versionadded:: 3.4
+%End
+
     void addVectorLayers( const QStringList &layerList, const QString &encoding, const QString &dataSourceType );
 %Docstring
 Emitted when one or more OGR supported layers are selected for addition
@@ -95,10 +102,11 @@ Emitted when a layer needs to be replaced
 :param provider: key
 %End
 
-
-    void progress( int, int );
+ void progress( int, int ) /Deprecated/;
 %Docstring
-Emitted when a progress dialog is shown by the provider dialog
+Emitted when a progress dialog is shown by the provider dialog.
+
+.. deprecated:: Since QGIS 3.4 this signal is no longer used. Use QgsProxyProgressTask instead to show progress reports.
 %End
 
     void progressMessage( QString message );

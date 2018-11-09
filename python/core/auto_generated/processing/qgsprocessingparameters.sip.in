@@ -493,9 +493,23 @@ be evaluated once for every input feature processed.
 Evaluates the parameter with matching ``definition`` to a static string value.
 %End
 
+    static QString parameterAsString( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a static string value.
+
+.. versionadded:: 3.4
+%End
+
     static QString parameterAsExpression( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to an expression.
+%End
+
+    static QString parameterAsExpression( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definitionand`` ``value`` to an expression.
+
+.. versionadded:: 3.4
 %End
 
     static double parameterAsDouble( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
@@ -503,9 +517,37 @@ Evaluates the parameter with matching ``definition`` to an expression.
 Evaluates the parameter with matching ``definition`` to a static double value.
 %End
 
+    static double parameterAsDouble( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a static double value.
+
+.. versionadded:: 3.4
+%End
+
     static int parameterAsInt( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a static integer value.
+%End
+
+    static int parameterAsInt( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a static integer value.
+
+.. versionadded:: 3.4
+%End
+
+    static QList<int> parameterAsInts( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a list of integer values.
+
+.. versionadded:: 3.4
+%End
+
+    static QList<int> parameterAsInts( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a list of integer values.
+
+.. versionadded:: 3.4
 %End
 
     static int parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
@@ -513,9 +555,23 @@ Evaluates the parameter with matching ``definition`` to a static integer value.
 Evaluates the parameter with matching ``definition`` to a enum value.
 %End
 
+    static int parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a enum value.
+
+.. versionadded:: 3.4
+%End
+
     static QList<int> parameterAsEnums( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to list of enum values.
+%End
+
+    static QList<int> parameterAsEnums( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to list of enum values.
+
+.. versionadded:: 3.4
 %End
 
     static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
@@ -523,9 +579,16 @@ Evaluates the parameter with matching ``definition`` to list of enum values.
 Evaluates the parameter with matching ``definition`` to a static boolean value.
 %End
 
+    static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a static boolean value.
+
+.. versionadded:: 3.4
+%End
+
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
                                             const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-                                            QgsProcessingContext &context, QString &destinationIdentifier /Out/ ) /Factory/;
+                                            QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = 0 ) /Factory/;
 %Docstring
 Evaluates the parameter with matching ``definition`` to a feature sink.
 
@@ -540,6 +603,25 @@ to the sink, e.g. via calling :py:func:`QgsProcessingUtils.mapLayerFromString()`
 This function creates a new object and the caller takes responsibility for deleting the returned object.
 %End
 
+    static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value,
+                                            const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+                                            QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = 0 ) /Factory/;
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a feature sink.
+
+The ``fields``, ``geometryType`` and ``crs`` parameters dictate the properties
+of the resulting feature sink.
+
+Sinks will either be taken from ``context``'s active project, or created from external
+providers and stored temporarily in the ``context``. The ``destinationIdentifier``
+argument will be set to a string which can be used to retrieve the layer corresponding
+to the sink, e.g. via calling :py:func:`QgsProcessingUtils.mapLayerFromString()`
+
+This function creates a new object and the caller takes responsibility for deleting the returned object.
+
+.. versionadded:: 3.4
+%End
+
     static QgsProcessingFeatureSource *parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) /Factory/;
 %Docstring
 Evaluates the parameter with matching ``definition`` to a feature source.
@@ -548,6 +630,18 @@ Sources will either be taken from ``context``'s active project, or loaded from e
 sources and stored temporarily in the ``context``.
 
 This function creates a new object and the caller takes responsibility for deleting the returned object.
+%End
+
+    static QgsProcessingFeatureSource *parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context ) /Factory/;
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a feature source.
+
+Sources will either be taken from ``context``'s active project, or loaded from external
+sources and stored temporarily in the ``context``.
+
+This function creates a new object and the caller takes responsibility for deleting the returned object.
+
+.. versionadded:: 3.4
 %End
 
     static QString parameterAsCompatibleSourceLayerPath( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
@@ -574,6 +668,17 @@ sources and stored temporarily in the ``context``. In either case, callers do no
 need to handle deletion of the returned layer.
 %End
 
+    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a map layer.
+
+Layers will either be taken from ``context``'s active project, or loaded from external
+sources and stored temporarily in the ``context``. In either case, callers do not
+need to handle deletion of the returned layer.
+
+.. versionadded:: 3.4
+%End
+
     static QgsRasterLayer *parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a raster layer.
@@ -583,14 +688,39 @@ sources and stored temporarily in the ``context``. In either case, callers do no
 need to handle deletion of the returned layer.
 %End
 
+    static QgsRasterLayer *parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a raster layer.
+
+Layers will either be taken from ``context``'s active project, or loaded from external
+sources and stored temporarily in the ``context``. In either case, callers do not
+need to handle deletion of the returned layer.
+
+.. versionadded:: 3.4
+%End
+
     static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a output layer destination.
 %End
 
+    static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a output layer destination.
+
+.. versionadded:: 3.4
+%End
+
     static QString parameterAsFileOutput( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a file based output destination.
+%End
+
+    static QString parameterAsFileOutput( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a file based output destination.
+
+.. versionadded:: 3.4
 %End
 
     static QgsVectorLayer *parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
@@ -602,9 +732,27 @@ sources and stored temporarily in the ``context``. In either case, callers do no
 need to handle deletion of the returned layer.
 %End
 
+    static QgsVectorLayer *parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a vector layer.
+
+Layers will either be taken from ``context``'s active project, or loaded from external
+sources and stored temporarily in the ``context``. In either case, callers do not
+need to handle deletion of the returned layer.
+
+.. versionadded:: 3.4
+%End
+
     static QgsCoordinateReferenceSystem parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a coordinate reference system.
+%End
+
+    static QgsCoordinateReferenceSystem parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a coordinate reference system.
+
+.. versionadded:: 3.4
 %End
 
     static QgsRectangle parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
@@ -618,6 +766,21 @@ reprojected so that it is in the specified ``crs``. In this case the extent of t
 .. seealso:: :py:func:`parameterAsExtentGeometry`
 
 .. seealso:: :py:func:`parameterAsExtentCrs`
+%End
+
+    static QgsRectangle parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context,
+                                           const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a rectangular extent.
+
+If ``crs`` is set, and the original coordinate reference system of the parameter can be determined, then the extent will be automatically
+reprojected so that it is in the specified ``crs``. In this case the extent of the reproject rectangle will be returned.
+
+.. seealso:: :py:func:`parameterAsExtentGeometry`
+
+.. seealso:: :py:func:`parameterAsExtentCrs`
+
+.. versionadded:: 3.4
 %End
 
     static QgsGeometry parameterAsExtentGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
@@ -652,6 +815,18 @@ If ``crs`` is set then the point will be automatically reprojected so that it is
 .. seealso:: :py:func:`parameterAsPointCrs`
 %End
 
+    static QgsPointXY parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context,
+                                        const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a point.
+
+If ``crs`` is set then the point will be automatically reprojected so that it is in the specified ``crs``.
+
+.. seealso:: :py:func:`parameterAsPointCrs`
+
+.. versionadded:: 3.4
+%End
+
     static QgsCoordinateReferenceSystem parameterAsPointCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Returns the coordinate reference system associated with an point parameter value.
@@ -664,10 +839,25 @@ Returns the coordinate reference system associated with an point parameter value
 Evaluates the parameter with matching ``definition`` to a file/folder name.
 %End
 
+    static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a file/folder name.
+
+.. versionadded:: 3.4
+%End
+
     static QVariantList parameterAsMatrix( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a matrix/table of values.
 Tables are collapsed to a 1 dimensional list.
+%End
+
+    static QVariantList parameterAsMatrix( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a matrix/table of values.
+Tables are collapsed to a 1 dimensional list.
+
+.. versionadded:: 3.4
 %End
 
     static QList< QgsMapLayer *> parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
@@ -675,14 +865,35 @@ Tables are collapsed to a 1 dimensional list.
 Evaluates the parameter with matching ``definition`` to a list of map layers.
 %End
 
+    static QList< QgsMapLayer *> parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a list of map layers.
+
+.. versionadded:: 3.4
+%End
+
     static QList<double> parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a range of values.
 %End
 
+    static QList<double> parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a range of values.
+
+.. versionadded:: 3.4
+%End
+
     static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a list of fields.
+%End
+
+    static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a list of fields.
+
+.. versionadded:: 3.4
 %End
 
     static QgsProcessingParameterDefinition *parameterFromVariantMap( const QVariantMap &map ) /Factory/;
@@ -1903,6 +2114,19 @@ a value of false indicates that the destination should not be created by default
 .. seealso:: :py:func:`createByDefault`
 %End
 
+  protected:
+
+    QgsProcessingProvider *originalProvider() const;
+%Docstring
+Original (source) provider which this parameter has been derived from.
+In the case of destination parameters which are part of model algorithms, this
+will reflect the child algorithm's provider which actually generates the
+parameter, as opposed to the provider which this parameter belongs to (i.e.
+the model provider)
+
+.. versionadded:: 3.2
+%End
+
 };
 
 
@@ -1947,6 +2171,15 @@ Returns the type name for the parameter class.
 
     virtual QString defaultFileExtension() const;
 
+
+    virtual QStringList supportedOutputVectorLayerExtensions() const;
+%Docstring
+Returns a list of the vector format file extensions supported by this parameter.
+
+.. seealso:: :py:func:`defaultFileExtension`
+
+.. versionadded:: 3.2
+%End
 
     QgsProcessing::SourceType dataType() const;
 %Docstring
@@ -2029,6 +2262,15 @@ Returns the type name for the parameter class.
     virtual QString defaultFileExtension() const;
 
 
+    virtual QStringList supportedOutputVectorLayerExtensions() const;
+%Docstring
+Returns a list of the vector format file extensions supported by this parameter.
+
+.. seealso:: :py:func:`defaultFileExtension`
+
+.. versionadded:: 3.2
+%End
+
     QgsProcessing::SourceType dataType() const;
 %Docstring
 Returns the layer type for this created vector layer.
@@ -2102,6 +2344,15 @@ Returns the type name for the parameter class.
 
     virtual QString defaultFileExtension() const;
 
+
+    virtual QStringList supportedOutputRasterLayerExtensions() const;
+%Docstring
+Returns a list of the raster format file extensions supported for this parameter.
+
+.. seealso:: :py:func:`defaultFileExtension`
+
+.. versionadded:: 3.2
+%End
 
     static QgsProcessingParameterRasterDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
@@ -2236,7 +2487,8 @@ A raster band parameter for Processing algorithms.
 
     QgsProcessingParameterBand( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                 const QString &parentLayerParameterName = QString(),
-                                bool optional = false );
+                                bool optional = false,
+                                bool allowMultiple = false );
 %Docstring
 Constructor for QgsProcessingParameterBand.
 %End
@@ -2279,6 +2531,24 @@ Sets the name of the parent layer parameter. Use an empty string if this is not 
     static QgsProcessingParameterBand *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
+%End
+
+    bool allowMultiple() const;
+%Docstring
+Returns whether multiple band selections are permitted.
+
+.. seealso:: :py:func:`setAllowMultiple`
+
+.. versionadded:: 3.4
+%End
+
+    void setAllowMultiple( bool allowMultiple );
+%Docstring
+Sets whether multiple band selections are permitted.
+
+.. seealso:: :py:func:`allowMultiple`
+
+.. versionadded:: 3.4
 %End
 
 };

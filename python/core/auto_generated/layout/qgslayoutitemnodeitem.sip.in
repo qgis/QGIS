@@ -135,12 +135,12 @@ Constructor for a QgsLayoutNodesItem with the given ``polygon`` nodes, attached 
 
 
 
-    virtual bool _addNode( const int nodeIndex, QPointF newNode, const double radius ) = 0;
+    virtual bool _addNode( int nodeIndex, QPointF newNode, double radius ) = 0;
 %Docstring
 Method called in addNode.
 %End
 
-    virtual bool _removeNode( const int nodeIndex ) = 0;
+    virtual bool _removeNode( int nodeIndex ) = 0;
 %Docstring
 Method called in removeNode.
 %End

@@ -14,7 +14,7 @@
    <string>DWG/DXF Import</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="7" column="0" colspan="2">
+   <item row="8" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -24,10 +24,10 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2">
+   <item row="3" column="0" colspan="2">
     <widget class="QGroupBox" name="mGroupBox">
      <property name="title">
-      <string>Choose layers to import into project</string>
+      <string>Layers to Import into Project</string>
      </property>
      <property name="checkable">
       <bool>false</bool>
@@ -91,14 +91,14 @@
         <item>
          <widget class="QPushButton" name="pbDeselectAll">
           <property name="text">
-           <string>Deselect all</string>
+           <string>Deselect All</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="pbSelectAll">
           <property name="text">
-           <string>Select all</string>
+           <string>Select All</string>
           </property>
          </widget>
         </item>
@@ -107,14 +107,14 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="0" colspan="2">
+   <item row="1" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Import</string>
+      <string>Import Drawing into GeoPackage</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="1" column="1">
-       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
         </property>
@@ -148,7 +148,7 @@
       <item row="3" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Drawing</string>
+         <string>Source drawing</string>
         </property>
         <property name="buddy">
          <cstring>leDrawing</cstring>
@@ -158,10 +158,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>GeoPackage</string>
-        </property>
-        <property name="buddy">
-         <cstring>leDatabase</cstring>
+         <string>Target package</string>
         </property>
        </widget>
       </item>
@@ -178,16 +175,12 @@
       <item row="0" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLineEdit" name="leDatabase">
-          <property name="readOnly">
-           <bool>true</bool>
+         <widget class="QgsFileWidget" name="mDatabaseFileWidget">
+          <property name="dialogTitle">
+           <string>Select GeoPackage Database</string>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pbBrowseDatabase">
-          <property name="text">
-           <string>…</string>
+          <property name="filter">
+           <string notr="true">*.gpkg;;*.GPKG</string>
           </property>
          </widget>
         </item>
@@ -228,19 +221,31 @@
      </layout>
     </widget>
    </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QgsMessageBar" name="bar" native="true"/>
+   </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QWidget</extends>
+   <header>qgsmessagebar.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>leDatabase</tabstop>
-  <tabstop>pbBrowseDatabase</tabstop>
   <tabstop>pbLoadDatabase</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>leDrawing</tabstop>

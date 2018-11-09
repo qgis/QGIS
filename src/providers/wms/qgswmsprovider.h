@@ -93,7 +93,7 @@ class QgsCachedImageFetcher: public QgsImageFetcher
   private slots:
     void send()
     {
-      QgsDebugMsg( QString( "XXX Sending %1x%2 image" ).arg( _img.width() ).arg( _img.height() ) );
+      QgsDebugMsg( QStringLiteral( "XXX Sending %1x%2 image" ).arg( _img.width() ).arg( _img.height() ) );
       emit finish( _img );
     }
 };
@@ -461,6 +461,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     //! User's settings (URI, authorization, layer, style, ...)
     QgsWmsSettings mSettings;
+
+    friend class TestQgsWmsProvider;
+
 };
 
 

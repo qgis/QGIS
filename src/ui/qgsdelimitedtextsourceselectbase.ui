@@ -45,16 +45,7 @@
       <bool>true</bool>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
+      <property name="margin">
        <number>0</number>
       </property>
       <item>
@@ -71,7 +62,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>File Name</string>
+           <string>File name</string>
           </property>
           <property name="indent">
            <number>0</number>
@@ -97,7 +88,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Layer Name</string>
+           <string>Layer name</string>
           </property>
          </widget>
         </item>
@@ -187,7 +178,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>File format</string>
+          <string>File Format</string>
          </property>
          <property name="collapsed">
           <bool>false</bool>
@@ -295,16 +286,7 @@
             </widget>
             <widget class="QWidget" name="swpDelimOptions">
              <layout class="QVBoxLayout" name="verticalLayout_11">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
+              <property name="margin">
                <number>0</number>
               </property>
               <item>
@@ -325,16 +307,7 @@
                  <property name="spacing">
                   <number>0</number>
                  </property>
-                 <property name="leftMargin">
-                  <number>2</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>2</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>2</number>
-                 </property>
-                 <property name="bottomMargin">
+                 <property name="margin">
                   <number>2</number>
                  </property>
                  <item>
@@ -593,16 +566,7 @@
             </widget>
             <widget class="QWidget" name="swpRegexpOptions">
              <layout class="QVBoxLayout" name="verticalLayout_12">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
+              <property name="margin">
                <number>0</number>
               </property>
               <item>
@@ -678,7 +642,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Record and fields options</string>
+          <string>Record and Fields Options</string>
          </property>
          <property name="collapsed">
           <bool>true</bool>
@@ -811,6 +775,16 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="cbxDetectTypes">
+            <property name="text">
+             <string>Detect field types</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -823,7 +797,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Geometry definition</string>
+          <string>Geometry Definition</string>
          </property>
          <property name="collapsed">
           <bool>true</bool>
@@ -900,16 +874,7 @@
             </property>
             <widget class="QWidget" name="swpGeomXY">
              <layout class="QVBoxLayout" name="verticalLayout_8">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
+              <property name="margin">
                <number>0</number>
               </property>
               <item>
@@ -1033,16 +998,7 @@
             </widget>
             <widget class="QWidget" name="swpGeomWKT">
              <layout class="QVBoxLayout" name="verticalLayout_6">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
+              <property name="margin">
                <number>0</number>
               </property>
               <item>
@@ -1157,7 +1113,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Layer settings</string>
+          <string>Layer Settings</string>
          </property>
          <property name="collapsed">
           <bool>true</bool>
@@ -1230,7 +1186,7 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Sample data</string>
+          <string>Sample Data</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>false</bool>
@@ -1332,6 +1288,7 @@
   <tabstop>recordOptionsGroupBox</tabstop>
   <tabstop>rowCounter</tabstop>
   <tabstop>cbxUseHeader</tabstop>
+  <tabstop>cbxDetectTypes</tabstop>
   <tabstop>cbxPointIsComma</tabstop>
   <tabstop>cbxTrimFields</tabstop>
   <tabstop>cbxSkipEmptyFields</tabstop>

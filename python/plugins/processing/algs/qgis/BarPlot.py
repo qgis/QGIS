@@ -29,7 +29,8 @@ import plotly as plt
 import plotly.graph_objs as go
 
 
-from qgis.core import (QgsProcessingParameterFeatureSource,
+from qgis.core import (QgsFeatureRequest,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingException,
                        QgsProcessingParameterFileDestination)
@@ -83,7 +84,7 @@ class BarPlot(QgisAlgorithm):
 
         values = vector.values(source, valuefieldname)
 
-        x_var = [i[namefieldname] for i in source.getFeatures()]
+        x_var = vector.convert_nulls([i[namefieldname] for i in source.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry))], '<NULL>')
 
         data = [go.Bar(x=x_var,
                        y=values[valuefieldname])]

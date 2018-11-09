@@ -22,11 +22,12 @@
 
 #include "qgis_core.h"
 #include "qgsellipse.h"
-#include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgsrectangle.h"
 #include "qgscircularstring.h"
 
+
+class QgsPoint;
 
 /**
  * \ingroup core
@@ -208,14 +209,14 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \see radius()
      * \see setRadius()
      */
-    void setSemiMajorAxis( const double semiMajorAxis ) override;
+    void setSemiMajorAxis( double semiMajorAxis ) override;
 
     /**
      * Inherited method. Use setRadius instead.
      * \see radius()
      * \see setRadius()
      */
-    void setSemiMinorAxis( const double semiMinorAxis ) override;
+    void setSemiMinorAxis( double semiMinorAxis ) override;
 
     //! Returns the radius of the circle
     double radius() const {return mSemiMajorAxis;}
@@ -247,6 +248,13 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
 
     QString toString( int pointPrecision = 17, int radiusPrecision = 17, int azimuthPrecision = 2 ) const override;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsCircle: %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 };
 
 #endif // QGSCIRCLE_H

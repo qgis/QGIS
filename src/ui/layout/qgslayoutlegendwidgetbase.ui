@@ -75,7 +75,7 @@
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
-          <string>Main properties</string>
+          <string>Main Properties</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
@@ -170,7 +170,7 @@
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
-          <string>Legend items</string>
+          <string>Legend Items</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
@@ -893,7 +893,7 @@
              <string>Space above text using group style.</string>
             </property>
             <property name="text">
-             <string>Group Space</string>
+             <string>Group space</string>
             </property>
            </widget>
           </item>

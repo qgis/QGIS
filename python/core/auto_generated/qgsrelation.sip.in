@@ -11,6 +11,7 @@
 
 
 
+
 class QgsRelation
 {
 
@@ -34,12 +35,22 @@ class QgsRelation
 %Docstring
 Default constructor. Creates an invalid relation.
 %End
+    ~QgsRelation();
 
-    static QgsRelation createFromXml( const QDomNode &node );
+    QgsRelation( const QgsRelation &other );
+%Docstring
+Copies a relation.
+This makes a shallow copy, relations are implicitly shared and only duplicated when the copy is
+changed.
+%End
+
+
+    static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context );
 %Docstring
 Creates a relation from an XML structure. Used for reading .qgs projects.
 
 :param node: The dom node containing the relation information
+:param context: to pass project translator
 
 :return: A relation
 %End
@@ -262,6 +273,7 @@ Returns a list of attributes used to form the referencing fields
     bool isValid() const;
 %Docstring
 Returns the validity of this relation. Don't use the information if it's not valid.
+A relation is considered valid if both referenced and referencig layers are valid.
 
 :return: true if the relation is valid
 %End
@@ -289,6 +301,14 @@ Gets the referenced field counterpart given a referencing field.
 Gets the referencing field counterpart given a referenced field.
 
 .. versionadded:: 3.0
+%End
+
+    void updateRelationStatus();
+%Docstring
+Updates the validity status of this relation.
+Will be called internally whenever a member is changed.
+
+.. versionadded:: 3.6
 %End
 
 };

@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include "qgsrubberband.h"
-#include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgsrectangle.h"
 #include <QPainter>
 
 QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geometryType )
-  : QgsMapCanvasItem( mapCanvas )
+  : QObject( nullptr )
+  , QgsMapCanvasItem( mapCanvas )
   , mGeometryType( geometryType )
 {
   reset( geometryType );
@@ -37,7 +38,8 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType
 }
 
 QgsRubberBand::QgsRubberBand()
-  : QgsMapCanvasItem( nullptr )
+  : QObject( nullptr )
+  , QgsMapCanvasItem( nullptr )
 {
 }
 
@@ -49,6 +51,9 @@ void QgsRubberBand::setColor( const QColor &color )
 
 void QgsRubberBand::setFillColor( const QColor &color )
 {
+  if ( mBrush.color() == color )
+    return;
+
   mBrush.setColor( color );
 }
 
@@ -229,6 +234,18 @@ void QgsRubberBand::setToGeometry( const QgsGeometry &geom, QgsVectorLayer *laye
 
   reset( geom.type() );
   addGeometry( geom, layer );
+}
+
+void QgsRubberBand::setToGeometry( const QgsGeometry &geom, const QgsCoordinateReferenceSystem &crs )
+{
+  if ( geom.isNull() )
+  {
+    reset( mGeometryType );
+    return;
+  }
+
+  reset( geom.type() );
+  addGeometry( geom, crs );
 }
 
 void QgsRubberBand::addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer )
@@ -524,7 +541,7 @@ void QgsRubberBand::updateRect()
   // This is an hack to pass QgsMapCanvasItem::setRect what it
   // expects (encoding of position and size of the item)
   qreal res = m2p.mapUnitsPerPixel();
-  QgsPointXY topLeft = m2p.toMapPoint( r.xMinimum(), r.yMinimum() );
+  QgsPointXY topLeft = m2p.toMapCoordinates( r.xMinimum(), r.yMinimum() );
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + r.width()*res, topLeft.y() - r.height()*res );
 
   setRect( rect );

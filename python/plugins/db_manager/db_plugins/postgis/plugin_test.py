@@ -79,7 +79,7 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
                 if tab.type == Table.RasterType:
                     raster_tables_count += 1
                     gdalUri = tab.gdalUri()
-                    m = re.search(' dbname=([^ ]*) ', gdalUri)
+                    m = re.search(' dbname=\'([^ ]*)\' ', gdalUri)
                     self.assertTrue(m)
                     actual_dbname = m.group(1)
                     self.assertEqual(actual_dbname, expected_dbname)

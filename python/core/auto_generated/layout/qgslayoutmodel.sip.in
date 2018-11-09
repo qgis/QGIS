@@ -82,7 +82,7 @@ Returns the QgsLayoutItem corresponding to a QModelIndex ``index``, if possible.
 .. seealso:: :py:func:`indexForItem`
 %End
 
-    QModelIndex indexForItem( QgsLayoutItem *item, const int column = 0 );
+    QModelIndex indexForItem( QgsLayoutItem *item, int column = 0 );
 %Docstring
 Returns the QModelIndex corresponding to a :py:class:`QgsLayoutItem` ``item`` and ``column``, if possible.
 

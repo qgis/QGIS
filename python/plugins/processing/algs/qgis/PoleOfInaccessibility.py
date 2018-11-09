@@ -27,7 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsWkbTypes,
+from qgis.core import (QgsApplication,
+                       QgsWkbTypes,
                        QgsField,
                        NULL,
                        QgsFeatureSink,
@@ -35,7 +36,6 @@ from qgis.core import (QgsWkbTypes,
                        QgsProcessingException,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSink)
 
 from qgis.PyQt.QtCore import QVariant
@@ -53,7 +53,10 @@ class PoleOfInaccessibility(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'centroids.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmCentroids.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmCentroids.svg")
 
     def tags(self):
         return self.tr('furthest,point,distant,extreme,maximum,centroid,center,centre').split(',')
@@ -71,7 +74,7 @@ class PoleOfInaccessibility(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'),
                                                               [QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterDistance(self.TOLERANCE,
-                                                         self.tr('Tolerance (layer units)'),
+                                                         self.tr('Tolerance'),
                                                          parentParameterName=self.INPUT,
                                                          defaultValue=1.0, minValue=0.0))
 

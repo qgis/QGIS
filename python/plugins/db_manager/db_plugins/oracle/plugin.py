@@ -32,15 +32,13 @@ from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 
-from qgis.core import QgsVectorLayer, NULL, QgsSettings
+from qgis.core import QgsApplication, QgsVectorLayer, NULL, QgsSettings
 
 from ..plugin import ConnectionError, InvalidDataException, DBPlugin, \
     Database, Schema, Table, VectorTable, TableField, TableConstraint, \
     TableIndex, TableTrigger
 
 from qgis.core import QgsCredentials
-
-from . import resources_rc  # NOQA
 
 
 def classFactory():
@@ -51,7 +49,7 @@ class OracleDBPlugin(DBPlugin):
 
     @classmethod
     def icon(self):
-        return QIcon(":/db_manager/oracle/icon")
+        return QgsApplication.getThemeIcon("/mIconOracle.svg")
 
     @classmethod
     def typeName(self):
@@ -204,7 +202,7 @@ class ORDatabase(Database):
         uri = self.uri()
         con = self.database().connector
 
-        uri.setDataSource(u"", u"({})".format(sql), geomCol, filter, uniqueCol.strip(u'"'))
+        uri.setDataSource(u"", u"({}\n)".format(sql), geomCol, filter, uniqueCol.strip(u'"'))
         if avoidSelectById:
             uri.disableSelectAtId(True)
         provider = self.dbplugin().providerName()
@@ -214,7 +212,7 @@ class ORDatabase(Database):
         if not vlayer.isValid():
 
             wkbType, srid = con.getTableMainGeomType(
-                u"({})".format(sql), geomCol)
+                u"({}\n)".format(sql), geomCol)
             uri.setWkbType(wkbType)
             if srid:
                 uri.setSrid(str(srid))
@@ -243,17 +241,17 @@ class ORDatabase(Database):
         mainWindow.registerAction(action, None, self.deleteActionSlot)
         action.setShortcuts(QKeySequence.Delete)
 
-        action = QAction(QIcon(":/db_manager/actions/create_table"),
+        action = QAction(QgsApplication.getThemeIcon("/mActionCreateTable.svg"),
                          QApplication.translate(
                              "DBManagerPlugin", "&Create Table…"), self)
         mainWindow.registerAction(action, QApplication.translate(
             "DBManagerPlugin", "&Table"), self.createTableActionSlot)
-        action = QAction(QIcon(":/db_manager/actions/edit_table"),
+        action = QAction(QgsApplication.getThemeIcon("/mActionEditTable.svg"),
                          QApplication.translate(
                              "DBManagerPlugin", "&Edit Table…"), self)
         mainWindow.registerAction(action, QApplication.translate(
             "DBManagerPlugin", "&Table"), self.editTableActionSlot)
-        action = QAction(QIcon(":/db_manager/actions/del_table"),
+        action = QAction(QgsApplication.getThemeIcon("/mActionDeleteTable.svg"),
                          QApplication.translate(
                              "DBManagerPlugin", "&Delete Table/View…"), self)
         mainWindow.registerAction(action, QApplication.translate(

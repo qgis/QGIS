@@ -61,7 +61,7 @@ class ReliefColorsWidget(BASE, WIDGET):
         self.btnDown.setIcon(QgsApplication.getThemeIcon('/mActionArrowDown.svg'))
         self.btnLoad.setIcon(QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
         self.btnSave.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
-        self.btnAuto.setIcon(QgsApplication.getThemeIcon('/mActionDraw.svg'))
+        self.btnAuto.setIcon(QgsApplication.getThemeIcon('/mActionReload.svg'))
 
         self.layer = None
 
@@ -258,7 +258,7 @@ class ReliefColorsWidgetWrapper(WidgetWrapper):
                 break
 
     def parentValueChanged(self, wrapper):
-        self.setLayer(wrapper.value())
+        self.setLayer(wrapper.parameterValue())
 
     def setLayer(self, layer):
         if isinstance(layer, QgsMapLayer):

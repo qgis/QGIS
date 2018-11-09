@@ -32,6 +32,7 @@
 #include "qgslayout.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutreportcontext.h"
+#include "qgsexpressionutils.h"
 
 #include <QSettings>
 #include <QDir>
@@ -237,6 +238,7 @@ QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other )
     mStack << new QgsExpressionContextScope( *scope );
   }
   mHighlightedVariables = other.mHighlightedVariables;
+  mHighlightedFunctions = other.mHighlightedFunctions;
   mCachedValues = other.mCachedValues;
 }
 
@@ -250,6 +252,7 @@ QgsExpressionContext &QgsExpressionContext::operator=( QgsExpressionContext &&ot
     other.mStack.clear();
 
     mHighlightedVariables = other.mHighlightedVariables;
+    mHighlightedFunctions = other.mHighlightedFunctions;
     mCachedValues = other.mCachedValues;
   }
   return *this;
@@ -264,6 +267,7 @@ QgsExpressionContext &QgsExpressionContext::operator=( const QgsExpressionContex
     mStack << new QgsExpressionContextScope( *scope );
   }
   mHighlightedVariables = other.mHighlightedVariables;
+  mHighlightedFunctions = other.mHighlightedFunctions;
   mCachedValues = other.mCachedValues;
   return *this;
 }
@@ -309,6 +313,16 @@ bool QgsExpressionContext::isHighlightedVariable( const QString &name ) const
 void QgsExpressionContext::setHighlightedVariables( const QStringList &variableNames )
 {
   mHighlightedVariables = variableNames;
+}
+
+bool QgsExpressionContext::isHighlightedFunction( const QString &name ) const
+{
+  return mHighlightedFunctions.contains( name );
+}
+
+void QgsExpressionContext::setHighlightedFunctions( const QStringList &names )
+{
+  mHighlightedFunctions = names;
 }
 
 const QgsExpressionContextScope *QgsExpressionContext::activeScopeForVariable( const QString &name ) const
@@ -677,7 +691,7 @@ class GetLayoutItemVariables : public QgsScopedExpressionFunction
       if ( !mLayout )
         return QVariant();
 
-      QString id = values.at( 0 ).toString().toLower();
+      QString id = values.at( 0 ).toString();
 
       const QgsLayoutItem *item = mLayout->itemById( id );
       if ( !item )
@@ -698,44 +712,6 @@ class GetLayoutItemVariables : public QgsScopedExpressionFunction
     const QgsLayout *mLayout = nullptr;
 
 };
-
-class GetLayerVisibility : public QgsScopedExpressionFunction
-{
-  public:
-    GetLayerVisibility( const QList<QgsMapLayer *> &layers )
-      : QgsScopedExpressionFunction( QStringLiteral( "is_layer_visible" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "General" ) )
-      , mLayers( layers )
-    {}
-
-    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
-    {
-      if ( mLayers.isEmpty() )
-      {
-        return QVariant( false );
-      }
-
-      QgsMapLayer *layer = _qgis_findLayer( mLayers, values.at( 0 ).toString() );
-      if ( layer )
-      {
-        return QVariant( true );
-      }
-      else
-      {
-        return QVariant( false );
-      }
-    }
-
-    QgsScopedExpressionFunction *clone() const override
-    {
-      return new GetLayerVisibility( mLayers );
-    }
-
-  private:
-
-    const QList<QgsMapLayer *> mLayers;
-
-};
-
 
 class GetCurrentFormFieldValue : public QgsScopedExpressionFunction
 {
@@ -790,12 +766,13 @@ class GetProcessingParameterValue : public QgsScopedExpressionFunction
 ///@endcond
 
 
-QgsExpressionContextScope *QgsExpressionContextUtils::formScope( const QgsFeature &formFeature )
+QgsExpressionContextScope *QgsExpressionContextUtils::formScope( const QgsFeature &formFeature, const QString &formMode )
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Form" ) );
   scope->addFunction( QStringLiteral( "current_value" ), new GetCurrentFormFieldValue( ) );
   scope->setVariable( QStringLiteral( "current_geometry" ), formFeature.geometry( ), true );
   scope->setVariable( QStringLiteral( "current_feature" ), formFeature, true );
+  scope->setVariable( QStringLiteral( "form_mode" ), formMode, true );
   return scope;
 }
 
@@ -978,24 +955,63 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
   // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
   // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
 
+  // and because people don't read that ^^, I'm going to blast it all over this function
+
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Map Settings" ) );
 
   //add known map settings context variables
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_id" ), "canvas", true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_rotation" ), mapSettings.rotation(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_scale" ), mapSettings.scale(), true ) );
+
+  // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
+  // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
+
   QgsGeometry extent = QgsGeometry::fromRect( mapSettings.visibleExtent() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent" ), QVariant::fromValue( extent ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_width" ), mapSettings.visibleExtent().width(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_height" ), mapSettings.visibleExtent().height(), true ) );
+
+  // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
+  // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
+
   QgsGeometry centerPoint = QgsGeometry::fromPointXY( mapSettings.visibleExtent().center() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_center" ), QVariant::fromValue( centerPoint ), true ) );
+
+  // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
+  // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs" ), mapSettings.destinationCrs().authid(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_definition" ), mapSettings.destinationCrs().toProj4(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mapSettings.mapUnits() ), true ) );
 
+  // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
+  // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
+
+  QVariantList layersIds;
+  QVariantList layers;
+  const QList<QgsMapLayer *> layersInMap = mapSettings.layers();
+  layersIds.reserve( layersInMap.count() );
+  layers.reserve( layersInMap.count() );
+  for ( QgsMapLayer *layer : layersInMap )
+  {
+    layersIds << layer->id();
+    layers << QVariant::fromValue<QgsWeakMapLayerPointer>( QgsWeakMapLayerPointer( layer ) );
+  }
+
+  // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
+  // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
+
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layer_ids" ), layersIds, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layers" ), layers, true ) );
+
+  // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
+  // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
+
   scope->addFunction( QStringLiteral( "is_layer_visible" ), new GetLayerVisibility( mapSettings.layers() ) );
+
+  // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
+  // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
 
   return scope;
 }
@@ -1270,13 +1286,13 @@ QgsExpressionContextScope *QgsExpressionContextUtils::processingAlgorithmScope( 
   Q_UNUSED( context );
 
   std::unique_ptr< QgsExpressionContextScope > scope( new QgsExpressionContextScope( QObject::tr( "Algorithm" ) ) );
+  scope->addFunction( QStringLiteral( "parameter" ), new GetProcessingParameterValue( parameters ) );
+
   if ( !algorithm )
     return scope.release();
 
   //add standard algorithm variables
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "algorithm_id" ), algorithm->id(), true ) );
-
-  scope->addFunction( QStringLiteral( "parameter" ), new GetProcessingParameterValue( parameters ) );
 
   return scope.release();
 }
@@ -1312,4 +1328,36 @@ QSet<QString> QgsScopedExpressionFunction::referencedColumns( const QgsExpressio
 bool QgsScopedExpressionFunction::isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
 {
   return allParamsStatic( node, parent, context );
+}
+
+//
+// GetLayerVisibility
+//
+
+QgsExpressionContextUtils::GetLayerVisibility::GetLayerVisibility( const QList<QgsMapLayer *> &layers )
+  : QgsScopedExpressionFunction( QStringLiteral( "is_layer_visible" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "General" ) )
+  , mLayers( _qgis_listRawToQPointer( layers ) )
+{}
+
+QVariant QgsExpressionContextUtils::GetLayerVisibility::func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  if ( mLayers.isEmpty() )
+  {
+    return false;
+  }
+
+  QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), parent );
+  if ( layer )
+  {
+    return mLayers.contains( layer );
+  }
+  else
+  {
+    return false;
+  }
+}
+
+QgsScopedExpressionFunction *QgsExpressionContextUtils::GetLayerVisibility::clone() const
+{
+  return new GetLayerVisibility( _qgis_listQPointerToRaw( mLayers ) );
 }

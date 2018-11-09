@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>org.qgis.qgis.desktop</id>
+  <name>QGIS Desktop</name>
+  <summary>A Free and Open Source Geographic Information System</summary>
+  <screenshots>
+    <screenshot><image type="source">https://qgis.org/en/_static/images/about-screenshot.png</image></screenshot>
+  </screenshots>
+  <description><p>QGIS is a user friendly Open Source Geographic Information System (GIS) licensed under the GNU General Public License. QGIS is an official project of the Open Source Geospatial Foundation (OSGeo). It runs on Linux, Unix, Mac OSX, Windows and Android and supports numerous vector, raster, and database formats and functionalities.</p></description>
+
+  <metadata_license>MIT</metadata_license>
+  <project_license>GPL-2.0+</project_license>
+  <url type="bugtracker">https://issues.qgis.org/projects/qgis/issues/</url>
+  <url type="donation">https://qgis.org/en/site/getinvolved/donations.html</url>
+  <url type="faq">https://qgis.org/en/site/getinvolved/faq/index.html</url>
+  <url type="help">https://qgis.org/en/docs/index.html</url>
+  <url type="homepage">https://qgis.org</url>
+
+  <project_group>QGIS</project_group>
+  <releases>
+    <release version="3.4.0" date="2018-10-26" />
+    <release version="3.2.0" date="2018-06-22" />
+  </releases>
+  <launchable type="desktop-id">org.qgis.qgis.desktop</launchable>
+  <provides>
+    <binary>qgis</binary>
+  </provides>
+</component>

@@ -16,8 +16,6 @@
 #ifndef QGSLAYOUTVIEWRUBBERBAND_H
 #define QGSLAYOUTVIEWRUBBERBAND_H
 
-#include <QMouseEvent>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include <QBrush>
@@ -57,7 +55,7 @@ class GUI_EXPORT QgsLayoutViewRubberBand : public QObject
      */
     QgsLayoutViewRubberBand( QgsLayoutView *view = nullptr );
 
-    virtual ~QgsLayoutViewRubberBand() = default;
+    ~QgsLayoutViewRubberBand() override = default;
 
     /**
      * Creates a new instance of the QgsLayoutViewRubberBand subclass.

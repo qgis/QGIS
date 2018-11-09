@@ -19,6 +19,7 @@
 #include "qgsgeorefvalidators.h"
 #include "qgsmapcoordsdialog.h"
 #include "qgssettings.h"
+#include "qgsmapmouseevent.h"
 
 QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QWidget *parent )
   : QDialog( parent, Qt::Dialog )
@@ -151,4 +152,40 @@ double QgsMapCoordsDialog::dmsToDD( const QString &dms )
     return -res;
   else
     return res;
+}
+
+QgsGeorefMapToolEmitPoint::QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
+{
+  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
+}
+
+void QgsGeorefMapToolEmitPoint::canvasMoveEvent( QgsMapMouseEvent *e )
+{
+  mSnapIndicator->setMatch( mapPointMatch( e ) );
+}
+
+void QgsGeorefMapToolEmitPoint::canvasPressEvent( QgsMapMouseEvent *e )
+{
+  QgsPointLocator::Match m = mapPointMatch( e );
+  emit canvasClicked( m.isValid() ? m.point() : toMapCoordinates( e->pos() ), e->button() );
+}
+
+void QgsGeorefMapToolEmitPoint::canvasReleaseEvent( QgsMapMouseEvent *e )
+{
+  QgsMapTool::canvasReleaseEvent( e );
+  emit mouseReleased();
+}
+
+void QgsGeorefMapToolEmitPoint::deactivate()
+{
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
+
+  QgsMapTool::deactivate();
+}
+
+QgsPointLocator::Match QgsGeorefMapToolEmitPoint::mapPointMatch( QMouseEvent *e )
+{
+  QgsPointXY pnt = toMapCoordinates( e->pos() );
+  return canvas()->snappingUtils()->snapToMap( pnt );
 }

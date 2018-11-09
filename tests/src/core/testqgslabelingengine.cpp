@@ -96,7 +96,7 @@ void TestQgsLabelingEngine::init()
 void TestQgsLabelingEngine::cleanup()
 {
   QgsProject::instance()->removeMapLayer( vl->id() );
-  vl = 0;
+  vl = nullptr;
 }
 
 void TestQgsLabelingEngine::setDefaultLabelParams( QgsPalLayerSettings &settings )
@@ -214,7 +214,7 @@ void TestQgsLabelingEngine::testRuleBased()
   mapSettings.setOutputDpi( 96 );
 
   // set up most basic rule-based labeling for layer
-  QgsRuleBasedLabeling::Rule *root = new QgsRuleBasedLabeling::Rule( 0 );
+  QgsRuleBasedLabeling::Rule *root = new QgsRuleBasedLabeling::Rule( nullptr );
 
   QgsPalLayerSettings s1;
   s1.fieldName = QStringLiteral( "Class" );
@@ -556,7 +556,7 @@ void TestQgsLabelingEngine::testParticipatingLayers()
   QCOMPARE( engine.participatingLayers().toSet(), QSet< QgsMapLayer * >() << vl << layer2 );
 
   // add a rule-based labeling node
-  QgsRuleBasedLabeling::Rule *root = new QgsRuleBasedLabeling::Rule( 0 );
+  QgsRuleBasedLabeling::Rule *root = new QgsRuleBasedLabeling::Rule( nullptr );
   QgsPalLayerSettings s1;
   root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s1 ) ) );
   QgsPalLayerSettings s2;

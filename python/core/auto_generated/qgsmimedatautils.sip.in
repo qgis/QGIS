@@ -71,10 +71,19 @@ Gets mesh layer from uri if possible, otherwise returns 0 and error is set
       QString uri;
       QStringList supportedCrs;
       QStringList supportedFormats;
+
+      SIP_PYOBJECT __repr__();
+%MethodCode
+      QString str = QStringLiteral( "<QgsMimeDataUtils::Uri (%1): %2>" ).arg( sipCpp->providerKey, sipCpp->uri );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
     };
     typedef QList<QgsMimeDataUtils::Uri> UriList;
 
-    static QMimeData *encodeUriList( const UriList &layers );
+    static QMimeData *encodeUriList( const UriList &layers ) /Factory/;
+%Docstring
+Encodes a URI list to a new QMimeData object.
+%End
 
     static bool isUriList( const QMimeData *data );
 

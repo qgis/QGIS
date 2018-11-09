@@ -143,7 +143,10 @@ class CORE_EXPORT QgsRasterBlock
      * that it really contains any no data. It can be used to speed up processing.
      * Not the difference between this method and hasNoDataValue().
      * \returns true if the block may contain no data */
-    bool hasNoData() const;
+    bool hasNoData() const
+    {
+      return mHasNoDataValue || mNoDataBitmap;
+    }
 
     /**
      * Sets cell value that will be considered as "no data".
@@ -181,7 +184,10 @@ class CORE_EXPORT QgsRasterBlock
      *  \param row row index
      *  \param column column index
      *  \returns value */
-    double value( int row, int column ) const;
+    double value( int row, int column ) const
+    {
+      return value( static_cast< qgssize >( row ) * mWidth + column );
+    }
 
     /**
      * \brief Read a single value if type of block is numeric. If type is color,
@@ -191,30 +197,96 @@ class CORE_EXPORT QgsRasterBlock
     double value( qgssize index ) const;
 
     /**
+     * Gives direct access to the raster block data.
+     * The data type of the block must be Qgis::Byte otherwise it returns null pointer.
+     * Useful for most efficient read access.
+     * \note not available in Python bindings
+     * \since QGIS 3.4
+     */
+    const quint8 *byteData() const SIP_SKIP
+    {
+      if ( mDataType != Qgis::Byte )
+        return nullptr;
+      return static_cast< const quint8 * >( mData );
+    }
+
+    /**
      * \brief Read a single color
      *  \param row row index
      *  \param column column index
      *  \returns color */
-    QRgb color( int row, int column ) const;
+    QRgb color( int row, int column ) const
+    {
+      if ( !mImage ) return NO_DATA_COLOR;
+
+      return mImage->pixel( column, row );
+    }
 
     /**
      * \brief Read a single value
      *  \param index data matrix index (long type in Python)
      *  \returns color */
-    QRgb color( qgssize index ) const;
+    QRgb color( qgssize index ) const
+    {
+      int row = static_cast< int >( std::floor( static_cast< double >( index ) / mWidth ) );
+      int column = index % mWidth;
+      return color( row, column );
+    }
 
     /**
      * \brief Check if value at position is no data
      *  \param row row index
      *  \param column column index
      *  \returns true if value is no data */
-    bool isNoData( int row, int column );
+    bool isNoData( int row, int column ) const
+    {
+      return isNoData( static_cast< qgssize >( row ) * mWidth + column );
+    }
+
+    /**
+     * \brief Check if value at position is no data
+     *  \param row row index
+     *  \param column column index
+     *  \returns true if value is no data */
+    bool isNoData( qgssize row, qgssize column ) const
+    {
+      return isNoData( row * static_cast< qgssize >( mWidth ) + column );
+    }
 
     /**
      * \brief Check if value at position is no data
      *  \param index data matrix index (long type in Python)
      *  \returns true if value is no data */
-    bool isNoData( qgssize index );
+    bool isNoData( qgssize index ) const
+    {
+      if ( !mHasNoDataValue && !mNoDataBitmap )
+        return false;
+      if ( index >= static_cast< qgssize >( mWidth )*mHeight )
+      {
+        QgsDebugMsg( QStringLiteral( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
+        return true; // we consider no data if outside
+      }
+      if ( mHasNoDataValue )
+      {
+        double value = readValue( mData, mDataType, index );
+        return isNoDataValue( value );
+      }
+      // use no data bitmap
+      if ( !mNoDataBitmap )
+      {
+        // no data are not defined
+        return false;
+      }
+      // TODO: optimize
+      int row = static_cast< int >( index ) / mWidth;
+      int column = index % mWidth;
+      qgssize byte = static_cast< qgssize >( row ) * mNoDataBitmapWidth + column / 8;
+      int bit = column % 8;
+      int mask = 0x80 >> bit;
+      //int x = mNoDataBitmap[byte] & mask;
+      //QgsDebugMsg ( QString("byte = %1 bit = %2 mask = %3 nodata = %4 is nodata = %5").arg(byte).arg(bit).arg(mask, 0, 2 ).arg( x, 0, 2 ).arg( (bool)(x) ) );
+      return mNoDataBitmap[byte] & mask;
+    }
 
     /**
      * \brief Set value on position
@@ -222,14 +294,31 @@ class CORE_EXPORT QgsRasterBlock
      *  \param column column index
      *  \param value the value to be set
      *  \returns true on success */
-    bool setValue( int row, int column, double value );
+    bool setValue( int row, int column, double value )
+    {
+      return setValue( static_cast< qgssize >( row ) * mWidth + column, value );
+    }
 
     /**
      * \brief Set value on index (indexed line by line)
      *  \param index data matrix index (long type in Python)
      *  \param value the value to be set
      *  \returns true on success */
-    bool setValue( qgssize index, double value );
+    bool setValue( qgssize index, double value )
+    {
+      if ( !mData )
+      {
+        QgsDebugMsg( QStringLiteral( "Data block not allocated" ) );
+        return false;
+      }
+      if ( index >= static_cast< qgssize >( mWidth ) *mHeight )
+      {
+        QgsDebugMsg( QStringLiteral( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
+        return false;
+      }
+      writeValue( mData, mDataType, index, value );
+      return true;
+    }
 
     /**
      * \brief Set color on position
@@ -237,27 +326,90 @@ class CORE_EXPORT QgsRasterBlock
      *  \param column column index
      *  \param color the color to be set, QRgb value
      *  \returns true on success */
-    bool setColor( int row, int column, QRgb color );
+    bool setColor( int row, int column, QRgb color )
+    {
+      return setColor( static_cast< qgssize >( row ) * mWidth + column, color );
+    }
 
     /**
      * \brief Set color on index (indexed line by line)
      *  \param index data matrix index (long type in Python)
      *  \param color the color to be set, QRgb value
      *  \returns true on success */
-    bool setColor( qgssize index, QRgb color );
+    bool setColor( qgssize index, QRgb color )
+    {
+      if ( !mImage )
+      {
+        QgsDebugMsg( QStringLiteral( "Image not allocated" ) );
+        return false;
+      }
+
+      if ( index >= static_cast< qgssize >( mImage->width() ) * mImage->height() )
+      {
+        QgsDebugMsg( QStringLiteral( "index %1 out of range" ).arg( index ) );
+        return false;
+      }
+
+      // setPixel() is slow, see Qt doc -> use direct access
+      QRgb *bits = reinterpret_cast< QRgb * >( mImage->bits() );
+      bits[index] = color;
+      return true;
+    }
+
+    /**
+     * Gives direct read/write access to the raster RGB data.
+     * The data type of the block must be Qgis::ARGB32 or Qgis::ARGB32_Premultiplied otherwise it returns null pointer.
+     * Useful for most efficient read/write access to RGB blocks.
+     * \note not available in Python bindings
+     * \since QGIS 3.4
+     */
+    QRgb *colorData() SIP_SKIP
+    {
+      if ( !mImage )
+        return nullptr;
+      return reinterpret_cast< QRgb * >( mImage->bits() );
+    }
 
     /**
      * \brief Set no data on pixel
      *  \param row row index
      *  \param column column index
      *  \returns true on success */
-    bool setIsNoData( int row, int column );
+    bool setIsNoData( int row, int column )
+    {
+      return setIsNoData( static_cast< qgssize >( row ) * mWidth + column );
+    }
 
     /**
      * \brief Set no data on pixel
      *  \param index data matrix index (long type in Python)
      *  \returns true on success */
-    bool setIsNoData( qgssize index );
+    bool setIsNoData( qgssize index )
+    {
+      if ( mHasNoDataValue )
+      {
+        return setValue( index, mNoDataValue );
+      }
+      else
+      {
+        if ( !mNoDataBitmap )
+        {
+          if ( !createNoDataBitmap() )
+          {
+            return false;
+          }
+        }
+        // TODO: optimize
+        int row = static_cast< int >( index ) / mWidth;
+        int column = index % mWidth;
+        qgssize byte = static_cast< qgssize >( row ) * mNoDataBitmapWidth + column / 8;
+        int bit = column % 8;
+        int nodata = 0x80 >> bit;
+        //QgsDebugMsg ( QString("set byte = %1 bit = %2 no data by %3").arg(byte).arg(bit).arg(nodata, 0,2 ) );
+        mNoDataBitmap[byte] = mNoDataBitmap[byte] | nodata;
+        return true;
+      }
+    }
 
     /**
      * \brief Set the whole block to no data
@@ -277,7 +429,10 @@ class CORE_EXPORT QgsRasterBlock
      *  \param row row index
      *  \param column column index
      *  \since QGIS 2.10 */
-    void setIsData( int row, int column );
+    void setIsData( int row, int column )
+    {
+      setIsData( static_cast< qgssize >( row )*mWidth + column );
+    }
 
     /**
      * \brief Remove no data flag on pixel. If the raster block does not have an explicit
@@ -286,7 +441,27 @@ class CORE_EXPORT QgsRasterBlock
      * method. This method has no effect for raster blocks with an explicit no data value set.
      *  \param index data matrix index (long type in Python)
      *  \since QGIS 2.10 */
-    void setIsData( qgssize index );
+    void setIsData( qgssize index )
+    {
+      if ( mHasNoDataValue )
+      {
+        //no data value set, so mNoDataBitmap is not being used
+        return;
+      }
+
+      if ( !mNoDataBitmap )
+      {
+        return;
+      }
+
+      // TODO: optimize
+      int row = static_cast< int >( index ) / mWidth;
+      int column = index % mWidth;
+      qgssize byte = static_cast< qgssize >( row ) * mNoDataBitmapWidth + column / 8;
+      int bit = column % 8;
+      int nodata = 0x80 >> bit;
+      mNoDataBitmap[byte] = mNoDataBitmap[byte] & ~nodata;
+    }
 
     /**
      * Gets access to raw data.
@@ -422,7 +597,14 @@ class CORE_EXPORT QgsRasterBlock
      * \param value tested value
      * \param noDataValue no data value
      * \returns true if value is nodata */
-    static bool isNoDataValue( double value, double noDataValue );
+    static bool isNoDataValue( double value, double noDataValue )
+    {
+      // TODO: optimize no data value test by memcmp()
+      // More precise would be std::isnan(value) && std::isnan(noDataValue(bandNo)), but probably
+      // not important and slower
+      return std::isnan( value ) ||
+             qgsDoubleNear( value, noDataValue );
+    }
 
     /**
      * Test if value is nodata for specific band
@@ -521,7 +703,7 @@ inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssiz
       return static_cast< double >( ( static_cast< double * >( data ) )[index] );
       break;
     default:
-      QgsDebugMsg( QString( "Data type %1 is not supported" ).arg( type ) );
+      QgsDebugMsg( QStringLiteral( "Data type %1 is not supported" ).arg( type ) );
       break;
   }
 
@@ -556,7 +738,7 @@ inline void QgsRasterBlock::writeValue( void *data, Qgis::DataType type, qgssize
       ( static_cast< double * >( data ) )[index] = value;
       break;
     default:
-      QgsDebugMsg( QString( "Data type %1 is not supported" ).arg( type ) );
+      QgsDebugMsg( QStringLiteral( "Data type %1 is not supported" ).arg( type ) );
       break;
   }
 }
@@ -565,7 +747,7 @@ inline double QgsRasterBlock::value( qgssize index ) const SIP_SKIP
 {
   if ( !mData )
   {
-    QgsDebugMsg( "Data block not allocated" );
+    QgsDebugMsg( QStringLiteral( "Data block not allocated" ) );
     return std::numeric_limits<double>::quiet_NaN();
   }
   return readValue( mData, mDataType, index );

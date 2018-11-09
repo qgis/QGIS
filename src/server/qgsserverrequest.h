@@ -22,6 +22,7 @@
 #include <QUrl>
 #include <QMap>
 #include "qgis_server.h"
+#include "qgsserverparameters.h"
 
 /**
  * \ingroup server
@@ -97,6 +98,11 @@ class SERVER_EXPORT QgsServerRequest
     QgsServerRequest::Parameters parameters() const;
 
     /**
+     * Returns parameters
+     */
+    QgsServerParameters serverParameters() const;
+
+    /**
      * Set a parameter
      */
     void setParameter( const QString &key, const QString &value );
@@ -159,11 +165,8 @@ class SERVER_EXPORT QgsServerRequest
     Method     mMethod = GetMethod;
     // We mark as mutable in order
     // to support lazy initialization
-    // Use QMap here because it will be faster for small
-    // number of elements
-    mutable bool mDecoded = false;
-    mutable Parameters mParams;
     mutable Headers mHeaders;
+    QgsServerParameters mParams;
 };
 
 #endif

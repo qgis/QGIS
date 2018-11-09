@@ -21,8 +21,8 @@
 
 #include <QString>
 #include <QVector>
+#include <QDomNode>
 
-class QDomNode;
 class QDomDocument;
 
 class QgsLayerTreeGroup;

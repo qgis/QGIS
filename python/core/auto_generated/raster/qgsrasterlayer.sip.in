@@ -114,7 +114,7 @@ Constructor for LayerOptions.
 
     explicit QgsRasterLayer( const QString &uri,
                              const QString &baseName = QString(),
-                             const QString &providerKey = "gdal",
+                             const QString &providerType = "gdal",
                              const QgsRasterLayer::LayerOptions &options = QgsRasterLayer::LayerOptions() );
 %Docstring
 This is the constructor for the RasterLayer class.
@@ -130,8 +130,6 @@ The main tasks carried out by the constructor are:
 -Determine whether the layer is gray, paletted or multiband.
 
 -Assign sensible defaults for the red, green, blue and gray bands.
-
--
 %End
 
     ~QgsRasterLayer();
@@ -194,6 +192,24 @@ Set the data provider.
 :param options: provider options
 
 .. versionadded:: 3.2
+%End
+
+    virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
+
+%Docstring
+Updates the data source of the layer. The layer's renderer and legend will be preserved only
+if the geometry type of the new data source matches the current geometry type of the layer.
+
+:param dataSource: new layer data source
+:param baseName: base name of the layer
+:param provider: provider string
+:param options: provider options
+:param loadDefaultStyleFlag: set to true to reset the layer's style to the default for the
+                             data source
+
+.. seealso:: :py:func:`dataSourceChanged`
+
+.. versionadded:: 3.6
 %End
 
     LayerType rasterType();
@@ -350,16 +366,16 @@ Draws a preview of the rasterlayer into a QImage
     void showStatusMessage( const QString &message );
 
   protected:
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
     virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );
 
-    virtual bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
-
-    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
-
+     virtual bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage,
+                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
+     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;

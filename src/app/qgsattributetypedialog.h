@@ -64,17 +64,17 @@ class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     bool labelOnTop() const;
 
     /**
-     * Setter for lable alias
+     * Setter for label alias
      */
     void setAlias( const QString &alias );
 
     /**
-     * Getter for lable alias
+     * Getter for label alias
      */
     QString alias() const;
 
     /**
-     * Setter for lable comment
+     * Setter for label comment
      */
     void setComment( const QString &comment );
 

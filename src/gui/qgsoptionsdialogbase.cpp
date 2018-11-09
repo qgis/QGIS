@@ -181,7 +181,7 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   int curIndx = mSettings->value( QStringLiteral( "/Windows/%1/tab" ).arg( mOptsKey ), 0 ).toInt();
 
   // if the last used tab is out of range or not enabled display the first enabled one
-  if ( mOptStackedWidget->count() < ( curIndx + 1 )
+  if ( mOptStackedWidget->count() < curIndx + 1
        || !mOptStackedWidget->widget( curIndx )->isEnabled() )
   {
     curIndx = 0;
@@ -279,7 +279,7 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
       }
       if ( shw && shw->isValid() )
       {
-        QgsDebugMsgLevel( QString( "Registering: %1" ).arg( w->objectName() ), 4 );
+        QgsDebugMsgLevel( QStringLiteral( "Registering: %1" ).arg( w->objectName() ), 4 );
         mRegisteredSearchWidgets.append( qMakePair( shw, i ) );
       }
       else

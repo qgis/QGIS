@@ -26,6 +26,7 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 
+//TODO 4.0 add explicitly qobject parent to constructor
 QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas *canvas )
   : QMenu( canvas )
   , mCanvas( canvas )
@@ -49,7 +50,7 @@ void QgsIdentifyMenu::setMaxLayerDisplay( int maxLayerDisplay )
 {
   if ( maxLayerDisplay < 0 )
   {
-    QgsDebugMsg( "invalid value for number of layers displayed." );
+    QgsDebugMsg( QStringLiteral( "invalid value for number of layers displayed." ) );
   }
   mMaxLayerDisplay = maxLayerDisplay;
 }
@@ -59,7 +60,7 @@ void QgsIdentifyMenu::setMaxFeatureDisplay( int maxFeatureDisplay )
 {
   if ( maxFeatureDisplay < 0 )
   {
-    QgsDebugMsg( "invalid value for number of layers displayed." );
+    QgsDebugMsg( QStringLiteral( "invalid value for number of layers displayed." ) );
   }
   mMaxFeatureDisplay = maxFeatureDisplay;
 }
@@ -124,7 +125,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
   if ( !singleLayer && mAllowMultipleReturn && idResults.count() > 1 )
   {
     addSeparator();
-    QAction *allAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ), tr( "%1 all (%2)" ).arg( mDefaultActionName ).arg( idResults.count() ), this );
+    QAction *allAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ), tr( "%1 All (%2)" ).arg( mDefaultActionName ).arg( idResults.count() ), this );
     allAction->setData( QVariant::fromValue<ActionData>( ActionData( nullptr ) ) );
     connect( allAction, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
     addAction( allAction );
@@ -260,7 +261,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     if ( !createMenu && mShowFeatureActions )
     {
       QgsActionMenu *featureActionMenu = new QgsActionMenu( layer, results[0].mFeature, QStringLiteral( "Feature" ), this );
-      featureActionMenu->setMode( QgsAttributeForm::IdentifyMode );
+      featureActionMenu->setMode( QgsAttributeEditorContext::IdentifyMode );
       createMenu  = !featureActionMenu->actions().isEmpty();
       delete featureActionMenu;
     }
@@ -346,7 +347,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     if ( mShowFeatureActions )
     {
       featureActionMenu = new QgsActionMenu( layer, result.mFeature, QStringLiteral( "Feature" ), layerMenu );
-      featureActionMenu->setMode( QgsAttributeForm::IdentifyMode );
+      featureActionMenu->setMode( QgsAttributeEditorContext::IdentifyMode );
       featureActionMenu->setExpressionContextScope( mExpressionContextScope );
     }
 
@@ -419,7 +420,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
   if ( mAllowMultipleReturn && results.count() > 1 )
   {
     layerMenu->addSeparator();
-    QAction *allAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ), tr( "%1 all (%2)" ).arg( mDefaultActionName ).arg( results.count() ), layerMenu );
+    QAction *allAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ), tr( "%1 All (%2)" ).arg( mDefaultActionName ).arg( results.count() ), layerMenu );
     allAction->setData( QVariant::fromValue<ActionData>( ActionData( layer ) ) );
     connect( allAction, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
     layerMenu->addAction( allAction );
@@ -484,7 +485,7 @@ void QgsIdentifyMenu::triggerMapLayerAction()
           return;
         }
       }
-      QgsDebugMsg( QString( "Identify menu: could not retrieve feature for action %1" ).arg( action->text() ) );
+      QgsDebugMsg( QStringLiteral( "Identify menu: could not retrieve feature for action %1" ).arg( action->text() ) );
     }
   }
 }
@@ -505,7 +506,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::results( QAction *act
   QVariant varData = action->data();
   if ( !varData.isValid() )
   {
-    QgsDebugMsg( "Identify menu: could not retrieve results from menu entry (invalid data)" );
+    QgsDebugMsg( QStringLiteral( "Identify menu: could not retrieve results from menu entry (invalid data)" ) );
     return idResults;
   }
 
@@ -532,7 +533,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::results( QAction *act
 
   if ( !hasData )
   {
-    QgsDebugMsg( "Identify menu: could not retrieve results from menu entry (no data found)" );
+    QgsDebugMsg( QStringLiteral( "Identify menu: could not retrieve results from menu entry (no data found)" ) );
     return idResults;
   }
 
@@ -551,7 +552,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::results( QAction *act
 
   if ( !mLayerIdResults.contains( actData.mLayer ) )
   {
-    QgsDebugMsg( "Identify menu: could not retrieve results from menu entry (layer not found)" );
+    QgsDebugMsg( QStringLiteral( "Identify menu: could not retrieve results from menu entry (layer not found)" ) );
     return idResults;
   }
 
@@ -572,7 +573,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::results( QAction *act
     }
   }
 
-  QgsDebugMsg( "Identify menu: could not retrieve results from menu entry (don't know what happened')" );
+  QgsDebugMsg( QStringLiteral( "Identify menu: could not retrieve results from menu entry (don't know what happened')" ) );
   return idResults;
 }
 

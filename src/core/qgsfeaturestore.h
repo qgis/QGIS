@@ -79,6 +79,12 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
     % MethodCode
     sipRes = sipCpp->count();
     % End
+
+    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
+    % End
 #endif
 
     /**

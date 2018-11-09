@@ -66,7 +66,7 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
   for ( int i = 0; i < myScalesList.size(); ++i )
   {
     parts = myScalesList[ i ] .split( ':' );
-    denominator = QLocale::system().toDouble( parts[1], &ok );
+    denominator = QLocale().toDouble( parts[1], &ok );
     if ( ok )
     {
       myScalesList[ i ] = toString( denominator );
@@ -185,11 +185,11 @@ QString QgsScaleComboBox::toString( double scale )
   }
   else if ( scale <= 1 )
   {
-    return QStringLiteral( "%1:1" ).arg( QLocale::system().toString( static_cast< int >( std::round( 1.0 / scale ) ) ) );
+    return QStringLiteral( "%1:1" ).arg( QLocale().toString( static_cast< int >( std::round( 1.0 / scale ) ) ) );
   }
   else
   {
-    return QStringLiteral( "1:%1" ).arg( QLocale::system().toString( static_cast< int >( std::round( scale ) ) ) );
+    return QStringLiteral( "1:%1" ).arg( QLocale().toString( static_cast< int >( std::round( scale ) ) ) );
   }
 }
 

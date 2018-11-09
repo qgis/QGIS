@@ -22,6 +22,7 @@
 #include "qgsrasterlayer.h"
 #include "qgszonalstatistics.h"
 #include "qgsproject.h"
+#include "qgsvectorlayerutils.h"
 
 /**
  * \ingroup UnitTests
@@ -38,10 +39,14 @@ class TestQgsZonalStatistics : public QObject
     void cleanup() {}
 
     void testStatistics();
+    void testReprojection();
+    void testNoData();
+    void testSmallPolygons();
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
     QgsRasterLayer *mRasterLayer = nullptr;
+    QString mTempPath;
 };
 
 void TestQgsZonalStatistics::initTestCase()
@@ -52,19 +57,19 @@ void TestQgsZonalStatistics::initTestCase()
 
   QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataPath = myDataPath + "/zonalstatistics/";
-  QString myTempPath = QDir::tempPath() + '/';
+  mTempPath = QDir::tempPath() + '/';
 
   // copy test data to temp directory
   QDir testDir( myTestDataPath );
   QStringList files = testDir.entryList( QDir::Files | QDir::NoDotAndDotDot );
   for ( int i = 0; i < files.size(); ++i )
   {
-    QFile::remove( myTempPath + files.at( i ) );
-    QVERIFY( QFile::copy( myTestDataPath + files.at( i ), myTempPath + files.at( i ) ) );
+    QFile::remove( mTempPath + files.at( i ) );
+    QVERIFY( QFile::copy( myTestDataPath + files.at( i ), mTempPath + files.at( i ) ) );
   }
 
-  mVectorLayer = new QgsVectorLayer( myTempPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
-  mRasterLayer = new QgsRasterLayer( myTempPath + "edge_problem.asc", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  mVectorLayer = new QgsVectorLayer( mTempPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
+  mRasterLayer = new QgsRasterLayer( mTempPath + "edge_problem.asc", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mVectorLayer << mRasterLayer );
 }
@@ -76,7 +81,7 @@ void TestQgsZonalStatistics::cleanupTestCase()
 
 void TestQgsZonalStatistics::testStatistics()
 {
-  QgsZonalStatistics zs( mVectorLayer, mRasterLayer, QLatin1String( "" ), 1, QgsZonalStatistics::All );
+  QgsZonalStatistics zs( mVectorLayer, mRasterLayer, QString(), 1, QgsZonalStatistics::All );
   zs.calculateStatistics( nullptr );
 
   QgsFeature f;
@@ -180,6 +185,162 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "myqgis2__3" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "myqgis2_va" ).toDouble(), 2.0 );
   QCOMPARE( f.attribute( "myqgis2__4" ).toDouble(), 0.13888888888889 );
+}
+
+void TestQgsZonalStatistics::testReprojection()
+{
+  QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString myTestDataPath = myDataPath + "/zonalstatistics/";
+
+  // create a reprojected version of the layer
+  std::unique_ptr< QgsVectorLayer > vectorLayer( new QgsVectorLayer( myTestDataPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) ) );
+  std::unique_ptr< QgsVectorLayer > reprojected( vectorLayer->materialize( QgsFeatureRequest().setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3785" ) ), QgsProject::instance()->transformContext() ) ) );
+
+  QCOMPARE( reprojected->featureCount(), vectorLayer->featureCount() );
+  QgsZonalStatistics zs( reprojected.get(), mRasterLayer, QString(), 1, QgsZonalStatistics::All );
+  zs.calculateStatistics( nullptr );
+
+  QgsFeature f;
+  QgsFeatureRequest request;
+  QgsFeatureIterator it = reprojected->getFeatures( request );
+  bool fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "count" ).toDouble(), 12.0 );
+  QCOMPARE( f.attribute( "sum" ).toDouble(), 8.0 );
+  QCOMPARE( f.attribute( "mean" ).toDouble(), 0.666666666666667 );
+  QCOMPARE( f.attribute( "median" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "stdev" ).toDouble(), 0.47140452079103201 );
+  QCOMPARE( f.attribute( "min" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "max" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "range" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "minority" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "majority" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "variety" ).toDouble(), 2.0 );
+  QCOMPARE( f.attribute( "variance" ).toDouble(), 0.222222222222222 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "count" ).toDouble(), 9.0 );
+  QCOMPARE( f.attribute( "sum" ).toDouble(), 5.0 );
+  QCOMPARE( f.attribute( "mean" ).toDouble(), 0.555555555555556 );
+  QCOMPARE( f.attribute( "median" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "stdev" ).toDouble(), 0.49690399499995302 );
+  QCOMPARE( f.attribute( "min" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "max" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "range" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "minority" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "majority" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "variety" ).toDouble(), 2.0 );
+  QCOMPARE( f.attribute( "variance" ).toDouble(), 0.24691358024691 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "count" ).toDouble(), 6.0 );
+  QCOMPARE( f.attribute( "sum" ).toDouble(), 5.0 );
+  QCOMPARE( f.attribute( "mean" ).toDouble(), 0.833333333333333 );
+  QCOMPARE( f.attribute( "median" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "stdev" ).toDouble(), 0.372677996249965 );
+  QCOMPARE( f.attribute( "min" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "max" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "range" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "minority" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "majority" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "variety" ).toDouble(), 2.0 );
+  QCOMPARE( f.attribute( "variance" ).toDouble(), 0.13888888888889 );
+}
+
+void TestQgsZonalStatistics::testNoData()
+{
+  QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString myTestDataPath = myDataPath + "/zonalstatistics/";
+
+  // test that zonal stats respects no data and user set no data values
+  std::unique_ptr< QgsRasterLayer > rasterLayer = qgis::make_unique< QgsRasterLayer >( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  std::unique_ptr< QgsVectorLayer > vectorLayer = qgis::make_unique< QgsVectorLayer >( mTempPath + "polys2.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
+
+  QgsZonalStatistics zs( vectorLayer.get(), rasterLayer.get(), QStringLiteral( "n" ), 1, QgsZonalStatistics::All );
+  zs.calculateStatistics( nullptr );
+
+  QgsFeature f;
+  QgsFeatureRequest request;
+  QgsFeatureIterator it = vectorLayer->getFeatures( request );
+  bool fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "ncount" ).toDouble(), 16.0 );
+  QCOMPARE( f.attribute( "nsum" ).toDouble(), 13428.0 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "ncount" ).toDouble(), 50.0 );
+  QCOMPARE( f.attribute( "nsum" ).toDouble(), 43868.0 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "ncount" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "nsum" ).toDouble(), 0.0 );
+
+  // with user no data
+  rasterLayer->dataProvider()->setUserNoDataValue( 1, QgsRasterRangeList() << QgsRasterRange( 842, 852 )
+      << QgsRasterRange( 877, 891 ) );
+
+  zs = QgsZonalStatistics( vectorLayer.get(), rasterLayer.get(), QStringLiteral( "un" ), 1, QgsZonalStatistics::All );
+  zs.calculateStatistics( nullptr );
+
+  it = vectorLayer->getFeatures( request );
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "uncount" ).toDouble(), 8.0 );
+  QCOMPARE( f.attribute( "unsum" ).toDouble(), 6652.0 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "uncount" ).toDouble(), 25.0 );
+  QCOMPARE( f.attribute( "unsum" ).toDouble(), 21750.0 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "uncount" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "unsum" ).toDouble(), 0.0 );
+}
+
+void TestQgsZonalStatistics::testSmallPolygons()
+{
+  QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString myTestDataPath = myDataPath + "/zonalstatistics/";
+
+  // test that zonal stats works ok with polygons much smaller than pixel size
+  std::unique_ptr< QgsRasterLayer > rasterLayer = qgis::make_unique< QgsRasterLayer >( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  std::unique_ptr< QgsVectorLayer > vectorLayer = qgis::make_unique< QgsVectorLayer >( mTempPath + "small_polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
+
+  QgsZonalStatistics zs( vectorLayer.get(), rasterLayer.get(), QStringLiteral( "n" ), 1, QgsZonalStatistics::All );
+  zs.calculateStatistics( nullptr );
+
+  QgsFeature f;
+  QgsFeatureRequest request;
+  QgsFeatureIterator it = vectorLayer->getFeatures( request );
+  bool fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QGSCOMPARENEAR( f.attribute( "ncount" ).toDouble(), 0.698248, 0.001 );
+  QGSCOMPARENEAR( f.attribute( "nsum" ).toDouble(), 588.711, 0.001 );
+  QCOMPARE( f.attribute( "nmin" ).toDouble(), 826.0 );
+  QCOMPARE( f.attribute( "nmax" ).toDouble(), 851.0 );
+  QGSCOMPARENEAR( f.attribute( "nmean" ).toDouble(), 843.125292, 0.001 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QGSCOMPARENEAR( f.attribute( "ncount" ).toDouble(), 0.240808, 0.001 );
+  QGSCOMPARENEAR( f.attribute( "nsum" ).toDouble(), 208.030921, 0.001 );
+  QCOMPARE( f.attribute( "nmin" ).toDouble(), 859.0 );
+  QCOMPARE( f.attribute( "nmax" ).toDouble(), 868.0 );
+  QGSCOMPARENEAR( f.attribute( "nmean" ).toDouble(), 863.887500, 0.001 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QGSCOMPARENEAR( f.attribute( "ncount" ).toDouble(), 0.259522, 0.001 );
+  QGSCOMPARENEAR( f.attribute( "nsum" ).toDouble(), 224.300747, 0.001 );
+  QCOMPARE( f.attribute( "nmin" ).toDouble(), 851.0 );
+  QCOMPARE( f.attribute( "nmax" ).toDouble(), 872.0 );
+  QGSCOMPARENEAR( f.attribute( "nmean" ).toDouble(), 864.285638, 0.001 );
 }
 
 QGSTEST_MAIN( TestQgsZonalStatistics )

@@ -19,7 +19,8 @@
 
 #include "ui_qgsgpsinformationwidgetbase.h"
 
-#include "qgsmapcanvas.h"
+#include "gmath.h"
+#include "info.h"
 #include "qgsgpsmarker.h"
 #include "qgsmaptoolcapture.h"
 #include <qwt_plot_curve.h>
@@ -33,6 +34,7 @@ class QextSerialPort;
 class QgsGpsConnection;
 class QgsGpsTrackerThread;
 struct QgsGpsInformation;
+class QgsMapCanvas;
 
 class QFile;
 class QColor;
@@ -55,7 +57,7 @@ class QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidg
     void updateCloseFeatureButton( QgsMapLayer *lyr );
     void layerEditStateChanged();
 //   void setTrackColor(); // no longer used
-    void mBtnTrackColor_clicked();
+    void trackColorChanged( const QColor &color );
     void mSpinTrackWidth_valueChanged( int value );
     void mBtnPosition_clicked();
     void mBtnSignal_clicked();
@@ -71,7 +73,9 @@ class QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidg
 
     void connected( QgsGpsConnection * );
     void timedout();
-
+    void switchAcquisition();
+    void cboAcquisitionIntervalEdited();
+    void cboDistanceThresholdEdited();
   private:
     enum FixStatus  //GPS status
     {
@@ -82,8 +86,10 @@ class QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidg
     void connectGpsSlot();
     void disconnectGps();
     void populateDevices();
-    void setStatusIndicator( const FixStatus statusValue );
+    void setStatusIndicator( FixStatus statusValue );
     void showStatusBarMessage( const QString &msg );
+    void setAcquisitionInterval( uint );
+    void setDistanceThreshold( uint );
     QgsGpsConnection *mNmea = nullptr;
     QgsMapCanvas *mpCanvas = nullptr;
     QgsGpsMarker *mpMapMarker = nullptr;
@@ -95,6 +101,7 @@ class QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidg
     QList< QwtPolarMarker * > mMarkerList;
 #endif
     void createRubberBand();
+
     QgsCoordinateReferenceSystem mWgs84CRS;
 // not used    QPointF gpsToPixelPosition( const QgsPoint& point );
     QgsRubberBand *mpRubberBand = nullptr;
@@ -102,10 +109,16 @@ class QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidg
     QList<QgsPointXY> mCaptureList;
     FixStatus mLastFixStatus;
     QString mDateTimeFormat; // user specified format string in registry (no UI presented)
-    QgsVectorLayer *mpLastLayer = nullptr;
+    QPointer< QgsVectorLayer > mpLastLayer;
     QFile *mLogFile = nullptr;
     QTextStream mLogFileTextStream;
-    QColor mTrackColor;
+    QIntValidator *mAcquisitionIntValidator = nullptr;
+    QIntValidator *mDistanceThresholdValidator = nullptr;
+    nmeaPOS mLastNmeaPosition;
+    std::unique_ptr<QTimer> mAcquisitionTimer;
+    bool mAcquisitionEnabled = true;
+    unsigned int mAcquisitionInterval = 0;
+    unsigned int mDistanceThreshold = 0;
 };
 
 #endif // QGSGPSINFORMATIONWIDGET_H

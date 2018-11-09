@@ -62,7 +62,7 @@ class TestQgsGeometryImport: public QObject
 
 void TestQgsGeometryImport::initTestCase()
 {
-  geos = initGEOS_r( 0, 0 );
+  geos = initGEOS_r( nullptr, nullptr );
 }
 
 void TestQgsGeometryImport::pointWkt_data()
@@ -85,8 +85,8 @@ void TestQgsGeometryImport::pointWkt()
   QCOMPARE( geom.wkbType(), QgsWkbTypes::Point );
   QgsPointXY point = geom.asPoint();
 
-  QGSCOMPARENEAR( point.x(), x, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( point.y(), y, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( point.x(), x, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( point.y(), y, 4 * std::numeric_limits<double>::epsilon() );
 }
 
 void TestQgsGeometryImport::pointWkb_data()
@@ -113,8 +113,8 @@ void TestQgsGeometryImport::pointWkb()
   QgsPointXY point = geom.asPoint();
 
   QCOMPARE( geom.wkbType(), QgsWkbTypes::Point );
-  QGSCOMPARENEAR( point.x(), x, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( point.y(), y, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( point.x(), x, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( point.y(), y, 4 * std::numeric_limits<double>::epsilon() );
 }
 
 void TestQgsGeometryImport::pointGeos_data()
@@ -140,8 +140,8 @@ void TestQgsGeometryImport::pointGeos()
 
   QgsPointXY geomPt = geom.asPoint();
 
-  QGSCOMPARENEAR( x, geomPt.x(), 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( y, geomPt.y(), 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( x, geomPt.x(), 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( y, geomPt.y(), 4 * std::numeric_limits<double>::epsilon() );
 }
 
 void TestQgsGeometryImport::linestringWkt_data()

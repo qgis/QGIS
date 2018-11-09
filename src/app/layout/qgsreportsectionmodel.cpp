@@ -2,7 +2,7 @@
     qgsreportsectionmodel.cpp
     ---------------------
     begin                : December 2017
-    copyright            : (C) 2017 by Nyall Dawso
+    copyright            : (C) 2017 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
@@ -29,7 +29,7 @@ QgsReportSectionModel::QgsReportSectionModel( QgsReport *report, QObject *parent
 Qt::ItemFlags QgsReportSectionModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
-    return 0;
+    return nullptr;
 
   return QAbstractItemModel::flags( index );
 }
@@ -70,7 +70,7 @@ QVariant QgsReportSectionModel::data( const QModelIndex &index, int role ) const
             QPixmap pixmap( icon.pixmap( 16, 16 ) );
 
             QPainter painter( &pixmap );
-            painter.drawPixmap( 0, 0, 16, 16, QgsApplication::getThemePixmap( "/mActionToggleEditing.svg" ) );
+            painter.drawPixmap( 0, 0, 16, 16, QgsApplication::getThemePixmap( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
             painter.end();
 
             return QIcon( pixmap );

@@ -95,7 +95,7 @@ Returns true on success *
 
     bool canSetOn( int idx, bool on );
 %Docstring
-Test if interface at index may be swithed on/off
+Test if interface at index may be switched on/off
 %End
 
     QgsRasterDataProvider *provider() const;

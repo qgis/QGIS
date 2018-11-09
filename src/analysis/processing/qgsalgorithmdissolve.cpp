@@ -67,7 +67,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
         firstFeature = false;
       }
 
-      if ( f.hasGeometry() && f.geometry() )
+      if ( f.hasGeometry() && !f.geometry().isNull() )
       {
         geomQueue.append( f.geometry() );
         if ( maxQueueLength > 0 && geomQueue.length() > maxQueueLength )
@@ -118,7 +118,7 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
         attributeHash.insert( indexAttributes, f.attributes() );
       }
 
-      if ( f.hasGeometry() && f.geometry() )
+      if ( f.hasGeometry() && !f.geometry().isNull() )
       {
         geometryHash[ indexAttributes ].append( f.geometry() );
       }
@@ -190,7 +190,7 @@ QString QgsDissolveAlgorithm::groupId() const
 void QgsDissolveAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Unique ID fields" ), QVariant(),
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Dissolve field(s)" ), QVariant(),
                 QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Dissolved" ) ) );
@@ -198,9 +198,9 @@ void QgsDissolveAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsDissolveAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a polygon or line vector layer and combines their geometries into new geometries. One or more attributes can "
-                      "be specified to dissolve only geometries belonging to the same class (having the same value for the specified attributes), alternatively "
-                      "all geometries can be dissolved.\n\n"
+  return QObject::tr( "This algorithm takes a vector layer and combines their features into new features. One or more attributes can "
+                      "be specified to dissolve features belonging to the same class (having the same value for the specified attributes), alternatively "
+                      "all features can be dissolved in a single one.\n\n"
                       "All output geometries will be converted to multi geometries. "
                       "In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased." );
 }

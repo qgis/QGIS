@@ -9,7 +9,6 @@
 
 
 
-
 class QgsIFeatureSelectionManager : QObject
 {
 %Docstring
@@ -60,7 +59,7 @@ Returns reference to identifiers of selected features
 
   signals:
 
-    void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, const bool clearAndSelect );
+    void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 %Docstring
 This signal is emitted when selection was changed
 

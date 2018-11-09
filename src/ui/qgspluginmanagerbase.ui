@@ -452,7 +452,7 @@
                     <string>Upgrade all upgradeable plugins</string>
                    </property>
                    <property name="text">
-                    <string>Upgrade all</string>
+                    <string>Upgrade All</string>
                    </property>
                   </widget>
                  </item>
@@ -481,7 +481,7 @@
                     <string>Uninstall the selected plugin</string>
                    </property>
                    <property name="text">
-                    <string>Uninstall plugin</string>
+                    <string>Uninstall Plugin</string>
                    </property>
                   </widget>
                  </item>
@@ -500,7 +500,7 @@
                     <string>Install, reinstall or upgrade the selected plugin</string>
                    </property>
                    <property name="text">
-                    <string>Reinstall plugin</string>
+                    <string>Reinstall Plugin</string>
                    </property>
                   </widget>
                  </item>
@@ -676,7 +676,7 @@
                 </size>
                </property>
                <property name="text">
-                <string>Install plugin</string>
+                <string>Install Plugin</string>
                </property>
               </widget>
              </item>
@@ -1054,7 +1054,7 @@ p, li { white-space: pre-wrap; }
 (useful when you uploaded a plugin there)</string>
                          </property>
                          <property name="text">
-                          <string>Reload repository</string>
+                          <string>Reload Repository</string>
                          </property>
                         </widget>
                        </item>
@@ -1080,7 +1080,7 @@ p, li { white-space: pre-wrap; }
                           <string>Add a new plugin repository</string>
                          </property>
                          <property name="text">
-                          <string>Add...</string>
+                          <string>Add…</string>
                          </property>
                         </widget>
                        </item>
@@ -1099,7 +1099,7 @@ p, li { white-space: pre-wrap; }
                           <string>Edit the selected repository</string>
                          </property>
                          <property name="text">
-                          <string>Edit...</string>
+                          <string>Edit…</string>
                          </property>
                         </widget>
                        </item>

@@ -101,7 +101,7 @@ class hillshade(GdalAlgorithm):
                                                         defaultValue=False))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
-                                                     self.tr('Additional creation parameters'),
+                                                     self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
         options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
@@ -147,8 +147,13 @@ class hillshade(GdalAlgorithm):
         arguments.append(str(self.parameterAsDouble(parameters, self.Z_FACTOR, context)))
         arguments.append('-s')
         arguments.append(str(self.parameterAsDouble(parameters, self.SCALE, context)))
-        arguments.append('-az')
-        arguments.append(str(self.parameterAsDouble(parameters, self.AZIMUTH, context)))
+
+        multidirectional = self.parameterAsBool(parameters, self.MULTIDIRECTIONAL, context)
+        # azimuth and multidirectional are mutually exclusive
+        if not multidirectional:
+            arguments.append('-az')
+            arguments.append(str(self.parameterAsDouble(parameters, self.AZIMUTH, context)))
+
         arguments.append('-alt')
         arguments.append(str(self.parameterAsDouble(parameters, self.ALTITUDE, context)))
 
@@ -162,7 +167,7 @@ class hillshade(GdalAlgorithm):
         if self.parameterAsBool(parameters, self.COMBINED, context):
             arguments.append('-combined')
 
-        if self.parameterAsBool(parameters, self.MULTIDIRECTIONAL, context):
+        if multidirectional:
             arguments.append('-multidirectional')
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)

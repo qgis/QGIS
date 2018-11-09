@@ -23,9 +23,8 @@
 #include "qgsdatetimestatisticalsummary.h"
 #include "qgsdockwidget.h"
 #include "qgsfeatureiterator.h"
-#include "qgsfeedback.h"
-#include "qgsvectorlayerutils.h"
 #include "qgstaskmanager.h"
+
 #include "qgis_app.h"
 
 class QMenu;
@@ -34,8 +33,7 @@ class QModelIndex;
 class QgsDockBrowserTreeView;
 class QgsLayerItem;
 class QgsDataItem;
-class QgsBrowserTreeFilterProxyModel;
-
+class QgsVectorLayer;
 
 /**
  * \class QgsStatisticsValueGatherer
@@ -46,60 +44,18 @@ class QgsStatisticsValueGatherer : public QgsTask
     Q_OBJECT
 
   public:
-    QgsStatisticsValueGatherer( QgsVectorLayer *layer, QgsFeatureIterator fit, int featureCount, QString sourceFieldExp )
-      : QgsTask( tr( "Fetching statistic values" ) )
-      , mFeatureIterator( fit )
-      , mFeatureCount( featureCount )
-      , mFieldExpression( sourceFieldExp )
-    {
-      mFieldIndex = layer->fields().lookupField( mFieldExpression );
-      if ( mFieldIndex == -1 )
-      {
-        // use expression, already validated
-        mExpression.reset( new QgsExpression( mFieldExpression ) );
-        mContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-      }
-    }
+    QgsStatisticsValueGatherer( QgsVectorLayer *layer, const QgsFeatureIterator &fit, long featureCount, const QString &sourceFieldExp );
 
-    bool run() override
-    {
-      QgsFeature f;
-      int current = 0;
-      while ( mFeatureIterator.nextFeature( f ) )
-      {
-        if ( mExpression )
-        {
-          mContext.setFeature( f );
-          QVariant v = mExpression->evaluate( &mContext );
-          mValues << v;
-        }
-        else
-        {
-          mValues << f.attribute( mFieldIndex );
-        }
-
-        if ( isCanceled() )
-        {
-          return false;
-        }
-
-        current++;
-        if ( mFeatureCount > 0 )
-        {
-          setProgress( 100.0 * static_cast< double >( current ) / mFeatureCount );
-        }
-      }
-      return true;
-    }
+    bool run() override;
 
     QList<QVariant> values() const { return mValues; }
 
   private:
 
     QgsFeatureIterator mFeatureIterator;
-    int mFeatureCount;
+    long mFeatureCount = 0;
     QString mFieldExpression;
-    int mFieldIndex;
+    int mFieldIndex = -1;
     QList<QVariant> mValues;
 
     std::unique_ptr<QgsExpression> mExpression;

@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
   public:
 
     /**
-     * \brief QgsMapLayerComboBox creates a combo box to dislpay the list of layers (currently in the registry).
+     * \brief QgsMapLayerComboBox creates a combo box to display the list of layers (currently in the registry).
      * The layers can be filtered and/or ordered.
      */
     explicit QgsMapLayerComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );

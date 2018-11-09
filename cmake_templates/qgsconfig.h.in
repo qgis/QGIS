@@ -57,6 +57,8 @@
 
 #cmakedefine HAVE_SERVER_PYTHON_PLUGINS
 
+#cmakedefine HAVE_OPENCL
+
 #cmakedefine ENABLE_MODELTEST
 
 #cmakedefine HAVE_3D

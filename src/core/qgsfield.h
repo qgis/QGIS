@@ -335,6 +335,14 @@ class CORE_EXPORT QgsField
      */
     QgsEditorWidgetSetup editorWidgetSetup() const;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsField: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->typeName() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   private:
 
     QSharedDataPointer<QgsFieldPrivate> d;

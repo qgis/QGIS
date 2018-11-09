@@ -114,7 +114,8 @@ class TestQgsFeatureSource(unittest.TestCase):
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
         new_layer = layer.materialize(request)
         self.assertEqual(new_layer.fields(), layer.fields())
-        self.assertEqual(new_layer.crs(), layer.crs())
+        self.assertFalse(new_layer.crs().isValid())
+        self.assertFalse(new_layer.isSpatial())
         self.assertEqual(new_layer.featureCount(), 5)
         self.assertEqual(new_layer.wkbType(), QgsWkbTypes.NoGeometry)
         new_features = {f[0]: f for f in new_layer.getFeatures()}
@@ -134,7 +135,7 @@ class TestQgsFeatureSource(unittest.TestCase):
                              2: 'Point (222639 222684)',
                              3: 'Point (333958 222684)',
                              4: 'Point (445278 334111)',
-                             5: 'Point (0 -0)'}
+                             5: 'Point (0 0)'}
         for id, f in original_features.items():
             self.assertEqual(new_features[id].attributes(), f.attributes())
             self.assertEqual(new_features[id].geometry().asWkt(0), expected_geometry[id])

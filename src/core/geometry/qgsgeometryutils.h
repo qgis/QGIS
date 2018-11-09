@@ -138,7 +138,7 @@ class CORE_EXPORT QgsGeometryUtils
      *   # (True, 'Point (0 0)', True)
      * \endcode
      */
-    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint SIP_OUT, bool &isIntersection SIP_OUT, const double tolerance = 1e-8, bool acceptImproperIntersection = false );
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint SIP_OUT, bool &isIntersection SIP_OUT, double tolerance = 1e-8, bool acceptImproperIntersection = false );
 
     /**
      * \brief Compute the intersection of a line and a circle.
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param intersection the initial point and the returned intersection point
      * \return true if an intersection has been found
      */
-    static bool lineCircleIntersection( const QgsPointXY &center, const double radius,
+    static bool lineCircleIntersection( const QgsPointXY &center, double radius,
                                         const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
                                         QgsPointXY &intersection SIP_INOUT );
 
@@ -247,9 +247,32 @@ class CORE_EXPORT QgsGeometryUtils
     static int leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
 
     /**
-     * Returns a point a specified distance toward a second point.
+     * Returns a point a specified \a distance toward a second point.
      */
     static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance );
+
+    /**
+     * Calculates the point a specified \a distance from (\a x1, \a y1) toward a second point (\a x2, \a y2).
+     *
+     * Optionally, interpolated z and m values can be obtained by specifying the \a z1, \a z2 and \a z arguments
+     * and/or the \a m1, \a m2, \a m arguments.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.4
+     */
+    static void pointOnLineWithDistance( double x1, double y1, double x2, double y2, double distance, double &x, double &y,
+                                         double *z1 = nullptr, double *z2 = nullptr, double *z = nullptr,
+                                         double *m1 = nullptr, double *m2 = nullptr, double *m = nullptr ) SIP_SKIP;
+
+    /**
+     * Interpolates a point on an arc defined by three points, \a pt1, \a pt2 and \a pt3. The arc will be
+     * interpolated by the specified \a distance from \a pt1.
+     *
+     * Any z or m values present in the points will also be linearly interpolated in the output.
+     *
+     * \since QGIS 3.4
+     */
+    static QgsPoint interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance );
 
     //! Returns the counter clockwise angle between a line with components dx, dy and the line with dx > 0 and dy = 0
     static double ccwAngle( double dy, double dx );
@@ -258,7 +281,12 @@ class CORE_EXPORT QgsGeometryUtils
     static void circleCenterRadius( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double &radius SIP_OUT,
                                     double &centerX SIP_OUT, double &centerY SIP_OUT );
 
-    //! Returns true if circle is ordered clockwise
+    /**
+     * Returns true if the circle defined by three angles is ordered clockwise.
+     *
+     * The angles are defined counter-clockwise from the origin, i.e. using
+     * Euclidean angles as opposed to geographic "North up" angles.
+     */
     static bool circleClockwise( double angle1, double angle2, double angle3 );
 
     //! Returns true if, in a circle, angle is between angle1 and angle2
@@ -344,13 +372,13 @@ class CORE_EXPORT QgsGeometryUtils
      * Returns a gml::coordinates DOM element.
      * \note not available in Python bindings
      */
-    static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
+    static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
 
     /**
      * Returns a gml::posList DOM element.
      * \note not available in Python bindings
      */
-    static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D, const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
+    static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D, QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
 
     /**
      * Returns a geoJSON coordinates string.

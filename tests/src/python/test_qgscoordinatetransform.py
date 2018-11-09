@@ -145,6 +145,7 @@ class TestQgsCoordinateTransform(unittest.TestCase):
                                                    3, 4)
 
         transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28354'), QgsCoordinateReferenceSystem('EPSG:28353'), context)
+        self.assertEqual(list(transform.context().sourceDestinationDatumTransforms().keys()), [('EPSG:28356', 'EPSG:4283')])
         # should be no datum transforms
         self.assertEqual(transform.sourceDatumTransformId(), -1)
         self.assertEqual(transform.destinationDatumTransformId(), -1)
@@ -193,6 +194,7 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         transform.setContext(context)
         self.assertEqual(transform.sourceDatumTransformId(), 3)
         self.assertEqual(transform.destinationDatumTransformId(), 4)
+        self.assertEqual(list(transform.context().sourceDestinationDatumTransforms().keys()), [('EPSG:28356', 'EPSG:4283')])
 
     def testProjectContext(self):
         """

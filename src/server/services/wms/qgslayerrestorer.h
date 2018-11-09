@@ -19,16 +19,38 @@
 #define QGSLAYERRESTORER_H
 
 #include <QList>
+#include <QDomDocument>
+#include <QMap>
 
-#include "qgsmaplayer.h"
+#include "qgsfeatureid.h"
+
+class QgsMapLayer;
 
 /**
+ * \ingroup server
  * RAII class to restore layer configuration on destruction (opacity,
- *  filters, ...)
+ * filters, ...)
  * \since QGIS 3.0
  */
 class QgsLayerRestorer
 {
+  public:
+
+    /**
+     * Constructor for QgsLayerRestorer.
+     * \param layers List of layers to restore in their initial states
+     */
+    QgsLayerRestorer( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Destructor.
+     *
+     * Restores layers in their initial states.
+     */
+    ~QgsLayerRestorer();
+
+  private:
+
     struct QgsLayerSettings
     {
       QString name;
@@ -39,11 +61,6 @@ class QgsLayerRestorer
       QgsFeatureIds mSelectedFeatureIds;
     };
 
-  public:
-    QgsLayerRestorer( const QList<QgsMapLayer *> &layers );
-    ~QgsLayerRestorer();
-
-  private:
     QMap<QgsMapLayer *, QgsLayerSettings> mLayerSettings;
 };
 

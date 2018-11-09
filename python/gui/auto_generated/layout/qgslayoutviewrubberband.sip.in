@@ -9,7 +9,6 @@
 
 
 
-
 class QgsLayoutViewRubberBand : QObject
 {
 %Docstring
@@ -35,7 +34,7 @@ in various shapes, for use within QgsLayoutView widgets.
 Constructor for QgsLayoutViewRubberBand.
 %End
 
-    virtual ~QgsLayoutViewRubberBand();
+    ~QgsLayoutViewRubberBand();
 
     virtual QgsLayoutViewRubberBand *create( QgsLayoutView *view ) const = 0 /Factory/;
 %Docstring

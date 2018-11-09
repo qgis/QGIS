@@ -284,7 +284,7 @@ and reloads and redraws the picture.
 Forces a recalculation of the picture's frame size
 %End
 
-    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
     virtual bool containsAdvancedEffects() const;
 
@@ -299,7 +299,7 @@ Is emitted on picture rotation change
 
     virtual void draw( QgsLayoutItemRenderContext &context );
 
-    virtual QSizeF applyItemSizeConstraint( const QSizeF &targetSize );
+    virtual QSizeF applyItemSizeConstraint( QSizeF targetSize );
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 

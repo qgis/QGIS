@@ -2,7 +2,7 @@
                               qgsmediancut.cpp
                               -------------------------
   begin                : December 20 , 2016
-  copyright            : (C) 2007 by Marco Hugentobler  ( parts fron qgswmshandler)
+  copyright            : (C) 2007 by Marco Hugentobler  ( parts from qgswmshandler)
                          (C) 2014 by Alessandro Pasotti ( parts from qgswmshandler)
                          (C) 2016 by David Marteau
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
@@ -67,14 +67,14 @@ namespace QgsWms
         return false;
       }
 
-      int rMin = INT_MAX;
-      int gMin = INT_MAX;
-      int bMin = INT_MAX;
-      int aMin = INT_MAX;
-      int rMax = INT_MIN;
-      int gMax = INT_MIN;
-      int bMax = INT_MIN;
-      int aMax = INT_MIN;
+      int rMin = std::numeric_limits<int>::max();
+      int gMin = std::numeric_limits<int>::max();
+      int bMin = std::numeric_limits<int>::max();
+      int aMin = std::numeric_limits<int>::max();
+      int rMax = std::numeric_limits<int>::min();
+      int gMax = std::numeric_limits<int>::min();
+      int bMax = std::numeric_limits<int>::min();
+      int aMax = std::numeric_limits<int>::min();
 
       int currentRed = 0;
       int currentGreen = 0;
@@ -166,7 +166,7 @@ namespace QgsWms
       {
         currentColor = colorBoxIt->first;
         currentPixel = colorBoxIt->second;
-        weight = ( double )currentPixel / boxPixels;
+        weight = static_cast<double>( currentPixel ) / boxPixels;
         avRed   += ( qRed( currentColor ) * weight );
         avGreen += ( qGreen( currentColor ) * weight );
         avBlue  += ( qBlue( currentColor ) * weight );

@@ -119,6 +119,18 @@ class TestQgsFilterLineEdit(unittest.TestCase):
         self.assertEqual(w.text(), 'def')
         self.assertFalse(w.isNull())
 
+    def test_selectedText(self):
+        """ test that NULL value is selected on focus and not-null value is not"""
+        w = qgis.gui.QgsFilterLineEdit(nullValue='my_null_value')
+        w.clearValue()
+        self.assertEqual(w.selectedText(), 'my_null_value')
+
+        w.setValue('my new value')
+        self.assertEqual(w.selectedText(), '')
+
+        w.clearValue()
+        self.assertEqual(w.selectedText(), 'my_null_value')
+
     @unittest.skipIf(not use_signal_spy, "No QSignalSpy available")
     def test_ChangedSignals(self):
         """ test that signals are correctly emitted when clearing"""

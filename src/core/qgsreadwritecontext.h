@@ -20,6 +20,7 @@
 
 #include "qgspathresolver.h"
 #include "qgis.h"
+#include "qgsprojecttranslator.h"
 
 class QgsReadWriteContextCategoryPopper;
 
@@ -64,7 +65,7 @@ class CORE_EXPORT QgsReadWriteContext
     /**
      * Constructor for QgsReadWriteContext.
      */
-    QgsReadWriteContext() = default;
+    QgsReadWriteContext();
 
     ~QgsReadWriteContext();
 
@@ -99,16 +100,38 @@ class CORE_EXPORT QgsReadWriteContext
      */
     QList<QgsReadWriteContext::ReadWriteMessage> takeMessages();
 
+    /**
+     * Returns the project translator
+     * \since QGIS 3.4
+     */
+    const QgsProjectTranslator *projectTranslator( ) const { return mProjectTranslator; }
+
+    /**
+     * Sets the project translator. Means it shouldn't conform mDefaultTranslator anymore.
+     * It's usually the QgsProject where the function with the context is made and won't be changed anymore.
+     *
+     * \since QGIS 3.4
+     */
+    void setProjectTranslator( QgsProjectTranslator *projectTranslator );
 
   private:
+
+    class DefaultTranslator : public QgsProjectTranslator
+    {
+        // QgsProjectTranslator interface
+      public:
+        QString translate( const QString &context, const QString &sourceText, const char *disambiguation, int n ) const;
+    };
+
     //! Pop the last category
     void leaveCategory();
 
     QgsPathResolver mPathResolver;
     QList<ReadWriteMessage> mMessages;
     QStringList mCategories = QStringList();
-
+    QgsProjectTranslator *mProjectTranslator = nullptr;
     friend class QgsReadWriteContextCategoryPopper;
+    DefaultTranslator mDefaultTranslator;
 };
 
 

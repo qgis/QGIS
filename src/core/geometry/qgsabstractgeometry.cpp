@@ -38,17 +38,6 @@ QgsAbstractGeometry &QgsAbstractGeometry::operator=( const QgsAbstractGeometry &
   return *this;
 }
 
-bool QgsAbstractGeometry::is3D() const
-{
-  return QgsWkbTypes::hasZ( mWkbType );
-}
-
-bool QgsAbstractGeometry::isMeasure() const
-{
-  return QgsWkbTypes::hasM( mWkbType );
-}
-
-
 void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *subgeom, QgsWkbTypes::Type baseGeomType )
 {
   if ( !subgeom )
@@ -247,6 +236,11 @@ bool QgsAbstractGeometry::convertTo( QgsWkbTypes::Type type )
 }
 
 void QgsAbstractGeometry::filterVertices( const std::function<bool ( const QgsPoint & )> & )
+{
+  // Ideally this would be pure virtual, but SIP has issues with that
+}
+
+void QgsAbstractGeometry::transformVertices( const std::function<QgsPoint( const QgsPoint & )> & )
 {
   // Ideally this would be pure virtual, but SIP has issues with that
 }

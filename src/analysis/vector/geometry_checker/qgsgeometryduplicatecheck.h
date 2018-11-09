@@ -18,7 +18,9 @@
 #ifndef QGS_GEOMETRY_DUPLICATE_CHECK_H
 #define QGS_GEOMETRY_DUPLICATE_CHECK_H
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheck.h"
+#include "qgsgeometrycheckerror.h"
 
 class ANALYSIS_EXPORT QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
 {
@@ -26,8 +28,9 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateCheckError : public QgsGeometryCheckEr
     QgsGeometryDuplicateCheckError( const QgsGeometryCheck *check,
                                     const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
                                     const QgsPointXY &errorLocation,
+                                    const QMap<QString, QgsFeaturePool *> &featurePools,
                                     const QMap<QString, QList<QgsFeatureId>> &duplicates )
-      : QgsGeometryCheckError( check, layerFeature, errorLocation, QgsVertexId(), duplicatesString( check->getContext()->featurePools, duplicates ) )
+      : QgsGeometryCheckError( check, layerFeature, errorLocation, QgsVertexId(), duplicatesString( featurePools, duplicates ) )
       , mDuplicates( duplicates )
     { }
     QMap<QString, QList<QgsFeatureId>> duplicates() const { return mDuplicates; }
@@ -49,16 +52,23 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateCheckError : public QgsGeometryCheckEr
 
 class ANALYSIS_EXPORT QgsGeometryDuplicateCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
-    explicit QgsGeometryDuplicateCheck( QgsGeometryCheckerContext *context )
-      : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
-    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
-    QStringList getResolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Duplicate" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometryDuplicateCheck" ); }
+    explicit QgsGeometryDuplicateCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
+      : QgsGeometryCheck( context, configuration ) {}
+    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
+
+    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    QStringList resolutionMethods() const override;
+    QString description() const override { return factoryDescription(); }
+    QString id() const override { return factoryId(); }
+    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
+
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
+    static QString factoryDescription() { return tr( "Duplicate" ); }
+    static QString factoryId();
+    static QgsGeometryCheck::CheckType factoryCheckType();
 
     enum ResolutionMethod { NoChange, RemoveDuplicates };
 };

@@ -63,12 +63,27 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
-    bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) override;
+    bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
 
     //curve polygon interface
-    int numInteriorRings() const;
-    const QgsCurve *exteriorRing() const;
-    const QgsCurve *interiorRing( int i ) const;
+    int numInteriorRings() const
+    {
+      return mInteriorRings.size();
+    }
+
+    const QgsCurve *exteriorRing() const
+    {
+      return mExteriorRing.get();
+    }
+
+    const QgsCurve *interiorRing( int i ) const
+    {
+      if ( i < 0 || i >= mInteriorRings.size() )
+      {
+        return nullptr;
+      }
+      return mInteriorRings.at( i );
+    }
 
     /**
      * Returns a new polygon geometry corresponding to a segmentized approximation
@@ -130,7 +145,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     int nCoordinates() const override;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
     bool isEmpty() const override;
-    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const override;
 
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
     void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
@@ -165,6 +180,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
+    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
 
     /**
      * Cast the \a geom to a QgsCurvePolygon.
@@ -188,6 +204,14 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 #endif
 
     QgsCurvePolygon *createEmptyWithSameType() const override SIP_FACTORY;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsCurvePolygon: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   protected:
 

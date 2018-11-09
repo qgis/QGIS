@@ -23,7 +23,7 @@ ELSE(TXT2TAGS_EXECUTABLE)
   )
 ENDIF(TXT2TAGS_EXECUTABLE)
 
-SET(QGIS_DOC_FILES ${QGIS_DOC_FILES} index.html news.html developersmap.html nohelp.html contributors.json favicon.ico style.css AUTHORS CONTRIBUTORS SPONSORS DONORS TRANSLATORS LICENSE)
+SET(QGIS_DOC_FILES ${QGIS_DOC_FILES} index.html news.html developersmap.html nohelp.html favicon.ico style.css AUTHORS CONTRIBUTORS SPONSORS DONORS TRANSLATORS LICENSE)
 
 INSTALL(FILES ${QGIS_DOC_FILES} DESTINATION ${QGIS_DATA_DIR}/doc)
 INSTALL(FILES ../images/icons/qgis-icon-60x60.png DESTINATION ${QGIS_DATA_DIR}/doc/images)
@@ -85,6 +85,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
       ${CMAKE_SOURCE_DIR}/src/gui/effects
       ${CMAKE_SOURCE_DIR}/src/gui/layertree
+      ${CMAKE_SOURCE_DIR}/src/gui/layout
       ${CMAKE_SOURCE_DIR}/src/gui/locator
       ${CMAKE_SOURCE_DIR}/src/gui/processing
       ${CMAKE_SOURCE_DIR}/src/gui/raster
@@ -104,23 +105,16 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/quickgui/plugin
     )
 
-    IF(WITH_SERVER_PLUGINS)
+    IF(WITH_SERVER)
       SET(DOXYGEN_INPUT
         ${DOXYGEN_INPUT}
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserver.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgscapabilitiescache.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverexception.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsrequesthandler.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverfilter.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsaccesscontrolfilter.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverinterface.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverrequest.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverresponse.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverrequest.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsservice.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserviceregistry.h
+        ${CMAKE_SOURCE_DIR}/src/server/
+        ${CMAKE_SOURCE_DIR}/src/server/services/
+        ${CMAKE_SOURCE_DIR}/src/server/services/wms
+        ${CMAKE_SOURCE_DIR}/src/server/services/wfs
+        ${CMAKE_SOURCE_DIR}/src/server/services/wcs
       )
-    ENDIF(WITH_SERVER_PLUGINS)
+    ENDIF(WITH_SERVER)
 
     SET(DOXYGEN_FILE_PATTERNS *.h *.cpp *.dox)
 

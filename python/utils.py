@@ -30,7 +30,7 @@ QGIS utilities module
 
 from qgis.PyQt.QtCore import QCoreApplication, QLocale, QThread
 from qgis.PyQt.QtWidgets import QPushButton, QApplication
-from qgis.core import Qgis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput, QgsWkbTypes
+from qgis.core import Qgis, QgsMessageLog, qgsfunction, QgsMessageOutput
 from qgis.gui import QgsMessageBar
 
 import os
@@ -38,10 +38,7 @@ import sys
 import traceback
 import glob
 import os.path
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
+import configparser
 import warnings
 import codecs
 import time
@@ -75,10 +72,6 @@ def showWarning(message, category, filename, lineno, file=None, line=None):
         u"warning:{}\ntraceback:{}".format(warnings.formatwarning(message, category, decoded_filename, lineno), stk),
         QCoreApplication.translate("Python", "Python warning")
     )
-
-
-if not os.environ.get('QGIS_DISABLE_MESSAGE_HOOKS'):
-    warnings.showwarning = showWarning
 
 
 def showException(type, value, tb, msg, messagebar=False):
@@ -198,16 +191,21 @@ def qgis_excepthook(type, value, tb):
 
 
 def installErrorHook():
+    """
+    Installs the QGIS application error/warning hook. This causes Python exceptions
+    to be intercepted by the QGIS application and shown in the main window message bar
+    and in custom dialogs.
+
+    Generally you shouldn't call this method - it's automatically called by
+    the QGIS app on startup, and has no use in standalone applications and scripts.
+    """
     sys.excepthook = qgis_excepthook
+    warnings.showwarning = showWarning
 
 
 def uninstallErrorHook():
     sys.excepthook = sys.__excepthook__
 
-
-# install error hook() on module load
-if not os.environ.get('QGIS_DISABLE_MESSAGE_HOOKS'):
-    installErrorHook()
 
 # initialize 'iface' object
 iface = None
@@ -330,7 +328,8 @@ def startPlugin(packageName):
 
     errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
 
-    start = time.clock()
+    start = time.process_time()
+
     # create an instance of the plugin
     try:
         plugins[packageName] = package.classFactory(iface)
@@ -352,7 +351,7 @@ def startPlugin(packageName):
 
     # add to active plugins
     active_plugins.append(packageName)
-    end = time.clock()
+    end = time.process_time()
     plugin_times[packageName] = "{0:02f}s".format(end - start)
 
     return True
@@ -658,9 +657,18 @@ _plugin_modules = {}
 
 
 def _import(name, globals={}, locals={}, fromlist=[], level=None):
-    """ wrapper around builtin import that keeps track of loaded plugin modules """
+    """
+    Wrapper around builtin import that keeps track of loaded plugin modules and blocks
+    certain unsafe imports
+    """
     if level is None:
         level = 0
+
+    if 'PyQt4' in name:
+        msg = 'PyQt4 classes cannot be imported in QGIS 3.x.\n' \
+              'Use {} or the version independent {} import instead.'.format(name.replace('PyQt4', 'PyQt5'), name.replace('PyQt4', 'qgis.PyQt'))
+        raise ImportError(msg)
+
     mod = _builtin_import(name, globals, locals, fromlist, level)
 
     if mod and '__file__' in mod.__dict__:

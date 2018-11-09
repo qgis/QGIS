@@ -21,6 +21,8 @@
 #include "qgis_app.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsgeometry.h"
+#include "qgspointlocator.h"
+
 
 class QRubberBand;
 
@@ -61,7 +63,15 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
-    QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
+
+    enum VertexToolMode
+    {
+      ActiveLayer,
+      AllLayers
+    };
+    Q_ENUM( VertexToolMode );
+
+    QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock, VertexToolMode mode = QgsVertexTool::AllLayers );
 
     //! Cleanup canvas items we have created
     ~QgsVertexTool() override;
@@ -146,6 +156,9 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     //! Gets list of matches of all vertices of a layer exactly snapped to a map point
     QList<QgsPointLocator::Match> layerVerticesSnappedToPoint( QgsVectorLayer *layer, const QgsPointXY &mapPoint );
 
+    //! Gets list of matches of all segments of a layer coincident with the given segment
+    QList<QgsPointLocator::Match> layerSegmentsSnappedToSegment( QgsVectorLayer *layer, const QgsPointXY &mapPoint1, const QgsPointXY &mapPoint2 );
+
     void startDraggingAddVertex( const QgsPointLocator::Match &m );
 
     void startDraggingAddVertexAtEndpoint( const QgsPointXY &mapPoint );
@@ -167,8 +180,24 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     void addExtraVerticesToEdits( VertexEdits &edits, const QgsPointXY &mapPoint, QgsVectorLayer *dragLayer = nullptr, const QgsPointXY &layerPoint = QgsPointXY() );
 
+    void addExtraSegmentsToEdits( QgsVertexTool::VertexEdits &edits, const QgsPointXY &mapPoint, QgsVectorLayer *dragLayer, const QgsPointXY &layerPoint );
+
     void applyEditsToLayers( VertexEdits &edits );
 
+    /**
+     * For the given set of vertices (possibly from multiple layers) find any another vertices that are coincident with
+     * them and not yet included in the set. This is used for topological editing to find all vertices that should be moved.
+     */
+    QSet<Vertex> findCoincidentVertices( const QSet<Vertex> &vertices );
+
+    /**
+     * For the given set of vertices, prepare mDraggingExtraVertices and mDraggingExtraVerticesOffset arrays.
+     * The parameters anchorPoint and anchorLayer are used to calculate offsets.
+     */
+    void buildExtraVertices( const QSet<Vertex> &vertices, const QgsPointXY &anchorPoint, QgsVectorLayer *anchorLayer );
+
+    //! Returns a list of canvas layers filtered to just editable spatial vector layers
+    QList<QgsVectorLayer *> editableVectorLayers();
 
     enum HighlightMode
     {
@@ -188,13 +217,13 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
      * Initialize rectangle that is being dragged to select vertices.
      * Argument point0 is in screen coordinates.
      */
-    void startSelectionRect( const QPoint &point0 );
+    void startSelectionRect( QPoint point0 );
 
     /**
      * Update bottom-right corner of the existing selection rectangle.
      * Argument point1 is in screen coordinates.
      */
-    void updateSelectionRect( const QPoint &point1 );
+    void updateSelectionRect( QPoint point1 );
 
     void stopSelectionRect();
 
@@ -320,6 +349,12 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
      */
     QList<QgsVector> mDraggingExtraVerticesOffset;
 
+    /**
+     * list of Vertex instances identifying segments (by their first vertex index) that should
+     * also get a new vertex: this is used for topo editing when adding a vertex to existing segment
+     */
+    QList<Vertex> mDraggingExtraSegments;
+
     // members for selection handling
 
     //! list of Vertex instances of vertices that are selected
@@ -361,7 +396,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
      */
     std::unique_ptr<QgsPointLocator::Match> mNewVertexFromDoubleClick;
 
-    //! Geometry cache for fast access to geometries
+    //! Geometry cache for fast access to geometries (coordinates are in their layer's CRS)
     QHash<const QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > mCache;
 
     // support for vertex editor
@@ -404,6 +439,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     //! Starting vertex when using range selection (null if not yet selected)
     std::unique_ptr<Vertex> mRangeSelectionFirstVertex;
+
+    VertexToolMode mMode = AllLayers;
 };
 
 

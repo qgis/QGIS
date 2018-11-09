@@ -21,7 +21,6 @@
 
 QgsAttributeFormWidget::QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAttributeForm *form )
   : QWidget( form )
-  , mMode( DefaultMode )
   , mForm( form )
   , mWidget( widget )
 {

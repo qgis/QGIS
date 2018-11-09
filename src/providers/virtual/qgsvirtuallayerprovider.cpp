@@ -248,7 +248,7 @@ bool QgsVirtualLayerProvider::createIt()
           continue;
 
         const QgsVectorLayer *vl = static_cast<const QgsVectorLayer *>( l );
-        if ( ( vl->name() == tname ) || ( vl->name().toLower() == tname.toLower() ) || ( vl->id() == tname ) )
+        if ( ( vl->name() == tname ) || ( vl->name().compare( tname.toLower(), Qt::CaseInsensitive ) == 0 ) || ( vl->id() == tname ) )
         {
           mDefinition.addSource( tname, vl->id() );
           found = true;
@@ -503,10 +503,16 @@ QString QgsVirtualLayerProvider::subsetString() const
 
 bool QgsVirtualLayerProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
 {
+  if ( subset == mSubset )
+    return true;
+
   mSubset = subset;
   clearMinMaxCache();
   if ( updateFeatureCount )
     updateStatistics();
+
+  emit dataChanged();
+
   return true;
 }
 
@@ -537,9 +543,9 @@ QgsRectangle QgsVirtualLayerProvider::extent() const
 void QgsVirtualLayerProvider::updateStatistics() const
 {
   bool hasGeometry = mDefinition.geometryWkbType() != QgsWkbTypes::NoGeometry;
-  QString subset = mSubset.isEmpty() ? QLatin1String( "" ) : " WHERE " + mSubset;
+  QString subset = mSubset.isEmpty() ? QString() : " WHERE " + mSubset;
   QString sql = QStringLiteral( "SELECT Count(*)%1 FROM %2%3" )
-                .arg( hasGeometry ? QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : QLatin1String( "" ),
+                .arg( hasGeometry ? QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : QString(),
                       mTableName,
                       subset );
   Sqlite::Query q( mSqlite.get(), sql );
@@ -603,7 +609,7 @@ QgsAttributeList QgsVirtualLayerProvider::pkAttributeIndexes() const
     const QgsFields &fields = mDefinition.fields();
     for ( int i = 0; i < fields.size(); i++ )
     {
-      if ( fields.at( i ).name().toLower() == mDefinition.uid().toLower() )
+      if ( fields.at( i ).name().compare( mDefinition.uid(), Qt::CaseInsensitive ) == 0 )
       {
         QgsAttributeList l;
         l << i;

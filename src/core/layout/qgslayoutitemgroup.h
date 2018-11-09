@@ -66,7 +66,7 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
     QList<QgsLayoutItem *> items() const;
 
     //overridden to also hide grouped items
-    void setVisibility( const bool visible ) override;
+    void setVisibility( bool visible ) override;
 
     //overridden to move child items
     void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false, int page = -1 ) override;

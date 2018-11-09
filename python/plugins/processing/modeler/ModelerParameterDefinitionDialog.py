@@ -294,8 +294,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 isinstance(self.param, QgsProcessingParameterMatrix):
             self.widget = MatrixModelerWidget(self)
             if self.param is not None:
-                self.widget.setValue(self.param.defaultValue())
-                self.widget.setHeaders(self.param.headers())
+                self.widget.setValue(self.param.headers(), self.param.defaultValue())
                 self.widget.setFixedRows(self.param.hasFixedNumberRows())
             self.verticalLayout.addWidget(self.widget)
 

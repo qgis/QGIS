@@ -16,6 +16,7 @@
 #include "qgsalgorithmdifference.h"
 
 #include "qgsoverlayutils.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -42,9 +43,29 @@ QString QgsDifferenceAlgorithm::groupId() const
 
 QString QgsDifferenceAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts features from the Input layer that fall outside, or partially overlap, features in the Difference layer. Input layer features that partially overlap the difference layer feature(s) are split along the boundary of the difference layer feature(s) and only the portions outside the difference layer features are retained." )
+  return QObject::tr( "This algorithm extracts features from the Input layer that fall outside, or partially overlap, features in the Overlay layer. "
+                      "Input layer features that partially overlap feature(s) in the Overlay layer are split along those features' boundary "
+                      "and only the portions outside the Overlay layer features are retained." )
          + QStringLiteral( "\n\n" )
-         + QObject::tr( "Attributes are not modified." );
+         + QObject::tr( "Attributes are not modified, although properties such as area or length of the features will "
+                        "be modified by the difference operation. If such properties are stored as attributes, those attributes will have to "
+                        "be manually updated." );
+}
+
+bool QgsDifferenceAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
+{
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
+  return layer->isSpatial();
+}
+
+QgsProcessingAlgorithm::Flags QgsDifferenceAlgorithm::flags() const
+{
+  Flags f = QgsProcessingAlgorithm::flags();
+  f |= QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+  return f;
 }
 
 QgsProcessingAlgorithm *QgsDifferenceAlgorithm::createInstance() const
@@ -55,7 +76,7 @@ QgsProcessingAlgorithm *QgsDifferenceAlgorithm::createInstance() const
 void QgsDifferenceAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Difference layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Difference" ) ) );
 }
 
@@ -82,7 +103,7 @@ QVariantMap QgsDifferenceAlgorithm::processAlgorithm( const QVariantMap &paramet
 
   int count = 0;
   int total = sourceA->featureCount();
-  QgsOverlayUtils::difference( *sourceA.get(), *sourceB.get(), *sink.get(), context, feedback, count, total, QgsOverlayUtils::OutputA );
+  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA );
 
   return outputs;
 }

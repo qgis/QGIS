@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import QgsMapLayerStore, QgsVectorLayer, QgsMapLayer
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QT_VERSION_STR
-import sip
+from qgis.PyQt import sip
 from qgis.PyQt.QtTest import QSignalSpy
 from time import sleep
 
@@ -66,9 +66,11 @@ class TestQgsMapLayerStore(unittest.TestCase):
         """ test that invalid map layers can't be added to store """
         store = QgsMapLayerStore()
 
-        self.assertEqual(store.addMapLayer(QgsVectorLayer("Point?field=x:string", 'test', "xxx")), None)
-        self.assertEqual(len(store.mapLayersByName('test')), 0)
-        self.assertEqual(store.count(), 0)
+        vl = QgsVectorLayer("Point?field=x:string", 'test', "xxx")
+        self.assertEqual(store.addMapLayer(vl), vl)
+        self.assertEqual(len(store.mapLayersByName('test')), 1)
+        self.assertEqual(store.count(), 1)
+        self.assertEqual(store.validCount(), 0)
 
     def test_addMapLayerSignals(self):
         """ test that signals are correctly emitted when adding map layer"""
@@ -120,12 +122,14 @@ class TestQgsMapLayerStore(unittest.TestCase):
         store.removeAllMapLayers()
 
     def test_addMapLayersInvalid(self):
-        """ test that invalid map layersd can't be added to store """
+        """ test that invalid map layers can be added to store """
         store = QgsMapLayerStore()
 
-        self.assertEqual(store.addMapLayers([QgsVectorLayer("Point?field=x:string", 'test', "xxx")]), [])
-        self.assertEqual(len(store.mapLayersByName('test')), 0)
-        self.assertEqual(store.count(), 0)
+        vl = QgsVectorLayer("Point?field=x:string", 'test', "xxx")
+        self.assertEqual(store.addMapLayers([vl]), [vl])
+        self.assertEqual(len(store.mapLayersByName('test')), 1)
+        self.assertEqual(store.count(), 1)
+        self.assertEqual(store.validCount(), 0)
 
     def test_addMapLayersAlreadyAdded(self):
         """ test that already added layers can't be readded to store """

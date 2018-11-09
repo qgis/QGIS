@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgsdemterraintilegeometry_p.h"
+#include <QMatrix4x4>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbufferdatagenerator.h>
 #include <limits>
 #include <cmath>
+#include "qgsraycastingutils_p.h"
 
 ///@cond PRIVATE
 
@@ -28,7 +30,7 @@ using namespace Qt3DRender;
 static QByteArray createPlaneVertexData( int res, float skirtHeight, const QByteArray &heights )
 {
   Q_ASSERT( res >= 2 );
-  Q_ASSERT( heights.count() == res * res * ( int )sizeof( float ) );
+  Q_ASSERT( heights.count() == res * res * static_cast<int>( sizeof( float ) ) );
 
   const float *zData = ( const float * ) heights.constData();
   const float *zBits = zData;
@@ -99,20 +101,20 @@ static QByteArray createPlaneVertexData( int res, float skirtHeight, const QByte
   return bufferBytes;
 }
 
-inline int ijToHeightMapIndex( int i, int j, int numVerticesX, int numVerticesZ )
+inline int ijToHeightMapIndex( int i, int j, int resX, int resZ )
 {
-  i = qBound( 1, i, numVerticesX - 1 ) - 1;
-  j = qBound( 1, j, numVerticesZ - 1 ) - 1;
-  return j * ( numVerticesX - 2 ) + i;
+  i = qBound( 1, i, resX ) - 1;
+  j = qBound( 1, j, resZ ) - 1;
+  return j * resX + i;
 }
 
 
-static bool hasNoData( int i, int j, const float *heightMap, int numVerticesX, int numVerticesZ )
+static bool hasNoData( int i, int j, const float *heightMap, int resX, int resZ )
 {
-  return std::isnan( heightMap[ ijToHeightMapIndex( i, j, numVerticesX, numVerticesZ ) ] ) ||
-         std::isnan( heightMap[ ijToHeightMapIndex( i + 1, j, numVerticesX, numVerticesZ ) ] ) ||
-         std::isnan( heightMap[ ijToHeightMapIndex( i, j + 1, numVerticesX, numVerticesZ ) ] ) ||
-         std::isnan( heightMap[ ijToHeightMapIndex( i + 1, j + 1, numVerticesX, numVerticesZ ) ] );
+  return std::isnan( heightMap[ ijToHeightMapIndex( i, j, resX, resZ ) ] ) ||
+         std::isnan( heightMap[ ijToHeightMapIndex( i + 1, j, resX, resZ ) ] ) ||
+         std::isnan( heightMap[ ijToHeightMapIndex( i, j + 1, resX, resZ ) ] ) ||
+         std::isnan( heightMap[ ijToHeightMapIndex( i + 1, j + 1, resX, resZ ) ] );
 }
 
 static QByteArray createPlaneIndexData( int res, const QByteArray &heightMap )
@@ -140,7 +142,7 @@ static QByteArray createPlaneIndexData( int res, const QByteArray &heightMap )
     // Iterate over x
     for ( int i = 0; i < numVerticesX - 1; ++i )
     {
-      if ( hasNoData( i, j, heightMapFloat, numVerticesX, numVerticesZ ) )
+      if ( hasNoData( i, j, heightMapFloat, res, res ) )
       {
         // at least one corner of the quad has no-data value
         // so let's make two invalid triangles
@@ -246,6 +248,65 @@ DemTerrainTileGeometry::DemTerrainTileGeometry( int resolution, float skirtHeigh
   init();
 }
 
+static bool intersectionDemTriangles( const QByteArray &vertexBuf, const QByteArray &indexBuf, const QgsRayCastingUtils::Ray3D &r, const QMatrix4x4 &worldTransform, QVector3D &intPt )
+{
+  // WARNING! this code is specific to how vertex buffers are built for DEM tiles,
+  // it is not usable for any mesh...
+
+  const float *vertices = reinterpret_cast<const float *>( vertexBuf.constData() );
+  const uint *indices = reinterpret_cast<const uint *>( indexBuf.constData() );
+  int vertexCnt = vertexBuf.count() / sizeof( float );
+  int indexCnt = indexBuf.count() / sizeof( uint );
+  Q_ASSERT( vertexCnt % 8 == 0 );
+  Q_ASSERT( indexCnt % 3 == 0 );
+  //int vertexCount = vertexCnt/8;
+  int triangleCount = indexCnt / 3;
+
+  QVector3D intersectionPt, minIntersectionPt;
+  float distance;
+  float minDistance = -1;
+
+  for ( int i = 0; i < triangleCount; ++i )
+  {
+    int v0 = indices[i * 3], v1 = indices[i * 3 + 1], v2 = indices[i * 3 + 2];
+    QVector3D a( vertices[v0 * 8], vertices[v0 * 8 + 1], vertices[v0 * 8 + 2] );
+    QVector3D b( vertices[v1 * 8], vertices[v1 * 8 + 1], vertices[v1 * 8 + 2] );
+    QVector3D c( vertices[v2 * 8], vertices[v2 * 8 + 1], vertices[v2 * 8 + 2] );
+
+    const QVector3D tA = worldTransform * a;
+    const QVector3D tB = worldTransform * b;
+    const QVector3D tC = worldTransform * c;
+
+    QVector3D uvw;
+    float t = 0;
+    if ( QgsRayCastingUtils::rayTriangleIntersection( r, tA, tB, tC, uvw, t ) )
+    {
+      intersectionPt = r.point( t * r.distance() );
+      distance = r.projectedDistance( intersectionPt );
+
+      // we only want the first intersection of the ray with the mesh (closest to the ray origin)
+      if ( minDistance == -1 || distance < minDistance )
+      {
+        minDistance = distance;
+        minIntersectionPt = intersectionPt;
+      }
+    }
+  }
+
+  if ( minDistance != -1 )
+  {
+    intPt = minIntersectionPt;
+    return true;
+  }
+  else
+    return false;
+}
+
+bool DemTerrainTileGeometry::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint )
+{
+  return intersectionDemTriangles( mVertexBuffer->data(), mIndexBuffer->data(), ray, worldTransform, intersectionPoint );
+}
+
 void DemTerrainTileGeometry::init()
 {
   mPositionAttribute = new QAttribute( this );
@@ -294,8 +355,10 @@ void DemTerrainTileGeometry::init()
   // Each primitive has 3 vertives
   mIndexAttribute->setCount( faces * 3 );
 
-  mVertexBuffer->setDataGenerator( QSharedPointer<PlaneVertexBufferFunctor>::create( mResolution, mSkirtHeight, mHeightMap ) );
-  mIndexBuffer->setDataGenerator( QSharedPointer<PlaneIndexBufferFunctor>::create( mResolution, mHeightMap ) );
+  // switched to setting data instead of just setting data generators because we also need the buffers
+  // available for ray-mesh intersections and we can't access the private copy of data in Qt (if there is any)
+  mVertexBuffer->setData( PlaneVertexBufferFunctor( mResolution, mSkirtHeight, mHeightMap )() );
+  mIndexBuffer->setData( PlaneIndexBufferFunctor( mResolution, mHeightMap )() );
 
   addAttribute( mPositionAttribute );
   addAttribute( mTexCoordAttribute );

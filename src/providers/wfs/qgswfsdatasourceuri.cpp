@@ -207,6 +207,20 @@ void QgsWFSDataSourceURI::setMaxNumFeatures( int maxNumFeatures )
   mURI.setParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES, QString( maxNumFeatures ) );
 }
 
+int QgsWFSDataSourceURI::pageSize() const
+{
+  if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_PAGE_SIZE ) )
+    return 0;
+  return mURI.param( QgsWFSConstants::URI_PARAM_PAGE_SIZE ).toInt();
+}
+
+bool QgsWFSDataSourceURI::pagingEnabled() const
+{
+  if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED ) )
+    return true;
+  return mURI.param( QgsWFSConstants::URI_PARAM_PAGING_ENABLED ) == QStringLiteral( "true" );
+}
+
 void QgsWFSDataSourceURI::setTypeName( const QString &typeName )
 {
   mURI.removeParam( QgsWFSConstants::URI_PARAM_TYPENAME );

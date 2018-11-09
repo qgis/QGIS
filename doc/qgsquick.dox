@@ -13,12 +13,16 @@ QGIS Quick consists of a Qt plugin that provides the QML components and of a sha
 
 \subsection qgsquick_overview_widgets QML Classes
 \subsubsection qgsquick_overview_widgets_mapcanvas MapCanvas
-Similarly to QgsMapCanvas, this component can be used for displaying GIS data on a canvas. See also QgsQuickMapCanvasMap.
+\subsubsection qgsquick_overview_widgets_featureform FeatureForm
+A form listing attributes of a given feature. It supports basic edit field widgets for types such as edit text, map value,
+checkbox,  date/time picker or external resource (photo capture).
+\subsubsection qgsquick_overview_widgets_positionmarker PositionMarker
+The element refers to current position according gps location device connected to it. It holds information about longitude, latitude, altitude,
+direction of the movement and accuracy of the signal. See also QgsQuickPositionKit.
 \subsubsection qgsquick_overview_widgets_scalebar ScaleBar
 A QML component that shows the scale ratio between its length and distance on the MapCanvas. There are predefined rounded values
 for several zooming levels with 'm' or 'km' postfixes. After any zoom in/out event on canvas recalculates its properties and updates
 text. See also QgsQuickScaleBarKit.
-
 \subsubsection qgsquick_overview_widgets_messagelog MessageLog
 A simple panel which can be used for publishing logs messages to a user such as basic information about the application or its status.
 See also QgsQuickMessageLogModel.

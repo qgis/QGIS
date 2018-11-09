@@ -180,10 +180,7 @@ void eVis::unload()
     delete ( mTemporaryFileList.takeLast() );
   }
 
-  if ( mIdTool )
-  {
-    delete mIdTool;
-  }
+  delete mIdTool;
 }
 
 void eVis::drawVectorLayer( const QString &pathNameQString, const QString &baseNameQString, const QString &providerQString )

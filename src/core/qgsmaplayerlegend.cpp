@@ -18,6 +18,7 @@
 #include "qgssettings.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgsmeshlayer.h"
 #include "qgspluginlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrenderer.h"
@@ -53,6 +54,11 @@ QgsMapLayerLegend *QgsMapLayerLegend::defaultRasterLegend( QgsRasterLayer *rl )
   return new QgsDefaultRasterLayerLegend( rl );
 }
 
+QgsMapLayerLegend *QgsMapLayerLegend::defaultMeshLegend( QgsMeshLayer *ml )
+{
+  return new QgsDefaultMeshLayerLegend( ml );
+}
+
 // -------------------------------------------------------------------------
 
 
@@ -79,7 +85,7 @@ static QList<int> _makeNodeOrder( QgsLayerTreeLayer *nodeLayer )
 {
   if ( !nodeLayer->layer() || !nodeLayer->layer()->legend() )
   {
-    QgsDebugMsg( "Legend node order manipulation is invalid without existing legend" );
+    QgsDebugMsg( QStringLiteral( "Legend node order manipulation is invalid without existing legend" ) );
     return QList<int>();
   }
 
@@ -161,7 +167,7 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
     {
       if ( usedIndices.contains( idx ) )
       {
-        QgsDebugMsg( "invalid node order. ignoring." );
+        QgsDebugMsg( QStringLiteral( "invalid node order. ignoring." ) );
         return;
       }
 
@@ -301,7 +307,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultRasterLayerLegend::createLayerTre
   QList<QgsLayerTreeModelLegendNode *> nodes;
 
   // temporary solution for WMS. Ideally should be done with a delegate.
-  if ( mLayer->dataProvider()->supportsLegendGraphic() )
+  if ( mLayer->dataProvider() && mLayer->dataProvider()->supportsLegendGraphic() )
   {
     nodes << new QgsWmsLegendNode( nodeLayer );
   }
@@ -325,6 +331,56 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultRasterLayerLegend::createLayerTre
       QString label = tr( "following %1 items\nnot displayed" ).arg( rasterItemList.size() - max_count );
       nodes << new QgsSimpleLegendNode( nodeLayer, label );
       break;
+    }
+  }
+
+  return nodes;
+}
+
+// -------------------------------------------------------------------------
+
+QgsDefaultMeshLayerLegend::QgsDefaultMeshLayerLegend( QgsMeshLayer *ml )
+  : mLayer( ml )
+{
+  connect( mLayer, &QgsMapLayer::rendererChanged, this, &QgsMapLayerLegend::itemsChanged );
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer )
+{
+  QList<QgsLayerTreeModelLegendNode *> nodes;
+
+  QgsMeshDataProvider *provider = mLayer->dataProvider();
+  if ( !provider )
+    return nodes;
+
+  QgsMeshRendererSettings rendererSettings = mLayer->rendererSettings();
+
+  QgsMeshDatasetIndex indexScalar = rendererSettings.activeScalarDataset();
+  QgsMeshDatasetIndex indexVector = rendererSettings.activeVectorDataset();
+
+  QString name;
+  if ( indexScalar.isValid() && indexVector.isValid() && indexScalar.group() != indexVector.group() )
+    name = QString( "%1 / %2" ).arg( provider->datasetGroupMetadata( indexScalar.group() ).name(), provider->datasetGroupMetadata( indexVector.group() ).name() );
+  else if ( indexScalar.isValid() )
+    name = provider->datasetGroupMetadata( indexScalar.group() ).name();
+  else if ( indexVector.isValid() )
+    name = provider->datasetGroupMetadata( indexVector.group() ).name();
+  else
+  {
+    // neither contours nor vectors get rendered - no legend needed
+    return nodes;
+  }
+
+  nodes << new QgsSimpleLegendNode( nodeLayer, name );
+
+  if ( indexScalar.isValid() )
+  {
+    QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings( indexScalar.group() );
+    QgsLegendColorList items;
+    settings.colorRampShader().legendSymbologyItems( items );
+    for ( const QPair< QString, QColor > &item : qgis::as_const( items ) )
+    {
+      nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
     }
   }
 

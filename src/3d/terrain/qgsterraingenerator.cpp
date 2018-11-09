@@ -61,11 +61,11 @@ QString QgsTerrainGenerator::typeToString( QgsTerrainGenerator::Type type )
   switch ( type )
   {
     case QgsTerrainGenerator::Flat:
-      return "flat";
+      return QStringLiteral( "flat" );
     case QgsTerrainGenerator::Dem:
-      return "dem";
+      return QStringLiteral( "dem" );
     case QgsTerrainGenerator::QuantizedMesh:
-      return "quantized-mesh";
+      return QStringLiteral( "quantized-mesh" );
   }
   return QString();
 }

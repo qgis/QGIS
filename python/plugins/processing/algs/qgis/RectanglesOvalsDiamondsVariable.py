@@ -90,7 +90,6 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.SEGMENTS,
                                                        self.tr('Number of segments'),
                                                        minValue=1,
-                                                       maxValue=999999999,
                                                        defaultValue=36))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,

@@ -36,6 +36,7 @@ class QStringList;
 class QgsOracleColumnTypeThread;
 class QgisApp;
 class QgsOracleSourceSelect;
+class QgsProxyProgressTask;
 
 class QgsOracleSourceSelectDelegate : public QItemDelegate
 {
@@ -44,17 +45,16 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
   public:
     explicit QgsOracleSourceSelectDelegate( QObject *parent = nullptr )
       : QItemDelegate( parent )
-      , mConn( nullptr )
     {}
 
-    ~QgsOracleSourceSelectDelegate()
+    ~QgsOracleSourceSelectDelegate() override
     {
       setConn( nullptr );
     }
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
 
     void setConnectionInfo( const QgsDataSourceUri &connInfo ) { mConnInfo = connInfo; }
 
@@ -71,7 +71,7 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
   private:
     QgsDataSourceUri mConnInfo;
     //! lazily initialized connection (to detect possible primary keys)
-    mutable QgsOracleConn *mConn;
+    mutable QgsOracleConn *mConn = nullptr;
 };
 
 
@@ -99,8 +99,6 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
 
   signals:
     void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
-    void progress( int, int );
-    void progressMessage( QString );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog
@@ -159,6 +157,7 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
     QStringList mColumnLabels;
     // Our thread for doing long running queries
     QgsOracleColumnTypeThread *mColumnTypeThread = nullptr;
+    QgsProxyProgressTask *mColumnTypeTask = nullptr;
     QgsDataSourceUri mConnInfo;
     QStringList mSelectedTables;
     // Storage for the range of layer type icons

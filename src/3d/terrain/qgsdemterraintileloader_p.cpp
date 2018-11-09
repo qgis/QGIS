@@ -44,8 +44,8 @@ static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &z
       zMin = zMax = z;
       first = false;
     }
-    zMin = qMin( zMin, z );
-    zMax = qMax( zMax, z );
+    zMin = std::min( zMin, z );
+    zMax = std::max( zMax, z );
   }
 }
 
@@ -162,7 +162,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
     projector->setInput( provider );
     input = projector.get();
   }
-  QgsRasterBlock *block = input->block( 1, extent, res, res );
+  std::unique_ptr< QgsRasterBlock > block( input->block( 1, extent, res, res ) );
 
   QByteArray data;
   if ( block )
@@ -183,8 +183,6 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
           floatData[i] = std::numeric_limits<float>::quiet_NaN();
       }
     }
-
-    delete block;
   }
   return data;
 }
@@ -199,7 +197,7 @@ int QgsDemHeightMapGenerator::render( int x, int y, int z )
   extent.grow( mapUnitsPerPixel / 2 );
   // but make sure not to go beyond the full extent (returns invalid values)
   QgsRectangle fullExtent = mTilingScheme.tileToExtent( 0, 0, 0 );
-  extent = extent.intersect( &fullExtent );
+  extent = extent.intersect( fullExtent );
 
   JobData jd;
   jd.jobId = ++mLastJobId;
@@ -225,9 +223,9 @@ QByteArray QgsDemHeightMapGenerator::renderSynchronously( int x, int y, int z )
   extent.grow( mapUnitsPerPixel / 2 );
   // but make sure not to go beyond the full extent (returns invalid values)
   QgsRectangle fullExtent = mTilingScheme.tileToExtent( 0, 0, 0 );
-  extent = extent.intersect( &fullExtent );
+  extent = extent.intersect( fullExtent );
 
-  QgsRasterBlock *block = mDtm->dataProvider()->block( 1, extent, mResolution, mResolution );
+  std::unique_ptr< QgsRasterBlock > block( mDtm->dataProvider()->block( 1, extent, mResolution, mResolution ) );
 
   QByteArray data;
   if ( block )
@@ -235,7 +233,6 @@ QByteArray QgsDemHeightMapGenerator::renderSynchronously( int x, int y, int z )
     block->convert( Qgis::Float32 ); // currently we expect just floats
     data = block->data();
     data.detach();  // this should make a deep copy
-    delete block;
   }
 
   return data;
@@ -248,11 +245,10 @@ float QgsDemHeightMapGenerator::heightAt( double x, double y )
   QgsRectangle rect = mDtm->extent();
   if ( mDtmCoarseData.isEmpty() )
   {
-    QgsRasterBlock *block = mDtm->dataProvider()->block( 1, rect, res, res );
+    std::unique_ptr< QgsRasterBlock > block( mDtm->dataProvider()->block( 1, rect, res, res ) );
     block->convert( Qgis::Float32 );
     mDtmCoarseData = block->data();
     mDtmCoarseData.detach();  // make a deep copy
-    delete block;
   }
 
   int cellX = ( int )( ( x - rect.xMinimum() ) / rect.width() * res + .5f );

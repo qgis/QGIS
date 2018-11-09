@@ -221,15 +221,17 @@ void QgsFileWidget::openFileDialog()
   QgsSettings settings;
   QString oldPath;
 
-  // If we use fixed default path
-  if ( !mDefaultRoot.isEmpty() )
-  {
-    oldPath = QDir::cleanPath( mDefaultRoot );
-  }
   // if we use a relative path option, we need to obtain the full path
-  else if ( !mFilePath.isEmpty() )
+  // first choice is the current file path, if one is entered
+  if ( !mFilePath.isEmpty() )
   {
     oldPath = relativePath( mFilePath, false );
+  }
+  // If we use fixed default path
+  // second choice is the default root
+  else if ( !mDefaultRoot.isEmpty() )
+  {
+    oldPath = QDir::cleanPath( mDefaultRoot );
   }
 
   // If there is no valid value, find a default path to use
@@ -376,7 +378,7 @@ QString QgsFileWidget::toUrl( const QString &path ) const
   QUrl url = QUrl::fromUserInput( urlStr );
   if ( !url.isValid() || !url.isLocalFile() )
   {
-    QgsDebugMsg( QString( "URL: %1 is not valid or not a local file!" ).arg( path ) );
+    QgsDebugMsg( QStringLiteral( "URL: %1 is not valid or not a local file!" ).arg( path ) );
     rep = path;
   }
 

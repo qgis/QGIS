@@ -9,8 +9,10 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/tests/core #for render checker class
   ${CMAKE_SOURCE_DIR}/src/3d
   ${CMAKE_SOURCE_DIR}/src/3d/chunks
+  ${CMAKE_SOURCE_DIR}/src/3d/symbols
   ${CMAKE_SOURCE_DIR}/src/3d/terrain
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/3d
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/geometry
@@ -32,6 +34,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
+  ${QT5_3DEXTRA_INCLUDE_DIR}
 )
 
 #note for tests we should not include the moc of our
@@ -68,4 +71,6 @@ MACRO (ADD_QGIS_TEST testname testsrc)
 ENDMACRO (ADD_QGIS_TEST)
 
 ADD_QGIS_TEST(3dutilstest testqgs3dutils.cpp)
+ADD_QGIS_TEST(3drenderingtest testqgs3drendering.cpp)
+ADD_QGIS_TEST(layout3dmaptest testqgslayout3dmap.cpp)
 ADD_QGIS_TEST(tessellatortest testqgstessellator.cpp)

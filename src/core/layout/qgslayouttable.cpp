@@ -128,14 +128,14 @@ bool QgsLayoutTable::readPropertiesFromElement( const QDomElement &itemElem, con
   mShowEmptyRows = itemElem.attribute( QStringLiteral( "showEmptyRows" ), QStringLiteral( "0" ) ).toInt();
   if ( !QgsFontUtils::setFromXmlChildNode( mHeaderFont, itemElem, QStringLiteral( "headerFontProperties" ) ) )
   {
-    mHeaderFont.fromString( itemElem.attribute( QStringLiteral( "headerFont" ), QLatin1String( "" ) ) );
+    mHeaderFont.fromString( itemElem.attribute( QStringLiteral( "headerFont" ), QString() ) );
   }
   mHeaderFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "headerFontColor" ), QStringLiteral( "0,0,0,255" ) ) );
   mHeaderHAlignment = QgsLayoutTable::HeaderHAlignment( itemElem.attribute( QStringLiteral( "headerHAlignment" ), QStringLiteral( "0" ) ).toInt() );
   mHeaderMode = QgsLayoutTable::HeaderMode( itemElem.attribute( QStringLiteral( "headerMode" ), QStringLiteral( "0" ) ).toInt() );
   if ( !QgsFontUtils::setFromXmlChildNode( mContentFont, itemElem, QStringLiteral( "contentFontProperties" ) ) )
   {
-    mContentFont.fromString( itemElem.attribute( QStringLiteral( "contentFont" ), QLatin1String( "" ) ) );
+    mContentFont.fromString( itemElem.attribute( QStringLiteral( "contentFont" ), QString() ) );
   }
   mContentFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "contentFontColor" ), QStringLiteral( "0,0,0,255" ) ) );
   mCellMargin = itemElem.attribute( QStringLiteral( "cellMargin" ), QStringLiteral( "1.0" ) ).toDouble();

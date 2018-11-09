@@ -22,6 +22,7 @@
 
 #include "qgis.h"
 #include "qgsconfig.h"
+#include "qgstranslationcontext.h"
 
 class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
@@ -47,6 +48,7 @@ class QgsPageSizeRegistry;
 class QgsLayoutItemRegistry;
 class QgsAuthManager;
 class QgsNetworkContentFetcherRegistry;
+class QTranslator;
 
 /**
  * \ingroup core
@@ -190,7 +192,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Calculate the application pkg path
      * \return the resolved pkg path
      */
-    static QString resolvePkgPath( );
+    static QString resolvePkgPath();
 
     /**
      * Set the active theme to the specified theme.
@@ -230,7 +232,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the path to the developers map file.
      * The developers map was created by using leaflet framework,
-     * it shows the doc/contributors.json file.
+     * it shows the contributors.json file.
      * \since QGIS 2.7 */
     static QString developersMapFilePath();
 
@@ -505,7 +507,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     //! Indicates whether running from build directory (not installed)
     static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
     static QString cfgIntDir() { return ABISYM( mCfgIntDir ); } SIP_SKIP
 #endif
     //! Returns path to the source directory. Valid only when running from build directory
@@ -724,13 +726,36 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static void setCustomVariables( const QVariantMap &customVariables );
 
-
     /**
      * Set a single custom expression variable.
      *
      * \since QGIS 3.0
      */
     static void setCustomVariable( const QString &name, const QVariant &value );
+
+    /**
+     * The maximum number of concurrent connections per connections pool.
+     *
+     * \note QGIS may in some situations allocate more than this amount
+     *       of connections to avoid deadlocks.
+     *
+     * \since QGIS 3.4
+     */
+    int maxConcurrentConnectionsPerPool() const;
+
+    /**
+     * Set translation
+     *
+     * \since QGIS 3.4
+     */
+    static void setTranslation( const QString &translation ) { sTranslation = translation; }
+
+    /**
+     * Emits the signal to collect all the strings of .qgs to be included in ts file
+     *
+     * \since QGIS 3.4
+     */
+    void collectTranslatableObjects( QgsTranslationContext *translationContext );
 
 #ifdef SIP_RUN
     SIP_IF_FEATURE( ANDROID )
@@ -754,6 +779,14 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \copydoc nullRepresentation()
      */
     void nullRepresentationChanged();
+
+    /**
+     * Emitted when project strings which require translation are being collected for inclusion in a .ts file.
+     * In order to register translatable strings, connect to this signal and register the strings within the specified \a translationContext.
+     *
+     * \since QGIS 3.4
+     */
+    void requestForTranslatableObjects( QgsTranslationContext *translationContext );
 
   private:
 
@@ -781,7 +814,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static bool ABISYM( mRunningFromBuildDir );
     //! Path to the source directory. valid only when running from build directory.
     static QString ABISYM( mBuildSourcePath );
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
     //! Configuration internal dir
     static QString ABISYM( mCfgIntDir );
 #endif
@@ -804,9 +837,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString sUserName;
     static QString sUserFullName;
     static QString sPlatformName;
+    static QString sTranslation;
 
     QMap<QString, QIcon> mIconCache;
     QMap<Cursor, QCursor> mCursorCache;
+
+    QTranslator *mQgisTranslator = nullptr;
+    QTranslator *mQtTranslator = nullptr;
 
     QgsDataItemProviderRegistry *mDataItemProviderRegistry = nullptr;
     QgsAuthManager *mAuthManager = nullptr;

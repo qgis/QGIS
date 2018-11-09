@@ -108,7 +108,7 @@ class Relief(QgisAlgorithm):
                                                             self.tr('Elevation layer')))
         self.addParameter(QgsProcessingParameterNumber(self.Z_FACTOR,
                                                        self.tr('Z factor'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.00, maxValue=999999.99, defaultValue=1.0))
+                                                       minValue=0.00, defaultValue=1.0))
         self.addParameter(QgsProcessingParameterBoolean(self.AUTO_COLORS,
                                                         self.tr('Generate relief classes automatically'),
                                                         defaultValue=False))
@@ -119,7 +119,10 @@ class Relief(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Relief')))
         self.addParameter(QgsProcessingParameterFileDestination(self.FREQUENCY_DISTRIBUTION,
-                                                                self.tr('Frequency distribution'), 'CSV files (*.csv)', optional=True))
+                                                                self.tr('Frequency distribution'),
+                                                                'CSV files (*.csv)',
+                                                                optional=True,
+                                                                createByDefault=False))
 
     def name(self):
         return 'relief'

@@ -776,6 +776,9 @@
           <widget objectName="mTileHeight" class="QLineEdit" label=""/>
           <widget objectName="label_3" class="QLabel" label="Feature limit for GetFeatureInfo"/>
           <widget objectName="mFeatureCount" class="QLineEdit" label="10"/>
+          <widget objectName="label_4" class="QLabel" label="Step size"/>
+          <widget objectName="mStepWidth" class="QLineEdit" label=""/>
+          <widget objectName="mStepHeight" class="QLineEdit" label=""/>
         </widget>
       </widget>
       <widget objectName="tabLayerOrder" class="QWidget" label="Layer Order">

@@ -36,7 +36,7 @@ namespace QgsWms
                                    const QgsServerRequest &request );
 
 
-} // samespace QgsWms
+} // namespace QgsWms
 
 
 

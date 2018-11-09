@@ -508,8 +508,20 @@ Sets flags that affect how features will be fetched
 
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
 %Docstring
-Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
-To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
+Set a subset of attributes that will be fetched.
+
+An empty attributes list indicates that no attributes will be fetched.
+To revert a call to setSubsetOfAttributes and fetch all available attributes,
+the SubsetOfAttributes flag should be removed from the request.
+%End
+
+    QgsFeatureRequest &setNoAttributes();
+%Docstring
+Set that no attributes will be fetched.
+To revert a call to setNoAttributes and fetch all or some available attributes,
+the SubsetOfAttributes flag should be removed from the request.
+
+.. versionadded:: 3.4
 %End
 
     QgsAttributeList subsetOfAttributes() const;
@@ -635,28 +647,84 @@ Check if a feature is accepted by this requests filter
 .. versionadded:: 2.1
 %End
 
-    int connectionTimeout() const;
+ int connectionTimeout() const /Deprecated/;
 %Docstring
-The timeout for how long we should wait for a connection if none is available from the pool
+Returns the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
 at this moment. A negative value (which is set by default) will wait forever.
 
 .. note::
 
    Only works if the provider supports this option.
+
+.. deprecated:: Use timeout() instead.
 
 .. versionadded:: 3.0
 %End
 
-    void setConnectionTimeout( int connectionTimeout );
+ QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) /Deprecated/;
 %Docstring
-The timeout for how long we should wait for a connection if none is available from the pool
+Sets the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
 at this moment. A negative value (which is set by default) will wait forever.
 
 .. note::
 
    Only works if the provider supports this option.
 
+.. deprecated:: Use setTimeout() instead.
+
 .. versionadded:: 3.0
+%End
+
+    int timeout() const;
+%Docstring
+Returns the timeout (in milliseconds) for the maximum time we should wait during feature requests before a
+feature is returned. A negative value (which is set by default) will wait forever.
+
+.. note::
+
+   Only works if the provider supports this option.
+
+.. versionadded:: 3.4
+%End
+
+    QgsFeatureRequest &setTimeout( int timeout );
+%Docstring
+Sets the ``timeout`` (in milliseconds) for the maximum time we should wait during feature requests before a
+feature is returned. A negative value (which is set by default) will wait forever.
+
+.. note::
+
+   Only works if the provider supports this option.
+
+.. versionadded:: 3.4
+%End
+
+    bool requestMayBeNested() const;
+%Docstring
+In case this request may be run nested within another already running
+iteration on the same connection, set this to true.
+
+If this flag is true, this request will be able to make use of "spare"
+connections to avoid deadlocks.
+
+For example, this should be set on requests that are issued from an
+expression function.
+
+.. versionadded:: 3.4
+%End
+
+    QgsFeatureRequest &setRequestMayBeNested( bool requestMayBeNested );
+%Docstring
+In case this request may be run nested within another already running
+iteration on the same connection, set this to true.
+
+If this flag is true, this request will be able to make use of "spare"
+connections to avoid deadlocks.
+
+For example, this should be set on requests that are issued from an
+expression function.
+
+.. versionadded:: 3.4
 %End
 
   protected:

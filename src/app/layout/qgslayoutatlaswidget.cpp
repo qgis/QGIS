@@ -91,7 +91,7 @@ void QgsLayoutAtlasWidget::mUseAtlasCheckBox_stateChanged( int state )
 
 void QgsLayoutAtlasWidget::changeCoverageLayer( QgsMapLayer *layer )
 {
-  QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( layer );
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
 
   mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Layer" ) );
   mLayout->reportContext().setLayer( vl );
@@ -266,7 +266,7 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterEdit_editingFinished()
 
 void QgsLayoutAtlasWidget::mAtlasFeatureFilterButton_clicked()
 {
-  QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( mAtlasCoverageLayerComboBox->currentLayer() );
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mAtlasCoverageLayerComboBox->currentLayer() );
 
   if ( !vl )
   {
@@ -334,7 +334,7 @@ void QgsLayoutAtlasWidget::updateGuiElements()
   mAtlasFilenamePatternEdit->setText( mAtlas->filenameExpression() );
   mAtlasHideCoverageCheckBox->setCheckState( mAtlas->hideCoverage() ? Qt::Checked : Qt::Unchecked );
 
-  bool singleFile = mLayout->customProperty( "singleFile", true ).toBool();
+  bool singleFile = mLayout->customProperty( QStringLiteral( "singleFile" ), true ).toBool();
   mAtlasSingleFileCheckBox->setCheckState( singleFile ? Qt::Checked : Qt::Unchecked );
   mAtlasFilenamePatternEdit->setEnabled( !singleFile );
   mAtlasFilenameExpressionButton->setEnabled( !singleFile );

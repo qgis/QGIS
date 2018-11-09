@@ -41,6 +41,7 @@ class QgsOrientedMinimumBoundingBoxAlgorithm : public QgsProcessingFeatureBasedA
     QString groupId() const override;
     QString shortHelpString() const override;
     QgsOrientedMinimumBoundingBoxAlgorithm *createInstance() const override SIP_FACTORY;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
     QString outputName() const override;

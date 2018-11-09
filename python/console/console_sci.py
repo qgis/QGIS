@@ -619,12 +619,12 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.writeCMD(cmd)
         import webbrowser
         self.updateHistory(cmd)
-        version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else re.findall('^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
+        version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
         if cmd in ('_pyqgis', '_api', '_cookbook'):
             if cmd == '_pyqgis':
                 webbrowser.open("https://qgis.org/pyqgis/{}".format(version))
             elif cmd == '_api':
-                webbrowser.open("https://qgis.org/api/{}".format(version))
+                webbrowser.open("https://qgis.org/api/{}".format('' if version == 'master' else version))
             elif cmd == '_cookbook':
                 webbrowser.open("https://docs.qgis.org/{}/en/docs/pyqgis_developer_cookbook/".format(
                     'testing' if version == 'master' else version))

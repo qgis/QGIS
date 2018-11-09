@@ -24,6 +24,7 @@
 #include "qgis_app.h"
 
 class QgsVectorLayer;
+class QgsFeature;
 
 /**
   \brief Map tool for running feature actions on the current layer
@@ -52,6 +53,7 @@ class APP_EXPORT QgsMapToolFeatureAction : public QgsMapTool
 
   private:
     bool doAction( QgsVectorLayer *layer, int x, int y );
+    void doActionForFeature( QgsVectorLayer *layer, const QgsFeature &feature, const QgsPointXY &point );
 };
 
 #endif

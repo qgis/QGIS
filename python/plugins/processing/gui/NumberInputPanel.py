@@ -27,12 +27,12 @@ __revision__ = '$Format:%H$'
 
 import os
 import math
-import sip
 import warnings
 
 from qgis.PyQt import uic
+from qgis.PyQt import sip
 from qgis.PyQt.QtCore import pyqtSignal, QSize
-from qgis.PyQt.QtWidgets import QDialog, QLabel
+from qgis.PyQt.QtWidgets import QDialog, QLabel, QComboBox
 
 from qgis.core import (QgsApplication,
                        QgsExpression,
@@ -143,6 +143,8 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
         super(NumberInputPanel, self).__init__(None)
         self.setupUi(self)
 
+        self.layer = None
+
         self.spnValue.setExpressionsEnabled(True)
 
         self.param = param
@@ -182,7 +184,7 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
                     self.spnValue.setClearValue(float(param.defaultValue()))
                 except:
                     pass
-        elif self.param.minimum() is not None:
+        elif self.param.minimum() is not None and not self.allowing_null:
             try:
                 self.setValue(float(self.param.minimum()))
                 if not self.allowing_null:
@@ -211,7 +213,8 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
 
     def setDynamicLayer(self, layer):
         try:
-            self.btnDataDefined.setVectorLayer(self.getLayerFromValue(layer))
+            self.layer = self.getLayerFromValue(layer)
+            self.btnDataDefined.setVectorLayer(self.layer)
         except:
             pass
 
@@ -221,7 +224,14 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
             value, ok = value.source.valueAsString(context.expressionContext())
         if isinstance(value, str):
             value = QgsProcessingUtils.mapLayerFromString(value, context)
-        return value
+        if value is None or not isinstance(value, QgsMapLayer):
+            return None
+
+        # need to return layer with ownership - otherwise layer may be deleted when context
+        # goes out of scope
+        new_layer = context.takeResultLayer(value.id())
+        # if we got ownership, return that - otherwise just return the layer (which may be owned by the project)
+        return new_layer if new_layer is not None else value
 
     def getValue(self):
         if self.btnDataDefined is not None and self.btnDataDefined.isActive():
@@ -258,10 +268,21 @@ class DistanceInputPanel(NumberInputPanel):
         super().__init__(param)
 
         self.label = QLabel('')
+
+        self.units_combo = QComboBox()
+        self.base_units = QgsUnitTypes.DistanceUnknownUnit
+        for u in (QgsUnitTypes.DistanceMeters,
+                  QgsUnitTypes.DistanceKilometers,
+                  QgsUnitTypes.DistanceFeet,
+                  QgsUnitTypes.DistanceMiles,
+                  QgsUnitTypes.DistanceYards):
+            self.units_combo.addItem(QgsUnitTypes.toString(u), u)
+
         label_margin = self.fontMetrics().width('X')
         self.layout().insertSpacing(1, label_margin / 2)
         self.layout().insertWidget(2, self.label)
-        self.layout().insertSpacing(3, label_margin / 2)
+        self.layout().insertWidget(3, self.units_combo)
+        self.layout().insertSpacing(4, label_margin / 2)
         self.warning_label = QLabel()
         icon = QgsApplication.getThemeIcon('mIconWarning.svg')
         size = max(24, self.spnValue.height() * 0.5)
@@ -269,11 +290,20 @@ class DistanceInputPanel(NumberInputPanel):
         self.warning_label.setToolTip(self.tr('Distance is in geographic degrees. Consider reprojecting to a projected local coordinate system for accurate results.'))
         self.layout().insertWidget(4, self.warning_label)
         self.layout().insertSpacing(5, label_margin)
+
         self.setUnits(QgsUnitTypes.DistanceUnknownUnit)
 
     def setUnits(self, units):
         self.label.setText(QgsUnitTypes.toString(units))
+        if QgsUnitTypes.unitType(units) != QgsUnitTypes.Standard:
+            self.units_combo.hide()
+            self.label.show()
+        else:
+            self.units_combo.setCurrentIndex(self.units_combo.findData(units))
+            self.units_combo.show()
+            self.label.hide()
         self.warning_label.setVisible(units == QgsUnitTypes.DistanceDegrees)
+        self.base_units = units
 
     def setUnitParameterValue(self, value):
         units = QgsUnitTypes.DistanceUnknownUnit
@@ -287,3 +317,17 @@ class DistanceInputPanel(NumberInputPanel):
             if crs.isValid():
                 units = crs.mapUnits()
         self.setUnits(units)
+
+    def getValue(self):
+        val = super().getValue()
+        if isinstance(val, float) and self.units_combo.isVisible():
+            display_unit = self.units_combo.currentData()
+            return val * QgsUnitTypes.fromUnitToUnitFactor(display_unit, self.base_units)
+
+        return val
+
+    def setValue(self, value):
+        try:
+            self.spnValue.setValue(float(value))
+        except:
+            return

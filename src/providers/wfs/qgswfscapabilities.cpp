@@ -30,7 +30,11 @@
 QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri )
   : QgsWfsRequest( QgsWFSDataSourceURI( uri ) )
 {
-  connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWfsCapabilities::capabilitiesReplyFinished );
+  // Using Qt::DirectConnection since the download might be running on a different thread.
+  // In this case, the request was sent from the main thread and is executed with the main
+  // thread being blocked in future.waitForFinished() so we can run code on this object which
+  // lives in the main thread without risking havoc.
+  connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWfsCapabilities::capabilitiesReplyFinished, Qt::DirectConnection );
 }
 
 bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefresh )
@@ -79,7 +83,7 @@ QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString &name
   if ( name.contains( ':' ) )
     return name;
   if ( setAmbiguousUnprefixedTypename.contains( name ) )
-    return QLatin1String( "" );
+    return QString();
   return mapUnprefixedTypenameToPrefixedTypename[name];
 }
 
@@ -116,7 +120,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
 {
   const QByteArray &buffer = mResponse;
 
-  QgsDebugMsg( "parsing capabilities: " + buffer );
+  QgsDebugMsgLevel( QStringLiteral( "parsing capabilities: " ) + buffer, 4 );
 
   // parse XML
   QString capabilitiesDocError;
@@ -210,7 +214,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
         if ( !value.isNull() )
         {
           mCaps.maxFeatures = value.text().toInt();
-          QgsDebugMsg( QString( "maxFeatures: %1" ).arg( mCaps.maxFeatures ) );
+          QgsDebugMsg( QStringLiteral( "maxFeatures: %1" ).arg( mCaps.maxFeatures ) );
         }
       }
       else if ( contraint.attribute( QStringLiteral( "name" ) ) == QLatin1String( "CountDefault" ) /* WFS 2.0 (e.g. MapServer) */ )
@@ -219,7 +223,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
         if ( !value.isNull() )
         {
           mCaps.maxFeatures = value.text().toInt();
-          QgsDebugMsg( QString( "maxFeatures: %1" ).arg( mCaps.maxFeatures ) );
+          QgsDebugMsg( QStringLiteral( "maxFeatures: %1" ).arg( mCaps.maxFeatures ) );
         }
       }
       else if ( contraint.attribute( QStringLiteral( "name" ) ) == QLatin1String( "ImplementsResultPaging" ) /* WFS 2.0 */ )
@@ -228,7 +232,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
         if ( !value.isNull() && value.text() == QLatin1String( "TRUE" ) )
         {
           mCaps.supportsPaging = true;
-          QgsDebugMsg( "Supports paging" );
+          QgsDebugMsg( QStringLiteral( "Supports paging" ) );
         }
       }
       else if ( contraint.attribute( QStringLiteral( "name" ) ) == QLatin1String( "ImplementsStandardJoins" ) ||
@@ -238,7 +242,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
         if ( !value.isNull() && value.text() == QLatin1String( "TRUE" ) )
         {
           mCaps.supportsJoins = true;
-          QgsDebugMsg( "Supports joins" );
+          QgsDebugMsg( QStringLiteral( "Supports joins" ) );
         }
       }
     }
@@ -282,7 +286,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
             if ( !value.isNull() )
             {
               mCaps.maxFeatures = value.text().toInt();
-              QgsDebugMsg( QString( "maxFeatures: %1" ).arg( mCaps.maxFeatures ) );
+              QgsDebugMsg( QStringLiteral( "maxFeatures: %1" ).arg( mCaps.maxFeatures ) );
             }
             break;
           }
@@ -301,7 +305,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
               if ( value.text() == QLatin1String( "hits" ) )
               {
                 mCaps.supportsHits = true;
-                QgsDebugMsg( "Support hits" );
+                QgsDebugMsg( QStringLiteral( "Support hits" ) );
                 break;
               }
             }
@@ -391,7 +395,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     {
       featureType.name = nameList.at( 0 ).toElement().text();
 
-      QgsDebugMsg( QString( "featureType.name = %1" ) . arg( featureType.name ) );
+      QgsDebugMsgLevel( QStringLiteral( "featureType.name = %1" ) . arg( featureType.name ), 4 );
       if ( featureType.name.contains( ':' ) )
       {
         QString prefixOfTypename = featureType.name.section( ':', 0, 0 );
@@ -498,7 +502,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
                std::fabs( featureType.bbox.xMaximum() - ptMaxBack.x() ) < 1e-5 &&
                std::fabs( featureType.bbox.yMaximum() - ptMaxBack.y() ) < 1e-5 )
           {
-            QgsDebugMsg( "Values of LatLongBoundingBox are consistent with WGS84 long/lat bounds, so as the CRS is projected, assume they are indeed in WGS84 and not in the CRS units" );
+            QgsDebugMsg( QStringLiteral( "Values of LatLongBoundingBox are consistent with WGS84 long/lat bounds, so as the CRS is projected, assume they are indeed in WGS84 and not in the CRS units" ) );
             featureType.bboxSRSIsWGS84 = true;
           }
         }

@@ -79,7 +79,7 @@
        <item row="1" column="0">
         <widget class="QPushButton" name="btnAddTag">
          <property name="text">
-          <string>Add tag…</string>
+          <string>Add Tag…</string>
          </property>
          <property name="autoDefault">
           <bool>false</bool>
@@ -89,7 +89,7 @@
        <item row="2" column="0">
         <widget class="QPushButton" name="btnAddSmartgroup">
          <property name="text">
-          <string>Add smart group…</string>
+          <string>Add Smart Group…</string>
          </property>
          <property name="autoDefault">
           <bool>false</bool>
@@ -102,7 +102,7 @@
           <string>Modify selected tag or smart group</string>
          </property>
          <property name="text">
-          <string>Modify group</string>
+          <string>Modify Group</string>
          </property>
          <property name="autoDefault">
           <bool>false</bool>
@@ -112,7 +112,7 @@
        <item row="4" column="0">
         <widget class="QPushButton" name="btnShare">
          <property name="text">
-          <string>Import / export</string>
+          <string>Import / Export</string>
          </property>
          <property name="icon">
           <iconset resource="../../images/images.qrc">
@@ -237,9 +237,12 @@
          </property>
          <property name="iconSize">
           <size>
-           <width>0</width>
-           <height>0</height>
+           <width>77</width>
+           <height>70</height>
           </size>
+         </property>
+         <property name="textElideMode">
+          <enum>Qt::ElideNone</enum>
          </property>
          <property name="movement">
           <enum>QListView::Static</enum>
@@ -249,12 +252,6 @@
          </property>
          <property name="spacing">
           <number>5</number>
-         </property>
-         <property name="gridSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
          </property>
          <property name="viewMode">
           <enum>QListView::IconMode</enum>

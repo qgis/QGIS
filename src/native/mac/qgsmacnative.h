@@ -20,13 +20,31 @@
 
 #include "qgsnative.h"
 
+class QString;
+
+
 class NATIVE_EXPORT QgsMacNative : public QgsNative
 {
   public:
-    virtual ~QgsMacNative();
+    explicit QgsMacNative();
+    ~QgsMacNative() override;
+
+    //! reset the application icon used in the notification
+    void setIconPath( const QString &iconPath = QString() );
 
     virtual const char *currentAppLocalizedName();
     void currentAppActivateIgnoringOtherApps() override;
+    void openFileExplorerAndSelectFile( const QString &path ) override;
+    QgsNative::Capabilities capabilities() const override;
+    QgsNative::NotificationResult showDesktopNotification( const QString &summary, const QString &body, const NotificationSettings &settings ) override;
+
+    bool hasDarkTheme() override;
+
+  private:
+    class QgsUserNotificationCenter;
+    QgsUserNotificationCenter *mQgsUserNotificationCenter = nullptr;
+
 };
+
 
 #endif // QGSMACNATIVE_H

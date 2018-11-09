@@ -61,7 +61,8 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
       AeTypeContainer, //!< A container
       AeTypeField,     //!< A field
       AeTypeRelation,  //!< A relation
-      AeTypeInvalid    //!< Invalid
+      AeTypeInvalid,   //!< Invalid
+      AeTypeQmlElement //!< A QML element
     };
 
     /**
@@ -411,5 +412,46 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     bool mShowUnlinkButton = true;
 };
 
+/**
+ * \ingroup core
+ * An attribute editor widget that will represent arbitrary QML code.
+ *
+ * \since QGIS 3.4
+ */
+class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElement
+{
+  public:
+
+    /**
+     * Creates a new element which can display QML
+     *
+     * \param name         The name of the widget
+     * \param parent       The parent (used as container)
+    */
+    QgsAttributeEditorQmlElement( const QString &name, QgsAttributeEditorElement *parent )
+      : QgsAttributeEditorElement( AeTypeQmlElement, name, parent )
+    {}
+
+    QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
+
+    /**
+     * The QML code that will be represented within this widget.
+     *
+     * \since QGIS 3.4
+     */
+    QString qmlCode() const;
+
+    /**
+     * The QML code that will be represented within this widget.
+     *
+     * @param qmlCode
+     */
+    void setQmlCode( const QString &qmlCode );
+
+  private:
+    void saveConfiguration( QDomElement &elem ) const override;
+    QString typeIdentifier() const override;
+    QString mQmlCode;
+};
 
 #endif // QGSATTRIBUTEEDITORELEMENT_H

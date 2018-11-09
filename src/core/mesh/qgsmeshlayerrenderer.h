@@ -19,11 +19,11 @@
 #define QGSMESHLAYERRENDERER_H
 
 class QgsMeshLayer;
-class QgsSymbol;
 
 #define SIP_NO_FILE
 
 #include <memory>
+#include <limits>
 
 #include "qgis.h"
 
@@ -33,6 +33,7 @@ class QgsSymbol;
 #include "qgstriangularmesh.h"
 #include "qgsmeshlayer.h"
 #include "qgssymbol.h"
+#include "qgsmeshdataprovider.h"
 
 ///@cond PRIVATE
 
@@ -44,8 +45,33 @@ class QgsMeshLayerRendererFeedback : public QgsRasterBlockFeedback
 {
 };
 
-///@endcond
 
+/**
+ * Cache for data needed to render active datasets
+ */
+struct CORE_NO_EXPORT QgsMeshLayerRendererCache
+{
+  int mDatasetGroupsCount = 0;
+
+  // scalar dataset
+  QgsMeshDatasetIndex mActiveScalarDatasetIndex;
+  QVector<double> mScalarDatasetValues;
+  QVector<bool> mScalarActiveFaceFlagValues;
+  bool mScalarDataOnVertices = true;
+  double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
+  double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
+
+  // vector dataset
+  QgsMeshDatasetIndex mActiveVectorDatasetIndex;
+  QVector<double> mVectorDatasetValuesX;
+  QVector<double> mVectorDatasetValuesY;
+  QVector<double> mVectorDatasetValuesMag;
+  double mVectorDatasetMagMinimum = std::numeric_limits<double>::quiet_NaN();
+  double mVectorDatasetMagMaximum = std::numeric_limits<double>::quiet_NaN();
+  bool mVectorDataOnVertices = true;
+};
+
+///@endcond
 
 /**
  * \ingroup core
@@ -64,12 +90,12 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     bool render() override;
 
   private:
-    void renderMesh( const std::unique_ptr<QgsSymbol> &symbol, const QVector<QgsMeshFace> &faces );
+    void renderMesh();
+    void renderMesh( const QgsMeshRendererMeshSettings &settings, const QVector<QgsMeshFace> &faces, const QList<int> facesInExtent );
     void renderScalarDataset();
     void renderVectorDataset();
     void copyScalarDatasetValues( QgsMeshLayer *layer );
     void copyVectorDatasetValues( QgsMeshLayer *layer );
-    void createMeshSymbol( std::unique_ptr<QgsSymbol> &symbol, const QgsMeshRendererMeshSettings &settings );
     void calculateOutputSize();
 
   protected:
@@ -84,28 +110,24 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
 
     // copy of the scalar dataset
     QVector<double> mScalarDatasetValues;
+    QVector<bool> mScalarActiveFaceFlagValues;
     bool mScalarDataOnVertices = true;
+    double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
+    double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
 
     // copy of the vector dataset
     QVector<double> mVectorDatasetValuesX;
     QVector<double> mVectorDatasetValuesY;
     QVector<double> mVectorDatasetValuesMag;
+    double mVectorDatasetMagMinimum = std::numeric_limits<double>::quiet_NaN();
+    double mVectorDatasetMagMaximum = std::numeric_limits<double>::quiet_NaN();
     bool mVectorDataOnVertices = true;
-
-    // copy from mesh layer
-    std::unique_ptr<QgsSymbol> mNativeMeshSymbol = nullptr;
-
-    // copy from mesh layer
-    std::unique_ptr<QgsSymbol> mTriangularMeshSymbol = nullptr;
 
     // rendering context
     QgsRenderContext &mContext;
 
     // copy of rendering settings
-    QgsMeshRendererMeshSettings mRendererNativeMeshSettings;
-    QgsMeshRendererMeshSettings mRendererTriangularMeshSettings;
-    QgsMeshRendererScalarSettings mRendererScalarSettings;
-    QgsMeshRendererVectorSettings mRendererVectorSettings;
+    QgsMeshRendererSettings mRendererSettings;
 
     // output screen size
     QSize mOutputSize;

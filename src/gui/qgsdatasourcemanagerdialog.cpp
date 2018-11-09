@@ -28,21 +28,22 @@
 #include "qgsmessagelog.h"
 #include "qgsgui.h"
 
-QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl ) :
-  QgsOptionsDialogBase( QStringLiteral( "Data Source Manager" ), parent, fl ),
-  ui( new Ui::QgsDataSourceManagerDialog ),
-  mPreviousRow( -1 ),
-  mMapCanvas( canvas )
+QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl )
+  : QgsOptionsDialogBase( QStringLiteral( "Data Source Manager" ), parent, fl )
+  , ui( new Ui::QgsDataSourceManagerDialog )
+  , mPreviousRow( -1 )
+  , mMapCanvas( canvas )
 {
 
   ui->setupUi( this );
   ui->verticalLayout_2->setSpacing( 6 );
   ui->verticalLayout_2->setMargin( 0 );
   ui->verticalLayout_2->setContentsMargins( 0, 0, 0, 0 );
+
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
-  initOptionsBase( true );
+  initOptionsBase( false );
 
   // Bind list index to the stacked dialogs
   connect( ui->mOptionsListWidget, &QListWidget::currentRowChanged, this, &QgsDataSourceManagerDialog::setCurrentPage );
@@ -71,6 +72,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browser
     addProviderDialog( dlg, provider->providerKey(), provider->text(), provider->icon( ), provider->toolTip( ) );
   }
 
+  restoreOptionsBaseUi( QStringLiteral( "Data Source Manager" ) );
 }
 
 QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
@@ -144,8 +146,6 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
   // DB
   connect( dlg, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
            this, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ) );
-  connect( dlg, SIGNAL( progress( int, int ) ),
-           this, SIGNAL( showProgress( int, int ) ) );
   connect( dlg, SIGNAL( progressMessage( QString ) ),
            this, SIGNAL( showStatusMessage( QString ) ) );
   // Vector
@@ -161,6 +161,8 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
   // Raster
   connect( dlg, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
            this, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ) );
+  // Mesh
+  connect( dlg, &QgsAbstractDataSourceWidget::addMeshLayer, this, &QgsDataSourceManagerDialog::addMeshLayer );
 
   // Virtual
   connect( dlg, SIGNAL( replaceVectorLayer( QString, QString, QString, QString ) ),

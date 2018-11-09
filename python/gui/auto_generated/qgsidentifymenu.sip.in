@@ -64,7 +64,7 @@ define if the menu executed can return multiple results (e.g. all results or all
 
     void setExecWithSingleResult( bool execWithSingleResult );
 %Docstring
-define if the menu will be shown with a single idetify result
+define if the menu will be shown with a single identify result
 %End
     bool execWithSingleResult();
 

@@ -18,7 +18,11 @@ import sys
 import tempfile
 
 from osgeo import gdal, ogr  # NOQA
-from qgis.core import (QgsFeature, QgsFeatureRequest, QgsSettings, QgsDataProvider,
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import (QgsApplication,
+                       QgsRectangle,
+                       QgsProviderRegistry,
+                       QgsFeature, QgsFeatureRequest, QgsField, QgsSettings, QgsDataProvider,
                        QgsVectorDataProvider, QgsVectorLayer, QgsWkbTypes, QgsNetworkAccessManager)
 from qgis.testing import start_app, unittest
 
@@ -68,6 +72,10 @@ class PyQgsOGRProvider(unittest.TestCase):
         """Run after all tests"""
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
+
+    def testCapabilities(self):
+        self.assertTrue(QgsProviderRegistry.instance().providerCapabilities("ogr") & QgsDataProvider.File)
+        self.assertTrue(QgsProviderRegistry.instance().providerCapabilities("ogr") & QgsDataProvider.Dir)
 
     def testUpdateMode(self):
 
@@ -318,10 +326,10 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXY"), "myproxyhostname.com")
         self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXYUSERPWD"), "username")
 
-    def testEditGeoJson(self):
-        """ Test bugfix of https://issues.qgis.org/issues/18596 """
+    def testEditGeoJsonRemoveField(self):
+        """ Test bugfix of https://issues.qgis.org/issues/18596 (deleting an existing field)"""
 
-        datasource = os.path.join(self.basetestpath, 'testEditGeoJson.json')
+        datasource = os.path.join(self.basetestpath, 'testEditGeoJsonRemoveField.json')
         with open(datasource, 'wt') as f:
             f.write("""{
 "type": "FeatureCollection",
@@ -333,12 +341,153 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertTrue(vl.startEditing())
         self.assertTrue(vl.deleteAttribute(1))
         self.assertTrue(vl.commitChanges())
+        self.assertEqual(len(vl.dataProvider().fields()), 4 - 1)
 
         f = QgsFeature()
         self.assertTrue(vl.getFeatures(QgsFeatureRequest()).nextFeature(f))
         self.assertEqual(f['x'], 1)
         self.assertEqual(f['z'], 3)
         self.assertEqual(f['w'], 4)
+
+    def testEditGeoJsonAddField(self):
+        """ Test bugfix of https://issues.qgis.org/issues/18596 (adding a new field)"""
+
+        datasource = os.path.join(self.basetestpath, 'testEditGeoJsonAddField.json')
+        with open(datasource, 'wt') as f:
+            f.write("""{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": { "x": 1 }, "geometry": { "type": "Point", "coordinates": [ 0, 0 ] } } ] }""")
+
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addAttribute(QgsField('strfield', QVariant.String)))
+        self.assertTrue(vl.commitChanges())
+        self.assertEqual(len(vl.dataProvider().fields()), 1 + 1)
+
+        f = QgsFeature()
+        self.assertTrue(vl.getFeatures(QgsFeatureRequest()).nextFeature(f))
+        self.assertIsNone(f['strfield'])
+
+        # Completely reload file
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        # As we didn't set any value to the new field, it is not written at
+        # all in the GeoJSON file, so it has disappeared
+        self.assertEqual(len(vl.fields()), 1)
+
+    def testEditGeoJsonAddFieldAndThenAddFeatures(self):
+        """ Test bugfix of https://issues.qgis.org/issues/18596 (adding a new field)"""
+
+        datasource = os.path.join(self.basetestpath, 'testEditGeoJsonAddField.json')
+        with open(datasource, 'wt') as f:
+            f.write("""{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": { "x": 1 }, "geometry": { "type": "Point", "coordinates": [ 0, 0 ] } } ] }""")
+
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addAttribute(QgsField('strfield', QVariant.String)))
+        self.assertTrue(vl.commitChanges())
+        self.assertEqual(len(vl.dataProvider().fields()), 1 + 1)
+        self.assertEqual([f.name() for f in vl.dataProvider().fields()], ['x', 'strfield'])
+
+        f = QgsFeature()
+        self.assertTrue(vl.getFeatures(QgsFeatureRequest()).nextFeature(f))
+        self.assertIsNone(f['strfield'])
+        self.assertEqual([field.name() for field in f.fields()], ['x', 'strfield'])
+
+        self.assertTrue(vl.startEditing())
+        vl.changeAttributeValue(f.id(), 1, 'x')
+        self.assertTrue(vl.commitChanges())
+        f = QgsFeature()
+        self.assertTrue(vl.getFeatures(QgsFeatureRequest()).nextFeature(f))
+        self.assertEqual(f['strfield'], 'x')
+        self.assertEqual([field.name() for field in f.fields()], ['x', 'strfield'])
+
+        # Completely reload file
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertEqual(len(vl.fields()), 2)
+
+    def testDataItems(self):
+
+        registry = QgsApplication.dataItemProviderRegistry()
+        ogrprovider = next(provider for provider in registry.providers() if provider.name() == 'OGR')
+
+        # Single layer
+        item = ogrprovider.createDataItem(os.path.join(TEST_DATA_DIR, 'lines.shp'), None)
+        self.assertTrue(item.uri().endswith('lines.shp'))
+
+        # Multiple layer
+        item = ogrprovider.createDataItem(os.path.join(TEST_DATA_DIR, 'multilayer.kml'), None)
+        children = item.createChildren()
+        self.assertEqual(len(children), 2)
+        self.assertIn('multilayer.kml|layername=Layer1', children[0].uri())
+        self.assertIn('multilayer.kml|layername=Layer2', children[1].uri())
+
+        # Multiple layer (geopackage)
+        tmpfile = os.path.join(self.basetestpath, 'testDataItems.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('Layer1', geom_type=ogr.wkbPoint)
+        lyr = ds.CreateLayer('Layer2', geom_type=ogr.wkbPoint)
+        ds = None
+        item = ogrprovider.createDataItem(tmpfile, None)
+        children = item.createChildren()
+        self.assertEqual(len(children), 2)
+        self.assertIn('testDataItems.gpkg|layername=Layer1', children[0].uri())
+        self.assertIn('testDataItems.gpkg|layername=Layer2', children[1].uri())
+
+    def testOSM(self):
+        """ Test that opening several layers of the same OSM datasource works properly """
+
+        datasource = os.path.join(TEST_DATA_DIR, 'test.osm')
+        vl_points = QgsVectorLayer(datasource + "|layername=points", 'test', 'ogr')
+        vl_multipolygons = QgsVectorLayer(datasource + "|layername=multipolygons", 'test', 'ogr')
+
+        f = QgsFeature()
+
+        # When sharing the same dataset handle, the spatial filter of test
+        # points layer would apply to the other layers
+        iter_points = vl_points.getFeatures(QgsFeatureRequest().setFilterRect(QgsRectangle(-200, -200, -200, -200)))
+        self.assertFalse(iter_points.nextFeature(f))
+
+        iter_multipolygons = vl_multipolygons.getFeatures(QgsFeatureRequest())
+        self.assertTrue(iter_multipolygons.nextFeature(f))
+        self.assertTrue(iter_multipolygons.nextFeature(f))
+        self.assertTrue(iter_multipolygons.nextFeature(f))
+        self.assertFalse(iter_multipolygons.nextFeature(f))
+
+        # Re-start an iterator (tests #20098)
+        iter_multipolygons = vl_multipolygons.getFeatures(QgsFeatureRequest())
+        self.assertTrue(iter_multipolygons.nextFeature(f))
+
+        # Test filter by id (#20308)
+        f = next(vl_multipolygons.getFeatures(QgsFeatureRequest().setFilterFid(8)))
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 8)
+
+        f = next(vl_multipolygons.getFeatures(QgsFeatureRequest().setFilterFid(1)))
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 1)
+
+        f = next(vl_multipolygons.getFeatures(QgsFeatureRequest().setFilterFid(5)))
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 5)
+
+        # 6 doesn't exist
+        it = vl_multipolygons.getFeatures(QgsFeatureRequest().setFilterFids([1, 5, 6, 8]))
+        f = next(it)
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 1)
+        f = next(it)
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 5)
+        f = next(it)
+        self.assertTrue(f.isValid())
+        self.assertEqual(f.id(), 8)
+        del it
 
 
 if __name__ == '__main__':

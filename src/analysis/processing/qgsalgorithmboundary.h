@@ -41,6 +41,7 @@ class QgsBoundaryAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QList<int> inputLayerTypes() const override;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
     QgsBoundaryAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:

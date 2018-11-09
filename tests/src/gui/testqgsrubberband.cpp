@@ -74,7 +74,7 @@ void TestQgsRubberband::initTestCase()
   mCanvas->show(); // to make the canvas resize
   mCanvas->hide();
 
-  mRubberband = 0;
+  mRubberband = nullptr;
 }
 
 void TestQgsRubberband::cleanupTestCase()

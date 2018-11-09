@@ -76,6 +76,17 @@ class TestQgsWmsProvider: public QObject
       QCOMPARE( provider.getLegendGraphicUrl(), QString( "http://localhost:8380/mapserv?" ) );
     }
 
+    // regression #20271 - WMS is not displayed in QGIS 3.4.0
+    void queryItemsWithNullValue()
+    {
+      QString failingAddress( "http://localhost:8380/mapserv" );
+      QgsWmsProvider provider( failingAddress, QgsDataProvider::ProviderOptions(), mCapabilities );
+      QUrl url( provider.createRequestUrlWMS( QgsRectangle( 0, 0, 90, 90 ), 100, 100 ) );
+      QCOMPARE( url.toString(), QString( "http://localhost:8380/mapserv?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap"
+                                         "&BBOX=0,0,90,90&CRS=CRS:84&WIDTH=100&HEIGHT=100&LAYERS=&"
+                                         "STYLES=&FORMAT=&TRANSPARENT=TRUE" ) );
+    }
+
   private:
     QgsWmsCapabilities *mCapabilities = nullptr;
 };

@@ -71,14 +71,14 @@ class CORE_EXPORT QgsRasterShaderFunction
      * \param returnRedValue The red component of the new RGBA value
      * \param returnGreenValue The green component of the new RGBA value
      * \param returnBlueValue The blue component of the new RGBA value
-     * \param returnAlpha The blue component of the new RGBA value
+     * \param returnAlpha The alpha component of the new RGBA value
      * \return True if the return values are valid otherwise false
     */
     virtual bool shade( double value,
                         int *returnRedValue SIP_OUT,
                         int *returnGreenValue SIP_OUT,
                         int *returnBlueValue SIP_OUT,
-                        int *returnAlpha SIP_OUT );
+                        int *returnAlpha SIP_OUT ) const;
 
     /**
      * Generates an new RGBA value based on an original RGBA value.
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsRasterShaderFunction
                         int *returnRedValue SIP_OUT,
                         int *returnGreenValue SIP_OUT,
                         int *returnBlueValue SIP_OUT,
-                        int *returnAlpha SIP_OUT );
+                        int *returnAlpha SIP_OUT ) const;
 
     double minimumMaximumRange() const { return mMinimumMaximumRange; }
 

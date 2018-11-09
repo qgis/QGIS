@@ -44,11 +44,15 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QgsBufferAlgorithm *createInstance() const override SIP_FACTORY;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
+    QgsProcessingAlgorithm::Flags flags() const override;
+
 
   protected:
 
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
 
 };
 

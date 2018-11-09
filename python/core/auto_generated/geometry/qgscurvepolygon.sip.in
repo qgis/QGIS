@@ -71,7 +71,9 @@ Curve polygon geometry type
 
 
     int numInteriorRings() const;
+
     const QgsCurve *exteriorRing() const;
+
     const QgsCurve *interiorRing( int i ) const;
 
     virtual QgsPolygon *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
@@ -213,6 +215,12 @@ Returns approximate rotation angle for a vertex. Usually average angle between a
 
     virtual QgsCurvePolygon *createEmptyWithSameType() const /Factory/;
 
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsCurvePolygon: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
   protected:
 

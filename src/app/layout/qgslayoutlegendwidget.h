@@ -93,6 +93,8 @@ class QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayo
 
     void setCurrentNodeStyleFromAction();
 
+    void setLegendMapViewData();
+
   private slots:
     //! Sets GUI according to state of mLegend
     void setGuiElements();

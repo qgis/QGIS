@@ -32,6 +32,9 @@ class QgsLine3DSymbolWidget : public QWidget, private Ui::Line3DSymbolWidget
     void setSymbol( const QgsLine3DSymbol &symbol );
     QgsLine3DSymbol symbol() const;
 
+  private slots:
+    void updateGuiState();
+
   signals:
     void changed();
 

@@ -39,7 +39,7 @@
 #include "priorityqueue.h"
 #include "internalexception.h"
 #include <cfloat>
-#include <limits> //for INT_MAX
+#include <limits> //for std::numeric_limits<int>::max()
 
 #include "qgslabelingengine.h"
 
@@ -71,31 +71,23 @@ Problem::~Problem()
 {
   if ( sol )
   {
-    if ( sol->s )
-      delete[] sol->s;
+    delete[] sol->s;
     delete sol;
   }
 
-  if ( featWrap )
-    delete[] featWrap;
-  if ( featStartId )
-    delete[] featStartId;
-  if ( featNbLp )
-    delete[] featNbLp;
+  delete[] featWrap;
+  delete[] featStartId;
+  delete[] featNbLp;
 
   qDeleteAll( mLabelPositions );
   mLabelPositions.clear();
 
-  if ( inactiveCost )
-    delete[] inactiveCost;
+  delete[] inactiveCost;
 
   delete candidates;
   delete candidates_sol;
 
-  if ( candidates_subsol )
-  {
-    delete candidates_subsol;
-  }
+  delete candidates_subsol;
 }
 
 typedef struct
@@ -182,8 +174,7 @@ void Problem::init_sol_empty()
 
   if ( sol )
   {
-    if ( sol->s )
-      delete[] sol->s;
+    delete[] sol->s;
     delete sol;
   }
 
@@ -347,7 +338,7 @@ void Problem::init_sol_falp()
     {
       if ( sol->s[i] == -1 )
       {
-        nbOverlap = INT_MAX;
+        nbOverlap = std::numeric_limits<int>::max();
         start_p = featStartId[i];
         for ( p = 0; p < featNbLp[i]; p++ )
         {
@@ -917,7 +908,7 @@ double Problem::popmusic_tabu( SubPart *part )
   while ( it < stop_it && best_cost >= EPSILON )
   {
     actualizeTabuCandidateList( m, it, nbOverlap, &candidateListSize, candidateBaseFactor, &candidateFactor, minCandidateListSize, reductionFactor, minTabuTSize, tabuFactor, &tenure, probSize );
-    delta_min     = DBL_MAX;
+    delta_min     = std::numeric_limits<double>::max();
     choosed_feat  = -1;
     choosed_label = -2;
     candidateId   = -1;
@@ -1167,7 +1158,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
 
   double delta;
   double delta_min;
-  double delta_best = DBL_MAX;
+  double delta_best = std::numeric_limits<double>::max();
   double delta_tmp;
 
   int next_seed;
@@ -1203,7 +1194,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
   {
     subseed = sub[seed];
     seedNbLp = featNbLp[subseed];
-    delta_min = DBL_MAX;
+    delta_min = std::numeric_limits<double>::max();
     next_seed = -1;
     retainedLabel = -2;
 
@@ -1447,7 +1438,7 @@ inline Chain *Problem::chain( int seed )
 
   double delta;
   double delta_min;
-  double delta_best = DBL_MAX;
+  double delta_best = std::numeric_limits<double>::max();
   double delta_tmp;
 
   int next_seed;
@@ -1482,7 +1473,7 @@ inline Chain *Problem::chain( int seed )
   while ( seed != -1 )
   {
     seedNbLp = featNbLp[seed];
-    delta_min = DBL_MAX;
+    delta_min = std::numeric_limits<double>::max();
 
     next_seed = -1;
     retainedLabel = -2;

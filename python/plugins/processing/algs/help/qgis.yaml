@@ -157,9 +157,6 @@ qgis:exportaddgeometrycolumns: >
 
   Depending on the geometry type of the vector layer, the attributes added to the table will be different.
 
-qgis:extendlines: >
-  This algorithm extends line geometries by a specified amount at the start and end of the line. Lines are extended using the bearing of the first and last segment in the line.
-
 qgis:extractbyattribute: >
   This algorithm creates a new vector layer that only contains matching features from an input layer. The criteria for adding features to the resulting layer is defined based on the values of an attribute from the input layer.
 
@@ -236,6 +233,13 @@ qgis:joinbylocationsummary: >
 qgis:keepnbiggestparts: >
   This algorithm takes a polygon layer and creates a new polygon layer in which multipart geometries have been removed, leaving only the n largest (in terms of area) parts.
 
+qgis:knearestconcavehull: >
+  This algorithm generates a concave hull polygon from a set of points. If the input layer is a line or polygon layer, it will use the nodes.
+
+  The number of neighbours to consider determines the concaveness of the output polygon. A lower number will result in a concave hull that follows the points very closely, while a higher number will have a smoother shape. The minimum number of neighbour points to consider is 3. A value equal to or greater than the number of points will result in a convex hull.
+
+  If a field is selected, the algorithm will group the features in the input layer using unique values in that field and generate individual polygons in the output layer for each group.
+
 qgis:lineintersections: >
   This algorithm creates point features where the lines in the Intersect layer intersect the lines in the Input layer.
 
@@ -282,15 +286,6 @@ qgis:numberofuniquevaluesinclasses: >
   Classes are defined according to a given attribute. For all layers that share the same value of this attribute, the values of a second attribute are analyzed.
 
   The resulting layer contains the same features as the input layer, but with an additional attribute containing the count of unique values for that class.
-
-qgis:offsetline: >
-  This algorithm offsets lines by a specified distance. Positive distances will offset lines to the left, and negative distances will offset to the right of lines.
-
-  The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded offsets.
-
-  The join style parameter specifies whether round, miter or beveled joins should be used when offsetting corners in a line.
-
-  The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the offset curve to use when creating a mitered join.
 
 qgis:minimalenclosingcircle: >
   This algorithm takes a vector layer and generate a new one with the minimum enclosing circle that covers all the input features.
@@ -356,6 +351,9 @@ qgis:spatialiteexecutesql: >
 qgis:postgisexecutesql: >
   This algorithm performs a SQL database query on a PostGIS database connected to QGIS.
 
+qgis:postgisexecuteandloadsql: >
+  This algorithm performs a SQL database query on a PostGIS database connected to QGIS and loads the query results as a new layer.
+
 qgis:randomextract: >
   This algorithm takes a vector layer and generates a new one that contains only a subset of the features in the input layer.
 
@@ -419,6 +417,11 @@ qgis:rasterlayerhistogram: >
 
 qgis:rasterlayerstatistics: >
   This algorithm computes basic statistics from the values in a given band of the raster layer.
+
+qgis:rastersampling: >
+  This algorithm creates a new vector layer with the same attributes of the input layer and the raster values corresponding on the point location.
+
+  If the raster layer has more than one band, all the band values are sampled.
 
 qgis:rasterize: >
   This algorithm rasterizes map canvas content.
@@ -555,4 +558,3 @@ qgis:definecurrentprojection: >
   This algorithm sets an existing layer's projection to the provided CRS. Contrary to the "Assign projection" algorithm, it will not output a new layer.
 
   For shapefile datasets, the .prj and .qpj files will be overwritten - or created if missing - to match the provided CRS.
-

@@ -29,6 +29,7 @@ class QgsMapCanvas;
 class QgsMapMouseEvent;
 class QgsRubberBand;
 class QgsSnapIndicator;
+class QgsIdentifyMenu;
 
 /// @cond private
 
@@ -88,7 +89,7 @@ class QgsMapToolSelectionHandler : public QObject
     {
       //! SelectSimple - single click or drawing a rectangle, default option
       SelectSimple,
-      //! SelectPolygon - drawing a polygon
+      //! SelectPolygon - drawing a polygon or right-click on existing polygon feature
       SelectPolygon,
       //! SelectFreehand - free hand selection
       SelectFreehand,
@@ -119,10 +120,12 @@ class QgsMapToolSelectionHandler : public QObject
     void canvasMoveEvent( QgsMapMouseEvent *e );
     //! Handles mouse press event from map tool
     void canvasPressEvent( QgsMapMouseEvent *e );
-    //! Handles mouse releasae event from map tool
+    //! Handles mouse release event from map tool
     void canvasReleaseEvent( QgsMapMouseEvent *e );
     //! Handles escape press event - returns true if the even has been processed
     bool keyReleaseEvent( QKeyEvent *e );
+
+    void setSelectedGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
   signals:
     //! emitted when a new geometry has been picked (selectedGeometry())
@@ -130,13 +133,13 @@ class QgsMapToolSelectionHandler : public QObject
 
   private slots:
     //! update the rubber band from the input widget
-    void updateRadiusRubberband( const double &radius );
+    void updateRadiusRubberband( double radius );
 
     /**
      * triggered when the user input widget has a new value
      * either programmatically (from the mouse event) or entered by the user
      */
-    void radiusValueEntered( const double &radius, const Qt::KeyboardModifiers &modifiers );
+    void radiusValueEntered( double radius, Qt::KeyboardModifiers modifiers );
 
     //! cancel selecting (between two click events)
     void cancel();
@@ -164,8 +167,6 @@ class QgsMapToolSelectionHandler : public QObject
     void deleteDistanceWidget();
 
     void updateRadiusFromEdge( QgsPointXY &radiusEdge );
-
-    void setSelectedGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
   private:
 
@@ -196,6 +197,9 @@ class QgsMapToolSelectionHandler : public QObject
 
     QColor mFillColor = QColor( 254, 178, 76, 63 );
     QColor mStrokeColor = QColor( 254, 58, 29, 100 );
+
+    //! Shows features to select polygon from existing features
+    QgsIdentifyMenu *mIdentifyMenu = nullptr; // owned by canvas
 };
 
 #endif

@@ -17,13 +17,12 @@
 
 #include <QStringList>
 #include <QVariant>
-#include "geometry/qgswkbtypes.h"
-#include "qgsfeature.h"
+#include "qgswkbtypes.h"
+#include "qgsrectangle.h"
 
 class QNetworkReply;
 class QgsNetworkAccessManager;
 class QgsFields;
-class QgsRectangle;
 class QgsAbstractGeometry;
 class QgsCoordinateReferenceSystem;
 class QgsFeedback;
@@ -41,15 +40,16 @@ class QgsArcGisRestUtils
     static std::unique_ptr< QgsAbstractGeometry > parseEsriGeoJSON( const QVariantMap &geometryData, const QString &esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs = nullptr );
     static QgsCoordinateReferenceSystem parseSpatialReference( const QVariantMap &spatialReferenceMap );
 
-    static QVariantMap getServiceInfo( const QString &baseurl, QString &errorTitle, QString &errorText );
-    static QVariantMap getLayerInfo( const QString &layerurl, QString &errorTitle, QString &errorText );
-    static QVariantMap getObjectIds( const QString &layerurl, const QString &objectIdFieldName, QString &errorTitle, QString &errorText );
-    static QVariantMap getObjects( const QString &layerurl, const QList<quint32> &objectIds, const QString &crs,
+    static QVariantMap getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText );
+    static QVariantMap getLayerInfo( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText );
+    static QVariantMap getObjectIds( const QString &layerurl, const QString &authcfg, const QString &objectIdFieldName, QString &errorTitle, QString &errorText,
+                                     const QgsRectangle &bbox = QgsRectangle() );
+    static QVariantMap getObjects( const QString &layerurl, const QString &authcfg, const QList<quint32> &objectIds, const QString &crs,
                                    bool fetchGeometry, const QStringList &fetchAttributes, bool fetchM, bool fetchZ,
                                    const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
-    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QString &objectIdField, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
-    static QByteArray queryService( const QUrl &url, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
-    static QVariantMap queryServiceJSON( const QUrl &url, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
+    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QString &objectIdField, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, QgsFeedback *feedback = nullptr );
+    static QByteArray queryService( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
+    static QVariantMap queryServiceJSON( const QUrl &url, const QString &authcfg, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
 
     static std::unique_ptr< QgsSymbol > parseEsriSymbolJson( const QVariantMap &symbolData );
     static std::unique_ptr< QgsLineSymbol > parseEsriLineSymbolJson( const QVariantMap &symbolData );
@@ -64,6 +64,9 @@ class QgsArcGisRestUtils
     static QDateTime parseDateTime( const QVariant &value );
 
     static QUrl parseUrl( const QUrl &url );
+    static void visitFolderItems( const std::function<void ( const QString &folderName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
+    static void visitServiceItems( const std::function<void ( const QString &serviceName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl, const QString &parentName );
+    static void addLayerItems( const std::function<void ( const QString &parentLayerId, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QString &authid )> &visitor, const QVariantMap &serviceData, const QString &parentUrl );
 };
 
 class QgsArcGisAsyncQuery : public QObject
@@ -91,6 +94,7 @@ class QgsArcGisAsyncParallelQuery : public QObject
   public:
     QgsArcGisAsyncParallelQuery( QObject *parent = nullptr );
     void start( const QVector<QUrl> &urls, QVector<QByteArray> *results, bool allowCache = false );
+
   signals:
     void finished( QStringList errors );
   private slots:

@@ -219,7 +219,7 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="0">
+      <item row="8" column="0" colspan="2">
        <widget class="QCheckBox" name="chkLowercaseFieldNames">
         <property name="text">
          <string>Convert field names to lowercase</string>

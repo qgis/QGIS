@@ -188,7 +188,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/symbology.svg</normaloff>:/images/themes/default/propertyicons/symbology.svg</iconset>
+            <normaloff>:/images/themes/default/propertyicons/colors.svg</normaloff>:/images/themes/default/propertyicons/colors.svg</iconset>
           </property>
          </item>
          <item>
@@ -287,6 +287,18 @@
             <normaloff>:/images/themes/default/mIconWarning.svg</normaloff>:/images/themes/default/mIconWarning.svg</iconset>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Acceleration</string>
+          </property>
+          <property name="toolTip">
+           <string>Configure GPU for processing algorithms</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mIconGPU.svg</normaloff>:/images/themes/default/mIconGPU.svg</iconset>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -320,7 +332,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>8</number>
+          <number>13</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -349,8 +361,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>411</width>
-                <height>662</height>
+                <width>556</width>
+                <height>885</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -368,6 +380,23 @@
                   </property>
                   <item>
                    <layout class="QGridLayout" name="gridLayout_25">
+                    <item row="6" column="0" colspan="2">
+                     <widget class="QLabel" name="label_7">
+                      <property name="text">
+                       <string>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing override on locale requires an application restart</string>
+                      </property>
+                      <property name="wordWrap">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="0">
+                     <widget class="QLabel" name="label_52">
+                      <property name="text">
+                       <string>Locale (numbers, date and currency formats)</string>
+                      </property>
+                     </widget>
+                    </item>
                     <item row="0" column="0">
                      <widget class="QLabel" name="label_5">
                       <property name="text">
@@ -376,15 +405,15 @@
                      </widget>
                     </item>
                     <item row="0" column="1">
-                     <widget class="QComboBox" name="cboLocale"/>
+                     <widget class="QComboBox" name="cboTranslation"/>
                     </item>
-                    <item row="1" column="0" colspan="2">
-                     <widget class="QLabel" name="label_7">
+                    <item row="2" column="1">
+                     <widget class="QComboBox" name="cboGlobalLocale"/>
+                    </item>
+                    <item row="3" column="1">
+                     <widget class="QCheckBox" name="cbShowGroupSeparator">
                       <property name="text">
-                       <string>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing override on locale requires an application restart</string>
-                      </property>
-                      <property name="wordWrap">
-                       <bool>true</bool>
+                       <string>Show group (thousand) separator</string>
                       </property>
                      </widget>
                     </item>
@@ -397,6 +426,16 @@
                     </property>
                     <property name="text">
                      <string>Detected active locale on your system</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="lblLocaleSample">
+                    <property name="styleSheet">
+                     <string notr="true">QLabel {background-color: #ffffff; }</string>
+                    </property>
+                    <property name="text">
+                     <string>Sample text for locale formatting</string>
                     </property>
                    </widget>
                   </item>
@@ -1043,8 +1082,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>437</width>
-                <height>1011</height>
+                <width>544</width>
+                <height>1096</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1579,8 +1618,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>443</width>
-                <height>312</height>
+                <width>556</width>
+                <height>369</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1746,8 +1785,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>393</width>
-                <height>648</height>
+                <width>496</width>
+                <height>753</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1760,7 +1799,7 @@
                   <item row="0" column="0" colspan="2">
                    <widget class="QCheckBox" name="cbxAttributeTableDocked">
                     <property name="text">
-                     <string>Open attribute table in a dock window</string>
+                     <string>Open new attribute tables as docked windows</string>
                     </property>
                    </widget>
                   </item>
@@ -2114,8 +2153,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>541</width>
-                <height>866</height>
+                <width>675</width>
+                <height>1052</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2865,8 +2904,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>449</width>
-                <height>195</height>
+                <width>507</width>
+                <height>314</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3176,8 +3215,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>515</width>
-                <height>527</height>
+                <width>613</width>
+                <height>646</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3620,8 +3659,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>124</width>
-                <height>230</height>
+                <width>154</width>
+                <height>271</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -3788,8 +3827,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>862</width>
-                <height>838</height>
+                <width>547</width>
+                <height>873</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4390,8 +4429,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>390</width>
-                <height>539</height>
+                <width>474</width>
+                <height>606</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -4659,8 +4698,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>862</width>
-                <height>838</height>
+                <width>415</width>
+                <height>392</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4828,8 +4867,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>862</width>
-                <height>838</height>
+                <width>857</width>
+                <height>828</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5280,6 +5319,61 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mOptionsPageAcceleration">
+          <layout class="QVBoxLayout" name="verticalLayout_29">
+           <item>
+            <widget class="QLabel" name="label_53">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Some of the internal C++ processing core algorithms and renderers can take advantage of an OpenCL compatible device to increase the performances.&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;QGIS OpenCL support is highly experimental and can crash QGIS because of bugs in the underlying libraries, enable at your own risk!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_64">
+             <property name="text">
+              <string>The following OpenCL devices were found on this system (changing the default device requires QGIS to be restarted).</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="mOpenClDevicesCombo"/>
+           </item>
+           <item>
+            <widget class="QTextBrowser" name="mGPUInfoTextBrowser">
+             <property name="html">
+              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Placemark for OpenCL information results (mGPUInfoTextBrowser)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="mGPUEnableCheckBox">
+             <property name="text">
+              <string>Enable OpenCL acceleration</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -5335,7 +5429,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   </layout>
   <action name="mActionImportPalette">
    <property name="text">
-    <string>Import Palette...</string>
+    <string>Import Palette…</string>
    </property>
    <property name="toolTip">
     <string>Import palette from file</string>
@@ -5351,7 +5445,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   </action>
   <action name="mActionNewPalette">
    <property name="text">
-    <string>New Palette...</string>
+    <string>New Palette…</string>
    </property>
    <property name="toolTip">
     <string>Create a new palette</string>
@@ -5449,7 +5543,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>mOptionsScrollArea_01</tabstop>
   <tabstop>grpLocale</tabstop>
-  <tabstop>cboLocale</tabstop>
+  <tabstop>cboTranslation</tabstop>
   <tabstop>cmbStyle</tabstop>
   <tabstop>cmbUITheme</tabstop>
   <tabstop>cmbIconSize</tabstop>
@@ -5644,33 +5738,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mAdvancedSettingsEnableButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

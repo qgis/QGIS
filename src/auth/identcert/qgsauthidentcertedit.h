@@ -49,7 +49,7 @@ class QgsAuthIdentCertEdit : public QgsAuthMethodEdit, private Ui::QgsAuthIdentC
 
   private:
     QgsStringMap mConfigMap;
-    bool mValid = 0;
+    bool mValid = false;
 };
 
 #endif // QGSAUTHIDENTCERTEDIT_H

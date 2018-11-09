@@ -34,17 +34,19 @@ QgsDataItemProviderRegistry is not usually directly created, but rather accessed
 
     QList<QgsDataItemProvider *> providers() const;
 %Docstring
-Gets list of available providers
+Returns the list of available providers.
 %End
 
     void addProvider( QgsDataItemProvider *provider /Transfer/ );
 %Docstring
-Add a provider implementation. Takes ownership of the object.
+Adds a ``provider`` implementation to the registry. Ownership of the provider
+is transferred to the registry.
 %End
 
     void removeProvider( QgsDataItemProvider *provider );
 %Docstring
-Remove provider implementation from the list (provider object is deleted)
+Removes a ``provider`` implementation from the registry.
+The provider object is automatically deleted.
 %End
 
   private:

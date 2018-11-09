@@ -23,11 +23,13 @@
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include "qgisapp.h"
+#include "qgssnapindicator.h"
 
 QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
   , mShowCenterPointRubberBand( false )
+  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
 {
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddCircularString::stopCapturing );
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddCircularString::stopCapturing );
@@ -106,6 +108,10 @@ void QgsMapToolAddCircularString::deactivate()
 
 void QgsMapToolAddCircularString::activate()
 {
+
+  QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
+  if ( vLayer )
+    mLayerType = vLayer->geometryType();
   if ( mParentTool )
   {
     mParentTool->deleteTempRubberBand();
@@ -124,7 +130,7 @@ void QgsMapToolAddCircularString::activate()
           mPoints.append( QgsPoint( mapPoint ) );
           if ( !mTempRubberBand )
           {
-            mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+            mTempRubberBand = createGeometryRubberBand( mLayerType, true );
             mTempRubberBand->show();
           }
           QgsCircularString *c = new QgsCircularString();

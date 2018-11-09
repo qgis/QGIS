@@ -61,9 +61,9 @@ of feature and attribute information from a spatial datasource.
 
     enum FeatureCountState
     {
-      //! Feature
+      //! Feature count not yet computed
       Uncounted,
-      //! Provider
+      //! Provider returned an unknown feature count
       UnknownCount,
     };
 
@@ -122,6 +122,27 @@ Returns the geometry type which is returned by this layer
 Number of features in the layer
 
 :return: long containing number of features
+%End
+
+    virtual bool empty() const;
+%Docstring
+Returns true if the layer contains at least one feature.
+
+.. versionadded:: 3.4
+%End
+
+    virtual QgsFeatureSource::FeatureAvailability hasFeatures() const;
+
+%Docstring
+Will always return FeatureAvailability.FeaturesAvailable or
+FeatureAvailability.NoFeaturesAvailable.
+
+Calls empty() internally. Providers should override empty()
+instead if they provide an optimized version of this call.
+
+.. seealso:: :py:func:`empty`
+
+.. versionadded:: 3.4
 %End
 
     virtual QgsFields fields() const = 0;
@@ -482,7 +503,7 @@ It returns false by default.
 Must be implemented by providers that support delete styles from db returning true
 %End
 
-    virtual QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const;
+    virtual QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const /Factory/;
 %Docstring
 Creates a new vector layer feature renderer, using provider backend specific information.
 

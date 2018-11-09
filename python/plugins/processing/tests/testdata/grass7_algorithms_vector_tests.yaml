@@ -32,4 +32,302 @@ tests:
         compare:
           geometry:
             precision: 7
+          ignore_crs_check: true
+
+  - algorithm: grass7:v.rast.stats
+    name: V.rast.stats
+    params:
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      column_prefix: s
+      map:
+        name: custom/zonal_stats.shp
+        type: vector
+      method:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      percentile: 90
+      raster:
+        name: dem.tif
+        type: raster
+    results:
+      output:
+        name: expected/grass7/v_rast_stats.shp
+        type: vector
+
+  - algorithm: grass7:v.voronoi
+    name: v.voronoi
+    params:
+      -a: false
+      -l: false
+      -s: false
+      -t: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      input:
+        name: points.gml
+        type: vector
+      smoothness: 0.25
+      thin: -1.0
+    results:
+      output:
+        name: expected/grass7/v_voronoi.shp
+        type: vector
+
+  - algorithm: grass7:v.what.rast
+    name: v.what.rast
+    params:
+      -i: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      column: val
+      map:
+        name: custom/grass7/sample_points.shp
+        type: vector
+      raster:
+        name: dem.tif
+        type: raster
+      type: 0
+      where: ''
+    results:
+      output:
+        name: expected/grass7/v_what_rast.shp
+        type: vector
+
+  - algorithm: grass7:v.vect.stats
+    name: v.vect.stats
+    params:
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      areas:
+        name: custom/zonal_stats.shp
+        type: vector
+      count_column: count
+      method: 0
+      points:
+        name: custom/grass7/sample_points.shp
+        type: vector
+      points_column: val
+      stats_column: stat
+      type:
+      - 0
+    results:
+      output:
+        name: expected/grass7/v_vect_stats.shp
+        type: vector
+
+  - algorithm: grass7:v.net.allpairs
+    name: v.net.allpairs
+    params:
+      -g: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      cats: 1-10000
+      input:
+        name: custom/grass7/network.shp
+        type: vector
+      points:
+        name: custom/grass7/network_points.shp
+        type: vector
+      threshold: 50.0
+      where: ''
+    results:
+      output:
+        name: expected/grass7/v_net_allpairs.shp
+        type: vector
+
+  - algorithm: grass7:v.net.centrality
+    name: v.net.centrality
+    params:
+      -a: true
+      -g: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      betweenness: ''
+      cats: ''
+      closeness: closeness
+      degree: degree
+      eigenvector: ''
+      error: 0.1
+      input:
+        name: custom/grass7/network.shp
+        type: vector
+      iterations: 1000
+      points:
+        name: custom/grass7/network_points.shp
+        type: vector
+      threshold: 50.0
+      where: ''
+    results:
+      output:
+        name: expected/grass7/v_net_centrality.shp
+        type: vector
+
+  - algorithm: grass7:v.net.salesman
+    name: v.net.salesman
+    params:
+      -g: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      arc_type:
+      - 0
+      - 1
+      center_cats: 1-100000
+      input:
+        name: custom/grass7/network.shp
+        type: vector
+      points:
+        name: custom/grass7/network_points.shp
+        type: vector
+      threshold: 50.0
+    results:
+      output:
+        name: expected/grass7/v_net_salesman.shp
+        type: vector
+
+  - algorithm: grass7:v.net.steiner
+    name: v.net.steiner
+    params:
+      -g: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      arc_type:
+      - 0
+      - 1
+      input:
+        name: custom/grass7/network.shp
+        type: vector
+      npoints: -1
+      points:
+        name: custom/grass7/network_points.shp
+        type: vector
+      terminal_cats: 1-100000
+      threshold: 50.0
+    results:
+      output:
+        name: expected/grass7/v_net_steiner.shp
+        type: vector
+
+  - algorithm: grass7:v.surf.bspline
+    name: v.surf.bspline - raster output
+    params:
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_RASTER_FORMAT_META: ''
+      GRASS_RASTER_FORMAT_OPT: ''
+      GRASS_REGION_CELLSIZE_PARAMETER: 1.0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      column: elev
+      error: 1.0e-06
+      ew_step: 0.5
+      input:
+        name: pointsz.gml
+        type: vector
+      lambda_i: 0.01
+      maxit: 10000
+      memory: 300
+      method: 0
+      ns_step: 0.5
+      solver: 0
+    results:
+      raster_output:
+        hash: 7aa8e68b697e1558e6621fa23b5f1f01a5826649ffc31fd255e709a1
+        type: rasterhash
+
+  - algorithm: grass7:v.buffer
+    name: Buffer with layername
+    params:
+      -c: false
+      -s: false
+      -t: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      angle: 0.0
+      cats: ''
+      distance: 10.0
+      input:
+        name: custom/pol.gpkg|layername=pol3
+        type: vector
+      scale: 1.0
+      tolerance: 0.01
+      type:
+      - 0
+      - 1
+      - 4
+      where: ''
+    results:
+      output:
+        name: expected/grass7/buffer_polys_layer3.shp
+        type: vector
+
+  - algorithm: grass7:v.buffer
+    name: Buffer with layername 2
+    params:
+      -c: false
+      -s: false
+      -t: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      angle: 0.0
+      cats: ''
+      distance: 10.0
+      input:
+        name: custom/pol.gpkg|layername=pol2
+        type: vector
+      scale: 1.0
+      tolerance: 0.01
+      type:
+      - 0
+      - 1
+      - 4
+      where: ''
+    results:
+      output:
+        name: expected/grass7/buffer_polys_layer2.shp
+        type: vector
 

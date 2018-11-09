@@ -29,7 +29,7 @@ from qgis.PyQt.QtWidgets import QMainWindow, QApplication, QMenu, QTabWidget, QG
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 
 from qgis.gui import QgsMessageBar
-from qgis.core import Qgis, QgsSettings, QgsMapLayer
+from qgis.core import Qgis, QgsApplication, QgsSettings, QgsMapLayer
 from qgis.utils import OverrideCursor
 
 from .info_viewer import InfoViewer
@@ -56,6 +56,8 @@ class DBManager(QMainWindow):
         self.restoreState(settings.value("/DB_Manager/mainWindow/windowState", QByteArray(), type=QByteArray))
 
         self.toolBar.setIconSize(self.iface.iconSize())
+        self.toolBarOrientation()
+        self.toolBar.orientationChanged.connect(self.toolBarOrientation)
         self.tabs.currentChanged.connect(self.tabChanged)
         self.tree.selectedItemChanged.connect(self.itemChanged)
         self.tree.model().dataChanged.connect(self.iface.reloadConnections)
@@ -356,6 +358,16 @@ class DBManager(QMainWindow):
             self.tabs.removeTab(index)
             widget.deleteLater()
 
+    def toolBarOrientation(self):
+        button_style = Qt.ToolButtonIconOnly
+        if self.toolBar.orientation() == Qt.Horizontal:
+            button_style = Qt.ToolButtonTextBesideIcon
+
+        widget = self.toolBar.widgetForAction(self.actionImport)
+        widget.setToolButtonStyle(button_style)
+        widget = self.toolBar.widgetForAction(self.actionExport)
+        widget.setToolButtonStyle(button_style)
+
     def setupUi(self):
         self.setWindowTitle(self.tr("DB Manager"))
         self.setWindowIcon(QIcon(":/db_manager/icon"))
@@ -393,7 +405,7 @@ class DBManager(QMainWindow):
         self.layout.addWidget(self.infoBar, 0, 0, 1, 1)
 
         # create database tree
-        self.dock = QDockWidget(self.tr("Tree"), self)
+        self.dock = QDockWidget(self.tr("Providers"), self)
         self.dock.setObjectName("DB_Manager_DBView")
         self.dock.setFeatures(QDockWidget.DockWidgetMovable)
         self.tree = DBTree(self)
@@ -429,7 +441,7 @@ class DBManager(QMainWindow):
         sep.setObjectName("DB_Manager_DbMenu_placeholder")
         sep.setVisible(False)
 
-        self.actionRefresh = self.menuDb.addAction(QIcon(":/db_manager/actions/refresh"), self.tr("&Refresh"),
+        self.actionRefresh = self.menuDb.addAction(QgsApplication.getThemeIcon("/mActionRefresh.svg"), self.tr("&Refresh"),
                                                    self.refreshActionSlot, QKeySequence("F5"))
         self.actionSqlWindow = self.menuDb.addAction(QIcon(":/db_manager/actions/sql_window"), self.tr("&SQL Window"),
                                                      self.runSqlWindow, QKeySequence("F2"))
@@ -463,5 +475,6 @@ class DBManager(QMainWindow):
         # add actions to the toolbar
         self.toolBar.addAction(self.actionRefresh)
         self.toolBar.addAction(self.actionSqlWindow)
+        self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionImport)
         self.toolBar.addAction(self.actionExport)

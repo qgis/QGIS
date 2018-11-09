@@ -78,6 +78,16 @@ class GUI_EXPORT QgsMapTip : public QWidget
      * \param mpMapCanvas the canvas from which the tip should be cleared.
      */
     void clear( QgsMapCanvas *mpMapCanvas = nullptr );
+
+    /**
+     * Apply font family and size to match user settings
+     */
+    void applyFontSettings();
+
+  private slots:
+    void onLinkClicked( const QUrl &url );
+    void resizeContent();
+
   private:
     // Fetch the feature to use for the maptip text.
     // Only the first feature in the search radius is used
@@ -94,7 +104,9 @@ class GUI_EXPORT QgsMapTip : public QWidget
     QWidget *mWidget = nullptr;
     QgsWebView *mWebView = nullptr;
 
-  private slots:
-    void onLinkClicked( const QUrl &url );
+    QString mFontFamily;
+    int mFontSize = 8;
+
+    const int MARGIN_VALUE = 5;
 };
 #endif // QGSMAPTIP_H

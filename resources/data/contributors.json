@@ -1,0 +1,912 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Gary Sherman",
+        "Committer": "Yes",
+        "First Commit Message": "Initial revision",
+        "First Commit Date": "06-07-2002",
+        "GIT Nickname": "g-sherman"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -149.908447265625,
+          61.22266872659718
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Tim Sutton",
+        "Committer": "Yes",
+        "First Commit Message": "Added support for grayscale tifs too.",
+        "First Commit Date": "31-12-2003",
+        "GIT Nickname": "timlinux"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.443990230560303,
+          -34.01992347338913
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Marco Bernasocchi",
+        "Committer": "No",
+        "First Commit Message": "Fixed mousewheel zoom making it consistent to qgis zoom (scroll up = zoom in) [talking about globe, Ed.]",
+        "GIT Nickname": "mbernasocchi",
+        "First Commit Date": "02-11-2010"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.252706468105316,
+          46.789811217009586
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Larry Shaffer",
+        "Committer": "Yes",
+        "First Commit Message": "Added SIP generation to build/python directory of API files for QScintilla code completion/call tips.",
+        "First Commit Date": "09-04-2012",
+        "GIT Nickname": "dakcarto"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -103.575687,
+          43.933346
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Giovanni Allegri",
+        "Committer": "No",
+        "GIT Nickname": "giohappy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.07272,
+          43.88417
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Tisham Dhar",
+        "Committer": "Yes",
+        "First Commit Message": "MINGW/MSYS based initial windows builds/installers",
+        "First Commit Date": "05-02-2008",
+        "GIT Nickname": "whatnick"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          138.6010,
+          -34.9290
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Nathan Woodrow",
+        "Committer": "Yes",
+        "First Commit Message": "Added expression based labels, simple dialog for entering expressions.",
+        "First Commit Date": "25-05-2011",
+        "GIT Nickname": "NathanW2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          153.42407226562497,
+          -28.05259082333986
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Nyall Dawson",
+        "Committer": "Yes",
+        "First Commit Message": "Fix calculation of graduated symbology breaks",
+        "First Commit Date": "28-02-2013",
+        "GIT Nickname": "nyalldawson"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          145.0349675,
+          -37.9170952
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Richard Duivenvoorde",
+        "Committer": "Yes",
+        "First Commit Message": "some dutch translations for git testing",
+        "First Commit Date": "4-9-2011",
+        "GIT Nickname": "rduivenvoorde"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.6,
+          52.3
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Borys Jurgiel",
+        "Committer": "Yes",
+        "First Commit Message": "Plugin Installer update: inclusion to i18n",
+        "First Commit Date": "10-11-2008",
+        "GIT Nickname": "borysiasty"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          20.95,
+          52.2815
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Vinayan Parameswaran",
+        "Committer": "Yes",
+        "First Commit Message": "Feature:Topology Checker",
+        "First Commit Date": "12-12-2012",
+        "GIT Nickname": "vinayan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.33026123046874,
+          10.308163730851513
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Paolo Cavallini",
+        "Committer": "Yes",
+        "First Commit Message": "unknown",
+        "First Commit Date": "unknown",
+        "GIT Nickname": "pcav"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.631332397460938,
+          43.659924074789
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Marco Hugentobler",
+        "Committer": "Yes",
+        "First Commit Message": "Changes in the display behavior of qgsmapcanvas (updating the screen, avoid flickering when paning).",
+        "First Commit Date": "15-06-2003",
+        "GIT Nickname": "mhugent"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.536376953125,
+          47.368594345213374
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Régis Haubourg",
+        "Committer": "No",
+        "First Commit Message": "minor fr ui translation",
+        "First Commit Date": "05-08-2013",
+        "GIT Nickname": "haubourg"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.444251537322998,
+          43.58023541434867
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Giuseppe Sucameli",
+        "Committer": "Yes",
+        "First Commit Message": "save file instead of open it in select output file dialog",
+        "First Commit Date": "10-05-2010",
+        "GIT Nickname": "brushtyler"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.399920546093,
+          43.716183974789
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Yoichi Kayama",
+        "Committer": "No",
+        "First Commit Message": "unknown",
+        "First Commit Date": "unknown",
+        "GIT Nickname": "yoichigmf"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.4000244140625,
+          35.69689817401091
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Radim Blazek",
+        "Committer": "Yes",
+        "First Commit Message": "some bugfixes",
+        "First Commit Date": "07-04-2004",
+        "GIT Nickname": "blazek"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.3231406,
+          49.9590836
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Hien Tran-Quang",
+        "Committer": "Yes",
+        "First Commit Message": "Customization of legend dock (right click)",
+        "First Commit Date": "08-10-2012",
+        "GIT Nickname": "tqhien"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.25494384765625,
+          48.80007963827956
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Luigi Pirelli",
+        "Committer": "Yes",
+        "First Commit Message": "WMS Tile retry feature ",
+        "First Commit Date": "22-08-2013",
+        "GIT Nickname": "luipir"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.397524356842041,
+          43.37283922663916
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Mathieu Pellerin",
+        "Committer": "Yes",
+        "First Commit Message": "[labeling] set fill rule of qpainterpath for text/buffer rendering",
+        "First Commit Date": "04-09-2015",
+        "GIT Nickname": "nirvn"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.9110,
+          11.5582
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Matthias Kuhn",
+        "Committer": "Yes",
+        "First Commit Message": "Add backbuffering option to resolve flickering on X11 systems",
+        "First Commit Date": "07-08-2012",
+        "GIT Nickname": "m-kuhn"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.6256,
+          46.7542
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Juergen Fischer",
+        "Committer": "Yes",
+        "First Commit Message": "fix for ticket #790 and #791 and another msvc logger update",
+        "First Commit Date": "5-11-2007",
+        "GIT Nickname": "jef-n"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.2145843505859375,
+          53.60615521721495
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Salvatore Larosa",
+        "Committer": "Yes",
+        "First Commit Message": "New Python Console",
+        "First Commit Date": "10-09-2012",
+        "GIT Nickname": "slarosa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.22705340385437,
+          39.357056058541474
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Brent Wood",
+        "Committer": "No"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.811004639,
+          -41.3275985718
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Hugo Mercier",
+        "Committer": "No",
+        "First Commit Message": "Implement basic copy/paste of styles between layers",
+        "First Commit Date": "15-04-2012",
+        "GIT Nickname": "mhugo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.547486,
+          47.199934
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Paul Blottiere",
+        "Committer": "Yes",
+        "First Commit Message": "Add polygon and polyline tools in composer",
+        "First Commit Date": "04-03-2016",
+        "GIT Nickname": "pblottiere"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.6445492,
+          48.3748789
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Germán Carrillo",
+        "Committer": "No",
+        "First Commit Message": "Applied patch to fix legend cursor. Provided by gcarrillo",
+        "First Commit Date": "10-06-2009",
+        "GIT Nickname": "gacarrillor"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -74.07595,
+          4.59805
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Alexander Bruy",
+        "Committer": "Yes",
+        "First Commit Message": "allow users to enter path to shapefiles manually in Merge shapefiles tool (apply #2897)",
+        "First Commit Date": "25-06-2010",
+        "GIT Nickname": "alexbruy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.101318359375,
+          47.857402894658
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Sandro Santilli",
+        "Committer": "Yes",
+        "First Commit Message": "Added patch from strk that improves calculation of extents for a postgres layer",
+        "First Commit Date": "29-06-2004",
+        "GIT Nickname": "strk"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.1728515625,
+          42.31692400697034
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "John Tull",
+        "Committer": "No",
+        "GIT Nickname": "jctull"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -119.82,
+          39.18
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Robert Szczepanek",
+        "Committer": "No",
+        "First Commit Date": "9-12-2011",
+        "GIT Nickname": "Cracert"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.938,
+          50.061
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Andreas Neumann",
+        "Committer": "Yes",
+        "First Commit Date": "19-04-2011",
+        "First Commit Message": "initial chekin of qgiswebclient",
+        "GIT Nickname": "andreasneumann"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.78342,
+          47.30919
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Tamas Szekeres",
+        "Committer": "No",
+        "First Commit Date": "06-02-2012",
+        "First Commit Message": "Adding the native MSSQL provider",
+        "GIT Nickname": "szekerest"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          19.1,
+          47.6
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Luiz Motta",
+        "Committer": "No",
+        "GIT Nickname": "lmotta",
+        "First Commit Date": 2010
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8645133972168,
+          -15.763344662010184
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Denis Rouzaud",
+        "Committer": "Yes",
+        "First Commit Message": "[FEATURE] add multiple selection option in value relations",
+        "First Commit Date": "28-06-2012",
+        "GIT Nickname": "3nids"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.413406,
+          19.745284
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Etienne Tourigny",
+        "Committer": "Yes",
+        "First Commit Message": "fixes for browser (GDAL rasters) : skip *.aux.xml files ; add suffix to raster file names in browser ; add HDF4 file suffix (.hdf) in buildSupportedRasterFileFilterAndExtensions()",
+        "First Commit Date": "09-03-2012",
+        "GIT Nickname": "etiennesky"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -45.87558,
+          -23.199067
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Vincent Mora",
+        "Committer": "Yes",
+        "First Commit Message": "- test that fails because of issue7244 (split several polygons of a multipolygon at the same time)",
+        "First Commit Date": "11-07-2013",
+        "GIT Nickname": "vmora"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.76,
+          45.115
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Werner Macho",
+        "Committer": "Yes",
+        "First Commit Message": "testcommit werner, nothing changed",
+        "GIT Nickname": "mach0",
+        "First Commit Date": "30-06-2008"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.99380588531494,
+          48.791220421656064
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Martin Dobias",
+        "Committer": "Yes",
+        "First Commit Message": "Patch to allow setting extents from cli on startup",
+        "First Commit Date": "03-06-2005",
+        "GIT Nickname": "wonder-sk"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.42916,
+          50.06681
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Marcel Dancak",
+        "Committer": "No",
+        "First Commit Message": "fixed occurrence of gml:featureMember elements in GetFeatureInfo response in application/vnd.ogc.gml format",
+        "First Commit Date": "20-02-2014",
+        "GIT Nickname": "marcel-dancak"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.28868,
+          49.04914
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Ivan Mincik",
+        "Committer": "No",
+        "First Commit Message": "Updating Slovak translation strings file.",
+        "First Commit Date": "23-05-2013",
+        "GIT Nickname": "imincik"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.19637,
+          49.04172
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Giovanni Manghi",
+        "Committer": "No",
+        "First Commit Message": "Makes SAGA supervised classification work also with SAGA 2.0.8.",
+        "First Commit Date": "30-09-2013",
+        "GIT Nickname": "gioman"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.917703,
+          38.596288
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Tom Kralidis",
+        "Committer": "Yes",
+        "First Commit Message": "add MetaSearch 0.2.0",
+        "First Commit Date": "07-05-2014",
+        "GIT Nickname": "tomkralidis"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.383184,
+           43.653226
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Alessandro Pasotti",
+        "Committer": "Yes",
+        "First Commit Message": "Initial GetStyles implementation",
+        "First Commit Date": "06-01-2014",
+        "GIT Nickname": "elpaso"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.251318,
+          44.815437
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Stéphane Brunner",
+        "Committer": "No",
+        "First Commit Message": "Typo in qgis_fr.ts",
+        "First Commit Date": "23-07-2013",
+        "GIT Nickname": "sbrunner"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.66946,
+          46.50825
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Alvaro Huarte",
+        "Committer": "No",
+        "First Commit Message": "Feature #8725: Fast rendering of geometries",
+        "First Commit Date": "07-10-2013",
+        "GIT Nickname": "ahuarte47"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.6588156567,
+          42.810529897
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Sebastian Dietrich",
+        "Committer": "No",
+        "First Commit Message": "Moved the code to determine the primary key for a view using the URI keyColumn to a separate function.",
+        "First Commit Date": "17-10-2015",
+        "GIT Nickname": "SebDieBln"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.409402,
+          52.520804
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Alexandre Neto",
+        "Committer": "No",
+        "First Commit Message": "Some translations",
+        "First Commit Date": "26-02-2013",
+        "GIT Nickname": "SrNetoChan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.42036,
+          38.69744
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Even Rouault",
+        "Committer": "Yes",
+        "First Commit Message": "OGR provider: don't segfault when the layer cannot be retrieved (e.g. datasource with 0 layer)",
+        "First Commit Date": "20-11-2011",
+        "GIT Nickname": "rouault"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.1539,
+          48.9472
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Matteo Ghetta",
+        "Committer": "No",
+        "GIT Nickname": "ghtmtt"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.9358,
+          46.7963
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Etienne Trimaille",
+        "Committer": "No",
+        "First Commit Message": "change str to unicode fix #10624",
+        "First Commit Date": "03-07-2014",
+        "GIT Nickname": "Gustry"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -61.70715,
+          16.01649
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Raymond Nijssen",
+        "Committer": "No",
+        "First Commit Message": "Sipify QgsPoint",
+        "First Commit Date": "30-04-2017",
+        "GIT Nickname": "raymondnijssen"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.2926,
+          51.6934
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Peter Petrik",
+        "Committer": "No",
+        "First Commit Message": "fix #13669 (Circular string generates duplicated nodes)",
+        "First Commit Date": "28-01-2016",
+        "GIT Nickname": "PeterPetrik"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.3137828,
+          49.871362
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Loïc Bartoletti",
+        "Committer": "No",
+        "First Commit Message": "Oriented Minimum Bounding Box",
+        "First Commit Date": "11-06-2015",
+        "GIT Nickname": "lbartoletti"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.63055,
+          45.93943
+        ]
+      }
+    }
+  ]
+}

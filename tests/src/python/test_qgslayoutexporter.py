@@ -13,7 +13,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-import sip
+from qgis.PyQt import sip
 import tempfile
 import shutil
 import os
@@ -56,7 +56,7 @@ TEST_DATA_DIR = unitTestDataPath()
 # look for Poppler w/ Cairo, then muPDF
 # * Poppler w/ Cairo renders correctly
 # * Poppler w/o Cairo does not always correctly render vectors in PDF to image
-# * muPDF renders correctly, but sightly shifts colors
+# * muPDF renders correctly, but slightly shifts colors
 for util in [
     'pdftocairo',
     # 'mudraw',
@@ -301,7 +301,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         md.setCreationDateTime(QDateTime(QDate(2011, 5, 3), QTime(9, 4, 5), QTimeZone(36000)))
         md.setIdentifier('proj identifier')
         md.setAbstract('proj abstract')
-        md.setKeywords({'kw': ['kw1', 'kw2']})
+        md.setKeywords({'kw': ['kw1', 'kw2'], 'KWx': ['kw3', 'kw4']})
         QgsProject.instance().setMetadata(md)
         l = QgsLayout(QgsProject.instance())
         l.initializeDefaults()
@@ -350,7 +350,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
             metadata = d.GetMetadata()
             self.assertEqual(metadata['Author'], 'proj author')
             self.assertEqual(metadata['Created'], '2011-05-03T09:04:05+10:00')
-            self.assertIn(metadata['Keywords'], ('kw1,kw2', 'kw2,kw1'))
+            self.assertEqual(metadata['Keywords'], 'KWx: kw3,kw4;kw: kw1,kw2')
             self.assertEqual(metadata['Subject'], 'proj abstract')
             self.assertEqual(metadata['Title'], 'proj title')
 
@@ -378,12 +378,21 @@ class TestQgsLayoutExporter(unittest.TestCase):
 
         # image size
         settings.imageSize = QSize(600, 851)
-
         rendered_file_path = os.path.join(self.basetestpath, 'test_exporttoimagesize.png')
         self.assertEqual(exporter.exportToImage(rendered_file_path, settings), QgsLayoutExporter.Success)
         self.assertFalse(os.path.exists(rendered_file_path))
         page2_path = os.path.join(self.basetestpath, 'test_exporttoimagesize_2.png')
         self.assertTrue(self.checkImage('exporttoimagesize_page2', 'exporttoimagesize_page2', page2_path))
+
+        # image size with incorrect aspect ratio
+        # this can happen as a result of data defined page sizes
+        settings.imageSize = QSize(851, 600)
+        rendered_file_path = os.path.join(self.basetestpath, 'test_exporttoimagesizebadaspect.png')
+        self.assertEqual(exporter.exportToImage(rendered_file_path, settings), QgsLayoutExporter.Success)
+
+        page2_path = os.path.join(self.basetestpath, 'test_exporttoimagesizebadaspect_2.png')
+        im = QImage(page2_path)
+        self.assertTrue(self.checkImage('exporttoimagesize_badaspect', 'exporttoimagedpi_page2', page2_path), '{}x{}'.format(im.width(), im.height()))
 
     def testExportToPdf(self):
         md = QgsProject.instance().metadata()
@@ -392,7 +401,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         md.setCreationDateTime(QDateTime(QDate(2011, 5, 3), QTime(9, 4, 5), QTimeZone(36000)))
         md.setIdentifier('proj identifier')
         md.setAbstract('proj abstract')
-        md.setKeywords({'kw': ['kw1', 'kw2']})
+        md.setKeywords({'kw': ['kw1', 'kw2'], 'KWx': ['kw3', 'kw4']})
         QgsProject.instance().setMetadata(md)
 
         l = QgsLayout(QgsProject.instance())
@@ -450,9 +459,51 @@ class TestQgsLayoutExporter(unittest.TestCase):
         metadata = d.GetMetadata()
         self.assertEqual(metadata['AUTHOR'], 'proj author')
         self.assertEqual(metadata['CREATION_DATE'], "D:20110503090405+10'0'")
-        self.assertIn(metadata['KEYWORDS'], ('kw1,kw2', 'kw2,kw1'))
+        self.assertEqual(metadata['KEYWORDS'], 'KWx: kw3,kw4;kw: kw1,kw2')
         self.assertEqual(metadata['SUBJECT'], 'proj abstract')
         self.assertEqual(metadata['TITLE'], 'proj title')
+
+    def testExportToPdfSkipFirstPage(self):
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+
+        # page 1 is excluded from export
+        page1 = l.pageCollection().page(0)
+        page1.setExcludeFromExports(True)
+
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        l.pageCollection().addPage(page2)
+
+        item2 = QgsLayoutItemShape(l)
+        item2.attemptSetSceneRect(QRectF(10, 20, 100, 150))
+        item2.attemptMove(QgsLayoutPoint(10, 20), page=1)
+        fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, fill)
+        fill.setColor(Qt.cyan)
+        fill.setStrokeStyle(Qt.NoPen)
+        item2.setSymbol(fill_symbol)
+        l.addItem(item2)
+
+        exporter = QgsLayoutExporter(l)
+        # setup settings
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.dpi = 80
+        settings.rasterizeWholeImage = False
+        settings.forceVectorOutput = False
+        settings.exportMetadata = True
+
+        pdf_file_path = os.path.join(self.basetestpath, 'test_exporttopdfdpi_skip_first.pdf')
+        self.assertEqual(exporter.exportToPdf(pdf_file_path, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(pdf_file_path))
+
+        rendered_page_1 = os.path.join(self.basetestpath, 'test_exporttopdfdpi_skip_first.png')
+        dpi = 80
+        pdfToPng(pdf_file_path, rendered_page_1, dpi=dpi, page=1)
+
+        self.assertTrue(self.checkImage('test_exporttopdfdpi_skip_first', 'exporttopdfdpi_page2', rendered_page_1, size_tolerance=1))
 
     def testExportToSvg(self):
         md = QgsProject.instance().metadata()

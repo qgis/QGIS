@@ -14,4 +14,4 @@ QgsProcessingParameterBoolean|DENSITY_MEAN          |Density from Neighbourhood|
 QgsProcessingParameterRasterDestination|DENSITY|Density [Percent]
 QgsProcessingParameterRasterDestination|CONNECTIVITY|Connectivity [Percent]
 QgsProcessingParameterRasterDestination|FRAGMENTATION|Fragmentation
-OutputTable|FRAGSTATS|Summary
+QgsProcessingParameterVectorDestination|FRAGSTATS|Summary

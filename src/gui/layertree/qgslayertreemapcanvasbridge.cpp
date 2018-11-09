@@ -63,9 +63,15 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
   else
     setCanvasLayers( mRoot, canvasLayers, overviewLayers, allLayerOrder );
 
-  QList<QgsLayerTreeLayer *> layerNodes = mRoot->findLayers();
-  int currentLayerCount = layerNodes.count();
-  bool firstLayers = mAutoSetupOnFirstLayer && mLastLayerCount == 0 && currentLayerCount != 0;
+  const QList<QgsLayerTreeLayer *> layerNodes = mRoot->findLayers();
+  int currentSpatialLayerCount = 0;
+  for ( QgsLayerTreeLayer *layerNode : layerNodes )
+  {
+    if ( layerNode->layer() && layerNode->layer()->isSpatial() )
+      currentSpatialLayerCount++;
+  }
+
+  bool firstLayers = mAutoSetupOnFirstLayer && mLastLayerCount == 0 && currentSpatialLayerCount != 0;
 
   mCanvas->setLayers( canvasLayers );
   if ( mOverviewCanvas )
@@ -95,8 +101,8 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
     QgsProject::instance()->setCrs( mFirstCRS );
   }
 
-  mLastLayerCount = currentLayerCount;
-  if ( currentLayerCount == 0 )
+  mLastLayerCount = currentSpatialLayerCount;
+  if ( currentSpatialLayerCount == 0 )
     mFirstCRS = QgsCoordinateReferenceSystem();
 
   mPendingCanvasUpdate = false;

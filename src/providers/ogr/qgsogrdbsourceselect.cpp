@@ -143,7 +143,7 @@ void QgsOgrDbSourceSelect::mSearchGroupBox_toggled( bool checked )
   if ( mSearchTableEdit->text().isEmpty() )
     return;
 
-  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
+  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QString() );
 }
 
 void QgsOgrDbSourceSelect::mSearchTableEdit_textChanged( const QString &text )
@@ -341,7 +341,7 @@ void QgsOgrDbSourceSelect::btnConnect_clicked()
   {
     if ( cbxAllowGeometrylessTables->isChecked() || table->geometryType() != QStringLiteral( "None" ) )
     {
-      mTableModel.addTableEntry( table->layerType(), table->name(), table->uri(), table->geometryColumn(), table->geometryType(), QLatin1String( "" ) );
+      mTableModel.addTableEntry( table->layerType(), table->name(), table->uri(), table->geometryColumn(), table->geometryType(), QString() );
     }
   }
 

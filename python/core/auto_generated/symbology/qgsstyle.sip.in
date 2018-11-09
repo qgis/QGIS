@@ -38,7 +38,13 @@ Constructor for QgsStyle.
 %End
     ~QgsStyle();
 
-    enum StyleEntity { SymbolEntity, TagEntity, ColorrampEntity, SmartgroupEntity };
+    enum StyleEntity
+    {
+      SymbolEntity,
+      TagEntity,
+      ColorrampEntity,
+      SmartgroupEntity
+    };
 
     bool addSymbol( const QString &name, QgsSymbol *symbol /Transfer/, bool update = false );
 %Docstring
@@ -79,13 +85,20 @@ Adds a new tag and returns the tag's id
 :return: returns an int, which is the DB id of the new tag created, 0 if the tag couldn't be created
 %End
 
-    int addSmartgroup( const QString &name, const QString &op, const QgsSmartConditionMap &conditions );
+
+    int addSmartgroup( const QString &name, const QString &op, const QStringList &matchTag, const QStringList &noMatchTag,
+                       const QStringList &matchName, const QStringList &noMatchName );
 %Docstring
-Adds a new smartgroup to the database and returns the id
+Adds a new smartgroup to the database and returns the id.
 
 :param name: is the name of the new Smart Group to be added
 :param op: is the operator between the conditions; AND/OR as QString
-:param conditions: are the smart group conditions
+:param matchTag: list of strings to match within tags
+:param noMatchTag: list of strings to exclude matches from tags
+:param matchName: list of string to match within names
+:param noMatchName: list of strings to exclude matches from names
+
+.. versionadded:: 3.4
 %End
 
     QStringList tags() const;
@@ -134,6 +147,7 @@ returns 0 if not found
 Returns default application-wide style
 %End
 
+
     bool tagSymbol( StyleEntity type, const QString &symbol, const QStringList &tags );
 %Docstring
 Tags the symbol with the tags in the list
@@ -179,7 +193,9 @@ Removes symbol from style (and delete it)
 
     bool renameSymbol( const QString &oldName, const QString &newName );
 %Docstring
-Changessymbol's name
+Renames a symbol from ``oldName`` to ``newName``.
+
+Returns true if symbol was successfully renamed.
 %End
 
     QgsSymbol *symbol( const QString &name ) /Factory/;
@@ -255,7 +271,7 @@ Removes the specified symbol from favorites
 :return: returns the success state as bool
 %End
 
-    void rename( StyleEntity type, int id, const QString &newName );
+    bool rename( StyleEntity type, int id, const QString &newName );
 %Docstring
 Renames the given entity with the specified id
 
@@ -264,7 +280,7 @@ Renames the given entity with the specified id
 :param newName: is the new name of the entity
 %End
 
-    void remove( StyleEntity type, int id );
+    bool remove( StyleEntity type, int id );
 %Docstring
 Removes the specified entity from the db
 
@@ -446,62 +462,114 @@ Imports the symbols and colorramps into the default style database from the give
 %End
 
   signals:
+
     void symbolSaved( const QString &name, QgsSymbol *symbol );
 %Docstring
-Is emitted every time a new symbol has been added to the database
+Emitted every time a new symbol has been added to the database.
+Emitted whenever a symbol has been added to the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`symbolRemoved`
+
+.. seealso:: :py:func:`rampAdded`
+
+.. seealso:: :py:func:`symbolChanged`
 %End
+
+    void symbolChanged( const QString &name );
+%Docstring
+Emitted whenever a symbol's definition is changed. This does not include
+name or tag changes.
+
+.. seealso:: :py:func:`symbolSaved`
+
+.. versionadded:: 3.4
+%End
+
     void groupsModified();
 %Docstring
 Is emitted every time a tag or smartgroup has been added, removed, or renamed
 %End
 
-  protected:
-
-
-
-
-
-    bool openDatabase( const QString &filename );
+    void entityTagsChanged( QgsStyle::StyleEntity entity, const QString &name, const QStringList &newTags );
 %Docstring
-Convenience function to open the DB and return a sqlite3 object
+Emitted whenever an ``entity``'s tags are changed.
+
+.. versionadded:: 3.4
 %End
 
-    bool runEmptyQuery( char *query, bool freeQuery = true );
+    void favoritedChanged( QgsStyle::StyleEntity entity, const QString &name, bool isFavorite );
 %Docstring
-Convenience function that would run queries which don't generate return values
+Emitted whenever an ``entity`` is either favorited or un-favorited.
 
-:param query: query to run
-:param freeQuery: release query memory
-
-:return: success true on success
+.. versionadded:: 3.4
 %End
 
-    int getId( const QString &table, const QString &name );
+    void symbolRemoved( const QString &name );
 %Docstring
-Gets the id from the table for the given name from the database, 0 if not found
+Emitted whenever a symbol has been removed from the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`symbolSaved`
+
+.. seealso:: :py:func:`rampRemoved`
+
+.. versionadded:: 3.4
 %End
 
-    QString getName( const QString &table, int id ) const;
+    void symbolRenamed( const QString &oldName, const QString &newName );
 %Docstring
-Gets the name from the table for the given id from the database, empty if not found
+Emitted whenever a symbol has been renamed from ``oldName`` to ``newName``
+
+.. seealso:: :py:func:`rampRenamed`
+
+.. versionadded:: 3.4
 %End
 
-    bool updateSymbol( StyleEntity type, const QString &name );
+    void rampRenamed( const QString &oldName, const QString &newName );
 %Docstring
-Updates the properties of an existing symbol/colorramp
+Emitted whenever a color ramp has been renamed from ``oldName`` to ``newName``
 
-.. note::
+.. seealso:: :py:func:`symbolRenamed`
 
-   This should not be called separately, only called through addSymbol or addColorRamp
+.. versionadded:: 3.4
+%End
 
-:param type: is either SymbolEntity or ColorrampEntity
-:param name: is the name of an existing symbol or a color ramp
+    void rampAdded( const QString &name );
+%Docstring
+Emitted whenever a color ramp has been added to the style and the database
+has been updated as a result.
 
-:return: Success state of the update operation
+.. seealso:: :py:func:`rampRemoved`
+
+.. seealso:: :py:func:`symbolSaved`
+
+.. versionadded:: 3.4
+%End
+
+    void rampRemoved( const QString &name );
+%Docstring
+Emitted whenever a color ramp has been removed from the style and the database
+has been updated as a result.
+
+.. seealso:: :py:func:`rampAdded`
+
+.. seealso:: :py:func:`symbolRemoved`
+
+.. versionadded:: 3.4
+%End
+
+    void rampChanged( const QString &name );
+%Docstring
+Emitted whenever a color ramp's definition is changed. This does not include
+name or tag changes.
+
+.. seealso:: :py:func:`rampAdded`
+
+.. versionadded:: 3.4
 %End
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

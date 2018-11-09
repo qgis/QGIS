@@ -18,8 +18,7 @@
 #include <QPainter>
 
 QgsLegendSettings::QgsLegendSettings()
-  : mTitle( QObject::tr( "Legend" ) )
-  , mFontColor( QColor( 0, 0, 0 ) )
+  : mFontColor( QColor( 0, 0, 0 ) )
   , mSymbolSize( 7, 4 )
   , mWmsLegendSize( 50, 25 )
   , mRasterStrokeColor( Qt::black )
@@ -39,7 +38,7 @@ QgsLegendSettings::QgsLegendSettings()
 QStringList QgsLegendSettings::splitStringForWrapping( const QString &stringToSplt ) const
 {
   QStringList list;
-  // If the string contains nothing then just return the string without spliting.
+  // If the string contains nothing then just return the string without splitting.
   if ( wrapChar().count() == 0 )
     list << stringToSplt;
   else

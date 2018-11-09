@@ -82,7 +82,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * \param parent   The usual QWidget parent.
      * \param actionScope The action scope this menu will run in
      */
-    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString &actionScope, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsActionMenu( QgsVectorLayer *layer, QgsFeatureId fid, const QString &actionScope, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Change the feature on which actions are performed
@@ -97,7 +97,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      *
      * \param mode The mode of the attribute form
      */
-    void setMode( const QgsAttributeForm::Mode mode );
+    void setMode( QgsAttributeEditorContext::Mode mode );
 
     /**
      * Sets an expression context scope used to resolve underlying actions.
@@ -119,6 +119,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
   private slots:
     void triggerAction();
     void reloadActions();
+    void layerWillBeDeleted();
 
   private:
     void init();
@@ -130,7 +131,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
     QgsFeatureId mFeatureId;
     QString mActionScope;
     QgsExpressionContextScope mExpressionContextScope;
-    QgsAttributeForm::Mode mMode;
+    QgsAttributeEditorContext::Mode mMode;
 };
 
 

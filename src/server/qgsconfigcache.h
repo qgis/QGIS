@@ -31,20 +31,29 @@
 #include "qgsproject.h"
 
 /**
- * Cache for server configuration.
  * \ingroup server
+ * \brief Cache for server configuration.
+ * \since QGIS 2.8
  */
 class SERVER_EXPORT QgsConfigCache : public QObject
 {
     Q_OBJECT
   public:
+
+    /**
+     * Returns the current instance.
+     */
     static QgsConfigCache *instance();
 
+    /**
+     * Removes an entry from cache.
+     * \param path The path of the project
+     */
     void removeEntry( const QString &path );
 
     /**
-     * If the project is not cached yet, then the project is read thank to the
-     *  path. If the project is not available, then a nullptr is returned.
+     * If the project is not cached yet, then the project is read thanks to the
+     * path. If the project is not available, then a nullptr is returned.
      * \param path the filename of the QGIS project
      * \returns the project or nullptr if an error happened
      * \since QGIS 3.0

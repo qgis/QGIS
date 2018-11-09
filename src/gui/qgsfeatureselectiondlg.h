@@ -69,6 +69,12 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
   private:
     QgsGenericFeatureSelectionManager *mFeatureSelection = nullptr;
     QgsVectorLayer *mVectorLayer = nullptr;
+
+    // QWidget interface
+  protected:
+
+    //! Make sure the dialog does not grow too much
+    void showEvent( QShowEvent *event ) override;
 };
 
 #endif // QGSFEATURESELECTIONDLG_H

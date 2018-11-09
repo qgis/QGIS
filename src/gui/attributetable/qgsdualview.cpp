@@ -446,7 +446,7 @@ void QgsDualView::setMultiEditEnabled( bool enabled )
   if ( enabled )
     setView( AttributeEditor );
 
-  mAttributeForm->setMode( enabled ? QgsAttributeForm::MultiEditMode : QgsAttributeForm::SingleEditMode );
+  mAttributeForm->setMode( enabled ? QgsAttributeEditorContext::MultiEditMode : QgsAttributeEditorContext::SingleEditMode );
 }
 
 void QgsDualView::toggleSearchMode( bool enabled )
@@ -454,11 +454,11 @@ void QgsDualView::toggleSearchMode( bool enabled )
   if ( enabled )
   {
     setView( AttributeEditor );
-    mAttributeForm->setMode( QgsAttributeForm::SearchMode );
+    mAttributeForm->setMode( QgsAttributeEditorContext::SearchMode );
   }
   else
   {
-    mAttributeForm->setMode( QgsAttributeForm::SingleEditMode );
+    mAttributeForm->setMode( QgsAttributeEditorContext::SingleEditMode );
   }
 }
 
@@ -574,11 +574,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
         continue;
 
       QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, action.id(), sourceIndex );
-#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
-      menu->addAction( action.name(), a, SLOT( execute() ) );
-#else
       menu->addAction( action.name(), a, &QgsAttributeTableAction::execute );
-#endif
     }
   }
 
@@ -592,21 +588,13 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
     Q_FOREACH ( QgsMapLayerAction *action, registeredActions )
     {
       QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( action->text(), this, action, sourceIndex );
-#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
-      menu->addAction( action->text(), a, SLOT( execut() ) );
-#else
       menu->addAction( action->text(), a, &QgsAttributeTableMapLayerAction::execute );
-#endif
     }
   }
 
   menu->addSeparator();
   QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open Form" ), this, QString(), sourceIndex );
-#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
-  menu->addAction( tr( "Open Form" ), a, SLOT( featureForm() ) );
-#else
   menu->addAction( tr( "Open Form" ), a, &QgsAttributeTableAction::featureForm );
-#endif
 }
 
 
@@ -654,7 +642,7 @@ void QgsDualView::organizeColumns()
     return;
   }
 
-  QgsOrganizeTableColumnsDialog dialog( mLayer, this );
+  QgsOrganizeTableColumnsDialog dialog( mLayer, attributeTableConfig(), this );
   if ( dialog.exec() == QDialog::Accepted )
   {
     QgsAttributeTableConfig config = dialog.config();
@@ -838,7 +826,7 @@ void QgsDualView::previewExpressionChanged( const QString &expression )
 
 void QgsDualView::onSortColumnChanged()
 {
-  QgsAttributeTableConfig cfg = mLayer->attributeTableConfig();
+  QgsAttributeTableConfig cfg = attributeTableConfig();
   if ( cfg.sortExpression() != mFilterModel->sortExpression() ||
        cfg.sortOrder() != mFilterModel->sortOrder() )
   {
@@ -916,7 +904,6 @@ void QgsDualView::setAttributeTableConfig( const QgsAttributeTableConfig &config
 {
   mConfig = config;
   mConfig.update( mLayer->fields() );
-  mLayer->setAttributeTableConfig( mConfig );
   mFilterModel->setAttributeTableConfig( mConfig );
   mTableView->setAttributeTableConfig( mConfig );
 }
@@ -936,6 +923,11 @@ void QgsDualView::setSortExpression( const QString &sortExpression, Qt::SortOrde
 QString QgsDualView::sortExpression() const
 {
   return mFilterModel->sortExpression();
+}
+
+QgsAttributeTableConfig QgsDualView::attributeTableConfig() const
+{
+  return mConfig;
 }
 
 void QgsDualView::progress( int i, bool &cancel )

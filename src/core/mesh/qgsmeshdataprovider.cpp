@@ -16,7 +16,42 @@
  ***************************************************************************/
 
 #include "qgsmeshdataprovider.h"
+#include "qgsrectangle.h"
 #include "qgis.h"
+
+
+
+QgsMeshDatasetIndex::QgsMeshDatasetIndex( int group, int dataset )
+  : mGroupIndex( group ), mDatasetIndex( dataset )
+{}
+
+int QgsMeshDatasetIndex::group() const
+{
+  return mGroupIndex;
+}
+
+int QgsMeshDatasetIndex::dataset() const
+{
+  return mDatasetIndex;
+}
+
+bool QgsMeshDatasetIndex::isValid() const
+{
+  return ( group() > -1 ) && ( dataset() > -1 );
+}
+
+bool QgsMeshDatasetIndex::operator ==( const QgsMeshDatasetIndex &other ) const
+{
+  if ( isValid() && other.isValid() )
+    return other.group() == group() && other.dataset() == dataset();
+  else
+    return isValid() == other.isValid();
+}
+
+bool QgsMeshDatasetIndex::operator !=( const QgsMeshDatasetIndex &other ) const
+{
+  return !( operator==( other ) );
+}
 
 QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
   : QgsDataProvider( uri, options )
@@ -109,40 +144,68 @@ bool QgsMeshDatasetValue::operator==( const QgsMeshDatasetValue &other ) const
   return equal;
 }
 
-QgsMeshDatasetMetadata::QgsMeshDatasetMetadata(
+QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata(
+  const QString &name,
   bool isScalar,
-  bool isValid,
   bool isOnVertices,
   const QMap<QString, QString> &extraOptions )
-  : mIsScalar( isScalar )
-  , mIsValid( isValid )
+  : mName( name )
+  ,  mIsScalar( isScalar )
   , mIsOnVertices( isOnVertices )
   , mExtraOptions( extraOptions )
 {
 }
 
-QMap<QString, QString> QgsMeshDatasetMetadata::extraOptions() const
+QMap<QString, QString> QgsMeshDatasetGroupMetadata::extraOptions() const
 {
   return mExtraOptions;
 }
 
-bool QgsMeshDatasetMetadata::isVector() const
+bool QgsMeshDatasetGroupMetadata::isVector() const
 {
   return !mIsScalar;
 }
 
-bool QgsMeshDatasetMetadata::isScalar() const
+bool QgsMeshDatasetGroupMetadata::isScalar() const
 {
   return mIsScalar;
+}
+
+
+
+QString QgsMeshDatasetGroupMetadata::name() const
+{
+  return mName;
+}
+
+QgsMeshDatasetGroupMetadata::DataType QgsMeshDatasetGroupMetadata::dataType() const
+{
+  return ( mIsOnVertices ) ? DataType::DataOnVertices : DataType::DataOnFaces;
+}
+
+int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const
+{
+  return datasetCount( index.group() );
+}
+
+QgsMeshDatasetGroupMetadata QgsMeshDatasetSourceInterface::datasetGroupMetadata( QgsMeshDatasetIndex index ) const
+{
+  return datasetGroupMetadata( index.group() );
+}
+
+QgsMeshDatasetMetadata::QgsMeshDatasetMetadata( double time,
+    bool isValid )
+  : mTime( time )
+  , mIsValid( isValid )
+{
+}
+
+double QgsMeshDatasetMetadata::time() const
+{
+  return mTime;
 }
 
 bool QgsMeshDatasetMetadata::isValid() const
 {
   return mIsValid;
-}
-
-
-bool QgsMeshDatasetMetadata::isOnVertices() const
-{
-  return mIsOnVertices;
 }

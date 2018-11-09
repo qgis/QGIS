@@ -82,7 +82,7 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
     QgsDrawSourceEffect *mEffect = nullptr;
 
     void initGui();
-    void blockSignals( const bool block );
+    void blockSignals( bool block );
 
   private slots:
 
@@ -115,7 +115,7 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
     QgsBlurEffect *mEffect = nullptr;
 
     void initGui();
-    void blockSignals( const bool block );
+    void blockSignals( bool block );
 
   private slots:
 
@@ -150,7 +150,7 @@ class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui
     QgsShadowEffect *mEffect = nullptr;
 
     void initGui();
-    void blockSignals( const bool block );
+    void blockSignals( bool block );
 
   private slots:
     void mShadowOffsetAngleSpnBx_valueChanged( int value );
@@ -186,7 +186,7 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
     QgsGlowEffect *mEffect = nullptr;
 
     void initGui();
-    void blockSignals( const bool block );
+    void blockSignals( bool block );
 
   private slots:
     void colorModeChanged();
@@ -222,7 +222,7 @@ class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::W
     QgsTransformEffect *mEffect = nullptr;
 
     void initGui();
-    void blockSignals( const bool block );
+    void blockSignals( bool block );
 
   private slots:
 
@@ -262,8 +262,8 @@ class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui:
     QgsColorEffect *mEffect = nullptr;
 
     void initGui();
-    void blockSignals( const bool block );
-    void enableColorizeControls( const bool enable );
+    void blockSignals( bool block );
+    void enableColorizeControls( bool enable );
 
   private slots:
 

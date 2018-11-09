@@ -48,6 +48,13 @@ Set the selected features
 :param ids: The feature ids to select
 %End
 
+  protected:
+
+    virtual void showEvent( QShowEvent *event );
+
+%Docstring
+Make sure the dialog does not grow too much
+%End
 };
 
 /************************************************************************

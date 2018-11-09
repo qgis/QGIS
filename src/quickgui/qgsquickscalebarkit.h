@@ -37,6 +37,9 @@ class QgsQuickMapSettings;
  * distance in meters or kilometers (int) rounded to "nice" number (e.g. 72.4 to 100)
  * and units text (e.g. km)
  *
+ * System of measurement for result could be set too, so for example the resulting scalebar
+ * can show results in the imperial units.
+ *
  * \note QML Type: ScaleBarKit
  *
  * \since QGIS 3.2
@@ -56,12 +59,19 @@ class QUICK_EXPORT QgsQuickScaleBarKit : public QObject
     Q_PROPERTY( int preferredWidth MEMBER mPreferredWidth NOTIFY preferredWidthChanged )
 
     /**
-     * Units of distance (e.g. km or m) Read-only (result).
+     * Preferred system of measurement for the result
+     */
+    Q_PROPERTY( QgsUnitTypes::SystemOfMeasurement systemOfMeasurement MEMBER mSystemOfMeasurement NOTIFY systemOfMeasurementChanged )
+
+    /**
+     * Units of distance (e.g. km or m) of result in desired systemOfMeasurement Read-only (result).
      */
     Q_PROPERTY( QString units READ units NOTIFY scaleBarChanged )
 
     /**
-     * Distance rounded to "nice" number (e.g. 100, 20) corresponding to width. To be used with units property for labels. Read-only (result).
+     * Distance rounded to "nice" number (e.g. 100, 20) corresponding to width and system of measurement
+     *
+     * To be used with units property for labels. Read-only (result).
      */
     Q_PROPERTY( int distance READ distance NOTIFY scaleBarChanged )
 
@@ -107,6 +117,9 @@ class QUICK_EXPORT QgsQuickScaleBarKit : public QObject
     //! \copydoc QgsQuickScaleBarKit::preferredWidth
     void preferredWidthChanged();
 
+    //! \copydoc QgsQuickScaleBarKit::systemOfMeasurement
+    void systemOfMeasurementChanged();
+
   public slots:
     //! recalculate width, distance and units.
     void updateScaleBar();
@@ -116,7 +129,8 @@ class QUICK_EXPORT QgsQuickScaleBarKit : public QObject
     int mPreferredWidth; // pixels
     int mWidth; // pixels
     int mDistance; // in meters or kilometers, rounded
-    QString mUnits; // km or m
+    QString mUnits; // e.g. km or m
+    QgsUnitTypes::SystemOfMeasurement mSystemOfMeasurement = QgsUnitTypes::MetricSystem;
 };
 
 

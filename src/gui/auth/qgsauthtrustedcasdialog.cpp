@@ -91,7 +91,7 @@ void QgsAuthTrustedCAsDialog::setupCaCertsTree()
   mRootCaSecItem = new QTreeWidgetItem(
     treeTrustedCAs,
     QStringList( tr( "Authorities/Issuers" ) ),
-    ( int )QgsAuthTrustedCAsDialog::Section );
+    static_cast<int>( QgsAuthTrustedCAsDialog::Section ) );
   setItemBold_( mRootCaSecItem );
   mRootCaSecItem->setFlags( Qt::ItemIsEnabled );
   mRootCaSecItem->setExpanded( true );
@@ -152,7 +152,7 @@ void QgsAuthTrustedCAsDialog::appendCertsToGroup( const QList<QSslCertificate> &
   {
     QTreeWidgetItem *grpitem( new QTreeWidgetItem( parent,
                               QStringList() << it.key(),
-                              ( int )QgsAuthTrustedCAsDialog::OrgName ) );
+                              static_cast<int>( QgsAuthTrustedCAsDialog::OrgName ) ) );
     grpitem->setFirstColumnSpanned( true );
     grpitem->setFlags( Qt::ItemIsEnabled );
     grpitem->setExpanded( true );
@@ -194,7 +194,7 @@ void QgsAuthTrustedCAsDialog::appendCertsToItem( const QList<QSslCertificate> &c
     coltxts << QString( cert.serialNumber() );
     coltxts << cert.expiryDate().toString();
 
-    QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, ( int )catype ) );
+    QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, static_cast<int>( catype ) ) );
 
     item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
     if ( !QgsAuthCertUtils::certIsViable( cert ) )
@@ -221,7 +221,7 @@ void QgsAuthTrustedCAsDialog::showCertInfo( QTreeWidgetItem *item )
 
   if ( !cacertscache.contains( digest ) )
   {
-    QgsDebugMsg( "Certificate Authority not in CA certs cache" );
+    QgsDebugMsg( QStringLiteral( "Certificate Authority not in CA certs cache" ) );
     return;
   }
 
@@ -306,7 +306,7 @@ void QgsAuthTrustedCAsDialog::btnGroupByOrg_toggled( bool checked )
 
 void QgsAuthTrustedCAsDialog::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
-  int levelint = ( int )level;
+  int levelint = static_cast<int>( level );
   messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint, 7 );
 }
 

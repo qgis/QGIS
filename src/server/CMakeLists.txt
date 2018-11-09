@@ -24,13 +24,13 @@ SET(QGIS_SERVER_SRCS
   qgsbufferserverresponse.cpp
   qgscapabilitiescache.cpp
   qgsconfigcache.cpp
-  qgsconfigparserutils.cpp
   qgsfcgiserverrequest.cpp
   qgsfcgiserverresponse.cpp
   qgsfilterresponsedecorator.cpp
   qgsfilterrestorer.cpp
   qgsrequesthandler.cpp
   qgsserver.cpp
+  qgsserverparameters.cpp
   qgsserverexception.cpp
   qgsserverinterface.cpp
   qgsserverinterfaceimpl.cpp
@@ -40,7 +40,6 @@ SET(QGIS_SERVER_SRCS
   qgsserverresponse.cpp
   qgsserversettings.cpp
   qgsservice.cpp
-  qgsservicemodule.cpp
   qgsservicenativeloader.cpp
   qgsserviceregistry.cpp
   qgsfeaturefilterprovidergroup.cpp
@@ -48,6 +47,7 @@ SET(QGIS_SERVER_SRCS
 )
 
 SET (QGIS_SERVER_HDRS
+  qgsservicemodule.h
   qgsmapserviceexception.h
 )
 
@@ -57,6 +57,7 @@ SET (QGIS_SERVER_MOC_HDRS
   qgsconfigcache.h
   qgsserverlogger.h
   qgsserversettings.h
+  qgsserverparameters.h
 )
 
 
@@ -72,6 +73,8 @@ IF (WITH_SERVER_PLUGINS)
     qgsserverfilter.cpp
     qgsaccesscontrolfilter.cpp
     qgsaccesscontrol.cpp
+    qgsservercachefilter.cpp
+    qgsservercachemanager.cpp
   )
 ENDIF (WITH_SERVER_PLUGINS)
 

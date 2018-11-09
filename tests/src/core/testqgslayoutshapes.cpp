@@ -43,10 +43,10 @@ class TestQgsLayoutShapes : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void rectangle(); //test if rectangle shape is functioning
-    void triangle(); //test if triange shape is functioning
+    void triangle(); //test if triangle shape is functioning
     void ellipse(); //test if ellipse shape is functioning
     void roundedRectangle(); //test if rounded rectangle shape is functioning
-    void symbol(); //test is styling shapes via symbol is working
+    void symbol(); //test if styling shapes via symbol is working
     void readWriteXml();
     void bounds();
     void shapeRotation();

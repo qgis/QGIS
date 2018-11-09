@@ -457,7 +457,7 @@ class CORE_EXPORT QgsExpression
      * for one-off evaluations only.
      * \since QGIS 2.7
      */
-    static double evaluateToDouble( const QString &text, const double fallbackValue );
+    static double evaluateToDouble( const QString &text, double fallbackValue );
 
     enum SpatialOperator
     {
@@ -594,10 +594,11 @@ class CORE_EXPORT QgsExpression
      * Formats an expression result for friendly display to the user. Truncates the result to a sensible
      * length, and presents text representations of non numeric/text types (e.g., geometries and features).
      * \param value expression result to format
-     * \returns formatted string, may contain HTML formatting characters
+     * \param htmlOutput set to true to allow HTML formatting, or false for plain text output
+     * \returns formatted string, may contain HTML formatting characters if \a htmlOutput is true
      * \since QGIS 2.14
      */
-    static QString formatPreviewString( const QVariant &value );
+    static QString formatPreviewString( const QVariant &value, bool htmlOutput = true );
 
     /**
      * Create an expression allowing to evaluate if a field is equal to a
@@ -608,6 +609,14 @@ class CORE_EXPORT QgsExpression
      * \since QGIS 3.0
      */
     static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value );
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsExpression: '%1'>" ).arg( sipCpp->expression() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
     void initGeomCalculator();

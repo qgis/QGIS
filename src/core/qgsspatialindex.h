@@ -40,6 +40,7 @@ class QgsPointXY;
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsfeaturesink.h"
 #include <QList>
 #include <QSharedDataPointer>
 
@@ -60,8 +61,10 @@ class QgsFeatureSource;
  * \note While the underlying libspatialindex is not thread safe on some platforms, the QgsSpatialIndex
  * class implements its own locks and accordingly, a single QgsSpatialIndex object can safely
  * be used across multiple threads.
+ *
+ * \see QgsSpatialIndexKDBush, which is an optimised non-mutable index for point geometries only.
  */
-class CORE_EXPORT QgsSpatialIndex
+class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
 {
 
   public:
@@ -102,7 +105,7 @@ class CORE_EXPORT QgsSpatialIndex
     QgsSpatialIndex( const QgsSpatialIndex &other );
 
     //! Destructor finalizes work with spatial index
-    ~QgsSpatialIndex();
+    ~QgsSpatialIndex() override;
 
     //! Implement assignment operator
     QgsSpatialIndex &operator=( const QgsSpatialIndex &other );
@@ -111,15 +114,41 @@ class CORE_EXPORT QgsSpatialIndex
 
     /**
      * Adds a \a feature to the index.
+     * \deprecated Use addFeature() instead
      */
-    bool insertFeature( const QgsFeature &feature );
+    Q_DECL_DEPRECATED bool insertFeature( const QgsFeature &feature ) SIP_DEPRECATED;
+
+    /**
+     * Adds a \a feature to the index.
+     *
+     * The \a flags argument is ignored.
+     *
+     * \since QGIS 3.4
+     */
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
+
+    /**
+     * Adds a list of \a features to the index.
+     *
+     * The \a flags argument is ignored.
+     *
+     * \see addFeature()
+     */
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
 
     /**
      * Add a feature \a id to the index with a specified bounding box.
      * \returns true if feature was successfully added to index.
-     * \since QGIS 3.0
+     * \deprecated Use addFeature() instead
     */
-    bool insertFeature( QgsFeatureId id, const QgsRectangle &bounds );
+    Q_DECL_DEPRECATED bool insertFeature( QgsFeatureId id, const QgsRectangle &bounds ) SIP_DEPRECATED;
+
+    /**
+     * Add a feature \a id to the index with a specified bounding box.
+     * \returns true if feature was successfully added to index.
+     * \since QGIS 3.4
+    */
+    bool addFeature( QgsFeatureId id, const QgsRectangle &bounds );
 
     /**
      * Removes a \a feature from the index.

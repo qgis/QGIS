@@ -86,7 +86,7 @@ namespace pal
        * \param cHull returns the point id (id of id's vector...) whom are parts of the convex hull
        * \returns convexHull's size
        */
-      static int convexHullId( int *id, const double *const x, const double *const y, int n, int *&cHull );
+      static int convexHullId( int *id, const double *x, const double *y, int n, int *&cHull );
 
       /**
        * Returns true if the two segments intersect.

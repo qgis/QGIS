@@ -164,12 +164,13 @@ void QgsLayerTreeLayer::layerWillBeDeleted()
 {
   Q_ASSERT( mRef );
 
+  emit layerWillBeUnloaded();
+
   mLayerName = mRef->name();
   // in theory we do not even need to do this - the weak ref should clear itself
   mRef.layer.clear();
   // layerId stays in the reference
 
-  emit layerWillBeUnloaded();
 }
 
 

@@ -29,7 +29,7 @@
    <item row="0" column="0">
     <widget class="QgsCollapsibleGroupBox" name="gboxGlobalTransp">
      <property name="title">
-      <string>Global opacity</string>
+      <string>Global Opacity</string>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -63,7 +63,7 @@
    <item row="1" column="0">
     <widget class="QgsCollapsibleGroupBox" name="gboxNoDataValue">
      <property name="title">
-      <string>No data value</string>
+      <string>No Data Value</string>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -138,7 +138,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Custom transparency options</string>
+      <string>Custom Transparency Options</string>
      </property>
      <property name="flat">
       <bool>true</bool>
@@ -189,7 +189,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Transparent pixel list</string>
+         <string>Transparent Pixel List</string>
         </property>
        </widget>
       </item>

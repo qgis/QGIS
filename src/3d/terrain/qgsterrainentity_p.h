@@ -37,6 +37,11 @@ namespace Qt3DRender
   class QObjectPicker;
 }
 
+namespace QgsRayCastingUtils
+{
+  class Ray3D;
+}
+
 class Qgs3DMapSettings;
 class QgsTerrainTextureGenerator;
 class QgsCoordinateTransform;
@@ -68,6 +73,9 @@ class QgsTerrainEntity : public QgsChunkedEntity
 
     //! Returns object picker attached to the terrain entity - used by camera controller
     Qt3DRender::QObjectPicker *terrainPicker() const { return mTerrainPicker; }
+
+    //! Tests whether the ray intersects the terrain - if it does, it sets the intersection point (in world coordinates)
+    bool rayIntersection( const QgsRayCastingUtils::Ray3D &ray, QVector3D &intersectionPoint );
 
   private slots:
     void onShowBoundingBoxesChanged();

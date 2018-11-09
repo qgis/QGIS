@@ -28,12 +28,14 @@ __revision__ = '$Format:%H$'
 import os
 import warnings
 
+from qgis.core import QgsApplication
+from qgis.gui import QgsGui
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
 from qgis.PyQt.QtGui import QIcon
 from processing.gui import TestTools
-from processing.core.ProcessingLog import ProcessingLog
+from processing.core.ProcessingLog import ProcessingLog, LOG_SEPARATOR
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -49,14 +51,11 @@ class HistoryDialog(BASE, WIDGET):
         super(HistoryDialog, self).__init__(None)
         self.setupUi(self)
 
-        self.groupIcon = QIcon()
-        self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
-        self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
+        QgsGui.instance().enableAutoGeometryRestore(self)
 
-        self.keyIcon = QIcon()
-        self.keyIcon.addPixmap(self.style().standardPixmap(QStyle.SP_FileIcon))
+        self.groupIcon = QgsApplication.getThemeIcon('mIconFolder.svg')
+
+        self.keyIcon = self.style().standardIcon(QStyle.SP_FileIcon)
 
         self.clearButton = QPushButton(self.tr('Clear'))
         self.clearButton.setToolTip(self.tr('Clear history'))
@@ -117,7 +116,7 @@ class HistoryDialog(BASE, WIDGET):
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:
                 script = 'import processing\n'
-                script += 'from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition, QgsProperty\n'
+                script += 'from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition, QgsProperty, QgsCoordinateReferenceSystem\n'
                 script += item.entry.text.replace('processing.run(', 'processing.execAlgorithmDialog(')
                 self.close()
                 exec(script)
@@ -125,7 +124,7 @@ class HistoryDialog(BASE, WIDGET):
     def changeText(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
-            self.text.setText(item.entry.text.replace('|', '\n'))
+            self.text.setText(item.entry.text.replace(LOG_SEPARATOR, '\n'))
 
     def createTest(self):
         item = self.tree.currentItem()
@@ -150,4 +149,4 @@ class TreeLogEntryItem(QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.entry = entry
         self.isAlg = isAlg
-        self.setText(0, '[' + entry.date + '] ' + entry.text.split('|')[0])
+        self.setText(0, '[' + entry.date + '] ' + entry.text.split(LOG_SEPARATOR)[0])

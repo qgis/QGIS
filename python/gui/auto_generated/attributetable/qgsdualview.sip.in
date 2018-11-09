@@ -167,6 +167,13 @@ Set the expression used for sorting the table and feature list.
 Gets the expression used for sorting the table and feature list.
 %End
 
+    QgsAttributeTableConfig attributeTableConfig() const;
+%Docstring
+The config used for the attribute table.
+
+:return: The config used for the attribute table.
+%End
+
   public slots:
 
     void setCurrentEditSelection( const QgsFeatureIds &fids );
@@ -240,14 +247,14 @@ Is emitted when a filter expression is set using the view.
 .. versionadded:: 2.16
 %End
 
-    void formModeChanged( QgsAttributeForm::Mode mode );
+    void formModeChanged( QgsAttributeEditorContext::Mode mode );
 %Docstring
 Emitted when the form changes mode.
 
 :param mode: new mode
 %End
 
-    void showContextMenuExternally( QgsActionMenu *menu, const QgsFeatureId fid );
+    void showContextMenuExternally( QgsActionMenu *menu, QgsFeatureId fid );
 %Docstring
 Emitted when selecting context menu on the feature list to create the context menu individually
 

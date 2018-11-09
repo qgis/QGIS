@@ -7,66 +7,76 @@
     <x>0</x>
     <y>0</y>
     <width>575</width>
-    <height>580</height>
+    <height>610</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Save Raster Layer as...</string>
+   <string>Save Raster Layer as…</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_6">
-     <item>
+    <layout class="QGridLayout" name="gridLayout_4">
+     <item row="2" column="1">
+      <widget class="QgsFileWidget" name="mFilename" native="true">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
       <widget class="QLabel" name="mModeLabel">
        <property name="text">
         <string>Output mode</string>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QRadioButton" name="mRawModeRadioButton">
-       <property name="toolTip">
-        <string>Write out raw raster layer data. Optionally user defined no data values may be applied.</string>
-       </property>
-       <property name="text">
-        <string>Raw data</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
+     <item row="0" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="QRadioButton" name="mRawModeRadioButton">
+         <property name="toolTip">
+          <string>Write out raw raster layer data. Optionally user defined no data values may be applied.</string>
+         </property>
+         <property name="text">
+          <string>Raw data</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="mRenderedModeRadioButton">
+         <property name="toolTip">
+          <string>Write out 3 bands RGB image rendered using current layer style.</string>
+         </property>
+         <property name="text">
+          <string>Rendered image</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
-     <item>
-      <widget class="QRadioButton" name="mRenderedModeRadioButton">
-       <property name="toolTip">
-        <string>Write out 3 bands RGB image rendered using current layer style.</string>
-       </property>
-       <property name="text">
-        <string>Rendered image</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
+     <item row="1" column="0">
       <widget class="QLabel" name="mFormatLabel">
        <property name="text">
         <string>Format</string>
@@ -76,53 +86,39 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QComboBox" name="mFormatComboBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+     <item row="4" column="1">
+      <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QCheckBox" name="mTileModeCheckBox">
-       <property name="toolTip">
-        <string>Create GDAL Virtual Format composed of multiple
+     <item row="1" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QComboBox" name="mFormatComboBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="mTileModeCheckBox">
+         <property name="toolTip">
+          <string>Create GDAL Virtual Format composed of multiple
 datasets with maximum width and height specified below.</string>
-       </property>
-       <property name="text">
-        <string>Create VRT</string>
-       </property>
-      </widget>
+         </property>
+         <property name="text">
+          <string>Create VRT</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QLabel" name="mSaveAsLabel">
-       <property name="text">
-        <string>Save as</string>
-       </property>
-       <property name="buddy">
-        <cstring>mFilename</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsFileWidget" name="mFilename">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <item>
+     <item row="4" column="0">
       <widget class="QLabel" name="label_2">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -141,24 +137,37 @@ datasets with maximum width and height specified below.</string>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
-       <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
+     <item row="2" column="0">
+      <widget class="QLabel" name="mSaveAsLabel">
+       <property name="text">
+        <string>File name</string>
+       </property>
+       <property name="buddy">
+        <cstring>mFilename</cstring>
        </property>
       </widget>
      </item>
+     <item row="5" column="0" colspan="2">
+      <widget class="QCheckBox" name="mAddToCanvas">
+       <property name="text">
+        <string>Add saved file to map</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Layer name</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="mLayerName"/>
+     </item>
     </layout>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="mAddToCanvas">
-     <property name="text">
-      <string>Add saved file to map</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
    </item>
    <item>
     <widget class="QgsScrollArea" name="mScrollArea">
@@ -176,8 +185,8 @@ datasets with maximum width and height specified below.</string>
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>541</width>
-        <height>754</height>
+        <width>543</width>
+        <height>675</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -289,14 +298,14 @@ datasets with maximum width and height specified below.</string>
             <item row="0" column="4">
              <widget class="QPushButton" name="mOriginalResolutionPushButton">
               <property name="text">
-               <string>Layer resolution</string>
+               <string>Layer Resolution</string>
               </property>
              </widget>
             </item>
             <item row="1" column="4">
              <widget class="QPushButton" name="mOriginalSizePushButton">
               <property name="text">
-               <string>Layer size</string>
+               <string>Layer Size</string>
               </property>
              </widget>
             </item>
@@ -516,10 +525,10 @@ datasets with maximum width and height specified below.</string>
          <property name="checked">
           <bool>false</bool>
          </property>
-         <property name="collapsed">
+         <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <property name="saveCollapsedState">
+         <property name="saveCollapsedState" stdset="0">
           <bool>true</bool>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
@@ -717,6 +726,7 @@ datasets with maximum width and height specified below.</string>
   <tabstop>mFormatComboBox</tabstop>
   <tabstop>mTileModeCheckBox</tabstop>
   <tabstop>mFilename</tabstop>
+  <tabstop>mLayerName</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mAddToCanvas</tabstop>
   <tabstop>mScrollArea</tabstop>

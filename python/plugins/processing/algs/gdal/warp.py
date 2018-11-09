@@ -61,7 +61,7 @@ class warp(GdalAlgorithm):
     MULTITHREADING = 'MULTITHREADING'
     OUTPUT = 'OUTPUT'
 
-    TYPES = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
+    TYPES = ['Use input layer data type', 'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
     def __init__(self):
         super().__init__()
@@ -87,18 +87,24 @@ class warp(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
                                                     self.tr('Target CRS'),
                                                     'EPSG:4326'))
+        self.addParameter(QgsProcessingParameterEnum(self.RESAMPLING,
+                                                     self.tr('Resampling method to use'),
+                                                     options=[i[0] for i in self.methods],
+                                                     defaultValue=0))
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('Nodata value for output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
-                                                       defaultValue=0.0))
+                                                       defaultValue=None,
+                                                       optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.TARGET_RESOLUTION,
                                                        self.tr('Output file resolution in target georeferenced units'),
                                                        type=QgsProcessingParameterNumber.Double,
                                                        minValue=0.0,
-                                                       defaultValue=None))
+                                                       defaultValue=None,
+                                                       optional=True))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
-                                                     self.tr('Additional creation parameters'),
+                                                     self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
         options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
@@ -107,16 +113,11 @@ class warp(GdalAlgorithm):
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         self.addParameter(options_param)
 
-        self.addParameter(QgsProcessingParameterEnum(self.RESAMPLING,
-                                                     self.tr('Resampling method to use'),
-                                                     options=[i[0] for i in self.methods],
-                                                     defaultValue=0))
-
         dataType_param = QgsProcessingParameterEnum(self.DATA_TYPE,
                                                     self.tr('Output data type'),
                                                     self.TYPES,
                                                     allowMultiple=False,
-                                                    defaultValue=5)
+                                                    defaultValue=0)
         dataType_param.setFlags(dataType_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(dataType_param)
 
@@ -215,8 +216,9 @@ class warp(GdalAlgorithm):
         if self.parameterAsBool(parameters, self.MULTITHREADING, context):
             arguments.append('-multi')
 
-        arguments.append('-ot')
-        arguments.append(self.TYPES[self.parameterAsEnum(parameters, self.DATA_TYPE, context)])
+        data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
+        if data_type:
+            arguments.append('-ot ' + self.TYPES[data_type])
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         arguments.append('-of')

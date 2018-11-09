@@ -20,4 +20,4 @@ usr/lib/qgis/plugins/libwmsprovider.so
 usr/lib/qgis/plugins/libarcgismapserverprovider.so
 usr/lib/qgis/plugins/libarcgisfeatureserverprovider.so
 usr/lib/qgis/plugins/libmdalprovider.so
-{QT_PLUGINS_DIR}/sqldrivers/libqsqlspatialite.so
+#!xenial#{QT_PLUGINS_DIR}/sqldrivers/libqsqlspatialite.so

@@ -66,6 +66,7 @@ void QgsWidgetWrapper::setConfig( const QVariantMap &config )
 void QgsWidgetWrapper::setContext( const QgsAttributeEditorContext &context )
 {
   mContext = context;
+  emit contextChanged();
 }
 
 QVariant QgsWidgetWrapper::config( const QString &key, const QVariant &defaultVal ) const
@@ -97,6 +98,11 @@ QgsWidgetWrapper *QgsWidgetWrapper::fromWidget( QWidget *widget )
   return widget->property( "EWV2Wrapper" ).value<QgsWidgetWrapper *>();
 }
 
+void QgsWidgetWrapper::notifyAboutToSave()
+{
+  aboutToSave();
+}
+
 void QgsWidgetWrapper::initWidget( QWidget *editor )
 {
   Q_UNUSED( editor )
@@ -105,4 +111,9 @@ void QgsWidgetWrapper::initWidget( QWidget *editor )
 void QgsWidgetWrapper::setEnabled( bool enabled )
 {
   Q_UNUSED( enabled );
+}
+
+void QgsWidgetWrapper::aboutToSave()
+{
+
 }

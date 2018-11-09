@@ -54,18 +54,38 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      */
     explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() );
 
+    /**
+     * Returns the ID for the map layer associated with this node.
+     *
+     * \see layer()
+     */
     QString layerId() const { return mRef.layerId; }
 
+    /**
+     * Returns the map layer associated with this node.
+     *
+     * \warning This can be (and often is!) a nullptr, e.g. in the case of a layer node representing a layer
+     * which has not yet been fully loaded into a project, or a layer node representing a layer
+     * with an invalid data source. The returned pointer must ALWAYS be checked to avoid dereferencing a nullptr.
+     *
+     * \see layerId()
+     */
     QgsMapLayer *layer() const { return mRef.get(); }
 
     /**
      * Returns the layer's name.
+     *
+     * \see setName()
+     *
      * \since QGIS 3.0
      */
     QString name() const override;
 
     /**
      * Sets the layer's name.
+     *
+     * \see name()
+     *
      * \since QGIS 3.0
      */
     void setName( const QString &n ) override;

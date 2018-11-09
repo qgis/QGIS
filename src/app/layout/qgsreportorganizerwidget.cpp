@@ -56,11 +56,11 @@ QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDe
   mViewSections->setEditTriggers( QAbstractItemView::AllEditTriggers );
 
   QMenu *addMenu = new QMenu( mButtonAddSection );
-  QAction *layoutSection = new QAction( tr( "Static layout section" ), addMenu );
+  QAction *layoutSection = new QAction( tr( "Static Layout Section" ), addMenu );
   layoutSection->setToolTip( tr( "A static layout report section which consists of a single layout inserted into the report" ) );
   addMenu->addAction( layoutSection );
   connect( layoutSection, &QAction::triggered, this, &QgsReportOrganizerWidget::addLayoutSection );
-  QAction *fieldGroupSection = new QAction( tr( "Field group section" ), addMenu );
+  QAction *fieldGroupSection = new QAction( tr( "Field Group Section" ), addMenu );
   fieldGroupSection->setToolTip( tr( "A report section which is repeated for every matching feature within a layer" ) );
   addMenu->addAction( fieldGroupSection );
   connect( fieldGroupSection, &QAction::triggered, this, &QgsReportOrganizerWidget::addFieldGroupSection );

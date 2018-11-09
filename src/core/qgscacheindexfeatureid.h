@@ -30,7 +30,7 @@ class CORE_EXPORT QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
   public:
     QgsCacheIndexFeatureId( QgsVectorLayerCache * );
 
-    void flushFeature( const QgsFeatureId fid ) override;
+    void flushFeature( QgsFeatureId fid ) override;
     void flush() override;
     void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids ) override;
     bool getCacheIterator( QgsFeatureIterator &featureIterator, const QgsFeatureRequest &featureRequest ) override;

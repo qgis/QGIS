@@ -72,19 +72,17 @@ namespace QgsWms
                              QgsServerResponse &response, bool projectSettings = false );
 
   /**
-   * Create WMS GetCapabilities document
-   *
-   * Returns an XML document with the capabilities description (as described in the WMS specs)
+   * Creates the WMS GetCapabilities XML document.
+   * \param serverIface Interface for plugins
+   * \param project Project
    * \param version WMS version
-   * \param projectSettings If true: add extended project information (does not validate against WMS schema)
+   * \param request WMS request
+   * \param projectSettings If true, adds extended project information (does not validate against WMS schema)
+   * \returns GetCapabilities XML document
    */
   QDomDocument getCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
-                                const QString &version, const QgsServerRequest &request, bool projectSettings );
-
-
-} // samespace QgsWms
-
+                                const QString &version, const QgsServerRequest &request,
+                                bool projectSettings );
+} // namespace QgsWms
 
 #endif
-
-

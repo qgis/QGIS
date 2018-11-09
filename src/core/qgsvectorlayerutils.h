@@ -17,8 +17,8 @@
 #define QGSVECTORLAYERUTILS_H
 
 #include "qgis_core.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 /**
  * \ingroup core
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * assuming that they respect the layer's constraints. Note that the created feature is not
      * automatically inserted into the layer.
      */
-    static QgsFeature createFeature( QgsVectorLayer *layer,
+    static QgsFeature createFeature( const QgsVectorLayer *layer,
                                      const QgsGeometry &geometry = QgsGeometry(),
                                      const QgsAttributeMap &attributes = QgsAttributeMap(),
                                      QgsExpressionContext *context = nullptr );
@@ -154,6 +154,82 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \since QGIS 3.0
      */
     static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, int depth, QgsDuplicateFeatureContext &duplicateFeatureContext SIP_OUT );
+
+    /**
+     * Gets the feature source from a QgsVectorLayer pointer.
+     * This method is thread-safe but will block the main thread for execution. Executing it from the main
+     * thread is safe too.
+     * This should be used in scenarios, where a ``QWeakPointer<QgsVectorLayer>`` is kept in a thread
+     * and features should be fetched from this layer. Using the layer directly is not safe to do.
+     * The result will be ``nullptr`` if the layer has been deleted.
+     * If \a feedback is specified, the call will return if the feedback is canceled.
+     * Returns a new feature source for the \a layer. The source may be a nullptr if the layer no longer
+     * exists or if the feedback is canceled.
+     *
+     * \note Requires Qt >= 5.10 to make use of the thread-safe implementation
+     * \since QGIS 3.4
+     */
+    static std::unique_ptr<QgsVectorLayerFeatureSource> getFeatureSource( QPointer<QgsVectorLayer> layer, QgsFeedback *feedback = nullptr ) SIP_SKIP;
+
+    /**
+     * Matches the attributes in \a feature to the specified \a fields.
+     *
+     * This causes the attributes contained within the given \a feature to be rearranged (or in
+     * some cases dropped) in order to match the fields and order indicated by \a fields.
+     *
+     * The exact behavior depends on whether or not \a feature has a valid fields container
+     * set (see QgsFeature::fields()). If a fields container is set, then the names of the
+     * feature's fields are matched to \a fields. In this case attributes from \a feature
+     * will be rearranged or dropped in order to match the field names from \a fields.
+     *
+     * If the \a feature does not have a valid fields container set, then the feature's attributes
+     * are simply truncated to match the number of fields present in \a fields (or if
+     * less attributes are present in \a feature than in \a fields, the feature's attributes
+     * are padded with NULL values to match the required length).
+     *
+     * \since QGIS 3.4
+     */
+    static void matchAttributesToFields( QgsFeature &feature, const QgsFields &fields );
+
+    /**
+     * Converts input \a feature to be compatible with the given \a layer.
+     *
+     * This function returns a new list of transformed features compatible with the input
+     * layer, note that the number of features returned might be greater than one when
+     * converting a multi part geometry to single part
+     *
+     * The following operations will be performed to convert the input features:
+     *  - convert single geometries to multi part
+     *  - drop additional attributes
+     *  - drop geometry if layer is geometry-less
+     *  - add missing attribute fields
+     *  - add back M/Z values (initialized to 0)
+     *  - drop Z/M
+     *  - convert multi part geometries to single part
+     *
+     * \since QGIS 3.4
+     */
+    static QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer );
+
+    /**
+     * Converts input \a features to be compatible with the given \a layer.
+     *
+     * This function returns a new list of transformed features compatible with the input
+     * layer, note that the number of features returned might be greater than the number
+     * of input features.
+     *
+     * The following operations will be performed to convert the input features:
+     *  - convert single geometries to multi part
+     *  - drop additional attributes
+     *  - drop geometry if layer is geometry-less
+     *  - add missing attribute fields
+     *  - add back M/Z values (initialized to 0)
+     *  - drop Z/M
+     *  - convert multi part geometries to single part
+     *
+     * \since QGIS 3.4
+     */
+    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer );
 
 };
 

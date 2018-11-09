@@ -19,6 +19,11 @@
 
 #include "qgsmdalprovider.h"
 
+#ifdef HAVE_GUI
+#include "qgssourceselectprovider.h"
+#include "qgsmdalsourceselect.h"
+#endif
+
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mdal" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "MDAL provider" );
 
@@ -39,7 +44,7 @@ QString QgsMdalProvider::description() const
 
 QgsCoordinateReferenceSystem QgsMdalProvider::crs() const
 {
-  return QgsCoordinateReferenceSystem();
+  return mCrs;
 }
 
 QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &options )
@@ -47,7 +52,12 @@ QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &opt
 {
   QByteArray curi = uri.toAscii();
   mMeshH = MDAL_LoadMesh( curi.constData() );
-  refreshDatasets();
+  if ( mMeshH )
+  {
+    const QString proj = MDAL_M_projection( mMeshH );
+    if ( !proj.isEmpty() )
+      mCrs.createFromString( proj );
+  }
 }
 
 QgsMdalProvider::~QgsMdalProvider()
@@ -98,43 +108,66 @@ QgsMeshFace QgsMdalProvider::face( int index ) const
 
 bool QgsMdalProvider::addDataset( const QString &uri )
 {
+  int datasetCount = datasetGroupCount();
+
   std::string str = uri.toStdString();
   MDAL_M_LoadDatasets( mMeshH, str.c_str() );
-  refreshDatasets();
-  return true;
+
+  if ( datasetCount == datasetGroupCount() )
+  {
+    return false;
+  }
+  else
+  {
+    mExtraDatasetUris << uri;
+    emit datasetGroupsAdded( datasetGroupCount() - datasetCount );
+    emit dataChanged();
+    return true; // Ok
+  }
 }
 
-int QgsMdalProvider::datasetCount() const
+QStringList QgsMdalProvider::extraDatasets() const
 {
-  return MDAL_M_datasetCount( mMeshH );
+  return mExtraDatasetUris;
 }
 
-QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( int datasetIndex ) const
+int QgsMdalProvider::datasetGroupCount() const
 {
-  if ( datasetIndex >= mDatasets.length() )
-    return QgsMeshDatasetMetadata();
+  return MDAL_M_datasetGroupCount( mMeshH );
+}
 
-  if ( datasetIndex < 0 )
-    return QgsMeshDatasetMetadata();
 
-  DatasetH dataset = mDatasets[datasetIndex];
+int QgsMdalProvider::datasetCount( int groupIndex ) const
+{
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, groupIndex );
+  if ( !group )
+    return 0;
+  return MDAL_G_datasetCount( group );
+}
 
-  bool isScalar = MDAL_D_hasScalarData( dataset );
-  bool isValid = MDAL_D_isValid( dataset );
-  bool isOnVertices = MDAL_D_isOnVertices( dataset );
+QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupIndex ) const
+{
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, groupIndex );
+  if ( !group )
+    return QgsMeshDatasetGroupMetadata();
+
+
+  bool isScalar = MDAL_G_hasScalarData( group );
+  bool isOnVertices = MDAL_G_isOnVertices( group );
+  QString name = MDAL_G_name( group );
 
   QMap<QString, QString> metadata;
-  int n = MDAL_D_metadataCount( dataset );
+  int n = MDAL_G_metadataCount( group );
   for ( int i = 0; i < n; ++i )
   {
-    QString key = MDAL_D_metadataKey( dataset, i );
-    QString value = MDAL_D_metadataValue( dataset, i );
+    QString key = MDAL_G_metadataKey( group, i );
+    QString value = MDAL_G_metadataValue( group, i );
     metadata[key] = value;
   }
 
-  QgsMeshDatasetMetadata meta(
+  QgsMeshDatasetGroupMetadata meta(
+    name,
     isScalar,
-    isValid,
     isOnVertices,
     metadata
   );
@@ -142,18 +175,41 @@ QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( int datasetIndex ) cons
   return meta;
 }
 
-QgsMeshDatasetValue QgsMdalProvider::datasetValue( int datasetIndex, int valueIndex ) const
+QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( QgsMeshDatasetIndex index ) const
 {
-  if ( datasetIndex >= mDatasets.length() )
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
+  if ( !group )
+    return QgsMeshDatasetMetadata();
+
+  DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
+  if ( !dataset )
+    return QgsMeshDatasetMetadata();
+
+  bool isValid = MDAL_D_isValid( dataset );
+  double time = MDAL_D_time( dataset );
+
+  QgsMeshDatasetMetadata meta(
+    time,
+    isValid
+  );
+
+  return meta;
+
+}
+
+QgsMeshDatasetValue QgsMdalProvider::datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const
+{
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
+  if ( !group )
     return QgsMeshDatasetValue();
 
-  if ( datasetIndex < 0 )
+  DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
+  if ( !dataset )
     return QgsMeshDatasetValue();
 
-  DatasetH dataset = mDatasets[datasetIndex];
   QgsMeshDatasetValue val;
 
-  if ( MDAL_D_hasScalarData( dataset ) )
+  if ( MDAL_G_hasScalarData( group ) )
   {
     val.setX( MDAL_D_value( dataset, valueIndex ) );
   }
@@ -166,16 +222,17 @@ QgsMeshDatasetValue QgsMdalProvider::datasetValue( int datasetIndex, int valueIn
   return val;
 }
 
-void QgsMdalProvider::refreshDatasets()
+bool QgsMdalProvider::isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const
 {
-  int n = MDAL_M_datasetCount( mMeshH );
-  mDatasets.resize( 0 ); // keeps allocated space - potentially avoids reallocation
-  mDatasets.reserve( n );
-  for ( int i = 0; i < n; ++i )
-  {
-    DatasetH dataset = MDAL_M_dataset( mMeshH, i );
-    mDatasets.push_back( dataset );
-  }
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
+  if ( !group )
+    return false;
+
+  DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
+  if ( !dataset )
+    return false;
+
+  return MDAL_D_active( dataset, faceIndex );
 }
 
 /*----------------------------------------------------------------------------------------------*/
@@ -218,3 +275,32 @@ QGISEXTERN void cleanupProvider()
 {
 }
 
+#ifdef HAVE_GUI
+
+//! Provider for mdal mesh source select
+class QgsMdalMeshSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    QString providerKey() const override { return QStringLiteral( "mdal" ); }
+    QString text() const override { return QObject::tr( "Mesh" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 22; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMeshLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsMdalSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsMdalMeshSourceSelectProvider;
+
+  return providers;
+}
+
+#endif

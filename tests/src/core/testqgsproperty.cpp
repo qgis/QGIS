@@ -881,7 +881,7 @@ void TestQgsProperty::genericNumericTransformerFromExpression()
   QVERIFY( !QgsGenericNumericTransformer::fromExpression( QStringLiteral( "coalesce(scale_exp(column, 1, 7, a, 10, 0.5), 0)" ), baseExpression, fieldName ) );
   QVERIFY( !QgsGenericNumericTransformer::fromExpression( QStringLiteral( "coalesce(scale_exp(column, 1, 7), 0)" ), baseExpression, fieldName ) );
   QVERIFY( !QgsGenericNumericTransformer::fromExpression( QStringLiteral( "1+2" ), baseExpression, fieldName ) );
-  QVERIFY( !QgsGenericNumericTransformer::fromExpression( QStringLiteral( "" ), baseExpression, fieldName ) );
+  QVERIFY( !QgsGenericNumericTransformer::fromExpression( QString(), baseExpression, fieldName ) );
 }
 
 void TestQgsProperty::sizeScaleTransformer()
@@ -1116,7 +1116,7 @@ void TestQgsProperty::sizeScaleTransformerFromExpression()
   QVERIFY( !QgsSizeScaleTransformer::fromExpression( QStringLiteral( "coalesce(scale_exp(column, 1, 7, a, 10, 0.5), 0)" ), baseExpression, fieldName ) );
   QVERIFY( !QgsSizeScaleTransformer::fromExpression( QStringLiteral( "coalesce(scale_exp(column, 1, 7), 0)" ), baseExpression, fieldName ) );
   QVERIFY( !QgsSizeScaleTransformer::fromExpression( QStringLiteral( "1+2" ), baseExpression, fieldName ) );
-  QVERIFY( !QgsSizeScaleTransformer::fromExpression( QStringLiteral( "" ), baseExpression, fieldName ) );
+  QVERIFY( !QgsSizeScaleTransformer::fromExpression( QString(), baseExpression, fieldName ) );
 }
 
 void TestQgsProperty::colorRampTransformer()

@@ -54,7 +54,7 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
   if ( sBuiltinProfiles.isEmpty() )
   {
     // key=profileKey values=format,profileName,options
-    sBuiltinProfiles[ QStringLiteral( "z_adefault" )] = ( QStringList() << QLatin1String( "" ) << tr( "Default" ) << QLatin1String( "" ) );
+    sBuiltinProfiles[ QStringLiteral( "z_adefault" )] = ( QStringList() << QString() << tr( "Default" ) << QString() );
 
     // these GTiff profiles are based on Tim's benchmarks at
     // http://linfiniti.com/2011/05/gdal-efficiency-of-various-compression-algorithms/
@@ -103,7 +103,7 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
   updateControls();
   updateProfiles();
 
-  QgsDebugMsg( "done" );
+  QgsDebugMsg( QStringLiteral( "done" ) );
 }
 
 void QgsRasterFormatSaveOptionsWidget::setFormat( const QString &format )
@@ -311,7 +311,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   QStringList createOptions = options();
   QString message;
 
-  QgsDebugMsg( QString( "layer: [%1] file: [%2] format: [%3]" ).arg( mRasterLayer ? mRasterLayer->id() : "none", mRasterFileName, mFormat ) );
+  QgsDebugMsg( QStringLiteral( "layer: [%1] file: [%2] format: [%3]" ).arg( mRasterLayer ? mRasterLayer->id() : "none", mRasterFileName, mFormat ) );
   // if no rasterLayer is defined, but we have a raster fileName, then create a temp. rasterLayer to validate options
   // ideally we should keep it for future access, but this is trickier
   QgsRasterLayer *rasterLayer = mRasterLayer;
@@ -340,7 +340,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   {
     if ( rasterLayer && rasterLayer->dataProvider() )
     {
-      QgsDebugMsg( "calling validate pyramids on layer's data provider" );
+      QgsDebugMsg( QStringLiteral( "calling validate pyramids on layer's data provider" ) );
       message = rasterLayer->dataProvider()->validatePyramidsConfigOptions( mPyramidsFormat, createOptions, mFormat );
     }
     else
@@ -352,7 +352,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   {
     if ( rasterLayer && rasterLayer->dataProvider() )
     {
-      QgsDebugMsg( "calling validate on layer's data provider" );
+      QgsDebugMsg( QStringLiteral( "calling validate on layer's data provider" ) );
       message = rasterLayer->dataProvider()->validateCreationOptions( createOptions, mFormat );
     }
     else
@@ -378,7 +378,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   }
   else if ( ! createOptions.isEmpty() )
   {
-    QMessageBox::information( this, QLatin1String( "" ), tr( "Cannot validate creation options." ), QMessageBox::Close );
+    QMessageBox::information( this, QString(), tr( "Cannot validate creation options." ), QMessageBox::Close );
     if ( tmpLayer )
       delete rasterLayer;
     return QString();
@@ -389,11 +389,11 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
     if ( message.isNull() )
     {
       if ( reportOK )
-        QMessageBox::information( this, QLatin1String( "" ), tr( "Valid" ), QMessageBox::Close );
+        QMessageBox::information( this, QString(), tr( "Valid" ), QMessageBox::Close );
     }
     else
     {
-      QMessageBox::warning( this, QLatin1String( "" ), tr( "Invalid %1:\n\n%2\n\nClick on help button to get valid creation options for this format." ).arg( mPyramids ? tr( "pyramid creation option" ) : tr( "creation option" ), message ), QMessageBox::Close );
+      QMessageBox::warning( this, QString(), tr( "Invalid %1:\n\n%2\n\nClick on help button to get valid creation options for this format." ).arg( mPyramids ? tr( "pyramid creation option" ) : tr( "creation option" ), message ), QMessageBox::Close );
     }
   }
 
@@ -430,7 +430,7 @@ void QgsRasterFormatSaveOptionsWidget::mOptionsLineEdit_editingFinished()
 
 void QgsRasterFormatSaveOptionsWidget::mProfileNewButton_clicked()
 {
-  QString profileName = QInputDialog::getText( this, QLatin1String( "" ), tr( "Profile name:" ) );
+  QString profileName = QInputDialog::getText( this, QString(), tr( "Profile name:" ) );
   if ( ! profileName.isEmpty() )
   {
     profileName = profileName.trimmed();
@@ -628,7 +628,7 @@ void QgsRasterFormatSaveOptionsWidget::showEvent( QShowEvent *event )
 {
   Q_UNUSED( event );
   mOptionsTable->horizontalHeader()->resizeSection( 0, mOptionsTable->width() - 115 );
-  QgsDebugMsg( "done" );
+  QgsDebugMsg( QStringLiteral( "done" ) );
 }
 
 void QgsRasterFormatSaveOptionsWidget::setOptions( const QString &options )

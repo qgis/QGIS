@@ -493,10 +493,21 @@ class CORE_EXPORT QgsFeatureRequest
     const Flags &flags() const { return mFlags; }
 
     /**
-     * Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
-     * To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
+     * Set a subset of attributes that will be fetched.
+     *
+     * An empty attributes list indicates that no attributes will be fetched.
+     * To revert a call to setSubsetOfAttributes and fetch all available attributes,
+     * the SubsetOfAttributes flag should be removed from the request.
      */
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
+
+    /**
+     * Set that no attributes will be fetched.
+     * To revert a call to setNoAttributes and fetch all or some available attributes,
+     * the SubsetOfAttributes flag should be removed from the request.
+     * \since QGIS 3.4
+     */
+    QgsFeatureRequest &setNoAttributes();
 
     /**
      * Returns the subset of attributes which at least need to be fetched
@@ -617,24 +628,74 @@ class CORE_EXPORT QgsFeatureRequest
     bool acceptFeature( const QgsFeature &feature );
 
     /**
-     * The timeout for how long we should wait for a connection if none is available from the pool
+     * Returns the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
      * at this moment. A negative value (which is set by default) will wait forever.
      *
      * \note Only works if the provider supports this option.
      *
+     * \deprecated Use timeout() instead.
      * \since QGIS 3.0
      */
-    int connectionTimeout() const;
+    Q_DECL_DEPRECATED int connectionTimeout() const SIP_DEPRECATED;
 
     /**
-     * The timeout for how long we should wait for a connection if none is available from the pool
+     * Sets the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
      * at this moment. A negative value (which is set by default) will wait forever.
      *
      * \note Only works if the provider supports this option.
      *
+     * \deprecated Use setTimeout() instead.
      * \since QGIS 3.0
      */
-    void setConnectionTimeout( int connectionTimeout );
+    Q_DECL_DEPRECATED QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) SIP_DEPRECATED;
+
+    /**
+     * Returns the timeout (in milliseconds) for the maximum time we should wait during feature requests before a
+     * feature is returned. A negative value (which is set by default) will wait forever.
+     *
+     * \note Only works if the provider supports this option.
+     *
+     * \since QGIS 3.4
+     */
+    int timeout() const;
+
+    /**
+     * Sets the \a timeout (in milliseconds) for the maximum time we should wait during feature requests before a
+     * feature is returned. A negative value (which is set by default) will wait forever.
+     *
+     * \note Only works if the provider supports this option.
+     *
+     * \since QGIS 3.4
+     */
+    QgsFeatureRequest &setTimeout( int timeout );
+
+    /**
+     * In case this request may be run nested within another already running
+     * iteration on the same connection, set this to true.
+     *
+     * If this flag is true, this request will be able to make use of "spare"
+     * connections to avoid deadlocks.
+     *
+     * For example, this should be set on requests that are issued from an
+     * expression function.
+     *
+     * \since QGIS 3.4
+     */
+    bool requestMayBeNested() const;
+
+    /**
+     * In case this request may be run nested within another already running
+     * iteration on the same connection, set this to true.
+     *
+     * If this flag is true, this request will be able to make use of "spare"
+     * connections to avoid deadlocks.
+     *
+     * For example, this should be set on requests that are issued from an
+     * expression function.
+     *
+     * \since QGIS 3.4
+     */
+    QgsFeatureRequest &setRequestMayBeNested( bool requestMayBeNested );
 
   protected:
     FilterType mFilter = FilterNone;
@@ -653,7 +714,8 @@ class CORE_EXPORT QgsFeatureRequest
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
-    int mConnectionTimeout = -1;
+    int mTimeout = -1;
+    int mRequestMayBeNested = false;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )

@@ -269,11 +269,11 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem *parent, QString name, QString pat
 QString QgsWMSLayerItem::createUri()
 {
   if ( mLayerProperty.name.isEmpty() )
-    return QLatin1String( "" ); // layer collection
+    return QString(); // layer collection
 
   // Number of styles must match number of layers
   mDataSourceUri.setParam( QStringLiteral( "layers" ), mLayerProperty.name );
-  QString style = !mLayerProperty.style.isEmpty() ? mLayerProperty.style.at( 0 ).name : QLatin1String( "" );
+  QString style = !mLayerProperty.style.isEmpty() ? mLayerProperty.style.at( 0 ).name : QString();
   mDataSourceUri.setParam( QStringLiteral( "styles" ), style );
 
   QString format;
@@ -511,7 +511,7 @@ void QgsXyzTileRootItem::saveXyzTilesServers()
 void QgsXyzTileRootItem::loadXyzTilesServers()
 {
   QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *XML)" ) );
+                     tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -604,7 +604,7 @@ QVector<QgsDataItem *> QgsWmsDataItemProvider::createDataItems( const QString &p
             uri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
           }
 
-          QgsDebugMsg( QString( "WMS full uri: '%1'." ).arg( QString( uri.encodedUri() ) ) );
+          QgsDebugMsg( QStringLiteral( "WMS full uri: '%1'." ).arg( QString( uri.encodedUri() ) ) );
 
           QgsDataItem *item = new QgsWMSConnectionItem( parentItem, QStringLiteral( "WMS" ), path, uri.encodedUri() );
           if ( item )

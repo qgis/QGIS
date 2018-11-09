@@ -513,7 +513,7 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
   //first test if text is directly convertible to double
   // use system locale: e.g. in German locale, user is presented with numbers "1,23" instead of "1.23" in C locale
   // so we also want to allow user to rewrite it to "5,23" and it is still accepted
-  double convertedValue = QLocale::system().toDouble( text, &ok );
+  double convertedValue = QLocale().toDouble( text, &ok );
   if ( ok )
   {
     return convertedValue;
@@ -548,7 +548,10 @@ QString QgsExpression::helpText( QString name )
 
   name = f.mName;
   if ( f.mType == tr( "group" ) )
+  {
     name = group( name );
+    name = name.toLower();
+  }
 
   name = name.toHtmlEscaped();
 
@@ -603,7 +606,7 @@ QString QgsExpression::helpText( QString name )
             helpContents += delim;
             helpContents += QStringLiteral( "<span class=\"argument\">%2%3</span>" ).arg(
                               a.mArg,
-                              a.mDefaultVal.isEmpty() ? QLatin1String( "" ) : '=' + a.mDefaultVal
+                              a.mDefaultVal.isEmpty() ? QString() : '=' + a.mDefaultVal
                             );
 
             if ( a.mOptional )
@@ -743,10 +746,15 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "map_crs" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of map (e.g., 'EPSG:4326')." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of map (full definition)." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_units" ), QCoreApplication::translate( "variable_help", "Units for map measurements." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_layer_ids" ), QCoreApplication::translate( "variable_help", "List of map layer IDs visible in the map." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_layers" ), QCoreApplication::translate( "variable_help", "List of map layers visible in the map." ) );
 
   sVariableHelpTexts.insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
   sVariableHelpTexts.insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
   sVariableHelpTexts.insert( QStringLiteral( "grid_axis" ), QCoreApplication::translate( "variable_help", "Current grid annotation axis (e.g., 'x' for longitude, 'y' for latitude)." ) );
+
+  // map canvas item variables
+  sVariableHelpTexts.insert( QStringLiteral( "canvas_cursor_point" ), QCoreApplication::translate( "variable_help", "Last cursor position on the canvas in the project's geographical coordinates." ) );
 
   // map tool capture variables
   sVariableHelpTexts.insert( QStringLiteral( "snapping_results" ), QCoreApplication::translate( "variable_help",
@@ -776,6 +784,10 @@ void QgsExpression::initVariableHelp()
 
   //processing variables
   sVariableHelpTexts.insert( QStringLiteral( "algorithm_id" ), QCoreApplication::translate( "algorithm_id", "Unique ID for algorithm." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "fullextent_minx" ), QCoreApplication::translate( "fullextent_minx", "Minimum x-value from full canvas extent (including all layers)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "fullextent_miny" ), QCoreApplication::translate( "fullextent_miny", "Minimum y-value from full canvas extent (including all layers)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "fullextent_maxx" ), QCoreApplication::translate( "fullextent_maxx", "Maximum x-value from full canvas extent (including all layers)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "fullextent_maxy" ), QCoreApplication::translate( "fullextent_maxy", "Maximum y-value from full canvas extent (including all layers)." ) );
 
   //provider notification
   sVariableHelpTexts.insert( QStringLiteral( "notification_message" ), QCoreApplication::translate( "notification_message", "Content of the notification message sent by the provider (available only for actions triggered by provider notifications)." ) );
@@ -783,6 +795,9 @@ void QgsExpression::initVariableHelp()
   //form context variable
   sVariableHelpTexts.insert( QStringLiteral( "current_geometry" ), QCoreApplication::translate( "current_geometry", "Represents the geometry of the feature currently being edited in the form or the table row. Can be used in a form/row context to filter the related features." ) );
   sVariableHelpTexts.insert( QStringLiteral( "current_feature" ), QCoreApplication::translate( "current_feature", "Represents the feature currently being edited in the form or the table row. Can be used in a form/row context to filter the related features." ) );
+
+  //form variable
+  sVariableHelpTexts.insert( QStringLiteral( "form_mode" ), QCoreApplication::translate( "form_mode", "What the form is used for, like AddFeatureMode, SingleEditMode, MultiEditMode, SearchMode, AggregateSearchMode or IdentifyMode as string." ) );
 }
 
 QString QgsExpression::variableHelpText( const QString &variableName )
@@ -816,17 +831,22 @@ QString QgsExpression::group( const QString &name )
 {
   if ( sGroups.isEmpty() )
   {
+    sGroups.insert( QStringLiteral( "Aggregates" ), tr( "Aggregates" ) );
+    sGroups.insert( QStringLiteral( "Arrays" ), tr( "Arrays" ) );
     sGroups.insert( QStringLiteral( "General" ), tr( "General" ) );
     sGroups.insert( QStringLiteral( "Operators" ), tr( "Operators" ) );
     sGroups.insert( QStringLiteral( "Conditionals" ), tr( "Conditionals" ) );
     sGroups.insert( QStringLiteral( "Fields and Values" ), tr( "Fields and Values" ) );
+    sGroups.insert( QStringLiteral( "Map Layers" ), tr( "Map Layers" ) );
+    sGroups.insert( QStringLiteral( "Maps" ), tr( "Maps" ) );
     sGroups.insert( QStringLiteral( "Math" ), tr( "Math" ) );
     sGroups.insert( QStringLiteral( "Conversions" ), tr( "Conversions" ) );
     sGroups.insert( QStringLiteral( "Date and Time" ), tr( "Date and Time" ) );
     sGroups.insert( QStringLiteral( "String" ), tr( "String" ) );
     sGroups.insert( QStringLiteral( "Color" ), tr( "Color" ) );
     sGroups.insert( QStringLiteral( "GeometryGroup" ), tr( "Geometry" ) );
-    sGroups.insert( QStringLiteral( "Record" ), tr( "Record" ) );
+    sGroups.insert( QStringLiteral( "Rasters" ), tr( "Rasters" ) );
+    sGroups.insert( QStringLiteral( "Record and Attributes" ), tr( "Record and Attributes" ) );
     sGroups.insert( QStringLiteral( "Variables" ), tr( "Variables" ) );
     sGroups.insert( QStringLiteral( "Fuzzy Matching" ), tr( "Fuzzy Matching" ) );
     sGroups.insert( QStringLiteral( "Recent (%1)" ), tr( "Recent (%1)" ) );
@@ -838,97 +858,120 @@ QString QgsExpression::group( const QString &name )
   return sGroups.value( name, name );
 }
 
-QString QgsExpression::formatPreviewString( const QVariant &value )
+QString QgsExpression::formatPreviewString( const QVariant &value, const bool htmlOutput )
 {
   static const int MAX_PREVIEW = 60;
+
+  const QString startToken = htmlOutput ? QStringLiteral( "<i>&lt;" ) : QStringLiteral( "<" );
+  const QString endToken = htmlOutput ? QStringLiteral( "&gt;</i>" ) : QStringLiteral( ">" );
 
   if ( value.canConvert<QgsGeometry>() )
   {
     //result is a geometry
     QgsGeometry geom = value.value<QgsGeometry>();
     if ( geom.isNull() )
-      return tr( "<i>&lt;empty geometry&gt;</i>" );
+      return startToken + tr( "empty geometry" ) + endToken;
     else
-      return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWkbTypes::displayString( geom.constGet()->wkbType() ) );
+      return startToken + tr( "geometry: %1" ).arg( QgsWkbTypes::displayString( geom.constGet()->wkbType() ) )
+             + endToken;
+  }
+  else if ( value.value< QgsWeakMapLayerPointer >().data() )
+  {
+    return startToken + tr( "map layer" ) + endToken;
   }
   else if ( !value.isValid() )
   {
-    return tr( "<i>NULL</i>" );
+    return htmlOutput ? tr( "<i>NULL</i>" ) : QString();
   }
   else if ( value.canConvert< QgsFeature >() )
   {
     //result is a feature
     QgsFeature feat = value.value<QgsFeature>();
-    return tr( "<i>&lt;feature: %1&gt;</i>" ).arg( feat.id() );
+    return startToken + tr( "feature: %1" ).arg( feat.id() ) + endToken;
   }
   else if ( value.canConvert< QgsInterval >() )
   {
     //result is a feature
     QgsInterval interval = value.value<QgsInterval>();
-    return tr( "<i>&lt;interval: %1 days&gt;</i>" ).arg( interval.days() );
+    return startToken + tr( "interval: %1 days" ).arg( interval.days() ) + endToken;
   }
   else if ( value.canConvert< QgsGradientColorRamp >() )
   {
-    return tr( "<i>&lt;gradient ramp&gt;</i>" );
+    return startToken + tr( "gradient ramp" ) + endToken;
   }
   else if ( value.type() == QVariant::Date )
   {
     QDate dt = value.toDate();
-    return tr( "<i>&lt;date: %1&gt;</i>" ).arg( dt.toString( QStringLiteral( "yyyy-MM-dd" ) ) );
+    return startToken + tr( "date: %1" ).arg( dt.toString( QStringLiteral( "yyyy-MM-dd" ) ) ) + endToken;
   }
   else if ( value.type() == QVariant::Time )
   {
     QTime tm = value.toTime();
-    return tr( "<i>&lt;time: %1&gt;</i>" ).arg( tm.toString( QStringLiteral( "hh:mm:ss" ) ) );
+    return startToken + tr( "time: %1" ).arg( tm.toString( QStringLiteral( "hh:mm:ss" ) ) ) + endToken;
   }
   else if ( value.type() == QVariant::DateTime )
   {
     QDateTime dt = value.toDateTime();
-    return tr( "<i>&lt;datetime: %1&gt;</i>" ).arg( dt.toString( QStringLiteral( "yyyy-MM-dd hh:mm:ss" ) ) );
+    return startToken + tr( "datetime: %1" ).arg( dt.toString( QStringLiteral( "yyyy-MM-dd hh:mm:ss" ) ) ) + endToken;
   }
   else if ( value.type() == QVariant::String )
   {
-    QString previewString = value.toString();
+    const QString previewString = value.toString();
     if ( previewString.length() > MAX_PREVIEW + 3 )
     {
       return tr( "'%1…'" ).arg( previewString.left( MAX_PREVIEW ) );
     }
     else
     {
-      return previewString.prepend( '\'' ).append( '\'' );
+      return '\'' + previewString + '\'';
     }
   }
   else if ( value.type() == QVariant::Map )
   {
-    QString mapStr;
+    QString mapStr = QStringLiteral( "{" );
     const QVariantMap map = value.toMap();
+    QString separator;
     for ( QVariantMap::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
     {
-      if ( !mapStr.isEmpty() ) mapStr.append( ", " );
-      mapStr.append( it.key() ).append( ": " ).append( formatPreviewString( it.value() ) );
-      if ( mapStr.length() > MAX_PREVIEW + 3 )
+      mapStr.append( separator );
+      if ( separator.isEmpty() )
+        separator = QStringLiteral( "," );
+
+      mapStr.append( QStringLiteral( " '%1': %2" ).arg( it.key(), formatPreviewString( it.value(), htmlOutput ) ) );
+      if ( mapStr.length() > MAX_PREVIEW - 3 )
       {
-        mapStr = QString( tr( "%1…" ) ).arg( mapStr.left( MAX_PREVIEW ) );
+        mapStr = tr( "%1…" ).arg( mapStr.left( MAX_PREVIEW - 2 ) );
         break;
       }
     }
-    return tr( "<i>&lt;map: %1&gt;</i>" ).arg( mapStr );
+    if ( !map.empty() )
+      mapStr += QStringLiteral( " " );
+    mapStr += QStringLiteral( "}" );
+    return mapStr;
   }
   else if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
   {
-    QString listStr;
+    QString listStr = QStringLiteral( "[" );
     const QVariantList list = value.toList();
-    for ( QVariantList::const_iterator it = list.constBegin(); it != list.constEnd(); ++it )
+    QString separator;
+    for ( const QVariant &arrayValue : list )
     {
-      if ( !listStr.isEmpty() ) listStr.append( ", " );
-      listStr.append( formatPreviewString( *it ) );
-      if ( listStr.length() > MAX_PREVIEW + 3 )
+      listStr.append( separator );
+      if ( separator.isEmpty() )
+        separator = QStringLiteral( "," );
+
+      listStr.append( " " );
+      listStr.append( formatPreviewString( arrayValue, htmlOutput ) );
+      if ( listStr.length() > MAX_PREVIEW - 3 )
       {
-        listStr = QString( tr( "%1…" ) ).arg( listStr.left( MAX_PREVIEW ) );
+        listStr = QString( tr( "%1…" ) ).arg( listStr.left( MAX_PREVIEW - 2 ) );
         break;
       }
     }
-    return tr( "<i>&lt;array: %1&gt;</i>" ).arg( listStr );
+    if ( !list.empty() )
+      listStr += QStringLiteral( " " );
+    listStr += QStringLiteral( "]" );
+    return listStr;
   }
   else
   {

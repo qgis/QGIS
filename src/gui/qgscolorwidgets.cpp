@@ -372,7 +372,7 @@ QgsColorWheel::QgsColorWheel( QWidget *parent )
   QColor gradColor = QColor::fromHsvF( 1.0, 1.0, 1.0 );
   for ( int pos = 0; pos <= wheelStops; ++pos )
   {
-    double relativePos = ( double )pos / wheelStops;
+    double relativePos = static_cast<double>( pos ) / wheelStops;
     gradColor.setHsvF( relativePos, 1, 1 );
     wheelGradient.setColorAt( relativePos, gradColor );
   }
@@ -769,8 +769,8 @@ void QgsColorBox::paintEvent( QPaintEvent *event )
   painter.drawImage( QPoint( mMargin, mMargin ), *mBoxImage );
 
   //draw cross lines
-  double xPos = mMargin + ( width() - 2 * mMargin - 1 ) * ( double )xComponentValue() / ( double )valueRangeX();
-  double yPos = mMargin + ( height() - 2 * mMargin - 1 ) - ( height() - 2 * mMargin - 1 ) * ( double )yComponentValue() / ( double )valueRangeY();
+  double xPos = mMargin + ( width() - 2 * mMargin - 1 ) * static_cast<double>( xComponentValue() ) / static_cast<double>( valueRangeX() );
+  double yPos = mMargin + ( height() - 2 * mMargin - 1 ) - ( height() - 2 * mMargin - 1 ) * static_cast<double>( yComponentValue() ) / static_cast<double>( valueRangeY() );
 
   painter.setBrush( Qt::white );
   painter.setPen( Qt::NoPen );
@@ -1022,7 +1022,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
     //draw background ramp
     for ( int c = 0; c <= maxValue; ++c )
     {
-      int colorVal = componentRange() * ( double )c / maxValue;
+      int colorVal = componentRange() * static_cast<double>( c ) / maxValue;
       //vertical sliders are reversed
       if ( mOrientation == QgsColorRampWidget::Vertical )
       {
@@ -1083,7 +1083,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
     painter.setRenderHint( QPainter::Antialiasing );
     painter.setBrush( QBrush( Qt::black ) );
     painter.setPen( Qt::NoPen );
-    painter.translate( mMargin + ( width() - 2 * mMargin ) * ( double )componentValue() / componentRange(), mMargin - 1 );
+    painter.translate( mMargin + ( width() - 2 * mMargin ) * static_cast<double>( componentValue() ) / componentRange(), mMargin - 1 );
     painter.drawPolygon( mTopTriangle );
     painter.translate( 0, height() - mMargin - 2 );
     painter.setBrush( QBrush( Qt::white ) );
@@ -1093,7 +1093,7 @@ void QgsColorRampWidget::paintEvent( QPaintEvent *event )
   else
   {
     //draw cross lines for vertical ramps
-    int ypos = mMargin + ( height() - 2 * mMargin - 1 ) - ( height() - 2 * mMargin - 1 ) * ( double )componentValue() / componentRange();
+    int ypos = mMargin + ( height() - 2 * mMargin - 1 ) - ( height() - 2 * mMargin - 1 ) * static_cast<double>( componentValue() ) / componentRange();
     painter.setBrush( Qt::white );
     painter.setPen( Qt::NoPen );
     painter.drawRect( mMargin, ypos - 1, width() - 2 * mMargin - 1, 3 );

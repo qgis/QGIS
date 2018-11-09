@@ -11,4 +11,4 @@ QgsProcessingParameterField|TIME|Time|None|OBSERVATIONS|-1|False|False
 QgsProcessingParameterField|PARAMETER|Parameter|None|OBSERVATIONS|-1|False|False
 QgsProcessingParameterNumber|EPS_TIME|Maximum Time Span (Seconds)|QgsProcessingParameterNumber.Double|60.0|False|None|None
 QgsProcessingParameterNumber|EPS_SPACE|Maximum Distance|QgsProcessingParameterNumber.Double|0.002|False|None|None
-OutputTable|AGGREGATED|Aggregated
+QgsProcessingParameterVectorDestination|AGGREGATED|Aggregated

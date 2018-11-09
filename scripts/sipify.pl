@@ -71,6 +71,7 @@ my $LINE_COUNT = @INPUT_LINES;
 my $LINE_IDX = 0;
 my $LINE;
 my @OUTPUT = ();
+my @OUTPUT_PYTHON = ();
 
 
 sub read_line {
@@ -115,20 +116,31 @@ sub exit_with_error {
   die "! Sipify error in $headerfile at line :: $LINE_IDX\n! $_[0]\n";
 }
 
-sub write_header_footer {
+sub sip_header_footer {
+    my @header_footer = ();
     # small hack to turn files src/core/3d/X.h to src/core/./3d/X.h
     # otherwise "sip up to date" test fails. This is because the test uses %Include entries
     # and over there we have to use ./3d/X.h entries because SIP parser does not allow a number
     # as the first letter of a relative path
     my $headerfile_x = $headerfile;
     $headerfile_x =~ s/src\/core\/3d/src\/core\/.\/3d/;
-    push @OUTPUT,  "/************************************************************************\n";
-    push @OUTPUT,  " * This file has been generated automatically from                      *\n";
-    push @OUTPUT,  " *                                                                      *\n";
-    push @OUTPUT, sprintf " * %-*s *\n", 68, $headerfile_x;
-    push @OUTPUT,  " *                                                                      *\n";
-    push @OUTPUT,  " * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n";
-    push @OUTPUT,  " ************************************************************************/\n";
+    push @header_footer,  "/************************************************************************\n";
+    push @header_footer,  " * This file has been generated automatically from                      *\n";
+    push @header_footer,  " *                                                                      *\n";
+    push @header_footer, sprintf " * %-*s *\n", 68, $headerfile_x;
+    push @header_footer,  " *                                                                      *\n";
+    push @header_footer,  " * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n";
+    push @header_footer,  " ************************************************************************/\n";
+    return @header_footer;
+}
+
+sub python_header {
+    my @header = ();
+    my $headerfile_x = $headerfile;
+    $headerfile_x =~ s/src\/core\/3d/src\/core\/.\/3d/;
+    push @header, "# The following has been generated automatically from ";
+    push @header, sprintf "%s\n", $headerfile_x;
+    return @header;
 }
 
 sub processDoxygenLine {
@@ -420,6 +432,16 @@ sub fix_annotations {
     return $line;
 }
 
+sub fix_constants {
+    my $line = $_[0];
+    $line =~ s/\bstd::numeric_limits<double>::max\(\)/DBL_MAX/g;
+    $line =~ s/\bstd::numeric_limits<double>::lowest\(\)/-DBL_MAX/g;
+    $line =~ s/\bstd::numeric_limits<double>::epsilon\(\)/DBL_EPSILON/g;
+    $line =~ s/\bstd::numeric_limits<int>::max\(\)/INT_MAX/g;
+    $line =~ s/\bstd::numeric_limits<int>::min\(\)/INT_MIN/g;
+    return $line;
+}
+
 # detect a comment block, return 1 if found
 # if STRICT comment block shall begin at beginning of line (no code in front)
 sub detect_comment_block{
@@ -454,9 +476,6 @@ sub detect_non_method_member{
   return 1 if $LINE =~ m/^\s*(?:template\s*<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)?(,?\s+\*?\w+( = (-?\d+(\.\d+)?|((QMap|QList)<[^()]+>\(\))|(\w+::)*\w+(\([^()]?\))?)|\[\d+\])?)+;/;
   return 0;
 }
-
-
-write_header_footer();
 
 # write some code in front of line to know where the output comes from
 $debug == 0 or push @OUTPUT, "CODE SIP_RUN MultiLine\n";
@@ -512,6 +531,13 @@ while ($LINE_IDX < $LINE_COUNT){
             $LINE =~ s/^\s*SIP_END(.*)$/%End$1/;
         }
         $LINE =~ s/^\s*% End/%End/;
+        write_output("COD", $LINE."\n");
+        next;
+    }
+    # do not process SIP code %Property
+    if ( $SIP_RUN == 1 && $LINE =~ m/^ *% *(Property)(.*)?$/ ){
+        $LINE = "%$1$2";
+        $COMMENT = '';
         write_output("COD", $LINE."\n");
         next;
     }
@@ -649,29 +675,21 @@ while ($LINE_IDX < $LINE_COUNT){
         }
         next;
     }
+    # insert in python output (python/module/__init__.py)
     if ($LINE =~ m/Q_(ENUM|FLAG)\(\s*(\w+)\s*\)/ ){
         if ($LINE !~ m/SIP_SKIP/){
             my $is_flag = $1 eq 'FLAG' ? 1 : 0;
             my $enum_helper = "$ACTUAL_CLASS.$2.baseClass = $ACTUAL_CLASS";
             dbg_info("Q_ENUM/Q_FLAG $enum_helper");
             if ($python_output ne ''){
-                my $pl;
-                open(FH, '+<', $python_output) or die $!;
-                foreach $pl (<FH>)  {
-                    if ($pl =~ m/$enum_helper/){
-                        $enum_helper = '';
-                        last;
+                if ($enum_helper ne ''){
+                    push @OUTPUT_PYTHON, "$enum_helper\n";
+                    if ($is_flag == 1){
+                        # SIP seems to introduce the flags in the module rather than in the class itself
+                        # as a dirty hack, inject directly in module, hopefully we don't have flags with the same name....
+                        push @OUTPUT_PYTHON, "$2 = $ACTUAL_CLASS  # dirty hack since SIP seems to introduce the flags in module\n";
                     }
                 }
-                if ($enum_helper ne ''){
-                  if ($is_flag == 1){
-                      # SIP seems to introduce the flags in the module rather than in the class itself
-                      # as a dirty hack, inject directly in module, hopefully we don't have flags with the same name....
-                      $enum_helper .= "\n$2 = $ACTUAL_CLASS  # dirty hack since SIP seems to introduce the flags in module";
-                  }
-                    print FH "$enum_helper\n";
-                }
-                close(FH);
             }
         }
         next;
@@ -683,9 +701,8 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # SIP_SKIP
-    if ( $LINE =~ m/SIP_SKIP/ ){
+    if ( $LINE =~ m/SIP_SKIP|SIP_PYTHON_SPECIAL_/ ){
         dbg_info('SIP SKIP!');
-        $COMMENT = '';
         # if multiline definition, remove previous lines
         if ( $MULTILINE_DEFINITION != MULTILINE_NO){
             dbg_info('SIP_SKIP with MultiLine');
@@ -700,6 +717,25 @@ while ($LINE_IDX < $LINE_COUNT){
         # also skip method body if there is one
         detect_and_remove_following_body_or_initializerlist();
         # line skipped, go to next iteration
+
+        if ($LINE =~ m/SIP_PYTHON_SPECIAL_(\w+)\(\s*(".*"|\w+)\s*\)/ ){
+            my $method_or_code = $2;
+            dbg_info("PYTHON SPECIAL method or code: $method_or_code");
+            my $pyop = "${ACTUAL_CLASS}.__" . lc($1) . "__ = lambda self: ";
+            if ( $method_or_code =~ m/^"(.*)"$/ ){
+              $pyop .= $1;
+            }
+            else
+            {
+              $pyop .= "self.${method_or_code}()";
+            }
+            dbg_info("PYTHON SPECIAL $pyop");
+            if ($python_output ne ''){
+                push @OUTPUT_PYTHON, "$pyop\n";
+            }
+        }
+
+        $COMMENT = '';
         next;
     }
 
@@ -718,7 +754,7 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # class declaration started
     # https://regex101.com/r/6FWntP/10
-    if ( $LINE =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
+    if ( $LINE =~ m/^(\s*class)\s+([A-Z0-9_]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
         dbg_info("class definition started");
         push @ACCESS, PUBLIC;
         push @EXPORTED, 0;
@@ -734,7 +770,7 @@ while ($LINE_IDX < $LINE_COUNT){
                 push @DECLARED_CLASSES, $CLASSNAME[$#CLASSNAME];
             }
             dbg_info("class: ".$CLASSNAME[$#CLASSNAME]);
-            if ($LINE =~ m/\b[A-Z]+_EXPORT\b/ || $#CLASSNAME != 0 || $INPUT_LINES[$LINE_IDX-2] =~ m/^\s*template</){
+            if ($LINE =~ m/\b[A-Z0-9_]+_EXPORT\b/ || $#CLASSNAME != 0 || $INPUT_LINES[$LINE_IDX-2] =~ m/^\s*template</){
                 # class should be exported except those not at top level or template classes
                 # if class is not exported, then its methods should be (checked whenever leaving out the class)
                 $EXPORTED[-1]++;
@@ -906,11 +942,11 @@ while ($LINE_IDX < $LINE_COUNT){
                 if (detect_comment_block()){
                     next;
                 }
-                if ($LINE =~ m/\};/){
-                    last;
-                }
+                last if ($LINE =~ m/\};/);
+                next if ($LINE =~ m/^\s*\w+\s*\|/); # multi line declaration as sum of enums
+
                 do {no warnings 'uninitialized';
-                    my $enum_decl = $LINE =~ s/(\s*\w+)(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+.*?)?(,?).*$/$1$2$3/r;
+                    my $enum_decl = $LINE =~ s/^(\s*\w+)(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+)?(,?).*$/$1$2$3/r;
                     $enum_decl = fix_annotations($enum_decl);
                     write_output("ENU3", "$enum_decl\n");
                 };
@@ -924,11 +960,13 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     $IS_OVERRIDE = 1 if ( $LINE =~ m/\boverride\b/);
+    $IS_OVERRIDE = 1 if ( $LINE =~ m/\bFINAL\b/);
 
     # keyword fixes
     do {no warnings 'uninitialized';
         $LINE =~ s/^(\s*template\s*<)(?:class|typename) (\w+>)(.*)$/$1$2$3/;
         $LINE =~ s/\s*\boverride\b//;
+        $LINE =~ s/\s*\bFINAL\b/ \${SIP_FINAL}/;
         $LINE =~ s/\s*\bextern \b//;
         $LINE =~ s/\s*\bMAYBE_UNUSED \b//;
         $LINE =~ s/\s*\bNODISCARD \b//;
@@ -1005,7 +1043,7 @@ while ($LINE_IDX < $LINE_COUNT){
                 if ( $virtual_line !~ m/^(\s*)virtual\b(.*)$/ ){
                     my $idx = $#OUTPUT-$LINE_IDX+$virtual_line_idx+2;
                     #print "len: $#OUTPUT line_idx: $LINE_IDX virt: $virtual_line_idx\n"idx: $idx\n$OUTPUT[$idx]\n";
-                    $OUTPUT[$idx] = $virtual_line =~ s/^(\s*?)\b(.*)$/$1 virtual $2\n/r;
+                    $OUTPUT[$idx] = fix_annotations($virtual_line =~ s/^(\s*?)\b(.*)$/$1 virtual $2\n/r);
                 }
             }
             elsif ( $LINE !~ m/^(\s*)virtual\b(.*)$/ ){
@@ -1077,6 +1115,7 @@ while ($LINE_IDX < $LINE_COUNT){
         $IS_OVERRIDE = 0;
     }
 
+    $LINE = fix_constants($LINE);
     $LINE = fix_annotations($LINE);
 
     # fix astyle placing space after % character
@@ -1110,7 +1149,7 @@ while ($LINE_IDX < $LINE_COUNT){
         }
     }
     elsif ( $LINE =~ m/^[^()]+\([^()]*([^()]*\([^()]*\)[^()]*)*[^)]*$/ ){
-      dbg_info("Mulitline detected");
+      dbg_info("Multiline detected:: $LINE");
       if ( $LINE =~ m/^\s*((else )?if|while|for) *\(/ ){
           $MULTILINE_DEFINITION = MULTILINE_CONDITIONAL_STATEMENT;
       }
@@ -1169,12 +1208,25 @@ while ($LINE_IDX < $LINE_COUNT){
         $IS_OVERRIDE = 0;
     }
 }
-write_header_footer();
 
 if ( $sip_output ne ''){
   open(FH, '>', $sip_output) or die $!;
+  print FH join('', sip_header_footer());
   print FH join('',@OUTPUT);
+  print FH join('', sip_header_footer());
   close(FH);
 } else {
+  print join('', sip_header_footer());
   print join('',@OUTPUT);
+  print join('', sip_header_footer());
+}
+
+if ( $python_output ne '' ){
+    unlink $python_output or 1;
+    if ( @OUTPUT_PYTHON ){
+        open(FH2, '>', $python_output) or die $!;
+        print FH2 join('', python_header());
+        print FH2 join('', @OUTPUT_PYTHON);
+        close(FH2);
+    }
 }

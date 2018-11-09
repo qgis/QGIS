@@ -239,7 +239,7 @@ double QgsPolygon::pointDistanceToBoundary( double x, double y ) const
     return std::numeric_limits< double >::quiet_NaN();
 
   bool inside = false;
-  double minimumDistance = DBL_MAX;
+  double minimumDistance = std::numeric_limits<double>::max();
   double minDistX = 0.0;
   double minDistY = 0.0;
 
@@ -260,7 +260,7 @@ double QgsPolygon::pointDistanceToBoundary( double x, double y ) const
            ( x < ( bX - aX ) * ( y - aY ) / ( bY - aY ) + aX ) )
         inside = !inside;
 
-      minimumDistance = std::min( minimumDistance, QgsGeometryUtils::sqrDistToLine( x, y, aX, aY, bX, bY, minDistX, minDistY, 4 * DBL_EPSILON ) );
+      minimumDistance = std::min( minimumDistance, QgsGeometryUtils::sqrDistToLine( x, y, aX, aY, bX, bY, minDistX, minDistY, 4 * std::numeric_limits<double>::epsilon() ) );
     }
   }
 

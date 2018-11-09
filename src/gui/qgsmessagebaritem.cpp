@@ -18,11 +18,13 @@
 #include "qgsapplication.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessagebar.h"
-
+#include "qgsgui.h"
+#include "qgsnative.h"
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTextBrowser>
 #include <QDesktopServices>
+#include <QFileInfo>
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &text, Qgis::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
@@ -107,36 +109,37 @@ void QgsMessageBarItem::writeContent()
     }
     icon = QgsApplication::getThemeIcon( msgIcon );
   }
-  mLblIcon->setPixmap( icon.pixmap( 24 ) );
+  const int iconSize = std::max( 24.0, fontMetrics().height() * 1.2 );
+  mLblIcon->setPixmap( icon.pixmap( iconSize ) );
 
 
   // STYLESHEETS
   QString contentStyleSheet;
   if ( mLevel == Qgis::Success )
   {
-    mStyleSheet = "QgsMessageBar { background-color: #dff0d8; border: 1px solid #8e998a; } "
-                  "QLabel,QTextEdit { color: black; } ";
-    contentStyleSheet = "<style> a, a:visited, a:hover { color:#268300; } </style>";
+    mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #dff0d8; border: 1px solid #8e998a; } "
+                                  "QLabel,QTextEdit { color: black; } " );
+    contentStyleSheet = QStringLiteral( "<style> a, a:visited, a:hover { color:#268300; } </style>" );
   }
   else if ( mLevel == Qgis::Critical )
   {
-    mStyleSheet = "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
-                  "QLabel,QTextEdit { color: white; } ";
-    contentStyleSheet = "<style>a, a:visited, a:hover { color:#4e0001; }</style>";
+    mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
+                                  "QLabel,QTextEdit { color: white; } " );
+    contentStyleSheet = QStringLiteral( "<style>a, a:visited, a:hover { color:#4e0001; }</style>" );
   }
   else if ( mLevel == Qgis::Warning )
   {
-    mStyleSheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
-                  "QLabel,QTextEdit { color: black; } ";
-    contentStyleSheet = "<style>a, a:visited, a:hover { color:#945a00; }</style>";
+    mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
+                                  "QLabel,QTextEdit { color: black; } " );
+    contentStyleSheet = QStringLiteral( "<style>a, a:visited, a:hover { color:#945a00; }</style>" );
   }
   else if ( mLevel == Qgis::Info )
   {
-    mStyleSheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
-                  "QLabel,QTextEdit { color: #2554a1; } ";
-    contentStyleSheet = "<style>a, a:visited, a:hover { color:#3bb2fe; }</style>";
+    mStyleSheet = QStringLiteral( "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
+                                  "QLabel,QTextEdit { color: #2554a1; } " );
+    contentStyleSheet = QStringLiteral( "<style>a, a:visited, a:hover { color:#3bb2fe; }</style>" );
   }
-  mStyleSheet += QLatin1String( "QLabel#mItemCount { font-style: italic; }" );
+  mStyleSheet += QStringLiteral( "QLabel#mItemCount { font-style: italic; }" );
 
   // TITLE AND TEXT
   if ( mTitle.isEmpty() && mText.isEmpty() )
@@ -267,7 +270,20 @@ QgsMessageBarItem *QgsMessageBarItem::setDuration( int duration )
   return this;
 }
 
+void QgsMessageBarItem::dismiss()
+{
+  if ( !mMessageBar )
+    return;
+
+  mMessageBar->popWidget( this );
+}
+
 void QgsMessageBarItem::urlClicked( const QUrl &url )
 {
-  QDesktopServices::openUrl( url );
+  QFileInfo file( url.toLocalFile() );
+  if ( file.exists() && !file.isDir() )
+    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+  else
+    QDesktopServices::openUrl( url );
+  dismiss();
 }

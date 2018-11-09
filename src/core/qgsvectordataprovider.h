@@ -164,6 +164,25 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     long featureCount() const override = 0;
 
     /**
+     * Returns true if the layer contains at least one feature.
+     *
+     * \since QGIS 3.4
+     */
+    virtual bool empty() const;
+
+    /**
+     * Will always return FeatureAvailability::FeaturesAvailable or
+     * FeatureAvailability::NoFeaturesAvailable.
+     *
+     * Calls empty() internally. Providers should override empty()
+     * instead if they provide an optimized version of this call.
+     *
+     * \see empty()
+     * \since QGIS 3.4
+     */
+    QgsFeatureSource::FeatureAvailability hasFeatures() const override;
+
+    /**
      * Returns the fields associated with this data provider.
      */
     QgsFields fields() const override = 0;
@@ -499,7 +518,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *
      * \since QGIS 3.2
      */
-    virtual QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const;
+    virtual QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
 
     static QVariant convertValue( QVariant::Type type, const QString &value );
 

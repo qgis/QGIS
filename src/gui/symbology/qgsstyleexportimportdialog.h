@@ -32,6 +32,8 @@
 
 class QgsStyle;
 class QgsStyleGroupSelectionDialog;
+class QgsTemporaryCursorOverride;
+class QgsStyleModel;
 
 /**
  * \ingroup gui
@@ -42,16 +44,29 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     Q_OBJECT
 
   public:
+
+    //! Dialog modes
     enum Mode
     {
-      Export,
-      Import
+      Export, //!< Export existing symbols mode
+      Import, //!< Import xml file mode
     };
 
-    // constructor
-    // mode argument must be 0 for saving and 1 for loading
+    /**
+     * Constructor for QgsStyleExportImportDialog, with the specified \a parent widget.
+     *
+     * Creates a dialog for importing symbols into the given \a style, or exporting symbols from the \a style.
+     * The \a mode argument dictates whether the dialog is to be used for exporting or importing symbols.
+     */
     QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, Mode mode = Export );
     ~QgsStyleExportImportDialog() override;
+
+    /**
+     * Sets the initial \a path to use for importing files, when the dialog is in a Import mode.
+     *
+     * \since QGIS 3.6
+     */
+    void setImportFilePath( const QString &path );
 
     /**
      * \brief selectSymbols select symbols by name
@@ -108,7 +123,6 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void deselectSmartgroup( const QString &groupName );
 
     void importTypeChanged( int );
-    void browse();
 
   private slots:
     void httpFinished();
@@ -118,9 +132,20 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     void showHelp();
 
+    void fetch();
+    void importFileChanged( const QString &path );
+
   private:
+
+    enum ImportSource
+    {
+      File,
+      //Official,
+      Url,
+    };
+
     void downloadStyleXml( const QUrl &url );
-    bool populateStyles( QgsStyle *style );
+    bool populateStyles();
     void moveStyles( QModelIndexList *selection, QgsStyle *src, QgsStyle *dst );
 
     QProgressDialog *mProgressDlg = nullptr;
@@ -132,8 +157,11 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     QString mFileName;
     Mode mDialogMode;
 
+    QgsStyleModel *mModel = nullptr;
+
     QgsStyle *mStyle = nullptr;
-    QgsStyle *mTempStyle = nullptr;
+    std::unique_ptr< QgsStyle > mTempStyle;
+    std::unique_ptr< QgsTemporaryCursorOverride > mCursorOverride;
 };
 
 #endif // QGSSTYLEV2EXPORTIMPORTDIALOG_H

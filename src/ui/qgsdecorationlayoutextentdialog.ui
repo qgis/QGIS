@@ -23,7 +23,7 @@
       <bool>true</bool>
      </property>
      <property name="title">
-      <string>Show layout extents</string>
+      <string>Show Layout Extents</string>
      </property>
      <property name="checkable">
       <bool>true</bool>

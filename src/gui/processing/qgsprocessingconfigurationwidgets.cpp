@@ -62,7 +62,7 @@ QgsFilterAlgorithmConfigurationWidget::QgsFilterAlgorithmConfigurationWidget( QW
   connect( addOutputButton, &QToolButton::clicked, this, &QgsFilterAlgorithmConfigurationWidget::addOutput );
   connect( removeOutputButton, &QToolButton::clicked, this, &QgsFilterAlgorithmConfigurationWidget::removeSelectedOutputs );
 
-  connect( mOutputExpressionWidget->selectionModel(), &QItemSelectionModel::selectionChanged, [removeOutputButton, this]
+  connect( mOutputExpressionWidget->selectionModel(), &QItemSelectionModel::selectionChanged, this, [removeOutputButton, this]
   {
     removeOutputButton->setEnabled( !mOutputExpressionWidget->selectionModel()->selectedIndexes().isEmpty() );
   } );
@@ -124,7 +124,7 @@ void QgsFilterAlgorithmConfigurationWidget::removeSelectedOutputs()
     rows.append( index.row() );
   }
 
-  qSort( rows );
+  std::sort( rows.begin(), rows.end() );
 
   int prev = -1;
   for ( int i = rows.count() - 1; i >= 0; i -= 1 )
@@ -158,10 +158,7 @@ QgsProcessingAlgorithmConfigurationWidget *QgsFilterAlgorithmConfigurationWidget
 
 bool QgsFilterAlgorithmConfigurationWidgetFactory::canCreateFor( const QgsProcessingAlgorithm *algorithm ) const
 {
-  if ( algorithm->name() == QStringLiteral( "filter" ) )
-    return true;
-  else
-    return false;
+  return algorithm->name() == QStringLiteral( "filter" );
 }
 
 ///@endcond PRIVATE

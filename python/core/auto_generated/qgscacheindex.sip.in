@@ -27,7 +27,7 @@ Constructor for QgsAbstractCacheIndex.
 %End
     virtual ~QgsAbstractCacheIndex();
 
-    virtual void flushFeature( const QgsFeatureId fid ) = 0;
+    virtual void flushFeature( QgsFeatureId fid ) = 0;
 %Docstring
 Is called, whenever a feature is removed from the cache. You should update your indexes, so
 they become invalid in case this feature was required to successfully answer a request.

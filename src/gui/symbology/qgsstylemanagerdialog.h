@@ -30,19 +30,38 @@ class QgsStyle;
 /**
  * \ingroup gui
  * \class QgsStyleManagerDialog
+ *
+ * A dialog allowing users to customize and populate a QgsStyle.
  */
 class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleManagerDialogBase
 {
     Q_OBJECT
 
   public:
-    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! open add color ramp dialog, return color ramp's name if the ramp has been added
+    /**
+     * Constructor for QgsStyleManagerDialog, with the specified \a parent widget and window \a flags.
+     *
+     * The \a style argument specifies the linked QgsStyle database. Symbols and objects contained within
+     * this style will be shown in the dialog, and changes made within the dialog will be applied to \a style.
+     * The \a style object must last for the lifetime of the dialog.
+     */
+    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
+
+    /**
+     * Opens the add color ramp dialog, returning the new color ramp's name if the ramp has been added.
+     */
     static QString addColorRampStatic( QWidget *parent, QgsStyle *style,
                                        QString RampType = QString() );
 
   public slots:
+
+    /**
+     * Raises, unminimizes and activates this window
+     * \since QGIS 3.4
+     */
+    void activate();
+
     void addItem();
     void editItem();
     void removeItem();
@@ -150,14 +169,20 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! sets the text of the item with bold font
     void setBold( QStandardItem * );
 
+  private slots:
+
+    void tabItemType_currentChanged( int );
+
+  private:
+
     QgsStyle *mStyle = nullptr;
 
     QString mStyleFilename;
 
-    bool mModified;
+    bool mModified = false;
 
     //! Mode to display the symbol list
-    bool mGrouppingMode;
+    bool mGrouppingMode = false;
 
     //! space to store symbol tags
     QStringList mTagList;
@@ -174,9 +199,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! Menu for the "Add item" toolbutton when in colorramp mode
     QMenu *mMenuBtnAddItemColorRamp = nullptr;
 
-  private slots:
+    int mBlockGroupUpdates = 0;
 
-    void tabItemType_currentChanged( int );
 };
 
 #endif

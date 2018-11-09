@@ -155,7 +155,7 @@ void QgsBookmarks::addClicked()
   QgsMapCanvas *canvas = QgisApp::instance()->mapCanvas();
   Q_ASSERT( canvas );
 
-  QString projStr( QLatin1String( "" ) );
+  QString projStr;
   if ( QgsProject::instance() )
   {
     if ( !QgsProject::instance()->title().isEmpty() )
@@ -165,7 +165,7 @@ void QgsBookmarks::addClicked()
     else if ( !QgsProject::instance()->fileName().isEmpty() )
     {
       QFileInfo fi( QgsProject::instance()->fileName() );
-      projStr = fi.exists() ? fi.fileName() : QLatin1String( "" );
+      projStr = fi.exists() ? fi.fileName() : QString();
     }
   }
 
@@ -274,7 +274,7 @@ void QgsBookmarks::importFromXml()
 
   QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), lastUsedDir,
-                     tr( "XML files (*.xml *XML)" ) );
+                     tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -785,7 +785,7 @@ void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom,
 
     if ( ! qgisModel->insertRecord( -1, record ) )
     {
-      QgsDebugMsg( QString( "Could not move bookmark: %1" )
+      QgsDebugMsg( QStringLiteral( "Could not move bookmark: %1" )
                    .arg( qgisModel->database().lastError().text() ) );
       return;
     }

@@ -31,6 +31,8 @@ class QgsStyle;
 class QgsExpressionContext;
 class QgsLayerTreeGroup;
 class QgsMetadataWidget;
+class QgsTreeWidgetItem;
+class QgsLayerCapabilitiesModel;
 
 /**
  * Dialog to set project level properties
@@ -45,8 +47,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
   public:
     //! Constructor
     QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-
-    QMap< QString, QString > pageWidgetNameMap();
 
     void setCurrentPage( const QString & );
 
@@ -92,6 +92,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! A scale in the list of project scales changed
     void scaleItemChanged( QListWidgetItem *changedScaleItem );
 
+    //! generate the ts file with the locale selected in the checkbox
+    void onGenerateTsFileButton() const;
+
     /**
      * Set WMS default extent to current canvas extent
      */
@@ -131,6 +134,11 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void pbtnStyleLine_clicked();
     void pbtnStyleFill_clicked();
     void pbtnStyleColorRamp_clicked();
+
+    /**
+     * Slot to link WMTS checkboxes in tree widget
+     */
+    void twWmtsItemChanged( QTreeWidgetItem *item, int column );
 
     /**
      * Slot to link WFS checkboxes
@@ -178,8 +186,11 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsStyle *mStyle = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
+    QgsLayerCapabilitiesModel *mLayerCapabilitiesModel = nullptr;
 
     QgsCoordinateReferenceSystem mCrs;
+
+    void checkPageWidgetNameMap();
 
     void populateStyles();
     void editSymbol( QComboBox *cbo );
@@ -210,6 +221,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QList<EllipsoidDefs> mEllipsoidList;
     int mEllipsoidIndex;
 
+    //! populate WMTS tree
+    void populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem );
     //! Check OWS configuration
     void checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
 
@@ -227,7 +240,4 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void updateGuiForMapUnits();
 
     void showHelp();
-
-    void populateRequiredLayers();
-    void applyRequiredLayers();
 };

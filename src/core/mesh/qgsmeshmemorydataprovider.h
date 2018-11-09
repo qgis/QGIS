@@ -31,11 +31,18 @@
 
 struct QgsMeshMemoryDataset
 {
-  QMap<QString, QString> metadata;
   QVector<QgsMeshDatasetValue> values;
+  double time = -1;
+  bool valid = false;
+};
+
+struct QgsMeshMemoryDatasetGroup
+{
+  QMap<QString, QString> metadata;
+  QVector<QgsMeshMemoryDataset> datasets;
+  QString name;
   bool isScalar = true;
   bool isOnVertices = true;
-  bool valid = false;
 };
 
 /**
@@ -72,7 +79,6 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
      * \endcode
      */
     QgsMeshMemoryDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
-    ~QgsMeshMemoryDataProvider();
 
     bool isValid() const override;
     QString name() const override;
@@ -90,29 +96,39 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
      *
      * Data string constains simple definition of datasets
      * Each entry is separated by "\n" sign and section deliminer "---"
-     * First section defines the type of dataset: Vertex/Face Vector/Scalar
-     * Second section defines the metadata: key: value pairs
-     * Third section defines the values. One value on line. For vectors separated by comma
+     * First section defines the dataset group: Vertex/Face Vector/Scalar Name
+     * Second section defines the group metadata: key: value pairs
+     * Third section defines the datasets (timesteps). First line is time,
+     * other lines are values (one value on line). For vectors separated by comma
      *
      * For example:
      *
      *  \code
      *    QString uri(
-     *      "Vertex Vector \n" \
+     *      "Vertex Vector MyVertexVectorDataset\n" \
      *      "---"
-     *      "name: MyVertexVectorDataset \n" \
-     *      "time: 0 \n" \
+     *      "description: My great dataset \n" \
+     *      "reference_time: Midnight  \n" \
      *      "---"
+     *      "0 \n"
      *      "3, 2 \n" \
      *      "1, -2 \n"
+     *      "---"
+     *      "1 \n"
+     *      "2, 2 \n" \
+     *      "2, -2 \n"
      *    );
      * \endcode
      */
     bool addDataset( const QString &uri ) override;
-    int datasetCount() const override;
+    QStringList extraDatasets() const override;
+    int datasetGroupCount() const override;
+    int datasetCount( int groupIndex ) const override;
 
-    QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const override;
-    QgsMeshDatasetValue datasetValue( int datasetIndex, int valueIndex ) const override;
+    QgsMeshDatasetGroupMetadata datasetGroupMetadata( int groupIndex ) const override;
+    QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const override;
+    QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const override;
+    bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
 
     //! Returns the memory provider key
     static QString providerKey();
@@ -125,17 +141,18 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     bool addMeshVertices( const QString &def );
     bool addMeshFaces( const QString &def );
 
-    bool splitDatasetSections( const QString &uri, QgsMeshMemoryDataset &dataset );
-    bool setDatasetType( const QString &uri, QgsMeshMemoryDataset &dataset );
-    bool addDatasetMetadata( const QString &def, QgsMeshMemoryDataset &dataset );
-    bool addDatasetValues( const QString &def, QgsMeshMemoryDataset &dataset );
-    bool checkDatasetValidity( QgsMeshMemoryDataset &dataset );
+    bool splitDatasetSections( const QString &uri, QgsMeshMemoryDatasetGroup &datasetGroup );
+    bool setDatasetGroupType( const QString &uri, QgsMeshMemoryDatasetGroup &datasetGroup );
+    bool addDatasetGroupMetadata( const QString &def, QgsMeshMemoryDatasetGroup &datasetGroup );
+    bool addDatasetValues( const QString &def, QgsMeshMemoryDataset &dataset, bool isScalar );
+    bool checkDatasetValidity( QgsMeshMemoryDataset &dataset, bool isOnVertices );
 
     QVector<QgsMeshVertex> mVertices;
     QVector<QgsMeshFace> mFaces;
-    QVector<QgsMeshMemoryDataset> mDatasets;
+    QVector<QgsMeshMemoryDatasetGroup> mDatasetGroups;
 
     bool mIsValid = false;
+    QStringList mExtraDatasetUris;
 };
 
 ///@endcond

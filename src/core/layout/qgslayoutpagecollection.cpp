@@ -164,6 +164,9 @@ int QgsLayoutPageCollection::pageNumberForPoint( QPointF point ) const
 
 int QgsLayoutPageCollection::predictPageNumberForPoint( QPointF point ) const
 {
+  if ( mPages.empty() )
+    return 0;
+
   int pageNumber = 0;
   double startNextPageY = 0;
   Q_FOREACH ( QgsLayoutItemPage *page, mPages )
@@ -454,7 +457,7 @@ int QgsLayoutPageCollection::pageNumber( QgsLayoutItemPage *page ) const
   return mPages.indexOf( page );
 }
 
-QList<QgsLayoutItemPage *> QgsLayoutPageCollection::visiblePages( QRectF region ) const
+QList<QgsLayoutItemPage *> QgsLayoutPageCollection::visiblePages( const QRectF &region ) const
 {
   QList<QgsLayoutItemPage *> pages;
   Q_FOREACH ( QgsLayoutItemPage *page, mPages )
@@ -465,7 +468,7 @@ QList<QgsLayoutItemPage *> QgsLayoutPageCollection::visiblePages( QRectF region 
   return pages;
 }
 
-QList<int> QgsLayoutPageCollection::visiblePageNumbers( QRectF region ) const
+QList<int> QgsLayoutPageCollection::visiblePageNumbers( const QRectF &region ) const
 {
   QList< int > pages;
   int p = 0;
@@ -501,6 +504,7 @@ QList<QgsLayoutItem *> QgsLayoutPageCollection::itemsOnPage( int page ) const
 {
   QList<QgsLayoutItem *> itemList;
   const QList<QGraphicsItem *> graphicsItemList = mLayout->items();
+  itemList.reserve( graphicsItemList.size() );
   for ( QGraphicsItem *graphicsItem : graphicsItemList )
   {
     QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
@@ -585,7 +589,7 @@ void QgsLayoutPageCollection::insertPage( QgsLayoutItemPage *page, int beforePag
   reflow();
 
   // bump up stored page numbers to account
-  for ( auto it = mPreviousItemPositions.begin(); it != mPreviousItemPositions.end(); ++it )
+  for ( auto it = mPreviousItemPositions.begin(); it != mPreviousItemPositions.end(); ++it ) // clazy:exclude=detaching-member
   {
     if ( it.value().first < beforePage )
       continue;
@@ -619,7 +623,7 @@ void QgsLayoutPageCollection::deletePage( int pageNumber )
   reflow();
 
   // bump stored page numbers to account
-  for ( auto it = mPreviousItemPositions.begin(); it != mPreviousItemPositions.end(); ++it )
+  for ( auto it = mPreviousItemPositions.begin(); it != mPreviousItemPositions.end(); ++it ) // clazy:exclude=detaching-member
   {
     if ( it.value().first <= pageNumber )
       continue;
@@ -653,7 +657,7 @@ void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
   reflow();
 
   // bump stored page numbers to account
-  for ( auto it = mPreviousItemPositions.begin(); it != mPreviousItemPositions.end(); ++it )
+  for ( auto it = mPreviousItemPositions.begin(); it != mPreviousItemPositions.end(); ++it ) // clazy:exclude=detaching-member
   {
     if ( it.value().first <= pageIndex )
       continue;

@@ -52,7 +52,7 @@ Returns the header value
 
     virtual bool headersSent() const = 0;
 %Docstring
-Returns true if the headers have alredy been sent
+Returns true if the headers have already been sent
 %End
 
 

@@ -144,6 +144,10 @@ Appends first point if not already closed.
 
     virtual QgsCompoundCurve *reversed() const /Factory/;
 
+    virtual QgsPoint *interpolatePoint( double distance ) const /Factory/;
+
+    virtual QgsCompoundCurve *curveSubstring( double startDistance, double endDistance ) const /Factory/;
+
 
     virtual bool addZValue( double zValue = 0 );
 
@@ -165,6 +169,12 @@ Appends first point if not already closed.
 
     virtual QgsCompoundCurve *createEmptyWithSameType() const /Factory/;
 
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsCompoundCurve: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
   protected:
 

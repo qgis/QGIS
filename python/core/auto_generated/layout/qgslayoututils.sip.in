@@ -31,7 +31,7 @@ Rotates a point / vector around the origin.
 :param y: in/out: y coordinate before / after the rotation
 %End
 
-    static double normalizedAngle( const double angle, const bool allowNegative = false );
+    static double normalizedAngle( double angle, bool allowNegative = false );
 %Docstring
 Ensures that an ``angle`` (in degrees) is in the range 0 <= angle < 360.
 If ``allowNegative`` is true then angles between (-360, 360) are allowed. If false,
@@ -77,7 +77,7 @@ Resizes a QRectF relative to a resized bounding rectangle.
 :param boundsAfter: QRectF of bounds after resize
 %End
 
-    static double relativePosition( const double position, const double beforeMin, const double beforeMax, const double afterMin, const double afterMax );
+    static double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );
 %Docstring
 Returns a scaled position given a before and after range
 
@@ -187,7 +187,7 @@ If ``color`` is specified, text will be rendered in that color. If not specified
 color will be used instead.
 %End
 
-    static void drawText( QPainter *painter, const QRectF &rectangle, const QString &text, const QFont &font, const QColor &color = QColor(), const Qt::AlignmentFlag halignment = Qt::AlignLeft, const Qt::AlignmentFlag valignment = Qt::AlignTop, const int flags = Qt::TextWordWrap );
+    static void drawText( QPainter *painter, const QRectF &rectangle, const QString &text, const QFont &font, const QColor &color = QColor(), Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap );
 %Docstring
 Draws ``text`` on a ``painter`` within a ``rectangle``, taking care of layout specific issues (calculation to pixel,
 scaling of font and painter to work around Qt font bugs).
@@ -201,7 +201,7 @@ arguments.
 The ``flags`` parameter allows for passing Qt.TextFlags to control appearance of rendered text.
 %End
 
-    static QRectF largestRotatedRectWithinBounds( const QRectF &originalRect, const QRectF &boundsRect, const double rotation );
+    static QRectF largestRotatedRectWithinBounds( const QRectF &originalRect, const QRectF &boundsRect, double rotation );
 %Docstring
 Calculates the largest scaled version of ``originalRect`` which fits within ``boundsRect``, when it is rotated by
 the a specified ``rotation`` amount.

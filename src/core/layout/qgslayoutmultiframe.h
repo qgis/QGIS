@@ -157,7 +157,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * \see minFrameSize()
      * \see recalculateFrameRects()
      */
-    virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
+    virtual QSizeF fixedFrameSize( int frameIndex = -1 ) const;
 
     /**
      * Returns the minimum size for a frames, if desired. If the minimum
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * \see fixedFrameSize()
      * \see recalculateFrameRects()
      */
-    virtual QSizeF minFrameSize( const int frameIndex = -1 ) const;
+    virtual QSizeF minFrameSize( int frameIndex = -1 ) const;
 
     /**
      * Renders a portion of the multiframe's content into a render \a context.
@@ -358,7 +358,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * QgsLayoutObject::AllProperties then all data defined properties for the item will be
      * refreshed.
     */
-    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
   signals:
 

@@ -19,6 +19,7 @@
 #include <QStringList>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 class QgsLayerItem;
 class QgsLayerTreeNode;
@@ -87,10 +88,21 @@ class CORE_EXPORT QgsMimeDataUtils
       QString uri;
       QStringList supportedCrs;
       QStringList supportedFormats;
+
+#ifdef SIP_RUN
+      SIP_PYOBJECT __repr__();
+      % MethodCode
+      QString str = QStringLiteral( "<QgsMimeDataUtils::Uri (%1): %2>" ).arg( sipCpp->providerKey, sipCpp->uri );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+      % End
+#endif
     };
     typedef QList<QgsMimeDataUtils::Uri> UriList;
 
-    static QMimeData *encodeUriList( const UriList &layers );
+    /**
+     * Encodes a URI list to a new QMimeData object.
+     */
+    static QMimeData *encodeUriList( const UriList &layers ) SIP_FACTORY;
 
     static bool isUriList( const QMimeData *data );
 
@@ -106,6 +118,9 @@ class CORE_EXPORT QgsMimeDataUtils
     static QString encode( const QStringList &items );
     static QStringList decode( const QString &encoded );
     static QByteArray uriListToByteArray( const UriList &layers );
+
+
+    friend class TestQgsMimeDataUtils;
 
 };
 

@@ -85,7 +85,7 @@ class SpatialJoinSummary(QgisAlgorithm):
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),
-            ('equals', self.tr('equals')),
+            ('isEqual', self.tr('equals')),
             ('touches', self.tr('touches')),
             ('overlaps', self.tr('overlaps')),
             ('within', self.tr('within')),
@@ -306,7 +306,7 @@ class SpatialJoinSummary(QgisAlgorithm):
 
                 join_attributes = []
                 for a in join_field_indexes:
-                    join_attributes.append(test_feat.attributes()[a])
+                    join_attributes.append(test_feat[a])
 
                 if engine is None:
                     engine = QgsGeometry.createGeometryEngine(f.geometry().constGet())

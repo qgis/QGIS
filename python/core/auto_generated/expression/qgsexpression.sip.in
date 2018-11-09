@@ -388,7 +388,7 @@ This function returns variables in each expression between [% and %].
 .. versionadded:: 3.2
 %End
 
-    static double evaluateToDouble( const QString &text, const double fallbackValue );
+    static double evaluateToDouble( const QString &text, double fallbackValue );
 %Docstring
 Attempts to evaluate a text string as an expression to a resultant double
 value.
@@ -561,14 +561,15 @@ Returns the translated name for a function group.
 :param group: untranslated group name
 %End
 
-    static QString formatPreviewString( const QVariant &value );
+    static QString formatPreviewString( const QVariant &value, bool htmlOutput = true );
 %Docstring
 Formats an expression result for friendly display to the user. Truncates the result to a sensible
 length, and presents text representations of non numeric/text types (e.g., geometries and features).
 
 :param value: expression result to format
+:param htmlOutput: set to true to allow HTML formatting, or false for plain text output
 
-:return: formatted string, may contain HTML formatting characters
+:return: formatted string, may contain HTML formatting characters if ``htmlOutput`` is true
 
 .. versionadded:: 2.14
 %End
@@ -584,6 +585,12 @@ value. The value may be null.
 :return: the expression to evaluate field equality
 
 .. versionadded:: 3.0
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsExpression: '%1'>" ).arg( sipCpp->expression() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
 };

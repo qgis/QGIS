@@ -33,7 +33,7 @@
 """
 import hashlib
 import sys
-# check to see if a class name was specified and if so, craete the context id
+# check to see if a class name was specified and if so, create the context id
 if len(sys.argv) > 1:
     hash = hashlib.sha1()
     # set the hash to the name passed on the command line

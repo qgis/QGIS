@@ -34,23 +34,22 @@
 #include <QAction>
 #include <QCursor>
 #include <QPixmap>
-#include <QMouseEvent>
 #include <QStatusBar>
 
 
 QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
   , mCaptureMode( mode )
+  , mCaptureModeFromLayer( mode == CaptureNone )
 {
-  mCaptureModeFromLayer = mode == CaptureNone;
-  mCapturing = false;
-
   mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
 
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
 
   connect( canvas, &QgsMapCanvas::currentLayerChanged,
            this, &QgsMapToolCapture::currentLayerChanged );
+
+  currentLayerChanged( canvas->currentLayer() );
 }
 
 QgsMapToolCapture::~QgsMapToolCapture()
@@ -80,16 +79,6 @@ void QgsMapToolCapture::deactivate()
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
 
   QgsMapToolAdvancedDigitizing::deactivate();
-}
-
-void QgsMapToolCapture::validationFinished()
-{
-  emit messageDiscarded();
-  QString msgFinished = tr( "Validation finished" );
-  if ( !mValidationWarnings.isEmpty() )
-  {
-    emit messageEmitted( mValidationWarnings.join( QStringLiteral( "\n" ) ).append( "\n" ).append( msgFinished ), Qgis::Warning );
-  }
 }
 
 void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
@@ -149,7 +138,7 @@ QgsPointXY QgsMapToolCapture::tracingStartPoint()
   }
   catch ( QgsCsException & )
   {
-    QgsDebugMsg( "transformation to layer coordinate failed" );
+    QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
     return QgsPointXY();
   }
 }
@@ -355,7 +344,7 @@ int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   if ( !vlayer )
   {
-    QgsDebugMsg( "no vector layer" );
+    QgsDebugMsg( QStringLiteral( "no vector layer" ) );
     return 1;
   }
   try
@@ -370,7 +359,7 @@ int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
-    QgsDebugMsg( "transformation to layer coordinate failed" );
+    QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
     return 2;
   }
 
@@ -435,7 +424,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
 {
   if ( mode() == CaptureNone )
   {
-    QgsDebugMsg( "invalid capture mode" );
+    QgsDebugMsg( QStringLiteral( "invalid capture mode" ) );
     return 2;
   }
 
@@ -689,7 +678,6 @@ void QgsMapToolCapture::validateGeometry()
     mValidator = nullptr;
   }
 
-  mValidationWarnings.clear();
   mGeomErrors.clear();
   while ( !mGeomErrorMarkers.isEmpty() )
   {
@@ -719,7 +707,7 @@ void QgsMapToolCapture::validateGeometry()
       break;
   }
 
-  if ( !geom )
+  if ( geom.isNull() )
     return;
 
   QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
@@ -727,19 +715,16 @@ void QgsMapToolCapture::validateGeometry()
     method = QgsGeometry::ValidatorGeos;
   mValidator = new QgsGeometryValidator( geom, nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );
-  connect( mValidator, &QThread::finished, this, &QgsMapToolCapture::validationFinished );
   mValidator->start();
-  QgsDebugMsgLevel( "Validation started", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Validation started" ), 4 );
 }
 
-void QgsMapToolCapture::addError( QgsGeometry::Error e )
+void QgsMapToolCapture::addError( const QgsGeometry::Error &e )
 {
   mGeomErrors << e;
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   if ( !vlayer )
     return;
-
-  mValidationWarnings << e.what();
 
   if ( e.hasWhere() )
   {
@@ -752,9 +737,6 @@ void QgsMapToolCapture::addError( QgsGeometry::Error e )
     vm->setZValue( vm->zValue() + 1 );
     mGeomErrorMarkers << vm;
   }
-
-  emit messageDiscarded();
-  emit messageEmitted( mValidationWarnings.join( QStringLiteral( "\n" ) ), Qgis::Warning );
 }
 
 int QgsMapToolCapture::size()

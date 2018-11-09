@@ -20,7 +20,6 @@
 
 #include <QObject>
 
-#include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 #include "qgsspatialindex.h"
 

@@ -69,7 +69,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
 void rulesDialog::setHorizontalHeaderItems()
 {
   QStringList labels;
-  labels << tr( "Test" ) << tr( "Layer #1" ) << tr( "Layer #2" ) << QLatin1String( "" ) << QLatin1String( "" );
+  labels << tr( "Test" ) << tr( "Layer #1" ) << tr( "Layer #2" ) << QString() << QString();
   mRulesTable->setHorizontalHeaderLabels( labels );
 }
 
@@ -80,9 +80,9 @@ void rulesDialog::readTest( int index, QgsProject *project )
   QString layer2Id;
   QString postfix = QStringLiteral( "%1" ).arg( index );
 
-  testName = project->readEntry( QStringLiteral( "Topol" ), "/testname_" + postfix, QLatin1String( "" ) );
-  layer1Id = project->readEntry( QStringLiteral( "Topol" ), "/layer1_" + postfix, QLatin1String( "" ) );
-  layer2Id = project->readEntry( QStringLiteral( "Topol" ), "/layer2_" + postfix, QLatin1String( "" ) );
+  testName = project->readEntry( QStringLiteral( "Topol" ), "/testname_" + postfix, QString() );
+  layer1Id = project->readEntry( QStringLiteral( "Topol" ), "/layer1_" + postfix, QString() );
+  layer2Id = project->readEntry( QStringLiteral( "Topol" ), "/layer2_" + postfix, QString() );
 
   QgsVectorLayer *l1 = nullptr;
   if ( !( QgsVectorLayer * )project->mapLayers().contains( layer1Id ) )

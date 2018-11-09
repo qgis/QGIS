@@ -1,0 +1,109 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerstyle.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMapLayerStyle
+{
+%Docstring
+Stores style information (renderer, opacity, labeling, diagrams etc.) applicable to a map layer.
+
+Stored data are considered as opaque - it is not possible to access them directly or modify them - it is
+only possible to read or write layer's current style.
+
+.. versionadded:: 2.8
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerstyle.h"
+%End
+  public:
+    QgsMapLayerStyle();
+%Docstring
+construct invalid style
+%End
+
+    explicit QgsMapLayerStyle( const QString &xmlData );
+%Docstring
+construct style from QML definition (XML)
+%End
+
+    bool isValid() const;
+%Docstring
+Tell whether the style is valid (i.e. there is something stored in it)
+%End
+
+    void clear();
+%Docstring
+Remove any stored style data (will get invalid)
+%End
+
+    QString xmlData() const;
+%Docstring
+Returns XML content of the style
+%End
+
+    void readFromLayer( QgsMapLayer *layer );
+%Docstring
+Store layer's active style information in the instance
+%End
+    void writeToLayer( QgsMapLayer *layer ) const;
+%Docstring
+Apply stored layer's style information to the layer
+%End
+
+    void readXml( const QDomElement &styleElement );
+%Docstring
+Read style configuration (for project file reading)
+%End
+    void writeXml( QDomElement &styleElement ) const;
+%Docstring
+Write style configuration (for project file writing)
+%End
+
+};
+
+
+class QgsMapLayerStyleOverride
+{
+%Docstring
+Restore overridden layer style on destruction.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerstyle.h"
+%End
+  public:
+
+    QgsMapLayerStyleOverride( QgsMapLayer *layer );
+%Docstring
+Construct a style override object associated with a map layer.
+The overridden style will be restored upon object destruction.
+%End
+
+    ~QgsMapLayerStyleOverride();
+
+    void setOverrideStyle( const QString &style );
+%Docstring
+Temporarily apply a different style to the layer. The argument
+can be either a style name or a full QML style definition.
+%End
+
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerstyle.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

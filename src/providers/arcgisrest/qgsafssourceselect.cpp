@@ -27,7 +27,7 @@
 
 
 QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QgsArcGisServiceSourceSelect( QStringLiteral( "ArcGisFeatureServer" ), QgsArcGisServiceSourceSelect::FeatureService, parent, fl, widgetMode )
+  : QgsArcGisServiceSourceSelect( QStringLiteral( "ARCGISFEATURESERVER" ), QgsArcGisServiceSourceSelect::FeatureService, parent, fl, widgetMode )
 {
   // import/export of connections not supported yet
   btnLoad->hide();
@@ -37,67 +37,115 @@ QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
 {
   QString errorTitle, errorMessage;
-  QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( connection.uri().param( QStringLiteral( "url" ) ), errorTitle, errorMessage );
-  if ( serviceInfoMap.isEmpty() )
+
+  const QString authcfg = connection.uri().param( QStringLiteral( "authcfg" ) );
+  const QString baseUrl = connection.uri().param( QStringLiteral( "url" ) );
+
+  std::function< bool( const QString &, QStandardItem *, const QString & )> visitItemsRecursive;
+  visitItemsRecursive = [this, &visitItemsRecursive, baseUrl, authcfg, &errorTitle, &errorMessage]( const QString & baseItemUrl, QStandardItem * parentItem, const QString & parentName ) -> bool
   {
+    const QVariantMap serviceInfoMap = QgsArcGisRestUtils::getServiceInfo( baseItemUrl, authcfg, errorTitle, errorMessage );
+
+    if ( serviceInfoMap.isEmpty() )
+    {
+      return false;
+    }
+
+    bool res = true;
+
+    QgsArcGisRestUtils::visitFolderItems( [ =, &res ]( const QString & name, const QString & url )
+    {
+      QStandardItem *nameItem = new QStandardItem( name );
+      nameItem->setToolTip( url );
+      if ( parentItem )
+        parentItem->appendRow( QList<QStandardItem *>() << nameItem );
+      else
+        mModel->appendRow( QList<QStandardItem *>() << nameItem );
+
+      if ( !visitItemsRecursive( url, nameItem, name ) )
+        res = false;
+    }, serviceInfoMap, baseUrl );
+
+    QgsArcGisRestUtils::visitServiceItems(
+      [ =, &res]( const QString & name, const QString & url )
+    {
+      QStandardItem *nameItem = new QStandardItem( name );
+      nameItem->setToolTip( url );
+      if ( parentItem )
+        parentItem->appendRow( QList<QStandardItem *>() << nameItem );
+      else
+        mModel->appendRow( QList<QStandardItem *>() << nameItem );
+
+      if ( !visitItemsRecursive( url, nameItem, name ) )
+        res = false;
+    }, serviceInfoMap, baseUrl, parentName );
+
+    QMap< QString, QList<QStandardItem *> > layerItems;
+    QMap< QString, QString > parents;
+
+    QgsArcGisRestUtils::addLayerItems( [ =, &layerItems, &parents]( const QString & parentLayerId, const QString & layerId, const QString & name, const QString & description, const QString & url, bool isParentLayer, const QString & authid )
+    {
+      if ( !parentLayerId.isEmpty() )
+        parents.insert( layerId, parentLayerId );
+
+      if ( isParentLayer )
+      {
+        QStandardItem *nameItem = new QStandardItem( name );
+        nameItem->setToolTip( url );
+        layerItems.insert( layerId, QList<QStandardItem *>() << nameItem );
+      }
+      else
+      {
+        // insert the typenames, titles and abstracts into the tree view
+        QStandardItem *idItem = new QStandardItem( layerId );
+        bool ok = false;
+        int idInt = layerId.toInt( &ok );
+        if ( ok )
+        {
+          // force display role to be int value, so that sorting works correctly
+          idItem->setData( idInt, Qt::DisplayRole );
+        }
+        idItem->setData( url, UrlRole );
+        idItem->setData( true, IsLayerRole );
+        QStandardItem *nameItem = new QStandardItem( name );
+        QStandardItem *abstractItem = new QStandardItem( description );
+        abstractItem->setToolTip( description );
+        QStandardItem *filterItem = new QStandardItem();
+
+        mAvailableCRS[name] = QList<QString>()  << authid;
+
+        layerItems.insert( layerId, QList<QStandardItem *>() << idItem << nameItem << abstractItem << filterItem );
+      }
+    }, serviceInfoMap, baseItemUrl );
+
+    // create layer groups
+    for ( auto it = layerItems.constBegin(); it != layerItems.constEnd(); ++it )
+    {
+      const QString id = it.key();
+      QList<QStandardItem *> row = it.value();
+      const QString parentId = parents.value( id );
+      QList<QStandardItem *> parentRow;
+      if ( !parentId.isEmpty() )
+        parentRow = layerItems.value( parentId );
+      if ( !parentRow.isEmpty() )
+      {
+        parentRow.at( 0 )->appendRow( row );
+      }
+      else
+      {
+        if ( parentItem )
+          parentItem->appendRow( row );
+        else
+          mModel->appendRow( row );
+      }
+    }
+
+    return res;
+  };
+
+  if ( !visitItemsRecursive( baseUrl, nullptr, QString() ) )
     QMessageBox::warning( this, tr( "Error" ), tr( "Failed to retrieve service capabilities:\n%1: %2" ).arg( errorTitle, errorMessage ) );
-    return false;
-  }
 
-  QStringList layerErrors;
-  foreach ( const QVariant &layerInfo, serviceInfoMap["layers"].toList() )
-  {
-    const QVariantMap layerInfoMap = layerInfo.toMap();
-    if ( !layerInfoMap[QStringLiteral( "id" )].isValid() )
-    {
-      continue;
-    }
-
-    if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
-    {
-      // group layer - do not show as it is not possible to load
-      // TODO - turn model into a tree and show nested groups
-      continue;
-    }
-
-    // Get layer info
-    const QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( connection.uri().param( QStringLiteral( "url" ) ) + "/" + layerInfoMap[QStringLiteral( "id" )].toString(), errorTitle, errorMessage );
-    if ( layerData.isEmpty() )
-    {
-      layerErrors.append( tr( "Layer %1: %2 - %3" ).arg( layerInfoMap[QStringLiteral( "id" )].toString(), errorTitle, errorMessage ) );
-      continue;
-    }
-    if ( !layerData.value( QStringLiteral( "capabilities" ) ).toString().contains( QStringLiteral( "query" ), Qt::CaseInsensitive ) )
-    {
-      QgsDebugMsg( QStringLiteral( "Layer %1 does not support query capabilities" ).arg( layerInfoMap[QStringLiteral( "id" )].toString() ) );
-      continue;
-    }
-    // insert the typenames, titles and abstracts into the tree view
-    QStandardItem *idItem = new QStandardItem( layerData[QStringLiteral( "id" )].toString() );
-    bool ok = false;
-    int idInt = layerData[QStringLiteral( "id" )].toInt( &ok );
-    if ( ok )
-    {
-      // force display role to be int value, so that sorting works correctly
-      idItem->setData( idInt, Qt::DisplayRole );
-    }
-    QStandardItem *nameItem = new QStandardItem( layerData[QStringLiteral( "name" )].toString() );
-    QStandardItem *abstractItem = new QStandardItem( layerData[QStringLiteral( "description" )].toString() );
-    abstractItem->setToolTip( layerData[QStringLiteral( "description" )].toString() );
-    QStandardItem *cachedItem = new QStandardItem();
-    QStandardItem *filterItem = new QStandardItem();
-    cachedItem->setCheckable( true );
-    cachedItem->setCheckState( Qt::Checked );
-
-    QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::parseSpatialReference( serviceInfoMap[QStringLiteral( "spatialReference" )].toMap() );
-    mAvailableCRS[layerData[QStringLiteral( "name" )].toString()] = QList<QString>()  << crs.authid();
-
-    mModel->appendRow( QList<QStandardItem *>() << idItem << nameItem << abstractItem << cachedItem << filterItem );
-  }
-  if ( !layerErrors.isEmpty() )
-  {
-    QMessageBox::warning( this, tr( "Error" ), tr( "Failed to query some layers:\n%1" ).arg( layerErrors.join( QStringLiteral( "\n" ) ) ) );
-  }
   return true;
 }
 
@@ -107,12 +155,11 @@ void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const Q
   {
     return;
   }
-  QModelIndex filterIndex = index.sibling( index.row(), 4 );
-  QString id = index.sibling( index.row(), 0 ).data().toString();
+  QModelIndex filterIndex = index.sibling( index.row(), 3 );
+  const QString url = index.sibling( index.row(), 0 ).data( UrlRole ).toString();
 
   // Query available fields
   QgsDataSourceUri ds = connection.uri();
-  QString url = ds.param( QStringLiteral( "url" ) ) + "/" + id;
   ds.removeParam( QStringLiteral( "url" ) );
   ds.setParam( QStringLiteral( "url" ), url );
   QgsDataProvider::ProviderOptions providerOptions;
@@ -143,7 +190,7 @@ QString QgsAfsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
     const QgsRectangle &bBox ) const
 {
   QgsDataSourceUri ds = connection.uri();
-  QString url = ds.param( QStringLiteral( "url" ) ) + "/" + layerTitle;
+  QString url = layerTitle;
   ds.removeParam( QStringLiteral( "url" ) );
   ds.setParam( QStringLiteral( "url" ), url );
   ds.setParam( QStringLiteral( "filter" ), filter );

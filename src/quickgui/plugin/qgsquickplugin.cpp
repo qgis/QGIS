@@ -28,12 +28,23 @@
 #include "qgsrelationmanager.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsvectorlayer.h"
+#include "qgsunittypes.h"
 
+#include "qgsquickattributeformmodel.h"
+#include "qgsquickattributeformmodelbase.h"
+#include "qgsquickattributemodel.h"
+#include "qgsquickfeaturehighlight.h"
+#include "qgsquickcoordinatetransformer.h"
+#include "qgsquickidentifykit.h"
+#include "qgsquickfeaturelayerpair.h"
 #include "qgsquickmapcanvasmap.h"
 #include "qgsquickmapsettings.h"
+#include "qgsquickmaptransform.h"
 #include "qgsquickmessagelogmodel.h"
 #include "qgsquickplugin.h"
+#include "qgsquickpositionkit.h"
 #include "qgsquickscalebarkit.h"
+#include "qgsquicksubmodel.h"
 #include "qgsquickutils.h"
 
 static QObject *_utilsProvider( QQmlEngine *engine, QJSEngine *scriptEngine )
@@ -53,12 +64,27 @@ void QgsQuickPlugin::registerTypes( const char *uri )
   qRegisterMetaType< QgsFeatureId > ( "QgsFeatureId" );
   qRegisterMetaType< QgsPoint >( "QgsPoint" );
   qRegisterMetaType< QgsPointXY >( "QgsPointXY" );
+  qRegisterMetaType< QgsQuickFeatureLayerPair >( "QgsQuickFeatureLayerPair" );
+  qRegisterMetaType< QgsUnitTypes::SystemOfMeasurement >( "QgsUnitTypes::SystemOfMeasurement" );
+  qRegisterMetaType< QgsUnitTypes::DistanceUnit >( "QgsUnitTypes::DistanceUnit" );
+  qRegisterMetaType< QgsCoordinateFormatter::FormatFlags >( "QgsCoordinateFormatter::FormatFlags" );
+  qRegisterMetaType< QgsCoordinateFormatter::Format >( "QgsCoordinateFormatter::Format" );
+
+  qmlRegisterUncreatableType< QgsUnitTypes >( uri, 0, 1, "QgsUnitTypes", "Only enums from QgsUnitTypes can be used" );
 
   qmlRegisterType< QgsProject >( uri, 0, 1, "Project" );
+  qmlRegisterType< QgsQuickAttributeFormModel >( uri, 0, 1, "AttributeFormModel" );
+  qmlRegisterType< QgsQuickAttributeModel >( uri, 0, 1, "AttributeModel" );
+  qmlRegisterType< QgsQuickFeatureHighlight >( uri, 0, 1, "FeatureHighlight" );
+  qmlRegisterType< QgsQuickCoordinateTransformer >( uri, 0, 1, "CoordinateTransformer" );
+  qmlRegisterType< QgsQuickIdentifyKit >( uri, 0, 1, "IdentifyKit" );
   qmlRegisterType< QgsQuickMapCanvasMap >( uri, 0, 1, "MapCanvasMap" );
   qmlRegisterType< QgsQuickMapSettings >( uri, 0, 1, "MapSettings" );
+  qmlRegisterType< QgsQuickMapTransform >( uri, 0, 1, "MapTransform" );
   qmlRegisterType< QgsQuickMessageLogModel >( uri, 0, 1, "MessageLogModel" );
+  qmlRegisterType< QgsQuickPositionKit >( uri, 0, 1, "PositionKit" );
   qmlRegisterType< QgsQuickScaleBarKit >( uri, 0, 1, "ScaleBarKit" );
+  qmlRegisterType< QgsQuickSubModel >( uri, 0, 1, "SubModel" );
   qmlRegisterType< QgsVectorLayer >( uri, 0, 1, "VectorLayer" );
 
   qmlRegisterSingletonType< QgsQuickUtils >( uri, 0, 1, "Utils", _utilsProvider );

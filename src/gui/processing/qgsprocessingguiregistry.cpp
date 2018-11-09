@@ -18,17 +18,31 @@
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgsprocessingconfigurationwidgets.h"
+#include "qgsprocessingwidgetwrapperimpl.h"
+#include "qgsprocessingparameters.h"
 #include "qgis.h"
+#include "qgslogger.h"
 
 QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
 {
   addAlgorithmConfigurationWidgetFactory( new QgsFilterAlgorithmConfigurationWidgetFactory() );
+
+  addParameterWidgetFactory( new QgsProcessingBooleanWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingCrsWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingStringWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingNumericWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDistanceWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingRangeWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
 {
-  for ( QgsProcessingAlgorithmConfigurationWidgetFactory *factory : qgis::as_const( mAlgorithmConfigurationWidgetFactories ) )
+  const QList< QgsProcessingAlgorithmConfigurationWidgetFactory * > factories = mAlgorithmConfigurationWidgetFactories;
+  for ( QgsProcessingAlgorithmConfigurationWidgetFactory *factory : factories )
     removeAlgorithmConfigurationWidgetFactory( factory );
+  const QMap< QString, QgsProcessingParameterWidgetFactoryInterface * > paramFactories = mParameterWidgetFactories;
+  for ( auto it = paramFactories.constBegin(); it != paramFactories.constEnd(); ++it )
+    removeParameterWidgetFactory( it.value() );
 }
 
 void QgsProcessingGuiRegistry::addAlgorithmConfigurationWidgetFactory( QgsProcessingAlgorithmConfigurationWidgetFactory *factory )
@@ -54,3 +68,52 @@ QgsProcessingAlgorithmConfigurationWidget *QgsProcessingGuiRegistry::algorithmCo
 
   return nullptr;
 }
+
+bool QgsProcessingGuiRegistry::addParameterWidgetFactory( QgsProcessingParameterWidgetFactoryInterface *factory )
+{
+  if ( !factory )
+    return false;
+
+  if ( mParameterWidgetFactories.contains( factory->parameterType() ) )
+  {
+    QgsLogger::warning( QStringLiteral( "Duplicate parameter factory for %1 registered" ).arg( factory->parameterType() ) );
+    return false;
+  }
+
+  mParameterWidgetFactories.insert( factory->parameterType(), factory );
+  return true;
+}
+
+void QgsProcessingGuiRegistry::removeParameterWidgetFactory( QgsProcessingParameterWidgetFactoryInterface *factory )
+{
+  if ( !factory )
+    return;
+
+  mParameterWidgetFactories.remove( factory->parameterType() );
+  delete factory;
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingGuiRegistry::createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  if ( !parameter )
+    return nullptr;
+
+  const QString parameterType = parameter->type();
+  if ( !mParameterWidgetFactories.contains( parameterType ) )
+    return nullptr;
+
+  return mParameterWidgetFactories.value( parameterType )->createWidgetWrapper( parameter, type );
+}
+
+QgsProcessingModelerParameterWidget *QgsProcessingGuiRegistry::createModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context )
+{
+  if ( !parameter )
+    return nullptr;
+
+  const QString parameterType = parameter->type();
+  if ( !mParameterWidgetFactories.contains( parameterType ) )
+    return nullptr;
+
+  return mParameterWidgetFactories.value( parameterType )->createModelerWidgetWrapper( model, childId, parameter, context );
+}
+

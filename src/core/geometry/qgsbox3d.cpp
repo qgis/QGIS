@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsbox3d.h"
+#include "qgspoint.h"
 
 
 QgsBox3d::QgsBox3d( double xmin, double ymin, double zmin, double xmax, double ymax, double zmax )
@@ -77,7 +78,7 @@ void QgsBox3d::normalize()
 
 QgsBox3d QgsBox3d::intersect( const QgsBox3d &other ) const
 {
-  QgsRectangle intersect2d = mBounds2d.intersect( &( other.mBounds2d ) );
+  QgsRectangle intersect2d = mBounds2d.intersect( other.mBounds2d );
   double zMin = std::max( mZmin, other.mZmin );
   double zMax = std::min( mZmax, other.mZmax );
   return QgsBox3d( intersect2d.xMinimum(), intersect2d.yMinimum(), zMin,

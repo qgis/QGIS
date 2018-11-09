@@ -38,16 +38,22 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     Q_OBJECT
 
   public:
-    // bitmask of options to be shown
+
+    //! Bitmask of options to be shown
     enum Options
     {
-      Symbology = 1,
-      AllOptions = ~0
+      Symbology = 1, //!< Show symbology options
+      DestinationCrs = 1 << 2, //!< Show destination CRS (reprojection) option
+      Fields = 1 << 3, //!< Show field customization group
+      AddToCanvas = 1 << 4, //!< Show add to map option
+      SelectedOnly = 1 << 5, //!< Show selected features only option
+      GeometryType = 1 << 6, //!< Show geometry group
+      Extent = 1 << 7, //!< Show extent group
+      AllOptions = ~0 //!< Show all options
     };
 
     QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
     QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
-    ~QgsVectorLayerSaveAsDialog() override;
 
     QString format() const;
     QString encoding() const;
@@ -59,7 +65,21 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsAttributeList selectedAttributes() const;
     //! Returns selected attributes that must be exported with their displayed values instead of their raw values. Added in QGIS 2.16
     QgsAttributeList attributesAsDisplayedValues() const;
+
+    /**
+     * Returns true if the "add to canvas" checkbox is checked.
+     *
+     * \see setAddToCanvas()
+     */
     bool addToCanvas() const;
+
+    /**
+     * Sets whether the  "add to canvas" checkbox should be \a checked.
+     *
+     * \see addToCanvas()
+     * \since QGIS 3.6
+     */
+    void setAddToCanvas( bool checked );
 
     /**
      * Returns type of symbology export.
@@ -157,6 +177,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     bool mAttributeTableItemChangedSlotEnabled;
     bool mReplaceRawFieldValuesStateChangedSlotEnabled;
     QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;
+    Options mOptions = AllOptions;
 };
 
 #endif // QGSVECTORLAYERSAVEASDIALOG_H

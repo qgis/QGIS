@@ -33,25 +33,29 @@ INCLUDE_DIRECTORIES(SYSTEM
 #No relinking and full RPATH for the install tree
 #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
 
-MACRO (ADD_QGIS_TEST testname testsrc)
-  SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
-  ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
-  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
-  TARGET_LINK_LIBRARIES(qgis_${testname}
-    ${Qt5Xml_LIBRARIES}
+MACRO (ADD_QGIS_TEST TESTSRC)
+  SET (TESTNAME  ${TESTSRC})
+  STRING(REPLACE "test" "" TESTNAME ${TESTNAME})
+  STRING(REPLACE "qgs" "" TESTNAME ${TESTNAME})
+  STRING(REPLACE ".cpp" "" TESTNAME ${TESTNAME})
+  SET (TESTNAME  "qgis_${TESTNAME}test")
+
+  SET(${TESTNAME}_SRCS ${TESTSRC} ${util_SRCS})
+  SET(${TESTNAME}_MOC_CPPS ${TESTSRC})
+  ADD_EXECUTABLE(${TESTNAME} ${${TESTNAME}_SRCS})
+  SET_TARGET_PROPERTIES(${TESTNAME} PROPERTIES AUTOMOC TRUE)
+  TARGET_LINK_LIBRARIES(${TESTNAME}
     ${Qt5Core_LIBRARIES}
-    ${Qt5Svg_LIBRARIES}
     ${Qt5Test_LIBRARIES}
-    ${PROJ_LIBRARY}
-    ${GEOS_LIBRARY}
-    ${GDAL_LIBRARY}
-    qgis_core
     qgis_analysis)
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
+  ADD_TEST(${TESTNAME} ${CMAKE_BINARY_DIR}/output/bin/${TESTNAME} -maxwarnings 10000)
+  #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
+  #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
+  #  INSTALL_RPATH_USE_LINK_PATH true )
 ENDMACRO (ADD_QGIS_TEST)
 
 #############################################################
 # Tests:
 
-ADD_QGIS_TEST( qgsgeometrycheckstest testqgsgeometrychecks.cpp )
+ADD_QGIS_TEST(testqgsgeometrychecks.cpp)
+ADD_QGIS_TEST(testqgsvectorlayerfeaturepool.cpp)

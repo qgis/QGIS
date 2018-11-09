@@ -85,7 +85,8 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mOrderBy = rh.mOrderBy;
   mCrs = rh.mCrs;
   mTransformErrorCallback = rh.mTransformErrorCallback;
-  mConnectionTimeout = rh.mConnectionTimeout;
+  mTimeout = rh.mTimeout;
+  mRequestMayBeNested = rh.mRequestMayBeNested;
   return *this;
 }
 
@@ -189,6 +190,11 @@ QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QgsAttributeL
   return *this;
 }
 
+QgsFeatureRequest &QgsFeatureRequest::setNoAttributes()
+{
+  return setSubsetOfAttributes( QgsAttributeList() );
+}
+
 QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields )
 {
   if ( attrNames.contains( QgsFeatureRequest::ALL_ATTRIBUTES ) )
@@ -290,12 +296,35 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
 
 int QgsFeatureRequest::connectionTimeout() const
 {
-  return mConnectionTimeout;
+  return mTimeout;
 }
 
-void QgsFeatureRequest::setConnectionTimeout( int connectionTimeout )
+QgsFeatureRequest &QgsFeatureRequest::setConnectionTimeout( int connectionTimeout )
 {
-  mConnectionTimeout = connectionTimeout;
+  mTimeout = connectionTimeout;
+  return *this;
+}
+
+int QgsFeatureRequest::timeout() const
+{
+  return mTimeout;
+}
+
+QgsFeatureRequest &QgsFeatureRequest::setTimeout( int timeout )
+{
+  mTimeout = timeout;
+  return *this;
+}
+
+bool QgsFeatureRequest::requestMayBeNested() const
+{
+  return mRequestMayBeNested;
+}
+
+QgsFeatureRequest &QgsFeatureRequest::setRequestMayBeNested( bool requestMayBeNested )
+{
+  mRequestMayBeNested = requestMayBeNested;
+  return *this;
 }
 
 
@@ -307,7 +336,7 @@ QgsAbstractFeatureSource::~QgsAbstractFeatureSource()
   while ( !mActiveIterators.empty() )
   {
     QgsAbstractFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsg( "closing active iterator" );
+    QgsDebugMsg( QStringLiteral( "closing active iterator" ) );
     it->close();
   }
 }

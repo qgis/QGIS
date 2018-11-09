@@ -96,7 +96,7 @@ class CORE_EXPORT QgsCadUtils
       QgsPointLocator::Match edgeMatch;
 
       //! Angle (in degrees) to which we have soft-locked ourselves (if not set it is -1)
-      int softLockCommonAngle;
+      double softLockCommonAngle;
     };
 
     /**

@@ -125,6 +125,13 @@ take some time to cancel after calling this.
 Returns true if a query is currently being executed by the locator.
 %End
 
+    void clearPreviousResults();
+%Docstring
+Will call clearPreviousResults on all filters
+
+.. versionadded:: 3.2
+%End
+
   signals:
 
     void foundResult( const QgsLocatorResult &result );

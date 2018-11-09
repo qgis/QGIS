@@ -31,12 +31,10 @@
 #include <QHBoxLayout>
 #include <QFormLayout>
 
-#include "qgsvectorlayer.h"
 #include "ui_qgssourcefieldsproperties.h"
 #include "qgis_app.h"
 #include "qgsaddattrdialog.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldcalculator.h"
 

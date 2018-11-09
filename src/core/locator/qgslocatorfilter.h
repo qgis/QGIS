@@ -117,6 +117,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
       Low, //!< Low priority
       Lowest //!< Lowest priority
     };
+    Q_ENUM( Priority )
 
     //! Flags for locator behavior.
     enum Flag
@@ -124,6 +125,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
       FlagFast = 1 << 1, //!< Filter finds results quickly and can be safely run in the main thread
     };
     Q_DECLARE_FLAGS( Flags, Flag )
+    Q_FLAG( Flags )
 
     /**
      * Constructor for QgsLocatorFilter.
@@ -208,6 +210,16 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     virtual void triggerResult( const QgsLocatorResult &result ) = 0;
 
     /**
+     * This method will be called on main thread on the original filter (not a clone)
+     * before fetching results or before triggering a result to clear any change made
+     * by a former call to triggerResult.
+     * For instance, this can be used to remove any on-canvas rubber bands which have been created
+     * when a previous search result was triggered.
+     * \since QGIS 3.2
+     */
+    virtual void clearPreviousResults() {}
+
+    /**
      * Returns true if the filter should be used when no prefix
      * is entered.
      * \see setUseWithoutPrefix()
@@ -270,6 +282,15 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * \note hasConfigWidget() must return true to indicate that the filter supports configuration.
      */
     virtual void openConfigWidget( QWidget *parent = nullptr );
+
+    /**
+     * Logs a \a message to the log panel
+     * \warning in Python, do not use print() method as it might result in crashes
+     *          since fetching results does not happen in the main thread.
+     * \since QGIS 3.2
+     */
+    void logMessage( const QString &message, Qgis::MessageLevel level = Qgis::Info );
+
 
   signals:
 

@@ -1134,7 +1134,7 @@
   <action name="mActionRefreshView">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
+     <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Refresh</string>
@@ -1262,7 +1262,7 @@
      <normaloff>:/images/themes/default/mActionLayoutManager.svg</normaloff>:/images/themes/default/mActionLayoutManager.svg</iconset>
    </property>
    <property name="text">
-    <string>Layout &amp;Manager...</string>
+    <string>Layout &amp;Manager…</string>
    </property>
    <property name="toolTip">
     <string>Layout manager</string>
@@ -1372,7 +1372,7 @@
      <normaloff>:/images/themes/default/mActionFilePrint.svg</normaloff>:/images/themes/default/mActionFilePrint.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Print Atlas...</string>
+    <string>&amp;Print Atlas…</string>
    </property>
   </action>
   <action name="mActionExportAtlasAsImage">
@@ -1381,7 +1381,7 @@
      <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
    </property>
    <property name="text">
-    <string>Export Atlas as &amp;Images...</string>
+    <string>Export Atlas as &amp;Images…</string>
    </property>
   </action>
   <action name="mActionExportAtlasAsSVG">
@@ -1390,7 +1390,7 @@
      <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
    </property>
    <property name="text">
-    <string>Export Atlas as S&amp;VG...</string>
+    <string>Export Atlas as S&amp;VG…</string>
    </property>
   </action>
   <action name="mActionExportAtlasAsPDF">
@@ -1399,7 +1399,7 @@
      <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Export Atlas as PDF...</string>
+    <string>&amp;Export Atlas as PDF…</string>
    </property>
    <property name="toolTip">
     <string>Export Atlas as PDF</string>
@@ -1438,7 +1438,7 @@
      <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
    </property>
    <property name="text">
-    <string>Export Report as &amp;Images...</string>
+    <string>Export Report as &amp;Images…</string>
    </property>
    <property name="toolTip">
     <string>Export Report as Images</string>
@@ -1450,7 +1450,7 @@
      <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
    </property>
    <property name="text">
-    <string>Export Report as S&amp;VG...</string>
+    <string>Export Report as S&amp;VG…</string>
    </property>
    <property name="toolTip">
     <string>Export Report as SVG</string>
@@ -1462,7 +1462,7 @@
      <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Export Report as PDF...</string>
+    <string>&amp;Export Report as PDF…</string>
    </property>
    <property name="toolTip">
     <string>Export Report as PDF</string>
@@ -1492,7 +1492,7 @@
      <normaloff>:/images/themes/default/mActionFilePrint.svg</normaloff>:/images/themes/default/mActionFilePrint.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Print...</string>
+    <string>&amp;Print…</string>
    </property>
    <property name="toolTip">
     <string>Print Layout</string>
@@ -1507,7 +1507,7 @@
      <normaloff>:/images/themes/default/mActionFilePrint.svg</normaloff>:/images/themes/default/mActionFilePrint.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Print Report...</string>
+    <string>&amp;Print Report…</string>
    </property>
    <property name="toolTip">
     <string>Print Report</string>
@@ -1522,11 +1522,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+P</string>
-   </property>
-  </action>
-  <action name="actiondsfg">
-   <property name="text">
-    <string>dsfg</string>
    </property>
   </action>
   <action name="mActionOptions">

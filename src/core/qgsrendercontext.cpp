@@ -110,7 +110,7 @@ QgsCoordinateTransformContext QgsRenderContext::transformContext() const
 {
 #ifdef QGISDEBUG
   if ( !mHasTransformContext )
-    qWarning( "No QgsCoordinateTransformContext context set for transform" );
+    QgsDebugMsgLevel( QStringLiteral( "No QgsCoordinateTransformContext context set for transform" ), 4 );
 #endif
   return mTransformContext;
 }
@@ -273,7 +273,7 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       size = convertMetersToMapUnits( size );
       unit = QgsUnitTypes::RenderMapUnits;
       // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
-      FALLTHROUGH;
+      FALLTHROUGH
     }
     case QgsUnitTypes::RenderMapUnits:
     {
@@ -323,12 +323,12 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
     {
       size = convertMetersToMapUnits( size );
       // Fall through to RenderMapUnits with values of meters converted to MapUnits
-      FALLTHROUGH;
+      FALLTHROUGH
     }
     case QgsUnitTypes::RenderMapUnits:
     {
       // check scale
-      double minSizeMU = -DBL_MAX;
+      double minSizeMU = std::numeric_limits<double>::lowest();
       if ( scale.minSizeMMEnabled )
       {
         minSizeMU = scale.minSizeMM * mScaleFactor * mup;
@@ -339,7 +339,7 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
       }
       size = std::max( size, minSizeMU );
 
-      double maxSizeMU = DBL_MAX;
+      double maxSizeMU = std::numeric_limits<double>::max();
       if ( scale.maxSizeMMEnabled )
       {
         maxSizeMU = scale.maxSizeMM * mScaleFactor * mup;

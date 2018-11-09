@@ -81,28 +81,11 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   return nullptr;
 }
 
-
-/*
-QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QString& sldStyle,
-                           const QString& styleName, const QString& styleDescription,
-                          const QString& uiFileContent, bool useAsDefault, QString& errCause )
+QGISEXTERN QVariantMap decodeUri( const QString &uri )
 {
+  QgsDataSourceUri dsUri = QgsDataSourceUri( uri );
 
+  QVariantMap components;
+  components.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
+  return components;
 }
-
-QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
-{
-
-}
-
-QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &names,
-                           QStringList &descriptions, QString& errCause )
-{
-
-}
-
-QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& errCause )
-{
-
-}
-*/

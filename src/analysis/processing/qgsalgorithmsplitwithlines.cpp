@@ -17,7 +17,7 @@
 
 #include "qgsalgorithmsplitwithlines.h"
 #include "qgsgeometryengine.h"
-
+#include "qgsvectorlayer.h"
 ///@cond PRIVATE
 
 QString QgsSplitWithLinesAlgorithm::name() const
@@ -65,6 +65,25 @@ QgsSplitWithLinesAlgorithm *QgsSplitWithLinesAlgorithm::createInstance() const
   return new QgsSplitWithLinesAlgorithm();
 }
 
+QgsProcessingAlgorithm::Flags QgsSplitWithLinesAlgorithm::flags() const
+{
+  Flags f = QgsProcessingAlgorithm::flags();
+  f |= QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+  return f;
+}
+
+bool QgsSplitWithLinesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
+{
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
+  if ( layer->geometryType() != QgsWkbTypes::LineGeometry && layer->geometryType() != QgsWkbTypes::PolygonGeometry )
+    return false;
+
+  return true;
+}
+
 QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
@@ -86,7 +105,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
   QgsSpatialIndex spatialIndex;
   QMap< QgsFeatureId, QgsGeometry > splitGeoms;
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   request.setDestinationCrs( source->sourceCrs(), context.transformContext() );
 
   QgsFeatureIterator splitLines = linesSource->getFeatures( request );
@@ -99,7 +118,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
     }
 
     splitGeoms.insert( aSplitFeature.id(), aSplitFeature.geometry() );
-    spatialIndex.insertFeature( aSplitFeature );
+    spatialIndex.addFeature( aSplitFeature );
   }
 
   QgsFeature outFeat;
@@ -173,7 +192,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
             }
 
             QgsGeometry inGeom = inGeoms.takeFirst();
-            if ( !inGeom )
+            if ( inGeom.isNull() )
               continue;
 
             if ( splitGeomEngine->intersects( inGeom.constGet() ) )

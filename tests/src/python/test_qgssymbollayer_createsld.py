@@ -32,7 +32,7 @@ from qgis.core import (
     QgsFontMarkerSymbolLayer, QgsEllipseSymbolLayer, QgsSimpleLineSymbolLayer,
     QgsMarkerLineSymbolLayer, QgsMarkerSymbol, QgsSimpleFillSymbolLayer, QgsSVGFillSymbolLayer,
     QgsLinePatternFillSymbolLayer, QgsPointPatternFillSymbolLayer, QgsVectorLayer, QgsVectorLayerSimpleLabeling,
-    QgsTextBufferSettings, QgsPalLayerSettings, QgsTextBackgroundSettings)
+    QgsTextBufferSettings, QgsPalLayerSettings, QgsTextBackgroundSettings, QgsRuleBasedLabeling)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -1052,6 +1052,13 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertEqual("POP_MAX", ltProperty.toElement().text())
         ltValue = gt.childNodes().item(1)
         self.assertEqual("1000000", gtValue.toElement().text())
+
+        # check that adding a rule without settings does not segfault
+        xml1 = dom.toString()
+        layer.labeling().rootRule().appendChild(QgsRuleBasedLabeling.Rule(None))
+        dom, root = self.layerToSld(layer)
+        xml2 = dom.toString()
+        self.assertEqual(xml1, xml2)
 
     def updateLinePlacementProperties(self, layer, linePlacement, distance, repeat, maxAngleInternal=25, maxAngleExternal=-25):
         settings = layer.labeling().settings()

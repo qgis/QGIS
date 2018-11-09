@@ -17,6 +17,7 @@
 #include "qgslayoutreportcontext.h"
 #include "qgsfeature.h"
 #include "qgslayout.h"
+#include "qgsvectorlayer.h"
 
 QgsLayoutReportContext::QgsLayoutReportContext( QgsLayout *layout )
   : QObject( layout )
@@ -78,5 +79,5 @@ void QgsLayoutReportContext::setPredefinedScales( const QVector<qreal> &scales )
 {
   mPredefinedScales = scales;
   // make sure the list is sorted
-  std::sort( mPredefinedScales.begin(), mPredefinedScales.end() );
+  std::sort( mPredefinedScales.begin(), mPredefinedScales.end() ); // clazy:exclude=detaching-member
 }

@@ -16,7 +16,71 @@
  ***************************************************************************/
 
 #include "qgsnative.h"
+#include <QString>
+#include <QDesktopServices>
+#include <QUrl>
+#include <QFileInfo>
+
+void QgsNative::cleanup()
+{}
+
+QgsNative::Capabilities QgsNative::capabilities() const
+{
+  return nullptr;
+}
+
+void QgsNative::initializeMainWindow( QWindow *,
+                                      const QString &,
+                                      const QString &,
+                                      const QString & )
+{
+
+}
 
 void QgsNative::currentAppActivateIgnoringOtherApps()
 {
+}
+
+void QgsNative::openFileExplorerAndSelectFile( const QString &path )
+{
+  QFileInfo fi( path );
+  QString folder = fi.path();
+  QDesktopServices::openUrl( QUrl::fromLocalFile( folder ) );
+}
+
+void QgsNative::showFileProperties( const QString & )
+{
+
+}
+
+void QgsNative::showUndefinedApplicationProgress()
+{
+
+}
+
+void QgsNative::setApplicationProgress( double )
+{
+
+}
+
+void QgsNative::hideApplicationProgress()
+{
+
+}
+
+void QgsNative::setApplicationBadgeCount( int )
+{
+
+}
+
+QgsNative::NotificationResult QgsNative::showDesktopNotification( const QString &, const QString &, const NotificationSettings & )
+{
+  NotificationResult result;
+  result.successful = false;
+  return result;
+}
+
+void QgsNative::onRecentProjectsChanged( const std::vector<QgsNative::RecentProjectProperties> & )
+{
+
 }

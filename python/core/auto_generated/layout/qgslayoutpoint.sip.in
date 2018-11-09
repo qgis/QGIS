@@ -33,17 +33,17 @@ for use in QGIS layouts. Measurement units are stored alongside the position.
 %End
   public:
 
-    QgsLayoutPoint( const double x, const double y, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    QgsLayoutPoint( double x, double y, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 %Docstring
 Constructor for QgsLayoutPoint.
 %End
 
-    explicit QgsLayoutPoint( const QPointF point, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutPoint( QPointF point, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 %Docstring
 Constructor for QgsLayoutPoint.
 %End
 
-    explicit QgsLayoutPoint( const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutPoint( QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 %Docstring
 Constructor for an empty point, where both x and y are set to 0.
 
@@ -145,13 +145,13 @@ Decodes a point from a ``string``.
     bool operator==( const QgsLayoutPoint &other ) const;
     bool operator!=( const QgsLayoutPoint &other ) const;
 
-    QgsLayoutPoint operator*( const double v ) const;
+    QgsLayoutPoint operator*( double v ) const;
 
-    QgsLayoutPoint operator*=( const double v );
+    QgsLayoutPoint operator*=( double v );
 
-    QgsLayoutPoint operator/( const double v ) const;
+    QgsLayoutPoint operator/( double v ) const;
 
-    QgsLayoutPoint operator/=( const double v );
+    QgsLayoutPoint operator/=( double v );
 
 };
 

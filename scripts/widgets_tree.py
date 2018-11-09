@@ -53,7 +53,7 @@ sys.modules['qwt_plot'] = qwt_plot
 # QgsRendererRulesTreeWidget
 # and QgsProjectionSelector cannot open db file
 from qgis import gui
-for m in ['qgscolorbutton', 'qgscolorrampcombobox', 'qgsprojectionselector', 'qgslabelpreview', 'qgsrulebasedrendererv2widget', 'qgscollapsiblegroupbox', 'qgsblendmodecombobox', 'qgsexpressionbuilderwidget', 'qgsrasterformatsaveoptionswidget', 'qgsrasterpyramidsoptionswidget', 'qgsscalecombobox', 'qgsfilterlineedit', 'qgsdualview']:
+for m in ['qgscolorbutton', 'qgscolorrampcombobox', 'qgsprojectionselector', 'qgslabelpreview', 'qgsrulebasedrendererwidget', 'qgscollapsiblegroupbox', 'qgsblendmodecombobox', 'qgsexpressionbuilderwidget', 'qgsrasterformatsaveoptionswidget', 'qgsrasterpyramidsoptionswidget', 'qgsscalecombobox', 'qgsfilterlineedit', 'qgsdualview']:
     sys.modules[m] = gui
 
 

@@ -44,13 +44,11 @@ struct QgsOracleLayerProperty
   QString              ownerName;
   QString              tableName;
   QString              geometryColName;
-  bool                 isView;
+  bool                 isView = false;
   QStringList          pkCols;
   QString              sql;
 
-  QgsOracleLayerProperty()
-    : isView( false )
-  {}
+  QgsOracleLayerProperty() = default;
 
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
@@ -187,7 +185,7 @@ class QgsOracleConn : public QObject
 
   private:
     explicit QgsOracleConn( QgsDataSourceUri uri );
-    ~QgsOracleConn();
+    ~QgsOracleConn() override;
 
     bool exec( QSqlQuery &qry, const QString &sql, const QVariantList &params );
 

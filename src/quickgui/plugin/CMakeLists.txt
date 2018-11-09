@@ -10,8 +10,17 @@ SET(QGIS_QUICK_PLUGIN_SRC
 )
 
 SET(QGIS_QUICK_PLUGIN_RESOURCES
+  editor/qgsquickcheckbox.qml
+  editor/qgsquickdatetime.qml
+  editor/qgsquickexternalresource.qml
+  editor/qgsquicktextedit.qml
+  editor/qgsquickvaluemap.qml
+  qgsquickfeatureform.qml
+  qgsquickfeatureformstyling.qml
   qgsquickmapcanvas.qml
   qgsquickmessagelog.qml
+  qgsquickphotopanel.qml
+  qgsquickpositionmarker.qml
   qgsquickscalebar.qml
   qmldir
 )
@@ -108,8 +117,9 @@ IF(QMLPLUGINDUMP_FOUND)
       COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QGIS_QUICK_TYPEINFO_GENERATE_DIR}
       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:qgis_quick_plugin> ${QGIS_QUICK_TYPEINFO_GENERATE_DIR}
       COMMAND ${QMLPLUGINDUMP_EXECUTABLE}
-      ARGS QgsQuick ${QGIS_QUICK_VERSION} . --output ${QGIS_QUICK_PLUGIN_TYPEINFO}
+      ARGS QgsQuick ${QGIS_QUICK_VERSION} . -noinstantiate --output ${QGIS_QUICK_PLUGIN_TYPEINFO}
       WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+      COMMENT "Generating qgsquick.qmltypes with qmlplugindump"
       POST_BUILD
   )
 ENDIF()

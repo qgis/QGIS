@@ -18,8 +18,10 @@
 
 #include "qgis_core.h"
 #include "qgsfeature.h"
-#include "qgsvectorlayer.h"
+#include "qgslayout.h"
+
 #include <QtGlobal>
+#include <QPointer>
 
 /**
  * \ingroup core

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>560</width>
-    <height>234</height>
+    <width>578</width>
+    <height>259</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,13 +15,14 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>.</normaloff>.</iconset>
+    <normaloff/>
+   </iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QGroupBox" name="grpEnable">
      <property name="title">
-      <string>Enable north arrow</string>
+      <string>Enable North Arrow</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -74,16 +75,7 @@
       </item>
       <item row="2" column="2" colspan="3">
        <layout class="QHBoxLayout" name="horizontalLayout_26">
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
@@ -142,7 +134,7 @@
         <item>
          <widget class="QLabel" name="outlineLabel">
           <property name="text">
-           <string>Outline</string>
+           <string>Stroke</string>
           </property>
          </widget>
         </item>
@@ -167,7 +159,7 @@
         </item>
        </layout>
       </item>
-      <item row="4" column="2" colspan="3">
+      <item row="5" column="2" colspan="3">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="labelHorizontal">
@@ -237,7 +229,7 @@
        </layout>
       </item>
       <item row="3" column="1">
-       <widget class="QLabel" name="textLabel6">
+       <widget class="QLabel" name="angleLabel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
           <horstretch>0</horstretch>
@@ -259,7 +251,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QLabel" name="textLabel8">
+       <widget class="QLabel" name="placementLabel">
         <property name="text">
          <string>Placement</string>
         </property>
@@ -281,7 +273,7 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="2" colspan="3">
+      <item row="4" column="2" colspan="3">
        <widget class="QComboBox" name="cboPlacement">
         <property name="toolTip">
          <string>Placement on screen</string>
@@ -429,16 +421,19 @@
  </customwidgets>
  <tabstops>
   <tabstop>grpEnable</tabstop>
+  <tabstop>pbnChangeColor</tabstop>
+  <tabstop>pbnChangeOutlineColor</tabstop>
+  <tabstop>spinSize</tabstop>
   <tabstop>mSvgPathLineEdit</tabstop>
   <tabstop>mSvgSelectorBtn</tabstop>
-  <tabstop>pbnChangeColor</tabstop>
   <tabstop>sliderRotation</tabstop>
   <tabstop>spinAngle</tabstop>
-  <tabstop>cboPlacement</tabstop>
-  <tabstop>spinVertical</tabstop>
-  <tabstop>spinHorizontal</tabstop>
-  <tabstop>wgtUnitSelection</tabstop>
   <tabstop>cboxAutomatic</tabstop>
+  <tabstop>cboPlacement</tabstop>
+  <tabstop>spinHorizontal</tabstop>
+  <tabstop>spinVertical</tabstop>
+  <tabstop>wgtUnitSelection</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

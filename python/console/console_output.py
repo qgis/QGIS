@@ -61,7 +61,7 @@ class writeOut(object):
         self.move_cursor_to_end()
 
         if self.style != "_traceback":
-            QCoreApplication.processEvents()
+            self.sO.repaint()
 
         if self.fire_keyboard_interrupt:
             self.fire_keyboard_interrupt = False
@@ -169,8 +169,9 @@ class ShellOutputScintilla(QsciScintilla):
 
     def insertInitText(self):
         txtInit = QCoreApplication.translate("PythonConsole",
-                                             "Python Console \n"
-                                             "Use iface to access QGIS API interface or Type help(iface) for more info")
+                                             "Python Console\n"
+                                             "Use iface to access QGIS API interface or Type help(iface) for more info\n"
+                                             "Security warning: typing commands from an untrusted source can lead to data loss and/or leak")
 
         # some translation string for the console header ends without '\n'
         # and the first command in console will be appended at the header text.

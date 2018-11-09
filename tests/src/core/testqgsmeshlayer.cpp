@@ -51,10 +51,12 @@ class TestQgsMeshLayer : public QObject
 
     void test_write_read_project();
     void test_read_mesh();
+    void test_read_bed_elevation_dataset();
     void test_read_vertex_scalar_dataset();
     void test_read_vertex_vector_dataset();
     void test_read_face_scalar_dataset();
     void test_read_face_vector_dataset();
+    void test_read_vertex_scalar_dataset_with_inactive_face();
     void test_extent();
 };
 
@@ -80,10 +82,13 @@ void TestQgsMeshLayer::initTestCase()
   // Memory layer
   mMemoryLayer = new QgsMeshLayer( readFile( "/quad_and_triangle.txt" ), "Triangle and Quad Memory", "mesh_memory" );
   QVERIFY( mMemoryLayer->isValid() );
+  QCOMPARE( mMemoryLayer->dataProvider()->extraDatasets().count(), 0 );
+  mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_bed_elevation.txt" ) );
   mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_vertex_scalar.txt" ) );
   mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_vertex_vector.txt" ) );
   mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_face_scalar.txt" ) );
   mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_face_vector.txt" ) );
+  QCOMPARE( mMemoryLayer->dataProvider()->extraDatasets().count(), 5 );
 
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mMemoryLayer );
@@ -91,8 +96,10 @@ void TestQgsMeshLayer::initTestCase()
   // MDAL Layer
   QString uri( mDataDir + "/quad_and_triangle.2dm" );
   mMdalLayer = new QgsMeshLayer( uri, "Triangle and Quad MDAL", "mdal" );
+  QCOMPARE( mMdalLayer->dataProvider()->datasetGroupCount(), 1 ); //bed elevation is already in the 2dm
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_vertex_scalar.dat" );
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_vertex_vector.dat" );
+  QCOMPARE( mMdalLayer->dataProvider()->extraDatasets().count(), 2 );
 
   //The face dataset is recognized by "_els_" in the filename for this format
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_els_face_scalar.dat" );
@@ -137,9 +144,8 @@ void TestQgsMeshLayer::test_read_mesh()
   }
 }
 
-void TestQgsMeshLayer::test_read_vertex_scalar_dataset()
+void TestQgsMeshLayer::test_read_bed_elevation_dataset()
 {
-  int ds = 0;
   QList<const QgsMeshDataProvider *> dataProviders;
   dataProviders.append( mMemoryLayer->dataProvider() );
   dataProviders.append( mMdalLayer->dataProvider() );
@@ -149,29 +155,75 @@ void TestQgsMeshLayer::test_read_vertex_scalar_dataset()
     QVERIFY( dp != nullptr );
     QVERIFY( dp->isValid() );
 
-    QCOMPARE( 4, dp->datasetCount() );
+    QCOMPARE( 5, dp->datasetGroupCount() );
 
-    const QgsMeshDatasetMetadata meta = dp->datasetMetadata( ds );
-    QCOMPARE( meta.extraOptions().count(), 2 );
-    QCOMPARE( meta.extraOptions()["name"], QString( "VertexScalarDataset" ) );
-    QVERIFY( qgsDoubleNear( meta.extraOptions()["time"].toDouble(), 0.0 ) );
+    QgsMeshDatasetIndex ds( 0, 0 );
 
-    QVERIFY( meta.isValid() );
+    const QgsMeshDatasetGroupMetadata meta = dp->datasetGroupMetadata( ds );
+    QVERIFY( meta.name().contains( "Elevation" ) );
     QVERIFY( meta.isScalar() );
-    QVERIFY( meta.isOnVertices() );
+    QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices );
+
+    const QgsMeshDatasetMetadata dmeta = dp->datasetMetadata( ds );
+    QVERIFY( qgsDoubleNear( dmeta.time(), 0 ) );
+    QVERIFY( dmeta.isValid() );
 
     // We have 5 values, since dp->vertexCount() = 5
-    QCOMPARE( QgsMeshDatasetValue( 1.0 ), dp->datasetValue( ds, 0 ) );
-    QCOMPARE( QgsMeshDatasetValue( 2.0 ), dp->datasetValue( ds, 1 ) );
-    QCOMPARE( QgsMeshDatasetValue( 3.0 ), dp->datasetValue( ds, 2 ) );
-    QCOMPARE( QgsMeshDatasetValue( 2.0 ), dp->datasetValue( ds, 3 ) );
-    QCOMPARE( QgsMeshDatasetValue( 1.0 ), dp->datasetValue( ds, 4 ) );
+    QCOMPARE( QgsMeshDatasetValue( 20 ), dp->datasetValue( ds, 0 ) );
+    QCOMPARE( QgsMeshDatasetValue( 30 ), dp->datasetValue( ds, 1 ) );
+    QCOMPARE( QgsMeshDatasetValue( 40 ), dp->datasetValue( ds, 2 ) );
+    QCOMPARE( QgsMeshDatasetValue( 50 ), dp->datasetValue( ds, 3 ) );
+    QCOMPARE( QgsMeshDatasetValue( 10 ), dp->datasetValue( ds, 4 ) );
+
+    QVERIFY( dp->isFaceActive( ds, 0 ) );
+  }
+}
+
+void TestQgsMeshLayer::test_read_vertex_scalar_dataset()
+{
+  QList<const QgsMeshDataProvider *> dataProviders;
+  dataProviders.append( mMemoryLayer->dataProvider() );
+  dataProviders.append( mMdalLayer->dataProvider() );
+
+  foreach ( auto dp, dataProviders )
+  {
+    QVERIFY( dp != nullptr );
+    QVERIFY( dp->isValid() );
+
+    QCOMPARE( 5, dp->datasetGroupCount() );
+
+    for ( int i = 0; i < 2 ; ++i )
+    {
+      QgsMeshDatasetIndex ds( 1, i );
+
+      const QgsMeshDatasetGroupMetadata meta = dp->datasetGroupMetadata( ds );
+      if ( meta.extraOptions().count() == 2 )
+      {
+        QCOMPARE( meta.extraOptions()["description"], QString( "Vertex Scalar Dataset" ) );
+        QCOMPARE( meta.extraOptions()["meta2"], QString( "best dataset" ) );
+      }
+      QCOMPARE( meta.name(), QString( "VertexScalarDataset" ) );
+      QVERIFY( meta.isScalar() );
+      QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices );
+
+      const QgsMeshDatasetMetadata dmeta = dp->datasetMetadata( ds );
+      QVERIFY( qgsDoubleNear( dmeta.time(), i ) );
+      QVERIFY( dmeta.isValid() );
+
+      // We have 5 values, since dp->vertexCount() = 5
+      QCOMPARE( QgsMeshDatasetValue( 1.0 + i ), dp->datasetValue( ds, 0 ) );
+      QCOMPARE( QgsMeshDatasetValue( 2.0 + i ), dp->datasetValue( ds, 1 ) );
+      QCOMPARE( QgsMeshDatasetValue( 3.0 + i ), dp->datasetValue( ds, 2 ) );
+      QCOMPARE( QgsMeshDatasetValue( 2.0 + i ), dp->datasetValue( ds, 3 ) );
+      QCOMPARE( QgsMeshDatasetValue( 1.0 + i ), dp->datasetValue( ds, 4 ) );
+
+      QVERIFY( dp->isFaceActive( ds, 0 ) );
+    }
   }
 }
 
 void TestQgsMeshLayer::test_read_vertex_vector_dataset()
 {
-  int ds = 1;
   QList<const QgsMeshDataProvider *> dataProviders;
   dataProviders.append( mMemoryLayer->dataProvider() );
   dataProviders.append( mMdalLayer->dataProvider() );
@@ -181,29 +233,37 @@ void TestQgsMeshLayer::test_read_vertex_vector_dataset()
     QVERIFY( dp != nullptr );
     QVERIFY( dp->isValid() );
 
-    QCOMPARE( 4, dp->datasetCount() );
+    QCOMPARE( 5, dp->datasetGroupCount() );
 
-    const QgsMeshDatasetMetadata meta = dp->datasetMetadata( ds );
-    QCOMPARE( meta.extraOptions().count(), 2 );
-    QCOMPARE( meta.extraOptions()["name"], QString( "VertexVectorDataset" ) );
-    QVERIFY( qgsDoubleNear( meta.extraOptions()["time"].toDouble(), 0.0 ) );
+    for ( int i = 0; i < 2 ; ++i )
+    {
+      QgsMeshDatasetIndex ds( 2, i );
 
-    QVERIFY( meta.isValid() );
-    QVERIFY( !meta.isScalar() );
-    QVERIFY( meta.isOnVertices() );
+      const QgsMeshDatasetGroupMetadata meta = dp->datasetGroupMetadata( ds );
+      if ( meta.extraOptions().count() == 2 )
+        QCOMPARE( meta.extraOptions()["description"], QString( "Vertex Vector Dataset" ) );
+      QCOMPARE( meta.name(), QString( "VertexVectorDataset" ) );
+      QVERIFY( !meta.isScalar() );
+      QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices );
 
-    // We have 5 values, since dp->vertexCount() = 5
-    QCOMPARE( QgsMeshDatasetValue( 1, 1 ), dp->datasetValue( ds, 0 ) );
-    QCOMPARE( QgsMeshDatasetValue( 2, 1 ), dp->datasetValue( ds, 1 ) );
-    QCOMPARE( QgsMeshDatasetValue( 3, 2 ), dp->datasetValue( ds, 2 ) );
-    QCOMPARE( QgsMeshDatasetValue( 2, 2 ), dp->datasetValue( ds, 3 ) );
-    QCOMPARE( QgsMeshDatasetValue( 1, -2 ), dp->datasetValue( ds, 4 ) );
+      const QgsMeshDatasetMetadata dmeta = dp->datasetMetadata( ds );
+      QVERIFY( qgsDoubleNear( dmeta.time(), i ) );
+      QVERIFY( dmeta.isValid() );
+
+      // We have 5 values, since dp->vertexCount() = 5
+      QCOMPARE( QgsMeshDatasetValue( 1 + i, 1 + i ), dp->datasetValue( ds, 0 ) );
+      QCOMPARE( QgsMeshDatasetValue( 2 + i, 1 + i ), dp->datasetValue( ds, 1 ) );
+      QCOMPARE( QgsMeshDatasetValue( 3 + i, 2 + i ), dp->datasetValue( ds, 2 ) );
+      QCOMPARE( QgsMeshDatasetValue( 2 + i, 2 + i ), dp->datasetValue( ds, 3 ) );
+      QCOMPARE( QgsMeshDatasetValue( 1 + i, -2 + i ), dp->datasetValue( ds, 4 ) );
+
+      QVERIFY( dp->isFaceActive( ds, 0 ) );
+    }
   }
 }
 
 void TestQgsMeshLayer::test_read_face_scalar_dataset()
 {
-  int ds = 2;
   QList<const QgsMeshDataProvider *> dataProviders;
   dataProviders.append( mMemoryLayer->dataProvider() );
   dataProviders.append( mMdalLayer->dataProvider() );
@@ -213,27 +273,35 @@ void TestQgsMeshLayer::test_read_face_scalar_dataset()
     QVERIFY( dp != nullptr );
     QVERIFY( dp->isValid() );
 
-    QCOMPARE( 4, dp->datasetCount() );
+    QCOMPARE( 5, dp->datasetGroupCount() );
 
-    const QgsMeshDatasetMetadata meta = dp->datasetMetadata( ds );
-    QCOMPARE( meta.extraOptions().count(), 2 );
-    QCOMPARE( meta.extraOptions()["name"], QString( "FaceScalarDataset" ) );
-    QVERIFY( qgsDoubleNear( meta.extraOptions()["time"].toDouble(), 0.0 ) );
+    for ( int i = 0; i < 2 ; ++i )
+    {
+      QgsMeshDatasetIndex ds( 3, i );
 
-    QVERIFY( meta.isValid() );
-    QVERIFY( meta.isScalar() );
-    QVERIFY( !meta.isOnVertices() );
+      const QgsMeshDatasetGroupMetadata meta = dp->datasetGroupMetadata( ds );
+      if ( meta.extraOptions().count() == 2 )
+        QCOMPARE( meta.extraOptions()["description"], QString( "Face Scalar Dataset" ) );
+      QCOMPARE( meta.name(), QString( "FaceScalarDataset" ) );
+      QVERIFY( meta.isScalar() );
+      QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces );
 
-    // We have 2 values, since dp->faceCount() = 2
-    QCOMPARE( QgsMeshDatasetValue( 1 ), dp->datasetValue( ds, 0 ) );
-    QCOMPARE( QgsMeshDatasetValue( 2 ), dp->datasetValue( ds, 1 ) );
+      const QgsMeshDatasetMetadata dmeta = dp->datasetMetadata( ds );
+      QVERIFY( qgsDoubleNear( dmeta.time(), i ) );
+      QVERIFY( dmeta.isValid() );
+
+      // We have 2 values, since dp->faceCount() = 2
+      QCOMPARE( QgsMeshDatasetValue( 1 + i ), dp->datasetValue( ds, 0 ) );
+      QCOMPARE( QgsMeshDatasetValue( 2 + i ), dp->datasetValue( ds, 1 ) );
+
+      QVERIFY( dp->isFaceActive( ds, 0 ) );
+    }
   }
 }
 
 
 void TestQgsMeshLayer::test_read_face_vector_dataset()
 {
-  int ds = 3;
   QList<const QgsMeshDataProvider *> dataProviders;
   dataProviders.append( mMemoryLayer->dataProvider() );
   dataProviders.append( mMdalLayer->dataProvider() );
@@ -243,23 +311,67 @@ void TestQgsMeshLayer::test_read_face_vector_dataset()
     QVERIFY( dp != nullptr );
     QVERIFY( dp->isValid() );
 
-    QCOMPARE( 4, dp->datasetCount() );
+    QCOMPARE( 5, dp->datasetGroupCount() );
 
-    const QgsMeshDatasetMetadata meta = dp->datasetMetadata( ds );
-    QCOMPARE( meta.extraOptions().count(), 2 );
-    QCOMPARE( meta.extraOptions()["name"], QString( "FaceVectorDataset" ) );
-    QVERIFY( qgsDoubleNear( meta.extraOptions()["time"].toDouble(), 0.0 ) );
+    for ( int i = 0; i < 2 ; ++i )
+    {
+      QgsMeshDatasetIndex ds( 4, i );
 
-    QVERIFY( meta.isValid() );
-    QVERIFY( !meta.isScalar() );
-    QVERIFY( !meta.isOnVertices() );
+      const QgsMeshDatasetGroupMetadata meta = dp->datasetGroupMetadata( ds );
+      if ( meta.extraOptions().count() == 2 )
+        QCOMPARE( meta.extraOptions()["description"], QString( "Face Vector Dataset" ) );
+      QCOMPARE( meta.name(), QString( "FaceVectorDataset" ) );
+      QVERIFY( !meta.isScalar() );
+      QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces );
 
-    // We have 2 values, since dp->faceCount() = 2
-    QCOMPARE( QgsMeshDatasetValue( 1, 1 ), dp->datasetValue( ds, 0 ) );
-    QCOMPARE( QgsMeshDatasetValue( 2, 2 ), dp->datasetValue( ds, 1 ) );
+      const QgsMeshDatasetMetadata dmeta = dp->datasetMetadata( ds );
+      QVERIFY( qgsDoubleNear( dmeta.time(), i ) );
+      QVERIFY( dmeta.isValid() );
+
+      // We have 2 values, since dp->faceCount() = 2
+      QCOMPARE( QgsMeshDatasetValue( 1 + i, 1 + i ), dp->datasetValue( ds, 0 ) );
+      QCOMPARE( QgsMeshDatasetValue( 2 + i, 2 + i ), dp->datasetValue( ds, 1 ) );
+
+      QVERIFY( dp->isFaceActive( ds, 0 ) );
+    }
   }
 }
 
+void TestQgsMeshLayer::test_read_vertex_scalar_dataset_with_inactive_face()
+{
+  QString uri( mDataDir + "/quad_and_triangle.2dm" );
+  QgsMeshLayer layer( uri, "Triangle and Quad MDAL", "mdal" );
+  layer.dataProvider()->addDataset( mDataDir + "/quad_and_triangle_vertex_scalar_with_inactive_face.dat" );
+  QgsMeshDataProvider *dp = layer.dataProvider();
+  QVERIFY( dp != nullptr );
+  QVERIFY( dp->isValid() );
+  QCOMPARE( 2, dp->datasetGroupCount() );
+
+  for ( int i = 0; i < 2 ; ++i )
+  {
+    QgsMeshDatasetIndex ds( 1, i );
+
+    const QgsMeshDatasetGroupMetadata meta = dp->datasetGroupMetadata( ds );
+    QCOMPARE( meta.name(), QString( "VertexScalarDatasetWithInactiveFace1" ) );
+    QVERIFY( meta.isScalar() );
+    QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices );
+
+    const QgsMeshDatasetMetadata dmeta = dp->datasetMetadata( ds );
+    QVERIFY( qgsDoubleNear( dmeta.time(), i ) );
+    QVERIFY( dmeta.isValid() );
+
+    // We have 5 values, since dp->vertexCount() = 5
+    QCOMPARE( QgsMeshDatasetValue( 1.0 + i ), dp->datasetValue( ds, 0 ) );
+    QCOMPARE( QgsMeshDatasetValue( 2.0 + i ), dp->datasetValue( ds, 1 ) );
+    QCOMPARE( QgsMeshDatasetValue( 3.0 + i ), dp->datasetValue( ds, 2 ) );
+    QCOMPARE( QgsMeshDatasetValue( 2.0 + i ), dp->datasetValue( ds, 3 ) );
+    QCOMPARE( QgsMeshDatasetValue( 1.0 + i ), dp->datasetValue( ds, 4 ) );
+
+    // We have 2 faces
+    QVERIFY( !dp->isFaceActive( ds, 0 ) );
+    QVERIFY( dp->isFaceActive( ds, 1 ) );
+  }
+}
 
 void TestQgsMeshLayer::test_extent()
 {

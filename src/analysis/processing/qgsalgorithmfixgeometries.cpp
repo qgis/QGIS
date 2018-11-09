@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfixgeometries.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -72,6 +73,18 @@ QgsFixGeometriesAlgorithm *QgsFixGeometriesAlgorithm::createInstance() const
   return new QgsFixGeometriesAlgorithm();
 }
 
+bool QgsFixGeometriesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
+{
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
+  if ( !layer->isSpatial() || ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
+    return false;
+  // The algorithm would drop M, so disable it if the layer has M
+  return ! QgsWkbTypes::hasM( layer->wkbType() );
+}
+
 QgsFeatureList QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   if ( !feature.hasGeometry() )
@@ -80,7 +93,7 @@ QgsFeatureList QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feat
   QgsFeature outputFeature = feature;
 
   QgsGeometry outputGeometry = outputFeature.geometry().makeValid();
-  if ( !outputGeometry )
+  if ( outputGeometry.isNull() )
   {
     feedback->pushInfo( QObject::tr( "makeValid failed for feature %1 " ).arg( feature.id() ) );
     outputFeature.clearGeometry();

@@ -35,11 +35,7 @@
 static bool _canExportToGeos( const QgsGeometry &geom )
 {
   geos::unique_ptr geosGeom = QgsGeos::asGeos( geom );
-  if ( geosGeom )
-  {
-    return true;
-  }
-  return false;
+  return static_cast<bool>( geosGeom );
 }
 
 topolTest::topolTest( QgisInterface *qgsIface )
@@ -587,7 +583,7 @@ ErrorList topolTest::checkGaps( QgsVectorLayer *layer1, QgsVectorLayer *layer2, 
   //qDebug() << "extent wkt - " << bufferExtent->exportToWkt();
 
   QgsGeometry diffGeoms = bufferExtent.difference( test );
-  if ( !diffGeoms )
+  if ( diffGeoms.isNull() )
   {
     qDebug() << "difference result 0-";
     return errorList;
@@ -1292,14 +1288,14 @@ void topolTest::fillFeatureMap( QgsVectorLayer *layer, const QgsRectangle &exten
   QgsFeatureIterator fit;
   if ( extent.isEmpty() )
   {
-    fit = layer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+    fit = layer->getFeatures( QgsFeatureRequest().setNoAttributes() );
   }
   else
   {
     fit = layer->getFeatures( QgsFeatureRequest()
                               .setFilterRect( extent )
                               .setFlags( QgsFeatureRequest::ExactIntersect )
-                              .setSubsetOfAttributes( QgsAttributeList() ) );
+                              .setNoAttributes() );
   }
 
   QgsFeature f;
@@ -1318,14 +1314,14 @@ void topolTest::fillFeatureList( QgsVectorLayer *layer, const QgsRectangle &exte
   QgsFeatureIterator fit;
   if ( extent.isEmpty() )
   {
-    fit = layer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+    fit = layer->getFeatures( QgsFeatureRequest().setNoAttributes() );
   }
   else
   {
     fit = layer->getFeatures( QgsFeatureRequest()
                               .setFilterRect( extent )
                               .setFlags( QgsFeatureRequest::ExactIntersect )
-                              .setSubsetOfAttributes( QgsAttributeList() ) );
+                              .setNoAttributes() );
   }
 
   QgsFeature f;
@@ -1347,14 +1343,14 @@ QgsSpatialIndex *topolTest::createIndex( QgsVectorLayer *layer, const QgsRectang
   QgsFeatureIterator fit;
   if ( extent.isEmpty() )
   {
-    fit = layer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+    fit = layer->getFeatures( QgsFeatureRequest().setNoAttributes() );
   }
   else
   {
     fit = layer->getFeatures( QgsFeatureRequest()
                               .setFilterRect( extent )
                               .setFlags( QgsFeatureRequest::ExactIntersect )
-                              .setSubsetOfAttributes( QgsAttributeList() ) );
+                              .setNoAttributes() );
   }
 
 
@@ -1373,7 +1369,7 @@ QgsSpatialIndex *topolTest::createIndex( QgsVectorLayer *layer, const QgsRectang
 
     if ( f.hasGeometry() )
     {
-      index->insertFeature( f );
+      index->addFeature( f );
       mFeatureMap2[f.id()] = FeatureLayer( layer, f );
     }
   }
@@ -1383,7 +1379,7 @@ QgsSpatialIndex *topolTest::createIndex( QgsVectorLayer *layer, const QgsRectang
 
 ErrorList topolTest::runTest( const QString &testName, QgsVectorLayer *layer1, QgsVectorLayer *layer2, ValidateType type )
 {
-  QgsDebugMsg( QString( "Running test %1" ).arg( testName ) );
+  QgsDebugMsg( QStringLiteral( "Running test %1" ).arg( testName ) );
   ErrorList errors;
 
   if ( !layer1 )

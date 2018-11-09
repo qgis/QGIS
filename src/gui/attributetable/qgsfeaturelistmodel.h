@@ -50,7 +50,10 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
          */
         FeatureInfo() = default;
 
+        //! True if feature is a newly added feature.
         bool isNew = false;
+
+        //! True if feature has been edited.
         bool isEdited = false;
     };
 
@@ -66,7 +69,12 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual void setSourceModel( QgsAttributeTableFilterModel *sourceModel );
+
+    /**
+     * Returns the vector layer cache which is being used to populate the model.
+     */
     QgsVectorLayerCache *layerCache();
+
     QVariant data( const QModelIndex &index, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
@@ -102,8 +110,18 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
 
     QString displayExpression() const;
     bool featureByIndex( const QModelIndex &index, QgsFeature &feat );
+
+    /**
+     * Returns the feature ID corresponding to an \a index from the model.
+     * \see fidToIdx()
+     */
     QgsFeatureId idxToFid( const QModelIndex &index ) const;
-    QModelIndex fidToIdx( const QgsFeatureId fid ) const;
+
+    /**
+     * Returns the model index corresponding to a feature ID.
+     * \see idxToFid()
+     */
+    QModelIndex fidToIdx( QgsFeatureId fid ) const;
 
     QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
     QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;

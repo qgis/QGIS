@@ -119,12 +119,12 @@ void QgsPropertyOverrideButton::init( int propertyKey, const QgsProperty &proper
   {
     case QgsPropertyDefinition::DataTypeBoolean:
       ts << tr( "boolean" );
-      FALLTHROUGH;
+      FALLTHROUGH
 
     case QgsPropertyDefinition::DataTypeNumeric:
       ts << tr( "int" );
       ts << tr( "double" );
-      FALLTHROUGH;
+      FALLTHROUGH
 
     case QgsPropertyDefinition::DataTypeString:
       ts << tr( "string" );
@@ -155,7 +155,8 @@ void QgsPropertyOverrideButton::updateFieldLists()
   if ( mVectorLayer )
   {
     // store just a list of fields of unknown type or those that match the expected type
-    Q_FOREACH ( const QgsField &f, mVectorLayer->fields() )
+    const QgsFields fields = mVectorLayer->fields();
+    for ( const QgsField &f : fields )
     {
       bool fieldMatch = false;
       QString fieldType;
@@ -690,6 +691,10 @@ void QgsPropertyOverrideButton::updateGui()
       icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpressionError.svg" ) );
       deftip = tr( "Parse error: %1" ).arg( exp.parserErrorString() );
     }
+    else
+    {
+      deftip = mExpressionString;
+    }
   }
   else if ( mProperty.propertyType() != QgsProperty::ExpressionBasedProperty && hasField )
   {
@@ -699,6 +704,10 @@ void QgsPropertyOverrideButton::updateGui()
     {
       icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineError.svg" ) );
       deftip = tr( "'%1' field missing" ).arg( mFieldName );
+    }
+    else
+    {
+      deftip = mFieldName;
     }
   }
 
@@ -724,7 +733,7 @@ void QgsPropertyOverrideButton::updateGui()
     mFullDescription += tr( "<b>Valid input types:</b><br>%1<br>" ).arg( mDataTypesString );
   }
 
-  QString deftype( QLatin1String( "" ) );
+  QString deftype;
   if ( deftip != tr( "undefined" ) )
   {
     deftype = QStringLiteral( " (%1)" ).arg( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty ? tr( "expression" ) : tr( "field" ) );

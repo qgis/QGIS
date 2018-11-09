@@ -57,7 +57,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
   public:
     QgsGeorefPluginGui( QgisInterface *qgisInterface, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
-    ~QgsGeorefPluginGui();
+    ~QgsGeorefPluginGui() override;
 
   protected:
     void closeEvent( QCloseEvent * ) override;

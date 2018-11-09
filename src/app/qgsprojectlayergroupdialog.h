@@ -18,11 +18,30 @@
 #include "QDialog"
 #include "ui_qgsprojectlayergroupdialogbase.h"
 #include "qgshelp.h"
+#include "qgslayertreemodel.h"
 #include "qgis_app.h"
 
 class QDomElement;
 
 class QgsLayerTree;
+
+/**
+ * Subclass of QgsLayerTreeModel which overrides font styling
+ * from base model.
+ */
+class QgsEmbeddedLayerTreeModel : public QgsLayerTreeModel
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Construct a new tree model with given layer tree (root node must not be null pointer).
+     * The root node is not transferred by the model.
+     */
+    explicit QgsEmbeddedLayerTreeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
+
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+};
 
 //! A dialog to select layers and groups from a qgs project
 class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProjectLayerGroupDialogBase
@@ -41,8 +60,6 @@ class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProj
     bool isValid() const;
 
   private slots:
-    void mBrowseFileToolButton_clicked();
-    void mProjectFileLineEdit_editingFinished();
     void onTreeViewSelectionChanged();
     void mButtonBox_accepted();
     void showHelp();
@@ -53,6 +70,7 @@ class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProj
     void deselectChildren( const QModelIndex &index );
     QString mProjectPath;
     bool mShowEmbeddedContent = false;
+    bool mPresetProjectMode = false;
 
     QgsLayerTree *mRootGroup = nullptr;
 };

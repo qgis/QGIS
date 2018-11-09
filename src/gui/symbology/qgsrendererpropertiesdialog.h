@@ -14,13 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSRENDERERV2PROPERTIESDIALOG_H
-#define QGSRENDERERV2PROPERTIESDIALOG_H
+#ifndef QGSRENDERERPROPERTIESDIALOG_H
+#define QGSRENDERERPROPERTIESDIALOG_H
 
 #include <QDialog>
 #include "qgis.h"
 
-#include "ui_qgsrendererv2propsdialogbase.h"
+#include "ui_qgsrendererpropsdialogbase.h"
 
 #include "qgsfeaturerequest.h"
 #include "qgis_gui.h"
@@ -153,6 +153,8 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
 
   private:
     bool mDockMode;
+
+    friend class QgsAppScreenShots;
 };
 
 

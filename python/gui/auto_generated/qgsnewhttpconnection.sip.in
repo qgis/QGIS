@@ -92,6 +92,11 @@ Returns the "test connection" button.
 .. versionadded:: 3.0
 %End
 
+
+
+
+
+
     virtual QString wfsSettingsKey( const QString &base, const QString &connectionName ) const;
 %Docstring
 Returns the QSettings key for WFS related settings for the connection.

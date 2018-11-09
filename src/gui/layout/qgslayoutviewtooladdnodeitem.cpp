@@ -36,7 +36,7 @@ QgsLayoutViewToolAddNodeItem::QgsLayoutViewToolAddNodeItem( QgsLayoutView *view 
   : QgsLayoutViewTool( view, tr( "Add item" ) )
 {
   setFlags( QgsLayoutViewTool::FlagSnaps );
-  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CrossHair ) );
+  setCursor( Qt::CrossCursor );
 }
 
 void QgsLayoutViewToolAddNodeItem::setItemMetadataId( int metadataId )

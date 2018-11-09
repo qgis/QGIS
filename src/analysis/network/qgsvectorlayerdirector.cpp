@@ -48,7 +48,7 @@ struct TiePointInfo
 
   int additionalPointId = -1;
   QgsPointXY mTiedPoint;
-  double mLength = DBL_MAX;
+  double mLength = std::numeric_limits<double>::max();
   QgsFeatureId mNetworkFeatureId = -1;
   QgsPointXY mFirstPoint;
   QgsPointXY mLastPoint;
@@ -203,7 +203,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
   };
 
   // first iteration - get all nodes from network, and snap additional points to network
-  QgsFeatureIterator fit = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeatureIterator fit = mSource->getFeatures( QgsFeatureRequest().setNoAttributes() );
   QgsFeature feature;
   while ( fit.nextFeature( feature ) )
   {
@@ -245,7 +245,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
           {
 
             QgsPointXY snappedPoint;
-            double thisSegmentClosestDist = DBL_MAX;
+            double thisSegmentClosestDist = std::numeric_limits<double>::max();
             if ( pt1 == pt2 )
             {
               thisSegmentClosestDist = additionalPoint.sqrDist( pt1 );
@@ -384,6 +384,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
             {
               double distance = builder->distanceArea()->measureLine( arcPt1, arcPt2 );
               QVector< QVariant > prop;
+              prop.reserve( mStrategies.size() );
               for ( QgsNetworkStrategy *strategy : mStrategies )
               {
                 prop.push_back( strategy->cost( distance, feature ) );

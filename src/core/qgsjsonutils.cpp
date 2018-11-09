@@ -70,6 +70,7 @@ QgsCoordinateReferenceSystem QgsJsonExporter::sourceCrs() const
 QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties,
                                         const QVariant &id ) const
 {
+
   QString s = QStringLiteral( "{\n   \"type\":\"Feature\",\n" );
 
   // ID
@@ -119,6 +120,12 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
     if ( mIncludeAttributes )
     {
       QgsFields fields = mLayer ? mLayer->fields() : feature.fields();
+      // List of formatters through we want to pass the values
+      QStringList formattersWhiteList;
+      formattersWhiteList << QStringLiteral( "KeyValue" )
+                          << QStringLiteral( "List" )
+                          << QStringLiteral( "ValueRelation" )
+                          << QStringLiteral( "ValueMap" );
 
       for ( int i = 0; i < fields.count(); ++i )
       {
@@ -133,7 +140,7 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
         {
           QgsEditorWidgetSetup setup = fields.at( i ).editorWidgetSetup();
           QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
-          if ( fieldFormatter != QgsApplication::fieldFormatterRegistry()->fallbackFieldFormatter() )
+          if ( formattersWhiteList.contains( fieldFormatter->id() ) )
             val = fieldFormatter->representValue( mLayer.data(), i, setup.config(), QVariant(), val );
         }
 
@@ -175,7 +182,8 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
           QgsFeatureIterator it = childLayer->getFeatures( req );
           QVector<QVariant> attributeWidgetCaches;
           int fieldIndex = 0;
-          for ( const auto &field : childLayer->fields() )
+          const QgsFields fields = childLayer->fields();
+          for ( const QgsField &field : fields )
           {
             QgsEditorWidgetSetup setup = field.editorWidgetSetup();
             QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );

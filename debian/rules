@@ -36,7 +36,7 @@ endif
 
 QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch buster xenial yakkety zesty artful bionic"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch buster xenial bionic cosmic"))
 	DISTRIBUTION := sid
 endif
 
@@ -72,7 +72,6 @@ CMAKE_OPTS := \
 	-DWITH_SERVER=TRUE \
 	-DWITH_SERVER_PLUGINS=TRUE \
 	-DWITH_QWTPOLAR=FALSE \
-	-DWITH_QSPATIALITE=TRUE \
 	-DQT_PLUGINS_DIR=$(QT_PLUGINS_DIR) \
 	-DPYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#') \
 	-DDOXYGEN_ON_DEMAND=TRUE
@@ -93,6 +92,9 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	MAKEFLAGS += -j$(NUMJOBS)
 endif
 
+ifneq ($(DISTRIBUTION),xenial)
+	CMAKE_OPTS += -DWITH_QSPATIALITE=TRUE
+endif
 
 ifneq (,$(WITH_GLOBE))
 	CMAKE_OPTS += -DWITH_GLOBE=TRUE
@@ -102,12 +104,19 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid buster stretch"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"artful bionic"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster bionic cosmic"))
 	CMAKE_OPTS += \
 		-DWITH_3D=TRUE \
 		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
-endif
 
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster cosmic"))
+# Qt3DExtras intentionally removed from debian (#895386) and in turn ubuntu
+	CMAKE_OPTS += \
+		-DCMAKE_PREFIX_PATH=$(realpath external/qt3dextra-headers/cmake) \
+		-DQT5_3DEXTRA_INCLUDE_DIR=$(realpath external/qt3dextra-headers) \
+		-DQT5_3DEXTRA_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libQt53DExtras.so
+endif
+endif
 
 ifneq (,$(WITH_ORACLE))
 ifeq ($(DEB_BUILD_ARCH),amd64)
@@ -287,41 +296,6 @@ override_dh_auto_install:
 
 	# Don't ship srs.db, automatically updated in postinst with crssync
 	mv $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs.db $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs-template.db
-
-	# Install menu pixmap
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.svg
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon-512x512.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.png
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-mime-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis-mime.png
-
-	# Install MIME type icon
-	for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128; do \
-		install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes ; \
-		install -o root -g root -m 644 $(CURDIR)/debian/icons/qgis-mime-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes/qgis-mime.png ; \
-	done
-
-	# Install QGIS file formats icons
-	for file_type in qgs qlr qml qpt; do \
-		for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do \
-			install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes ; \
-			install -o root -g root -m 644 \
-				$(CURDIR)/debian/icons/qgis-$${file_type}$${size}.png \
-				$(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes/qgis-$${file_type}.png ; \
-		done ; \
-	done
-
-	# Install application icon
-	for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do \
-		install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps ; \
-		install -o root -g root -m 644 $(CURDIR)/debian/icons/qgis-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps/qgis.png ; \
-	done
-	
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps/qgis.svg
-
-	# Install desktop files
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/applications
-	install -o root -g root -m 644 $(CURDIR)/debian/qgis.desktop $(CURDIR)/debian/tmp/usr/share/applications
 
 	# Mime info
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/mime/packages

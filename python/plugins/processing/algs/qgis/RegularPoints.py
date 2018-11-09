@@ -38,12 +38,11 @@ from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsWkbTypes,
                        QgsGeometry,
-                       QgsPointXY,
+                       QgsPoint,
                        QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterExtent,
-                       QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterFeatureSink)
@@ -82,9 +81,9 @@ class RegularPoints(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
                                                        self.tr('Input extent'), optional=False))
         self.addParameter(QgsProcessingParameterDistance(self.SPACING,
-                                                         self.tr('Point spacing/count'), 100, self.CRS, False, 0.000001, 999999999.999999999))
+                                                         self.tr('Point spacing/count'), 100, self.CRS, False, 0.000001))
         self.addParameter(QgsProcessingParameterDistance(self.INSET,
-                                                         self.tr('Initial inset from corner (LH side)'), 0.0, self.CRS, False, 0.0, 9999.9999))
+                                                         self.tr('Initial inset from corner (LH side)'), 0.0, self.CRS, False, 0.0))
         self.addParameter(QgsProcessingParameterBoolean(self.RANDOMIZE,
                                                         self.tr('Apply random offset to point spacing'), False))
         self.addParameter(QgsProcessingParameterBoolean(self.IS_SPACING,
@@ -130,6 +129,7 @@ class RegularPoints(QgisAlgorithm):
         f.setFields(fields)
 
         count = 0
+        id = 0
         total = 100.0 / (area / pSpacing)
         y = extent.yMaximum() - inset
 
@@ -144,19 +144,22 @@ class RegularPoints(QgisAlgorithm):
                     break
 
                 if randomize:
-                    geom = QgsGeometry().fromPointXY(QgsPointXY(
+                    geom = QgsGeometry(QgsPoint(
                         uniform(x - (pSpacing / 2.0), x + (pSpacing / 2.0)),
                         uniform(y - (pSpacing / 2.0), y + (pSpacing / 2.0))))
                 else:
-                    geom = QgsGeometry().fromPointXY(QgsPointXY(x, y))
+                    geom = QgsGeometry(QgsPoint(x, y))
 
                 if extent_engine.intersects(geom.constGet()):
-                    f.setAttribute('id', count)
+                    f.setAttributes([id])
                     f.setGeometry(geom)
                     sink.addFeature(f, QgsFeatureSink.FastInsert)
                     x += pSpacing
-                    count += 1
-                    feedback.setProgress(int(count * total))
+                    id += 1
+
+                count += 1
+                feedback.setProgress(int(count * total))
+
             y = y - pSpacing
 
         return {self.OUTPUT: dest_id}

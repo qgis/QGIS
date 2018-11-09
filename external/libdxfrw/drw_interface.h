@@ -67,7 +67,7 @@ class DRW_Interface
      *
      * int handle are the value of DRW_Block::handleBlock added with addBlock()
      */
-    virtual void setBlock( const int handle ) = 0;
+    virtual void setBlock( int handle ) = 0;
 
     //! Called to end the current block
     virtual void endBlock() = 0;

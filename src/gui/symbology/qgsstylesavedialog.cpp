@@ -19,6 +19,7 @@
 
 #include "qgis.h"
 #include "qgsstyle.h"
+#include "qgsgui.h"
 
 #include <QLineEdit>
 #include <QCheckBox>
@@ -27,6 +28,8 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
   : QDialog( parent )
 {
   setupUi( this );
+
+  QgsGui::enableAutoGeometryRestore( this );
 
   if ( type == QgsStyle::SymbolEntity )
   {

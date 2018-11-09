@@ -43,8 +43,11 @@ from qgis.core import (Qgis,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterRasterDestination,
-                       QgsProcessingAlgorithm)
-from qgis.gui import (QgsMessageBar,
+                       QgsProcessingAlgorithm,
+                       QgsProxyProgressTask,
+                       QgsTaskManager)
+from qgis.gui import (QgsGui,
+                      QgsMessageBar,
                       QgsProcessingAlgorithmDialogBase)
 from qgis.utils import iface
 
@@ -54,27 +57,40 @@ from processing.core.ProcessingResults import resultsList
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
-from processing.gui.AlgorithmExecutor import executeIterating, execute
+from processing.gui.AlgorithmExecutor import executeIterating, execute, execute_in_place
 from processing.gui.Postprocessing import handleAlgorithmResults
+from processing.gui.wrappers import WidgetWrapper
 
 from processing.tools import dataobjects
 
 
 class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
-    def __init__(self, alg):
-        super().__init__()
+    def __init__(self, alg, in_place=False, parent=None):
+        super().__init__(parent)
+
         self.feedback_dialog = None
+        self.in_place = in_place
+        self.active_layer = None
 
         self.setAlgorithm(alg)
         self.setMainWidget(self.getParametersPanel(alg, self))
 
-        self.runAsBatchButton = QPushButton(QCoreApplication.translate("AlgorithmDialog", "Run as Batch Process…"))
-        self.runAsBatchButton.clicked.connect(self.runAsBatch)
-        self.buttonBox().addButton(self.runAsBatchButton, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
+        if not self.in_place:
+            self.runAsBatchButton = QPushButton(QCoreApplication.translate("AlgorithmDialog", "Run as Batch Process…"))
+            self.runAsBatchButton.clicked.connect(self.runAsBatch)
+            self.buttonBox().addButton(self.runAsBatchButton, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
+        else:
+            self.active_layer = iface.activeLayer()
+            self.runAsBatchButton = None
+            has_selection = self.active_layer and (self.active_layer.selectedFeatureCount() > 0)
+            self.buttonBox().button(QDialogButtonBox.Ok).setText(QCoreApplication.translate("AlgorithmDialog", "Modify Selected Features")
+                                                                 if has_selection else QCoreApplication.translate("AlgorithmDialog", "Modify All Features"))
+            self.buttonBox().button(QDialogButtonBox.Close).setText(QCoreApplication.translate("AlgorithmDialog", "Cancel"))
+            self.setWindowTitle(self.windowTitle() + ' | ' + self.active_layer.name())
 
     def getParametersPanel(self, alg, parent):
-        return ParametersPanel(parent, alg)
+        return ParametersPanel(parent, alg, self.in_place)
 
     def runAsBatch(self):
         self.close()
@@ -95,15 +111,38 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
             if not param.isDestination():
-                wrapper = self.mainWidget().wrappers[param.name()]
-                value = None
-                if wrapper.widget:
-                    value = wrapper.value()
-                    parameters[param.name()] = value
 
-                    if not param.checkValueIsAcceptable(value):
-                        raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper.widget)
+                if self.in_place and param.name() == 'INPUT':
+                    parameters[param.name()] = self.active_layer
+                    continue
+
+                try:
+                    wrapper = self.mainWidget().wrappers[param.name()]
+                except KeyError:
+                    continue
+
+                # For compatibility with 3.x API, we need to check whether the wrapper is
+                # the deprecated WidgetWrapper class. If not, it's the newer
+                # QgsAbstractProcessingParameterWidgetWrapper class
+                # TODO QGIS 4.0 - remove
+                if issubclass(wrapper.__class__, WidgetWrapper):
+                    widget = wrapper.widget
+                else:
+                    widget = wrapper.wrappedWidget()
+
+                if widget is None:
+                    continue
+
+                value = wrapper.parameterValue()
+                parameters[param.name()] = value
+
+                if not param.checkValueIsAcceptable(value):
+                    raise AlgorithmDialogBase.InvalidParameterValue(param, widget)
             else:
+                if self.in_place and param.name() == 'OUTPUT':
+                    parameters[param.name()] = 'memory:'
+                    continue
+
                 dest_project = None
                 if not param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
                         isinstance(param, (QgsProcessingParameterRasterDestination,
@@ -188,6 +227,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 command = self.algorithm().asPythonCommand(parameters, context)
                 if command:
                     ProcessingLog.addToLog(command)
+                QgsGui.instance().processingRecentAlgorithmLog().push(self.algorithm().id())
                 self.cancelButton().setEnabled(self.algorithm().flags() & QgsProcessingAlgorithm.FlagCanCancel)
 
                 def on_complete(ok, results):
@@ -207,9 +247,12 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
                     self.cancelButton().setEnabled(False)
 
-                    self.finish(ok, results, context, feedback)
+                    if not self.in_place:
+                        self.finish(ok, results, context, feedback)
+                    elif ok:
+                        self.close()
 
-                if not (self.algorithm().flags() & QgsProcessingAlgorithm.FlagNoThreading):
+                if not self.in_place and not (self.algorithm().flags() & QgsProcessingAlgorithm.FlagNoThreading):
                     # Make sure the Log tab is visible before executing the algorithm
                     self.showLog()
 
@@ -217,9 +260,17 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     task.executed.connect(on_complete)
                     self.setCurrentTask(task)
                 else:
+                    self.proxy_progress = QgsProxyProgressTask(QCoreApplication.translate("AlgorithmDialog", "Executing “{}”").format(self.algorithm().displayName()))
+                    QgsApplication.taskManager().addTask(self.proxy_progress)
+                    feedback.progressChanged.connect(self.proxy_progress.setProxyProgress)
                     self.feedback_dialog = self.createProgressDialog()
                     self.feedback_dialog.show()
-                    ok, results = execute(self.algorithm(), parameters, context, feedback)
+                    if self.in_place:
+                        ok, results = execute_in_place(self.algorithm(), parameters, context, feedback)
+                    else:
+                        ok, results = execute(self.algorithm(), parameters, context, feedback)
+                    feedback.progressChanged.disconnect()
+                    self.proxy_progress.finalize(ok)
                     on_complete(ok, results)
 
         except AlgorithmDialogBase.InvalidParameterValue as e:

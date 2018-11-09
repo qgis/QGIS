@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayerMetadataFormatter
 {
 %Docstring
@@ -39,10 +40,12 @@ Formats the "Contacts" section according to a ``metadata`` object.
 This will return a HTML table.
 %End
 
-    QString extentSectionHtml() const;
+    QString extentSectionHtml( const bool showSpatialExtent = true ) const;
 %Docstring
-Formats the "Extents" section according to a ``metadata`` object.
+Formats the "Extents" section according to a ``metadata`` object (extent and temporal).
 This will return a HTML table.
+
+:param showSpatialExtent: flag if the spatial extent needs to be displayed. Default to true.
 %End
 
     QString identificationSectionHtml() const;

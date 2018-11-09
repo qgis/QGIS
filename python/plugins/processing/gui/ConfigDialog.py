@@ -111,11 +111,7 @@ class ConfigDialog(BASE, WIDGET):
         super(ConfigDialog, self).__init__(None)
         self.setupUi(self)
 
-        self.groupIcon = QIcon()
-        self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
-        self.groupIcon.addPixmap(self.style().standardPixmap(
-            QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
+        self.groupIcon = QgsApplication.getThemeIcon('mIconFolder.svg')
 
         self.model = QStandardItemModel()
         self.tree.setModel(self.model)
@@ -513,6 +509,8 @@ class MultipleDirectorySelector(QWidget):
         text = self.lineEdit.text()
         if text != '':
             items = text.split(';')
+        else:
+            items = []
 
         dlg = DirectorySelectorDialog(None, items)
         if dlg.exec_():

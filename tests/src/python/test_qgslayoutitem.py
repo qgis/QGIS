@@ -13,6 +13,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
+import os
 from qgis.testing import start_app, unittest
 from qgis.core import (QgsProject,
                        QgsLayout,
@@ -24,11 +25,16 @@ from qgis.core import (QgsProject,
                        QgsUnitTypes,
                        QgsLayoutPoint,
                        QgsLayoutSize,
+                       QgsLayoutItemLabel,
+                       QgsLayoutItem,
                        QgsApplication)
 from qgis.PyQt.QtCore import QRectF
 from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.PyQt.QtTest import QSignalSpy
+from utilities import unitTestDataPath
 
+
+TEST_DATA_DIR = unitTestDataPath()
 
 start_app()
 
@@ -165,6 +171,33 @@ class TestQgsLayoutItem(unittest.TestCase):
         item.setId('a')
         self.assertEqual(item.displayName(), 'a')
         self.assertEqual(item.id(), 'a')
+
+    def testCasting(self):
+        """
+        Test that sip correctly casts stuff
+        """
+        p = QgsProject()
+        p.read(os.path.join(TEST_DATA_DIR, 'layouts', 'layout_casting.qgs'))
+
+        layout = p.layoutManager().layouts()[0]
+
+        # check a method which often fails casting
+        map = layout.itemById('map')
+        self.assertIsInstance(map, QgsLayoutItemMap)
+        label = layout.itemById('label')
+        self.assertIsInstance(label, QgsLayoutItemLabel)
+
+        # another method -- sometimes this fails casting for different(?) reasons
+        # make sure we start from a new project so sip hasn't remembered item instances
+        p2 = QgsProject()
+        p2.read(os.path.join(TEST_DATA_DIR, 'layouts', 'layout_casting.qgs'))
+        layout = p2.layoutManager().layouts()[0]
+
+        items = layout.items()
+        map2 = [i for i in items if isinstance(i, QgsLayoutItem) and i.id() == 'map'][0]
+        self.assertIsInstance(map2, QgsLayoutItemMap)
+        label2 = [i for i in items if isinstance(i, QgsLayoutItem) and i.id() == 'label'][0]
+        self.assertIsInstance(label2, QgsLayoutItemLabel)
 
 
 if __name__ == '__main__':

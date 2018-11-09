@@ -78,6 +78,13 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
      */
     QgsCoordinateReferenceSystem crs() const;
 
+    /**
+     * Returns the layer id of the source layer.
+     *
+     * \since QGIS 3.4
+     */
+    QString id() const;
+
   protected:
 
     QgsAbstractFeatureSource *mProviderFeatureSource = nullptr;
@@ -87,6 +94,8 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     QgsExpressionFieldBuffer *mExpressionFieldBuffer = nullptr;
 
     QgsFields mFields;
+
+    QString mId;
 
     QgsExpressionContextScope mLayerScope;
 
@@ -317,5 +326,32 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource,
     QPointer< QgsVectorLayer > mLayer;
 
 };
+
+///@cond PRIVATE
+
+#ifndef SIP_RUN
+class QgsVectorLayerSelectedFeatureIterator : public QgsAbstractFeatureIterator
+{
+  public:
+
+    QgsVectorLayerSelectedFeatureIterator( const QgsFeatureIds &selectedFeatureIds,
+                                           const QgsFeatureRequest &request,
+                                           QgsVectorLayerFeatureSource &source );
+
+    bool rewind() override;
+    bool close() override;
+
+  protected:
+    bool fetchFeature( QgsFeature &f ) override;
+
+  private:
+    QgsFeatureIds mSelectedFeatureIds;
+    QgsFeatureIterator mIterator;
+
+};
+
+#endif
+
+///@endcond
 
 #endif // QGSVECTORLAYERFEATUREITERATOR_H

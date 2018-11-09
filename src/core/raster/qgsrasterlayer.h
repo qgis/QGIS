@@ -93,8 +93,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *
  * \code{.cpp}
  *     QString myFileNameQString = "/path/to/file";
- *     QFileInfo myFileInfo(myFileNameQString);
- *     QString myBaseNameQString = myFileInfo.baseName();
+ *     QString myBaseNameQString = "my layer";
  *     QgsRasterLayer *myRasterLayer = new QgsRasterLayer(myFileNameQString, myBaseNameQString);
  * \endcode
  *
@@ -197,12 +196,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * -Determine whether the layer is gray, paletted or multiband.
      *
      * -Assign sensible defaults for the red, green, blue and gray bands.
-     *
-     * -
      * */
     explicit QgsRasterLayer( const QString &uri,
                              const QString &baseName = QString(),
-                             const QString &providerKey = "gdal",
+                             const QString &providerType = "gdal",
                              const QgsRasterLayer::LayerOptions &options = QgsRasterLayer::LayerOptions() );
 
     ~QgsRasterLayer() override;
@@ -261,6 +258,20 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \since QGIS 3.2
      */
     void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options );
+
+    /**
+     * Updates the data source of the layer. The layer's renderer and legend will be preserved only
+     * if the geometry type of the new data source matches the current geometry type of the layer.
+     * \param dataSource new layer data source
+     * \param baseName base name of the layer
+     * \param provider provider string
+     * \param options provider options
+     * \param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
+     * data source
+     * \see dataSourceChanged()
+     * \since QGIS 3.6
+     */
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false ) override;
 
     /**
      * Returns the raster layer type (which is a read only property).
@@ -407,11 +418,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void showStatusMessage( const QString &message );
 
   protected:
-    bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
-    bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
+    bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
+    bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
-    bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
-    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
+    bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage,
+                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const override;
+    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const override;
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
     QString decodedSource( const QString &source, const QString &provider,  const QgsReadWriteContext &context ) const override;
@@ -453,9 +466,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QDateTime mLastModified;
 
     QgsRasterViewPort mLastViewPort;
-
-    //! [ data provider interface ] Data provider key
-    QString mProviderKey;
 
     LayerType mRasterType;
 

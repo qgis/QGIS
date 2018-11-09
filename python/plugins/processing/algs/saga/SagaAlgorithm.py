@@ -28,7 +28,6 @@ __revision__ = '$Format:%H$'
 
 import os
 import importlib
-from copy import deepcopy
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessingUtils,
@@ -113,7 +112,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
         return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def defineCharacteristicsFromFile(self):
-        with open(self.description_file) as lines:
+        with open(self.description_file, encoding="utf-8") as lines:
             line = lines.readline().strip('\n').strip()
             self._name = line
             if '|' in self._name:
@@ -226,8 +225,8 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
                     self.exportedLayers[param.name()] = files
                 else:
-                    temp_params = deepcopy(parameters)
                     for layer in layers:
+                        temp_params = {}
                         temp_params[param.name()] = layer
 
                         if not crs:
@@ -237,7 +236,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
                             crs = source.sourceCrs()
 
-                        layer_path = self.parameterAsCompatibleSourceLayerPath(temp_params, param.name(), context, 'shp',
+                        layer_path = self.parameterAsCompatibleSourceLayerPath(temp_params, param.name(), context, ['shp'], 'shp',
                                                                                feedback=feedback)
                         if layer_path:
                             if param.name() in self.exportedLayers:
@@ -261,7 +260,8 @@ class SagaAlgorithm(SagaAlgorithmBase):
             if isinstance(param, (QgsProcessingParameterRasterLayer, QgsProcessingParameterFeatureSource)):
                 command += ' -{} "{}"'.format(param.name(), self.exportedLayers[param.name()])
             elif isinstance(param, QgsProcessingParameterMultipleLayers):
-                command += ' -{} "{}"'.format(param.name(), ';'.join(self.exportedLayers[param.name()]))
+                if parameters[param.name()]: # parameter may have been an empty list
+                    command += ' -{} "{}"'.format(param.name(), ';'.join(self.exportedLayers[param.name()]))
             elif isinstance(param, QgsProcessingParameterBoolean):
                 if self.parameterAsBool(parameters, param.name(), context):
                     command += ' -{} true'.format(param.name().strip())
@@ -273,7 +273,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                     f.write('\t'.join([col for col in param.headers()]) + '\n')
                     values = self.parameterAsMatrix(parameters, param.name(), context)
                     for i in range(0, len(values), 3):
-                        s = values[i] + '\t' + values[i + 1] + '\t' + values[i + 2] + '\n'
+                        s = '{}\t{}\t{}\n'.format(values[i], values[i + 1], values[i + 2])
                         f.write(s)
                 command += ' -{} "{}"'.format(param.name(), tempTableFile)
             elif isinstance(param, QgsProcessingParameterExtent):

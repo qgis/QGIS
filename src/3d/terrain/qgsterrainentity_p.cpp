@@ -18,6 +18,8 @@
 #include "qgsaabb.h"
 #include "qgs3dmapsettings.h"
 #include "qgschunknode_p.h"
+#include "qgsdemterraintilegeometry_p.h"
+#include "qgsraycastingutils_p.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintextureimage_p.h"
@@ -25,6 +27,8 @@
 
 #include "qgscoordinatetransform.h"
 
+#include <Qt3DCore/QTransform>
+#include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QObjectPicker>
 
 
@@ -88,6 +92,41 @@ QgsTerrainEntity::~QgsTerrainEntity()
 
   delete mTextureGenerator;
   delete mTerrainToMapTransform;
+}
+
+bool QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, QVector3D &intersectionPoint )
+{
+  if ( !rootNode() )
+    return false;
+
+  if ( mMap.terrainGenerator()->type() != QgsTerrainGenerator::Dem )
+    return false;  // currently only working with DEM terrain
+
+  float minDist = -1;
+
+  QList<QgsChunkNode *> lst = activeNodes();
+  for ( QgsChunkNode *n : lst )
+  {
+    if ( n->entity() && ( minDist < 0 || n->bbox().distanceFromPoint( ray.origin() ) < minDist ) && QgsRayCastingUtils::rayBoxIntersection( ray, n->bbox() ) )
+    {
+      Qt3DRender::QGeometryRenderer *rend = n->entity()->findChild<Qt3DRender::QGeometryRenderer *>();
+      Qt3DRender::QGeometry *geom = rend->geometry();
+      DemTerrainTileGeometry *demGeom = static_cast<DemTerrainTileGeometry *>( geom );
+      Qt3DCore::QTransform *tr = n->entity()->findChild<Qt3DCore::QTransform *>();
+      QVector3D nodeIntPoint;
+      if ( demGeom->rayIntersection( ray, tr->matrix(), nodeIntPoint ) )
+      {
+        float dist = ( ray.origin() - intersectionPoint ).length();
+        if ( minDist < 0 || dist < minDist )
+        {
+          minDist = dist;
+          intersectionPoint = nodeIntPoint;
+        }
+      }
+    }
+  }
+
+  return minDist >= 0;
 }
 
 void QgsTerrainEntity::onShowBoundingBoxesChanged()

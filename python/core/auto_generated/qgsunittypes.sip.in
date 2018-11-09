@@ -26,6 +26,14 @@ Helper functions for various unit types.
     static const QMetaObject staticMetaObject;
 
   public:
+    enum SystemOfMeasurement
+    {
+      UnknownSystem,
+      MetricSystem,
+      ImperialSystem,
+      USCSSystem
+    };
+
     enum DistanceUnit
     {
       DistanceMeters,
@@ -438,7 +446,7 @@ Decodes a layout unit from a string.
 .. versionadded:: 3.0
 %End
 
-    static QgsUnitTypes::LayoutUnitType unitType( const QgsUnitTypes::LayoutUnit units );
+    static QgsUnitTypes::LayoutUnitType unitType( QgsUnitTypes::LayoutUnit units );
 %Docstring
 Returns the type for a unit of measurement.
 

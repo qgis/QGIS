@@ -395,7 +395,7 @@ void QgsGeorefPluginGui::generateGDALScript()
         break;
       }
     }
-    FALLTHROUGH;
+    FALLTHROUGH
     default:
       mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
                                 .arg( convertTransformEnumToString( mTransformParam ) )
@@ -584,7 +584,7 @@ void QgsGeorefPluginGui::showCoordDialog( const QgsPointXY &pixelCoords )
   if ( mLayer && !mMapCoordsDialog )
   {
     mMapCoordsDialog = new QgsMapCoordsDialog( mIface->mapCanvas(), pixelCoords, this );
-    connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded,
+    connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded, this,
     [this]( const QgsPointXY & a, const QgsPointXY & b ) { this->addPoint( a, b ); }
            );
     mMapCoordsDialog->show();
@@ -593,7 +593,7 @@ void QgsGeorefPluginGui::showCoordDialog( const QgsPointXY &pixelCoords )
 
 void QgsGeorefPluginGui::loadGCPsDialog()
 {
-  QString selectedFile = mRasterFileName.isEmpty() ? QLatin1String( "" ) : mRasterFileName + ".points";
+  QString selectedFile = mRasterFileName.isEmpty() ? QString() : mRasterFileName + ".points";
   mGCPpointsFileName = QFileDialog::getOpenFileName( this, tr( "Load GCP Points" ),
                        selectedFile, tr( "GCP file" ) + " (*.points)" );
   if ( mGCPpointsFileName.isEmpty() )
@@ -617,7 +617,7 @@ void QgsGeorefPluginGui::saveGCPsDialog()
     return;
   }
 
-  QString selectedFile = mRasterFileName.isEmpty() ? QLatin1String( "" ) : mRasterFileName + ".points";
+  QString selectedFile = mRasterFileName.isEmpty() ? QString() : mRasterFileName + ".points";
   mGCPpointsFileName = QFileDialog::getSaveFileName( this, tr( "Save GCP Points" ),
                        selectedFile,
                        tr( "GCP file" ) + " (*.points)" );
@@ -696,7 +696,7 @@ void QgsGeorefPluginGui::showHelp()
 // Comfort slots
 void QgsGeorefPluginGui::jumpToGCP( uint theGCPIndex )
 {
-  if ( ( int )theGCPIndex >= mPoints.size() )
+  if ( static_cast<int>( theGCPIndex ) >= mPoints.size() )
   {
     return;
   }
@@ -1933,7 +1933,7 @@ bool QgsGeorefPluginGui::checkReadyGeoref()
     return false;
   }
 
-  if ( mPoints.count() < ( int )mGeorefTransform.getMinimumGCPCount() )
+  if ( mPoints.count() < static_cast<int>( mGeorefTransform.getMinimumGCPCount() ) )
   {
     mMessageBar->pushMessage( tr( "Not Enough GCPs" ), tr( "%1 transformation requires at least %2 GCPs. Please define more." )
                               .arg( convertTransformEnumToString( mTransformParam ) ).arg( mGeorefTransform.getMinimumGCPCount() )
@@ -1996,16 +1996,16 @@ QgsRectangle QgsGeorefPluginGui::transformViewportBoundingBox( const QgsRectangl
       switch ( edge )
       {
         case 0:
-          src = QgsPointXY( oX + ( double )s * stepX, oY );
+          src = QgsPointXY( oX + static_cast<double>( s ) * stepX, oY );
           break;
         case 1:
-          src = QgsPointXY( oX + ( double )s * stepX, dY );
+          src = QgsPointXY( oX + static_cast<double>( s ) * stepX, dY );
           break;
         case 2:
-          src = QgsPointXY( oX, oY + ( double )s * stepY );
+          src = QgsPointXY( oX, oY + static_cast<double>( s ) * stepY );
           break;
         case 3:
-          src = QgsPointXY( dX, oY + ( double )s * stepY );
+          src = QgsPointXY( dX, oY + static_cast<double>( s ) * stepY );
           break;
       }
       t.transform( src, raster, rasterToWorld );
@@ -2056,7 +2056,7 @@ QString QgsGeorefPluginGui::convertResamplingEnumToString( QgsImageWarper::Resam
     case QgsImageWarper::Lanczos:
       return QStringLiteral( "lanczos" );
   }
-  return QLatin1String( "" );
+  return QString();
 }
 
 int QgsGeorefPluginGui::polynomialOrder( QgsGeorefTransform::TransformParametrisation transform )

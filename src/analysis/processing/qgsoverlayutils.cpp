@@ -20,8 +20,7 @@
 
 ///@cond PRIVATE
 
-//! Makes sure that what came out from intersection of two geometries is good to be used in the output
-static bool sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType )
+bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType )
 {
   if ( geom.isNull() )
   {
@@ -78,7 +77,7 @@ static bool sanitizeDifferenceResult( QgsGeometry &geom )
 void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, QgsOverlayUtils::DifferenceOutput outputAttrs )
 {
   QgsFeatureRequest requestB;
-  requestB.setSubsetOfAttributes( QgsAttributeList() );
+  requestB.setNoAttributes();
   if ( outputAttrs != OutputBA )
     requestB.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
   QgsSpatialIndex indexB( sourceB.getFeatures( requestB ), feedback );
@@ -93,6 +92,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
 
   QgsFeature featA;
   QgsFeatureRequest requestA;
+  requestA.setInvalidGeometryCheck( context.invalidGeometryCheck() );
   if ( outputAttrs == OutputBA )
     requestA.setDestinationCrs( sourceB.sourceCrs(), context.transformContext() );
   QgsFeatureIterator fitA = sourceA.getFeatures( requestA );
@@ -108,7 +108,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
 
       QgsFeatureRequest request;
       request.setFilterFids( intersects );
-      request.setSubsetOfAttributes( QgsAttributeList() );
+      request.setNoAttributes();
       if ( outputAttrs != OutputBA )
         request.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
 
@@ -180,7 +180,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
   int attrCount = fieldIndicesA.count() + fieldIndicesB.count();
 
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   request.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
 
   QgsFeature outFeat;
@@ -261,14 +261,14 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
   QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( source.wkbType() ) );
 
   QgsFeatureRequest requestOnlyGeoms;
-  requestOnlyGeoms.setSubsetOfAttributes( QgsAttributeList() );
+  requestOnlyGeoms.setNoAttributes();
 
   QgsFeatureRequest requestOnlyAttrs;
   requestOnlyAttrs.setFlags( QgsFeatureRequest::NoGeometry );
 
   QgsFeatureRequest requestOnlyIds;
   requestOnlyIds.setFlags( QgsFeatureRequest::NoGeometry );
-  requestOnlyIds.setSubsetOfAttributes( QgsAttributeList() );
+  requestOnlyIds.setNoAttributes();
 
   // make a set of used feature IDs so that we do not try to reuse them for newly added features
   QgsFeature f;
@@ -299,7 +299,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
     std::unique_ptr< QgsGeometryEngine > g1engine;
 
     geometries.insert( fid1, g1 );
-    index.insertFeature( f );
+    index.addFeature( f );
 
     QgsRectangle bbox( f.geometry().boundingBox() );
     const QList<QgsFeatureId> ids = index.intersects( bbox );
@@ -336,7 +336,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       QgsFeature fx( newFid );
       fx.setGeometry( geomIntersection );
 
-      index.insertFeature( fx );
+      index.addFeature( fx );
 
       // figure out which feature IDs belong to this intersection. Some of the IDs can be of the newly
       // created geometries - in such case we need to retrieve original IDs
@@ -366,7 +366,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
 
         QgsFeature f1x( fid1 );
         f1x.setGeometry( g12 );
-        index.insertFeature( f1x );
+        index.addFeature( f1x );
       }
 
       //
@@ -387,7 +387,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
 
         QgsFeature f2x( fid2 );
         f2x.setGeometry( g21 );
-        index.insertFeature( f2x );
+        index.addFeature( f2x );
       }
 
       // update our temporary copy of the geometry to what is left from it

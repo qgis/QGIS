@@ -167,6 +167,33 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     virtual QPolygonF asQPolygonF() const;
 
     /**
+     * Returns an interpolated point on the curve at the specified \a distance.
+     *
+     * If z or m values are present, the output z and m will be interpolated using
+     * the existing vertices' z or m values.
+     *
+     * If distance is negative, or is greater than the length of the curve, a nullptr
+     * will be returned.
+     *
+     * \since QGIS 3.4
+     */
+    virtual QgsPoint *interpolatePoint( double distance ) const = 0 SIP_FACTORY;
+
+    /**
+     * Returns a new curve representing a substring of this curve.
+     *
+     * The \a startDistance and \a endDistance arguments specify the length along the curve
+     * which the substring should start and end at. If the \a endDistance is greater than the
+     * total length of the curve then any "extra" length will be ignored.
+     *
+     * If z or m values are present, the output z and m will be interpolated using
+     * the existing vertices' z or m values.
+     *
+     * \since QGIS 3.4
+     */
+    virtual QgsCurve *curveSubstring( double startDistance, double endDistance ) const = 0 SIP_FACTORY;
+
+    /**
      * Returns the straight distance of the curve, i.e. the direct/euclidean distance
      * between the first and last vertex of the curve. (Also known as
      * "as the crow flies" distance).

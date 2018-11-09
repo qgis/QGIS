@@ -31,6 +31,8 @@
 #include "qgslayoutframe.h"
 #include "qgsgloweffect.h"
 #include "qgseffectstack.h"
+#include "qgsvectorlayer.h"
+
 #include <QPainter>
 
 QgsLayoutItemRegistry::QgsLayoutItemRegistry( QObject *parent )

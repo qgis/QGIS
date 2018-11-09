@@ -224,7 +224,7 @@ PolygonCostCalculator::PolygonCostCalculator( LabelPosition *lp ) : lp( lp )
   px = ( lp->x[0] + lp->x[2] ) / 2.0;
   py = ( lp->y[0] + lp->y[2] ) / 2.0;
 
-  dist = DBL_MAX;
+  dist = std::numeric_limits<double>::max();
   ok = false;
 }
 

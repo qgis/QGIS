@@ -33,7 +33,7 @@ QgsAttributeMap QgsAttributes::toMap() const
 uint qHash( const QgsAttributes &attributes )
 {
   if ( attributes.isEmpty() )
-    return -1;
+    return ~0;
   else
     return qHash( attributes.at( 0 ) );
 }

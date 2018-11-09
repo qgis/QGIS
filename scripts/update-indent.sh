@@ -52,17 +52,17 @@ fi
 echo "Checking changes between $REV0 and $REV1"
 
 ASTYLEDIFF=astyle.r$REV0-r$REV1.diff
->$ASTYLEDIFF
+true > $ASTYLEDIFF
 
 # reformat
 for f in $MODIFIED; do
 	case "$f" in
-	src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|external/astyle/*)
+	src/plugins/grass/qtermwidget/*|external/astyle/*)
 		echo $f skipped
 		continue
 		;;
 
-        *.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp)
+        *.cpp|*.h|*.c|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp)
 		cmd=astyle.sh
                 ;;
 

@@ -51,7 +51,7 @@ Constructor for QgsDoubleSpinBox.
 :param parent: parent widget
 %End
 
-    void setShowClearButton( const bool showClearButton );
+    void setShowClearButton( bool showClearButton );
 %Docstring
 Sets whether the widget will show a clear button. The clear button
 allows users to reset the widget to a default or empty state.
@@ -68,7 +68,7 @@ Returns whether the widget is showing a clear button.
 .. seealso:: :py:func:`setShowClearButton`
 %End
 
-    void setExpressionsEnabled( const bool enabled );
+    void setExpressionsEnabled( bool enabled );
 %Docstring
 Sets if the widget will allow entry of simple expressions, which are
 evaluated and then discarded.
@@ -124,6 +124,13 @@ Returns the value used when clear() is called.
 Set alignment in the embedded line edit widget
 
 :param alignment:
+%End
+
+    void setSpecialValueText( const QString &txt );
+%Docstring
+Set the special-value text to be ``txt``
+If set, the spin box will display this text instead of a numeric value whenever the current value
+is equal to minimum(). Typical use is to indicate that this choice has a special (default) meaning.
 %End
 
     virtual double valueFromText( const QString &text ) const;

@@ -49,6 +49,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
   const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve * >( mGeometry );
   if ( multiCurve )
   {
+    linesToProcess.reserve( multiCurve->partCount() );
     for ( int i = 0; i < multiCurve->partCount(); ++i )
     {
       linesToProcess << static_cast<QgsLineString *>( multiCurve->geometryN( i )->clone() );
@@ -234,7 +235,7 @@ QgsPoint surfacePoleOfInaccessibility( const QgsSurface *surface, double precisi
 QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, double *distanceFromBoundary ) const
 {
   if ( distanceFromBoundary )
-    *distanceFromBoundary = DBL_MAX;
+    *distanceFromBoundary = std::numeric_limits<double>::max();
 
   if ( !mGeometry || mGeometry->isEmpty() )
     return QgsGeometry();
@@ -255,7 +256,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
         continue;
 
       found = true;
-      double dist = DBL_MAX;
+      double dist = std::numeric_limits<double>::max();
       QgsPoint p = surfacePoleOfInaccessibility( surface, precision, dist );
       if ( dist > maxDist )
       {
@@ -277,7 +278,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
     if ( !surface )
       return QgsGeometry();
 
-    double dist = DBL_MAX;
+    double dist = std::numeric_limits<double>::max();
     QgsPoint p = surfacePoleOfInaccessibility( surface, precision, dist );
     if ( distanceFromBoundary )
       *distanceFromBoundary = dist;
@@ -384,7 +385,7 @@ QgsVector calcMotion( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c,
 
 QgsLineString *doOrthogonalize( QgsLineString *ring, int iterations, double tolerance, double lowerThreshold, double upperThreshold )
 {
-  double minScore = DBL_MAX;
+  double minScore = std::numeric_limits<double>::max();
 
   bool isClosed = ring->isClosed();
   int numPoints = ring->numPoints();
@@ -920,6 +921,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
   }
 
   QVector<QgsGeometry> bufferedLines;
+  bufferedLines.reserve( linesToProcess.size() );
 
   for ( std::unique_ptr< QgsLineString > &line : linesToProcess )
   {

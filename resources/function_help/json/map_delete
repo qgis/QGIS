@@ -4,5 +4,5 @@
   "description": "Returns a map with the given key and its corresponding value deleted.",
   "arguments": [ {"arg":"map","description":"a map"},
                  {"arg":"key","description":"the key to delete"}],
-  "examples": [ { "expression":"map_delete(map('1','one','2','two'),'2')", "returns":"map: 1: 'one'"}]
+  "examples": [ { "expression":"map_delete(map('1','one','2','two'),'2')", "returns":"{ '1': 'one' }"}]
 }

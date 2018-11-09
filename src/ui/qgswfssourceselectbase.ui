@@ -43,7 +43,7 @@
    <item row="0" column="0">
     <widget class="QGroupBox" name="GroupBox1">
      <property name="title">
-      <string>Server connections</string>
+      <string>Server Connections</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
@@ -184,7 +184,7 @@
    <item row="6" column="0">
     <widget class="QGroupBox" name="gbCRS">
      <property name="title">
-      <string>Coordinate reference system</string>
+      <string>Coordinate Reference System</string>
      </property>
      <layout class="QHBoxLayout">
       <property name="spacing">
@@ -231,7 +231,7 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>Change...</string>
+         <string>Change…</string>
         </property>
        </widget>
       </item>

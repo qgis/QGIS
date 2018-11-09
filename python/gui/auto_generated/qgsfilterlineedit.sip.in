@@ -268,6 +268,8 @@ Will select all text when this widget receives the focus.
   protected:
     virtual void focusInEvent( QFocusEvent *e );
 
+    virtual void mouseReleaseEvent( QMouseEvent *e );
+
 
 };
 

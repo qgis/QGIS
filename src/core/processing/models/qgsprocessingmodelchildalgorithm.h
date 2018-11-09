@@ -82,10 +82,27 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     /**
      * Sets the underlying child algorithm's ID. This
      * should be set to an existing QgsProcessingAlgorithm algorithm ID.
+     *
+     * Returns true if the algorithm was successfully set.
+     *
+     * \see reattach()
      * \see algorithm()
      * \see algorithmId()
      */
-    void setAlgorithmId( const QString &algorithmId );
+    bool setAlgorithmId( const QString &algorithmId );
+
+    /**
+     * Attempts to re-attach the child to the algorithm specified by \a algorithmId().
+     *
+     * This can be run to relink the child to algorithms from providers which were not
+     * originally available for the model to link to.
+     *
+     * Returns true if the algorithm was successfully reattached.
+     *
+     * \see algorithm()
+     * \see setAlgorithmId()
+     */
+    bool reattach() const;
 
     /**
      * Returns the child algorithm's configuration map.
@@ -114,6 +131,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     /**
      * Returns the underlying child algorithm, or a nullptr
      * if a matching algorithm is not available.
+     * \see reattach()
      * \see algorithmId()
      */
     const QgsProcessingAlgorithm *algorithm() const;
@@ -288,6 +306,8 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     bool mParametersCollapsed = true;
     //! Whether list of outputs should be collapsed in the graphical modeler
     bool mOutputsCollapsed = true;
+
+    friend class TestQgsProcessing;
 
 };
 

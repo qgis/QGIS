@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSRULEBASEDRENDERERV2WIDGET_H
-#define QGSRULEBASEDRENDERERV2WIDGET_H
+#ifndef QGSRULEBASEDRENDERERWIDGET_H
+#define QGSRULEBASEDRENDERERWIDGET_H
 
 #include "qgsrendererwidget.h"
 #include "qgis.h"
@@ -27,7 +27,7 @@ class QgsSymbolSelectorWidget;
 
 #include <QAbstractItemModel>
 
-/* Features count fro rule */
+/* Features count for rule */
 struct QgsRuleBasedRendererCount SIP_SKIP
 {
   int count; // number of features
@@ -100,7 +100,7 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
 
 ///////
 
-#include "ui_qgsrulebasedrendererv2widget.h"
+#include "ui_qgsrulebasedrendererwidget.h"
 
 /**
  * \ingroup gui
@@ -282,4 +282,4 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
 };
 
 
-#endif // QGSRULEBASEDRENDERERV2WIDGET_H
+#endif // QGSRULEBASEDRENDERERWIDGET_H

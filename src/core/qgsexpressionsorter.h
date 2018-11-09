@@ -30,7 +30,7 @@ class QgsExpressionSorter
         // QString::localeAwareCompare() is case insensitive for common locales,
         // but case sensitive for the C locale. So use an explicit case
         // insensitive comparison in that later case to avoid test failures.
-      , mUseCaseInsensitiveComparison( QLocale::system().name() == QLocale::c().name() )
+      , mUseCaseInsensitiveComparison( QLocale().name() == QLocale::c().name() )
     {}
 
     bool operator()( const QgsIndexedFeature &f1, const QgsIndexedFeature &f2 ) const

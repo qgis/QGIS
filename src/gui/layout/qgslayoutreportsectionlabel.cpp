@@ -23,6 +23,8 @@
 #include <QWidget>
 #include <QBrush>
 
+///@cond PRIVATE
+
 QgsLayoutReportSectionLabel::QgsLayoutReportSectionLabel( QgsLayout *layout, QgsLayoutView *view )
   : QGraphicsRectItem( nullptr )
   , mLayout( layout )
@@ -31,13 +33,11 @@ QgsLayoutReportSectionLabel::QgsLayoutReportSectionLabel( QgsLayout *layout, Qgs
   setCacheMode( QGraphicsItem::DeviceCoordinateCache );
 }
 
-QgsLayoutReportSectionLabel::~QgsLayoutReportSectionLabel()
+void QgsLayoutReportSectionLabel::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
+  Q_UNUSED( option );
+  Q_UNUSED( widget );
 
-}
-
-void QgsLayoutReportSectionLabel::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
-{
   if ( !mLayout || !mLayout->renderContext().isPreviewRender() )
   {
     //don't draw label in outputs
@@ -97,3 +97,5 @@ void QgsLayoutReportSectionLabel::setLabel( const QString &label )
   mLabel = label;
   update();
 }
+
+///@endcond PRIVATE

@@ -31,6 +31,7 @@
 #include "qgisapp.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsmessagebar.h"
 
 #ifdef WITH_BINDINGS
 #include "qgspythonutils.h"
@@ -129,12 +130,12 @@ void QgsPluginRegistry::addPlugin( const QString &key, const QgsPluginMetadata &
 
 void QgsPluginRegistry::dump()
 {
-  QgsDebugMsg( "PLUGINS IN REGISTRY: key -> (name, library)" );
+  QgsDebugMsg( QStringLiteral( "PLUGINS IN REGISTRY: key -> (name, library)" ) );
   for ( QMap<QString, QgsPluginMetadata>::const_iterator it = mPlugins.constBegin();
         it != mPlugins.constEnd();
         ++it )
   {
-    QgsDebugMsg( QString( "PLUGIN: %1 -> (%2, %3)" )
+    QgsDebugMsg( QStringLiteral( "PLUGIN: %1 -> (%2, %3)" )
                  .arg( it.key(),
                        it->name(),
                        it->library() ) );
@@ -143,7 +144,7 @@ void QgsPluginRegistry::dump()
 #ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    QgsDebugMsg( "PYTHON PLUGINS IN REGISTRY:" );
+    QgsDebugMsg( QStringLiteral( "PYTHON PLUGINS IN REGISTRY:" ) );
     Q_FOREACH ( const QString &pluginName, mPythonUtils->listActivePlugins() )
     {
       Q_UNUSED( pluginName );
@@ -372,25 +373,25 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
           QObject *o = dynamic_cast<QObject *>( pl );
           if ( o )
           {
-            QgsDebugMsg( QString( "plugin object name: %1" ).arg( o->objectName() ) );
+            QgsDebugMsg( QStringLiteral( "plugin object name: %1" ).arg( o->objectName() ) );
             if ( o->objectName().isEmpty() )
             {
 #ifndef Q_OS_WIN
               baseName = baseName.mid( 3 );
 #endif
-              QgsDebugMsg( QString( "object name to %1" ).arg( baseName ) );
+              QgsDebugMsg( QStringLiteral( "object name to %1" ).arg( baseName ) );
               o->setObjectName( QStringLiteral( "qgis_plugin_%1" ).arg( baseName ) );
-              QgsDebugMsg( QString( "plugin object name now: %1" ).arg( o->objectName() ) );
+              QgsDebugMsg( QStringLiteral( "plugin object name now: %1" ).arg( o->objectName() ) );
             }
 
             if ( !o->parent() )
             {
-              QgsDebugMsg( QString( "setting plugin parent" ) );
+              QgsDebugMsg( QStringLiteral( "setting plugin parent" ) );
               o->setParent( QgisApp::instance() );
             }
             else
             {
-              QgsDebugMsg( QString( "plugin parent already set" ) );
+              QgsDebugMsg( QStringLiteral( "plugin parent already set" ) );
             }
           }
 
@@ -484,7 +485,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
 #elif ANDROID
   QString pluginExt = "*plugin.so";
 #else
-  QString pluginExt = QStringLiteral( "*.so*" );
+  QString pluginExt = QStringLiteral( "*.so" );
 #endif
 
   // check all libs in the current plugin directory and get name and descriptions
@@ -517,7 +518,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
   {
     // check for python plugins system-wide
     QStringList pluginList = mPythonUtils->pluginList();
-    QgsDebugMsg( "Loading python plugins" );
+    QgsDebugMsg( QStringLiteral( "Loading python plugins" ) );
 
     QStringList corePlugins = QStringList();
     corePlugins << QStringLiteral( "GdalTools" );
@@ -578,7 +579,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
   }
 #endif
 
-  QgsDebugMsg( "Plugin loading completed" );
+  QgsDebugMsg( QStringLiteral( "Plugin loading completed" ) );
 }
 
 

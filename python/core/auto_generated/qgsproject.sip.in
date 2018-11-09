@@ -13,7 +13,7 @@
 
 
 
-class QgsProject : QObject, QgsExpressionContextGenerator
+class QgsProject : QObject, QgsExpressionContextGenerator, QgsProjectTranslator
 {
 %Docstring
 Reads and writes project states.
@@ -138,6 +138,14 @@ Returns empty string when the project is stored in a project storage (there is n
 .. versionadded:: 3.2
 %End
 
+    QString absolutePath() const;
+%Docstring
+Returns full absolute path to the project folder if the project is stored in a file system - derived from fileName().
+Returns empty string when the project is stored in a project storage (there is no concept of paths for custom project storages).
+
+.. versionadded:: 3.2
+%End
+
     QString baseName() const;
 %Docstring
 Returns the base name of the project file without the path and without extension - derived from fileName().
@@ -218,7 +226,9 @@ from a source to destination coordinate reference system.
 
     void clear();
 %Docstring
-Clear the project - removes all settings and resets it back to an empty, default state.
+Clears the project, removing all settings and resetting it back to an empty, default state.
+
+.. seealso:: :py:func:`cleared`
 
 .. versionadded:: 2.4
 %End
@@ -563,19 +573,25 @@ Returns pointer to the project's annotation manager.
 %End
 
 
-    void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
+ void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
 Set a list of layers which should not be taken into account on map identification
+
+.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
 %End
 
-    void setNonIdentifiableLayers( const QStringList &layerIds );
+ void setNonIdentifiableLayers( const QStringList &layerIds );
 %Docstring
 Set a list of layers which should not be taken into account on map identification
+
+.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
 %End
 
-    QStringList nonIdentifiableLayers() const;
+ QStringList nonIdentifiableLayers() const;
 %Docstring
 Gets the list of layers which currently should not be taken into account on map identification
+
+.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
 %End
 
     bool autoTransaction() const;
@@ -599,13 +615,21 @@ Make sure that this is only called when all layers are not in edit mode.
 %End
 
 
+    QgsTransactionGroup *transactionGroup( const QString &providerKey, const QString &connString );
+%Docstring
+Returns the matching transaction group from a provider key and connection string.
+
+Returns None if a matching transaction group is not available.
+
+.. versionadded:: 3.2
+%End
+
     bool evaluateDefaultValues() const;
 %Docstring
 Should default values be evaluated on provider side when requested and not when committed.
 
 .. versionadded:: 2.16
 %End
-
 
     void setEvaluateDefaultValues( bool evaluateDefaultValues );
 %Docstring
@@ -678,6 +702,11 @@ Returns a pointer to the project's internal layer store.
 Returns the number of registered layers.
 %End
 
+    int validCount() const;
+%Docstring
+Returns the number of registered valid layers.
+%End
+
     QgsMapLayer *mapLayer( const QString &layerId ) const;
 %Docstring
 Retrieve a pointer to a registered layer by layer ID.
@@ -704,9 +733,11 @@ Retrieve a list of matching registered layers by layer name.
 .. seealso:: :py:func:`mapLayers`
 %End
 
-    QMap<QString, QgsMapLayer *> mapLayers() const;
+    QMap<QString, QgsMapLayer *> mapLayers( const bool validOnly = false ) const;
 %Docstring
 Returns a map of all registered layers by layer ID.
+
+:param validOnly: if set only valid layers will be returned
 
 .. seealso:: :py:func:`mapLayer`
 
@@ -739,7 +770,7 @@ The legendLayersAdded() signal is emitted only if addToLegend is true.
                       the layers yourself. Not available in Python.
 
 :return: a list of the map layers that were added
-         successfully. If a layer is invalid, or already exists in the registry,
+         successfully. If a layer or already exists in the registry,
          it will not be part of the returned QList.
 
 
@@ -955,40 +986,82 @@ Sets the project's ``metadata`` store.
 .. versionadded:: 3.2
 %End
 
-    QSet<QgsMapLayer *> requiredLayers() const;
+ QSet<QgsMapLayer *> requiredLayers() const;
 %Docstring
 Returns a set of map layers that are required in the project and therefore they should not get
 removed from the project. The set of layers may be configured by users in project properties.
 and it is mainly a hint for the user interface to protect users from removing layers that important
 in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
 
+.. deprecated:: since QGIS 3.4 use QgsMapLayer.flags() instead
+
 .. versionadded:: 3.2
 %End
 
-    void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
+ void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
 %Docstring
 Configures a set of map layers that are required in the project and therefore they should not get
 removed from the project. The set of layers may be configured by users in project properties.
 and it is mainly a hint for the user interface to protect users from removing layers that important
 in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
 
+.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
+
 .. versionadded:: 3.2
 %End
 
+    void generateTsFile( const QString &locale );
+%Docstring
+Triggers the collection strings of .qgs to be included in ts file and calls writeTsFile()
+
+.. versionadded:: 3.4
+%End
+
+    virtual QString translate( const QString &context, const QString &sourceText, const char *disambiguation = 0, int n = -1 ) const;
+
+%Docstring
+Translates the project with QTranslator and qm file
+
+:return: the result string (in case there is no QTranslator loaded the sourceText)
+
+:param context: describing layer etc.
+:param sourceText: is the identifier of this text
+:param disambiguation: it's the disambiguation
+:param n: if -1 uses the appropriate form
+
+.. versionadded:: 3.4
+%End
+
   signals:
+
+    void cleared();
+%Docstring
+Emitted when the project is cleared (and additionally when an open project is cleared
+just before a new project is read).
+
+.. seealso:: :py:func:`clear`
+
+.. versionadded:: 3.2
+%End
+
     void readProject( const QDomDocument & );
 %Docstring
-emitted when project is being read
+Emitted when a project is being read.
+%End
+
+    void readProjectWithContext( const QDomDocument &, QgsReadWriteContext &context );
+%Docstring
+Emitted when a project is being read. And passing the /a context
 %End
 
     void writeProject( QDomDocument & );
 %Docstring
-emitted when project is being written
+Emitted when the project is being written.
 %End
 
     void readMapLayer( QgsMapLayer *mapLayer, const QDomElement &layerNode );
 %Docstring
-Emitted, after the basic initialization of a layer from the project
+Emitted after the basic initialization of a layer from the project
 file is done. You can use this signal to read additional information
 from the project file.
 
@@ -998,7 +1071,7 @@ from the project file.
 
     void writeMapLayer( QgsMapLayer *mapLayer, QDomElement &layerElem, QDomDocument &doc );
 %Docstring
-Emitted, when a layer is being saved. You can use this method to save
+Emitted when a layer is being saved. You can use this method to save
 additional information to the layer.
 
 :param mapLayer: The map layer which is being initialized
@@ -1008,12 +1081,12 @@ additional information to the layer.
 
     void projectSaved();
 %Docstring
-emitted when the project file has been written and closed
+Emitted when the project file has been written and closed.
 %End
 
     void oldProjectVersionWarning( const QString & );
 %Docstring
-emitted when an old project file is read.
+Emitted when an old project file is read.
 %End
 
     void layerLoaded( int i, int n );
@@ -1039,9 +1112,11 @@ Emitted when loading layers has produced some messages
 .. versionadded:: 3.2
 %End
 
-    void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
+ void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 %Docstring
 Emitted when the list of layer which are excluded from map identification changes
+
+.. deprecated:: since QGIS 3.4
 %End
 
     void fileNameChanged();
@@ -1062,7 +1137,7 @@ Emitted when the home path of the project changes.
 
     void snappingConfigChanged( const QgsSnappingConfig &config );
 %Docstring
-emitted whenever the configuration for snapping has changed
+Emitted whenever the configuration for snapping has changed.
 %End
 
     void customVariablesChanged();
@@ -1316,6 +1391,26 @@ home path will be automatically determined from the project's file path.
 .. versionadded:: 3.2
 %End
 
+    void registerTranslatableContainers( QgsTranslationContext *translationContext, QgsAttributeEditorContainer *parent, const QString &layerId );
+%Docstring
+Registers the containers that require translation into the translationContext.
+This is a recursive function to get all the child containers.
+
+:param translationContext: where the objects will be registered
+:param parent: parent-container containing list of children
+:param layerId: to store under the correct context
+
+.. versionadded:: 3.4
+%End
+
+    void registerTranslatableObjects( QgsTranslationContext *translationContext );
+%Docstring
+Registers the objects that require translation into the ``translationContext``.
+So there can be created a ts file with these values.
+
+.. versionadded:: 3.4
+%End
+
 };
 
 class QgsProjectDirtyBlocker
@@ -1353,8 +1448,12 @@ Constructor for QgsProjectDirtyBlocker.
 This will block dirtying the specified ``project`` for the lifetime of this object.
 %End
 
+
+
     ~QgsProjectDirtyBlocker();
 
+  private:
+    QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other );
 };
 
 

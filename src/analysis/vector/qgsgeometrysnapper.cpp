@@ -485,7 +485,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   QgsFeatureIds refFeatureIds = mIndex.intersects( searchBounds ).toSet();
   mIndexMutex.unlock();
 
-  QgsFeatureRequest refFeatureRequest = QgsFeatureRequest().setFilterFids( refFeatureIds ).setSubsetOfAttributes( QgsAttributeList() );
+  QgsFeatureRequest refFeatureRequest = QgsFeatureRequest().setFilterFids( refFeatureIds ).setNoAttributes();
   mReferenceLayerMutex.lock();
   QgsFeature refFeature;
   QgsFeatureIterator refFeatureIt = mReferenceSource->getFeatures( refFeatureRequest );
@@ -573,8 +573,8 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
             case EndPointPreferClosest:
             {
               QgsPoint nodeSnap, segmentSnap;
-              double distanceNode = DBL_MAX;
-              double distanceSegment = DBL_MAX;
+              double distanceNode = std::numeric_limits<double>::max();
+              double distanceSegment = std::numeric_limits<double>::max();
               if ( snapPoint )
               {
                 nodeSnap = snapPoint->getSnapPoint( p );
@@ -768,7 +768,7 @@ QgsGeometry QgsInternalGeometrySnapper::snapFeature( const QgsFeature &feature )
     }
   }
   mProcessedGeometries.insert( feat.id(), geometry );
-  mProcessedIndex.insertFeature( feat );
+  mProcessedIndex.addFeature( feat );
   mFirstFeature = false;
   return geometry;
 }

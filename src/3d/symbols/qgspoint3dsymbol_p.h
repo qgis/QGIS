@@ -78,7 +78,7 @@ class QgsPoint3DSymbolModelEntityFactory
     static void addSceneEntities( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent );
     static void addMeshEntities( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent, bool are_selected );
 
-    static Qt3DCore::QTransform *transform( const QVector3D &position, const QgsPoint3DSymbol &symbol );
+    static Qt3DCore::QTransform *transform( QVector3D position, const QgsPoint3DSymbol &symbol );
 };
 
 /// @endcond

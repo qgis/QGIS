@@ -24,8 +24,7 @@
 #include <QtTest/QTest>
 
 #include <cstdio>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 #ifdef Q_OS_WIN
 // Open files in binary mode
@@ -87,7 +86,7 @@ void usage( std::string const &appName )
             << "\t[--help]\t\tthis text\n\n"
             << "  FILES:\n"
             << "    Files specified on the command line can include rasters,\n"
-            << "    vectors, and QGIS project files (.qgs): \n"
+            << "    vectors, and QGIS project files (.qgs or .qgz): \n"
             << "     1. Rasters - Supported formats include GeoTiff, DEM \n"
             << "        and others supported by GDAL\n"
             << "     2. Vectors - Supported formats include ESRI Shapefiles\n"
@@ -159,28 +158,28 @@ int main( int argc, char *argv[] )
   // Invokes ctor `GetOpt (int argc, char **argv,  char *optstring);'
   ///////////////////////////////////////////////////////////////
   int optionChar;
-  while ( 1 )
+  while ( true )
   {
     static struct option long_options[] =
     {
       /* These options set a flag. */
-      {"help", no_argument, 0, '?'},
+      {"help", no_argument, nullptr, '?'},
       /* These options don't set a flag.
        *  We distinguish them by their indices. */
-      {"iterations",    required_argument, 0, 'i'},
-      {"snapshot", required_argument, 0, 's'},
-      {"log", required_argument, 0, 'l'},
-      {"width",    required_argument, 0, 'w'},
-      {"height",   required_argument, 0, 'h'},
-      {"project",  required_argument, 0, 'p'},
-      {"extent",   required_argument, 0, 'e'},
-      {"optionspath", required_argument, 0, 'o'},
-      {"configpath", required_argument, 0, 'c'},
-      {"prefix", required_argument, 0, 'r'},
-      {"quality", required_argument, 0, 'q'},
-      {"parallel", no_argument, 0, 'P'},
-      {"print", required_argument, 0, 'R'},
-      {0, 0, 0, 0}
+      {"iterations",    required_argument, nullptr, 'i'},
+      {"snapshot", required_argument, nullptr, 's'},
+      {"log", required_argument, nullptr, 'l'},
+      {"width",    required_argument, nullptr, 'w'},
+      {"height",   required_argument, nullptr, 'h'},
+      {"project",  required_argument, nullptr, 'p'},
+      {"extent",   required_argument, nullptr, 'e'},
+      {"optionspath", required_argument, nullptr, 'o'},
+      {"configpath", required_argument, nullptr, 'c'},
+      {"prefix", required_argument, nullptr, 'r'},
+      {"quality", required_argument, nullptr, 'q'},
+      {"parallel", no_argument, nullptr, 'P'},
+      {"print", required_argument, nullptr, 'R'},
+      {nullptr, 0, nullptr, 0}
     };
 
     /* getopt_long stores the option index here. */
@@ -197,7 +196,7 @@ int main( int argc, char *argv[] )
     {
       case 0:
         /* If this option set a flag, do nothing else now. */
-        if ( long_options[option_index].flag != 0 )
+        if ( long_options[option_index].flag != nullptr )
           break;
         printf( "option %s", long_options[option_index].name );
         if ( optarg )
@@ -262,21 +261,21 @@ int main( int argc, char *argv[] )
         return 2;   // XXX need standard exit codes
 
       default:
-        QgsDebugMsg( QString( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
+        QgsDebugMsg( QStringLiteral( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
         return 1;   // XXX need standard exit codes
     }
   }
 
   // Add any remaining args to the file list - we will attempt to load them
   // as layers in the map view further down....
-  QgsDebugMsg( QString( "Files specified on command line: %1" ).arg( optind ) );
+  QgsDebugMsg( QStringLiteral( "Files specified on command line: %1" ).arg( optind ) );
   if ( optind < argc )
   {
     while ( optind < argc )
     {
 #ifdef QGISDEBUG
       int idx = optind;
-      QgsDebugMsg( QString( "%1: %2" ).arg( idx ).arg( argv[idx] ) );
+      QgsDebugMsg( QStringLiteral( "%1: %2" ).arg( idx ).arg( argv[idx] ) );
 #endif
       sFileList.append( QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
     }
@@ -397,6 +396,9 @@ int main( int argc, char *argv[] )
   QgsApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QgsApplication::setApplicationName( QStringLiteral( "QGIS3" ) );
 
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
 #ifdef Q_OS_MACX
@@ -472,11 +474,11 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   if ( myProjectFileName.isEmpty() )
   {
-    // check for a .qgs
+    // check for a .qgs or .qgz
     for ( int i = 0; i < argc; i++ )
     {
       QString arg = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
-      if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
+      if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) || arg.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
       {
         myProjectFileName = arg;
         break;
@@ -512,7 +514,7 @@ int main( int argc, char *argv[] )
         return 1;
       }
     }
-    QgsDebugMsg( QString( "hints: %1" ).arg( hints ) );
+    QgsDebugMsg( QStringLiteral( "hints: %1" ).arg( hints ) );
     qbench->setRenderHints( hints );
   }
 
@@ -521,13 +523,14 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-  QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( sFileList.count() ) );
+  QgsDebugMsg( QStringLiteral( "Number of files in myFileList: %1" ).arg( sFileList.count() ) );
   for ( QStringList::Iterator myIterator = sFileList.begin(); myIterator != sFileList.end(); ++myIterator )
   {
-    QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
+    QgsDebugMsg( QStringLiteral( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
     QString myLayerName = *myIterator;
-    // don't load anything with a .qgs extension - these are project files
-    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
+    // don't load anything with a .qgs or .qgz extension - these are project files
+    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
+         !myLayerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
     {
       fprintf( stderr, "Data files not yet supported\n" );
       return 1;
@@ -571,7 +574,7 @@ int main( int argc, char *argv[] )
 
     if ( !ok )
     {
-      QgsDebugMsg( "Error while parsing initial extent!" );
+      QgsDebugMsg( QStringLiteral( "Error while parsing initial extent!" ) );
     }
     else
     {

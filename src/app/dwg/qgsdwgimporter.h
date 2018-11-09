@@ -30,7 +30,7 @@ class QgsDwgImporter : public DRW_Interface
 {
   public:
     QgsDwgImporter( const QString &database, const QgsCoordinateReferenceSystem &crs );
-    ~QgsDwgImporter();
+    ~QgsDwgImporter() override;
 
     bool import( const QString &drawing, QString &error, bool expandInserts, bool useCurves );
 
@@ -57,7 +57,7 @@ class QgsDwgImporter : public DRW_Interface
 
     void addBlock( const DRW_Block &data ) override;
 
-    void setBlock( const int handle ) override;
+    void setBlock( int handle ) override;
 
     //! Called to end the current block
     void endBlock() override;

@@ -28,7 +28,7 @@ email                : wonder.sk at gmail dot com
 static bool _executeSqliteStatement( sqlite3 *db, const QString &sql )
 {
   sqlite3_stmt *stmt = nullptr;
-  if ( sqlite3_prepare_v2( db, sql.toUtf8().data(), -1, &stmt, nullptr ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( db, sql.toUtf8().constData(), -1, &stmt, nullptr ) != SQLITE_OK )
     return false;
 
   return sqlite3_step( stmt ) == SQLITE_DONE;
@@ -51,13 +51,13 @@ static bool _removeFromCache( sqlite3 *db, const QString &connName )
 static sqlite3 *_openCacheDatabase()
 {
   sqlite3 *database = nullptr;
-  if ( sqlite3_open_v2( QgsOracleTableCache::cacheDatabaseFilename().toUtf8().data(), &database, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0 ) != SQLITE_OK )
-    return 0;
+  if ( sqlite3_open_v2( QgsOracleTableCache::cacheDatabaseFilename().toUtf8().constData(), &database, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr ) != SQLITE_OK )
+    return nullptr;
 
   if ( !_executeSqliteStatement( database, "CREATE TABLE IF NOT EXISTS meta_oracle(conn text primary_key, flags int)" ) )
   {
     sqlite3_close( database );
-    return 0;
+    return nullptr;
   }
 
   return database;
@@ -149,7 +149,7 @@ bool QgsOracleTableCache::saveToCache( const QString &connName, CacheFlags flags
 
   QString sqlInsert = QString( "INSERT INTO %1 VALUES(?,?,?,?,?,?,?,?)" ).arg( tblName );
   sqlite3_stmt *stmtInsert = nullptr;
-  if ( sqlite3_prepare_v2( db, sqlInsert.toUtf8().data(), -1, &stmtInsert, 0 ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( db, sqlInsert.toUtf8().constData(), -1, &stmtInsert, nullptr ) != SQLITE_OK )
   {
     sqlite3_close( db );
     return false;
@@ -158,23 +158,23 @@ bool QgsOracleTableCache::saveToCache( const QString &connName, CacheFlags flags
   bool insertOk = true;
   Q_FOREACH ( const QgsOracleLayerProperty &item, layers )
   {
-    sqlite3_bind_text( stmtInsert, 1, item.ownerName.toUtf8().data(), -1, SQLITE_TRANSIENT );
-    sqlite3_bind_text( stmtInsert, 2, item.tableName.toUtf8().data(), -1, SQLITE_TRANSIENT );
-    sqlite3_bind_text( stmtInsert, 3, item.geometryColName.toUtf8().data(), -1, SQLITE_TRANSIENT );
+    sqlite3_bind_text( stmtInsert, 1, item.ownerName.toUtf8().constData(), -1, SQLITE_TRANSIENT );
+    sqlite3_bind_text( stmtInsert, 2, item.tableName.toUtf8().constData(), -1, SQLITE_TRANSIENT );
+    sqlite3_bind_text( stmtInsert, 3, item.geometryColName.toUtf8().constData(), -1, SQLITE_TRANSIENT );
     sqlite3_bind_int( stmtInsert, 4, item.isView );
-    sqlite3_bind_text( stmtInsert, 5, item.sql.toUtf8().data(), -1, SQLITE_TRANSIENT );
+    sqlite3_bind_text( stmtInsert, 5, item.sql.toUtf8().constData(), -1, SQLITE_TRANSIENT );
 
-    sqlite3_bind_text( stmtInsert, 6, item.pkCols.join( "," ).toUtf8().data(), -1, SQLITE_TRANSIENT );
+    sqlite3_bind_text( stmtInsert, 6, item.pkCols.join( "," ).toUtf8().constData(), -1, SQLITE_TRANSIENT );
 
     QStringList geomTypes;
     Q_FOREACH ( QgsWkbTypes::Type geomType, item.types )
       geomTypes.append( QString::number( static_cast<ulong>( geomType ) ) );
-    sqlite3_bind_text( stmtInsert, 7, geomTypes.join( "," ).toUtf8().data(), -1, SQLITE_TRANSIENT );
+    sqlite3_bind_text( stmtInsert, 7, geomTypes.join( "," ).toUtf8().constData(), -1, SQLITE_TRANSIENT );
 
     QStringList geomSrids;
     Q_FOREACH ( int geomSrid, item.srids )
       geomSrids.append( QString::number( geomSrid ) );
-    sqlite3_bind_text( stmtInsert, 8, geomSrids.join( "," ).toUtf8().data(), -1, SQLITE_TRANSIENT );
+    sqlite3_bind_text( stmtInsert, 8, geomSrids.join( "," ).toUtf8().constData(), -1, SQLITE_TRANSIENT );
 
     if ( sqlite3_step( stmtInsert ) != SQLITE_DONE )
       insertOk = false;
@@ -202,7 +202,7 @@ bool QgsOracleTableCache::loadFromCache( const QString &connName, CacheFlags fla
 
   sqlite3_stmt *stmt = nullptr;
   QString sql = QString( "SELECT * FROM %1" ).arg( QgsOracleConn::quotedIdentifier( "oracle_" + connName ) );
-  if ( sqlite3_prepare_v2( db, sql.toUtf8().data(), -1, &stmt, nullptr ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( db, sql.toUtf8().constData(), -1, &stmt, nullptr ) != SQLITE_OK )
   {
     sqlite3_close( db );
     return false;

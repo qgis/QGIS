@@ -39,6 +39,7 @@ cleanup() {
 		python/plugins/*/python-i18n.{ts,cpp} \
 		python/plugins/processing/processing-i18n.{ts,cpp} \
 		src/plugins/grass/grasslabels-i18n.cpp \
+		src/app/appinfo-i18n.cpp \
 		i18n/backup.tar \
 		qgis_ts.pro
 	do
@@ -118,8 +119,10 @@ if [ $action = push ]; then
 	tx pull -s -l none
 	if ! [ -f "i18n/qgis_en.ts" ]; then
 		echo Download of source translation failed
-		exit
+		exit 1
 	fi
+	cp i18n/qgis_en.ts /tmp/qgis_en.ts-downloaded
+	perl scripts/ts-clear.pl  # reset English translations
 elif [ $action = pull ]; then
 	rm i18n/qgis_*.ts
 
@@ -134,11 +137,12 @@ elif [ $action = pull ]; then
 fi
 
 echo Updating python translations
-cd python
-pylupdate5 user.py utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
-perl ../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
-rm python-i18n.ts
-cd ..
+(
+	cd python
+	pylupdate5 user.py utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
+	perl ../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
+	rm python-i18n.ts
+)
 for i in python/plugins/*/CMakeLists.txt; do
 	cd ${i%/*}
 	cat <<EOF >python-i18n.pro
@@ -163,19 +167,32 @@ perl scripts/qgm2cpp.pl >src/plugins/grass/grasslabels-i18n.cpp
 echo Updating processing translations
 perl scripts/processing2cpp.pl python/plugins/processing/processing-i18n.cpp
 
+echo Updating appinfo files
+python scripts/appinfo2cpp.py >src/app/appinfo-i18n.cpp
+
 echo Creating qmake project file
 $QMAKE -project -o qgis_ts.pro -nopwd $PWD/src $PWD/python $PWD/i18n $textcpp
 
 echo "TR_EXCLUDE = $(qmake -query QT_INSTALL_HEADERS)/*" >>qgis_ts.pro
 
 echo Updating translations
-$LUPDATE -locations absolute -verbose qgis_ts.pro
+$LUPDATE -no-obsolete -locations absolute -verbose qgis_ts.pro
 
 perl -i.bak -ne 'print unless /^\s+<location.*qgs(expression|contexthelp)_texts\.cpp.*$/;' i18n/qgis_*.ts
 
 if [ $action = push ]; then
+	cp i18n/qgis_en.ts /tmp/qgis_en.ts-uploading
 	echo Pushing translation...
-	tx push -s
+	fail=1
+	for i in $(seq 10); do
+		tx push -s && fail=0 && break
+		echo Retrying...
+		sleep 10
+	done
+	if (( fail )); then
+		echo "Could not push translations"
+		exit 1
+	fi
 else
 	echo Updating TRANSLATORS File
 	./scripts/tsstat.pl >doc/TRANSLATORS

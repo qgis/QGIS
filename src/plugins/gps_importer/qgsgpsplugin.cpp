@@ -86,7 +86,7 @@ void QgsGpsPlugin::initGui()
   mQActionPointer->setObjectName( QStringLiteral( "mQActionPointer" ) );
   mCreateGPXAction = new QAction( QIcon(), tr( "&Create new GPX layer" ), this );
   mCreateGPXAction->setObjectName( QStringLiteral( "mCreateGPXAction" ) );
-  setCurrentTheme( QLatin1String( "" ) );
+  setCurrentTheme( QString() );
 
   mQActionPointer->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );
   mCreateGPXAction->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );
@@ -252,7 +252,7 @@ void QgsGpsPlugin::importGPSFile( const QString &inputFileName, QgsBabelFormat *
     importer->importCommand( mBabelPath, typeArg,
                              inputFileName, outputFileName );
 
-  QgsDebugMsg( QString( "Import command: " ) + babelArgs.join( "|" ) );
+  QgsDebugMsg( QStringLiteral( "Import command: " ) + babelArgs.join( "|" ) );
 
   QProcess babelProcess;
   babelProcess.start( babelArgs.join( QStringLiteral( " " ) ) );
@@ -323,7 +323,7 @@ void QgsGpsPlugin::convertGPSFile( const QString &inputFileName,
       convertStrings << QStringLiteral( "-x" ) << QStringLiteral( "transform,wpt=trk,del" );
       break;
     default:
-      QgsDebugMsg( "Illegal conversion index!" );
+      QgsDebugMsg( QStringLiteral( "Illegal conversion index!" ) );
       return;
   }
 
@@ -331,7 +331,7 @@ void QgsGpsPlugin::convertGPSFile( const QString &inputFileName,
   QStringList babelArgs;
   babelArgs << mBabelPath << QStringLiteral( "-i" ) << QStringLiteral( "gpx" ) << QStringLiteral( "-f" ) << QStringLiteral( "\"%1\"" ).arg( inputFileName )
             << convertStrings << QStringLiteral( "-o" ) << QStringLiteral( "gpx" ) << QStringLiteral( "-F" ) << QStringLiteral( "\"%1\"" ).arg( outputFileName );
-  QgsDebugMsg( QString( "Conversion command: " ) + babelArgs.join( "|" ) );
+  QgsDebugMsg( QStringLiteral( "Conversion command: " ) + babelArgs.join( "|" ) );
 
   QProcess babelProcess;
   babelProcess.start( babelArgs.join( QStringLiteral( " " ) ) );
@@ -380,7 +380,7 @@ void QgsGpsPlugin::convertGPSFile( const QString &inputFileName,
                        layerName, QStringLiteral( "gpx" ) );
       break;
     default:
-      QgsDebugMsg( "Illegal conversion index!" );
+      QgsDebugMsg( QStringLiteral( "Illegal conversion index!" ) );
       return;
   }
 
@@ -422,7 +422,7 @@ void QgsGpsPlugin::downloadFromGPS( const QString &device, const QString &port,
     return;
   }
 
-  QgsDebugMsg( QString( "Download command: " ) + babelArgs.join( "|" ) );
+  QgsDebugMsg( QStringLiteral( "Download command: " ) + babelArgs.join( "|" ) );
 
   QProcess babelProcess;
   babelProcess.start( babelArgs.join( QStringLiteral( " " ) ) );
@@ -512,7 +512,7 @@ void QgsGpsPlugin::uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
     return;
   }
 
-  QgsDebugMsg( QString( "Upload command: " ) + babelArgs.join( "|" ) );
+  QgsDebugMsg( QStringLiteral( "Upload command: " ) + babelArgs.join( "|" ) );
 
   QProcess babelProcess;
   babelProcess.start( babelArgs.join( QStringLiteral( " " ) ) );

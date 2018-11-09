@@ -10,4 +10,4 @@ QgsProcessingParameterNumber|NEWTON_EPSILON|Epsilon|QgsProcessingParameterNumber
 QgsProcessingParameterEnum|PRECIP|Precipitation|[0] Homogenous;[1] Above Elevation;[2] Left Half
 QgsProcessingParameterNumber|THRESHOLD|Threshold Elevation|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterRasterDestination|FLOW|Runoff
-OutputTable|GAUGES_FLOW|Flow at Gauges
+QgsProcessingParameterVectorDestination|GAUGES_FLOW|Flow at Gauges

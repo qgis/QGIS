@@ -56,8 +56,9 @@ static void _setStandardTestFont( QgsLegendSettings &settings, const QString &st
   }
 }
 
-static void _renderLegend( const QString &testName, QgsLayerTreeModel *legendModel, const QgsLegendSettings &settings )
+static void _renderLegend( const QString &testName, QgsLayerTreeModel *legendModel, QgsLegendSettings &settings )
 {
+  settings.setTitle( QStringLiteral( "Legend" ) );
   QgsLegendRenderer legendRenderer( legendModel, settings );
   QSizeF size = legendRenderer.minimumSize();
 

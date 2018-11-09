@@ -140,7 +140,7 @@ const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QStrin
   // try mapping 'qgis' algs to 'native' algs - this allows us to freely move algorithms
   // from the python 'qgis' provider to the c++ 'native' provider without breaking API
   // or existing models
-  if ( id.startsWith( QStringLiteral( "qgis:" ) ) )
+  if ( id.startsWith( QLatin1String( "qgis:" ) ) )
   {
     QString newId = QStringLiteral( "native:" ) + id.mid( 5 );
     return algorithmById( newId );

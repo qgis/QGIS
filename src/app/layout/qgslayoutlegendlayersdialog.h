@@ -18,7 +18,7 @@
 #include "ui_qgslayoutlegendlayersdialogbase.h"
 
 class QgsMapLayer;
-class QgsMapLayerModel;
+class QgsMapLayerProxyModel;
 
 /**
  * \ingroup app
@@ -32,12 +32,22 @@ class QgsLayoutLegendLayersDialog: public QDialog, private Ui::QgsLayoutLegendLa
     QgsLayoutLegendLayersDialog( QWidget *parent = nullptr );
     ~QgsLayoutLegendLayersDialog() override;
 
+    /**
+     * Sets a list of visible \a layers, to use for filtering within the dialog.
+     */
+    void setVisibleLayers( const QList<QgsMapLayer *> &layers );
+
     QList< QgsMapLayer * > selectedLayers() const;
+
+  private slots:
+
+    void filterVisible( bool enabled );
 
   private:
     QgsLayoutLegendLayersDialog() = delete;
 
-    QgsMapLayerModel *mModel = nullptr;
+    QgsMapLayerProxyModel *mModel = nullptr;
+    QList< QgsMapLayer * > mVisibleLayers;
 };
 
 #endif //QGSLAYOUTLEGENDLAYERSDIALOG_H

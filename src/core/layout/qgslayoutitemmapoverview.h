@@ -92,7 +92,7 @@ class CORE_EXPORT QgsLayoutItemMapOverviewStack : public QgsLayoutItemMapItemSta
     /**
      * Returns a reference to an overview at the specified \a index within the stack.
      */
-    QgsLayoutItemMapOverview *overview( const int index ) const;
+    QgsLayoutItemMapOverview *overview( int index ) const;
 
     /**
      * Returns a reference to an overview at the specified \a index within the stack.
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsLayoutItemMapOverview : public QgsLayoutItemMapItem
      * Sets the blending \a mode used for drawing the overview.
      * \see blendMode()
      */
-    void setBlendMode( const QPainter::CompositionMode mode );
+    void setBlendMode( QPainter::CompositionMode mode );
 
     /**
      * Returns whether the overview frame is inverted, ie, whether the shaded area is drawn outside
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsLayoutItemMapOverview : public QgsLayoutItemMapItem
      * the extent of the overview map.
      * \see inverted()
      */
-    void setInverted( const bool inverted );
+    void setInverted( bool inverted );
 
     /**
      * Returns whether the extent of the map is forced to center on the overview.
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsLayoutItemMapOverview : public QgsLayoutItemMapItem
      * Sets whether the extent of the map is forced to center on the overview
      * \see centered()
      */
-    void setCentered( const bool centered );
+    void setCentered( bool centered );
 
     /**
      * Reconnects signals for overview map, so that overview correctly follows changes to source

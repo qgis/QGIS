@@ -16,6 +16,7 @@
 #include "qgsfieldvalueslineedit.h"
 #include "qgsvectorlayer.h"
 #include "qgsfloatingwidget.h"
+
 #include <QCompleter>
 #include <QStringListModel>
 #include <QTimer>
@@ -131,3 +132,42 @@ void QgsFieldValuesLineEdit::updateCompleter( const QStringList &values )
   completer()->complete();
 }
 
+
+// just internal guff - definitely not for exposing to public API!
+///@cond PRIVATE
+
+void QgsFieldValuesLineEditValuesGatherer::run()
+{
+  mWasCanceled = false;
+  if ( mSubstring.isEmpty() )
+  {
+    emit collectedValues( QStringList() );
+    return;
+  }
+
+  // allow responsive cancelation
+  mFeedback = new QgsFeedback();
+  // just get 100 values... maybe less/more would be useful?
+  mValues = mLayer->uniqueStringsMatching( mAttributeIndex, mSubstring, 100, mFeedback );
+
+  // be overly cautious - it's *possible* stop() might be called between deleting mFeedback and nulling it
+  mFeedbackMutex.lock();
+  delete mFeedback;
+  mFeedback = nullptr;
+  mFeedbackMutex.unlock();
+
+  emit collectedValues( mValues );
+}
+
+void QgsFieldValuesLineEditValuesGatherer::stop()
+{
+  // be cautious, in case gatherer stops naturally just as we are canceling it and mFeedback gets deleted
+  mFeedbackMutex.lock();
+  if ( mFeedback )
+    mFeedback->cancel();
+  mFeedbackMutex.unlock();
+
+  mWasCanceled = true;
+}
+
+///@endcond

@@ -26,7 +26,7 @@ declare -a EXT=("cpp" "h")
 for i in "${EXT[@]}"
 do
 	DESTFILE=$DIR/../src/customwidgets/${CLASSLOWER}plugin.$i
-	cp $DIR/customwidget.$i.template $DESTFILE
+	cp "$DIR"/customwidget."$i".template "$DESTFILE"
 	sed -i s/%DATE%/"$TODAY"/g "$DESTFILE"
 	sed -i s/%YEAR%/"$YEAR"/g "$DESTFILE"
 	sed -i s/%AUTHOR%/"$AUTHOR"/g "$DESTFILE"

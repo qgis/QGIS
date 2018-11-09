@@ -68,7 +68,7 @@ QgsRasterRenderer *QgsPalettedRasterRenderer::create( const QDomElement &elem, Q
       QColor color;
       QString label;
       entryElem = paletteEntries.at( i ).toElement();
-      value = ( int )entryElem.attribute( QStringLiteral( "value" ), QStringLiteral( "0" ) ).toDouble();
+      value = static_cast<int>( entryElem.attribute( QStringLiteral( "value" ), QStringLiteral( "0" ) ).toDouble() );
       QgsDebugMsgLevel( entryElem.attribute( "color", "#000000" ), 4 );
       color = QColor( entryElem.attribute( QStringLiteral( "color" ), QStringLiteral( "#000000" ) ) );
       color.setAlpha( entryElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt() );
@@ -131,7 +131,7 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  cons
 
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugMsg( "No raster data!" );
+    QgsDebugMsg( QStringLiteral( "No raster data!" ) );
     return outputBlock.release();
   }
 

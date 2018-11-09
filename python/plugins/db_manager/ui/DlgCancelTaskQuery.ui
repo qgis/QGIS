@@ -28,7 +28,7 @@
       <item>
        <widget class="QLabel" name="mLabel">
         <property name="text">
-         <string>Executing SQL...</string>
+         <string>Executing SQL…</string>
         </property>
        </widget>
       </item>

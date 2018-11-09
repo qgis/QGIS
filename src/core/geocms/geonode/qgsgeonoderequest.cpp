@@ -163,12 +163,12 @@ void QgsGeoNodeRequest::setProtocol( const QString &protocol )
 
 void QgsGeoNodeRequest::replyFinished()
 {
-  QgsDebugMsg( "Reply finished" );
+  QgsDebugMsg( QStringLiteral( "Reply finished" ) );
   if ( !mIsAborted && mGeoNodeReply )
   {
     if ( mGeoNodeReply->error() == QNetworkReply::NoError )
     {
-      QgsDebugMsg( "reply OK" );
+      QgsDebugMsg( QStringLiteral( "reply OK" ) );
       QVariant redirect = mGeoNodeReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {
@@ -192,7 +192,7 @@ void QgsGeoNodeRequest::replyFinished()
           mGeoNodeReply->deleteLater();
           mGeoNodeReply = nullptr;
 
-          QgsDebugMsgLevel( QString( "redirected getcapabilities: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ), 3 );
+          QgsDebugMsgLevel( QStringLiteral( "redirected getcapabilities: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ), 3 );
           mGeoNodeReply = QgsNetworkAccessManager::instance()->get( request );
 
           connect( mGeoNodeReply, &QNetworkReply::finished, this, &QgsGeoNodeRequest::replyFinished, Qt::DirectConnection );
@@ -217,7 +217,7 @@ void QgsGeoNodeRequest::replyFinished()
           }
           cmd.setRawHeaders( hl );
 
-          QgsDebugMsg( QString( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
+          QgsDebugMsg( QStringLiteral( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
           if ( cmd.expirationDate().isNull() )
           {
             QgsSettings settings;
@@ -228,7 +228,7 @@ void QgsGeoNodeRequest::replyFinished()
         }
         else
         {
-          QgsDebugMsg( "No cache for capabilities!" );
+          QgsDebugMsg( QStringLiteral( "No cache for capabilities!" ) );
         }
 
         mHttpGeoNodeResponse = mGeoNodeReply->readAll();

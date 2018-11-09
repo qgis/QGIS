@@ -70,7 +70,7 @@ class CORE_EXPORT QgsScaleCalculator
      * \param canvasWidth Width of the map canvas in pixel (physical) units
      * \returns scale denominator of current map view, e.g. 1000.0 for a 1:1000 map.
      */
-    double calculate( const QgsRectangle &mapExtent, int canvasWidth );
+    double calculate( const QgsRectangle &mapExtent, double canvasWidth );
 
     /**
      * Calculate the distance between two points in geographic coordinates.

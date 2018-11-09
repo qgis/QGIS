@@ -93,7 +93,6 @@ class QgsVertexEditor : public QgsDockWidget
   private slots:
     void updateTableSelection();
     void updateVertexSelection( const QItemSelection &selected, const QItemSelection &deselected );
-    void zoomToVertex( int idx );
 
   private:
 

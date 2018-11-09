@@ -22,10 +22,12 @@
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include "qgisapp.h"
+#include "qgssnapindicator.h"
 
 QgsMapToolAddEllipse::QgsMapToolAddEllipse( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
+  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
 {
   clean();
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddEllipse::stopCapturing );
@@ -110,4 +112,8 @@ void QgsMapToolAddEllipse::clean()
   }
 
   mEllipse = QgsEllipse();
+
+  QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
+  if ( vLayer )
+    mLayerType = vLayer->geometryType();
 }

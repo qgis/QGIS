@@ -29,7 +29,7 @@ namespace QgsWms
                                const QString &version, const QgsServerRequest &request,
                                QgsServerResponse &response );
 
-} // samespace QgsWms
+} // namespace QgsWms
 
 
 

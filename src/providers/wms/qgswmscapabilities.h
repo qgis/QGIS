@@ -139,9 +139,9 @@ struct QgsWmsServiceProperty
   QgsWmsContactInformationProperty   contactInformation;
   QString                            fees;
   QString                            accessConstraints;
-  uint                               layerLimit;
-  uint                               maxWidth;
-  uint                               maxHeight;
+  uint                               layerLimit = 0;
+  uint                               maxWidth = 0;
+  uint                               maxHeight = 0;
 };
 
 //! Bounding Box Property structure

@@ -10,8 +10,6 @@
 
 
 
-const int NO_ACTIVE_MESH_DATASET;
-
 
 class QgsMeshLayer : QgsMapLayer
 {
@@ -111,10 +109,10 @@ QgsMeshLayer cannot be copied.
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
-
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
-
+     virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
+                        QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
     virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;
 
     virtual QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const;
@@ -131,66 +129,51 @@ Returns the provider type for this layer
 
 
 
-    QgsMeshRendererMeshSettings rendererNativeMeshSettings() const;
+
+    QgsMeshRendererSettings rendererSettings() const;
 %Docstring
 Returns renderer settings
 %End
-
-    void setRendererNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
+    void setRendererSettings( const QgsMeshRendererSettings &settings );
 %Docstring
-Sets new renderer settings, triggers repaint
+Sets new renderer settings
 %End
 
-    QgsMeshRendererMeshSettings rendererTriangularMeshSettings() const;
+    QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
 %Docstring
-Returns renderer settings
+Interpolates the value on the given point from given dataset.
+
+.. note::
+
+   It uses previously cached and indexed triangular mesh
+   and so if the layer has not been rendered previously
+   (e.g. when used in a script) it returns NaN value
+
+:param index: dataset index specifying group and dataset to extract value from
+:param point: point to query in map coordinates
+
+:return: interpolated value at the point. Returns NaN values for values
+         outside the mesh layer, nodata values and in case triangular mesh was not
+         previously used for rendering
+
+
+.. versionadded:: 3.4
 %End
 
-    void setRendererTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
+  signals:
+
+    void activeScalarDatasetChanged( const QgsMeshDatasetIndex &index );
 %Docstring
-Sets new renderer settings, triggers repaint
+Emitted when active scalar dataset is changed
+
+.. versionadded:: 3.4
 %End
 
-    QgsMeshRendererScalarSettings rendererScalarSettings() const;
+    void activeVectorDatasetChanged( const QgsMeshDatasetIndex &index );
 %Docstring
-Returns renderer settings
-%End
+Emitted when active vector dataset is changed
 
-    void setRendererScalarSettings( const QgsMeshRendererScalarSettings &settings );
-%Docstring
-Sets new renderer settings, triggers repaint
-%End
-
-    QgsMeshRendererVectorSettings rendererVectorSettings() const;
-%Docstring
-Returns renderer settings
-%End
-
-    void setRendererVectorSettings( const QgsMeshRendererVectorSettings &settings );
-%Docstring
-Sets new renderer settings, triggers repaint
-%End
-
-    void setActiveScalarDataset( int index = NO_ACTIVE_MESH_DATASET );
-%Docstring
-Sets active scalar dataset for rendering
-
-Triggers repaint
-%End
-    int activeScalarDataset() const;
-%Docstring
-Returns active scalar dataset
-%End
-
-    void setActiveVectorDataset( int index = NO_ACTIVE_MESH_DATASET );
-%Docstring
-Sets active vector dataset for rendering.
-
-If dataset is not vector based, do nothing. Triggers repaint
-%End
-    int activeVectorDataset() const;
-%Docstring
-Returns active vector dataset
+.. versionadded:: 3.4
 %End
 
   private: // Private methods

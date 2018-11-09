@@ -13,20 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrysegmentlengthcheck.h"
 #include "qgsgeometryutils.h"
 #include "qgsfeaturepool.h"
+#include "qgsgeometrycheckerror.h"
 
-void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+void QgsGeometrySegmentLengthCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
-  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter );
+  Q_UNUSED( messages )
+
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    double layerToMapUnits = layerFeature.layerToMapUnits();
+    double layerToMapUnits = scaleFactor( layerFeature.layer() );
     double minLength = mMinLengthMapUnits / layerToMapUnits;
 
-    const QgsAbstractGeometry *geom = layerFeature.geometry();
+    const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
@@ -41,7 +45,7 @@ void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError *
         {
           QgsPoint pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
           QgsPoint pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
-          double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
+          double dist = pi.distance( pj );
           // Don't report very small lengths, they are either duplicate nodes or degenerate geometries
           if ( dist < minLength && dist > mContext->tolerance )
           {
@@ -54,11 +58,11 @@ void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError *
   }
 }
 
-void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &/*changes*/ ) const
+void QgsGeometrySegmentLengthCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &/*changes*/ ) const
 {
-  QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
+  QgsFeaturePool *featurePool = featurePools[ error->layerId() ];
   QgsFeature feature;
-  if ( !featurePool->get( error->featureId(), feature ) )
+  if ( !featurePool->getFeature( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -85,8 +89,8 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError *error, int 
 
   QgsPoint pi = geom->vertexAt( error->vidx() );
   QgsPoint pj = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + nVerts ) % nVerts ) );
-  double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
-  double layerToMapUnits = featurePool->getLayerToMapUnits();
+  double dist = pi.distance( pj );
+  double layerToMapUnits = scaleFactor( featurePool->layer() );
   double minLength = mMinLengthMapUnits / layerToMapUnits;
   if ( dist >= minLength )
   {
@@ -105,8 +109,13 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError *error, int 
   }
 }
 
-QStringList QgsGeometrySegmentLengthCheck::getResolutionMethods() const
+QStringList QgsGeometrySegmentLengthCheck::resolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;
+}
+
+QgsGeometryCheck::CheckType QgsGeometrySegmentLengthCheck::factoryCheckType()
+{
+  return QgsGeometryCheck::FeatureNodeCheck;
 }

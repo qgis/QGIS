@@ -98,14 +98,14 @@
      <item>
       <widget class="QToolButton" name="btnAdd">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="btnRemove">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>

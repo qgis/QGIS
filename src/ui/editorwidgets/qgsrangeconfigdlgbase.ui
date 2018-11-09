@@ -27,7 +27,7 @@
    <item row="4" column="0">
     <widget class="QgsCollapsibleGroupBox" name="groupBox">
      <property name="title">
-      <string>Advanced options</string>
+      <string>Advanced Options</string>
      </property>
      <layout class="QFormLayout" name="formLayout_3">
       <item row="0" column="0">

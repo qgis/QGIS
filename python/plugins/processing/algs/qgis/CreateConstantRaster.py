@@ -30,6 +30,8 @@ import math
 import struct
 
 from qgis.core import (Qgis,
+                       QgsErrorMessage,
+                       QgsProcessingException,
                        QgsRasterBlock,
                        QgsRasterFileWriter,
                        QgsProcessingParameterExtent,
@@ -40,7 +42,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class CreateConstantRaster(QgisAlgorithm):
-
     EXTENT = 'EXTENT'
     TARGET_CRS = 'TARGET_CRS'
     PIXEL_SIZE = 'PIXEL_SIZE'
@@ -65,7 +66,7 @@ class CreateConstantRaster(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.PIXEL_SIZE,
                                                        self.tr('Pixel size'),
                                                        QgsProcessingParameterNumber.Double,
-                                                       0.1, False, 0.01, 999))
+                                                       0.1, False, 0.01))
         self.addParameter(QgsProcessingParameterNumber(self.NUMBER,
                                                        self.tr('Constant value'),
                                                        QgsProcessingParameterNumber.Double,
@@ -87,13 +88,20 @@ class CreateConstantRaster(QgisAlgorithm):
         outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         outputFormat = QgsRasterFileWriter.driverForExtension(os.path.splitext(outputFile)[1])
 
-        rows = max([math.ceil(extent.height() / pixelSize) + 1, 1.0])
-        cols = max([math.ceil(extent.width() / pixelSize) + 1, 1.0])
+        rows = max([math.ceil(extent.height() / pixelSize), 1.0])
+        cols = max([math.ceil(extent.width() / pixelSize), 1.0])
 
         writer = QgsRasterFileWriter(outputFile)
         writer.setOutputProviderKey('gdal')
         writer.setOutputFormat(outputFormat)
         provider = writer.createOneBandRaster(Qgis.Float32, cols, rows, extent, crs)
+        if provider is None:
+            raise QgsProcessingException(self.tr("Could not create raster output: {}").format(outputFile))
+        if not provider.isValid():
+            raise QgsProcessingException(self.tr("Could not create raster output {}: {}").format(outputFile,
+                                                                                                 provider.error().message(
+                                                                                                     QgsErrorMessage.Text)))
+
         provider.setNoDataValue(1, -9999)
 
         data = [value] * cols

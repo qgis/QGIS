@@ -77,6 +77,9 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
         self.field_name = self.parameterAsString(parameters, self.FIELD, context)
         return True
 
+    def supportInPlaceEdit(self, layer):
+        return False
+
     def sourceFlags(self):
         return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks
 

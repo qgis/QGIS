@@ -15,6 +15,7 @@
 
 #include "qgs3dmapsettings.h"
 
+#include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsdemterraingenerator.h"
 //#include "quantizedmeshterraingenerator.h"
@@ -27,7 +28,7 @@
 #include "qgsrasterlayer.h"
 
 Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
-  : QObject()
+  : QObject( nullptr )
   , mOrigin( other.mOrigin )
   , mCrs( other.mCrs )
   , mBackgroundColor( other.mBackgroundColor )
@@ -38,6 +39,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mMaxTerrainGroundError( other.mMaxTerrainGroundError )
   , mShowTerrainBoundingBoxes( other.mShowTerrainBoundingBoxes )
   , mShowTerrainTileInfo( other.mShowTerrainTileInfo )
+  , mShowCameraViewCenter( other.mShowCameraViewCenter )
   , mLayers( other.mLayers )
   , mSkyboxEnabled( other.mSkyboxEnabled )
   , mSkyboxFileBase( other.mSkyboxFileBase )
@@ -56,39 +58,46 @@ Qgs3DMapSettings::~Qgs3DMapSettings()
 
 void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  QDomElement elemOrigin = elem.firstChildElement( "origin" );
+  QDomElement elemOrigin = elem.firstChildElement( QStringLiteral( "origin" ) );
   mOrigin = QgsVector3D(
-              elemOrigin.attribute( "x" ).toDouble(),
-              elemOrigin.attribute( "y" ).toDouble(),
-              elemOrigin.attribute( "z" ).toDouble() );
+              elemOrigin.attribute( QStringLiteral( "x" ) ).toDouble(),
+              elemOrigin.attribute( QStringLiteral( "y" ) ).toDouble(),
+              elemOrigin.attribute( QStringLiteral( "z" ) ).toDouble() );
 
-  QDomElement elemCrs = elem.firstChildElement( "crs" );
+  QDomElement elemColor = elem.firstChildElement( QStringLiteral( "color" ) );
+  if ( !elemColor.isNull() )
+  {
+    mBackgroundColor = QgsSymbolLayerUtils::decodeColor( elemColor.attribute( QStringLiteral( "background" ) ) );
+    mSelectionColor = QgsSymbolLayerUtils::decodeColor( elemColor.attribute( QStringLiteral( "selection" ) ) );
+  }
+
+  QDomElement elemCrs = elem.firstChildElement( QStringLiteral( "crs" ) );
   mCrs.readXml( elemCrs );
 
-  QDomElement elemTerrain = elem.firstChildElement( "terrain" );
-  mTerrainVerticalScale = elemTerrain.attribute( "exaggeration", "1" ).toFloat();
-  mMapTileResolution = elemTerrain.attribute( "texture-size", "512" ).toInt();
-  mMaxTerrainScreenError = elemTerrain.attribute( "max-terrain-error", "3" ).toFloat();
-  mMaxTerrainGroundError = elemTerrain.attribute( "max-ground-error", "1" ).toFloat();
-  mShowLabels = elemTerrain.attribute( "show-labels", "0" ).toInt();
-  QDomElement elemMapLayers = elemTerrain.firstChildElement( "layers" );
-  QDomElement elemMapLayer = elemMapLayers.firstChildElement( "layer" );
+  QDomElement elemTerrain = elem.firstChildElement( QStringLiteral( "terrain" ) );
+  mTerrainVerticalScale = elemTerrain.attribute( QStringLiteral( "exaggeration" ), QStringLiteral( "1" ) ).toFloat();
+  mMapTileResolution = elemTerrain.attribute( QStringLiteral( "texture-size" ), QStringLiteral( "512" ) ).toInt();
+  mMaxTerrainScreenError = elemTerrain.attribute( QStringLiteral( "max-terrain-error" ), QStringLiteral( "3" ) ).toFloat();
+  mMaxTerrainGroundError = elemTerrain.attribute( QStringLiteral( "max-ground-error" ), QStringLiteral( "1" ) ).toFloat();
+  mShowLabels = elemTerrain.attribute( QStringLiteral( "show-labels" ), QStringLiteral( "0" ) ).toInt();
+  QDomElement elemMapLayers = elemTerrain.firstChildElement( QStringLiteral( "layers" ) );
+  QDomElement elemMapLayer = elemMapLayers.firstChildElement( QStringLiteral( "layer" ) );
   QList<QgsMapLayerRef> mapLayers;
   while ( !elemMapLayer.isNull() )
   {
-    mapLayers << QgsMapLayerRef( elemMapLayer.attribute( "id" ) );
-    elemMapLayer = elemMapLayer.nextSiblingElement( "layer" );
+    mapLayers << QgsMapLayerRef( elemMapLayer.attribute( QStringLiteral( "id" ) ) );
+    elemMapLayer = elemMapLayer.nextSiblingElement( QStringLiteral( "layer" ) );
   }
   mLayers = mapLayers;  // needs to resolve refs afterwards
-  QDomElement elemTerrainGenerator = elemTerrain.firstChildElement( "generator" );
-  QString terrainGenType = elemTerrainGenerator.attribute( "type" );
-  if ( terrainGenType == "dem" )
+  QDomElement elemTerrainGenerator = elemTerrain.firstChildElement( QStringLiteral( "generator" ) );
+  QString terrainGenType = elemTerrainGenerator.attribute( QStringLiteral( "type" ) );
+  if ( terrainGenType == QLatin1String( "dem" ) )
   {
     QgsDemTerrainGenerator *demTerrainGenerator = new QgsDemTerrainGenerator;
     demTerrainGenerator->setCrs( mCrs, mTransformContext );
     mTerrainGenerator.reset( demTerrainGenerator );
   }
-  else if ( terrainGenType == "quantized-mesh" )
+  else if ( terrainGenType == QLatin1String( "quantized-mesh" ) )
   {
 #if 0
     terrainGenerator.reset( new QuantizedMeshTerrainGenerator );
@@ -106,13 +115,13 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   qDeleteAll( mRenderers );
   mRenderers.clear();
 
-  QDomElement elemRenderers = elem.firstChildElement( "renderers" );
-  QDomElement elemRenderer = elemRenderers.firstChildElement( "renderer" );
+  QDomElement elemRenderers = elem.firstChildElement( QStringLiteral( "renderers" ) );
+  QDomElement elemRenderer = elemRenderers.firstChildElement( QStringLiteral( "renderer" ) );
   while ( !elemRenderer.isNull() )
   {
     QgsAbstract3DRenderer *renderer = nullptr;
-    QString type = elemRenderer.attribute( "type" );
-    if ( type == "vector" )
+    QString type = elemRenderer.attribute( QStringLiteral( "type" ) );
+    if ( type == QLatin1String( "vector" ) )
     {
       renderer = new QgsVectorLayer3DRenderer;
     }
@@ -122,73 +131,80 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
       renderer->readXml( elemRenderer, context );
       mRenderers.append( renderer );
     }
-    elemRenderer = elemRenderer.nextSiblingElement( "renderer" );
+    elemRenderer = elemRenderer.nextSiblingElement( QStringLiteral( "renderer" ) );
   }
 
-  QDomElement elemSkybox = elem.firstChildElement( "skybox" );
-  mSkyboxEnabled = elemSkybox.attribute( "enabled", "0" ).toInt();
-  mSkyboxFileBase = elemSkybox.attribute( "file-base" );
-  mSkyboxFileExtension = elemSkybox.attribute( "file-ext" );
+  QDomElement elemSkybox = elem.firstChildElement( QStringLiteral( "skybox" ) );
+  mSkyboxEnabled = elemSkybox.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
+  mSkyboxFileBase = elemSkybox.attribute( QStringLiteral( "file-base" ) );
+  mSkyboxFileExtension = elemSkybox.attribute( QStringLiteral( "file-ext" ) );
 
-  QDomElement elemDebug = elem.firstChildElement( "debug" );
-  mShowTerrainBoundingBoxes = elemDebug.attribute( "bounding-boxes", "0" ).toInt();
-  mShowTerrainTileInfo = elemDebug.attribute( "terrain-tile-info", "0" ).toInt();
+  QDomElement elemDebug = elem.firstChildElement( QStringLiteral( "debug" ) );
+  mShowTerrainBoundingBoxes = elemDebug.attribute( QStringLiteral( "bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
+  mShowTerrainTileInfo = elemDebug.attribute( QStringLiteral( "terrain-tile-info" ), QStringLiteral( "0" ) ).toInt();
+  mShowCameraViewCenter = elemDebug.attribute( QStringLiteral( "camera-view-center" ), QStringLiteral( "0" ) ).toInt();
 }
 
 QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement elem = doc.createElement( "qgis3d" );
+  QDomElement elem = doc.createElement( QStringLiteral( "qgis3d" ) );
 
-  QDomElement elemOrigin = doc.createElement( "origin" );
-  elemOrigin.setAttribute( "x", QString::number( mOrigin.x() ) );
-  elemOrigin.setAttribute( "y", QString::number( mOrigin.y() ) );
-  elemOrigin.setAttribute( "z", QString::number( mOrigin.z() ) );
+  QDomElement elemOrigin = doc.createElement( QStringLiteral( "origin" ) );
+  elemOrigin.setAttribute( QStringLiteral( "x" ), QString::number( mOrigin.x() ) );
+  elemOrigin.setAttribute( QStringLiteral( "y" ), QString::number( mOrigin.y() ) );
+  elemOrigin.setAttribute( QStringLiteral( "z" ), QString::number( mOrigin.z() ) );
   elem.appendChild( elemOrigin );
 
-  QDomElement elemCrs = doc.createElement( "crs" );
+  QDomElement elemColor = doc.createElement( QStringLiteral( "color" ) );
+  elemColor.setAttribute( QStringLiteral( "background" ), QgsSymbolLayerUtils::encodeColor( mBackgroundColor ) );
+  elemColor.setAttribute( QStringLiteral( "selection" ), QgsSymbolLayerUtils::encodeColor( mSelectionColor ) );
+  elem.appendChild( elemColor );
+
+  QDomElement elemCrs = doc.createElement( QStringLiteral( "crs" ) );
   mCrs.writeXml( elemCrs, doc );
   elem.appendChild( elemCrs );
 
-  QDomElement elemTerrain = doc.createElement( "terrain" );
-  elemTerrain.setAttribute( "exaggeration", QString::number( mTerrainVerticalScale ) );
-  elemTerrain.setAttribute( "texture-size", mMapTileResolution );
-  elemTerrain.setAttribute( "max-terrain-error", QString::number( mMaxTerrainScreenError ) );
-  elemTerrain.setAttribute( "max-ground-error", QString::number( mMaxTerrainGroundError ) );
-  elemTerrain.setAttribute( "show-labels", mShowLabels ? 1 : 0 );
-  QDomElement elemMapLayers = doc.createElement( "layers" );
+  QDomElement elemTerrain = doc.createElement( QStringLiteral( "terrain" ) );
+  elemTerrain.setAttribute( QStringLiteral( "exaggeration" ), QString::number( mTerrainVerticalScale ) );
+  elemTerrain.setAttribute( QStringLiteral( "texture-size" ), mMapTileResolution );
+  elemTerrain.setAttribute( QStringLiteral( "max-terrain-error" ), QString::number( mMaxTerrainScreenError ) );
+  elemTerrain.setAttribute( QStringLiteral( "max-ground-error" ), QString::number( mMaxTerrainGroundError ) );
+  elemTerrain.setAttribute( QStringLiteral( "show-labels" ), mShowLabels ? 1 : 0 );
+  QDomElement elemMapLayers = doc.createElement( QStringLiteral( "layers" ) );
   Q_FOREACH ( const QgsMapLayerRef &layerRef, mLayers )
   {
-    QDomElement elemMapLayer = doc.createElement( "layer" );
-    elemMapLayer.setAttribute( "id", layerRef.layerId );
+    QDomElement elemMapLayer = doc.createElement( QStringLiteral( "layer" ) );
+    elemMapLayer.setAttribute( QStringLiteral( "id" ), layerRef.layerId );
     elemMapLayers.appendChild( elemMapLayer );
   }
   elemTerrain.appendChild( elemMapLayers );
-  QDomElement elemTerrainGenerator = doc.createElement( "generator" );
-  elemTerrainGenerator.setAttribute( "type", QgsTerrainGenerator::typeToString( mTerrainGenerator->type() ) );
+  QDomElement elemTerrainGenerator = doc.createElement( QStringLiteral( "generator" ) );
+  elemTerrainGenerator.setAttribute( QStringLiteral( "type" ), QgsTerrainGenerator::typeToString( mTerrainGenerator->type() ) );
   mTerrainGenerator->writeXml( elemTerrainGenerator );
   elemTerrain.appendChild( elemTerrainGenerator );
   elem.appendChild( elemTerrain );
 
-  QDomElement elemRenderers = doc.createElement( "renderers" );
+  QDomElement elemRenderers = doc.createElement( QStringLiteral( "renderers" ) );
   Q_FOREACH ( const QgsAbstract3DRenderer *renderer, mRenderers )
   {
-    QDomElement elemRenderer = doc.createElement( "renderer" );
-    elemRenderer.setAttribute( "type", renderer->type() );
+    QDomElement elemRenderer = doc.createElement( QStringLiteral( "renderer" ) );
+    elemRenderer.setAttribute( QStringLiteral( "type" ), renderer->type() );
     renderer->writeXml( elemRenderer, context );
     elemRenderers.appendChild( elemRenderer );
   }
   elem.appendChild( elemRenderers );
 
-  QDomElement elemSkybox = doc.createElement( "skybox" );
-  elemSkybox.setAttribute( "enabled", mSkyboxEnabled ? 1 : 0 );
+  QDomElement elemSkybox = doc.createElement( QStringLiteral( "skybox" ) );
+  elemSkybox.setAttribute( QStringLiteral( "enabled" ), mSkyboxEnabled ? 1 : 0 );
   // TODO: use context for relative paths, maybe explicitly list all files(?)
-  elemSkybox.setAttribute( "file-base", mSkyboxFileBase );
-  elemSkybox.setAttribute( "file-ext", mSkyboxFileExtension );
+  elemSkybox.setAttribute( QStringLiteral( "file-base" ), mSkyboxFileBase );
+  elemSkybox.setAttribute( QStringLiteral( "file-ext" ), mSkyboxFileExtension );
   elem.appendChild( elemSkybox );
 
-  QDomElement elemDebug = doc.createElement( "debug" );
-  elemDebug.setAttribute( "bounding-boxes", mShowTerrainBoundingBoxes ? 1 : 0 );
-  elemDebug.setAttribute( "terrain-tile-info", mShowTerrainTileInfo ? 1 : 0 );
+  QDomElement elemDebug = doc.createElement( QStringLiteral( "debug" ) );
+  elemDebug.setAttribute( QStringLiteral( "bounding-boxes" ), mShowTerrainBoundingBoxes ? 1 : 0 );
+  elemDebug.setAttribute( QStringLiteral( "terrain-tile-info" ), mShowTerrainTileInfo ? 1 : 0 );
+  elemDebug.setAttribute( QStringLiteral( "camera-view-center" ), mShowCameraViewCenter ? 1 : 0 );
   elem.appendChild( elemDebug );
 
   return elem;
@@ -375,6 +391,15 @@ void Qgs3DMapSettings::setShowTerrainTilesInfo( bool enabled )
 
   mShowTerrainTileInfo = enabled;
   emit showTerrainTilesInfoChanged();
+}
+
+void Qgs3DMapSettings::setShowCameraViewCenter( bool enabled )
+{
+  if ( mShowCameraViewCenter == enabled )
+    return;
+
+  mShowCameraViewCenter = enabled;
+  emit showCameraViewCenterChanged();
 }
 
 void Qgs3DMapSettings::setShowLabels( bool enabled )

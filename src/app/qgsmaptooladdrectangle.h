@@ -22,6 +22,7 @@
 #include "qgis_app.h"
 
 class QgsPolygon;
+class QgsSnapIndicator;
 
 class APP_EXPORT QgsMapToolAddRectangle: public QgsMapToolCapture
 {
@@ -34,7 +35,7 @@ class APP_EXPORT QgsMapToolAddRectangle: public QgsMapToolCapture
     void keyPressEvent( QKeyEvent *e ) override;
     void keyReleaseEvent( QKeyEvent *e ) override;
 
-    void deactivate( const bool isOriented = false );
+    void deactivate( bool isOriented = false );
 
     void activate() override;
     void clean() override;
@@ -55,18 +56,18 @@ class APP_EXPORT QgsMapToolAddRectangle: public QgsMapToolCapture
     QgsBox3d mRectangle;
 
     //! Convenient method to export a QgsRectangle to a LineString
-    QgsLineString *rectangleToLinestring( const bool isOriented = false ) const;
+    QgsLineString *rectangleToLinestring( bool isOriented = false ) const;
     //! Convenient method to export a QgsRectangle to a Polygon
-    QgsPolygon *rectangleToPolygon( const bool isOriented = false ) const;
+    QgsPolygon *rectangleToPolygon( bool isOriented = false ) const;
 
     //! Sets the azimuth. \see mAzimuth
-    void setAzimuth( const double azimuth );
+    void setAzimuth( double azimuth );
     //! Sets the first distance. \see mDistance1
-    void setDistance1( const double distance1 );
+    void setDistance1( double distance1 );
     //! Sets the second distance. \see mDistance2
-    void setDistance2( const double distance2 );
+    void setDistance2( double distance2 );
     //! Sets the side. \see mSide
-    void setSide( const int side );
+    void setSide( int side );
 
     //! Returns the azimuth. \see mAzimuth
     double azimuth( ) const { return mAzimuth; }
@@ -76,6 +77,12 @@ class APP_EXPORT QgsMapToolAddRectangle: public QgsMapToolCapture
     double distance2( ) const { return mDistance2; }
     //! Returns the side. \see mSide
     int side( ) const { return mSide; }
+
+    //! Layer type which will be used for rubberband
+    QgsWkbTypes::GeometryType mLayerType = QgsWkbTypes::LineGeometry;
+
+    //! Snapping indicators
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
   private:
     //! Convenient member for the azimuth of the rotated rectangle or when map is rotated.

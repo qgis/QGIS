@@ -60,48 +60,11 @@ QGISEXTERN int dataCapabilities()
   return  QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
+QGISEXTERN QVariantMap decodeUri( const QString &uri )
 {
-  if ( path.isEmpty() )
-  {
-    return new QgsAfsRootItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), QStringLiteral( "arcgisfeatureserver:" ) );
-  }
+  QgsDataSourceUri dsUri = QgsDataSourceUri( uri );
 
-  // path schema: afs:/connection name (used by OWS)
-  if ( path.startsWith( QLatin1String( "afs:/" ) ) )
-  {
-    QString connectionName = path.split( '/' ).last();
-    if ( QgsOwsConnection::connectionList( QStringLiteral( "arcgisfeatureserver" ) ).contains( connectionName ) )
-    {
-      QgsOwsConnection connection( QStringLiteral( "arcgisfeatureserver" ), connectionName );
-      return new QgsAfsConnectionItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), path, connection.uri().param( QStringLiteral( "url" ) ) );
-    }
-  }
-
-  return nullptr;
+  QVariantMap components;
+  components.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
+  return components;
 }
-
-/*
-QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QString& sldStyle,
-                           const QString& styleName, const QString& styleDescription,
-                          const QString& uiFileContent, bool useAsDefault, QString& errCause )
-{
-
-}
-
-QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
-{
-
-}
-
-QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &names,
-                           QStringList &descriptions, QString& errCause )
-{
-
-}
-
-QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& errCause )
-{
-
-}
-*/

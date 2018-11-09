@@ -21,170 +21,203 @@
 
 namespace QgsWfs
 {
+  //
+  // QgsWfsParameter
+  //
+  QgsWfsParameter::QgsWfsParameter( const QgsWfsParameter::Name name,
+                                    const QVariant::Type type,
+                                    const QVariant defaultValue )
+    : QgsServerParameterDefinition( type, defaultValue )
+    , mName( name )
+  {
+  }
+
+  int QgsWfsParameter::toInt() const
+  {
+    bool ok = false;
+    const int val = QgsServerParameterDefinition::toInt( ok );
+
+    if ( !ok )
+    {
+      raiseError();
+    }
+
+    return val;
+  }
+
+  QgsRectangle QgsWfsParameter::toRectangle() const
+  {
+    QString value = toString();
+    const QStringList corners = mValue.toString().split( ',' );
+    if ( corners.size() == 5 )
+    {
+      value.resize( value.size() - corners[4].size() - 1 );
+    }
+
+    QgsServerParameterDefinition param;
+    param.mValue = QVariant( value );
+
+    bool ok = false;
+    const QgsRectangle rectangle = param.toRectangle( ok );
+
+    if ( !ok )
+    {
+      const QString msg = QString( "%1 ('%2') cannot be converted into rectangle" ).arg( name( mName ), toString() );
+      QgsServerParameterDefinition::raiseError( msg );
+    }
+
+    return rectangle;
+  }
+
+  QStringList QgsWfsParameter::toStringListWithExp( const QString &exp ) const
+  {
+    QStringList theList;
+
+    QString val = mValue.toString();
+    if ( val.isEmpty() )
+      return theList;
+
+    QRegExp rx( exp );
+    if ( rx.indexIn( val, 0 ) == -1 )
+    {
+      theList << val;
+    }
+    else
+    {
+      int pos = 0;
+      while ( ( pos = rx.indexIn( val, pos ) ) != -1 )
+      {
+        theList << rx.cap( 1 );
+        pos += rx.matchedLength();
+      }
+    }
+
+    return theList;
+  }
+
+  void QgsWfsParameter::raiseError() const
+  {
+    const QString msg = QString( "%1 ('%2') cannot be converted into %3" ).arg( name( mName ), toString(), typeName() );
+    QgsServerParameterDefinition::raiseError( msg );
+  }
+
+  QString QgsWfsParameter::name( const QgsWfsParameter::Name name )
+  {
+    const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWfsParameter::Name>() );
+    return metaEnum.valueToKey( name );
+  }
+
+  QgsWfsParameter::Name QgsWfsParameter::name( const QString &name )
+  {
+    const QMetaEnum metaEnum( QMetaEnum::fromType<QgsWfsParameter::Name>() );
+    return ( QgsWfsParameter::Name ) metaEnum.keyToValue( name.toUpper().toStdString().c_str() );
+  }
+
+  //
+  // QgsWfsParameters
+  //
   QgsWfsParameters::QgsWfsParameters()
+    : QgsServerParameters()
   {
     // Available version number
     mVersions.append( QgsProjectVersion( 1, 0, 0 ) );
     mVersions.append( QgsProjectVersion( 1, 1, 0 ) );
 
-    const Parameter pOutputFormat = { ParameterName::OUTPUTFORMAT,
-                                      QVariant::String,
-                                      QVariant( "" ),
-                                      QVariant()
-                                    };
+    const QgsWfsParameter pOutputFormat = QgsWfsParameter( QgsWfsParameter::OUTPUTFORMAT );
     save( pOutputFormat );
 
-    const Parameter pResultType = { ParameterName::RESULTTYPE,
-                                    QVariant::String,
-                                    QVariant( "" ),
-                                    QVariant()
-                                  };
+    const QgsWfsParameter pResultType = QgsWfsParameter( QgsWfsParameter::RESULTTYPE );
     save( pResultType );
 
-    const Parameter pPropertyName = { ParameterName::PROPERTYNAME,
-                                      QVariant::String,
-                                      QVariant( "" ),
-                                      QVariant()
-                                    };
+    const QgsWfsParameter pPropertyName = QgsWfsParameter( QgsWfsParameter::PROPERTYNAME );
     save( pPropertyName );
 
-    const Parameter pMaxFeatures = { ParameterName::MAXFEATURES,
-                                     QVariant::Int,
-                                     QVariant( -1 ),
-                                     QVariant()
-                                   };
+    const QgsWfsParameter pMaxFeatures = QgsWfsParameter( QgsWfsParameter::MAXFEATURES,
+                                         QVariant::Int,
+                                         QVariant( -1 ) );
     save( pMaxFeatures );
 
-    const Parameter pStartIndex = { ParameterName::STARTINDEX,
-                                    QVariant::Int,
-                                    QVariant( 0 ),
-                                    QVariant()
-                                  };
+    const QgsWfsParameter pStartIndex = QgsWfsParameter( QgsWfsParameter::STARTINDEX,
+                                        QVariant::Int,
+                                        QVariant( 0 ) );
     save( pStartIndex );
 
-    const Parameter pSrsName = { ParameterName::SRSNAME,
-                                 QVariant::String,
-                                 QVariant( "" ),
-                                 QVariant()
-                               };
+    const QgsWfsParameter pSrsName = QgsWfsParameter( QgsWfsParameter::SRSNAME );
     save( pSrsName );
 
-    const Parameter pTypeName = { ParameterName::TYPENAME,
-                                  QVariant::String,
-                                  QVariant( "" ),
-                                  QVariant()
-                                };
+    const QgsWfsParameter pTypeName = QgsWfsParameter( QgsWfsParameter::TYPENAME );
     save( pTypeName );
 
-    const Parameter pFeatureId = { ParameterName::FEATUREID,
-                                   QVariant::String,
-                                   QVariant( "" ),
-                                   QVariant()
-                                 };
+    const QgsWfsParameter pFeatureId = QgsWfsParameter( QgsWfsParameter::FEATUREID );
     save( pFeatureId );
 
-    const Parameter pFilter = { ParameterName::FILTER,
-                                QVariant::String,
-                                QVariant( "" ),
-                                QVariant()
-                              };
+    const QgsWfsParameter pFilter = QgsWfsParameter( QgsWfsParameter::FILTER );
     save( pFilter );
 
-    const Parameter pBbox = { ParameterName::BBOX,
-                              QVariant::String,
-                              QVariant( "" ),
-                              QVariant()
-                            };
+    const QgsWfsParameter pBbox = QgsWfsParameter( QgsWfsParameter::BBOX );
     save( pBbox );
 
-    const Parameter pSortBy = { ParameterName::SORTBY,
-                                QVariant::String,
-                                QVariant( "" ),
-                                QVariant()
-                              };
+    const QgsWfsParameter pSortBy = QgsWfsParameter( QgsWfsParameter::SORTBY );
     save( pSortBy );
 
-    const Parameter pExpFilter = { ParameterName::EXP_FILTER,
-                                   QVariant::String,
-                                   QVariant( "" ),
-                                   QVariant()
-                                 };
+    const QgsWfsParameter pExpFilter = QgsWfsParameter( QgsWfsParameter::EXP_FILTER );
     save( pExpFilter );
 
-    const Parameter pGeometryName = { ParameterName::GEOMETRYNAME,
-                                      QVariant::String,
-                                      QVariant( "" ),
-                                      QVariant()
-                                    };
+    const QgsWfsParameter pGeometryName = QgsWfsParameter( QgsWfsParameter::GEOMETRYNAME );
     save( pGeometryName );
   }
 
-  QgsWfsParameters::QgsWfsParameters( const QgsServerRequest::Parameters &parameters ) : QgsWfsParameters()
+  QgsWfsParameters::QgsWfsParameters( const QgsServerParameters &parameters )
+    : QgsWfsParameters()
   {
-    load( parameters );
+    load( parameters.urlQuery() );
   }
 
-  void QgsWfsParameters::load( const QgsServerRequest::Parameters &parameters )
+  bool QgsWfsParameters::loadParameter( const QString &key, const QString &value )
   {
-    mRequestParameters = parameters;
+    bool loaded = false;
 
-    const QMetaEnum metaEnum( QMetaEnum::fromType<ParameterName>() );
-    foreach ( QString key, parameters.keys() )
+    const QgsWfsParameter::Name name = QgsWfsParameter::name( key );
+    if ( name >= 0 )
     {
-      const ParameterName name = ( ParameterName ) metaEnum.keyToValue( key.toStdString().c_str() );
-      if ( name >= 0 )
+      mWfsParameters[name].mValue = value;
+      if ( ! mWfsParameters[name].isValid() )
       {
-        QVariant value( parameters[key] );
-        if ( value.canConvert( mParameters[name].mType ) )
-        {
-          mParameters[name].mValue = value;
-        }
-        else
-        {
-          raiseError( name );
-        }
+        mWfsParameters[name].raiseError();
       }
+
+      loaded = true;
     }
+
+    return loaded;
+  }
+
+  void QgsWfsParameters::save( const QgsWfsParameter &parameter )
+  {
+    mWfsParameters[ parameter.mName ] = parameter;
   }
 
   void QgsWfsParameters::dump() const
   {
-    const QMetaEnum metaEnum( QMetaEnum::fromType<ParameterName>() );
-
     log( "WFS Request parameters:" );
-    for ( auto parameter : mParameters.toStdMap() )
+    for ( auto parameter : mWfsParameters.toStdMap() )
     {
-      const QString value = parameter.second.mValue.toString();
+      const QString value = parameter.second.toString();
 
       if ( ! value.isEmpty() )
       {
-        const QString name = metaEnum.valueToKey( parameter.first );
-        log( " - " + name + " : " + value );
+        const QString name = QgsWfsParameter::name( parameter.first );
+        log( QStringLiteral( " - %1 : %2" ).arg( name, value ) );
       }
     }
 
     if ( !version().isEmpty() )
-      log( " - VERSION : " + version() );
-  }
-
-  void QgsWfsParameters::save( const Parameter &parameter )
-  {
-    mParameters[ parameter.mName ] = parameter;
-  }
-
-  QVariant QgsWfsParameters::value( ParameterName name ) const
-  {
-    return mParameters[name].mValue;
-  }
-
-  QVariant QgsWfsParameters::defaultValue( ParameterName name ) const
-  {
-    return mParameters[name].mDefaultValue;
+      log( QStringLiteral( " - VERSION : %1" ).arg( version() ) );
   }
 
   QString QgsWfsParameters::outputFormatAsString() const
   {
-    return value( ParameterName::OUTPUTFORMAT ).toString();
+    return mWfsParameters[ QgsWfsParameter::OUTPUTFORMAT ].toString();
   }
 
   QgsWfsParameters::Format QgsWfsParameters::outputFormat() const
@@ -223,7 +256,7 @@ namespace QgsWfs
 
   QString QgsWfsParameters::resultTypeAsString() const
   {
-    return value( ParameterName::RESULTTYPE ).toString();
+    return mWfsParameters[ QgsWfsParameter::RESULTTYPE ].toString();
   }
 
   QgsWfsParameters::ResultType QgsWfsParameters::resultType() const
@@ -240,90 +273,72 @@ namespace QgsWfs
 
   QStringList QgsWfsParameters::propertyNames() const
   {
-    return toStringListWithExp( ParameterName::PROPERTYNAME );
+    return mWfsParameters[ QgsWfsParameter::PROPERTYNAME ].toStringListWithExp();
   }
 
   QString QgsWfsParameters::maxFeatures() const
   {
-    return value( ParameterName::MAXFEATURES ).toString();
+    return mWfsParameters[ QgsWfsParameter::MAXFEATURES ].toString();
   }
 
   int QgsWfsParameters::maxFeaturesAsInt() const
   {
-    return toInt( ParameterName::MAXFEATURES );
+    return mWfsParameters[ QgsWfsParameter::MAXFEATURES ].toInt();
   }
 
   QString QgsWfsParameters::startIndex() const
   {
-    return value( ParameterName::STARTINDEX ).toString();
+    return mWfsParameters[ QgsWfsParameter::STARTINDEX ].toString();
   }
 
   int QgsWfsParameters::startIndexAsInt() const
   {
-    return toInt( ParameterName::STARTINDEX );
+    return mWfsParameters[ QgsWfsParameter::STARTINDEX ].toInt();
   }
 
   QString QgsWfsParameters::srsName() const
   {
-    return value( ParameterName::SRSNAME ).toString();
+    return mWfsParameters[ QgsWfsParameter::SRSNAME ].toString();
   }
 
   QStringList QgsWfsParameters::typeNames() const
   {
-    return toStringList( ParameterName::TYPENAME );
+    return mWfsParameters[ QgsWfsParameter::TYPENAME ].toStringList();
   }
 
   QStringList QgsWfsParameters::featureIds() const
   {
-    return toStringList( ParameterName::FEATUREID );
+    return mWfsParameters[ QgsWfsParameter::FEATUREID ].toStringList();
   }
 
   QStringList QgsWfsParameters::filters() const
   {
-    return toStringListWithExp( ParameterName::FILTER );
+    return mWfsParameters[ QgsWfsParameter::FILTER ].toStringListWithExp();
   }
 
   QString QgsWfsParameters::bbox() const
   {
-    return value( ParameterName::BBOX ).toString();
+    return mWfsParameters[ QgsWfsParameter::BBOX ].toString();
   }
 
   QgsRectangle QgsWfsParameters::bboxAsRectangle() const
   {
-    return toRectangle( ParameterName::BBOX );
+    return mWfsParameters[ QgsWfsParameter::BBOX ].toRectangle();
   }
 
   QStringList QgsWfsParameters::sortBy() const
   {
-    return toStringListWithExp( ParameterName::SORTBY );
+    return mWfsParameters[ QgsWfsParameter::SORTBY ].toStringListWithExp();
   }
 
   QStringList QgsWfsParameters::expFilters() const
   {
-    return toStringListWithExp( ParameterName::EXP_FILTER );
+    return mWfsParameters[ QgsWfsParameter::EXP_FILTER ].toStringListWithExp();
   }
 
   QString QgsWfsParameters::geometryNameAsString() const
   {
-    return value( ParameterName::GEOMETRYNAME ).toString();
-  }
-
-  QString QgsWfsParameters::request() const
-  {
-    if ( mRequestParameters.contains( "REQUEST" ) )
-      return mRequestParameters["REQUEST"];
-    else
-      return QString();
-  }
-
-  QString QgsWfsParameters::version() const
-  {
-    // VERSION parameter is not managed with other parameters because
-    // there's a conflict with qgis VERSION defined in qgsconfig.h
-    if ( mRequestParameters.contains( "VERSION" ) )
-      return mRequestParameters["VERSION"];
-    else
-      return QString();
+    return mWfsParameters[ QgsWfsParameter::GEOMETRYNAME ].toString();
   }
 
   QgsProjectVersion QgsWfsParameters::versionAsNumber() const
@@ -339,141 +354,8 @@ namespace QgsWfs
     return version;
   }
 
-  QString QgsWfsParameters::name( ParameterName name ) const
-  {
-    const QMetaEnum metaEnum( QMetaEnum::fromType<ParameterName>() );
-    return metaEnum.valueToKey( name );
-  }
-
-  int QgsWfsParameters::toInt( const QVariant &value, const QVariant &defaultValue, bool *error ) const
-  {
-    int val = defaultValue.toInt();
-    QString valStr = value.toString();
-    bool ok = true;
-
-    if ( !valStr.isEmpty() )
-    {
-      val = value.toInt( &ok );
-    }
-    *error = !ok;
-
-    return val;
-  }
-
-  int QgsWfsParameters::toInt( ParameterName p ) const
-  {
-    bool error;
-    int val = toInt( value( p ), defaultValue( p ), &error );
-    if ( error )
-    {
-      QString n = name( p );
-      QString valStr = value( p ).toString();
-      QString msg = n + " ('" + valStr + "') cannot be converted into int";
-      raiseError( msg );
-    }
-
-    return val;
-  }
-
-  QgsRectangle QgsWfsParameters::toRectangle( const QVariant &value, bool *error ) const
-  {
-    *error = false;
-    QString bbox = value.toString();
-    QgsRectangle extent;
-
-    if ( !bbox.isEmpty() )
-    {
-      QStringList corners = bbox.split( ',' );
-      // We need at least 4 elements, an optional fifth could be the CRS in WFS 1.1.0 BBOX
-      if ( corners.size() >= 4 )
-      {
-        double d[4];
-        bool ok;
-
-        for ( int i = 0; i < 4; i++ )
-        {
-          corners[i].replace( QLatin1String( " " ), QLatin1String( "+" ) );
-          d[i] = corners[i].toDouble( &ok );
-          if ( !ok )
-          {
-            *error = !ok;
-            return extent;
-          }
-        }
-
-        extent = QgsRectangle( d[0], d[1], d[2], d[3] );
-
-      }
-      else
-      {
-        *error = true;
-        return extent;
-      }
-    }
-
-    return extent;
-  }
-
-  QgsRectangle QgsWfsParameters::toRectangle( ParameterName p ) const
-  {
-    bool error;
-    QgsRectangle extent = toRectangle( value( p ), &error );
-    if ( error )
-    {
-      QString n = name( p );
-      QString valStr = value( p ).toString();
-      QString msg = n + " ('" + valStr + "') cannot be converted into a rectangle";
-      raiseError( msg );
-    }
-
-    return extent;
-  }
-
-  QStringList QgsWfsParameters::toStringList( ParameterName p, char delimiter ) const
-  {
-    return value( p ).toString().split( delimiter, QString::SkipEmptyParts );
-  }
-
-  QStringList QgsWfsParameters::toStringListWithExp( ParameterName p, const QString &exp ) const
-  {
-    QStringList theList;
-
-    QString val = value( p ).toString();
-    if ( val.isEmpty() )
-      return theList;
-
-    QRegExp rx( exp );
-    if ( rx.indexIn( val, 0 ) == -1 )
-    {
-      theList << val;
-    }
-    else
-    {
-      int pos = 0;
-      while ( ( pos = rx.indexIn( val, pos ) ) != -1 )
-      {
-        theList << rx.cap( 1 );
-        pos += rx.matchedLength();
-      }
-    }
-    return theList;
-  }
-
   void QgsWfsParameters::log( const QString &msg ) const
   {
     QgsMessageLog::logMessage( msg, "Server", Qgis::Info );
-  }
-
-  void QgsWfsParameters::raiseError( ParameterName paramName ) const
-  {
-    const QString value = mParameters[paramName].mValue.toString();
-    const QString param = name( paramName );
-    const QString type = QVariant::typeToName( mParameters[paramName].mType );
-    raiseError( param + " ('" + value + "') cannot be converted into " + type );
-  }
-
-  void QgsWfsParameters::raiseError( const QString &msg ) const
-  {
-    throw QgsBadRequestException( QStringLiteral( "Invalid WFS Parameter" ), msg );
   }
 }

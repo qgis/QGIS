@@ -16,10 +16,11 @@ email                : jpalmer at linz dot govt dot nz
 #ifndef QGSMAPTOOLSELECTUTILS_H
 #define QGSMAPTOOLSELECTUTILS_H
 
-#include "qgsvectorlayer.h"
 #include <Qt>
 #include <QRect>
 #include <QPoint>
+
+#include "qgsvectorlayer.h"
 
 class QMouseEvent;
 class QgsMapCanvas;
@@ -76,7 +77,7 @@ namespace QgsMapToolSelectUtils
     \since QGIS 2.16
     \see selectSingleFeature()
   */
-  void selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers );
+  void selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qt::KeyboardModifiers modifiers );
 
   /**
     Selects a single feature from within currently selected layer.
@@ -88,7 +89,7 @@ namespace QgsMapToolSelectUtils
     operations (add, subtract, contains)
     \see selectMultipleFeatures()
   */
-  void selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers );
+  void selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qt::KeyboardModifiers modifiers );
 
   /**
     Get the current selected canvas map layer. Returns nullptr if it is not a vector layer

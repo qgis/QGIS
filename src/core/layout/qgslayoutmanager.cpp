@@ -108,6 +108,7 @@ QList<QgsPrintLayout *> QgsLayoutManager::printLayouts() const
 {
   QList<QgsPrintLayout *> result;
   const QList<QgsMasterLayoutInterface *> _layouts( mLayouts );
+  result.reserve( _layouts.size() );
   for ( const auto &layout : _layouts )
   {
     QgsPrintLayout *_item( dynamic_cast<QgsPrintLayout *>( layout ) );
@@ -278,6 +279,7 @@ QgsMasterLayoutInterface *QgsLayoutManager::duplicateLayout( const QgsMasterLayo
 QString QgsLayoutManager::generateUniqueTitle( QgsMasterLayoutInterface::Type type ) const
 {
   QStringList names;
+  names.reserve( mLayouts.size() );
   for ( QgsMasterLayoutInterface *l : mLayouts )
   {
     names << l->name();

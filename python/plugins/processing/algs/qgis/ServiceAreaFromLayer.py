@@ -118,7 +118,7 @@ class ServiceAreaFromLayer(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.TRAVEL_COST,
                                                        self.tr('Travel cost (distance for "Shortest", time for "Fastest")'),
                                                        QgsProcessingParameterNumber.Double,
-                                                       0.0, False, 0, 99999999.99))
+                                                       0.0, False, 0))
 
         params = []
         params.append(QgsProcessingParameterField(self.DIRECTION_FIELD,
@@ -147,10 +147,10 @@ class ServiceAreaFromLayer(QgisAlgorithm):
         params.append(QgsProcessingParameterNumber(self.DEFAULT_SPEED,
                                                    self.tr('Default speed (km/h)'),
                                                    QgsProcessingParameterNumber.Double,
-                                                   5.0, False, 0, 99999999.99))
+                                                   5.0, False, 0))
         params.append(QgsProcessingParameterDistance(self.TOLERANCE,
                                                      self.tr('Topology tolerance'),
-                                                     0.0, self.INPUT, False, 0, 99999999.99))
+                                                     0.0, self.INPUT, False, 0))
         params.append(QgsProcessingParameterBoolean(self.INCLUDE_BOUNDS,
                                                     self.tr('Include upper/lower bound points'),
                                                     defaultValue=False))

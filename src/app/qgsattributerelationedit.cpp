@@ -15,9 +15,9 @@
 #include "qgsattributerelationedit.h"
 #include "ui_qgsattributerelationedit.h"
 
-QgsAttributeRelationEdit::QgsAttributeRelationEdit( const QString &relationid, QWidget *parent ) :
-  QWidget( parent ),
-  mRelationId( relationid )
+QgsAttributeRelationEdit::QgsAttributeRelationEdit( const QString &relationid, QWidget *parent )
+  : QWidget( parent )
+  , mRelationId( relationid )
 {
   setupUi( this );
   coCardinality->setToolTip( tr( "For a many to many (N:M) relation, the direct link has to be selected. The in-between table will be hidden." ) );

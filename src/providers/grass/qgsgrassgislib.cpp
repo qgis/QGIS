@@ -224,7 +224,7 @@ int GRASS_LIB_EXPORT QgsGrassGisLib::G__gisinit( const char *version, const char
   }
   mDistanceArea.setSourceCrs( mCrs );
 
-  // Read region fron environment variable
+  // Read region from environment variable
   // QGIS_GRASS_REGION=west,south,east,north,cols,rows
 #if 0
   QString regionStr = getenv( "QGIS_GRASS_REGION" );
@@ -602,7 +602,7 @@ int QgsGrassGisLib::G_open_raster_new( const char *name, RASTER_MAP_TYPE wr_type
 
   raster.band = 1;
   raster.noDataValue = noDataValueForGrassType( wr_type );
-  QgsDebugMsg( QString( "noDataValue = %1" ).arg( ( int )raster.noDataValue ) );
+  QgsDebugMsg( QString( "noDataValue = %1" ).arg( static_cast<int>( raster.noDataValue ) ) );
   raster.provider->setNoDataValue( raster.band, raster.noDataValue );
 
   raster.fd = mRasters.size();

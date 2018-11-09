@@ -59,6 +59,7 @@ class QgsLine3DSymbolEntityNode : public Qt3DCore::QEntity
 
   private:
     Qt3DRender::QGeometryRenderer *renderer( const Qgs3DMapSettings &map, const QgsLine3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &req );
+    Qt3DRender::QGeometryRenderer *rendererSimple( const Qgs3DMapSettings &map, const QgsLine3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request );
 
     QgsTessellatedPolygonGeometry *mGeometry = nullptr;
 };

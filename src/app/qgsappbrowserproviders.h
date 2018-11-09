@@ -15,6 +15,7 @@
 #ifndef QGSAPPBROWSERPROVIDERS_H
 #define QGSAPPBROWSERPROVIDERS_H
 
+#include "qgis_app.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
 #include "qgscustomdrophandler.h"
@@ -144,6 +145,92 @@ class QgsPyDropHandler : public QgsCustomDropHandler
     QString customUriProviderKey() const override;
     void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const override;
     bool handleFileDrop( const QString &file ) override;
+};
+
+
+/**
+ * Custom data item for XML style libraries.
+ */
+class QgsStyleXmlDataItem : public QgsDataItem
+{
+    Q_OBJECT
+
+  public:
+
+    QgsStyleXmlDataItem( QgsDataItem *parent, const QString &name, const QString &path );
+    bool hasDragEnabled() const override;
+    QgsMimeDataUtils::Uri mimeUri() const override;
+    bool handleDoubleClick() override;
+    QList< QAction * > actions( QWidget *parent ) override;
+
+};
+
+/**
+ * Data item provider for showing style XML libraries in the browser.
+ */
+class QgsStyleXmlDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
+    int capabilities() override;
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+};
+
+/**
+ * Handles drag and drop of style XML libraries to app.
+ */
+class QgsStyleXmlDropHandler : public QgsCustomDropHandler
+{
+    Q_OBJECT
+
+  public:
+
+    QString customUriProviderKey() const override;
+    void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const override;
+    bool handleFileDrop( const QString &file ) override;
+};
+
+/**
+ * Custom data item for qgs/qgz QGIS project files, with more functionality than default browser project
+ * file handling. Specifically allows browsing of the project's layer structure within the browser
+ */
+class APP_EXPORT QgsProjectRootDataItem : public QgsProjectItem
+{
+  public:
+
+    /**
+     * Constructor for QgsProjectRootDataItem, with the specified
+     * project \a path.
+     */
+    QgsProjectRootDataItem( QgsDataItem *parent, const QString &path );
+    QVector<QgsDataItem *> createChildren() override;
+};
+
+/**
+ * Represents a layer tree group node within a QGIS project file.
+ */
+class APP_EXPORT QgsProjectLayerTreeGroupItem : public QgsDataCollectionItem
+{
+  public:
+
+    /**
+     * Constructor for QgsProjectLayerTreeGroupItem, with the specified group \a name.
+     */
+    QgsProjectLayerTreeGroupItem( QgsDataItem *parent, const QString &name );
+
+};
+
+/**
+ * Custom data item provider for showing qgs/qgz QGIS project files within the browser,
+ * including the ability to browser the whole project's layer tree structure directly
+ * within the browser.
+ */
+class APP_EXPORT QgsProjectDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
+    int capabilities() override;
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 #endif // QGSAPPBROWSERPROVIDERS_H

@@ -196,7 +196,7 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
      * Sets the combination of \a flags that will be used for the tool.
      * \see flags()
      */
-    void setFlags( const QgsLayoutViewTool::Flags flags );
+    void setFlags( QgsLayoutViewTool::Flags flags );
 
     /**
      * Constructor for QgsLayoutViewTool, taking a layout \a view and

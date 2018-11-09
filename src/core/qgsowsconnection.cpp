@@ -65,17 +65,17 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
   }
   mConnectionInfo.append( ",authcfg=" + authcfg );
 
-  if ( mService.compare( QStringLiteral( "WMS" ), Qt::CaseInsensitive ) == 0
-       || mService.compare( QStringLiteral( "WCS" ), Qt::CaseInsensitive ) == 0 )
+  if ( mService.compare( QLatin1String( "WMS" ), Qt::CaseInsensitive ) == 0
+       || mService.compare( QLatin1String( "WCS" ), Qt::CaseInsensitive ) == 0 )
   {
     addWmsWcsConnectionSettings( mUri, key );
   }
-  else if ( mService.compare( QStringLiteral( "WFS" ), Qt::CaseInsensitive ) == 0 )
+  else if ( mService.compare( QLatin1String( "WFS" ), Qt::CaseInsensitive ) == 0 )
   {
     addWfsConnectionSettings( mUri, key );
   }
 
-  QgsDebugMsg( QString( "encoded uri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
+  QgsDebugMsg( QStringLiteral( "encoded uri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
 }
 
 QString QgsOwsConnection::connectionName() const

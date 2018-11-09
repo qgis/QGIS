@@ -16,26 +16,44 @@
  ***************************************************************************/
 
 #include "qgszonalstatistics.h"
+
 #include "qgsfeatureiterator.h"
 #include "qgsfeedback.h"
 #include "qgsgeometry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "processing/qgsrasteranalysisutils.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
-#include "qgsrasterblock.h"
 #include "qgslogger.h"
-#include "qgsgeos.h"
+#include "qgsproject.h"
 
 #include <QFile>
 
 QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, QgsZonalStatistics::Statistics stats )
-  : mRasterLayer( rasterLayer )
+  : QgsZonalStatistics( polygonLayer,
+                        rasterLayer ? rasterLayer->dataProvider() : nullptr,
+                        rasterLayer ? rasterLayer->crs() : QgsCoordinateReferenceSystem(),
+                        rasterLayer ? rasterLayer->rasterUnitsPerPixelX() : 0,
+                        rasterLayer ? rasterLayer->rasterUnitsPerPixelY() : 0,
+                        attributePrefix,
+                        rasterBand,
+                        stats )
+{
+}
+
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterInterface *rasterInterface,
+                                        const QgsCoordinateReferenceSystem &rasterCrs, double rasterUnitsPerPixelX, double rasterUnitsPerPixelY, const QString &attributePrefix, int rasterBand, QgsZonalStatistics::Statistics stats )
+  : mRasterInterface( rasterInterface )
+  , mRasterCrs( rasterCrs )
+  , mCellSizeX( std::fabs( rasterUnitsPerPixelX ) )
+  , mCellSizeY( std::fabs( rasterUnitsPerPixelY ) )
   , mRasterBand( rasterBand )
   , mPolygonLayer( polygonLayer )
   , mAttributePrefix( attributePrefix )
   , mStatistics( stats )
-{}
+{
+}
 
 int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
 {
@@ -50,33 +68,21 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
     return 2;
   }
 
-  if ( !mRasterLayer )
+  if ( !mRasterInterface )
   {
     return 3;
   }
 
-  if ( mRasterLayer->bandCount() < mRasterBand )
+  if ( mRasterInterface->bandCount() < mRasterBand )
   {
     return 4;
   }
 
-  mRasterProvider = mRasterLayer->dataProvider();
-  mInputNodataValue = mRasterProvider->sourceNoDataValue( mRasterBand );
-
   //get geometry info about raster layer
-  int nCellsXProvider = mRasterProvider->xSize();
-  int nCellsYProvider = mRasterProvider->ySize();
-  double cellsizeX = mRasterLayer->rasterUnitsPerPixelX();
-  if ( cellsizeX < 0 )
-  {
-    cellsizeX = -cellsizeX;
-  }
-  double cellsizeY = mRasterLayer->rasterUnitsPerPixelY();
-  if ( cellsizeY < 0 )
-  {
-    cellsizeY = -cellsizeY;
-  }
-  QgsRectangle rasterBBox = mRasterProvider->extent();
+  int nCellsXProvider = mRasterInterface->xSize();
+  int nCellsYProvider = mRasterInterface->ySize();
+
+  QgsRectangle rasterBBox = mRasterInterface->extent();
 
   //add the new fields to the provider
   QList<QgsField> newFieldList;
@@ -203,7 +209,8 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
 
   //iterate over each polygon
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
+  request.setDestinationCrs( mRasterCrs, QgsProject::instance()->transformContext() );
   QgsFeatureIterator fi = vectorProvider->getFeatures( request );
   QgsFeature f;
 
@@ -236,38 +243,27 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
     }
     QgsGeometry featureGeometry = f.geometry();
 
-    QgsRectangle featureRect = featureGeometry.boundingBox().intersect( &rasterBBox );
+    QgsRectangle featureRect = featureGeometry.boundingBox().intersect( rasterBBox );
     if ( featureRect.isEmpty() )
     {
       ++featureCounter;
       continue;
     }
 
-    int offsetX, offsetY, nCellsX, nCellsY;
-    if ( cellInfoForBBox( rasterBBox, featureRect, cellsizeX, cellsizeY, offsetX, offsetY, nCellsX, nCellsY ) != 0 )
-    {
-      ++featureCounter;
-      continue;
-    }
+    int nCellsX, nCellsY;
+    QgsRectangle rasterBlockExtent;
+    QgsRasterAnalysisUtils::cellInfoForBBox( rasterBBox, featureRect, mCellSizeX, mCellSizeY, nCellsX, nCellsY, nCellsXProvider, nCellsYProvider, rasterBlockExtent );
 
-    //avoid access to cells outside of the raster (may occur because of rounding)
-    if ( ( offsetX + nCellsX ) > nCellsXProvider )
-    {
-      nCellsX = nCellsXProvider - offsetX;
-    }
-    if ( ( offsetY + nCellsY ) > nCellsYProvider )
-    {
-      nCellsY = nCellsYProvider - offsetY;
-    }
-
-    statisticsFromMiddlePointTest( featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY,
-                                   rasterBBox, featureStats );
+    featureStats.reset();
+    QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( mRasterInterface, mRasterBand, featureGeometry, nCellsX, nCellsY, mCellSizeX, mCellSizeY,
+    rasterBlockExtent, [ &featureStats ]( double value ) { featureStats.addValue( value ); } );
 
     if ( featureStats.count <= 1 )
     {
       //the cell resolution is probably larger than the polygon area. We switch to precise pixel - polygon intersection in this case
-      statisticsFromPreciseIntersection( featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY,
-                                         rasterBBox, featureStats );
+      featureStats.reset();
+      QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( mRasterInterface, mRasterBand, featureGeometry, nCellsX, nCellsY, mCellSizeX, mCellSizeY,
+      rasterBlockExtent, [ &featureStats ]( double value, double weight ) { featureStats.addValue( value, weight ); } );
     }
 
     //write the statistics value to the vector data provider
@@ -326,12 +322,12 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
         std::sort( vals.begin(), vals.end() );
         if ( mStatistics & QgsZonalStatistics::Minority )
         {
-          float minorityKey = featureStats.valueCount.key( vals.first() );
+          double minorityKey = featureStats.valueCount.key( vals.first() );
           changeAttributeMap.insert( minorityIndex, QVariant( minorityKey ) );
         }
         if ( mStatistics & QgsZonalStatistics::Majority )
         {
-          float majKey = featureStats.valueCount.key( vals.last() );
+          double majKey = featureStats.valueCount.key( vals.last() );
           changeAttributeMap.insert( majorityIndex, QVariant( majKey ) );
         }
       }
@@ -358,138 +354,6 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
   }
 
   return 0;
-}
-
-int QgsZonalStatistics::cellInfoForBBox( const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY,
-    int &offsetX, int &offsetY, int &nCellsX, int &nCellsY ) const
-{
-  //get intersecting bbox
-  QgsRectangle intersectBox = rasterBBox.intersect( &featureBBox );
-  if ( intersectBox.isEmpty() )
-  {
-    nCellsX = 0;
-    nCellsY = 0;
-    offsetX = 0;
-    offsetY = 0;
-    return 0;
-  }
-
-  //get offset in pixels in x- and y- direction
-  offsetX = ( int )( ( intersectBox.xMinimum() - rasterBBox.xMinimum() ) / cellSizeX );
-  offsetY = ( int )( ( rasterBBox.yMaximum() - intersectBox.yMaximum() ) / cellSizeY );
-
-  int maxColumn = ( int )( ( intersectBox.xMaximum() - rasterBBox.xMinimum() ) / cellSizeX ) + 1;
-  int maxRow = ( int )( ( rasterBBox.yMaximum() - intersectBox.yMinimum() ) / cellSizeY ) + 1;
-
-  nCellsX = maxColumn - offsetX;
-  nCellsY = maxRow - offsetY;
-
-  return 0;
-}
-
-void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly, int pixelOffsetX,
-    int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, FeatureStats &stats )
-{
-  double cellCenterX, cellCenterY;
-
-  cellCenterY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
-  stats.reset();
-
-  geos::unique_ptr polyGeos( QgsGeos::asGeos( poly ) );
-  if ( !polyGeos )
-  {
-    return;
-  }
-
-  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
-  geos::prepared_unique_ptr polyGeosPrepared( GEOSPrepare_r( geosctxt, polyGeos.get() ) );
-  if ( !polyGeosPrepared )
-  {
-    return;
-  }
-
-  GEOSCoordSequence *cellCenterCoords = nullptr;
-  geos::unique_ptr currentCellCenter;
-
-  QgsRectangle featureBBox = poly.boundingBox().intersect( &rasterBBox );
-  QgsRectangle intersectBBox = rasterBBox.intersect( &featureBBox );
-
-  std::unique_ptr< QgsRasterBlock > block( mRasterProvider->block( mRasterBand, intersectBBox, nCellsX, nCellsY ) );
-  for ( int i = 0; i < nCellsY; ++i )
-  {
-    cellCenterX = rasterBBox.xMinimum() + pixelOffsetX * cellSizeX + cellSizeX / 2;
-    for ( int j = 0; j < nCellsX; ++j )
-    {
-      if ( validPixel( block->value( i, j ) ) )
-      {
-        cellCenterCoords = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-        GEOSCoordSeq_setX_r( geosctxt, cellCenterCoords, 0, cellCenterX );
-        GEOSCoordSeq_setY_r( geosctxt, cellCenterCoords, 0, cellCenterY );
-        currentCellCenter.reset( GEOSGeom_createPoint_r( geosctxt, cellCenterCoords ) );
-        if ( GEOSPreparedContains_r( geosctxt, polyGeosPrepared.get(), currentCellCenter.get() ) )
-        {
-          stats.addValue( block->value( i, j ) );
-        }
-      }
-      cellCenterX += cellSizeX;
-    }
-    cellCenterY -= cellSizeY;
-  }
-}
-
-void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &poly, int pixelOffsetX,
-    int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, FeatureStats &stats )
-{
-  stats.reset();
-
-  double currentY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
-  QgsGeometry pixelRectGeometry;
-
-  double hCellSizeX = cellSizeX / 2.0;
-  double hCellSizeY = cellSizeY / 2.0;
-  double pixelArea = cellSizeX * cellSizeY;
-  double weight = 0;
-
-  QgsRectangle featureBBox = poly.boundingBox().intersect( &rasterBBox );
-  QgsRectangle intersectBBox = rasterBBox.intersect( &featureBBox );
-
-  QgsRasterBlock *block = mRasterProvider->block( mRasterBand, intersectBBox, nCellsX, nCellsY );
-  for ( int i = 0; i < nCellsY; ++i )
-  {
-    double currentX = rasterBBox.xMinimum() + cellSizeX / 2.0 + pixelOffsetX * cellSizeX;
-    for ( int j = 0; j < nCellsX; ++j )
-    {
-      if ( !validPixel( block->value( i, j ) ) )
-      {
-        continue;
-      }
-
-      pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - hCellSizeX, currentY - hCellSizeY, currentX + hCellSizeX, currentY + hCellSizeY ) );
-      if ( !pixelRectGeometry.isNull() )
-      {
-        //intersection
-        QgsGeometry intersectGeometry = pixelRectGeometry.intersection( poly );
-        if ( !intersectGeometry.isNull() )
-        {
-          double intersectionArea = intersectGeometry.area();
-          if ( intersectionArea >= 0.0 )
-          {
-            weight = intersectionArea / pixelArea;
-            stats.addValue( block->value( i, j ), weight );
-          }
-        }
-        pixelRectGeometry = QgsGeometry();
-      }
-      currentX += cellSizeX;
-    }
-    currentY -= cellSizeY;
-  }
-  delete block;
-}
-
-bool QgsZonalStatistics::validPixel( float value ) const
-{
-  return !( value == mInputNodataValue || std::isnan( value ) );
 }
 
 QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const QList<QgsField> &newFields )

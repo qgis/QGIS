@@ -55,6 +55,12 @@ Multi point geometry collection.
     virtual QgsMultiPoint *createEmptyWithSameType() const /Factory/;
 
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsMultiPoint: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
   protected:
 
     virtual bool wktOmitChildType() const;

@@ -55,7 +55,10 @@ def uri_from_name(conn_name):
     service, host, port, database, username, password, authcfg = [settings.value(x, "", type=str) for x in settingsList]
 
     useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
-    sslmode = settings.value("sslmode", QgsDataSourceUri.SslPrefer, type=int)
+    try:
+        sslmode = settings.value("sslmode", QgsDataSourceUri.SslPrefer, type=int)
+    except TypeError:
+        sslmode = QgsDataSourceUri.SslPrefer
 
     settings.endGroup()
 

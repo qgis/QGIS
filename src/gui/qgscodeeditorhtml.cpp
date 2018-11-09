@@ -19,6 +19,7 @@
 #include <QWidget>
 #include <QString>
 #include <QFont>
+#include <QLabel>
 #include <Qsci/qscilexerhtml.h>
 
 
@@ -36,8 +37,14 @@ QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
 
 void QgsCodeEditorHTML::setSciLexerHTML()
 {
-  QsciLexerHTML *lexer = new QsciLexerHTML( this );
-  lexer->setDefaultFont( QFont( QStringLiteral( "Sans" ), 10 ) );
+  QFont font = getMonospaceFont();
+#ifdef Q_OS_MAC
+  // The font size gotten from getMonospaceFont() is too small on Mac
+  font.setPointSize( QLabel().font().pointSize() );
+#endif
 
+  QsciLexerHTML *lexer = new QsciLexerHTML( this );
+  lexer->setDefaultFont( font );
+  lexer->setFont( font, -1 );
   setLexer( lexer );
 }

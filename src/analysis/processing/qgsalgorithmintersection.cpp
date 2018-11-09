@@ -44,9 +44,9 @@ QString QgsIntersectionAlgorithm::groupId() const
 
 QString QgsIntersectionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts the overlapping portions of features in the Input and Overlay layers. Features in the Overlay layer are assigned the attributes of the overlapping features from both the Input and Overlay layers." )
-         + QStringLiteral( "\n\n" )
-         + QObject::tr( "Optionally, the rotation can occur around a preset point. If not set the rotation occurs around each feature's centroid." );
+  return QObject::tr( "This algorithm extracts the overlapping portions of features in the Input and Overlay layers. "
+                      "Features in the output Intersection layer are assigned the attributes of the overlapping features "
+                      "from both the Input and Overlay layers." );
 }
 
 QgsProcessingAlgorithm *QgsIntersectionAlgorithm::createInstance() const
@@ -57,7 +57,7 @@ QgsProcessingAlgorithm *QgsIntersectionAlgorithm::createInstance() const
 void QgsIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Intersection layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ) ) );
 
   addParameter( new QgsProcessingParameterField(
                   QStringLiteral( "INPUT_FIELDS" ),
@@ -65,7 +65,7 @@ void QgsIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
                   QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true ) );
   addParameter( new QgsProcessingParameterField(
                   QStringLiteral( "OVERLAY_FIELDS" ),
-                  QObject::tr( "Intersect fields to keep (leave empty to keep all fields)" ), QVariant(),
+                  QObject::tr( "Overlay fields to keep (leave empty to keep all fields)" ), QVariant(),
                   QStringLiteral( "OVERLAY" ), QgsProcessingParameterField::Any, true, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Intersection" ) ) );
@@ -106,7 +106,7 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
   int count = 0;
   int total = sourceA->featureCount();
 
-  QgsOverlayUtils::intersection( *sourceA.get(), *sourceB.get(), *sink.get(), context, feedback, count, total, fieldIndicesA, fieldIndicesB );
+  QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB );
 
   return outputs;
 }

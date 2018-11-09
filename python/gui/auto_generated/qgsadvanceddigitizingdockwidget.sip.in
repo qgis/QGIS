@@ -11,6 +11,7 @@
 
 
 
+
 class QgsAdvancedDigitizingDockWidget : QgsDockWidget
 {
 %Docstring
@@ -220,27 +221,35 @@ construction mode is used to draw intermediate points. These points won't be giv
 
     AdditionalConstraint additionalConstraint() const;
 %Docstring
-Additional constraints are used to place perpendicular/parallel segments to snapped segments on the canvas
+Returns the additional constraints which are used to place
+perpendicular/parallel segments to snapped segments on the canvas
 %End
     const CadConstraint *constraintAngle() const;
 %Docstring
-Constraint on the angle
+Returns the ``CadConstraint`` on the angle
 %End
     const CadConstraint *constraintDistance() const;
 %Docstring
-Constraint on the distance
+Returns the ``CadConstraint`` on the distance
 %End
     const CadConstraint *constraintX() const;
 %Docstring
-Constraint on the X coordinate
+Returns the ``CadConstraint`` on the X coordinate
 %End
     const CadConstraint *constraintY() const;
 %Docstring
-Constraint on the Y coordinate
+Returns the ``CadConstraint`` on the Y coordinate
 %End
     bool commonAngleConstraint() const;
 %Docstring
-Constraint on a common angle
+Returns true if a constraint on a common angle is active
+%End
+
+    QgsPointLocator::Match mapPointMatch() const;
+%Docstring
+Returns the point locator match
+
+.. versionadded:: 3.4
 %End
 
     void clearPoints();

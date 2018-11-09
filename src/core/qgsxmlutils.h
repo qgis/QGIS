@@ -16,13 +16,16 @@
 #define QGSXMLUTILS_H
 
 class QDomDocument;
-class QDomElement;
 
 class QgsRectangle;
+
+#include <QDomElement>
 
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsunittypes.h"
+
+
 
 /**
  * \ingroup core
@@ -66,7 +69,8 @@ class CORE_EXPORT QgsXmlUtils
      * - QVariant::Int
      * - QVariant::Double
      * - QVariant::String
-     *
+     * - QgsProperty (since QGIS 3.4)
+     * - QgsCoordinateReferenceSystem (since QGIS 3.4)
      */
     static QDomElement writeVariant( const QVariant &value, QDomDocument &doc );
 
@@ -74,6 +78,31 @@ class CORE_EXPORT QgsXmlUtils
      * Read a QVariant from a QDomElement.
      */
     static QVariant readVariant( const QDomElement &element );
+
+    /**
+     * Read a flag value from an attribute of the element.
+     * \param element the element to read the attribute from
+     * \param attributeName the attribute name
+     * \param defaultValue the default value as a flag
+     * \note The flag value is a text as returned by \see QMetaEnum::valueToKeys.
+     *       The flag must have been declared with Q_ENUM macro.
+     * \since QGIS 3.4
+     */
+    template<class T> static T readFlagAttribute( const QDomElement &element, const QString &attributeName, T defaultValue ) SIP_SKIP
+    {
+      T value = defaultValue;
+      // Get source categories
+      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      QString sourceCategoriesStr( element.attribute( attributeName, metaEnum.valueToKeys( static_cast<int>( defaultValue ) ) ) );
+      if ( metaEnum.isValid() )
+      {
+        bool ok = false;
+        int newValue = metaEnum.keysToValue( sourceCategoriesStr.toUtf8().constData(), &ok );
+        if ( ok )
+          value = static_cast<T>( newValue );
+      }
+      return value;
+    }
 };
 
 

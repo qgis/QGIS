@@ -31,7 +31,7 @@ Constructor for QgsLayoutSnapper, attached to the specified ``layout``.
     virtual QgsLayout *layout();
 
 
-    void setSnapTolerance( const int snapTolerance );
+    void setSnapTolerance( int snapTolerance );
 %Docstring
 Sets the snap ``tolerance`` (in pixels) to use when snapping.
 

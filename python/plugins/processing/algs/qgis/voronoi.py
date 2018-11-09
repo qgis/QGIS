@@ -224,146 +224,140 @@ class Context(object):
 
 
 def voronoi(siteList, context):
-    try:
-        edgeList = EdgeList(siteList.xmin, siteList.xmax, len(siteList))
-        priorityQ = PriorityQueue(siteList.ymin, siteList.ymax, len(siteList))
-        siteIter = siteList.iterator()
+    edgeList = EdgeList(siteList.xmin, siteList.xmax, len(siteList))
+    priorityQ = PriorityQueue(siteList.ymin, siteList.ymax, len(siteList))
+    siteIter = siteList.iterator()
 
-        bottomsite = next(siteIter)
-        context.outSite(bottomsite)
-        newsite = next(siteIter)
-        minpt = Site(-BIG_FLOAT, -BIG_FLOAT)
-        while True:
-            if not priorityQ.isEmpty():
-                minpt = priorityQ.getMinPt()
+    bottomsite = next(siteIter)
+    context.outSite(bottomsite)
+    newsite = next(siteIter)
+    minpt = Site(-BIG_FLOAT, -BIG_FLOAT)
+    while True:
+        if not priorityQ.isEmpty():
+            minpt = priorityQ.getMinPt()
 
-            if (newsite and (priorityQ.isEmpty() or cmp(newsite, minpt) < 0)):
-                # newsite is smallest -  this is a site event
-                context.outSite(newsite)
+        if (newsite and (priorityQ.isEmpty() or cmp(newsite, minpt) < 0)):
+            # newsite is smallest -  this is a site event
+            context.outSite(newsite)
 
-                # get first Halfedge to the LEFT and RIGHT of the new site
-                lbnd = edgeList.leftbnd(newsite)
-                rbnd = lbnd.right
+            # get first Halfedge to the LEFT and RIGHT of the new site
+            lbnd = edgeList.leftbnd(newsite)
+            rbnd = lbnd.right
 
-                # if this halfedge has no edge, bot = bottom site (whatever that is)
-                # create a new edge that bisects
-                bot = lbnd.rightreg(bottomsite)
-                edge = Edge.bisect(bot, newsite)
-                context.outBisector(edge)
+            # if this halfedge has no edge, bot = bottom site (whatever that is)
+            # create a new edge that bisects
+            bot = lbnd.rightreg(bottomsite)
+            edge = Edge.bisect(bot, newsite)
+            context.outBisector(edge)
 
-                # create a new Halfedge, setting its pm field to 0 and insert
-                # this new bisector edge between the left and right vectors in
-                # a linked list
-                bisector = Halfedge(edge, Edge.LE)
-                edgeList.insert(lbnd, bisector)
+            # create a new Halfedge, setting its pm field to 0 and insert
+            # this new bisector edge between the left and right vectors in
+            # a linked list
+            bisector = Halfedge(edge, Edge.LE)
+            edgeList.insert(lbnd, bisector)
 
-                # if the new bisector intersects with the left edge, remove
-                # the left edge's vertex, and put in the new one
-                p = lbnd.intersect(bisector)
-                if p is not None:
-                    priorityQ.delete(lbnd)
-                    priorityQ.insert(lbnd, p, newsite.distance(p))
+            # if the new bisector intersects with the left edge, remove
+            # the left edge's vertex, and put in the new one
+            p = lbnd.intersect(bisector)
+            if p is not None:
+                priorityQ.delete(lbnd)
+                priorityQ.insert(lbnd, p, newsite.distance(p))
 
-                # create a new Halfedge, setting its pm field to 1
-                # insert the new Halfedge to the right of the original bisector
-                lbnd = bisector
-                bisector = Halfedge(edge, Edge.RE)
-                edgeList.insert(lbnd, bisector)
+            # create a new Halfedge, setting its pm field to 1
+            # insert the new Halfedge to the right of the original bisector
+            lbnd = bisector
+            bisector = Halfedge(edge, Edge.RE)
+            edgeList.insert(lbnd, bisector)
 
-                # if this new bisector intersects with the right Halfedge
-                p = bisector.intersect(rbnd)
-                if p is not None:
-                    # push the Halfedge into the ordered linked list of vertices
-                    priorityQ.insert(bisector, p, newsite.distance(p))
+            # if this new bisector intersects with the right Halfedge
+            p = bisector.intersect(rbnd)
+            if p is not None:
+                # push the Halfedge into the ordered linked list of vertices
+                priorityQ.insert(bisector, p, newsite.distance(p))
 
-                newsite = next(siteIter)
+            newsite = next(siteIter)
 
-            elif not priorityQ.isEmpty():
-                # intersection is smallest - this is a vector (circle) event
+        elif not priorityQ.isEmpty():
+            # intersection is smallest - this is a vector (circle) event
 
-                # pop the Halfedge with the lowest vector off the ordered list of
-                # vectors.  Get the Halfedge to the left and right of the above HE
-                # and also the Halfedge to the right of the right HE
-                lbnd = priorityQ.popMinHalfedge()
-                llbnd = lbnd.left
-                rbnd = lbnd.right
-                rrbnd = rbnd.right
+            # pop the Halfedge with the lowest vector off the ordered list of
+            # vectors.  Get the Halfedge to the left and right of the above HE
+            # and also the Halfedge to the right of the right HE
+            lbnd = priorityQ.popMinHalfedge()
+            llbnd = lbnd.left
+            rbnd = lbnd.right
+            rrbnd = rbnd.right
 
-                # get the Site to the left of the left HE and to the right of
-                # the right HE which it bisects
-                bot = lbnd.leftreg(bottomsite)
-                top = rbnd.rightreg(bottomsite)
+            # get the Site to the left of the left HE and to the right of
+            # the right HE which it bisects
+            bot = lbnd.leftreg(bottomsite)
+            top = rbnd.rightreg(bottomsite)
 
-                # output the triple of sites, stating that a circle goes through them
-                mid = lbnd.rightreg(bottomsite)
-                context.outTriple(bot, top, mid)
+            # output the triple of sites, stating that a circle goes through them
+            mid = lbnd.rightreg(bottomsite)
+            context.outTriple(bot, top, mid)
 
-                # get the vertex that caused this event and set the vertex number
-                # couldn't do this earlier since we didn't know when it would be processed
-                v = lbnd.vertex
-                siteList.setSiteNumber(v)
-                context.outVertex(v)
+            # get the vertex that caused this event and set the vertex number
+            # couldn't do this earlier since we didn't know when it would be processed
+            v = lbnd.vertex
+            siteList.setSiteNumber(v)
+            context.outVertex(v)
 
-                # set the endpoint of the left and right Halfedge to be this vector
-                if lbnd.edge.setEndpoint(lbnd.pm, v):
-                    context.outEdge(lbnd.edge)
+            # set the endpoint of the left and right Halfedge to be this vector
+            if lbnd.edge.setEndpoint(lbnd.pm, v):
+                context.outEdge(lbnd.edge)
 
-                if rbnd.edge.setEndpoint(rbnd.pm, v):
-                    context.outEdge(rbnd.edge)
+            if rbnd.edge.setEndpoint(rbnd.pm, v):
+                context.outEdge(rbnd.edge)
 
-                # delete the lowest HE, remove all vertex events to do with the
-                # right HE and delete the right HE
-                edgeList.delete(lbnd)
-                priorityQ.delete(rbnd)
-                edgeList.delete(rbnd)
+            # delete the lowest HE, remove all vertex events to do with the
+            # right HE and delete the right HE
+            edgeList.delete(lbnd)
+            priorityQ.delete(rbnd)
+            edgeList.delete(rbnd)
 
-                # if the site to the left of the event is higher than the Site
-                # to the right of it, then swap them and set 'pm' to RIGHT
-                pm = Edge.LE
-                if bot.y > top.y:
-                    bot, top = top, bot
-                    pm = Edge.RE
+            # if the site to the left of the event is higher than the Site
+            # to the right of it, then swap them and set 'pm' to RIGHT
+            pm = Edge.LE
+            if bot.y > top.y:
+                bot, top = top, bot
+                pm = Edge.RE
 
-                # Create an Edge (or line) that is between the two Sites.  This
-                # creates the formula of the line, and assigns a line number to it
-                edge = Edge.bisect(bot, top)
-                context.outBisector(edge)
+            # Create an Edge (or line) that is between the two Sites.  This
+            # creates the formula of the line, and assigns a line number to it
+            edge = Edge.bisect(bot, top)
+            context.outBisector(edge)
 
-                # create a HE from the edge
-                bisector = Halfedge(edge, pm)
+            # create a HE from the edge
+            bisector = Halfedge(edge, pm)
 
-                # insert the new bisector to the right of the left HE
-                # set one endpoint to the new edge to be the vector point 'v'
-                # If the site to the left of this bisector is higher than the right
-                # Site, then this endpoint is put in position 0; otherwise in pos 1
-                edgeList.insert(llbnd, bisector)
-                if edge.setEndpoint(Edge.RE - pm, v):
-                    context.outEdge(edge)
+            # insert the new bisector to the right of the left HE
+            # set one endpoint to the new edge to be the vector point 'v'
+            # If the site to the left of this bisector is higher than the right
+            # Site, then this endpoint is put in position 0; otherwise in pos 1
+            edgeList.insert(llbnd, bisector)
+            if edge.setEndpoint(Edge.RE - pm, v):
+                context.outEdge(edge)
 
-                # if left HE and the new bisector don't intersect, then delete
-                # the left HE, and reinsert it
-                p = llbnd.intersect(bisector)
-                if p is not None:
-                    priorityQ.delete(llbnd)
-                    priorityQ.insert(llbnd, p, bot.distance(p))
+            # if left HE and the new bisector don't intersect, then delete
+            # the left HE, and reinsert it
+            p = llbnd.intersect(bisector)
+            if p is not None:
+                priorityQ.delete(llbnd)
+                priorityQ.insert(llbnd, p, bot.distance(p))
 
-                # if right HE and the new bisector don't intersect, then reinsert it
-                p = bisector.intersect(rrbnd)
-                if p is not None:
-                    priorityQ.insert(bisector, p, bot.distance(p))
-            else:
-                break
+            # if right HE and the new bisector don't intersect, then reinsert it
+            p = bisector.intersect(rrbnd)
+            if p is not None:
+                priorityQ.insert(bisector, p, bot.distance(p))
+        else:
+            break
 
-        he = edgeList.leftend.right
-        while he is not edgeList.rightend:
-            context.outEdge(he.edge)
-            he = he.right
-        Edge.EDGE_NUM = 0
-    except Exception as err:
-        # fix_print_with_import
-        print("######################################################")
-        # fix_print_with_import
-        print(str(err))
+    he = edgeList.leftend.right
+    while he is not edgeList.rightend:
+        context.outEdge(he.edge)
+        he = he.right
+    Edge.EDGE_NUM = 0
 
 # ------------------------------------------------------------------
 
@@ -397,7 +391,7 @@ class Site(object):
             return False
         elif self.x < other.x:
             return True
-        elif self.x > other.x:
+        else:
             return False
 
     def distance(self, other):
@@ -512,7 +506,7 @@ class Halfedge(object):
             return False
         elif self.vertex.x < other.vertex.x:
             return True
-        elif self.vertex.x > other.vertex.x:
+        else:
             return False
 
     def leftreg(self, default):
@@ -905,4 +899,4 @@ def cmp(a, b):
 
     In python 2 cmp() was a built in function but in python 3 is gone.
     """
-    return (a > b) - (a < b)
+    return (b < a) - (a < b)

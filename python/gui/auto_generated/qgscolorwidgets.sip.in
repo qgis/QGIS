@@ -38,7 +38,7 @@ set to a color with an ambiguous hue (e.g., black or white shades).
       Alpha
     };
 
-    QgsColorWidget( QWidget *parent /TransferThis/ = 0, const ColorComponent component = Multiple );
+    QgsColorWidget( QWidget *parent /TransferThis/ = 0, ColorComponent component = Multiple );
 %Docstring
 Construct a new color widget.
 
@@ -85,7 +85,7 @@ Create an icon for dragging colors
 
   public slots:
 
-    virtual void setColor( const QColor &color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, bool emitSignals = false );
 %Docstring
 Sets the color for the widget
 
@@ -95,7 +95,7 @@ Sets the color for the widget
 .. seealso:: :py:func:`color`
 %End
 
-    virtual void setComponent( const QgsColorWidget::ColorComponent component );
+    virtual void setComponent( QgsColorWidget::ColorComponent component );
 %Docstring
 Sets the color component which the widget controls
 
@@ -104,7 +104,7 @@ Sets the color component which the widget controls
 .. seealso:: :py:func:`component`
 %End
 
-    virtual void setComponentValue( const int value );
+    virtual void setComponentValue( int value );
 %Docstring
 Alters the widget's color by setting the value for the widget's color component
 
@@ -149,14 +149,14 @@ Returns the range of valid values for the color widget's component
 :return: maximum value allowed for color component, or -1 if widget has multiple components
 %End
 
-    int componentRange( const ColorComponent component ) const;
+    int componentRange( ColorComponent component ) const;
 %Docstring
 Returns the range of valid values a color component
 
 :return: maximum value allowed for color component
 %End
 
-    int componentValue( const ColorComponent component ) const;
+    int componentValue( ColorComponent component ) const;
 %Docstring
 Returns the value of a component of the widget's current color. This method correctly
 handles hue values when the color has an ambiguous hue (e.g., black or white shades)
@@ -176,7 +176,7 @@ as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the satu
 :return: explicitly set hue for widget
 %End
 
-    void alterColor( QColor &color, const QgsColorWidget::ColorComponent component, const int newValue ) const;
+    void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue ) const;
 %Docstring
 Alters a color by modifiying the value of a specific color component
 
@@ -302,7 +302,7 @@ Constructs a new color wheel widget.
 
   public slots:
 
-    virtual void setColor( const QColor &color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, bool emitSignals = false );
 
 
   protected:
@@ -335,7 +335,7 @@ axis.
 %End
   public:
 
-    QgsColorBox( QWidget *parent /TransferThis/ = 0, const ColorComponent component = Value );
+    QgsColorBox( QWidget *parent /TransferThis/ = 0, ColorComponent component = Value );
 %Docstring
 Construct a new color box widget.
 
@@ -352,11 +352,11 @@ Construct a new color box widget.
     virtual void paintEvent( QPaintEvent *event );
 
 
-    virtual void setComponent( const ColorComponent component );
+    virtual void setComponent( ColorComponent component );
 
 
   public slots:
-    virtual void setColor( const QColor &color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, bool emitSignals = false );
 
 
   protected:
@@ -393,8 +393,8 @@ its length by a single color component (e.g., varying saturation from 0 to 100%)
     };
 
     QgsColorRampWidget( QWidget *parent /TransferThis/ = 0,
-                        const ColorComponent component = QgsColorWidget::Red,
-                        const Orientation orientation = QgsColorRampWidget::Horizontal );
+                        ColorComponent component = QgsColorWidget::Red,
+                        Orientation orientation = QgsColorRampWidget::Horizontal );
 %Docstring
 Construct a new color ramp widget.
 
@@ -408,7 +408,7 @@ Construct a new color ramp widget.
     virtual void paintEvent( QPaintEvent *event );
 
 
-    void setOrientation( const Orientation orientation );
+    void setOrientation( Orientation orientation );
 %Docstring
 Sets the orientation for the color ramp
 
@@ -426,7 +426,7 @@ Fetches the orientation for the color ramp
 .. seealso:: :py:func:`setOrientation`
 %End
 
-    void setInteriorMargin( const int margin );
+    void setInteriorMargin( int margin );
 %Docstring
 Sets the margin between the edge of the widget and the ramp
 
@@ -444,7 +444,7 @@ Fetches the margin between the edge of the widget and the ramp
 .. seealso:: :py:func:`setInteriorMargin`
 %End
 
-    void setShowFrame( const bool showFrame );
+    void setShowFrame( bool showFrame );
 %Docstring
 Sets whether the ramp should be drawn within a frame
 
@@ -462,7 +462,7 @@ Fetches whether the ramp is drawn within a frame
 .. seealso:: :py:func:`setShowFrame`
 %End
 
-    void setMarkerSize( const int markerSize );
+    void setMarkerSize( int markerSize );
 %Docstring
 Sets the size for drawing the triangular markers on the ramp
 
@@ -471,7 +471,7 @@ Sets the size for drawing the triangular markers on the ramp
 
   signals:
 
-    void valueChanged( const int value );
+    void valueChanged( int value );
 %Docstring
 Emitted when the widget's color component value changes
 
@@ -506,7 +506,7 @@ A composite horizontal color ramp widget and associated spinbox for manual value
 %End
   public:
 
-    QgsColorSliderWidget( QWidget *parent /TransferThis/ = 0, const ColorComponent component = QgsColorWidget::Red );
+    QgsColorSliderWidget( QWidget *parent /TransferThis/ = 0, ColorComponent component = QgsColorWidget::Red );
 %Docstring
 Construct a new color slider widget.
 
@@ -514,11 +514,11 @@ Construct a new color slider widget.
 :param component: color component which is controlled by the slider
 %End
 
-    virtual void setComponent( const ColorComponent component );
+    virtual void setComponent( ColorComponent component );
 
-    virtual void setComponentValue( const int value );
+    virtual void setComponentValue( int value );
 
-    virtual void setColor( const QColor &color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, bool emitSignals = false );
 
 
 };
@@ -554,7 +554,7 @@ Construct a new color line edit widget.
 :param parent: parent QWidget for the widget
 %End
 
-    virtual void setColor( const QColor &color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, bool emitSignals = false );
 
 
   protected:

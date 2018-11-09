@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgslayoutrendercontext.h"
-#include "qgsfeature.h"
 #include "qgslayout.h"
 
 QgsLayoutRenderContext::QgsLayoutRenderContext( QgsLayout *layout )
@@ -73,7 +72,7 @@ QgsRenderContext::Flags QgsLayoutRenderContext::renderContextFlags() const
 
 void QgsLayoutRenderContext::setDpi( double dpi )
 {
-  if ( dpi == mMeasurementConverter.dpi() )
+  if ( qgsDoubleNear( dpi, mMeasurementConverter.dpi() ) )
     return;
 
   mMeasurementConverter.setDpi( dpi );

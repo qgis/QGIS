@@ -138,4 +138,29 @@ class CORE_EXPORT sqlite3_database_unique_ptr : public std::unique_ptr< sqlite3,
 
 };
 
+/**
+ * Contains utilities for working with Sqlite data sources.
+ * \note not available in Python bindings
+ * \ingroup core
+ * \since QGIS 3.4
+ */
+class CORE_EXPORT QgsSqliteUtils
+{
+  public:
+
+    /**
+     * Returns a quoted string \a value, surround by ' characters and with special
+     * characters correctly escaped.
+     */
+    static QString quotedString( const QString &value );
+};
+
+/**
+ * Wraps sqlite3_mprintf() by automatically freeing the memory.
+ * \note not available in Python bindings.
+ * \since QGIS 3.2
+ */
+QString CORE_EXPORT QgsSqlite3Mprintf( const char *format, ... );
+
+
 #endif // QGSSQLITEUTILS_H

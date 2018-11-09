@@ -205,7 +205,7 @@ void QgsUserProfileManager::loadUserProfile( const QString &name )
   arguments.removeFirst();
 
   arguments << QStringLiteral( "--profile" ) << name;
-  QgsDebugMsg( QString( "Starting instance from %1 with %2" ).arg( path ).arg( arguments.join( " " ) ) );
+  QgsDebugMsg( QStringLiteral( "Starting instance from %1 with %2" ).arg( path ).arg( arguments.join( " " ) ) );
   QProcess::startDetached( path, arguments, QDir::toNativeSeparators( QCoreApplication::applicationDirPath() ) );
 }
 

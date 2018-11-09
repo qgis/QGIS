@@ -22,8 +22,8 @@
 #include "qgsattributedialog.h"
 #include "qgisapp.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsmapmouseevent.h"
 
-#include <QMouseEvent>
 #include <limits>
 
 QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas *canvas )
@@ -161,7 +161,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     else
     {
       QgsAttributeDialog *dialog = new QgsAttributeDialog( vlayer, &ft, false, nullptr, true );
-      dialog->setMode( QgsAttributeForm::AddFeatureMode );
+      dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
       res = dialog->exec(); // will also add the feature
     }
 

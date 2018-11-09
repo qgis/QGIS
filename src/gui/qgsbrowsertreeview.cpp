@@ -23,6 +23,7 @@ QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
   : QTreeView( parent )
   , mSettingsSection( QStringLiteral( "browser" ) )
 {
+  setEditTriggers( QAbstractItemView::EditKeyPressed );
 }
 
 void QgsBrowserTreeView::setModel( QAbstractItemModel *model )
@@ -61,7 +62,7 @@ void QgsBrowserTreeView::saveState()
   QgsSettings settings;
   QStringList expandedPaths = expandedPathsList( QModelIndex() );
   settings.setValue( expandedPathsKey(), expandedPaths );
-  QgsDebugMsgLevel( "expandedPaths = " + expandedPaths.join( " " ), 4 );
+  QgsDebugMsgLevel( "expandedPaths = " + expandedPaths.join( ' ' ), 4 );
 }
 
 void QgsBrowserTreeView::restoreState()
@@ -69,7 +70,7 @@ void QgsBrowserTreeView::restoreState()
   QgsSettings settings;
   mExpandPaths = settings.value( expandedPathsKey(), QVariant() ).toStringList();
 
-  QgsDebugMsgLevel( "mExpandPaths = " + mExpandPaths.join( " " ), 4 );
+  QgsDebugMsgLevel( "mExpandPaths = " + mExpandPaths.join( ' ' ), 4 );
   if ( !mExpandPaths.isEmpty() )
   {
     QSet<QModelIndex> expandIndexSet;
@@ -166,7 +167,7 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex &parentIndex, int start
   if ( mExpandPaths.isEmpty() )
     return;
 
-  QgsDebugMsgLevel( "mExpandPaths = " + mExpandPaths.join( "," ), 2 );
+  QgsDebugMsgLevel( "mExpandPaths = " + mExpandPaths.join( ',' ), 2 );
 
   QString parentPath = model()->data( parentIndex, QgsBrowserModel::PathRole ).toString();
   QgsDebugMsgLevel( "parentPath = " + parentPath, 2 );
@@ -195,8 +196,16 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex &parentIndex, int start
     QgsDebugMsgLevel( "childPath = " + childPath + " escapedChildPath = " + escapedChildPath, 2 );
     if ( mExpandPaths.contains( childPath ) || mExpandPaths.indexOf( QRegExp( "^" + escapedChildPath + "/.*" ) ) != -1 )
     {
-      QgsDebugMsgLevel( "-> expand", 2 );
-      expand( childIndex );
+      QgsDebugMsgLevel( QStringLiteral( "-> expand" ), 2 );
+      QModelIndex modelIndex = browserModel()->findPath( childPath, Qt::MatchExactly );
+      if ( modelIndex.isValid() )
+      {
+        QgsDataItem *ptr = browserModel()->dataItem( modelIndex );
+        if ( !ptr || !( ptr->capabilities2() & QgsDataItem::Capability::Collapse ) )
+        {
+          expand( childIndex );
+        }
+      }
     }
   }
 }

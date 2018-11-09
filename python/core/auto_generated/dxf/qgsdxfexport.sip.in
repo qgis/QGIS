@@ -397,10 +397,23 @@ Write mtext (MTEXT)
 .. versionadded:: 2.15
 %End
 
-    static double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
+    static double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 );
 %Docstring
-Calculates a scaling factor to convert from map units to a specified symbol unit.
-The ``scale`` parameter indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Returns scale factor for conversion to map units
+
+:param scale: the map scale denominator
+:param symbolUnits: the symbol output units
+:param mapUnits: the map units
+:param mapUnitsPerPixel: Map units per pixel
+%End
+
+    void clipValueToMapUnitScale( double &value, const QgsMapUnitScale &scale, double pixelToMMFactor ) const;
+%Docstring
+Clips value to scale minimum/maximum
+
+:param value: the value to clip
+:param scale: the scale dependent minimum/maximum values
+:param pixelToMMFactor: pixels per mm
 %End
 
     static QString dxfLayerName( const QString &name );

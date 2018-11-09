@@ -20,6 +20,7 @@
 #include <QLineEdit>
 #include <QPalette>
 #include <QTimer>
+#include <QEvent>
 
 QgsStatusBar::QgsStatusBar( QWidget *parent )
   : QWidget( parent )
@@ -88,4 +89,14 @@ void QgsStatusBar::showMessage( const QString &text, int timeout )
 void QgsStatusBar::clearMessage()
 {
   mLineEdit->setText( QString() );
+}
+
+void QgsStatusBar::changeEvent( QEvent *event )
+{
+  QWidget::changeEvent( event );
+
+  if ( event->type() == QEvent::FontChange )
+  {
+    mLineEdit->setFont( font() );
+  }
 }

@@ -89,14 +89,14 @@ class SchemaWidgetWrapper(WidgetWrapper):
 
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
-            if wrapper.param.name() == self._connection_param:
+            if wrapper.parameterDefinition().name() == self._connection_param:
                 self.connection_wrapper = wrapper
-                self.setConnection(wrapper.value())
+                self.setConnection(wrapper.parameterValue())
                 wrapper.widgetValueHasChanged.connect(self.connectionChanged)
                 break
 
     def connectionChanged(self, wrapper):
-        connection = wrapper.value()
+        connection = wrapper.parameterValue()
         if connection == self._connection:
             return
         self.setConnection(connection)
@@ -161,15 +161,15 @@ class TableWidgetWrapper(WidgetWrapper):
 
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
-            if wrapper.param.name() == self._schema_param:
+            if wrapper.parameterDefinition().name() == self._schema_param:
                 self.schema_wrapper = wrapper
-                self.setSchema(wrapper.database(), wrapper.value())
+                self.setSchema(wrapper.database(), wrapper.parameterValue())
                 wrapper.widgetValueHasChanged.connect(self.schemaChanged)
                 break
 
     def schemaChanged(self, wrapper):
         database = wrapper.database()
-        schema = wrapper.value()
+        schema = wrapper.parameterValue()
         if database == self._database and schema == self._schema:
             return
         self.setSchema(database, schema)

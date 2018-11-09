@@ -151,3 +151,24 @@ void QgsPluginSortFilterProxyModel::sortPluginsByStatus()
   sort( 0, Qt::DescendingOrder );
   setSortRole( PLUGIN_STATUS_ROLE );
 }
+
+
+
+bool QgsPluginSortFilterProxyModel::lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const
+{
+  // Always move deprecated plugins to bottom, regardless of the sort order.
+  const bool isLeftDepreciated = sourceModel()->data( source_left, PLUGIN_ISDEPRECATED_ROLE ).toString() == QStringLiteral( "true" );
+  const bool isRightDepreciated = sourceModel()->data( source_right, PLUGIN_ISDEPRECATED_ROLE ).toString() == QStringLiteral( "true" );
+  if ( isRightDepreciated && !isLeftDepreciated )
+  {
+    return sortOrder() == Qt::AscendingOrder ? true : false;
+  }
+  else if ( isLeftDepreciated && !isRightDepreciated )
+  {
+    return sortOrder() == Qt::AscendingOrder ? false : true;
+  }
+  else
+  {
+    return QSortFilterProxyModel::lessThan( source_left, source_right );
+  }
+}

@@ -180,8 +180,8 @@ bool QgsVectorLayerRenderer::render()
         QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
         QgsRectangle targetRect = ct.transform( sourceRect );
 
-        QgsDebugMsgLevel( QString( "Simplify - SourceTransformRect=%1" ).arg( sourceRect.toString( 16 ) ), 4 );
-        QgsDebugMsgLevel( QString( "Simplify - TargetTransformRect=%1" ).arg( targetRect.toString( 16 ) ), 4 );
+        QgsDebugMsgLevel( QStringLiteral( "Simplify - SourceTransformRect=%1" ).arg( sourceRect.toString( 16 ) ), 4 );
+        QgsDebugMsgLevel( QStringLiteral( "Simplify - TargetTransformRect=%1" ).arg( targetRect.toString( 16 ) ), 4 );
 
         if ( !sourceRect.isEmpty() && sourceRect.isFinite() && !targetRect.isEmpty() && targetRect.isFinite() )
         {
@@ -193,8 +193,8 @@ bool QgsVectorLayerRenderer::render()
           double sourceHypothenuse = std::sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
           double targetHypothenuse = std::sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
 
-          QgsDebugMsgLevel( QString( "Simplify - SourceHypothenuse=%1" ).arg( sourceHypothenuse ), 4 );
-          QgsDebugMsgLevel( QString( "Simplify - TargetHypothenuse=%1" ).arg( targetHypothenuse ), 4 );
+          QgsDebugMsgLevel( QStringLiteral( "Simplify - SourceHypothenuse=%1" ).arg( sourceHypothenuse ), 4 );
+          QgsDebugMsgLevel( QStringLiteral( "Simplify - TargetHypothenuse=%1" ).arg( targetHypothenuse ), 4 );
 
           if ( !qgsDoubleNear( targetHypothenuse, 0.0 ) )
             map2pixelTol *= ( sourceHypothenuse / targetHypothenuse );
@@ -267,7 +267,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
     {
       if ( mContext.renderingStopped() )
       {
-        QgsDebugMsg( QString( "Drawing of vector layer %1 canceled." ).arg( layerId() ) );
+        QgsDebugMsg( QStringLiteral( "Drawing of vector layer %1 canceled." ).arg( layerId() ) );
         break;
       }
 
@@ -315,7 +315,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
     catch ( const QgsCsException &cse )
     {
       Q_UNUSED( cse );
-      QgsDebugMsg( QString( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
+      QgsDebugMsg( QStringLiteral( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
                    .arg( fet.id() ).arg( cse.what() ) );
     }
   }
@@ -398,6 +398,13 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
 
   delete mContext.expressionContext().popScope();
 
+  if ( features.empty() )
+  {
+    // nothing to draw
+    stopRenderer( selRenderer );
+    return;
+  }
+
   // find out the order
   QgsSymbolLevelOrder levels;
   QgsSymbolList symbols = mRenderer->symbols( mContext );
@@ -425,7 +432,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
       QgsSymbolLevelItem &item = level[i];
       if ( !features.contains( item.symbol() ) )
       {
-        QgsDebugMsg( "level item's symbol not found!" );
+        QgsDebugMsg( QStringLiteral( "level item's symbol not found!" ) );
         continue;
       }
       int layer = item.layer();
@@ -452,7 +459,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
         catch ( const QgsCsException &cse )
         {
           Q_UNUSED( cse );
-          QgsDebugMsg( QString( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
+          QgsDebugMsg( QStringLiteral( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
                        .arg( fet.id() ).arg( cse.what() ) );
         }
       }
@@ -503,7 +510,7 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer *layer, QSet<QStrin
   {
     QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
                                           .setFilterRect( mContext.extent() )
-                                          .setSubsetOfAttributes( QgsAttributeList() ) );
+                                          .setNoAttributes() );
 
     // total number of features that may be labeled
     QgsFeature f;

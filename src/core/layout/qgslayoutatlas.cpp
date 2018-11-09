@@ -21,6 +21,9 @@
 #include "qgslayoutatlas.h"
 #include "qgslayout.h"
 #include "qgsmessagelog.h"
+#include "qgsfeaturerequest.h"
+#include "qgsfeatureiterator.h"
+#include "qgsvectorlayer.h"
 
 QgsLayoutAtlas::QgsLayoutAtlas( QgsLayout *layout )
   : QObject( layout )
@@ -304,7 +307,7 @@ int QgsLayoutAtlas::updateFeatures()
   if ( !mFeatureKeys.isEmpty() )
   {
     AtlasFeatureSorter sorter( mFeatureKeys, mSortAscending );
-    std::sort( mFeatureIds.begin(), mFeatureIds.end(), sorter );
+    std::sort( mFeatureIds.begin(), mFeatureIds.end(), sorter ); // clazy:exclude=detaching-member
   }
 
   emit numberFeaturesChanged( mFeatureIds.size() );
@@ -524,6 +527,12 @@ bool QgsLayoutAtlas::prepareForFeature( const int featureI )
   if ( !mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ].first ) ).nextFeature( mCurrentFeature ) )
     return false;
 
+  mLayout->reportContext().blockSignals( true ); // setFeature emits changed, we don't want 2 signals
+  mLayout->reportContext().setLayer( mCoverageLayer.get() );
+  mLayout->reportContext().blockSignals( false );
+  mLayout->reportContext().setFeature( mCurrentFeature );
+
+  // must come after we've set the report context feature, or the expression context will have an outdated atlas feature
   QgsExpressionContext expressionContext = createExpressionContext();
 
   // generate filename for current feature
@@ -532,11 +541,6 @@ bool QgsLayoutAtlas::prepareForFeature( const int featureI )
     //error evaluating filename
     return false;
   }
-
-  mLayout->reportContext().blockSignals( true ); // setFeature emits changed, we don't want 2 signals
-  mLayout->reportContext().setLayer( mCoverageLayer.get() );
-  mLayout->reportContext().blockSignals( false );
-  mLayout->reportContext().setFeature( mCurrentFeature );
 
   emit featureChanged( mCurrentFeature );
   emit messagePushed( QString( tr( "Atlas feature %1 of %2" ) ).arg( featureI + 1 ).arg( mFeatureIds.size() ) );

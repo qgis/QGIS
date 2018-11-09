@@ -46,7 +46,7 @@ on which is faster for the particular operation.
       FlipVertical
     };
 
-    static void convertToGrayscale( QImage &image, const GrayscaleMode mode = GrayscaleLuminosity );
+    static void convertToGrayscale( QImage &image, GrayscaleMode mode = GrayscaleLuminosity );
 %Docstring
 Convert a QImage to a grayscale image. Alpha channel is preserved.
 
@@ -54,7 +54,7 @@ Convert a QImage to a grayscale image. Alpha channel is preserved.
 :param mode: mode to use during grayscale conversion
 %End
 
-    static void adjustBrightnessContrast( QImage &image, const int brightness, const double contrast );
+    static void adjustBrightnessContrast( QImage &image, int brightness, double contrast );
 %Docstring
 Alter the brightness or contrast of a QImage.
 
@@ -67,8 +67,8 @@ Alter the brightness or contrast of a QImage.
                  contrast of the image.
 %End
 
-    static void adjustHueSaturation( QImage &image, const double saturation, const QColor &colorizeColor = QColor(),
-                                     const double colorizeStrength = 1.0 );
+    static void adjustHueSaturation( QImage &image, double saturation, const QColor &colorizeColor = QColor(),
+                                     double colorizeStrength = 1.0 );
 %Docstring
 Alter the hue or saturation of a QImage.
 
@@ -79,7 +79,7 @@ Alter the hue or saturation of a QImage.
 :param colorizeStrength: double between 0 and 1, where 0 = no colorization and 1.0 = full colorization
 %End
 
-    static void multiplyOpacity( QImage &image, const double factor );
+    static void multiplyOpacity( QImage &image, double factor );
 %Docstring
 Multiplies opacity of image pixel values by a factor.
 
@@ -118,7 +118,7 @@ using a color ramp.
                    for the distance transform operation
 %End
 
-    static void stackBlur( QImage &image, const int radius, const bool alphaOnly = false );
+    static void stackBlur( QImage &image, int radius, bool alphaOnly = false );
 %Docstring
 Performs a stack blur on an image. Stack blur represents a good balance between
 speed and blur quality.
@@ -133,7 +133,7 @@ speed and blur quality.
    alphaOnly is set to false, or ARGB32 if alphaOnly is true
 %End
 
-    static QImage *gaussianBlur( QImage &image, const int radius ) /Factory/;
+    static QImage *gaussianBlur( QImage &image, int radius ) /Factory/;
 %Docstring
 Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
 quality blur.

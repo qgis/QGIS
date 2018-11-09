@@ -9,6 +9,7 @@ SET (OGR_SRCS
     qgsgeopackagerasterwritertask.cpp
     qgsogrdbconnection.cpp
     qgsogrdbtablemodel.cpp
+    qgsogrtransaction.cpp
 )
 
 SET(OGR_MOC_HDRS
@@ -19,6 +20,7 @@ SET(OGR_MOC_HDRS
     qgsgeopackagerasterwritertask.h
     qgsogrdbconnection.h
     qgsogrdbtablemodel.h
+    qgsogrtransaction.h
 )
 
 IF (WITH_GUI)

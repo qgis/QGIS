@@ -51,7 +51,7 @@ class OpenScriptFromFileAction(ToolboxAction):
         lastDir = settings.value('Processing/lastScriptsDir', '')
         filename, selected_filter = QFileDialog.getOpenFileName(self.toolbox,
                                                                 self.tr('Open Script', 'AddScriptFromFileAction'), lastDir,
-                                                                self.tr('Script files (*.py)', 'AddScriptFromFileAction'))
+                                                                self.tr('Processing scripts (*.py *.PY)', 'AddScriptFromFileAction'))
         if filename:
             settings.setValue('Processing/lastScriptsDir',
                               QFileInfo(filename).absoluteDir().absolutePath())

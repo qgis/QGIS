@@ -98,7 +98,7 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
      */
     QgsLayout *layout() { return mLayout; }
 
-    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
     //! Finds out which mouse move action to choose depending on the scene cursor position
     QgsLayoutMouseHandles::MouseAction mouseActionForScenePos( QPointF sceneCoordPos );
@@ -209,7 +209,7 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
     void hideAlignItems();
 
     //! Collects all items from a list of \a items, exploring for any group members and adding them too
-    void collectItems( const QList< QgsLayoutItem * > items, QList< QgsLayoutItem * > &collected );
+    void collectItems( QList< QgsLayoutItem * > items, QList< QgsLayoutItem * > &collected );
 
 };
 

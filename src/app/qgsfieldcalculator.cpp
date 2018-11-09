@@ -25,6 +25,9 @@
 #include "qgsexpressioncontext.h"
 #include "qgsgeometry.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgsproxyprogresstask.h"
 
 #include <QMessageBox>
 
@@ -48,6 +51,8 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   connect( mCreateVirtualFieldCheckbox, &QCheckBox::stateChanged, this, &QgsFieldCalculator::mCreateVirtualFieldCheckbox_stateChanged );
   connect( mOutputFieldNameLineEdit, &QLineEdit::textChanged, this, &QgsFieldCalculator::mOutputFieldNameLineEdit_textChanged );
   connect( mOutputFieldTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsFieldCalculator::mOutputFieldTypeComboBox_activated );
+
+  QgsGui::enableAutoGeometryRestore( this );
 
   if ( !vl )
     return;
@@ -148,15 +153,6 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   mInfoIcon->setPixmap( style()->standardPixmap( QStyle::SP_MessageBoxInformation ) );
 
   setOkButtonState();
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsFieldCalculator/geometry" ) ).toByteArray() );
-}
-
-QgsFieldCalculator::~QgsFieldCalculator()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/QgsFieldCalculator/geometry" ), saveGeometry() );
 }
 
 void QgsFieldCalculator::accept()
@@ -201,7 +197,7 @@ void QgsFieldCalculator::accept()
     if ( !mVectorLayer->isEditable() )
       mVectorLayer->startEditing();
 
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+    QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
 
     mVectorLayer->beginEditCommand( QStringLiteral( "Field calculator" ) );
 
@@ -230,7 +226,7 @@ void QgsFieldCalculator::accept()
 
       if ( !mVectorLayer->addAttribute( newField ) )
       {
-        QApplication::restoreOverrideCursor();
+        cursorOverride.release();
         QMessageBox::critical( nullptr, tr( "Create New Field" ), tr( "Could not add the new field to the provider." ) );
         mVectorLayer->destroyEditCommand();
         return;
@@ -252,7 +248,7 @@ void QgsFieldCalculator::accept()
       expContext.setFields( mVectorLayer->fields() );
       if ( ! exp.prepare( &expContext ) )
       {
-        QApplication::restoreOverrideCursor();
+        cursorOverride.release();
         QMessageBox::critical( nullptr, tr( "Evaluation Error" ), exp.evalErrorString() );
         return;
       }
@@ -261,7 +257,6 @@ void QgsFieldCalculator::accept()
     if ( mAttributeId == -1 && !updatingGeom )
     {
       mVectorLayer->destroyEditCommand();
-      QApplication::restoreOverrideCursor();
       return;
     }
 
@@ -281,13 +276,23 @@ void QgsFieldCalculator::accept()
       emptyAttribute = QVariant( field.type() );
 
     QgsFeatureRequest req = QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
+    QSet< QString > referencedColumns = exp.referencedColumns();
+    referencedColumns.insert( field.name() ); // need existing column value to store old attribute when changing field values
+    req.setSubsetOfAttributes( referencedColumns, mVectorLayer->fields() );
     if ( mOnlyUpdateSelectedCheckBox->isChecked() )
     {
       req.setFilterFids( mVectorLayer->selectedFeatureIds() );
     }
     QgsFeatureIterator fit = mVectorLayer->getFeatures( req );
+
+    std::unique_ptr< QgsScopedProxyProgressTask > task = qgis::make_unique< QgsScopedProxyProgressTask >( tr( "Calculating field" ) );
+    long long count = mOnlyUpdateSelectedCheckBox->isChecked() ? mVectorLayer->selectedFeatureCount() : mVectorLayer->featureCount();
+    long long i = 0;
     while ( fit.nextFeature( feature ) )
     {
+      i++;
+      task->setProgress( i / static_cast< double >( count ) * 100 );
+
       expContext.setFeature( feature );
       expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), rownum, true ) );
 
@@ -315,10 +320,10 @@ void QgsFieldCalculator::accept()
       rownum++;
     }
 
-    QApplication::restoreOverrideCursor();
-
     if ( !calculationSuccess )
     {
+      cursorOverride.release();
+      task.reset();
       QMessageBox::critical( nullptr, tr( "Evaluation Error" ), tr( "An error occurred while evaluating the calculation string:\n%1" ).arg( error ) );
       mVectorLayer->destroyEditCommand();
       return;
@@ -484,7 +489,7 @@ void QgsFieldCalculator::setOkButtonState()
     return;
   }
 
-  okButton->setToolTip( QLatin1String( "" ) );
+  okButton->setToolTip( QString() );
   okButton->setEnabled( true );
 }
 
@@ -516,7 +521,7 @@ QgsField QgsFieldCalculator::fieldDefinition()
                    static_cast< QVariant::Type >( mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_TYPE_ROLE_IDX ).toInt() ),
                    mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_TYPE_NAME_IDX ).toString(),
                    mOutputFieldWidthSpinBox->value(),
-                   mOutputFieldPrecisionSpinBox->value(),
+                   mOutputFieldPrecisionSpinBox->isEnabled() ? mOutputFieldPrecisionSpinBox->value() : 0,
                    QString(),
                    static_cast< QVariant::Type >( mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_SUBTYPE_IDX ).toInt() )
                  );

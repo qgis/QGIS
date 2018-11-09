@@ -32,8 +32,8 @@ from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryFile, QTemporaryDir
-import sip
+from qgis.PyQt.QtCore import QT_VERSION_STR, QTemporaryDir
+from qgis.PyQt import sip
 
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
@@ -134,6 +134,14 @@ class TestQgsProject(unittest.TestCase):
 
     def catchMessage(self):
         self.messageCaught = True
+
+    def testClear(self):
+        prj = QgsProject.instance()
+        prj.setTitle('xxx')
+        spy = QSignalSpy(prj.cleared)
+        prj.clear()
+        self.assertEqual(len(spy), 1)
+        self.assertFalse(prj.title())
 
     def testCrs(self):
         prj = QgsProject.instance()
@@ -241,12 +249,17 @@ class TestQgsProject(unittest.TestCase):
         QgsProject.instance().removeAllMapLayers()
 
     def test_addMapLayerInvalid(self):
-        """ test that invalid map layersd can't be added to registry """
+        """ test that invalid map layers can be added to registry """
         QgsProject.instance().removeAllMapLayers()
 
-        self.assertEqual(QgsProject.instance().addMapLayer(QgsVectorLayer("Point?field=x:string", 'test', "xxx")), None)
-        self.assertEqual(len(QgsProject.instance().mapLayersByName('test')), 0)
-        self.assertEqual(QgsProject.instance().count(), 0)
+        vl = QgsVectorLayer("Point?field=x:string", 'test', "xxx")
+        self.assertEqual(QgsProject.instance().addMapLayer(vl), vl)
+        self.assertFalse(vl in QgsProject.instance().mapLayers(True).values())
+        self.assertEqual(len(QgsProject.instance().mapLayersByName('test')), 1)
+        self.assertEqual(QgsProject.instance().count(), 1)
+        self.assertEqual(QgsProject.instance().validCount(), 0)
+
+        self.assertEqual(len(QgsProject.instance().mapLayers(True)), 0)
 
         QgsProject.instance().removeAllMapLayers()
 
@@ -305,12 +318,15 @@ class TestQgsProject(unittest.TestCase):
         QgsProject.instance().removeAllMapLayers()
 
     def test_addMapLayersInvalid(self):
-        """ test that invalid map layersd can't be added to registry """
+        """ test that invalid map layers can be added to registry """
         QgsProject.instance().removeAllMapLayers()
 
-        self.assertEqual(QgsProject.instance().addMapLayers([QgsVectorLayer("Point?field=x:string", 'test', "xxx")]), [])
-        self.assertEqual(len(QgsProject.instance().mapLayersByName('test')), 0)
-        self.assertEqual(QgsProject.instance().count(), 0)
+        vl = QgsVectorLayer("Point?field=x:string", 'test', "xxx")
+        self.assertEqual(QgsProject.instance().addMapLayers([vl]), [vl])
+        self.assertFalse(vl in QgsProject.instance().mapLayers(True).values())
+        self.assertEqual(len(QgsProject.instance().mapLayersByName('test')), 1)
+        self.assertEqual(QgsProject.instance().count(), 1)
+        self.assertEqual(QgsProject.instance().validCount(), 0)
 
         QgsProject.instance().removeAllMapLayers()
 
@@ -688,6 +704,12 @@ class TestQgsProject(unittest.TestCase):
         # destroy project
         p = None
         self.assertTrue(l1.isValid())
+
+    def test_transactionsGroup(self):
+        # Undefined transaction group (wrong provider key).
+        QgsProject.instance().setAutoTransaction(True)
+        noTg = QgsProject.instance().transactionGroup("provider-key", "database-connection-string")
+        self.assertIsNone(noTg)
 
     def test_zip_new_project(self):
         tmpDir = QTemporaryDir()
@@ -1076,6 +1098,36 @@ class TestQgsProject(unittest.TestCase):
 
         self.assertTrue(l.setSubsetString('class=\'a\''))
         self.assertTrue(p.isDirty())
+
+    def testProjectTitleWithPeriod(self):
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/2.18.21.qgs".format(tmpDir.path())
+        tmpFile2 = "{}/qgis-3.2.0.qgs".format(tmpDir.path())
+
+        p0 = QgsProject()
+        p0.setFileName(tmpFile)
+
+        p1 = QgsProject()
+        p1.setFileName(tmpFile2)
+
+        self.assertEqual(p0.baseName(), '2.18.21')
+        self.assertEqual(p1.baseName(), 'qgis-3.2.0')
+
+    def testWriteEntry(self):
+
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgs".format(tmpDir.path())
+
+        # zip with existing file
+        project = QgsProject()
+        query = 'select * from "sample DH" where "sample DH"."Elev" > 130 and "sample DH"."Elev" < 140'
+        self.assertTrue(project.writeEntry('myscope', 'myentry', query))
+        self.assertTrue(project.write(tmpFile))
+
+        self.assertTrue(project.read(tmpFile))
+        q, ok = project.readEntry('myscope', 'myentry')
+        self.assertTrue(ok)
+        self.assertEqual(q, query)
 
 
 if __name__ == '__main__':

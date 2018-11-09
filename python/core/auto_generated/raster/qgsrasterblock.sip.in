@@ -166,6 +166,7 @@ returned value is undefined.
 :return: value *
 %End
 
+
     QRgb color( int row, int column ) const;
 %Docstring
 Read a single color
@@ -185,7 +186,7 @@ Read a single value
 :return: color *
 %End
 
-    bool isNoData( int row, int column );
+    bool isNoData( int row, int column ) const;
 %Docstring
 Check if value at position is no data
 
@@ -195,7 +196,17 @@ Check if value at position is no data
 :return: true if value is no data *
 %End
 
-    bool isNoData( qgssize index );
+    bool isNoData( qgssize row, qgssize column ) const;
+%Docstring
+Check if value at position is no data
+
+:param row: row index
+:param column: column index
+
+:return: true if value is no data *
+%End
+
+    bool isNoData( qgssize index ) const;
 %Docstring
 Check if value at position is no data
 
@@ -245,6 +256,7 @@ Set color on index (indexed line by line)
 
 :return: true on success *
 %End
+
 
     bool setIsNoData( int row, int column );
 %Docstring

@@ -36,9 +36,10 @@ from qgis.core import (Qgis,
                        QgsApplication,
                        QgsSettings,
                        QgsProcessingParameterDefinition)
-from qgis.gui import QgsMessageBar
+from qgis.gui import QgsProcessingParameterWidgetContext
+from qgis.utils import iface
 
-from processing.gui.wrappers import WidgetWrapperFactory
+from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 
 from processing.tools import dataobjects
@@ -136,6 +137,7 @@ class BatchPanel(BASE, WIDGET):
         self.tblParameters.horizontalHeader().setStretchLastSection(True)
 
     def load(self):
+        context = dataobjects.createContext()
         settings = QgsSettings()
         last_path = settings.value("/Processing/LastBatchPath", QDir.homePath())
         filename, selected_filter = QFileDialog.getOpenFileName(self,
@@ -165,7 +167,7 @@ class BatchPanel(BASE, WIDGET):
                     if param.name() in params:
                         value = eval(params[param.name()])
                         wrapper = self.wrappers[row][column]
-                        wrapper.setValue(value)
+                        wrapper.setParameterValue(value, context)
                     column += 1
 
                 for out in self.alg.destinationParameterDefinitions():
@@ -196,12 +198,24 @@ class BatchPanel(BASE, WIDGET):
                 if param.isDestination():
                     continue
                 wrapper = self.wrappers[row][col]
-                if not param.checkValueIsAcceptable(wrapper.value(), context):
+
+                # For compatibility with 3.x API, we need to check whether the wrapper is
+                # the deprecated WidgetWrapper class. If not, it's the newer
+                # QgsAbstractProcessingParameterWidgetWrapper class
+                # TODO QGIS 4.0 - remove
+                if issubclass(wrapper.__class__, WidgetWrapper):
+                    widget = wrapper.widget
+                else:
+                    widget = wrapper.wrappedWidget()
+
+                value = wrapper.parameterValue()
+
+                if not param.checkValueIsAcceptable(value, context):
                     self.parent.messageBar().pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
                         param.description(), row + 1),
                         level=Qgis.Warning, duration=5)
                     return
-                algParams[param.name()] = param.valueAsPythonString(wrapper.value(), context)
+                algParams[param.name()] = param.valueAsPythonString(value, context)
                 col += 1
             for out in alg.destinationParameterDefinitions():
                 if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
@@ -232,13 +246,30 @@ class BatchPanel(BASE, WIDGET):
             with open(filename, 'w') as f:
                 json.dump(toSave, f)
 
-    def setCellWrapper(self, row, column, wrapper):
+    def setCellWrapper(self, row, column, wrapper, context):
         self.wrappers[row][column] = wrapper
-        self.tblParameters.setCellWidget(row, column, wrapper.widget)
+
+        # For compatibility with 3.x API, we need to check whether the wrapper is
+        # the deprecated WidgetWrapper class. If not, it's the newer
+        # QgsAbstractProcessingParameterWidgetWrapper class
+        # TODO QGIS 4.0 - remove
+        is_cpp_wrapper = not issubclass(wrapper.__class__, WidgetWrapper)
+        if is_cpp_wrapper:
+            widget_context = QgsProcessingParameterWidgetContext()
+            if iface is not None:
+                widget_context.setMapCanvas(iface.mapCanvas())
+            wrapper.setWidgetContext(widget_context)
+            widget = wrapper.createWrappedWidget(context)
+        else:
+            widget = wrapper.widget
+
+        self.tblParameters.setCellWidget(row, column, widget)
 
     def addRow(self):
         self.wrappers.append([None] * self.tblParameters.columnCount())
         self.tblParameters.setRowCount(self.tblParameters.rowCount() + 1)
+
+        context = dataobjects.createContext()
 
         wrappers = {}
         row = self.tblParameters.rowCount() - 1
@@ -249,7 +280,7 @@ class BatchPanel(BASE, WIDGET):
 
             wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent, row, column)
             wrappers[param.name()] = wrapper
-            self.setCellWrapper(row, column, wrapper)
+            self.setCellWrapper(row, column, wrapper, context)
             column += 1
 
         for out in self.alg.destinationParameterDefinitions():
@@ -277,13 +308,15 @@ class BatchPanel(BASE, WIDGET):
             self.tblParameters.setRowCount(self.tblParameters.rowCount() - 1)
 
     def fillParameterValues(self, column):
+        context = dataobjects.createContext()
+
         wrapper = self.wrappers[0][column]
         if wrapper is None:
             # e.g. double clicking on a destination header
             return
 
         for row in range(1, self.tblParameters.rowCount()):
-            self.wrappers[row][column].setValue(wrapper.value())
+            self.wrappers[row][column].setParameterValue(wrapper.parameterValue(), context)
 
     def toggleAdvancedMode(self, checked):
         for column, param in enumerate(self.alg.parameterDefinitions()):

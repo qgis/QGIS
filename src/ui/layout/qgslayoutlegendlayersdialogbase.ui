@@ -14,7 +14,17 @@
    <string>Add Layer to Legend</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="spacing">
+    <number>6</number>
+   </property>
    <item row="1" column="0">
+    <widget class="QListView" name="listMapLayers">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -25,14 +35,35 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QListView" name="listMapLayers">
-     <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
+    <widget class="QgsFilterLineEdit" name="mFilterLineEdit">
+     <property name="placeholderText">
+      <string>Search</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QCheckBox" name="mCheckBoxVisibleLayers">
+     <property name="toolTip">
+      <string>If checked, only layers visible within the map will be listed</string>
+     </property>
+     <property name="text">
+      <string>Show visible layers only</string>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mFilterLineEdit</tabstop>
+  <tabstop>listMapLayers</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

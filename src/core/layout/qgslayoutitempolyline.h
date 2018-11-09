@@ -187,8 +187,8 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
 
   protected:
 
-    bool _addNode( const int indexPoint, QPointF newPoint, const double radius ) override;
-    bool _removeNode( const int nodeIndex ) override;
+    bool _addNode( int indexPoint, QPointF newPoint, double radius ) override;
+    bool _removeNode( int nodeIndex ) override;
     void _draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
     void _readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context ) override;
     void _writeXmlStyle( QDomDocument &doc, QDomElement &elmt, const QgsReadWriteContext &context ) const override;
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
      * clockwise from pointing vertical upward
      * \param arrowHeadWidth size of arrow head
      */
-    static void drawArrowHead( QPainter *p, const double x, const double y, const double angle, const double arrowHeadWidth );
+    static void drawArrowHead( QPainter *p, double x, double y, double angle, double arrowHeadWidth );
     void drawSvgMarker( QPainter *p, QPointF point, double angle, const QString &markerPath, double height ) const;
 
     double computeMarkerMargin() const;

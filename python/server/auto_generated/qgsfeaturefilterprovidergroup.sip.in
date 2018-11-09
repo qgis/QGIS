@@ -27,7 +27,8 @@ A filter filter provider grouping several filter providers.
 Constructor
 %End
 
-    void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
+    virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
+
 %Docstring
 Filter the features of the layer
 
@@ -35,7 +36,8 @@ Filter the features of the layer
 :param filterFeatures: the request to fill
 %End
 
-    QgsFeatureFilterProvider *clone() const /Factory/;
+    virtual QgsFeatureFilterProvider *clone() const /Factory/;
+
 %Docstring
 Returns a clone of the object
 

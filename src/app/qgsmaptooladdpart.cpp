@@ -24,8 +24,8 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgisapp.h"
+#include "qgsmapmouseevent.h"
 
-#include <QMouseEvent>
 
 QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), CaptureNone )
@@ -71,7 +71,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     QgsFeatureIterator selectedFeatures = vlayer->getSelectedFeatures();
     QgsFeature firstSelectedFeature;
     if ( selectedFeatures.nextFeature( firstSelectedFeature ) )
-      if ( !firstSelectedFeature.geometry().isNull() )
+      if ( firstSelectedFeature.geometry().isNull() )
         isGeometryEmpty = true;
   }
 
@@ -91,7 +91,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       if ( nextPoint( QgsPoint( mapPoint ), layerPoint ) != 0 )
       {
-        QgsDebugMsg( "nextPoint failed" );
+        QgsDebugMsg( QStringLiteral( "nextPoint failed" ) );
         return;
       }
 
@@ -109,7 +109,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         int error = addVertex( e->mapPoint(), e->mapPointMatch() );
         if ( error == 1 )
         {
-          QgsDebugMsg( "current layer is not a vector layer" );
+          QgsDebugMsg( QStringLiteral( "current layer is not a vector layer" ) );
           return;
         }
         else if ( error == 2 )

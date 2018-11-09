@@ -37,7 +37,7 @@ class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
      */
     virtual bool executeDeleteLayer( QString &errCause );
 #ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
+    QList<QAction *> actions( QWidget *menu ) override;
   public slots:
     virtual void deleteLayer();
 #endif
@@ -83,19 +83,32 @@ class QgsGeoPackageCollectionItem : public QgsDataCollectionItem
     bool acceptDrop() override { return true; }
     bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
     QList<QAction *> actions( QWidget *parent ) override;
+    static void deleteGpkg( const QString &path, QPointer< QgsDataItem > parent );
+
 #endif
 
     //! Returns the layer type from \a geometryType
     static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
 
-    //! Delete a geopackage layer
+    //! Deletes a geopackage raster layer
     static bool deleteGeoPackageRasterLayer( const QString &uri, QString &errCause );
+
+    /**
+     * Compacts (VACUUM) a geopackage database
+     * \param path DB path
+     * \param name DB name
+     * \param errCause contains the error message
+     * \return true on success
+     */
+    static bool vacuumGeoPackageDb( const QString &path, const QString &name, QString &errCause );
 
   public slots:
 #ifdef HAVE_GUI
     void addTable();
     void addConnection();
     void deleteConnection();
+    //! Compacts (VACUUM) a geopackage database
+    void vacuumGeoPackageDbAction();
 #endif
 
   protected:

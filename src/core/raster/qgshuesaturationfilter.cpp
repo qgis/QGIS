@@ -30,7 +30,7 @@ QgsHueSaturationFilter::QgsHueSaturationFilter( QgsRasterInterface *input )
 
 QgsHueSaturationFilter *QgsHueSaturationFilter::clone() const
 {
-  QgsDebugMsgLevel( "Entered hue/saturation filter", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered hue/saturation filter" ), 4 );
   QgsHueSaturationFilter *filter = new QgsHueSaturationFilter( nullptr );
   filter->setSaturation( mSaturation );
   filter->setGrayscaleMode( mGrayscaleMode );
@@ -72,45 +72,45 @@ Qgis::DataType QgsHueSaturationFilter::dataType( int bandNo ) const
 
 bool QgsHueSaturationFilter::setInput( QgsRasterInterface *input )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
   // Hue/saturation filter can only work with single band ARGB32_Premultiplied
   if ( !input )
   {
-    QgsDebugMsg( "No input" );
+    QgsDebugMsg( QStringLiteral( "No input" ) );
     return false;
   }
 
   if ( !mOn )
   {
     // In off mode we can connect to anything
-    QgsDebugMsgLevel( "OK", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "OK" ), 4 );
     mInput = input;
     return true;
   }
 
   if ( input->bandCount() < 1 )
   {
-    QgsDebugMsg( "No input band" );
+    QgsDebugMsg( QStringLiteral( "No input band" ) );
     return false;
   }
 
   if ( input->dataType( 1 ) != Qgis::ARGB32_Premultiplied &&
        input->dataType( 1 ) != Qgis::ARGB32 )
   {
-    QgsDebugMsg( "Unknown input data type" );
+    QgsDebugMsg( QStringLiteral( "Unknown input data type" ) );
     return false;
   }
 
   mInput = input;
-  QgsDebugMsgLevel( "OK", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "OK" ), 4 );
   return true;
 }
 
 QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo );
-  QgsDebugMsgLevel( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
 
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput )
@@ -123,13 +123,13 @@ QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &
   std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNumber, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugMsg( "No raster data!" );
+    QgsDebugMsg( QStringLiteral( "No raster data!" ) );
     return outputBlock.release();
   }
 
   if ( mSaturation == 0 && mGrayscaleMode == GrayscaleOff && !mColorizeOn )
   {
-    QgsDebugMsgLevel( "No hue/saturation change.", 4 );
+    QgsDebugMsgLevel( QStringLiteral( "No hue/saturation change." ), 4 );
     return inputBlock.release();
   }
 

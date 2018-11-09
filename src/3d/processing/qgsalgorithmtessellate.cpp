@@ -41,6 +41,11 @@ QString QgsTessellateAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsTessellateAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsTessellateAlgorithm::outputName() const
 {
   return QObject::tr( "Tessellated" );

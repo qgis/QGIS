@@ -48,7 +48,7 @@ class SelectByAttribute(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     OPERATORS = ['=',
-                 '!=',
+                 '≠',
                  '>',
                  '>=',
                  '<',
@@ -80,7 +80,7 @@ class SelectByAttribute(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.operators = ['=',
-                          '!=',
+                          '≠',
                           '>',
                           '>=',
                           '<',
@@ -106,7 +106,8 @@ class SelectByAttribute(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.OPERATOR,
                                                      self.tr('Operator'), self.operators))
         self.addParameter(QgsProcessingParameterString(self.VALUE,
-                                                       self.tr('Value')))
+                                                       self.tr('Value'),
+                                                       optional=True))
         self.addParameter(QgsProcessingParameterEnum(self.METHOD,
                                                      self.tr('Modify current selection by'),
                                                      self.methods,
@@ -130,6 +131,9 @@ class SelectByAttribute(QgisAlgorithm):
         fields = layer.fields()
 
         idx = layer.fields().lookupField(fieldName)
+        if idx < 0:
+            raise QgsProcessingException(self.tr("Field '{}' was not found in layer").format(fieldName))
+
         fieldType = fields[idx].type()
 
         if fieldType != QVariant.String and operator in self.STRING_OPERATORS:

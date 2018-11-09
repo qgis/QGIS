@@ -35,7 +35,7 @@ A ramp shader will color a raster pixel based on a list of values ranges in a ra
       Quantile
     };
 
-    QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp = 0, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
+    QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp /Transfer/ = 0, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
 %Docstring
 Creates a new color ramp shader.
 
@@ -43,7 +43,7 @@ Creates a new color ramp shader.
 :param maximumValue: maximum value for the raster shader
 :param type: interpolation type used
 :param classificationMode: method used to classify the color ramp shader
-:param colorRamp: vector color ramp used to classify the color ramp shader
+:param colorRamp: vector color ramp used to classify the color ramp shader. Ownership is transferred to the shader.
 
 :return: new QgsColorRampShader
 %End
@@ -82,7 +82,7 @@ Returns the custom colormap.
 Returns the color ramp type.
 %End
 
-    QString colorRampTypeAsQString();
+    QString colorRampTypeAsQString() const;
 %Docstring
 Returns the color ramp type as a string.
 %End
@@ -92,6 +92,13 @@ Returns the color ramp type as a string.
     void setColorRampType( QgsColorRampShader::Type colorRampType );
 %Docstring
 Sets the color ramp type
+%End
+
+    bool isEmpty() const;
+%Docstring
+Whether the color ramp contains any items
+
+.. versionadded:: 3.4
 %End
 
     QgsColorRamp *sourceColorRamp() const /Factory/;
@@ -105,7 +112,7 @@ Gets the source color ramp
 
     void setSourceColorRamp( QgsColorRamp *colorramp /Transfer/ );
 %Docstring
-Set the source color ramp. Ownership is transferred to the renderer.
+Set the source color ramp. Ownership is transferred to the shader.
 
 .. seealso:: :py:func:`sourceColorRamp`
 
@@ -117,7 +124,7 @@ Set the source color ramp. Ownership is transferred to the renderer.
 Sets the color ramp type
 %End
 
-    void classifyColorRamp( const int classes = 0, const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 );
+    void classifyColorRamp( int classes = 0, int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 );
 %Docstring
 Classify color ramp shader
 
@@ -127,7 +134,7 @@ Classify color ramp shader
 :param input: raster input used in classification (only used in quantile mode)
 %End
 
-    void classifyColorRamp( const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 ) /PyName=classifyColorRampV2/;
+    void classifyColorRamp( int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 ) /PyName=classifyColorRampV2/;
 %Docstring
 Classify color ramp shader
 
@@ -136,7 +143,7 @@ Classify color ramp shader
 :param input: raster input used in classification (quantile mode only)
 %End
 
-    virtual bool shade( double value, int *returnRedValue /Out/, int *returnGreenValue /Out/, int *returnBlueValue /Out/, int *returnAlphaValue /Out/ );
+    virtual bool shade( double value, int *returnRedValue /Out/, int *returnGreenValue /Out/, int *returnBlueValue /Out/, int *returnAlphaValue /Out/ ) const;
 
 %Docstring
 Generates and new RGB value based on one input value
@@ -145,13 +152,27 @@ Generates and new RGB value based on one input value
      virtual bool shade( double redValue, double greenValue,
                 double blueValue, double alphaValue,
                 int *returnRedValue /Out/, int *returnGreenValue /Out/,
-                int *returnBlueValue /Out/, int *returnAlphaValue /Out/ );
+                int *returnBlueValue /Out/, int *returnAlphaValue /Out/ ) const;
 %Docstring
 Generates and new RGB value based on original RGB value
 %End
 
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
 
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+
+.. versionadded:: 3.4
+%End
+
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+
+.. versionadded:: 3.4
+%End
 
     void setClassificationMode( ClassificationMode classificationMode );
 %Docstring

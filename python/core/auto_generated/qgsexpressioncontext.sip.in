@@ -424,13 +424,13 @@ contained by the context.
 
     bool isHighlightedVariable( const QString &name ) const;
 %Docstring
-Returns true if the specified variable name is intended to be highlighted to the
+Returns true if the specified variable ``name`` is intended to be highlighted to the
 user. This is used by the expression builder to more prominently display the
 variable.
 
-:param name: variable name
-
 .. seealso:: :py:func:`setHighlightedVariables`
+
+.. seealso:: :py:func:`isHighlightedFunction`
 %End
 
     void setHighlightedVariables( const QStringList &variableNames );
@@ -441,6 +441,36 @@ is used by the expression builder to more prominently display these variables.
 :param variableNames: variable names to highlight
 
 .. seealso:: :py:func:`isHighlightedVariable`
+
+.. seealso:: :py:func:`setHighlightedFunctions`
+%End
+
+    bool isHighlightedFunction( const QString &name ) const;
+%Docstring
+Returns true if the specified function ``name`` is intended to be highlighted to the
+user. This is used by the expression builder to more prominently display the
+function.
+
+.. seealso:: :py:func:`setHighlightedFunctions`
+
+.. seealso:: :py:func:`isHighlightedVariable`
+
+.. versionadded:: 3.4
+%End
+
+    void setHighlightedFunctions( const QStringList &names );
+%Docstring
+Sets the list of function ``names`` intended to be highlighted to the user. This
+is used by the expression builder to more prominently display these functions.
+
+Note that these function names may include standard functions which are not functions
+specific to this context, and these standard functions will also be highlighted to users.
+
+.. seealso:: :py:func:`isHighlightedFunction`
+
+.. seealso:: :py:func:`setHighlightedVariables`
+
+.. versionadded:: 3.4
 %End
 
     QgsExpressionContextScope *activeScopeForVariable( const QString &name );
@@ -765,10 +795,11 @@ For instance, QGIS version numbers and variables specified through QGIS options.
 .. seealso:: :py:func:`setGlobalVariable`
 %End
 
-    static QgsExpressionContextScope *formScope( const QgsFeature &formFeature = QgsFeature( ) ) /Factory/;
+    static QgsExpressionContextScope *formScope( const QgsFeature &formFeature = QgsFeature( ), const QString &formMode = QString() ) /Factory/;
 %Docstring
-Creates a new scope which contains functions and variables from the current attribute form/table feature.
+Creates a new scope which contains functions and variables from the current attribute form/table ``feature``.
 The variables and values in this scope will reflect the current state of the form/row being edited.
+The ``formMode`` (SingleEditMode etc.) is passed as text
 
 .. versionadded:: 3.2
 %End
@@ -1044,6 +1075,7 @@ Creates a new scope which contains variables and functions relating to provider 
 Registers all known core functions provided by QgsExpressionContextScope objects.
 %End
 
+      public:
 };
 
 /************************************************************************

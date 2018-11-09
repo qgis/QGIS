@@ -50,6 +50,12 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      */
     int count() const;
 
+    /**
+     * Returns the number of valid layers contained in the store.
+     * \since QGIS 3.6
+     */
+    int validCount() const;
+
 #ifdef SIP_RUN
 
     /**
@@ -58,6 +64,12 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
     int __len__() const;
     % MethodCode
     sipRes = sipCpp->count();
+    % End
+
+    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
     % End
 #endif
 
@@ -86,6 +98,15 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * \see layers()
      */
     QMap<QString, QgsMapLayer *> mapLayers() const;
+
+    /**
+     * Returns a map of all valid layers by layer ID.
+     * \see mapLayer()
+     * \see mapLayersByName()
+     * \see layers()
+     * \since QGIS 3.6
+     */
+    QMap<QString, QgsMapLayer *> validMapLayers() const;
 
 #ifndef SIP_RUN
 
@@ -129,7 +150,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      *                      the layers yourself. Not available in Python.
      *
      * \returns a list of the map layers that were added
-     *         successfully. If a layer is invalid, or already exists in the store,
+     *         successfully. If a layer already exists in the store,
      *         it will not be part of the returned list.
      *
      * \see addMapLayer()

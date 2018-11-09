@@ -198,7 +198,7 @@ QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
   Q_UNUSED( bandNo );
 
   std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
-  if ( !mInput || !mShader )
+  if ( !mInput || !mShader || !mShader->rasterShaderFunction() )
   {
     return outputBlock.release();
   }
@@ -207,7 +207,7 @@ QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
   std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( mBand, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
-    QgsDebugMsg( "No raster data!" );
+    QgsDebugMsg( QStringLiteral( "No raster data!" ) );
     return outputBlock.release();
   }
 
@@ -234,19 +234,22 @@ QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
   }
 
   QRgb myDefaultColor = NODATA_COLOR;
+  QRgb *outputBlockData = outputBlock->colorData();
+  const QgsRasterShaderFunction *fcn = mShader->rasterShaderFunction();
 
-  for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
+  qgssize count = ( qgssize )width * height;
+  for ( qgssize i = 0; i < count; i++ )
   {
     if ( inputBlock->isNoData( i ) )
     {
-      outputBlock->setColor( i, myDefaultColor );
+      outputBlockData[i] = myDefaultColor;
       continue;
     }
     double val = inputBlock->value( i );
     int red, green, blue, alpha;
-    if ( !mShader->shade( val, &red, &green, &blue, &alpha ) )
+    if ( !fcn->shade( val, &red, &green, &blue, &alpha ) )
     {
-      outputBlock->setColor( i, myDefaultColor );
+      outputBlockData[i] = myDefaultColor;
       continue;
     }
 
@@ -260,7 +263,7 @@ QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
 
     if ( !hasTransparency )
     {
-      outputBlock->setColor( i, qRgba( red, green, blue, alpha ) );
+      outputBlockData[i] = qRgba( red, green, blue, alpha );
     }
     else
     {
@@ -275,7 +278,7 @@ QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
         currentOpacity *= alphaBlock->value( i ) / 255.0;
       }
 
-      outputBlock->setColor( i, qRgba( currentOpacity * red, currentOpacity * green, currentOpacity * blue, currentOpacity * alpha ) );
+      outputBlockData[i] = qRgba( currentOpacity * red, currentOpacity * green, currentOpacity * blue, currentOpacity * alpha );
     }
   }
 

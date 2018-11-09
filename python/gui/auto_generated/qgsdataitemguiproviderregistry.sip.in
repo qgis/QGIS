@@ -1,0 +1,61 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdataitemguiproviderregistry.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsDataItemGuiProviderRegistry
+{
+%Docstring
+This class keeps a list of data item GUI providers that may affect how QgsDataItems
+behave within the application GUI.
+
+QgsDataItemGuiProviderRegistry is not usually directly created, but rather accessed through
+QgsGui.instance()->dataItemGuiProviderRegistry().
+
+.. versionadded:: 3.6
+%End
+
+%TypeHeaderCode
+#include "qgsdataitemguiproviderregistry.h"
+%End
+  public:
+
+    QgsDataItemGuiProviderRegistry();
+
+    ~QgsDataItemGuiProviderRegistry();
+
+
+    QList<QgsDataItemGuiProvider *> providers() const;
+%Docstring
+Returns the list of available providers.
+%End
+
+    void addProvider( QgsDataItemGuiProvider *provider /Transfer/ );
+%Docstring
+Adds a ``provider`` implementation to the registry. Ownership of the provider
+is transferred to the registry.
+%End
+
+    void removeProvider( QgsDataItemGuiProvider *provider );
+%Docstring
+Removes a ``provider`` implementation from the registry.
+The provider object is automatically deleted.
+%End
+
+  private:
+    QgsDataItemGuiProviderRegistry( const QgsDataItemGuiProviderRegistry &rh );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdataitemguiproviderregistry.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

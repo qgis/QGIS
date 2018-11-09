@@ -27,24 +27,18 @@
 #include "qgsmaptoolcapture.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmessagebaritem.h"
-#include "qgspointxy.h"
 #include "qgslinestring.h"
 #include "qgsfocuswatcher.h"
 #include "qgssettings.h"
 #include "qgssnappingutils.h"
 #include "qgsproject.h"
+#include "qgsmapmouseevent.h"
 
 
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsDockWidget( parent )
   , mMapCanvas( canvas )
-  , mCurrentMapToolSupportsCad( false )
-  , mCadEnabled( false )
-  , mConstructionMode( false )
-  , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toInt() )
-  , mSnappedToVertex( false )
-  , mSessionActive( false )
-  , mErrorMessage( nullptr )
+  , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toDouble() )
 {
   setupUi( this );
 
@@ -108,13 +102,19 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   QMenu *menu = new QMenu( this );
   // common angles
   QActionGroup *angleButtonGroup = new QActionGroup( menu ); // actions are exclusive for common angles
-  mCommonAngleActions = QMap<QAction *, int>();
-  QList< QPair< int, QString > > commonAngles;
-  commonAngles << QPair<int, QString>( 0, tr( "Do not snap to common angles" ) );
-  commonAngles << QPair<int, QString>( 30, tr( "Snap to 30° angles" ) );
-  commonAngles << QPair<int, QString>( 45, tr( "Snap to 45° angles" ) );
-  commonAngles << QPair<int, QString>( 90, tr( "Snap to 90° angles" ) );
-  for ( QList< QPair< int, QString > >::const_iterator it = commonAngles.constBegin(); it != commonAngles.constEnd(); ++it )
+  mCommonAngleActions = QMap<QAction *, double>();
+  QList< QPair< double, QString > > commonAngles;
+  QString menuText;
+  QList<double> anglesDouble( { 0.0, 5.0, 10.0, 15.0, 18.0, 22.5, 30.0, 45.0, 90.0} );
+  for ( QList<double>::const_iterator it = anglesDouble.constBegin(); it != anglesDouble.constEnd(); ++it )
+  {
+    if ( *it == 0 )
+      menuText = tr( "Do Not Snap to Common Angles" );
+    else
+      menuText = QString( tr( "%1, %2, %3, %4°…" ) ).arg( *it, 0, 'f', 1 ).arg( *it * 2, 0, 'f', 1 ).arg( *it * 3, 0, 'f', 1 ).arg( *it * 4, 0, 'f', 1 );
+    commonAngles << QPair<double, QString>( *it, menuText );
+  }
+  for ( QList< QPair<double, QString > >::const_iterator it = commonAngles.constBegin(); it != commonAngles.constEnd(); ++it )
   {
     QAction *action = new QAction( it->second, menu );
     action->setCheckable( true );
@@ -248,7 +248,7 @@ void QgsAdvancedDigitizingDockWidget::setConstructionMode( bool enabled )
 void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
 {
   // common angles
-  QMap<QAction *, int>::const_iterator ica = mCommonAngleActions.constFind( action );
+  QMap<QAction *, double>::const_iterator ica = mCommonAngleActions.constFind( action );
   if ( ica != mCommonAngleActions.constEnd() )
   {
     ica.key()->setChecked( true );
@@ -310,7 +310,7 @@ QgsAdvancedDigitizingDockWidget::CadConstraint *QgsAdvancedDigitizingDockWidget:
 double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString &inputValue, bool &ok ) const
 {
   ok = false;
-  double value = inputValue.toDouble( &ok );
+  double value = qgsPermissiveToDouble( inputValue, ok );
   if ( ok )
   {
     return value;
@@ -557,6 +557,8 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   // set the point coordinates in the map event
   e->setMapPoint( point );
 
+  mSnapMatch = context.snappingUtils->snapToMap( point );
+
   // update the point list
   updateCurrentPoint( point );
 
@@ -781,131 +783,169 @@ void QgsAdvancedDigitizingDockWidget::setPoints( const QList<QgsPointXY> &points
 
 bool QgsAdvancedDigitizingDockWidget::eventFilter( QObject *obj, QEvent *event )
 {
-  // event for line edits
-  Q_UNUSED( obj );
-  if ( event->type() != QEvent::KeyPress )
+  if ( !cadEnabled() )
   {
-    return false;
+    return QgsDockWidget::eventFilter( obj, event );
   }
-  QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *>( event );
-  if ( !keyEvent )
+
+  // event for line edits and map canvas
+  // we have to catch both KeyPress events and ShortcutOverride events. This is because
+  // the Ctrl+D and Ctrl+A shortcuts for locking distance/angle clash with the global
+  // "remove layer" and "select all" shortcuts. Catching ShortcutOverride events allows
+  // us to intercept these keystrokes before they are caught by the global shortcuts
+  if ( event->type() == QEvent::ShortcutOverride || event->type() == QEvent::KeyPress )
   {
-    return false;
+    if ( QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *>( event ) )
+    {
+      return filterKeyPress( keyEvent );
+    }
   }
-  return filterKeyPress( keyEvent );
+  return QgsDockWidget::eventFilter( obj, event );
 }
 
 bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
 {
+  // we need to be careful here -- because this method is called on both KeyPress events AND
+  // ShortcutOverride events, we have to take care that we don't trigger the handling for BOTH
+  // these event types for a single key press. I.e. pressing "A" may first call trigger a
+  // ShortcutOverride event (sometimes, not always!) followed immediately by a KeyPress event.
+  QEvent::Type type = e->type();
   switch ( e->key() )
   {
     case Qt::Key_X:
     {
-      if ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier )
+      // modifier+x ONLY caught for ShortcutOverride events...
+      if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         mXConstraint->toggleLocked();
         emit pointChanged( mCadPointList.value( 0 ) );
+        e->accept();
       }
-      else if ( e->modifiers() == Qt::ShiftModifier )
+      else if ( type == QEvent::ShortcutOverride && e->modifiers() == Qt::ShiftModifier )
       {
         if ( mCapacities.testFlag( RelativeCoordinates ) )
         {
           mXConstraint->toggleRelative();
           emit pointChanged( mCadPointList.value( 0 ) );
+          e->accept();
         }
       }
-      else
+      // .. but "X" alone ONLY caught for KeyPress events (see comment at start of function)
+      else if ( type == QEvent::KeyPress )
       {
         mXLineEdit->setFocus();
         mXLineEdit->selectAll();
+        e->accept();
       }
       break;
     }
     case Qt::Key_Y:
     {
-      if ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier )
+      // modifier+y ONLY caught for ShortcutOverride events...
+      if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         mYConstraint->toggleLocked();
         emit pointChanged( mCadPointList.value( 0 ) );
+        e->accept();
       }
-      else if ( e->modifiers() == Qt::ShiftModifier )
+      else if ( type == QEvent::ShortcutOverride &&  e->modifiers() == Qt::ShiftModifier )
       {
         if ( mCapacities.testFlag( RelativeCoordinates ) )
         {
           mYConstraint->toggleRelative();
           emit pointChanged( mCadPointList.value( 0 ) );
+          e->accept();
         }
       }
-      else
+      // .. but "y" alone ONLY caught for KeyPress events (see comment at start of function)
+      else if ( type == QEvent::KeyPress )
       {
         mYLineEdit->setFocus();
         mYLineEdit->selectAll();
+        e->accept();
       }
       break;
     }
     case Qt::Key_A:
     {
-      if ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier )
+      // modifier+a ONLY caught for ShortcutOverride events...
+      if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         if ( mCapacities.testFlag( AbsoluteAngle ) )
         {
           mAngleConstraint->toggleLocked();
           emit pointChanged( mCadPointList.value( 0 ) );
+          e->accept();
         }
       }
-      else if ( e->modifiers() == Qt::ShiftModifier )
+      else if ( type == QEvent::ShortcutOverride && e->modifiers() == Qt::ShiftModifier )
       {
         if ( mCapacities.testFlag( RelativeAngle ) )
         {
           mAngleConstraint->toggleRelative();
           emit pointChanged( mCadPointList.value( 0 ) );
+          e->accept();
         }
       }
-      else
+      // .. but "a" alone ONLY caught for KeyPress events (see comment at start of function)
+      else if ( type == QEvent::KeyPress )
       {
         mAngleLineEdit->setFocus();
         mAngleLineEdit->selectAll();
+        e->accept();
       }
       break;
     }
     case Qt::Key_D:
     {
-      if ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier )
+      // modifier+d ONLY caught for ShortcutOverride events...
+      if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         if ( mCapacities.testFlag( RelativeCoordinates ) )
         {
           mDistanceConstraint->toggleLocked();
           emit pointChanged( mCadPointList.value( 0 ) );
+          e->accept();
         }
       }
-      else
+      // .. but "d" alone ONLY caught for KeyPress events (see comment at start of function)
+      else if ( type == QEvent::KeyPress )
       {
         mDistanceLineEdit->setFocus();
         mDistanceLineEdit->selectAll();
+        e->accept();
       }
       break;
     }
     case Qt::Key_C:
     {
-      setConstructionMode( !mConstructionMode );
+      if ( type == QEvent::KeyPress )
+      {
+        setConstructionMode( !mConstructionMode );
+        e->accept();
+      }
       break;
     }
     case Qt::Key_P:
     {
-      bool parallel = mParallelButton->isChecked();
-      bool perpendicular = mPerpendicularButton->isChecked();
+      if ( type == QEvent::KeyPress )
+      {
+        bool parallel = mParallelButton->isChecked();
+        bool perpendicular = mPerpendicularButton->isChecked();
 
-      if ( !parallel && !perpendicular )
-      {
-        lockAdditionalConstraint( Perpendicular );
-      }
-      else if ( perpendicular )
-      {
-        lockAdditionalConstraint( Parallel );
-      }
-      else
-      {
-        lockAdditionalConstraint( NoConstraint );
+        if ( !parallel && !perpendicular )
+        {
+          lockAdditionalConstraint( Perpendicular );
+        }
+        else if ( perpendicular )
+        {
+          lockAdditionalConstraint( Parallel );
+        }
+        else
+        {
+          lockAdditionalConstraint( NoConstraint );
+        }
+        e->accept();
       }
       break;
     }
@@ -914,7 +954,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       return false; // continues
     }
   }
-  return true; // stop the event
+  return e->isAccepted();
 }
 
 void QgsAdvancedDigitizingDockWidget::enable()
@@ -1054,7 +1094,7 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::setValue( double value, boo
 {
   mValue = value;
   if ( updateWidget )
-    mLineEdit->setText( QString::number( value, 'f' ) );
+    mLineEdit->setText( QLocale().toString( value, 'f', 6 ) );
 }
 
 void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleLocked()

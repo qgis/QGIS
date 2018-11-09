@@ -36,6 +36,7 @@ class QgsPostgresExpressionCompiler : public QgsSqlExpressionCompiler
     QStringList sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const override;
     QString castToReal( const QString &value ) const override;
     QString castToInt( const QString &value ) const override;
+    QString castToText( const QString &value ) const override;
 
     QString mGeometryColumn;
     QgsPostgresGeometryColumnType mSpatialColType;

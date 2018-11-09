@@ -18,19 +18,112 @@
 #include "qgsmacnative.h"
 
 #include <Cocoa/Cocoa.h>
+#include <QtMacExtras/QtMac>
+
+#include <QString>
+#include <QPixmap>
+
+
+@interface QgsUserNotificationCenterDelegate : NSObject <NSUserNotificationCenterDelegate>
+@end
+
+@implementation QgsUserNotificationCenterDelegate
+
+- ( BOOL )userNotificationCenter:( NSUserNotificationCenter * )center shouldPresentNotification:( NSUserNotification * )notification
+{
+#pragma unused (notification)
+#pragma unused (center)
+  return YES;
+}
+
+@end
+
+class QgsMacNative::QgsUserNotificationCenter
+{
+  public:
+    QgsUserNotificationCenterDelegate *_qgsUserNotificationCenter;
+    NSImage *_qgisIcon;
+};
+
+QgsMacNative::QgsMacNative()
+  : mQgsUserNotificationCenter( new QgsMacNative::QgsUserNotificationCenter() )
+{
+  mQgsUserNotificationCenter->_qgsUserNotificationCenter = [[QgsUserNotificationCenterDelegate alloc] init];
+  [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate: mQgsUserNotificationCenter->_qgsUserNotificationCenter];
+}
 
 QgsMacNative::~QgsMacNative()
 {
+  [mQgsUserNotificationCenter->_qgsUserNotificationCenter dealloc];
+  delete mQgsUserNotificationCenter;
 }
 
-const char* QgsMacNative::currentAppLocalizedName()
+void QgsMacNative::setIconPath( const QString &iconPath )
+{
+  mQgsUserNotificationCenter->_qgisIcon = QtMac::toNSImage( QPixmap( iconPath ) );
+}
+
+const char *QgsMacNative::currentAppLocalizedName()
 {
   return [[[NSRunningApplication currentApplication] localizedName] UTF8String];
 }
 
 void QgsMacNative::currentAppActivateIgnoringOtherApps()
 {
-  // valid for Mac OS X >= 10.6
   [[NSRunningApplication currentApplication] activateWithOptions:
-    (NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps)];
+                                             ( NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps )];
+}
+
+void QgsMacNative::openFileExplorerAndSelectFile( const QString &path )
+{
+  NSString *pathStr = [[NSString alloc] initWithUTF8String:path.toUtf8().constData()];
+  NSArray *fileURLs = [NSArray arrayWithObjects:[NSURL fileURLWithPath:pathStr], nil];
+  [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:fileURLs];
+}
+
+QgsNative::Capabilities QgsMacNative::capabilities() const
+{
+  return NativeDesktopNotifications;
+}
+
+QgsNative::NotificationResult QgsMacNative::showDesktopNotification( const QString &summary,
+    const QString &body,
+    const QgsNative::NotificationSettings &settings )
+{
+  NSUserNotification *notification = [[NSUserNotification alloc] init];
+  notification.title = summary.toNSString();
+  notification.informativeText = body.toNSString();
+  notification.soundName = NSUserNotificationDefaultSoundName;   //Will play a default sound
+  const QPixmap px = QPixmap::fromImage( settings.image );
+  NSImage *image = nil;
+  if ( settings.image.isNull() )
+  {
+    // image application (qgis.icns) seems not to be set for now, although present in the plist
+    // whenever fixed, try following line (and remove corresponding code in QgsMacNative::QgsUserNotificationCenter)
+    // image = [[NSImage imageNamed:@"NSApplicationIcon"] retain]
+    image = mQgsUserNotificationCenter->_qgisIcon;
+  }
+  else
+  {
+    image = QtMac::toNSImage( px );
+  }
+  notification.contentImage = image;
+
+  [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification: notification];
+  [notification autorelease];
+
+  //[userCenterDelegate dealloc];
+
+  NotificationResult result;
+  result.successful = true;
+  return result;
+}
+
+bool QgsMacNative::hasDarkTheme()
+{
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= 101400
+  return ( NSApp.effectiveAppearance.name == NSAppearanceNameDarkAqua );
+#else
+  return false;
+#endif
 }

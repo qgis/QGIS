@@ -100,7 +100,7 @@ Returns all color schemes in the registry
 :return: list of color schemes
 %End
 
-    QList<QgsColorScheme *> schemes( const QgsColorScheme::SchemeFlag flag ) const;
+    QList<QgsColorScheme *> schemes( QgsColorScheme::SchemeFlag flag ) const;
 %Docstring
 Returns all color schemes in the registry which have a specified flag set
 

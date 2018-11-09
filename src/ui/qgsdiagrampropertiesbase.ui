@@ -844,6 +844,9 @@
                              <verstretch>0</verstretch>
                             </sizepolicy>
                            </property>
+                           <property name="toolTip">
+                            <string>Controls whether specific diagrams should be shown</string>
+                           </property>
                            <property name="text">
                             <string>Show diagram</string>
                            </property>
@@ -870,6 +873,9 @@
                              <horstretch>0</horstretch>
                              <verstretch>0</verstretch>
                             </sizepolicy>
+                           </property>
+                           <property name="toolTip">
+                            <string>Controls whether specific diagrams should always be rendered, even when they overlap other diagrams or map labels</string>
                            </property>
                            <property name="text">
                             <string>Always show</string>
@@ -952,6 +958,9 @@
                        </item>
                        <item row="1" column="0" colspan="3">
                         <widget class="QCheckBox" name="mShowAllCheckBox">
+                         <property name="toolTip">
+                          <string>Always show all diagrams, even when they overlap with each other or other map labels</string>
+                         </property>
                          <property name="text">
                           <string>Show all diagrams</string>
                          </property>
@@ -1623,7 +1632,7 @@
                          <string>Labels are placed in an equal radius circle around point features.</string>
                         </property>
                         <property name="text">
-                         <string>Around Point</string>
+                         <string>Around point</string>
                         </property>
                         <property name="checked">
                          <bool>true</bool>
@@ -1636,7 +1645,7 @@
                          <string>Labels are placed at a fixed offset from the point.</string>
                         </property>
                         <property name="text">
-                         <string>Over Point</string>
+                         <string>Over point</string>
                         </property>
                        </widget>
                       </item>
@@ -2078,7 +2087,7 @@
                     <item>
                      <widget class="QPushButton" name="mButtonSizeLegendSettings">
                       <property name="text">
-                       <string>Legend entries for diagram size...</string>
+                       <string>Legend Entries for Diagram Size…</string>
                       </property>
                      </widget>
                     </item>

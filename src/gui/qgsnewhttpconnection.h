@@ -97,6 +97,8 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     void nameChanged( const QString & );
     void urlChanged( const QString & );
     void updateOkButtonState();
+    void wfsVersionCurrentIndexChanged( int index );
+    void wfsFeaturePagingStateChanged( int state );
 
   protected:
 
@@ -112,6 +114,36 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      * \since QGIS 3.0
      */
     QPushButton *testConnectButton();
+
+    /**
+     * Returns the "WFS version detect" button.
+     * \since QGIS 3.2
+     */
+    QPushButton *wfsVersionDetectButton() SIP_SKIP;
+
+    /**
+     * Returns the "WFS version" combobox.
+     * \since QGIS 3.2
+     */
+    QComboBox *wfsVersionComboBox() SIP_SKIP;
+
+    /**
+     * Returns the "WFS paging enabled" checkbox
+     * \since QGIS 3.2
+     */
+    QCheckBox *wfsPagingEnabledCheckBox() SIP_SKIP;
+
+    /**
+     * Returns the "WFS page size" edit
+     * \since QGIS 3.2
+     */
+    QLineEdit *wfsPageSizeLineEdit() SIP_SKIP;
+
+    /**
+     * Returns the url.
+     * \since QGIS 3.2
+     */
+    QUrl urlTrimmed() const SIP_SKIP;
 
     /**
      * Returns the QSettings key for WFS related settings for the connection.

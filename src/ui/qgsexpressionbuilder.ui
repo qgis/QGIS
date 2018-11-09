@@ -273,7 +273,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QgsCodeEditorSQL" name="txtExpressionString" native="true"/>
+               <widget class="QgsCodeEditorExpression" name="txtExpressionString" native="true"/>
               </item>
               <item>
                <layout class="QGridLayout" name="gridLayout">
@@ -556,14 +556,14 @@
                     <item>
                      <widget class="QPushButton" name="btnLoadAll">
                       <property name="text">
-                       <string>all unique</string>
+                       <string>All Unique</string>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QPushButton" name="btnLoadSample">
                       <property name="text">
-                       <string>10 samples</string>
+                       <string>10 Samples</string>
                       </property>
                      </widget>
                     </item>
@@ -624,51 +624,27 @@
          <property name="childrenCollapsible">
           <bool>false</bool>
          </property>
-         <widget class="QWidget" name="layoutWidget3">
-          <layout class="QVBoxLayout" name="verticalLayout_5">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_6">
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QToolButton" name="btnNewFile">
-               <property name="toolTip">
-                <string>Create a new function file based on the template file.
-
-Change the name of the script and save to allow QGIS to auto load on startup.</string>
-               </property>
-               <property name="text">
-                <string>New file</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../images/images.qrc">
-                 <normaloff>:/images/themes/default/console/iconTabEditorConsole.svg</normaloff>:/images/themes/default/console/iconTabEditorConsole.svg</iconset>
-               </property>
-               <property name="toolButtonStyle">
-                <enum>Qt::ToolButtonTextBesideIcon</enum>
-               </property>
-               <property name="autoRaise">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_4">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item>
+         <widget class="QWidget" name="widget3" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_7">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item row="0" column="0">
             <widget class="QListWidget" name="cmbFileNames">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -687,10 +663,70 @@ Change the name of the script and save to allow QGIS to auto load on startup.</s
              </property>
             </widget>
            </item>
+           <item row="1" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="btnNewFile">
+               <property name="toolTip">
+                <string>Create a new function file based on the template file.
+
+Change the name of the script and save to allow QGIS to auto load on startup.</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="../../images/images.qrc">
+                 <normaloff>:/images/themes/default/console/iconNewTabEditorConsole.svg</normaloff>:/images/themes/default/console/iconNewTabEditorConsole.svg</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="layoutWidget">
+         <widget class="QWidget" name="widget" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>1</number>
+           </property>
+           <item>
+            <widget class="QgsCodeEditorPython" name="txtPython" native="true"/>
+           </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_5">
              <property name="sizeConstraint">
@@ -700,26 +736,9 @@ Change the name of the script and save to allow QGIS to auto load on startup.</s
               <number>0</number>
              </property>
              <item>
-              <widget class="QToolButton" name="btnRun">
-               <property name="toolTip">
-                <string>Run the current editor text in QGIS (also saves current script).
-
-Use this when testing your functions.
-
-Saved scripts are auto loaded on QGIS startup.</string>
-               </property>
+              <widget class="QLabel" name="lblAutoSave">
                <property name="text">
-                <string>Load</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../images/images.qrc">
-                 <normaloff>:/images/themes/default/mActionStart.svg</normaloff>:/images/themes/default/mActionStart.svg</iconset>
-               </property>
-               <property name="toolButtonStyle">
-                <enum>Qt::ToolButtonTextBesideIcon</enum>
-               </property>
-               <property name="autoRaise">
-                <bool>true</bool>
+                <string/>
                </property>
               </widget>
              </item>
@@ -740,16 +759,48 @@ Saved scripts are auto loaded on QGIS startup.</string>
               </spacer>
              </item>
              <item>
-              <widget class="QLabel" name="lblAutoSave">
+              <widget class="QPushButton" name="btnRun">
+               <property name="toolTip">
+                <string>Run the current editor text in QGIS (also saves current script).
+
+Use this when testing your functions.
+
+Saved scripts are auto loaded on QGIS startup.</string>
+               </property>
                <property name="text">
-                <string/>
+                <string>Save and Load Functions</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../../images/images.qrc">
+                 <normaloff>:/images/themes/default/mActionStart.svg</normaloff>:/images/themes/default/mActionStart.svg</iconset>
                </property>
               </widget>
              </item>
             </layout>
            </item>
            <item>
-            <widget class="QgsCodeEditorPython" name="txtPython" native="true"/>
+            <widget class="QgsCollapsibleGroupBox" name="groupBox">
+             <property name="title">
+              <string>Help</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_4">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QgsCodeEditorPython" name="mFunctionBuilderHelp" native="true"/>
+              </item>
+             </layout>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -768,15 +819,21 @@ Saved scripts are auto loaded on QGIS startup.</string>
    <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCodeEditorSQL</class>
+   <class>QgsCodeEditorExpression</class>
    <extends>QWidget</extends>
-   <header>qgscodeeditorsql.h</header>
+   <header>qgscodeeditorexpression.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsCodeEditorPython</class>
    <extends>QWidget</extends>
    <header>qgscodeeditorpython.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

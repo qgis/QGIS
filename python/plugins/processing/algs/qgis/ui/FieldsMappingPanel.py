@@ -242,7 +242,7 @@ class FieldTypeDelegate(QStyledItemDelegate):
 
     def createEditor(self, parent, option, index):
         editor = QComboBox(parent)
-        for key, text in list(FieldsMappingModel.fieldTypes.items()):
+        for key, text in FieldsMappingModel.fieldTypes.items():
             editor.addItem(text, key)
         return editor
 
@@ -513,9 +513,9 @@ class FieldsMappingWidgetWrapper(WidgetWrapper):
 
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
-            if wrapper.param.name() == self.param.parentLayerParameter():
-                if wrapper.value():
-                    self.setLayer(wrapper.value())
+            if wrapper.parameterDefinition().name() == self.parameterDefinition().parentLayerParameter():
+                if wrapper.parameterValue():
+                    self.setLayer(wrapper.parameterValue())
                 wrapper.widgetValueHasChanged.connect(self.parentLayerChanged)
                 break
 

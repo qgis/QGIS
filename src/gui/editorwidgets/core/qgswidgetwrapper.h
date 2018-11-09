@@ -32,6 +32,7 @@ class QgsVectorLayer;
 // so RTTI for casting is available in the whole module.
 % ModuleCode
 #include "qgsrelationwidgetwrapper.h"
+#include "qgsqmlwidgetwrapper.h"
 % End
 #endif
 
@@ -56,6 +57,8 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
       sipType = sipType_QgsEditorWidgetWrapper;
     else if ( qobject_cast<QgsRelationWidgetWrapper *>( sipCpp ) )
       sipType = sipType_QgsRelationWidgetWrapper;
+    else if ( qobject_cast<QgsQmlWidgetWrapper *>( sipCpp ) )
+      sipType = sipType_QgsQmlWidgetWrapper;
     else
       sipType = 0;
     SIP_END
@@ -190,6 +193,24 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mPropertyCollection = collection; }
 
+    /**
+     * Notify this widget, that the containing form is about to save and
+     * that any pending changes should be pushed to the edit buffer or they
+     * might be lost.
+     *
+     * \since QGIS 3.2
+     */
+    void notifyAboutToSave();
+
+  signals:
+
+    /**
+     * Signal when QgsAttributeEditorContext mContext changed
+     *
+     * \since QGIS 3.4
+     */
+    void contextChanged();
+
   protected:
 
     /**
@@ -234,6 +255,15 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     virtual void setEnabled( bool enabled );
 
   private:
+
+    /**
+     * Called when the containing attribute form is about to save.
+     * Use this to push any widget states to the edit buffer.
+     *
+     * \since QGIS 3.2
+     */
+    virtual void aboutToSave();
+
     QgsAttributeEditorContext mContext;
     QVariantMap mConfig;
     QWidget *mWidget = nullptr;

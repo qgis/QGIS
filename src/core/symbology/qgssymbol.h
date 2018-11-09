@@ -21,8 +21,6 @@
 #include <QList>
 #include <QMap>
 #include "qgsmapunitscale.h"
-#include "qgspoint.h"
-#include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsrendercontext.h"
 #include "qgsproperty.h"
@@ -33,10 +31,8 @@ class QPainter;
 class QSize;
 class QPointF;
 class QPolygonF;
-
 class QDomDocument;
 class QDomElement;
-//class
 
 class QgsFields;
 class QgsSymbolLayer;
@@ -47,16 +43,20 @@ class QgsMarkerSymbolLayer;
 class QgsLineSymbolLayer;
 class QgsFillSymbolLayer;
 class QgsSymbolRenderContext;
+class QgsFeature;
 class QgsFeatureRenderer;
 class QgsCurve;
 class QgsPolygon;
 class QgsExpressionContext;
+class QgsPoint;
 
 typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
 
 /**
  * \ingroup core
  * \class QgsSymbol
+ *
+ * Abstract base class for all rendered symbols.
  */
 class CORE_EXPORT QgsSymbol
 {
@@ -107,15 +107,22 @@ class CORE_EXPORT QgsSymbol
 
     virtual ~QgsSymbol();
 
-    //! Returns new default symbol for specified geometry type
+    /**
+     * Returns a new default symbol for the specified geometry type.
+     *
+     * The caller takes ownership of the returned object.
+     */
     static QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
 
+    /**
+     * Returns the symbol's type.
+     */
     SymbolType type() const { return mType; }
 
     // symbol layers handling
 
     /**
-     * Returns list of symbol layers contained in the symbol.
+     * Returns the list of symbol layers contained in the symbol.
      * \returns symbol layers list
      * \see symbolLayer
      * \see symbolLayerCount
@@ -124,7 +131,7 @@ class CORE_EXPORT QgsSymbol
     QgsSymbolLayerList symbolLayers() { return mLayers; }
 
     /**
-     * Returns a specific symbol layers contained in the symbol.
+     * Returns a specific symbol layer contained in the symbol.
      * \param layer layer number
      * \returns corresponding symbol layer
      * \see symbolLayers
@@ -134,7 +141,7 @@ class CORE_EXPORT QgsSymbol
     QgsSymbolLayer *symbolLayer( int layer );
 
     /**
-     * Returns total number of symbol layers contained in the symbol.
+     * Returns the total number of symbol layers contained in the symbol.
      * \returns count of symbol layers
      * \see symbolLayers
      * \see symbolLayer
@@ -143,8 +150,8 @@ class CORE_EXPORT QgsSymbol
     int symbolLayerCount() const { return mLayers.count(); }
 
     /**
-     * Insert symbol layer to specified index
-     * Ownership will be transferred.
+     * Inserts a symbol \a layer to specified \a index.
+     * Ownership of \a layer is transferred to the symbol.
      * \param index The index at which the layer should be added
      * \param layer The symbol layer to add
      * \returns True if the layer is added, False if the index or the layer is bad
@@ -152,25 +159,33 @@ class CORE_EXPORT QgsSymbol
     bool insertSymbolLayer( int index, QgsSymbolLayer *layer SIP_TRANSFER );
 
     /**
-     * Append symbol layer at the end of the list
-     * Ownership will be transferred.
-     * \param layer The layer to add
-     * \returns True if the layer is added, False if the layer is bad
+     * Appends a symbol \a layer at the end of the current symbol layer list.
+     * Ownership of \a layer is transferred to the symbol.
+     * \returns true if the layer was successfully added, false if the layer is not compatible with the
+     * symbol's type().
      */
     bool appendSymbolLayer( QgsSymbolLayer *layer SIP_TRANSFER );
 
-    //! delete symbol layer at specified index
+    /**
+     * Removes and deletes the symbol layer at the specified \a index.
+     */
     bool deleteSymbolLayer( int index );
 
     /**
-     * Remove symbol layer from the list and return pointer to it.
-     * Ownership is handed to the caller.
+     * Removes a symbol layer from the list and returns a pointer to it.
+     * Ownership of the layer is handed to the caller.
      * \param index The index of the layer to remove
      * \returns A pointer to the removed layer
      */
     QgsSymbolLayer *takeSymbolLayer( int index ) SIP_TRANSFERBACK;
 
-    //! delete layer at specified index and set a new one
+    /**
+     * Deletes the current layer at the specified \a index and replaces it with \a layer.
+     * Ownership of \a layer is transferred to the symbol.
+     *
+     * Returns false if \a layer is not compatible with the symbol's type(), or
+     * true if the layer was successfully replaced.
+     */
     bool changeSymbolLayer( int index, QgsSymbolLayer *layer SIP_TRANSFER );
 
     /**
@@ -192,38 +207,87 @@ class CORE_EXPORT QgsSymbol
      */
     void stopRender( QgsRenderContext &context );
 
+    /**
+     * Sets the \a color for the symbol.
+     *
+     * Calling this method sets the color for each individual symbol layer contained
+     * within the symbol to \a color.
+     *
+     * Locked symbol layers are skipped and are left unchanged.
+     *
+     * \see color()
+     */
     void setColor( const QColor &color );
+
+    /**
+     * Returns the symbol's color.
+     *
+     * For multi-layer symbols, this method returns the color of the first unlocked symbol
+     * layer.
+     *
+     * \see setColor()
+     */
     QColor color() const;
 
     /**
-     * Draw icon of the symbol that occupyies area given by size using the painter.
-     * Optionally custom context may be given in order to get rendering of symbols that use map units right.
+     * Draws an icon of the symbol that occupies an area given by \a size using the specified \a painter.
+     *
+     * Optionally a custom render context may be given in order to ensure that the preview icon exactly
+     * matches the settings from that context.
+     *
+     * \see exportImage()
+     * \see asImage()
      * \since QGIS 2.6
      */
     void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr );
 
-    //! export symbol as image format. PNG and SVG supported
+    /**
+     * Export the symbol as an image format, to the specified \a path and with the given \a size.
+     *
+     * If \a format is "SVG" then an SVG file will be created, otherwise a raster image of the
+     * specified format will be created.
+     *
+     * \see asImage()
+     * \see drawPreviewIcon()
+     */
     void exportImage( const QString &path, const QString &format, QSize size );
 
-    //! Generate symbol as image
+    /**
+     * Returns an image of the symbol at the specified \a size.
+     *
+     * Optionally a custom render context may be given in order to ensure that the preview icon exactly
+     * matches the settings from that context.
+     *
+     * \see exportImage()
+     * \see drawPreviewIcon()
+     */
     QImage asImage( QSize size, QgsRenderContext *customContext = nullptr );
 
     /**
      * Returns a large (roughly 100x100 pixel) preview image for the symbol.
      * \param expressionContext optional expression context, for evaluation of
      * data defined symbol properties
+     *
+     * \see asImage()
+     * \see drawPreviewIcon()
      */
     QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr );
 
+    /**
+     * Returns a string dump of the symbol's properties.
+     */
     QString dump() const;
 
     /**
-     * Gets a deep copy of this symbol.
-     * Needs to be reimplemented by subclasses.
+     * Returns a deep copy of this symbol.
+     *
      * Ownership is transferred to the caller.
      */
     virtual QgsSymbol *clone() const = 0 SIP_FACTORY;
 
+    /**
+     * Converts the symbol to a SLD representation.
+     */
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     /**
@@ -246,7 +310,25 @@ class CORE_EXPORT QgsSymbol
      */
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
+    /**
+     * Returns the map unit scale for the symbol.
+     *
+     * If the symbol consists of multiple layers, the map unit scale is only
+     * returned if all layers have the same scale settings. If the settings differ,
+     * a default constructed map unit scale is returned.
+     *
+     * \see setMapUnitScale()
+     */
     QgsMapUnitScale mapUnitScale() const;
+
+    /**
+     * Sets the map unit \a scale for the symbol.
+     *
+     * Calling this method sets the scale for all symbol layers contained within the
+     * symbol.
+     *
+     * \see mapUnitScale()
+     */
     void setMapUnitScale( const QgsMapUnitScale &scale );
 
     /**
@@ -310,9 +392,16 @@ class CORE_EXPORT QgsSymbol
      */
     bool hasDataDefinedProperties() const;
 
-    //! \note the layer will be NULL after stopRender
-    void setLayer( const QgsVectorLayer *layer ) { mLayer = layer; }
-    const QgsVectorLayer *layer() const { return mLayer; }
+    /**
+     * \note the layer will be NULL after stopRender
+     * \deprecated Will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED void setLayer( const QgsVectorLayer *layer ) SIP_DEPRECATED;
+
+    /**
+     * \deprecated Will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED const QgsVectorLayer *layer() const SIP_DEPRECATED;
 
     /**
      * Render a feature. Before calling this the startRender() method should be called to initialize
@@ -399,7 +488,7 @@ class CORE_EXPORT QgsSymbol
     RenderHints mRenderHints = nullptr;
     bool mClipFeaturesToExtent = true;
 
-    const QgsVectorLayer *mLayer = nullptr; //current vectorlayer
+    Q_DECL_DEPRECATED const QgsVectorLayer *mLayer = nullptr; //current vectorlayer
 
   private:
 #ifdef SIP_RUN

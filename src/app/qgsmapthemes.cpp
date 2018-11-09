@@ -47,10 +47,10 @@ QgsMapThemes::QgsMapThemes()
 
   mReplaceMenu = new QMenu( tr( "Replace Theme" ) );
   mMenu->addMenu( mReplaceMenu );
-  mActionAddPreset = mMenu->addAction( tr( "Add Theme…" ), this, SLOT( addPreset() ) );
+  mActionAddPreset = mMenu->addAction( tr( "Add Theme…" ), this, [ = ] { addPreset(); } );
   mMenuSeparator = mMenu->addSeparator();
 
-  mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Theme" ), this, SLOT( removeCurrentPreset() ) );
+  mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Theme" ), this, &QgsMapThemes::removeCurrentPreset );
 
   connect( mMenu, &QMenu::aboutToShow, this, &QgsMapThemes::menuAboutToShow );
 }
@@ -133,7 +133,7 @@ void QgsMapThemes::replaceTriggered()
   if ( !actionPreset )
     return;
 
-  int res = QMessageBox::question( mMenu, tr( "Replace Theme" ),
+  int res = QMessageBox::question( QgisApp::instance(), tr( "Replace Theme" ),
                                    tr( "Are you sure you want to replace the existing theme “%1”?" ).arg( actionPreset->text() ),
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
   if ( res != QMessageBox::Yes )
@@ -160,7 +160,7 @@ void QgsMapThemes::removeCurrentPreset()
   {
     if ( actionPreset->isChecked() )
     {
-      int res = QMessageBox::question( mMenu, tr( "Remove Theme" ),
+      int res = QMessageBox::question( QgisApp::instance(), tr( "Remove Theme" ),
                                        tr( "Are you sure you want to remove the existing theme “%1”?" ).arg( actionPreset->text() ),
                                        QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
       if ( res == QMessageBox::Yes )

@@ -66,7 +66,7 @@ class CORE_EXPORT QgsLayoutMeasurementConverter
      * \param targetUnits units to convert measurement into
      * \returns measurement converted to target units
     */
-    QgsLayoutMeasurement convert( const QgsLayoutMeasurement &measurement, const QgsUnitTypes::LayoutUnit targetUnits ) const;
+    QgsLayoutMeasurement convert( QgsLayoutMeasurement measurement, QgsUnitTypes::LayoutUnit targetUnits ) const;
 
     /**
      * Converts a layout size from one unit to another.
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsLayoutMeasurementConverter
      * \param targetUnits units to convert size into
      * \returns size converted to target units
     */
-    QgsLayoutSize convert( const QgsLayoutSize &size, const QgsUnitTypes::LayoutUnit targetUnits ) const;
+    QgsLayoutSize convert( const QgsLayoutSize &size, QgsUnitTypes::LayoutUnit targetUnits ) const;
 
     /**
      * Converts a layout point from one unit to another.
@@ -82,20 +82,20 @@ class CORE_EXPORT QgsLayoutMeasurementConverter
      * \param targetUnits units to convert point into
      * \returns point converted to target units
     */
-    QgsLayoutPoint convert( const QgsLayoutPoint &point, const QgsUnitTypes::LayoutUnit targetUnits ) const;
+    QgsLayoutPoint convert( const QgsLayoutPoint &point, QgsUnitTypes::LayoutUnit targetUnits ) const;
 
   private:
 
     double mDpi = 300.0;
 
-    double convertToMillimeters( const QgsLayoutMeasurement &measurement ) const;
-    double convertToCentimeters( const QgsLayoutMeasurement &measurement ) const;
-    double convertToMeters( const QgsLayoutMeasurement &measurement ) const;
-    double convertToInches( const QgsLayoutMeasurement &measurement ) const;
-    double convertToFeet( const QgsLayoutMeasurement &measurement ) const;
-    double convertToPoints( const QgsLayoutMeasurement &measurement ) const;
-    double convertToPicas( const QgsLayoutMeasurement &measurement ) const;
-    double convertToPixels( const QgsLayoutMeasurement &measurement ) const;
+    double convertToMillimeters( QgsLayoutMeasurement measurement ) const;
+    double convertToCentimeters( QgsLayoutMeasurement measurement ) const;
+    double convertToMeters( QgsLayoutMeasurement measurement ) const;
+    double convertToInches( QgsLayoutMeasurement measurement ) const;
+    double convertToFeet( QgsLayoutMeasurement measurement ) const;
+    double convertToPoints( QgsLayoutMeasurement measurement ) const;
+    double convertToPicas( QgsLayoutMeasurement measurement ) const;
+    double convertToPixels( QgsLayoutMeasurement measurement ) const;
 
 };
 

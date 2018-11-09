@@ -23,8 +23,8 @@ You can also <a href="https://qgis.org/downloads/qgis-api-doc.zip">download</a>
 this documentation or a <a href="qgis.qch">Qt help file</a>
 for offline use.
 
-A Python version of the documentation is available
-<a href="https://python.qgis.org/api">here</a>.
+There is also a <a href="https://qgis.org/pyqgis/master">Python version of
+the documentation</a> available.
 
 \section index_APIStability Earlier versions of the API
 
@@ -32,6 +32,7 @@ See \ref api_break for information about incompatible changes to API between rel
 
 Earlier versions of the documentation are also available on the QGIS
 website:
+<a href="https://qgis.org/api/3.2">3.2</a>,
 <a href="https://qgis.org/api/3.0">3.0</a>,
 <a href="https://qgis.org/api/2.18">2.18 (LTR)</a>,
 <a href="https://qgis.org/api/2.14">2.14 (LTR)</a>,

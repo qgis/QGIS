@@ -32,7 +32,7 @@ namespace QgsWcs
     return QStringLiteral( "1.0.0" );
   }
 
-  QDomElement getCoverageOffering( QDomDocument &doc, const QgsRasterLayer *layer, bool brief )
+  QDomElement getCoverageOffering( QDomDocument &doc, const QgsRasterLayer *layer, const QgsProject *project, bool brief )
   {
     QDomElement layerElem;
     if ( brief )
@@ -73,9 +73,7 @@ namespace QgsWcs
 
     //lonLatEnvelope
     QgsCoordinateReferenceSystem layerCrs = layer->crs();
-    Q_NOWARN_DEPRECATED_PUSH
-    QgsCoordinateTransform t( layerCrs, QgsCoordinateReferenceSystem( 4326 ) );
-    Q_NOWARN_DEPRECATED_POP
+    QgsCoordinateTransform t( layerCrs, QgsCoordinateReferenceSystem( 4326 ), project );
     //transform
     QgsRectangle BBox;
     try
@@ -84,7 +82,7 @@ namespace QgsWcs
     }
     catch ( QgsCsException &e )
     {
-      QgsDebugMsg( QString( "Transform error caught: %1. Using original layer extent." ).arg( e.what() ) );
+      QgsDebugMsg( QStringLiteral( "Transform error caught: %1. Using original layer extent." ).arg( e.what() ) );
       BBox = layer->extent();
     }
     QDomElement lonLatElem = doc.createElement( QStringLiteral( "lonLatEnvelope" ) );
@@ -253,7 +251,7 @@ namespace QgsWcs
       q.removeAllQueryItems( QStringLiteral( "_DC" ) );
 
       url.setQuery( q );
-      href = url.toString( QUrl::FullyDecoded );
+      href = url.toString();
 
     }
 

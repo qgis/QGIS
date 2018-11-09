@@ -35,7 +35,6 @@ from qgis.core import (QgsFeatureSink,
                        QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterDistance,
-                       QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -63,10 +62,10 @@ class PointsDisplacement(QgisAlgorithm):
                                                               self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
         self.addParameter(QgsProcessingParameterDistance(self.PROXIMITY,
                                                          self.tr('Minimum distance to other points'), parentParameterName='INPUT',
-                                                         minValue=0.00001, defaultValue=0.00015))
+                                                         minValue=0.00001, defaultValue=1.0))
         self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
                                                          self.tr('Displacement distance'), parentParameterName='INPUT',
-                                                         minValue=0.00001, defaultValue=0.00015))
+                                                         minValue=0.00001, defaultValue=1.0))
         self.addParameter(QgsProcessingParameterBoolean(self.HORIZONTAL,
                                                         self.tr('Horizontal distribution for two point case')))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Displaced'), QgsProcessing.TypeVectorPoint))
@@ -117,7 +116,7 @@ class PointsDisplacement(QgisAlgorithm):
 
             other_features_within_radius = index.intersects(searchRect(point))
             if not other_features_within_radius:
-                index.insertFeature(f)
+                index.addFeature(f)
                 group = [f]
                 clustered_groups.append(group)
                 group_index[f.id()] = len(clustered_groups) - 1

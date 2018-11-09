@@ -88,6 +88,12 @@ Removes any temporary message being shown.
 .. seealso:: :py:func:`showMessage`
 %End
 
+
+  protected:
+
+    virtual void changeEvent( QEvent *event );
+
+
 };
 
 

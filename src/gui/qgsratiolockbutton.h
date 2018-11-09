@@ -49,7 +49,7 @@ class GUI_EXPORT QgsRatioLockButton : public QToolButton
      * \param locked locked state
      * \see locked
      */
-    void setLocked( const bool locked );
+    void setLocked( bool locked );
 
     /**
      * Returns whether the button state is locked.
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsRatioLockButton : public QToolButton
     /**
      * Emitted whenever the lock state changes.
      */
-    void lockChanged( const bool locked );
+    void lockChanged( bool locked );
 
   protected:
 

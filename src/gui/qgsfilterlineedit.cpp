@@ -73,6 +73,12 @@ void QgsFilterLineEdit::updateClearIcon()
   }
   else if ( !showClear && mClearAction )
   {
+    // pretty freakin weird... seems the deleteLater call on the mClearAction
+    // isn't sufficient to actually remove the action from the line edit, and
+    // a kind of "ghost" action gets left behind... resulting in duplicate
+    // clear actions appearing if later we re-create the action.
+    // in summary: don't remove this "removeAction" call!
+    removeAction( mClearAction );
     mClearAction->deleteLater();
     mClearAction = nullptr;
   }
@@ -84,6 +90,16 @@ void QgsFilterLineEdit::focusInEvent( QFocusEvent *e )
   if ( e->reason() == Qt::MouseFocusReason && ( isNull() || mSelectOnFocus ) )
   {
     mFocusInEvent = true;
+    mWaitingForMouseRelease = true;
+  }
+}
+
+void QgsFilterLineEdit::mouseReleaseEvent( QMouseEvent *e )
+{
+  QLineEdit::mouseReleaseEvent( e );
+  if ( mWaitingForMouseRelease )
+  {
+    mWaitingForMouseRelease = false;
     selectAll();
   }
 }
@@ -192,7 +208,7 @@ bool QgsFilterLineEdit::shouldShowClear() const
 
 bool QgsFilterLineEdit::event( QEvent *event )
 {
-  if ( event->type() == QEvent::ReadOnlyChange )
+  if ( event->type() == QEvent::ReadOnlyChange || event->type() == QEvent::EnabledChange )
     updateClearIcon();
 
   return QLineEdit::event( event );;

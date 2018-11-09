@@ -129,6 +129,11 @@ Find layer IDs used in all layer nodes. Searches recursively the whole sub-tree.
 Find group node with specified name. Searches recursively the whole sub-tree.
 %End
 
+    QList<QgsLayerTreeGroup *> findGroups() const;
+%Docstring
+Find all group layer nodes
+%End
+
     static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).

@@ -1813,7 +1813,7 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment 
       if ( !format.buffer().enabled() )
         break;
     }
-    FALLTHROUGH;
+    FALLTHROUGH
     case Text:
     case Shadow:
     {
@@ -1857,7 +1857,7 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer
       if ( !format.buffer().enabled() )
         break;
     }
-    FALLTHROUGH;
+    FALLTHROUGH
     case Text:
     case Shadow:
     {
@@ -2011,7 +2011,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
     p = context.painter();
   }
 
-  //QgsDebugMsgLevel( QString( "Background label rotation: %1" ).arg( component.rotation() ), 4 );
+  //QgsDebugMsgLevel( QStringLiteral( "Background label rotation: %1" ).arg( component.rotation() ), 4 );
 
   // shared calculations between shapes and SVG
 
@@ -2077,6 +2077,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
                                         component.origin.y() - height / 2.0 + originAdjust );
             break;
         }
+        break;
       }
 
       case Label:
@@ -2437,7 +2438,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
     //       when this shadow function is used for something other than labels
 
     // it's 0-->cw-->360 for labels
-    //QgsDebugMsgLevel( QString( "Shadow aggregated label rotation (degrees): %1" ).arg( component.rotation() + component.rotationOffset() ), 4 );
+    //QgsDebugMsgLevel( QStringLiteral( "Shadow aggregated label rotation (degrees): %1" ).arg( component.rotation() + component.rotationOffset() ), 4 );
     angleRad -= ( component.rotation * M_PI / 180 + component.rotationOffset * M_PI / 180 );
   }
 
@@ -2585,7 +2586,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
 
           break;
       }
-      //QgsDebugMsgLevel( QString( "xMultiLineOffset: %1" ).arg( xMultiLineOffset ), 4 );
+      //QgsDebugMsgLevel( QStringLiteral( "xMultiLineOffset: %1" ).arg( xMultiLineOffset ), 4 );
     }
 
     double yMultiLineOffset = 0.0;

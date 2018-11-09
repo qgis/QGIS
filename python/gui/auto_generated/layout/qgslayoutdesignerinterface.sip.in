@@ -18,11 +18,29 @@ Provides a common interface and stable API for layout designer dialogs and widge
 This interface can be used by plugins and scripts to interact with
 open layout designer dialogs.
 
+.. note::
+
+   Layout designer dialogs are transitory. They are created only on demand
+   (when a user opens the dialog) and are deleted as soon as the user closes the dialog.
+   There can be multiple designer dialogs open at any one time, and each is a separate
+   instance of the dialog and QgsLayoutDesignerInterface. Accordingly, plugins must
+   take care to react to newly created designer dialogs and apply their customizations
+   to all newly created dialogs. This can be done by listening for the QgisInterface.layoutDesignerOpened
+   signal. Plugins must also listen for the QgisInterface.layoutDesignerWillBeClosed
+   signal and gracefully cleanup any customizations before the designer dialog is
+   deleted.
+
 .. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
 #include "qgslayoutdesignerinterface.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsLayoutDesignerInterface *>( sipCpp ) )
+      sipType = sipType_QgsLayoutDesignerInterface;
+    else
+      sipType = NULL;
 %End
   public:
 
@@ -45,6 +63,13 @@ Returns the master layout displayed in the designer.
 .. seealso:: :py:func:`layout`
 %End
 
+    virtual QWidget *window() = 0;
+%Docstring
+Returns a pointer to the designer window.
+
+.. versionadded:: 3.4
+%End
+
     virtual QgsLayoutView *view() = 0;
 %Docstring
 Returns the layout view utilized by the designer.
@@ -57,9 +82,313 @@ Returns the layout view utilized by the designer.
 Returns the designer's message bar.
 %End
 
-    virtual void selectItems( const QList< QgsLayoutItem * > items ) = 0;
+    virtual void selectItems( const QList< QgsLayoutItem * > &items ) = 0;
 %Docstring
 Selects the specified ``items``.
+%End
+
+    virtual void setAtlasPreviewEnabled( bool enabled ) = 0;
+%Docstring
+Toggles whether the atlas preview mode should be ``enabled`` in the designer.
+
+.. seealso:: :py:func:`atlasPreviewEnabled`
+
+.. versionadded:: 3.4
+%End
+
+    virtual bool atlasPreviewEnabled() const = 0;
+%Docstring
+Returns whether the atlas preview mode is enabled in the designer.
+
+.. seealso:: :py:func:`setAtlasPreviewEnabled`
+
+.. versionadded:: 3.4
+%End
+
+    virtual void showItemOptions( QgsLayoutItem *item, bool bringPanelToFront = true ) = 0;
+%Docstring
+Shows the configuration widget for the specified layout ``item``.
+
+If ``bringPanelToFront`` is true, then the item properties panel will be automatically
+shown and raised to the top of the interface.
+
+.. versionadded:: 3.4
+%End
+
+
+    virtual QMenu *layoutMenu() = 0;
+%Docstring
+Returns a reference to the designer's "Layout" menu.
+
+.. note::
+
+   See class documentation for notes regarding handling customization of designer dialogs.
+
+.. seealso:: :py:func:`editMenu`
+
+.. seealso:: :py:func:`viewMenu`
+
+.. seealso:: :py:func:`itemsMenu`
+
+.. seealso:: :py:func:`atlasMenu`
+
+.. seealso:: :py:func:`reportMenu`
+
+.. seealso:: :py:func:`settingsMenu`
+
+
+.. versionadded:: 3.4
+%End
+
+    virtual QMenu *editMenu() = 0;
+%Docstring
+Returns a reference to the designer's "Edit" menu.
+
+.. note::
+
+   See class documentation for notes regarding handling customization of designer dialogs.
+
+.. seealso:: :py:func:`layoutMenu`
+
+.. seealso:: :py:func:`viewMenu`
+
+.. seealso:: :py:func:`itemsMenu`
+
+.. seealso:: :py:func:`atlasMenu`
+
+.. seealso:: :py:func:`reportMenu`
+
+.. seealso:: :py:func:`settingsMenu`
+
+
+.. versionadded:: 3.4
+%End
+
+    virtual QMenu *viewMenu() = 0;
+%Docstring
+Returns a reference to the designer's "View" menu.
+
+.. note::
+
+   See class documentation for notes regarding handling customization of designer dialogs.
+
+.. seealso:: :py:func:`layoutMenu`
+
+.. seealso:: :py:func:`editMenu`
+
+.. seealso:: :py:func:`itemsMenu`
+
+.. seealso:: :py:func:`atlasMenu`
+
+.. seealso:: :py:func:`reportMenu`
+
+.. seealso:: :py:func:`settingsMenu`
+
+
+.. versionadded:: 3.4
+%End
+
+    virtual QMenu *itemsMenu() = 0;
+%Docstring
+Returns a reference to the designer's "Items" menu.
+
+.. note::
+
+   See class documentation for notes regarding handling customization of designer dialogs.
+
+.. seealso:: :py:func:`layoutMenu`
+
+.. seealso:: :py:func:`editMenu`
+
+.. seealso:: :py:func:`viewMenu`
+
+.. seealso:: :py:func:`atlasMenu`
+
+.. seealso:: :py:func:`reportMenu`
+
+.. seealso:: :py:func:`settingsMenu`
+
+
+.. versionadded:: 3.4
+%End
+
+    virtual QMenu *atlasMenu() = 0;
+%Docstring
+Returns a reference to the designer's "Atlas" menu.
+
+Note that this may not exist or may be hidden if the designer is in report mode.
+
+.. note::
+
+   See class documentation for notes regarding handling customization of designer dialogs.
+
+.. seealso:: :py:func:`layoutMenu`
+
+.. seealso:: :py:func:`editMenu`
+
+.. seealso:: :py:func:`viewMenu`
+
+.. seealso:: :py:func:`itemsMenu`
+
+.. seealso:: :py:func:`reportMenu`
+
+.. seealso:: :py:func:`settingsMenu`
+
+
+.. versionadded:: 3.4
+%End
+
+    virtual QMenu *reportMenu() = 0;
+%Docstring
+Returns a reference to the designer's "Report" menu.
+
+Note that this may not exist or may be hidden if the designer is not in report mode.
+
+.. note::
+
+   See class documentation for notes regarding handling customization of designer dialogs.
+
+.. seealso:: :py:func:`layoutMenu`
+
+.. seealso:: :py:func:`editMenu`
+
+.. seealso:: :py:func:`viewMenu`
+
+.. seealso:: :py:func:`itemsMenu`
+
+.. seealso:: :py:func:`atlasMenu`
+
+.. seealso:: :py:func:`settingsMenu`
+
+
+.. versionadded:: 3.4
+%End
+
+    virtual QMenu *settingsMenu() = 0;
+%Docstring
+Returns a reference to the designer's "Settings" menu.
+
+.. note::
+
+   See class documentation for notes regarding handling customization of designer dialogs.
+
+.. seealso:: :py:func:`layoutMenu`
+
+.. seealso:: :py:func:`editMenu`
+
+.. seealso:: :py:func:`viewMenu`
+
+.. seealso:: :py:func:`itemsMenu`
+
+.. seealso:: :py:func:`atlasMenu`
+
+.. seealso:: :py:func:`reportMenu`
+
+
+.. versionadded:: 3.4
+%End
+
+    virtual QToolBar *layoutToolbar() = 0;
+%Docstring
+Returns a reference to the designer's "Layout" toolbar.
+
+.. note::
+
+   See class documentation for notes regarding handling customization of designer dialogs.
+
+.. seealso:: :py:func:`navigationToolbar`
+
+.. seealso:: :py:func:`actionsToolbar`
+
+.. seealso:: :py:func:`atlasToolbar`
+
+
+.. versionadded:: 3.4
+%End
+
+    virtual QToolBar *navigationToolbar() = 0;
+%Docstring
+Returns a reference to the designer's "Navigation" toolbar.
+
+.. note::
+
+   See class documentation for notes regarding handling customization of designer dialogs.
+
+.. seealso:: :py:func:`layoutToolbar`
+
+.. seealso:: :py:func:`actionsToolbar`
+
+.. seealso:: :py:func:`atlasToolbar`
+
+
+.. versionadded:: 3.4
+%End
+
+    virtual QToolBar *actionsToolbar() = 0;
+%Docstring
+Returns a reference to the designer's "Actions" toolbar.
+
+.. note::
+
+   See class documentation for notes regarding handling customization of designer dialogs.
+
+.. seealso:: :py:func:`layoutToolbar`
+
+.. seealso:: :py:func:`navigationToolbar`
+
+.. seealso:: :py:func:`atlasToolbar`
+
+
+.. versionadded:: 3.4
+%End
+
+    virtual QToolBar *atlasToolbar() = 0;
+%Docstring
+Returns a reference to the designer's "Atlas" toolbar.
+
+Note that this toolbar may not exist or may be hidden if the
+designer is in report mode.
+
+.. note::
+
+   See class documentation for notes regarding handling customization of designer dialogs.
+
+.. seealso:: :py:func:`layoutToolbar`
+
+.. seealso:: :py:func:`navigationToolbar`
+
+.. seealso:: :py:func:`actionsToolbar`
+
+
+.. versionadded:: 3.4
+%End
+
+    virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dock ) = 0;
+%Docstring
+Adds a ``dock`` widget to the layout designer, in the specified dock ``area``.
+
+.. note::
+
+   See class documentation for notes regarding handling customization of designer dialogs.
+
+.. seealso:: :py:func:`removeDockWidget`
+
+
+.. versionadded:: 3.4
+%End
+
+    virtual void removeDockWidget( QDockWidget *dock ) = 0;
+%Docstring
+Removes the specified ``dock`` widget from layout designer (without deleting it).
+
+.. note::
+
+   See class documentation for notes regarding handling customization of designer dialogs.
+
+.. seealso:: :py:func:`addDockWidget`
+
+
+.. versionadded:: 3.4
 %End
 
   public slots:
@@ -68,6 +397,14 @@ Selects the specified ``items``.
 %Docstring
 Closes the layout designer.
 %End
+
+    virtual void showRulers( bool visible ) = 0;
+%Docstring
+Toggles whether or not the rulers should be ``visible`` in the designer.
+
+.. versionadded:: 3.4
+%End
+
 
 };
 

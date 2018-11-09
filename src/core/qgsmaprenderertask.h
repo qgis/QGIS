@@ -56,7 +56,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     QgsMapRendererTask( const QgsMapSettings &ms,
                         const QString &fileName,
                         const QString &fileFormat = QString( "PNG" ),
-                        const bool forceRaster = false );
+                        bool forceRaster = false );
 
     /**
      * Constructor for QgsMapRendererTask to render a map to a QPainter object.

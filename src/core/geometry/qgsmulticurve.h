@@ -73,6 +73,13 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
 
     QgsMultiCurve *createEmptyWithSameType() const override SIP_FACTORY;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsMultiCurve: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
 };
 

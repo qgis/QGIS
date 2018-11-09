@@ -7,26 +7,103 @@
     <x>0</x>
     <y>0</y>
     <width>328</width>
-    <height>497</height>
+    <height>509</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="10" column="0" colspan="3">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+   <item row="3" column="3">
+    <widget class="QgsPropertyOverrideButton" name="mFilColorDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QLineEdit" name="mSVGLineEdit"/>
+      <widget class="QgsDoubleSpinBox" name="mTextureWidthSpinBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>999999999.999999046325684</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mBrowseToolButton">
-       <property name="text">
-        <string>…</string>
+      <widget class="QgsUnitSelectionWidget" name="mTextureWidthUnitWidget" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
        </property>
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="8" column="3">
+    <widget class="QgsPropertyOverrideButton" name="mRotationDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QgsDoubleSpinBox" name="mRotationSpinBox">
+     <property name="wrapping">
+      <bool>true</bool>
+     </property>
+     <property name="suffix">
+      <string> °</string>
+     </property>
+     <property name="minimum">
+      <double>-360.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>360.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.500000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QgsColorButton" name="mChangeColorButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </item>
    <item row="5" column="0">
     <widget class="QLabel" name="mStrokeColorLabel">
@@ -41,7 +118,52 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="2">
+   <item row="3" column="0">
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Fill color</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QgsColorButton" name="mChangeStrokeColorButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="mRotationLabel">
+     <property name="text">
+      <string>Rotation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <widget class="QgsDoubleSpinBox" name="mStrokeWidthSpinBox">
@@ -84,40 +206,22 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="2">
-    <widget class="QgsColorButton" name="mChangeColorButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="3">
-    <widget class="QgsPropertyOverrideButton" name="mStrokeColorDDBtn">
+   <item row="0" column="3">
+    <widget class="QgsPropertyOverrideButton" name="mTextureWidthDDBtn">
      <property name="text">
       <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="3">
-    <widget class="QgsPropertyOverrideButton" name="mStrokeWidthDDBtn">
+   <item row="0" column="0">
+    <widget class="QLabel" name="mTextureWidthLabel">
+     <property name="text">
+      <string>Texture width</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="3">
+    <widget class="QgsPropertyOverrideButton" name="mSVGDDBtn">
      <property name="text">
       <string>…</string>
      </property>
@@ -194,135 +298,24 @@
      </item>
     </layout>
    </item>
-   <item row="10" column="3">
-    <widget class="QgsPropertyOverrideButton" name="mSVGDDBtn">
+   <item row="6" column="3">
+    <widget class="QgsPropertyOverrideButton" name="mStrokeWidthDDBtn">
      <property name="text">
       <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="3">
-    <widget class="QgsPropertyOverrideButton" name="mFilColorDDBtn">
+   <item row="5" column="3">
+    <widget class="QgsPropertyOverrideButton" name="mStrokeColorDDBtn">
      <property name="text">
       <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="2">
-    <widget class="QgsColorButton" name="mChangeStrokeColorButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Fill color</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="mRotationLabel">
-     <property name="text">
-      <string>Rotation</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="2">
-    <widget class="QgsDoubleSpinBox" name="mRotationSpinBox">
-     <property name="wrapping">
-      <bool>true</bool>
-     </property>
-     <property name="suffix">
-      <string> °</string>
-     </property>
-     <property name="minimum">
-      <double>-360.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>360.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.500000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="3">
-    <widget class="QgsPropertyOverrideButton" name="mRotationDDBtn">
-     <property name="text">
-      <string>…</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="mTextureWidthLabel">
-     <property name="text">
-      <string>Texture width</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QgsDoubleSpinBox" name="mTextureWidthSpinBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="maximum">
-        <double>999999999.999999046325684</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-       <property name="showClearButton" stdset="0">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsUnitSelectionWidget" name="mTextureWidthUnitWidget" native="true">
-       <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="3">
-    <widget class="QgsPropertyOverrideButton" name="mTextureWidthDDBtn">
-     <property name="text">
-      <string>…</string>
+   <item row="10" column="0" colspan="3">
+    <widget class="QgsSvgSourceLineEdit" name="mSvgSourceLineEdit" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
      </property>
     </widget>
    </item>
@@ -330,14 +323,20 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
@@ -346,9 +345,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsSvgSourceLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgssvgsourcelineedit.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -367,8 +366,7 @@
   <tabstop>mRotationDDBtn</tabstop>
   <tabstop>mSvgTreeView</tabstop>
   <tabstop>mSvgListView</tabstop>
-  <tabstop>mSVGLineEdit</tabstop>
-  <tabstop>mBrowseToolButton</tabstop>
+  <tabstop>mSvgSourceLineEdit</tabstop>
   <tabstop>mSVGDDBtn</tabstop>
  </tabstops>
  <resources/>

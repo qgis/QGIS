@@ -32,7 +32,21 @@ import os
 import warnings
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QRectF, QMimeData, QPoint, QPointF, QByteArray, QSize, QSizeF, pyqtSignal
+from qgis.PyQt.QtCore import (
+    Qt,
+    QCoreApplication,
+    QDir,
+    QRectF,
+    QMimeData,
+    QPoint,
+    QPointF,
+    QByteArray,
+    QSize,
+    QSizeF,
+    pyqtSignal,
+    QDataStream,
+    QIODevice,
+    QUrl)
 from qgis.PyQt.QtWidgets import (QGraphicsView,
                                  QTreeWidget,
                                  QMessageBox,
@@ -57,6 +71,7 @@ from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessingAlgorithm,
+                       QgsProject,
                        QgsSettings,
                        QgsMessageLog,
                        QgsProcessingUtils,
@@ -67,13 +82,16 @@ from qgis.core import (Qgis,
 from qgis.gui import (QgsMessageBar,
                       QgsDockWidget,
                       QgsScrollArea,
-                      QgsFilterLineEdit)
+                      QgsFilterLineEdit,
+                      QgsProcessingToolboxTreeView,
+                      QgsProcessingToolboxProxyModel)
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
+from processing.modeler.ProjectProvider import PROJECT_PROVIDER_ID
 from qgis.utils import iface
 
 
@@ -82,6 +100,22 @@ with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     WIDGET, BASE = uic.loadUiType(
         os.path.join(pluginPath, 'ui', 'DlgModeler.ui'))
+
+
+class ModelerToolboxModel(QgsProcessingToolboxProxyModel):
+
+    def __init__(self, parent=None, registry=None, recentLog=None):
+        super().__init__(parent, registry, recentLog)
+
+    def flags(self, index):
+        f = super().flags(index)
+        source_index = self.mapToSource(index)
+        if self.toolboxModel().isAlgorithm(source_index):
+            f = f | Qt.ItemIsDragEnabled
+        return f
+
+    def supportedDragActions(self):
+        return Qt.CopyAction
 
 
 class ModelerDialog(BASE, WIDGET):
@@ -193,7 +227,8 @@ class ModelerDialog(BASE, WIDGET):
         self.verticalLayout_2.setSpacing(4)
         self.searchBox = QgsFilterLineEdit(self.scrollAreaWidgetContents_3)
         self.verticalLayout_2.addWidget(self.searchBox)
-        self.algorithmTree = QTreeWidget(self.scrollAreaWidgetContents_3)
+        self.algorithmTree = QgsProcessingToolboxTreeView(None,
+                                                          QgsApplication.processingRegistry())
         self.algorithmTree.setAlternatingRowColors(True)
         self.algorithmTree.header().setVisible(False)
         self.verticalLayout_2.addWidget(self.algorithmTree)
@@ -214,13 +249,18 @@ class ModelerDialog(BASE, WIDGET):
         except:
             pass
 
-        self.mToolbar.setIconSize(iface.iconSize())
+        if iface is not None:
+            self.mToolbar.setIconSize(iface.iconSize())
+            self.setStyleSheet(iface.mainWindow().styleSheet())
+
         self.mActionOpen.setIcon(
             QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
         self.mActionSave.setIcon(
             QgsApplication.getThemeIcon('/mActionFileSave.svg'))
         self.mActionSaveAs.setIcon(
             QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
+        self.mActionSaveInProject.setIcon(
+            QgsApplication.getThemeIcon('/mAddToProject.svg'))
         self.mActionZoomActual.setIcon(
             QgsApplication.getThemeIcon('/mActionZoomActual.svg'))
         self.mActionZoomIn.setIcon(
@@ -266,26 +306,31 @@ class ModelerDialog(BASE, WIDGET):
         self.view.ensureVisible(0, 0, 10, 10)
 
         def _dragEnterEvent(event):
-            if event.mimeData().hasText():
+            if event.mimeData().hasText() or event.mimeData().hasFormat('application/x-vnd.qgis.qgis.algorithmid'):
                 event.acceptProposedAction()
             else:
                 event.ignore()
 
         def _dropEvent(event):
-            if event.mimeData().hasText():
+            if event.mimeData().hasFormat('application/x-vnd.qgis.qgis.algorithmid'):
+                data = event.mimeData().data('application/x-vnd.qgis.qgis.algorithmid')
+                stream = QDataStream(data, QIODevice.ReadOnly)
+                algorithm_id = stream.readQString()
+                alg = QgsApplication.processingRegistry().createAlgorithmById(algorithm_id)
+                if alg is not None:
+                    self._addAlgorithm(alg, event.pos())
+                else:
+                    assert False, algorithm_id
+            elif event.mimeData().hasText():
                 itemId = event.mimeData().text()
                 if itemId in [param.id() for param in QgsApplication.instance().processingRegistry().parameterTypes()]:
                     self.addInputOfType(itemId, event.pos())
-                else:
-                    alg = QgsApplication.processingRegistry().createAlgorithmById(itemId)
-                    if alg is not None:
-                        self._addAlgorithm(alg, event.pos())
                 event.accept()
             else:
                 event.ignore()
 
         def _dragMoveEvent(event):
-            if event.mimeData().hasText():
+            if event.mimeData().hasText() or event.mimeData().hasFormat('application/x-vnd.qgis.qgis.algorithmid'):
                 event.accept()
             else:
                 event.ignore()
@@ -352,18 +397,12 @@ class ModelerDialog(BASE, WIDGET):
         self.inputsTree.setDragDropMode(QTreeWidget.DragOnly)
         self.inputsTree.setDropIndicatorShown(True)
 
-        def _mimeDataAlgorithm(items):
-            item = items[0]
-            mimeData = None
-            if isinstance(item, TreeAlgorithmItem):
-                mimeData = QMimeData()
-                mimeData.setText(item.alg.id())
-            return mimeData
-
-        self.algorithmTree.mimeData = _mimeDataAlgorithm
-
+        self.algorithms_model = ModelerToolboxModel(self, QgsApplication.processingRegistry())
+        self.algorithmTree.setToolboxProxyModel(self.algorithms_model)
         self.algorithmTree.setDragDropMode(QTreeWidget.DragOnly)
         self.algorithmTree.setDropIndicatorShown(True)
+
+        self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.FilterModeler)
 
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(QCoreApplication.translate('ModelerDialog', 'Search…'))
@@ -374,7 +413,7 @@ class ModelerDialog(BASE, WIDGET):
 
         # Connect signals and slots
         self.inputsTree.doubleClicked.connect(self.addInput)
-        self.searchBox.textChanged.connect(self.textChanged)
+        self.searchBox.textChanged.connect(self.algorithmTree.setFilterString)
         self.algorithmTree.doubleClicked.connect(self.addAlgorithm)
 
         # Ctrl+= should also trigger a zoom in action
@@ -384,6 +423,7 @@ class ModelerDialog(BASE, WIDGET):
         self.mActionOpen.triggered.connect(self.openModel)
         self.mActionSave.triggered.connect(self.save)
         self.mActionSaveAs.triggered.connect(self.saveAs)
+        self.mActionSaveInProject.triggered.connect(self.saveInProject)
         self.mActionZoomIn.triggered.connect(self.zoomIn)
         self.mActionZoomOut.triggered.connect(self.zoomOut)
         self.mActionZoomActual.triggered.connect(self.zoomActual)
@@ -407,7 +447,6 @@ class ModelerDialog(BASE, WIDGET):
             self.model.setProvider(QgsApplication.processingRegistry().providerById('model'))
 
         self.fillInputsTree()
-        self.fillTreeUsingProviders()
 
         self.view.centerOn(0, 0)
         self.help = None
@@ -456,6 +495,23 @@ class ModelerDialog(BASE, WIDGET):
 
     def saveAs(self):
         self.saveModel(True)
+
+    def saveInProject(self):
+        if not self.can_save():
+            return
+
+        self.model.setName(str(self.textName.text()))
+        self.model.setGroup(str(self.textGroup.text()))
+        self.model.setSourceFilePath(None)
+
+        project_provider = QgsApplication.processingRegistry().providerById(PROJECT_PROVIDER_ID)
+        project_provider.add_model(self.model)
+
+        self.update_model.emit()
+        self.bar.pushMessage("", self.tr("Model was saved inside current project"), level=Qgis.Success, duration=5)
+
+        self.hasChanged = False
+        QgsProject.instance().setDirty(True)
 
     def zoomIn(self):
         self.view.setTransformationAnchor(QGraphicsView.NoAnchor)
@@ -516,7 +572,7 @@ class ModelerDialog(BASE, WIDGET):
 
         img.save(filename)
 
-        self.bar.pushMessage("", self.tr("Model was correctly exported as image"), level=Qgis.Success, duration=5)
+        self.bar.pushMessage("", self.tr("Successfully exported model as image to <a href=\"{}\">{}</a>").format(QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.Success, duration=5)
         self.repaintModel(controls=True)
 
     def exportAsPdf(self):
@@ -544,7 +600,7 @@ class ModelerDialog(BASE, WIDGET):
         self.scene.render(painter, printerRect, totalRect)
         painter.end()
 
-        self.bar.pushMessage("", self.tr("Model was correctly exported as PDF"), level=Qgis.Success, duration=5)
+        self.bar.pushMessage("", self.tr("Successfully exported model as PDF to <a href=\"{}\">{}</a>").format(QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.Success, duration=5)
         self.repaintModel(controls=True)
 
     def exportAsSvg(self):
@@ -572,13 +628,13 @@ class ModelerDialog(BASE, WIDGET):
         self.scene.render(painter, svgRect, totalRect)
         painter.end()
 
-        self.bar.pushMessage("", self.tr("Model was correctly exported as SVG"), level=Qgis.Success, duration=5)
+        self.bar.pushMessage("", self.tr("Successfully exported model as SVG to <a href=\"{}\">{}</a>").format(QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.Success, duration=5)
         self.repaintModel(controls=True)
 
     def exportAsPython(self):
         filename, filter = QFileDialog.getSaveFileName(self,
                                                        self.tr('Save Model As Python Script'), '',
-                                                       self.tr('Python files (*.py *.PY)'))
+                                                       self.tr('Processing scripts (*.py *.PY)'))
         if not filename:
             return
 
@@ -589,14 +645,23 @@ class ModelerDialog(BASE, WIDGET):
         with codecs.open(filename, 'w', encoding='utf-8') as fout:
             fout.write(text)
 
-        self.bar.pushMessage("", self.tr("Model was correctly exported as python script"), level=Qgis.Success, duration=5)
+        self.bar.pushMessage("", self.tr("Successfully exported model as python script to <a href=\"{}\">{}</a>").format(QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.Success, duration=5)
+
+    def can_save(self):
+        """
+        Tests whether a model can be saved, or if it is not yet valid
+        :return: bool
+        """
+        if str(self.textName.text()).strip() == '':
+            self.bar.pushWarning(
+                "", self.tr('Please a enter model name before saving')
+            )
+            return False
+
+        return True
 
     def saveModel(self, saveAs):
-        if str(self.textGroup.text()).strip() == '' \
-                or str(self.textName.text()).strip() == '':
-            QMessageBox.warning(
-                self, self.tr('Warning'), self.tr('Please enter group and model names before saving')
-            )
+        if not self.can_save():
             return
         self.model.setName(str(self.textName.text()))
         self.model.setGroup(str(self.textGroup.text()))
@@ -606,7 +671,7 @@ class ModelerDialog(BASE, WIDGET):
             filename, filter = QFileDialog.getSaveFileName(self,
                                                            self.tr('Save Model'),
                                                            ModelerUtils.modelsFolders()[0],
-                                                           self.tr('Processing models (*.model3)'))
+                                                           self.tr('Processing models (*.model3 *.MODEL3)'))
             if filename:
                 if not filename.endswith('.model3'):
                     filename += '.model3'
@@ -623,7 +688,10 @@ class ModelerDialog(BASE, WIDGET):
                     )
                 return
             self.update_model.emit()
-            self.bar.pushMessage("", self.tr("Model was correctly saved"), level=Qgis.Success, duration=5)
+            if saveAs:
+                self.bar.pushMessage("", self.tr("Model was correctly saved to <a href=\"{}\">{}</a>").format(QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.Success, duration=5)
+            else:
+                self.bar.pushMessage("", self.tr("Model was correctly saved"), level=Qgis.Success, duration=5)
 
             self.hasChanged = False
 
@@ -693,51 +761,6 @@ class ModelerDialog(BASE, WIDGET):
             newX = MARGIN + BOX_WIDTH / 2
         return QPointF(newX, MARGIN + BOX_HEIGHT / 2)
 
-    def textChanged(self):
-        text = self.searchBox.text().strip(' ').lower()
-        for item in list(self.disabledProviderItems.values()):
-            item.setHidden(True)
-        self._filterItem(self.algorithmTree.invisibleRootItem(), [t for t in text.split(' ') if t])
-        if text:
-            self.algorithmTree.expandAll()
-            self.disabledWithMatchingAlgs = []
-            for provider in QgsApplication.processingRegistry().providers():
-                if not provider.isActive():
-                    for alg in provider.algorithms():
-                        if text in alg.name():
-                            self.disabledWithMatchingAlgs.append(provider.id())
-                            break
-        else:
-            self.algorithmTree.collapseAll()
-
-    def _filterItem(self, item, text):
-        if (item.childCount() > 0):
-            show = False
-            for i in range(item.childCount()):
-                child = item.child(i)
-                showChild = self._filterItem(child, text)
-                show = (showChild or show) and item not in list(self.disabledProviderItems.values())
-            item.setHidden(not show)
-            return show
-        elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
-            # hide if every part of text is not contained somewhere in either the item text or item user role
-            item_text = [item.text(0).lower(), item.data(0, ModelerDialog.NAME_ROLE).lower()]
-            if isinstance(item, TreeAlgorithmItem):
-                item_text.append(item.alg.id().lower())
-                if item.alg.shortDescription():
-                    item_text.append(item.alg.shortDescription().lower())
-                item_text.extend([t.lower() for t in item.data(0, ModelerDialog.TAG_ROLE)])
-
-            hide = bool(text) and not all(
-                any(part in t for t in item_text)
-                for part in text)
-
-            item.setHidden(hide)
-            return not hide
-        else:
-            item.setHidden(True)
-            return False
-
     def fillInputsTree(self):
         icon = QIcon(os.path.join(pluginPath, 'images', 'input.svg'))
         parametersItem = QTreeWidgetItem()
@@ -756,9 +779,9 @@ class ModelerDialog(BASE, WIDGET):
         parametersItem.setExpanded(True)
 
     def addAlgorithm(self):
-        item = self.algorithmTree.currentItem()
-        if isinstance(item, TreeAlgorithmItem):
-            alg = QgsApplication.processingRegistry().createAlgorithmById(item.alg.id())
+        algorithm = self.algorithmTree.selectedAlgorithm()
+        if algorithm is not None:
+            alg = QgsApplication.processingRegistry().createAlgorithmById(algorithm.id())
             self._addAlgorithm(alg)
 
     def _addAlgorithm(self, alg, pos=None):
@@ -791,158 +814,3 @@ class ModelerDialog(BASE, WIDGET):
             newX = MARGIN + BOX_WIDTH / 2
             newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2
         return QPointF(newX, newY)
-
-    def fillTreeUsingProviders(self):
-        self.algorithmTree.clear()
-        self.disabledProviderItems = {}
-
-        # TODO - replace with proper model for toolbox!
-
-        # first add qgis/native providers, since they create top level groups
-        for provider in QgsApplication.processingRegistry().providers():
-            if provider.id() in ('qgis', 'native', '3d'):
-                self.addAlgorithmsFromProvider(provider, self.algorithmTree.invisibleRootItem())
-            else:
-                continue
-        self.algorithmTree.sortItems(0, Qt.AscendingOrder)
-
-        for provider in QgsApplication.processingRegistry().providers():
-            if provider.id() in ('qgis', 'native', '3d'):
-                # already added
-                continue
-            else:
-                providerItem = TreeProviderItem(provider, self.algorithmTree, self)
-
-                # insert non-native providers at end of tree, alphabetically
-                for i in range(self.algorithmTree.invisibleRootItem().childCount()):
-                    child = self.algorithmTree.invisibleRootItem().child(i)
-                    if isinstance(child, TreeProviderItem):
-                        if child.text(0) > providerItem.text(0):
-                            break
-
-                self.algorithmTree.insertTopLevelItem(i + 1, providerItem)
-
-                if not provider.isActive():
-                    providerItem.setHidden(True)
-                    self.disabledProviderItems[provider.id()] = providerItem
-
-    def addAlgorithmsFromProvider(self, provider, parent):
-        groups = {}
-        count = 0
-        algs = provider.algorithms()
-        active = provider.isActive()
-
-        # Add algorithms
-        for alg in algs:
-            if alg.flags() & QgsProcessingAlgorithm.FlagHideFromModeler:
-                continue
-            groupItem = None
-            if alg.group() in groups:
-                groupItem = groups[alg.group()]
-            else:
-                # check if group already exists
-                for i in range(parent.childCount()):
-                    if parent.child(i).text(0) == alg.group():
-                        groupItem = parent.child(i)
-                        groups[alg.group()] = groupItem
-                        break
-
-                if not groupItem:
-                    groupItem = TreeGroupItem(alg.group())
-                    if not active:
-                        groupItem.setInactive()
-                    if provider.id() in ('qgis', 'native', '3d'):
-                        groupItem.setIcon(0, provider.icon())
-                    groups[alg.group()] = groupItem
-            algItem = TreeAlgorithmItem(alg)
-            if not active:
-                algItem.setForeground(0, Qt.darkGray)
-            groupItem.addChild(algItem)
-            count += 1
-
-        text = provider.name()
-
-        if not provider.id() in ('qgis', 'native', '3d'):
-            if not active:
-                def activateProvider():
-                    self.activateProvider(provider.id())
-
-                label = QLabel(text + "&nbsp;&nbsp;&nbsp;&nbsp;<a href='%s'>Activate</a>")
-                label.setStyleSheet("QLabel {background-color: white; color: grey;}")
-                label.linkActivated.connect(activateProvider)
-                self.algorithmTree.setItemWidget(parent, 0, label)
-            else:
-                parent.setText(0, text)
-
-        for group, groupItem in sorted(groups.items(), key=operator.itemgetter(1)):
-            parent.addChild(groupItem)
-
-        if not provider.id() in ('qgis', 'native', '3d'):
-            parent.setHidden(parent.childCount() == 0)
-
-
-class TreeAlgorithmItem(QTreeWidgetItem):
-
-    def __init__(self, alg):
-        QTreeWidgetItem.__init__(self)
-        self.alg = alg
-        icon = alg.icon()
-        nameEn = alg.name()
-        name = alg.displayName()
-        name = name if name != '' else nameEn
-        self.setIcon(0, icon)
-        self.setToolTip(0, self.formatAlgorithmTooltip(alg))
-        self.setText(0, name)
-        self.setData(0, ModelerDialog.NAME_ROLE, nameEn)
-        self.setData(0, ModelerDialog.TAG_ROLE, alg.tags())
-        self.setData(0, ModelerDialog.TYPE_ROLE, ModelerDialog.ALG_ITEM)
-
-    def formatAlgorithmTooltip(self, alg):
-        return '<p><b>{}</b></p>{}<p>{}</p>'.format(
-            alg.displayName(),
-            '<p>{}</p>'.format(alg.shortDescription()) if alg.shortDescription() else '',
-            QCoreApplication.translate('Toolbox', 'Algorithm ID: ‘{}’').format('<i>{}</i>'.format(alg.id()))
-        )
-
-
-class TreeGroupItem(QTreeWidgetItem):
-
-    def __init__(self, name):
-        QTreeWidgetItem.__init__(self)
-        self.setToolTip(0, name)
-        self.setText(0, name)
-        self.setData(0, ModelerDialog.NAME_ROLE, name)
-        self.setData(0, ModelerDialog.TYPE_ROLE, ModelerDialog.GROUP_ITEM)
-
-    def setInactive(self):
-        self.setForeground(0, Qt.darkGray)
-
-
-class TreeActionItem(QTreeWidgetItem):
-
-    def __init__(self, action):
-        QTreeWidgetItem.__init__(self)
-        self.action = action
-        self.setText(0, action.name)
-        self.setIcon(0, action.getIcon())
-        self.setData(0, ModelerDialog.NAME_ROLE, action.name)
-
-
-class TreeProviderItem(QTreeWidgetItem):
-
-    def __init__(self, provider, tree, toolbox):
-        QTreeWidgetItem.__init__(self, None)
-        self.tree = tree
-        self.toolbox = toolbox
-        self.provider = provider
-        self.setIcon(0, self.provider.icon())
-        self.setData(0, ModelerDialog.TYPE_ROLE, ModelerDialog.PROVIDER_ITEM)
-        self.setToolTip(0, self.provider.longName())
-        self.populate()
-
-    def refresh(self):
-        self.takeChildren()
-        self.populate()
-
-    def populate(self):
-        self.toolbox.addAlgorithmsFromProvider(self.provider, self)

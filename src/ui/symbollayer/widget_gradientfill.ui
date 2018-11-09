@@ -141,7 +141,7 @@
    <item row="12" column="0" rowspan="3">
     <widget class="QLabel" name="label_8">
      <property name="text">
-      <string>Reference Point 2</string>
+      <string>Reference point 2</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -455,7 +455,7 @@
    <item row="6" column="0" rowspan="4">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Reference Point 1</string>
+      <string>Reference point 1</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>

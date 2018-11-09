@@ -253,7 +253,7 @@ QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *fee
 
 QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback )
 {
-  d = new QgsSpatialIndexData( source.getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) ), feedback );
+  d = new QgsSpatialIndexData( source.getFeatures( QgsFeatureRequest().setNoAttributes() ), feedback );
 }
 
 QgsSpatialIndex::QgsSpatialIndex( const QgsSpatialIndex &other ) //NOLINT
@@ -299,19 +299,41 @@ bool QgsSpatialIndex::featureInfo( const QgsFeature &f, QgsRectangle &rect, QgsF
   return true;
 }
 
-bool QgsSpatialIndex::insertFeature( const QgsFeature &f )
+bool QgsSpatialIndex::addFeature( QgsFeature &feature, QgsFeatureSink::Flags )
 {
   QgsRectangle rect;
   QgsFeatureId id;
-  if ( !featureInfo( f, rect, id ) )
+  if ( !featureInfo( feature, rect, id ) )
     return false;
 
-  return insertFeature( id, rect );
+  return addFeature( id, rect );
 }
 
-bool QgsSpatialIndex::insertFeature( QgsFeatureId id, const QgsRectangle &rect )
+bool QgsSpatialIndex::addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags )
 {
-  SpatialIndex::Region r( rectToRegion( rect ) );
+  QgsFeatureList::iterator fIt = features.begin();
+  bool result = true;
+  for ( ; fIt != features.end(); ++fIt )
+  {
+    result = result && addFeature( *fIt, flags );
+  }
+  return result;
+}
+
+bool QgsSpatialIndex::insertFeature( const QgsFeature &f )
+{
+  QgsFeature feature( f );
+  return addFeature( feature );
+}
+
+bool QgsSpatialIndex::insertFeature( QgsFeatureId id, const QgsRectangle &bounds )
+{
+  return addFeature( id, bounds );
+}
+
+bool QgsSpatialIndex::addFeature( QgsFeatureId id, const QgsRectangle &bounds )
+{
+  SpatialIndex::Region r( rectToRegion( bounds ) );
 
   QMutexLocker locker( &d->mMutex );
 
@@ -324,16 +346,16 @@ bool QgsSpatialIndex::insertFeature( QgsFeatureId id, const QgsRectangle &rect )
   catch ( Tools::Exception &e )
   {
     Q_UNUSED( e );
-    QgsDebugMsg( QString( "Tools::Exception caught: " ).arg( e.what().c_str() ) );
+    QgsDebugMsg( QStringLiteral( "Tools::Exception caught: " ).arg( e.what().c_str() ) );
   }
   catch ( const std::exception &e )
   {
     Q_UNUSED( e );
-    QgsDebugMsg( QString( "std::exception caught: " ).arg( e.what() ) );
+    QgsDebugMsg( QStringLiteral( "std::exception caught: " ).arg( e.what() ) );
   }
   catch ( ... )
   {
-    QgsDebugMsg( "unknown spatial index exception caught" );
+    QgsDebugMsg( QStringLiteral( "unknown spatial index exception caught" ) );
   }
 
   return false;

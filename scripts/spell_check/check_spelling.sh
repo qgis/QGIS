@@ -23,7 +23,7 @@
 # fi
 
 # extensions or files that should be excluded from file list if :% is appended in the spelling.dat file
-EXCLUDE_SCRIPT_LIST='(\.(xml|svg|sip|t2t|pl|sh|qgs|badquote|cmake(\.in)?)|^(debian/copyright|cmake_templates/.*|INSTALL|NEWS|tests/testdata/labeling/README.rst|tests/testdata/font/QGIS-Vera/COPYRIGHT.TXT|doc/(news|INSTALL)\.html))$'
+EXCLUDE_SCRIPT_LIST='(\.(xml|svg|sip|t2t|pl|sh|qgs|badquote|cmake(\.in)?)|^(debian/copyright|cmake_templates/.*|INSTALL|NEWS|tests/testdata/labeling/README.rst|tests/testdata/font/QGIS-Vera/COPYRIGHT.TXT|doc/(news|INSTALL)\.html|debian/build/))$'
 
 DIR=$(git rev-parse --show-toplevel)/scripts/spell_check
 
@@ -56,11 +56,11 @@ while getopts ":rdl:" opt; do
       ;;
   esac
 done
-shift $(expr $OPTIND - 1)
+shift $((OPTIND - 1))
 
 if [ $# -ne 0 ]; then
   EXCLUDE=$(${GP}sed -e 's/\s*#.*$//' -e '/^\s*$/d' $AGIGNORE | tr '\n' '|' | ${GP}sed -e 's/|$//')
-  INPUTFILES=$(echo $@ | tr -s '[[:blank:]]' '\n' | ${GP}egrep -iv "$EXCLUDE" | tr '\n' ' ' )
+  INPUTFILES=$(echo "$@" | tr -s '[[:blank:]]' '\n' | ${GP}egrep -iv "$EXCLUDE" | tr '\n' ' ' )
   if [[ -z $INPUTFILES  ]]; then
     exit 0
   fi
@@ -84,7 +84,7 @@ declare -A GLOBREP_IGNORE=()
 
 ERRORFOUND=NO
 
-for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
+for I in $(seq -f '%02g' 0  $((SPLIT-1)) ) ; do
   ( [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]] ) && printf "Progress: %d/%d\r" $(( I + 1 )) $SPLIT
   SPELLFILE=spelling$I~
   ${GP}sed -i '/^#/d' $SPELLFILE
@@ -223,7 +223,7 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
         else
           # Match case
           MATCHCASE="$ERROR:$CORRECTION"
-          CORRECTIONCASE=$(echo "$MATCHCASE" | ${GP}sed -r 's/([A-Z]+):(.*)/\1:\U\2/; s/([A-Z][a-z]+):([a-z])/\1:\U\2\L/' | cut -d: -f2)
+          CORRECTIONCASE=$(echo "$MATCHCASE" | ${GP}sed -r 's/([A-Z]+):(.*)/\1:\U\2/; s/([A-Z][a-z]+):([a-z])/\1:\U\2\L/; s/\*?$//;' | cut -d: -f2)
 
           if [[ -n $OUTPUTLOG ]]; then
             echo "$FILE $NUMBER $ERROR $CORRECTIONCASE" >> $OUTPUTLOG

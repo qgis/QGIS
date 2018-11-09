@@ -46,7 +46,7 @@ Returns the currently selected CRS for the widget
 :return: current CRS
 %End
 
-    void setOptionVisible( const CrsOption option, const bool visible );
+    void setOptionVisible( CrsOption option, bool visible );
 %Docstring
 Sets whether a predefined CRS option should be shown in the widget.
 

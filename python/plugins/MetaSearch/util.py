@@ -29,7 +29,6 @@ import warnings
 warnings.filterwarnings("ignore", category=PendingDeprecationWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-import configparser
 from gettext import gettext, ngettext
 import logging
 import os
@@ -59,9 +58,6 @@ class StaticContext(object):
     def __init__(self):
         """init"""
         self.ppath = os.path.dirname(os.path.abspath(__file__))
-        self.metadata = configparser.ConfigParser()
-        with codecs.open(os.path.join(self.ppath, 'metadata.txt'), "r", "utf8") as f:
-            self.metadata.read_file(f)
 
 
 def get_ui_class(ui_file):

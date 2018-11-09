@@ -22,6 +22,7 @@
 
 class QgsMapMouseEvent;
 class QgsAdvancedDigitizingDockWidget;
+class QgsSnapToGridCanvasItem;
 
 /**
  * \ingroup gui
@@ -140,6 +141,22 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) { Q_UNUSED( e ) }
 
+    /**
+     * Enables or disables snap to grid of mouse events.
+     * The snapping will occur in the layer's CRS.
+     *
+     * \since QGIS 3.4
+     */
+    bool snapToLayerGridEnabled() const;
+
+    /**
+     * Enables or disables snap to grid of mouse events.
+     * The snapping will occur in the layer's CRS.
+     *
+     * \since QGIS 3.4
+     */
+    void setSnapToLayerGridEnabled( bool snapToLayerGridEnabled );
+
   private slots:
 
     /**
@@ -152,6 +169,8 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     void cadPointChanged( const QgsPointXY &point );
 
+    void onCurrentLayerChanged();
+
   private:
     QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
 
@@ -159,6 +178,9 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     bool mAdvancedDigitizingAllowed = true;
     //! Whether to snap mouse cursor to map before passing coordinates to cadCanvas*Event()
     bool mAutoSnapEnabled = true;
+    //! Whether to snap to grid before passing coordinates to cadCanvas*Event()
+    bool mSnapToLayerGridEnabled = true;
+    QgsSnapToGridCanvasItem *mSnapToGridCanvasItem = nullptr;
 };
 
 #endif // QGSMAPTOOLADVANCEDDIGITIZE_H

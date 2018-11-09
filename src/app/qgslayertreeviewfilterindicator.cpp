@@ -17,122 +17,16 @@
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 #include "qgsquerybuilder.h"
 #include "qgsvectorlayer.h"
 
 
 QgsLayerTreeViewFilterIndicatorProvider::QgsLayerTreeViewFilterIndicatorProvider( QgsLayerTreeView *view )
-  : QObject( view )
-  , mLayerTreeView( view )
+  : QgsLayerTreeViewIndicatorProvider( view )
 {
-  mIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIndicatorFilter.svg" ) );
-
-  QgsLayerTree *tree = mLayerTreeView->layerTreeModel()->rootGroup();
-  onAddedChildren( tree, 0, tree->children().count() - 1 );
-
-  connect( tree, &QgsLayerTree::addedChildren, this, &QgsLayerTreeViewFilterIndicatorProvider::onAddedChildren );
-  connect( tree, &QgsLayerTree::willRemoveChildren, this, &QgsLayerTreeViewFilterIndicatorProvider::onWillRemoveChildren );
 }
-
-
-void QgsLayerTreeViewFilterIndicatorProvider::onAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
-{
-  // recursively connect to providers' dataChanged() signal
-
-  QList<QgsLayerTreeNode *> children = node->children();
-  for ( int i = indexFrom; i <= indexTo; ++i )
-  {
-    QgsLayerTreeNode *childNode = children[i];
-
-    if ( QgsLayerTree::isGroup( childNode ) )
-    {
-      onAddedChildren( childNode, 0, childNode->children().count() - 1 );
-    }
-    else if ( QgsLayerTree::isLayer( childNode ) )
-    {
-      QgsLayerTreeLayer *childLayerNode = QgsLayerTree::toLayer( childNode );
-      if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( childLayerNode->layer() ) )
-      {
-        if ( vlayer )
-        {
-          connect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onSubsetStringChanged );
-
-          addOrRemoveIndicator( childLayerNode, vlayer );
-        }
-      }
-      else if ( !childLayerNode->layer() )
-      {
-        // wait for layer to be loaded (e.g. when loading project, first the tree is loaded, afterwards the references to layers are resolved)
-        connect( childLayerNode, &QgsLayerTreeLayer::layerLoaded, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerLoaded );
-      }
-    }
-  }
-}
-
-
-void QgsLayerTreeViewFilterIndicatorProvider::onWillRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
-{
-  // recursively disconnect from providers' dataChanged() signal
-
-  QList<QgsLayerTreeNode *> children = node->children();
-  for ( int i = indexFrom; i <= indexTo; ++i )
-  {
-    QgsLayerTreeNode *childNode = children[i];
-
-    if ( QgsLayerTree::isGroup( childNode ) )
-    {
-      onWillRemoveChildren( childNode, 0, childNode->children().count() - 1 );
-    }
-    else if ( QgsLayerTree::isLayer( childNode ) )
-    {
-      QgsLayerTreeLayer *childLayerNode = QgsLayerTree::toLayer( childNode );
-      if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( childLayerNode->layer() ) )
-      {
-        if ( vlayer )
-          disconnect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onSubsetStringChanged );
-      }
-    }
-  }
-}
-
-
-void QgsLayerTreeViewFilterIndicatorProvider::onLayerLoaded()
-{
-  QgsLayerTreeLayer *nodeLayer = qobject_cast<QgsLayerTreeLayer *>( sender() );
-  if ( !nodeLayer )
-    return;
-
-  if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
-  {
-    if ( vlayer )
-    {
-      connect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onSubsetStringChanged );
-
-      addOrRemoveIndicator( nodeLayer, vlayer );
-    }
-  }
-}
-
-
-void QgsLayerTreeViewFilterIndicatorProvider::onSubsetStringChanged()
-{
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( sender() );
-  if ( !vlayer )
-    return;
-
-  // walk the tree and find layer node that needs to be updated
-  const QList<QgsLayerTreeLayer *> layerNodes = mLayerTreeView->layerTreeModel()->rootGroup()->findLayers();
-  for ( QgsLayerTreeLayer *node : layerNodes )
-  {
-    if ( node->layer() && node->layer() == vlayer )
-    {
-      addOrRemoveIndicator( node, vlayer );
-      break;
-    }
-  }
-}
-
 
 void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIndex &index )
 {
@@ -151,57 +45,43 @@ void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIn
     vlayer->setSubsetString( qb.sql() );
 }
 
-QgsLayerTreeViewIndicator *QgsLayerTreeViewFilterIndicatorProvider::newIndicator( const QString &filter )
+QString QgsLayerTreeViewFilterIndicatorProvider::iconName( QgsMapLayer *layer )
 {
-  QgsLayerTreeViewIndicator *indicator = new QgsLayerTreeViewIndicator( this );
-  indicator->setIcon( mIcon );
-  updateIndicator( indicator, filter );
-  connect( indicator, &QgsLayerTreeViewIndicator::clicked, this, &QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked );
-  mIndicators.insert( indicator );
-  return indicator;
+  Q_UNUSED( layer );
+  return QStringLiteral( "/mIndicatorFilter.svg" );
 }
 
-void QgsLayerTreeViewFilterIndicatorProvider::updateIndicator( QgsLayerTreeViewIndicator *indicator, const QString &filter )
+QString QgsLayerTreeViewFilterIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
-  indicator->setToolTip( QString( "<b>%1:</b><br>%2" ).arg( tr( "Filter" ) ).arg( filter ) );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vlayer )
+    return QString();
+  return  QStringLiteral( "<b>%1:</b><br>%2" ).arg( tr( "Filter" ), vlayer->subsetString() );
 }
 
-
-void QgsLayerTreeViewFilterIndicatorProvider::addOrRemoveIndicator( QgsLayerTreeNode *node, QgsVectorLayer *vlayer )
+void QgsLayerTreeViewFilterIndicatorProvider::connectSignals( QgsMapLayer *layer )
 {
-  QString filter = vlayer->subsetString();
-  if ( !filter.isEmpty() )
-  {
-    const QList<QgsLayerTreeViewIndicator *> nodeIndicators = mLayerTreeView->indicators( node );
-
-    // maybe the indicator exists already
-    foreach ( QgsLayerTreeViewIndicator *indicator, nodeIndicators )
-    {
-      if ( mIndicators.contains( indicator ) )
-      {
-        updateIndicator( indicator, filter );
-        return;
-      }
-    }
-
-    // it does not exist: need to create a new one
-    mLayerTreeView->addIndicator( node, newIndicator( filter ) );
-  }
-  else
-  {
-    const QList<QgsLayerTreeViewIndicator *> nodeIndicators = mLayerTreeView->indicators( node );
-
-    // there may be existing indicator we need to get rid of
-    foreach ( QgsLayerTreeViewIndicator *indicator, nodeIndicators )
-    {
-      if ( mIndicators.contains( indicator ) )
-      {
-        mLayerTreeView->removeIndicator( node, indicator );
-        indicator->deleteLater();
-        return;
-      }
-    }
-
-    // no indicator was there before, nothing to do
-  }
+  QgsLayerTreeViewIndicatorProvider::connectSignals( layer );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vlayer )
+    return;
+  connect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
 }
+
+void QgsLayerTreeViewFilterIndicatorProvider::disconnectSignals( QgsMapLayer *layer )
+{
+  QgsLayerTreeViewIndicatorProvider::disconnectSignals( layer );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vlayer )
+    return;
+  disconnect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
+}
+
+bool QgsLayerTreeViewFilterIndicatorProvider::acceptLayer( QgsMapLayer *layer )
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vlayer )
+    return false;
+  return ! vlayer->subsetString().isEmpty();
+}
+

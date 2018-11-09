@@ -56,7 +56,16 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
     {
       if ( mField.length() > 0 && mField.precision() > 0 )
       {
-        QString re = QStringLiteral( "-?\\d{0,%1}(\\.\\d{0,%2})?" ).arg( mField.length() - mField.precision() ).arg( mField.precision() );
+        QString re;
+        // Also accept locale's decimalPoint if it's not a dot
+        if ( QLocale().decimalPoint() != '.' )
+        {
+          re = QStringLiteral( "-?\\d{0,%1}([\\.%2]\\d{0,%3})?" ).arg( mField.length() - mField.precision() ).arg( QLocale().decimalPoint() ).arg( mField.precision() );
+        }
+        else
+        {
+          re = QStringLiteral( "-?\\d{0,%1}([\\.,]\\d{0,%2})?" ).arg( mField.length() - mField.precision() ).arg( mField.precision() );
+        }
         mValidator = new QRegExpValidator( QRegExp( re ), parent );
       }
       else if ( mField.length() > 0 && mField.precision() == 0 )
@@ -66,7 +75,16 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
       }
       else if ( mField.precision() > 0 )
       {
-        QString re = QStringLiteral( "-?\\d*(\\.\\d{0,%1})?" ).arg( mField.precision() );
+        QString re;
+        // Also accept locale's decimalPoint if it's not a dot
+        if ( QLocale().decimalPoint() != '.' )
+        {
+          re = QStringLiteral( "-?\\d*([\\.%1]\\d{0,%2})?" ).arg( QLocale().decimalPoint(), mField.precision() );
+        }
+        else
+        {
+          re = QStringLiteral( "-?\\d*([\\.]\\d{0,%1})?" ).arg( mField.precision() );
+        }
         mValidator = new QRegExpValidator( QRegExp( re ), parent );
       }
       else
@@ -112,12 +130,6 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   // delegate to the child validator if any
   if ( mValidator )
   {
-    // force to use the '.' as a decimal point or in case we are using QDoubleValidator
-    // we can get a valid number with a comma depending on current locale
-    // ... but this will fail subsequently when converted from string to double and
-    // becomes a NULL!
-    if ( mField.type() == QVariant::Double )
-      s = s.replace( ',', '.' );
     QValidator::State result = mValidator->validate( s, i );
     return result;
   }
@@ -143,7 +155,7 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   }
   else
   {
-    QgsDebugMsg( QString( "unsupported type %1 for validation" ).arg( mField.type() ) );
+    QgsDebugMsg( QStringLiteral( "unsupported type %1 for validation" ).arg( mField.type() ) );
     return Invalid;
   }
 
@@ -164,6 +176,6 @@ void QgsFieldValidator::fixup( QString &s ) const
   else if ( mField.type() == QVariant::Date )
   {
     // invalid dates will also translate to NULL
-    s = QLatin1String( "" );
+    s = QString();
   }
 }

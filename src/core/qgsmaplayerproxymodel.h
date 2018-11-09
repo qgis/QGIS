@@ -67,45 +67,121 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     QgsMapLayerModel *sourceLayerModel() const { return mModel; }
 
     /**
-     * \brief setFilters set flags that affect how layers are filtered
-     * \param filters are Filter flags
+     * Sets \a filter flags which affect how layers are filtered within the model.
+     *
+     * \see filters()
+     *
      * \since QGIS 2.3
      */
     QgsMapLayerProxyModel *setFilters( QgsMapLayerProxyModel::Filters filters );
+
+    /**
+     * Returns the filter flags which affect how layers are filtered within the model.
+     *
+     * \see setFilters()
+     *
+     * \since QGIS 2.3
+     */
     const Filters &filters() const { return mFilters; }
 
-    //! offer the possibility to except some layers to be listed
+    /**
+     * Sets a whitelist of \a layers to include within the model. Only layers
+     * from this list will be shown.
+     *
+     * An empty list indicates that no whitelisting should be performed.
+     *
+     * \see layerWhitelist()
+     * \see setExceptedLayerList()
+     *
+     * \since QGIS 3.4
+     */
+    void setLayerWhitelist( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Returns the list of layers which are excluded from the model.
+     *
+     * An empty list indicates that no whitelisting should be performed.
+     *
+     * \see setLayerWhitelist()
+     * \see exceptedLayerList()
+     *
+     * \since QGIS 3.4
+     */
+    QList<QgsMapLayer *> layerWhitelist() {return mLayerWhitelist;}
+
+    /**
+     * Sets a blacklist of layers to exclude from the model.
+     * \see exceptedLayerList()
+     * \see setExceptedLayerIds()
+     * \see setLayerWhitelist()
+     */
     void setExceptedLayerList( const QList<QgsMapLayer *> &exceptList );
-    //! Gets the list of maplayers which are excluded from the list
+
+    /**
+     * Returns the blacklist of layers which are excluded from the model.
+     * \see setExceptedLayerList()
+     * \see exceptedLayerIds()
+     * \see layerWhitelist()
+     */
     QList<QgsMapLayer *> exceptedLayerList() {return mExceptList;}
 
-    //! Sets the list of maplayer ids which are excluded from the list
+    /**
+     * Sets a blacklist of layers (by layer ID) to exclude from the model.
+     * \see exceptedLayerIds()
+     * \see setExceptedLayerList()
+     */
     void setExceptedLayerIds( const QStringList &ids );
-    //! Gets the list of maplayer ids which are excluded from the list
+
+    /**
+     * Returns the blacklist of layer IDs which are excluded from the model.
+     * \see setExceptedLayerIds()
+     * \see exceptedLayerList()
+     */
     QStringList exceptedLayerIds() const;
 
     /**
-     * Sets a list of data providers which should be excluded from the model.
+     * Sets a blacklist of data providers which should be excluded from the model.
      * \see excludedProviders()
      * \since QGIS 3.0
      */
     void setExcludedProviders( const QStringList &providers );
 
     /**
-     * Returns the list of data providers which are excluded from the model.
+     * Returns the blacklist of data providers which are excluded from the model.
      * \see setExcludedProviders()
      * \since QGIS 3.0
      */
     QStringList excludedProviders() const { return mExcludedProviders; }
 
+    /**
+     * Returns the current filter string, if set.
+     *
+     * \see setFilterString()
+     * \since QGIS 3.4
+     */
+    QString filterString() const { return mFilterString; }
+
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+
+  public slots:
+
+    /**
+     * Sets a \a filter string, such that only layers with names matching the
+     * specified string will be shown.
+     *
+     * \see filterString()
+     * \since QGIS 3.4
+    */
+    void setFilterString( const QString &filter );
 
   private:
     Filters mFilters;
     QList<QgsMapLayer *> mExceptList;
+    QList<QgsMapLayer *> mLayerWhitelist;
     QgsMapLayerModel *mModel = nullptr;
     QStringList mExcludedProviders;
+    QString mFilterString;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerProxyModel::Filters )

@@ -49,7 +49,7 @@ when converting measurements to and from pixels.
 .. seealso:: :py:func:`setDpi`
 %End
 
-    QgsLayoutMeasurement convert( const QgsLayoutMeasurement &measurement, const QgsUnitTypes::LayoutUnit targetUnits ) const;
+    QgsLayoutMeasurement convert( QgsLayoutMeasurement measurement, QgsUnitTypes::LayoutUnit targetUnits ) const;
 %Docstring
 Converts a measurement from one unit to another.
 
@@ -59,7 +59,7 @@ Converts a measurement from one unit to another.
 :return: measurement converted to target units
 %End
 
-    QgsLayoutSize convert( const QgsLayoutSize &size, const QgsUnitTypes::LayoutUnit targetUnits ) const;
+    QgsLayoutSize convert( const QgsLayoutSize &size, QgsUnitTypes::LayoutUnit targetUnits ) const;
 %Docstring
 Converts a layout size from one unit to another.
 
@@ -69,7 +69,7 @@ Converts a layout size from one unit to another.
 :return: size converted to target units
 %End
 
-    QgsLayoutPoint convert( const QgsLayoutPoint &point, const QgsUnitTypes::LayoutUnit targetUnits ) const;
+    QgsLayoutPoint convert( const QgsLayoutPoint &point, QgsUnitTypes::LayoutUnit targetUnits ) const;
 %Docstring
 Converts a layout point from one unit to another.
 

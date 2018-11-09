@@ -34,12 +34,15 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgslayoutitemlegend.h"
 #include "qgslayoutatlas.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutmeasurementconverter.h"
+#include "qgsunittypes.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
 
+Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 static int _unfilteredLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
 {
@@ -135,6 +138,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
 
   mItemTreeView->setModel( legend->model() );
   mItemTreeView->setMenuProvider( new QgsLayoutLegendMenuProvider( mItemTreeView, this ) );
+  setLegendMapViewData();
   connect( legend, &QgsLayoutObject::changed, this, &QgsLayoutLegendWidget::setGuiElements );
 
   // connect atlas state to the filter legend by atlas checkbox
@@ -627,6 +631,8 @@ void QgsLayoutLegendWidget::composerMapChanged( QgsLayoutItem *item )
     mLegend->setLinkedMap( map );
     mLegend->updateFilterByMap();
     mLegend->endCommand();
+
+    setLegendMapViewData();
   }
 }
 
@@ -693,7 +699,19 @@ void QgsLayoutLegendWidget::mAddToolButton_clicked()
     return;
   }
 
+  QList< QgsMapLayer * > visibleLayers;
+  if ( mLegend->linkedMap() )
+  {
+    visibleLayers = mLegend->linkedMap()->layersToRender();
+  }
+  if ( visibleLayers.isEmpty() )
+  {
+    // just use current canvas layers as visible layers
+    visibleLayers = QgisApp::instance()->mapCanvas()->layers();
+  }
+
   QgsLayoutLegendLayersDialog addDialog( this );
+  addDialog.setVisibleLayers( visibleLayers );
   if ( addDialog.exec() == QDialog::Accepted )
   {
     const QList<QgsMapLayer *> layers = addDialog.selectedLayers();
@@ -821,7 +839,7 @@ void QgsLayoutLegendWidget::resetLayerNodeToDefaults()
 
 void QgsLayoutLegendWidget::mCountToolButton_clicked( bool checked )
 {
-  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( QStringLiteral( "Entered." ) );
   if ( !mLegend )
   {
     return;
@@ -850,6 +868,7 @@ void QgsLayoutLegendWidget::mFilterByMapToolButton_toggled( bool checked )
   mLegend->beginCommand( tr( "Update Legend" ) );
   mLegend->setLegendFilterByMapEnabled( checked );
   mLegend->adjustBoxSize();
+  mLegend->update();
   mLegend->endCommand();
 }
 
@@ -1035,6 +1054,21 @@ void QgsLayoutLegendWidget::setCurrentNodeStyleFromAction()
   mLegend->updateFilterByMap();
 }
 
+void QgsLayoutLegendWidget::setLegendMapViewData()
+{
+  if ( mLegend->linkedMap() )
+  {
+    int dpi = qt_defaultDpiX();
+    QgsLayoutMeasurementConverter measurementConverter = QgsLayoutMeasurementConverter();
+    measurementConverter.setDpi( dpi );
+    double mapWidth = measurementConverter.convert( mLegend->linkedMap()->sizeWithUnits(), QgsUnitTypes::LayoutPixels ).width();
+    double mapHeight = measurementConverter.convert( mLegend->linkedMap()->sizeWithUnits(), QgsUnitTypes::LayoutPixels ).height();
+    double mapUnitsPerPixelX = mLegend->linkedMap()->extent().width() / mapWidth;
+    double mapUnitsPerPixelY = mLegend->linkedMap()->extent().height() / mapHeight;
+    mLegend->model()->setLegendMapViewData( ( mapUnitsPerPixelX > mapUnitsPerPixelY ? mapUnitsPerPixelX : mapUnitsPerPixelY ), dpi, mLegend->linkedMap()->scale() );
+  }
+}
+
 void QgsLayoutLegendWidget::updateFilterLegendByAtlasButton()
 {
   if ( QgsLayoutAtlas *atlas = layoutAtlas() )
@@ -1125,7 +1159,7 @@ QMenu *QgsLayoutLegendMenuProvider::createContextMenu()
 
   if ( QgsLayerTree::isLayer( mView->currentNode() ) )
   {
-    menu->addAction( QObject::tr( "Reset to Defaults" ), mWidget, SLOT( resetLayerNodeToDefaults() ) );
+    menu->addAction( QObject::tr( "Reset to Defaults" ), mWidget, &QgsLayoutLegendWidget::resetLayerNodeToDefaults );
     menu->addSeparator();
   }
 
@@ -1135,7 +1169,7 @@ QMenu *QgsLayoutLegendMenuProvider::createContextMenu()
   lst << QgsLegendStyle::Hidden << QgsLegendStyle::Group << QgsLegendStyle::Subgroup;
   for ( QgsLegendStyle::Style style : qgis::as_const( lst ) )
   {
-    QAction *action = menu->addAction( QgsLegendStyle::styleLabel( style ), mWidget, SLOT( setCurrentNodeStyleFromAction() ) );
+    QAction *action = menu->addAction( QgsLegendStyle::styleLabel( style ), mWidget, &QgsLayoutLegendWidget::setCurrentNodeStyleFromAction );
     action->setCheckable( true );
     action->setChecked( currentStyle == style );
     action->setData( ( int ) style );

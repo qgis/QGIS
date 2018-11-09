@@ -47,7 +47,7 @@
    <item row="5" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mMarginsGroupBox">
      <property name="title">
-      <string>Contents margins</string>
+      <string>Contents Margins</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">

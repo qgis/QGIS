@@ -15,12 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckersetuptab.h"
 #include "qgsgeometrycheckerresulttab.h"
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheckfactory.h"
 #include "qgsgeometrycheck.h"
 #include "qgsfeaturepool.h"
+#include "qgsvectordataproviderfeaturepool.h"
 
 #include "qgsfeatureiterator.h"
 #include "qgisinterface.h"
@@ -236,7 +238,7 @@ void QgsGeometryCheckerSetupTab::selectOutputDirectory()
 void QgsGeometryCheckerSetupTab::runChecks()
 {
   // Get selected layer
-  QList<QgsVectorLayer *> layers = getSelectedLayers();
+  const QList<QgsVectorLayer *> layers = getSelectedLayers();
   if ( layers.isEmpty() )
     return;
 
@@ -255,7 +257,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   QgsVectorLayer *followBoundaryCheckLayer = ui.comboBoxFollowBoundaries->isEnabled() ? dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboBoxFollowBoundaries->currentData().toString() ) ) : nullptr;
   if ( layers.contains( lineLayerCheckLayer ) || layers.contains( followBoundaryCheckLayer ) )
   {
-    QMessageBox::critical( this, tr( "Check Geometries" ), tr( "The test layer set contains a layer selected for a topology check." ) );
+    QMessageBox::critical( this, tr( "Check Geometries" ), tr( "The selected input layers cannot contain a layer also selected for a topology check." ) );
     return;
   }
 
@@ -272,7 +274,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   // Set window busy
   setCursor( Qt::WaitCursor );
   mRunButton->setEnabled( false );
-  ui.labelStatus->setText( tr( "<b>Preparing output...</b>" ) );
+  ui.labelStatus->setText( tr( "<b>Preparing output…</b>" ) );
   ui.labelStatus->show();
   QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
 
@@ -409,26 +411,22 @@ void QgsGeometryCheckerSetupTab::runChecks()
   }
 
   // Setup checker
-  ui.labelStatus->setText( tr( "<b>Building spatial index...</b>" ) );
+  ui.labelStatus->setText( tr( "<b>Building spatial index…</b>" ) );
   QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
   QMap<QString, QgsFeaturePool *> featurePools;
   for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
   {
-    double layerToMapUntis = mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
-    QgsCoordinateTransform layerToMapTransform( layer->crs(), QgsProject::instance()->crs(), QgsProject::instance() );
-    featurePools.insert( layer->id(), new QgsFeaturePool( layer, layerToMapUntis, layerToMapTransform, selectedOnly ) );
+    featurePools.insert( layer->id(), new QgsVectorDataProviderFeaturePool( layer, selectedOnly ) );
   }
   // LineLayerIntersection check is enabled, make sure there is also a feature pool for that layer
   if ( ui.checkLineLayerIntersection->isChecked() && !featurePools.keys().contains( ui.comboLineLayerIntersection->currentData().toString() ) )
   {
     QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboLineLayerIntersection->currentData().toString() ) );
     Q_ASSERT( layer );
-    double layerToMapUntis = mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
-    QgsCoordinateTransform layerToMapTransform( layer->crs(), QgsProject::instance()->crs(), QgsProject::instance() );
-    featurePools.insert( layer->id(), new QgsFeaturePool( layer, layerToMapUntis, layerToMapTransform, selectedOnly ) );
+    featurePools.insert( layer->id(), new QgsVectorDataProviderFeaturePool( layer, selectedOnly ) );
   }
 
-  QgsGeometryCheckerContext *context = new QgsGeometryCheckerContext( ui.spinBoxTolerance->value(), QgsProject::instance()->crs(), featurePools );
+  QgsGeometryCheckContext *context = new QgsGeometryCheckContext( ui.spinBoxTolerance->value(), QgsProject::instance()->crs(), QgsProject::instance()->transformContext() );
 
   QList<QgsGeometryCheck *> checks;
   for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )
@@ -439,7 +437,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
       checks.append( check );
     }
   }
-  QgsGeometryChecker *checker = new QgsGeometryChecker( checks, context );
+  QgsGeometryChecker *checker = new QgsGeometryChecker( checks, context, featurePools );
 
   emit checkerStarted( checker );
 
@@ -467,10 +465,14 @@ void QgsGeometryCheckerSetupTab::runChecks()
   connect( mAbortButton, &QAbstractButton::clicked, &futureWatcher, &QFutureWatcherBase::cancel );
   connect( mAbortButton, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::showCancelFeedback );
 
+  mIsRunningInBackground = true;
+
   int maxSteps = 0;
   futureWatcher.setFuture( checker->execute( &maxSteps ) );
   ui.progressBar->setRange( 0, maxSteps );
   evLoop.exec();
+
+  mIsRunningInBackground = false;
 
   // Restore window
   unsetCursor();
@@ -489,7 +491,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
 void QgsGeometryCheckerSetupTab::showCancelFeedback()
 {
   mAbortButton->setEnabled( false );
-  ui.labelStatus->setText( tr( "<b>Waiting for running checks to finish...</b>" ) );
+  ui.labelStatus->setText( tr( "<b>Waiting for running checks to finish…</b>" ) );
   ui.labelStatus->show();
   ui.progressBar->hide() ;
 }

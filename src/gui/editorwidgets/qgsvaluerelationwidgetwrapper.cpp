@@ -157,9 +157,11 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
 
     // This block is needed because item->setCheckState triggers dataChanged gets back to value()
     // and iterate over all items again! This can be extremely slow on large items sets.
-    mTableWidget->blockSignals( true );
     for ( int j = 0; j < mTableWidget->rowCount(); j++ )
     {
+      auto signalBlockedTableWidget = whileBlocking( mTableWidget );
+      Q_UNUSED( signalBlockedTableWidget )
+
       for ( int i = 0; i < nofColumns; ++i )
       {
         QTableWidgetItem *item = mTableWidget->item( j, i );
@@ -170,7 +172,6 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
         }
       }
     }
-    mTableWidget->blockSignals( false );
     // let's trigger the signal now, once and for all
     if ( lastChangedItem )
       lastChangedItem->setCheckState( checkList.contains( lastChangedItem->data( Qt::UserRole ).toString() ) ? Qt::Checked : Qt::Unchecked );
@@ -178,7 +179,19 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
   }
   else if ( mComboBox )
   {
-    mComboBox->setCurrentIndex( mComboBox->findData( value ) );
+    // findData fails to tell a 0 from a NULL
+    // See: "Value relation, value 0 = NULL" - https://issues.qgis.org/issues/19981
+    int idx = -1; // default to not found
+    for ( int i = 0; i < mComboBox->count(); i++ )
+    {
+      QVariant v( mComboBox->itemData( i ) );
+      if ( qgsVariantEqual( v, value ) )
+      {
+        idx = i;
+        break;
+      }
+    }
+    mComboBox->setCurrentIndex( idx );
   }
   else if ( mLineEdit )
   {
@@ -222,12 +235,12 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
   // and signals unblocked (we want this to propagate to the feature itself)
   if ( formFeature().isValid()
        && ! formFeature().attribute( fieldIdx() ).isValid()
-       && mCache.size() > 0
+       && ! mCache.empty()
        && ! config( QStringLiteral( "AllowNull" ) ).toBool( ) )
   {
     // This is deferred because at the time the feature is set in one widget it is not
     // set in the next, which is typically the "down" in a drill-down
-    QTimer::singleShot( 0, [ = ]
+    QTimer::singleShot( 0, this, [ this ]
     {
       setValue( mCache.at( 0 ).key );
     } );
@@ -236,7 +249,7 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
 
 int QgsValueRelationWidgetWrapper::columnCount() const
 {
-  return qMax( 1, config( QStringLiteral( "NofColumns" ) ).toInt() );
+  return std::max( 1, config( QStringLiteral( "NofColumns" ) ).toInt() );
 }
 
 void QgsValueRelationWidgetWrapper::populate( )
@@ -246,7 +259,7 @@ void QgsValueRelationWidgetWrapper::populate( )
   {
     mCache = QgsValueRelationFieldFormatter::createCache( config( ), formFeature() );
   }
-  else if ( mCache.isEmpty() )
+  else if ( mCache.empty() )
   {
     mCache = QgsValueRelationFieldFormatter::createCache( config( ) );
   }
@@ -268,7 +281,7 @@ void QgsValueRelationWidgetWrapper::populate( )
   {
     const int nofColumns = columnCount();
 
-    if ( mCache.size() > 0 )
+    if ( ! mCache.empty() )
     {
       mTableWidget->setRowCount( ( mCache.size() + nofColumns - 1 ) / nofColumns );
     }
@@ -277,7 +290,8 @@ void QgsValueRelationWidgetWrapper::populate( )
     mTableWidget->setColumnCount( nofColumns );
 
     whileBlocking( mTableWidget )->clear();
-    int row = 0, column = 0;
+    int row = 0;
+    int column = 0;
     for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : qgis::as_const( mCache ) )
     {
       if ( column == nofColumns )
@@ -340,7 +354,9 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
 
   if ( mTableWidget )
   {
-    mTableWidget->blockSignals( true );
+    auto signalBlockedTableWidget = whileBlocking( mTableWidget );
+    Q_UNUSED( signalBlockedTableWidget )
+
     for ( int j = 0; j < mTableWidget->rowCount(); j++ )
     {
       for ( int i = 0; i < mTableWidget->columnCount(); ++i )
@@ -355,7 +371,6 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
         }
       }
     }
-    mTableWidget->blockSignals( false );
   }
   else
     QgsEditorWidgetWrapper::setEnabled( enabled );

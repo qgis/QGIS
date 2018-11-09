@@ -222,10 +222,16 @@ void QgsProcessingModelChildAlgorithm::generateChildId( const QgsProcessingModel
   mId = id;
 }
 
-void QgsProcessingModelChildAlgorithm::setAlgorithmId( const QString &algorithmId )
+bool QgsProcessingModelChildAlgorithm::setAlgorithmId( const QString &algorithmId )
 {
   mAlgorithmId = algorithmId;
   mAlgorithm.reset( QgsApplication::processingRegistry()->createAlgorithmById( mAlgorithmId, mConfiguration ) );
+  return static_cast< bool >( mAlgorithm.get() );
+}
+
+bool QgsProcessingModelChildAlgorithm::reattach() const
+{
+  return const_cast< QgsProcessingModelChildAlgorithm * >( this )->setAlgorithmId( mAlgorithmId );
 }
 
 ///@endcond

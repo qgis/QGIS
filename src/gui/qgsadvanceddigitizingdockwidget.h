@@ -16,21 +16,24 @@
 #ifndef QGSADVANCEDDIGITIZINGDOCK
 #define QGSADVANCEDDIGITIZINGDOCK
 
-#include "qgsdockwidget.h"
-#include "qgsmapmouseevent.h"
-#include "qgsmessagebaritem.h"
+#include <QList>
+
+#include <memory>
 
 #include "ui_qgsadvanceddigitizingdockwidgetbase.h"
 #include "qgis_gui.h"
 #include "qgis.h"
-#include <memory>
+#include "qgsdockwidget.h"
+#include "qgsmessagebaritem.h"
+#include "qgspointxy.h"
+#include "qgspointlocator.h"
 
 
 class QgsAdvancedDigitizingCanvasItem;
 class QgsMapCanvas;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
-class QgsPointXY;
+class QgsMapMouseEvent;
 
 /**
  * \ingroup gui
@@ -241,18 +244,27 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
     bool constructionMode() const { return mConstructionMode; }
 
-    //! Additional constraints are used to place perpendicular/parallel segments to snapped segments on the canvas
+    /**
+     * Returns the additional constraints which are used to place
+     * perpendicular/parallel segments to snapped segments on the canvas
+     */
     AdditionalConstraint additionalConstraint() const  { return mAdditionalConstraint; }
-    //! Constraint on the angle
+    //! Returns the \a CadConstraint on the angle
     const CadConstraint *constraintAngle() const  { return mAngleConstraint.get(); }
-    //! Constraint on the distance
+    //! Returns the \a CadConstraint on the distance
     const CadConstraint *constraintDistance() const { return mDistanceConstraint.get(); }
-    //! Constraint on the X coordinate
+    //! Returns the \a CadConstraint on the X coordinate
     const CadConstraint *constraintX() const { return mXConstraint.get(); }
-    //! Constraint on the Y coordinate
+    //! Returns the \a CadConstraint on the Y coordinate
     const CadConstraint *constraintY() const { return mYConstraint.get(); }
-    //! Constraint on a common angle
-    bool commonAngleConstraint() const { return mCommonAngleConstraint; }
+    //! Returns true if a constraint on a common angle is active
+    bool commonAngleConstraint() const { return !qgsDoubleNear( mCommonAngleConstraint, 0.0 ); }
+
+    /**
+     * Returns the point locator match
+     * \since QGIS 3.4
+     */
+    QgsPointLocator::Match mapPointMatch() const { return mSnapMatch; }
 
     /**
      * Removes all points from the CAD point list
@@ -452,14 +464,14 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsAdvancedDigitizingCanvasItem *mCadPaintItem = nullptr;
 
-    CadCapacities mCapacities;
+    CadCapacities mCapacities = nullptr;
 
-    bool mCurrentMapToolSupportsCad;
+    bool mCurrentMapToolSupportsCad = false;
 
     // CAD properties
     //! is CAD currently enabled for current map tool
-    bool mCadEnabled;
-    bool mConstructionMode;
+    bool mCadEnabled = false;
+    bool mConstructionMode = false;
 
     // constraints
     std::unique_ptr< CadConstraint > mAngleConstraint;
@@ -467,22 +479,25 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     std::unique_ptr< CadConstraint > mXConstraint;
     std::unique_ptr< CadConstraint > mYConstraint;
     AdditionalConstraint mAdditionalConstraint;
-    int mCommonAngleConstraint; // if 0: do not snap to common angles
+    double mCommonAngleConstraint; // if 0: do not snap to common angles
 
     // point list and current snap point / segment
     QList<QgsPointXY> mCadPointList;
     QList<QgsPointXY> mSnappedSegment;
-    bool mSnappedToVertex;
+    bool mSnappedToVertex = false;
 
-    bool mSessionActive;
+    bool mSessionActive = false;
 
     // error message
     std::unique_ptr<QgsMessageBarItem> mErrorMessage;
 
     // UI
     QAction *mEnableAction = nullptr;
-    QMap< QAction *, int > mCommonAngleActions; // map the common angle actions with their angle values
+    QMap< QAction *, double > mCommonAngleActions; // map the common angle actions with their angle values
 
+    // Snap indicator
+
+    QgsPointLocator::Match mSnapMatch;
   private:
 #ifdef SIP_RUN
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)

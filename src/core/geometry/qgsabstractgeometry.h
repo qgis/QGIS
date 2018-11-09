@@ -16,6 +16,8 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSABSTRACTGEOMETRYV2
 #define QGSABSTRACTGEOMETRYV2
 
+#include <functional>
+
 #include <QString>
 
 #include "qgis_core.h"
@@ -181,13 +183,19 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns true if the geometry is 3D and contains a z-value.
      * \see isMeasure
      */
-    bool is3D() const;
+    bool is3D() const
+    {
+      return QgsWkbTypes::hasZ( mWkbType );
+    }
 
     /**
      * Returns true if the geometry contains m values.
      * \see is3D
      */
-    bool isMeasure() const;
+    bool isMeasure() const
+    {
+      return QgsWkbTypes::hasM( mWkbType );
+    }
 
     /**
      * Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry).
@@ -356,7 +364,7 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
                                    QgsVertexId &vertexAfter SIP_OUT,
-                                   int *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const = 0;
+                                   int *leftOf SIP_OUT = nullptr, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const = 0;
 
     //low-level editing
 
@@ -486,7 +494,7 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \since QGIS 3.0
      */
-    virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) = 0;
+    virtual bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) = 0;
 
     /**
      * Returns approximate angle at a vertex. This is usually the average angle between adjacent
@@ -579,6 +587,22 @@ class CORE_EXPORT QgsAbstractGeometry
      * \since QGIS 3.2
      */
     virtual void filterVertices( const std::function< bool( const QgsPoint & ) > &filter );
+
+    /**
+     * Transforms the vertices from the geometry in place, applying the \a transform function
+     * to every vertex.
+     *
+     * Depending on the \a transform used, this may result in an invalid geometry.
+     *
+     * Transform functions are not permitted to alter the dimensionality of vertices. If
+     * a transform which adds (or removes) z/m values is desired, first call the corresponding
+     * addZValue() or addMValue() function to change the geometry's dimensionality and then
+     * transform.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.4
+     */
+    virtual void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform );
 
     /**
      * \ingroup core

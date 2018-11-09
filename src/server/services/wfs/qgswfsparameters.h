@@ -26,22 +26,26 @@
 #include "qgswfsserviceexception.h"
 #include "qgsserverrequest.h"
 #include "qgsprojectversion.h"
+#include "qgsserverparameters.h"
 
-/**
- * QgsWfsParameters provides an interface to retrieve and manipulate WFS
- *  parameters received from the client.
- * \since QGIS 3.0
- */
 namespace QgsWfs
 {
 
-  class QgsWfsParameters
+  /**
+   * \ingroup server
+   * \class QgsWfs::QgsWfsParameter
+   * \brief WFS parameter received from the client.
+   * \since QGIS 3.4
+   */
+  class QgsWfsParameter : public QgsServerParameterDefinition
   {
       Q_GADGET
 
     public:
-      enum ParameterName
+      //! Available parameters for WFS requests
+      enum Name
       {
+        UNKNOWN,
         OUTPUTFORMAT,
         RESULTTYPE,
         PROPERTYNAME,
@@ -56,8 +60,78 @@ namespace QgsWfs
         EXP_FILTER,
         GEOMETRYNAME
       };
-      Q_ENUM( ParameterName )
+      Q_ENUM( Name )
 
+      /**
+       * Constructor for QgsWfsParameter.
+      * \param name Name of the WMS parameter
+      * \param type Type of the parameter
+      * \param defaultValue Default value of the parameter
+       */
+      QgsWfsParameter( const QgsWfsParameter::Name name = QgsWfsParameter::UNKNOWN,
+                       const QVariant::Type type = QVariant::String,
+                       const QVariant defaultValue = QVariant( "" ) );
+
+      /**
+       * Default destructor for QgsWfsParameter.
+       */
+      virtual ~QgsWfsParameter() = default;
+
+      /**
+       * Converts the parameter into an integer.
+       * \returns An integer
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
+      int toInt() const;
+
+      /**
+       * Converts the parameter into a list of string.
+       * \param exp The expression to use for splitting
+       * \returns A list of strings
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
+      QStringList toStringListWithExp( const QString &exp = "\\(([^()]+)\\)" ) const;
+
+      /**
+       * Converts the parameter into a rectangle.
+       * \returns A rectangle
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
+      QgsRectangle toRectangle() const;
+
+      /**
+       * Raises an error in case of an invalid conversion.
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
+      void raiseError() const;
+
+      /**
+       * Converts a parameter's name into its string representation.
+       */
+      static QString name( const QgsWfsParameter::Name );
+
+      /**
+       * Converts a string into a parameter's name (UNKNOWN in case of an
+       * invalid string).
+       */
+      static QgsWfsParameter::Name name( const QString &name );
+
+      QgsWfsParameter::Name mName;
+  };
+
+  /**
+   * \ingroup server
+   * \class QgsWfs::QgsWfsParameters
+   * \brief Provides an interface to retrieve and manipulate WFS parameters received from the client.
+   * \since QGIS 3.0
+   */
+  class QgsWfsParameters : public QgsServerParameters
+  {
+      Q_GADGET
+
+    public:
+
+      //! Output format for the response
       enum Format
       {
         NONE,
@@ -67,55 +141,33 @@ namespace QgsWfs
         XSD
       };
 
+      //! Type of results
       enum ResultType
       {
         RESULTS,
         HITS
       };
 
-      struct Parameter
-      {
-        ParameterName mName;
-        QVariant::Type mType;
-        QVariant mDefaultValue;
-        QVariant mValue;
-      };
-
       /**
-       * Constructor.
-       * \param map of parameters where keys are parameters' names.
+       * Constructor for WFS parameters with specific values.
+       * \param parameters Map of parameters where keys are parameters' names.
        */
-      QgsWfsParameters( const QgsServerRequest::Parameters &parameters );
+      QgsWfsParameters( const QgsServerParameters &parameters );
 
       /**
-       * Constructor.
-        */
+       * Constructor for WFS parameters with default values only.
+       */
       QgsWfsParameters();
 
       /**
-       * Loads new parameters.
-       * \param map of parameters
+       * Default destructor for QgsWfsParameters.
        */
-      void load( const QgsServerRequest::Parameters &parameters );
+      virtual ~QgsWfsParameters() = default;
 
       /**
        * Dumps parameters.
        */
       void dump() const;
-
-      /**
-       * Returns REQUEST parameter as a string or an empty string if not
-       *  defined.
-       * \returns request
-       */
-      QString request() const;
-
-      /**
-       * Returns VERSION parameter as a string or an empty string if not
-       *  defined.
-       * \returns version
-       */
-      QString version() const;
 
       /**
        * Returns VERSION parameter if defined or its default value.
@@ -131,7 +183,7 @@ namespace QgsWfs
 
       /**
        * Returns format. If the OUTPUTFORMAT parameter is not used, then the
-       *  default value is GML2 or GML3.
+       * default value is GML2 or GML3.
        * \returns format
        */
       Format outputFormat() const;
@@ -144,7 +196,7 @@ namespace QgsWfs
 
       /**
        * Returns resultType. If the RESULTTYPE parameter is not used, then the
-       *  default value is RESULTS.
+       * default value is RESULTS.
        * \returns resultType
        */
       ResultType resultType() const;
@@ -163,7 +215,7 @@ namespace QgsWfs
 
       /**
        * Returns MAXFEATURES parameter as an int or its default value if not
-       *  defined. An exception is raised if I is defined and cannot be
+       * defined. An exception is raised if I is defined and cannot be
        *  converted.
        * \returns maxFeatures parameter
        * \throws QgsBadRequestException
@@ -178,8 +230,8 @@ namespace QgsWfs
 
       /**
        * Returns STARTINDEX parameter as an int or its default value if not
-       *  defined. An exception is raised if I is defined and cannot be
-       *  converted.
+       * defined. An exception is raised if I is defined and cannot be
+       * converted.
        * \returns startIndex parameter
        * \throws QgsBadRequestException
        */
@@ -217,7 +269,7 @@ namespace QgsWfs
 
       /**
        * Returns BBOX as a rectangle if defined and valid. An exception is
-       *  raised if the BBOX string cannot be converted into a rectangle.
+       * raised if the BBOX string cannot be converted into a rectangle.
        * \returns bbox as rectangle
        * \throws QgsBadRequestException
        */
@@ -242,23 +294,13 @@ namespace QgsWfs
       QString geometryNameAsString() const;
 
     private:
-      QString name( ParameterName name ) const;
-      void raiseError( ParameterName name ) const;
-      void raiseError( const QString &msg ) const;
-      QVariant value( ParameterName name ) const;
-      QVariant defaultValue( ParameterName name ) const;
-      void log( const QString &msg ) const;
-      void save( const Parameter &parameter );
-      int toInt( const QVariant &value, const QVariant &defaultValue, bool *error = Q_NULLPTR ) const;
-      int toInt( ParameterName name ) const;
-      QgsRectangle toRectangle( const QVariant &value, bool *error = Q_NULLPTR ) const;
-      QgsRectangle toRectangle( ParameterName p ) const;
-      QStringList toStringList( ParameterName p, char delimiter = ',' ) const;
-      QStringList toStringListWithExp( ParameterName p, const QString &exp = "\\(([^()]+)\\)" ) const;
+      bool loadParameter( const QString &name, const QString &key ) override;
+      void save( const QgsWfsParameter &parameter );
 
-      QgsServerRequest::Parameters mRequestParameters;
-      QMap<ParameterName, Parameter> mParameters;
+      void log( const QString &msg ) const;
+
       QList<QgsProjectVersion> mVersions;
+      QMap<QgsWfsParameter::Name, QgsWfsParameter> mWfsParameters;
   };
 }
 

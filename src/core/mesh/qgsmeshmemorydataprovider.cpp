@@ -47,10 +47,6 @@ QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri, const 
   mIsValid = splitMeshSections( uri );
 }
 
-QgsMeshMemoryDataProvider::~QgsMeshMemoryDataProvider()
-{
-}
-
 QString QgsMeshMemoryDataProvider::providerKey()
 {
   return TEXT_PROVIDER_KEY;
@@ -147,47 +143,56 @@ bool QgsMeshMemoryDataProvider::addMeshFaces( const QString &def )
 }
 
 
-bool QgsMeshMemoryDataProvider::splitDatasetSections( const QString &uri, QgsMeshMemoryDataset &dataset )
+bool QgsMeshMemoryDataProvider::splitDatasetSections( const QString &uri, QgsMeshMemoryDatasetGroup &datasetGroup )
 {
   const QStringList sections = uri.split( QStringLiteral( "---" ), QString::SkipEmptyParts );
 
-  bool success = sections.size() == 3;
+  bool success = sections.size() > 2;
   if ( !success )
   {
-    setError( QgsError( tr( "Invalid dataset definition, does not contain 3 sections" ),
+    setError( QgsError( tr( "Invalid dataset definition, does not contain 3+ sections" ),
                         QStringLiteral( "Mesh Memory Provider" ) ) );
   }
 
   if ( success )
-    success = setDatasetType( sections[0], dataset );
+    success = setDatasetGroupType( sections[0], datasetGroup );
   if ( success )
-    success = addDatasetMetadata( sections[1], dataset );
-  if ( success )
-    success = addDatasetValues( sections[2], dataset );
-  if ( success )
-    success = checkDatasetValidity( dataset );
+    success = addDatasetGroupMetadata( sections[1], datasetGroup );
+
+  for ( int i = 2; i < sections.size(); ++i )
+  {
+    if ( !success )
+      break;
+    QgsMeshMemoryDataset dataset;
+    success = addDatasetValues( sections[i], dataset, datasetGroup.isScalar );
+    if ( success )
+      success = checkDatasetValidity( dataset, datasetGroup.isOnVertices );
+    if ( success )
+      datasetGroup.datasets.push_back( dataset );
+  }
 
   return success;
 }
 
-bool QgsMeshMemoryDataProvider::setDatasetType( const QString &def, QgsMeshMemoryDataset &dataset )
+bool QgsMeshMemoryDataProvider::setDatasetGroupType( const QString &def, QgsMeshMemoryDatasetGroup &datasetGroup )
 {
   const QStringList types = def.split( ' ', QString::SkipEmptyParts );
 
-  if ( types.size() != 2 )
+  if ( types.size() != 3 )
   {
-    setError( QgsError( tr( "Invalid type definition, must be Vertex/Face Vector/Scalar" ),
+    setError( QgsError( tr( "Invalid type definition, must be Vertex/Face Vector/Scalar Name" ),
                         QStringLiteral( "Mesh Memory Provider" ) ) );
     return false;
   }
 
-  dataset.isOnVertices = 0 == QString::compare( types[0].trimmed(), QStringLiteral( "vertex" ), Qt::CaseInsensitive );
-  dataset.isScalar = 0 == QString::compare( types[1].trimmed(), QStringLiteral( "scalar" ), Qt::CaseInsensitive );
+  datasetGroup.isOnVertices = 0 == QString::compare( types[0].trimmed(), QStringLiteral( "vertex" ), Qt::CaseInsensitive );
+  datasetGroup.isScalar = 0 == QString::compare( types[1].trimmed(), QStringLiteral( "scalar" ), Qt::CaseInsensitive );
+  datasetGroup.name = types[2].trimmed();
 
   return true;
 }
 
-bool QgsMeshMemoryDataProvider::addDatasetMetadata( const QString &def, QgsMeshMemoryDataset &dataset )
+bool QgsMeshMemoryDataProvider::addDatasetGroupMetadata( const QString &def, QgsMeshMemoryDatasetGroup &datasetGroup )
 {
   const QStringList metadataLines = def.split( '\n', QString::SkipEmptyParts );
   for ( int i = 0; i < metadataLines.size(); ++i )
@@ -200,20 +205,30 @@ bool QgsMeshMemoryDataProvider::addDatasetMetadata( const QString &def, QgsMeshM
       return false;
     }
 
-    dataset.metadata.insert( keyVal.at( 0 ).trimmed(), keyVal.at( 1 ).trimmed() );
+    datasetGroup.metadata.insert( keyVal.at( 0 ).trimmed(), keyVal.at( 1 ).trimmed() );
   }
   return true;
 }
 
-bool QgsMeshMemoryDataProvider::addDatasetValues( const QString &def, QgsMeshMemoryDataset &dataset )
+bool QgsMeshMemoryDataProvider::addDatasetValues( const QString &def, QgsMeshMemoryDataset &dataset, bool isScalar )
 {
   const QStringList valuesLines = def.split( '\n', QString::SkipEmptyParts );
-  for ( int i = 0; i < valuesLines.size(); ++i )
+  // first line is time
+  if ( valuesLines.size() < 2 )
+  {
+    setError( QgsError( tr( "Invalid dataset definition, must contain at least 1 line (time)" ),
+                        QStringLiteral( "Mesh Memory Provider" ) ) );
+    return false;
+  }
+
+  dataset.time = valuesLines[0].toDouble();
+
+  for ( int i = 1; i < valuesLines.size(); ++i )
   {
     const QStringList values = valuesLines[i].split( ',', QString::SkipEmptyParts );
     QgsMeshDatasetValue point;
 
-    if ( dataset.isScalar )
+    if ( isScalar )
     {
       if ( values.size() != 1 )
       {
@@ -246,11 +261,11 @@ bool QgsMeshMemoryDataProvider::addDatasetValues( const QString &def, QgsMeshMem
   return true;
 }
 
-bool QgsMeshMemoryDataProvider::checkDatasetValidity( QgsMeshMemoryDataset &dataset )
+bool QgsMeshMemoryDataProvider::checkDatasetValidity( QgsMeshMemoryDataset &dataset, bool isOnVertices )
 {
   bool valid = true;
 
-  if ( dataset.isOnVertices )
+  if ( isOnVertices )
   {
     if ( dataset.values.count() != vertexCount() )
     {
@@ -270,6 +285,7 @@ bool QgsMeshMemoryDataProvider::checkDatasetValidity( QgsMeshMemoryDataset &data
     }
   }
 
+  dataset.valid = valid;
   return valid;
 }
 
@@ -297,37 +313,77 @@ QgsMeshFace QgsMeshMemoryDataProvider::face( int index ) const
 
 bool QgsMeshMemoryDataProvider::addDataset( const QString &uri )
 {
-  QgsMeshMemoryDataset ds;
+  QgsMeshMemoryDatasetGroup group;
 
+  bool valid = false;
   if ( mIsValid )
   {
-    ds.valid = splitDatasetSections( uri, ds );
+    valid = splitDatasetSections( uri, group );
   }
   else
   {
-    setError( QgsError( tr( "Unable to add dataset to invalid mesh" ),
+    setError( QgsError( tr( "Unable to add dataset group to invalid mesh" ),
                         QStringLiteral( "Mesh Memory Provider" ) ) );
   }
 
-  mDatasets.push_back( ds );
+  mDatasetGroups.push_back( group );
 
-  return ds.valid;
-}
-
-int QgsMeshMemoryDataProvider::datasetCount() const
-{
-  return mDatasets.count();
-}
-
-QgsMeshDatasetMetadata QgsMeshMemoryDataProvider::datasetMetadata( int index ) const
-{
-  if ( ( index >= 0 ) && ( index < datasetCount() ) )
+  if ( valid )
   {
+    mExtraDatasetUris << uri;
+    emit datasetGroupsAdded( 1 );
+    emit dataChanged();
+  }
+
+  return valid;
+}
+
+QStringList QgsMeshMemoryDataProvider::extraDatasets() const
+{
+  return mExtraDatasetUris;
+}
+
+int QgsMeshMemoryDataProvider::datasetGroupCount() const
+{
+  return mDatasetGroups.count();
+}
+
+int QgsMeshMemoryDataProvider::datasetCount( int groupIndex ) const
+{
+  if ( ( groupIndex >= 0 ) && ( groupIndex < datasetGroupCount() ) )
+    return mDatasetGroups[groupIndex].datasets.count();
+  else
+    return 0;
+}
+
+QgsMeshDatasetGroupMetadata QgsMeshMemoryDataProvider::datasetGroupMetadata( int groupIndex ) const
+{
+  if ( ( groupIndex >= 0 ) && ( groupIndex < datasetGroupCount() ) )
+  {
+    QgsMeshDatasetGroupMetadata metadata(
+      mDatasetGroups[groupIndex].name,
+      mDatasetGroups[groupIndex].isScalar,
+      mDatasetGroups[groupIndex].isOnVertices,
+      mDatasetGroups[groupIndex].metadata
+    );
+    return metadata;
+  }
+  else
+  {
+    return QgsMeshDatasetGroupMetadata();
+  }
+}
+
+QgsMeshDatasetMetadata QgsMeshMemoryDataProvider::datasetMetadata( QgsMeshDatasetIndex index ) const
+{
+  if ( ( index.group() >= 0 ) && ( index.group() < datasetGroupCount() ) &&
+       ( index.dataset() >= 0 ) && ( index.dataset() < datasetCount( index.group() ) )
+     )
+  {
+    const QgsMeshMemoryDatasetGroup &grp = mDatasetGroups.at( index.group() );
     QgsMeshDatasetMetadata metadata(
-      mDatasets[index].isScalar,
-      mDatasets[index].valid,
-      mDatasets[index].isOnVertices,
-      mDatasets[index].metadata
+      grp.datasets[index.dataset()].time,
+      grp.datasets[index.dataset()].valid
     );
     return metadata;
   }
@@ -337,19 +393,25 @@ QgsMeshDatasetMetadata QgsMeshMemoryDataProvider::datasetMetadata( int index ) c
   }
 }
 
-QgsMeshDatasetValue QgsMeshMemoryDataProvider::datasetValue( int datasetIndex, int valueIndex ) const
+QgsMeshDatasetValue QgsMeshMemoryDataProvider::datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const
 {
-  if ( ( datasetIndex >= 0 ) &&
-       ( datasetIndex < datasetCount() )  &&
-       ( valueIndex >= 0 ) &&
-       ( valueIndex < mDatasets[datasetIndex].values.count() ) )
+  if ( ( index.group() >= 0 ) && ( index.group() < datasetGroupCount() ) &&
+       ( index.dataset() >= 0 ) && ( index.dataset() < datasetCount( index.group() ) ) &&
+       ( valueIndex >= 0 ) && ( valueIndex < mDatasetGroups[index.group()].datasets[index.dataset()].values.count() ) )
   {
-    return mDatasets[datasetIndex].values[valueIndex];
+    return mDatasetGroups[index.group()].datasets[index.dataset()].values[valueIndex];
   }
   else
   {
     return QgsMeshDatasetValue();
   }
+}
+
+bool QgsMeshMemoryDataProvider::isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const
+{
+  Q_UNUSED( index );
+  Q_UNUSED( faceIndex );
+  return true;
 }
 
 

@@ -58,17 +58,17 @@ namespace QgsWfs
   /**
    * Transform Query element to getFeatureQuery
    */
-  getFeatureQuery parseQueryElement( QDomElement &queryElem );
+  getFeatureQuery parseQueryElement( QDomElement &queryElem, const QgsProject *project = nullptr );
 
   /**
    * Transform RequestBody root element to getFeatureRequest
    */
-  getFeatureRequest parseGetFeatureRequestBody( QDomElement &docElem );
+  getFeatureRequest parseGetFeatureRequestBody( QDomElement &docElem, const QgsProject *project = nullptr );
 
   /**
    * Transform parameters to getFeatureRequest
    */
-  getFeatureRequest parseGetFeatureParameters();
+  getFeatureRequest parseGetFeatureParameters( const QgsProject *project = nullptr );
 
   /**
    * Output WFS  GetFeature response
@@ -77,7 +77,7 @@ namespace QgsWfs
                         const QString &version, const QgsServerRequest &request,
                         QgsServerResponse &response );
 
-} // samespace QgsWfs
+} // namespace QgsWfs
 
 #endif
 

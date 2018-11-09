@@ -28,10 +28,8 @@
 
 QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>( source, ownSource, request )
-  , mExpressionCompiled( false )
 {
-
-  mHandle = QgsSpatiaLiteConnPool::instance()->acquireConnection( mSource->mSqlitePath );
+  mHandle = QgsSpatiaLiteConnPool::instance()->acquireConnection( mSource->mSqlitePath, request.timeout(), request.requestMayBeNested() );
 
   mFetchGeometry = !mSource->mGeometryColumn.isNull() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   mHasPrimaryKey = !mSource->mPrimaryKey.isEmpty();
@@ -213,6 +211,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
       mExpressionCompiled = false;
       success = prepareStatement( fallbackWhereClause, -1, orderByParts.join( QStringLiteral( "," ) ) );
+      mCompileFailed = true;
     }
 
     if ( !success )
@@ -239,7 +238,7 @@ bool QgsSpatiaLiteFeatureIterator::fetchFeature( QgsFeature &feature )
 
   if ( !sqliteStatement )
   {
-    QgsDebugMsg( "Invalid current SQLite statement" );
+    QgsDebugMsg( QStringLiteral( "Invalid current SQLite statement" ) );
     close();
     return false;
   }
@@ -356,6 +355,8 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause,
     if ( limit >= 0 )
       sql += QStringLiteral( " LIMIT %1" ).arg( limit );
 
+    // qDebug() << sql;
+
     if ( sqlite3_prepare_v2( mHandle->handle(), sql.toUtf8().constData(), -1, &sqliteStatement, nullptr ) != SQLITE_OK )
     {
       // some error occurred
@@ -385,7 +386,7 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseFid()
 QString QgsSpatiaLiteFeatureIterator::whereClauseFids()
 {
   if ( mRequest.filterFids().isEmpty() )
-    return QLatin1String( "" );
+    return QString();
 
   QString expr = QStringLiteral( "%1 IN (" ).arg( quotedPrimaryKey() ), delim;
   Q_FOREACH ( const QgsFeatureId featureId, mRequest.filterFids() )
@@ -509,7 +510,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
       {
         // first column always contains the ROWID (or the primary key)
         QgsFeatureId fid = sqlite3_column_int64( stmt, ic );
-        QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 3 );
+        QgsDebugMsgLevel( QStringLiteral( "fid=%1" ).arg( fid ), 3 );
         feature.setId( fid );
       }
       else

@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
 #include <QSettings>
 #include <QEvent>
 #include <QHBoxLayout>
@@ -34,6 +33,7 @@
 #include "qgisapp.h"
 #include "qgsspinbox.h"
 #include "qgsdoublespinbox.h"
+#include "qgsmapmouseevent.h"
 
 
 QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *parent )
@@ -235,7 +235,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     if ( vlayer->selectedFeatureCount() == 0 )
     {
-      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setSubsetOfAttributes( QgsAttributeList() ) );
+      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setNoAttributes() );
 
       //find the closest feature
       QgsGeometry pointGeometry = QgsGeometry::fromPointXY( layerCoords );
@@ -299,8 +299,6 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
       }
     }
 
-    mRubberBand->setColor( QColor( 255, 0, 0, 65 ) );
-    mRubberBand->setWidth( 2 );
     mRubberBand->show();
 
     double XDistance = mInitialPos.x() - mAnchorPoint->x();

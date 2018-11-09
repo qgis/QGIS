@@ -31,15 +31,18 @@ import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
-from qgis.PyQt.QtWidgets import QToolButton, QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
+from qgis.PyQt.QtWidgets import QToolButton, QMenu, QAction
 from qgis.utils import iface
-from qgis.core import (QgsApplication,
+from qgis.core import (QgsWkbTypes,
+                       QgsMapLayer,
+                       QgsApplication,
                        QgsProcessingAlgorithm)
-from qgis.gui import QgsDockWidget
+from qgis.gui import (QgsGui,
+                      QgsDockWidget,
+                      QgsProcessingToolboxProxyModel)
 
 from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.core.ProcessingLog import ProcessingLog
-from processing.core.ProcessingConfig import ProcessingConfig, settingsWatcher
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
@@ -49,6 +52,7 @@ from processing.gui.AlgorithmExecutor import execute
 from processing.gui.ProviderActions import (ProviderActions,
                                             ProviderContextMenuActions)
 from processing.tools import dataobjects
+from processing.gui.AlgorithmExecutor import execute_in_place
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -70,20 +74,23 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
     def __init__(self):
         super(ProcessingToolbox, self).__init__(None)
         self.tipWasClosed = False
+        self.in_place_mode = False
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.processingToolbar.setIconSize(iface.iconSize(True))
 
+        self.algorithmTree.setRegistry(QgsApplication.processingRegistry(),
+                                       QgsGui.instance().processingRecentAlgorithmLog())
+        self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.FilterToolbox)
+
         self.searchBox.setShowSearchIcon(True)
 
-        self.searchBox.textChanged.connect(self.textChanged)
+        self.searchBox.textChanged.connect(self.algorithmTree.setFilterString)
         self.searchBox.returnPressed.connect(self.activateCurrent)
         self.algorithmTree.customContextMenuRequested.connect(
             self.showPopupMenu)
         self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
-        self.txtDisabled.setVisible(False)
         self.txtTip.setVisible(self.disabledProviders())
-        self.txtDisabled.linkActivated.connect(self.showDisabled)
 
         def openSettings(url):
             if url == "close":
@@ -97,23 +104,27 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(QCoreApplication.translate('ProcessingToolbox', 'Search…'))
 
-        self.fillTree()
-
         # connect to existing providers
         for p in QgsApplication.processingRegistry().providers():
-            p.algorithmsLoaded.connect(self.updateProvider)
             if p.isActive():
                 self.addProviderActions(p)
 
+        QgsApplication.processingRegistry().providerRemoved.connect(self.addProvider)
         QgsApplication.processingRegistry().providerRemoved.connect(self.removeProvider)
-        QgsApplication.processingRegistry().providerAdded.connect(self.addProvider)
-        settingsWatcher.settingsChanged.connect(self.fillTree)
 
-    def showDisabled(self):
-        self.txtDisabled.setVisible(False)
-        for provider_id in self.disabledWithMatchingAlgs:
-            self.disabledProviderItems[provider_id].setHidden(False)
-        self.algorithmTree.expandAll()
+        iface.currentLayerChanged.connect(self.layer_changed)
+
+    def set_in_place_edit_mode(self, enabled):
+        if enabled:
+            self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterToolbox | QgsProcessingToolboxProxyModel.FilterInPlace))
+        else:
+            self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.FilterToolbox)
+        self.in_place_mode = enabled
+
+    def layer_changed(self, layer):
+        if layer is None or layer.type() != QgsMapLayer.VectorLayer:
+            return
+        self.algorithmTree.setInPlaceLayer(layer)
 
     def disabledProviders(self):
         showTip = ProcessingConfig.getSetting(ProcessingConfig.SHOW_PROVIDERS_TOOLTIP)
@@ -121,86 +132,10 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             return False
 
         for provider in QgsApplication.processingRegistry().providers():
-            if not provider.isActive():
+            if not provider.isActive() and provider.canBeActivated():
                 return True
 
         return False
-
-    def textChanged(self):
-        text = self.searchBox.text().strip(' ').lower()
-        for item in list(self.disabledProviderItems.values()):
-            item.setHidden(True)
-        self._filterItem(self.algorithmTree.invisibleRootItem(), [t for t in text.split(' ') if t])
-        if text:
-            self.algorithmTree.expandAll()
-            self.disabledWithMatchingAlgs = []
-            for provider in QgsApplication.processingRegistry().providers():
-                if not provider.isActive():
-                    for alg in provider.algorithms():
-                        if text in alg.name():
-                            self.disabledWithMatchingAlgs.append(provider.id())
-                            break
-            showTip = ProcessingConfig.getSetting(ProcessingConfig.SHOW_PROVIDERS_TOOLTIP)
-            if showTip:
-                self.txtDisabled.setVisible(bool(self.disabledWithMatchingAlgs))
-
-            if self.algorithmTree.currentItem() is None or self.algorithmTree.currentItem().isHidden():
-                # if previously selected item was hidden, auto select the first visible algorithm
-                first_visible = self._findFirstVisibleAlgorithm(self.algorithmTree.invisibleRootItem())
-                if first_visible is not None:
-                    self.algorithmTree.setCurrentItem(first_visible)
-        else:
-            self.algorithmTree.collapseAll()
-            self.algorithmTree.invisibleRootItem().child(0).setExpanded(True)
-            self.txtDisabled.setVisible(False)
-
-    def _filterItem(self, item, text):
-        if (item.childCount() > 0):
-            show = False
-            for i in range(item.childCount()):
-                child = item.child(i)
-                showChild = self._filterItem(child, text)
-                show = (showChild or show) and item not in list(self.disabledProviderItems.values())
-            item.setHidden(not show)
-            return show
-        elif isinstance(item, TreeAlgorithmItem):
-            # hide if every part of text is not contained somewhere in either the item text or item user role
-            item_text = [item.text(0).lower(), item.data(0, ProcessingToolbox.NAME_ROLE).lower()]
-            item_text.append(item.alg.id().lower())
-            if item.alg.shortDescription():
-                item_text.append(item.alg.shortDescription().lower())
-            item_text.extend([t.lower() for t in item.data(0, ProcessingToolbox.TAG_ROLE)])
-
-            hide = bool(text) and not all(
-                any(part in t for t in item_text)
-                for part in text)
-
-            item.setHidden(hide)
-            return not hide
-        else:
-            item.setHidden(True)
-            return False
-
-    def _findFirstVisibleAlgorithm(self, item):
-        """
-        Returns the first visible algorithm in the tree widget
-        """
-        if item is None:
-            return None
-        if item.childCount() > 0:
-            for i in range(item.childCount()):
-                child = item.child(i)
-                first_visible = self._findFirstVisibleAlgorithm(child)
-                if first_visible is not None:
-                    return first_visible
-            return None
-        elif isinstance(item, TreeAlgorithmItem):
-            if not item.isHidden():
-                return item
-            else:
-                return None
-        else:
-            return None
 
     def addProviderActions(self, provider):
         if provider.id() in ProviderActions.actions:
@@ -220,68 +155,35 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             toolbarButton.setMenu(menu)
             self.processingToolbar.addWidget(toolbarButton)
 
-    def activateProvider(self, id):
-        provider = QgsApplication.processingRegistry().providerById(id)
-        if not provider.canBeActivated():
-            QMessageBox.warning(self, self.tr("Activate provider"),
-                                self.tr("The provider has been activated, but it might need additional configuration."))
-            return
-
-        try:
-            # not part of the base class - only some providers have a setActive member
-            provider.setActive(True)
+    def addProvider(self, provider_id):
+        provider = QgsApplication.processingRegistry().providerById(provider_id)
+        if provider is not None:
             self.addProviderActions(provider)
-            self.fillTree()
-            self.textChanged()
-            self.showDisabled()
-        except:
-            QMessageBox.warning(self, self.tr("Activate provider"),
-                                self.tr("The provider could not be activated."))
-
-    def updateProvider(self):
-        provider = self.sender()
-        item = self._providerItem(provider.id())
-        if item is not None:
-            item.refresh()
-            item.sortChildren(0, Qt.AscendingOrder)
-            for i in range(item.childCount()):
-                item.child(i).sortChildren(0, Qt.AscendingOrder)
-            self.addRecentAlgorithms(True)
 
     def removeProvider(self, provider_id):
-        item = self._providerItem(provider_id)
-        if item is not None:
-            self.algorithmTree.invisibleRootItem().removeChild(item)
         button = self.findChild(QToolButton, 'provideraction-' + provider_id)
         if button:
             self.processingToolbar.removeChild(button)
 
-    def _providerItem(self, provider_id):
-        for i in range(self.algorithmTree.invisibleRootItem().childCount()):
-            child = self.algorithmTree.invisibleRootItem().child(i)
-            if isinstance(child, TreeProviderItem):
-                if child.provider.id() == provider_id:
-                    return child
-
     def showPopupMenu(self, point):
-        item = self.algorithmTree.itemAt(point)
+        index = self.algorithmTree.indexAt(point)
         popupmenu = QMenu()
-        if isinstance(item, TreeAlgorithmItem):
-            alg = item.alg
-            executeAction = QAction(QCoreApplication.translate('ProcessingToolbox', 'Execute…'), self.algorithmTree)
+        alg = self.algorithmTree.algorithmForIndex(index)
+        if alg is not None:
+            executeAction = QAction(QCoreApplication.translate('ProcessingToolbox', 'Execute…'), popupmenu)
             executeAction.triggered.connect(self.executeAlgorithm)
             popupmenu.addAction(executeAction)
             if alg.flags() & QgsProcessingAlgorithm.FlagSupportsBatch:
                 executeBatchAction = QAction(
                     QCoreApplication.translate('ProcessingToolbox', 'Execute as Batch Process…'),
-                    self.algorithmTree)
+                    popupmenu)
                 executeBatchAction.triggered.connect(
                     self.executeAlgorithmAsBatchProcess)
                 popupmenu.addAction(executeBatchAction)
             popupmenu.addSeparator()
             editRenderingStylesAction = QAction(
                 QCoreApplication.translate('ProcessingToolbox', 'Edit Rendering Styles for Outputs…'),
-                self.algorithmTree)
+                popupmenu)
             editRenderingStylesAction.triggered.connect(
                 self.editRenderingStyles)
             popupmenu.addAction(editRenderingStylesAction)
@@ -289,19 +191,18 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             if len(actions) > 0:
                 popupmenu.addSeparator()
             for action in actions:
-                action.setData(item.alg, self)
+                action.setData(alg, self)
                 if action.isEnabled():
                     contextMenuAction = QAction(action.name,
-                                                self.algorithmTree)
+                                                popupmenu)
                     contextMenuAction.triggered.connect(action.execute)
                     popupmenu.addAction(contextMenuAction)
 
             popupmenu.exec_(self.algorithmTree.mapToGlobal(point))
 
     def editRenderingStyles(self):
-        item = self.algorithmTree.currentItem()
-        if isinstance(item, TreeAlgorithmItem):
-            alg = QgsApplication.processingRegistry().createAlgorithmById(item.alg.id())
+        alg = self.algorithmTree.selectedAlgorithm().create() if self.algorithmTree.selectedAlgorithm() is not None else None
+        if alg is not None:
             dlg = EditRenderingStylesDialog(alg)
             dlg.exec_()
 
@@ -309,21 +210,16 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.executeAlgorithm()
 
     def executeAlgorithmAsBatchProcess(self):
-        item = self.algorithmTree.currentItem()
-        if isinstance(item, TreeAlgorithmItem):
-            alg = QgsApplication.processingRegistry().createAlgorithmById(item.alg.id())
-            if alg:
-                dlg = BatchAlgorithmDialog(alg)
-                dlg.show()
-                dlg.exec_()
+        alg = self.algorithmTree.selectedAlgorithm().create() if self.algorithmTree.selectedAlgorithm() is not None else None
+        if alg is not None:
+            dlg = BatchAlgorithmDialog(alg, iface.mainWindow())
+            dlg.setAttribute(Qt.WA_DeleteOnClose)
+            dlg.show()
+            dlg.exec_()
 
     def executeAlgorithm(self):
-        item = self.algorithmTree.currentItem()
-        if isinstance(item, TreeAlgorithmItem):
-            alg = QgsApplication.processingRegistry().createAlgorithmById(item.alg.id())
-            if not alg:
-                return
-
+        alg = self.algorithmTree.selectedAlgorithm().create() if self.algorithmTree.selectedAlgorithm() is not None else None
+        if alg is not None:
             ok, message = alg.canExecute()
             if not ok:
                 dlg = MessageDialog()
@@ -334,11 +230,21 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 dlg.exec_()
                 return
 
+            if self.in_place_mode and not [d for d in alg.parameterDefinitions() if d.name() not in ('INPUT', 'OUTPUT')]:
+                parameters = {}
+                feedback = MessageBarProgress(algname=alg.displayName())
+                ok, results = execute_in_place(alg, parameters, feedback=feedback)
+                if ok:
+                    iface.messageBar().pushSuccess('', self.tr('{} complete').format(alg.displayName()))
+                feedback.close()
+                # MessageBarProgress handles errors
+                return
+
             if alg.countVisibleParameters() > 0:
                 dlg = alg.createCustomParametersWidget(self)
 
                 if not dlg:
-                    dlg = AlgorithmDialog(alg)
+                    dlg = AlgorithmDialog(alg, self.in_place_mode, iface.mainWindow())
                 canvas = iface.mapCanvas()
                 prevMapTool = canvas.mapTool()
                 dlg.show()
@@ -349,208 +255,10 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                     except:
                         pass
                     canvas.setMapTool(prevMapTool)
-                if dlg.wasExecuted():
-                    showRecent = ProcessingConfig.getSetting(
-                        ProcessingConfig.SHOW_RECENT_ALGORITHMS)
-                    if showRecent:
-                        self.addRecentAlgorithms(True)
             else:
-                feedback = MessageBarProgress()
+                feedback = MessageBarProgress(algname=alg.displayName())
                 context = dataobjects.createContext(feedback)
                 parameters = {}
                 ret, results = execute(alg, parameters, context, feedback)
                 handleAlgorithmResults(alg, context, feedback)
                 feedback.close()
-
-    def fillTree(self):
-        self.fillTreeUsingProviders()
-        self.addRecentAlgorithms(False)
-
-    def addRecentAlgorithms(self, updating):
-        showRecent = ProcessingConfig.getSetting(
-            ProcessingConfig.SHOW_RECENT_ALGORITHMS)
-        if showRecent:
-            recent = ProcessingLog.getRecentAlgorithms()
-            if len(recent) != 0:
-                found = False
-                if updating:
-                    recentItem = self.algorithmTree.topLevelItem(0)
-                    if recentItem.text(0) == self.tr('Recently used'):
-                        treeWidget = recentItem.treeWidget()
-                        treeWidget.takeTopLevelItem(
-                            treeWidget.indexOfTopLevelItem(recentItem))
-
-                recentItem = QTreeWidgetItem()
-                recentItem.setText(0, self.tr('Recently used'))
-                for algname in recent:
-                    alg = QgsApplication.processingRegistry().createAlgorithmById(algname)
-                    if alg is not None:
-                        algItem = TreeAlgorithmItem(alg)
-                        recentItem.addChild(algItem)
-                        found = True
-                if found:
-                    self.algorithmTree.insertTopLevelItem(0, recentItem)
-                    recentItem.setExpanded(True)
-
-            self.algorithmTree.setWordWrap(True)
-
-    def addProvider(self, provider_id):
-        provider = QgsApplication.processingRegistry().providerById(provider_id)
-        providerItem = TreeProviderItem(provider, self.algorithmTree, self)
-
-        for i in range(self.algorithmTree.invisibleRootItem().childCount()):
-            child = self.algorithmTree.invisibleRootItem().child(i)
-            if isinstance(child, TreeProviderItem):
-                if child.text(0) > providerItem.text(0):
-                    break
-
-        self.algorithmTree.insertTopLevelItem(i, providerItem)
-        if not provider.isActive():
-            providerItem.setHidden(True)
-            self.disabledProviderItems[provider.id()] = providerItem
-
-        provider.algorithmsLoaded.connect(self.updateProvider)
-
-    def fillTreeUsingProviders(self):
-        self.algorithmTree.clear()
-        self.disabledProviderItems = {}
-
-        # TODO - replace with proper model for toolbox!
-
-        # first add qgis/native providers, since they create top level groups
-        for provider in QgsApplication.processingRegistry().providers():
-            if provider.id() in ('qgis', 'native', '3d'):
-                self.addAlgorithmsFromProvider(provider, self.algorithmTree.invisibleRootItem())
-            else:
-                continue
-        self.algorithmTree.sortItems(0, Qt.AscendingOrder)
-
-        for provider in QgsApplication.processingRegistry().providers():
-            if provider.id() in ('qgis', 'native', '3d'):
-                # already added
-                continue
-            else:
-                providerItem = TreeProviderItem(provider, self.algorithmTree, self)
-
-                # insert non-native providers at end of tree, alphabetically
-                for i in range(self.algorithmTree.invisibleRootItem().childCount()):
-                    child = self.algorithmTree.invisibleRootItem().child(i)
-                    if isinstance(child, TreeProviderItem):
-                        if child.text(0) > providerItem.text(0):
-                            break
-
-                self.algorithmTree.insertTopLevelItem(i + 1, providerItem)
-                if not provider.isActive():
-                    providerItem.setHidden(True)
-                    self.disabledProviderItems[provider.id()] = providerItem
-
-    def addAlgorithmsFromProvider(self, provider, parent):
-        groups = {}
-        count = 0
-        algs = provider.algorithms()
-        active = provider.isActive()
-
-        # Add algorithms
-        for alg in algs:
-            if alg.flags() & QgsProcessingAlgorithm.FlagHideFromToolbox:
-                continue
-            groupItem = None
-            if alg.group() in groups:
-                groupItem = groups[alg.group()]
-            else:
-                # check if group already exists
-                for i in range(parent.childCount()):
-                    if parent.child(i).text(0) == alg.group():
-                        groupItem = parent.child(i)
-                        groups[alg.group()] = groupItem
-                        break
-
-                if not groupItem:
-                    groupItem = TreeGroupItem(alg.group())
-                    if not active:
-                        groupItem.setInactive()
-                    if provider.id() in ('qgis', 'native', '3d'):
-                        groupItem.setIcon(0, provider.icon())
-                    groups[alg.group()] = groupItem
-            algItem = TreeAlgorithmItem(alg)
-            if not active:
-                algItem.setForeground(0, Qt.darkGray)
-            groupItem.addChild(algItem)
-            count += 1
-
-        text = provider.name()
-
-        if not provider.id() in ('qgis', 'native', '3d'):
-            if not active:
-                def activateProvider():
-                    self.activateProvider(provider.id())
-
-                label = QLabel(text + "&nbsp;&nbsp;&nbsp;&nbsp;<a href='%s'>Activate</a>")
-                label.setStyleSheet("QLabel {background-color: white; color: grey;}")
-                label.linkActivated.connect(activateProvider)
-                self.algorithmTree.setItemWidget(parent, 0, label)
-            else:
-                parent.setText(0, text)
-
-        for group, groupItem in sorted(groups.items(), key=operator.itemgetter(1)):
-            parent.addChild(groupItem)
-
-        if not provider.id() in ('qgis', 'native', '3d'):
-            parent.setHidden(parent.childCount() == 0)
-
-
-class TreeAlgorithmItem(QTreeWidgetItem):
-
-    def __init__(self, alg):
-        QTreeWidgetItem.__init__(self)
-        self.alg = alg
-        icon = alg.icon()
-        nameEn = alg.name()
-        name = alg.displayName()
-        name = name if name != '' else nameEn
-        self.setIcon(0, icon)
-        self.setToolTip(0, self.formatAlgorithmTooltip(alg))
-        self.setText(0, name)
-        self.setData(0, ProcessingToolbox.NAME_ROLE, nameEn)
-        self.setData(0, ProcessingToolbox.TAG_ROLE, alg.tags())
-        self.setData(0, ProcessingToolbox.TYPE_ROLE, ProcessingToolbox.ALG_ITEM)
-
-    def formatAlgorithmTooltip(self, alg):
-        return '<p><b>{}</b></p>{}<p>{}</p>'.format(
-            alg.displayName(),
-            '<p>{}</p>'.format(alg.shortDescription()) if alg.shortDescription() else '',
-            QCoreApplication.translate('Toolbox', 'Algorithm ID: ‘{}’').format('<i>{}</i>'.format(alg.id()))
-        )
-
-
-class TreeGroupItem(QTreeWidgetItem):
-
-    def __init__(self, name):
-        QTreeWidgetItem.__init__(self)
-        self.setToolTip(0, name)
-        self.setText(0, name)
-        self.setData(0, ProcessingToolbox.NAME_ROLE, name)
-        self.setData(0, ProcessingToolbox.TYPE_ROLE, ProcessingToolbox.GROUP_ITEM)
-
-    def setInactive(self):
-        self.setForeground(0, Qt.darkGray)
-
-
-class TreeProviderItem(QTreeWidgetItem):
-
-    def __init__(self, provider, tree, toolbox):
-        QTreeWidgetItem.__init__(self, None)
-        self.tree = tree
-        self.toolbox = toolbox
-        self.provider = provider
-        self.setIcon(0, self.provider.icon())
-        self.setData(0, ProcessingToolbox.TYPE_ROLE, ProcessingToolbox.PROVIDER_ITEM)
-        self.setToolTip(0, self.provider.longName())
-        self.populate()
-
-    def refresh(self):
-        self.takeChildren()
-        self.populate()
-
-    def populate(self):
-        self.toolbox.addAlgorithmsFromProvider(self.provider, self)

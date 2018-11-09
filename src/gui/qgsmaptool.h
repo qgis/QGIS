@@ -18,9 +18,6 @@
 
 #include "qgsconfig.h"
 #include "qgis.h"
-#include "qgsmessagebar.h"
-#include "qgspoint.h"
-#include "qgsmapmouseevent.h"
 
 #include <QCursor>
 #include <QString>
@@ -35,11 +32,13 @@ class QgsRenderContext;
 class QKeyEvent;
 class QMouseEvent;
 class QWheelEvent;
+class QgsPoint;
 class QgsPointXY;
 class QgsRectangle;
 class QPoint;
 class QAction;
 class QAbstractButton;
+class QgsMapMouseEvent;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -137,6 +136,12 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //! Returns associated action with map tool or NULL if no action is associated
     QAction *action();
+
+    /**
+     * Returns if the current map tool active on the map canvas
+     * \since QGIS 3.4
+     */
+    bool isActive() const;
 
     /**
      * Use this to associate a button to this maptool. It has the same meaning

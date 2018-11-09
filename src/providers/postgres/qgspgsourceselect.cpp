@@ -28,6 +28,7 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayer.h"
 #include "qgscolumntypethread.h"
 #include "qgssettings.h"
+#include "qgsproxyprogresstask.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -252,6 +253,11 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   mProxyModel.setFilterCaseSensitivity( Qt::CaseInsensitive );
   mProxyModel.setSourceModel( &mTableModel );
 
+  // Do not do dynamic sorting - otherwise whenever user selects geometry type / srid / pk columns,
+  // that item suddenly jumps to the end of the list (because the item gets changed) which is very annoying.
+  // The list gets sorted in finishList() method when the listing of tables and views has finished.
+  mProxyModel.setDynamicSortFilter( false );
+
   mTablesTreeView->setModel( &mProxyModel );
   mTablesTreeView->setSortingEnabled( true );
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
@@ -321,7 +327,7 @@ void QgsPgSourceSelect::btnSave_clicked()
 void QgsPgSourceSelect::btnLoad_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *XML)" ) );
+                     tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -390,7 +396,7 @@ void QgsPgSourceSelect::mSearchGroupBox_toggled( bool checked )
   if ( mSearchTableEdit->text().isEmpty() )
     return;
 
-  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
+  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QString() );
 }
 
 void QgsPgSourceSelect::mSearchTableEdit_textChanged( const QString &text )
@@ -545,13 +551,18 @@ void QgsPgSourceSelect::btnConnect_clicked()
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
   mColumnTypeThread = new QgsGeomColumnTypeThread( cmbConnections->currentText(), mUseEstimatedMetadata, cbxAllowGeometrylessTables->isChecked() );
+  mColumnTypeTask = new QgsProxyProgressTask( tr( "Scanning tables for %1" ).arg( cmbConnections->currentText() ) );
+  QgsApplication::taskManager()->addTask( mColumnTypeTask );
 
   connect( mColumnTypeThread, &QgsGeomColumnTypeThread::setLayerType,
            this, &QgsPgSourceSelect::setLayerType );
   connect( mColumnTypeThread, &QThread::finished,
            this, &QgsPgSourceSelect::columnThreadFinished );
   connect( mColumnTypeThread, &QgsGeomColumnTypeThread::progress,
-           this, &QgsPgSourceSelect::progress );
+           mColumnTypeTask, [ = ]( int i, int n )
+  {
+    mColumnTypeTask->setProxyProgress( 100.0 * static_cast< double >( i ) / n );
+  } );
   connect( mColumnTypeThread, &QgsGeomColumnTypeThread::progressMessage,
            this, &QgsPgSourceSelect::progressMessage );
 
@@ -572,6 +583,8 @@ void QgsPgSourceSelect::columnThreadFinished()
   delete mColumnTypeThread;
   mColumnTypeThread = nullptr;
   btnConnect->setText( tr( "Connect" ) );
+  mColumnTypeTask->finalize( true );
+  mColumnTypeTask = nullptr;
 
   finishList();
 }
@@ -600,7 +613,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
 {
   if ( !index.parent().isValid() )
   {
-    QgsDebugMsg( "schema item found" );
+    QgsDebugMsg( QStringLiteral( "schema item found" ) );
     return;
   }
 
@@ -610,7 +623,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   QString uri = mTableModel.layerURI( idx, connectionInfo( false ), mUseEstimatedMetadata );
   if ( uri.isNull() )
   {
-    QgsDebugMsg( "no uri" );
+    QgsDebugMsg( QStringLiteral( "no uri" ) );
     return;
   }
 

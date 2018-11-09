@@ -29,7 +29,7 @@ Construct a new ratio lock button.
 Use ``parent`` to attach a parent QWidget to the button.
 %End
 
-    void setLocked( const bool locked );
+    void setLocked( bool locked );
 %Docstring
 Sets whether the button state is locked.
 
@@ -79,7 +79,7 @@ from the current values of the width and height spin boxes.
 
   signals:
 
-    void lockChanged( const bool locked );
+    void lockChanged( bool locked );
 %Docstring
 Emitted whenever the lock state changes.
 %End

@@ -84,6 +84,14 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
 
     QgsPolygon *createEmptyWithSameType() const override SIP_FACTORY;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsPolygon: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   protected:
 
     friend class QgsCurvePolygon;

@@ -17,6 +17,7 @@
 
 #include "qgsstylegroupselectiondialog.h"
 #include "qgsstyle.h"
+#include "qgsgui.h"
 
 #include <QStandardItemModel>
 #include <QStandardItem>
@@ -28,16 +29,18 @@ QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWi
 {
   setupUi( this );
 
+  QgsGui::enableAutoGeometryRestore( this );
+
   QStandardItemModel *model = new QStandardItemModel( groupTree );
   groupTree->setModel( model );
 
-  QStandardItem *allSymbols = new QStandardItem( tr( "All Symbols" ) );
+  QStandardItem *allSymbols = new QStandardItem( tr( "All" ) );
   allSymbols->setData( "all", Qt::UserRole + 2 );
   allSymbols->setEditable( false );
   setBold( allSymbols );
   model->appendRow( allSymbols );
 
-  QStandardItem *tags = new QStandardItem( QLatin1String( "" ) ); //require empty name to get first order groups
+  QStandardItem *tags = new QStandardItem( QString() ); //require empty name to get first order groups
   tags->setData( "tagsheader", Qt::UserRole + 2 );
   tags->setEditable( false );
   tags->setFlags( tags->flags() & ~Qt::ItemIsSelectable );

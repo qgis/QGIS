@@ -16,17 +16,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include <QTemporaryFile>
+
 #include "qgswcsutils.h"
 #include "qgsserverprojectutils.h"
 #include "qgswcsgetcoverage.h"
 
+#include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterpipe.h"
 #include "qgsrasterprojector.h"
 #include "qgsrasterfilewriter.h"
 
-#include <QTemporaryFile>
 
 namespace QgsWcs
 {
@@ -165,9 +168,7 @@ namespace QgsWcs
     // transform rect
     if ( requestCRS != rLayer->crs() )
     {
-      Q_NOWARN_DEPRECATED_PUSH
-      QgsCoordinateTransform t( requestCRS, rLayer->crs() );
-      Q_NOWARN_DEPRECATED_POP
+      QgsCoordinateTransform t( requestCRS, rLayer->crs(), project );
       rect = t.transformBoundingBox( rect );
     }
 

@@ -234,7 +234,7 @@ bool QgsOptionsDialogHighlightTree::highlightText( const QString &text )
     setChildrenVisible( treeWidget->invisibleRootItem(), false );
 
     QList<QTreeWidgetItem *> items = treeWidget->findItems( text, Qt::MatchContains | Qt::MatchRecursive, 0 );
-    success = items.count() ? true : false;
+    success = !items.empty();
     mTreeInitialStyle.clear();
     mTreeInitialExpand.clear();
     for ( QTreeWidgetItem *item : items )

@@ -29,12 +29,17 @@ class QgsMapLayer;
 class QgsAccessControl;
 
 /**
- * RAII class to restore layer filters on destruction
+ * \ingroup server
+ * \brief RAII class to restore layer filters on destruction
+ * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsOWSServerFilterRestorer
 {
   public:
 
+    /**
+     * Default constructor for QgsOWSServerFilterRestorer.
+     */
     QgsOWSServerFilterRestorer() = default;
 
     //! Destructor. When object is destroyed all original layer filters will be restored.

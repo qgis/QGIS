@@ -183,7 +183,7 @@ class BatchInputSelectionPanel(QWidget):
         self.valueChanged.emit()
 
     def value(self):
-        return self._value
+        return self._value if self._value else None
 
     def setValue(self, value):
         self._value = value

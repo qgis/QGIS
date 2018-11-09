@@ -81,7 +81,7 @@
           <enum>Qt::StrongFocus</enum>
          </property>
          <property name="title">
-          <string>Main properties</string>
+          <string>Main Properties</string>
          </property>
          <property name="syncGroup" stdset="0">
           <string notr="true">composeritem</string>
@@ -176,7 +176,7 @@
           <item row="0" column="0" colspan="2">
            <widget class="QPushButton" name="mUpdatePreviewButton">
             <property name="text">
-             <string>Update preview</string>
+             <string>Update Preview</string>
             </property>
            </widget>
           </item>
@@ -413,7 +413,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mAtlasCheckBox">
          <property name="title">
-          <string>Controlled by atlas</string>
+          <string>Controlled by Atlas</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -600,7 +600,7 @@
             <item>
              <widget class="QPushButton" name="mGridPropertiesButton">
               <property name="text">
-               <string>Modify grid...</string>
+               <string>Modify grid…</string>
               </property>
              </widget>
             </item>
@@ -768,7 +768,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>Change...</string>
+                <string>Change…</string>
                </property>
               </widget>
              </item>

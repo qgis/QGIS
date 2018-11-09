@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsVectorLayerExporter,
                        QgsSettings,
                        QgsFeatureSink,
+                       QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
@@ -40,7 +41,6 @@ from processing.tools import postgis
 
 
 class ImportIntoPostGIS(QgisAlgorithm):
-
     DATABASE = 'DATABASE'
     TABLENAME = 'TABLENAME'
     SCHEMA = 'SCHEMA'
@@ -65,7 +65,8 @@ class ImportIntoPostGIS(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Layer to import')))
+                                                              self.tr('Layer to import'),
+                                                              types=[QgsProcessing.TypeVector]))
 
         db_param = QgsProcessingParameterString(
             self.DATABASE,
@@ -94,7 +95,8 @@ class ImportIntoPostGIS(QgisAlgorithm):
         self.addParameter(table_param)
 
         self.addParameter(QgsProcessingParameterField(self.PRIMARY_KEY,
-                                                      self.tr('Primary key field'), None, self.INPUT, QgsProcessingParameterField.Any, False, True))
+                                                      self.tr('Primary key field'), None, self.INPUT,
+                                                      QgsProcessingParameterField.Any, False, True))
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY_COLUMN,
                                                        self.tr('Geometry column'), 'geom'))
         self.addParameter(QgsProcessingParameterString(self.ENCODING,
@@ -109,13 +111,20 @@ class ImportIntoPostGIS(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.DROP_STRING_LENGTH,
                                                         self.tr('Drop length constraints on character fields'), False))
         self.addParameter(QgsProcessingParameterBoolean(self.FORCE_SINGLEPART,
-                                                        self.tr('Create single-part geometries instead of multi-part'), False))
+                                                        self.tr('Create single-part geometries instead of multi-part'),
+                                                        False))
 
     def name(self):
         return 'importintopostgis'
 
     def displayName(self):
-        return self.tr('Import into PostGIS')
+        return self.tr('Export to PostgreSQL')
+
+    def shortDescription(self):
+        return self.tr('Exports a vector layer to a PostgreSQL database')
+
+    def tags(self):
+        return self.tr('import,postgis,table,layer,into,copy').split(',')
 
     def processAlgorithm(self, parameters, context, feedback):
         connection = self.parameterAsString(parameters, self.DATABASE, context)

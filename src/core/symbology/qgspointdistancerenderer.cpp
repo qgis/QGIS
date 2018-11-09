@@ -94,7 +94,7 @@ bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRend
   QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( point, searchDistance ) );
   if ( intersectList.empty() )
   {
-    mSpatialIndex->insertFeature( transformedFeature );
+    mSpatialIndex->addFeature( transformedFeature );
     // create new group
     ClusteredGroup newGroup;
     newGroup << GroupedFeature( transformedFeature, symbol->clone(), selected, label );
@@ -216,6 +216,11 @@ QSet<QString> QgsPointDistanceRenderer::usedAttributes( const QgsRenderContext &
     attributeList += mRenderer->usedAttributes( context );
   }
   return attributeList;
+}
+
+bool QgsPointDistanceRenderer::filterNeedsGeometry() const
+{
+  return mRenderer ? mRenderer->filterNeedsGeometry() : false;
 }
 
 QgsFeatureRenderer::Capabilities QgsPointDistanceRenderer::capabilities()

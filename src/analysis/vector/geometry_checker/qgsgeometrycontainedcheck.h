@@ -19,6 +19,8 @@
 #define QGS_GEOMETRY_COVER_CHECK_H
 
 #include "qgsgeometrycheck.h"
+#include "qgsvectorlayer.h"
+#include "qgsgeometrycheckerror.h"
 
 class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckError
 {
@@ -29,7 +31,7 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckEr
                                     const QgsGeometryCheckerUtils::LayerFeature &containingFeature
                                   )
       : QgsGeometryCheckError( check, layerFeature, errorLocation, QgsVertexId(), containingFeature.id(), ValueOther )
-      , mContainingFeature( qMakePair( containingFeature.layer().id(), containingFeature.feature().id() ) )
+      , mContainingFeature( qMakePair( containingFeature.layer()->id(), containingFeature.feature().id() ) )
     { }
     const QPair<QString, QgsFeatureId> &containingFeature() const { return mContainingFeature; }
 
@@ -40,7 +42,8 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckEr
              static_cast<QgsGeometryContainedCheckError *>( other )->containingFeature() == containingFeature();
     }
 
-    QString description() const override { return QApplication::translate( "QgsGeometryContainedCheckError", "Within feature" ); }
+    static QString factoryDescription() { return QApplication::translate( "QgsGeometryContainedCheckError", "Within feature" ); }
+    QString description() const override { return factoryDescription(); }
 
   private:
     QPair<QString, QgsFeatureId> mContainingFeature;
@@ -48,18 +51,24 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckEr
 
 class ANALYSIS_EXPORT QgsGeometryContainedCheck : public QgsGeometryCheck
 {
-    Q_OBJECT
-
   public:
-    explicit QgsGeometryContainedCheck( QgsGeometryCheckerContext *context )
-      : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
-    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
-    QStringList getResolutionMethods() const override;
-    QString errorDescription() const override { return tr( "Within" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometryContainedCheck" ); }
-
     enum ResolutionMethod { Delete, NoChange };
+
+    explicit QgsGeometryContainedCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
+      : QgsGeometryCheck( context, configuration ) {}
+    QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
+    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
+    QStringList resolutionMethods() const override;
+    QString id() const override { return factoryId(); }
+    QString description() const override { return factoryDescription(); }
+    QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
+
+    static QList<QgsWkbTypes::GeometryType> factoryCompatibleGeometryTypes() {return {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}; }
+    static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
+    static QString factoryDescription() { return tr( "Within" ); }
+    static QString factoryId() { return QStringLiteral( "QgsGeometryContainedCheck" ); }
+    static QgsGeometryCheck::CheckType factoryCheckType() { return QgsGeometryCheck::FeatureCheck; }
 };
 
 #endif // QGS_GEOMETRY_COVER_CHECK_H

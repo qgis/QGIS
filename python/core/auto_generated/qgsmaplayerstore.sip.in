@@ -37,6 +37,13 @@ Constructor for QgsMapLayerStore.
 Returns the number of layers contained in the store.
 %End
 
+    int validCount() const;
+%Docstring
+Returns the number of valid layers contained in the store.
+
+.. versionadded:: 3.6
+%End
+
 
     int __len__() const;
 %Docstring
@@ -44,6 +51,12 @@ Returns the number of layers contained in the store.
 %End
 %MethodCode
     sipRes = sipCpp->count();
+%End
+
+    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    int __bool__() const;
+%MethodCode
+    sipRes = true;
 %End
 
     QgsMapLayer *mapLayer( const QString &id ) const;
@@ -83,6 +96,19 @@ Returns a map of all layers by layer ID.
 .. seealso:: :py:func:`layers`
 %End
 
+    QMap<QString, QgsMapLayer *> validMapLayers() const;
+%Docstring
+Returns a map of all valid layers by layer ID.
+
+.. seealso:: :py:func:`mapLayer`
+
+.. seealso:: :py:func:`mapLayersByName`
+
+.. seealso:: :py:func:`layers`
+
+.. versionadded:: 3.6
+%End
+
 
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &layers /Transfer/);
 
@@ -98,7 +124,7 @@ The layersAdded() and layerWasAdded() signals will always be emitted.
                       the layers yourself. Not available in Python.
 
 :return: a list of the map layers that were added
-         successfully. If a layer is invalid, or already exists in the store,
+         successfully. If a layer already exists in the store,
          it will not be part of the returned list.
 
 

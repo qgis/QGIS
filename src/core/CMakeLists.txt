@@ -2,6 +2,8 @@
 # sources
 
 SET(QGIS_CORE_SRCS
+  ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
+
   ${CMAKE_SOURCE_DIR}/external/nmea/context.c
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
   ${CMAKE_SOURCE_DIR}/external/nmea/info.c
@@ -9,6 +11,12 @@ SET(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/nmea/sentence.c
   ${CMAKE_SOURCE_DIR}/external/nmea/time.c
   ${CMAKE_SOURCE_DIR}/external/nmea/tok.c
+
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/common/shapes.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/advancing_front.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/cdt.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep_context.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
 
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
@@ -39,6 +47,7 @@ SET(QGIS_CORE_SRCS
   symbology/qgsrulebasedrenderer.cpp
   symbology/qgssinglesymbolrenderer.cpp
   symbology/qgsstyle.cpp
+  symbology/qgsstylemodel.cpp
   symbology/qgssvgcache.cpp
   symbology/qgssymbollayer.cpp
   symbology/qgssymbollayerregistry.cpp
@@ -142,6 +151,7 @@ SET(QGIS_CORE_SRCS
   qgsauxiliarystorage.cpp
   qgsbearingutils.cpp
   qgsbrowsermodel.cpp
+  qgsbrowserproxymodel.cpp
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
   qgscacheindexfeatureid.cpp
@@ -193,11 +203,14 @@ SET(QGIS_CORE_SRCS
   qgsfiledownloader.cpp
   qgsfileutils.cpp
   qgsfontutils.cpp
+  qgsgdalutils.cpp
   qgsgeometrysimplifier.cpp
   qgsgeometryvalidator.cpp
+  qgsgeometryoptions.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
   qgshistogram.cpp
+  qgshstoreutils.cpp
   qgshtmlutils.cpp
   qgsinterval.cpp
   qgsjsonutils.cpp
@@ -218,6 +231,7 @@ SET(QGIS_CORE_SRCS
   qgsmaplayermodel.cpp
   qgsmaplayerproxymodel.cpp
   qgsmaplayerstore.cpp
+  qgsmaplayerstyle.cpp
   qgsmaplayerstylemanager.cpp
   qgsmaprenderercache.cpp
   qgsmaprenderercustompainterjob.cpp
@@ -268,8 +282,10 @@ SET(QGIS_CORE_SRCS
   qgspropertytransformer.cpp
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
+  qgsproxyprogresstask.cpp
   qgspythonrunner.cpp
   qgsreadwritecontext.cpp
+  qgsreadwritelocker.cpp
   qgsrelation.cpp
   qgsrelationmanager.cpp
   qgsrenderchecker.cpp
@@ -282,6 +298,7 @@ SET(QGIS_CORE_SRCS
   qgssimplifymethod.cpp
   qgssnappingutils.cpp
   qgsspatialindex.cpp
+  qgsspatialindexkdbush.cpp
   qgssqlexpressioncompiler.cpp
   qgssqliteexpressioncompiler.cpp
   qgssqlstatement.cpp
@@ -291,10 +308,12 @@ SET(QGIS_CORE_SRCS
   qgsstringstatisticalsummary.cpp
   qgsstringutils.cpp
   qgstaskmanager.cpp
+  qgstessellator.cpp
   qgstextlabelfeature.cpp
   qgstextrenderer.cpp
   qgstolerance.cpp
   qgstracer.cpp
+  qgstranslationcontext.cpp
   qgstrackedvectorlayertools.cpp
   qgstransaction.cpp
   qgstransactiongroup.cpp
@@ -451,6 +470,7 @@ SET(QGIS_CORE_SRCS
   mesh/qgsmeshdataprovider.cpp
   mesh/qgsmeshlayer.cpp
   mesh/qgsmeshlayerrenderer.cpp
+  mesh/qgsmeshlayerutils.cpp
   mesh/qgsmeshmemorydataprovider.cpp
   mesh/qgstriangularmesh.cpp
   mesh/qgsmeshlayerinterpolator.cpp
@@ -511,7 +531,6 @@ SET(QGIS_CORE_SRCS
   qgsuserprofilemanager.cpp
 )
 
-
 FILE(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
 IF(NOT USING_NINJA)
   STRING(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
@@ -545,27 +564,6 @@ IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   SET_SOURCE_FILES_PROPERTIES(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
 ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
-IF (WITH_INTERNAL_QEXTSERIALPORT)
-  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    ${CMAKE_SOURCE_DIR}/external/qextserialport/qextserialport.cpp
-    ${CMAKE_SOURCE_DIR}/external/qextserialport/qextserialenumerator.cpp
-  )
-  IF(WIN32)
-    SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-      ${CMAKE_SOURCE_DIR}/external/qextserialport/win_qextserialport.cpp
-    )
-    ADD_DEFINITIONS(-D_TTY_WIN_)
-
-  ELSE(WIN32)
-    SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-      ${CMAKE_SOURCE_DIR}/external/qextserialport/posix_qextserialport.cpp
-    )
-    ADD_DEFINITIONS(-D_TTY_POSIX_)
-  ENDIF(WIN32)
-ELSE (WITH_INTERNAL_QEXTSERIALPORT)
-  INCLUDE_DIRECTORIES(${QEXTSERIALPORT_INCLUDE_DIR})
-ENDIF (WITH_INTERNAL_QEXTSERIALPORT)
-
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
   SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     gps/qgsqtlocationconnection.cpp
@@ -593,6 +591,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsanimatedicon.h
   qgsauxiliarystorage.h
   qgsbrowsermodel.h
+  qgsbrowserproxymodel.h
   qgscoordinatereferencesystem.h
   qgscredentials.h
   qgsdataitem.h
@@ -609,6 +608,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsfiledownloader.h
   qgsfeaturefiltermodel.h
   qgsfeaturefiltermodel_p.h
+  qgsgeometryoptions.h
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
@@ -638,6 +638,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgspointxy.h
   qgspointlocator.h
   qgsproject.h
+  qgsproxyprogresstask.h
   qgsrelationmanager.h
   qgsrelation.h
   qgsrunprocess.h
@@ -702,6 +703,7 @@ SET(QGIS_CORE_MOC_HDRS
   geometry/qgsabstractgeometry.h
   geometry/qgsgeometry.h
   geometry/qgspoint.h
+  geometry/qgswkbtypes.h
 
   geocms/geonode/qgsgeonoderequest.h
 
@@ -751,6 +753,7 @@ SET(QGIS_CORE_MOC_HDRS
   symbology/qgscptcityarchive.h
   symbology/qgssvgcache.h
   symbology/qgsstyle.h
+  symbology/qgsstylemodel.h
 
   layertree/qgslayertree.h
   layertree/qgslayertreegroup.h
@@ -774,20 +777,21 @@ ENDIF(NOT WITH_QTWEBKIT)
 #    qgshttptransaction.h
 #)
 
-IF (WITH_INTERNAL_QEXTSERIALPORT)
-  SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
-    ${CMAKE_SOURCE_DIR}/external/qextserialport/qextserialport.h
-    ${CMAKE_SOURCE_DIR}/external/qextserialport/qextserialenumerator.h
-  )
-ENDIF (WITH_INTERNAL_QEXTSERIALPORT)
-
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
   SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
     gps/qgsqtlocationconnection.h
   )
 ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 
+
+IF (HAVE_OPENCL)
+    SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
+        qgsopenclutils.h
+    )
+ENDIF (HAVE_OPENCL)
+
 QT5_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
+
 
 IF(MSVC)
   SET_SOURCE_FILES_PROPERTIES(${QGIS_CORE_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
@@ -810,6 +814,8 @@ SET(QGIS_CORE_HDRS
   expression/qgsexpressionnode.h
   expression/qgsexpressionnodeimpl.h
   expression/qgsexpressionfunction.h
+
+  qgstessellator.h
 
   qgis.h
   qgis_sip.h
@@ -855,6 +861,7 @@ SET(QGIS_CORE_HDRS
   qgsexpressioncontextscopegenerator.h
   qgsexpressionfieldbuffer.h
   qgsfeaturefilterprovider.h
+  qgsfeatureid.h
   qgsfeatureiterator.h
   qgsfeaturerequest.h
   qgsfeaturesink.h
@@ -867,6 +874,7 @@ SET(QGIS_CORE_HDRS
   qgsfontutils.h
   qgsgeometrysimplifier.h
   qgshistogram.h
+  qgshstoreutils.h
   qgshtmlutils.h
   qgsindexedfeature.h
   qgsinterval.h
@@ -885,7 +893,7 @@ SET(QGIS_CORE_HDRS
   qgsmaphittest.h
   qgsmaplayerdependency.h
   qgsmaplayerrenderer.h
-  qgsmaplayerstylemanager.h
+  qgsmaplayerstyle.h
   qgsmapsettings.h
   qgsmapsettingsutils.h
   qgsmaptopixel.h
@@ -910,6 +918,7 @@ SET(QGIS_CORE_HDRS
   qgsprojectproperty.h
   qgsprojectstorage.h
   qgsprojectstorageregistry.h
+  qgsprojecttranslator.h
   qgsprojectversion.h
   qgsproperty.h
   qgsproperty_p.h
@@ -920,6 +929,7 @@ SET(QGIS_CORE_HDRS
   qgspythonrunner.h
   qgsrange.h
   qgsreadwritecontext.h
+  qgsreadwritelocker.h
   qgsrenderchecker.h
   qgsrendercontext.h
   qgsrulebasedlabeling.h
@@ -929,6 +939,9 @@ SET(QGIS_CORE_HDRS
   qgssimplifymethod.h
   qgssnappingutils.h
   qgsspatialindex.h
+  qgsspatialindexkdbush.h
+  qgsspatialindexkdbush_p.h
+  qgsspatialindexkdbushdata.h
   qgsspatialiteutils.h
   qgssqlstatement.h
   qgssqliteutils.h
@@ -940,7 +953,9 @@ SET(QGIS_CORE_HDRS
   qgstextlabelfeature.h
   qgstextrenderer.h
   qgstextrenderer_p.h
+  qgsthreadingutils.h
   qgstracer.h
+  qgstranslationcontext.h
 
   qgsvectordataprovider.h
   qgsvectorlayercache.h
@@ -1079,6 +1094,7 @@ SET(QGIS_CORE_HDRS
   mesh/qgstriangularmesh.h
   mesh/qgsmeshlayerrenderer.h
   mesh/qgsmeshlayerinterpolator.h
+  mesh/qgsmeshlayerutils.h
   mesh/qgsmeshvectorrenderer.h
   mesh/qgsmeshrenderersettings.h
 
@@ -1147,7 +1163,6 @@ SET(QGIS_CORE_HDRS
   geometry/qgstriangle.h
   geometry/qgssurface.h
   geometry/qgswkbptr.h
-  geometry/qgswkbtypes.h
 
   3d/qgs3drendererregistry.h
   3d/qgsabstract3drenderer.h
@@ -1203,11 +1218,10 @@ INCLUDE_DIRECTORIES(
   symbology
   metadata
   mesh
+  ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
+  ${CMAKE_SOURCE_DIR}/external/poly2tri
 )
-IF (WITH_INTERNAL_QEXTSERIALPORT)
-  INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/external/qextserialport)
-ENDIF(WITH_INTERNAL_QEXTSERIALPORT)
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${LIBZIP_INCLUDE_DIRS}
@@ -1220,7 +1234,19 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALITE_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
+  ${Qt5SerialPort_INCLUDE_DIRS}
 )
+
+
+IF (HAVE_OPENCL)
+    SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+        qgsopenclutils.cpp
+    )
+    SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+        qgsopenclutils.h
+    )
+    INCLUDE_DIRECTORIES(SYSTEM ${OpenCL_INCLUDE_DIRS})
+ENDIF (HAVE_OPENCL)
 
 
 IF (APPLE)
@@ -1257,6 +1283,12 @@ SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_core.h)
 IF(ENABLE_MODELTEST)
   TARGET_LINK_LIBRARIES(qgis_core ${Qt5Test_LIBRARIES})
 ENDIF(ENABLE_MODELTEST)
+
+
+IF(HAVE_OPENCL)
+  TARGET_LINK_LIBRARIES(qgis_core ${OpenCL_LIBRARY})
+ENDIF(HAVE_OPENCL)
+
 
 IF(NOT APPLE)
   INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
@@ -1303,10 +1335,6 @@ IF (APPLE)
   TARGET_LINK_LIBRARIES(qgis_core qgis_native ${LIBTASN1_LIBRARY})
 ENDIF (APPLE)
 
-IF (NOT WITH_INTERNAL_QEXTSERIALPORT)
-  TARGET_LINK_LIBRARIES(qgis_core ${QEXTSERIALPORT_LIBRARY})
-ENDIF (NOT WITH_INTERNAL_QEXTSERIALPORT)
-
 IF (QT_MOBILITY_LOCATION_FOUND)
   TARGET_LINK_LIBRARIES(qgis_core ${QT_MOBILITY_LOCATION_LIBRARY})
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
@@ -1332,6 +1360,7 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${SQLITE3_LIBRARY}
   ${SPATIALITE_LIBRARY}
   ${LIBZIP_LIBRARY}
+  Qt5::SerialPort
 )
 
 IF (Qt5Positioning_FOUND)

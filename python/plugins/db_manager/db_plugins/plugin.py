@@ -27,7 +27,7 @@ from qgis.PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMes
 from qgis.PyQt.QtGui import QKeySequence, QIcon
 
 from qgis.gui import QgsMessageBar
-from qgis.core import Qgis, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsSettings
 from ..db_plugins import createDbPlugin
 
 
@@ -49,9 +49,6 @@ class BaseError(Exception):
 
     def __unicode__(self):
         return self.msg
-
-    def __str__(self):
-        return str(self).encode('utf-8')
 
 
 class InvalidDataException(BaseError):
@@ -90,6 +87,9 @@ class DBPlugin(QObject):
 
     def __del__(self):
         pass  # print "DBPlugin.__del__", self.connName
+
+    def connectionIcon(self):
+        return QgsApplication.getThemeIcon("/mIconDbSchema.svg")
 
     def connectionName(self):
         return self.connName
@@ -282,7 +282,7 @@ class Database(DbItemObject):
                     q = 1
                     while "_subq_%d_" % q in sql:
                         q += 1
-                    sql = "SELECT %s AS _uid_,* FROM (%s) AS _subq_%d_" % (uniqueFct, sql, q)
+                    sql = u"SELECT %s AS _uid_,* FROM (%s\n) AS _subq_%d_" % (uniqueFct, sql, q)
                     uniqueCol = "_uid_"
 
         uri = self.uri()
@@ -324,14 +324,14 @@ class Database(DbItemObject):
         mainWindow.registerAction(action, None, self.deleteActionSlot)
         action.setShortcuts(QKeySequence.Delete)
 
-        action = QAction(QIcon(":/db_manager/actions/create_table"),
+        action = QAction(QgsApplication.getThemeIcon("/mActionCreateTable.svg"),
                          QApplication.translate("DBManagerPlugin", "&Create Table…"), self)
         mainWindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Table"),
                                   self.createTableActionSlot)
-        action = QAction(QIcon(":/db_manager/actions/edit_table"),
+        action = QAction(QgsApplication.getThemeIcon("/mActionEditTable.svg"),
                          QApplication.translate("DBManagerPlugin", "&Edit Table…"), self)
         mainWindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Table"), self.editTableActionSlot)
-        action = QAction(QIcon(":/db_manager/actions/del_table"),
+        action = QAction(QgsApplication.getThemeIcon("/mActionDeleteTable.svg"),
                          QApplication.translate("DBManagerPlugin", "&Delete Table/View…"), self)
         mainWindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Table"),
                                   self.deleteTableActionSlot)

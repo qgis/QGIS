@@ -19,4 +19,4 @@
 RE=$(echo $(cut -d: -f1 scripts/spelling.dat | sed -e 's/^/\\</; s/$/\\>|/;') | sed -e 's/| /|/g; s/|$//;')
 EX="\.(svn-base|tmp|xpm|ts|o)|spelling\.dat|Exception_to_GPL_for_Qt.txt|sqlite3.c|qgisstyle|LexerR.py|debian/build.*|debian/.*/usr/|ms-windows/osgeo4w|ChangeLog|src/plugins/grass/qtermwidget|src/app/gps/qwtpolar-|python/ext-libs|i18n/"
 
-egrep --exclude=*.{png,svg,db,bz2,pdf,qgs,qml,api,pyc} --exclude-dir=.git --exclude-dir=debian/build* --color=always "$RE" -ir .  | egrep -iv "$EX"
+grep --exclude=*.{png,svg,db,bz2,pdf,qgs,qml,api,pyc} --exclude-dir=.git --exclude-dir=debian/build* --color=always -E "$RE" -ir .  | grep -iv -E "$EX"

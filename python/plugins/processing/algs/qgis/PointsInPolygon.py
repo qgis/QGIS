@@ -117,16 +117,13 @@ class PointsInPolygon(QgisAlgorithm):
 
         fields = poly_source.fields()
         if fields.lookupField(field_name) < 0:
-            fields.append(QgsField(field_name, QVariant.Int))
+            fields.append(QgsField(field_name, QVariant.LongLong))
         field_index = fields.lookupField(field_name)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, poly_source.wkbType(), poly_source.sourceCrs())
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
-
-        spatialIndex = QgsSpatialIndex(point_source.getFeatures(
-            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())), feedback)
 
         point_attribute_indices = []
         if weight_field_index >= 0:
@@ -150,28 +147,26 @@ class PointsInPolygon(QgisAlgorithm):
                 count = 0
                 classes = set()
 
-                points = spatialIndex.intersects(geom.boundingBox())
-                if len(points) > 0:
-                    request = QgsFeatureRequest().setFilterFids(points).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())
-                    request.setSubsetOfAttributes(point_attribute_indices)
-                    for point_feature in point_source.getFeatures(request):
-                        if feedback.isCanceled():
-                            break
+                request = QgsFeatureRequest().setFilterRect(geom.boundingBox()).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())
+                request.setSubsetOfAttributes(point_attribute_indices)
+                for point_feature in point_source.getFeatures(request):
+                    if feedback.isCanceled():
+                        break
 
-                        if engine.contains(point_feature.geometry().constGet()):
-                            if weight_field_index >= 0:
-                                weight = point_feature.attributes()[weight_field_index]
-                                try:
-                                    count += float(weight)
-                                except:
-                                    # Ignore fields with non-numeric values
-                                    pass
-                            elif class_field_index >= 0:
-                                point_class = point_feature.attributes()[class_field_index]
-                                if point_class not in classes:
-                                    classes.add(point_class)
-                            else:
-                                count += 1
+                    if engine.contains(point_feature.geometry().constGet()):
+                        if weight_field_index >= 0:
+                            weight = point_feature[weight_field_index]
+                            try:
+                                count += float(weight)
+                            except:
+                                # Ignore fields with non-numeric values
+                                pass
+                        elif class_field_index >= 0:
+                            point_class = point_feature[class_field_index]
+                            if point_class not in classes:
+                                classes.add(point_class)
+                        else:
+                            count += 1
 
                 output_feature.setGeometry(geom)
 

@@ -97,7 +97,7 @@ void QgsAuthIdentitiesEditor::setupIdentitiesTree()
   mRootCertIdentItem = new QTreeWidgetItem(
     treeIdentities,
     QStringList( tr( "Certificate Bundles" ) ),
-    ( int )QgsAuthIdentitiesEditor::Section );
+    static_cast<int>( QgsAuthIdentitiesEditor::Section ) );
   setItemBold_( mRootCertIdentItem );
   mRootCertIdentItem->setFlags( Qt::ItemIsEnabled );
   mRootCertIdentItem->setExpanded( true );
@@ -160,7 +160,7 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToGroup( const QList<QSslCertifica
   {
     QTreeWidgetItem *grpitem( new QTreeWidgetItem( parent,
                               QStringList() << it.key(),
-                              ( int )QgsAuthIdentitiesEditor::OrgName ) );
+                              static_cast<int>( QgsAuthIdentitiesEditor::OrgName ) ) );
     grpitem->setFirstColumnSpanned( true );
     grpitem->setFlags( Qt::ItemIsEnabled );
     grpitem->setExpanded( true );
@@ -202,7 +202,7 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToItem( const QList<QSslCertificat
     coltxts << QString( cert.serialNumber() );
     coltxts << cert.expiryDate().toString();
 
-    QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, ( int )identype ) );
+    QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, static_cast<int>( identype ) ) );
 
     item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
     if ( !QgsAuthCertUtils::certIsViable( cert ) )
@@ -226,7 +226,7 @@ void QgsAuthIdentitiesEditor::showCertInfo( QTreeWidgetItem *item )
 
   if ( !QgsApplication::authManager()->existsCertIdentity( digest ) )
   {
-    QgsDebugMsg( "Certificate identity does not exist in database" );
+    QgsDebugMsg( QStringLiteral( "Certificate identity does not exist in database" ) );
     return;
   }
 
@@ -318,7 +318,7 @@ void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
 
   if ( !item )
   {
-    QgsDebugMsg( "Current tree widget item not set" );
+    QgsDebugMsg( QStringLiteral( "Current tree widget item not set" ) );
     return;
   }
 
@@ -333,7 +333,7 @@ void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
 
   if ( !QgsApplication::authManager()->existsCertIdentity( digest ) )
   {
-    QgsDebugMsg( "Certificate identity does not exist in database" );
+    QgsDebugMsg( QStringLiteral( "Certificate identity does not exist in database" ) );
     return;
   }
 
@@ -381,7 +381,7 @@ void QgsAuthIdentitiesEditor::btnGroupByOrg_toggled( bool checked )
 
 void QgsAuthIdentitiesEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
-  int levelint = ( int )level;
+  int levelint = static_cast<int>( level );
   messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint, 7 );
 }
 

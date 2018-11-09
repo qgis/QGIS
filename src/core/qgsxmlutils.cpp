@@ -18,7 +18,7 @@
 
 #include "qgslogger.h"
 #include "qgsrectangle.h"
-
+#include "qgsproperty.h"
 
 QgsUnitTypes::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement &element )
 {
@@ -105,6 +105,12 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
   QDomElement element = doc.createElement( QStringLiteral( "Option" ) );
   switch ( value.type() )
   {
+    case QVariant::Invalid:
+    {
+      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "invalid" ) );
+      break;
+    }
+
     case QVariant::Map:
     {
       QVariantMap map = value.toMap();
@@ -153,9 +159,27 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
       element.setAttribute( QStringLiteral( "value" ), value.toString() );
       break;
 
+    case QVariant::UserType:
+    {
+      if ( value.canConvert< QgsProperty >() )
+      {
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProperty" ) );
+        const QDomElement propertyElem = QgsXmlUtils::writeVariant( value.value< QgsProperty >().toVariant(), doc );
+        element.appendChild( propertyElem );
+        break;
+      }
+      else if ( value.canConvert< QgsCoordinateReferenceSystem >() )
+      {
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsCoordinateReferenceSystem" ) );
+        const QgsCoordinateReferenceSystem crs = value.value< QgsCoordinateReferenceSystem >();
+        crs.writeXml( element, doc );
+        break;
+      }
+      FALLTHROUGH
+    }
+
     default:
-      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "Unknown" ) );
-      element.setAttribute( QStringLiteral( "value" ), value.toString() );
+      Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", QStringLiteral( "unsupported variant type %1" ).arg( QVariant::typeToName( value.type() ) ).toLocal8Bit() );
       break;
   }
 
@@ -166,7 +190,11 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
 {
   QString type = element.attribute( QStringLiteral( "type" ) );
 
-  if ( type == QLatin1String( "int" ) )
+  if ( type == QLatin1String( "invalid" ) )
+  {
+    return QVariant();
+  }
+  else if ( type == QLatin1String( "int" ) )
   {
     return element.attribute( QStringLiteral( "value" ) ).toInt();
   }
@@ -216,6 +244,24 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
       list.append( readVariant( elem ).toString() );
     }
     return list;
+  }
+  else if ( type == QLatin1String( "QgsProperty" ) )
+  {
+    const QDomNodeList values = element.childNodes();
+    if ( values.isEmpty() )
+      return QVariant();
+
+    QgsProperty p;
+    if ( p.loadVariant( QgsXmlUtils::readVariant( values.at( 0 ).toElement() ) ) )
+      return p;
+
+    return QVariant();
+  }
+  else if ( type == QLatin1String( "QgsCoordinateReferenceSystem" ) )
+  {
+    QgsCoordinateReferenceSystem crs;
+    crs.readXml( element );
+    return crs;
   }
   else
   {

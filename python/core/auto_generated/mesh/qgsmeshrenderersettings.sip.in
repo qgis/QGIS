@@ -10,6 +10,7 @@
 
 
 
+
 class QgsMeshRendererMeshSettings
 {
 %Docstring
@@ -54,6 +55,15 @@ Returns color used for rendering
 Sets color used for rendering of the mesh
 %End
 
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
 };
 
 class QgsMeshRendererScalarSettings
@@ -73,52 +83,44 @@ Represents a mesh renderer settings for scalar datasets
 #include "qgsmeshrenderersettings.h"
 %End
   public:
-    QColor maxColor() const;
+    QgsColorRampShader colorRampShader() const;
 %Docstring
-Returns color representing maximum scalar value in the dataset
+Returns color ramp shader function
 %End
-    void setMaxColor( const QColor &maxColor );
+    void setColorRampShader( const QgsColorRampShader &shader );
 %Docstring
-Sets color representing maximum scalar value in the dataset
-%End
-
-    QColor minColor() const;
-%Docstring
-Returns color representing minimum scalar value in the dataset
-%End
-    void setMinColor( const QColor &minColor );
-%Docstring
-Sets color representing maximum scalar value in the dataset
+Sets color ramp shader function
 %End
 
-    double minValue() const;
+    double classificationMinimum() const;
 %Docstring
-Returns min scalar value that represents minColor()
-
-if set to numerical_limits<double>.quiet_NaN(), value for minColor() is
-taken from minimum value of active scalar dataset
+Returns min value used for creation of the color ramp shader
+%End
+    double classificationMaximum() const;
+%Docstring
+Returns max value used for creation of the color ramp shader
+%End
+    void setClassificationMinimumMaximum( double minimum, double maximum );
+%Docstring
+Sets min/max values used for creation of the color ramp shader
 %End
 
-    void setMinValue( double minValue );
+    double opacity() const;
 %Docstring
-Sets min scalar value that represents minColor()
-
-.. seealso:: :py:func:`QgsMeshRendererScalarSettings.minValue`
+Returns opacity
+%End
+    void setOpacity( double opacity );
+%Docstring
+Sets opacity
 %End
 
-    double maxValue() const;
+    QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
-Returns max scalar value that represents maxColor()
-
-if set to numerical_limits<double>.quiet_NaN(), value for maxColor() is
-taken from maximum value of active scalar dataset
+Writes configuration to a new DOM element
 %End
-
-    void setMaxValue( double maxValue );
+    void readXml( const QDomElement &elem );
 %Docstring
-Sets min scalar value that represents minColor()
-
-.. seealso:: :py:func:`QgsMeshRendererScalarSettings.maxValue`
+Reads configuration from the given DOM element
 %End
 
 };
@@ -140,6 +142,7 @@ Represents a mesh renderer settings for vector datasets
 #include "qgsmeshrenderersettings.h"
 %End
   public:
+
     enum ArrowScalingMethod
     {
 
@@ -279,6 +282,124 @@ Returns ratio of the head length of the arrow (range 0-1)
     void setArrowHeadLengthRatio( double arrowHeadLengthRatio );
 %Docstring
 Sets ratio of the head length of the arrow (range 0-1)
+%End
+
+    bool isOnUserDefinedGrid() const;
+%Docstring
+Returns whether vectors are drawn on user-defined grid
+%End
+    void setOnUserDefinedGrid( bool enabled );
+%Docstring
+Toggles drawing of vectors on user defined grid
+%End
+    int userGridCellWidth() const;
+%Docstring
+Returns width in pixels of user grid cell
+%End
+    void setUserGridCellWidth( int width );
+%Docstring
+Sets width of user grid cell (in pixels)
+%End
+    int userGridCellHeight() const;
+%Docstring
+Returns height in pixels of user grid cell
+%End
+    void setUserGridCellHeight( int height );
+%Docstring
+Sets height of user grid cell (in pixels)
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+};
+
+
+class QgsMeshRendererSettings
+{
+%Docstring
+
+Represents all mesh renderer settings
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsmeshrenderersettings.h"
+%End
+  public:
+
+    QgsMeshRendererMeshSettings nativeMeshSettings() const;
+%Docstring
+Returns renderer settings
+%End
+    void setNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
+%Docstring
+Sets new renderer settings, triggers repaint
+%End
+
+    QgsMeshRendererMeshSettings triangularMeshSettings() const;
+%Docstring
+Returns renderer settings
+%End
+    void setTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
+%Docstring
+Sets new renderer settings
+%End
+
+    QgsMeshRendererScalarSettings scalarSettings( int groupIndex ) const;
+%Docstring
+Returns renderer settings
+%End
+    void setScalarSettings( int groupIndex, const QgsMeshRendererScalarSettings &settings );
+%Docstring
+Sets new renderer settings
+%End
+
+    QgsMeshRendererVectorSettings vectorSettings( int groupIndex ) const;
+%Docstring
+Returns renderer settings
+%End
+    void setVectorSettings( int groupIndex, const QgsMeshRendererVectorSettings &settings );
+%Docstring
+Sets new renderer settings
+%End
+
+    QgsMeshDatasetIndex activeScalarDataset() const;
+%Docstring
+Returns active scalar dataset
+%End
+    void setActiveScalarDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
+%Docstring
+Sets active scalar dataset for rendering
+%End
+
+    QgsMeshDatasetIndex activeVectorDataset() const;
+%Docstring
+Returns active vector dataset
+%End
+    void setActiveVectorDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
+%Docstring
+Sets active vector dataset for rendering.
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
 %End
 
 };

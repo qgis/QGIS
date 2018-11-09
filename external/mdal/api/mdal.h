@@ -53,6 +53,7 @@ enum MDAL_Status
   Err_IncompatibleMesh,
   Err_InvalidData,
   Err_IncompatibleDataset,
+  Err_IncompatibleDatasetGroup,
   Err_MissingDriver,
   // Warnings
   Warn_UnsupportedElement,
@@ -64,80 +65,122 @@ enum MDAL_Status
 
 //! Mesh
 typedef void *MeshH;
+typedef void *DatasetGroupH;
 typedef void *DatasetH;
 
-//! Return MDAL version
+//! Returns MDAL version
 MDAL_EXPORT const char *MDAL_Version();
 
-//! Return last status message
+//! Returns last status message
 MDAL_EXPORT MDAL_Status MDAL_LastStatus();
 
-//! Load mesh file. On error see MDAL_LastStatus for error type This effectively loads whole mesh in-memory
+///////////////////////////////////////////////////////////////////////////////////////
+/// MESH
+///////////////////////////////////////////////////////////////////////////////////////
+
+//! Loads mesh file. On error see MDAL_LastStatus for error type This effectively loads whole mesh in-memory
 MDAL_EXPORT MeshH MDAL_LoadMesh( const char *meshFile );
-//! Close mesh, free the memory
+//! Closes mesh, frees the memory
 MDAL_EXPORT void MDAL_CloseMesh( MeshH mesh );
-//! Return vertex count for the mesh
+
+/**
+ * Returns mesh projection
+ * not thread-safe and valid only till next call
+ */
+MDAL_EXPORT const char *MDAL_M_projection( MeshH mesh );
+//! Returns vertex count for the mesh
 MDAL_EXPORT int MDAL_M_vertexCount( MeshH mesh );
-//! Return vertex X coord for the mesh
+//! Returns vertex X coord for the mesh
 MDAL_EXPORT double MDAL_M_vertexXCoordinatesAt( MeshH mesh, int index );
-//! Return vertex Y coord for the mesh
+//! Returns vertex Y coord for the mesh
 MDAL_EXPORT double MDAL_M_vertexYCoordinatesAt( MeshH mesh, int index );
-//! Return face count for the mesh
+//! Returns vertex Z coord for the mesh
+MDAL_EXPORT double MDAL_M_vertexZCoordinatesAt( MeshH mesh, int index );
+//! Returns face count for the mesh
 MDAL_EXPORT int MDAL_M_faceCount( MeshH mesh );
-//! Return number of vertices face consist of, e.g. 3 for triangle
+//! Returns number of vertices face consist of, e.g. 3 for triangle
 MDAL_EXPORT int MDAL_M_faceVerticesCountAt( MeshH mesh, int index );
-//! Return vertex index for face
+//! Returns vertex index for face
 MDAL_EXPORT int MDAL_M_faceVerticesIndexAt( MeshH mesh, int face_index, int vertex_index );
 
 /**
- * Load dataset file. On error see MDAL_LastStatus for error type.
+ * Loads dataset file. On error see MDAL_LastStatus for error type.
  * This may effectively load whole dataset in-memory for some providers
  * Datasets will be closed automatically on mesh destruction or memory
  * can be freed manually with MDAL_CloseDataset if needed
  */
 MDAL_EXPORT void MDAL_M_LoadDatasets( MeshH mesh, const char *datasetFile );
 
-//! Free the memory used to get dataset values
-MDAL_EXPORT void MDAL_M_CloseDataset( DatasetH dataset );
+//! Returns dataset groups count
+MDAL_EXPORT int MDAL_M_datasetGroupCount( MeshH mesh );
 
-//! Return dataset count
-MDAL_EXPORT int MDAL_M_datasetCount( MeshH mesh );
+//! Returns dataset group handle
+MDAL_EXPORT DatasetGroupH MDAL_M_datasetGroup( MeshH mesh, int index );
 
-//! Return dataset handle
-MDAL_EXPORT DatasetH MDAL_M_dataset( MeshH mesh, int index );
+///////////////////////////////////////////////////////////////////////////////////////
+/// DATASET GROUPS
+///////////////////////////////////////////////////////////////////////////////////////
+
+//! Returns dataset count in group
+MDAL_EXPORT int MDAL_G_datasetCount( DatasetGroupH group );
+
+//! Returns dataset handle
+MDAL_EXPORT DatasetH MDAL_G_dataset( DatasetGroupH group, int index );
+
+//! Returns number of metadata values
+MDAL_EXPORT int MDAL_G_metadataCount( DatasetGroupH group );
+
+/**
+ * Returns dataset metadata key
+ * not thread-safe and valid only till next call
+ */
+MDAL_EXPORT const char *MDAL_G_metadataKey( DatasetGroupH group, int index );
+
+/**
+ * Returns dataset metadata value
+ * not thread-safe and valid only till next call
+ */
+MDAL_EXPORT const char *MDAL_G_metadataValue( DatasetGroupH group, int index );
+
+/**
+ * Returns dataset group name
+ * not thread-safe and valid only till next call
+ */
+MDAL_EXPORT const char *MDAL_G_name( DatasetGroupH group );
 
 //! Whether dataset has scalar data associated
-MDAL_EXPORT bool MDAL_D_hasScalarData( DatasetH dataset );
+MDAL_EXPORT bool MDAL_G_hasScalarData( DatasetGroupH group );
 
 //! Whether dataset is on vertices
-MDAL_EXPORT bool MDAL_D_isOnVertices( DatasetH dataset );
+MDAL_EXPORT bool MDAL_G_isOnVertices( DatasetGroupH group );
 
-//! Return number of metadata values
-MDAL_EXPORT int MDAL_D_metadataCount( DatasetH dataset );
+///////////////////////////////////////////////////////////////////////////////////////
+/// DATASETS
+///////////////////////////////////////////////////////////////////////////////////////
 
-//! Return dataset metadata key
-MDAL_EXPORT const char *MDAL_D_metadataKey( DatasetH dataset, int index );
+//! Returns dataset parent group
+MDAL_EXPORT DatasetGroupH MDAL_D_group( DatasetH dataset );
 
-//! Return dataset metadata value
-MDAL_EXPORT const char *MDAL_D_metadataValue( DatasetH dataset, int index );
+//! Returns dataset time
+MDAL_EXPORT double MDAL_D_time( DatasetH dataset );
 
-//! Return number of values
+//! Returns number of values
 MDAL_EXPORT int MDAL_D_valueCount( DatasetH dataset );
 
 /**
- * Return scalar value associated with the index from the dataset
+ * Returns scalar value associated with the index from the dataset
  * for nodata return numeric_limits<double>:quiet_NaN
  */
 MDAL_EXPORT double MDAL_D_value( DatasetH dataset, int valueIndex );
 
 /**
- * Return X value associated with the index from the vector dataset
+ * Returns X value associated with the index from the vector dataset
  * for nodata return numeric_limits<double>:quiet_NaN
  */
 MDAL_EXPORT double MDAL_D_valueX( DatasetH dataset, int valueIndex );
 
 /**
- * Return Y value associated with the index from the vector dataset
+ * Returns Y value associated with the index from the vector dataset
  * for nodata return numeric_limits<double>:quiet_NaN
  */
 MDAL_EXPORT double MDAL_D_valueY( DatasetH dataset, int valueIndex );
@@ -148,7 +191,7 @@ MDAL_EXPORT double MDAL_D_valueY( DatasetH dataset, int valueIndex );
  */
 MDAL_EXPORT bool MDAL_D_active( DatasetH dataset, int faceIndex );
 
-//! Return whether dataset is valid
+//! Returns whether dataset is valid
 MDAL_EXPORT bool MDAL_D_isValid( DatasetH dataset );
 
 #ifdef __cplusplus

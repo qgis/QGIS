@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSGRADUATEDSYMBOLRENDERERV2_H
-#define QGSGRADUATEDSYMBOLRENDERERV2_H
+#ifndef QGSGRADUATEDSYMBOLRENDERER_H
+#define QGSGRADUATEDSYMBOLRENDERER_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -152,6 +152,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool filterNeedsGeometry() const override;
     QString dump() const override;
     QgsGraduatedSymbolRenderer *clone() const override SIP_FACTORY;
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
@@ -223,13 +224,87 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void setMode( Mode mode ) { mMode = mode; }
 
     /**
+     * Returns if we want to classify symmetric around a given value
+     * \since QGIS 3.4
+     */
+    bool useSymmetricMode() const { return mUseSymmetricMode; }
+
+    /**
+     * Set if we want to classify symmetric around a given value
+     * \since QGIS 3.4
+     */
+    void setUseSymmetricMode( bool useSymmetricMode ) { mUseSymmetricMode = useSymmetricMode; }
+
+    /**
+     * Returns the pivot value for symmetric classification
+     * \since QGIS 3.4
+     */
+    double symmetryPoint() const { return mSymmetryPoint; }
+
+    /**
+     * Set the pivot point
+     * \since QGIS 3.4
+     */
+    void setSymmetryPoint( double symmetryPoint ) { mSymmetryPoint = symmetryPoint; }
+
+    /**
+     * Returns the list of breaks used in the prettybreaks mode. Needed to recover this list in saved configuration, or when property window in closed and reopened
+     * \note Not available in Python bindings, not stable API
+     * \since QGIS 3.4
+     */
+    QStringList listForCboPrettyBreaks() const { return mListForCboPrettyBreaks; } SIP_SKIP
+
+    /**
+     * Set the list of breaks used in the prettybreaks mode, which is needed to recover this list in saved configuration, or when property window is closed and reopened
+     * \note Not available in Python bindings, not stable API
+     * \since QGIS 3.4
+     */
+    void setListForCboPrettyBreaks( const QStringList &listForCboPrettyBreaks ) { mListForCboPrettyBreaks = listForCboPrettyBreaks; } SIP_SKIP
+
+    /**
+     * Returns if we want to have a central class astride the pivot value
+     * \since QGIS 3.4
+     */
+    bool astride() const { return mAstride; }
+
+    /**
+     * Set if we want a central class astride the pivot value
+     * \since QGIS 3.4
+     */
+    void setAstride( bool astride ) { mAstride = astride; }
+
+    /**
+     * Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint
+     * Does not put a break on the symmetryPoint. This is done before.
+     * \param breaks The breaks of an already-done classification
+     * \param symmetryPoint The point around which we want a symmetry
+     * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+     * \since QGIS 3.4
+     */
+    static void makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, bool astride );
+
+    /**
+     * Compute the equal interval classification
+     * \param minimum The minimum value of the distribution
+     * \param maximum The maximum value of the distribution
+     * \param classes The number of classes desired
+     * \param useSymmetricMode A bool indicating if we want to have classes and hence colors ramp symmetric around a value
+     * \param symmetryPoint The point around which we want a symmetry
+     * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+     */
+    static QList<double> calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride );
+
+    /**
      * Recalculate classes for a layer
      * \param vlayer  The layer being rendered (from which data values are calculated)
      * \param mode    The calculation mode
      * \param nclasses The number of classes to calculate (approximate for some modes)
-     * \since QGIS 2.6
+     * \param useSymmetricMode A bool indicating if we want to have classes and hence colors ramp symmetric around a value
+     * \param symmetryPoint The value around which the classes will be symmetric if useSymmetricMode is checked
+     * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+     * \since QGIS 2.6 (three first arguments) and 3.4 (three last arguments)
      */
-    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
+    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false );
 
     /**
      * Returns the label format used to generate default classification labels
@@ -261,6 +336,10 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param symbol base symbol
      * \param ramp color ramp for classes
      * \param legendFormat
+     * \param useSymmetricMode A bool indicating if we want to have classes and hence colors ramp symmetric around a value
+     * \param symmetryPoint The value around which the classes will be symmetric if useSymmetricMode is checked
+     * \param listForCboPrettyBreaks The list of potential pivot values for symmetric mode with prettybreaks mode
+     * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
      * \returns new QgsGraduatedSymbolRenderer object
      */
     static QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
@@ -269,7 +348,11 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
         Mode mode,
         QgsSymbol *symbol SIP_TRANSFER,
         QgsColorRamp *ramp SIP_TRANSFER,
-        const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat() );
+        const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(),
+        bool useSymmetricMode = false,
+        double symmetryPoint = 0.0,
+        QStringList listForCboPrettyBreaks = QStringList(),
+        bool astride = false );
 
     //! create renderer from XML element
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
@@ -403,6 +486,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     std::unique_ptr<QgsExpression> mExpression;
     GraduatedMethod mGraduatedMethod = GraduatedColor;
     //! attribute index (derived from attribute name in startRender)
+
     int mAttrNum = -1;
     bool mCounting = false;
 
@@ -421,6 +505,11 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! \note not available in Python bindings
     static const char *graduatedMethodStr( GraduatedMethod method ) SIP_SKIP;
 
+    bool mUseSymmetricMode = false;
+    double mSymmetryPoint = 0.0;
+    QStringList mListForCboPrettyBreaks = QStringList();
+    bool mAstride = false;
+
   private:
 
     /**
@@ -438,4 +527,4 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
 };
 
-#endif // QGSGRADUATEDSYMBOLRENDERERV2_H
+#endif // QGSGRADUATEDSYMBOLRENDERER_H

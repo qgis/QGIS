@@ -62,7 +62,7 @@ class ScriptEdit(QsciScintilla):
     FOLD_COLOR = "#efefef"
 
     def __init__(self, parent=None):
-        QsciScintilla.__init__(self, parent)
+        super().__init__(parent)
 
         self.lexer = None
         self.api = None
@@ -128,7 +128,7 @@ class ScriptEdit(QsciScintilla):
         self.setTabWidth(4)
         self.setIndentationGuides(True)
 
-        # Autocomletion
+        # Autocompletion
         self.setAutoCompletionThreshold(2)
         self.setAutoCompletionSource(QsciScintilla.AcsAPIs)
 
@@ -145,8 +145,6 @@ class ScriptEdit(QsciScintilla):
         self.defaultFont.setFixedPitch(True)
         self.defaultFont.setPointSize(fontSize)
         self.defaultFont.setStyleHint(QFont.TypeWriter)
-        self.defaultFont.setStretch(QFont.SemiCondensed)
-        self.defaultFont.setLetterSpacing(QFont.PercentageSpacing, 87.0)
         self.defaultFont.setBold(False)
 
         self.boldFont = QFont(self.defaultFont)

@@ -88,7 +88,7 @@ Returns the items model attached to the layout.
 
 
 
-    QList<QgsLayoutItem *> selectedLayoutItems( const bool includeLockedItems = true );
+    QList<QgsLayoutItem *> selectedLayoutItems( bool includeLockedItems = true );
 %Docstring
 Returns list of selected layout items.
 
@@ -168,7 +168,7 @@ updating the scene for each one.
 .. seealso:: :py:func:`updateZValues`
 %End
 
-    void updateZValues( const bool addUndoCommands = true );
+    void updateZValues( bool addUndoCommands = true );
 %Docstring
 Resets the z-values of items based on their position in the internal
 z order list. This should be called after any stacking changes
@@ -237,13 +237,13 @@ Note that template UUIDs are only available while a layout is being restored fro
 .. seealso:: :py:func:`itemByUuid`
 %End
 
-    QgsLayoutItem *layoutItemAt( QPointF position, const bool ignoreLocked = false ) const;
+    QgsLayoutItem *layoutItemAt( QPointF position, bool ignoreLocked = false ) const;
 %Docstring
 Returns the topmost layout item at a specified ``position``. Ignores paper items.
 If ``ignoreLocked`` is set to true any locked items will be ignored.
 %End
 
-    QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked = false ) const;
+    QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, bool ignoreLocked = false ) const;
 %Docstring
 Returns the topmost layout item at a specified ``position`` which is below a specified ``item``. Ignores paper items.
 If ``ignoreLocked`` is set to true any locked items will be ignored.
@@ -268,7 +268,7 @@ Returns the native units for the layout.
 .. seealso:: :py:func:`convertToLayoutUnits`
 %End
 
-    double convertToLayoutUnits( const QgsLayoutMeasurement &measurement ) const;
+    double convertToLayoutUnits( QgsLayoutMeasurement measurement ) const;
 %Docstring
 Converts a measurement into the layout's native units.
 
@@ -301,7 +301,7 @@ Converts a ``point`` into the layout's native units.
 .. seealso:: :py:func:`units`
 %End
 
-    QgsLayoutMeasurement convertFromLayoutUnits( const double length, const QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutMeasurement convertFromLayoutUnits( double length, QgsUnitTypes::LayoutUnit unit ) const;
 %Docstring
 Converts a ``length`` measurement from the layout's native units to a specified target ``unit``.
 
@@ -312,7 +312,7 @@ Converts a ``length`` measurement from the layout's native units to a specified 
 .. seealso:: :py:func:`units`
 %End
 
-    QgsLayoutSize convertFromLayoutUnits( const QSizeF &size, const QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutSize convertFromLayoutUnits( QSizeF size, QgsUnitTypes::LayoutUnit unit ) const;
 %Docstring
 Converts a ``size`` from the layout's native units to a specified target ``unit``.
 
@@ -323,7 +323,7 @@ Converts a ``size`` from the layout's native units to a specified target ``unit`
 .. seealso:: :py:func:`units`
 %End
 
-    QgsLayoutPoint convertFromLayoutUnits( const QPointF &point, const QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutPoint convertFromLayoutUnits( QPointF point, QgsUnitTypes::LayoutUnit unit ) const;
 %Docstring
 Converts a ``point`` from the layout's native units to a specified target ``unit``.
 

@@ -167,7 +167,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
          <property name="title">
-          <string>Gradient stop</string>
+          <string>Gradient Stop</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
           <item row="0" column="0">
@@ -193,7 +193,7 @@
           <item row="0" column="2">
            <widget class="QPushButton" name="mDeleteStopButton">
             <property name="text">
-             <string>&amp;Delete stop</string>
+             <string>&amp;Delete Stop</string>
             </property>
            </widget>
           </item>

@@ -20,6 +20,9 @@ Iterator for sequentially processing raster cells.
   public:
 
     QgsRasterIterator( QgsRasterInterface *input );
+%Docstring
+Constructor for QgsRasterIterator, iterating over the specified ``input`` raster source.
+%End
 
     void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
@@ -47,20 +50,58 @@ caller should delete the block.
 :param topLeftCol: top left column
 :param topLeftRow: top left row
 
-:return: false if the last part was already returned*
+:return: false if the last part was already returned
 %End
 
+
     void stopRasterRead( int bandNumber );
+%Docstring
+Cancels the raster iteration and resets the iterator.
+%End
 
     const QgsRasterInterface *input() const;
+%Docstring
+Returns the input raster interface which is being iterated over.
+%End
 
     void setMaximumTileWidth( int w );
+%Docstring
+Sets the maximum tile width returned during iteration.
+
+.. seealso:: :py:func:`maximumTileWidth`
+
+.. seealso:: :py:func:`setMaximumTileHeight`
+%End
+
     int maximumTileWidth() const;
+%Docstring
+Returns the maximum tile width returned during iteration.
+
+.. seealso:: :py:func:`setMaximumTileWidth`
+
+.. seealso:: :py:func:`maximumTileHeight`
+%End
 
     void setMaximumTileHeight( int h );
+%Docstring
+Sets the minimum tile height returned during iteration.
+
+.. seealso:: :py:func:`maximumTileHeight`
+
+.. seealso:: :py:func:`setMaximumTileWidth`
+%End
+
     int maximumTileHeight() const;
+%Docstring
+Returns the minimum tile width returned during iteration.
+
+.. seealso:: :py:func:`setMaximumTileHeight`
+
+.. seealso:: :py:func:`maximumTileWidth`
+%End
 
     static const int DEFAULT_MAXIMUM_TILE_WIDTH;
+
     static const int DEFAULT_MAXIMUM_TILE_HEIGHT;
 
 };

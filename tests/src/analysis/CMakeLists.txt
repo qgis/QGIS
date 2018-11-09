@@ -34,6 +34,10 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SQLITE3_INCLUDE_DIR}
 )
 
+IF(HAVE_OPENCL)
+    INCLUDE_DIRECTORIES(SYSTEM ${OpenCL_INCLUDE_DIRS})
+ENDIF(HAVE_OPENCL)
+
 #note for tests we should not include the moc of our
 #qtests in the executable file list as the moc is
 #directly included in the sources
@@ -73,6 +77,7 @@ SET(TESTS
  testqgsprocessingalgs.cpp
  testqgszonalstatistics.cpp
  testqgsrastercalculator.cpp
+ testqgsreclassifyutils.cpp
  testqgsalignraster.cpp
  testqgsnetworkanalysis.cpp
  testqgsninecellfilters.cpp

@@ -26,9 +26,8 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
 
-const int NO_ACTIVE_MESH_DATASET = -1;
-
 class QgsMapLayerRenderer;
+struct QgsMeshLayerRendererCache;
 class QgsSymbol;
 class QgsTriangularMesh;
 struct QgsMesh;
@@ -127,8 +126,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMeshLayer *clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
-    bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
-    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
+    bool readSymbology( const QDomNode &node, QString &errorMessage,
+                        QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
+                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const override;
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
     QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
@@ -143,47 +144,46 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //! Returns triangular mesh (nullptr before rendering)
     QgsTriangularMesh *triangularMesh() SIP_SKIP;
 
-    //! Returns renderer settings
-    QgsMeshRendererMeshSettings rendererNativeMeshSettings() const;
-
-    //! Sets new renderer settings, triggers repaint
-    void setRendererNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
+    //! Returns native mesh (nullptr before rendering)
+    QgsMeshLayerRendererCache *rendererCache() SIP_SKIP;
 
     //! Returns renderer settings
-    QgsMeshRendererMeshSettings rendererTriangularMeshSettings() const;
-
-    //! Sets new renderer settings, triggers repaint
-    void setRendererTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
-
-    //! Returns renderer settings
-    QgsMeshRendererScalarSettings rendererScalarSettings() const;
-
-    //! Sets new renderer settings, triggers repaint
-    void setRendererScalarSettings( const QgsMeshRendererScalarSettings &settings );
-
-    //! Returns renderer settings
-    QgsMeshRendererVectorSettings rendererVectorSettings() const;
-
-    //! Sets new renderer settings, triggers repaint
-    void setRendererVectorSettings( const QgsMeshRendererVectorSettings &settings );
+    QgsMeshRendererSettings rendererSettings() const;
+    //! Sets new renderer settings
+    void setRendererSettings( const QgsMeshRendererSettings &settings );
 
     /**
-     * Sets active scalar dataset for rendering
-     *
-     * Triggers repaint
-     */
-    void setActiveScalarDataset( int index = NO_ACTIVE_MESH_DATASET );
-    //! Returns active scalar dataset
-    int activeScalarDataset() const { return mActiveScalarDataset; }
+      * Interpolates the value on the given point from given dataset.
+      *
+      * \note It uses previously cached and indexed triangular mesh
+      * and so if the layer has not been rendered previously
+      * (e.g. when used in a script) it returns NaN value
+      *
+      * \param index dataset index specifying group and dataset to extract value from
+      * \param point point to query in map coordinates
+      * \returns interpolated value at the point. Returns NaN values for values
+      * outside the mesh layer, nodata values and in case triangular mesh was not
+      * previously used for rendering
+      *
+      * \since QGIS 3.4
+      */
+    QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+
+  signals:
 
     /**
-     * Sets active vector dataset for rendering.
+     * Emitted when active scalar dataset is changed
      *
-     * If dataset is not vector based, do nothing. Triggers repaint
+     * \since QGIS 3.4
      */
-    void setActiveVectorDataset( int index = NO_ACTIVE_MESH_DATASET );
-    //! Returns active vector dataset
-    int activeVectorDataset() const { return mActiveVectorDataset; }
+    void activeScalarDatasetChanged( const QgsMeshDatasetIndex &index );
+
+    /**
+     * Emitted when active vector dataset is changed
+     *
+     * \since QGIS 3.4
+     */
+    void activeVectorDatasetChanged( const QgsMeshDatasetIndex &index );
 
   private: // Private methods
 
@@ -205,6 +205,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
   private:
     void fillNativeMesh();
+    void assignDefaultStyleToDatasetGroup( int groupIndex );
+
+  private slots:
+    void onDatasetGroupsAdded( int count );
 
   private:
     //! Pointer to data provider derived from the abastract base class QgsMeshDataProvider
@@ -219,16 +223,11 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //! Pointer to derived mesh structure
     std::unique_ptr<QgsTriangularMesh> mTriangularMesh;
 
-    QgsMeshRendererMeshSettings mRendererNativeMeshSettings;
-    QgsMeshRendererMeshSettings mRendererTriangularMeshSettings;
-    QgsMeshRendererScalarSettings mRendererScalarSettings;
-    QgsMeshRendererVectorSettings mRendererVectorSettings;
+    //! Pointer to the cache with data used for last rendering
+    std::unique_ptr<QgsMeshLayerRendererCache> mRendererCache;
 
-    //! index of active scalar dataset; -1 if none
-    int mActiveScalarDataset = NO_ACTIVE_MESH_DATASET;
-
-    //! index of active vector dataset; -1 if none
-    int mActiveVectorDataset = NO_ACTIVE_MESH_DATASET;
+    //! Renderer configuration
+    QgsMeshRendererSettings mRendererSettings;
 };
 
 #endif //QGSMESHLAYER_H

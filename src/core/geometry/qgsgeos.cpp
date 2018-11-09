@@ -91,7 +91,7 @@ static void printGEOSNotice( const char *fmt, ... )
   vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
 
-  QgsDebugMsg( QString( "GEOS notice: %1" ).arg( QString::fromUtf8( buffer ) ) );
+  QgsDebugMsg( QStringLiteral( "GEOS notice: %1" ).arg( QString::fromUtf8( buffer ) ) );
 #else
   Q_UNUSED( fmt );
 #endif
@@ -157,7 +157,7 @@ QgsGeometry QgsGeos::geometryFromGeos( GEOSGeometry *geos )
   return g;
 }
 
-QgsGeometry QgsGeos::geometryFromGeos( geos::unique_ptr geos )
+QgsGeometry QgsGeos::geometryFromGeos( const geos::unique_ptr &geos )
 {
   QgsGeometry g( QgsGeos::fromGeos( geos.get() ) );
   return g;
@@ -310,17 +310,17 @@ void QgsGeos::subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes,
 
   if ( height <= 0 )
   {
-    halfClipRect1.setYMinimum( halfClipRect1.yMinimum() - DBL_EPSILON );
-    halfClipRect2.setYMinimum( halfClipRect2.yMinimum() - DBL_EPSILON );
-    halfClipRect1.setYMaximum( halfClipRect1.yMaximum() + DBL_EPSILON );
-    halfClipRect2.setYMaximum( halfClipRect2.yMaximum() + DBL_EPSILON );
+    halfClipRect1.setYMinimum( halfClipRect1.yMinimum() - std::numeric_limits<double>::epsilon() );
+    halfClipRect2.setYMinimum( halfClipRect2.yMinimum() - std::numeric_limits<double>::epsilon() );
+    halfClipRect1.setYMaximum( halfClipRect1.yMaximum() + std::numeric_limits<double>::epsilon() );
+    halfClipRect2.setYMaximum( halfClipRect2.yMaximum() + std::numeric_limits<double>::epsilon() );
   }
   if ( width <= 0 )
   {
-    halfClipRect1.setXMinimum( halfClipRect1.xMinimum() - DBL_EPSILON );
-    halfClipRect2.setXMinimum( halfClipRect2.xMinimum() - DBL_EPSILON );
-    halfClipRect1.setXMaximum( halfClipRect1.xMaximum() + DBL_EPSILON );
-    halfClipRect2.setXMaximum( halfClipRect2.xMaximum() + DBL_EPSILON );
+    halfClipRect1.setXMinimum( halfClipRect1.xMinimum() - std::numeric_limits<double>::epsilon() );
+    halfClipRect2.setXMinimum( halfClipRect2.xMinimum() - std::numeric_limits<double>::epsilon() );
+    halfClipRect1.setXMaximum( halfClipRect1.xMaximum() + std::numeric_limits<double>::epsilon() );
+    halfClipRect2.setXMaximum( halfClipRect2.xMaximum() + std::numeric_limits<double>::epsilon() );
   }
 
   geos::unique_ptr clipPart1( GEOSClipByRect_r( geosinit.ctxt, currentPart, halfClipRect1.xMinimum(), halfClipRect1.yMinimum(), halfClipRect1.xMaximum(), halfClipRect1.yMaximum() ) );
@@ -393,7 +393,7 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QSt
   geosGeometries.reserve( geomList.size() );
   for ( const QgsGeometry &g : geomList )
   {
-    if ( !g )
+    if ( g.isNull() )
       continue;
 
     geosGeometries << asGeos( g.constGet(), mPrecision ).release();
@@ -910,7 +910,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeom
     intersectGeometry.reset( GEOSIntersection_r( geosinit.ctxt, mGeos.get(), polygon ) );
     if ( !intersectGeometry )
     {
-      QgsDebugMsg( "intersectGeometry is nullptr" );
+      QgsDebugMsg( QStringLiteral( "intersectGeometry is nullptr" ) );
       continue;
     }
 
@@ -1187,7 +1187,9 @@ std::unique_ptr<QgsPolygon> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
   }
 
   QVector<QgsCurve *> interiorRings;
-  for ( int i = 0; i < GEOSGetNumInteriorRings_r( geosinit.ctxt, geos ); ++i )
+  const int ringCount = GEOSGetNumInteriorRings_r( geosinit.ctxt, geos );
+  interiorRings.reserve( ringCount );
+  for ( int i = 0; i < ringCount; ++i )
   {
     ring = GEOSGetInteriorRingN_r( geosinit.ctxt, geos, i );
     if ( ring )

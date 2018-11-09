@@ -445,7 +445,7 @@ void QgsGrassMapcalc::mouseReleaseEvent( QMouseEvent *e )
 
 QStringList QgsGrassMapcalc::arguments()
 {
-  QString cmd = QLatin1String( "" );
+  QString cmd;
   // Attention with quotes and spaces!
   //cmd.append("\"");
 

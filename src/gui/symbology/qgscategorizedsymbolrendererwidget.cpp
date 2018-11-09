@@ -419,7 +419,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   btnColorRamp->setShowRandomColorRamp( true );
 
   // set project default color ramp
-  QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QLatin1String( "" ) );
+  QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QString() );
   if ( !defaultColorRamp.isEmpty() )
   {
     btnColorRamp->setColorRampFromName( defaultColorRamp );
@@ -548,6 +548,8 @@ void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
   std::unique_ptr<QgsSymbol> newSymbol( mCategorizedSymbol->clone() );
   if ( panel && panel->dockMode() )
   {
+    // bit tricky here - the widget doesn't take ownership of the symbol. So we need it to last for the duration of the
+    // panel's existence. Accordingly, just kinda give it ownership here, and clean up in cleanUpSymbolSelector
     QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol.release(), mStyle, mLayer, panel );
     dlg->setContext( mContext );
     connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget );
@@ -919,20 +921,14 @@ int QgsCategorizedSymbolRendererWidget::matchToSymbols( QgsStyle *style )
   if ( !mLayer || !style )
     return 0;
 
-  int matched = 0;
-  for ( int catIdx = 0; catIdx < mRenderer->categories().count(); ++catIdx )
-  {
-    QString val = mRenderer->categories().at( catIdx ).value().toString();
-    QgsSymbol *symbol = style->symbol( val );
-    if ( symbol &&
-         ( ( symbol->type() == QgsSymbol::Marker && mLayer->geometryType() == QgsWkbTypes::PointGeometry )
-           || ( symbol->type() == QgsSymbol::Line && mLayer->geometryType() == QgsWkbTypes::LineGeometry )
-           || ( symbol->type() == QgsSymbol::Fill && mLayer->geometryType() == QgsWkbTypes::PolygonGeometry ) ) )
-    {
-      matched++;
-      mRenderer->updateCategorySymbol( catIdx, symbol->clone() );
-    }
-  }
+  const QgsSymbol::SymbolType type = mLayer->geometryType() == QgsWkbTypes::PointGeometry ? QgsSymbol::Marker
+                                     : mLayer->geometryType() == QgsWkbTypes::LineGeometry ? QgsSymbol::Line
+                                     : QgsSymbol::Fill;
+
+  QVariantList unmatchedCategories;
+  QStringList unmatchedSymbols;
+  const int matched = mRenderer->matchToSymbols( style, type, unmatchedCategories, unmatchedSymbols );
+
   mModel->updateSymbology();
   return matched;
 }
@@ -943,7 +939,7 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
   QString openFileDir = settings.value( QStringLiteral( "UI/lastMatchToSymbolsDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Match to Symbols from File" ), openFileDir,
-                     tr( "XML files (*.xml *XML)" ) );
+                     tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

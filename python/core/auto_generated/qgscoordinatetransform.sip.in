@@ -156,7 +156,19 @@ Sets the destination coordinate reference system.
 Sets the ``context`` in which the coordinate transform should be
 calculated.
 
+.. seealso:: :py:func:`context`
+
 .. versionadded:: 3.0
+%End
+
+    QgsCoordinateTransformContext context() const;
+%Docstring
+Returns the context in which the coordinate transform will be
+calculated.
+
+.. seealso:: :py:func:`setContext`
+
+.. versionadded:: 3.4
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;
@@ -191,7 +203,7 @@ otherwise points are transformed from destination to source CRS.
 :return: transformed point
 %End
 
-    QgsPointXY transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const;
+    QgsPointXY transform( double x, double y, TransformDirection direction = ForwardTransform ) const;
 %Docstring
 Transform the point specified by x,y from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -204,7 +216,7 @@ otherwise points are transformed from destination to source CRS.
 :return: transformed point
 %End
 
-    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const throw( QgsCsException );
+    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, bool handle180Crossover = false ) const throw( QgsCsException );
 %Docstring
 Transforms a rectangle from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -344,6 +356,17 @@ This should be called whenever the srs database has
 been modified in order to ensure that outdated CRS transforms are not created.
 
 .. versionadded:: 3.0
+%End
+
+    double scaleFactor( const QgsRectangle &referenceExtent ) const;
+%Docstring
+Computes an *estimated* conversion factor between source and destination units:
+
+sourceUnits * scaleFactor = destinationUnits
+
+:param referenceExtent: A reference extent based on which to perform the computation
+
+.. versionadded:: 3.4
 %End
 
 };

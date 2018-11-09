@@ -54,8 +54,8 @@ class TestQgsVectorDataProvider : public QObject
 
 void TestQgsVectorDataProvider::initTestCase()
 {
-  vlayerPoints = 0;
-  vlayerLines = 0;
+  vlayerPoints = nullptr;
+  vlayerLines = nullptr;
 
   // load QGIS
   QgsApplication::init();

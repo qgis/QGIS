@@ -33,6 +33,10 @@ Item {
    */
   property alias preferredWidth: scaleBarKit.preferredWidth
   /**
+   * Preferred system of measurement for the resulting distance. Default is metric system
+   */
+  property alias systemOfMeasurement: scaleBarKit.systemOfMeasurement
+  /**
    * Kit for all calculation of width and text of the scalebar
    *
    * See also QgsQuickMapCanvasMap::mapSettings

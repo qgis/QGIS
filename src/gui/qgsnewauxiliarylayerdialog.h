@@ -21,7 +21,8 @@
 #include "ui_qgsnewauxiliarylayerdialogbase.h"
 #include "qgsguiutils.h"
 #include "qgis_gui.h"
-#include "qgsvectorlayer.h"
+
+class QgsVectorLayer;
 
 /**
  * \ingroup gui

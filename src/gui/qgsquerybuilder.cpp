@@ -75,7 +75,7 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   txtSQL->setText( mOrigSubsetString );
 
   mFilterLineEdit->setShowSearchIcon( true );
-  mFilterLineEdit->setPlaceholderText( tr( "Search" ) );
+  mFilterLineEdit->setPlaceholderText( tr( "Search…" ) );
   connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsQueryBuilder::onTextChanged );
 
   populateFields();
@@ -150,7 +150,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
 
   QString nullValue = QgsApplication::nullRepresentation();
 
-  QgsDebugMsg( QString( "nullValue: %1" ).arg( nullValue ) );
+  QgsDebugMsg( QStringLiteral( "nullValue: %1" ).arg( nullValue ) );
 
   Q_FOREACH ( const QVariant &var, values )
   {
@@ -166,7 +166,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
     myItem->setEditable( false );
     myItem->setData( var, Qt::UserRole + 1 );
     mModelValues->insertRow( mModelValues->rowCount(), myItem );
-    QgsDebugMsg( QString( "Value is null: %1\nvalue: %2" ).arg( var.isNull() ).arg( var.isNull() ? nullValue : var.toString() ) );
+    QgsDebugMsg( QStringLiteral( "Value is null: %1\nvalue: %2" ).arg( var.isNull() ).arg( var.isNull() ? nullValue : var.toString() ) );
   }
 }
 
@@ -177,7 +177,7 @@ void QgsQueryBuilder::btnSampleValues_clicked()
   QString prevSubsetString = mLayer->subsetString();
   if ( mUseUnfilteredLayer->isChecked() && !prevSubsetString.isEmpty() )
   {
-    mLayer->setSubsetString( QLatin1String( "" ) );
+    mLayer->setSubsetString( QString() );
   }
 
   //Clear and fill the mModelValues
@@ -198,7 +198,7 @@ void QgsQueryBuilder::btnGetAllValues_clicked()
   QString prevSubsetString = mLayer->subsetString();
   if ( mUseUnfilteredLayer->isChecked() && !prevSubsetString.isEmpty() )
   {
-    mLayer->setSubsetString( QLatin1String( "" ) );
+    mLayer->setSubsetString( QString() );
   }
 
   //Clear and fill the mModelValues
@@ -409,7 +409,7 @@ void QgsQueryBuilder::onTextChanged( const QString &text )
 void QgsQueryBuilder::clear()
 {
   txtSQL->clear();
-  mLayer->setSubsetString( QLatin1String( "" ) );
+  mLayer->setSubsetString( QString() );
   mUseUnfilteredLayer->setDisabled( true );
 }
 

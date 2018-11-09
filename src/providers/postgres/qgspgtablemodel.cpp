@@ -56,17 +56,19 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     }
 
     QString tip;
+    bool withTipButSelectable = false;
     if ( wkbType == QgsWkbTypes::Unknown )
     {
       tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
     }
-    else if ( wkbType != QgsWkbTypes::NoGeometry && srid == INT_MIN )
+    else if ( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() )
     {
       tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
     }
     else if ( !layerProperty.pkCols.isEmpty() )
     {
       tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
+      withTipButSelectable = true;
     }
 
     QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
@@ -81,15 +83,15 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
     QStandardItem *commentItem = new QStandardItem( layerProperty.tableComment );
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
-    QStandardItem *sridItem  = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : QLatin1String( "" ) );
-    sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid == INT_MIN );
+    QStandardItem *sridItem  = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : QString() );
+    sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() );
     if ( sridItem->isEditable() )
     {
       sridItem->setText( tr( "Enter…" ) );
       sridItem->setFlags( sridItem->flags() | Qt::ItemIsEditable );
     }
 
-    QStandardItem *pkItem = new QStandardItem( QLatin1String( "" ) );
+    QStandardItem *pkItem = new QStandardItem( QString() );
     if ( !layerProperty.pkCols.isEmpty() )
     {
       pkItem->setText( tr( "Select…" ) );
@@ -101,7 +103,17 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
     pkItem->setData( "", Qt::UserRole + 2 );
 
-    QStandardItem *selItem = new QStandardItem( QLatin1String( "" ) );
+    if ( !layerProperty.pkCols.isEmpty() )
+    {
+      // If we have a view with multiple possible columns to be used as the primary key, for convenience
+      // let's select the first one - this is what the browser dock already does. We risk that a wrong column
+      // will be used, but most of the time we should be fine.
+      QString firstCol = layerProperty.pkCols[0];
+      pkItem->setText( firstCol );
+      pkItem->setData( QStringList( firstCol ), Qt::UserRole + 2 );
+    }
+
+    QStandardItem *selItem = new QStandardItem( QString() );
     selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
     selItem->setCheckState( Qt::Checked );
     selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
@@ -123,15 +135,17 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
 
     Q_FOREACH ( QStandardItem *item, childItemList )
     {
+      if ( tip.isEmpty() || withTipButSelectable )
+        item->setFlags( item->flags() | Qt::ItemIsSelectable );
+      else
+        item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
+
       if ( tip.isEmpty() )
       {
-        item->setFlags( item->flags() | Qt::ItemIsSelectable );
-        item->setToolTip( QLatin1String( "" ) );
+        item->setToolTip( QString() );
       }
       else
       {
-        item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
-
         if ( item == schemaNameItem )
           item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
 
@@ -264,7 +278,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
       bool ok;
       int srid = idx.sibling( idx.row(), DbtmSrid ).data().toInt( &ok );
 
-      if ( !ok || srid == INT_MIN )
+      if ( !ok || srid == std::numeric_limits<int>::min() )
         tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
     }
 
@@ -273,7 +287,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
     {
       QSet<QString> s0( idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 2 ).toStringList().toSet() );
       QSet<QString> s1( pkCols.toSet() );
-      if ( s0.intersect( s1 ).isEmpty() )
+      if ( !s0.intersects( s1 ) )
         tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
     }
 
@@ -288,7 +302,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
         }
 
         item->setFlags( item->flags() | Qt::ItemIsSelectable );
-        item->setToolTip( QLatin1String( "" ) );
+        item->setToolTip( QString() );
       }
       else
       {
@@ -313,14 +327,14 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
 {
   if ( !index.isValid() )
   {
-    QgsDebugMsg( "invalid index" );
+    QgsDebugMsg( QStringLiteral( "invalid index" ) );
     return QString();
   }
 
   QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt();
   if ( wkbType == QgsWkbTypes::Unknown )
   {
-    QgsDebugMsg( "unknown geometry type" );
+    QgsDebugMsg( QStringLiteral( "unknown geometry type" ) );
     // no geometry type selected
     return QString();
   }
@@ -328,10 +342,10 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
   QSet<QString> s0( pkItem->data( Qt::UserRole + 1 ).toStringList().toSet() );
   QSet<QString> s1( pkItem->data( Qt::UserRole + 2 ).toStringList().toSet() );
-  if ( !s0.isEmpty() && s0.intersect( s1 ).isEmpty() )
+  if ( !s0.isEmpty() && !s0.intersects( s1 ) )
   {
     // no valid primary candidate selected
-    QgsDebugMsg( "no pk candidate selected" );
+    QgsDebugMsg( QStringLiteral( "no pk candidate selected" ) );
     return QString();
   }
 
@@ -349,7 +363,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
     srid.toInt( &ok );
     if ( !ok )
     {
-      QgsDebugMsg( "srid not numeric" );
+      QgsDebugMsg( QStringLiteral( "srid not numeric" ) );
       return QString();
     }
   }
@@ -371,6 +385,6 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
 
-  QgsDebugMsg( QString( "returning uri %1" ).arg( uri.uri( false ) ) );
+  QgsDebugMsg( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ) );
   return uri.uri( false );
 }

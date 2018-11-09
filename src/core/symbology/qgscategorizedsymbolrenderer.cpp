@@ -29,6 +29,7 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsproperty.h"
+#include "qgsstyle.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -111,7 +112,7 @@ QString QgsRendererCategory::dump() const
 
 void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
 {
-  if ( !mSymbol.get() || props.value( QStringLiteral( "attribute" ), QLatin1String( "" ) ).isEmpty() )
+  if ( !mSymbol.get() || props.value( QStringLiteral( "attribute" ), QString() ).isEmpty() )
     return;
 
   QString attrName = props[ QStringLiteral( "attribute" )];
@@ -166,7 +167,7 @@ QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString &attrN
   {
     if ( !cat.symbol() )
     {
-      QgsDebugMsg( "invalid symbol in a category! ignoring..." );
+      QgsDebugMsg( QStringLiteral( "invalid symbol in a category! ignoring..." ) );
     }
     mCategories << cat;
   }
@@ -199,12 +200,12 @@ QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value, 
   foundMatchingSymbol = false;
 
   // TODO: special case for int, double
-  QHash<QString, QgsSymbol *>::const_iterator it = mSymbolHash.constFind( value.isNull() ? QLatin1String( "" ) : value.toString() );
+  QHash<QString, QgsSymbol *>::const_iterator it = mSymbolHash.constFind( value.isNull() ? QString() : value.toString() );
   if ( it == mSymbolHash.constEnd() )
   {
     if ( mSymbolHash.isEmpty() )
     {
-      QgsDebugMsg( "there are no hashed symbols!!!" );
+      QgsDebugMsg( QStringLiteral( "there are no hashed symbols!!!" ) );
     }
     else
     {
@@ -321,7 +322,7 @@ void QgsCategorizedSymbolRenderer::addCategory( const QgsRendererCategory &cat )
 {
   if ( !cat.symbol() )
   {
-    QgsDebugMsg( "invalid symbol in a category! ignoring..." );
+    QgsDebugMsg( QStringLiteral( "invalid symbol in a category! ignoring..." ) );
     return;
   }
 
@@ -449,6 +450,19 @@ QSet<QString> QgsCategorizedSymbolRenderer::usedAttributes( const QgsRenderConte
     }
   }
   return attributes;
+}
+
+bool QgsCategorizedSymbolRenderer::filterNeedsGeometry() const
+{
+  QgsExpression testExpr( mAttrName );
+  if ( !testExpr.hasParserError() )
+  {
+    QgsExpressionContext context;
+    context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) ); // unfortunately no layer access available!
+    testExpr.prepare( &context );
+    return testExpr.needsGeometry();
+  }
+  return false;
 }
 
 QString QgsCategorizedSymbolRenderer::dump() const
@@ -932,7 +946,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
 
   if ( !r )
   {
-    r = new QgsCategorizedSymbolRenderer( QLatin1String( "" ), QgsCategoryList() );
+    r = new QgsCategorizedSymbolRenderer( QString(), QgsCategoryList() );
     QgsRenderContext context;
     QgsSymbolList symbols = const_cast<QgsFeatureRenderer *>( renderer )->symbols( context );
     if ( !symbols.isEmpty() )
@@ -955,4 +969,66 @@ void QgsCategorizedSymbolRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeL
 QgsDataDefinedSizeLegend *QgsCategorizedSymbolRenderer::dataDefinedSizeLegend() const
 {
   return mDataDefinedSizeLegend.get();
+}
+
+int QgsCategorizedSymbolRenderer::matchToSymbols( QgsStyle *style, const QgsSymbol::SymbolType type, QVariantList &unmatchedCategories, QStringList &unmatchedSymbols, const bool caseSensitive, const bool useTolerantMatch )
+{
+  if ( !style )
+    return 0;
+
+  int matched = 0;
+  unmatchedSymbols = style->symbolNames();
+  const QSet< QString > allSymbolNames = unmatchedSymbols.toSet();
+
+  const QRegularExpression tolerantMatchRe( QStringLiteral( "[^\\w\\d ]" ), QRegularExpression::UseUnicodePropertiesOption );
+
+  for ( int catIdx = 0; catIdx < mCategories.count(); ++catIdx )
+  {
+    const QVariant value = mCategories.at( catIdx ).value();
+    const QString val = value.toString().trimmed();
+    std::unique_ptr< QgsSymbol > symbol( style->symbol( val ) );
+    // case-sensitive match
+    if ( symbol && symbol->type() == type )
+    {
+      matched++;
+      unmatchedSymbols.removeAll( val );
+      updateCategorySymbol( catIdx, symbol.release() );
+      continue;
+    }
+
+    if ( !caseSensitive || useTolerantMatch )
+    {
+      QString testVal = val;
+      if ( useTolerantMatch )
+        testVal.replace( tolerantMatchRe, QString() );
+
+      bool foundMatch = false;
+      for ( const QString &name : allSymbolNames )
+      {
+        QString testName = name.trimmed();
+        if ( useTolerantMatch )
+          testName.replace( tolerantMatchRe, QString() );
+
+        if ( testName == testVal || ( !caseSensitive && testName.trimmed().compare( testVal, Qt::CaseInsensitive ) == 0 ) )
+        {
+          // found a case-insensitive match
+          std::unique_ptr< QgsSymbol > symbol( style->symbol( name ) );
+          if ( symbol && symbol->type() == type )
+          {
+            matched++;
+            unmatchedSymbols.removeAll( name );
+            updateCategorySymbol( catIdx, symbol.release() );
+            foundMatch = true;
+            break;
+          }
+        }
+      }
+      if ( foundMatch )
+        continue;
+    }
+
+    unmatchedCategories << value;
+  }
+
+  return matched;
 }

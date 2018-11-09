@@ -31,7 +31,9 @@ namespace QgsWms
   {
     Q_UNUSED( version );
     QgsServerRequest::Parameters params = request.parameters();
-    QgsRenderer renderer( serverIface, project, params );
+
+    QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
+    QgsRenderer renderer( serverIface, project, wmsParameters );
 
     QString infoFormat = params.value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );
 
@@ -40,7 +42,7 @@ namespace QgsWms
   }
 
 
-} // samespace QgsWms
+} // namespace QgsWms
 
 
 

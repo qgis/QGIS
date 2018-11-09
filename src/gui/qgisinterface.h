@@ -47,6 +47,8 @@ class QgsVectorLayerTools;
 class QgsOptionsWidgetFactory;
 class QgsLocatorFilter;
 class QgsStatusBar;
+class QgsMeshLayer;
+class QgsBrowserModel;
 
 #include <QObject>
 #include <QFont>
@@ -180,7 +182,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Advanced digitizing dock widget
-     *  \since QGIS 2.12
+     * \since QGIS 2.12
      */
     virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;
 
@@ -280,6 +282,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * Returns a reference to the main window "Layer" toolbar.
      */
     virtual QToolBar *layerToolBar() = 0;
+
+    /**
+     * Returns a reference to the main window "Data Source Manager" toolbar.
+     * \since QGIS 3.4
+     */
+    virtual QToolBar *dataSourceManagerToolBar() = 0;
 
     /**
      * Returns a reference to the main window "Map Navigation" toolbar.
@@ -521,34 +529,61 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QgsStatusBar *statusBarIface() = 0;
 
+    /**
+     * Take screenshots for user documentation
+     * @param saveDirectory path where the screenshots will be saved
+     * @param categories an int as a flag value of QgsAppScreenShots::Categories
+     * \since QGIS 3.4
+     */
+    virtual void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) {Q_UNUSED( saveDirectory ); Q_UNUSED( categories );}
+
   public slots: // TODO: do these functions really need to be slots?
 
     /* Exposed functions */
 
-    //! Zoom to full extent of map layers
+    /**
+     * Zooms to the full extent of all map layers.
+     */
     virtual void zoomFull() = 0;
 
-    //! Zoom to previous view extent
+    /**
+     * Zooms to the previous view extent.
+     */
     virtual void zoomToPrevious() = 0;
 
-    //! Zoom to next view extent
+    /**
+     * Zooms to the next view extent.
+     */
     virtual void zoomToNext() = 0;
 
-    //! Zoom to extent of the active layer
+    /**
+     * Zooms to extent of the active layer.
+     */
     virtual void zoomToActiveLayer() = 0;
 
-    //! Add a vector layer
+    /**
+     * Adds a vector layer to the current project.
+     */
     virtual QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey ) = 0;
 
-    //! Add a raster layer given a raster layer file name
+    /**
+     * Adds a raster layer to the current project, given a raster layer file name.
+     */
     virtual QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName = QString() ) = 0;
 
-    //! Add a WMS layer
+    /**
+     * Adds a raster layer to the current project, from the specified raster data provider.
+     */
     virtual QgsRasterLayer *addRasterLayer( const QString &url, const QString &layerName, const QString &providerKey ) = 0;
 
-    //! Add a project
+    /**
+     * Adds a mesh layer to the current project.
+     */
+    virtual QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
+
+    //! Adds (opens) a project
     virtual bool addProject( const QString &project ) = 0;
-    //! Start a blank project
+    //! Starts a new blank project
     virtual void newProject( bool promptToSaveFlag = false ) = 0;
 
     /**
@@ -667,7 +702,9 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void addToolBar( QToolBar *toolbar SIP_TRANSFER, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 
-    //! Open the message log dock widget *
+    /**
+     * Opens the message log dock widget.
+     */
     virtual void openMessageLog() = 0;
 
     //! Adds a widget to the user input tool bar.
@@ -739,10 +776,18 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Remove action from the Web menu
     virtual void removePluginWebMenu( const QString &name, QAction *action ) = 0;
 
-    //! Add a dock widget to the main window
+    /**
+     * Adds a \a dock widget to the main window, in the specified dock \a area.
+     *
+     * \see removeDockWidget()
+     */
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
 
-    //! Remove specified dock widget from main window (doesn't delete it).
+    /**
+     * Removes the specified \a dock widget from main window (without deleting it).
+     *
+     * \see addDockWidget()
+     */
     virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
 
     //! Open layer properties dialog
@@ -771,6 +816,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Register a new tab in the vector layer properties dialog.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
+     * \see QgsMapLayerConfigWidgetFactory
      * \see unregisterMapLayerConfigWidgetFactory()
      * \since QGIS 2.16
      */
@@ -778,6 +824,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Unregister a previously registered tab in the vector layer properties dialog.
+     * \see QgsMapLayerConfigWidgetFactory
      * \see registerMapLayerConfigWidgetFactory()
      * \since QGIS 2.16
     */
@@ -787,6 +834,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Register a new tab in the options dialog.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
+     * \see QgsOptionsWidgetFactory
      * \see unregisterOptionsWidgetFactory()
      * \since QGIS 3.0
      */
@@ -794,6 +842,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Unregister a previously registered tab in the options dialog.
+     * \see QgsOptionsWidgetFactory
      * \see registerOptionsWidgetFactory()
      * \since QGIS 3.0
     */
@@ -803,6 +852,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Register a new custom drop handler.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
+     * \see QgsCustomDropHandler
      * \see unregisterCustomDropHandler()
      * \since QGIS 3.0
      */
@@ -810,6 +860,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Unregister a previously registered custom drop handler.
+     * \see QgsCustomDropHandler
      * \see registerCustomDropHandler()
      * \since QGIS 3.0
      */
@@ -819,6 +870,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Register a new custom drop \a handler for layout windows.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
+     * \see QgsLayoutCustomDropHandler
      * \see unregisterCustomLayoutDropHandler()
      * \since QGIS 3.0
      */
@@ -826,6 +878,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Unregister a previously registered custom drop \a handler for layout windows.
+     * \see QgsLayoutCustomDropHandler
      * \see registerCustomLayoutDropHandler()
      * \since QGIS 3.0
      */
@@ -848,7 +901,8 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 SIP_DEPRECATED;
 
     /**
-     * Open feature form
+     * Opens a new feature form.
+     * Returns true if dialog was accepted (if shown modal, true otherwise).
      * \param l vector layer
      * \param f feature to show/modify
      * \param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
@@ -857,7 +911,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
 
     /**
-     * Returns a feature form for a given feature
+     * Returns a feature form for a given feature.
      *
      * \param l The layer for which the dialog will be created
      * \param f The feature for which the dialog will be created
@@ -868,13 +922,13 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * This method is only needed when using a UI form with a custom widget plugin and calling
-     * openFeatureForm or getFeatureForm from Python (PyQt4) and you haven't used the info tool first.
+     * openFeatureForm or getFeatureForm from Python (PyQt) and you haven't used the info tool first.
      * Python will crash bringing QGIS with it
      * if the custom form is not loaded from a C++ method call.
      *
-     * This method uses a QTimer to call QUiLoader in order to load the form via C++
-     * you only need to call this once after that you can call openFeatureForm/getFeatureForm
-     * like normal
+     * This method uses a QTimer to call QUiLoader in order to load the form via C++.
+     * You only need to call this once. After that you can call openFeatureForm/getFeatureForm
+     * like usual.
      *
      * More information here: http://qt-project.org/forums/viewthread/27098/
      */
@@ -919,11 +973,18 @@ class GUI_EXPORT QgisInterface : public QObject
       */
     virtual bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) = 0;
 
+    /**
+     * Returns the application browser model. Using this shared model is more efficient than
+     * creating a new browser model for every use.
+     * \since QGIS 3.4
+     */
+    virtual QgsBrowserModel *browserModel() = 0;
+
   signals:
 
     /**
      * Emitted whenever current (selected) layer changes.
-     *  The pointer to layer can be null if no layer is selected
+     *  The pointer to layer can be null if no layer is selected.
      */
     void currentLayerChanged( QgsMapLayer *layer );
 
@@ -959,34 +1020,31 @@ class GUI_EXPORT QgisInterface : public QObject
     void layoutDesignerClosed();
 
     /**
-     * This signal is emitted when the initialization is complete
+     * This signal is emitted when the initialization is complete.
      */
     void initializationCompleted();
 
     /**
-     * Emitted when a project file is successfully read
-     * \note
-     * This is useful for plug-ins that store properties with project files.  A
-     * plug-in can connect to this signal.  When it is emitted, the plug-in
-     * knows to then check the project properties for any relevant state.
+     * Emitted when a project file is successfully read.
+     * \note This is useful for plugins that store properties with project files.
+     *       A plugin can connect to this signal. When it is emitted, the plugin
+     *       knows to then check the project properties for any relevant state.
      */
     void projectRead();
 
     /**
-     * Emitted when starting an entirely new project
-     * \note
-     * This is similar to projectRead(); plug-ins might want to be notified
-     * that they're in a new project.  Yes, projectRead() could have been
-     * overloaded to be used in the case of new projects instead.  However,
-     * it's probably more semantically correct to have an entirely separate
-     * signal for when this happens.
+     * Emitted when starting an entirely new project.
+     * \note This is similar to projectRead(); plugins might want to be notified
+     *       that they're in a new project. Yes, projectRead() could have been
+     *       overloaded to be used in the case of new projects instead. However,
+     *       it's probably more semantically correct to have an entirely separate
+     *       signal for when this happens.
      */
     void newProjectCreated();
 
     /**
-     * This signal is emitted when a layer has been saved using save as
-     * \note
-     * added in version 2.7
+     * This signal is emitted when a layer has been saved using save as.
+     * \since QGIS 2.7
      */
     void layerSavedAs( QgsMapLayer *l, const QString &path );
 

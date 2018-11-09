@@ -203,7 +203,7 @@ void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
   painter->restore();
 }
 
-QSizeF QgsLayoutItemPicture::applyItemSizeConstraint( const QSizeF &targetSize )
+QSizeF QgsLayoutItemPicture::applyItemSizeConstraint( const QSizeF targetSize )
 {
   QSizeF currentPictureSize = pictureSize();
   QSizeF newSize = targetSize;
@@ -347,7 +347,7 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
     if ( ok )
     {
       source = source.trimmed();
-      QgsDebugMsg( QString( "exprVal PictureSource:%1" ).arg( source ) );
+      QgsDebugMsg( QStringLiteral( "exprVal PictureSource:%1" ).arg( source ) );
     }
     else
     {
@@ -473,7 +473,7 @@ void QgsLayoutItemPicture::updateMapRotation()
       catch ( QgsException &e )
       {
         Q_UNUSED( e );
-        QgsDebugMsg( QString( "Caught exception %1" ).arg( e.what() ) );
+        QgsDebugMsg( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
       }
       break;
     }
@@ -752,7 +752,7 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   if ( itemElem.hasAttribute( QStringLiteral( "sourceExpression" ) ) )
   {
     //update pre 2.5 picture expression to use data defined expression
-    QString sourceExpression = itemElem.attribute( QStringLiteral( "sourceExpression" ), QLatin1String( "" ) );
+    QString sourceExpression = itemElem.attribute( QStringLiteral( "sourceExpression" ), QString() );
     QString useExpression = itemElem.attribute( QStringLiteral( "useExpression" ) );
     bool expressionActive;
     expressionActive = ( useExpression.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );

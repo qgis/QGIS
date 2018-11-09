@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmzonalhistogram.h"
-#include "qgsgeos.h"
+#include "qgsrasteranalysisutils.h"
 #include "qgslogger.h"
 
 ///@cond PRIVATE
@@ -74,20 +74,19 @@ QgsZonalHistogramAlgorithm *QgsZonalHistogramAlgorithm::createInstance() const
 bool QgsZonalHistogramAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT_RASTER" ), context );
-  mBand = parameterAsInt( parameters, QStringLiteral( "RASTER_BAND" ), context );
-
   if ( !layer )
     throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT_RASTER" ) ) );
 
-  mInterface.reset( layer->dataProvider()->clone() );
-  mHasNoDataValue = layer->dataProvider()->sourceHasNoDataValue( mBand );
-  mNodataValue = layer->dataProvider()->sourceNoDataValue( mBand );
-  mExtent = layer->extent();
+  mRasterBand = parameterAsInt( parameters, QStringLiteral( "RASTER_BAND" ), context );
+  mHasNoDataValue = layer->dataProvider()->sourceHasNoDataValue( mRasterBand );
+  mNodataValue = layer->dataProvider()->sourceNoDataValue( mRasterBand );
+  mRasterInterface.reset( layer->dataProvider()->clone() );
+  mRasterExtent = layer->extent();
   mCrs = layer->crs();
-  mRasterUnitsPerPixelX = std::abs( layer->rasterUnitsPerPixelX() );
-  mRasterUnitsPerPixelY = std::abs( layer->rasterUnitsPerPixelX() );
-  mNbCellsXProvider = mInterface->xSize();
-  mNbCellsYProvider = mInterface->ySize();
+  mCellSizeX = std::abs( layer->rasterUnitsPerPixelX() );
+  mCellSizeY = std::abs( layer->rasterUnitsPerPixelX() );
+  mNbCellsXProvider = mRasterInterface->xSize();
+  mNbCellsYProvider = mRasterInterface->ySize();
 
   return true;
 }
@@ -108,7 +107,7 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
 
   // First loop through the zones to build up a list of unique values across all zones to determine sink fields list
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
   if ( zones->sourceCrs() != mCrs )
   {
     request.setDestinationCrs( mCrs, context.transformContext() );
@@ -130,41 +129,27 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
     }
 
     QgsGeometry featureGeometry = f.geometry();
-    QgsRectangle intersectRect = featureGeometry.boundingBox().intersect( &mExtent );
-    if ( intersectRect.isEmpty() )
+    QgsRectangle featureRect = featureGeometry.boundingBox().intersect( mRasterExtent );
+    if ( featureRect.isEmpty() )
     {
       current++;
       continue;
     }
 
-    int offsetX, offsetY, nCellsX, nCellsY;
-    // Get offset in pixels in x- and y- direction
-    offsetX = ( int )( ( intersectRect.xMinimum() - mExtent.xMinimum() ) / mRasterUnitsPerPixelX );
-    offsetY = ( int )( ( mExtent.yMaximum() - intersectRect.yMaximum() ) / mRasterUnitsPerPixelY );
-
-    int maxColumn = ( int )( ( intersectRect.xMaximum() - mExtent.xMinimum() ) / mRasterUnitsPerPixelX ) + 1;
-    int maxRow = ( int )( ( mExtent.yMaximum() - intersectRect.yMinimum() ) / mRasterUnitsPerPixelY ) + 1;
-
-    nCellsX = maxColumn - offsetX;
-    nCellsY = maxRow - offsetY;
-
-    // Avoid access to cells outside of the raster (may occur because of rounding)
-    if ( ( offsetX + nCellsX ) > mNbCellsXProvider )
-    {
-      nCellsX = mNbCellsXProvider - offsetX;
-    }
-    if ( ( offsetY + nCellsY ) > mNbCellsYProvider )
-    {
-      nCellsY = mNbCellsYProvider - offsetY;
-    }
+    int nCellsX, nCellsY;
+    QgsRectangle rasterBlockExtent;
+    QgsRasterAnalysisUtils::cellInfoForBBox( mRasterExtent, featureRect, mCellSizeX, mCellSizeY, nCellsX, nCellsY, mNbCellsXProvider, mNbCellsYProvider, rasterBlockExtent );
 
     QHash< double, qgssize > fUniqueValues;
-    middlePoints( featureGeometry, offsetX, offsetY, nCellsX, nCellsY, fUniqueValues );
+    QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( mRasterInterface.get(), mRasterBand, featureGeometry, nCellsX, nCellsY, mCellSizeX, mCellSizeY,
+    rasterBlockExtent, [ &fUniqueValues]( double value ) { fUniqueValues[value]++; }, false );
 
     if ( fUniqueValues.count() < 1 )
     {
       // The cell resolution is probably larger than the polygon area. We switch to slower precise pixel - polygon intersection in this case
-      preciseIntersection( featureGeometry, offsetX, offsetY, nCellsX, nCellsY, fUniqueValues );
+      // TODO: eventually deal with weight if needed
+      QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( mRasterInterface.get(), mRasterBand, featureGeometry, nCellsX, nCellsY, mCellSizeX, mCellSizeY,
+      rasterBlockExtent, [ &fUniqueValues]( double value, double ) { fUniqueValues[value]++; }, false );
     }
 
     for ( auto it = fUniqueValues.constBegin(); it != fUniqueValues.constEnd(); ++it )
@@ -185,7 +170,7 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
   QgsFields newFields;
   for ( auto it = uniqueValues.constBegin(); it != uniqueValues.constEnd(); ++it )
   {
-    newFields.append( QgsField( QStringLiteral( "%1%2" ).arg( fieldPrefix ).arg( mHasNoDataValue && *it == mNodataValue ? QStringLiteral( "NODATA" ) : QString::number( *it ) ), QVariant::LongLong, QString(), -1, 0 ) );
+    newFields.append( QgsField( QStringLiteral( "%1%2" ).arg( fieldPrefix, mHasNoDataValue && *it == mNodataValue ? QStringLiteral( "NODATA" ) : QString::number( *it ) ), QVariant::LongLong, QString(), -1, 0 ) );
   }
   QgsFields fields = QgsProcessingUtils::combineFields( zones->fields(), newFields );
 
@@ -215,97 +200,6 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
-}
-
-void QgsZonalHistogramAlgorithm::middlePoints( const QgsGeometry &poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY, QHash< double, qgssize > &uniqueValues )
-{
-  double cellCenterX, cellCenterY;
-
-  cellCenterY = mExtent.yMaximum() - pixelOffsetY * mRasterUnitsPerPixelY - mRasterUnitsPerPixelY / 2;
-
-  geos::unique_ptr polyGeos( QgsGeos::asGeos( poly ) );
-  if ( !polyGeos )
-  {
-    return;
-  }
-
-  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
-  geos::prepared_unique_ptr polyGeosPrepared( GEOSPrepare_r( geosctxt, polyGeos.get() ) );
-  if ( !polyGeosPrepared )
-  {
-    return;
-  }
-
-  GEOSCoordSequence *cellCenterCoords = nullptr;
-  geos::unique_ptr currentCellCenter;
-
-  QgsRectangle blockRect( mExtent.xMinimum() + pixelOffsetX * mRasterUnitsPerPixelX,
-                          mExtent.yMaximum() - pixelOffsetY * mRasterUnitsPerPixelY - nCellsY * mRasterUnitsPerPixelY,
-                          mExtent.xMinimum() + pixelOffsetX * mRasterUnitsPerPixelX + nCellsX * mRasterUnitsPerPixelX,
-                          mExtent.yMaximum() - pixelOffsetY * mRasterUnitsPerPixelY );
-  std::unique_ptr< QgsRasterBlock > block( mInterface->block( mBand, blockRect, nCellsX, nCellsY ) );
-  for ( int i = 0; i < nCellsY; ++i )
-  {
-    cellCenterX = mExtent.xMinimum() + pixelOffsetX * mRasterUnitsPerPixelX + mRasterUnitsPerPixelX / 2;
-    for ( int j = 0; j < nCellsX; ++j )
-    {
-      if ( !std::isnan( block->value( i, j ) ) )
-      {
-        cellCenterCoords = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-        GEOSCoordSeq_setX_r( geosctxt, cellCenterCoords, 0, cellCenterX );
-        GEOSCoordSeq_setY_r( geosctxt, cellCenterCoords, 0, cellCenterY );
-        currentCellCenter.reset( GEOSGeom_createPoint_r( geosctxt, cellCenterCoords ) );
-        if ( GEOSPreparedContains_r( geosctxt, polyGeosPrepared.get(), currentCellCenter.get() ) )
-        {
-          uniqueValues[block->value( i, j )]++;
-        }
-      }
-      cellCenterX += mRasterUnitsPerPixelX;
-    }
-    cellCenterY -= mRasterUnitsPerPixelY;
-  }
-}
-
-void QgsZonalHistogramAlgorithm::preciseIntersection( const QgsGeometry &poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY, QHash< double, qgssize > &uniqueValues )
-{
-  double currentY = mExtent.yMaximum() - pixelOffsetY * mRasterUnitsPerPixelY - mRasterUnitsPerPixelY / 2;
-  QgsGeometry pixelRectGeometry;
-
-  double hCellSizeX = mRasterUnitsPerPixelX / 2.0;
-  double hCellSizeY = mRasterUnitsPerPixelY / 2.0;
-
-  QgsRectangle blockRect( mExtent.xMinimum() + pixelOffsetX * mRasterUnitsPerPixelX,
-                          mExtent.yMaximum() - pixelOffsetY * mRasterUnitsPerPixelY - nCellsY * mRasterUnitsPerPixelY,
-                          mExtent.xMinimum() + pixelOffsetX * mRasterUnitsPerPixelX + nCellsX * mRasterUnitsPerPixelX,
-                          mExtent.yMaximum() - pixelOffsetY * mRasterUnitsPerPixelY );
-  std::unique_ptr< QgsRasterBlock > block( mInterface->block( mBand, blockRect, nCellsX, nCellsY ) );
-  for ( int i = 0; i < nCellsY; ++i )
-  {
-    double currentX = mExtent.xMinimum() + mRasterUnitsPerPixelX / 2.0 + pixelOffsetX * mRasterUnitsPerPixelX;
-    for ( int j = 0; j < nCellsX; ++j )
-    {
-      if ( !std::isnan( block->value( i, j ) ) )
-      {
-        pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - hCellSizeX, currentY - hCellSizeY, currentX + hCellSizeX, currentY + hCellSizeY ) );
-        if ( !pixelRectGeometry.isNull() )
-        {
-          //intersection
-          QgsGeometry intersectGeometry = pixelRectGeometry.intersection( poly );
-          if ( !intersectGeometry.isNull() )
-          {
-            double intersectionArea = intersectGeometry.area();
-            if ( intersectionArea >= 0.0 )
-            {
-              uniqueValues[block->value( i, j )]++;
-            }
-          }
-          pixelRectGeometry = QgsGeometry();
-        }
-      }
-      currentX += mRasterUnitsPerPixelX;
-    }
-    currentY -= mRasterUnitsPerPixelY;
-  }
 }
 
 ///@endcond

@@ -93,6 +93,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
     def enableCompiler(self):
         QgsSettings().setValue('/qgis/compileExpressions', True)
+        return True
 
     def disableCompiler(self):
         QgsSettings().setValue('/qgis/compileExpressions', False)
@@ -613,8 +614,8 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateSpatialIndex)
         self.assertTrue(vl.dataProvider().createSpatialIndex())
 
-    def testSubSetStringEditable_bug17795(self):
-        """Test that a layer is not editable after setting a subset and it's reverted to editable after the filter is removed"""
+    def testSubSetStringEditable_bug17795_but_with_modified_behavior(self):
+        """Test that a layer is still editable after setting a subset"""
 
         testPath = TEST_DATA_DIR + '/' + 'lines.shp'
         isEditable = QgsVectorDataProvider.ChangeAttributeValues
@@ -631,7 +632,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
         vl.setSubsetString('"Name" = \'Arterial\'')
         self.assertTrue(vl.isValid())
-        self.assertFalse(vl.dataProvider().capabilities() & isEditable)
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
 
         vl.setSubsetString('')
         self.assertTrue(vl.dataProvider().capabilities() & isEditable)

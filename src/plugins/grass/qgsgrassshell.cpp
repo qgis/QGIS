@@ -115,8 +115,8 @@ void QgsGrassShell::closeShell()
 
 void QgsGrassShell::initTerminal( QTermWidget *terminal )
 {
-  QStringList env( QLatin1String( "" ) );
-  QStringList args( QLatin1String( "" ) );
+  QStringList env( ( QString() ) );
+  QStringList args( ( QString() ) );
 
   // GRASS Init.sh should not be started here, it is either run when GRASS is started if QGIS is run from GRASS shell or everything (set environment variables and lock mapset) is done in QgsGrass::openMapset
   //QString shellProgram = QString( "%1/etc/Init.sh" ).arg( ::getenv( "GISBASE" ) );

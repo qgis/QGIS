@@ -36,10 +36,35 @@ from qgis.core import (Qgis,
                        QgsProcessingUtils,
                        QgsMapLayer,
                        QgsWkbTypes,
-                       QgsMessageLog)
+                       QgsMessageLog,
+                       QgsProviderRegistry)
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.RenderingStyles import RenderingStyles
+
+
+def set_layer_name(layer, context_layer_details):
+    """
+    Sets the name for the given layer, either using the layer's file name
+    (or database layer name), or the name specified by the parameter definition.
+    """
+    use_filename_as_layer_name = ProcessingConfig.getSetting(ProcessingConfig.USE_FILENAME_AS_LAYER_NAME)
+
+    if use_filename_as_layer_name or not context_layer_details.name:
+        source_parts = QgsProviderRegistry.instance().decodeUri(layer.dataProvider().name(), layer.source())
+        layer_name = source_parts.get('layerName', '')
+        # if source layer name exists, use that -- else use
+        if layer_name:
+            layer.setName(layer_name)
+        else:
+            path = source_parts.get('path', '')
+            if path:
+                layer.setName(os.path.splitext(os.path.basename(path))[0])
+            elif context_layer_details.name:
+                # fallback to parameter's name -- shouldn't happen!
+                layer.setName(context_layer_details.name)
+    else:
+        layer.setName(context_layer_details.name)
 
 
 def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
@@ -48,6 +73,7 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
         feedback = QgsProcessingFeedback()
     feedback.setProgressText(QCoreApplication.translate('Postprocessing', 'Loading resulting layers'))
     i = 0
+
     for l, details in context.layersToLoadOnCompletion().items():
         if feedback.isCanceled():
             return False
@@ -57,10 +83,9 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
             feedback.setProgress(100 * i / float(len(context.layersToLoadOnCompletion())))
 
         try:
-            layer = QgsProcessingUtils.mapLayerFromString(l, context)
+            layer = QgsProcessingUtils.mapLayerFromString(l, context, typeHint=details.layerTypeHint)
             if layer is not None:
-                if not ProcessingConfig.getSetting(ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):
-                    layer.setName(details.name)
+                set_layer_name(layer, details)
 
                 style = None
                 if details.outputName:

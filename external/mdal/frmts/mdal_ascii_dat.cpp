@@ -52,17 +52,15 @@ void MDAL::LoaderAsciiDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
     return;
   }
   line = trim( line );
-  std::string basename = baseName( mDatFile );
 
   // http://www.xmswiki.com/xms/SMS:ASCII_Dataset_Files_*.dat
   // Apart from the format specified above, there is an older supported format used in BASEMENT (and SMS?)
   // which is simpler (has only one dataset in one file, no status flags etc)
   bool oldFormat;
   bool isVector = false;
-  bool readingDataset = false; // whether we are in process of reading the dataset
 
-  std::string baseDatasetName( basename );
-  std::vector<std::shared_ptr<Dataset>> datOutputs; // DAT outputs data
+  std::shared_ptr<DatasetGroup> group; // DAT outputs data
+  std::string name( MDAL::baseName( mDatFile ) );
 
   if ( line == "DATASET" )
     oldFormat = false;
@@ -70,16 +68,22 @@ void MDAL::LoaderAsciiDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
   {
     oldFormat = true;
     isVector = ( line == "VECTOR" );
-    baseDatasetName = basename;
-    readingDataset = true;
+
+    group = std::make_shared< DatasetGroup >();
+    group->uri = mDatFile;
+    group->setName( name );
+    group->isScalar = !isVector;
   }
   else
     EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
 
-  // see if it contains element-centered results - supported by BASEMENT
-  bool elementCentered = false;
-  if ( !oldFormat && contains( basename, "_els_" ) )
-    elementCentered = true;
+  // see if it contains face-centered results - supported by BASEMENT
+  bool faceCentered = false;
+  if ( !oldFormat && contains( name, "_els_" ) )
+    faceCentered = true;
+
+  if ( group )
+    group->isOnVertices = !faceCentered;
 
   while ( std::getline( in, line ) )
   {
@@ -107,28 +111,32 @@ void MDAL::LoaderAsciiDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
     }
     else if ( !oldFormat && ( cardType == "BEGSCL" || cardType == "BEGVEC" ) )
     {
-      if ( readingDataset )
+      if ( group )
       {
         debug( "New dataset while previous one is still active!" );
         EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
       }
       isVector = cardType == "BEGVEC";
-      baseDatasetName = basename;
-      readingDataset = true;
+
+      group = std::make_shared< DatasetGroup >();
+      group->uri = mDatFile;
+      group->setName( name );
+      group->isScalar = !isVector;
+      group->isOnVertices = !faceCentered;
     }
     else if ( !oldFormat && cardType == "ENDDS" )
     {
-      if ( !readingDataset )
+      if ( !group )
       {
         debug( "ENDDS card for no active dataset!" );
         EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
       }
-
-      addDatasets( mesh, baseDatasetName, datOutputs );
+      mesh->datasetGroups.push_back( group );
+      group.reset();
     }
     else if ( !oldFormat && cardType == "NAME" && items.size() >= 2 )
     {
-      if ( !readingDataset )
+      if ( !group )
       {
         debug( "NAME card for no active dataset!" );
         EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
@@ -137,7 +145,7 @@ void MDAL::LoaderAsciiDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
       size_t quoteIdx1 = line.find( '\"' );
       size_t quoteIdx2 = line.find( '\"', quoteIdx1 + 1 );
       if ( quoteIdx1 != std::string::npos && quoteIdx2 != std::string::npos )
-        baseDatasetName = line.substr( quoteIdx1 + 1, quoteIdx2 - quoteIdx1 - 1 );
+        group->setName( line.substr( quoteIdx1 + 1, quoteIdx2 - quoteIdx1 - 1 ) );
     }
     else if ( oldFormat && ( cardType == "SCALAR" || cardType == "VECTOR" ) )
     {
@@ -147,14 +155,14 @@ void MDAL::LoaderAsciiDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
     {
       double t = toDouble( items[oldFormat ? 1 : 2] );
 
-      if ( elementCentered )
+      if ( faceCentered )
       {
-        readFaceTimestep( mesh, datOutputs, t, isVector, in );
+        readFaceTimestep( mesh, group, t, isVector, in );
       }
       else
       {
         bool hasStatus = ( oldFormat ? false : toBool( items[1] ) );
-        readVertexTimestep( mesh, datOutputs, t, isVector, hasStatus, in );
+        readVertexTimestep( mesh, group, t, isVector, hasStatus, in );
       }
 
     }
@@ -168,43 +176,32 @@ void MDAL::LoaderAsciiDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
 
   if ( oldFormat )
   {
-    if ( datOutputs.size() == 0 )
+    if ( !group || group->datasets.size() == 0 )
       EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
 
-    addDatasets( mesh, baseDatasetName, datOutputs );
+    mesh->datasetGroups.push_back( group );
+    group.reset();
   }
 }
 
-void MDAL::LoaderAsciiDat::addDatasets( MDAL::Mesh *mesh,
-                                        const std::string &name,
-                                        const std::vector<std::shared_ptr<Dataset>> &datOutputs ) const
+void MDAL::LoaderAsciiDat::readVertexTimestep(
+  const MDAL::Mesh *mesh,
+  std::shared_ptr<DatasetGroup> group,
+  double t,
+  bool isVector,
+  bool hasStatus,
+  std::ifstream &stream )
 {
-  for ( const std::shared_ptr<Dataset> &ds : datOutputs )
-  {
-    ds->uri = mDatFile;
-    ds->setName( name );
-    ds->isValid = true;
-  }
+  assert( group );
 
-  //https://stackoverflow.com/a/2551785/2838364
-  mesh->datasets.insert(
-    mesh->datasets.end(),
-    datOutputs.begin(),
-    datOutputs.end()
-  );
-}
-
-void MDAL::LoaderAsciiDat::readVertexTimestep( const MDAL::Mesh *mesh, std::vector<std::shared_ptr<MDAL::Dataset> > &datOutputs, double t, bool isVector, bool hasStatus, std::ifstream &stream )
-{
   size_t vertexCount = mesh->vertices.size();
   size_t faceCount = mesh->faces.size();
 
-  std::shared_ptr<MDAL::Dataset> dataset( new MDAL::Dataset );
-  dataset->isScalar = !isVector; //everything else to be set in addDatasets
-  dataset->setMetadata( "time", std::to_string( t / 3600. ) );
+  std::shared_ptr<MDAL::Dataset> dataset = std::make_shared< MDAL::Dataset >();
+  dataset->time = t / 3600.; // TODO read TIMEUNITS
   dataset->values.resize( vertexCount );
   dataset->active.resize( faceCount );
-  dataset->isOnVertices = true;
+  dataset->parent = group.get();
 
   // only for new format
   for ( size_t i = 0; i < faceCount; ++i )
@@ -256,18 +253,24 @@ void MDAL::LoaderAsciiDat::readVertexTimestep( const MDAL::Mesh *mesh, std::vect
     }
   }
 
-  datOutputs.push_back( std::move( dataset ) );
+  group->datasets.push_back( dataset );
 }
 
-void MDAL::LoaderAsciiDat::readFaceTimestep( const MDAL::Mesh *mesh, std::vector<std::shared_ptr<MDAL::Dataset> > &datOutputs, double t, bool isVector, std::ifstream &stream )
+void MDAL::LoaderAsciiDat::readFaceTimestep(
+  const MDAL::Mesh *mesh,
+  std::shared_ptr<DatasetGroup> group,
+  double t,
+  bool isVector,
+  std::ifstream &stream )
 {
+  assert( group );
+
   size_t faceCount = mesh->faces.size();
 
-  std::shared_ptr<MDAL::Dataset> dataset( new MDAL::Dataset );
-  dataset->isScalar = !isVector; //everything else to be set in addDatasets
-  dataset->setMetadata( "time", std::to_string( t / 3600. ) );
+  std::shared_ptr<MDAL::Dataset> dataset = std::make_shared< MDAL::Dataset >();
+  dataset->time = t / 3600.;
   dataset->values.resize( faceCount );
-  dataset->isOnVertices = false;
+  dataset->parent = group.get();
 
   // TODO: hasStatus
   for ( size_t index = 0; index < faceCount; ++index )
@@ -301,5 +304,5 @@ void MDAL::LoaderAsciiDat::readFaceTimestep( const MDAL::Mesh *mesh, std::vector
     }
   }
 
-  datOutputs.push_back( std::move( dataset ) );
+  group->datasets.push_back( dataset );
 }

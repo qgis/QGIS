@@ -54,7 +54,7 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
      * Adding the guide to a QgsLayoutGuideCollection will automatically set
      * the corresponding layout for you.
      */
-    QgsLayoutGuide( Qt::Orientation orientation, const QgsLayoutMeasurement &position, QgsLayoutItemPage *page );
+    QgsLayoutGuide( Qt::Orientation orientation, QgsLayoutMeasurement position, QgsLayoutItemPage *page );
 
     ~QgsLayoutGuide() override;
 
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
      *
      * \see position()
      */
-    void setPosition( const QgsLayoutMeasurement &position );
+    void setPosition( QgsLayoutMeasurement position );
 
     /**
      * Returns the page the guide is contained within.

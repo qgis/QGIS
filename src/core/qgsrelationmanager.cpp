@@ -27,7 +27,7 @@ QgsRelationManager::QgsRelationManager( QgsProject *project )
 {
   if ( mProject )
   {
-    connect( project, &QgsProject::readProject, this, &QgsRelationManager::readProject );
+    connect( project, &QgsProject::readProjectWithContext, this, &QgsRelationManager::readProject );
     connect( project, &QgsProject::writeProject, this, &QgsRelationManager::writeProject );
     connect( project, &QgsProject::layersRemoved, this, &QgsRelationManager::layersRemoved );
   }
@@ -50,7 +50,8 @@ QMap<QString, QgsRelation> QgsRelationManager::relations() const
 
 void QgsRelationManager::addRelation( const QgsRelation &relation )
 {
-  if ( !relation.isValid() )
+  // Do not add relations to layers that do not exist
+  if ( !( relation.referencingLayer() && relation.referencedLayer() ) )
     return;
 
   mRelations.insert( relation.id(), relation );
@@ -59,6 +60,16 @@ void QgsRelationManager::addRelation( const QgsRelation &relation )
     mProject->setDirty( true );
   emit changed();
 }
+
+
+void QgsRelationManager::updateRelationsStatus()
+{
+  for ( auto relation : mRelations )
+  {
+    relation.updateRelationStatus();
+  }
+}
+
 
 void QgsRelationManager::removeRelation( const QString &id )
 {
@@ -153,7 +164,7 @@ QList<QgsRelation> QgsRelationManager::referencedRelations( QgsVectorLayer *laye
   return relations;
 }
 
-void QgsRelationManager::readProject( const QDomDocument &doc )
+void QgsRelationManager::readProject( const QDomDocument &doc, QgsReadWriteContext &context )
 {
   mRelations.clear();
 
@@ -165,12 +176,12 @@ void QgsRelationManager::readProject( const QDomDocument &doc )
     int relCount = relationNodes.count();
     for ( int i = 0; i < relCount; ++i )
     {
-      addRelation( QgsRelation::createFromXml( relationNodes.at( i ) ) );
+      addRelation( QgsRelation::createFromXml( relationNodes.at( i ), context ) );
     }
   }
   else
   {
-    QgsDebugMsg( "No relations data present in this document" );
+    QgsDebugMsg( QStringLiteral( "No relations data present in this document" ) );
   }
 
   emit relationsLoaded();
@@ -182,7 +193,7 @@ void QgsRelationManager::writeProject( QDomDocument &doc )
   QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
   if ( !nl.count() )
   {
-    QgsDebugMsg( "Unable to find qgis element in project file" );
+    QgsDebugMsg( QStringLiteral( "Unable to find qgis element in project file" ) );
     return;
   }
   QDomNode qgisNode = nl.item( 0 );  // there should only be one

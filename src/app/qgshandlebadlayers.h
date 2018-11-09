@@ -18,7 +18,6 @@
 #define QGSHANDLEBADLAYERS_H
 
 #include "ui_qgshandlebadlayersbase.h"
-#include "qgsproject.h"
 #include "qgsprojectbadlayerhandler.h"
 #include "qgis_app.h"
 
@@ -40,7 +39,7 @@ class QPushButton;
 
 class APP_EXPORT QgsHandleBadLayers
   : public QDialog
-  , private Ui::QgsHandleBadLayersBase
+  , public Ui::QgsHandleBadLayersBase
 {
     Q_OBJECT
 
@@ -55,10 +54,10 @@ class APP_EXPORT QgsHandleBadLayers
     void editAuthCfg();
     void apply();
     void accept() override;
-    void reject() override;
 
   private:
     QPushButton *mBrowseButton = nullptr;
+    QPushButton *mApplyButton = nullptr;
     const QList<QDomNode> &mLayers;
     QList<int> mRows;
     QString mVectorFileFilter;

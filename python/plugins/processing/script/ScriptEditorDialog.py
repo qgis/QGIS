@@ -68,7 +68,9 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.editor.initLexer()
         self.searchWidget.setVisible(False)
 
-        self.toolBar.setIconSize(iface.iconSize())
+        if iface is not None:
+            self.toolBar.setIconSize(iface.iconSize())
+            self.setStyleSheet(iface.mainWindow().styleSheet())
 
         self.actionOpenScript.setIcon(
             QgsApplication.getThemeIcon('/mActionScriptOpen.svg'))
@@ -119,7 +121,6 @@ class ScriptEditorDialog(BASE, WIDGET):
         if filePath is not None:
             self._loadFile(filePath)
 
-        self.needUpdate = False
         self.setHasChanged(False)
 
     def update_dialog_title(self):
@@ -148,20 +149,14 @@ class ScriptEditorDialog(BASE, WIDGET):
                 QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
 
             if ret == QMessageBox.Save:
-                self.updateProvider()
                 self.saveScript(False)
                 event.accept()
             elif ret == QMessageBox.Discard:
-                self.updateProvider()
                 event.accept()
             else:
                 event.ignore()
         else:
             event.accept()
-
-    def updateProvider(self):
-        if self.needUpdate:
-            QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
 
     def openScript(self):
         if self.hasChanged:
@@ -176,7 +171,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         fileName, _ = QFileDialog.getOpenFileName(self,
                                                   self.tr("Open script"),
                                                   scriptDir,
-                                                  self.tr("Script files (*.py *.PY)"))
+                                                  self.tr("Processing scripts (*.py *.PY)"))
 
         if fileName == "":
             return
@@ -197,7 +192,7 @@ class ScriptEditorDialog(BASE, WIDGET):
             newPath, _ = QFileDialog.getSaveFileName(self,
                                                      self.tr("Save script"),
                                                      scriptDir,
-                                                     self.tr("Script files (*.py *.PY)"))
+                                                     self.tr("Processing scripts (*.py *.PY)"))
 
             if newPath:
                 if not newPath.lower().endswith(".py"):
@@ -216,8 +211,10 @@ class ScriptEditorDialog(BASE, WIDGET):
                                     self.tr("Unable to save edits:\n{}").format(str(e))
                                     )
                 return
-            self.needUpdate = True
+
             self.setHasChanged(False)
+
+        QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
 
     def setHasChanged(self, hasChanged):
         self.hasChanged = hasChanged

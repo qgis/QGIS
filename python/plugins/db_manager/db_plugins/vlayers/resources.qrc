@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/db_manager/vlayers">
-        <file alias="icon">vlayer.svg</file>
-    </qresource>
-</RCC>

@@ -34,6 +34,28 @@ class CORE_EXPORT QgsFeatureSink
 {
   public:
 
+    /**
+     * Flags that can be set on a QgsFeatureSink. Not all sinks may implement all flags.
+     *
+     * \since QGIS 3.4
+     */
+    enum SinkFlag
+    {
+
+      /**
+       * This flag indicates, that a primary key field cannot be guaranteed to be unique and
+       * the sink should ignore it if somehow possible.
+       * This should for example be set for a geopackage file if the field "fid" has a risk
+       * to contain duplicate entries. In this case sinks like QgsVectorFileWriter or
+       * QgsVectorLayerExporter will prefer to regenerate the fid instead of trying to reuse
+       * the fids provided in addFeature calls.
+       *
+       * \since QGIS 3.4
+       */
+      RegeneratePrimaryKey = 1 << 1,
+    };
+    Q_DECLARE_FLAGS( SinkFlags, SinkFlag )
+
     //! Flags controlling how features are added to a sink.
     enum Flag
     {

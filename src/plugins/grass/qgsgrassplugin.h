@@ -18,7 +18,7 @@
 #include "../qgisplugin.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
-#include "qgsvectorlayer.h"
+#include "qgseditformconfig.h"
 #include <QObject>
 
 class QgsGrassTools;
@@ -29,6 +29,7 @@ class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapTool;
 class QgsRubberBand;
+class QgsVectorLayer;
 
 class QAction;
 class QIcon;

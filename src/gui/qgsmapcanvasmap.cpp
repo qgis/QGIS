@@ -60,12 +60,20 @@ QRectF QgsMapCanvasMap::boundingRect() const
 
 void QgsMapCanvasMap::paint( QPainter *painter )
 {
-  int w = std::round( mItemSize.width() ) - 2, h = std::round( mItemSize.height() ) - 2; // setRect() makes the size +2 :-(
-  if ( mImage.size() != QSize( w, h ) )
+  // setRect() makes the size +2 :-(
+  int w = std::round( mItemSize.width() ) - 2;
+  int h = std::round( mItemSize.height() ) - 2;
+
+  bool scale = false;
+  if ( mImage.size() != QSize( w, h ) * mImage.devicePixelRatioF() )
   {
-    QgsDebugMsg( QString( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" ).arg( mImage.width() ).arg( mImage.height() ).arg( w ).arg( h ) );
+    QgsDebugMsg( QStringLiteral( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" )
+                 .arg( mImage.width() / mImage.devicePixelRatioF() )
+                 .arg( mImage.height() / mImage.devicePixelRatioF() )
+                 .arg( w ).arg( h ) );
     // This happens on zoom events when ::paint is called before
     // the renderer has completed
+    scale = true;
   }
 
   /*Offset between 0/0 and mRect.xMinimum/mRect.yMinimum.
@@ -83,7 +91,10 @@ void QgsMapCanvasMap::paint( QPainter *painter )
     painter->drawImage( QRectF( ul.x(), ul.y(), lr.x() - ul.x(), lr.y() - ul.y() ), imIt->first, QRect( 0, 0, imIt->first.width(), imIt->first.height() ) );
   }
 
-  painter->drawImage( QRect( 0, 0, w, h ), mImage );
+  if ( scale )
+    painter->drawImage( QRect( 0, 0, w, h ), mImage );
+  else
+    painter->drawImage( 0, 0, mImage );
 
   // For debugging:
 #if 0

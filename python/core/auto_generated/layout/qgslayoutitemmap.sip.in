@@ -61,7 +61,7 @@ The caller takes responsibility for deleting the returned object.
 
     virtual int numberExportLayers() const;
 
-    virtual void setFrameStrokeWidth( const QgsLayoutMeasurement &width );
+    virtual void setFrameStrokeWidth( QgsLayoutMeasurement width );
 
 
     double scale() const;
@@ -380,7 +380,7 @@ is enabled.
 .. seealso:: :py:func:`atlasDriven`
 %End
 
-    double atlasMargin( const QgsLayoutObject::PropertyValueType valueType = QgsLayoutObject::EvaluatedValue );
+    double atlasMargin( QgsLayoutObject::PropertyValueType valueType = QgsLayoutObject::EvaluatedValue );
 %Docstring
 Returns the margin size (percentage) used when the map is in atlas mode.
 
@@ -470,6 +470,12 @@ will be calculated. This can be expensive to calculate, so if they are not requi
     virtual void finalizeRestoreFromXml();
 
 
+    QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = 0 ) const;
+%Docstring
+Returns a list of the layers which will be rendered within this map item, considering
+any locked layers, linked map theme, and data defined settings.
+%End
+
   protected:
 
     virtual void draw( QgsLayoutItemRenderContext &context );
@@ -546,7 +552,7 @@ associated legend items know they should update
 Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
 %End
 
-    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
 
 };

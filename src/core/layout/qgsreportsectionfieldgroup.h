@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgsabstractreportsection.h"
+#include "qgsfeatureiterator.h"
 
 
 ///@cond NOT_STABLE

@@ -23,6 +23,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
+QgsFeatureSource::FeatureAvailability QgsFeatureSource::hasFeatures() const
+{
+  return FeaturesMaybeAvailable;
+}
+
 QSet<QVariant> QgsFeatureSource::uniqueValues( int fieldIndex, int limit ) const
 {
   if ( fieldIndex < 0 || fieldIndex >= fields().count() )
@@ -59,7 +64,7 @@ QVariant QgsFeatureSource::minimumValue( int fieldIndex ) const
   while ( it.nextFeature( f ) )
   {
     QVariant v = f.attribute( fieldIndex );
-    if ( v.isValid() && qgsVariantLessThan( v, min ) )
+    if ( !v.isNull() && ( qgsVariantLessThan( v, min ) || min.isNull() ) )
     {
       min = v;
     }
@@ -82,7 +87,7 @@ QVariant QgsFeatureSource::maximumValue( int fieldIndex ) const
   while ( it.nextFeature( f ) )
   {
     QVariant v = f.attribute( fieldIndex );
-    if ( v.isValid() && qgsVariantGreaterThan( v, max ) )
+    if ( !v.isNull() && ( qgsVariantGreaterThan( v, max ) || max.isNull() ) )
     {
       max = v;
     }
@@ -95,7 +100,7 @@ QgsRectangle QgsFeatureSource::sourceExtent() const
   QgsRectangle r;
 
   QgsFeatureRequest req;
-  req.setSubsetOfAttributes( QgsAttributeList() );
+  req.setNoAttributes();
 
   QgsFeatureIterator it = getFeatures( req );
   QgsFeature f;
@@ -111,7 +116,7 @@ QgsFeatureIds QgsFeatureSource::allFeatureIds() const
 {
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
                                         .setFlags( QgsFeatureRequest::NoGeometry )
-                                        .setSubsetOfAttributes( QgsAttributeList() ) );
+                                        .setNoAttributes() );
 
   QgsFeatureIds ids;
 

@@ -28,16 +28,18 @@
 #include "qgis_sip.h"
 
 /**
-  * QgsServerSettingsEnv provides some enum describing the environment
-  * currently supported for configuration.
-  * \since QGIS 3.0
-  */
+ * \ingroup server
+ * \class QgsServerSettingsEnv
+ * \brief Provides some enum describing the environment currently supported for configuration.
+ * \since QGIS 3.0
+ */
 #ifndef SIP_RUN
 class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 {
     Q_OBJECT
 
   public:
+    //! Source of the parameter used in the configuration
     enum Source
     {
       DEFAULT_VALUE,
@@ -46,6 +48,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
     };
     Q_ENUM( Source )
 
+    //! Environment variables to configure the server
     enum EnvVar
     {
       QGIS_OPTIONS_PATH,
@@ -53,6 +56,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_MAX_THREADS,
       QGIS_SERVER_LOG_LEVEL,
       QGIS_SERVER_LOG_FILE,
+      QGIS_SERVER_LOG_STDERR,
       QGIS_PROJECT_FILE,
       MAX_CACHE_LAYERS,
       QGIS_SERVER_CACHE_DIRECTORY,
@@ -64,8 +68,8 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 
 /**
  * \ingroup server
- * QgsServerSettings provides a way to retrieve settings by prioritizing
- * according to environment variables, ini file and default values.
+ * \class QgsServerSettings
+ * \brief Provides a way to retrieve settings by prioritizing according to environment variables, ini file and default values.
  * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsServerSettings
@@ -144,6 +148,13 @@ class SERVER_EXPORT QgsServerSettings
       * \returns the path of the log file or an empty string if none is defined.
       */
     QString logFile() const;
+
+    /**
+     * Returns whether logging to stderr is activated.
+     * \returns true if logging to stderr is activated, false otherwise.
+     * \since QGIS 3.4
+     */
+    bool logStderr() const;
 
     /**
      * Returns the cache size.

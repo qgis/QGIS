@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
     <number>3</number>
    </property>
@@ -26,286 +26,57 @@
    <property name="bottomMargin">
     <number>3</number>
    </property>
-   <item row="6" column="0" colspan="5">
-    <widget class="QTreeWidget" name="mColormapTreeWidget">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>250</height>
-      </size>
-     </property>
-     <attribute name="headerDefaultSectionSize">
-      <number>70</number>
-     </attribute>
-     <attribute name="headerMinimumSectionSize">
-      <number>10</number>
-     </attribute>
-     <attribute name="headerStretchLastSection">
-      <bool>true</bool>
-     </attribute>
-     <column>
-      <property name="text">
-       <string>Value</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Color</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Label</string>
-      </property>
-     </column>
-    </widget>
-   </item>
-   <item row="4" column="1" colspan="4">
-    <widget class="QgsColorRampButton" name="btnColorRamp">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>16777215</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="mColorInterpolationLabel_2">
-     <property name="text">
-      <string>Color ramp</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="4">
-    <widget class="QLineEdit" name="mMaxLineEdit"/>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLabel" name="mMinLabel">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Min</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1" colspan="4">
-    <widget class="QComboBox" name="mColorInterpolationComboBox"/>
-   </item>
-   <item row="0" column="1" colspan="4">
-    <widget class="QgsRasterBandComboBox" name="mBandComboBox"/>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="mBandLabel">
-     <property name="text">
-      <string>Band</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <widget class="QLabel" name="mMaxLabel">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Max</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="mColorInterpolationLabel">
-     <property name="text">
-      <string>Interpolation</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0" colspan="5">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QPushButton" name="mClassifyButton">
-       <property name="text">
-        <string>Classify</string>
-       </property>
-      </widget>
+   <item>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="mMinLineEdit"/>
      </item>
-     <item>
-      <widget class="QPushButton" name="mAddEntryButton">
-       <property name="toolTip">
-        <string>Add values manually</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mDeleteEntryButton">
-       <property name="toolTip">
-        <string>Remove selected row(s)</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mLoadFromBandButton">
-       <property name="toolTip">
-        <string>Load color map from band</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mLoadFromFileButton">
-       <property name="toolTip">
-        <string>Load color map from file</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mExportToFileButton">
-       <property name="toolTip">
-        <string>Export color map to file</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionFileSaveAs.svg</normaloff>:/images/themes/default/mActionFileSaveAs.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>48</width>
-         <height>28</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="2">
-    <widget class="QLineEdit" name="mMinLineEdit"/>
-   </item>
-   <item row="9" column="0" colspan="5">
-    <widget class="QCheckBox" name="mClipCheckBox">
-     <property name="toolTip">
-      <string>If checked, any pixels with a value out of range will not be rendered</string>
-     </property>
-     <property name="text">
-      <string>Clip out of range values</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0" colspan="5">
-    <layout class="QHBoxLayout" name="horizontalLayout_5">
-     <item>
-      <widget class="QLabel" name="mClassificationModeLabel">
-       <property name="text">
-        <string>Mode</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="mClassificationModeComboBox"/>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="mNumberOfEntriesLabel">
-       <property name="text">
-        <string>Classes</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSpinBox" name="mNumberOfEntriesSpinBox">
+     <item row="1" column="0">
+      <widget class="QLabel" name="mMinLabel">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="minimum">
-        <number>2</number>
-       </property>
-       <property name="maximum">
-        <number>255</number>
-       </property>
-       <property name="value">
-        <number>5</number>
+       <property name="text">
+        <string>Min</string>
        </property>
       </widget>
      </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="mBandLabel">
+       <property name="text">
+        <string>Band</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="mMaxLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Max</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QLineEdit" name="mMaxLineEdit"/>
+     </item>
+     <item row="0" column="1" colspan="3">
+      <widget class="QgsRasterBandComboBox" name="mBandComboBox"/>
+     </item>
     </layout>
    </item>
-   <item row="5" column="1" colspan="4">
-    <widget class="QLineEdit" name="mUnitLineEdit">
-     <property name="toolTip">
-      <string>Unit suffix</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="5">
+   <item>
     <widget class="QWidget" name="mMinMaxContainerWidget" native="true"/>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="mUnitLabel">
-     <property name="text">
-      <string>Label unit
-suffix</string>
-     </property>
-    </widget>
+   <item>
+    <widget class="QgsColorRampShaderWidget" name="mColorRampShaderWidget" native="true"/>
    </item>
   </layout>
  </widget>
@@ -316,32 +87,12 @@ suffix</string>
    <header>raster/qgsrasterbandcombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorRampButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorrampbutton.h</header>
+   <class>QgsColorRampShaderWidget</class>
+   <extends>QWidget</extends>
+   <header>raster/qgscolorrampshaderwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>mBandComboBox</tabstop>
-  <tabstop>mMinLineEdit</tabstop>
-  <tabstop>mMaxLineEdit</tabstop>
-  <tabstop>mColorInterpolationComboBox</tabstop>
-  <tabstop>btnColorRamp</tabstop>
-  <tabstop>mUnitLineEdit</tabstop>
-  <tabstop>mColormapTreeWidget</tabstop>
-  <tabstop>mClassificationModeComboBox</tabstop>
-  <tabstop>mNumberOfEntriesSpinBox</tabstop>
-  <tabstop>mClassifyButton</tabstop>
-  <tabstop>mAddEntryButton</tabstop>
-  <tabstop>mDeleteEntryButton</tabstop>
-  <tabstop>mLoadFromBandButton</tabstop>
-  <tabstop>mLoadFromFileButton</tabstop>
-  <tabstop>mExportToFileButton</tabstop>
-  <tabstop>mClipCheckBox</tabstop>
- </tabstops>
- <resources>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

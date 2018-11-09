@@ -30,57 +30,35 @@ if not "%SHA%"=="" set SHA=-%SHA%
 if "%SITE%"=="" set SITE=qgis.org
 
 set BUILDDIR=%CD%\build-%PACKAGENAME%-%ARCH%
-
-if "%OSGEO4W_ROOT%"=="" (
-	if "%ARCH%"=="x86" (
-		set OSGEO4W_ROOT=C:\OSGeo4W
-	) else (
-		set OSGEO4W_ROOT=C:\OSGeo4W64
-	)
-)
-
 if not exist "%BUILDDIR%" mkdir %BUILDDIR%
 if not exist "%BUILDDIR%" (echo could not create build directory %BUILDDIR% & goto error)
 
-if not exist "%OSGEO4W_ROOT%\bin\o4w_env.bat" (echo o4w_env.bat not found & goto error)
-call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
-call "%OSGEO4W_ROOT%\bin\py3_env.bat"
-call "%OSGEO4W_ROOT%\bin\qt5_env.bat"
+call msvc-env.bat %ARCH%
 
 set O4W_ROOT=%OSGEO4W_ROOT:\=/%
 set LIB_DIR=%O4W_ROOT%
-
-if not "%PROGRAMFILES(X86)%"=="" set PF86=%PROGRAMFILES(X86)%
-if "%PF86%"=="" set PF86=%PROGRAMFILES%
-if "%PF86%"=="" (echo PROGRAMFILES not set & goto error)
 
 if "%ARCH%"=="x86" goto cmake_x86
 goto cmake_x86_64
 
 :cmake_x86
-call "%PF86%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
-path %path%;%PF86%\Microsoft Visual Studio 14.0\VC\bin
 set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin
-set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\10\Lib\10.0.14393.0\um\x86\SetupAPI.Lib
-if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x86\SetupAPI.Lib
+set SETUPAPI_LIBRARY=%PF86%\Windows Kits\10\Lib\10.0.14393.0\um\x86\SetupAPI.Lib
+if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=%PF86%\Windows Kits\8.0\Lib\win8\um\x86\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 
 set CMAKE_OPT=^
-	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python36/sip.exe ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex_i.lib
 goto cmake
 
 :cmake_x86_64
-call "%PF86%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
-path %path%;%PF86%\Microsoft Visual Studio 14.0\VC\bin
 set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin\amd64
-set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\10\Lib\10.0.14393.0\um\x64\SetupAPI.Lib
-if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x64\SetupAPI.Lib
+set SETUPAPI_LIBRARY=%PF86%\Windows Kits\10\Lib\10.0.14393.0\um\x64\SetupAPI.Lib
+if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=%PF86%\Windows Kits\8.0\Lib\win8\um\x64\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 
 set CMAKE_OPT=^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
-	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python36/sip.exe ^
 	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
@@ -95,9 +73,9 @@ for %%i in ("%GRASS7_PATH%") do set GRASS7_VERSION=%%~nxi
 set GRASS7_VERSION=%GRASS7_VERSION:grass-=%
 set GRASS_VERSIONS=%GRASS7_VERSION%
 
-set PYTHONPATH=
-if exist "%PF86%\CMake\bin" path %PATH%;c:\cygwin\bin;%PF86%\CMake\bin
-if exist "%PROGRAMFILES%\CMake\bin" path %PATH%;c:\cygwin\bin;%PROGRAMFILES%\CMake\bin
+set TAR=tar.exe
+if exist "c:\cygwin\bin\tar.exe" set TAR=c:\cygwin\bin\tar.exe
+if exist "c:\cygwin64\bin\tar.exe" set TAR=c:\cygwin64\bin\tar.exe
 
 PROMPT qgis%VERSION%$g
 
@@ -151,10 +129,11 @@ touch %SRCDIR%\CMakeLists.txt
 echo CMAKE: %DATE% %TIME%
 if errorlevel 1 goto error
 
-set LIB=%LIB%;%OSGEO4W_ROOT%\apps\Qt5\lib;%OSGEO4W_ROOT%\lib
-set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\apps\Qt5\include;%OSGEO4W_ROOT%\include
+if "%CMAKEGEN%"=="" set CMAKEGEN=Ninja
 
-cmake -G Ninja ^
+for %%i in (%PYTHONHOME%) do set PYVER=%%~ni
+
+cmake -G "%CMAKEGEN%" ^
 	-D CMAKE_CXX_COMPILER="%CMAKE_COMPILER_PATH:\=/%/cl.exe" ^
 	-D CMAKE_C_COMPILER="%CMAKE_COMPILER_PATH:\=/%/cl.exe" ^
 	-D CMAKE_LINKER="%CMAKE_COMPILER_PATH:\=/%/link.exe" ^
@@ -167,20 +146,23 @@ cmake -G Ninja ^
 	-D WITH_GRASS=TRUE ^
 	-D WITH_3D=TRUE ^
 	-D WITH_GRASS7=TRUE ^
-	-D GRASS_PREFIX7=%GRASS7_PATH:\=/% ^
+	-D GRASS_PREFIX7=%GRASS_PREFIX:\=/% ^
 	-D WITH_GLOBE=FALSE ^
 	-D WITH_ORACLE=TRUE ^
 	-D WITH_CUSTOM_WIDGETS=TRUE ^
-	-D CMAKE_CXX_FLAGS_RELEASE="/MD /MP /O2 /Ob2 /D NDEBUG" ^
+	-D CMAKE_CXX_FLAGS_RELEASE="/MD /Zi /MP /O2 /Ob2 /D NDEBUG" ^
+	-D CMAKE_SHARED_LINKER_FLAGS_RELEASE="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
+	-D CMAKE_MODULE_LINKER_FLAGS_RELEASE="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF" ^
+	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELEASE=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
 	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c.lib ^
 	-D SQLITE3_LIBRARY=%O4W_ROOT%/lib/sqlite3_i.lib ^
 	-D SPATIALITE_LIBRARY=%O4W_ROOT%/lib/spatialite_i.lib ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python3.exe ^
-	-D PYTHON_INCLUDE_PATH=%O4W_ROOT%/apps/Python36/include ^
-	-D PYTHON_LIBRARY=%O4W_ROOT%/apps/Python36/libs/python36.lib ^
-	-D QT_BINARY_DIR=%O4W_ROOT%/bin ^
+	-D SIP_BINARY_PATH=%PYTHONHOME:\=/%/sip.exe ^
+	-D PYTHON_INCLUDE_PATH=%PYTHONHOME:\=/%/include ^
+	-D PYTHON_LIBRARY=%PYTHONHOME:\=/%/libs/%PYVER%.lib ^
 	-D QT_LIBRARY_DIR=%O4W_ROOT%/lib ^
 	-D QT_HEADERS_DIR=%O4W_ROOT%/apps/qt5/include ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
@@ -192,6 +174,8 @@ cmake -G Ninja ^
 	%CMAKE_OPT% ^
 	%SRCDIR:\=/%
 if errorlevel 1 (echo cmake failed & goto error)
+
+if "%CONFIGONLY%"=="1" (echo Exiting after configuring build directory: %CD% & goto end)
 
 :skipcmake
 if exist ..\noclean (echo skip clean & goto skipclean)
@@ -310,7 +294,7 @@ for %%i in (%packages%) do (
 	if not exist %ARCH%\release\qgis\%PACKAGENAME%%%i mkdir %ARCH%\release\qgis\%PACKAGENAME%%%i
 )
 
-tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME%-common-%VERSION%-%PACKAGE%.tar.bz2 ^
+%TAR% -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME%-common-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
 	"apps/%PACKAGENAME%/bin/qgispython.dll" ^
@@ -341,6 +325,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME
 	"apps/%PACKAGENAME%/plugins/arcgismapserverprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/arcgisfeatureserverprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/mdalprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/oauth2authmethod.dll" ^
 	"apps/%PACKAGENAME%/resources/qgis.db" ^
 	"apps/%PACKAGENAME%/resources/spatialite.db" ^
 	"apps/%PACKAGENAME%/resources/srs.db" ^
@@ -351,7 +336,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME
 	"etc/postinstall/%PACKAGENAME%-common.bat"
 if errorlevel 1 (echo tar common failed & goto error)
 
-tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-server/%PACKAGENAME%-server-%VERSION%-%PACKAGE%.tar.bz2 ^
+%TAR% -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-server/%PACKAGENAME%-server-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
 	"apps/%PACKAGENAME%/bin/qgis_mapserv.fcgi.exe" ^
@@ -383,11 +368,11 @@ move %OSGEO4W_ROOT%\apps\qt5\plugins\designer\qgis_customwidgets.dll %PKGDIR%\qt
 if errorlevel 1 (echo move of customwidgets failed & goto error)
 
 if not exist %PKGDIR%\python\PyQt5\uic\widget-plugins mkdir %PKGDIR%\python\PyQt5\uic\widget-plugins
-move %OSGEO4W_ROOT%\apps\Python36\Lib\site-packages\PyQt5\uic\widget-plugins\qgis_customwidgets.py %PKGDIR%\python\PyQt5\uic\widget-plugins
+move %PYTHONHOME%\Lib\site-packages\PyQt5\uic\widget-plugins\qgis_customwidgets.py %PKGDIR%\python\PyQt5\uic\widget-plugins
 if errorlevel 1 (echo move of customwidgets binding failed & goto error)
 
 if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAGENAME%
-tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
+%TAR% -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
 	--exclude "apps/%PACKAGENAME%/python/qgis/_server.pyd" ^
@@ -416,6 +401,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/resources/themes/" ^
 	"apps/%PACKAGENAME%/resources/data/" ^
 	"apps/%PACKAGENAME%/resources/metadata-ISO/" ^
+	"apps/%PACKAGENAME%/resources/opencl_programs/" ^
 	"apps/%PACKAGENAME%/resources/palettes/" ^
 	"apps/%PACKAGENAME%/resources/2to3migration.txt" ^
 	"apps/%PACKAGENAME%/resources/qgis_global_settings.ini" ^
@@ -426,7 +412,12 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"etc/preremove/%PACKAGENAME%.bat"
 if errorlevel 1 (echo tar desktop failed & goto error)
 
-tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin-common/%PACKAGENAME%-grass-plugin-common-%VERSION%-%PACKAGE%.tar.bz2 ^
+if not exist %ARCH%\release\qgis\%PACKAGENAME%-pdb mkdir %ARCH%\release\qgis\%PACKAGENAME%-pdb
+%TAR% -C %BUILDDIR% -cjf %ARCH%/release/qgis/%PACKAGENAME%-pdb/%PACKAGENAME%-pdb-%VERSION%-%PACKAGE%.tar.bz2 ^
+	apps/%PACKAGENAME%/pdb
+if errorlevel 1 (echo tar failed & goto error)
+
+%TAR% -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin-common/%PACKAGENAME%-grass-plugin-common-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
 	--exclude "apps/%PACKAGENAME%/grass/modules/qgis.d.rast6.exe" ^
@@ -449,7 +440,7 @@ for %%g IN (%GRASS_VERSIONS%) do (
 	set w=!v!
 	if !v!==6 set w=
 
-	tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin!w!/%PACKAGENAME%-grass-plugin!w!-%VERSION%-%PACKAGE%.tar.bz2 ^
+	%TAR% -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin!w!/%PACKAGENAME%-grass-plugin!w!-%VERSION%-%PACKAGE%.tar.bz2 ^
 		"apps/%PACKAGENAME%/bin/qgisgrass!v!.dll" ^
 		"apps/%PACKAGENAME%/grass/bin/qgis.g.browser!v!.exe" ^
 		"apps/%PACKAGENAME%/grass/modules/qgis.d.rast!v!.exe" ^
@@ -465,12 +456,12 @@ for %%g IN (%GRASS_VERSIONS%) do (
 	if errorlevel 1 (echo tar grass-plugin!w! failed & goto error)
 )
 
-tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-oracle-provider/%PACKAGENAME%-oracle-provider-%VERSION%-%PACKAGE%.tar.bz2 ^
+%TAR% -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-oracle-provider/%PACKAGENAME%-oracle-provider-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/plugins/oracleprovider.dll" ^
 	"apps/%PACKAGENAME%/qtplugins/sqldrivers/qsqlocispatial.dll"
 if errorlevel 1 (echo tar oracle-provider failed & goto error)
 
-tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-devel/%PACKAGENAME%-devel-%VERSION%-%PACKAGE%.tar.bz2 ^
+%TAR% -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-devel/%PACKAGENAME%-devel-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
 	"apps/%PACKAGENAME%/FindQGIS.cmake" ^

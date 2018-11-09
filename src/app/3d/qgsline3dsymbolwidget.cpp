@@ -34,6 +34,8 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   connect( spinExtrusion, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLine3DSymbolWidget::changed );
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLine3DSymbolWidget::changed );
   connect( cboAltBinding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLine3DSymbolWidget::changed );
+  connect( chkSimpleLines, &QCheckBox::clicked, this, &QgsLine3DSymbolWidget::changed );
+  connect( chkSimpleLines, &QCheckBox::clicked, this, &QgsLine3DSymbolWidget::updateGuiState );
   connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsLine3DSymbolWidget::changed );
 }
 
@@ -42,9 +44,11 @@ void QgsLine3DSymbolWidget::setSymbol( const QgsLine3DSymbol &symbol )
   spinWidth->setValue( symbol.width() );
   spinHeight->setValue( symbol.height() );
   spinExtrusion->setValue( symbol.extrusionHeight() );
-  cboAltClamping->setCurrentIndex( ( int ) symbol.altitudeClamping() );
-  cboAltBinding->setCurrentIndex( ( int ) symbol.altitudeBinding() );
+  cboAltClamping->setCurrentIndex( static_cast<int>( symbol.altitudeClamping() ) );
+  cboAltBinding->setCurrentIndex( static_cast<int>( symbol.altitudeBinding() ) );
+  chkSimpleLines->setChecked( symbol.renderAsSimpleLines() );
   widgetMaterial->setMaterial( symbol.material() );
+  updateGuiState();
 }
 
 QgsLine3DSymbol QgsLine3DSymbolWidget::symbol() const
@@ -53,8 +57,16 @@ QgsLine3DSymbol QgsLine3DSymbolWidget::symbol() const
   sym.setWidth( spinWidth->value() );
   sym.setHeight( spinHeight->value() );
   sym.setExtrusionHeight( spinExtrusion->value() );
-  sym.setAltitudeClamping( ( AltitudeClamping ) cboAltClamping->currentIndex() );
-  sym.setAltitudeBinding( ( AltitudeBinding ) cboAltBinding->currentIndex() );
+  sym.setAltitudeClamping( static_cast<Qgs3DTypes::AltitudeClamping>( cboAltClamping->currentIndex() ) );
+  sym.setAltitudeBinding( static_cast<Qgs3DTypes::AltitudeBinding>( cboAltBinding->currentIndex() ) );
+  sym.setRenderAsSimpleLines( chkSimpleLines->isChecked() );
   sym.setMaterial( widgetMaterial->material() );
   return sym;
+}
+
+void QgsLine3DSymbolWidget::updateGuiState()
+{
+  bool simple = chkSimpleLines->isChecked();
+  spinWidth->setEnabled( !simple );
+  spinExtrusion->setEnabled( !simple );
 }

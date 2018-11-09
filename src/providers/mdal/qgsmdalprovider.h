@@ -26,6 +26,7 @@
 
 class QMutex;
 class QgsCoordinateTransform;
+class QgsCoordinateReferenceSystem;
 
 /**
   \brief Data provider for MDAL layers.
@@ -43,7 +44,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
      * \param options generic provider options
      */
     QgsMdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
-    ~QgsMdalProvider();
+    ~QgsMdalProvider() override;
 
     bool isValid() const override;
     QString name() const override;
@@ -55,16 +56,21 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QgsMeshVertex vertex( int index ) const override;
     QgsMeshFace face( int index ) const override;
 
-
     bool addDataset( const QString &uri ) override;
-    int datasetCount() const override;
-    QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const override;
-    QgsMeshDatasetValue datasetValue( int datasetIndex, int valueIndex ) const override;
-  private:
-    void refreshDatasets();
+    QStringList extraDatasets() const override;
 
+    int datasetGroupCount() const override;
+    int datasetCount( int groupIndex ) const override;
+
+    QgsMeshDatasetGroupMetadata datasetGroupMetadata( int groupIndex ) const override;
+    QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const override;
+    QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const override;
+    bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
+
+  private:
     MeshH mMeshH;
-    QVector<DatasetH> mDatasets;
+    QStringList mExtraDatasetUris;
+    QgsCoordinateReferenceSystem mCrs;
 };
 
 #endif //QGSMDALPROVIDER_H

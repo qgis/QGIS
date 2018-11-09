@@ -33,8 +33,7 @@ bool QgsTransactionGroup::addLayer( QgsVectorLayer *layer )
   if ( !QgsTransaction::supportsTransaction( layer ) )
     return false;
 
-  QString connString = QgsDataSourceUri( layer->source() ).connectionInfo();
-
+  QString connString = QgsTransaction::connectionString( layer->source() );
   if ( mConnString.isEmpty() )
   {
     mConnString = connString;
@@ -74,6 +73,8 @@ void QgsTransactionGroup::onEditingStarted()
     return;
 
   mTransaction.reset( QgsTransaction::create( mConnString, mProviderKey ) );
+  if ( !mTransaction )
+    return;
 
   QString errorMsg;
   mTransaction->begin( errorMsg );
@@ -116,7 +117,7 @@ void QgsTransactionGroup::onCommitChanges()
   {
     emit commitError( errMsg );
     // Restart editing the calling layer in the next event loop cycle
-    QTimer::singleShot( 0, triggeringLayer, SLOT( startEditing() ) );
+    QTimer::singleShot( 0, triggeringLayer, &QgsVectorLayer::startEditing );
   }
   mEditingStopping = false;
 }
@@ -143,7 +144,7 @@ void QgsTransactionGroup::onRollback()
   else
   {
     // Restart editing the calling layer in the next event loop cycle
-    QTimer::singleShot( 0, triggeringLayer, SLOT( startEditing() ) );
+    QTimer::singleShot( 0, triggeringLayer, &QgsVectorLayer::startEditing );
   }
   mEditingStopping = false;
 }

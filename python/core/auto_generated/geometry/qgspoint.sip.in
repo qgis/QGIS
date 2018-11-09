@@ -92,7 +92,6 @@ Construct a QgsPoint from a QPointF
 
     virtual bool operator!=( const QgsAbstractGeometry &other ) const;
 
-
     double x() const;
 %Docstring
 Returns the point's x-coordinate.
@@ -426,6 +425,12 @@ Angle undefined. Always returns 0.0
 
     virtual QgsPoint *createEmptyWithSameType() const /Factory/;
 
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsPoint: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
   protected:
 

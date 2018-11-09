@@ -20,12 +20,16 @@
 
 #include "qgsabstract3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
-#include "qgs3dutils.h"
+#include "qgs3dtypes.h"
 
+#include <QMatrix4x4>
 
 /**
  * \ingroup 3d
  * 3D symbol that draws point geometries as 3D objects using one of the predefined shapes.
+ *
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings as a tech preview only.
  *
  * \since QGIS 3.0
  */
@@ -42,9 +46,9 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
     //! Returns method that determines altitude (whether to clamp to feature to terrain)
-    AltitudeClamping altitudeClamping() const { return mAltClamping; }
+    Qgs3DTypes::AltitudeClamping altitudeClamping() const { return mAltClamping; }
     //! Sets method that determines altitude (whether to clamp to feature to terrain)
-    void setAltitudeClamping( AltitudeClamping altClamping ) { mAltClamping = altClamping; }
+    void setAltitudeClamping( Qgs3DTypes::AltitudeClamping altClamping ) { mAltClamping = altClamping; }
 
     //! Returns material used for shading of the symbol
     QgsPhongMaterialSettings material() const { return mMaterial; }
@@ -86,7 +90,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
 
   private:
     //! how to handle altitude of vector features
-    AltitudeClamping mAltClamping = AltClampRelative;
+    Qgs3DTypes::AltitudeClamping mAltClamping = Qgs3DTypes::AltClampRelative;
 
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
     Shape mShape = Cylinder;  //!< What kind of shape to use

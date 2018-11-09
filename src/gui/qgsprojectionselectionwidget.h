@@ -67,7 +67,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * \param visible whether the option should be shown
      * \see optionVisible()
      */
-    void setOptionVisible( const CrsOption option, const bool visible );
+    void setOptionVisible( CrsOption option, bool visible );
 
     /**
      * Returns whether the specified CRS option is visible in the widget.
@@ -142,7 +142,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     void addCurrentCrsOption();
     QString currentCrsOptionText( const QgsCoordinateReferenceSystem &crs ) const;
     void addRecentCrs();
-    bool crsIsShown( const long srsid ) const;
+    bool crsIsShown( long srsid ) const;
 
     int firstRecentCrsIndex() const;
 

@@ -36,9 +36,13 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
 
     /**
      * Runs the dialog and creates a layer matching the dialog parameters.
+     *
+     * If the \a initialPath argument is specified, then the dialog will default to the specified filename.
+     *
      * \returns fileName on success, empty string use aborted, QString() if creation failed
      */
-    static QString runAndCreateLayer( QWidget *parent = nullptr, QString *enc = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+    static QString runAndCreateLayer( QWidget *parent = nullptr, QString *enc = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+                                      const QString &initialPath = QString() );
 
     QgsNewVectorLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsNewVectorLayerDialog() override;
@@ -50,8 +54,22 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     QString selectedFileFormat() const;
     //! Returns the file format for storage
     QString selectedFileEncoding() const;
-    //! Returns the name for the new layer
+
+    /**
+     * Returns the name for the new layer
+     *
+     * \see setFilename()
+     */
     QString filename() const;
+
+    /**
+     * Sets the initial file name to show in the dialog.
+     *
+     * \see filename()
+     *
+     * \since QGIS 3.6
+     */
+    void setFilename( const QString &filename );
 
     /**
      * Returns the selected CRS for the new layer.

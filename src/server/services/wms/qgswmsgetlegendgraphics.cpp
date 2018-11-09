@@ -34,14 +34,64 @@ namespace QgsWms
     Q_UNUSED( version );
 
     QgsServerRequest::Parameters params = request.parameters();
-    QgsRenderer renderer( serverIface, project, params );
+    QString format = params.value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
+
+    QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
+
+    // Get cached image
+    QgsAccessControl *accessControl = nullptr;
+    QgsServerCacheManager *cacheManager = nullptr;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    accessControl = serverIface->accessControls();
+    cacheManager = serverIface->cacheManager();
+#endif
+    if ( cacheManager )
+    {
+      ImageOutputFormat outputFormat = parseImageFormat( format );
+      QString saveFormat;
+      QString contentType;
+      switch ( outputFormat )
+      {
+        case PNG:
+        case PNG8:
+        case PNG16:
+        case PNG1:
+          contentType = "image/png";
+          saveFormat = "PNG";
+          break;
+        case JPEG:
+          contentType = "image/jpeg";
+          saveFormat = "JPEG";
+          break;
+        default:
+          throw QgsServiceException( "InvalidFormat",
+                                     QString( "Output format '%1' is not supported in the GetLegendGraphic request" ).arg( format ) );
+          break;
+      }
+
+      QImage image;
+      QByteArray content = cacheManager->getCachedImage( project, request, accessControl );
+      if ( !content.isEmpty() && image.loadFromData( content ) )
+      {
+        response.setHeader( QStringLiteral( "Content-Type" ), contentType );
+        image.save( response.io(), qPrintable( saveFormat ) );
+        return;
+      }
+    }
+
+    QgsRenderer renderer( serverIface, project, wmsParameters );
 
     std::unique_ptr<QImage> result( renderer.getLegendGraphics() );
 
     if ( result )
     {
-      QString format = params.value( QStringLiteral( "FORMAT" ), QStringLiteral( "PNG" ) );
       writeImage( response, *result,  format, renderer.getImageQuality() );
+      if ( cacheManager )
+      {
+        QByteArray content = response.data();
+        if ( !content.isEmpty() )
+          cacheManager->setCachedImage( &content, project, request, accessControl );
+      }
     }
     else
     {
@@ -51,7 +101,7 @@ namespace QgsWms
   }
 
 
-} // samespace QgsWms
+} // namespace QgsWms
 
 
 

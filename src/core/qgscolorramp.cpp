@@ -638,7 +638,7 @@ void QgsCptCityColorRamp::invert()
 
 QgsCptCityColorRamp *QgsCptCityColorRamp::clone() const
 {
-  QgsCptCityColorRamp *ramp = new QgsCptCityColorRamp( QLatin1String( "" ), QLatin1String( "" ), mInverted, false );
+  QgsCptCityColorRamp *ramp = new QgsCptCityColorRamp( QString(), QString(), mInverted, false );
   ramp->copy( this );
   return ramp;
 }
@@ -728,7 +728,7 @@ bool QgsCptCityColorRamp::loadFile()
     return false;
   }
 
-  QgsDebugMsg( QString( "filename= %1 loaded=%2" ).arg( filename ).arg( mFileLoaded ) );
+  QgsDebugMsg( QStringLiteral( "filename= %1 loaded=%2" ).arg( filename ).arg( mFileLoaded ) );
 
   // get color ramp from svg file
   QMap< double, QPair<QColor, QColor> > colorMap =

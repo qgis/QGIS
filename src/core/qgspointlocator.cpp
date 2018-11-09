@@ -357,7 +357,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
     case QgsWkbTypes::LineString25D:
       hasZValue = true;
       //intentional fall-through
-      FALLTHROUGH;
+      FALLTHROUGH
     case QgsWkbTypes::LineString:
     {
       int nPoints;
@@ -391,7 +391,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
     case QgsWkbTypes::MultiLineString25D:
       hasZValue = true;
       //intentional fall-through
-      FALLTHROUGH;
+      FALLTHROUGH
     case QgsWkbTypes::MultiLineString:
     {
       int nLines;
@@ -432,7 +432,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
     case QgsWkbTypes::Polygon25D:
       hasZValue = true;
       //intentional fall-through
-      FALLTHROUGH;
+      FALLTHROUGH
     case QgsWkbTypes::Polygon:
     {
       int nRings;
@@ -473,7 +473,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
     case QgsWkbTypes::MultiPolygon25D:
       hasZValue = true;
       //intentional fall-through
-      FALLTHROUGH;
+      FALLTHROUGH
     case QgsWkbTypes::MultiPolygon:
     {
       int nPolygons;
@@ -587,13 +587,13 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
       if ( !n )
         return;
 
-      QgsDebugMsg( QString( "NODE: %1" ).arg( n->getIdentifier() ) );
+      QgsDebugMsgLevel( QStringLiteral( "NODE: %1" ).arg( n->getIdentifier() ), 4 );
       if ( n->getLevel() > 0 )
       {
         // inner nodes
         for ( uint32_t cChild = 0; cChild < n->getChildrenCount(); cChild++ )
         {
-          QgsDebugMsg( QString( "- CH: %1" ).arg( n->getChildIdentifier( cChild ) ) );
+          QgsDebugMsgLevel( QStringLiteral( "- CH: %1" ).arg( n->getChildIdentifier( cChild ) ), 4 );
           ids.push( n->getChildIdentifier( cChild ) );
         }
       }
@@ -602,7 +602,7 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
         // leaves
         for ( uint32_t cChild = 0; cChild < n->getChildrenCount(); cChild++ )
         {
-          QgsDebugMsg( QString( "- L: %1" ).arg( n->getChildIdentifier( cChild ) ) );
+          QgsDebugMsgLevel( QStringLiteral( "- L: %1" ).arg( n->getChildIdentifier( cChild ) ), 4 );
         }
       }
 
@@ -621,8 +621,7 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
 
 
 QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destCRS, const QgsCoordinateTransformContext &transformContext, const QgsRectangle *extent )
-  : mIsEmptyLayer( false )
-  , mLayer( layer )
+  : mLayer( layer )
 {
   if ( destCRS.isValid() )
   {
@@ -631,7 +630,7 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateRefe
 
   setExtent( extent );
 
-  mStorage = StorageManager::createNewMemoryStorageManager();
+  mStorage.reset( StorageManager::createNewMemoryStorageManager() );
 
   connect( mLayer, &QgsVectorLayer::featureAdded, this, &QgsPointLocator::onFeatureAdded );
   connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsPointLocator::onFeatureDeleted );
@@ -644,8 +643,6 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateRefe
 QgsPointLocator::~QgsPointLocator()
 {
   destroyIndex();
-  delete mStorage;
-  delete mExtent;
 }
 
 QgsCoordinateReferenceSystem QgsPointLocator::destinationCrs() const
@@ -655,10 +652,7 @@ QgsCoordinateReferenceSystem QgsPointLocator::destinationCrs() const
 
 void QgsPointLocator::setExtent( const QgsRectangle *extent )
 {
-  if ( extent )
-  {
-    mExtent = new QgsRectangle( *extent );
-  }
+  mExtent.reset( extent ? new QgsRectangle( *extent ) : nullptr );
 
   destroyIndex();
 }
@@ -701,7 +695,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     return true; // nothing to index
 
   QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setNoAttributes();
 
   if ( mExtent )
   {
@@ -716,7 +710,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       {
         Q_UNUSED( e );
         // See https://issues.qgis.org/issues/12634
-        QgsDebugMsg( QString( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
+        QgsDebugMsg( QStringLiteral( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
       }
     }
     request.setFilterRect( rect );
@@ -767,7 +761,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       {
         Q_UNUSED( e );
         // See https://issues.qgis.org/issues/12634
-        QgsDebugMsg( QString( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
+        QgsDebugMsg( QStringLiteral( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
         continue;
       }
     }
@@ -803,13 +797,12 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   }
 
   QgsPointLocator_Stream stream( dataList );
-  mRTree = RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity,
-           leafCapacity, dimension, variant, indexId );
+  mRTree.reset( RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity,
+                leafCapacity, dimension, variant, indexId ) );
 
   if ( ctx && renderer )
   {
     renderer->stopRender( *ctx );
-    renderer.release();
   }
   return true;
 }
@@ -817,8 +810,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 
 void QgsPointLocator::destroyIndex()
 {
-  delete mRTree;
-  mRTree = nullptr;
+  mRTree.reset();
 
   mIsEmptyLayer = false;
 
@@ -861,7 +853,6 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
         }
 
         renderer->stopRender( *ctx );
-        renderer.release();
         if ( pass )
           return;
       }
@@ -879,7 +870,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
       {
         Q_UNUSED( e );
         // See https://issues.qgis.org/issues/12634
-        QgsDebugMsg( QString( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
+        QgsDebugMsg( QStringLiteral( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
         return;
       }
     }

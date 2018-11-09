@@ -14,8 +14,6 @@
 
 
 
-
-
 class QgsFeature
 {
 %Docstring
@@ -526,9 +524,6 @@ typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
 
 
 typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
-
-
-typedef QSet<qint64> QgsFeatureIds;
 
 typedef QList<QgsFeature> QgsFeatureList;
 

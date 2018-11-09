@@ -51,6 +51,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QIcon icon() const override;
     QString svgIconPath() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QString helpUrl() const override;
     Flags flags() const override;
 
@@ -252,6 +253,24 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     bool fromFile( const QString &path );
 
     /**
+     * Saves this model to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     *
+     * \see loadVariant()
+     * \since QGIS 3.4
+     */
+    QVariant toVariant() const;
+
+    /**
+     * Loads this model from a QVariantMap, wrapped in a QVariant \a variant.
+     * You can use QgsXmlUtils::readVariant to load it from an XML document.
+     *
+     * \see toVariant()
+     * \since QGIS 3.4
+     */
+    bool loadVariant( const QVariant &variant );
+
+    /**
      * Returns the model's help contents (a free-form map of values describing the algorithm's
      * use and metadata).
      * \see setHelpContent()
@@ -293,7 +312,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * Returns a list of possible sources which can be used for the parameters for a child
      * algorithm in the model. Returned sources are those which match either one of the
      * specified \a parameterTypes (see QgsProcessingParameterDefinition::type() ) or
-     * on of the specified \a outputTypes (see QgsProcessingOutputDefinition::type() ).
+     * one of the specified \a outputTypes (see QgsProcessingOutputDefinition::type() ).
      * If specified, an optional list of \a dataTypes can be used to filter the returned
      * sources to those with compatible data types for the parameter/outputs.
      */
@@ -388,22 +407,6 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     bool childOutputIsRequired( const QString &childId, const QString &outputName ) const;
 
     /**
-     * Saves this model to a QVariantMap, wrapped in a QVariant.
-     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
-     *
-     * \see loadVariant()
-     */
-    QVariant toVariant() const;
-
-    /**
-     * Loads this model from a QVariantMap, wrapped in a QVariant.
-     * You can use QgsXmlUtils::readVariant to load it from an XML document.
-     *
-     * \see toVariant()
-     */
-    bool loadVariant( const QVariant &model );
-
-    /**
      * Checks whether the output vector type given by \a outputType is compatible
      * with the list of acceptable data types specified by \a acceptableDataTypes.
      * Returns true if vector output is compatible.
@@ -413,6 +416,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * if there's doubt then we default to returning true.
      */
     static bool vectorOutputIsCompatibleType( const QList<int> &acceptableDataTypes, QgsProcessing::SourceType outputType );
+
+    /**
+     * Tries to reattach all child algorithms to their linked algorithms.
+     */
+    void reattachAlgorithms() const;
 
     friend class TestQgsProcessing;
 };

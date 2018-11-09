@@ -55,7 +55,7 @@ class CORE_EXPORT QgsEllipse
      * \param semiMinorAxis Semi-minor axis of the ellipse.
      * \param azimuth Angle in degrees started from the North to the first quadrant.
      */
-    QgsEllipse( const QgsPoint &center, const double semiMajorAxis, const double semiMinorAxis, const double azimuth = 90 );
+    QgsEllipse( const QgsPoint &center, double semiMajorAxis, double semiMinorAxis, double azimuth = 90 );
 
     /**
      * Constructs an ellipse by foci (\a pt1 and \a pt2) and a point \a pt3.
@@ -158,19 +158,19 @@ class CORE_EXPORT QgsEllipse
      * Sets the semi-major axis.
      * \see semiMajorAxis()
      */
-    virtual void setSemiMajorAxis( const double semiMajorAxis );
+    virtual void setSemiMajorAxis( double semiMajorAxis );
 
     /**
      * Sets the semi-minor axis.
      * \see semiMinorAxis()
      */
-    virtual void setSemiMinorAxis( const double semiMinorAxis );
+    virtual void setSemiMinorAxis( double semiMinorAxis );
 
     /**
      * Sets the azimuth (orientation).
      * \see azimuth()
      */
-    void setAzimuth( const double azimuth );
+    void setAzimuth( double azimuth );
 
     /**
      * The distance between the center and each foci.
@@ -239,6 +239,14 @@ class CORE_EXPORT QgsEllipse
      * Members will be truncated to the specified precision.
      */
     virtual QString toString( int pointPrecision = 17, int axisPrecision = 17, int azimuthPrecision = 2 ) const;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsEllipse: %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   protected:
     QgsPoint mCenter;

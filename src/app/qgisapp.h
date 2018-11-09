@@ -36,7 +36,6 @@ class QStringList;
 class QToolButton;
 class QTcpSocket;
 class QValidator;
-class QSystemTrayIcon;
 
 class QgisAppInterface;
 class QgisAppStyleSheet;
@@ -64,7 +63,6 @@ class QgsMasterLayoutInterface;
 class QgsLayoutCustomDropHandler;
 class QgsLayoutDesignerDialog;
 class QgsLayoutDesignerInterface;
-class QgsLayoutManagerDialog;
 class QgsMapCanvas;
 class QgsMapCanvasDockWidget;
 class QgsMapLayer;
@@ -77,6 +75,7 @@ class QgsMapToolDigitizeFeature;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapToolIdentifyAction;
 class QgsMapToolSelect;
+class QgsOptions;
 class QgsPluginLayer;
 class QgsPluginLayer;
 class QgsPluginManager;
@@ -101,9 +100,10 @@ class QgsVectorLayerTools;
 class QgsWelcomePage;
 class QgsOptionsWidgetFactory;
 class QgsStatusBar;
-
+class QgsGeometryValidationService;
+class QgsGeometryValidationDock;
+class QgsGeometryValidationModel;
 class QgsUserProfileManagerWidgetFactory;
-
 class Qgs3DMapCanvasDockWidget;
 
 class QDomDocument;
@@ -118,13 +118,11 @@ class QgsStatisticalSummaryDockWidget;
 class QgsMapCanvasTracer;
 
 class QgsDecorationItem;
-
 class QgsMessageLogViewer;
 class QgsMessageBar;
-
+class QgsMessageBarItem;
 class QgsDataItem;
 class QgsTileScaleWidget;
-
 class QgsLabelingWidget;
 class QgsLayerStylingWidget;
 class QgsDiagramProperties;
@@ -133,7 +131,7 @@ class QgsDataSourceManagerDialog;
 class QgsBrowserModel;
 class QgsGeoCmsProviderRegistry;
 class QgsLayoutQptDropHandler;
-
+class QgsProxyProgressTask;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -145,9 +143,7 @@ class QgsLayoutQptDropHandler;
 
 #include "qgsauthmanager.h"
 #include "qgsconfig.h"
-#include "qgsfeature.h"
 #include "qgspointxy.h"
-#include "qgsmessagebar.h"
 #include "qgsmimedatautils.h"
 #include "qgswelcomepageitemsmodel.h"
 #include "qgsraster.h"
@@ -156,6 +152,7 @@ class QgsLayoutQptDropHandler;
 #include "qgsoptionswidgetfactory.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsmasterlayoutinterface.h"
+#include "ogr/qgsvectorlayersaveasdialog.h"
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
 
@@ -415,8 +412,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *
      * \param title
      * \param message
+     * \param replaceExisting set to true to replace any existing notifications, or false to add a new notification
      */
-    void showSystemNotification( const QString &title, const QString &message );
+    void showSystemNotification( const QString &title, const QString &message, bool replaceExisting = true );
 
 
     //! Actions to be inserted in menus and toolbars
@@ -692,15 +690,32 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Zoom to a bookmark
     void zoomToBookmarkIndex( const QModelIndex & );
 
+    //! Returns pointer to the identify map tool - used by identify tool in 3D view
+    QgsMapToolIdentifyAction *identifyMapTool() const { return mMapTools.mIdentify; }
+
+    /**
+     * Take screenshots for user documentation
+     * @param saveDirectory path were the screenshots will be saved
+     * @param categories an int as a flag value of QgsAppScreenShots::Categories
+     */
+    void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 );
+
   public slots:
     //! save current vector layer
-    void saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false );
+    QString saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false, bool defaultToAddToMap = true );
+
+    /**
+     * Makes a memory layer permanent, by prompting users to save the layer to a disk-based (OGR)
+     * format, and then replacing the layer's data source in place.
+     */
+    void makeMemoryLayerPermanent( QgsVectorLayer *layer );
+
     //! save qml style for the current layer
     void saveStyleFile( QgsMapLayer *layer = nullptr );
     //! save qrl definition for the current layer
     void saveAsLayerDefinition();
     //! save current raster layer
-    void saveAsRasterFile( QgsRasterLayer *layer = nullptr );
+    QString saveAsRasterFile( QgsRasterLayer *layer = nullptr, bool defaultAddToCanvas = true );
     //! Process the list of URIs that have been dropped in QGIS
     void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
     //! Convenience function to open either a project or a layer file.
@@ -710,7 +725,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void updateNewLayerInsertionPoint();
     //! connected to layer tree registry bridge, selects first of the newly added map layers
     void autoSelectAddedLayer( QList<QgsMapLayer *> layers );
-    void activeLayerChanged( QgsMapLayer *layer );
+
     //! Zoom to full extent
     void zoomFull();
     //! Zoom to the previous extent
@@ -817,21 +832,26 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! copies style of the active layer to the clipboard
 
     /**
-       \param sourceLayer  The layer where the style will be taken from
-                                        (defaults to the active layer on the legend)
+     * Copy the style of a map layer
+     * \param sourceLayer The layer where the style will be taken from (defaults to the active layer on the legend)
+     * \param categories The style categories to copy
      */
-    void copyStyle( QgsMapLayer *sourceLayer = nullptr );
+    void copyStyle( QgsMapLayer *sourceLayer = nullptr, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
     //! pastes style on the clipboard to the active layer
 
     /**
-       \param destinationLayer  The layer that the clipboard will be pasted to
-                                (defaults to the active layer on the legend)
+     * \param destinationLayer  The layer that the clipboard will be pasted to (defaults to the active layer on the legend)
+     * \param categories The style categories to copy
      */
-    void pasteStyle( QgsMapLayer *destinationLayer = nullptr );
+    void pasteStyle( QgsMapLayer *destinationLayer = nullptr,
+                     QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
     //! copies group or layer on the clipboard
     void copyLayer();
     //! pastes group or layer from the clipboard to layer tree
     void pasteLayer();
+
+    //! Apply the same style to selected layers or to current legend group
+    void applyStyleToGroup();
 
     //! Sets CRS of a layer
     void setLayerCrs();
@@ -874,9 +894,23 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! layer selection changed
     void legendLayerSelectionChanged();
 
+    /**
+     * Zooms so that the pixels of the raster layer occupies exactly one screen pixel.
+        Only works on raster layers*/
+    void legendLayerZoomNative();
+
+    /**
+     * Stretches the raster layer, if stretching is active, based on the min and max of the current extent.
+        Only works on raster layers*/
+    void legendLayerStretchUsingCurrentExtent();
+
     //! Watch for QFileOpenEvent.
     bool event( QEvent *event ) override;
 
+    //! Sets the CRS of the current legend group
+    void legendGroupSetCrs();
+    //! Sets the WMS data of the current legend group
+    void legendGroupSetWmsData();
 
     /**
      * \brief dataSourceManager Open the DataSourceManager dialog
@@ -884,6 +918,39 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *        or "ogr" (vector layers) or "raster" (raster layers)
      */
     void dataSourceManager( const QString &pageName = QString() );
+
+    //! Add a virtual layer
+    void addVirtualLayer();
+
+    //! Remove a layer from the map and legend
+    void removeLayer();
+
+    //! Duplicate map layer(s) in legend
+    void duplicateLayers( const QList<QgsMapLayer *> &lyrList = QList<QgsMapLayer *>() );
+
+    //! change layer subset of current vector layer
+    void layerSubsetString();
+
+    //! Sets scale visibility of selected layers
+    void setLayerScaleVisibility();
+
+    //! Zoom to nearest scale such that current layer is visible
+    void zoomToLayerScale();
+
+    /**
+     * Returns the shared application browser model.
+     */
+    QgsBrowserModel *browserModel();
+
+    /*
+     * Change data source for \a layer, a data source selection dialog
+     * will be opened and if accepted the data selected source will be
+     * applied.
+     *
+     * In case the layer was originally invalid and it had the original
+     * XML layer properties, the properties will be applied.
+     */
+    void changeDataSource( QgsMapLayer *layer );
 
     /**
      * Add a raster layer directly without prompting user for location
@@ -906,11 +973,17 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
 
     /**
+     * Adds a mesh layer directly without prompting user for location
+     * \returns true if successfully added layer
+     */
+    QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey );
+
+    /**
      * \brief overloaded version of the private addLayer method that takes a list of
      * file names instead of prompting user with a dialog.
-     \param enc encoding type for the layer
-    \param dataSourceType type of ogr datasource
-     \returns true if successfully added layer
+     * \param enc encoding type for the layer
+     * \param dataSourceType type of ogr datasource
+     * \returns true if successfully added layer
      */
     bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
 
@@ -936,7 +1009,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Settings pages section
      */
     //! Gets map of option pages
-    QMap< QString, QString > optionsPagesMap();
+    QMap<QString, int> optionsPagesMap();
     //! Gets map of project property pages
     QMap< QString, QString > projectPropertiesPagesMap();
     //! Gets map of setting pages
@@ -947,7 +1020,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     // End Settings pages section
 
     //! Opens the options dialog
-    void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() );
+    void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString(), int pageNumber = -1 );
 
     /**
      * Refreshes the state of the layer actions toolbar action
@@ -958,7 +1031,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void renameView();
 
-    void showProgress( int progress, int totalSteps );
     void showStatusMessage( const QString &message );
 
     void loadingLayerMessages( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages );
@@ -982,6 +1054,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void snappingOptions();
 
     void setMapTipsDelay( int timerInterval );
+
+    /**
+     * Abort application triggering the crash handler
+     * \since QGIS 3.4
+     */
+    void triggerCrashHandler();
 
   protected:
 
@@ -1021,30 +1099,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void sponsors();
     //! About QGIS
     void about();
-    //#ifdef HAVE_POSTGRESQL
-    //! Add a databaselayer to the map
-    void addDatabaseLayer();
-    //#endif
+
     //! Add a list of database layers to the map
     void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
-    //! Add a SpatiaLite layer to the map
-    void addSpatiaLiteLayer();
-    //! Add a Delimited Text layer to the map
-    void addDelimitedTextLayer();
     //! Add a vector layer defined by uri, layer name, data source uri
     void addSelectedVectorLayer( const QString &uri, const QString &layerName, const QString &provider );
     //! Replace the selected layer by a vector layer defined by uri, layer name, data source uri
     void replaceSelectedVectorLayer( const QString &oldId, const QString &uri, const QString &layerName, const QString &provider );
-    //! Add a MSSQL layer to the map
-    void addMssqlLayer();
-    //! Add a DB2 layer to the map
-    void addDb2Layer();
-    //#ifdef HAVE_ORACLE
-    //! Add a Oracle layer to the map
-    void addOracleLayer();
-    //#endif
-    //! Add a virtual layer
-    void addVirtualLayer();
+
     //! toggles whether the current selected layer is in overview or not
     void isInOverview();
     //! Store the position for map tool tip
@@ -1057,32 +1119,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \since QGIS 2.8
      */
     void userRotation();
-    //! Remove a layer from the map and legend
-    void removeLayer();
-    //! Duplicate map layer(s) in legend
-    void duplicateLayers( const QList<QgsMapLayer *> &lyrList = QList<QgsMapLayer *>() );
-    //! Sets scale visibility of selected layers
-    void setLayerScaleVisibility();
-    //! Zoom to nearest scale such that current layer is visible
-    void zoomToLayerScale();
-
-    /**
-     * Zooms so that the pixels of the raster layer occupies exactly one screen pixel.
-        Only works on raster layers*/
-    void legendLayerZoomNative();
-
-    /**
-     * Stretches the raster layer, if stretching is active, based on the min and max of the current extent.
-        Only workds on raster layers*/
-    void legendLayerStretchUsingCurrentExtent();
-
-    //! Apply the same style to selected layers or to current legend group
-    void applyStyleToGroup();
-
-    //! Sets the CRS of the current legend group
-    void legendGroupSetCrs();
-    //! Sets the WMS data of the current legend group
-    void legendGroupSetWmsData();
 
     //! zoom to extent of layer
     void zoomToLayerExtent();
@@ -1386,12 +1422,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void mergeAttributesOfSelectedFeatures();
     //! Modifies the attributes of selected features via feature form
     void modifyAttributesOfSelectedFeatures();
-    //! provides operations with nodes
+    //! provides operations with nodes on all layers
     void vertexTool();
+    //! provides operations with nodes on active layer only
+    void vertexToolActiveLayer();
     //! activates the rotate points tool
     void rotatePointSymbols();
     //! activates the offset point symbol tool
     void offsetPointSymbol();
+    //! activates the reverse line tool
+    void reverseLine();
     //! activates the tool
     void setMapTool( QgsMapTool *tool, bool clean = false );
 
@@ -1436,9 +1476,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Update gui actions/menus when layers are modified
     void updateLayerModifiedActions();
-
-    //! change layer subset of current vector layer
-    void layerSubsetString();
 
     //! map tool changed
     void mapToolChanged( QgsMapTool *newTool, QgsMapTool *oldTool );
@@ -1629,11 +1666,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void toggleFilterLegendByExpression( bool );
     void updateFilterLegend();
 
-    /**
-     * Shows the statistical summary dock widget and brings it to the foreground
-     */
-    void showStatisticsDockWidget( bool show );
-
     //! Pushes a layer error to the message bar
     void onLayerError( const QString &msg );
 
@@ -1646,6 +1678,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! handle project crs changes
     void projectCrsChanged();
+
+    void onActiveLayerChanged( QgsMapLayer *layer );
 
   signals:
 
@@ -1720,10 +1754,17 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void layerSavedAs( QgsMapLayer *l, const QString &path );
 
+    /**
+     * Emitted when the active layer is changed.
+     */
+    void activeLayerChanged( QgsMapLayer *layer );
+
   private:
     void startProfile( const QString &name );
     void endProfile();
     void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name );
+
+    void showProgress( int progress, int totalSteps );
 
     /**
      * This method will open a dialog so the user can select GDAL sublayers to load
@@ -1779,6 +1820,29 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \returns true if saved or discarded, false if canceled
      */
     bool saveDirty();
+
+    /**
+     * Checks for unsaved changes in open layers and prompts the user to save
+     * or discard these changes for each layer.
+     *
+     * Returns true if there are no unsaved layer edits remaining, or the user
+     * opted to discard them all. Returns false if the user opted to cancel
+     * on any layer.
+     */
+    bool checkUnsavedLayerEdits();
+
+    /**
+     * Checks whether memory layers (with features) exist in the project, and if so
+     * shows a warning to users that their contents will be lost on
+     * project unload.
+     *
+     * Returns true if there are no memory layers present, or if the
+     * user opted to discard their contents. Returns false if there
+     * are memory layers present and the user clicked 'Cancel' on
+     * the warning dialog.
+     */
+    bool checkMemoryLayers();
+
     //! Checks for running tasks dependent on the open project
     bool checkTasksDependOnProject();
 
@@ -1796,7 +1860,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void setLayoutAtlasFeature( QgsPrintLayout *layout, QgsMapLayer *layer, const QgsFeature &feat );
 
-    void saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false );
+    QString saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false, bool defaultToAddToMap = true );
+
+    QString saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected, bool defaultToAddToMap,
+                                     const std::function< void ( const QString &newFilename,
+                                         bool addToCanvas,
+                                         const QString &layerName,
+                                         const QString &encoding,
+                                         const QString &vectorFileName )> &onSuccess, const std::function< void ( int error, const QString &errorMessage ) > &onFailure,
+                                     int dialogOptions = QgsVectorLayerSaveAsDialog::AllOptions,
+                                     const QString &dialogTitle = QString() );
 
     //! Sets project properties, including map untis
     void projectProperties( const QString  &currentPage = QString() );
@@ -1873,7 +1946,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * The \a isFloating and \a dockGeometry arguments can be used to specify an initial floating state
      * and widget geometry rect for the dock.
      */
-    void setupDockWidget( QDockWidget *dockWidget, bool isFloating = false, const QRect &dockGeometry = QRect(),
+    void setupDockWidget( QDockWidget *dockWidget, bool isFloating = false, QRect dockGeometry = QRect(),
                           Qt::DockWidgetArea area = Qt::RightDockWidgetArea );
 
     /**
@@ -1900,6 +1973,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Populates project "load from" / "save to" menu based on project storages (when the menu is about to be shown)
     void populateProjectStorageMenu( QMenu *menu, bool saving );
+
+    //! Create the option dialog
+    QgsOptions *createOptionsDialog( QWidget *parent = nullptr );
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
@@ -1994,6 +2070,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mDeleteRing = nullptr;
         QgsMapTool *mDeletePart = nullptr;
         QgsMapTool *mVertexTool = nullptr;
+        QgsMapTool *mVertexToolActiveLayer = nullptr;
         QgsMapTool *mRotatePointSymbolsTool = nullptr;
         QgsMapTool *mOffsetPointSymbolTool = nullptr;
         QgsMapTool *mAnnotation = nullptr;
@@ -2007,6 +2084,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mRotateFeature = nullptr;
         QgsMapTool *mRotateLabel = nullptr;
         QgsMapTool *mChangeLabelProperties = nullptr;
+        QgsMapTool *mReverseLine = nullptr ;
     } mMapTools;
 
     QgsMapTool *mNonEditMapTool = nullptr;
@@ -2071,7 +2149,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! interface to QgisApp for plugins
     QgisAppInterface *mQgisInterface = nullptr;
-    friend class QgisAppInterface;
 
     QSplashScreen *mSplash = nullptr;
     //! list of recently opened/saved project files
@@ -2145,8 +2222,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsDockWidget *mMapStylingDock = nullptr;
     QgsLayerStylingWidget *mMapStyleWidget = nullptr;
 
-    QPointer< QgsLayoutManagerDialog > mLayoutManagerDialog;
-
     //! Persistent tile scale slider
     QgsTileScaleWidget *mpTileScaleWidget = nullptr;
 
@@ -2202,6 +2277,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QHash< QgsPrintLayout *, QgsMapLayerAction * > mAtlasFeatureActions;
 
+
     std::unique_ptr<QgsMapLayerAction> mDuplicateFeatureAction;
     std::unique_ptr<QgsMapLayerAction> mDuplicateFeatureDigitizeAction;
 
@@ -2209,8 +2285,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     bool gestureEvent( QGestureEvent *event );
     void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
-
-    QSystemTrayIcon *mTray = nullptr;
 
     QgsLocatorWidget *mLocatorWidget = nullptr;
 
@@ -2228,12 +2302,18 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsFeature duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &feature );
     QgsFeature duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFeature &feature );
 
-    //! Internal vars supporting Settings Pages function
-    QMap< QString, QString > mOptionsPagesMap;
-    QMap< QString, QString > mProjectPropertiesPagesMap;
-    QMap< QString, QString > mSettingPagesMap;
+    QgsProxyProgressTask *mProjectLoadingProxyTask = nullptr;
+
+    //! True if we are blocking the activeLayerChanged signal from being emitted
+    bool mBlockActiveLayerChanged = false;
+
+    std::unique_ptr<QgsGeometryValidationService> mGeometryValidationService;
+    QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
+    QgsGeometryValidationDock *mGeometryValidationDock = nullptr;
 
     friend class TestQgisAppPython;
+    friend class QgisAppInterface;
+    friend class QgsAppScreenShots;
 };
 
 #ifdef ANDROID

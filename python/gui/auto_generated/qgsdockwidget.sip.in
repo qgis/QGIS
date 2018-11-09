@@ -45,6 +45,27 @@ Returns true if the dock is both opened and raised to the front (ie not hidden b
 any other tabs.
 
 .. seealso:: :py:func:`setUserVisible`
+
+.. seealso:: :py:func:`toggleUserVisible`
+%End
+
+    void setToggleVisibilityAction( QAction *action );
+%Docstring
+Links an ``action`` to the dock, so that toggling the action will automatically set the dock's visibility
+to suit (and changing the dock visibility will update the action's state).
+
+.. seealso:: :py:func:`toggleVisibilityAction`
+
+.. versionadded:: 3.4
+%End
+
+    QAction *toggleVisibilityAction();
+%Docstring
+Returns the action linked to the dock.
+
+.. seealso:: :py:func:`setToggleVisibilityAction`
+
+.. versionadded:: 3.4
 %End
 
   public slots:
@@ -64,6 +85,21 @@ Sets the dock widget as visible to a user, ie both shown and raised to the front
                 - hiding a dock which is closed has no effect and raises no signals
 
 .. seealso:: :py:func:`isUserVisible`
+
+.. seealso:: :py:func:`toggleUserVisible`
+%End
+
+    void toggleUserVisible();
+%Docstring
+Toggles whether the dock is user visible. If the dock is not currently user
+visible (i.e. opened and activated as a tab) then the dock will be opened
+and raised. If it is currently user visible it will be closed.
+
+.. seealso:: :py:func:`setUserVisible`
+
+.. seealso:: :py:func:`isUserVisible`
+
+.. versionadded:: 3.2
 %End
 
   protected:

@@ -29,15 +29,13 @@ from .connector import PostGisDBConnector
 from qgis.PyQt.QtCore import Qt, QRegExp, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
-from qgis.core import Qgis, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
 
 from ..plugin import ConnectionError, InvalidDataException, DBPlugin, Database, Schema, Table, VectorTable, RasterTable, \
     TableField, TableConstraint, TableIndex, TableTrigger, TableRule
 
 import re
-
-from . import resources_rc  # NOQA
 
 
 def classFactory():
@@ -48,7 +46,7 @@ class PostGisDBPlugin(DBPlugin):
 
     @classmethod
     def icon(self):
-        return QIcon(":/db_manager/postgis/icon")
+        return QgsApplication.getThemeIcon("/mIconPostgis.svg")
 
     @classmethod
     def typeName(self):
@@ -85,7 +83,10 @@ class PostGisDBPlugin(DBPlugin):
         service, host, port, database, username, password, authcfg = [settings.value(x, "", type=str) for x in settingsList]
 
         useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
-        sslmode = settings.value("sslmode", QgsDataSourceUri.SslPrefer, type=int)
+        try:
+            sslmode = settings.value("sslmode", QgsDataSourceUri.SslPrefer, type=int)
+        except TypeError:
+            sslmode = QgsDataSourceUri.SslPrefer
 
         settings.endGroup()
 
@@ -315,9 +316,9 @@ class PGRasterTable(PGTable, RasterTable):
     def gdalUri(self, uri=None):
         if not uri:
             uri = self.database().uri()
-        service = (u'service=%s' % uri.service()) if uri.service() else ''
-        schema = (u'schema=%s' % self.schemaName()) if self.schemaName() else ''
-        dbname = (u'dbname=%s' % uri.database()) if uri.database() else ''
+        service = (u'service=\'%s\'' % uri.service()) if uri.service() else ''
+        schema = (u'schema=\'%s\'' % self.schemaName()) if self.schemaName() else ''
+        dbname = (u'dbname=\'%s\'' % uri.database()) if uri.database() else ''
         host = (u'host=%s' % uri.host()) if uri.host() else ''
         user = (u'user=%s' % uri.username()) if uri.username() else ''
         passw = (u'password=%s' % uri.password()) if uri.password() else ''
@@ -329,17 +330,17 @@ class PGRasterTable(PGTable, RasterTable):
             # TODO: cache this ?
             connector = self.database().connector
             r = connector._execute(None, "SELECT current_database()")
-            dbname = (u'dbname=%s' % connector._fetchone(r)[0])
+            dbname = (u'dbname=\'%s\'' % connector._fetchone(r)[0])
             connector._close_cursor(r)
 
         # Find first raster field
         col = ''
         for fld in self.fields():
             if fld.dataType == "raster":
-                col = u'column=%s' % fld.name
+                col = u'column=\'%s\'' % fld.name
                 break
 
-        gdalUri = u'PG: %s %s %s %s %s %s mode=2 %s %s table=%s' % \
+        gdalUri = u'PG: %s %s %s %s %s %s mode=2 %s %s table=\'%s\'' % \
                   (service, dbname, host, user, passw, port, schema, col, self.name)
 
         return gdalUri

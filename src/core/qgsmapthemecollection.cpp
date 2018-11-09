@@ -365,7 +365,8 @@ QMap<QString, QString> QgsMapThemeCollection::mapThemeStyleOverrides( const QStr
     if ( layerRec.usingCurrentStyle )
     {
       QgsMapLayer *layer = layerRec.layer();
-      layer->styleManager()->setOverrideStyle( layerRec.currentStyle );
+      QgsMapLayerStyleOverride styleOverride( layer );
+      styleOverride.setOverrideStyle( layerRec.currentStyle );
 
       // set the checked legend nodes
       applyMapThemeCheckedLegendNodesToLayer( layerRec, layer );
@@ -374,8 +375,6 @@ QMap<QString, QString> QgsMapThemeCollection::mapThemeStyleOverrides( const QStr
       QgsMapLayerStyle layerStyle;
       layerStyle.readFromLayer( layer );
       styleOverrides[layer->id()] = layerStyle.xmlData();
-
-      layer->styleManager()->restoreOverrideStyle();
     }
   }
   return styleOverrides;

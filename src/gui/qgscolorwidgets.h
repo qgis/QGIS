@@ -62,7 +62,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \param parent parent QWidget for the widget
      * \param component color component the widget alters
      */
-    QgsColorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const ColorComponent component = Multiple );
+    QgsColorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, ColorComponent component = Multiple );
 
     /**
      * Returns the current color for the widget
@@ -101,14 +101,14 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \param emitSignals set to true to emit the colorChanged signal after setting color
      * \see color
      */
-    virtual void setColor( const QColor &color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, bool emitSignals = false );
 
     /**
      * Sets the color component which the widget controls
      * \param component color component for widget
      * \see component
      */
-    virtual void setComponent( const QgsColorWidget::ColorComponent component );
+    virtual void setComponent( QgsColorWidget::ColorComponent component );
 
     /**
      * Alters the widget's color by setting the value for the widget's color component
@@ -119,7 +119,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \note this method has no effect if the widget is set to the QgsColorWidget::Multiple
      * component
      */
-    virtual void setComponentValue( const int value );
+    virtual void setComponentValue( int value );
 
   signals:
 
@@ -157,7 +157,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * Returns the range of valid values a color component
      * \returns maximum value allowed for color component
      */
-    int componentRange( const ColorComponent component ) const;
+    int componentRange( ColorComponent component ) const;
 
     /**
      * Returns the value of a component of the widget's current color. This method correctly
@@ -166,7 +166,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \returns value of color component, or -1 if widget has an invalid color set
      * \see hue
      */
-    int componentValue( const ColorComponent component ) const;
+    int componentValue( ColorComponent component ) const;
 
     /**
      * Returns the hue for the widget. This may differ from the hue for the QColor returned by color(),
@@ -182,7 +182,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \param newValue new value of color component. Values are automatically clipped to a
      * valid range for the color component.
      */
-    void alterColor( QColor &color, const QgsColorWidget::ColorComponent component, const int newValue ) const;
+    void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue ) const;
 
     /**
      * Generates a checkboard pattern pixmap for use as a background to transparent colors
@@ -305,7 +305,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
 
   public slots:
 
-    void setColor( const QColor &color, const bool emitSignals = false ) override;
+    void setColor( const QColor &color, bool emitSignals = false ) override;
 
   protected:
 
@@ -354,7 +354,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
      * Creates cache images for specified widget size
      * \param size widget size for images
      */
-    void createImages( const QSizeF size );
+    void createImages( QSizeF size );
 
     //! Creates the hue wheel image
     void createWheel();
@@ -366,7 +366,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
      * Sets the widget color based on a point in the widget
      * \param pos position for color
      */
-    void setColorFromPos( const QPointF pos );
+    void setColorFromPos( QPointF pos );
 
 };
 
@@ -393,17 +393,17 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
      * which vary along the horizontal and vertical axis are automatically assigned
      * based on this constant color component.
      */
-    QgsColorBox( QWidget *parent SIP_TRANSFERTHIS = nullptr, const ColorComponent component = Value );
+    QgsColorBox( QWidget *parent SIP_TRANSFERTHIS = nullptr, ColorComponent component = Value );
 
     ~QgsColorBox() override;
 
     QSize sizeHint() const override;
     void paintEvent( QPaintEvent *event ) override;
 
-    void setComponent( const ColorComponent component ) override;
+    void setComponent( ColorComponent component ) override;
 
   public slots:
-    void setColor( const QColor &color, const bool emitSignals = false ) override;
+    void setColor( const QColor &color, bool emitSignals = false ) override;
 
   protected:
 
@@ -498,8 +498,8 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * \param orientation orientation for widget
      */
     QgsColorRampWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                        const ColorComponent component = QgsColorWidget::Red,
-                        const Orientation orientation = QgsColorRampWidget::Horizontal );
+                        ColorComponent component = QgsColorWidget::Red,
+                        Orientation orientation = QgsColorRampWidget::Horizontal );
 
     QSize sizeHint() const override;
     void paintEvent( QPaintEvent *event ) override;
@@ -509,7 +509,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * \param orientation new orientation for the ramp
      * \see orientation
      */
-    void setOrientation( const Orientation orientation );
+    void setOrientation( Orientation orientation );
 
     /**
      * Fetches the orientation for the color ramp
@@ -523,7 +523,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * \param margin margin around the ramp
      * \see interiorMargin
      */
-    void setInteriorMargin( const int margin );
+    void setInteriorMargin( int margin );
 
     /**
      * Fetches the margin between the edge of the widget and the ramp
@@ -537,7 +537,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * \param showFrame set to true to draw a frame around the ramp
      * \see showFrame
      */
-    void setShowFrame( const bool showFrame );
+    void setShowFrame( bool showFrame );
 
     /**
      * Fetches whether the ramp is drawn within a frame
@@ -550,7 +550,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * Sets the size for drawing the triangular markers on the ramp
      * \param markerSize marker size in pixels
      */
-    void setMarkerSize( const int markerSize );
+    void setMarkerSize( int markerSize );
 
   signals:
 
@@ -558,7 +558,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * Emitted when the widget's color component value changes
      * \param value new value of color component
      */
-    void valueChanged( const int value );
+    void valueChanged( int value );
 
   protected:
 
@@ -611,11 +611,11 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
      * \param parent parent QWidget for the widget
      * \param component color component which is controlled by the slider
      */
-    QgsColorSliderWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const ColorComponent component = QgsColorWidget::Red );
+    QgsColorSliderWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, ColorComponent component = QgsColorWidget::Red );
 
-    void setComponent( const ColorComponent component ) override;
-    void setComponentValue( const int value ) override;
-    void setColor( const QColor &color, const bool emitSignals = false ) override;
+    void setComponent( ColorComponent component ) override;
+    void setComponentValue( int value ) override;
+    void setColor( const QColor &color, bool emitSignals = false ) override;
 
   private:
 
@@ -632,7 +632,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
      * \returns display value of color component
      * \see convertDisplayToReal
      */
-    int convertRealToDisplay( const int realValue ) const;
+    int convertRealToDisplay( int realValue ) const;
 
     /**
      * Converts the display value of a color component to a real value.
@@ -640,7 +640,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
      * \returns real value of color component
      * \see convertRealToDisplay
      */
-    int convertDisplayToReal( const int displayValue ) const;
+    int convertDisplayToReal( int displayValue ) const;
 
   private slots:
 
@@ -694,7 +694,7 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
      */
     QgsColorTextWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    void setColor( const QColor &color, const bool emitSignals = false ) override;
+    void setColor( const QColor &color, bool emitSignals = false ) override;
 
   protected:
     void resizeEvent( QResizeEvent *event ) override;

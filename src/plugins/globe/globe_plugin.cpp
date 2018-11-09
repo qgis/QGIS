@@ -30,7 +30,6 @@
 #include <qgsapplication.h>
 #include <qgsmapcanvas.h>
 #include <qgsvectorlayer.h>
-#include <qgsfeature.h>
 #include <qgsgeometry.h>
 #include <qgspoint.h>
 #include <qgsdistancearea.h>
@@ -40,6 +39,7 @@
 #include <qgssettings.h>
 #include <qgsvectorlayerlabeling.h>
 #include <qgsproject.h>
+#include <qgsrectangle.h>
 
 #include <QAction>
 #include <QDir>

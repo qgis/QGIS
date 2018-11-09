@@ -34,7 +34,9 @@ namespace QgsWms
     Q_UNUSED( version );
 
     QgsServerRequest::Parameters params = request.parameters();
-    QgsRenderer renderer( serverIface, project, params );
+
+    QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
+    QgsRenderer renderer( serverIface, project, wmsParameters );
 
     std::unique_ptr<QImage> result( renderer.getMap() );
     if ( result )
@@ -49,7 +51,7 @@ namespace QgsWms
     }
   }
 
-} // samespace QgsWms
+} // namespace QgsWms
 
 
 

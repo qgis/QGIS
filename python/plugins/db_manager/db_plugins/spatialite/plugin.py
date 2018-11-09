@@ -27,13 +27,11 @@ from .connector import SpatiaLiteDBConnector
 from qgis.PyQt.QtCore import Qt, QFileInfo, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QApplication, QAction, QFileDialog
-from qgis.core import Qgis, QgsDataSourceUri, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsDataSourceUri, QgsSettings
 from qgis.gui import QgsMessageBar
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, \
     InvalidDataException
-
-from . import resources_rc  # NOQA
 
 
 def classFactory():
@@ -44,7 +42,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
 
     @classmethod
     def icon(self):
-        return QIcon(":/db_manager/spatialite/icon")
+        return QgsApplication.getThemeIcon("/mIconSpatialite.svg")
 
     @classmethod
     def typeName(self):

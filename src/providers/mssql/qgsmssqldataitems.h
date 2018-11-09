@@ -34,7 +34,7 @@ class QgsMssqlRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsMssqlRootItem( QgsDataItem *parent, QString name, QString path );
+    QgsMssqlRootItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
 
@@ -56,7 +56,7 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsMssqlConnectionItem( QgsDataItem *parent, QString name, QString path );
+    QgsMssqlConnectionItem( QgsDataItem *parent, const QString &name, const QString &path );
     ~QgsMssqlConnectionItem() override;
 
     QVector<QgsDataItem *> createChildren() override;
@@ -80,6 +80,7 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     void editConnection();
     void deleteConnection();
     void setAllowGeometrylessTables( bool allow );
+    void createSchema();
 #endif
 
     void setLayerType( QgsMssqlLayerProperty layerProperty );
@@ -109,9 +110,13 @@ class QgsMssqlSchemaItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsMssqlSchemaItem( QgsDataItem *parent, QString name, QString path );
+    QgsMssqlSchemaItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
+
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
+#endif
 
     QgsMssqlLayerItem *addLayer( const QgsMssqlLayerProperty &layerProperty, bool refresh );
     void refresh() override {} // do not refresh directly
@@ -125,14 +130,19 @@ class QgsMssqlLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsMssqlLayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsMssqlLayerProperty layerProperties );
-
+    QgsMssqlLayerItem( QgsDataItem *parent, const QString &name, const QString &path, QgsLayerItem::LayerType layerType, const QgsMssqlLayerProperty &layerProperties );
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
+#endif
     QString createUri();
 
     QgsMssqlLayerItem *createClone();
 
+    bool disableInvalidGeometryHandling() const;
+
   private:
     QgsMssqlLayerProperty mLayerProperty;
+    bool mDisableInvalidGeometryHandling = false;
 };
 
 #endif // QGSMSSQLDATAITEMS_H

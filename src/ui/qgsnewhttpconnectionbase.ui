@@ -23,7 +23,7 @@
    <item row="0" column="0">
     <widget class="QGroupBox" name="mGroupBox">
      <property name="title">
-      <string>Connection details</string>
+      <string>Connection Details</string>
      </property>
      <layout class="QGridLayout">
       <item row="2" column="0" colspan="2">
@@ -32,14 +32,14 @@
          <string>WFS Options</string>
         </property>
         <layout class="QGridLayout" name="gridLayout1">
-         <item row="2" column="0" colspan="2">
+         <item row="4" column="0" colspan="2">
           <widget class="QCheckBox" name="cbxWfsIgnoreAxisOrientation">
            <property name="text">
             <string>Ignore axis orientation (WFS 1.1/WFS 2.0)</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="0" colspan="2">
+         <item row="5" column="0" colspan="2">
           <widget class="QCheckBox" name="cbxWfsInvertAxisOrientation">
            <property name="text">
             <string>Invert axis orientation</string>
@@ -60,17 +60,48 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="cmbVersion">
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select protocol version&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="1">
           <widget class="QLineEdit" name="txtMaxNumFeatures">
            <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter a number to limit the maximum number of features retrieved in a single GetFeature request. If let to empty, server default will apply.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter a number to limit the maximum number of features retrieved per feature request. If let to empty, no limit is set.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <layout class="QHBoxLayout" name="layoutWfsVersion">
+           <item>
+            <widget class="QComboBox" name="cmbVersion"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="mWfsVersionDetectButton">
+             <property name="text">
+              <string>Detect</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="2" column="0">
+          <widget class="QCheckBox" name="cbxWfsFeaturePaging">
+           <property name="text">
+            <string>Enable feature paging</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="lblPageSize">
+           <property name="text">
+            <string>Page size</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="txtPageSize">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter a number to limit the maximum number of features retrieved in a single GetFeature request when paging is enabled. If let to empty, server default will apply.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>
@@ -158,7 +189,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="lblDpiMode">
            <property name="text">
-            <string>&amp;DPI-Mode</string>
+            <string>DPI-&amp;Mode</string>
            </property>
            <property name="buddy">
             <cstring>cmbDpiMode</cstring>
@@ -168,7 +199,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="lblReferer">
            <property name="text">
-            <string>Referer</string>
+            <string>&amp;Referer</string>
            </property>
            <property name="buddy">
             <cstring>txtReferer</cstring>
@@ -289,6 +320,25 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>txtName</tabstop>
+  <tabstop>txtUrl</tabstop>
+  <tabstop>cmbVersion</tabstop>
+  <tabstop>mWfsVersionDetectButton</tabstop>
+  <tabstop>txtMaxNumFeatures</tabstop>
+  <tabstop>cbxWfsFeaturePaging</tabstop>
+  <tabstop>txtPageSize</tabstop>
+  <tabstop>cbxWfsIgnoreAxisOrientation</tabstop>
+  <tabstop>cbxWfsInvertAxisOrientation</tabstop>
+  <tabstop>txtReferer</tabstop>
+  <tabstop>cmbDpiMode</tabstop>
+  <tabstop>cbxIgnoreGetMapURI</tabstop>
+  <tabstop>cbxIgnoreGetFeatureInfoURI</tabstop>
+  <tabstop>cbxWmsIgnoreAxisOrientation</tabstop>
+  <tabstop>cbxWmsInvertAxisOrientation</tabstop>
+  <tabstop>cbxSmoothPixmapTransform</tabstop>
+  <tabstop>mTestConnectionButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

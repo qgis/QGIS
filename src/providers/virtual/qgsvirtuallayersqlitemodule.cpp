@@ -14,7 +14,7 @@ email                : hugo dot mercier at oslandia dot com
  *                                                                         *
  ***************************************************************************/
 
-#include <string.h>
+#include <cstring>
 #include <iostream>
 #include <cstdint>
 #include <stdexcept>
@@ -135,10 +135,7 @@ struct VTable
 
     ~VTable()
     {
-      if ( mProvider )
-      {
-        delete mProvider;
-      }
+      delete mProvider;
     }
 
     QgsVectorDataProvider *provider() { return mProvider; }
@@ -708,10 +705,7 @@ static QCoreApplication *sCoreApp = nullptr;
 
 void moduleDestroy( void * )
 {
-  if ( sCoreApp )
-  {
-    delete sCoreApp;
-  }
+  delete sCoreApp;
 }
 
 // the expression context used for calling qgis functions

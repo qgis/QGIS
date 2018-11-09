@@ -220,7 +220,7 @@ bool QgsCheckableComboBox::eventFilter( QObject *object, QEvent *event )
       return true;
     }
   }
-  return false;
+  return QComboBox::eventFilter( object, event );
 }
 
 void QgsCheckableComboBox::setCheckedItems( const QStringList &items )

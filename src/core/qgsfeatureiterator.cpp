@@ -147,6 +147,11 @@ void QgsAbstractFeatureIterator::deref()
     delete this;
 }
 
+bool QgsAbstractFeatureIterator::compileFailed() const
+{
+  return mCompileFailed;
+}
+
 bool QgsAbstractFeatureIterator::prepareSimplification( const QgsSimplifyMethod &simplifyMethod )
 {
   Q_UNUSED( simplifyMethod );

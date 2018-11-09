@@ -38,12 +38,14 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingOutputVectorLayer,
-                       QgsProcessingOutputRasterLayer,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterVectorDestination,
                        QgsProject)
+from qgis.gui import (QgsProcessingContextGenerator,
+                      QgsProcessingParameterWidgetContext)
+from qgis.utils import iface
+
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
@@ -51,8 +53,8 @@ from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
 from qgis.PyQt.QtGui import QIcon
 
 from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
-from processing.gui.wrappers import WidgetWrapperFactory
-
+from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
+from processing.tools.dataobjects import createContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]\
 
@@ -66,9 +68,10 @@ class ParametersPanel(BASE, WIDGET):
 
     NOT_SELECTED = QCoreApplication.translate('ParametersPanel', '[Not selected]')
 
-    def __init__(self, parent, alg):
+    def __init__(self, parent, alg, in_place=False):
         super(ParametersPanel, self).__init__(None)
         self.setupUi(self)
+        self.in_place = in_place
 
         self.grpAdvanced.hide()
 
@@ -84,6 +87,19 @@ class ParametersPanel(BASE, WIDGET):
         self.dependentItems = {}
         self.iterateButtons = {}
 
+        self.processing_context = createContext()
+
+        class ContextGenerator(QgsProcessingContextGenerator):
+
+            def __init__(self, context):
+                super().__init__()
+                self.processing_context = context
+
+            def processingContext(self):
+                return self.processing_context
+
+        self.context_generator = ContextGenerator(self.processing_context)
+
         self.initWidgets()
 
         QgsProject.instance().layerWasAdded.connect(self.layerRegistryChanged)
@@ -91,7 +107,10 @@ class ParametersPanel(BASE, WIDGET):
 
     def layerRegistryChanged(self, layers):
         for wrapper in list(self.wrappers.values()):
-            wrapper.refresh()
+            try:
+                wrapper.refresh()
+            except AttributeError:
+                pass
 
     def formatParameterTooltip(self, parameter):
         return '<p><b>{}</b></p><p>{}</p>'.format(
@@ -105,6 +124,11 @@ class ParametersPanel(BASE, WIDGET):
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.grpAdvanced.show()
                 break
+
+        widget_context = QgsProcessingParameterWidgetContext()
+        if iface is not None:
+            widget_context.setMapCanvas(iface.mapCanvas())
+
         # Create widgets and put them in layouts
         for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
@@ -115,9 +139,30 @@ class ParametersPanel(BASE, WIDGET):
             else:
                 wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent)
                 self.wrappers[param.name()] = wrapper
-                widget = wrapper.widget
+
+                # For compatibility with 3.x API, we need to check whether the wrapper is
+                # the deprecated WidgetWrapper class. If not, it's the newer
+                # QgsAbstractProcessingParameterWidgetWrapper class
+                # TODO QGIS 4.0 - remove
+                is_python_wrapper = issubclass(wrapper.__class__, WidgetWrapper)
+                if not is_python_wrapper:
+                    wrapper.setWidgetContext(widget_context)
+                    widget = wrapper.createWrappedWidget(self.processing_context)
+                    wrapper.registerProcessingContextGenerator(self.context_generator)
+                else:
+                    widget = wrapper.widget
+
+                if self.in_place and param.name() in ('INPUT', 'OUTPUT'):
+                    # don't show the input/output parameter widgets in in-place mode
+                    # we still need to CREATE them, because other wrappers may need to interact
+                    # with them (e.g. those parameters which need the input layer for field
+                    # selections/crs properties/etc)
+                    continue
 
                 if widget is not None:
+                    if is_python_wrapper:
+                        widget.setToolTip(param.toolTip())
+
                     if isinstance(param, QgsProcessingParameterFeatureSource):
                         layout = QHBoxLayout()
                         layout.setSpacing(6)
@@ -136,15 +181,19 @@ class ParametersPanel(BASE, WIDGET):
                         widget = QWidget()
                         widget.setLayout(layout)
 
-                    widget.setToolTip(param.toolTip())
+                    label = None
+                    if not is_python_wrapper:
+                        label = wrapper.createWrappedLabel()
+                    else:
+                        label = wrapper.label
 
-                    if wrapper.label is not None:
+                    if label is not None:
                         if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
-                            self.layoutAdvanced.addWidget(wrapper.label)
+                            self.layoutAdvanced.addWidget(label)
                         else:
                             self.layoutMain.insertWidget(
-                                self.layoutMain.count() - 2, wrapper.label)
-                    else:
+                                self.layoutMain.count() - 2, label)
+                    elif is_python_wrapper:
                         desc = param.description()
                         if isinstance(param, QgsProcessingParameterExtent):
                             desc += self.tr(' (xmin, xmax, ymin, ymax)')
@@ -161,6 +210,9 @@ class ParametersPanel(BASE, WIDGET):
 
         for output in self.alg.destinationParameterDefinitions():
             if output.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                continue
+
+            if self.in_place and param.name() in ('INPUT', 'OUTPUT'):
                 continue
 
             label = QLabel(output.description())
@@ -196,8 +248,10 @@ class ParametersPanel(BASE, WIDGET):
                 continue
 
             if not param.isDestination():
+                value = parameters[param.name()]
+
                 wrapper = self.wrappers[param.name()]
-                wrapper.setValue(parameters[param.name()])
+                wrapper.setParameterValue(value, self.processing_context)
             else:
                 dest_widget = self.outputWidgets[param.name()]
                 dest_widget.setValue(parameters[param.name()])

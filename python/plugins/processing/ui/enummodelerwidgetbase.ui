@@ -32,7 +32,7 @@
       <string>Remove item</string>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -55,7 +55,7 @@
       <string>Add item</string>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -65,7 +65,7 @@
       <string>Clear all</string>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>

@@ -117,8 +117,29 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     explicit QgsPoint( QgsWkbTypes::Type wkbType, double x = 0.0, double y = 0.0, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
 
-    bool operator==( const QgsAbstractGeometry &other ) const override;
-    bool operator!=( const QgsAbstractGeometry &other ) const override;
+    bool operator==( const QgsAbstractGeometry &other ) const override
+    {
+      const QgsPoint *pt = qgsgeometry_cast< const QgsPoint * >( &other );
+      if ( !pt )
+        return false;
+
+      const QgsWkbTypes::Type type = wkbType();
+
+      bool equal = pt->wkbType() == type;
+      equal &= qgsDoubleNear( pt->x(), mX, 1E-8 );
+      equal &= qgsDoubleNear( pt->y(), mY, 1E-8 );
+      if ( QgsWkbTypes::hasZ( type ) )
+        equal &= qgsDoubleNear( pt->z(), mZ, 1E-8 ) || ( std::isnan( pt->z() ) && std::isnan( mZ ) );
+      if ( QgsWkbTypes::hasM( type ) )
+        equal &= qgsDoubleNear( pt->m(), mM, 1E-8 ) || ( std::isnan( pt->m() ) && std::isnan( mM ) );
+
+      return equal;
+    }
+
+    bool operator!=( const QgsAbstractGeometry &other ) const override
+    {
+      return !operator==( other );
+    }
 
     /**
      * Returns the point's x-coordinate.
@@ -240,7 +261,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * Returns the point as a QPointF.
      * \since QGIS 2.14
      */
-    QPointF toQPointF() const;
+    QPointF toQPointF() const
+    {
+      return QPointF( mX, mY );
+    }
 
     /**
      * Returns the distance between this point and a specified x, y coordinate. In certain
@@ -249,7 +273,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distanceSquared()
      * \since QGIS 3.0
     */
-    double distance( double x, double y ) const;
+    double distance( double x, double y ) const
+    {
+      return std::sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
+    }
 
     /**
      * Returns the 2D distance between this point and another point. In certain
@@ -257,7 +284,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * when comparing distances.
      * \since QGIS 3.0
     */
-    double distance( const QgsPoint &other ) const;
+    double distance( const QgsPoint &other ) const
+    {
+      return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
+    }
 
     /**
      * Returns the squared distance between this point a specified x, y coordinate. Calling
@@ -266,7 +296,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared( double x, double y ) const;
+    double distanceSquared( double x, double y ) const
+    {
+      return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
+    }
 
     /**
      * Returns the squared distance between this point another point. Calling
@@ -275,7 +308,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared( const QgsPoint &other ) const;
+    double distanceSquared( const QgsPoint &other ) const
+    {
+      return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() );
+    }
 
     /**
      * Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
@@ -392,7 +428,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     int dimension() const override;
     QgsPoint *clone() const override SIP_FACTORY;
     QgsPoint *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
-    bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) override;
+    bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
     void clear() override;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
@@ -414,7 +450,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     bool deleteVertex( QgsVertexId position ) override;
 
-    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const override;
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
     void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
 
@@ -441,6 +477,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 #ifndef SIP_RUN
 
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
+    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
 
     /**
      * Cast the \a geom to a QgsPoint.
@@ -458,6 +495,14 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 #endif
 
     QgsPoint *createEmptyWithSameType() const override SIP_FACTORY;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsPoint: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   protected:
 

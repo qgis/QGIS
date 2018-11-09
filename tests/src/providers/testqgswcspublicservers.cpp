@@ -136,7 +136,7 @@ void TestQgsWcsPublicServers::init()
       QJsonObject::ConstIterator paramsIt = serverParams.constBegin();
       for ( ; paramsIt != serverParams.constEnd(); paramsIt++ )
       {
-        QgsDebugMsg( QString( "params value: %1" ).arg( paramsIt.value().toString() ) );
+        QgsDebugMsg( QStringLiteral( "params value: %1" ).arg( paramsIt.value().toString() ) );
         server.params.insert( paramsIt.key(), paramsIt.value().toString() );
       }
 
@@ -332,7 +332,7 @@ void TestQgsWcsPublicServers::test()
       QVector<QgsWcsCoverageSummary> myCoverages;
       if ( !myCapabilities.supportedCoverages( myCoverages ) )
       {
-        QgsDebugMsg( "Cannot get list of coverages" );
+        QgsDebugMsg( QStringLiteral( "Cannot get list of coverages" ) );
         myVersionLog << QStringLiteral( "error:Cannot get list of coverages" );
         continue;
       }
@@ -484,7 +484,7 @@ void TestQgsWcsPublicServers::test()
               }
               delete myBlock;
             }
-            QgsDebugMsg( QString( "%1 values" ).arg( myValues.size() ) );
+            QgsDebugMsg( QStringLiteral( "%1 values" ).arg( myValues.size() ) );
             myLog << provider + QStringLiteral( "_valuesCount:%1" ).arg( myValues.size() );
 
             // Verify image colors
@@ -497,12 +497,12 @@ void TestQgsWcsPublicServers::test()
                 if ( !myColors.contains( color ) ) myColors.insert( color );
               }
             }
-            QgsDebugMsg( QString( "%1 colors" ).arg( myColors.size() ) );
+            QgsDebugMsg( QStringLiteral( "%1 colors" ).arg( myColors.size() ) );
             myLog << provider + QStringLiteral( "_colorsCount:%1" ).arg( myColors.size() );
           }
           else
           {
-            QgsDebugMsg( "Layer is not valid" );
+            QgsDebugMsg( QStringLiteral( "Layer is not valid" ) );
             myLog << provider + "_error:Layer is not valid";
           }
           myLog << provider + QStringLiteral( "_time:%1" ).arg( time.elapsed() / 1000., 0, 'f', 2 );
@@ -521,7 +521,7 @@ void TestQgsWcsPublicServers::test()
       }
       if ( !mCoverage.isEmpty() && ! myCoverageFound )
       {
-        QgsDebugMsg( "Coverage not found" );
+        QgsDebugMsg( QStringLiteral( "Coverage not found" ) );
       }
       QFile myVersionLogFile( myVersionLogPath );
       Q_ASSERT( myVersionLogFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) );
@@ -634,7 +634,7 @@ void TestQgsWcsPublicServers::report()
           QStringList myValues;
           myValues << QStringLiteral( "<a href='%1'>%2</a>" ).arg( myLog.value( QStringLiteral( "describeCoverageUrl" ) ), myLog.value( QStringLiteral( "identifier" ) ) );
           //myValues << myLog.value( "hasSize" );
-          myVersionReport += cells( myValues, QLatin1String( "" ), 1, 2 );
+          myVersionReport += cells( myValues, QString(), 1, 2 );
           myValues.clear();
 
           QStringList issues = issueDescriptions( myServerLog.value( QStringLiteral( "server" ) ), myLog.value( QStringLiteral( "identifier" ) ), myLog.value( QStringLiteral( "version" ) ) );
@@ -725,7 +725,7 @@ void TestQgsWcsPublicServers::report()
           }
           else
           {
-            myValues << QLatin1String( "" );
+            myValues << QString();
             cls = QStringLiteral( "cell-empty" );
           }
           myVersionReport += cells( myValues, cls, 24 );
@@ -877,16 +877,16 @@ int main( int argc, char *argv[] )
   int optionChar;
   static struct option long_options[] =
   {
-    {"help",     no_argument,       0, 'h'},
-    {"server",   required_argument, 0, 's'},
-    {"coverage", required_argument, 0, 'c'},
-    {"num",      required_argument, 0, 'n'},
-    {"version",  required_argument, 0, 'v'},
-    {"force",    no_argument,       0, 'f'},
-    {0, 0, 0, 0}
+    {"help",     no_argument,       nullptr, 'h'},
+    {"server",   required_argument, nullptr, 's'},
+    {"coverage", required_argument, nullptr, 'c'},
+    {"num",      required_argument, nullptr, 'n'},
+    {"version",  required_argument, nullptr, 'v'},
+    {"force",    no_argument,       nullptr, 'f'},
+    {nullptr, 0, nullptr, 0}
   };
 
-  while ( 1 )
+  while ( true )
   {
     /* getopt_long stores the option index here. */
     int option_index = 0;
@@ -902,7 +902,7 @@ int main( int argc, char *argv[] )
     {
       case 0:
         /* If this option set a flag, do nothing else now. */
-        if ( long_options[option_index].flag != 0 )
+        if ( long_options[option_index].flag != nullptr )
           break;
         printf( "option %s", long_options[option_index].name );
         if ( optarg )
@@ -935,16 +935,16 @@ int main( int argc, char *argv[] )
         return 2;   // XXX need standard exit codes
 
       default:
-        QgsDebugMsg( QString( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
+        QgsDebugMsg( QStringLiteral( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
         return 1;   // XXX need standard exit codes
     }
 
   }
 
-  QgsDebugMsg( QString( "myServer = %1" ).arg( myServer ) );
-  QgsDebugMsg( QString( "myCoverage = %1" ).arg( myCoverage ) );
-  QgsDebugMsg( QString( "myMaxCoverages = %1" ).arg( myMaxCoverages ) );
-  QgsDebugMsg( QString( "myVersion = %1" ).arg( myVersion ) );
+  QgsDebugMsg( QStringLiteral( "myServer = %1" ).arg( myServer ) );
+  QgsDebugMsg( QStringLiteral( "myCoverage = %1" ).arg( myCoverage ) );
+  QgsDebugMsg( QStringLiteral( "myMaxCoverages = %1" ).arg( myMaxCoverages ) );
+  QgsDebugMsg( QStringLiteral( "myVersion = %1" ).arg( myVersion ) );
 
   if ( !myCoverage.isEmpty() && myServer.isEmpty() )
   {
@@ -952,7 +952,7 @@ int main( int argc, char *argv[] )
     return 1;
   }
 
-  QgsDebugMsg( QString( "optind = %1 argc = %2" ).arg( optind ).arg( argc ) );
+  QgsDebugMsg( QStringLiteral( "optind = %1 argc = %2" ).arg( optind ).arg( argc ) );
   if ( optind > argc - 1 )
   {
     std::cerr << "CACHE_DIR missing.\n";

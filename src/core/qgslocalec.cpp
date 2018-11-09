@@ -36,8 +36,7 @@ QgsLocaleNumC::QgsLocaleNumC()
 QgsLocaleNumC::~QgsLocaleNumC()
 {
   setlocale( LC_NUMERIC, mOldlocale );
-  if ( mOldlocale )
-    delete [] mOldlocale;
+  delete [] mOldlocale;
 
   sLocaleLock.unlock();
 }

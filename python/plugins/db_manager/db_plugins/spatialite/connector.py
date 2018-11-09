@@ -172,8 +172,8 @@ class SpatiaLiteDBConnector(DBConnector):
         items = []
 
         sys_tables = ["SpatialIndex", "geom_cols_ref_sys", "geometry_columns", "geometry_columns_auth",
-                      "views_geometry_columns", "virts_geometry_columns", "spatial_ref_sys",
-                      "sqlite_sequence",  # "tableprefix_metadata", "tableprefix_rasters",
+                      "views_geometry_columns", "virts_geometry_columns", "spatial_ref_sys", "spatial_ref_sys_all", "spatial_ref_sys_aux",
+                      "sqlite_sequence", "tableprefix_metadata", "tableprefix_rasters",
                       "layer_params", "layer_statistics", "layer_sub_classes", "layer_table_layout",
                       "pattern_bitmaps", "symbol_bitmaps", "project_defs", "raster_pyramids",
                       "sqlite_stat1", "sqlite_stat2", "spatialite_history",
@@ -181,7 +181,8 @@ class SpatiaLiteDBConnector(DBConnector):
                       "geometry_columns_statistics", "geometry_columns_time",
                       "sql_statements_log", "vector_layers", "vector_layers_auth", "vector_layers_field_infos", "vector_layers_statistics",
                       "views_geometry_columns_auth", "views_geometry_columns_field_infos", "views_geometry_columns_statistics",
-                      "virts_geometry_columns_auth", "virts_geometry_columns_field_infos", "virts_geometry_columns_statistics"
+                      "virts_geometry_columns_auth", "virts_geometry_columns_field_infos", "virts_geometry_columns_statistics",
+                      "virts_layer_statistics", "views_layer_statistics", "ElementaryGeometries"
                       ]
 
         try:

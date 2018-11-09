@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayerrestorer.h"
+#include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
@@ -23,7 +24,7 @@
 
 QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
 {
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  for ( QgsMapLayer *layer : layers )
   {
     QgsLayerSettings settings;
     settings.name = layer->name();

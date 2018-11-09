@@ -244,7 +244,7 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
 
     if ( fontFamilyHasStyle( fontFamily, fontstyle ) )
     {
-      QgsDebugMsg( QString( "Test font '%1 %2' already available" ).arg( fontFamily, fontstyle ) );
+      QgsDebugMsg( QStringLiteral( "Test font '%1 %2' already available" ).arg( fontFamily, fontstyle ) );
     }
     else
     {
@@ -259,10 +259,10 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
         int fontID = QFontDatabase::addApplicationFont( fontPath );
         loaded = ( fontID != -1 );
         fontsLoaded = ( fontsLoaded || loaded );
-        QgsDebugMsg( QString( "Test font '%1 %2' %3 from filesystem [%4]" )
+        QgsDebugMsg( QStringLiteral( "Test font '%1 %2' %3 from filesystem [%4]" )
                      .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load", fontPath ) );
         QFontDatabase db;
-        QgsDebugMsg( QString( "font families in %1: %2" ).arg( fontID ).arg( db.applicationFontFamilies( fontID ).join( "," ) ) );
+        QgsDebugMsg( QStringLiteral( "font families in %1: %2" ).arg( fontID ).arg( db.applicationFontFamilies( fontID ).join( "," ) ) );
       }
       else
       {
@@ -273,7 +273,7 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
           loaded = ( fontID != -1 );
           fontsLoaded = ( fontsLoaded || loaded );
         }
-        QgsDebugMsg( QString( "Test font '%1' (%2) %3 from testdata.qrc" )
+        QgsDebugMsg( QStringLiteral( "Test font '%1' (%2) %3 from testdata.qrc" )
                      .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load" ) );
       }
     }
@@ -306,10 +306,10 @@ QFont QgsFontUtils::getStandardTestFont( const QString &style, int pointsize )
   }
   if ( !f.exactMatch() )
   {
-    QgsDebugMsg( QString( "Inexact font match - consider installing the %1 font." ).arg( standardTestFontFamily() ) );
-    QgsDebugMsg( QString( "Requested: %1" ).arg( f.toString() ) );
+    QgsDebugMsg( QStringLiteral( "Inexact font match - consider installing the %1 font." ).arg( standardTestFontFamily() ) );
+    QgsDebugMsg( QStringLiteral( "Requested: %1" ).arg( f.toString() ) );
     QFontInfo fi( f );
-    QgsDebugMsg( QString( "Replaced:  %1,%2,%3,%4,%5,%6,%7,%8,%9,%10" ).arg( fi.family() ).arg( fi.pointSizeF() ).arg( fi.pixelSize() ).arg( fi.styleHint() ).arg( fi.weight() ).arg( fi.style() ).arg( fi.underline() ).arg( fi.strikeOut() ).arg( fi.fixedPitch() ).arg( fi.rawMode() ) );
+    QgsDebugMsg( QStringLiteral( "Replaced:  %1,%2,%3,%4,%5,%6,%7,%8,%9,%10" ).arg( fi.family() ).arg( fi.pointSizeF() ).arg( fi.pixelSize() ).arg( fi.styleHint() ).arg( fi.weight() ).arg( fi.style() ).arg( fi.underline() ).arg( fi.strikeOut() ).arg( fi.fixedPitch() ).arg( fi.rawMode() ) );
   }
 #endif
   // in case above statement fails to set style
@@ -410,7 +410,15 @@ QFont QgsFontUtils::fromMimeData( const QMimeData *data, bool *ok )
 static QMap<QString, QString> createTranslatedStyleMap()
 {
   QMap<QString, QString> translatedStyleMap;
-  QStringList words = QStringList() << QStringLiteral( "Normal" ) << QStringLiteral( "Light" ) << QStringLiteral( "Bold" ) << QStringLiteral( "Black" ) << QStringLiteral( "Demi" ) << QStringLiteral( "Italic" ) << QStringLiteral( "Oblique" );
+  QStringList words = QStringList()
+                      << QStringLiteral( "Normal" )
+                      << QStringLiteral( "Regular" )
+                      << QStringLiteral( "Light" )
+                      << QStringLiteral( "Bold" )
+                      << QStringLiteral( "Black" )
+                      << QStringLiteral( "Demi" )
+                      << QStringLiteral( "Italic" )
+                      << QStringLiteral( "Oblique" );
   Q_FOREACH ( const QString &word, words )
   {
     translatedStyleMap.insert( QCoreApplication::translate( "QFontDatabase", qPrintable( word ) ), word );
@@ -440,7 +448,7 @@ QString QgsFontUtils::untranslateNamedStyle( const QString &namedStyle )
     }
     else
     {
-      QgsDebugMsg( QString( "Warning: style map does not contain %1" ).arg( words[i] ) );
+      QgsDebugMsg( QStringLiteral( "Warning: style map does not contain %1" ).arg( words[i] ) );
     }
   }
   return words.join( QStringLiteral( " " ) );
@@ -485,7 +493,6 @@ QString QgsFontUtils::asCSS( const QFont &font, double pointToPixelScale )
     case QFont::Black:
       cssWeight = 900;
       break;
-#if QT_VERSION >= 0x050500
     case QFont::Thin:
       cssWeight = 100;
       break;
@@ -498,7 +505,6 @@ QString QgsFontUtils::asCSS( const QFont &font, double pointToPixelScale )
     case QFont::ExtraBold:
       cssWeight = 800;
       break;
-#endif
   }
   css += QStringLiteral( "font-weight: %1;" ).arg( cssWeight );
 

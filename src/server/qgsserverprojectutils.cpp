@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsserverprojectutils.h"
+#include "qgsproject.h"
 
 bool QgsServerProjectUtils::owsServiceCapabilities( const QgsProject &project )
 {
@@ -330,4 +331,9 @@ QString QgsServerProjectUtils::wcsServiceUrl( const QgsProject &project )
 QStringList QgsServerProjectUtils::wcsLayerIds( const QgsProject &project )
 {
   return project.readListEntry( QStringLiteral( "WCSLayers" ), QStringLiteral( "/" ) );
+}
+
+QString QgsServerProjectUtils::wmtsServiceUrl( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMTSSUrl" ), QStringLiteral( "/" ), "" );
 }

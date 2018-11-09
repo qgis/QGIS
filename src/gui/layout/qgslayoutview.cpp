@@ -92,21 +92,17 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
 
   viewChanged();
 
-  delete mSnapMarker;
+  // IMPORTANT!
+  // previous snap markers, snap lines are owned by previous layout - so don't delete them here!
   mSnapMarker = new QgsLayoutViewSnapMarker();
   mSnapMarker->hide();
   layout->addItem( mSnapMarker );
-
-  delete mHorizontalSnapLine;
   mHorizontalSnapLine = createSnapLine();
   mHorizontalSnapLine->hide();
   layout->addItem( mHorizontalSnapLine );
-  delete mVerticalSnapLine;
   mVerticalSnapLine = createSnapLine();
   mVerticalSnapLine->hide();
   layout->addItem( mVerticalSnapLine );
-
-  delete mSectionLabel;
   mSectionLabel = nullptr;
 
   if ( mHorizontalRuler )

@@ -21,12 +21,12 @@
 #include <QList>
 
 #include "qgis.h"
-#include "qgspoint.h"
 #include "qgsfeedback.h"
 #include "qgsnetworkstrategy.h"
 #include "qgis_analysis.h"
 
 class QgsGraphBuilderInterface;
+class QgsPoint;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -56,7 +56,7 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
 
   public:
 
-    ~QgsGraphDirector()
+    ~QgsGraphDirector() override
     {
       qDeleteAll( mStrategies );
     }

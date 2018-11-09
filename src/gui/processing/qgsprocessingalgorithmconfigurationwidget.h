@@ -45,7 +45,7 @@ class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget
      * Creates a new QgsProcessingAlgorithmConfigurationWidget
      */
     QgsProcessingAlgorithmConfigurationWidget( QWidget *parent = nullptr );
-    virtual ~QgsProcessingAlgorithmConfigurationWidget() = default;
+    ~QgsProcessingAlgorithmConfigurationWidget() override = default;
 
     /**
      * Read the current configuration from this widget.

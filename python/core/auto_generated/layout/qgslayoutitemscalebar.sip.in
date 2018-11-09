@@ -505,7 +505,7 @@ Returns the scale bar style name.
 Adjusts the scale bar box size and updates the item.
 %End
 
-    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
     virtual void finalizeRestoreFromXml();
 

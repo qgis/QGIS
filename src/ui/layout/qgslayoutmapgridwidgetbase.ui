@@ -106,7 +106,7 @@
           <item row="1" column="1">
            <widget class="QPushButton" name="mMapGridCRSButton">
             <property name="text">
-             <string>change...</string>
+             <string>Change…</string>
             </property>
            </widget>
           </item>
@@ -278,7 +278,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>change...</string>
+             <string>Change…</string>
             </property>
            </widget>
           </item>
@@ -291,7 +291,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>change...</string>
+             <string>Change…</string>
             </property>
            </widget>
           </item>
@@ -536,7 +536,7 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Draw coordinates</string>
+          <string>Draw Coordinates</string>
          </property>
          <property name="checkable">
           <bool>true</bool>

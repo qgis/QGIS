@@ -121,7 +121,7 @@ class QgsChunkNode
     QgsChunkQueueJob *updater() const { return mUpdater; }
 
     //! Returns true if all child chunks are available and thus this node could be swapped to the child nodes
-    bool allChildChunksResident( const QTime &currentTime ) const;
+    bool allChildChunksResident( QTime currentTime ) const;
 
     //! make sure that all child nodes are at least skeleton nodes
     void ensureAllChildrenExist();

@@ -399,6 +399,13 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
     }
   }
 
+  // maybe it's an embedded base64 string
+  if ( path.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) )
+  {
+    QByteArray base64 = path.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
+    return QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
+  }
+
   // maybe it's a url...
   if ( !path.contains( QLatin1String( "://" ) ) ) // otherwise short, relative SVG paths might be considered URLs
   {
@@ -906,12 +913,12 @@ void QgsSvgCache::removeCacheEntry( const QString &s, QgsSvgCacheEntry *entry )
 
 void QgsSvgCache::printEntryList()
 {
-  QgsDebugMsg( "****************svg cache entry list*************************" );
+  QgsDebugMsg( QStringLiteral( "****************svg cache entry list*************************" ) );
   QgsDebugMsg( "Cache size: " + QString::number( mTotalSize ) );
   QgsSvgCacheEntry *entry = mLeastRecentEntry;
   while ( entry )
   {
-    QgsDebugMsg( "***Entry:" );
+    QgsDebugMsg( QStringLiteral( "***Entry:" ) );
     QgsDebugMsg( "File:" + entry->path );
     QgsDebugMsg( "Size:" + QString::number( entry->size ) );
     QgsDebugMsg( "Width scale factor" + QString::number( entry->widthScaleFactor ) );

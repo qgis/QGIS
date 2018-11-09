@@ -66,7 +66,7 @@ class QgsResidualPlotItem: public QgsLayoutItem
      * clockwise from pointing vertical upward
      * \param arrowHeadWidth size of arrow head
      */
-    static void drawArrowHead( QPainter *p, const double x, const double y, const double angle, const double arrowHeadWidth );
+    static void drawArrowHead( QPainter *p, double x, double y, double angle, double arrowHeadWidth );
 
     /**
      * Calculates the angle of the line from p1 to p2 (counter clockwise,

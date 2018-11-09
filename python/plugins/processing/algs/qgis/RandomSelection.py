@@ -80,7 +80,7 @@ class RandomSelection(QgisAlgorithm):
                                                      self.tr('Method'), self.methods, False, 0))
         self.addParameter(QgsProcessingParameterNumber(self.NUMBER,
                                                        self.tr('Number/percentage of selected features'), QgsProcessingParameterNumber.Integer,
-                                                       10, False, 0.0, 999999999999.0))
+                                                       10, False, 0.0))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (random)')))
 
     def name(self):
@@ -93,11 +93,11 @@ class RandomSelection(QgisAlgorithm):
         layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         method = self.parameterAsEnum(parameters, self.METHOD, context)
 
-        featureCount = layer.featureCount()
+        ids = layer.allFeatureIds()
         value = self.parameterAsInt(parameters, self.NUMBER, context)
 
         if method == 0:
-            if value > featureCount:
+            if value > len(ids):
                 raise QgsProcessingException(
                     self.tr('Selected number is greater than feature count. '
                             'Choose a lower value and try again.'))
@@ -106,9 +106,9 @@ class RandomSelection(QgisAlgorithm):
                 raise QgsProcessingException(
                     self.tr("Percentage can't be greater than 100. Set a "
                             "different value and try again."))
-            value = int(round(value / 100.0, 4) * featureCount)
+            value = int(round(value / 100.0, 4) * len(ids))
 
-        selran = random.sample(list(range(featureCount)), value)
+        selran = random.sample(ids, value)
 
         layer.selectByIds(selran)
         return {self.OUTPUT: parameters[self.INPUT]}

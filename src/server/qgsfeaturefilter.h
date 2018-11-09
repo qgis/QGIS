@@ -35,20 +35,20 @@ class SERVER_EXPORT QgsFeatureFilter : public QgsFeatureFilterProvider
 {
   public:
     //! Constructor
-    QgsFeatureFilter() {}
+    QgsFeatureFilter() = default;
 
     /**
      * Filter the features of the layer
      * \param layer the layer to control
      * \param filterFeatures the request to fill
      */
-    void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
+    void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
 
     /**
      * Returns a clone of the object
      * \returns A clone
      */
-    QgsFeatureFilterProvider *clone() const SIP_FACTORY;
+    QgsFeatureFilterProvider *clone() const override SIP_FACTORY;
 
     /**
      * Set a filter for the given layer.

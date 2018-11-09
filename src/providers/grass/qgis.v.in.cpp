@@ -73,12 +73,12 @@ void closeMaps()
   if ( tmpMap )
   {
     Vect_close( tmpMap );
-    Vect_delete( sTmpName.toUtf8().data() );
+    Vect_delete( sTmpName.toUtf8().constData() );
   }
   if ( finalMap )
   {
     Vect_close( finalMap );
-    Vect_delete( sFinalName.toUtf8().data() );
+    Vect_delete( sFinalName.toUtf8().constData() );
   }
   if ( driver )
   {
@@ -161,7 +161,7 @@ int main( int argc, char **argv )
   {
     tmpMap = QgsGrass::vectNewMapStruct();
     // TODO: use Vect_open_tmp_new with GRASS 7
-    Vect_open_new( tmpMap, sTmpName.toUtf8().data(), 0 );
+    Vect_open_new( tmpMap, sTmpName.toUtf8().constData(), 0 );
     map = tmpMap;
   }
 
@@ -173,7 +173,7 @@ int main( int argc, char **argv )
   QString key;
   while ( true )
   {
-    key = "cat" + ( keyNum == 1 ? QLatin1String( "" ) : QString::number( keyNum ) );
+    key = "cat" + ( keyNum == 1 ? QString() : QString::number( keyNum ) );
     if ( srcFields.indexFromName( key ) == -1 )
     {
       break;
@@ -248,7 +248,7 @@ int main( int argc, char **argv )
       if ( !isPolygon )
       {
         Vect_reset_cats( cats );
-        Vect_cat_set( cats, 1, ( int )feature.id() + fidToCatPlus );
+        Vect_cat_set( cats, 1, static_cast<int>( feature.id() ) + fidToCatPlus );
       }
 
       if ( geometryType == QgsWkbTypes::Point )
@@ -396,7 +396,7 @@ int main( int argc, char **argv )
       feature.setGeometry( QgsGeometry::fromPointXY( point ) );
       feature.setValid( true );
       centroids.insert( area, feature );
-      spatialIndex.insertFeature( feature );
+      spatialIndex.addFeature( feature );
     }
 
     G_message( "Attaching input polygons to cleaned areas" );
@@ -429,7 +429,7 @@ int main( int argc, char **argv )
         if ( feature.geometry().contains( centroid.geometry() ) )
         {
           QgsAttributes attr = centroid.attributes();
-          attr.append( ( int )feature.id() + fidToCatPlus );
+          attr.append( static_cast<int>( feature.id() ) + fidToCatPlus );
           centroid.setAttributes( attr );
         }
       }
@@ -440,7 +440,7 @@ int main( int argc, char **argv )
     G_message( "Copying lines from temporary map" );
     Vect_copy_map_lines( tmpMap, finalMap );
     Vect_close( tmpMap );
-    Vect_delete( sTmpName.toUtf8().data() );
+    Vect_delete( sTmpName.toUtf8().constData() );
 
     int centroidsCount = centroids.size();
     count = 0;

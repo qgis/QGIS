@@ -59,22 +59,15 @@ class QPainter;
 class QStandardItem;
 class QgsLayerTreeGroup;
 
-/**
- * This class handles requestsi that share rendering:
- *
- * This includes
- *  - getfeatureinfo
- *  - getmap
- *  - getlegendgraphics
- *  - getprint
- */
-
-// These requests share common methods: putting them into a single helper class is
-// more practical than spitting everything in a more functional way.
-
 namespace QgsWms
 {
 
+  /**
+   * \ingroup server
+   * \class QgsWms::QgsRenderer
+   * \brief Map renderer for WMS requests
+   * \since QGIS 3.0
+   */
   class QgsRenderer
   {
     public:
@@ -84,7 +77,7 @@ namespace QgsWms
           QgsConfigParser and QgsCapabilitiesCache*/
       QgsRenderer( QgsServerInterface *serverIface,
                    const QgsProject *project,
-                   const QgsServerRequest::Parameters &parameters );
+                   const QgsWmsParameters &parameters );
 
       ~QgsRenderer();
 
@@ -169,7 +162,7 @@ namespace QgsWms
       void setLayerOpacity( QgsMapLayer *layer, int opacity ) const;
 
       // Set layer filter
-      void setLayerFilter( QgsMapLayer *layer, const QStringList &filter );
+      void setLayerFilter( QgsMapLayer *layer, const QList<QgsWmsParametersFilter> &filters );
 
       // Set layer python filter
       void setLayerAccessControlFilter( QgsMapLayer *layer ) const;
@@ -203,9 +196,9 @@ namespace QgsWms
       QImage *createImage( int width = -1, int height = -1, bool useBbox = true ) const;
 
       /**
-       * Configures mapSettings to the parameters
-       * HEIGHT, WIDTH, BBOX, CRS.
-       * \param paintDevice the device that is used for painting (for dpi)
+       * Configures map settings according to WMS parameters.
+       * \param paintDevice The device that is used for painting (for dpi)
+       * \param mapSettings Map settings to use for rendering
        * may throw an exception
        */
       void configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings ) const;
@@ -214,9 +207,20 @@ namespace QgsWms
                                         const QImage *outputImage, const QString &version ) const;
 
       /**
-       * Appends feature info xml for the layer to the layer element of the feature info dom document
-      \param featureBBox the bounding box of the selected features in output CRS
-      \returns true in case of success*/
+       * Appends feature info xml for the layer to the layer element of the
+       * feature info dom document.
+       * \param layer The vector layer
+       * \param infoPoint The point coordinates
+       * \param nFeatures The number of features
+       * \param infoDocument Feature info document
+       * \param layerElement Layer XML element
+       * \param mapSettings Map settings with extent, CRS, ...
+       * \param renderContext Context to use for feature rendering
+       * \param version WMS version
+       * \param featureBBox The bounding box of the selected features in output CRS
+       * \param filterGeom Geometry for filtering selected features
+       * \returns true in case of success
+       */
       bool featureInfoFromVectorLayer( QgsVectorLayer *layer,
                                        const QgsPointXY *infoPoint,
                                        int nFeatures,
@@ -227,6 +231,7 @@ namespace QgsWms
                                        const QString &version,
                                        QgsRectangle *featureBBox = nullptr,
                                        QgsGeometry *filterGeom = nullptr ) const;
+
       //! Appends feature info xml for the layer to the layer element of the dom document
       bool featureInfoFromRasterLayer( QgsRasterLayer *layer,
                                        const QgsMapSettings &mapSettings,
@@ -273,7 +278,7 @@ namespace QgsWms
         QStringList *attributes = nullptr ) const;
 
       //! Replaces attribute value with ValueRelation or ValueRelation if defined. Otherwise returns the original value
-      static QString replaceValueMapAndRelation( QgsVectorLayer *vl, int idx, const QString &attributeVal );
+      static QString replaceValueMapAndRelation( QgsVectorLayer *vl, int idx, const QVariant &attributeVal );
       //! Gets layer search rectangle (depending on request parameter, layer type, map and layer crs)
       QgsRectangle featureInfoSearchRect( QgsVectorLayer *ml, const QgsMapSettings &ms, const QgsRenderContext &rct, const QgsPointXY &infoPoint ) const;
 
@@ -287,7 +292,7 @@ namespace QgsWms
 
     private:
 
-      const QgsServerRequest::Parameters &mParameters;
+      const QgsWmsParameters &mWmsParameters;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       //! The access control helper
@@ -297,7 +302,6 @@ namespace QgsWms
 
       const QgsServerSettings &mSettings;
       const QgsProject *mProject = nullptr;
-      QgsWmsParameters mWmsParameters;
       QStringList mRestrictedLayers;
       QMap<QString, QgsMapLayer *> mNicknameLayers;
       QMap<QString, QList<QgsMapLayer *> > mLayerGroups;

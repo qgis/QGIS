@@ -145,21 +145,21 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   populateConnectionList();
 
   QgsSettings settings;
-  QgsDebugMsg( "restoring geometry" );
+  QgsDebugMsg( QStringLiteral( "restoring geometry" ) );
   restoreGeometry( settings.value( QStringLiteral( "Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
 }
 
 QgsWMSSourceSelect::~QgsWMSSourceSelect()
 {
   QgsSettings settings;
-  QgsDebugMsg( "saving geometry" );
+  QgsDebugMsg( QStringLiteral( "saving geometry" ) );
   settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
 }
 
 void QgsWMSSourceSelect::refresh()
 {
   // Reload WMS connections and update the GUI
-  QgsDebugMsg( "Refreshing WMS connections ..." );
+  QgsDebugMsg( QStringLiteral( "Refreshing WMS connections ..." ) );
   populateConnectionList();
 }
 
@@ -221,7 +221,7 @@ void QgsWMSSourceSelect::btnSave_clicked()
 void QgsWMSSourceSelect::btnLoad_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *XML)" ) );
+                     tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -290,7 +290,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
     int id = mMimeMap.value( encoding, -1 );
     if ( id < 0 )
     {
-      QgsDebugMsg( QString( "encoding %1 not supported." ).arg( encoding ) );
+      QgsDebugMsg( QStringLiteral( "encoding %1 not supported." ).arg( encoding ) );
       continue;
     }
     // Different mime-types can map to the same label. Just add the first
@@ -335,7 +335,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
     // Layer Styles
     for ( int j = 0; j < layer->style.size(); j++ )
     {
-      QgsDebugMsg( QString( "got style name %1 and title '%2'." ).arg( layer->style.at( j ).name, layer->style.at( j ).title ) );
+      QgsDebugMsg( QStringLiteral( "got style name %1 and title '%2'." ).arg( layer->style.at( j ).name, layer->style.at( j ).title ) );
 
       QgsTreeWidgetItem *lItem2 = new QgsTreeWidgetItem( lItem );
       lItem2->setText( 0, QString::number( ++layerAndStyleCount ) );
@@ -581,7 +581,7 @@ void QgsWMSSourceSelect::addButtonClicked()
   uri.setParam( QStringLiteral( "styles" ), styles );
   uri.setParam( QStringLiteral( "format" ), format );
   uri.setParam( QStringLiteral( "crs" ), crs );
-  QgsDebugMsg( QString( "crs=%2 " ).arg( crs ) );
+  QgsDebugMsg( QStringLiteral( "crs=%2 " ).arg( crs ) );
 
   if ( mFeatureCount->text().toInt() > 0 )
   {
@@ -771,7 +771,7 @@ void QgsWMSSourceSelect::collectNamedLayers( QTreeWidgetItem *item, QStringList 
   {
     // named layers
     layers << layerName;
-    styles << QLatin1String( "" );
+    styles << QString();
     titles << titleName;
 
     if ( mCRSs.isEmpty() )
@@ -817,7 +817,7 @@ void QgsWMSSourceSelect::lstLayers_itemSelectionChanged()
     {
       // named layer: add using default style
       layers << layerName;
-      styles << QLatin1String( "" );
+      styles << QString();
       titles << titleName;
       if ( mCRSs.isEmpty() )
         mCRSs = item->data( 0, Qt::UserRole + 2 ).toStringList().toSet();
@@ -890,7 +890,7 @@ void QgsWMSSourceSelect::lstTilesets_itemClicked( QTableWidgetItem *item )
   lstTilesets->clearSelection();
   if ( !wasSelected )
   {
-    QgsDebugMsg( QString( "selecting current row %1" ).arg( lstTilesets->currentRow() ) );
+    QgsDebugMsg( QStringLiteral( "selecting current row %1" ).arg( lstTilesets->currentRow() ) );
     lstTilesets->selectRow( lstTilesets->currentRow() );
     mCurrentTileset = rowItem;
   }
@@ -1024,7 +1024,7 @@ QString QgsWMSSourceSelect::selectedImageEncoding()
   int id = mImageFormatGroup->checkedId();
   if ( id < 0 )
   {
-    return QLatin1String( "" );
+    return QString();
   }
   else
   {
@@ -1213,7 +1213,7 @@ void QgsWMSSourceSelect::searchFinished()
     }
     else
     {
-      QgsDebugMsg( "setContent failed" );
+      QgsDebugMsg( QStringLiteral( "setContent failed" ) );
       showStatusMessage( tr( "parse error at row %1, column %2: %3" ).arg( line ).arg( column ).arg( error ) );
     }
   }

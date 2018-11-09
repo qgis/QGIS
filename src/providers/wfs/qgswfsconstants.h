@@ -46,6 +46,8 @@ struct QgsWFSConstants
   static const QString URI_PARAM_INVERTAXISORIENTATION;
   static const QString URI_PARAM_VALIDATESQLFUNCTIONS;
   static const QString URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG;
+  static const QString URI_PARAM_PAGING_ENABLED;
+  static const QString URI_PARAM_PAGE_SIZE;
 
   //
   static const QString VERSION_AUTO;
@@ -54,6 +56,8 @@ struct QgsWFSConstants
   static const QString CONNECTIONS_WFS;
   static const QString SETTINGS_VERSION;
   static const QString SETTINGS_MAXNUMFEATURES;
+  static const QString SETTINGS_PAGING_ENABLED;
+  static const QString SETTINGS_PAGE_SIZE;
 
   // Special fields of the cache
   static const QString FIELD_GEN_COUNTER;

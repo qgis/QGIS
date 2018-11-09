@@ -16,6 +16,7 @@
 #ifndef QGSTESSELLATEDPOLYGONGEOMETRY_H
 #define QGSTESSELLATEDPOLYGONGEOMETRY_H
 
+#include "qgsfeatureid.h"
 #include "qgspolygon.h"
 
 #include <Qt3DRender/QGeometry>
@@ -36,10 +37,10 @@ namespace Qt3DRender
  */
 class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
 {
+    Q_OBJECT
   public:
     //! Constructor
     QgsTessellatedPolygonGeometry( QNode *parent = nullptr );
-    ~QgsTessellatedPolygonGeometry() override;
 
     //! Returns whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
     bool invertNormals() const { return mInvertNormals; }
@@ -59,13 +60,19 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
     void setAddBackFaces( bool add ) { mAddBackFaces = add; }
 
     //! Initializes vertex buffer from given polygons. Takes ownership of passed polygon geometries
-    void setPolygons( const QList<QgsPolygon *> &polygons, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon = QList<float>() );
+    void setPolygons( const QList<QgsPolygon *> &polygons, const QList<QgsFeatureId> &featureIds, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon = QList<float>() );
+
+    //! Returns ID of the feature to which given triangle index belongs (used for picking)
+    QgsFeatureId triangleIndexToFeatureId( uint triangleIndex ) const;
 
   private:
 
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QAttribute *mNormalAttribute = nullptr;
     Qt3DRender::QBuffer *mVertexBuffer = nullptr;
+
+    QVector<QgsFeatureId> mTriangleIndexFids;
+    QVector<uint> mTriangleIndexStartingIndices;
 
     bool mWithNormals = true;
     bool mInvertNormals = false;

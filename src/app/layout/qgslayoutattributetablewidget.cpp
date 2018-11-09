@@ -115,7 +115,7 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   mBackgroundColorButton->setAllowOpacity( true );
   mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
   mBackgroundColorButton->setShowNoColor( true );
-  mBackgroundColorButton->setNoColorString( tr( "No background" ) );
+  mBackgroundColorButton->setNoColorString( tr( "No Background" ) );
 
   updateGuiElements();
 
@@ -466,8 +466,8 @@ void QgsLayoutAttributeTableWidget::updateGuiElements()
   mFeatureFilterEdit->setEnabled( mTable->filterFeatures() );
   mFeatureFilterButton->setEnabled( mTable->filterFeatures() );
 
-  mHeaderHAlignmentComboBox->setCurrentIndex( ( int )mTable->headerHAlignment() );
-  mHeaderModeComboBox->setCurrentIndex( ( int )mTable->headerMode() );
+  mHeaderHAlignmentComboBox->setCurrentIndex( static_cast<int>( mTable->headerHAlignment() ) );
+  mHeaderModeComboBox->setCurrentIndex( static_cast<int>( mTable->headerMode() ) );
 
   mEmptyModeComboBox->setCurrentIndex( mEmptyModeComboBox->findData( mTable->emptyTableBehavior() ) );
   mEmptyMessageLineEdit->setText( mTable->emptyTableMessage() );
@@ -482,6 +482,8 @@ void QgsLayoutAttributeTableWidget::updateGuiElements()
 
   mEmptyFrameCheckBox->setChecked( mFrame->hidePageIfEmpty() );
   mHideEmptyBgCheckBox->setChecked( mFrame->hideBackgroundIfEmpty() );
+
+  updateDataDefinedButton( mLayerSourceDDBtn );
 
   toggleSourceControls();
 

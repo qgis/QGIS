@@ -189,7 +189,7 @@ void QgsSpatiaLiteSourceSelect::mSearchGroupBox_toggled( bool checked )
   if ( mSearchTableEdit->text().isEmpty() )
     return;
 
-  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
+  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QString() );
 }
 
 void QgsSpatiaLiteSourceSelect::mSearchTableEdit_textChanged( const QString &text )
@@ -298,7 +298,7 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
     bool ok;
     savedName = QInputDialog::getText( nullptr, tr( "Cannot add connection '%1'" ).arg( myName ),
                                        tr( "A connection with the same name already exists,\nplease provide a new name:" ), QLineEdit::Normal,
-                                       QLatin1String( "" ), &ok );
+                                       QString(), &ok );
     if ( !ok || savedName.isEmpty() )
     {
       return false;
@@ -351,7 +351,7 @@ QString QgsSpatiaLiteSourceSelect::layerURI( const QModelIndex &index )
   }
 
   QgsDataSourceUri uri( connectionInfo() );
-  uri.setDataSource( QLatin1String( "" ), tableName, geomColumnName, sql, QLatin1String( "" ) );
+  uri.setDataSource( QString(), tableName, geomColumnName, sql, QString() );
   return uri.uri();
 }
 
@@ -463,7 +463,7 @@ void QgsSpatiaLiteSourceSelect::btnConnect_clicked()
         break;
       case QgsSpatiaLiteConnection::FailedToCheckMetadata:
         QMessageBox::critical( this, tr( "SpatiaLite metadata check failed" ),
-                               tr( "Failure getting table metadata... is %1 really a SpatiaLite database?\n\n%2" ).arg( mSqlitePath, errCause ) );
+                               tr( "Failure getting table metadata. Is %1 really a SpatiaLite database?\n\n%2" ).arg( mSqlitePath, errCause ) );
         break;
       default:
         QMessageBox::critical( this, tr( "SpatiaLite Error" ),
@@ -484,7 +484,7 @@ void QgsSpatiaLiteSourceSelect::btnConnect_clicked()
   QList<QgsSpatiaLiteConnection::TableEntry> tables = conn.tables();
   Q_FOREACH ( const QgsSpatiaLiteConnection::TableEntry &table, tables )
   {
-    mTableModel.addTableEntry( table.type, table.tableName, table.column, QLatin1String( "" ) );
+    mTableModel.addTableEntry( table.type, table.tableName, table.column, QString() );
   }
 
   if ( cmbConnections->count() > 0 )
@@ -583,10 +583,9 @@ void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString &regexp )
   Q_UNUSED( regexp );
 }
 
-void QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+void QgsSpatiaLiteSourceSelect::treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & )
 {
-  Q_UNUSED( deselected )
-  emit enableButtons( !selected.isEmpty() );
+  emit enableButtons( !mTablesTreeView->selectionModel()->selection().isEmpty() );
 }
 
 void QgsSpatiaLiteSourceSelect::showHelp()

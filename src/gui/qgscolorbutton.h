@@ -95,7 +95,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \see allowOpacity()
      * \since QGIS 3.0
      */
-    void setAllowOpacity( const bool allowOpacity );
+    void setAllowOpacity( bool allowOpacity );
 
     /**
      * Returns whether opacity modification (transparency) is permitted
@@ -126,7 +126,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \param showMenu set to false to hide the drop-down menu
      * \see showMenu
      */
-    void setShowMenu( const bool showMenu );
+    void setShowMenu( bool showMenu );
 
     /**
      * Returns whether the drop-down menu is shown for the button.
@@ -141,7 +141,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \param behavior behavior when button is clicked
      * \see behavior
      */
-    void setBehavior( const Behavior behavior );
+    void setBehavior( Behavior behavior );
 
     /**
      * Returns the behavior for when the button is clicked.
@@ -454,7 +454,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \param showChecks set to true to display a checkboard pattern behind
      * transparent colors
      */
-    QPixmap createMenuIcon( const QColor &color, const bool showChecks = true );
+    QPixmap createMenuIcon( const QColor &color, bool showChecks = true );
 
   private slots:
 

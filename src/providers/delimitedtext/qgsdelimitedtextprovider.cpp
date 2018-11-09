@@ -120,6 +120,10 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
     }
   }
 
+  mDetectTypes = true;
+  if ( url.hasQueryItem( QStringLiteral( "detectTypes" ) ) )
+    mDetectTypes = ! url.queryItemValue( QStringLiteral( "detectTypes" ) ).toLower().startsWith( 'n' );
+
   if ( url.hasQueryItem( QStringLiteral( "decimalPoint" ) ) )
     mDecimalPoint = url.queryItemValue( QStringLiteral( "decimalPoint" ) );
 
@@ -158,9 +162,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
   }
 }
 
-QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
-{
-}
+QgsDelimitedTextProvider::~QgsDelimitedTextProvider() = default;
 
 QgsAbstractFeatureSource *QgsDelimitedTextProvider::featureSource() const
 {
@@ -223,15 +225,15 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
 
   // All good, so pull out the types from the string.  Currently only returning integer, real, and string types
 
-  QgsDebugMsg( QString( "Reading field types from %1" ).arg( csvtInfo.fileName() ) );
-  QgsDebugMsg( QString( "Field type string: %1" ).arg( strTypeList ) );
+  QgsDebugMsg( QStringLiteral( "Reading field types from %1" ).arg( csvtInfo.fileName() ) );
+  QgsDebugMsg( QStringLiteral( "Field type string: %1" ).arg( strTypeList ) );
 
   int pos = 0;
-  QRegExp reType( "(integer|real|string|date|datetime|time)" );
+  QRegExp reType( "(integer|real|double|string|date|datetime|time)" );
 
   while ( ( pos = reType.indexIn( strTypeList, pos ) ) != -1 )
   {
-    QgsDebugMsg( QString( "Found type: %1" ).arg( reType.cap( 1 ) ) );
+    QgsDebugMsg( QStringLiteral( "Found type: %1" ).arg( reType.cap( 1 ) ) );
     types << reType.cap( 1 );
     pos += reType.matchedLength();
   }
@@ -242,10 +244,7 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
     // *message=tr("Reading field types from %1").arg(csvtInfo.fileName());
   }
 
-
   return types;
-
-
 }
 
 void QgsDelimitedTextProvider::resetCachedSubset() const
@@ -320,7 +319,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
     messages.append( tr( "File cannot be opened or delimiter parameters are not valid" ) );
     reportErrors( messages );
-    QgsDebugMsg( "Delimited text source invalid - filename or delimiter parameters" );
+    QgsDebugMsg( QStringLiteral( "Delimited text source invalid - filename or delimiter parameters" ) );
     return;
   }
 
@@ -352,7 +351,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   if ( !messages.isEmpty() )
   {
     reportErrors( messages );
-    QgsDebugMsg( "Delimited text source invalid - missing geometry fields" );
+    QgsDebugMsg( QStringLiteral( "Delimited text source invalid - missing geometry fields" ) );
     return;
   }
 
@@ -447,7 +446,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
                 QgsFeature f;
                 f.setId( mFile->recordId() );
                 f.setGeometry( geom );
-                mSpatialIndex->insertFeature( f );
+                mSpatialIndex->addFeature( f );
               }
             }
             else
@@ -502,7 +501,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
             QgsFeature f;
             f.setId( mFile->recordId() );
             f.setGeometry( QgsGeometry::fromPointXY( pt ) );
-            mSpatialIndex->insertFeature( f );
+            mSpatialIndex->addFeature( f );
           }
         }
         else
@@ -558,6 +557,11 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         couldBeDouble[i] = true;
       }
 
+      if ( ! mDetectTypes )
+      {
+        continue;
+      }
+
       // Now test for still valid possible types for the field
       // Types are possible until first record which cannot be parsed
 
@@ -605,39 +609,39 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     QString typeName = QStringLiteral( "text" );
     if ( i < csvtTypes.size() )
     {
-      if ( csvtTypes[i] == QLatin1String( "integer" ) )
-      {
-        fieldType = QVariant::Int;
-        typeName = QStringLiteral( "integer" );
-      }
-      else if ( csvtTypes[i] == QLatin1String( "long" ) || csvtTypes[i] == QLatin1String( "longlong" ) || csvtTypes[i] == QLatin1String( "int8" ) )
-      {
-        fieldType = QVariant::LongLong; //QVariant doesn't support long
-        typeName = QStringLiteral( "longlong" );
-      }
-      else if ( csvtTypes[i] == QLatin1String( "real" ) || csvtTypes[i] == QLatin1String( "double" ) )
-      {
-        fieldType = QVariant::Double;
-        typeName = QStringLiteral( "double" );
-      }
+      typeName = csvtTypes[i];
     }
-    else if ( i < couldBeInt.size() )
+    else if ( mDetectTypes && i < couldBeInt.size() )
     {
       if ( couldBeInt[i] )
       {
-        fieldType = QVariant::Int;
         typeName = QStringLiteral( "integer" );
       }
       else if ( couldBeLongLong[i] )
       {
-        fieldType = QVariant::LongLong;
         typeName = QStringLiteral( "longlong" );
       }
       else if ( couldBeDouble[i] )
       {
-        fieldType = QVariant::Double;
         typeName = QStringLiteral( "double" );
       }
+    }
+    if ( typeName == QStringLiteral( "integer" ) )
+    {
+      fieldType = QVariant::Int;
+    }
+    else if ( typeName == QStringLiteral( "longlong" ) )
+    {
+      fieldType = QVariant::LongLong;
+    }
+    else if ( typeName == QStringLiteral( "real" ) || typeName == QStringLiteral( "double" ) )
+    {
+      typeName = QStringLiteral( "double" );
+      fieldType = QVariant::Double;
+    }
+    else
+    {
+      typeName = QStringLiteral( "text" );
     }
     attributeFields.append( QgsField( fieldNames[i], fieldType, typeName ) );
   }
@@ -730,7 +734,7 @@ void QgsDelimitedTextProvider::rescanFile() const
   if ( !messages.isEmpty() )
   {
     reportErrors( messages );
-    QgsDebugMsg( "Delimited text source invalid on rescan - missing geometry fields" );
+    QgsDebugMsg( QStringLiteral( "Delimited text source invalid on rescan - missing geometry fields" ) );
     mValid = false;
     return;
   }
@@ -766,7 +770,7 @@ void QgsDelimitedTextProvider::rescanFile() const
         mExtent.combineExtentWith( bbox );
       }
       if ( buildSpatialIndex )
-        mSpatialIndex->insertFeature( f );
+        mSpatialIndex->addFeature( f );
     }
     if ( buildSubsetIndex )
       mSubsetIndex.append( ( quintptr ) f.id() );
@@ -963,7 +967,7 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList &messages, bool s
 
 bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
 {
-  QString nonNullSubset = subset.isNull() ? QLatin1String( "" ) : subset;
+  QString nonNullSubset = subset.isNull() ? QString() : subset;
 
   // If not changing string, then all OK, nothing to do
   if ( nonNullSubset == mSubsetString )
@@ -1025,14 +1029,14 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
     {
       if ( ! mCachedSubsetString.isNull() && mSubsetString == mCachedSubsetString )
       {
-        QgsDebugMsg( QString( "DelimitedText: Resetting cached subset string %1" ).arg( mSubsetString ) );
+        QgsDebugMsg( QStringLiteral( "DelimitedText: Resetting cached subset string %1" ).arg( mSubsetString ) );
         mUseSpatialIndex = mCachedUseSpatialIndex;
         mUseSubsetIndex = mCachedUseSubsetIndex;
         resetCachedSubset();
       }
       else
       {
-        QgsDebugMsg( QString( "DelimitedText: Setting new subset string %1" ).arg( mSubsetString ) );
+        QgsDebugMsg( QStringLiteral( "DelimitedText: Setting new subset string %1" ).arg( mSubsetString ) );
         // Reset the subset index
         rescanFile();
         // Encode the subset string into the data source URI.
@@ -1042,10 +1046,10 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
     else
     {
       // If not already using temporary subset, then cache the current subset
-      QgsDebugMsg( QString( "DelimitedText: Setting temporary subset string %1" ).arg( mSubsetString ) );
+      QgsDebugMsg( QStringLiteral( "DelimitedText: Setting temporary subset string %1" ).arg( mSubsetString ) );
       if ( mCachedSubsetString.isNull() )
       {
-        QgsDebugMsg( QString( "DelimitedText: Caching previous subset %1" ).arg( previousSubset ) );
+        QgsDebugMsg( QStringLiteral( "DelimitedText: Caching previous subset %1" ).arg( previousSubset ) );
         mCachedSubsetString = previousSubset;
         mCachedUseSpatialIndex = mUseSpatialIndex;
         mCachedUseSubsetIndex = mUseSubsetIndex;
@@ -1129,6 +1133,13 @@ QString  QgsDelimitedTextProvider::name() const
 QString  QgsDelimitedTextProvider::description() const
 {
   return TEXT_PROVIDER_DESCRIPTION;
+}
+
+QGISEXTERN QVariantMap decodeUri( const QString &uri )
+{
+  QVariantMap components;
+  components.insert( QStringLiteral( "path" ), QUrl( uri ).toLocalFile() );
+  return components;
 }
 
 /**

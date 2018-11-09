@@ -72,10 +72,6 @@ QgsCustomizationDialog::QgsCustomizationDialog( QWidget * parent, QSettings * se
 
 }
 
-QgsCustomizationDialog::~QgsCustomizationDialog()
-{
-}
-
 QTreeWidgetItem *QgsCustomizationDialog::item( const QString &path, QTreeWidgetItem *widgetItem )
 {
   QString pathCopy = path;
@@ -115,13 +111,13 @@ QTreeWidgetItem *QgsCustomizationDialog::item( const QString &path, QTreeWidgetI
       }
     }
   }
-  QgsDebugMsg( "not found" );
+  QgsDebugMsg( QStringLiteral( "not found" ) );
   return nullptr;
 }
 
 bool QgsCustomizationDialog::itemChecked( const QString &path )
 {
-  QgsDebugMsg( QString( "thePath = %1" ).arg( path ) );
+  QgsDebugMsg( QStringLiteral( "thePath = %1" ).arg( path ) );
   QTreeWidgetItem *myItem = item( path );
   if ( !myItem )
     return true;
@@ -130,7 +126,7 @@ bool QgsCustomizationDialog::itemChecked( const QString &path )
 
 void QgsCustomizationDialog::setItemChecked( const QString &path, bool on )
 {
-  QgsDebugMsg( QString( "thePath = %1 on = %2" ).arg( path ).arg( on ) );
+  QgsDebugMsg( QStringLiteral( "thePath = %1 on = %2" ).arg( path ).arg( on ) );
   QTreeWidgetItem *myItem = item( path );
   if ( !myItem )
     return;
@@ -208,7 +204,7 @@ void QgsCustomizationDialog::ok()
 }
 void QgsCustomizationDialog::apply()
 {
-  QgsDebugMsg( QString( "columnCount = %1" ).arg( treeWidget->columnCount() ) );
+  QgsDebugMsg( QStringLiteral( "columnCount = %1" ).arg( treeWidget->columnCount() ) );
   treeToSettings( mSettings );
   mSettings->setValue( QgsCustomization::instance()->statusPath(), QgsCustomization::User );
   mSettings->sync();
@@ -348,7 +344,7 @@ QTreeWidgetItem *QgsCustomizationDialog::readWidgetsXmlNode( const QDomNode &nod
 {
   QDomElement myElement = node.toElement();
 
-  QString name = myElement.attribute( QStringLiteral( "objectName" ), QLatin1String( "" ) );
+  QString name = myElement.attribute( QStringLiteral( "objectName" ), QString() );
   QStringList data( name );
 
   data << myElement.attribute( QStringLiteral( "label" ), name );
@@ -357,7 +353,7 @@ QTreeWidgetItem *QgsCustomizationDialog::readWidgetsXmlNode( const QDomNode &nod
 
   // It is nice to have icons for each Qt widget class, is it too heavy?
   // There are 47 png files, total 196K in qt/tools/designer/src/components/formeditor/images/
-  QString iconName = myElement.attribute( QStringLiteral( "class" ), QLatin1String( "" ) ).toLower().mid( 1 ) + ".png";
+  QString iconName = myElement.attribute( QStringLiteral( "class" ), QString() ).toLower().mid( 1 ) + ".png";
   QString iconPath = QgsApplication::iconPath( "/customization/" + iconName );
   QgsDebugMsg( "iconPath = " + iconPath );
   if ( QFile::exists( iconPath ) )
@@ -428,7 +424,7 @@ bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
   QgsDebugMsg( "path final = " + path );
   bool on = !itemChecked( path );
 
-  QgsDebugMsg( QString( "on = %1" ).arg( on ) );
+  QgsDebugMsg( QStringLiteral( "on = %1" ).arg( on ) );
 
   setItemChecked( path, on );
   QTreeWidgetItem *myItem = item( path );
@@ -495,7 +491,7 @@ void QgsCustomizationDialog::showHelp()
 
 void QgsCustomization::addTreeItemActions( QTreeWidgetItem *parentItem, const QList<QAction *> &actions )
 {
-  Q_FOREACH ( QAction *action, actions )
+  for ( const QAction *action : actions )
   {
     if ( action->isSeparator() )
     {
@@ -504,27 +500,29 @@ void QgsCustomization::addTreeItemActions( QTreeWidgetItem *parentItem, const QL
     if ( action->menu() )
     {
       // it is a submenu
-      addTreeItemMenu( parentItem, action->menu() );
+      addTreeItemMenu( parentItem, action->menu(), action );
     }
     else
     {
       // it is an ordinary action
       QStringList strs;
       strs << action->objectName() << action->text();
-      QTreeWidgetItem *myItem = new QTreeWidgetItem( parentItem, strs );
-      myItem->setIcon( 0, action->icon() );
-      myItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
-      myItem->setCheckState( 0, Qt::Checked );
+      QTreeWidgetItem *item = new QTreeWidgetItem( parentItem, strs );
+      item->setIcon( 0, action->icon() );
+      item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+      item->setCheckState( 0, Qt::Checked );
     }
   }
 }
 
-void QgsCustomization::addTreeItemMenu( QTreeWidgetItem *parentItem, QMenu *menu )
+void QgsCustomization::addTreeItemMenu( QTreeWidgetItem *parentItem, const QMenu *menu, const QAction *action )
 {
   QStringList menustrs;
   // remove '&' which are used to mark shortcut key
   menustrs << menu->objectName() << menu->title().remove( '&' );
   QTreeWidgetItem *menuItem = new QTreeWidgetItem( parentItem, menustrs );
+  if ( action )
+    menuItem->setIcon( 0, action->icon() );
   menuItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
   menuItem->setCheckState( 0, Qt::Checked );
 
@@ -810,9 +808,9 @@ void QgsCustomization::customizeWidget( QWidget *widget, QEvent *event, QSetting
   if ( !widget->inherits( "QDialog" ) )
     return;
 
-  QgsDebugMsg( QString( "objectName = %1 event type = %2" ).arg( widget->objectName() ).arg( event->type() ) );
+  QgsDebugMsg( QStringLiteral( "objectName = %1 event type = %2" ).arg( widget->objectName() ).arg( event->type() ) );
 
-  QgsDebugMsg( QString( "%1 x %2" ).arg( widget->metaObject()->className(), QDialog::staticMetaObject.className() ) );
+  QgsDebugMsg( QStringLiteral( "%1 x %2" ).arg( widget->metaObject()->className(), QDialog::staticMetaObject.className() ) );
   QString path = QStringLiteral( "/Customization/Widgets/" );
 
   QgsCustomization::customizeWidget( path, widget, settings );
@@ -843,7 +841,7 @@ void QgsCustomization::customizeWidget( const QString &path, QWidget *widget, QS
     QString p = myPath + '/' + w->objectName();
 
     bool on = settings->value( p, true ).toBool();
-    //QgsDebugMsg( QString( "p = %1 on = %2" ).arg( p ).arg( on ) );
+    //QgsDebugMsg( QStringLiteral( "p = %1 on = %2" ).arg( p ).arg( on ) );
     if ( on )
     {
       QgsCustomization::customizeWidget( myPath, w, settings );
@@ -853,13 +851,13 @@ void QgsCustomization::customizeWidget( const QString &path, QWidget *widget, QS
       QLayout *l = widget->layout();
       if ( l )
       {
-        QgsDebugMsg( "remove" );
+        QgsDebugMsg( QStringLiteral( "remove" ) );
         QgsCustomization::removeFromLayout( l, w );
         w->hide();
       }
       else
       {
-        QgsDebugMsg( "hide" );
+        QgsDebugMsg( QStringLiteral( "hide" ) );
         w->hide();
       }
     }
@@ -900,7 +898,7 @@ void QgsCustomization::preNotify( QObject *receiver, QEvent *event, bool *done )
     }
     else if ( widget && event->type() == QEvent::MouseButtonPress )
     {
-      //QgsDebugMsg( "click" );
+      //QgsDebugMsg( QStringLiteral( "click" ) );
       if ( pDialog && pDialog->isVisible() )
       {
         QMouseEvent *e = static_cast<QMouseEvent *>( event );
@@ -916,7 +914,7 @@ void QgsCustomization::preNotify( QObject *receiver, QEvent *event, bool *done )
     if ( pDialog && pDialog->isVisible() )
     {
       QKeyEvent *e = static_cast<QKeyEvent *>( event );
-      //QgsDebugMsg( QString( "key = %1 modifiers = %2" ).arg( e->key() ).arg( e->modifiers() ) );
+      //QgsDebugMsg( QStringLiteral( "key = %1 modifiers = %2" ).arg( e->key() ).arg( e->modifiers() ) );
       if ( e->key() == Qt::Key_M && e->modifiers() == Qt::ControlModifier )
       {
         pDialog->setCatch( !pDialog->catchOn() );
@@ -925,7 +923,7 @@ void QgsCustomization::preNotify( QObject *receiver, QEvent *event, bool *done )
   }
 }
 
-QString QgsCustomization::splashPath()
+QString QgsCustomization::splashPath() const
 {
   if ( isEnabled() )
   {
@@ -945,7 +943,7 @@ void QgsCustomization::loadDefault()
   // Check customization state
   int status = mySettings.value( mStatusPath, QgsCustomization::NotSet ).toInt();
   QgsDebugMsg( "Status path = " + mStatusPath );
-  QgsDebugMsg( QString( "status = %1" ).arg( status ) );
+  QgsDebugMsg( QStringLiteral( "status = %1" ).arg( status ) );
   if ( status == QgsCustomization::User || status == QgsCustomization::Default )
     return;
 
@@ -960,7 +958,7 @@ void QgsCustomization::loadDefault()
 
   QSettings fileSettings( path );
   QStringList keys = fileSettings.allKeys();
-  QgsDebugMsg( QString( "size = %1" ).arg( keys.size() ) );
+  QgsDebugMsg( QStringLiteral( "size = %1" ).arg( keys.size() ) );
   QStringList::const_iterator i;
   for ( i = keys.constBegin(); i != keys.constEnd(); ++i )
   {

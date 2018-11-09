@@ -243,7 +243,7 @@ class CORE_EXPORT QgsRasterFileWriter
     bool writeVRT( const QString &file );
     //add file entry to vrt
     void addToVRT( const QString &filename, int band, int xSize, int ySize, int xOffset, int yOffset );
-    void buildPyramids( const QString &filename );
+    void buildPyramids( const QString &filename, QgsRasterDataProvider *destProviderIn = nullptr );
 
     //! Create provider and datasource for a part image (vrt mode)
     QgsRasterDataProvider *createPartProvider( const QgsRectangle &extent, int nCols, int iterCols, int iterRows,
@@ -275,8 +275,8 @@ class CORE_EXPORT QgsRasterFileWriter
 
     Mode mMode = Raw;
     QString mOutputUrl;
-    QString mOutputProviderKey;
-    QString mOutputFormat;
+    QString mOutputProviderKey = QStringLiteral( "gdal" );
+    QString mOutputFormat = QStringLiteral( "GTiff" );
     QStringList mCreateOptions;
     QgsCoordinateReferenceSystem mOutputCRS;
 
@@ -286,7 +286,7 @@ class CORE_EXPORT QgsRasterFileWriter
     double mMaxTileHeight = 500;
 
     QList< int > mPyramidsList;
-    QString mPyramidsResampling;
+    QString mPyramidsResampling = QStringLiteral( "AVERAGE" );
     QgsRaster::RasterBuildPyramids mBuildPyramidsFlag = QgsRaster::PyramidsFlagNo;
     QgsRaster::RasterPyramidsFormat mPyramidsFormat = QgsRaster::PyramidsGTiff;
     QStringList mPyramidsConfigOptions;

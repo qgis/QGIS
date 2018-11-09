@@ -86,7 +86,7 @@ class RandomSelectionWithinSubsets(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.NUMBER,
                                                        self.tr('Number/percentage of selected features'),
                                                        QgsProcessingParameterNumber.Integer,
-                                                       10, False, 0.0, 999999999999.0))
+                                                       10, False, 0.0))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (stratified random)')))
 
     def name(self):
@@ -129,15 +129,18 @@ class RandomSelectionWithinSubsets(QgisAlgorithm):
                 if feedback.isCanceled():
                     break
 
-                classes[feature.attributes()[index]].append(feature.id())
+                classes[feature[index]].append(feature.id())
                 feedback.setProgress(int(i * total))
 
             selran = []
-            for subset in classes.values():
+            for k, subset in classes.items():
                 if feedback.isCanceled():
                     break
 
                 selValue = value if method != 1 else int(round(value * len(subset), 0))
+                if selValue > len(subset):
+                    selValue = len(subset)
+                    feedback.reportError(self.tr('Subset "{}" is smaller than requested number of features.'.format(k)))
                 selran.extend(random.sample(subset, selValue))
 
             layer.selectByIds(selran)

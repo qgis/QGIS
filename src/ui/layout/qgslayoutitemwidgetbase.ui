@@ -32,7 +32,7 @@
       <enum>Qt::StrongFocus</enum>
      </property>
      <property name="title">
-      <string>Position and size</string>
+      <string>Position and Size</string>
      </property>
      <property name="syncGroup" stdset="0">
       <string notr="true">composeritem</string>

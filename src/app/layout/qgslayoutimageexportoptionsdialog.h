@@ -37,7 +37,7 @@ class QgsLayoutImageExportOptionsDialog: public QDialog, private Ui::QgsLayoutIm
      * \param parent parent widget
      * \param flags window flags
      */
-    QgsLayoutImageExportOptionsDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
+    QgsLayoutImageExportOptionsDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 
     /**
      * Sets the initial resolution displayed in the dialog.

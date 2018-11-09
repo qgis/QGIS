@@ -19,6 +19,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
 #include "qgssettings.h"
+#include "qgsmapmouseevent.h"
 
 #include <QAction>
 #include <QAbstractButton>
@@ -45,7 +46,7 @@ QgsPointXY QgsMapTool::toMapCoordinates( QPoint point )
 QgsPoint QgsMapTool::toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point )
 {
   QgsPointXY result = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPointXY( point.x(), point.y() ) );
-  return QgsPoint( result.x(), result.y() );
+  return QgsPoint( result );
 }
 
 
@@ -88,7 +89,7 @@ void QgsMapTool::activate()
 
   // set cursor (map tools usually set it in constructor)
   mCanvas->setCursor( mCursor );
-  QgsDebugMsg( "Cursor has been set" );
+  QgsDebugMsg( QStringLiteral( "Cursor has been set" ) );
 
   emit activated();
 }
@@ -129,6 +130,11 @@ QAction *QgsMapTool::action()
   return mAction;
 }
 
+bool QgsMapTool::isActive() const
+{
+  return mCanvas && mCanvas->mapTool() == this;
+}
+
 void QgsMapTool::setButton( QAbstractButton *button )
 {
   mButton = button;
@@ -142,6 +148,8 @@ QAbstractButton *QgsMapTool::button()
 void QgsMapTool::setCursor( const QCursor &cursor )
 {
   mCursor = cursor;
+  if ( isActive() )
+    mCanvas->setCursor( mCursor );
 }
 
 

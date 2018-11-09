@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmpromotetomultipart.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -63,6 +64,17 @@ QString QgsPromoteToMultipartAlgorithm::shortHelpString() const
 QgsPromoteToMultipartAlgorithm *QgsPromoteToMultipartAlgorithm::createInstance() const
 {
   return new QgsPromoteToMultipartAlgorithm();
+}
+
+bool QgsPromoteToMultipartAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
+{
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
+  if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
+    return false;
+  return QgsWkbTypes::isMultiType( layer->wkbType() );
 }
 
 QgsWkbTypes::Type QgsPromoteToMultipartAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const

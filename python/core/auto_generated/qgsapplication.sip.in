@@ -143,7 +143,7 @@ for resources in their own datastores e.g. a Qt4 resource bundle.
    be reverted to 'default'.
 %End
 
-    static QString resolvePkgPath( );
+    static QString resolvePkgPath();
 %Docstring
 Calculate the application pkg path
 
@@ -200,7 +200,7 @@ but don't have commit access. *
 %Docstring
 Returns the path to the developers map file.
 The developers map was created by using leaflet framework,
-it shows the doc/contributors.json file.
+it shows the contributors.json file.
 
 .. versionadded:: 2.7
 %End
@@ -791,12 +791,37 @@ Do not include generated variables (like system name, user name etc.)
 .. versionadded:: 3.0
 %End
 
-
     static void setCustomVariable( const QString &name, const QVariant &value );
 %Docstring
 Set a single custom expression variable.
 
 .. versionadded:: 3.0
+%End
+
+    int maxConcurrentConnectionsPerPool() const;
+%Docstring
+The maximum number of concurrent connections per connections pool.
+
+.. note::
+
+   QGIS may in some situations allocate more than this amount
+   of connections to avoid deadlocks.
+
+.. versionadded:: 3.4
+%End
+
+    static void setTranslation( const QString &translation );
+%Docstring
+Set translation
+
+.. versionadded:: 3.4
+%End
+
+    void collectTranslatableObjects( QgsTranslationContext *translationContext );
+%Docstring
+Emits the signal to collect all the strings of .qgs to be included in ts file
+
+.. versionadded:: 3.4
 %End
 
 %If (ANDROID)
@@ -817,6 +842,14 @@ Emitted whenever a custom global variable changes.
     void nullRepresentationChanged();
 %Docstring
 \copydoc nullRepresentation()
+%End
+
+    void requestForTranslatableObjects( QgsTranslationContext *translationContext );
+%Docstring
+Emitted when project strings which require translation are being collected for inclusion in a .ts file.
+In order to register translatable strings, connect to this signal and register the strings within the specified ``translationContext``.
+
+.. versionadded:: 3.4
 %End
 
 };

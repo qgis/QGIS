@@ -19,6 +19,8 @@
 #include "qgsmaptoolcapture.h"
 #include "qgis_app.h"
 
+class QgsFeature;
+
 //! This tool digitizes geometry of new point/line/polygon features on already existing vector layers
 class APP_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
 {

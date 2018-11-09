@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmmultiringconstantbuffer.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -77,6 +78,18 @@ void QgsMultiRingConstantBufferAlgorithm::initParameters( const QVariantMap & )
   addParameter( distance.release() );
 }
 
+bool QgsMultiRingConstantBufferAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
+{
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  if ( !layer )
+    return false;
+
+  if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
+    return false;
+  // Polygons only
+  return layer->wkbType() == QgsWkbTypes::Type::Polygon || layer->wkbType() == QgsWkbTypes::Type::MultiPolygon;
+}
+
 bool QgsMultiRingConstantBufferAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mRingsNumber = parameterAsInt( parameters, QStringLiteral( "RINGS" ), context );
@@ -120,7 +133,7 @@ QgsFeatureList QgsMultiRingConstantBufferAlgorithm::processFeature( const QgsFea
     QgsFeature out;
     currentDistance = i * distance;
     outputGeometry = feature.geometry().buffer( currentDistance, 40 );
-    if ( !outputGeometry )
+    if ( outputGeometry.isNull() )
     {
       feedback->reportError( QObject::tr( "Error calculating buffer for feature %1" ).arg( feature.id() ) );
       continue;

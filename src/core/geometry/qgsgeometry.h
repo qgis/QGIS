@@ -16,6 +16,8 @@ email                : morb at ozemail dot com dot au
 #ifndef QGSGEOMETRY_H
 #define QGSGEOMETRY_H
 
+#include <functional>
+
 #include <QDomDocument>
 #include <QSet>
 #include <QString>
@@ -29,9 +31,9 @@ email                : morb at ozemail dot com dot au
 #include "qgis.h"
 
 #include "qgsabstractgeometry.h"
-#include "qgsfeature.h"
 #include "qgspointxy.h"
 #include "qgspoint.h"
+#include "qgsfeatureid.h"
 
 
 class QgsGeometryEngine;
@@ -98,7 +100,7 @@ struct QgsGeometryPrivate;
  * container class can also be stored inside a QVariant object.
  *
  * The actual geometry representation is stored as a QgsAbstractGeometry within the container, and
- * can be accessed via the geometry() method or set using the setGeometry() method.
+ * can be accessed via the get() method or set using the set() method.
  */
 
 class CORE_EXPORT QgsGeometry
@@ -794,7 +796,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.0
      */
-    bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+    bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false );
 
     /**
      * Returns true if this geometry exactly intersects with a \a rectangle. This test is exact
@@ -1134,12 +1136,16 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry subdivide( int maxNodes = 256 ) const;
 
     /**
-     * Returns interpolated point on line at distance.
+     * Returns an interpolated point on the geometry at the specified \a distance.
+     *
+     * If the original geometry is a polygon type, the boundary of the polygon
+     * will be used during interpolation. If the original geometry is a point
+     * type, a null geometry will be returned.
+     *
+     * If z or m values are present, the output z and m will be interpolated using
+     * the existing vertices' z or m values.
      *
      * If the input is a NULL geometry, the output will also be a NULL geometry.
-     *
-     * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
      *
      * \see lineLocatePoint()
      * \since QGIS 2.0
@@ -1247,6 +1253,14 @@ class CORE_EXPORT QgsGeometry
      * \note precision parameter added in QGIS 2.4
      */
     QString asWkt( int precision = 17 ) const;
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsGeometry: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
     /**
      * Exports the geometry to a GeoJSON string.
@@ -1406,27 +1420,47 @@ class CORE_EXPORT QgsGeometry
      */
     class CORE_EXPORT Error
     {
-        QString message;
-        QgsPointXY location;
-        bool hasLocation = false;
-
       public:
         Error()
-          : message( QStringLiteral( "none" ) )
+          : mMessage( QStringLiteral( "none" ) )
         {}
 
         explicit Error( const QString &m )
-          : message( m )
+          : mMessage( m )
         {}
 
         Error( const QString &m, const QgsPointXY &p )
-          : message( m )
-          , location( p )
-          , hasLocation( true ) {}
+          : mMessage( m )
+          , mLocation( p )
+          , mHasLocation( true ) {}
 
-        QString what() { return message; }
-        QgsPointXY where() { return location; }
-        bool hasWhere() { return hasLocation; }
+        /**
+         * A human readable error message containing details about the error.
+         */
+        QString what() const;
+
+        /**
+         * The coordinates at which the error is located and should be visualized.
+         */
+        QgsPointXY where() const;
+
+        /**
+         * True if the location available from \see where is valid.
+         */
+        bool hasWhere() const;
+
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+        QString str = QStringLiteral( "<QgsGeometry.Error: %1>" ).arg( sipCpp->what() );
+        sipRes = PyUnicode_FromString( str.toUtf8().data() );
+        % End
+#endif
+
+      private:
+        QString mMessage;
+        QgsPointXY mLocation;
+        bool mHasLocation = false;
     };
 
     /**
@@ -1541,6 +1575,22 @@ class CORE_EXPORT QgsGeometry
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) SIP_SKIP;
 
     /**
+     * Transforms the vertices from the geometry in place, applying the \a transform function
+     * to every vertex.
+     *
+     * Depending on the \a transform used, this may result in an invalid geometry.
+     *
+     * Transform functions are not permitted to alter the dimensionality of vertices. If
+     * a transform which adds (or removes) z/m values is desired, first call the corresponding
+     * addZValue() or addMValue() function to change the geometry's dimensionality and then
+     * transform.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.4
+     */
+    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) SIP_SKIP;
+
+    /**
      * Construct geometry from a QPointF
      * \param point source QPointF
      * \since QGIS 2.7
@@ -1630,7 +1680,7 @@ class CORE_EXPORT QgsGeometry
      * tolerance
      * \since QGIS 2.9
      */
-    static bool compare( PyObject *obj1, PyObject *obj2, double epsilon = 4 * DBL_EPSILON );
+    static bool compare( PyObject *obj1, PyObject *obj2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
     % MethodCode
     {
       sipRes = false;
@@ -1745,7 +1795,7 @@ class CORE_EXPORT QgsGeometry
      * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
      * \since QGIS 2.9
      */
-    QgsGeometry smooth( const unsigned int iterations = 1, const double offset = 0.25,
+    QgsGeometry smooth( unsigned int iterations = 1, double offset = 0.25,
                         double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
 
     /**
@@ -1772,13 +1822,6 @@ class CORE_EXPORT QgsGeometry
     {
       return QVariant::fromValue( *this );
     }
-
-    /**
-     * Returns true if the geometry is non empty (ie, isNull() returns false),
-     * or false if it is an empty, uninitialized geometry (ie, isNull() returns true).
-     * \since QGIS 3.0
-     */
-    operator bool() const;
 
   private:
 
@@ -1820,7 +1863,7 @@ class CORE_EXPORT QgsGeometry
      * \param minimumDistance minimum segment length to apply smoothing to
      * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
     */
-    std::unique_ptr< QgsLineString > smoothLine( const QgsLineString &line, const unsigned int iterations = 1, const double offset = 0.25,
+    std::unique_ptr< QgsLineString > smoothLine( const QgsLineString &line, unsigned int iterations = 1, double offset = 0.25,
         double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
     /**
@@ -1834,7 +1877,7 @@ class CORE_EXPORT QgsGeometry
      * \param minimumDistance minimum segment length to apply smoothing to
      * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
     */
-    std::unique_ptr< QgsPolygon > smoothPolygon( const QgsPolygon &polygon, const unsigned int iterations = 1, const double offset = 0.25,
+    std::unique_ptr< QgsPolygon > smoothPolygon( const QgsPolygon &polygon, unsigned int iterations = 1, double offset = 0.25,
         double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
 

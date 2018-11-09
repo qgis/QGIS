@@ -128,7 +128,7 @@ namespace QgsWfs
                                             const QString &version, const QgsServerRequest &request );
 
   } // namespace v1_0_0
-} // samespace QgsWfs
+} // namespace QgsWfs
 
 #endif
 

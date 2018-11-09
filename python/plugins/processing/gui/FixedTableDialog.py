@@ -28,6 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 import warnings
 
+from qgis.gui import QgsGui
+
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog, QPushButton, QAbstractItemView, QDialogButtonBox
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
@@ -43,8 +45,16 @@ with warnings.catch_warnings():
 class FixedTableDialog(BASE, WIDGET):
 
     def __init__(self, param, table):
-        super(FixedTableDialog, self).__init__(None)
+        """
+        Constructor for FixedTableDialog
+        :param param: linked processing parameter
+        :param table: initial table contents - squashed to 1-dimensional!
+        """
+        super().__init__(None)
+
         self.setupUi(self)
+
+        QgsGui.instance().enableAutoGeometryRestore(self)
 
         self.tblView.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tblView.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -76,27 +86,27 @@ class FixedTableDialog(BASE, WIDGET):
 
     def populateTable(self, table):
         cols = len(self.param.headers())
-        rows = len(table)
+        rows = len(table) // cols
         model = QStandardItemModel(rows, cols)
 
         # Set headers
         model.setHorizontalHeaderLabels(self.param.headers())
 
         # Populate table
-        for i in range(rows):
-            for j in range(cols):
-                item = QStandardItem(str(table[i][j]))
-                model.setItem(i, j, item)
+        for row in range(rows):
+            for col in range(cols):
+                item = QStandardItem(str(table[row * cols + col]))
+                model.setItem(row, col, item)
         self.tblView.setModel(model)
 
     def accept(self):
         cols = self.tblView.model().columnCount()
         rows = self.tblView.model().rowCount()
+        # Table MUST BE 1-dimensional to match core QgsProcessingParameterMatrix expectations
         self.rettable = []
-        for i in range(rows):
-            self.rettable.append(list())
-            for j in range(cols):
-                self.rettable[i].append(str(self.tblView.model().item(i, j).text()))
+        for row in range(rows):
+            for col in range(cols):
+                self.rettable.append(str(self.tblView.model().item(row, col).text()))
         QDialog.accept(self)
 
     def reject(self):

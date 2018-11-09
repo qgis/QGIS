@@ -14,6 +14,12 @@
  ***************************************************************************/
 #include "qgsreadwritecontext.h"
 
+QgsReadWriteContext::QgsReadWriteContext()
+  : mProjectTranslator( &mDefaultTranslator )
+{
+
+}
+
 QgsReadWriteContext::~QgsReadWriteContext()
 {
   // be sure that categories have been emptied
@@ -39,7 +45,7 @@ QgsReadWriteContextCategoryPopper QgsReadWriteContext::enterCategory( const QStr
 {
   QString message = category;
   if ( !details.isEmpty() )
-    message.append( QString( " :: %1" ).arg( details ) );
+    message.append( QStringLiteral( " :: %1" ).arg( details ) );
   mCategories.push_back( message );
   return QgsReadWriteContextCategoryPopper( *this );
 }
@@ -50,9 +56,22 @@ void QgsReadWriteContext::leaveCategory()
     mCategories.pop_back();
 }
 
+void QgsReadWriteContext::setProjectTranslator( QgsProjectTranslator *projectTranslator )
+{
+  mProjectTranslator = projectTranslator;
+}
+
 QList<QgsReadWriteContext::ReadWriteMessage > QgsReadWriteContext::takeMessages()
 {
   QList<QgsReadWriteContext::ReadWriteMessage > messages = mMessages;
   mMessages.clear();
   return messages;
+}
+
+QString QgsReadWriteContext::DefaultTranslator::translate( const QString &context, const QString &sourceText, const char *disambiguation, int n ) const
+{
+  Q_UNUSED( context );
+  Q_UNUSED( disambiguation );
+  Q_UNUSED( n );
+  return sourceText;
 }

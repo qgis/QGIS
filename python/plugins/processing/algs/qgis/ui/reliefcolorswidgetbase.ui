@@ -41,7 +41,7 @@
         <string>Add row</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -51,7 +51,7 @@
         <string>Remove row</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -61,7 +61,7 @@
         <string>Move up</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -71,7 +71,7 @@
         <string>Move down</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -94,7 +94,7 @@
         <string>Load colors from file</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -104,7 +104,7 @@
         <string>Save colors to file</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -114,7 +114,7 @@
         <string>Generate color table automatically</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>

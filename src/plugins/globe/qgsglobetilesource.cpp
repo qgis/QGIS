@@ -155,7 +155,7 @@ void QgsGlobeTileUpdateManager::addTile( QgsGlobeTileImage *tile )
 #ifdef GLOBE_SHOW_TILE_STATS
     QgsGlobeTileStatistics::instance()->updateQueueTileCount( mTileQueue.size() );
 #endif
-    qSort( mTileQueue.begin(), mTileQueue.end(), QgsGlobeTileImage::lodSort );
+    std::sort( mTileQueue.begin(), mTileQueue.end(), QgsGlobeTileImage::lodSort );
   }
   emit startRendering();
 }

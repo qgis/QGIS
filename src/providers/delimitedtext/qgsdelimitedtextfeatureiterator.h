@@ -26,7 +26,6 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider *p );
-    ~QgsDelimitedTextFeatureSource() override;
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 

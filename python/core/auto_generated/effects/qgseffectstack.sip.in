@@ -93,7 +93,7 @@ Appends an effect to the end of the stack.
 .. seealso:: :py:func:`insertEffect`
 %End
 
-    bool insertEffect( const int index, QgsPaintEffect *effect /Transfer/ );
+    bool insertEffect( int index, QgsPaintEffect *effect /Transfer/ );
 %Docstring
 Inserts an effect at a specified index within the stack.
 
@@ -104,7 +104,7 @@ Inserts an effect at a specified index within the stack.
 .. seealso:: :py:func:`appendEffect`
 %End
 
-    bool changeEffect( const int index, QgsPaintEffect *effect /Transfer/ );
+    bool changeEffect( int index, QgsPaintEffect *effect /Transfer/ );
 %Docstring
 Replaces the effect at a specified position within the stack.
 
@@ -113,7 +113,7 @@ Replaces the effect at a specified position within the stack.
                transferred to the stack object.
 %End
 
-    QgsPaintEffect *takeEffect( const int index /TransferBack/ );
+    QgsPaintEffect *takeEffect( int index /TransferBack/ );
 %Docstring
 Removes an effect from the stack and returns a pointer to it.
 

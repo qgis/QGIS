@@ -41,7 +41,7 @@
       <item>
        <widget class="QPushButton" name="mDatabaseButton">
         <property name="text">
-         <string>Browse...</string>
+         <string>Browse…</string>
         </property>
        </widget>
       </item>

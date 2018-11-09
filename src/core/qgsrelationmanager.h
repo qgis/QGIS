@@ -59,6 +59,8 @@ class CORE_EXPORT QgsRelationManager : public QObject
 
     /**
      * Add a relation.
+     * Invalid relations are added only if both referencing layer and referenced
+     * layer exist.
      *
      * \param relation The relation to add.
      */
@@ -141,8 +143,15 @@ class CORE_EXPORT QgsRelationManager : public QObject
      */
     void changed();
 
+  public slots:
+
+    /**
+     * Updates relations status
+     */
+    void updateRelationsStatus();
+
   private slots:
-    void readProject( const QDomDocument &doc );
+    void readProject( const QDomDocument &doc, QgsReadWriteContext &context );
     void writeProject( QDomDocument &doc );
     void layersRemoved( const QStringList &layers );
 

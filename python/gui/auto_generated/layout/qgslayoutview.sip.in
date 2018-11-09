@@ -22,6 +22,12 @@ QgsLayoutView manages the layout interaction tools and mouse/key events.
 %TypeHeaderCode
 #include "qgslayoutview.h"
 %End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsLayoutView *>( sipCpp ) )
+      sipType = sipType_QgsLayoutView;
+    else
+      sipType = NULL;
+%End
   public:
 
     enum ClipboardOperation

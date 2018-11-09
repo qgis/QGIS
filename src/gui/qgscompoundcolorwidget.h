@@ -66,7 +66,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      * \param allowOpacity set to false to disable opacity modification
      * \since QGIS 3.0
      */
-    void setAllowOpacity( const bool allowOpacity );
+    void setAllowOpacity( bool allowOpacity );
 
     /**
      * Sets whether the widget's color has been "discarded" and the selected color should not
@@ -194,7 +194,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      * \param takeSample set to true to actually sample the color, false to just cancel
      * the color picking operation
      */
-    void stopPicking( QPoint eventPos, const bool takeSample = true );
+    void stopPicking( QPoint eventPos, bool takeSample = true );
 
     /**
      * Returns the average color from the pixels in an image

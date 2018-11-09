@@ -20,8 +20,9 @@
 
 #include <QEvent>
 #include <QString>
-#include <QRegExp>
 #include <QMetaType>
+#include <QMap>
+#include <QMetaEnum>
 #include <QVariant>
 #include <QDateTime>
 #include <QDate>
@@ -237,9 +238,35 @@ CORE_EXPORT uint qHash( const QVariant &variant );
 inline QString qgsDoubleToString( double a, int precision = 17 )
 {
   if ( precision )
-    return QString::number( a, 'f', precision ).remove( QRegExp( "\\.?0+$" ) );
+  {
+    QString str = QString::number( a, 'f', precision );
+    if ( str.contains( QLatin1Char( '.' ) ) )
+    {
+      // remove ending 0s
+      int idx = str.length() - 1;
+      while ( str.at( idx ) == '0' && idx > 1 )
+      {
+        idx--;
+      }
+      if ( idx < str.length() - 1 )
+        str.truncate( str.at( idx ) == '.' ? idx : idx + 1 );
+    }
+    return str;
+  }
   else
-    return QString::number( a, 'f', precision );
+  {
+    // avoid printing -0
+    // see https://bugreports.qt.io/browse/QTBUG-71439
+    const QString str( QString::number( a, 'f', precision ) );
+    if ( str == QLatin1String( "-0" ) )
+    {
+      return QLatin1String( "0" );
+    }
+    else
+    {
+      return str;
+    }
+  }
 }
 
 /**
@@ -248,7 +275,7 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
  * \param b second double
  * \param epsilon maximum difference allowable between doubles
  */
-inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
+inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() )
 {
   const double diff = a - b;
   return diff > -epsilon && diff <= epsilon;
@@ -289,8 +316,8 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
  */
 inline double qgsRound( double number, double places )
 {
-  int scaleFactor = std::pow( 10, places );
-  return static_cast<double>( static_cast<qlonglong>( number * scaleFactor + 0.5 ) ) / scaleFactor;
+  double scaleFactor = std::pow( 10.0, places );
+  return std::trunc( number * scaleFactor + 0.5 ) / scaleFactor;
 }
 
 
@@ -388,6 +415,24 @@ namespace qgis
 #endif
 
 /**
+ * Returns a map of all enum entries.
+ * The map has the enum values (int) as keys and the enum keys (QString) as values.
+ * The enum must have been declared using Q_ENUM or Q_FLAG.
+ */
+template<class T> const QMap<T, QString> qgsEnumMap() SIP_SKIP
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+  Q_ASSERT( metaEnum.isValid() );
+  QMap<T, QString> enumMap;
+  for ( int idx = 0; idx < metaEnum.keyCount(); ++idx )
+  {
+    const char *enumKey = metaEnum.key( idx );
+    enumMap.insert( static_cast<T>( metaEnum.keyToValue( enumKey ) ), QString( enumKey ) );
+  }
+  return enumMap;
+};
+
+/**
  * Converts a string to a double in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * \param string string to convert
@@ -410,12 +455,36 @@ CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
 CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
 
 /**
+ * Converts a string to an qlonglong in a permissive way, e.g., allowing for incorrect
+ * numbers of digits between thousand separators
+ * \param string string to convert
+ * \param ok will be set to true if conversion was successful
+ * \returns string converted to int if possible
+ * \see permissiveToInt
+ * \since QGIS 3.4
+ */
+CORE_EXPORT qlonglong qgsPermissiveToLongLong( QString string, bool &ok );
+
+/**
  * Compares two QVariant values and returns whether the first is less than the second.
  * Useful for sorting lists of variants, correctly handling sorting of the various
  * QVariant data types (such as strings, numeric values, dates and times)
+ *
+ * Invalid < NULL < Values
+ *
  * \see qgsVariantGreaterThan()
  */
 CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
+
+/**
+ * Compares two QVariant values and returns whether they are equal, NULL values are treated as equal.
+ *
+ * \param lhs first value
+ * \param rhs second value
+ * \return true if values are equal
+ */
+CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
+
 
 /**
  * Compares two QVariant values and returns whether the first is greater than the second.
@@ -563,7 +632,7 @@ typedef unsigned long long qgssize;
 #if __cplusplus >= 201500
 #define FALLTHROUGH [[fallthrough]];
 #elif defined(__clang__)
-#define FALLTHROUGH //[[clang::fallthrough]]
+#define FALLTHROUGH [[clang::fallthrough]];
 #elif defined(__GNUC__) && __GNUC__ >= 7
 #define FALLTHROUGH [[gnu::fallthrough]];
 #else
@@ -605,6 +674,8 @@ typedef unsigned long long qgssize;
 #define MAYBE_UNUSED
 #endif
 
-
+#ifndef FINAL
+#define FINAL final
+#endif
 
 

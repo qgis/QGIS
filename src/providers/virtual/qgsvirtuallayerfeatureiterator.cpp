@@ -65,7 +65,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     QStringList wheres;
     QString offset;
     QString subset = mSource->mSubset;
-    if ( !subset.isNull() )
+    if ( !subset.isEmpty() )
     {
       wheres << subset;
     }
@@ -114,6 +114,14 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
           offset = QStringLiteral( " LIMIT 1 OFFSET %1" ).arg( request.filterFid() );
         else // never return a feature if the id is negative
           offset = QStringLiteral( " LIMIT 0" );
+      }
+      else if ( !mFilterRect.isNull() &&
+                mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+      {
+        // if an exact intersection is requested, prepare the geometry to intersect
+        QgsGeometry rectGeom = QgsGeometry::fromRect( mFilterRect );
+        mRectEngine.reset( QgsGeometry::createGeometryEngine( rectGeom.constGet() ) );
+        mRectEngine->prepareGeometry();
       }
     }
 
@@ -246,61 +254,85 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
   {
     return false;
   }
-  if ( mQuery->step() != SQLITE_ROW )
-  {
-    return false;
-  }
 
-  feature.setFields( mSource->mFields, /* init */ true );
 
-  if ( mSource->mDefinition.uid().isNull() &&
-       mRequest.filterType() != QgsFeatureRequest::FilterFid )
+  bool skipFeature = false;
+  do
   {
-    // no id column => autoincrement
-    feature.setId( mFid++ );
-  }
-  else
-  {
-    // first column: uid
-    feature.setId( mQuery->columnInt64( 0 ) );
-  }
-
-  int n = mQuery->columnCount();
-  int i = 0;
-  Q_FOREACH ( int idx, mAttributes )
-  {
-    int type = mQuery->columnType( i + 1 );
-    switch ( type )
+    if ( mQuery->step() != SQLITE_ROW )
     {
-      case SQLITE_INTEGER:
-        feature.setAttribute( idx, mQuery->columnInt64( i + 1 ) );
-        break;
-      case SQLITE_FLOAT:
-        feature.setAttribute( idx, mQuery->columnDouble( i + 1 ) );
-        break;
-      case SQLITE_TEXT:
-      default:
-        feature.setAttribute( idx, mQuery->columnText( i + 1 ) );
-        break;
-    };
-    i++;
-  }
-  if ( n > mAttributes.size() + 1 )
-  {
-    // geometry field
-    QByteArray blob( mQuery->columnBlob( n - 1 ) );
-    if ( blob.size() > 0 )
+      return false;
+    }
+
+    feature.setFields( mSource->mFields, /* init */ true );
+
+    if ( mSource->mDefinition.uid().isNull() &&
+         mRequest.filterType() != QgsFeatureRequest::FilterFid )
     {
-      feature.setGeometry( spatialiteBlobToQgsGeometry( blob.constData(), blob.size() ) );
+      // no id column => autoincrement
+      feature.setId( mFid++ );
     }
     else
     {
-      feature.clearGeometry();
+      // first column: uid
+      feature.setId( mQuery->columnInt64( 0 ) );
+    }
+
+    int n = mQuery->columnCount();
+    int i = 0;
+    Q_FOREACH ( int idx, mAttributes )
+    {
+      int type = mQuery->columnType( i + 1 );
+      switch ( type )
+      {
+        case SQLITE_INTEGER:
+          feature.setAttribute( idx, mQuery->columnInt64( i + 1 ) );
+          break;
+        case SQLITE_FLOAT:
+          feature.setAttribute( idx, mQuery->columnDouble( i + 1 ) );
+          break;
+        case SQLITE_TEXT:
+        default:
+          feature.setAttribute( idx, mQuery->columnText( i + 1 ) );
+          break;
+      };
+      i++;
+    }
+    if ( n > mAttributes.size() + 1 )
+    {
+      // geometry field
+      QByteArray blob( mQuery->columnBlob( n - 1 ) );
+      if ( blob.size() > 0 )
+      {
+        feature.setGeometry( spatialiteBlobToQgsGeometry( blob.constData(), blob.size() ) );
+      }
+      else
+      {
+        feature.clearGeometry();
+      }
+    }
+
+    feature.setValid( true );
+    geometryToDestinationCrs( feature, mTransform );
+
+    // if the FilterRect has not been applied on the query
+    // apply it here by skipping features until they intersect
+    if ( mSource->mDefinition.uid().isNull() && feature.hasGeometry() && mSource->mDefinition.hasDefinedGeometry() && !mFilterRect.isNull() )
+    {
+      if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+      {
+        // using exact test when checking for intersection
+        skipFeature = !mRectEngine->intersects( feature.geometry().constGet() );
+      }
+      else
+      {
+        // check just bounding box against rect when not using intersection
+        skipFeature = !feature.geometry().boundingBox().intersects( mFilterRect );
+      }
     }
   }
+  while ( skipFeature );
 
-  feature.setValid( true );
-  geometryToDestinationCrs( feature, mTransform );
   return true;
 }
 

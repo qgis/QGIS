@@ -147,7 +147,7 @@ void QgsAuthImportCertDialog::validateCertificates()
 {
   mCerts.clear();
   teValidation->clear();
-  teValidation->setStyleSheet( QLatin1String( "" ) );
+  teValidation->setStyleSheet( QString() );
 
   bool valid = false;
   QList<QSslCertificate> certs;

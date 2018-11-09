@@ -53,7 +53,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     QVariant val = index.model()->data( index.model()->sibling( index.row(), QgsSnappingLayerTreeModel::UnitsColumn, index ), Qt::UserRole );
     if ( val.isValid() )
     {
-      QgsTolerance::UnitType units = ( QgsTolerance::UnitType )val.toInt();
+      QgsTolerance::UnitType units = static_cast<QgsTolerance::UnitType>( val.toInt() );
       if ( units == QgsTolerance::Pixels )
       {
         w->setDecimals( 0 );
@@ -90,7 +90,7 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
 
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn )
   {
-    QgsSnappingConfig::SnappingType type = ( QgsSnappingConfig::SnappingType )val.toInt();
+    QgsSnappingConfig::SnappingType type = static_cast<QgsSnappingConfig::SnappingType>( val.toInt() );
     QComboBox *cb = qobject_cast<QComboBox *>( editor );
     if ( cb )
     {
@@ -107,7 +107,7 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::UnitsColumn )
   {
-    QgsTolerance::UnitType units = ( QgsTolerance::UnitType )val.toInt();
+    QgsTolerance::UnitType units = static_cast<QgsTolerance::UnitType>( val.toInt() );
     QComboBox *w = qobject_cast<QComboBox *>( editor );
     if ( w )
     {
@@ -229,6 +229,15 @@ QgsVectorLayer *QgsSnappingLayerTreeModel::vectorLayer( const QModelIndex &idx )
   return qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
 }
 
+void QgsSnappingLayerTreeModel::setFilterText( const QString &filterText )
+{
+  if ( filterText == mFilterText )
+    return;
+
+  mFilterText = filterText;
+  invalidateFilter();
+}
+
 void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
 {
   const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> oldSettings = mIndividualLayerSettings;
@@ -317,7 +326,7 @@ bool QgsSnappingLayerTreeModel::nodeShown( QgsLayerTreeNode *node ) const
   else
   {
     QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
-    return layer && layer->isSpatial();
+    return layer && layer->isSpatial() && ( mFilterText.isEmpty() || layer->name().contains( mFilterText, Qt::CaseInsensitive ) );
   }
 }
 
@@ -441,8 +450,6 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
             return tr( "vertex and segment" );
           case QgsSnappingConfig::Segment:
             return tr( "segment" );
-          default:
-            return tr( "N/A" );
         }
       }
 
@@ -537,12 +544,13 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
         else if ( value.toInt() == Qt::Unchecked )
           ls.setEnabled( false );
         else
-          Q_ASSERT( "expected checked or unchecked" );
+          Q_ASSERT( false ); // expected checked or unchecked
 
         QgsSnappingConfig config = mProject->snappingConfig();
         config.setIndividualLayerSettings( vl, ls );
         mProject->setSnappingConfig( config );
       }
+      emit dataChanged( index, index );
       return true;
     }
 
@@ -561,10 +569,11 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       if ( !ls.valid() )
         return false;
 
-      ls.setType( ( QgsSnappingConfig::SnappingType )value.toInt() );
+      ls.setType( static_cast<QgsSnappingConfig::SnappingType>( value.toInt() ) );
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );
+      emit dataChanged( index, index );
       return true;
     }
   }
@@ -585,6 +594,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );
+      emit dataChanged( index, index );
       return true;
     }
   }
@@ -601,10 +611,11 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       if ( !ls.valid() )
         return false;
 
-      ls.setUnits( ( QgsTolerance::UnitType )value.toInt() );
+      ls.setUnits( static_cast<QgsTolerance::UnitType>( value.toInt() ) );
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );
+      emit dataChanged( index, index );
       return true;
     }
   }
@@ -625,6 +636,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
         avoidIntersectionsList.removeAll( vl );
 
       mProject->setAvoidIntersectionsLayers( avoidIntersectionsList );
+      emit dataChanged( index, index );
       return true;
     }
   }

@@ -2,9 +2,9 @@
 Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="utf-8"?>
-<OWSContext xmlns:ogc="http://www.opengis.net/ogc" version="0.3.1" xmlns:context="http://www.opengis.net/context" xmlns="http://www.opengis.net/ows-context" xmlns:xal="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ows-context="http://www.opengis.net/ows-context" xmlns:sld="http://www.opengis.net/sld" xmlns:gml="http://www.opengis.net/gml" id="ows-context-test_project" xmlns:ows="http://www.opengis.net/ows" xmlns:ns9="http://www.w3.org/2005/Atom" xmlns:ins="http://www.inspire.org">
+<OWSContext xmlns:gml="http://www.opengis.net/gml" xmlns:context="http://www.opengis.net/context" xmlns:ows="http://www.opengis.net/ows" xmlns="http://www.opengis.net/ows-context" xmlns:ins="http://www.inspire.org" id="ows-context-test_project" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows-context="http://www.opengis.net/ows-context" xmlns:ns9="http://www.w3.org/2005/Atom" xmlns:kml="http://www.opengis.net/kml/2.2" version="0.3.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sld="http://www.opengis.net/sld" xmlns:xal="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0">
  <General>
-  <Window width="800" height="600"/>
+  <Window height="600" width="800"/>
   <ows:Title>QGIS TestProject</ows:Title>
   <ows:Abstract><![CDATA[Some UTF8 text èòù]]></ows:Abstract>
   <ows:BoundingBox crs="EPSG:4326">
@@ -13,13 +13,53 @@ Content-Type: text/xml; charset=utf-8
   </ows:BoundingBox>
  </General>
  <ResourceList>
+  <Layer group="groupwithoutshortname" hidden="true" queryable="false" id="testlayer3" name="testlayer3" opacity="1">
+   <ows:Title>testlayer3</ows:Title>
+   <ows:OutputFormat>image/png</ows:OutputFormat>
+   <Server default="true" service="urn:ogc:serviceType:WMS" version="1.3.0">
+    <OnlineResource xlink:href="https://www.qgis.org/?*****"/>
+   </Server>
+   <StyleList>
+    <Style current="true">
+     <Name>default</Name>
+     <Title>default</Title>
+    </Style>
+   </StyleList>
+  </Layer>
+  <Layer group="groupwithshortname" hidden="true" queryable="true" id="testlayer2" name="testlayer2" opacity="1">
+   <ows:Title>testlayer2</ows:Title>
+   <ows:OutputFormat>image/png</ows:OutputFormat>
+   <Server default="true" service="urn:ogc:serviceType:WMS" version="1.3.0">
+    <OnlineResource xlink:href="https://www.qgis.org/?*****"/>
+   </Server>
+   <StyleList>
+    <Style current="true">
+     <Name>default</Name>
+     <Title>default</Title>
+    </Style>
+   </StyleList>
+  </Layer>
   <Layer hidden="true" queryable="true" id="testlayer_èé" name="testlayer èé" opacity="1">
    <ows:Title>A test vector layer</ows:Title>
    <ows:OutputFormat>image/png</ows:OutputFormat>
-   <Server version="1.3.0" default="true" service="urn:ogc:serviceType:WMS">
+   <Server default="true" service="urn:ogc:serviceType:WMS" version="1.3.0">
     <OnlineResource xlink:href="https://www.qgis.org/?*****"/>
    </Server>
    <ows:Abstract>A test vector layer with unicode òà</ows:Abstract>
+   <StyleList>
+    <Style current="true">
+     <Name>default</Name>
+     <Title>default</Title>
+    </Style>
+   </StyleList>
+  </Layer>
+  <Layer hidden="true" queryable="true" id="layer_with_short_name" name="layer_with_short_name" opacity="1">
+   <ows:Title>A Layer with a short name</ows:Title>
+   <ows:OutputFormat>image/png</ows:OutputFormat>
+   <Server default="true" service="urn:ogc:serviceType:WMS" version="1.3.0">
+    <OnlineResource xlink:href="https://www.qgis.org/?*****"/>
+   </Server>
+   <ows:Abstract>A Layer with an abstract</ows:Abstract>
    <StyleList>
     <Style current="true">
      <Name>default</Name>

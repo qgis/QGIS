@@ -71,8 +71,6 @@ Returns the vector layer associated with the widget.
     void addSymbolToStyle();
     void saveSymbol();
 
-    void symbolAddedToStyle( const QString &name, QgsSymbol *symbol );
-
     void populateGroups();
 %Docstring
 Pupulates the groups combo box with available tags and smartgroups

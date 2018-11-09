@@ -45,6 +45,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
       FlagUseAdvancedEffects = 1 << 4, //!< Enable advanced effects such as blend modes.
       FlagForceVectorOutput = 1 << 5, //!< Force output in vector format where possible, even if items require rasterization to keep their correct appearance.
       FlagHideCoverageLayer = 1 << 6, //!< Hide coverage layer in outputs
+      FlagDrawSelection = 1 << 7, //!< Draw selection
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -59,7 +60,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see flags()
      * \see testFlag()
      */
-    void setFlags( const QgsLayoutRenderContext::Flags flags );
+    void setFlags( QgsLayoutRenderContext::Flags flags );
 
     /**
      * Enables or disables a particular rendering \a flag for the layout. Other existing
@@ -68,7 +69,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see flags()
      * \see testFlag()
      */
-    void setFlag( const QgsLayoutRenderContext::Flag flag, const bool on = true );
+    void setFlag( QgsLayoutRenderContext::Flag flag, bool on = true );
 
     /**
      * Returns the current combination of flags used for rendering the layout.
@@ -84,7 +85,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see setFlag()
      * \see flags()
      */
-    bool testFlag( const Flag flag ) const;
+    bool testFlag( Flag flag ) const;
 
     /**
      * Returns the combination of render context flags matched to the layout context's settings.
@@ -103,6 +104,20 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see setDpi()
      */
     double dpi() const;
+
+    /**
+     * Sets color that is used for drawing of selected vector features
+     * \see selectionColor()
+     * \since QGIS 3.4
+     */
+    void setSelectionColor( const QColor &color ) { mSelectionColor = color; }
+
+    /**
+     * Gets color that is used for drawing of selected vector features
+     * \see setSelectionColor()
+     * \since QGIS 3.4
+     */
+    QColor selectionColor() const { return mSelectionColor; }
 
     /**
      * Returns the layout measurement converter to be used in the layout. This converter is used
@@ -205,6 +220,8 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     QgsLayout *mLayout = nullptr;
 
     int mCurrentExportLayer = -1;
+
+    QColor mSelectionColor = Qt::yellow;
 
     QgsLayoutMeasurementConverter mMeasurementConverter;
 

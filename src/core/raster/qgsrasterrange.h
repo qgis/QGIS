@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 #include <QList>
 
 class QgsRasterRange;
@@ -35,41 +36,126 @@ class CORE_EXPORT QgsRasterRange
 {
   public:
 
-    /**
-     * \brief Constructor.
-     */
-    QgsRasterRange();
+    //! Handling for min and max bounds
+    enum BoundsType
+    {
+      IncludeMinAndMax = 0, //!< Min and max values are inclusive
+      IncludeMax, //!< Include the max value, but not the min value, e.g. min < value <= max
+      IncludeMin, //!< Include the min value, but not the max value, e.g. min <= value < max
+      Exclusive, //!< Don't include either the min or max value, e.g. min < value < max
+    };
 
     /**
-     * \brief Constructor
-     *  \param min minimum value
-     *  \param max max value
+     * Default constructor, both min and max value for the range will be set to NaN.
      */
-    QgsRasterRange( double min, double max );
+    QgsRasterRange() = default;
 
+    /**
+     * Constructor for a range with the given \a min and \a max values.
+     *
+     * The \a bounds argument dictates how the min and max value themselves
+     * will be handled by the range.
+     */
+    QgsRasterRange( double min, double max, BoundsType bounds = IncludeMinAndMax );
+
+    /**
+     * Returns the minimum value for the range.
+     * \see setMin()
+     */
     double min() const { return mMin; }
+
+    /**
+     * Returns the maximum value for the range.
+     * \see setMax()
+     */
     double max() const { return mMax; }
 
+    /**
+     * Returns the bounds type for the range, which specifies
+     * whether or not the min and max values themselves are included
+     * in the range.
+     * \see setBounds()
+     * \since QGIS 3.2
+     */
+    BoundsType bounds() const { return mType; }
+
+    /**
+     * Sets the minimum value for the range.
+     * \see min()
+     */
     double setMin( double min ) { return mMin = min; }
+
+    /**
+     * Sets the maximum value for the range.
+     * \see max()
+     */
     double setMax( double max ) { return mMax = max; }
 
-    inline bool operator==( QgsRasterRange o ) const
+    /**
+     * Sets the bounds \a type for the range, which specifies
+     * whether or not the min and max values themselves are included
+     * in the range.
+     * \see bounds()
+     * \since QGIS 3.2
+     */
+    void setBounds( BoundsType type ) { mType = type; }
+
+    inline bool operator==( const QgsRasterRange &o ) const
     {
-      return qgsDoubleNear( mMin, o.mMin ) && qgsDoubleNear( mMax, o.mMax );
+      return ( ( std::isnan( mMin ) && std::isnan( o.mMin ) ) || qgsDoubleNear( mMin, o.mMin ) )
+             && ( ( std::isnan( mMax ) && std::isnan( o.mMax ) ) || qgsDoubleNear( mMax, o.mMax ) )
+             && mType == o.mType;
     }
 
     /**
-     * \brief Test if value is within the list of ranges
+     * Returns true if this range contains the specified \a value.
+     * \since QGIS 3.2
+     */
+    bool contains( double value ) const
+    {
+      return ( value > mMin
+               || ( !std::isnan( mMin ) && qgsDoubleNear( value, mMin ) && ( mType == IncludeMinAndMax || mType == IncludeMin ) )
+               || std::isnan( mMin ) )
+             &&
+             ( value < mMax
+               || ( !std::isnan( mMax ) && qgsDoubleNear( value, mMax ) && ( mType == IncludeMinAndMax || mType == IncludeMax ) )
+               || std::isnan( mMax ) );
+    }
+
+    /**
+     * \brief Tests if a \a value is within the list of ranges
      *  \param value value
      *  \param rangeList list of ranges
      *  \returns true if value is in at least one of ranges
-     *  \note not available in Python bindings
      */
-    static bool contains( double value, const QgsRasterRangeList &rangeList ) SIP_SKIP;
+    static bool contains( double value, const QgsRasterRangeList &rangeList )
+    {
+      for ( QgsRasterRange range : rangeList )
+      {
+        if ( range.contains( value ) )
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Returns true if this range overlaps another range.
+     * \since QGIS 3.2
+     */
+    bool overlaps( const QgsRasterRange &other ) const;
+
+    /**
+     * Returns a text representation of the range.
+     * \since QGIS 3.2
+     */
+    QString asText() const;
 
   private:
-    double mMin;
-    double mMax;
+    double mMin = std::numeric_limits<double>::quiet_NaN();
+    double mMax = std::numeric_limits<double>::quiet_NaN();
+    BoundsType mType = IncludeMinAndMax;
 };
 
 #endif

@@ -57,6 +57,9 @@ class QTimer;
  * \ingroup core
  * Singleton offering an interface to manage the authentication configuration database
  * and to utilize configurations through various authentication method plugins
+ *
+ * QgsAuthManager should not usually be directly created, but rather accessed through
+ * QgsApplication::authManager().
  */
 class CORE_EXPORT QgsAuthManager : public QObject
 {
@@ -649,7 +652,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Password helper enabled setter
      * \note not available in Python bindings
      */
-    void setPasswordHelperEnabled( const bool enabled ) SIP_SKIP;
+    void setPasswordHelperEnabled( bool enabled ) SIP_SKIP;
 
     /**
      * Password helper logging enabled getter
@@ -661,7 +664,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Password helper logging enabled setter
      * \note not available in Python bindings
      */
-    void setPasswordHelperLoggingEnabled( const bool enabled ) SIP_SKIP;
+    void setPasswordHelperLoggingEnabled( bool enabled ) SIP_SKIP;
 
     /**
      * Store the password manager into the wallet

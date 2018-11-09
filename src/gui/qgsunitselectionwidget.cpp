@@ -136,7 +136,7 @@ QgsUnitSelectionWidget::QgsUnitSelectionWidget( QWidget *parent )
   setFocusProxy( mUnitCombo );
 
   connect( mUnitCombo, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, &QgsUnitSelectionWidget::toggleUnitRangeButton );
-  connect( mMapScaleButton, &QPushButton::clicked, this, &QgsUnitSelectionWidget::showDialog );
+  connect( mMapScaleButton, &QToolButton::clicked, this, &QgsUnitSelectionWidget::showDialog );
   connect( mUnitCombo, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, &QgsUnitSelectionWidget::changed );
 }
 
@@ -196,7 +196,7 @@ QgsUnitTypes::RenderUnit QgsUnitSelectionWidget::unit() const
   QVariant currentData = mUnitCombo->currentData();
   if ( currentData.isValid() )
   {
-    return ( QgsUnitTypes::RenderUnit ) currentData.toInt();
+    return static_cast< QgsUnitTypes::RenderUnit >( currentData.toInt() );
   }
   //unknown
   return QgsUnitTypes::RenderUnknownUnit;
@@ -211,7 +211,7 @@ void QgsUnitSelectionWidget::setUnit( int unitIndex )
 
 void QgsUnitSelectionWidget::setUnit( QgsUnitTypes::RenderUnit unit )
 {
-  int idx = mUnitCombo->findData( QVariant( ( int ) unit ) );
+  int idx = mUnitCombo->findData( QVariant( static_cast< int >( unit ) ) );
   mUnitCombo->setCurrentIndex( idx == -1 ? 0 : idx );
 }
 

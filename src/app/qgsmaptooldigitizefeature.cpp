@@ -34,7 +34,6 @@
 #include "qgsfeatureaction.h"
 #include "qgisapp.h"
 
-#include <QMouseEvent>
 #include <QSettings>
 
 QgsMapToolDigitizeFeature::QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsMapLayer *layer, CaptureMode mode )

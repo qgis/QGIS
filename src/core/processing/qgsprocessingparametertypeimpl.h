@@ -252,12 +252,14 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
       return QStringList()
              << QStringLiteral( "str: 'ProjectCrs'" )
              << QObject::tr( "str: CRS auth ID (e.g. 'EPSG:3111')" )
-             << QObject::tr( "str: CRS PROJ4 (e.g. 'PROJ4:...')" )
-             << QObject::tr( "str: CRS WKT (e.g. 'WKT:...')" )
+             << QObject::tr( "str: CRS PROJ4 (e.g. 'PROJ4:…')" )
+             << QObject::tr( "str: CRS WKT (e.g. 'WKT:…')" )
              << QObject::tr( "str: layer ID. CRS of layer is used." )
              << QObject::tr( "str: layer name. CRS of layer is used." )
              << QObject::tr( "str: layer source. CRS of layer is used." )
+             << QObject::tr( "QgsCoordinateReferenceSystem" )
              << QObject::tr( "QgsMapLayer: CRS of layer is used" )
+             << QObject::tr( "QgsProcessingFeatureSourceDefinition: CRS of source is used" )
              << QStringLiteral( "QgsProperty" );
     }
 };
@@ -354,7 +356,7 @@ class CORE_EXPORT QgsProcessingParameterTypeEnum : public QgsProcessingParameter
 
     QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "TODO." );
+      return QCoreApplication::translate( "Processing", "An enumerated type parameter." );
     }
 
     QString name() const override
@@ -411,6 +413,7 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
              << QObject::tr( "str: layer name. Extent of layer is used." )
              << QObject::tr( "str: layer source. Extent of layer is used." )
              << QObject::tr( "QgsMapLayer: Extent of layer is used" )
+             << QObject::tr( "QgsProcessingFeatureSourceDefinition: Extent of source is used" )
              << QStringLiteral( "QgsProperty" )
              << QStringLiteral( "QgsRectangle" )
              << QStringLiteral( "QgsReferencedRectangle" );
@@ -559,13 +562,7 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProces
     ParameterFlags flags() const override
     {
       ParameterFlags flags = QgsProcessingParameterType::flags();
-
-#if QT_VERSION >= 0x50700
       flags.setFlag( ParameterFlag::ExposeToModeler, false );
-#else
-      flags &= ~ParameterFlag::ExposeToModeler;
-#endif
-
       return flags;
     }
 
@@ -610,13 +607,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
     ParameterFlags flags() const override
     {
       ParameterFlags flags = QgsProcessingParameterType::flags();
-
-#if QT_VERSION >= 0x50700
       flags.setFlag( ParameterFlag::ExposeToModeler, false );
-#else
-      flags &= ~ParameterFlag::ExposeToModeler;
-#endif
-
       return flags;
     }
 
@@ -661,13 +652,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
     ParameterFlags flags() const override
     {
       ParameterFlags flags = QgsProcessingParameterType::flags();
-
-#if QT_VERSION >= 0x50700
       flags.setFlag( ParameterFlag::ExposeToModeler, false );
-#else
-      flags &= ~ParameterFlag::ExposeToModeler;
-#endif
-
       return flags;
     }
 
@@ -711,13 +696,7 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProces
     ParameterFlags flags() const override
     {
       ParameterFlags flags = QgsProcessingParameterType::flags();
-
-#if QT_VERSION >= 0x50700
       flags.setFlag( ParameterFlag::ExposeToModeler, false );
-#else
-      flags &= ~ParameterFlag::ExposeToModeler;
-#endif
-
       return flags;
     }
 
@@ -973,13 +952,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSink : public QgsProcessingPa
     ParameterFlags flags() const override
     {
       ParameterFlags flags = QgsProcessingParameterType::flags();
-
-#if QT_VERSION >= 0x50700
       flags.setFlag( ParameterFlag::ExposeToModeler, false );
-#else
-      flags &= ~ParameterFlag::ExposeToModeler;
-#endif
-
       return flags;
     }
 
@@ -1002,7 +975,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSink : public QgsProcessingPa
     {
       return QStringList() << QObject::tr( "str: destination vector file, e.g. 'd:/test.shp'" )
              << QObject::tr( "str: 'memory:' to store result in temporary memory layer" )
-             << QObject::tr( "str: using vector provider ID prefix and destination URI, e.g. 'postgres:...' to store result in PostGIS table" )
+             << QObject::tr( "str: using vector provider ID prefix and destination URI, e.g. 'postgres:…' to store result in PostGIS table" )
              << QStringLiteral( "QgsProcessingOutputLayerDefinition" )
              << QStringLiteral( "QgsProperty" );
     }

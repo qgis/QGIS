@@ -60,7 +60,7 @@ void QgsMapSettings::setMagnificationFactor( double factor )
   mExtent = ext;
   mDpi = mDpi / ratio;
 
-  QgsDebugMsg( QString( "Magnification factor: %1  dpi: %2  ratio: %3" ).arg( factor ).arg( mDpi ).arg( ratio ) );
+  QgsDebugMsg( QStringLiteral( "Magnification factor: %1  dpi: %2  ratio: %3" ).arg( factor ).arg( mDpi ).arg( ratio ) );
 
   updateDerived();
 }
@@ -180,7 +180,7 @@ void QgsMapSettings::updateDerived()
   mVisibleExtent.set( dxmin, dymin, dxmax, dymax );
 
   // update the scale
-  mScaleCalculator.setDpi( mDpi );
+  mScaleCalculator.setDpi( mDpi * mDevicePixelRatio );
   mScale = mScaleCalculator.calculate( mVisibleExtent, mSize.width() );
 
   mMapToPixel.setParameters( mapUnitsPerPixel(),
@@ -205,14 +205,14 @@ void QgsMapSettings::updateDerived()
   }
 #endif
 
-  QgsDebugMsgLevel( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ), qgsDoubleToString( mapUnitsPerPixelY ) ), 5 );
-  QgsDebugMsgLevel( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mSize.width() ), qgsDoubleToString( mSize.height() ) ), 5 );
-  QgsDebugMsgLevel( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ), qgsDoubleToString( mExtent.height() ) ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ), qgsDoubleToString( mapUnitsPerPixelY ) ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mSize.width() ), qgsDoubleToString( mSize.height() ) ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ), qgsDoubleToString( mExtent.height() ) ), 5 );
   QgsDebugMsgLevel( mExtent.toString(), 5 );
-  QgsDebugMsgLevel( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / myWidth ), qgsDoubleToString( mVisibleExtent.height() / myHeight ) ), 5 );
-  QgsDebugMsgLevel( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ), qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ), 5 );
-  QgsDebugMsgLevel( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ), 5 );
-  QgsDebugMsgLevel( QString( "Rotation: %1 degrees" ).arg( mRotation ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / myWidth ), qgsDoubleToString( mVisibleExtent.height() / myHeight ) ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ), qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Rotation: %1 degrees" ).arg( mRotation ), 5 );
 
   mValid = true;
 }
@@ -228,6 +228,22 @@ void QgsMapSettings::setOutputSize( QSize size )
   mSize = size;
 
   updateDerived();
+}
+
+float QgsMapSettings::devicePixelRatio() const
+{
+  return mDevicePixelRatio;
+}
+
+void QgsMapSettings::setDevicePixelRatio( float dpr )
+{
+  mDevicePixelRatio = dpr;
+  updateDerived();
+}
+
+QSize QgsMapSettings::deviceOutputSize() const
+{
+  return outputSize() * mDevicePixelRatio;
 }
 
 double QgsMapSettings::outputDpi() const
@@ -350,10 +366,10 @@ QPolygonF QgsMapSettings::visiblePolygon() const
   const QSize &sz = outputSize();
   const QgsMapToPixel &m2p = mapToPixel();
 
-  poly << m2p.toMapCoordinatesF( 0,          0 ).toQPointF();
-  poly << m2p.toMapCoordinatesF( sz.width(), 0 ).toQPointF();
-  poly << m2p.toMapCoordinatesF( sz.width(), sz.height() ).toQPointF();
-  poly << m2p.toMapCoordinatesF( 0,          sz.height() ).toQPointF();
+  poly << m2p.toMapCoordinates( 0.0,                             0.0 ).toQPointF();
+  poly << m2p.toMapCoordinates( static_cast<double>( sz.width() ), 0.0 ).toQPointF();
+  poly << m2p.toMapCoordinates( static_cast<double>( sz.width() ), static_cast<double>( sz.height() ) ).toQPointF();
+  poly << m2p.toMapCoordinates( 0.0,                             static_cast<double>( sz.height() ) ).toQPointF();
 
   return poly;
 }
@@ -372,7 +388,7 @@ QgsCoordinateTransformContext QgsMapSettings::transformContext() const
 {
 #ifdef QGISDEBUG
   if ( !mHasTransformContext )
-    qWarning( "No QgsCoordinateTransformContext context set for transform" );
+    QgsDebugMsgLevel( QStringLiteral( "No QgsCoordinateTransformContext context set for transform" ), 4 );
 #endif
 
   return mTransformContext;
@@ -396,14 +412,7 @@ QgsCoordinateTransform QgsMapSettings::layerTransform( const QgsMapLayer *layer 
 
 double QgsMapSettings::layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent ) const
 {
-  QgsRectangle extent = referenceExtent.isEmpty() ? layer->extent() : referenceExtent;
-  QgsPointXY l1( extent.xMinimum(), extent.yMinimum() );
-  QgsPointXY l2( extent.xMaximum(), extent.yMaximum() );
-  double distLayerUnits = std::sqrt( l1.sqrDist( l2 ) );
-  QgsPointXY m1 = layerToMapCoordinates( layer, l1 );
-  QgsPointXY m2 = layerToMapCoordinates( layer, l2 );
-  double distMapUnits = std::sqrt( m1.sqrDist( m2 ) );
-  return distMapUnits / distLayerUnits;
+  return layerTransform( layer ).scaleFactor( referenceExtent );
 }
 
 
@@ -414,9 +423,9 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( const QgsMapLayer *layer
     QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
     {
-      QgsDebugMsgLevel( QString( "sourceCrs = " + ct.sourceCrs().authid() ), 3 );
-      QgsDebugMsgLevel( QString( "destCRS = " + ct.destinationCrs().authid() ), 3 );
-      QgsDebugMsgLevel( QString( "extent = " + extent.toString() ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "sourceCrs = %1" ).arg( ct.sourceCrs().authid() ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "destCRS = %1" ).arg( ct.destinationCrs().authid() ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "extent %1" ).arg( extent.toString() ), 3 );
       extent = ct.transformBoundingBox( extent );
     }
   }
@@ -425,7 +434,7 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( const QgsMapLayer *layer
     QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
   }
 
-  QgsDebugMsgLevel( QString( "proj extent = " + extent.toString() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "proj extent = %1 " ).arg( extent.toString() ), 3 );
 
   return extent;
 }
@@ -438,9 +447,9 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer *layer
     QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
     {
-      QgsDebugMsgLevel( QString( "sourceCrs = " + ct.sourceCrs().authid() ), 3 );
-      QgsDebugMsgLevel( QString( "destCRS = " + ct.destinationCrs().authid() ), 3 );
-      QgsDebugMsgLevel( QString( "extent = " + extent.toString() ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "sourceCrs = %1" ).arg( ct.sourceCrs().authid() ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "destCRS = %1" ).arg( ct.destinationCrs().authid() ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "extent = %1" ).arg( extent.toString() ), 3 );
       extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
     }
   }
@@ -449,7 +458,7 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer *layer
     QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
   }
 
-  QgsDebugMsgLevel( QString( "proj extent = " + extent.toString() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "proj extent =  %1" ).arg( extent.toString() ), 3 );
 
   return extent;
 }
@@ -533,7 +542,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
 
   // iterate through the map layers and test each layers extent
   // against the current min and max values
-  QgsDebugMsgLevel( QString( "Layer count: %1" ).arg( mLayers.count() ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Layer count: %1" ).arg( mLayers.count() ), 5 );
   Q_FOREACH ( const QgsWeakMapLayerPointer &layerPtr, mLayers )
   {
     if ( QgsMapLayer *lyr = layerPtr.data() )

@@ -24,12 +24,16 @@
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlprovider.h"
 #include "qgssettings.h"
+#include "qgsmssqlconnection.h"
+#include "qgsgui.h"
 
 QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mOriginalConnName( connName )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( btnListDatabase, &QPushButton::clicked, this, &QgsMssqlNewConnection::btnListDatabase_clicked );
   connect( btnConnect, &QPushButton::clicked, this, &QgsMssqlNewConnection::btnConnect_clicked );
   connect( cb_trustedConnection, &QCheckBox::clicked, this, &QgsMssqlNewConnection::cb_trustedConnection_clicked );
@@ -48,9 +52,10 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
     txtHost->setText( settings.value( key + "/host" ).toString() );
     listDatabase->addItem( settings.value( key + "/database" ).toString() );
     listDatabase->setCurrentRow( 0 );
-    cb_geometryColumns->setChecked( settings.value( key + "/geometryColumns", true ).toBool() );
-    cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", true ).toBool() );
-    cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
+    cb_geometryColumns->setChecked( QgsMssqlConnection::geometryColumnsOnly( connName ) );
+    cb_allowGeometrylessTables->setChecked( QgsMssqlConnection::allowGeometrylessTables( connName ) );
+    cb_useEstimatedMetadata->setChecked( QgsMssqlConnection::useEstimatedMetadata( connName ) );
+    mCheckNoInvalidGeometryHandling->setChecked( QgsMssqlConnection::isInvalidGeometryHandlingDisabled( connName ) );
 
     if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
     {
@@ -96,7 +101,8 @@ void QgsMssqlNewConnection::accept()
     settings.sync();
   }
 
-  baseKey += txtName->text();
+  const QString connName = txtName->text();
+  baseKey += connName;
   QString database;
   QListWidgetItem *item = listDatabase->currentItem();
   if ( item && item->text() != QLatin1String( "(from service)" ) )
@@ -107,13 +113,14 @@ void QgsMssqlNewConnection::accept()
   settings.setValue( baseKey + "/service", txtService->text() );
   settings.setValue( baseKey + "/host", txtHost->text() );
   settings.setValue( baseKey + "/database", database );
-  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() ? txtUsername->text() : QLatin1String( "" ) );
-  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : QLatin1String( "" ) );
+  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() ? txtUsername->text() : QString() );
+  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : QString() );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() ? "true" : "false" );
-  settings.setValue( baseKey + "/geometryColumns", cb_geometryColumns->isChecked() );
-  settings.setValue( baseKey + "/allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
-  settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
+  QgsMssqlConnection::setGeometryColumnsOnly( connName, cb_geometryColumns->isChecked() );
+  QgsMssqlConnection::setAllowGeometrylessTables( connName, cb_allowGeometrylessTables->isChecked() );
+  QgsMssqlConnection::setUseEstimatedMetadata( connName, cb_useEstimatedMetadata->isChecked() );
+  QgsMssqlConnection::setInvalidGeometryHandlingDisabled( connName, mCheckNoInvalidGeometryHandling->isChecked() );
 
   QDialog::accept();
 }
@@ -170,7 +177,7 @@ bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
     database = item->text();
   }
 
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( txtService->text().trimmed(),
+  QSqlDatabase db = QgsMssqlConnection::getDatabase( txtService->text().trimmed(),
                     txtHost->text().trimmed(),
                     database,
                     txtUsername->text().trimmed(),
@@ -203,7 +210,7 @@ void QgsMssqlNewConnection::listDatabases()
   listDatabase->clear();
   QString queryStr = QStringLiteral( "SELECT name FROM master..sysdatabases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')" );
 
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( txtService->text().trimmed(),
+  QSqlDatabase db = QgsMssqlConnection::getDatabase( txtService->text().trimmed(),
                     txtHost->text().trimmed(),
                     QStringLiteral( "master" ),
                     txtUsername->text().trimmed(),

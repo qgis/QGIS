@@ -22,6 +22,7 @@ from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsWkbTypes,
                        QgsAction,
+                       QgsDataProvider,
                        QgsDefaultValue,
                        QgsEditorWidgetSetup,
                        QgsVectorLayer,
@@ -60,6 +61,7 @@ from qgis.core import (QgsWkbTypes,
 from qgis.gui import (QgsAttributeTableModel,
                       QgsGui
                       )
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import start_app, unittest
 from featuresourcetestbase import FeatureSourceTestCase
 from utilities import unitTestDataPath
@@ -291,6 +293,66 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(layer.undoStack().count(), 2)
         self.assertEqual(layer.undoStack().index(), 2)
         self.assertEqual(layer.featureCount(), 4)
+
+    def testSetDataSource(self):
+        """
+        Test changing a layer's data source
+        """
+        layer = createLayerWithOnePoint()
+        layer.setCrs(QgsCoordinateReferenceSystem("epsg:3111"))
+        r = QgsSingleSymbolRenderer(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry))
+        layer.setRenderer(r)
+        self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.Marker)
+
+        spy = QSignalSpy(layer.dataSourceChanged)
+
+        options = QgsDataProvider.ProviderOptions()
+        # change with layer of same type
+        points_path = os.path.join(unitTestDataPath(), 'points.shp')
+        layer.setDataSource(points_path, 'new name', 'ogr', options)
+
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.name(), 'new name')
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(layer.crs().authid(), 'EPSG:4326')
+        self.assertIn(points_path, layer.dataProvider().dataSourceUri())
+        self.assertEqual(len(spy), 1)
+
+        # should have kept the same renderer!
+        self.assertEqual(layer.renderer(), r)
+
+        # layer with different type
+        lines_path = os.path.join(unitTestDataPath(), 'lines.shp')
+        layer.setDataSource(lines_path, 'new name2', 'ogr', options)
+
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.name(), 'new name2')
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.MultiLineString)
+        self.assertEqual(layer.crs().authid(), 'EPSG:4326')
+        self.assertIn(lines_path, layer.dataProvider().dataSourceUri())
+        self.assertEqual(len(spy), 2)
+
+        # should have reset renderer!
+        self.assertNotEqual(layer.renderer(), r)
+        self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.Line)
+
+    def test_layer_crs(self):
+        """
+        Test that spatial layers have CRS, and non-spatial don't
+        """
+        vl = QgsVectorLayer('Point?crs=epsg:3111&field=pk:integer', 'test', 'memory')
+        self.assertTrue(vl.isSpatial())
+        self.assertTrue(vl.crs().isValid())
+        self.assertEqual(vl.crs().authid(), 'EPSG:3111')
+
+        vl = QgsVectorLayer('None?field=pk:integer', 'test', 'memory')
+        self.assertFalse(vl.isSpatial())
+        self.assertFalse(vl.crs().isValid())
+
+        # even if provider has a crs - we don't respect it for non-spatial layers!
+        vl = QgsVectorLayer('None?crs=epsg:3111field=pk:integer', 'test', 'memory')
+        self.assertFalse(vl.isSpatial())
+        self.assertFalse(vl.crs().isValid())
 
     # ADD FEATURE
 
@@ -1832,13 +1894,13 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         # check value
         f = next(temp_layer.getFeatures())
-        expected = 1009089817.0
+        expected = 1005721496.7800847
         self.assertAlmostEqual(f['area'], expected, delta=1.0)
 
         # change project area unit, check calculation respects unit
         QgsProject.instance().setAreaUnits(QgsUnitTypes.AreaSquareMiles)
         f = next(temp_layer.getFeatures())
-        expected = 389.6117565069
+        expected = 388.31124079933016
         self.assertAlmostEqual(f['area'], expected, 3)
 
     def test_ExpressionFilter(self):
@@ -2711,6 +2773,45 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertAlmostEqual(features[3].geometry().constGet().x(), -7591989, -5)
         self.assertAlmostEqual(features[4]['virtual'], -65.32, 2)
         self.assertAlmostEqual(features[4].geometry().constGet().x(), -7271389, -5)
+
+    def testPrecision(self):
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int", "vl", "memory")
+        layer.geometryOptions().setGeometryPrecision(10)
+        geom = QgsGeometry.fromWkt('Polygon ((2596411 1224654, 2596400 1224652, 2596405 1224640, 2596410 1224641, 2596411 1224654))')
+        feature = QgsFeature(layer.fields())
+        feature.setGeometry(geom)
+        layer.startEditing()
+        layer.addFeature(feature)
+        self.assertGeometriesEqual(QgsGeometry.fromWkt('Polygon ((2596410 1224650, 2596400 1224650, 2596410 1224640, 2596410 1224650))'), feature.geometry(), 'geometry with unsnapped nodes', 'fixed geometry')
+        layer.geometryOptions().setGeometryPrecision(0.0)
+        feature.setGeometry(QgsGeometry.fromWkt('Polygon ((2596411 1224654, 2596400 1224652, 2596405 1224640, 2596410 1224641, 2596411 1224654))'))
+        layer.addFeature(feature)
+        self.assertGeometriesEqual(QgsGeometry.fromWkt('Polygon ((2596411 1224654, 2596400 1224652, 2596405 1224640, 2596410 1224641, 2596411 1224654))'), feature.geometry(), 'geometry with duplicates', 'unchanged geometry')
+
+    def testRemoveDuplicateNodes(self):
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int", "vl", "memory")
+        layer.geometryOptions().setRemoveDuplicateNodes(True)
+        geom = QgsGeometry.fromWkt('Polygon ((70 80, 80 90, 80 90, 60 50, 70 80))')
+        feature = QgsFeature(layer.fields())
+        feature.setGeometry(geom)
+        layer.startEditing()
+        layer.addFeature(feature)
+        self.assertGeometriesEqual(feature.geometry(), QgsGeometry.fromWkt('Polygon ((70 80, 80 90, 60 50, 70 80))'), 'fixed geometry', 'geometry with duplicates')
+        layer.geometryOptions().setRemoveDuplicateNodes(False)
+        feature.setGeometry(QgsGeometry.fromWkt('Polygon ((70 80, 80 90, 80 90, 60 50, 70 80))'))
+        layer.addFeature(feature)
+        self.assertGeometriesEqual(feature.geometry(), QgsGeometry.fromWkt('Polygon ((70 80, 80 90, 80 90, 60 50, 70 80))'), 'unchanged geometry', 'geometry with duplicates')
+
+    def testPrecisionAndDuplicateNodes(self):
+        layer = QgsVectorLayer("Polygon?crs=epsg:2056&field=pk:int", "vl", "memory")
+        layer.geometryOptions().setGeometryPrecision(10)
+        layer.geometryOptions().setRemoveDuplicateNodes(True)
+        geom = QgsGeometry.fromWkt('Polygon ((2596411 1224654, 2596400 1224652, 2596402 1224653, 2596405 1224640, 2596410 1224641, 2596411 1224654))')
+        feature = QgsFeature(layer.fields())
+        feature.setGeometry(geom)
+        layer.startEditing()
+        layer.addFeature(feature)
+        self.assertGeometriesEqual(QgsGeometry.fromWkt('Polygon ((2596410 1224650, 2596400 1224650, 2596410 1224640, 2596410 1224650))'), feature.geometry(), 'geometry with unsnapped nodes', 'fixed geometry')
 
 
 class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSourceTestCase):

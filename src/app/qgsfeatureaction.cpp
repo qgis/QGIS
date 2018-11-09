@@ -34,7 +34,7 @@
 
 #include <QPushButton>
 
-QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, const QUuid &actionId, int defaultAttr, QObject *parent )
+QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, QUuid actionId, int defaultAttr, QObject *parent )
   : QAction( name, parent )
   , mLayer( layer )
   , mFeature( &f )
@@ -74,7 +74,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   {
     dialog->setContextMenuPolicy( Qt::ActionsContextMenu );
 
-    QAction *a = new QAction( tr( "Run actions" ), dialog );
+    QAction *a = new QAction( tr( "Run Actions" ), dialog );
     a->setEnabled( false );
     dialog->addAction( a );
 
@@ -135,7 +135,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
     std::unique_ptr<QgsAttributeDialog> dialog( newDialog( false ) );
 
     if ( !mFeature->isValid() )
-      dialog->setMode( QgsAttributeForm::AddFeatureMode );
+      dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
 
     int rv = dialog->exec();
     mFeature->setAttributes( dialog->feature()->attributes() );
@@ -155,7 +155,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
     dialog = newDialog( false );
 
     if ( !mFeature->isValid() )
-      dialog->setMode( QgsAttributeForm::AddFeatureMode );
+      dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
 
     // delete the dialog when it is closed
     dialog->setAttribute( Qt::WA_DeleteOnClose );
@@ -172,7 +172,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
 
   QgsSettings settings;
   bool reuseLastValues = settings.value( QStringLiteral( "qgis/digitizing/reuseLastValues" ), false ).toBool();
-  QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
+  QgsDebugMsg( QStringLiteral( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 
   QgsFields fields = mLayer->fields();
   QgsAttributeMap initialAttributeValues;
@@ -235,7 +235,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     QgsAttributeDialog *dialog = newDialog( false );
     // delete the dialog when it is closed
     dialog->setAttribute( Qt::WA_DeleteOnClose );
-    dialog->setMode( QgsAttributeForm::AddFeatureMode );
+    dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
     dialog->setEditCommandMessage( text() );
 
     connect( dialog->attributeForm(), &QgsAttributeForm::featureSaved, this, &QgsFeatureAction::onFeatureSaved );
@@ -269,7 +269,7 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
 
   QgsSettings settings;
   bool reuseLastValues = settings.value( QStringLiteral( "qgis/digitizing/reuseLastValues" ), false ).toBool();
-  QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
+  QgsDebugMsg( QStringLiteral( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 
   if ( reuseLastValues )
   {
@@ -280,7 +280,7 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
       QgsAttributeMap origValues = sLastUsedValues[ mLayer ];
       if ( origValues[idx] != newValues.at( idx ) )
       {
-        QgsDebugMsg( QString( "saving %1 for %2" ).arg( sLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
+        QgsDebugMsg( QStringLiteral( "saving %1 for %2" ).arg( sLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
         sLastUsedValues[ mLayer ][idx] = newValues.at( idx );
       }
     }

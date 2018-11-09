@@ -86,6 +86,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     bool supportsSubsetString() const override { return true; }
     QgsWkbTypes::Type wkbType() const override;
+    //! Return the table schema condition
+    static QString tableSchemaCondition( const QgsDataSourceUri &dsUri );
 
     /**
      * Returns the number of layers for the current data source
@@ -142,7 +144,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     static int computeMultiWKB3Dsize( const unsigned char *p_in, int little_endian,
                                       int endian_arch );
     static QString quotedIdentifier( QString id );
-    static QString quotedValue( QString value );
 
     struct SLFieldNotFound {}; //! Exception to throw
 
@@ -227,6 +228,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     //! Flag indicating if the layer data source is based on a query
     bool mIsQuery = false;
+
+    //! Flag indicating if ROWID has been injected in the query
+    bool mRowidInjectedInQuery = false;
 
     //! Flag indicating if the layer data source is based on a plain Table
     bool mTableBased = false;

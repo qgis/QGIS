@@ -2,7 +2,7 @@
     qgsreportsectionmodel.h
     ---------------------
     begin                : December 2017
-    copyright            : (C) 2017 by Nyall Dawso
+    copyright            : (C) 2017 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *

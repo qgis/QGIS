@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>536</width>
-    <height>401</height>
+    <width>863</width>
+    <height>547</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,7 +36,7 @@
    <item row="1" column="2">
     <widget class="QToolButton" name="mButtonZoomToFeatures">
      <property name="text">
-      <string>Zoom to features</string>
+      <string>Zoom to Features</string>
      </property>
     </widget>
    </item>

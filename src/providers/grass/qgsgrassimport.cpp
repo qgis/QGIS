@@ -113,13 +113,13 @@ void QgsGrassImportProgress::setRange( int min, int max )
   mProgressMin = min;
   mProgressMax = max;
   mProgressValue = min;
-  emit progressChanged( QLatin1String( "" ), mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
+  emit progressChanged( QString(), mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
 }
 
 void QgsGrassImportProgress::setValue( int value )
 {
   mProgressValue = value;
-  emit progressChanged( QLatin1String( "" ), mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
+  emit progressChanged( QString(), mProgressHtml, mProgressMin, mProgressMax, mProgressValue );
 }
 
 //------------------------------ QgsGrassImport ------------------------------------
@@ -471,14 +471,14 @@ bool QgsGrassRasterImport::import()
     {
       QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
       struct Ref ref;
-      I_get_group_ref( name.toUtf8().data(), &ref );
+      I_get_group_ref( name.toUtf8().constData(), &ref );
       QString redName = name + QStringLiteral( ".%1" ).arg( redBand );
       QString greenName = name + QStringLiteral( ".%1" ).arg( greenBand );
       QString blueName = name + QStringLiteral( ".%1" ).arg( blueBand );
-      I_add_file_to_group_ref( redName.toUtf8().data(), mGrassObject.mapset().toUtf8().data(), &ref );
-      I_add_file_to_group_ref( greenName.toUtf8().data(), mGrassObject.mapset().toUtf8().data(), &ref );
-      I_add_file_to_group_ref( blueName.toUtf8().data(), mGrassObject.mapset().toUtf8().data(), &ref );
-      I_put_group_ref( name.toUtf8().data(), &ref );
+      I_add_file_to_group_ref( redName.toUtf8().constData(), mGrassObject.mapset().toUtf8().constData(), &ref );
+      I_add_file_to_group_ref( greenName.toUtf8().constData(), mGrassObject.mapset().toUtf8().constData(), &ref );
+      I_add_file_to_group_ref( blueName.toUtf8().constData(), mGrassObject.mapset().toUtf8().constData(), &ref );
+      I_put_group_ref( name.toUtf8().constData(), &ref );
     }
     G_CATCH( QgsGrass::Exception & e )
     {
@@ -492,7 +492,7 @@ QString QgsGrassRasterImport::srcDescription() const
 {
   if ( !mPipe || !mPipe->provider() )
   {
-    return QLatin1String( "" );
+    return QString();
   }
   return mPipe->provider()->dataSourceUri();
 }
@@ -749,7 +749,7 @@ QString QgsGrassVectorImport::srcDescription() const
 {
   if ( !mProvider )
   {
-    return QLatin1String( "" );
+    return QString();
   }
   return mProvider->dataSourceUri();
 }

@@ -24,6 +24,7 @@
 #include "qgsproperty.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeaturesource.h"
+#include "qgsprocessingutils.h"
 #include <QMap>
 #include <limits>
 
@@ -564,9 +565,21 @@ class CORE_EXPORT QgsProcessingParameters
     static QString parameterAsString( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition and \a value to a static string value.
+     * \since QGIS 3.4
+     */
+    static QString parameterAsString( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to an expression.
      */
     static QString parameterAsExpression( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definitionand \a value to an expression.
+     * \since QGIS 3.4
+     */
+    static QString parameterAsExpression( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a static double value.
@@ -574,9 +587,33 @@ class CORE_EXPORT QgsProcessingParameters
     static double parameterAsDouble( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition and \a value to a static double value.
+     * \since QGIS 3.4
+     */
+    static double parameterAsDouble( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to a static integer value.
      */
     static int parameterAsInt( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a static integer value.
+     * \since QGIS 3.4
+     */
+    static int parameterAsInt( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a list of integer values.
+     * \since QGIS 3.4
+     */
+    static QList<int> parameterAsInts( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a list of integer values.
+     * \since QGIS 3.4
+     */
+    static QList<int> parameterAsInts( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a enum value.
@@ -584,14 +621,32 @@ class CORE_EXPORT QgsProcessingParameters
     static int parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition and \a value to a enum value.
+     * \since QGIS 3.4
+     */
+    static int parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to list of enum values.
      */
     static QList<int> parameterAsEnums( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition and \a value to list of enum values.
+     * \since QGIS 3.4
+     */
+    static QList<int> parameterAsEnums( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to a static boolean value.
      */
     static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a static boolean value.
+     * \since QGIS 3.4
+     */
+    static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a feature sink.
@@ -608,7 +663,26 @@ class CORE_EXPORT QgsProcessingParameters
      */
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
                                             const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-                                            QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT ) SIP_FACTORY;
+                                            QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = nullptr ) SIP_FACTORY;
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a feature sink.
+     *
+     * The \a fields, \a geometryType and \a crs parameters dictate the properties
+     * of the resulting feature sink.
+     *
+     * Sinks will either be taken from \a context's active project, or created from external
+     * providers and stored temporarily in the \a context. The \a destinationIdentifier
+     * argument will be set to a string which can be used to retrieve the layer corresponding
+     * to the sink, e.g. via calling QgsProcessingUtils::mapLayerFromString().
+     *
+     * This function creates a new object and the caller takes responsibility for deleting the returned object.
+     *
+     * \since QGIS 3.4
+     */
+    static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value,
+                                            const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+                                            QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = nullptr ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a definition to a feature source.
@@ -619,6 +693,18 @@ class CORE_EXPORT QgsProcessingParameters
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      */
     static QgsProcessingFeatureSource *parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) SIP_FACTORY;
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a feature source.
+     *
+     * Sources will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context.
+     *
+     * This function creates a new object and the caller takes responsibility for deleting the returned object.
+     *
+     * \since QGIS 3.4
+     */
+    static QgsProcessingFeatureSource *parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a definition to a source vector layer file path of compatible format.
@@ -645,6 +731,17 @@ class CORE_EXPORT QgsProcessingParameters
     static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition and \a value to a map layer.
+     *
+     * Layers will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context. In either case, callers do not
+     * need to handle deletion of the returned layer.
+     *
+     * \since QGIS 3.4
+     */
+    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to a raster layer.
      *
      * Layers will either be taken from \a context's active project, or loaded from external
@@ -654,14 +751,37 @@ class CORE_EXPORT QgsProcessingParameters
     static QgsRasterLayer *parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition and \a value to a raster layer.
+     *
+     * Layers will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context. In either case, callers do not
+     * need to handle deletion of the returned layer.
+     *
+     * \since QGIS 3.4
+     */
+    static QgsRasterLayer *parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to a output layer destination.
      */
     static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition and \a value to a output layer destination.
+     * \since QGIS 3.4
+     */
+    static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to a file based output destination.
      */
     static QString parameterAsFileOutput( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a file based output destination.
+     * \since QGIS 3.4
+     */
+    static QString parameterAsFileOutput( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a vector layer.
@@ -673,9 +793,26 @@ class CORE_EXPORT QgsProcessingParameters
     static QgsVectorLayer *parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition and \a value to a vector layer.
+     *
+     * Layers will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context. In either case, callers do not
+     * need to handle deletion of the returned layer.
+     *
+     * \since QGIS 3.4
+     */
+    static QgsVectorLayer *parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to a coordinate reference system.
      */
     static QgsCoordinateReferenceSystem parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a coordinate reference system.
+     * \since QGIS 3.4
+     */
+    static QgsCoordinateReferenceSystem parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a rectangular extent.
@@ -687,6 +824,20 @@ class CORE_EXPORT QgsProcessingParameters
      * \see parameterAsExtentCrs()
      */
     static QgsRectangle parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
+                                           const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a rectangular extent.
+     *
+     * If \a crs is set, and the original coordinate reference system of the parameter can be determined, then the extent will be automatically
+     * reprojected so that it is in the specified \a crs. In this case the extent of the reproject rectangle will be returned.
+     *
+     * \see parameterAsExtentGeometry()
+     * \see parameterAsExtentCrs()
+     *
+     * \since QGIS 3.4
+     */
+    static QgsRectangle parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context,
                                            const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
@@ -721,6 +872,17 @@ class CORE_EXPORT QgsProcessingParameters
                                         const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
+     * Evaluates the parameter with matching \a definition and \a value to a point.
+     *
+     * If \a crs is set then the point will be automatically reprojected so that it is in the specified \a crs.
+     *
+     * \see parameterAsPointCrs()
+     * \since QGIS 3.4
+     */
+    static QgsPointXY parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context,
+                                        const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+
+    /**
      * Returns the coordinate reference system associated with an point parameter value.
      *
      * \see parameterAsPoint()
@@ -733,10 +895,23 @@ class CORE_EXPORT QgsProcessingParameters
     static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition and \a value to a file/folder name.
+     * \since QGIS 3.4
+     */
+    static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to a matrix/table of values.
      * Tables are collapsed to a 1 dimensional list.
      */
     static QVariantList parameterAsMatrix( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a matrix/table of values.
+     * Tables are collapsed to a 1 dimensional list.
+     * \since QGIS 3.4
+     */
+    static QVariantList parameterAsMatrix( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a list of map layers.
@@ -744,14 +919,32 @@ class CORE_EXPORT QgsProcessingParameters
     static QList< QgsMapLayer *> parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition and \a value to a list of map layers.
+     * \since QGIS 3.4
+     */
+    static QList< QgsMapLayer *> parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to a range of values.
      */
     static QList<double> parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition and \a value to a range of values.
+     * \since QGIS 3.4
+     */
+    static QList<double> parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to a list of fields.
      */
     static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a list of fields.
+     * \since QGIS 3.4
+     */
+    static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
 
     /**
      * Creates a new QgsProcessingParameterDefinition using the configuration from a
@@ -1186,8 +1379,8 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
                                            Type type = Integer,
                                            const QVariant &defaultValue = QVariant(),
                                            bool optional = false,
-                                           double minValue = -DBL_MAX + 1,
-                                           double maxValue = DBL_MAX
+                                           double minValue = std::numeric_limits<double>::lowest() + 1,
+                                           double maxValue = std::numeric_limits<double>::max()
                                          );
 
     /**
@@ -1246,8 +1439,8 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
 
   private:
 
-    double mMin = -DBL_MAX + 1;
-    double mMax = DBL_MAX;
+    double mMin = std::numeric_limits<double>::lowest() + 1;
+    double mMax = std::numeric_limits<double>::max();
     Type mDataType = Integer;
 };
 
@@ -1269,8 +1462,8 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
         const QVariant &defaultValue = QVariant(),
         const QString &parentParameterName = QString(),
         bool optional = false,
-        double minValue = -DBL_MAX + 1,
-        double maxValue = DBL_MAX );
+        double minValue = std::numeric_limits<double>::lowest() + 1,
+        double maxValue = std::numeric_limits<double>::max() );
 
     /**
      * Returns the type name for the parameter class.
@@ -1831,11 +2024,34 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
      */
     void setCreateByDefault( bool createByDefault );
 
+  protected:
+
+    /**
+     * Original (source) provider which this parameter has been derived from.
+     * In the case of destination parameters which are part of model algorithms, this
+     * will reflect the child algorithm's provider which actually generates the
+     * parameter, as opposed to the provider which this parameter belongs to (i.e.
+     * the model provider)
+     * \since QGIS 3.2
+     */
+    QgsProcessingProvider *originalProvider() const { return mOriginalProvider; }
+
   private:
+
+    /**
+     * Original (source) provider which this parameter has been derived from.
+     * In the case of destination parameters which are part of model algorithms, this
+     * will reflect the child algorithm's provider which actually generates the
+     * parameter, as opposed to the provider which this parameter belongs to (i.e.
+     * the model provider)
+     */
+    QgsProcessingProvider *mOriginalProvider = nullptr;
 
     bool mSupportsNonFileBasedOutputs = true;
     bool mCreateByDefault = true;
 
+    friend class QgsProcessingModelAlgorithm;
+    friend class TestQgsProcessing;
 };
 
 
@@ -1871,6 +2087,13 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
     QString asScriptCode() const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
     QString defaultFileExtension() const override;
+
+    /**
+     * Returns a list of the vector format file extensions supported by this parameter.
+     * \see defaultFileExtension()
+     * \since QGIS 3.2
+     */
+    virtual QStringList supportedOutputVectorLayerExtensions() const;
 
     /**
      * Returns the layer type for sinks associated with the parameter.
@@ -1941,6 +2164,13 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
     QString defaultFileExtension() const override;
 
     /**
+     * Returns a list of the vector format file extensions supported by this parameter.
+     * \see defaultFileExtension()
+     * \since QGIS 3.2
+     */
+    virtual QStringList supportedOutputVectorLayerExtensions() const;
+
+    /**
      * Returns the layer type for this created vector layer.
      * \see setDataType()
      */
@@ -2004,6 +2234,13 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
     QString defaultFileExtension() const override;
+
+    /**
+     * Returns a list of the raster format file extensions supported for this parameter.
+     * \see defaultFileExtension()
+     * \since QGIS 3.2
+     */
+    virtual QStringList supportedOutputRasterLayerExtensions() const;
 
     /**
      * Creates a new parameter using the definition from a script code.
@@ -2122,7 +2359,8 @@ class CORE_EXPORT QgsProcessingParameterBand : public QgsProcessingParameterDefi
      */
     QgsProcessingParameterBand( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                 const QString &parentLayerParameterName = QString(),
-                                bool optional = false );
+                                bool optional = false,
+                                bool allowMultiple = false );
 
     /**
      * Returns the type name for the parameter class.
@@ -2155,9 +2393,24 @@ class CORE_EXPORT QgsProcessingParameterBand : public QgsProcessingParameterDefi
      */
     static QgsProcessingParameterBand *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
+    /**
+     * Returns whether multiple band selections are permitted.
+     * \see setAllowMultiple()
+     * \since QGIS 3.4
+     */
+    bool allowMultiple() const;
+
+    /**
+     * Sets whether multiple band selections are permitted.
+     * \see allowMultiple()
+     * \since QGIS 3.4
+     */
+    void setAllowMultiple( bool allowMultiple );
+
   private:
 
     QString mParentLayerParameterName;
+    bool mAllowMultiple = false;
 };
 
 // clazy:excludeall=qstring-allocations

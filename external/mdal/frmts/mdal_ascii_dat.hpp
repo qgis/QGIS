@@ -13,7 +13,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "mdal_defines.hpp"
+#include "mdal_data_model.hpp"
 #include "mdal.h"
 
 namespace MDAL
@@ -28,7 +28,7 @@ namespace MDAL
     private:
       void readVertexTimestep(
         const Mesh *mesh,
-        std::vector<std::shared_ptr<Dataset>> &datOutputs,
+        std::shared_ptr<DatasetGroup> group,
         double t,
         bool isVector,
         bool hasStatus,
@@ -36,14 +36,10 @@ namespace MDAL
 
       void readFaceTimestep(
         const Mesh *mesh,
-        std::vector<std::shared_ptr<Dataset>> &datOutputs,
+        std::shared_ptr<DatasetGroup> group,
         double t,
         bool isVector,
         std::ifstream &stream );
-
-      void addDatasets( MDAL::Mesh *mesh,
-                        const std::string &name,
-                        const std::vector<std::shared_ptr<Dataset>> &datOutputs ) const;
 
       std::string mDatFile;
   };

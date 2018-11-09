@@ -37,8 +37,7 @@ QgsAttributeDialog::~QgsAttributeDialog()
     delete mHighlight;
   }
 
-  if ( mOwnedFeature )
-    delete mOwnedFeature;
+  delete mOwnedFeature;
 
   saveGeometry();
 }
@@ -80,7 +79,7 @@ void QgsAttributeDialog::show()
 void QgsAttributeDialog::reject()
 {
   // Delete any actions on other layers that may have been triggered from this dialog
-  if ( mAttributeForm->mode() == QgsAttributeForm::AddFeatureMode )
+  if ( mAttributeForm->mode() == QgsAttributeEditorContext::AddFeatureMode )
     mTrackedVectorLayerTools.rollback();
 
   QDialog::reject();
@@ -117,7 +116,7 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
   focusNextChild();
 }
 
-void QgsAttributeDialog::setMode( QgsAttributeForm::Mode mode )
+void QgsAttributeDialog::setMode( QgsAttributeEditorContext::Mode mode )
 {
   mAttributeForm->setMode( mode );
   mMenu->setMode( mode );

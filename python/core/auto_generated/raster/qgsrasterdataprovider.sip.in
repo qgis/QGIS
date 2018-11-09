@@ -246,6 +246,55 @@ into a subset of the GUI raster properties "Metadata" tab.
 %End
 
     virtual QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
+%Docstring
+Identify raster value(s) found on the point position. The context
+parameters extent, width and height are important to identify
+on the same zoom level as a displayed map and to do effective
+caching (WCS). If context params are not specified the highest
+resolution is used. capabilities() may be used to test if format
+is supported by provider. Values are set to 'no data' or empty string
+if point is outside data source extent.
+
+:param point: coordinates in data source CRS
+:param format: result format
+:param boundingBox: context bounding box
+:param width: context width
+:param height: context height
+:param dpi: context dpi
+
+:return: QgsRaster.IdentifyFormatValue: map of values for each band, keys are band numbers
+         (from 1).
+         QgsRaster.IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
+         (WMS) - TODO: it is not consistent with QgsRaster.IdentifyFormatValue.
+         QgsRaster.IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
+         Empty if failed or there are no results (TODO: better error reporting).
+
+.. note::
+
+   The arbitraryness of the returned document is enforced by WMS standards
+   up to at least v1.3.0
+
+.. seealso:: :py:func:`sample`
+%End
+
+    virtual double sample( const QgsPointXY &point, int band,
+                           bool *ok /Out/ = 0,
+                           const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
+%Docstring
+Samples a raster value from the specified ``band`` found at the ``point`` position. The context
+parameters ``boundingBox``, ``width`` and ``height`` are important to identify
+on the same zoom level as a displayed map and to do effective
+caching (WCS). If context params are not specified the highest
+resolution is used.
+
+If ``ok`` is specified and the point is outside data source extent, or an invalid
+band number was specified, then ``ok`` will be set to false. In this case the function will return
+a NaN value.
+
+.. seealso:: :py:func:`identify`
+
+.. versionadded:: 3.4
+%End
 
     virtual QString lastErrorTitle() = 0;
 %Docstring

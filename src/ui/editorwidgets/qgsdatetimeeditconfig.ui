@@ -75,7 +75,7 @@
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>Field format</string>
+      <string>Field Format</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
@@ -131,7 +131,7 @@
    <item row="2" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Widget display</string>
+      <string>Widget Display</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="3">

@@ -42,7 +42,7 @@ class QgsDb2SourceSelectDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsDb2SourceSelectDelegate( QObject *parent = NULL )
+    explicit QgsDb2SourceSelectDelegate( QObject *parent = nullptr )
       : QItemDelegate( parent )
     {}
 
@@ -75,8 +75,8 @@ class QgsDb2GeomColumnTypeThread : public QThread
     QgsDb2GeomColumnTypeThread() = delete;
 
     QString mConnectionName;
-    bool mUseEstimatedMetadata;
-    bool mStopped;
+    bool mUseEstimatedMetadata = false;
+    bool mStopped = false;
     QList<QgsDb2LayerProperty> layerProperties;
 };
 

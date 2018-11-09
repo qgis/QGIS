@@ -62,7 +62,7 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
      */
     QgsNetworkContentFetcherTask( const QNetworkRequest &request );
 
-    ~QgsNetworkContentFetcherTask();
+    ~QgsNetworkContentFetcherTask() override;
 
     bool run() override;
     void cancel() override;

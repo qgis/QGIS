@@ -48,6 +48,7 @@
    <addaction name="mActionOpen"/>
    <addaction name="mActionSave"/>
    <addaction name="mActionSaveAs"/>
+   <addaction name="mActionSaveInProject"/>
    <addaction name="separator"/>
    <addaction name="mActionZoomIn"/>
    <addaction name="mActionZoomOut"/>
@@ -64,7 +65,7 @@
   </widget>
   <action name="mActionOpen">
    <property name="text">
-    <string>Open model...</string>
+    <string>Open model…</string>
    </property>
    <property name="toolTip">
     <string>Open model (Ctrl+O)</string>
@@ -86,7 +87,7 @@
   </action>
   <action name="mActionSaveAs">
    <property name="text">
-    <string>Save model as...</string>
+    <string>Save model as…</string>
    </property>
    <property name="toolTip">
     <string>Save model as (Ctrl+S)</string>
@@ -130,7 +131,7 @@
   </action>
   <action name="mActionExportImage">
    <property name="text">
-    <string>Export as image...</string>
+    <string>Export as image…</string>
    </property>
    <property name="toolTip">
     <string>Export as image</string>
@@ -149,7 +150,7 @@
   </action>
   <action name="mActionExportPdf">
    <property name="text">
-    <string>Export as PDF...</string>
+    <string>Export as PDF…</string>
    </property>
    <property name="toolTip">
     <string>Export as PDF</string>
@@ -157,7 +158,7 @@
   </action>
   <action name="mActionExportSvg">
    <property name="text">
-    <string>Export as SVG...</string>
+    <string>Export as SVG…</string>
    </property>
    <property name="toolTip">
     <string>Export as SVG</string>
@@ -165,7 +166,7 @@
   </action>
   <action name="mActionExportPython">
    <property name="text">
-    <string>Export as Python script...</string>
+    <string>Export as Python script…</string>
    </property>
    <property name="toolTip">
     <string>Export as Python script</string>
@@ -173,7 +174,7 @@
   </action>
   <action name="mActionEditHelp">
    <property name="text">
-    <string>Edit model help...</string>
+    <string>Edit model help…</string>
    </property>
    <property name="toolTip">
     <string>Edit model help</string>
@@ -181,13 +182,21 @@
   </action>
   <action name="mActionRun">
    <property name="text">
-    <string>Run model...</string>
+    <string>Run model…</string>
    </property>
    <property name="toolTip">
     <string>Run model (F5)</string>
    </property>
    <property name="shortcut">
     <string>F5</string>
+   </property>
+  </action>
+  <action name="mActionSaveInProject">
+   <property name="text">
+    <string>Save model in project</string>
+   </property>
+   <property name="toolTip">
+    <string>Save model in project</string>
    </property>
   </action>
  </widget>

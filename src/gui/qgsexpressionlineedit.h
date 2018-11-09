@@ -27,7 +27,7 @@ class QgsFilterLineEdit;
 class QToolButton;
 class QgsDistanceArea;
 class QgsExpressionContextGenerator;
-class QgsCodeEditorSQL;
+class QgsCodeEditorExpression;
 
 /**
  * \ingroup gui
@@ -77,6 +77,23 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
      * to show single line editor (the default).
      */
     void setMultiLine( bool multiLine );
+
+    /**
+     * Returns the expected format string, which is shown in the expression builder dialog for the widget.
+     * This is purely a text format and no expression validation
+     * is done against it.
+     * \see setExpectedOutputFormat()
+     * \since QGIS 3.4
+     */
+    QString expectedOutputFormat() const;
+
+    /**
+     * Set the \a expected format string, which is shown in the expression builder dialog for the widget.
+     * This is purely a text format and no expression validation is done against it.
+     * \see expectedOutputFormat()
+     * \since QGIS 3.4
+     */
+    void setExpectedOutputFormat( const QString &expected );
 
     /**
      * Set the geometry calculator used in the expression dialog.
@@ -153,13 +170,14 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
 
   private:
     QgsFilterLineEdit *mLineEdit = nullptr;
-    QgsCodeEditorSQL *mCodeEditor = nullptr;
+    QgsCodeEditorExpression *mCodeEditor = nullptr;
     QToolButton *mButton = nullptr;
     QString mExpressionDialogTitle;
     std::unique_ptr<QgsDistanceArea> mDa;
     QgsExpressionContext mExpressionContext;
     const QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
     QgsVectorLayer *mLayer = nullptr;
+    QString mExpectedOutputFormat;
 
     bool isExpressionValid( const QString &expressionStr );
 

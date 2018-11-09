@@ -27,7 +27,7 @@
 #define SIP_NO_FILE
 
 #ifndef _MSC_VER
-#include <stdint.h>
+#include <cstdint>
 #else
 typedef __int32 int32_t;
 typedef unsigned __int32 uint32_t;

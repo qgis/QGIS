@@ -56,6 +56,7 @@ ELSE(EXISTS QSCINTILLA_VERSION_STR)
       "${QT_INCLUDE_DIR}"
       /usr/local/include
       /usr/include
+    PATH_SUFFIXES qt
     )
 
   IF(QSCINTILLA_LIBRARY AND QSCINTILLA_INCLUDE_DIR)

@@ -142,7 +142,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
   //In some (common) cases, we can simplify the drawing loop considerably and save render time
   bool fastDraw = ( !usesTransparency()
                     && mRedBand > 0 && mGreenBand > 0 && mBlueBand > 0
-                    && mAlphaBand < 1 && !mRedContrastEnhancement && !mGreenContrastEnhancement && !mBlueContrastEnhancement );
+                    && mAlphaBand < 1 );
 
   QSet<int> bands;
   if ( mRedBand > 0 )
@@ -189,7 +189,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     if ( !bandBlocks[*bandIt] )
     {
       // We should free the alloced mem from block().
-      QgsDebugMsg( "No input band" );
+      QgsDebugMsg( QStringLiteral( "No input band" ) );
       --bandIt;
       for ( ; bandIt != bands.constBegin(); --bandIt )
       {
@@ -225,9 +225,43 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     return outputBlock.release();
   }
 
+  QRgb *outputBlockColorData = outputBlock->colorData();
+
+  // faster data access to data for the common case that input data are coming from RGB image with 8-bit bands
+  bool hasByteRgb = ( redBlock && greenBlock && blueBlock && redBlock->dataType() == Qgis::Byte && greenBlock->dataType() == Qgis::Byte && blueBlock->dataType() == Qgis::Byte );
+  const quint8 *redData = nullptr, *greenData = nullptr, *blueData = nullptr;
+  if ( hasByteRgb )
+  {
+    redData = redBlock->byteData();
+    greenData = greenBlock->byteData();
+    blueData = blueBlock->byteData();
+  }
+
   QRgb myDefaultColor = NODATA_COLOR;
 
-  for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
+  if ( fastDraw )
+  {
+    // By default RGB raster layers have contrast enhancement assigned and normally that requires us to take the slow
+    // route that applies the enhancement. However if the algorithm type is "no enhancement" and all input bands are byte-sized,
+    // no transform would be applied to the input values and we can take the fast route.
+    bool hasEnhancement;
+    if ( hasByteRgb )
+    {
+      hasEnhancement =
+        ( mRedContrastEnhancement && mRedContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement ) ||
+        ( mGreenContrastEnhancement && mGreenContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement ) ||
+        ( mBlueContrastEnhancement && mBlueContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement );
+    }
+    else
+    {
+      hasEnhancement = mRedContrastEnhancement || mGreenContrastEnhancement || mBlueContrastEnhancement;
+    }
+    if ( hasEnhancement )
+      fastDraw = false;
+  }
+
+  qgssize count = ( qgssize )width * height;
+  for ( qgssize i = 0; i < count; i++ )
   {
     if ( fastDraw ) //fast rendering if no transparency, stretching, color inversion, etc.
     {
@@ -239,10 +273,17 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
       }
       else
       {
-        int redVal = ( int )redBlock->value( i );
-        int greenVal = ( int )greenBlock->value( i );
-        int blueVal = ( int )blueBlock->value( i );
-        outputBlock->setColor( i, qRgba( redVal, greenVal, blueVal, 255 ) );
+        if ( hasByteRgb )
+        {
+          outputBlockColorData[i] = qRgb( redData[i], greenData[i], blueData[i] );
+        }
+        else
+        {
+          int redVal = static_cast<int>( redBlock->value( i ) );
+          int greenVal = static_cast<int>( greenBlock->value( i ) );
+          int blueVal = static_cast<int>( blueBlock->value( i ) );
+          outputBlockColorData[i] = qRgb( redVal, greenVal, blueVal );
+        }
       }
       continue;
     }

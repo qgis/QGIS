@@ -29,13 +29,12 @@
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QFormLayout>
+#include <QPlainTextEdit>
 
-#include "qgsvectorlayer.h"
 #include "ui_qgsattributesformproperties.h"
 #include "qgis_app.h"
 #include "qgsaddattrdialog.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldcalculator.h"
 #include "qgsfieldexpressionwidget.h"
@@ -70,6 +69,11 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       bool showUnlinkButton = true;
     };
 
+    struct QmlElementEditorConfiguration
+    {
+      QString qmlCode;
+    };
+
     class DnDTreeItemData : public QTreeWidgetItem
     {
       public:
@@ -77,7 +81,8 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         {
           Field,
           Relation,
-          Container
+          Container,
+          QmlWidget
         };
 
         //do we need that
@@ -87,9 +92,6 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
           : mType( type )
           , mName( name )
           , mDisplayName( displayName )
-          , mColumnCount( 1 )
-          , mShowAsGroupBox( false )
-          , mShowLabel( true )
         {}
 
         QString name() const { return mName; }
@@ -118,6 +120,9 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         RelationEditorConfiguration relationEditorConfiguration() const;
         void setRelationEditorConfiguration( RelationEditorConfiguration relationEditorConfiguration );
 
+        QmlElementEditorConfiguration qmlElementEditorConfiguration() const;
+        void setQmlElementEditorConfiguration( QmlElementEditorConfiguration qmlElementEditorConfiguration );
+
       private:
         Type mType = Field;
         QString mName;
@@ -128,6 +133,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         bool mShowLabel = true;
         QgsOptionalExpression mVisibilityExpression;
         RelationEditorConfiguration mRelationEditorConfiguration;
+        QmlElementEditorConfiguration mQmlElementEditorConfiguration;
     };
 
 
@@ -214,7 +220,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     QString mInitFilePath;
     QString mInitCode;
 
-    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, DnDTree *tree );
+    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *widgetDef, QTreeWidgetItem *parent, DnDTree *tree );
 
   private slots:
     void addTabOrGroupButton();
@@ -260,7 +266,7 @@ class DnDTree : public QTreeWidget
 
 
     Type type() const;
-    void setType( const Type &value );
+    void setType( DnDTree::Type value );
 
   protected:
     void dragMoveEvent( QDragMoveEvent *event ) override;

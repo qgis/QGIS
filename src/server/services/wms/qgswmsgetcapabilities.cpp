@@ -39,6 +39,7 @@
 
 #include "qgsexception.h"
 #include "qgsexpressionnodeimpl.h"
+#include "qgsvectorlayer.h"
 
 
 namespace QgsWms
@@ -61,11 +62,12 @@ namespace QgsWms
         const QgsProject *project );
 
     void appendLayerBoundingBox( QDomDocument &doc, QDomElement &layerElem, const QgsRectangle &layerExtent,
-                                 const QgsCoordinateReferenceSystem &layerCRS, const QString &crsText );
+                                 const QgsCoordinateReferenceSystem &layerCRS, const QString &crsText,
+                                 const QgsProject *project );
 
     void appendLayerBoundingBoxes( QDomDocument &doc, QDomElement &layerElem, const QgsRectangle &lExtent,
                                    const QgsCoordinateReferenceSystem &layerCRS, const QStringList &crsList,
-                                   const QStringList &constrainedCrsList );
+                                   const QStringList &constrainedCrsList, const QgsProject *project );
 
     void appendCrsElementToLayer( QDomDocument &doc, QDomElement &layerElement, const QDomElement &precedingElement,
                                   const QString &crsText );
@@ -92,43 +94,67 @@ namespace QgsWms
                              const QString &version, const QgsServerRequest &request,
                              QgsServerResponse &response, bool projectSettings )
   {
+    QgsAccessControl *accessControl = nullptr;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    accessControl = serverIface->accessControls();
+#endif
+
+    QDomDocument doc;
+    const QDomDocument *capabilitiesDocument = nullptr;
+
+    // Data for WMS capabilities server memory cache
     QString configFilePath = serverIface->configFilePath();
     QgsCapabilitiesCache *capabilitiesCache = serverIface->capabilitiesCache();
-
     QStringList cacheKeyList;
     cacheKeyList << ( projectSettings ? QStringLiteral( "projectSettings" ) : version );
     cacheKeyList << request.url().host();
     bool cache = true;
-
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsAccessControl *accessControl = serverIface->accessControls();
     if ( accessControl )
       cache = accessControl->fillCacheKey( cacheKeyList );
-#endif
+    QString cacheKey = cacheKeyList.join( '-' );
 
-    QDomDocument doc;
-    QString cacheKey = cacheKeyList.join( QStringLiteral( "-" ) );
-    const QDomDocument *capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
+    QgsServerCacheManager *cacheManager = nullptr;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    cacheManager = serverIface->cacheManager();
+#endif
+    if ( cacheManager && cacheManager->getCachedDocument( &doc, project, request, accessControl ) )
+    {
+      capabilitiesDocument = &doc;
+    }
+
+    if ( !capabilitiesDocument && cache ) //capabilities xml not in cache plugins
+    {
+      capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
+    }
+
     if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Capabilities document not found in cache" ) );
+      QgsMessageLog::logMessage( QStringLiteral( "WMS capabilities document not found in cache" ) );
 
       doc = getCapabilities( serverIface, project, version, request, projectSettings );
 
-      if ( cache )
+      if ( cacheManager &&
+           cacheManager->setCachedDocument( &doc, project, request, accessControl ) )
+      {
+        capabilitiesDocument = &doc;
+      }
+      else if ( cache )
       {
         capabilitiesCache->insertCapabilitiesDocument( configFilePath, cacheKey, &doc );
         capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
       }
+      if ( !capabilitiesDocument )
+      {
+        capabilitiesDocument = &doc;
+      }
       else
       {
-        doc = doc.cloneNode().toDocument();
-        capabilitiesDocument = &doc;
+        QgsMessageLog::logMessage( QStringLiteral( "Set WMS capabilities document in cache" ) );
       }
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Found capabilities document in cache" ) );
+      QgsMessageLog::logMessage( QStringLiteral( "Found WMS capabilities document in cache" ) );
     }
 
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
@@ -148,7 +174,7 @@ namespace QgsWms
     QUrl href = serviceUrl( request, project );
 
     //href needs to be a prefix
-    QString hrefString = href.toString( QUrl::FullyDecoded );
+    QString hrefString = href.toString();
     hrefString.append( href.hasQuery() ? "&" : "?" );
 
     // XML declaration
@@ -388,7 +414,7 @@ namespace QgsWms
     QUrl href = serviceUrl( request, project );
 
     //href needs to be a prefix
-    QString hrefString = href.toString( QUrl::FullyDecoded );
+    QString hrefString = href.toString();
     hrefString.append( href.hasQuery() ? "&" : "?" );
 
     QDomElement capabilityElem = doc.createElement( QStringLiteral( "Capability" )/*wms:Capability*/ );
@@ -751,7 +777,6 @@ namespace QgsWms
       const QgsProject *project, const QString &version,
       const QgsServerRequest &request, bool projectSettings )
   {
-    QStringList nonIdentifiableLayers = project->nonIdentifiableLayers();
     const QgsLayerTree *projectLayerTreeRoot = project->layerTreeRoot();
 
     QDomElement layerParentElem = doc.createElement( QStringLiteral( "Layer" ) );
@@ -916,7 +941,7 @@ namespace QgsWms
           }
 
           // queryable layer
-          if ( project->nonIdentifiableLayers().contains( l->id() ) )
+          if ( !l->flags().testFlag( QgsMapLayer::Identifiable ) )
           {
             layerElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "0" ) );
           }
@@ -992,7 +1017,24 @@ namespace QgsWms
             appendCrsElementsToLayer( doc, layerElem, crsList, outputCrsList );
 
             //Ex_GeographicBoundingBox
-            appendLayerBoundingBoxes( doc, layerElem, l->extent(), l->crs(), crsList, outputCrsList );
+            QgsRectangle extent = l->extent();  // layer extent by default
+            if ( l->type() == QgsMapLayer::VectorLayer )
+            {
+              QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
+              if ( vl && vl->featureCount() == 0 )
+              {
+                // if there's no feature, use the wms extent defined in the
+                // project...
+                extent = QgsServerProjectUtils::wmsExtent( *project );
+                if ( extent.isNull() )
+                {
+                  // or the CRS extent otherwise
+                  extent = vl->crs().bounds();
+                }
+              }
+            }
+
+            appendLayerBoundingBoxes( doc, layerElem, extent, l->crs(), crsList, outputCrsList, project );
           }
 
           // add details about supported styles of the layer
@@ -1121,9 +1163,9 @@ namespace QgsWms
       QUrl href = serviceUrl( request, project );
 
       //href needs to be a prefix
-      QString hrefString = href.toString( QUrl::FullyDecoded );
+      QString hrefString = href.toString();
       hrefString.append( href.hasQuery() ? "&" : "?" );
-      Q_FOREACH ( QString styleName, currentLayer->styleManager()->styles() )
+      for ( const QString &styleName : currentLayer->styleManager()->styles() )
       {
         QDomElement styleElem = doc.createElement( QStringLiteral( "Style" ) );
         QDomElement styleNameElem = doc.createElement( QStringLiteral( "Name" ) );
@@ -1222,7 +1264,7 @@ namespace QgsWms
       }
       else //no crs constraint
       {
-        Q_FOREACH ( const QString &crs, crsList )
+        for ( const QString &crs : crsList )
         {
           appendCrsElementToLayer( doc, layerElement, CRSPrecedingElement, crs );
         }
@@ -1246,7 +1288,7 @@ namespace QgsWms
 
     void appendLayerBoundingBoxes( QDomDocument &doc, QDomElement &layerElem, const QgsRectangle &lExtent,
                                    const QgsCoordinateReferenceSystem &layerCRS, const QStringList &crsList,
-                                   const QStringList &constrainedCrsList )
+                                   const QStringList &constrainedCrsList, const QgsProject *project )
     {
       if ( layerElem.isNull() )
       {
@@ -1270,9 +1312,7 @@ namespace QgsWms
       QgsRectangle wgs84BoundingRect;
       if ( !layerExtent.isNull() )
       {
-        Q_NOWARN_DEPRECATED_PUSH
-        QgsCoordinateTransform exGeoTransform( layerCRS, wgs84 );
-        Q_NOWARN_DEPRECATED_POP
+        QgsCoordinateTransform exGeoTransform( layerCRS, wgs84, project );
         try
         {
           wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
@@ -1330,21 +1370,22 @@ namespace QgsWms
       {
         for ( int i = constrainedCrsList.size() - 1; i >= 0; --i )
         {
-          appendLayerBoundingBox( doc, layerElem, layerExtent, layerCRS, constrainedCrsList.at( i ) );
+          appendLayerBoundingBox( doc, layerElem, layerExtent, layerCRS, constrainedCrsList.at( i ), project );
         }
       }
       else //no crs constraint
       {
-        Q_FOREACH ( const QString &crs, crsList )
+        for ( const QString &crs : crsList )
         {
-          appendLayerBoundingBox( doc, layerElem, layerExtent, layerCRS, crs );
+          appendLayerBoundingBox( doc, layerElem, layerExtent, layerCRS, crs, project );
         }
       }
     }
 
 
     void appendLayerBoundingBox( QDomDocument &doc, QDomElement &layerElem, const QgsRectangle &layerExtent,
-                                 const QgsCoordinateReferenceSystem &layerCRS, const QString &crsText )
+                                 const QgsCoordinateReferenceSystem &layerCRS, const QString &crsText,
+                                 const QgsProject *project )
     {
       if ( layerElem.isNull() )
       {
@@ -1364,9 +1405,7 @@ namespace QgsWms
       QgsRectangle crsExtent;
       if ( !layerExtent.isNull() )
       {
-        Q_NOWARN_DEPRECATED_PUSH
-        QgsCoordinateTransform crsTransform( layerCRS, crs );
-        Q_NOWARN_DEPRECATED_POP
+        QgsCoordinateTransform crsTransform( layerCRS, crs, project );
         try
         {
           crsExtent = crsTransform.transformBoundingBox( layerExtent );
@@ -1479,9 +1518,7 @@ namespace QgsWms
       }
 
       //get project crs
-      Q_NOWARN_DEPRECATED_PUSH
-      QgsCoordinateTransform t( layerCrs, project->crs() );
-      Q_NOWARN_DEPRECATED_POP
+      QgsCoordinateTransform t( layerCrs, project->crs(), project );
 
       //transform
       try
@@ -1584,7 +1621,7 @@ namespace QgsWms
           combinedBBox = mapRect;
         }
       }
-      appendLayerBoundingBoxes( doc, groupElem, combinedBBox, groupCRS, combinedCRSSet.toList(), outputCrsList );
+      appendLayerBoundingBoxes( doc, groupElem, combinedBBox, groupCRS, combinedCRSSet.toList(), outputCrsList, project );
 
     }
 

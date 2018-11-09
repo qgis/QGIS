@@ -78,8 +78,7 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   mModel->setHorizontalHeaderItem( 2, new QStandardItem( QStringLiteral( "Abstract" ) ) );
   if ( serviceType == FeatureService )
   {
-    mModel->setHorizontalHeaderItem( 3, new QStandardItem( QStringLiteral( "Cache Feature" ) ) );
-    mModel->setHorizontalHeaderItem( 4, new QStandardItem( QStringLiteral( "Filter" ) ) );
+    mModel->setHorizontalHeaderItem( 3, new QStandardItem( QStringLiteral( "Filter" ) ) );
     gbImageEncoding->hide();
   }
   else
@@ -92,6 +91,7 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   mModelProxy->setSourceModel( mModel );
   mModelProxy->setSortCaseSensitivity( Qt::CaseInsensitive );
   treeView->setModel( mModelProxy );
+  treeView->setSortingEnabled( true );
 
   connect( treeView, &QAbstractItemView::doubleClicked, this, &QgsArcGisServiceSourceSelect::treeWidgetItemDoubleClicked );
   connect( treeView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsArcGisServiceSourceSelect::treeWidgetCurrentRowChanged );
@@ -118,11 +118,11 @@ void QgsArcGisServiceSourceSelect::populateImageEncodings( const QStringList &av
     delete item;
   }
   bool first = true;
-  QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-  foreach ( const QString &encoding, availableEncodings )
+  const QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+  for ( const QString &encoding : availableEncodings )
   {
     bool supported = false;
-    foreach ( const QByteArray &fmt, supportedFormats )
+    for ( const QByteArray &fmt : supportedFormats )
     {
       if ( encoding.startsWith( fmt, Qt::CaseInsensitive ) )
       {
@@ -144,14 +144,14 @@ void QgsArcGisServiceSourceSelect::populateImageEncodings( const QStringList &av
 
 QString QgsArcGisServiceSourceSelect::getSelectedImageEncoding() const
 {
-  return mImageEncodingGroup ? mImageEncodingGroup->checkedButton()->text() : QString();
+  return mImageEncodingGroup && mImageEncodingGroup->checkedButton() ? mImageEncodingGroup->checkedButton()->text() : QString();
 }
 
 void QgsArcGisServiceSourceSelect::populateConnectionList()
 {
-  QStringList conns = QgsOwsConnection::connectionList( mServiceName );
+  const QStringList conns = QgsOwsConnection::connectionList( mServiceName );
   cmbConnections->clear();
-  foreach ( const QString &item, conns )
+  for ( const QString &item : conns )
   {
     cmbConnections->addItem( item );
   }
@@ -174,7 +174,7 @@ QString QgsArcGisServiceSourceSelect::getPreferredCrs( const QSet<QString> &crsS
 {
   if ( crsSet.size() < 1 )
   {
-    return QLatin1String( "" );
+    return QString();
   }
 
   //first: project CRS
@@ -266,16 +266,10 @@ void QgsArcGisServiceSourceSelect::connectToServer()
 
     if ( haveLayers )
     {
-      for ( int i = 0; i < treeView->header()->count(); ++i )
-      {
-        treeView->resizeColumnToContents( i );
-        if ( i < 2 && treeView->columnWidth( i ) > 300 )
-        {
-          treeView->setColumnWidth( i, 300 );
-        }
-      }
       treeView->selectionModel()->select( mModel->index( 0, 0 ), QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows );
       treeView->setFocus();
+
+      treeView->sortByColumn( 0, Qt::AscendingOrder );
     }
     else
     {
@@ -319,7 +313,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
       Q_NOWARN_DEPRECATED_PUSH
       extent = QgsCoordinateTransform( canvasCrs, pCrs ).transform( extent );
       Q_NOWARN_DEPRECATED_POP
-      QgsDebugMsg( QString( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" )
+      QgsDebugMsg( QStringLiteral( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" )
                    .arg( canvasCrs.authid(), pCrs.authid(), extent.asWktCoordinates() ) );
     }
     catch ( const QgsCsException & )
@@ -338,21 +332,25 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     {
       continue;
     }
+
     int row = idx.row();
-    QString layerTitle = mModel->item( row, 0 )->text(); //layer title/id
-    QString layerName = mModel->item( row, 1 )->text(); //layer name
-    bool cacheFeatures = mServiceType == FeatureService ? mModel->item( row, 3 )->checkState() == Qt::Checked : false;
-    QString filter = mServiceType == FeatureService ? mModel->item( row, 4 )->text() : QLatin1String( "" ); //optional filter specified by user
+    if ( !mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( IsLayerRole ).toBool() )
+      continue;
+
+    QString layerTitle = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->text();  //layer title/id
+    QString layerName = mModel->itemFromIndex( mModel->index( row, 1, idx.parent() ) )->text(); //layer name
+    const QString layerUri = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( UrlRole ).toString();
+    QString filter = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 3, idx.parent() ) )->text() : QString(); //optional filter specified by user
     if ( cbxUseTitleLayerName->isChecked() && !layerTitle.isEmpty() )
     {
       layerName = layerTitle;
     }
     QgsRectangle layerExtent;
-    if ( mServiceType == FeatureService && ( cbxFeatureCurrentViewExtent->isChecked() || !cacheFeatures ) )
+    if ( mServiceType == FeatureService && ( cbxFeatureCurrentViewExtent->isChecked() ) )
     {
       layerExtent = extent;
     }
-    QString uri = getLayerURI( connection, layerTitle, layerName, pCrsString, filter, layerExtent );
+    QString uri = getLayerURI( connection, layerUri.isEmpty() ? layerTitle : layerUri, layerName, pCrsString, filter, layerExtent );
 
     QgsDebugMsg( "Layer " + layerName + ", uri: " + uri );
     addServiceLayer( uri, layerName );
@@ -371,19 +369,20 @@ void QgsArcGisServiceSourceSelect::changeCrs()
 
 void QgsArcGisServiceSourceSelect::changeCrsFilter()
 {
-  QgsDebugMsg( "changeCRSFilter called" );
+  QgsDebugMsg( QStringLiteral( "changeCRSFilter called" ) );
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( currentIndex.isValid() )
   {
     QString currentTypename = currentIndex.sibling( currentIndex.row(), 1 ).data().toString();
-    QgsDebugMsg( QString( "the current typename is: %1" ).arg( currentTypename ) );
+    QgsDebugMsg( QStringLiteral( "the current typename is: %1" ).arg( currentTypename ) );
 
     QMap<QString, QStringList>::const_iterator crsIterator = mAvailableCRS.constFind( currentTypename );
     if ( crsIterator != mAvailableCRS.constEnd() )
     {
       QSet<QString> crsNames;
-      foreach ( const QString &crsName, crsIterator.value() )
+      const QStringList crsNamesList = crsIterator.value();
+      for ( const QString &crsName : crsNamesList )
       {
         crsNames.insert( crsName );
       }
@@ -411,7 +410,7 @@ void QgsArcGisServiceSourceSelect::cmbConnections_activated( int index )
 
 void QgsArcGisServiceSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex &index )
 {
-  QgsDebugMsg( "double-click called" );
+  QgsDebugMsg( QStringLiteral( "double-click called" ) );
   QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
   buildQuery( connection, index );
 }
@@ -419,7 +418,7 @@ void QgsArcGisServiceSourceSelect::treeWidgetItemDoubleClicked( const QModelInde
 void QgsArcGisServiceSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous )
 {
   Q_UNUSED( previous )
-  QgsDebugMsg( "treeWidget_currentRowChanged called" );
+  QgsDebugMsg( QStringLiteral( "treeWidget_currentRowChanged called" ) );
   changeCrsFilter();
   if ( mServiceType == FeatureService )
   {
@@ -430,7 +429,7 @@ void QgsArcGisServiceSourceSelect::treeWidgetCurrentRowChanged( const QModelInde
 
 void QgsArcGisServiceSourceSelect::buildQueryButtonClicked()
 {
-  QgsDebugMsg( "mBuildQueryButton click called" );
+  QgsDebugMsg( QStringLiteral( "mBuildQueryButton click called" ) );
   QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
   buildQuery( connection, treeView->selectionModel()->currentIndex() );
 }

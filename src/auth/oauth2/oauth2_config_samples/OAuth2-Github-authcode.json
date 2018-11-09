@@ -1,0 +1,27 @@
+{
+ "accessMethod" : 2,
+ "apiKey" : "",
+ "clientId" : "c69f25048b7adh318c6h",
+ "clientSecret" : "ff8c1ee32042n070ePf3c09o6abe8389he127b2b",
+ "configType" : 1,
+ "description" : "Example Github OAuth2 auth code grant flow configuration",
+ "grantFlow" : 0,
+ "id" : "1bq7806",
+ "name" : "OAuth2 - github - authcode",
+ "objectName" : "",
+ "password" : "",
+ "persistToken" : false,
+ "queryPairs" :  {
+  
+ },
+ "redirectPort" : 7070,
+ "redirectUrl" : "auth",
+ "refreshTokenUrl" : "",
+ "requestTimeout" : 60,
+ "requestUrl" : "https://github.com/login/oauth/authorize",
+ "scope" : "repo",
+ "state" : "",
+ "tokenUrl" : "https://github.com/login/oauth/access_token",
+ "username" : "",
+ "version" : 1
+}

@@ -97,7 +97,7 @@ void QgsAuthServersEditor::setupSslConfigsTree()
   mRootSslConfigItem = new QTreeWidgetItem(
     treeServerConfigs,
     QStringList( tr( "SSL Server Configurations" ) ),
-    ( int )QgsAuthServersEditor::Section );
+    static_cast<int>( QgsAuthServersEditor::Section ) );
   setItemBold_( mRootSslConfigItem );
   mRootSslConfigItem->setFlags( Qt::ItemIsEnabled );
   mRootSslConfigItem->setExpanded( true );
@@ -161,7 +161,7 @@ void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSsl
   {
     QTreeWidgetItem *grpitem( new QTreeWidgetItem( parent,
                               QStringList() << it.key(),
-                              ( int )QgsAuthServersEditor::OrgName ) );
+                              static_cast<int>( QgsAuthServersEditor::OrgName ) ) );
     grpitem->setFirstColumnSpanned( true );
     grpitem->setFlags( Qt::ItemIsEnabled );
     grpitem->setExpanded( true );
@@ -204,7 +204,7 @@ void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslS
     coltxts << QString( config.sslHostPort() );
     coltxts << cert.expiryDate().toString();
 
-    QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, ( int )conftype ) );
+    QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, static_cast<int>( conftype ) ) );
 
     item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
     if ( !QgsAuthCertUtils::certIsViable( cert ) )
@@ -288,7 +288,7 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
 
   if ( !item )
   {
-    QgsDebugMsg( "Current tree widget item not set" );
+    QgsDebugMsg( QStringLiteral( "Current tree widget item not set" ) );
     return;
   }
 
@@ -310,7 +310,7 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
 
   if ( !QgsApplication::authManager()->existsSslCertCustomConfig( digest, hostport ) )
   {
-    QgsDebugMsg( QString( "SSL custom config does not exist in database for host:port, id %1:" )
+    QgsDebugMsg( QStringLiteral( "SSL custom config does not exist in database for host:port, id %1:" )
                  .arg( hostport, digest ) );
     return;
   }
@@ -344,7 +344,7 @@ void QgsAuthServersEditor::btnEditServer_clicked()
 
   if ( !item )
   {
-    QgsDebugMsg( "Current tree widget item not set" );
+    QgsDebugMsg( QStringLiteral( "Current tree widget item not set" ) );
     return;
   }
 
@@ -366,7 +366,7 @@ void QgsAuthServersEditor::btnEditServer_clicked()
 
   if ( !QgsApplication::authManager()->existsSslCertCustomConfig( digest, hostport ) )
   {
-    QgsDebugMsg( "SSL custom config does not exist in database" );
+    QgsDebugMsg( QStringLiteral( "SSL custom config does not exist in database" ) );
     return;
   }
 
@@ -397,7 +397,7 @@ void QgsAuthServersEditor::btnGroupByOrg_toggled( bool checked )
 
 void QgsAuthServersEditor::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
-  int levelint = ( int )level;
+  int levelint = static_cast<int>( level );
   messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint, 7 );
 }
 

@@ -178,7 +178,7 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
   bool subtractingSelection = false;
   if ( event->modifiers() & Qt::ShiftModifier )
   {
-    //shift modifer means adding to selection, nothing required here
+    //shift modifier means adding to selection, nothing required here
   }
   else if ( event->modifiers() & Qt::ControlModifier )
   {

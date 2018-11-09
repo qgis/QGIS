@@ -47,14 +47,8 @@ QgsRasterCalcNode::QgsRasterCalcNode( const QString &rasterName )
 
 QgsRasterCalcNode::~QgsRasterCalcNode()
 {
-  if ( mLeft )
-  {
-    delete mLeft;
-  }
-  if ( mRight )
-  {
-    delete mRight;
-  }
+  delete mLeft;
+  delete mRight;
 }
 
 bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData, QgsRasterMatrix &result, int row ) const

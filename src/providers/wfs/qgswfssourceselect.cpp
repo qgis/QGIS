@@ -22,7 +22,7 @@
 #include "qgswfsprovider.h"
 #include "qgswfsdatasourceuri.h"
 #include "qgswfsutils.h"
-#include "qgsnewhttpconnection.h"
+#include "qgswfsnewconnection.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
@@ -85,7 +85,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   treeView->setItemDelegate( mItemDelegate );
 
   QgsSettings settings;
-  QgsDebugMsg( "restoring settings" );
+  QgsDebugMsg( QStringLiteral( "restoring settings" ) );
   restoreGeometry( settings.value( QStringLiteral( "Windows/WFSSourceSelect/geometry" ) ).toByteArray() );
   cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/UseTitleLayerName" ), false ).toBool() );
   cbxFeatureCurrentViewExtent->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool() );
@@ -108,8 +108,10 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
 QgsWFSSourceSelect::~QgsWFSSourceSelect()
 {
+  QApplication::restoreOverrideCursor();
+
   QgsSettings settings;
-  QgsDebugMsg( "saving settings" );
+  QgsDebugMsg( QStringLiteral( "saving settings" ) );
   settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
   settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), cbxFeatureCurrentViewExtent->isChecked() );
@@ -170,7 +172,7 @@ QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString> &crsSet ) const
 {
   if ( crsSet.size() < 1 )
   {
-    return QLatin1String( "" );
+    return QString();
   }
 
   //first: project CRS
@@ -204,6 +206,7 @@ void QgsWFSSourceSelect::refresh()
 
 void QgsWFSSourceSelect::capabilitiesReplyFinished()
 {
+  QApplication::restoreOverrideCursor();
   btnConnect->setEnabled( true );
 
   if ( !mCapabilities )
@@ -290,7 +293,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
 
 void QgsWFSSourceSelect::addEntryToServerList()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS );
+  auto nc = new QgsWFSNewConnection( this );
   nc->setAttribute( Qt::WA_DeleteOnClose );
   nc->setWindowTitle( tr( "Create a New WFS Connection" ) );
 
@@ -303,7 +306,7 @@ void QgsWFSSourceSelect::addEntryToServerList()
 
 void QgsWFSSourceSelect::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS, cmbConnections->currentText() );
+  auto nc = new QgsWFSNewConnection( this, cmbConnections->currentText() );
   nc->setAttribute( Qt::WA_DeleteOnClose );
   nc->setWindowTitle( tr( "Modify WFS Connection" ) );
 
@@ -356,6 +359,7 @@ void QgsWFSSourceSelect::connectToServer()
     const bool synchronous = false;
     const bool forceRefresh = true;
     mCapabilities->requestCapabilities( synchronous, forceRefresh );
+    QApplication::setOverrideCursor( Qt::WaitCursor );
   }
 }
 
@@ -476,7 +480,7 @@ void QgsWFSTableSelectedCallback::tableSelected( const QString &name )
     QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( p.geometryAttribute() ) );
     fieldList << QgsSQLComposerDialog::PairNameType( fieldName, QStringLiteral( "geometry" ) );
   }
-  fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", QLatin1String( "" ) );
+  fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", QString() );
 
   mDialog->addColumnNames( fieldList, name );
 }
@@ -605,7 +609,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
     QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( p.geometryAttribute() ) );
     fieldList << QgsSQLComposerDialog::PairNameType( fieldName, QStringLiteral( "geometry" ) );
   }
-  fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", QLatin1String( "" ) );
+  fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", QString() );
 
   d->addColumnNames( fieldList, QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ) );
 
@@ -635,7 +639,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
 
 void QgsWFSSourceSelect::updateSql()
 {
-  QgsDebugMsg( "updateSql called" );
+  QgsDebugMsg( QStringLiteral( "updateSql called" ) );
   Q_ASSERT( mSQLComposerDialog );
 
   const QString typeName = mSQLIndex.sibling( mSQLIndex.row(), MODEL_IDX_NAME ).data().toString();
@@ -665,13 +669,13 @@ void QgsWFSSourceSelect::changeCRS()
 
 void QgsWFSSourceSelect::changeCRSFilter()
 {
-  QgsDebugMsg( "changeCRSFilter called" );
+  QgsDebugMsg( QStringLiteral( "changeCRSFilter called" ) );
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( currentIndex.isValid() )
   {
     QString currentTypename = currentIndex.sibling( currentIndex.row(), MODEL_IDX_NAME ).data().toString();
-    QgsDebugMsg( QString( "the current typename is: %1" ).arg( currentTypename ) );
+    QgsDebugMsg( QStringLiteral( "the current typename is: %1" ).arg( currentTypename ) );
 
     QMap<QString, QStringList >::const_iterator crsIterator = mAvailableCRS.constFind( currentTypename );
     if ( crsIterator != mAvailableCRS.constEnd() )
@@ -715,7 +719,7 @@ void QgsWFSSourceSelect::btnSave_clicked()
 void QgsWFSSourceSelect::btnLoad_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *XML)" ) );
+                     tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -729,14 +733,14 @@ void QgsWFSSourceSelect::btnLoad_clicked()
 
 void QgsWFSSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex &index )
 {
-  QgsDebugMsg( "double-click called" );
+  QgsDebugMsg( QStringLiteral( "double-click called" ) );
   buildQuery( index );
 }
 
 void QgsWFSSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous )
 {
   Q_UNUSED( previous )
-  QgsDebugMsg( "treeWidget_currentRowChanged called" );
+  QgsDebugMsg( QStringLiteral( "treeWidget_currentRowChanged called" ) );
   changeCRSFilter();
   mBuildQueryButton->setEnabled( current.isValid() );
   emit enableButtons( current.isValid() );
@@ -744,7 +748,7 @@ void QgsWFSSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current
 
 void QgsWFSSourceSelect::buildQueryButtonClicked()
 {
-  QgsDebugMsg( "mBuildQueryButton click called" );
+  QgsDebugMsg( QStringLiteral( "mBuildQueryButton click called" ) );
   buildQuery( treeView->selectionModel()->currentIndex() );
 }
 

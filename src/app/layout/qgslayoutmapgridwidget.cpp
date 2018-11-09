@@ -26,6 +26,7 @@
 #include "qgslayout.h"
 #include "qgsmapsettings.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsvectorlayer.h"
 
 QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, QgsLayoutItemMap *map )
   : QgsLayoutItemBaseWidget( nullptr, mapGrid )
@@ -122,19 +123,19 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   mGridFramePenColorButton->setColorDialogTitle( tr( "Select Grid Frame Color" ) );
   mGridFramePenColorButton->setAllowOpacity( true );
   mGridFramePenColorButton->setContext( QStringLiteral( "composer" ) );
-  mGridFramePenColorButton->setNoColorString( tr( "Transparent frame" ) );
+  mGridFramePenColorButton->setNoColorString( tr( "Transparent Frame" ) );
   mGridFramePenColorButton->setShowNoColor( true );
 
   mGridFrameFill1ColorButton->setColorDialogTitle( tr( "Select Grid Frame Fill Color" ) );
   mGridFrameFill1ColorButton->setAllowOpacity( true );
   mGridFrameFill1ColorButton->setContext( QStringLiteral( "composer" ) );
-  mGridFrameFill1ColorButton->setNoColorString( tr( "Transparent fill" ) );
+  mGridFrameFill1ColorButton->setNoColorString( tr( "Transparent Fill" ) );
   mGridFrameFill1ColorButton->setShowNoColor( true );
 
   mGridFrameFill2ColorButton->setColorDialogTitle( tr( "Select Grid Frame Fill Color" ) );
   mGridFrameFill2ColorButton->setAllowOpacity( true );
   mGridFrameFill2ColorButton->setContext( QStringLiteral( "composer" ) );
-  mGridFrameFill2ColorButton->setNoColorString( tr( "Transparent fill" ) );
+  mGridFrameFill2ColorButton->setNoColorString( tr( "Transparent Fill" ) );
   mGridFrameFill2ColorButton->setShowNoColor( true );
 
   mGridLineStyleButton->setSymbolType( QgsSymbol::Line );
@@ -746,22 +747,22 @@ void QgsLayoutMapGridWidget::mCheckGridBottomSide_toggled( bool checked )
 
 void QgsLayoutMapGridWidget::mFrameDivisionsLeftComboBox_currentIndexChanged( int index )
 {
-  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Left, ( QgsLayoutItemMapGrid::DisplayMode ) mFrameDivisionsLeftComboBox->itemData( index ).toInt() );
+  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Left, static_cast< QgsLayoutItemMapGrid::DisplayMode >( mFrameDivisionsLeftComboBox->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mFrameDivisionsRightComboBox_currentIndexChanged( int index )
 {
-  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Right, ( QgsLayoutItemMapGrid::DisplayMode ) mFrameDivisionsRightComboBox->itemData( index ).toInt() );
+  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Right, static_cast< QgsLayoutItemMapGrid::DisplayMode >( mFrameDivisionsRightComboBox->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mFrameDivisionsTopComboBox_currentIndexChanged( int index )
 {
-  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Top, ( QgsLayoutItemMapGrid::DisplayMode ) mFrameDivisionsTopComboBox->itemData( index ).toInt() );
+  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Top, static_cast< QgsLayoutItemMapGrid::DisplayMode >( mFrameDivisionsTopComboBox->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mFrameDivisionsBottomComboBox_currentIndexChanged( int index )
 {
-  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Bottom, ( QgsLayoutItemMapGrid::DisplayMode ) mFrameDivisionsBottomComboBox->itemData( index ).toInt() );
+  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Bottom, static_cast< QgsLayoutItemMapGrid::DisplayMode >( mFrameDivisionsBottomComboBox->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mGridFramePenSizeSpinBox_valueChanged( double d )
@@ -1003,6 +1004,7 @@ void QgsLayoutMapGridWidget::mAnnotationFormatButton_clicked()
   }
 
   QgsExpressionContext expressionContext = mMapGrid->createExpressionContext();
+  expressionContext.setHighlightedFunctions( QStringList() << QStringLiteral( "to_dms" ) << QStringLiteral( "to_dm" ) );
 
   QgsExpressionBuilderDialog exprDlg( nullptr, mMapGrid->annotationExpression(), this, QStringLiteral( "generic" ), expressionContext );
   exprDlg.setWindowTitle( tr( "Expression Based Annotation" ) );
@@ -1060,22 +1062,22 @@ void QgsLayoutMapGridWidget::mAnnotationPositionBottomComboBox_currentIndexChang
 
 void QgsLayoutMapGridWidget::mAnnotationDirectionComboBoxLeft_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Left, ( QgsLayoutItemMapGrid::AnnotationDirection ) mAnnotationDirectionComboBoxLeft->itemData( index ).toInt() );
+  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Left, static_cast< QgsLayoutItemMapGrid::AnnotationDirection >( mAnnotationDirectionComboBoxLeft->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDirectionComboBoxRight_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Right, ( QgsLayoutItemMapGrid::AnnotationDirection ) mAnnotationDirectionComboBoxRight->itemData( index ).toInt() );
+  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Right, static_cast< QgsLayoutItemMapGrid::AnnotationDirection >( mAnnotationDirectionComboBoxRight->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDirectionComboBoxTop_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Top, ( QgsLayoutItemMapGrid::AnnotationDirection ) mAnnotationDirectionComboBoxTop->itemData( index ).toInt() );
+  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Top, static_cast< QgsLayoutItemMapGrid::AnnotationDirection >( mAnnotationDirectionComboBoxTop->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDirectionComboBoxBottom_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Bottom, ( QgsLayoutItemMapGrid::AnnotationDirection ) mAnnotationDirectionComboBoxBottom->itemData( index ).toInt() );
+  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Bottom, static_cast< QgsLayoutItemMapGrid::AnnotationDirection >( mAnnotationDirectionComboBoxBottom->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mDistanceToMapFrameSpinBox_valueChanged( double d )
@@ -1154,7 +1156,7 @@ void QgsLayoutMapGridWidget::mAnnotationFormatComboBox_currentIndexChanged( int 
 
   mMap->beginCommand( tr( "Change Annotation Format" ) );
 
-  mMapGrid->setAnnotationFormat( ( QgsLayoutItemMapGrid::AnnotationFormat )mAnnotationFormatComboBox->itemData( index ).toInt() );
+  mMapGrid->setAnnotationFormat( static_cast< QgsLayoutItemMapGrid::AnnotationFormat >( mAnnotationFormatComboBox->itemData( index ).toInt() ) );
   mAnnotationFormatButton->setEnabled( mMapGrid->annotationFormat() == QgsLayoutItemMapGrid::CustomFormat );
 
   mMap->updateBoundingRect();

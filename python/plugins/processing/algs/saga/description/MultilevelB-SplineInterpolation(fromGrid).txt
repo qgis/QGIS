@@ -4,7 +4,7 @@ QgsProcessingParameterRasterLayer|GRID|Grid|None|False
 Hardcoded|-TARGET_DEFINITION 0
 QgsProcessingParameterEnum|METHOD|Method|[0] without B-spline refinement;[1] with B-spline refinement
 QgsProcessingParameterNumber|EPSILON|Threshold Error|QgsProcessingParameterNumber.Double|0.0001|False|0|None
-QgsProcessingParameterNumber|LEVEL_MAX|Maximum Level|QgsProcessingParameterNumber.Double|11.0|False|1|14
+QgsProcessingParameterNumber|LEVEL_MAX|Maximum Level|QgsProcessingParameterNumber.Integer|11|False|1|14
 QgsProcessingParameterBoolean|UPDATE|Update View|False
 QgsProcessingParameterEnum|DATATYPE|Data Type|[0] same as input grid;[1] floating point
 QgsProcessingParameterExtent|TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX|Output extent|None|True

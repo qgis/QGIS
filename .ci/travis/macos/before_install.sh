@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ###########################################################################
 #    before_install.sh
 #    ---------------------
@@ -27,7 +28,8 @@ pip3 install \
     pyyaml \
     mock \
     future \
-    termcolor
+    termcolor \
+    oauthlib
 
 brew install \
     qscintilla2 \

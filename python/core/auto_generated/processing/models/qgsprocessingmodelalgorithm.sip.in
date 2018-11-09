@@ -45,6 +45,8 @@ Constructor for QgsProcessingModelAlgorithm.
 
     virtual QString shortHelpString() const;
 
+    virtual QString shortDescription() const;
+
     virtual QString helpUrl() const;
 
     virtual Flags flags() const;
@@ -293,6 +295,26 @@ Reads the model from a file, at the specified ``path``.
 .. seealso:: :py:func:`toFile`
 %End
 
+    QVariant toVariant() const;
+%Docstring
+Saves this model to a QVariantMap, wrapped in a QVariant.
+You can use QgsXmlUtils.writeVariant to save it to an XML document.
+
+.. seealso:: :py:func:`loadVariant`
+
+.. versionadded:: 3.4
+%End
+
+    bool loadVariant( const QVariant &variant );
+%Docstring
+Loads this model from a QVariantMap, wrapped in a QVariant ``variant``.
+You can use QgsXmlUtils.readVariant to load it from an XML document.
+
+.. seealso:: :py:func:`toVariant`
+
+.. versionadded:: 3.4
+%End
+
     QVariantMap &helpContent();
 %Docstring
 Returns the model's help contents (a free-form map of values describing the algorithm's
@@ -335,7 +357,7 @@ Attempts to convert the model to executable Python code.
 Returns a list of possible sources which can be used for the parameters for a child
 algorithm in the model. Returned sources are those which match either one of the
 specified ``parameterTypes`` (see QgsProcessingParameterDefinition.type() ) or
-on of the specified ``outputTypes`` (see QgsProcessingOutputDefinition.type() ).
+one of the specified ``outputTypes`` (see QgsProcessingOutputDefinition.type() ).
 If specified, an optional list of ``dataTypes`` can be used to filter the returned
 sources to those with compatible data types for the parameter/outputs.
 %End

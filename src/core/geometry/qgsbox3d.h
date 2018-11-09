@@ -20,7 +20,8 @@
 
 #include "qgis_core.h"
 #include "qgsrectangle.h"
-#include "qgspoint.h"
+
+class QgsPoint;
 
 /**
  * \ingroup core

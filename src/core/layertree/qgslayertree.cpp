@@ -138,6 +138,10 @@ void QgsLayerTree::writeXml( QDomElement &parentElement, const QgsReadWriteConte
 
   Q_FOREACH ( QgsMapLayer *layer, mCustomLayerOrder )
   {
+    // Safety belt, see https://issues.qgis.org/issues/19145
+    // Crash when deleting an item from the layout legend
+    if ( ! layer )
+      continue;
     QDomElement layerElem = doc.createElement( QStringLiteral( "item" ) );
     layerElem.appendChild( doc.createTextNode( layer->id() ) );
     customOrderElem.appendChild( layerElem );

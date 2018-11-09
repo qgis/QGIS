@@ -33,7 +33,7 @@
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmimedatautils.h"
-
+#include "qgswkbtypes.h"
 
 class QgsDataProvider;
 class QgsDataItem;
@@ -210,7 +210,8 @@ class CORE_EXPORT QgsDataItem : public QObject
       SetCrs            = 1 << 0, //!< Can set CRS on layer or group of layers
       Fertile           = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
       Fast              = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
-      Collapse          = 1 << 3  //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
+      Collapse          = 1 << 3,  //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
+      Rename            = 1 << 4, //!< Item can be renamed
     };
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
@@ -220,11 +221,30 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) { Q_UNUSED( crs ); return false; }
 
-    // ### QGIS 3 - rename to capabilities()
+    /**
+     * Sets a new \a name for the item, and returns true if the item was successfully renamed.
+     *
+     * Items which implement this method should return the QgsDataItem::Rename capability.
+     *
+     * The default implementation does nothing.
+     *
+     * \since QGIS 3.4
+     */
+    virtual bool rename( const QString &name );
+
+    // ### QGIS 4 - rename to capabilities()
+
+    /**
+     * Returns the capabilities for the data item.
+     *
+     * \see setCapabilities()
+     */
     virtual Capabilities capabilities2() const { return mCapabilities; }
 
     /**
      * Sets the capabilities for the data item.
+     *
+     * \see capabilities2()
      */
     virtual void setCapabilities( Capabilities capabilities ) { mCapabilities = capabilities; }
 
@@ -326,7 +346,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     QVector<QgsDataItem *> mChildren; // easier to have it always
     State mState;
     QString mName;
-    // Path is slash ('/') separated chain of item identifiers which are usually item names, but may be differen if it is
+    // Path is slash ('/') separated chain of item identifiers which are usually item names, but may be different if it is
     // necessary to distinguish paths of two providers to the same source (e.g GRASS location and standard directory have the same
     // name but different paths). Identifiers in path must not contain '/' characters.
     // The path is used to identify item in tree.
@@ -443,6 +463,12 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     //! Returns QgsMapLayer::LayerType
     QgsMapLayer::LayerType mapLayerType() const;
 
+    /**
+     * Returns the layer item type corresponding to a QgsMapLayer \a layer.
+     * \since QGIS 3.6
+     */
+    static LayerType typeFromMapLayer( QgsMapLayer *layer );
+
     //! Returns layer uri or empty string if layer cannot be created
     QString uri() const { return mUri; }
 
@@ -522,6 +548,20 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 
     static QIcon iconDir(); // shared icon: open/closed directory
     static QIcon iconDataCollection(); // default icon for data collection
+
+  protected:
+
+    /**
+     * Shared open directory icon.
+     * \since QGIS 3.4
+     */
+    static QIcon openDirIcon();
+
+    /**
+     * Shared home directory icon.
+     * \since QGIS 3.4
+     */
+    static QIcon homeDirIcon();
 };
 
 /**
@@ -564,9 +604,6 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
     //! Check if the given path is hidden from the browser model
     static bool hiddenPath( const QString &path );
-
-    QList<QAction *> actions( QWidget *parent ) override;
-
 
   public slots:
     void childrenCreated() override;
@@ -750,9 +787,6 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
     QIcon icon() override;
     QVariant sortKey() const override;
 
-    QList<QAction *> actions( QWidget *parent ) override;
-
-
 };
 
 /**
@@ -768,10 +802,7 @@ class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
 
     QgsFavoriteItem( QgsFavoritesItem *parent, const QString &name, const QString &dirPath, const QString &path );
 
-    /**
-     * Sets a new \a name for the favorite, storing the new name permanently for the favorite.
-     */
-    void rename( const QString &name );
+    bool rename( const QString &name ) override;
 
   private:
 

@@ -202,7 +202,7 @@
      <item>
       <widget class="QToolButton" name="btnBrowse">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>

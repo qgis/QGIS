@@ -175,9 +175,18 @@ class CORE_EXPORT QgsCoordinateTransform
     /**
      * Sets the \a context in which the coordinate transform should be
      * calculated.
+     * \see context()
      * \since QGIS 3.0
      */
     void setContext( const QgsCoordinateTransformContext &context );
+
+    /**
+     * Returns the context in which the coordinate transform will be
+     * calculated.
+     * \see setContext()
+     * \since QGIS 3.4
+     */
+    QgsCoordinateTransformContext context() const;
 
     /**
      * Returns the source coordinate reference system, which the transform will
@@ -214,7 +223,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param direction transform direction (defaults to ForwardTransform)
      * \returns transformed point
      */
-    QgsPointXY transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const;
+    QgsPointXY transform( double x, double y, TransformDirection direction = ForwardTransform ) const;
 
     /**
      * Transforms a rectangle from the source CRS to the destination CRS.
@@ -229,7 +238,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * crossing the 180 degree longitude line is required
      * \returns rectangle in destination CRS
      */
-    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const SIP_THROW( QgsCsException );
+    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, bool handle180Crossover = false ) const SIP_THROW( QgsCsException );
 
     /**
      * Transforms an array of x, y and z double coordinates in place, from the source CRS to the destination CRS.
@@ -395,6 +404,17 @@ class CORE_EXPORT QgsCoordinateTransform
      * \since QGIS 3.0
      */
     static void invalidateCache();
+
+    /**
+     * Computes an *estimated* conversion factor between source and destination units:
+     *
+     *   sourceUnits * scaleFactor = destinationUnits
+     *
+     * \param referenceExtent A reference extent based on which to perform the computation
+     *
+     * \since QGIS 3.4
+     */
+    double scaleFactor( const QgsRectangle &referenceExtent ) const;
 
   private:
 

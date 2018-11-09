@@ -53,6 +53,12 @@ Returns the geometry converted to the more generic curve type :py:class:`QgsMult
     virtual QgsMultiLineString *createEmptyWithSameType() const /Factory/;
 
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsMultiLineString: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
   protected:
 
     virtual bool wktOmitChildType() const;

@@ -25,9 +25,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import csv
-
-from qgis.core import (QgsWkbTypes,
+from qgis.core import (NULL,
                        QgsFeatureRequest)
 
 
@@ -78,7 +76,7 @@ def values(source, *attributes):
 
             # convert attribute value to number
             try:
-                v = float(feature.attributes()[i])
+                v = float(feature[i])
             except:
                 v = None
 
@@ -88,6 +86,16 @@ def values(source, *attributes):
             else:
                 ret[k] = [v]
     return ret
+
+
+def convert_nulls(values, replacement=None):
+    """
+    Converts NULL items in a list of values to a replacement value (usually None)
+    :param values: list of values
+    :param replacement: value to use in place of NULL
+    :return: converted list
+    """
+    return [i if i != NULL else replacement for i in values]
 
 
 def checkMinDistance(point, index, distance, points):

@@ -170,7 +170,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mLineDistanceUnitWidget->setUnit( lyr.distUnits );
   mLineDistanceUnitWidget->setMapUnitScale( lyr.distMapUnitScale );
   mOffsetTypeComboBox->setCurrentIndex( mOffsetTypeComboBox->findData( lyr.offsetType ) );
-  mQuadrantBtnGrp->button( ( int )lyr.quadOffset )->setChecked( true );
+  mQuadrantBtnGrp->button( static_cast<int>( lyr.quadOffset ) )->setChecked( true );
   mPointOffsetXSpinBox->setValue( lyr.xOffset );
   mPointOffsetYSpinBox->setValue( lyr.yOffset );
   mPointOffsetUnitWidget->setUnit( lyr.offsetUnits );
@@ -238,8 +238,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mDirectSymbRightLineEdit->setText( lyr.rightDirectionSymbol );
   mDirectSymbRevChkBx->setChecked( lyr.reverseDirectionSymbol );
 
-  mDirectSymbBtnGrp->button( ( int )lyr.placeDirectionSymbol )->setChecked( true );
-  mUpsidedownBtnGrp->button( ( int )lyr.upsidedownLabels )->setChecked( true );
+  mDirectSymbBtnGrp->button( static_cast<int>( lyr.placeDirectionSymbol ) )->setChecked( true );
+  mUpsidedownBtnGrp->button( static_cast<int>( lyr.upsidedownLabels ) )->setChecked( true );
 
   // curved label max character angles
   mMaxCharAngleInDSpinBox->setValue( lyr.maxCurvedCharAngleIn );
@@ -247,6 +247,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mMaxCharAngleOutDSpinBox->setValue( std::fabs( lyr.maxCurvedCharAngleOut ) );
 
   wrapCharacterEdit->setText( lyr.wrapChar );
+  mAutoWrapLengthSpinBox->setValue( lyr.autoWrapLength );
+  mAutoWrapTypeComboBox->setCurrentIndex( lyr.useMaxLineLengthForAutoWrap ? 0 : 1 );
   mFontMultiLineAlignComboBox->setCurrentIndex( ( unsigned int ) lyr.multilineAlign );
   chkPreserveRotation->setChecked( lyr.preserveRotation );
 
@@ -435,6 +437,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.fontMinPixelSize = mFontMinPixelSpinBox->value();
   lyr.fontMaxPixelSize = mFontMaxPixelSpinBox->value();
   lyr.wrapChar = wrapCharacterEdit->text();
+  lyr.autoWrapLength = mAutoWrapLengthSpinBox->value();
+  lyr.useMaxLineLengthForAutoWrap = mAutoWrapTypeComboBox->currentIndex() == 0;
   lyr.multilineAlign = ( QgsPalLayerSettings::MultiLineAlign ) mFontMultiLineAlignComboBox->currentIndex();
   lyr.preserveRotation = chkPreserveRotation->isChecked();
 
@@ -465,6 +469,7 @@ void QgsLabelingGui::populateDataDefinedButtons()
 
   // text formatting
   registerDataDefinedButton( mWrapCharDDBtn, QgsPalLayerSettings::MultiLineWrapChar );
+  registerDataDefinedButton( mAutoWrapLengthDDBtn, QgsPalLayerSettings::AutoWrapLength );
   registerDataDefinedButton( mFontLineHeightDDBtn, QgsPalLayerSettings::MultiLineHeight );
   registerDataDefinedButton( mFontMultiLineAlignDDBtn, QgsPalLayerSettings::MultiLineAlignment );
 

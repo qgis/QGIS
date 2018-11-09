@@ -68,7 +68,7 @@ QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capit
       {
         smallWords = QObject::tr( "a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via" ).split( '|' );
         newPhraseSeparators = QObject::tr( ".|:" ).split( '|' );
-        splitWords = QRegularExpression( QStringLiteral( "\\b" ) );
+        splitWords = QRegularExpression( QStringLiteral( "\\b" ), QRegularExpression::UseUnicodePropertiesOption );
       }
 
       const QStringList parts = string.split( splitWords, QString::SkipEmptyParts );
@@ -431,7 +431,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
   {
     found = true;
     QString email = emailRegEx.cap( 1 );
-    QString anchor = QStringLiteral( "<a href=\"mailto:%1\">%1</a>" ).arg( email.toHtmlEscaped(), email.toHtmlEscaped() );
+    QString anchor = QStringLiteral( "<a href=\"mailto:%1\">%1</a>" ).arg( email.toHtmlEscaped() );
     converted.replace( emailRegEx.pos( 1 ), email.length(), anchor );
     offset = emailRegEx.pos( 1 ) + anchor.length();
   }
@@ -440,6 +440,76 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
     *foundLinks = found;
 
   return converted;
+}
+
+QString QgsStringUtils::wordWrap( const QString &string, const int length, const bool useMaxLineLength, const QString &customDelimiter )
+{
+  if ( string.isEmpty() || length == 0 )
+    return string;
+
+  QString newstr;
+  QRegExp rx;
+  int delimiterLength = 0;
+
+  if ( !customDelimiter.isEmpty() )
+  {
+    rx.setPatternSyntax( QRegExp::FixedString );
+    rx.setPattern( customDelimiter );
+    delimiterLength = customDelimiter.length();
+  }
+  else
+  {
+    // \x200B is a ZERO-WIDTH SPACE, needed for worwrap to support a number of complex scripts (Indic, Arabic, etc.)
+    rx.setPattern( QStringLiteral( "[\\s\\x200B]" ) );
+    delimiterLength = 1;
+  }
+
+  const QStringList lines = string.split( '\n' );
+  int strLength, strCurrent, strHit, lastHit;
+
+  for ( int i = 0; i < lines.size(); i++ )
+  {
+    strLength = lines.at( i ).length();
+    strCurrent = 0;
+    strHit = 0;
+    lastHit = 0;
+
+    while ( strCurrent < strLength )
+    {
+      // positive wrap value = desired maximum line width to wrap
+      // negative wrap value = desired minimum line width before wrap
+      if ( useMaxLineLength )
+      {
+        //first try to locate delimiter backwards
+        strHit = lines.at( i ).lastIndexOf( rx, strCurrent + length );
+        if ( strHit == lastHit || strHit == -1 )
+        {
+          //if no new backward delimiter found, try to locate forward
+          strHit = lines.at( i ).indexOf( rx, strCurrent + std::abs( length ) );
+        }
+        lastHit = strHit;
+      }
+      else
+      {
+        strHit = lines.at( i ).indexOf( rx, strCurrent + std::abs( length ) );
+      }
+      if ( strHit > -1 )
+      {
+        newstr.append( lines.at( i ).midRef( strCurrent, strHit - strCurrent ) );
+        newstr.append( '\n' );
+        strCurrent = strHit + delimiterLength;
+      }
+      else
+      {
+        newstr.append( lines.at( i ).midRef( strCurrent ) );
+        strCurrent = strLength;
+      }
+    }
+    if ( i < lines.size() - 1 )
+      newstr.append( '\n' );
+  }
+
+  return newstr;
 }
 
 QgsStringReplacement::QgsStringReplacement( const QString &match, const QString &replacement, bool caseSensitive, bool wholeWordOnly )

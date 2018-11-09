@@ -9,7 +9,7 @@
 #include <string>
 #include <memory>
 
-#include "mdal_defines.hpp"
+#include "mdal_data_model.hpp"
 #include "mdal.h"
 
 namespace MDAL

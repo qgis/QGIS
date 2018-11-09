@@ -41,6 +41,7 @@ class QgsDropMZValuesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QgsDropMZValuesAlgorithm *createInstance() const override SIP_FACTORY;
+    bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
 
@@ -55,6 +56,7 @@ class QgsDropMZValuesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
     bool mDropM = false;
     bool mDropZ = false;
+
 };
 
 ///@endcond PRIVATE

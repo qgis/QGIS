@@ -1,0 +1,98 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingtoolboxtreeview.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProcessingToolboxTreeView : QTreeView
+{
+%Docstring
+Processing toolbox tree view, showing algorithms and providers in a tree structure.
+
+.. warning::
+
+   Not part of stable API and may change in future QGIS releases.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingtoolboxtreeview.h"
+%End
+  public:
+
+    QgsProcessingToolboxTreeView( QWidget *parent /TransferThis/ = 0,
+                                  QgsProcessingRegistry *registry = 0,
+                                  QgsProcessingRecentAlgorithmLog *recentLog = 0 );
+%Docstring
+Constructor for QgsProcessingToolboxTreeView, with the specified ``parent`` widget.
+
+If ``registry`` is set, then the view will automatically be populated with algorithms
+and providers from the registry. Otherwise, users must manually call setRegistry()
+to associate a registry with the view.
+
+If ``recentLog`` is specified then it will be used to create a "Recently used" top
+level group containing recently used algorithms.
+%End
+
+    void setRegistry(
+      QgsProcessingRegistry *registry,
+      QgsProcessingRecentAlgorithmLog *recentLog = 0 );
+%Docstring
+Sets the processing ``registry`` associated with the view.
+
+If ``recentLog`` is specified then it will be used to create a "Recently used" top
+level group containing recently used algorithms.
+%End
+
+    void setToolboxProxyModel( QgsProcessingToolboxProxyModel *model /Transfer/ );
+%Docstring
+Sets the toolbox proxy model used to drive the view.
+%End
+
+    const QgsProcessingAlgorithm *algorithmForIndex( const QModelIndex &index );
+%Docstring
+Returns the algorithm at the specified tree view ``index``, or a None
+if the index does not correspond to an algorithm.
+%End
+
+    const QgsProcessingAlgorithm *selectedAlgorithm();
+%Docstring
+Returns the currently selected algorithm in the tree view, or a None
+if no algorithm is currently selected.
+%End
+
+    void setFilters( QgsProcessingToolboxProxyModel::Filters filters );
+%Docstring
+Sets ``filters`` controlling the view's contents.
+%End
+
+
+    void setInPlaceLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the vector ``layer`` for the in-place algorithms
+%End
+
+  public slots:
+
+    void setFilterString( const QString &filter );
+%Docstring
+Sets a ``filter`` string, used to filter out the contents of the view
+to matching algorithms.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingtoolboxtreeview.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

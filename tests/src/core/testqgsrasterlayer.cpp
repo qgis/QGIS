@@ -85,6 +85,7 @@ class TestQgsRasterLayer : public QObject
     void setRenderer();
     void regression992(); //test for issue #992 - GeoJP2 images improperly displayed as all black
     void testRefreshRendererIfNeeded();
+    void sample();
 
 
   private:
@@ -340,7 +341,7 @@ void TestQgsRasterLayer::colorRamp3()
 void TestQgsRasterLayer::colorRamp4()
 {
   // cpt-city ramp, continuous
-  QgsCptCityColorRamp ramp( QStringLiteral( "grass/elevation" ), QLatin1String( "" ) );
+  QgsCptCityColorRamp ramp( QStringLiteral( "grass/elevation" ), QString() );
   QVERIFY( testColorRamp( "raster_colorRamp4",
                           &ramp,
                           QgsColorRampShader::Discrete, 10 ) );
@@ -385,17 +386,56 @@ void TestQgsRasterLayer::checkStats()
   QgsRasterBandStats myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
                                     QgsRasterBandStats::Min | QgsRasterBandStats::Max |
                                     QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev );
-  QVERIFY( mpRasterLayer->width() == 10 );
-  QVERIFY( mpRasterLayer->height() == 10 );
-  //QVERIFY( myStatistics.elementCount == 100 );
-  QVERIFY( myStatistics.minimumValue == 0 );
-  QVERIFY( myStatistics.maximumValue == 9 );
-  QGSCOMPARENEAR( myStatistics.mean, 4.5, 4 * DBL_EPSILON );
+  QCOMPARE( mpRasterLayer->width(), 10 );
+  QCOMPARE( mpRasterLayer->height(), 10 );
+  //QCOMPARE( myStatistics.elementCount, 100 );
+  QCOMPARE( myStatistics.minimumValue, 0.0 );
+  QCOMPARE( myStatistics.maximumValue, 9.0 );
+  QGSCOMPARENEAR( myStatistics.mean, 4.5, 4 * std::numeric_limits<double>::epsilon() );
   double stdDev = 2.87228132326901431;
   // TODO: verify why GDAL stdDev is so different from generic (2.88675)
   mReport += QStringLiteral( "stdDev = %1 expected = %2<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev );
   QGSCOMPARENEAR( myStatistics.stdDev, stdDev, 0.00000000000001 );
   mReport += QLatin1String( "<p>Passed</p>" );
+
+  // limited extent
+  myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
+                 QgsRasterBandStats::Min | QgsRasterBandStats::Max |
+                 QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, QgsRectangle( 1535400, 5083280, 1535450, 5083320 ) );
+
+  QCOMPARE( myStatistics.minimumValue, 2.0 );
+  QCOMPARE( myStatistics.maximumValue, 7.0 );
+  QGSCOMPARENEAR( myStatistics.mean, 4.5, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( myStatistics.stdDev, 1.507557, 0.00001 );
+
+  // with sample size
+  myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
+                 QgsRasterBandStats::Min | QgsRasterBandStats::Max |
+                 QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, QgsRectangle( 1535400, 5083280, 1535450, 5083320 ), 10 );
+  QCOMPARE( myStatistics.minimumValue, 2.0 );
+  QCOMPARE( myStatistics.maximumValue, 7.0 );
+  QCOMPARE( myStatistics.elementCount, 12ULL );
+  QGSCOMPARENEAR( myStatistics.mean, 4.5, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( myStatistics.stdDev, 2.153222, 0.00001 );
+
+  // extremely limited extent - ~1 px size
+  myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
+                 QgsRasterBandStats::Min | QgsRasterBandStats::Max |
+                 QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, QgsRectangle( 1535400, 5083280, 1535412, 5083288 ) );
+  QCOMPARE( myStatistics.minimumValue, 2.0 );
+  QCOMPARE( myStatistics.maximumValue, 3.0 );
+  QGSCOMPARENEAR( myStatistics.mean, 2.600000, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( myStatistics.stdDev, 0.492366, 0.00001 );
+
+  // extremely limited extent - ~1 px size - with sample size
+  myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
+                 QgsRasterBandStats::Min | QgsRasterBandStats::Max |
+                 QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, QgsRectangle( 1535400, 5083280, 1535412, 5083288 ), 6 );
+  QCOMPARE( myStatistics.minimumValue, 2.0 );
+  QCOMPARE( myStatistics.maximumValue, 3.0 );
+  QCOMPARE( myStatistics.elementCount, 2ULL );
+  QGSCOMPARENEAR( myStatistics.mean, 2.500000, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( myStatistics.stdDev, 0.707107, 0.00001 );
 }
 
 // test scale_factor and offset - uses netcdf file which may not be supported
@@ -718,6 +758,54 @@ void TestQgsRasterLayer::testRefreshRendererIfNeeded()
   mpLandsatRasterLayer->refreshRendererIfNeeded( mpLandsatRasterLayer->renderer(), newExtent );
   double newMinVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
   QGSCOMPARENOTNEAR( initMinVal, newMinVal, 1e-5 );
+}
+
+void TestQgsRasterLayer::sample()
+{
+  QString fileName = mTestDataDir + "landsat-f32-b1.tif";
+
+  QFileInfo rasterFileInfo( fileName );
+  std::unique_ptr< QgsRasterLayer > rl = qgis::make_unique< QgsRasterLayer> ( rasterFileInfo.filePath(),
+                                         rasterFileInfo.completeBaseName() );
+  QVERIFY( rl->isValid() );
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 0, 0 ), 1 ) ) );
+  bool ok = false;
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 0, 0 ), 1, &ok ) ) );
+  QVERIFY( !ok );
+  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 1 ), 125.0 );
+  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 1, &ok ), 125.0 );
+  QVERIFY( ok );
+  // bad bands
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 0 ) ) );
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 0, &ok ) ) );
+  QVERIFY( !ok );
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 10, &ok ) ) );
+  QVERIFY( !ok );
+
+  fileName = mTestDataDir + "landsat_4326.tif";
+  rasterFileInfo = QFileInfo( fileName );
+  rl = qgis::make_unique< QgsRasterLayer> ( rasterFileInfo.filePath(),
+       rasterFileInfo.completeBaseName() );
+  QVERIFY( rl->isValid() );
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 0, 0 ), 1 ) ) );
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 0, 0 ), 1, &ok ) ) );
+  QVERIFY( !ok );
+  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 1, &ok ), 125.0 );
+  QVERIFY( ok );
+  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 2 ), 139.0 );
+  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 3 ), 111.0 );
+
+  // src no data
+  rl->dataProvider()->setNoDataValue( 3, 111.0 );
+  ok = false;
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 3, &ok ) ) );
+  QVERIFY( !ok );
+  rl->dataProvider()->setUseSourceNoDataValue( 3, false );
+  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 3 ), 111.0 );
+
+  rl->dataProvider()->setUserNoDataValue( 2, QgsRasterRangeList() << QgsRasterRange( 130, 140 ) );
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 2, &ok ) ) );
+  QVERIFY( !ok );
 }
 
 QGSTEST_MAIN( TestQgsRasterLayer )

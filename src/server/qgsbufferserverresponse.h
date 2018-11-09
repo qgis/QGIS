@@ -30,7 +30,8 @@
 /**
  * \ingroup server
  * \class QgsBufferServerResponse
- * Class defining buffered response
+ * \brief Class defining buffered response
+ * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
 {
@@ -65,7 +66,7 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
     QMap<QString, QString> headers() const override { return mHeaders; }
 
     /**
-     * Returns true if the headers have alredy been sent
+     * Returns true if the headers have already been sent
      */
     bool headersSent() const override;
 

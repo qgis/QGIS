@@ -47,6 +47,7 @@ cmake \
  -DSUPPRESS_QT_WARNINGS=ON \
  -DENABLE_MODELTEST=ON \
  -DENABLE_PGTEST=ON \
+ -DENABLE_MSSQLTEST=ON \
  -DWITH_QSPATIALITE=ON \
  -DWITH_QWTPOLAR=OFF \
  -DWITH_APIDOC=OFF \
@@ -55,7 +56,10 @@ cmake \
  -DWITH_BINDINGS=ON \
  -DWITH_SERVER=ON \
  -DDISABLE_DEPRECATED=ON \
- -DCXX_EXTRA_FLAGS=${CLANG_WARNINGS} ..
+ -DPYTHON_TEST_WRAPPER="timeout -sSIGSEGV 55s"\
+ -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
+ -DWERROR=TRUE \
+ ..
 echo "travis_fold:end:cmake"
 
 #######
@@ -71,8 +75,8 @@ echo "travis_fold:end:cmake"
 TRAVIS_TIME=120
 UPLOAD_TIME=5
 CURRENT_TIME=$(date +%s)
-TIMEOUT=$((( ${TRAVIS_TIME} - ${UPLOAD_TIME} ) * 60 - ${CURRENT_TIME} + ${TRAVIS_TIMESTAMP}))
-TIMEOUT=$(( ${TIMEOUT} < 300 ? 300 : ${TIMEOUT} ))
+TIMEOUT=$((( TRAVIS_TIME - UPLOAD_TIME ) * 60 - CURRENT_TIME + TRAVIS_TIMESTAMP))
+TIMEOUT=$(( TIMEOUT < 300 ? 300 : TIMEOUT ))
 echo "Timeout: ${TIMEOUT}s (started at ${TRAVIS_TIMESTAMP}, current: ${CURRENT_TIME})"
 
 # echo "travis_fold:start:ninja-build.1"
@@ -104,11 +108,41 @@ pushd /root/QGIS > /dev/null
 /root/QGIS/tests/testdata/provider/testdata_pg.sh
 popd > /dev/null # /root/QGIS
 
+##############################
+# Restore SQL Server test data
+##############################
+
+echo "Importing SQL Server test data..."
+
+export SQLUSER=sa
+export SQLHOST=mssql
+export SQLPORT=1433
+export SQLPASSWORD='<YourStrong!Passw0rd>'
+export SQLDATABASE=qgis_test
+
+export PATH=$PATH:/opt/mssql-tools/bin
+
+pushd /root/QGIS > /dev/null
+/root/QGIS/tests/testdata/provider/testdata_mssql.sh
+popd > /dev/null # /root/QGIS
+
+echo "Setting up DSN for test SQL Server"
+
+cat <<EOT > /etc/odbc.ini
+[ODBC Data Sources]
+testsqlserver = ODBC Driver 17 for SQL Server
+
+[testsqlserver]
+Driver       = ODBC Driver 17 for SQL Server
+Description  = Test SQL Server
+Server       = mssql
+EOT
+
 ###########
 # Run tests
 ###########
 CURRENT_TIME=$(date +%s)
-TIMEOUT=$((( ${TRAVIS_TIME} - ${UPLOAD_TIME}) * 60 - ${CURRENT_TIME} + ${TRAVIS_TIMESTAMP}))
+TIMEOUT=$((( TRAVIS_TIME - UPLOAD_TIME) * 60 - CURRENT_TIME + TRAVIS_TIMESTAMP))
 echo "Timeout: ${TIMEOUT}s (started at ${TRAVIS_TIMESTAMP}, current: ${CURRENT_TIME})"
 timeout ${TIMEOUT}s python3 /root/QGIS/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V -E "$(cat /root/QGIS/.ci/travis/linux/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S /root/QGIS/.ci/travis/travis.ctest --output-on-failure
 rv=$?

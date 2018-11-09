@@ -16,11 +16,11 @@
  ***************************************************************************/
 
 #include "qgsgpsdetector.h"
-#include "qextserialenumerator.h"
 #include "qgslogger.h"
 #include "qgsgpsconnection.h"
 #include "qgsnmeaconnection.h"
 #include "qgsgpsdconnection.h"
+
 
 #if defined(HAVE_QT_MOBILITY_LOCATION ) || defined(QT_POSITIONING_LIB)
 #include "qgsqtlocationconnection.h"
@@ -29,6 +29,7 @@
 #include <QStringList>
 #include <QFileInfo>
 #include <QTimer>
+#include <QSerialPortInfo>
 
 QList< QPair<QString, QString> > QgsGpsDetector::availablePorts()
 {
@@ -42,58 +43,10 @@ QList< QPair<QString, QString> > QgsGpsDetector::availablePorts()
   // try local gpsd first
   devs << QPair<QString, QString>( QStringLiteral( "localhost:2947:" ), tr( "local gpsd" ) );
 
-#ifdef Q_OS_LINUX
-  // look for linux serial devices
-  const QStringList devices { QStringLiteral( "/dev/ttyS%1" ),
-                              QStringLiteral( "/dev/ttyUSB%1" ),
-                              QStringLiteral( "/dev/rfcomm%1" ), QStringLiteral( "/dev/ttyACM%1" ) };
-  for ( const QString &linuxDev : devices )
+  for ( auto p : QSerialPortInfo::availablePorts() )
   {
-    for ( int i = 0; i < 10; ++i )
-    {
-      if ( QFileInfo::exists( linuxDev.arg( i ) ) )
-      {
-        devs << QPair<QString, QString>( linuxDev.arg( i ), linuxDev.arg( i ) );
-      }
-    }
+    devs << QPair<QString, QString>( p.portName(), tr( "%1: %2" ).arg( p.portName(), p.description() ) );
   }
-#endif
-
-#ifdef Q_OS_FREEBSD
-  // and freebsd devices (untested)
-  Q_FOREACH ( const QString &freebsdDev, QStringList() << "/dev/cuaa%1" << "/dev/ucom%1" )
-  {
-    for ( int i = 0; i < 10; ++i )
-    {
-      if ( QFileInfo( freebsdDev.arg( i ) ).exists() )
-      {
-        devs << QPair<QString, QString>( freebsdDev.arg( i ), freebsdDev.arg( i ) );
-      }
-    }
-  }
-#endif
-
-#ifdef Q_OS_SOLARIS
-  // and solaris devices (also untested)
-  QString solarisDev( "/dev/cua/%1" );
-  for ( char i = 'a'; i < 'k'; ++i )
-  {
-    if ( QFileInfo( solarisDev.arg( i ) ).exists() )
-    {
-      devs << QPair<QString, QString>( solarisDev.arg( i ), solarisDev.arg( i ) );
-    }
-  }
-#endif
-
-#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
-  QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
-  Q_FOREACH ( QextPortInfo port, ports )
-  {
-    devs << QPair<QString, QString>( port.portName, port.friendName );
-  }
-#endif
-
-  // OpenBSD, NetBSD etc? Anyone?
 
   return devs;
 }
@@ -101,7 +54,7 @@ QList< QPair<QString, QString> > QgsGpsDetector::availablePorts()
 QgsGpsDetector::QgsGpsDetector( const QString &portName )
 {
   mConn = nullptr;
-  mBaudList << BAUD4800 << BAUD9600 << BAUD38400 << BAUD57600 << BAUD115200;  //add 57600 for SXBlueII GPS unit
+  mBaudList << QSerialPort::Baud4800 << QSerialPort::Baud9600 << QSerialPort::Baud38400 << QSerialPort::Baud57600 << QSerialPort::Baud115200;  //add 57600 for SXBlueII GPS unit
 
   if ( portName.isEmpty() )
   {
@@ -118,16 +71,12 @@ QgsGpsDetector::QgsGpsDetector( const QString &portName )
 
 QgsGpsDetector::~QgsGpsDetector()
 {
-  if ( mConn )
-    delete mConn;
+  delete mConn;
 }
 
 void QgsGpsDetector::advance()
 {
-  if ( mConn )
-  {
-    delete mConn;
-  }
+  delete mConn;
 
   mConn = nullptr;
 
@@ -167,15 +116,15 @@ void QgsGpsDetector::advance()
     }
     else
     {
-      QextSerialPort *serial = new QextSerialPort( mPortList.at( mPortIndex ).first, QextSerialPort::EventDriven );
+      QSerialPort *serial = new QSerialPort( mPortList.at( mPortIndex ).first );
 
       serial->setBaudRate( mBaudList[ mBaudIndex ] );
-      serial->setFlowControl( FLOW_OFF );
-      serial->setParity( PAR_NONE );
-      serial->setDataBits( DATA_8 );
-      serial->setStopBits( STOP_1 );
+      serial->setFlowControl( QSerialPort::NoFlowControl );
+      serial->setParity( QSerialPort::NoParity );
+      serial->setDataBits( QSerialPort::Data8 );
+      serial->setStopBits( QSerialPort::OneStop );
 
-      if ( serial->open( QIODevice::ReadOnly | QIODevice::Unbuffered ) )
+      if ( serial->open( QIODevice::ReadOnly ) )
       {
         mConn = new QgsNmeaConnection( serial );
       }

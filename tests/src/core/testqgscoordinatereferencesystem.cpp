@@ -114,7 +114,7 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  QgsDebugMsg( QString( "Custom srs database: %1" ).arg( QgsApplication::qgisUserDatabaseFilePath() ) );
+  QgsDebugMsg( QStringLiteral( "Custom srs database: %1" ).arg( QgsApplication::qgisUserDatabaseFilePath() ) );
 
   qDebug() << "GEOPROJ4 constant:      " << GEOPROJ4;
   qDebug() << "GDAL version (build):   " << GDAL_RELEASE_NAME;
@@ -349,7 +349,7 @@ QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateRefer
     return QStringLiteral( "test %1 AUTHID = [%2] expecting [%3]"
                          ).arg( i ).arg( myCrs.authid(), myAuthIdStrings[i] );
 
-  return QLatin1String( "" );
+  return QString();
 }
 void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 {
@@ -369,7 +369,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 
   // this example file taken from bug #5598 - geographic CRS only, supported since gdal 1.9
   myWktStrings << QStringLiteral( "GEOGCS[\"GCS_Indian_1960\",DATUM[\"D_Indian_1960\",SPHEROID[\"Everest_Adjustment_1937\",6377276.345,300.8017]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]" );
-  myFiles << QLatin1String( "" );
+  myFiles << QString();
   myGdalVersionOK << 1900;
   myProj4Strings << QStringLiteral( "+proj=longlat +a=6377276.345 +b=6356075.41314024 +towgs84=198,881,317,0,0,0,0 +no_defs" );
   myTOWGS84Strings << QStringLiteral( "+towgs84=198,881,317,0,0,0,0" );
@@ -377,7 +377,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 
   // SAD69 geographic CRS, supported since gdal 1.9
   myWktStrings << QStringLiteral( "GEOGCS[\"GCS_South_American_1969\",DATUM[\"D_South_American_1969\",SPHEROID[\"GRS_1967_Truncated\",6378160.0,298.25]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]" );
-  myFiles << QLatin1String( "" );
+  myFiles << QString();
   myGdalVersionOK << 1900;
 
   //proj definition for EPSG:4618 was updated in GDAL 2.0 - see https://github.com/OSGeo/proj.4/issues/241
@@ -388,7 +388,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
   // do test with WKT definitions
   for ( int i = 0; i < myWktStrings.size() ; i++ )
   {
-    QgsDebugMsg( QString( "i=%1 wkt=%2" ).arg( i ).arg( myWktStrings[i] ) );
+    QgsDebugMsg( QStringLiteral( "i=%1 wkt=%2" ).arg( i ).arg( myWktStrings[i] ) );
     // use createFromUserInput and add the ESRI:: prefix to force morphFromESRI
     CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configOld );
     myCrs.createFromUserInput( "ESRI::" + myWktStrings[i] );
@@ -410,9 +410,9 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
       // use ogr to open file, make sure CRS is OK
       // this probably could be in another test, but leaving it here since it deals with CRS
       QString fileStr = QStringLiteral( TEST_DATA_DIR ) + '/' + myFiles[i];
-      QgsDebugMsg( QString( "i=%1 file=%2" ).arg( i ).arg( fileStr ) );
+      QgsDebugMsg( QStringLiteral( "i=%1 file=%2" ).arg( i ).arg( fileStr ) );
 
-      QgsVectorLayer *myLayer = new QgsVectorLayer( fileStr, QLatin1String( "" ), QStringLiteral( "ogr" ) );
+      QgsVectorLayer *myLayer = new QgsVectorLayer( fileStr, QString(), QStringLiteral( "ogr" ) );
       if ( !myLayer || ! myLayer->isValid() )
       {
         qWarning() << QStringLiteral( "test %1 did not get valid vector layer from %2" ).arg( i ).arg( fileStr );
@@ -503,7 +503,7 @@ void TestQgsCoordinateReferenceSystem::fromProj4()
   debugPrint( myCrs );
   QVERIFY( myCrs.isValid() );
   QCOMPARE( myCrs.srsid(), GEOCRS_ID );
-  myCrs = QgsCoordinateReferenceSystem::fromProj4( QLatin1String( "" ) );
+  myCrs = QgsCoordinateReferenceSystem::fromProj4( QString() );
   QVERIFY( !myCrs.isValid() );
 }
 
@@ -738,7 +738,7 @@ void TestQgsCoordinateReferenceSystem::hasAxisInverted()
 void TestQgsCoordinateReferenceSystem::debugPrint(
   QgsCoordinateReferenceSystem &crs )
 {
-  QgsDebugMsg( "***SpatialRefSystem***" );
+  QgsDebugMsg( QStringLiteral( "***SpatialRefSystem***" ) );
   QgsDebugMsg( "* Valid : " + ( crs.isValid() ? QString( "true" ) :
                                 QString( "false" ) ) );
   QgsDebugMsg( "* SrsId : " + QString::number( crs.srsid() ) );
@@ -749,15 +749,15 @@ void TestQgsCoordinateReferenceSystem::debugPrint(
   QgsDebugMsg( "* Desc. : " + crs.description() );
   if ( crs.mapUnits() == QgsUnitTypes::DistanceMeters )
   {
-    QgsDebugMsg( "* Units : meters" );
+    QgsDebugMsg( QStringLiteral( "* Units : meters" ) );
   }
   else if ( crs.mapUnits() == QgsUnitTypes::DistanceFeet )
   {
-    QgsDebugMsg( "* Units : feet" );
+    QgsDebugMsg( QStringLiteral( "* Units : feet" ) );
   }
   else if ( crs.mapUnits() == QgsUnitTypes::DistanceDegrees )
   {
-    QgsDebugMsg( "* Units : degrees" );
+    QgsDebugMsg( QStringLiteral( "* Units : degrees" ) );
   }
 }
 

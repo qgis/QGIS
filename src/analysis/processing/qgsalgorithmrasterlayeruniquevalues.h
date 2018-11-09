@@ -2,8 +2,8 @@
                          qgsalgorithmrasterlayeruniquevalues.h
                          ---------------------
     begin                : April 2017
-    copyright            : (C) 2017 by Nyall Dawson
-    email                : nyall dot dawson at gmail dot com
+    copyright            : (C) 2017 by Mathieu Pellerin
+    email                : nirvn dot asia at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -53,6 +53,7 @@ class QgsRasterLayerUniqueValuesReportAlgorithm : public QgsProcessingAlgorithm
 
     std::unique_ptr< QgsRasterInterface > mInterface;
     bool mHasNoDataValue = false;
+    int mBand = 1;
     int mLayerWidth;
     int mLayerHeight;
     QgsRectangle mExtent;

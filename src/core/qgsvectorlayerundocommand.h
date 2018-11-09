@@ -29,7 +29,6 @@
 
 class QgsGeometry;
 
-#include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
 
 /**

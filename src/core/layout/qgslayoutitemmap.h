@@ -90,7 +90,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     // for now, map items behave a bit differently and don't implement draw. TODO - see if we can avoid this
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
     int numberExportLayers() const override;
-    void setFrameStrokeWidth( const QgsLayoutMeasurement &width ) override;
+    void setFrameStrokeWidth( QgsLayoutMeasurement width ) override;
 
     /**
      * Returns the map scale.
@@ -358,7 +358,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * \see atlasScalingMode
      * \see setAtlasMargin
      */
-    double atlasMargin( const QgsLayoutObject::PropertyValueType valueType = QgsLayoutObject::EvaluatedValue );
+    double atlasMargin( QgsLayoutObject::PropertyValueType valueType = QgsLayoutObject::EvaluatedValue );
 
     /**
      * Sets the margin size (percentage) used when the map is in atlas mode.
@@ -417,6 +417,12 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     void finalizeRestoreFromXml() override;
 
+    /**
+     * Returns a list of the layers which will be rendered within this map item, considering
+     * any locked layers, linked map theme, and data defined settings.
+     */
+    QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = nullptr ) const;
+
   protected:
 
     void draw( QgsLayoutItemRenderContext &context ) override;
@@ -474,7 +480,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     //! Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
     void updateBoundingRect();
 
-    void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
 
   private slots:
     void layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers );
@@ -618,9 +624,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     //! Resets the item tooltip to reflect current map id
     void updateToolTip();
-
-    //! Returns a list of the layers to render for this map item
-    QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = nullptr ) const;
 
     //! Returns current layer style overrides for this map item
     QMap<QString, QString> layerStyleOverridesToRender( const QgsExpressionContext &context ) const;

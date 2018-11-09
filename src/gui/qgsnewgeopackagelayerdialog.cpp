@@ -44,11 +44,13 @@
 #include <cpl_error.h>
 #include <cpl_string.h>
 
+#define DEFAULT_OGR_FID_COLUMN_TITLE "fid" // default value from OGR
+
 QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
   setupUi( this );
-  QgsGui::instance()->enableAutoGeometryRestore( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   connect( mAddAttributeButton, &QToolButton::clicked, this, &QgsNewGeoPackageLayerDialog::mAddAttributeButton_clicked );
   connect( mRemoveAttributeButton, &QToolButton::clicked, this, &QgsNewGeoPackageLayerDialog::mRemoveAttributeButton_clicked );
@@ -85,7 +87,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mGeometryWithMCheckBox->setEnabled( false );
   mGeometryColumnEdit->setEnabled( false );
   mGeometryColumnEdit->setText( "geometry" );
-  mFeatureIdColumnEdit->setText( "fid" );
+  mFeatureIdColumnEdit->setPlaceholderText( DEFAULT_OGR_FID_COLUMN_TITLE );
   mCheckBoxCreateSpatialIndex->setEnabled( false );
   mCrsSelector->setEnabled( false );
 
@@ -126,10 +128,6 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
     }
     checkOk();
   } );
-}
-
-QgsNewGeoPackageLayerDialog::~QgsNewGeoPackageLayerDialog()
-{
 }
 
 void QgsNewGeoPackageLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
@@ -196,7 +194,8 @@ void QgsNewGeoPackageLayerDialog::mAddAttributeButton_clicked()
   if ( !mFieldNameEdit->text().isEmpty() )
   {
     QString myName = mFieldNameEdit->text();
-    if ( myName == mFeatureIdColumnEdit->text() )
+    const QString featureId = mFeatureIdColumnEdit->text().isEmpty() ? DEFAULT_OGR_FID_COLUMN_TITLE : mFeatureIdColumnEdit->text();
+    if ( myName.compare( featureId, Qt::CaseInsensitive ) == 0 )
     {
       QMessageBox::critical( this, tr( "Add Field" ), tr( "The field cannot have the same name as the feature identifier." ) );
       return;

@@ -20,12 +20,14 @@ class QgsPointXY;
 class QgsVectorLayer;
 class QgsFeatureRenderer;
 class QgsRenderContext;
+class QgsRectangle;
 
 #include "qgis_core.h"
-#include "qgsfeature.h"
 #include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeatureid.h"
+#include "qgsgeometry.h"
 #include <memory>
 
 class QgsPointLocator_VisitorNearestVertex;
@@ -87,7 +89,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * Gets extent of the area point locator covers - if null then it caches the whole layer
      * \since QGIS 2.14
      */
-    const QgsRectangle *extent() const { return mExtent; }
+    const QgsRectangle *extent() const { return mExtent.get(); }
 
     /**
      * Configure extent - if not null, it will index only that area
@@ -278,19 +280,19 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
   private:
     //! Storage manager
-    SpatialIndex::IStorageManager *mStorage = nullptr;
+    std::unique_ptr< SpatialIndex::IStorageManager > mStorage;
 
     QHash<QgsFeatureId, QgsGeometry *> mGeoms;
-    SpatialIndex::ISpatialIndex *mRTree = nullptr;
+    std::unique_ptr< SpatialIndex::ISpatialIndex > mRTree;
 
     //! flag whether the layer is currently empty (i.e. mRTree is null but it is not necessary to rebuild it)
-    bool mIsEmptyLayer;
+    bool mIsEmptyLayer = false;
 
 
     //! R-tree containing spatial index
     QgsCoordinateTransform mTransform;
     QgsVectorLayer *mLayer = nullptr;
-    QgsRectangle *mExtent = nullptr;
+    std::unique_ptr< QgsRectangle > mExtent;
 
     std::unique_ptr<QgsRenderContext> mContext;
 

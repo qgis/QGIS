@@ -19,7 +19,6 @@
 #include "qgsattributeeditorcontext.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-
 #include <QWidget>
 
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor, QWidget *parent )
@@ -44,6 +43,34 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
 {
   if ( mWidget )
     mWidget->setVisible( visible );
+}
+
+void QgsRelationWidgetWrapper::aboutToSave()
+{
+  if ( !mRelation.isValid() || !widget() || !widget()->isVisible() || mRelation.referencingLayer() ==  mRelation.referencedLayer() )
+    return;
+
+  // If the layer is already saved before, return
+  const QgsAttributeEditorContext *ctx = &context();
+  do
+  {
+    if ( ctx->relation().isValid() && ( ctx->relation().referencedLayer() == mRelation.referencingLayer()
+                                        || ( mNmRelation.isValid() && ctx->relation().referencedLayer() == mNmRelation.referencedLayer() ) )
+       )
+    {
+      return;
+    }
+    ctx = ctx->parentContext();
+  }
+  while ( ctx );
+
+  // Calling isModified() will emit a beforeModifiedCheck()
+  // signal that will make the embedded form to send any
+  // outstanding widget changes to the edit buffer
+  mRelation.referencingLayer()->isModified();
+
+  if ( mNmRelation.isValid() )
+    mNmRelation.referencedLayer()->isModified();
 }
 
 QgsRelation QgsRelationWidgetWrapper::relation() const
@@ -96,14 +123,14 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 
   w->setEditorContext( myContext );
 
-  QgsRelation nmrel = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "nm-rel" ) ).toString() );
+  mNmRelation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "nm-rel" ) ).toString() );
 
   // If this widget is already embedded by the same relation, reduce functionality
   const QgsAttributeEditorContext *ctx = &context();
   do
   {
     if ( ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
-         || ( nmrel.isValid() && ctx->relation().name() == nmrel.name() ) )
+         || ( mNmRelation.isValid() && ctx->relation().name() == mNmRelation.name() ) )
     {
       w->setVisible( false );
       break;
@@ -112,8 +139,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   }
   while ( ctx );
 
-
-  w->setRelations( mRelation, nmrel );
+  w->setRelations( mRelation, mNmRelation );
 
   mWidget = w;
 }

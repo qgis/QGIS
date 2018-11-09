@@ -260,7 +260,7 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual const QgsRasterInterface *sourceInput() const SIP_SKIP
     {
-      QgsDebugMsgLevel( "Entered", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
       return mInput ? mInput->sourceInput() : this;
     }
 
@@ -271,7 +271,7 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual QgsRasterInterface *sourceInput()
     {
-      QgsDebugMsgLevel( "Entered", 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
       return mInput ? mInput->sourceInput() : this;
     }
 

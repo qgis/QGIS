@@ -18,11 +18,13 @@
 
 #include "qgsvertexeditor.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagelog.h"
 #include "qgsselectedfeature.h"
 #include "qgsvertexentry.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometryutils.h"
 #include "qgsproject.h"
+#include "qgscoordinatetransform.h"
 
 #include <QTableWidget>
 #include <QHeaderView>
@@ -107,11 +109,21 @@ QVariant QgsVertexEditorModel::data( const QModelIndex &index, int role ) const
   {
     double r = 0;
     double minRadius = 0;
+    QFont font = mWidgetFont;
+    bool fontChanged = false;
+    if ( vertex->isSelected() )
+    {
+      font.setBold( true );
+      fontChanged = true;
+    }
     if ( calcR( index.row(), r, minRadius ) )
     {
-      QFont curvePointFont = mWidgetFont;
-      curvePointFont.setItalic( true );
-      return curvePointFont;
+      font.setItalic( true );
+      fontChanged = true;;
+    }
+    if ( fontChanged )
+    {
+      return font;
     }
     else
     {
@@ -199,15 +211,23 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
     return false;
   }
 
-  double x = ( index.column() == 0 ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().x() );
-  double y = ( index.column() == 1 ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().y() );
+  // Get double value wrt current locale.
+  bool ok;
+  double doubleValue = QLocale().toDouble( value.toString(), &ok );
+  // If not valid and locale's decimal point is not '.' let's try with english locale
+  if ( ! ok && QLocale().decimalPoint() != '.' )
+  {
+    doubleValue = QLocale( QLocale::English ).toDouble( value.toString() );
+  }
+
+  double x = ( index.column() == 0 ? doubleValue : mSelectedFeature->vertexMap().at( index.row() )->point().x() );
+  double y = ( index.column() == 1 ? doubleValue : mSelectedFeature->vertexMap().at( index.row() )->point().y() );
 
   if ( index.column() == mRCol ) // radius modified
   {
     if ( index.row() == 0 || index.row() >= mSelectedFeature->vertexMap().count() - 1 )
       return false;
 
-    double r = value.toDouble();
     double x1 = mSelectedFeature->vertexMap().at( index.row() - 1 )->point().x();
     double y1 = mSelectedFeature->vertexMap().at( index.row() - 1 )->point().y();
     double x2 = x;
@@ -216,7 +236,7 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
     double y3 = mSelectedFeature->vertexMap().at( index.row() + 1 )->point().y();
 
     QgsPoint result;
-    if ( QgsGeometryUtils::segmentMidPoint( QgsPoint( x1, y1 ), QgsPoint( x3, y3 ), result, r, QgsPoint( x2, y2 ) ) )
+    if ( QgsGeometryUtils::segmentMidPoint( QgsPoint( x1, y1 ), QgsPoint( x3, y3 ), result, doubleValue, QgsPoint( x2, y2 ) ) )
     {
       x = result.x();
       y = result.y();
@@ -293,17 +313,12 @@ QgsVertexEditor::QgsVertexEditor(
 
   setWidget( mTableView );
 
-  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
-
   updateEditor( layer, selectedFeature );
 }
 
 void QgsVertexEditor::updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *selectedFeature )
 {
-  if ( mVertexModel )
-  {
-    delete mVertexModel;
-  }
+  delete mVertexModel;
 
   mLayer = layer;
   mSelectedFeature = selectedFeature;
@@ -311,6 +326,7 @@ void QgsVertexEditor::updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *s
   // TODO We really should just update the model itself.
   mVertexModel = new QgsVertexEditorModel( mLayer, mSelectedFeature, mCanvas, this );
   mTableView->setModel( mVertexModel );
+  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
 
   connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
 }
@@ -350,49 +366,40 @@ void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, con
   mUpdatingVertexSelection = true;
 
   mSelectedFeature->deselectAllVertices();
-  Q_FOREACH ( const QModelIndex &index, mTableView->selectionModel()->selectedRows() )
+
+  QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+  std::unique_ptr<QgsRectangle> bbox;
+  QModelIndexList indexList = selected.indexes();
+  for ( int i = 0; i < indexList.length(); ++i )
   {
-    int vertexIdx = index.row();
+    int vertexIdx = indexList.at( i ).row();
     mSelectedFeature->selectVertex( vertexIdx );
+
+    // create a bounding box of selected vertices
+    QgsPointXY point( mSelectedFeature->vertexMap().at( vertexIdx )->point() );
+    if ( !bbox )
+      bbox.reset( new QgsRectangle( point, point ) );
+    else
+      bbox->combineExtentWith( point );
   }
 
-  //ensure that newly selected vertex is visible in canvas
-  if ( !selected.indexes().isEmpty() )
+  //ensure that newly selected vertices are visible in canvas
+  if ( bbox )
   {
-    int newRow = selected.indexes().first().row();
-    zoomToVertex( newRow );
+    try
+    {
+      QgsRectangle transformedBbox = t.transform( *bbox );
+      QgsRectangle canvasExtent = mCanvas->mapSettings().extent();
+      transformedBbox.combineExtentWith( canvasExtent );
+      mCanvas->setExtent( transformedBbox );
+    }
+    catch ( QgsCsException &cse )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Simplify transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
+    }
   }
 
   mUpdatingVertexSelection = false;
-}
-
-void QgsVertexEditor::zoomToVertex( int idx )
-{
-  double x = mSelectedFeature->vertexMap().at( idx )->point().x();
-  double y = mSelectedFeature->vertexMap().at( idx )->point().y();
-  QgsPointXY newCenter( x, y );
-
-  QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
-  QgsPointXY tCenter;
-  try
-  {
-    tCenter = t.transform( newCenter );
-  }
-  catch ( QgsCsException & )
-  {
-    return;
-  }
-
-  QPolygonF ext = mCanvas->mapSettings().visiblePolygon();
-  //close polygon
-  ext.append( ext.first() );
-  QgsGeometry extGeom( QgsGeometry::fromQPolygonF( ext ) );
-  QgsGeometry vertexGeom( QgsGeometry::fromPointXY( tCenter ) );
-  if ( !vertexGeom.within( extGeom ) )
-  {
-    mCanvas->setCenter( tCenter );
-    mCanvas->refresh();
-  }
 }
 
 void QgsVertexEditor::keyPressEvent( QKeyEvent *e )

@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSRENDERERV2_H
-#define QGSRENDERERV2_H
+#ifndef QGSRENDERER_H
+#define QGSRENDERER_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -299,7 +299,7 @@ class CORE_EXPORT QgsFeatureRenderer
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const
     {
-      element.appendChild( doc.createComment( QStringLiteral( "FeatureRendererV2 %1 not implemented yet" ).arg( type() ) ) );
+      element.appendChild( doc.createComment( QStringLiteral( "FeatureRenderer %1 not implemented yet" ).arg( type() ) ) );
       ( void ) props; // warning avoidance
     }
 
@@ -547,4 +547,4 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRenderer::Capabilities )
 class QgsRendererWidget;
 class QgsPaintEffectWidget;
 
-#endif // QGSRENDERERV2_H
+#endif // QGSRENDERER_H

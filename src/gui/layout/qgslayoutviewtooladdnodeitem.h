@@ -34,6 +34,7 @@ class GUI_EXPORT QgsLayoutViewToolAddNodeItem : public QgsLayoutViewTool
 
   public:
 
+    //! Constructs a QgsLayoutViewToolAddNodeItem for the given layout \a view.
     QgsLayoutViewToolAddNodeItem( QgsLayoutView *view SIP_TRANSFERTHIS );
 
     /**

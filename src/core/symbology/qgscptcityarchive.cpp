@@ -214,7 +214,7 @@ QgsStringMap QgsCptCityArchive::copyingInfo( const QString &fileName )
   QDomElement authorsElement = docElem.firstChildElement( QStringLiteral( "authors" ) );
   if ( authorsElement.isNull() )
   {
-    QgsDebugMsg( "authors tag missing" );
+    QgsDebugMsg( QStringLiteral( "authors tag missing" ) );
   }
   else
   {
@@ -237,7 +237,7 @@ QgsStringMap QgsCptCityArchive::copyingInfo( const QString &fileName )
   QDomElement licenseElement = docElem.firstChildElement( QStringLiteral( "license" ) );
   if ( licenseElement.isNull() )
   {
-    QgsDebugMsg( "license tag missing" );
+    QgsDebugMsg( QStringLiteral( "license tag missing" ) );
   }
   else
   {
@@ -256,7 +256,7 @@ QgsStringMap QgsCptCityArchive::copyingInfo( const QString &fileName )
   QDomElement element = docElem.firstChildElement( QStringLiteral( "src" ) );
   if ( element.isNull() )
   {
-    QgsDebugMsg( "src tag missing" );
+    QgsDebugMsg( QStringLiteral( "src tag missing" ) );
   }
   else
   {
@@ -306,13 +306,13 @@ QgsStringMap QgsCptCityArchive::description( const QString &fileName )
   QDomElement e = docElem.firstChildElement( QStringLiteral( "name" ) );
   if ( e.isNull() )
   {
-    QgsDebugMsg( "name tag missing" );
+    QgsDebugMsg( QStringLiteral( "name tag missing" ) );
   }
   descMap[ QStringLiteral( "name" )] = e.text().simplified();
   e = docElem.firstChildElement( QStringLiteral( "full" ) );
   if ( e.isNull() )
   {
-    QgsDebugMsg( "full tag missing" );
+    QgsDebugMsg( QStringLiteral( "full tag missing" ) );
   }
   descMap[ QStringLiteral( "full" )] = e.text().simplified();
 
@@ -359,7 +359,7 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
   }
   if ( rampsElement.isNull() )
   {
-    QgsDebugMsg( "linearGradient tag missing" );
+    QgsDebugMsg( QStringLiteral( "linearGradient tag missing" ) );
     return colorMap;
   }
 
@@ -373,7 +373,7 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
       //todo integrate this into symbollayerutils, keep here for now...
       double offset;
       QString offsetStr = e.attribute( QStringLiteral( "offset" ) ); // offset="50.00%" | offset="0.5"
-      QString colorStr = e.attribute( QStringLiteral( "stop-color" ), QLatin1String( "" ) ); // stop-color="rgb(222,235,247)"
+      QString colorStr = e.attribute( QStringLiteral( "stop-color" ), QString() ); // stop-color="rgb(222,235,247)"
       QString opacityStr = e.attribute( QStringLiteral( "stop-opacity" ), QStringLiteral( "1.0" ) ); // stop-opacity="1.0000"
       if ( offsetStr.endsWith( '%' ) )
         offset = offsetStr.remove( offsetStr.size() - 1, 1 ).toDouble() / 100.0;
@@ -393,7 +393,7 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
       }
       else
       {
-        QgsDebugMsg( QString( "at offset=%1 invalid color" ).arg( offset ) );
+        QgsDebugMsg( QStringLiteral( "at offset=%1 invalid color" ).arg( offset ) );
       }
     }
     else
@@ -480,7 +480,7 @@ void QgsCptCityArchive::initArchives( bool loadAll )
       QgsCptCityArchive::initArchive( it.key(), it.value() );
     else
     {
-      QgsDebugMsg( QString( "not loading archive [%1] because dir %2 does not exist " ).arg( it.key(), it.value() ) );
+      QgsDebugMsg( QStringLiteral( "not loading archive [%1] because dir %2 does not exist " ).arg( it.key(), it.value() ) );
     }
   }
   sDefaultArchiveName = defArchiveName;
@@ -562,7 +562,7 @@ bool QgsCptCityDataItem::hasChildren()
 
 void QgsCptCityDataItem::addChildItem( QgsCptCityDataItem *child, bool refresh )
 {
-  QgsDebugMsg( QString( "add child #%1 - %2 - %3" ).arg( mChildren.size() ).arg( child->mName ).arg( child->mType ) );
+  QgsDebugMsg( QStringLiteral( "add child #%1 - %2 - %3" ).arg( mChildren.size() ).arg( child->mName ).arg( child->mType ) );
 
   int i;
   if ( type() == ColorRamp )
@@ -832,7 +832,7 @@ QVector< QgsCptCityDataItem * > QgsCptCityCollectionItem::childrenRamps( bool re
   {
     QgsCptCityCollectionItem *collectionItem = dynamic_cast<QgsCptCityCollectionItem *>( childItem );
     QgsCptCityColorRampItem *rampItem = dynamic_cast<QgsCptCityColorRampItem *>( childItem );
-    QgsDebugMsgLevel( QString( "child path= %1 coll= %2 ramp = %3" ).arg( childItem->path() ).arg( nullptr != collectionItem ).arg( nullptr != rampItem ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "child path= %1 coll= %2 ramp = %3" ).arg( childItem->path() ).arg( nullptr != collectionItem ).arg( nullptr != rampItem ), 2 );
     if ( collectionItem && recursive )
     {
       collectionItem->populate();
@@ -856,7 +856,7 @@ QVector< QgsCptCityDataItem * > QgsCptCityCollectionItem::childrenRamps( bool re
   // delete invalid items - this is not efficient, but should only happens once
   Q_FOREACH ( QgsCptCityDataItem *deleteItem, deleteItems )
   {
-    QgsDebugMsg( QString( "item %1 is invalid, will be deleted" ).arg( deleteItem->path() ) );
+    QgsDebugMsg( QStringLiteral( "item %1 is invalid, will be deleted" ).arg( deleteItem->path() ) );
     int i = mChildren.indexOf( deleteItem );
     if ( i != -1 )
       mChildren.remove( i );
@@ -920,7 +920,7 @@ QVector<QgsCptCityDataItem *> QgsCptCityDirectoryItem::createChildren()
       children << childItem;
   }
 
-  QgsDebugMsg( QString( "name= %1 path= %2 found %3 children" ).arg( mName, mPath ).arg( children.count() ) );
+  QgsDebugMsg( QStringLiteral( "name= %1 path= %2 found %3 children" ).arg( mName, mPath ).arg( children.count() ) );
 
   return children;
 }
@@ -1095,7 +1095,7 @@ QgsCptCityDataItem *QgsCptCityDirectoryItem::dataItem( QgsCptCityDataItem *paren
   QStringList dirEntries = dirItem->dirEntries();
   QMap< QString, QStringList > rampsMap = dirItem->rampsMap();
 
-  QgsDebugMsg( QString( "item has %1 dirs and %2 ramps" ).arg( dirEntries.count() ).arg( rampsMap.count() ) );
+  QgsDebugMsg( QStringLiteral( "item has %1 dirs and %2 ramps" ).arg( dirEntries.count() ).arg( rampsMap.count() ) );
 
   // return item if has at least one subdir
   if ( !dirEntries.isEmpty() )
@@ -1175,7 +1175,7 @@ QVector<QgsCptCityDataItem *> QgsCptCitySelectionItem::createChildren()
     }
   }
 
-  QgsDebugMsg( QString( "path= %1 inserted %2 children" ).arg( mPath ).arg( children.count() ) );
+  QgsDebugMsg( QStringLiteral( "path= %1 inserted %2 children" ).arg( mPath ).arg( children.count() ) );
 
   return children;
 }
@@ -1312,7 +1312,7 @@ void QgsCptCityBrowserModel::addRootItems()
   {
     mRootItems = mArchive->selectionItems();
   }
-  QgsDebugMsg( QString( "added %1 root items" ).arg( mRootItems.size() ) );
+  QgsDebugMsg( QStringLiteral( "added %1 root items" ).arg( mRootItems.size() ) );
 }
 
 void QgsCptCityBrowserModel::removeRootItems()
@@ -1602,9 +1602,9 @@ void QgsCptCityBrowserModel::beginInsertItems( QgsCptCityDataItem *parent, int f
   QModelIndex idx = findItem( parent );
   if ( !idx.isValid() )
     return;
-  QgsDebugMsg( "valid" );
+  QgsDebugMsg( QStringLiteral( "valid" ) );
   beginInsertRows( idx, first, last );
-  QgsDebugMsg( "end" );
+  QgsDebugMsg( QStringLiteral( "end" ) );
 }
 void QgsCptCityBrowserModel::endInsertItems()
 {
@@ -1693,7 +1693,7 @@ bool QgsCptCityBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction
   QgsCptCityDataItem *destItem = dataItem( parent );
   if ( !destItem )
   {
-    QgsDebugMsg( "DROP PROBLEM!" );
+    QgsDebugMsg( QStringLiteral( "DROP PROBLEM!" ) );
     return false;
   }
 

@@ -64,9 +64,9 @@ Ownership of ``symbol`` is not transferred.
 %End
 
   protected:
-    virtual bool _addNode( const int indexPoint, QPointF newPoint, const double radius );
+    virtual bool _addNode( int indexPoint, QPointF newPoint, double radius );
 
-    virtual bool _removeNode( const int nodeIndex );
+    virtual bool _removeNode( int nodeIndex );
 
     virtual void _draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
 

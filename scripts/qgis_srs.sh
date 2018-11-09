@@ -201,7 +201,7 @@ for i in $(awk 'NR>1' ${gdal_share}/pcs.csv | cut -d, -f1); do
 
   if [ -n "$raw" ]; then
 
-   no=$(($no + 1))
+   no=$((no + 1))
    name=$(echo $raw | sed 's/^# //' | grep -o "^.\{1,\} <[[:digit:]]\{1,\}>" | sed 's/ <[[:digit:]]\{1,\}>//' | sed "s/'/''/g")
    proj=$(echo $raw | grep -o "+proj=[^[:space:]]\{1,\}" | cut -d"=" -f2)
    ellps=$(echo $raw | grep -o "+ellps=[^[:space:]]\{1,\}" | cut -d"=" -f2)
@@ -224,7 +224,7 @@ for i in $(awk 'NR>1' ${gdal_share}/gcs.csv | cut -d, -f1); do
 
   if [ -n "$raw" ]; then
 
-   no=$(($no + 1))
+   no=$((no + 1))
    name=$(echo $raw | sed 's/^# //' | grep -o "^.\{1,\} <[[:digit:]]\{1,\}>" | sed 's/ <[[:digit:]]\{1,\}>//' | sed "s/'/''/g")
    proj=$(echo $raw | grep -o "+proj=[^[:space:]]\{1,\}" | cut -d"=" -f2)
    ellps=$(echo $raw | grep -o "+ellps=[^[:space:]]\{1,\}" | cut -d"=" -f2)

@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSRENDERERV2WIDGET_H
-#define QGSRENDERERV2WIDGET_H
+#ifndef QGSRENDERERWIDGET_H
+#define QGSRENDERERWIDGET_H
 
 #include <QWidget>
 #include <QMenu>
@@ -297,4 +297,4 @@ class GUI_EXPORT QgsDataDefinedWidthDialog : public QgsDataDefinedValueDialog
 
 
 
-#endif // QGSRENDERERV2WIDGET_H
+#endif // QGSRENDERERWIDGET_H

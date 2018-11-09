@@ -79,3 +79,9 @@ print("pyqt_mod_dir:%s" % pyqtcfg.pyqt_mod_dir)
 print("pyqt_sip_dir:%s" % pyqtcfg.pyqt_sip_dir)
 print("pyqt_sip_flags:%s" % pyqtcfg.pyqt_sip_flags)
 print("pyqt_bin_dir:%s" % pyqtcfg.pyqt_bin_dir)
+
+try:
+    import PyQt5.sip
+    print("pyqt_sip_module:PyQt5.sip")
+except:
+    print("pyqt_sip_module:sip")

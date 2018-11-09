@@ -52,8 +52,31 @@ Constructor for QgsRasterLayerSaveAsDialog
     int maximumTileSizeX() const;
     int maximumTileSizeY() const;
     bool tileMode() const;
+
     bool addToCanvas() const;
+%Docstring
+Returns true if the "add to canvas" checkbox is checked.
+
+.. seealso:: :py:func:`setAddToCanvas`
+%End
+
+    void setAddToCanvas( bool checked );
+%Docstring
+Sets whether the  "add to canvas" checkbox should be ``checked``.
+
+.. seealso:: :py:func:`addToCanvas`
+
+.. versionadded:: 3.6
+%End
+
     QString outputFileName() const;
+
+    QString outputLayerName() const;
+%Docstring
+Name of the output layer within GeoPackage file
+
+.. versionadded:: 3.4
+%End
     QString outputFormat() const;
     QgsCoordinateReferenceSystem outputCrs();
     QStringList createOptions() const;
@@ -71,6 +94,7 @@ Constructor for QgsRasterLayerSaveAsDialog
 
   public slots:
     virtual void accept();
+
 
 };
 

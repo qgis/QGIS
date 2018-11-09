@@ -14,6 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsProject,
                        QgsVectorLayer,
                        QgsVectorLayerUtils,
@@ -24,6 +25,11 @@ from qgis.core import (QgsProject,
                        QgsPointXY,
                        QgsDefaultValue,
                        QgsRelation,
+                       QgsFields,
+                       QgsField,
+                       QgsMemoryProviderUtils,
+                       QgsWkbTypes,
+                       QgsCoordinateReferenceSystem,
                        NULL
                        )
 from qgis.testing import start_app, unittest
@@ -252,23 +258,44 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         # layer with default value expression
         layer.setDefaultValueDefinition(2, QgsDefaultValue('3*4'))
         f = QgsVectorLayerUtils.createFeature(layer)
-        self.assertEqual(f.attributes(), [NULL, NULL, 12.0])
-        # we expect the default value expression to take precedence over the attribute map
+        self.assertEqual(f.attributes(), [NULL, NULL, 12])
+        # we do not expect the default value expression to take precedence over the attribute map
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'a', 2: 6.0})
-        self.assertEqual(f.attributes(), ['a', NULL, 12.0])
+        self.assertEqual(f.attributes(), ['a', NULL, 6.0])
         # layer with default value expression based on geometry
         layer.setDefaultValueDefinition(2, QgsDefaultValue('3*$x'))
         f = QgsVectorLayerUtils.createFeature(layer, g)
+        #adjusted so that input value and output feature are the same
         self.assertEqual(f.attributes(), [NULL, NULL, 300.0])
         layer.setDefaultValueDefinition(2, QgsDefaultValue(None))
 
         # test with violated unique constraints
         layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique)
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
+        # since field 1 has Unique Constraint, it ignores value 123 that already has been set and sets to 128
         self.assertEqual(f.attributes(), ['test_1', 128, NULL])
         layer.setFieldConstraint(0, QgsFieldConstraints.ConstraintUnique)
+        # since field 0 and 1 already have values test_1 and 123, the output must be a new unique value
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
         self.assertEqual(f.attributes(), ['test_4', 128, NULL])
+
+        # test with violated unique constraints and default value expression providing unique value
+        layer.setDefaultValueDefinition(1, QgsDefaultValue('130'))
+        f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
+        # since field 1 has Unique Constraint, it ignores value 123 that already has been set and adds the default value
+        self.assertEqual(f.attributes(), ['test_4', 130, NULL])
+        # fallback: test with violated unique constraints and default value expression providing already existing value
+        # add the feature with the default value:
+        self.assertTrue(layer.dataProvider().addFeatures([f]))
+        f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
+        # since field 1 has Unique Constraint, it ignores value 123 that already has been set and adds the default value
+        # and since the default value providing an already existing value (130) it generates a unique value (next int: 131)
+        self.assertEqual(f.attributes(), ['test_5', 131, NULL])
+        layer.setDefaultValueDefinition(1, QgsDefaultValue(None))
+
+        # test with manually correct unique constraint
+        f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 132})
+        self.assertEqual(f.attributes(), ['test_5', 132, NULL])
 
     def testDuplicateFeature(self):
         """ test duplicating a feature """
@@ -422,6 +449,88 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
 
         # - check if the ids are still the same
         self.assertEqual(copyValueList, origValueList)
+
+    def test_make_features_compatible_attributes(self):
+        """Test corner cases for attributes"""
+
+        # Test feature with attributes
+        fields = QgsFields()
+        fields.append(QgsField('int_f', QVariant.Int))
+        fields.append(QgsField('str_f', QVariant.String))
+        f1 = QgsFeature(fields)
+        f1['int_f'] = 1
+        f1['str_f'] = 'str'
+        f1.setGeometry(QgsGeometry.fromWkt('Point(9 45)'))
+        f2 = f1
+        QgsVectorLayerUtils.matchAttributesToFields(f2, fields)
+        self.assertEqual(f1.attributes(), f2.attributes())
+        self.assertTrue(f1.geometry().asWkt(), f2.geometry().asWkt())
+
+        # Test pad with 0 with fields
+        f1.setAttributes([])
+        QgsVectorLayerUtils.matchAttributesToFields(f1, fields)
+        self.assertEqual(len(f1.attributes()), 2)
+        self.assertEqual(f1.attributes()[0], QVariant())
+        self.assertEqual(f1.attributes()[1], QVariant())
+
+        # Test pad with 0 without fields
+        f1 = QgsFeature()
+        QgsVectorLayerUtils.matchAttributesToFields(f1, fields)
+        self.assertEqual(len(f1.attributes()), 2)
+        self.assertEqual(f1.attributes()[0], QVariant())
+        self.assertEqual(f1.attributes()[1], QVariant())
+
+        # Test drop extra attrs
+        f1 = QgsFeature(fields)
+        f1.setAttributes([1, 'foo', 'extra'])
+        QgsVectorLayerUtils.matchAttributesToFields(f1, fields)
+        self.assertEqual(len(f1.attributes()), 2)
+        self.assertEqual(f1.attributes()[0], 1)
+        self.assertEqual(f1.attributes()[1], 'foo')
+
+        # Rearranged fields
+        fields2 = QgsFields()
+        fields2.append(QgsField('str_f', QVariant.String))
+        fields2.append(QgsField('int_f', QVariant.Int))
+        f1 = QgsFeature(fields2)
+        f1.setAttributes([1, 'foo', 'extra'])
+        QgsVectorLayerUtils.matchAttributesToFields(f1, fields)
+        self.assertEqual(len(f1.attributes()), 2)
+        self.assertEqual(f1.attributes()[0], 'foo')
+        self.assertEqual(f1.attributes()[1], 1)
+
+        # mixed
+        fields2.append(QgsField('extra', QVariant.String))
+        fields.append(QgsField('extra2', QVariant.Int))
+        f1.setFields(fields2)
+        f1.setAttributes([1, 'foo', 'blah'])
+        QgsVectorLayerUtils.matchAttributesToFields(f1, fields)
+        self.assertEqual(len(f1.attributes()), 3)
+        self.assertEqual(f1.attributes()[0], 'foo')
+        self.assertEqual(f1.attributes()[1], 1)
+        self.assertEqual(f1.attributes()[2], QVariant())
+
+        fields.append(QgsField('extra', QVariant.Int))
+        f1.setAttributes([1, 'foo', 'blah'])
+        QgsVectorLayerUtils.matchAttributesToFields(f1, fields)
+        self.assertEqual(len(f1.attributes()), 4)
+        self.assertEqual(f1.attributes()[0], 'foo')
+        self.assertEqual(f1.attributes()[1], 1)
+        self.assertEqual(f1.attributes()[2], QVariant())
+        self.assertEqual(f1.attributes()[3], 'blah')
+
+        # case insensitive
+        fields2.append(QgsField('extra3', QVariant.String))
+        fields.append(QgsField('EXTRA3', QVariant.Int))
+        f1.setFields(fields2)
+        f1.setAttributes([1, 'foo', 'blah', 'blergh'])
+        QgsVectorLayerUtils.matchAttributesToFields(f1, fields)
+        self.assertEqual(len(f1.attributes()), 5)
+        self.assertEqual(f1.attributes()[0], 'foo')
+        self.assertEqual(f1.attributes()[1], 1)
+        self.assertEqual(f1.attributes()[2], QVariant())
+        self.assertEqual(f1.attributes()[3], 'blah')
+        self.assertEqual(f1.attributes()[4], 'blergh')
 
 
 if __name__ == '__main__':

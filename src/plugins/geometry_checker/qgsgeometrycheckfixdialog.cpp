@@ -14,15 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrycheckfixdialog.h"
-#include "qgsgeometrycheckerresulttab.h"
-#include "qgisinterface.h"
-#include "qgsmapcanvas.h"
-#include "qgssettings.h"
-
-#include "qgsgeometrychecker.h"
-#include "qgsgeometrycheck.h"
-
 #include <QButtonGroup>
 #include <QDialogButtonBox>
 #include <QGroupBox>
@@ -31,6 +22,15 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QGridLayout>
+
+#include "qgsgeometrycheckfixdialog.h"
+#include "qgsgeometrycheckerresulttab.h"
+#include "qgisinterface.h"
+#include "qgsmapcanvas.h"
+#include "qgssettings.h"
+#include "qgsgeometrycheckerror.h"
+#include "qgsgeometrychecker.h"
+#include "qgsgeometrycheck.h"
 
 QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *checker,
     const QList<QgsGeometryCheckError *> &errors, QWidget *parent )
@@ -105,8 +105,8 @@ void QgsGeometryCheckerFixDialog::setupNextError()
   mResolutionsBox->layout()->setContentsMargins( 0, 0, 0, 4 );
 
   int id = 0;
-  int checkedid = QgsSettings().value( QgsGeometryCheckerResultTab::sSettingsGroup + error->check()->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
-  for ( const QString &method : error->check()->getResolutionMethods() )
+  int checkedid = QgsSettings().value( QgsGeometryCheckerResultTab::sSettingsGroup + error->check()->id(), QVariant::fromValue<int>( 0 ) ).toInt();
+  for ( const QString &method : error->check()->resolutionMethods() )
   {
     QRadioButton *radio = new QRadioButton( method );
     radio->setChecked( checkedid == id );

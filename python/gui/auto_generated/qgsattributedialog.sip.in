@@ -50,11 +50,11 @@ Is this dialog editable?
 :return: returns true, if this dialog was created in an editable manner.
 %End
 
-    void setMode( QgsAttributeForm::Mode mode );
+    void setMode( QgsAttributeEditorContext::Mode mode );
 %Docstring
 Toggles the form mode.
 
-:param mode: form mode. For example, if set to QgsAttributeForm.AddFeatureMode, the dialog will be editable even with an invalid feature and
+:param mode: form mode. For example, if set to QgsAttributeEditorContext.AddFeatureMode, the dialog will be editable even with an invalid feature and
              will add a new feature when the form is accepted.
 %End
 
@@ -68,7 +68,7 @@ Sets the edit command message (Undo) that will be used when the dialog is accept
     virtual bool event( QEvent *e );
 
 %Docstring
-Intercept window activate/deactive events to show/hide the highlighted feature.
+Intercept window activate/deactivate events to show/hide the highlighted feature.
 
 :param e: The event
 

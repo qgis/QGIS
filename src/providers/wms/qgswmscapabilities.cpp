@@ -140,7 +140,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
       }
       else
       {
-        QgsDebugMsg( QString( "skipped dimension %1" ).arg( param ) );
+        QgsDebugMsg( QStringLiteral( "skipped dimension %1" ).arg( param ) );
       }
     }
   }
@@ -148,7 +148,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   mCrsId = uri.param( QStringLiteral( "crs" ) );
 
   mEnableContextualLegend = uri.param( QStringLiteral( "contextualWMSLegend" ) ).toInt();
-  QgsDebugMsg( QString( "Contextual legend: %1" ).arg( mEnableContextualLegend ) );
+  QgsDebugMsg( QStringLiteral( "Contextual legend: %1" ).arg( mEnableContextualLegend ) );
 
   mFeatureCount = uri.param( QStringLiteral( "featureCount" ) ).toInt(); // default to 0
 
@@ -171,7 +171,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
       mErrorFormat = QStringLiteral( "text/plain" );
       mError = QObject::tr( "empty capabilities document" );
     }
-    QgsDebugMsg( "response is empty" );
+    QgsDebugMsg( QStringLiteral( "response is empty" ) );
     return false;
   }
 
@@ -180,12 +180,12 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
   {
     mErrorFormat = QStringLiteral( "text/html" );
     mError = response;
-    QgsDebugMsg( "starts with <html>" );
+    QgsDebugMsg( QStringLiteral( "starts with <html>" ) );
     return false;
   }
 
 
-  QgsDebugMsg( "Converting to Dom." );
+  QgsDebugMsg( QStringLiteral( "Converting to Dom." ) );
 
   bool domOK;
   domOK = parseCapabilitiesDom( response, mCapabilities );
@@ -230,7 +230,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
     mIdentifyFormats.insert( format, f );
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 
   mValid = mError.isEmpty();
   return mValid;
@@ -309,24 +309,24 @@ bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapa
 
       if ( e.tagName() == QLatin1String( "Service" ) || e.tagName() == QLatin1String( "ows:ServiceProvider" ) || e.tagName() == QLatin1String( "ows:ServiceIdentification" ) )
       {
-        QgsDebugMsg( "  Service." );
+        QgsDebugMsg( QStringLiteral( "  Service." ) );
         parseService( e, capabilitiesProperty.service );
       }
       else if ( e.tagName() == QLatin1String( "Capability" ) || e.tagName() == QLatin1String( "ows:OperationsMetadata" ) )
       {
-        QgsDebugMsg( "  Capability." );
+        QgsDebugMsg( QStringLiteral( "  Capability." ) );
         parseCapability( e, capabilitiesProperty.capability );
       }
       else if ( e.tagName() == QLatin1String( "Contents" ) )
       {
-        QgsDebugMsg( "  Contents." );
+        QgsDebugMsg( QStringLiteral( "  Contents." ) );
         parseWMTSContents( e );
       }
     }
     n = n.nextSibling();
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 
   return true;
 }
@@ -392,7 +392,7 @@ void QgsWmsCapabilities::parseService( QDomElement const &e, QgsWmsServiceProper
     n1 = n1.nextSibling();
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -401,7 +401,7 @@ void QgsWmsCapabilities::parseOnlineResource( QDomElement const &e, QgsWmsOnline
 
   onlineResourceAttribute.xlinkHref = QUrl::fromEncoded( e.attribute( QStringLiteral( "xlink:href" ) ).toUtf8() ).toString();
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -422,14 +422,14 @@ void QgsWmsCapabilities::parseKeywordList( QDomElement  const &e, QStringList &k
 
       if ( tagName == QLatin1String( "Keyword" ) )
       {
-        QgsDebugMsg( "      Keyword." );
+        QgsDebugMsg( QStringLiteral( "      Keyword." ) );
         keywordListProperty += e1.text();
       }
     }
     n1 = n1.nextSibling();
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 void QgsWmsCapabilities::parseContactInformation( QDomElement const &e, QgsWmsContactInformationProperty &contactInformationProperty )
@@ -495,7 +495,7 @@ void QgsWmsCapabilities::parseContactInformation( QDomElement const &e, QgsWmsCo
     n1 = n1.nextSibling();
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 void QgsWmsCapabilities::parseContactPersonPrimary( QDomElement const &e, QgsWmsContactPersonPrimaryProperty &contactPersonPrimaryProperty )
@@ -523,7 +523,7 @@ void QgsWmsCapabilities::parseContactPersonPrimary( QDomElement const &e, QgsWms
     n1 = n1.nextSibling();
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -568,7 +568,7 @@ void QgsWmsCapabilities::parseContactAddress( QDomElement const &e, QgsWmsContac
     n1 = n1.nextSibling();
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -629,7 +629,7 @@ void QgsWmsCapabilities::parseCapability( QDomElement const &e, QgsWmsCapability
       QgsWmsOperationType *ot = nullptr;
       if ( href.isNull() )
       {
-        QgsDebugMsg( QString( "http get missing from ows:Operation '%1'" ).arg( name ) );
+        QgsDebugMsg( QStringLiteral( "http get missing from ows:Operation '%1'" ).arg( name ) );
       }
       else if ( name == QLatin1String( "GetTile" ) )
       {
@@ -645,7 +645,7 @@ void QgsWmsCapabilities::parseCapability( QDomElement const &e, QgsWmsCapability
       }
       else
       {
-        QgsDebugMsg( QString( "ows:Operation %1 ignored" ).arg( name ) );
+        QgsDebugMsg( QStringLiteral( "ows:Operation %1 ignored" ).arg( name ) );
       }
 
       if ( ot )
@@ -662,7 +662,7 @@ void QgsWmsCapabilities::parseCapability( QDomElement const &e, QgsWmsCapability
     }
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -683,24 +683,24 @@ void QgsWmsCapabilities::parseRequest( QDomElement const &e, QgsWmsRequestProper
 
       if ( operation == QLatin1String( "GetMap" ) )
       {
-        QgsDebugMsg( "      GetMap." );
+        QgsDebugMsg( QStringLiteral( "      GetMap." ) );
         parseOperationType( e1, requestProperty.getMap );
       }
       else if ( operation == QLatin1String( "GetFeatureInfo" ) )
       {
-        QgsDebugMsg( "      GetFeatureInfo." );
+        QgsDebugMsg( QStringLiteral( "      GetFeatureInfo." ) );
         parseOperationType( e1, requestProperty.getFeatureInfo );
       }
       else if ( operation == QLatin1String( "GetLegendGraphic" ) || operation == QLatin1String( "sld:GetLegendGraphic" ) )
       {
-        QgsDebugMsg( "      GetLegendGraphic." );
+        QgsDebugMsg( QStringLiteral( "      GetLegendGraphic." ) );
         parseOperationType( e1, requestProperty.getLegendGraphic );
       }
     }
     n1 = n1.nextSibling();
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -733,7 +733,7 @@ void QgsWmsCapabilities::parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlPr
     n1 = n1.nextSibling();
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &layerProperty,
@@ -771,7 +771,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
 
       if ( tagName == QLatin1String( "Layer" ) )
       {
-        //QgsDebugMsg( "      Nested layer." );
+        //QgsDebugMsg( QStringLiteral( "      Nested layer." ) );
 
         QgsWmsLayerProperty subLayerProperty;
 
@@ -907,7 +907,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
         }
         else
         {
-          QgsDebugMsg( "CRS/SRS attribute not found in BoundingBox" );
+          QgsDebugMsg( QStringLiteral( "CRS/SRS attribute not found in BoundingBox" ) );
         }
       }
       else if ( tagName == QLatin1String( "Dimension" ) )
@@ -999,7 +999,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
     mLayerParentNames[ layerProperty.orderId ] = QStringList() << layerProperty.name << layerProperty.title << layerProperty.abstract;
   }
 
-  //QgsDebugMsg( "exiting." );
+  //QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -1045,7 +1045,7 @@ void QgsWmsCapabilities::parseStyle( QDomElement const &e, QgsWmsStyleProperty &
     n1 = n1.nextSibling();
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -1064,12 +1064,12 @@ void QgsWmsCapabilities::parseOperationType( QDomElement const &e, QgsWmsOperati
 
       if ( tagName == QLatin1String( "Format" ) )
       {
-        QgsDebugMsg( "      Format." );
+        QgsDebugMsg( QStringLiteral( "      Format." ) );
         operationType.format += e1.text();
       }
       else if ( tagName == QLatin1String( "DCPType" ) )
       {
-        QgsDebugMsg( "      DCPType." );
+        QgsDebugMsg( QStringLiteral( "      DCPType." ) );
         QgsWmsDcpTypeProperty dcp;
         parseDcpType( e1, dcp );
         operationType.dcpType.push_back( dcp );
@@ -1078,7 +1078,7 @@ void QgsWmsCapabilities::parseOperationType( QDomElement const &e, QgsWmsOperati
     n1 = n1.nextSibling();
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 
@@ -1093,14 +1093,14 @@ void QgsWmsCapabilities::parseDcpType( QDomElement const &e, QgsWmsDcpTypeProper
     {
       if ( e1.tagName() == QLatin1String( "HTTP" ) )
       {
-        QgsDebugMsg( "      HTTP." );
+        QgsDebugMsg( QStringLiteral( "      HTTP." ) );
         parseHttp( e1, dcpType.http );
       }
     }
     n1 = n1.nextSibling();
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 void QgsWmsCapabilities::parseHttp( QDomElement const &e, QgsWmsHttpProperty &httpProperty )
@@ -1118,19 +1118,19 @@ void QgsWmsCapabilities::parseHttp( QDomElement const &e, QgsWmsHttpProperty &ht
 
       if ( tagName == QLatin1String( "Get" ) )
       {
-        QgsDebugMsg( "      Get." );
+        QgsDebugMsg( QStringLiteral( "      Get." ) );
         parseGet( e1, httpProperty.get );
       }
       else if ( tagName == QLatin1String( "Post" ) )
       {
-        QgsDebugMsg( "      Post." );
+        QgsDebugMsg( QStringLiteral( "      Post." ) );
         parsePost( e1, httpProperty.post );
       }
     }
     n1 = n1.nextSibling();
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 void QgsWmsCapabilities::parseGet( QDomElement const &e, QgsWmsGetProperty &getProperty )
@@ -1148,14 +1148,14 @@ void QgsWmsCapabilities::parseGet( QDomElement const &e, QgsWmsGetProperty &getP
 
       if ( tagName == QLatin1String( "OnlineResource" ) )
       {
-        QgsDebugMsg( "      OnlineResource." );
+        QgsDebugMsg( QStringLiteral( "      OnlineResource." ) );
         parseOnlineResource( e1, getProperty.onlineResource );
       }
     }
     n1 = n1.nextSibling();
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 void QgsWmsCapabilities::parsePost( QDomElement const &e, QgsWmsPostProperty &postProperty )
@@ -1173,14 +1173,14 @@ void QgsWmsCapabilities::parsePost( QDomElement const &e, QgsWmsPostProperty &po
 
       if ( tagName == QLatin1String( "OnlineResource" ) )
       {
-        QgsDebugMsg( "      OnlineResource." );
+        QgsDebugMsg( QStringLiteral( "      OnlineResource." ) );
         parseOnlineResource( e1, postProperty.onlineResource );
       }
     }
     n1 = n1.nextSibling();
   }
 
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QStringLiteral( "exiting." ) );
 }
 
 void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
@@ -1248,7 +1248,7 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
           bb.crs = e1.attribute( QStringLiteral( "crs" ) );
         else
         {
-          QgsDebugMsg( "crs of bounding box undefined" );
+          QgsDebugMsg( QStringLiteral( "crs of bounding box undefined" ) );
         }
 
         if ( !bb.crs.isEmpty() )
@@ -1266,7 +1266,7 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
       }
       else
       {
-        QgsDebugMsg( QString( "tileset tag %1 ignored" ).arg( e1.tagName() ) );
+        QgsDebugMsg( QStringLiteral( "tileset tag %1 ignored" ).arg( e1.tagName() ) );
       }
     }
     n1 = n1.nextSibling();
@@ -1333,7 +1333,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
     if ( mParserSettings.invertAxisOrientation )
       invert = !invert;
 
-    QgsDebugMsg( QString( "tilematrix set: %1 (supportedCRS:%2 crs:%3; metersPerUnit:%4 axisInverted:%5)" )
+    QgsDebugMsg( QStringLiteral( "tilematrix set: %1 (supportedCRS:%2 crs:%3; metersPerUnit:%4 axisInverted:%5)" )
                  .arg( s.identifier,
                        supportedCRS,
                        s.crs )
@@ -1368,7 +1368,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
       }
       else
       {
-        QgsDebugMsg( "Could not parse topLeft" );
+        QgsDebugMsg( QStringLiteral( "Could not parse topLeft" ) );
         continue;
       }
 
@@ -1381,7 +1381,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
       // in WMTS (and WMS 1.3) standard, being 0.28 pixel
       m.tres = m.scaleDenom * 0.00028 / metersPerUnit;
 
-      QgsDebugMsg( QString( " %1: scale=%2 res=%3 tile=%4x%5 matrix=%6x%7 topLeft=%8" )
+      QgsDebugMsg( QStringLiteral( " %1: scale=%2 res=%3 tile=%4x%5 matrix=%6x%7 topLeft=%8" )
                    .arg( m.identifier )
                    .arg( m.scaleDenom ).arg( m.tres )
                    .arg( m.tileWidth ).arg( m.tileHeight )
@@ -1406,7 +1406,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
   {
 #ifdef QGISDEBUG
     QString id = e0.firstChildElement( QStringLiteral( "ows:Identifier" ) ).text();  // clazy:exclude=unused-non-trivial-variable
-    QgsDebugMsg( QString( "Layer %1" ).arg( id ) );
+    QgsDebugMsg( QStringLiteral( "Layer %1" ).arg( id ) );
 #endif
 
     QgsWmtsTileLayer l;
@@ -1456,7 +1456,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
           bb.crs = bbox.attribute( QStringLiteral( "crs" ) );
         else
         {
-          QgsDebugMsg( "crs of bounding box undefined" );
+          QgsDebugMsg( QStringLiteral( "crs of bounding box undefined" ) );
         }
 
         if ( !bb.crs.isEmpty() )
@@ -1535,7 +1535,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
       QgsRaster::IdentifyFormat fmt = QgsRaster::IdentifyFormatUndefined;
 
-      QgsDebugMsg( QString( "format=%1" ).arg( format ) );
+      QgsDebugMsg( QStringLiteral( "format=%1" ).arg( format ) );
 
       if ( format == QLatin1String( "MIME" ) )
         fmt = QgsRaster::IdentifyFormatText; // 1.0
@@ -1553,11 +1553,11 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
         fmt = QgsRaster::IdentifyFormatFeature;
       else
       {
-        QgsDebugMsg( QString( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
+        QgsDebugMsg( QStringLiteral( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
         continue;
       }
 
-      QgsDebugMsg( QString( "fmt=%1" ).arg( fmt ) );
+      QgsDebugMsg( QStringLiteral( "fmt=%1" ).arg( fmt ) );
       mIdentifyFormats.insert( fmt, format );
     }
 
@@ -1596,7 +1596,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
       if ( !mTileMatrixSets.contains( sl.tileMatrixSet ) )
       {
-        QgsDebugMsg( QString( "  TileMatrixSet %1 not found." ).arg( sl.tileMatrixSet ) );
+        QgsDebugMsg( QStringLiteral( "  TileMatrixSet %1 not found." ).arg( sl.tileMatrixSet ) );
         continue;
       }
 
@@ -1640,10 +1640,10 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
           }
           else
           {
-            QgsDebugMsg( QString( "   TileMatrix id:%1 not found." ).arg( id ) );
+            QgsDebugMsg( QStringLiteral( "   TileMatrix id:%1 not found." ).arg( id ) );
           }
 
-          QgsDebugMsg( QString( "   TileMatrixLimit id:%1 row:%2-%3 col:%4-%5 matrix:%6x%7 %8" )
+          QgsDebugMsg( QStringLiteral( "   TileMatrixLimit id:%1 row:%2-%3 col:%4-%5 matrix:%6x%7 %8" )
                        .arg( id )
                        .arg( limit.minTileRow ).arg( limit.maxTileRow )
                        .arg( limit.minTileCol ).arg( limit.maxTileCol )
@@ -1669,7 +1669,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
       if ( format.isEmpty() || resourceType.isEmpty() || tmpl.isEmpty() )
       {
-        QgsDebugMsg( QString( "SKIPPING ResourceURL format=%1 resourceType=%2 template=%3" )
+        QgsDebugMsg( QStringLiteral( "SKIPPING ResourceURL format=%1 resourceType=%2 template=%3" )
                      .arg( format,
                            resourceType,
                            tmpl ) );
@@ -1686,7 +1686,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
         QgsRaster::IdentifyFormat fmt = QgsRaster::IdentifyFormatUndefined;
 
-        QgsDebugMsg( QString( "format=%1" ).arg( format ) );
+        QgsDebugMsg( QStringLiteral( "format=%1" ).arg( format ) );
 
         if ( format == QLatin1String( "MIME" ) )
           fmt = QgsRaster::IdentifyFormatText; // 1.0
@@ -1704,23 +1704,23 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
           fmt = QgsRaster::IdentifyFormatFeature;
         else
         {
-          QgsDebugMsg( QString( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
+          QgsDebugMsg( QStringLiteral( "Unsupported featureInfoUrl format: %1" ).arg( format ) );
           continue;
         }
 
-        QgsDebugMsg( QString( "fmt=%1" ).arg( fmt ) );
+        QgsDebugMsg( QStringLiteral( "fmt=%1" ).arg( fmt ) );
         mIdentifyFormats.insert( fmt, format );
       }
       else
       {
-        QgsDebugMsg( QString( "UNEXPECTED resourceType in ResourcURL format=%1 resourceType=%2 template=%3" )
+        QgsDebugMsg( QStringLiteral( "UNEXPECTED resourceType in ResourcURL format=%1 resourceType=%2 template=%3" )
                      .arg( format,
                            resourceType,
                            tmpl ) );
       }
     }
 
-    QgsDebugMsg( QString( "add layer %1" ).arg( id ) );
+    QgsDebugMsg( QStringLiteral( "add layer %1" ).arg( id ) );
     mTileLayersSupported << l;
   }
 
@@ -1842,7 +1842,7 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer &l )
   QgsPointXY bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
                           tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
 
-  QgsDebugMsg( QString( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" )
+  QgsDebugMsg( QStringLiteral( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" )
                .arg( tmsIt->identifier, tm.identifier, tmsIt->crs ).arg( res ) );
 
   QgsRectangle extent( tm.topLeft, bottomRight );
@@ -1999,7 +1999,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
   {
     if ( mCapabilitiesReply->error() == QNetworkReply::NoError )
     {
-      QgsDebugMsg( "reply OK" );
+      QgsDebugMsg( QStringLiteral( "reply OK" ) );
       QVariant redirect = mCapabilitiesReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {
@@ -2030,7 +2030,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           mCapabilitiesReply->deleteLater();
           mCapabilitiesReply = nullptr;
 
-          QgsDebugMsg( QString( "redirected getcapabilities: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ) );
+          QgsDebugMsg( QStringLiteral( "redirected getcapabilities: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ) );
           mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
 
           if ( !mAuth.setAuthorizationReply( mCapabilitiesReply ) )
@@ -2065,7 +2065,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           }
           cmd.setRawHeaders( hl );
 
-          QgsDebugMsg( QString( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
+          QgsDebugMsg( QStringLiteral( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
           if ( cmd.expirationDate().isNull() )
           {
             QgsSettings s;
@@ -2076,12 +2076,12 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
         }
         else
         {
-          QgsDebugMsg( "No cache for capabilities!" );
+          QgsDebugMsg( QStringLiteral( "No cache for capabilities!" ) );
         }
 
 #ifdef QGISDEBUG
         bool fromCache = mCapabilitiesReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
-        QgsDebugMsg( QString( "Capabilities reply was cached: %1" ).arg( fromCache ) );
+        QgsDebugMsg( QStringLiteral( "Capabilities reply was cached: %1" ).arg( fromCache ) );
 #endif
 
         mHttpCapabilitiesResponse = mCapabilitiesReply->readAll();
@@ -2143,7 +2143,7 @@ void QgsWmtsTileMatrix::viewExtentIntersection( const QgsRectangle &viewExtent, 
     maxTileCol = tml->maxTileCol;
     minTileRow = tml->minTileRow;
     maxTileRow = tml->maxTileRow;
-    //QgsDebugMsg( QString( "%1 %2: TileMatrixLimits col %3-%4 row %5-%6" )
+    //QgsDebugMsg( QStringLiteral( "%1 %2: TileMatrixLimits col %3-%4 row %5-%6" )
     //             .arg( tileMatrixSet->identifier, identifier )
     //             .arg( minTileCol ).arg( maxTileCol )
     //             .arg( minTileRow ).arg( maxTileRow ) );
@@ -2160,7 +2160,7 @@ const QgsWmtsTileMatrix *QgsWmtsTileMatrixSet::findNearestResolution( double vre
   QMap<double, QgsWmtsTileMatrix>::const_iterator prev, it = tileMatrices.constBegin();
   while ( it != tileMatrices.constEnd() && it.key() < vres )
   {
-    //QgsDebugMsg( QString( "res:%1 >= %2" ).arg( it.key() ).arg( vres ) );
+    //QgsDebugMsg( QStringLiteral( "res:%1 >= %2" ).arg( it.key() ).arg( vres ) );
     prev = it;
     ++it;
   }
@@ -2168,7 +2168,7 @@ const QgsWmtsTileMatrix *QgsWmtsTileMatrixSet::findNearestResolution( double vre
   if ( it == tileMatrices.constEnd() ||
        ( it != tileMatrices.constBegin() && vres - prev.key() < it.key() - vres ) )
   {
-    //QgsDebugMsg( "back to previous res" );
+    //QgsDebugMsg( QStringLiteral( "back to previous res" ) );
     it = prev;
   }
 
@@ -2180,7 +2180,7 @@ const QgsWmtsTileMatrix *QgsWmtsTileMatrixSet::findOtherResolution( double tres,
   QMap<double, QgsWmtsTileMatrix>::const_iterator it = tileMatrices.constFind( tres );
   if ( it == tileMatrices.constEnd() )
     return nullptr;
-  while ( 1 )
+  while ( true )
   {
     if ( offset > 0 )
     {

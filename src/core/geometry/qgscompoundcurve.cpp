@@ -76,9 +76,10 @@ int QgsCompoundCurve::dimension() const
 QgsCompoundCurve::QgsCompoundCurve( const QgsCompoundCurve &curve ): QgsCurve( curve )
 {
   mWkbType = curve.wkbType();
+  mCurves.reserve( curve.mCurves.size() );
   for ( const QgsCurve *c : curve.mCurves )
   {
-    mCurves.append( static_cast<QgsCurve *>( c->clone() ) );
+    mCurves.append( c->clone() );
   }
 }
 
@@ -90,7 +91,7 @@ QgsCompoundCurve &QgsCompoundCurve::operator=( const QgsCompoundCurve &curve )
     QgsCurve::operator=( curve );
     for ( const QgsCurve *c : curve.mCurves )
     {
-      mCurves.append( static_cast<QgsCurve *>( c->clone() ) );
+      mCurves.append( c->clone() );
     }
   }
   return *this;
@@ -221,6 +222,7 @@ QByteArray QgsCompoundCurve::asWkb() const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   QVector<QByteArray> wkbForCurves;
+  wkbForCurves.reserve( mCurves.size() );
   for ( const QgsCurve *curve : mCurves )
   {
     QByteArray wkbForCurve = curve->asWkb();
@@ -782,6 +784,15 @@ void QgsCompoundCurve::filterVertices( const std::function<bool ( const QgsPoint
   clearCache();
 }
 
+void QgsCompoundCurve::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
+{
+  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  {
+    curve->transformVertices( transform );
+  }
+  clearCache();
+}
+
 void QgsCompoundCurve::sumUpArea( double &sum ) const
 {
   for ( const QgsCurve *curve : mCurves )
@@ -853,6 +864,61 @@ QgsCompoundCurve *QgsCompoundCurve::reversed() const
     clone->addCurve( reversedCurve );
   }
   return clone;
+}
+
+QgsPoint *QgsCompoundCurve::interpolatePoint( const double distance ) const
+{
+  if ( distance < 0 )
+    return nullptr;
+
+  double distanceTraversed = 0;
+  for ( const QgsCurve *curve : mCurves )
+  {
+    const double thisCurveLength = curve->length();
+    if ( distanceTraversed + thisCurveLength > distance || qgsDoubleNear( distanceTraversed + thisCurveLength, distance ) )
+    {
+      // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
+      const double distanceToPoint = std::min( distance - distanceTraversed, thisCurveLength );
+
+      // point falls on this curve
+      return curve->interpolatePoint( distanceToPoint );
+    }
+
+    distanceTraversed += thisCurveLength;
+  }
+
+  return nullptr;
+}
+
+QgsCompoundCurve *QgsCompoundCurve::curveSubstring( double startDistance, double endDistance ) const
+{
+  if ( startDistance < 0 && endDistance < 0 )
+    return createEmptyWithSameType();
+
+  endDistance = std::max( startDistance, endDistance );
+  std::unique_ptr< QgsCompoundCurve > substring = qgis::make_unique< QgsCompoundCurve >();
+
+  double distanceTraversed = 0;
+  for ( const QgsCurve *curve : mCurves )
+  {
+    const double thisCurveLength = curve->length();
+    if ( distanceTraversed + thisCurveLength < startDistance )
+    {
+      // keep going - haven't found start yet, so no need to include this curve at all
+    }
+    else
+    {
+      std::unique_ptr< QgsCurve > part( curve->curveSubstring( startDistance - distanceTraversed, endDistance - distanceTraversed ) );
+      if ( part )
+        substring->addCurve( part.release() );
+    }
+
+    distanceTraversed += thisCurveLength;
+    if ( distanceTraversed > endDistance )
+      break;
+  }
+
+  return substring.release();
 }
 
 bool QgsCompoundCurve::addZValue( double zValue )

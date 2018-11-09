@@ -33,14 +33,17 @@ Examples are storing a layer extent or the current view extent of a map
 %Docstring
 Constructor
 %End
+
     QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2 );
 %Docstring
 Construct a rectangle from two points. The rectangle is normalized after construction.
 %End
+
     QgsRectangle( const QRectF &qRectF );
 %Docstring
 Construct a rectangle from a QRectF. The rectangle is normalized after construction.
 %End
+
     QgsRectangle( const QgsRectangle &other );
 %Docstring
 Copy constructor
@@ -70,7 +73,7 @@ Sets the rectangle from two :py:class:`QgsPoints`. The rectangle is
 normalised after construction.
 %End
 
-    void set( double mXmin, double mYmin, double mXmax, double mYmax );
+    void set( double xMin, double yMin, double xMax, double yMax );
 %Docstring
 Sets the rectangle from four points. The rectangle is
 normalised after construction.
@@ -182,6 +185,13 @@ Scale the rectangle around its center point.
 Scale the rectangle around its center point.
 %End
 
+    QgsRectangle scaled( double scaleFactor, const QgsPointXY *center = 0 ) const;
+%Docstring
+Scale the rectangle around its ``center`` point.
+
+.. versionadded:: 3.4
+%End
+
     void grow( double delta );
 %Docstring
 Grows the rectangle in place by the specified amount.
@@ -207,7 +217,7 @@ Gets rectangle enlarged by buffer.
 .. versionadded:: 3.0
 %End
 
-    QgsRectangle intersect( const QgsRectangle *rect ) const;
+    QgsRectangle intersect( const QgsRectangle &rect ) const;
 %Docstring
 Returns the intersection with the given rectangle.
 %End
@@ -229,21 +239,28 @@ Returns true when rectangle contains a point.
 
     void combineExtentWith( const QgsRectangle &rect );
 %Docstring
-Expand the rectangle so that covers both the original rectangle and the given rectangle.
+Expands the rectangle so that it covers both the original rectangle and the given rectangle.
 %End
 
     void combineExtentWith( double x, double y );
 %Docstring
-Expand the rectangle so that covers both the original rectangle and the given point.
+Expands the rectangle so that it covers both the original rectangle and the given point.
 %End
 
-    QgsRectangle operator-( const QgsVector v ) const;
+    void combineExtentWith( const QgsPointXY &point );
+%Docstring
+Expands the rectangle so that it covers both the original rectangle and the given point.
 
-    QgsRectangle operator+( const QgsVector v ) const;
+.. versionadded:: 3.2
+%End
 
-    QgsRectangle &operator-=( const QgsVector v );
+    QgsRectangle operator-( QgsVector v ) const;
 
-    QgsRectangle &operator+=( const QgsVector v );
+    QgsRectangle operator+( QgsVector v ) const;
+
+    QgsRectangle &operator-=( QgsVector v );
+
+    QgsRectangle &operator+=( QgsVector v );
 
     bool isEmpty() const;
 %Docstring
@@ -311,6 +328,20 @@ Converts the rectangle to a 3D box, with the specified
 %End
 
     operator QVariant() const;
+
+    QgsRectangle snappedToGrid( double spacing ) const;
+%Docstring
+Returns a copy of this rectangle that is snapped to a grid with
+the specified ``spacing`` between the grid lines.
+
+.. versionadded:: 3.4
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsRectangle: %1>" ).arg( sipCpp->asWktCoordinates() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
 
 };
 

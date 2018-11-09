@@ -58,6 +58,7 @@ class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
     SIP_SKIP QgsLayoutMouseHandles *mouseHandles();
     ///@endcond
 
+    //! Sets the a \a layout.
     void setLayout( QgsLayout *layout );
 
   private:

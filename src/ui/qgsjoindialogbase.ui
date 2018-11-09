@@ -47,7 +47,7 @@
    <item row="8" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mUseJoinFieldsSubset">
      <property name="title">
-      <string>Choose which fields are &amp;joined</string>
+      <string>&amp;Joined Fields</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -68,7 +68,7 @@
    <item row="9" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mUseCustomPrefix">
      <property name="title">
-      <string>Custom field &amp;name prefix</string>
+      <string>Custom Field &amp;Name Prefix</string>
      </property>
      <property name="checkable">
       <bool>true</bool>

@@ -6,6 +6,7 @@ Content-Type: text/xml; charset=utf-8
   <ows:Title>QGIS TestProject</ows:Title>
   <ows:Abstract><![CDATA[Some UTF8 text èòù]]></ows:Abstract>
   <ows:ServiceType>WFS</ows:ServiceType>
+  <ows:ServiceTypeVersion>1.1.0</ows:ServiceTypeVersion>
   <ows:Fees>None</ows:Fees>
   <ows:AccessConstraints>None</ows:AccessConstraints>
  </ows:ServiceIdentification>
@@ -20,8 +21,8 @@ Content-Type: text/xml; charset=utf-8
   <ows:Operation name="GetCapabilities">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
-     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Get xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Post xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
     </ows:HTTP>
    </ows:DCP>
    <ows:Parameter name="service">
@@ -38,8 +39,8 @@ Content-Type: text/xml; charset=utf-8
   <ows:Operation name="DescribeFeatureType">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
-     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Get xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Post xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
     </ows:HTTP>
    </ows:DCP>
    <ows:Parameter name="outputFormat">
@@ -51,8 +52,8 @@ Content-Type: text/xml; charset=utf-8
   <ows:Operation name="GetFeature">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
-     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Get xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Post xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
     </ows:HTTP>
    </ows:DCP>
    <ows:Parameter name="outputFormat">
@@ -68,8 +69,8 @@ Content-Type: text/xml; charset=utf-8
   <ows:Operation name="Transaction">
    <ows:DCP>
     <ows:HTTP>
-     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
-     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Get xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Post xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
     </ows:HTTP>
    </ows:DCP>
    <ows:Parameter name="inputFormat">
@@ -81,7 +82,7 @@ Content-Type: text/xml; charset=utf-8
  </ows:OperationsMetadata>
  <FeatureTypeList>
   <Operations>
-   <Query/>
+   <Operation>Query</Operation>
   </Operations>
   <FeatureType>
    <Name>testlayer</Name>
@@ -89,6 +90,12 @@ Content-Type: text/xml; charset=utf-8
    <Abstract>A test vector layer with unicode òà</Abstract>
    <DefaultSRS>EPSG:4326</DefaultSRS>
    <OtherSRS>EPSG:3857</OtherSRS>
+   <Operations>
+    <Operation>Query</Operation>
+    <Operation>Insert</Operation>
+    <Operation>Update</Operation>
+    <Operation>Delete</Operation>
+   </Operations>
    <OutputFormats>
     <Format>text/xml; subtype=gml/3.1.1</Format>
    </OutputFormats>
@@ -96,12 +103,6 @@ Content-Type: text/xml; charset=utf-8
     <ows:LowerCorner>8.20346 44.9014</ows:LowerCorner>
     <ows:UpperCorner>8.20355 44.9015</ows:UpperCorner>
    </ows:WGS84BoundingBox>
-   <Operations>
-    <Query/>
-    <Insert/>
-    <Update/>
-    <Delete/>
-   </Operations>
   </FeatureType>
  </FeatureTypeList>
  <ogc:Filter_Capabilities>
@@ -113,17 +114,17 @@ Content-Type: text/xml; charset=utf-8
     <ogc:GeometryOperand>gml:Envelope</ogc:GeometryOperand>
    </ogc:GeometryOperands>
    <ogc:SpatialOperators>
-    <ogc:SpatialOperator>Equals</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Disjoint</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Touches</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Within</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Overlaps</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Crosses</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Intersects</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Contains</ogc:SpatialOperator>
-    <ogc:SpatialOperator>DWithin</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Beyond</ogc:SpatialOperator>
-    <ogc:SpatialOperator>BBOX</ogc:SpatialOperator>
+    <ogc:SpatialOperator name="Equals"/>
+    <ogc:SpatialOperator name="Disjoint"/>
+    <ogc:SpatialOperator name="Touches"/>
+    <ogc:SpatialOperator name="Within"/>
+    <ogc:SpatialOperator name="Overlaps"/>
+    <ogc:SpatialOperator name="Crosses"/>
+    <ogc:SpatialOperator name="Intersects"/>
+    <ogc:SpatialOperator name="Contains"/>
+    <ogc:SpatialOperator name="DWithin"/>
+    <ogc:SpatialOperator name="Beyond"/>
+    <ogc:SpatialOperator name="BBOX"/>
    </ogc:SpatialOperators>
   </ogc:Spatial_Capabilities>
   <ogc:Scalar_Capabilities>
@@ -138,5 +139,8 @@ Content-Type: text/xml; charset=utf-8
     <ogc:ComparisonOperator>Between</ogc:ComparisonOperator>
    </ogc:ComparisonOperators>
   </ogc:Scalar_Capabilities>
+  <ogc:Id_Capabilities>
+   <ogc:FID/>
+  </ogc:Id_Capabilities>
  </ogc:Filter_Capabilities>
 </WFS_Capabilities>

@@ -17,17 +17,24 @@
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QMesh>
+#include <Qt3DRender/QObjectPicker>
+#include <Qt3DRender/QPickEvent>
 #include <Qt3DRender/QPickingSettings>
+#include <Qt3DRender/QPickTriangleEvent>
+#include <Qt3DRender/QPointLight>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QSkyboxEntity>
+#include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
 
 #include <QTimer>
 
 #include "qgsaabb.h"
+#include "qgsabstract3dengine.h"
+#include "qgs3dmapscenepickhandler.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstract3drenderer.h"
@@ -36,14 +43,14 @@
 #include "qgschunknode_p.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
+#include "qgstessellatedpolygongeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 
 
-Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph, Qt3DRender::QRenderSettings *renderSettings, Qt3DRender::QCamera *camera, const QRect &viewportRect, Qt3DCore::QNode *parent )
-  : Qt3DCore::QEntity( parent )
-  , mMap( map )
-  , mForwardRenderer( defaultFrameGraph )
+Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
+  : mMap( map )
+  , mEngine( engine )
 {
 
   connect( &map, &Qgs3DMapSettings::backgroundColorChanged, this, &Qgs3DMapScene::onBackgroundColorChanged );
@@ -51,16 +58,18 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardR
 
   // TODO: strange - setting OnDemand render policy still keeps QGIS busy (Qt 5.9.0)
   // actually it is more busy than with the default "Always" policy although there are no changes in the scene.
-  //renderSettings->setRenderPolicy( Qt3DRender::QRenderSettings::OnDemand );
+  //mRenderer->renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::OnDemand );
 
 #if QT_VERSION >= 0x050900
   // we want precise picking of terrain (also bounding volume picking does not seem to work - not sure why)
-  renderSettings->pickingSettings()->setPickMethod( Qt3DRender::QPickingSettings::TrianglePicking );
+  mEngine->renderSettings()->pickingSettings()->setPickMethod( Qt3DRender::QPickingSettings::TrianglePicking );
 #endif
+
+  QRect viewportRect( QPoint( 0, 0 ), mEngine->size() );
 
   // Camera
   float aspectRatio = ( float )viewportRect.width() / viewportRect.height();
-  camera->lens()->setPerspectiveProjection( 45.0f, aspectRatio, 10.f, 10000.0f );
+  mEngine->camera()->lens()->setPerspectiveProjection( 45.0f, aspectRatio, 10.f, 10000.0f );
 
   mFrameAction = new Qt3DLogic::QFrameAction();
   connect( mFrameAction, &Qt3DLogic::QFrameAction::triggered,
@@ -70,8 +79,10 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardR
   // Camera controlling
   mCameraController = new QgsCameraController( this ); // attaches to the scene
   mCameraController->setViewport( viewportRect );
-  mCameraController->setCamera( camera );
+  mCameraController->setCamera( mEngine->camera() );
   mCameraController->resetView( 1000 );
+
+  addCameraViewCenterEntity( mEngine->camera() );
 
   // create terrain entity
 
@@ -153,7 +164,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardR
     // docs say frustum culling must be disabled for skybox.
     // it _somehow_ works even when frustum culling is enabled with some camera positions,
     // but then when zoomed in more it would disappear - so let's keep frustum culling disabled
-    defaultFrameGraph->setFrustumCullingEnabled( false );
+    mEngine->setFrustumCullingEnabled( false );
   }
 
   // force initial update of chunked entities
@@ -163,13 +174,58 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardR
 void Qgs3DMapScene::viewZoomFull()
 {
   QgsRectangle extent = mMap.terrainGenerator()->extent();
-  float side = qMax( extent.width(), extent.height() );
+  float side = std::max( extent.width(), extent.height() );
   mCameraController->resetView( side );  // assuming FOV being 45 degrees
 }
 
 int Qgs3DMapScene::terrainPendingJobsCount() const
 {
   return mTerrain ? mTerrain->pendingJobsCount() : 0;
+}
+
+void Qgs3DMapScene::registerPickHandler( Qgs3DMapScenePickHandler *pickHandler )
+{
+  if ( mPickHandlers.isEmpty() )
+  {
+    // we need to add object pickers
+    for ( Qt3DCore::QEntity *entity : mLayerEntities.values() )
+    {
+      Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker( entity );
+      entity->addComponent( picker );
+      connect( picker, &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapScene::onLayerEntityPickEvent );
+    }
+  }
+
+  mPickHandlers.append( pickHandler );
+}
+
+void Qgs3DMapScene::unregisterPickHandler( Qgs3DMapScenePickHandler *pickHandler )
+{
+  mPickHandlers.removeOne( pickHandler );
+
+  if ( mPickHandlers.isEmpty() )
+  {
+    // we need to remove pickers
+    for ( Qt3DCore::QEntity *entity : mLayerEntities.values() )
+    {
+      Qt3DRender::QObjectPicker *picker = entity->findChild<Qt3DRender::QObjectPicker *>();
+      picker->deleteLater();
+    }
+  }
+}
+
+float Qgs3DMapScene::worldSpaceError( float epsilon, float distance )
+{
+  Qt3DRender::QCamera *camera = mCameraController->camera();
+  float fov = camera->fieldOfView();
+  QRect rect = mCameraController->viewport();
+  float screenSizePx = std::max( rect.width(), rect.height() ); // TODO: is this correct?
+
+  // in qgschunkedentity_p.cpp there is inverse calculation (world space error to screen space error)
+  // with explanation of the math.
+  float frustumWidthAtDistance = 2 * distance * tan( fov / 2 );
+  float err = frustumWidthAtDistance * epsilon / screenSizePx;
+  return err;
 }
 
 QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController )
@@ -179,19 +235,38 @@ QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController 
   state.cameraFov = camera->fieldOfView();
   state.cameraPos = camera->position();
   QRect rect = cameraController->viewport();
-  state.screenSizePx = qMax( rect.width(), rect.height() ); // TODO: is this correct?
+  state.screenSizePx = std::max( rect.width(), rect.height() ); // TODO: is this correct?
   state.viewProjectionMatrix = camera->projectionMatrix() * camera->viewMatrix();
   return state;
 }
 
 void Qgs3DMapScene::onCameraChanged()
 {
-  Q_FOREACH ( QgsChunkedEntity *entity, mChunkEntities )
+  updateScene();
+  bool changedCameraPlanes = updateCameraNearFarPlanes();
+
+  if ( changedCameraPlanes )
+  {
+    // repeat update of entities - because we have updated camera's near/far planes,
+    // the active nodes may have changed as well
+    updateScene();
+    updateCameraNearFarPlanes();
+  }
+}
+
+void Qgs3DMapScene::updateScene()
+{
+  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() )
       entity->update( _sceneState( mCameraController ) );
   }
 
+  updateSceneState();
+}
+
+bool Qgs3DMapScene::updateCameraNearFarPlanes()
+{
   // Update near and far plane from the terrain.
   // this needs to be done with great care as we have kind of circular dependency here:
   // active nodes are culled based on the current frustum (which involves near + far plane)
@@ -251,20 +326,26 @@ void Qgs3DMapScene::onCameraChanged()
     }
 
     // set near/far plane - with some tolerance in front/behind expected near/far planes
-    camera->setFarPlane( ffar * 2 );
-    camera->setNearPlane( fnear / 2 );
+    float newFar = ffar * 2;
+    float newNear = fnear / 2;
+    if ( !qgsFloatNear( newFar, camera->farPlane() ) || !qgsFloatNear( newNear, camera->nearPlane() ) )
+    {
+      camera->setFarPlane( newFar );
+      camera->setNearPlane( newNear );
+      return true;
+    }
   }
   else
     qDebug() << "no terrain - not setting near/far plane";
 
-  //qDebug() << "camera near/far" << mCameraController->camera()->nearPlane() << mCameraController->camera()->farPlane();
+  return false;
 }
 
 void Qgs3DMapScene::onFrameTriggered( float dt )
 {
   mCameraController->frameTriggered( dt );
 
-  Q_FOREACH ( QgsChunkedEntity *entity, mChunkEntities )
+  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() && entity->needsUpdate() )
     {
@@ -272,6 +353,8 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
       entity->update( _sceneState( mCameraController ) );
     }
   }
+
+  updateSceneState();
 }
 
 void Qgs3DMapScene::createTerrain()
@@ -289,6 +372,7 @@ void Qgs3DMapScene::createTerrain()
     // defer re-creation of terrain: there may be multiple invocations of this slot, so create the new entity just once
     QTimer::singleShot( 0, this, &Qgs3DMapScene::createTerrainDeferred );
     mTerrainUpdateScheduled = true;
+    setSceneState( Updating );
   }
 }
 
@@ -304,7 +388,7 @@ void Qgs3DMapScene::createTerrainDeferred()
   if ( mMap.showTerrainBoundingBoxes() )
     mTerrain->setShowBoundingBoxes( true );
 
-  mCameraController->addTerrainPicker( mTerrain->terrainPicker() );
+  mCameraController->setTerrainEntity( mTerrain );
 
   mChunkEntities << mTerrain;
 
@@ -329,7 +413,55 @@ void Qgs3DMapScene::createTerrainDeferred()
 
 void Qgs3DMapScene::onBackgroundColorChanged()
 {
-  mForwardRenderer->setClearColor( mMap.backgroundColor() );
+  mEngine->setClearColor( mMap.backgroundColor() );
+}
+
+void Qgs3DMapScene::onLayerEntityPickEvent( Qt3DRender::QPickEvent *event )
+{
+  if ( event->button() != Qt3DRender::QPickEvent::LeftButton )
+    return;
+
+  Qt3DRender::QPickTriangleEvent *triangleEvent = qobject_cast<Qt3DRender::QPickTriangleEvent *>( event );
+  if ( !triangleEvent )
+    return;
+
+  Qt3DRender::QObjectPicker *picker = qobject_cast<Qt3DRender::QObjectPicker *>( sender() );
+  if ( !picker )
+    return;
+
+  Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( picker->parent() );
+  if ( !entity )
+    return;
+
+  QgsMapLayer *layer = mLayerEntities.key( entity );
+  if ( !layer )
+    return;
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vlayer )
+    return;
+
+  for ( Qgs3DMapScenePickHandler *pickHandler : qgis::as_const( mPickHandlers ) )
+  {
+    // go figure out feature ID from the triangle index
+    QgsFeatureId fid = -1;
+    for ( Qt3DRender::QGeometryRenderer *geomRenderer : entity->findChildren<Qt3DRender::QGeometryRenderer *>() )
+    {
+      // unfortunately we can't access which sub-entity triggered the pick event
+      // so as a temporary workaround let's just ignore the entity with selection
+      // and hope the event was the main entity (QTBUG-58206)
+      if ( geomRenderer->objectName() != QLatin1String( "main" ) )
+        continue;
+
+      if ( QgsTessellatedPolygonGeometry *g = qobject_cast<QgsTessellatedPolygonGeometry *>( geomRenderer->geometry() ) )
+      {
+        fid = g->triangleIndexToFeatureId( triangleEvent->triangleIndex() );
+        break;
+      }
+    }
+    pickHandler->handlePickOnVectorLayer( vlayer, fid, event->worldIntersection() );
+  }
+
 }
 
 void Qgs3DMapScene::onLayerRenderer3DChanged()
@@ -382,7 +514,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     // This is a bit of a hack and it should be handled in QgsMapLayer::setRenderer3D() but in qgis_core
     // the vector layer 3D renderer class is not available. Maybe we need an intermediate map layer 3D renderer
     // class in qgis_core that can be used to handle this case nicely.
-    if ( layer->type() == QgsMapLayer::VectorLayer && renderer->type() == "vector" )
+    if ( layer->type() == QgsMapLayer::VectorLayer && renderer->type() == QLatin1String( "vector" ) )
     {
       static_cast<QgsVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
     }
@@ -392,6 +524,13 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     {
       newEntity->setParent( this );
       mLayerEntities.insert( layer, newEntity );
+
+      if ( !mPickHandlers.isEmpty() )
+      {
+        Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker( newEntity );
+        newEntity->addComponent( picker );
+        connect( picker, &Qt3DRender::QObjectPicker::pressed, this, &Qgs3DMapScene::onLayerEntityPickEvent );
+      }
     }
   }
 
@@ -417,4 +556,60 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
+}
+
+void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
+{
+  mEntityCameraViewCenter = new Qt3DCore::QEntity;
+
+  Qt3DCore::QTransform *trCameraViewCenter = new Qt3DCore::QTransform;
+  mEntityCameraViewCenter->addComponent( trCameraViewCenter );
+  connect( camera, &Qt3DRender::QCamera::viewCenterChanged, this, [trCameraViewCenter, camera]
+  {
+    trCameraViewCenter->setTranslation( camera->viewCenter() );
+  } );
+
+  Qt3DExtras::QPhongMaterial *materialCameraViewCenter = new Qt3DExtras::QPhongMaterial;
+  materialCameraViewCenter->setAmbient( Qt::red );
+  mEntityCameraViewCenter->addComponent( materialCameraViewCenter );
+
+  Qt3DExtras::QSphereMesh *rendererCameraViewCenter = new Qt3DExtras::QSphereMesh;
+  rendererCameraViewCenter->setRadius( 10 );
+  mEntityCameraViewCenter->addComponent( rendererCameraViewCenter );
+
+  mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() );
+  mEntityCameraViewCenter->setParent( this );
+
+  connect( &mMap, &Qgs3DMapSettings::showCameraViewCenterChanged, this, [this]
+  {
+    mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() );
+  } );
+}
+
+void Qgs3DMapScene::setSceneState( Qgs3DMapScene::SceneState state )
+{
+  if ( mSceneState == state )
+    return;
+  mSceneState = state;
+  emit sceneStateChanged();
+}
+
+void Qgs3DMapScene::updateSceneState()
+{
+  if ( mTerrainUpdateScheduled )
+  {
+    setSceneState( Updating );
+    return;
+  }
+
+  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
+  {
+    if ( entity->isEnabled() && entity->pendingJobsCount() > 0 )
+    {
+      setSceneState( Updating );
+      return;
+    }
+  }
+
+  setSceneState( Ready );
 }

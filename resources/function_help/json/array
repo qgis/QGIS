@@ -7,6 +7,6 @@
     {"arg":"value1", "syntaxOnly": true},
     {"arg":"value2", "syntaxOnly": true},
     {"arg":"value", "descOnly": true, "description":"a value"}],
-  "examples": [ { "expression":"array(2,10)", "returns":"array: 2, 10"}
+  "examples": [ { "expression":"array(2,10)", "returns":"[ 2, 10 ]"}
   ]
 }

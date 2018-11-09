@@ -31,6 +31,7 @@
 
 QgsWelcomePageItemDelegate::QgsWelcomePageItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
+  , mRoundedRectSizePixels( Qgis::UI_SCALE_FACTOR * QApplication::fontMetrics().height() * 0.5 )
 {
 
 }
@@ -73,7 +74,8 @@ void QgsWelcomePageItemDelegate::paint( QPainter *painter, const QStyleOptionVie
   painter->setRenderHint( QPainter::Antialiasing );
   painter->setPen( QColor( 0, 0, 0, 0 ) );
   painter->setBrush( QBrush( color ) );
-  painter->drawRoundedRect( option.rect.left() + 5, option.rect.top() + 5, option.rect.width() - 10, option.rect.height() - 10, 8, 8 );
+  painter->drawRoundedRect( option.rect.left() + 0.625 * mRoundedRectSizePixels, option.rect.top() + 0.625 * mRoundedRectSizePixels,
+                            option.rect.width() - 2 * 0.625 * mRoundedRectSizePixels, option.rect.height() - 2 * 0.625 * mRoundedRectSizePixels, mRoundedRectSizePixels, mRoundedRectSizePixels );
 
   int titleSize = QApplication::fontMetrics().height() * 1.1;
   int textSize = titleSize * 0.85;
@@ -83,15 +85,15 @@ void QgsWelcomePageItemDelegate::paint( QPainter *painter, const QStyleOptionVie
                      index.data( QgsWelcomePageItemsModel::PinRole ).toBool() ? QStringLiteral( "<img src=\"qrc:/images/themes/default/pin.svg\">" ) : QString(),
                      index.data( QgsWelcomePageItemsModel::NativePathRole ).toString(),
                      index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
-  doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? icon.width() + 35 : 35 ) );
+  doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? icon.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
   if ( !icon.isNull() )
   {
-    painter->drawPixmap( option.rect.left() + 10, option.rect.top()  + 10, icon );
+    painter->drawPixmap( option.rect.left() + 1.25 * mRoundedRectSizePixels, option.rect.top() + 1.25 * mRoundedRectSizePixels, icon );
   }
 
-  painter->translate( option.rect.left() + ( !icon.isNull() ? icon.width() + 25 : 15 ), option.rect.top() + 15 );
-  ctx.clip = QRect( 0, 0, option.rect.width() - ( !icon.isNull() ? icon.width() - 35 : 25 ), option.rect.height() - 25 );
+  painter->translate( option.rect.left() + ( !icon.isNull() ? icon.width() + 3.125 * mRoundedRectSizePixels : 1.875 * mRoundedRectSizePixels ), option.rect.top() + 1.875 * mRoundedRectSizePixels );
+  ctx.clip = QRect( 0, 0, option.rect.width() - ( !icon.isNull() ? icon.width() - 4.375 * mRoundedRectSizePixels : 3.125 *  mRoundedRectSizePixels ), option.rect.height() - 3.125 * mRoundedRectSizePixels );
   doc.documentLayout()->draw( painter, ctx );
 
   painter->restore();
@@ -120,9 +122,9 @@ QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem &option, 
                      index.data( QgsWelcomePageItemsModel::PinRole ).toBool() ? QStringLiteral( "<img src=\"qrc:/images/themes/default/pin.svg\">" ) : QString(),
                      index.data( QgsWelcomePageItemsModel::NativePathRole ).toString(),
                      index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
-  doc.setTextWidth( width - ( !icon.isNull() ? icon.width() + 35 : 35 ) );
+  doc.setTextWidth( width - ( !icon.isNull() ? icon.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
-  return QSize( width, std::max( ( double ) doc.size().height() + 10, ( double )icon.height() ) + 20 );
+  return QSize( width, std::max( ( double ) doc.size().height() + 1.25 * mRoundedRectSizePixels, static_cast<double>( icon.height() ) ) + 2.5 * mRoundedRectSizePixels );
 }
 
 QgsWelcomePageItemsModel::QgsWelcomePageItemsModel( QObject *parent )

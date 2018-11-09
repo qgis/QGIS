@@ -64,11 +64,9 @@ static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::Scene
 
 QgsChunkedEntity::QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, float tau, int maxLevel, QgsChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
-  , mNeedsUpdate( false )
   , mTau( tau )
   , mMaxLevel( maxLevel )
   , mChunkLoaderFactory( loaderFactory )
-  , mMaxLoadedChunks( 512 )
 {
   mRootNode = new QgsChunkNode( 0, 0, 0, rootBbox, rootError );
   mChunkLoaderQueue = new QgsChunkList;

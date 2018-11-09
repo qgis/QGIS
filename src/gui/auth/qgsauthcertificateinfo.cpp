@@ -190,7 +190,7 @@ bool QgsAuthCertInfo::populateCertChain()
 
   if ( mACertChain.isEmpty() )
   {
-    QgsDebugMsg( "Could not populate QCA certificate chain" );
+    QgsDebugMsg( QStringLiteral( "Could not populate QCA certificate chain" ) );
     mACertChain = certchain;
   }
 
@@ -224,7 +224,7 @@ void QgsAuthCertInfo::setCertHierarchy()
   {
     QSslCertificate cert( it.previous() );
     bool missingCA = cert.isNull();
-    QString cert_source( QLatin1String( "" ) );
+    QString cert_source;
     if ( missingCA && it.hasPrevious() )
     {
       cert_source = QgsAuthCertUtils::resolvedCertName( it.peekPrevious(), true );
@@ -321,7 +321,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
   mSecGeneral = new QTreeWidgetItem(
     treeDetails,
     QStringList( tr( "General" ) ),
-    ( int )DetailsSection );
+    static_cast<int>( DetailsSection ) );
   setItemBold_( mSecGeneral );
   mSecGeneral->setFirstColumnSpanned( true );
   mSecGeneral->setFlags( Qt::ItemIsEnabled );
@@ -331,7 +331,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
   mSecDetails = new QTreeWidgetItem(
     treeDetails,
     QStringList( tr( "Details" ) ),
-    ( int )DetailsSection );
+    static_cast<int>( DetailsSection ) );
   setItemBold_( mSecDetails );
   mSecDetails->setFirstColumnSpanned( true );
   mSecDetails->setFlags( Qt::ItemIsEnabled );
@@ -348,7 +348,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
   mSecPemText = new QTreeWidgetItem(
     treeDetails,
     QStringList( tr( "PEM Text" ) ),
-    ( int )DetailsSection );
+    static_cast<int>( DetailsSection ) );
   setItemBold_( mSecPemText );
   mSecPemText->setFirstColumnSpanned( true );
   mSecPemText->setFlags( Qt::ItemIsEnabled );
@@ -371,7 +371,7 @@ QTreeWidgetItem *QgsAuthCertInfo::addGroupItem( QTreeWidgetItem *parent, const Q
   QTreeWidgetItem *grpitem = new QTreeWidgetItem(
     parent,
     QStringList( group ),
-    ( int )DetailsGroup );
+    static_cast<int>( DetailsGroup ) );
 
   grpitem->setFirstColumnSpanned( true );
   grpitem->setFlags( Qt::ItemIsEnabled );
@@ -395,8 +395,8 @@ void QgsAuthCertInfo::addFieldItem( QTreeWidgetItem *parent, const QString &fiel
 
   QTreeWidgetItem *item = new QTreeWidgetItem(
     parent,
-    QStringList() << field << ( wdgt == NoWidget ? value : QLatin1String( "" ) ),
-    ( int )DetailsField );
+    QStringList() << field << ( wdgt == NoWidget ? value : QString() ),
+    static_cast<int>( DetailsField ) );
 
   item->setTextAlignment( 0, Qt::AlignRight );
   item->setTextAlignment( 1, Qt::AlignLeft );
@@ -818,8 +818,8 @@ void QgsAuthCertInfo::populateInfoPemTextSection()
 
   QTreeWidgetItem *item = new QTreeWidgetItem(
     mSecPemText,
-    QStringList( QLatin1String( "" ) ),
-    ( int )DetailsField );
+    QStringList( QString() ),
+    static_cast<int>( DetailsField ) );
 
   item->setFirstColumnSpanned( true );
 
@@ -836,7 +836,7 @@ void QgsAuthCertInfo::btnSaveTrust_clicked()
   QgsAuthCertUtils::CertTrustPolicy newpolicy( cmbbxTrust->trustPolicy() );
   if ( !QgsApplication::authManager()->storeCertTrustPolicy( mCurrentQCert, newpolicy ) )
   {
-    QgsDebugMsg( "Could not set trust policy for certificate" );
+    QgsDebugMsg( QStringLiteral( "Could not set trust policy for certificate" ) );
   }
   mCurrentTrustPolicy = newpolicy;
   decorateCertTreeItem( mCurrentQCert, newpolicy, nullptr );

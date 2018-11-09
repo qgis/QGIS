@@ -58,7 +58,7 @@ Returns the currently selected color.
 .. seealso:: :py:func:`setColor`
 %End
 
-    void setAllowOpacity( const bool allowOpacity );
+    void setAllowOpacity( bool allowOpacity );
 %Docstring
 Sets whether opacity modification (transparency) is permitted
 for the color. Defaults to false.
@@ -100,7 +100,7 @@ Returns the title for the color chooser dialog window.
 .. seealso:: :py:func:`setColorDialogTitle`
 %End
 
-    void setShowMenu( const bool showMenu );
+    void setShowMenu( bool showMenu );
 %Docstring
 Sets whether the drop-down menu should be shown for the button. The default behavior is to
 show the menu.
@@ -119,7 +119,7 @@ Returns whether the drop-down menu is shown for the button.
 .. seealso:: :py:func:`setShowMenu`
 %End
 
-    void setBehavior( const Behavior behavior );
+    void setBehavior( Behavior behavior );
 %Docstring
 Sets the behavior for when the button is clicked. The default behavior is to show
 a color picker dialog.

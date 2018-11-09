@@ -196,7 +196,7 @@ Returns whether the effect is enabled
 .. seealso:: :py:func:`setEnabled`
 %End
 
-    void setEnabled( const bool enabled );
+    void setEnabled( bool enabled );
 %Docstring
 Sets whether the effect is enabled
 
@@ -215,7 +215,7 @@ effect if the paint effect is used in a :py:class:`QgsEffectStack`.
 .. seealso:: :py:func:`setDrawMode`
 %End
 
-    void setDrawMode( const DrawMode drawMode );
+    void setDrawMode( DrawMode drawMode );
 %Docstring
 Sets the draw mode for the effect. This property only has an
 effect if the paint effect is used in a :py:class:`QgsEffectStack`.

@@ -79,6 +79,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
 
     //! Proxy that will call this method on the embedded renderer.
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    bool filterNeedsGeometry() const override;
     //! Proxy that will call this method on the embedded renderer.
     QgsFeatureRenderer::Capabilities capabilities() override;
 
@@ -200,4 +201,4 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
 };
 
 
-#endif // QGSMASKRENDERERV2_H
+#endif // QGSINVERTEDPOLYGONRENDERER_H

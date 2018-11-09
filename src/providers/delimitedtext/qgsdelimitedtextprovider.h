@@ -76,7 +76,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     };
 
     explicit QgsDelimitedTextProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
-
     ~QgsDelimitedTextProvider() override;
 
     /* Implementation of functions from QgsVectorDataProvider */
@@ -228,6 +227,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QString mWktFieldName;
     QString mXFieldName;
     QString mYFieldName;
+    bool mDetectTypes = true;
 
     mutable int mXFieldIndex = -1;
     mutable int mYFieldIndex = -1;

@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDialog>
+
 #include "qgsmaptoolannotation.h"
 #include "qgsannotation.h"
 #include "qgsformannotationdialog.h"
@@ -30,8 +32,8 @@
 #include "qgsproject.h"
 #include "qgsexception.h"
 #include "qgsannotationmanager.h"
-#include <QDialog>
-#include <QMouseEvent>
+#include "qgsmapmouseevent.h"
+
 
 QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
@@ -226,14 +228,14 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp )
       {
         xmin += e->pos().x() - mLastMousePosition.x();
-        relPosX = ( relPosX * mCanvas->width() + e->pos().x() - mLastMousePosition.x() ) / ( double )mCanvas->width();
+        relPosX = ( relPosX * mCanvas->width() + e->pos().x() - mLastMousePosition.x() ) / static_cast<double>( mCanvas->width() );
       }
       if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameUp ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightUp )
       {
         ymin += e->pos().y() - mLastMousePosition.y();
-        relPosY = ( relPosY * mCanvas->height() + e->pos().y() - mLastMousePosition.y() ) / ( double )mCanvas->height();
+        relPosY = ( relPosY * mCanvas->height() + e->pos().y() - mLastMousePosition.y() ) / static_cast<double>( mCanvas->height() );
       }
       if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameDown ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftDown ||

@@ -57,6 +57,7 @@ class TestQgsLayoutMap : public QObject
     void layersToRender();
     void mapRotation();
     void mapItemRotation();
+    void expressionContext();
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
@@ -179,7 +180,7 @@ void TestQgsLayoutMap::uniqueId()
   l.addItemsFromXml( documentElement, doc, QgsReadWriteContext() );
 
   //test if both composer maps have different ids
-  QgsLayoutItemMap *newMap = 0;
+  QgsLayoutItemMap *newMap = nullptr;
   QList<QgsLayoutItemMap *> mapList;
   l.layoutItems( mapList );
   for ( auto mapIt = mapList.constBegin() ; mapIt != mapList.constEnd(); ++mapIt )
@@ -581,6 +582,57 @@ void TestQgsLayoutMap::mapItemRotation()
   QgsLayoutChecker checker( QStringLiteral( "composerrotation_mapitemrotation" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
   QVERIFY( checker.testLayout( mReport, 0, 200 ) );
+}
+
+void TestQgsLayoutMap::expressionContext()
+{
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsLayout l( QgsProject::instance() );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
+  map->setExtent( extent );
+  l.addLayoutItem( map );
+  map->setId( QStringLiteral( "Map_id" ) );
+
+  QgsExpression e( QStringLiteral( "@map_scale" ) );
+
+  QgsExpressionContext c = map->createExpressionContext();
+  QVariant r = e.evaluate( &c );
+  QGSCOMPARENEAR( r.toDouble(), 184764103, 100 );
+
+  QgsExpression e2( QStringLiteral( "@map_crs" ) );
+  r = e2.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "EPSG:4326" ) );
+
+  QgsExpression e3( QStringLiteral( "@map_crs_definition" ) );
+  r = e3.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  QgsExpression e4( QStringLiteral( "@map_units" ) );
+  r = e4.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "degrees" ) );
+
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
+  map->setLayers( QList<QgsMapLayer *>() << layer << layer2 );
+  QgsProject::instance()->addMapLayers( map->layers() );
+  c = map->createExpressionContext();
+  QgsExpression e5( QStringLiteral( "@map_layer_ids" ) );
+  r = e5.evaluate( &c );
+  QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "%1,%2" ).arg( layer->id(), layer2->id() ) );
+  e5 = QgsExpression( QStringLiteral( "array_foreach(@map_layers, layer_property(@element, 'name'))" ) );
+  r = e5.evaluate( &c );
+  QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "A,B" ) );
+
+  QgsExpression e6( QStringLiteral( "is_layer_visible( '%1' )" ).arg( layer->id() ) );
+  r = e6.evaluate( &c );
+  QCOMPARE( r.toBool(), true );
+
+  QgsExpression e7( QStringLiteral( "is_layer_visible( 'aaaaaa' )" ).arg( layer->id() ) );
+  r = e7.evaluate( &c );
+  QCOMPARE( r.toBool(), false );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMap )

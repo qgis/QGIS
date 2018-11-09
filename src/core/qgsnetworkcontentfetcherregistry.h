@@ -55,13 +55,12 @@ class CORE_EXPORT QgsFetchedContent : public QObject
 
     //! Constructs a FetchedContent with pointer to the downloaded file and status of the download
     explicit QgsFetchedContent( const QString &url, QTemporaryFile *file = nullptr, ContentStatus status = NotStarted )
-      : QObject()
-      , mUrl( url )
+      : mUrl( url )
       , mFile( file )
       , mStatus( status )
     {}
 
-    ~QgsFetchedContent()
+    ~QgsFetchedContent() override
     {
       if ( mFile )
         mFile->close();
@@ -137,9 +136,9 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
     Q_ENUM( FetchingMode )
 
     //! Create the registry for temporary downloaded files
-    explicit QgsNetworkContentFetcherRegistry();
+    explicit QgsNetworkContentFetcherRegistry() = default;
 
-    ~QgsNetworkContentFetcherRegistry();
+    ~QgsNetworkContentFetcherRegistry() override;
 
     /**
      * \brief Initialize a download for the given URL
@@ -147,7 +146,7 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
      * \param fetchingMode defines if the download will start immediately or shall be manually triggered
      * \note If the download starts immediately, it will not redownload any already fetched or currently fetching file.
      */
-    const QgsFetchedContent *fetch( const QString &url, const FetchingMode fetchingMode = DownloadLater );
+    const QgsFetchedContent *fetch( const QString &url, FetchingMode fetchingMode = DownloadLater );
 
 #ifndef SIP_RUN
 

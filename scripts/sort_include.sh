@@ -30,14 +30,11 @@ FILE3="sort_include_3.tmp"
 DoNotSort="(sqlite3.h)|(spatialite.h)"
 
 for file in $(find . \
- ! -path "./src/app/gps/qwtpolar-*" \
- ! -path "./src/core/gps/qextserialport/*" \
  ! -path "./src/plugins/grass/qtermwidget/*" \
- ! -path "./src/astyle/*" \
  ! -path "./python/ext-libs/*" \
- ! -path "./src/providers/spatialite/qspatialite/*" \
- ! -path "./src/plugins/globe/osgEarthQt/*" \
- ! -path "./src/plugins/globe/osgEarthUtil/*" \
+ ! -path "./external/astyle/*" \
+ ! -path "./external/qwtpolar-*" \
+ ! -path "./external/qspatialite/*" \
  -regex "./src/\(.+/\)*.*\.\(h\|cpp\)" -type f \
  -or -regex "./tests/\(.+/\)*.*\.\(h\|cpp\)" -type f )
 do
@@ -73,7 +70,7 @@ do
 	sort -u $FILE3 >> $FILE1
 	SORTING=false
   fi
-  mv $FILE1 $file
+  mv $FILE1 "$file"
   rm -f $FILE1 $FILE2 $FILE3
 done
 

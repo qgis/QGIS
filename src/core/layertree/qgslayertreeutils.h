@@ -19,6 +19,7 @@
 #include <qnamespace.h>
 #include <QList>
 #include <QPair>
+#include <QDomNodeList>
 #include "qgis_core.h"
 
 class QDomElement;
@@ -58,8 +59,14 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! Returns true if any of the layers is modified
     static bool layersModified( const QList<QgsLayerTreeLayer *> &layerNodes );
 
-    //! Remove layer nodes that refer to invalid layers
+    //! Removes layer nodes that refer to invalid layers
     static void removeInvalidLayers( QgsLayerTreeGroup *group );
+
+    /**
+     * Stores in a layer's originalXmlProperties the layer properties information
+     * \since 3.6
+     */
+    static void storeOriginalLayersProperties( QgsLayerTreeGroup *group, const QDomDocument *doc );
 
     //! Remove subtree of embedded groups and replaces it with a custom property embedded-visible-layers
     static void replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup *group );
@@ -87,6 +94,27 @@ class CORE_EXPORT QgsLayerTreeUtils
      * \returns the new tree layer
      */
     static QgsLayerTreeLayer *insertLayerBelow( QgsLayerTreeGroup *group, const QgsMapLayer *refLayer, QgsMapLayer *layerToInsert );
+
+    /**
+     * Returns map layers from the given list of layer tree nodes. Also recursively visits
+     * child nodes of groups.
+     * \since QGIS 3.4
+     */
+    static QSet<QgsMapLayer *> collectMapLayersRecursive( const QList<QgsLayerTreeNode *> &nodes );
+
+    /**
+     * Returns how many occurrences of a map layer are there in a layer tree.
+     * In normal situations there is at most one occurrence, but sometimes there
+     * may be temporarily more: for example, during drag&drop, upon drop a new layer
+     * node is created while the original dragged node is still in the tree, resulting
+     * in two occurrences.
+     *
+     * This is useful when deciding whether to start or stop listening to a signal
+     * of a map layer within a layer tree and only connecting/disconnecting when
+     * there is only one occurrence of that layer.
+     * \since QGIS 3.4
+     */
+    static int countMapLayerInTree( QgsLayerTreeNode *tree, QgsMapLayer *layer );
 };
 
 #endif // QGSLAYERTREEUTILS_H

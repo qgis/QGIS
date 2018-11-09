@@ -21,8 +21,6 @@
 #include "qgsapplication.h"
 
 QgsOracleTableModel::QgsOracleTableModel()
-  : QStandardItemModel()
-  , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Owner" );
@@ -36,22 +34,18 @@ QgsOracleTableModel::QgsOracleTableModel()
   setHorizontalHeaderLabels( headerLabels );
 }
 
-QgsOracleTableModel::~QgsOracleTableModel()
-{
-}
-
 void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProperty )
 {
   QgsDebugMsg( layerProperty.toString() );
 
   if ( layerProperty.isView && layerProperty.pkCols.isEmpty() )
   {
-    QgsDebugMsg( "View without pk skipped." );
+    QgsDebugMsg( QStringLiteral( "View without pk skipped." ) );
     return;
   }
 
   // is there already a root item with the given scheme Name?
-  QStandardItem *ownerItem = 0;
+  QStandardItem *ownerItem = nullptr;
 
   for ( int i = 0; i < layerProperty.size(); i++ )
   {
@@ -304,14 +298,14 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
 {
   if ( !index.isValid() )
   {
-    QgsDebugMsg( "invalid index" );
+    QgsDebugMsg( QStringLiteral( "invalid index" ) );
     return QString();
   }
 
   QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt();
   if ( wkbType == QgsWkbTypes::Unknown )
   {
-    QgsDebugMsg( "unknown geometry type" );
+    QgsDebugMsg( QStringLiteral( "unknown geometry type" ) );
     // no geometry type selected
     return QString();
   }
@@ -324,7 +318,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
   if ( isView && !isSet )
   {
     // no valid primary candidate selected
-    QgsDebugMsg( "no pk candidate selected" );
+    QgsDebugMsg( QStringLiteral( "no pk candidate selected" ) );
     return QString();
   }
 
@@ -342,7 +336,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
     srid.toInt( &ok );
     if ( !ok )
     {
-      QgsDebugMsg( "srid not numeric" );
+      QgsDebugMsg( QStringLiteral( "srid not numeric" ) );
       return QString();
     }
   }
@@ -356,6 +350,6 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
 
-  QgsDebugMsg( QString( "returning uri %1" ).arg( uri.uri() ) );
+  QgsDebugMsg( QStringLiteral( "returning uri %1" ).arg( uri.uri() ) );
   return uri.uri();
 }

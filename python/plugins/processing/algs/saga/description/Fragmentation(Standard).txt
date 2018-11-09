@@ -14,4 +14,4 @@ QgsProcessingParameterBoolean|DIAGONAL|Include diagonal neighbour relations|True
 QgsProcessingParameterRasterDestination|DENSITY|Density [Percent]
 QgsProcessingParameterRasterDestination|CONNECTIVITY|Connectivity [Percent]
 QgsProcessingParameterRasterDestination|FRAGMENTATION|Fragmentation
-OutputTable|FRAGSTATS|Summary
+QgsProcessingParameterVectorDestination|FRAGSTATS|Summary

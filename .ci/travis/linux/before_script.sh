@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ###########################################################################
 #    before_script.sh
 #    ---------------------
@@ -46,7 +47,7 @@ echo "${bold}Docker build deps${endbold}"
 docker --version
 if [[ $DOCKER_QGIS_IMAGE_BUILD_PUSH =~ false ]]; then
   docker-compose --version
-  docker-compose -f $DOCKER_COMPOSE config
+  docker-compose -f "${DOCKER_COMPOSE}" config
 fi
 
 if [[ $DOCKER_DEPS_IMAGE_REBUILD =~ true ]]; then

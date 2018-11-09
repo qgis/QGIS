@@ -17,6 +17,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (
+    QgsApplication,
     QgsRectangle,
     QgsFeatureRequest,
     QgsFeature,
@@ -24,12 +25,15 @@ from qgis.core import (
     QgsAbstractFeatureIterator,
     QgsExpressionContextScope,
     QgsExpressionContext,
+    QgsExpression,
     QgsVectorDataProvider,
     QgsVectorLayerFeatureSource,
     QgsFeatureSink,
     QgsTestUtils,
+    QgsFeatureSource,
     NULL
 )
+from qgis.PyQt.QtTest import QSignalSpy
 
 from utilities import compareWkt
 from featuresourcetestbase import FeatureSourceTestCase
@@ -51,6 +55,11 @@ class ProviderTestCase(FeatureSourceTestCase):
         """ Individual derived provider tests should override this to return a list of expressions which
         cannot be compiled """
         return set()
+
+    def enableCompiler(self):
+        """By default there is no expression compiling available, needs to be overridden in subclass"""
+        print('Provider does not support compiling')
+        return False
 
     def partiallyCompiledFilters(self):
         """ Individual derived provider tests should override this to return a list of expressions which
@@ -141,23 +150,27 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.runPolyGetFeatureTests(self.poly_provider)
 
     def testGetFeaturesExp(self):
-        try:
-            self.enableCompiler()
+        if self.enableCompiler():
             self.compiled = True
             self.runGetFeatureTests(self.source)
             if hasattr(self, 'poly_provider'):
                 self.runPolyGetFeatureTests(self.poly_provider)
-        except AttributeError:
-            print('Provider does not support compiling')
 
     def testSubsetString(self):
         if not self.source.supportsSubsetString():
             print('Provider does not support subset strings')
             return
 
+        changed_spy = QSignalSpy(self.source.dataChanged)
         subset = self.getSubsetString()
         self.source.setSubsetString(subset)
         self.assertEqual(self.source.subsetString(), subset)
+        self.assertEqual(len(changed_spy), 1)
+
+        # No signal should be emitted if the subset string is not modified
+        self.source.setSubsetString(subset)
+        self.assertEqual(len(changed_spy), 1)
+
         result = set([f['pk'] for f in self.source.getFeatures()])
         all_valid = (all(f.isValid() for f in self.source.getFeatures()))
         self.source.setSubsetString(None)
@@ -232,11 +245,8 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.runOrderByTests()
 
     def testOrderByCompiled(self):
-        try:
-            self.enableCompiler()
+        if self.enableCompiler():
             self.runOrderByTests()
-        except AttributeError:
-            print('Provider does not support compiling')
 
     def runOrderByTests(self):
         FeatureSourceTestCase.runOrderByTests(self)
@@ -299,6 +309,9 @@ class ProviderTestCase(FeatureSourceTestCase):
         assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
 
     def testMinValue(self):
+        self.assertFalse(self.source.minimumValue(-1))
+        self.assertFalse(self.source.minimumValue(1000))
+
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('cnt')), -200)
         self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('name')), 'Apple')
 
@@ -310,6 +323,8 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertEqual(min_value, 200)
 
     def testMaxValue(self):
+        self.assertFalse(self.source.maximumValue(-1))
+        self.assertFalse(self.source.maximumValue(1000))
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('cnt')), 400)
         self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('name')), 'Pear')
 
@@ -350,8 +365,12 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.source.setSubsetString(None)
             self.assertEqual(count, 0)
             self.assertTrue(provider_extent.isNull())
+            self.assertEqual(self.source.featureCount(), 5)
 
     def testUnique(self):
+        self.assertEqual(self.source.uniqueValues(-1), set())
+        self.assertEqual(self.source.uniqueValues(1000), set())
+
         self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('cnt'))),
                          set([-200, 100, 200, 300, 400]))
         assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(
@@ -366,6 +385,9 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertEqual(set(values), set([200, 300]))
 
     def testUniqueStringsMatching(self):
+        self.assertEqual(self.source.uniqueStringsMatching(-1, 'a'), [])
+        self.assertEqual(self.source.uniqueStringsMatching(100001, 'a'), [])
+
         field_index = self.source.fields().lookupField('name')
         self.assertEqual(set(self.source.uniqueStringsMatching(field_index, 'a')), set(['Pear', 'Orange', 'Apple']))
         # test case insensitive
@@ -415,6 +437,46 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertEqual(count, 0)
             self.assertEqual(self.source.featureCount(), 5)
 
+    def testEmpty(self):
+        self.assertFalse(self.source.empty())
+        self.assertEqual(self.source.hasFeatures(), QgsFeatureSource.FeaturesAvailable)
+
+        if self.source.supportsSubsetString():
+            try:
+                backup = self.source.subsetString()
+                # Add a subset string and test feature count
+                subset = self.getSubsetString()
+                self.source.setSubsetString(subset)
+                self.assertFalse(self.source.empty())
+                self.assertEqual(self.source.hasFeatures(), QgsFeatureSource.FeaturesAvailable)
+                subsetNoMatching = self.getSubsetStringNoMatching()
+                self.source.setSubsetString(subsetNoMatching)
+                self.assertTrue(self.source.empty())
+                self.assertEqual(self.source.hasFeatures(), QgsFeatureSource.NoFeaturesAvailable)
+            finally:
+                self.source.setSubsetString(None)
+            self.assertFalse(self.source.empty())
+
+        # If the provider supports tests on editable layers
+        if getattr(self, 'getEditableLayer', None):
+            l = self.getEditableLayer()
+            self.assertTrue(l.isValid())
+
+            self.assertEqual(l.hasFeatures(), QgsFeatureSource.FeaturesAvailable)
+
+            # Test that deleting some features in the edit buffer does not
+            # return empty, we accept FeaturesAvailable as well as
+            # MaybeAvailable
+            l.startEditing()
+            l.deleteFeature(next(l.getFeatures()).id())
+            self.assertNotEqual(l.hasFeatures(), QgsFeatureSource.NoFeaturesAvailable)
+            l.rollBack()
+
+            # Call truncate(), we need an empty set now
+            l.dataProvider().truncate()
+            self.assertTrue(l.dataProvider().empty())
+            self.assertEqual(l.dataProvider().hasFeatures(), QgsFeatureSource.NoFeaturesAvailable)
+
     def testGetFeaturesNoGeometry(self):
         """ Test that no geometry is present when fetching features without geometry"""
 
@@ -449,6 +511,14 @@ class ProviderTestCase(FeatureSourceTestCase):
             # add empty list, should return true for consistency
             self.assertTrue(l.dataProvider().addFeatures([]))
 
+            # ensure that returned features have been given the correct id
+            f = next(l.getFeatures(QgsFeatureRequest().setFilterFid(added[0].id())))
+            self.assertTrue(f.isValid())
+            self.assertEqual(f['cnt'], -220)
+
+            f = next(l.getFeatures(QgsFeatureRequest().setFilterFid(added[1].id())))
+            self.assertTrue(f.isValid())
+            self.assertEqual(f['cnt'], 330)
         else:
             # expect fail
             self.assertFalse(l.dataProvider().addFeatures([f1, f2]),
@@ -814,6 +884,76 @@ class ProviderTestCase(FeatureSourceTestCase):
 
         if vl.dataProvider().capabilities() & QgsVectorDataProvider.DeleteAttributes:
             # delete attributes
-            self.assertTrue(vl.dataProvider().deleteAttributes([0]))
-            self.assertEqual(vl.dataProvider().minimumValue(0), -200)
-            self.assertEqual(vl.dataProvider().maximumValue(0), 400)
+            if vl.dataProvider().deleteAttributes([0]):
+                # may not be possible, e.g. if it's a primary key
+                self.assertEqual(vl.dataProvider().minimumValue(0), -200)
+                self.assertEqual(vl.dataProvider().maximumValue(0), 400)
+
+    def testStringComparison(self):
+        """
+        Test if string comparisons with numbers are cast by the expression
+        compiler (or work fine without doing anything :P)
+        """
+        for expression in (
+                '5 LIKE \'5\'',
+                '5 ILIKE \'5\'',
+                '15 NOT LIKE \'5\'',
+                '15 NOT ILIKE \'5\'',
+                '5 ~ \'5\''):
+            iterator = self.source.getFeatures(QgsFeatureRequest().setFilterExpression('5 LIKE \'5\''))
+            count = len([f for f in iterator])
+            self.assertEqual(count, 5)
+            self.assertFalse(iterator.compileFailed())
+            if self.enableCompiler():
+                iterator = self.source.getFeatures(QgsFeatureRequest().setFilterExpression('5 LIKE \'5\''))
+                self.assertEqual(count, 5)
+                self.assertFalse(iterator.compileFailed())
+                self.disableCompiler()
+
+    def testConcurrency(self):
+        """
+        The connection pool has a maximum of 4 connections defined (+2 spare connections)
+        Make sure that if we exhaust those 4 connections and force another connection
+        it is actually using the spare connections and does not freeze.
+        This situation normally happens when (at least) 4 rendering threads are active
+        in parallel and one requires an expression to be evaluated.
+        """
+        # Acquire the maximum amount of concurrent connections
+        iterators = list()
+        for i in range(QgsApplication.instance().maxConcurrentConnectionsPerPool()):
+            iterators.append(self.vl.getFeatures())
+
+        # Run an expression that will also do a request and should use a spare
+        # connection. It just should not deadlock here.
+
+        feat = next(iterators[0])
+        context = QgsExpressionContext()
+        context.setFeature(feat)
+        exp = QgsExpression('get_feature(\'{layer}\', \'pk\', 5)'.format(layer=self.vl.id()))
+        exp.evaluate(context)
+
+    def testEmptySubsetOfAttributesWithSubsetString(self):
+
+        if self.source.supportsSubsetString():
+            try:
+                # Add a subset string
+                subset = self.getSubsetString()
+                self.source.setSubsetString(subset)
+
+                # First test, in a regular way
+                features = [f for f in self.source.getFeatures()]
+                count = len(features)
+                self.assertEqual(count, 3)
+                has_geometry = features[0].hasGeometry()
+
+                # Ask for no attributes
+                request = QgsFeatureRequest().setSubsetOfAttributes([])
+                # Make sure we still retrieve features !
+                features = [f for f in self.source.getFeatures(request)]
+                count = len(features)
+                self.assertEqual(count, 3)
+                # Check that we still get a geometry if we add one before
+                self.assertEqual(features[0].hasGeometry(), has_geometry)
+
+            finally:
+                self.source.setSubsetString(None)

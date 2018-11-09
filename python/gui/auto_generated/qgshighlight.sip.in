@@ -8,7 +8,7 @@
 
 
 
-class QgsHighlight: QgsMapCanvasItem
+class QgsHighlight: QObject, QgsMapCanvasItem
 {
 %Docstring
 A class for highlight features on the map.
@@ -51,10 +51,24 @@ and renderer.
 %End
     ~QgsHighlight();
 
+    QColor color( ) const;
+%Docstring
+Returns the line/stroke color
+
+.. versionadded:: 3.4
+%End
+
     void setColor( const QColor &color );
 %Docstring
 Set line/stroke to color, polygon fill to color with alpha = 63.
 This is legacy function, use setFillColor() after setColor() if different fill color is required. *
+%End
+
+    QColor fillColor( ) const;
+%Docstring
+Returns the fill color
+
+.. versionadded:: 3.4
 %End
 
     void setFillColor( const QColor &fillColor );
@@ -65,6 +79,13 @@ Will be used for polygons and points.
 .. versionadded:: 2.4
 %End
 
+    int width( ) const;
+%Docstring
+Returns the stroke width
+
+.. versionadded:: 3.4
+%End
+
     void setWidth( int width );
 %Docstring
 Set stroke width.
@@ -72,6 +93,13 @@ Set stroke width.
 .. note::
 
    Ignored in feature mode.
+%End
+
+    double buffer( ) const;
+%Docstring
+Returns the buffer
+
+.. versionadded:: 3.4
 %End
 
     void setBuffer( double buffer );

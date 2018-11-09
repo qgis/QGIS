@@ -404,7 +404,7 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
       continue;
     }
 
-    QgsDebugMsg( QString( "ddField: %1" ).arg( ddField ) );
+    QgsDebugMsg( QStringLiteral( "ddField: %1" ).arg( ddField ) );
 
     switch ( key )
     {

@@ -49,11 +49,12 @@ class FixedTablePanel(BASE, WIDGET):
         self.leText.setEnabled(False)
 
         self.param = param
+
+        # NOTE - table IS squashed to 1-dimensional!
         self.table = []
-        for i in range(param.numberRows()):
-            self.table.append(list())
-            for j in range(len(param.headers())):
-                self.table[i].append('0')
+        for row in range(param.numberRows()):
+            for col in range(len(param.headers())):
+                self.table.append('0')
 
         self.leText.setText(
             self.tr('Fixed table {0}x{1}').format(param.numberRows(), len(param.headers())))
@@ -62,7 +63,7 @@ class FixedTablePanel(BASE, WIDGET):
 
     def updateSummaryText(self):
         self.leText.setText(self.tr('Fixed table {0}x{1}').format(
-            len(self.table), len(self.param.headers())))
+            len(self.table) // len(self.param.headers()), len(self.param.headers())))
 
     def setValue(self, value):
         self.table = value
@@ -73,3 +74,4 @@ class FixedTablePanel(BASE, WIDGET):
         dlg.exec_()
         if dlg.rettable is not None:
             self.setValue(dlg.rettable)
+        dlg.deleteLater()

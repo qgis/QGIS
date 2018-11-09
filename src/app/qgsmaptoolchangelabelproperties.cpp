@@ -20,6 +20,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgsmapmouseevent.h"
 
 QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas ): QgsMapToolLabel( canvas )
 {
@@ -69,6 +70,12 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
   {
     QgsPalIndexes indexes;
     bool newAuxiliaryLayer = createAuxiliaryFields( indexes );
+
+    if ( !newAuxiliaryLayer && !mCurrentLabel.layer->auxiliaryLayer() )
+    {
+      deleteRubberBands();
+      return;
+    }
 
     // in case of a new auxiliary layer, a dialog window is displayed and the
     // canvas release event is lost.

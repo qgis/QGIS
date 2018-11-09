@@ -58,7 +58,7 @@ Items remain in the scene but are no longer grouped together
 Returns a list of items contained by the group.
 %End
 
-    virtual void setVisibility( const bool visible );
+    virtual void setVisibility( bool visible );
 
 
     virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false, int page = -1 );

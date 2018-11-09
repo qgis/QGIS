@@ -107,8 +107,6 @@ class SqlEdit(QsciScintilla):
         self.defaultFont.setFixedPitch(True)
         self.defaultFont.setPointSize(fontSize)
         self.defaultFont.setStyleHint(QFont.TypeWriter)
-        self.defaultFont.setStretch(QFont.SemiCondensed)
-        self.defaultFont.setLetterSpacing(QFont.PercentageSpacing, 87.0)
         self.defaultFont.setBold(False)
 
         self.boldFont = QFont(self.defaultFont)

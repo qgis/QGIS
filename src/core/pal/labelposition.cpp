@@ -376,10 +376,10 @@ void LabelPosition::getBoundingBox( double amin[2], double amax[2] ) const
   }
   else
   {
-    amin[0] = DBL_MAX;
-    amax[0] = -DBL_MAX;
-    amin[1] = DBL_MAX;
-    amax[1] = -DBL_MAX;
+    amin[0] = std::numeric_limits<double>::max();
+    amax[0] = std::numeric_limits<double>::lowest();
+    amin[1] = std::numeric_limits<double>::max();
+    amax[1] = std::numeric_limits<double>::lowest();
   }
   for ( int c = 0; c < 4; c++ )
   {

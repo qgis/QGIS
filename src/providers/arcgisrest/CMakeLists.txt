@@ -14,6 +14,8 @@ INCLUDE_DIRECTORIES(
 )
 
 INCLUDE_DIRECTORIES(SYSTEM
+  ${QCA_INCLUDE_DIR}
+  ${QTKEYCHAIN_INCLUDE_DIR}
 )
 
 IF (WITH_GUI)
@@ -57,10 +59,12 @@ ADD_LIBRARY(arcgisfeatureserverprovider MODULE ${AFS_SRCS} ${AFS_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(arcgisfeatureserverprovider
   qgis_core
+  ${QCA_LIBRARY}
 )
 
 TARGET_LINK_LIBRARIES (arcgisfeatureserverprovider_a
   qgis_core
+  ${QCA_LIBRARY}
 )
 
 IF (WITH_GUI)
@@ -107,6 +111,7 @@ ADD_LIBRARY(arcgismapserverprovider MODULE ${AMS_SRCS} ${AMS_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(arcgismapserverprovider
   qgis_core
+  ${QCA_LIBRARY}
 )
 
 IF (WITH_GUI)

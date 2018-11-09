@@ -13,6 +13,7 @@
 
 
 
+
 typedef QVector<QgsPointXY> QgsPolylineXY;
 
 typedef QVector<QgsPoint> QgsPolyline;
@@ -37,7 +38,7 @@ for geometry objects. QgsGeometry is implicitly shared, so making copies of geom
 container class can also be stored inside a QVariant object.
 
 The actual geometry representation is stored as a QgsAbstractGeometry within the container, and
-can be accessed via the geometry() method or set using the setGeometry() method.
+can be accessed via the get() method or set using the set() method.
 %End
 
 %TypeHeaderCode
@@ -1154,12 +1155,16 @@ by calling `error()` on the returned geometry.
 
     QgsGeometry interpolate( double distance ) const;
 %Docstring
-Returns interpolated point on line at distance.
+Returns an interpolated point on the geometry at the specified ``distance``.
+
+If the original geometry is a polygon type, the boundary of the polygon
+will be used during interpolation. If the original geometry is a point
+type, a null geometry will be returned.
+
+If z or m values are present, the output z and m will be interpolated using
+the existing vertices' z or m values.
 
 If the input is a NULL geometry, the output will also be a NULL geometry.
-
-If an error was encountered while creating the result, more information can be retrieved
-by calling `error()` on the returned geometry.
 
 .. seealso:: :py:func:`lineLocatePoint`
 
@@ -1288,6 +1293,12 @@ Exports the geometry to WKT
 .. note::
 
    precision parameter added in QGIS 2.4
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsGeometry: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
     QString asJson( int precision = 17 ) const;
@@ -1471,9 +1482,27 @@ by calling `error()` on the returned geometry.
         explicit Error( const QString &m );
 
         Error( const QString &m, const QgsPointXY &p );
-        QString what();
-        QgsPointXY where();
-        bool hasWhere();
+        QString what() const;
+%Docstring
+A human readable error message containing details about the error.
+%End
+
+        QgsPointXY where() const;
+%Docstring
+The coordinates at which the error is located and should be visualized.
+%End
+
+        bool hasWhere() const;
+%Docstring
+True if the location available from :py:func:`where` is valid.
+%End
+
+        SIP_PYOBJECT __repr__();
+%MethodCode
+        QString str = QStringLiteral( "<QgsGeometry.Error: %1>" ).arg( sipCpp->what() );
+        sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
+
     };
 
     enum ValidationMethod
@@ -1587,6 +1616,7 @@ was performed on the geometry.
 
 .. versionadded:: 3.0
 %End
+
 
 
     static QgsGeometry fromQPointF( QPointF point );
@@ -1751,7 +1781,7 @@ The 2 types should match.
     }
 %End
 
-    QgsGeometry smooth( const unsigned int iterations = 1, const double offset = 0.25,
+    QgsGeometry smooth( unsigned int iterations = 1, double offset = 0.25,
                         double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
 %Docstring
 Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
@@ -1793,8 +1823,6 @@ Downgrades a point list from QgsPoint to :py:class:`QgsPointXY`
 %End
 
     operator QVariant() const;
-
-    operator bool() const;
 
 }; // class QgsGeometry
 

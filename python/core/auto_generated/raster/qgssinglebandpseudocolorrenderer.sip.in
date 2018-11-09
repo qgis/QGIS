@@ -56,7 +56,7 @@ Returns the raster shader
    available in Python as constShader
 %End
 
-    void createShader( QgsColorRamp *colorRamp = 0,
+    void createShader( QgsColorRamp *colorRamp /Transfer/ = 0,
                        QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated,
                        QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous,
                        int classes = 0,
@@ -65,7 +65,7 @@ Returns the raster shader
 %Docstring
 Creates a color ramp shader
 
-:param colorRamp: vector color ramp
+:param colorRamp: vector color ramp. Ownership is transferred to the shader.
 :param colorRampType: type of color ramp shader
 :param classificationMode: classification mode
 :param classes: number of classes

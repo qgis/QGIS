@@ -188,7 +188,7 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
     const QVector< QgsDataItem * > serviceChildItems = item->children();
     for ( QgsDataItem *subItem : serviceChildItems )
     {
-      if ( subItem->path().endsWith( QStringLiteral( "error" ) ) )
+      if ( subItem->path().endsWith( QLatin1String( "error" ) ) )
       {
         continue;
       }

@@ -15,6 +15,7 @@
 
 
 #include "qgscurveeditorwidget.h"
+#include "qgsvectorlayer.h"
 
 #include <QPainter>
 #include <QVBoxLayout>

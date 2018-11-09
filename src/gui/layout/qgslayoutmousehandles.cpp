@@ -33,6 +33,8 @@
 #include <QWidget>
 #include <limits>
 
+///@cond PRIVATE
+
 QgsLayoutMouseHandles::QgsLayoutMouseHandles( QgsLayout *layout, QgsLayoutView *view )
   : QObject( nullptr )
   , QGraphicsRectItem( nullptr )
@@ -53,10 +55,10 @@ QgsLayoutMouseHandles::QgsLayoutMouseHandles( QgsLayout *layout, QgsLayoutView *
   layout->addItem( mVerticalSnapLine );
 }
 
-void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
+void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
-  Q_UNUSED( itemStyle );
-  Q_UNUSED( pWidget );
+  Q_UNUSED( option );
+  Q_UNUSED( widget );
 
   if ( !mLayout->renderContext().isPreviewRender() )
   {
@@ -1164,3 +1166,5 @@ void QgsLayoutMouseHandles::resizeMouseMove( QPointF currentPosition, bool lockR
   //show current size of selection in status bar
   mView->pushStatusMessage( tr( "width: %1 mm height: %2 mm" ).arg( rect().width() ).arg( rect().height() ) );
 }
+
+///@endcond PRIVATE

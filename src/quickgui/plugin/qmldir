@@ -14,7 +14,11 @@ module QgsQuick
 plugin qgis_quick_plugin
 
 MapCanvas 0.1 qgsquickmapcanvas.qml
+FeatureForm 0.1 qgsquickfeatureform.qml
+FeatureFormStyling 0.1 qgsquickfeatureformstyling.qml
+PositionMarker 0.1 qgsquickpositionmarker.qml
 ScaleBar 0.1 qgsquickscalebar.qml
+PhotoCapture 0.1 qgsquickphotopanel.qml
 MessageLog 0.1 qgsquickmessagelog.qml
 
 typeinfo qgsquick.qmltypes

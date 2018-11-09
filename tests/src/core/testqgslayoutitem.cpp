@@ -29,6 +29,8 @@
 #include "qgsfillsymbollayer.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgsvectorlayer.h"
+
 #include <QObject>
 #include <QPainter>
 #include <QImage>
@@ -65,7 +67,7 @@ class TestItem : public QgsLayoutItem
       painter->restore();
     }
 
-    QSizeF applyItemSizeConstraint( const QSizeF &targetSize ) override
+    QSizeF applyItemSizeConstraint( QSizeF targetSize ) override
     {
       if ( !forceResize )
         return targetSize;
@@ -1091,18 +1093,18 @@ void TestQgsLayoutItem::fixedSize()
   item->setRect( 0, 0, 5.0, 6.0 ); //temporarily set rect to random size
   item->attemptResize( QgsLayoutSize( 7.0, 8.0, QgsUnitTypes::LayoutPoints ) );
   //check size matches fixed item size converted to mm
-  QGSCOMPARENEAR( item->rect().width(), 2.0 * 25.4, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( item->rect().height(), 4.0 * 25.4, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( item->rect().width(), 2.0 * 25.4, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( item->rect().height(), 4.0 * 25.4, 4 * std::numeric_limits<double>::epsilon() );
 
   item->attemptResize( QgsLayoutSize( 7.0, 8.0, QgsUnitTypes::LayoutInches ) );
   //check size matches fixed item size converted to mm
-  QGSCOMPARENEAR( item->rect().width(), 2.0 * 25.4, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( item->rect().height(), 4.0 * 25.4, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( item->rect().width(), 2.0 * 25.4, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( item->rect().height(), 4.0 * 25.4, 4 * std::numeric_limits<double>::epsilon() );
 
   //check that setting a fixed size applies this size immediately
   item->updateFixedSize( QgsLayoutSize( 150, 250, QgsUnitTypes::LayoutMillimeters ) );
-  QGSCOMPARENEAR( item->rect().width(), 150.0, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( item->rect().height(), 250.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( item->rect().width(), 150.0, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( item->rect().height(), 250.0, 4 * std::numeric_limits<double>::epsilon() );
 }
 
 void TestQgsLayoutItem::minSize()
@@ -1120,18 +1122,18 @@ void TestQgsLayoutItem::minSize()
   //try to resize to less than minimum size
   item->attemptResize( QgsLayoutSize( 1.0, 0.5, QgsUnitTypes::LayoutPoints ) );
   //check size matches min item size converted to mm
-  QGSCOMPARENEAR( item->rect().width(), 50.0, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( item->rect().height(), 100.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( item->rect().width(), 50.0, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( item->rect().height(), 100.0, 4 * std::numeric_limits<double>::epsilon() );
 
   //check that resize to larger than min size works
   item->attemptResize( QgsLayoutSize( 0.1, 0.2, QgsUnitTypes::LayoutMeters ) );
-  QGSCOMPARENEAR( item->rect().width(), 100.0, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( item->rect().height(), 200.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( item->rect().width(), 100.0, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( item->rect().height(), 200.0, 4 * std::numeric_limits<double>::epsilon() );
 
   //check that setting a minimum size applies this size immediately
   item->updateMinSize( QgsLayoutSize( 150, 250, QgsUnitTypes::LayoutMillimeters ) );
-  QGSCOMPARENEAR( item->rect().width(), 150.0, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( item->rect().height(), 250.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( item->rect().width(), 150.0, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( item->rect().height(), 250.0, 4 * std::numeric_limits<double>::epsilon() );
 
   //also need check that fixed size trumps min size
   std::unique_ptr< FixedMinSizedItem > fixedMinItem( new FixedMinSizedItem( &l ) );
@@ -1144,8 +1146,8 @@ void TestQgsLayoutItem::minSize()
   //try to resize to less than minimum size
   fixedMinItem->attemptResize( QgsLayoutSize( 1.0, 0.5, QgsUnitTypes::LayoutPoints ) );
   //check size matches fixed item size, not minimum size (converted to mm)
-  QGSCOMPARENEAR( fixedMinItem->rect().width(), 20.0, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( fixedMinItem->rect().height(), 40.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( fixedMinItem->rect().width(), 20.0, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( fixedMinItem->rect().height(), 40.0, 4 * std::numeric_limits<double>::epsilon() );
 }
 
 void TestQgsLayoutItem::move()
@@ -1403,7 +1405,7 @@ void TestQgsLayoutItem::itemVariablesFunction()
   QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsLayout l( QgsProject::instance() );
 
-  QgsExpression e( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_scale' )" ) );
+  QgsExpression e( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_scale' )" ) );
   // no map
   QgsExpressionContext c = l.createExpressionContext();
   QVariant r = e.evaluate( &c );
@@ -1414,23 +1416,33 @@ void TestQgsLayoutItem::itemVariablesFunction()
   map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
   map->setExtent( extent );
   l.addLayoutItem( map );
-  map->setId( QStringLiteral( "map_id" ) );
+  map->setId( QStringLiteral( "Map_id" ) );
 
   c = l.createExpressionContext();
   r = e.evaluate( &c );
   QGSCOMPARENEAR( r.toDouble(), 184764103, 100 );
 
-  QgsExpression e2( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_crs' )" ) );
+  QgsExpression e2( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_crs' )" ) );
   r = e2.evaluate( &c );
   QCOMPARE( r.toString(), QString( "EPSG:4326" ) );
 
-  QgsExpression e3( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_crs_definition' )" ) );
+  QgsExpression e3( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_crs_definition' )" ) );
   r = e3.evaluate( &c );
   QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
 
-  QgsExpression e4( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_units' )" ) );
+  QgsExpression e4( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_units' )" ) );
   r = e4.evaluate( &c );
   QCOMPARE( r.toString(), QString( "degrees" ) );
+
+  std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > layer2 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
+  map->setLayers( QList<QgsMapLayer *>() << layer.get() << layer2.get() );
+  QgsExpression e5( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_layer_ids' )" ) );
+  r = e5.evaluate( &c );
+  QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "%1,%2" ).arg( layer->id(), layer2->id() ) );
+  e5 = QgsExpression( QStringLiteral( "array_foreach(map_get( item_variables( 'Map_id' ), 'map_layers' ), layer_property(@element, 'name'))" ) );
+  r = e5.evaluate( &c );
+  QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "A,B" ) );
 }
 
 void TestQgsLayoutItem::variables()

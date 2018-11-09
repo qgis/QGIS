@@ -34,7 +34,7 @@ class TestSignalReceiver : public QObject
 
   public:
     TestSignalReceiver()
-      : QObject( 0 )
+      : QObject( nullptr )
     {}
     QPainter::CompositionMode blendMode =  QPainter::CompositionMode_SourceOver ;
   public slots:
@@ -72,6 +72,8 @@ class TestQgsMapLayer : public QObject
 
     void layerRef();
     void layerRefListUtils();
+
+    void styleCategories();
 
 
   private:
@@ -283,8 +285,19 @@ void TestQgsMapLayer::layerRefListUtils()
   QCOMPARE( refs.size(), 2 );
   QCOMPARE( refs.at( 0 ).get(), vlA );
   QCOMPARE( refs.at( 1 ).get(), vlC );
+}
 
+void TestQgsMapLayer::styleCategories()
+{
+  // control that AllStyleCategories is actually complete
+  QgsMapLayer::StyleCategories allStyleCategories = QgsMapLayer::AllStyleCategories;
+  for ( QgsMapLayer::StyleCategory category : qgsEnumMap<QgsMapLayer::StyleCategory>().keys() )
+  {
+    if ( category == QgsMapLayer::AllStyleCategories )
+      continue;
 
+    QVERIFY( allStyleCategories.testFlag( category ) );
+  }
 }
 
 QGSTEST_MAIN( TestQgsMapLayer )

@@ -18,6 +18,7 @@
 #include "qgsvectorlayertools.h"
 #include "qgsfeaturerequest.h"
 #include "qgslogger.h"
+#include "qgsvectorlayerutils.h"
 
 
 QgsVectorLayerTools::QgsVectorLayerTools()
@@ -34,7 +35,6 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
 
   QgsFeatureIterator fi = layer->getFeatures( request );
   QgsFeature f;
-  QgsAttributeList pkAttrList = layer->primaryKeyAttributes();
 
   int browsedFeatureCount = 0;
   int couldNotWriteCount = 0;
@@ -45,29 +45,27 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
   while ( fi.nextFeature( f ) )
   {
     browsedFeatureCount++;
-    // remove pkey values
-    Q_FOREACH ( auto idx, pkAttrList )
-    {
-      f.setAttribute( idx, QVariant() );
-    }
+
+    QgsFeature newFeature = QgsVectorLayerUtils::createFeature( layer, f.geometry(), f.attributes().toMap() );
+
     // translate
-    if ( f.hasGeometry() )
+    if ( newFeature.hasGeometry() )
     {
-      QgsGeometry geom = f.geometry();
+      QgsGeometry geom = newFeature.geometry();
       geom.translate( dx, dy );
-      f.setGeometry( geom );
+      newFeature.setGeometry( geom );
 #ifdef QGISDEBUG
-      const QgsFeatureId fid = f.id();
+      const QgsFeatureId fid = newFeature.id();
 #endif
       // paste feature
-      if ( !layer->addFeature( f ) )
+      if ( !layer->addFeature( newFeature ) )
       {
         couldNotWriteCount++;
-        QgsDebugMsg( QString( "Could not add new feature. Original copied feature id: %1" ).arg( fid ) );
+        QgsDebugMsg( QStringLiteral( "Could not add new feature. Original copied feature id: %1" ).arg( fid ) );
       }
       else
       {
-        fidList.insert( f.id() );
+        fidList.insert( newFeature.id() );
       }
     }
     else

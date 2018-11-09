@@ -32,27 +32,28 @@ namespace QgsWms
 
     Q_UNUSED( version );
 
-    QgsRenderer renderer( serverIface, project, params );
+    QgsWmsParameters wmsParameters( QUrlQuery( request.url() ) );
+    QgsRenderer renderer( serverIface, project, wmsParameters );
 
     QString format = params.value( "FORMAT" );
     QString contentType;
 
     // GetPrint supports svg/png/pdf
-    if ( format.compare( QStringLiteral( "image/png" ), Qt::CaseInsensitive ) == 0 ||
-         format.compare( QStringLiteral( "png" ), Qt::CaseInsensitive ) == 0 )
+    if ( format.compare( QLatin1String( "image/png" ), Qt::CaseInsensitive ) == 0 ||
+         format.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 )
     {
       format   = "png";
       contentType = "image/png";
     }
-    else if ( format.compare( QStringLiteral( "image/svg" ), Qt::CaseInsensitive ) == 0 ||
-              format.compare( QStringLiteral( "image/svg+xml" ), Qt::CaseInsensitive ) == 0 ||
-              format.compare( QStringLiteral( "svg" ), Qt::CaseInsensitive ) == 0 )
+    else if ( format.compare( QLatin1String( "image/svg" ), Qt::CaseInsensitive ) == 0 ||
+              format.compare( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive ) == 0 ||
+              format.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
     {
       format   = "svg";
       contentType = "image/svg+xml";
     }
-    else if ( format.compare( QStringLiteral( "application/pdf" ), Qt::CaseInsensitive ) == 0 ||
-              format.compare( QStringLiteral( "pdf" ), Qt::CaseInsensitive ) == 0 )
+    else if ( format.compare( QLatin1String( "application/pdf" ), Qt::CaseInsensitive ) == 0 ||
+              format.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
     {
       format = "pdf";
       contentType = "application/pdf";
@@ -67,7 +68,7 @@ namespace QgsWms
     response.write( renderer.getPrint( format ) );
   }
 
-} // samespace QgsWms
+} // namespace QgsWms
 
 
 

@@ -18,7 +18,7 @@
 
 #include "qgis_3d.h"
 
-#include <math.h>
+#include <cmath>
 #include <QList>
 #include <QVector3D>
 
@@ -67,7 +67,7 @@ class _3D_EXPORT QgsAABB
     float distanceFromPoint( float x, float y, float z ) const;
 
     //! Returns shortest distance from the box to a point
-    float distanceFromPoint( const QVector3D &v ) const;
+    float distanceFromPoint( QVector3D v ) const;
 
     //! Returns a list of pairs of vertices (useful for display of bounding boxes)
     QList<QVector3D> verticesForLines() const;

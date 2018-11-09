@@ -198,6 +198,12 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     QString sortExpression() const;
 
+    /**
+     * The config used for the attribute table.
+     * \returns The config used for the attribute table.
+     */
+    QgsAttributeTableConfig attributeTableConfig() const;
+
   public slots:
 
     /**
@@ -267,14 +273,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * Emitted when the form changes mode.
      * \param mode new mode
      */
-    void formModeChanged( QgsAttributeForm::Mode mode );
+    void formModeChanged( QgsAttributeEditorContext::Mode mode );
 
     /**
      * Emitted when selecting context menu on the feature list to create the context menu individually
      * \param menu context menu
      * \param fid feature id of the selected feature
      */
-    void showContextMenuExternally( QgsActionMenu *menu, const QgsFeatureId fid );
+    void showContextMenuExternally( QgsActionMenu *menu, QgsFeatureId fid );
 
   protected:
     void hideEvent( QHideEvent *event ) override;

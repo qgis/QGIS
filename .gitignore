@@ -41,6 +41,8 @@ ms-windows/osgeo4w/binary-*
 ms-windows/osgeo4w/nsis/
 ms-windows/osgeo4w/packages-x86/
 ms-windows/osgeo4w/packages-x86_64/
+ms-windows/osgeo4w/build-qgis-test-x86/
+ms-windows/osgeo4w/build-qgis-test-x86_64/
 ms-windows/osgeo4w/unpacked/
 ms-windows/osgeo4w/untgz/
 ms-windows/packages/
@@ -50,6 +52,7 @@ qgis.kdev4
 qgis.supp
 qgis-test.ctest
 qtcreator-build/
+resources/themes/*/style.qss.auto
 scripts/astyle.exe
 scripts/Debug
 scripts/qgisstyle*

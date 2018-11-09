@@ -86,7 +86,7 @@ class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
         self.filledExpression = None
         self.options = options
         self.expression = expression
-        self.variables = set(re.findall('\[.*?\]', expression))
+        self.variables = set(re.findall(r'\[.*?\]', expression))
         self.comboBoxes = {}
         for variable in self.variables:
             label = QLabel(variable[1:-1])
@@ -214,10 +214,11 @@ class ExpressionWidgetWrapper(WidgetWrapper):
             return QLineEdit()
         else:
             layers = self.dialog.getAvailableValuesOfType([QgsProcessingParameterRasterLayer], [QgsProcessingOutputRasterLayer])
-            options = {self.dialog.resolveValueDescription(lyr): "{}@1".format(lyr) for lyr in layers}
+            options = {self.dialog.resolveValueDescription(lyr): "{}@1".format(self.dialog.resolveValueDescription(lyr)) for lyr in layers}
             return self._panel(options)
 
     def refresh(self):
+        # TODO: check if avoid code duplication with self.createWidget
         layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
         options = {}
         for lyr in layers:
@@ -234,7 +235,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
             self.widget.setValue(value)
 
     def value(self):
-        if self.dialogType in DIALOG_STANDARD:
+        if self.dialogType == DIALOG_STANDARD:
             return self.widget.value()
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.text()
@@ -246,7 +247,7 @@ class LayersListWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType == DIALOG_BATCH:
-            widget = BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget = BatchInputSelectionPanel(self.parameterDefinition(), self.row, self.col, self.dialog)
             widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             return widget
         else:
@@ -273,6 +274,6 @@ class LayersListWidgetWrapper(WidgetWrapper):
         else:
             options = self._getOptions()
             values = [options[i] for i in self.widget.selectedoptions]
-            if len(values) == 0 and not self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+            if len(values) == 0 and not self.parameterDefinition().flags() & QgsProcessingParameterDefinition.FlagOptional:
                 raise InvalidParameterValue()
             return values

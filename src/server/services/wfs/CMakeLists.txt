@@ -45,13 +45,13 @@ INCLUDE_DIRECTORIES(
   ../../../core/raster
   ../../../core/symbology
   ../../../core/layertree
+  ../../../core/fieldformatter
   ../..
   ..
   .
 )
 
 
-#endif
 TARGET_LINK_LIBRARIES(wfs
   qgis_core
   qgis_server
