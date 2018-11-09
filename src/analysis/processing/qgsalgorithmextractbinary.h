@@ -21,6 +21,7 @@
 #define SIP_NO_FILE
 
 #include "qgis.h"
+#include "qgis_analysis.h"
 #include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
@@ -28,7 +29,7 @@
 /**
  * Native extract binary field algorithm.
  */
-class QgsExtractBinaryFieldAlgorithm : public QgsProcessingAlgorithm
+class ANALYSIS_EXPORT QgsExtractBinaryFieldAlgorithm : public QgsProcessingAlgorithm
 {
 
   public:
