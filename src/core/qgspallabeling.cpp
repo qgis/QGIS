@@ -2976,13 +2976,13 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   // fix invalid polygons
   if ( geom.type() == QgsWkbTypes::PolygonGeometry && !geom.isGeosValid() )
   {
-    QgsGeometry validGeom = geom.makeValid();
-    if ( validGeom.isNull() )
+    QgsGeometry bufferGeom = geom.buffer( 0, 0 );
+    if ( bufferGeom.isNull() )
     {
-      QgsDebugMsg( QStringLiteral( "Could not repair geometry: %1" ).arg( validGeom.lastError() ) );
+      QgsDebugMsg( QStringLiteral( "Could not repair geometry: %1" ).arg( bufferGeom.lastError() ) );
       return QgsGeometry();
     }
-    geom = validGeom;
+    geom = bufferGeom;
   }
 
   if ( !clipGeometry.isNull() &&
