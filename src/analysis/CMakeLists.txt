@@ -41,6 +41,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmexplodehstore.cpp
   processing/qgsalgorithmextendlines.cpp
   processing/qgsalgorithmextenttolayer.cpp
+  processing/qgsalgorithmextractbinary.cpp
   processing/qgsalgorithmextractbyattribute.cpp
   processing/qgsalgorithmextractbyexpression.cpp
   processing/qgsalgorithmextractbyextent.cpp
