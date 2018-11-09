@@ -27,7 +27,6 @@ import urllib.parse
 import urllib.error
 
 from qgis.testing import unittest
-from qgis.PyQt.QtCore import QSize
 
 import osgeo.gdal  # NOQA
 
@@ -37,8 +36,9 @@ from test_qgsserver import QgsServerTestBase
 from qgis.core import QgsProject
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
-RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
+RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \\d+'
+RE_STRIP_EXTENTS = b'<(north|east|south|west)Bound(Lat|Long)itude>.*</(north|east|south|west)Bound(Lat|Long)itude>|<BoundingBox .*/>'
+RE_ATTRIBUTES = b'[^>\\s]+=[^>\\s]+'
 
 
 class TestQgsServerWMSTestBase(QgsServerTestBase):
@@ -57,7 +57,7 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
         header, body = self._execute_request(query_string)
         return (header, body, query_string)
 
-    def wms_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs', version='1.3.0'):
+    def wms_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs', version='1.3.0', ignoreExtent=False):
         response_header, response_body, query_string = self.wms_request(request, extra, project, version)
         response = response_header + response_body
         reference_path = self.testdata_path + (request.lower() if not reference_file else reference_file) + '.txt'
@@ -67,6 +67,9 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
         f.close()
         response = re.sub(RE_STRIP_UNCHECKABLE, b'*****', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'*****', expected)
+        if ignoreExtent:
+            response = re.sub(RE_STRIP_EXTENTS, b'*****', response)
+            expected = re.sub(RE_STRIP_EXTENTS, b'*****', expected)
 
         msg = "request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8'))
         self.assertXMLEqual(response, expected, msg=msg)
@@ -158,12 +161,13 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         # according to OGC specifications tests.
         self.wms_request_compare('GetCapabilities', reference_file='wms_getcapabilities_without_title', project='test_project_without_title.qgs')
 
-    def test_wms_getcapabilitie_empty_spatial_layer(self):
+    def test_wms_getcapabilities_empty_spatial_layer(self):
         # The project contains a spatial layer without feature and the WMS
         # extent is not configured in the project.
         self.wms_request_compare('GetCapabilities',
                                  reference_file='wms_getcapabilities_empty_spatial_layer',
-                                 project='test_project_empty_spatial_layer.qgz')
+                                 project='test_project_empty_spatial_layer.qgz',
+                                 ignoreExtent=True)
 
     def test_wms_getcapabilities_versions(self):
         # default version 1.3.0 when empty VERSION parameter
@@ -226,13 +230,14 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
                 item_found = True
         self.assertTrue(item_found)
 
-        # url passed in quesry string
+        # url passed in query string
+        # verify that GetCapabilities isn't put into the url for non-uppercase parameter names
         project = os.path.join(self.testdata_path, "test_project_without_urls.qgs")
         qs = "https://www.qgis-server.org?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
-            "SERVICE": "WMS",
-            "VERSION": "1.3.0",
-            "REQUEST": "GetCapabilities",
+            "SeRvIcE": "WMS",
+            "VeRsIoN": "1.3.0",
+            "ReQuEsT": "GetCapabilities",
             "STYLES": ""
         }.items())])
 
@@ -242,6 +247,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         for item in str(r).split("\\n"):
             if "OnlineResource" in item:
                 self.assertEqual("xlink:href=\"https://www.qgis-server.org?" in item, True)
+                self.assertEqual("GetCapabilities" in item, False)
                 item_found = True
         self.assertTrue(item_found)
 

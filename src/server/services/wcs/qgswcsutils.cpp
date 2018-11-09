@@ -233,6 +233,14 @@ namespace QgsWcs
 
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project )
   {
+    static QSet< QString > sFilter
+    {
+      QStringLiteral( "REQUEST" ),
+      QStringLiteral( "VERSION" ),
+      QStringLiteral( "SERVICE" ),
+      QStringLiteral( "_DC" )
+    };
+
     QString href;
     if ( project )
     {
@@ -245,10 +253,11 @@ namespace QgsWcs
       QUrl url = request.url();
       QUrlQuery q( url );
 
-      q.removeAllQueryItems( QStringLiteral( "REQUEST" ) );
-      q.removeAllQueryItems( QStringLiteral( "VERSION" ) );
-      q.removeAllQueryItems( QStringLiteral( "SERVICE" ) );
-      q.removeAllQueryItems( QStringLiteral( "_DC" ) );
+      for ( auto param : q.queryItems() )
+      {
+        if ( sFilter.contains( param.first.toUpper() ) )
+          q.removeAllQueryItems( param.first );
+      }
 
       url.setQuery( q );
       href = url.toString();

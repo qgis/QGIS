@@ -28,6 +28,21 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
   // http://example.com/?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=x&SRSNAME=y&username=foo&password=
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) )
   {
+    static QSet<QString> sFilter
+    {
+      QStringLiteral( "service" ),
+      QgsWFSConstants::URI_PARAM_VERSION,
+      QgsWFSConstants::URI_PARAM_TYPENAME,
+      QStringLiteral( "request" ),
+      QgsWFSConstants::URI_PARAM_BBOX,
+      QgsWFSConstants::URI_PARAM_SRSNAME,
+      QgsWFSConstants::URI_PARAM_FILTER,
+      QgsWFSConstants::URI_PARAM_OUTPUTFORMAT,
+      QgsWFSConstants::URI_PARAM_USERNAME,
+      QgsWFSConstants::URI_PARAM_PASSWORD,
+      QgsWFSConstants::URI_PARAM_AUTHCFG
+    };
+
     QUrl url( uri );
     // Transform all param keys to lowercase
     QList<queryItem> items( url.queryItems() );
@@ -58,17 +73,11 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
     }
 
     // Now remove all stuff that is not the core URL
-    url.removeQueryItem( QStringLiteral( "service" ) );
-    url.removeQueryItem( QgsWFSConstants::URI_PARAM_VERSION );
-    url.removeQueryItem( QgsWFSConstants::URI_PARAM_TYPENAME );
-    url.removeQueryItem( QStringLiteral( "request" ) );
-    url.removeQueryItem( QgsWFSConstants::URI_PARAM_BBOX );
-    url.removeQueryItem( QgsWFSConstants::URI_PARAM_SRSNAME );
-    url.removeQueryItem( QgsWFSConstants::URI_PARAM_FILTER );
-    url.removeQueryItem( QgsWFSConstants::URI_PARAM_OUTPUTFORMAT );
-    url.removeQueryItem( QgsWFSConstants::URI_PARAM_USERNAME );
-    url.removeQueryItem( QgsWFSConstants::URI_PARAM_PASSWORD );
-    url.removeQueryItem( QgsWFSConstants::URI_PARAM_AUTHCFG );
+    for ( auto param : url.queryItems() )
+    {
+      if ( sFilter.contains( param.first.toLower() ) )
+        url.removeAllQueryItems( param.first );
+    }
 
     mURI = QgsDataSourceUri();
     mURI.setParam( QgsWFSConstants::URI_PARAM_URL, url.toEncoded() );
