@@ -946,6 +946,22 @@ namespace QgsWfs
 
   namespace
   {
+    static QSet< QString > sParamFilter
+    {
+      QStringLiteral( "REQUEST" ),
+      QStringLiteral( "FORMAT" ),
+      QStringLiteral( "OUTPUTFORMAT" ),
+      QStringLiteral( "BBOX" ),
+      QStringLiteral( "FEATUREID" ),
+      QStringLiteral( "TYPENAME" ),
+      QStringLiteral( "FILTER" ),
+      QStringLiteral( "EXP_FILTER" ),
+      QStringLiteral( "MAXFEATURES" ),
+      QStringLiteral( "STARTINDEX" ),
+      QStringLiteral( "PROPERTYNAME" ),
+      QStringLiteral( "_DC" )
+    };
+
 
     void hitGetFeature( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project, QgsWfsParameters::Format format,
                         int numberOfFeatures, const QStringList &typeNames )
@@ -983,18 +999,11 @@ namespace QgsWfs
         else
           query.addQueryItem( QStringLiteral( "VERSION" ), QStringLiteral( "1.0.0" ) );
 
-        query.removeAllQueryItems( QStringLiteral( "REQUEST" ) );
-        query.removeAllQueryItems( QStringLiteral( "FORMAT" ) );
-        query.removeAllQueryItems( QStringLiteral( "OUTPUTFORMAT" ) );
-        query.removeAllQueryItems( QStringLiteral( "BBOX" ) );
-        query.removeAllQueryItems( QStringLiteral( "FEATUREID" ) );
-        query.removeAllQueryItems( QStringLiteral( "TYPENAME" ) );
-        query.removeAllQueryItems( QStringLiteral( "FILTER" ) );
-        query.removeAllQueryItems( QStringLiteral( "EXP_FILTER" ) );
-        query.removeAllQueryItems( QStringLiteral( "MAXFEATURES" ) );
-        query.removeAllQueryItems( QStringLiteral( "STARTINDEX" ) );
-        query.removeAllQueryItems( QStringLiteral( "PROPERTYNAME" ) );
-        query.removeAllQueryItems( QStringLiteral( "_DC" ) );
+        for ( auto param : query.queryItems() )
+        {
+          if ( sParamFilter.contains( param.first.toUpper() ) )
+            query.removeAllQueryItems( param.first );
+        }
 
         query.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
         query.addQueryItem( QStringLiteral( "TYPENAME" ), typeNames.join( ',' ) );
@@ -1092,18 +1101,11 @@ namespace QgsWfs
         else
           query.addQueryItem( QStringLiteral( "VERSION" ), QStringLiteral( "1.0.0" ) );
 
-        query.removeAllQueryItems( QStringLiteral( "REQUEST" ) );
-        query.removeAllQueryItems( QStringLiteral( "FORMAT" ) );
-        query.removeAllQueryItems( QStringLiteral( "OUTPUTFORMAT" ) );
-        query.removeAllQueryItems( QStringLiteral( "BBOX" ) );
-        query.removeAllQueryItems( QStringLiteral( "FEATUREID" ) );
-        query.removeAllQueryItems( QStringLiteral( "TYPENAME" ) );
-        query.removeAllQueryItems( QStringLiteral( "FILTER" ) );
-        query.removeAllQueryItems( QStringLiteral( "EXP_FILTER" ) );
-        query.removeAllQueryItems( QStringLiteral( "MAXFEATURES" ) );
-        query.removeAllQueryItems( QStringLiteral( "STARTINDEX" ) );
-        query.removeAllQueryItems( QStringLiteral( "PROPERTYNAME" ) );
-        query.removeAllQueryItems( QStringLiteral( "_DC" ) );
+        for ( auto param : query.queryItems() )
+        {
+          if ( sParamFilter.contains( param.first.toUpper() ) )
+            query.removeAllQueryItems( param.first );
+        }
 
         query.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
         query.addQueryItem( QStringLiteral( "TYPENAME" ), typeNames.join( ',' ) );
