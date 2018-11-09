@@ -179,6 +179,19 @@ Qt::ItemFlags QgsLocatorModel::flags( const QModelIndex &index ) const
   return flags;
 }
 
+QHash<int, QByteArray> QgsLocatorModel::roleNames() const
+{
+  QHash<int, QByteArray> roles;
+  roles[ResultDataRole] = "ResultData";
+  roles[ResultTypeRole] = "ResultType";
+  roles[ResultFilterPriorityRole] = "ResultFilterPriority";
+  roles[ResultScoreRole] = "ResultScore";
+  roles[ResultFilterNameRole] = "ResultFilterName";
+  roles[ResultFilterGroupSortingRole] = "ResultFilterGroupSorting";
+  roles[Qt::DisplayRole] = "Text";
+  return roles;
+}
+
 void QgsLocatorModel::addResult( const QgsLocatorResult &result )
 {
   mDeferredClearTimer.stop();

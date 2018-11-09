@@ -29,10 +29,9 @@
 
 class QgsLocator;
 class QgsFilterLineEdit;
-class QgsLocatorModel;
 class QgsLocatorResultsView;
 class QgsMapCanvas;
-class QgsLocatorProxyModel;
+class QgsLocatorModelBridge;
 
 /**
  * \class QgsLocatorWidget
@@ -86,40 +85,30 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
     void configTriggered();
 
   protected:
-
     bool eventFilter( QObject *obj, QEvent *event ) override;
 
   private slots:
-
-    void scheduleDelayedPopup();
     void performSearch();
     void showList();
     void triggerSearchAndShowList();
-    void searchFinished();
-    void addResult( const QgsLocatorResult &result );
     void configMenuAboutToShow();
+    void scheduleDelayedPopup();
+    void resultAdded();
 
   private:
-
-    QgsLocator *mLocator = nullptr;
+    QgsLocatorModelBridge *mModelBridge = nullptr;
     QgsFilterLineEdit *mLineEdit = nullptr;
-    QgsLocatorModel *mLocatorModel = nullptr;
-    QgsLocatorProxyModel *mProxyModel = nullptr;
     QgsFloatingWidget *mResultsContainer = nullptr;
     QgsLocatorResultsView *mResultsView = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
+    QList<QMetaObject::Connection> mCanvasConnections;
     QMenu *mMenu = nullptr;
 
-    QString mNextRequestedString;
-    bool mHasQueuedRequest = false;
-    bool mHasSelectedResult = false;
-    QTimer mPopupTimer;
     QTimer mFocusTimer;
+    QTimer mPopupTimer;
+    bool mHasSelectedResult = false;
 
-    void updateResults( const QString &text );
     void acceptCurrentEntry();
-    QgsLocatorContext createContext();
-
 };
 
 #ifndef SIP_RUN
@@ -144,7 +133,6 @@ class QgsLocatorFilterFilter : public QgsLocatorFilter
     void triggerResult( const QgsLocatorResult &result ) override;
 
   private:
-
     QgsLocatorWidget *mLocator = nullptr;
 };
 
