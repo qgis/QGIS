@@ -44,12 +44,12 @@ QList<QgsSingleGeometryCheckError *> QgsGeometrySelfContactCheck::processGeometr
           ring.append( p );
         }
       }
-      while ( QgsGeometryUtils::sqrDistance2D( ring.front(), ring.back() ) < mContext->tolerance * mContext->tolerance )
+      while ( !ring.empty() && QgsGeometryUtils::sqrDistance2D( ring.front(), ring.back() ) < mContext->tolerance * mContext->tolerance )
       {
         vtxMap.pop_back();
         ring.pop_back();
       }
-      if ( isClosed )
+      if ( !ring.empty() && isClosed )
       {
         vtxMap.append( n - 1 );
         ring.append( ring.front() );
