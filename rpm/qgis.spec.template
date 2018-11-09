@@ -13,6 +13,8 @@
 %global __python %{__python3}
 
 %if %{_timestamp} > 0
+# Epoch is set only when building packages from master
+Epoch: %{_timestamp}
 %define builddate %(date -d @%{_timestamp} '+%a %b %d %Y')
 %else
 %define builddate %(date '+%a %b %d %Y')
@@ -27,9 +29,6 @@ Summary:        A user friendly Open Source Geographic Information System
 
 License:        GPLv2+
 URL:            http://www.qgis.org
-
-# Epoch is used when building packages from master, otherwise is set to 0
-Epoch: %{_timestamp}
 
 Source0:        http://qgis.org/downloads/%{name}-%{version}.tar.bz2
 
@@ -47,66 +46,66 @@ Source5:        %{name}-mime.xml
 Patch0:         %{name}-lib64.patch
 
 # Compiling stuff
-BuildRequires: bison
-BuildRequires: clang
-BuildRequires: cmake
-BuildRequires: expat-devel
-BuildRequires: flex
-BuildRequires: desktop-file-utils
+BuildRequires:  bison
+BuildRequires:  clang
+BuildRequires:  cmake
+BuildRequires:  expat-devel
+BuildRequires:  flex
+BuildRequires:  desktop-file-utils
 
 # Geo stuff
-BuildRequires: gdal-devel
-BuildRequires: gdal-python3
-BuildRequires: geos-devel
-BuildRequires: gsl-devel
-BuildRequires: libspatialite-devel
-BuildRequires: proj-devel
-BuildRequires: spatialindex-devel
-BuildRequires: grass-devel
+BuildRequires:  gdal-devel
+BuildRequires:  gdal-python3
+BuildRequires:  geos-devel
+BuildRequires:  gsl-devel
+BuildRequires:  libspatialite-devel
+BuildRequires:  proj-devel
+BuildRequires:  spatialindex-devel
+BuildRequires:  grass-devel
 
 # Other stuff
-BuildRequires: gsl-devel
-BuildRequires: libzip-devel
-BuildRequires: postgresql-devel
-BuildRequires: sqlite-devel
-BuildRequires: fcgi-devel
+BuildRequires:  gsl-devel
+BuildRequires:  libzip-devel
+BuildRequires:  postgresql-devel
+BuildRequires:  sqlite-devel
+BuildRequires:  fcgi-devel
 
 # OpenCL
-BuildRequires: opencl-headers
-BuildRequires: ocl-icd-devel
+BuildRequires:  opencl-headers
+BuildRequires:  ocl-icd-devel
 
 # Python stuff
-BuildRequires: python3-future
-BuildRequires: python3-jinja2
-BuildRequires: python3-OWSLib
-BuildRequires: python3-psycopg2
-BuildRequires: python3-pygments
-BuildRequires: python3-PyYAML
-BuildRequires: python3-qscintilla-devel
-BuildRequires: python3-qscintilla-qt5
-BuildRequires: python3-qscintilla-qt5-devel
-BuildRequires: python3-qt5-devel
-BuildRequires: sip-devel
+BuildRequires:  python3-future
+BuildRequires:  python3-jinja2
+BuildRequires:  python3-OWSLib
+BuildRequires:  python3-psycopg2
+BuildRequires:  python3-pygments
+BuildRequires:  python3-PyYAML
+BuildRequires:  python3-qscintilla-devel
+BuildRequires:  python3-qscintilla-qt5
+BuildRequires:  python3-qscintilla-qt5-devel
+BuildRequires:  python3-qt5-devel
+BuildRequires:  sip-devel
 
 # Qca stuff
-BuildRequires: qca-qt5-devel
-BuildRequires: qca-qt5-ossl
-BuildRequires: qscintilla-qt5-devel
+BuildRequires:  qca-qt5-devel
+BuildRequires:  qca-qt5-ossl
+BuildRequires:  qscintilla-qt5-devel
 
 # Qt5 stuff
-BuildRequires: qt5-qtlocation-devel
-BuildRequires: qt5-qtsvg-devel
-BuildRequires: qt5-qttools-static
-BuildRequires: qt5-qtwebkit-devel
-BuildRequires: qt5-qtxmlpatterns-devel
-BuildRequires: qtkeychain-qt5-devel
-BuildRequires: qt5-qtserialport-devel
-BuildRequires: qt5-qt3d-devel
+BuildRequires:  qt5-qtlocation-devel
+BuildRequires:  qt5-qtsvg-devel
+BuildRequires:  qt5-qttools-static
+BuildRequires:  qt5-qtwebkit-devel
+BuildRequires:  qt5-qtxmlpatterns-devel
+BuildRequires:  qtkeychain-qt5-devel
+BuildRequires:  qt5-qtserialport-devel
+BuildRequires:  qt5-qt3d-devel
 
 # Qwt stuff
-BuildRequires: qwt-devel
-BuildRequires: qwt-qt5-devel
-BuildRequires: qwt-qt5-devel
+BuildRequires:  qwt-devel
+BuildRequires:  qwt-qt5-devel
+BuildRequires:  qwt-qt5-devel
 
 # Installation of QCA plugins must be explicit
 Requires:       qca-qt5-ossl
@@ -149,22 +148,22 @@ GRASS plugin for QGIS required to interface with the GRASS system.
 %package -n python3-qgis
 %{?python_provide:%python_provide python3-qgis}
 # Remove before F30
-Provides: %{name}-python = %{version}-%{release}
-Provides: %{name}-python%{?_isa} = %{version}-%{release}
-Obsoletes: %{name}-python < %{version}-%{release}
-Obsoletes: python2-%{name} < %{version}-%{release}
+Provides:       %{name}-python = %{version}-%{release}
+Provides:       %{name}-python%{?_isa} = %{version}-%{release}
+Obsoletes:      %{name}-python < %{version}-%{release}
+Obsoletes:      python2-%{name} < %{version}-%{release}
 Summary:        Python integration and plug-ins for QGIS
 Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
-Requires: gdal-python3
-Requires: python3-future
-Requires: python3-jinja2
-Requires: python3-OWSLib
-Requires: python3-psycopg2
-Requires: python3-pygments
-Requires: python3-PyYAML
-Requires: python3-qscintilla
-Requires: python3-qscintilla-qt5
-Requires: python3-qt5
+Requires:       gdal-python3
+Requires:       python3-future
+Requires:       python3-jinja2
+Requires:       python3-OWSLib
+Requires:       python3-psycopg2
+Requires:       python3-pygments
+Requires:       python3-PyYAML
+Requires:       python3-qscintilla
+Requires:       python3-qscintilla-qt5
+Requires:       python3-qt5
 %{?_sip_api:Requires: sip-api(%{_sip_api_major}) >= %{_sip_api}}
 
 %description -n python3-qgis
@@ -174,8 +173,8 @@ Python integration and plug-ins for QGIS.
 Summary:        FCGI-based OGC web map server
 Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:       mod_fcgid
-Provides: mapserver = %{version}-%{release}
-Obsoletes: mapserver < 2.8.1-1
+Provides:       mapserver = %{version}-%{release}
+Obsoletes:      mapserver < 2.8.1-1
 
 %description server
 This FastCGI OGC web map server implements OGC WMS 1.3.0 and 1.1.1.
@@ -197,9 +196,7 @@ install -pm0644 %{SOURCE4} .
 
 gzip ChangeLog
 
-
 %build
-
 %cmake \
       %{_cmake_skip_rpath} \
       -D QGIS_LIB_SUBDIR=%{_lib} \
@@ -218,7 +215,6 @@ gzip ChangeLog
       .
 
 make %{?_smp_mflags}
-
 
 %install
 # Necessary for the test suite
@@ -243,7 +239,6 @@ rm -f %{buildroot}%{_libexecdir}/%{name}/admin.sld
 rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 
 %find_lang %{name} --with-qt
-
 
 %post
 /sbin/ldconfig
@@ -334,7 +329,6 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 %{_libexecdir}/%{name}/
 %{python3_sitearch}/%{name}/server/
 %{python3_sitearch}/%{name}/_server.so
-
 
 %changelog
 * %{builddate} Daniele Viganò <daniele@vigano.me> %{_version}-%{_relver}
