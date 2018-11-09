@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="64"
+   width="64"
+   version="1.1"
+   id="svg14"
+   sodipodi:docname="mIconFieldBinary.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata20">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs18" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="3840"
+     inkscape:window-height="2031"
+     id="namedview16"
+     showgrid="false"
+     inkscape:zoom="14.75"
+     inkscape:cx="32.542373"
+     inkscape:cy="31.457627"
+     inkscape:window-x="0"
+     inkscape:window-y="55"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg14" />
+  <text
+     transform="translate(0 32)"
+     x="-.333"
+     y="13.642"
+     font-weight="700"
+     font-size="36.594"
+     letter-spacing="0"
+     word-spacing="0"
+     font-family="DejaVu Sans Mono"
+     fill="#555"
+     stroke="#555"
+     stroke-width="1.677"
+     id="text2" />
+  <g
+     aria-label="O1"
+     font-weight="700"
+     font-size="36.594"
+     letter-spacing="0"
+     word-spacing="0"
+     id="g6"
+     transform="matrix(0.90442354,0,0,0.90442354,3.29865,3.0391688)"
+     style="font-weight:700;font-size:36.59400177px;font-family:'DejaVu Sans Mono';letter-spacing:0;word-spacing:0;fill:#555555;stroke:#555555;stroke-width:1.67700005">
+    <path
+       d="m 20.597,6.87 q -2.019,0 -2.948,2.162 -0.93,2.144 -0.93,6.95 0,4.79 0.93,6.952 0.93,2.144 2.948,2.144 2.037,0 2.966,-2.144 0.93,-2.162 0.93,-6.951 0,-4.807 -0.93,-6.95 Q 22.634,6.87 20.597,6.87 Z m -9.363,9.113 q 0,-6.844 2.359,-10.346 2.376,-3.502 7.004,-3.502 4.646,0 7.005,3.502 2.376,3.502 2.376,10.346 0,6.826 -2.376,10.328 -2.359,3.502 -7.005,3.502 -4.628,0 -7.004,-3.502 -2.359,-3.502 -2.359,-10.328 z m 23.729,8.666 H 40.86 V 7.335 L 35.374,8.693 V 3.94 l 5.521,-1.323 h 5.093 V 24.65 h 5.896 v 4.646 h -16.92 z"
+       id="path4"
+       inkscape:connector-curvature="0" />
+  </g>
+  <circle
+     cx="21.942434"
+     cy="17.607622"
+     r="2.3415525"
+     id="circle8"
+     style="fill:#555555;stroke-width:0.90442353" />
+  <path
+     d="m 42.59313,38.194106 q -1.826936,0 -2.667145,1.955364 -0.84021,1.939084 -0.84021,6.285743 0,4.332189 0.841114,6.287553 0.84021,1.939084 2.666241,1.939084 1.842311,0 2.68252,-1.939084 0.840209,-1.955364 0.840209,-6.286648 0,-4.347564 -0.841113,-6.285744 -0.839305,-1.956268 -2.681616,-1.956268 z m -8.468118,8.242012 q 0,-6.189875 2.132631,-9.357166 2.149815,-3.167291 6.335487,-3.167291 4.201047,0 6.334582,3.167291 2.148911,3.167291 2.148911,9.357166 0,6.173595 -2.148911,9.340886 -2.133535,3.167291 -6.334582,3.167291 -4.185672,0 -6.335487,-3.167291 -2.132631,-3.167291 -2.132631,-9.340886 z m -18.885268,7.837734 h 5.332481 V 38.614663 l -4.960763,1.228207 v -4.298725 l 4.993323,-1.196552 h 4.606229 v 19.927164 h 5.332481 v 4.201951 H 15.239744 Z"
+     font-weight="700"
+     letter-spacing="0"
+     word-spacing="0"
+     id="path10"
+     inkscape:connector-curvature="0"
+     style="font-weight:700;font-family:'DejaVu Sans Mono';letter-spacing:0;word-spacing:0;fill:#555555;stroke:#555555;stroke-width:1.51671827" />
+  <circle
+     cx="42.564243"
+     cy="46.54921"
+     r="2.3415525"
+     id="circle12"
+     style="fill:#555555;stroke-width:0.90442353" />
+</svg>
