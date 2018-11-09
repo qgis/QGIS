@@ -725,6 +725,9 @@
         <file>themes/default/mIconFolderOpen.svg</file>
         <file>themes/default/mIconFolderProject.svg</file>
         <file>themes/default/mActionActive.svg</file>
+        <file>themes/default/mIconAllRings.svg</file>
+        <file>themes/default/mIconExteriorRing.svg</file>
+        <file>themes/default/mIconInteriorRings.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
