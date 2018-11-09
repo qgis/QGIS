@@ -2694,42 +2694,9 @@ static QVariant fcnBuffer( const QVariantList &values, const QgsExpressionContex
 
 static QVariant fcnForceRHR( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  if ( fGeom.isMultipart() )
-  {
-    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( fGeom.constGet() );
-    std::unique_ptr< QgsGeometryCollection > newCollection( collection->createEmptyWithSameType() );
-    for ( int i = 0; i < collection->numGeometries(); ++i )
-    {
-      const QgsAbstractGeometry *g = collection->geometryN( i );
-      if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( g ) )
-      {
-        std::unique_ptr< QgsCurvePolygon > corrected( cp->clone() );
-        corrected->forceRHR();
-        newCollection->addGeometry( corrected.release() );
-      }
-      else
-      {
-        newCollection->addGeometry( g->clone() );
-      }
-    }
-    QgsGeometry geom( std::move( newCollection ) );
-    return !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
-  }
-  else
-  {
-    if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( fGeom.constGet() ) )
-    {
-      std::unique_ptr< QgsCurvePolygon > corrected( cp->clone() );
-      corrected->forceRHR();
-      QgsGeometry geom( std::move( corrected ) );
-      return !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
-    }
-    else
-    {
-      return fGeom;
-    }
-  }
+  const QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const QgsGeometry reoriented = fGeom.forceRHR();
+  return !reoriented.isNull() ? QVariant::fromValue( reoriented ) : QVariant();
 }
 
 static QVariant fcnWedgeBuffer( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )

@@ -84,40 +84,8 @@ QgsFeatureList QgsForceRHRAlgorithm::processFeature( const QgsFeature &feature, 
   if ( !feature.hasGeometry() )
     return QgsFeatureList() << feature;
 
-  const QgsGeometry inputGeom = feature.geometry();
-  QgsGeometry outputGeometry = inputGeom;
-  if ( inputGeom.isMultipart() )
-  {
-    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( inputGeom.constGet() );
-    std::unique_ptr< QgsGeometryCollection > newCollection( collection->createEmptyWithSameType() );
-    for ( int i = 0; i < collection->numGeometries(); ++i )
-    {
-      const QgsAbstractGeometry *g = collection->geometryN( i );
-      if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( g ) )
-      {
-        std::unique_ptr< QgsCurvePolygon > corrected( cp->clone() );
-        corrected->forceRHR();
-        newCollection->addGeometry( corrected.release() );
-      }
-      else
-      {
-        newCollection->addGeometry( g->clone() );
-      }
-    }
-    outputGeometry = QgsGeometry( std::move( newCollection ) );
-  }
-  else
-  {
-    if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( inputGeom.constGet() ) )
-    {
-      std::unique_ptr< QgsCurvePolygon > corrected( cp->clone() );
-      corrected->forceRHR();
-      outputGeometry = QgsGeometry( std::move( corrected ) );
-    }
-  }
-
   QgsFeature outputFeature = feature;
-  outputFeature.setGeometry( outputGeometry );
+  outputFeature.setGeometry( feature.geometry().forceRHR() );
 
   return QgsFeatureList() << outputFeature;
 }
