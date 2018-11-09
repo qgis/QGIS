@@ -641,7 +641,6 @@ void TestQgsProcessingAlgs::extractBinary()
   QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   const QString source = dataDir + QStringLiteral( "/attachments.gdb|layername=points__ATTACH" );
 
-
   QVariantMap parameters;
   parameters.insert( QStringLiteral( "INPUT" ), source );
   parameters.insert( QStringLiteral( "FIELD" ), QStringLiteral( "DATA" ) );
@@ -655,17 +654,17 @@ void TestQgsProcessingAlgs::extractBinary()
   QVERIFY( ok );
 
   QCOMPARE( results.count(), 1 );
-  QCOMPARE( results.value( QStringLiteral( "FOLDER" ) ), folder );
+  QCOMPARE( results.value( QStringLiteral( "FOLDER" ) ).toString(), folder );
 
   QFile file( folder + "/test1.jpg" );
   QVERIFY( file.open( QIODevice::ReadOnly ) );
   QByteArray d = file.readAll();
-  QCOMPARE( QCryptographicHash::hash( d, QCryptographicHash::Md5 ).toHex(), QStringLiteral( "ef3dbc530cc39a545832a6c82aac57b6" ) );
+  QCOMPARE( QString( QCryptographicHash::hash( d, QCryptographicHash::Md5 ).toHex() ), QStringLiteral( "ef3dbc530cc39a545832a6c82aac57b6" ) );
 
   QFile file2( folder + "/test2.jpg" );
   QVERIFY( file2.open( QIODevice::ReadOnly ) );
   d = file2.readAll();
-  QCOMPARE( QCryptographicHash::hash( d, QCryptographicHash::Md5 ).toHex(), QStringLiteral( "4b952b80e4288ca5111be2f6dd5d6809" ) );
+  QCOMPARE( QString( QCryptographicHash::hash( d, QCryptographicHash::Md5 ).toHex() ), QStringLiteral( "4b952b80e4288ca5111be2f6dd5d6809" ) );
 }
 
 
