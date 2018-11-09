@@ -101,7 +101,6 @@ class ClipRasterByMask(GdalAlgorithm):
         target_extent_crs_param.setFlags(target_extent_crs_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(target_extent_crs_param)
 
-
         multithreading_param = QgsProcessingParameterBoolean(self.MULTITHREADING,
                                                              self.tr('Use multithreaded warping implementation'),
                                                              defaultValue=False)
