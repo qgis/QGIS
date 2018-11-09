@@ -166,7 +166,7 @@ QgsNative::NotificationResult QgsWinNative::showDesktopNotification( const QStri
 bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, void *message, long * )
 {
   static const QByteArray sWindowsGenericMSG{ "windows_generic_MSG" };
-  if ( eventType != sWindowsGenericMSG )
+  if ( !message || eventType != sWindowsGenericMSG )
     return false;
 
   MSG *pWindowsMessage = static_cast<MSG *>( message );
@@ -178,12 +178,27 @@ bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, vo
   unsigned int wParam = pWindowsMessage->wParam;
   if ( wParam == DBT_DEVICEARRIVAL || wParam == DBT_DEVICEREMOVECOMPLETE )
   {
-    long lParam = pWindowsMessage->lParam;
-    unsigned long deviceType = reinterpret_cast<DEV_BROADCAST_HDR *>( lParam )->dbch_devicetype;
+    if ( !pWindowsMessage->lParam )
+      return false;
+
+    unsigned long deviceType = reinterpret_cast<DEV_BROADCAST_HDR *>( pWindowsMessage->lParam )->dbch_devicetype;
     if ( deviceType == DBT_DEVTYP_VOLUME )
     {
+      const DEV_BROADCAST_VOLUME *broadcastVolume = reinterpret_cast<const DEV_BROADCAST_VOLUME *>( pWindowsMessage->lParam );
+      if ( !broadcastVolume )
+        return false;
+
+      // Seen in qfilesystemwatcher_win.cpp from Qt:
+      // WM_DEVICECHANGE/DBT_DEVTYP_VOLUME messages are sent to all toplevel windows. Compare a hash value to ensure
+      // it is handled only once.
+      const quintptr newHash = reinterpret_cast<quintptr>( broadcastVolume ) + pWindowsMessage->wParam
+                               + quintptr( broadcastVolume->dbcv_flags ) + quintptr( broadcastVolume->dbcv_unitmask );
+      if ( newHash == mLastMessageHash )
+        return false;
+      mLastMessageHash = newHash;
+
       // need to handle disks with multiple partitions -- these are given by a single event
-      unsigned long unitmask = reinterpret_cast<DEV_BROADCAST_VOLUME *>( lParam )->dbcv_unitmask;
+      unsigned long unitmask = broadcastVolume->dbcv_unitmask;
       std::vector< QString > drives;
       char driveName[] = "A:/";
       unitmask &= 0x3ffffff;
@@ -199,6 +214,7 @@ bool QgsWinNativeEventFilter::nativeEventFilter( const QByteArray &eventType, vo
       {
         emit usbStorageNotification( QStringLiteral( "%1:/" ).arg( drive ), wParam == DBT_DEVICEARRIVAL );
       }
+      return false;
     }
   }
   return false;
