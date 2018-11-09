@@ -1028,6 +1028,11 @@ void QgsOgrProvider::loadFields()
       case OFTDateTime:
         varType = QVariant::DateTime;
         break;
+
+      case OFTBinary:
+        varType = QVariant::ByteArray;
+        break;
+
       case OFTString:
       default:
         varType = QVariant::String; // other unsupported, leave it as a string
@@ -1503,6 +1508,13 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
                                   textEncoding()->name().data() ), 3 );
           OGR_F_SetFieldString( feature.get(), ogrAttId, textEncoding()->fromUnicode( attrVal.toString() ).constData() );
           break;
+
+        case OFTBinary:
+        {
+          const QByteArray ba = attrVal.toByteArray();
+          OGR_F_SetFieldBinary( feature.get(), ogrAttId, ba.size(), const_cast< GByte * >( reinterpret_cast< const GByte * >( ba.data() ) ) );
+          break;
+        }
 
         default:
           QgsMessageLog::logMessage( tr( "type %1 for attribute %2 not found" ).arg( type ).arg( qgisAttId ), tr( "OGR" ) );
@@ -2059,6 +2071,14 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
           case OFTString:
             OGR_F_SetFieldString( of.get(), f, textEncoding()->fromUnicode( it2->toString() ).constData() );
             break;
+
+          case OFTBinary:
+          {
+            const QByteArray ba = it2->toByteArray();
+            OGR_F_SetFieldBinary( of.get(), f, ba.size(), const_cast< GByte * >( reinterpret_cast< const GByte * >( ba.data() ) ) );
+            break;
+          }
+
           default:
             pushError( tr( "Type %1 of attribute %2 of feature %3 unknown." ).arg( type ).arg( fid ).arg( f ) );
             break;

@@ -16,9 +16,10 @@ import os
 import shutil
 import sys
 import tempfile
+import hashlib
 
 from osgeo import gdal, ogr  # NOQA
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, QByteArray
 from qgis.core import (QgsApplication,
                        QgsRectangle,
                        QgsProviderRegistry,
@@ -488,6 +489,23 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertTrue(f.isValid())
         self.assertEqual(f.id(), 8)
         del it
+
+    def testBinaryField(self):
+        source = os.path.join(TEST_DATA_DIR, 'attachments.gdb')
+        vl = QgsVectorLayer(source + "|layername=points__ATTACH")
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+        data_field = fields[fields.lookupField('DATA')]
+        self.assertEqual(data_field.type(), QVariant.ByteArray)
+        self.assertEqual(data_field.typeName(), 'Binary')
+
+        features = {f['ATTACHMENTID']: f for f in vl.getFeatures()}
+        self.assertEqual(len(features), 2)
+        self.assertIsInstance(features[1]['DATA'], QByteArray)
+        self.assertEqual(hashlib.md5(features[1]['DATA'].data()).hexdigest(), 'ef3dbc530cc39a545832a6c82aac57b6')
+        self.assertIsInstance(features[2]['DATA'], QByteArray)
+        self.assertEqual(hashlib.md5(features[2]['DATA'].data()).hexdigest(), '4b952b80e4288ca5111be2f6dd5d6809')
 
 
 if __name__ == '__main__':
