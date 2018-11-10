@@ -193,8 +193,11 @@ class Grass7Utils:
         if not isWindows() and not isMac():
             return ''
 
-        folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_FOLDER) or ''
-        if not os.path.exists(folder):
+        if isMac():
+            folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_FOLDER) or ''
+            if not os.path.exists(folder):
+                folder = None
+        else:
             folder = None
 
         if folder is None:
@@ -206,10 +209,9 @@ class Grass7Utils:
                     testfolder = str(QgsApplication.prefixPath())
                 testfolder = os.path.join(testfolder, 'grass')
                 if os.path.isdir(testfolder):
-                    for subfolder in os.listdir(testfolder):
-                        if subfolder.startswith('grass-7'):
-                            folder = os.path.join(testfolder, subfolder)
-                            break
+                    grassfolders = sorted([f for f in os.listdir(testfolder) if f.startswith("grass-7.") and os.path.isdir(os.path.join(testfolder, f))], reverse=True, key=lambda x: [int(v) for v in x[len("grass-"):].split('.')])
+                    if grassfolders:
+                        folder = os.path.join(testfolder, grassfolders[0])
             elif isMac():
                 # For MacOSX, we scan some well-known directories
                 # Start with QGIS bundle

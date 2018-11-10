@@ -52,7 +52,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
         ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_GRASS7',
                                             self.tr('Activate'), True))
-        if isWindows() or isMac():
+        if isMac():
             ProcessingConfig.addSetting(Setting(
                 self.name(),
                 Grass7Utils.GRASS_FOLDER, self.tr('GRASS7 folder'),
@@ -84,7 +84,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
 
     def unload(self):
         ProcessingConfig.removeSetting('ACTIVATE_GRASS7')
-        if isWindows() or isMac():
+        if isMac():
             ProcessingConfig.removeSetting(Grass7Utils.GRASS_FOLDER)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
