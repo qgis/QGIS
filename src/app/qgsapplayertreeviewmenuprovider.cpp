@@ -243,7 +243,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( vlayer || rlayer )
       {
 
-        QAction *a = new QAction( tr( "Change data source…" ), menu );
+        QAction *a = new QAction( tr( "Change Data Source…" ), menu );
         // Disable when layer is editable
         if ( layer->isEditable() )
         {
