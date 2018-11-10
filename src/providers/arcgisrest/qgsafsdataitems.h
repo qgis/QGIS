@@ -19,6 +19,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgswkbtypes.h"
 #include "qgsdataitemprovider.h"
+#include "qgsdataprovider.h"
 
 class QgsAfsRootItem : public QgsDataCollectionItem
 {
