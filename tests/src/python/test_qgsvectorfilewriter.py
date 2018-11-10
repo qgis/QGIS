@@ -30,7 +30,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsRectangle,
                        QgsCoordinateTransform
                        )
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QByteArray
 import os
 import tempfile
 import osgeo.gdal  # NOQA
@@ -1043,6 +1043,67 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertTrue(created_layer.isValid())
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
         self.assertEqual(f.geometry().asWkt(), 'Point (10 10)')
+
+    def testWriteWithBinaryField(self):
+        """
+        Test writing with a binary field
+        :return:
+        """
+        basetestpath = tempfile.mkdtemp()
+
+        tmpfile = os.path.join(basetestpath, 'binaryfield.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
+        lyr.CreateField(ogr.FieldDefn('strfield', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('intfield', ogr.OFTInteger))
+        lyr.CreateField(ogr.FieldDefn('binfield', ogr.OFTBinary))
+        lyr.CreateField(ogr.FieldDefn('binfield2', ogr.OFTBinary))
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl.isValid())
+
+        # check that 1 of its fields is a bool
+        fields = vl.fields()
+        self.assertEqual(fields.at(fields.indexFromName('binfield')).type(), QVariant.ByteArray)
+
+        dp = vl.dataProvider()
+        f = QgsFeature(fields)
+        bin_1 = b'xxx'
+        bin_2 = b'yyy'
+        bin_val1 = QByteArray(bin_1)
+        bin_val2 = QByteArray(bin_2)
+        f.setAttributes([1, 'str', 100, bin_val1, bin_val2])
+        self.assertTrue(dp.addFeature(f))
+
+        # write a gpkg package with a binary field
+        filename = os.path.join(str(QDir.tempPath()), 'with_bin_field')
+        rc, errmsg = QgsVectorFileWriter.writeAsVectorFormat(vl,
+                                                             filename,
+                                                             'utf-8',
+                                                             vl.crs(),
+                                                             'GPKG')
+
+        self.assertEqual(rc, QgsVectorFileWriter.NoError)
+
+        # open the resulting geopackage
+        vl = QgsVectorLayer(filename + '.gpkg', '', 'ogr')
+        self.assertTrue(vl.isValid())
+        fields = vl.fields()
+
+        # test type of converted field
+        idx = fields.indexFromName('binfield')
+        self.assertEqual(fields.at(idx).type(), QVariant.ByteArray)
+        idx2 = fields.indexFromName('binfield2')
+        self.assertEqual(fields.at(idx2).type(), QVariant.ByteArray)
+
+        # test values
+        self.assertEqual(vl.getFeature(1).attributes()[idx], bin_val1)
+        self.assertEqual(vl.getFeature(1).attributes()[idx2], bin_val2)
+
+        del vl
+        os.unlink(filename + '.gpkg')
 
 
 if __name__ == '__main__':

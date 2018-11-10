@@ -589,6 +589,10 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             }
             break;
 
+          case QVariant::ByteArray:
+            ogrType = OFTBinary;
+            break;
+
           default:
             //assert(0 && "invalid variant type!");
             mErrorMessage = QObject::tr( "Unsupported type for field %1" )
@@ -2207,6 +2211,14 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
                                   0 );
         }
         break;
+
+      case QVariant::ByteArray:
+      {
+        const QByteArray ba = attrValue.toByteArray();
+        OGR_F_SetFieldBinary( poFeature.get(), ogrField, ba.size(), const_cast< GByte * >( reinterpret_cast< const GByte * >( ba.data() ) ) );
+        break;
+      }
+
       case QVariant::Invalid:
         break;
       default:
