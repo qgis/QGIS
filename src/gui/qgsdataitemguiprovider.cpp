@@ -19,7 +19,7 @@
 // QgsDataItemGuiContext
 //
 
-QgsMessageBar *QgsDataItemGuiContext::messageBar()
+QgsMessageBar *QgsDataItemGuiContext::messageBar() const
 {
   return mMessageBar;
 }

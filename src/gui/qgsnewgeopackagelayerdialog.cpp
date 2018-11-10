@@ -483,22 +483,28 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
   QString uri( QStringLiteral( "%1|layername=%2" ).arg( fileName, tableName ) );
   QString userVisiblelayerName( layerIdentifier.isEmpty() ? tableName : layerIdentifier );
-  QgsVectorLayer *layer = new QgsVectorLayer( uri, userVisiblelayerName, QStringLiteral( "ogr" ) );
+  std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique< QgsVectorLayer >( uri, userVisiblelayerName, QStringLiteral( "ogr" ) );
   if ( layer->isValid() )
   {
-    // register this layer with the central layers registry
-    QList<QgsMapLayer *> myList;
-    myList << layer;
-    //addMapLayers returns a list of all successfully added layers
-    //so we compare that to our original list.
-    if ( myList == QgsProject::instance()->addMapLayers( myList ) )
+    if ( mAddToProject )
+    {
+      // register this layer with the central layers registry
+      QList<QgsMapLayer *> myList;
+      myList << layer.release();
+      //addMapLayers returns a list of all successfully added layers
+      //so we compare that to our original list.
+      if ( myList == QgsProject::instance()->addMapLayers( myList ) )
+        return true;
+    }
+    else
+    {
       return true;
+    }
   }
   else
   {
     if ( !property( "hideDialogs" ).toBool() )
       QMessageBox::critical( this, tr( "New GeoPackage Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( tableName ) );
-    delete layer;
   }
 
   return false;
@@ -507,6 +513,11 @@ bool QgsNewGeoPackageLayerDialog::apply()
 void QgsNewGeoPackageLayerDialog::setOverwriteBehavior( OverwriteBehavior behavior )
 {
   mBehavior = behavior;
+}
+
+void QgsNewGeoPackageLayerDialog::setAddToProject( bool addToProject )
+{
+  mAddToProject = addToProject;
 }
 
 void QgsNewGeoPackageLayerDialog::showHelp()
