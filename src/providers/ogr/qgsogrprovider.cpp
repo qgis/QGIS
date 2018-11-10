@@ -475,6 +475,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   bool supportsDate = true;
   bool supportsTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" ) && mGDALDriverName != QLatin1String( "GPKG" );
   bool supportsDateTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" );
+  bool supportsBinary = false;
   const char *pszDataTypes = nullptr;
   if ( mOgrOrigLayer )
   {
@@ -488,6 +489,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
     supportsDate = CSLFindString( papszTokens, "Date" ) >= 0;
     supportsTime = CSLFindString( papszTokens, "Time" ) >= 0;
     supportsDateTime = CSLFindString( papszTokens, "DateTime" ) >= 0;
+    supportsBinary = CSLFindString( papszTokens, "Binary" ) >= 0;
     CSLDestroy( papszTokens );
   }
 
@@ -505,6 +507,11 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   {
     nativeTypes
         << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime );
+  }
+  if ( supportsBinary )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray );
   }
 
   bool supportsBoolean = false;
@@ -1623,6 +1630,10 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
     case QVariant::String:
       type = OFTString;
       break;
+    case QVariant::ByteArray:
+      type = OFTBinary;
+      break;
+
     default:
       pushError( tr( "type %1 for field %2 not found" ).arg( field.typeName(), field.name() ) );
       ignoreErrorOut = true;
