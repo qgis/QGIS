@@ -251,7 +251,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         }
         else
         {
-          connect( a, &QAction::triggered, [ = ]
+          connect( a, &QAction::triggered, this, [ = ]
           {
             QgisApp::instance()->changeDataSource( layer );
           } );
