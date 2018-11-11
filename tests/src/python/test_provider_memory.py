@@ -42,7 +42,7 @@ from utilities import (
 )
 
 from providertestbase import ProviderTestCase
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, QByteArray
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -410,6 +410,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         fields.append(QgsField("time", QVariant.Time))
         fields.append(QgsField("#complex_name", QVariant.String))
         fields.append(QgsField("complex/name", QVariant.String))
+        fields.append(QgsField("binaryfield", QVariant.ByteArray))
         layer = QgsMemoryProviderUtils.createMemoryLayer('my name', fields)
         self.assertTrue(layer.isValid())
         self.assertFalse(layer.fields().isEmpty())
@@ -508,6 +509,46 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.dataProvider().deleteAttributes([0]))
         self.assertEqual(vl.dataProvider().minimumValue(0), -100)
         self.assertEqual(vl.dataProvider().maximumValue(0), 400)
+
+    def testBinary(self):
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=f1:integer&field=f2:binary',
+            'test', 'memory')
+        self.assertTrue(vl.isValid())
+
+        dp = vl.dataProvider()
+        fields = dp.fields()
+        self.assertEqual([f.name() for f in fields], ['f1', 'f2'])
+        self.assertEqual([f.type() for f in fields], [QVariant.Int, QVariant.ByteArray])
+        self.assertEqual([f.typeName() for f in fields], ['integer', 'binary'])
+
+        f = QgsFeature(dp.fields())
+        bin_1 = b'xxx'
+        bin_val1 = QByteArray(bin_1)
+        f.setAttributes([1, bin_val1])
+        self.assertTrue(dp.addFeature(f))
+
+        f2 = [f for f in dp.getFeatures()][0]
+        self.assertEqual(f2.attributes(), [1, bin_val1])
+
+        # add binary field
+        self.assertTrue(dp.addAttributes([QgsField('binfield2', QVariant.ByteArray, 'Binary')]))
+
+        fields = dp.fields()
+        bin2_field = fields[fields.lookupField('binfield2')]
+        self.assertEqual(bin2_field.type(), QVariant.ByteArray)
+        self.assertEqual(bin2_field.typeName(), 'Binary')
+
+        f = QgsFeature(fields)
+        bin_2 = b'yyy'
+        bin_val2 = QByteArray(bin_2)
+        f.setAttributes([2, NULL, bin_val2])
+        self.assertTrue(dp.addFeature(f))
+
+        f1 = [f for f in dp.getFeatures()][0]
+        self.assertEqual(f1.attributes(), [1, bin_val1, NULL])
+        f2 = [f for f in dp.getFeatures()][1]
+        self.assertEqual(f2.attributes(), [2, NULL, bin_val2])
 
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
