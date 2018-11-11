@@ -35,7 +35,7 @@ QgsBinaryWidgetWrapper::QgsBinaryWidgetWrapper( QgsVectorLayer *vl, int fieldIdx
 
 QVariant QgsBinaryWidgetWrapper::value() const
 {
-  return mValue;
+  return mValue.isEmpty() || mValue.isNull() ? QVariant( QVariant::Invalid ) : mValue;
 }
 
 void QgsBinaryWidgetWrapper::showIndeterminateState()
@@ -109,7 +109,10 @@ bool QgsBinaryWidgetWrapper::valid() const
 
 void QgsBinaryWidgetWrapper::setValue( const QVariant &value )
 {
-  mValue = value.toByteArray();
+  mValue = value.isValid() && !value.isNull() && value.canConvert< QByteArray >() ? value.toByteArray() : QByteArray();
+  if ( mValue.length() == 0 )
+    mValue = QByteArray();
+
   if ( mLabel )
   {
     if ( !mValue.isEmpty() )
