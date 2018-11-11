@@ -93,7 +93,7 @@ std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
 
   std::unique_ptr< wchar_t[] > pathArray( new wchar_t[static_cast< uint>( nativePath.length() + 1 )] );
   nativePath.toWCharArray( pathArray.get() );
-  pathArray[nativePath.length()] = 0;
+  pathArray[static_cast< size_t >( nativePath.length() )] = 0;
   return pathArray;
 }
 
@@ -136,7 +136,7 @@ void QgsWinNative::setApplicationProgress( double progress )
 {
   mTaskProgress->setMaximum( 100 );
   mTaskProgress->show();
-  mTaskProgress->setValue( progress );
+  mTaskProgress->setValue( static_cast< int >( std::round( progress ) ) );
 }
 
 void QgsWinNative::hideApplicationProgress()
