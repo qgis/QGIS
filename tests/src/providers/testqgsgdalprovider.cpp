@@ -162,7 +162,7 @@ void TestQgsGdalProvider::noDataOutsideExtent()
   if ( rp )
   {
     std::unique_ptr<QgsRasterBlock> block( rp->block( 1, QgsRectangle( 10, 10, 12, 12 ), 16, 16 ) );
-    QVERIFY( block );
+    QVERIFY( block != nullptr );
     QCOMPARE( block->width(), 16 );
     QCOMPARE( block->height(), 16 );
     for ( int y = 0; y < 16; ++y )
