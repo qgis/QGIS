@@ -760,6 +760,7 @@ void QgsAttributeTableDialog::mActionAddFeature_triggered()
 
   QgsFeature f;
   QgsFeatureAction action( tr( "Geometryless feature added" ), f, mLayer, QString(), -1, this );
+  action.setForceSuppressFormPopup( true ); // we're already showing the table, allowing users to enter the new feature's attributes directly
   if ( action.addFeature() )
   {
     masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
