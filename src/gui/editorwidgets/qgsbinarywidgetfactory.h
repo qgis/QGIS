@@ -19,6 +19,8 @@
 #include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
 
+class QgsMessageBar;
+
 SIP_NO_FILE
 
 /**
@@ -36,8 +38,11 @@ class GUI_EXPORT QgsBinaryWidgetFactory : public QgsEditorWidgetFactory
     /**
      * Constructor for QgsBinaryWidgetFactory, where \a name is a human-readable
      * name for the factory.
+     *
+     * The \a messageBar argument can be used to link the widget to a QgsMessageBar
+     * for providing user feedback.
      */
-    explicit QgsBinaryWidgetFactory( const QString &name );
+    explicit QgsBinaryWidgetFactory( const QString &name, QgsMessageBar *messageBar );
 
     // QgsEditorWidgetFactory interface
   public:
@@ -45,6 +50,10 @@ class GUI_EXPORT QgsBinaryWidgetFactory : public QgsEditorWidgetFactory
     QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
 
     unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
+
+  private:
+
+    QgsMessageBar *mMessageBar = nullptr;
 };
 
 #endif // QGSBINARYWIDGETFACTORY_H
