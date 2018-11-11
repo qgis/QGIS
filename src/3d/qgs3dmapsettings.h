@@ -24,6 +24,7 @@
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaplayerref.h"
+#include "qgsphongmaterialsettings.h"
 #include "qgsterraingenerator.h"
 #include "qgsvector3d.h"
 
@@ -200,6 +201,35 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     //! Returns terrain generator. It takes care of producing terrain tiles from the input data.
     QgsTerrainGenerator *terrainGenerator() const { return mTerrainGenerator.get(); }
 
+    /**
+     * Sets whether terrain shading is enabled.
+     * \sa isTerrainShadingEnabled()
+     * \since QGIS 3.6
+     */
+    void setTerrainShadingEnabled( bool enabled );
+
+    /**
+     * Returns whether terrain shading is enabled. When enabled, in addition to the terrain texture
+     * generated from the map, the terrain rendering will take into account position of the lights,
+     * terrain normals and terrain shading material (ambient and specular colors, shininess).
+     * \since QGIS 3.6
+     */
+    bool isTerrainShadingEnabled() const { return mTerrainShadingEnabled; }
+
+    /**
+     * Sets terrain shading material.
+     * \sa terrainShadingMaterial()
+     * \since QGIS 3.6
+     */
+    void setTerrainShadingMaterial( const QgsPhongMaterialSettings &material );
+
+    /**
+     * Returns terrain shading material. Diffuse color component is ignored since the diffuse component
+     * is provided by 2D rendered map texture. Only used when isTerrainShadingEnabled() is true.
+     * \since QGIS 3.6
+     */
+    QgsPhongMaterialSettings terrainShadingMaterial() const { return mTerrainShadingMaterial; }
+
     //! Sets list of extra 3D renderers to use in the scene. Takes ownership of the objects.
     void setRenderers( const QList<QgsAbstract3DRenderer *> &renderers SIP_TRANSFER );
     //! Returns list of extra 3D renderers
@@ -261,6 +291,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     void maxTerrainScreenErrorChanged();
     //! Emitted when the maximum terrain ground error has changed
     void maxTerrainGroundErrorChanged();
+
+    /**
+     * Emitted when terrain shading enabled flag or terrain shading material has changed
+     * \since QGIS 3.6
+     */
+    void terrainShadingChanged();
     //! Emitted when the flag whether terrain's bounding boxes are shown has changed
     void showTerrainBoundingBoxesChanged();
     //! Emitted when the flag whether terrain's tile info is shown has changed
@@ -285,6 +321,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     int mMapTileResolution = 512;   //!< Size of map textures of tiles in pixels (width/height)
     float mMaxTerrainScreenError = 3.f;   //!< Maximum allowed terrain error in pixels (determines when tiles are switched to more detailed ones)
     float mMaxTerrainGroundError = 1.f;  //!< Maximum allowed horizontal map error in map units (determines how many zoom levels will be used)
+    bool mTerrainShadingEnabled = false;   //!< Whether terrain should be shaded taking lights into account
+    QgsPhongMaterialSettings mTerrainShadingMaterial;  //!< Material to use for the terrain (if shading is enabled). Diffuse color is ignored.
     bool mShowTerrainBoundingBoxes = false;  //!< Whether to show bounding boxes of entities - useful for debugging
     bool mShowTerrainTileInfo = false;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
     bool mShowCameraViewCenter = false;  //!< Whether to show camera view center as a sphere - useful for debugging

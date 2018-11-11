@@ -73,6 +73,8 @@ Reads settings from a DOM element
 Writes settings to a DOM element
 %End
 
+    bool operator==( const QgsPhongMaterialSettings &other ) const;
+
 };
 
 
