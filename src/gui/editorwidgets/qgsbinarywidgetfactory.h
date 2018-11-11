@@ -32,6 +32,11 @@ SIP_NO_FILE
 class GUI_EXPORT QgsBinaryWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
+
+    /**
+     * Constructor for QgsBinaryWidgetFactory, where \a name is a human-readable
+     * name for the factory.
+     */
     explicit QgsBinaryWidgetFactory( const QString &name );
 
     // QgsEditorWidgetFactory interface
