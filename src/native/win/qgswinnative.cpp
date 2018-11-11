@@ -29,6 +29,20 @@
 #include <QtWinExtras/QWinJumpListCategory>
 #include "wintoastlib.h"
 #include <Dbt.h>
+#include <memory>
+
+
+struct ITEMIDLISTDeleter
+{
+  void operator()( ITEMIDLIST *pidl )
+  {
+    ILFree( pidl );
+  }
+};
+
+using ITEMIDLIST_unique_ptr = std::unique_ptr< ITEMIDLIST, ITEMIDLISTDeleter>;
+
+
 
 QgsNative::Capabilities QgsWinNative::capabilities() const
 {
@@ -40,6 +54,7 @@ void QgsWinNative::initializeMainWindow( QWindow *window,
     const QString &organizationName,
     const QString &version )
 {
+  mWindow = window;
   if ( mTaskButton )
     return; // already initialized!
 
@@ -69,24 +84,46 @@ void QgsWinNative::cleanup()
 {
   if ( mWinToastInitialized )
     WinToastLib::WinToast::instance()->clear();
+  mWindow = nullptr;
+}
+
+std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
+{
+  const QString nativePath = QDir::toNativeSeparators( path );
+
+  std::unique_ptr< wchar_t[] > pathArray( new wchar_t[static_cast< uint>( nativePath.length() + 1 )] );
+  nativePath.toWCharArray( pathArray.get() );
+  pathArray[nativePath.length()] = 0;
+  return pathArray;
 }
 
 void QgsWinNative::openFileExplorerAndSelectFile( const QString &path )
 {
-  const QString nativePath = QDir::toNativeSeparators( path );
-
-  wchar_t *pathArray = new wchar_t[static_cast< uint>( nativePath.length() + 1 )];
-  nativePath.toWCharArray( pathArray );
-  pathArray[nativePath.length()] = 0;
-
-  ITEMIDLIST *pidl = ILCreateFromPathW( pathArray );
+  std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
+  ITEMIDLIST_unique_ptr pidl( ILCreateFromPathW( pathArray.get() ) );
   if ( pidl )
   {
-    SHOpenFolderAndSelectItems( pidl, 0, nullptr, 0 );
-    ILFree( pidl );
+    SHOpenFolderAndSelectItems( pidl.get(), 0, nullptr, 0 );
+    pidl.reset();
   }
+}
 
-  delete[] pathArray;
+void QgsWinNative::showFileProperties( const QString &path )
+{
+  std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
+  ITEMIDLIST_unique_ptr pidl( ILCreateFromPathW( pathArray.get() ) );
+  if ( pidl )
+  {
+    SHELLEXECUTEINFO info{ sizeof( info ) };
+    if ( mWindow )
+      info.hwnd = reinterpret_cast<HWND>( mWindow->winId() );
+    info.nShow = SW_SHOWNORMAL;
+    info.fMask = SEE_MASK_INVOKEIDLIST;
+    info.lpIDList = pidl.get();
+    info.lpVerb = "properties";
+
+    ShellExecuteEx( &info );
+  }
 }
 
 void QgsWinNative::showUndefinedApplicationProgress()
