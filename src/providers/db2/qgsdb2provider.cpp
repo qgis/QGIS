@@ -5,7 +5,7 @@
   Copyright : (C) 2016 by David Adler
                           Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
-              xshirley2012 at yahoo.com, davidng0123 at gmail.com
+              xshirley2012 at yahoo.com,  davidng0123 at gmail.com
   Adapted from MSSQL provider by Tamas Szekeres
 ****************************************************************************
  *
@@ -192,7 +192,7 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
   // using the thread address as connection name.
   const QString threadSafeConnectionName = dbConnectionName( connectionName );
   QgsDebugMsg( "threadSafeConnectionName: " + threadSafeConnectionName );
-	
+
   /* if new database connection */
   if ( !QSqlDatabase::contains( threadSafeConnectionName ) )
   {
