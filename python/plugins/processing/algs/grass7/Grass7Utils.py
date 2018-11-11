@@ -353,7 +353,7 @@ class Grass7Utils:
         loglines.append(Grass7Utils.tr('GRASS GIS 7 execution console output'))
         grassOutDone = False
         command, grassenv = Grass7Utils.prepareGrassExecution(commands)
-        #QgsMessageLog.logMessage('exec: {}'.format(command), 'DEBUG', Qgis.Info)
+        # QgsMessageLog.logMessage('exec: {}'.format(command), 'DEBUG', Qgis.Info)
 
         # For MS-Windows, we need to hide the console window.
         if isWindows():
@@ -369,6 +369,7 @@ class Grass7Utils:
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
                 env=grassenv,
+                encoding="cp{}".format(Grass7Utils.getWindowsCodePage()) if isWindows() else None,
                 startupinfo=si if isWindows() else None
         ) as proc:
             for line in iter(proc.stdout.readline, ''):
