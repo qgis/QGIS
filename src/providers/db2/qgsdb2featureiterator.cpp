@@ -5,7 +5,7 @@
   Copyright : (C) 2016 by David Adler
                           Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
-              xshirley2012 at yahoo.com, davidng0123 at gmail.com
+              xshirley2012 at yahoo.com,  davidng0123 at gmail.com
   Adapted from MSSQL provider by Tamas Szekeres
 ****************************************************************************
  *
@@ -302,23 +302,23 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature &feature )
   if ( !mDatabase.isValid() )
   {
     // No existing connection, so set it up now. It's safe to do here as we're now in
-    // the thread were iteration is actually occurring.  
-  // connect to the database
-  QString errMsg;
-  QgsDebugMsg( QStringLiteral( "fetchFeature getDatabase" ) );
-  mDatabase = QgsDb2Provider::getDatabase( mSource->mConnInfo, errMsg );
-  QgsDebugMsg( QStringLiteral( "fetchFeature back from getDatabase" ) );
-  if ( !errMsg.isEmpty() )
-  {
-    QgsDebugMsg( "Failed to open database: " + errMsg );
-    return false;
-  }
+    // the thread were iteration is actually occurring.
+    // connect to the database
+    QString errMsg;
+    QgsDebugMsg( QStringLiteral( "fetchFeature getDatabase" ) );
+    mDatabase = QgsDb2Provider::getDatabase( mSource->mConnInfo, errMsg );
+    QgsDebugMsg( QStringLiteral( "fetchFeature back from getDatabase" ) );
+    if ( !errMsg.isEmpty() )
+    {
+      QgsDebugMsg( "Failed to open database: " + errMsg );
+      return false;
+    }
 
-  // create sql query
-  mQuery.reset( new QSqlQuery( mDatabase ) );
+    // create sql query
+    mQuery.reset( new QSqlQuery( mDatabase ) );
 
-  // start selection
-  if ( !rewind() )
+    // start selection
+    if ( !rewind() )
       return false;
   }
 

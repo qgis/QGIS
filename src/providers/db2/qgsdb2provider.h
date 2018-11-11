@@ -5,7 +5,7 @@
   Copyright : (C) 2016 by David Adler
                           Shirley Xiao, David Nguyen
   Email     : dadler at adtechgeospatial.com
-              xshirley2012 at yahoo.com, davidng0123 at gmail.com
+              xshirley2012 at yahoo.com,  davidng0123 at gmail.com
 ****************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify
@@ -118,9 +118,10 @@ class QgsDb2Provider : public QgsVectorDataProvider
   private:
     static void db2WkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
     static QString db2TypeName( int typeId );
-	/**
-     * Returns a thread-safe connection name for use with QSqlDatabase
-     */
+
+    /**
+       * Returns a thread-safe connection name for use with QSqlDatabase
+       */
     static QString dbConnectionName( const QString &name );
 
     QgsFields mAttributeFields; //fields
