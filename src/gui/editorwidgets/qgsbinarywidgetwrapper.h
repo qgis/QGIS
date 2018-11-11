@@ -21,6 +21,7 @@
 
 class QLabel;
 class QToolButton;
+class QgsMessageBar;
 
 SIP_NO_FILE
 
@@ -46,7 +47,7 @@ class GUI_EXPORT QgsBinaryWidgetWrapper : public QgsEditorWidgetWrapper
      *
      * A \a parent widget for this widget wrapper and the created widget can also be specified.
      */
-    explicit QgsBinaryWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor = nullptr, QWidget *parent = nullptr );
+    explicit QgsBinaryWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor = nullptr, QWidget *parent = nullptr, QgsMessageBar *messageBar = nullptr );
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -72,6 +73,8 @@ class GUI_EXPORT QgsBinaryWidgetWrapper : public QgsEditorWidgetWrapper
     QString defaultPath();
 
     QByteArray mValue;
+
+    QgsMessageBar *mMessageBar = nullptr;
 
     QLabel *mLabel = nullptr;
     QToolButton *mButton = nullptr;

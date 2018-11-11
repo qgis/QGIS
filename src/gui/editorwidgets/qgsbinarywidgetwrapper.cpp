@@ -18,6 +18,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsfileutils.h"
 #include "qgssettings.h"
+#include "qgsmessagebar.h"
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QLabel>
@@ -26,9 +27,9 @@
 #include <QMenu>
 #include <QMessageBox>
 
-QgsBinaryWidgetWrapper::QgsBinaryWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
+QgsBinaryWidgetWrapper::QgsBinaryWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
-
+  , mMessageBar( messageBar )
 {
 }
 
@@ -149,6 +150,10 @@ void QgsBinaryWidgetWrapper::saveContent()
   fileOut.open( QIODevice::WriteOnly );
   fileOut.write( mValue );
   fileOut.close();
+
+  if ( mMessageBar )
+    mMessageBar->pushSuccess( QString(), tr( "Saved content to <a href=\"%1\">%2</a>" ).arg(
+                                QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ) );
 }
 
 void QgsBinaryWidgetWrapper::setContent()

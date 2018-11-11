@@ -20,14 +20,15 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-QgsBinaryWidgetFactory::QgsBinaryWidgetFactory( const QString &name )
+QgsBinaryWidgetFactory::QgsBinaryWidgetFactory( const QString &name, QgsMessageBar *messageBar )
   :  QgsEditorWidgetFactory( name )
+  , mMessageBar( messageBar )
 {
 }
 
 QgsEditorWidgetWrapper *QgsBinaryWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
-  return new QgsBinaryWidgetWrapper( vl, fieldIdx, editor, parent );
+  return new QgsBinaryWidgetWrapper( vl, fieldIdx, editor, parent, mMessageBar );
 }
 
 QgsEditorConfigWidget *QgsBinaryWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
