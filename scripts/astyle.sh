@@ -71,6 +71,10 @@ if type -p cygpath >/dev/null; then
 	ASTYLEOPTS="$(cygpath -w "$ASTYLEOPTS")"
 fi
 
+if type -p wslpath >/dev/null; then
+	ASTYLEOPTS="$(wslpath -a -w "$ASTYLEOPTS")"
+fi
+
 set -e
 
 astyleit() {
