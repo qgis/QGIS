@@ -76,12 +76,20 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
     return nullptr;
   }
 
+  const Qgs3DMapSettings &map = terrain()->map3D();
+  QgsRectangle extent = map.terrainGenerator()->tilingScheme().tileToExtent( mNode->tileX(), mNode->tileY(), mNode->tileZ() ); //node->extent;
+  double x0 = extent.xMinimum() - map.origin().x();
+  double y0 = extent.yMinimum() - map.origin().y();
+  double side = extent.width();
+  double half = side / 2;
+
+
   QgsTerrainTileEntity *entity = new QgsTerrainTileEntity;
 
   // create geometry renderer
 
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( new DemTerrainTileGeometry( mResolution, mSkirtHeight, mHeightMap, mesh ) );
+  mesh->setGeometry( new DemTerrainTileGeometry( mResolution, side, map.terrainVerticalScale(), mSkirtHeight, mHeightMap, mesh ) );
   entity->addComponent( mesh ); // takes ownership if the component has no parent
 
   // create material
@@ -94,14 +102,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   transform = new Qt3DCore::QTransform();
   entity->addComponent( transform );
 
-  const Qgs3DMapSettings &map = terrain()->map3D();
-  QgsRectangle extent = map.terrainGenerator()->tilingScheme().tileToExtent( mNode->tileX(), mNode->tileY(), mNode->tileZ() ); //node->extent;
-  double x0 = extent.xMinimum() - map.origin().x();
-  double y0 = extent.yMinimum() - map.origin().y();
-  double side = extent.width();
-  double half = side / 2;
-
-  transform->setScale3D( QVector3D( side, map.terrainVerticalScale(), side ) );
+  transform->setScale( side );
   transform->setTranslation( QVector3D( x0 + half, 0, - ( y0 + half ) ) );
 
   mNode->setExactBbox( QgsAABB( x0, zMin * map.terrainVerticalScale(), -y0, x0 + side, zMax * map.terrainVerticalScale(), -( y0 + side ) ) );
