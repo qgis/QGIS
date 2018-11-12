@@ -767,8 +767,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mMapCanvas = new QgsMapCanvas( centralWidget );
   mMapCanvas->setObjectName( QStringLiteral( "theMapCanvas" ) );
   connect( mMapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
-  mMapCanvas->setWhatsThis( tr( "Map canvas. This is where raster and vector "
-                                "layers are displayed when added to the map" ) );
 
   if ( settings.value( QStringLiteral( "qgis/main_canvas_preview_jobs" ) ).isNull() )
   {
@@ -3098,9 +3096,6 @@ void QgisApp::createStatusBar()
   mRotationEdit->setSingleStep( 5.0 );
   mRotationEdit->setFont( statusBarFont );
   mRotationEdit->setSuffix( tr( " °" ) );
-  mRotationEdit->setWhatsThis( tr( "Shows the current map clockwise rotation "
-                                   "in degrees. It also allows editing to set "
-                                   "the rotation" ) );
   mRotationEdit->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
   mStatusBar->addPermanentWidget( mRotationEdit, 0 );
   connect( mRotationEdit, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgisApp::userRotation );
@@ -3112,10 +3107,6 @@ void QgisApp::createStatusBar()
   mRenderSuppressionCBox->setObjectName( QStringLiteral( "mRenderSuppressionCBox" ) );
   mRenderSuppressionCBox->setChecked( true );
   mRenderSuppressionCBox->setFont( statusBarFont );
-  mRenderSuppressionCBox->setWhatsThis( tr( "When checked, the map layers "
-                                        "are rendered in response to map navigation commands and other "
-                                        "events. When not checked, no rendering is done. This allows you "
-                                        "to add a large number of layers and symbolize them before rendering." ) );
   mRenderSuppressionCBox->setToolTip( tr( "Toggle map rendering" ) );
   mStatusBar->addPermanentWidget( mRenderSuppressionCBox, 0 );
   // On the fly projection status bar icon
@@ -3130,10 +3121,6 @@ void QgisApp::createStatusBar()
   // For Qt/Mac 3.3, the default toolbutton height is 30 and labels were expanding to match
   mOnTheFlyProjectionStatusButton->setMaximumHeight( mScaleWidget->height() );
   mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionEnabled.svg" ) ) );
-  mOnTheFlyProjectionStatusButton->setWhatsThis( tr( "This icon shows whether "
-      "on the fly coordinate reference system transformation is enabled or not. "
-      "Click the icon to bring up "
-      "the project properties dialog to alter this behavior." ) );
   mOnTheFlyProjectionStatusButton->setToolTip( tr( "CRS status - Click "
       "to open coordinate reference system dialog" ) );
   connect( mOnTheFlyProjectionStatusButton, &QAbstractButton::clicked,
@@ -3145,7 +3132,6 @@ void QgisApp::createStatusBar()
   mMessageButton->setAutoRaise( true );
   mMessageButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mMessageLogRead.svg" ) ) );
   mMessageButton->setToolTip( tr( "Messages" ) );
-  mMessageButton->setWhatsThis( tr( "Messages" ) );
   mMessageButton->setObjectName( QStringLiteral( "mMessageLogViewerButton" ) );
   mMessageButton->setMaximumHeight( mScaleWidget->height() );
   mMessageButton->setCheckable( true );
@@ -3672,8 +3658,6 @@ void QgisApp::createOverview()
   int blue = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
   mOverviewCanvas->setBackgroundColor( QColor( red, green, blue ) );
 
-  mOverviewCanvas->setWhatsThis( tr( "Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas." ) );
-
   mOverviewMapCursor = new QCursor( Qt::OpenHandCursor );
   mOverviewCanvas->setCursor( *mOverviewMapCursor );
 //  QVBoxLayout *myOverviewLayout = new QVBoxLayout;
@@ -3916,8 +3900,6 @@ void QgisApp::addUserInputWidget( QWidget *widget )
 
 void QgisApp::initLayerTreeView()
 {
-  mLayerTreeView->setWhatsThis( tr( "Map legend that displays all the layers currently on the map canvas. Click on the checkbox to turn a layer on or off. Double-click on a layer in the legend to customize its appearance and set other properties." ) );
-
   mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), this );
   mLayerTreeDock->setObjectName( QStringLiteral( "Layers" ) );
   mLayerTreeDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
@@ -4025,7 +4007,6 @@ void QgisApp::initLayerTreeView()
   mMapLayerOrder = new QgsCustomLayerOrderWidget( mLayerTreeCanvasBridge, this );
   mMapLayerOrder->setObjectName( QStringLiteral( "theMapLayerOrder" ) );
 
-  mMapLayerOrder->setWhatsThis( tr( "Map layer list that displays all layers in drawing order." ) );
   mLayerOrderDock = new QgsDockWidget( tr( "Layer Order" ), this );
   mLayerOrderDock->setObjectName( QStringLiteral( "LayerOrder" ) );
   mLayerOrderDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
@@ -11453,12 +11434,6 @@ void QgisApp::closeEvent( QCloseEvent *event )
   // Do the usual checks and ask if they want to save, etc
   fileExit();
 }
-
-
-void QgisApp::whatsThis()
-{
-  QWhatsThis::enterWhatsThisMode();
-} // QgisApp::whatsThis()
 
 QMenu *QgisApp::getPluginMenu( const QString &menuName )
 {

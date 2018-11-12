@@ -497,11 +497,6 @@ void QgsVectorLayerProperties::syncToLayer()
   // populate the general information
   mLayerOrigNameLineEdit->setText( mLayer->name() );
   txtDisplayName->setText( mLayer->name() );
-  pbnQueryBuilder->setWhatsThis( tr( "This button opens the query "
-                                     "builder and allows you to create a subset of features to display on "
-                                     "the map canvas rather than displaying all features in the layer" ) );
-  txtSubsetSQL->setWhatsThis( tr( "The query used to limit the features in the "
-                                  "layer is shown here. To enter or modify the query, click on the Query Builder button" ) );
 
   //see if we are dealing with a pg layer here
   mSubsetGroupBox->setEnabled( true );
