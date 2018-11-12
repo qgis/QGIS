@@ -121,6 +121,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         self.presetStore.clicked.connect(self.storePreset)
         self.presetSaveAsFile.clicked.connect(self.saveAsFilePreset)
+        self.presetLoadFile.clicked.connect(self.loadFilePreset)
         self.presetDelete.clicked.connect(self.deletePreset)
         self.presetCombo.activated[str].connect(self.loadPreset)
         self.presetCombo.activated[str].connect(self.presetName.setText)
@@ -236,13 +237,25 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         filename, ext = QFileDialog.getSaveFileName(
             self,
-            'Save SQL Query',
+            self.tr('Save SQL Query'),
             QDir.homePath(),
             "SQL File (*.sql)")
 
         if filename:
             with open(filename, 'w') as f:
                 f.write(query)
+
+    def loadFilePreset(self):
+        filename = QFileDialog.getOpenFileName(
+                         self,
+                         self.tr("Load SQL Query"),
+                         QDir.homePath(),
+                         "SQL File (*.sql)");
+        if filename:
+            with open(filename[0], 'r') as f:
+                self.editSql.clear()
+                for line in f:
+                    self.editSql.insertText(line)
 
     def deletePreset(self):
         name = self.presetCombo.currentText()

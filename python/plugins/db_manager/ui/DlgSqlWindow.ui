@@ -101,6 +101,16 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="presetLoadFile">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Load SQL file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>Load File</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="presetSaveAsFile">
            <property name="toolTip">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Save the query as SQL file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
