@@ -31,6 +31,17 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
   connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
 }
 
+void QgsPhongMaterialWidget::setDiffuseVisible( bool visible )
+{
+  label->setVisible( visible );
+  btnDiffuse->setVisible( visible );
+}
+
+bool QgsPhongMaterialWidget::isDiffuseVisible() const
+{
+  return btnDiffuse->isVisible();
+}
+
 void QgsPhongMaterialWidget::setMaterial( const QgsPhongMaterialSettings &material )
 {
   btnDiffuse->setColor( material.diffuse() );
