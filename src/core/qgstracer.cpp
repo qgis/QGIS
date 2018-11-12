@@ -476,24 +476,23 @@ bool QgsTracer::initGraph()
   t1.start();
   int featuresCounted = 0;
   bool enableInvisibleFeature = QgsSettings().value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool();
-  for ( QgsVectorLayer *vl : qgis::as_const( mLayers ) )
+  for ( const QgsVectorLayer *vl : qgis::as_const( mLayers ) )
   {
     QgsFeatureRequest request;
     bool filter = false;
     std::unique_ptr< QgsFeatureRenderer > renderer;
-    QgsRenderContext *ctx = nullptr;
-    if ( !enableInvisibleFeature && mRenderContext )
+    std::unique_ptr<QgsRenderContext> ctx;
+
+    if ( !enableInvisibleFeature && mRenderContext && vl->renderer() )
     {
-      renderer.reset( vl->renderer() ? vl->renderer()->clone() : nullptr );
-      mRenderContext->expressionContext() << QgsExpressionContextUtils::layerScope( vl );
-      ctx = mRenderContext.get();
-      if ( renderer )
-      {
-        // setup scale for scale dependent visibility (rule based)
-        renderer->startRender( *ctx, vl->fields() );
-        filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
-        request.setSubsetOfAttributes( renderer->usedAttributes( *ctx ), vl->fields() );
-      }
+      renderer.reset( vl->renderer()->clone() );
+      ctx.reset( new QgsRenderContext( *mRenderContext.get() ) );
+      ctx->expressionContext() << QgsExpressionContextUtils::layerScope( vl );
+
+      // setup scale for scale dependent visibility (rule based)
+      renderer->startRender( *ctx.get(), vl->fields() );
+      filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
+      request.setSubsetOfAttributes( renderer->usedAttributes( *ctx.get() ), vl->fields() );
     }
     else
     {
@@ -510,10 +509,10 @@ bool QgsTracer::initGraph()
       if ( !f.hasGeometry() )
         continue;
 
-      if ( filter && ctx && renderer )
+      if ( filter )
       {
         ctx->expressionContext().setFeature( f );
-        if ( !renderer->willRenderFeature( f, *ctx ) )
+        if ( !renderer->willRenderFeature( f, *ctx.get() ) )
         {
           continue;
         }
@@ -526,9 +525,9 @@ bool QgsTracer::initGraph()
         return false;
     }
 
-    if ( ctx && renderer )
+    if ( renderer )
     {
-      renderer->stopRender( *ctx );
+      renderer->stopRender( *ctx.get() );
     }
   }
   int timeExtract = t1.elapsed();
@@ -631,7 +630,7 @@ void QgsTracer::setDestinationCrs( const QgsCoordinateReferenceSystem &crs, cons
 
 void QgsTracer::setRenderContext( const QgsRenderContext *renderContext )
 {
-  mRenderContext = std::unique_ptr<QgsRenderContext>( new QgsRenderContext( *renderContext ) );
+  mRenderContext.reset( new QgsRenderContext( *renderContext ) );
   invalidateGraph();
 }
 
