@@ -529,12 +529,12 @@ QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::selfIntersections(
   return intersections;
 }
 
-int QgsGeometryUtils::leftOfLine( QgsPoint point, QgsPoint p1, QgsPoint p2 )
+int QgsGeometryUtils::leftOfLine( const QgsPoint point, const QgsPoint p1, const QgsPoint p2 )
 {
   return leftOfLine( point.x(), point.y(), p1.x(), p1.y(), p2.x(), p2.y() );
 }
 
-int QgsGeometryUtils::leftOfLine( double x, double y, double x1, double y1, double x2, double y2 )
+int QgsGeometryUtils::leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 )
 {
   double f1 = x - x1;
   double f2 = y2 - y1;

@@ -217,7 +217,7 @@ Project the point on a segment
 
 
 
-    static int leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
+    static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 );
 %Docstring
 Returns a value < 0 if the point (``x``, ``y``) is left of the line from (``x1``, ``y1``) -> ( ``x2``, ``y2``).
 A positive return value indicates the point is to the right of the line.
@@ -226,7 +226,7 @@ If the return value is 0, then the test was unsuccessful (e.g. due to testing a 
 on the line, or exactly in line with the segment) and the result is undefined.
 %End
 
-    static int leftOfLine( QgsPoint point, QgsPoint p1, QgsPoint p2 );
+    static int leftOfLine( const QgsPoint point, const QgsPoint p1, const QgsPoint p2 );
 %Docstring
 Returns a value < 0 if the point ``point`` is left of the line from ``p1`` -> ``p2``.
 A positive return value indicates the point is to the right of the line.

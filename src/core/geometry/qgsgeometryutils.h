@@ -244,7 +244,7 @@ class CORE_EXPORT QgsGeometryUtils
      * If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
      * on the line, or exactly in line with the segment) and the result is undefined.
      */
-    static int leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
+    static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 );
 
     /**
      * Returns a value < 0 if the point \a point is left of the line from \a p1 -> \a p2.
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * \since QGIS 3.6
      */
-    static int leftOfLine( QgsPoint point, QgsPoint p1, QgsPoint p2 );
+    static int leftOfLine( const QgsPoint point, const QgsPoint p1, const QgsPoint p2 );
 
     /**
      * Returns a point a specified \a distance toward a second point.

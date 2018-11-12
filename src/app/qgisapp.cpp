@@ -2122,7 +2122,7 @@ void QgisApp::createActions()
   connect( mActionSnappingOptions, &QAction::triggered, this, &QgisApp::snappingOptions );
   connect( mActionOffsetCurve, &QAction::triggered, this, &QgisApp::offsetCurve );
   connect( mActionReverseLine, &QAction::triggered, this, &QgisApp::reverseLine );
-  connect( mActionTrimExtendFeature, &QAction::triggered, this, &QgisApp::trimExtendFeature );
+  connect( mActionTrimExtendFeature, &QAction::triggered, this, [ = ] { mMapCanvas->setMapTool( mMapTools.mTrimExtendFeature ); } );
 
   // View Menu Items
   connect( mActionPan, &QAction::triggered, this, &QgisApp::pan );
@@ -7862,11 +7862,6 @@ void QgisApp::deletePart()
 void QgisApp::reverseLine()
 {
   mMapCanvas->setMapTool( mMapTools.mReverseLine );
-}
-
-void QgisApp::trimExtendFeature()
-{
-  mMapCanvas->setMapTool( mMapTools.mTrimExtendFeature );
 }
 
 QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &featureList, bool &canceled )

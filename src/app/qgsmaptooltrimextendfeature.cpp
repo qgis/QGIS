@@ -35,16 +35,16 @@ class FeatureFilter : public QgsPointLocator::MatchFilter
 
     bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
-      if ( layer )
-        return match.layer() == layer && match.hasEdge();
+      if ( mLayer )
+        return match.layer() == mLayer && match.hasEdge();
 
       return match.hasEdge();
     }
     // We only want to modify the current layer. When geometries are overlapped, this makes it possible to snap onto the current layer.
-    void setLayer( QgsVectorLayer *vlayer ) { layer = vlayer; }
+    void setLayer( QgsVectorLayer *vlayer ) { mLayer = vlayer; }
 
   private:
-    const QgsVectorLayer *layer = nullptr;
+    const QgsVectorLayer *mLayer = nullptr;
 };
 
 QgsMapToolTrimExtendFeature::QgsMapToolTrimExtendFeature( QgsMapCanvas *canvas )
@@ -62,7 +62,7 @@ static void getPoints( const QgsPointLocator::Match &match, QgsPoint &p1, QgsPoi
   const QgsFeatureId fid = match.featureId();
   const int vertex = match.vertexIndex();
 
-  const QgsGeometry geom = match.layer()->getFeature( fid ).geometry();
+  const QgsGeometry geom = match.layer()->getGeometry( fid );
 
   if ( !( geom.isNull() || geom.isEmpty() ) )
   {
@@ -137,9 +137,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
         if ( is3DLayer && QgsWkbTypes::hasZ( match.layer()->wkbType() ) )
         {
           /* Z Interpolation */
-          QgsLineString line( QVector<QgsPoint>()
-                              << pLimit1
-                              << pLimit2 );
+          QgsLineString line( pLimit1, pLimit2 );
 
           intersection = QgsGeometryUtils::closestPoint( line, QgsPoint( intersection ) );
         }

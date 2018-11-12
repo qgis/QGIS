@@ -1432,8 +1432,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void offsetPointSymbol();
     //! activates the reverse line tool
     void reverseLine();
-    //! activates the trim/extend feature tool
-    void trimExtendFeature();
     //! activates the tool
     void setMapTool( QgsMapTool *tool, bool clean = false );
 
