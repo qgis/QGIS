@@ -21,11 +21,22 @@ QgsNetworkReplyContent::QgsNetworkReplyContent( QNetworkReply *reply )
   , mError( reply->error() )
   , mErrorString( reply->errorString() )
   , mRawHeaderPairs( reply->rawHeaderPairs() )
-{}
+{
+  for ( int i = 0; i < QNetworkRequest::ResourceTypeAttribute; ++i )
+  {
+    if ( reply->attribute( static_cast< QNetworkRequest::Attribute>( i ) ).isValid() )
+      mAttributes[ static_cast< QNetworkRequest::Attribute>( i ) ] = reply->attribute( static_cast< QNetworkRequest::Attribute>( i ) );
+  }
+}
 
 void QgsNetworkReplyContent::clear()
 {
   *this = QgsNetworkReplyContent();
+}
+
+QVariant QgsNetworkReplyContent::attribute( QNetworkRequest::Attribute code ) const
+{
+  return mAttributes.value( code );
 }
 
 bool QgsNetworkReplyContent::hasRawHeader( const QByteArray &headerName ) const

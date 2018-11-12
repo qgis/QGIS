@@ -94,6 +94,10 @@ class TestQgsBlockingNetworkRequest(unittest.TestCase):
                                                  b'Last-Modified'])
         self.assertEqual(reply.rawHeader(b'Content-type'), 'text/html')
         self.assertEqual(reply.rawHeader(b'xxxxxxxxx'), '')
+        self.assertEqual(reply.attribute(QNetworkRequest.HttpStatusCodeAttribute), 200)
+        self.assertEqual(reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute), 'OK')
+        self.assertEqual(reply.attribute(QNetworkRequest.HttpStatusCodeAttribute), 200)
+        self.assertEqual(reply.attribute(QNetworkRequest.RedirectionTargetAttribute), None)
 
 
 if __name__ == "__main__":

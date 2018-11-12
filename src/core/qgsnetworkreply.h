@@ -44,6 +44,28 @@ class CORE_EXPORT QgsNetworkReplyContent
     void clear();
 
     /**
+     * Returns the attribute associated with the \a code. If the attribute has not been set, it returns an
+     * invalid QVariant.
+     *
+     * You can expect the default values listed in QNetworkRequest::Attribute to be
+     * applied to the values returned by this function.
+     *
+     * \see attributes()
+     */
+    QVariant attribute( QNetworkRequest::Attribute code ) const;
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns a list of valid attributes received in the reply.
+     *
+     * \see attribute()
+     * \note Not available in Python bindings
+     */
+    QMap< QNetworkRequest::Attribute, QVariant > attributes() const { return mAttributes; }
+#endif
+
+    /**
      * Returns the raw reply content.
      */
     QByteArray content() const
@@ -120,6 +142,7 @@ class CORE_EXPORT QgsNetworkReplyContent
     QNetworkReply::NetworkError mError = QNetworkReply::NoError;
     QString mErrorString;
     QList<RawHeaderPair> mRawHeaderPairs;
+    QMap< QNetworkRequest::Attribute, QVariant > mAttributes;
 };
 
 #endif // QGSNETWORKREPLY_H

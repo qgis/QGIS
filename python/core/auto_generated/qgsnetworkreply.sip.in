@@ -36,6 +36,18 @@ Constructor for QgsNetworkReplyContent, populated from the specified ``reply``.
 Clears the reply, resetting it back to a default, empty reply.
 %End
 
+    QVariant attribute( QNetworkRequest::Attribute code ) const;
+%Docstring
+Returns the attribute associated with the ``code``. If the attribute has not been set, it returns an
+invalid QVariant.
+
+You can expect the default values listed in QNetworkRequest.Attribute to be
+applied to the values returned by this function.
+
+.. seealso:: :py:func:`attributes`
+%End
+
+
     QByteArray content() const;
 %Docstring
 Returns the raw reply content.
