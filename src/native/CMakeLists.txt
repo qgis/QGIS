@@ -1,6 +1,12 @@
 #############################################################
 # locate native libs
 
+IF (IOS)
+  # No native library for IOS
+  RETURN()
+ENDIF(IOS)
+
+
 SET(NATIVE_LINK_LIBS)
 
 IF(UNIX AND NOT APPLE AND NOT ANDROID)
