@@ -1202,7 +1202,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
   try
   {
-    QSqlQuery ins( db ), getfid( db );
+    QSqlQuery ins( db );
 
     if ( !db.transaction() )
     {
@@ -1210,8 +1210,9 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
     }
 
     // Prepare the INSERT statement
-    QString insert = QStringLiteral( "INSERT INTO %1(" ).arg( mQuery );
-    QString values = QStringLiteral( ") VALUES (" );
+    QString insert;
+    QString values;
+    QString returning;
     QString delim;
 
     QStringList defaultValues;
@@ -1226,24 +1227,23 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
     if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap )
     {
-      QString keys, kdelim;
+      QString keys, vals, kdelim;
 
       Q_FOREACH ( int idx, mPrimaryKeyAttrs )
       {
         QgsField fld = field( idx );
         insert += delim + quotedIdentifier( fld.name() );
         keys += kdelim + quotedIdentifier( fld.name() );
-        values += delim + '?';
-        delim = ',';
+        vals += kdelim + '?';
         kdelim = ',';
         fieldId << idx;
         defaultValues << defaultValue( idx ).toString();
       }
 
-      if ( !getfid.prepare( QStringLiteral( "SELECT %1 FROM %2 WHERE ROWID=?" ).arg( keys ).arg( mQuery ) ) )
-      {
-        throw OracleException( tr( "Could not prepare get feature id statement" ), getfid );
-      }
+      values += delim + vals;
+      delim = ',';
+
+      returning = QStringLiteral( " RETURNING %1 INTO %2" ).arg( keys, vals );
     }
 
     QgsAttributes attributevec = flist[0].attributes();
@@ -1277,14 +1277,13 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
       delim = ',';
     }
 
-    insert += values + ")";
-
     QgsDebugMsgLevel( QStringLiteral( "SQL prepare: %1" ).arg( insert ), 4 );
-    if ( !ins.prepare( insert ) )
+    if ( !ins.prepare( QStringLiteral( "INSERT INTO %1(%2) VALUES (%3)%4" ).arg( mQuery, insert, values, returning ) ) )
     {
       throw OracleException( tr( "Could not prepare insert statement" ), ins );
     }
 
+    int valueParams = 0;
     for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
     {
       QgsAttributes attributevec = features->attributes();
@@ -1294,6 +1293,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
       if ( !mGeometryColumn.isNull() )
       {
         appendGeomParam( features->geometry(), ins );
+        valueParams++;
       }
 
       for ( int i = 0; i < fieldId.size(); i++ )
@@ -1323,6 +1323,18 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
         QgsDebugMsgLevel( QStringLiteral( "addBindValue: %1" ).arg( v ), 4 );
         ins.addBindValue( v );
+        valueParams++;
+      }
+
+      QVariantList keyValues;
+      if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap )
+      {
+        Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+        {
+          QgsField fld = field( idx );
+          keyValues << QVariant( fld.type() );
+          ins.addBindValue( keyValues.back(), QSql::Out );
+        }
       }
 
       if ( !ins.exec() )
@@ -1337,18 +1349,15 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
         }
         else if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap )
         {
-          getfid.addBindValue( QVariant( ins.lastInsertId() ) );
-          if ( !getfid.exec() || !getfid.next() )
-            throw OracleException( tr( "Could not retrieve feature id %1" ).arg( features->id() ), getfid );
-
-          int col = 0;
+          int col = valueParams;
           Q_FOREACH ( int idx, mPrimaryKeyAttrs )
           {
             QgsField fld = field( idx );
 
-            QVariant v = getfid.value( col++ );
+            QVariant v = ins.boundValue( col++ );
             if ( v.type() != fld.type() )
               v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
+            QgsDebugMsg( QStringLiteral( "key value %1:%2" ).arg( idx ).arg( v.toString() ) );
             features->setAttribute( idx, v );
           }
         }
