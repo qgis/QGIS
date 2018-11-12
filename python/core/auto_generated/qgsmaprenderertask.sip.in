@@ -26,11 +26,8 @@ task. This can be used to draw maps without blocking the QGIS interface.
 
     enum ErrorType
     {
-      //! Image allocation failure
       ImageAllocationFail,
-      //! Image save failure
       ImageSaveFail,
-
       ImageUnsupportedFormat
     };
 
