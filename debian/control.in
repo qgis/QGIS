@@ -381,6 +381,7 @@ Section: python
 Provides: ${python:Provides}
 Depends:
  gdal-bin,
+ python-gdal,
  python3-gdal,
  python3-matplotlib,
  libqgis-customwidgets,
