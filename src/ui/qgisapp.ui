@@ -395,7 +395,6 @@
    <addaction name="mActionNewProject"/>
    <addaction name="mActionOpenProject"/>
    <addaction name="mActionSaveProject"/>
-   <addaction name="mActionSaveProjectAs"/>
    <addaction name="mActionNewPrintLayout"/>
    <addaction name="mActionShowLayoutManager"/>
    <addaction name="mActionStyleManager"/>
