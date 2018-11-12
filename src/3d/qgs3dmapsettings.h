@@ -154,7 +154,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
 
     /**
      * Sets resolution (in pixels) of the texture of a terrain tile
-     * \sa mapTileResolution()
+     * \see mapTileResolution()
      */
     void setMapTileResolution( int res );
 
@@ -166,7 +166,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
 
     /**
      * Sets maximum allowed screen error of terrain tiles in pixels.
-     * \sa maxTerrainScreenError()
+     * \see maxTerrainScreenError()
      */
     void setMaxTerrainScreenError( float error );
 
@@ -181,7 +181,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
 
     /**
      * Returns maximum ground error of terrain tiles in world units.
-     * \sa maxTerrainGroundError()
+     * \see maxTerrainGroundError()
      */
     void setMaxTerrainGroundError( float error );
 
@@ -203,7 +203,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
 
     /**
      * Sets whether terrain shading is enabled.
-     * \sa isTerrainShadingEnabled()
+     * \see isTerrainShadingEnabled()
      * \since QGIS 3.6
      */
     void setTerrainShadingEnabled( bool enabled );
@@ -218,7 +218,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
 
     /**
      * Sets terrain shading material.
-     * \sa terrainShadingMaterial()
+     * \see terrainShadingMaterial()
      * \since QGIS 3.6
      */
     void setTerrainShadingMaterial( const QgsPhongMaterialSettings &material );
