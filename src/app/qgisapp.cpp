@@ -11153,6 +11153,11 @@ void QgisApp::new3DMapCanvas()
     flatTerrain->setExtent( fullExtent );
     map->setTerrainGenerator( flatTerrain );
 
+    QgsPointLightSettings defaultPointLight;
+    defaultPointLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+    defaultPointLight.setConstantAttenuation( 0 );
+    map->setPointLights( QList<QgsPointLightSettings>() << defaultPointLight );
+
     dock->setMapSettings( map );
 
     QgsRectangle extent = mMapCanvas->extent();
