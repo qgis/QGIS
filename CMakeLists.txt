@@ -69,6 +69,20 @@ IF(NOT MSVC)
   endif(USE_CCACHE)
 endif(NOT MSVC)
 
+IF (IOS)
+    SET (DEFAULT_FORCE_STATIC_LIBS TRUE)
+ELSE (IOS)
+    SET (DEFAULT_FORCE_STATIC_LIBS FALSE)
+ENDIF (IOS)
+SET (FORCE_STATIC_LIBS ${DEFAULT_FORCE_STATIC_LIBS} CACHE BOOL "Determines whether libraries should be static only")
+MARK_AS_ADVANCED(FORCE_STATIC_LIBS)
+
+IF(FORCE_STATIC_LIBS)
+  SET(LIBRARY_TYPE STATIC)
+ELSE (FORCE_STATIC_LIBS)
+  SET(LIBRARY_TYPE SHARED)
+ENDIF (FORCE_STATIC_LIBS)
+
 # in generated makefiles use relative paths so the project dir is moveable
 # Note commented out since it cause problems but it would be nice to resolve these and enable
 #

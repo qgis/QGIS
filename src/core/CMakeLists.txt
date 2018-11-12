@@ -1271,13 +1271,7 @@ ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
 #############################################################
 # qgis_core library
-IF (IOS)
-  SET(LIBRARY_TYPE STATIC)
-ELSE (IOS)
-  SET(LIBRARY_TYPE SHARED)
-ENDIF (IOS)
 ADD_LIBRARY(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_MOC_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS})
-
 
 GENERATE_EXPORT_HEADER(
   qgis_core
