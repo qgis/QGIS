@@ -45,6 +45,7 @@ class NATIVE_EXPORT QgsNative : public QObject
     {
       NativeDesktopNotifications = 1 << 1, //!< Native desktop notifications are supported. See showDesktopNotification().
       NativeFilePropertiesDialog = 1 << 2, //!< Platform can show a native "file" (or folder) properties dialog.
+      NativeOpenTerminalAtPath = 1 << 3, //!< Platform can open a terminal (command line) at a specific path
     };
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
@@ -150,7 +151,16 @@ class NATIVE_EXPORT QgsNative : public QObject
      * Returns true if the operating system is set to utilize a "dark" theme.
      * \since QGIS 3.4
      */
-    virtual bool hasDarkTheme() {return false;}
+    virtual bool hasDarkTheme();
+
+    /**
+     * Opens a terminal (command line) window at the given \a path.
+     *
+     * This method is only supported when the interface returns the NativeOpenTerminalAtPath flag for capabilities().
+     *
+     * Returns true if terminal was successfully opened.
+     */
+    virtual bool openTerminalAtPath( const QString &path );
 
     /**
      * Notification settings, for use with showDesktopNotification().

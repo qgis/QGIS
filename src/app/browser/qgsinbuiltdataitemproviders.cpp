@@ -175,6 +175,17 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   } );
   menu->addAction( openFolder );
 
+  if ( QgsGui::instance()->nativePlatformInterface()->capabilities() & QgsNative::NativeOpenTerminalAtPath )
+  {
+    QAction *openTerminal = new QAction( tr( "Open in Terminal…" ), menu );
+    connect( openTerminal, &QAction::triggered, this, [ = ]
+    {
+      QgsGui::instance()->nativePlatformInterface()->openTerminalAtPath( directoryItem->dirPath() );
+    } );
+    menu->addAction( openTerminal );
+    menu->addSeparator();
+  }
+
   QAction *propertiesAction = new QAction( tr( "Properties…" ), menu );
   connect( propertiesAction, &QAction::triggered, this, [ = ]
   {
