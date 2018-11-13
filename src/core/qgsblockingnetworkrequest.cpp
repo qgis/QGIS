@@ -103,7 +103,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
   if ( mFeedback )
     connect( mFeedback, &QgsFeedback::canceled, this, &QgsBlockingNetworkRequest::abort );
 
-  std::function<void()> downloaderFunction = [ this, request, &waitConditionMutex, &waitCondition, &threadFinished, &success, feedback ]()
+  std::function<void()> downloaderFunction = [ this, request, &waitConditionMutex, &waitCondition, &threadFinished, &success ]()
   {
     if ( QThread::currentThread() != QgsApplication::instance()->thread() )
       QgsNetworkAccessManager::instance( Qt::DirectConnection );
