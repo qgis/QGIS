@@ -10,6 +10,7 @@ Build-Depends:
  dh-python,
  flex,
  grass-dev,
+ libexiv2-dev,
  libexpat1-dev,
  libfcgi-dev,
  libgdal-dev (>= 1.11),
@@ -21,6 +22,7 @@ Build-Depends:
  libsqlite3-dev,
  libspatialindex-dev,
  libzip-dev,
+ libexiv2-dev,
  qtbase5-dev, qttools5-dev-tools, qttools5-dev, qtpositioning5-dev, qt5keychain-dev,
 #!xenial# qtbase5-private-dev,
  libqt5svg5-dev, libqt5xmlpatterns5-dev, libqt5webkit5-dev, libqt5opengl5-dev, libqt5sql5-sqlite, libqt5serialport5-dev, libqt5scintilla2-dev,
@@ -214,6 +216,7 @@ Architecture: any
 Section: libdevel
 Depends:
  grass-dev,
+ libexiv2-dev,
  libexpat1-dev,
  libgdal-dev (>= 1.11),
  libgeos-dev (>= 3.0.0),
@@ -381,6 +384,7 @@ Section: python
 Provides: ${python:Provides}
 Depends:
  gdal-bin,
+ python-gdal,
  python3-gdal,
  python3-matplotlib,
  libqgis-customwidgets,

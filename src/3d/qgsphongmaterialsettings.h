@@ -65,6 +65,14 @@ class _3D_EXPORT QgsPhongMaterialSettings
     //! Writes settings to a DOM element
     void writeXml( QDomElement &elem ) const;
 
+    bool operator==( const QgsPhongMaterialSettings &other ) const
+    {
+      return mAmbient == other.mAmbient &&
+             mDiffuse == other.mDiffuse &&
+             mSpecular == other.mSpecular &&
+             mShininess == other.mShininess;
+    }
+
   private:
     QColor mAmbient;
     QColor mDiffuse;

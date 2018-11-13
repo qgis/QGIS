@@ -93,13 +93,17 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
 
                   // string types
                   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String, -1, -1, -1, -1 )
+
+                  // blob
+                  << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "binary" ), QVariant::ByteArray )
+
                 );
 
   if ( url.hasQueryItem( QStringLiteral( "field" ) ) )
   {
     QList<QgsField> attributes;
     QRegExp reFieldDef( "\\:"
-                        "(int|integer|long|int8|real|double|string|date|time|datetime)" // type
+                        "(int|integer|long|int8|real|double|string|date|time|datetime|binary)" // type
                         "(?:\\((\\-?\\d+)"                // length
                         "(?:\\,(\\d+))?"                  // precision
                         "\\))?(\\[\\])?"                  // array
@@ -154,6 +158,12 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
         {
           type = QVariant::DateTime;
           typeName = QStringLiteral( "datetime" );
+          length = -1;
+        }
+        else if ( typeName == QLatin1String( "binary" ) )
+        {
+          type = QVariant::ByteArray;
+          typeName = QStringLiteral( "binary" );
           length = -1;
         }
 
@@ -443,6 +453,7 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
       case QVariant::LongLong:
       case QVariant::StringList:
       case QVariant::List:
+      case QVariant::ByteArray:
         break;
       default:
         QgsDebugMsg( "Field type not supported: " + it->typeName() );

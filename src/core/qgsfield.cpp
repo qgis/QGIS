@@ -259,6 +259,10 @@ QString QgsField::displayString( const QVariant &v ) const
     QJsonDocument doc = QJsonDocument::fromVariant( v );
     return QString::fromUtf8( doc.toJson().data() );
   }
+  else if ( d->type == QVariant::ByteArray )
+  {
+    return QObject::tr( "BLOB" );
+  }
   // Fallback if special rules do not apply
   return v.toString();
 }

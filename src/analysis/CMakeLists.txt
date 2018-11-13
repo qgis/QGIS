@@ -41,6 +41,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmexplodehstore.cpp
   processing/qgsalgorithmextendlines.cpp
   processing/qgsalgorithmextenttolayer.cpp
+  processing/qgsalgorithmextractbinary.cpp
   processing/qgsalgorithmextractbyattribute.cpp
   processing/qgsalgorithmextractbyexpression.cpp
   processing/qgsalgorithmextractbyextent.cpp
@@ -114,6 +115,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsreclassifyutils.cpp
 
   raster/qgsalignraster.cpp
+  raster/qgsexiftools.cpp
   raster/qgsninecellfilter.cpp
   raster/qgsruggednessfilter.cpp
   raster/qgsderivativefilter.cpp
@@ -193,6 +195,8 @@ SET(QGIS_ANALYSIS_MOC_HDRS
   vector/geometry_checker/qgsgeometrymissingvertexcheck.h
 )
 
+FIND_PACKAGE(EXIV2 REQUIRED)
+
 INCLUDE_DIRECTORIES(SYSTEM ${SPATIALITE_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(SYSTEM ${SQLITE3_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(BEFORE raster)
@@ -239,6 +243,7 @@ SET(QGIS_ANALYSIS_HDRS
   raster/qgsalignraster.h
   raster/qgsaspectfilter.h
   raster/qgsderivativefilter.h
+  raster/qgsexiftools.h
   raster/qgshillshadefilter.h
   raster/qgskde.h
   raster/qgsninecellfilter.h
@@ -335,6 +340,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
+  ${EXIV2_INCLUDE_DIR}
 )
 
 IF(HAVE_OPENCL)
@@ -392,7 +398,11 @@ IF (NOT ANDROID)
     )
 ENDIF (NOT ANDROID)
 
-TARGET_LINK_LIBRARIES(qgis_analysis qgis_core)
+TARGET_LINK_LIBRARIES(
+  qgis_analysis
+  qgis_core
+  ${EXIV2_LIBRARY}
+  )
 
 IF(HAVE_OPENCL)
     TARGET_LINK_LIBRARIES(qgis_analysis ${OpenCL_LIBRARIES})

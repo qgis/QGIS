@@ -49,7 +49,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   mToggleEditingButton = new QToolButton( this );
   mToggleEditingButton->setObjectName( QStringLiteral( "mToggleEditingButton" ) );
   mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
-  mToggleEditingButton->setText( tr( "Toggle editing" ) );
+  mToggleEditingButton->setText( tr( "Toggle Editing" ) );
   mToggleEditingButton->setEnabled( false );
   mToggleEditingButton->setCheckable( true );
   mToggleEditingButton->setToolTip( tr( "Toggle editing mode for child layer" ) );
@@ -57,42 +57,42 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   // save Edits
   mSaveEditsButton = new QToolButton( this );
   mSaveEditsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
-  mSaveEditsButton->setText( tr( "Save child layer edits" ) );
+  mSaveEditsButton->setText( tr( "Save Child Layer Edits" ) );
   mSaveEditsButton->setToolTip( tr( "Save child layer edits" ) );
   mSaveEditsButton->setEnabled( true );
   buttonLayout->addWidget( mSaveEditsButton );
   // add feature
   mAddFeatureButton = new QToolButton( this );
   mAddFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewTableRow.svg" ) ) );
-  mAddFeatureButton->setText( tr( "Add child feature" ) );
+  mAddFeatureButton->setText( tr( "Add Child Feature" ) );
   mAddFeatureButton->setToolTip( tr( "Add child feature" ) );
   mAddFeatureButton->setObjectName( QStringLiteral( "mAddFeatureButton" ) );
   buttonLayout->addWidget( mAddFeatureButton );
   // duplicate feature
   mDuplicateFeatureButton = new QToolButton( this );
   mDuplicateFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeature.svg" ) ) );
-  mDuplicateFeatureButton->setText( tr( "Duplicate child feature" ) );
+  mDuplicateFeatureButton->setText( tr( "Duplicate Child Feature" ) );
   mDuplicateFeatureButton->setToolTip( tr( "Duplicate child feature" ) );
   mDuplicateFeatureButton->setObjectName( QStringLiteral( "mDuplicateFeatureButton" ) );
   buttonLayout->addWidget( mDuplicateFeatureButton );
   // delete feature
   mDeleteFeatureButton = new QToolButton( this );
   mDeleteFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ) );
-  mDeleteFeatureButton->setText( tr( "Delete child feature" ) );
+  mDeleteFeatureButton->setText( tr( "Delete Child Feature" ) );
   mDeleteFeatureButton->setToolTip( tr( "Delete child feature" ) );
   mDeleteFeatureButton->setObjectName( QStringLiteral( "mDeleteFeatureButton" ) );
   buttonLayout->addWidget( mDeleteFeatureButton );
   // link feature
   mLinkFeatureButton = new QToolButton( this );
   mLinkFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLink.svg" ) ) );
-  mLinkFeatureButton->setText( tr( "Link existing features" ) );
+  mLinkFeatureButton->setText( tr( "Link Existing Features" ) );
   mLinkFeatureButton->setToolTip( tr( "Link existing child features" ) );
   mLinkFeatureButton->setObjectName( QStringLiteral( "mLinkFeatureButton" ) );
   buttonLayout->addWidget( mLinkFeatureButton );
   // unlink feature
   mUnlinkFeatureButton = new QToolButton( this );
   mUnlinkFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUnlink.svg" ) ) );
-  mUnlinkFeatureButton->setText( tr( "Unlink feature" ) );
+  mUnlinkFeatureButton->setText( tr( "Unlink Feature" ) );
   mUnlinkFeatureButton->setToolTip( tr( "Unlink child feature" ) );
   mUnlinkFeatureButton->setObjectName( QStringLiteral( "mUnlinkFeatureButton" ) );
   buttonLayout->addWidget( mUnlinkFeatureButton );
@@ -107,7 +107,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   buttonLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ) );
   // form view
   mFormViewButton = new QToolButton( this );
-  mFormViewButton->setText( tr( "Form view" ) );
+  mFormViewButton->setText( tr( "Form View" ) );
   mFormViewButton->setToolTip( tr( "Switch to form view" ) );
   mFormViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPropertyItem.svg" ) ) );
   mFormViewButton->setCheckable( true );
@@ -115,7 +115,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   buttonLayout->addWidget( mFormViewButton );
   // table view
   mTableViewButton = new QToolButton( this );
-  mTableViewButton->setText( tr( "Table view" ) );
+  mTableViewButton->setText( tr( "Table View" ) );
   mTableViewButton->setToolTip( tr( "Switch to table view" ) );
   mTableViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ) );
   mTableViewButton->setCheckable( true );

@@ -23,6 +23,7 @@
 #include "qgssearchwidgetwrapper.h"
 
 // Editors
+#include "qgsbinarywidgetfactory.h"
 #include "qgsclassificationwidgetwrapperfactory.h"
 #include "qgscheckboxwidgetfactory.h"
 #include "qgscolorwidgetfactory.h"
@@ -63,6 +64,7 @@ void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBa
   registerWidget( QStringLiteral( "ExternalResource" ), new QgsExternalResourceWidgetFactory( tr( "Attachment" ) ) );
   registerWidget( QStringLiteral( "KeyValue" ), new QgsKeyValueWidgetFactory( tr( "Key/Value" ) ) );
   registerWidget( QStringLiteral( "List" ), new QgsListWidgetFactory( tr( "List" ) ) );
+  registerWidget( QStringLiteral( "Binary" ), new QgsBinaryWidgetFactory( tr( "Binary (BLOB)" ), messageBar ) );
 }
 
 QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()

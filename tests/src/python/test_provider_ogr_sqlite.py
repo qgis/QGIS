@@ -17,6 +17,7 @@ import qgis  # NOQA
 import os
 import tempfile
 import shutil
+import hashlib
 from osgeo import gdal, ogr
 
 from qgis.core import (QgsVectorLayer,
@@ -27,7 +28,7 @@ from qgis.core import (QgsVectorLayer,
                        NULL,
                        QgsRectangle)
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QByteArray
 
 start_app()
 
@@ -383,6 +384,54 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         self.assertEqual(layer.featureCount(), 2)
         self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'Polygon ((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0))')
         self.assertEqual([f for f in layer.getFeatures()][1].geometry().asWkt(), 'Polygon ((0.5 1, 0.5 0, 0 0, 0 1, 0.5 1))')
+
+    def testBlob(self):
+        """
+        Test binary blob field
+        """
+        tmpfile = os.path.join(self.basetestpath, 'binaryfield.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
+        lyr.CreateField(ogr.FieldDefn('strfield', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('intfield', ogr.OFTInteger))
+        lyr.CreateField(ogr.FieldDefn('binfield', ogr.OFTBinary))
+        lyr.CreateField(ogr.FieldDefn('binfield2', ogr.OFTBinary))
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile)
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+        bin1_field = fields[fields.lookupField('binfield')]
+        self.assertEqual(bin1_field.type(), QVariant.ByteArray)
+        self.assertEqual(bin1_field.typeName(), 'Binary')
+        bin2_field = fields[fields.lookupField('binfield2')]
+        self.assertEqual(bin2_field.type(), QVariant.ByteArray)
+        self.assertEqual(bin2_field.typeName(), 'Binary')
+
+        dp = vl.dataProvider()
+        f = QgsFeature(fields)
+        bin_1 = b'xxx'
+        bin_2 = b'yyy'
+        bin_val1 = QByteArray(bin_1)
+        bin_val2 = QByteArray(bin_2)
+        f.setAttributes([1, 'str', 100, bin_val1, bin_val2])
+        self.assertTrue(dp.addFeature(f))
+
+        f2 = next(dp.getFeatures())
+        self.assertEqual(f2.attributes(), [1, 'str', 100, QByteArray(bin_1), QByteArray(bin_2)])
+
+        bin_3 = b'zzz'
+        bin_4 = b'aaa'
+        bin_val3 = QByteArray(bin_3)
+        bin_val4 = QByteArray(bin_4)
+        self.assertTrue(dp.changeAttributeValues({f2.id(): {fields.lookupField('intfield'): 200,
+                                                            fields.lookupField('binfield'): bin_val4,
+                                                            fields.lookupField('binfield2'): bin_val3}}))
+
+        f5 = next(dp.getFeatures())
+        self.assertEqual(f5.attributes(), [1, 'str', 200, QByteArray(bin_4), QByteArray(bin_3)])
 
 
 if __name__ == '__main__':

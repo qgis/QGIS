@@ -79,12 +79,12 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   // open form button
   mOpenFormButton = new QToolButton();
   mOpenFormButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPropertyItem.svg" ) ) );
-  mOpenFormButton->setText( tr( "Open related feature form" ) );
+  mOpenFormButton->setText( tr( "Open Related Feature Form" ) );
   editLayout->addWidget( mOpenFormButton );
 
   mAddEntryButton = new QToolButton();
   mAddEntryButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAdd.svg" ) ) );
-  mAddEntryButton->setText( tr( "Add new entry" ) );
+  mAddEntryButton->setText( tr( "Add New Entry" ) );
   editLayout->addWidget( mAddEntryButton );
 
   // highlight button
@@ -102,14 +102,14 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   // map identification button
   mMapIdentificationButton = new QToolButton( this );
   mMapIdentificationButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
-  mMapIdentificationButton->setText( tr( "Select on map" ) );
+  mMapIdentificationButton->setText( tr( "Select on Map" ) );
   mMapIdentificationButton->setCheckable( true );
   editLayout->addWidget( mMapIdentificationButton );
 
   // remove foreign key button
   mRemoveFKButton = new QToolButton( this );
   mRemoveFKButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemove.svg" ) ) );
-  mRemoveFKButton->setText( tr( "No selection" ) );
+  mRemoveFKButton->setText( tr( "No Selection" ) );
   editLayout->addWidget( mRemoveFKButton );
 
   // add line to top layout

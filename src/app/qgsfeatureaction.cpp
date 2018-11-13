@@ -200,8 +200,19 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
   *mFeature = newFeature;
 
   //show the dialog to enter attribute values
-  //only show if enabled in settings and layer has fields
-  bool isDisabledAttributeValuesDlg = ( fields.count() == 0 ) || settings.value( QStringLiteral( "qgis/digitizing/disable_enter_attribute_values_dialog" ), false ).toBool();
+  //only show if enabled in settings
+  bool isDisabledAttributeValuesDlg = settings.value( QStringLiteral( "qgis/digitizing/disable_enter_attribute_values_dialog" ), false ).toBool();
+
+  // override application-wide setting if layer is non-spatial -- BECAUSE it's bad UX if
+  // it appears that nothing happens when you click the add row button for a non-spatial layer. Unlike
+  // spatial layers, where you can SEE the newly created spatial object on the map, creating a new
+  // feature in a non-spatial layer otherwise seems to have no result.
+  if ( !mLayer->isSpatial() )
+    isDisabledAttributeValuesDlg = false;
+
+  // override application-wide setting if layer has no fields
+  if ( fields.count() == 0 )
+    isDisabledAttributeValuesDlg = true;
 
   // override application-wide setting with any layer setting
   switch ( mLayer->editFormConfig().suppress() )
@@ -215,6 +226,11 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     case QgsEditFormConfig::SuppressDefault:
       break;
   }
+
+  // finally, if this action has specifically forced suppression of the form, that overrides everything
+  if ( mForceSuppressFormPopup )
+    isDisabledAttributeValuesDlg = true;
+
   if ( isDisabledAttributeValuesDlg )
   {
     mLayer->beginEditCommand( text() );
@@ -253,6 +269,11 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
 
   // Will be set in the onFeatureSaved SLOT
   return mFeatureSaved;
+}
+
+void QgsFeatureAction::setForceSuppressFormPopup( bool force )
+{
+  mForceSuppressFormPopup = force;
 }
 
 void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )

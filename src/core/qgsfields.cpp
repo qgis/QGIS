@@ -285,6 +285,10 @@ QIcon QgsFields::iconForField( int fieldIdx ) const
     {
       return QgsApplication::getThemeIcon( "/mIconFieldTime.svg" );
     }
+    case QVariant::ByteArray:
+    {
+      return QgsApplication::getThemeIcon( "/mIconFieldBinary.svg" );
+    }
     default:
       return QIcon();
   }

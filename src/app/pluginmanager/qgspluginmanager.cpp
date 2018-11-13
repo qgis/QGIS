@@ -989,21 +989,21 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   buttonInstall->setDefault( false );
   if ( metadata->value( QStringLiteral( "status" ) ) == QLatin1String( "upgradeable" ) )
   {
-    buttonInstall->setText( tr( "Upgrade plugin" ) );
+    buttonInstall->setText( tr( "Upgrade Plugin" ) );
     buttonInstall->setDefault( true );
   }
   else if ( metadata->value( QStringLiteral( "status" ) ) == QLatin1String( "newer" ) )
   {
-    buttonInstall->setText( tr( "Downgrade plugin" ) );
+    buttonInstall->setText( tr( "Downgrade Plugin" ) );
   }
   else if ( metadata->value( QStringLiteral( "status" ) ) == QLatin1String( "not installed" ) || metadata->value( QStringLiteral( "status" ) ) == QLatin1String( "new" ) )
   {
-    buttonInstall->setText( tr( "Install plugin" ) );
+    buttonInstall->setText( tr( "Install Plugin" ) );
   }
   else
   {
     // Default (will be grayed out if not available for reinstallation)
-    buttonInstall->setText( tr( "Reinstall plugin" ) );
+    buttonInstall->setText( tr( "Reinstall Plugin" ) );
   }
 
   // Enable/disable buttons

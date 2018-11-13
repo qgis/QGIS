@@ -95,6 +95,8 @@ SET(QGIS_GUI_SRCS
   editorwidgets/core/qgssearchwidgetwrapper.cpp
   editorwidgets/core/qgswidgetwrapper.cpp
 
+  editorwidgets/qgsbinarywidgetfactory.cpp
+  editorwidgets/qgsbinarywidgetwrapper.cpp
   editorwidgets/qgscheckboxconfigdlg.cpp
   editorwidgets/qgscheckboxsearchwidgetwrapper.cpp
   editorwidgets/qgscheckboxwidgetwrapper.cpp
@@ -657,6 +659,7 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/core/qgssearchwidgetwrapper.h
   editorwidgets/core/qgswidgetwrapper.h
 
+  editorwidgets/qgsbinarywidgetwrapper.h
   editorwidgets/qgscheckboxconfigdlg.h
   editorwidgets/qgscheckboxsearchwidgetwrapper.h
   editorwidgets/qgscheckboxwidgetwrapper.h
@@ -831,6 +834,7 @@ SET(QGIS_GUI_HDRS
   editorwidgets/core/qgseditorwidgetfactory.h
   editorwidgets/core/qgseditorwidgetautoconf.h
 
+  editorwidgets/qgsbinarywidgetfactory.h
   editorwidgets/qgscheckboxwidgetfactory.h
   editorwidgets/qgsclassificationwidgetwrapperfactory.h
   editorwidgets/qgscolorwidgetfactory.h

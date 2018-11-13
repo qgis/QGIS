@@ -22,6 +22,7 @@
 #include "qgsgui.h"
 #include "qgsnative.h"
 #include "qgisapp.h"
+#include "qgsmessagebar.h"
 #include "qgsnewnamedialog.h"
 #include "qgsbrowsermodel.h"
 #include "qgsbrowserdockwidget_p.h"
@@ -29,6 +30,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsnewgeopackagelayerdialog.h"
+#include "qgsfileutils.h"
 #include <QMenu>
 #include <QInputDialog>
 #include <QMessageBox>
@@ -40,7 +42,7 @@ QString QgsAppDirectoryItemGuiProvider::name()
   return QStringLiteral( "directory_items" );
 }
 
-void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
 {
   if ( item->type() != QgsDataItem::Directory )
     return;
@@ -84,8 +86,15 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     QDir dir( directoryItem->dirPath() );
     dialog.setDatabasePath( dir.filePath( QStringLiteral( "new_geopackage" ) ) );
     dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+    dialog.setAddToProject( false );
     if ( dialog.exec() )
+    {
+      QString file = dialog.databasePath();
+      file = QgsFileUtils::ensureFileNameHasExtension( file, QStringList() << QStringLiteral( "gpkg" ) );
+      context.messageBar()->pushSuccess( tr( "New GeoPackage" ), tr( "Created <a href=\"%1\">%2</a>" ).arg(
+                                           QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ) );
       item->refresh();
+    }
   } );
   newMenu->addAction( createGpkg );
 
@@ -97,7 +106,11 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     QDir dir( directoryItem->dirPath() );
     const QString newFile = QgsNewVectorLayerDialog::runAndCreateLayer( QgisApp::instance(), &enc, QgsProject::instance()->defaultCrsForNewLayers(), dir.filePath( QStringLiteral( "new_layer.shp" ) ) );
     if ( !newFile.isEmpty() )
+    {
+      context.messageBar()->pushSuccess( tr( "New ShapeFile" ), tr( "Created <a href=\"%1\">%2</a>" ).arg(
+                                           QUrl::fromLocalFile( newFile ).toString(), QDir::toNativeSeparators( newFile ) ) );
       item->refresh();
+    }
   } );
   newMenu->addAction( createShp );
 

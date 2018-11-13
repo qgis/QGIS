@@ -57,6 +57,7 @@ class NATIVE_EXPORT QgsWinNative : public QgsNative
                                const QString &version ) override;
     void cleanup() override;
     void openFileExplorerAndSelectFile( const QString &path ) override;
+    void showFileProperties( const QString &path ) override;
     void showUndefinedApplicationProgress() override;
     void setApplicationProgress( double progress ) override;
     void hideApplicationProgress() override;
@@ -65,7 +66,8 @@ class NATIVE_EXPORT QgsWinNative : public QgsNative
 
   private:
 
-    Capabilities mCapabilities = nullptr;
+    QWindow *mWindow = nullptr;
+    Capabilities mCapabilities = NativeFilePropertiesDialog;
     bool mWinToastInitialized = false;
     QWinTaskbarButton *mTaskButton = nullptr;
     QWinTaskbarProgress *mTaskProgress = nullptr;
